@@ -4,9 +4,18 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 0.9.1
+
+The first public release, published as 0.9.1 because the 0.9.0 build stopped before anything was released. It holds everything listed under 0.9.0 below, plus two fixes to how the release is built.
+
+### Fixed
+
+- The Docker image builds again: the admin's install step now has the API description it reads.
+- Release builds for every platform compile again: the saved database query data is up to date.
+
 ## 0.9.0
 
-The first public release. What it is, how to install it and what is known not to work yet: `docs/releases/0.9.0.md`.
+The first public release. What it is, how to install it and what is known not to work yet: `docs/releases/0.9.1.md`.
 
 ### Added
 
