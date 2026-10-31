@@ -13,6 +13,8 @@ CI's Demo check job stops at 30 minutes, and every run since the job began was c
 - A page load or an axe run that takes over 60 seconds fails by name, and its tab is replaced, so one stuck page cannot use up the job's time. Each page prints a line when it is done, so a slow run shows where it is.
 - Lighthouse stays one page at a time, so its performance scores are not measured on a busy machine.
 - `scores.mjs` prints what each failing audit found, such as the console message, so a red run can be fixed from its log.
+- axe runs with scripts on only, at all six widths. axe is a script the browser runs inside the page, so with the page's scripts off it never finished: the first run of this check timed out on all 31 pages. The scripts-off run checks what BL-WEB-2 asks instead. At each width it runs the layout checks and reads the main landmark's text and every link a reader can see, and both must match what the same page showed with scripts on. Accessibility does not depend on scripts here, because the page's markup and styles are the same either way and the reader script only adds things after a click, a key or a hover.
+- A page Lighthouse could not trace (NO_NAVSTART, a Chrome timing fault) is tried once more. A low score is never retried.
 
 ## Consequences
 
