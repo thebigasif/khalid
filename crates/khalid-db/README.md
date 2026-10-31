@@ -61,4 +61,4 @@ A test reads the table below and checks it lists every table in the schema, once
 
 ## Changing a query
 
-The `sqlx` macros check every query against the schema when the crate compiles (RULES.md BL-DB-3). CI has no database, so it reads the checked query shapes from `.sqlx/` at the repository root. After changing a query or adding a migration, run `just db-prepare` and commit what changes in `.sqlx/`.
+The `sqlx` macros check every query against the schema when the crate compiles (RULES.md BL-DB-3). CI has no database, so it reads the checked query shapes from `.sqlx/` at the repository root. After changing a query or adding a migration, run `just db-prepare` and commit what changes in `.sqlx/`. A `query_file!` entry is named by a hash of the `.sql` file's bytes, so `.gitattributes` keeps every `.sql` file at LF line endings on Windows too, and `tests/sql_line_endings.rs` fails if a checkout ignores it.
