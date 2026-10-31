@@ -24,6 +24,8 @@ ARG BINARY=build
 FROM node:${NODE_VERSION}-alpine AS admin
 WORKDIR /src/admin
 COPY admin/package.json admin/package-lock.json ./
+# npm ci generates the admin's API types from the SDK's OpenAPI document.
+COPY sdk/typescript/openapi.json /src/sdk/typescript/openapi.json
 RUN npm ci --no-audit --no-fund
 COPY admin/ ./
 RUN npm run build
