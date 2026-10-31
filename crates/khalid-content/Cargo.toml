@@ -1,6 +1,6 @@
 [package]
 name = "khalid-content"
-version = "0.0.0"
+version.workspace = true
 description = "Front matter, markdown and the content tree: the files that are the source of truth."
 edition.workspace = true
 rust-version.workspace = true
@@ -12,7 +12,7 @@ publish.workspace = true
 comrak = { version = "0.59", default-features = false, features = ["syntect-fancy"] }
 chrono = { version = "0.4", default-features = false, features = ["serde"] }
 khalid-core.workspace = true
-khalid-routes = { path = "../khalid-routes", version = "0.0.0" }
+khalid-routes = { path = "../khalid-routes", version = "0.9.0" }
 serde.workspace = true
 serde-saphyr = "2"
 sha2 = "0.11"

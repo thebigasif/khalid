@@ -1,6 +1,6 @@
 [package]
 name = "khalid-mount"
-version = "0.0.0"
+version.workspace = true
 description = "Proxy rules that mount the blog under a folder of a site built with something else."
 edition.workspace = true
 rust-version.workspace = true

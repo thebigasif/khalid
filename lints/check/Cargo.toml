@@ -1,6 +1,6 @@
 [package]
 name = "lint-check"
-version = "0.0.0"
+version.workspace = true
 description = "Deliberate lint violations that prove the lint table in lints/lints.toml fires (RULES.md BL-LNT-3)."
 edition.workspace = true
 rust-version.workspace = true

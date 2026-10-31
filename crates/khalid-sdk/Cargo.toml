@@ -1,6 +1,6 @@
 [package]
 name = "khalid-sdk"
-version = "0.0.0"
+version.workspace = true
 description = "Generates the TypeScript SDK in sdk/typescript/ from the API's OpenAPI document."
 edition.workspace = true
 rust-version.workspace = true

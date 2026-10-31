@@ -1,6 +1,6 @@
 [package]
 name = "khalid-static"
-version = "0.0.0"
+version.workspace = true
 description = "Static mode: the features a static site cannot have, and its pages without their forms."
 edition.workspace = true
 rust-version.workspace = true

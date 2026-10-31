@@ -1,6 +1,6 @@
 [package]
 name = "khalid-mcp"
-version = "0.0.0"
+version.workspace = true
 description = "The Model Context Protocol server behind khalid mcp, a client of the same functions the API calls."
 edition.workspace = true
 rust-version.workspace = true
@@ -11,7 +11,7 @@ publish.workspace = true
 [dependencies]
 axum = { version = "0.8", default-features = false }
 form_urlencoded = "1"
-khalid-api = { path = "../khalid-api", version = "0.0.0" }
+khalid-api = { path = "../khalid-api", version = "0.9.0" }
 khalid-core.workspace = true
 percent-encoding = "2"
 serde.workspace = true
@@ -22,7 +22,7 @@ tower = { version = "0.5", features = ["util"] }
 
 [dev-dependencies]
 chrono = { version = "0.4", default-features = false }
-khalid-api = { path = "../khalid-api", version = "0.0.0", features = ["test-util"] }
+khalid-api = { path = "../khalid-api", version = "0.9.0", features = ["test-util"] }
 tokio.workspace = true
 
 [lints]

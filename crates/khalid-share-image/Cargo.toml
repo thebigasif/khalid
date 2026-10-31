@@ -1,6 +1,6 @@
 [package]
 name = "khalid-share-image"
-version = "0.0.0"
+version.workspace = true
 description = "The generated share image: a 1200 by 630 PNG from a post's title, the site name and the theme colours."
 edition.workspace = true
 rust-version.workspace = true

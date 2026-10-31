@@ -1,6 +1,6 @@
 [package]
 name = "khalid-forms"
-version = "0.0.0"
+version.workspace = true
 description = "The form block's answers on a running site: the route, its spam trap and limits, and where answers are kept."
 edition.workspace = true
 rust-version.workspace = true
@@ -11,7 +11,7 @@ publish.workspace = true
 [dependencies]
 axum = { version = "0.8", default-features = false, features = ["form", "tokio"] }
 chrono = { version = "0.4", default-features = false, features = ["alloc"] }
-khalid-comments = { path = "../khalid-comments", version = "0.0.0" }
+khalid-comments = { path = "../khalid-comments", version = "0.9.0" }
 khalid-core.workspace = true
 thiserror.workspace = true
 tracing.workspace = true

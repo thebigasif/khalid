@@ -1,6 +1,6 @@
 [package]
 name = "khalid-analytics"
-version = "0.0.0"
+version.workspace = true
 description = "Server analytics with no cookies: page views by referrer group, AI search grouped, and the log of which bots fetched which page."
 edition.workspace = true
 rust-version.workspace = true

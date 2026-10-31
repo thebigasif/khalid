@@ -1,6 +1,6 @@
 [package]
 name = "khalid-render"
-version = "0.0.0"
+version.workspace = true
 description = "The public site's templates: sandboxed MiniJinja pages, theme tokens and strings per language."
 edition.workspace = true
 rust-version.workspace = true
