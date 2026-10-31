@@ -1,1 +1,0 @@
-- **`khalid crawl health`.** While the visitor log is on, shows each search and AI crawler's visits over the kept days, by what the site answered, with visits from addresses that only borrowed its name set apart (GEO C3).

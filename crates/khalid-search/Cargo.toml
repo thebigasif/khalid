@@ -1,6 +1,6 @@
 [package]
 name = "khalid-search"
-version = "0.0.0"
+version.workspace = true
 description = "Site search: words and their stems per language, ranking, and highlighted snippets."
 edition.workspace = true
 rust-version.workspace = true

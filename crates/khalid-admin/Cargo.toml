@@ -1,6 +1,6 @@
 [package]
 name = "khalid-admin"
-version = "0.0.0"
+version.workspace = true
 description = "The admin app, built from admin/ and embedded in the binary, answered under /admin/."
 edition.workspace = true
 rust-version.workspace = true

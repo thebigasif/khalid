@@ -1,6 +1,6 @@
 [package]
 name = "khalid-routes"
-version = "0.0.0"
+version.workspace = true
 description = "routes.toml: collections and their permalinks, channels, taxonomy prefixes, and the URLs they make."
 edition.workspace = true
 rust-version.workspace = true

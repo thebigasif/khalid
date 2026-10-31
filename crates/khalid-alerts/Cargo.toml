@@ -1,6 +1,6 @@
 [package]
 name = "khalid-alerts"
-version = "0.0.0"
+version.workspace = true
 description = "Alerts for a site's owner: what each problem is, the checks that find it, and remembering what was raised."
 edition.workspace = true
 rust-version.workspace = true
@@ -18,7 +18,7 @@ serde.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]
-khalid-alerts = { path = ".", version = "0.0.0", features = ["test-util"] }
+khalid-alerts = { path = ".", version = "0.9.0", features = ["test-util"] }
 serde_json.workspace = true
 tokio.workspace = true
 

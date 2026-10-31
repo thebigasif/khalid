@@ -1,6 +1,6 @@
 [package]
 name = "khalid-theme"
-version = "0.0.0"
+version.workspace = true
 description = "Theme sync: read a main site's colours, fonts and logo into theme tokens, and fix contrast."
 edition.workspace = true
 rust-version.workspace = true
@@ -10,7 +10,7 @@ publish.workspace = true
 
 [dependencies]
 khalid-core.workspace = true
-khalid-outbound = { path = "../khalid-outbound", version = "0.0.0" }
+khalid-outbound = { path = "../khalid-outbound", version = "0.9.0" }
 scraper = "0.29"
 serde.workspace = true
 thiserror.workspace = true
@@ -19,7 +19,7 @@ url = "2"
 read-fonts = "0.41"
 
 [dev-dependencies]
-khalid-outbound = { path = "../khalid-outbound", version = "0.0.0", features = ["test-util"] }
+khalid-outbound = { path = "../khalid-outbound", version = "0.9.0", features = ["test-util"] }
 tempfile = "3"
 tokio.workspace = true
 wiremock = "0.6"

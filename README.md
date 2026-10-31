@@ -1,6 +1,6 @@
 # Khalid, by SerpDad
 
-**Status: getting ready for the first release.** There is no release to download yet, so you build Khalid from source for now. Byline and Wellranked were working names; the product is Khalid.
+**Status: 0.9.0, the first public release.** It holds everything planned for 1.0, with a short list of known gaps in [docs/releases/0.9.0.md](docs/releases/0.9.0.md). Byline and Wellranked were working names; the product is Khalid.
 
 Khalid is an open-source blog engine any business can add to its website, whatever the site is built with. One Rust binary. Every post is a text file. The best SEO defaults are built in, including schema markup for every content type and a site audit that passes the Ahrefs and Semrush checks. A linter refuses to publish a post that breaks basic SEO hygiene, and every refusal teaches why. It is run from the command line and from a web editor, by people and by agents. There is no drag-and-drop page builder.
 
@@ -8,7 +8,13 @@ The one-line idea: get an Ahrefs- or Semrush-quality blog in one click.
 
 ## Install
 
-Until the first release is out, build Khalid from source. You need git, Rust through [rustup](https://rustup.rs/), a C compiler and Node.js 22. The npm steps build the admin, the web editor; `cargo` alone builds a blog without it. `CONTRIBUTING.md` explains each step.
+On Linux or a Mac, this one line downloads the newest release, checks it and puts `khalid` on your path. On Windows, download the `.exe` from the [releases page](https://github.com/thebigasif/khalid/releases). For Docker, see `docs/deploy.md`.
+
+```text
+curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/install.sh | sh
+```
+
+Or build Khalid from source. You need git, Rust through [rustup](https://rustup.rs/), a C compiler and Node.js 22. The npm steps build the admin, the web editor; `cargo` alone builds a blog without it. `CONTRIBUTING.md` explains each step.
 
 ```sh
 git clone https://github.com/thebigasif/khalid.git
@@ -17,12 +23,6 @@ npm ci
 npm run build
 cd ..
 cargo install --path crates/khalid --locked
-```
-
-Once the first release is out, this one line will install it on Linux or a Mac instead:
-
-```text
-curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/install.sh | sh
 ```
 
 Then make a site and run it:

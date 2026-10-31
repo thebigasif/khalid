@@ -1,6 +1,6 @@
 [package]
 name = "khalid-api"
-version = "0.0.0"
+version.workspace = true
 description = "The Content API and the Admin API: routes, the shared query grammar, keys and problem details."
 edition.workspace = true
 rust-version.workspace = true
@@ -20,12 +20,12 @@ chrono = { version = "0.4", default-features = false, features = ["alloc", "serd
 getrandom = "0.4"
 hmac = "0.13"
 htmd = "0.5"
-khalid-analytics = { path = "../khalid-analytics", version = "0.0.0" }
+khalid-analytics = { path = "../khalid-analytics", version = "0.9.0" }
 khalid-core.workspace = true
 khalid-lint.workspace = true
-khalid-media = { path = "../khalid-media", version = "0.0.0" }
-khalid-seo = { path = "../khalid-seo", version = "0.0.0" }
-khalid-webhooks = { path = "../khalid-webhooks", version = "0.0.0" }
+khalid-media = { path = "../khalid-media", version = "0.9.0" }
+khalid-seo = { path = "../khalid-seo", version = "0.9.0" }
+khalid-webhooks = { path = "../khalid-webhooks", version = "0.9.0" }
 serde.workspace = true
 serde_json.workspace = true
 sha2 = "0.11"
@@ -38,9 +38,9 @@ utoipa-axum = "0.3"
 
 [dev-dependencies]
 image = { version = "0.25", default-features = false, features = ["png"] }
-khalid-api = { path = ".", version = "0.0.0", features = ["test-util"] }
+khalid-api = { path = ".", version = "0.9.0", features = ["test-util"] }
 khalid-core = { workspace = true, features = ["test-util"] }
-khalid-outbound = { path = "../khalid-outbound", version = "0.0.0", features = ["test-util"] }
+khalid-outbound = { path = "../khalid-outbound", version = "0.9.0", features = ["test-util"] }
 proptest = "1"
 tempfile = "3"
 tokio.workspace = true

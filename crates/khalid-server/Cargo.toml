@@ -1,6 +1,6 @@
 [package]
 name = "khalid-server"
-version = "0.0.0"
+version.workspace = true
 description = "The web server: rendered pages from memory at clean addresses, and a graceful stop."
 edition.workspace = true
 rust-version.workspace = true
@@ -13,7 +13,7 @@ axum = { version = "0.8", default-features = false, features = ["http1", "tokio"
 brotli = "9"
 bytes = "1"
 getrandom = "0.4"
-khalid-webhooks = { path = "../khalid-webhooks", version = "0.0.0" }
+khalid-webhooks = { path = "../khalid-webhooks", version = "0.9.0" }
 notify = "8"
 percent-encoding = "2"
 sha2 = "0.11"
@@ -27,8 +27,8 @@ chrono = { version = "0.4", default-features = false }
 divan = "0.1"
 http-body-util = "0.1"
 khalid-core.workspace = true
-khalid-outbound = { path = "../khalid-outbound", version = "0.0.0", features = ["test-util"] }
-khalid-webhooks = { path = "../khalid-webhooks", version = "0.0.0", features = ["test-util"] }
+khalid-outbound = { path = "../khalid-outbound", version = "0.9.0", features = ["test-util"] }
+khalid-webhooks = { path = "../khalid-webhooks", version = "0.9.0", features = ["test-util"] }
 serde_json.workspace = true
 tempfile = "3"
 wiremock = "0.6"

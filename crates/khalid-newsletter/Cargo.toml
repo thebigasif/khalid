@@ -1,6 +1,6 @@
 [package]
 name = "khalid-newsletter"
-version = "0.0.0"
+version.workspace = true
 description = "Subscribers and newsletters: sign-up with double opt-in, one-click unsubscribe, and the emails they send."
 edition.workspace = true
 rust-version.workspace = true
@@ -28,8 +28,8 @@ tracing.workspace = true
 [dev-dependencies]
 # khalid-db implements SubscriberStore, so the flow is tested against SQLite.
 khalid-core = { workspace = true, features = ["test-util"] }
-khalid-db = { path = "../khalid-db", version = "0.0.0" }
-khalid-newsletter = { path = ".", version = "0.0.0", features = ["test-util"] }
+khalid-db = { path = "../khalid-db", version = "0.9.0" }
+khalid-newsletter = { path = ".", version = "0.9.0", features = ["test-util"] }
 tempfile = "3"
 tokio.workspace = true
 tower = { version = "0.5", features = ["util"] }

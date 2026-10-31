@@ -1,6 +1,6 @@
 [package]
 name = "khalid-perf"
-version = "0.0.0"
+version.workspace = true
 description = "Generated large sites and the measures behind the performance budgets."
 edition.workspace = true
 rust-version.workspace = true
@@ -11,10 +11,10 @@ publish.workspace = true
 [dependencies]
 chrono = { version = "0.4", default-features = false }
 flate2 = "1"
-khalid-content = { path = "../khalid-content", version = "0.0.0" }
+khalid-content = { path = "../khalid-content", version = "0.9.0" }
 khalid-core.workspace = true
 khalid-lint.workspace = true
-khalid-render = { path = "../khalid-render", version = "0.0.0" }
+khalid-render = { path = "../khalid-render", version = "0.9.0" }
 thiserror.workspace = true
 
 [dev-dependencies]

@@ -1,6 +1,6 @@
 [package]
 name = "khalid-outbound"
-version = "0.0.0"
+version.workspace = true
 description = "The one HTTP client for every outbound request, with the private-network guard."
 edition.workspace = true
 rust-version.workspace = true
@@ -22,7 +22,7 @@ thiserror.workspace = true
 tokio = { workspace = true, features = ["net"] }
 
 [dev-dependencies]
-khalid-outbound = { path = ".", version = "0.0.0", features = ["test-util"] }
+khalid-outbound = { path = ".", version = "0.9.0", features = ["test-util"] }
 tokio.workspace = true
 wiremock = "0.6"
 
