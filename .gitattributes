@@ -1,0 +1,5 @@
+# SQL keeps LF line endings on every checkout, Windows included.
+# `query_file!` finds its offline entry in .sqlx/ by a hash of the file's bytes,
+# and `migrate!` checksums each migration, so CRLF breaks the offline build and
+# makes a database look edited when it moves between systems.
+*.sql text eol=lf
