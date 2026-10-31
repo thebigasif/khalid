@@ -2,11 +2,10 @@
 //! rendered into memory instead of files, with the site's files and moved
 //! addresses. A headless site has the files and moves and no HTML page.
 
-use std::error::Error;
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, PoisonError};
-use std::{fmt, fs};
 
 use khalid_content::{
     ContentTree, Document, PostFront, SiteContent, check_bodies, parse_post, read_content,
@@ -18,12 +17,13 @@ use khalid_server::{Moved, Page, Render, Rendered};
 
 use crate::comment_pages::{self, ShownComments};
 use crate::content_feed::ContentFeed;
+use crate::form_pages::{self, LiveForms};
 use crate::listed_post::ListedPost;
 use crate::post_files::Assets;
 use crate::post_photos::Shown;
 use crate::site_content::Catalog;
 use crate::site_files::HEADLESS_NOT_FOUND;
-use crate::site_html::{SearchShell, Which, html_pages, search_shells};
+use crate::site_html::{SearchShell, Unrendered, Which, html_pages, search_shells};
 use crate::unlock::Gate;
 use crate::{
     assets, build_home, build_lists, build_message, build_pages, build_seo, build_sitemap,
@@ -67,6 +67,8 @@ struct Site {
     searches: Mutex<Vec<SearchShell>>,
     /// The comments post pages show, or `None` when the site takes none.
     comments: Option<ShownComments>,
+    /// The page of each form, or `None` when the site takes none.
+    forms: Option<LiveForms>,
     /// The password posts of the last full render, for the password form.
     gate: Gate,
     /// Dates a feed with no posts yet, and a draft's preview.
@@ -87,11 +89,12 @@ struct Outline {
     shown: Shown,
 }
 
-/// The theme's renderer, and the stylesheet every page links.
+/// The theme's renderer, and the stylesheet and reader script every page links.
 #[derive(Debug)]
 struct Theme {
     renderer: Renderer,
     stylesheet: Page,
+    script: Page,
     /// The tokens the stylesheet was built from, for the share cards.
     tokens: Tokens,
 }
@@ -124,6 +127,7 @@ impl SitePages {
             Some(Theme {
                 renderer,
                 stylesheet,
+                script: assets::script_page(&config)?,
                 tokens,
             })
         } else {
@@ -131,6 +135,7 @@ impl SitePages {
         };
         let comments =
             (theme.is_some() && comment_pages::taken(config.mode())).then(ShownComments::default);
+        let forms = comments.is_some().then(LiveForms::default);
         Ok(Self(Arc::new(Site {
             folder: folder.to_path_buf(),
             config,
@@ -144,6 +149,7 @@ impl SitePages {
             searches: Mutex::default(),
             gate: Gate::default(),
             comments,
+            forms,
             clock,
         })))
     }
@@ -193,6 +199,11 @@ impl SitePages {
     /// The comments the post pages show, or `None` when the site takes none.
     pub(crate) fn comments(&self) -> Option<ShownComments> {
         self.0.comments.clone()
+    }
+
+    /// The page of each form, or `None` when the site takes none.
+    pub(crate) fn forms(&self) -> Option<LiveForms> {
+        self.0.forms.clone()
     }
 
     /// The address of the stylesheet every page links; `None` when headless.
@@ -251,7 +262,7 @@ impl SitePages {
         // rest warm in the background once the pages are live (G14).
         share_images::draw_now(folder, cards)?;
         build_seo::heads(&seo_site, &mut languages)?;
-        let mut pages = vec![theme.stylesheet.clone()];
+        let mut pages = vec![theme.stylesheet.clone(), theme.script.clone()];
         html_pages(&theme.renderer, config, &languages, Which::All, &mut pages)?;
         Ok(pages)
     }
@@ -422,6 +433,7 @@ impl SitePages {
             }
         }
         comment_pages::fill(config, self.0.comments.as_ref(), &mut languages);
+        form_pages::fill(config, self.0.forms.as_ref(), &mut languages);
         let beside = post_files::served(folder, config, assets, &mut languages, shown)?;
         post_gate::open(config, routes, content, &mut languages)?;
         let seo_site = build_seo::site(config)?;
@@ -446,7 +458,7 @@ impl SitePages {
         }
         if let Some(theme) = theme {
             if which == Which::All {
-                served.pages.push(theme.stylesheet.clone());
+                (served.pages).extend([theme.stylesheet.clone(), theme.script.clone()]);
                 let shells = search_shells(&languages);
                 *self
                     .0
@@ -454,13 +466,8 @@ impl SitePages {
                     .lock()
                     .unwrap_or_else(PoisonError::into_inner) = shells;
             }
-            served.not_found = html_pages(
-                &theme.renderer,
-                config,
-                &languages,
-                which,
-                &mut served.pages,
-            )?;
+            let renderer = &theme.renderer;
+            served.not_found = html_pages(renderer, config, &languages, which, &mut served.pages)?;
         }
         // The cards draw behind the answers: their addresses are already
         // baked into the heads, so the pages are complete without the
@@ -580,18 +587,6 @@ impl Render for SitePages {
         Ok(Some(served.pages))
     }
 }
-
-/// Why the site could not be rendered after an edit, as a person reads it.
-#[derive(Debug)]
-pub(crate) struct Unrendered(UserMessage);
-
-impl fmt::Display for Unrendered {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl Error for Unrendered {}
 
 #[cfg(test)]
 #[path = "site_pages_tests.rs"]

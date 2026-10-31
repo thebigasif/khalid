@@ -35,6 +35,7 @@ mod build_sitemap;
 mod categories;
 mod cli;
 mod cli_access;
+mod cli_name;
 mod comment_pages;
 mod config_message;
 mod consent_route;
@@ -52,6 +53,8 @@ mod doctor_robots;
 mod entry_events;
 mod exit;
 mod export;
+mod form_delivery;
+mod form_pages;
 mod https_message;
 mod import;
 mod import_rest;
@@ -62,6 +65,7 @@ mod init_prompt;
 mod keys;
 mod keys_message;
 mod late_api;
+mod link_graph;
 mod lint;
 mod lint_fix;
 mod lint_input;
@@ -77,7 +81,12 @@ mod memory;
 mod miss_log;
 mod new;
 mod new_message;
+mod new_template;
 mod newsletter;
+mod newsletter_cli;
+mod newsletter_digest;
+mod newsletter_files;
+mod newsletter_send;
 mod outbound;
 mod page_code;
 mod page_counts;
@@ -97,6 +106,11 @@ mod repair;
 mod report;
 mod routes_message;
 mod scheduler;
+mod search_console;
+mod search_console_email;
+mod search_console_lost;
+mod search_console_post;
+mod search_console_report;
 mod search_index;
 mod search_page;
 mod search_route;
@@ -113,8 +127,11 @@ mod settings_text;
 mod share_images;
 mod site_addresses;
 mod site_audit;
+mod site_briefs;
+mod site_chrome;
 mod site_config;
 mod site_content;
+mod site_facts;
 mod site_files;
 mod site_html;
 mod site_lists;
@@ -122,11 +139,13 @@ mod site_outline;
 mod site_page;
 mod site_pages;
 mod site_posts;
+mod site_schema_templates;
 mod slug_moves;
 mod slug_repair;
 mod staff;
 mod staff_message;
 mod staff_owner;
+mod staff_toolbar;
 mod static_mode;
 mod subscriber_events;
 mod tag_events;
@@ -151,7 +170,7 @@ use khalid_core::{Config, Environment, SystemClock, UserMessage};
 use khalid_routes::Routes;
 use khalid_server::FolderLook;
 
-use crate::cli::{Cli, Command, Output, ThemeCommand};
+use crate::cli::{Cli, Command, Output, ServeArgs, ThemeCommand};
 use crate::exit::Exit;
 use crate::lint::Mode;
 use crate::new::NewPost;
@@ -177,13 +196,26 @@ fn serving(folder: &Path) -> FolderLook {
     FolderLook::take(folder)
 }
 
+/// For `serve --init`, makes the site before it is checked when the folder
+/// holds none, and returns the exit when that fails.
+fn first_start(cli: &Cli, environment: &Environment) -> Option<Exit> {
+    let (Some(Command::Serve(ServeArgs { init: true, .. })), Some(folder)) =
+        (&cli.command, cli.site.as_deref())
+    else {
+        return None;
+    };
+    let made = init::first_start(folder, environment);
+    made.err()
+        .map(|message| report::failure(cli.output, &message, Exit::Failure))
+}
+
 /// Runs the command the person asked for, after checking the site's settings
 /// and reading its content when `--site` names a folder.
 fn run(cli: &Cli) -> Exit {
-    if let Some(exit) = run_unchecked(cli) {
+    let env = Environment::from_process();
+    if let Some(exit) = run_unchecked(cli).or_else(|| first_start(cli, &env)) {
         return exit;
     }
-    let env = Environment::from_process();
     // The server's watch starts from a look taken before the content is
     // read, so a post saved while the server starts still shows.
     let serves = matches!(cli.command, Some(Command::Serve(_)));
@@ -217,13 +249,6 @@ fn run(cli: &Cli) -> Exit {
             let mode = if *fix { Mode::Fix } else { Mode::Check };
             lint::run(folder, path.as_deref(), mode, cli.output)
         }
-        (Some(Command::New { title, language }), Some((folder, config, ..))) => {
-            let post = NewPost {
-                title,
-                language: language.as_ref(),
-            };
-            new::run(folder, config, post, &SystemClock, cli.output)
-        }
         (
             Some(asked @ (Command::Build { .. } | Command::Export | Command::Audit { .. })),
             Some((folder, config, routes, (content, _))),
@@ -233,43 +258,58 @@ fn run(cli: &Cli) -> Exit {
             Some((folder, config, ..)),
         ) => access(folder, config, command, cli.output),
         (Some(Command::Mcp), Some((folder, config, ..))) => mcp::run(folder, config, &env),
-        (Some(Command::Bing { command }), Some((_, config, ..))) => {
-            bing::run(config, &env, *command, cli)
-        }
         (
-            Some(command @ (Command::Theme { .. } | Command::Publish { .. })),
+            Some(command @ (Command::Bing { .. } | Command::SearchConsole { .. })),
+            Some((folder, config, _, (content, _))),
+        ) => outside((folder, config, content), &env, command, cli),
+        (
+            Some(
+                command @ (Command::Theme { .. }
+                | Command::Publish { .. }
+                | Command::Newsletter { .. }
+                | Command::New(_)),
+            ),
             Some((folder, config, ..)),
         ) => on_settings(folder, config, command, cli),
         (Some(Command::Import(args)), Some((folder, config, routes, _))) => {
             import::run(folder, (config, routes), args, cli)
         }
-        (
-            Some(
-                command @ (Command::Db { .. }
-                | Command::Import(_)
-                | Command::Theme { .. }
-                | Command::Serve(_)
-                | Command::Keys { .. }
-                | Command::Staff { .. }
-                | Command::Mcp
-                | Command::Lint { .. }
-                | Command::Publish { .. }
-                | Command::New { .. }
-                | Command::Build { .. }
-                | Command::Export
-                | Command::Audit { .. }
-                | Command::Bing { .. }),
-            ),
-            None,
-        ) => report::failure(cli.output, &needs_site(command), Exit::Usage),
+        // Every command that works without a site returned in
+        // `run_unchecked`, so each one left needs `--site`.
+        (Some(command), None) => report::failure(cli.output, &needs_site(command), Exit::Usage),
         (Some(command), _) => report::failure(cli.output, &not_built(command), Exit::Internal),
     }
 }
 
-/// Runs the commands that need only a checked site's settings: `theme`
-/// and `publish`.
+/// Runs the commands that ask a search engine about the checked site, with
+/// the keys in `env`: `bing` and `search-console`.
+fn outside(
+    (folder, config, content): (&Path, &Config, &SiteContent),
+    env: &Environment,
+    command: &Command,
+    cli: &Cli,
+) -> Exit {
+    match command {
+        Command::Bing { command } => bing::run(config, env, *command, cli),
+        Command::SearchConsole { command } => {
+            search_console::run((folder, config, content), env, command.clone(), cli)
+        }
+        _ => report::failure(cli.output, &not_built(command), Exit::Internal),
+    }
+}
+
+/// Runs the commands that need only a checked site's settings: `theme`,
+/// `publish`, `newsletter` and `new`.
 fn on_settings(folder: &Path, config: &Config, command: &Command, cli: &Cli) -> Exit {
     match command {
+        Command::New(args) => new::run(
+            folder,
+            config,
+            NewPost::from(args),
+            &SystemClock,
+            cli.output,
+        ),
+        Command::Newsletter { command } => newsletter_cli::run(cli, (folder, config), command),
         Command::Theme { command } => theme(folder, config, command, cli),
         Command::Publish { slug, language } => {
             publish::run(cli, (folder, config), (slug, language.as_ref()))

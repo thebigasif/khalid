@@ -20,6 +20,7 @@ khalid-content = { path = "../khalid-content", version = "0.0.0" }
 khalid-core.workspace = true
 khalid-routes = { path = "../khalid-routes", version = "0.0.0" }
 khalid-db = { path = "../khalid-db", version = "0.0.0" }
+khalid-forms = { path = "../khalid-forms", version = "0.0.0" }
 khalid-https = { path = "../khalid-https", version = "0.0.0" }
 khalid-import = { path = "../khalid-import", version = "0.0.0" }
 khalid-lint.workspace = true
@@ -28,6 +29,7 @@ khalid-mount = { path = "../khalid-mount", version = "0.0.0" }
 khalid-media = { path = "../khalid-media", version = "0.0.0" }
 khalid-render = { path = "../khalid-render", version = "0.0.0" }
 khalid-search = { path = "../khalid-search", version = "0.0.0" }
+khalid-search-console = { path = "../khalid-search-console", version = "0.0.0" }
 khalid-seo = { path = "../khalid-seo", version = "0.0.0" }
 khalid-share-image = { path = "../khalid-share-image", version = "0.0.0" }
 khalid-mail = { path = "../khalid-mail", version = "0.0.0" }
@@ -47,6 +49,7 @@ serde_json.workspace = true
 tempfile = "3"
 tokio = { workspace = true, features = ["rt", "net", "sync", "io-std", "io-util"] }
 toml = "0.9"
+toml_edit = "0.25"
 tower = { version = "0.5", default-features = false, features = ["util"] }
 tracing.workspace = true
 tar = { version = "0.4", default-features = false }
@@ -105,6 +108,10 @@ required-features = ["test-util"]
 
 [[test]]
 name = "audit_webhooks"
+required-features = ["test-util"]
+
+[[test]]
+name = "serve_form_delivery"
 required-features = ["test-util"]
 
 [[test]]

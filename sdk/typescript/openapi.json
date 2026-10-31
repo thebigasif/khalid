@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Khalid API",
-    "description": "The Content API and the Admin API of a Khalid blog.",
+    "description": "The Content API and the Admin API of a Khalid blog. Each key, and each address that sends wrong keys, has a limit a minute; past it the answer is 429 with Retry-After.",
     "license": {
       "name": "AGPL-3.0-only",
       "identifier": "AGPL-3.0-only"
@@ -10,6 +10,94 @@
     "version": "0.0.0"
   },
   "paths": {
+    "/api/admin/v1/audit/": {
+      "get": {
+        "tags": [
+          "admin audit"
+        ],
+        "summary": "Lists who changed what through the Admin API and when, newest first:\nevery write that succeeded, to content, settings or staff accounts.\nNeeds `admin:all`.",
+        "operationId": "list_changes",
+        "parameters": [
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Only changes older than this one, by its `id`: the `next` of the\npage before. Left out, the list starts at the newest.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "From 1 to 100; 50 when left out.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of the log",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminChanges"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The limit is not from 1 to 100, or before is not a number",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks admin:all",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/comments/": {
       "get": {
         "tags": [
@@ -1438,6 +1526,82 @@
         ]
       }
     },
+    "/api/admin/v1/posts/{id}/check/": {
+      "get": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "Checks one post as it would go live now, saving nothing: every lint\nfinding with the score out of 100, the search result its page would\nmake, and the JSON-LD the page would carry. A draft is checked as if\npublished today. Needs `posts:write`.",
+        "operationId": "check_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The post's identity",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The post's check",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminChecks"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No post has this identity, or this server checks no posts",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/posts/{id}/preview-link/": {
       "post": {
         "tags": [
@@ -1942,6 +2106,168 @@
           },
           "404": {
             "description": "No redirect has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/schema-templates/": {
+      "get": {
+        "tags": [
+          "admin settings"
+        ],
+        "summary": "Lists the site's schema templates, the collections a template may name,\nand whether the running server needs a restart to use the templates.\nNeeds `settings:write`.",
+        "operationId": "read_templates",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The schema templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaTemplates"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no schema templates",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "admin settings"
+        ],
+        "summary": "Puts a new list in place of every schema template, made on the copy\n`updated_at` names. Each template is checked as `khalid serve` checks\n`site.toml` at start, and nothing is saved when one is refused. The\nrunning server uses the new templates after a restart. Needs\n`settings:write`.",
+        "operationId": "replace_templates",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplatesChange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The schema templates as saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaTemplates"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no schema templates",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The templates changed after the copy this change was made on",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, or a template is not valid",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -2920,6 +3246,218 @@
         "security": [
           {
             "staff_session": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/trash/": {
+      "get": {
+        "tags": [
+          "admin trash"
+        ],
+        "summary": "Lists the deleted posts, the most recently deleted first. Needs\n`posts:write`.",
+        "operationId": "list_trash",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The deleted posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrashList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/trash/{key}/": {
+      "delete": {
+        "tags": [
+          "admin trash"
+        ],
+        "summary": "Deletes a post in the trash for good. Needs `posts:publish`.",
+        "operationId": "purge_trashed",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "The deleted post's key in the trash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The post is gone for good"
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:publish",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing in the trash has this key",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/trash/{key}/restore/": {
+      "post": {
+        "tags": [
+          "admin trash"
+        ],
+        "summary": "Puts a deleted post back where it was, in the status it had, and\nanswers it as it is now. Needs `posts:write`, and `posts:publish` for a\npost that was live or scheduled.",
+        "operationId": "restore_trashed",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "The deleted post's key in the trash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The restored post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPosts"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write, or posts:publish for a post that was live or scheduled",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing in the trash has this key",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Another post has the address the restored one would take",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
           }
         ]
       }
@@ -5769,6 +6307,88 @@
   },
   "components": {
     "schemas": {
+      "AdminChange": {
+        "type": "object",
+        "description": "One change, as the Admin API shows it.",
+        "required": [
+          "id",
+          "at",
+          "by",
+          "action",
+          "route",
+          "path"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "`added`, `changed` or `removed`."
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When it was made."
+          },
+          "by": {
+            "type": "string",
+            "description": "The identity of the key or staff account that made it."
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Its place in the log: a later change has a larger number."
+          },
+          "path": {
+            "type": "string",
+            "description": "The address it was made at.",
+            "example": "/api/admin/v1/posts/en.internal-links/"
+          },
+          "route": {
+            "type": "string",
+            "description": "The route it went through.",
+            "example": "/api/admin/v1/posts/{id}/"
+          }
+        }
+      },
+      "AdminChanges": {
+        "type": "object",
+        "description": "One page of the audit log.",
+        "required": [
+          "changes"
+        ],
+        "properties": {
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminChange"
+            },
+            "description": "The changes, newest first."
+          },
+          "next": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "The `before` that lists the next page, or null on the last page."
+          }
+        }
+      },
+      "AdminChecks": {
+        "type": "object",
+        "description": "Checks as the Admin API wraps them.",
+        "required": [
+          "checks"
+        ],
+        "properties": {
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostCheck"
+            },
+            "description": "The one post's check."
+          }
+        }
+      },
       "AdminComment": {
         "type": "object",
         "description": "A comment in Admin API shape.\n\nExhaustive on purpose: the comments crate fills it in.",
@@ -6202,6 +6822,45 @@
           }
         }
       },
+      "AdminSchemaTemplate": {
+        "type": "object",
+        "description": "One schema template as the Admin API sends and takes it.",
+        "required": [
+          "applies_to",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "applies_to": {
+            "$ref": "#/components/schemas/TemplateTarget",
+            "description": "Whether `name` is a collection or a category."
+          },
+          "name": {
+            "type": "string",
+            "description": "The collection or category whose posts get the node.",
+            "example": "guides"
+          },
+          "properties": {
+            "type": "object",
+            "description": "Each property's value, by property name. A value may use the title\ntemplate variables, such as `{title}` and `{site}`.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            },
+            "example": {
+              "provider": "{site}"
+            }
+          },
+          "type": {
+            "type": "string",
+            "description": "The schema.org type, such as `Course`.",
+            "example": "Course"
+          }
+        },
+        "additionalProperties": false
+      },
       "AdminWebhook": {
         "type": "object",
         "description": "A webhook as the Admin API lists it. Its secret is never listed.",
@@ -6577,50 +7236,18 @@
         }
       },
       "CreateOptions": {
-        "type": "object",
-        "description": "What the admin passes to `navigator.credentials.create`.",
-        "required": [
-          "challenge",
-          "rp_id",
-          "user_id",
-          "exclude",
-          "algorithms",
-          "timeout_ms"
-        ],
-        "properties": {
-          "algorithms": {
-            "type": "array",
-            "items": {
-              "type": "integer",
-              "format": "int64"
-            },
-            "description": "The key algorithms Khalid accepts, by their `WebAuthn` numbers:\nES256, then `EdDSA`."
-          },
-          "challenge": {
-            "type": "string",
-            "description": "The challenge to sign."
-          },
-          "exclude": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Passkeys the account already has."
-          },
-          "rp_id": {
-            "type": "string",
-            "description": "The site's host name."
-          },
-          "timeout_ms": {
-            "type": "integer",
-            "format": "int64",
-            "description": "How long the browser may wait, in milliseconds."
-          },
-          "user_id": {
-            "type": "string",
-            "description": "The account's handle for authenticators."
+        "allOf": [
+          {
+            "type": "object",
+            "description": "The options, in `publicKey`."
           }
-        }
+        ],
+        "description": "What the admin passes to `navigator.credentials.create`, as\n`{\"publicKey\": {...}}`."
+      },
+      "CustomJsonLd": {
+        "type": "string",
+        "description": "JSON-LD written by hand for a type Khalid does not write itself, kept\nas written. It is read as schema.org nodes before it is kept, so a page\nnever carries JSON-LD a search engine would throw away.",
+        "example": "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}"
       },
       "EditPosts": {
         "type": "object",
@@ -6751,28 +7378,13 @@
         ]
       },
       "GetOptions": {
-        "type": "object",
-        "description": "What the admin passes to `navigator.credentials.get`.",
-        "required": [
-          "challenge",
-          "rp_id",
-          "timeout_ms"
-        ],
-        "properties": {
-          "challenge": {
-            "type": "string",
-            "description": "The challenge to sign."
-          },
-          "rp_id": {
-            "type": "string",
-            "description": "The site's host name."
-          },
-          "timeout_ms": {
-            "type": "integer",
-            "format": "int64",
-            "description": "How long the browser may wait, in milliseconds."
+        "allOf": [
+          {
+            "type": "object",
+            "description": "The options, in `publicKey`, and how the browser should ask."
           }
-        }
+        ],
+        "description": "What the admin passes to `navigator.credentials.get`, as\n`{\"publicKey\": {...}, \"mediation\": \"conditional\"}`."
       },
       "GlossaryTerms": {
         "type": "object",
@@ -7080,17 +7692,17 @@
         "description": "A new passkey, as `navigator.credentials.create` returned it.",
         "required": [
           "name",
-          "client_data",
-          "attestation_object"
+          "challenge",
+          "credential"
         ],
         "properties": {
-          "attestation_object": {
+          "challenge": {
             "type": "string",
-            "description": "`attestationObject`."
+            "description": "The `challenge` of the options it answers, as they gave it."
           },
-          "client_data": {
-            "type": "string",
-            "description": "`clientDataJSON`."
+          "credential": {
+            "type": "object",
+            "description": "The credential's `toJSON()`."
           },
           "name": {
             "type": "string",
@@ -7347,27 +7959,17 @@
         "type": "object",
         "description": "A sign-in, as `navigator.credentials.get` returned it.",
         "required": [
-          "credential_id",
-          "client_data",
-          "authenticator_data",
-          "signature"
+          "challenge",
+          "credential"
         ],
         "properties": {
-          "authenticator_data": {
+          "challenge": {
             "type": "string",
-            "description": "`authenticatorData`."
+            "description": "The `challenge` of the options it answers, as they gave it."
           },
-          "client_data": {
-            "type": "string",
-            "description": "`clientDataJSON`."
-          },
-          "credential_id": {
-            "type": "string",
-            "description": "The credential's `rawId`."
-          },
-          "signature": {
-            "type": "string",
-            "description": "`signature`."
+          "credential": {
+            "type": "object",
+            "description": "The credential's `toJSON()`."
           }
         },
         "additionalProperties": false
@@ -7476,6 +8078,34 @@
           }
         ],
         "description": "A published post in API shape. Bodies are present only when asked for\nwith `formats`."
+      },
+      "PostCheck": {
+        "type": "object",
+        "description": "One post's check: findings and score, snippet and schema.",
+        "required": [
+          "id",
+          "lint",
+          "snippet",
+          "schema"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The post's identity."
+          },
+          "lint": {
+            "type": "object",
+            "description": "Every finding, as `khalid lint --json` prints them for one post,\nwith `blocks` and the post's `score` out of 100 and the rules that\ncost it points."
+          },
+          "schema": {
+            "type": "object",
+            "description": "The JSON-LD the page would carry: `@context` and `@graph`."
+          },
+          "snippet": {
+            "$ref": "#/components/schemas/Snippet",
+            "description": "The search result the page would make."
+          }
+        }
       },
       "PostEdit": {
         "type": "object",
@@ -7767,6 +8397,14 @@
             "type": "boolean",
             "description": "Whether the post is featured in lists and the featured channel."
           },
+          "focus_keyword": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The one search phrase the post is written to answer, which the\nlinter checks the title, description and text against.",
+            "example": "anchor text"
+          },
           "head_code": {
             "type": [
               "string",
@@ -7799,6 +8437,28 @@
             ],
             "description": "The post's own robots directives, in place of the site's.",
             "example": "noindex, nofollow"
+          },
+          "schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CustomJsonLd",
+                "description": "Hand-written JSON-LD the page carries beside the schema Khalid\nwrites, for a type Khalid does not write itself."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "seo_title": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SearchTitle",
+                "description": "The title search results show, in place of the site's title\ntemplate, or `null` for the template's."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "share_cards": {
             "$ref": "#/components/schemas/ShareCards",
@@ -8052,6 +8712,50 @@
         },
         "additionalProperties": false
       },
+      "SchemaTemplates": {
+        "type": "object",
+        "description": "The site's schema templates, in the order `site.toml` lists them.",
+        "required": [
+          "templates",
+          "collections",
+          "updated_at",
+          "restart_needed"
+        ],
+        "properties": {
+          "collections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The site's collections, to pick a template's collection from.",
+            "example": [
+              "posts",
+              "guides"
+            ]
+          },
+          "restart_needed": {
+            "type": "boolean",
+            "description": "Whether the running server still uses older templates, so a restart\nis needed before previews and served pages show these."
+          },
+          "templates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminSchemaTemplate"
+            },
+            "description": "Every template. When two of one type cover a post, the first wins."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When `site.toml` last changed. A change sends it back."
+          }
+        }
+      },
+      "SearchTitle": {
+        "type": "string",
+        "description": "The title search results show for a post, in place of the site's title\ntemplate. It may use the template variables, such as `{site}`.",
+        "example": "Anchor text that says where it goes {sep} {site}"
+      },
       "SessionAnswer": {
         "type": "object",
         "description": "A signed-in session: who it is, and the CSRF token every request with\nthe cookie sends in `x-khalid-csrf`.",
@@ -8187,6 +8891,14 @@
             ],
             "description": "Whether the post is featured."
           },
+          "focus_keyword": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new focus keyword, or `null` for none.",
+            "example": "anchor text"
+          },
           "head_code": {
             "type": [
               "string",
@@ -8230,6 +8942,22 @@
             ],
             "description": "New robots directives, or `null` for the site's.",
             "example": "noindex, nofollow"
+          },
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New hand-written JSON-LD, or `null` for none.",
+            "example": "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}"
+          },
+          "seo_title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new search title, or `null` for the site's title template.",
+            "example": "Anchor text that says where it goes {sep} {site}"
           },
           "share_cards": {
             "oneOf": [
@@ -8357,6 +9085,32 @@
           }
         }
       },
+      "Snippet": {
+        "type": "object",
+        "description": "The lines of a search result: the title, the address and the\ndescription, as the page's head gives them.",
+        "required": [
+          "title",
+          "url",
+          "description"
+        ],
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "The meta description, or empty when the page has none.",
+            "example": "Pick words that say where the link goes."
+          },
+          "title": {
+            "type": "string",
+            "description": "The `<title>`, after the site's title template.",
+            "example": "Choosing anchor text | Field Notes on SEO"
+          },
+          "url": {
+            "type": "string",
+            "description": "The canonical address.",
+            "example": "https://www.example.com/blog/choosing-anchor-text/"
+          }
+        }
+      },
       "StaffAccount": {
         "type": "object",
         "description": "A staff account as the Admin API shows it.",
@@ -8428,6 +9182,37 @@
           }
         }
       },
+      "TemplateTarget": {
+        "type": "string",
+        "description": "What a schema template's `name` names.",
+        "enum": [
+          "collection",
+          "category"
+        ]
+      },
+      "TemplatesChange": {
+        "type": "object",
+        "description": "A new list of schema templates, made on the copy `updated_at` names.",
+        "required": [
+          "templates",
+          "updated_at"
+        ],
+        "properties": {
+          "templates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminSchemaTemplate"
+            },
+            "description": "Every template, in order. An empty list removes them all."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The `updated_at` of the copy the change was made on."
+          }
+        },
+        "additionalProperties": false
+      },
       "Term": {
         "type": "object",
         "description": "A tag or a category in one language, in API shape. Both are a name for\na group of posts, so they share one shape.",
@@ -8455,6 +9240,58 @@
             "type": "string",
             "description": "The slug posts name it by.",
             "example": "on-page-seo"
+          }
+        }
+      },
+      "TrashList": {
+        "type": "object",
+        "description": "The trash as the Admin API wraps it.",
+        "required": [
+          "trash"
+        ],
+        "properties": {
+          "trash": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrashedPost"
+            },
+            "description": "The deleted posts, the most recently deleted first."
+          }
+        }
+      },
+      "TrashedPost": {
+        "type": "object",
+        "description": "A deleted post, as the Admin API shows it.",
+        "required": [
+          "key",
+          "id",
+          "title",
+          "status",
+          "trashed_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The post's identity when it was deleted.",
+            "example": "en.internal-links"
+          },
+          "key": {
+            "type": "string",
+            "description": "Names this copy in the trash, for restoring or deleting it.",
+            "example": "20261031T093000Z-en.internal-links"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PostStatus",
+            "description": "Its status when it was deleted."
+          },
+          "title": {
+            "type": "string",
+            "description": "Its title."
+          },
+          "trashed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When it was deleted."
           }
         }
       }

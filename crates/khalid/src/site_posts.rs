@@ -25,7 +25,7 @@ use khalid_routes::Routes;
 use crate::lint_input::{LintInput, PostParts, lint_parts, lint_site};
 use crate::post_text::{PostText, quoted};
 use crate::settings_text::{put, settings_of, write_real_update, write_settings};
-use crate::{atomic, lint};
+use crate::{atomic, lint, site_briefs, site_facts};
 
 /// The folder of drafts at the top of a site.
 const DRAFTS: &str = "drafts";
@@ -327,10 +327,12 @@ impl Site {
     /// made once for a whole list.
     fn judge(&self, content: &SiteContent) -> Result<Judge, PostStoreError> {
         let routes = Routes::load(&self.folder).map_err(PostStoreError::new)?;
-        let input = LintInput::new(content, &self.config, routes);
+        let facts = site_facts::load(&self.folder).map_err(|m| failure(&m.to_string()))?;
+        let briefs = site_briefs::load(&self.folder).map_err(|m| failure(&m.to_string()))?;
+        let input =
+            (LintInput::new(content, &self.config, routes).with_facts(facts)).with_briefs(briefs);
         let (site, _) = lint_site(content, &self.config, &input);
-        let settings =
-            lint::lint_settings(&self.folder).map_err(|message| failure(&message.to_string()))?;
+        let settings = lint::lint_settings(&self.folder).map_err(|m| failure(&m.to_string()))?;
         let linter = Linter::new(&settings, self.clock.as_ref()).map_err(PostStoreError::new)?;
         Ok(Judge {
             linter,
@@ -377,15 +379,7 @@ impl Site {
     /// `found` as the linter judges it now: a draft as it would go live
     /// today, a published post as it is.
     fn candidate_now(&self, judge: &Judge, found: &Found) -> Result<LintPost, PostStoreError> {
-        let mut text = found.text.clone();
-        let relative = match found.status {
-            PostStatus::Draft => self.dated(found, &mut text).1,
-            _ => found
-                .path
-                .strip_prefix(&self.folder)
-                .map_err(PostStoreError::new)?
-                .to_path_buf(),
-        };
+        let (text, relative) = self.as_now(found)?;
         self.candidate(judge, found, &text, &relative)
     }
 
@@ -453,9 +447,9 @@ impl Site {
         Ok(Self::admin_post(&found)?.with_updated_by(by))
     }
 
-    /// Removes post `id` when its file has not changed since `seen`. A post
-    /// kept as a folder, `index.md` with its images beside it, goes with
-    /// the whole folder.
+    /// Moves post `id` to the trash when its file has not changed since
+    /// `seen`. A post kept as a folder, `index.md` with its images beside
+    /// it, goes with the whole folder.
     fn delete_now(&self, id: &str, seen: DateTime<Utc>) -> Result<AdminPost, DeletePostError> {
         let _writing = self.seen.lock().unwrap_or_else(PoisonError::into_inner);
         let found = self.find(id)?.ok_or(DeletePostError::NotFound)?;
@@ -475,11 +469,7 @@ impl Site {
             let collection = folder.parent().and_then(Path::file_name);
             found.status == PostStatus::Published && index && collection == Some("posts".as_ref())
         });
-        match folder {
-            Some(folder) => fs::remove_dir_all(folder),
-            None => fs::remove_file(&found.path),
-        }
-        .map_err(PostStoreError::new)?;
+        self.keep(folder.unwrap_or(&found.path), id)?;
         Ok(post)
     }
 
@@ -513,8 +503,7 @@ where
 
 impl SitePosts {
     /// What the lint publish gate finds in post `id` now, on a blocking
-    /// thread, writing nothing. `khalid mcp`'s `lint_post` calls it; the
-    /// Admin API has no lint route yet.
+    /// thread, writing nothing. `khalid mcp`'s `lint_post` calls it.
     ///
     /// # Errors
     ///
@@ -592,8 +581,13 @@ fn failure(what: &str) -> PostStoreError {
     PostStoreError::new(Failure(what.to_owned()))
 }
 
+#[path = "site_posts_check.rs"]
+mod check;
 #[path = "site_posts_list.rs"]
 mod list;
+
+#[path = "site_trash.rs"]
+mod trash;
 
 #[cfg(test)]
 #[path = "site_posts_tests.rs"]

@@ -5,28 +5,36 @@ use std::sync::Arc;
 use axum::middleware;
 use axum::routing::get;
 use axum::{Json, Router};
+use khalid_core::SystemClock;
 use utoipa::openapi::OpenApi as Document;
 use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
 use utoipa::{Modify, OpenApi};
 use utoipa_axum::router::OpenApiRouter;
 
 use crate::admin_key::{AdminDoor, require_admin_key};
+use crate::api_limits::ApiLimits;
 use crate::api_version::negotiate_version;
 use crate::comment_moderation::{CommentModeration, NoComments};
+use crate::content_key::ContentDoor;
 use crate::content_store::ContentStore;
 use crate::keys::KeyStore;
 use crate::media_api::{self, MediaLibrary};
+use crate::post_check::PostChecks;
 use crate::post_store::PostStore;
+use crate::post_trash::PostTrash;
 use crate::problem::Problem;
 use crate::publish_door::{PublishDoor, Silent};
 use crate::redirect_desk::RedirectDesk;
 use crate::resources::MediaItems;
+use crate::schema_template_store::SchemaTemplateStore;
 use crate::session_check::{SessionCheck, StaffRoutes};
 use crate::webhook_store::WebhookStore;
 use crate::{
-    admin_api, admin_comments, admin_not_found, admin_redirect_csv, admin_redirects,
-    admin_webhooks, api_version, content_api,
+    admin_api, admin_audit, admin_check, admin_comments, admin_not_found, admin_redirect_csv,
+    admin_redirects, admin_schema_templates, admin_trash, admin_webhooks, api_version, content_api,
 };
+
+pub use crate::audit_desk::AuditDesk;
 
 /// The document's title, the schemas every route shares and the ways a
 /// key may be sent.
@@ -34,7 +42,9 @@ use crate::{
 #[openapi(
     info(
         title = "Khalid API",
-        description = "The Content API and the Admin API of a Khalid blog."
+        description = "The Content API and the Admin API of a Khalid blog. Each key, and each \
+                       address that sends wrong keys, has a limit a minute; past it the answer \
+                       is 429 with Retry-After."
     ),
     components(schemas(Problem, MediaItems)),
     modifiers(&KeySchemes)
@@ -214,6 +224,17 @@ pub struct AdminDesks {
     /// The site's webhooks, or `None` when the webhook routes list none
     /// and answer that the site keeps none.
     pub webhooks: Option<Arc<dyn WebhookStore>>,
+    /// The audit log every write that succeeds is kept in, or `None` when
+    /// nothing is logged and the audit route lists nothing.
+    pub audit: Option<AuditDesk>,
+    /// Where deleted posts wait, or `None` when the trash routes list none.
+    pub trash: Option<Arc<dyn PostTrash>>,
+    /// The post checks behind the editor's SEO panel, or `None` when the
+    /// check route answers that this server makes none.
+    pub checks: Option<Arc<dyn PostChecks>>,
+    /// The site's schema templates, or `None` when their routes answer
+    /// that this server keeps none.
+    pub schema_templates: Option<Arc<dyn SchemaTemplateStore>>,
 }
 
 impl std::fmt::Debug for AdminDesks {
@@ -226,15 +247,60 @@ impl std::fmt::Debug for AdminDesks {
 }
 
 impl AdminDesks {
-    /// No comments, no media library, no stored redirects and no webhooks.
+    /// No comments, no media library, no stored redirects, no webhooks, no
+    /// audit log, no trash, no post checks and no schema templates.
     pub fn none() -> Self {
         Self {
             comments: Arc::new(NoComments),
             media: None,
             redirects: RedirectDesk::none(),
             webhooks: None,
+            audit: None,
+            trash: None,
+            checks: None,
+            schema_templates: None,
         }
     }
+}
+
+/// [`router_with_door`] keeping each deleted post in `trash`, under
+/// `/api/admin/v1/trash/`. `trash` is usually the store behind `door`.
+pub fn router_with_trash(
+    content: Arc<dyn ContentStore>,
+    door: Arc<PublishDoor>,
+    keys: Arc<dyn KeyStore>,
+    trash: Arc<dyn PostTrash>,
+) -> (Router, Document) {
+    let desks = AdminDesks {
+        trash: Some(trash),
+        ..AdminDesks::none()
+    };
+    assemble(content, door, keys, desks, None)
+}
+
+/// [`router_with_door`] keeping every write that succeeds in `audit`'s
+/// log, which `/api/admin/v1/audit/` lists.
+pub fn router_with_audit(
+    content: Arc<dyn ContentStore>,
+    door: Arc<PublishDoor>,
+    keys: Arc<dyn KeyStore>,
+    audit: AuditDesk,
+) -> (Router, Document) {
+    let desks = AdminDesks {
+        audit: Some(audit),
+        ..AdminDesks::none()
+    };
+    assemble(content, door, keys, desks, None)
+}
+
+/// [`router_with_door`] with every store in `desks`, and no staff.
+pub fn router_with_desks(
+    content: Arc<dyn ContentStore>,
+    door: Arc<PublishDoor>,
+    keys: Arc<dyn KeyStore>,
+    desks: AdminDesks,
+) -> (Router, Document) {
+    assemble(content, door, keys, desks, None)
 }
 
 /// [`router_with_door`] with the webhook routes under
@@ -276,18 +342,29 @@ fn assemble(
     staff: Option<Staff>,
 ) -> (Router, Document) {
     let (routes, sessions) = staff.unzip();
+    let limits = Arc::new(ApiLimits::new(SystemClock));
     let door = AdminDoor {
         keys: Arc::clone(&keys),
         sessions,
+        limits: Arc::clone(&limits),
+        audit: desks.audit.clone(),
     };
+    let content_door = ContentDoor { keys, limits };
     let redirects = desks.redirects;
     let mut admin = admin_api::routes(posts, door.clone())
+        .merge(admin_audit::routes(desks.audit, door.clone()))
         .merge(admin_comments::routes(desks.comments, door.clone()))
         .merge(media_api::routes(desks.media, door.clone()))
         .merge(admin_not_found::routes(redirects.clone(), door.clone()))
         .merge(admin_redirect_csv::routes(redirects.clone(), door.clone()))
         .merge(admin_redirects::routes(redirects, door.clone()))
-        .merge(admin_webhooks::routes(desks.webhooks, door.clone()));
+        .merge(admin_trash::routes(desks.trash, door.clone()))
+        .merge(admin_webhooks::routes(desks.webhooks, door.clone()))
+        .merge(admin_check::routes(desks.checks, door.clone()))
+        .merge(admin_schema_templates::routes(
+            desks.schema_templates,
+            door.clone(),
+        ));
     if let Some(staff) = routes {
         let signed_in = staff
             .signed_in
@@ -299,7 +376,10 @@ fn assemble(
         admin = admin.merge(staff);
     }
     let api = OpenApiRouter::with_openapi(ApiDoc::openapi())
-        .nest(content_api::BASE, content_api::routes(content, keys))
+        .nest(
+            content_api::BASE,
+            content_api::routes(content, content_door),
+        )
         .nest(admin_api::BASE, admin);
     finish(api)
 }
