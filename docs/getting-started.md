@@ -12,13 +12,13 @@ A few words first:
 
 ## 1. Get Khalid
 
-Khalid has not had its first release yet. Until it has, build it from source as [CONTRIBUTING.md](../CONTRIBUTING.md#build-khalid-from-source) says. Building the admin needs Node.js; without it you get a working blog but no admin screens.
-
-Once the first release is out, one line installs it on Linux or a Mac:
+On Linux or a Mac, one line installs the newest release:
 
 ```text
 curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/install.sh | sh
 ```
+
+On Windows, download the `.exe` from the [releases page](https://github.com/thebigasif/khalid/releases). To build it from source instead, follow [CONTRIBUTING.md](../CONTRIBUTING.md#build-khalid-from-source). Building the admin needs Node.js; without it you get a working blog but no admin screens.
 
 Check that it runs with `khalid --version`.
 

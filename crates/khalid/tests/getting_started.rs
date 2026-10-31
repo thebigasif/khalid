@@ -119,8 +119,8 @@ fn the_getting_started_guide_runs_as_written() {
     assert!(within(here.path(), "blog-restored/data/site.db").is_file());
 }
 
-/// Before the first release, the README's way in is a build from source,
-/// and the build steps make the admin, which `cargo` alone leaves out.
+/// Beside the install script, the README offers a build from source, and
+/// the build steps make the admin, which `cargo` alone leaves out.
 #[test]
 fn the_readme_and_contributing_say_how_to_build_with_the_admin() {
     let readme = fs::read_to_string(repository("README.md")).unwrap();
