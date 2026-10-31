@@ -51,6 +51,7 @@ mod crawler_lists;
 mod db;
 mod db_export;
 mod db_message;
+mod definition_text;
 mod doctor;
 mod doctor_address;
 mod doctor_check;

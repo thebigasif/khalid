@@ -4,7 +4,8 @@
 # page in each language:
 #
 #   1. the W3C HTML validator (vnu) on the HTML the server sends,
-#   2. Lighthouse in all four categories, where any score under 100 fails,
+#   2. Lighthouse in every category, where any score under 100 fails, on
+#      every page but the not-found pages, which answer 404,
 #   3. axe and the layout checks at 320, 375, 768, 1024, 1280 and 1920 px,
 #      first with scripts on and then again with scripts off.
 #
@@ -80,7 +81,9 @@ while read -r url; do
 done < "$work/missing.txt"
 
 echo "HTML validator:"
-vnu="$(node -p 'require(process.argv[1])' "$tools/node_modules/vnu-jar")"
+# vnu-jar exports its path as a String object, which `node -p` would print
+# with its properties, so it is turned into plain text first.
+vnu="$(node -p 'String(require(process.argv[1]))' "$tools/node_modules/vnu-jar")"
 if java -jar "$vnu" --errors-only --format text "$work"/html/*.html; then
   echo "Every page is valid HTML."
 else
@@ -102,17 +105,16 @@ while read -r url; do
   number=$((number + 1))
   lighthouse "$url" "$number"
 done < "$work/pages.txt"
-# A not-found page answers 404 on purpose, which SEO and best practices
-# count against it, so it is held to the other two categories.
-while read -r url; do
-  number=$((number + 1))
-  lighthouse "$url" "$number" --only-categories=performance,accessibility
-done < "$work/missing.txt"
+# A not-found page answers 404 on purpose, and Lighthouse refuses to score
+# a page that answers an error, so those pages get the validator and axe
+# only.
 node "$tools/scores.mjs" "$work"/lighthouse/*.json || failed=1
+echo "Lighthouse took $SECONDS seconds since the start."
 
 echo "axe and layout, six widths, scripts on and off:"
 cat "$work/pages.txt" "$work/missing.txt" > "$work/all.txt"
 node "$tools/browse.mjs" "$work/all.txt" || failed=1
+echo "The browser checks ended $SECONDS seconds after the start."
 
 if [ "$failed" -ne 0 ]; then
   echo "The demo check failed. A reader would meet the problems above. Fix each one in the crate that owns it, then run scripts/demo-check.sh again."

@@ -22,6 +22,12 @@ for (const file of process.argv.slice(2)) {
       const audit = report.audits[ref.id];
       if (ref.weight > 0 && audit.score !== null && audit.score < 1) {
         console.log(`    costs points: ${audit.title} (${ref.id})`);
+        // What the audit found, such as the console message or the
+        // element, so the fix can start from the log alone.
+        for (const item of (audit.details?.items ?? []).slice(0, 5)) {
+          const found = [item.description, item.url, item.node?.snippet].filter((part) => typeof part === "string" && part).join(" ");
+          if (found) console.log(`      ${found}`);
+        }
       }
     }
   }

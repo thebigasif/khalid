@@ -133,6 +133,38 @@ async fn answers_an_unknown_address_with_the_not_found_page() {
 }
 
 #[tokio::test]
+async fn a_site_without_an_icon_answers_the_browsers_icon_request_with_no_content() {
+    for method in [Method::GET, Method::HEAD] {
+        let response = send(method.clone(), "/favicon.ico").await;
+        assert_eq!(response.status(), StatusCode::NO_CONTENT, "{method}");
+        assert!(response.headers().get(header::CONTENT_TYPE).is_none());
+        assert_eq!(header(&response, &header::CACHE_CONTROL), "max-age=86400");
+        assert_eq!(text(response).await, "");
+    }
+    let response = get("/blog/favicon.ico").await;
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn a_site_with_an_icon_serves_it() {
+    let pages = Pages::new(
+        vec![page("/favicon.ico", MediaType::Xml, "icon")],
+        "<h1>Page not found</h1>",
+    )
+    .unwrap();
+    let request = Request::builder()
+        .uri("/favicon.ico")
+        .body(Body::empty())
+        .unwrap();
+    let response = router(pages, SecurityHeaders::default())
+        .oneshot(request)
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(text(response).await, "icon");
+}
+
+#[tokio::test]
 async fn never_redirects_to_another_site() {
     for uri in ["//evil.example", "/%2Fevil.example", "//blog"] {
         let response = get(uri).await;
