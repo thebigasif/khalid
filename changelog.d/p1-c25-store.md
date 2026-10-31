@@ -1,1 +1,0 @@
-- **Crawled pages.** While the visitor log is on, each page a checked crawler fetched is kept with its first and last fetch, after the log erases its rows (GEO C2).
