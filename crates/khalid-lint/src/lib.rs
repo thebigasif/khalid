@@ -40,6 +40,7 @@ mod reading;
 mod rule;
 mod score;
 mod severity;
+mod shingles;
 mod site_content;
 mod site_links;
 mod site_sections;

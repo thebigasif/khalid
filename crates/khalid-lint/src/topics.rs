@@ -1,35 +1,13 @@
 //! Rules that compare a post with related content: near copies, glossary
 //! terms and topic groups.
 
-use std::collections::BTreeSet;
-use std::hash::{DefaultHasher, Hash, Hasher};
-
 use crate::link_graph::{links_to, page_key};
+use crate::shingles::{Shingles, Words};
 use crate::{ClusterRole, Hit, LinkKind, LintPost, Rule, RuleId, Severity, SiteView};
-
-/// How many words make one shingle, the unit two texts are compared in.
-const SHINGLE_WORDS: usize = 5;
 
 /// The fewest shingles a text needs before it is compared at all, so two
 /// one-line drafts never count as copies of each other.
 const MIN_SHINGLES: usize = 10;
-
-/// The runs of five words in `text`, ignoring case and punctuation, hashed.
-/// Hashes are only compared with others from the same run, so the hasher's
-/// exact output never matters.
-fn shingles(text: &str) -> BTreeSet<u64> {
-    let lower = text.to_lowercase();
-    let words: Vec<&str> = lower
-        .split(|c: char| !c.is_alphanumeric())
-        .filter(|word| !word.is_empty())
-        .collect();
-    let hash = |run: &[&str]| {
-        let mut hasher = DefaultHasher::new();
-        run.hash(&mut hasher);
-        hasher.finish()
-    };
-    words.windows(SHINGLE_WORDS).map(hash).collect()
-}
 
 /// Another post in the same language that shares more than the site's limit
 /// of its shingles with this one, named in the finding.
@@ -49,17 +27,28 @@ impl Rule for NearDuplicate {
     }
 
     fn check(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Hit> {
-        let own = shingles(&post.body_text);
+        let own = Shingles::of(&post.body_text);
         if own.len() < MIN_SHINGLES {
             return Vec::new();
         }
+        let (mut words, mut theirs) = (Words::default(), Shingles::default());
         let others = site.posts().iter();
         let others = others.filter(|o| o.locale == post.locale && o.slug != post.slug);
         let copies = others.filter(|other| {
-            let theirs = shingles(&other.body_text);
-            let shared = own.intersection(&theirs).count();
+            words.read(&other.body_text);
+            // The union is never smaller than our own shingles, and the
+            // shared ones never outnumber `found_in`, so a post this rules
+            // out could not pass the exact test below either.
+            if own.found_in(&words) * 100 <= self.max_percent * own.len() {
+                return false;
+            }
+            theirs.refill(&words);
+            if theirs.len() < MIN_SHINGLES {
+                return false;
+            }
+            let shared = own.shared_with(&theirs);
             let union = own.len() + theirs.len() - shared;
-            theirs.len() >= MIN_SHINGLES && shared * 100 > self.max_percent * union
+            shared * 100 > self.max_percent * union
         });
         copies
             .map(|other| Hit::about(other.slug.as_str()))
@@ -145,5 +134,76 @@ impl Rule for ClusterWithoutPillar {
             .map(|pillar| Hit::about(pillar.slug.as_str()))
             .into_iter()
             .collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::collections::BTreeSet;
+
+    use khalid_core::{Locale, Slug};
+
+    use super::*;
+    use crate::LintSite;
+
+    /// The plain definition the rule must agree with: the distinct runs of
+    /// five lowercase words, compared as text, with no hashing at all.
+    fn copies_by_definition(own: &str, theirs: &str, max_percent: usize) -> bool {
+        let runs = |text: &str| -> BTreeSet<Vec<String>> {
+            let lower = text.to_lowercase();
+            let words: Vec<String> = lower
+                .split(|c: char| !c.is_alphanumeric())
+                .filter(|word| !word.is_empty())
+                .map(str::to_owned)
+                .collect();
+            words.windows(5).map(<[String]>::to_vec).collect()
+        };
+        let (own, theirs) = (runs(own), runs(theirs));
+        let shared = own.intersection(&theirs).count();
+        let union = own.len() + theirs.len() - shared;
+        own.len() >= MIN_SHINGLES
+            && theirs.len() >= MIN_SHINGLES
+            && shared * 100 > max_percent * union
+    }
+
+    fn post(slug: &str, body: &str) -> LintPost {
+        let mut post = LintPost::new(Locale::try_new("en").unwrap(), Slug::try_new(slug).unwrap());
+        post.body_text = body.to_owned();
+        post
+    }
+
+    /// A text of `len` words, `Word0, word1 ...`, with every `every`th word
+    /// swapped for another and the first `skip` left out.
+    fn variant(len: usize, every: usize, skip: usize) -> String {
+        (skip..len)
+            .map(|at| match at % 7 {
+                _ if every > 0 && at % every == 0 => format!("other{at}"),
+                0 => format!("Word{at},"),
+                _ => format!("word{at}"),
+            })
+            .collect::<Vec<_>>()
+            .join(" ")
+    }
+
+    #[test]
+    fn the_rule_agrees_with_the_plain_definition_around_the_limit() {
+        let base = variant(80, 0, 0);
+        let mut found = 0;
+        for every in 0..=24 {
+            for skip in [0, 5, 20, 39, 41, 60, 72] {
+                let other = variant(80, every, skip);
+                let site = LintSite {
+                    posts: vec![post("base", &base), post("other", &other)],
+                    ..LintSite::default()
+                };
+                let rule = NearDuplicate { max_percent: 50 };
+                let hits = rule.check(&site.posts[0], &site);
+                let expected = copies_by_definition(&base, &other, 50);
+                assert_eq!(!hits.is_empty(), expected, "every {every}, skip {skip}");
+                found += usize::from(expected);
+            }
+        }
+        // Both answers occur, so the limit itself was crossed.
+        assert!(found > 10 && found < 150, "{found} copies");
     }
 }
