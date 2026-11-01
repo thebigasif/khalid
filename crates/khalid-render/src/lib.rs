@@ -64,7 +64,7 @@ pub use parts::part_keys;
 pub use person::Person;
 pub use post::{BodyHtml, Link, RenderPost};
 pub use reading_time::ReadingTime;
-pub use related::{PostTopics, related};
+pub use related::{MOST_RELATED, PostTopics, related, related_up_to};
 pub use render_error::RenderError;
 pub use renderer::Renderer;
 pub use script::{ScriptFile, ScriptTag, reader_script, reader_script_file};

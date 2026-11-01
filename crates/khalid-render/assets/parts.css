@@ -48,3 +48,11 @@
 .page-numbers a, .page-numbers span { display: inline-flex; align-items: center; justify-content: center; min-inline-size: 44px; min-block-size: 44px; border-radius: var(--radius); }
 .page-numbers a[aria-current] { background: var(--color-accent); color: var(--color-on-accent); text-decoration: none; }
 .page-numbers span { color: var(--color-muted); }
+
+/* Related posts as plain links, or as one row that scrolls sideways and
+   snaps to each card; the row needs no script. */
+.related-links { margin: 0; padding-inline-start: 1.25rem; }
+.related-links a { display: inline-flex; align-items: center; min-block-size: 44px; }
+.related-scroll .cards { grid-auto-flow: column; grid-auto-columns: minmax(14rem, 40%); overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: inline mandatory; padding-block-end: 0.5rem; }
+.related-scroll .card { scroll-snap-align: start; }
+.related-scroll .card:has(.image) { display: block; }

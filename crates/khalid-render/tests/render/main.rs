@@ -58,6 +58,8 @@ mod reading_time;
 #[cfg(test)]
 mod related;
 #[cfg(test)]
+mod related_layouts;
+#[cfg(test)]
 mod sandbox;
 #[cfg(test)]
 mod script;

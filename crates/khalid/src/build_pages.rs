@@ -13,8 +13,8 @@ use khalid_content::{
 };
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
 use khalid_render::{
-    BodyHtml, MOST_PICKS, PageBody, PageKind, PageMeta, Person, PostCard, PostTopics, ReadingTime,
-    RenderHome, RenderListing, RenderPost, RenderSite, Robots, related,
+    BodyHtml, MOST_PICKS, MOST_RELATED, PageBody, PageKind, PageMeta, Person, PostCard, PostTopics,
+    ReadingTime, RenderHome, RenderListing, RenderPost, RenderSite, Robots, related_up_to,
 };
 use khalid_routes::{Collection, PostAddress, Routes};
 use khalid_seo::{ArticleType, MetaTemplate, PageKind as SeoKind, SeoPage};
@@ -242,7 +242,7 @@ fn post_pages(
             .iter()
             .map(Slug::to_string)
             .collect();
-        let related = related(topic, &topics, &pinned)
+        let related = related_up_to(topic, &topics, &pinned, MOST_RELATED)
             .into_iter()
             .filter_map(|index| among.get(index).map(|post| post.card.clone()))
             .collect();

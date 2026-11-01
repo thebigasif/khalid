@@ -53,8 +53,15 @@
 {% endfor %}</ul>
 </section>
 {% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
-{% endif %}{% if "related_posts" in site.features and page.related %}<section class="related">
+{% endif %}{% if "related_posts" in site.features and page.related %}{% set layout = template.options.related %}{% set shown = page.related[:template.options.related_count] -%}
+{% if layout == "scroll" %}<section class="related related-scroll">{% else %}<section class="related">{% endif %}
 <h2>{{ t.related_posts }}</h2>
-{{ cards(page.related, 3) }}
-</section>
+{% if layout == "links" %}<ul class="related-links">
+{% for post in shown %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
+{% endfor %}</ul>
+{% elif layout == "list" %}{{ cards(shown, 3, "text") }}
+{% elif layout == "row" %}{{ cards(shown, 3, "row") }}
+{% elif layout == "scroll" %}{{ cards(shown, 3, "image") }}
+{% else %}{{ cards(shown, 3) }}
+{% endif %}</section>
 {% endif %}{% endblock %}

@@ -43,6 +43,11 @@ const PARTS: &[(&str, Off)] = &[
     ("picks", Off::Number(0)),
     // The page links under a list: pages (newer and older) or numbered.
     ("pagination", Off::Word("pages")),
+    // How the related posts under a post are laid out: grid (the list's
+    // cards), list, row, scroll or links.
+    ("related", Off::Word("grid")),
+    // How many related posts show, from 3 to 10.
+    ("related_count", Off::Number(5)),
 ];
 
 /// The option key of every part the shared templates read.

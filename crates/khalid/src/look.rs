@@ -118,11 +118,17 @@ mod tests {
     }
 
     #[test]
-    fn a_site_cannot_ask_for_more_picks_than_the_home_page_carries() {
+    fn a_site_cannot_ask_for_more_picks_or_related_posts_than_the_pages_carry() {
         let khalid_theme::OptionKind::Count { most, .. } = khalid_theme::parts::picks(0).kind
         else {
             panic!("picks is not a count");
         };
         assert_eq!(usize::try_from(most).unwrap(), khalid_render::MOST_PICKS);
+        let khalid_theme::OptionKind::Count { most, .. } =
+            khalid_theme::parts::related_count(5).kind
+        else {
+            panic!("related_count is not a count");
+        };
+        assert_eq!(usize::try_from(most).unwrap(), khalid_render::MOST_RELATED);
     }
 }

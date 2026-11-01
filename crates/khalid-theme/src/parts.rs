@@ -156,6 +156,66 @@ pub const fn pagination(links: PageLinks) -> OptionSpec {
     }
 }
 
+/// How the related posts under a post are laid out, as the `related`
+/// option names it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RelatedLayout {
+    /// The list's own cards in a grid: classic's.
+    Grid,
+    /// Text cards, one under another.
+    List,
+    /// Cards with a small picture beside the text.
+    Row,
+    /// Picture cards in one row that scrolls sideways.
+    Scroll,
+    /// Plain links, one per line.
+    Links,
+}
+
+/// How the related posts under a post are laid out, `layout` unless the
+/// site sets it.
+pub const fn related(layout: RelatedLayout) -> OptionSpec {
+    OptionSpec {
+        key: "related",
+        help: "How the related posts under a post are laid out: grid, list, row, scroll or links.",
+        kind: OptionKind::Choice {
+            allowed: &["grid", "list", "row", "scroll", "links"],
+            default: match layout {
+                RelatedLayout::Grid => "grid",
+                RelatedLayout::List => "list",
+                RelatedLayout::Row => "row",
+                RelatedLayout::Scroll => "scroll",
+                RelatedLayout::Links => "links",
+            },
+        },
+    }
+}
+
+/// The fewest and the most related posts a site may ask for.
+const RELATED: (i64, i64) = (3, 10);
+
+/// How many related posts show, `count` unless the site sets it, kept
+/// from 3 to 10.
+pub const fn related_count(count: i64) -> OptionSpec {
+    let (least, most) = RELATED;
+    let default = if count > most {
+        most
+    } else if count < least {
+        least
+    } else {
+        count
+    };
+    OptionSpec {
+        key: "related_count",
+        help: "How many related posts show under a post, from 3 to 10.",
+        kind: OptionKind::Count {
+            least,
+            most,
+            default,
+        },
+    }
+}
+
 /// `spec` turned on by default, when it is an on or off option. Any other
 /// option comes back as it is.
 pub const fn on(spec: OptionSpec) -> OptionSpec {
@@ -182,5 +242,7 @@ pub fn all() -> Vec<OptionSpec> {
         FEATURED,
         picks(0),
         pagination(PageLinks::Pages),
+        related(RelatedLayout::Grid),
+        related_count(5),
     ]
 }

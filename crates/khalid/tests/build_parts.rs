@@ -185,3 +185,19 @@ fn the_sampler_pack_shows_the_featured_post_and_the_picks() {
         "{home}"
     );
 }
+
+#[test]
+fn the_sampler_pack_lays_out_related_posts_as_links() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\nrelated = \"links\"\nrelated_count = 3\n",
+        &[],
+    );
+    let post = page(&sampler, "what-a-sitemap-does/index.html");
+    let (_, related) = post.split_once("<ul class=\"related-links\">").unwrap();
+    let (related, _) = related.split_once("</ul>").unwrap();
+    assert_eq!(related.matches("<li>").count(), 3, "{related}");
+    let (_temp, classic) = built("", &[]);
+    let post = page(&classic, "what-a-sitemap-does/index.html");
+    assert!(post.contains("<section class=\"related\">"), "{post}");
+    assert!(!post.contains("related-links"), "{post}");
+}

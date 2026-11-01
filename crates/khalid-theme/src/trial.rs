@@ -26,6 +26,8 @@ pub(crate) static SAMPLER: Pack = Pack {
         parts::FEATURED,
         parts::picks(0),
         parts::pagination(parts::PageLinks::Pages),
+        parts::related(parts::RelatedLayout::Grid),
+        parts::related_count(5),
     ],
 };
 
