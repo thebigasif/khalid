@@ -30,19 +30,32 @@ fn copy_dir(from: &Path, into: &Path) {
     }
 }
 
+/// The demo post every test reads.
+#[cfg(test)]
+const POST_FILE: &str = "content/en/posts/2026-09-28-what-a-sitemap-does.md";
+
 /// Builds a copy of the demo site with `table` added to its `site.toml`.
 #[cfg(test)]
 fn build(table: &str) -> (tempfile::TempDir, PathBuf, Output) {
+    build_with(table, "")
+}
+
+/// Builds like [`build`], with `post_end` added to the end of the demo
+/// post in [`POST_FILE`].
+#[cfg(test)]
+fn build_with(table: &str, post_end: &str) -> (tempfile::TempDir, PathBuf, Output) {
     let temp = tempfile::tempdir().unwrap();
     let demo = at(
         Path::new(env!("CARGO_MANIFEST_DIR")),
         "../../fixtures/demo-site",
     );
     copy_dir(&demo, temp.path());
-    let settings = at(temp.path(), "site.toml");
-    let mut toml = fs::read_to_string(&settings).unwrap();
-    toml.push_str(table);
-    fs::write(&settings, toml).unwrap();
+    for (rel, end) in [("site.toml", table), (POST_FILE, post_end)] {
+        let file = at(temp.path(), rel);
+        let mut text = fs::read_to_string(&file).unwrap();
+        text.push_str(end);
+        fs::write(&file, text).unwrap();
+    }
     let out = at(temp.path(), "out");
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
         .args(["--site", temp.path().to_str().unwrap(), "build", "--out"])
@@ -108,10 +121,89 @@ fn the_trial_pack_changes_the_build_and_reads_its_options() {
     );
 
     let post = "what-a-sitemap-does/index.html";
+    assert!(
+        page(&trial, post).contains("<div class=\"share\">"),
+        "trial shows share links"
+    );
+    assert!(!page(&classic, post).contains("class=\"share\""));
     assert!(page(&classic, post).contains("min read</time>"));
     assert!(
         !page(&trial, post).contains("min read</time>"),
         "trial turns reading time off"
+    );
+}
+
+#[test]
+fn the_newsletter_form_shows_only_when_the_site_takes_sign_ups() {
+    let post = "what-a-sitemap-does/index.html";
+    let (_plain, plain) = built("\n[template]\nname = \"trial\"\n");
+    assert!(!page(&plain, post).contains("newsletter-slot"), "no [mail]");
+
+    let mail = "\n[mail]\nfrom = \"news@example.com\"\n\n[mail.smtp]\nhost = \"127.0.0.1\"\n\
+                port = 2525\nsecurity = \"none\"\nprivate_host = true\n";
+    let (_mail, out) = built(&format!("{mail}\n[template]\nname = \"trial\"\n"));
+    let form = "<form class=\"subscribe\" method=\"post\" action=\"/blog/subscribe\">";
+    assert!(page(&out, post).contains(form), "{}", page(&out, post));
+    assert!(page(&out, "index.html").contains("newsletter-slot"));
+    let (_classic, classic) = built(mail);
+    assert!(!page(&classic, post).contains("newsletter-slot"), "classic");
+}
+
+#[test]
+fn the_call_to_action_shows_as_a_band_and_a_header_button() {
+    let cta = "\n[template]\nname = \"trial\"\n[template.cta]\nlabel = \"Start a free trial\"\n\
+               href = \"https://www.example.com/signup/\"\nnote = \"No card needed.\"\n";
+    let (_trial, out) = built(cta);
+    let button = "<a class=\"button header-button\" href=\"https://www.example.com/signup/\">";
+    for rel in ["index.html", "what-a-sitemap-does/index.html"] {
+        let html = page(&out, rel);
+        assert!(
+            html.contains("<p class=\"cta-note\">No card needed.</p>"),
+            "{rel}"
+        );
+        assert!(html.contains(button), "{rel}");
+    }
+    assert!(
+        page(&out, "404.html").contains(button),
+        "every page's header"
+    );
+
+    let (_classic, classic) = built(&cta.replace("trial", "classic"));
+    let html = page(&classic, "what-a-sitemap-does/index.html");
+    assert!(!html.contains("cta-band") && !html.contains("header-button"));
+}
+
+#[test]
+fn a_cta_block_shows_the_band_in_the_post_even_in_classic() {
+    let cta = "\n[template.cta]\nlabel = \"Book a demo\"\nhref = \"/blog/demo/\"\n";
+    let end = "\n\n::cta\n\nOne more line.\n";
+    let (_temp, out, output) = build_with(cta, end);
+    assert_eq!(output.status.code(), Some(0), "{output:?}");
+    let html = page(&out, "what-a-sitemap-does/index.html");
+    let band = "<div class=\"cta-band\">\n<p><a class=\"button\" href=\"/blog/demo/\">Book a demo</a></p>\n</div>\n<p>One more line.</p>";
+    assert!(html.contains(band), "{html}");
+    assert!(!html.contains("khalid-cta"), "the mark is gone");
+}
+
+#[test]
+fn footer_groups_show_on_every_page_of_their_language() {
+    let groups = "\n[[nav.footer_groups]]\nheading = \"Product\"\n\
+                  [[nav.footer_groups.links]]\nlabel = \"Pricing\"\nhref = \"/pricing/\"\n\n\
+                  [[nav.footer_groups]]\nheading = \"Rechtliches\"\nlanguage = \"de\"\n\
+                  [[nav.footer_groups.links]]\nlabel = \"Impressum\"\nhref = \"/blog/de/impressum/\"\n";
+    let (_temp, out) = built(groups);
+    for rel in ["index.html", "404.html", "what-a-sitemap-does/index.html"] {
+        let html = page(&out, rel);
+        assert!(
+            html.contains("<nav aria-label=\"Product\">\n<h2>Product</h2>"),
+            "{rel}"
+        );
+        assert!(!html.contains("Rechtliches"), "{rel}");
+    }
+    let german = page(&out, "de/index.html");
+    assert!(
+        german.contains("<nav aria-label=\"Rechtliches\">\n<h2>Rechtliches</h2>"),
+        "{german}"
     );
 }
 

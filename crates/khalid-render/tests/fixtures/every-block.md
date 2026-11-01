@@ -4,6 +4,8 @@
 
 A claim with a source.[^1]
 
+::cta
+
 [^1]: The source.
 
 ```rust

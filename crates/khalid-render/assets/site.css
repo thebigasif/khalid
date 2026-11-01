@@ -103,6 +103,9 @@ nav a { min-inline-size: 44px; }
   font-size: var(--text-small);
 }
 .site-footer p { margin: 0; }
+.footer-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 1rem 1.5rem; }
+.footer-groups h2 { margin: 0; color: var(--color-text); font-size: var(--text-small); }
+.footer-groups ul { display: grid; gap: 0; }
 
 /* A post, a plain page or an author: one piece of writing. */
 .post, .page, .author { margin-block-end: var(--space-section); }
@@ -302,3 +305,20 @@ mark { color: inherit; background: var(--color-surface); font-weight: 700; }
 }
 .consent button[value="yes"] { color: var(--color-background); background: var(--color-accent); border-color: var(--color-accent); }
 .consent-chosen { position: static; font-size: 0.875rem; }
+
+/* The slots a template switches on around its pages. Share links are plain links in a row. */
+.share { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space); margin-block: calc(var(--space) * 3); }
+.share-title { margin: 0; font-weight: 600; }
+.share ul { display: flex; flex-wrap: wrap; gap: var(--space); margin: 0; padding: 0; list-style: none; }
+.share a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: calc(var(--space) * 1.5); border: 1px solid var(--color-border); border-radius: var(--radius); text-decoration: none; }
+.share a:hover, .share a:focus-visible { border-color: var(--color-accent); }
+/* The newsletter form a template places after a post or on the front page. */
+.newsletter-slot { margin-block: var(--space-section); padding: 1.5rem; background: var(--color-surface); border-radius: var(--radius); }
+.newsletter-slot h2 { margin-block-start: 0; }
+.newsletter-slot .subscribe { margin: 0; padding: 0; background: none; }
+/* The site's one call to action: a band after a post or on the front page, and a header button. */
+.cta-band { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space) calc(var(--space) * 3); margin-block: var(--space-section); padding: 1.5rem; background: var(--color-surface); border-radius: var(--radius); }
+.cta-band p { margin: 0; }
+.cta-note { font-weight: 600; }
+.header-button { white-space: nowrap; }
+@media print { .share, .newsletter-slot, .cta-band, .header-button { display: none; } }
