@@ -1,0 +1,14 @@
+[shape]
+radius = "0.25rem"
+measure = "68ch"
+
+[type]
+body = "1.0625rem 1.125rem"
+h1 = "2rem 3rem"
+h2 = "1.5rem 1.75rem"
+h4 = "1.25rem 1.375rem"
+line_height = 1.6
+
+[space]
+unit = "0.5rem"
+section = "2.5rem"

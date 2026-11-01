@@ -109,12 +109,17 @@ static CLASSIC: Pack = Pack {
 
 /// Every built-in pack, classic first.
 #[cfg(not(feature = "test-util"))]
-static PACKS: [&Pack; 1] = [&CLASSIC];
+static PACKS: [&Pack; 2] = [&CLASSIC, &crate::wire::WIRE];
 
 /// Every built-in pack, classic first, and the throwaway packs the tests
 /// switch to.
 #[cfg(feature = "test-util")]
-static PACKS: [&Pack; 3] = [&CLASSIC, &crate::trial::TRIAL, &crate::trial::SAMPLER];
+static PACKS: [&Pack; 4] = [
+    &CLASSIC,
+    &crate::wire::WIRE,
+    &crate::trial::TRIAL,
+    &crate::trial::SAMPLER,
+];
 
 /// Every built-in pack, classic first.
 pub fn packs() -> &'static [&'static Pack] {

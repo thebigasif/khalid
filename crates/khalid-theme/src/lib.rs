@@ -35,6 +35,7 @@ mod tokens;
 mod tokens_error;
 #[cfg(feature = "test-util")]
 mod trial;
+mod wire;
 
 pub use brand::Brand;
 pub use color::Rgb;
