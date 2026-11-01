@@ -1,0 +1,52 @@
+name: Demo site
+
+# Publishes the demo blog (fixtures/demo-site) to GitHub Pages at
+# https://thebigasif.github.io/khalid/, built by the latest released
+# binary, so the public demo always shows what people can download.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the demo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Latest released binary
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download --repo "$GITHUB_REPOSITORY" --pattern 'khalid-v*-linux-x86_64' --output khalid
+          chmod +x khalid
+          ./khalid --version
+      - name: Build for the Pages address
+        run: |
+          cp -r fixtures/demo-site "$RUNNER_TEMP/site"
+          sed -i 's#^address = .*#address = "https://thebigasif.github.io"#; s#^mount = .*#mount = "/khalid/"#' "$RUNNER_TEMP/site/site.toml"
+          ./khalid --site "$RUNNER_TEMP/site" build
+          # Project pages cannot serve files at the host root.
+          rm -rf "$RUNNER_TEMP/site/public/_root"
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ runner.temp }}/site/public
+  deploy:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
