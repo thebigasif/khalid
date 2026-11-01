@@ -170,6 +170,21 @@ fn a_callout_round_trips_with_its_kind() {
 }
 
 #[test]
+fn the_template_callout_kinds_round_trip() {
+    for (written, kind) in [
+        ("summary", CalloutKind::Summary),
+        ("read", CalloutKind::Read),
+        ("stat", CalloutKind::Stat),
+    ] {
+        round_trip(
+            &format!(":::callout{{kind={written}}}\nThree in four readers skim.\n:::\n"),
+            &BlockKind::Callout { kind },
+        );
+        assert_eq!(kind.name(), written);
+    }
+}
+
+#[test]
 fn a_figure_round_trips_with_its_image_and_alt() {
     round_trip(
         ":::figure{src=\"shelf.jpg\" alt=\"A bakery shelf of sourdough loaves\"}\nThe shelf on a Saturday morning.\n:::\n",
@@ -234,7 +249,7 @@ fn names_the_nearest_block_for_a_typing_slip() {
 fn refuses_a_callout_of_an_unknown_kind() {
     assert_eq!(
         error(":::callout{kind=danger}\nCareful.\n:::\n"),
-        "line 1: a callout's kind is note, tip or warning, not danger"
+        "line 1: a callout's kind is note, tip, warning, summary, read or stat, not danger"
     );
 }
 

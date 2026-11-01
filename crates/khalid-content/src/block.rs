@@ -1,12 +1,14 @@
 //! The block model between markdown and the editor (RULES.md BL-FS-5).
 
+use std::num::NonZeroU8;
+
 use comrak::nodes::NodeValue;
 use comrak::{Arena, Options, parse_document};
 use khalid_core::{AbsoluteUrl, ParseUrlError, Slug};
 
 use crate::{
-    BusinessBlock, FormField, HowToBlock, ProductBlock, Question, RecipeBlock, ReviewBlock,
-    VideoBlock,
+    BusinessBlock, Column, FormField, HowToBlock, ProductBlock, ProsConsBlock, Question,
+    RecipeBlock, ReviewBlock, VideoBlock,
 };
 
 use crate::directive::{Form, directive, opening, unknown_hint};
@@ -196,6 +198,29 @@ pub enum BlockKind {
         /// The pictures, in order.
         images: Vec<GalleryImage>,
     },
+    /// `:::pullquote{by="..."}`: a short line set large to catch the eye, its
+    /// words as the body.
+    PullQuote {
+        /// Who said it, shown under the words, when it is a quote.
+        by: Option<String>,
+    },
+    /// `:::proscons{pros="..." cons="..."}`: a list of pros beside a list of
+    /// cons.
+    ProsCons(ProsConsBlock),
+    /// `::::columns` holding two to four `:::column{title="..."}` cards,
+    /// side by side when there is room.
+    Columns {
+        /// The cards, in order.
+        columns: Vec<Column>,
+    },
+    /// `:::table{fold=8 more="..."}` around one markdown table: the first
+    /// `fold` rows show, and the rest open from a summary line.
+    FoldingTable {
+        /// How many rows show before the rest fold away, 1 to 100.
+        fold: NonZeroU8,
+        /// The summary line that opens the rest, when the block sets one.
+        more: Option<String>,
+    },
     /// `:::maths{label="..."}` with a LaTeX formula as the body: maths on its
     /// own, drawn as `MathML` that browsers show with scripts off.
     Maths {
@@ -235,6 +260,28 @@ pub enum CalloutKind {
     Tip,
     /// Something that can go wrong.
     Warning,
+    /// The post's key points, often near the top.
+    Summary,
+    /// Further reading: links to other pages.
+    Read,
+    /// One number worth remembering, with its source.
+    Stat,
+}
+
+impl CalloutKind {
+    /// The kind as written after `kind=`, which is also its CSS class
+    /// `callout-<name>`.
+    #[must_use]
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Note => "note",
+            Self::Tip => "tip",
+            Self::Warning => "warning",
+            Self::Summary => "summary",
+            Self::Read => "read",
+            Self::Stat => "stat",
+        }
+    }
 }
 
 /// Why a body's blocks could not be read. Lines count from 1 in the body.
@@ -281,7 +328,9 @@ pub enum BlockError {
         takes: &'static str,
     },
     /// A callout kind Khalid does not know.
-    #[error("line {line}: a callout's kind is note, tip or warning, not {kind}")]
+    #[error(
+        "line {line}: a callout's kind is note, tip, warning, summary, read or stat, not {kind}"
+    )]
     CalloutKind {
         /// The line of the opening `:::`.
         line: usize,
@@ -475,7 +524,7 @@ pub fn print_blocks(blocks: &[Block]) -> String {
 }
 
 /// The standard markdown blocks in `lines`, in the order of the file.
-fn markdown_blocks(lines: &[&str]) -> Vec<Block> {
+pub(crate) fn markdown_blocks(lines: &[&str]) -> Vec<Block> {
     let text = lines.join("\n");
     let mut options = Options::default();
     options.extension.table = true;

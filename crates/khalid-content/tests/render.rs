@@ -245,6 +245,6 @@ fn a_broken_directive_is_refused_not_rendered() {
     .unwrap_err();
     assert_eq!(
         error.to_string(),
-        "line 1: a callout's kind is note, tip or warning, not danger"
+        "line 1: a callout's kind is note, tip, warning, summary, read or stat, not danger"
     );
 }
