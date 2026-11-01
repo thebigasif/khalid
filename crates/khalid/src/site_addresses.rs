@@ -70,7 +70,7 @@ mod tests {
         folder.push("../../fixtures/demo-site");
         let config = Config::load(&folder, &Environment::empty()).unwrap();
         let content = read_content(&ContentTree::walk(&folder).unwrap()).unwrap();
-        let index = crate::index::of_content(&folder, &content).unwrap();
+        let index = crate::index::of_content(&folder, &config, &content).unwrap();
         let by_file = of(&config, &index);
         let english = "content/en/posts/2026-09-14-why-internal-links-matter.md";
         let at = by_file.get(english).map(UrlPath::as_str);

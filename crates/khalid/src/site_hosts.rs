@@ -21,6 +21,7 @@ use tower::ServiceExt;
 use crate::cli::Output;
 use crate::exit::Exit;
 use crate::serve::{self, GRACE};
+use crate::serve_address;
 use crate::serve_https::{self, Listen};
 use crate::site_folders::NoPanel;
 
@@ -107,6 +108,11 @@ impl Door {
             return Ok(Self::Among(among.hosts.clone(), among.domain.clone()));
         }
         let (listener, address) = serve_https::open(site, listen).await?;
+        if let Listening::Plain(plain) = &listener
+            && let Ok(local) = plain.local_addr()
+        {
+            serve_address::record(site, local);
+        }
         serve::announce(output, config, &format!("{address}{}", config.mount()));
         Ok(Self::Alone(listener))
     }

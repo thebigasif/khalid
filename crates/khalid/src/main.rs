@@ -68,6 +68,7 @@ mod form_delivery;
 mod form_pages;
 mod https_message;
 mod import;
+mod import_held;
 mod import_rest;
 mod index;
 mod init;
@@ -143,6 +144,7 @@ mod seo_graph_settings;
 mod seo_head_settings;
 mod seo_settings;
 mod serve;
+mod serve_address;
 mod serve_apis;
 mod serve_check;
 mod serve_https;
@@ -281,8 +283,8 @@ fn run(cli: &Cli) -> Exit {
     };
     match (&cli.command, &site) {
         (None, _) => report::text(&Cli::command().render_help().to_string(), Exit::Success),
-        (Some(Command::Db { command }), Some((folder, ..))) => {
-            db::run(folder, command.clone(), cli.output)
+        (Some(Command::Db { command }), Some((folder, config, ..))) => {
+            db::run((folder, config), command.clone(), cli.output)
         }
         (Some(Command::Watch), Some((folder, ..))) => {
             watch_report::run(folder, &SystemClock, cli.output)

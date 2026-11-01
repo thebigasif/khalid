@@ -123,8 +123,12 @@ pub(crate) fn human(
     trend: &[Run],
     folder: &Path,
 ) -> String {
+    // A build counts every page it writes, such as the not-found page, so
+    // the audit says which pages it counts, and what its score weighs.
     let mut said = format!(
-        "Audited {} pages. Health score: {} out of 100.\n",
+        "Audited {} pages: the ones readers and search engines reach through links and the sitemap.\n\
+         Health score: {} out of 100, the share of pages with no error. \
+         Warnings and notices do not lower it.\n",
         audit.pages(),
         audit.score()
     );

@@ -10,6 +10,7 @@ dist/
 *.db-shm
 **/data/media/
 **/data/share/
+**/data/serve-address
 /sites/
 # Secrets and env
 .env

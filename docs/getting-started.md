@@ -32,6 +32,13 @@ khalid init blog --address https://blog.example.com --yes
 
 Leave out `--yes` to answer the questions one by one: the address, the folder of the website the blog lives under (such as `/blog/`), the languages and whether Khalid runs as a server or writes plain files.
 
+The folder now holds:
+
+- `site.toml`, the settings.
+- `routes.toml`, the shape of the blog's addresses. It starts empty, which gives the usual addresses; [routes.md](routes.md) shows what it can change.
+- `theme/tokens.toml`, the colours, fonts and corners of the pages. Edit it by hand, or let `khalid theme sync` copy them from your main site.
+- `content/en/posts/` for live posts, and `drafts/en/` for posts that are not live yet.
+
 ## 3. Say who writes
 
 Every post needs an author, and every author needs a profile page. Save this as `blog/content/en/authors/sam.md`:
@@ -99,7 +106,7 @@ The admin is the web editor at `/admin/`. Make yourself its owner:
 khalid --site blog staff owner --email you@example.com --name "Sam Rivera"
 ```
 
-Khalid prints a sign-in link once. It works for 15 minutes, and only once. It shows the link twice: on the address in `site.toml`, and on `localhost` for this computer. While you try Khalid on your own computer, open the `localhost` link while `khalid serve` runs. Once signed in, choose a password or add a passkey. To sign in again later, run the same command.
+Khalid prints a sign-in link once. It works for 15 minutes, and only once. It shows the link twice: on the address in `site.toml`, and on `localhost` for this computer. While you try Khalid on your own computer, open the `localhost` link while `khalid serve` runs. It names the port `serve` last ran on, so a blog started with `--listen` gets the right link too. Once signed in, choose a password or add a passkey. To sign in again later, run the same command.
 
 If `/admin/` says the admin is not built, your copy of Khalid was built without it: see [CONTRIBUTING.md](../CONTRIBUTING.md#build-khalid-from-source).
 

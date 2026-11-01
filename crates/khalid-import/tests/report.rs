@@ -9,14 +9,46 @@ use khalid_import::wordpress::{LeftReason, Plan, plan, read_redirection, read_wx
 use khalid_routes::Routes;
 
 #[cfg(test)]
-fn planned() -> Plan {
+fn read(name: &str) -> String {
     let dir = env!("CARGO_MANIFEST_DIR");
-    let read = |name: &str| fs::read_to_string(format!("{dir}/fixtures/wordpress/{name}")).unwrap();
-    let toml = "name = \"Northfield Bakery\"\naddress = \"https://northfield.example.com\"\nmount = \"/blog/\"\nmode = \"server\"\ndefault_language = \"en\"\nlanguages = [\"en\"]\n";
-    let site = Config::from_toml(Path::new("site.toml"), toml, &Environment::empty()).unwrap();
+    fs::read_to_string(format!("{dir}/fixtures/wordpress/{name}")).unwrap()
+}
+
+/// The basic export planned into a site at `address`, with the blog in
+/// `mount`, and the Redirection plugin's rules in the fixture `rules`.
+#[cfg(test)]
+fn planned_at(address: &str, mount: &str, rules: Option<&str>) -> Plan {
+    let toml = format!(
+        "name = \"Northfield Bakery\"\naddress = \"{address}\"\nmount = \"{mount}\"\nmode = \"server\"\ndefault_language = \"en\"\nlanguages = [\"en\"]\n"
+    );
+    let site = Config::from_toml(Path::new("site.toml"), &toml, &Environment::empty()).unwrap();
     let export = read_wxr(&read("basic.xml")).unwrap();
-    let redirection = read_redirection(&read("redirection.json")).unwrap();
-    plan(&export, Some(&redirection), &site, &Routes::default())
+    let redirection = rules.map(|name| read_redirection(&read(name)).unwrap());
+    plan(&export, redirection.as_ref(), &site, &Routes::default())
+}
+
+#[cfg(test)]
+fn planned() -> Plan {
+    planned_at(
+        "https://northfield.example.com",
+        "/blog/",
+        Some("redirection.json"),
+    )
+}
+
+#[test]
+fn an_address_whose_path_stays_on_a_new_host_stays_the_same() {
+    // The blog moves to a new host at its root: /about/ and the baking
+    // archive keep their paths, and only the host changes.
+    let plan = planned_at("https://blog.example.com", "/", None);
+    let report = plan.report();
+    assert_eq!((report.redirects, report.kept_addresses), (3, 2));
+    assert!(
+        report
+            .to_string()
+            .contains("Old addresses mapped: 5, of which 3 move and 2 stay the same.\n"),
+        "{report}"
+    );
 }
 
 #[test]

@@ -58,6 +58,19 @@ pub(crate) fn path_of(url: &AbsoluteUrl) -> &str {
         .unwrap_or("/")
 }
 
+/// Whether the old path `from` keeps its path in Khalid: it is
+/// [`MapTarget::Kept`], or it moves to a full address with the same path,
+/// as when only the host changes, so the blog answers it with its own page.
+pub(crate) fn keeps_path(from: &str, to: &MapTarget) -> bool {
+    match to {
+        MapTarget::Kept => true,
+        MapTarget::Moved { to, .. } => {
+            AbsoluteUrl::parse(to).is_ok_and(|url| path_of(&url) == from)
+        }
+        MapTarget::Gone | MapTarget::Unavailable => false,
+    }
+}
+
 /// The old address as an alias of `new`, when it lived on the new site's
 /// host and its path lies inside the blog, so Khalid answers it itself.
 pub(crate) fn alias(

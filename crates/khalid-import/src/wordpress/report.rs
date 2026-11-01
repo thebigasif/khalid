@@ -3,9 +3,10 @@
 
 use std::fmt;
 
+use crate::redirects::keeps_path;
 use crate::sentences::{count, list};
-use crate::wordpress::{Held, LeftReason, Plan, SkipReason};
-use crate::{MapTarget, Place, SlugOrigin};
+use crate::wordpress::{Held, LeftReason, MapSource, Plan, SkipReason};
+use crate::{Place, SlugOrigin};
 
 /// What a plan would do, counted, with the plan's lists for the details.
 #[derive(Debug)]
@@ -19,7 +20,7 @@ pub struct Report<'plan> {
     pub pages: usize,
     /// Old addresses that move.
     pub redirects: usize,
-    /// Old addresses that stay the same.
+    /// Old addresses that keep their path, the host aside.
     pub kept_addresses: usize,
     plan: &'plan Plan,
 }
@@ -28,10 +29,12 @@ impl Plan {
     /// The report of this plan, which is the dry run's output.
     pub fn report(&self) -> Report<'_> {
         let placed = |place: Place| self.items.iter().filter(|item| item.place == place).count();
+        // A plugin's rule may send a path to the same path on another site.
         let kept = self
             .redirects
             .iter()
-            .filter(|entry| entry.to == MapTarget::Kept)
+            .filter(|entry| !matches!(entry.source, MapSource::Rule(_)))
+            .filter(|entry| keeps_path(&entry.from, &entry.to))
             .count();
         Report {
             posts: placed(Place::Post),

@@ -12,7 +12,11 @@ use serde::Serialize;
 
 use crate::cli::{Output, OwnerArgs, StaffCommand};
 use crate::exit::Exit;
-use crate::{db, db_message, report, staff, staff_message};
+use crate::{db, db_message, report, serve_address, staff, staff_message};
+
+/// Where `khalid serve` answers when `--listen` does not say otherwise.
+const USUAL_LISTEN: SocketAddr =
+    SocketAddr::new(std::net::IpAddr::V4(std::net::Ipv4Addr::LOCALHOST), 8080);
 
 /// The JSON shape of `khalid staff owner --json`. The link appears here and
 /// nowhere else, ever: on the site's address, and on this computer.
@@ -57,8 +61,12 @@ fn owner(site: &Path, config: &Config, args: &OwnerArgs, output: Output) -> Exit
         let saved = links.create(token.hash(), owner.id(), now).await;
         saved.map_err(|_| staff_message::not_saved(site))
     });
+    let listen = args
+        .listen
+        .or_else(|| serve_address::last(site))
+        .unwrap_or(USUAL_LISTEN);
     match made {
-        Ok(Ok(())) => shown(output, &email, &token, (config, args.listen)),
+        Ok(Ok(())) => shown(output, &email, &token, (config, listen)),
         Ok(Err(message)) | Err(message) => report::failure(output, &message, Exit::Failure),
     }
 }

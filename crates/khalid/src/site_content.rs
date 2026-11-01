@@ -62,7 +62,7 @@ impl Catalog {
         config: &Config,
         content: &SiteContent,
     ) -> Result<Self, UserMessage> {
-        let index = index::of_content(folder, content)?;
+        let index = index::of_content(folder, config, content)?;
         let featured = content
             .posts
             .iter()

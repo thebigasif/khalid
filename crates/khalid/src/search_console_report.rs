@@ -168,7 +168,8 @@ pub(crate) fn live_posts(
     config: &Config,
     content: &SiteContent,
 ) -> Result<Vec<LivePost>, Failed> {
-    let rows = index::of_content(folder, content).map_err(|message| (message, Exit::Failure))?;
+    let rows =
+        index::of_content(folder, config, content).map_err(|message| (message, Exit::Failure))?;
     let hidden: BTreeSet<String> = content
         .posts
         .iter()

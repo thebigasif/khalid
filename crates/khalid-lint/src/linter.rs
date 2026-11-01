@@ -169,19 +169,18 @@ impl Linter {
 
 impl<R: ?Sized> Configured<R> {
     fn finding(&self, rule: RuleId, post: &LintPost, hit: Hit) -> Finding {
+        let message = if hit.is_on_the_only_post() {
+            self.message.for_only_post()
+        } else {
+            self.message.clone()
+        };
         let (subject, suggestions) = hit.into_parts();
         let location = Location {
             locale: post.locale.clone(),
             slug: post.slug.clone(),
             subject,
         };
-        Finding::new(
-            rule,
-            self.severity,
-            location,
-            self.message.clone(),
-            suggestions,
-        )
+        Finding::new(rule, self.severity, location, message, suggestions)
     }
 }
 

@@ -1,5 +1,6 @@
 //! `khalid new "Title"`: a post file with correct front matter and a slug made
-//! from the title in the post's language (docs/plan.md section 4.1).
+//! from the title in the post's language, without the filler words and years
+//! the slug rules warn about (docs/plan.md section 4.1).
 
 use std::fs;
 use std::io;
@@ -14,6 +15,7 @@ use crate::exit::Exit;
 use crate::init::quoted;
 use crate::new_author::{self, Byline};
 use crate::new_template::{self, Template};
+use crate::slug_repair::{self, SLUG_RULES};
 use crate::{atomic, new_branch, new_message, report};
 
 /// What `khalid new` takes on the command line.
@@ -110,6 +112,7 @@ pub(crate) fn run(
     let Ok(slug) = Slug::from_title(title, locale, config.slugs()) else {
         return report::failure(output, &new_message::no_slug(title), Exit::Failure);
     };
+    let slug = slug_repair::cleaned(&slug, locale, &SLUG_RULES, config.slugs()).unwrap_or(slug);
     let date = (!post.draft).then(|| clock.now().date_naive().to_string());
     let tail = match post.template {
         None => EMPTY_BODY.to_owned(),
@@ -242,8 +245,9 @@ fn success(
 ) -> Exit {
     let next = match (body.date.is_some(), body.branch) {
         (true, Some(_)) => String::new(),
-        (true, None) => "It goes live at the next build. To keep a new post hidden, make it \
-                         with --draft, which writes it in drafts/.\n"
+        (true, None) => "Readers see it after the next `khalid build`, or at once while \
+                         `khalid serve` runs. To keep a new post hidden, make it with --draft, \
+                         which writes it in drafts/.\n"
             .to_owned(),
         (false, _) => format!(
             "Readers cannot see it until you run `khalid --site {} publish {}{language}`.\n",
