@@ -1,0 +1,93 @@
+{#- Wire's post (templates spec 3.6): breadcrumbs, the title and its
+    subtitle, the writer's photo, role and name with the date and reading
+    time, the lead picture with its credit, then the writer's card with a
+    bio that folds open. After the post: its tags as pills, the author box,
+    the newsletter and three related posts as rows. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture, avatar -%}
+{% from "contents.html" import contents_list -%}
+{% from "author_box.html" import author_box -%}
+{% from "card.html" import cards -%}
+{% from "comments.html" import comments_section -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% set placement = template.options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% if side and placement == "side-start" %}<article class="post post-with-toc post-toc-start">{% elif side %}<article class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post post-toc-folded">{% else %}<article class="post">{% endif %}
+<header class="post-header">
+<h1>{{ page.title }}</h1>
+{% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}<div class="post-meta">
+<address>
+<ul class="people" role="list" aria-label="{{ t.written_by }}">
+{% for author in page.authors %}<li class="person">{% if author.image and "byline" in site.features %}{{ avatar(author.image) }}{% endif %}<span>{% if author.role %}<span class="role-badge">{{ author.role }}</span> {% endif %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a></span></li>
+{% endfor %}</ul>
+</address>
+<p class="post-dates"><time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}{% if "reading_time" in site.features %} <span class="reading-time"><time datetime="PT{{ page.reading_time.minutes }}M">{{ t.reading_time | replace("{minutes}", page.reading_time.minutes | string) }}</time></span>{% endif %}</p>
+{% if page.reviewers and "reviewed_by" in site.features %}<p class="reviewed-by">{{ t.reviewed_by }} {% for reviewer in page.reviewers %}<a href="{{ reviewer.href }}">{{ reviewer.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>
+{% endif %}{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}</div>
+{% if page.image %}{{ picture(page.image) }}
+{% endif %}</header>
+{% if template.options.author_card and page.authors %}<aside class="author-card" aria-label="{{ t.written_by }}">
+{% for author in page.authors %}<div class="person-card">
+{% if author.image %}{{ avatar(author.image) }}
+{% endif %}<div>
+<p class="person-name"><a href="{{ author.href }}">{{ author.name }}</a></p>
+{% if author.role %}<p class="person-role">{{ author.role }}</p>
+{% endif %}{% if author.bio %}<details class="author-fold">
+<summary>{{ t.about_the_author }}</summary>
+{{ author.bio }}
+</details>
+{% endif %}{% if author.profiles %}<ul class="author-profiles">
+{% for profile in author.profiles %}<li><a href="{{ profile.href }}">{{ profile.name }}</a></li>
+{% endfor %}</ul>
+{% endif %}</div>
+</div>
+{% endfor %}</aside>
+{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.contents }}</summary>
+<nav aria-label="{{ t.contents }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}<div class="post-body">
+{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}
+</div>
+{% if page.tags %}<footer class="post-footer">
+<ul class="tags" aria-label="{{ t.tags }}">
+{% for tag in page.tags %}<li><a href="{{ tag.href }}" rel="tag">{{ tag.name }}</a></li>
+{% endfor %}</ul>
+</footer>
+{% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
+{% endif %}</article>
+{% if site.subscribe and template.options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if "related_posts" in site.features and page.related %}{% set layout = template.options.related %}{% set shown = page.related[:template.options.related_count] -%}
+{% if layout == "scroll" %}<section class="related related-scroll">{% else %}<section class="related">{% endif %}
+<h2>{{ t.related_posts }}</h2>
+{% if layout == "links" %}<ul class="related-links">
+{% for post in shown %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
+{% endfor %}</ul>
+{% elif layout == "list" %}{{ cards(shown, 3, "text") }}
+{% elif layout == "row" %}{{ cards(shown, 3, "row") }}
+{% elif layout == "scroll" %}{{ cards(shown, 3, "image") }}
+{% else %}{{ cards(shown, 3) }}
+{% endif %}</section>
+{% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
+<h2>{{ t.mentions }}</h2>
+<ul>
+{% for link in page.mentions %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
+{% endif %}{% endblock %}

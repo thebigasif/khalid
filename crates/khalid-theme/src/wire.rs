@@ -10,10 +10,16 @@ pub(crate) static WIRE: Pack = Pack {
     name: "wire",
     summary: "A news and columns site: a lead story beside tabs of the latest posts and the editor's picks, a fast one-column feed, and posts that open with a subtitle and the writer's card.",
     stylesheet: include_str!("../packs/wire/wire.css"),
-    templates: &[PackTemplate {
-        name: "home.html",
-        source: include_str!("../packs/wire/home.html"),
-    }],
+    templates: &[
+        PackTemplate {
+            name: "home.html",
+            source: include_str!("../packs/wire/home.html"),
+        },
+        PackTemplate {
+            name: "post.html",
+            source: include_str!("../packs/wire/post.html"),
+        },
+    ],
     tokens: include_str!("../packs/wire/tokens.toml"),
     reader: &[],
     options: &[

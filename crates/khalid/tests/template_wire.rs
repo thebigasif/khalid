@@ -106,6 +106,12 @@ fn wire_front_page() {
 }
 
 #[test]
+fn wire_post() {
+    let (_temp, out) = built();
+    insta::assert_snapshot!(shown(&out, "fixing-slow-pages/index.html"));
+}
+
+#[test]
 fn wire_author_page() {
     let (_temp, out) = built();
     insta::assert_snapshot!(shown(&out, "authors/asif/index.html"));
