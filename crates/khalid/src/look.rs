@@ -6,9 +6,10 @@
 use std::fs;
 use std::path::Path;
 
+use khalid_api::resources::{AdminTemplate, OptionTakes, ReaderDefault, TemplateOptionSpec};
 use khalid_core::{Config, ConfigError, UserMessage, toml_location};
 use khalid_render::{RenderCta, RenderPack, TemplateOption, Tokens};
-use khalid_theme::{CheckedOption, Look, LookError};
+use khalid_theme::{CheckedOption, Look, LookError, OptionKind};
 
 use crate::{build_message, config_message};
 
@@ -65,6 +66,54 @@ pub(crate) fn render_pack(look: &Look) -> RenderPack<'static> {
 /// The message for a mistake in `theme/tokens.toml`.
 pub(crate) fn tokens(site: &Path, look: &Look) -> Result<Tokens, UserMessage> {
     Tokens::load_over(site, look.pack().tokens).map_err(|error| build_message::tokens(&error))
+}
+
+/// Every built-in template as the Admin API lists it, read from the
+/// engine's packs, so a template another builder adds is listed as well.
+pub(crate) fn admin_templates() -> Vec<AdminTemplate> {
+    let words = |words: &[&str]| words.iter().map(|word| (*word).to_owned()).collect();
+    let takes = |kind| match kind {
+        OptionKind::Switch { default } => OptionTakes::Switch { default },
+        OptionKind::Choice { allowed, default } => OptionTakes::Choice {
+            allowed: words(allowed),
+            default: default.to_owned(),
+        },
+        OptionKind::Count {
+            least,
+            most,
+            default,
+        } => OptionTakes::Count {
+            least,
+            most,
+            default,
+        },
+        OptionKind::Lines { most } => OptionTakes::Lines { most },
+        OptionKind::Picks { allowed, default } => OptionTakes::Picks {
+            allowed: words(allowed),
+            default: words(default),
+        },
+    };
+    let template = |pack: &khalid_theme::Pack| AdminTemplate {
+        name: pack.name.to_owned(),
+        summary: pack.summary.to_owned(),
+        reader: (pack.reader.iter())
+            .map(|(switch, on)| ReaderDefault {
+                key: switch.key().to_owned(),
+                on: *on,
+            })
+            .collect(),
+        options: (pack.options.iter())
+            .map(|spec| TemplateOptionSpec {
+                key: spec.key.to_owned(),
+                help: spec.help.to_owned(),
+                takes: takes(spec.kind),
+            })
+            .collect(),
+    };
+    khalid_theme::packs()
+        .iter()
+        .map(|pack| template(pack))
+        .collect()
 }
 
 /// The settings message for `error`, at its line of the `site` folder's

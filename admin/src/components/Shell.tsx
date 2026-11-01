@@ -85,6 +85,9 @@ export function Shell() {
               <Link to="/team">{en.nav.team}</Link>
             </li>
             <li>
+              <Link to="/look">{en.nav.look}</Link>
+            </li>
+            <li>
               <Link to="/settings">{en.nav.settings}</Link>
             </li>
             <li>

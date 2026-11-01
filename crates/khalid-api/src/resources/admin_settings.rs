@@ -4,6 +4,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+use super::TemplateSetting;
+
 /// The site's core settings from `site.toml`, in Admin API shape. The
 /// running server reads `site.toml` once at start, so a change applies
 /// after a restart.
@@ -19,6 +21,8 @@ pub struct AdminSettings {
     pub default_language: String,
     /// Every language the site is written in.
     pub languages: Vec<String>,
+    /// The template the site uses and the options it sets.
+    pub template: TemplateSetting,
     /// When `site.toml` last changed. A change sends it back.
     pub updated_at: DateTime<Utc>,
     /// Whether `site.toml` says something the running server does not use
@@ -40,6 +44,9 @@ pub struct SettingsChange {
     pub default_language: Option<String>,
     /// A new list of languages.
     pub languages: Option<Vec<String>>,
+    /// A new template with the options it sets. It replaces the template's
+    /// name and every option; the call to action, `[template.cta]`, stays.
+    pub template: Option<TemplateSetting>,
     /// The `updated_at` of the copy this change was made on.
     pub updated_at: DateTime<Utc>,
 }

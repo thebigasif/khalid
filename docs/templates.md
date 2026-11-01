@@ -32,6 +32,17 @@ An option a template does not know, or a value it does not take, stops every com
 
 An option you leave out takes the template's default.
 
+## Picking a template in the admin
+
+The admin's **Look** screen does the same without opening `site.toml`. It lists every template your Khalid has, each with one sentence on what it is for and what it turns on and off. Pick one, change the options you want different, and press **Save the look**.
+
+Khalid checks the choice as it checks `site.toml` at start, so a template or value it would refuse is never saved. It writes only the options that differ from the template's defaults, and keeps your comments and `[template.cta]`. Your blog shows the new look after Khalid restarts.
+
+The screen reads two Admin API routes, which need `settings:write`:
+
+- `GET /api/admin/v1/templates/` lists the templates, each with its options: the values each takes and its default.
+- `PUT /api/admin/v1/settings/` saves the choice as `template`, with its `name` and `options`, beside the other settings.
+
 ## Parts a template can switch on
 
 Every template shares one set of page parts. A template switches on the ones it uses, and offers each as an option with its own default. Classic switches none of them on, so it looks as it always has. The words below are the option keys and the values each takes; a template lists only the parts it offers.

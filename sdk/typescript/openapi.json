@@ -7399,6 +7399,73 @@
         ]
       }
     },
+    "/api/admin/v1/templates/": {
+      "get": {
+        "tags": [
+          "admin settings"
+        ],
+        "summary": "Lists every built-in template the running Khalid has, classic first,\neach with its summary, the reader features it turns on or off and the\noptions `[template.options]` may set for it. Choose one through the\nsettings route. Needs `settings:write`.",
+        "operationId": "list_templates",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server lists no templates",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/trash/": {
       "get": {
         "tags": [
@@ -11557,6 +11624,7 @@
           "mount",
           "default_language",
           "languages",
+          "template",
           "updated_at",
           "restart_needed"
         ],
@@ -11587,6 +11655,10 @@
           "restart_needed": {
             "type": "boolean",
             "description": "Whether `site.toml` says something the running server does not use\nyet, so a restart is needed to apply it."
+          },
+          "template": {
+            "$ref": "#/components/schemas/TemplateSetting",
+            "description": "The template the site uses and the options it sets."
           },
           "updated_at": {
             "type": "string",
@@ -11735,6 +11807,41 @@
               "$ref": "#/components/schemas/AdminTag"
             },
             "description": "The tag or tags."
+          }
+        }
+      },
+      "AdminTemplate": {
+        "type": "object",
+        "description": "One built-in template: what it is for, what it turns on and off, and\nthe options `[template.options]` may set for it.",
+        "required": [
+          "name",
+          "summary",
+          "reader",
+          "options"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name `[template]` uses, such as `classic`.",
+            "example": "classic"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TemplateOptionSpec"
+            },
+            "description": "Every option the template takes, in the order its docs list them."
+          },
+          "reader": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReaderDefault"
+            },
+            "description": "The reader features the template turns on or off. A key the site\nwrites in its own `[reader]` table wins."
+          },
+          "summary": {
+            "type": "string",
+            "description": "One plain sentence on what the template is for."
           }
         }
       },
@@ -13922,6 +14029,144 @@
         "type": "string",
         "description": "Text with something in it other than spaces."
       },
+      "OptionTakes": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "`true` or `false`.",
+            "required": [
+              "default",
+              "kind"
+            ],
+            "properties": {
+              "default": {
+                "type": "boolean",
+                "description": "The value when not set."
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "switch"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "One word from `allowed`.",
+            "required": [
+              "allowed",
+              "default",
+              "kind"
+            ],
+            "properties": {
+              "allowed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Every word allowed, in the order the docs list them."
+              },
+              "default": {
+                "type": "string",
+                "description": "The word when not set."
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "choice"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "A whole number from `least` to `most`.",
+            "required": [
+              "least",
+              "most",
+              "default",
+              "kind"
+            ],
+            "properties": {
+              "default": {
+                "type": "integer",
+                "format": "int64",
+                "description": "The number when not set."
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "count"
+                ]
+              },
+              "least": {
+                "type": "integer",
+                "format": "int64",
+                "description": "The smallest allowed."
+              },
+              "most": {
+                "type": "integer",
+                "format": "int64",
+                "description": "The largest allowed."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Up to `most` lines of text, none when not set.",
+            "required": [
+              "most",
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "lines"
+                ]
+              },
+              "most": {
+                "type": "integer",
+                "description": "The most lines allowed.",
+                "minimum": 0
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "One or more words from `allowed`, each once, in the order written.",
+            "required": [
+              "allowed",
+              "default",
+              "kind"
+            ],
+            "properties": {
+              "allowed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Every word allowed, in the order the docs list them."
+              },
+              "default": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The words when not set."
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "picks"
+                ]
+              }
+            }
+          }
+        ],
+        "description": "The values one option takes, and its default."
+      },
       "PageEdit": {
         "type": "object",
         "description": "A change to a page: only the fields sent change.",
@@ -14915,6 +15160,25 @@
           }
         }
       },
+      "ReaderDefault": {
+        "type": "object",
+        "description": "One reader feature a template turns on or off.",
+        "required": [
+          "key",
+          "on"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The key in `[reader]`, such as `reading_time`.",
+            "example": "reading_time"
+          },
+          "on": {
+            "type": "boolean",
+            "description": "Whether the template turns it on."
+          }
+        }
+      },
       "RealUpdate": {
         "type": "object",
         "description": "An edit's claim that it is a real update: it changes what a live post\nsays, and `note` tells readers what. Only then does the post's\nupdated date become today. Title, description and settings edits\nalone never move it.",
@@ -15309,6 +15573,17 @@
               "null"
             ],
             "description": "A new name."
+          },
+          "template": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TemplateSetting",
+                "description": "A new template with the options it sets. It replaces the template's\nname and every option; the call to action, `[template.cta]`, stays."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "updated_at": {
             "type": "string",
@@ -15899,6 +16174,71 @@
           }
         }
       },
+      "TemplateList": {
+        "type": "object",
+        "description": "Every built-in template, as the Admin API wraps the list.",
+        "required": [
+          "templates"
+        ],
+        "properties": {
+          "templates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminTemplate"
+            },
+            "description": "The templates, classic first."
+          }
+        }
+      },
+      "TemplateOptionSpec": {
+        "type": "object",
+        "description": "One option a template takes.",
+        "required": [
+          "key",
+          "help",
+          "takes"
+        ],
+        "properties": {
+          "help": {
+            "type": "string",
+            "description": "One plain sentence on what the option changes."
+          },
+          "key": {
+            "type": "string",
+            "description": "The key in `[template.options]`, such as `contents`.",
+            "example": "contents"
+          },
+          "takes": {
+            "$ref": "#/components/schemas/OptionTakes",
+            "description": "The values it takes, and the one it has when the site sets none."
+          }
+        }
+      },
+      "TemplateSetting": {
+        "type": "object",
+        "description": "The template a site uses and the options it sets, as `[template]` in\n`site.toml` holds them. An option left out takes the template's default.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The template's name, such as `classic`.",
+            "example": "classic"
+          },
+          "options": {
+            "type": "object",
+            "description": "The options the site sets, by key. Each must be one the template\ntakes, with a value it takes.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TemplateValue"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "TemplateTarget": {
         "type": "string",
         "description": "What a schema template's `name` names.",
@@ -15906,6 +16246,31 @@
           "collection",
           "category"
         ]
+      },
+      "TemplateValue": {
+        "oneOf": [
+          {
+            "type": "boolean",
+            "description": "On or off."
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "A whole number."
+          },
+          {
+            "type": "string",
+            "description": "A word from the option's list."
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Words from the option's list, or lines of text."
+          }
+        ],
+        "description": "One option's value: on or off, a whole number, a word, or a list of\nwords or lines."
       },
       "TemplatesChange": {
         "type": "object",

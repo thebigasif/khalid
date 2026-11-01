@@ -11,10 +11,11 @@ use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use chrono::{DateTime, Utc};
 use khalid_api::content_store::BoxFuture;
 use khalid_api::entry_store::EntryStoreError;
-use khalid_api::resources::{AdminSettings, SettingsChange};
+use khalid_api::resources::{AdminSettings, SettingsChange, TemplateSetting, TemplateValue};
 use khalid_api::settings_store::{SettingsError, SettingsStore};
-use khalid_core::{Config, ConfigError, Environment};
-use toml_edit::{Array, DocumentMut, Item, Value};
+use khalid_core::{Config, ConfigError, Environment, OptionValue};
+use khalid_theme::Look;
+use toml_edit::{Array, DocumentMut, Item, Table, Value};
 
 use crate::atomic;
 use crate::site_config;
@@ -37,11 +38,28 @@ struct Core {
     mount: String,
     default_language: String,
     languages: Vec<String>,
+    template: TemplateSetting,
 }
 
 impl Core {
     fn of(config: &Config) -> Self {
+        let choice = config.template();
+        // A table never reaches here: the look refuses it in `checked`.
+        let value = |value: &OptionValue| match value {
+            OptionValue::Switch(on) => Some(TemplateValue::Switch(*on)),
+            OptionValue::Number(number) => Some(TemplateValue::Number(*number)),
+            OptionValue::Word(word) => Some(TemplateValue::Word(word.clone())),
+            OptionValue::Words(words) => Some(TemplateValue::Words(words.clone())),
+            _ => None,
+        };
+        let options = (choice.options().iter())
+            .filter_map(|(key, written)| Some((key.clone(), value(written)?)))
+            .collect();
         Self {
+            template: TemplateSetting {
+                name: choice.name().to_string(),
+                options,
+            },
             name: config.name().to_owned(),
             address: config.address().as_str().to_owned(),
             mount: config.mount().to_owned(),
@@ -93,6 +111,7 @@ impl SiteSettings {
             mount: core.mount,
             default_language: core.default_language,
             languages: core.languages,
+            template: core.template,
             updated_at: changed,
             restart_needed,
         })
@@ -105,6 +124,10 @@ impl SiteSettings {
         site_config::check(&self.site, &config).map_err(|message| SettingsError::Refused {
             field: "address".to_owned(),
             problem: message.what().to_owned(),
+        })?;
+        Look::choose(config.template()).map_err(|error| SettingsError::Refused {
+            field: format!("{}.{}", error.table().trim_matches(['[', ']']), error.key()),
+            problem: error.to_string(),
         })?;
         Ok(config)
     }
@@ -137,6 +160,9 @@ impl SiteSettings {
         if let Some(languages) = change.languages {
             let languages: Array = languages.into_iter().collect();
             set(&mut document, "languages", languages.into());
+        }
+        if let Some(template) = change.template {
+            set_template(&mut document, template);
         }
         let text = document.to_string();
         self.checked(&text)?;
@@ -192,6 +218,40 @@ fn refused(error: ConfigError) -> SettingsError {
     }
 }
 
+/// Sets `[template]` to `template`: its name, and every option in place of
+/// the old ones. `[template.cta]` and the table's place in the file stay.
+fn set_template(document: &mut DocumentMut, template: TemplateSetting) {
+    let mut table = match document.remove("template") {
+        Some(Item::Table(table)) => table,
+        Some(Item::Value(Value::InlineTable(inline))) => inline.into_table(),
+        _ => Table::new(),
+    };
+    table.set_implicit(false);
+    table.insert("name", Item::Value(template.name.into()));
+    // The old options' table, emptied, keeps its place and comments.
+    let old = table.remove("options");
+    if !template.options.is_empty() {
+        let mut options = match old {
+            Some(Item::Table(mut old)) => {
+                old.clear();
+                old
+            }
+            _ => Table::new(),
+        };
+        for (key, value) in template.options {
+            let value = match value {
+                TemplateValue::Switch(on) => on.into(),
+                TemplateValue::Number(number) => number.into(),
+                TemplateValue::Word(word) => word.into(),
+                TemplateValue::Words(words) => Value::Array(words.into_iter().collect()),
+            };
+            options.insert(&key, Item::Value(value));
+        }
+        table.insert("options", Item::Table(options));
+    }
+    document.insert("template", Item::Table(table));
+}
+
 /// Sets `key` to `new`, keeping the comments and spacing around the old
 /// value, such as the comment block above the first key.
 fn set(document: &mut DocumentMut, key: &str, new: Value) {
@@ -204,5 +264,30 @@ fn set(document: &mut DocumentMut, key: &str, new: Value) {
         None => {
             document.insert(key, Item::Value(new));
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::collections::BTreeMap;
+
+    use super::*;
+
+    #[test]
+    fn a_new_template_replaces_every_option_and_keeps_the_call_to_action() {
+        let before = "name = \"Blog\"\n\n# The look.\n[template]\nname = \"trial\"\n\n\
+                      [template.options]\nbanner = true\n\n\
+                      [template.cta]\nlabel = \"Try it\"\nhref = \"/start/\"\n\n[nav]\nmain = []\n";
+        let mut document: DocumentMut = before.parse().unwrap();
+        let options = BTreeMap::from([("columns".to_owned(), TemplateValue::Number(3))]);
+        let template = TemplateSetting {
+            name: "sampler".to_owned(),
+            options,
+        };
+        set_template(&mut document, template);
+        let after = "name = \"Blog\"\n\n# The look.\n[template]\nname = \"sampler\"\n\n\
+                     [template.options]\ncolumns = 3\n\n\
+                     [template.cta]\nlabel = \"Try it\"\nhref = \"/start/\"\n\n[nav]\nmain = []\n";
+        assert_eq!(document.to_string(), after);
     }
 }

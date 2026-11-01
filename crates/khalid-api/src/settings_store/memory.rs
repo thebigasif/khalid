@@ -52,6 +52,7 @@ impl MemorySettings {
         next.mount = change.mount.unwrap_or(next.mount);
         next.default_language = change.default_language.unwrap_or(next.default_language);
         next.languages = change.languages.unwrap_or(next.languages);
+        next.template = change.template.unwrap_or(next.template);
         if !next.languages.contains(&next.default_language) {
             return Err(SettingsError::Refused {
                 field: "default_language".to_owned(),

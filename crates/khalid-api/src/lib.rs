@@ -32,6 +32,7 @@ mod admin_serpdad;
 mod admin_site_settings;
 mod admin_snippets;
 mod admin_tags;
+mod admin_templates;
 mod admin_trash;
 mod admin_versions;
 mod admin_webhooks;
