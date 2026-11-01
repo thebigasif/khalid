@@ -82,6 +82,11 @@ pub(crate) fn overrides(site_root: &Path) -> Result<Vec<Source>, RenderError> {
     Ok(sources)
 }
 
+/// Whether `name` is one of the default templates, such as `post.html`.
+pub(crate) fn is_default(name: &str) -> bool {
+    Defaults::get(name).is_some()
+}
+
 /// Whether `name` is a post template a post may ask for, such as
 /// `post-wide.html` for `template: wide`.
 fn is_post_template(name: &str) -> bool {

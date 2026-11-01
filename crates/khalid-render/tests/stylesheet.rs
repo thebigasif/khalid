@@ -4,7 +4,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use khalid_render::{Tokens, stylesheet};
+use khalid_render::{Tokens, stylesheet, stylesheet_text, stylesheet_text_with, stylesheet_with};
 
 /// RULES.md BL-WEB-7 and docs/standards/performance.md: the public CSS stays
 /// under 20 KB compressed.
@@ -145,4 +145,15 @@ fn a_self_hosted_font_gets_its_own_tuned_fallback() {
         text.contains("src: local(\"Arial\")"),
         "the fallback stands in with a local font:\n{text}"
     );
+}
+
+#[test]
+fn a_pack_adds_its_own_rules_after_the_shared_ones() {
+    let tokens = Tokens::default();
+    let shared = stylesheet_text(&tokens);
+    let packed = stylesheet_text_with(&tokens, "/* mine */\n.pack-mark {\n  color: red;\n}\n");
+    assert_eq!(packed, format!("{shared}.pack-mark {{\ncolor: red;\n}}\n"));
+    assert_eq!(stylesheet_text_with(&tokens, ""), shared);
+    let built = stylesheet_with(&tokens, ".pack-mark { color: red; }").unwrap();
+    assert_ne!(built.name(), stylesheet(&tokens).unwrap().name());
 }

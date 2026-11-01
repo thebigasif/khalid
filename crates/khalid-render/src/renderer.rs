@@ -9,6 +9,7 @@ use minijinja::{AutoEscape, Environment, UndefinedBehavior, context};
 use crate::dates;
 use crate::direction::Direction;
 use crate::heading_links;
+use crate::pack::{PackContext, RenderPack};
 use crate::strings::Strings;
 use crate::templates::{self, Source};
 use crate::{PageBody, PageMeta, RenderError, RenderSite};
@@ -30,6 +31,7 @@ const FUEL_PER_PAGE: u64 = 1_000_000;
 pub struct Renderer {
     env: Environment<'static>,
     strings: Strings,
+    pack: PackContext,
 }
 
 impl Renderer {
@@ -40,7 +42,34 @@ impl Renderer {
     /// Returns a [`RenderError`] if a built-in template or strings file is
     /// broken, which this crate's tests rule out.
     pub fn new() -> Result<Self, RenderError> {
-        Self::build(Vec::new())
+        Self::build(Vec::new(), &RenderPack::classic())
+    }
+
+    /// A renderer where the template pack `pack` replaces the default
+    /// templates it names, and each file in `site_root/theme/templates/`
+    /// replaces either. Templates read the pack's name and options as
+    /// `template`.
+    ///
+    /// # Errors
+    ///
+    /// The errors of [`Renderer::with_theme`], and
+    /// [`RenderError::UnknownTemplate`] for a pack file that replaces
+    /// nothing.
+    pub fn with_pack(site_root: &Path, pack: &RenderPack<'_>) -> Result<Self, RenderError> {
+        let mut sources = Vec::new();
+        for &(name, text) in &pack.templates {
+            if !templates::is_default(name) {
+                return Err(RenderError::UnknownTemplate {
+                    name: name.to_owned(),
+                });
+            }
+            sources.push(Source {
+                name: name.to_owned(),
+                text: text.to_owned(),
+            });
+        }
+        sources.extend(templates::overrides(site_root)?);
+        Self::build(sources, pack)
     }
 
     /// A renderer where each file in `site_root/theme/templates/` replaces
@@ -53,10 +82,10 @@ impl Renderer {
     /// mistake, and the read errors of [`RenderError`] when a file cannot be
     /// read or leads outside the site folder.
     pub fn with_theme(site_root: &Path) -> Result<Self, RenderError> {
-        Self::build(templates::overrides(site_root)?)
+        Self::with_pack(site_root, &RenderPack::classic())
     }
 
-    fn build(overrides: Vec<Source>) -> Result<Self, RenderError> {
+    fn build(overrides: Vec<Source>, pack: &RenderPack<'_>) -> Result<Self, RenderError> {
         let mut env = Environment::new();
         env.set_auto_escape_callback(|_| AutoEscape::Html);
         env.set_formatter(escape::format);
@@ -72,6 +101,7 @@ impl Renderer {
         Ok(Self {
             env,
             strings: Strings::load()?,
+            pack: PackContext::from(pack),
         })
     }
 
@@ -133,6 +163,7 @@ impl Renderer {
             lang => site.locale.as_str(),
             dir => Serde(Direction::of(&site.locale)),
             page => body.value(),
+            template => Serde(&self.pack),
         };
         template
             .render(context)
