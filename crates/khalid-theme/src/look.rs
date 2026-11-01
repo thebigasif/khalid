@@ -181,6 +181,12 @@ fn check(spec: &OptionSpec, written: Option<&OptionValue>) -> Option<CheckedOpti
         {
             CheckedOption::Number(*number)
         }
+        (OptionKind::Line { .. }, None) => CheckedOption::Word(String::new()),
+        (OptionKind::Line { most }, Some(OptionValue::Word(text)))
+            if !text.contains(['\n', '\r']) && text.chars().count() <= most =>
+        {
+            CheckedOption::Word(text.clone())
+        }
         (OptionKind::Lines { .. }, None) => CheckedOption::Lines(Vec::new()),
         (OptionKind::Lines { most }, Some(OptionValue::Words(lines))) if lines.len() <= most => {
             CheckedOption::Lines(lines.clone())
@@ -205,6 +211,7 @@ fn wants(kind: OptionKind) -> String {
         OptionKind::Count { least, most, .. } => {
             format!("a whole number from {least} to {most}")
         }
+        OptionKind::Line { most } => format!("one line of text of up to {most} characters"),
         OptionKind::Lines { most } => format!("a list of up to {most} lines of text"),
         OptionKind::Picks { allowed, .. } => {
             format!("a list of one or more of {}, each once", allowed.join(", "))

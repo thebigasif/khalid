@@ -1,9 +1,9 @@
-{#- contents_list(contents): a post's sections, each with its parts,
-    linked to their headings, numbered as the template's
-    `contents_numbers` part says: 1, 2, 3 (numbered), 1, 1.1 (nested) or
-    without numbers (none). -#}
-{% macro contents_list(contents) -%}
-{% set numbers = template.options.contents_numbers -%}
+{#- contents_list(contents, numbers): a post's sections, each with its
+    parts, linked to their headings, numbered as `numbers` or else the
+    template's `contents_numbers` part says: 1, 2, 3 (numbered), 1, 1.1
+    (nested) or without numbers (none). -#}
+{% macro contents_list(contents, numbers=none) -%}
+{% set numbers = numbers or template.options.contents_numbers -%}
 {% if numbers == "nested" %}<ol class="toc-nested">{% elif numbers == "none" %}<ol class="toc-plain">{% else %}<ol>{% endif %}
 {% for section in contents.sections %}<li><a href="#{{ section.id }}">{{ section.text }}</a>{% if section.parts %}
 <ol>

@@ -13,7 +13,19 @@ name = "classic"
 
 Without a `[template]` table your blog uses `classic`, the look Khalid has always had. Updating Khalid never changes your template.
 
-Classic is the only template today. The ten templates in the templates spec arrive one or two at a time, and each one lists its options here.
+These eleven templates are built in. Every template but classic has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default.
+
+- `classic`: a calm column of text, cards on the home page and the contents beside long posts. It takes no options.
+- `almanac`: a library of long guides, soft and roomy, with a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
+- `atlas`: a portal for a blog with many topics, with topic tabs, featured posts and editor's picks. See [Atlas](templates/atlas.md).
+- `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
+- `folio`: a product team's essays under their own masthead, with category pills, a featured story and a grid of outlined cards. See [Folio](templates/folio.md).
+- `harbor`: a busy marketing blog with featured posts, rows of recent posts, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
+- `keystone`: a personal guide site with one big featured post, a grid of pictures and numbered chapters. See [Keystone](templates/keystone.md).
+- `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
+- `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
+- `wire`: a news and columns site with a lead story beside tabs of the latest posts and editor's picks, and a fast feed. See [Wire](templates/wire.md).
+- `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 
 ## Options
 
@@ -32,6 +44,17 @@ An option a template does not know, or a value it does not take, stops every com
 
 An option you leave out takes the template's default.
 
+## Picking a template in the admin
+
+The admin's **Look** screen does the same without opening `site.toml`. It lists every template your Khalid has, each with one sentence on what it is for and what it turns on and off. Pick one, change the options you want different, and press **Save the look**.
+
+Khalid checks the choice as it checks `site.toml` at start, so a template or value it would refuse is never saved. It writes only the options that differ from the template's defaults, and keeps your comments and `[template.cta]`. Your blog shows the new look after Khalid restarts.
+
+The screen reads two Admin API routes, which need `settings:write`:
+
+- `GET /api/admin/v1/templates/` lists the templates, each with its options: the values each takes and its default.
+- `PUT /api/admin/v1/settings/` saves the choice as `template`, with its `name` and `options`, beside the other settings.
+
 ## Parts a template can switch on
 
 Every template shares one set of page parts. A template switches on the ones it uses, and offers each as an option with its own default. Classic switches none of them on, so it looks as it always has. The words below are the option keys and the values each takes; a template lists only the parts it offers.
@@ -39,12 +62,14 @@ Every template shares one set of page parts. A template switches on the ones it 
 | Option | Values | What it changes |
 |---|---|---|
 | `logo` | `true`, `false` | The header shows the logo from `[brand] logo` in `theme/tokens.toml` in place of the blog's name. Without a logo, the name shows. |
+| `back_link` | `true`, `false` | A post shows an "All posts" link back to the front page above its title, in place of breadcrumbs. |
 | `breadcrumbs` | `true`, `false` | Each page shows the trail of links from the home page to it: home, the post's category, the page. Search engines read the same trail. |
 | `dek` | `true`, `false` | A post shows its `description` as a subtitle under its title. |
 | `updated_note` | `true`, `false` | An updated post shows its `updated_note` (why it was updated) under its dates. |
 | `cards` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists: with a picture, text only, a small picture beside the text, title and date only, or a numbered list. |
 | `card_reading_time` | `true`, `false` | Each card shows how long the post takes to read. |
 | `card_author_role` | `true`, `false` | Each card shows its author's role after their name. |
+| `category_tabs` | `true`, `false` | The home page shows a row of tabs: "All", then each category your posts use, in the order `categories.toml` lists them. |
 | `featured` | `true`, `false` | The newest post with `featured: true` shows large above the home page and each list, and not again below. |
 | `picks` | `0` to `8` | How many posts with `featured: true` the home page lists as editor's picks. `0` shows none. |
 | `pagination` | `pages`, `numbered` | The links under a long list: newer and older, or a numbered link to each page near this one. |

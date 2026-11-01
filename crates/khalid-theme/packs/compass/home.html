@@ -1,0 +1,35 @@
+{#- Compass's front page: the title and intro, a row of links to the
+    sections on the page when there are two or more, each section as
+    three picture cards with a link to the rest, then the newsletter as a
+    band before the footer. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.sections | length > 1 %}<nav class="jump-links" aria-label="{{ t.on_this_page }}">
+<ul>
+{% for section in page.sections %}<li><a href="#section-{{ loop.index }}">{{ section.title }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}{% set posts = page.posts -%}
+{% if page.sections %}{% for section in page.sections %}<section class="home-section" id="section-{{ loop.index }}">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts[:3], 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif posts %}<section class="home-section" id="latest" aria-labelledby="latest-title">
+<h2 id="latest-title">{{ t.recent_posts }}</h2>
+{{ cards(posts, 3) }}
+{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<div class="newsletter-band">
+{{ newsletter_form(site.subscribe, t) }}
+</div>
+{% endif %}{% endblock %}

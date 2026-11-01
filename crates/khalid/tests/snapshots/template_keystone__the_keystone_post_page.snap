@@ -1,0 +1,50 @@
+---
+source: crates/khalid/tests/template_keystone.rs
+expression: "main_of(&page(&out, \"what-a-sitemap-does/index.html\"))"
+---
+ id="main" tabindex="-1">
+
+<article class="post">
+<header class="post-header">
+<h1>What a sitemap does, and what it does not</h1>
+<div class="post-meta">
+<address>
+<ul class="people" role="list" aria-label="Written by">
+<li class="person"><span><a rel="author" href="/blog/authors/lena-vogt/">Lena Vogt</a><span class="person-role">Technical SEO editor</span></span></li>
+</ul>
+</address>
+<p>Published <time datetime="2026-09-28">28 September 2026</time></p>
+</div>
+</header>
+<div class="post-columns">
+<div class="share share-rail">
+<p class="share-title">Share this post</p>
+<ul>
+<li><a href="https://x.com/intent/post?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F&amp;text=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not" rel="nofollow noreferrer">X</a></li>
+<li><a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">LinkedIn</a></li>
+<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">Facebook</a></li>
+<li><a href="mailto:?subject=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not&amp;body=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">Email</a></li>
+</ul>
+</div>
+<div class="post-body post-numbered">
+<p>A sitemap is a file, usually at <code>/sitemap.xml</code>, that lists the addresses of the pages on your site. Search engines read it to find pages they might otherwise miss.</p>
+<h2 id="what-it-does">What it does <a class="heading-link" href="#what-it-does" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>It helps new pages get found sooner, especially on a young site with few links pointing in.</li>
+<li>It tells search engines when a page last changed, so they know what to fetch again.</li>
+<li>It points to each language version of a page, which helps the right reader land on the right version.</li>
+</ul>
+<h2 id="what-it-does-not-do">What it does not do <a class="heading-link" href="#what-it-does-not-do" aria-label="Link to this section">#</a></h2>
+<p>A sitemap does not make a page rank. A weak page listed in a sitemap is still a weak page. It also does not replace links: a page that only appears in the sitemap, with no links from your own posts, still looks unimportant. See <a href="/blog/why-internal-links-matter/">why internal links matter</a>.</p>
+<h2 id="keep-it-clean">Keep it clean <a class="heading-link" href="#keep-it-clean" aria-label="Link to this section">#</a></h2>
+<p>List only pages you want in search results. Leave out drafts, redirects and pages marked <code>noindex</code>. A sitemap full of pages that should not be there teaches search engines to trust it less.</p>
+
+</div>
+</div>
+</article>
+<section class="mentions">
+<h2>Posts that link here</h2>
+<ul>
+<li><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></li>
+</ul>
+</section>

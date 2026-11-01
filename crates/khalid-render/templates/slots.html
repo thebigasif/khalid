@@ -1,14 +1,17 @@
 {#- The slots a template switches on around its pages (templates spec 4.2).
-    Each is plain HTML that works with scripts off. -#}
-{% macro newsletter_form(action, t) -%}
-<section class="newsletter-slot" aria-labelledby="newsletter-slot-title">
-<h2 id="newsletter-slot-title">{{ t.newsletter_title }}</h2>
+    Each is plain HTML that works with scripts off. A page that shows the
+    newsletter form twice gives each its own `id`; `note` is one more line,
+    such as how often the newsletter goes out. -#}
+{% macro newsletter_form(action, t, id="newsletter-slot", note=none) -%}
+<section class="newsletter-slot" aria-labelledby="{{ id }}-title">
+<h2 id="{{ id }}-title">{{ t.newsletter_title }}</h2>
 <p>{{ t.newsletter_text }}</p>
-<form class="subscribe" method="post" action="{{ action }}">
-<p><label for="newsletter-slot-email">{{ t.newsletter_label }}</label>
-<input id="newsletter-slot-email" name="email" type="email" autocomplete="email" required></p>
-<p class="form-trap" aria-hidden="true"><label for="newsletter-slot-homepage">{{ t.form_trap }}</label>
-<input id="newsletter-slot-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+{% if note %}<p class="newsletter-note">{{ note }}</p>
+{% endif %}<form class="subscribe" method="post" action="{{ action }}">
+<p><label for="{{ id }}-email">{{ t.newsletter_label }}</label>
+<input id="{{ id }}-email" name="email" type="email" autocomplete="email" required></p>
+<p class="form-trap" aria-hidden="true"><label for="{{ id }}-homepage">{{ t.form_trap }}</label>
+<input id="{{ id }}-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
 <p><button type="submit">{{ t.newsletter_button }}</button></p>
 </form>
 </section>

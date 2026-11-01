@@ -1,0 +1,2 @@
+Added
+- The Atlas template: a portal for a blog with many topics. Pick it with `name = "atlas"` under `[template]`. Its front page shows a sticky bar of topic tabs, the two newest featured posts large, editor's picks, the feed and a block per topic; each post shows its breadcrumbs, share links at the top and end, its contents in a sticky column, the author box, your call-to-action band and three related posts. See `docs/templates/atlas.md`.

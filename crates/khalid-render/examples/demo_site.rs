@@ -338,7 +338,7 @@ impl Demo {
             .iter()
             .map(|(_, category, _)| category.clone())
             .collect();
-        let topics = used
+        let topics: Vec<Link> = used
             .iter()
             .map(|slug| Link {
                 name: self.category_name(lang, slug),
@@ -351,8 +351,9 @@ impl Demo {
             picks: Vec::new(),
             topics: vec![TopicGroup {
                 name: None,
-                links: topics,
+                links: topics.clone(),
             }],
+            categories: topics,
         });
         self.page(lang, (lang.prefix, None), "Field Notes on SEO", &home)?;
         self.author_pages(lang, &authors, &cards)?;

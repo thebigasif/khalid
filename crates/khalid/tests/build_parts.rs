@@ -99,6 +99,52 @@ fn the_sampler_pack_shows_the_logo_and_classic_keeps_the_name() {
 }
 
 #[test]
+fn the_sampler_pack_shows_a_tab_for_each_category_in_the_order_categories_toml_lists_them() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\ncategory_tabs = true\n",
+        &[],
+    );
+    let home = page(&sampler, "index.html");
+    let tabs = "<li><a href=\"/blog/\" aria-current=\"page\">All</a></li>\n\
+<li><a href=\"/blog/category/on-page-seo/\">On-page SEO</a></li>\n\
+<li><a href=\"/blog/category/technical-seo/\">Technical SEO</a></li>\n\
+<li><a href=\"/blog/category/content-strategy/\">Content strategy</a></li>\n</ul>";
+    assert!(home.contains(tabs), "{home}");
+    let german = page(&sampler, "de/index.html");
+    assert!(
+        german
+            .contains("<li><a href=\"/blog/de/category/technical-seo/\">Technisches SEO</a></li>"),
+        "{german}"
+    );
+    let (_temp, classic) = built("", &[]);
+    let home = page(&classic, "index.html");
+    assert!(!home.contains("category-tabs"), "{home}");
+}
+
+#[test]
+fn the_sampler_pack_links_each_post_back_to_all_posts() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\nback_link = true\n",
+        &[],
+    );
+    let back = "<p class=\"back-link\"><a href=\"/blog/\">All posts</a></p>";
+    let post = page(&sampler, "what-a-sitemap-does/index.html");
+    assert!(post.contains(back), "{post}");
+    let german = page(&sampler, "de/was-eine-sitemap-leistet/index.html");
+    // The German words come from the strings file; the link goes to the
+    // German front page.
+    assert!(
+        german.contains("<p class=\"back-link\"><a href=\"/blog/de/\">"),
+        "{german}"
+    );
+    assert!(!german.contains(">All posts<"), "{german}");
+    assert!(!page(&sampler, "index.html").contains("back-link"));
+    let (_temp, classic) = built("", &[]);
+    let post = page(&classic, "what-a-sitemap-does/index.html");
+    assert!(!post.contains("back-link"), "{post}");
+}
+
+#[test]
 fn the_sampler_pack_shows_one_trail_in_the_page_and_its_schema() {
     let (_temp, sampler) = built(
         "\n[template]\nname = \"sampler\"\n[template.options]\nbreadcrumbs = true\n",
@@ -119,6 +165,47 @@ fn the_sampler_pack_shows_one_trail_in_the_page_and_its_schema() {
     let post = page(&classic, "what-a-sitemap-does/index.html");
     assert!(!post.contains("class=\"breadcrumbs\""), "{post}");
     assert!(post.contains("\"name\":\"Technical SEO\""), "{post}");
+}
+
+#[test]
+fn a_post_its_cards_and_the_home_page_name_its_category() {
+    let (_temp, out) = built("", &[]);
+    let post = page(&out, "what-a-sitemap-does/index.html");
+    assert!(
+        post.contains(
+            "<p>Filed under <a href=\"/blog/category/technical-seo/\">Technical SEO</a></p>"
+        ),
+        "{post}"
+    );
+    let home = page(&out, "index.html");
+    let (before, _) = home
+        .split_once("<a href=\"/blog/what-a-sitemap-does/\">")
+        .unwrap();
+    let (_, meta) = before.rsplit_once("<p class=\"card-meta\">").unwrap();
+    assert!(
+        meta.contains("<a href=\"/blog/category/technical-seo/\">Technical SEO</a>"),
+        "{meta}"
+    );
+    let (_, topics) = home.split_once("<nav class=\"topics\"").unwrap();
+    let (topics, _) = topics.split_once("</nav>").unwrap();
+    let names: Vec<&str> = ["On-page SEO", "Technical SEO", "Content strategy"]
+        .into_iter()
+        .filter(|name| topics.contains(&format!(">{name}</a>")))
+        .collect();
+    assert_eq!(names.len(), 3, "{topics}");
+    let at = |name: &str| topics.find(name).unwrap();
+    assert!(
+        at("On-page SEO") < at("Technical SEO") && at("Technical SEO") < at("Content strategy"),
+        "in the order of categories.toml: {topics}"
+    );
+}
+
+#[test]
+fn a_german_page_names_the_category_in_german() {
+    let (_temp, out) = built("", &[]);
+    let home = page(&out, "de/index.html");
+    let (_, topics) = home.split_once("<nav class=\"topics\"").unwrap();
+    assert!(topics.contains(">Technisches SEO</a>"), "{topics}");
 }
 
 #[test]

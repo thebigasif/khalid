@@ -1,0 +1,68 @@
+---
+source: crates/khalid/tests/build_packs.rs
+expression: "main_of(&page(&out, \"index.html\"))"
+---
+<main id="main" tabindex="-1">
+
+<nav class="al-subnav" aria-label="Categories">
+<ul>
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>
+<h1 class="al-title">Field Notes on SEO</h1>
+<section class="featured" aria-labelledby="featured-title">
+<h2 id="featured-title">Featured</h2>
+<article class="card card-featured">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-21">21 September 2026</time>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</article>
+</section>
+<div class="cta-band">
+<p class="cta-note">No card needed.</p>
+<p><a class="button" href="https://www.example.com/signup/">Start a free trial</a></p>
+</div>
+<section class="al-latest" aria-labelledby="al-latest-title">
+<h2 id="al-latest-title">Latest posts</h2>
+<ul class="al-rows" role="list">
+<li>
+<a class="al-pill" href="/blog/category/content-strategy/">Content strategy</a>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p><time datetime="2026-10-12">12 October 2026</time></p>
+</li>
+<li>
+<a class="al-pill" href="/blog/category/technical-seo/">Technical SEO</a>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p><time datetime="2026-10-05">5 October 2026</time></p>
+</li>
+<li>
+<a class="al-pill" href="/blog/category/technical-seo/">Technical SEO</a>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p><time datetime="2026-09-28">28 September 2026</time></p>
+</li>
+<li>
+<a class="al-pill" href="/blog/category/on-page-seo/">On-page SEO</a>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p><time datetime="2026-09-14">14 September 2026</time></p>
+</li>
+</ul>
+</section>
+<section class="newsletter-slot" aria-labelledby="newsletter-slot-title">
+<h2 id="newsletter-slot-title">Get new posts by email</h2>
+<p>New posts in your inbox. Every email has a link to leave.</p>
+<form class="subscribe" method="post" action="/blog/subscribe">
+<p><label for="newsletter-slot-email">Your email address</label>
+<input id="newsletter-slot-email" name="email" type="email" autocomplete="email" required></p>
+<p class="form-trap" aria-hidden="true"><label for="newsletter-slot-homepage">Leave this empty</label>
+<input id="newsletter-slot-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+<p><button type="submit">Subscribe</button></p>
+</form>
+</section>
+<div class="al-closing"><div class="cta-band">
+<p class="cta-note">No card needed.</p>
+<p><a class="button" href="https://www.example.com/signup/">Start a free trial</a></p>
+</div></div>

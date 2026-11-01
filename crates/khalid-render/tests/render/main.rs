@@ -8,6 +8,8 @@ mod author_box;
 #[cfg(test)]
 mod authors;
 #[cfg(test)]
+mod back_link;
+#[cfg(test)]
 mod breadcrumbs;
 #[cfg(test)]
 mod byline;
@@ -15,6 +17,8 @@ mod byline;
 mod card_shapes;
 #[cfg(test)]
 mod cards;
+#[cfg(test)]
+mod category_tabs;
 #[cfg(test)]
 mod comments;
 #[cfg(test)]

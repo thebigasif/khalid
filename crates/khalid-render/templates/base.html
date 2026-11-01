@@ -43,7 +43,8 @@
 {% endif %}{% if template.cta and template.options.cta_button %}<a class="button header-button" href="{{ template.cta.href }}">{{ template.cta.label }}</a>
 {% endif %}</header>
 <main id="main" tabindex="-1">
-{% if template.options.breadcrumbs and meta.breadcrumbs %}<nav class="breadcrumbs" aria-label="{{ t.breadcrumbs }}">
+{% if template.options.back_link and meta.kind == "article" %}<p class="back-link"><a href="{{ site.home }}">{{ t.back_to_posts }}</a></p>
+{% endif %}{% if template.options.breadcrumbs and meta.breadcrumbs %}<nav class="breadcrumbs" aria-label="{{ t.breadcrumbs }}">
 <ol>
 {% for crumb in meta.breadcrumbs %}<li><a href="{{ crumb.href }}"{% if loop.last %} aria-current="page"{% endif %}>{{ crumb.name }}</a></li>
 {% endfor %}</ol>

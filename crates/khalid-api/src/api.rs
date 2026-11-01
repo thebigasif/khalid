@@ -32,7 +32,9 @@ use crate::post_trash::PostTrash;
 use crate::problem::Problem;
 use crate::publish_door::{PublishDoor, Silent};
 use crate::redirect_desk::RedirectDesk;
-use crate::resources::{AdminAuthor, AdminCategory, AdminPage, AdminSnippet, MediaItems};
+use crate::resources::{
+    AdminAuthor, AdminCategory, AdminPage, AdminSnippet, AdminTemplate, MediaItems,
+};
 use crate::schema_template_store::SchemaTemplateStore;
 use crate::serpdad_store::SerpdadStore;
 use crate::session_check::{SessionCheck, StaffRoutes};
@@ -44,7 +46,7 @@ use crate::{
     admin_categories, admin_check, admin_comments, admin_draft_comments, admin_draft_threads,
     admin_follow_ups, admin_not_found, admin_pages, admin_redirect_csv, admin_redirects,
     admin_schema_templates, admin_serpdad, admin_site_settings, admin_snippets, admin_tags,
-    admin_trash, admin_webhooks, api_version, content_api,
+    admin_templates, admin_trash, admin_webhooks, api_version, content_api,
 };
 
 pub use crate::audit_desk::AuditDesk;
@@ -272,6 +274,9 @@ pub struct AdminDesks {
     /// The site's core settings, or `None` when the settings routes answer
     /// that this server keeps none.
     pub settings: Option<Arc<dyn SettingsStore>>,
+    /// The built-in templates, or `None` when the template route answers
+    /// that this server lists none.
+    pub templates: Option<Arc<[AdminTemplate]>>,
     /// The views `khalid serve` counted, read under `/api/admin/v1/analytics/`.
     pub analytics: AnalyticsDesk,
     /// Staff comments on drafts, or `None` when the routes list none and
@@ -298,7 +303,7 @@ impl AdminDesks {
     /// No comments, no media library, no stored redirects, no webhooks, no
     /// audit log, no trash, no post checks, no schema templates, no pages,
     /// no snippets, no authors, no tags, no categories, no settings, no
-    /// counted views, no comments on drafts, no Search Console connection
+    /// templates, no counted views, no comments on drafts, no Search Console connection
     /// and no `SerpDad` connection.
     pub fn none() -> Self {
         Self {
@@ -316,6 +321,7 @@ impl AdminDesks {
             tags: None,
             categories: None,
             settings: None,
+            templates: None,
             analytics: AnalyticsDesk::none(),
             draft_comments: None,
             follow_ups: Arc::new(NoSearchConsole),
@@ -507,6 +513,7 @@ fn assemble(
         .merge(admin_tags::routes(desks.tags, door.clone()))
         .merge(admin_categories::routes(desks.categories, door.clone()))
         .merge(admin_site_settings::routes(desks.settings, door.clone()))
+        .merge(admin_templates::routes(desks.templates, door.clone()))
         .merge(admin_api_keys::routes(keys, door.clone()))
         .merge(admin_analytics::routes(desks.analytics, door.clone()))
         .merge(admin_follow_ups::routes(desks.follow_ups, door.clone()))

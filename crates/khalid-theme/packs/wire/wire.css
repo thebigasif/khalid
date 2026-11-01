@@ -1,0 +1,74 @@
+/* Wire (templates spec 3.6): a news front page on a wide grid, a thick
+   accent rule under the header, rows split by thin lines, and posts in one
+   readable column. Every colour is a token or a tint of one. */
+
+.site-header, main, .site-footer { max-inline-size: 78rem; }
+.site-header { border-block-end: 3px solid var(--color-accent); }
+.button, .subscribe button { color: var(--color-on-accent); }
+
+/* Labels: small capitals over each part of the front page. */
+.feed > h2, .home-section > h2, .related > h2, .tab-panel > h2 { margin-block: 0 0.75rem; padding-block-end: 0.5rem; border-block-end: 1px solid var(--color-text); font-family: var(--font-body); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+.masthead { margin-block-end: 1.5rem; }
+.masthead h1 { margin-block: 0.5rem 0; font-size: var(--text-h2); letter-spacing: -0.01em; }
+.masthead .intro { margin-block-start: 0.25rem; }
+
+/* The lead story beside the tabs on wide screens. */
+.front { display: grid; gap: 2rem 3rem; margin-block-end: var(--space-section); }
+@media (min-width: 64rem) { .front:has(.front-lead) { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+.front-lead { position: relative; }
+.front-lead .image { margin: 0 0 1rem; }
+.front-lead h2 { margin-block: 0.5rem; font-size: var(--text-h1); line-height: 1.1; letter-spacing: -0.02em; }
+.front-lead h2 a { color: var(--color-text); text-decoration: none; }
+.front-lead h2 a::after { content: ""; position: absolute; inset: 0; }
+.front-lead > p:last-child { color: var(--color-muted); font-size: var(--text-h4); }
+
+/* Two tabs, switched by the part named in the address, with no script. Without
+   :has() both lists show, one under the other. */
+.front-tabs { min-inline-size: 0; }
+.tab-names ul { gap: 0; border-block-end: 1px solid var(--color-border); }
+.tab-names a { padding-inline: 1rem; border-block-end: 3px solid transparent; color: var(--color-muted); font-weight: 700; text-decoration: none; }
+.front-tabs:not(:has(.tab-panel:target)) .tab-names li:first-child a, .front-tabs:has([id="front-picks"]:target) .tab-names li:last-child a { border-block-end-color: var(--color-accent); color: var(--color-text); }
+.front-tabs:has(.tab-names) .tab-panel > h2 { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; text-wrap: nowrap; }
+.front-tabs:not(:has(.tab-panel:target)) .tab-panel + .tab-panel, .front-tabs:has(.tab-panel:target) .tab-panel:not(:target) { display: none; }
+.tab-panel { padding-block-start: 1rem; scroll-margin-block-start: 1rem; }
+.tab-panel .cards { gap: 0; }
+.tab-panel .card { padding-block: 0.75rem; border-block-end: 1px solid var(--color-border); }
+
+/* Topic pills. */
+.filters { margin-block-end: var(--space-section); }
+.filters .tags a, .post-footer .tags a { background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border-radius: 999px; color: var(--color-text); font-weight: 600; }
+
+/* The feed: one column of rows, each split by a line. */
+.feed, .home-section { max-inline-size: 52rem; margin-block-end: var(--space-section); }
+.cards-row { gap: 0; }
+.cards-row .card { position: relative; padding-block: 1.25rem; border-block-end: 1px solid var(--color-border); }
+.cards-row .card h3 a::after { content: ""; position: absolute; inset: 0; }
+.cards-row .card-meta a { position: relative; z-index: 1; }
+.cards-row .card > p:last-child { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; overflow: hidden; color: var(--color-muted); }
+.card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; }
+.feed .newsletter-slot { margin-block: 1.5rem; border-block-start: 3px solid var(--color-accent); }
+
+/* A post: one readable column. */
+main:has(> .post) > *, main:has(> .author) > * { max-inline-size: var(--measure); margin-inline: auto; }
+main:has(> .post-with-toc) > .post { max-inline-size: calc(var(--measure) + 18rem); }
+.post-header h1 { margin-block-end: 0.5rem; letter-spacing: -0.02em; }
+.post-header .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.role-badge { display: inline-block; margin-inline-end: 0.5rem; padding: 0.125rem 0.5rem; background: var(--color-text); border-radius: var(--radius); color: var(--color-background); font-size: 0.75em; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.post-dates { display: flex; flex-wrap: wrap; gap: 0 1rem; }
+.post-header .image figcaption { font-style: italic; }
+
+/* The writer's card under the picture, the bio folded. */
+.author-card { margin-block: 0 2rem; padding: 1rem 1.25rem; border-block: 1px solid var(--color-border); }
+.author-card .person-card { margin: 0; }
+.author-card .person-card + .person-card { margin-block-start: 1rem; }
+.author-card .person-role { margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-fold summary { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-link); cursor: pointer; }
+.author-fold > :last-child { margin-block-end: 0.5rem; }
+
+/* The body: bold lead-ins and "see also" lines set off quietly. */
+.post-body > p > strong:first-child { font-family: var(--font-heading); }
+.post-body .callout-read { padding-block: 0.5rem; font-style: italic; }
+.post .post-footer { margin-block-start: 2rem; }
+.related { margin-block-start: var(--space-section); }
+
+@media print { .author-card, .tab-names, .related { display: none; } }

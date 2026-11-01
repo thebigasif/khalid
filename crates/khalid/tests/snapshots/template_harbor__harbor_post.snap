@@ -1,0 +1,120 @@
+---
+source: crates/khalid/tests/template_harbor.rs
+expression: "shown(&out, \"fixing-slow-pages/index.html\")"
+---
+<header class="site-header">
+<a class="site-name site-logo" href="/blog/"><img src="https://www.example.com/logo.svg" alt="Field Notes on SEO" decoding="async"></a>
+<a class="search-link" href="/blog/search/">Search</a>
+<a class="button header-button" href="https://www.example.com/checklist/">Get the free checklist</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/fixing-slow-pages/" aria-current="page">Fixing slow pages, starting with the biggest win</a></li>
+</ol>
+</nav>
+
+<article class="post">
+<header class="post-header">
+<h1>Fixing slow pages, starting with the biggest win</h1>
+<div class="post-meta">
+<address>
+<ul class="people" role="list" aria-label="Written by">
+<li class="person"><span><a rel="author" href="/blog/authors/lena-vogt/">Lena Vogt</a><span class="person-role">Technical SEO editor</span></span></li>
+</ul>
+</address>
+<p class="post-date">Published <time datetime="2026-10-05">5 October 2026</time></p>
+</div>
+<div class="offer">
+<div class="cta-band">
+<p class="cta-note">Twenty checks for every new post.</p>
+<p><a class="button" href="https://www.example.com/checklist/">Get the free checklist</a></p>
+</div>
+</div>
+<figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/320.png 320w, /blog/media/d9df18e6d7e8625d/480.png 480w, /blog/media/d9df18e6d7e8625d/640.png 640w, /blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+<figcaption>Images weigh the most.</figcaption>
+</figure>
+</header>
+<div class="post-body post-marked">
+<p>Readers leave pages that load slowly, and search engines notice. The good news: most slow pages are slow for the same few reasons.</p>
+<h2 id="measure-first">Measure first <a class="heading-link" href="#measure-first" aria-label="Link to this section">#</a></h2>
+<p>Run the page through a speed test on a phone setting, not a desktop one. Write down the largest contentful paint, which is the time until the main content is visible. Under one second is great. Over two and a half seconds needs work.</p>
+<h2 id="the-usual-causes-biggest-first">The usual causes, biggest first <a class="heading-link" href="#the-usual-causes-biggest-first" aria-label="Link to this section">#</a></h2>
+<figure>
+<a class="enlarge" href="/blog/media/d9df18e6d7e8625d/800.png"><picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/320.png 320w, /blog/media/d9df18e6d7e8625d/480.png 480w, /blog/media/d9df18e6d7e8625d/640.png 640w, /blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="Bar chart of a slow page&#39;s bytes: images take the most, then scripts, fonts, styles and HTML" loading="lazy" decoding="async">
+</picture></a>
+<figcaption>
+<p>Where the bytes of a typical slow page go.</p>
+</figcaption>
+</figure>
+<ol>
+<li><strong>Images that are too large.</strong> A photo saved at 4,000 pixels wide for a slot 800 pixels wide wastes most of its bytes. Serve the size the page needs, in a modern format.</li>
+<li><strong>Scripts the reader does not need.</strong> Every chat widget and tracking tag delays the page. Remove the ones nobody reads the data from.</li>
+<li><strong>Fonts that block the text.</strong> Show the text in a system font first, and swap in the web font when it arrives.</li>
+<li><strong>Layout that jumps.</strong> Give every image a width and height, so the text does not move while the page loads.</li>
+</ol>
+<p>Fix the first cause on your slowest page, measure again, and move on. Faster pages also get crawled more often, which helps <a href="/blog/what-a-sitemap-does/">your sitemap</a> do its job.</p>
+<section class="faq">
+<details open>
+<summary>How fast should a page load?</summary>
+<p>Aim for the main content to show within 2.5 seconds on a phone.</p>
+</details>
+<details open>
+<summary>Which page should I fix first?</summary>
+<p>The slowest page that brings in the most readers.</p>
+</details>
+</section>
+
+</div>
+<footer class="post-footer">
+<div class="share">
+<p class="share-title">Share this post</p>
+<ul>
+<li><a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.example.com%2Fblog%2Ffixing-slow-pages%2F" rel="nofollow noreferrer">LinkedIn</a></li>
+<li><a href="https://x.com/intent/post?url=https%3A%2F%2Fwww.example.com%2Fblog%2Ffixing-slow-pages%2F&amp;text=Fixing%20slow%20pages%2C%20starting%20with%20the%20biggest%20win" rel="nofollow noreferrer">X</a></li>
+<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.example.com%2Fblog%2Ffixing-slow-pages%2F" rel="nofollow noreferrer">Facebook</a></li>
+<li><a href="mailto:?subject=Fixing%20slow%20pages%2C%20starting%20with%20the%20biggest%20win&amp;body=https%3A%2F%2Fwww.example.com%2Fblog%2Ffixing-slow-pages%2F" rel="nofollow noreferrer">Email</a></li>
+</ul>
+</div>
+</footer>
+</article>
+<section class="related related-scroll">
+<h2>Related posts</h2>
+<ul class="cards" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-09-28">28 September 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-10-12">12 October 2026</time>
+<a href="/blog/category/content-strategy/">Content strategy</a></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-21">21 September 2026</time>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</article>
+</li>
+</ul>
+</section>

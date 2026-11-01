@@ -28,8 +28,9 @@ use crate::site_html::{SearchShell, Unrendered, Which, html_pages, search_shells
 use crate::unlock::Gate;
 use crate::{
     assets, build_gate, build_home, build_lists, build_message, build_pages, build_seo,
-    build_sitemap, categories, content_message, look, own_descriptions, post_files, post_gate,
-    post_lock, search_page, serve_message, share_images, site_files, site_outline, trails,
+    build_sitemap, categories, content_message, look, own_descriptions, post_categories,
+    post_files, post_gate, post_lock, search_page, serve_message, share_images, site_files,
+    site_outline, trails,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -225,6 +226,8 @@ impl SitePages {
         };
         let href = theme.stylesheet.path().as_str();
         let mut languages = build_home::home_pages(config, routes, content, href)?;
+        let categories = categories::of(folder)?;
+        post_categories::fill((config, routes), &categories, &mut languages);
         search_page::link(config, &mut languages);
         own_descriptions::fill(config, &theme.renderer, &mut languages)?;
         let seo_site = build_seo::site(config)?;
@@ -421,12 +424,12 @@ impl SitePages {
         let mut languages = build_pages::pages(config, routes, (content, others), href, today)?;
         let renderer = theme.as_ref().map(|theme| &theme.renderer);
         post_lock::lock(config, content, renderer, &mut languages);
+        let categories = categories::of(folder)?;
         if let Some(theme) = theme {
             search_page::add(config, &theme.renderer, &mut languages)?;
             // A saved post's page alone needs no list, and its content
             // holds too few posts to make one.
             if which == Which::All {
-                let categories = categories::of(folder)?;
                 let sources = (content, categories.as_slice());
                 build_lists::add((config, routes), &theme.renderer, sources, &mut languages)?;
                 build_sitemap::add(config, &theme.renderer, &mut languages)?;
@@ -435,6 +438,7 @@ impl SitePages {
         }
         // A headless site's heads carry the same trail as its pages would.
         trails::fill(folder, (config, routes), &mut languages)?;
+        post_categories::fill((config, routes), &categories, &mut languages);
         comment_pages::fill(config, self.0.comments.as_ref(), &mut languages);
         form_pages::fill(config, self.0.forms.as_ref(), &mut languages);
         form_pages::subscribe_under(config, &mut languages);

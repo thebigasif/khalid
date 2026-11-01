@@ -110,6 +110,7 @@ mod page_code;
 mod page_counts;
 mod plan;
 mod plan_message;
+mod post_categories;
 mod post_files;
 mod post_gate;
 mod post_heads;

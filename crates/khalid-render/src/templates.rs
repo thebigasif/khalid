@@ -89,7 +89,7 @@ pub(crate) fn is_default(name: &str) -> bool {
 
 /// Whether `name` is a post template a post may ask for, such as
 /// `post-wide.html` for `template: wide`.
-fn is_post_template(name: &str) -> bool {
+pub(crate) fn is_post_template(name: &str) -> bool {
     let inner = name
         .strip_prefix("post-")
         .and_then(|n| n.strip_suffix(".html"));

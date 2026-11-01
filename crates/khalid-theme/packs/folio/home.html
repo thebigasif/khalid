@@ -1,0 +1,43 @@
+{#- Folio's front page (templates spec 3.10): its own centred masthead
+    with the blog's name, a tagline and the category links, the newest
+    featured post large, then a grid of picture cards, an optional quote,
+    and numbered page links. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, featured_slot, pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% set options = template.options -%}
+<header class="masthead">
+<h1>{{ options.masthead_name[0] if options.masthead_name else page.title }}</h1>
+{% if options.tagline %}<p class="masthead-tagline">{{ options.tagline[0] }}</p>
+{% elif page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if options.category_tabs and page.categories %}<nav class="category-tabs" aria-label="{{ t.categories }}">
+<ul>
+<li><a href="{{ site.home }}" aria-current="page">{{ t.all_topics }}</a></li>
+{% for category in page.categories %}<li><a href="{{ category.href }}">{{ category.name }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}</header>
+{% set slot = page.featured if options.featured else none -%}
+{% if slot %}{{ featured_slot(slot) }}
+{% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
+{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif posts %}{{ cards(posts) }}
+{% elif not slot %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if options.quote %}<figure class="masthead-quote">
+<blockquote>
+<p>{{ options.quote[0] }}</p>
+</blockquote>
+{% if options.quote | length > 1 %}<figcaption>{{ options.quote[1] }}</figcaption>
+{% endif %}</figure>
+{% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}

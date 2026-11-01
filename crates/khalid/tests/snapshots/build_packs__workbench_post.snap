@@ -1,0 +1,77 @@
+---
+source: crates/khalid/tests/build_packs.rs
+expression: "main_of(&page(&out, POST))"
+---
+<main id="main" tabindex="-1">
+
+<article class="post">
+<header class="post-header">
+<a class="wb-label" href="/blog/category/technical-seo/">Technical SEO</a>
+<h1>What a sitemap does, and what it does not</h1>
+<p class="dek">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+<div class="post-meta">
+<address>
+<ul class="people" role="list" aria-label="Written by">
+<li class="person"><span><a rel="author" href="/blog/authors/lena-vogt/">Lena Vogt</a><span class="person-role">Technical SEO editor</span></span></li>
+</ul>
+</address>
+<p>Published <time datetime="2026-09-28">28 September 2026</time><span class="reading-time"> · <time datetime="PT1M">1 min read</time></span></p>
+</div>
+</header>
+<nav class="toc-box" aria-label="Contents">
+<p class="toc-title">Contents</p>
+<ol>
+<li><a href="#what-it-does">What it does</a></li>
+<li><a href="#what-it-does-not-do">What it does not do</a></li>
+<li><a href="#keep-it-clean">Keep it clean</a></li>
+</ol>
+</nav>
+<div class="post-body">
+[the post's body]
+</div>
+<p class="wb-closing">By Lena Vogt. Published <time datetime="2026-09-28">28 September 2026</time>.</p>
+<div class="share">
+<p class="share-title">Share this post</p>
+<ul>
+<li><a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">LinkedIn</a></li>
+<li><a href="https://x.com/intent/post?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F&amp;text=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not" rel="nofollow noreferrer">X</a></li>
+<li><a href="mailto:?subject=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not&amp;body=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">Email</a></li>
+</ul>
+</div>
+<section class="author-box">
+<h2>About the author</h2>
+<div class="person-card">
+<div>
+<p class="person-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a></p>
+<p class="person-role">Technical SEO editor</p>
+<p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees before a reader does. She writes in English and German.</p>
+
+</div>
+</div>
+</section>
+</article>
+<section class="newsletter-slot" aria-labelledby="newsletter-slot-title">
+<h2 id="newsletter-slot-title">Get new posts by email</h2>
+<p>New posts in your inbox. Every email has a link to leave.</p>
+<form class="subscribe" method="post" action="/blog/subscribe">
+<p><label for="newsletter-slot-email">Your email address</label>
+<input id="newsletter-slot-email" name="email" type="email" autocomplete="email" required></p>
+<p class="form-trap" aria-hidden="true"><label for="newsletter-slot-homepage">Leave this empty</label>
+<input id="newsletter-slot-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+<p><button type="submit">Subscribe</button></p>
+</form>
+</section>
+<section class="mentions">
+<h2>Posts that link here</h2>
+<ul>
+<li><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></li>
+</ul>
+</section>
+<section class="related">
+<h2>Related posts</h2>
+<ul class="related-links">
+<li><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></li>
+<li><a href="/blog/why-internal-links-matter/">Why internal links matter</a></li>
+<li><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></li>
+</ul>
+</section>

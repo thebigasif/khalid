@@ -1,0 +1,85 @@
+---
+source: crates/khalid/tests/build_ledger.rs
+expression: home
+---
+
+<a class="skip-link" href="#main">Skip to the content</a>
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/">Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+
+<header class="masthead">
+<h1>Field Notes on SEO</h1>
+<p class="tagline">Plain advice on search for small teams</p>
+<ul class="stats" role="list">
+<li>5 field-tested guides</li>
+<li>Two writers</li>
+</ul>
+</header>
+<nav class="pills" aria-label="Topics">
+<ul>
+<li><a class="pill" href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a class="pill" href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a class="pill" href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>
+<section class="home-section" aria-labelledby="latest-title">
+<h2 id="latest-title">Latest posts</h2>
+<ol class="ledger-list" role="list">
+<li>
+<article class="entry">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-10-12">12 October 2026</time>
+<a class="pill" href="/blog/category/content-strategy/">Content strategy</a></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+</article>
+</li>
+<li>
+<article class="entry">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-10-05">5 October 2026</time>
+<a class="pill" href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+</article>
+</li>
+<li>
+<article class="entry">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-09-28">28 September 2026</time>
+<a class="pill" href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+</article>
+</li>
+<li>
+<article class="entry">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-21">21 September 2026</time>
+<a class="pill" href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+</article>
+</li>
+<li>
+<article class="entry">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-14">14 September 2026</time>
+<a class="pill" href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+</article>
+</li>
+</ol>
+</section>
+
+</main>
+<footer class="site-footer">
+<nav aria-label="Footer menu">
+<ul>
+<li><a href="/blog/ai/">AI info</a></li>
+<li><a href="/blog/sitemap/">Sitemap</a></li>
+</ul>
+</nav>
+</footer>
+</body>
+</html>

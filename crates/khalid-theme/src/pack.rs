@@ -56,9 +56,10 @@ pub struct OptionSpec {
 }
 
 /// The values one option takes, and the one it has when the site does not
-/// set it. Templates read every option, so each has a default.
+/// set it. Templates read every option, so each has a default. The enum is
+/// exhaustive on purpose, like [`crate::CheckedOption`]: the Admin API's
+/// list matches it, so a new kind stops the build until it is described.
 #[derive(Debug, Clone, Copy)]
-#[non_exhaustive]
 pub enum OptionKind {
     /// `true` or `false`.
     Switch {
@@ -80,6 +81,11 @@ pub enum OptionKind {
         most: i64,
         /// The number when not set.
         default: i64,
+    },
+    /// One line of text, such as a tagline, empty when not set.
+    Line {
+        /// The most characters allowed.
+        most: usize,
     },
     /// A short list of lines of text, empty when not set.
     Lines {
@@ -109,12 +115,38 @@ static CLASSIC: Pack = Pack {
 
 /// Every built-in pack, classic first.
 #[cfg(not(feature = "test-util"))]
-static PACKS: [&Pack; 1] = [&CLASSIC];
+static PACKS: [&Pack; 11] = [
+    &CLASSIC,
+    &crate::almanac::ALMANAC,
+    &crate::atlas::ATLAS,
+    &crate::compass::COMPASS,
+    &crate::folio::FOLIO,
+    &crate::harbor::HARBOR,
+    &crate::keystone::KEYSTONE,
+    &crate::ledger::LEDGER,
+    &crate::meridian::MERIDIAN,
+    &crate::wire::WIRE,
+    &crate::workbench::WORKBENCH,
+];
 
 /// Every built-in pack, classic first, and the throwaway packs the tests
 /// switch to.
 #[cfg(feature = "test-util")]
-static PACKS: [&Pack; 3] = [&CLASSIC, &crate::trial::TRIAL, &crate::trial::SAMPLER];
+static PACKS: [&Pack; 13] = [
+    &CLASSIC,
+    &crate::almanac::ALMANAC,
+    &crate::atlas::ATLAS,
+    &crate::compass::COMPASS,
+    &crate::folio::FOLIO,
+    &crate::harbor::HARBOR,
+    &crate::keystone::KEYSTONE,
+    &crate::ledger::LEDGER,
+    &crate::meridian::MERIDIAN,
+    &crate::wire::WIRE,
+    &crate::workbench::WORKBENCH,
+    &crate::trial::TRIAL,
+    &crate::trial::SAMPLER,
+];
 
 /// Every built-in pack, classic first.
 pub fn packs() -> &'static [&'static Pack] {

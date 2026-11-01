@@ -79,6 +79,7 @@ fn language_pages(
         others,
         locale,
         people: &people,
+        routes,
     };
     let (mut pages, listed) = post_pages(config, routes, &links, &posts)?;
     pages.extend(plain_pages(config, &links, content, locale)?);
@@ -146,6 +147,7 @@ pub(crate) fn home_page(
         sections: Vec::new(),
         picks,
         topics: Vec::new(),
+        categories: Vec::new(),
     });
     Ok(page(locale, config, "", meta, body, seo))
 }
@@ -159,6 +161,7 @@ struct Posts<'a> {
     others: &'a [ListedPost],
     locale: &'a Locale,
     people: &'a BTreeMap<Slug, Person>,
+    routes: &'a Routes,
 }
 
 /// A dated post, read and rendered, before its page is built.
@@ -234,7 +237,7 @@ fn post_pages(
     let among: Vec<&ListedPost> = listed.iter().chain(others).collect();
     let topics: Vec<PostTopics> = among.iter().map(|post| post.topics.clone()).collect();
     let mut pages = Vec::with_capacity(drafts.len() + 2);
-    for (draft, topic) in drafts.into_iter().zip(&topics) {
+    for ((draft, topic), own) in drafts.into_iter().zip(&topics).zip(&listed) {
         let pinned: Vec<String> = draft
             .doc
             .front
@@ -251,6 +254,9 @@ fn post_pages(
             .is_some_and(Collection::is_news);
         let authors = &content.authors;
         let mut page = post_page(config, locale, draft, related, people, authors)?;
+        if let PageBody::Post(post) = &mut page.body {
+            post.category.clone_from(&own.card.category);
+        }
         if news {
             page.seo.article_type = ArticleType::NewsArticle;
         }
@@ -270,7 +276,7 @@ fn listed(
 ) -> ListedPost {
     let (locale, front) = (posts.locale, &draft.doc.front);
     let named = (draft.title.clone(), draft.rest.as_str(), draft.date);
-    let mut card = build_home::card(config, locale, posts.people, named, front);
+    let mut card = build_home::card((config, posts.routes), locale, posts.people, named, front);
     card.reading_time = Some(ReadingTime::of_html(&draft.rendered.html, locale));
     let tags = ListedTag::all(&front.tags, locale, config.slugs());
     let mut topics = build_reader::topics(&draft.slug, draft.date, front, &draft.rendered, slugs);

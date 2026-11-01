@@ -1,0 +1,66 @@
+---
+source: crates/khalid/tests/build_packs.rs
+expression: "main_of(&page(&out, \"authors/asif/index.html\"))"
+---
+<main id="main" tabindex="-1">
+
+
+<article class="author">
+<header class="author-header">
+<h1>Asif</h1>
+<p class="author-role">Founder of SerpDad</p>
+</header>
+<div class="author-bio">
+<p>Asif writes about search from the side of the people who have to do the work: small teams with a website, a blog and not much time. He likes advice you can act on before lunch.</p>
+
+</div>
+<ul class="author-profiles">
+<li><a href="https://serpdad.com/" rel="me">serpdad.com</a></li>
+</ul>
+</article>
+<section aria-labelledby="author-posts">
+<h2 id="author-posts">Posts by Asif</h2>
+<ul class="cards" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-10-12">12 October 2026</time>
+<span class="card-reading-time">1 min read</span>
+<a href="/blog/category/content-strategy/">Content strategy</a></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-21">21 September 2026</time>
+<span class="card-reading-time">1 min read</span>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-14">14 September 2026</time>
+<span class="card-reading-time">1 min read</span>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</article>
+</li>
+</ul>
+</section>
+<section aria-labelledby="other-authors">
+<h2 id="other-authors">Other authors</h2>
+<ul class="people-list" role="list">
+<li class="person-card">
+<div>
+<p class="person-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a></p>
+<p class="person-role">Technical SEO editor</p>
+</div>
+</li>
+</ul>
+</section>

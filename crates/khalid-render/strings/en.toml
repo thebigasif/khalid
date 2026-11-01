@@ -27,12 +27,27 @@ in_category = "Filed under"
 tags = "Tags"
 # The heading of a post's table of contents.
 contents = "Contents"
+# The label of a front page's row of links to its own sections.
+on_this_page = "On this page"
 # The heading of the posts shown under a post.
 related_posts = "Related posts"
+# A reference guide's date line, its related posts, and the link back to
+# every post beside its closing button.
+last_updated = "Last updated"
+related_articles = "Related articles"
+all_articles = "All articles"
 # The heading over the newest featured post, above a list.
 featured = "Featured"
 # The heading over the posts the editors chose, on the home page.
 editors_picks = "Editor's picks"
+# The heading over the rest of the posts after the newest few.
+more_posts = "More posts"
+# Names the menu of the blog's categories.
+categories = "Categories"
+# Opens the rest of a menu that has too many links for one line.
+more = "More"
+# The heading over the first few related posts in templates that show two sets.
+keep_reading = "Keep reading"
 mentions = "Posts that link here"
 # The words before a post's share links.
 share = "Share this post"
@@ -61,6 +76,13 @@ older_posts = "Older posts"
 view_all = "View all posts in {name}"
 # The heading and label of the row of topic links on the home page.
 topics = "Topics"
+latest = "Latest posts"
+# The first link in a template's row of topics, to every post.
+all_topics = "All"
+# The heading over the newest posts on a template's front page.
+recent_posts = "Recently published"
+# The link above a post back to the front page.
+back_to_posts = "All posts"
 # {name} is filled in.
 posts_by = "Posts by {name}"
 # The heading of the other authors at the end of an author page.
@@ -144,3 +166,4 @@ consent_note = "This blog would like to run code from other companies that count
 consent_change = "You can change your choice about code from other companies that counts visits."
 consent_allow = "Allow"
 consent_refuse = "Do not allow"
+all_posts = "All posts"

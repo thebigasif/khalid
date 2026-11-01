@@ -30,7 +30,7 @@ use crate::site_posts::SitePosts;
 use crate::site_schema_templates::SiteSchemaTemplates;
 use crate::site_settings::SiteSettings;
 use crate::site_tags::SiteTags;
-use crate::{draft_comment_mail, late_api, mounted, staff};
+use crate::{draft_comment_mail, late_api, look, mounted, staff};
 
 /// The desks `khalid serve` keeps in memory for the Admin API: comment
 /// moderation, the media library, stored redirects and the Search Console
@@ -89,6 +89,7 @@ pub(crate) fn api_router(
         tags: Some(Arc::new(SiteTags::new(site, config))),
         categories: Some(Arc::new(SiteCategories::new(site, config))),
         settings: Some(Arc::new(SiteSettings::new(site, config))),
+        templates: Some(Arc::from(look::admin_templates())),
         analytics: AnalyticsDesk::new(
             Arc::new(AnalyticsTable::new(database.clone(), id)),
             Arc::new(SystemClock),

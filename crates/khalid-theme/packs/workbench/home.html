@@ -1,0 +1,49 @@
+{#- Workbench's front page (templates spec 3.7): the categories in one
+    menu that opens without a script, the featured post, the newest three
+    posts as a list, the newsletter, the rest as picture cards, the
+    newsletter again, and a link to every post. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, featured_slot, pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+<div class="wb-masthead">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.topics and "topic_links" in site.features %}<details class="wb-topics">
+<summary>{{ t.categories }}</summary>
+<nav aria-label="{{ t.categories }}">
+<ul>
+{% for group in page.topics %}{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}{% endfor %}</ul>
+</nav>
+</details>
+{% endif %}</div>
+{% set slot = page.featured if template.options.featured else none -%}
+{% if slot %}{{ featured_slot(slot) }}
+{% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
+{% set signup = site.subscribe and template.options.newsletter in ["home", "both"] -%}
+{% set note = template.options.newsletter_note | first if template.options.newsletter_note else none -%}
+{% if posts %}<section class="wb-latest" aria-labelledby="wb-latest-title">
+<h2 id="wb-latest-title">{{ t.latest }}</h2>
+<ol class="wb-latest-list" role="list">
+{% for post in posts[:3] %}<li>
+{% if post.category %}<a class="wb-label" href="{{ post.category.href }}">{{ post.category.name }}</a>
+{% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p class="wb-latest-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.reading_time %}
+<span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}</p>
+</li>
+{% endfor %}</ol>
+</section>
+{% elif not slot %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t, note=note) }}
+{% endif %}{% if posts[3:] %}<section class="wb-more" aria-labelledby="wb-more-title">
+<h2 id="wb-more-title">{{ t.more_posts }}</h2>
+{{ cards(posts[3:], 3) }}
+</section>
+{% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t, id="newsletter-end", note=note) }}
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if "archive" in site.features %}<p class="wb-all"><a href="{{ site.home }}archive/">{{ t.all_posts }}</a></p>
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}

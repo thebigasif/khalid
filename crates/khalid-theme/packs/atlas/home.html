@@ -1,0 +1,71 @@
+{#- Atlas's front page: a sticky bar of topic tabs, the two newest featured
+    posts large, the next ones as editor's picks in a grid, the feed of
+    every other post, one block per topic, then the call-to-action band. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{#- story(post, level, kind): a post as the front page shows it. A lead
+    is large; a brief, under its topic's heading, leaves out the topic
+    and the summary. -#}
+{% macro story(post, level, kind="plain") -%}
+{% if kind == "lead" %}<article class="story story-lead">{% else %}<article class="story">{% endif %}
+{% if post.category and kind != "brief" %}<p class="story-label">{{ post.category.name }}</p>
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.excerpt and kind != "brief" %}<p class="story-excerpt">{{ post.excerpt }}</p>
+{% endif %}<p class="story-meta">{% if post.author %}<span>{{ post.author.name }}</span>{% endif %}{% if template.options.card_reading_time and post.reading_time %}<span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+</article>
+{%- endmacro %}
+{% set featured = page.picks if template.options.featured else [] -%}
+{% set leads = featured[:2] -%}
+{% set lead_hrefs = leads | map(attribute="href") | list -%}
+{% set picks = page.picks[2:2 + template.options.picks] if template.options.featured else page.picks[:template.options.picks] -%}
+<div class="front">
+{% if page.topics and "topic_links" in site.features %}<nav class="catbar" aria-label="{{ t.topics }}">
+<ul>
+<li><a href="{{ site.home }}" aria-current="page">{{ t.all_posts }}</a></li>
+{% for group in page.topics %}{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}{% endfor %}</ul>
+</nav>
+{% endif %}<h1 class="front-title">{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if leads %}<section class="leads" aria-labelledby="leads-title">
+<h2 id="leads-title">{{ t.featured }}</h2>
+{% for post in leads %}{{ story(post, 3, "lead") }}
+{% endfor %}</section>
+{% endif %}{% if picks %}<section class="picks" aria-labelledby="picks-title">
+<h2 id="picks-title">{{ t.editors_picks }}</h2>
+<ul class="pick-grid" role="list">
+{% for post in picks %}<li>{{ story(post, 3) }}</li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+<ul class="stories" role="list">
+{% for post in section.posts %}<li>{{ story(post, 3) }}</li>
+{% endfor %}</ul>
+<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% else %}<section class="feed" aria-labelledby="feed-title">
+<h2 id="feed-title">{{ t.latest }}</h2>
+<ul class="stories" role="list">
+{% for post in page.posts if post.href not in lead_hrefs %}<li>{{ story(post, 3) }}</li>
+{% else %}<li><p>{{ t.no_posts }}</p></li>
+{% endfor %}</ul>
+{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% endif %}{% if page.topics and "topic_links" in site.features %}<div class="topic-blocks">
+{% for group in page.topics %}{% for topic in group.links %}<section class="topic-block">
+<h2>{{ topic.name }}</h2>
+<ul class="stories" role="list">
+{% for post in page.posts if post.category and post.category.href == topic.href %}{% if loop.index <= 2 %}<li>{{ story(post, 3, "brief") }}</li>
+{% endif %}{% endfor %}</ul>
+<p class="view-all"><a href="{{ topic.href }}">{{ t.view_all | replace("{name}", topic.name) }}</a></p>
+</section>
+{% endfor %}{% endfor %}</div>
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}</div>
+{% endblock %}

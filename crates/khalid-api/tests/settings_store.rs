@@ -1,7 +1,9 @@
 //! The site's core settings as the Admin API keeps them (KH-API-2).
 
+use std::collections::BTreeMap;
+
 use chrono::{DateTime, TimeZone, Utc};
-use khalid_api::resources::{AdminSettings, SettingsChange};
+use khalid_api::resources::{AdminSettings, SettingsChange, TemplateSetting, TemplateValue};
 use khalid_api::settings_store::{MemorySettings, SettingsError, SettingsStore};
 use khalid_core::FixedClock;
 use serde_json::json;
@@ -20,6 +22,10 @@ fn demo() -> MemorySettings {
         mount: "/blog/".to_owned(),
         default_language: "en".to_owned(),
         languages: vec!["en".to_owned(), "de".to_owned()],
+        template: TemplateSetting {
+            name: "classic".to_owned(),
+            options: BTreeMap::new(),
+        },
         updated_at: at(20),
         restart_needed: false,
     };
@@ -39,9 +45,34 @@ async fn the_settings_are_sent_in_api_shape() {
         json!({
             "name": "Field Notes on SEO", "address": "https://www.example.com",
             "mount": "/blog/", "default_language": "en", "languages": ["en", "de"],
+            "template": {"name": "classic", "options": {}},
             "updated_at": "2026-10-20T09:00:00Z", "restart_needed": false,
         })
     );
+}
+
+#[tokio::test]
+async fn a_template_change_reads_each_kind_of_value_and_replaces_every_option() {
+    let store = demo();
+    let sent = json!({"template": {"name": "ledger", "options": {
+        "logo": false, "related_count": 6, "contents": "inline", "stats": ["12,000 readers"],
+    }}, "updated_at": "2026-10-20T09:00:00Z"});
+    let saved = store.change(change(sent)).await.unwrap();
+    assert_eq!(saved.template.name, "ledger");
+    let options: Vec<&TemplateValue> = saved.template.options.values().collect();
+    assert_eq!(
+        options,
+        [
+            &TemplateValue::Word("inline".to_owned()),
+            &TemplateValue::Switch(false),
+            &TemplateValue::Number(6),
+            &TemplateValue::Words(vec!["12,000 readers".to_owned()]),
+        ]
+    );
+    let nested = json!({"template": {"name": "ledger", "options": {"related": {"count": 5}}},
+        "updated_at": "2026-10-27T09:00:00Z"});
+    let refused = serde_json::from_value::<SettingsChange>(nested);
+    assert!(refused.is_err(), "an option is never a table");
 }
 
 #[tokio::test]

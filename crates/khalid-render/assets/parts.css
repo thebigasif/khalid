@@ -14,6 +14,14 @@
 .breadcrumbs a { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-muted); }
 .breadcrumbs a[aria-current] { color: var(--color-text); text-decoration: none; }
 
+/* The link back to every post, above a post. The arrow is drawn in CSS
+   and points the way the page reads. */
+.back-link { margin-block: 1rem 0; }
+.back-link a { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-muted); text-decoration: none; }
+.back-link a::before { content: "← " / ""; white-space: pre; }
+[dir="rtl"] .back-link a::before { content: "→ " / ""; }
+.back-link a:hover { color: var(--color-text); }
+
 /* A post's subtitle under its title, and why it was updated. */
 .dek { margin-block: 0.5rem 1rem; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.4; }
 .updated-note { color: var(--color-muted); font-size: var(--text-small); font-style: italic; }
@@ -30,6 +38,14 @@
 .cards-ranked .card :is(h2, h3) { margin-block-start: 0; }
 .card-author .person-role { display: inline; margin-block: 0; margin-inline-start: 0.375rem; color: var(--color-muted); }
 .card-reading-time { white-space: nowrap; }
+
+/* The category tabs on the home page: one row that scrolls inside its own
+   box on a narrow screen, the current tab underlined in the accent. */
+.category-tabs { margin-block: 1.5rem 2rem; border-block-end: 1px solid var(--color-border); }
+.category-tabs ul { flex-wrap: nowrap; gap: 0 1.25rem; overflow-x: auto; }
+.category-tabs a { white-space: nowrap; color: var(--color-muted); text-decoration: none; border-block-end: 2px solid transparent; }
+.category-tabs a:hover { color: var(--color-text); }
+.category-tabs a[aria-current] { color: var(--color-text); border-block-end-color: var(--color-accent); }
 
 /* The featured slot: the newest featured post, large, above a list. */
 .featured { margin-block: 2rem; }

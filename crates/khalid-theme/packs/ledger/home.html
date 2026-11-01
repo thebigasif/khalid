@@ -1,0 +1,53 @@
+{#- Ledger's front page: a masthead with the blog's name, its tagline and
+    up to three facts, a row of topic pills, the latest posts as a ruled
+    list with no pictures, five posts per home section, then the
+    newsletter band. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import avatar -%}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% macro entries(posts, level) -%}
+<ol class="ledger-list" role="list">
+{% for post in posts %}<li>
+<article class="entry">
+<p class="card-meta">{% if post.author %}<span class="card-author">{% if post.author.image %}{{ avatar(post.author.image) }}{% endif %}{{ post.author.name }}</span>
+{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %}
+<a class="pill" href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}</p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+</article>
+</li>
+{% endfor %}</ol>
+{%- endmacro %}
+<header class="masthead">
+<h1>{{ page.title }}</h1>
+{% if template.options.tagline %}<p class="tagline">{{ template.options.tagline }}</p>
+{% endif %}{% if template.options.stats %}<ul class="stats" role="list">
+{% for stat in template.options.stats %}<li>{{ stat }}</li>
+{% endfor %}</ul>
+{% endif %}</header>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="pills" aria-label="{{ t.topics }}">
+<ul>
+{% for group in page.topics %}{% for topic in group.links %}<li><a class="pill" href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}{% endfor %}</ul>
+</nav>
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ entries(section.posts[:5], 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}<section class="home-section" aria-labelledby="latest-title">
+<h2 id="latest-title">{{ t.latest }}</h2>
+{{ entries(page.posts, 3) }}
+</section>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<div class="band">
+{{ newsletter_form(site.subscribe, t) }}
+</div>
+{% endif %}{% endblock %}

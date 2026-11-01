@@ -1,0 +1,110 @@
+---
+source: crates/khalid/tests/build_ledger.rs
+expression: post
+---
+
+<a class="skip-link" href="#main">Skip to the content</a>
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/">Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<article class="post">
+<header class="post-header">
+<p class="pills"><a class="pill" href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h1>What a sitemap does, and what it does not</h1>
+<div class="post-meta">
+<address>
+<ul class="people" role="list" aria-label="Written by">
+<li class="person"><span><a rel="author" href="/blog/authors/lena-vogt/">Lena Vogt</a><span class="person-role">Technical SEO editor</span></span></li>
+</ul>
+</address>
+<p class="post-dates">Published <time datetime="2026-09-28">28 September 2026</time>
+<span class="reading-time"><time datetime="PT1M">1 min read</time></span></p>
+</div>
+</header>
+<nav class="toc-box" aria-label="Contents">
+<p class="toc-title">Contents</p>
+<ol class="toc-plain">
+<li><a href="#what-it-does">What it does</a></li>
+<li><a href="#what-it-does-not-do">What it does not do</a></li>
+<li><a href="#keep-it-clean">Keep it clean</a></li>
+</ol>
+</nav>
+<div class="post-body">
+<p>A sitemap is a file, usually at <code>/sitemap.xml</code>, that lists the addresses of the pages on your site. Search engines read it to find pages they might otherwise miss.</p>
+<h2 id="what-it-does">What it does <a class="heading-link" href="#what-it-does" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>It helps new pages get found sooner, especially on a young site with few links pointing in.</li>
+<li>It tells search engines when a page last changed, so they know what to fetch again.</li>
+<li>It points to each language version of a page, which helps the right reader land on the right version.</li>
+</ul>
+<h2 id="what-it-does-not-do">What it does not do <a class="heading-link" href="#what-it-does-not-do" aria-label="Link to this section">#</a></h2>
+<p>A sitemap does not make a page rank. A weak page listed in a sitemap is still a weak page. It also does not replace links: a page that only appears in the sitemap, with no links from your own posts, still looks unimportant. See <a href="/blog/why-internal-links-matter/">why internal links matter</a>.</p>
+<h2 id="keep-it-clean">Keep it clean <a class="heading-link" href="#keep-it-clean" aria-label="Link to this section">#</a></h2>
+<p>List only pages you want in search results. Leave out drafts, redirects and pages marked <code>noindex</code>. A sitemap full of pages that should not be there teaches search engines to trust it less.</p>
+
+</div>
+<section class="author-box">
+<h2>About the author</h2>
+<div class="person-card">
+<div>
+<p class="person-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a></p>
+<p class="person-role">Technical SEO editor</p>
+<p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees before a reader does. She writes in English and German.</p>
+
+</div>
+</div>
+</section>
+</article>
+<section class="related">
+<h2>Related posts</h2>
+<ul class="cards cards-text" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-10-05">5 October 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-14">14 September 2026</time>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-10-12">12 October 2026</time>
+<a href="/blog/category/content-strategy/">Content strategy</a></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+</ul>
+</section>
+<section class="mentions">
+<h2>Posts that link here</h2>
+<ul>
+<li><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></li>
+</ul>
+</section>
+
+</main>
+<footer class="site-footer">
+<nav aria-label="Footer menu">
+<ul>
+<li><a href="/blog/ai/">AI info</a></li>
+<li><a href="/blog/sitemap/">Sitemap</a></li>
+</ul>
+</nav>
+</footer>
+</body>
+</html>

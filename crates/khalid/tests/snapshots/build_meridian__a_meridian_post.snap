@@ -1,0 +1,59 @@
+---
+source: crates/khalid/tests/build_meridian.rs
+expression: "shown(&out, \"why-internal-links-matter/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/">Search</a>
+<a class="button header-button" href="https://www.example.com/demo/">Book a demo</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/why-internal-links-matter/" aria-current="page">Why internal links matter</a></li>
+</ol>
+</nav>
+
+<article class="post">
+<header class="post-header">
+<h1>Why internal links matter</h1>
+<div class="post-meta">
+<address>
+<ul class="people" role="list" aria-label="Written by">
+<li class="person"><span><a rel="author" href="/blog/authors/asif/">Asif</a><span class="person-role">Founder of SerpDad</span></span></li>
+</ul>
+</address>
+<p>Published <time datetime="2026-09-14">14 September 2026</time>. Updated <time datetime="2026-10-20">20 October 2026</time></p>
+<p>Filed under <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</div>
+</header>
+<div class="post-body">
+<p>An internal link is a link from one page on your site to another page on the same site. It sounds too simple to matter. It matters a lot.</p>
+<h2 id="readers-use-them-to-keep-going">Readers use them to keep going <a class="heading-link" href="#readers-use-them-to-keep-going" aria-label="Link to this section">#</a></h2>
+<p>Someone who finishes a post is interested. If the post ends without pointing anywhere, they leave. One link to a related post gives them a next step, and gives you a second page view.</p>
+<h2 id="search-engines-use-them-to-find-and-rank-pages">Search engines use them to find and rank pages <a class="heading-link" href="#search-engines-use-them-to-find-and-rank-pages" aria-label="Link to this section">#</a></h2>
+<p>A crawler finds new pages by following links. A post that nothing links to is hard to find and looks unimportant. A post that ten other posts link to looks like something your site cares about. That is how you build <a href="/blog/glossary/topical-authority/">Topical authority</a>.</p>
+<h2 id="how-to-add-them-well">How to add them well <a class="heading-link" href="#how-to-add-them-well" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Link from new posts to older ones, and go back to add links from older posts to new ones.</li>
+<li>Use anchor text that says what the reader gets: &quot;how to write a title tag&quot;, not &quot;click here&quot;.</li>
+<li>Use the same anchor text for the same page. If one phrase points to two different pages, search engines cannot tell which one you mean.</li>
+</ul>
+<p>Start with one link per post. For example, once your links are in place, read <a href="/blog/how-to-write-a-title-tag/">how to write a title tag</a> next.</p>
+
+</div>
+</article>
+<div class="cta-band">
+<p class="cta-note">See your own blog in Meridian.</p>
+<p><a class="button" href="https://www.example.com/demo/">Book a demo</a></p>
+</div>
+<section class="mentions">
+<h2>Posts that link here</h2>
+<ul>
+<li><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></li>
+<li><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></li>
+<li><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></li>
+</ul>
+</section>

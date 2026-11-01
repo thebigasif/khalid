@@ -23,6 +23,10 @@ pub struct RenderHome {
     pub picks: Vec<PostCard>,
     /// The links to every category, grouped the way the menu groups them.
     pub topics: Vec<TopicGroup>,
+    /// Each category with posts in this language, in the order
+    /// `categories.toml` lists them, for the tabs a template with its
+    /// `category_tabs` part on shows.
+    pub categories: Vec<Link>,
 }
 
 /// One section of the front page: the newest posts of a category, a

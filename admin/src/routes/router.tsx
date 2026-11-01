@@ -23,6 +23,7 @@ import { Dashboard } from "./Dashboard";
 import { HandOver } from "./HandOver";
 import { Keys } from "./Keys";
 import { LinkSignIn } from "./LinkSignIn";
+import { Look } from "./Look";
 import { Media } from "./Media";
 import { MediaDetails } from "./MediaDetails";
 import { NewPost } from "./NewPost";
@@ -185,6 +186,9 @@ const handOver = createRoute({
   component: HandOver,
 });
 
+// The blog's template, saved through the settings like the screen below.
+const look = createRoute({ getParentRoute: () => signedIn, path: "/look", component: Look });
+
 // The whole blog's settings; post settings live in the editor.
 const site = createRoute({ getParentRoute: () => signedIn, path: "/settings", component: Site });
 
@@ -220,6 +224,7 @@ const routeTree = root.addChildren([
     webhookActivity,
     team,
     handOver,
+    look,
     site,
     account,
     serpdad,

@@ -2,6 +2,7 @@
 //! copy gets and the 422 a value the site could not start with gets
 //! (KH-API-2).
 
+use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use axum::Router;
@@ -13,7 +14,7 @@ use khalid_api::content_store::MemoryContentStore;
 use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
-use khalid_api::resources::AdminSettings;
+use khalid_api::resources::{AdminSettings, TemplateSetting};
 use khalid_api::settings_store::{MemorySettings, SettingsStore};
 use khalid_core::FixedClock;
 use serde_json::{Value, json};
@@ -57,6 +58,10 @@ fn demo() -> Router {
         mount: "/blog/".to_owned(),
         default_language: "en".to_owned(),
         languages: vec!["en".to_owned(), "de".to_owned()],
+        template: TemplateSetting {
+            name: "classic".to_owned(),
+            options: BTreeMap::new(),
+        },
         updated_at: Utc.with_ymd_and_hms(2026, 10, 20, 9, 0, 0).unwrap(),
         restart_needed: false,
     };
@@ -102,6 +107,7 @@ async fn the_settings_are_read_and_changed_with_settings_write() {
         json["settings"]["updated_at"], "2026-10-27T09:00:00Z",
         "{json}"
     );
+    assert_eq!(json["settings"]["template"]["name"], "classic", "{json}");
     let (status, json) = send(&router, "PUT", OWNER, Some(change)).await;
     assert_eq!(
         status,

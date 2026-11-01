@@ -16,6 +16,14 @@ pub const LOGO: OptionSpec = OptionSpec {
     kind: OptionKind::Switch { default: false },
 };
 
+/// An "All posts" link to the front page above a post, in place of
+/// breadcrumbs.
+pub const BACK_LINK: OptionSpec = OptionSpec {
+    key: "back_link",
+    help: "Whether a post shows an \"All posts\" link back to the front page above its title.",
+    kind: OptionKind::Switch { default: false },
+};
+
 /// The trail from the home page to the page, above its content.
 pub const BREADCRUMBS: OptionSpec = OptionSpec {
     key: "breadcrumbs",
@@ -97,6 +105,14 @@ pub const CARD_READING_TIME: OptionSpec = OptionSpec {
 pub const CARD_AUTHOR_ROLE: OptionSpec = OptionSpec {
     key: "card_author_role",
     help: "Whether each post card shows its author's role after their name.",
+    kind: OptionKind::Switch { default: false },
+};
+
+/// A row of tabs on the home page: all posts, then each category with
+/// posts.
+pub const CATEGORY_TABS: OptionSpec = OptionSpec {
+    key: "category_tabs",
+    help: "Whether the home page shows a row of tabs: all posts, then each category.",
     kind: OptionKind::Switch { default: false },
 };
 
@@ -296,12 +312,14 @@ pub const fn on(spec: OptionSpec) -> OptionSpec {
 pub fn all() -> Vec<OptionSpec> {
     vec![
         LOGO,
+        BACK_LINK,
         BREADCRUMBS,
         DEK,
         UPDATED_NOTE,
         cards(CardShape::Image),
         CARD_READING_TIME,
         CARD_AUTHOR_ROLE,
+        CATEGORY_TABS,
         FEATURED,
         picks(0),
         pagination(PageLinks::Pages),

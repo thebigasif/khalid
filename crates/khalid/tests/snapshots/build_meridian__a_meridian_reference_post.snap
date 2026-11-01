@@ -1,0 +1,99 @@
+---
+source: crates/khalid/tests/build_meridian.rs
+expression: "shown(&out, \"robots-txt-guide/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/">Search</a>
+<a class="button header-button" href="https://www.example.com/demo/">Book a demo</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/robots-txt-guide/" aria-current="page">The robots.txt guide</a></li>
+</ol>
+</nav>
+
+<article class="post post-reference">
+<header class="post-header">
+<h1>The robots.txt guide</h1>
+<div class="post-meta">
+<p>Last updated <time datetime="2026-10-26">26 October 2026</time></p>
+<p><a class="button" href="https://www.example.com/demo/">Book a demo</a></p>
+</div>
+</header>
+<nav class="toc-box" aria-label="Contents">
+<p class="toc-title">Contents</p>
+<ol class="toc-nested">
+<li><a href="#what-robots-txt-does">What robots.txt does</a>
+<ol>
+<li><a href="#who-reads-it">Who reads it</a></li>
+<li><a href="#who-ignores-it">Who ignores it</a></li>
+</ol>
+</li>
+<li><a href="#how-to-write-one">How to write one</a></li>
+<li><a href="#how-to-check-it">How to check it</a></li>
+</ol>
+</nav>
+<div class="post-body">
+<aside class="callout callout-summary">
+<ul>
+<li>robots.txt asks crawlers to stay out of some paths.</li>
+<li>It does not hide a page from search results.</li>
+</ul>
+</aside>
+<h2 id="what-robots-txt-does">What robots.txt does <a class="heading-link" href="#what-robots-txt-does" aria-label="Link to this section">#</a></h2>
+<p>It is a plain text file at the root of your site that crawlers read first.</p>
+<h3 id="who-reads-it">Who reads it <a class="heading-link" href="#who-reads-it" aria-label="Link to this section">#</a></h3>
+<p>Search engine crawlers that follow the rules read it before anything else.</p>
+<h3 id="who-ignores-it">Who ignores it <a class="heading-link" href="#who-ignores-it" aria-label="Link to this section">#</a></h3>
+<p>Scrapers that do not follow the rules ignore it.</p>
+<h2 id="how-to-write-one">How to write one <a class="heading-link" href="#how-to-write-one" aria-label="Link to this section">#</a></h2>
+<p>Start with one rule per path you want left alone, then list your sitemap, as <a href="/blog/what-a-sitemap-does/">what a sitemap does</a> explains.</p>
+<h2 id="how-to-check-it">How to check it <a class="heading-link" href="#how-to-check-it" aria-label="Link to this section">#</a></h2>
+<p>Open the file in a browser at /robots.txt and read each rule aloud.</p>
+<aside class="callout callout-note">
+<p>Test every change before you publish it. A wrong rule can hide your whole blog.</p>
+</aside>
+
+</div>
+</article>
+<section class="related">
+<h2>Related articles</h2>
+<ul class="cards cards-text" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
+<time datetime="2026-09-28">28 September 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
+<time datetime="2026-10-05">5 October 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<time datetime="2026-10-12">12 October 2026</time>
+<a href="/blog/category/content-strategy/">Content strategy</a></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+</ul>
+</section>
+<div class="cta-band cta-closing">
+<p class="cta-note">See your own blog in Meridian.</p>
+<p class="cta-buttons"><a class="button" href="https://www.example.com/demo/">Book a demo</a>
+<a class="button button-quiet" href="/blog/">All articles</a></p>
+</div>

@@ -24,6 +24,8 @@ const PARTS: &[(&str, Off)] = &[
     // The site's logo in the header, from `[brand] logo` in the tokens, in
     // place of its name as text.
     ("logo", Off::Switch(false)),
+    // An "All posts" link to the front page above a post.
+    ("back_link", Off::Switch(false)),
     // The trail from the home page to the page, above the content.
     ("breadcrumbs", Off::Switch(false)),
     // A post's subtitle, its description, under its title.
@@ -37,6 +39,8 @@ const PARTS: &[(&str, Off)] = &[
     ("card_reading_time", Off::Switch(false)),
     // A card author's role after their name.
     ("card_author_role", Off::Switch(false)),
+    // A row of tabs on the home page: all posts, then each category.
+    ("category_tabs", Off::Switch(false)),
     // The newest featured post above the home page and each list.
     ("featured", Off::Switch(false)),
     // How many editor's picks the home page shows; none at 0.
