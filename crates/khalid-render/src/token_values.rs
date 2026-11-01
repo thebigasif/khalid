@@ -27,7 +27,7 @@ pub struct Length(String);
 
 /// Why a token value was refused.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ParseTokenError(&'static str);
+pub struct ParseTokenError(pub(crate) &'static str);
 
 impl fmt::Display for ParseTokenError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

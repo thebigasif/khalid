@@ -42,6 +42,7 @@ mod stylesheet;
 mod templates;
 mod token_values;
 mod tokens;
+mod type_scale;
 
 pub use asset::Asset;
 pub use author::{AuthorEntry, RenderAuthor, RenderAuthors, RenderPage};
@@ -70,3 +71,4 @@ pub use token_values::{Color, FontStack, Length, ParseTokenError};
 pub use tokens::{
     Brand, Colors, ContrastFailure, FontFile, Fonts, Metrics, Shape, TokenName, Tokens,
 };
+pub use type_scale::{FluidSize, LineHeight, Space, TypeScale, Weight};

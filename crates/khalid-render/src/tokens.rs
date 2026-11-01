@@ -9,6 +9,7 @@ use khalid_core::{AbsoluteUrl, SitePath};
 use serde::Deserialize;
 
 use crate::token_values::{Color, FontStack, Length};
+use crate::type_scale::{Space, TypeScale};
 use crate::{RenderError, font_fallback};
 
 /// Where a site keeps its tokens.
@@ -33,6 +34,11 @@ pub struct Tokens {
     pub fonts: Fonts,
     /// Corners and line length.
     pub shape: Shape,
+    /// Text sizes, line height and heading weight, from `[type]`.
+    #[serde(rename = "type")]
+    pub type_scale: TypeScale,
+    /// Spacing, from `[space]`.
+    pub space: Space,
     /// The main site's logo and icon.
     pub brand: Brand,
 }
@@ -258,9 +264,25 @@ impl Tokens {
             ("font-mono", mono.as_str()),
             ("radius", self.shape.radius.as_str()),
             ("measure", self.shape.measure.as_str()),
+            ("color-on-accent", on_accent(&colors.accent)),
         ] {
             let _ = writeln!(css, "  --{name}: {value};");
         }
+        let scale = &self.type_scale;
+        for (name, size) in [
+            ("text-body", &scale.body),
+            ("text-h1", &scale.h1),
+            ("text-h2", &scale.h2),
+            ("text-h3", &scale.h3),
+            ("text-h4", &scale.h4),
+            ("text-small", &scale.small),
+        ] {
+            let _ = writeln!(css, "  --{name}: {};", size.as_str());
+        }
+        let _ = writeln!(css, "  --leading: {};", scale.line_height);
+        let _ = writeln!(css, "  --heading-weight: {};", scale.heading_weight);
+        let _ = writeln!(css, "  --space: {};", self.space.unit.as_str());
+        let _ = writeln!(css, "  --space-section: {};", self.space.section.as_str());
         css.push_str("}\n");
         for file in &self.fonts.files {
             css.push_str(&font_face(file));
@@ -317,6 +339,17 @@ impl Default for Fonts {
             mono: FontStack::trusted("ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"),
             files: Vec::new(),
         }
+    }
+}
+
+/// Black or white, whichever reads better on `accent`, for the text of
+/// buttons and other accent backgrounds.
+fn on_accent(accent: &Color) -> &'static str {
+    let (black, white) = (Color::rgb(0, 0, 0), Color::rgb(0xff, 0xff, 0xff));
+    if accent.contrast(&white) >= accent.contrast(&black) {
+        "#ffffff"
+    } else {
+        "#000000"
     }
 }
 
