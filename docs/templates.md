@@ -13,7 +13,7 @@ name = "classic"
 
 Without a `[template]` table your blog uses `classic`, the look Khalid has always had. Updating Khalid never changes your template.
 
-Classic is the only template today. The ten templates in the templates spec arrive one or two at a time, and each one lists its options here.
+Every other template has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default. More arrive one or two at a time.
 
 ## Options
 
