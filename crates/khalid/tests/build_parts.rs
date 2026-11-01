@@ -122,6 +122,29 @@ fn the_sampler_pack_shows_a_tab_for_each_category_in_the_order_categories_toml_l
 }
 
 #[test]
+fn the_sampler_pack_links_each_post_back_to_all_posts() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\nback_link = true\n",
+        &[],
+    );
+    let back = "<p class=\"back-link\"><a href=\"/blog/\">All posts</a></p>";
+    let post = page(&sampler, "what-a-sitemap-does/index.html");
+    assert!(post.contains(back), "{post}");
+    let german = page(&sampler, "de/was-eine-sitemap-leistet/index.html");
+    // The German words come from the strings file; the link goes to the
+    // German front page.
+    assert!(
+        german.contains("<p class=\"back-link\"><a href=\"/blog/de/\">"),
+        "{german}"
+    );
+    assert!(!german.contains(">All posts<"), "{german}");
+    assert!(!page(&sampler, "index.html").contains("back-link"));
+    let (_temp, classic) = built("", &[]);
+    let post = page(&classic, "what-a-sitemap-does/index.html");
+    assert!(!post.contains("back-link"), "{post}");
+}
+
+#[test]
 fn the_sampler_pack_shows_one_trail_in_the_page_and_its_schema() {
     let (_temp, sampler) = built(
         "\n[template]\nname = \"sampler\"\n[template.options]\nbreadcrumbs = true\n",

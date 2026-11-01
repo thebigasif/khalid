@@ -17,6 +17,7 @@ pub(crate) static SAMPLER: Pack = Pack {
     reader: &[],
     options: &[
         parts::LOGO,
+        parts::BACK_LINK,
         parts::BREADCRUMBS,
         parts::DEK,
         parts::UPDATED_NOTE,

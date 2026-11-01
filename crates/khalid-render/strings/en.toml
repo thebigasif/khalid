@@ -65,6 +65,8 @@ topics = "Topics"
 # tab, which lists every post.
 categories = "Categories"
 all_posts = "All"
+# The link above a post back to the front page.
+back_to_posts = "All posts"
 # {name} is filled in.
 posts_by = "Posts by {name}"
 # The heading of the other authors at the end of an author page.
