@@ -182,13 +182,32 @@ fn a_rebuild_indexes_the_authors_and_the_categories() {
 }
 
 #[test]
-fn a_post_with_no_slug_is_explained() {
+fn a_post_with_no_slug_takes_one_from_its_title() {
     let dir = tempfile::tempdir().unwrap();
     let site = within(dir.path(), "demo-site");
     copy(Path::new(DEMO), &site);
     fs::write(
         within(&site, "content/en/posts/2026-10-20-untitled.md"),
-        "---\ntitle: A draft\ndate: 2026-10-20\n---\n\nA draft with no slug yet.\n",
+        "---\ntitle: A post with no slug\ndate: 2026-10-20\n---\n\nIts slug comes from the title.\n",
+    )
+    .unwrap();
+    let output = khalid(&site, &["db", "rebuild"]);
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+#[test]
+fn a_post_with_no_slug_and_no_title_is_explained() {
+    let dir = tempfile::tempdir().unwrap();
+    let site = within(dir.path(), "demo-site");
+    copy(Path::new(DEMO), &site);
+    fs::write(
+        within(&site, "content/en/posts/2026-10-20-untitled.md"),
+        "---\ndate: 2026-10-20\n---\n\nA draft with no slug yet.\n",
     )
     .unwrap();
     let output = khalid(&site, &["db", "rebuild"]);

@@ -32,6 +32,13 @@ khalid init blog --address https://blog.example.com --yes
 
 Leave out `--yes` to answer the questions one by one: the address, the folder of the website the blog lives under (such as `/blog/`), the languages and whether Khalid runs as a server or writes plain files.
 
+The folder now holds:
+
+- `site.toml`, the settings.
+- `routes.toml`, the shape of the blog's addresses. It starts empty, which gives the usual addresses; [routes.md](routes.md) shows what it can change.
+- `theme/tokens.toml`, the colours, fonts and corners of the pages. Edit it by hand, or let `khalid theme sync` copy them from your main site.
+- `content/en/posts/` for live posts, and `drafts/en/` for posts that are not live yet.
+
 ## 3. Say who writes
 
 Every post needs an author, and every author needs a profile page. Save this as `blog/content/en/authors/sam.md`:

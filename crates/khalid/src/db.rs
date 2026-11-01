@@ -4,7 +4,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use khalid_core::{Slug, UserMessage};
+use khalid_core::{Config, Slug, UserMessage};
 use khalid_db::{ContentIndex, Database, DbError};
 use serde::Serialize;
 
@@ -31,12 +31,12 @@ struct DbBody<'a> {
     posts: Option<usize>,
 }
 
-/// Runs a database command on the `site` folder, whose settings and content were checked.
-pub(crate) fn run(site: &Path, command: DbCommand, output: Output) -> Exit {
+/// Runs a database command on the `site` folder, whose settings `config` and content were checked.
+pub(crate) fn run((site, config): (&Path, &Config), command: DbCommand, output: Output) -> Exit {
     let index = match command {
         DbCommand::Export { out } => return db_export::run(site, out.as_deref(), output),
         DbCommand::Migrate => None,
-        DbCommand::Rebuild => match index::of(site) {
+        DbCommand::Rebuild => match index::of(site, config) {
             Ok(index) => Some(index),
             Err(message) => return report::failure(output, &message, Exit::Failure),
         },

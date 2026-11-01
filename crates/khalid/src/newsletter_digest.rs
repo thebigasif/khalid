@@ -32,7 +32,7 @@ pub(crate) struct Asked<'a> {
 pub(crate) fn run(cli: &Cli, (folder, config): (&Path, &Config), asked: &Asked<'_>) -> Exit {
     let output = cli.output;
     let language = asked.language.unwrap_or_else(|| config.default_language());
-    let index = match index::of(folder) {
+    let index = match index::of(folder, config) {
         Ok(index) => index,
         Err(message) => return report::failure(output, &message, Exit::Failure),
     };

@@ -162,3 +162,30 @@ fn serve_leaves_out_the_post_build_leaves_out_and_shows_it_once_fixed() {
         "the fixed post never went live"
     );
 }
+
+#[test]
+fn serve_shows_a_post_with_no_slug_where_build_puts_it() {
+    let site = site();
+    let posts = at(site.path(), "content/en/posts");
+    fs::remove_file(at(&posts, "2026-09-21-choosing-link-text.md")).unwrap();
+    let unnamed = READY
+        .replace("slug: why-internal-links-matter\n", "")
+        .replace("Why internal links matter", "Links that help readers");
+    fs::write(at(&posts, "2026-09-28-links.md"), unnamed).unwrap();
+    let folder = site.path().to_str().unwrap();
+    let built = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", folder, "build"])
+        .output()
+        .unwrap();
+    assert_eq!(built.status.code(), Some(0));
+    let public = at(site.path(), "public");
+    assert!(at(&public, "links-that-help-readers/index.html").exists());
+
+    let server = start(site.path());
+    assert!(
+        shows(&server, "/blog/links-that-help-readers/"),
+        "serve leaves out the post build shows"
+    );
+    let (_, home) = get(&server, "/blog/");
+    assert!(home.contains("Links that help readers"), "{home}");
+}
