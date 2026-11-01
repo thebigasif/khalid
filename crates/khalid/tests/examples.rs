@@ -19,11 +19,42 @@ const POSTS: RangeInclusive<usize> = 6..=10;
 
 /// What each example is there to show: text its `site.toml` holds, and
 /// text its content holds.
-const FEATURES: [(&str, &[&str], &[&str]); 1] = [(
-    "local-business",
-    &["[[seo.locations]]", "[[seo.locations.hours]]"],
-    &["::::faq", "::::howto", "::business{"],
-)];
+const FEATURES: [(&str, &[&str], &[&str]); 2] = [
+    (
+        "local-business",
+        &["[[seo.locations]]", "[[seo.locations.hours]]"],
+        &["::::faq", "::::howto", "::business{"],
+    ),
+    (
+        "multilingual",
+        &["languages = [\"en\", \"de\", \"es\"]"],
+        &["translation: ", ":::pullquote{"],
+    ),
+];
+
+/// The address prefixes of the examples' other languages. Every example
+/// mounts the blog at `/blog/`.
+const LANGUAGE_PREFIXES: [&str; 2] = ["/blog/de/", "/blog/es/"];
+
+/// Whether `issue` is a page sharing its title or description with its own
+/// version in another language. Khalid makes some pages itself and gives
+/// them the same words in every language: each home page takes the site's
+/// name and tagline, and a language with no built-in interface words, such
+/// as Spanish today, takes the English ones. A fix in the engine leaves
+/// this test green.
+#[cfg(test)]
+fn own_translation(issue: &Value) -> bool {
+    let unprefixed = |field: &str| {
+        let url = issue[field].as_str().unwrap_or_default();
+        LANGUAGE_PREFIXES
+            .iter()
+            .fold(url.to_owned(), |url, prefix| {
+                url.replacen(prefix, "/blog/", 1)
+            })
+    };
+    ["title-duplicate", "description-duplicate"].contains(&issue["check"].as_str().unwrap())
+        && unprefixed("url") == unprefixed("detail")
+}
 
 /// `base` with each of `parts` added, all of them fixed names.
 #[cfg(test)]
@@ -125,6 +156,28 @@ fn markdown(dir: &Path, found: &mut Vec<(PathBuf, String)>) {
 }
 
 #[test]
+fn only_a_page_and_its_own_translation_may_share_a_title() {
+    let issue = |url: &str, detail: &str| serde_json::json!({ "check": "title-duplicate", "url": url, "detail": detail });
+    let home = "https://www.example.com/blog/";
+    assert!(own_translation(&issue(
+        home,
+        "https://www.example.com/blog/es/"
+    )));
+    assert!(own_translation(&issue(
+        "https://www.example.com/blog/de/authors/",
+        "https://www.example.com/blog/authors/"
+    )));
+    assert!(!own_translation(&issue(
+        "https://www.example.com/blog/es/falsos-amigos/",
+        "https://www.example.com/blog/es/rutina-de-estudio/"
+    )));
+    assert!(!own_translation(&issue(
+        home,
+        "https://www.example.com/blog/about/"
+    )));
+}
+
+#[test]
 fn every_example_this_test_knows_is_there() {
     let slugs = slugs();
     for (slug, _, _) in FEATURES {
@@ -161,6 +214,7 @@ fn every_built_example_passes_the_audit_with_no_warning() {
             .iter()
             .filter(|issue| ["error", "warning"].contains(&issue["severity"].as_str().unwrap()))
             .filter(|issue| !DATED.contains(&issue["check"].as_str().unwrap()))
+            .filter(|issue| !own_translation(issue))
             .collect();
         assert_eq!(problems, Vec::<&Value>::new(), "{slug}: {body}");
         assert_eq!(body["score"], 100, "{slug}: {body}");

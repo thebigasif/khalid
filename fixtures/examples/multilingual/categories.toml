@@ -1,0 +1,19 @@
+# Bridgeword's three categories, named in each language.
+
+[[categories]]
+slug = "methods"
+en = "Methods"
+de = "Methoden"
+es = "Métodos"
+
+[[categories]]
+slug = "speaking"
+en = "Speaking"
+de = "Sprechen"
+es = "Hablar"
+
+[[categories]]
+slug = "reading-and-listening"
+en = "Reading and listening"
+de = "Lesen und Hören"
+es = "Leer y escuchar"
