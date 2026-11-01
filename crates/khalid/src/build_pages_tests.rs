@@ -46,6 +46,41 @@ fn the_english_feed_carries_each_wikilink_as_a_full_address() {
 }
 
 #[test]
+fn a_glossary_term_is_described_by_its_definition() {
+    let site = demo();
+    let config = Config::load(&site, &Environment::empty()).unwrap();
+    let routes = Routes::load(&site).unwrap();
+    let content = read_content(&ContentTree::walk(&site).unwrap()).unwrap();
+    let languages = super::pages(
+        &config,
+        &routes,
+        (&content, &[]),
+        "/blog/assets/site.css",
+        NaiveDate::default(),
+    )
+    .unwrap();
+    let term = |path: &str| {
+        languages
+            .iter()
+            .flat_map(|language| &language.pages)
+            .find(|page| page.meta.path == path)
+            .unwrap()
+    };
+    let english = term("/blog/glossary/topical-authority/");
+    let definition = "Topical authority is how much a search engine trusts a site on one \
+                      subject.";
+    assert_eq!(english.meta.description, definition);
+    assert_eq!(english.seo.excerpt, definition);
+    let german = term("/blog/de/glossary/thematische-autoritaet/");
+    assert_ne!(german.meta.description, "");
+    assert!(
+        !german.meta.description.contains('<'),
+        "{}",
+        german.meta.description
+    );
+}
+
+#[test]
 fn only_addresses_from_the_site_root_become_full() {
     let config = Config::load(&demo(), &Environment::empty()).unwrap();
     let html = "<a href=\"/blog/a/\">a</a><img src=\"/blog/b.png\" alt=\"\">\

@@ -33,13 +33,24 @@ const COOKIE_VARIES: HeaderValue = HeaderValue::from_static("cookie");
 /// A page made for one reader's choice, kept by no cache at all.
 const PRIVATE: HeaderValue = HeaderValue::from_static("private, no-store");
 
+/// The address every browser asks for a site's icon when a page names
+/// none. A site without one answers it with 204 No Content rather than
+/// 404, so the browser shows its own icon and logs no error on every page.
+/// Behind a proxy that sends only the blog's folder here, the main site
+/// answers it instead.
+const ICON: &str = "/favicon.ico";
+
+/// Lets the browser keep the "no icon" answer for a day.
+const NO_ICON_FOR_A_DAY: HeaderValue = HeaderValue::from_static("max-age=86400");
+
 /// The `Content-Encoding` of a Brotli copy.
 const BROTLI: HeaderValue = HeaderValue::from_static("br");
 
 /// The router that answers every request from `pages`.
 ///
 /// `GET` and `HEAD` get the page, a redirect to its clean address, a 301
-/// for an address that moved, or the not-found page with status 404. A page carries an `ETag` made from its
+/// for an address that moved, or the not-found page with status 404, except
+/// that `/favicon.ico` with no file there gets 204 No Content. A page carries an `ETag` made from its
 /// bytes, and a request whose `If-None-Match` names it gets 304 with no
 /// body. A page is cached as `no-cache`, and a [`Page::immutable`] file for
 /// a year. Any other method gets 405. Every response, whatever its status,
@@ -206,6 +217,13 @@ fn respond(pages: &Pages, request: &Request<Body>, consent: Consent<'_>) -> Resp
         Resolved::Page(page) => page_response(page, request.headers(), send_body, consent),
         Resolved::Redirect(location) => redirect(StatusCode::PERMANENT_REDIRECT, &location),
         Resolved::Moved(location) => redirect(StatusCode::MOVED_PERMANENTLY, &location),
+        Resolved::NotFound if uri.path() == ICON => {
+            let mut response = status(StatusCode::NO_CONTENT);
+            response
+                .headers_mut()
+                .insert(header::CACHE_CONTROL, NO_ICON_FOR_A_DAY);
+            response
+        }
         Resolved::NotFound if answered(consent) || holds_slot(pages.not_found()) => personal(
             StatusCode::NOT_FOUND,
             (MediaType::Html, pages.not_found()),

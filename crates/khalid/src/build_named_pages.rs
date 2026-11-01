@@ -11,7 +11,7 @@ use khalid_seo::{AuthorProfile, PageKind as SeoKind};
 
 use crate::build_pages::{Page, body_html, meta, named, page, path_of, routed};
 use crate::listed_post::ListedPost;
-use crate::{build_message, build_seo};
+use crate::{build_message, build_seo, definition_text};
 
 /// The page of every plain page in `locale`, such as About, at `/<slug>/`.
 pub(crate) fn plain_pages(
@@ -59,13 +59,17 @@ pub(crate) fn glossary_pages(
         let entry = PostAddress::new(&doc.collection, locale, &slug, None);
         let rest = routed(config, routes, locale, &entry, &doc.path)?;
         let path = path_of(config, locale, &rest);
+        let definition = body_html(config, links, doc)?;
+        // A term has no description field, so its definition describes it.
+        let description = definition_text::summary(definition.as_str());
         let mut seo = build_seo::page(SeoKind::GlossaryTerm, locale, &rest, &term)?;
+        seo.excerpt.clone_from(&description);
         seo.translation = build_seo::translation(front.translation.as_deref())?;
-        let meta = meta(config, term.clone(), String::new(), path, PageKind::Website)?;
+        let meta = meta(config, term.clone(), description, path, PageKind::Website)?;
         let body = RenderPage {
             title: term,
             updated: None,
-            body: body_html(config, links, doc)?,
+            body: definition,
         };
         let body = PageBody::Page(body);
         pages.push(page(locale, config, &rest, meta, body, seo).made_from(&doc.path));

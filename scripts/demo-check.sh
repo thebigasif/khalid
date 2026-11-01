@@ -4,9 +4,12 @@
 # page in each language:
 #
 #   1. the W3C HTML validator (vnu) on the HTML the server sends,
-#   2. Lighthouse in all four categories, where any score under 100 fails,
-#   3. axe and the layout checks at 320, 375, 768, 1024, 1280 and 1920 px,
-#      first with scripts on and then again with scripts off.
+#   2. Lighthouse in every category, where any score under 100 fails, on
+#      every page but the not-found pages, which answer 404,
+#   3. axe and the layout checks at 320, 375, 768, 1024, 1280 and 1920 px
+#      with scripts on, then the layout checks again with scripts off, where
+#      the page must show the same main text and links. axe is a script
+#      itself, so it cannot run on a page with scripts off.
 #
 # Every check runs even when an earlier one fails, so one run lists all
 # problems. Headless browsers run on a server or in CI, never on the
@@ -80,7 +83,9 @@ while read -r url; do
 done < "$work/missing.txt"
 
 echo "HTML validator:"
-vnu="$(node -p 'require(process.argv[1])' "$tools/node_modules/vnu-jar")"
+# vnu-jar exports its path as a String object, which `node -p` would print
+# with its properties, so it is turned into plain text first.
+vnu="$(node -p 'String(require(process.argv[1]))' "$tools/node_modules/vnu-jar")"
 if java -jar "$vnu" --errors-only --format text "$work"/html/*.html; then
   echo "Every page is valid HTML."
 else
@@ -92,30 +97,39 @@ echo "Lighthouse:"
 CHROME_PATH="$(cd "$tools" && node -p 'require("playwright").chromium.executablePath()')"
 export CHROME_PATH
 # Lighthouse runs inside `while read` loops, so it reads nothing from them.
+# Chrome now and then misses the start of a page load (NO_NAVSTART), so a
+# page Lighthouse could not check gets one more try. A low score is kept
+# as it is: scores.mjs fails on it.
 lighthouse() {
-  "$tools/node_modules/.bin/lighthouse" "$1" --quiet --output=json \
-    --output-path="$work/lighthouse/$2.json" \
-    --chrome-flags="--headless=new --no-sandbox" "${@:3}" < /dev/null || failed=1
+  local report="$work/lighthouse/$2.json" attempt
+  for attempt in 1 2; do
+    if "$tools/node_modules/.bin/lighthouse" "$1" --quiet --output=json \
+      --output-path="$report" --chrome-flags="--headless=new --no-sandbox" < /dev/null \
+      && node -e 'process.exit(require(process.argv[1]).runtimeError ? 1 : 0)' "$report" < /dev/null; then
+      return
+    fi
+    [ "$attempt" = 1 ] && echo "Lighthouse could not check $1, so it tries once more."
+  done
+  failed=1
 }
 number=0
 while read -r url; do
   number=$((number + 1))
   lighthouse "$url" "$number"
 done < "$work/pages.txt"
-# A not-found page answers 404 on purpose, which SEO and best practices
-# count against it, so it is held to the other two categories.
-while read -r url; do
-  number=$((number + 1))
-  lighthouse "$url" "$number" --only-categories=performance,accessibility
-done < "$work/missing.txt"
+# A not-found page answers 404 on purpose, and Lighthouse refuses to score
+# a page that answers an error, so those pages get the validator and axe
+# only.
 node "$tools/scores.mjs" "$work"/lighthouse/*.json || failed=1
+echo "Lighthouse took $SECONDS seconds since the start."
 
-echo "axe and layout, six widths, scripts on and off:"
+echo "Six widths: axe and layout with scripts on, then layout and reading with scripts off:"
 cat "$work/pages.txt" "$work/missing.txt" > "$work/all.txt"
 node "$tools/browse.mjs" "$work/all.txt" || failed=1
+echo "The browser checks ended $SECONDS seconds after the start."
 
 if [ "$failed" -ne 0 ]; then
   echo "The demo check failed. A reader would meet the problems above. Fix each one in the crate that owns it, then run scripts/demo-check.sh again."
   exit 1
 fi
-echo "The demo check passed: valid HTML, Lighthouse 100, and no axe or layout problem at six widths with scripts on and off."
+echo "The demo check passed: valid HTML, Lighthouse 100, no axe or layout problem at six widths, and every page reads the same with scripts off."
