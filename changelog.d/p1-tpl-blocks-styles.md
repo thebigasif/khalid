@@ -1,2 +1,0 @@
-Added
-- Every block in a post now has its own look: callouts, figures, galleries, videos, the FAQ, how-to steps, product, review and recipe cards, bookmarks, buttons and forms. Callouts gain three kinds, `summary` for key takeaways, `read` for further reading and `stat` for one number worth remembering. The hidden spam-trap field on forms no longer shows to readers, and comments in code are coloured.

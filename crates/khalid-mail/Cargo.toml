@@ -14,8 +14,8 @@ test-util = []
 
 [dependencies]
 khalid-core.workspace = true
-khalid-newsletter = { path = "../khalid-newsletter", version = "1.0.0" }
-khalid-outbound = { path = "../khalid-outbound", version = "1.0.0" }
+khalid-newsletter = { path = "../khalid-newsletter", version = "1.0.1" }
+khalid-outbound = { path = "../khalid-outbound", version = "1.0.1" }
 # SMTP (decision 8 of 2026-10-27), on rustls with ring and the system's
 # certificate store, as the shared HTTP client is; no OpenSSL.
 lettre = { version = "0.11", default-features = false, features = ["builder", "smtp-transport", "tokio1-rustls", "ring", "rustls-platform-verifier"] }
@@ -25,8 +25,8 @@ thiserror.workspace = true
 tokio = { workspace = true, features = ["net"] }
 
 [dev-dependencies]
-khalid-mail = { path = ".", version = "1.0.0", features = ["test-util"] }
-khalid-outbound = { path = "../khalid-outbound", version = "1.0.0", features = ["test-util"] }
+khalid-mail = { path = ".", version = "1.0.1", features = ["test-util"] }
+khalid-outbound = { path = "../khalid-outbound", version = "1.0.1", features = ["test-util"] }
 toml = "1.1"
 wiremock = "0.6"
 

@@ -12,8 +12,8 @@ publish.workspace = true
 ammonia = "4"
 chrono = { version = "0.4", default-features = false, features = ["alloc"] }
 khalid-core.workspace = true
-khalid-content = { path = "../khalid-content", version = "1.0.0" }
-khalid-routes = { path = "../khalid-routes", version = "1.0.0" }
+khalid-content = { path = "../khalid-content", version = "1.0.1" }
+khalid-routes = { path = "../khalid-routes", version = "1.0.1" }
 htmd = "0.5"
 roxmltree = "0.21"
 scraper = "0.29"
@@ -28,6 +28,6 @@ toml = "1.1"
 workspace = true
 
 [dev-dependencies]
-khalid-routes = { path = "../khalid-routes", version = "1.0.0" }
+khalid-routes = { path = "../khalid-routes", version = "1.0.1" }
 proptest = "1"
 tempfile = "3"

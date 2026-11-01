@@ -9,7 +9,7 @@ members = ["crates/*", "lints/check"]
 [workspace.package]
 # Every crate but khalid-core and khalid-lint, which keep their own published
 # version (docs/adr/0000-the-lint-crates-are-published-under-agpl.md).
-version = "1.0.0"
+version = "1.0.1"
 edition = "2024"
 rust-version = "1.99"
 license = "AGPL-3.0-only"

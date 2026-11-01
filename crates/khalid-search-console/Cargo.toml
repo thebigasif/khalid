@@ -11,13 +11,13 @@ publish.workspace = true
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["alloc"] }
 khalid-core.workspace = true
-khalid-outbound = { path = "../khalid-outbound", version = "1.0.0" }
+khalid-outbound = { path = "../khalid-outbound", version = "1.0.1" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]
-khalid-outbound = { path = "../khalid-outbound", version = "1.0.0", features = ["test-util"] }
+khalid-outbound = { path = "../khalid-outbound", version = "1.0.1", features = ["test-util"] }
 tokio.workspace = true
 wiremock = "0.6"
 

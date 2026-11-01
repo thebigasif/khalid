@@ -4,6 +4,47 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.0.1
+
+A patch release. A blog under a folder of another site now reaches its admin and APIs, and templates gain looks, page parts and new blocks without changing an existing blog's look. What changed, in plain words: `docs/releases/1.0.1.md`.
+
+### Added
+
+#### Templates
+
+- `site.toml` takes a `[template]` table that names the look the site uses and that look's options. Without it a site keeps today's look, now named classic, so nothing changes on upgrade.
+- Templates can switch on shared page parts: the main site's logo in the header, breadcrumbs, a post's subtitle and why it was updated, five card shapes with reading time and author role, a featured post above lists, editor's picks, numbered page links, five layouts for related posts and five places for a post's contents. Classic switches none of them on, so existing blogs look the same. See `docs/templates.md`.
+- Every page shows the main site's icon in the browser tab when theme sync found one.
+- `site.toml` takes `[template.cta]`: one call to action with `label`, `href` and an optional `note`. Templates show it as a band after each post or on the front page, with the `cta_band` option, and as a button in the header, with `cta_button`.
+- `site.toml` takes `[[nav.footer_groups]]`: columns of footer links, each under its own heading, beside the flat `[[nav.footer]]` list. The footer shows them in every template, and a group can be for one language only.
+- Templates can show share links under a post's title, after it, or both: plain links to each network's own share page and an email link, with no script and nothing loaded from the networks. The `share` and `share_networks` options choose where and which.
+- Templates can show a newsletter sign-up form after each post, on the front page, or both, with the `newsletter` option. It shows only on a blog that takes sign-ups: server mode with `[mail]`.
+
+#### Writing and content
+
+- Every block in a post now has its own look: callouts, figures, galleries, videos, the FAQ, how-to steps, product, review and recipe cards, bookmarks, buttons and forms. Callouts gain three kinds, `summary` for key takeaways, `read` for further reading and `stat` for one number worth remembering. The hidden spam-trap field on forms no longer shows to readers, and comments in code are coloured.
+- A columns block: `::::columns` around two to four `:::column{title="..."}` cards sets them side by side, and stacks them on a phone. Good for comparing two options.
+- A pull quote block, `:::pullquote{by="..."}`, sets a short line large with who said it.
+- A pros and cons block, `:::proscons`, shows a `+` list beside a `-` list under their own titles. It reads in full with scripts off, as the pull quote does.
+- Long tables can fold: wrap a table in `:::table{fold=8}` and readers see the first eight rows with a "Show 16 more rows" line that opens the rest. It works with scripts off, and `more="..."` sets your own words for that line.
+- A `::cta` block places the band with your `[template.cta]` anywhere in a post or page, in every template.
+
+### Changed
+
+#### Search engines
+
+- A post with a category now has its category as a step in its breadcrumb schema, between the home page and the post.
+
+#### Under the hood
+
+- Khalid now reads its settings files with toml 1.1 and XML (sitemaps, WordPress exports) with roxmltree 0.21. Nothing changes for you; the newer XML reader no longer crashes on very deeply nested files.
+
+### Fixed
+
+#### Running it
+
+- A blog under a folder of another site, such as `/blog/`, now serves its admin at `/blog/admin/` and both APIs at `/blog/api/`, so the proxy rule `khalid init --stack` prints reaches them. Sign-in links, preview links, webhooks, the OpenAPI document and the newsletter form name the folder too. An old `/admin/` address moves there. A blog at `/` is unchanged.
+
 ## 1.0.0
 
 The first stable release. It holds everything in 0.9.1 and the fixes below, found by walking a new user's path from install to a published post. What it is, how to install it and what is still checked after launch: `docs/releases/1.0.0.md`.
