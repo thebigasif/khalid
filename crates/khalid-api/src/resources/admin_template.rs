@@ -2,8 +2,39 @@
 //! them (templates spec 4.1). The binary fills the list from the engine's
 //! packs, so a template another builder adds is listed with no change here.
 
-use serde::Serialize;
+use std::collections::BTreeMap;
+
+use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+
+/// The template a site uses and the options it sets, as `[template]` in
+/// `site.toml` holds them. An option left out takes the template's default.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct TemplateSetting {
+    /// The template's name, such as `classic`.
+    #[schema(example = "classic")]
+    pub name: String,
+    /// The options the site sets, by key. Each must be one the template
+    /// takes, with a value it takes.
+    #[serde(default)]
+    pub options: BTreeMap<String, TemplateValue>,
+}
+
+/// One option's value: on or off, a whole number, a word, or a list of
+/// words or lines.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(untagged)]
+pub enum TemplateValue {
+    /// On or off.
+    Switch(bool),
+    /// A whole number.
+    Number(i64),
+    /// A word from the option's list.
+    Word(String),
+    /// Words from the option's list, or lines of text.
+    Words(Vec<String>),
+}
 
 /// One built-in template: what it is for, what it turns on and off, and
 /// the options `[template.options]` may set for it.

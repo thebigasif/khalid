@@ -34,7 +34,9 @@ pub use admin_post::{AdminPost, NewPost, PostDraft, PostEdit, PostStatus};
 pub use admin_settings::{AdminSettings, SettingsChange};
 pub use admin_snippet::{AdminSnippet, NewSnippet, SnippetEdit};
 pub use admin_tag::{AdminTag, TagEdit};
-pub use admin_template::{AdminTemplate, OptionTakes, ReaderDefault, TemplateOptionSpec};
+pub use admin_template::{
+    AdminTemplate, OptionTakes, ReaderDefault, TemplateOptionSpec, TemplateSetting, TemplateValue,
+};
 pub use author::Author;
 pub use collection::Collection;
 pub use comment::{AdminComment, CommentReply, CommentStatus, CommentWriter};

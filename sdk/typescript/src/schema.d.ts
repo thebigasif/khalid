@@ -361,6 +361,8 @@ export type AdminSettings = {
   name: string;
   /** Whether `site.toml` says something the running server does not use yet, so a restart is needed to apply it. */
   restart_needed: boolean;
+  /** The template the site uses and the options it sets. */
+  template: TemplateSetting;
   /** When `site.toml` last changed. A change sends it back. */
   updated_at: string;
 };
@@ -1643,6 +1645,7 @@ export type SettingsChange = {
   mount?: string | null;
   /** A new name. */
   name?: string | null;
+  template?: TemplateSetting | null;
   /** The `updated_at` of the copy this change was made on. */
   updated_at: string;
 };
@@ -1841,8 +1844,19 @@ export type TemplateOptionSpec = {
   takes: OptionTakes;
 };
 
+/** The template a site uses and the options it sets, as `[template]` in `site.toml` holds them. An option left out takes the template's default. */
+export type TemplateSetting = {
+  /** The template's name, such as `classic`. */
+  name: string;
+  /** The options the site sets, by key. Each must be one the template takes, with a value it takes. */
+  options?: Record<string, TemplateValue>;
+};
+
 /** What a schema template's `name` names. */
 export type TemplateTarget = "collection" | "category";
+
+/** One option's value: on or off, a whole number, a word, or a list of words or lines. */
+export type TemplateValue = boolean | number | string | string[];
 
 /** A new list of schema templates, made on the copy `updated_at` names. */
 export type TemplatesChange = {
