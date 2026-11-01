@@ -62,6 +62,10 @@ view_all = "View all posts in {name}"
 # The heading and label of the row of topic links on the home page.
 topics = "Topics"
 latest = "Latest posts"
+# The first link in a template's row of topics, to every post.
+all_topics = "All"
+# The heading over the newest posts on a template's front page.
+recent_posts = "Recently published"
 # {name} is filled in.
 posts_by = "Posts by {name}"
 # The heading of the other authors at the end of an author page.

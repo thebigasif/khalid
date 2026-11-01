@@ -13,7 +13,12 @@ name = "classic"
 
 Without a `[template]` table your blog uses `classic`, the look Khalid has always had. Updating Khalid never changes your template.
 
-Every other template has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default. More arrive one or two at a time.
+These templates are built in. Every template but classic has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default.
+
+- `classic`: a calm column of text, cards on the home page and the contents beside long posts. It takes no options.
+- `atlas`: a portal for a blog with many topics, with topic tabs, featured posts and editor's picks. See [Atlas](templates/atlas.md).
+- `keystone`: a personal guide site with one big featured post, a grid of pictures and numbered chapters. See [Keystone](templates/keystone.md).
+- `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 
 ## Options
 
