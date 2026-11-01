@@ -1,9 +1,10 @@
 //! The template slots around a page: share links and the newsletter form,
-//! each switched on by the template's options and read with scripts off
-//! (templates spec 4.2).
+//! each switched on by the template's options, and grouped footer links,
+//! all read with scripts off (templates spec 4.2).
 
 use khalid_render::{
-    PageBody, PageKind, RenderCta, RenderPack, RenderSite, Renderer, TemplateOption,
+    NavGroup, NavLink, PageBody, PageKind, RenderCta, RenderPack, RenderSite, Renderer,
+    TemplateOption,
 };
 
 use crate::common::{demo_site, meta};
@@ -96,6 +97,34 @@ fn a_site_without_a_newsletter_or_a_template_without_the_slot_shows_no_form() {
     let classic = Renderer::new().unwrap();
     assert!(!post_on(&classic, &with_newsletter()).contains("newsletter-slot"));
     assert!(!home_on(&classic, &with_newsletter()).contains("newsletter-slot"));
+}
+
+#[test]
+fn footer_groups_show_as_columns_under_their_headings_in_every_template() {
+    let mut site = demo_site("en");
+    let link = |label: &str, href: &str| NavLink {
+        label: label.to_owned(),
+        href: href.to_owned(),
+    };
+    site.nav.footer_groups = vec![
+        NavGroup {
+            heading: "Product".to_owned(),
+            links: vec![link("Pricing", "/pricing/"), link("Docs", "/docs/")],
+        },
+        NavGroup {
+            heading: "Company".to_owned(),
+            links: vec![link("About", "/blog/about/")],
+        },
+    ];
+    let page = post_on(&Renderer::new().unwrap(), &site);
+    assert_valid_page(&page);
+    insta::assert_snapshot!(part(&page, "<div class=\"footer-groups\">", "</div>"));
+    let flat = page.find("aria-label=\"Footer menu\"").unwrap();
+    assert!(
+        page.find("footer-groups").unwrap() < flat,
+        "groups come first"
+    );
+    assert!(!post_page(&Renderer::new().unwrap()).contains("footer-groups"));
 }
 
 #[test]

@@ -51,6 +51,18 @@ pub struct Nav {
     pub primary: Vec<NavLink>,
     /// The menu in the footer.
     pub footer: Vec<NavLink>,
+    /// Columns of footer links, each under its heading, before the menu
+    /// in the footer.
+    pub footer_groups: Vec<NavGroup>,
+}
+
+/// One column of footer links under its heading.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct NavGroup {
+    /// The words over the links.
+    pub heading: String,
+    /// The links, in order.
+    pub links: Vec<NavLink>,
 }
 
 /// One line shown above the header, such as news of a launch, in plain

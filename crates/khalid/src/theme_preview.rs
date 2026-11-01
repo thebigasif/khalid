@@ -187,6 +187,7 @@ fn sample_site(source: Source<'_>) -> RenderSite {
                 href: PAGE.to_owned(),
             }],
             footer: Vec::new(),
+            footer_groups: Vec::new(),
         },
         announcement: None,
         main_site: Some(NavLink {

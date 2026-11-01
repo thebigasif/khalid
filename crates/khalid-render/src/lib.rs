@@ -69,7 +69,7 @@ pub use render_error::RenderError;
 pub use renderer::Renderer;
 pub use script::{ScriptFile, ScriptTag, reader_script, reader_script_file};
 pub use share::SHARE_NETWORKS;
-pub use site::{AnnouncementBar, Nav, NavLink, RenderSite};
+pub use site::{AnnouncementBar, Nav, NavGroup, NavLink, RenderSite};
 pub use sitemap::{RenderSitemap, SitemapGroup, SitemapSection};
 pub use stylesheet::{stylesheet, stylesheet_text, stylesheet_text_with, stylesheet_with};
 pub use token_values::{Color, FontStack, Length, ParseTokenError};

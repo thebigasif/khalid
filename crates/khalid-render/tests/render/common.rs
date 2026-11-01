@@ -34,6 +34,7 @@ pub(crate) fn demo_site(tag: &str) -> RenderSite {
                 link("Glossary", &format!("{prefix}glossary/")),
             ],
             footer: vec![link("About", &format!("{prefix}about/"))],
+            footer_groups: Vec::new(),
         },
         announcement: None,
         main_site: Some(link("Back to example.com", "https://www.example.com/")),

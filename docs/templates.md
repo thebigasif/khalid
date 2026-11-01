@@ -63,6 +63,30 @@ Templates show it as a band after a post or on the front page (`cta_band`), and 
 
 To place the band inside a post or page, write `::cta` on a line of its own. It works in every template, classic too. Without `[template.cta]` the line shows nothing. Feeds and the Content API keep it as the comment `<!--khalid-cta-->`, so another front end can put its own band there.
 
+## Footer links in groups
+
+Besides the one row of `[[nav.footer]]` links, the footer can hold columns of links, each under its own heading. Every template shows them.
+
+```toml
+[[nav.footer_groups]]
+heading = "Product"
+[[nav.footer_groups.links]]
+label = "Pricing"
+href = "https://example.com/pricing/"
+[[nav.footer_groups.links]]
+label = "Docs"
+href = "https://docs.example.com/"
+
+[[nav.footer_groups]]
+heading = "Rechtliches"
+language = "de"            # optional: only pages in this language show the group
+[[nav.footer_groups.links]]
+label = "Impressum"
+href = "/blog/de/impressum/"
+```
+
+A group needs at least one link. A link may also name a `language`, like any menu link.
+
 ## Reader features
 
 A template may switch some `[reader]` features on or off by default, such as the reading time. A key you write in `[reader]` always wins over the template.

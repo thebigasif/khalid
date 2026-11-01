@@ -222,6 +222,7 @@ impl Demo {
                     link(lang.archive, format!("{}archive/", lang.prefix)),
                 ],
                 footer: Vec::new(),
+                footer_groups: Vec::new(),
             },
             announcement: None,
             main_site: Some(link("example.com", format!("{ADDRESS}/"))),

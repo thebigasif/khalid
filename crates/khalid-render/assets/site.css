@@ -103,6 +103,9 @@ nav a { min-inline-size: 44px; }
   font-size: var(--text-small);
 }
 .site-footer p { margin: 0; }
+.footer-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 1rem 1.5rem; }
+.footer-groups h2 { margin: 0; color: var(--color-text); font-size: var(--text-small); }
+.footer-groups ul { display: grid; gap: 0; }
 
 /* A post, a plain page or an author: one piece of writing. */
 .post, .page, .author { margin-block-end: var(--space-section); }

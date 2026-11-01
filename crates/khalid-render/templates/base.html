@@ -49,6 +49,14 @@
 {% for alternate in meta.alternates %}<li><a href="{{ alternate.href }}" hreflang="{{ alternate.locale }}" lang="{{ alternate.locale }}"{% if alternate.locale == lang %} aria-current="page"{% endif %}>{{ alternate.label }}</a></li>
 {% endfor %}</ul>
 </nav>
+{% endif %}{% if site.nav.footer_groups %}<div class="footer-groups">
+{% for group in site.nav.footer_groups %}<nav aria-label="{{ group.heading }}">
+<h2>{{ group.heading }}</h2>
+<ul>
+{% for link in group.links %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endfor %}</div>
 {% endif %}<nav aria-label="{{ t.nav_footer }}">
 <ul>
 {% for link in site.nav.footer %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>

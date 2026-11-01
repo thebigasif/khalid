@@ -186,6 +186,28 @@ fn a_cta_block_shows_the_band_in_the_post_even_in_classic() {
 }
 
 #[test]
+fn footer_groups_show_on_every_page_of_their_language() {
+    let groups = "\n[[nav.footer_groups]]\nheading = \"Product\"\n\
+                  [[nav.footer_groups.links]]\nlabel = \"Pricing\"\nhref = \"/pricing/\"\n\n\
+                  [[nav.footer_groups]]\nheading = \"Rechtliches\"\nlanguage = \"de\"\n\
+                  [[nav.footer_groups.links]]\nlabel = \"Impressum\"\nhref = \"/blog/de/impressum/\"\n";
+    let (_temp, out) = built(groups);
+    for rel in ["index.html", "404.html", "what-a-sitemap-does/index.html"] {
+        let html = page(&out, rel);
+        assert!(
+            html.contains("<nav aria-label=\"Product\">\n<h2>Product</h2>"),
+            "{rel}"
+        );
+        assert!(!html.contains("Rechtliches"), "{rel}");
+    }
+    let german = page(&out, "de/index.html");
+    assert!(
+        german.contains("<nav aria-label=\"Rechtliches\">\n<h2>Rechtliches</h2>"),
+        "{german}"
+    );
+}
+
+#[test]
 fn the_sites_own_reader_key_wins_over_the_pack() {
     let table = "\n[reader]\nreading_time = true\n\n[template]\nname = \"trial\"\n";
     let (_temp, out) = built(table);

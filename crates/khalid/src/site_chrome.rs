@@ -1,8 +1,8 @@
 //! What every page of one language shows around its content: the site's
 //! name, stylesheet, reader script, menus and announcement, from `site.toml`.
 
-use khalid_core::{Config, Locale, MenuLink, Mode};
-use khalid_render::{AnnouncementBar, Nav, NavLink, RenderSite};
+use khalid_core::{Config, FooterGroup, Locale, MenuLink, Mode};
+use khalid_render::{AnnouncementBar, Nav, NavGroup, NavLink, RenderSite};
 
 use crate::build_pages::path_of;
 use crate::{assets, build_ai_page, build_reader};
@@ -20,6 +20,7 @@ pub(crate) fn render_site(config: &Config, locale: &Locale, stylesheet: &str) ->
         nav: Nav {
             primary: menu(&nav.primary, locale),
             footer: footer(config, &nav.footer, locale),
+            footer_groups: footer_groups(&nav.footer_groups, locale),
         },
         announcement: announcement(config, locale),
         main_site: None,
@@ -63,6 +64,19 @@ fn footer(config: &Config, links: &[MenuLink], locale: &Locale) -> Vec<NavLink> 
         });
     }
     footer
+}
+
+/// The footer groups pages in `locale` show, in the order written: those
+/// for every language and those for `locale`, each with its links for
+/// `locale`. A group left with no link shows nothing.
+fn footer_groups(groups: &[FooterGroup], locale: &Locale) -> Vec<NavGroup> {
+    let shown = |group: &&FooterGroup| group.language.as_ref().is_none_or(|only| only == locale);
+    let group = |group: &FooterGroup| NavGroup {
+        heading: group.heading.to_string(),
+        links: menu(&group.links, locale),
+    };
+    let groups = groups.iter().filter(shown).map(group);
+    groups.filter(|group| !group.links.is_empty()).collect()
 }
 
 /// The announcement pages in `locale` show, if `site.toml` has one for
