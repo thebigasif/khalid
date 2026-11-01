@@ -25,6 +25,8 @@ pub(crate) fn card(title: &str, slug: &str, day: u32, excerpt: &str) -> PostCard
             Some("Technical SEO editor"),
         )),
         category: Some(link("Technical SEO", "/blog/category/technical-seo/")),
+        featured: false,
+        reading_time: None,
     }
 }
 
@@ -33,6 +35,7 @@ pub(crate) fn home(listing: RenderListing) -> RenderHome {
     RenderHome {
         listing,
         sections: Vec::new(),
+        picks: Vec::new(),
         topics: Vec::new(),
     }
 }
@@ -61,6 +64,7 @@ pub(crate) fn first_page() -> RenderListing {
             ),
         ],
         pagination: Pagination::new(pages, 1),
+        featured: None,
     }
 }
 

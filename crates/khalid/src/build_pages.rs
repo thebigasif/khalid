@@ -13,8 +13,8 @@ use khalid_content::{
 };
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
 use khalid_render::{
-    BodyHtml, PageBody, PageKind, PageMeta, Person, PostCard, PostTopics, ReadingTime, RenderHome,
-    RenderListing, RenderPost, RenderSite, Robots, related,
+    BodyHtml, MOST_PICKS, MOST_RELATED, PageBody, PageKind, PageMeta, Person, PostCard, PostTopics,
+    ReadingTime, RenderHome, RenderListing, RenderPost, RenderSite, Robots, related_up_to,
 };
 use khalid_routes::{Collection, PostAddress, Routes};
 use khalid_seo::{ArticleType, MetaTemplate, PageKind as SeoKind, SeoPage};
@@ -120,9 +120,15 @@ pub(crate) fn home_page(
     locale: &Locale,
     cards: Vec<PostCard>,
 ) -> Result<Page, UserMessage> {
+    let picks: Vec<PostCard> = (cards.iter())
+        .filter(|card| card.featured)
+        .take(MOST_PICKS)
+        .cloned()
+        .collect();
     let listing = RenderListing {
         title: config.name().to_owned(),
         intro: None,
+        featured: picks.first().cloned(),
         posts: cards,
         pagination: None,
     };
@@ -138,6 +144,7 @@ pub(crate) fn home_page(
     let body = PageBody::Home(RenderHome {
         listing,
         sections: Vec::new(),
+        picks,
         topics: Vec::new(),
     });
     Ok(page(locale, config, "", meta, body, seo))
@@ -235,7 +242,7 @@ fn post_pages(
             .iter()
             .map(Slug::to_string)
             .collect();
-        let related = related(topic, &topics, &pinned)
+        let related = related_up_to(topic, &topics, &pinned, MOST_RELATED)
             .into_iter()
             .filter_map(|index| among.get(index).map(|post| post.card.clone()))
             .collect();
@@ -263,7 +270,8 @@ fn listed(
 ) -> ListedPost {
     let (locale, front) = (posts.locale, &draft.doc.front);
     let named = (draft.title.clone(), draft.rest.as_str(), draft.date);
-    let card = build_home::card(config, locale, posts.people, named, front);
+    let mut card = build_home::card(config, locale, posts.people, named, front);
+    card.reading_time = Some(ReadingTime::of_html(&draft.rendered.html, locale));
     let tags = ListedTag::all(&front.tags, locale, config.slugs());
     let mut topics = build_reader::topics(&draft.slug, draft.date, front, &draft.rendered, slugs);
     topics.tags = tags.iter().map(|tag| tag.slug.to_string()).collect();
@@ -309,6 +317,14 @@ fn post_page(
         title: title.clone(),
         date,
         updated: front.updated,
+        updated_note: front
+            .updated_note
+            .clone()
+            .filter(|note| !note.trim().is_empty()),
+        dek: front
+            .description
+            .clone()
+            .filter(|dek| !dek.trim().is_empty()),
         reading_time: ReadingTime::of(&html, locale),
         authors: front
             .author
@@ -421,6 +437,7 @@ pub(crate) fn meta(
         alternates: Vec::new(),
         x_default: None,
         seo_head: None,
+        breadcrumbs: Vec::new(),
     })
 }
 
