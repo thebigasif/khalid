@@ -3,9 +3,10 @@
 use std::path::{Component, Path};
 
 use khalid_content::{ContentHash, ContentTree, SiteContent, read_content};
-use khalid_core::UserMessage;
+use khalid_core::{Config, UserMessage};
 use khalid_db::{ContentIndex, IndexedAuthor, IndexedPost};
 
+use crate::build_pages::named;
 use crate::{categories, content_message};
 
 /// The collection whose entries are posts. Other collections get their own
@@ -14,22 +15,28 @@ pub(crate) const POSTS: &str = "posts";
 
 /// Every post and author of every language in the `site` folder, and the
 /// categories in its `categories.toml`, ready for the database.
-pub(crate) fn of(site: &Path) -> Result<ContentIndex, UserMessage> {
+pub(crate) fn of(site: &Path, config: &Config) -> Result<ContentIndex, UserMessage> {
     let content = |error| content_message::of(site, &error);
     let tree = ContentTree::walk(site).map_err(content)?;
     let read = read_content(&tree).map_err(content)?;
-    of_content(site, &read)
+    of_content(site, config, &read)
 }
 
 /// The same index as [`of`], from the content already `read` from the
-/// `site` folder, so no post is read twice.
-pub(crate) fn of_content(site: &Path, read: &SiteContent) -> Result<ContentIndex, UserMessage> {
+/// `site` folder, so no post is read twice. A post or an author with no
+/// `slug:` takes the one `khalid build` makes from its title or name, so
+/// the server and the built site give it the same address.
+pub(crate) fn of_content(
+    site: &Path,
+    config: &Config,
+    read: &SiteContent,
+) -> Result<ContentIndex, UserMessage> {
     let mut index = ContentIndex::default();
     for doc in read.posts.iter().filter(|doc| doc.collection == POSTS) {
         let front = &doc.front;
         let at = format!("{}/{}", site.display(), doc.path.display());
         let path = slashed(&doc.path).ok_or_else(|| unreadable_name(&at))?;
-        let slug = front.slug.clone().ok_or_else(|| no_slug(&at))?;
+        let (_, slug) = named(config, doc, front.slug.as_ref(), front.title.as_deref())?;
         let mut post = IndexedPost::new(&path, doc.locale.clone(), POSTS, slug, bytes(doc.hash));
         post.title.clone_from(&front.title);
         post.description.clone_from(&front.description);
@@ -42,8 +49,8 @@ pub(crate) fn of_content(site: &Path, read: &SiteContent) -> Result<ContentIndex
     for doc in &read.authors {
         let at = format!("{}/{}", site.display(), doc.path.display());
         let path = slashed(&doc.path).ok_or_else(|| unreadable_name(&at))?;
-        let slug = doc.front.slug.clone().ok_or_else(|| no_slug(&at))?;
-        let name = doc.front.name.clone().unwrap_or_else(|| slug.to_string());
+        let front = &doc.front;
+        let (name, slug) = named(config, doc, front.slug.as_ref(), front.name.as_deref())?;
         let author = IndexedAuthor::new(&path, doc.locale.clone(), slug, &name, bytes(doc.hash));
         index.authors.push(author);
     }
@@ -62,15 +69,6 @@ pub(crate) fn slashed(path: &Path) -> Option<String> {
         })
         .collect();
     parts.map(|parts| parts.join("/"))
-}
-
-/// The message for a post or an author whose front matter has no slug.
-fn no_slug(at: &str) -> UserMessage {
-    UserMessage::new(
-        format!("{at} has no slug."),
-        "The slug is the last part of the address, so every post and author needs one.",
-        format!("Add a `slug:` line to the front matter of {at}."),
-    )
 }
 
 /// The message for a file name that is not valid UTF-8.

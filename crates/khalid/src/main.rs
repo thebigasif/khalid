@@ -281,8 +281,8 @@ fn run(cli: &Cli) -> Exit {
     };
     match (&cli.command, &site) {
         (None, _) => report::text(&Cli::command().render_help().to_string(), Exit::Success),
-        (Some(Command::Db { command }), Some((folder, ..))) => {
-            db::run(folder, command.clone(), cli.output)
+        (Some(Command::Db { command }), Some((folder, config, ..))) => {
+            db::run((folder, config), command.clone(), cli.output)
         }
         (Some(Command::Watch), Some((folder, ..))) => {
             watch_report::run(folder, &SystemClock, cli.output)

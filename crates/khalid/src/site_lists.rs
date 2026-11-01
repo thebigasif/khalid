@@ -170,7 +170,7 @@ mod tests {
         demo.push("../../fixtures/demo-site");
         let config = Config::load(&demo, &Environment::empty()).unwrap();
         let content = read_content(&ContentTree::walk(&demo).unwrap()).unwrap();
-        let indexed = index::of_content(&demo, &content).unwrap();
+        let indexed = index::of_content(&demo, &config, &content).unwrap();
         let lists = of(&config, &indexed, &content).unwrap();
 
         let authors = serde_json::to_value(lists.authors()).unwrap();
