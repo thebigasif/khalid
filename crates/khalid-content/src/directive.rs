@@ -12,6 +12,7 @@ use crate::{
 mod cards;
 mod forms;
 mod formula;
+mod layout;
 mod names;
 mod nested;
 
@@ -73,6 +74,8 @@ pub(crate) fn directive(
         "form" => forms::form(&attributes, body),
         "newsletter" | "gated" => forms::subscribe(name, &attributes),
         "maths" => formula::maths(&attributes, body),
+        "pullquote" => layout::pull_quote(&attributes, body),
+        "proscons" => layout::pros_cons(&attributes, body),
         other => Err(BlockError::UnknownBlock {
             line,
             name: other.to_owned(),

@@ -13,6 +13,23 @@
 .callout-read { padding-inline: 0; background: none; border: 0; border-block: 1px solid var(--color-border); border-radius: 0; }
 .callout-stat strong:first-child { display: block; font-family: var(--font-heading); font-size: 2.25em; line-height: 1.1; }
 
+/* A pull quote: large words in the heading font, set off by the accent. */
+.pullquote { margin-block: 2rem; padding-inline-start: 1.25rem; border-inline-start: 4px solid var(--color-accent); }
+.pullquote blockquote { margin: 0; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: 1.5rem; line-height: 1.35; }
+.pullquote blockquote > :last-child { margin-block-end: 0; }
+.pullquote figcaption { margin-block-start: 0.75rem; }
+
+/* Pros and cons: two titled lists, side by side when there is room. A drawn
+   check or cross in the text colour marks each line; the titles carry the meaning. */
+.proscons { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin-block: 0 1.5rem; }
+.pros, .cons { padding: 1rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.proscons-title { margin-block-end: 0.5rem; font-weight: 700; }
+.proscons ul { margin: 0; padding: 0; list-style: none; }
+.proscons li { position: relative; margin-block-end: 0.25rem; padding-inline-start: 1.5rem; }
+.proscons li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.3em; inline-size: 1em; block-size: 1em; background: currentColor; mask: var(--mark) no-repeat center / contain; }
+.pros { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 8.5l4 4 8-9' fill='none' stroke='black' stroke-width='2.2'/%3E%3C/svg%3E"); }
+.cons { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 3l10 10M13 3L3 13' fill='none' stroke='black' stroke-width='2.2'/%3E%3C/svg%3E"); }
+
 /* Figures, galleries and players fill the column and keep their space. */
 figure { margin-inline: 0; }
 figure > img { inline-size: 100%; border-radius: var(--radius); }

@@ -35,6 +35,15 @@ Read the [sitemap guide](/guides/sitemaps/).
 **72%** of readers skim.
 :::
 
+:::pullquote{by="Ada, head of search"}
+No post should be more than two clicks from the home page.
+:::
+
+:::proscons
++ Sets up in five minutes
+- No phone support
+:::
+
 ### A figure and a toggle
 
 :::figure{src="/media/shelf.jpg" alt="A bakery shelf of sourdough loaves"}
