@@ -18,6 +18,7 @@ pub(crate) fn pack_with(options: &[(&str, TemplateOption)]) -> RenderPack<'stati
         name: "trial",
         templates: Vec::new(),
         options,
+        cta: None,
     }
 }
 

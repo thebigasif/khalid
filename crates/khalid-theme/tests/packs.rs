@@ -36,6 +36,11 @@ fn every_option_of_every_pack_is_documented_and_its_default_allowed() {
             if let OptionKind::Choice { allowed, default } = option.kind {
                 assert!(allowed.contains(&default), "{} {}", pack.name, option.key);
             }
+            if let OptionKind::Picks { allowed, default } = option.kind {
+                assert!(!default.is_empty(), "{} {}", pack.name, option.key);
+                let known = default.iter().all(|word| allowed.contains(word));
+                assert!(known, "{} {}", pack.name, option.key);
+            }
             if let OptionKind::Count {
                 least,
                 most,

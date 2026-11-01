@@ -1,0 +1,8 @@
+---
+source: crates/khalid-render/tests/render/cta.rs
+expression: "part(&page, \"<div class=\\\"cta-band\\\">\", \"</div>\")"
+---
+<div class="cta-band">
+<p class="cta-note">No card needed.</p>
+<p><a class="button" href="https://www.example.com/signup/">Start a free trial</a></p>
+</div>

@@ -54,6 +54,9 @@ pub(crate) fn directive(
         "toc" => attributes
             .only("toc", &[], "nothing")
             .map(|()| BlockKind::Toc),
+        "cta" => attributes
+            .only("cta", &[], "nothing")
+            .map(|()| BlockKind::Cta),
         "button" => button(&attributes),
         "bookmark" => bookmark(&attributes),
         "embed" => embed(&attributes),
