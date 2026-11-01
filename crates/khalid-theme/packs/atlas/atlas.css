@@ -1,73 +1,123 @@
 /* Atlas: a portal for a blog with many topics. A wide frame, a sticky bar
-   of topic tabs, stories with small-caps labels, and posts with their
-   contents in a sticky column. Every colour, font and size comes from the
-   tokens. */
+   of topic tabs, lead stories and picks as picture cards, labels in the
+   accent, and posts with their numbered contents in a sticky column.
+   Every colour, font and size comes from the tokens or a tint of one. */
 
-:root { --atlas-wide: 76rem; --atlas-bar: 3rem; --atlas-gap: 1.5rem; }
+:root { --atlas-wide: 76rem; --atlas-bar: 3rem; --atlas-gap: 1.5rem; --atlas-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); }
 .site-header, .site-footer, main:has(.front) { max-inline-size: var(--atlas-wide); }
-.header-button { margin-inline-start: auto; }
+.header-button { margin-inline-start: auto; border-radius: 999px; }
+.button, .subscribe button, .search button { color: var(--color-on-accent); }
+
+/* Header and footer: the name beside a small tile of the accent, menus in
+   the text colour, a footer on the surface across the window. */
+.site-header { padding-block: 1.125rem; border: 0; }
+.site-name { gap: 0.625rem; font-size: 1.375rem; font-weight: 800; letter-spacing: -0.02em; }
+.site-name::before { content: ""; inline-size: 1.5rem; block-size: 1.5rem; background: linear-gradient(135deg, var(--color-accent), color-mix(in oklab, var(--color-accent) 55%, var(--color-background))); border-radius: 0.375rem; }
+.site-header nav a { color: var(--color-text); font-size: var(--text-small); font-weight: 600; text-decoration: none; }
+.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-link); }
+.announcement { margin-block-end: 0; background: var(--atlas-tint); border: 0; font-size: var(--text-small); font-weight: 600; box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
+.announcement a { color: var(--color-link); }
+.site-footer { margin-block-start: var(--space-section); padding-block: calc(var(--space) * 5); background: var(--color-surface); border-block-start: 3px solid var(--color-accent); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.site-footer a { color: var(--color-text); }
 
 /* The bar of topic tabs: full width on the surface colour, sticky under
    the top of the window, scrolling sideways inside itself on a phone. */
-.catbar { position: sticky; inset-block-start: 0; z-index: 2; margin-block: -1rem calc(var(--space) * 3); background: var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.catbar { position: sticky; inset-block-start: 0; z-index: 2; margin-block: -1rem calc(var(--space) * 4); background: var(--color-surface); border-block: 1px solid var(--color-border); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
 .catbar ul { flex-wrap: nowrap; gap: 0; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
 .catbar a { min-block-size: var(--atlas-bar); padding-inline: calc(var(--space) * 2); color: var(--color-text); font-size: var(--text-small); font-weight: 600; text-decoration: none; white-space: nowrap; }
-.catbar a:hover { box-shadow: inset 0 -3px 0 var(--color-border); }
-.catbar a[aria-current] { box-shadow: inset 0 -3px 0 var(--color-accent); }
+.catbar a:hover { color: var(--color-link); box-shadow: inset 0 -3px 0 var(--color-border); }
+.catbar a[aria-current] { color: var(--color-link); box-shadow: inset 0 -3px 0 var(--color-accent); }
 
-/* The front page's sections, each under a small heading. */
-.front-title { margin-block: 0 calc(var(--space) * 3); }
+/* The front page's sections, each under a small label with an accent tile. */
+.front-title { margin-block: 0 calc(var(--space) * 4); font-size: calc(var(--text-h1) * 1.1); letter-spacing: -0.03em; }
 .front section { margin-block-end: var(--space-section); }
-.front section > h2 { margin-block: 0 calc(var(--space) * 2); padding-block-end: var(--space); border-block-end: 2px solid var(--color-text); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+.front section > h2 { display: flex; align-items: center; gap: var(--space); margin-block: 0 calc(var(--space) * 2.5); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+.front section > h2::before { content: ""; inline-size: 0.625rem; block-size: 0.625rem; background: var(--color-accent); border-radius: 2px; }
 
-/* A story: its topic as a label, the title, the summary, then who, how
-   long and when. */
+/* A story: its picture when it has one, its topic as a label, the title,
+   the summary, then who, how long and when. */
 .stories { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 .stories > li + li { border-block-start: 1px solid var(--color-border); }
-.story { padding-block: calc(var(--space) * 2.5); }
-.story-label { margin: 0 0 calc(var(--space) / 2); color: var(--color-muted); font-size: var(--text-small); font-variant-caps: all-small-caps; font-weight: 600; letter-spacing: 0.04em; }
+.story { position: relative; padding-block: calc(var(--space) * 2.5); }
+.story-label { margin: 0 0 calc(var(--space) * 0.75); color: var(--color-link); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 .story :is(h2, h3) { margin: 0; font-size: var(--text-h3); line-height: 1.3; }
 .story :is(h2, h3) a { color: var(--color-text); text-decoration: none; }
-.story :is(h2, h3) a:hover { text-decoration: underline; }
-.story-excerpt { margin: var(--space) 0 0; }
+.story :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
+.story:hover :is(h2, h3) a { color: var(--color-link); }
+.story-excerpt { margin: var(--space) 0 0; color: var(--color-muted); }
 .story-meta { display: flex; flex-wrap: wrap; gap: 0 calc(var(--space) * 1.5); margin: var(--space) 0 0; color: var(--color-muted); font-size: var(--text-small); }
 .story-meta > * + *::before { content: "\00b7" / ""; margin-inline-end: calc(var(--space) * 1.5); }
+.story .image { margin: 0; }
+.story .image img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0; background: var(--color-surface); }
 
-/* The two newest featured posts, large, then the picks in a grid. */
+/* The two newest featured posts, large picture cards side by side when
+   there is room, then the picks in a grid of smaller ones. */
 .leads { display: grid; gap: var(--atlas-gap); }
-.story-lead { padding: calc(var(--space) * 3); background: var(--color-surface); border-radius: var(--radius); }
-.story-lead :is(h2, h3) { font-size: var(--text-h2); }
+.leads > h2 { grid-column: 1 / -1; }
+.story-lead, .pick-grid .story { display: flex; flex-direction: column; overflow: hidden; padding: 0; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); transition: border-color 0.15s, box-shadow 0.15s; }
+.story-lead > :not(.image), .pick-grid .story > :not(.image) { margin-inline: calc(var(--space) * 2.5); }
+.story-lead > :not(.image):first-child, .pick-grid .story > :not(.image):first-child, .story-lead > .image + *, .pick-grid .story > .image + * { margin-block-start: calc(var(--space) * 2.5); }
+.story-lead > :last-child, .pick-grid .story > :last-child { margin-block-end: calc(var(--space) * 2.5); }
+.story-lead:hover, .pick-grid .story:hover { border-color: var(--color-accent); box-shadow: 0 0.75rem 2rem color-mix(in oklab, var(--color-accent) 16%, transparent); }
+.story-lead { background: var(--atlas-tint); border-color: color-mix(in oklab, var(--color-accent) 20%, var(--color-background)); }
+.story-lead :is(h2, h3) { font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.015em; }
+@media (min-width: 52rem) { .leads:has(> .story-lead + .story-lead) { grid-template-columns: 3fr 2fr; } }
 .pick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--atlas-gap); margin: 0; padding: 0; list-style: none; }
-.pick-grid .story { block-size: 100%; padding: calc(var(--space) * 2.5); border: 1px solid var(--color-border); border-radius: var(--radius); }
-.pick-grid .story:has(a:hover) { border-color: var(--color-accent); }
+.pick-grid > li { display: flex; }
+.pick-grid .story { flex: 1; }
+.pick-grid .story :is(h2, h3) { font-size: var(--text-h4); }
 
-/* One block per topic: its newest posts and a link to all of them. */
-.topic-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 0 calc(var(--atlas-gap) * 2); }
+/* One block per topic: a tinted card with its newest posts and a link to
+   all of them. */
+.topic-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--atlas-gap); }
+.front .topic-block { margin: 0; padding: calc(var(--space) * 2.5); background: var(--color-surface); border-block-start: 3px solid var(--color-accent); border-radius: 0 0 var(--radius) var(--radius); }
 .topic-block .story { padding-block: calc(var(--space) * 1.5); }
+.topic-block .story :is(h2, h3) { font-size: var(--text-body); }
+.view-all a { font-weight: 700; }
+.view-all a::after { content: " \2192" / ""; white-space: pre; }
+[dir="rtl"] .view-all a::after { content: " \2190" / ""; }
 @media (min-width: 64rem) { .feed { max-inline-size: 48rem; } }
 
-/* Lists and author pages: text cards split by rules. */
+/* Lists and author pages: text cards split by rules, labels in the accent. */
 .cards-text { gap: 0; }
 .cards-text > li + li { border-block-start: 1px solid var(--color-border); }
 .cards-text .card { padding-block: calc(var(--space) * 2); }
+.cards-text .card-meta a { color: var(--color-link); font-weight: 700; }
+.page-numbers a { color: var(--color-text); text-decoration: none; }
+.page-numbers a:hover { background: var(--atlas-tint); }
 
-/* A post: the trail, the title, then the contents in a ruled column. */
-.post-header h1 { margin-block-start: var(--space); }
-.toc-side { padding-inline-end: calc(var(--space) * 2); border-inline-end: 1px solid var(--color-border); }
-.toc-side .toc-title, .toc-inline summary { font-size: var(--text-small); letter-spacing: 0.06em; text-transform: uppercase; }
+/* A post: the trail, a large title, the picture in a soft frame, then the
+   numbered contents on a tinted panel beside the body. */
+.post-header h1 { margin-block: var(--space) calc(var(--space) * 2); font-size: calc(var(--text-h1) * 1.05); letter-spacing: -0.025em; line-height: 1.1; }
+.post-meta a { font-weight: 600; }
+.post-header .image img { border: 1px solid var(--color-border); }
+.toc-side { padding: calc(var(--space) * 2); background: var(--color-surface); border-radius: var(--radius); }
+.toc-side a { color: var(--color-text); text-decoration: none; }
+.toc-side a:hover, .toc-side a[aria-current] { color: var(--color-link); box-shadow: inset 2px 0 0 var(--color-accent); }
+[dir="rtl"] .toc-side a:hover, [dir="rtl"] .toc-side a[aria-current] { box-shadow: inset -2px 0 0 var(--color-accent); }
+.toc-side .toc-title, .toc-inline summary { color: var(--color-link); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+.toc-inline { background: var(--atlas-tint); }
+.share { padding-block: calc(var(--space) * 1.5); border-block: 1px solid var(--color-border); }
+.share a { border-radius: 999px; color: var(--color-text); font-size: var(--text-small); font-weight: 600; }
+.share a:hover, .share a:focus-visible { background: var(--color-accent); color: var(--color-on-accent); }
 
 /* Body furniture: an expert quote set large under an opening mark,
    further reading in italics, steps and tables with clear edges. */
-.pullquote { padding-inline-start: 0; border: 0; }
+.post-body > h2 { padding-block-start: calc(var(--space) * 1.5); border-block-start: 2px solid var(--color-text); }
+.pullquote { padding: calc(var(--space) * 3); background: var(--atlas-tint); border: 0; border-radius: var(--radius); }
 .pullquote blockquote { font-size: var(--text-h3); }
 .pullquote blockquote::before { content: "\201C" / ""; display: block; block-size: 0.5em; color: var(--color-accent); font-size: 3em; line-height: 1; }
 .callout-read { font-style: italic; }
 .post-body th { background: var(--color-surface); }
 .post-body table { border: 1px solid var(--color-border); border-radius: var(--radius); }
-.howto > li::marker { font-family: var(--font-heading); font-weight: var(--heading-weight); }
+.howto > li::marker { color: var(--color-link); font-family: var(--font-heading); font-weight: var(--heading-weight); }
+.lock { background: var(--atlas-tint); border-color: color-mix(in oklab, var(--color-accent) 25%, var(--color-background)); }
 
-/* The call to action: a band on a tint of the accent. */
-.cta-band { background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border: 1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-background)); }
+/* After the post: the author on a card with an accent edge, the call to
+   action on a tint of the accent. */
+.author-box { background: var(--color-background); border: 1px solid var(--color-border); border-block-start: 3px solid var(--color-accent); }
+.author-box h2 { color: var(--color-link); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+.cta-band { background: linear-gradient(120deg, var(--atlas-tint), color-mix(in oklab, var(--color-accent) 18%, var(--color-background))); border: 1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-background)); }
 .related > h2 { font-size: var(--text-h3); }
 
-@media print { .catbar { display: none; } }
+@media print { .catbar, .site-name::before { display: none; } }
