@@ -419,6 +419,18 @@ export type AdminTags = {
   tags: AdminTag[];
 };
 
+/** One built-in template: what it is for, what it turns on and off, and the options `[template.options]` may set for it. */
+export type AdminTemplate = {
+  /** The name `[template]` uses, such as `classic`. */
+  name: string;
+  /** Every option the template takes, in the order its docs list them. */
+  options: TemplateOptionSpec[];
+  /** The reader features the template turns on or off. A key the site writes in its own `[reader]` table wins. */
+  reader: ReaderDefault[];
+  /** One plain sentence on what the template is for. */
+  summary: string;
+};
+
 /** What one AI assistant sent. */
 export type AdminToolVisitors = {
   /** Views from its readers in the period of the same length before. */
@@ -1148,6 +1160,37 @@ export type NewWebhooks = {
 /** Text with something in it other than spaces. */
 export type NonBlank = string;
 
+/** The values one option takes, and its default. */
+export type OptionTakes = {
+  /** The value when not set. */
+  default: boolean;
+  kind: "switch";
+} | {
+  /** Every word allowed, in the order the docs list them. */
+  allowed: string[];
+  /** The word when not set. */
+  default: string;
+  kind: "choice";
+} | {
+  /** The number when not set. */
+  default: number;
+  kind: "count";
+  /** The smallest allowed. */
+  least: number;
+  /** The largest allowed. */
+  most: number;
+} | {
+  kind: "lines";
+  /** The most lines allowed. */
+  most: number;
+} | {
+  /** Every word allowed, in the order the docs list them. */
+  allowed: string[];
+  /** The words when not set. */
+  default: string[];
+  kind: "picks";
+};
+
 /** A change to a page: only the fields sent change. */
 export type PageEdit = {
   /** A new description; an empty one removes it. */
@@ -1456,6 +1499,14 @@ export type Problem = {
   title: string;
   /** A link to the page that explains this kind of problem. */
   type: string;
+};
+
+/** One reader feature a template turns on or off. */
+export type ReaderDefault = {
+  /** The key in `[reader]`, such as `reading_time`. */
+  key: string;
+  /** Whether the template turns it on. */
+  on: boolean;
 };
 
 /** An edit's claim that it is a real update: it changes what a live post says, and `note` tells readers what. Only then does the post's updated date become today. Title, description and settings edits alone never move it. */
@@ -1772,6 +1823,22 @@ export type Tags = {
   meta?: Meta | null;
   /** The entries on this page, or the one entry asked for. */
   tags: Term[];
+};
+
+/** Every built-in template, as the Admin API wraps the list. */
+export type TemplateList = {
+  /** The templates, classic first. */
+  templates: AdminTemplate[];
+};
+
+/** One option a template takes. */
+export type TemplateOptionSpec = {
+  /** One plain sentence on what the option changes. */
+  help: string;
+  /** The key in `[template.options]`, such as `contents`. */
+  key: string;
+  /** The values it takes, and the one it has when the site sets none. */
+  takes: OptionTakes;
 };
 
 /** What a schema template's `name` names. */
@@ -3041,6 +3108,16 @@ export interface Operations {
       };
     };
     output: null;
+  };
+  /** Lists every built-in template the running Khalid has, classic first, each with its summary, the reader features it turns on or off and the options `[template.options]` may set for it. Choose one through the settings route. Needs `settings:write`. */
+  list_templates: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: TemplateList;
   };
   /** Lists the deleted posts, the most recently deleted first. Needs `posts:write`. */
   list_trash: {

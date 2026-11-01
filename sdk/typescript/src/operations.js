@@ -95,6 +95,7 @@ export const operations = {
   list_tags: { method: "GET", path: "/api/admin/v1/tags/", key: "admin", body: null },
   rename_tag: { method: "PUT", path: "/api/admin/v1/tags/{id}/", key: "admin", body: "application/json" },
   remove_tag: { method: "DELETE", path: "/api/admin/v1/tags/{id}/", key: "admin", body: null },
+  list_templates: { method: "GET", path: "/api/admin/v1/templates/", key: "admin", body: null },
   list_trash: { method: "GET", path: "/api/admin/v1/trash/", key: "admin", body: null },
   purge_trashed: { method: "DELETE", path: "/api/admin/v1/trash/{key}/", key: "admin", body: null },
   restore_trashed: { method: "POST", path: "/api/admin/v1/trash/{key}/restore/", key: "admin", body: null },
