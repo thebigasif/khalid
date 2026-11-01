@@ -3093,9 +3093,11 @@ version = "1.0.0"
 dependencies = [
  "khalid-core",
  "khalid-outbound",
+ "khalid-theme",
  "read-fonts",
  "scraper",
  "serde",
+ "serde_json",
  "tempfile",
  "thiserror 2.0.21",
  "tokio",

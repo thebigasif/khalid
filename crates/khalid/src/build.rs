@@ -23,7 +23,7 @@ use crate::post_photos::Shown;
 use crate::site_page::HeadNonce;
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
-    build_seo, build_sitemap, categories, content_message, own_descriptions, post_files,
+    build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_files,
     post_images, post_lock, report, search_page, search_static, share_images, static_mode,
 };
 
@@ -93,6 +93,20 @@ pub(crate) fn into_folder(
     Ok(Built { pages, left_out })
 }
 
+/// The renderer and stylesheet of the look `config` chose, and the tokens
+/// the share images take, for a site with pages. A headless site gets no
+/// renderer and the default tokens, and its theme is never read.
+fn theme(site: &Path, config: &Config) -> Result<(Option<(Renderer, Asset)>, Tokens), UserMessage> {
+    if !config.mode().has_pages() {
+        return Ok((None, Tokens::default()));
+    }
+    let look = look::of(site, config)?;
+    let renderer = Renderer::with_pack(site, &look::render_pack(&look))
+        .map_err(|error| build_message::render(&error))?;
+    let css = assets::site_stylesheet(site, &look)?;
+    Ok((Some((renderer, css)), look::tokens(site, &look)?))
+}
+
 /// Renders every page into `out`, then writes the stylesheet they link and
 /// the site's files beside them, and says how many pages were written. A
 /// headless site gets the files only, and its theme is never read (ADR
@@ -105,17 +119,7 @@ fn build(
     out: &Path,
     clock: &dyn Clock,
 ) -> Result<usize, UserMessage> {
-    let theme = if config.mode().has_pages() {
-        let renderer = Renderer::with_theme(site).map_err(|error| build_message::render(&error))?;
-        Some((renderer, assets::site_stylesheet(site)?))
-    } else {
-        None
-    };
-    let tokens = if config.mode().has_pages() {
-        Tokens::load(site).map_err(|error| build_message::tokens(&error))?
-    } else {
-        Tokens::default()
-    };
+    let (theme, tokens) = theme(site, config)?;
     let href = theme
         .as_ref()
         .map(|(_, css)| assets::href(config, css))

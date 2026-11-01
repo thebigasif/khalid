@@ -1,0 +1,2 @@
+/* The trial pack: a throwaway look the tests switch to. Never shipped. */
+.trial-greeting { padding: var(--space); border-inline-start: 4px solid var(--color-accent); }
