@@ -24,6 +24,8 @@ const PARTS: &[(&str, Off)] = &[
     // The site's logo in the header, from `[brand] logo` in the tokens, in
     // place of its name as text.
     ("logo", Off::Switch(false)),
+    // An "All posts" link to the front page above a post.
+    ("back_link", Off::Switch(false)),
     // The trail from the home page to the page, above the content.
     ("breadcrumbs", Off::Switch(false)),
     // A post's subtitle, its description, under its title.

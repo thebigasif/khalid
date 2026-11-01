@@ -81,6 +81,8 @@ latest = "Latest posts"
 all_topics = "All"
 # The heading over the newest posts on a template's front page.
 recent_posts = "Recently published"
+# The link above a post back to the front page.
+back_to_posts = "All posts"
 # {name} is filled in.
 posts_by = "Posts by {name}"
 # The heading of the other authors at the end of an author page.

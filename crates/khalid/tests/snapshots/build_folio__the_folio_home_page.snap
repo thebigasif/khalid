@@ -1,0 +1,72 @@
+---
+source: crates/khalid/tests/build_folio.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/">Search</a>
+<a class="button header-button" href="https://www.example.com/signup/">Try it free</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="masthead">
+<h1>Field Notes on SEO</h1>
+<p class="masthead-tagline">Notes from the team that builds the blog.</p>
+<nav class="category-tabs" aria-label="Categories">
+<ul>
+<li><a href="/blog/" aria-current="page">All</a></li>
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>
+</header>
+<section class="featured" aria-labelledby="featured-title">
+<h2 id="featured-title">Featured</h2>
+<article class="card card-featured">
+<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<time datetime="2026-09-21">21 September 2026</time></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</article>
+</section>
+<ul class="cards" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<time datetime="2026-10-12">12 October 2026</time></p>
+<h2><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
+<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
+<time datetime="2026-10-05">5 October 2026</time></p>
+<h2><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
+<time datetime="2026-09-28">28 September 2026</time></p>
+<h2><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h2>
+<p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<time datetime="2026-09-14">14 September 2026</time></p>
+<h2><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h2>
+<p>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</article>
+</li>
+</ul>
+<figure class="masthead-quote">
+<blockquote>
+<p>Write for one reader at a time.</p>
+</blockquote>
+<figcaption>Lena Vogt</figcaption>
+</figure>

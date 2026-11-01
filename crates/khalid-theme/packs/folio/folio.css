@@ -1,0 +1,73 @@
+/* Folio: a product team's essays under their own masthead (templates
+   spec 3.10). A centred masthead, outlined picture cards in a grid, and
+   essays in one centred column. Every colour, font and corner comes from
+   the tokens; tints are mixed from them. */
+
+/* The page is wider than the reading column, so the grid has room. */
+.site-header, main, .site-footer { max-inline-size: 76rem; }
+.post, .page, .author, .back-link, .post ~ * { max-inline-size: var(--measure); margin-inline: auto; }
+.site-header nav a { color: var(--color-muted); text-decoration: none; }
+.site-header nav a:hover, .site-header nav [aria-current] { color: var(--color-text); }
+.button { color: var(--color-on-accent); }
+.header-button { padding-inline: 1.125rem; border-radius: 999px; }
+h1, h2, h3 { letter-spacing: -0.015em; }
+
+/* The masthead: the blog's own name, its tagline and the category links,
+   centred. The links are pills that wrap onto a second line. */
+.masthead { padding-block: clamp(2.5rem, 8vw, 5rem) 1rem; text-align: center; }
+.masthead h1 { margin: 0; font-size: var(--text-h1); line-height: 1.05; }
+.masthead-tagline, .masthead .intro { max-inline-size: 36rem; margin: 1rem auto 0; color: var(--color-muted); font-size: var(--text-h4); }
+.masthead .category-tabs { margin-block: 2rem 0; border: 0; }
+.masthead .category-tabs ul { flex-wrap: wrap; justify-content: center; gap: 0.5rem; overflow: visible; }
+.masthead .category-tabs a { padding-inline: 1rem; border: 1px solid var(--color-border); border-radius: 999px; }
+.masthead .category-tabs a[aria-current] { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
+
+/* Cards: outlined, picture on top, the author at the foot. The outline
+   turns to the accent on hover and when a link inside has focus. */
+main > .cards, .home-section .cards, section > .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 2rem; }
+@media (min-width: 80rem) { main > .cards { grid-template-columns: repeat(3, 1fr); } }
+.cards .card, .card-featured { display: flex; flex-direction: column; block-size: 100%; padding: 0 0 1.5rem; overflow: hidden; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); transition: border-color 0.15s; }
+.cards .card:hover, .cards .card:focus-within, .card-featured:hover, .card-featured:focus-within { border-color: var(--color-accent); }
+.card > :not(.image) { margin-inline: 1.5rem; }
+.card .image { margin: 0 0 0.5rem; }
+.card .image img { aspect-ratio: 16 / 10; object-fit: cover; border-radius: 0; }
+.card :is(h2, h3) { margin-block: 1rem 0.5rem; font-size: var(--text-h3); line-height: 1.25; }
+.card > p:not(.card-meta) { color: var(--color-muted); }
+.card .card-meta { order: 9; margin-block-start: auto; padding-block-start: 1rem; }
+.card-meta time { display: none; }
+.card-author .person-role { display: block; margin: 0; }
+.featured > h2 { text-align: center; }
+.card-featured :is(h2, h3) { font-size: var(--text-h2); }
+@media (min-width: 60rem) {
+  .card-featured:has(.image) { display: grid; grid-template-columns: 3fr 2fr; align-content: center; padding: 0; }
+  .card-featured .image { grid-row: 1 / span 9; margin: 0; }
+  .card-featured .image img { block-size: 100%; }
+  .card-featured > :not(.image) { grid-column: 2; margin-inline: 2rem; }
+}
+
+/* The quote from the options: large, centred, in the heading font. */
+.masthead-quote { max-inline-size: var(--measure); margin: var(--space-section) auto; text-align: center; }
+.masthead-quote blockquote { margin: 0; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-h2); line-height: 1.3; }
+.masthead-quote figcaption { margin-block-start: 1rem; }
+
+/* Page links with arrows that point the way the page reads. */
+.pagination-numbered a[rel="prev"]::before { content: "← " / ""; }
+.pagination-numbered a[rel="next"]::after { content: " →" / ""; }
+[dir="rtl"] .pagination-numbered a[rel="prev"]::before { content: "→ " / ""; }
+[dir="rtl"] .pagination-numbered a[rel="next"]::after { content: " ←" / ""; }
+
+/* An essay: the back link, a centred title, the authors, share links. */
+.back-link { margin-block: 1.5rem 0; font-size: var(--text-small); }
+.post-header { text-align: center; }
+.post-header h1 { margin-block-start: 1.5rem; }
+.post-meta { display: grid; justify-items: center; gap: 0.75rem; }
+.people { justify-content: center; }
+.person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.share { justify-content: center; }
+.share-title { flex-basis: 100%; text-align: center; font-size: var(--text-small); color: var(--color-muted); }
+.share a { border-radius: 999px; font-size: var(--text-small); }
+.post-body img { border-radius: var(--radius); }
+.post-body figure:not(.pullquote) { margin-block: 2.5rem; }
+.post-body > blockquote { padding-inline-start: 1.5rem; border-inline-start-color: var(--color-accent); color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-h4); font-style: italic; }
+.callout-summary { margin-block: 3rem; padding: 1.5rem 0 0; background: none; border: 0; border-block-start: 2px solid var(--color-text); border-radius: 0; }
+.cta-band { flex-direction: column; padding: clamp(1.5rem, 5vw, 3rem); text-align: center; background: var(--color-background); border: 1px solid var(--color-border); }

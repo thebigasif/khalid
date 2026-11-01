@@ -16,6 +16,14 @@ pub const LOGO: OptionSpec = OptionSpec {
     kind: OptionKind::Switch { default: false },
 };
 
+/// An "All posts" link to the front page above a post, in place of
+/// breadcrumbs.
+pub const BACK_LINK: OptionSpec = OptionSpec {
+    key: "back_link",
+    help: "Whether a post shows an \"All posts\" link back to the front page above its title.",
+    kind: OptionKind::Switch { default: false },
+};
+
 /// The trail from the home page to the page, above its content.
 pub const BREADCRUMBS: OptionSpec = OptionSpec {
     key: "breadcrumbs",
@@ -304,6 +312,7 @@ pub const fn on(spec: OptionSpec) -> OptionSpec {
 pub fn all() -> Vec<OptionSpec> {
     vec![
         LOGO,
+        BACK_LINK,
         BREADCRUMBS,
         DEK,
         UPDATED_NOTE,

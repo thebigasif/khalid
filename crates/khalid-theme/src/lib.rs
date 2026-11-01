@@ -20,6 +20,7 @@ mod contrast;
 mod css;
 mod fetch;
 mod fetch_error;
+mod folio;
 mod font_files;
 mod fonts;
 mod harbor;

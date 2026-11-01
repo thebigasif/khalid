@@ -62,6 +62,7 @@ Every template shares one set of page parts. A template switches on the ones it 
 | Option | Values | What it changes |
 |---|---|---|
 | `logo` | `true`, `false` | The header shows the logo from `[brand] logo` in `theme/tokens.toml` in place of the blog's name. Without a logo, the name shows. |
+| `back_link` | `true`, `false` | A post shows an "All posts" link back to the front page above its title, in place of breadcrumbs. |
 | `breadcrumbs` | `true`, `false` | Each page shows the trail of links from the home page to it: home, the post's category, the page. Search engines read the same trail. |
 | `dek` | `true`, `false` | A post shows its `description` as a subtitle under its title. |
 | `updated_note` | `true`, `false` | An updated post shows its `updated_note` (why it was updated) under its dates. |
