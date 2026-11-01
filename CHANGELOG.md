@@ -108,6 +108,12 @@ Ten finished blog templates to choose from, a Look screen to pick one, pictures 
 
 ### Fixed
 
+#### Templates
+
+- On a 320 px phone the header's call to action wraps onto two lines instead of running past the screen, in every template.
+- On a phone, the category tabs and Atlas's category bar wrap onto rows, and the related posts row stacks, so no item sits past the edge of the screen.
+- The website's Templates page shows its cards three to a row on a wide screen, two on a tablet and one on a phone, instead of one narrow column.
+
 #### Serving
 
 - A blog under a folder of another site, such as `/blog/`, now serves its admin at `/blog/admin/` and both APIs at `/blog/api/`, so the proxy rule `khalid init --stack` prints reaches them. Sign-in links, preview links, webhooks, the OpenAPI document and the newsletter form name the folder too. An old `/admin/` address moves there. A blog at `/` is unchanged.
