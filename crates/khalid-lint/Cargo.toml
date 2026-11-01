@@ -2,7 +2,7 @@
 name = "khalid-lint"
 # Published to crates.io with khalid-core, always at the same version
 # (docs/adr/0000-the-lint-crates-are-published-under-agpl.md).
-version = "0.1.0"
+version = "0.2.0"
 description = "The Khalid linter: rules that refuse a weak post and explain why in plain words."
 readme = "README.md"
 documentation = "https://docs.rs/khalid-lint"

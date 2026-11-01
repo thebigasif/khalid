@@ -4,6 +4,130 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.1.0
+
+Ten finished blog templates to choose from, a Look screen to pick one, pictures on every card and drawings as lead images, new blocks for posts, a fix for blogs under a folder of another site and for very large home pages, Khalid's own designed website with live demos, and a Deploy to Cloudflare button. Nothing changes for an existing blog until you pick a template. What is new, in plain words, with links to the live demos: `docs/releases/1.1.0.md`.
+
+### Added
+
+#### Templates
+
+- `site.toml` takes a `[template]` table that names the look the site uses and that look's options. Without it a site keeps today's look, now named classic, so nothing changes on upgrade.
+- Ten new templates, each with its own guide in `docs/templates/`. Pick one with `name = "<template>"` under `[template]`:
+  - **Almanac**, for a library of long guides: category links, a featured guide with a call to action, the newest posts as short rows, a grid of guides beside the editor's picks, and posts with breadcrumbs, a wide lead picture, an "On this page" box and two sets of further reading.
+  - **Atlas**, a portal for a blog with many topics: a sticky bar of topic tabs, the two newest featured posts large, editor's picks, the feed and a block per topic; each post shows its breadcrumbs, share links at the top and end, its contents in a sticky column, the author box, your call-to-action band and three related posts.
+  - **Compass**, for a teaching blog: breadcrumbs, an open contents box and the key points before each guide, share links, the author box and the newsletter after it, and outlined picture cards on the lists.
+  - **Folio**, a product team's essays under their own masthead: a centred blog name with a tagline and category links, a featured story, outlined picture cards, share links above and below each essay, and an "All posts" link in place of breadcrumbs.
+  - **Harbor**, for a busy marketing blog: a featured post with more featured posts under it, rows of the newest posts, the sign-up form beside the blog's name, an offer card in each post and a sideways row of related reading.
+  - **Keystone**, for a personal guide site: one big featured post, a grid of picture cards, numbered chapters, share links in a column beside each post and a newsletter form between sections.
+  - **Ledger**, a calm, text-led blog with no pictures in its lists, for studies and long how-tos: your tagline, up to three facts, a row of topics and the latest posts as a ruled list; each post shows its topic above the title, an open contents list, the author box, five related posts and the newsletter form.
+  - **Meridian**, a calm company journal: category tabs, wide rows with a square picture, several authors with their roles, and a reference layout for long guides that a post picks with `template: reference`.
+  - **Wire**, for a news and columns site: a lead story beside tabs of the latest posts and the editor's picks that switch with no script, a one-column feed with the newsletter form inside it, and posts that open with a subtitle, the writer's role and a card with their bio.
+  - **Workbench**, for blogs that review and compare tools: a featured post, the newest posts as rows, the newsletter twice on the front page, wide comparison tables, pros and cons, and a closing line with the dates.
+- Templates can switch on shared page parts: the main site's logo in the header, breadcrumbs, a post's subtitle and why it was updated, five card shapes with reading time and author role, a featured post above lists, editor's picks, numbered page links, five layouts for related posts and five places for a post's contents. Classic switches none of them on, so existing blogs look the same. See `docs/templates.md`.
+- Templates can show a row of category tabs on the home page: "All", then each category your posts use, in the order `categories.toml` lists them.
+- Templates can show an "All posts" link above each post, back to the front page, in place of breadcrumbs.
+- A template pack may bring its own post templates, such as `post-reference.html`, which a post picks with `template:` in its front matter.
+- Every page shows the main site's icon in the browser tab when theme sync found one.
+- A site may add its own CSS rules in `theme/site.css`. They join the one stylesheet after the template's rules, so they win, and `khalid theme sync` still sets the colours and fonts they read.
+
+#### Pictures
+
+- A lead image or author photo in SVG now shows at the top of its page, on every card and beside every byline, drawn at the size the file declares. Before, only JPEG, PNG and WebP showed.
+- Cards on the home page, in featured slots, in editor's picks and in home sections now show each post's lead image and its author's photo, as list pages already did.
+
+#### Calls to action, sharing and the newsletter
+
+- `site.toml` takes `[template.cta]`: one call to action with `label`, `href` and an optional `note`. Templates show it as a band after each post or on the front page, with the `cta_band` option, and as a button in the header, with `cta_button`.
+- A new block, `::cta`, places the band with your `[template.cta]` anywhere in a post or page, in every template.
+- `site.toml` takes `[[nav.footer_groups]]`: columns of footer links, each under its own heading, beside the flat `[[nav.footer]]` list. Every template shows them, and a group can be for one language only.
+- Templates can show share links under a post's title, after it, or both: plain links to each network's own share page and an email link, with no script and nothing loaded from the networks. The `share` and `share_networks` options choose where and which.
+- Templates can show a newsletter sign-up form after each post, on the front page, or both, with the `newsletter` option. It shows only on a blog that takes sign-ups: server mode with `[mail]`. The form can show a note, such as how often the newsletter goes out.
+
+#### Writing and content
+
+- Every block in a post now has its own look: callouts, figures, galleries, videos, the FAQ, how-to steps, product, review and recipe cards, bookmarks, buttons and forms. Callouts gain three kinds: `summary` for key takeaways, `read` for further reading and `stat` for one number worth remembering. The hidden spam-trap field on forms no longer shows to readers, and comments in code are coloured.
+- A columns block: `::::columns` around two to four `:::column{title="..."}` cards sets them side by side, and stacks them on a phone. Good for comparing two options.
+- A pull quote, `:::pullquote{by="..."}`, sets a short line large with who said it, and pros and cons, `:::proscons`, shows a `+` list beside a `-` list under their own titles. Both read in full with scripts off.
+- Long tables can fold: wrap a table in `:::table{fold=8}` and readers see the first eight rows with a "Show 16 more rows" line that opens the rest. It works with scripts off, and `more="..."` sets your own words for that line.
+
+#### Editor and admin
+
+- A Look screen in the admin: pick one of the built-in templates, see what each one turns on and off, and set that template's options. It saves to `site.toml`, and your blog shows the new look after Khalid restarts. See `docs/templates.md`.
+- `GET /api/admin/v1/templates/` lists every built-in template with its options, and the settings route reads and saves the site's `template`.
+
+#### Deploy
+
+- A "Deploy to Cloudflare" button puts a small, ready Khalid blog in your GitHub account and on Cloudflare for free, rebuilt on every push. `docs/deploy/cloudflare.md` explains the button, the Cloudflare Pages steps, the blog's address and your own domain. The starter installs Khalid 1.1.0.
+
+#### Website, demo and examples
+
+- Khalid's own website, built with Khalid, in `site/`: the story on the home page, one page per feature group, the templates gallery, six use cases, the ways to start and a fair comparison with WordPress, Ghost and Webflow. It is published at https://thebigasif.github.io/khalid/, and every post on it passes `khalid lint` with no finding.
+- A showcase demo site in `fixtures/showcase-site`: the blog of a fictional content studio, with sixteen posts in English and German, three authors, a pillar guide with its cluster, and every block Khalid has but audio, video files and recipes. It is live at https://thebigasif.github.io/khalid/demo/, and once in every template under https://thebigasif.github.io/khalid/templates/.
+- Six example sites in `fixtures/examples/` to copy from: a software company's blog with guides, comparisons and product updates; a marketing agency's blog with case studies, services and named experts; a writer's newsletter with a free letter, a supporters' list and an archive; a local bike workshop's blog with opening hours, local business details, how-to guides and FAQs; a publication in English, German and Spanish with every post linked to its translations; and a darkroom club's membership blog with members-only posts, a password post and a guide whose last part is for mailing list readers. Each has a README that says who it is for and which features it shows.
+- Every post of the showcase site and the six example sites has its own cover illustration, and every author a portrait.
+- The showcase sets a call to action and a newsletter sign-up, so every template demo shows its call-to-action band, and a served showcase shows the newsletter form. Nothing is sent: the mail server is a reserved example name.
+- `scripts/template-previews.sh` draws the website's template previews: a screenshot of each template demo's home page and of one post, taken with a headless Chromium, or a plain card where none runs.
+- Tests keep the showcase, every example and the website free of lint findings and audit warnings.
+
+### Changed
+
+#### Templates
+
+- Every template now shows each post's category: on the post under its dates, on each post card, and as a row of topic links on the front page, named as `categories.toml` names them in each language. Turn the row off with `topic_links = false` in `[reader]`.
+- Templates share one set of words: "Latest posts" over the newest posts, "All posts" for the link to every post, and "All" as the first of a row of topics or categories.
+- The Look screen's options include one-line text, such as Ledger's tagline, drawn as a single text field. The Admin API lists it as `line` with the most characters it takes.
+- Every template keeps its links, stylesheets, newsletter form and share links under a blog's folder, such as `/blog/`, and the Look screen calls the Admin API there too. A test builds the demo in each template and fails on any address that leaves the folder.
+- Every template now has a finished look:
+  - **Almanac** looks like a well-lit library: the featured guide on a large tinted panel with its cover, rounded picture cards that warm to a tint when pointed at, numbered editor's picks, "On this page" in two columns with accent dots, and the newsletter and footer as bands across the screen.
+  - **Atlas**: the two lead stories and the editor's picks are picture cards that lift on hover, topic labels and tabs take the indigo accent, topic blocks sit on tinted cards, and posts get a tinted contents panel, round share buttons, a framed pull quote and a footer across the window.
+  - **Compass**: a teal strip along the top, the name after a drawn compass, the blog's title on a tinted band, outlined picture cards that lift on hover with a drawn cover for posts without a picture, key points with drawn check marks, round share buttons, and an author box and footer with the accent.
+  - **Folio** opens under a soft glow of the accent behind its masthead, with outlined cards that rise when pointed at, a large featured story, and essays whose cover runs wider than the text.
+  - **Harbor**: the blog's name large on a berry tint across the window, the featured post on a soft panel with a shadowed picture, cards and rows with a drawn cover when a post has no picture, labels in the accent, a tinted contents box, round share buttons that fill on hover and a footer across the window.
+  - **Keystone**: a heavy name after an orange dot, menus that tint on hover, the featured post as a hero on a warm tint, topic pills, picture cards that zoom gently on hover with a drawn cover for posts without a picture, a centred post title over a rounded lead picture, and a warm author card and footer.
+  - **Ledger**: serif headings, the latest posts numbered in the margin, a large masthead, pills that fill with the accent on hover, a framed lead image (now on by default), a contents box with an accent edge, an author box and a footer on the paper tint.
+  - **Meridian** is calmer: large titles set close, square pictures that ease in on hover, the editor's picks on a soft panel, the post's cover under a hairline byline, and the newsletter between two hairlines.
+  - **Wire** looks like a newsroom: an accent bar over the page, heavy headlines, pictures in the lead story and on the end side of every row, big numerals in the editor's picks, quotes set between heavy rules, the writer's card on a tint with an accent edge, and the footer as a band across the screen.
+  - **Workbench** looks like a well-kept bench: the name and labels in the code font, a squared grid behind the front page's title, the featured post and the post's cover framed on a hard shadow of the accent, cards that lift onto it when pointed at, numbered contents, and an "at a glance" table with a tinted header. A post now shows its cover by default; set `lead_image = false` to hide it.
+- Ledger, Atlas, Keystone, Compass and Harbor each bring their own colours: ink green on warm paper, indigo, warm orange, teal and berry. Ledger and Compass also bring their own heading type. A site's own colours and fonts in `theme/tokens.toml`, such as the ones theme sync writes, still win.
+
+#### Website
+
+- Khalid's website wears the Atlas template with its own look: a warm paper and ink palette with an orange accent, a sticky header with a button, page heroes, features and use cases as tiles with drawn icons, numbered ways to start and footer link columns.
+- The website's home page is designed: a hero with the promise and a drawn lint report, the three ways to start with the Deploy to Cloudflare button, the figures Khalid holds itself to, a feature grid with drawn icons, a blog without checks beside a blog on Khalid, the use cases, how it works in three steps and a closing call to action.
+- The website shows every template in a gallery, each with a picture of its demo's home page and of a post, and the home page shows six of them in a strip.
+
+#### Search engines
+
+- A post with a category now has its category as a step in its breadcrumb schema, between the home page and the post.
+
+#### Libraries
+
+- Khalid now reads its settings files with toml 1.1 and XML (sitemaps, WordPress exports) with roxmltree 0.21. Nothing changes for you; the newer XML reader no longer crashes on very deeply nested files.
+- The library crates `khalid-core` and `khalid-lint` move to 0.2.0. `khalid-core` gained the template choice, reader settings and footer groups, and the two crates always share one version.
+
+### Fixed
+
+#### Templates
+
+- On a 320 px phone the header's call to action wraps onto two lines instead of running past the screen, in every template.
+- On a phone, the category tabs and Atlas's category bar wrap onto rows, and the related posts row stacks, so no item sits past the edge of the screen.
+- The website's Templates page shows its cards three to a row on a wide screen, two on a tablet and one on a phone, instead of one narrow column.
+
+#### Serving
+
+- A blog under a folder of another site, such as `/blog/`, now serves its admin at `/blog/admin/` and both APIs at `/blog/api/`, so the proxy rule `khalid init --stack` prints reaches them. Sign-in links, preview links, webhooks, the OpenAPI document and the newsletter form name the folder too. An old `/admin/` address moves there. A blog at `/` is unchanged.
+- A blog with thousands of posts builds and serves again. Its home page lists every post, and it stopped with "template home.html failed while rendering" because a page had a fixed limit on its work. A page now gets more room for each post it lists, and a template that loops without end is still stopped.
+
+#### Redirects and import
+
+- `khalid redirects explain` now knows the old addresses listed in a post's `aliases`. It names the post, and a stored redirect that points at an alias ends at the post in one step, as `khalid serve` sends it. An alias of a post the linter blocks is shown as waiting for that post (KH-SEO-8).
+- `khalid import` and `khalid redirects import` say "1 redirect" and "1 file" instead of "1 redirects" and "1 files".
+
+#### Admin
+
+- The admin's tests no longer fail now and then after every test has passed. Each test now waits for the writing editor to close before it ends.
+
 ## 1.0.0
 
 The first stable release. It holds everything in 0.9.1 and the fixes below, found by walking a new user's path from install to a published post. What it is, how to install it and what is still checked after launch: `docs/releases/1.0.0.md`.

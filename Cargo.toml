@@ -9,7 +9,7 @@ members = ["crates/*", "lints/check"]
 [workspace.package]
 # Every crate but khalid-core and khalid-lint, which keep their own published
 # version (docs/adr/0000-the-lint-crates-are-published-under-agpl.md).
-version = "1.0.0"
+version = "1.1.0"
 edition = "2024"
 rust-version = "1.99"
 license = "AGPL-3.0-only"
@@ -27,8 +27,8 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal", "tim
 tracing = "0.1"
 # The two crates published to crates.io (docs/adr/0000-the-lint-crates-are-published-under-agpl.md).
 # Every member names them through these lines, so a release bumps one place.
-khalid-core = { path = "crates/khalid-core", version = "0.1.0" }
-khalid-lint = { path = "crates/khalid-lint", version = "0.1.0" }
+khalid-core = { path = "crates/khalid-core", version = "0.2.0" }
+khalid-lint = { path = "crates/khalid-lint", version = "0.2.0" }
 
 [workspace.lints.rust]
 # The complete lint table is in lints/lints.toml, with the reasoning. It is

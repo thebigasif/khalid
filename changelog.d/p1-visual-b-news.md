@@ -1,3 +1,0 @@
-Changed
-- Wire looks like a newsroom: an accent bar over the page, heavy headlines, pictures in the lead story and on the end side of every row, big numerals in the editor's picks, quotes set between heavy rules, the writer's card on a tint with an accent edge, and the footer as a band across the screen.
-- Workbench looks like a well-kept bench: the name and labels in the code font, a squared grid behind the front page's title, the featured post and the post's cover framed on a hard shadow of the accent, cards that lift onto it when pointed at, numbered contents, and an "at a glance" table with a tinted header. A post now shows its cover by default; set `lead_image = false` to hide it.
