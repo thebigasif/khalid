@@ -2,14 +2,16 @@
 //! each switched on by the template's options and read with scripts off
 //! (templates spec 4.2).
 
-use khalid_render::{PageBody, PageKind, RenderPack, RenderSite, Renderer, TemplateOption};
+use khalid_render::{
+    PageBody, PageKind, RenderCta, RenderPack, RenderSite, Renderer, TemplateOption,
+};
 
 use crate::common::{demo_site, meta};
 use crate::html_check::assert_valid_page;
 use crate::listing::{first_page, home};
 use crate::post::{part, sitemap_post};
 
-fn word(text: &str) -> TemplateOption {
+pub(crate) fn word(text: &str) -> TemplateOption {
     TemplateOption::Word(text.to_owned())
 }
 
@@ -19,6 +21,12 @@ fn lines(items: &[&str]) -> TemplateOption {
 
 /// A renderer for a pack that replaces no file and sets `options`.
 fn with_options(options: &[(&str, TemplateOption)]) -> Renderer {
+    with_pack(options, None)
+}
+
+/// A renderer for a pack that replaces no file, sets `options` and has
+/// the site's call to action `cta`.
+pub(crate) fn with_pack(options: &[(&str, TemplateOption)], cta: Option<RenderCta>) -> Renderer {
     let site = tempfile::tempdir().unwrap();
     let pack = RenderPack {
         name: "trial",
@@ -26,6 +34,7 @@ fn with_options(options: &[(&str, TemplateOption)]) -> Renderer {
         options: (options.iter())
             .map(|(key, value)| ((*key).to_owned(), value.clone()))
             .collect(),
+        cta,
     };
     Renderer::with_pack(site.path(), &pack).unwrap()
 }
@@ -34,14 +43,14 @@ fn post_page(renderer: &Renderer) -> String {
     post_on(renderer, &demo_site("en"))
 }
 
-fn post_on(renderer: &Renderer, site: &RenderSite) -> String {
+pub(crate) fn post_on(renderer: &Renderer, site: &RenderSite) -> String {
     let post = sitemap_post();
     let meta = meta(&post.title, "/blog/what-a-sitemap-does/", PageKind::Article);
     let body = PageBody::Post(Box::new(post));
     renderer.render(site, &meta, &body).unwrap()
 }
 
-fn home_on(renderer: &Renderer, site: &RenderSite) -> String {
+pub(crate) fn home_on(renderer: &Renderer, site: &RenderSite) -> String {
     let meta = meta("Field Notes on SEO", "/blog/", PageKind::Website);
     let body = PageBody::Home(home(first_page()));
     renderer.render(site, &meta, &body).unwrap()

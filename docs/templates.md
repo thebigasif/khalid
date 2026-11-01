@@ -41,10 +41,25 @@ Some parts of a page work the same in every template that has them. Each templat
 | `share` | `none`, `top`, `end`, `both` | Where a post shows its share links: under the title, after the post, or both. |
 | `share_networks` | a list from `x`, `linkedin`, `facebook`, `bluesky`, `reddit`, `hacker-news`, `whatsapp`, `email` | Which networks the share links go to, in the order they show. Each name once. |
 | `newsletter` | `none`, `post`, `home`, `both` | Where the newsletter form shows: after each post, on the front page, or both. |
+| `cta_band` | `none`, `post`, `home`, `both` | Where the band with your call to action shows. |
+| `cta_button` | `true`, `false` | Whether the header shows your call to action as a button. |
 
 Share links are plain links to each network's own share page. They need no script, load nothing from the network, and tell the network nothing until a reader follows one.
 
 The newsletter form shows only when your blog can take sign-ups: `mode = "server"` with a `[mail]` table. A static blog has nowhere to send the form, so it shows none.
+
+## Your call to action
+
+A call to action is the one thing you ask readers to do, such as start a trial. Write it once:
+
+```toml
+[template.cta]
+label = "Start a free trial"          # the words on the button
+href = "https://example.com/signup"   # a full address, or a path on your blog such as /blog/start/
+note = "No card needed."              # optional: one line beside the button
+```
+
+Templates show it as a band after a post or on the front page (`cta_band`), and as a button in the header (`cta_button`). Without `[template.cta]` neither shows.
 
 ## Reader features
 

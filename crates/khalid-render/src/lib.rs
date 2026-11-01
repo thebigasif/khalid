@@ -57,7 +57,7 @@ pub use glossary::{
 pub use home::{HomeSectionPosts, RenderHome, TopicGroup};
 pub use image::{ImageCandidate, ImageSet, Loading, RenderImage};
 pub use listing::{Pagination, PostCard, RenderListing};
-pub use pack::{RenderPack, TemplateOption};
+pub use pack::{RenderCta, RenderPack, TemplateOption};
 pub use page_body::PageBody;
 pub use page_meta::{Alternate, HeadHtml, PageKind, PageMeta, Robots, ShareImage};
 pub use person::Person;

@@ -18,6 +18,8 @@ mod common;
 #[cfg(test)]
 mod contents;
 #[cfg(test)]
+mod cta;
+#[cfg(test)]
 mod enlarge;
 #[cfg(test)]
 mod glossary;

@@ -137,6 +137,30 @@ fn the_newsletter_form_shows_only_when_the_site_takes_sign_ups() {
 }
 
 #[test]
+fn the_call_to_action_shows_as_a_band_and_a_header_button() {
+    let cta = "\n[template]\nname = \"trial\"\n[template.cta]\nlabel = \"Start a free trial\"\n\
+               href = \"https://www.example.com/signup/\"\nnote = \"No card needed.\"\n";
+    let (_trial, out) = built(cta);
+    let button = "<a class=\"button header-button\" href=\"https://www.example.com/signup/\">";
+    for rel in ["index.html", "what-a-sitemap-does/index.html"] {
+        let html = page(&out, rel);
+        assert!(
+            html.contains("<p class=\"cta-note\">No card needed.</p>"),
+            "{rel}"
+        );
+        assert!(html.contains(button), "{rel}");
+    }
+    assert!(
+        page(&out, "404.html").contains(button),
+        "every page's header"
+    );
+
+    let (_classic, classic) = built(&cta.replace("trial", "classic"));
+    let html = page(&classic, "what-a-sitemap-does/index.html");
+    assert!(!html.contains("cta-band") && !html.contains("header-button"));
+}
+
+#[test]
 fn the_sites_own_reader_key_wins_over_the_pack() {
     let table = "\n[reader]\nreading_time = true\n\n[template]\nname = \"trial\"\n";
     let (_temp, out) = built(table);

@@ -7,7 +7,7 @@ use std::fs;
 use std::path::Path;
 
 use khalid_core::{Config, ConfigError, UserMessage, toml_location};
-use khalid_render::{RenderPack, TemplateOption, Tokens};
+use khalid_render::{RenderCta, RenderPack, TemplateOption, Tokens};
 use khalid_theme::{CheckedOption, Look, LookError};
 
 use crate::{build_message, config_message};
@@ -50,6 +50,11 @@ pub(crate) fn render_pack(look: &Look) -> RenderPack<'static> {
         options: (look.options().iter())
             .map(|(key, value)| ((*key).to_owned(), option(value)))
             .collect(),
+        cta: look.cta().map(|cta| RenderCta {
+            label: cta.label.to_string(),
+            href: cta.href.to_string(),
+            note: cta.note.as_ref().map(ToString::to_string),
+        }),
     }
 }
 
@@ -110,6 +115,7 @@ mod tests {
                     .map(|file| (file.name, file.source))
                     .collect(),
                 options: BTreeMap::new(),
+                cta: None,
             };
             let renderer = Renderer::with_pack(site.path(), &chosen);
             assert!(renderer.is_ok(), "{}", pack.name);

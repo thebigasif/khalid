@@ -57,7 +57,7 @@ fn an_unknown_option_lists_the_options_the_pack_takes() {
     let error = choose("[template]\nname = \"trial\"\n[template.options]\nbaner = true\n");
     assert_eq!(
         error.unwrap_err().to_string(),
-        "the trial template has no option baner; it takes greeting, banner, columns, stats, share, share_networks, newsletter"
+        "the trial template has no option baner; it takes greeting, banner, columns, stats, share, share_networks, newsletter, cta_band, cta_button"
     );
 }
 
@@ -133,11 +133,22 @@ fn share_networks_take_known_names_once_each() {
 }
 
 #[test]
+fn the_look_keeps_the_sites_call_to_action() {
+    assert!(choose("").unwrap().cta().is_none());
+    let look = choose("[template.cta]\nlabel = \"Book a demo\"\nhref = \"/demo/\"\n").unwrap();
+    assert_eq!(look.pack().name, "classic");
+    assert_eq!(
+        look.cta().map(|cta| cta.label.as_str()),
+        Some("Book a demo")
+    );
+}
+
+#[test]
 fn options_reach_templates_as_plain_values() {
     let look = choose("[template]\nname = \"trial\"\n").unwrap();
     let json = serde_json::to_string(look.options()).unwrap();
     assert_eq!(
         json,
-        r#"{"banner":false,"columns":2,"greeting":"hello","newsletter":"both","share":"end","share_networks":["linkedin","x","email"],"stats":[]}"#
+        r#"{"banner":false,"columns":2,"cta_band":"both","cta_button":true,"greeting":"hello","newsletter":"both","share":"end","share_networks":["linkedin","x","email"],"stats":[]}"#
     );
 }

@@ -3,16 +3,18 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use khalid_core::{OptionValue, TemplateChoice};
+use khalid_core::{CallToAction, OptionValue, TemplateChoice};
 use serde::Serialize;
 
 use crate::{OptionKind, OptionSpec, Pack, packs};
 
-/// The pack a site chose, with every one of its options set.
+/// The pack a site chose, with every one of its options set, and the
+/// site's call to action.
 #[derive(Debug, Clone)]
 pub struct Look {
     pack: &'static Pack,
     options: BTreeMap<&'static str, CheckedOption>,
+    cta: Option<CallToAction>,
 }
 
 /// One option's value, checked against the pack. Templates read it as
@@ -91,6 +93,7 @@ impl Look {
         Self {
             pack: crate::classic(),
             options: BTreeMap::new(),
+            cta: None,
         }
     }
 
@@ -137,7 +140,11 @@ impl Look {
                 })?;
             options.insert(spec.key, value);
         }
-        Ok(Self { pack, options })
+        Ok(Self {
+            pack,
+            options,
+            cta: choice.cta().cloned(),
+        })
     }
 
     /// The chosen pack.
@@ -148,6 +155,11 @@ impl Look {
     /// Every option of the pack, set as written or to its default.
     pub fn options(&self) -> &BTreeMap<&'static str, CheckedOption> {
         &self.options
+    }
+
+    /// The site's call to action from `[template.cta]`, if it set one.
+    pub fn cta(&self) -> Option<&CallToAction> {
+        self.cta.as_ref()
     }
 }
 

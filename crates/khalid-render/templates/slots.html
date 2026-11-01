@@ -13,3 +13,9 @@
 </form>
 </section>
 {%- endmacro %}
+{% macro cta_band(cta) -%}
+<div class="cta-band">
+{% if cta.note %}<p class="cta-note">{{ cta.note }}</p>
+{% endif %}<p><a class="button" href="{{ cta.href }}">{{ cta.label }}</a></p>
+</div>
+{%- endmacro %}

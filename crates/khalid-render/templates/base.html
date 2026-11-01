@@ -38,6 +38,7 @@
 {% endfor %}</ul>
 </nav>
 {% endif %}{% if site.search and "search_shortcut" in site.features %}<a class="search-link" href="{{ site.search }}">{{ t.search_link }}</a>
+{% endif %}{% if template.cta and template.options.cta_button %}<a class="button header-button" href="{{ template.cta.href }}">{{ template.cta.label }}</a>
 {% endif %}</header>
 <main id="main" tabindex="-1">
 {% block main %}{% endblock %}
