@@ -216,6 +216,69 @@ pub const fn related_count(count: i64) -> OptionSpec {
     }
 }
 
+/// Where a post's contents go, as the `contents` option names it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ContentsPlacement {
+    /// A folded box on phones and a sticky column on the end side of wide
+    /// screens: classic's.
+    SideEnd,
+    /// The same, with the column on the start side.
+    SideStart,
+    /// An open box after the post's heading, at every width.
+    Inline,
+    /// A folded box after the post's heading, at every width.
+    InlineFolded,
+    /// No contents.
+    None,
+}
+
+/// Where a post's contents go, `placement` unless the site sets it.
+pub const fn contents(placement: ContentsPlacement) -> OptionSpec {
+    OptionSpec {
+        key: "contents",
+        help: "Where a long post's contents go: side-end, side-start, inline, inline-folded or none.",
+        kind: OptionKind::Choice {
+            allowed: &["side-end", "side-start", "inline", "inline-folded", "none"],
+            default: match placement {
+                ContentsPlacement::SideEnd => "side-end",
+                ContentsPlacement::SideStart => "side-start",
+                ContentsPlacement::Inline => "inline",
+                ContentsPlacement::InlineFolded => "inline-folded",
+                ContentsPlacement::None => "none",
+            },
+        },
+    }
+}
+
+/// How the contents are numbered, as the `contents_numbers` option names
+/// it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ContentsNumbers {
+    /// 1, 2, 3 for the sections and again for each section's parts:
+    /// classic's.
+    Numbered,
+    /// 1, 1.1, 1.2, 2 for the sections and their parts.
+    Nested,
+    /// No numbers.
+    None,
+}
+
+/// How the contents are numbered, `numbers` unless the site sets it.
+pub const fn contents_numbers(numbers: ContentsNumbers) -> OptionSpec {
+    OptionSpec {
+        key: "contents_numbers",
+        help: "How a post's contents are numbered: numbered, nested for 1.1, or none.",
+        kind: OptionKind::Choice {
+            allowed: &["numbered", "nested", "none"],
+            default: match numbers {
+                ContentsNumbers::Numbered => "numbered",
+                ContentsNumbers::Nested => "nested",
+                ContentsNumbers::None => "none",
+            },
+        },
+    }
+}
+
 /// `spec` turned on by default, when it is an on or off option. Any other
 /// option comes back as it is.
 pub const fn on(spec: OptionSpec) -> OptionSpec {
@@ -244,5 +307,7 @@ pub fn all() -> Vec<OptionSpec> {
         pagination(PageLinks::Pages),
         related(RelatedLayout::Grid),
         related_count(5),
+        contents(ContentsPlacement::SideEnd),
+        contents_numbers(ContentsNumbers::Numbered),
     ]
 }

@@ -22,6 +22,8 @@ mod common;
 #[cfg(test)]
 mod contents;
 #[cfg(test)]
+mod contents_parts;
+#[cfg(test)]
 mod dek;
 #[cfg(test)]
 mod enlarge;

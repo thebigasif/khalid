@@ -28,3 +28,12 @@ fn the_cards_option_takes_every_card_shape_and_nothing_else() {
     assert_eq!(allowed, words.as_slice());
     assert_eq!(default, "ranked");
 }
+
+#[test]
+fn every_choice_starts_on_one_of_its_words() {
+    for spec in parts::all() {
+        if let OptionKind::Choice { allowed, default } = spec.kind {
+            assert!(allowed.contains(&default), "{}: {default}", spec.key);
+        }
+    }
+}

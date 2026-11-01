@@ -28,6 +28,8 @@ pub(crate) static SAMPLER: Pack = Pack {
         parts::pagination(parts::PageLinks::Pages),
         parts::related(parts::RelatedLayout::Grid),
         parts::related_count(5),
+        parts::contents(parts::ContentsPlacement::SideEnd),
+        parts::contents_numbers(parts::ContentsNumbers::Numbered),
     ],
 };
 

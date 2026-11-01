@@ -5,8 +5,10 @@
 {% from "author_box.html" import author_box -%}
 {% from "card.html" import cards -%}
 {% from "comments.html" import comments_section -%}
-{% set toc = page.contents and "table_of_contents" in site.features -%}
-{% if toc %}<article class="post post-with-toc">{% else %}<article class="post">{% endif %}
+{% set placement = template.options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% if side and placement == "side-start" %}<article class="post post-with-toc post-toc-start">{% elif side %}<article class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post post-toc-folded">{% else %}<article class="post">{% endif %}
 <header class="post-header">
 <h1>{{ page.title }}</h1>
 {% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
@@ -25,17 +27,21 @@
 {% endif %}</div>
 {% if page.image %}{{ picture(page.image) }}
 {% endif %}</header>
-{% if toc %}<details class="toc-inline">
+{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
 <summary>{{ t.contents }}</summary>
 <nav aria-label="{{ t.contents }}">
 {{ contents_list(page.contents) }}
 </nav>
 </details>
-<nav class="toc-side" aria-label="{{ t.contents }}">
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>
 {{ contents_list(page.contents) }}
 </nav>
-{% endif %}<div class="post-body">
+{% endif %}{% endif %}<div class="post-body">
 {% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body }}
 </div>
 {% if page.tags %}<footer class="post-footer">

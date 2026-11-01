@@ -48,6 +48,11 @@ const PARTS: &[(&str, Off)] = &[
     ("related", Off::Word("grid")),
     // How many related posts show, from 3 to 10.
     ("related_count", Off::Number(5)),
+    // Where a post's contents go: side-end (classic), side-start, inline,
+    // inline-folded or none.
+    ("contents", Off::Word("side-end")),
+    // How the contents are numbered: numbered, nested or none.
+    ("contents_numbers", Off::Word("numbered")),
 ];
 
 /// The option key of every part the shared templates read.

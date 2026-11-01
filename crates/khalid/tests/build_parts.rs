@@ -201,3 +201,22 @@ fn the_sampler_pack_lays_out_related_posts_as_links() {
     assert!(post.contains("<section class=\"related\">"), "{post}");
     assert!(!post.contains("related-links"), "{post}");
 }
+
+#[test]
+fn the_sampler_pack_puts_the_contents_in_an_open_box_with_nested_numbers() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\ncontents = \"inline\"\ncontents_numbers = \"nested\"\n",
+        &[],
+    );
+    let post = page(&sampler, "what-a-sitemap-does/index.html");
+    assert!(post.contains("<nav class=\"toc-box\""), "{post}");
+    assert!(post.contains("<ol class=\"toc-nested\">"), "{post}");
+    assert!(!post.contains("toc-side"), "{post}");
+    let (_temp, classic) = built("", &[]);
+    let post = page(&classic, "what-a-sitemap-does/index.html");
+    assert!(
+        post.contains("<article class=\"post post-with-toc\">"),
+        "{post}"
+    );
+    assert!(post.contains("<nav class=\"toc-side\""), "{post}");
+}
