@@ -2,7 +2,7 @@
 name = "khalid-core"
 # Published to crates.io with khalid-lint, always at the same version
 # (docs/adr/0000-the-lint-crates-are-published-under-agpl.md).
-version = "0.1.0"
+version = "0.2.0"
 description = "Shared building blocks for every Khalid crate: messages, identifiers, time and settings."
 readme = "README.md"
 documentation = "https://docs.rs/khalid-core"
