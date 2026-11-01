@@ -20,6 +20,8 @@ mod common;
 #[cfg(test)]
 mod contents;
 #[cfg(test)]
+mod dek;
+#[cfg(test)]
 mod enlarge;
 #[cfg(test)]
 mod glossary;

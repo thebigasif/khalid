@@ -16,12 +16,16 @@ enum Off {
 
 /// Every part by its option key, with the value that keeps classic's look.
 /// A pack offers a part by listing an option with the same key.
-const PARTS: [(&str, Off); 2] = [
+const PARTS: [(&str, Off); 4] = [
     // The site's logo in the header, from `[brand] logo` in the tokens, in
     // place of its name as text.
     ("logo", Off::Switch(false)),
     // The trail from the home page to the page, above the content.
     ("breadcrumbs", Off::Switch(false)),
+    // A post's subtitle, its description, under its title.
+    ("dek", Off::Switch(false)),
+    // Why a post was updated, after its dates.
+    ("updated_note", Off::Switch(false)),
 ];
 
 /// The option key of every part the shared templates read.

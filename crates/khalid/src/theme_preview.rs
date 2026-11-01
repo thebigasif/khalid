@@ -212,6 +212,8 @@ fn sample_post(author: &str, locale: &Locale) -> RenderPost {
         title: "How this blog will look".to_owned(),
         date: NaiveDate::from_ymd_opt(2026, 10, 26).unwrap_or_default(),
         updated: None,
+        updated_note: None,
+        dek: None,
         reading_time: ReadingTime::of(&body, locale),
         authors: vec![Person {
             name: author.to_owned(),

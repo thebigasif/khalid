@@ -309,6 +309,14 @@ fn post_page(
         title: title.clone(),
         date,
         updated: front.updated,
+        updated_note: front
+            .updated_note
+            .clone()
+            .filter(|note| !note.trim().is_empty()),
+        dek: front
+            .description
+            .clone()
+            .filter(|dek| !dek.trim().is_empty()),
         reading_time: ReadingTime::of(&html, locale),
         authors: front
             .author

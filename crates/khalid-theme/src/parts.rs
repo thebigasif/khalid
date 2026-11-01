@@ -23,6 +23,20 @@ pub const BREADCRUMBS: OptionSpec = OptionSpec {
     kind: OptionKind::Switch { default: false },
 };
 
+/// A post's subtitle under its title, from its `description`.
+pub const DEK: OptionSpec = OptionSpec {
+    key: "dek",
+    help: "Whether a post shows its description as a subtitle under its title.",
+    kind: OptionKind::Switch { default: false },
+};
+
+/// Why a post was updated, from its `updated_note`, after its dates.
+pub const UPDATED_NOTE: OptionSpec = OptionSpec {
+    key: "updated_note",
+    help: "Whether an updated post says why it was updated, under its dates.",
+    kind: OptionKind::Switch { default: false },
+};
+
 /// `spec` turned on by default, when it is an on or off option. Any other
 /// option comes back as it is.
 pub const fn on(spec: OptionSpec) -> OptionSpec {
@@ -38,5 +52,5 @@ pub const fn on(spec: OptionSpec) -> OptionSpec {
 /// Every part's option with classic's value, so a test can hold this list
 /// and the renderer's to the same keys.
 pub fn all() -> Vec<OptionSpec> {
-    vec![LOGO, BREADCRUMBS]
+    vec![LOGO, BREADCRUMBS, DEK, UPDATED_NOTE]
 }

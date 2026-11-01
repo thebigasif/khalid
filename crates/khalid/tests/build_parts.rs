@@ -110,3 +110,16 @@ fn the_sampler_pack_shows_one_trail_in_the_page_and_its_schema() {
     assert!(!post.contains("class=\"breadcrumbs\""), "{post}");
     assert!(post.contains("\"name\":\"Technical SEO\""), "{post}");
 }
+
+#[test]
+fn the_sampler_pack_shows_the_dek_from_the_description() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\ndek = true\n",
+        &[],
+    );
+    let post = page(&sampler, "what-a-sitemap-does/index.html");
+    assert!(post.contains("</h1>\n<p class=\"dek\">"), "{post}");
+    let (_temp, classic) = built("", &[]);
+    let post = page(&classic, "what-a-sitemap-does/index.html");
+    assert!(!post.contains("class=\"dek\""), "{post}");
+}

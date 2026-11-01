@@ -532,6 +532,8 @@ impl Demo {
             title: post.field("title"),
             date,
             updated: None,
+            updated_note: None,
+            dek: None,
             reading_time: ReadingTime::of(&body, &Locale::try_new(lang.tag)?),
             authors: vec![Person {
                 name: file.map_or(author.clone(), |a| a.field("name")),
