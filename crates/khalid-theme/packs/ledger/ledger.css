@@ -1,8 +1,20 @@
-/* Ledger: a text-led look. Thin rules in place of boxes, topics as tinted
-   pills, and no pictures in lists, so the words lead. Every colour, font
-   and size comes from the tokens. */
+/* Ledger: a text-led look on warm paper. Serif headings, an ink-green
+   accent, thin rules in place of boxes, topics as tinted pills, and lists
+   numbered like the lines of a ledger, so the words lead. Every colour,
+   font and size comes from the tokens or a tint of one. */
 
-.site-header { border-block-end: 2px solid var(--color-text); }
+/* Header and footer: the name with a small accent mark, a double rule under
+   the header, and a footer on the surface colour across the window. */
+.site-header { padding-block: 1.25rem; border-block-end: 3px double var(--color-text); }
+.site-name { gap: 0.625rem; font-size: 1.375rem; letter-spacing: -0.01em; }
+.site-name::before { content: ""; inline-size: 0.875rem; block-size: 0.875rem; background: var(--color-accent); border-radius: 2px; }
+.site-header nav a { color: var(--color-text); font-weight: 500; text-decoration: none; }
+.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px 0 var(--color-accent); }
+.announcement { margin-block-end: 0; background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border: 0; font-size: var(--text-small); font-weight: 600; }
+.announcement a { color: var(--color-text); }
+.site-footer { margin-block-start: var(--space-section); padding-block: calc(var(--space) * 5); background: var(--color-surface); border-block-start: 3px double var(--color-text); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.site-footer a { color: var(--color-text); }
+h1, h2, h3 { letter-spacing: -0.01em; }
 
 /* Pills: a topic's name on a light tint of the accent. The pill is drawn
    small; its hit area reaches 44 px. */
@@ -14,9 +26,9 @@
   align-items: center;
   min-block-size: 2rem;
   padding-inline: calc(var(--space) * 1.5);
-  background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background));
+  background: color-mix(in oklab, var(--color-accent) 12%, var(--color-background));
   color: var(--color-text);
-  border-radius: var(--radius);
+  border-radius: 999px;
   font-size: var(--text-small);
   font-weight: 600;
   line-height: 1.2;
@@ -24,61 +36,94 @@
 }
 nav .pill { min-block-size: 2rem; }
 .pill::after, .card-meta > a::after { content: ""; position: absolute; inset: -0.375rem 0; }
-.pill:hover, .card-meta > a:hover { background: color-mix(in oklab, var(--color-accent) 18%, var(--color-background)); }
+.pill:hover, .card-meta > a:hover { background: var(--color-accent); color: var(--color-on-accent); }
 .card-meta > a { min-block-size: 1.75rem; }
 
-/* The front page: the name, a tagline and up to three facts. */
-.masthead { padding-block: calc(var(--space) * 4) calc(var(--space) * 3); }
-.masthead h1 { margin: 0; letter-spacing: -0.02em; }
-.tagline { margin: var(--space) 0 0; max-inline-size: 40ch; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.4; }
-.stats { display: flex; flex-wrap: wrap; gap: var(--space); margin: calc(var(--space) * 2.5) 0 0; padding: 0; list-style: none; }
-.stats li { padding: calc(var(--space) / 2) calc(var(--space) * 1.5); border: 1px solid var(--color-border); border-radius: var(--radius); font-size: var(--text-small); font-variant-numeric: tabular-nums; }
-.home-section > h2 { margin-block: calc(var(--space) * 2) var(--space); font-size: var(--text-small); letter-spacing: 0.06em; text-transform: uppercase; }
+/* The front page: a kicker rule, the name large, a tagline and up to three
+   facts set as figures. */
+.masthead { padding-block: calc(var(--space) * 6) calc(var(--space) * 4); }
+.masthead::before { content: ""; display: block; inline-size: 3rem; block-size: 4px; margin-block-end: calc(var(--space) * 3); background: var(--color-accent); }
+.masthead h1 { margin: 0; font-size: calc(var(--text-h1) * 1.15); letter-spacing: -0.025em; line-height: 1.05; }
+.tagline { margin: calc(var(--space) * 2) 0 0; max-inline-size: 46ch; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.45; }
+.stats { display: flex; flex-wrap: wrap; gap: calc(var(--space) * 2); margin: calc(var(--space) * 4) 0 0; padding: 0; list-style: none; }
+.stats li { padding: var(--space) calc(var(--space) * 2); background: var(--color-background); border-inline-start: 3px solid var(--color-accent); box-shadow: 0 0 0 1px var(--color-border); font-family: var(--font-heading); font-size: var(--text-h4); font-variant-numeric: lining-nums tabular-nums; }
+.home-section > h2, .related > h2, .author-box > h2 { display: flex; align-items: center; gap: calc(var(--space) * 2); margin-block: calc(var(--space) * 3) var(--space); color: var(--color-link); font-family: var(--font-body); font-size: var(--text-small); letter-spacing: 0.1em; text-transform: uppercase; }
+.home-section > h2::after, .related > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--color-border); }
 
-/* The ruled list: posts one under another, split by thin rules. */
-.ledger-list, .cards-text { gap: 0; margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--color-border); }
-.ledger-list > li, .cards-text > li { padding-block: calc(var(--space) * 2.5); border-block-end: 1px solid var(--color-border); }
+/* The ruled list: posts one under another, each numbered in the margin in
+   the heading face, split by thin rules. */
+.ledger-list, .cards-text { counter-reset: line; gap: 0; margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--color-border); }
+.ledger-list > li, .cards-text > li { counter-increment: line; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); padding-block: calc(var(--space) * 3); border-block-end: 1px solid var(--color-border); }
+.ledger-list > li::before, .cards-text > li::before { content: counter(line, decimal-leading-zero) / ""; padding-block-start: 0.15rem; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-h4); font-variant-numeric: lining-nums tabular-nums; }
 .entry .card-meta, .cards-text .card-meta { gap: calc(var(--space) / 2) calc(var(--space) * 2); margin: 0; }
 .entry :is(h2, h3), .cards-text .card :is(h2, h3) { margin: var(--space) 0 0; font-size: var(--text-h3); line-height: 1.3; }
 .entry :is(h2, h3) a { color: var(--color-text); text-decoration: none; }
-.entry :is(h2, h3) a:hover { text-decoration: underline; }
-.cards-text .card p:last-child { margin: calc(var(--space) / 2) 0 0; color: var(--color-muted); }
+.entry :is(h2, h3) a:hover, .cards-text .card :is(h2, h3) a:hover { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 1px; }
+.cards-text .card p:last-child { margin: var(--space) 0 0; color: var(--color-muted); }
 .card time, .post-dates { font-variant-numeric: tabular-nums; }
+.view-all a { font-weight: 600; }
+.view-all a::after { content: " \2192" / ""; white-space: pre; }
+[dir="rtl"] .view-all a::after { content: " \2190" / ""; }
+.page-numbers a[aria-current] { border-radius: 999px; }
 
-/* A post: pill, title, byline, then a rule. */
+/* A post: pill, title, byline, then the lead picture in a soft frame. */
 .post-header { padding-block-end: calc(var(--space) * 3); border-block-end: 1px solid var(--color-border); }
 .post-header .pills { margin-block: calc(var(--space) * 2) 0; }
-.post-header h1 { margin-block: var(--space) calc(var(--space) * 2); letter-spacing: -0.015em; }
+.post-header h1 { margin-block: calc(var(--space) * 1.5) calc(var(--space) * 2); font-size: calc(var(--text-h1) * 1.05); letter-spacing: -0.02em; line-height: 1.1; }
+.post-meta { font-size: var(--text-small); }
+.post-meta .person a { color: var(--color-text); font-weight: 600; }
 .post-dates { display: flex; flex-wrap: wrap; gap: 0 calc(var(--space) * 2); }
+.post-dates > * + *::before { content: "\00b7" / ""; margin-inline-end: calc(var(--space) * 2); }
+.post-header .image { margin-block-start: calc(var(--space) * 3); }
+.post-header .image img { padding: calc(var(--space) * 1.5); background: var(--color-surface); border: 1px solid var(--color-border); }
+.post-body > p:first-child { font-size: calc(var(--text-body) * 1.12); }
+.post-body > h2 { padding-block-start: calc(var(--space) * 2); border-block-start: 1px solid var(--color-border); }
+.post-body blockquote { color: var(--color-text); border-inline-start-color: var(--color-accent); font-family: var(--font-heading); font-size: var(--text-h4); }
 
-/* The contents: an open, ruled box, in two columns when there is room. */
-.toc-box { padding: calc(var(--space) * 2) calc(var(--space) * 2.5); background: none; border: 1px solid var(--color-border); }
+/* The contents: an open, ruled box with an accent edge, in two columns when
+   there is room. */
+.toc-box { padding: calc(var(--space) * 2.5) calc(var(--space) * 3); background: var(--color-surface); border: 0; border-block-start: 3px solid var(--color-accent); border-radius: 0 0 var(--radius) var(--radius); }
 .toc-box ol { columns: 2 16rem; column-gap: calc(var(--space) * 4); }
 .toc-box li { break-inside: avoid; }
-.toc-title { font-size: var(--text-small); letter-spacing: 0.06em; text-transform: uppercase; }
+.toc-box a { color: var(--color-text); text-decoration-color: var(--color-border); }
+.toc-box a:hover { color: var(--color-link); }
+.toc-title { color: var(--color-link); font-size: var(--text-small); letter-spacing: 0.1em; text-transform: uppercase; }
 
-/* Body furniture: tips and further reading as ruled notes, the key points
-   as a closing "bottom line", numbered steps, plain questions. */
-.post-body .callout { border-radius: 0; }
-.callout-summary { margin-block: calc(var(--space) * 5) calc(var(--space) * 3); padding: calc(var(--space) * 2.5) 0 0; background: none; border: 0; border-block-start: 3px solid var(--color-text); }
+/* Body furniture: tips and further reading as ruled notes, a figure that
+   leads the eye, the key points as a closing "bottom line", numbered
+   steps, plain questions. */
+.post-body .callout, .author-box { border-start-start-radius: 0; border-end-start-radius: 0; }
+.post-body .callout-tip { background: color-mix(in oklab, var(--color-accent) 7%, var(--color-background)); border-inline-start: 4px solid var(--color-accent); }
+.callout-summary { margin-block: calc(var(--space) * 5) calc(var(--space) * 3); padding: calc(var(--space) * 2.5) 0 0; background: none; border: 0; border-block-start: 3px double var(--color-text); }
+.post-body .callout-summary { border-radius: 0; }
+.callout-summary li::marker { color: var(--color-link); }
 .callout-read { font-size: var(--text-small); }
-.post-body th { background: var(--color-surface); font-size: var(--text-small); }
+.callout-stat strong:first-child { color: var(--color-link); font-family: var(--font-heading); font-variant-numeric: lining-nums; }
+.post-body table { font-size: var(--text-small); }
+.post-body th { background: none; border-block-end: 2px solid var(--color-text); }
+.post-body tbody tr:nth-child(even) { background: var(--color-surface); }
 .post-body td { font-variant-numeric: tabular-nums; }
 .howto { counter-reset: step; padding: 0; list-style: none; }
 .howto > li { counter-increment: step; position: relative; padding-inline-start: 3rem; }
-.howto > li::before { content: counter(step) / ""; position: absolute; inset-inline-start: 0; inline-size: 2rem; block-size: 2rem; display: grid; place-items: center; border: 2px solid var(--color-text); border-radius: 50%; font-family: var(--font-heading); font-weight: var(--heading-weight); }
+.howto > li::before { content: counter(step) / ""; position: absolute; inset-inline-start: 0; inline-size: 2rem; block-size: 2rem; display: grid; place-items: center; background: var(--color-accent); color: var(--color-on-accent); border-radius: 50%; font-family: var(--font-heading); font-weight: var(--heading-weight); }
 .faq details { padding-block: var(--space); }
 .faq summary { list-style: none; font-size: var(--text-h4); cursor: text; }
 .faq summary::-webkit-details-marker { display: none; }
+.lock { background: color-mix(in oklab, var(--color-accent) 6%, var(--color-background)); border-style: dashed; }
 
-/* After the post: the author between rules, then the related posts. */
-.author-box { padding: calc(var(--space) * 3) 0; background: none; border-block: 1px solid var(--color-border); border-radius: 0; }
+/* After the post: the author on the surface with an accent edge, then the
+   related posts. */
+.author-box { padding: calc(var(--space) * 3); background: var(--color-surface); border: 0; border-inline-start: 4px solid var(--color-accent); }
+.author-box > h2 { margin-block-start: 0; }
+.author-box .person-name { font-family: var(--font-heading); font-size: var(--text-h4); }
 .related { margin-block-start: var(--space-section); }
-.related > h2, .author-box > h2 { font-size: var(--text-small); letter-spacing: 0.06em; text-transform: uppercase; }
 
 /* The newsletter band runs the full width of the window, without making
    the page scroll sideways. */
-.band { margin-block: var(--space-section) calc(var(--space) * -6); padding-block: calc(var(--space) * 5); background: color-mix(in oklab, var(--color-accent) 7%, var(--color-background)); box-shadow: 0 0 0 100vmax color-mix(in oklab, var(--color-accent) 7%, var(--color-background)); clip-path: inset(0 -100vmax); }
+.band { margin-block: var(--space-section) calc(var(--space) * -6); padding-block: calc(var(--space) * 5); background: color-mix(in oklab, var(--color-accent) 9%, var(--color-background)); box-shadow: 0 0 0 100vmax color-mix(in oklab, var(--color-accent) 9%, var(--color-background)); clip-path: inset(0 -100vmax); }
 .band .newsletter-slot { margin: 0; padding: 0; background: none; }
+.newsletter-slot h2 { font-size: var(--text-h2); }
+.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; }
+.cta-band { background: var(--color-surface); border-block-start: 3px solid var(--color-accent); }
 
-@media print { .pills, .band { display: none; } }
+@media print { .pills, .band, .site-name::before { display: none; } }
