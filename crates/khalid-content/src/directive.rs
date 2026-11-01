@@ -77,6 +77,7 @@ pub(crate) fn directive(
         "pullquote" => layout::pull_quote(&attributes, body),
         "proscons" => layout::pros_cons(&attributes, body),
         "columns" => nested::columns(&attributes, body),
+        "table" => layout::table(&attributes, body),
         other => Err(BlockError::UnknownBlock {
             line,
             name: other.to_owned(),

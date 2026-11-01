@@ -1,5 +1,7 @@
 //! The HTML of the layout blocks. Each reads in full with scripts off.
 
+use std::num::NonZeroU8;
+
 use super::{Renderer, attribute, inside};
 use crate::{Block, Column, ProsConsBlock};
 
@@ -61,5 +63,46 @@ impl Renderer<'_> {
             self.html.push_str("</div>\n");
         }
         self.html.push_str("</div>\n");
+    }
+
+    /// Writes a folding table: the first `fold` rows as a table, then the
+    /// rest in a second table with the same header inside a `<details>`, so
+    /// every row reads with scripts off. A table no longer than `fold`
+    /// stays one plain table.
+    pub(super) fn folding_table(&mut self, block: &Block, fold: NonZeroU8, more: Option<&str>) {
+        let source = inside(&block.source);
+        let lines: Vec<&str> = source
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            .collect();
+        let (head, rows) = lines.split_at_checked(2).unwrap_or_default();
+        let Some((shown, folded)) = rows
+            .split_at_checked(usize::from(fold.get()))
+            .filter(|(_, folded)| !folded.is_empty())
+        else {
+            self.markdown(&source);
+            return;
+        };
+        self.html.push_str("<div class=\"table-fold\">\n");
+        self.markdown(&[head, shown].concat().join("\n"));
+        let summary = more.map_or_else(
+            || match folded.len() {
+                1 => "Show 1 more row".to_owned(),
+                count => format!("Show {count} more rows"),
+            },
+            str::to_owned,
+        );
+        self.push(&["<details>\n<summary>", &attribute(&summary), "</summary>\n"]);
+        // The header shows twice but is read once.
+        let header_words: usize = head.first().map_or(0, |header| {
+            header
+                .split('|')
+                .map(|cell| cell.split_whitespace().count())
+                .sum()
+        });
+        let before = self.facts.words;
+        self.markdown(&[head, folded].concat().join("\n"));
+        self.facts.words = self.facts.words.saturating_sub(header_words).max(before);
+        self.html.push_str("</details>\n</div>\n");
     }
 }

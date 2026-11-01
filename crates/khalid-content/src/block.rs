@@ -1,5 +1,7 @@
 //! The block model between markdown and the editor (RULES.md BL-FS-5).
 
+use std::num::NonZeroU8;
+
 use comrak::nodes::NodeValue;
 use comrak::{Arena, Options, parse_document};
 use khalid_core::{AbsoluteUrl, ParseUrlError, Slug};
@@ -210,6 +212,14 @@ pub enum BlockKind {
     Columns {
         /// The cards, in order.
         columns: Vec<Column>,
+    },
+    /// `:::table{fold=8 more="..."}` around one markdown table: the first
+    /// `fold` rows show, and the rest open from a summary line.
+    FoldingTable {
+        /// How many rows show before the rest fold away, 1 to 100.
+        fold: NonZeroU8,
+        /// The summary line that opens the rest, when the block sets one.
+        more: Option<String>,
     },
     /// `:::maths{label="..."}` with a LaTeX formula as the body: maths on its
     /// own, drawn as `MathML` that browsers show with scripts off.
@@ -514,7 +524,7 @@ pub fn print_blocks(blocks: &[Block]) -> String {
 }
 
 /// The standard markdown blocks in `lines`, in the order of the file.
-fn markdown_blocks(lines: &[&str]) -> Vec<Block> {
+pub(crate) fn markdown_blocks(lines: &[&str]) -> Vec<Block> {
     let text = lines.join("\n");
     let mut options = Options::default();
     options.extension.table = true;

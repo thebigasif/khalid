@@ -53,6 +53,13 @@ Full control, more work.
 :::
 ::::
 
+:::table{fold=1}
+| Tool | Price |
+|---|---|
+| Rank Ledger | 12 |
+| Crawl Kit | 20 |
+:::
+
 ### A figure and a toggle
 
 :::figure{src="/media/shelf.jpg" alt="A bakery shelf of sourdough loaves"}

@@ -262,6 +262,9 @@ impl Renderer<'_> {
             BlockKind::PullQuote { by } => self.pull_quote(block, by.as_deref()),
             BlockKind::ProsCons(pros_cons) => self.pros_cons(pros_cons),
             BlockKind::Columns { columns } => self.columns(columns),
+            BlockKind::FoldingTable { fold, more } => {
+                self.folding_table(block, *fold, more.as_deref());
+            }
             BlockKind::Faq { questions } => self.faq(questions),
             BlockKind::HowTo(how_to) => self.how_to(how_to),
             BlockKind::Review(review) => self.review(review),

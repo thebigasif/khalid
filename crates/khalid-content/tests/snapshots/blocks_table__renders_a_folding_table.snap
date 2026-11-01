@@ -1,0 +1,45 @@
+---
+source: crates/khalid-content/tests/blocks_table.rs
+expression: html(TABLE)
+---
+<div class="table-fold">
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rank Ledger</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Crawl Kit</td>
+<td>20</td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary>Show 2 more rows</summary>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Link Atlas</td>
+<td>35</td>
+</tr>
+<tr>
+<td>Page Scout</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+</details>
+</div>
