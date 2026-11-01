@@ -290,6 +290,7 @@ impl Demo {
             image: None,
             x_default: alternates.first().map(|first| first.href.clone()),
             seo_head: None,
+            breadcrumbs: Vec::new(),
             alternates,
         };
         let html = self.renderer.render(&self.site(lang)?, &meta, body)?;

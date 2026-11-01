@@ -115,6 +115,7 @@ impl Prepared {
             image: None,
             x_default: None,
             seo_head: None,
+            breadcrumbs: Vec::new(),
             alternates: Vec::new(),
         };
         self.pages.push(Page {

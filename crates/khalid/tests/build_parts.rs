@@ -87,3 +87,26 @@ fn the_sampler_pack_shows_the_logo_and_classic_keeps_the_name() {
         "{home}"
     );
 }
+
+#[test]
+fn the_sampler_pack_shows_one_trail_in_the_page_and_its_schema() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\nbreadcrumbs = true\n",
+        &[],
+    );
+    let post = page(&sampler, "what-a-sitemap-does/index.html");
+    assert!(
+        post.contains(
+            "<li><a href=\"/blog/category/technical-seo/\">Technical SEO</a></li>\n<li><a href=\"/blog/what-a-sitemap-does/\" aria-current=\"page\">What a sitemap does, and what it does not</a></li>"
+        ),
+        "{post}"
+    );
+    assert!(
+        post.contains("{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Technical SEO\",\"item\":\"https://www.example.com/blog/category/technical-seo/\"}"),
+        "{post}"
+    );
+    let (_temp, classic) = built("", &[]);
+    let post = page(&classic, "what-a-sitemap-does/index.html");
+    assert!(!post.contains("class=\"breadcrumbs\""), "{post}");
+    assert!(post.contains("\"name\":\"Technical SEO\""), "{post}");
+}

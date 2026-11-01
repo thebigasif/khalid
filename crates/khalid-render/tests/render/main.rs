@@ -8,6 +8,8 @@ mod author_box;
 #[cfg(test)]
 mod authors;
 #[cfg(test)]
+mod breadcrumbs;
+#[cfg(test)]
 mod byline;
 #[cfg(test)]
 mod cards;

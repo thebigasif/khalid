@@ -421,6 +421,7 @@ pub(crate) fn meta(
         alternates: Vec::new(),
         x_default: None,
         seo_head: None,
+        breadcrumbs: Vec::new(),
     })
 }
 

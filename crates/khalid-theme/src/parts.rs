@@ -16,6 +16,13 @@ pub const LOGO: OptionSpec = OptionSpec {
     kind: OptionKind::Switch { default: false },
 };
 
+/// The trail from the home page to the page, above its content.
+pub const BREADCRUMBS: OptionSpec = OptionSpec {
+    key: "breadcrumbs",
+    help: "Whether each page shows the trail of links from the home page to it.",
+    kind: OptionKind::Switch { default: false },
+};
+
 /// `spec` turned on by default, when it is an on or off option. Any other
 /// option comes back as it is.
 pub const fn on(spec: OptionSpec) -> OptionSpec {
@@ -31,5 +38,5 @@ pub const fn on(spec: OptionSpec) -> OptionSpec {
 /// Every part's option with classic's value, so a test can hold this list
 /// and the renderer's to the same keys.
 pub fn all() -> Vec<OptionSpec> {
-    vec![LOGO]
+    vec![LOGO, BREADCRUMBS]
 }

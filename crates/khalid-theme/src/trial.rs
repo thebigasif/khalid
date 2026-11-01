@@ -15,7 +15,7 @@ pub(crate) static SAMPLER: Pack = Pack {
     templates: &[],
     tokens: "",
     reader: &[],
-    options: &[parts::LOGO],
+    options: &[parts::LOGO, parts::BREADCRUMBS],
 };
 
 /// The trial pack.

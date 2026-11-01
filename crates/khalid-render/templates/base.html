@@ -42,7 +42,12 @@
 {% endif %}{% if site.search and "search_shortcut" in site.features %}<a class="search-link" href="{{ site.search }}">{{ t.search_link }}</a>
 {% endif %}</header>
 <main id="main" tabindex="-1">
-{% block main %}{% endblock %}
+{% if template.options.breadcrumbs and meta.breadcrumbs %}<nav class="breadcrumbs" aria-label="{{ t.breadcrumbs }}">
+<ol>
+{% for crumb in meta.breadcrumbs %}<li><a href="{{ crumb.href }}"{% if loop.last %} aria-current="page"{% endif %}>{{ crumb.name }}</a></li>
+{% endfor %}</ol>
+</nav>
+{% endif %}{% block main %}{% endblock %}
 </main>
 <footer class="site-footer">
 {% if meta.alternates | length > 1 %}<nav aria-label="{{ t.nav_languages }}">

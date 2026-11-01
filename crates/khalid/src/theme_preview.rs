@@ -125,6 +125,7 @@ impl Preview {
             alternates: Vec::new(),
             x_default: None,
             seo_head: None,
+            breadcrumbs: Vec::new(),
         };
         let post = PageBody::Post(Box::new(sample_post(&site.name, &site.locale)));
         let html = renderer
