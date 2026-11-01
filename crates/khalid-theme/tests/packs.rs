@@ -55,6 +55,26 @@ fn every_option_of_every_pack_is_documented_and_its_default_allowed() {
 }
 
 #[test]
+fn every_option_of_a_shipped_template_is_in_its_guide() {
+    let shipped = packs()
+        .iter()
+        .filter(|pack| !["classic", "trial", "sampler"].contains(&pack.name));
+    for pack in shipped {
+        let mut guide = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        for part in ["..", "..", "docs", "templates"] {
+            guide.push(part);
+        }
+        guide.push(format!("{}.md", pack.name));
+        let text = std::fs::read_to_string(&guide)
+            .unwrap_or_else(|error| panic!("{}: {error}", guide.display()));
+        for option in pack.options {
+            let row = format!("| `{}` |", option.key);
+            assert!(text.contains(&row), "{} {}", pack.name, option.key);
+        }
+    }
+}
+
+#[test]
 fn classic_comes_first_and_names_are_unique() {
     let names: Vec<&str> = packs().iter().map(|pack| pack.name).collect();
     assert_eq!(names.first(), Some(&"classic"));
