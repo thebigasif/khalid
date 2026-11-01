@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" role="img"><title>The Wire template: Home page</title>
+<rect width="1280" height="800" fill="#f7f5f0"/><rect x="40" y="40" width="1200" height="720" rx="24" fill="#fff" stroke="#e4dfd4" stroke-width="2"/><path d="M40 112h1200" stroke="#e4dfd4" stroke-width="2"/><circle cx="84" cy="76" r="9" fill="#c2410c"/><circle cx="114" cy="76" r="9" fill="#e4dfd4"/><circle cx="144" cy="76" r="9" fill="#e4dfd4"/>
+<text x="640" y="250" text-anchor="middle" font-family="Georgia, serif" font-size="88" font-weight="700" fill="#16181d">Wire</text><text x="640" y="316" text-anchor="middle" font-family="system-ui, sans-serif" font-size="34" fill="#4f5563">Home page</text>
+<g fill="#efebe3"><rect x="96" y="392" width="336" height="200" rx="14"/><rect x="472" y="392" width="336" height="200" rx="14"/><rect x="848" y="392" width="336" height="200" rx="14"/></g>
+</svg>

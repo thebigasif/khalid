@@ -35,6 +35,25 @@ const TEMPLATES: [&str; 10] = [
     "folio",
 ];
 
+/// Every look the template gallery shows, each with a picture of its
+/// demo's home page and of a post: Classic, then the ten templates.
+const LOOKS: [&str; 11] = [
+    "classic",
+    "ledger",
+    "atlas",
+    "keystone",
+    "compass",
+    "harbor",
+    "wire",
+    "workbench",
+    "almanac",
+    "meridian",
+    "folio",
+];
+
+/// Where the gallery's plain cards sit, beside the Templates page.
+const CARDS: &str = "site/content/en/pages/templates";
+
 /// The use case sites, each at `/khalid/examples/<slug>/`, and the page
 /// of this site that tells its story.
 const EXAMPLES: [(&str, &str); 6] = [
@@ -274,4 +293,35 @@ fn every_page_the_brief_asks_for_is_built_and_links_its_live_demo() {
     for source in ["wordpress.org", "ghost.org", "developers.webflow.com"] {
         assert!(compare.contains(source), "{source}");
     }
+}
+
+/// The plain cards beside the Templates page are what the preview script
+/// writes where no Chromium runs, so the website shows the same card
+/// before Pages draws the screenshots over it.
+#[test]
+fn the_gallery_cards_are_the_preview_scripts_plain_cards() {
+    let read = Command::new("bash")
+        .arg("-n")
+        .arg(repo_file("scripts/template-previews.sh"))
+        .output()
+        .unwrap();
+    assert!(read.status.success(), "{read:?}");
+    let drawn = tempfile::tempdir().unwrap();
+    let script = Command::new("bash")
+        .arg(repo_file("scripts/template-previews.sh"))
+        .arg("--cards")
+        .arg(drawn.path())
+        .output()
+        .unwrap();
+    assert!(script.status.success(), "{script:?}");
+    for name in LOOKS {
+        for kind in ["home", "post"] {
+            let file = format!("{name}-{kind}.svg");
+            let committed = fs::read_to_string(within(&repo_file(CARDS), &file)).unwrap();
+            let fresh = fs::read_to_string(within(drawn.path(), &file)).unwrap();
+            assert_eq!(committed, fresh, "{file}");
+        }
+    }
+    let beside = fs::read_dir(repo_file(CARDS)).unwrap().count();
+    assert_eq!(beside, LOOKS.len() * 2 + 1, "the cards and index.md");
 }

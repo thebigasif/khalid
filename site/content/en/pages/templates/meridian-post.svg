@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" role="img"><title>The Meridian template: A post</title>
+<rect width="1280" height="800" fill="#f7f5f0"/><rect x="40" y="40" width="1200" height="720" rx="24" fill="#fff" stroke="#e4dfd4" stroke-width="2"/><path d="M40 112h1200" stroke="#e4dfd4" stroke-width="2"/><circle cx="84" cy="76" r="9" fill="#c2410c"/><circle cx="114" cy="76" r="9" fill="#e4dfd4"/><circle cx="144" cy="76" r="9" fill="#e4dfd4"/>
+<text x="640" y="250" text-anchor="middle" font-family="Georgia, serif" font-size="88" font-weight="700" fill="#16181d">Meridian</text><text x="640" y="316" text-anchor="middle" font-family="system-ui, sans-serif" font-size="34" fill="#4f5563">A post</text>
+<g fill="#efebe3"><rect x="300" y="400" width="680" height="18" rx="9"/><rect x="300" y="440" width="640" height="18" rx="9"/><rect x="300" y="480" width="660" height="18" rx="9"/><rect x="300" y="520" width="520" height="18" rx="9"/></g>
+</svg>
