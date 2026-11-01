@@ -12,7 +12,7 @@ use khalid_render::{Person, PostCard};
 use khalid_routes::{PostAddress, Routes};
 
 use crate::build_pages::{self, LanguagePages};
-use crate::{build_reader, site_chrome};
+use crate::{build_reader, post_categories, site_chrome};
 
 /// The home page of each language of `content`, in the order of
 /// `site.toml`, linking the stylesheet at `stylesheet`: the page
@@ -38,7 +38,8 @@ pub(crate) fn home_pages(
                 build_pages::named(config, doc, front.slug.as_ref(), front.title.as_deref())?;
             let entry = PostAddress::new(&doc.collection, locale, &slug, Some(date));
             let rest = build_pages::routed(config, routes, locale, &entry, &doc.path)?;
-            cards.push(card(config, locale, &people, (title, &rest, date), front));
+            let named = (title, rest.as_str(), date);
+            cards.push(card((config, routes), locale, &people, named, front));
         }
         // A stable sort, as the full render's, so posts of one day keep
         // their file order.
@@ -54,9 +55,11 @@ pub(crate) fn home_pages(
 }
 
 /// The card lists show of a dated post with this `title`, address end
-/// `rest` and `date`, and the front matter `front`.
+/// `rest` and `date`, and the front matter `front`. Its category is named
+/// by its slug until [`post_categories::fill`] names it as
+/// `categories.toml` does.
 pub(crate) fn card(
-    config: &Config,
+    (config, routes): (&Config, &Routes),
     locale: &Locale,
     people: &BTreeMap<Slug, Person>,
     (title, rest, date): (String, &str, NaiveDate),
@@ -72,7 +75,8 @@ pub(crate) fn card(
             .author
             .as_ref()
             .map(|slug| build_reader::person(people, slug, config, locale)),
-        category: None,
+        category: (front.category.as_ref())
+            .map(|slug| post_categories::link(config, routes, locale, slug)),
         featured: front.featured,
         reading_time: None,
     }

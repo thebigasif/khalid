@@ -83,6 +83,17 @@ export function OptionField({ option, value, onChange }: Props) {
         }}
       />
     );
+  } else if (takes.kind === "line") {
+    input = (
+      <input
+        id={id}
+        type="text"
+        maxLength={takes.most}
+        aria-describedby={`${id}-hint`}
+        value={typeof value === "string" ? value : ""}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    );
   } else if (takes.kind === "lines") {
     input = (
       <textarea

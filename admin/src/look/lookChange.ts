@@ -15,7 +15,10 @@ export function startOf(templates: Template[], site: SiteSettings): Template | u
 
 /** The value an option has when the site sets none. */
 export function defaultOf(takes: OptionTakes): TemplateValue {
-  return takes.kind === "lines" ? [] : takes.default;
+  if (takes.kind === "lines") {
+    return [];
+  }
+  return takes.kind === "line" ? "" : takes.default;
 }
 
 /** Every option of `template`, as `written` sets it or at its default. */
@@ -39,6 +42,8 @@ export function setOnly(template: Template, values: Values): Values {
     let value = values[option.key];
     if (option.takes.kind === "lines" && Array.isArray(value)) {
       value = value.map((line) => line.trim()).filter((line) => line !== "");
+    } else if (option.takes.kind === "line" && typeof value === "string") {
+      value = value.trim();
     }
     if (value !== undefined && !same(value, defaultOf(option.takes))) {
       set[option.key] = value;

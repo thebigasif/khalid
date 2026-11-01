@@ -82,6 +82,11 @@ pub enum OptionKind {
         /// The number when not set.
         default: i64,
     },
+    /// One line of text, such as a tagline, empty when not set.
+    Line {
+        /// The most characters allowed.
+        most: usize,
+    },
     /// A short list of lines of text, empty when not set.
     Lines {
         /// The most lines allowed.
@@ -110,12 +115,17 @@ static CLASSIC: Pack = Pack {
 
 /// Every built-in pack, classic first.
 #[cfg(not(feature = "test-util"))]
-static PACKS: [&Pack; 1] = [&CLASSIC];
+static PACKS: [&Pack; 2] = [&CLASSIC, &crate::ledger::LEDGER];
 
 /// Every built-in pack, classic first, and the throwaway packs the tests
 /// switch to.
 #[cfg(feature = "test-util")]
-static PACKS: [&Pack; 3] = [&CLASSIC, &crate::trial::TRIAL, &crate::trial::SAMPLER];
+static PACKS: [&Pack; 4] = [
+    &CLASSIC,
+    &crate::ledger::LEDGER,
+    &crate::trial::TRIAL,
+    &crate::trial::SAMPLER,
+];
 
 /// Every built-in pack, classic first.
 pub fn packs() -> &'static [&'static Pack] {

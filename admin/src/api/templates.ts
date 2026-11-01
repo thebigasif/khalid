@@ -12,6 +12,7 @@ export type OptionTakes =
   | { kind: "switch"; default: boolean }
   | { kind: "choice"; allowed: string[]; default: string }
   | { kind: "count"; least: number; most: number; default: number }
+  | { kind: "line"; most: number }
   | { kind: "lines"; most: number }
   | { kind: "picks"; allowed: string[]; default: string[] };
 

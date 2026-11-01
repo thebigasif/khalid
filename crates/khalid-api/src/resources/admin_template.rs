@@ -99,6 +99,11 @@ pub enum OptionTakes {
         /// The number when not set.
         default: i64,
     },
+    /// One line of text of up to `most` characters, empty when not set.
+    Line {
+        /// The most characters allowed.
+        most: usize,
+    },
     /// Up to `most` lines of text, none when not set.
     Lines {
         /// The most lines allowed.

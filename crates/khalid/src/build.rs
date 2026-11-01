@@ -23,8 +23,9 @@ use crate::post_photos::Shown;
 use crate::site_page::HeadNonce;
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
-    build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_files,
-    post_images, post_lock, report, search_page, search_static, share_images, static_mode, trails,
+    build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_categories,
+    post_files, post_images, post_lock, report, search_page, search_static, share_images,
+    static_mode, trails,
 };
 
 /// The output folder inside a site when `--out` is not given.
@@ -131,9 +132,9 @@ fn build(
     let renderer = theme.as_ref().map(|(renderer, _)| renderer);
     static_mode::comments(config, &mut languages);
     post_lock::lock(config, content, renderer, &mut languages);
+    let categories = categories::of(site)?;
     if let Some((renderer, _)) = &theme {
         search_page::add(config, renderer, &mut languages)?;
-        let categories = categories::of(site)?;
         let sources = (content, categories.as_slice());
         build_lists::add((config, routes), renderer, sources, &mut languages)?;
         build_sitemap::add(config, renderer, &mut languages)?;
@@ -141,6 +142,7 @@ fn build(
     }
     // A headless site's heads carry the same trail as its pages would.
     trails::fill(site, (config, routes), &mut languages)?;
+    post_categories::fill((config, routes), &categories, &mut languages);
     // The checked content keeps no assets, so the tree is read again for
     // them. A headless site gets them too: its feeds point at them.
     let tree = ContentTree::walk(site).map_err(|error| content_message::of(site, &error))?;

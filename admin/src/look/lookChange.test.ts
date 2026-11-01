@@ -14,6 +14,7 @@ const LEDGER: Template = {
     { key: "logo", help: "Logo.", takes: { kind: "switch", default: true } },
     { key: "dek", help: "Dek.", takes: { kind: "switch", default: false } },
     { key: "stats", help: "Stats.", takes: { kind: "lines", most: 3 } },
+    { key: "tagline", help: "Tagline.", takes: { kind: "line", most: 140 } },
     { key: "count", help: "Count.", takes: { kind: "count", least: 3, most: 10, default: 5 } },
   ],
 };
@@ -35,6 +36,7 @@ describe("the Look screen's options", () => {
       logo: true,
       dek: false,
       stats: [],
+      tagline: "",
       count: 6,
     });
   });
@@ -42,6 +44,8 @@ describe("the Look screen's options", () => {
   it("send only what differs from the defaults, without blank lines", () => {
     const values = { logo: true, dek: true, stats: ["", " 12,000 readers ", ""], count: 5 };
     expect(setOnly(LEDGER, values)).toEqual({ dek: true, stats: ["12,000 readers"] });
+    expect(setOnly(LEDGER, { tagline: "  " })).toEqual({});
+    expect(setOnly(LEDGER, { tagline: " Long how-tos " })).toEqual({ tagline: "Long how-tos" });
   });
 
   it("make no change for the look the site has, and a whole one for another", () => {

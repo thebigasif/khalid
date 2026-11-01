@@ -122,6 +122,47 @@ fn the_sampler_pack_shows_one_trail_in_the_page_and_its_schema() {
 }
 
 #[test]
+fn a_post_its_cards_and_the_home_page_name_its_category() {
+    let (_temp, out) = built("", &[]);
+    let post = page(&out, "what-a-sitemap-does/index.html");
+    assert!(
+        post.contains(
+            "<p>Filed under <a href=\"/blog/category/technical-seo/\">Technical SEO</a></p>"
+        ),
+        "{post}"
+    );
+    let home = page(&out, "index.html");
+    let (before, _) = home
+        .split_once("<a href=\"/blog/what-a-sitemap-does/\">")
+        .unwrap();
+    let (_, meta) = before.rsplit_once("<p class=\"card-meta\">").unwrap();
+    assert!(
+        meta.contains("<a href=\"/blog/category/technical-seo/\">Technical SEO</a>"),
+        "{meta}"
+    );
+    let (_, topics) = home.split_once("<nav class=\"topics\"").unwrap();
+    let (topics, _) = topics.split_once("</nav>").unwrap();
+    let names: Vec<&str> = ["On-page SEO", "Technical SEO", "Content strategy"]
+        .into_iter()
+        .filter(|name| topics.contains(&format!(">{name}</a>")))
+        .collect();
+    assert_eq!(names.len(), 3, "{topics}");
+    let at = |name: &str| topics.find(name).unwrap();
+    assert!(
+        at("On-page SEO") < at("Technical SEO") && at("Technical SEO") < at("Content strategy"),
+        "in the order of categories.toml: {topics}"
+    );
+}
+
+#[test]
+fn a_german_page_names_the_category_in_german() {
+    let (_temp, out) = built("", &[]);
+    let home = page(&out, "de/index.html");
+    let (_, topics) = home.split_once("<nav class=\"topics\"").unwrap();
+    assert!(topics.contains(">Technisches SEO</a>"), "{topics}");
+}
+
+#[test]
 fn the_sampler_pack_shows_the_dek_from_the_description() {
     let (_temp, sampler) = built(
         "\n[template]\nname = \"sampler\"\n[template.options]\ndek = true\n",
