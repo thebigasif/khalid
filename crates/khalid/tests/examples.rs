@@ -323,6 +323,11 @@ fn no_example_has_an_em_dash_or_filler_text() {
     for slug in slugs() {
         let mut texts = Vec::new();
         markdown(&example(&slug), &mut texts);
+        for settings in ["site.toml", "categories.toml"] {
+            let path = within(&example(&slug), &[settings]);
+            let text = fs::read_to_string(&path).unwrap();
+            texts.push((path, text));
+        }
         for (path, text) in texts {
             let lower = text.to_lowercase();
             for banned in ["\u{2014}", "lorem", "placeholder"] {
