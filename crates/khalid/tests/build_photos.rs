@@ -94,6 +94,7 @@ fn an_authors_photo_and_a_posts_lead_image_show_wherever_they_go() {
     let home = page(out.path(), "index.html");
     let card = card_of(&home, "/blog/fixing-slow-pages/");
     assert!(card.contains(chart), "{card}");
+    assert!(card.contains("loading=\"lazy\""), "{card}");
 }
 
 #[test]
@@ -119,6 +120,10 @@ fn an_svg_lead_image_and_photo_are_drawn_at_their_own_size() {
     let lead = "<img src=\"/blog/fixing-slow-pages/cover.svg\" srcset=\"/blog/fixing-slow-pages/cover.svg 1600w\"";
     assert!(post.contains(lead), "{post}");
     assert!(post.contains("width=\"1600\" height=\"900\""), "{post}");
+    assert!(post.contains("fetchpriority=\"high\""), "{post}");
+    // A drawing is offered as itself, with no WebP copy beside it.
+    let picture = post.split_once(lead).unwrap().0.rsplit_once("<picture>").unwrap().1;
+    assert!(!picture.contains("<source"), "{picture}");
     // No network draws an SVG, so the page shares its generated card.
     assert!(!post.contains("content=\"https://www.example.com/blog/fixing-slow-pages/cover.svg"));
     let photo = "<img class=\"avatar\" src=\"/blog/authors/lena-vogt/lena.svg\"";
