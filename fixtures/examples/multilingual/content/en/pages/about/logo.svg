@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="12" width="42" height="34" rx="11" fill="#3d4ed8"/>
+  <polygon points="18,42 14,56 30,44" fill="#3d4ed8"/>
+  <rect x="28" y="30" width="42" height="34" rx="11" fill="#f26b5b"/>
+  <polygon points="60,60 66,72 50,62" fill="#f26b5b"/>
+  <path d="M36 54 q13 -16 26 0" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="64" cy="14" r="5" fill="#f6c744"/>
+  <circle cx="18" cy="66" r="4" fill="#2bb3a3"/>
+  <text x="84" y="50" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="700" fill="#1c2140">Bridgeword</text>
+</svg>
