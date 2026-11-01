@@ -54,3 +54,57 @@ href = "https://github.com/thebigasif/khalid"
 [[nav.footer]]
 label = "Releases"
 href = "https://github.com/thebigasif/khalid/releases"
+
+[[nav.footer_groups]]
+heading = "Product"
+[[nav.footer_groups.links]]
+label = "Features"
+href = "/khalid/features/"
+[[nav.footer_groups.links]]
+label = "Templates"
+href = "/khalid/templates/"
+[[nav.footer_groups.links]]
+label = "Use cases"
+href = "/khalid/use-cases/"
+[[nav.footer_groups.links]]
+label = "Compare"
+href = "/khalid/compare/"
+
+[[nav.footer_groups]]
+heading = "Get started"
+[[nav.footer_groups.links]]
+label = "Three ways to start"
+href = "/khalid/start/"
+[[nav.footer_groups.links]]
+label = "Getting started guide"
+href = "https://github.com/thebigasif/khalid/blob/main/docs/getting-started.md"
+[[nav.footer_groups.links]]
+label = "Deploy guide"
+href = "https://github.com/thebigasif/khalid/blob/main/docs/deploy.md"
+
+[[nav.footer_groups]]
+heading = "Project"
+[[nav.footer_groups.links]]
+label = "Who makes Khalid"
+href = "/khalid/about/"
+[[nav.footer_groups.links]]
+label = "Licence"
+href = "https://github.com/thebigasif/khalid/blob/main/LICENSE"
+[[nav.footer_groups.links]]
+label = "Security"
+href = "https://github.com/thebigasif/khalid/blob/main/SECURITY.md"
+
+# The website wears Atlas, the portal template. theme/site.css adds the
+# product site's own rules: the hero, the grids, the cards and the gallery.
+[template]
+name = "atlas"
+
+[template.options]
+share = "none"
+cta_band = "post"
+contents = "none"
+
+[template.cta]
+label = "Start a blog"
+href = "/khalid/start/"
+note = "Free and open source. Pick one of three ways to start."

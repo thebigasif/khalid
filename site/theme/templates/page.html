@@ -1,0 +1,46 @@
+{#- Khalid's website: a plain page under the product site's hero, its
+    description as the lead, then the words in one readable column. The
+    Templates page shows the gallery first: each look with a picture of
+    its demo's home page and of a post, which scripts/template-previews.sh
+    draws beside this page when Pages publishes the site. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "slots.html" import cta_band -%}
+{% set slug = meta.path | replace(site.home, "") | replace("/", "") -%}
+<article class="page page-{{ slug }}">
+<header class="page-hero band">
+<h1>{{ page.title }}</h1>
+<p class="lead">{{ meta.description }}</p>
+</header>
+{% if slug == "templates" %}<section class="gallery" aria-labelledby="gallery-title">
+<h2 id="gallery-title" class="label">Eleven looks, each with a live demo</h2>
+<ul class="looks" role="list">
+{% for name, line, suits in [
+  ("classic", "The look every Khalid blog starts with: a clean list of posts, a contents list beside long posts, and author boxes.", "any blog that wants to start writing today"),
+  ("ledger", "A knowledge blog led by data, with no pictures in its lists.", "teams that publish studies and long how-to guides"),
+  ("atlas", "A large portal with many categories, breadcrumbs, a category bar and editor's picks.", "a blog with hundreds of posts across many topics"),
+  ("keystone", "A personal-brand guide site with a big featured post, a picture grid and numbered chapters.", "a founder or expert who writes long guides under their own name"),
+  ("compass", "A teaching blog where every guide opens with its key points.", "a business that explains how to do things, step by step"),
+  ("harbor", "A busy blog with downloadable offers inside posts and a scrolling row of related posts.", "a marketing team that turns readers into leads"),
+  ("wire", "A news and columns site with a lead story, a ranked list of popular posts and a fast feed.", "a publication that posts often"),
+  ("workbench", "A tools and comparisons blog with an at-a-glance table, a review of each tool and pros and cons.", "anyone who compares products for readers"),
+  ("almanac", "A resource library of long list guides, each with an \"On this page\" box and many related links.", "a shop or platform that teaches its customers"),
+  ("meridian", "A calm company journal, with a second layout for long reference pages.", "a company that writes thoughtful posts and evergreen explainers"),
+  ("folio", "A product team's essays and engineering notes under its own masthead.", "a team that writes about how it builds"),
+] %}{% set title = name | capitalize %}{% set demo = site.home ~ ("demo/" if name == "classic" else "templates/" ~ name ~ "/") %}<li><article class="tile look">
+<div class="look-shots">
+<img src="{{ site.home }}templates/{{ name }}-home.svg" alt="The {{ title }} demo's home page" width="1280" height="800"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">
+<img class="look-post" src="{{ site.home }}templates/{{ name }}-post.svg" alt="A post in the {{ title }} demo" width="1280" height="800"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">
+</div>
+<h3><a href="{{ demo }}">{{ title }}</a></h3>
+<p>{{ line }}</p>
+<p class="look-suits">Suits {{ suits }}.</p>
+</article></li>
+{% endfor %}</ul>
+</section>
+{% endif %}<div class="page-body">
+{{ page.body | place_cta(cta_band(template.cta) if template.cta else "") }}
+</div>
+{% if page.updated %}<p class="page-updated">{{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time></p>
+{% endif %}</article>
+{% endblock %}
