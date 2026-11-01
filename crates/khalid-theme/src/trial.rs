@@ -23,6 +23,8 @@ pub(crate) static SAMPLER: Pack = Pack {
         parts::cards(parts::CardShape::Image),
         parts::CARD_READING_TIME,
         parts::CARD_AUTHOR_ROLE,
+        parts::FEATURED,
+        parts::picks(0),
     ],
 };
 

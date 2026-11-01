@@ -29,6 +29,10 @@ tags = "Tags"
 contents = "Contents"
 # The heading of the posts shown under a post.
 related_posts = "Related posts"
+# The heading over the newest featured post, above a list.
+featured = "Featured"
+# The heading over the posts the editors chose, on the home page.
+editors_picks = "Editor's picks"
 mentions = "Posts that link here"
 # Names the # link beside each heading for screen readers.
 heading_link = "Link to this section"

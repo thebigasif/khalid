@@ -36,6 +36,18 @@
 </li>
 {% endfor %}{% if shape == "ranked" %}</ol>{% else %}</ul>{% endif %}
 {%- endmacro %}
+{#- featured_slot(post): the newest featured post, large, above a list. -#}
+{% macro featured_slot(post) -%}
+<section class="featured" aria-labelledby="featured-title">
+<h2 id="featured-title">{{ t.featured }}</h2>
+<article class="card card-featured">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}{{ card_meta(post) }}
+<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p>{{ post.excerpt }}</p>
+</article>
+</section>
+{%- endmacro %}
 {#- pages(pagination): links to the newer and older pages of a list. -#}
 {% macro pages(pagination) -%}
 <nav class="pagination" aria-label="{{ t.pagination }}">

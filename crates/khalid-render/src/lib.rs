@@ -54,7 +54,7 @@ pub use features::{Feature, Features};
 pub use glossary::{
     GlossaryGroup, GlossaryTerm, Highlight, RenderGlossary, RenderSearch, SearchMode, SearchResult,
 };
-pub use home::{HomeSectionPosts, RenderHome, TopicGroup};
+pub use home::{HomeSectionPosts, MOST_PICKS, RenderHome, TopicGroup};
 pub use image::{ImageCandidate, ImageSet, Loading, RenderImage};
 pub use listing::{Pagination, PostCard, RenderListing};
 pub use pack::{RenderPack, TemplateOption};

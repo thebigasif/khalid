@@ -116,4 +116,13 @@ mod tests {
             .collect();
         assert_eq!(offered, khalid_render::part_keys());
     }
+
+    #[test]
+    fn a_site_cannot_ask_for_more_picks_than_the_home_page_carries() {
+        let khalid_theme::OptionKind::Count { most, .. } = khalid_theme::parts::picks(0).kind
+        else {
+            panic!("picks is not a count");
+        };
+        assert_eq!(usize::try_from(most).unwrap(), khalid_render::MOST_PICKS);
+    }
 }

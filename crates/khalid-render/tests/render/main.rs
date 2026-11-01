@@ -26,6 +26,8 @@ mod dek;
 #[cfg(test)]
 mod enlarge;
 #[cfg(test)]
+mod featured;
+#[cfg(test)]
 mod glossary;
 #[cfg(test)]
 mod heading_links;

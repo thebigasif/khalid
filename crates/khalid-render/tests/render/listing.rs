@@ -35,6 +35,7 @@ pub(crate) fn home(listing: RenderListing) -> RenderHome {
     RenderHome {
         listing,
         sections: Vec::new(),
+        picks: Vec::new(),
         topics: Vec::new(),
     }
 }
@@ -63,6 +64,7 @@ pub(crate) fn first_page() -> RenderListing {
             ),
         ],
         pagination: Pagination::new(pages, 1),
+        featured: None,
     }
 }
 

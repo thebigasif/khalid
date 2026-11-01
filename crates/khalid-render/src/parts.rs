@@ -14,6 +14,8 @@ enum Off {
     Switch(bool),
     /// One word, such as a card shape.
     Word(&'static str),
+    /// A whole number, such as how many picks.
+    Number(i64),
 }
 
 /// Every part by its option key, with the value that keeps classic's look.
@@ -35,6 +37,10 @@ const PARTS: &[(&str, Off)] = &[
     ("card_reading_time", Off::Switch(false)),
     // A card author's role after their name.
     ("card_author_role", Off::Switch(false)),
+    // The newest featured post above the home page and each list.
+    ("featured", Off::Switch(false)),
+    // How many editor's picks the home page shows; none at 0.
+    ("picks", Off::Number(0)),
 ];
 
 /// The option key of every part the shared templates read.
@@ -51,6 +57,7 @@ pub(crate) fn with_parts(
         options.entry(key.to_owned()).or_insert(match off {
             Off::Switch(on) => TemplateOption::Switch(on),
             Off::Word(word) => TemplateOption::Word(word.to_owned()),
+            Off::Number(number) => TemplateOption::Number(number),
         });
     }
     options

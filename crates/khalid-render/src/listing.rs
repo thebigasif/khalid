@@ -17,6 +17,10 @@ pub struct RenderListing {
     pub posts: Vec<PostCard>,
     /// Links to the other pages of the list, when there is more than one.
     pub pagination: Option<Pagination>,
+    /// The newest post of the whole list marked `featured`, on its first
+    /// page only. A template with its `featured` part on shows it above
+    /// the list and leaves it out of the list below.
+    pub featured: Option<PostCard>,
 }
 
 /// A post as a list shows it.

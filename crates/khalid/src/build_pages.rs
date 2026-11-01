@@ -13,8 +13,8 @@ use khalid_content::{
 };
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
 use khalid_render::{
-    BodyHtml, PageBody, PageKind, PageMeta, Person, PostCard, PostTopics, ReadingTime, RenderHome,
-    RenderListing, RenderPost, RenderSite, Robots, related,
+    BodyHtml, MOST_PICKS, PageBody, PageKind, PageMeta, Person, PostCard, PostTopics, ReadingTime,
+    RenderHome, RenderListing, RenderPost, RenderSite, Robots, related,
 };
 use khalid_routes::{Collection, PostAddress, Routes};
 use khalid_seo::{ArticleType, MetaTemplate, PageKind as SeoKind, SeoPage};
@@ -120,9 +120,15 @@ pub(crate) fn home_page(
     locale: &Locale,
     cards: Vec<PostCard>,
 ) -> Result<Page, UserMessage> {
+    let picks: Vec<PostCard> = (cards.iter())
+        .filter(|card| card.featured)
+        .take(MOST_PICKS)
+        .cloned()
+        .collect();
     let listing = RenderListing {
         title: config.name().to_owned(),
         intro: None,
+        featured: picks.first().cloned(),
         posts: cards,
         pagination: None,
     };
@@ -138,6 +144,7 @@ pub(crate) fn home_page(
     let body = PageBody::Home(RenderHome {
         listing,
         sections: Vec::new(),
+        picks,
         topics: Vec::new(),
     });
     Ok(page(locale, config, "", meta, body, seo))

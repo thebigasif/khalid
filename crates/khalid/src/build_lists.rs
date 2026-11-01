@@ -152,6 +152,9 @@ fn paged(
             intro: list.intro.clone().filter(|_| number == 1),
             posts,
             pagination: Pagination::new(paths.clone(), number),
+            featured: (number == 1)
+                .then(|| list.cards.iter().find(|card| card.featured).cloned())
+                .flatten(),
         });
         pages.push(Page {
             file: format!("{}{rest}index.html", build_pages::prefix(config, locale)),

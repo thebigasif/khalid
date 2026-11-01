@@ -100,6 +100,38 @@ pub const CARD_AUTHOR_ROLE: OptionSpec = OptionSpec {
     kind: OptionKind::Switch { default: false },
 };
 
+/// The newest featured post above the home page and each list.
+pub const FEATURED: OptionSpec = OptionSpec {
+    key: "featured",
+    help: "Whether the newest post marked featured shows large above the posts, and not again below.",
+    kind: OptionKind::Switch { default: false },
+};
+
+/// The most editor's picks a site may ask for, the most the home page
+/// carries.
+const MOST_PICKS: i64 = 8;
+
+/// How many editor's picks the home page shows, `count` unless the site
+/// sets it, and kept from 0 for none to eight.
+pub const fn picks(count: i64) -> OptionSpec {
+    let default = if count > MOST_PICKS {
+        MOST_PICKS
+    } else if count < 0 {
+        0
+    } else {
+        count
+    };
+    OptionSpec {
+        key: "picks",
+        help: "How many posts marked featured the home page lists as editor's picks, from 0 for none to 8.",
+        kind: OptionKind::Count {
+            least: 0,
+            most: MOST_PICKS,
+            default,
+        },
+    }
+}
+
 /// `spec` turned on by default, when it is an on or off option. Any other
 /// option comes back as it is.
 pub const fn on(spec: OptionSpec) -> OptionSpec {
@@ -123,5 +155,7 @@ pub fn all() -> Vec<OptionSpec> {
         cards(CardShape::Image),
         CARD_READING_TIME,
         CARD_AUTHOR_ROLE,
+        FEATURED,
+        picks(0),
     ]
 }

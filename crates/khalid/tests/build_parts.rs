@@ -45,6 +45,16 @@ fn built(table: &str, files: &[(&str, &str)]) -> (tempfile::TempDir, PathBuf) {
     for (rel, text) in files {
         let path = at(temp.path(), rel);
         fs::create_dir_all(path.parent().unwrap()).unwrap();
+        // A line starting with `+` is added after the file's first line,
+        // such as a front matter key; anything else replaces the file.
+        let text = match text.strip_prefix('+') {
+            Some(line) => {
+                fs::read_to_string(&path)
+                    .unwrap()
+                    .replacen('\n', &format!("\n{line}\n"), 1)
+            }
+            None => (*text).to_owned(),
+        };
         fs::write(path, text).unwrap();
     }
     let out = at(temp.path(), "out");
@@ -146,4 +156,32 @@ fn the_sampler_pack_shows_ranked_cards_with_their_reading_time() {
         "{home}"
     );
     assert!(!home.contains("card-reading-time"), "{home}");
+}
+
+const FEATURED: (&str, &str) = (
+    "content/en/posts/2026-09-21-how-to-write-a-title-tag.md",
+    "+featured: true",
+);
+
+#[test]
+fn the_sampler_pack_shows_the_featured_post_and_the_picks() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\nfeatured = true\npicks = 3\n",
+        &[FEATURED],
+    );
+    let home = page(&sampler, "index.html");
+    assert!(home.contains("<section class=\"featured\""), "{home}");
+    assert_eq!(
+        home.matches("href=\"/blog/how-to-write-a-title-tag/\"")
+            .count(),
+        1,
+        "{home}"
+    );
+    let (_temp, classic) = built("", &[FEATURED]);
+    let home = page(&classic, "index.html");
+    assert!(!home.contains("class=\"featured\""), "{home}");
+    assert!(
+        home.contains("href=\"/blog/how-to-write-a-title-tag/\""),
+        "{home}"
+    );
 }

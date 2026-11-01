@@ -330,6 +330,7 @@ impl Demo {
                 .map(|(_, _, card)| card.clone())
                 .collect(),
             pagination: None,
+            featured: None,
         };
         let used: BTreeSet<String> = cards
             .iter()
@@ -345,6 +346,7 @@ impl Demo {
         let home = PageBody::Home(RenderHome {
             listing: pick("Field Notes on SEO", &|_, _| true),
             sections: Vec::new(),
+            picks: Vec::new(),
             topics: vec![TopicGroup {
                 name: None,
                 links: topics,
