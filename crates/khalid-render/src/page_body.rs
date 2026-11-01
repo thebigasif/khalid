@@ -66,6 +66,29 @@ impl PageBody {
         }
     }
 
+    /// How many post cards the page lists: on the front page every post,
+    /// so a page's steps grow with the blog.
+    pub(crate) fn cards(&self) -> usize {
+        match self {
+            Self::Home(home) => {
+                let sections = home.sections.iter().map(|section| section.posts.len());
+                let listing = &home.listing;
+                listing.posts.len()
+                    + usize::from(listing.featured.is_some())
+                    + home.picks.len()
+                    + sections.sum::<usize>()
+            }
+            Self::Collection(listing)
+            | Self::Tag(listing)
+            | Self::Category(listing)
+            | Self::Archive(listing)
+            | Self::Channel(listing)
+            | Self::Date(listing) => listing.posts.len() + usize::from(listing.featured.is_some()),
+            Self::Author(author) => author.posts.len(),
+            _ => 0,
+        }
+    }
+
     /// The page's own data, which templates read as `page`.
     pub(crate) fn value(&self) -> Value {
         match self {
