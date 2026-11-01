@@ -8,6 +8,9 @@ description: La repetición espaciada consiste en repasar una palabra justo ante
 focus_keyword: repetición espaciada
 translation: spaced
 tags: [memoria, vocabulario]
+image:
+  src: cover.svg
+  alt: Un montón de tarjetas y un camino de puntos que salta cada vez más lejos hasta una marca
 ---
 
 La repetición espaciada consiste en repasar una palabra nueva justo antes de olvidarla, y esperar después un poco más cada vez. Una palabra que repasas a intervalos cada vez más largos pasa de la memoria a corto plazo a la memoria a largo plazo. Es la forma más fiable que conocemos de aprender vocabulario.

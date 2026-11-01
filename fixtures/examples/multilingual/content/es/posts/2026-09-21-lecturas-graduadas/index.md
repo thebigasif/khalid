@@ -8,6 +8,9 @@ description: Las lecturas graduadas son libros escritos para estudiantes, con un
 focus_keyword: lecturas graduadas
 translation: readers
 tags: [leer, libros]
+image:
+  src: cover.svg
+  alt: Pilas de libros que suben como escalones, con un libro abierto y una bandera en lo alto
 ---
 
 Las lecturas graduadas son libros escritos para quienes aprenden un idioma. Cada nivel usa un vocabulario limitado y una gramática sencilla, así que puedes leer una historia entera mucho antes de poder leer una novela. Son la forma más suave de empezar a leer en otro idioma, y leyendo es como aprenderás la mayor parte de tu vocabulario.

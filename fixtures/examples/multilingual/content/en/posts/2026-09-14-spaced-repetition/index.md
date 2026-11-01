@@ -8,6 +8,9 @@ description: Spaced repetition means reviewing a word just before you would forg
 focus_keyword: spaced repetition
 translation: spaced
 tags: [memory, vocabulary]
+image:
+  src: cover.svg
+  alt: A stack of flashcards with a dotted path hopping onward in ever wider leaps to a tick
 ---
 
 Spaced repetition means reviewing a new word just before you would forget it, and then waiting a little longer each time. A word you review at growing gaps moves from short-term memory into long-term memory. It is the most reliable way we know to learn vocabulary.

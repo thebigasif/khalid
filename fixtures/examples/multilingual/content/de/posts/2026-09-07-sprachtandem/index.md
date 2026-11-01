@@ -8,6 +8,9 @@ description: Ein Sprachtandem bringt Sie mit jemandem zusammen, der Ihre Zielspr
 focus_keyword: Sprachtandem
 translation: exchange
 tags: [Sprechen, Partner]
+image:
+  src: cover.svg
+  alt: Zwei überlappende Sprechblasen in Blau und Koralle über einer türkisen Brücke
 ---
 
 Ein Sprachtandem ist ein Treffen von zwei Menschen, die jeweils die Sprache des anderen lernen wollen. Die Hälfte der Zeit sprechen Sie die eine Sprache, die andere Hälfte die andere. Es kostet nichts und bietet etwas, das keine App kann: einen echten Menschen, der auf Ihre Antwort wartet.

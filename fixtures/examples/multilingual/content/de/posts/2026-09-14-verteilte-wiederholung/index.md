@@ -8,6 +8,9 @@ description: Verteilte Wiederholung heißt, ein Wort kurz vor dem Vergessen zu w
 focus_keyword: verteilte Wiederholung
 translation: spaced
 tags: [Gedächtnis, Wortschatz]
+image:
+  src: cover.svg
+  alt: Ein Stapel Karteikarten, von dem ein gepunkteter Weg in immer weiteren Sprüngen zu einem Häkchen führt
 ---
 
 Verteilte Wiederholung heißt: Sie wiederholen ein neues Wort kurz bevor Sie es vergessen würden, und warten danach jedes Mal etwas länger. Ein Wort, das Sie in wachsenden Abständen wiederholen, wandert aus dem Kurzzeitgedächtnis ins Langzeitgedächtnis. Es ist der verlässlichste Weg, den wir kennen, um Vokabeln zu lernen.

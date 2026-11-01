@@ -8,6 +8,9 @@ description: A language exchange pairs you with someone who speaks the language 
 focus_keyword: language exchange
 translation: exchange
 tags: [speaking, partners]
+image:
+  src: cover.svg
+  alt: Two overlapping speech bubbles in blue and coral above a teal bridge
 ---
 
 A language exchange is a meeting between two people who each want to learn the other's language. You spend half the time in one language and half in the other. It costs nothing, and it gives you something no app can: a real person who waits for your answer.

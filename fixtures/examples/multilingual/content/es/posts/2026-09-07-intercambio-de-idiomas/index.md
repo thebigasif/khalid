@@ -8,6 +8,9 @@ description: Un intercambio de idiomas te une a alguien que habla la lengua que 
 focus_keyword: intercambio de idiomas
 translation: exchange
 tags: [hablar, compañeros]
+image:
+  src: cover.svg
+  alt: Dos bocadillos de diálogo superpuestos, uno azul y otro coral, sobre un puente turquesa
 ---
 
 Un intercambio de idiomas es un encuentro entre dos personas que quieren aprender la lengua de la otra. La mitad del tiempo habláis en un idioma y la otra mitad en el otro. No cuesta nada y ofrece algo que ninguna aplicación puede dar: una persona real que espera tu respuesta.

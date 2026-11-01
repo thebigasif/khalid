@@ -8,6 +8,9 @@ description: Graded readers are books written for learners, with a limited set o
 focus_keyword: graded readers
 translation: readers
 tags: [reading, books]
+image:
+  src: cover.svg
+  alt: Stacks of books rising like steps, with an open book on one and a flag on top
 ---
 
 Graded readers are books written for language learners. Each level uses a limited set of words and simple grammar, so you can read a whole story long before you could read a novel. They are the gentlest way to start reading in a new language, and reading is where most of your vocabulary will come from.

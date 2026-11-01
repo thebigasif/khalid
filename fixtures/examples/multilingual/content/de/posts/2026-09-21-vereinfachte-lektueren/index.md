@@ -8,6 +8,9 @@ description: Vereinfachte Lektüren sind Bücher für Lernende mit begrenztem Wo
 focus_keyword: vereinfachte Lektüren
 translation: readers
 tags: [Lesen, Bücher]
+image:
+  src: cover.svg
+  alt: Bücherstapel, die wie Stufen ansteigen, mit einem offenen Buch und einer Fahne ganz oben
 ---
 
 Vereinfachte Lektüren sind Bücher, die für Sprachlernende geschrieben sind. Jede Stufe nutzt einen begrenzten Wortschatz und einfache Grammatik. So lesen Sie eine ganze Geschichte, lange bevor Sie einen Roman lesen könnten. Sie sind der sanfteste Einstieg ins Lesen in einer neuen Sprache, und beim Lesen lernen Sie die meisten Ihrer Wörter.
