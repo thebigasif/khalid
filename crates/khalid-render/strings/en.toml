@@ -33,6 +33,8 @@ related_posts = "Related posts"
 featured = "Featured"
 # The heading over the posts the editors chose, on the home page.
 editors_picks = "Editor's picks"
+# The heading over the newest posts, on a template's front page.
+latest = "Latest"
 mentions = "Posts that link here"
 # The words before a post's share links.
 share = "Share this post"
