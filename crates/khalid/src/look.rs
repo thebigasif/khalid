@@ -175,6 +175,24 @@ mod tests {
     }
 
     #[test]
+    fn every_option_of_a_template_is_in_its_guide() {
+        let tests_only = ["trial", "sampler"];
+        for pack in khalid_theme::packs() {
+            if pack.options.is_empty() || tests_only.contains(&pack.name) {
+                continue;
+            }
+            let mut path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+            path.push(format!("../../docs/templates/{}.md", pack.name));
+            let guide = fs::read_to_string(&path)
+                .unwrap_or_else(|error| panic!("{}: {error}", path.display()));
+            for option in pack.options {
+                let row = format!("| `{}` |", option.key);
+                assert!(guide.contains(&row), "{}: {}", pack.name, option.key);
+            }
+        }
+    }
+
+    #[test]
     fn the_theme_offers_an_option_for_every_part_the_templates_read() {
         let offered: Vec<&str> = khalid_theme::parts::all()
             .iter()
