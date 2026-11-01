@@ -180,3 +180,45 @@ fn the_showcase_uses_every_block_it_promises() {
         assert!(all.contains(feature), "{feature}");
     }
 }
+
+#[test]
+fn every_template_demo_shows_the_showcase_call_to_action() {
+    let packs = [
+        "almanac",
+        "atlas",
+        "compass",
+        "folio",
+        "harbor",
+        "keystone",
+        "ledger",
+        "meridian",
+        "wire",
+        "workbench",
+    ];
+    for pack in packs {
+        // As scripts/pages.sh makes each template demo: the template's name
+        // and the band's place go after the showcase's own [template.cta].
+        let site = showcase_copy();
+        let mut toml = site.path().to_path_buf();
+        toml.push("site.toml");
+        let text = fs::read_to_string(&toml).unwrap();
+        let demo = format!(
+            "{text}\n[template]\nname = \"{pack}\"\n\n[template.options]\ncta_band = \"both\"\n"
+        );
+        fs::write(&toml, demo).unwrap();
+        let out = tempfile::tempdir().unwrap();
+        let output = khalid(
+            site.path(),
+            &["build", "--out", out.path().to_str().unwrap()],
+        );
+        assert_eq!(output.status.code(), Some(0), "{pack}: {output:?}");
+        for page in ["index.html", "seo-writing-guide/index.html"] {
+            let mut path = out.path().to_path_buf();
+            path.push(page);
+            let html = fs::read_to_string(&path).unwrap();
+            let band = html.split_once("<div class=\"cta-band\">");
+            let band = band.unwrap_or_else(|| panic!("{pack} {page}: no band")).1;
+            assert!(band.contains("Read the 2026 content benchmark"), "{pack} {page}");
+        }
+    }
+}

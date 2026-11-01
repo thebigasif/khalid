@@ -35,10 +35,11 @@ templates() {
     tr ',' '\n' | tr -d ' ' | sed '/^$/d' || true
 }
 
-# Drops the [template] table and its sub-tables from a site.toml.
+# Drops the [template] table and its options from a site.toml. The call to
+# action in [template.cta] stays, since every template takes it.
 without_template() {
   awk '
-    /^\[/ { skip = ($0 ~ /^\[template(\]|\.)/) }
+    /^\[/ { skip = ($0 ~ /^\[template(\]|\.options\])/) }
     !skip
   ' "$1" >"$1.new"
   mv "$1.new" "$1"
@@ -77,6 +78,12 @@ build() {
   if [ -n "$template" ]; then
     without_template "$site/site.toml"
     printf '\n[template]\nname = "%s"\n' "$template" >>"$site/site.toml"
+    # Each demo shows the showcase's call to action as a band on its front
+    # page and after each post, so every template shows off that part.
+    # Classic has no options at all.
+    if [ "$template" != "classic" ]; then
+      printf '\n[template.options]\ncta_band = "both"\n' >>"$site/site.toml"
+    fi
   else
     local named
     named="$(awk '/^\[/ { in_t = ($0 == "[template]") } in_t && /^name = / { gsub(/"/, "", $3); print $3 }' "$site/site.toml")"
