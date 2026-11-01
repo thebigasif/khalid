@@ -70,6 +70,23 @@ fn main_of(page: &str) -> &str {
 }
 
 #[test]
+fn the_compass_index_page() {
+    let (_temp, out) = built("");
+    insta::assert_snapshot!(main_of(&page(&out, "index.html")));
+}
+
+#[test]
+fn the_compass_front_page_lists_the_newest_posts_as_one_titled_section() {
+    let (_temp, out) = built("");
+    let home = page(&out, "index.html");
+    assert!(
+        home.contains("<section class=\"home-section\" id=\"latest\" aria-labelledby=\"latest-title\">\n<h2 id=\"latest-title\">Recently published</h2>\n<ul class=\"cards\" role=\"list\">"),
+        "{home}"
+    );
+    assert!(!home.contains("class=\"jump-links\""), "{home}");
+}
+
+#[test]
 fn the_compass_post_page() {
     let (_temp, out) = built("");
     insta::assert_snapshot!(main_of(&page(&out, "what-a-sitemap-does/index.html")));

@@ -27,6 +27,8 @@ in_category = "Filed under"
 tags = "Tags"
 # The heading of a post's table of contents.
 contents = "Contents"
+# The label of a front page's row of links to its own sections.
+on_this_page = "On this page"
 # The heading of the posts shown under a post.
 related_posts = "Related posts"
 # The heading over the newest featured post, above a list.
@@ -61,6 +63,10 @@ older_posts = "Older posts"
 view_all = "View all posts in {name}"
 # The heading and label of the row of topic links on the home page.
 topics = "Topics"
+# The first link in a template's row of topics, to every post.
+all_topics = "All"
+# The heading over the newest posts on a template's front page.
+recent_posts = "Recently published"
 # {name} is filled in.
 posts_by = "Posts by {name}"
 # The heading of the other authors at the end of an author page.

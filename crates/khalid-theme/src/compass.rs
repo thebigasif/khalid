@@ -1,20 +1,24 @@
 //! Compass (templates spec 3.4): a teaching blog where every guide opens
 //! with its trail, its contents and its key points, and ends with share
-//! links, its author and the newsletter. It keeps the shared post page,
+//! links, its author and the newsletter. It has its own front page of
+//! titled sections and keeps the shared post page. It
 //! shows the author's name without a photo at the top, turns off reading
 //! time and related posts, and sets a calm type scale.
 
 use khalid_core::ReaderSwitch;
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks};
-use crate::{Pack, slot};
+use crate::{Pack, PackTemplate, slot};
 
 /// The Compass pack.
 pub(crate) static COMPASS: Pack = Pack {
     name: "compass",
     summary: "A teaching blog: breadcrumbs, the contents and key points before each guide, share links, the author and the newsletter after it.",
     stylesheet: include_str!("../packs/compass/compass.css"),
-    templates: &[],
+    templates: &[PackTemplate {
+        name: "home.html",
+        source: include_str!("../packs/compass/home.html"),
+    }],
     tokens: TOKENS,
     reader: &[
         (ReaderSwitch::Byline, false),
