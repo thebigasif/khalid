@@ -135,7 +135,7 @@ fn message(site: &Path, error: &LookError) -> UserMessage {
 mod tests {
     use std::collections::BTreeMap;
 
-    use khalid_render::{Renderer, stylesheet_with};
+    use khalid_render::{Renderer, stylesheet_text_with, stylesheet_with};
 
     use super::*;
 
@@ -169,6 +169,34 @@ mod tests {
             };
             let renderer = Renderer::with_pack(site.path(), &chosen);
             assert!(renderer.is_ok(), "{}", pack.name);
+        }
+    }
+
+    /// The declarations of every rule in `css` whose selector names `class`.
+    fn rules_naming<'a>(css: &'a str, class: &str) -> Vec<&'a str> {
+        (css.split('}'))
+            .filter_map(|rule| rule.rsplit_once('{'))
+            .filter(|(selector, _)| selector.contains(class))
+            .map(|(_, declarations)| declarations)
+            .collect()
+    }
+
+    /// On a 320 px phone the header's call to action wrapped onto no new
+    /// line and ran past the screen. In every pack it now wraps, and stops
+    /// at the header's edge.
+    #[test]
+    fn every_packs_header_button_wraps_within_the_header() {
+        let site = tempfile::tempdir().unwrap();
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let css = stylesheet_text_with(&tokens, pack.stylesheet);
+            let rules = rules_naming(&css, ".header-button");
+            let capped = rules
+                .iter()
+                .any(|rule| rule.contains("max-inline-size: 100%"));
+            assert!(capped, "{}: no width cap", pack.name);
+            let held = rules.iter().find(|rule| rule.contains("nowrap"));
+            assert!(held.is_none(), "{}: {held:?}", pack.name);
         }
     }
 

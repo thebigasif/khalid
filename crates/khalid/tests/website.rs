@@ -333,3 +333,46 @@ fn the_gallery_cards_are_the_preview_scripts_plain_cards() {
     let beside = fs::read_dir(repo_file(CARDS)).unwrap().count();
     assert_eq!(beside, LOOKS.len() * 2 + 1, "the cards and index.md");
 }
+
+/// The class names a stylesheet gives rules to, such as `gallery` for
+/// `.gallery img { ... }`.
+#[cfg(test)]
+fn styled_classes(css: &str) -> BTreeSet<String> {
+    let name = |c: char| c.is_ascii_alphanumeric() || c == '-' || c == '_';
+    css.split('.')
+        .skip(1)
+        .map(|rest| rest.chars().take_while(|c| name(*c)).collect::<String>())
+        .filter(|class| class.starts_with(|c: char| c.is_ascii_alphabetic()))
+        .collect()
+}
+
+/// The class names the site's own templates write into their pages.
+#[cfg(test)]
+fn written_classes(html: &str) -> BTreeSet<String> {
+    html.split("class=\"")
+        .skip(1)
+        .filter_map(|rest| rest.split('"').next())
+        .flat_map(str::split_whitespace)
+        .filter(|class| !class.contains('{'))
+        .map(str::to_owned)
+        .collect()
+}
+
+/// A class the site's templates write that the editor blocks also style
+/// takes the block's layout: the Templates page's `gallery` section became
+/// the picture gallery's grid and showed its cards in one narrow column.
+/// Only the button and the page body that holds the blocks are shared on
+/// purpose.
+#[test]
+fn the_sites_templates_borrow_no_blocks_layout_but_the_button() {
+    let blocks = styled_classes(
+        &fs::read_to_string(repo_file("crates/khalid-render/assets/blocks.css")).unwrap(),
+    );
+    let mut borrowed = BTreeSet::new();
+    for entry in fs::read_dir(repo_file("site/theme/templates")).unwrap() {
+        let html = fs::read_to_string(entry.unwrap().path()).unwrap();
+        borrowed.extend(written_classes(&html).intersection(&blocks).cloned());
+    }
+    let shared = BTreeSet::from(["button".to_owned(), "page-body".to_owned()]);
+    assert_eq!(borrowed, shared);
+}
