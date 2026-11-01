@@ -20,6 +20,7 @@ on:
       - "fixtures/showcase-site/**"
       - "fixtures/examples/**"
       - "scripts/pages.sh"
+      - "scripts/template-previews.sh"
       - ".github/workflows/pages.yml"
   release:
     types: [published]
@@ -53,6 +54,8 @@ jobs:
           ./target/release/khalid --version
       - name: Build every site for the Pages address
         run: bash scripts/pages.sh ./target/release/khalid "$RUNNER_TEMP/pages" https://thebigasif.github.io /khalid/
+      - name: Template previews
+        run: bash scripts/template-previews.sh "$RUNNER_TEMP/pages" /khalid/
       - uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ runner.temp }}/pages
