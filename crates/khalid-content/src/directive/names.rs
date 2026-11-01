@@ -2,12 +2,13 @@
 //! typing slip.
 
 /// Every block name, for messages.
-pub(super) const BLOCKS: [&str; 26] = [
+pub(super) const BLOCKS: [&str; 27] = [
     "audio",
     "bookmark",
     "business",
     "button",
     "callout",
+    "columns",
     "embed",
     "faq",
     "figure",

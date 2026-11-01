@@ -30,6 +30,12 @@
 .pros { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 8.5l4 4 8-9' fill='none' stroke='black' stroke-width='2.2'/%3E%3C/svg%3E"); }
 .cons { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 3l10 10M13 3L3 13' fill='none' stroke='black' stroke-width='2.2'/%3E%3C/svg%3E"); }
 
+/* Columns: two to four cards side by side when there is room, stacked on a phone. */
+.columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; margin-block: 0 1.5rem; }
+.column { padding: 1rem 1.25rem; background: var(--color-surface); border-radius: var(--radius); }
+.column > :last-child { margin-block-end: 0; }
+.column-title { margin-block-end: 0.5rem; font-family: var(--font-heading); font-size: 1.125rem; font-weight: 700; }
+
 /* Figures, galleries and players fill the column and keep their space. */
 figure { margin-inline: 0; }
 figure > img { inline-size: 100%; border-radius: var(--radius); }

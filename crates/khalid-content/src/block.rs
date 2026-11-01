@@ -5,8 +5,8 @@ use comrak::{Arena, Options, parse_document};
 use khalid_core::{AbsoluteUrl, ParseUrlError, Slug};
 
 use crate::{
-    BusinessBlock, FormField, HowToBlock, ProductBlock, ProsConsBlock, Question, RecipeBlock,
-    ReviewBlock, VideoBlock,
+    BusinessBlock, Column, FormField, HowToBlock, ProductBlock, ProsConsBlock, Question,
+    RecipeBlock, ReviewBlock, VideoBlock,
 };
 
 use crate::directive::{Form, directive, opening, unknown_hint};
@@ -205,6 +205,12 @@ pub enum BlockKind {
     /// `:::proscons{pros="..." cons="..."}`: a list of pros beside a list of
     /// cons.
     ProsCons(ProsConsBlock),
+    /// `::::columns` holding two to four `:::column{title="..."}` cards,
+    /// side by side when there is room.
+    Columns {
+        /// The cards, in order.
+        columns: Vec<Column>,
+    },
     /// `:::maths{label="..."}` with a LaTeX formula as the body: maths on its
     /// own, drawn as `MathML` that browsers show with scripts off.
     Maths {

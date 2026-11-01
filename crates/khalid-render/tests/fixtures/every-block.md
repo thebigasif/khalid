@@ -44,6 +44,15 @@ No post should be more than two clicks from the home page.
 - No phone support
 :::
 
+::::columns
+:::column{title="Hosted checkout"}
+Live in an afternoon.
+:::
+:::column{title="Your own form"}
+Full control, more work.
+:::
+::::
+
 ### A figure and a toggle
 
 :::figure{src="/media/shelf.jpg" alt="A bakery shelf of sourdough loaves"}

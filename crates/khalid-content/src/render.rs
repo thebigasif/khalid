@@ -261,6 +261,7 @@ impl Renderer<'_> {
             BlockKind::Maths { label, formula } => self.maths(label.as_deref(), formula),
             BlockKind::PullQuote { by } => self.pull_quote(block, by.as_deref()),
             BlockKind::ProsCons(pros_cons) => self.pros_cons(pros_cons),
+            BlockKind::Columns { columns } => self.columns(columns),
             BlockKind::Faq { questions } => self.faq(questions),
             BlockKind::HowTo(how_to) => self.how_to(how_to),
             BlockKind::Review(review) => self.review(review),

@@ -33,7 +33,7 @@ pub use content_error::ContentError;
 pub use content_hash::ContentHash;
 pub use embed::{EMBED_PROVIDERS, EmbedProvider};
 pub use form::{FieldKind, FormField};
-pub use layout::ProsConsBlock;
+pub use layout::{Column, ProsConsBlock};
 pub use post::{MAX_RELATED, MAX_SECONDARY_KEYWORDS, Post, PostFront, parse_post};
 pub use post_fields::{
     LeadImage, ReviewState, ShareCard, ShareCards, Sitemap, TopicCluster, TopicRole,

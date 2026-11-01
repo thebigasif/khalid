@@ -1,7 +1,7 @@
 //! The HTML of the layout blocks. Each reads in full with scripts off.
 
 use super::{Renderer, attribute, inside};
-use crate::{Block, ProsConsBlock};
+use crate::{Block, Column, ProsConsBlock};
 
 impl Renderer<'_> {
     /// Writes a pull quote as a `<figure>`: the words in a `<blockquote>`,
@@ -43,6 +43,21 @@ impl Renderer<'_> {
                 .collect::<Vec<_>>()
                 .join("\n");
             self.markdown(&list);
+            self.html.push_str("</div>\n");
+        }
+        self.html.push_str("</div>\n");
+    }
+
+    /// Writes columns: one card per column, each with its title and its
+    /// markdown, in a grid that stacks on a narrow screen.
+    pub(super) fn columns(&mut self, columns: &[Column]) {
+        self.html.push_str("<div class=\"columns\">\n");
+        for column in columns {
+            self.html.push_str("<div class=\"column\">\n");
+            if let Some(title) = &column.title {
+                self.push(&["<p class=\"column-title\">", &attribute(title), "</p>\n"]);
+            }
+            self.markdown(&column.text);
             self.html.push_str("</div>\n");
         }
         self.html.push_str("</div>\n");

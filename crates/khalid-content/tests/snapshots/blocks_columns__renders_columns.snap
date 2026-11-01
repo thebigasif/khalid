@@ -1,0 +1,16 @@
+---
+source: crates/khalid-content/tests/blocks_columns.rs
+expression: html(COLUMNS)
+---
+<div class="columns">
+<div class="column">
+<p class="column-title">Hosted checkout</p>
+<p>Live in <strong>an afternoon</strong>.</p>
+</div>
+<div class="column">
+<ul>
+<li>Full control</li>
+<li>More work</li>
+</ul>
+</div>
+</div>

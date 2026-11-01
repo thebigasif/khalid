@@ -1,5 +1,14 @@
-//! Blocks that lay out a post's own words: pros and cons side by side
-//! (templates spec 4.4). They carry no schema.
+//! Blocks that lay out a post's own words: pros and cons and columns side
+//! by side (templates spec 4.4). They carry no schema.
+
+/// One card of a `::::columns` block, written `:::column{title="..."}`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Column {
+    /// The words over the card, when it has some.
+    pub title: Option<String>,
+    /// The card's markdown.
+    pub text: String,
+}
 
 /// `:::proscons`: what is good and what is not about one thing, as two
 /// lists. One `+ ` line per pro and one `- ` line per con.
