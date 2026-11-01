@@ -47,5 +47,6 @@ pub(crate) static TRIAL: Pack = Pack {
         },
         slot::share("end"),
         slot::share_networks(&["linkedin", "x", "email"]),
+        slot::newsletter("both"),
     ],
 };

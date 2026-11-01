@@ -1,7 +1,7 @@
 //! What every page of one language shows around its content: the site's
 //! name, stylesheet, reader script, menus and announcement, from `site.toml`.
 
-use khalid_core::{Config, Locale, MenuLink};
+use khalid_core::{Config, Locale, MenuLink, Mode};
 use khalid_render::{AnnouncementBar, Nav, NavLink, RenderSite};
 
 use crate::build_pages::path_of;
@@ -27,7 +27,16 @@ pub(crate) fn render_site(config: &Config, locale: &Locale, stylesheet: &str) ->
         script: assets::script_tag(config, &features),
         features,
         search: None,
+        subscribe: subscribe(config),
     }
+}
+
+/// Where a template's newsletter form posts: the site's own sign-up
+/// route, which `khalid serve` answers only on a server site with `[mail]`.
+/// A static site, or one that sends no mail, takes no sign-ups.
+fn subscribe(config: &Config) -> Option<String> {
+    let takes_sign_ups = config.mode() == Mode::Server && config.mail().is_some();
+    takes_sign_ups.then(|| format!("{}subscribe", config.mount()))
 }
 
 /// The links of `links` that pages in `locale` show, in the order written:

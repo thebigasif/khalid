@@ -197,6 +197,7 @@ fn sample_site(source: Source<'_>) -> RenderSite {
         features: Features::all(),
         search: None,
         script: None,
+        subscribe: None,
     }
 }
 

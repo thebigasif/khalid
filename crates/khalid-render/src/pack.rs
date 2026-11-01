@@ -71,9 +71,11 @@ impl From<&RenderPack<'_>> for PackContext {
 
 /// The options of the slots around a page (templates spec 4.2), each off:
 /// what a pack that does not take a slot shows.
-fn slots_off() -> [(&'static str, TemplateOption); 2] {
+fn slots_off() -> [(&'static str, TemplateOption); 3] {
+    let none = || TemplateOption::Word("none".to_owned());
     [
-        ("share", TemplateOption::Word("none".to_owned())),
+        ("share", none()),
         ("share_networks", TemplateOption::Lines(Vec::new())),
+        ("newsletter", none()),
     ]
 }

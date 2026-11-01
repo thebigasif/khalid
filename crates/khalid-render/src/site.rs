@@ -38,6 +38,10 @@ pub struct RenderSite {
     /// The reader script's tag. `None` serves no script, and every page
     /// still reads completely.
     pub script: Option<ScriptTag>,
+    /// The address the newsletter form a template shows posts to, such as
+    /// `/blog/subscribe`. `None` when the site takes no sign-ups, such as a
+    /// static site, so no template shows the form.
+    pub subscribe: Option<String>,
 }
 
 /// The site's menus. An empty menu renders nothing.

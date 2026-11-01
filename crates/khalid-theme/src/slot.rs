@@ -30,6 +30,23 @@ pub const fn share(default: &'static str) -> OptionSpec {
     }
 }
 
+/// `newsletter`: where the newsletter form shows, `default` when not set.
+/// A site that takes no sign-ups shows it nowhere.
+pub const fn newsletter(default: &'static str) -> OptionSpec {
+    OptionSpec {
+        key: "newsletter",
+        help: "Where the newsletter form shows: none, post after each post, home on the front page, or both.",
+        kind: OptionKind::Choice {
+            allowed: PLACES,
+            default,
+        },
+    }
+}
+
+/// The places a slot may show: none, after each post, on the front page,
+/// or both.
+const PLACES: &[&str] = &["none", "post", "home", "both"];
+
 /// `share_networks`: which networks the share links go to, in order,
 /// `default` when not set.
 pub const fn share_networks(default: &'static [&'static str]) -> OptionSpec {

@@ -309,4 +309,8 @@ mark { color: inherit; background: var(--color-surface); font-weight: 700; }
 .share ul { display: flex; flex-wrap: wrap; gap: var(--space); margin: 0; padding: 0; list-style: none; }
 .share a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: calc(var(--space) * 1.5); border: 1px solid var(--color-border); border-radius: var(--radius); text-decoration: none; }
 .share a:hover, .share a:focus-visible { border-color: var(--color-accent); }
-@media print { .share { display: none; } }
+/* The newsletter form a template places after a post or on the front page. */
+.newsletter-slot { margin-block: var(--space-section); padding: 1.5rem; background: var(--color-surface); border-radius: var(--radius); }
+.newsletter-slot h2 { margin-block-start: 0; }
+.newsletter-slot .subscribe { margin: 0; padding: 0; background: none; }
+@media print { .share, .newsletter-slot { display: none; } }

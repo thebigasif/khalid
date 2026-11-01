@@ -121,6 +121,22 @@ fn the_trial_pack_changes_the_build_and_reads_its_options() {
 }
 
 #[test]
+fn the_newsletter_form_shows_only_when_the_site_takes_sign_ups() {
+    let post = "what-a-sitemap-does/index.html";
+    let (_plain, plain) = built("\n[template]\nname = \"trial\"\n");
+    assert!(!page(&plain, post).contains("newsletter-slot"), "no [mail]");
+
+    let mail = "\n[mail]\nfrom = \"news@example.com\"\n\n[mail.smtp]\nhost = \"127.0.0.1\"\n\
+                port = 2525\nsecurity = \"none\"\nprivate_host = true\n";
+    let (_mail, out) = built(&format!("{mail}\n[template]\nname = \"trial\"\n"));
+    let form = "<form class=\"subscribe\" method=\"post\" action=\"/blog/subscribe\">";
+    assert!(page(&out, post).contains(form), "{}", page(&out, post));
+    assert!(page(&out, "index.html").contains("newsletter-slot"));
+    let (_classic, classic) = built(mail);
+    assert!(!page(&classic, post).contains("newsletter-slot"), "classic");
+}
+
+#[test]
 fn the_sites_own_reader_key_wins_over_the_pack() {
     let table = "\n[reader]\nreading_time = true\n\n[template]\nname = \"trial\"\n";
     let (_temp, out) = built(table);

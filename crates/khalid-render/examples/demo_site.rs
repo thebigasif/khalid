@@ -229,6 +229,7 @@ impl Demo {
             features: Features::all(),
             search: Some(format!("{}search/", lang.prefix)),
             script: Some(self.script.clone()),
+            subscribe: None,
         })
     }
 

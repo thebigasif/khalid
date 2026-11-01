@@ -32,6 +32,20 @@ An option a template does not know, or a value it does not take, stops every com
 
 An option you leave out takes the template's default.
 
+## Options many templates share
+
+Some parts of a page work the same in every template that has them. Each template lists the ones it takes, with its own defaults. Classic takes none of them, so it shows none of them.
+
+| Option | Values | What it does |
+|---|---|---|
+| `share` | `none`, `top`, `end`, `both` | Where a post shows its share links: under the title, after the post, or both. |
+| `share_networks` | a list from `x`, `linkedin`, `facebook`, `bluesky`, `reddit`, `hacker-news`, `whatsapp`, `email` | Which networks the share links go to, in the order they show. Each name once. |
+| `newsletter` | `none`, `post`, `home`, `both` | Where the newsletter form shows: after each post, on the front page, or both. |
+
+Share links are plain links to each network's own share page. They need no script, load nothing from the network, and tell the network nothing until a reader follows one.
+
+The newsletter form shows only when your blog can take sign-ups: `mode = "server"` with a `[mail]` table. A static blog has nowhere to send the form, so it shows none.
+
 ## Reader features
 
 A template may switch some `[reader]` features on or off by default, such as the reading time. A key you write in `[reader]` always wins over the template.

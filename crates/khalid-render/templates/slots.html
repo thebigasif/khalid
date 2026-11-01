@@ -1,0 +1,15 @@
+{#- The slots a template switches on around its pages (templates spec 4.2).
+    Each is plain HTML that works with scripts off. -#}
+{% macro newsletter_form(action, t) -%}
+<section class="newsletter-slot" aria-labelledby="newsletter-slot-title">
+<h2 id="newsletter-slot-title">{{ t.newsletter_title }}</h2>
+<p>{{ t.newsletter_text }}</p>
+<form class="subscribe" method="post" action="{{ action }}">
+<p><label for="newsletter-slot-email">{{ t.newsletter_label }}</label>
+<input id="newsletter-slot-email" name="email" type="email" autocomplete="email" required></p>
+<p class="form-trap" aria-hidden="true"><label for="newsletter-slot-homepage">{{ t.form_trap }}</label>
+<input id="newsletter-slot-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+<p><button type="submit">{{ t.newsletter_button }}</button></p>
+</form>
+</section>
+{%- endmacro %}

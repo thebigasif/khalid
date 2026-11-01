@@ -57,7 +57,7 @@ fn an_unknown_option_lists_the_options_the_pack_takes() {
     let error = choose("[template]\nname = \"trial\"\n[template.options]\nbaner = true\n");
     assert_eq!(
         error.unwrap_err().to_string(),
-        "the trial template has no option baner; it takes greeting, banner, columns, stats, share, share_networks"
+        "the trial template has no option baner; it takes greeting, banner, columns, stats, share, share_networks, newsletter"
     );
 }
 
@@ -138,6 +138,6 @@ fn options_reach_templates_as_plain_values() {
     let json = serde_json::to_string(look.options()).unwrap();
     assert_eq!(
         json,
-        r#"{"banner":false,"columns":2,"greeting":"hello","share":"end","share_networks":["linkedin","x","email"],"stats":[]}"#
+        r#"{"banner":false,"columns":2,"greeting":"hello","newsletter":"both","share":"end","share_networks":["linkedin","x","email"],"stats":[]}"#
     );
 }

@@ -1,10 +1,12 @@
-//! The template slots around a post: share links, each switched on by the
-//! template's options and read with scripts off (templates spec 4.2).
+//! The template slots around a page: share links and the newsletter form,
+//! each switched on by the template's options and read with scripts off
+//! (templates spec 4.2).
 
-use khalid_render::{PageBody, PageKind, RenderPack, Renderer, TemplateOption};
+use khalid_render::{PageBody, PageKind, RenderPack, RenderSite, Renderer, TemplateOption};
 
 use crate::common::{demo_site, meta};
 use crate::html_check::assert_valid_page;
+use crate::listing::{first_page, home};
 use crate::post::{part, sitemap_post};
 
 fn word(text: &str) -> TemplateOption {
@@ -29,10 +31,62 @@ fn with_options(options: &[(&str, TemplateOption)]) -> Renderer {
 }
 
 fn post_page(renderer: &Renderer) -> String {
+    post_on(renderer, &demo_site("en"))
+}
+
+fn post_on(renderer: &Renderer, site: &RenderSite) -> String {
     let post = sitemap_post();
     let meta = meta(&post.title, "/blog/what-a-sitemap-does/", PageKind::Article);
     let body = PageBody::Post(Box::new(post));
-    renderer.render(&demo_site("en"), &meta, &body).unwrap()
+    renderer.render(site, &meta, &body).unwrap()
+}
+
+fn home_on(renderer: &Renderer, site: &RenderSite) -> String {
+    let meta = meta("Field Notes on SEO", "/blog/", PageKind::Website);
+    let body = PageBody::Home(home(first_page()));
+    renderer.render(site, &meta, &body).unwrap()
+}
+
+/// The demo site with a newsletter that takes sign-ups.
+fn with_newsletter() -> RenderSite {
+    let mut site = demo_site("en");
+    site.subscribe = Some("/blog/subscribe".to_owned());
+    site
+}
+
+#[test]
+fn the_newsletter_form_posts_to_the_site_and_reads_with_scripts_off() {
+    let renderer = with_options(&[("newsletter", word("post"))]);
+    let page = post_on(&renderer, &with_newsletter());
+    assert_valid_page(&page);
+    let form = part(&page, "<section class=\"newsletter-slot\"", "</section>");
+    insta::assert_snapshot!(form);
+    let home = home_on(&renderer, &with_newsletter());
+    assert!(!home.contains("newsletter-slot"), "post only");
+}
+
+#[test]
+fn the_newsletter_shows_on_the_home_page_when_the_template_says() {
+    let renderer = with_options(&[("newsletter", word("both"))]);
+    let home = home_on(&renderer, &with_newsletter());
+    assert_valid_page(&home);
+    assert!(
+        home.contains("<section class=\"newsletter-slot\""),
+        "{home}"
+    );
+    assert!(post_on(&renderer, &with_newsletter()).contains("newsletter-slot"));
+}
+
+#[test]
+fn a_site_without_a_newsletter_or_a_template_without_the_slot_shows_no_form() {
+    let renderer = with_options(&[("newsletter", word("both"))]);
+    assert!(
+        !post_page(&renderer).contains("newsletter-slot"),
+        "no target"
+    );
+    let classic = Renderer::new().unwrap();
+    assert!(!post_on(&classic, &with_newsletter()).contains("newsletter-slot"));
+    assert!(!home_on(&classic, &with_newsletter()).contains("newsletter-slot"));
 }
 
 #[test]
