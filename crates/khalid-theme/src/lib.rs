@@ -11,6 +11,7 @@
 //! Every request goes through `khalid_outbound::Outbound` (RULES.md
 //! BL-RUN-8). The crate must not know about content, posts or the database.
 
+mod almanac;
 mod atlas;
 mod brand;
 mod color;
@@ -41,6 +42,7 @@ mod tokens_error;
 #[cfg(feature = "test-util")]
 mod trial;
 mod wire;
+mod workbench;
 
 pub use brand::Brand;
 pub use color::Rgb;

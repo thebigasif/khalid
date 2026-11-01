@@ -1,0 +1,103 @@
+/* Workbench (templates spec 3.7): a tools-and-comparisons blog. A ruled,
+   exact look: small labels in the code font, thin borders, panels on the
+   surface colour, and wide comparison tables. Every colour, font and
+   corner comes from the tokens; tints are color-mix() of them. */
+
+/* Lists use the full width for their grid; a post keeps its measure. */
+.site-header, .site-footer, main { max-inline-size: 76rem; }
+main:has(> .post), main:has(> .page) { max-inline-size: var(--measure); }
+.site-header { border-block-end: 2px solid var(--color-text); }
+.header-button { padding-inline: 1.25rem; }
+
+/* The small labels: the code font, spaced capitals, a square of accent. */
+.wb-label, .featured > h2, .toc-title, .share-title, .proscons-title, .related > h2, .wb-latest > h2, .wb-more > h2 {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.wb-label { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; color: var(--color-text); text-decoration: none; }
+.wb-label::before { content: ""; inline-size: 0.5rem; block-size: 0.5rem; background: var(--color-accent); border-radius: 1px; }
+.wb-label:hover { text-decoration: underline; }
+
+/* The front page. */
+.wb-masthead { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem 2rem; margin-block: 1rem 2rem; }
+.wb-masthead h1 { margin: 0; }
+.wb-masthead .intro { flex-basis: 100%; margin: 0; }
+.wb-topics { position: relative; }
+.wb-topics summary { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); font-weight: 600; cursor: pointer; }
+.wb-topics[open] summary { border-color: var(--color-text); }
+.wb-topics ul { display: grid; gap: 0; margin-block-start: 0.5rem; padding: 0.5rem 1rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); }
+
+.featured { margin-block: 0 var(--space-section); }
+.featured > h2 { display: inline-block; margin: 0 0 0.75rem; padding: 0.25rem 0.625rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: var(--radius); }
+.card-featured { container-type: inline-size; display: grid; gap: 0.5rem 2rem; padding: clamp(1.25rem, 3vw, 2.5rem); border: 1px solid var(--color-border); }
+.card-featured h3 { margin-block: 0.25rem; font-size: var(--text-h1); line-height: 1.1; }
+.card-featured > p:last-child { margin: 0; font-size: 1.125rem; }
+@container (min-width: 44rem) {
+  .card-featured:has(.image) { grid-template-columns: 1fr 1fr; }
+  .card-featured .image { grid-row: span 4; }
+}
+
+.wb-latest, .wb-more { margin-block: var(--space-section); }
+.wb-latest > h2, .wb-more > h2 { margin-block: 0 1rem; padding-block-end: 0.5rem; border-block-end: 1px solid var(--color-text); }
+.wb-latest-list { display: grid; margin: 0; padding: 0; list-style: none; }
+.wb-latest-list > li { display: grid; gap: 0 1.5rem; padding-block: 0.75rem; border-block-end: 1px solid var(--color-border); }
+.wb-latest-list h3 { margin: 0; font-size: var(--text-h3); }
+.wb-latest-list h3 a { color: var(--color-text); text-decoration: none; }
+.wb-latest-list h3 a:hover { text-decoration: underline; }
+.wb-latest-meta { display: flex; flex-wrap: wrap; gap: 0 1rem; margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+@media (min-width: 48rem) {
+  .wb-latest-list > li { grid-template-columns: 12rem 1fr auto; align-items: baseline; }
+  .wb-latest-list > li > :not(.wb-label) { grid-column: 2; }
+  .wb-latest-list .wb-label { grid-column: 1; grid-row: 1 / span 2; }
+}
+
+/* Picture cards in a grid of up to three, each a bordered panel. */
+.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.5rem; }
+.cards .card { block-size: 100%; padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.cards .card:hover, .cards .card:focus-within { border-color: var(--color-text); }
+.cards .card:has(.image) { display: block; }
+.cards .card .image { margin: -1rem -1rem 0.75rem; }
+.cards .card .image img { border-radius: var(--radius) var(--radius) 0 0; }
+.card :is(h2, h3) { margin-block-start: 0.5rem; font-size: var(--text-h3); }
+
+.newsletter-slot { display: grid; gap: 0 2rem; padding: clamp(1.25rem, 3vw, 2rem); background: color-mix(in oklab, var(--color-accent) 6%, var(--color-background)); border: 1px solid var(--color-border); }
+.newsletter-slot .subscribe { display: flex; flex-wrap: wrap; align-items: end; gap: 0.5rem; }
+.newsletter-slot .subscribe > p:first-child { flex: 1 1 16rem; margin: 0; }
+.newsletter-note { margin-block-end: 1rem; font-family: var(--font-mono); }
+.wb-all { margin-block: 2rem; text-align: center; }
+.wb-all a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: 1.5rem; color: var(--color-text); border: 1px solid var(--color-text); border-radius: var(--radius); font-weight: 600; text-decoration: none; }
+.wb-all a:hover { background: var(--color-surface); }
+
+/* A post: an open contents box, ruled sections, and the dates at the end. */
+.post-header .wb-label { margin-block-end: -0.5rem; }
+.dek { font-size: var(--text-h4); }
+.toc-box { padding: 0.75rem 1.25rem; background: var(--color-background); border: 1px solid var(--color-border); border-inline-start: 3px solid var(--color-accent); }
+.post-body h2 { padding-block-start: 1.25rem; border-block-start: 1px solid var(--color-border); }
+.post-body strong { font-weight: 700; color: var(--color-text); }
+.post-body li > strong:first-child { font-family: var(--font-heading); }
+.wb-closing { margin-block: 2.5rem 0; padding-block-start: 1rem; border-block-start: 1px solid var(--color-border); color: var(--color-muted); font-style: italic; }
+.share a { font-weight: 600; }
+
+/* "At a glance": the header row on the surface, the first column bold,
+   and on wide screens a table may grow past the text to 60rem. */
+.post-body th { background: var(--color-surface); font-family: var(--font-heading); }
+.post-body td:first-child { font-weight: 600; }
+.post-body table { border: 1px solid var(--color-border); border-radius: var(--radius); }
+@media (min-width: 64rem) {
+  .post-body > table { inline-size: max-content; min-inline-size: 100%; max-inline-size: 60rem; margin-inline-start: 50%; translate: -50% 0; }
+  [dir="rtl"] .post-body > table { translate: 50% 0; }
+}
+
+/* Reviews: pros and cons as panels, and a bold price line. */
+.pros, .cons { background: var(--color-background); border: 1px solid var(--color-border); }
+.review-rating, .product-price { font-weight: 700; }
+.faq details { border-block-end: 1px solid var(--color-border); }
+.related-links { padding-inline-start: 0; list-style: none; }
+.related-links li { border-block-end: 1px solid var(--color-border); }
+
+@media (min-width: 70rem) {
+  main:has(.post-with-toc) { max-inline-size: calc(var(--measure) + 18rem); }
+}

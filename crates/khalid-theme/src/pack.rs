@@ -9,6 +9,7 @@
 
 use khalid_core::{PackName, ReaderSwitch};
 
+
 /// One built-in look.
 #[derive(Debug)]
 #[non_exhaustive]
@@ -115,27 +116,31 @@ static CLASSIC: Pack = Pack {
 
 /// Every built-in pack, classic first.
 #[cfg(not(feature = "test-util"))]
-static PACKS: [&Pack; 7] = [
+static PACKS: [&Pack; 9] = [
     &CLASSIC,
+    &crate::almanac::ALMANAC,
     &crate::atlas::ATLAS,
     &crate::compass::COMPASS,
     &crate::harbor::HARBOR,
     &crate::keystone::KEYSTONE,
     &crate::ledger::LEDGER,
     &crate::wire::WIRE,
+    &crate::workbench::WORKBENCH,
 ];
 
 /// Every built-in pack, classic first, and the throwaway packs the tests
 /// switch to.
 #[cfg(feature = "test-util")]
-static PACKS: [&Pack; 9] = [
+static PACKS: [&Pack; 11] = [
     &CLASSIC,
+    &crate::almanac::ALMANAC,
     &crate::atlas::ATLAS,
     &crate::compass::COMPASS,
     &crate::harbor::HARBOR,
     &crate::keystone::KEYSTONE,
     &crate::ledger::LEDGER,
     &crate::wire::WIRE,
+    &crate::workbench::WORKBENCH,
     &crate::trial::TRIAL,
     &crate::trial::SAMPLER,
 ];

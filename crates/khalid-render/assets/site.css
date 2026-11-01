@@ -316,6 +316,7 @@ mark { color: inherit; background: var(--color-surface); font-weight: 700; }
 .newsletter-slot { margin-block: var(--space-section); padding: 1.5rem; background: var(--color-surface); border-radius: var(--radius); }
 .newsletter-slot h2 { margin-block-start: 0; }
 .newsletter-slot .subscribe { margin: 0; padding: 0; background: none; }
+.newsletter-note { color: var(--color-muted); font-size: var(--text-small); }
 /* The site's one call to action: a band after a post or on the front page, and a header button. */
 .cta-band { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space) calc(var(--space) * 3); margin-block: var(--space-section); padding: 1.5rem; background: var(--color-surface); border-radius: var(--radius); }
 .cta-band p { margin: 0; }

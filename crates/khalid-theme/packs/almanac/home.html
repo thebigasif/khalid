@@ -1,0 +1,69 @@
+{#- Almanac's front page (templates spec 3.8): a row of category links
+    with the rest under "More", the featured guide and the call to action,
+    the next four posts as short rows, a grid of guides beside the
+    editor's picks, the newsletter, the home sections, and the call to
+    action again to close. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, featured_slot, pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% set groups = page.topics if "topic_links" in site.features else [] -%}
+{% set first = groups[0].links if groups else [] -%}
+{% if first %}<nav class="al-subnav" aria-label="{{ t.categories }}">
+<ul>
+{% for topic in first[:5] %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}{% if first[5:] or groups[1:] %}<li><details>
+<summary>{{ t.more }}</summary>
+<ul>
+{% for topic in first[5:] %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}{% for group in groups[1:] %}{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}{% endfor %}</ul>
+</details></li>
+{% endif %}</ul>
+</nav>
+{% endif %}<h1 class="al-title">{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% set slot = page.featured if template.options.featured else none -%}
+{% set band = template.cta and template.options.cta_band in ["home", "both"] -%}
+{% if slot %}{{ featured_slot(slot) }}
+{% endif %}{% if band %}{{ cta_band(template.cta) }}
+{% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
+{% if posts %}<section class="al-latest" aria-labelledby="al-latest-title">
+<h2 id="al-latest-title">{{ t.latest }}</h2>
+<ul class="al-rows" role="list">
+{% for post in posts[:4] %}<li>
+{% if post.category %}<a class="al-pill" href="{{ post.category.href }}">{{ post.category.name }}</a>
+{% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+</li>
+{% endfor %}</ul>
+</section>
+{% elif not slot %}<p>{{ t.no_posts }}</p>
+{% endif %}{% set picks = page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks -%}
+{% set picks = picks[:template.options.picks] -%}
+{% if posts[4:] or picks %}<div class="al-library">
+{% if posts[4:] %}<section class="al-grid" aria-labelledby="al-more-title">
+<h2 id="al-more-title">{{ t.more_posts }}</h2>
+{{ cards(posts[4:10], 3) }}
+</section>
+{% endif %}{% if picks %}<section class="al-picks" aria-labelledby="al-picks-title">
+<h2 id="al-picks-title">{{ t.editors_picks }}</h2>
+<ul>
+{% for post in picks %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}</div>
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t, note=template.options.newsletter_note | first if template.options.newsletter_note else none) }}
+{% endif %}{% for section in page.sections %}<section class="home-section">
+<div class="al-section-head">
+<h2>{{ section.title }}</h2>
+<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</div>
+{% if section.posts %}{{ cards(section.posts[:4], 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% endfor %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if band %}<div class="al-closing">{{ cta_band(template.cta) }}</div>
+{% endif %}{% endblock %}

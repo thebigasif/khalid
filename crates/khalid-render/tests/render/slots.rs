@@ -88,6 +88,35 @@ fn the_newsletter_shows_on_the_home_page_when_the_template_says() {
 }
 
 #[test]
+fn a_page_may_show_the_newsletter_form_twice_with_its_own_ids_and_a_note() {
+    const TWICE: &str = "{% extends \"base.html\" %}{% block main %}\
+{% from \"slots.html\" import newsletter_form %}<h1>{{ page.title }}</h1>\
+{{ newsletter_form(site.subscribe, t) }}\
+{{ newsletter_form(site.subscribe, t, id=\"newsletter-end\", note=\"Every Tuesday.\") }}\
+{% endblock %}";
+    let site = tempfile::tempdir().unwrap();
+    let pack = RenderPack {
+        name: "trial",
+        templates: vec![("home.html", TWICE)],
+        options: std::collections::BTreeMap::new(),
+        cta: None,
+    };
+    let renderer = Renderer::with_pack(site.path(), &pack).unwrap();
+    let home = home_on(&renderer, &with_newsletter());
+    assert_valid_page(&home);
+    assert_eq!(home.matches("<form class=\"subscribe\"").count(), 2);
+    assert!(
+        home.contains("<input id=\"newsletter-end-email\""),
+        "{home}"
+    );
+    assert!(
+        home.contains("<p class=\"newsletter-note\">Every Tuesday.</p>"),
+        "{home}"
+    );
+    assert_eq!(home.matches("newsletter-note").count(), 1, "one note");
+}
+
+#[test]
 fn a_site_without_a_newsletter_or_a_template_without_the_slot_shows_no_form() {
     let renderer = with_options(&[("newsletter", word("both"))]);
     assert!(
