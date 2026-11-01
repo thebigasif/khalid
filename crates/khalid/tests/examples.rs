@@ -19,11 +19,16 @@ const POSTS: RangeInclusive<usize> = 6..=10;
 
 /// What each example is there to show: text its `site.toml` holds, and
 /// text its content holds.
-const FEATURES: [(&str, &[&str], &[&str]); 2] = [
+const FEATURES: [(&str, &[&str], &[&str]); 3] = [
     (
         "local-business",
         &["[[seo.locations]]", "[[seo.locations.hours]]"],
         &["::::faq", "::::howto", "::business{"],
+    ),
+    (
+        "membership",
+        &["mode = \"server\""],
+        &["access: members", "password_hash: ", "::gated{"],
     ),
     (
         "multilingual",
@@ -54,6 +59,29 @@ fn own_translation(issue: &Value) -> bool {
     };
     ["title-duplicate", "description-duplicate"].contains(&issue["check"].as_str().unwrap())
         && unprefixed("url") == unprefixed("detail")
+}
+
+/// Whether `issue` is the audit's warning about a page that is both
+/// noindex and nofollow, on the page of a post that `slug`'s example locks
+/// with a password. Khalid gives every password post both directives, and
+/// the audit warns about nofollow. A fix in either leaves this test green.
+#[cfg(test)]
+fn password_post(slug: &str, issue: &Value) -> bool {
+    if issue["check"] != "noindex-nofollow" {
+        return false;
+    }
+    let mut texts = Vec::new();
+    markdown(&within(&example(slug), &["content"]), &mut texts);
+    let url = issue["url"].as_str().unwrap_or_default();
+    texts.iter().any(|(_, text)| {
+        let field = |name: &str| {
+            text.lines()
+                .find_map(|line| line.strip_prefix(name))
+                .map(str::trim)
+        };
+        field("password_hash:").is_some()
+            && field("slug:").is_some_and(|post| url.ends_with(&format!("/{post}/")))
+    })
 }
 
 /// `base` with each of `parts` added, all of them fixed names.
@@ -178,6 +206,26 @@ fn only_a_page_and_its_own_translation_may_share_a_title() {
 }
 
 #[test]
+fn only_a_password_post_may_be_noindex_and_nofollow() {
+    let issue = |check: &str, url: &str| serde_json::json!({ "check": check, "url": url });
+    let handouts = "https://www.example.com/blog/printing-course-handouts/";
+    let booking = "https://www.example.com/blog/darkroom-booking/";
+    assert!(password_post(
+        "membership",
+        &issue("noindex-nofollow", handouts)
+    ));
+    assert!(!password_post(
+        "membership",
+        &issue("noindex-nofollow", booking)
+    ));
+    assert!(!password_post("membership", &issue("noindex", handouts)));
+    assert!(!password_post(
+        "local-business",
+        &issue("noindex-nofollow", handouts)
+    ));
+}
+
+#[test]
 fn every_example_this_test_knows_is_there() {
     let slugs = slugs();
     for (slug, _, _) in FEATURES {
@@ -215,6 +263,7 @@ fn every_built_example_passes_the_audit_with_no_warning() {
             .filter(|issue| ["error", "warning"].contains(&issue["severity"].as_str().unwrap()))
             .filter(|issue| !DATED.contains(&issue["check"].as_str().unwrap()))
             .filter(|issue| !own_translation(issue))
+            .filter(|issue| !password_post(&slug, issue))
             .collect();
         assert_eq!(problems, Vec::<&Value>::new(), "{slug}: {body}");
         assert_eq!(body["score"], 100, "{slug}: {body}");

@@ -1,0 +1,14 @@
+# Silverline Darkroom's three categories. "Members" holds the posts only
+# signed-in members read.
+
+[[categories]]
+slug = "developing"
+en = "Developing"
+
+[[categories]]
+slug = "printing"
+en = "Printing"
+
+[[categories]]
+slug = "members"
+en = "Members"
