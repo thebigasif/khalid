@@ -30,6 +30,7 @@ fn page_meta_reaches_templates_as_plain_text() {
         }],
         x_default: None,
         seo_head: None,
+        breadcrumbs: Vec::new(),
     };
     let seen = serde_json::to_value(&meta).unwrap();
     assert_eq!(

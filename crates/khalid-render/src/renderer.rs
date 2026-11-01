@@ -12,7 +12,7 @@ use crate::heading_links;
 use crate::pack::{PackContext, RenderPack};
 use crate::strings::Strings;
 use crate::templates::{self, Source};
-use crate::{PageBody, PageMeta, RenderError, RenderSite};
+use crate::{Brand, PageBody, PageMeta, RenderError, RenderSite};
 use crate::{enlarge, escape};
 
 /// How many steps one page may take before rendering stops. The default
@@ -32,6 +32,14 @@ pub struct Renderer {
     env: Environment<'static>,
     strings: Strings,
     pack: PackContext,
+    brand: BrandContext,
+}
+
+/// What templates read as `brand`: the logo and the icon as addresses.
+#[derive(Debug, Default, serde::Serialize)]
+struct BrandContext {
+    logo: Option<String>,
+    icon: Option<String>,
 }
 
 impl Renderer {
@@ -102,7 +110,20 @@ impl Renderer {
             env,
             strings: Strings::load()?,
             pack: PackContext::from(pack),
+            brand: BrandContext::default(),
         })
+    }
+
+    /// This renderer with the main site's logo and icon from the tokens'
+    /// `[brand]`: every page links the icon for the browser tab, and a
+    /// template that turns on its `logo` part shows the logo in the header.
+    #[must_use]
+    pub fn with_brand(mut self, brand: &Brand) -> Self {
+        self.brand = BrandContext {
+            logo: brand.logo.as_ref().map(ToString::to_string),
+            icon: brand.icon.as_ref().map(ToString::to_string),
+        };
+        self
     }
 
     /// Renders one page of `site` with the head `meta` and the main content
@@ -164,6 +185,7 @@ impl Renderer {
             dir => Serde(Direction::of(&site.locale)),
             page => body.value(),
             template => Serde(&self.pack),
+            brand => Serde(&self.brand),
         };
         template
             .render(context)

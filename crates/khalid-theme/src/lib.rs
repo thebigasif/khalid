@@ -23,6 +23,7 @@ mod links;
 mod look;
 mod pack;
 mod palette;
+pub mod parts;
 mod properties;
 mod resync;
 mod site_theme;

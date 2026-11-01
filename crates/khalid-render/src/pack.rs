@@ -58,7 +58,7 @@ impl From<&RenderPack<'_>> for PackContext {
     fn from(pack: &RenderPack<'_>) -> Self {
         Self {
             name: pack.name.to_owned(),
-            options: pack.options.clone(),
+            options: crate::parts::with_parts(pack.options.clone()),
         }
     }
 }
