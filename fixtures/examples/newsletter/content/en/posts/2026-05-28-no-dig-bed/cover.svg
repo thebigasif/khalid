@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#f0f6ea"/>
+  <circle cx="1040" cy="130" r="70" fill="#e9c46a"/>
+  <circle cx="150" cy="150" r="60" fill="#d9533f" opacity="0.15"/>
+  <ellipse cx="600" cy="605" rx="420" ry="22" fill="#2b2a20" opacity="0.12"/>
+  <rect x="240" y="468" width="720" height="114" rx="20" fill="#8b5e3c" opacity="0.45"/>
+  <path d="M320 530 C340 550 360 510 380 530 C400 550 420 510 440 530" fill="none" stroke="#d9533f" stroke-width="10" stroke-linecap="round"/>
+  <ellipse cx="760" cy="520" rx="24" ry="10" fill="#4f8a3c" opacity="0.5" transform="rotate(-15 760 520)"/>
+  <ellipse cx="840" cy="540" rx="20" ry="9" fill="#4f8a3c" opacity="0.5" transform="rotate(20 840 540)"/>
+  <rect x="230" y="438" width="740" height="36" rx="10" fill="#e9c46a"/>
+  <path d="M262 456 L938 456" stroke="#8b5e3c" stroke-width="4" stroke-dasharray="20 14" opacity="0.5"/>
+  <path d="M250 440 C250 330 330 320 600 320 C870 320 950 330 950 440 Z" fill="#8b5e3c"/>
+  <circle cx="340" cy="400" r="6" fill="#2b2a20" opacity="0.3"/>
+  <circle cx="680" cy="390" r="7" fill="#2b2a20" opacity="0.3"/>
+  <circle cx="860" cy="410" r="6" fill="#2b2a20" opacity="0.3"/>
+  <circle cx="420" cy="306" r="44" fill="#4f8a3c"/>
+  <circle cx="440" cy="292" r="26" fill="#ffffff" opacity="0.25"/>
+  <path d="M600 330 L580 250 M600 330 L620 246" stroke="#4f8a3c" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="572" cy="244" rx="16" ry="30" fill="#4f8a3c" transform="rotate(-20 572 244)"/>
+  <ellipse cx="628" cy="240" rx="16" ry="30" fill="#4f8a3c" transform="rotate(20 628 240)"/>
+  <circle cx="600" cy="330" r="30" fill="#d9533f"/>
+  <path d="M780 322 L780 262" stroke="#4f8a3c" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="760" cy="266" rx="24" ry="11" fill="#4f8a3c" transform="rotate(-25 760 266)"/>
+  <ellipse cx="800" cy="260" rx="24" ry="11" fill="#4f8a3c" transform="rotate(25 800 260)"/>
+  <path d="M1060 330 L1060 370 M1040 350 L1080 350" stroke="#4f8a3c" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="160" cy="400" r="9" fill="#e9c46a"/>
+</svg>

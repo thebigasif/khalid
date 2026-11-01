@@ -7,6 +7,9 @@ category: soil
 description: A no-dig bed turns a patch of weeds into a bed you can plant the same day. You need cardboard, compost and an afternoon, not a spade.
 focus_keyword: no-dig bed
 tags: [beds, beginners]
+image:
+  src: cover.svg
+  alt: A cut-away no-dig bed showing soil, a cardboard layer and compost with young plants on top
 ---
 
 A no-dig bed is a growing bed made on top of the ground, not dug into it. You smother the weeds with cardboard, pile compost on top and plant straight into the compost. The soil life underneath is left alone to do its work. I made my first no-dig bed on a weedy corner of my plot in one afternoon, and I have grown in it every year since.

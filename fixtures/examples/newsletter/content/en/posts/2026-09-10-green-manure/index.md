@@ -7,6 +7,9 @@ category: soil
 description: Green manure is a crop you grow for the soil, not to eat. Sow it on bare beds in early autumn and cut it down in spring, a few weeks before planting.
 focus_keyword: green manure
 tags: [cover crops, autumn]
+image:
+  src: cover.svg
+  alt: A bed of soil covered in green manure with crimson clover flowers and a bee
 ---
 
 Green manure is a crop you grow to protect and feed the soil, not to eat. Sown on bare beds in early autumn, it covers the soil through winter, stops rain washing it away, and keeps weeds out. In spring you cut it down, and it rots back into the bed. I sow green manure on every bed that would otherwise stand empty.

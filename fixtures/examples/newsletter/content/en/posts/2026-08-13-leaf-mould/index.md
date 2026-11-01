@@ -7,6 +7,9 @@ category: soil
 description: Leaf mould is fallen leaves left to rot for a year or two. It is free, it improves any soil, and it needs only a bag or a wire cage and patience.
 focus_keyword: leaf mould
 tags: [compost, autumn]
+image:
+  src: cover.svg
+  alt: A wire cage full of fallen autumn leaves rotting down, with more leaves drifting in
 ---
 
 Leaf mould is what fallen leaves become when you leave them to rot slowly in a pile. It is dark, crumbly and smells of a wood after rain. It does not feed plants much, but it improves soil better than almost anything else, and it is free. I am writing this in August so you have time to get ready before the leaves fall.

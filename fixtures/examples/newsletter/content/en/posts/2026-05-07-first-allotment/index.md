@@ -8,6 +8,9 @@ description: A first allotment can swallow every weekend. Grow a few easy crops 
 focus_keyword: first allotment
 featured: true
 tags: [planning, beginners]
+image:
+  src: cover.svg
+  alt: A small vegetable bed with three young plants beside a covered patch of ground and a spade
 ---
 
 Your first allotment is exciting and a little frightening. The plot is bigger than it looked, the weeds grow faster than you do, and every neighbour has advice. This letter is what I wish someone had told me in my first allotment year: grow a few easy things well, cover what you cannot use, and spend the year learning your soil.

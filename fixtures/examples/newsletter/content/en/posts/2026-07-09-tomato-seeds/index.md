@@ -7,6 +7,9 @@ category: growing
 description: Saving tomato seeds takes a jar, some water and a few days. Pick the right variety and the right fruit, ferment the seeds, then dry them well.
 focus_keyword: tomato seeds
 tags: [seeds, summer]
+image:
+  src: cover.svg
+  alt: A whole tomato and a cut tomato showing its seeds, beside a jar of seeds soaking in water
 ---
 
 Saving tomato seeds is one of the easiest ways to start saving your own seed. You need one ripe tomato, a jar and a few days. Next spring, you sow seeds from the plant that did best on your own plot. Here is how I do it each summer.

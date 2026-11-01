@@ -7,6 +7,9 @@ category: growing
 description: Plant garlic in autumn and it needs almost nothing until summer. Choose good cloves, plant them pointed end up, and keep the bed weeded.
 focus_keyword: plant garlic
 tags: [autumn, beginners]
+image:
+  src: cover.svg
+  alt: A white garlic bulb beside a bed where three cloves sprout green shoots
 ---
 
 Plant garlic in autumn, and it is one of the least demanding crops on the plot. Each clove you put in the ground grows into a whole bulb by the next summer. Garlic needs a spell of cold weather to split into cloves, which is why autumn planting works so well in a cold climate like ours.

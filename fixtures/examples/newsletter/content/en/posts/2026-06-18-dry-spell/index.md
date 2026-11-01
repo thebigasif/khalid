@@ -7,6 +7,9 @@ category: growing
 description: In a dry spell, water deeply and less often, at the roots, and give the water to the plants that need it most. Mulch does the rest.
 focus_keyword: dry spell
 tags: [watering, summer]
+image:
+  src: cover.svg
+  alt: A red watering can pouring water onto a young plant in dry soil under a hot sun
 ---
 
 A dry spell on an allotment means carrying cans, and there is never enough water for everything. The answer is not to water more. It is to water better: deeply, less often, at the roots, and first to the plants that need it most. This letter is how I get my plot through a dry spell without losing crops or my weekends.
