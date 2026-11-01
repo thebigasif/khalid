@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#f6eeee"/>
+  <circle cx="1040" cy="150" r="100" fill="#e0a23b" opacity="0.14"/>
+  <path d="M140 140 q40 -30 80 0 t80 0 t80 0" fill="none" stroke="#9aa5b1" stroke-width="8" stroke-linecap="round"/>
+  <path d="M170 190 q40 -30 80 0 t80 0 t80 0" fill="none" stroke="#9aa5b1" stroke-width="8" stroke-linecap="round"/>
+  <path d="M140 240 q40 -30 80 0 t80 0" fill="none" stroke="#9aa5b1" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="610" cy="550" rx="400" ry="26" fill="#1e2226" opacity="0.1"/>
+  <rect x="270" y="330" width="130" height="216" rx="22" fill="#e0a23b"/>
+  <rect x="305" y="292" width="60" height="50" rx="8" fill="#4a5560"/>
+  <rect x="295" y="270" width="80" height="30" rx="8" fill="#1e2226"/>
+  <rect x="290" y="400" width="90" height="80" rx="8" fill="#ffffff"/>
+  <line x1="306" y1="424" x2="364" y2="424" stroke="#4a5560" stroke-width="6" stroke-linecap="round"/>
+  <line x1="306" y1="450" x2="346" y2="450" stroke="#9aa5b1" stroke-width="6" stroke-linecap="round"/>
+  <rect x="440" y="468" width="340" height="24" rx="12" fill="#1e2226"/>
+  <rect x="480" y="420" width="260" height="120" rx="56" fill="#c8423b"/>
+  <circle cx="545" cy="480" r="42" fill="#ffffff"/>
+  <circle cx="675" cy="480" r="42" fill="#ffffff"/>
+  <path d="M520 470 q10 -22 32 -26" fill="none" stroke="#9aa5b1" stroke-width="6" stroke-linecap="round"/>
+  <path d="M650 470 q10 -22 32 -26" fill="none" stroke="#9aa5b1" stroke-width="6" stroke-linecap="round"/>
+  <rect x="757" y="372" width="28" height="110" rx="14" fill="#9aa5b1" transform="rotate(-35 771 427)"/>
+  <rect x="802" y="270" width="28" height="140" rx="14" fill="#9aa5b1"/>
+  <rect x="836" y="250" width="28" height="150" rx="14" fill="#9aa5b1"/>
+  <rect x="870" y="258" width="28" height="150" rx="14" fill="#9aa5b1"/>
+  <rect x="904" y="282" width="26" height="130" rx="13" fill="#9aa5b1"/>
+  <rect x="800" y="360" width="130" height="170" rx="40" fill="#9aa5b1"/>
+  <rect x="806" y="506" width="118" height="40" rx="10" fill="#4a5560"/>
+  <path d="M640 330 l7 17 l17 7 l-17 7 l-7 17 l-7 -17 l-17 -7 l17 -7 z" fill="#e0a23b"/>
+</svg>

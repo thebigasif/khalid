@@ -26,6 +26,12 @@ type = "organization"
 name = "Silverline Darkroom"
 email = "hello@example.com"
 
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Silverline Darkroom logo beside its name"
+width = 320
+height = 80
+
 [[nav.primary]]
 label = "Developing"
 href = "/blog/category/developing/"

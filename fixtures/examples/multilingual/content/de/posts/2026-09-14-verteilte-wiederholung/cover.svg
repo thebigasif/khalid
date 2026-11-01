@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#fdf8e4"/>
+  <circle cx="1060" cy="560" r="120" fill="#f26b5b" opacity="0.14"/>
+  <circle cx="1000" cy="120" r="7" fill="#3d4ed8"/>
+  <circle cx="1030" cy="120" r="7" fill="#3d4ed8"/>
+  <circle cx="1060" cy="120" r="7" fill="#3d4ed8"/>
+  <ellipse cx="620" cy="500" rx="460" ry="22" fill="#1c2140" opacity="0.08"/>
+  <rect x="170" y="320" width="240" height="160" rx="18" fill="#2bb3a3" transform="rotate(-8 290 400)"/>
+  <rect x="170" y="320" width="240" height="160" rx="18" fill="#3d4ed8" transform="rotate(-3 290 400)"/>
+  <rect x="170" y="320" width="240" height="160" rx="18" fill="#ffffff" transform="rotate(2 290 400)"/>
+  <circle cx="230" cy="380" r="18" fill="#f26b5b"/>
+  <line x1="266" y1="380" x2="370" y2="382" stroke="#1c2140" stroke-width="12" stroke-linecap="round" opacity="0.8"/>
+  <line x1="214" y1="424" x2="350" y2="428" stroke="#1c2140" stroke-width="10" stroke-linecap="round" opacity="0.3"/>
+  <path d="M360 330 Q420 210 480 420 Q590 160 700 420 Q850 40 1000 420" fill="none" stroke="#3d4ed8" stroke-width="10" stroke-linecap="round" stroke-dasharray="1 22"/>
+  <circle cx="480" cy="420" r="16" fill="#f6c744"/>
+  <circle cx="700" cy="420" r="20" fill="#f26b5b"/>
+  <circle cx="1000" cy="420" r="34" fill="#2bb3a3"/>
+  <path d="M984 420 l11 11 l22 -22" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M860 160 l8 20 l20 8 l-20 8 l-8 20 l-8 -20 l-20 -8 l20 -8 z" fill="#f6c744"/>
+  <path d="M560 200 l6 14 l14 6 l-14 6 l-6 14 l-6 -14 l-14 -6 l14 -6 z" fill="#2bb3a3"/>
+</svg>

@@ -11,9 +11,8 @@ translation: core-web-vitals
 focus_keyword: Core Web Vitals
 tags: [page speed, images]
 image:
-  src: lcp.svg
-  alt: A timeline of a page loading, the moment the Core Web Vitals call the largest contentful paint
-  caption: A reader sees a blank screen, then text, then the largest element. The last step is what most posts get wrong.
+  src: cover.svg
+  alt: A speed gauge with its needle in the green zone above a page loading bar
 ---
 
 Core Web Vitals are three measures Google uses to judge how a page feels to the person reading it: how fast the main content appears, how quickly the page responds to a tap, and whether things jump around while it loads. Writers rarely touch the code, yet most of what slows a blog post down is something a writer added.

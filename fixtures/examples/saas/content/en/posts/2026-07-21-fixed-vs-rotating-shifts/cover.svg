@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#fff7e6"/>
+  <circle cx="1080" cy="110" r="90" fill="#4cb8e8" opacity="0.2"/>
+  <circle cx="110" cy="580" r="80" fill="#0f8a7e" opacity="0.14"/>
+  <ellipse cx="340" cy="560" rx="200" ry="20" fill="#12312e" opacity="0.12"/>
+  <ellipse cx="800" cy="570" rx="220" ry="22" fill="#12312e" opacity="0.12"/>
+  <rect x="190" y="170" width="300" height="360" rx="28" fill="#ffffff"/>
+  <rect x="220" y="205" width="240" height="56" rx="28" fill="#0f8a7e"/>
+  <rect x="220" y="281" width="240" height="56" rx="28" fill="#0f8a7e"/>
+  <rect x="220" y="357" width="240" height="56" rx="28" fill="#0f8a7e"/>
+  <rect x="220" y="433" width="240" height="56" rx="28" fill="#0f8a7e"/>
+  <circle cx="250" cy="233" r="14" fill="#ffffff"/>
+  <circle cx="250" cy="309" r="14" fill="#ffffff"/>
+  <circle cx="250" cy="385" r="14" fill="#ffffff"/>
+  <circle cx="250" cy="461" r="14" fill="#ffffff"/>
+  <rect x="280" y="227" width="140" height="12" rx="6" fill="#ffffff" opacity="0.6"/>
+  <rect x="280" y="303" width="140" height="12" rx="6" fill="#ffffff" opacity="0.6"/>
+  <rect x="280" y="379" width="140" height="12" rx="6" fill="#ffffff" opacity="0.6"/>
+  <rect x="280" y="455" width="140" height="12" rx="6" fill="#ffffff" opacity="0.6"/>
+  <circle cx="800" cy="350" r="172" fill="#ffffff"/>
+  <path d="M800 350 L800 200 A150 150 0 0 1 930 425 Z" fill="#f7b733"/>
+  <path d="M800 350 L930 425 A150 150 0 0 1 670 425 Z" fill="#f2765a"/>
+  <path d="M800 350 L670 425 A150 150 0 0 1 800 200 Z" fill="#4cb8e8"/>
+  <circle cx="800" cy="350" r="58" fill="#ffffff"/>
+  <circle cx="800" cy="350" r="16" fill="#12312e"/>
+  <path d="M640 258 A185 185 0 0 1 960 258" fill="none" stroke="#0f8a7e" stroke-width="12" stroke-linecap="round"/>
+  <polygon points="982,290 946,272 976,244" fill="#0f8a7e"/>
+  <path d="M960 442 A185 185 0 0 1 640 442" fill="none" stroke="#0f8a7e" stroke-width="12" stroke-linecap="round"/>
+  <polygon points="618,410 654,428 624,456" fill="#0f8a7e"/>
+  <circle cx="560" cy="160" r="7" fill="#f7b733"/>
+  <circle cx="590" cy="130" r="5" fill="#f2765a"/>
+  <circle cx="1040" cy="470" r="6" fill="#0f8a7e"/>
+</svg>

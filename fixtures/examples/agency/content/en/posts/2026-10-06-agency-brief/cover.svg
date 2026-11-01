@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#eef4ef"/>
+  <path d="M940 420 C1040 380 1150 440 1130 540 C1110 630 980 640 930 580 C890 530 880 450 940 420 Z" fill="#9ccc3c" opacity="0.22"/>
+  <circle cx="160" cy="140" r="80" fill="#f0d9a8" opacity="0.6"/>
+  <ellipse cx="600" cy="600" rx="300" ry="24" fill="#1b2a22" opacity="0.12"/>
+  <rect x="390" y="90" width="420" height="500" rx="28" fill="#2f5d46" stroke="#1b2a22" stroke-width="4"/>
+  <rect x="420" y="130" width="360" height="430" rx="14" fill="#ffffff"/>
+  <rect x="530" y="70" width="140" height="50" rx="14" fill="#c8642d" stroke="#1b2a22" stroke-width="4"/>
+  <circle cx="600" cy="95" r="9" fill="#fbf4e6"/>
+  <circle cx="530" cy="250" r="70" fill="#f0d9a8"/>
+  <circle cx="530" cy="250" r="48" fill="#ffffff"/>
+  <circle cx="530" cy="250" r="28" fill="#c8642d"/>
+  <circle cx="530" cy="250" r="10" fill="#ffffff"/>
+  <line x1="530" y1="250" x2="610" y2="190" stroke="#1b2a22" stroke-width="6" stroke-linecap="round"/>
+  <polygon points="606,178 626,178 616,198" fill="#9ccc3c" stroke="#1b2a22" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="630" y="214" width="120" height="14" rx="7" fill="#2f5d46" opacity="0.35"/>
+  <rect x="630" y="244" width="90" height="14" rx="7" fill="#2f5d46" opacity="0.35"/>
+  <rect x="450" y="360" width="300" height="14" rx="7" fill="#2f5d46" opacity="0.35"/>
+  <rect x="450" y="392" width="260" height="14" rx="7" fill="#2f5d46" opacity="0.35"/>
+  <rect x="450" y="424" width="290" height="14" rx="7" fill="#2f5d46" opacity="0.35"/>
+  <rect x="450" y="476" width="130" height="50" rx="12" fill="#9ccc3c"/>
+  <rect x="600" y="476" width="130" height="50" rx="12" fill="#f0d9a8"/>
+  <g transform="rotate(35 880 330)">
+    <rect x="790" y="314" width="200" height="32" rx="10" fill="#c8642d" stroke="#1b2a22" stroke-width="4"/>
+    <rect x="950" y="314" width="40" height="32" rx="6" fill="#2f5d46" stroke="#1b2a22" stroke-width="4"/>
+    <polygon points="790,314 750,330 790,346" fill="#f0d9a8" stroke="#1b2a22" stroke-width="4" stroke-linejoin="round"/>
+  </g>
+  <circle cx="300" cy="420" r="8" fill="#c8642d"/>
+  <circle cx="270" cy="460" r="5" fill="#2f5d46"/>
+  <circle cx="960" cy="150" r="6" fill="#9ccc3c"/>
+</svg>

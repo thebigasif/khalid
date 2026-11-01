@@ -19,6 +19,12 @@ name = "Larkspur Studio"
 email = "hello@example.com"
 founded = "2017-03-01"
 
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Larkspur Ledger logo, a violet larkspur flower beside the name"
+width = 320
+height = 80
+
 [seo.ai_page]
 covers = "Larkspur Studio writes about SEO, content strategy, technical SEO and how AI search picks its sources, for small marketing teams."
 cite = "Name Larkspur Ledger and the author, and link the post you quote."
