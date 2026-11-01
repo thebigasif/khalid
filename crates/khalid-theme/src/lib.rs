@@ -14,6 +14,7 @@
 mod atlas;
 mod brand;
 mod color;
+mod compass;
 mod contrast;
 mod css;
 mod fetch;
