@@ -4,11 +4,20 @@ This folder is Khalid's own website, built with Khalid and published at https://
 
 ## What is where
 
-- `theme/templates/home.html` replaces the home page, which would otherwise list posts, with the story.
+- `site.toml` puts the site in the Atlas template, with a "Start a blog" button and footer link columns.
+- `theme/tokens.toml` holds the colours, fonts and sizes: paper, ink and an orange accent.
+- `theme/site.css` holds the site's own rules: the hero, the tiles, the gallery and the bands. Every rule reads the tokens.
+- `theme/templates/home.html` replaces the home page, which would otherwise list posts, with the story in sections.
+- `theme/templates/collection.html` lists features and use cases as tiles, and holds the drawn icons home.html imports.
+- `theme/templates/page.html` gives every page its hero, and the Templates page its gallery.
 - `content/en/features/` holds one post per feature group, listed at `/khalid/features/`.
 - `content/en/use-cases/` holds one post per use case, listed at `/khalid/use-cases/`.
 - `content/en/pages/` holds Templates, Start, Compare and About.
 - `routes.toml` gives the two collections their addresses.
+
+## The template pictures
+
+The gallery shows a picture of each template demo's home page and of one post, at `/khalid/templates/<name>-home.svg` and `<name>-post.svg`. The files beside `content/en/pages/templates/index.md` are plain cards with each template's name, so the site always has a picture. After `scripts/pages.sh` builds everything, `scripts/template-previews.sh <pages folder>` replaces them in the built folder with screenshots taken in a headless Chromium. Where no Chromium runs, it writes the plain cards again. To remake the committed cards after changing them in the script, run `scripts/template-previews.sh --cards site/content/en/pages/templates`.
 
 ## The sites published beside it
 

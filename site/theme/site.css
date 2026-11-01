@@ -23,8 +23,8 @@ body { overflow-x: clip; }
 .site-header, main, .site-footer { max-inline-size: var(--wide); }
 
 /* A full-width band behind a part of the page, in --band. */
-.band, .post-header { position: relative; isolation: isolate; }
-.band::before, .post-header::before { content: ""; position: absolute; z-index: -1; inset-block: 0; inset-inline: calc(50% - 50vw); background: var(--band, var(--color-surface)); }
+.band, .post-header, main > .breadcrumbs { position: relative; isolation: isolate; }
+.band::before, .post-header::before, main > .breadcrumbs::before { content: ""; position: absolute; z-index: -1; inset-block: 0; inset-inline: calc(50% - 50vw); background: var(--band, var(--color-surface)); }
 
 /* The header: the name with its mark, the menu and the one button. */
 .site-header { padding-block: 0.75rem; border-block-end-color: var(--line); }
@@ -66,7 +66,8 @@ h1, h2 { letter-spacing: -0.015em; }
 .post-header .post-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 1.25rem; }
 .post-header .people { margin: 0; }
 .post-header .person-role { display: none; }
-main > .breadcrumbs { max-inline-size: var(--read); margin: 0.5rem auto -0.5rem; }
+main > .breadcrumbs { max-inline-size: var(--read); margin: -1rem auto 0; padding-block-start: 0.5rem; }
+main > .breadcrumbs + .page-hero, main > .breadcrumbs + * > :is(.page-hero, .post-header) { padding-block-start: clamp(1rem, 3vw, 2rem); }
 
 /* One readable column for the words of a post or a page. */
 .post, .page-body, main > .cta-band, .mentions, .related { max-inline-size: var(--read); margin-inline: auto; }
@@ -158,12 +159,27 @@ main > .hero:first-child { margin-block-start: -1rem; }
 .side h3 { margin: 0 0 1rem; font-size: var(--text-h3); }
 .side ul { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
 
-/* How it works: three numbered steps joined by a line. */
+/* How it works: three numbered steps. */
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.25rem; margin: 0; padding: 0; list-style: none; counter-reset: step; }
 .step { position: relative; padding: 1.75rem 1.5rem 1.5rem; border: 1px solid var(--color-border); border-radius: var(--round); }
 .step::before { counter-increment: step; content: counter(step); display: grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; margin-block-end: 1rem; border-radius: 50%; background: var(--color-accent); color: var(--color-background); font-weight: 700; }
 .step h3 { margin: 0 0 0.5rem; font-size: var(--text-h3); }
 .step p { margin: 0; color: var(--color-muted); }
+
+/* The template gallery and the home page's strip: each look as a card
+   with its demo's home page, and a post set over its corner. */
+.gallery { margin-block-end: var(--space-section); }
+.looks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+.tile.look { padding: 0.625rem 0.625rem 1.25rem; }
+.look :is(h2, h3), .look p { padding-inline: 0.875rem; }
+.look-shots { position: relative; margin-block-end: 0.25rem; padding: 1rem 3.5rem 2.25rem 1rem; overflow: hidden; background: linear-gradient(150deg, var(--accent-tint), var(--link-tint)); border-radius: calc(var(--round) - 0.25rem); }
+.look-shots img { inline-size: 100%; block-size: auto; border-radius: 0.5rem; box-shadow: var(--lift); }
+.look-shots .look-post { position: absolute; inset-block-end: 0.75rem; inset-inline-end: 0.75rem; inline-size: 44%; border: 1px solid var(--color-border); }
+.looks > :nth-child(3n + 2) .look-shots { background: linear-gradient(150deg, var(--link-tint), color-mix(in oklab, var(--third) 9%, var(--color-background))); }
+.looks > :nth-child(3n + 3) .look-shots { background: linear-gradient(150deg, color-mix(in oklab, var(--third) 9%, var(--color-background)), var(--accent-tint)); }
+.look .look-suits { margin-block-start: 0.5rem; color: var(--color-text); font-size: var(--text-small); font-weight: 600; }
+.strip .look-shots { padding: 0.875rem 0.875rem 0; }
+.strip .look-shots img { border-end-start-radius: 0; border-end-end-radius: 0; }
 
 /* The closing call to action: a tinted band with the button. */
 .cta-band { justify-content: center; gap: 1rem 2rem; margin-block: var(--space-section) 0; padding: clamp(1.75rem, 4vw, 2.5rem); background: linear-gradient(135deg, var(--accent-tint), var(--link-tint)); border: 1px solid color-mix(in oklab, var(--color-accent) 18%, var(--color-border)); border-radius: var(--round); text-align: center; }
@@ -174,11 +190,11 @@ main > .hero:first-child { margin-block-start: -1rem; }
 .closing .actions { justify-content: center; }
 
 /* The footer: link columns on the surface colour. */
-.site-footer { margin-block-start: var(--space-section); padding-block: 3rem 2.5rem; border: 0; background: var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.site-footer { margin-block-start: 2rem; padding-block: 3rem 2.5rem; border: 0; background: var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
 .footer-groups { grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 1.5rem 2rem; padding-block-end: 1.5rem; border-block-end: 1px solid var(--color-border); }
 .footer-groups h2 { margin-block-end: 0.25rem; font-family: var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
 .site-footer a { color: var(--color-text); text-decoration: none; }
 .site-footer a:hover { color: var(--accent-ink); text-decoration: underline; }
 
 @media (prefers-reduced-motion: reduce) { .tile, .button { transition: none; transform: none; } }
-@media print { .band::before, .post-header::before, .site-name::before { display: none; } .page-hero, .post-header { padding-block: 0; } }
+@media print { .band::before, .post-header::before, main > .breadcrumbs::before, .site-name::before { display: none; } .page-hero, .post-header { padding-block: 0; } }

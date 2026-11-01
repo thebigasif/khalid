@@ -120,6 +120,21 @@
 <p class="more"><a class="arrow-link" href="{{ home }}features/writing-checks/">See how the writing checks work {{ arrow() }}</a></p>
 </section>
 
+<section class="section strip" aria-labelledby="looks-title">
+<header class="section-head">
+<p class="eyebrow">Templates</p>
+<h2 id="looks-title">Pick a look, keep your brand</h2>
+<p class="lead">Ten templates and Classic, each in your own colours, fonts and logo through theme sync. Each one has a live demo.</p>
+</header>
+<ul class="looks" role="list">
+{% for name in ["atlas", "ledger", "keystone", "harbor", "wire", "folio"] %}{% set title = name | capitalize %}<li><article class="tile look">
+<div class="look-shots"><img src="{{ home }}templates/{{ name }}-home.svg" alt="The {{ title }} demo's home page" width="1280" height="800" loading="lazy" decoding="async"></div>
+<h3><a href="{{ home }}templates/{{ name }}/">{{ title }}</a></h3>
+</article></li>
+{% endfor %}</ul>
+<p class="more"><a class="arrow-link" href="{{ home }}templates/">Browse all eleven looks {{ arrow() }}</a></p>
+</section>
+
 <section class="section" aria-labelledby="who-title">
 <header class="section-head">
 <p class="eyebrow">Use cases</p>

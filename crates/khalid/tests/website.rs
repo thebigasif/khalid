@@ -278,6 +278,14 @@ fn every_page_the_brief_asks_for_is_built_and_links_its_live_demo() {
             "{name}"
         );
     }
+    for name in LOOKS {
+        for kind in ["home", "post"] {
+            let picture = format!("templates/{name}-{kind}.svg");
+            assert!(templates.contains(&format!("src=\"/khalid/{picture}\"")));
+            assert!(within(site.path(), &format!("public/{picture}")).is_file());
+        }
+    }
+    assert_eq!(home.matches("class=\"look-shots\"").count(), 6);
 
     let start = built_page(site.path(), "start/");
     for way in [
