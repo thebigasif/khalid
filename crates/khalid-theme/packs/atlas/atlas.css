@@ -1,0 +1,73 @@
+/* Atlas: a portal for a blog with many topics. A wide frame, a sticky bar
+   of topic tabs, stories with small-caps labels, and posts with their
+   contents in a sticky column. Every colour, font and size comes from the
+   tokens. */
+
+:root { --atlas-wide: 76rem; --atlas-bar: 3rem; --atlas-gap: 1.5rem; }
+.site-header, .site-footer, main:has(.front) { max-inline-size: var(--atlas-wide); }
+.header-button { margin-inline-start: auto; }
+
+/* The bar of topic tabs: full width on the surface colour, sticky under
+   the top of the window, scrolling sideways inside itself on a phone. */
+.catbar { position: sticky; inset-block-start: 0; z-index: 2; margin-block: -1rem calc(var(--space) * 3); background: var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.catbar ul { flex-wrap: nowrap; gap: 0; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
+.catbar a { min-block-size: var(--atlas-bar); padding-inline: calc(var(--space) * 2); color: var(--color-text); font-size: var(--text-small); font-weight: 600; text-decoration: none; white-space: nowrap; }
+.catbar a:hover { box-shadow: inset 0 -3px 0 var(--color-border); }
+.catbar a[aria-current] { box-shadow: inset 0 -3px 0 var(--color-accent); }
+
+/* The front page's sections, each under a small heading. */
+.front-title { margin-block: 0 calc(var(--space) * 3); }
+.front section { margin-block-end: var(--space-section); }
+.front section > h2 { margin-block: 0 calc(var(--space) * 2); padding-block-end: var(--space); border-block-end: 2px solid var(--color-text); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* A story: its topic as a label, the title, the summary, then who, how
+   long and when. */
+.stories { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.stories > li + li { border-block-start: 1px solid var(--color-border); }
+.story { padding-block: calc(var(--space) * 2.5); }
+.story-label { margin: 0 0 calc(var(--space) / 2); color: var(--color-muted); font-size: var(--text-small); font-variant-caps: all-small-caps; font-weight: 600; letter-spacing: 0.04em; }
+.story :is(h2, h3) { margin: 0; font-size: var(--text-h3); line-height: 1.3; }
+.story :is(h2, h3) a { color: var(--color-text); text-decoration: none; }
+.story :is(h2, h3) a:hover { text-decoration: underline; }
+.story-excerpt { margin: var(--space) 0 0; }
+.story-meta { display: flex; flex-wrap: wrap; gap: 0 calc(var(--space) * 1.5); margin: var(--space) 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.story-meta > * + *::before { content: "\00b7" / ""; margin-inline-end: calc(var(--space) * 1.5); }
+
+/* The two newest featured posts, large, then the picks in a grid. */
+.leads { display: grid; gap: var(--atlas-gap); }
+.story-lead { padding: calc(var(--space) * 3); background: var(--color-surface); border-radius: var(--radius); }
+.story-lead :is(h2, h3) { font-size: var(--text-h2); }
+.pick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--atlas-gap); margin: 0; padding: 0; list-style: none; }
+.pick-grid .story { block-size: 100%; padding: calc(var(--space) * 2.5); border: 1px solid var(--color-border); border-radius: var(--radius); }
+.pick-grid .story:has(a:hover) { border-color: var(--color-accent); }
+
+/* One block per topic: its newest posts and a link to all of them. */
+.topic-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 0 calc(var(--atlas-gap) * 2); }
+.topic-block .story { padding-block: calc(var(--space) * 1.5); }
+@media (min-width: 64rem) { .feed { max-inline-size: 48rem; } }
+
+/* Lists and author pages: text cards split by rules. */
+.cards-text { gap: 0; }
+.cards-text > li + li { border-block-start: 1px solid var(--color-border); }
+.cards-text .card { padding-block: calc(var(--space) * 2); }
+
+/* A post: the trail, the title, then the contents in a ruled column. */
+.post-header h1 { margin-block-start: var(--space); }
+.toc-side { padding-inline-end: calc(var(--space) * 2); border-inline-end: 1px solid var(--color-border); }
+.toc-side .toc-title, .toc-inline summary { font-size: var(--text-small); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* Body furniture: an expert quote set large under an opening mark,
+   further reading in italics, steps and tables with clear edges. */
+.pullquote { padding-inline-start: 0; border: 0; }
+.pullquote blockquote { font-size: var(--text-h3); }
+.pullquote blockquote::before { content: "\201C" / ""; display: block; block-size: 0.5em; color: var(--color-accent); font-size: 3em; line-height: 1; }
+.callout-read { font-style: italic; }
+.post-body th { background: var(--color-surface); }
+.post-body table { border: 1px solid var(--color-border); border-radius: var(--radius); }
+.howto > li::marker { font-family: var(--font-heading); font-weight: var(--heading-weight); }
+
+/* The call to action: a band on a tint of the accent. */
+.cta-band { background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border: 1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-background)); }
+.related > h2 { font-size: var(--text-h3); }
+
+@media print { .catbar { display: none; } }

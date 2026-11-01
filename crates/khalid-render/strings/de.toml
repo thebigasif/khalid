@@ -112,3 +112,4 @@ consent_note = "Dieser Blog möchte Code anderer Firmen ausführen, der Besuche 
 consent_change = "Du kannst deine Wahl zu Code anderer Firmen, der Besuche zählt, hier ändern."
 consent_allow = "Erlauben"
 consent_refuse = "Nicht erlauben"
+all_posts = "Alle Beiträge"
