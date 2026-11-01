@@ -10,6 +10,8 @@ use std::fmt;
 
 use serde::Deserialize;
 
+use crate::{OneLine, SiteHref};
+
 /// The longest a template's name may be.
 const MAX_NAME: usize = 32;
 
@@ -21,6 +23,9 @@ const MAX_NAME: usize = 32;
 /// name = "classic"
 /// [template.options]
 /// lead_image = true
+/// [template.cta]
+/// label = "Start a free trial"
+/// href = "https://example.com/signup"
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Eq, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -30,6 +35,8 @@ pub struct TemplateChoice {
     name: PackName,
     #[serde(default)]
     options: BTreeMap<String, OptionValue>,
+    #[serde(default)]
+    cta: Option<CallToAction>,
 }
 
 impl TemplateChoice {
@@ -42,6 +49,26 @@ impl TemplateChoice {
     pub fn options(&self) -> &BTreeMap<String, OptionValue> {
         &self.options
     }
+
+    /// The site's one call to action, if `[template.cta]` sets it.
+    pub fn cta(&self) -> Option<&CallToAction> {
+        self.cta.as_ref()
+    }
+}
+
+/// The one thing the site asks a reader to do, such as start a trial. The
+/// call-to-action band, the header button and the `::cta` block show it.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct CallToAction {
+    /// The words on the button.
+    pub label: OneLine,
+    /// Where the button goes.
+    pub href: SiteHref,
+    /// One line beside the button, such as "No card needed."
+    #[serde(default)]
+    pub note: Option<OneLine>,
 }
 
 /// A look's name: lowercase letters, digits and hyphens, starting with a
