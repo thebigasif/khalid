@@ -39,10 +39,11 @@ pub(crate) struct MediaFile {
     pub(crate) address: String,
 }
 
-/// Every size an image is offered in, as a page draws it.
+/// Every size an image is offered in, as a page draws it. A drawing (SVG)
+/// is offered as itself, with no WebP copy.
 #[derive(Debug)]
 struct Picture {
-    webp: ImageSet,
+    webp: Option<ImageSet>,
     fallback: ImageSet,
     width: u32,
     height: u32,
@@ -65,9 +66,17 @@ pub(crate) fn attach(
 ) -> Result<Vec<MediaFile>, UserMessage> {
     let cache = MediaCache::new(site);
     let mut pictures = BTreeMap::new();
+    let mut drawings = BTreeMap::new();
     let mut sizes = BTreeMap::new();
     for file in files {
         let kind = MediaType::for_file(&file.address);
+        if matches!(kind, MediaType::Svg) {
+            let bytes = post_files::read(site, file)?;
+            if let Some(drawing) = drawing(&file.address, &bytes) {
+                drawings.insert(file.address.clone(), drawing);
+            }
+            continue;
+        }
         if !matches!(kind, MediaType::Jpeg | MediaType::Png | MediaType::Webp) {
             continue;
         }
@@ -79,13 +88,14 @@ pub(crate) fn attach(
         pictures.insert(file.address.clone(), picture);
         sizes.extend(made.into_iter().map(|size| (size.address.clone(), size)));
     }
-    for language in languages.iter_mut().filter(|_| !pictures.is_empty()) {
+    let none = pictures.is_empty() && drawings.is_empty();
+    for language in languages.iter_mut().filter(|_| !none) {
         for page in &mut language.pages {
             post_files::rewrite(page, |html| drawn(html, &pictures));
             if let PageBody::Post(post) = &mut page.body {
                 post.originals = originals(post.body.as_str(), &pictures);
             }
-            if let Some(image) = lead(config, page, &pictures) {
+            if let Some(image) = lead(config, page, (&pictures, &drawings)) {
                 shown.add(page, image);
             }
         }
@@ -99,16 +109,18 @@ pub(crate) fn attach(
 /// `pictures`: fetched at once with high priority, as the one large image
 /// at the top (BL-WEB-5), and shared as the page's Open Graph and X image.
 /// Returns what it drew. An image anywhere else is left out until it has
-/// sizes, so no page shifts while it loads.
+/// sizes, so no page shifts while it loads. A drawing among `drawings` is
+/// drawn at its own size, and the page keeps the site's share image,
+/// since networks do not show a drawing.
 fn lead(
     config: &Config,
     page: &mut Page,
-    pictures: &BTreeMap<String, Picture>,
+    (pictures, drawings): (&BTreeMap<String, Picture>, &BTreeMap<String, Picture>),
 ) -> Option<RenderImage> {
     let image = page.lead.as_ref()?;
     let name = image.src.trim_start_matches("./");
     let address = format!("{}{name}", page.meta.path);
-    let Some(picture) = pictures.get(&address) else {
+    let Some(picture) = pictures.get(&address).or_else(|| drawings.get(&address)) else {
         tracing::warn!(image = %image.src, page = %page.meta.path, "the lead image is not a file beside its page, so it is left out");
         return None;
     };
@@ -119,7 +131,7 @@ fn lead(
         height: picture.height,
         sizes: SIZES.to_owned(),
         avif: None,
-        webp: Some(picture.webp.clone()),
+        webp: picture.webp.clone(),
         fallback: picture.fallback.clone(),
         loading: Loading::Eager,
     };
@@ -127,6 +139,9 @@ fn lead(
         PageBody::Post(post) => post.image = Some(drawn.clone()),
         PageBody::Author(author) => author.image = Some(drawn.clone()),
         _ => return None,
+    }
+    if picture.webp.is_none() {
+        return Some(drawn);
     }
     let origin = config.address().as_str().trim_end_matches('/');
     let widest = picture.fallback.widest();
@@ -169,12 +184,59 @@ fn picture(config: &Config, image: &DerivedImage) -> Option<(Picture, Vec<MediaF
         Some(ImageSet::new(first, candidates))
     };
     let picture = Picture {
-        webp: set(webp)?,
+        webp: Some(set(webp)?),
         fallback: set(fallback)?,
         width: image.width,
         height: image.height,
     };
     Some((picture, made))
+}
+
+/// The drawing (SVG) `bytes` at `address`, offered as itself at the size
+/// its `svg` element gives. `None`, with a warning, when it gives none, so
+/// a page never draws it at an unknown size.
+fn drawing(address: &str, bytes: &[u8]) -> Option<Picture> {
+    let text = String::from_utf8_lossy(bytes);
+    let Some((width, height)) = drawing_size(&text) else {
+        tracing::warn!(image = %address, "a drawing names no width and height or viewBox, so it is left out as a lead image");
+        return None;
+    };
+    let candidate = ImageCandidate {
+        url: address.to_owned(),
+        width,
+    };
+    Some(Picture {
+        webp: None,
+        fallback: ImageSet::new(candidate, Vec::new()),
+        width,
+        height,
+    })
+}
+
+/// The width and height of the `svg` element of `text`: its `width` and
+/// `height` when both are whole pixel numbers, else the last two numbers
+/// of its `viewBox`.
+fn drawing_size(text: &str) -> Option<(u32, u32)> {
+    let tag = text.split_once("<svg")?.1.split_once('>')?.0;
+    let value = |name: &str| {
+        let (_, rest) = tag.split_once(&format!(" {name}=\""))?;
+        Some(rest.split_once('"')?.0)
+    };
+    let pixels = |text: &str| -> Option<u32> {
+        let number = text.trim().trim_end_matches("px");
+        let whole = number.split_once('.').map_or(number, |(whole, _)| whole);
+        whole.parse().ok().filter(|pixels| *pixels > 0)
+    };
+    let sized = value("width")
+        .and_then(pixels)
+        .zip(value("height").and_then(pixels));
+    sized.or_else(|| {
+        let numbers: Vec<&str> = value("viewBox")?.split_whitespace().collect();
+        match numbers.as_slice() {
+            [_, _, width, height] => pixels(width).zip(pixels(height)),
+            _ => None,
+        }
+    })
 }
 
 /// `html` with each image whose address is a key of `pictures` drawn as
@@ -231,15 +293,21 @@ fn alt(tag: &str) -> &str {
 
 /// Writes `picture` with `alt`, in the shape of the templates' `picture` macro.
 fn draw(out: &mut String, picture: &Picture, alt: &str) {
-    let webp = attribute(&picture.webp.to_srcset());
+    out.push_str("<picture>\n");
+    if let Some(webp) = &picture.webp {
+        let webp = attribute(&webp.to_srcset());
+        let _ = writeln!(
+            out,
+            "<source type=\"image/webp\" srcset=\"{webp}\" sizes=\"{SIZES}\">"
+        );
+    }
     let fallback = &picture.fallback;
     let src = attribute(fallback.widest().map_or("", |widest| widest.url.as_str()));
     let srcset = attribute(&fallback.to_srcset());
     let (width, height) = (picture.width, picture.height);
     let _ = write!(
         out,
-        "<picture>\n<source type=\"image/webp\" srcset=\"{webp}\" sizes=\"{SIZES}\">\n\
-         <img src=\"{src}\" srcset=\"{srcset}\" sizes=\"{SIZES}\" width=\"{width}\" \
+        "<img src=\"{src}\" srcset=\"{srcset}\" sizes=\"{SIZES}\" width=\"{width}\" \
          height=\"{height}\" alt=\"{alt}\" loading=\"lazy\" decoding=\"async\">\n</picture>"
     );
 }
@@ -282,7 +350,7 @@ mod tests {
 
     fn pictures(mount: &str) -> BTreeMap<String, Picture> {
         let picture = Picture {
-            webp: set(mount, "webp"),
+            webp: Some(set(mount, "webp")),
             fallback: set(mount, "png"),
             width: 800,
             height: 450,
@@ -334,6 +402,17 @@ mod tests {
             originals(&drawn(&image, &pictures), &pictures),
             BTreeMap::new()
         );
+    }
+
+    #[test]
+    fn a_drawing_is_as_large_as_its_width_and_height_or_its_view_box() {
+        let sized = "<?xml version=\"1.0\"?><svg xmlns=\"x\" width=\"640px\" height=\"360.5\" viewBox=\"0 0 1 1\">";
+        assert_eq!(drawing_size(sized), Some((640, 360)));
+        let boxed = "<svg xmlns=\"x\" viewBox=\"0 0 400 300\" width=\"100%\">";
+        assert_eq!(drawing_size(boxed), Some((400, 300)));
+        for bare in ["<svg xmlns=\"x\">", "<svg viewBox=\"0 0 0 300\">", "<p>"] {
+            assert_eq!(drawing_size(bare), None, "{bare}");
+        }
     }
 
     #[test]
