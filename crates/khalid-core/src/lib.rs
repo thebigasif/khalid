@@ -76,9 +76,11 @@ pub use seo_publisher_settings::{
 };
 pub use seo_settings::{ArchiveIndex, IndexNowSettings, SeoSettings};
 pub use site_code::{BodyCode, BodyCodeError, Consent, SiteCode};
-pub use site_nav::{Announcement, MenuLink, NavSettings, OneLine, SiteHref, SiteNavError};
+pub use site_nav::{
+    Announcement, FooterGroup, MenuLink, NavSettings, OneLine, SiteHref, SiteNavError,
+};
 pub use site_path::{SitePath, SitePathError};
 pub use slug::{ParseSlugError, Slug};
-pub use template_choice::{OptionValue, PackName, TemplateChoice};
+pub use template_choice::{CallToAction, OptionValue, PackName, TemplateChoice};
 pub use user_message::UserMessage;
 pub use visitor_log_settings::VisitorLogSettings;

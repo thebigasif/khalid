@@ -24,6 +24,8 @@ mod contents;
 #[cfg(test)]
 mod contents_parts;
 #[cfg(test)]
+mod cta;
+#[cfg(test)]
 mod dek;
 #[cfg(test)]
 mod enlarge;
@@ -69,5 +71,7 @@ mod script;
 mod search_link;
 #[cfg(test)]
 mod seo_head;
+#[cfg(test)]
+mod slots;
 #[cfg(test)]
 mod validity;

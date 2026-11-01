@@ -3,7 +3,7 @@
 
 use std::path::Path;
 
-use khalid_core::{Config, Environment, OptionValue, ReaderSwitch};
+use khalid_core::{Config, Environment, OneLine, OptionValue, ReaderSwitch};
 
 const SITE: &str = r#"name = "Field Notes on SEO"
 address = "https://www.example.com"
@@ -69,6 +69,40 @@ fn refuses_an_option_of_a_kind_no_template_takes() {
 fn refuses_an_unknown_key_in_the_table() {
     let error = load("[template]\nname = \"ledger\"\ncolour = \"red\"\n").unwrap_err();
     assert!(error.contains("colour"), "{error}");
+}
+
+#[test]
+fn reads_the_call_to_action_with_an_optional_note() {
+    assert_eq!(load("").unwrap().template().cta(), None);
+    let config = load(
+        "[template]\nname = \"ledger\"\n[template.cta]\nlabel = \"Start a free trial\"\n\
+         href = \"https://example.com/signup\"\nnote = \"No card needed.\"\n",
+    )
+    .unwrap();
+    let cta = config.template().cta().unwrap();
+    assert_eq!(cta.label.as_str(), "Start a free trial");
+    assert_eq!(cta.href.as_str(), "https://example.com/signup");
+    assert_eq!(
+        cta.note.as_ref().map(OneLine::as_str),
+        Some("No card needed.")
+    );
+
+    let plain = load("[template.cta]\nlabel = \"Book a demo\"\nhref = \"/demo/\"\n").unwrap();
+    assert_eq!(plain.template().name().as_str(), "classic");
+    assert_eq!(plain.template().cta().unwrap().note, None);
+}
+
+#[test]
+fn refuses_a_call_to_action_with_no_label_or_a_script_address() {
+    let error = load("[template.cta]\nhref = \"/demo/\"\n").unwrap_err();
+    assert!(error.contains("label"), "{error}");
+    let error =
+        load("[template.cta]\nlabel = \"Go\"\nhref = \"javascript:alert(1)\"\n").unwrap_err();
+    assert!(error.contains("line 8"), "{error}");
+    assert!(error.contains("use a path on this site"), "{error}");
+    let error =
+        load("[template.cta]\nlabel = \"Go\"\nhref = \"/\"\ncolor = \"red\"\n").unwrap_err();
+    assert!(error.contains("color"), "{error}");
 }
 
 #[test]

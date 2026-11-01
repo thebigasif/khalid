@@ -1,0 +1,19 @@
+---
+source: crates/khalid-render/tests/render/slots.rs
+expression: "part(&page, \"<div class=\\\"footer-groups\\\">\", \"</div>\")"
+---
+<div class="footer-groups">
+<nav aria-label="Product">
+<h2>Product</h2>
+<ul>
+<li><a href="/pricing/">Pricing</a></li>
+<li><a href="/docs/">Docs</a></li>
+</ul>
+</nav>
+<nav aria-label="Company">
+<h2>Company</h2>
+<ul>
+<li><a href="/blog/about/">About</a></li>
+</ul>
+</nav>
+</div>
