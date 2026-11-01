@@ -56,9 +56,10 @@ pub struct OptionSpec {
 }
 
 /// The values one option takes, and the one it has when the site does not
-/// set it. Templates read every option, so each has a default.
+/// set it. Templates read every option, so each has a default. The enum is
+/// exhaustive on purpose, like [`crate::CheckedOption`]: the Admin API's
+/// list matches it, so a new kind stops the build until it is described.
 #[derive(Debug, Clone, Copy)]
-#[non_exhaustive]
 pub enum OptionKind {
     /// `true` or `false`.
     Switch {

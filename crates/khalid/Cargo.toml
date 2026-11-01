@@ -104,6 +104,10 @@ name = "build_every_template"
 required-features = ["test-util"]
 
 [[test]]
+name = "serve_look"
+required-features = ["test-util"]
+
+[[test]]
 name = "doctor_address"
 required-features = ["test-util"]
 
