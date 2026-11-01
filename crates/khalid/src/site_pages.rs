@@ -11,7 +11,7 @@ use khalid_content::{
     ContentTree, Document, PostFront, SiteContent, check_bodies, parse_post, read_content,
 };
 use khalid_core::{Clock, Config, Locale, Slug, UserMessage};
-use khalid_render::{PageBody, RenderSearch, Renderer, SearchMode, SearchResult, Tokens};
+use khalid_render::{Renderer, Tokens};
 use khalid_routes::Routes;
 use khalid_server::{Moved, Page, Render, Rendered};
 
@@ -164,41 +164,6 @@ impl SitePages {
         theme.renderer.text(locale, key).map(str::to_owned)
     }
 
-    /// The page of a search for `query` that found `results`, rendered into
-    /// the search page at `path` as the last full render made it. `None`
-    /// before the first full render, or when `path` has no search page.
-    pub(crate) fn render_search(
-        &self,
-        path: &str,
-        query: Option<String>,
-        results: Vec<SearchResult>,
-    ) -> Result<Option<String>, UserMessage> {
-        let Some(theme) = &self.0.theme else {
-            return Ok(None);
-        };
-        let shell = self
-            .0
-            .searches
-            .lock()
-            .unwrap_or_else(PoisonError::into_inner)
-            .iter()
-            .find(|shell| shell.meta.path == path)
-            .cloned();
-        let Some(SearchShell { site, meta }) = shell else {
-            return Ok(None);
-        };
-        let body = PageBody::Search(RenderSearch {
-            title: meta.title.clone(),
-            mode: SearchMode::Live,
-            action: meta.path.clone(),
-            query,
-            results,
-        });
-        let html = theme.renderer.render(&site, &meta, &body);
-        html.map(Some)
-            .map_err(|error| build_message::render(&error))
-    }
-
     /// The comments the post pages show, or `None` when the site takes none.
     pub(crate) fn comments(&self) -> Option<ShownComments> {
         self.0.comments.clone()
@@ -269,6 +234,27 @@ impl SitePages {
         let mut pages = vec![theme.stylesheet.clone(), theme.script.clone()];
         html_pages(&theme.renderer, config, &languages, Which::All, &mut pages)?;
         Ok(pages)
+    }
+
+    /// Keeps what a full render's `content`, once the publish gate has
+    /// left out the posts it refuses, and `assets` say about the site, so a
+    /// post saved before the first full render ends shows at once: on a
+    /// 10,000-post site that render takes most of a minute. Until it ends,
+    /// a saved post's page has no related posts and no author photo, which
+    /// only a full render draws; the full render that follows each save
+    /// adds them. Once a render has kept an outline, this keeps nothing.
+    fn outline_start(&self, content: &SiteContent, assets: &Assets) {
+        let mut kept = self.0.assets.lock().unwrap_or_else(PoisonError::into_inner);
+        if kept.is_some() {
+            return;
+        }
+        *kept = Some(assets.clone());
+        let mut outline = self
+            .0
+            .outline
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner);
+        outline.content = site_outline::outline_of(content);
     }
 
     /// The password posts the password form checks, as the last full
@@ -374,6 +360,7 @@ impl SitePages {
         // Readers never see a post `khalid build` leaves out (KH-LNT-1).
         let checked = (config, routes, content);
         let content = &*build_gate::for_readers(folder, checked, clock.as_ref())?;
+        self.outline_start(content, &assets);
         // The catalog holds no post body, so it is quick to make here, and
         // the Content API's store is built from it in the background.
         let catalog = match feed {
@@ -558,7 +545,8 @@ impl Render for SitePages {
     /// A saved post's page alone: its own file read again, with the authors
     /// and the files beside it as the last full render read them. Only
     /// when nothing else can reach the page (see `saved_posts`), so it is
-    /// the page the full render will make.
+    /// the page the full render will make, but for what a save before the
+    /// first full render ends leaves out (see `outline_start`).
     fn render_saved(&self, files: &[PathBuf]) -> Result<Option<Vec<Page>>, Unrendered> {
         let kept = self
             .0
@@ -593,3 +581,6 @@ impl Render for SitePages {
 #[cfg(test)]
 #[path = "site_pages_tests.rs"]
 mod tests;
+
+#[path = "site_pages_search.rs"]
+mod search;

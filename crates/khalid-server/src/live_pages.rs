@@ -33,8 +33,15 @@ impl LivePages {
     /// once, unless the server started with [`Pages::first`] and the rest
     /// is still being rendered.
     pub async fn whole(&self) -> Arc<Pages> {
+        self.once(Pages::is_whole).await
+    }
+
+    /// The pages being served once `ready` says yes to them: at once when
+    /// it does now. A request held for the rest of the site waits so for
+    /// its own page, which a post saved during the start brings sooner.
+    pub async fn once(&self, ready: impl Fn(&Pages) -> bool) -> Arc<Pages> {
         let mut served = self.0.subscribe();
-        match served.wait_for(|pages| pages.is_whole()).await {
+        match served.wait_for(|pages| ready(pages)).await {
             Ok(pages) => Arc::clone(&pages),
             // The sender lives as long as `self`, so it cannot be closed.
             Err(_) => self.current(),
@@ -62,21 +69,47 @@ impl LivePages {
     }
 
     /// Renders the site again with `renderer`, like [`LivePages::refresh`],
-    /// but serves the new pages only when nothing replaced the pages while
-    /// it rendered, such as [`LivePages::show_saved`] after a newer save.
-    /// Says whether the new pages are served.
+    /// but serves the new pages only when no newer save showed while it
+    /// rendered through [`LivePages::show_saved`]. Says whether the new
+    /// pages are served.
+    ///
+    /// Pages replaced meanwhile by a render of older content, such as the
+    /// start render or its Brotli copies, do not hold the new pages back:
+    /// on a large site the start render can take as long as this one, and
+    /// waiting for both would hold an edit back for two full renders.
     ///
     /// # Errors
     ///
     /// Returns the errors of [`render_pages`]; the pages being served do
     /// not change.
-    pub async fn refresh_unless_replaced<R: Render + Clone>(
+    pub async fn refresh_unless_saved<R: Render + Clone>(
         &self,
         renderer: &R,
     ) -> Result<bool, ServerError> {
         let before = self.current();
-        let pages = render_pages(renderer, Some(Arc::clone(&before))).await?;
-        Ok(self.replace_if_current(&before, pages))
+        let saves = before.saves();
+        let pages = render_pages(renderer, Some(before)).await?;
+        Ok(self.0.send_if_modified(|served| {
+            if served.saves() != saves {
+                return false;
+            }
+            *served = Arc::new(pages);
+            true
+        }))
+    }
+
+    /// Serves the whole site's `pages`, rendered from the content read at
+    /// start, in place of the first pages, with every page saved since kept
+    /// on top. Says whether they are served: not when a whole set is
+    /// served already, since a full render after a save read newer content.
+    pub fn serve_whole(&self, pages: Pages) -> bool {
+        self.0.send_if_modified(|served| {
+            if served.is_whole() {
+                return false;
+            }
+            *served = Arc::new(pages.under_saved(served));
+            true
+        })
     }
 
     /// Adds a Brotli copy to every page being served, on a blocking thread,

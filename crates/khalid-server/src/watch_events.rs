@@ -173,8 +173,8 @@ async fn show_saved<R: Render + Clone>(live: &LivePages, renderer: &R, files: Ve
 }
 
 /// Renders every page each time it is `asked`, until the asking side is
-/// gone. When the pages were replaced during a render, by the pages of a
-/// newer save, the render is stale and runs again.
+/// gone. When a newer save showed during a render, the render is stale and
+/// runs again.
 async fn render_when_asked<R: Render + Clone>(
     live: LivePages,
     renderer: R,
@@ -182,7 +182,7 @@ async fn render_when_asked<R: Render + Clone>(
 ) {
     while asked.recv().await.is_some() {
         loop {
-            match live.refresh_unless_replaced(&renderer).await {
+            match live.refresh_unless_saved(&renderer).await {
                 Ok(true) => tracing::info!("a file changed, so the pages were rendered again"),
                 Ok(false) => continue,
                 Err(error) => tracing::warn!(

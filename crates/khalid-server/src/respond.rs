@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 use axum::Router;
 use axum::body::Body;
-use axum::http::{HeaderMap, HeaderValue, Method, Request, Response, StatusCode, header};
+use axum::http::{HeaderMap, HeaderValue, Method, Request, Response, StatusCode, Uri, header};
 use bytes::Bytes;
 use tower::service_fn;
 
@@ -48,7 +48,8 @@ const BROTLI: HeaderValue = HeaderValue::from_static("br");
 /// Each request reads the pages being served at that moment, so a
 /// [`LivePages`] replaced after an edit shows the edit at once. While a
 /// starting server serves its [`Pages::first`], a request for an address
-/// they lack waits for the whole site rather than getting a 404.
+/// they lack waits for the whole site, or for a saved page at that
+/// address, rather than getting a 404.
 pub fn router(pages: impl Into<LivePages>, security: SecurityHeaders) -> Router {
     answering(pages.into(), security, None)
 }
@@ -79,7 +80,8 @@ fn answering(live: LivePages, security: SecurityHeaders, held: Option<HeldCode>)
             let (live, security, held) = &*site;
             let mut pages = live.current();
             if waits(&pages, &request) {
-                pages = live.whole().await;
+                let uri = request.uri().clone();
+                pages = live.once(|pages| !lacks(pages, &uri)).await;
             }
             let consent = held
                 .as_ref()
@@ -94,10 +96,12 @@ type Consent<'held> = Option<(Choice, &'held HeldCode)>;
 
 /// Whether `request` asks a set of first pages for an address it lacks.
 fn waits(pages: &Pages, request: &Request<Body>) -> bool {
-    let uri = request.uri();
-    !pages.is_whole()
-        && matches!(*request.method(), Method::GET | Method::HEAD)
-        && matches!(resolve(pages, uri.path(), uri.query()), Resolved::NotFound)
+    matches!(*request.method(), Method::GET | Method::HEAD) && lacks(pages, request.uri())
+}
+
+/// Whether `pages` are first pages without anything at `uri`.
+fn lacks(pages: &Pages, uri: &Uri) -> bool {
+    !pages.is_whole() && matches!(resolve(pages, uri.path(), uri.query()), Resolved::NotFound)
 }
 
 /// Answers at once from `pages`, already in memory, as the reader who made

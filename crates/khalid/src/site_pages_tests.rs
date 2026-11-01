@@ -9,7 +9,7 @@ use chrono::{TimeZone, Utc};
 use khalid_core::{Config, Environment, FixedClock, SystemClock};
 use khalid_routes::Routes;
 
-use super::{Assets, ContentFeed, ContentTree, Render, SitePages, read_content};
+use super::{Assets, ContentFeed, ContentTree, Render, SiteContent, SitePages, read_content};
 
 fn fixture(name: &str) -> PathBuf {
     let mut path = Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf();
@@ -216,6 +216,35 @@ fn a_saved_edit_that_changes_the_related_posts_renders_the_next_full_render_page
     let html = String::from_utf8_lossy(&body);
     assert!(html.contains("What a sitemap is for"), "the edit shows");
     assert!(all.contains(page), "the saved page is the full render's");
+}
+
+#[test]
+fn a_post_saved_before_the_first_full_render_ends_shows_alone() {
+    let site = demo_copy();
+    let tree = ContentTree::walk(site.path()).unwrap();
+    let (content, assets) = (read_content(&tree).unwrap(), Assets::of(&tree));
+    let source = pages(site.path());
+    source.outline_start(&content, &assets);
+    let post = PathBuf::from("content/en/posts/2026-09-28-what-a-sitemap-does.md");
+    let mut file = site.path().to_path_buf();
+    file.push(&post);
+    let text = fs::read_to_string(&file).unwrap();
+    fs::write(&file, format!("{text}\nSaved while serve started.\n")).unwrap();
+
+    let saved = source.render_saved(std::slice::from_ref(&post)).unwrap();
+    let saved = saved.expect("shown before the start render ends");
+    let page = saved
+        .iter()
+        .find(|page| page.path().as_str() == "/blog/what-a-sitemap-does/")
+        .unwrap();
+    let body = page.body().unwrap();
+    assert!(String::from_utf8_lossy(&body).contains("Saved while serve started."));
+
+    // The full render's outline stays once it has handed one on.
+    source.render_all().unwrap();
+    let posts = outlined(&source);
+    source.outline_start(&SiteContent::default(), &Assets::default());
+    assert_eq!(outlined(&source), posts);
 }
 
 #[test]
