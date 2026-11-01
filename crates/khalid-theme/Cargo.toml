@@ -25,6 +25,7 @@ read-fonts = "0.41"
 [dev-dependencies]
 khalid-outbound = { path = "../khalid-outbound", version = "1.0.0", features = ["test-util"] }
 khalid-theme = { path = ".", version = "1.0.0", features = ["test-util"] }
+serde_json.workspace = true
 tempfile = "3"
 tokio.workspace = true
 wiremock = "0.6"
