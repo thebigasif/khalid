@@ -1,0 +1,13 @@
+# The agency's three kinds of post.
+
+[[categories]]
+slug = "case-studies"
+en = "Case studies"
+
+[[categories]]
+slug = "local-search"
+en = "Local search"
+
+[[categories]]
+slug = "email-marketing"
+en = "Email marketing"
