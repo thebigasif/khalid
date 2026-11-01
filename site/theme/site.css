@@ -168,7 +168,7 @@ main > .hero:first-child { margin-block-start: -1rem; }
 
 /* The template gallery and the home page's strip: each look as a card
    with its demo's home page, and a post set over its corner. */
-.gallery { margin-block-end: var(--space-section); }
+.look-gallery { margin-block-end: var(--space-section); }
 .looks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
 .tile.look { padding: 0.625rem 0.625rem 1.25rem; }
 .look :is(h2, h3), .look p { padding-inline: 0.875rem; }
