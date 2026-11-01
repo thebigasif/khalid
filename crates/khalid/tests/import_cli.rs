@@ -100,6 +100,28 @@ fn a_wordpress_import_writes_posts_and_stores_its_redirects() {
 }
 
 #[test]
+fn an_address_that_keeps_its_path_is_not_stored_as_a_redirect() {
+    // The readiness walk: the blog moves to a new host, at its root.
+    let site = site();
+    let settings = "name = \"Blog\"\naddress = \"https://blog.example.com/\"\nmount = \"/\"\nmode = \"server\"\ndefault_language = \"en\"\nlanguages = [\"en\"]\n";
+    fs::write(file(site.path(), "site.toml"), settings).unwrap();
+    let export = fixture("wordpress/basic.xml");
+    let (code, printed) = khalid(site.path(), &["import", "wordpress", &export]);
+    assert_eq!(code, 0, "{printed}");
+    assert!(
+        printed.contains("Old addresses mapped: 5, of which 3 move and 2 stay the same."),
+        "{printed}"
+    );
+    let (_, stored) = khalid(site.path(), &["redirects", "export"]);
+    for path in ["/about/,", "/category/baking/,"] {
+        assert!(!stored.contains(path), "{stored}");
+    }
+    assert!(stored.contains("/category/baking/sourdough/,"), "{stored}");
+    let (_, explained) = khalid(site.path(), &["redirects", "explain", "/about/"]);
+    assert!(!explained.contains("moves for good"), "{explained}");
+}
+
+#[test]
 fn a_ghost_import_answers_in_json() {
     let site = site();
     let export = fixture("ghost/ghost-5.json");

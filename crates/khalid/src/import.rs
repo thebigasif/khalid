@@ -11,7 +11,7 @@ use khalid_api::redirect_store::Origin;
 use khalid_core::{AbsoluteUrl, Config, UserMessage};
 use khalid_import::{PlannedFile, WriteError, folder, ghost, medium, substack, wordpress};
 use khalid_routes::Routes;
-use khalid_seo::read_redirects_csv;
+use khalid_seo::{Matching, RedirectEntry, read_redirects_csv};
 use serde::Serialize;
 
 use crate::cli::{Cli, ImportArgs, ImportSource, Output, Run};
@@ -89,14 +89,14 @@ pub(crate) fn run(site: &Path, checked: (&Config, &Routes), args: &ImportArgs, c
     planned(args, (config, routes), cli)
         .and_then(|plan| match args.run {
             Run::Dry => Ok(answer(&plan.report(), None, output)),
-            Run::Write => import(site, &plan, output),
+            Run::Write => import(site, config, &plan, output),
         })
         .unwrap_or_else(|(message, exit)| report::failure(output, &message, exit))
 }
 
 /// Writes the plan's files, then stores the redirects that start on this
 /// site's host.
-fn import(site: &Path, plan: &Plan, output: Output) -> Done {
+fn import(site: &Path, config: &Config, plan: &Plan, output: Output) -> Done {
     let written = plan
         .write(site)
         .map_err(|error| (not_written(&error), Exit::Failure))?;
@@ -107,7 +107,8 @@ fn import(site: &Path, plan: &Plan, output: Output) -> Done {
         .find(|file| file.path == Path::new(map))
         .map(|file| ours(&file.text))
         .unwrap_or_default();
-    let stored = store(site, &csv).map_err(|(why, exit)| {
+    let origin = config.address().as_str().trim_end_matches('/');
+    let stored = store(site, origin, &csv).map_err(|(why, exit)| {
         let message = UserMessage::new(
             format!("The posts came in, but the redirects in {map} were not stored."),
             why,
@@ -121,11 +122,13 @@ fn import(site: &Path, plan: &Plan, output: Output) -> Done {
     Ok(answer(said, Some((&written, stored)), output))
 }
 
-/// Stores every redirect in `csv` through the redirect desk, and returns
-/// how many, or says why not in one sentence.
-fn store(site: &Path, csv: &str) -> Result<usize, (String, Exit)> {
-    let entries = read_redirects_csv(csv)
+/// Stores every redirect in `csv` through the redirect desk, but those
+/// that send an address to itself on the site at `origin`, and returns how
+/// many, or says why not in one sentence.
+fn store(site: &Path, origin: &str, csv: &str) -> Result<usize, (String, Exit)> {
+    let mut entries = read_redirects_csv(csv)
         .map_err(|error| (format!("The map cannot be read: {error}."), Exit::Internal))?;
+    entries.retain(|entry| !to_itself(origin, entry));
     if entries.is_empty() {
         return Ok(0);
     }
@@ -140,6 +143,15 @@ fn store(site: &Path, csv: &str) -> Result<usize, (String, Exit)> {
             Exit::Failure,
         )
     })
+}
+
+/// Whether `entry` sends a path to the same path on the site at `origin`,
+/// as a map row does for an address that only changes host. The page
+/// answers that address itself, so the row is not stored.
+fn to_itself(origin: &str, entry: &RedirectEntry) -> bool {
+    let columns = entry.columns();
+    let to = columns.to.as_deref().unwrap_or_default();
+    columns.matching == Matching::Exact && to.strip_prefix(origin).unwrap_or(to) == columns.from
 }
 
 /// The rows of a redirect map that this site can answer: those whose old
