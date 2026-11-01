@@ -1,0 +1,66 @@
+# Example site: The Allotment Letter, a fictional writer's blog that is
+# also a newsletter, with a free weekly letter and a supporters' letter.
+# See README.md for what it shows.
+
+name = "The Allotment Letter"
+address = "https://www.example.net"
+mount = "/blog/"
+mode = "server"
+default_language = "en"
+languages = ["en"]
+
+[template]
+name = "keystone"
+
+[template.options]
+subscriber_line = ["A free letter every Thursday, and a monthly plot plan for supporters."]
+about = ["The Allotment Letter is written by Margot Ellery on her plot in Sheffield."]
+share_networks = ["bluesky", "facebook", "email"]
+
+[template.cta]
+label = "Get the Thursday letter"
+href = "/blog/subscribe/"
+
+[seo.titles]
+separator = "·"
+tagline = "Growing food on a small plot, one season at a time"
+
+[seo.publisher]
+type = "person"
+name = "Margot Ellery"
+email = "margot@example.net"
+
+[seo.ai_page]
+covers = "The Allotment Letter is a weekly letter about growing vegetables on a small allotment in the north of England: soil, sowing, watering, saving seed and planning the year."
+cite = "Name The Allotment Letter and Margot Ellery, and link the letter you quote."
+contact = "margot@example.net"
+
+# Sign-ups need a way to send the confirmation email. The password, if
+# your mail server needs one, goes in KHALID_SMTP_PASSWORD, never here.
+[mail]
+from = "letter@example.net"
+name = "The Allotment Letter"
+postal_address = "The Allotment Letter, PO Box 4410, Sheffield S1 9QQ, UK"
+
+[mail.smtp]
+host = "smtp.example.net"
+
+[[nav.primary]]
+label = "Start here"
+href = "/blog/start-here/"
+
+[[nav.primary]]
+label = "Archive"
+href = "/blog/archive/"
+
+[[nav.primary]]
+label = "Subscribe"
+href = "/blog/subscribe/"
+
+[[nav.footer]]
+label = "About Margot"
+href = "/blog/about/"
+
+[[nav.footer]]
+label = "Subscribe"
+href = "/blog/subscribe/"
