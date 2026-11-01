@@ -1,7 +1,7 @@
 //! The Keystone template (templates spec 3.3), end to end: `khalid build`
 //! of the demo site with `[template] name = "keystone"` gives a featured
-//! post above a picture grid and no author box or related posts, and a
-//! site's own options and `[reader]` keys win.
+//! post above a picture grid, numbered chapters, a share rail and no author
+//! box or related posts, and a site's own options and `[reader]` keys win.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -118,4 +118,39 @@ fn a_site_switches_keystone_options_off_and_its_reader_keys_win() {
     let post = page(&out, "what-a-sitemap-does/index.html");
     assert!(!post.contains("class=\"share"), "{post}");
     assert!(post.contains("class=\"author-box\""), "{post}");
+}
+
+#[test]
+fn the_keystone_post_page() {
+    let (_temp, out) = built("");
+    insta::assert_snapshot!(main_of(&page(&out, "what-a-sitemap-does/index.html")));
+}
+
+#[test]
+fn a_keystone_post_has_numbered_chapters_a_share_rail_and_one_date() {
+    let (_temp, out) = built("");
+    let post = page(&out, "what-a-sitemap-does/index.html");
+    let rail = post.find("<div class=\"share share-rail\">").unwrap();
+    let body = post
+        .find("<div class=\"post-body post-numbered\">")
+        .unwrap();
+    assert!(rail < body, "{post}");
+    assert_eq!(post.matches("<time datetime=").count(), 1, "{post}");
+}
+
+#[test]
+fn a_site_turns_keystone_chapters_off_and_adds_its_about_lines() {
+    let (_temp, out) = built(
+        "[template.options]\nnumbered_headings = false\nshare = \"end\"\nabout = [\"Field Notes is written by two people who run SEO for small teams.\"]\n",
+    );
+    let post = page(&out, "what-a-sitemap-does/index.html");
+    assert!(post.contains("<div class=\"post-body\">"), "{post}");
+    assert!(!post.contains("share-rail"), "{post}");
+    assert!(post.contains("</div>\n<div class=\"share\">"), "{post}");
+    assert!(
+        post.contains(
+            "<div class=\"about-site\">\n<p>Field Notes is written by two people who run SEO for small teams.</p>"
+        ),
+        "{post}"
+    );
 }

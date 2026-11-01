@@ -1,7 +1,7 @@
 //! Keystone (templates spec 3.3): a personal guide site with a big featured
 //! post, a grid of pictures and numbered chapters. It replaces the home
-//! page, turns off the author box, related posts, reading time and
-//! contents, and sets a larger type scale with wide spacing.
+//! and post pages, turns off the author box, related posts, reading time
+//! and contents, and sets a larger type scale with wide spacing.
 
 use khalid_core::ReaderSwitch;
 
@@ -13,10 +13,16 @@ pub(crate) static KEYSTONE: Pack = Pack {
     name: "keystone",
     summary: "A personal guide site: one big featured post, a grid of pictures, numbered chapters and share links beside the post.",
     stylesheet: include_str!("../packs/keystone/keystone.css"),
-    templates: &[PackTemplate {
-        name: "home.html",
-        source: include_str!("../packs/keystone/home.html"),
-    }],
+    templates: &[
+        PackTemplate {
+            name: "home.html",
+            source: include_str!("../packs/keystone/home.html"),
+        },
+        PackTemplate {
+            name: "post.html",
+            source: include_str!("../packs/keystone/post.html"),
+        },
+    ],
     tokens: TOKENS,
     reader: &[
         (ReaderSwitch::ReadingTime, false),
@@ -35,9 +41,19 @@ pub(crate) static KEYSTONE: Pack = Pack {
         slot::newsletter("home"),
         slot::cta_band("none"),
         OptionSpec {
+            key: "numbered_headings",
+            help: "Whether each main heading of a post gets a chapter number: 01, 02, 03.",
+            kind: OptionKind::Switch { default: true },
+        },
+        OptionSpec {
             key: "subscriber_line",
             help: "One line over the newsletter form on the front page, such as Join 4,000 readers.",
             kind: OptionKind::Lines { most: 1 },
+        },
+        OptionSpec {
+            key: "about",
+            help: "Up to two lines about the site after each post, such as who writes it.",
+            kind: OptionKind::Lines { most: 2 },
         },
     ],
 };
