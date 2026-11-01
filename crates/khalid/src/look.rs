@@ -122,6 +122,37 @@ mod tests {
         }
     }
 
+    /// Whether `css` has a selector for `class` that is not the start of a
+    /// longer class name.
+    fn has_selector(css: &str, class: &str) -> bool {
+        let needle = format!(".{class}");
+        css.match_indices(&needle).any(|(at, _)| {
+            let after = css
+                .get(at + needle.len()..)
+                .and_then(|rest| rest.chars().next());
+            !after.is_some_and(|c| c.is_alphanumeric() || c == '-' || c == '_')
+        })
+    }
+
+    #[test]
+    fn every_class_a_pack_template_uses_is_styled() {
+        let site = tempfile::tempdir().unwrap();
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let css = stylesheet_with(&tokens, pack.stylesheet).unwrap();
+            let css = String::from_utf8_lossy(css.body());
+            for file in pack.templates {
+                for attribute in file.source.split("class=\"").skip(1) {
+                    let classes = attribute.split('"').next().unwrap();
+                    for class in classes.split_whitespace() {
+                        let styled = has_selector(&css, class);
+                        assert!(styled, "{}: .{class} from {}", pack.name, file.name);
+                    }
+                }
+            }
+        }
+    }
+
     #[test]
     fn the_theme_offers_an_option_for_every_part_the_templates_read() {
         let offered: Vec<&str> = khalid_theme::parts::all()
