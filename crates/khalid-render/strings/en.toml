@@ -61,6 +61,10 @@ older_posts = "Older posts"
 view_all = "View all posts in {name}"
 # The heading and label of the row of topic links on the home page.
 topics = "Topics"
+# The label of the row of category tabs on the home page, and its first
+# tab, which lists every post.
+categories = "Categories"
+all_posts = "All"
 # {name} is filled in.
 posts_by = "Posts by {name}"
 # The heading of the other authors at the end of an author page.

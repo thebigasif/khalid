@@ -16,6 +16,8 @@ mod card_shapes;
 #[cfg(test)]
 mod cards;
 #[cfg(test)]
+mod category_tabs;
+#[cfg(test)]
 mod comments;
 #[cfg(test)]
 mod common;

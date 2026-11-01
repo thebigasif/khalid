@@ -37,6 +37,8 @@ const PARTS: &[(&str, Off)] = &[
     ("card_reading_time", Off::Switch(false)),
     // A card author's role after their name.
     ("card_author_role", Off::Switch(false)),
+    // A row of tabs on the home page: all posts, then each category.
+    ("category_tabs", Off::Switch(false)),
     // The newest featured post above the home page and each list.
     ("featured", Off::Switch(false)),
     // How many editor's picks the home page shows; none at 0.

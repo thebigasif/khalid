@@ -99,6 +99,29 @@ fn the_sampler_pack_shows_the_logo_and_classic_keeps_the_name() {
 }
 
 #[test]
+fn the_sampler_pack_shows_a_tab_for_each_category_in_the_order_categories_toml_lists_them() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\ncategory_tabs = true\n",
+        &[],
+    );
+    let home = page(&sampler, "index.html");
+    let tabs = "<li><a href=\"/blog/\" aria-current=\"page\">All</a></li>\n\
+<li><a href=\"/blog/category/on-page-seo/\">On-page SEO</a></li>\n\
+<li><a href=\"/blog/category/technical-seo/\">Technical SEO</a></li>\n\
+<li><a href=\"/blog/category/content-strategy/\">Content strategy</a></li>\n</ul>";
+    assert!(home.contains(tabs), "{home}");
+    let german = page(&sampler, "de/index.html");
+    assert!(
+        german
+            .contains("<li><a href=\"/blog/de/category/technical-seo/\">Technisches SEO</a></li>"),
+        "{german}"
+    );
+    let (_temp, classic) = built("", &[]);
+    let home = page(&classic, "index.html");
+    assert!(!home.contains("category-tabs"), "{home}");
+}
+
+#[test]
 fn the_sampler_pack_shows_one_trail_in_the_page_and_its_schema() {
     let (_temp, sampler) = built(
         "\n[template]\nname = \"sampler\"\n[template.options]\nbreadcrumbs = true\n",
