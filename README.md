@@ -29,10 +29,10 @@ Then make a site and run it:
 
 ```sh
 khalid init blog --address https://blog.example.com --yes
-khalid --site blog serve
+MIMALLOC_PURGE_DELAY=0 khalid --site blog serve
 ```
 
-The blog is then at `http://127.0.0.1:8080/`. To sign in to the admin, make yourself the owner from a second terminal:
+The blog is then at `http://127.0.0.1:8080/`. `MIMALLOC_PURGE_DELAY=0` makes Khalid give the memory it no longer needs back to the computer at once, so a quiet blog stays small. The Docker image and the systemd service set it for you. To sign in to the admin, make yourself the owner from a second terminal:
 
 ```sh
 khalid --site blog staff owner --email you@example.com --name "Your Name"

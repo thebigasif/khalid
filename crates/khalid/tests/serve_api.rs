@@ -614,8 +614,8 @@ fn the_first_owner_signs_in_with_the_link_khalid_staff_owner_shows_once() {
     let site = demo_copy();
     let server = start(site.path());
     let (_, port) = server.host.split_once(':').unwrap();
-    let listen = format!("127.0.0.1:{port}");
-    let (code, made) = owner(site.path(), "asif@example.com", &["--listen", &listen]);
+    // No --listen: the link names the port the running server took.
+    let (code, made) = owner(site.path(), "asif@example.com", &[]);
     assert_eq!(code, Some(0), "{made}");
     let link = made["link"].as_str().unwrap();
     let (admin, token) = link.split_once("/sign-in/link#token=").unwrap();

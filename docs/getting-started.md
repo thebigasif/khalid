@@ -99,7 +99,7 @@ The admin is the web editor at `/admin/`. Make yourself its owner:
 khalid --site blog staff owner --email you@example.com --name "Sam Rivera"
 ```
 
-Khalid prints a sign-in link once. It works for 15 minutes, and only once. It shows the link twice: on the address in `site.toml`, and on `localhost` for this computer. While you try Khalid on your own computer, open the `localhost` link while `khalid serve` runs. Once signed in, choose a password or add a passkey. To sign in again later, run the same command.
+Khalid prints a sign-in link once. It works for 15 minutes, and only once. It shows the link twice: on the address in `site.toml`, and on `localhost` for this computer. While you try Khalid on your own computer, open the `localhost` link while `khalid serve` runs. It names the port `serve` last ran on, so a blog started with `--listen` gets the right link too. Once signed in, choose a password or add a passkey. To sign in again later, run the same command.
 
 If `/admin/` says the admin is not built, your copy of Khalid was built without it: see [CONTRIBUTING.md](../CONTRIBUTING.md#build-khalid-from-source).
 

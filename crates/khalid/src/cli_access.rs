@@ -59,8 +59,9 @@ pub(crate) struct OwnerArgs {
     pub(crate) name: String,
 
     /// Where `khalid serve` answers on this computer, for a second link that works before the site is online
-    #[arg(long, value_name = "ADDRESS", default_value = "127.0.0.1:8080")]
-    pub(crate) listen: SocketAddr,
+    /// [default: where `khalid serve` last answered for this site, else 127.0.0.1:8080]
+    #[arg(long, value_name = "ADDRESS")]
+    pub(crate) listen: Option<SocketAddr>,
 }
 
 /// What `khalid keys create` takes.
