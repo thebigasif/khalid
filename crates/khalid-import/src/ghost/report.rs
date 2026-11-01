@@ -4,8 +4,9 @@
 use std::fmt;
 
 use crate::ghost::{Dropped, Held, LeftReason, Plan};
+use crate::redirects::keeps_path;
 use crate::sentences::{count, list};
-use crate::{MapTarget, Place, SlugOrigin};
+use crate::{Place, SlugOrigin};
 
 /// What a plan would do, counted, with the plan's lists for the details.
 #[derive(Debug)]
@@ -52,7 +53,7 @@ impl fmt::Display for Report<'_> {
         let same = plan
             .redirects
             .iter()
-            .filter(|entry| entry.to == MapTarget::Kept)
+            .filter(|entry| keeps_path(&entry.from, &entry.to))
             .count();
         writeln!(
             f,

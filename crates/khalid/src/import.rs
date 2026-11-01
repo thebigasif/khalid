@@ -3,7 +3,7 @@
 //! redirect map in `data/site.db` through the redirect desk (plan section
 //! 5.7, KH-API-7, KH-SEO-8).
 
-use std::fmt::Display;
+use std::fmt::{Display, Write as _};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -11,12 +11,13 @@ use khalid_api::redirect_store::Origin;
 use khalid_core::{AbsoluteUrl, Config, UserMessage};
 use khalid_import::{PlannedFile, WriteError, folder, ghost, medium, substack, wordpress};
 use khalid_routes::Routes;
-use khalid_seo::read_redirects_csv;
+use khalid_seo::{Matching, RedirectEntry, read_redirects_csv};
 use serde::Serialize;
 
 use crate::cli::{Cli, ImportArgs, ImportSource, Output, Run};
 use crate::exit::Exit;
-use crate::{import_rest, redirects, report};
+use crate::import_held::{HELD_CSV, Held};
+use crate::{import_held, import_rest, redirects, report};
 
 /// The JSON shape of `khalid import --json`.
 #[derive(Serialize)]
@@ -25,6 +26,10 @@ struct ImportedBody<'a> {
     report: &'a str,
     written: Vec<String>,
     stored_redirects: usize,
+    /// The imported posts the linter blocks, from the site folder.
+    held_posts: Vec<String>,
+    /// The old addresses that wait for those posts instead of being stored.
+    held_redirects: usize,
 }
 
 /// One source's plan, which says what an import would write.
@@ -89,43 +94,49 @@ pub(crate) fn run(site: &Path, checked: (&Config, &Routes), args: &ImportArgs, c
     planned(args, (config, routes), cli)
         .and_then(|plan| match args.run {
             Run::Dry => Ok(answer(&plan.report(), None, output)),
-            Run::Write => import(site, &plan, output),
+            Run::Write => import(site, (config, routes), &plan, output),
         })
         .unwrap_or_else(|(message, exit)| report::failure(output, &message, exit))
 }
 
 /// Writes the plan's files, then stores the redirects that start on this
-/// site's host.
-fn import(site: &Path, plan: &Plan, output: Output) -> Done {
+/// site's host, but those that lead to an imported post the publish gate
+/// blocks, which wait in its aliases.
+fn import(site: &Path, (config, routes): (&Config, &Routes), plan: &Plan, output: Output) -> Done {
     let written = plan
         .write(site)
         .map_err(|error| (not_written(&error), Exit::Failure))?;
     let map = plan.map_file();
-    let csv = plan
-        .files()
-        .iter()
-        .find(|file| file.path == Path::new(map))
-        .map(|file| ours(&file.text))
-        .unwrap_or_default();
-    let stored = store(site, &csv).map_err(|(why, exit)| {
+    let not_stored = |why: String, exit| {
         let message = UserMessage::new(
             format!("The posts came in, but the redirects in {map} were not stored."),
             why,
             format!("Fix that, then run `khalid redirects import {map}`."),
         );
         (message, exit)
-    })?;
+    };
+    let csv = plan
+        .files()
+        .iter()
+        .find(|file| file.path == Path::new(map))
+        .map(|file| ours(&file.text))
+        .unwrap_or_default();
+    let mut entries = read_redirects_csv(&csv)
+        .map_err(|error| not_stored(format!("The map cannot be read: {error}."), Exit::Internal))?;
+    let origin = config.address().as_str().trim_end_matches('/');
+    entries.retain(|entry| !to_itself(origin, entry));
+    let held = import_held::hold(site, (config, routes), &written, &mut entries)
+        .map_err(|message| (message, Exit::Failure))?;
+    let stored = store(site, entries).map_err(|(why, exit)| not_stored(why, exit))?;
     // The report's first sentence is for a dry run only.
     let said = plan.report();
     let said = said.split_once('\n').map_or("", |(_, rest)| rest);
-    Ok(answer(said, Some((&written, stored)), output))
+    Ok(answer(said, Some((&written, stored, &held)), output))
 }
 
-/// Stores every redirect in `csv` through the redirect desk, and returns
-/// how many, or says why not in one sentence.
-fn store(site: &Path, csv: &str) -> Result<usize, (String, Exit)> {
-    let entries = read_redirects_csv(csv)
-        .map_err(|error| (format!("The map cannot be read: {error}."), Exit::Internal))?;
+/// Stores `entries` through the redirect desk, and returns how many, or
+/// says why not in one sentence.
+fn store(site: &Path, entries: Vec<RedirectEntry>) -> Result<usize, (String, Exit)> {
     if entries.is_empty() {
         return Ok(0);
     }
@@ -140,6 +151,15 @@ fn store(site: &Path, csv: &str) -> Result<usize, (String, Exit)> {
             Exit::Failure,
         )
     })
+}
+
+/// Whether `entry` sends a path to the same path on the site at `origin`,
+/// as a map row does for an address that only changes host. The page
+/// answers that address itself, so the row is not stored.
+fn to_itself(origin: &str, entry: &RedirectEntry) -> bool {
+    let columns = entry.columns();
+    let to = columns.to.as_deref().unwrap_or_default();
+    columns.matching == Matching::Exact && to.strip_prefix(origin).unwrap_or(to) == columns.from
 }
 
 /// The rows of a redirect map that this site can answer: those whose old
@@ -157,30 +177,67 @@ fn ours(csv: &str) -> String {
     kept
 }
 
-/// Prints what would come in, or with `done`, the files written and the
-/// redirects stored.
-fn answer(said: &str, done: Option<(&[PathBuf], usize)>, output: Output) -> Exit {
+/// Prints what would come in, or with `done`, the files written, the
+/// redirects stored and what was held back.
+fn answer(said: &str, done: Option<(&[PathBuf], usize, &Held)>, output: Output) -> Exit {
     match (output, done) {
         (Output::Json, _) => {
-            let (written, stored) = done.unwrap_or_default();
+            let none = Held::default();
+            let (written, stored, held) = done.unwrap_or((&[], 0, &none));
             let body = ImportedBody {
                 dry_run: done.is_none(),
                 report: said,
                 written: written.iter().map(|p| p.display().to_string()).collect(),
                 stored_redirects: stored,
+                held_posts: held.posts.iter().map(|p| p.display().to_string()).collect(),
+                held_redirects: held.aliased + held.outside,
             };
             report::json(&body, Exit::Success)
         }
         (Output::Human, None) => report::text(said, Exit::Success),
-        (Output::Human, Some((written, stored))) => {
+        (Output::Human, Some((written, stored, held))) => {
             let files = written.len();
+            let held = held_text(held);
             let text = format!(
-                "Wrote {files} files and stored {stored} redirects.\n{said}\
+                "Wrote {files} files and stored {stored} redirects.\n{held}{said}\
                  Run `khalid lint` to see how each post scores.\n"
             );
             report::text(&text, Exit::Success)
         }
     }
+}
+
+/// The imported posts the linter blocks and where their old addresses
+/// wait, in plain sentences, or nothing when every post went live.
+fn held_text(held: &Held) -> String {
+    let paths: Vec<String> = held.posts.iter().map(|p| p.display().to_string()).collect();
+    let mut text = match paths.len() {
+        0 => return String::new(),
+        1 => format!(
+            "1 imported post is blocked by the linter, so readers do not see it yet: {}.\n",
+            paths.join(", ")
+        ),
+        posts => format!(
+            "{posts} imported posts are blocked by the linter, so readers do not see them yet: {}.\n",
+            paths.join(", ")
+        ),
+    };
+    // Writing to a String cannot fail.
+    if held.aliased > 0 {
+        let _ = writeln!(
+            text,
+            "Old addresses held in their aliases, the list in each post's header: {}. Each leads to its post once the post passes, and to the not-found page until then.",
+            held.aliased
+        );
+    }
+    if held.outside > 0 {
+        let _ = writeln!(
+            text,
+            "Old addresses held in {HELD_CSV}, because they lie outside the blog's folder: {}. Store them with `khalid redirects import {HELD_CSV}` once their posts are live.",
+            held.outside
+        );
+    }
+    text
 }
 
 /// Reads the export the person named and plans the import.
