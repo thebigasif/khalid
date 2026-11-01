@@ -5,6 +5,9 @@
 //! text colours that fail WCAG contrast (plan section 4.9). The proxy rule
 //! that mounts the blog under a folder lives in `khalid-mount` (ADR 0017).
 //!
+//! It also holds the template packs, the built-in looks a site picks in
+//! `[template]` of `site.toml` (templates spec 4.1).
+//!
 //! Every request goes through `khalid_outbound::Outbound` (RULES.md
 //! BL-RUN-8). The crate must not know about content, posts or the database.
 
@@ -17,6 +20,7 @@ mod fetch_error;
 mod font_files;
 mod fonts;
 mod links;
+mod pack;
 mod palette;
 mod properties;
 mod resync;
@@ -26,6 +30,8 @@ mod token_name;
 mod token_values;
 mod tokens;
 mod tokens_error;
+#[cfg(feature = "test-util")]
+mod trial;
 
 pub use brand::Brand;
 pub use color::Rgb;
@@ -37,6 +43,7 @@ pub use fetch_error::FetchError;
 pub use font_files::{FontMetrics, MAX_FONT_BYTES, SavedFont, download, download_and_report};
 pub use fonts::{FontHost, FontSource, HeldFont, Typography};
 pub use links::{PageStyle, SkipReason, Skipped, page_styles};
+pub use pack::{OptionKind, OptionSpec, Pack, PackTemplate, classic, packs};
 pub use palette::Palette;
 pub use properties::CustomProperties;
 pub use resync::{ThemeDiff, TokenChange};

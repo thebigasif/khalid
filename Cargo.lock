@@ -3093,6 +3093,7 @@ version = "1.0.0"
 dependencies = [
  "khalid-core",
  "khalid-outbound",
+ "khalid-theme",
  "read-fonts",
  "scraper",
  "serde",

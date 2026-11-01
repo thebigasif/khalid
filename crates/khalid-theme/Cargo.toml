@@ -1,12 +1,16 @@
 [package]
 name = "khalid-theme"
 version.workspace = true
-description = "Theme sync: read a main site's colours, fonts and logo into theme tokens, and fix contrast."
+description = "Theme sync and template packs: read a main site's colours, fonts and logo into theme tokens, fix contrast, and hold the built-in looks."
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 publish.workspace = true
+
+[features]
+# The throwaway trial pack, for this crate's tests and other crates' tests.
+test-util = []
 
 [dependencies]
 khalid-core.workspace = true
@@ -20,6 +24,7 @@ read-fonts = "0.41"
 
 [dev-dependencies]
 khalid-outbound = { path = "../khalid-outbound", version = "1.0.0", features = ["test-util"] }
+khalid-theme = { path = ".", version = "1.0.0", features = ["test-util"] }
 tempfile = "3"
 tokio.workspace = true
 wiremock = "0.6"
