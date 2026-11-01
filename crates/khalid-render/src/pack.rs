@@ -55,10 +55,25 @@ pub(crate) struct PackContext {
 }
 
 impl From<&RenderPack<'_>> for PackContext {
+    /// The pack's options, and each slot option it does not take set to
+    /// off, so the shared templates read every slot of every pack.
     fn from(pack: &RenderPack<'_>) -> Self {
+        let mut options = pack.options.clone();
+        for (key, off) in slots_off() {
+            options.entry(key.to_owned()).or_insert(off);
+        }
         Self {
             name: pack.name.to_owned(),
-            options: pack.options.clone(),
+            options,
         }
     }
+}
+
+/// The options of the slots around a page (templates spec 4.2), each off:
+/// what a pack that does not take a slot shows.
+fn slots_off() -> [(&'static str, TemplateOption); 2] {
+    [
+        ("share", TemplateOption::Word("none".to_owned())),
+        ("share_networks", TemplateOption::Lines(Vec::new())),
+    ]
 }

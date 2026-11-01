@@ -108,6 +108,11 @@ fn the_trial_pack_changes_the_build_and_reads_its_options() {
     );
 
     let post = "what-a-sitemap-does/index.html";
+    assert!(
+        page(&trial, post).contains("<div class=\"share\">"),
+        "trial shows share links"
+    );
+    assert!(!page(&classic, post).contains("class=\"share\""));
     assert!(page(&classic, post).contains("min read</time>"));
     assert!(
         !page(&trial, post).contains("min read</time>"),

@@ -4,7 +4,7 @@
 
 use khalid_core::ReaderSwitch;
 
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 
 /// The trial pack.
 pub(crate) static TRIAL: Pack = Pack {
@@ -45,5 +45,7 @@ pub(crate) static TRIAL: Pack = Pack {
             help: "Short facts shown under the blog's name.",
             kind: OptionKind::Lines { most: 3 },
         },
+        slot::share("end"),
+        slot::share_networks(&["linkedin", "x", "email"]),
     ],
 };

@@ -1,0 +1,12 @@
+---
+source: crates/khalid-render/tests/render/slots.rs
+expression: row
+---
+<div class="share">
+<p class="share-title">Share this post</p>
+<ul>
+<li><a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">LinkedIn</a></li>
+<li><a href="https://x.com/intent/post?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F&amp;text=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not" rel="nofollow noreferrer">X</a></li>
+<li><a href="mailto:?subject=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not&amp;body=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">Email</a></li>
+</ul>
+</div>

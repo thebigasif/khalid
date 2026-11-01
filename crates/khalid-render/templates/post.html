@@ -6,6 +6,14 @@
 {% from "card.html" import cards -%}
 {% from "comments.html" import comments_section -%}
 {% set toc = page.contents and "table_of_contents" in site.features -%}
+{% set share = template.options.share -%}
+{% if share != "none" %}{% set share_row %}<div class="share">
+<p class="share-title">{{ t.share }}</p>
+<ul>
+{% for link in share_links(meta.canonical, page.title, template.options.share_networks) %}<li><a href="{{ link.href }}" rel="nofollow noreferrer">{{ t.share_email if link.key == "email" else link.name }}</a></li>
+{% endfor %}</ul>
+</div>
+{% endset %}{% endif -%}
 {% if toc %}<article class="post post-with-toc">{% else %}<article class="post">{% endif %}
 <header class="post-header">
 <h1>{{ page.title }}</h1>
@@ -23,7 +31,7 @@
 {% endif %}</div>
 {% if page.image %}{{ picture(page.image) }}
 {% endif %}</header>
-{% if toc %}<details class="toc-inline">
+{% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc %}<details class="toc-inline">
 <summary>{{ t.contents }}</summary>
 <nav aria-label="{{ t.contents }}">
 {{ contents_list(page.contents) }}
@@ -36,7 +44,7 @@
 {% endif %}<div class="post-body">
 {% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body }}
 </div>
-{% if page.tags %}<footer class="post-footer">
+{% if share in ["end", "both"] %}{{ share_row }}{% endif %}{% if page.tags %}<footer class="post-footer">
 <h2>{{ t.tags }}</h2>
 <ul class="tags">
 {% for tag in page.tags %}<li><a href="{{ tag.href }}" rel="tag">{{ tag.name }}</a></li>

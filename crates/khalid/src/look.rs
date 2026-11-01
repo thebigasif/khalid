@@ -88,6 +88,14 @@ mod tests {
     const BUDGET_BYTES: usize = 20 * 1024;
 
     #[test]
+    fn the_theme_offers_every_network_the_renderer_links_to() {
+        assert_eq!(
+            khalid_theme::slot::SHARE_NETWORKS,
+            khalid_render::SHARE_NETWORKS
+        );
+    }
+
+    #[test]
     fn every_pack_loads_compiles_and_ships_under_the_css_budget() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {

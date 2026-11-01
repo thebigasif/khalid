@@ -86,6 +86,14 @@ pub enum OptionKind {
         /// The most lines allowed.
         most: usize,
     },
+    /// One or more words from a fixed list, each once, in the order
+    /// written, such as the networks a share row links to.
+    Picks {
+        /// Every word allowed, in the order the docs list them.
+        allowed: &'static [&'static str],
+        /// The words when not set.
+        default: &'static [&'static str],
+    },
 }
 
 /// Classic: the look every site had before packs, and every site's default.

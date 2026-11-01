@@ -54,4 +54,6 @@ mod search_link;
 #[cfg(test)]
 mod seo_head;
 #[cfg(test)]
+mod slots;
+#[cfg(test)]
 mod validity;
