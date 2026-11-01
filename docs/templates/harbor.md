@@ -18,9 +18,9 @@ It suits a personal essay blog less well. For that, a calmer template such as cl
 
 ## What the front page shows
 
-1. The blog's name and its intro, with the newsletter form beside them on wide screens and under them on phones.
-2. **Featured:** the newest post with `featured: true`, large, with its picture beside the words. Under it, a row of up to three more featured posts as picture cards.
-3. **Latest:** the newest posts as rows, each with a small picture beside its title, author and date. On wide screens the rows sit in two columns.
+1. The blog's name, large, and its intro on a tint of your accent colour across the window, with the newsletter form beside them on wide screens and under them on phones.
+2. **Featured:** the newest post with `featured: true`, large on a soft panel, with its picture beside the words. Under it, a row of up to three more featured posts as picture cards.
+3. **Latest:** the newest posts as rows, each with a small picture beside its title, author and date. On wide screens the rows sit in two columns. A post with no picture gets a drawn cover in tints of your accent colour, here and on every card, so they line up.
 4. Numbered page links under the list.
 5. Your call to action as a band.
 
@@ -42,7 +42,7 @@ Harbor has no author box after the post and no reading time; turn either on in `
 
 ## Your brand
 
-Harbor takes your colours, fonts and logo from `theme/tokens.toml`, so it looks like your main site. Buttons use your accent colour with black or white text, whichever reads better on it. Cards, the offer and the gated downloads use your surface and border colours.
+Harbor brings its own colours: a berry accent (`#b0225a`) on white with a pink-tinted surface. Your colours, fonts and logo in `theme/tokens.toml`, such as the ones theme sync writes, replace them, so it looks like your main site. Buttons use the accent colour with black or white text, whichever reads better on it. Cards, the offer and the gated downloads use the surface and border colours.
 
 Harbor's own defaults, which any value in your `theme/tokens.toml` replaces:
 
