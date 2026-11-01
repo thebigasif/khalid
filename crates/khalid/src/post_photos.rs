@@ -4,7 +4,7 @@
 
 use std::collections::BTreeMap;
 
-use khalid_render::{Loading, PageBody, Person, PostCard, RenderImage};
+use khalid_render::{Loading, PageBody, Person, PostCard, RenderHome, RenderImage};
 
 use crate::build_pages::{LanguagePages, Page};
 
@@ -44,9 +44,10 @@ impl Shown {
 }
 
 /// Puts the images `shown` holds on every card and beside every name on
-/// the pages of `languages`, except the home page: `khalid serve` answers
-/// with it before any image has its sizes, and it must be the page the
-/// full render makes.
+/// the pages of `languages`. The home page takes only its cards' lead
+/// images: `khalid serve` answers with it before any author page is read,
+/// draws those same images with [`crate::home_pictures`], and it must be
+/// the page the full render makes.
 pub(crate) fn attach(languages: &mut [LanguagePages], shown: &Shown) {
     if shown.cards.is_empty() && shown.photos.is_empty() {
         return;
@@ -76,10 +77,31 @@ pub(crate) fn attach(languages: &mut [LanguagePages], shown: &Shown) {
             PageBody::Collection(listing)
             | PageBody::Tag(listing)
             | PageBody::Category(listing)
-            | PageBody::Archive(listing) => cards(&mut listing.posts, shown),
+            | PageBody::Archive(listing) => {
+                cards(&mut listing.posts, shown);
+                cards(listing.featured.as_mut_slice(), shown);
+            }
+            PageBody::Home(home) => {
+                for card in home_cards(home) {
+                    card.image = shown.cards.get(&card.href).cloned();
+                }
+            }
             _ => {}
         }
     }
+}
+
+/// Every card on the home page `home`: its list, its featured post, its
+/// sections and its picks.
+pub(crate) fn home_cards(home: &mut RenderHome) -> impl Iterator<Item = &mut PostCard> {
+    let sections = home
+        .sections
+        .iter_mut()
+        .flat_map(|section| &mut section.posts);
+    (home.listing.posts.iter_mut())
+        .chain(home.listing.featured.as_mut())
+        .chain(sections)
+        .chain(home.picks.iter_mut())
 }
 
 /// Gives each of `posts` its post's lead image and its author's photo.

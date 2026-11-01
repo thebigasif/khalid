@@ -58,6 +58,10 @@ fn the_first_pages_are_the_full_renders_home_pages_and_stylesheet() {
     for page in &first {
         assert!(all.contains(page), "{} differs", page.path().as_str());
     }
+    let home = first.iter().find(|page| page.path().as_str() == "/blog/");
+    let home = String::from_utf8_lossy(&home.unwrap().body().unwrap()).into_owned();
+    let chart = "alt=\"A bar chart of page weight by part\"";
+    assert!(home.contains(chart), "the cards carry lead images: {home}");
 }
 
 #[test]

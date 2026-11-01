@@ -12,19 +12,22 @@ use khalid_render::{Person, PostCard};
 use khalid_routes::{PostAddress, Routes};
 
 use crate::build_pages::{self, LanguagePages};
+use crate::home_pictures::{self, Leads};
 use crate::{build_reader, post_categories, site_chrome};
 
 /// The home page of each language of `content`, in the order of
 /// `site.toml`, linking the stylesheet at `stylesheet`: the page
 /// [`build_pages::pages`] makes there, every dated post's card newest
-/// first, and no other page.
+/// first, and no other page. Also returns each card's lead image, which
+/// [`home_pictures::draw`] puts on the cards.
 pub(crate) fn home_pages(
     config: &Config,
     routes: &Routes,
     content: &SiteContent,
     stylesheet: &str,
-) -> Result<Vec<LanguagePages>, UserMessage> {
+) -> Result<(Vec<LanguagePages>, Leads), UserMessage> {
     let mut languages = Vec::with_capacity(config.languages().len());
+    let mut leads = Leads::new();
     for locale in config.languages() {
         let links = Wikilinks::for_language(content, config, routes, locale);
         let people = build_reader::people(config, &links, content, locale)?;
@@ -39,7 +42,11 @@ pub(crate) fn home_pages(
             let entry = PostAddress::new(&doc.collection, locale, &slug, Some(date));
             let rest = build_pages::routed(config, routes, locale, &entry, &doc.path)?;
             let named = (title, rest.as_str(), date);
-            cards.push(card((config, routes), locale, &people, named, front));
+            let card = card((config, routes), locale, &people, named, front);
+            if let Some(lead) = home_pictures::of(doc, &card.href) {
+                leads.insert(card.href.clone(), lead);
+            }
+            cards.push(card);
         }
         // A stable sort, as the full render's, so posts of one day keep
         // their file order.
@@ -51,7 +58,7 @@ pub(crate) fn home_pages(
             unlocked: Vec::new(),
         });
     }
-    Ok(languages)
+    Ok((languages, leads))
 }
 
 /// The card lists show of a dated post with this `title`, address end

@@ -104,6 +104,46 @@ pub(crate) fn attach(
     Ok(sizes.into_values().collect())
 }
 
+/// The lead image `file`, described by `alt`, as a card shows it: what
+/// [`attach`] draws at the top of its post, then hands to the post's other
+/// cards. `None` when the file is missing or a drawing names no size, as
+/// the post's own page then leaves it out too.
+///
+/// # Errors
+///
+/// The message for a file that cannot be read or made into sizes.
+pub(crate) fn card_image(
+    site: &Path,
+    config: &Config,
+    file: &PostFile,
+    alt: &str,
+) -> Result<Option<RenderImage>, UserMessage> {
+    if !post_files::on_disk(site, file)?.is_file() {
+        return Ok(None);
+    }
+    let picture = match MediaType::for_file(&file.address) {
+        MediaType::Svg => drawing(&file.address, &post_files::read(site, file)?),
+        MediaType::Jpeg | MediaType::Png | MediaType::Webp => {
+            let bytes = post_files::read(site, file)?;
+            let cache = MediaCache::new(site);
+            let image = derive(&bytes, &cache).map_err(|error| unmade(&file.source, &error))?;
+            picture(config, &image).map(|(picture, _)| picture)
+        }
+        _ => None,
+    };
+    Ok(picture.map(|picture| RenderImage {
+        alt: alt.to_owned(),
+        caption: None,
+        width: picture.width,
+        height: picture.height,
+        sizes: SIZES.to_owned(),
+        avif: None,
+        webp: picture.webp,
+        fallback: picture.fallback,
+        loading: Loading::Lazy,
+    }))
+}
+
 /// Draws the lead image of a post, or the photo of an author, at the top
 /// of `page`, when it is a file beside the page's file with its sizes among
 /// `pictures`: fetched at once with high priority, as the one large image

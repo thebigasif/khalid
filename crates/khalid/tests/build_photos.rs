@@ -84,10 +84,14 @@ fn an_authors_photo_and_a_posts_lead_image_show_wherever_they_go() {
     assert!(card.contains(chart), "{card}");
     assert!(card.contains("loading=\"lazy\""), "{card}");
     assert!(!card.contains("<figcaption>"), "{card}");
-    // The home page is served before any image has its sizes, so its
-    // cards carry none and it stays the page the full render makes.
+    // The home page's cards carry their posts' lead images too. Bylines on
+    // it name their authors without a photo, as `khalid serve` answers it
+    // before any author page is read.
     let home = page(out.path(), "index.html");
-    assert!(!card_of(&home, "/blog/fixing-slow-pages/").contains(chart));
+    let card = card_of(&home, "/blog/fixing-slow-pages/");
+    assert!(card.contains(chart), "{card}");
+    assert!(card.contains("loading=\"lazy\""), "{card}");
+    assert!(!card.contains("class=\"avatar\""), "{card}");
 }
 
 #[test]
