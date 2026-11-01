@@ -32,14 +32,15 @@ impl Rule for NearDuplicate {
             return Vec::new();
         }
         let (mut words, mut theirs) = (Words::default(), Shingles::default());
+        // The union is never smaller than our own shingles, and the shared
+        // ones never outnumber the runs `found_in_more_than` counts, so a
+        // post with no more than this many could not pass the exact test.
+        let limit = self.max_percent * own.len() / 100;
         let others = site.posts().iter();
         let others = others.filter(|o| o.locale == post.locale && o.slug != post.slug);
         let copies = others.filter(|other| {
             words.read(&other.body_text);
-            // The union is never smaller than our own shingles, and the
-            // shared ones never outnumber `found_in`, so a post this rules
-            // out could not pass the exact test below either.
-            if own.found_in(&words) * 100 <= self.max_percent * own.len() {
+            if !own.found_in_more_than(&words, limit) {
                 return false;
             }
             theirs.refill(&words);

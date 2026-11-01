@@ -20,9 +20,9 @@ impl LintTimes {
 
     /// Lints `samples` posts of `site`, spread evenly from the first to the
     /// last, each against the whole site as `khalid publish` lints it, and
-    /// times each with `clock`. One post costs about 15 milliseconds on a
-    /// 1,000-post site, so linting every post would take a quarter of a
-    /// minute. A site
+    /// times each with `clock`. One post costs about 9 milliseconds on a
+    /// 1,000-post site, so linting every post would take about 9 seconds.
+    /// A site
     /// with fewer posts than `samples` has each post linted once.
     pub fn measure(site: &Prepared, linter: &Linter, samples: usize, clock: &dyn Clock) -> Self {
         let posts = &site.lint.posts;

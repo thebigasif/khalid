@@ -3,9 +3,11 @@
 //! Linting one post compares it with every other post of the site, so this
 //! runs once per post of the site on each lint. Each word is hashed once,
 //! as its letters are read, and each run of five combines five word
-//! hashes, so no word is hashed five times, and a text in plain ASCII, as
-//! most are, is never copied to lowercase it. [`Shingles::found_in`] then rules most posts out from their
-//! [`Words`] alone, before their own set is built.
+//! hashes, so no word is hashed five times. A word's letters are packed
+//! eight to a multiply, and a text in plain ASCII, as most are, is never
+//! copied to lowercase it. [`Shingles::found_in_more_than`] then rules most
+//! posts out from their [`Words`] alone, with a 1 KiB bit filter and before
+//! their own set is built.
 
 use std::collections::HashSet;
 use std::hash::{BuildHasherDefault, Hasher};
@@ -19,8 +21,15 @@ const WORD_SEED: u64 = 0xcbf2_9ce4_8422_2325;
 /// The FNV prime each letter is multiplied in with.
 const WORD_PRIME: u64 = 0x0000_0100_0000_01b3;
 
-/// The odd number a run's word hashes are folded together with.
-const RUN_PRIME: u64 = 0x9e37_79b9_7f4a_7c15;
+/// One odd key for each place in a run, so the same words in another
+/// order make another hash.
+const RUN_KEYS: [u64; SHINGLE_WORDS] = [
+    0x9e37_79b9_7f4a_7c15,
+    0xc2b2_ae3d_27d4_eb4f,
+    0x1656_67b1_9e37_79f9,
+    0xd6e8_feb8_6659_fd93,
+    0xa076_1d64_78bd_642f,
+];
 
 /// The words of a text, ignoring case and punctuation, each hashed, in
 /// order. Hashes are only compared with others made here, so their exact
@@ -31,17 +40,52 @@ pub(crate) struct Words(Vec<u64>);
 impl Words {
     /// Replaces the words held with those of `text`, reusing the memory.
     pub(crate) fn read(&mut self, text: &str) {
-        self.0.clear();
         if text.is_ascii() {
-            let letters = text
-                .bytes()
-                .map(|byte| char::from(byte.to_ascii_lowercase()));
-            hash_words(letters, &mut self.0);
+            self.read_ascii(text.as_bytes());
         } else {
-            // The whole text at once, so a word-final Greek sigma becomes
-            // the final form, as it does when one reads the text.
-            hash_words(text.to_lowercase().chars(), &mut self.0);
+            self.read_letters(text);
         }
+    }
+
+    /// Reads a text in plain ASCII, byte by byte, with no copy.
+    fn read_ascii(&mut self, text: &[u8]) {
+        self.0.clear();
+        let mut word = WordHash::default();
+        for &byte in text {
+            if byte.is_ascii_alphanumeric() {
+                word.push(byte.to_ascii_lowercase());
+            } else {
+                word.end(&mut self.0);
+            }
+        }
+        word.end(&mut self.0);
+    }
+
+    /// Reads any text, letter by letter.
+    fn read_letters(&mut self, text: &str) {
+        self.0.clear();
+        let mut word = WordHash::default();
+        // The whole text at once, so a word-final Greek sigma becomes the
+        // final form, as it does when one reads the text. A letter goes in
+        // as its UTF-8 bytes, so a word in plain ASCII hashes the same as
+        // in `read_ascii`.
+        let mut utf8 = [0; 4];
+        for letter in text.to_lowercase().chars() {
+            if letter.is_alphanumeric() {
+                letter
+                    .encode_utf8(&mut utf8)
+                    .bytes()
+                    .for_each(|b| word.push(b));
+            } else {
+                word.end(&mut self.0);
+            }
+        }
+        word.end(&mut self.0);
+    }
+
+    /// How many runs of five words the text has, repeats included.
+    fn run_count(&self) -> usize {
+        self.0.len().saturating_sub(SHINGLE_WORDS - 1)
     }
 
     /// The hash of each run of five words, in order, repeats included.
@@ -50,11 +94,77 @@ impl Words {
     }
 }
 
+/// The hash of the word being read. Letters are packed eight to a 64-bit
+/// block, and only a full block or the word's end costs a multiply. UTF-8
+/// bytes are never zero, so a block that is not empty is never zero.
+#[derive(Debug)]
+struct WordHash {
+    /// The full blocks so far, mixed.
+    done: u64,
+    /// The letters of the block being filled, the last in the low byte.
+    block: u64,
+}
+
+impl Default for WordHash {
+    fn default() -> Self {
+        Self {
+            done: WORD_SEED,
+            block: 0,
+        }
+    }
+}
+
+impl WordHash {
+    /// Adds one byte of a lowercase letter or digit.
+    fn push(&mut self, byte: u8) {
+        if self.block >> 56 != 0 {
+            self.fold_block();
+        }
+        self.block = (self.block << 8) | u64::from(byte);
+    }
+
+    /// Mixes the full block into the blocks before it and starts a new one.
+    fn fold_block(&mut self) {
+        self.done = self.finish();
+        self.block = 0;
+    }
+
+    /// The hash of the word as read so far.
+    fn finish(&self) -> u64 {
+        (self.done ^ self.block).wrapping_mul(WORD_PRIME)
+    }
+
+    /// Ends the word, if one was being read, and pushes its hash onto
+    /// `words`.
+    fn end(&mut self, words: &mut Vec<u64>) {
+        if self.block != 0 {
+            words.push(self.finish());
+            *self = Self::default();
+        }
+    }
+}
+
 /// The distinct shingles of a text: each run of five of its [`Words`],
 /// hashed. The set is only counted, never listed, so its order never
 /// reaches a finding.
-#[derive(Debug, Default)]
-pub(crate) struct Shingles(HashSet<u64, BuildHasherDefault<Premixed>>);
+#[derive(Debug)]
+pub(crate) struct Shingles {
+    /// The shingles.
+    set: HashSet<u64, BuildHasherDefault<Premixed>>,
+    /// One bit for each value of a hash's top [`FILTER_BITS`] bits, set
+    /// when a shingle has it. A clear bit means "not a shingle", read
+    /// from one small table with no branch.
+    filter: Vec<u64>,
+}
+
+impl Default for Shingles {
+    fn default() -> Self {
+        Self {
+            set: HashSet::default(),
+            filter: vec![0; FILTER_WORDS],
+        }
+    }
+}
 
 impl Shingles {
     /// The shingles of `text`.
@@ -68,21 +178,44 @@ impl Shingles {
 
     /// Replaces the shingles held with those of `words`, reusing the memory.
     pub(crate) fn refill(&mut self, words: &Words) {
-        self.0.clear();
-        self.0.extend(words.runs());
+        self.set.clear();
+        self.filter.fill(0);
+        for run in words.runs() {
+            self.set.insert(run);
+            let (at, bit) = filter_place(run);
+            if let Some(slot) = self.filter.get_mut(at) {
+                *slot |= bit;
+            }
+        }
     }
 
     /// How many distinct shingles the text has.
     pub(crate) fn len(&self) -> usize {
-        self.0.len()
+        self.set.len()
     }
 
-    /// How many runs of `words`, repeats included, are shingles of this
-    /// text. Every shingle the two texts share is one of those runs, so
-    /// this is never less than [`Shingles::shared_with`] would give, and
-    /// it costs no set of their own.
-    pub(crate) fn found_in(&self, words: &Words) -> usize {
-        words.runs().filter(|run| self.0.contains(run)).count()
+    /// Whether more than `limit` runs of `words`, repeats included, may be
+    /// shingles of this text. Every shingle the two texts share is one of
+    /// those runs, and a run that is a shingle always passes the filter,
+    /// so this never undercounts [`Shingles::shared_with`]. It costs no
+    /// set of their own, and stops as soon as the answer is known: once
+    /// `limit` is passed, or once the runs left could no longer pass it.
+    pub(crate) fn found_in_more_than(&self, words: &Words, limit: usize) -> bool {
+        let mut left = words.run_count();
+        let mut found = 0;
+        for run in words.runs() {
+            if found > limit {
+                return true;
+            }
+            if found + left <= limit {
+                return false;
+            }
+            let (at, bit) = filter_place(run);
+            let slot = self.filter.get(at).copied().unwrap_or(u64::MAX);
+            found += usize::from(slot & bit != 0);
+            left -= 1;
+        }
+        found > limit
     }
 
     /// How many shingles this text and `other` share.
@@ -92,35 +225,35 @@ impl Shingles {
         } else {
             (other, self)
         };
-        small.0.iter().filter(|run| large.0.contains(run)).count()
+        small
+            .set
+            .iter()
+            .filter(|run| large.set.contains(run))
+            .count()
     }
 }
 
-/// Pushes onto `words` the hash of each word in `letters`, which are already
-/// lowercase. A word is a run of letters and digits; anything else ends it.
-fn hash_words(letters: impl Iterator<Item = char>, words: &mut Vec<u64>) {
-    let mut word = WORD_SEED;
-    let mut in_word = false;
-    for letter in letters {
-        if letter.is_alphanumeric() {
-            word = (word ^ u64::from(u32::from(letter))).wrapping_mul(WORD_PRIME);
-            in_word = true;
-        } else if in_word {
-            words.push(word);
-            word = WORD_SEED;
-            in_word = false;
-        }
-    }
-    if in_word {
-        words.push(word);
-    }
+/// How many top bits of a shingle's hash pick its bit in the filter.
+const FILTER_BITS: u32 = 13;
+
+/// The filter's size in 64-bit words: 1 KiB, which stays in the fastest
+/// cache, and leaves a post's few hundred shingles setting under one bit
+/// in ten.
+const FILTER_WORDS: usize = (1 << FILTER_BITS) / 64;
+
+/// The word of the filter and the bit in it that stand for `run`.
+fn filter_place(run: u64) -> (usize, u64) {
+    let top = run >> (64 - FILTER_BITS);
+    let at = usize::try_from(top >> 6).unwrap_or(usize::MAX);
+    (at, 1 << (top & 63))
 }
 
 /// One hash for a run of word hashes, which depends on their order, with
-/// its bits spread so the set can use it as it is.
+/// its bits spread so the set can use it as it is. Each word is multiplied
+/// by its own odd key, so the five multiplies do not wait on each other.
 fn run_hash(run: &[u64]) -> u64 {
-    let folded = run.iter().fold(0_u64, |acc, word| {
-        (acc.rotate_left(27) ^ word).wrapping_mul(RUN_PRIME)
+    let folded = run.iter().zip(RUN_KEYS).fold(0_u64, |acc, (word, key)| {
+        acc.wrapping_add(word.wrapping_mul(key))
     });
     spread(folded)
 }
@@ -223,8 +356,65 @@ mod tests {
         let own = Shingles::of("a b c d e f");
         let theirs = "a b c d e a b c d e";
         assert_eq!(own.shared_with(&Shingles::of(theirs)), 1);
-        assert_eq!(own.found_in(&words(theirs)), 2);
-        assert_eq!(own.found_in(&words("z y x w v")), 0);
+        assert!(own.found_in_more_than(&words(theirs), 1));
+        assert!(!own.found_in_more_than(&words(theirs), 2));
+        assert!(!own.found_in_more_than(&words("z y x w v"), 0));
+    }
+
+    #[test]
+    fn found_in_never_undercounts_at_any_limit() {
+        let own = Shingles::of("q a b c d e f g h i j k l m n o p q");
+        let theirs = words("z a b c d e f y g h i j k l x m n o p a b c d e");
+        let found = theirs.runs().filter(|run| own.set.contains(run)).count();
+        // abcde twice, bcdef, ghijk, hijkl.
+        assert_eq!(found, 5);
+        for limit in 0..found {
+            assert!(own.found_in_more_than(&theirs, limit), "{limit}");
+        }
+        assert!(!own.found_in_more_than(&theirs, theirs.run_count()));
+    }
+
+    #[test]
+    fn the_filter_rules_out_unrelated_text() {
+        let text = |letter: &str| (0..400).map(|n| format!("{letter}{n}")).collect::<Vec<_>>();
+        let own = Shingles::of(&text("w").join(" "));
+        let other = text("x").join(" ");
+        // Under one bit in ten is set, so far fewer than 100 of 396 runs
+        // pass the filter.
+        assert!(!own.found_in_more_than(&words(&other), 100));
+    }
+
+    #[test]
+    fn both_readers_give_the_same_words() {
+        let text = "  Internationalisation, of 16 READABILITY-measurements: \
+                    abcdefgh abcdefghi a1b2c3d4e5f6g7h8 x";
+        let mut ascii = Words::default();
+        ascii.read_ascii(text.as_bytes());
+        let mut letters = Words::default();
+        letters.read_letters(text);
+        assert_eq!(ascii.0.len(), 9);
+        assert_eq!(ascii.0, letters.0);
+    }
+
+    #[test]
+    fn long_words_and_ascii_words_in_other_text_hash_the_same() {
+        let ascii = words("Internationalisation of readability measurements");
+        let mixed = words("internationalisation of readability measurements é");
+        assert_eq!(ascii.0, mixed.0.get(..4).unwrap_or_default());
+        let shorter = words("internationalisatio measurement");
+        assert_ne!(ascii.0.first(), shorter.0.first());
+        assert_ne!(ascii.0.last(), shorter.0.last());
+    }
+
+    #[test]
+    fn a_shorter_text_read_after_a_longer_one_keeps_only_its_words() {
+        let mut reused = words("one two three four five six seven eight nine");
+        reused.read("ten eleven");
+        assert_eq!(reused.0, words("ten eleven").0);
+        reused.read("...");
+        assert_eq!(reused.0.len(), 0);
+        reused.read("Größe x");
+        assert_eq!(reused.0.len(), 2);
     }
 
     #[test]
