@@ -12,8 +12,8 @@ use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
     AbsoluteUrl, AiPageSettings, AlertSettings, Announcement, Environment, Locale, MailSettings,
-    MediaSettings, NavSettings, ParseUrlError, Reader, SearchConsoleSettings, SeoSettings,
-    SiteCode, VisitorLogSettings,
+    MediaSettings, NavSettings, ParseUrlError, Reader, ReaderSwitch, SearchConsoleSettings,
+    SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
 };
 
 /// Every setting Khalid reads, checked once at start and then passed by
@@ -33,6 +33,8 @@ pub struct Config {
     languages: Vec<Locale>,
     seo: SeoSettings,
     reader: Reader,
+    reader_written: Vec<ReaderSwitch>,
+    template: TemplateChoice,
     nav: NavSettings,
     announcement: Option<Announcement>,
     media: MediaSettings,
@@ -98,6 +100,8 @@ struct SiteFile {
     seo: SeoSettings,
     #[serde(default)]
     reader: Reader,
+    #[serde(default)]
+    template: TemplateChoice,
     #[serde(default)]
     nav: NavSettings,
     announcement: Option<Announcement>,
@@ -316,6 +320,8 @@ impl Config {
             languages: file.languages,
             seo: file.seo,
             reader: file.reader,
+            reader_written: ReaderSwitch::written_in(text),
+            template: file.template,
             nav: file.nav,
             announcement: file.announcement,
             media: file.media,
@@ -416,6 +422,24 @@ impl Config {
     /// Which reader features the default templates show, from `[reader]`.
     pub fn reader(&self) -> &Reader {
         &self.reader
+    }
+
+    /// The look the site chose and its options, from `[template]`, as
+    /// written. `khalid-theme` checks them against the look.
+    pub fn template(&self) -> &TemplateChoice {
+        &self.template
+    }
+
+    /// These settings with the look's defaults for the reader switches
+    /// that `[reader]` leaves out. A key the site writes always wins.
+    #[must_use]
+    pub fn with_reader_defaults(mut self, defaults: &[(ReaderSwitch, bool)]) -> Self {
+        for &(switch, on) in defaults {
+            if !self.reader_written.contains(&switch) {
+                *switch.field(&mut self.reader) = on;
+            }
+        }
+        self
     }
 
     /// The header and footer menus, from `[nav]`.

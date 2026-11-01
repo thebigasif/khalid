@@ -82,6 +82,119 @@ impl Default for Reader {
     }
 }
 
+/// One on or off key of [`Reader`], so a template can name the switches it
+/// turns on or off by default.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[non_exhaustive]
+pub enum ReaderSwitch {
+    /// `byline`.
+    Byline,
+    /// `reviewed_by`.
+    ReviewedBy,
+    /// `reading_time`.
+    ReadingTime,
+    /// `table_of_contents`.
+    TableOfContents,
+    /// `heading_links`.
+    HeadingLinks,
+    /// `enlarge_images`.
+    EnlargeImages,
+    /// `author_box`.
+    AuthorBox,
+    /// `related_posts`.
+    RelatedPosts,
+    /// `rich_cards`.
+    RichCards,
+    /// `topic_links`.
+    TopicLinks,
+    /// `authors_page`.
+    AuthorsPage,
+    /// `archive`.
+    Archive,
+    /// `search_shortcut`.
+    SearchShortcut,
+    /// `linked_mentions`.
+    LinkedMentions,
+    /// `link_previews`.
+    LinkPreviews,
+}
+
+impl ReaderSwitch {
+    /// Every switch, in the order of [`Reader`].
+    pub const ALL: [Self; 15] = [
+        Self::Byline,
+        Self::ReviewedBy,
+        Self::ReadingTime,
+        Self::TableOfContents,
+        Self::HeadingLinks,
+        Self::EnlargeImages,
+        Self::AuthorBox,
+        Self::RelatedPosts,
+        Self::RichCards,
+        Self::TopicLinks,
+        Self::AuthorsPage,
+        Self::Archive,
+        Self::SearchShortcut,
+        Self::LinkedMentions,
+        Self::LinkPreviews,
+    ];
+
+    /// The key in `[reader]`, such as `reading_time`.
+    pub fn key(self) -> &'static str {
+        match self {
+            Self::Byline => "byline",
+            Self::ReviewedBy => "reviewed_by",
+            Self::ReadingTime => "reading_time",
+            Self::TableOfContents => "table_of_contents",
+            Self::HeadingLinks => "heading_links",
+            Self::EnlargeImages => "enlarge_images",
+            Self::AuthorBox => "author_box",
+            Self::RelatedPosts => "related_posts",
+            Self::RichCards => "rich_cards",
+            Self::TopicLinks => "topic_links",
+            Self::AuthorsPage => "authors_page",
+            Self::Archive => "archive",
+            Self::SearchShortcut => "search_shortcut",
+            Self::LinkedMentions => "linked_mentions",
+            Self::LinkPreviews => "link_previews",
+        }
+    }
+
+    /// The switch's field in `reader`.
+    pub(crate) fn field(self, reader: &mut Reader) -> &mut bool {
+        match self {
+            Self::Byline => &mut reader.byline,
+            Self::ReviewedBy => &mut reader.reviewed_by,
+            Self::ReadingTime => &mut reader.reading_time,
+            Self::TableOfContents => &mut reader.table_of_contents,
+            Self::HeadingLinks => &mut reader.heading_links,
+            Self::EnlargeImages => &mut reader.enlarge_images,
+            Self::AuthorBox => &mut reader.author_box,
+            Self::RelatedPosts => &mut reader.related_posts,
+            Self::RichCards => &mut reader.rich_cards,
+            Self::TopicLinks => &mut reader.topic_links,
+            Self::AuthorsPage => &mut reader.authors_page,
+            Self::Archive => &mut reader.archive,
+            Self::SearchShortcut => &mut reader.search_shortcut,
+            Self::LinkedMentions => &mut reader.linked_mentions,
+            Self::LinkPreviews => &mut reader.link_previews,
+        }
+    }
+
+    /// The switches whose keys the `[reader]` table of `text` writes. A
+    /// file that is not TOML writes none; [`crate::Config`] refuses it first.
+    pub(crate) fn written_in(text: &str) -> Vec<Self> {
+        let table: toml::Table = toml::from_str(text).unwrap_or_default();
+        let Some(toml::Value::Table(reader)) = table.get("reader") else {
+            return Vec::new();
+        };
+        Self::ALL
+            .into_iter()
+            .filter(|switch| reader.contains_key(switch.key()))
+            .collect()
+    }
+}
+
 /// One section of the home page: the newest posts of a category, a
 /// collection or a channel, with a "View all" link to its own page.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
