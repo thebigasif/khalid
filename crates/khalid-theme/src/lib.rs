@@ -19,6 +19,7 @@ mod fetch;
 mod fetch_error;
 mod font_files;
 mod fonts;
+mod keystone;
 mod links;
 mod look;
 mod pack;
