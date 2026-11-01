@@ -1,0 +1,74 @@
+# Example site: the blog of Kestrel & Lime, a fictional marketing agency
+# for local service businesses. Case studies, services and posts written
+# by named experts. See README.md for what it shows.
+
+name = "Kestrel & Lime Notes"
+address = "https://www.example.org"
+mount = "/blog/"
+mode = "server"
+default_language = "en"
+languages = ["en"]
+
+[template]
+name = "compass"
+
+[template.cta]
+label = "Book a free first call"
+href = "/blog/services/"
+note = "Half an hour with the person who would do the work."
+
+[seo.titles]
+separator = "·"
+tagline = "Local search and email marketing for clinics, trades and shops"
+
+[seo.publisher]
+type = "organization"
+name = "Kestrel & Lime"
+email = "studio@example.org"
+founded = "2018-09-03"
+
+[seo.ai_page]
+covers = "Kestrel & Lime is a small marketing agency. It writes about local search, Google Business Profiles, customer reviews and email marketing for local service businesses, and publishes case studies of its own client work."
+cite = "Name Kestrel & Lime and the author, and link the post you quote."
+contact = "studio@example.org"
+
+# Form answers and sign-ups are sent by email. The password, if your mail
+# server needs one, goes in KHALID_SMTP_PASSWORD, never here.
+[mail]
+from = "studio@example.org"
+name = "Kestrel & Lime"
+postal_address = "Kestrel & Lime, 3 Ropewalk Court, Nottingham NG1 5DT, UK"
+
+[mail.smtp]
+host = "smtp.example.org"
+
+[reader]
+home_sections = [
+    { collection = "work" },
+    { category = "local-search" },
+    { category = "email-marketing" },
+]
+
+[[nav.primary]]
+label = "Case studies"
+href = "/blog/category/case-studies/"
+
+[[nav.primary]]
+label = "Local search"
+href = "/blog/category/local-search/"
+
+[[nav.primary]]
+label = "Email"
+href = "/blog/category/email-marketing/"
+
+[[nav.primary]]
+label = "Services"
+href = "/blog/services/"
+
+[[nav.footer]]
+label = "About the team"
+href = "/blog/about/"
+
+[[nav.footer]]
+label = "Services and contact"
+href = "/blog/services/"

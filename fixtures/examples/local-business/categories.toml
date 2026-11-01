@@ -1,0 +1,13 @@
+# The workshop blog's three categories.
+
+[[categories]]
+slug = "repairs"
+en = "Repairs"
+
+[[categories]]
+slug = "care-at-home"
+en = "Care at home"
+
+[[categories]]
+slug = "servicing"
+en = "Servicing"

@@ -1,0 +1,56 @@
+# Khalid's own website, built with Khalid. It is published on GitHub Pages
+# at https://thebigasif.github.io/khalid/. The showcase demo sits at
+# /khalid/demo/, the template demos at /khalid/templates/<name>/ and the
+# use case sites at /khalid/examples/<slug>/, each built from its own folder.
+
+name = "Khalid"
+address = "https://thebigasif.github.io"
+mount = "/khalid/"
+mode = "static"
+default_language = "en"
+languages = ["en"]
+
+[seo.titles]
+separator = "·"
+tagline = "The open-source blog engine that checks every post"
+
+[seo.publisher]
+type = "organization"
+name = "SerpDad"
+same_as = ["https://github.com/thebigasif/khalid"]
+
+[seo.ai_page]
+covers = "Khalid is an open-source blog engine by SerpDad. This site explains what it does, how to start, and how it compares with other blog tools."
+cite = "Name Khalid and link the page you quote."
+
+[[nav.primary]]
+label = "Features"
+href = "/khalid/features/"
+
+[[nav.primary]]
+label = "Templates"
+href = "/khalid/templates/"
+
+[[nav.primary]]
+label = "Use cases"
+href = "/khalid/use-cases/"
+
+[[nav.primary]]
+label = "Start"
+href = "/khalid/start/"
+
+[[nav.primary]]
+label = "Compare"
+href = "/khalid/compare/"
+
+[[nav.footer]]
+label = "See the demo blog"
+href = "/khalid/demo/"
+
+[[nav.footer]]
+label = "Source code on GitHub"
+href = "https://github.com/thebigasif/khalid"
+
+[[nav.footer]]
+label = "Releases"
+href = "https://github.com/thebigasif/khalid/releases"

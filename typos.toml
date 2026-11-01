@@ -15,8 +15,13 @@ minijinja = "minijinja"
 ue = "ue"
 # "Search" in German, a menu label in the demo example.
 suche = "suche"
+# German and Spanish words in the multilingual example's settings and its
+# English post on false friends.
+methoden = "methoden"
+sensibel = "sensibel"
+instituto = "instituto"
 
 [files]
-# typos knows English only. German content is checked by its writer, not by
-# an English dictionary that reads "Sie" and "ein" as typos.
-extend-exclude = ["target/", "node_modules/", "*.lock", ".claude/skills/rust-best-practices/references/", "**/content/de/", "crates/khalid-render/strings/de.toml", "crates/khalid-newsletter/strings/de.toml","crates/khalid-lint/src/german.rs"]
+# typos knows English only. German and Spanish content is checked by its
+# writer, not by an English dictionary that reads "Sie" and "frase" as typos.
+extend-exclude = ["target/", "node_modules/", "*.lock", ".claude/skills/rust-best-practices/references/", "**/content/de/", "**/content/es/", "crates/khalid-render/strings/de.toml", "crates/khalid-newsletter/strings/de.toml","crates/khalid-lint/src/german.rs"]

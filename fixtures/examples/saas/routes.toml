@@ -1,0 +1,5 @@
+# Product updates live in their own folder and under their own address,
+# so the guides keep short addresses and the updates read as a series.
+
+[collections.updates]
+permalink = "/updates/{slug}/"

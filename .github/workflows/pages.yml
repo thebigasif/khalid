@@ -1,9 +1,26 @@
-name: Demo site
+name: Pages
 
-# Publishes the demo blog (fixtures/demo-site) to GitHub Pages at
-# https://thebigasif.github.io/khalid/, built by the latest released
-# binary, so the public demo always shows what people can download.
+# Publishes Khalid's website and its demos to GitHub Pages under
+# https://thebigasif.github.io/khalid/, all built by the binary from this
+# commit, so a template that lands shows at once:
+#
+#   /khalid/                    the website (site/)
+#   /khalid/demo/               the showcase site (fixtures/showcase-site)
+#   /khalid/examples/<slug>/    each example in fixtures/examples/
+#   /khalid/templates/<name>/   the showcase in each template the binary has
+#
+# A change to the sites publishes on its own. A change to the engine
+# publishes at the next release, or by running this workflow by hand, so
+# CI does not build a release binary for every pull request that lands.
 on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "fixtures/showcase-site/**"
+      - "fixtures/examples/**"
+      - "scripts/pages.sh"
+      - ".github/workflows/pages.yml"
   release:
     types: [published]
   workflow_dispatch:
@@ -19,27 +36,26 @@ concurrency:
 
 jobs:
   build:
-    name: Build the demo
+    name: Build the website and demos
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Latest released binary
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Toolchain from rust-toolchain.toml
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.1
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: pages
+      - name: Binary from this commit
         run: |
-          gh release download --repo "$GITHUB_REPOSITORY" --pattern 'khalid-v*-linux-x86_64' --output khalid
-          chmod +x khalid
-          ./khalid --version
-      - name: Build for the Pages address
-        run: |
-          cp -r fixtures/demo-site "$RUNNER_TEMP/site"
-          sed -i 's#^address = .*#address = "https://thebigasif.github.io"#; s#^mount = .*#mount = "/khalid/"#' "$RUNNER_TEMP/site/site.toml"
-          ./khalid --site "$RUNNER_TEMP/site" build
-          # Project pages cannot serve files at the host root.
-          rm -rf "$RUNNER_TEMP/site/public/_root"
+          cargo build --release -p khalid
+          ./target/release/khalid --version
+      - name: Build every site for the Pages address
+        run: bash scripts/pages.sh ./target/release/khalid "$RUNNER_TEMP/pages" https://thebigasif.github.io /khalid/
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: ${{ runner.temp }}/site/public
+          path: ${{ runner.temp }}/pages
   deploy:
     name: Publish
     needs: build

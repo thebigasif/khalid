@@ -1,0 +1,51 @@
+# Example site: the blog of Silverline Darkroom, a fictional members'
+# darkroom club. It shows a membership blog: public guides that bring
+# readers in, posts only signed-in members read, a post locked with a
+# password for one course, and a guide whose last part is for readers who
+# join the mailing list. These need the server, so the site runs in
+# server mode.
+
+name = "Silverline Darkroom"
+address = "https://www.example.com"
+mount = "/blog/"
+mode = "server"
+default_language = "en"
+languages = ["en"]
+
+# Harbor suits a membership blog: an offer card under the byline and
+# cards for gated downloads in the text.
+[template]
+name = "harbor"
+
+[seo.titles]
+separator = "·"
+tagline = "Film developing and printing notes from a members' darkroom"
+
+[seo.publisher]
+type = "organization"
+name = "Silverline Darkroom"
+email = "hello@example.com"
+
+[[nav.primary]]
+label = "Developing"
+href = "/blog/category/developing/"
+
+[[nav.primary]]
+label = "Printing"
+href = "/blog/category/printing/"
+
+[[nav.primary]]
+label = "Members"
+href = "/blog/category/members/"
+
+[[nav.primary]]
+label = "Join"
+href = "/blog/join/"
+
+[[nav.footer]]
+label = "About the darkroom"
+href = "/blog/about/"
+
+[[nav.footer]]
+label = "How membership works"
+href = "/blog/join/"

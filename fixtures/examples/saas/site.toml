@@ -1,0 +1,66 @@
+# Example site: the blog of Fernhour, a fictional staff scheduling app.
+# A software company's blog with guides, comparisons, product updates and
+# a newsletter. See README.md for what it shows.
+
+name = "The Fernhour Blog"
+address = "https://www.example.com"
+mount = "/blog/"
+mode = "server"
+default_language = "en"
+languages = ["en"]
+
+[template]
+name = "harbor"
+
+[template.cta]
+label = "Try Fernhour with your team"
+href = "https://www.example.com/start/"
+note = "Set up your first rota in one sitting."
+
+[seo.titles]
+separator = "·"
+tagline = "Rotas, shifts and small teams, from the people who build Fernhour"
+
+[seo.publisher]
+type = "organization"
+name = "Fernhour"
+email = "hello@example.com"
+founded = "2021-04-12"
+
+[seo.ai_page]
+covers = "Fernhour writes about planning staff rotas, covering shifts and fair scheduling for small cafes, shops and clinics, and about changes to the Fernhour app."
+cite = "Name The Fernhour Blog and the author, and link the post you quote."
+contact = "hello@example.com"
+
+# Sign-ups need a way to send the confirmation email. The password, if
+# your mail server needs one, goes in KHALID_SMTP_PASSWORD, never here.
+[mail]
+from = "news@example.com"
+name = "The Fernhour Blog"
+postal_address = "Fernhour Ltd, 12 Wharf Street, Leeds LS2 7EQ, UK"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[reader]
+home_sections = [
+    { category = "guides" },
+    { category = "comparisons" },
+    { collection = "updates" },
+]
+
+[[nav.primary]]
+label = "Guides"
+href = "/blog/category/guides/"
+
+[[nav.primary]]
+label = "Comparisons"
+href = "/blog/category/comparisons/"
+
+[[nav.primary]]
+label = "Product updates"
+href = "/blog/category/product-updates/"
+
+[[nav.footer]]
+label = "About Fernhour"
+href = "/blog/about/"

@@ -1,0 +1,6 @@
+# "Start here" lists the letters Margot marks as the best place to begin,
+# with its own feed. It never changes a letter's own address.
+
+[channels.start-here]
+path = "/start-here/"
+filter = { featured = true }

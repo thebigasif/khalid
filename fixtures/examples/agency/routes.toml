@@ -1,0 +1,5 @@
+# Case studies live in their own folder, at /blog/work/<slug>/, so a
+# reader sees at once that a page is client work and not advice.
+
+[collections.work]
+permalink = "/work/{slug}/"
