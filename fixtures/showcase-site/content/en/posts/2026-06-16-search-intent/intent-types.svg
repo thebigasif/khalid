@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" width="640" height="300" role="img" aria-labelledby="t">
+  <title id="t">Four cards side by side: know, go, compare and buy, the four goals behind a search</title>
+  <rect width="640" height="300" fill="#f7f4ee"/>
+  <g fill="#ffffff" stroke="#6b5ca5" stroke-width="3">
+    <rect x="20" y="60" width="135" height="180" rx="12"/>
+    <rect x="175" y="60" width="135" height="180" rx="12"/>
+    <rect x="330" y="60" width="135" height="180" rx="12"/>
+    <rect x="485" y="60" width="135" height="180" rx="12"/>
+  </g>
+  <g fill="#6b5ca5">
+    <circle cx="87" cy="115" r="26"/>
+    <circle cx="242" cy="115" r="26"/>
+    <circle cx="397" cy="115" r="26"/>
+    <circle cx="552" cy="115" r="26"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="22" text-anchor="middle" fill="#ffffff">
+    <text x="87" y="123">?</text>
+    <text x="242" y="123">&#8594;</text>
+    <text x="397" y="123">&#8644;</text>
+    <text x="552" y="123">&#163;</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="19" text-anchor="middle" fill="#2b2540">
+    <text x="87" y="180">Know</text>
+    <text x="242" y="180">Go</text>
+    <text x="397" y="180">Compare</text>
+    <text x="552" y="180">Buy</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#2b2540">
+    <text x="87" y="210">learn a thing</text>
+    <text x="242" y="210">reach a page</text>
+    <text x="397" y="210">weigh options</text>
+    <text x="552" y="210">act now</text>
+  </g>
+  <text x="320" y="38" font-family="Georgia, serif" font-size="20" text-anchor="middle" fill="#2b2540">What the searcher wants</text>
+</svg>
