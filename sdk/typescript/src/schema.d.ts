@@ -1182,6 +1182,10 @@ export type OptionTakes = {
   /** The largest allowed. */
   most: number;
 } | {
+  kind: "line";
+  /** The most characters allowed. */
+  most: number;
+} | {
   kind: "lines";
   /** The most lines allowed. */
   most: number;

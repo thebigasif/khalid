@@ -180,7 +180,7 @@ mod tests {
                 let found = css
                     .lines()
                     .filter(|line| !line.contains("data:image/svg+xml"))
-                    .any(|line| line.contains(fixed));
+                    .any(|line| line.replace("white-space", "").contains(fixed));
                 assert!(!found, "{}: a fixed colour, {fixed}", pack.name);
             }
             for physical in ["-left", "-right", "prefers-color-scheme"] {

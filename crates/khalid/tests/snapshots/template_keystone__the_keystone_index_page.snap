@@ -9,18 +9,28 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <h2 id="featured-title">Featured</h2>
 <article class="card card-featured">
 <p class="card-meta"><span class="card-author">Asif</span>
-<time datetime="2026-09-21">21 September 2026</time></p>
+<time datetime="2026-09-21">21 September 2026</time>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
 <h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
 <p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
 </article>
 </section>
+<nav class="topic-row" aria-label="Topics">
+<ul>
+<li><a href="/blog/archive/">All</a></li>
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>
 <section class="home-section recent" aria-labelledby="recent-title">
 <h2 id="recent-title">Recently published</h2>
 <ul class="cards" role="list">
 <li>
 <article class="card">
 <p class="card-meta"><span class="card-author">Asif</span>
-<time datetime="2026-10-12">12 October 2026</time></p>
+<time datetime="2026-10-12">12 October 2026</time>
+<a href="/blog/category/content-strategy/">Content strategy</a></p>
 <h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
 <p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
 </article>
@@ -28,7 +38,8 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <li>
 <article class="card">
 <p class="card-meta"><span class="card-author">Lena Vogt</span>
-<time datetime="2026-10-05">5 October 2026</time></p>
+<time datetime="2026-10-05">5 October 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
 <p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
 </article>
@@ -36,7 +47,8 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <li>
 <article class="card">
 <p class="card-meta"><span class="card-author">Lena Vogt</span>
-<time datetime="2026-09-28">28 September 2026</time></p>
+<time datetime="2026-09-28">28 September 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
 <p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
 </article>
@@ -44,7 +56,8 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <li>
 <article class="card">
 <p class="card-meta"><span class="card-author">Asif</span>
-<time datetime="2026-09-14">14 September 2026</time></p>
+<time datetime="2026-09-14">14 September 2026</time>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
 <h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
 <p>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
 </article>

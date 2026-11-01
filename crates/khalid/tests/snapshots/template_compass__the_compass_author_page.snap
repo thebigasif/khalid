@@ -33,7 +33,8 @@ expression: "main_of(&page(&out, \"authors/lena-vogt/index.html\"))"
 </picture>
 </figure>
 <p class="card-meta"><span class="card-author">Lena Vogt</span>
-<time datetime="2026-10-05">5 October 2026</time></p>
+<time datetime="2026-10-05">5 October 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
 <p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
 </article>
@@ -41,7 +42,8 @@ expression: "main_of(&page(&out, \"authors/lena-vogt/index.html\"))"
 <li>
 <article class="card">
 <p class="card-meta"><span class="card-author">Lena Vogt</span>
-<time datetime="2026-09-28">28 September 2026</time></p>
+<time datetime="2026-09-28">28 September 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
 <p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
 </article>

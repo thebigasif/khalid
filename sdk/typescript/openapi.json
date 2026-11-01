@@ -14114,6 +14114,27 @@
           },
           {
             "type": "object",
+            "description": "One line of text of up to `most` characters, empty when not set.",
+            "required": [
+              "most",
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "line"
+                ]
+              },
+              "most": {
+                "type": "integer",
+                "description": "The most characters allowed.",
+                "minimum": 0
+              }
+            }
+          },
+          {
+            "type": "object",
             "description": "Up to `most` lines of text, none when not set.",
             "required": [
               "most",

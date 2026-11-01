@@ -15,7 +15,7 @@
 </div>
 {% endif %}{% if options.category_tabs and page.categories %}<nav class="category-tabs" aria-label="{{ t.categories }}">
 <ul>
-<li><a href="{{ site.home }}" aria-current="page">{{ t.all_posts }}</a></li>
+<li><a href="{{ site.home }}" aria-current="page">{{ t.all_topics }}</a></li>
 {% for category in page.categories %}<li><a href="{{ category.href }}">{{ category.name }}</a></li>
 {% endfor %}</ul>
 </nav>

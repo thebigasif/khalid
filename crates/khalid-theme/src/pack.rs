@@ -9,7 +9,6 @@
 
 use khalid_core::{PackName, ReaderSwitch};
 
-
 /// One built-in look.
 #[derive(Debug)]
 #[non_exhaustive]

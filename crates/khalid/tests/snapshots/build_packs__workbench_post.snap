@@ -6,6 +6,7 @@ expression: "main_of(&page(&out, POST))"
 
 <article class="post">
 <header class="post-header">
+<a class="wb-label" href="/blog/category/technical-seo/">Technical SEO</a>
 <h1>What a sitemap does, and what it does not</h1>
 <p class="dek">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
 <div class="post-meta">

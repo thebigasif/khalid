@@ -4,8 +4,8 @@ import { failureMessage, isData } from "../api/call";
 import { changeSite, readSite } from "../api/site";
 import { readTemplates, type Template } from "../api/templates";
 import { Problem } from "../components/Problem";
-import { lookChange, startOf, type Values } from "../look/lookChange";
 import { LookForm } from "../look/LookForm";
+import { lookChange, startOf, type Values } from "../look/lookChange";
 import { en, type UserMessage } from "../strings/en";
 
 // The Look screen shares the settings with the Settings screen, so a save

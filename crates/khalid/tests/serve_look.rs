@@ -78,7 +78,9 @@ fn the_templates_are_the_engines_packs_with_their_options() {
         .collect();
     let packs: Vec<&str> = khalid_theme::packs().iter().map(|pack| pack.name).collect();
     assert_eq!(listed, packs, "every pack, in the engine's order");
-    let trial = &body["templates"][1];
+    let trial = (body["templates"].as_array().unwrap().iter())
+        .find(|template| template["name"] == "trial")
+        .unwrap();
     assert_eq!(trial["reader"][0]["key"], "reading_time", "{trial}");
     assert_eq!(trial["reader"][0]["on"], false, "{trial}");
     let greeting = &trial["options"][0];

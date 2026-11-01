@@ -1,0 +1,54 @@
+---
+source: crates/khalid/tests/build_every_template.rs
+expression: pages
+---
+# index.html
+header.masthead
+  h1: Field Notes on SEO
+nav.pills "Topics"
+section.home-section
+  h2: Latest posts
+  article.entry
+    h3: Planning a topic cluster in an afternoon
+  article.entry
+    h3: Fixing slow pages, starting with the biggest win
+  article.entry
+    h3: What a sitemap does, and what it does not
+  article.entry
+    h3: How to write a title tag
+  article.entry
+    h3: Why internal links matter
+
+# why-internal-links-matter/index.html
+article.post
+  header.post-header
+    h1: Why internal links matter
+  nav.toc-box "Contents"
+  div.post-body: the text
+  section.author-box
+    h2: About the author
+section.related
+  h2: Related posts
+  article.card
+    h3: How to write a title tag
+  article.card
+    h3: Planning a topic cluster in an afternoon
+  article.card
+    h3: What a sitemap does, and what it does not
+section.mentions
+  h2: Posts that link here
+
+# authors/asif/index.html
+article.author
+  header.author-header
+    h1: Asif
+section
+  h2: Posts by Asif
+  article.card
+    h3: Planning a topic cluster in an afternoon
+  article.card
+    h3: How to write a title tag
+  article.card
+    h3: Why internal links matter
+section
+  h2: Other authors

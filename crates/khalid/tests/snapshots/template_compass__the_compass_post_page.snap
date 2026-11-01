@@ -17,6 +17,7 @@ expression: "main_of(&page(&out, \"what-a-sitemap-does/index.html\"))"
 <div class="post-meta">
 <address>By <a rel="author" href="/blog/authors/lena-vogt/">Lena Vogt</a></address>
 <p>Published <time datetime="2026-09-28">28 September 2026</time></p>
+<p>Filed under <a href="/blog/category/technical-seo/">Technical SEO</a></p>
 </div>
 </header>
 <nav class="toc-box" aria-label="Contents">

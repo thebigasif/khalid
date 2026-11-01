@@ -6,13 +6,24 @@ expression: "main_of(&page(&out, \"index.html\"))"
 
 <div class="wb-masthead">
 <h1>Field Notes on SEO</h1>
+<details class="wb-topics">
+<summary>Categories</summary>
+<nav aria-label="Categories">
+<ul>
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>
+</details>
 </div>
 <section class="featured" aria-labelledby="featured-title">
 <h2 id="featured-title">Featured</h2>
 <article class="card card-featured">
 <p class="card-meta"><span class="card-author">Asif</span>
 <time datetime="2026-09-21">21 September 2026</time>
-<span class="card-reading-time">1 min read</span></p>
+<span class="card-reading-time">1 min read</span>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
 <h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
 <p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
 </article>
@@ -21,16 +32,19 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <h2 id="wb-latest-title">Latest posts</h2>
 <ol class="wb-latest-list" role="list">
 <li>
+<a class="wb-label" href="/blog/category/content-strategy/">Content strategy</a>
 <h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
 <p class="wb-latest-meta"><time datetime="2026-10-12">12 October 2026</time>
 <span>1 min read</span></p>
 </li>
 <li>
+<a class="wb-label" href="/blog/category/technical-seo/">Technical SEO</a>
 <h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
 <p class="wb-latest-meta"><time datetime="2026-10-05">5 October 2026</time>
 <span>2 min read</span></p>
 </li>
 <li>
+<a class="wb-label" href="/blog/category/technical-seo/">Technical SEO</a>
 <h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
 <p class="wb-latest-meta"><time datetime="2026-09-28">28 September 2026</time>
 <span>1 min read</span></p>
@@ -55,7 +69,8 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <article class="card">
 <p class="card-meta"><span class="card-author">Asif</span>
 <time datetime="2026-09-14">14 September 2026</time>
-<span class="card-reading-time">1 min read</span></p>
+<span class="card-reading-time">1 min read</span>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
 <h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
 <p>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
 </article>
@@ -73,4 +88,4 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <p><button type="submit">Subscribe</button></p>
 </form>
 </section>
-<p class="wb-all"><a href="/blog/archive/">See all posts</a></p>
+<p class="wb-all"><a href="/blog/archive/">All posts</a></p>
