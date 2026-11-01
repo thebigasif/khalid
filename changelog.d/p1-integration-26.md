@@ -1,1 +1,0 @@
-- The showcase sets a call to action and a newsletter sign-up, so every template demo shows its call-to-action band, and a served showcase shows the newsletter form. Nothing is sent: the mail server is a reserved example name.
