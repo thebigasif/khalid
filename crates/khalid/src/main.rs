@@ -200,6 +200,7 @@ mod unlock;
 mod update;
 mod update_message;
 mod update_release;
+mod vector_size;
 mod visitor_log;
 mod watch_report;
 mod webhooks;
