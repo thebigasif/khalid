@@ -218,7 +218,10 @@ fn every_template_demo_shows_the_showcase_call_to_action() {
             let html = fs::read_to_string(&path).unwrap();
             let band = html.split_once("<div class=\"cta-band\">");
             let band = band.unwrap_or_else(|| panic!("{pack} {page}: no band")).1;
-            assert!(band.contains("Read the 2026 content benchmark"), "{pack} {page}");
+            assert!(
+                band.contains("Read the 2026 content benchmark"),
+                "{pack} {page}"
+            );
         }
     }
 }

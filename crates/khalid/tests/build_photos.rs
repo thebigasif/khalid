@@ -122,7 +122,13 @@ fn an_svg_lead_image_and_photo_are_drawn_at_their_own_size() {
     assert!(post.contains("width=\"1600\" height=\"900\""), "{post}");
     assert!(post.contains("fetchpriority=\"high\""), "{post}");
     // A drawing is offered as itself, with no WebP copy beside it.
-    let picture = post.split_once(lead).unwrap().0.rsplit_once("<picture>").unwrap().1;
+    let picture = post
+        .split_once(lead)
+        .unwrap()
+        .0
+        .rsplit_once("<picture>")
+        .unwrap()
+        .1;
     assert!(!picture.contains("<source"), "{picture}");
     // No network draws an SVG, so the page shares its generated card.
     assert!(!post.contains("content=\"https://www.example.com/blog/fixing-slow-pages/cover.svg"));
