@@ -1,0 +1,121 @@
+---
+source: crates/khalid/tests/template_wire.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name site-logo" href="/blog/"><img src="https://www.example.com/logo.svg" alt="Field Notes on SEO" decoding="async"></a>
+<a class="search-link" href="/blog/search/">Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<div class="masthead">
+<h1>Field Notes on SEO</h1>
+</div>
+<div class="front">
+<article class="card front-lead">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-10-05">5 October 2026</time>
+<span class="card-reading-time">2 min read</span></p>
+<h2><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</article>
+<div class="front-tabs">
+<nav class="tab-names" aria-label="Latest, Editor&#39;s picks">
+<ul>
+<li><a href="#front-latest">Latest</a></li>
+<li><a href="#front-picks">Editor&#39;s picks</a></li>
+</ul>
+</nav>
+<section class="tab-panel" id="front-latest" aria-labelledby="front-latest-title">
+<h2 id="front-latest-title">Latest</h2>
+<ul class="cards cards-compact" role="list">
+<li>
+<article class="card">
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p><time datetime="2026-10-12">12 October 2026</time></p>
+</article>
+</li>
+<li>
+<article class="card">
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p><time datetime="2026-09-28">28 September 2026</time></p>
+</article>
+</li>
+<li>
+<article class="card">
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p><time datetime="2026-09-21">21 September 2026</time></p>
+</article>
+</li>
+<li>
+<article class="card">
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p><time datetime="2026-09-14">14 September 2026</time></p>
+</article>
+</li>
+</ul>
+</section>
+<section class="tab-panel" id="front-picks" aria-labelledby="front-picks-title">
+<h2 id="front-picks-title">Editor&#39;s picks</h2>
+<ol class="cards cards-ranked" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-21">21 September 2026</time>
+<span class="card-reading-time">1 min read</span></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-14">14 September 2026</time>
+<span class="card-reading-time">1 min read</span></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+</article>
+</li>
+</ol>
+</section>
+</div>
+</div>
+<section class="feed" aria-labelledby="feed-title">
+<h2 id="feed-title">All posts</h2>
+<ul class="cards cards-row" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-10-12">12 October 2026</time>
+<span class="card-reading-time">1 min read</span></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-09-28">28 September 2026</time>
+<span class="card-reading-time">1 min read</span></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-21">21 September 2026</time>
+<span class="card-reading-time">1 min read</span></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-14">14 September 2026</time>
+<span class="card-reading-time">1 min read</span></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</article>
+</li>
+</ul>
+</section>
