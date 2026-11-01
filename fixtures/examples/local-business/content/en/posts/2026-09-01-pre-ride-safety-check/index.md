@@ -7,6 +7,9 @@ category: care-at-home
 description: A safety check of your tyres, brakes, wheels, handlebars and lights takes a few minutes. The same check we do on every bike that comes in.
 focus_keyword: safety check
 tags: [safety, brakes, tyres]
+image:
+  src: cover.svg
+  alt: A bicycle seen from the side, next to a green badge with a white tick
 ---
 
 A quick safety check before every ride catches most problems while they are still small. It takes a few minutes, needs no tools, and it is the same check we run on every bike that comes into the workshop. Work from the front of the bike to the back, so you never skip a part.

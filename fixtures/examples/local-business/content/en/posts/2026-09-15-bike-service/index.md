@@ -8,6 +8,9 @@ category: servicing
 description: What we check, adjust and replace in a bike service at Larch Lane Cycles, and how to tell when your own bike is due for one.
 focus_keyword: bike service
 tags: [servicing, brakes, gears]
+image:
+  src: cover.svg
+  alt: An orange spanner and a screwdriver crossed over a large green gear wheel
 ---
 
 A bike service is a full check of every part that moves, wears or keeps you safe. We clean the bike, adjust what has drifted, and replace what has worn out. You get it back running like it did when it was new, or we tell you clearly what stands in the way.

@@ -7,6 +7,9 @@ category: care-at-home
 description: A clean, oiled bike chain shifts better, runs quieter and lasts longer. How to do it at home with a rag, a brush and the right oil.
 focus_keyword: bike chain
 tags: [chain, cleaning, drivetrain]
+image:
+  src: cover.svg
+  alt: A bike chain wrapped around a large chainring and a small cog, with a drop of oil above
 ---
 
 A clean and oiled bike chain makes the whole bike feel better. Gears change more smoothly, the bike runs quieter, and the chain and cogs wear out more slowly. Cleaning and oiling a chain at home takes about a quarter of an hour, and you need nothing you cannot buy at a hardware shop.

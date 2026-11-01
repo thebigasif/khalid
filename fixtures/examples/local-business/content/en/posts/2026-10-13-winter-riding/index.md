@@ -7,6 +7,9 @@ category: care-at-home
 description: Lights, mudguards, tyres and a little chain care keep winter riding safe through the dark, wet months. What to change before it starts.
 focus_keyword: winter riding
 tags: [winter, lights, tyres]
+image:
+  src: cover.svg
+  alt: The front of a bike with a mudguard and a bright lamp shining through the rain
 ---
 
 Getting your bike ready for winter riding means four things: lights you can rely on, mudguards, tyres with more grip, and a chain that can cope with rain and salt. Do them in October and you can keep riding through the dark months without a breakdown on a cold evening.

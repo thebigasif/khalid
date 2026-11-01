@@ -7,6 +7,9 @@ category: repairs
 description: Brake pads wear down slowly, so the change is easy to miss. Five signs your pads need replacing, and how to check them yourself.
 focus_keyword: brake pads
 tags: [brakes, safety, pads]
+image:
+  src: cover.svg
+  alt: A new brake pad with deep grooves beside a thin worn pad throwing sparks
 ---
 
 Worn brake pads are the most common safety problem we find on bikes that come into the workshop. Pads wear down slowly, so you get used to brakes that stop a little later each week. These five signs tell you your pads are worn out and need replacing before the next ride.

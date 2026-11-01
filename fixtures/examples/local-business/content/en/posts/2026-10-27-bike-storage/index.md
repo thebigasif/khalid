@@ -7,6 +7,9 @@ category: care-at-home
 description: A bike left in a shed for months comes back with flat tyres and a rusty chain. Good bike storage, indoors or out, and what to do first.
 focus_keyword: bike storage
 tags: [storage, winter, chain]
+image:
+  src: cover.svg
+  alt: A small green shed with its door open and a bike stored safely inside
 ---
 
 Good bike storage means your bike is ready to ride the day you want it. A bike left wet in a shed comes back with flat tyres, a rusty chain and brakes that stick. Storing a bike well takes half an hour before you put it away, and a dry place to keep it.

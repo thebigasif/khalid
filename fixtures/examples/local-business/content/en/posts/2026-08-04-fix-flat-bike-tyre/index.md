@@ -7,6 +7,9 @@ category: repairs
 description: A flat bike tyre is the most common repair we see. Here is how to find the hole, patch or replace the tube, and stop it happening again.
 focus_keyword: flat bike tyre
 tags: [punctures, tyres, tools]
+image:
+  src: cover.svg
+  alt: A bicycle wheel with an orange inner tube pulled out, a yellow patch, two tyre levers and a pump
 ---
 
 A flat bike tyre is the repair we see most at the workshop, and it is the one you can most easily do yourself. With a pump, two tyre levers and a spare tube or a patch kit, you can fix a flat at home in well under an hour, even the first time.
