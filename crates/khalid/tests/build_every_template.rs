@@ -50,6 +50,13 @@ fn copy_dir(from: &Path, into: &Path) {
 /// Builds a copy of the demo site in the template `name`.
 #[cfg(test)]
 fn built(name: &str) -> (tempfile::TempDir, PathBuf) {
+    built_with(name, "")
+}
+
+/// Builds a copy of the demo site in the template `name`, with `extra`
+/// added to its `site.toml`.
+#[cfg(test)]
+fn built_with(name: &str, extra: &str) -> (tempfile::TempDir, PathBuf) {
     let temp = tempfile::tempdir().unwrap();
     let demo = at(
         Path::new(env!("CARGO_MANIFEST_DIR")),
@@ -58,7 +65,7 @@ fn built(name: &str) -> (tempfile::TempDir, PathBuf) {
     copy_dir(&demo, temp.path());
     let toml = at(temp.path(), "site.toml");
     let mut text = fs::read_to_string(&toml).unwrap();
-    write!(text, "\n[template]\nname = \"{name}\"\n").unwrap();
+    write!(text, "{extra}\n[template]\nname = \"{name}\"\n").unwrap();
     fs::write(&toml, text).unwrap();
     let out = at(temp.path(), "out");
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
@@ -136,6 +143,137 @@ fn walk(element: ElementRef<'_>, depth: usize, lines: &mut String) {
         };
         walk(child, next, lines);
     }
+}
+
+/// The demo's address with its mount, which every link it gives out starts.
+#[cfg(test)]
+const BLOG: &str = "https://www.example.com/blog/";
+
+/// `[mail]` for a build: the newsletter form shows only on a site that
+/// sends mail. Nothing is sent while building.
+#[cfg(test)]
+const MAIL: &str = "\n[mail]\nfrom = \"news@example.com\"\nname = \"Field Notes\"\n\n\
+     [mail.smtp]\nhost = \"127.0.0.1\"\nport = 2525\nsecurity = \"none\"\nprivate_host = true\n";
+
+/// Every file under `folder`, by its path.
+#[cfg(test)]
+fn files(folder: &Path, found: &mut Vec<PathBuf>) {
+    for entry in fs::read_dir(folder).unwrap() {
+        let path = entry.unwrap().path();
+        if path.is_dir() {
+            files(&path, found);
+        } else {
+            found.push(path);
+        }
+    }
+}
+
+/// The attributes that hold an address, `srcset` with several.
+#[cfg(test)]
+const ADDRESSED: [&str; 5] = ["href", "src", "action", "srcset", "poster"];
+
+/// Each address the template puts in `html`: every attribute of
+/// [`ADDRESSED`] outside the post's or page's own text, which its writer
+/// links as they like.
+#[cfg(test)]
+fn drawn(html: &str) -> Vec<String> {
+    let page = Html::parse_document(html);
+    let text = Selector::parse(".post-body, .page-body").unwrap();
+    let written: Vec<_> = page.select(&text).map(|body| body.id()).collect();
+    let mut found = Vec::new();
+    for element in page.select(&Selector::parse("*").unwrap()) {
+        if element
+            .ancestors()
+            .any(|above| written.contains(&above.id()))
+        {
+            continue;
+        }
+        for name in ADDRESSED {
+            if let Some(value) = element.value().attr(name) {
+                let candidates = value.split(", ");
+                found.extend(candidates.map(|it| it.split(' ').next().unwrap().to_owned()));
+            }
+        }
+    }
+    found
+}
+
+/// Each address in the `url(...)` of a stylesheet's `css`.
+#[cfg(test)]
+fn in_css(css: &str) -> Vec<String> {
+    let values = css.split("url(").skip(1);
+    let values = values.map(|rest| rest.split(')').next().unwrap());
+    values
+        .map(|value| value.trim_matches(['"', '\'']).to_owned())
+        .collect()
+}
+
+/// Whether `address` stays on the blog: under `/blog/` on its host, or
+/// under its address, or off the host altogether.
+#[cfg(test)]
+fn under_the_mount(address: &str) -> bool {
+    let path = address.split(['?', '#']).next().unwrap();
+    if path.starts_with("//") {
+        return true;
+    }
+    if path.starts_with('/') {
+        return path.starts_with("/blog/");
+    }
+    !address.starts_with("https://www.example.com") || address.starts_with(BLOG)
+}
+
+/// Each address in the pages and stylesheets under `out` that leaves the
+/// mount, with its file, and how many addresses were read.
+#[cfg(test)]
+fn outside_the_mount(out: &Path) -> (Vec<String>, usize) {
+    let mut all = Vec::new();
+    files(out, &mut all);
+    let mut outside = Vec::new();
+    let mut seen = 0;
+    for path in &all {
+        let rel = path.strip_prefix(out).unwrap().display().to_string();
+        let addresses = match path.extension().and_then(|it| it.to_str()) {
+            Some("html") => drawn(&fs::read_to_string(path).unwrap()),
+            Some("css") => in_css(&fs::read_to_string(path).unwrap()),
+            _ => continue,
+        };
+        seen += addresses.len();
+        let left = addresses.into_iter().filter(|it| !under_the_mount(it));
+        outside.extend(left.map(|address| format!("{rel}: {address}")));
+    }
+    (outside, seen)
+}
+
+#[test]
+fn a_template_keeps_every_link_asset_and_form_under_the_mount() {
+    for pack in khalid_theme::packs() {
+        let (_site, out) = built_with(pack.name, MAIL);
+        let (outside, seen) = outside_the_mount(&out);
+        assert!(
+            outside.is_empty(),
+            "{}: outside /blog/: {outside:#?}",
+            pack.name
+        );
+        assert!(
+            seen > 500,
+            "{}: the check read the addresses: {seen}",
+            pack.name
+        );
+    }
+    let (_site, out) = built_with("harbor", MAIL);
+    let post = fs::read_to_string(at(&out, "why-internal-links-matter/index.html")).unwrap();
+    assert!(
+        post.contains("<form class=\"subscribe\" method=\"post\" action=\"/blog/subscribe\">"),
+        "the template's newsletter form posts under the mount"
+    );
+    let share = format!("{BLOG}why-internal-links-matter/");
+    let encoded = share.replace(':', "%3A").replace('/', "%2F");
+    assert!(
+        drawn(&post)
+            .iter()
+            .any(|link| link.starts_with("https://www.linkedin.com/") && link.contains(&encoded)),
+        "the share links name the post under the mount"
+    );
 }
 
 #[test]

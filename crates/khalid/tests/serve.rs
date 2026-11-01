@@ -477,7 +477,8 @@ fn serve_gives_body_links_the_sites_link_policy() {
 fn serve_answers_the_admin_app_at_admin_with_its_own_policy() {
     let site = demo_copy();
     let server = start(site.path());
-    let admin = get(&server, "/admin/");
+    // The demo blog sits under /blog/, and so does its admin.
+    let admin = get(&server, "/blog/admin/");
     // The pull request checks build Khalid without running npm, so the
     // binary holds no admin and says how to add it. The release builds
     // admin/dist first, and then only the app's page will do (G7).

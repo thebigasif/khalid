@@ -1,10 +1,14 @@
 //! The admin app, built from `admin/` by Vite and embedded in the binary,
-//! answered under `/admin/` (plan section 4.6). It talks only to the Admin
-//! and Content APIs, which `khalid serve` mounts beside it.
+//! answered under `admin/` in the blog's folder, such as `/admin/` or
+//! `/blog/admin/` (plan section 4.6). It talks only to the Admin and
+//! Content APIs, which `khalid serve` answers beside it.
+
+use std::sync::Arc;
 
 use axum::Router;
+use axum::body::Bytes;
 use axum::extract::Path;
-use axum::http::{StatusCode, header};
+use axum::http::{StatusCode, Uri, header};
 use axum::response::{IntoResponse, Redirect, Response};
 use axum::routing::get;
 
@@ -48,34 +52,81 @@ pub fn built() -> &'static [Asset] {
     built::FILES
 }
 
-/// The routes that answer the admin: `/admin` moves to `/admin/`, a built
-/// file answers as itself, and any other address under `/admin/` gets the
-/// app's page, whose router shows the screen for it.
-pub fn router(files: &'static [Asset]) -> Router {
-    Router::new()
-        .route("/admin", get(|| async { Redirect::permanent("/admin/") }))
-        .route("/admin/", get(move || async move { page(files) }))
+/// The routes that answer the admin of a blog under `mount`, such as
+/// `/blog/`, or `/` for a blog that is the whole site: `<mount>admin`
+/// moves to `<mount>admin/`, a built file answers as itself, and any other
+/// address under `<mount>admin/` gets the app's page, whose router shows
+/// the screen for it. The page names `mount`, so the app finds its files,
+/// screens and APIs there. Under a mount, an address under `/admin/` moves
+/// to the same one under `<mount>admin/`.
+pub fn router(files: &'static [Asset], mount: &str) -> Router {
+    let home = Arc::<str>::from(format!("{mount}admin/"));
+    let shown = Arc::new(page_in(files, mount));
+    let (to_home, at_home, anywhere) = (Arc::clone(&home), Arc::clone(&shown), shown);
+    let router = Router::new()
         .route(
-            "/admin/{*path}",
-            get(move |Path(path): Path<String>| async move { file(files, &path) }),
+            &format!("{mount}admin"),
+            get(move || async move { Redirect::permanent(&to_home) }),
         )
+        .route(
+            &home,
+            get(move || async move { page(Option::as_ref(&at_home)) }),
+        )
+        .route(
+            &format!("{home}{{*path}}"),
+            get(move |Path(path): Path<String>| async move {
+                file(files, Option::as_ref(&anywhere), &path)
+            }),
+        );
+    if mount == "/" {
+        return router;
+    }
+    let moved = move |uri: Uri| async move {
+        let rest = uri.path().strip_prefix("/admin/").unwrap_or_default();
+        let query = uri
+            .query()
+            .map(|query| format!("?{query}"))
+            .unwrap_or_default();
+        Redirect::permanent(&format!("{home}{rest}{query}"))
+    };
+    router
+        .route("/admin", get(moved.clone()))
+        .route("/admin/", get(moved.clone()))
+        .route("/admin/{*path}", get(moved))
 }
 
-fn file(files: &[Asset], path: &str) -> Response {
+/// The app's page as a blog under `mount` serves it, or `None` when this
+/// binary holds no admin. Vite names the built files from the page's own
+/// folder, which differs on each screen's address, so they are named from
+/// the host's root instead, and the mount goes in a `khalid-mount` meta.
+fn page_in(files: &[Asset], mount: &str) -> Option<Bytes> {
+    let index = files.iter().find(|asset| asset.path == "index.html")?;
+    let html = String::from_utf8_lossy(index.body);
+    let folder = format!("=\"{mount}admin/");
+    let named = format!("<meta name=\"khalid-mount\" content=\"{mount}\">\n</head>");
+    let html = html
+        .replace("=\"./", &folder)
+        .replace("=\"/admin/", &folder)
+        .replacen("</head>", &named, 1);
+    Some(Bytes::from(html))
+}
+
+fn file(files: &[Asset], shown: Option<&Bytes>, path: &str) -> Response {
     match files.iter().find(|asset| asset.path == path) {
         Some(asset) if path.starts_with("assets/") => answer(asset, FOR_A_YEAR),
+        Some(_) if path == "index.html" => page(shown),
         Some(asset) => answer(asset, CHECK_EACH_TIME),
         None if path.starts_with("assets/") => StatusCode::NOT_FOUND.into_response(),
-        None => page(files),
+        None => page(shown),
     }
 }
 
-fn page(files: &[Asset]) -> Response {
-    if let Some(asset) = files.iter().find(|asset| asset.path == "index.html") {
-        return answer(asset, CHECK_EACH_TIME);
-    }
+fn page(shown: Option<&Bytes>) -> Response {
     let headers = headers("text/html; charset=utf-8", CHECK_EACH_TIME);
-    (StatusCode::SERVICE_UNAVAILABLE, headers, NOT_BUILT).into_response()
+    match shown {
+        Some(html) => (headers, html.clone()).into_response(),
+        None => (StatusCode::SERVICE_UNAVAILABLE, headers, NOT_BUILT).into_response(),
+    }
 }
 
 fn answer(asset: &Asset, cache: &'static str) -> Response {

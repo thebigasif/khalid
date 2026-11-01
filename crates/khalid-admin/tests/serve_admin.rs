@@ -1,8 +1,9 @@
 //! `/admin/` answers the built admin app, and says how to build it when
-//! the binary holds none.
+//! the binary holds none. A blog under a mount such as `/blog/` has its
+//! admin at `/blog/admin/`.
 
 use axum::body::Body;
-use axum::http::{Request, StatusCode, header};
+use axum::http::{HeaderMap, Request, StatusCode, header};
 use http_body_util::BodyExt;
 use khalid_admin::{Asset, router};
 use tower::ServiceExt;
@@ -10,7 +11,8 @@ use tower::ServiceExt;
 static BUILT: &[Asset] = &[
     Asset {
         path: "index.html",
-        body: b"<!doctype html><title>Khalid admin</title>",
+        body: b"<!doctype html><head><title>Khalid admin</title>\n\
+            <script type=\"module\" src=\"./assets/index-4f2a.js\"></script>\n</head>",
     },
     Asset {
         path: "assets/index-4f2a.js",
@@ -23,13 +25,67 @@ static BUILT: &[Asset] = &[
 ];
 
 #[cfg(test)]
-async fn get(files: &'static [Asset], path: &str) -> (StatusCode, axum::http::HeaderMap, String) {
+async fn get(files: &'static [Asset], path: &str) -> (StatusCode, HeaderMap, String) {
+    get_under("/", files, path).await
+}
+
+#[cfg(test)]
+async fn get_under(
+    mount: &str,
+    files: &'static [Asset],
+    path: &str,
+) -> (StatusCode, HeaderMap, String) {
     let request = Request::get(path).body(Body::empty()).unwrap();
-    let response = router(files).oneshot(request).await.unwrap();
+    let response = router(files, mount).oneshot(request).await.unwrap();
     let status = response.status();
     let headers = response.headers().clone();
     let body = response.into_body().collect().await.unwrap().to_bytes();
     (status, headers, String::from_utf8(body.to_vec()).unwrap())
+}
+
+#[tokio::test]
+async fn at_the_root_the_page_names_its_files_under_admin_and_the_root_as_its_mount() {
+    let (_, _, body) = get(BUILT, "/admin/posts").await;
+    assert!(
+        body.contains("src=\"/admin/assets/index-4f2a.js\""),
+        "{body}"
+    );
+    assert!(
+        body.contains("<meta name=\"khalid-mount\" content=\"/\">\n</head>"),
+        "{body}"
+    );
+}
+
+#[tokio::test]
+async fn under_a_mount_the_admin_answers_there_and_names_it() {
+    let (status, _, body) = get_under("/blog/", BUILT, "/blog/admin/posts/01JB").await;
+    assert_eq!(status, StatusCode::OK);
+    assert!(
+        body.contains("src=\"/blog/admin/assets/index-4f2a.js\""),
+        "{body}"
+    );
+    assert!(
+        body.contains("<meta name=\"khalid-mount\" content=\"/blog/\">"),
+        "{body}"
+    );
+    let (status, _, js) = get_under("/blog/", BUILT, "/blog/admin/assets/index-4f2a.js").await;
+    assert_eq!((status, js.as_str()), (StatusCode::OK, "console.log(1)"));
+    let (status, headers, _) = get_under("/blog/", BUILT, "/blog/admin").await;
+    assert_eq!(status, StatusCode::PERMANENT_REDIRECT);
+    assert_eq!(headers[header::LOCATION], "/blog/admin/");
+}
+
+#[tokio::test]
+async fn under_a_mount_an_old_admin_address_moves_into_it() {
+    for (old, new) in [
+        ("/admin", "/blog/admin/"),
+        ("/admin/", "/blog/admin/"),
+        ("/admin/posts?page=2", "/blog/admin/posts?page=2"),
+    ] {
+        let (status, headers, _) = get_under("/blog/", BUILT, old).await;
+        assert_eq!(status, StatusCode::PERMANENT_REDIRECT, "{old}");
+        assert_eq!(headers[header::LOCATION], new, "{old}");
+    }
 }
 
 #[tokio::test]

@@ -272,7 +272,12 @@ fn khalid_serve_serves_the_openapi_document_its_routes_keep() {
         (200, "application/json"),
         "{body}"
     );
-    let document: Value = serde_json::from_str(&body).unwrap();
+    let mut document: Value = serde_json::from_str(&body).unwrap();
+    // The SDK's copy fits every blog; the served one names where this
+    // blog's APIs answer, under the demo's mount.
+    let servers = document.as_object_mut().unwrap().remove("servers");
+    let blog = serde_json::json!([{ "url": "https://www.example.com/blog" }]);
+    assert_eq!(servers, Some(blog));
     let mut sdk = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     sdk.push("../../sdk/typescript/openapi.json");
     let committed: Value = serde_json::from_str(&fs::read_to_string(sdk).unwrap()).unwrap();
@@ -599,11 +604,11 @@ fn the_owner_link_also_names_where_khalid_serve_listens_by_default() {
     assert_eq!(output.status.code(), Some(0));
     let said = String::from_utf8(output.stdout).unwrap();
     assert!(
-        said.contains("https://www.example.com/admin/sign-in/link#token="),
+        said.contains("https://www.example.com/blog/admin/sign-in/link#token="),
         "{said}"
     );
     assert!(
-        said.contains("http://localhost:8080/admin/sign-in/link#token="),
+        said.contains("http://localhost:8080/blog/admin/sign-in/link#token="),
         "{said}"
     );
     assert!(said.contains("`khalid serve`"), "{said}");
@@ -621,7 +626,7 @@ fn the_first_owner_signs_in_with_the_link_khalid_staff_owner_shows_once() {
     let (admin, token) = link.split_once("/sign-in/link#token=").unwrap();
     assert!(admin.ends_with("/admin"), "{link}");
     let local = made["local_link"].as_str().unwrap();
-    let on_this_computer = format!("http://localhost:{port}/admin/sign-in/link#token={token}");
+    let on_this_computer = format!("http://localhost:{port}/blog/admin/sign-in/link#token={token}");
     assert_eq!(
         local, on_this_computer,
         "the same link, where serve listens"

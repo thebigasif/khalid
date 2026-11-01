@@ -8,6 +8,8 @@ use khalid_auth::{Accounts, Links, PasskeySite, Passkeys, PasswordHashing};
 use khalid_core::{Config, SystemClock};
 use khalid_db::{AccountTable, Database, LinkTable, PasskeyTable, SessionTable, SiteId};
 
+use crate::mounted;
+
 /// The staff accounts of `site` in `db`, with passkeys for the address in
 /// `config` when it has a host name. Sign-in links made by `khalid staff
 /// owner` work; mailing links waits for a mail sender.
@@ -37,8 +39,8 @@ pub(crate) fn accounts(db: &Database, site: SiteId, config: &Config) -> Accounts
     }
 }
 
-/// Where the admin is served: `admin/` under the site's address, such as
-/// `https://example.com/blog/admin` (plan section 4.6).
+/// Where the admin is served: `admin` under the blog's address with its
+/// mount, such as `https://example.com/blog/admin` (plan section 4.6).
 pub(crate) fn admin_address(config: &Config) -> String {
-    format!("{}/admin", config.address().as_str().trim_end_matches('/'))
+    format!("{}admin", mounted::blog_address(config))
 }

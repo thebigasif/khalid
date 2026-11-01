@@ -1,5 +1,6 @@
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { endSession } from "../api/account";
+import { mountPath } from "../api/mount";
 import { forgetKey, readCsrf } from "../auth/session";
 import { en } from "../strings/en";
 import { searchConsoleWords } from "../strings/searchConsoleWords";
@@ -23,7 +24,7 @@ export function Shell() {
       <header className="top">
         <div className="brand">{en.brand}</div>
         <div className="flex flex-wrap items-center gap-3">
-          <a href="/">{en.viewBlog}</a>
+          <a href={mountPath()}>{en.viewBlog}</a>
           <Link to="/account">{en.account.nav}</Link>
           <button type="button" className="btn" onClick={signOut}>
             {en.signOut}

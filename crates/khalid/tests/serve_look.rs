@@ -12,7 +12,8 @@ use serde_json::json;
 /// A key that may change the settings.
 const OWNER: [&str; 4] = ["--name", "Owner", "--scope", "settings:write"];
 
-const SETTINGS: &str = "/api/admin/v1/settings/";
+/// The settings route under the demo's mount, where the admin calls it.
+const SETTINGS: &str = "/blog/api/admin/v1/settings/";
 
 #[test]
 fn a_template_saved_through_the_settings_is_in_site_toml_and_used_after_a_restart() {
@@ -71,7 +72,7 @@ fn the_templates_are_the_engines_packs_with_their_options() {
     let site = demo_copy();
     let server = start(site.path(), &new_key(site.path(), &OWNER));
     assert!(server.answers("/blog/", 200));
-    let (status, body) = server.admin("GET", "/api/admin/v1/templates/", None);
+    let (status, body) = server.admin("GET", "/blog/api/admin/v1/templates/", None);
     assert_eq!(status, 200, "{body}");
     let listed: Vec<&str> = (body["templates"].as_array().unwrap().iter())
         .map(|template| template["name"].as_str().unwrap())

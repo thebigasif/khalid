@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { blogAddress } from "../api/mount";
 import { en } from "../strings/en";
 
 type Props = { secret: string };
@@ -28,7 +29,7 @@ export function KeyShown({ secret }: Props) {
       <p>{words.where}</p>
       <div className="field">
         <label htmlFor="serpdad-address">{words.address}</label>
-        <input id="serpdad-address" readOnly value={globalThis.location.origin} />
+        <input id="serpdad-address" readOnly value={blogAddress()} />
       </div>
       <div className="field">
         <label htmlFor="serpdad-key">{words.key}</label>

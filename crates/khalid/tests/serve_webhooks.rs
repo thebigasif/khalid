@@ -203,6 +203,11 @@ async fn the_delivery(receiver: &MockServer, event: Event, secret: &Secret<Strin
         .unwrap();
     let body: Value = serde_json::from_slice(&hook.body).unwrap();
     assert_eq!(body["event"], event.as_str(), "{body}");
+    let site = "https://www.example.com/blog/";
+    assert_eq!(
+        body["site"], site,
+        "the receiver calls back under the mount"
+    );
     body
 }
 

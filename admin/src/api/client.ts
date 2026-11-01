@@ -1,5 +1,6 @@
 import createClient, { type Client } from "openapi-fetch";
 import { readCsrf, readKey } from "../auth/session";
+import { blogAddress } from "./mount";
 import type { paths } from "./schema";
 
 /** A client for the Admin and Content APIs, typed from the OpenAPI document. */
@@ -14,7 +15,7 @@ type Options = {
 /** Makes a client that talks to the blog that served the admin. */
 export function createApi({ key = readKey, fetch }: Options = {}): Api {
   const api = createClient<paths>({
-    baseUrl: globalThis.location.origin,
+    baseUrl: blogAddress(),
     // Looked up on each request, so the page always uses the current fetch.
     fetch: fetch ?? ((request: Request) => globalThis.fetch(request)),
   });
