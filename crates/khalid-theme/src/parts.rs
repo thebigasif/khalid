@@ -100,6 +100,14 @@ pub const CARD_AUTHOR_ROLE: OptionSpec = OptionSpec {
     kind: OptionKind::Switch { default: false },
 };
 
+/// A row of tabs on the home page: all posts, then each category with
+/// posts.
+pub const CATEGORY_TABS: OptionSpec = OptionSpec {
+    key: "category_tabs",
+    help: "Whether the home page shows a row of tabs: all posts, then each category.",
+    kind: OptionKind::Switch { default: false },
+};
+
 /// The newest featured post above the home page and each list.
 pub const FEATURED: OptionSpec = OptionSpec {
     key: "featured",
@@ -302,6 +310,7 @@ pub fn all() -> Vec<OptionSpec> {
         cards(CardShape::Image),
         CARD_READING_TIME,
         CARD_AUTHOR_ROLE,
+        CATEGORY_TABS,
         FEATURED,
         picks(0),
         pagination(PageLinks::Pages),

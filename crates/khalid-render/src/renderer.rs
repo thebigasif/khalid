@@ -55,18 +55,19 @@ impl Renderer {
 
     /// A renderer where the template pack `pack` replaces the default
     /// templates it names, and each file in `site_root/theme/templates/`
-    /// replaces either. Templates read the pack's name and options as
-    /// `template`.
+    /// replaces either. A pack may also add post templates such as
+    /// `post-reference.html`, which a post asks for with `template:`.
+    /// Templates read the pack's name and options as `template`.
     ///
     /// # Errors
     ///
     /// The errors of [`Renderer::with_theme`], and
-    /// [`RenderError::UnknownTemplate`] for a pack file that replaces
-    /// nothing.
+    /// [`RenderError::UnknownTemplate`] for a pack file that is neither a
+    /// default template nor a post template.
     pub fn with_pack(site_root: &Path, pack: &RenderPack<'_>) -> Result<Self, RenderError> {
         let mut sources = Vec::new();
         for &(name, text) in &pack.templates {
-            if !templates::is_default(name) {
+            if !templates::is_default(name) && !templates::is_post_template(name) {
                 return Err(RenderError::UnknownTemplate {
                     name: name.to_owned(),
                 });

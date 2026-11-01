@@ -27,6 +27,7 @@ mod keystone;
 mod ledger;
 mod links;
 mod look;
+mod meridian;
 mod pack;
 mod palette;
 pub mod parts;

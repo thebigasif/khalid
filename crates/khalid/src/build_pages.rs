@@ -147,6 +147,7 @@ pub(crate) fn home_page(
         sections: Vec::new(),
         picks,
         topics: Vec::new(),
+        categories: Vec::new(),
     });
     Ok(page(locale, config, "", meta, body, seo))
 }

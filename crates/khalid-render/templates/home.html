@@ -8,6 +8,12 @@
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
+{% endif %}{% if template.options.category_tabs and page.categories %}<nav class="category-tabs" aria-label="{{ t.categories }}">
+<ul>
+<li><a href="{{ site.home }}" aria-current="page">{{ t.all_posts }}</a></li>
+{% for category in page.categories %}<li><a href="{{ category.href }}">{{ category.name }}</a></li>
+{% endfor %}</ul>
+</nav>
 {% endif %}{% set slot = page.featured if template.options.featured else none -%}
 {% if slot %}{{ featured_slot(slot) }}
 {% endif %}{% set picks = page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks -%}

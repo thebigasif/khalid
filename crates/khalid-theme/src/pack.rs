@@ -116,7 +116,7 @@ static CLASSIC: Pack = Pack {
 
 /// Every built-in pack, classic first.
 #[cfg(not(feature = "test-util"))]
-static PACKS: [&Pack; 9] = [
+static PACKS: [&Pack; 10] = [
     &CLASSIC,
     &crate::almanac::ALMANAC,
     &crate::atlas::ATLAS,
@@ -124,6 +124,7 @@ static PACKS: [&Pack; 9] = [
     &crate::harbor::HARBOR,
     &crate::keystone::KEYSTONE,
     &crate::ledger::LEDGER,
+    &crate::meridian::MERIDIAN,
     &crate::wire::WIRE,
     &crate::workbench::WORKBENCH,
 ];
@@ -131,7 +132,7 @@ static PACKS: [&Pack; 9] = [
 /// Every built-in pack, classic first, and the throwaway packs the tests
 /// switch to.
 #[cfg(feature = "test-util")]
-static PACKS: [&Pack; 11] = [
+static PACKS: [&Pack; 12] = [
     &CLASSIC,
     &crate::almanac::ALMANAC,
     &crate::atlas::ATLAS,
@@ -139,6 +140,7 @@ static PACKS: [&Pack; 11] = [
     &crate::harbor::HARBOR,
     &crate::keystone::KEYSTONE,
     &crate::ledger::LEDGER,
+    &crate::meridian::MERIDIAN,
     &crate::wire::WIRE,
     &crate::workbench::WORKBENCH,
     &crate::trial::TRIAL,

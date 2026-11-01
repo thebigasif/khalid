@@ -68,6 +68,7 @@ Every template shares one set of page parts. A template switches on the ones it 
 | `cards` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists: with a picture, text only, a small picture beside the text, title and date only, or a numbered list. |
 | `card_reading_time` | `true`, `false` | Each card shows how long the post takes to read. |
 | `card_author_role` | `true`, `false` | Each card shows its author's role after their name. |
+| `category_tabs` | `true`, `false` | The home page shows a row of tabs: "All", then each category your posts use, in the order `categories.toml` lists them. |
 | `featured` | `true`, `false` | The newest post with `featured: true` shows large above the home page and each list, and not again below. |
 | `picks` | `0` to `8` | How many posts with `featured: true` the home page lists as editor's picks. `0` shows none. |
 | `pagination` | `pages`, `numbered` | The links under a long list: newer and older, or a numbered link to each page near this one. |
