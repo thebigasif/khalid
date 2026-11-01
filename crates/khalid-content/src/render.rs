@@ -240,6 +240,7 @@ impl Renderer<'_> {
                 self.html.push_str("</details>\n");
             }
             BlockKind::Toc => self.html.push_str(TOC_MARK),
+            BlockKind::Cta => self.html.push_str(CTA_MARK),
             BlockKind::Snippet { slug } => self.snippet(slug),
             BlockKind::Button { href, label } => self.button(href, label),
             BlockKind::Bookmark {
@@ -416,6 +417,11 @@ pub(crate) fn options() -> Options<'static> {
 /// Where `::toc` goes until the headings are known. Raw HTML in markdown is
 /// escaped, so no post can write this comment itself.
 const TOC_MARK: &str = "<!--khalid-toc-->\n";
+
+/// Where `::cta` puts the site's call to action. The page swaps it for the
+/// band from `[template.cta]`. Raw HTML in markdown is escaped, so no post
+/// can write it itself.
+pub const CTA_MARK: &str = "<!--khalid-cta-->\n";
 
 /// The list of `headings`, linked, for `::toc`.
 fn contents(headings: &[Heading]) -> String {

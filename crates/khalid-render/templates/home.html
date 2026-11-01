@@ -3,6 +3,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
 <h1>{{ page.title }}</h1>
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
@@ -31,4 +32,6 @@
 {% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
 {% endfor %}</ul>
 {% endfor %}</nav>
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% endblock %}
