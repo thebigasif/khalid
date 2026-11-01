@@ -4,6 +4,7 @@
 // (docs/decisions/2026-10-31-admin-screens.md). The answer wraps one
 // object, `{ "settings": AdminSettings }`, as G24's handlers write it.
 import { call, type Reply, sending } from "./call";
+import type { TemplateSetting } from "./templates";
 
 /** The site's core settings, as `site.toml` holds them. */
 export type SiteSettings = {
@@ -14,6 +15,8 @@ export type SiteSettings = {
   mount: string;
   default_language: string;
   languages: string[];
+  /** The template the blog uses and the options `site.toml` sets for it. */
+  template: TemplateSetting;
   /** When `site.toml` last changed; a change sends it back. */
   updated_at: string;
   /** Whether the running server needs a restart to use what `site.toml` says. */
@@ -28,6 +31,8 @@ export type SiteChange = {
   mount?: string | null;
   default_language?: string | null;
   languages?: string[] | null;
+  /** A new template; it replaces the name and every option. */
+  template?: TemplateSetting | null;
 };
 
 async function settings(response: Response): Promise<SiteSettings> {

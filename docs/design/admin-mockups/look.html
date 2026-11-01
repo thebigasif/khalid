@@ -43,9 +43,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
 .note{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.9375rem}
 /* This screen */
 .looks{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(17rem,100%),1fr));gap:1rem;list-style:none;margin:0 0 1rem;padding:0}
-.look{display:block;height:100%;border:1px solid var(--border);border-radius:var(--radius);padding:1rem;font-weight:400;cursor:pointer}
+.look{border:1px solid var(--border);border-radius:var(--radius);padding:1rem}
 .look:has(input:checked){border:2px solid var(--link);background:var(--tint);padding:calc(1rem - 1px)}
-.look-head{display:flex;align-items:center;flex-wrap:wrap;gap:.25rem .5rem;font-weight:700;font-size:1.0625rem;margin:0 0 .35rem}
+.look-head{display:flex;align-items:center;flex-wrap:wrap;gap:.25rem .5rem;min-height:44px;font-weight:700;font-size:1.0625rem;margin:0 0 .35rem;cursor:pointer}
 .look p{color:var(--muted);margin:0 0 .5rem}
 .turns{margin:0;padding-left:1.1rem;font-size:.9375rem}
 .turns-title{font-size:.875rem;font-weight:600;margin:.5rem 0 .15rem}
@@ -78,18 +78,18 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   <fieldset>
     <legend><h2>Choose a template</h2></legend>
     <ul class="looks" role="list">
-      <li><label class="look"><span class="look-head"><input type="radio" name="template" value="classic">Classic <span class="pill ok">In use</span></span>
-        <p>Today's look: a calm column of text, cards on the home page and the contents beside long posts.</p></label></li>
-      <li><label class="look"><span class="look-head"><input type="radio" name="template" value="ledger" checked>Ledger</span>
-        <p>A data-led knowledge blog with no pictures in the lists, for teams that publish studies and long how-tos.</p>
+      <li class="look"><label class="look-head"><input type="radio" name="template" value="classic" aria-describedby="l-classic">Classic <span class="pill ok">In use</span></label>
+        <p id="l-classic">Today's look: a calm column of text, cards on the home page and the contents beside long posts.</p></li>
+      <li class="look"><label class="look-head"><input type="radio" name="template" value="ledger" checked aria-describedby="l-ledger">Ledger</label>
+        <p id="l-ledger">A data-led knowledge blog with no pictures in the lists, for teams that publish studies and long how-tos.</p>
         <p class="turns-title">Turns on</p>
-        <ul class="turns"><li>Your logo in the header</li><li>How long a post takes to read</li><li>The author box after a post</li></ul>
+        <ul class="turns"><li>Logo</li><li>Breadcrumbs</li><li>The author box after a post</li></ul>
         <p class="turns-title">Turns off</p>
-        <ul class="turns"><li>Comments</li></ul></label></li>
-      <li><label class="look"><span class="look-head"><input type="radio" name="template" value="compass">Compass</span>
-        <p>A teaching blog where every guide opens with its key points.</p>
+        <ul class="turns"><li>Comments</li></ul></li>
+      <li class="look"><label class="look-head"><input type="radio" name="template" value="compass" aria-describedby="l-compass">Compass</label>
+        <p id="l-compass">A teaching blog where every guide opens with its key points.</p>
         <p class="turns-title">Turns on</p>
-        <ul class="turns"><li>Your logo in the header</li><li>Breadcrumbs</li><li>Share links after a post</li></ul></label></li>
+        <ul class="turns"><li>Logo</li><li>Breadcrumbs</li><li>How long a post takes to read</li></ul></li>
     </ul>
   </fieldset>
 

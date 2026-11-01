@@ -13,6 +13,7 @@ const DEMO: SiteSettings = {
   mount: "/blog/",
   default_language: "en",
   languages: ["en", "de"],
+  template: { name: "classic", options: {} },
   updated_at: "2026-10-30T09:00:00Z",
   restart_needed: false,
 };

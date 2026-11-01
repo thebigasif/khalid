@@ -1,3 +1,4 @@
+import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
 import { records } from "./records";
 import { serpdadWords } from "./serpdadWords";
@@ -29,6 +30,7 @@ export const en = {
     keys: "API keys",
     webhooks: "Webhooks",
     team: "Team",
+    look: "Look",
     settings: "Settings",
     serpdad: "SerpDad",
   },
@@ -980,6 +982,7 @@ export const en = {
   },
   sites: sitesWords,
   serpdad: serpdadWords,
+  look: lookWords,
   problems: {
     rejected: {
       what: "The blog did not accept this token.",
