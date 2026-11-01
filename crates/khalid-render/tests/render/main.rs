@@ -12,6 +12,8 @@ mod breadcrumbs;
 #[cfg(test)]
 mod byline;
 #[cfg(test)]
+mod card_shapes;
+#[cfg(test)]
 mod cards;
 #[cfg(test)]
 mod comments;

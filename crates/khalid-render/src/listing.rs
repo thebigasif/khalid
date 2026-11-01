@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 use serde::{Serialize, Serializer};
 
 use crate::serde_display::display;
-use crate::{BodyHtml, Link, Person, RenderImage};
+use crate::{BodyHtml, Link, Person, ReadingTime, RenderImage};
 
 /// One page of a list of posts.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -37,6 +37,12 @@ pub struct PostCard {
     pub author: Option<Person>,
     /// The post's primary category.
     pub category: Option<Link>,
+    /// Whether its front matter marks it `featured`, for the featured slot
+    /// and the editor's picks.
+    pub featured: bool,
+    /// How long it takes to read. `None` on a card made before its body
+    /// is rendered, such as the home page `khalid serve` answers first.
+    pub reading_time: Option<ReadingTime>,
 }
 
 /// The pages of a list and which one this is. The current page is always one

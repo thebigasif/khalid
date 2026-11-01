@@ -12,11 +12,13 @@ use crate::TemplateOption;
 enum Off {
     /// An on or off part.
     Switch(bool),
+    /// One word, such as a card shape.
+    Word(&'static str),
 }
 
 /// Every part by its option key, with the value that keeps classic's look.
 /// A pack offers a part by listing an option with the same key.
-const PARTS: [(&str, Off); 4] = [
+const PARTS: &[(&str, Off)] = &[
     // The site's logo in the header, from `[brand] logo` in the tokens, in
     // place of its name as text.
     ("logo", Off::Switch(false)),
@@ -26,6 +28,13 @@ const PARTS: [(&str, Off); 4] = [
     ("dek", Off::Switch(false)),
     // Why a post was updated, after its dates.
     ("updated_note", Off::Switch(false)),
+    // The shape of the cards in every list: image, text, row, compact or
+    // ranked.
+    ("cards", Off::Word("image")),
+    // A card's reading time after its date.
+    ("card_reading_time", Off::Switch(false)),
+    // A card author's role after their name.
+    ("card_author_role", Off::Switch(false)),
 ];
 
 /// The option key of every part the shared templates read.
@@ -38,9 +47,10 @@ pub fn part_keys() -> Vec<&'static str> {
 pub(crate) fn with_parts(
     mut options: BTreeMap<String, TemplateOption>,
 ) -> BTreeMap<String, TemplateOption> {
-    for (key, off) in PARTS {
+    for &(key, off) in PARTS {
         options.entry(key.to_owned()).or_insert(match off {
             Off::Switch(on) => TemplateOption::Switch(on),
+            Off::Word(word) => TemplateOption::Word(word.to_owned()),
         });
     }
     options

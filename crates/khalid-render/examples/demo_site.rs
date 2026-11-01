@@ -566,6 +566,8 @@ impl Demo {
             image: None,
             author: record.authors.first().cloned(),
             category: record.category.clone(),
+            featured: false,
+            reading_time: Some(record.reading_time),
         };
         let body = PageBody::Post(Box::new(record));
         self.page(lang, (&path, Some(&key)), &title, &body)?;

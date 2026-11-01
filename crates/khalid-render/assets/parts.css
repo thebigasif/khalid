@@ -17,3 +17,16 @@
 /* A post's subtitle under its title, and why it was updated. */
 .dek { margin-block: 0.5rem 1rem; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.4; }
 .updated-note { color: var(--color-muted); font-size: var(--text-small); font-style: italic; }
+
+/* Card shapes, picked with the cards part. Image cards are classic's. */
+.cards-row .card:has(.image) { display: grid; grid-template-columns: minmax(5rem, 30%) 1fr; gap: 0 1rem; }
+.cards-row .card .image { grid-row: span 4; margin: 0; }
+.cards-text { gap: 1.5rem; }
+.cards-compact { gap: 0.75rem; }
+.cards-compact .card :is(h2, h3) { margin-block: 0; font-size: var(--text-body); }
+.cards-ranked { counter-reset: rank; gap: 1.25rem; }
+.cards-ranked > li { counter-increment: rank; display: grid; grid-template-columns: 2.5rem 1fr; }
+.cards-ranked > li::before { content: counter(rank) / ""; font-family: var(--font-heading); font-size: var(--text-h3); font-weight: var(--heading-weight); line-height: 1.2; }
+.cards-ranked .card :is(h2, h3) { margin-block-start: 0; }
+.card-author .person-role { display: inline; margin-block: 0; margin-inline-start: 0.375rem; color: var(--color-muted); }
+.card-reading-time { white-space: nowrap; }

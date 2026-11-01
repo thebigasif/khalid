@@ -123,3 +123,27 @@ fn the_sampler_pack_shows_the_dek_from_the_description() {
     let post = page(&classic, "what-a-sitemap-does/index.html");
     assert!(!post.contains("class=\"dek\""), "{post}");
 }
+
+#[test]
+fn the_sampler_pack_shows_ranked_cards_with_their_reading_time() {
+    let (_temp, sampler) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\ncards = \"ranked\"\ncard_reading_time = true\n",
+        &[],
+    );
+    let home = page(&sampler, "index.html");
+    assert!(
+        home.contains("<ol class=\"cards cards-ranked\" role=\"list\">"),
+        "{home}"
+    );
+    assert!(
+        home.contains("<span class=\"card-reading-time\">"),
+        "{home}"
+    );
+    let (_temp, classic) = built("", &[]);
+    let home = page(&classic, "index.html");
+    assert!(
+        home.contains("<ul class=\"cards\" role=\"list\">"),
+        "{home}"
+    );
+    assert!(!home.contains("card-reading-time"), "{home}");
+}

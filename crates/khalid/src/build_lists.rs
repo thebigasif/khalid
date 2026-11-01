@@ -526,6 +526,8 @@ mod tests {
                 image: None,
                 author: None,
                 category: None,
+                featured: false,
+                reading_time: None,
             },
             author: None,
         }

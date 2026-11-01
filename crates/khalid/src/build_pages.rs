@@ -263,7 +263,8 @@ fn listed(
 ) -> ListedPost {
     let (locale, front) = (posts.locale, &draft.doc.front);
     let named = (draft.title.clone(), draft.rest.as_str(), draft.date);
-    let card = build_home::card(config, locale, posts.people, named, front);
+    let mut card = build_home::card(config, locale, posts.people, named, front);
+    card.reading_time = Some(ReadingTime::of_html(&draft.rendered.html, locale));
     let tags = ListedTag::all(&front.tags, locale, config.slugs());
     let mut topics = build_reader::topics(&draft.slug, draft.date, front, &draft.rendered, slugs);
     topics.tags = tags.iter().map(|tag| tag.slug.to_string()).collect();

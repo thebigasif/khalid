@@ -37,6 +37,69 @@ pub const UPDATED_NOTE: OptionSpec = OptionSpec {
     kind: OptionKind::Switch { default: false },
 };
 
+/// The shape of a list's cards, as the `cards` option names it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CardShape {
+    /// Picture, meta line, title and excerpt: classic's card.
+    Image,
+    /// Meta line, title and excerpt, no picture.
+    Text,
+    /// A small picture beside the text.
+    Row,
+    /// Title and date only.
+    Compact,
+    /// A numbered list of titles with their meta line.
+    Ranked,
+}
+
+impl CardShape {
+    /// Every shape, in the order the docs list them.
+    pub const ALL: [Self; 5] = [
+        Self::Image,
+        Self::Text,
+        Self::Row,
+        Self::Compact,
+        Self::Ranked,
+    ];
+
+    /// The word `[template.options]` and templates use for the shape.
+    pub const fn word(self) -> &'static str {
+        match self {
+            Self::Image => "image",
+            Self::Text => "text",
+            Self::Row => "row",
+            Self::Compact => "compact",
+            Self::Ranked => "ranked",
+        }
+    }
+}
+
+/// The shape of the cards in every list, `shape` unless the site sets one.
+pub const fn cards(shape: CardShape) -> OptionSpec {
+    OptionSpec {
+        key: "cards",
+        help: "The shape of the post cards in lists: image, text, row, compact or ranked.",
+        kind: OptionKind::Choice {
+            allowed: &["image", "text", "row", "compact", "ranked"],
+            default: shape.word(),
+        },
+    }
+}
+
+/// A card's reading time after its date.
+pub const CARD_READING_TIME: OptionSpec = OptionSpec {
+    key: "card_reading_time",
+    help: "Whether each post card shows how long the post takes to read.",
+    kind: OptionKind::Switch { default: false },
+};
+
+/// A card author's role after their name.
+pub const CARD_AUTHOR_ROLE: OptionSpec = OptionSpec {
+    key: "card_author_role",
+    help: "Whether each post card shows its author's role after their name.",
+    kind: OptionKind::Switch { default: false },
+};
+
 /// `spec` turned on by default, when it is an on or off option. Any other
 /// option comes back as it is.
 pub const fn on(spec: OptionSpec) -> OptionSpec {
@@ -52,5 +115,13 @@ pub const fn on(spec: OptionSpec) -> OptionSpec {
 /// Every part's option with classic's value, so a test can hold this list
 /// and the renderer's to the same keys.
 pub fn all() -> Vec<OptionSpec> {
-    vec![LOGO, BREADCRUMBS, DEK, UPDATED_NOTE]
+    vec![
+        LOGO,
+        BREADCRUMBS,
+        DEK,
+        UPDATED_NOTE,
+        cards(CardShape::Image),
+        CARD_READING_TIME,
+        CARD_AUTHOR_ROLE,
+    ]
 }

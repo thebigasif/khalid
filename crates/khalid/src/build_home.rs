@@ -73,5 +73,7 @@ pub(crate) fn card(
             .as_ref()
             .map(|slug| build_reader::person(people, slug, config, locale)),
         category: None,
+        featured: front.featured,
+        reading_time: None,
     }
 }
