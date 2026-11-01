@@ -1,0 +1,74 @@
+/* The parts a template switches on with its options (templates spec 4.2).
+   Classic turns none on, so none of these rules changes its look. */
+
+/* The logo in the header. Its box has a fixed size before the image
+   arrives, so nothing moves when it does. */
+.site-logo img { display: block; block-size: 2.5rem; inline-size: 10rem; object-fit: contain; object-position: 0 50%; }
+[dir="rtl"] .site-logo img { object-position: 100% 50%; }
+
+/* The breadcrumbs: one line of links, split by a slash drawn in CSS, so a
+   screen reader reads only the names. */
+.breadcrumbs { margin-block: 1rem; font-size: var(--text-small); }
+.breadcrumbs ol { display: flex; flex-wrap: wrap; gap: 0 0.5rem; margin: 0; padding: 0; list-style: none; }
+.breadcrumbs li + li::before { content: "/" / ""; margin-inline-end: 0.5rem; color: var(--color-muted); }
+.breadcrumbs a { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-muted); }
+.breadcrumbs a[aria-current] { color: var(--color-text); text-decoration: none; }
+
+/* A post's subtitle under its title, and why it was updated. */
+.dek { margin-block: 0.5rem 1rem; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.4; }
+.updated-note { color: var(--color-muted); font-size: var(--text-small); font-style: italic; }
+
+/* Card shapes, picked with the cards part. Image cards are classic's. */
+.cards-row .card:has(.image) { display: grid; grid-template-columns: minmax(5rem, 30%) 1fr; gap: 0 1rem; }
+.cards-row .card .image { grid-row: span 4; margin: 0; }
+.cards-text { gap: 1.5rem; }
+.cards-compact { gap: 0.75rem; }
+.cards-compact .card :is(h2, h3) { margin-block: 0; font-size: var(--text-body); }
+.cards-ranked { counter-reset: rank; gap: 1.25rem; }
+.cards-ranked > li { counter-increment: rank; display: grid; grid-template-columns: 2.5rem 1fr; }
+.cards-ranked > li::before { content: counter(rank) / ""; font-family: var(--font-heading); font-size: var(--text-h3); font-weight: var(--heading-weight); line-height: 1.2; }
+.cards-ranked .card :is(h2, h3) { margin-block-start: 0; }
+.card-author .person-role { display: inline; margin-block: 0; margin-inline-start: 0.375rem; color: var(--color-muted); }
+.card-reading-time { white-space: nowrap; }
+
+/* The featured slot: the newest featured post, large, above a list. */
+.featured { margin-block: 2rem; }
+.featured > h2 { margin-block-end: 0.5rem; color: var(--color-muted); font-size: var(--text-small); text-transform: uppercase; letter-spacing: 0.05em; }
+.card-featured { padding: 1.5rem; background: var(--color-surface); border-radius: var(--radius); }
+.card-featured h3 { margin-block: 0.75rem 0.5rem; font-size: var(--text-h2); }
+.card-featured h3 a { color: var(--color-text); text-decoration: none; }
+.card-featured .image { margin: 0; }
+/* The editor's picks: a grid of the posts marked featured. */
+.picks { margin-block: 2rem 3rem; }
+.picks .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); }
+
+/* Numbered page links: newer, the numbers near this page, older. */
+.pagination-numbered ul { flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.25rem 1rem; }
+.page-numbers { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+.page-numbers a, .page-numbers span { display: inline-flex; align-items: center; justify-content: center; min-inline-size: 44px; min-block-size: 44px; border-radius: var(--radius); }
+.page-numbers a[aria-current] { background: var(--color-accent); color: var(--color-on-accent); text-decoration: none; }
+.page-numbers span { color: var(--color-muted); }
+
+/* Related posts as plain links, or as one row that scrolls sideways and
+   snaps to each card; the row needs no script. */
+.related-links { margin: 0; padding-inline-start: 1.25rem; }
+.related-links a { display: inline-flex; align-items: center; min-block-size: 44px; }
+.related-scroll .cards { grid-auto-flow: column; grid-auto-columns: minmax(14rem, 40%); overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: inline mandatory; padding-block-end: 0.5rem; }
+.related-scroll .card { scroll-snap-align: start; }
+.related-scroll .card:has(.image) { display: block; }
+
+/* Contents placements and numbering. Side-end is classic's. */
+.toc-box { margin-block-end: 2rem; padding: 0.5rem 1rem; background: var(--color-surface); border-radius: var(--radius); }
+.toc-box ol { margin: 0; padding-inline-start: 1.25rem; }
+.toc-box a { display: inline-flex; align-items: center; min-block-size: 44px; }
+ol.toc-plain, ol.toc-nested { list-style: none; padding-inline-start: 0; }
+ol.toc-plain ol, ol.toc-nested ol { list-style: none; padding-inline-start: 1rem; }
+.toc-nested, .toc-nested ol { counter-reset: toc; }
+.toc-nested li { counter-increment: toc; }
+.toc-nested a::before { content: counters(toc, ".") "\00a0\00a0"; color: var(--color-muted); }
+@media (min-width: 70rem) {
+  .post-toc-start { grid-template-columns: 15rem minmax(0, 1fr); }
+  .post-toc-start > * { grid-column: 2; }
+  .post-toc-start > .toc-side { grid-column: 1; }
+  .post-toc-folded .toc-inline { display: block; }
+}

@@ -192,6 +192,7 @@ mod theme_check;
 mod theme_message;
 mod theme_preview;
 mod theme_sync;
+mod trails;
 mod uncited_report;
 mod unlock;
 mod update;

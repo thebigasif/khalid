@@ -74,5 +74,6 @@ pub(crate) fn meta(title: &str, path: &str, kind: PageKind) -> PageMeta {
         ],
         x_default: Some(url(&format!("https://www.example.com{path}"))),
         seo_head: None,
+        breadcrumbs: Vec::new(),
     }
 }

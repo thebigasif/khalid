@@ -5,6 +5,10 @@ use serde::Serialize;
 
 use crate::{Link, PostCard, RenderListing};
 
+/// The most editor's picks the home page carries, the most the `picks`
+/// part may show.
+pub const MOST_PICKS: usize = 8;
+
 /// The front page in one language.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct RenderHome {
@@ -14,6 +18,9 @@ pub struct RenderHome {
     /// The sections from `[[reader.home_sections]]`, in order. When there
     /// are any, they replace the one list of newest posts.
     pub sections: Vec<HomeSectionPosts>,
+    /// The posts marked `featured`, newest first, at most [`MOST_PICKS`],
+    /// for the editor's picks a template with its `picks` part on shows.
+    pub picks: Vec<PostCard>,
     /// The links to every category, grouped the way the menu groups them.
     pub topics: Vec<TopicGroup>,
 }
