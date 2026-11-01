@@ -144,6 +144,26 @@ fn workbench_pages() {
 }
 
 #[test]
+fn almanac_pages() {
+    let (_temp, out) = built("almanac");
+    insta::assert_snapshot!("almanac_home", main_of(&page(&out, "index.html")));
+    insta::assert_snapshot!("almanac_post", main_of(&page(&out, POST)));
+    insta::assert_snapshot!(
+        "almanac_author",
+        main_of(&page(&out, "authors/asif/index.html"))
+    );
+}
+
+#[test]
+fn almanac_options_drop_the_closing_byline_and_the_lead_picture() {
+    let (_temp, out) = built_with("almanac", "byline_end = false\nlead_image = false");
+    let post = page(&out, POST);
+    assert!(!post.contains("al-byline-end"), "{post}");
+    let (_temp, plain) = built("almanac");
+    assert!(page(&plain, POST).contains("al-byline-end"));
+}
+
+#[test]
 fn workbench_options_change_the_closing_line_and_the_newsletter_note() {
     let options = "closing_line = false\nnewsletter_note = [\"A new review every Tuesday.\"]";
     let (_temp, out) = built_with("workbench", options);

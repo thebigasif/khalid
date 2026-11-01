@@ -1,0 +1,97 @@
+---
+source: crates/khalid/tests/build_packs.rs
+expression: "main_of(&page(&out, POST))"
+---
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/what-a-sitemap-does/" aria-current="page">What a sitemap does, and what it does not</a></li>
+</ol>
+</nav>
+
+<article class="post">
+<header class="post-header">
+<h1>What a sitemap does, and what it does not</h1>
+<p class="dek">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+<div class="post-meta al-byline">
+<address>
+<ul class="people" role="list" aria-label="Written by">
+<li class="person"><a rel="author" href="/blog/authors/lena-vogt/">Lena Vogt</a></li>
+</ul>
+</address>
+<p><time datetime="2026-09-28">28 September 2026</time><span class="reading-time"><time datetime="PT1M">1 min read</time></span></p>
+</div>
+</header>
+<nav class="toc-box" aria-label="On this page">
+<p class="toc-title">On this page</p>
+<ol class="toc-plain">
+<li><a href="#what-it-does">What it does</a></li>
+<li><a href="#what-it-does-not-do">What it does not do</a></li>
+<li><a href="#keep-it-clean">Keep it clean</a></li>
+</ol>
+</nav>
+<div class="post-body">
+[the post's body]
+</div>
+<aside class="al-byline-end" aria-label="Written by">
+<ul class="people" role="list">
+<li class="person"><span><a rel="author" href="/blog/authors/lena-vogt/">Lena Vogt</a><span class="person-role">Technical SEO editor</span></span></li>
+</ul>
+<p>Published <time datetime="2026-09-28">28 September 2026</time></p>
+</aside>
+<div class="share">
+<p class="share-title">Share this post</p>
+<ul>
+<li><a href="https://x.com/intent/post?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F&amp;text=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not" rel="nofollow noreferrer">X</a></li>
+<li><a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">LinkedIn</a></li>
+<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">Facebook</a></li>
+<li><a href="mailto:?subject=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not&amp;body=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">Email</a></li>
+</ul>
+</div>
+</article>
+<section class="newsletter-slot" aria-labelledby="newsletter-slot-title">
+<h2 id="newsletter-slot-title">Get new posts by email</h2>
+<p>New posts in your inbox. Every email has a link to leave.</p>
+<form class="subscribe" method="post" action="/blog/subscribe">
+<p><label for="newsletter-slot-email">Your email address</label>
+<input id="newsletter-slot-email" name="email" type="email" autocomplete="email" required></p>
+<p class="form-trap" aria-hidden="true"><label for="newsletter-slot-homepage">Leave this empty</label>
+<input id="newsletter-slot-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+<p><button type="submit">Subscribe</button></p>
+</form>
+</section>
+<div class="cta-band">
+<p class="cta-note">No card needed.</p>
+<p><a class="button" href="https://www.example.com/signup/">Start a free trial</a></p>
+</div>
+<section class="mentions">
+<h2>Posts that link here</h2>
+<ul>
+<li><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></li>
+</ul>
+</section>
+<section class="related al-keep" aria-labelledby="al-keep-title">
+<h2 id="al-keep-title">Keep reading</h2>
+<ul class="cards cards-compact" role="list">
+<li>
+<article class="card">
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p><time datetime="2026-10-05">5 October 2026</time></p>
+</article>
+</li>
+<li>
+<article class="card">
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p><time datetime="2026-09-14">14 September 2026</time></p>
+</article>
+</li>
+<li>
+<article class="card">
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p><time datetime="2026-10-12">12 October 2026</time></p>
+</article>
+</li>
+</ul>
+</section>
