@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">A pillar post in the middle, joined by lines to four cluster posts around it</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <g stroke="#6b5ca5" stroke-width="3">
+    <line x1="320" y1="180" x2="120" y2="80"/>
+    <line x1="320" y1="180" x2="520" y2="80"/>
+    <line x1="320" y1="180" x2="120" y2="280"/>
+    <line x1="320" y1="180" x2="520" y2="280"/>
+  </g>
+  <g fill="#ffffff" stroke="#6b5ca5" stroke-width="3">
+    <rect x="40" y="50" width="160" height="60" rx="10"/>
+    <rect x="440" y="50" width="160" height="60" rx="10"/>
+    <rect x="40" y="250" width="160" height="60" rx="10"/>
+    <rect x="440" y="250" width="160" height="60" rx="10"/>
+  </g>
+  <rect x="220" y="140" width="200" height="80" rx="12" fill="#6b5ca5"/>
+  <g font-family="Georgia, serif" font-size="17" text-anchor="middle" fill="#2b2540">
+    <text x="120" y="86">Search intent</text>
+    <text x="520" y="86">Meta descriptions</text>
+    <text x="120" y="286">Headlines</text>
+    <text x="520" y="286">Editing checklist</text>
+  </g>
+  <text x="320" y="186" font-family="Georgia, serif" font-size="20" text-anchor="middle" fill="#ffffff">Pillar guide</text>
+</svg>
