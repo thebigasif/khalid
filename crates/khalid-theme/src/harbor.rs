@@ -12,10 +12,16 @@ pub(crate) static HARBOR: Pack = Pack {
     name: "harbor",
     summary: "A busy marketing blog: a featured post with three more beside it, rows of recent posts, an offer in each post and a sideways row of related reading.",
     stylesheet: include_str!("../packs/harbor/harbor.css"),
-    templates: &[PackTemplate {
-        name: "home.html",
-        source: include_str!("../packs/harbor/home.html"),
-    }],
+    templates: &[
+        PackTemplate {
+            name: "home.html",
+            source: include_str!("../packs/harbor/home.html"),
+        },
+        PackTemplate {
+            name: "post.html",
+            source: include_str!("../packs/harbor/post.html"),
+        },
+    ],
     tokens: include_str!("../packs/harbor/tokens.toml"),
     reader: &[
         (ReaderSwitch::ReadingTime, false),

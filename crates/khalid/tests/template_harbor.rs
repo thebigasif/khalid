@@ -106,6 +106,12 @@ fn harbor_front_page() {
 }
 
 #[test]
+fn harbor_post() {
+    let (_temp, out) = built();
+    insta::assert_snapshot!(shown(&out, "fixing-slow-pages/index.html"));
+}
+
+#[test]
 fn harbor_author_page() {
     let (_temp, out) = built();
     insta::assert_snapshot!(shown(&out, "authors/asif/index.html"));
