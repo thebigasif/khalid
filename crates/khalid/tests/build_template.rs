@@ -30,19 +30,32 @@ fn copy_dir(from: &Path, into: &Path) {
     }
 }
 
+/// The demo post every test reads.
+#[cfg(test)]
+const POST_FILE: &str = "content/en/posts/2026-09-28-what-a-sitemap-does.md";
+
 /// Builds a copy of the demo site with `table` added to its `site.toml`.
 #[cfg(test)]
 fn build(table: &str) -> (tempfile::TempDir, PathBuf, Output) {
+    build_with(table, "")
+}
+
+/// Builds like [`build`], with `post_end` added to the end of the demo
+/// post in [`POST_FILE`].
+#[cfg(test)]
+fn build_with(table: &str, post_end: &str) -> (tempfile::TempDir, PathBuf, Output) {
     let temp = tempfile::tempdir().unwrap();
     let demo = at(
         Path::new(env!("CARGO_MANIFEST_DIR")),
         "../../fixtures/demo-site",
     );
     copy_dir(&demo, temp.path());
-    let settings = at(temp.path(), "site.toml");
-    let mut toml = fs::read_to_string(&settings).unwrap();
-    toml.push_str(table);
-    fs::write(&settings, toml).unwrap();
+    for (rel, end) in [("site.toml", table), (POST_FILE, post_end)] {
+        let file = at(temp.path(), rel);
+        let mut text = fs::read_to_string(&file).unwrap();
+        text.push_str(end);
+        fs::write(&file, text).unwrap();
+    }
     let out = at(temp.path(), "out");
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
         .args(["--site", temp.path().to_str().unwrap(), "build", "--out"])
@@ -158,6 +171,18 @@ fn the_call_to_action_shows_as_a_band_and_a_header_button() {
     let (_classic, classic) = built(&cta.replace("trial", "classic"));
     let html = page(&classic, "what-a-sitemap-does/index.html");
     assert!(!html.contains("cta-band") && !html.contains("header-button"));
+}
+
+#[test]
+fn a_cta_block_shows_the_band_in_the_post_even_in_classic() {
+    let cta = "\n[template.cta]\nlabel = \"Book a demo\"\nhref = \"/blog/demo/\"\n";
+    let end = "\n\n::cta\n\nOne more line.\n";
+    let (_temp, out, output) = build_with(cta, end);
+    assert_eq!(output.status.code(), Some(0), "{output:?}");
+    let html = page(&out, "what-a-sitemap-does/index.html");
+    let band = "<div class=\"cta-band\">\n<p><a class=\"button\" href=\"/blog/demo/\">Book a demo</a></p>\n</div>\n<p>One more line.</p>";
+    assert!(html.contains(band), "{html}");
+    assert!(!html.contains("khalid-cta"), "the mark is gone");
 }
 
 #[test]

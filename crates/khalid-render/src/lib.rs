@@ -14,6 +14,7 @@ mod asset;
 mod author;
 mod comments;
 mod contents;
+mod cta;
 mod dates;
 mod direction;
 mod enlarge;

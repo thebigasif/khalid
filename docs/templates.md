@@ -61,6 +61,8 @@ note = "No card needed."              # optional: one line beside the button
 
 Templates show it as a band after a post or on the front page (`cta_band`), and as a button in the header (`cta_button`). Without `[template.cta]` neither shows.
 
+To place the band inside a post or page, write `::cta` on a line of its own. It works in every template, classic too. Without `[template.cta]` the line shows nothing. Feeds and the Content API keep it as the comment `<!--khalid-cta-->`, so another front end can put its own band there.
+
 ## Reader features
 
 A template may switch some `[reader]` features on or off by default, such as the reading time. A key you write in `[reader]` always wins over the template.

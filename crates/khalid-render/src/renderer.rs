@@ -13,7 +13,7 @@ use crate::pack::{PackContext, RenderPack};
 use crate::strings::Strings;
 use crate::templates::{self, Source};
 use crate::{PageBody, PageMeta, RenderError, RenderSite};
-use crate::{enlarge, escape, share};
+use crate::{cta, enlarge, escape, share};
 
 /// How many steps one page may take before rendering stops. The default
 /// pages use a few thousand; the cap stops a theme template that loops
@@ -95,6 +95,7 @@ impl Renderer {
         env.add_filter("heading_links", heading_links::heading_links);
         env.add_filter("enlarge", enlarge::enlarge);
         env.add_function("share_links", share::share_links);
+        env.add_filter("place_cta", cta::place_cta);
         for source in templates::defaults().into_iter().chain(overrides) {
             env.add_template_owned(source.name.clone(), source.text)
                 .map_err(|error| RenderError::compile(&source.name, error))?;
