@@ -148,3 +148,24 @@ fn every_token_can_be_locked() {
     unchanged.locked = TokenName::ALL.to_vec();
     assert_eq!(tokens, unchanged);
 }
+
+#[test]
+fn a_sync_keeps_the_type_and_space_tables_as_written() {
+    let text = "[type]\nh1 = \"2rem 3rem\"\n\n[space]\nsection = \"3rem\"\n";
+    let mut file = ThemeTokens::default().to_toml();
+    file.push_str(text);
+    let mut tokens = ThemeTokens::from_toml(&file).unwrap();
+
+    let diff = tokens.resync(&ThemeTokens::default());
+
+    assert!(diff.is_empty());
+    let written = tokens.to_toml();
+    assert!(
+        written.contains("[type]\nh1 = \"2rem 3rem\"\n"),
+        "{written}"
+    );
+    assert!(
+        written.contains("[space]\nsection = \"3rem\"\n"),
+        "{written}"
+    );
+}

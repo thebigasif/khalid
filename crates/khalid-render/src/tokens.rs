@@ -200,12 +200,35 @@ impl Tokens {
     /// [`RenderError::ReadTokens`] or [`RenderError::ThemePath`] when the
     /// file cannot be read.
     pub fn load(site_root: &Path) -> Result<Self, RenderError> {
+        Self::load_over(site_root, "")
+    }
+
+    /// Reads `site_root/theme/tokens.toml` over `defaults`, a template
+    /// pack's tokens in the same form: a value the site's file sets wins,
+    /// and the pack fills the rest before the built-in defaults do.
+    ///
+    /// # Errors
+    ///
+    /// The errors of [`Tokens::load`], with the line in the site's file.
+    pub fn load_over(site_root: &Path, defaults: &str) -> Result<Self, RenderError> {
         let path = SitePath::within(site_root, TOKENS_FILE)?.resolve()?;
-        match fs::read_to_string(&path) {
-            Ok(text) => Self::from_toml(&text),
-            Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(Self::default()),
-            Err(source) => Err(RenderError::ReadTokens { path, source }),
+        let text = match fs::read_to_string(&path) {
+            Ok(text) => text,
+            Err(error) if error.kind() == io::ErrorKind::NotFound => String::new(),
+            Err(source) => return Err(RenderError::ReadTokens { path, source }),
+        };
+        let own = Self::from_toml(&text)?;
+        if defaults.is_empty() {
+            return Ok(own);
         }
+        let table = |text: &str| -> Result<toml::Table, RenderError> {
+            toml::from_str(text).map_err(|source| RenderError::Tokens { line: None, source })
+        };
+        let mut merged = table(defaults)?;
+        merge(&mut merged, table(&text)?);
+        toml::Value::Table(merged)
+            .try_into()
+            .map_err(|source| RenderError::Tokens { line: None, source })
     }
 
     /// Reads tokens from the text of a `tokens.toml` file.
@@ -350,6 +373,19 @@ fn on_accent(accent: &Color) -> &'static str {
         "#ffffff"
     } else {
         "#000000"
+    }
+}
+
+/// Puts every value of `over` into `under`, table by table, so a key
+/// `over` sets wins and one it leaves out keeps `under`'s value.
+fn merge(under: &mut toml::Table, over: toml::Table) {
+    for (key, value) in over {
+        match (under.get_mut(&key), value) {
+            (Some(toml::Value::Table(below)), toml::Value::Table(above)) => merge(below, above),
+            (_, value) => {
+                under.insert(key, value);
+            }
+        }
     }
 }
 

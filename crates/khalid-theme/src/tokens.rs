@@ -43,6 +43,14 @@ pub struct ThemeTokens {
     pub fonts: Fonts,
     /// Corners and line length.
     pub shape: Shape,
+    /// Text sizes, line height and heading weight, as written by hand or
+    /// left to the template. A sync keeps the table as it is; the renderer
+    /// checks its values.
+    #[serde(default, rename = "type", skip_serializing_if = "Option::is_none")]
+    pub type_scale: Option<toml::Table>,
+    /// Spacing, kept by a sync like `type_scale`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub space: Option<toml::Table>,
     /// The main site's logo and icon. The table is left out of the file
     /// when neither was found.
     #[serde(default, skip_serializing_if = "BrandImages::is_empty")]
@@ -176,6 +184,8 @@ impl Default for ThemeTokens {
                 radius: Length::trusted("0.375rem"),
                 measure: Length::trusted("68ch"),
             },
+            type_scale: None,
+            space: None,
             brand: BrandImages::default(),
         }
     }
