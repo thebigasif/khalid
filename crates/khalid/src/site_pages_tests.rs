@@ -55,9 +55,46 @@ fn the_first_pages_are_the_full_renders_home_pages_and_stylesheet() {
     );
     assert!(paths.contains(&"/blog/"), "{paths:?}");
     assert!(paths.contains(&"/blog/de/"), "{paths:?}");
+    let html =
+        |page: &khalid_server::Page| String::from_utf8_lossy(&page.body().unwrap()).into_owned();
     for page in &first {
-        assert!(all.contains(page), "{} differs", page.path().as_str());
+        let full = all.iter().find(|it| it.path() == page.path());
+        let full = full.unwrap_or_else(|| panic!("{} is missing", page.path().as_str()));
+        // Only the full render has the images' sizes, so the first home
+        // pages show their cards without pictures until it replaces them.
+        assert_eq!(
+            html(page),
+            without_pictures(&html(full)),
+            "{}",
+            page.path().as_str()
+        );
     }
+    let home = all
+        .iter()
+        .find(|it| it.path().as_str() == "/blog/")
+        .unwrap();
+    assert!(
+        html(home).contains("<figure class=\"image\">"),
+        "the full home shows a card picture"
+    );
+}
+
+/// `html` without its figures and pictures.
+fn without_pictures(html: &str) -> String {
+    let mut out = html.to_owned();
+    for (open, close) in [
+        ("<figure class=\"image\">", "</figure>\n"),
+        ("<picture>", "</picture>"),
+    ] {
+        while let Some(at) = out.find(open) {
+            let rest = out.get(at..).unwrap_or_default();
+            let end = rest
+                .find(close)
+                .map_or(out.len(), |end| at + end + close.len());
+            out.replace_range(at..end, "");
+        }
+    }
+    out
 }
 
 #[test]

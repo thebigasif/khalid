@@ -39,6 +39,9 @@ pub(crate) struct MediaFile {
     pub(crate) address: String,
 }
 
+/// The width and height of each SVG drawing beside a post, by its address.
+type Drawings = BTreeMap<String, (u32, u32)>;
+
 /// Every size an image is offered in, as a page draws it.
 #[derive(Debug)]
 struct Picture {
@@ -65,9 +68,16 @@ pub(crate) fn attach(
 ) -> Result<Vec<MediaFile>, UserMessage> {
     let cache = MediaCache::new(site);
     let mut pictures = BTreeMap::new();
+    let mut drawings = BTreeMap::new();
     let mut sizes = BTreeMap::new();
     for file in files {
         let kind = MediaType::for_file(&file.address);
+        if matches!(kind, MediaType::Svg) {
+            if let Some(size) = drawing_size(&post_files::read(site, file)?) {
+                drawings.insert(file.address.clone(), size);
+            }
+            continue;
+        }
         if !matches!(kind, MediaType::Jpeg | MediaType::Png | MediaType::Webp) {
             continue;
         }
@@ -79,13 +89,14 @@ pub(crate) fn attach(
         pictures.insert(file.address.clone(), picture);
         sizes.extend(made.into_iter().map(|size| (size.address.clone(), size)));
     }
-    for language in languages.iter_mut().filter(|_| !pictures.is_empty()) {
+    let found = !pictures.is_empty() || !drawings.is_empty();
+    for language in languages.iter_mut().filter(|_| found) {
         for page in &mut language.pages {
             post_files::rewrite(page, |html| drawn(html, &pictures));
             if let PageBody::Post(post) = &mut page.body {
                 post.originals = originals(post.body.as_str(), &pictures);
             }
-            if let Some(image) = lead(config, page, &pictures) {
+            if let Some(image) = lead(config, page, (&pictures, &drawings)) {
                 shown.add(page, image);
             }
         }
@@ -96,31 +107,48 @@ pub(crate) fn attach(
 
 /// Draws the lead image of a post, or the photo of an author, at the top
 /// of `page`, when it is a file beside the page's file with its sizes among
-/// `pictures`: fetched at once with high priority, as the one large image
-/// at the top (BL-WEB-5), and shared as the page's Open Graph and X image.
-/// Returns what it drew. An image anywhere else is left out until it has
-/// sizes, so no page shifts while it loads.
+/// `pictures`, or a drawing among `drawings`: fetched at once with high
+/// priority, as the one large image at the top (BL-WEB-5). A picture is
+/// also shared as the page's Open Graph and X image; a drawing is not, as
+/// the networks do not show one. Returns what it drew. An image anywhere
+/// else is left out until it has sizes, so no page shifts while it loads.
 fn lead(
     config: &Config,
     page: &mut Page,
-    pictures: &BTreeMap<String, Picture>,
+    (pictures, drawings): (&BTreeMap<String, Picture>, &Drawings),
 ) -> Option<RenderImage> {
     let image = page.lead.as_ref()?;
     let name = image.src.trim_start_matches("./");
     let address = format!("{}{name}", page.meta.path);
-    let Some(picture) = pictures.get(&address) else {
-        tracing::warn!(image = %image.src, page = %page.meta.path, "the lead image is not a file beside its page, so it is left out");
-        return None;
+    let picture = pictures.get(&address);
+    let (width, height, webp, fallback) = match (picture, drawings.get(&address)) {
+        (Some(picture), _) => (
+            picture.width,
+            picture.height,
+            Some(picture.webp.clone()),
+            picture.fallback.clone(),
+        ),
+        (None, Some(&(width, height))) => {
+            let drawing = ImageCandidate {
+                url: address,
+                width,
+            };
+            (width, height, None, ImageSet::new(drawing, Vec::new()))
+        }
+        (None, None) => {
+            tracing::warn!(image = %image.src, page = %page.meta.path, "the lead image is not a file beside its page, so it is left out");
+            return None;
+        }
     };
     let drawn = RenderImage {
         alt: image.alt.clone(),
         caption: image.caption.clone(),
-        width: picture.width,
-        height: picture.height,
+        width,
+        height,
         sizes: SIZES.to_owned(),
         avif: None,
-        webp: Some(picture.webp.clone()),
-        fallback: picture.fallback.clone(),
+        webp,
+        fallback,
         loading: Loading::Eager,
     };
     match &mut page.body {
@@ -128,6 +156,9 @@ fn lead(
         PageBody::Author(author) => author.image = Some(drawn.clone()),
         _ => return None,
     }
+    let Some(picture) = picture else {
+        return Some(drawn);
+    };
     let origin = config.address().as_str().trim_end_matches('/');
     let widest = picture.fallback.widest();
     let shared = widest.and_then(|file| {
@@ -175,6 +206,53 @@ fn picture(config: &Config, image: &DerivedImage) -> Option<(Picture, Vec<MediaF
         height: image.height,
     };
     Some((picture, made))
+}
+
+/// The size an SVG drawing asks to be shown at, in CSS pixels: the `width`
+/// and `height` of its `svg` element, or else those of its `viewBox`.
+/// `None` when it gives neither, as the page could then shift.
+fn drawing_size(bytes: &[u8]) -> Option<(u32, u32)> {
+    let text = std::str::from_utf8(bytes).ok()?;
+    let (_, rest) = text.split_once("<svg")?;
+    let (tag, _) = rest.split_once('>')?;
+    let whole = |value: &str| {
+        let number: f64 = value.trim().trim_end_matches("px").parse().ok()?;
+        let rounded = number.round();
+        (1.0..=f64::from(u16::MAX))
+            .contains(&rounded)
+            .then(|| format!("{rounded}").parse().ok())
+            .flatten()
+    };
+    let width = value_of(tag, "width").and_then(whole);
+    let height = value_of(tag, "height").and_then(whole);
+    if let (Some(width), Some(height)) = (width, height) {
+        return Some((width, height));
+    }
+    let view: Vec<&str> = value_of(tag, "viewBox")?
+        .split([' ', ','])
+        .filter(|it| !it.is_empty())
+        .collect();
+    match view.as_slice() {
+        [_, _, width, height] => Some((whole(width)?, whole(height)?)),
+        _ => None,
+    }
+}
+
+/// The value of the attribute `name` in the start tag `tag`, quoted with
+/// either quote.
+fn value_of<'a>(tag: &'a str, name: &str) -> Option<&'a str> {
+    tag.match_indices(name).find_map(|(at, _)| {
+        let (before, after) = tag.split_at(at);
+        let spaced = before.chars().next_back().is_some_and(char::is_whitespace);
+        let value = after
+            .strip_prefix(name)?
+            .trim_start()
+            .strip_prefix('=')?
+            .trim_start();
+        let quote = value.chars().next().filter(|c| matches!(c, '"' | '\''))?;
+        let (value, _) = value.strip_prefix(quote)?.split_once(quote)?;
+        spaced.then_some(value)
+    })
 }
 
 /// `html` with each image whose address is a key of `pictures` drawn as
@@ -334,6 +412,29 @@ mod tests {
             originals(&drawn(&image, &pictures), &pictures),
             BTreeMap::new()
         );
+    }
+
+    #[test]
+    fn a_drawing_gives_its_size_from_its_width_and_height_or_its_view_box() {
+        let sized = |svg: &str| drawing_size(svg.as_bytes());
+        let both = "<?xml version=\"1.0\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 10 10\"\n  width=\"640px\" height='300'>";
+        assert_eq!(sized(both), Some((640, 300)));
+        assert_eq!(
+            sized("<svg viewBox=\"0,0,800.4,450\"><rect/></svg>"),
+            Some((800, 450))
+        );
+        assert_eq!(
+            sized("<svg stroke-width=\"2\" viewBox=\"0 0 64 30\">"),
+            Some((64, 30))
+        );
+        for none in [
+            "<svg width=\"100%\" height=\"100%\">",
+            "<svg>",
+            "<svg viewBox=\"0 0 0 30\">",
+            "not a drawing",
+        ] {
+            assert_eq!(sized(none), None, "{none}");
+        }
     }
 
     #[test]

@@ -4,7 +4,7 @@
 
 use std::collections::BTreeMap;
 
-use khalid_render::{Loading, PageBody, Person, PostCard, RenderImage};
+use khalid_render::{Loading, PageBody, Person, PostCard, RenderImage, RenderListing};
 
 use crate::build_pages::{LanguagePages, Page};
 
@@ -44,9 +44,10 @@ impl Shown {
 }
 
 /// Puts the images `shown` holds on every card and beside every name on
-/// the pages of `languages`, except the home page: `khalid serve` answers
-/// with it before any image has its sizes, and it must be the page the
-/// full render makes.
+/// the pages of `languages`. The home page `khalid serve` answers before
+/// the full render has none, as no image has its sizes yet; the full
+/// render's home page replaces it (ADR "home page cards show their
+/// pictures after the full render").
 pub(crate) fn attach(languages: &mut [LanguagePages], shown: &Shown) {
     if shown.cards.is_empty() && shown.photos.is_empty() {
         return;
@@ -73,13 +74,26 @@ pub(crate) fn attach(languages: &mut [LanguagePages], shown: &Shown) {
                 let people = authors.authors.iter_mut().map(|entry| &mut entry.person);
                 people.for_each(|person| photo(person, shown));
             }
-            PageBody::Collection(listing)
-            | PageBody::Tag(listing)
-            | PageBody::Category(listing)
-            | PageBody::Archive(listing) => cards(&mut listing.posts, shown),
+            PageBody::Home(home) => {
+                listing(&mut home.listing, shown);
+                cards(&mut home.picks, shown);
+                for section in &mut home.sections {
+                    cards(&mut section.posts, shown);
+                }
+            }
+            PageBody::Collection(posts)
+            | PageBody::Tag(posts)
+            | PageBody::Category(posts)
+            | PageBody::Archive(posts) => listing(posts, shown),
             _ => {}
         }
     }
+}
+
+/// Gives the cards of `list`, its featured one too, their images.
+fn listing(list: &mut RenderListing, shown: &Shown) {
+    cards(&mut list.posts, shown);
+    cards(list.featured.as_mut_slice(), shown);
 }
 
 /// Gives each of `posts` its post's lead image and its author's photo.

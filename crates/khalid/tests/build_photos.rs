@@ -51,6 +51,20 @@ fn built() -> (tempfile::TempDir, tempfile::TempDir) {
     fs::write(at(&folder, "index.md"), text).unwrap();
     let chart = "content/en/posts/2026-10-05-fixing-slow-pages/page-weight.png";
     fs::copy(at(site.path(), chart), at(&folder, "lena.png")).unwrap();
+    // The sitemap post becomes a folder post whose lead image is a drawing.
+    let posts = at(site.path(), "content/en/posts");
+    let text = fs::read_to_string(at(&posts, "2026-09-28-what-a-sitemap-does.md")).unwrap();
+    let text = text.replacen(
+        "---\n",
+        "---\nimage:\n  src: map.svg\n  alt: A map of pages\n",
+        1,
+    );
+    fs::remove_file(at(&posts, "2026-09-28-what-a-sitemap-does.md")).unwrap();
+    let folder = at(&posts, "2026-09-28-what-a-sitemap-does");
+    fs::create_dir_all(&folder).unwrap();
+    fs::write(at(&folder, "index.md"), text).unwrap();
+    let drawing = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 640 300\"><rect width=\"640\" height=\"300\"/></svg>\n";
+    fs::write(at(&folder, "map.svg"), drawing).unwrap();
     let out = tempfile::tempdir().unwrap();
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
         .args(["--site", site.path().to_str().unwrap(), "build", "--out"])
@@ -84,10 +98,38 @@ fn an_authors_photo_and_a_posts_lead_image_show_wherever_they_go() {
     assert!(card.contains(chart), "{card}");
     assert!(card.contains("loading=\"lazy\""), "{card}");
     assert!(!card.contains("<figcaption>"), "{card}");
-    // The home page is served before any image has its sizes, so its
-    // cards carry none and it stays the page the full render makes.
     let home = page(out.path(), "index.html");
-    assert!(!card_of(&home, "/blog/fixing-slow-pages/").contains(chart));
+    let card = card_of(&home, "/blog/fixing-slow-pages/");
+    assert!(card.contains(chart), "{card}");
+    assert!(card.contains("loading=\"lazy\""), "{card}");
+}
+
+#[test]
+fn a_drawing_as_lead_image_shows_at_its_own_size_on_the_post_and_its_cards() {
+    let (_site, out) = built();
+    let drawing = "<img src=\"/blog/what-a-sitemap-does/map.svg\" srcset=\"/blog/what-a-sitemap-does/map.svg 640w\"";
+    let post = page(out.path(), "what-a-sitemap-does/index.html");
+    let lead = post.split_once("<header class=\"post-header\">").unwrap().1;
+    let lead = lead.split_once("<figure class=\"image\">").unwrap().1;
+    let lead = lead.split_once("</figure>").unwrap().0;
+    assert!(lead.contains(drawing), "{lead}");
+    assert!(
+        lead.contains("width=\"640\" height=\"300\" alt=\"A map of pages\" fetchpriority=\"high\""),
+        "{lead}"
+    );
+    assert!(!lead.contains("image/webp"), "{lead}");
+    assert!(
+        !post.contains(
+            "og:image\" content=\"https://www.example.com/blog/what-a-sitemap-does/map.svg"
+        ),
+        "a drawing is not a share image"
+    );
+    let home = page(out.path(), "index.html");
+    let card = card_of(&home, "/blog/what-a-sitemap-does/");
+    assert!(
+        card.contains(drawing) && card.contains("loading=\"lazy\""),
+        "{card}"
+    );
 }
 
 /// The card on `html` that links `href`, up to its link.
