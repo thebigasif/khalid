@@ -116,3 +116,108 @@ fn a_bad_row_a_loop_or_a_bad_address_stores_nothing_and_says_why() {
     let (code, printed) = redirects(site.path(), &["import", "missing.csv"]);
     assert_eq!(code, 2, "{printed}");
 }
+
+#[test]
+fn one_stored_redirect_is_one_redirect() {
+    let site = site();
+    let one = list(
+        site.path(),
+        "one.csv",
+        "from,to,status\n/blog/a/,/blog/b/,301\n",
+    );
+    let (code, printed) = redirects(site.path(), &["import", one.to_str().unwrap()]);
+    assert_eq!(code, 0, "{printed}");
+    assert!(printed.starts_with("Stored 1 redirect from"), "{printed}");
+}
+
+/// Writes a post into `site` with `aliases` in its header, an author when
+/// `author` is set, and a link home, so with an author the gate lets it
+/// through.
+#[cfg(test)]
+fn post(site: &Path, slug: &str, author: Option<&str>, aliases: &[&str]) {
+    let mut folder = site.to_path_buf();
+    folder.push("content/en/posts");
+    fs::create_dir_all(&folder).unwrap();
+    let author = author.map(|name| format!("author: {name}\n"));
+    let listed = aliases.join(", ");
+    let text = format!(
+        "---\ntitle: {slug}\nslug: {slug}\ndate: 2026-10-01\n{}aliases: [{listed}]\n---\n\n\
+         A post that moved from [the home page](/blog/).\n",
+        author.unwrap_or_default()
+    );
+    folder.push(format!("{slug}.md"));
+    fs::write(folder, text).unwrap();
+}
+
+#[test]
+fn an_alias_in_a_post_header_is_explained_as_serve_answers_it() {
+    let site = site();
+    post(
+        site.path(),
+        "why-links-matter",
+        Some("asif"),
+        &["/blog/links/"],
+    );
+
+    let (code, printed) = redirects(site.path(), &["explain", "/blog/links/"]);
+    assert_eq!(code, 0, "{printed}");
+    assert!(printed.contains("why-links-matter.md"), "{printed}");
+    assert!(
+        printed.ends_with(
+            "A visitor gets one step: moves for good (301) to /blog/why-links-matter/.\n"
+        ),
+        "{printed}"
+    );
+
+    let (code, printed) = redirects(site.path(), &["explain", "/blog/links/", "--json"]);
+    assert_eq!(code, 0, "{printed}");
+    let json: Value = serde_json::from_str(&printed).unwrap();
+    assert_eq!(
+        (json["status"].as_u64(), json["to"].as_str()),
+        (Some(301), Some("/blog/why-links-matter/"))
+    );
+}
+
+#[test]
+fn a_stored_move_to_an_alias_ends_at_the_post() {
+    let site = site();
+    post(
+        site.path(),
+        "why-links-matter",
+        Some("asif"),
+        &["/blog/links/"],
+    );
+    let file = list(
+        site.path(),
+        "moves.csv",
+        "from,to,status\n/blog/older-links/,/blog/links/,302\n",
+    );
+    let (code, printed) = redirects(site.path(), &["import", file.to_str().unwrap()]);
+    assert_eq!(code, 0, "{printed}");
+
+    let (code, printed) = redirects(site.path(), &["explain", "/blog/older-links/"]);
+    assert_eq!(code, 0, "{printed}");
+    assert!(
+        printed.ends_with(
+            "A visitor gets one step: moves for now (302) to /blog/why-links-matter/.\n"
+        ),
+        "{printed}"
+    );
+}
+
+#[test]
+fn the_alias_of_a_blocked_post_says_it_waits_for_the_post() {
+    let site = site();
+    post(
+        site.path(),
+        "keep-a-starter-alive",
+        None,
+        &["/blog/2024/03/starter/"],
+    );
+
+    let (code, printed) = redirects(site.path(), &["explain", "/blog/2024/03/starter/"]);
+    assert_eq!(code, 0, "{printed}");
+    assert!(printed.contains("matches no redirect rule"), "{printed}");
+    assert!(printed.contains("keep-a-starter-alive.md"), "{printed}");
+    assert!(printed.contains("blocks"), "{printed}");
+}

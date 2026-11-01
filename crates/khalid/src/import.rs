@@ -15,6 +15,7 @@ use khalid_seo::{Matching, RedirectEntry, read_redirects_csv};
 use serde::Serialize;
 
 use crate::cli::{Cli, ImportArgs, ImportSource, Output, Run};
+use crate::doctor_files::counted;
 use crate::exit::Exit;
 use crate::import_held::{HELD_CSV, Held};
 use crate::{import_held, import_rest, redirects, report};
@@ -196,10 +197,11 @@ fn answer(said: &str, done: Option<(&[PathBuf], usize, &Held)>, output: Output) 
         }
         (Output::Human, None) => report::text(said, Exit::Success),
         (Output::Human, Some((written, stored, held))) => {
-            let files = written.len();
+            let files = counted(written.len(), "file");
+            let stored = counted(stored, "redirect");
             let held = held_text(held);
             let text = format!(
-                "Wrote {files} files and stored {stored} redirects.\n{held}{said}\
+                "Wrote {files} and stored {stored}.\n{held}{said}\
                  Run `khalid lint` to see how each post scores.\n"
             );
             report::text(&text, Exit::Success)

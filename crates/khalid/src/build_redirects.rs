@@ -3,7 +3,7 @@
 //! keeps its links on a static host (KH-SEO-8, ADR "the build writes its
 //! redirects as a `_redirects` file").
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use khalid_content::SiteContent;
 use khalid_core::{Config, UserMessage};
@@ -15,11 +15,29 @@ use crate::build_pages::{named, prefix, routed};
 use crate::{build_message, db, redirects};
 
 /// One alias and the address it ends at, each from the site root, mount
-/// folder included. Every alias is a permanent move.
+/// folder included, and the post whose header lists it. Every alias is a
+/// permanent move.
 #[derive(Debug)]
 pub(crate) struct Hop {
     pub(crate) from: String,
     pub(crate) to: String,
+    /// The post's file, relative to the site folder.
+    pub(crate) post: PathBuf,
+}
+
+impl Hop {
+    /// This hop as a rule of the redirect table: a permanent move.
+    ///
+    /// # Errors
+    ///
+    /// What, why and fix when either end is not a path.
+    pub(crate) fn rule(&self) -> Result<RedirectRule, UserMessage> {
+        let redirect = Redirect::Move {
+            kind: Move::Permanent,
+            to: Destination::Path(path(&self.to)?),
+        };
+        Ok(RedirectRule::new(path(&self.from)?, redirect))
+    }
 }
 
 /// The redirects file, or `None` when there is nothing to redirect: one
@@ -33,15 +51,8 @@ pub(crate) fn file(
     routes: &Routes,
     content: &SiteContent,
 ) -> Result<Option<SiteFile>, UserMessage> {
-    let mut rules = Vec::new();
-    for hop in hops(config, routes, content)? {
-        let to = Destination::Path(path(&hop.to)?);
-        let redirect = Redirect::Move {
-            kind: Move::Permanent,
-            to,
-        };
-        rules.push(RedirectRule::new(path(&hop.from)?, redirect));
-    }
+    let hops = hops(config, routes, content)?;
+    let mut rules: Vec<RedirectRule> = hops.iter().map(Hop::rule).collect::<Result<_, _>>()?;
     rules.extend(stored_moves(site)?);
     if rules.is_empty() {
         return Ok(None);
@@ -87,7 +98,7 @@ pub(crate) fn hops(
     routes: &Routes,
     content: &SiteContent,
 ) -> Result<Vec<Hop>, UserMessage> {
-    let mut rules = Vec::new();
+    let (mut rules, mut posts) = (Vec::new(), Vec::new());
     for doc in content.posts.iter().filter(|doc| doc.front.date.is_some()) {
         let front = &doc.front;
         let (_, slug) = named(config, doc, front.slug.as_ref(), front.title.as_deref())?;
@@ -104,13 +115,14 @@ pub(crate) fn hops(
                 to: Destination::Path(to.clone()),
             };
             rules.push(RedirectRule::new(path(inside)?, redirect));
+            posts.push(doc.path.clone());
         }
     }
     if rules.is_empty() {
         return Ok(Vec::new());
     }
     let table = RedirectTable::new(rules).map_err(|error| build_message::seo(&error))?;
-    Ok(followed(config, &table))
+    Ok(followed(config, &table, posts))
 }
 
 fn path(text: &str) -> Result<UrlPath, UserMessage> {
@@ -118,13 +130,15 @@ fn path(text: &str) -> Result<UrlPath, UserMessage> {
 }
 
 /// One hop per rule, with each chain followed to its end and every path
-/// from the site root, mount folder included.
-fn followed(config: &Config, table: &RedirectTable) -> Vec<Hop> {
+/// from the site root, mount folder included. `posts` holds the file of
+/// each rule's post, in the table's order.
+fn followed(config: &Config, table: &RedirectTable, posts: Vec<PathBuf>) -> Vec<Hop> {
     let mount = config.mount().trim_end_matches('/');
     table
         .rules()
         .iter()
-        .filter_map(|rule| {
+        .zip(posts)
+        .filter_map(|(rule, post)| {
             let answer = table.resolve(&rule.from)?;
             let to = match answer.location()? {
                 Destination::Path(to) => format!("{mount}{to}"),
@@ -134,6 +148,7 @@ fn followed(config: &Config, table: &RedirectTable) -> Vec<Hop> {
             Some(Hop {
                 from: format!("{mount}{}", rule.from),
                 to,
+                post,
             })
         })
         .collect()

@@ -393,7 +393,7 @@ pub(crate) enum RedirectsCommand {
     },
     /// Print every stored redirect as CSV, to keep or open in a spreadsheet
     Export,
-    /// Say which stored redirect an address matches, and where a reader ends up
+    /// Say which stored redirect or post alias an address matches, and where a reader ends up
     Explain {
         /// The address from the site root, such as /blog/old-links/
         #[arg(value_name = "PATH")]

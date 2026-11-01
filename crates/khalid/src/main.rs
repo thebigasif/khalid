@@ -126,6 +126,7 @@ mod pull_message;
 mod push_hook;
 mod redirect_route;
 mod redirects;
+mod redirects_explain;
 mod repair;
 mod report;
 mod restore;
