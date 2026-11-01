@@ -1,0 +1,9 @@
+/* Workbench (templates spec 3.7). Every colour, font and corner comes from the tokens. */
+.wb-masthead { margin-block-end: var(--space-section); }
+.wb-topics summary { cursor: pointer; }
+.wb-label { font-size: var(--text-small); }
+.wb-latest, .wb-more { margin-block: var(--space-section); }
+.wb-latest-list { margin: 0; padding: 0; list-style: none; }
+.wb-latest-meta { color: var(--color-muted); font-size: var(--text-small); }
+.wb-all { margin-block-start: 2rem; }
+.wb-closing { font-style: italic; color: var(--color-muted); }
