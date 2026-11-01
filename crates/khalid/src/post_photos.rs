@@ -4,7 +4,7 @@
 
 use std::collections::BTreeMap;
 
-use khalid_render::{Loading, PageBody, Person, PostCard, RenderImage};
+use khalid_render::{Loading, PageBody, Person, PostCard, RenderImage, RenderListing};
 
 use crate::build_pages::{LanguagePages, Page};
 
@@ -26,27 +26,35 @@ impl Shown {
     /// Keeps `image`, drawn at the top of `page`, for the other pages that
     /// show the post or person. Elsewhere it loads when it nears the
     /// screen, with no caption.
-    pub(crate) fn add(&mut self, page: &Page, mut image: RenderImage) {
-        image.loading = Loading::Lazy;
-        image.caption = None;
+    pub(crate) fn add(&mut self, page: &Page, image: RenderImage) {
         let address = page.meta.path.clone();
         match &page.body {
-            PageBody::Post(_) => {
-                self.cards.insert(address, image);
-            }
-            PageBody::Author(_) => {
-                AVATAR.clone_into(&mut image.sizes);
-                self.photos.insert(address, image);
-            }
+            PageBody::Post(_) => self.card(address, image),
+            PageBody::Author(_) => self.photo(address, image),
             _ => {}
         }
+    }
+
+    /// Keeps `image`, the lead image of the post at `address`, for its cards.
+    pub(crate) fn card(&mut self, address: String, mut image: RenderImage) {
+        image.loading = Loading::Lazy;
+        image.caption = None;
+        self.cards.insert(address, image);
+    }
+
+    /// Keeps `image`, the photo of the author whose page is at `address`,
+    /// for the places their name appears.
+    pub(crate) fn photo(&mut self, address: String, mut image: RenderImage) {
+        image.loading = Loading::Lazy;
+        image.caption = None;
+        AVATAR.clone_into(&mut image.sizes);
+        self.photos.insert(address, image);
     }
 }
 
 /// Puts the images `shown` holds on every card and beside every name on
-/// the pages of `languages`, except the home page: `khalid serve` answers
-/// with it before any image has its sizes, and it must be the page the
-/// full render makes.
+/// the pages of `languages`. `khalid serve` answers with the home pages
+/// before the full render, so `home_images` draws theirs the same way.
 pub(crate) fn attach(languages: &mut [LanguagePages], shown: &Shown) {
     if shown.cards.is_empty() && shown.photos.is_empty() {
         return;
@@ -76,10 +84,24 @@ pub(crate) fn attach(languages: &mut [LanguagePages], shown: &Shown) {
             PageBody::Collection(listing)
             | PageBody::Tag(listing)
             | PageBody::Category(listing)
-            | PageBody::Archive(listing) => cards(&mut listing.posts, shown),
+            | PageBody::Archive(listing) => list(listing, shown),
+            PageBody::Home(home) => {
+                list(&mut home.listing, shown);
+                cards(&mut home.picks, shown);
+                for section in &mut home.sections {
+                    cards(&mut section.posts, shown);
+                }
+            }
             _ => {}
         }
     }
+}
+
+/// Gives each card of `listing`, and its featured post, the post's lead
+/// image and its author's photo.
+fn list(listing: &mut RenderListing, shown: &Shown) {
+    cards(&mut listing.posts, shown);
+    cards(listing.featured.as_mut_slice(), shown);
 }
 
 /// Gives each of `posts` its post's lead image and its author's photo.

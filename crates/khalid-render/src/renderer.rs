@@ -20,6 +20,12 @@ use crate::{cta, enlarge, escape, share};
 /// without end from holding a worker (RULES.md BL-SEC-10).
 const FUEL_PER_PAGE: u64 = 1_000_000;
 
+/// How many steps a page may take for each post card it lists, once its
+/// cards need more than [`FUEL_PER_PAGE`]: then it may take both. A card
+/// takes a few hundred; the front page lists every post, so on a blog of
+/// 10,000 posts the cap per page alone would stop it.
+const FUEL_PER_CARD: u64 = 2_000;
+
 /// Renders pages with the default templates and a theme's replacements.
 ///
 /// The environment is sandboxed (RULES.md BL-SEC-10): it has no loader, so
@@ -176,8 +182,21 @@ impl Renderer {
         meta: &PageMeta,
         body: &PageBody,
     ) -> Result<String, RenderError> {
-        let template = self
-            .env
+        let cards = u64::try_from(body.cards()).unwrap_or(u64::MAX);
+        let for_cards = cards.saturating_mul(FUEL_PER_CARD);
+        // Fuel is set on the environment, so a list longer than the cap
+        // per page covers renders in a copy with more. The copy shares the
+        // compiled templates.
+        let wider;
+        let env = if for_cards > FUEL_PER_PAGE {
+            let mut copy = self.env.clone();
+            copy.set_fuel(Some(for_cards.saturating_add(FUEL_PER_PAGE)));
+            wider = copy;
+            &wider
+        } else {
+            &self.env
+        };
+        let template = env
             .get_template(name)
             .map_err(|error| RenderError::render(name, error))?;
         let context = context! {

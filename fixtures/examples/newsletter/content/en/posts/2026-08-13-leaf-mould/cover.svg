@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#fdf0ea"/>
+  <circle cx="1050" cy="130" r="64" fill="#e9c46a" opacity="0.7"/>
+  <circle cx="140" cy="540" r="80" fill="#4f8a3c" opacity="0.15"/>
+  <ellipse cx="600" cy="588" rx="340" ry="22" fill="#2b2a20" opacity="0.12"/>
+  <path d="M430 570 L430 400 C470 340 730 340 770 400 L770 570 Z" fill="#8b5e3c"/>
+  <path d="M444 390 C464 368 496 368 516 390 C496 412 464 412 444 390 Z" fill="#d9533f" transform="rotate(-20 480 390)"/>
+  <path d="M524 362 C544 340 576 340 596 362 C576 384 544 384 524 362 Z" fill="#e9c46a" transform="rotate(15 560 362)"/>
+  <path d="M604 372 C624 350 656 350 676 372 C656 394 624 394 604 372 Z" fill="#4f8a3c" transform="rotate(-10 640 372)"/>
+  <path d="M684 394 C704 372 736 372 756 394 C736 416 704 416 684 394 Z" fill="#d9533f" transform="rotate(25 720 394)"/>
+  <path d="M564 410 C584 388 616 388 636 410 C616 432 584 432 564 410 Z" fill="#e9c46a" transform="rotate(-30 600 410)"/>
+  <rect x="420" y="260" width="360" height="310" rx="12" fill="none" stroke="#2b2a20" stroke-width="6"/>
+  <path d="M480 260 L480 570 M540 260 L540 570 M600 260 L600 570 M660 260 L660 570 M720 260 L720 570 M420 340 L780 340 M420 420 L780 420 M420 500 L780 500" stroke="#2b2a20" stroke-width="3" opacity="0.35"/>
+  <path d="M262 170 C282 148 318 148 338 170 C318 192 282 192 262 170 Z" fill="#e9c46a" transform="rotate(30 300 170)"/>
+  <path d="M842 220 C862 198 898 198 918 220 C898 242 862 242 842 220 Z" fill="#d9533f" transform="rotate(-35 880 220)"/>
+  <path d="M202 360 C222 338 258 338 278 360 C258 382 222 382 202 360 Z" fill="#4f8a3c" transform="rotate(60 240 360)"/>
+  <path d="M922 400 C942 378 978 378 998 400 C978 422 942 422 922 400 Z" fill="#e9c46a" transform="rotate(-20 960 400)"/>
+  <path d="M600 110 C620 88 656 88 676 110 C656 132 620 132 600 110 Z" fill="#8b5e3c" transform="rotate(15 638 110)"/>
+  <path d="M330 250 C350 270 340 300 360 320" fill="none" stroke="#2b2a20" stroke-width="3" stroke-dasharray="6 10" stroke-linecap="round" opacity="0.4"/>
+  <path d="M900 280 C880 310 900 340 920 360" fill="none" stroke="#2b2a20" stroke-width="3" stroke-dasharray="6 10" stroke-linecap="round" opacity="0.4"/>
+  <circle cx="1080" cy="300" r="8" fill="#d9533f"/>
+  <circle cx="160" cy="250" r="7" fill="#8b5e3c"/>
+</svg>

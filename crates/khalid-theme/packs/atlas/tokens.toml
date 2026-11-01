@@ -1,3 +1,12 @@
+[colors]
+background = "#ffffff"
+surface = "#f3f4fb"
+text = "#151a2d"
+muted = "#575e75"
+link = "#3337b5"
+accent = "#3c40c6"
+border = "#dde0ee"
+
 [shape]
 radius = "0.5rem"
 measure = "72ch"

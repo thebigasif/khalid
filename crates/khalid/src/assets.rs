@@ -4,8 +4,9 @@
 
 use std::path::Path;
 use std::sync::LazyLock;
+use std::{fs, io};
 
-use khalid_core::{Config, UserMessage};
+use khalid_core::{Config, SitePath, UserMessage};
 use khalid_render::{
     Asset, Feature, Features, ScriptFile, ScriptTag, Tokens, reader_script, reader_script_file,
     stylesheet_text_with, stylesheet_with,
@@ -34,12 +35,34 @@ const SCRIPTED: [Feature; 5] = [
 /// so the script never delays the first page.
 static READER: LazyLock<ScriptFile> = LazyLock::new(reader_script_file);
 
+/// The file in a site folder that holds the site's own CSS rules.
+const SITE_CSS: &str = "theme/site.css";
+
 /// The site's stylesheet: the values in `theme/tokens.toml` over the
 /// look's defaults, as CSS custom properties, then the shared rules, then
-/// the look's own rules.
+/// the look's own rules and the site's own.
 pub(crate) fn site_stylesheet(site: &Path, look: &Look) -> Result<Asset, UserMessage> {
     let tokens = look::tokens(site, look)?;
-    stylesheet_with(&tokens, look.pack().stylesheet).map_err(|error| build_message::render(&error))
+    stylesheet_with(&tokens, &rules(site, look)?).map_err(|error| build_message::render(&error))
+}
+
+/// The look's own rules, then the site's own from `theme/site.css` when the
+/// site has that file, so a rule of the site's wins over the look's.
+///
+/// # Errors
+///
+/// The message for a file that leads outside the site folder or cannot be
+/// read.
+pub(crate) fn rules(site: &Path, look: &Look) -> Result<String, UserMessage> {
+    let path = SitePath::within(site, SITE_CSS)
+        .and_then(|path| path.resolve())
+        .map_err(|error| build_message::site_css(SITE_CSS, &error))?;
+    let own = match fs::read_to_string(&path) {
+        Ok(text) => text,
+        Err(error) if error.kind() == io::ErrorKind::NotFound => String::new(),
+        Err(error) => return Err(build_message::site_css(SITE_CSS, &error)),
+    };
+    Ok([look.pack().stylesheet, &own].join("\n"))
 }
 
 /// The reader script's name, integrity value and bytes.
@@ -65,7 +88,8 @@ pub(crate) fn href(config: &Config, asset: &Asset) -> String {
     format!("{}{FOLDER}{}", config.mount(), asset.name())
 }
 
-/// The stylesheet as `khalid serve` holds it from `tokens`, cached for a
+/// The stylesheet as `khalid serve` holds it from `tokens` and the look's
+/// and site's [`rules`], cached for a
 /// year because its name changes with its content. It is the file
 /// [`site_stylesheet`] builds, at the same address, made without the
 /// compressed copies: the server compresses its pages after it answers,
@@ -73,9 +97,9 @@ pub(crate) fn href(config: &Config, asset: &Asset) -> String {
 pub(crate) fn stylesheet_page(
     config: &Config,
     tokens: &Tokens,
-    look: &Look,
+    rules: &str,
 ) -> Result<Page, UserMessage> {
-    let css = stylesheet_text_with(tokens, look.pack().stylesheet).into_bytes();
+    let css = stylesheet_text_with(tokens, rules).into_bytes();
     let name = Asset::hashed_name("site", "css", &css);
     let href = format!("{}{FOLDER}{name}", config.mount());
     let path = PagePath::try_new(&href).map_err(|_| build_message::address(&href))?;
@@ -110,7 +134,7 @@ mod tests {
             Config::from_toml(Path::new("site.toml"), text, &Environment::empty()).unwrap();
         let tokens = Tokens::from_toml("[colors]\nlink = \"#b3261e\"").unwrap();
         let built = stylesheet(&tokens).unwrap();
-        let page = stylesheet_page(&config, &tokens, &Look::classic()).unwrap();
+        let page = stylesheet_page(&config, &tokens, "").unwrap();
         assert_eq!(
             page.body().unwrap().as_ref(),
             stylesheet_text(&tokens).as_bytes()

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#eff2ff"/>
+  <circle cx="1040" cy="130" r="110" fill="#f6c744" opacity="0.3"/>
+  <circle cx="130" cy="150" r="7" fill="#2bb3a3"/>
+  <circle cx="160" cy="150" r="7" fill="#2bb3a3"/>
+  <circle cx="190" cy="150" r="7" fill="#2bb3a3"/>
+  <ellipse cx="600" cy="566" rx="380" ry="22" fill="#1c2140" opacity="0.08"/>
+  <rect x="250" y="100" width="360" height="220" rx="48" fill="#3d4ed8"/>
+  <polygon points="320,300 310,390 410,316" fill="#3d4ed8"/>
+  <line x1="304" y1="170" x2="548" y2="170" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
+  <line x1="304" y1="212" x2="520" y2="212" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+  <line x1="304" y1="254" x2="460" y2="254" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.6"/>
+  <rect x="590" y="200" width="360" height="200" rx="48" fill="#f26b5b"/>
+  <polygon points="860,390 900,470 790,396" fill="#f26b5b"/>
+  <line x1="644" y1="264" x2="896" y2="264" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
+  <line x1="644" y1="306" x2="860" y2="306" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+  <line x1="644" y1="348" x2="780" y2="348" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.6"/>
+  <path d="M300 546 Q600 414 900 546" fill="none" stroke="#2bb3a3" stroke-width="16" stroke-linecap="round"/>
+  <line x1="450" y1="497" x2="450" y2="546" stroke="#2bb3a3" stroke-width="8"/>
+  <line x1="600" y1="480" x2="600" y2="546" stroke="#2bb3a3" stroke-width="8"/>
+  <line x1="750" y1="497" x2="750" y2="546" stroke="#2bb3a3" stroke-width="8"/>
+  <line x1="260" y1="548" x2="940" y2="548" stroke="#1c2140" stroke-width="10" stroke-linecap="round"/>
+  <path d="M1000 400 l8 20 l20 8 l-20 8 l-8 20 l-8 -20 l-20 -8 l20 -8 z" fill="#f6c744"/>
+  <path d="M190 420 l6 14 l14 6 l-14 6 l-6 14 l-6 -14 l-14 -6 l14 -6 z" fill="#3d4ed8"/>
+</svg>

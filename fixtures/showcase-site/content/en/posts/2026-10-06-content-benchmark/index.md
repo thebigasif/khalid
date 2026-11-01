@@ -12,9 +12,8 @@ focus_keyword: content benchmark
 featured: true
 tags: [research, measurement]
 image:
-  src: chart.svg
-  alt: A bar chart of five findings from the content benchmark
-  caption: Five findings from this year's benchmark, as a share of the blogs we read.
+  src: cover.svg
+  alt: A magnifying glass over a grid of blog cards, showing a small bar chart inside the lens
 ---
 
 The Larkspur content benchmark is our yearly look at how small companies that sell to other businesses run their blogs. During August 2026, 140 of their public blogs went through our hands. We read each one post by post and counted what any reader can see: who wrote each post, when it was last updated, how it answers its question and where its numbers come from.

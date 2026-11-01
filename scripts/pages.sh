@@ -35,10 +35,11 @@ templates() {
     tr ',' '\n' | tr -d ' ' | sed '/^$/d' || true
 }
 
-# Drops the [template] table and its sub-tables from a site.toml.
+# Drops the [template] table and its options from a site.toml. The call to
+# action in [template.cta] stays, since every template takes it.
 without_template() {
   awk '
-    /^\[/ { skip = ($0 ~ /^\[template(\]|\.)/) }
+    /^\[/ { skip = ($0 ~ /^\[template(\]|\.options\])/) }
     !skip
   ' "$1" >"$1.new"
   mv "$1.new" "$1"
@@ -60,15 +61,29 @@ build() {
   # Menus and posts link to the site's own pages by path, such as
   # "/blog/about/", so each path follows the site to its new mount. A path
   # inside a full address, such as https://example.com/blog/, stays.
-  local was
+  local was origin
   was="$(sed -n 's#^mount = "\(.*\)"#\1#p' "$from/site.toml")"
+  origin="$(sed -n 's#^address = "\(.*\)"#\1#p' "$from/site.toml")"
+  origin="${origin%/}"
   if [ -n "$was" ] && [ "$was" != "$at" ]; then
     find "$site" -type f \( -name '*.md' -o -name '*.toml' \) -exec \
       sed -i -E "s#(^|[^A-Za-z0-9._~:/-])${was}#\1${at}#g" {} +
   fi
+  # A full address of the site's own file, such as the logo in
+  # theme/tokens.toml, follows the site to its new address and mount.
+  if [ -n "$was" ] && [ -n "$origin" ]; then
+    find "$site" -type f -name '*.toml' -exec \
+      sed -i "s#${origin}${was}#${address}${at}#g" {} +
+  fi
   if [ -n "$template" ]; then
     without_template "$site/site.toml"
     printf '\n[template]\nname = "%s"\n' "$template" >>"$site/site.toml"
+    # Each demo shows the showcase's call to action as a band on its front
+    # page and after each post, so every template shows off that part.
+    # Classic has no options at all.
+    if [ "$template" != "classic" ]; then
+      printf '\n[template.options]\ncta_band = "both"\n' >>"$site/site.toml"
+    fi
   else
     local named
     named="$(awk '/^\[/ { in_t = ($0 == "[template]") } in_t && /^name = / { gsub(/"/, "", $3); print $3 }' "$site/site.toml")"

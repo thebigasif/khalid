@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#fbf4e6"/>
+  <circle cx="1070" cy="540" r="110" fill="#9ccc3c" opacity="0.22"/>
+  <path d="M90 120 C150 60 270 90 260 170 C250 240 140 250 100 210 C70 180 60 150 90 120 Z" fill="#2f5d46" opacity="0.12"/>
+  <ellipse cx="600" cy="590" rx="340" ry="24" fill="#1b2a22" opacity="0.12"/>
+  <path d="M270 140 L930 140 C960 140 980 160 980 190 L980 410 C980 440 960 460 930 460 L520 460 L420 540 L440 460 L270 460 C240 460 220 440 220 410 L220 190 C220 160 240 140 270 140 Z" fill="#ffffff" stroke="#1b2a22" stroke-width="4" stroke-linejoin="round"/>
+  <polygon points="320,200 336,246 384,246 345,274 360,320 320,292 280,320 295,274 256,246 304,246" fill="#c8642d" stroke="#1b2a22" stroke-width="4" stroke-linejoin="round"/>
+  <polygon points="460,200 476,246 524,246 485,274 500,320 460,292 420,320 435,274 396,246 444,246" fill="#c8642d" stroke="#1b2a22" stroke-width="4" stroke-linejoin="round"/>
+  <polygon points="600,200 616,246 664,246 625,274 640,320 600,292 560,320 575,274 536,246 584,246" fill="#c8642d" stroke="#1b2a22" stroke-width="4" stroke-linejoin="round"/>
+  <polygon points="740,200 756,246 804,246 765,274 780,320 740,292 700,320 715,274 676,246 724,246" fill="#c8642d" stroke="#1b2a22" stroke-width="4" stroke-linejoin="round"/>
+  <polygon points="880,200 896,246 944,246 905,274 920,320 880,292 840,320 855,274 816,246 864,246" fill="#9ccc3c" stroke="#1b2a22" stroke-width="4" stroke-linejoin="round"/>
+  <rect x="280" y="360" width="400" height="16" rx="8" fill="#2f5d46" opacity="0.35"/>
+  <rect x="280" y="394" width="300" height="16" rx="8" fill="#2f5d46" opacity="0.35"/>
+  <circle cx="1000" cy="220" r="80" fill="#2f5d46" stroke="#1b2a22" stroke-width="4"/>
+  <circle cx="1000" cy="198" r="24" fill="#f0d9a8"/>
+  <path d="M960 262 C960 232 1040 232 1040 262 Z" fill="#f0d9a8"/>
+  <path d="M1044 160 C1044 150 1060 150 1060 160 C1060 172 1052 178 1052 178 C1052 178 1044 172 1044 160 Z" fill="#9ccc3c"/>
+  <path d="M760 480 C790 520 840 520 870 480" fill="none" stroke="#c8642d" stroke-width="8" stroke-linecap="round"/>
+  <polygon points="882,462 880,496 852,482" fill="#c8642d"/>
+  <circle cx="160" cy="400" r="7" fill="#c8642d"/>
+  <circle cx="1100" cy="380" r="6" fill="#2f5d46"/>
+  <circle cx="190" cy="440" r="5" fill="#9ccc3c"/>
+</svg>

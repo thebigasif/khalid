@@ -32,8 +32,8 @@ fn ledger_turns_on_the_parts_its_spec_lists() {
     let on = CheckedOption::Switch(true);
     let off = CheckedOption::Switch(false);
     for (key, value) in [
-        ("logo", on),
-        ("lead_image", off.clone()),
+        ("logo", on.clone()),
+        ("lead_image", on),
         ("tagline", word("")),
         ("stats", CheckedOption::Lines(Vec::new())),
         ("cards", word("text")),
@@ -55,7 +55,7 @@ fn ledger_turns_on_the_parts_its_spec_lists() {
 fn ledger_takes_a_tagline_and_three_facts() {
     let look = choose(
         "tagline = \"Studies and long how-tos on search\"\n\
-         stats = [\"12,000 readers\", \"Weekly since 2024\"]\nlead_image = true\n",
+         stats = [\"12,000 readers\", \"Weekly since 2024\"]\nlead_image = false\n",
     )
     .unwrap();
     let options = look.options();
@@ -65,7 +65,7 @@ fn ledger_takes_a_tagline_and_three_facts() {
     );
     assert_eq!(
         options.get("lead_image"),
-        Some(&CheckedOption::Switch(true))
+        Some(&CheckedOption::Switch(false))
     );
 }
 

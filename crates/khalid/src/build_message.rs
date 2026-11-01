@@ -110,6 +110,16 @@ pub(crate) fn tokens(error: &RenderError) -> UserMessage {
     )
 }
 
+/// The message when the site's own CSS file `file` leads outside the site
+/// folder or cannot be read.
+pub(crate) fn site_css(file: &str, error: &dyn std::error::Error) -> UserMessage {
+    UserMessage::new(
+        format!("Khalid could not read {file}: {error}."),
+        "The stylesheet adds the site's own rules from that file after the template's rules.",
+        format!("Make {file} a text file inside the site folder, or delete it, then try again."),
+    )
+}
+
 /// The message when a page cannot be written.
 pub(crate) fn write(file: &Path, error: &io::Error) -> UserMessage {
     UserMessage::new(

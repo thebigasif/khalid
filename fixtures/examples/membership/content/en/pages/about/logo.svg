@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <circle cx="38" cy="40" r="28" fill="#4a5560"/>
+  <circle cx="38" cy="40" r="19" fill="none" stroke="#9aa5b1" stroke-width="4"/>
+  <circle cx="38" cy="40" r="9" fill="#c8423b"/>
+  <circle cx="60" cy="16" r="5" fill="#e0a23b"/>
+  <text x="78" y="50" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700" fill="#1e2226" textLength="234" lengthAdjust="spacingAndGlyphs">Silverline Darkroom</text>
+</svg>

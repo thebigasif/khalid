@@ -24,6 +24,12 @@ type = "organization"
 name = "Bridgeword"
 email = "editors@example.com"
 
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Bridgeword logo beside its name"
+width = 320
+height = 80
+
 [[nav.primary]]
 label = "Methods"
 href = "/blog/category/methods/"

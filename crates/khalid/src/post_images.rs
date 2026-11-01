@@ -1,12 +1,15 @@
 //! The images beside a folder post, offered in sizes made by `khalid-media`
 //! at `<mount>media/<key>/<width>.<ext>`, each body image drawn as a
 //! `picture` whose `img` has `width`, `height`, `srcset`, `sizes` and `alt`,
-//! so the page never shifts as it loads (RULES.md BL-WEB-5, KH-WEB-5).
+//! so the page never shifts as it loads (RULES.md BL-WEB-5, KH-WEB-5). A
+//! lead image or photo in SVG is drawn from its one file, which is sharp
+//! at every size, at the size it declares.
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
+use khalid_content::LeadImage;
 use khalid_core::{AbsoluteUrl, Config, UserMessage};
 use khalid_media::{DerivedImage, Format, MediaCache, MediaError, derive};
 use khalid_render::{ImageCandidate, ImageSet, Loading, PageBody, RenderImage};
@@ -16,6 +19,7 @@ use khalid_server::MediaType;
 use crate::build_pages::{LanguagePages, Page};
 use crate::post_files::{self, IMAGE, PostFile};
 use crate::post_photos::{self, Shown};
+use crate::vector_size;
 
 /// The folder under the mount, and in the output folder, that holds every size.
 const FOLDER: &str = "media/";
@@ -41,8 +45,10 @@ pub(crate) struct MediaFile {
 
 /// Every size an image is offered in, as a page draws it.
 #[derive(Debug)]
-struct Picture {
-    webp: ImageSet,
+pub(crate) struct Picture {
+    /// The WebP sizes. `None` for an SVG, which is its own one size and
+    /// which no network takes as a share image.
+    webp: Option<ImageSet>,
     fallback: ImageSet,
     width: u32,
     height: u32,
@@ -63,29 +69,30 @@ pub(crate) fn attach(
     languages: &mut [LanguagePages],
     shown: &mut Shown,
 ) -> Result<Vec<MediaFile>, UserMessage> {
-    let cache = MediaCache::new(site);
     let mut pictures = BTreeMap::new();
+    let mut vectors = BTreeMap::new();
     let mut sizes = BTreeMap::new();
     for file in files {
-        let kind = MediaType::for_file(&file.address);
-        if !matches!(kind, MediaType::Jpeg | MediaType::Png | MediaType::Webp) {
-            continue;
-        }
-        let bytes = post_files::read(site, file)?;
-        let image = derive(&bytes, &cache).map_err(|error| unmade(&file.source, &error))?;
-        let Some((picture, made)) = picture(config, &image) else {
+        let Some((picture, made)) = picture_of(site, config, file)? else {
             continue;
         };
-        pictures.insert(file.address.clone(), picture);
+        // Body images are drawn in sizes; an SVG in a body stays as it is.
+        let kept = if picture.webp.is_some() {
+            &mut pictures
+        } else {
+            &mut vectors
+        };
+        kept.insert(file.address.clone(), picture);
         sizes.extend(made.into_iter().map(|size| (size.address.clone(), size)));
     }
-    for language in languages.iter_mut().filter(|_| !pictures.is_empty()) {
+    let any = !pictures.is_empty() || !vectors.is_empty();
+    for language in languages.iter_mut().filter(|_| any) {
         for page in &mut language.pages {
             post_files::rewrite(page, |html| drawn(html, &pictures));
             if let PageBody::Post(post) = &mut page.body {
                 post.originals = originals(post.body.as_str(), &pictures);
             }
-            if let Some(image) = lead(config, page, &pictures) {
+            if let Some(image) = lead(config, page, (&pictures, &vectors)) {
                 shown.add(page, image);
             }
         }
@@ -103,30 +110,23 @@ pub(crate) fn attach(
 fn lead(
     config: &Config,
     page: &mut Page,
-    pictures: &BTreeMap<String, Picture>,
+    (pictures, vectors): (&BTreeMap<String, Picture>, &BTreeMap<String, Picture>),
 ) -> Option<RenderImage> {
     let image = page.lead.as_ref()?;
-    let name = image.src.trim_start_matches("./");
-    let address = format!("{}{name}", page.meta.path);
-    let Some(picture) = pictures.get(&address) else {
+    let address = format!("{}{}", page.meta.path, lead_name(image));
+    let Some(picture) = pictures.get(&address).or_else(|| vectors.get(&address)) else {
         tracing::warn!(image = %image.src, page = %page.meta.path, "the lead image is not a file beside its page, so it is left out");
         return None;
     };
-    let drawn = RenderImage {
-        alt: image.alt.clone(),
-        caption: image.caption.clone(),
-        width: picture.width,
-        height: picture.height,
-        sizes: SIZES.to_owned(),
-        avif: None,
-        webp: Some(picture.webp.clone()),
-        fallback: picture.fallback.clone(),
-        loading: Loading::Eager,
-    };
+    let drawn = lead_image(picture, image);
     match &mut page.body {
         PageBody::Post(post) => post.image = Some(drawn.clone()),
         PageBody::Author(author) => author.image = Some(drawn.clone()),
         _ => return None,
+    }
+    // No network draws an SVG, so the page keeps its generated share card.
+    if picture.webp.is_none() {
+        return Some(drawn);
     }
     let origin = config.address().as_str().trim_end_matches('/');
     let widest = picture.fallback.widest();
@@ -138,6 +138,70 @@ fn lead(
     });
     page.seo.share_image = shared;
     Some(drawn)
+}
+
+/// The name of the file beside its page that `image` names.
+pub(crate) fn lead_name(image: &LeadImage) -> &str {
+    image.src.trim_start_matches("./")
+}
+
+/// `picture` as the lead image at the top of a page, described as `image`
+/// says: fetched at once with high priority.
+pub(crate) fn lead_image(picture: &Picture, image: &LeadImage) -> RenderImage {
+    RenderImage {
+        alt: image.alt.clone(),
+        caption: image.caption.clone(),
+        width: picture.width,
+        height: picture.height,
+        sizes: SIZES.to_owned(),
+        avif: None,
+        webp: picture.webp.clone(),
+        fallback: picture.fallback.clone(),
+        loading: Loading::Eager,
+    }
+}
+
+/// The picture the image `file` in the `site` folder makes, and the sizes
+/// made for it: a JPEG, PNG or WebP in the sizes `khalid-media` makes, or
+/// an SVG as it is. `None` for any other file, and for an SVG that
+/// declares no size, which could not reserve its space.
+///
+/// # Errors
+///
+/// Returns a message when the file cannot be read or made into sizes.
+pub(crate) fn picture_of(
+    site: &Path,
+    config: &Config,
+    file: &PostFile,
+) -> Result<Option<(Picture, Vec<MediaFile>)>, UserMessage> {
+    match MediaType::for_file(&file.address) {
+        MediaType::Jpeg | MediaType::Png | MediaType::Webp => {
+            let bytes = post_files::read(site, file)?;
+            let cache = MediaCache::new(site);
+            let image = derive(&bytes, &cache).map_err(|error| unmade(&file.source, &error))?;
+            Ok(picture(config, &image))
+        }
+        MediaType::Svg => {
+            let bytes = post_files::read(site, file)?;
+            let declared = std::str::from_utf8(&bytes).ok().and_then(vector_size::of);
+            let Some((width, height)) = declared else {
+                tracing::warn!(file = %file.source.display(), "an SVG with no whole-number size or viewBox cannot reserve its space, so it is not drawn as a lead image");
+                return Ok(None);
+            };
+            let only = ImageCandidate {
+                url: file.address.clone(),
+                width,
+            };
+            let picture = Picture {
+                webp: None,
+                fallback: ImageSet::new(only, Vec::new()),
+                width,
+                height,
+            };
+            Ok(Some((picture, Vec::new())))
+        }
+        _ => Ok(None),
+    }
 }
 
 /// The picture `image` makes, and its files. `None` without the WebP and
@@ -169,7 +233,7 @@ fn picture(config: &Config, image: &DerivedImage) -> Option<(Picture, Vec<MediaF
         Some(ImageSet::new(first, candidates))
     };
     let picture = Picture {
-        webp: set(webp)?,
+        webp: Some(set(webp)?),
         fallback: set(fallback)?,
         width: image.width,
         height: image.height,
@@ -231,15 +295,21 @@ fn alt(tag: &str) -> &str {
 
 /// Writes `picture` with `alt`, in the shape of the templates' `picture` macro.
 fn draw(out: &mut String, picture: &Picture, alt: &str) {
-    let webp = attribute(&picture.webp.to_srcset());
     let fallback = &picture.fallback;
     let src = attribute(fallback.widest().map_or("", |widest| widest.url.as_str()));
     let srcset = attribute(&fallback.to_srcset());
     let (width, height) = (picture.width, picture.height);
+    out.push_str("<picture>\n");
+    if let Some(webp) = &picture.webp {
+        let webp = attribute(&webp.to_srcset());
+        let _ = writeln!(
+            out,
+            "<source type=\"image/webp\" srcset=\"{webp}\" sizes=\"{SIZES}\">"
+        );
+    }
     let _ = write!(
         out,
-        "<picture>\n<source type=\"image/webp\" srcset=\"{webp}\" sizes=\"{SIZES}\">\n\
-         <img src=\"{src}\" srcset=\"{srcset}\" sizes=\"{SIZES}\" width=\"{width}\" \
+        "<img src=\"{src}\" srcset=\"{srcset}\" sizes=\"{SIZES}\" width=\"{width}\" \
          height=\"{height}\" alt=\"{alt}\" loading=\"lazy\" decoding=\"async\">\n</picture>"
     );
 }
@@ -282,7 +352,7 @@ mod tests {
 
     fn pictures(mount: &str) -> BTreeMap<String, Picture> {
         let picture = Picture {
-            webp: set(mount, "webp"),
+            webp: Some(set(mount, "webp")),
             fallback: set(mount, "png"),
             width: 800,
             height: 450,

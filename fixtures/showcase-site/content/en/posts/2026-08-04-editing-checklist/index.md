@@ -14,9 +14,8 @@ cluster:
   role: member
 tags: [editing, writing]
 image:
-  src: after.svg
-  alt: A draft page after our editing checklist, with a heading, short paragraphs and a list
-  caption: What a page looks like after a full edit. Compare it with the cramped first draft in the gallery below.
+  src: cover.svg
+  alt: A clipboard checklist with three boxes ticked in green, one box still empty and a pencil
 ---
 
 An editing checklist is a short list of checks you run on every post before it goes live, in the same order, every time. Ours has grown out of years of newspaper subbing and client work. It catches the problems a tired writer no longer sees, and it turns a good draft into a post a busy reader can use.

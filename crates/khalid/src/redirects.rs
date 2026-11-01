@@ -14,7 +14,9 @@ use khalid_seo::{RedirectEntry, UrlPath, read_redirects_csv, write_redirects_csv
 use serde::Serialize;
 
 use crate::cli::{Output, RedirectsCommand};
+use crate::doctor_files::counted;
 use crate::exit::Exit;
+use crate::redirects_explain::{self, Aliases};
 use crate::{db, db_message, report, site_config};
 
 /// The JSON shape of `khalid redirects import --json`.
@@ -30,17 +32,9 @@ struct ExportedBody {
     csv: String,
 }
 
-/// The JSON shape of `khalid redirects explain --json`.
-#[derive(Serialize)]
-struct ExplainedBody {
-    path: String,
-    status: Option<u16>,
-    to: Option<String>,
-    text: String,
-}
-
-/// Runs a redirect command on the `site` folder. Only its settings are
-/// read, not its content, so a large site answers at once.
+/// Runs a redirect command on the `site` folder. `import` and `export`
+/// read only its settings, not its content, so a large site answers at
+/// once. `explain` reads the posts too, for the aliases in their headers.
 pub(crate) fn run(site: &Path, command: &RedirectsCommand, output: Output) -> Exit {
     let done = match command {
         RedirectsCommand::Import { file } => site_config::load(site, &Environment::from_process())
@@ -50,14 +44,21 @@ pub(crate) fn run(site: &Path, command: &RedirectsCommand, output: Output) -> Ex
             on_desk(site, async |desk| export(desk, output).await).flatten()
         }
         RedirectsCommand::Explain { path } => match UrlPath::try_new(path) {
-            Ok(path) => on_desk(site, async |desk| explain(desk, &path, output).await).flatten(),
+            Ok(path) => Aliases::read(site)
+                .map_err(|message| (message, Exit::Failure))
+                .and_then(|aliases| {
+                    let explained = async |desk: &RedirectDesk| {
+                        redirects_explain::explain(desk, &path, &aliases, output).await
+                    };
+                    on_desk(site, explained).flatten()
+                }),
             Err(error) => Err((not_a_path(&error.to_string()), Exit::Usage)),
         },
     };
     done.unwrap_or_else(|(message, exit)| report::failure(output, &message, exit))
 }
 
-type Done = Result<Exit, (UserMessage, Exit)>;
+pub(crate) type Done = Result<Exit, (UserMessage, Exit)>;
 
 /// Reads `file` and stores every redirect in it, or none.
 fn import(site: &Path, config: &Config, file: &Path, output: Output) -> Done {
@@ -107,8 +108,9 @@ fn import(site: &Path, config: &Config, file: &Path, output: Output) -> Done {
                 String::new()
             };
             let text = format!(
-                "Stored {stored} redirects from {shown}.\n{note}\
-                 A running khalid serve answers them once it is started again.\n"
+                "Stored {} from {shown}.\n{note}\
+                 A running khalid serve answers them once it is started again.\n",
+                counted(stored, "redirect")
             );
             report::text(&text, Exit::Success)
         }
@@ -132,28 +134,6 @@ async fn export(desk: &RedirectDesk, output: Output) -> Done {
     })
 }
 
-async fn explain(desk: &RedirectDesk, path: &UrlPath, output: Output) -> Done {
-    let table = desk
-        .table()
-        .await
-        .map_err(|refusal| (refused(&refusal), Exit::Failure))?;
-    let explained = table.explain(path);
-    let text = explained.to_string();
-    Ok(match output {
-        Output::Json => {
-            let answer = explained.answer.as_ref();
-            let body = ExplainedBody {
-                path: path.to_string(),
-                status: answer.map(khalid_seo::Redirect::status),
-                to: answer.and_then(|a| a.location()).map(ToString::to_string),
-                text,
-            };
-            report::json(&body, Exit::Success)
-        }
-        Output::Human => report::text(&text, Exit::Success),
-    })
-}
-
 fn not_a_path(reason: &str) -> UserMessage {
     UserMessage::new(
         format!("That is not an address Khalid can explain: {reason}."),
@@ -162,7 +142,7 @@ fn not_a_path(reason: &str) -> UserMessage {
     )
 }
 
-fn refused(refusal: &StoreRefusal) -> UserMessage {
+pub(crate) fn refused(refusal: &StoreRefusal) -> UserMessage {
     UserMessage::new(
         format!("The redirects cannot be stored: {refusal}."),
         "Nothing was stored, so readers are never sent round in a loop or to two places.",

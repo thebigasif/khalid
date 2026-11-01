@@ -16,9 +16,9 @@ Pick another template if your posts lead with photos, or if you want a large fea
 ## What each page shows
 
 **Front page**
-- The blog's name, your tagline, and up to three short facts such as "12,000 readers".
+- The blog's name in large type under a short accent bar, your tagline, and up to three short facts such as "12,000 readers".
 - A row of topics, one for each category your posts use, as small tinted labels called pills.
-- The latest posts as a list split by thin lines: author, date and topic above each title. No pictures and no summaries, so a reader scans many titles at once.
+- The latest posts as a list split by thin lines, numbered 01, 02 and on in the margin: author, date and topic above each title. No pictures and no summaries, so a reader scans many titles at once.
 - When `[[reader.home_sections]]` lists sections, five posts for each, with a "View all" link.
 - A newsletter band across the full width at the end, when your site takes sign-ups.
 
@@ -29,11 +29,11 @@ Pick another template if your posts lead with photos, or if you want a large fea
 - The contents as an open box after the title, without numbers.
 - The body. Tips and further reading show as ruled notes, a `summary` callout shows as a closing "bottom line" under a heavy rule, how-to steps get large numbers, and FAQ questions read as plain questions with their answers always shown.
 - After the body: the author box, then five related posts in the same ruled list, then the newsletter form.
-- No share links and no lead image, unless you turn the image on.
+- The lead image under the byline, in a light frame, unless you turn it off. No share links.
 
 **Lists and author pages** show posts as the same ruled list, each with its summary.
 
-Everything reads with scripts off, and every colour, font and the logo come from your theme tokens.
+Everything reads with scripts off. Ledger brings its own look: ink green on warm paper, with serif headings. Your theme tokens, such as the ones theme sync writes, replace any of those colours and fonts, and the logo comes from them too.
 
 ## Options
 
@@ -43,7 +43,7 @@ Set these under `[template.options]`. Each line shows the default.
 |---|---|---|
 | `tagline` | empty | One line under the blog's name on the front page, up to 140 characters. |
 | `stats` | none | Up to three short facts beside the tagline, such as `["12,000 readers", "Weekly since 2024"]`. |
-| `lead_image` | `false` | Whether a post shows its lead image under its title. |
+| `lead_image` | `true` | Whether a post shows its lead image under its title. |
 | `logo` | `true` | Whether the header shows your logo from `[brand] logo` in place of the blog's name. |
 | `updated_note` | `false` | Whether an updated post says why it was updated, under its date. |
 | `cards` | `"text"` | The shape of the post cards on list and author pages: `image`, `text`, `row`, `compact` or `ranked`. |
@@ -73,6 +73,18 @@ related_count = 3
 Ledger sets these in place of classic's. A value in your own `theme/tokens.toml` wins.
 
 ```toml
+[colors]
+background = "#fcfbf7"
+surface = "#f3efe3"
+text = "#1b2420"
+muted = "#55605a"
+link = "#0d6b4c"
+accent = "#0d6b4c"
+border = "#dcd6c6"
+
+[fonts]
+heading = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, \"Book Antiqua\", Georgia, serif"
+
 [shape]
 radius = "0.375rem"
 measure = "70ch"

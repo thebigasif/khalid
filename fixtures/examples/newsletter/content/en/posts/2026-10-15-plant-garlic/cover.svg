@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#fbf6e9"/>
+  <circle cx="1060" cy="120" r="64" fill="#e9c46a"/>
+  <circle cx="150" cy="140" r="70" fill="#4f8a3c" opacity="0.15"/>
+  <ellipse cx="620" cy="600" rx="440" ry="22" fill="#2b2a20" opacity="0.12"/>
+  <path d="M360 230 L352 170" stroke="#e9c46a" stroke-width="14" stroke-linecap="round"/>
+  <path d="M360 230 C400 280 500 320 500 420 C500 510 430 560 360 560 C290 560 220 510 220 420 C220 320 320 280 360 230 Z" fill="#ffffff" stroke="#8b5e3c" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M360 260 C330 340 320 470 345 556 M360 260 C390 340 400 470 375 556 M300 320 C260 380 260 480 300 545 M420 320 C460 380 460 480 420 545" fill="none" stroke="#8b5e3c" stroke-width="4" opacity="0.45"/>
+  <path d="M290 420 C300 400 310 400 318 420" fill="none" stroke="#d9533f" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+  <path d="M330 562 L322 584 M360 562 L360 588 M390 562 L398 584" stroke="#e9c46a" stroke-width="5" stroke-linecap="round"/>
+  <rect x="560" y="420" width="440" height="170" rx="50" fill="#8b5e3c"/>
+  <path d="M660 460 C660 430 650 400 634 370 M660 460 C660 430 672 400 686 380 M780 460 C780 430 770 400 754 360 M780 460 C780 430 792 400 806 376 M900 460 C900 430 890 400 874 372 M900 460 C900 430 912 400 926 384" fill="none" stroke="#4f8a3c" stroke-width="8" stroke-linecap="round"/>
+  <path d="M660 460 C680 480 686 510 674 530 C666 540 654 540 646 530 C634 510 640 480 660 460 Z" fill="#ffffff"/>
+  <path d="M780 460 C800 480 806 510 794 530 C786 540 774 540 766 530 C754 510 760 480 780 460 Z" fill="#ffffff"/>
+  <path d="M900 460 C920 480 926 510 914 530 C906 540 894 540 886 530 C874 510 880 480 900 460 Z" fill="#ffffff"/>
+  <path d="M652 540 L646 560 M668 540 L674 560 M772 540 L766 560 M788 540 L794 560 M892 540 L886 560 M908 540 L914 560" stroke="#e9c46a" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="610" cy="470" r="6" fill="#2b2a20" opacity="0.3"/>
+  <circle cx="960" cy="560" r="6" fill="#2b2a20" opacity="0.3"/>
+  <path d="M1080 300 L1080 340 M1060 320 L1100 320" stroke="#d9533f" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="140" cy="440" r="9" fill="#d9533f"/>
+</svg>

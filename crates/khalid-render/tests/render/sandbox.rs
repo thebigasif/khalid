@@ -7,6 +7,7 @@ use khalid_core::TemplateName;
 use khalid_render::{PageBody, PageKind, RenderError, Renderer};
 
 use crate::common::{demo_site, meta};
+use crate::listing::{first_page, home};
 
 /// A site folder whose `theme/templates/` holds `files`.
 fn site_with_theme(files: &[(&str, &str)]) -> tempfile::TempDir {
@@ -129,6 +130,22 @@ fn a_template_that_loops_without_end_is_stopped() {
         render_with(site.path()),
         Err(RenderError::Render { .. })
     ));
+}
+
+#[test]
+fn a_loop_without_end_is_stopped_on_a_page_that_lists_many_posts() {
+    let endless = "{% for a in range(10000) %}{% for b in range(10000) %}{% endfor %}{% endfor %}";
+    let site = site_with_theme(&[("home.html", endless)]);
+    let mut listing = first_page();
+    let one = listing.posts.swap_remove(0);
+    listing.posts = vec![one; 10_000];
+    let meta = meta("Field Notes on SEO", "/blog/", PageKind::Website);
+    let rendered = Renderer::with_theme(site.path()).unwrap().render(
+        &demo_site("en"),
+        &meta,
+        &PageBody::Home(home(listing)),
+    );
+    assert!(matches!(rendered, Err(RenderError::Render { .. })));
 }
 
 #[cfg(unix)]

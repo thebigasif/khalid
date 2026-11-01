@@ -13,9 +13,9 @@ Compass is a template for a teaching blog: guides that explain how to do somethi
 **The front page**
 
 1. Your logo in the header, and your call to action as a button when `[template.cta]` is set.
-2. The blog's title.
+2. The blog's title, large, on a tinted band across the window.
 3. When the page has two or more home sections, a row of links that jump to each one.
-4. Each home section as three picture cards (author, date, title, summary), ending in a link to the rest. Without home sections, your newest posts under "Recently published", with numbered page links.
+4. Each home section as three picture cards (author, date, title, summary), ending in a link to the rest. Without home sections, your newest posts under "Recently published", with numbered page links. A post with no picture gets a drawn cover in tints of your accent colour, so the cards line up.
 5. The newsletter as a band before the footer, when your blog takes sign-ups.
 
 Lists such as a category or the archive show the same outlined picture cards.
@@ -26,7 +26,7 @@ Lists such as a category or the archive show the same outlined picture cards.
 2. The title, the author's name (without a photo) and the date it was published, and updated if it was.
 3. The lead picture.
 4. The contents: an open box listing the main headings, without numbers.
-5. The post. Write a summary callout first and it sits right after the contents as the key points:
+5. The post. Write a summary callout first and it sits right after the contents as the key points, each with a drawn check mark:
 
    ```markdown
    :::callout{kind=summary}
@@ -106,4 +106,4 @@ Your own `theme/tokens.toml` wins over each value.
 | Corners | 0.5rem |
 | Line length | 68 characters |
 
-Your colours, fonts and logo come from your main site through theme sync, as in every template.
+Compass brings its own colours and heading type: a teal accent (`#0e7490`) and rounded headings where the reader's system has them. Your colours, fonts and logo from your main site, through theme sync, replace them, as in every template.

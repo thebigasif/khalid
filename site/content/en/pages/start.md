@@ -39,7 +39,9 @@ The repository also has a Compose file and ready files for Fly.io, Railway, Cool
 
 ## Put a free blog on Cloudflare
 
-Cloudflare can host a Khalid blog of plain files on its free plan. Select [Deploy to Cloudflare](https://deploy.workers.cloudflare.com/?url=https://github.com/thebigasif/khalid/tree/main/deploy/cloudflare). Cloudflare copies a small ready blog into your GitHub account and puts it online. Every change you push builds it again.
+Cloudflare can host a Khalid blog of plain files on its free plan. Select the button below. Cloudflare copies a small ready blog into your GitHub account and puts it online. Every change you push builds it again.
+
+::button{href="https://deploy.workers.cloudflare.com/?url=https://github.com/thebigasif/khalid/tree/main/deploy/cloudflare" label="Deploy to Cloudflare"}
 
 A blog of plain files has no admin, comments, forms, sign-ups, search or scheduling. For those, run Khalid as a server.
 

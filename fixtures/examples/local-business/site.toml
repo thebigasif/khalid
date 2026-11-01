@@ -24,6 +24,12 @@ name = "Larch Lane Cycles"
 email = "hello@example.com"
 telephone = "+44 1632 960418"
 
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Larch Lane Cycles logo beside the shop's name"
+width = 320
+height = 80
+
 # The workshop itself, for the local business details in search results.
 [[seo.locations]]
 type = "BicycleStore"

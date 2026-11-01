@@ -14,9 +14,8 @@ cluster:
   role: member
 tags: [writing, planning]
 image:
-  src: intent-types.svg
-  alt: The four kinds of search intent drawn as cards, know, go, compare and buy
-  caption: Every search carries one main goal. Your page has to serve that goal first.
+  src: cover.svg
+  alt: A compass with four coloured markers around its edge and a needle pointing to the top
 ---
 
 Search intent is the goal a person has when they type a search. They might want to learn something, reach a page, weigh options or buy. If your post serves a different goal from the one the searcher has, it will not rank for long, however well it is written.

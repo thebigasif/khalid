@@ -1,0 +1,200 @@
+/* Khalid's website: a product site on top of the Atlas template. Every
+   colour, font and size reads the tokens in theme/tokens.toml. Light only,
+   logical properties, and nothing here needs a script. */
+
+:root {
+  --wide: 74rem;
+  --read: 46rem;
+  --round: calc(var(--radius) * 1.5);
+  --accent-tint: color-mix(in oklab, var(--color-accent) 9%, var(--color-background));
+  --link-tint: color-mix(in oklab, var(--color-link) 8%, var(--color-background));
+  --accent-ink: color-mix(in oklab, var(--color-accent) 78%, var(--color-text));
+  --line: color-mix(in oklab, var(--color-border) 70%, var(--color-background));
+  --lift: 0 1px 2px color-mix(in srgb, var(--color-text) 6%, transparent), 0 12px 32px -16px color-mix(in srgb, var(--color-text) 28%, transparent);
+  --third: var(--color-link);
+}
+/* A third colour for the icons, turned from the accent; browsers without
+   relative colours keep the link colour. */
+@supports (color: oklch(from red l c h)) {
+  :root { --third: oklch(from var(--color-accent) calc(l - 0.1) c calc(h + 130)); }
+}
+html { scroll-padding-block-start: 5.5rem; }
+body { overflow-x: clip; }
+.site-header, main, .site-footer { max-inline-size: var(--wide); }
+
+/* A full-width band behind a part of the page, in --band. */
+.band, .post-header, main > .breadcrumbs { position: relative; isolation: isolate; }
+.band::before, .post-header::before, main > .breadcrumbs::before { content: ""; position: absolute; z-index: -1; inset-block: 0; inset-inline: calc(50% - 50vw); background: var(--band, var(--color-surface)); }
+
+/* The header: the name with its mark, the menu and the one button. */
+.site-header { padding-block: 0.75rem; border-block-end-color: var(--line); }
+.site-name { gap: 0.625rem; font-size: 1.375rem; letter-spacing: -0.01em; }
+.site-name::before { content: ""; flex: none; inline-size: 2rem; block-size: 2rem; border-radius: 0.625rem; background: var(--color-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center / 1.25rem no-repeat; }
+.site-header nav a { padding-inline: 0.25rem; color: var(--color-text); font-weight: 500; text-decoration: none; }
+.site-header nav a:hover { color: var(--accent-ink); box-shadow: inset 0 -2px 0 var(--color-accent); }
+.site-header nav [aria-current] { box-shadow: inset 0 -2px 0 var(--color-accent); }
+@media (min-width: 60rem) {
+  .site-header { position: sticky; inset-block-start: 0; z-index: 5; background: var(--color-background); box-shadow: 0 0 0 100vmax var(--color-background); clip-path: inset(0 -100vmax -1px); }
+  .site-header nav { margin-inline-start: auto; }
+  .header-button { margin-inline-start: 0.5rem; }
+}
+
+/* Buttons: the accent for the main action, an outline for the next one. */
+.button { gap: 0.5rem; padding: 0.625rem 1.375rem; border-radius: 999px; font-weight: 650; line-height: 1.3; transition: background-color 0.15s, box-shadow 0.15s, transform 0.15s; }
+.button:hover { background: color-mix(in oklab, var(--color-accent) 84%, var(--color-text)); transform: translateY(-1px); }
+.button-quiet { color: var(--color-text); background: var(--color-background); box-shadow: inset 0 0 0 1.5px var(--color-border); }
+.button-quiet:hover { color: var(--color-text); background: var(--color-background); box-shadow: inset 0 0 0 1.5px var(--color-text); }
+.button svg, .arrow-link svg { inline-size: 1.125rem; block-size: 1.125rem; }
+.arrow-link { display: inline-flex; align-items: center; gap: 0.375rem; min-block-size: 44px; font-weight: 650; text-decoration: none; }
+.arrow-link:hover { text-decoration: underline; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin: 0; }
+
+/* Links in running text: the link colour with a quiet underline. */
+:is(.post-body, .page-body, .lead, .intro, .tile, .step) a:not(.button, .arrow-link) { text-decoration-color: color-mix(in oklab, var(--color-link) 40%, transparent); text-decoration-thickness: 0.1em; }
+:is(.post-body, .page-body, .lead, .intro, .tile, .step) a:not(.button, .arrow-link):hover { text-decoration-color: currentColor; }
+
+/* The small label above a heading, and the lead under it. */
+.eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; margin: 0 0 1rem; padding: 0.25rem 0.875rem; border-radius: 999px; background: var(--accent-tint); color: var(--accent-ink); font-size: var(--text-small); font-weight: 650; }
+.lead, .page-hero .intro { max-inline-size: 40rem; margin-inline: auto; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem); }
+.lead p, .page-hero .intro p { margin-block-end: 0.5em; }
+h1, h2 { letter-spacing: -0.015em; }
+
+/* The top of every page: a band with the title in the middle. */
+.page-hero, .post-header { --band: linear-gradient(180deg, var(--color-surface), var(--color-background)); margin-block-end: 3rem; padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 2.5rem); text-align: center; }
+.page-hero h1, .post-header h1 { max-inline-size: 22ch; margin: 0 auto 1rem; }
+.post-header { margin-block-end: 2.5rem; }
+.post-header .post-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 1.25rem; }
+.post-header .people { margin: 0; }
+.post-header .person-role { display: none; }
+main > .breadcrumbs { max-inline-size: var(--read); margin: -1rem auto 0; padding-block-start: 0.5rem; }
+main > .breadcrumbs + .page-hero, main > .breadcrumbs + * > :is(.page-hero, .post-header) { padding-block-start: clamp(1rem, 3vw, 2rem); }
+
+/* One readable column for the words of a post or a page. */
+.post, .page-body, main > .cta-band, .mentions, .related { max-inline-size: var(--read); margin-inline: auto; }
+.post-body h2, .page-body h2 { margin-block-start: 2.25em; }
+.post-body li::marker, .page-body li::marker { color: var(--color-accent); }
+.post-body li + li, .page-body li + li { margin-block-start: 0.375rem; }
+.post-body pre, .page-body pre { border: 1px solid var(--line); }
+.heading-link { opacity: 0.4; }
+.heading-link:hover, .heading-link:focus-visible { opacity: 1; }
+.page-body table { display: table; inline-size: 100%; margin-block: 1.5rem 2rem; border: 1px solid var(--color-border); border-collapse: separate; border-spacing: 0; border-radius: var(--radius); overflow: hidden; font-size: var(--text-small); }
+.page-body th { background: var(--color-surface); font-weight: 650; }
+.page-body tr:last-child td { border-block-end: 0; }
+@media (max-width: 40rem) { .page-body table { display: block; overflow-x: auto; } }
+
+/* "See it live" on every feature and use case: the links in a tinted box. */
+#see-it-live + :is(ul, p) { padding: 1.25rem 1.5rem 1.25rem 2.75rem; background: var(--accent-tint); border-radius: var(--round); }
+#see-it-live + p { padding-inline-start: 1.5rem; }
+
+/* Start: the ways to start as numbered steps. */
+.page-start .page-body { counter-reset: way; }
+.page-start .page-body h2:nth-of-type(-n + 4) { display: flex; align-items: center; gap: 0.875rem; }
+.page-start .page-body h2:nth-of-type(-n + 4)::before { counter-increment: way; content: counter(way); display: grid; flex: none; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; border-radius: 50%; background: var(--color-accent); color: var(--color-background); font: 700 1.125rem/1 var(--font-body); }
+
+/* The author box and the lists under a post. */
+.author-box { padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--round); }
+.mentions { margin-block: 3rem 0; padding-block-start: 2rem; border-block-start: 1px solid var(--line); }
+.mentions h2, .related > h2 { font-size: var(--text-h3); }
+.related { margin-block-start: 3rem; }
+.lock[data-feature="comments"] { display: none; }
+
+/* Cards: a grid of tiles, each one link, each with its drawn icon. */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr)); gap: 1.25rem; margin: 0; padding: 0; list-style: none; }
+.tile { position: relative; block-size: 100%; padding: 1.5rem 1.5rem 1.375rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--round); transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; }
+.tile:hover, .tile:focus-within { border-color: color-mix(in oklab, var(--color-accent) 45%, var(--color-border)); box-shadow: var(--lift); transform: translateY(-2px); }
+.tile :is(h2, h3) { margin: 1rem 0 0.375rem; font-size: var(--text-h3); line-height: 1.25; }
+.tile :is(h2, h3) a { color: var(--color-text); text-decoration: none; }
+.tile :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.tile :is(h2, h3) a:focus-visible { outline: none; }
+.tile:has(a:focus-visible) { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+.tile p { margin: 0; color: var(--color-muted); }
+.icon { display: grid; place-items: center; inline-size: 3rem; block-size: 3rem; border-radius: 0.875rem; background: var(--accent-tint); color: var(--color-accent); }
+.icon svg { inline-size: 1.5rem; block-size: 1.5rem; }
+.tiles > :nth-child(3n + 2) .icon { background: var(--link-tint); color: var(--color-link); }
+.tiles > :nth-child(3n + 3) .icon { background: color-mix(in oklab, var(--third) 10%, var(--color-background)); color: var(--third); }
+
+/* The home page's hero: the promise beside a drawn lint report, on a band
+   of dots that fades into the page. */
+.hero { --band: radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--color-text) 13%, transparent) 1px, transparent 1.5px) 0 0 / 22px 22px, linear-gradient(180deg, var(--color-surface), var(--color-background)); display: grid; gap: 3rem; align-items: center; padding-block: clamp(3rem, 8vw, 6rem) clamp(2.5rem, 6vw, 4rem); }
+.hero::before { mask-image: linear-gradient(180deg, #000 60%, transparent); }
+main > .hero:first-child { margin-block-start: -1rem; }
+.hero h1 { max-inline-size: 16ch; margin: 0 0 1.25rem; font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem); line-height: 1.05; letter-spacing: -0.025em; }
+.hero .lead { margin: 0 0 2rem; }
+.pen { background: linear-gradient(transparent 62%, color-mix(in oklab, var(--color-accent) 30%, transparent) 62%, color-mix(in oklab, var(--color-accent) 30%, transparent) 92%, transparent 92%); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+@media (min-width: 64rem) { .hero { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); } }
+
+/* The drawn report: a window of checks with a score. */
+.shot { padding: 0 0 1.25rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--round); box-shadow: var(--lift); font-size: var(--text-small); }
+.shot p, .shot ul { margin: 0; padding-inline: 1.25rem; }
+.shot-bar { display: flex; align-items: center; gap: 0.375rem; padding-block: 0.75rem; border-block-end: 1px solid var(--line); color: var(--color-muted); font-family: var(--font-mono); }
+.shot-bar span { inline-size: 0.625rem; block-size: 0.625rem; border-radius: 50%; background: var(--color-border); }
+.shot-bar span:first-child { background: var(--color-accent); }
+.shot-post { padding-block: 1rem 0.5rem; font-family: var(--font-mono); font-weight: 600; }
+.shot ul { display: grid; gap: 0.5rem; list-style: none; }
+.shot li, .side li { display: flex; gap: 0.625rem; align-items: start; }
+.mark { flex: none; inline-size: 1.25rem; block-size: 1.25rem; margin-block-start: 0.125rem; color: var(--third); }
+.shot-warn .mark, .side-before .mark { color: var(--color-accent); }
+.shot .shot-score { display: flex; align-items: center; gap: 0.75rem; margin-block-start: 1.25rem; padding-block-start: 1rem; border-block-start: 1px solid var(--line); font-weight: 600; }
+.shot-score strong { display: grid; place-items: center; inline-size: 3rem; block-size: 3rem; border-radius: 50%; background: var(--accent-tint); color: var(--accent-ink); font-size: 1.125rem; box-shadow: inset 0 0 0 3px color-mix(in oklab, var(--color-accent) 55%, transparent); }
+
+/* The three ways to start, the figures, and each section's heading. */
+.label { margin: 0 0 1rem; color: var(--color-muted); font-family: var(--font-body); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+.ways .tiles { grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+.tile .tile-code, .step .tile-code { margin-block-start: 1rem; }
+.tile-code code { display: block; padding: 0.5rem 0.75rem; overflow-x: auto; white-space: nowrap; border: 1px solid var(--line); }
+.tile-cloud { background: linear-gradient(160deg, var(--accent-tint), var(--color-background) 70%); border-color: color-mix(in oklab, var(--color-accent) 30%, var(--color-border)); }
+.tile-cloud .button { margin-block-start: 1rem; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1px; margin: var(--space-section) 0 0; padding: 0; overflow: hidden; list-style: none; background: var(--color-border); border: 1px solid var(--color-border); border-radius: var(--round); }
+.stats li { padding: 1.5rem; background: var(--color-background); color: var(--color-muted); }
+.stats strong { display: block; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem); line-height: 1.1; }
+.section { margin-block-start: var(--space-section); }
+.section-head { max-inline-size: 44rem; margin: 0 auto 2.5rem; text-align: center; }
+.section-head h2 { margin: 0 0 0.75rem; }
+.more { margin: 1.5rem 0 0; text-align: center; }
+
+/* The problem: a blog without checks beside a blog on Khalid. */
+.versus { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1.25rem; }
+.side { padding: 1.75rem; border-radius: var(--round); background: var(--color-surface); }
+.side-after { background: color-mix(in oklab, var(--third) 7%, var(--color-background)); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--third) 25%, var(--color-border)); }
+.side h3 { margin: 0 0 1rem; font-size: var(--text-h3); }
+.side ul { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+
+/* How it works: three numbered steps. */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.25rem; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.step { position: relative; padding: 1.75rem 1.5rem 1.5rem; border: 1px solid var(--color-border); border-radius: var(--round); }
+.step::before { counter-increment: step; content: counter(step); display: grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; margin-block-end: 1rem; border-radius: 50%; background: var(--color-accent); color: var(--color-background); font-weight: 700; }
+.step h3 { margin: 0 0 0.5rem; font-size: var(--text-h3); }
+.step p { margin: 0; color: var(--color-muted); }
+
+/* The template gallery and the home page's strip: each look as a card
+   with its demo's home page, and a post set over its corner. */
+.gallery { margin-block-end: var(--space-section); }
+.looks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+.tile.look { padding: 0.625rem 0.625rem 1.25rem; }
+.look :is(h2, h3), .look p { padding-inline: 0.875rem; }
+.look-shots { position: relative; margin-block-end: 0.25rem; padding: 1rem 3.5rem 2.25rem 1rem; overflow: hidden; background: linear-gradient(150deg, var(--accent-tint), var(--link-tint)); border-radius: calc(var(--round) - 0.25rem); }
+.look-shots img { inline-size: 100%; block-size: auto; border-radius: 0.5rem; box-shadow: var(--lift); }
+.look-shots .look-post { position: absolute; inset-block-end: 0.75rem; inset-inline-end: 0.75rem; inline-size: 44%; border: 1px solid var(--color-border); }
+.looks > :nth-child(3n + 2) .look-shots { background: linear-gradient(150deg, var(--link-tint), color-mix(in oklab, var(--third) 9%, var(--color-background))); }
+.looks > :nth-child(3n + 3) .look-shots { background: linear-gradient(150deg, color-mix(in oklab, var(--third) 9%, var(--color-background)), var(--accent-tint)); }
+.look .look-suits { margin-block-start: 0.5rem; color: var(--color-text); font-size: var(--text-small); font-weight: 600; }
+.strip .look-shots { padding: 0.875rem 0.875rem 0; }
+.strip .look-shots img { border-end-start-radius: 0; border-end-end-radius: 0; }
+
+/* The closing call to action: a tinted band with the button. */
+.cta-band { justify-content: center; gap: 1rem 2rem; margin-block: var(--space-section) 0; padding: clamp(1.75rem, 4vw, 2.5rem); background: linear-gradient(135deg, var(--accent-tint), var(--link-tint)); border: 1px solid color-mix(in oklab, var(--color-accent) 18%, var(--color-border)); border-radius: var(--round); text-align: center; }
+.cta-note { font-family: var(--font-heading); font-size: var(--text-h3); }
+.closing { margin-block-start: var(--space-section); padding: clamp(2.5rem, 7vw, 4.5rem) 1.5rem; background: linear-gradient(135deg, var(--accent-tint), var(--link-tint)); border-radius: calc(var(--round) * 1.5); text-align: center; }
+.closing h2 { max-inline-size: 20ch; margin: 0 auto 0.75rem; }
+.closing .lead { margin-block-end: 1.75rem; }
+.closing .actions { justify-content: center; }
+
+/* The footer: link columns on the surface colour. */
+.site-footer { margin-block-start: 2rem; padding-block: 3rem 2.5rem; border: 0; background: var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.footer-groups { grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 1.5rem 2rem; padding-block-end: 1.5rem; border-block-end: 1px solid var(--color-border); }
+.footer-groups h2 { margin-block-end: 0.25rem; font-family: var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+.site-footer a { color: var(--color-text); text-decoration: none; }
+.site-footer a:hover { color: var(--accent-ink); text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce) { .tile, .button { transition: none; transform: none; } }
+@media print { .band::before, .post-header::before, main > .breadcrumbs::before, .site-name::before { display: none; } .page-hero, .post-header { padding-block: 0; } }
