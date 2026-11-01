@@ -1,0 +1,17 @@
+{#- Khalid's website: a plain page under the product site's hero, its
+    description as the lead, then the words in one readable column. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "slots.html" import cta_band -%}
+{% set slug = meta.path | replace(site.home, "") | replace("/", "") -%}
+<article class="page page-{{ slug }}">
+<header class="page-hero band">
+<h1>{{ page.title }}</h1>
+<p class="lead">{{ meta.description }}</p>
+</header>
+<div class="page-body">
+{{ page.body | place_cta(cta_band(template.cta) if template.cta else "") }}
+</div>
+{% if page.updated %}<p class="page-updated">{{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time></p>
+{% endif %}</article>
+{% endblock %}

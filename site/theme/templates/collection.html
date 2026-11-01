@@ -1,0 +1,65 @@
+{#- Khalid's website lists its features and use cases as a grid of tiles,
+    each with its own drawn icon, instead of a list of posts. The icon
+    macro lives here, and home.html imports it, so both draw the same set.
+    Every icon is a line drawing on a 24 by 24 grid in the text colour. -#}
+{% extends "base.html" %}
+{% set icons = {
+  "writing-checks": "M7 3h7l4 4v14H7z M14 3v4h4 M9.5 14l2 2 4-4.5",
+  "seo-ai-search": "M10.5 4a6.5 6.5 0 1 0 0 13a6.5 6.5 0 1 0 0-13z M20 20l-4.9-4.9 M10.5 7.6l.9 2 2 .9-2 .9-.9 2-.9-2-2-.9 2-.9z",
+  "blog-editor": "M4 20h4L19 9l-4-4L4 16z M13.5 6.5l4 4 M13 20h7",
+  "schedule-posts": "M4 6h16v14H4z M4 10h16 M8 3v5 M16 3v5 M12 13v3h2.5",
+  "blog-newsletter": "M3 6h18v12H3z M3 7l9 6 9-6",
+  "blog-comments": "M4 5h16v11H10l-6 4z M8 9h8 M8 12h5",
+  "ai-visitors": "M4 20h16 M7 16v-4 M12 16V8 M17 16V5",
+  "blog-migration": "M3 12h11 M10 8l4 4-4 4 M15 4h5v16h-5",
+  "blog-api": "M8 7l-5 5 5 5 M16 7l5 5-5 5 M13.5 4l-3 16",
+  "blog-hosting": "M13 3L5 14h6l-1 7 8-11h-6z",
+  "blog-backups": "M3 4h18v4H3z M5 8v12h14V8 M10 12h4",
+  "theme-sync": "M20 12a8 8 0 0 1-14 5.3 M4 12a8 8 0 0 1 14-5.3 M18 3v4h-4 M6 21v-4h4",
+  "saas-blog": "M4 17l6-6 4 4 6-7 M15 8h5v5",
+  "agency-blog": "M4 8h16v11H4z M9 8V5h6v3 M4 13h16",
+  "newsletter-writers": "M21 3L3 10l7 3 3 7z M10 13L21 3",
+  "local-business-blog": "M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z M12 8a2 2 0 1 0 0 4a2 2 0 1 0 0-4z",
+  "multilingual-blog": "M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18",
+  "membership-blog": "M6 11h12v9H6z M8.5 11V8a3.5 3.5 0 0 1 7 0v3 M12 14.5v2",
+  "terminal": "M3 5h18v14H3z M7 10l3 2-3 2 M12 15h5",
+  "box": "M12 3l8 4.5v9L12 21l-8-4.5v-9z M4 7.5l8 4.5 8-4.5 M12 12v9",
+  "cloud": "M7 18h10a4 4 0 0 0 .5-8a6 6 0 0 0-11.4 1.6A3.2 3.2 0 0 0 7 18z",
+  "layout": "M3 4h18v16H3z M3 9h18 M9 9v11",
+  "arrow": "M5 12h14 M13 6l6 6-6 6",
+} %}
+{#- icon(name): the drawing called name in a tinted square, hidden from
+    screen readers because the words beside it say the same. -#}
+{% macro icon(name) -%}
+<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="{{ icons[name] }}"/></svg></span>
+{%- endmacro %}
+{#- arrow(): the small arrow after a link that leads on. -#}
+{% macro arrow() -%}
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="{{ icons.arrow }}"/></svg>
+{%- endmacro %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% set features = "/features/" in meta.path -%}
+<header class="page-hero band">
+<p class="eyebrow">{{ "Features" if features else "Use cases" }}</p>
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}</header>
+<ul class="tiles" role="list">
+{% for post in page.posts %}{% set slug = post.href | replace(meta.path, "") | replace("/", "") %}<li>
+<article class="tile">
+{{ icon(slug) }}
+<h2><a href="{{ post.href }}">{{ post.title }}</a></h2>
+<p>{{ post.excerpt }}</p>
+</article>
+</li>
+{% endfor %}</ul>
+{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}<section class="closing">
+<h2>{{ "See every feature working" if features else "Open a whole example site" }}</h2>
+<p class="lead">{{ "The demo blog runs all of them, with scripts off and full marks from the checks." if features else "Each use case has a live example, built by Khalid from text files." }}</p>
+<p class="actions"><a class="button" href="{{ site.home }}start/">Start a blog {{ arrow() }}</a> <a class="button button-quiet" href="{{ site.home }}demo/">See the demo blog</a></p>
+</section>
+{% endblock %}
