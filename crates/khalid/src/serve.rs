@@ -416,7 +416,7 @@ fn assembled(
         .merge(previews)
         .merge(searches)
         .merge(share_images::router(site, config, security.clone()))
-        .merge(khalid_admin::router(khalid_admin::built()))
+        .merge(khalid_admin::router(khalid_admin::built(), config.mount()))
         .merge(comments)
         .merge(newsletters)
         .merge(consent_route::router(config, security.clone()))

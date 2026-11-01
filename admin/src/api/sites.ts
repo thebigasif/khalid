@@ -3,6 +3,7 @@
 // cookie with its CSRF token, never a key. So the calls here send the
 // token and leave the tab's key out, even when it has one.
 import { readCsrf, saveCsrf } from "../auth/session";
+import { blogAddress } from "./mount";
 import { isProblem } from "./posts";
 import type { Reply } from "./redirects";
 import type { components } from "./schema";
@@ -20,7 +21,7 @@ async function call<T>(
   init: RequestInit,
   read: (response: Response) => Promise<T>,
 ): Promise<Reply<T>> {
-  const request = new Request(`${globalThis.location.origin}${ADMIN}${path}`, init);
+  const request = new Request(`${blogAddress()}${ADMIN}${path}`, init);
   const csrf = readCsrf();
   if (csrf !== null) {
     request.headers.set("x-khalid-csrf", csrf);

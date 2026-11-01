@@ -1,6 +1,7 @@
 // The media library routes of the Admin API (KH-EDT-5).
 import { readKey } from "../auth/session";
 import { createApi } from "./client";
+import { blogAddress } from "./mount";
 import { isProblem } from "./posts";
 import type { Failure, Reply } from "./redirects";
 import type { Pagination } from "./rows";
@@ -97,7 +98,7 @@ export async function editMedia(id: string, edit: MediaEdit): Promise<Reply<Medi
  * call is plain fetch.
  */
 export async function uploadMedia(file: File, folder: string): Promise<Reply<Uploaded>> {
-  const address = new URL("/api/admin/v1/media/", globalThis.location.origin);
+  const address = new URL(`${blogAddress()}/api/admin/v1/media/`);
   address.searchParams.set("name", file.name);
   if (folder !== "") {
     address.searchParams.set("folder", folder);

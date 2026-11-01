@@ -26,7 +26,7 @@ use khalid_webhooks::{Dispatcher, Event};
 use serde::Serialize;
 use tokio::task::JoinSet;
 
-use crate::{build_message, build_pages, build_seo};
+use crate::{build_message, build_pages, build_seo, mounted};
 
 /// How often failed webhook deliveries are looked at for one that is due.
 const RETRY_EVERY: Duration = Duration::from_mins(1);
@@ -238,7 +238,9 @@ pub(crate) fn once(
 ) -> Result<(SiteAnnounce, Announcing), UserMessage> {
     let webhooks = WebhookTable::new(db.clone(), site, SystemClock);
     let log = DeliveryLog::new(db.clone(), site);
-    let site_address = config.address().clone();
+    // A receiver calls the blog back under its mount, where its APIs answer.
+    let site_address = AbsoluteUrl::parse(&mounted::blog_address(config))
+        .unwrap_or_else(|_| config.address().clone());
     let dispatcher = Arc::new(Dispatcher::new(
         outbound.clone(),
         log,

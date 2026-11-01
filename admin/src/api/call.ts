@@ -2,6 +2,7 @@
 // answers need no more than "the data, or the problem".
 import { signingHeaders } from "../auth/session";
 import { en, type UserMessage } from "../strings/en";
+import { blogAddress } from "./mount";
 import { isProblem, type Problem, problemMessage } from "./posts";
 
 /** A call that failed: the problem the API sent, if any, and the status; 0 when unreachable. */
@@ -23,7 +24,7 @@ export async function call<T>(
   init: RequestInit,
   read: (response: Response) => Promise<T>,
 ): Promise<Reply<T>> {
-  const request = new Request(`${globalThis.location.origin}${ADMIN}${path}`, init);
+  const request = new Request(`${blogAddress()}${ADMIN}${path}`, init);
   for (const [name, value] of Object.entries(signingHeaders())) {
     request.headers.set(name, value);
   }

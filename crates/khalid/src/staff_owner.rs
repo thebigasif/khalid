@@ -81,7 +81,7 @@ fn shown(
     (config, listen): (&Config, SocketAddr),
 ) -> Exit {
     let link = token.link(&staff::admin_address(config));
-    let local = token.link(&local_admin(listen));
+    let local = token.link(&local_admin(listen, config.mount()));
     match output {
         Output::Json => report::json(
             &OwnerBody {
@@ -108,17 +108,17 @@ fn shown(
     }
 }
 
-/// Where the admin answers on this computer when `khalid serve` listens on
-/// `listen`. A loopback or any-address listener is named `localhost`,
-/// which browsers treat as secure over plain HTTP, so they keep the
-/// session cookie the sign-in sets.
-fn local_admin(listen: SocketAddr) -> String {
+/// Where the admin of a blog under `mount` answers on this computer when
+/// `khalid serve` listens on `listen`. A loopback or any-address listener
+/// is named `localhost`, which browsers treat as secure over plain HTTP,
+/// so they keep the session cookie the sign-in sets.
+fn local_admin(listen: SocketAddr, mount: &str) -> String {
     let ip = listen.ip();
     let port = listen.port();
     if ip.is_loopback() || ip.is_unspecified() {
-        format!("http://localhost:{port}/admin")
+        format!("http://localhost:{port}{mount}admin")
     } else {
-        format!("http://{listen}/admin")
+        format!("http://{listen}{mount}admin")
     }
 }
 
@@ -163,10 +163,12 @@ mod tests {
 
     #[test]
     fn a_listener_on_this_computer_is_reached_at_localhost() {
-        let admin = |listen: &str| local_admin(listen.parse().unwrap());
+        let admin = |listen: &str| local_admin(listen.parse().unwrap(), "/");
         assert_eq!(admin("127.0.0.1:8080"), "http://localhost:8080/admin");
         assert_eq!(admin("0.0.0.0:3000"), "http://localhost:3000/admin");
         assert_eq!(admin("[::1]:8080"), "http://localhost:8080/admin");
         assert_eq!(admin("192.168.1.5:8080"), "http://192.168.1.5:8080/admin");
+        let mounted = local_admin("127.0.0.1:8080".parse().unwrap(), "/blog/");
+        assert_eq!(mounted, "http://localhost:8080/blog/admin");
     }
 }
