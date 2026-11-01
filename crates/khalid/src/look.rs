@@ -173,6 +173,23 @@ mod tests {
     }
 
     #[test]
+    fn a_pack_takes_every_colour_from_the_tokens_and_mirrors_for_right_to_left() {
+        for pack in khalid_theme::packs() {
+            let css = pack.stylesheet;
+            for fixed in ["#", "rgb(", "hsl(", "oklch(", "white", "black;"] {
+                let found = css
+                    .lines()
+                    .filter(|line| !line.contains("data:image/svg+xml"))
+                    .any(|line| line.contains(fixed));
+                assert!(!found, "{}: a fixed colour, {fixed}", pack.name);
+            }
+            for physical in ["-left", "-right", "prefers-color-scheme"] {
+                assert!(!css.contains(physical), "{}: {physical}", pack.name);
+            }
+        }
+    }
+
+    #[test]
     fn every_class_a_pack_template_uses_has_a_rule() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {

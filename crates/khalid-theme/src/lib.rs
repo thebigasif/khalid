@@ -21,6 +21,7 @@ mod fetch;
 mod fetch_error;
 mod font_files;
 mod fonts;
+mod harbor;
 mod keystone;
 mod ledger;
 mod links;
