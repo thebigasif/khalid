@@ -91,10 +91,9 @@ fn an_authors_photo_and_a_posts_lead_image_show_wherever_they_go() {
     assert!(card.contains(chart), "{card}");
     assert!(card.contains("loading=\"lazy\""), "{card}");
     assert!(!card.contains("<figcaption>"), "{card}");
-    // The home page is served before any image has its sizes, so its
-    // cards carry none and it stays the page the full render makes.
     let home = page(out.path(), "index.html");
-    assert!(!card_of(&home, "/blog/fixing-slow-pages/").contains(chart));
+    let card = card_of(&home, "/blog/fixing-slow-pages/");
+    assert!(card.contains(chart), "{card}");
 }
 
 #[test]
@@ -124,12 +123,9 @@ fn an_svg_lead_image_and_photo_are_drawn_at_their_own_size() {
     assert!(!post.contains("content=\"https://www.example.com/blog/fixing-slow-pages/cover.svg"));
     let photo = "<img class=\"avatar\" src=\"/blog/authors/lena-vogt/lena.svg\"";
     assert!(post.contains(photo), "{post}");
-    let card = page(out.path(), "authors/lena-vogt/index.html");
-    let card = card_of(&card, "/blog/fixing-slow-pages/");
-    assert!(
-        card.contains("src=\"/blog/fixing-slow-pages/cover.svg\""),
-        "{card}"
-    );
+    let home = page(out.path(), "index.html");
+    let card = card_of(&home, "/blog/fixing-slow-pages/");
+    assert!(card.contains(lead) && card.contains(photo), "{card}");
 }
 
 /// The card on `html` that links `href`, up to its link.

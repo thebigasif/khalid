@@ -28,9 +28,9 @@ use crate::site_html::{SearchShell, Unrendered, Which, html_pages, search_shells
 use crate::unlock::Gate;
 use crate::{
     assets, build_gate, build_home, build_lists, build_message, build_pages, build_seo,
-    build_sitemap, categories, content_message, look, own_descriptions, post_categories,
-    post_files, post_gate, post_lock, search_page, serve_message, share_images, site_files,
-    site_outline, trails,
+    build_sitemap, categories, content_message, home_images, look, own_descriptions,
+    post_categories, post_files, post_gate, post_lock, search_page, serve_message, share_images,
+    site_files, site_outline, trails,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -228,6 +228,7 @@ impl SitePages {
         let mut languages = build_home::home_pages(config, routes, content, href)?;
         let categories = categories::of(folder)?;
         post_categories::fill((config, routes), &categories, &mut languages);
+        home_images::attach(folder, (config, routes), content, &mut languages)?;
         search_page::link(config, &mut languages);
         own_descriptions::fill(config, &theme.renderer, &mut languages)?;
         let seo_site = build_seo::site(config)?;
