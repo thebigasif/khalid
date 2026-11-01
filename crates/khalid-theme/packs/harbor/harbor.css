@@ -1,0 +1,75 @@
+/* Harbor (templates spec 3.5): wide pages for lists, a readable column for
+   posts, cards on an outline that turns the accent colour on hover. Every
+   colour is a token or a tint of one. */
+
+.site-header, main, .site-footer { max-inline-size: 76rem; }
+.site-name { font-size: 1.375rem; letter-spacing: -0.01em; }
+.button, .subscribe button { color: var(--color-on-accent); }
+.header-button { border-radius: 999px; }
+
+/* Section labels: small capitals over each part of a page. */
+.lead-title, .latest > h2, .home-section > h2, .related > h2 { margin-block: 0 1rem; color: var(--color-muted); font-family: var(--font-body); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* The front page: the blog's name and intro beside the sign-up form. */
+.masthead { display: grid; gap: 1.5rem 3rem; align-items: center; margin-block-end: var(--space-section); padding-block: 2rem 2.5rem; border-block-end: 1px solid var(--color-border); }
+.masthead-text { min-inline-size: 0; }
+.masthead h1 { margin: 0; letter-spacing: -0.02em; }
+.masthead .intro { margin-block-start: 0.75rem; font-size: var(--text-h4); }
+.masthead .newsletter-slot { margin: 0; border: 1px solid var(--color-border); }
+@media (min-width: 60rem) { .masthead-signup { grid-template-columns: 3fr 2fr; } }
+
+/* Cards: an outline, the picture to the edge, the whole card one link. */
+.cards .card, .lead-card { position: relative; }
+.cards .card { block-size: 100%; padding: 1.25rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: calc(var(--radius) * 1.5); transition: border-color 0.15s, box-shadow 0.15s; }
+.cards .card:hover, .cards .card:focus-within { border-color: var(--color-accent); box-shadow: 0 0.5rem 1.5rem color-mix(in oklab, var(--color-text) 10%, transparent); }
+.cards .card > .image { margin: -1.25rem -1.25rem 1rem; }
+.cards .card > .image img { border-end-start-radius: 0; border-end-end-radius: 0; }
+.card h3 a::after, .card h2 a::after { content: ""; position: absolute; inset: 0; }
+.card-meta a { position: relative; z-index: 1; }
+.card h2, .card h3 { line-height: 1.25; }
+
+/* Featured: the newest featured post large, more featured posts in a row. */
+.lead { display: grid; gap: 1.5rem; margin-block-end: var(--space-section); }
+.lead-card { display: grid; gap: 1.5rem; align-items: center; }
+.lead-card .image { margin: 0; }
+.lead-card h3 { margin-block: 0.5rem; font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.01em; }
+.lead-card h3 a { color: var(--color-text); text-decoration: none; }
+.lead-text > p:last-child { color: var(--color-muted); }
+.lead .cards, .home-section .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: 1.25rem; }
+@media (min-width: 60rem) { .lead-card:has(.image) { grid-template-columns: 3fr 2fr; gap: 2.5rem; } }
+
+/* Rows: a small picture beside the words, split by a line. */
+.cards-row { grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 1fr)); gap: 0 3rem; }
+.cards-row .card { padding: 1.25rem 0; border: 0; border-block-end: 1px solid var(--color-border); border-radius: 0; }
+.cards-row .card:hover, .cards-row .card:focus-within { box-shadow: none; }
+.cards-row .card > .image { margin: 0; }
+.cards-row .card > .image img { border-radius: var(--radius); }
+.latest, .home-section { margin-block-end: var(--space-section); }
+
+/* A post: one readable column, the lead picture wider than the words. */
+main:has(> .post) > :not(.related), main:has(> .author) > * { max-inline-size: var(--measure); margin-inline: auto; }
+main:has(> .post-with-toc) > .post { max-inline-size: calc(var(--measure) + 18rem); }
+.post-header h1 { margin-block-end: 1rem; letter-spacing: -0.02em; }
+.post-header .avatar { border-radius: calc(var(--radius) * 0.75); }
+.post-header .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-date time { color: var(--color-text); font-weight: 600; }
+.post:not(.post-with-toc) > .post-header > .image { margin-inline: calc(50% - min(50vw - 1rem, 30rem)); }
+.offer .cta-band { margin-block: 1.5rem 0; padding: 1.25rem 1.5rem; border: 1px solid var(--color-border); border-inline-start: 4px solid var(--color-accent); }
+.gated { background: var(--color-surface); border: 1px solid var(--color-border); }
+
+/* A drawn wave in the accent colour above each section of a post. */
+.post-marked h2::before { content: ""; display: block; inline-size: 2.5rem; block-size: 0.75rem; margin-block-end: 1.25rem; background: var(--color-accent); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 12'%3E%3Cpath d='M2 6c4-5 8-5 12 0s8 5 12 0 8-5 12 0' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 0 50% / contain; }
+[dir="rtl"] .post-marked h2::before { mask-position: 100% 50%; }
+
+/* After the post: its topic and the share links on one line. */
+.post .post-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-block-start: 2.5rem; padding-block-start: 1.5rem; border-block-start: 1px solid var(--color-border); }
+.post-footer .share { margin: 0; }
+.post-footer .tags a { background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border-radius: 999px; color: var(--color-text); font-weight: 600; }
+
+/* Related posts: one row of small cards that scrolls sideways. */
+.related-scroll { margin-block-start: var(--space-section); padding-block-start: 2rem; border-block-start: 1px solid var(--color-border); }
+.related-scroll .cards { grid-auto-columns: minmax(13rem, 17rem); gap: 1.25rem; }
+.related-scroll .card h3 { font-size: var(--text-body); }
+.related-scroll .card > p:not(.card-meta) { display: none; }
+
+@media print { .offer, .related, .post-marked h2::before { display: none; } }
