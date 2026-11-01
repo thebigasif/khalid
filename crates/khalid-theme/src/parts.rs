@@ -132,6 +132,30 @@ pub const fn picks(count: i64) -> OptionSpec {
     }
 }
 
+/// The links under a list of posts, as the `pagination` option names them.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PageLinks {
+    /// "Newer posts" and "Older posts" with "Page 2 of 9": classic's.
+    Pages,
+    /// Those two and a numbered link to each page near this one.
+    Numbered,
+}
+
+/// The links under a list of posts, `links` unless the site sets them.
+pub const fn pagination(links: PageLinks) -> OptionSpec {
+    OptionSpec {
+        key: "pagination",
+        help: "The links under a list of posts: pages for newer and older, or numbered for a link to each page.",
+        kind: OptionKind::Choice {
+            allowed: &["pages", "numbered"],
+            default: match links {
+                PageLinks::Pages => "pages",
+                PageLinks::Numbered => "numbered",
+            },
+        },
+    }
+}
+
 /// `spec` turned on by default, when it is an on or off option. Any other
 /// option comes back as it is.
 pub const fn on(spec: OptionSpec) -> OptionSpec {
@@ -157,5 +181,6 @@ pub fn all() -> Vec<OptionSpec> {
         CARD_AUTHOR_ROLE,
         FEATURED,
         picks(0),
+        pagination(PageLinks::Pages),
     ]
 }

@@ -25,6 +25,7 @@ pub(crate) static SAMPLER: Pack = Pack {
         parts::CARD_AUTHOR_ROLE,
         parts::FEATURED,
         parts::picks(0),
+        parts::pagination(parts::PageLinks::Pages),
     ],
 };
 

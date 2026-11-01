@@ -48,8 +48,21 @@
 </article>
 </section>
 {%- endmacro %}
-{#- pages(pagination): links to the newer and older pages of a list. -#}
+{#- pages(pagination): links to the newer and older pages of a list, and
+    with the template's `pagination` part set to numbered, a link to each
+    page near this one. -#}
 {% macro pages(pagination) -%}
+{% if template.options.pagination == "numbered" %}<nav class="pagination pagination-numbered" aria-label="{{ t.pagination }}">
+<ul>
+{% if pagination.previous %}<li><a href="{{ pagination.previous }}" rel="prev">{{ t.newer_posts }}</a></li>
+{% endif %}<li><ol class="page-numbers">
+{% for link in pagination.links %}{% if link.href %}<li><a href="{{ link.href }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.number }}</a></li>
+{% else %}<li><span>…</span></li>
+{% endif %}{% endfor %}</ol></li>
+{% if pagination.next %}<li><a href="{{ pagination.next }}" rel="next">{{ t.older_posts }}</a></li>
+{% endif %}</ul>
+</nav>
+{%- else -%}
 <nav class="pagination" aria-label="{{ t.pagination }}">
 <p>{{ t.page_of | replace("{current}", pagination.current | string) | replace("{total}", pagination.total | string) }}</p>
 <ul>
@@ -57,4 +70,5 @@
 {% endif %}{% if pagination.next %}<li><a href="{{ pagination.next }}" rel="next">{{ t.older_posts }}</a></li>
 {% endif %}</ul>
 </nav>
+{%- endif %}
 {%- endmacro %}

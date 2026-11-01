@@ -46,6 +46,8 @@ mod more_pages;
 #[cfg(test)]
 mod packs;
 #[cfg(test)]
+mod page_links;
+#[cfg(test)]
 mod pages;
 #[cfg(test)]
 mod parts;

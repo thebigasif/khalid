@@ -41,6 +41,8 @@ const PARTS: &[(&str, Off)] = &[
     ("featured", Off::Switch(false)),
     // How many editor's picks the home page shows; none at 0.
     ("picks", Off::Number(0)),
+    // The page links under a list: pages (newer and older) or numbered.
+    ("pagination", Off::Word("pages")),
 ];
 
 /// The option key of every part the shared templates read.

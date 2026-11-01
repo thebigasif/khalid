@@ -41,3 +41,10 @@
 /* The editor's picks: a grid of the posts marked featured. */
 .picks { margin-block: 2rem 3rem; }
 .picks .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); }
+
+/* Numbered page links: newer, the numbers near this page, older. */
+.pagination-numbered ul { flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.25rem 1rem; }
+.page-numbers { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+.page-numbers a, .page-numbers span { display: inline-flex; align-items: center; justify-content: center; min-inline-size: 44px; min-block-size: 44px; border-radius: var(--radius); }
+.page-numbers a[aria-current] { background: var(--color-accent); color: var(--color-on-accent); text-decoration: none; }
+.page-numbers span { color: var(--color-muted); }
