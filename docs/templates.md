@@ -13,7 +13,12 @@ name = "classic"
 
 Without a `[template]` table your blog uses `classic`, the look Khalid has always had. Updating Khalid never changes your template.
 
-Classic is the only template today. The ten templates in the templates spec arrive one or two at a time, and each one lists its options here.
+The templates so far, each with its own guide to what it shows and its options:
+
+- `classic`: a calm column of text, cards on the home page and the contents beside long posts.
+- `harbor`: a busy marketing blog with a featured post, rows of recent posts, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
+
+More templates arrive one or two at a time.
 
 ## Options
 
