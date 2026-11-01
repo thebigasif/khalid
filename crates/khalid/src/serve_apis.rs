@@ -30,7 +30,7 @@ use crate::site_posts::SitePosts;
 use crate::site_schema_templates::SiteSchemaTemplates;
 use crate::site_settings::SiteSettings;
 use crate::site_tags::SiteTags;
-use crate::{draft_comment_mail, late_api, staff};
+use crate::{draft_comment_mail, late_api, mounted, staff};
 
 /// The desks `khalid serve` keeps in memory for the Admin API: comment
 /// moderation, the media library, stored redirects and the Search Console
@@ -107,7 +107,8 @@ pub(crate) fn api_router(
 }
 
 /// `app` with the router of [`api_router`] and git mode's push `hook`
-/// answering under `/api/`, built on a blocking thread when the first
+/// answering under `/api/`, and under the blog's mount (see [`mounted`]),
+/// built on a blocking thread when the first
 /// request under `/api/` arrives (ADR "the APIs are built on their first
 /// request"). An address
 /// under `/api/` the APIs lack goes to `app`, as it did when the routers
@@ -120,10 +121,12 @@ pub(crate) fn with_apis(
     let (database, id, (site, config)) = at;
     let (database, site, config) = (database.clone(), site.to_path_buf(), config.clone());
     let rest = app.clone();
-    late_api::router(app, move || {
+    let blog = config.clone();
+    let app = late_api::router(app, move || {
         let at = (&database, id, (site.as_path(), &config));
         api_router(apis, desks, at, helpers)
             .merge(hook)
             .fallback_service(rest)
-    })
+    });
+    mounted::router(&blog, app)
 }

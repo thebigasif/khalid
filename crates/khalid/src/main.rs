@@ -93,6 +93,7 @@ mod mcp_tools;
 mod media_library;
 mod memory;
 mod miss_log;
+mod mounted;
 mod new;
 mod new_author;
 mod new_branch;
