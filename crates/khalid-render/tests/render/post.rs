@@ -42,6 +42,8 @@ pub(crate) fn sitemap_post() -> RenderPost {
         title: "What a sitemap does, and what it does not".to_owned(),
         date: NaiveDate::from_ymd_opt(2026, 9, 28).unwrap(),
         updated: None,
+        updated_note: None,
+        dek: None,
         reading_time: ReadingTime::of(&body, &locale("en")),
         authors: vec![person(
             "Lena Vogt",

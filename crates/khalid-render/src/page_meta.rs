@@ -4,6 +4,7 @@ use khalid_core::{AbsoluteUrl, Locale};
 use minijinja::Value;
 use serde::Serialize;
 
+use crate::Link;
 use crate::serde_display::{display, display_option};
 
 /// The head of one page: the title tag, the description, the canonical
@@ -38,6 +39,10 @@ pub struct PageMeta {
     /// present, the base layout prints it in place of its own title,
     /// description, robots, canonical, hreflang and share card tags.
     pub seo_head: Option<HeadHtml>,
+    /// The trail from the home page to this page, both included, the same
+    /// trail as the page's `BreadcrumbList`. Empty on the home page, and
+    /// shown only by a template that turns on its `breadcrumbs` part.
+    pub breadcrumbs: Vec<Link>,
 }
 
 /// Head tags that were built and escaped before they reached this crate, so

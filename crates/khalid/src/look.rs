@@ -107,4 +107,28 @@ mod tests {
             assert!(renderer.is_ok(), "{}", pack.name);
         }
     }
+
+    #[test]
+    fn the_theme_offers_an_option_for_every_part_the_templates_read() {
+        let offered: Vec<&str> = khalid_theme::parts::all()
+            .iter()
+            .map(|spec| spec.key)
+            .collect();
+        assert_eq!(offered, khalid_render::part_keys());
+    }
+
+    #[test]
+    fn a_site_cannot_ask_for_more_picks_or_related_posts_than_the_pages_carry() {
+        let khalid_theme::OptionKind::Count { most, .. } = khalid_theme::parts::picks(0).kind
+        else {
+            panic!("picks is not a count");
+        };
+        assert_eq!(usize::try_from(most).unwrap(), khalid_render::MOST_PICKS);
+        let khalid_theme::OptionKind::Count { most, .. } =
+            khalid_theme::parts::related_count(5).kind
+        else {
+            panic!("related_count is not a count");
+        };
+        assert_eq!(usize::try_from(most).unwrap(), khalid_render::MOST_RELATED);
+    }
 }

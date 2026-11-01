@@ -28,6 +28,7 @@ mod listing;
 mod pack;
 mod page_body;
 mod page_meta;
+mod parts;
 mod person;
 mod post;
 mod reading_time;
@@ -53,16 +54,17 @@ pub use features::{Feature, Features};
 pub use glossary::{
     GlossaryGroup, GlossaryTerm, Highlight, RenderGlossary, RenderSearch, SearchMode, SearchResult,
 };
-pub use home::{HomeSectionPosts, RenderHome, TopicGroup};
+pub use home::{HomeSectionPosts, MOST_PICKS, RenderHome, TopicGroup};
 pub use image::{ImageCandidate, ImageSet, Loading, RenderImage};
 pub use listing::{Pagination, PostCard, RenderListing};
 pub use pack::{RenderPack, TemplateOption};
 pub use page_body::PageBody;
 pub use page_meta::{Alternate, HeadHtml, PageKind, PageMeta, Robots, ShareImage};
+pub use parts::part_keys;
 pub use person::Person;
 pub use post::{BodyHtml, Link, RenderPost};
 pub use reading_time::ReadingTime;
-pub use related::{PostTopics, related};
+pub use related::{MOST_RELATED, PostTopics, related, related_up_to};
 pub use render_error::RenderError;
 pub use renderer::Renderer;
 pub use script::{ScriptFile, ScriptTag, reader_script, reader_script_file};
