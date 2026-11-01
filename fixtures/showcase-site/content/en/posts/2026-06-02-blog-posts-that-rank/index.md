@@ -18,9 +18,8 @@ cluster:
 featured: true
 tags: [writing, planning, editing]
 image:
-  src: cluster-map.svg
-  alt: A map of our SEO writing cluster, with the guide in the middle and four shorter posts around it
-  caption: This guide sits in the middle. Each shorter post answers one question in depth.
+  src: cover.svg
+  alt: Three pages standing on podium steps, with the tallest page on top beside a small sparkle
 ---
 
 SEO writing is the craft of answering a real question so well that search engines choose your page to show for it. It is not a trick played on an algorithm. It is ordinary good writing, planned around what people search for and shaped so that a busy reader can act on it.

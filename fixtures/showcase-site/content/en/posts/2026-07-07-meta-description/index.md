@@ -13,6 +13,9 @@ cluster:
   name: seo-writing
   role: member
 tags: [writing, snippets]
+image:
+  src: cover.svg
+  alt: A search results list with the middle result highlighted and a pointer about to click it
 ---
 
 A meta description is the short summary you write for a page, which search engines often show under its title in the results. It does not move your page up the list on its own. What it can do is persuade the right reader to click, and tell the wrong reader to keep scrolling.

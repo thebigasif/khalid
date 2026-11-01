@@ -12,6 +12,9 @@ description: A content refresh playbook for small teams. How to find the old pos
 translation: content-refresh
 focus_keyword: content refresh
 tags: [editing, measurement]
+image:
+  src: cover.svg
+  alt: A watering can sprinkling water on an old page, with a fresh flower sprouting from the top
 ---
 
 A content refresh is the work of bringing an old post back up to date so it serves readers again: new facts, a clearer answer, better links. It is the cheapest growth most blogs ignore. Writing a new post starts from nothing. A refresh starts from a page that search engines already know.
