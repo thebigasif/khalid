@@ -8,6 +8,7 @@ use std::path::Path;
 use khalid_core::{AbsoluteUrl, Config, Environment, Locale, UserMessage};
 use khalid_mount::{MountError, MountPath, Stack, proxy_rule};
 use khalid_routes::Routes;
+use khalid_theme::ThemeTokens;
 use serde::Serialize;
 
 use crate::cli::{InitArgs, Output, Prompts, SiteMode};
@@ -23,8 +24,12 @@ pub(crate) const LOCAL_SERVE: &str = "http://127.0.0.1:8080";
 
 /// `routes.toml` for a new site: the defaults, which need no settings.
 const ROUTES_TOML: &str = "\
-# Collections, channels and address patterns. Empty means the defaults (docs/plan.md 4.11).
+# How the blog's addresses look. With nothing below, a post sits at /<slug>/.
+# Each setting, with examples: https://github.com/thebigasif/khalid/blob/main/docs/routes.md
 ";
+
+/// The theme's colours, fonts and shape inside a site folder.
+const TOKENS: &str = "theme/tokens.toml";
 
 /// The four answers that make a site. `languages` is never empty, and its
 /// first is the default.
@@ -309,38 +314,48 @@ pub(crate) fn make_site(folder: &Path, address: AbsoluteUrl) -> io::Result<()> {
 }
 
 /// Makes the site's folders and files, `site.toml` last so a failed run can be
-/// repeated, keeping any `routes.toml`. Returns what it made, relative to `folder`.
+/// repeated, keeping any `routes.toml` or `theme/tokens.toml`. Returns what it
+/// made, relative to `folder`.
 fn write(folder: &Path, answers: &Answers, settings: &str) -> io::Result<Vec<String>> {
-    let mut created = vec![Config::FILE_NAME.to_owned(), Routes::FILE_NAME.to_owned()];
-    created.push("theme/templates/".to_owned());
-    created.extend(
+    let mut folders = vec!["theme/templates/".to_owned()];
+    folders.extend(
         answers
             .languages
             .iter()
             .map(|locale| format!("content/{locale}/posts/")),
     );
-    created.extend(
+    folders.extend(
         answers
             .languages
             .iter()
             .map(|locale| format!("drafts/{locale}/")),
     );
-    for relative in created.iter().skip(2) {
+    for relative in &folders {
         let mut path = folder.to_path_buf();
         path.push(relative);
         fs::create_dir_all(path)?;
     }
-    if let Err(error) = create(folder, Routes::FILE_NAME, ROUTES_TOML)
-        && error.kind() != io::ErrorKind::AlreadyExists
-    {
-        return Err(error);
+    // The light defaults the pages use anyway, written out so they can be
+    // edited by hand and `khalid theme sync` has a file to update.
+    let tokens = ThemeTokens::default().to_toml();
+    for (name, text) in [(Routes::FILE_NAME, ROUTES_TOML), (TOKENS, tokens.as_str())] {
+        if let Err(error) = create(folder, name, text)
+            && error.kind() != io::ErrorKind::AlreadyExists
+        {
+            return Err(error);
+        }
     }
     create(folder, Config::FILE_NAME, settings)?;
+    let mut created = [Config::FILE_NAME, Routes::FILE_NAME, TOKENS]
+        .map(str::to_owned)
+        .to_vec();
+    created.extend(folders);
     Ok(created)
 }
 
 /// Writes `text` to a new file `name` in `folder`, and never replaces one.
-/// Both files sit at the site's root, outside the folders BL-RUN-9 covers.
+/// No other writer exists yet, as the site is new, so BL-RUN-9's atomic
+/// write is not needed.
 fn create(folder: &Path, name: &str, text: &str) -> io::Result<()> {
     let mut path = folder.to_path_buf();
     path.push(name);
@@ -356,10 +371,11 @@ fn success(output: Output, folder: &Path, answers: &Answers, created: Vec<String
     match output {
         Output::Human => report::text(
             &format!(
-                "Made a Khalid site in {shown} for {}.\n{}Next, write your first post with \
+                "Made a Khalid site in {shown} for {}.\nIt holds {}.\n{}Next, write your first post with \
                  `khalid --site {shown} new --draft \"Your title\" --author \"Your name\"`. \
                  It waits in drafts/ until `khalid --site {shown} publish <slug>` takes it live.\n{}",
                 answers.address,
+                listed(&created),
                 proxy.as_ref().map_or(String::new(), proxy_text),
                 match answers.mode {
                     SiteMode::Server => format!(
@@ -383,6 +399,15 @@ fn success(output: Output, folder: &Path, answers: &Answers, created: Vec<String
             },
             Exit::Success,
         ),
+    }
+}
+
+/// `names` as one list in a sentence: `a, b and c`.
+fn listed(names: &[String]) -> String {
+    match names.split_last() {
+        Some((last, [])) => last.clone(),
+        Some((last, rest)) => format!("{} and {last}", rest.join(", ")),
+        None => String::new(),
     }
 }
 

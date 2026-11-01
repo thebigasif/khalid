@@ -114,6 +114,7 @@ fn init_with_json_takes_the_defaults_and_lists_what_it_wrote() {
     let created = [
         "site.toml",
         "routes.toml",
+        "theme/tokens.toml",
         "theme/templates/",
         "content/en/posts/",
         "drafts/en/",
@@ -127,6 +128,38 @@ fn init_with_json_takes_the_defaults_and_lists_what_it_wrote() {
     assert_eq!(config.mode(), Mode::Server);
     assert_eq!(config.languages().len(), 1);
     assert_eq!(config.default_language().as_str(), "en");
+}
+
+#[test]
+fn init_fills_theme_and_content_and_says_what_it_made() {
+    let temp = tempfile::tempdir().unwrap();
+    let site = at(temp.path(), "blog");
+    let address = ["--address", "https://www.example.com", "--yes"];
+    let output = khalid(&[&["init", path(&site)], &address[..]].concat());
+    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
+    let said = text(&output.stdout);
+    assert!(
+        said.contains("It holds site.toml, routes.toml, theme/tokens.toml, theme/templates/, content/en/posts/ and drafts/en/."),
+        "{said}"
+    );
+
+    let tokens = fs::read_to_string(at(&site, "theme/tokens.toml")).unwrap();
+    assert!(tokens.contains("[colors]"), "{tokens}");
+    let doctor = khalid(&["--site", path(&site), "doctor", "--offline"]);
+    let report = text(&doctor.stdout);
+    assert!(
+        report.contains("theme/tokens.toml reads, and every text colour in it is readable."),
+        "{report}"
+    );
+
+    let routes = fs::read_to_string(at(&site, "routes.toml")).unwrap();
+    assert!(!routes.contains("plan.md"), "{routes}");
+    assert!(
+        routes.contains("https://github.com/thebigasif/khalid/blob/main/docs/routes.md"),
+        "{routes}"
+    );
+    let checked = khalid(&["--site", path(&site)]);
+    assert_eq!(checked.status.code(), Some(0), "{}", text(&checked.stderr));
 }
 
 #[test]
