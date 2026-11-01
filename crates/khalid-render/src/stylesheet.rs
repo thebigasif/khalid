@@ -5,8 +5,11 @@ use crate::{Asset, RenderError, Tokens};
 /// The rules every site shares. They read the tokens through CSS variables.
 const SITE_CSS: &str = include_str!("../assets/site.css");
 
+/// The styles of the body blocks, shared by every template.
+const BLOCKS_CSS: &str = include_str!("../assets/blocks.css");
+
 /// Builds the one public stylesheet (RULES.md BL-WEB-7): the tokens as
-/// CSS variables, then the shared rules with comments and indentation
+/// CSS variables, then the shared page and block rules with comments and indentation
 /// removed, as a hashed asset with its compressed copies.
 ///
 /// # Errors
@@ -24,6 +27,7 @@ pub fn stylesheet(tokens: &Tokens) -> Result<Asset, RenderError> {
 pub fn stylesheet_text(tokens: &Tokens) -> String {
     let mut css = tokens.to_css();
     css.push_str(&minify(SITE_CSS));
+    css.push_str(&minify(BLOCKS_CSS));
     css
 }
 

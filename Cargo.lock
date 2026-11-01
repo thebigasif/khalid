@@ -2962,6 +2962,7 @@ dependencies = [
  "chrono",
  "flate2",
  "insta",
+ "khalid-content",
  "khalid-core",
  "minijinja",
  "rust-embed",

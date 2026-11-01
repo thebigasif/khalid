@@ -235,6 +235,28 @@ pub enum CalloutKind {
     Tip,
     /// Something that can go wrong.
     Warning,
+    /// The post's key points, often near the top.
+    Summary,
+    /// Further reading: links to other pages.
+    Read,
+    /// One number worth remembering, with its source.
+    Stat,
+}
+
+impl CalloutKind {
+    /// The kind as written after `kind=`, which is also its CSS class
+    /// `callout-<name>`.
+    #[must_use]
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Note => "note",
+            Self::Tip => "tip",
+            Self::Warning => "warning",
+            Self::Summary => "summary",
+            Self::Read => "read",
+            Self::Stat => "stat",
+        }
+    }
 }
 
 /// Why a body's blocks could not be read. Lines count from 1 in the body.
@@ -281,7 +303,9 @@ pub enum BlockError {
         takes: &'static str,
     },
     /// A callout kind Khalid does not know.
-    #[error("line {line}: a callout's kind is note, tip or warning, not {kind}")]
+    #[error(
+        "line {line}: a callout's kind is note, tip, warning, summary, read or stat, not {kind}"
+    )]
     CalloutKind {
         /// The line of the opening `:::`.
         line: usize,

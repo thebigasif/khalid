@@ -1,0 +1,91 @@
+/* Body blocks: the shared base every template uses (templates spec 4.4).
+   Every colour is a token or a tint of one made with color-mix, so a
+   template changes the look by changing tokens, never these rules. */
+
+/* Callouts: a tinted box with a start border; each kind differs by more than colour. */
+.callout { margin-block: 1.5rem; padding: 1rem 1.25rem; background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); border-inline-start: 4px solid var(--color-accent); border-radius: var(--radius); }
+.callout > :last-child, .banner > :last-child, .review > :last-child, .product > :last-child, .gated > :last-child { margin-block-end: 0; }
+.callout-note { background: var(--color-surface); border-color: var(--color-border); }
+.callout-tip { border-inline-start-style: double; border-inline-start-width: 6px; }
+.callout-warning { border-inline-start-width: 6px; border-color: var(--color-text); font-weight: 500; }
+.callout-summary { background: var(--color-surface); }
+.callout-summary ul, .callout-summary ol { padding-inline-start: 1.25rem; }
+.callout-read { padding-inline: 0; background: none; border: 0; border-block: 1px solid var(--color-border); border-radius: 0; }
+.callout-stat strong:first-child { display: block; font-family: var(--font-heading); font-size: 2.25em; line-height: 1.1; }
+
+/* Figures, galleries and players fill the column and keep their space. */
+figure { margin-inline: 0; }
+figure > img { inline-size: 100%; border-radius: var(--radius); }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); gap: 0.75rem; margin-block: 0 1.1em; }
+.gallery figure { margin: 0; }
+.gallery img { block-size: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.embed iframe, .video video, .audio audio { display: block; inline-size: 100%; border: 0; border-radius: var(--radius); }
+.embed-wide iframe, .video video { block-size: auto; aspect-ratio: 16 / 9; background: var(--color-surface); }
+.embed-audio iframe { block-size: 152px; }
+.audio figcaption { margin-block: 0 0.5rem; color: var(--color-text); font-weight: 700; }
+.maths { overflow-x: auto; text-align: center; }
+
+/* Toggles and the FAQ open with scripts off; each summary is a 44 px target. */
+.post-body details, .page-body details { margin-block: 0 1.1em; }
+.post-body summary, .page-body summary { min-block-size: 44px; padding-block: 0.6rem; font-weight: 700; cursor: pointer; }
+.faq details { margin: 0; border-block-end: 1px solid var(--color-border); }
+.faq summary { font-family: var(--font-heading); }
+
+/* How-to steps and the in-body contents list. */
+.howto { padding-inline-start: 1.5rem; }
+.howto > li { margin-block-end: 1rem; }
+.howto-step { margin-block-end: 0.25rem; font-weight: 700; }
+.toc { margin-block: 0 1.5rem; padding: 0.5rem 1.25rem; background: var(--color-surface); border-radius: var(--radius); }
+.toc ol { margin: 0; padding-inline-start: 1.25rem; }
+.toc a { display: inline-flex; align-items: center; min-block-size: 44px; }
+.toc-h2 { font-weight: 600; }
+.toc-h3 { margin-inline-start: 1rem; font-weight: 400; }
+.toc-h4, .toc-h5, .toc-h6 { margin-inline-start: 2rem; font-weight: 400; }
+
+/* Buttons: one look for the button block and every form's button. */
+.button, .form button, .subscribe button { display: inline-flex; align-items: center; min-block-size: 44px; padding: 0.5rem 1.25rem; font: inherit; font-weight: 700; color: var(--color-background); background: var(--color-accent); border: 0; border-radius: var(--radius); text-decoration: none; cursor: pointer; }
+.file a { display: inline-flex; align-items: center; min-block-size: 44px; font-weight: 700; }
+
+/* A bookmark with a title is a card; without one it stays a plain link. */
+.bookmark a:has(.bookmark-title) { display: grid; gap: 0.125rem 1rem; padding: 0.75rem 1rem; color: var(--color-text); text-decoration: none; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.bookmark a:has(img) { grid-template-columns: 8rem 1fr; }
+.bookmark a:hover { border-color: var(--color-accent); }
+.bookmark img { grid-row: span 3; inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); }
+.bookmark-title { color: var(--color-link); font-weight: 700; }
+.bookmark-description, .bookmark-host { color: var(--color-muted); font-size: 0.9375rem; }
+
+/* Cards in the body: review, product, recipe, business, banner. */
+.review, .product, .recipe, .business, .banner { display: block; margin-block: 0 1.5rem; padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); font-style: normal; }
+.banner { margin-block-start: 2rem; background: var(--color-surface); border: 0; }
+.banner h2 { margin-block-start: 0; }
+.banner img, .product img, .recipe img { inline-size: 100%; margin-block-end: 1rem; border-radius: var(--radius); }
+.review-item, .product-name, .recipe-name { margin-block-end: 0.25rem; font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; }
+.review-rating, .product-rating, .product-price { font-weight: 700; }
+.recipe-description { color: var(--color-muted); }
+.recipe-facts { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; color: var(--color-muted); font-size: 0.9375rem; }
+.recipe-servings, .recipe-prep, .recipe-cook { white-space: nowrap; }
+.recipe-ingredients, .recipe-method { padding-inline-start: 1.25rem; }
+
+/* Forms in the body. The spam trap never shows to people. */
+.form label, .subscribe label { display: block; margin-block-end: 0.25rem; font-weight: 600; }
+.form input, .form textarea, .subscribe input { inline-size: 100%; min-block-size: 44px; padding: 0.5rem 0.75rem; font: inherit; color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-muted); border-radius: var(--radius); }
+.form textarea { min-block-size: 8rem; }
+.form-trap { display: none; }
+.subscribe { margin-block: 0 1.5rem; padding: 1.25rem; background: var(--color-surface); border-radius: var(--radius); }
+.subscribe p:last-child { margin-block-end: 0; }
+.gated { margin-block: 0 1.5rem; padding: 1.25rem; border: 1px dashed var(--color-muted); border-radius: var(--radius); }
+.gated .subscribe { margin: 0; padding: 0; background: none; }
+.gated-note { font-weight: 700; }
+.gated-open { border-style: solid; border-color: var(--color-border); }
+
+/* Footnotes and code colours. */
+.footnotes { margin-block-start: 2.5rem; padding-block-start: 1rem; border-block-start: 1px solid var(--color-border); color: var(--color-muted); font-size: 0.9375rem; }
+.footnote-ref a, .footnote-backref { padding-inline: 0.15em; text-decoration: none; }
+.syntax-highlighting { line-height: 1.5; }
+.hl-comment { color: var(--color-muted); font-style: italic; }
+.hl-keyword, .hl-storage { color: var(--color-link); }
+
+@media print {
+  .form, .subscribe { display: none; }
+  .callout, .review, .product, .recipe, .banner { break-inside: avoid; }
+}

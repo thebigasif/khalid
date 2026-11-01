@@ -12,8 +12,7 @@ use comrak::{Arena, Options, format_html_with_plugins, parse_document};
 use khalid_core::{AbsoluteUrl, Locale, Slug, SlugMode};
 
 use crate::{
-    Block, BlockError, BlockKind, CalloutKind, StructuredBlock, Wikilinks, maths, parse_blocks,
-    wikilink,
+    Block, BlockError, BlockKind, StructuredBlock, Wikilinks, maths, parse_blocks, wikilink,
 };
 
 mod cards;
@@ -211,12 +210,7 @@ impl Renderer<'_> {
     fn directive(&mut self, block: &Block) {
         match &block.kind {
             BlockKind::Callout { kind } => {
-                let kind = match kind {
-                    CalloutKind::Note => "note",
-                    CalloutKind::Tip => "tip",
-                    CalloutKind::Warning => "warning",
-                };
-                self.push(&["<aside class=\"callout callout-", kind, "\">\n"]);
+                self.push(&["<aside class=\"callout callout-", kind.name(), "\">\n"]);
                 self.markdown(&inside(&block.source));
                 self.html.push_str("</aside>\n");
             }

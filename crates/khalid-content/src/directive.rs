@@ -191,6 +191,9 @@ fn callout(attributes: &Attributes) -> Result<BlockKind, BlockError> {
         Some("note") | None => CalloutKind::Note,
         Some("tip") => CalloutKind::Tip,
         Some("warning") => CalloutKind::Warning,
+        Some("summary") => CalloutKind::Summary,
+        Some("read") => CalloutKind::Read,
+        Some("stat") => CalloutKind::Stat,
         Some(other) => {
             return Err(BlockError::CalloutKind {
                 line: attributes.line,
