@@ -32,6 +32,13 @@ An option a template does not know, or a value it does not take, stops every com
 
 An option you leave out takes the template's default.
 
+## The templates
+
+| Template | For | Its page |
+|---|---|---|
+| `classic` | Today's look, every blog's default: a calm column of text, cards on the home page and the contents beside long posts. | This page |
+| `folio` | A product team's essays under their own masthead: a featured story, outlined picture cards, share links and an "All posts" link on every essay. | [Folio](templates/folio.md) |
+
 ## Parts a template can switch on
 
 Every template shares one set of page parts. A template switches on the ones it uses, and offers each as an option with its own default. Classic switches none of them on, so it looks as it always has. The words below are the option keys and the values each takes; a template lists only the parts it offers.

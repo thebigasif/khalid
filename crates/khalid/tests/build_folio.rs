@@ -79,6 +79,18 @@ fn the_folio_home_page() {
 }
 
 #[test]
+fn a_folio_post() {
+    let (_temp, out) = built("");
+    insta::assert_snapshot!(shown(&out, "why-internal-links-matter/index.html"));
+}
+
+#[test]
+fn a_folio_author_page() {
+    let (_temp, out) = built("");
+    insta::assert_snapshot!(shown(&out, "authors/lena-vogt/index.html"));
+}
+
+#[test]
 fn folio_ships_its_own_rules_after_the_shared_ones() {
     let (_temp, out) = built("");
     let css = fs::read_dir(at(&out, "assets"))
