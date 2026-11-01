@@ -7,6 +7,9 @@ category: printing
 description: Negatives last a lifetime when you keep them clean, dry, cool and in the right sleeves. How to store negatives at home without special kit.
 focus_keyword: store negatives
 tags: [archiving, negatives]
+image:
+  src: cover.svg
+  alt: Archival sleeves standing upright in a storage box, with one sleeve of negatives pulled out
 ---
 
 To store negatives well, keep them clean, dry, cool and in sleeves made for the job. A negative is the original of every print you will ever make from it. Stored well, it outlives you. Stored badly, it can scratch, stick together or grow mould.

@@ -8,6 +8,9 @@ access: members
 description: Darkroom booking for members, from choosing an enlarger or the film sink to what to bring and the house rules that keep it fair for everyone.
 focus_keyword: darkroom booking
 tags: [members, house rules]
+image:
+  src: cover.svg
+  alt: An enlarger casting warm light beside a booking calendar with several sessions filled in
 ---
 
 Darkroom booking keeps the enlargers and the film sink fair for every member. You book a session online, arrive on time, and leave the space clean for the next person. This guide covers how to book, what to bring, and the house rules we ask everyone to follow.

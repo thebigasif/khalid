@@ -7,6 +7,9 @@ category: printing
 description: A contact sheet prints a whole roll of negatives on one sheet of paper, so you can choose which frames to enlarge. How to make one.
 focus_keyword: contact sheet
 tags: [printing, beginners]
+image:
+  src: cover.svg
+  alt: A contact sheet of negatives with one frame circled in red, a magnifying glass and a wax pencil
 ---
 
 A contact sheet is a print of a whole roll of negatives, laid directly on one sheet of photographic paper. Every frame comes out at its real size. It is the quickest way to see what you shot, and the best way to choose which frames are worth enlarging.

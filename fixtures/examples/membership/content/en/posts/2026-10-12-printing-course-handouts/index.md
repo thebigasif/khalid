@@ -8,6 +8,9 @@ description: The handouts for Silverline's autumn printing course, from test str
 focus_keyword: printing course
 password_hash: "$argon2id$v=19$m=19456,t=2,p=1$ZXhhbXBsZU9ubHlTYWx0MA$Tm9QYXNzd29yZE1ha2VzVGhpc0hhc2hBdEFsbDAwMDA"
 tags: [printing, course]
+image:
+  src: cover.svg
+  alt: A stack of course handouts beside a developing tray where a landscape print is appearing
 ---
 
 These are the handouts for our autumn printing course, one section for each evening. They follow what we do in the darkroom, so you can repeat each step at your own pace. The printing course takes you from your first test strip to a finished, toned print.

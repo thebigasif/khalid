@@ -7,6 +7,9 @@ category: developing
 description: Darkroom safety comes down to gloves, fresh air, clear labels and safe disposal. The rules we teach every new member, for home or club.
 focus_keyword: darkroom safety
 tags: [safety, chemistry]
+image:
+  src: cover.svg
+  alt: Safety goggles, a rubber glove and a labelled chemical bottle, with fresh air drifting in
 ---
 
 Darkroom safety is simple, and it matters every time. Black-and-white chemistry is not especially harsh, but you handle it often, sometimes for hours. Small habits protect your skin, your lungs and the drains. These are the rules we teach every new member on their first visit.

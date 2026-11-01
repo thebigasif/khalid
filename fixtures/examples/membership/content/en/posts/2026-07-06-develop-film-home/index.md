@@ -7,6 +7,9 @@ category: developing
 description: You can develop film at home in a kitchen or bathroom, with a tank, three chemicals and a thermometer. What you need and every step.
 focus_keyword: develop film
 tags: [developing, chemistry, beginners]
+image:
+  src: cover.svg
+  alt: A developing tank beside a film reel, a thermometer and a bottle of developer
 ---
 
 You can develop film at home without a darkroom. Black-and-white film only needs darkness for the first minute, while you load it into a light-tight tank. After that, every step happens with the lights on, at the kitchen sink. It is a cheap way to start with film, and a satisfying one.

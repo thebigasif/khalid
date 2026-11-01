@@ -8,6 +8,9 @@ access: members
 description: Push processing lets you shoot film faster than its box speed in dim light, then develop it longer. Our members' notes on when and how.
 focus_keyword: push processing
 tags: [developing, low light]
+image:
+  src: cover.svg
+  alt: A darkroom timer running past its usual mark, beside a film canister and a crescent moon
 ---
 
 Push processing means rating a film faster than its box speed, so you can shoot in dim light, and then developing it for longer to make up for the missing light. It turns a dark evening or a dim concert hall into usable negatives. The price is more contrast and more grain, and you have to push the whole roll.

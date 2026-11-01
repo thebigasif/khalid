@@ -7,6 +7,9 @@ category: developing
 description: Slow film or fast film, classic grain or modern grain. How to choose a black-and-white film stock for the light you shoot in.
 focus_keyword: film stock
 tags: [film, beginners, grain]
+image:
+  src: cover.svg
+  alt: Three film canisters of different sizes, with a strip of film pulled out of one
 ---
 
 The film stock you choose decides how your photographs look before you press the shutter. It sets how much light you need, how fine the grain is and how the greys fall between black and white. You do not need to try every film. Pick one for the light you shoot in most, and learn it well.
