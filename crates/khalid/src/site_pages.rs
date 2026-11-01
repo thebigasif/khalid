@@ -434,6 +434,7 @@ impl SitePages {
         }
         comment_pages::fill(config, self.0.comments.as_ref(), &mut languages);
         form_pages::fill(config, self.0.forms.as_ref(), &mut languages);
+        form_pages::subscribe_under(config, &mut languages);
         let beside = post_files::served(folder, config, assets, &mut languages, shown)?;
         post_gate::open(config, routes, content, &mut languages)?;
         let seo_site = build_seo::site(config)?;

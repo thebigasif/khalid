@@ -23,6 +23,9 @@ const BLOCK_FORM: &str = "<form class=\"form\" method=\"post\" action=\"/forms/"
 /// The same opening without the address, which the mount path goes after.
 const BEFORE_ACTION: &str = "<form class=\"form\" method=\"post\" action=\"";
 
+/// How the `::newsletter` block opens its form (`khalid-content`).
+const SUBSCRIBE_FORM: &str = "<form class=\"subscribe\" method=\"post\" action=\"/subscribe\">";
+
 /// The page each form is on, by form id, as the renders found them. A
 /// saved post's render adds its forms, and a full render adds every
 /// page's. Cloning shares them.
@@ -58,6 +61,30 @@ pub(crate) fn fill(config: &Config, forms: Option<&LiveForms>, languages: &mut [
             for id in ids {
                 pages.insert(id, page.meta.path.clone());
             }
+        }
+    }
+}
+
+/// Points each `::newsletter` block in `languages` at `<mount>subscribe`,
+/// the sign-up route under the blog's mount, where the proxy in front
+/// passes it on. A blog at `/` is left as it is.
+pub(crate) fn subscribe_under(config: &Config, languages: &mut [LanguagePages]) {
+    let mount = config.mount();
+    if mount == "/" {
+        return;
+    }
+    let mounted = format!("<form class=\"subscribe\" method=\"post\" action=\"{mount}subscribe\">");
+    for page in languages
+        .iter_mut()
+        .flat_map(|language| &mut language.pages)
+    {
+        let body = match &mut page.body {
+            PageBody::Post(post) => &mut post.body,
+            PageBody::Page(shown) => &mut shown.body,
+            _ => continue,
+        };
+        if body.as_str().contains(SUBSCRIBE_FORM) {
+            *body = BodyHtml::from_sanitised(body.as_str().replace(SUBSCRIBE_FORM, &mounted));
         }
     }
 }

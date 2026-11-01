@@ -7,6 +7,7 @@ import {
   type RouterHistory,
   redirect,
 } from "@tanstack/react-router";
+import { mountPath } from "../api/mount";
 import { isSignedIn } from "../auth/session";
 import { RouteError } from "../components/RouteError";
 import { Shell } from "../components/Shell";
@@ -227,7 +228,7 @@ const routeTree = root.addChildren([
 
 /** Makes the admin's router; a test passes a memory history. */
 export function makeRouter(history: RouterHistory = createBrowserHistory()) {
-  return createRouter({ routeTree, history, basepath: "/admin" });
+  return createRouter({ routeTree, history, basepath: `${mountPath()}admin` });
 }
 
 declare module "@tanstack/react-router" {
