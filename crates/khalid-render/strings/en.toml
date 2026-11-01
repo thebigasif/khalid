@@ -33,6 +33,20 @@ related_posts = "Related posts"
 featured = "Featured"
 # The heading over the posts the editors chose, on the home page.
 editors_picks = "Editor's picks"
+# The heading over the newest posts on a template's front page.
+latest = "Latest posts"
+# The heading over the rest of the posts after the newest few.
+more_posts = "More posts"
+# The link from a template's front page to the list of every post.
+all_posts = "See all posts"
+# The heading of a post's contents in templates that put them in a box at the top.
+on_this_page = "On this page"
+# Names the menu of the blog's categories.
+categories = "Categories"
+# Opens the rest of a menu that has too many links for one line.
+more = "More"
+# The heading over the first few related posts in templates that show two sets.
+keep_reading = "Keep reading"
 mentions = "Posts that link here"
 # The words before a post's share links.
 share = "Share this post"
