@@ -191,6 +191,14 @@
   .queue>li{margin:0 0 1rem}
   .said{white-space:pre-line;max-width:68ch}
   .careful{border-left:4px solid var(--color-warn);background:var(--color-warn-bg);border-radius:var(--radius-field);padding:.75rem 1rem;max-width:40rem}
+  .looks{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(17rem,100%),1fr));gap:1rem;list-style:none;margin:0 0 1rem;padding:0}
+  .look{border:1px solid var(--color-border);border-radius:var(--radius-field);padding:1rem}
+  .look:has(input:checked){border:2px solid var(--color-link);background:var(--color-tint);padding:calc(1rem - 1px)}
+  .look p{color:var(--color-muted);margin:0 0 .5rem}
+  .look-head{display:flex;align-items:center;flex-wrap:wrap;gap:.25rem .5rem;min-height:44px;font-size:1.0625rem;font-weight:700;cursor:pointer}
+  .look-head input{width:1.25rem;min-height:1.25rem;margin:0;accent-color:var(--color-link);flex:none}
+  .turns{margin:0;padding-left:1.1rem;font-size:.9375rem}
+  .look .turns-title{color:var(--color-text);font-size:.875rem;font-weight:600;margin:.5rem 0 .15rem}
   /* At phone width each row becomes a card with its own labels, so nothing scrolls sideways. */
   @media (max-width:40em){
     table,tbody,tr,td{display:block}
