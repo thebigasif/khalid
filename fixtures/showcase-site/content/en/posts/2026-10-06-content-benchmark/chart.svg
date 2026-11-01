@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Bar chart of five findings from the 2026 content benchmark: 61 percent had no author name, 54 percent left meta descriptions blank, 38 percent updated nothing in a year, 23 percent shared a content calendar, 19 percent cited sources for numbers</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <text x="320" y="36" font-family="Georgia, serif" font-size="19" text-anchor="middle" fill="#2b2540">Share of 140 small business blogs, 2026</text>
+  <g font-family="Georgia, serif" font-size="15" fill="#2b2540" text-anchor="end">
+    <text x="230" y="86">No author name on posts</text>
+    <text x="230" y="146">Blank meta descriptions</text>
+    <text x="230" y="206">No post updated in a year</text>
+    <text x="230" y="266">Shared content calendar</text>
+    <text x="230" y="326">Numbers with a source</text>
+  </g>
+  <g fill="#6b5ca5">
+    <rect x="245" y="64" width="219.6" height="30" rx="4"/>
+    <rect x="245" y="124" width="194.4" height="30" rx="4"/>
+    <rect x="245" y="184" width="136.8" height="30" rx="4"/>
+    <rect x="245" y="244" width="82.8" height="30" rx="4"/>
+    <rect x="245" y="304" width="68.4" height="30" rx="4"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="15" fill="#2b2540">
+    <text x="474" y="86">61%</text>
+    <text x="449" y="146">54%</text>
+    <text x="392" y="206">38%</text>
+    <text x="338" y="266">23%</text>
+    <text x="323" y="326">19%</text>
+  </g>
+</svg>

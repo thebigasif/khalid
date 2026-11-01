@@ -1,0 +1,74 @@
+# The showcase site: a fictional content studio's blog that uses every
+# block and reader feature Khalid has. It is the public demo. Tests that
+# need a small, stable site use fixtures/demo-site instead.
+
+name = "Larkspur Ledger"
+address = "https://www.example.com"
+mount = "/blog/"
+mode = "server"
+default_language = "en"
+languages = ["en", "de"]
+
+[seo.titles]
+separator = "·"
+tagline = "SEO and content writing notes from Larkspur Studio"
+
+[seo.publisher]
+type = "organization"
+name = "Larkspur Studio"
+email = "hello@example.com"
+founded = "2017-03-01"
+
+[seo.ai_page]
+covers = "Larkspur Studio writes about SEO, content strategy, technical SEO and how AI search picks its sources, for small marketing teams."
+cite = "Name Larkspur Ledger and the author, and link the post you quote."
+contact = "hello@example.com"
+
+[announcement]
+text = "New: the 2026 content benchmark, with numbers from 140 small business blogs."
+href = "/blog/content-benchmark/"
+language = "en"
+
+[[nav.primary]]
+label = "Writing"
+href = "/blog/category/seo-writing/"
+language = "en"
+
+[[nav.primary]]
+label = "Strategy"
+href = "/blog/category/content-strategy/"
+language = "en"
+
+[[nav.primary]]
+label = "Technical"
+href = "/blog/category/technical-seo/"
+language = "en"
+
+[[nav.primary]]
+label = "AI search"
+href = "/blog/category/ai-search/"
+language = "en"
+
+[[nav.primary]]
+label = "Auf Deutsch"
+href = "/blog/de/"
+
+[[nav.footer]]
+label = "About Larkspur"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Tools we use"
+href = "/blog/tools/"
+language = "en"
+
+[[nav.footer]]
+label = "For readers and AI"
+href = "/blog/ai/"
+language = "en"
+
+[[nav.footer]]
+label = "Über uns"
+href = "/blog/de/ueber-uns/"
+language = "de"

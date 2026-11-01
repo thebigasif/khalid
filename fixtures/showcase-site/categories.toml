@@ -1,0 +1,21 @@
+# The showcase site's four categories, with a name per language.
+
+[[categories]]
+slug = "seo-writing"
+en = "SEO writing"
+de = "SEO-Texte"
+
+[[categories]]
+slug = "content-strategy"
+en = "Content strategy"
+de = "Content-Strategie"
+
+[[categories]]
+slug = "technical-seo"
+en = "Technical SEO"
+de = "Technisches SEO"
+
+[[categories]]
+slug = "ai-search"
+en = "AI search"
+de = "KI-Suche"
