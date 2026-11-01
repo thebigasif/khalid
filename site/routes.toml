@@ -1,0 +1,9 @@
+# Each feature group and each use case is a post in its own collection,
+# so /khalid/features/ and /khalid/use-cases/ list them with an intro from
+# their _index.md.
+
+[collections.features]
+permalink = "/features/{slug}/"
+
+[collections.use-cases]
+permalink = "/use-cases/{slug}/"
