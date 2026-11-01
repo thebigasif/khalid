@@ -66,9 +66,10 @@ flate2 = "1"
 rustix = { version = "1", default-features = false, features = ["std", "thread"] }
 
 [features]
-# The hidden --test-hosts flag, for CLI tests against a local stand-in.
-# Release builds leave it off, so the private-network guard has no switch.
-test-util = ["khalid-outbound/test-util"]
+# The hidden --test-hosts flag, for CLI tests against a local stand-in, and
+# the throwaway trial template pack. Release builds leave it off, so the
+# private-network guard has no switch and only real packs ship.
+test-util = ["khalid-outbound/test-util", "khalid-theme/test-util"]
 
 [dev-dependencies]
 atom_syndication = "0.12"
@@ -88,6 +89,10 @@ wiremock = "0.6"
 
 [[test]]
 name = "theme"
+required-features = ["test-util"]
+
+[[test]]
+name = "build_template"
 required-features = ["test-util"]
 
 [[test]]

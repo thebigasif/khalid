@@ -85,6 +85,7 @@ mod lint_message;
 mod lint_text;
 mod listed_post;
 mod live_redirects;
+mod look;
 mod mcp;
 mod mcp_content;
 mod mcp_message;

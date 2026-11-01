@@ -16,10 +16,11 @@ pub struct Look {
 }
 
 /// One option's value, checked against the pack. Templates read it as
-/// `site.template.options.<key>`.
+/// `template.options.<key>`. A new kind of option adds a variant here and
+/// in the renderer's `TemplateOption`, so the enum is exhaustive on
+/// purpose: the binary's match stops the build until it is handled.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(untagged)]
-#[non_exhaustive]
 pub enum CheckedOption {
     /// An on or off option.
     Switch(bool),
