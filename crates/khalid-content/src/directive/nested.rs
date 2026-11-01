@@ -1,8 +1,9 @@
 //! Blocks that hold other blocks, written with more colons on the outer one:
-//! `::::faq` around `:::question{...}` (ADR 0012).
+//! `::::faq` around `:::question{...}`, `::::columns` around `:::column`
+//! (ADR 0012).
 
 use super::{Attributes, clock, opening, read};
-use crate::{BlockError, BlockKind, HowToBlock, Question, RecipeBlock, Step};
+use crate::{BlockError, BlockKind, Column, HowToBlock, Question, RecipeBlock, Step};
 
 /// One inner block: its name, attributes and body's markdown.
 struct Child {
@@ -34,6 +35,29 @@ pub(super) fn faq(attributes: &Attributes, body: &[&str]) -> Result<BlockKind, B
         });
     }
     Ok(BlockKind::Faq { questions })
+}
+
+/// Reads columns: two to four `:::column{title="..."}` cards, each body
+/// markdown.
+pub(super) fn columns(attributes: &Attributes, body: &[&str]) -> Result<BlockKind, BlockError> {
+    attributes.only("columns", &[], "nothing")?;
+    let columns = children(attributes.line, body, &["column"], COLUMNS_SHAPE)?
+        .into_iter()
+        .map(|child| {
+            child.attributes.only("column", &["title"], "title")?;
+            Ok(Column {
+                title: child.attributes.get("title"),
+                text: child.text,
+            })
+        })
+        .collect::<Result<Vec<_>, BlockError>>()?;
+    if !(2..=4).contains(&columns.len()) {
+        return Err(BlockError::Value {
+            line: attributes.line,
+            problem: "columns hold two to four :::column blocks; one column is a callout, and five do not fit",
+        });
+    }
+    Ok(BlockKind::Columns { columns })
 }
 
 /// Reads a how-to: its name and time, and one `:::step{name="..."}` per
@@ -160,6 +184,7 @@ fn list(line: usize, text: &str) -> Result<Vec<String>, BlockError> {
 
 const RECIPE_SHAPE: &str =
     "a recipe needs a :::ingredients list and a :::method list, each closed with :::";
+const COLUMNS_SHAPE: &str = "columns hold only :::column blocks, each with its words, then :::";
 const FAQ_SHAPE: &str =
     "an FAQ holds only questions, each written :::question{text=\"...\"}, its answer, then :::";
 const HOW_TO_SHAPE: &str =

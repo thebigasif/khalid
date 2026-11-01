@@ -12,13 +12,13 @@ use comrak::{Arena, Options, format_html_with_plugins, parse_document};
 use khalid_core::{AbsoluteUrl, Locale, Slug, SlugMode};
 
 use crate::{
-    Block, BlockError, BlockKind, CalloutKind, StructuredBlock, Wikilinks, maths, parse_blocks,
-    wikilink,
+    Block, BlockError, BlockKind, StructuredBlock, Wikilinks, maths, parse_blocks, wikilink,
 };
 
 mod cards;
 mod forms;
 mod formula;
+mod layout;
 
 pub use forms::Gated;
 mod media;
@@ -211,12 +211,7 @@ impl Renderer<'_> {
     fn directive(&mut self, block: &Block) {
         match &block.kind {
             BlockKind::Callout { kind } => {
-                let kind = match kind {
-                    CalloutKind::Note => "note",
-                    CalloutKind::Tip => "tip",
-                    CalloutKind::Warning => "warning",
-                };
-                self.push(&["<aside class=\"callout callout-", kind, "\">\n"]);
+                self.push(&["<aside class=\"callout callout-", kind.name(), "\">\n"]);
                 self.markdown(&inside(&block.source));
                 self.html.push_str("</aside>\n");
             }
@@ -264,6 +259,12 @@ impl Renderer<'_> {
             BlockKind::File { src, title } => self.file(src, title),
             BlockKind::Gallery { images } => self.gallery(images),
             BlockKind::Maths { label, formula } => self.maths(label.as_deref(), formula),
+            BlockKind::PullQuote { by } => self.pull_quote(block, by.as_deref()),
+            BlockKind::ProsCons(pros_cons) => self.pros_cons(pros_cons),
+            BlockKind::Columns { columns } => self.columns(columns),
+            BlockKind::FoldingTable { fold, more } => {
+                self.folding_table(block, *fold, more.as_deref());
+            }
             BlockKind::Faq { questions } => self.faq(questions),
             BlockKind::HowTo(how_to) => self.how_to(how_to),
             BlockKind::Review(review) => self.review(review),

@@ -1,0 +1,10 @@
+---
+source: crates/khalid-content/tests/blocks_layout.rs
+expression: html(PULL_QUOTE)
+---
+<figure class="pullquote">
+<blockquote>
+<p>No post should be more than <strong>two clicks</strong> from the home page.</p>
+</blockquote>
+<figcaption>Ada, head of search</figcaption>
+</figure>

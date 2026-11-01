@@ -9,91 +9,16 @@ use crate::{
     VideoBlock,
 };
 
-/// Every block name, for messages.
-pub(crate) const BLOCKS: [&str; 24] = [
-    "audio",
-    "bookmark",
-    "business",
-    "button",
-    "callout",
-    "embed",
-    "faq",
-    "figure",
-    "file",
-    "form",
-    "gallery",
-    "gated",
-    "header",
-    "howto",
-    "html",
-    "maths",
-    "newsletter",
-    "product",
-    "recipe",
-    "review",
-    "snippet",
-    "toc",
-    "toggle",
-    "video",
-];
-
 mod cards;
 mod forms;
 mod formula;
+mod layout;
+mod names;
 mod nested;
 
 pub(crate) use forms::TRAP;
-
-/// What to say after "there is no block called `name`": the nearest block
-/// name when one is a typing slip away, or where the names come from.
-pub(crate) fn unknown_hint(name: &str) -> String {
-    BLOCKS
-        .iter()
-        .map(|block| (distance(name, block), block))
-        .filter(|(steps, _)| *steps <= 2)
-        .min()
-        .map_or_else(
-            || "a block's name is one word, such as callout, figure or toggle".to_owned(),
-            |(_, block)| format!("the closest name is {block}"),
-        )
-}
-
-/// How many letters must be added, removed or changed to turn `a` into `b`.
-fn distance(a: &str, b: &str) -> usize {
-    let b: Vec<char> = b.chars().collect();
-    let mut previous: Vec<usize> = (0..=b.len()).collect();
-    for (i, left) in a.chars().enumerate() {
-        let mut current = vec![i.saturating_add(1)];
-        for (j, right) in b.iter().enumerate() {
-            let replace =
-                previous.get(j).copied().unwrap_or_default() + usize::from(left != *right);
-            let remove = previous
-                .get(j.saturating_add(1))
-                .copied()
-                .unwrap_or_default()
-                + 1;
-            let add = current.last().copied().unwrap_or_default() + 1;
-            current.push(replace.min(remove).min(add));
-        }
-        previous = current;
-    }
-    previous.last().copied().unwrap_or_default()
-}
-
-/// Blocks with no body, written on one line as `::name{...}`. Every other
-/// block opens with `:::name{...}` and closes with `:::`.
-const LEAVES: [&str; 10] = [
-    "audio",
-    "bookmark",
-    "business",
-    "button",
-    "embed",
-    "file",
-    "newsletter",
-    "snippet",
-    "toc",
-    "video",
-];
+pub(crate) use names::unknown_hint;
+use names::{BLOCKS, LEAVES};
 
 /// How a block was written.
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -149,6 +74,10 @@ pub(crate) fn directive(
         "form" => forms::form(&attributes, body),
         "newsletter" | "gated" => forms::subscribe(name, &attributes),
         "maths" => formula::maths(&attributes, body),
+        "pullquote" => layout::pull_quote(&attributes, body),
+        "proscons" => layout::pros_cons(&attributes, body),
+        "columns" => nested::columns(&attributes, body),
+        "table" => layout::table(&attributes, body),
         other => Err(BlockError::UnknownBlock {
             line,
             name: other.to_owned(),
@@ -191,6 +120,9 @@ fn callout(attributes: &Attributes) -> Result<BlockKind, BlockError> {
         Some("note") | None => CalloutKind::Note,
         Some("tip") => CalloutKind::Tip,
         Some("warning") => CalloutKind::Warning,
+        Some("summary") => CalloutKind::Summary,
+        Some("read") => CalloutKind::Read,
+        Some("stat") => CalloutKind::Stat,
         Some(other) => {
             return Err(BlockError::CalloutKind {
                 line: attributes.line,
