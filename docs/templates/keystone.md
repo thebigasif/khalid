@@ -13,9 +13,9 @@ Keystone is a template for a personal guide site: one person, or a small team, w
 **The front page**
 
 1. Your logo in the header, and your call to action as a button when `[template.cta]` is set.
-2. The newest post marked `featured: true`, large: its picture on one side on a wide screen, with its author, title and summary.
-3. A row of topics that starts with "All", when your blog lists its topics.
-4. "Recently published": your other posts as a grid of picture cards, up to three across, each with its author.
+2. The newest post marked `featured: true`, large on a warm tint: its picture on one side on a wide screen, with its author, title and summary.
+3. A row of topic pills that starts with "All", when your blog lists its topics.
+4. "Recently published": your other posts as a grid of picture cards, up to three across, each with its author. A post with no picture gets a drawn cover in tints of your accent colour, so the grid stays even.
 5. The newsletter form, with one line over it such as "Join 4,000 readers", when your blog takes sign-ups.
 6. One row of three cards for each home section in `[reader]`, each with a "View all" link.
 
@@ -23,8 +23,8 @@ Lists such as a category or the archive show the same picture cards, with number
 
 **A post**
 
-1. The title, then the author's photo and name, and one date: the day it was last updated, or the day it was published if it never was.
-2. The lead picture, as wide as the page.
+1. The title, centred, then the author's photo and name, and one date: the day it was last updated, or the day it was published if it never was.
+2. The lead picture, as wide as the page, with rounded corners and a soft shadow.
 3. Share links. On a wide screen they sit in a column beside the post and stay in view as you scroll. On a phone they sit in one row under the picture.
 4. The post, each main heading marked with its chapter number: 01, 02, 03.
 5. Your own lines about the site, such as who writes it, when you set them.
@@ -96,4 +96,4 @@ Keystone sets larger text and wide space. Your own `theme/tokens.toml` wins over
 | Corners | 0.75rem |
 | Line length | 66 characters |
 
-Your colours, fonts and logo come from your main site through theme sync, as in every template.
+Keystone brings its own warm colours: an orange accent (`#c2410c`) on a cream page (`#fffaf4`). Your colours, fonts and logo from your main site, through theme sync, replace them, as in every template.

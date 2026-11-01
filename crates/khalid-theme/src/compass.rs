@@ -42,7 +42,19 @@ pub(crate) static COMPASS: Pack = Pack {
 
 /// Compass's type scale, spacing and shape. A value in the site's own
 /// `theme/tokens.toml` wins.
-const TOKENS: &str = "[type]
+const TOKENS: &str = "[colors]
+background = \"#ffffff\"
+surface = \"#eef6f7\"
+text = \"#0f2328\"
+muted = \"#4b6167\"
+link = \"#0b6580\"
+accent = \"#0e7490\"
+border = \"#d2e3e7\"
+
+[fonts]
+heading = \"ui-rounded, \\\"SF Pro Rounded\\\", \\\"Segoe UI Variable Display\\\", \\\"Segoe UI\\\", system-ui, sans-serif\"
+
+[type]
 body = \"1.0625rem 1.125rem\"
 h1 = \"2rem 3rem\"
 h2 = \"1.5rem 2rem\"

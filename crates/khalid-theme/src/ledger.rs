@@ -41,7 +41,7 @@ pub(crate) static LEDGER: Pack = Pack {
         OptionSpec {
             key: "lead_image",
             help: "Whether a post shows its lead image under its title.",
-            kind: OptionKind::Switch { default: false },
+            kind: OptionKind::Switch { default: true },
         },
         parts::on(parts::LOGO),
         parts::UPDATED_NOTE,

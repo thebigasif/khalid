@@ -4,9 +4,23 @@
    a token or a tint of one; the sizes come from the [type] and [space]
    tokens. */
 
+:root { --compass-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); }
 .site-header, main, .site-footer { max-inline-size: 72rem; }
-.site-header nav a { font-weight: 500; }
-.tags a { background: none; border: 1px solid var(--color-border); }
+.tags a { background: none; border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-text); }
+.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; }
+
+/* Header and footer: a strip of the accent along the top of the window,
+   the name after a drawn compass, menus in the text colour. */
+body { border-block-start: 4px solid var(--color-accent); }
+.site-header { padding-block: 1rem; }
+.site-name { gap: 0.5rem; font-size: 1.375rem; }
+.site-name::before { content: ""; inline-size: 1.5rem; block-size: 1.5rem; background: var(--color-accent); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M15.5 8.5l-2 5-5 2 2-5z' fill='black'/%3E%3C/svg%3E") no-repeat center / contain; }
+.site-header nav a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px 0 var(--color-accent); }
+.announcement { margin-block-end: 0; background: var(--compass-tint); border: 0; font-weight: 600; }
+.announcement a { color: var(--color-text); }
+.site-footer { margin-block-start: var(--space-section); padding-block: calc(var(--space) * 5); background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.site-footer a { color: var(--color-text); }
 
 /* One column for reading, wider only when the contents sit beside it. */
 .page, .author, .post:not(.post-with-toc), main > :is(.mentions, .comments, .newsletter-slot, .cta-band),
@@ -17,15 +31,21 @@ main:has(> :is(.post, .page)) > .breadcrumbs { max-inline-size: var(--measure); 
 .breadcrumbs li:first-child a::before { content: ""; inline-size: 1rem; block-size: 1rem; margin-inline-end: 0.375rem; background: currentColor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 7.5L8 2l6 5.5M3.5 6.5V14h3.5v-4h2v4h3.5V6.5' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain; }
 
 /* The top of a guide: title, author and dates, then the picture. */
-.post-header h1 { margin-block: 0.25em 0.5em; }
+.post-header h1 { margin-block: 0.25em 0.5em; font-size: calc(var(--text-h1) * 1.05); letter-spacing: -0.02em; }
 .post-meta address { color: var(--color-text); font-weight: 600; }
-.post-header .image img { aspect-ratio: 16 / 9; object-fit: cover; }
+.post-meta a { font-weight: 600; }
+.post-header .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--compass-tint); border: 1px solid var(--color-border); }
 
 /* The contents, open under an accent rule, then the key points. */
 .toc-box { padding: calc(var(--space) * 2) calc(var(--space) * 2.5); background: var(--color-background); border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); }
-.toc-title { font-family: var(--font-heading); }
+.toc-title { color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-h4); }
+.toc-box a { color: var(--color-text); }
+.toc-box a:hover { color: var(--color-link); }
 .post-body .callout { padding: 1.25rem; }
-.post-body .callout-summary { background: var(--color-surface); border: 0; border-inline-start: 4px solid var(--color-accent); }
+.post-body .callout-summary { background: var(--compass-tint); border: 0; border-inline-start: 4px solid var(--color-accent); }
+.callout-summary :is(ul, ol) { padding-inline-start: 0; list-style: none; }
+.callout-summary li { position: relative; padding-inline-start: 1.75rem; }
+.callout-summary li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.3em; inline-size: 1.125rem; block-size: 1.125rem; background: var(--color-accent); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Ccircle cx='9' cy='9' r='8' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M5.2 9.2l2.6 2.6 5-5.4' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / contain; }
 .callout-summary li + li { margin-block-start: calc(var(--space) * 0.75); }
 .post-body .callout-read { padding: 1rem 1.25rem; background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); border: 0; border-inline-start: 4px solid var(--color-accent); border-radius: var(--radius); font-weight: 600; }
 .post-body .callout-tip { background: var(--color-surface); border: 0; }
@@ -42,11 +62,17 @@ main:has(> :is(.post, .page)) > .breadcrumbs { max-inline-size: var(--measure); 
 
 /* After the guide: share links between rules, the author, the newsletter. */
 .post .share { padding-block: calc(var(--space) * 1.5); border-block: 1px solid var(--color-border); }
-.author-box { padding: 1.5rem; background: none; border: 1px solid var(--color-border); }
+.author-box { padding: 1.5rem; background: none; border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); }
+.author-box h2 { color: var(--color-link); font-size: var(--text-h4); }
 .author-box .avatar { inline-size: 4rem; block-size: 4rem; }
+.share a { border-radius: 999px; color: var(--color-text); }
+.share a:hover, .share a:focus-visible { background: var(--compass-tint); }
+.lock { background: var(--compass-tint); border-color: color-mix(in oklab, var(--color-accent) 25%, var(--color-background)); }
 main > .newsletter-slot { padding: calc(var(--space) * 4) 0; background: none; border-block: 1px solid var(--color-border); border-radius: 0; }
 
 /* The front page: the intro, the row of links to its sections. */
+main > h1:first-child { margin-block: -1rem calc(var(--space) * 4); padding-block: calc(var(--space) * 7); background: radial-gradient(circle at 100% 0, color-mix(in oklab, var(--color-accent) 16%, var(--color-background)) 0 18rem, transparent 18rem), var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: calc(var(--text-h1) * 1.15); letter-spacing: -0.03em; }
+[dir="rtl"] main > h1:first-child { background-image: radial-gradient(circle at 0 0, color-mix(in oklab, var(--color-accent) 16%, var(--color-background)) 0 18rem, transparent 18rem); }
 main > h1 + .intro { max-inline-size: var(--measure); font-size: var(--text-h4); }
 .jump-links { margin-block: 0 var(--space-section); padding-block: var(--space); border-block: 1px solid var(--color-border); }
 .jump-links ul { gap: 0 calc(var(--space) * 3); }
@@ -61,11 +87,18 @@ main > h1 + .intro { max-inline-size: var(--measure); font-size: var(--text-h4);
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card { display: flex; flex-direction: column; block-size: 100%; padding-block-end: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card > :not(.image) { margin-inline: 1.25rem; }
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card > :first-child:not(.image) { margin-block-start: 1.25rem; }
-.cards .card:focus-within, .cards .card:has(a:hover) { border-color: var(--color-accent); }
+.cards .card { position: relative; transition: border-color 0.15s, box-shadow 0.15s; }
+.cards .card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
+.cards .card .card-meta a { position: relative; z-index: 1; }
+.cards .card:focus-within, .cards .card:hover { border-color: var(--color-accent); box-shadow: 0 0.75rem 2rem -0.75rem color-mix(in oklab, var(--color-accent) 35%, transparent); }
+.cards .card:hover :is(h2, h3) a { color: var(--color-link); }
 .cards .card .image { margin: 0 0 calc(var(--space) * 2); }
-.cards .card .image img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0; }
-.card h2, .card h3 { font-size: var(--text-h4); }
+.cards .card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--compass-tint); border-radius: 0; }
+.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card:not(:has(.image))::before { content: ""; display: block; aspect-ratio: 16 / 9; margin-block-end: calc(var(--space) * 2); background: radial-gradient(color-mix(in oklab, var(--color-accent) 30%, var(--color-background)) 1.5px, transparent 2px) 0 0 / 1.25rem 1.25rem, linear-gradient(135deg, var(--compass-tint), color-mix(in oklab, var(--color-accent) 20%, var(--color-background))); }
+.cards > li:nth-child(even) .card:not(:has(.image))::before { background: repeating-linear-gradient(45deg, transparent 0 0.875rem, color-mix(in oklab, var(--color-accent) 12%, transparent) 0.875rem 1rem), linear-gradient(200deg, var(--color-surface), color-mix(in oklab, var(--color-accent) 16%, var(--color-background))); }
+.card h2, .card h3 { font-size: var(--text-h4); line-height: 1.3; }
+.card-meta > a { color: var(--color-link); font-weight: 700; text-decoration: none; }
 
 /* The newsletter as a band before the footer. */
-.newsletter-band { margin-block-start: var(--space-section); padding: clamp(1.25rem, 5vw, 3rem); background: var(--color-surface); border-radius: var(--radius); }
+.newsletter-band { margin-block-start: var(--space-section); padding: clamp(1.25rem, 5vw, 3rem); background: var(--compass-tint); border-radius: var(--radius); }
 .newsletter-band .newsletter-slot { max-inline-size: var(--measure); margin: 0 auto; padding: 0; background: none; }
