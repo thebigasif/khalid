@@ -1,7 +1,7 @@
 //! The Atlas template end to end (templates spec 3.2): `khalid build` of
 //! the demo site with `name = "atlas"`, three posts marked featured and a
-//! call to action, a snapshot of its front page, and the parts it must
-//! show.
+//! call to action, snapshots of its front page, a post and an author
+//! page, and the parts each must show.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -128,4 +128,57 @@ fn atlas_without_featured_posts_opens_with_the_feed() {
     assert!(!home.contains("class=\"picks\""), "{home}");
     let feed = between(&home, "<section class=\"feed\"", "</section>");
     assert_eq!(feed.matches("<li>").count(), 5, "{feed}");
+}
+
+#[test]
+fn atlas_post_page() {
+    let (_temp, out) = built(ATLAS);
+    let post = body(&out, "what-a-sitemap-does/index.html");
+    let trail = between(&post, "<nav class=\"breadcrumbs\"", "</nav>");
+    assert!(trail.contains(">Technical SEO</a>"), "{trail}");
+    assert!(
+        post.contains("<article class=\"post post-with-toc post-toc-start\">"),
+        "contents on the start side: {post}"
+    );
+    let side = between(&post, "<nav class=\"toc-side\"", "</nav>");
+    assert!(side.contains("<ol>"), "numbered: {side}");
+    assert_eq!(
+        post.matches("<div class=\"share\">").count(),
+        2,
+        "top and end"
+    );
+    let (_, header) = post.split_once("<header class=\"post-header\">").unwrap();
+    let (title, rest) = header.split_once("</header>").unwrap();
+    assert!(title.contains("<h1>"), "{title}");
+    assert!(
+        rest.trim_start().starts_with("<div class=\"share\">"),
+        "share under the title: {rest}"
+    );
+    let author = post.find("<section class=\"author-box\">").unwrap();
+    let band = post.find("<div class=\"cta-band\">").unwrap();
+    let related = post.find("<section class=\"related\">").unwrap();
+    assert!(
+        author < band && band < related,
+        "author, band, related: {post}"
+    );
+    let list = between(&post, "<section class=\"related\">", "</section>");
+    assert!(list.contains("<ul class=\"cards cards-text\""), "{list}");
+    assert!(list.matches("<li>").count() <= 3, "{list}");
+    insta::assert_snapshot!(post);
+}
+
+#[test]
+fn atlas_author_page() {
+    let (_temp, out) = built(ATLAS);
+    let author = body(&out, "authors/asif/index.html");
+    assert!(author.contains("<nav class=\"breadcrumbs\""), "{author}");
+    assert!(
+        author.contains("<ul class=\"cards cards-text\""),
+        "{author}"
+    );
+    assert!(
+        author.contains("<span class=\"card-reading-time\">"),
+        "{author}"
+    );
+    insta::assert_snapshot!(author);
 }
