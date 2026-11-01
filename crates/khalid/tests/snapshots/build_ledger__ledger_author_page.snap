@@ -1,0 +1,69 @@
+---
+source: crates/khalid/tests/build_ledger.rs
+expression: author
+---
+
+<a class="skip-link" href="#main">Skip to the content</a>
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/">Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+
+<article class="author">
+<header class="author-header">
+<h1>Lena Vogt</h1>
+<p class="author-role">Technical SEO editor</p>
+</header>
+<div class="author-bio">
+<p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees before a reader does. She writes in English and German.</p>
+
+</div>
+</article>
+<section aria-labelledby="author-posts">
+<h2 id="author-posts">Posts by Lena Vogt</h2>
+<ul class="cards cards-text" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-10-05">5 October 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-09-28">28 September 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</article>
+</li>
+</ul>
+</section>
+<section aria-labelledby="other-authors">
+<h2 id="other-authors">Other authors</h2>
+<ul class="people-list" role="list">
+<li class="person-card">
+<div>
+<p class="person-name"><a href="/blog/authors/asif/">Asif</a></p>
+<p class="person-role">Founder of SerpDad</p>
+</div>
+</li>
+</ul>
+</section>
+
+</main>
+<footer class="site-footer">
+<nav aria-label="Footer menu">
+<ul>
+<li><a href="/blog/ai/">AI info</a></li>
+<li><a href="/blog/sitemap/">Sitemap</a></li>
+</ul>
+</nav>
+</footer>
+</body>
+</html>

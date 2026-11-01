@@ -13,10 +13,16 @@ pub(crate) static LEDGER: Pack = Pack {
     name: "ledger",
     summary: "A calm, text-led blog with no pictures in its lists, for studies and long how-tos.",
     stylesheet: include_str!("../packs/ledger/ledger.css"),
-    templates: &[PackTemplate {
-        name: "home.html",
-        source: include_str!("../packs/ledger/home.html"),
-    }],
+    templates: &[
+        PackTemplate {
+            name: "home.html",
+            source: include_str!("../packs/ledger/home.html"),
+        },
+        PackTemplate {
+            name: "post.html",
+            source: include_str!("../packs/ledger/post.html"),
+        },
+    ],
     tokens: include_str!("../packs/ledger/tokens.toml"),
     reader: &[],
     options: &[

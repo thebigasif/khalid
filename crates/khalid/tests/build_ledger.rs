@@ -1,6 +1,6 @@
 //! The Ledger template end to end (templates spec 3.1): `khalid build` of
-//! the demo site with `name = "ledger"`, a snapshot of its front page,
-//! and the parts it must show.
+//! the demo site with `name = "ledger"`, a snapshot of its front page, a
+//! post and an author page, and the parts each must show.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -78,7 +78,45 @@ fn ledger_front_page() {
 }
 
 #[test]
-fn ledger_ends_the_front_page_with_the_newsletter_band() {
+fn ledger_post_page() {
+    let (_temp, out) = built(LEDGER);
+    let post = body(&out, "what-a-sitemap-does/index.html");
+    let (before_title, _) = post.split_once("<h1>").unwrap();
+    assert!(
+        before_title
+            .contains("<a class=\"pill\" href=\"/blog/category/technical-seo/\">Technical SEO</a>"),
+        "the category pill sits above the title: {post}"
+    );
+    assert!(
+        post.contains("<nav class=\"toc-box\""),
+        "inline contents: {post}"
+    );
+    assert!(
+        post.contains("<ol class=\"toc-plain\">"),
+        "unnumbered: {post}"
+    );
+    assert!(post.contains("<section class=\"author-box\">"), "{post}");
+    assert!(
+        post.contains("<ul class=\"cards cards-text\""),
+        "related list: {post}"
+    );
+    assert!(!post.contains("class=\"share\""), "no share row: {post}");
+    insta::assert_snapshot!(post);
+}
+
+#[test]
+fn ledger_shows_the_updated_date_in_place_of_the_published_one() {
+    let (_temp, out) = built(LEDGER);
+    let post = body(&out, "why-internal-links-matter/index.html");
+    assert!(
+        post.contains("Updated <time datetime=\"2026-10-20\">"),
+        "{post}"
+    );
+    assert!(!post.contains("Published <time"), "{post}");
+}
+
+#[test]
+fn ledger_ends_the_front_page_with_the_newsletter_band_and_a_post_with_the_form() {
     let mail = "\n[mail]\nfrom = \"news@example.com\"\n\n[mail.smtp]\nhost = \"127.0.0.1\"\n\
                 port = 2525\nsecurity = \"none\"\nprivate_host = true\n";
     let (_temp, out) = built(&format!("{mail}{LEDGER}"));
@@ -93,4 +131,19 @@ fn ledger_ends_the_front_page_with_the_newsletter_band() {
         after.trim_start().starts_with("</main>"),
         "the band comes last: {home}"
     );
+    let post = body(&out, "what-a-sitemap-does/index.html");
+    let related = post.find("<section class=\"related\">").unwrap();
+    let form = post.find("<section class=\"newsletter-slot\"").unwrap();
+    assert!(related < form, "the form follows the related posts: {post}");
+}
+
+#[test]
+fn ledger_author_page() {
+    let (_temp, out) = built(LEDGER);
+    let author = body(&out, "authors/lena-vogt/index.html");
+    assert!(
+        author.contains("<ul class=\"cards cards-text\""),
+        "{author}"
+    );
+    insta::assert_snapshot!(author);
 }
