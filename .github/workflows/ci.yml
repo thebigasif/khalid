@@ -29,7 +29,7 @@ jobs:
     name: Text rules
     runs-on: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: No em dashes (RULES.md BL-TXT-1)
         run: |
           if git grep -nI -- $'\xe2\x80\x94' -- ':!*.lock' ':!.claude/skills/rust-best-practices/references/*'; then
@@ -41,7 +41,7 @@ jobs:
     name: Rust
     runs-on: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       # The maintainer's runners share one user. Each gets its own Rust home,
       # so one job's toolchain install cannot swap cargo out under another.
       - name: Per-runner Rust home
@@ -139,7 +139,7 @@ jobs:
     name: Admin
     runs-on: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Any admin yet?
         id: admin
         run: |
@@ -175,7 +175,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
         with:
@@ -199,7 +199,7 @@ jobs:
     timeout-minutes: 30
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Toolchain from rust-toolchain.toml
         uses: dtolnay/rust-toolchain@master
         with:
@@ -223,7 +223,7 @@ jobs:
         run: ./scripts/demo-check.sh
       - name: Keep the reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: demo-check
           path: |
@@ -243,7 +243,7 @@ jobs:
     env:
       PEBBLE_VERSION: v2.9.0
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Toolchain from rust-toolchain.toml
         uses: dtolnay/rust-toolchain@master
         with:
@@ -291,6 +291,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Budgets (docs/standards/performance.md)
         run: ./scripts/perf.sh
