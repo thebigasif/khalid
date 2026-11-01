@@ -34,6 +34,16 @@ fn words(link: &LintLink) -> String {
     joined.trim_end_matches(['.', ':', '!', '…']).to_owned()
 }
 
+/// Whether the [`words`] of `link` are `text`, which is not empty. Most
+/// links of a site start with another letter, so they are ruled out before
+/// their words are copied: lowercasing never changes which letter comes
+/// first, and only the end is trimmed.
+fn says(link: &LintLink, text: &str) -> bool {
+    let first = link.text.trim_start().chars().next();
+    let first = first.and_then(|letter| letter.to_lowercase().next());
+    first == text.chars().next() && words(link) == text
+}
+
 /// The page a link opens, so two links to the same page compare equal.
 fn page(link: &LintLink) -> &str {
     page_key(&link.target)
@@ -76,7 +86,7 @@ impl Rule for ReusedLinkText {
 
     fn check(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Hit> {
         per_distinct_words(post, |link, text| {
-            internal_links(site).any(|other| words(other) == text && page(other) != page(link))
+            internal_links(site).any(|other| page(other) != page(link) && says(other, text))
         })
     }
 }
@@ -99,8 +109,8 @@ impl Rule for RepeatedLinkText {
 
     fn check(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Hit> {
         per_distinct_words(post, |link, text| {
-            let same = internal_links(site)
-                .filter(|other| words(other) == text && page(other) == page(link));
+            let same =
+                internal_links(site).filter(|other| page(other) == page(link) && says(other, text));
             same.count() > self.max
         })
     }
@@ -252,6 +262,35 @@ mod tests {
 
     fn post(slug: &str) -> LintPost {
         LintPost::new(Locale::try_new("en").unwrap(), Slug::try_new(slug).unwrap())
+    }
+
+    #[test]
+    fn says_agrees_with_comparing_the_words() {
+        let texts = [
+            "Internal links",
+            "  internal   LINKS.",
+            "internal links:",
+            "Ήλιος και θάλασσα",
+            "ήλιος και θάλασσα!",
+            "Über uns",
+            "über uns",
+            "İstanbul",
+            "...",
+            "   ",
+            "read more ...",
+            "Read more",
+        ];
+        for one in texts {
+            let one = LintLink::new(LinkKind::Internal, "/a/", one);
+            let text = words(&one);
+            if text.is_empty() {
+                continue;
+            }
+            for other in texts {
+                let other = LintLink::new(LinkKind::Internal, "/b/", other);
+                assert_eq!(says(&other, &text), words(&other) == text, "{text}");
+            }
+        }
     }
 
     #[test]

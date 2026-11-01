@@ -75,6 +75,29 @@ async fn any_other_address_waits_for_the_whole_site() {
 }
 
 #[tokio::test]
+async fn a_waiting_request_is_answered_once_its_page_is_saved() {
+    let live = LivePages::new(Pages::first(vec![home()]).unwrap());
+    let asking = tokio::spawn({
+        let live = live.clone();
+        async move { get(&live, "/blog/what-a-sitemap-does/").await }
+    });
+    tokio::time::sleep(SETTLE).await;
+    assert!(!asking.is_finished(), "nothing is there yet");
+
+    live.show_saved(vec![page("/blog/what-a-sitemap-does/", "<p>Saved.</p>")]);
+    let (status, body) = tokio::time::timeout(SETTLE, asking)
+        .await
+        .expect("the saved page answers before the rest of the site")
+        .unwrap();
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body, "<p>Saved.</p>");
+    assert!(
+        !live.current().is_whole(),
+        "the rest of the site still waits"
+    );
+}
+
+#[tokio::test]
 async fn a_saved_page_keeps_a_first_set_first() {
     let live = LivePages::new(Pages::first(vec![home()]).unwrap());
     live.show_saved(vec![page("/blog/what-a-sitemap-does/", "<p>Saved.</p>")]);

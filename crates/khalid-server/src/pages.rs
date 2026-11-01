@@ -16,6 +16,13 @@ pub struct Pages {
     moved: BTreeMap<String, PagePath>,
     extent: Extent,
     preloads: Vec<String>,
+    /// The pages saved on top since the last full render, so the start
+    /// render can keep them on top of the rest of the site.
+    saved: Vec<Page>,
+    /// How many times pages were saved on top of this set and the sets it
+    /// was rendered from, so a full render can tell whether a newer save
+    /// showed while it ran.
+    saves: u64,
 }
 
 /// How much of the site a page set holds.
@@ -71,6 +78,8 @@ impl Pages {
             moved: BTreeMap::new(),
             extent: Extent::Whole,
             preloads: Vec::new(),
+            saved: Vec::new(),
+            saves: 0,
         })
     }
 
@@ -142,17 +151,22 @@ impl Pages {
             moved: self.moved.clone(),
             extent: self.extent,
             preloads: self.preloads.clone(),
+            saved: self.saved.clone(),
+            saves: self.saves,
         }
     }
 
     /// The same pages, with each of `saved` in place of the page at its
     /// address, or added when there was none. The saved pages come without
     /// a Brotli copy; the next full render adds one. Every other page is
-    /// shared, not copied, and first pages stay first.
+    /// shared, not copied, and first pages stay first. Counts as one save.
     #[must_use]
     pub fn with_saved(&self, saved: Vec<Page>) -> Self {
         let mut by_path = self.by_path.clone();
+        let mut on_top = self.saved.clone();
         for page in saved {
+            on_top.retain(|older| older.path() != page.path());
+            on_top.push(page.clone());
             by_path.insert(page.path().as_str().to_owned(), page);
         }
         Self {
@@ -161,19 +175,38 @@ impl Pages {
             moved: self.moved.clone(),
             extent: self.extent,
             preloads: self.preloads.clone(),
+            saved: on_top,
+            saves: self.saves.saturating_add(1),
         }
+    }
+
+    /// These pages, with the pages saved on top of `served` kept on top,
+    /// and its count of saves, for a render of content read before those
+    /// saves, such as the start render.
+    pub(crate) fn under_saved(self, served: &Self) -> Self {
+        let mut pages = self.with_saved(served.saved.clone());
+        pages.saves = served.saves;
+        pages
+    }
+
+    /// How many times pages were saved on top of this set, and of the sets
+    /// it was rendered from.
+    pub(crate) fn saves(&self) -> u64 {
+        self.saves
     }
 
     /// Holds the `rendered` pages. A page whose bytes are the same as the
     /// page at its address in `previous` takes that page's Brotli copy
     /// instead of compressing again, so a change to one post costs one
-    /// compression.
+    /// compression. The render read every save on top of `previous`, so it
+    /// keeps their count and none of their pages.
     pub(crate) fn from_rendered(
         rendered: Rendered,
         previous: Option<&Self>,
     ) -> Result<Self, ServerError> {
         let (pages, not_found, moves) = rendered.into_parts();
         let mut plain = Self::plain(pages, not_found)?.with_moves(moves);
+        plain.saves = previous.map_or(0, |pages| pages.saves);
         for (path, page) in &mut plain.by_path {
             let old = previous.and_then(|pages| pages.get(path));
             *page = page.clone().compressed_like(old);

@@ -474,9 +474,10 @@ async fn unlocking(
 }
 
 /// Renders every page from the `checked` content on a blocking thread
-/// (RULES.md BL-RUN-7), serves them in place of the first pages, then adds
-/// their Brotli copies. A save during the start may have served a whole set
-/// already, which is newer and stays. When the pages cannot be rendered,
+/// (RULES.md BL-RUN-7), serves them in place of the first pages, with any
+/// post saved meanwhile kept on top, then adds their Brotli copies. A save
+/// during the start may have served a whole set already, which is newer and
+/// stays. When the pages cannot be rendered,
 /// `failed` gets why, and the server stops with it, as it did when it
 /// rendered every page before listening.
 async fn render_the_rest(
@@ -484,7 +485,6 @@ async fn render_the_rest(
     (checked, assets): (Arc<SiteContent>, Assets),
     failed: oneshot::Sender<UserMessage>,
 ) {
-    let first = live.current();
     let rendering = tokio::task::spawn_blocking(move || {
         let served = source.render_content(&checked, assets)?;
         drop(checked);
@@ -504,7 +504,7 @@ async fn render_the_rest(
             return;
         }
     };
-    if live.replace_if_current(&first, pages)
+    if live.serve_whole(pages)
         && let Err(error) = live.compress().await
     {
         tracing::warn!(
