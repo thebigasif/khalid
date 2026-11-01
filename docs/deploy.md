@@ -115,7 +115,7 @@ Compose runs Khalid as user 1000, the first user on most Linux machines. If `id 
 
 ## Hosting platforms
 
-The repository holds a ready file for four hosts. Each one builds the `Dockerfile` or installs the binary, keeps the site on a disk that survives restarts, and makes the site on the first start. `KHALID_ADDRESS` says the blog's address. The image's command, `serve --init`, makes a site there when the disk is empty, and leaves a site it finds as it is.
+The repository holds a ready file for four hosts that run the server, and a ready static blog for Cloudflare, last below. Each of the four builds the `Dockerfile` or installs the binary, keeps the site on a disk that survives restarts, and makes the site on the first start. `KHALID_ADDRESS` says the blog's address. The image's command, `serve --init`, makes a site there when the disk is empty, and leaves a site it finds as it is.
 
 ### Fly.io
 
@@ -156,6 +156,14 @@ Coolify makes the blog's address, sends it to port 8080, and passes it to Khalid
 3. Create a server with that address, and paste the file under "Cloud config".
 
 The blog is at `https://<your domain>/` a few minutes later. Point the domain first: Khalid asks for its certificate on the first start, and Let's Encrypt only gives one for a domain that leads to the server.
+
+### Cloudflare, free
+
+Cloudflare builds a static blog from GitHub and serves its files for free. `deploy/cloudflare/` is a small, ready blog for it: on each build Cloudflare installs one pinned Khalid release, checked against its checksums, runs `khalid build`, and serves `public/`. The admin, comments and forms need a running server, so they are not part of a static blog.
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/thebigasif/khalid/tree/main/deploy/cloudflare)
+
+The button copies the folder into a new repository in your GitHub account and deploys it as a Worker. For Cloudflare Pages, the build command is `sh build.sh`, the output folder is `public`, and the root folder is `deploy/cloudflare`. `docs/deploy/cloudflare.md` gives every step, the blog's address and your own domain.
 
 ## Sending email
 

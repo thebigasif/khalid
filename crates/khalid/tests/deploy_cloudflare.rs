@@ -10,8 +10,9 @@ use std::process::{Command, Output};
 use serde_json::Value;
 use tempfile::TempDir;
 
-/// Where the starter lives.
+/// Where the starter lives, and the button's address for it.
 const STARTER: &str = "deploy/cloudflare";
+const BUTTON: &str = "https://deploy.workers.cloudflare.com/?url=https://github.com/thebigasif/khalid/tree/main/deploy/cloudflare";
 
 /// The path of a file in the repository.
 #[cfg(test)]
@@ -175,4 +176,21 @@ fn khalid_address_sets_the_built_pages_address() {
         home.contains("href=\"https://my-blog.pages.dev/\""),
         "{home}"
     );
+}
+
+/// The button is in every guide, and the Pages settings in the guide match
+/// the starter's own build command and folder.
+#[test]
+fn the_guides_carry_the_button_and_the_starter_s_settings() {
+    for guide in ["README.md", "docs/deploy.md", "docs/deploy/cloudflare.md"] {
+        assert!(read(guide).contains(BUTTON), "{guide} has no button");
+    }
+    let guide = read("docs/deploy/cloudflare.md");
+    for row in [
+        "| Build command | `sh build.sh` |",
+        "| Build output directory | `public` |",
+        "| Root directory (advanced), Path | `deploy/cloudflare` ",
+    ] {
+        assert!(guide.contains(row), "the guide has no {row}");
+    }
 }
