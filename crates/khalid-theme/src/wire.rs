@@ -3,14 +3,17 @@
 //! feed, and posts that open with a subtitle and the writer's card.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 
 /// The Wire pack.
 pub(crate) static WIRE: Pack = Pack {
     name: "wire",
     summary: "A news and columns site: a lead story beside tabs of the latest posts and the editor's picks, a fast one-column feed, and posts that open with a subtitle and the writer's card.",
     stylesheet: include_str!("../packs/wire/wire.css"),
-    templates: &[],
+    templates: &[PackTemplate {
+        name: "home.html",
+        source: include_str!("../packs/wire/home.html"),
+    }],
     tokens: include_str!("../packs/wire/tokens.toml"),
     reader: &[],
     options: &[
