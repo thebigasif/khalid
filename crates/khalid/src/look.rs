@@ -123,6 +123,29 @@ mod tests {
     }
 
     #[test]
+    fn every_class_a_pack_template_uses_has_a_rule() {
+        let site = tempfile::tempdir().unwrap();
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let css = stylesheet_with(&tokens, pack.stylesheet).unwrap();
+            let css = String::from_utf8(css.body().to_vec()).unwrap();
+            for file in pack.templates {
+                let classes = (file.source.split("class=\"").skip(1))
+                    .filter_map(|attribute| attribute.split('"').next())
+                    .flat_map(str::split_whitespace);
+                for class in classes {
+                    let needle = format!(".{class}");
+                    let styled = css.match_indices(&needle).any(|(at, _)| {
+                        let next = css.get(at + needle.len()..).and_then(|r| r.chars().next());
+                        !next.is_some_and(|c| c.is_alphanumeric() || c == '-' || c == '_')
+                    });
+                    assert!(styled, "{}: .{class} in {}", pack.name, file.name);
+                }
+            }
+        }
+    }
+
+    #[test]
     fn the_theme_offers_an_option_for_every_part_the_templates_read() {
         let offered: Vec<&str> = khalid_theme::parts::all()
             .iter()

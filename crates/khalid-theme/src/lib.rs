@@ -11,6 +11,7 @@
 //! Every request goes through `khalid_outbound::Outbound` (RULES.md
 //! BL-RUN-8). The crate must not know about content, posts or the database.
 
+mod atlas;
 mod brand;
 mod color;
 mod contrast;
