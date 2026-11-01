@@ -61,6 +61,7 @@ fn the_site_hides_its_locale_from_templates() {
                 href: "/blog/glossary/".to_owned(),
             }],
             footer: Vec::new(),
+            footer_groups: Vec::new(),
         },
         announcement: None,
         main_site: None,
@@ -68,6 +69,7 @@ fn the_site_hides_its_locale_from_templates() {
         features: Features::all(),
         search: None,
         script: None,
+        subscribe: None,
     };
     let seen = serde_json::to_value(&site).unwrap();
     assert!(

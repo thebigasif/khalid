@@ -27,6 +27,7 @@ pub mod parts;
 mod properties;
 mod resync;
 mod site_theme;
+pub mod slot;
 mod split;
 mod token_name;
 mod token_values;

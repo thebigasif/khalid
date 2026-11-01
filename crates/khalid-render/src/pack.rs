@@ -19,6 +19,21 @@ pub struct RenderPack<'a> {
     pub templates: Vec<(&'a str, &'a str)>,
     /// Its options by key, which templates read as `template.options`.
     pub options: BTreeMap<String, TemplateOption>,
+    /// The site's call to action from `[template.cta]`, which templates
+    /// read as `template.cta`.
+    pub cta: Option<RenderCta>,
+}
+
+/// The one thing the site asks a reader to do, as the band, the header
+/// button and the `::cta` block show it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct RenderCta {
+    /// The words on the button.
+    pub label: String,
+    /// Where the button goes.
+    pub href: String,
+    /// One line beside the button, if the site wrote one.
+    pub note: Option<String>,
 }
 
 /// One option's value as templates read it.
@@ -43,22 +58,45 @@ impl RenderPack<'_> {
             name: "classic",
             templates: Vec::new(),
             options: BTreeMap::new(),
+            cta: None,
         }
     }
 }
 
-/// What templates read as `template`: the pack's name and options.
+/// What templates read as `template`: the pack's name, options and the
+/// site's call to action.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub(crate) struct PackContext {
     pub(crate) name: String,
     pub(crate) options: BTreeMap<String, TemplateOption>,
+    pub(crate) cta: Option<RenderCta>,
 }
 
 impl From<&RenderPack<'_>> for PackContext {
+    /// The pack's options, and each slot option it does not take set to
+    /// off, so the shared templates read every slot of every pack.
     fn from(pack: &RenderPack<'_>) -> Self {
+        let mut options = pack.options.clone();
+        for (key, off) in slots_off() {
+            options.entry(key.to_owned()).or_insert(off);
+        }
         Self {
             name: pack.name.to_owned(),
-            options: crate::parts::with_parts(pack.options.clone()),
+            options: crate::parts::with_parts(options),
+            cta: pack.cta.clone(),
         }
     }
+}
+
+/// The options of the slots around a page (templates spec 4.2), each off:
+/// what a pack that does not take a slot shows.
+fn slots_off() -> [(&'static str, TemplateOption); 5] {
+    let none = || TemplateOption::Word("none".to_owned());
+    [
+        ("share", none()),
+        ("share_networks", TemplateOption::Lines(Vec::new())),
+        ("newsletter", none()),
+        ("cta_band", none()),
+        ("cta_button", TemplateOption::Switch(false)),
+    ]
 }
