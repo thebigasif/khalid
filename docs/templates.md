@@ -32,6 +32,29 @@ An option a template does not know, or a value it does not take, stops every com
 
 An option you leave out takes the template's default.
 
+## Parts a template can switch on
+
+Every template shares one set of page parts. A template switches on the ones it uses, and offers each as an option with its own default. Classic switches none of them on, so it looks as it always has. The words below are the option keys and the values each takes; a template lists only the parts it offers.
+
+| Option | Values | What it changes |
+|---|---|---|
+| `logo` | `true`, `false` | The header shows the logo from `[brand] logo` in `theme/tokens.toml` in place of the blog's name. Without a logo, the name shows. |
+| `breadcrumbs` | `true`, `false` | Each page shows the trail of links from the home page to it: home, the post's category, the page. Search engines read the same trail. |
+| `dek` | `true`, `false` | A post shows its `description` as a subtitle under its title. |
+| `updated_note` | `true`, `false` | An updated post shows its `updated_note` (why it was updated) under its dates. |
+| `cards` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists: with a picture, text only, a small picture beside the text, title and date only, or a numbered list. |
+| `card_reading_time` | `true`, `false` | Each card shows how long the post takes to read. |
+| `card_author_role` | `true`, `false` | Each card shows its author's role after their name. |
+| `featured` | `true`, `false` | The newest post with `featured: true` shows large above the home page and each list, and not again below. |
+| `picks` | `0` to `8` | How many posts with `featured: true` the home page lists as editor's picks. `0` shows none. |
+| `pagination` | `pages`, `numbered` | The links under a long list: newer and older, or a numbered link to each page near this one. |
+| `related` | `grid`, `list`, `row`, `scroll`, `links` | How the related posts under a post are laid out. `scroll` is one row of pictures that scrolls sideways. |
+| `related_count` | `3` to `10` | How many related posts show. |
+| `contents` | `side-end`, `side-start`, `inline`, `inline-folded`, `none` | Where a long post's contents go: a column beside the post on wide screens (on the end or start side), an open box at the top, a folded box at the top, or nowhere. |
+| `contents_numbers` | `numbered`, `nested`, `none` | How the contents are numbered: 1, 2, 3, or 1, 1.1, 2, or not at all. |
+
+Every part reads with scripts off. Every page also shows `[brand] icon` in the browser tab, in every template.
+
 ## Reader features
 
 A template may switch some `[reader]` features on or off by default, such as the reading time. A key you write in `[reader]` always wins over the template.

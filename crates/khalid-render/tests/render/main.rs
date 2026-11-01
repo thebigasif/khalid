@@ -8,7 +8,11 @@ mod author_box;
 #[cfg(test)]
 mod authors;
 #[cfg(test)]
+mod breadcrumbs;
+#[cfg(test)]
 mod byline;
+#[cfg(test)]
+mod card_shapes;
 #[cfg(test)]
 mod cards;
 #[cfg(test)]
@@ -18,7 +22,13 @@ mod common;
 #[cfg(test)]
 mod contents;
 #[cfg(test)]
+mod contents_parts;
+#[cfg(test)]
+mod dek;
+#[cfg(test)]
 mod enlarge;
+#[cfg(test)]
+mod featured;
 #[cfg(test)]
 mod glossary;
 #[cfg(test)]
@@ -38,13 +48,19 @@ mod more_pages;
 #[cfg(test)]
 mod packs;
 #[cfg(test)]
+mod page_links;
+#[cfg(test)]
 mod pages;
+#[cfg(test)]
+mod parts;
 #[cfg(test)]
 mod post;
 #[cfg(test)]
 mod reading_time;
 #[cfg(test)]
 mod related;
+#[cfg(test)]
+mod related_layouts;
 #[cfg(test)]
 mod sandbox;
 #[cfg(test)]

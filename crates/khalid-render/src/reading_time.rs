@@ -27,7 +27,13 @@ impl ReadingTime {
     /// about 230 a minute, or for a language written without spaces, its
     /// characters at about 500 a minute, rounded up. Markup is not counted.
     pub fn of(body: &BodyHtml, locale: &Locale) -> Self {
-        let text = text_of(body.as_str());
+        Self::of_html(body.as_str(), locale)
+    }
+
+    /// The reading time of the sanitised HTML `html`, counted like
+    /// [`ReadingTime::of`], for a card made before its post's page.
+    pub fn of_html(html: &str, locale: &Locale) -> Self {
+        let text = text_of(html);
         let (count, per_minute) = if WITHOUT_SPACES.contains(&locale.language()) {
             let characters = text.chars().filter(|c| !c.is_whitespace()).count();
             (characters, CHARACTERS_PER_MINUTE)
@@ -37,6 +43,13 @@ impl ReadingTime {
         let minutes = count.div_ceil(per_minute).max(1);
         Self {
             minutes: u32::try_from(minutes).unwrap_or(u32::MAX),
+        }
+    }
+
+    /// A reading time of `minutes`, at least one.
+    pub fn from_minutes(minutes: u32) -> Self {
+        Self {
+            minutes: minutes.max(1),
         }
     }
 

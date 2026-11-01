@@ -96,6 +96,10 @@ name = "build_template"
 required-features = ["test-util"]
 
 [[test]]
+name = "build_parts"
+required-features = ["test-util"]
+
+[[test]]
 name = "doctor_address"
 required-features = ["test-util"]
 
