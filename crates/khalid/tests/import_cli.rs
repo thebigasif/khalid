@@ -98,7 +98,8 @@ fn a_wordpress_import_writes_posts_and_stores_its_redirects() {
     assert!(held.contains("/2024/03/keep-a-starter-alive/,"), "{held}");
     let rows = map.lines().count() - held.lines().count();
     assert!(rows > 0, "{map}");
-    let told = format!("Wrote 7 files and stored {rows} redirects.");
+    let noun = if rows == 1 { "redirect" } else { "redirects" };
+    let told = format!("Wrote 7 files and stored {rows} {noun}.");
     assert!(printed.starts_with(&told), "{printed}");
     assert!(printed.contains(
         "held in import/held-redirects.csv, because they lie outside the blog's folder: 2."
@@ -128,7 +129,7 @@ fn a_blocked_post_holds_its_old_addresses_until_it_goes_live() {
     let export = fixture("wordpress/basic.xml");
     let (code, printed) = khalid(site.path(), &["import", "wordpress", &export]);
     assert_eq!(code, 0, "{printed}");
-    assert!(printed.starts_with("Wrote 7 files and stored 1 redirects."));
+    assert!(printed.starts_with("Wrote 7 files and stored 1 redirect."));
     assert!(printed.contains(&format!("so readers do not see it yet: {POST}.")));
     assert!(printed.contains("held in their aliases, the list in each post's header: 2."));
     let (_, stored) = khalid(site.path(), &["redirects", "export"]);
@@ -149,6 +150,13 @@ fn a_blocked_post_holds_its_old_addresses_until_it_goes_live() {
     assert!(
         moves.contains("/2024/03/keep-a-starter-alive/ /keep-a-starter-alive/ 301"),
         "{moves}"
+    );
+    let asked = ["redirects", "explain", "/2024/03/keep-a-starter-alive/"];
+    let (code, explained) = khalid(site.path(), &asked);
+    assert_eq!(code, 0, "{explained}");
+    assert!(
+        explained.ends_with("moves for good (301) to /keep-a-starter-alive/.\n"),
+        "{explained}"
     );
 }
 

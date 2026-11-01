@@ -70,7 +70,7 @@ fn summary(content: &SiteContent) -> String {
 }
 
 /// `count` of `noun`, such as `1 post` or `10 posts`.
-fn counted(count: usize, noun: &str) -> String {
+pub(crate) fn counted(count: usize, noun: &str) -> String {
     if count == 1 {
         format!("1 {noun}")
     } else {
