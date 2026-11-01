@@ -129,7 +129,8 @@ impl SitePages {
             let renderer = Renderer::with_pack(folder, &look::render_pack(&look))
                 .map_err(|error| build_message::render(&error))?
                 .with_brand(&tokens.brand);
-            let stylesheet = assets::stylesheet_page(&config, &tokens, &look)?;
+            let rules = assets::rules(folder, &look)?;
+            let stylesheet = assets::stylesheet_page(&config, &tokens, &rules)?;
             Some(Theme {
                 renderer,
                 stylesheet,

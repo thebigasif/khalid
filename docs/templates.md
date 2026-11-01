@@ -162,3 +162,16 @@ section = "3rem"              # the space between large parts of a page
 Two sizes grow with the screen: the first on a phone 320 pixels wide, the second on a screen 1280 pixels wide and wider, and in between in step. Sizes are in `rem`, the browser's base text size.
 
 `khalid theme sync` keeps both tables as you wrote them. A file in `theme/templates/` still replaces the template's file of the same name.
+
+## Your own CSS rules
+
+A file named `theme/site.css` adds your own rules to the blog's one stylesheet, after the template's rules, so yours win. Use it for a few touches the tokens cannot make, such as a home page of your own in `theme/templates/home.html`.
+
+```css
+.hero { padding-block: 4rem; background: var(--color-surface); }
+```
+
+- Read the tokens as CSS variables, such as `var(--color-accent)` and `var(--space)`, so `khalid theme sync` still sets your colours and fonts.
+- Comments and blank lines are removed when the site is built.
+- The whole stylesheet must stay small: Khalid's own pages keep it under 20 KB once compressed.
+- The file must sit inside the site folder. A link to a file elsewhere stops the build with a message.
