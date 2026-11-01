@@ -4,14 +4,17 @@
 //! sticky column.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{Pack, slot};
+use crate::{Pack, PackTemplate, slot};
 
 /// The Atlas pack.
 pub(crate) static ATLAS: Pack = Pack {
     name: "atlas",
     summary: "A portal for a blog with many topics: topic tabs, featured posts, editor's picks and breadcrumbs.",
     stylesheet: include_str!("../packs/atlas/atlas.css"),
-    templates: &[],
+    templates: &[PackTemplate {
+        name: "home.html",
+        source: include_str!("../packs/atlas/home.html"),
+    }],
     tokens: include_str!("../packs/atlas/tokens.toml"),
     reader: &[],
     options: &[

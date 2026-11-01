@@ -61,6 +61,7 @@ older_posts = "Older posts"
 view_all = "View all posts in {name}"
 # The heading and label of the row of topic links on the home page.
 topics = "Topics"
+latest = "Latest posts"
 # {name} is filled in.
 posts_by = "Posts by {name}"
 # The heading of the other authors at the end of an author page.
@@ -144,3 +145,4 @@ consent_note = "This blog would like to run code from other companies that count
 consent_change = "You can change your choice about code from other companies that counts visits."
 consent_allow = "Allow"
 consent_refuse = "Do not allow"
+all_posts = "All posts"

@@ -44,7 +44,6 @@
 /* One block per topic: its newest posts and a link to all of them. */
 .topic-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 0 calc(var(--atlas-gap) * 2); }
 .topic-block .story { padding-block: calc(var(--space) * 1.5); }
-.topic-block .story-excerpt { display: none; }
 @media (min-width: 64rem) { .feed { max-inline-size: 48rem; } }
 
 /* Lists and author pages: text cards split by rules. */
