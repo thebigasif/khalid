@@ -1,0 +1,7 @@
+/* The parts a template switches on with its options (templates spec 4.2).
+   Classic turns none on, so none of these rules changes its look. */
+
+/* The logo in the header. Its box has a fixed size before the image
+   arrives, so nothing moves when it does. */
+.site-logo img { display: block; block-size: 2.5rem; inline-size: 10rem; object-fit: contain; object-position: 0 50%; }
+[dir="rtl"] .site-logo img { object-position: 100% 50%; }

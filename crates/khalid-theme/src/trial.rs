@@ -4,7 +4,19 @@
 
 use khalid_core::ReaderSwitch;
 
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, parts};
+
+/// The sampler pack: every part's option, each off, so a test turns on
+/// one part at a time in `[template.options]` (templates spec 4.2).
+pub(crate) static SAMPLER: Pack = Pack {
+    name: "sampler",
+    summary: "A throwaway look for tests of the parts.",
+    stylesheet: "",
+    templates: &[],
+    tokens: "",
+    reader: &[],
+    options: &[parts::LOGO],
+};
 
 /// The trial pack.
 pub(crate) static TRIAL: Pack = Pack {

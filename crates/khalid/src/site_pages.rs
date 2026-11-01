@@ -124,9 +124,10 @@ impl SitePages {
     ) -> Result<Self, UserMessage> {
         let theme = if config.mode().has_pages() {
             let look = look::of(folder, &config)?;
-            let renderer = Renderer::with_pack(folder, &look::render_pack(&look))
-                .map_err(|error| build_message::render(&error))?;
             let tokens = look::tokens(folder, &look)?;
+            let renderer = Renderer::with_pack(folder, &look::render_pack(&look))
+                .map_err(|error| build_message::render(&error))?
+                .with_brand(&tokens.brand);
             let stylesheet = assets::stylesheet_page(&config, &tokens, &look)?;
             Some(Theme {
                 renderer,

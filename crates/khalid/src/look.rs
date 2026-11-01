@@ -107,4 +107,13 @@ mod tests {
             assert!(renderer.is_ok(), "{}", pack.name);
         }
     }
+
+    #[test]
+    fn the_theme_offers_an_option_for_every_part_the_templates_read() {
+        let offered: Vec<&str> = khalid_theme::parts::all()
+            .iter()
+            .map(|spec| spec.key)
+            .collect();
+        assert_eq!(offered, khalid_render::part_keys());
+    }
 }

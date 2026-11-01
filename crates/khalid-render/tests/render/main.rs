@@ -40,6 +40,8 @@ mod packs;
 #[cfg(test)]
 mod pages;
 #[cfg(test)]
+mod parts;
+#[cfg(test)]
 mod post;
 #[cfg(test)]
 mod reading_time;
