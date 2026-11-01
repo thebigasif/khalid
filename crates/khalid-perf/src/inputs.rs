@@ -62,6 +62,7 @@ impl Prepared {
             features: Features::all(),
             search: None,
             script: None,
+            subscribe: None,
         };
         let mut prepared = Self {
             site,
