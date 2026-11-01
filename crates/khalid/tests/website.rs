@@ -208,11 +208,28 @@ fn every_page_the_brief_asks_for_is_built_and_links_its_live_demo() {
         "The problem it solves",
         "What you get",
         "Three ways to start",
+        "deploy.workers.cloudflare.com",
+        "Write, check, publish",
+        "class=\"closing\"",
     ] {
         assert!(home.contains(part), "{part}");
     }
+    for slug in FEATURES {
+        assert!(
+            home.contains(&format!("href=\"/khalid/features/{slug}/\"")),
+            "{slug}"
+        );
+    }
 
     let features = built_page(site.path(), "features/");
+    assert_eq!(
+        features.matches("<span class=\"icon\"><svg").count(),
+        FEATURES.len()
+    );
+    assert!(
+        !features.contains("<path d=\"\""),
+        "every feature has an icon"
+    );
     let places: Vec<usize> = FEATURES
         .iter()
         .map(|slug| {

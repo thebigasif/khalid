@@ -2,7 +2,11 @@
     each with its own drawn icon, instead of a list of posts. The icon
     macro lives here, and home.html imports it, so both draw the same set.
     Every icon is a line drawing on a 24 by 24 grid in the text colour. -#}
-{% extends "base.html" %}
+{#- An import sees the page that imports it. On the home page this file
+    only lends its macros, so there it neither extends base.html, which
+    home.html already extends, nor draws its main block. -#}
+{% set listing = meta.path != site.home -%}
+{% if listing %}{% extends "base.html" %}{% endif %}
 {% set icons = {
   "writing-checks": "M7 3h7l4 4v14H7z M14 3v4h4 M9.5 14l2 2 4-4.5",
   "seo-ai-search": "M10.5 4a6.5 6.5 0 1 0 0 13a6.5 6.5 0 1 0 0-13z M20 20l-4.9-4.9 M10.5 7.6l.9 2 2 .9-2 .9-.9 2-.9-2-2-.9 2-.9z",
@@ -37,7 +41,7 @@
 {% macro arrow() -%}
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="{{ icons.arrow }}"/></svg>
 {%- endmacro %}
-{% block main %}
+{% block main %}{% if listing %}
 {% from "card.html" import pages -%}
 {% set features = "/features/" in meta.path -%}
 <header class="page-hero band">
@@ -62,4 +66,4 @@
 <p class="lead">{{ "The demo blog runs all of them, with scripts off and full marks from the checks." if features else "Each use case has a live example, built by Khalid from text files." }}</p>
 <p class="actions"><a class="button" href="{{ site.home }}start/">Start a blog {{ arrow() }}</a> <a class="button button-quiet" href="{{ site.home }}demo/">See the demo blog</a></p>
 </section>
-{% endblock %}
+{% endif %}{% endblock %}
