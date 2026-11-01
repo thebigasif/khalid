@@ -60,11 +60,19 @@ build() {
   # Menus and posts link to the site's own pages by path, such as
   # "/blog/about/", so each path follows the site to its new mount. A path
   # inside a full address, such as https://example.com/blog/, stays.
-  local was
+  local was origin
   was="$(sed -n 's#^mount = "\(.*\)"#\1#p' "$from/site.toml")"
+  origin="$(sed -n 's#^address = "\(.*\)"#\1#p' "$from/site.toml")"
+  origin="${origin%/}"
   if [ -n "$was" ] && [ "$was" != "$at" ]; then
     find "$site" -type f \( -name '*.md' -o -name '*.toml' \) -exec \
       sed -i -E "s#(^|[^A-Za-z0-9._~:/-])${was}#\1${at}#g" {} +
+  fi
+  # A full address of the site's own file, such as the logo in
+  # theme/tokens.toml, follows the site to its new address and mount.
+  if [ -n "$was" ] && [ -n "$origin" ]; then
+    find "$site" -type f -name '*.toml' -exec \
+      sed -i "s#${origin}${was}#${address}${at}#g" {} +
   fi
   if [ -n "$template" ]; then
     without_template "$site/site.toml"
