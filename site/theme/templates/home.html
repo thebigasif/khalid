@@ -1,0 +1,61 @@
+{#- Khalid's own home page: the story of the product in short sections,
+    each with a link to see it working. It replaces the default home page,
+    which lists posts, because this site is a product site, not a blog. -#}
+{% extends "base.html" %}
+{% block main %}
+{% set home = site.home -%}
+<h1>{{ page.title }}: a blog that checks every post before it goes live</h1>
+<div class="intro">
+<p>Khalid is an open-source blog engine you add to the website you already have. It is one small program. Every post is a text file. It writes the SEO for you, and it will not publish a post with the mistakes that hurt it in search.</p>
+<p><a href="{{ home }}start/">Start a blog</a> or <a href="{{ home }}demo/">see the demo blog</a>.</p>
+</div>
+
+<section>
+<h2>Who it is for</h2>
+<p>Businesses that want a blog beside their main website, whatever that site is built with. Small marketing teams, agencies, founders and newsletter writers who want posts that search engines and AI tools can find.</p>
+<p>You do not need to be technical to write. The admin is a web editor. People who like the command line and AI agents can use the same features there.</p>
+<p><a href="{{ home }}use-cases/">See who uses Khalid, and how</a>.</p>
+</section>
+
+<section>
+<h2>The problem it solves</h2>
+<p>Most blogs lose readers in quiet ways. A post goes out with no description. A link breaks when a page moves. Search tools need a plugin, then another, and each one needs updates.</p>
+<p>Khalid puts the checks before the post goes live, and builds the SEO in. A careful editor reads every post, and nothing extra needs installing.</p>
+<p><a href="{{ home }}features/writing-checks/">See how the writing checks work</a>.</p>
+</section>
+
+<section>
+<h2>What you get</h2>
+<ul>
+<li><strong>Writing checks</strong> that stop serious mistakes and explain every fix. <a href="{{ home }}features/writing-checks/">Writing checks</a></li>
+<li><strong>SEO and AI search</strong> built in: tags, structured data, sitemaps, feeds and files for AI tools. <a href="{{ home }}features/seo-ai-search/">SEO and AI search</a></li>
+<li><strong>A web editor</strong> with blocks, versions and roles for your team. <a href="{{ home }}features/blog-editor/">The editor</a></li>
+<li><strong>Drafts, previews and scheduling</strong>, so posts go live when they are ready. <a href="{{ home }}features/schedule-posts/">Publishing</a></li>
+<li><strong>A newsletter and members-only posts</strong>, with your list on your own site. <a href="{{ home }}features/blog-newsletter/">Newsletter</a></li>
+<li><strong>Comments and forms</strong> that work with scripts off. <a href="{{ home }}features/blog-comments/">Comments and forms</a></li>
+<li><strong>Analytics without cookies</strong>, including readers sent by AI tools. <a href="{{ home }}features/ai-visitors/">Analytics</a></li>
+<li><strong>Imports</strong> from WordPress, Ghost, Medium, Substack and markdown. <a href="{{ home }}features/blog-migration/">Moving your blog</a></li>
+<li><strong>APIs, an SDK and an MCP server</strong> for your tools and AI agents. <a href="{{ home }}features/blog-api/">APIs</a></li>
+<li><strong>Fast, light pages</strong> that need no script, on a server or as plain files. <a href="{{ home }}features/blog-hosting/">Hosting and speed</a></li>
+<li><strong>Backups in one file</strong>, a safe restore and undo for mistakes. <a href="{{ home }}features/blog-backups/">Backups</a></li>
+<li><strong>Your brand's look</strong> copied from your website, in any language. <a href="{{ home }}features/theme-sync/">Theme sync</a></li>
+</ul>
+<p><a href="{{ home }}features/">See every feature</a> or <a href="{{ home }}templates/">browse the templates</a>.</p>
+</section>
+
+<section>
+<h2>Three ways to start</h2>
+<ol>
+<li><strong>The install script.</strong> One line on Linux or a Mac puts Khalid on your computer. Windows has a download.</li>
+<li><strong>Docker.</strong> Each release publishes an image, so you run a blog without building anything.</li>
+<li><strong>The Deploy to Cloudflare button.</strong> Cloudflare copies a small ready blog into your GitHub account and puts it online on its free plan.</li>
+</ol>
+<p><a href="{{ home }}start/">See the steps for each way</a>, or <a href="{{ home }}compare/">compare Khalid with WordPress, Ghost and Webflow</a> first.</p>
+</section>
+
+<section>
+<h2>Open, and checked in public</h2>
+<p>Khalid is open source under the AGPL licence. Its code, tests and every decision are public on GitHub. This website is built with Khalid and passes its own checks.</p>
+<p><a href="https://github.com/thebigasif/khalid">Read the code on GitHub</a> or <a href="{{ home }}about/">read about who makes Khalid</a>.</p>
+</section>
+{% endblock %}
