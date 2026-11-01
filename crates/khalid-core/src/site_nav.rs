@@ -19,6 +19,12 @@ use crate::{AbsoluteUrl, Locale};
 /// label = "Impressum"
 /// href = "/blog/de/impressum/"
 /// language = "de"
+///
+/// [[nav.footer_groups]]
+/// heading = "Product"
+/// [[nav.footer_groups.links]]
+/// label = "Pricing"
+/// href = "/pricing/"
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
 #[serde(default, deny_unknown_fields)]
@@ -28,13 +34,60 @@ pub struct NavSettings {
     pub primary: Vec<MenuLink>,
     /// The menu in the footer, in the order written.
     pub footer: Vec<MenuLink>,
+    /// Columns of footer links under a heading each, in the order written.
+    pub footer_groups: Vec<FooterGroup>,
 }
 
 impl NavSettings {
-    /// Every link of both menus that names a language.
+    /// Every language a menu link or a footer group names.
     pub(crate) fn languages(&self) -> impl Iterator<Item = &Locale> {
-        let links = self.primary.iter().chain(&self.footer);
-        links.filter_map(|link| link.language.as_ref())
+        let grouped = self.footer_groups.iter().flat_map(|group| &group.links);
+        let links = self.primary.iter().chain(&self.footer).chain(grouped);
+        let groups = self.footer_groups.iter();
+        let groups = groups.filter_map(|group| group.language.as_ref());
+        links
+            .filter_map(|link| link.language.as_ref())
+            .chain(groups)
+    }
+}
+
+/// One column of footer links under its heading, such as "Product".
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(try_from = "GroupFields")]
+#[non_exhaustive]
+pub struct FooterGroup {
+    /// The words over the links.
+    pub heading: OneLine,
+    /// The links, in the order written. Never empty.
+    pub links: Vec<MenuLink>,
+    /// The one language whose pages show the group. `None` shows it on
+    /// every page.
+    pub language: Option<Locale>,
+}
+
+/// A footer group as written, before it is checked for links.
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct GroupFields {
+    heading: OneLine,
+    #[serde(default)]
+    links: Vec<MenuLink>,
+    #[serde(default)]
+    language: Option<Locale>,
+}
+
+impl TryFrom<GroupFields> for FooterGroup {
+    type Error = SiteNavError;
+
+    fn try_from(fields: GroupFields) -> Result<Self, Self::Error> {
+        if fields.links.is_empty() {
+            return Err(SiteNavError::NoLinks);
+        }
+        Ok(Self {
+            heading: fields.heading,
+            links: fields.links,
+            language: fields.language,
+        })
     }
 }
 
@@ -189,6 +242,11 @@ pub enum SiteNavError {
         "use a path on this site such as /blog/about/, or a full address such as https://www.example.com/"
     )]
     Href,
+    /// A footer group has a heading and no link under it.
+    #[error(
+        "give each footer group at least one link with [[nav.footer_groups.links]], or remove the group"
+    )]
+    NoLinks,
 }
 
 #[cfg(test)]

@@ -74,6 +74,9 @@ pub enum BlockKind {
     },
     /// `::toc`: a list of the body's headings, linked.
     Toc,
+    /// `::cta`: the site's call to action from `[template.cta]`, as the
+    /// page's template draws it.
+    Cta,
     /// `::snippet{slug="..."}`: the blocks of the snippet with that slug in
     /// the post's language, so one change to it shows in every post.
     Snippet {

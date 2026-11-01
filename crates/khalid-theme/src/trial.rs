@@ -4,7 +4,7 @@
 
 use khalid_core::ReaderSwitch;
 
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, parts};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, parts, slot};
 
 /// The sampler pack: every part's option, each off, so a test turns on
 /// one part at a time in `[template.options]` (templates spec 4.2).
@@ -72,5 +72,10 @@ pub(crate) static TRIAL: Pack = Pack {
             help: "Short facts shown under the blog's name.",
             kind: OptionKind::Lines { most: 3 },
         },
+        slot::share("end"),
+        slot::share_networks(&["linkedin", "x", "email"]),
+        slot::newsletter("both"),
+        slot::cta_band("both"),
+        slot::CTA_BUTTON_ON,
     ],
 };
