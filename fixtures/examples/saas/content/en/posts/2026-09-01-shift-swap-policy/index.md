@@ -7,6 +7,9 @@ category: guides
 description: A shift swap policy fits on one page. It says who can swap, how to ask and who approves, so swaps stay fair and the rota stays right.
 focus_keyword: shift swap policy
 tags: [cover, fairness]
+image:
+  src: cover.svg
+  alt: Two shift cards trading places with curved arrows, in front of a one page policy with a tick
 ---
 
 A shift swap policy is a short set of rules for trading shifts. It says who can swap with whom, how to ask, and who must approve the change. Without one, swaps happen in group chats, the rota goes out of date, and someone turns up for a shift that is no longer theirs.

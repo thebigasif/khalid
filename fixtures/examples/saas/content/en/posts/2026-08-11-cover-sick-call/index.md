@@ -7,6 +7,9 @@ category: guides
 description: A sick call at six in the morning is stressful. A short cover list and a fair order of asking turn it into a two-minute job.
 focus_keyword: sick call
 tags: [cover, planning]
+image:
+  src: cover.svg
+  alt: An early morning alarm clock at sunrise beside a phone with a cover list and a tick
 ---
 
 A sick call is the message every manager dreads: someone cannot come in, and the shift starts soon. You cannot stop people falling ill. You can decide now how you will cover the gap, so the early morning becomes a short routine instead of a scramble.

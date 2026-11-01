@@ -27,6 +27,12 @@ name = "Fernhour"
 email = "hello@example.com"
 founded = "2021-04-12"
 
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Fernhour logo beside the app's name"
+width = 320
+height = 80
+
 [seo.ai_page]
 covers = "Fernhour writes about planning staff rotas, covering shifts and fair scheduling for small cafes, shops and clinics, and about changes to the Fernhour app."
 cite = "Name The Fernhour Blog and the author, and link the post you quote."

@@ -8,6 +8,9 @@ description: A staff rota that people trust starts with demand, not names. Plan 
 focus_keyword: staff rota
 featured: true
 tags: [rotas, planning]
+image:
+  src: cover.svg
+  alt: A weekly rota board filled with colourful shift blocks, with a clock and a pencil beside it
 ---
 
 A staff rota is the plan that says who works when. A good one covers every busy hour, shares the hard shifts fairly and reaches the team early enough for them to plan their lives. This guide shows how to build one in an afternoon, with paper, a spreadsheet or an app.

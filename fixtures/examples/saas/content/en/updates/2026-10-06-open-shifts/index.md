@@ -7,6 +7,9 @@ category: product-updates
 description: Post gaps on the rota as open shifts. Everyone who can work one sees it, the first person to claim it gets it, and you approve with one tap.
 focus_keyword: open shifts
 tags: [cover, fernhour]
+image:
+  src: cover.svg
+  alt: A phone showing an open shift card with a dotted outline, and three team members ready to claim it
 ---
 
 Open shifts are now in Fernhour. An open shift is a gap on the rota that you post for the team to claim, instead of texting people one by one. Everyone with the right role sees it on their phone. The first person to claim it gets it, once you approve.

@@ -7,6 +7,9 @@ category: comparisons
 description: A spreadsheet rota costs nothing and suits a tiny team. A scheduling app saves time once people swap shifts. Here is how to tell which you need.
 focus_keyword: scheduling app
 tags: [rotas, tools]
+image:
+  src: cover.svg
+  alt: A spreadsheet grid on the left and a phone showing shift cards on the right, joined by an arrow
 ---
 
 A spreadsheet rota suits a small team that rarely changes its shifts, and a scheduling app suits a team where people swap, call in sick or work across sites. Both can work well. This page compares them point by point, so you can pick the one that fits the team you have today.

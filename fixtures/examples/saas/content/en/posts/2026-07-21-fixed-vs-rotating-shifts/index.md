@@ -7,6 +7,9 @@ category: comparisons
 description: Fixed shifts give people a steady life. Rotating shifts share the hard hours. Compare the two and pick the pattern that suits your team.
 focus_keyword: rotating shifts
 tags: [shift patterns, fairness]
+image:
+  src: cover.svg
+  alt: A stack of identical shift bars beside a turning wheel split into three coloured parts
 ---
 
 Fixed shifts keep each person on the same hours every week, while rotating shifts move people through early, late and weekend hours in turn. Fixed shifts suit teams where people want a steady routine. Rotating shifts suit teams where the hard hours must be shared to feel fair.

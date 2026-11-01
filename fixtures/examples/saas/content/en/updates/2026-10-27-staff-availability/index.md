@@ -7,6 +7,9 @@ category: product-updates
 description: Staff availability is now in the Fernhour app. Each person marks the hours they cannot work, so you plan the rota from facts, not texts.
 focus_keyword: staff availability
 tags: [planning, fernhour]
+image:
+  src: cover.svg
+  alt: An app rota with shaded hours people cannot work, and a phone with a calendar and a switch
 ---
 
 Staff availability now lives in Fernhour. Each person marks the days and hours they cannot work, from their phone, and you see it as you build the rota. No more collecting days off by text, and no more shifts placed on someone's exam day.

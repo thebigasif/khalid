@@ -7,6 +7,9 @@ category: guides
 description: Rest breaks planned on the day get skipped. Put them on the rota when you build it, and check the rest between shifts too.
 focus_keyword: rest breaks
 tags: [breaks, planning]
+image:
+  src: cover.svg
+  alt: A steaming cup of tea sitting over a break in a long shift bar, with a clock and a moon
 ---
 
 Rest breaks are the pauses people take during a shift, and the rest they get between one shift and the next. Both are easy to forget when the shop is busy. The fix is to plan them when you build the rota, not to hope they happen on the day.
