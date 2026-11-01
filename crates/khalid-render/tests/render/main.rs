@@ -36,6 +36,8 @@ mod lists;
 #[cfg(test)]
 mod more_pages;
 #[cfg(test)]
+mod packs;
+#[cfg(test)]
 mod pages;
 #[cfg(test)]
 mod post;

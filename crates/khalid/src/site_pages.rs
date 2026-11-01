@@ -28,8 +28,8 @@ use crate::site_html::{SearchShell, Unrendered, Which, html_pages, search_shells
 use crate::unlock::Gate;
 use crate::{
     assets, build_gate, build_home, build_lists, build_message, build_pages, build_seo,
-    build_sitemap, categories, content_message, own_descriptions, post_files, post_gate, post_lock,
-    search_page, serve_message, share_images, site_files, site_outline,
+    build_sitemap, categories, content_message, look, own_descriptions, post_files, post_gate,
+    post_lock, search_page, serve_message, share_images, site_files, site_outline,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -123,10 +123,11 @@ impl SitePages {
         clock: Arc<dyn Clock>,
     ) -> Result<Self, UserMessage> {
         let theme = if config.mode().has_pages() {
-            let renderer =
-                Renderer::with_theme(folder).map_err(|error| build_message::render(&error))?;
-            let tokens = Tokens::load(folder).map_err(|error| build_message::tokens(&error))?;
-            let stylesheet = assets::stylesheet_page(&config, &tokens)?;
+            let look = look::of(folder, &config)?;
+            let renderer = Renderer::with_pack(folder, &look::render_pack(&look))
+                .map_err(|error| build_message::render(&error))?;
+            let tokens = look::tokens(folder, &look)?;
+            let stylesheet = assets::stylesheet_page(&config, &tokens, &look)?;
             Some(Theme {
                 renderer,
                 stylesheet,

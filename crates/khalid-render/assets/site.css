@@ -15,21 +15,23 @@ body {
   background: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-body);
-  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-  line-height: 1.6;
+  font-size: var(--text-body);
+  line-height: var(--leading);
   overflow-wrap: break-word;
   padding-inline: max(1rem, env(safe-area-inset-left)) max(1rem, env(safe-area-inset-right));
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
+  font-weight: var(--heading-weight);
   line-height: 1.2;
   margin-block: 1.6em 0.5em;
   text-wrap: balance;
 }
-h1 { font-size: clamp(1.875rem, 1.4rem + 2vw, 2.75rem); margin-block-start: 0.5em; }
-h2 { font-size: clamp(1.4rem, 1.2rem + 1vw, 1.875rem); }
-h3 { font-size: clamp(1.15rem, 1.05rem + 0.5vw, 1.375rem); }
+h1 { font-size: var(--text-h1); margin-block-start: 0.5em; }
+h2 { font-size: var(--text-h2); }
+h3 { font-size: var(--text-h3); }
+h4 { font-size: var(--text-h4); }
 
 p, ul, ol, dl, figure, pre, table, blockquote { margin-block: 0 1.1em; }
 
@@ -98,15 +100,15 @@ nav a { min-inline-size: 44px; }
   padding-block: 2rem 3rem;
   border-block-start: 1px solid var(--color-border);
   color: var(--color-muted);
-  font-size: 0.9375rem;
+  font-size: var(--text-small);
 }
 .site-footer p { margin: 0; }
 
 /* A post, a plain page or an author: one piece of writing. */
-.post, .page, .author { margin-block-end: 2.5rem; }
+.post, .page, .author { margin-block-end: var(--space-section); }
 .post-header { margin-block-end: 2rem; }
 .post-header .image { margin-block: 1.5rem 0; }
-.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta { color: var(--color-muted); font-size: var(--text-small); }
 .post-meta p, .post-meta address { margin-block: 0 0.25rem; font-style: normal; }
 .people { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-block-end: 0.5rem; }
 .person { display: flex; align-items: center; gap: 0.625rem; }
@@ -115,12 +117,12 @@ nav a { min-inline-size: 44px; }
 .reading-time time { white-space: nowrap; }
 .avatar { inline-size: 2.75rem; block-size: 2.75rem; border-radius: 50%; object-fit: cover; }
 .post-body > :first-child, .page-body > :first-child { margin-block-start: 0; }
-.post-footer { margin-block-start: 2.5rem; }
+.post-footer { margin-block-start: var(--space-section); }
 .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .tags a { padding-inline: 0.75rem; background: var(--color-surface); border-radius: var(--radius); text-decoration: none; }
 
 /* Home page sections and the row of topic links. */
-.home-section { margin-block-end: 2.5rem; }
+.home-section { margin-block-end: var(--space-section); }
 .view-all a { display: inline-flex; align-items: center; min-block-size: 44px; }
 .topics { margin-block-start: 3rem; }
 
@@ -128,24 +130,24 @@ nav a { min-inline-size: 44px; }
 .related, .mentions { margin-block-start: 1rem; }
 
 /* Readers' comments under a post. The honeypot field stays hidden from people; the thanks shows only after sending. */
-.comments { margin-block: 2.5rem; }
+.comments { margin-block: var(--space-section); }
 .comment-list, .comment-replies { margin: 0; padding: 0; list-style: none; }
 .comment { margin-block-end: 1.5rem; scroll-margin-block-start: 1rem; }
 .comment-replies { margin-block-start: 1rem; padding-inline-start: 1.25rem; border-inline-start: 3px solid var(--color-surface); }
 .comment-body p { margin-block: 0 0.5rem; }
 .comments-none { color: var(--color-muted); }
-.comment-meta { margin-block-end: 0.25rem; color: var(--color-muted); font-size: 0.9375rem; }
+.comment-meta { margin-block-end: 0.25rem; color: var(--color-muted); font-size: var(--text-small); }
 .comment-author { color: var(--color-text); font-weight: 700; }
 .comment-staff { padding-inline: 0.5rem; background: var(--color-surface); border-radius: var(--radius); }
 .comment-reply summary { display: inline-flex; align-items: center; min-block-size: 44px; cursor: pointer; }
 .comment-form label { display: block; font-weight: 600; }
 .comment-form input, .comment-form textarea { inline-size: 100%; min-block-size: 44px; font: inherit; }
-.comment-held { color: var(--color-muted); font-size: 0.9375rem; }
+.comment-held { color: var(--color-muted); font-size: var(--text-small); }
 .comment-trap, .comment-sent { display: none; }
 .comment-sent:target { display: block; padding: 1rem; background: var(--color-surface); border-radius: var(--radius); }
 
 /* The author box at the end of a post. */
-.author-box { margin-block-start: 2.5rem; padding: 1.25rem; background: var(--color-surface); border-radius: var(--radius); }
+.author-box { margin-block-start: var(--space-section); padding: 1.25rem; background: var(--color-surface); border-radius: var(--radius); }
 .author-box h2 { margin-block-start: 0; font-size: 1.25rem; }
 .person-card { display: flex; gap: 1rem; align-items: start; margin-block-end: 1rem; }
 .person-name { margin-block-end: 0; font-weight: 700; }
@@ -179,7 +181,7 @@ h2[id], h3[id] { scroll-margin-block-start: 1rem; }
   main:has(.post-with-toc) { max-inline-size: calc(var(--measure) + 18rem); }
   .post-with-toc { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; column-gap: 3rem; }
   .post-with-toc > * { grid-column: 1; }
-  .post-with-toc > .toc-side { display: block; grid-column: 2; grid-row: 1 / span 9; align-self: start; position: sticky; inset-block-start: 1rem; max-block-size: calc(100vh - 2rem); overflow-y: auto; font-size: 0.9375rem; }
+  .post-with-toc > .toc-side { display: block; grid-column: 2; grid-row: 1 / span 9; align-self: start; position: sticky; inset-block-start: 1rem; max-block-size: calc(100vh - 2rem); overflow-y: auto; font-size: var(--text-small); }
   .toc-inline { display: none; }
 }
 
@@ -187,7 +189,7 @@ h2[id], h3[id] { scroll-margin-block-start: 1rem; }
 .image { margin-inline: 0; }
 .image img { inline-size: 100%; border-radius: var(--radius); }
 .enlarge { display: block; cursor: zoom-in; }
-figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-size: 0.9375rem; }
+figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-size: var(--text-small); }
 
 /* Lists of posts. Cards change shape by their own width, wherever they sit. */
 .intro { color: var(--color-muted); }
@@ -197,8 +199,8 @@ figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-size: 0
 .card h2 a, .card h3 a { color: var(--color-text); text-decoration: none; }
 .card h2 a:hover, .card h3 a:hover { text-decoration: underline; }
 .card p { margin-block-end: 0.25rem; }
-.card time { color: var(--color-muted); font-size: 0.9375rem; }
-.card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1rem; color: var(--color-muted); font-size: 0.9375rem; }
+.card time { color: var(--color-muted); font-size: var(--text-small); }
+.card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1rem; color: var(--color-muted); font-size: var(--text-small); }
 .card-author { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-text); }
 .card-meta .avatar { inline-size: 2rem; block-size: 2rem; }
 @container (min-width: 36rem) {
@@ -217,7 +219,7 @@ figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-size: 0
 .author-bio { margin-block-end: 1rem; }
 .author-profiles { display: flex; flex-wrap: wrap; gap: 0 1rem; }
 
-.page-updated { color: var(--color-muted); font-size: 0.9375rem; }
+.page-updated { color: var(--color-muted); font-size: var(--text-small); }
 
 /* The glossary. */
 .letters ul { gap: 0.25rem; }

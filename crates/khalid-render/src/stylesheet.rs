@@ -5,15 +5,29 @@ use crate::{Asset, RenderError, Tokens};
 /// The rules every site shares. They read the tokens through CSS variables.
 const SITE_CSS: &str = include_str!("../assets/site.css");
 
+/// The styles of the body blocks, shared by every template.
+const BLOCKS_CSS: &str = include_str!("../assets/blocks.css");
+
 /// Builds the one public stylesheet (RULES.md BL-WEB-7): the tokens as
-/// CSS variables, then the shared rules with comments and indentation
+/// CSS variables, then the shared page and block rules with comments and indentation
 /// removed, as a hashed asset with its compressed copies.
 ///
 /// # Errors
 ///
 /// Returns [`RenderError::Compress`] if a compressor fails.
 pub fn stylesheet(tokens: &Tokens) -> Result<Asset, RenderError> {
-    let css = stylesheet_text(tokens);
+    stylesheet_with(tokens, "")
+}
+
+/// Builds the stylesheet like [`stylesheet`], with a template pack's own
+/// rules `pack_css` after the shared ones. A site ships its own pack's
+/// rules and no other pack's.
+///
+/// # Errors
+///
+/// Returns [`RenderError::Compress`] if a compressor fails.
+pub fn stylesheet_with(tokens: &Tokens, pack_css: &str) -> Result<Asset, RenderError> {
+    let css = stylesheet_text_with(tokens, pack_css);
     Asset::build("site", "css", "text/css; charset=utf-8", css.into_bytes())
 }
 
@@ -22,8 +36,15 @@ pub fn stylesheet(tokens: &Tokens) -> Result<Asset, RenderError> {
 /// `Asset::hashed_name("site", "css", text)`. `khalid serve` starts from
 /// this, so it answers before it spends time compressing.
 pub fn stylesheet_text(tokens: &Tokens) -> String {
+    stylesheet_text_with(tokens, "")
+}
+
+/// The text of the stylesheet [`stylesheet_with`] builds.
+pub fn stylesheet_text_with(tokens: &Tokens, pack_css: &str) -> String {
     let mut css = tokens.to_css();
     css.push_str(&minify(SITE_CSS));
+    css.push_str(&minify(BLOCKS_CSS));
+    css.push_str(&minify(pack_css));
     css
 }
 

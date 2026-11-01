@@ -1,6 +1,7 @@
 //! A site's settings as every command reads them: `site.toml` through
-//! `khalid-core`, then its SEO values through `khalid-seo`'s rules, so a
-//! wrong value stops the command before it runs (BL-RUN-2).
+//! `khalid-core`, then its SEO values through `khalid-seo`'s rules and its
+//! `[template]` through `khalid-theme`'s packs, so a wrong value stops the
+//! command before it runs (BL-RUN-2).
 
 use std::fs;
 use std::path::Path;
@@ -8,10 +9,11 @@ use std::path::Path;
 use khalid_core::{Config, ConfigError, Environment, UserMessage};
 use khalid_seo::SeoSite;
 
-use crate::{config_message, seo_settings};
+use crate::{config_message, look, seo_settings};
 
 /// Reads and checks the settings of the `site` folder, with `environment`
-/// on top.
+/// on top, and the chosen template's reader switches for the keys
+/// `[reader]` leaves out.
 ///
 /// # Errors
 ///
@@ -19,7 +21,7 @@ use crate::{config_message, seo_settings};
 pub(crate) fn load(site: &Path, environment: &Environment) -> Result<Config, UserMessage> {
     let config = Config::load(site, environment).map_err(|error| config_message::of(&error))?;
     check(site, &config)?;
-    Ok(config)
+    look::apply(site, config)
 }
 
 /// Checks the SEO values of `config`, read from the `site` folder, with

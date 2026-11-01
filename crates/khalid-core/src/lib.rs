@@ -35,6 +35,7 @@ mod site_nav;
 mod site_path;
 mod slug;
 mod slug_from_title;
+mod template_choice;
 pub mod toml_location;
 mod user_message;
 mod visitor_log_settings;
@@ -58,7 +59,7 @@ pub use media_settings::{MediaSettings, S3Keys, S3Settings};
 pub use post_access::{
     ParsePasswordHashError, ParseTemplateNameError, PasswordHash, PostAccess, TemplateName,
 };
-pub use reader::{HomeSection, Reader};
+pub use reader::{HomeSection, Reader, ReaderSwitch};
 pub use robots::{
     Following, ImagePreview, Indexing, ParseRobotsError, PreviewLimit, Restriction,
     RobotsDirectives,
@@ -78,5 +79,6 @@ pub use site_code::{BodyCode, BodyCodeError, Consent, SiteCode};
 pub use site_nav::{Announcement, MenuLink, NavSettings, OneLine, SiteHref, SiteNavError};
 pub use site_path::{SitePath, SitePathError};
 pub use slug::{ParseSlugError, Slug};
+pub use template_choice::{OptionValue, PackName, TemplateChoice};
 pub use user_message::UserMessage;
 pub use visitor_log_settings::VisitorLogSettings;

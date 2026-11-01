@@ -1,0 +1,19 @@
+---
+source: crates/khalid-content/tests/blocks_layout.rs
+expression: html(PROS_CONS)
+---
+<div class="proscons">
+<div class="pros">
+<p class="proscons-title">What we liked</p>
+<ul>
+<li>Sets up in <strong>five minutes</strong></li>
+<li>A free plan</li>
+</ul>
+</div>
+<div class="cons">
+<p class="proscons-title">What we missed</p>
+<ul>
+<li>No phone support</li>
+</ul>
+</div>
+</div>

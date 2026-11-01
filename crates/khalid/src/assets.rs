@@ -8,11 +8,12 @@ use std::sync::LazyLock;
 use khalid_core::{Config, UserMessage};
 use khalid_render::{
     Asset, Feature, Features, ScriptFile, ScriptTag, Tokens, reader_script, reader_script_file,
-    stylesheet, stylesheet_text,
+    stylesheet_text_with, stylesheet_with,
 };
 use khalid_server::{MediaType, Page, PagePath};
+use khalid_theme::Look;
 
-use crate::build_message;
+use crate::{build_message, look};
 
 /// The folder, under the mount and in the output folder, that holds them.
 pub(crate) const FOLDER: &str = "assets/";
@@ -33,11 +34,12 @@ const SCRIPTED: [Feature; 5] = [
 /// so the script never delays the first page.
 static READER: LazyLock<ScriptFile> = LazyLock::new(reader_script_file);
 
-/// The site's stylesheet: the values in `theme/tokens.toml`, when the site
-/// has that file, as CSS custom properties, then the shared rules.
-pub(crate) fn site_stylesheet(site: &Path) -> Result<Asset, UserMessage> {
-    let tokens = Tokens::load(site).map_err(|error| build_message::tokens(&error))?;
-    stylesheet(&tokens).map_err(|error| build_message::render(&error))
+/// The site's stylesheet: the values in `theme/tokens.toml` over the
+/// look's defaults, as CSS custom properties, then the shared rules, then
+/// the look's own rules.
+pub(crate) fn site_stylesheet(site: &Path, look: &Look) -> Result<Asset, UserMessage> {
+    let tokens = look::tokens(site, look)?;
+    stylesheet_with(&tokens, look.pack().stylesheet).map_err(|error| build_message::render(&error))
 }
 
 /// The reader script's name, integrity value and bytes.
@@ -68,8 +70,12 @@ pub(crate) fn href(config: &Config, asset: &Asset) -> String {
 /// [`site_stylesheet`] builds, at the same address, made without the
 /// compressed copies: the server compresses its pages after it answers,
 /// and Brotli's best setting would cost the start tens of megabytes.
-pub(crate) fn stylesheet_page(config: &Config, tokens: &Tokens) -> Result<Page, UserMessage> {
-    let css = stylesheet_text(tokens).into_bytes();
+pub(crate) fn stylesheet_page(
+    config: &Config,
+    tokens: &Tokens,
+    look: &Look,
+) -> Result<Page, UserMessage> {
+    let css = stylesheet_text_with(tokens, look.pack().stylesheet).into_bytes();
     let name = Asset::hashed_name("site", "css", &css);
     let href = format!("{}{FOLDER}{name}", config.mount());
     let path = PagePath::try_new(&href).map_err(|_| build_message::address(&href))?;
@@ -92,6 +98,7 @@ pub(crate) fn script_page(config: &Config) -> Result<Page, UserMessage> {
 #[cfg(test)]
 mod tests {
     use khalid_core::Environment;
+    use khalid_render::{stylesheet, stylesheet_text};
 
     use super::*;
 
@@ -103,7 +110,11 @@ mod tests {
             Config::from_toml(Path::new("site.toml"), text, &Environment::empty()).unwrap();
         let tokens = Tokens::from_toml("[colors]\nlink = \"#b3261e\"").unwrap();
         let built = stylesheet(&tokens).unwrap();
-        let page = stylesheet_page(&config, &tokens).unwrap();
+        let page = stylesheet_page(&config, &tokens, &Look::classic()).unwrap();
+        assert_eq!(
+            page.body().unwrap().as_ref(),
+            stylesheet_text(&tokens).as_bytes()
+        );
         assert_eq!(page.path().as_str(), href(&config, &built));
         let folder = format!("{}{FOLDER}site.", config.mount());
         assert!(page.path().as_str().starts_with(&folder));
