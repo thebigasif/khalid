@@ -36,6 +36,7 @@ impl fmt::Display for RuleId {
 pub struct Hit {
     subject: Option<String>,
     suggestions: Vec<String>,
+    only_post: bool,
 }
 
 impl Hit {
@@ -49,8 +50,16 @@ impl Hit {
     pub fn about(subject: impl Into<String>) -> Self {
         Self {
             subject: Some(subject.into()),
-            suggestions: Vec::new(),
+            ..Self::default()
         }
+    }
+
+    /// This hit on a post that is the only one in its language, so the
+    /// writer reads the rule's fix for that case, when it has one.
+    #[must_use]
+    pub fn on_the_only_post(mut self) -> Self {
+        self.only_post = true;
+        self
     }
 
     /// This hit with `suggestions`, such as posts to link to, best first,
@@ -69,6 +78,11 @@ impl Hit {
     /// The suggestions for the fix, best first.
     pub fn suggestions(&self) -> &[String] {
         &self.suggestions
+    }
+
+    /// Whether the post is the only one in its language.
+    pub(crate) fn is_on_the_only_post(&self) -> bool {
+        self.only_post
     }
 
     pub(crate) fn into_parts(self) -> (Option<String>, Vec<String>) {

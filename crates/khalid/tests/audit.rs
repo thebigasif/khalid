@@ -57,10 +57,7 @@ fn file(site: &Path, name: &str) -> String {
 /// The warnings the demo site has today, each a gap in the default pages
 /// that another track's brief fixes. A fix leaves this test green; a new
 /// kind of warning fails it.
-const KNOWN_WARNINGS: [&str; 2] = [
-    // The glossary term pages have no meta description: each should take
-    // its definition's first sentence.
-    "description-missing",
+const KNOWN_WARNINGS: [&str; 1] = [
     // The German home and author pages reuse the English titles.
     "title-duplicate",
 ];
@@ -184,7 +181,15 @@ fn each_run_adds_to_the_trend() {
     assert_eq!(audit(site.path(), &[]).status.code(), Some(0));
     let output = audit(site.path(), &[]);
     let said = String::from_utf8_lossy(&output.stdout);
-    assert!(said.contains("Health score: 100 out of 100."), "{said}");
+    // The demo has warnings, and the score says why they cost nothing,
+    // and which pages it counts, since a build counts more.
+    let score = "Health score: 100 out of 100, the share of pages with no error. \
+                 Warnings and notices do not lower it.\n";
+    assert!(said.contains(score), "{said}");
+    assert!(
+        said.contains(" pages: the ones readers and search engines reach through links"),
+        "{said}"
+    );
     assert!(
         said.contains("The last scores, oldest first: 100, 100."),
         "{said}"

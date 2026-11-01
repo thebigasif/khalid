@@ -2,7 +2,9 @@
 #
 # Each message is three sentences for a writer who is new to SEO: what is
 # wrong, why it matters, and what to do. `guide` names the SerpDad guide that
-# explains the rule at length. tests/messages.rs checks every entry.
+# explains the rule at length. `fix_alone`, where a rule has it, replaces
+# `fix` for a post that is the only one in its language. tests/messages.rs
+# checks every entry.
 
 [no-date]
 what = "This post has no date."
@@ -19,7 +21,8 @@ guide = "post-authors"
 [no-internal-link]
 what = "This post links to none of your other posts."
 why = "Internal links are how readers and Google find the rest of your site."
-fix = "Add one link to a related post, or to your home page while this is your only post."
+fix = "Add one link to a related post on your site."
+fix_alone = "Add one link to your home page, since this is your only post so far."
 guide = "internal-links"
 
 [no-title]

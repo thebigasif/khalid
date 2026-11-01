@@ -130,6 +130,36 @@ fn init_with_json_takes_the_defaults_and_lists_what_it_wrote() {
 }
 
 #[test]
+fn routes_toml_explains_itself_and_its_example_works_once_uncommented() {
+    let temp = tempfile::tempdir().unwrap();
+    let site = path(temp.path());
+    let args = [
+        "init",
+        site,
+        "--address",
+        "https://www.example.com",
+        "--yes",
+    ];
+    assert_eq!(khalid(&args).status.code(), Some(0));
+    let file = at(temp.path(), "routes.toml");
+    let routes = fs::read_to_string(&file).unwrap();
+    assert!(
+        !routes.contains("docs/"),
+        "no file of ours to look up: {routes}"
+    );
+    let lines: Vec<&str> = routes
+        .lines()
+        .filter_map(|line| line.strip_prefix("# "))
+        .filter(|line| line.starts_with('[') || line.contains(" = "))
+        .collect();
+    let example = lines.join("\n");
+    assert!(example.contains("permalink = "), "{routes}");
+    fs::write(&file, example).unwrap();
+    let checked = khalid(&["--site", site]);
+    assert_eq!(checked.status.code(), Some(0), "{}", text(&checked.stderr));
+}
+
+#[test]
 fn init_needs_the_address_flag() {
     let temp = tempfile::tempdir().unwrap();
     let output = khalid(&["init", path(temp.path())]);

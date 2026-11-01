@@ -111,7 +111,12 @@ impl Rule for NoInternalLink {
         if internal {
             return Vec::new();
         }
-        vec![Hit::post().suggesting(related_posts(post, site))]
+        let hit = Hit::post().suggesting(related_posts(post, site));
+        let others = site
+            .posts()
+            .iter()
+            .any(|other| other.locale == post.locale && other.slug != post.slug);
+        vec![if others { hit } else { hit.on_the_only_post() }]
     }
 }
 
