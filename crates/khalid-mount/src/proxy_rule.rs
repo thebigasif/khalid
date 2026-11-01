@@ -20,10 +20,16 @@ pub fn proxy_rule(stack: Stack, at: &MountPath, blog: &AbsoluteUrl) -> Result<St
     if after_scheme.contains(['/', '?', '#']) {
         return Err(MountError::UpstreamPath);
     }
+    // Only a TLS upstream needs its server name sent; on plain http the line does nothing.
+    let sni = if u.starts_with("https://") {
+        "proxy_ssl_server_name on;\n    "
+    } else {
+        ""
+    };
     Ok(match stack {
         Stack::Nginx => format!(
             "location = {m} {{\n    return 301 {m}/;\n}}\nlocation {m}/ {{\n    \
-             proxy_pass {u};\n    proxy_ssl_server_name on;\n    \
+             proxy_pass {u};\n    {sni}\
              proxy_set_header X-Forwarded-Host $host;\n    \
              proxy_set_header X-Forwarded-Proto $scheme;\n    \
              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n}}\n"
