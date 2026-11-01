@@ -1,0 +1,9 @@
+{
+  "name": "khalid-blog",
+  "private": true,
+  "description": "A Khalid blog, built by Cloudflare and served as static files.",
+  "scripts": {
+    "build": "sh build.sh",
+    "deploy": "npx wrangler deploy"
+  }
+}

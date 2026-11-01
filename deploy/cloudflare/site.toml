@@ -1,0 +1,14 @@
+# The blog's settings. Change name and address to your own.
+#
+# address is where readers find the blog. Every page names it, so search
+# engines know the true address. After the first deploy, put the address
+# Cloudflare gave you here, such as https://my-blog.example.workers.dev,
+# or your own domain once it points at Cloudflare. KHALID_ADDRESS, set as a
+# build variable in Cloudflare, takes its place without editing this file.
+
+name = "My Khalid blog"
+address = "https://blog.example.com"
+mount = "/"
+mode = "static"
+default_language = "en"
+languages = ["en"]
