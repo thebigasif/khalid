@@ -11,10 +11,10 @@ publish.workspace = true
 [dependencies]
 chrono = { version = "0.4", default-features = false }
 flate2 = "1"
-khalid-content = { path = "../khalid-content", version = "0.9.1" }
+khalid-content = { path = "../khalid-content", version = "1.0.0" }
 khalid-core.workspace = true
 khalid-lint.workspace = true
-khalid-render = { path = "../khalid-render", version = "0.9.1" }
+khalid-render = { path = "../khalid-render", version = "1.0.0" }
 thiserror.workspace = true
 
 [dev-dependencies]

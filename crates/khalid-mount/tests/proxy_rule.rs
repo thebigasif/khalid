@@ -30,6 +30,16 @@ fn a_nested_mount_and_a_port_reach_the_snippet() {
 }
 
 #[test]
+fn nginx_names_the_server_only_to_an_https_blog() {
+    let plain = rule(Stack::Nginx, "/blog", "http://127.0.0.1:8080").unwrap();
+    assert!(plain.contains(
+        "\n    proxy_pass http://127.0.0.1:8080;\n    proxy_set_header X-Forwarded-Host"
+    ));
+    let secure = rule(Stack::Nginx, "/blog", "https://blog-origin.example.com").unwrap();
+    assert!(secure.contains("\n    proxy_ssl_server_name on;\n"));
+}
+
+#[test]
 fn stack_names_parse_back_and_an_unknown_one_lists_them_all() {
     for stack in Stack::ALL {
         assert_eq!(stack.to_string().parse::<Stack>(), Ok(stack));

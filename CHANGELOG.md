@@ -4,6 +4,62 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.0.0
+
+The first stable release. It holds everything in 0.9.1 and the fixes below, found by walking a new user's path from install to a published post. What it is, how to install it and what is still checked after launch: `docs/releases/1.0.0.md`.
+
+### Changed
+
+#### Install and setup
+
+- `khalid init` now writes `theme/tokens.toml` with the light default colours, fonts and corners, so a new site's theme can be edited by hand at once, and it lists every file and folder it made (KH-INS-2).
+- The `routes.toml` that `khalid init` writes explains the default addresses and holds an example to uncomment. It points at the new guide `docs/routes.md` instead of an internal planning file.
+
+### Fixed
+
+- The getting-started guide now says what `khalid build` does with a blocked post: it leaves that post out and writes the rest. It used to say the build wrote nothing.
+- The nginx rule from `khalid init --stack nginx` no longer adds `proxy_ssl_server_name on;` when the blog's address is plain `http://`, where the line does nothing.
+
+#### Install and setup
+
+- `khalid staff owner` names the port `khalid serve` last ran on in its link for this computer, so a blog started with `--listen 127.0.0.1:3000` gets a link to port 3000 without being told. `--listen` still sets it by hand.
+- `cargo build` warns, in three plain lines, when `admin/dist/` is empty, so a build from source without the npm steps says it has no admin and how to add it.
+- The README's quick start starts `khalid serve` with `MIMALLOC_PURGE_DELAY=0`, as the Docker image and the systemd service do, so a blog started by hand gives unused memory back at once.
+- The Windows download builds again. Windows changed the line endings of two saved queries on checkout, so the build could not find their checked shapes. The repository now keeps every SQL file in one form on every system.
+
+#### Writing and content
+
+- A post with no `slug:` line now works with `khalid serve` and `khalid db rebuild` as it already did with `khalid build`: its address comes from its title, the same in all three. Before, `serve` stopped and `db rebuild` refused the post with "has no slug". An author with no `slug:` takes one from their name the same way.
+- `khalid new` leaves filler words and years out of a post's address, such as "that" or "2026", so its own linter no longer warns about the address it just made. A title made only of filler words keeps them.
+- `khalid new` says a post shows after the next build, or at once while `khalid serve` runs.
+
+#### Linting and audit
+
+- The "links to none of your other posts" block mentions the home page only when the post really is the only one in its language. Otherwise it asks for a link to a related post and lists the best ones to try.
+- `khalid audit` says which pages it counts, the ones readers and search engines reach, since `build` counts every page it writes. It also says the health score is the share of pages with no error, so warnings do not lower it.
+
+#### Search engines
+
+- A glossary term's page now has a meta description, taken from the first sentences of its definition, so search results show the definition and Lighthouse's SEO check passes.
+
+#### Importing
+
+- An import no longer sends old addresses to a post readers cannot see. When the linter blocks an imported post, its old addresses wait in the post's own aliases and lead to it the moment it is fixed. Old addresses outside the blog's folder wait in `import/held-redirects.csv`. The import summary names each blocked post and says where its addresses wait.
+- An import that moves a blog to a new host now counts an address whose path stays the same, such as `/about/`, as one that stays the same. Khalid no longer stores a redirect that sends such an address to itself, because its page answers it.
+
+#### Serving
+
+- `khalid serve` answers the browser's request for `/favicon.ico` with "no content" when the site has no icon, so browsers stop logging an error on every page.
+- A post saved while `khalid serve` is still starting now shows at once. On a 10,000-post site it used to wait about 40 seconds, for two or three renders of the whole site. The saved page now shows in about 15 ms, and the rest of the site follows when its render ends.
+
+#### Speed
+
+- Checking a post before it is published is about five times faster on a large site: 9 ms instead of 45 ms for one post on a 1,000-post site. The check for posts that copy each other now reads each other post once and skips the ones that cannot be copies, and the link-word checks no longer copy every link of the site for each link of the post. They find the same problems as before.
+
+#### Checks behind the release
+
+- The demo check (`scripts/demo-check.sh`) finishes well inside CI's 30 minutes: the HTML validator runs again, the not-found pages skip Lighthouse, which cannot score a 404, and the browser checks load each page once and check four at a time. axe runs with scripts on, where it can run, and the scripts-off run now proves each page shows the same text and links without JavaScript.
+
 ## 0.9.1
 
 The first public release, published as 0.9.1 because the 0.9.0 build stopped before anything was released. It holds everything listed under 0.9.0 below, plus two fixes to how the release is built.
