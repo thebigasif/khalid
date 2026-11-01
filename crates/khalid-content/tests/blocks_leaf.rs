@@ -1,7 +1,7 @@
 //! Toggle, table of contents and button blocks, and the one-line leaf form
 //! `::name{...}` for blocks with no body (task 1.7, KH-CON-5).
 
-use khalid_content::{BlockKind, parse_blocks, print_blocks, render};
+use khalid_content::{BlockKind, CTA_MARK, parse_blocks, print_blocks, render};
 use khalid_core::{Locale, SlugMode};
 
 #[cfg(test)]
@@ -37,6 +37,20 @@ fn a_toggle_round_trips() {
 #[test]
 fn a_table_of_contents_round_trips() {
     round_trip("::toc\n", &BlockKind::Toc);
+}
+
+#[test]
+fn a_call_to_action_round_trips_and_leaves_its_place_for_the_page() {
+    round_trip("::cta\n", &BlockKind::Cta);
+    let body = html("Read this first.\n\n::cta\n\nThen this.\n");
+    assert_eq!(
+        body,
+        format!("<p>Read this first.</p>\n{CTA_MARK}<p>Then this.</p>\n")
+    );
+    assert_eq!(
+        error("::cta{label=\"Go\"}\n"),
+        "line 1: a cta does not take label; it takes nothing"
+    );
 }
 
 #[test]

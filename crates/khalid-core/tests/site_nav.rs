@@ -103,6 +103,41 @@ fn refuses_a_language_the_site_does_not_have() {
 }
 
 #[test]
+fn footer_groups_keep_their_heading_links_and_order() {
+    let config = read(
+        "[[nav.footer_groups]]\nheading = \"Product\"\n\
+         [[nav.footer_groups.links]]\nlabel = \"Pricing\"\nhref = \"/pricing/\"\n\
+         [[nav.footer_groups.links]]\nlabel = \"Docs\"\nhref = \"https://docs.example.com/\"\n\n\
+         [[nav.footer_groups]]\nheading = \"Rechtliches\"\nlanguage = \"de\"\n\
+         [[nav.footer_groups.links]]\nlabel = \"Impressum\"\nhref = \"/blog/de/impressum/\"\n",
+    )
+    .unwrap();
+    let groups = &config.nav().footer_groups;
+    let headings: Vec<&str> = groups.iter().map(|g| g.heading.as_str()).collect();
+    assert_eq!(headings, ["Product", "Rechtliches"]);
+    let links: Vec<&str> = groups[0].links.iter().map(|l| l.label.as_str()).collect();
+    assert_eq!(links, ["Pricing", "Docs"]);
+    assert_eq!(groups[0].language, None);
+    assert_eq!(groups[1].language, Some(Locale::try_new("de").unwrap()));
+    assert!(
+        config.nav().footer.is_empty(),
+        "the flat list stays its own"
+    );
+}
+
+#[test]
+fn refuses_a_footer_group_with_no_links_or_an_unknown_language() {
+    let empty = read("[[nav.footer_groups]]\nheading = \"Product\"\n").unwrap_err();
+    assert!(empty.contains("at least one link"), "{empty}");
+    let french = read(
+        "[[nav.footer_groups]]\nheading = \"Produit\"\n\
+         [[nav.footer_groups.links]]\nlabel = \"Prix\"\nhref = \"/prix/\"\nlanguage = \"fr\"\n",
+    )
+    .unwrap_err();
+    assert!(french.contains("names a language"), "{french}");
+}
+
+#[test]
 fn refuses_an_unknown_key_in_a_menu_link() {
     let message = read("[[nav.primary]]\nlabel = \"Guides\"\nhref = \"/blog/\"\nicon = \"star\"\n")
         .unwrap_err();

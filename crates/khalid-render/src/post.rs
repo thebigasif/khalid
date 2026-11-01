@@ -22,6 +22,12 @@ pub struct RenderPost {
     /// The day it last changed in a way readers should know about.
     #[serde(serialize_with = "display_option")]
     pub updated: Option<NaiveDate>,
+    /// Why it was updated, from `updated_note` in its front matter, shown
+    /// by a template that turns on its `updated_note` part.
+    pub updated_note: Option<String>,
+    /// The subtitle under the heading, from `description` in its front
+    /// matter, shown by a template that turns on its `dek` part.
+    pub dek: Option<String>,
     /// How long it takes to read, from [`ReadingTime::of`] its body.
     pub reading_time: ReadingTime,
     /// Who wrote it, first author first.

@@ -4,12 +4,15 @@
     its own shape, for its sections and topic links. -#}
 {% extends "base.html" %}
 {% block main %}
-{% from "card.html" import cards, pages -%}
+{% from "card.html" import cards, featured_slot, pages -%}
 <h1>{{ page.title }}</h1>
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
-{% endif %}{% if page.posts %}{{ cards(page.posts) }}
-{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% set slot = page.featured if template.options.featured else none -%}
+{% if slot %}{{ featured_slot(slot) }}
+{% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
+{% if posts %}{{ cards(posts) }}
+{% elif not slot %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}{% endblock %}

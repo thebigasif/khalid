@@ -25,6 +25,7 @@ fn pack(templates: Vec<(&'static str, &'static str)>) -> RenderPack<'static> {
         name: "trial",
         templates,
         options,
+        cta: None,
     }
 }
 

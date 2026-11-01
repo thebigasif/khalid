@@ -125,6 +125,7 @@ impl Preview {
             alternates: Vec::new(),
             x_default: None,
             seo_head: None,
+            breadcrumbs: Vec::new(),
         };
         let post = PageBody::Post(Box::new(sample_post(&site.name, &site.locale)));
         let html = renderer
@@ -187,6 +188,7 @@ fn sample_site(source: Source<'_>) -> RenderSite {
                 href: PAGE.to_owned(),
             }],
             footer: Vec::new(),
+            footer_groups: Vec::new(),
         },
         announcement: None,
         main_site: Some(NavLink {
@@ -197,6 +199,7 @@ fn sample_site(source: Source<'_>) -> RenderSite {
         features: Features::all(),
         search: None,
         script: None,
+        subscribe: None,
     }
 }
 
@@ -211,6 +214,8 @@ fn sample_post(author: &str, locale: &Locale) -> RenderPost {
         title: "How this blog will look".to_owned(),
         date: NaiveDate::from_ymd_opt(2026, 10, 26).unwrap_or_default(),
         updated: None,
+        updated_note: None,
+        dek: None,
         reading_time: ReadingTime::of(&body, locale),
         authors: vec![Person {
             name: author.to_owned(),

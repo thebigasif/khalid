@@ -1,0 +1,15 @@
+---
+source: crates/khalid-render/tests/render/slots.rs
+expression: form
+---
+<section class="newsletter-slot" aria-labelledby="newsletter-slot-title">
+<h2 id="newsletter-slot-title">Get new posts by email</h2>
+<p>New posts in your inbox. Every email has a link to leave.</p>
+<form class="subscribe" method="post" action="/blog/subscribe">
+<p><label for="newsletter-slot-email">Your email address</label>
+<input id="newsletter-slot-email" name="email" type="email" autocomplete="email" required></p>
+<p class="form-trap" aria-hidden="true"><label for="newsletter-slot-homepage">Leave this empty</label>
+<input id="newsletter-slot-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+<p><button type="submit">Subscribe</button></p>
+</form>
+</section>

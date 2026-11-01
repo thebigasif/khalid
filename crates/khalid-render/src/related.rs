@@ -8,6 +8,10 @@ use chrono::NaiveDate;
 /// lets a post pin.
 const MOST: usize = 5;
 
+/// The most related posts any template shows, the most its
+/// `related_count` part may ask for.
+pub const MOST_RELATED: usize = 10;
+
 /// The fewest a post shows. With fewer related posts than this, the newest
 /// others fill the list, so a reader always has somewhere to go next.
 const FEWEST: usize = 3;
@@ -45,6 +49,19 @@ pub struct PostTopics {
 /// scores, then by slug, so the same posts always give the same list. With
 /// fewer than three, the newest other posts fill it to three.
 pub fn related(post: &PostTopics, posts: &[PostTopics], pinned: &[String]) -> Vec<usize> {
+    related_up_to(post, posts, pinned, MOST)
+}
+
+/// The posts to show under `post`, chosen like [`related`] but keeping up
+/// to `most` that score, so a template can show more than five. The first
+/// five are always the five [`related`] keeps. Pinned posts stay at most
+/// five, the most a post may pin.
+pub fn related_up_to(
+    post: &PostTopics,
+    posts: &[PostTopics],
+    pinned: &[String],
+    most: usize,
+) -> Vec<usize> {
     let others = || {
         posts
             .iter()
@@ -55,7 +72,7 @@ pub fn related(post: &PostTopics, posts: &[PostTopics], pinned: &[String]) -> Ve
         .iter()
         .filter_map(|slug| others().find(|(_, other)| &other.slug == slug))
         .map(|(index, _)| index)
-        .take(MOST)
+        .take(MOST.min(most))
         .collect();
     if !chosen.is_empty() {
         return chosen;
@@ -69,7 +86,7 @@ pub fn related(post: &PostTopics, posts: &[PostTopics], pinned: &[String]) -> Ve
     let sharing = scored.iter().filter(|&&(score, _, _)| score > 0).count();
     scored
         .iter()
-        .take(sharing.clamp(FEWEST, MOST))
+        .take(sharing.max(FEWEST).min(most))
         .map(|&(_, index, _)| index)
         .collect()
 }

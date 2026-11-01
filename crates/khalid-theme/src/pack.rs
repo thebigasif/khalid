@@ -86,6 +86,14 @@ pub enum OptionKind {
         /// The most lines allowed.
         most: usize,
     },
+    /// One or more words from a fixed list, each once, in the order
+    /// written, such as the networks a share row links to.
+    Picks {
+        /// Every word allowed, in the order the docs list them.
+        allowed: &'static [&'static str],
+        /// The words when not set.
+        default: &'static [&'static str],
+    },
 }
 
 /// Classic: the look every site had before packs, and every site's default.
@@ -103,10 +111,10 @@ static CLASSIC: Pack = Pack {
 #[cfg(not(feature = "test-util"))]
 static PACKS: [&Pack; 1] = [&CLASSIC];
 
-/// Every built-in pack, classic first, and the throwaway pack the tests
+/// Every built-in pack, classic first, and the throwaway packs the tests
 /// switch to.
 #[cfg(feature = "test-util")]
-static PACKS: [&Pack; 2] = [&CLASSIC, &crate::trial::TRIAL];
+static PACKS: [&Pack; 3] = [&CLASSIC, &crate::trial::TRIAL, &crate::trial::SAMPLER];
 
 /// Every built-in pack, classic first.
 pub fn packs() -> &'static [&'static Pack] {

@@ -2,19 +2,28 @@
     the newest posts, then the topic links. -#}
 {% extends "base.html" %}
 {% block main %}
-{% from "card.html" import cards, pages -%}
+{% from "card.html" import cards, featured_slot, pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
 <h1>{{ page.title }}</h1>
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+{% endif %}{% set slot = page.featured if template.options.featured else none -%}
+{% if slot %}{{ featured_slot(slot) }}
+{% endif %}{% set picks = page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks -%}
+{% if template.options.picks and picks %}<section class="picks">
+<h2>{{ t.editors_picks }}</h2>
+{{ cards(picks[:template.options.picks], 3) }}
+</section>
+{% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
+{% if page.sections %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts, 3) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}{{ cards(page.posts) }}
-{% else %}<p>{{ t.no_posts }}</p>
+{% endfor %}{% elif posts %}{{ cards(posts) }}
+{% elif not slot %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
 {% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
 <h2>{{ t.topics }}</h2>
@@ -23,4 +32,6 @@
 {% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
 {% endfor %}</ul>
 {% endfor %}</nav>
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% endblock %}

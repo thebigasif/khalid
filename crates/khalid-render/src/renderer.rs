@@ -12,8 +12,8 @@ use crate::heading_links;
 use crate::pack::{PackContext, RenderPack};
 use crate::strings::Strings;
 use crate::templates::{self, Source};
-use crate::{PageBody, PageMeta, RenderError, RenderSite};
-use crate::{enlarge, escape};
+use crate::{Brand, PageBody, PageMeta, RenderError, RenderSite};
+use crate::{cta, enlarge, escape, share};
 
 /// How many steps one page may take before rendering stops. The default
 /// pages use a few thousand; the cap stops a theme template that loops
@@ -32,6 +32,14 @@ pub struct Renderer {
     env: Environment<'static>,
     strings: Strings,
     pack: PackContext,
+    brand: BrandContext,
+}
+
+/// What templates read as `brand`: the logo and the icon as addresses.
+#[derive(Debug, Default, serde::Serialize)]
+struct BrandContext {
+    logo: Option<String>,
+    icon: Option<String>,
 }
 
 impl Renderer {
@@ -94,6 +102,8 @@ impl Renderer {
         env.add_filter("date", dates::format_date);
         env.add_filter("heading_links", heading_links::heading_links);
         env.add_filter("enlarge", enlarge::enlarge);
+        env.add_function("share_links", share::share_links);
+        env.add_filter("place_cta", cta::place_cta);
         for source in templates::defaults().into_iter().chain(overrides) {
             env.add_template_owned(source.name.clone(), source.text)
                 .map_err(|error| RenderError::compile(&source.name, error))?;
@@ -102,7 +112,20 @@ impl Renderer {
             env,
             strings: Strings::load()?,
             pack: PackContext::from(pack),
+            brand: BrandContext::default(),
         })
+    }
+
+    /// This renderer with the main site's logo and icon from the tokens'
+    /// `[brand]`: every page links the icon for the browser tab, and a
+    /// template that turns on its `logo` part shows the logo in the header.
+    #[must_use]
+    pub fn with_brand(mut self, brand: &Brand) -> Self {
+        self.brand = BrandContext {
+            logo: brand.logo.as_ref().map(ToString::to_string),
+            icon: brand.icon.as_ref().map(ToString::to_string),
+        };
+        self
     }
 
     /// Renders one page of `site` with the head `meta` and the main content
@@ -164,6 +187,7 @@ impl Renderer {
             dir => Serde(Direction::of(&site.locale)),
             page => body.value(),
             template => Serde(&self.pack),
+            brand => Serde(&self.brand),
         };
         template
             .render(context)
