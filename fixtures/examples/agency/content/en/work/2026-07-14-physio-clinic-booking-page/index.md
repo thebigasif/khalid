@@ -8,6 +8,9 @@ category: case-studies
 description: A two-room physio clinic had its booking page buried three menus deep. We rebuilt it as one clear page and linked every route to it.
 focus_keyword: booking page
 tags: [clinics, pages]
+image:
+  src: cover.svg
+  alt: Three arrows leading to one booking calendar with a single ticked appointment slot
 ---
 
 This case study is about a booking page. Our client is a small physiotherapy clinic with two treatment rooms and a front desk shared with a dentist. They asked us for more weekday bookings from new patients. The clinic is real, and they asked us not to name it.

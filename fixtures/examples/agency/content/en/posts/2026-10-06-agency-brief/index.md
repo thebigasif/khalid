@@ -8,6 +8,9 @@ category: email-marketing
 description: A one-page agency brief tells a marketing agency what you want, who for, and how you will judge it, so the first proposal is close to right.
 focus_keyword: agency brief
 tags: [planning, working with agencies]
+image:
+  src: cover.svg
+  alt: A single page brief on a clipboard with a target and an arrow, and a pencil beside it
 ---
 
 An agency brief is a short document that tells a marketing agency what you want to achieve and what they have to work with. A clear one saves weeks of back and forth. It also lets you compare agencies fairly, because each one answers the same question. This guide shows what to put in a brief that fits on one page.

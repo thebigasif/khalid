@@ -8,6 +8,9 @@ category: local-search
 description: A Google Business Profile is often the first thing a nearby customer sees. Work through this checklist once, then keep it current each month.
 focus_keyword: google business profile
 tags: [google, maps]
+image:
+  src: cover.svg
+  alt: A green map pin on a folded town map beside a checklist with three ticked boxes
 ---
 
 A Google Business Profile is the listing that shows your business on Google Maps and beside local search results. For a clinic, a trade or a shop, it is often the first thing a nearby customer sees, before your website. This checklist covers what to set up once and what to check each month.

@@ -8,6 +8,9 @@ category: email-marketing
 description: The welcome email is the one message almost every new subscriber opens. Use it to say what they will get, how often, and one useful thing now.
 focus_keyword: welcome email
 tags: [email, writing]
+image:
+  src: cover.svg
+  alt: An open green envelope with a friendly letter rising out of it and small sparkles around
 ---
 
 A welcome email is the first message a person gets after they join your list. It arrives when they still remember signing up, so it is the email they are most likely to open. A good welcome email tells them what to expect and gives them a reason to open the next one.

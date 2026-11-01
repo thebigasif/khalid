@@ -8,6 +8,9 @@ category: local-search
 description: Google ratings come when asking is easy and well timed. A short script, a direct link and a reply to each one are all most local firms need.
 focus_keyword: google ratings
 tags: [google, maps]
+image:
+  src: cover.svg
+  alt: A large speech bubble holding a row of five stars beside a happy customer with a heart
 ---
 
 Google ratings are the stars and short comments customers leave on your map listing. They help a local business twice. They help people nearby decide to trust you, and Google uses them when it ranks local listings. Most happy customers will leave one if you ask at the right moment and make it easy. This guide shows how to do both without feeling pushy.

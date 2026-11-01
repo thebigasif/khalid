@@ -8,6 +8,9 @@ category: case-studies
 description: A family plumbing firm had one page for every job. We wrote service pages for the work they want more of, and pointed their map listing at them.
 focus_keyword: service pages
 tags: [trades, pages]
+image:
+  src: cover.svg
+  alt: A pipe and a wrench in front of a neat stack of service pages with a flame on top
 ---
 
 This case study is about service pages for a family plumbing firm of three people. Their website had a single page that listed every job they did, from dripping taps to new bathrooms. They wanted more boiler work and fewer small callouts, and they asked us how their website could help.

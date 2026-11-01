@@ -8,6 +8,9 @@ category: local-search
 description: A local landing page earns its place when it says something only you could say about that town. Here is what to put on one, and what to leave off.
 focus_keyword: local landing page
 tags: [pages, writing]
+image:
+  src: cover.svg
+  alt: A web page showing a small town street with a map pin and a call button below
 ---
 
 A local landing page is a page on your website about one service in one place, such as boiler repair in a nearby town. Done well, it is the page a nearby customer lands on from search or from your map listing. Done badly, it is the same text with a new town name, and search engines learn to ignore it.

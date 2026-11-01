@@ -8,6 +8,9 @@ category: case-studies
 description: A neighbourhood bakery wanted to tell regulars about new bakes without social media. We set up an email list, a welcome email and a short weekly letter.
 focus_keyword: email list
 tags: [shops, email]
+image:
+  src: cover.svg
+  alt: A fresh loaf of bread on a plate, with an envelope flying off to a sign up button
 ---
 
 This case study is about a bakery's first email list. The bakery has one shop and a small team, and it bakes a few new things each week. The owner wanted regulars to know about them without relying on social media, where few of her posts were seen.
