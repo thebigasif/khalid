@@ -68,6 +68,7 @@ mod form_delivery;
 mod form_pages;
 mod https_message;
 mod import;
+mod import_held;
 mod import_rest;
 mod index;
 mod init;

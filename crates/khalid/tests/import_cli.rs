@@ -22,6 +22,16 @@ fn site() -> TempDir {
     temp
 }
 
+/// A site whose linter only warns about a post with no internal link, so
+/// a lone imported post goes live and its redirects are stored.
+#[cfg(test)]
+fn lenient_site() -> TempDir {
+    let site = site();
+    let rules = "[rules]\nno-internal-link = \"warn\"\n";
+    fs::write(file(site.path(), "lint.toml"), rules).unwrap();
+    site
+}
+
 /// A fixture of the importer crate, by its path inside `fixtures/`.
 #[cfg(test)]
 fn fixture(name: &str) -> String {
@@ -82,29 +92,69 @@ fn a_wordpress_import_writes_posts_and_stores_its_redirects() {
     let post = fs::read_to_string(file(site.path(), POST)).unwrap();
     assert!(post.contains("slug: \"keep-a-starter-alive\""), "{post}");
     let map = fs::read_to_string(file(site.path(), "import/wordpress-redirects.csv")).unwrap();
-    let rows = map.lines().count() - 1;
+    // The post is blocked, and its two old paths lie outside /blog/, so
+    // they wait in the held file instead of the database.
+    let held = fs::read_to_string(file(site.path(), "import/held-redirects.csv")).unwrap();
+    assert!(held.contains("/2024/03/keep-a-starter-alive/,"), "{held}");
+    let rows = map.lines().count() - held.lines().count();
     assert!(rows > 0, "{map}");
     let told = format!("Wrote 7 files and stored {rows} redirects.");
     assert!(printed.starts_with(&told), "{printed}");
+    assert!(printed.contains(
+        "held in import/held-redirects.csv, because they lie outside the blog's folder: 2."
+    ));
     let (code, stored) = khalid(site.path(), &["redirects", "export"]);
     assert_eq!(code, 0, "{stored}");
-    assert_eq!(
-        stored.lines().count(),
-        map.lines().count(),
-        "{stored}\n{map}"
-    );
+    assert_eq!(stored.lines().count(), rows + 1, "{stored}\n{map}");
+    assert!(!stored.contains("keep-a-starter-alive/,"), "{stored}");
 
     let (code, again) = khalid(site.path(), &["import", "wordpress", &export]);
     assert_eq!(code, 1, "{again}");
     assert!(again.contains(POST), "{again}");
 }
 
-#[test]
-fn an_address_that_keeps_its_path_is_not_stored_as_a_redirect() {
-    // The readiness walk: the blog moves to a new host, at its root.
+/// The readiness walk's site: the blog moves to a new host, at its root.
+#[cfg(test)]
+fn site_at_root() -> TempDir {
     let site = site();
     let settings = "name = \"Blog\"\naddress = \"https://blog.example.com/\"\nmount = \"/\"\nmode = \"server\"\ndefault_language = \"en\"\nlanguages = [\"en\"]\n";
     fs::write(file(site.path(), "site.toml"), settings).unwrap();
+    site
+}
+
+#[test]
+fn a_blocked_post_holds_its_old_addresses_until_it_goes_live() {
+    let site = site_at_root();
+    let export = fixture("wordpress/basic.xml");
+    let (code, printed) = khalid(site.path(), &["import", "wordpress", &export]);
+    assert_eq!(code, 0, "{printed}");
+    assert!(printed.starts_with("Wrote 7 files and stored 1 redirects."));
+    assert!(printed.contains(&format!("so readers do not see it yet: {POST}.")));
+    assert!(printed.contains("held in their aliases, the list in each post's header: 2."));
+    let (_, stored) = khalid(site.path(), &["redirects", "export"]);
+    assert!(!stored.contains("keep-a-starter-alive"), "{stored}");
+    let post = fs::read_to_string(file(site.path(), POST)).unwrap();
+    let aliases = "aliases: [\"/2024/03/keep-a-starter-alive/\", \"/2024/03/keep-a-starter-alive/starter-jar/\"]\n";
+    assert!(post.contains(aliases), "{post}");
+
+    let (code, built) = khalid(site.path(), &["build"]);
+    assert_eq!(code, 0, "{built}");
+    let moves = fs::read_to_string(file(site.path(), "public/_redirects")).unwrap();
+    assert!(!moves.contains("keep-a-starter-alive"), "{moves}");
+    let fixed = post.replace("every day**.", "every day**. Start at [our home page](/).");
+    fs::write(file(site.path(), POST), fixed).unwrap();
+    let (code, built) = khalid(site.path(), &["build"]);
+    assert_eq!(code, 0, "{built}");
+    let moves = fs::read_to_string(file(site.path(), "public/_redirects")).unwrap();
+    assert!(
+        moves.contains("/2024/03/keep-a-starter-alive/ /keep-a-starter-alive/ 301"),
+        "{moves}"
+    );
+}
+
+#[test]
+fn an_address_that_keeps_its_path_is_not_stored_as_a_redirect() {
+    let site = site_at_root();
     let export = fixture("wordpress/basic.xml");
     let (code, printed) = khalid(site.path(), &["import", "wordpress", &export]);
     assert_eq!(code, 0, "{printed}");
@@ -182,14 +232,15 @@ fn a_substack_import_moves_old_addresses_on_the_same_host() {
         &["import", "substack", export.to_str().unwrap()],
     );
     assert_eq!(code, 0, "{printed}");
+    // The lone post is blocked, and /p/why-rye lies outside /blog/.
     assert!(
-        printed.starts_with("Wrote 2 files and stored 1 redirects."),
+        printed.starts_with("Wrote 2 files and stored 0 redirects."),
         "{printed}"
     );
     let post = fs::read_to_string(file(site.path(), "content/en/posts/2024-03-12-why-rye.md"));
     assert!(post.unwrap().contains("access: \"members\""));
-    let (_, explained) = khalid(site.path(), &["redirects", "explain", "/p/why-rye"]);
-    assert!(explained.contains("/blog/why-rye/"), "{explained}");
+    let held = fs::read_to_string(file(site.path(), "import/held-redirects.csv")).unwrap();
+    assert!(held.contains("/p/why-rye,https://www.example.com/blog/why-rye/,301"));
 }
 
 #[test]
@@ -220,17 +271,17 @@ fn a_jekyll_folder_comes_in_and_skips_built_folders() {
     let (code, printed) = khalid(site.path(), &args[..3]);
     assert_eq!(code, 0, "{printed}");
     assert!(
-        printed.starts_with("Wrote 2 files and stored 1 redirects."),
+        printed.starts_with("Wrote 2 files and stored 0 redirects."),
         "{printed}"
     );
-    let old = "/2024/03/12/why-rye.html";
-    let (_, explained) = khalid(site.path(), &["redirects", "explain", old]);
-    assert!(explained.contains("/blog/why-rye/"), "{explained}");
+    let held = fs::read_to_string(file(site.path(), "import/held-redirects.csv")).unwrap();
+    let row = "/2024/03/12/why-rye.html,https://www.example.com/blog/why-rye/,301";
+    assert!(held.contains(row), "{held}");
 }
 
 #[test]
 fn redirects_that_clash_with_stored_ones_are_named() {
-    let site = site();
+    let site = lenient_site();
     let clash = file(site.path(), "clash.csv");
     let row = "/keep-a-starter-alive/,/blog/elsewhere/,301";
     fs::write(&clash, format!("from,to,status\n{row}\n")).unwrap();
