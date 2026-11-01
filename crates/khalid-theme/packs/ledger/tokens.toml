@@ -1,3 +1,15 @@
+[colors]
+background = "#fcfbf7"
+surface = "#f3efe3"
+text = "#1b2420"
+muted = "#55605a"
+link = "#0d6b4c"
+accent = "#0d6b4c"
+border = "#dcd6c6"
+
+[fonts]
+heading = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, \"Book Antiqua\", Georgia, serif"
+
 [shape]
 radius = "0.375rem"
 measure = "70ch"

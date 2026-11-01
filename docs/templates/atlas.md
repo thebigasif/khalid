@@ -18,8 +18,8 @@ Pick Ledger instead if you publish fewer, longer pieces and want the words to le
 **Front page**
 - A bar of topic tabs under the header: "All posts", then one tab for each category your posts use. It stays at the top of the window as the reader scrolls, and on a phone it scrolls sideways inside itself.
 - The blog's name.
-- The two newest posts marked `featured: true`, large.
-- Editor's picks: the next posts marked featured, four by default, in a grid.
+- The two newest posts marked `featured: true`, as large cards with their lead image, side by side when there is room.
+- Editor's picks: the next posts marked featured, four by default, as picture cards in a grid.
 - The feed: every other post with its topic, title, summary, author, reading time and date, then numbered page links when there are many.
 - One block per topic with its two newest posts and a link to all of them.
 - The band with your `[template.cta]`, when you set one.
@@ -36,7 +36,7 @@ With no post marked featured, the front page opens with the topic tabs and the f
 
 **Lists and author pages** show posts as text cards with their reading time, split by thin lines, under the trail of links.
 
-The header shows your call to action as a button. Everything reads with scripts off, and every colour, font and the logo come from your theme tokens.
+The header shows your call to action as a button. Everything reads with scripts off. Atlas brings its own indigo colours; your theme tokens, such as the ones theme sync writes, replace any of them, and the logo comes from them too.
 
 ## Options
 
@@ -84,6 +84,15 @@ note = "No card needed."
 Atlas sets these in place of classic's. A value in your own `theme/tokens.toml` wins. The header, the footer and the front page are wider than a post, up to 76rem, so the grid has room.
 
 ```toml
+[colors]
+background = "#ffffff"
+surface = "#f3f4fb"
+text = "#151a2d"
+muted = "#575e75"
+link = "#3337b5"
+accent = "#3c40c6"
+border = "#dde0ee"
+
 [shape]
 radius = "0.5rem"
 measure = "72ch"

@@ -48,7 +48,7 @@ pub(crate) static WORKBENCH: Pack = Pack {
         OptionSpec {
             key: "lead_image",
             help: "Whether a post shows its lead picture under its title.",
-            kind: OptionKind::Switch { default: false },
+            kind: OptionKind::Switch { default: true },
         },
         OptionSpec {
             key: "closing_line",

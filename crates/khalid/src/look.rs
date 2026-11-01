@@ -190,6 +190,28 @@ mod tests {
     }
 
     #[test]
+    fn every_pack_palette_reads_at_wcag_aa() {
+        let site = tempfile::tempdir().unwrap();
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let failures = tokens.contrast_failures();
+            assert!(failures.is_empty(), "{}: {failures:?}", pack.name);
+            let colors = &tokens.colors;
+            // Buttons, rules and focus rings in the accent need 3 to 1 on
+            // the page and on the surface (WCAG 2.2, 1.4.11).
+            for (name, behind) in [
+                ("background", &colors.background),
+                ("surface", &colors.surface),
+            ] {
+                let ratio = colors.accent.contrast(behind);
+                assert!(ratio >= 3.0, "{}: accent on {name} {ratio:.2}", pack.name);
+            }
+            let ratio = colors.link.contrast(&colors.surface);
+            assert!(ratio >= 4.5, "{}: link on surface {ratio:.2}", pack.name);
+        }
+    }
+
+    #[test]
     fn every_class_a_pack_template_uses_has_a_rule() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {

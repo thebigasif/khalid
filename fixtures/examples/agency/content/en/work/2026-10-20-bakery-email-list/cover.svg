@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#fbf4e6"/>
+  <circle cx="1080" cy="560" r="100" fill="#2f5d46" opacity="0.12"/>
+  <circle cx="140" cy="130" r="80" fill="#9ccc3c" opacity="0.25"/>
+  <ellipse cx="420" cy="560" rx="280" ry="22" fill="#1b2a22" opacity="0.12"/>
+  <ellipse cx="420" cy="520" rx="260" ry="40" fill="#ffffff" stroke="#1b2a22" stroke-width="4"/>
+  <ellipse cx="420" cy="514" rx="200" ry="24" fill="#eef4ef"/>
+  <path d="M220 480 C200 360 280 270 420 270 C560 270 640 360 620 480 Z" fill="#c8642d" stroke="#1b2a22" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M250 470 C240 380 300 300 420 300 C540 300 600 380 590 470 Z" fill="#f0d9a8" opacity="0.35"/>
+  <path d="M300 360 C320 330 350 320 370 330" fill="none" stroke="#f0d9a8" stroke-width="12" stroke-linecap="round"/>
+  <path d="M390 340 C410 310 440 300 460 310" fill="none" stroke="#f0d9a8" stroke-width="12" stroke-linecap="round"/>
+  <path d="M480 360 C500 330 530 320 550 330" fill="none" stroke="#f0d9a8" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="300" cy="420" r="5" fill="#1b2a22" opacity="0.4"/>
+  <circle cx="540" cy="430" r="5" fill="#1b2a22" opacity="0.4"/>
+  <path d="M640 330 C700 260 760 300 800 240" fill="none" stroke="#2f5d46" stroke-width="5" stroke-dasharray="4 14" stroke-linecap="round"/>
+  <ellipse cx="900" cy="440" rx="130" ry="14" fill="#1b2a22" opacity="0.1"/>
+  <g transform="rotate(-10 900 240)">
+    <rect x="780" y="160" width="240" height="160" rx="16" fill="#ffffff" stroke="#1b2a22" stroke-width="4"/>
+    <path d="M780 176 L900 252 L1020 176" fill="none" stroke="#2f5d46" stroke-width="6" stroke-linejoin="round"/>
+    <rect x="950" y="250" width="50" height="50" rx="6" fill="#9ccc3c"/>
+    <path d="M965 272 C965 262 985 262 985 272 C985 282 975 288 975 288 C975 288 965 282 965 272 Z" fill="#1b2a22"/>
+  </g>
+  <rect x="820" y="380" width="160" height="40" rx="20" fill="#2f5d46"/>
+  <circle cx="846" cy="400" r="10" fill="#9ccc3c"/>
+  <rect x="866" y="394" width="90" height="12" rx="6" fill="#ffffff"/>
+  <path d="M1040 120 L1052 132 L1040 144 L1028 132 Z" fill="#c8642d"/>
+  <circle cx="720" cy="160" r="6" fill="#9ccc3c"/>
+  <circle cx="160" cy="400" r="6" fill="#c8642d"/>
+</svg>

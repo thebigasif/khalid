@@ -6,7 +6,7 @@ use std::cmp::Reverse;
 use std::collections::BTreeMap;
 
 use chrono::NaiveDate;
-use khalid_content::{PostFront, SiteContent, Wikilinks};
+use khalid_content::{Document, PostFront, SiteContent, Wikilinks};
 use khalid_core::{Config, Locale, Slug, UserMessage};
 use khalid_render::{Person, PostCard};
 use khalid_routes::{PostAddress, Routes};
@@ -30,16 +30,11 @@ pub(crate) fn home_pages(
         let people = build_reader::people(config, &links, content, locale)?;
         let mut cards = Vec::new();
         for doc in content.posts.iter().filter(|doc| &doc.locale == locale) {
-            let Some(date) = doc.front.date else {
+            let Some((title, rest, date)) = dated((config, routes), doc)? else {
                 continue;
             };
-            let front = &doc.front;
-            let (title, slug) =
-                build_pages::named(config, doc, front.slug.as_ref(), front.title.as_deref())?;
-            let entry = PostAddress::new(&doc.collection, locale, &slug, Some(date));
-            let rest = build_pages::routed(config, routes, locale, &entry, &doc.path)?;
             let named = (title, rest.as_str(), date);
-            cards.push(card((config, routes), locale, &people, named, front));
+            cards.push(card((config, routes), locale, &people, named, &doc.front));
         }
         // A stable sort, as the full render's, so posts of one day keep
         // their file order.
@@ -52,6 +47,28 @@ pub(crate) fn home_pages(
         });
     }
     Ok(languages)
+}
+
+/// The title, address end and date of the post `doc`, as its card shows
+/// them. `None` for a post with no date, which no list shows.
+///
+/// # Errors
+///
+/// Returns a message when the post has no title to make a slug from, or
+/// its route cannot make an address.
+pub(crate) fn dated(
+    (config, routes): (&Config, &Routes),
+    doc: &Document<PostFront>,
+) -> Result<Option<(String, String, NaiveDate)>, UserMessage> {
+    let Some(date) = doc.front.date else {
+        return Ok(None);
+    };
+    let front = &doc.front;
+    let (title, slug) =
+        build_pages::named(config, doc, front.slug.as_ref(), front.title.as_deref())?;
+    let entry = PostAddress::new(&doc.collection, &doc.locale, &slug, Some(date));
+    let rest = build_pages::routed(config, routes, &doc.locale, &entry, &doc.path)?;
+    Ok(Some((title, rest, date)))
 }
 
 /// The card lists show of a dated post with this `title`, address end

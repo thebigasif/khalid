@@ -1,0 +1,4 @@
+# Only the brand: the template keeps its own colours and type. The
+# header shows this logo in place of the site's name.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

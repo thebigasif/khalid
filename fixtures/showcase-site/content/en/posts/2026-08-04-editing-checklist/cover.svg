@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#eef3ff"/>
+  <circle cx="200" cy="480" r="110" fill="#ffb38a" opacity="0.3"/>
+  <circle cx="1010" cy="170" r="90" fill="#8fd9bd" opacity="0.35"/>
+  <circle cx="220" cy="150" r="7" fill="#5b45d6"/>
+  <circle cx="252" cy="176" r="5" fill="#8fa2ff"/>
+  <ellipse cx="610" cy="612" rx="300" ry="20" fill="#1f1b3a" opacity="0.08"/>
+  <rect x="380" y="110" width="440" height="486" rx="28" fill="#5b45d6"/>
+  <rect x="410" y="150" width="380" height="416" rx="16" fill="#ffffff"/>
+  <rect x="520" y="86" width="160" height="58" rx="16" fill="#8fa2ff"/>
+  <circle cx="600" cy="108" r="10" fill="#eef3ff"/>
+  <rect x="450" y="200" width="44" height="44" rx="10" fill="#8fd9bd"/>
+  <path d="M461 223 L472 234 L486 212" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="516" y="215" width="230" height="14" rx="7" fill="#1f1b3a" opacity="0.18"/>
+  <rect x="450" y="285" width="44" height="44" rx="10" fill="#8fd9bd"/>
+  <path d="M461 308 L472 319 L486 297" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="516" y="300" width="200" height="14" rx="7" fill="#1f1b3a" opacity="0.18"/>
+  <rect x="450" y="370" width="44" height="44" rx="10" fill="#8fd9bd"/>
+  <path d="M461 393 L472 404 L486 382" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="516" y="385" width="240" height="14" rx="7" fill="#1f1b3a" opacity="0.18"/>
+  <rect x="453" y="458" width="38" height="38" rx="9" fill="#ffffff" stroke="#8fa2ff" stroke-width="5"/>
+  <rect x="516" y="470" width="180" height="14" rx="7" fill="#1f1b3a" opacity="0.18"/>
+  <g transform="rotate(25 870 400)">
+    <rect x="850" y="240" width="40" height="34" rx="8" fill="#8fd9bd"/>
+    <rect x="850" y="268" width="40" height="210" fill="#ffb38a"/>
+    <polygon points="850,478 890,478 870,526" fill="#fff3ea"/>
+    <polygon points="864,512 876,512 870,526" fill="#1f1b3a"/>
+  </g>
+</svg>

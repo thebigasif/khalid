@@ -71,7 +71,7 @@ Set these under `[template.options]`. An option you leave out takes the default.
 | `newsletter` | `both` | Where the newsletter form shows: `none`, `post`, `home` or `both`. On the front page, `home` and `both` show it twice. |
 | `cta_band` | `none` | Where the band with your `[template.cta]` shows: `none`, `post`, `home` or `both`. |
 | `cta_button` | `true` | The header shows your `[template.cta]` as a button. |
-| `lead_image` | `false` | A post shows its lead picture under its title. Comparison posts usually start with the table, so it is off. |
+| `lead_image` | `true` | A post shows its lead picture under its title, framed on a shadow of the accent. Turn it off when your comparison posts open with their table. |
 | `closing_line` | `true` | A post ends with one line naming its writers and its dates. Turned off, the updated date shows beside the published date instead. |
 | `newsletter_note` | none | One line under the front page's newsletter forms, such as how often you send. |
 

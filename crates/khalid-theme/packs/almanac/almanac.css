@@ -1,17 +1,27 @@
 /* Almanac (templates spec 3.8): a resource library of long guides. Soft,
-   roomy and rounded: panels on the surface colour, pill labels on a light
-   tint of the accent, bands for the call to action, a wide lead picture.
-   Every colour, font and corner comes from the tokens; tints are
-   color-mix() of them. */
+   roomy and rounded: large panels on tints of the accent, pill labels,
+   picture cards with round corners, bands that reach the screen's edges,
+   a wide lead picture. Every colour, font and corner comes from the
+   tokens; tints are color-mix() of them, with text in the text colour. */
 
 /* Lists use the full width for their grid; a post keeps its measure. */
 .site-header, .site-footer, main { max-inline-size: 80rem; }
 main:has(> .post), main:has(> .page) { max-inline-size: var(--measure); }
-.site-header { border-block-end: 0; }
-.header-button { border-radius: 999px; padding-inline: 1.25rem; }
+.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; }
+
+/* The header: the name, the menu as soft pills, the button round. */
+.site-header { padding-block: 1.25rem; border-block-end: 0; }
+.site-name { font-size: 1.375rem; letter-spacing: -0.02em; }
+.site-header nav ul { gap: 0.25rem; }
+.site-header nav a { padding-inline: 0.875rem; border-radius: 999px; color: var(--color-text); font-weight: 600; text-decoration: none; }
+.site-header nav a:hover, .site-header nav [aria-current] { background: color-mix(in oklab, var(--color-accent) 12%, var(--color-background)); }
+.search-link { padding-inline: 1rem; background: var(--color-surface); border-radius: 999px; color: var(--color-text); font-weight: 600; text-decoration: none; }
+.header-button { padding-inline: 1.25rem; }
+.announcement { margin: 0; background: color-mix(in oklab, var(--color-accent) 12%, var(--color-background)); border: 0; box-shadow: 0 0 0 100vmax color-mix(in oklab, var(--color-accent) 12%, var(--color-background)); clip-path: inset(0 -100vmax); font-weight: 600; }
+.announcement a { color: var(--color-text); }
 
 /* The row of category links, with the rest under "More". */
-.al-subnav { margin-block: 0.5rem 1.5rem; border-block: 1px solid var(--color-border); }
+.al-subnav { margin-block: 0.25rem 1rem; padding-block: 0.25rem; border-block: 1px solid var(--color-border); }
 .al-subnav > ul { align-items: center; gap: 0 1.5rem; }
 .al-subnav a { color: var(--color-text); font-weight: 600; text-decoration: none; }
 .al-subnav a:hover { color: var(--color-link); text-decoration: underline; }
@@ -19,32 +29,38 @@ main:has(> .post), main:has(> .page) { max-inline-size: var(--measure); }
 .al-subnav summary { display: inline-flex; align-items: center; min-block-size: 44px; font-weight: 600; cursor: pointer; }
 .al-subnav details ul { position: absolute; z-index: 2; inset-inline-start: 0; display: grid; gap: 0; min-inline-size: 14rem; padding: 0.5rem 1rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); }
 
-.al-title { margin-block: 1.5rem 2rem; letter-spacing: -0.01em; }
-.al-pill { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-text); font-size: var(--text-small); font-weight: 600; text-decoration: none; }
+.al-title { margin-block: 2rem 0.5rem; font-size: var(--text-h1); letter-spacing: -0.025em; }
+main > .intro { max-inline-size: 42rem; margin-block-end: 2rem; font-size: var(--text-h4); }
+.al-pill { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-text); font-size: var(--text-small); font-weight: 700; text-decoration: none; }
 .al-pill::before { content: ""; inline-size: 0.625rem; block-size: 0.625rem; margin-inline-end: 0.5rem; background: var(--color-accent); border-radius: 50%; }
+.card-meta a { padding-inline: 0.75rem; background: color-mix(in oklab, var(--color-accent) 12%, var(--color-background)); border-radius: 999px; color: var(--color-text); font-weight: 600; text-decoration: none; }
 
-/* The featured guide: a large rounded panel. */
+/* The featured guide: a large rounded panel on a tint of the accent, the
+   picture on the page colour inside it, with a soft shadow. */
 .featured { margin-block: 0 1.5rem; }
 .featured > h2 { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; white-space: nowrap; }
-.card-featured { container-type: inline-size; display: grid; gap: 0.5rem 2.5rem; padding: clamp(1.5rem, 4vw, 3rem); }
-.card-featured h3 { margin-block: 0.25rem 0.5rem; font-size: var(--text-h1); line-height: 1.1; letter-spacing: -0.01em; }
+.card-featured { container-type: inline-size; display: grid; gap: 0.75rem 3rem; padding: clamp(1.25rem, 4vw, 3rem); background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border-radius: calc(var(--radius) * 1.5); }
+.card-featured .image img { aspect-ratio: 4 / 3; object-fit: cover; background: var(--color-background); border-radius: var(--radius); box-shadow: 0 1.5rem 3rem -1.5rem color-mix(in oklab, var(--color-text) 35%, transparent); }
+.card-featured h3 { margin-block: 0.25rem 0.5rem; font-size: var(--text-h1); line-height: 1.08; letter-spacing: -0.025em; }
+.card-featured h3 a:hover { text-decoration: underline; text-decoration-thickness: 0.06em; }
 .card-featured > p:last-child { margin: 0; font-size: var(--text-h4); }
+.card-featured .card-meta a { background: var(--color-background); }
 @container (min-width: 48rem) {
   .card-featured:has(.image) { grid-template-columns: 1fr 1fr; align-items: center; }
   .card-featured .image { grid-row: span 4; }
 }
 
 /* The call to action: a band on the surface, the button in the accent. */
-.cta-band { padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 4vw, 3rem); }
+.cta-band { padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 4vw, 3rem); border-radius: calc(var(--radius) * 1.5); }
 .cta-note { font-family: var(--font-heading); font-size: var(--text-h4); }
-.cta-band .button { border-radius: 999px; }
-.al-closing .cta-band { flex-direction: column; justify-content: center; text-align: center; padding-block: clamp(2rem, 6vw, 4rem); }
+.al-closing .cta-band { flex-direction: column; justify-content: center; text-align: center; padding-block: clamp(2rem, 6vw, 4rem); background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); }
 
-/* The newest posts as short rows, each under a line of the accent. */
-.al-latest > h2, .al-grid > h2, .al-picks > h2, .al-keep > h2, .al-related > h2 { margin-block: 0 1rem; font-size: var(--text-h3); }
-.al-rows { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 1.5rem; }
-.al-rows > li { padding-block-start: 0.75rem; border-block-start: 3px solid var(--color-accent); }
-.al-rows h3 { margin-block: 0 0.25rem; font-size: var(--text-body); line-height: 1.35; }
+/* The newest posts as short panels, each topped with a line of the accent. */
+.al-latest, .al-library { margin-block: var(--space-section); }
+.al-latest > h2, .al-grid > h2, .al-picks > h2, .al-keep > h2, .al-related > h2, .home-section h2 { margin-block: 0 1rem; font-size: var(--text-h2); letter-spacing: -0.02em; }
+.al-rows { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
+.al-rows > li { padding: 0.75rem 1.25rem 1.25rem; background: var(--color-surface); border-block-start: 4px solid var(--color-accent); border-radius: var(--radius); }
+.al-rows h3 { margin-block: 0 0.5rem; font-size: 1.125rem; line-height: 1.35; }
 .al-rows h3 a { color: var(--color-text); text-decoration: none; }
 .al-rows h3 a:hover { text-decoration: underline; }
 .al-rows p { margin: 0; color: var(--color-muted); font-size: var(--text-small); }
@@ -52,46 +68,76 @@ main:has(> .post), main:has(> .page) { max-inline-size: var(--measure); }
 /* The library: picture cards, with the editor's picks beside them. */
 .al-library { display: grid; gap: 1.5rem 3rem; }
 @media (min-width: 64rem) {
-  .al-library:has(.al-grid):has(.al-picks) { grid-template-columns: minmax(0, 3fr) minmax(14rem, 1fr); }
+  .al-library:has(.al-grid):has(.al-picks) { grid-template-columns: minmax(0, 3fr) minmax(15rem, 1fr); }
 }
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 1.5rem; }
-.cards .card { block-size: 100%; padding: 1.25rem; background: var(--color-surface); border-radius: var(--radius); }
+.cards .card { block-size: 100%; padding: 1.25rem; background: var(--color-surface); border-radius: var(--radius); transition: background-color 0.15s; }
+.cards .card:hover, .cards .card:focus-within { background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); }
 .cards .card:has(.image) { display: block; }
 .cards .card .image { margin: -1.25rem -1.25rem 1rem; }
-.cards .card .image img { border-radius: var(--radius) var(--radius) 0 0; }
-.card :is(h2, h3) { margin-block-start: 0.25rem; font-size: var(--text-h4); }
-.al-picks { padding: 1.25rem 1.5rem; border: 1px solid var(--color-border); border-radius: var(--radius); align-self: start; }
+.cards .card .image img { aspect-ratio: 16 / 10; object-fit: cover; background: var(--color-background); border-radius: var(--radius) var(--radius) 0 0; }
+.card :is(h2, h3) { margin-block: 0.5rem; font-size: var(--text-h4); line-height: 1.3; }
+.card > p:last-child { color: var(--color-muted); }
+.al-picks { padding: 1.5rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); align-self: start; }
+.al-picks ul { counter-reset: pick; }
+.al-picks li { display: flex; align-items: center; gap: 0.75rem; counter-increment: pick; }
+.al-picks li::before { content: counter(pick) / ""; display: grid; place-items: center; flex: none; inline-size: 2rem; block-size: 2rem; background: color-mix(in oklab, var(--color-accent) 14%, var(--color-background)); border-radius: 50%; font-size: var(--text-small); font-weight: 700; }
 .al-picks li + li { border-block-start: 1px solid var(--color-border); }
 .al-picks a { display: flex; align-items: center; min-block-size: 44px; padding-block: 0.5rem; color: var(--color-text); font-weight: 600; text-decoration: none; }
-.al-picks a:hover { color: var(--color-link); }
+.al-picks a:hover { color: var(--color-link); text-decoration: underline; }
 
-.newsletter-slot { padding: clamp(1.5rem, 4vw, 2.5rem); background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); text-align: center; }
+/* The newsletter: a tinted band across the screen, the form centred. */
+.newsletter-slot { margin-block: var(--space-section); padding: clamp(2rem, 6vw, 4rem) 0; background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border-radius: 0; box-shadow: 0 0 0 100vmax color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); clip-path: inset(0 -100vmax); text-align: center; }
+.newsletter-slot h2 { font-size: var(--text-h2); letter-spacing: -0.02em; }
 .newsletter-slot .subscribe { display: flex; flex-wrap: wrap; justify-content: center; align-items: end; gap: 0.5rem; max-inline-size: 32rem; margin-inline: auto; text-align: start; }
 .newsletter-slot .subscribe > p:first-child { flex: 1 1 14rem; margin: 0; }
+.newsletter-slot input { border-radius: 999px; padding-inline: 1.25rem; }
 .newsletter-note { margin-block-start: 1rem; }
 .al-section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 1rem; }
 .al-section-head h2 { margin-block-end: 1rem; }
+.view-all a { font-weight: 700; text-decoration: none; }
+.view-all a::after { content: " →" / ""; white-space: pre; }
+[dir="rtl"] .view-all a::after { content: " ←" / ""; }
+.page-numbers a { border-radius: 999px; }
 
-/* A post: the byline on one line, a wide lead picture, "On this page". */
+/* A post: the byline on one line, a wide rounded lead picture, "On this
+   page" in a tinted panel. */
+.post-header { margin-block: 2rem 2.5rem; }
+.post-header h1 { font-size: var(--text-h1); line-height: 1.08; letter-spacing: -0.025em; }
+.breadcrumbs a { text-decoration: none; }
 .al-byline { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.25rem; }
 .al-byline address, .al-byline p { margin: 0; }
 .al-byline .people { margin: 0; }
+.al-byline .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
 .al-byline .reading-time::before { content: "·" / ""; margin-inline: 0.5rem; }
-.al-lead { margin-block-start: 1.5rem; }
+.al-lead { margin-block-start: 2rem; }
 .al-lead .image { margin: 0; }
+.al-lead .image img { border-radius: calc(var(--radius) * 1.5); }
 @media (min-width: 64rem) {
-  .al-lead { inline-size: min(60rem, 100% + 16rem); margin-inline-start: 50%; translate: -50% 0; }
+  .al-lead { inline-size: min(64rem, 100% + 18rem); margin-inline-start: 50%; translate: -50% 0; }
   [dir="rtl"] .al-lead { translate: 50% 0; }
 }
-.toc-box { padding: 1rem 1.5rem; background: var(--color-surface); }
+.toc-box { padding: 1.25rem 1.75rem; background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); border-radius: var(--radius); }
 .toc-box .toc-title { font-family: var(--font-heading); font-size: var(--text-h4); }
+.toc-box ol { list-style: none; padding: 0; }
+.toc-box li { position: relative; padding-inline-start: 1.25rem; break-inside: avoid; }
+.toc-box li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 1.125rem; inline-size: 0.5rem; block-size: 0.5rem; background: var(--color-accent); border-radius: 50%; }
+.toc-box a { color: var(--color-text); text-decoration: none; }
+.toc-box a:hover { color: var(--color-link); text-decoration: underline; }
 @media (min-width: 48rem) { .toc-box > ol { columns: 2; column-gap: 2rem; } }
-.post-body h2 { margin-block-start: 2em; }
+.post-body h2 { margin-block-start: 2em; letter-spacing: -0.02em; }
 .post-body figure { margin-inline: 0; }
+.post-body img { border-radius: var(--radius); }
 figcaption { font-size: 0.875rem; font-style: italic; }
+.callout { border: 0; border-radius: var(--radius); padding: 1.25rem 1.5rem; }
+.callout-summary { background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); }
+.pullquote { padding: 1.5rem; background: var(--color-surface); border: 0; border-radius: var(--radius); }
 .al-byline-end { margin-block-start: 2.5rem; padding: 1.25rem 1.5rem; background: var(--color-surface); border-radius: var(--radius); font-size: var(--text-small); }
 .al-byline-end p { margin: 0.25rem 0 0; color: var(--color-muted); }
 .al-byline-end .people { margin: 0; }
+.share a { border-radius: 999px; background: var(--color-surface); border-color: transparent; color: var(--color-text); font-weight: 600; }
+.post-footer .tags a { border-radius: 999px; }
+.author-box { border-radius: var(--radius); }
 
 /* Two sets of further reading: short rows, then picture cards. */
 .al-keep, .al-related { margin-block: var(--space-section); }
@@ -101,6 +147,13 @@ figcaption { font-size: 0.875rem; font-style: italic; }
 .al-keep .card a { color: var(--color-text); text-decoration: none; }
 .al-keep .card a:hover { text-decoration: underline; }
 
+/* The footer: a band on the surface colour across the screen. */
+.site-footer { margin-block-start: 2rem; padding-block: 3rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.site-footer a { color: var(--color-text); }
+/* A band right before the footer meets it without a gap. */
+main:has(> .newsletter-slot:last-child) { padding-block-end: 0; }
+
 @media (min-width: 70rem) {
   main:has(.post-with-toc) { max-inline-size: calc(var(--measure) + 18rem); }
 }
+@media print { .newsletter-slot, .site-footer, .announcement { box-shadow: none; } }

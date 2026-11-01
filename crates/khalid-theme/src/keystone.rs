@@ -60,7 +60,16 @@ pub(crate) static KEYSTONE: Pack = Pack {
 
 /// Keystone's type scale, spacing and shape. A value in the site's own
 /// `theme/tokens.toml` wins.
-const TOKENS: &str = "[type]
+const TOKENS: &str = "[colors]
+background = \"#fffaf4\"
+surface = \"#fdeedf\"
+text = \"#1f1813\"
+muted = \"#695a4f\"
+link = \"#a8380a\"
+accent = \"#c2410c\"
+border = \"#eeddcb\"
+
+[type]
 body = \"1.125rem 1.25rem\"
 h1 = \"2.5rem 3.75rem\"
 h2 = \"1.75rem 2.25rem\"

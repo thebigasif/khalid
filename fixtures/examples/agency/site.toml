@@ -27,6 +27,12 @@ name = "Kestrel & Lime"
 email = "studio@example.org"
 founded = "2018-09-03"
 
+[seo.publisher.logo]
+url = "https://www.example.org/blog/about/logo.svg"
+alt = "The Kestrel & Lime logo beside the agency's name"
+width = 320
+height = 80
+
 [seo.ai_page]
 covers = "Kestrel & Lime is a small marketing agency. It writes about local search, Google Business Profiles, customer reviews and email marketing for local service businesses, and publishes case studies of its own client work."
 cite = "Name Kestrel & Lime and the author, and link the post you quote."

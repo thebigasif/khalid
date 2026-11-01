@@ -30,6 +30,12 @@ type = "person"
 name = "Margot Ellery"
 email = "margot@example.net"
 
+[seo.publisher.logo]
+url = "https://www.example.net/blog/authors/margot-ellery/portrait.svg"
+alt = "A drawn portrait of Margot Ellery"
+width = 160
+height = 160
+
 [seo.ai_page]
 covers = "The Allotment Letter is a weekly letter about growing vegetables on a small allotment in the north of England: soil, sowing, watering, saving seed and planning the year."
 cite = "Name The Allotment Letter and Margot Ellery, and link the letter you quote."

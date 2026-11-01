@@ -84,6 +84,23 @@ fn a_view_all_link_reads_in_the_page_language() {
 }
 
 #[test]
+fn a_front_page_that_lists_ten_thousand_posts_still_renders() {
+    // The front page lists every post, so its steps grow with the blog;
+    // the cap on a page's steps must grow with them.
+    let mut listing = first_page();
+    let one = listing.posts.swap_remove(0);
+    listing.posts = (0..10_000)
+        .map(|number| {
+            let mut post = one.clone();
+            post.href = format!("/blog/post-{number}/");
+            post
+        })
+        .collect();
+    let page = render_on(&demo_site("en"), home(listing));
+    assert_eq!(page.matches("<article class=\"card\">").count(), 10_000);
+}
+
+#[test]
 fn switched_off_there_are_no_topic_links() {
     let page = render_on(&site_without(Feature::TopicLinks), sectioned());
     assert_valid_page(&page);
