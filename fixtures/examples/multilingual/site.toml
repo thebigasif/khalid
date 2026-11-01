@@ -1,0 +1,85 @@
+# Example site: Bridgeword, a fictional publication about learning a
+# language as an adult, in English, German and Spanish. Each post has a
+# version in all three languages, paired by its `translation` key, so
+# search engines show readers the version in their own language.
+
+name = "Bridgeword"
+address = "https://www.example.com"
+mount = "/blog/"
+mode = "static"
+default_language = "en"
+languages = ["en", "de", "es"]
+
+# Wire suits a publication: a lead story, a subtitle under each title and
+# pull quotes.
+[template]
+name = "wire"
+
+[seo.titles]
+separator = "·"
+tagline = "Learning languages as an adult, in English, Deutsch and español"
+
+[seo.publisher]
+type = "organization"
+name = "Bridgeword"
+email = "editors@example.com"
+
+[[nav.primary]]
+label = "Methods"
+href = "/blog/category/methods/"
+language = "en"
+
+[[nav.primary]]
+label = "Speaking"
+href = "/blog/category/speaking/"
+language = "en"
+
+[[nav.primary]]
+label = "Reading and listening"
+href = "/blog/category/reading-and-listening/"
+language = "en"
+
+[[nav.primary]]
+label = "Methoden"
+href = "/blog/de/category/methods/"
+language = "de"
+
+[[nav.primary]]
+label = "Sprechen"
+href = "/blog/de/category/speaking/"
+language = "de"
+
+[[nav.primary]]
+label = "Lesen und Hören"
+href = "/blog/de/category/reading-and-listening/"
+language = "de"
+
+[[nav.primary]]
+label = "Métodos"
+href = "/blog/es/category/methods/"
+language = "es"
+
+[[nav.primary]]
+label = "Hablar"
+href = "/blog/es/category/speaking/"
+language = "es"
+
+[[nav.primary]]
+label = "Leer y escuchar"
+href = "/blog/es/category/reading-and-listening/"
+language = "es"
+
+[[nav.footer]]
+label = "About Bridgeword"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Über Bridgeword"
+href = "/blog/de/ueber-uns/"
+language = "de"
+
+[[nav.footer]]
+label = "Sobre Bridgeword"
+href = "/blog/es/sobre-nosotros/"
+language = "es"

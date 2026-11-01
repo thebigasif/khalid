@@ -1,0 +1,75 @@
+# Example site: the blog of Larch Lane Cycles, a fictional bike repair
+# workshop. It shows a local business blog: how-to posts, FAQs, opening
+# hours and the local business details search engines read.
+
+name = "Larch Lane Cycles"
+address = "https://www.example.com"
+mount = "/blog/"
+mode = "static"
+default_language = "en"
+languages = ["en"]
+
+# Compass suits a teaching blog: key points first, then the steps and the
+# questions people ask.
+[template]
+name = "compass"
+
+[seo.titles]
+separator = "·"
+tagline = "Bike repair tips from a small workshop in Norwich"
+
+[seo.publisher]
+type = "organization"
+name = "Larch Lane Cycles"
+email = "hello@example.com"
+telephone = "+44 1632 960418"
+
+# The workshop itself, for the local business details in search results.
+[[seo.locations]]
+type = "BicycleStore"
+name = "Larch Lane Cycles"
+street = "14 Larch Lane"
+locality = "Norwich"
+postal_code = "NR2 4PL"
+country = "GB"
+region = "Norfolk"
+telephone = "+44 1632 960418"
+price_range = "££"
+
+[[seo.locations.hours]]
+days = ["tue", "wed", "thu", "fri"]
+opens = "08:30"
+closes = "17:30"
+
+[[seo.locations.hours]]
+days = ["sat"]
+opens = "09:00"
+closes = "16:00"
+
+[[nav.primary]]
+label = "Repairs"
+href = "/blog/category/repairs/"
+
+[[nav.primary]]
+label = "Care at home"
+href = "/blog/category/care-at-home/"
+
+[[nav.primary]]
+label = "Servicing"
+href = "/blog/category/servicing/"
+
+[[nav.primary]]
+label = "Visit us"
+href = "/blog/visit/"
+
+[[nav.footer]]
+label = "About the workshop"
+href = "/blog/about/"
+
+[[nav.footer]]
+label = "Questions we hear most"
+href = "/blog/questions/"
+
+[[nav.footer]]
+label = "Opening hours"
+href = "/blog/visit/"
