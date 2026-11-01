@@ -1,2 +1,0 @@
-Added
-- The Ledger template: a calm, text-led blog with no pictures in its lists, for studies and long how-tos. Pick it with `name = "ledger"` under `[template]`. Its front page shows your tagline, up to three facts, a row of topics and the latest posts as a ruled list; each post shows its topic above the title, an open contents list, the author box, five related posts and the newsletter form. See `docs/templates/ledger.md`.
