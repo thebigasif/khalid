@@ -1,0 +1,3 @@
+# What `khalid build` and `khalid audit` write into an example's folder.
+*/data/
+*/public/
