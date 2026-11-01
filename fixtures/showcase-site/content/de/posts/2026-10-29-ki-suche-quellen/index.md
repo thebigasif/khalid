@@ -10,6 +10,9 @@ description: Wonach die KI-Suche ihre Quellen auswählt und welche Schreibgewohn
 translation: ai-search-sources
 focus_keyword: KI-Suche
 tags: [ki, zitate, schreiben]
+image:
+  src: cover.svg
+  alt: Eine Antwortblase mit einem Funkeln, durch eine gestrichelte Linie mit der gewählten Quellseite verbunden
 ---
 
 Die KI-Suche beantwortet eine Frage in wenigen Sätzen und nennt dazu eine Handvoll Seiten als Quellen. Zu diesen Quellen zu gehören, ist der neue erste Platz. Dieser Beitrag erklärt, worauf die Dienste bei der Auswahl achten. Und er zeigt, wie Sie Beiträge schreiben, die man gern zitiert.

@@ -11,6 +11,9 @@ translation: content-brief-template
 focus_keyword: content brief
 access: members
 tags: [planning, writing]
+image:
+  src: cover.svg
+  alt: A one-page plan with a target at the top, coloured section markers and a paper clip
 ---
 
 A content brief is a one-page plan that a writer reads before they write a word. It says who the post is for, which question it answers, what it must cover and how it will be judged. Ours takes twenty minutes to fill in, and it saves hours of rewriting.

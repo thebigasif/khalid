@@ -10,6 +10,9 @@ description: What we learned about how AI search picks the pages it quotes, and 
 translation: ai-search-sources
 focus_keyword: AI search
 tags: [ai search, citations, writing]
+image:
+  src: cover.svg
+  alt: An answer bubble with a sparkle, linked by a dotted line to the one source page it chose
 ---
 
 AI search tools answer a question in a few sentences and name a handful of pages as their sources. Being one of those sources is the new first place. This post explains what those tools look for when they choose a page, and how to write posts they can quote with confidence.

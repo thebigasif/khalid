@@ -10,6 +10,9 @@ description: What structured data tells search engines about a blog post, which 
 translation: structured-data
 focus_keyword: structured data
 tags: [schema, search results]
+image:
+  src: cover.svg
+  alt: A blog page linked by dotted lines to three cards showing a person, a calendar and a star
 ---
 
 Structured data is a short block of code that tells search engines, in their own language, what a page is: a blog post, who wrote it, when it was published and what it is about. Readers never see it. Search engines and AI tools read it first, because it saves them from guessing.

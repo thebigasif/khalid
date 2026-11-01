@@ -10,6 +10,9 @@ description: Wie Sie die Suchintention hinter einer Anfrage in zehn Minuten erke
 translation: search-intent
 focus_keyword: Suchintention
 tags: [planung, schreiben]
+image:
+  src: cover.svg
+  alt: Ein Kompass mit vier farbigen Markierungen am Rand und einer Nadel, die nach oben zeigt
 ---
 
 Die Suchintention ist das Ziel hinter einer Suchanfrage. Wer „Meta Description Länge“ eingibt, will eine Zahl und einen Grund. Wer „Redaktionsplan erstellen“ sucht, will eine Methode für diese Woche. Ein Beitrag, der dieses Ziel verfehlt, rankt selten, egal wie gut er geschrieben ist.
