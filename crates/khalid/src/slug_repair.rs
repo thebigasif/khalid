@@ -5,7 +5,7 @@
 use std::path::Path;
 
 use khalid_content::parse_post;
-use khalid_core::{Config, Slug};
+use khalid_core::{Config, Locale, Slug, SlugMode};
 use khalid_lint::{LintPost, LintSite, RuleId, flags_slug_part};
 use khalid_routes::{PostAddress, Routes};
 
@@ -49,12 +49,7 @@ pub(crate) fn moved_header(
             .filter(|part| flagged(rule, part))
             .collect()
     };
-    let keep = |part: &&str| !moving.rules.iter().any(|rule| flagged(rule, part));
-    let kept: Vec<&str> = parts.iter().copied().filter(keep).collect();
-    if kept.is_empty() || kept.len() == parts.len() {
-        return None;
-    }
-    let slug = Slug::from_title(&kept.join("-"), &post.locale, config.slugs()).ok()?;
+    let slug = cleaned(&post.slug, &post.locale, moving.rules, config.slugs())?;
     let site = moving.site;
     let posts = site.posts.iter().map(|p| (&p.locale, &p.slug));
     let mut taken = posts.chain(site.pages.iter().map(|p| (&p.locale, &p.slug)));
@@ -84,6 +79,34 @@ pub(crate) fn moved_header(
         }
     });
     Some((header, changes.collect()))
+}
+
+/// `slug` in `locale` without the parts that `rules` flag, such as "the" or
+/// 2026, so `khalid new` makes an address its own linter accepts. `None`
+/// when no part is flagged, or when every part is, which leaves nothing to
+/// make an address from.
+pub(crate) fn cleaned(
+    slug: &Slug,
+    locale: &Locale,
+    rules: &[&'static str],
+    mode: SlugMode,
+) -> Option<Slug> {
+    let language = locale.language();
+    let flagged = |part: &str| {
+        rules
+            .iter()
+            .any(|&rule| flags_slug_part(RuleId::new(rule), language, part))
+    };
+    let parts: Vec<&str> = slug.as_str().split('-').collect();
+    let kept: Vec<&str> = parts
+        .iter()
+        .copied()
+        .filter(|part| !flagged(part))
+        .collect();
+    if kept.is_empty() || kept.len() == parts.len() {
+        return None;
+    }
+    Slug::from_title(&kept.join("-"), locale, mode).ok()
 }
 
 /// `header` with `slug:` set to `slug` and `old` first in `aliases`, or

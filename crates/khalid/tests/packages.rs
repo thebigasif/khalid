@@ -312,8 +312,13 @@ fn the_compose_file_runs_the_image_on_the_site_folder_and_port() {
 fn the_readme_install_steps_make_a_site_that_serves() {
     let readme = fs::read_to_string(repo_file("README.md")).unwrap();
     let init = "khalid init blog --address https://blog.example.com --yes";
+    // The allocator setting keeps idle memory in budget, as in the image.
+    let setting = "MIMALLOC_PURGE_DELAY=0 ";
     let serve = "khalid --site blog serve";
-    assert!(readme.contains(&format!("{init}\n{serve}\n")), "{readme}");
+    assert!(
+        readme.contains(&format!("{init}\n{setting}{serve}\n")),
+        "{readme}"
+    );
     let folder = tempfile::tempdir().unwrap();
     let mut site = folder.path().to_path_buf();
     site.push("blog");

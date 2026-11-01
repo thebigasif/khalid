@@ -80,7 +80,8 @@ fn new_writes_a_post_with_a_transliterated_slug() {
         Some("Über Größe: der \"Test\"")
     );
     let slug = post.front.slug.unwrap();
-    assert_eq!(slug.as_str(), "ueber-groesse-der-test");
+    // "der" is a German filler word, which the slug rules warn about.
+    assert_eq!(slug.as_str(), "ueber-groesse-test");
     let date = post.front.date.unwrap();
     assert_eq!(name, format!("{date}-{slug}.md"));
     assert!(
@@ -185,6 +186,10 @@ fn new_without_draft_says_the_post_goes_live_and_where_drafts_live() {
     let said = text(&output.stdout);
     assert!(said.contains("--draft"), "{said}");
     assert!(said.contains("drafts/"), "{said}");
+    assert!(
+        said.contains("at once while `khalid serve` runs"),
+        "a running server shows it without a build: {said}"
+    );
 }
 
 #[test]
@@ -280,6 +285,35 @@ fn rules_found(site: &Path, folder: &str) -> Vec<String> {
         .iter()
         .map(|finding| finding["rule"].as_str().unwrap_or_default().to_owned())
         .collect()
+}
+
+#[test]
+fn new_leaves_out_the_filler_words_and_years_its_own_linter_warns_about() {
+    let (temp, folder) = site();
+    let title = "Anchor text that works in 2026";
+    let args = [
+        "--site",
+        &folder,
+        "new",
+        title,
+        "--language",
+        "en",
+        "--json",
+    ];
+    let output = khalid(&args);
+    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
+    let json: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(json["slug"], "anchor-text-works", "{json}");
+    let rules = rules_found(temp.path(), &folder);
+    for rule in ["slug-stopwords", "slug-date"] {
+        assert!(!rules.contains(&rule.to_owned()), "{rule}: {rules:?}");
+    }
+
+    // A title of filler words only keeps them, so it still has an address.
+    let args = ["--site", &folder, "new", "To be or not", "--language", "en"];
+    let output = khalid(&[&args[..], &["--json"]].concat());
+    let json: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(json["slug"], "to-be-or-not", "{json}");
 }
 
 #[test]

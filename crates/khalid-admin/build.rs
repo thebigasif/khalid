@@ -1,10 +1,13 @@
 //! Embeds the admin that `npm run build` left in `admin/dist/`. When it has
-//! not run, the list is empty and `/admin/` says how to build it.
+//! not run, the list is empty, cargo warns, and `/admin/` says how to
+//! build it.
 
 use std::ffi::OsString;
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 use std::{fs, io};
+
+include!("src/build_warning.rs");
 
 fn main() -> io::Result<()> {
     let mut dist = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -19,6 +22,11 @@ fn main() -> io::Result<()> {
         collect(&dist, "", &mut files)?;
     }
     files.sort();
+    if files.is_empty() {
+        for line in BUILD_WARNING {
+            println!("cargo::warning={line}");
+        }
+    }
     let mut code = String::from("pub(crate) static FILES: &[crate::Asset] = &[\n");
     for (path, full) in &files {
         writeln!(

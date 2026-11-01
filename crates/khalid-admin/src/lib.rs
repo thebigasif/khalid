@@ -111,3 +111,24 @@ fn content_type(path: &str) -> &'static str {
         _ => "application/octet-stream",
     }
 }
+
+#[cfg(test)]
+mod tests {
+    include!("build_warning.rs");
+
+    #[test]
+    fn the_build_warning_says_what_why_and_fix_like_the_admin_page() {
+        let [what, why, fix] = BUILD_WARNING;
+        assert!(what.contains("admin/dist/"), "{what}");
+        assert!(why.contains("/admin/"), "{why}");
+        for step in ["npm ci", "npm run build"] {
+            assert!(fix.contains(step), "{fix}");
+            assert!(super::NOT_BUILT.contains(step), "the page names {step} too");
+        }
+        for line in BUILD_WARNING {
+            assert!(line.ends_with('.'), "{line}");
+            assert!(line.split_whitespace().count() < 25, "{line}");
+            assert!(!line.contains('\u{2014}'), "{line}");
+        }
+    }
+}

@@ -24,7 +24,15 @@ pub(crate) const LOCAL_SERVE: &str = "http://127.0.0.1:8080";
 
 /// `routes.toml` for a new site: the defaults, which need no settings.
 const ROUTES_TOML: &str = "\
-# How the blog's addresses look. With nothing below, a post sits at /<slug>/.
+# Where each kind of page lives on your blog. With nothing set, a post's
+# address is its slug, such as /why-links-matter/, and each other language
+# sits under its code, such as /de/.
+#
+# To put the year in every post's address instead, remove the # and the
+# space before the next two lines:
+# [collections.posts]
+# permalink = \"/{year}/{slug}/\"
+#
 # Each setting, with examples: https://github.com/thebigasif/khalid/blob/main/docs/routes.md
 ";
 

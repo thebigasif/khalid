@@ -144,6 +144,7 @@ mod seo_graph_settings;
 mod seo_head_settings;
 mod seo_settings;
 mod serve;
+mod serve_address;
 mod serve_apis;
 mod serve_check;
 mod serve_https;

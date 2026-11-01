@@ -175,6 +175,36 @@ fn a_threshold_in_lint_toml_reaches_its_rule() {
 }
 
 #[test]
+fn the_internal_link_fix_names_the_home_page_only_for_a_languages_only_post() {
+    let mut site = undated_site();
+    let linter = Linter::new(&LintConfig::default(), &clock()).unwrap();
+    let fix = |site: &LintSite| {
+        let report = linter.lint_post(&site.posts[0], site);
+        let finding = report
+            .findings()
+            .iter()
+            .find(|finding| finding.rule() == RuleId::new("no-internal-link"));
+        finding.unwrap().message().fix().to_owned()
+    };
+    let alone = fix(&site);
+    assert!(alone.contains("home page"), "{alone}");
+    assert!(alone.contains("only post"), "{alone}");
+
+    // A post in another language leaves this one still alone in its own.
+    let german = Locale::try_new("de").unwrap();
+    let elsewhere = LintPost::new(german, Slug::try_new("anderswo").unwrap());
+    site.posts.push(elsewhere);
+    assert_eq!(fix(&site), alone);
+
+    let locale = site.posts[0].locale.clone();
+    site.posts
+        .push(LintPost::new(locale, Slug::try_new("second").unwrap()));
+    let among = fix(&site);
+    assert!(!among.contains("only post"), "{among}");
+    assert!(among.contains("related post"), "{among}");
+}
+
+#[test]
 fn site_rules_run_on_the_whole_site_but_never_before_publishing() {
     let mut site = undated_site();
     // A language's only post is never an orphan, so the site gets a second.

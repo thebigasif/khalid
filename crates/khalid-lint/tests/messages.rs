@@ -64,12 +64,18 @@ fn check_sentence(rule: &str, part: &str, sentence: &str) {
 fn check_message(rule: &str, message: &Message) {
     check_sentence(rule, "what", message.what());
     check_sentence(rule, "why", message.why());
-    check_sentence(rule, "fix", message.fix());
-    let verb = message.fix().split_whitespace().next().unwrap_or_default();
-    assert!(
-        ACTIONS.contains(&verb),
-        "{rule} fix: start with an action such as Add or Change, got {verb:?}"
-    );
+    for (part, fix) in [
+        ("fix", Some(message.fix())),
+        ("fix_alone", message.fix_alone()),
+    ] {
+        let Some(fix) = fix else { continue };
+        check_sentence(rule, part, fix);
+        let verb = fix.split_whitespace().next().unwrap_or_default();
+        assert!(
+            ACTIONS.contains(&verb),
+            "{rule} {part}: start with an action such as Add or Change, got {verb:?}"
+        );
+    }
 }
 
 #[test]
@@ -83,12 +89,14 @@ fn every_catalogue_message_is_three_plain_sentences() {
 }
 
 /// A site's first post has no other post to link to, so the fix it reads
-/// must say what else counts.
+/// must say what else counts. Every other post reads the usual fix.
 #[test]
 fn the_internal_link_fix_says_a_first_post_may_link_home() {
     let catalogue = Catalogue::builtin().unwrap();
-    let fix = catalogue.get("no-internal-link").unwrap().fix();
-    assert!(fix.contains("home page"), "{fix}");
+    let message = catalogue.get("no-internal-link").unwrap();
+    let alone = message.fix_alone().unwrap();
+    assert!(alone.contains("home page"), "{alone}");
+    assert!(!message.fix().contains("only post"), "{}", message.fix());
 }
 
 /// The fix for a missing profile says where the profile file goes and

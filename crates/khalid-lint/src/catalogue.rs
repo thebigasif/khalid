@@ -22,10 +22,29 @@ pub struct Message {
     what: String,
     why: String,
     fix: String,
+    #[serde(default)]
+    fix_alone: Option<String>,
     guide: Slug,
 }
 
 impl Message {
+    /// The fix for a post that is the only one in its language, when the
+    /// rule has one, such as linking the home page while there is no other
+    /// post to link to.
+    pub fn fix_alone(&self) -> Option<&str> {
+        self.fix_alone.as_deref()
+    }
+
+    /// This message as a post that is the only one in its language reads
+    /// it: with [`Message::fix_alone`] as the fix, when the rule has one.
+    pub(crate) fn for_only_post(&self) -> Self {
+        let mut message = self.clone();
+        if let Some(alone) = message.fix_alone.take() {
+            message.fix = alone;
+        }
+        message
+    }
+
     /// What is wrong.
     pub fn what(&self) -> &str {
         &self.what
