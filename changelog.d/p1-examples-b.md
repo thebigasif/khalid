@@ -1,2 +1,2 @@
 Added
-- Example sites in `fixtures/examples/` to copy from: a local bike workshop's blog with opening hours, local business details, how-to guides and FAQs. Each example has a README that says who it is for and which features it shows, and a test keeps every example clean in `khalid lint` and `khalid audit`.
+- Example sites in `fixtures/examples/` to copy from: a local bike workshop's blog with opening hours, local business details, how-to guides and FAQs; and a publication in English, German and Spanish with every post linked to its translations. Each example has a README that says who it is for and which features it shows, and a test keeps every example clean in `khalid lint` and `khalid audit`.
