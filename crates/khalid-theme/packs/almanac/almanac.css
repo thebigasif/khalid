@@ -1,0 +1,8 @@
+/* Almanac (templates spec 3.8). Every colour, font and corner comes from the tokens. */
+.al-subnav, .al-latest, .al-library, .al-keep, .al-related { margin-block: var(--space-section); }
+.al-title { margin-block-start: 1rem; }
+.al-rows, .al-picks ul { margin: 0; padding: 0; list-style: none; }
+.al-pill { font-size: var(--text-small); }
+.al-grid, .al-picks, .al-section-head, .al-closing, .al-byline { display: block; }
+.al-lead { margin-block-start: 1.5rem; }
+.al-byline-end { margin-block-start: 2rem; padding-block-start: 1rem; border-block-start: 1px solid var(--color-border); }

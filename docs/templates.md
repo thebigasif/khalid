@@ -19,6 +19,7 @@ The templates you can pick today:
 |---|---|---|
 | `classic` | Any blog. A calm column of text, cards on the home page and the contents beside long posts. | This page |
 | `workbench` | Blogs that review and compare tools or products. | [Workbench](templates/workbench.md) |
+| `almanac` | A library of long guides and list posts, with a product to offer. | [Almanac](templates/almanac.md) |
 
 More templates arrive one or two at a time. Each has its own guide with its options.
 
