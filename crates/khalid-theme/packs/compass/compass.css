@@ -1,0 +1,2 @@
+/* Compass (templates spec 3.4). Every colour is a token or a tint of one. */
+.jump-links ul { gap: var(--space); }
