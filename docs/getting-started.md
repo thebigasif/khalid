@@ -119,7 +119,7 @@ khalid --site blog audit
 ```
 
 - `lint` checks every post and scores it out of 100. Warnings do not stop anything, but each one says how to do better.
-- `build` writes every page as plain HTML into `blog/public/`, the way static hosting needs it. It writes nothing if a dated post is blocked.
+- `build` writes every page as plain HTML into `blog/public/`, the way static hosting needs it. If the linter blocks a dated post, `build` leaves that post out, writes the rest, and lists what it left out and why.
 - `audit` builds the site and crawls it the way Ahrefs and Semrush do, then scores its health out of 100. It keeps its reports in `blog/data/audit/` and exits with an error when it finds one. Add `--server http://127.0.0.1:8080` to crawl the running blog instead.
 
 Each linter message ends with a rule and a guide, such as "Rule no-internal-link, guide internal-links". The rule is the check that fired. The guide names a SerpDad guide that explains it at length; those guides are not published yet, so until then the three sentences in the message are the whole advice. Every message is listed in `crates/khalid-lint/catalogue.toml`, and `khalid --site blog lint --json` gives them in a form scripts can read.
@@ -134,7 +134,7 @@ Khalid imports from WordPress, Ghost, Medium, Substack and folders of markdown. 
 khalid --site blog import wordpress export.xml --dry-run
 ```
 
-`--dry-run` says what would come in and what would stay behind, and writes nothing. Run it again without `--dry-run` to bring the posts in. Imported posts keep their dates, so each must pass the linter before `build` writes the site.
+`--dry-run` says what would come in and what would stay behind, and writes nothing. Run it again without `--dry-run` to bring the posts in. Imported posts keep their dates, so each goes live at the next build once it passes the linter. Until then `build` leaves it out and says why.
 
 ## 10. Back up and restore
 
