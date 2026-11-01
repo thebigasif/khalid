@@ -29,6 +29,11 @@ tags = "Tags"
 contents = "Contents"
 # The heading of the posts shown under a post.
 related_posts = "Related posts"
+# A reference guide's date line, its related posts, and the link back to
+# every post beside its closing button.
+last_updated = "Last updated"
+related_articles = "Related articles"
+all_articles = "All articles"
 # The heading over the newest featured post, above a list.
 featured = "Featured"
 # The heading over the posts the editors chose, on the home page.

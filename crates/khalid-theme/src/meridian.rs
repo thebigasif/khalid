@@ -4,14 +4,17 @@
 use khalid_core::ReaderSwitch;
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{Pack, slot};
+use crate::{Pack, PackTemplate, slot};
 
 /// The Meridian pack.
 pub(crate) static MERIDIAN: Pack = Pack {
     name: "meridian",
     summary: "A calm company journal: category tabs, wide rows with a square picture, several authors with their roles, and a reference layout for long guides.",
     stylesheet: include_str!("../packs/meridian/meridian.css"),
-    templates: &[],
+    templates: &[PackTemplate {
+        name: "post-reference.html",
+        source: include_str!("../packs/meridian/post-reference.html"),
+    }],
     tokens: TOKENS,
     reader: &[
         (ReaderSwitch::ReadingTime, false),
