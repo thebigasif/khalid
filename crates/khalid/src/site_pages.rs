@@ -29,7 +29,7 @@ use crate::unlock::Gate;
 use crate::{
     assets, build_gate, build_home, build_lists, build_message, build_pages, build_seo,
     build_sitemap, categories, content_message, look, own_descriptions, post_files, post_gate,
-    post_lock, search_page, serve_message, share_images, site_files, site_outline,
+    post_lock, search_page, serve_message, share_images, site_files, site_outline, trails,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -124,9 +124,10 @@ impl SitePages {
     ) -> Result<Self, UserMessage> {
         let theme = if config.mode().has_pages() {
             let look = look::of(folder, &config)?;
-            let renderer = Renderer::with_pack(folder, &look::render_pack(&look))
-                .map_err(|error| build_message::render(&error))?;
             let tokens = look::tokens(folder, &look)?;
+            let renderer = Renderer::with_pack(folder, &look::render_pack(&look))
+                .map_err(|error| build_message::render(&error))?
+                .with_brand(&tokens.brand);
             let stylesheet = assets::stylesheet_page(&config, &tokens, &look)?;
             Some(Theme {
                 renderer,
@@ -432,6 +433,8 @@ impl SitePages {
             }
             own_descriptions::fill(config, &theme.renderer, &mut languages)?;
         }
+        // A headless site's heads carry the same trail as its pages would.
+        trails::fill(folder, (config, routes), &mut languages)?;
         comment_pages::fill(config, self.0.comments.as_ref(), &mut languages);
         form_pages::fill(config, self.0.forms.as_ref(), &mut languages);
         let beside = post_files::served(folder, config, assets, &mut languages, shown)?;

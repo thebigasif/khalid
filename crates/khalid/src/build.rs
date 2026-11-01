@@ -24,7 +24,7 @@ use crate::site_page::HeadNonce;
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
     build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_files,
-    post_images, post_lock, report, search_page, search_static, share_images, static_mode,
+    post_images, post_lock, report, search_page, search_static, share_images, static_mode, trails,
 };
 
 /// The output folder inside a site when `--out` is not given.
@@ -101,10 +101,12 @@ fn theme(site: &Path, config: &Config) -> Result<(Option<(Renderer, Asset)>, Tok
         return Ok((None, Tokens::default()));
     }
     let look = look::of(site, config)?;
+    let tokens = look::tokens(site, &look)?;
     let renderer = Renderer::with_pack(site, &look::render_pack(&look))
-        .map_err(|error| build_message::render(&error))?;
+        .map_err(|error| build_message::render(&error))?
+        .with_brand(&tokens.brand);
     let css = assets::site_stylesheet(site, &look)?;
-    Ok((Some((renderer, css)), look::tokens(site, &look)?))
+    Ok((Some((renderer, css)), tokens))
 }
 
 /// Renders every page into `out`, then writes the stylesheet they link and
@@ -137,6 +139,8 @@ fn build(
         build_sitemap::add(config, renderer, &mut languages)?;
         own_descriptions::fill(config, renderer, &mut languages)?;
     }
+    // A headless site's heads carry the same trail as its pages would.
+    trails::fill(site, (config, routes), &mut languages)?;
     // The checked content keeps no assets, so the tree is read again for
     // them. A headless site gets them too: its feeds point at them.
     let tree = ContentTree::walk(site).map_err(|error| content_message::of(site, &error))?;
