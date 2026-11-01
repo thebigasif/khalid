@@ -2,7 +2,7 @@
 //! tags, newest first on ties, and the same posts always give the same list.
 
 use chrono::NaiveDate;
-use khalid_render::{PostTopics, related};
+use khalid_render::{MOST_RELATED, PostTopics, related, related_up_to};
 
 #[cfg(test)]
 fn post(slug: &str, day: u32, category: Option<&str>, tags: &[&str], links: &[&str]) -> PostTopics {
@@ -116,4 +116,20 @@ fn a_post_never_lists_itself_and_a_lone_post_lists_nothing() {
     assert!(!chosen.contains(&0));
     let alone = vec![post("only-post", 1, None, &[], &[])];
     assert_eq!(related(&alone[0], &alone, &[]), Vec::<usize>::new());
+}
+
+#[test]
+fn up_to_more_posts_keeps_the_best_five_first_then_adds_the_rest() {
+    let mut posts = blog();
+    for day in 11..=16 {
+        let slug = format!("audit-{day}");
+        posts.push(post(&slug, day, Some("technical-seo"), &[], &[]));
+    }
+    let five = related(&posts[0], &posts, &[]);
+    let ten = related_up_to(&posts[0], &posts, &[], MOST_RELATED);
+    assert_eq!(MOST_RELATED, 10);
+    assert_eq!((five.len(), ten.len()), (5, 10));
+    assert_eq!(ten.get(..5), Some(five.as_slice()));
+    let two = related_up_to(&posts[0], &posts, &[], 2);
+    assert_eq!(Some(two.as_slice()), five.get(..2));
 }

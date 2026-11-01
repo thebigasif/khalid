@@ -290,6 +290,7 @@ impl Demo {
             image: None,
             x_default: alternates.first().map(|first| first.href.clone()),
             seo_head: None,
+            breadcrumbs: Vec::new(),
             alternates,
         };
         let html = self.renderer.render(&self.site(lang)?, &meta, body)?;
@@ -329,6 +330,7 @@ impl Demo {
                 .map(|(_, _, card)| card.clone())
                 .collect(),
             pagination: None,
+            featured: None,
         };
         let used: BTreeSet<String> = cards
             .iter()
@@ -344,6 +346,7 @@ impl Demo {
         let home = PageBody::Home(RenderHome {
             listing: pick("Field Notes on SEO", &|_, _| true),
             sections: Vec::new(),
+            picks: Vec::new(),
             topics: vec![TopicGroup {
                 name: None,
                 links: topics,
@@ -531,6 +534,8 @@ impl Demo {
             title: post.field("title"),
             date,
             updated: None,
+            updated_note: None,
+            dek: None,
             reading_time: ReadingTime::of(&body, &Locale::try_new(lang.tag)?),
             authors: vec![Person {
                 name: file.map_or(author.clone(), |a| a.field("name")),
@@ -563,6 +568,8 @@ impl Demo {
             image: None,
             author: record.authors.first().cloned(),
             category: record.category.clone(),
+            featured: false,
+            reading_time: Some(record.reading_time),
         };
         let body = PageBody::Post(Box::new(record));
         self.page(lang, (&path, Some(&key)), &title, &body)?;

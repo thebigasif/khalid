@@ -88,6 +88,8 @@ impl Prepared {
             title: title.clone(),
             date,
             updated: None,
+            updated_note: None,
+            dek: None,
             reading_time: ReadingTime::of(&body, &post.locale),
             authors: front
                 .author
@@ -115,6 +117,7 @@ impl Prepared {
             image: None,
             x_default: None,
             seo_head: None,
+            breadcrumbs: Vec::new(),
             alternates: Vec::new(),
         };
         self.pages.push(Page {
