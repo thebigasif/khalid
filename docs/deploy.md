@@ -28,7 +28,7 @@ curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/inst
 
 ## Signing in to the admin the first time
 
-The admin is at `/admin/` on the site's host. The first person in is the owner, and the command line makes them:
+The admin is at `admin/` in the blog's folder: `/admin/` for a blog that is the whole site, and `/blog/admin/` for one under `/blog/`. The first person in is the owner, and the command line makes them:
 
 ```sh
 khalid --site blog staff owner --email you@example.com --name "Your Name"
@@ -112,6 +112,27 @@ docker compose up -d
 Compose runs Khalid as user 1000, the first user on most Linux machines. If `id -u` prints another number, put `KHALID_UID=<that number>` and `KHALID_GID=<the number id -g prints>` in a file named `.env` next to `compose.yaml`. When the image cannot be downloaded yet, Compose builds it from the repository.
 
 `KHALID_ADDRESS` changes the site's address without editing `site.toml`, for example when a site moves to a new domain. Uncomment the `environment` lines in `compose.yaml` to set it.
+
+## A blog under a folder of another site
+
+A blog can live in a folder of a website built with something else, such as `https://example.com/blog/`. The folder is the blog's **mount**. Make the site with it, and name the program that serves the website:
+
+```sh
+khalid init blog --address https://example.com --mount /blog/ --stack caddy
+```
+
+Khalid prints the rule to add to that program, for nginx, Caddy, Apache, Traefik, a Cloudflare Worker, Vercel, Next.js, Netlify, Webflow or Shopify. The rule passes everything under `/blog/` on to Khalid, and Khalid serves everything there:
+
+| What | Address |
+| --- | --- |
+| The blog | `/blog/` |
+| The admin | `/blog/admin/` |
+| The Content API and the Admin API | `/blog/api/content/v1/` and `/blog/api/admin/v1/` |
+| The OpenAPI document | `/blog/api/openapi.json`, whose server is `https://example.com/blog` |
+| The git mode push hook | `/blog/api/hooks/git` |
+| Preview links, forms, comments and newsletter sign-ups | under `/blog/` |
+
+Every address Khalid gives out names the folder too: sign-in links, preview links, the `site` in each webhook, `Location` headers, `admin_path`, and the address the Connect to SerpDad page shows. An old `/admin/` address moves to `/blog/admin/`. The APIs also still answer at `/api/` for a program that reaches Khalid directly, without the proxy in front.
 
 ## Hosting platforms
 
@@ -355,7 +376,7 @@ Git mode keeps the site in a git repository, so posts ship like code. Each draft
 The server then needs what was merged. Run `khalid pull` from a deploy step, or let the git host tell the server on every push:
 
 1. Make a long random secret, for example with `openssl rand -hex 32`, and set it as `KHALID_GIT_HOOK_SECRET` in the server's environment, the same way as the mail secrets above. The secret never goes in `site.toml`.
-2. On GitHub, add a webhook under Settings, Webhooks, with the payload address `https://<your host>/api/hooks/git`, the content type `application/json` and the same secret. On GitLab, add it under Settings, Webhooks, with the same address and the secret as its token, for push events.
+2. On GitHub, add a webhook under Settings, Webhooks, with the payload address `https://<your host>/api/hooks/git`, or `https://<your host>/blog/api/hooks/git` for a blog under `/blog/`, the content type `application/json` and the same secret. On GitLab, add it under Settings, Webhooks, with the same address and the secret as its token, for push events.
 
 The server answers a signed push at once and pulls in the background; the post shows as soon as the pull finishes. A push signed with anything else gets a 401 and changes nothing. Without `KHALID_GIT_HOOK_SECRET`, the address does not exist.
 
