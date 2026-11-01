@@ -1,0 +1,12 @@
+// The Cloudflare Worker that serves this blog. It has no code of its own:
+// Cloudflare serves the files `khalid build` writes to public/ (Workers
+// static assets). Change "name" to rename the Worker and its address.
+{
+  "name": "khalid-blog",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    // Khalid writes a 404.html; a missing page shows it with status 404.
+    "not_found_handling": "404-page"
+  }
+}

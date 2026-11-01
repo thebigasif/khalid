@@ -42,7 +42,13 @@ Khalid shows the sign-in link only this once. Open the `localhost` address it sh
 
 To write a post, run `khalid --site blog new --draft "Why internal links matter"`. It writes `blog/drafts/en/why-internal-links-matter.md`, which readers never see. Its address leaves out filler words such as "the", which search engines skip. Write the post below its front matter, then run `khalid --site blog publish why-internal-links-matter`. The linter checks it first, and only a post it lets through moves into `blog/content/en/posts/` with today's date. Without `--draft`, `new` writes the post straight into `content/`, dated today, and it goes live at once.
 
-`docs/getting-started.md` goes on from there: an author, a first post, publishing, the admin, checks, imports, and backup and restore. `docs/deploy.md` covers the systemd service, the Docker image and Docker Compose, and the ready files for Fly.io, Railway, Coolify and a Hetzner Cloud server.
+`docs/getting-started.md` goes on from there: an author, a first post, publishing, the admin, checks, imports, and backup and restore. `docs/deploy.md` covers the systemd service, the Docker image and Docker Compose, and the ready files for Fly.io, Railway, Coolify, a Hetzner Cloud server and Cloudflare.
+
+## A free blog on Cloudflare
+
+This button copies a small, ready Khalid blog into your GitHub account and puts it on Cloudflare for free. Cloudflare builds it again on every change you push. The blog is static, so the admin, comments and forms, which need a running server, are not part of it. `docs/deploy/cloudflare.md` explains each step, your own domain, and the Cloudflare Pages way.
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/thebigasif/khalid/tree/main/deploy/cloudflare)
 
 ## Where things are
 
