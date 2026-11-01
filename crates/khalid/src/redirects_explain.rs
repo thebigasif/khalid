@@ -1,13 +1,6 @@
-//! `khalid redirects explain`: why one address answers what it answers on
-//! the running site, from the aliases in post headers as well as the
-//! stored redirects (KH-SEO-8).
-//!
-//! `khalid serve` answers a post's alias before any stored rule, and sends
-//! a stored move that ends at an alias on to the post in one step. The
-//! table explained here holds the stored exact rules, then the aliases of
-//! the posts the publish gate lets through, then the stored patterns, so
-//! the view follows the same chain. An alias of a blocked post leads to
-//! the not-found page until the post passes, and the view says so.
+//! `khalid redirects explain`: why an address answers what it answers on
+//! the running site, from post aliases and stored redirects, in the order
+//! `khalid serve` tries them (KH-SEO-8).
 
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
