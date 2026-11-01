@@ -1,0 +1,4 @@
+# This site translates three posts into German on purpose, so a post
+# without a German version is a choice here, not a gap.
+[rules]
+missing-translation = "off"
