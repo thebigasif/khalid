@@ -93,7 +93,7 @@ fn a_site_without_the_file_gets_the_template_alone() {
     assert!(
         stylesheet(&out)
             .trim_end()
-            .ends_with("@media print { .catbar, .site-name::before { display: none; } }")
+            .ends_with("@media print { .catbar, .masthead::before, .cta-band::before, .site-footer::before { display: none; } }")
     );
 }
 

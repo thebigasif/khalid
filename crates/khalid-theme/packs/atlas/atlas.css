@@ -1,125 +1,281 @@
-/* Atlas: a portal for a blog with many topics. A wide frame, a sticky bar
-   of topic tabs, lead stories and picks as picture cards, labels in the
-   accent, and posts with their numbered contents in a sticky column.
-   Every colour, font and size comes from the tokens or a tint of one. */
+/* Atlas: a publication for SEO and content teams. A masthead on a tint of
+   the accent with a faint map grid, a featured story, picture cards and an
+   index of every topic on the front page; long posts set for reading, with
+   a wide title block, a contents rail on the start side and a measured
+   column. Every colour, font and size comes from the tokens or a tint of
+   one. One radius, one pill, one spacing step of the unit. */
 
-:root { --atlas-wide: 76rem; --atlas-bar: 3rem; --atlas-gap: 1.5rem; --atlas-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); }
-.site-header, .site-footer, main:has(.front) { max-inline-size: var(--atlas-wide); }
-.header-button { margin-inline-start: auto; border-radius: 999px; }
+:root {
+  --atlas-wide: 75rem;
+  --atlas-gap: 2rem;
+  --atlas-pill: 999px;
+  --atlas-tint: color-mix(in oklab, var(--color-accent) 7%, var(--color-background));
+  --atlas-line: color-mix(in oklab, var(--color-accent) 16%, var(--color-background));
+  --atlas-display: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem);
+  --atlas-section: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+}
+.site-header, .site-footer, main:has(.front), main:has(> .cards), main:has(> .featured) { max-inline-size: var(--atlas-wide); }
+main:has(.front), main:has(> .post) { padding-block-start: 0; }
 .button, .subscribe button, .search button { color: var(--color-on-accent); }
+.button, .header-button, .subscribe button { border-radius: var(--atlas-pill); }
 
-/* Header and footer: the name beside a small tile of the accent, menus in
-   the text colour, a footer on the surface across the window. */
-.site-header { padding-block: 1.125rem; border: 0; }
-.site-name { gap: 0.625rem; font-size: 1.375rem; font-weight: 800; letter-spacing: -0.02em; }
-.site-name::before { content: ""; inline-size: 1.5rem; block-size: 1.5rem; background: linear-gradient(135deg, var(--color-accent), color-mix(in oklab, var(--color-accent) 55%, var(--color-background))); border-radius: 0.375rem; }
-.site-header nav a { color: var(--color-text); font-size: var(--text-small); font-weight: 600; text-decoration: none; }
-.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-link); }
-.announcement { margin-block-end: 0; background: var(--atlas-tint); border: 0; font-size: var(--text-small); font-weight: 600; box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
-.announcement a { color: var(--color-link); }
-.site-footer { margin-block-start: var(--space-section); padding-block: calc(var(--space) * 5); background: var(--color-surface); border-block-start: 3px solid var(--color-accent); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
-.site-footer a { color: var(--color-text); }
+/* The header: the name or logo, the menu in pills, the call to action at
+   the end, over a hairline across the window. */
+.site-header { gap: 0.75rem 1.5rem; padding-block: 0.875rem; border: 0; border-block-end: 1px solid var(--color-border); border-image: linear-gradient(var(--color-border), var(--color-border)) 0 0 1 / 0 0 1px / 0 100vmax; }
+.site-name { font-size: 1.375rem; font-weight: 800; letter-spacing: -0.03em; }
+.site-header nav { margin-inline-end: auto; }
+.site-header nav ul { gap: 0 0.25rem; }
+.site-header nav a { padding-inline: 0.875rem; color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; border-radius: var(--atlas-pill); }
+.site-header nav a:hover { background: var(--color-surface); }
+.site-header nav a[aria-current] { color: var(--color-link); background: var(--atlas-tint); }
+.header-button { padding: 0.5rem 1.25rem; font-size: 0.9375rem; }
+.announcement { margin: 0; padding-block: 0.625rem; background: var(--atlas-tint); border: 0; font-size: var(--text-small); font-weight: 600; box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
+.announcement a { color: var(--color-link); text-decoration: none; }
+.announcement a:hover { text-decoration: underline; }
+@media (max-width: 47.99rem) {
+  .site-header { flex-wrap: wrap; gap: 0.5rem 1rem; padding-block: 0.75rem 0.25rem; }
+  .site-header nav { order: 1; flex-basis: 100%; margin-inline: -0.75rem 0; }
+  .site-header nav ul { gap: 0; }
+  .site-header nav a { padding-inline: 0.75rem; font-size: var(--text-small); }
+  .site-logo img { block-size: 2rem; inline-size: 8rem; }
+  .header-button { flex: 0 1 auto; min-inline-size: 0; padding: 0.375rem 1rem; font-size: 0.8125rem; line-height: 1.3; }
+}
 
-/* The bar of topic tabs: full width on the surface colour, sticky under
-   the top of the window, scrolling sideways inside itself on a tablet.
-   On a phone the tabs wrap onto rows and the bar stays in place. */
-.catbar { position: sticky; inset-block-start: 0; z-index: 2; margin-block: -1rem calc(var(--space) * 4); background: var(--color-surface); border-block: 1px solid var(--color-border); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
-.catbar ul { flex-wrap: nowrap; gap: 0; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
-.catbar a { min-block-size: var(--atlas-bar); padding-inline: calc(var(--space) * 2); color: var(--color-text); font-size: var(--text-small); font-weight: 600; text-decoration: none; white-space: nowrap; }
-.catbar a:hover { color: var(--color-link); box-shadow: inset 0 -3px 0 var(--color-border); }
-.catbar a[aria-current] { color: var(--color-link); box-shadow: inset 0 -3px 0 var(--color-accent); }
-@media (max-width: 30rem) { .catbar { position: static; } .catbar ul { flex-wrap: wrap; overflow-x: visible; } }
+/* The masthead: the blog's name at display size, its introduction and the
+   topics as pills, on a tint of the accent across the window with a faint
+   map grid fading in on the end side. */
+.masthead { position: relative; isolation: isolate; margin-block-end: var(--atlas-section); padding-block: clamp(2.75rem, 2rem + 3.5vw, 5rem) clamp(2.5rem, 2rem + 2vw, 3.5rem); background: var(--atlas-tint); box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
+.masthead::before { content: ""; position: absolute; z-index: -1; inset-block: 0; inset-inline: 35% 0; background-image: linear-gradient(var(--atlas-line) 1px, transparent 1px), linear-gradient(90deg, var(--atlas-line) 1px, transparent 1px); background-size: 3rem 3rem; background-position: 100% 0; mask-image: radial-gradient(ellipse at 70% 50%, var(--color-text), transparent 70%); }
+.front-title { max-inline-size: 14ch; margin: 0; font-size: var(--atlas-display); line-height: 1.02; letter-spacing: -0.04em; }
+.masthead :is(.tagline, .intro) { max-inline-size: 34rem; margin-block: 1.25rem 0; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.5; }
+.masthead .intro > :last-child { margin-block-end: 0; }
+.catbar { margin-block-start: 2rem; }
+.catbar ul { gap: 0.5rem; }
+.catbar a { padding-inline: 1.125rem; color: var(--color-text); font-size: var(--text-small); font-weight: 600; text-decoration: none; background: var(--color-background); border: 1px solid var(--atlas-line); border-radius: var(--atlas-pill); }
+.catbar a:hover { color: var(--color-link); border-color: var(--color-accent); }
+.catbar a[aria-current] { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
 
-/* The front page's sections, each under a small label with an accent tile. */
-.front-title { margin-block: 0 calc(var(--space) * 4); font-size: calc(var(--text-h1) * 1.1); letter-spacing: -0.03em; }
-.front section { margin-block-end: var(--space-section); }
-.front section > h2 { display: flex; align-items: center; gap: var(--space); margin-block: 0 calc(var(--space) * 2.5); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
-.front section > h2::before { content: ""; inline-size: 0.625rem; block-size: 0.625rem; background: var(--color-accent); border-radius: 2px; }
+/* The front page's sections, each under a large title on a hairline. The
+   featured posts open under a small label instead. */
+.front > section { margin-block: 0 var(--atlas-section); }
+.front section > h2 { margin-block: 0 2rem; padding-block-start: 1.25rem; border-block-start: 1px solid var(--color-text); font-size: clamp(1.5rem, 1.2rem + 1.1vw, 2rem); letter-spacing: -0.025em; }
+.front .leads > h2 { margin-block-end: 0.25rem; padding: 0; border: 0; color: var(--color-link); font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase; }
 
-/* A story: its picture when it has one, its topic as a label, the title,
-   the summary, then who, how long and when. */
-.stories { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
-.stories > li + li { border-block-start: 1px solid var(--color-border); }
-.story { position: relative; padding-block: calc(var(--space) * 2.5); }
-.story-label { margin: 0 0 calc(var(--space) * 0.75); color: var(--color-link); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-.story :is(h2, h3) { margin: 0; font-size: var(--text-h3); line-height: 1.3; }
-.story :is(h2, h3) a { color: var(--color-text); text-decoration: none; }
-.story :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
-.story:hover :is(h2, h3) a { color: var(--color-link); }
-.story-excerpt { margin: var(--space) 0 0; color: var(--color-muted); }
-.story-meta { display: flex; flex-wrap: wrap; gap: 0 calc(var(--space) * 1.5); margin: var(--space) 0 0; color: var(--color-muted); font-size: var(--text-small); }
-.story-meta > * + *::before { content: "\00b7" / ""; margin-inline-end: calc(var(--space) * 1.5); }
-.story .image { margin: 0; }
-.story .image img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0; background: var(--color-surface); }
+/* A story: its picture in a soft frame, its topic as a label, the title,
+   the summary, then who, when and how long at the foot of the card. The
+   whole card is the link. */
+.story { position: relative; display: flex; flex-direction: column; }
+.story .image { margin: 0 0 1.25rem; overflow: hidden; background: var(--color-surface); border-radius: var(--radius); }
+.story .image img { aspect-ratio: 16 / 10; object-fit: cover; border-radius: 0; transition: transform 0.4s ease; }
+.story:hover .image img { transform: scale(1.03); }
+.story-label { margin: 0 0 0.5rem; color: var(--color-link); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; }
+.story :is(h2, h3, h4) { margin: 0; font-size: 1.25rem; line-height: 1.25; letter-spacing: -0.015em; }
+.story :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.story :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
+.story:hover :is(h2, h3, h4) a { text-decoration: underline; text-decoration-thickness: 0.06em; }
+.story-excerpt { margin: 0.625rem 0 0; color: var(--color-muted); font-size: 1rem; line-height: 1.55; }
+.story-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.25rem; overflow: hidden; margin: auto 0 0; padding-block-start: 1rem; color: var(--color-muted); font-size: 0.8125rem; }
+.story-meta > * { position: relative; }
+.story-meta > * + *::before { content: "\00b7" / ""; position: absolute; inset-inline-start: -0.75rem; }
+.story-author { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-text); font-weight: 600; }
+.story-author .avatar { inline-size: 2rem; block-size: 2rem; }
 
-/* The two newest featured posts, large picture cards side by side when
-   there is room, then the picks in a grid of smaller ones. */
-.leads { display: grid; gap: var(--atlas-gap); }
+/* The two newest featured posts: the first large, the second beside it
+   when there is room. */
+.leads { display: grid; gap: 1.5rem var(--atlas-gap); align-items: start; }
 .leads > h2 { grid-column: 1 / -1; }
-.story-lead, .pick-grid .story { display: flex; flex-direction: column; overflow: hidden; padding: 0; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); transition: border-color 0.15s, box-shadow 0.15s; }
-.story-lead > :not(.image), .pick-grid .story > :not(.image) { margin-inline: calc(var(--space) * 2.5); }
-.story-lead > :not(.image):first-child, .pick-grid .story > :not(.image):first-child, .story-lead > .image + *, .pick-grid .story > .image + * { margin-block-start: calc(var(--space) * 2.5); }
-.story-lead > :last-child, .pick-grid .story > :last-child { margin-block-end: calc(var(--space) * 2.5); }
-.story-lead:hover, .pick-grid .story:hover { border-color: var(--color-accent); box-shadow: 0 0.75rem 2rem color-mix(in oklab, var(--color-accent) 16%, transparent); }
-.story-lead { background: var(--atlas-tint); border-color: color-mix(in oklab, var(--color-accent) 20%, var(--color-background)); }
-.story-lead :is(h2, h3) { font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.015em; }
-@media (min-width: 52rem) { .leads:has(> .story-lead + .story-lead) { grid-template-columns: 3fr 2fr; } }
-.pick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--atlas-gap); margin: 0; padding: 0; list-style: none; }
-.pick-grid > li { display: flex; }
-.pick-grid .story { flex: 1; }
-.pick-grid .story :is(h2, h3) { font-size: var(--text-h4); }
+@media (min-width: 56rem) { .leads:has(> .story-lead + .story-lead) { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); } }
+.story-lead :is(h2, h3) { font-size: clamp(1.625rem, 1.2rem + 1.5vw, 2.5rem); line-height: 1.1; letter-spacing: -0.03em; }
+.story-lead .story-excerpt { font-size: 1.125rem; }
+.story-lead + .story-lead :is(h2, h3) { font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem); }
+.story-lead + .story-lead .story-excerpt { font-size: 1rem; }
 
-/* One block per topic: a tinted card with its newest posts and a link to
-   all of them. */
-.topic-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--atlas-gap); }
-.front .topic-block { margin: 0; padding: calc(var(--space) * 2.5); background: var(--color-surface); border-block-start: 3px solid var(--color-accent); border-radius: 0 0 var(--radius) var(--radius); }
-.topic-block .story { padding-block: calc(var(--space) * 1.5); }
-.topic-block .story :is(h2, h3) { font-size: var(--text-body); }
-.view-all a { font-weight: 700; }
+/* Picture cards in a grid: three across on a laptop, one on a phone. */
+.story-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 3rem var(--atlas-gap); margin: 0; padding: 0; list-style: none; }
+.picks .story-grid, .pick-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); }
+.story-grid > li { display: flex; }
+.feed .pagination { margin-block-start: 3.5rem; padding-block-start: 1.5rem; border-block-start: 1px solid var(--color-border); }
+.topic-index > h2 { margin-block-end: 1.5rem; }
+.story-grid .story { flex: 1; }
+.view-all { margin-block: 1.5rem 0; }
+.view-all a { display: inline-block; padding-block: 0.625rem; font-size: var(--text-small); font-weight: 700; text-decoration: none; }
+.view-all a:hover { text-decoration: underline; }
 .view-all a::after { content: " \2192" / ""; white-space: pre; }
 [dir="rtl"] .view-all a::after { content: " \2190" / ""; }
-@media (min-width: 64rem) { .feed { max-inline-size: 48rem; } }
 
-/* Lists and author pages: text cards split by rules, labels in the accent. */
-.cards-text { gap: 0; }
-.cards-text > li + li { border-block-start: 1px solid var(--color-border); }
-.cards-text .card { padding-block: calc(var(--space) * 2); }
-.cards-text .card-meta a { color: var(--color-link); font-weight: 700; }
-.page-numbers a { color: var(--color-text); text-decoration: none; }
+/* The topic index: one column per topic under an accent rule, its three
+   newest posts by title and date, and a link to all of them. */
+.topic-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 2.5rem var(--atlas-gap); }
+.topic-block { display: flex; flex-direction: column; }
+.topic-block h3 { margin: 0; padding-block-end: 0.75rem; border-block-end: 3px solid var(--color-accent); font-size: 1.125rem; }
+.topic-block h3 a { color: var(--color-text); text-decoration: none; }
+.topic-block h3 a:hover { color: var(--color-link); }
+.topic-block .stories { margin: 0 0 auto; padding: 0; list-style: none; }
+.topic-block .stories > li + li { border-block-start: 1px solid var(--color-border); }
+.story-brief { padding-block: 1rem; }
+.story-brief :is(h3, h4) { font-size: 1rem; line-height: 1.4; }
+.story-brief .story-meta { padding-block-start: 0.375rem; }
+
+/* The call to action: a band on the tint with the map grid, its note large
+   and centred over a pill button. */
+.cta-band { position: relative; isolation: isolate; overflow: hidden; flex-direction: column; justify-content: center; gap: 1.5rem; margin-block: var(--atlas-section); padding: clamp(2.5rem, 1.5rem + 4vw, 4.5rem) 1.5rem; text-align: center; background: var(--atlas-tint); border-radius: calc(var(--radius) * 1.5); }
+.cta-band::before { content: ""; position: absolute; z-index: -1; inset: 0; background-image: linear-gradient(var(--atlas-line) 1px, transparent 1px), linear-gradient(90deg, var(--atlas-line) 1px, transparent 1px); background-size: 3rem 3rem; background-position: center; mask-image: radial-gradient(farthest-side, transparent 45%, var(--color-text)); opacity: 0.7; }
+.cta-note { max-inline-size: 24ch; font-family: var(--font-heading); font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem); font-weight: var(--heading-weight); line-height: 1.15; letter-spacing: -0.025em; text-wrap: balance; }
+.cta-band .button { min-block-size: 3rem; padding-inline: 1.75rem; }
+@media (max-width: 30rem) { .cta-band .button { padding-inline: 1.25rem; font-size: 0.9375rem; border-radius: var(--radius); } }
+
+/* The footer: on the surface across the window, links in the text colour. */
+.site-footer { position: relative; isolation: isolate; margin-block-start: 2rem; padding-block: 3.5rem 4rem; gap: 1.25rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.site-footer::before { content: ""; position: absolute; z-index: -1; inset-block: 0; inset-inline: 50% 0; background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 3rem 3rem; background-position: 100% 100%; mask-image: radial-gradient(ellipse at 100% 100%, var(--color-text), transparent 75%); }
+.site-footer nav ul { gap: 0 1.5rem; }
+@media (min-width: 48rem) { .site-footer > nav:last-of-type li:last-child { margin-inline-start: auto; } }
+.site-footer a { color: var(--color-muted); font-weight: 500; text-decoration: none; }
+.site-footer a:hover, .site-footer a[aria-current] { color: var(--color-text); text-decoration: underline; }
+.front > :last-child { margin-block-end: 0; }
+
+/* Lists, topic and author pages: the featured post large with its picture
+   beside the text, then picture cards in the same grid as the front page. */
+main:has(> .cards, > .featured) > :is(.breadcrumbs, h1, .intro) { margin: 0; background: var(--atlas-tint); box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
+main:has(> .cards, > .featured) { padding-block-start: 0; }
+main:has(> .cards, > .featured) > .breadcrumbs { padding-block: 1.25rem 0.25rem; }
+main:has(> .cards, > .featured) > h1 { padding-block: 0.75rem 3.5rem; font-size: var(--atlas-display); line-height: 1.02; letter-spacing: -0.04em; }
+main:has(> .cards, > .featured) > h1:has(+ .intro) { padding-block-end: 1.25rem; }
+main > .intro { max-inline-size: none; padding-block-end: 3.5rem; font-size: 1.1875rem; line-height: 1.55; }
+main > .intro > * { max-inline-size: 40rem; }
+main > .intro > :last-child { margin-block-end: 0; }
+.cards { gap: 3rem var(--atlas-gap); }
+.cards:has(.image) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
+main > .cards, .featured { margin-block-start: var(--atlas-section); }
+.featured + .cards { margin-block-start: 3.5rem; padding-block-start: 3.5rem; border-block-start: 1px solid var(--color-border); }
+
+/* A card: the same shape as a story. Its topic link sits above the title,
+   placed under the picture, whose height the 16 by 10 frame fixes; who,
+   when and how long sit at the foot. */
+.card { position: relative; display: flex; flex-direction: column; }
+.card .image { margin: 0 0 1.25rem; overflow: hidden; background: var(--color-surface); border-radius: var(--radius); }
+.card .image img { aspect-ratio: 16 / 10; object-fit: cover; border-radius: 0; }
+.card :is(h2, h3) { order: 1; margin: 0; font-size: 1.25rem; line-height: 1.25; letter-spacing: -0.015em; }
+.card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
+.card > p:not(.card-meta) { order: 2; margin: 0.625rem 0 0; color: var(--color-muted); font-size: 1rem; line-height: 1.55; }
+.card-meta { order: 3; gap: 0.25rem 1.25rem; overflow: hidden; margin: auto 0 0; padding-block-start: 1rem; font-size: 0.8125rem; }
+.card-meta > * { position: relative; }
+.card-meta > :is(time, .card-reading-time)::before, .card-featured .card-meta > a::before { content: "\00b7" / ""; position: absolute; inset-inline-start: -0.75rem; }
+.card-meta a { z-index: 1; color: var(--color-link); font-weight: 700; text-decoration: none; }
+.card-meta a:hover { text-decoration: underline; }
+.cards .card:has(.card-meta > a) :is(h2, h3) { margin-block-start: 1.875rem; }
+.cards .card-meta > a { position: absolute; inset-block-start: 0; inset-inline-start: 0; min-block-size: 0; font-size: 0.75rem; letter-spacing: 0.09em; line-height: 1.2; text-transform: uppercase; }
+.cards .card:has(.image) .card-meta > a { inset-block-start: calc(62.5cqi + 1.25rem); }
+.card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; }
+.card-author { font-weight: 600; }
+.featured > h2 { margin-block: 0 1rem; color: var(--color-link); font-size: 0.8125rem; letter-spacing: 0.1em; }
+.card-featured { padding: 0; background: none; }
+.card-featured h3 { font-size: clamp(1.625rem, 1.2rem + 1.5vw, 2.5rem); line-height: 1.1; letter-spacing: -0.03em; }
+.card-featured > p:not(.card-meta) { font-size: 1.125rem; }
+@media (min-width: 56rem) {
+  .card-featured:has(.image) { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); grid-template-rows: 1fr auto auto 1fr; gap: 0 2.5rem; }
+  .card-featured .image { grid-row: 1 / -1; grid-column: 1; margin: 0; }
+  .card-featured h3 { grid-row: 1; grid-column: 2; align-self: end; }
+  .card-featured > p:not(.card-meta) { grid-row: 2; grid-column: 2; }
+  .card-featured .card-meta { grid-row: 3; grid-column: 2; margin: 0; padding-block-start: 1.25rem; }
+}
+.page-numbers a { color: var(--color-text); text-decoration: none; border-radius: var(--atlas-pill); }
 .page-numbers a:hover { background: var(--atlas-tint); }
 
-/* A post: the trail, a large title, the picture in a soft frame, then the
-   numbered contents on a tinted panel beside the body. */
-.post-header h1 { margin-block: var(--space) calc(var(--space) * 2); font-size: calc(var(--text-h1) * 1.05); letter-spacing: -0.025em; line-height: 1.1; }
-.post-meta a { font-weight: 600; }
-.post-header .image img { border: 1px solid var(--color-border); }
-.toc-side { padding: calc(var(--space) * 2); background: var(--color-surface); border-radius: var(--radius); }
-.toc-side a { color: var(--color-text); text-decoration: none; }
-.toc-side a:hover, .toc-side a[aria-current] { color: var(--color-link); box-shadow: inset 2px 0 0 var(--color-accent); }
-[dir="rtl"] .toc-side a:hover, [dir="rtl"] .toc-side a[aria-current] { box-shadow: inset -2px 0 0 var(--color-accent); }
-.toc-side .toc-title, .toc-inline summary { color: var(--color-link); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
-.toc-inline { background: var(--atlas-tint); }
-.share { padding-block: calc(var(--space) * 1.5); border-block: 1px solid var(--color-border); }
-.share a { border-radius: 999px; color: var(--color-text); font-size: var(--text-small); font-weight: 600; }
-.share a:hover, .share a:focus-visible { background: var(--color-accent); color: var(--color-on-accent); }
+/* A post: the trail, a large title across the page, the byline in one
+   quiet block, the picture in a soft frame, then the numbered contents in
+   a rail beside the body. */
+.breadcrumbs { margin-block: 1.25rem 0.5rem; }
+.breadcrumbs ol { flex-wrap: nowrap; }
+.breadcrumbs li { flex: none; }
+.breadcrumbs li:last-child { display: flex; flex: 0 1 auto; align-items: center; min-inline-size: 0; }
+.breadcrumbs li:last-child a { display: block; min-inline-size: 0; overflow: hidden; line-height: 44px; text-overflow: ellipsis; white-space: nowrap; }
+.breadcrumbs a { text-decoration: none; }
+.breadcrumbs a:hover { color: var(--color-text); text-decoration: underline; }
+.post { container-type: inline-size; }
+main:has(> .post) > .breadcrumbs { margin: 0; padding-block: 1.25rem 0.25rem; background: var(--atlas-tint); box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
+.post > .post-header { display: flow-root; margin-block-end: 3rem; padding-block-end: 2.5rem; border-image: linear-gradient(var(--atlas-tint), var(--atlas-tint)) fill 0 // 0 100vmax; }
+.post > .post-header:has(> .image) { padding-block-end: 0; border-image: linear-gradient(var(--atlas-tint) calc(100% - 26cqi), transparent 0) fill 0 // 0 100vmax; }
+.post-header h1 { margin-block: 0.75rem 1.5rem; line-height: 1.08; letter-spacing: -0.035em; }
+.post-meta { display: flex; flex-flow: column; gap: 0.25rem; color: var(--color-muted); }
+.post-meta address { margin-block-end: 0.75rem; }
+.post-meta > p { margin: 0; }
+@media (min-width: 48rem) {
+  .post-meta { flex-flow: row wrap; align-items: center; gap: 0; }
+  .post-meta address { flex-basis: 100%; }
+  .post-meta > p + p::before { content: "\00b7" / ""; margin-inline: 0.625rem; }
+}
+.post-meta a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta a:hover { text-decoration: underline; }
+.post-meta .person a { font-size: 1rem; }
+.post-header .image { margin-block: 2.5rem 0; }
+.post-header .image img { border-radius: calc(var(--radius) * 1.25); box-shadow: 0 1px 2px color-mix(in oklab, var(--color-text) 8%, transparent), 0 1.5rem 3rem -1.5rem color-mix(in oklab, var(--color-accent) 30%, transparent); }
+.toc-side { padding: 0; background: none; }
+.toc-side .toc-title { margin-block-end: 0.75rem; color: var(--color-muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.toc-side ol { padding: 0; list-style: none; border-inline-start: 1px solid var(--color-border); }
+.toc-side ol ol { border: 0; }
+.toc-side a { min-block-size: 2.5rem; margin-inline-start: -1px; padding-block: 0.375rem; padding-inline: 1rem 0; color: var(--color-muted); line-height: 1.35; text-decoration: none; border-inline-start: 2px solid transparent; }
+.toc-side a:hover { color: var(--color-text); }
+.toc-side a[aria-current] { color: var(--color-link); font-weight: inherit; border-inline-start-color: var(--color-accent); }
+.toc-side > ol:not(.toc-plain, .toc-nested) { counter-reset: atlas-toc; }
+.toc-side > ol:not(.toc-plain, .toc-nested) > li { counter-increment: atlas-toc; }
+.toc-side > ol:not(.toc-plain, .toc-nested) > li > a::before { content: counter(atlas-toc, decimal-leading-zero) / ""; flex: none; inline-size: 1.75rem; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.toc-inline { padding-inline: 1.25rem; background: var(--color-surface); }
+.toc-inline summary { font-size: var(--text-small); }
+@media (min-width: 70rem) {
+  .post-toc-start { column-gap: 4rem; }
+  .post-toc-start > .post-header { grid-column: 1 / -1; }
+  .post-toc-start > .toc-side { grid-row: 2 / span 20; inset-block-start: 1.5rem; }
+}
+.share { gap: 0.5rem 0.75rem; margin-block: 2rem; }
+.share-title { color: var(--color-muted); font-size: var(--text-small); }
+.share a { padding-inline: 1rem; color: var(--color-text); font-size: var(--text-small); font-weight: 600; background: var(--color-surface); border: 0; border-radius: var(--atlas-pill); }
+.share a:hover, .share a:focus-visible { color: var(--color-on-accent); background: var(--color-accent); }
 
-/* Body furniture: an expert quote set large under an opening mark,
-   further reading in italics, steps and tables with clear edges. */
-.post-body > h2 { padding-block-start: calc(var(--space) * 1.5); border-block-start: 2px solid var(--color-text); }
-.pullquote { padding: calc(var(--space) * 3); background: var(--atlas-tint); border: 0; border-radius: var(--radius); }
-.pullquote blockquote { font-size: var(--text-h3); }
-.pullquote blockquote::before { content: "\201C" / ""; display: block; block-size: 0.5em; color: var(--color-accent); font-size: 3em; line-height: 1; }
-.callout-read { font-style: italic; }
-.post-body th { background: var(--color-surface); }
-.post-body table { border: 1px solid var(--color-border); border-radius: var(--radius); }
-.howto > li::marker { color: var(--color-link); font-family: var(--font-heading); font-weight: var(--heading-weight); }
-.lock { background: var(--atlas-tint); border-color: color-mix(in oklab, var(--color-accent) 25%, var(--color-background)); }
+/* The body: generous headings, calm tinted panels in place of boxes,
+   tables on hairlines and a quote set large. */
+.post-body > h2 { margin-block: 2.75em 0.6em; line-height: 1.15; letter-spacing: -0.025em; }
+.post-body > h3 { margin-block: 2em 0.5em; letter-spacing: -0.015em; }
+.heading-link { font-size: 0.75em; opacity: 0.7; }
+.post-body li { margin-block-end: 0.375rem; }
+.toc { margin-block: 2rem; padding: 1rem 1.5rem; }
+.toc ol { padding-inline-start: 1.5rem; }
+@media (min-width: 40rem) { .toc > ol { columns: 2; column-gap: 2rem; } }
+.toc li { break-inside: avoid; color: var(--color-muted); font-size: 0.9375rem; }
+.toc .toc-h2 { font-weight: 400; }
+.toc a { min-block-size: 2.5rem; color: var(--color-text); line-height: 1.35; text-decoration: none; }
+.toc a:hover { color: var(--color-link); text-decoration: underline; }
+.callout { margin-block: 2rem; padding: 1.25rem 1.5rem; border-inline-start-width: 3px; border-start-start-radius: 0; border-end-start-radius: 0; }
+.callout-summary { border-color: var(--color-accent); }
+.callout-read { padding-inline: 0; border-radius: 0; font-style: italic; }
+.pullquote { margin-block: 2.5rem; padding: 0; border: 0; }
+.pullquote blockquote { font-size: clamp(1.375rem, 1.1rem + 1vw, 1.875rem); line-height: 1.3; letter-spacing: -0.015em; }
+.pullquote blockquote::before { content: "\201C" / ""; display: block; block-size: 0.55em; color: var(--color-accent); font-size: 3em; line-height: 1; }
+.post-body table { inline-size: 100%; font-size: 0.9375rem; }
+.post-body th { border-block-end: 2px solid var(--color-text); }
+.post-body :is(th, td) { padding-block: 0.75rem; padding-inline: 0 1rem; }
+.howto { padding-inline-start: 0; list-style: none; counter-reset: atlas-step; }
+.howto > li { position: relative; counter-increment: atlas-step; padding-inline-start: 3rem; }
+.howto > li::before { content: counter(atlas-step) / ""; position: absolute; inset-inline-start: 0; inset-block-start: -0.125rem; display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; color: var(--color-link); background: var(--atlas-tint); border-radius: 50%; font-size: 0.875rem; font-weight: 700; }
+.faq summary { font-size: 1.0625rem; }
+.lock, .locked { background: var(--color-surface); border: 0; color: var(--color-muted); font-size: var(--text-small); }
 
-/* After the post: the author on a card with an accent edge, the call to
-   action on a tint of the accent. */
-.author-box { background: var(--color-background); border: 1px solid var(--color-border); border-block-start: 3px solid var(--color-accent); }
-.author-box h2 { color: var(--color-link); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
-.cta-band { background: linear-gradient(120deg, var(--atlas-tint), color-mix(in oklab, var(--color-accent) 18%, var(--color-background))); border: 1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-background)); }
-.related > h2 { font-size: var(--text-h3); }
+/* After the post: the author on the surface, the band, the posts that
+   link here as a list of titles, then related posts as picture cards. */
+.author-box { margin-block-start: 3rem; padding: 2rem; border-radius: calc(var(--radius) * 1.25); }
+.author-box h2 { margin-block-end: 1.25rem; color: var(--color-muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.author-box .avatar { inline-size: 4rem; block-size: 4rem; }
+.person-card { gap: 1.25rem; }
+.person-card > picture { flex: none; }
+.person-name a { font-size: 1.125rem; color: var(--color-text); text-decoration: none; }
+.person-name a:hover { text-decoration: underline; }
+.author-box .person-role { margin-block: -0.5rem 0.75rem; color: var(--color-muted); font-size: var(--text-small); }
+.author-box .reviewed-by { margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.mentions, .related, .comments { margin-block: var(--atlas-section) 0; }
+:is(.mentions, .related, .comments) > h2 { margin-block: 0 1.5rem; padding-block-start: 1.25rem; border-block-start: 1px solid var(--color-text); font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem); letter-spacing: -0.02em; }
+.mentions ul { columns: 2 18rem; column-gap: var(--atlas-gap); }
+.mentions li { break-inside: avoid; border-block-end: 1px solid var(--color-border); }
+.mentions a { padding-block: 0.625rem; color: var(--color-text); font-weight: 600; line-height: 1.4; text-decoration: none; }
+.mentions a:hover { color: var(--color-link); }
+.comments > .lock, .mentions + .lock, .mentions + .locked { margin-block-start: 2rem; }
 
-@media print { .catbar, .site-name::before { display: none; } }
+@media print { .catbar, .masthead::before, .cta-band::before, .site-footer::before { display: none; } }
