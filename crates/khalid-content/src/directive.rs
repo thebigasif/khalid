@@ -72,6 +72,7 @@ pub(crate) fn directive(
         "product" => product(&attributes, body),
         "business" => cards::business(&attributes),
         "snippet" => cards::snippet(&attributes),
+        "location" => cards::location(&attributes),
         "header" => cards::header(&attributes),
         "html" => cards::html(&attributes),
         "form" => forms::form(&attributes, body),

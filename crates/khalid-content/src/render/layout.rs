@@ -6,6 +6,18 @@ use super::{Renderer, attribute, inside};
 use crate::{Block, Column, ProsConsBlock};
 
 impl Renderer<'_> {
+    /// Writes a toggle as `<details>`, open, so it reads in full with
+    /// scripts off, with `summary` as what the reader clicks.
+    pub(super) fn toggle(&mut self, block: &Block, summary: &str) {
+        self.push(&[
+            "<details open>\n<summary>",
+            &attribute(summary),
+            "</summary>\n",
+        ]);
+        self.markdown(&inside(&block.source));
+        self.html.push_str("</details>\n");
+    }
+
     /// Writes a pull quote as a `<figure>`: the words in a `<blockquote>`,
     /// and who said them as its caption.
     pub(super) fn pull_quote(&mut self, block: &Block, by: Option<&str>) {

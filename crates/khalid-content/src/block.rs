@@ -83,6 +83,12 @@ pub enum BlockKind {
         /// The snippet's slug, the name it has in `snippets/`.
         slug: String,
     },
+    /// `::location{name="..."}`: one of the site's `[[seo.locations]]`,
+    /// its address, opening hours and map link drawn in place.
+    Location {
+        /// The location's name, as written in `site.toml`.
+        name: String,
+    },
     /// `::button{href="..." label="..."}`: a link styled as a button.
     Button {
         /// Where it leads.
