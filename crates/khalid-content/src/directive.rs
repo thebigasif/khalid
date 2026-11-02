@@ -10,6 +10,7 @@ use crate::{
 };
 
 mod cards;
+mod charts;
 mod forms;
 mod formula;
 mod layout;
@@ -77,6 +78,7 @@ pub(crate) fn directive(
         "form" => forms::form(&attributes, body),
         "newsletter" | "gated" => forms::subscribe(name, &attributes),
         "maths" => formula::maths(&attributes, body),
+        "chart" => charts::chart(&attributes, body),
         "pullquote" => layout::pull_quote(&attributes, body),
         "proscons" => layout::pros_cons(&attributes, body),
         "columns" => nested::columns(&attributes, body),

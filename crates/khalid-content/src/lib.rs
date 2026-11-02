@@ -8,6 +8,7 @@
 
 mod block;
 mod body_check;
+mod chart;
 mod content_error;
 mod content_hash;
 mod directive;
@@ -29,6 +30,9 @@ pub use block::{
     Block, BlockError, BlockKind, CalloutKind, GalleryImage, Visibility, parse_blocks, print_blocks,
 };
 pub use body_check::check_bodies;
+pub use chart::{
+    ChartBlock, ChartKind, ChartRow, ChartTable, ChartValue, MAX_CHART_ROWS, MAX_CHART_SERIES,
+};
 pub use content_error::ContentError;
 pub use content_hash::ContentHash;
 pub use embed::{EMBED_PROVIDERS, EmbedProvider};

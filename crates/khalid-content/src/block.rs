@@ -7,8 +7,8 @@ use comrak::{Arena, Options, parse_document};
 use khalid_core::{AbsoluteUrl, ParseUrlError, Slug};
 
 use crate::{
-    BusinessBlock, Column, FormField, HowToBlock, ProductBlock, ProsConsBlock, Question,
-    RecipeBlock, ReviewBlock, VideoBlock,
+    BusinessBlock, ChartBlock, Column, FormField, HowToBlock, ProductBlock, ProsConsBlock,
+    Question, RecipeBlock, ReviewBlock, VideoBlock,
 };
 
 use crate::directive::{Form, directive, opening, unknown_hint};
@@ -232,6 +232,9 @@ pub enum BlockKind {
         /// The formula as written, without the lines around it.
         formula: String,
     },
+    /// `:::chart{type="..." title="..."}` with CSV lines as the body, or
+    /// `src="data.csv"`: numbers drawn as a picture at build time.
+    Chart(ChartBlock),
 }
 
 /// One picture in a gallery, written `![alt](src)` on its own line.
