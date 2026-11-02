@@ -90,7 +90,7 @@ fn a_post_shows_its_people_reading_time_and_related_posts() {
     );
     assert!(
         post.contains(
-            "<p class=\"reviewed-by\">Reviewed by <a href=\"/blog/authors/asif/\">Asif</a></p>"
+            "<p class=\"reviewed-by\">Reviewed by <span class=\"reviewer\"><a href=\"/blog/authors/asif/\">Asif</a></span></p>"
         ),
         "{post}"
     );

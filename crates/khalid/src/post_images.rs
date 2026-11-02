@@ -17,9 +17,10 @@ use khalid_seo::ShareImage;
 use khalid_server::MediaType;
 
 use crate::build_pages::{LanguagePages, Page};
+use crate::post_files::library_photo;
 use crate::post_files::{self, IMAGE, PostFile};
 use crate::post_photos::{self, Shown};
-use crate::{library_photo, vector_size};
+use crate::vector_size;
 
 /// The folder under the mount, and in the output folder, that holds every size.
 const FOLDER: &str = "media/";

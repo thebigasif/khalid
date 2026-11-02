@@ -11,18 +11,23 @@ expression: "main_of(&page(&out, \"authors/asif/index.html\"))"
 </nav>
 
 
+
 <article class="author">
 <header class="author-header">
+<div class="author-intro">
 <h1>Asif</h1>
 <p class="author-role">Founder of SerpDad</p>
+<p class="author-count">3 posts</p>
+<p class="author-credentials"><strong>Experience</strong> Ten years running SEO for small teams</p>
+<ul class="author-profiles" role="list" aria-label="Asif elsewhere">
+<li><a href="https://serpdad.com/" rel="me" data-icon="website"><svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></g></svg><span>serpdad.com</span></a></li>
+</ul>
+</div>
 </header>
 <div class="author-bio">
 <p>Asif writes about search from the side of the people who have to do the work: small teams with a website, a blog and not much time. He likes advice you can act on before lunch.</p>
 
 </div>
-<ul class="author-profiles">
-<li><a href="https://serpdad.com/" rel="me">serpdad.com</a></li>
-</ul>
 </article>
 <section aria-labelledby="author-posts">
 <h2 id="author-posts">Posts by Asif</h2>

@@ -8,8 +8,8 @@ use std::path::{Path, PathBuf};
 use khalid_core::Config;
 use khalid_media::{ContentKey, LIBRARY_ADDRESS};
 
+use super::{self as post_files, PostFile};
 use crate::build_pages::LanguagePages;
-use crate::post_files::{self, PostFile};
 
 /// The library address `src` names, below the blog's mount, such as
 /// `media/library/3f2a9c1e0b57d0aa/lena.png`. `None` for anything else.

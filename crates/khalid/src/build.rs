@@ -18,14 +18,14 @@ use serde::Serialize;
 use crate::cli::Output;
 use crate::exit::Exit;
 use crate::page_code::PageCode;
-use crate::post_files::Assets;
+use crate::post_files::{Assets, library_photo};
 use crate::post_photos::Shown;
 use crate::site_page::HeadNonce;
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
-    build_seo, build_sitemap, categories, content_message, library_photo, look, own_descriptions,
-    post_categories, post_files, post_images, post_lock, report, search_page, search_static,
-    share_images, static_mode, trails,
+    build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_categories,
+    post_files, post_images, post_lock, report, search_page, search_static, share_images,
+    static_mode, trails,
 };
 
 /// The output folder inside a site when `--out` is not given.

@@ -11,10 +11,14 @@ expression: "main_of(&page(&out, \"authors/lena-vogt/index.html\"))"
 </nav>
 
 
+
 <article class="author">
 <header class="author-header">
+<div class="author-intro">
 <h1>Lena Vogt</h1>
 <p class="author-role">Technical SEO editor</p>
+<p class="author-count">2 posts</p>
+</div>
 </header>
 <div class="author-bio">
 <p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees before a reader does. She writes in English and German.</p>

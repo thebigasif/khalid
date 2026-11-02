@@ -165,6 +165,7 @@ fn author(slug: &Slug, config: &Config) -> Person {
         name: slug.to_string(),
         href: format!("{}authors/{slug}/", config.mount()),
         role: None,
+        credentials: None,
         image: None,
         bio: None,
         profiles: Vec::new(),

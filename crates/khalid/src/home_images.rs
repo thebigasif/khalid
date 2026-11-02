@@ -12,9 +12,10 @@ use khalid_render::{PageBody, PostCard};
 use khalid_routes::Routes;
 
 use crate::build_pages::{self, LanguagePages};
+use crate::post_files::library_photo;
 use crate::post_files::{self, PostFile};
+use crate::post_images;
 use crate::post_photos::{self, Shown};
-use crate::{library_photo, post_images};
 
 /// Puts on the cards of the home pages in `languages` the lead image of
 /// each post and the photo of each author they show, from `content` in

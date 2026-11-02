@@ -56,9 +56,9 @@ fn an_author_page_says_why_to_trust_them_and_where_else_they_are() {
     );
     assert!(page.contains("<strong>Experience</strong> Ten years running crawls"));
     // Each known profile draws its icon, with its name beside it, rel="me".
-    assert!(page.contains("rel=\"me\" class=\"profile-mastodon\"><svg class=\"icon\""));
-    assert!(page.contains("class=\"profile-github\"><svg"));
-    assert!(page.contains("class=\"profile-website\"><svg"));
+    assert!(page.contains("rel=\"me\" data-icon=\"mastodon\"><svg class=\"icon\""));
+    assert!(page.contains("data-icon=\"github\"><svg"));
+    assert!(page.contains("data-icon=\"website\"><svg"));
     assert!(page.contains("<span>lenavogt.example</span>"));
     assert!(page.contains("aria-label=\"Lena Vogt elsewhere\""));
     // No icon needs a script.

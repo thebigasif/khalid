@@ -55,6 +55,8 @@ Sam writes about running a small business website.
 
 `slug` is what posts put after `author:`. The text under the front matter appears on the author's page.
 
+Three more lines make the author page and the box under each post complete. `credentials:` says why to trust them, such as `Ten years running a bakery`. `photo:` names a picture beside the file, or one you chose in the admin's Media. `same_as:` lists their profiles elsewhere, one address per line starting with `  - `; LinkedIn, X, GitHub, YouTube, Instagram, Facebook, Mastodon and a personal site's home page get their own icon. If you made the owner with `khalid staff owner`, a profile with your name is already there, and "Your account" in the admin edits it.
+
 ## 4. Write your first post as a draft
 
 A draft goes in `drafts/<language>/<slug>.md`, with no `date:` line. Save this as `blog/drafts/en/why-internal-links-matter.md`:

@@ -37,7 +37,7 @@ fn the_box_shows_credentials_and_icons_named_for_screen_readers() {
     let page = render("en", post_with_profile());
     let parts = part(&page, "<section class=\"author-box\">", "</section>");
     assert!(parts.contains("<strong>Experience</strong> Ten years running crawls"));
-    let linkedin = "class=\"profile-linkedin\"><svg";
+    let linkedin = "data-icon=\"linkedin\"><svg";
     assert!(parts.contains(linkedin), "{parts}");
     assert!(parts.contains("<span class=\"visually-hidden\">LinkedIn</span>"));
     // A page with no known icon shows its host as a plain link.

@@ -20,6 +20,6 @@
     person's own page, so each profile can link back to it. -#}
 {% macro profiles(list, label, named, me) -%}
 <ul class="author-profiles" role="list" aria-label="{{ label }}">
-{% for profile in list %}<li><a href="{{ profile.href }}"{% if me %} rel="me"{% endif %}{% if profile.icon %} class="profile-{{ profile.icon }}"{% endif %}>{% if profile.icon %}{{ profile_icon(profile.icon) }}{% endif %}<span{% if profile.icon and not named %} class="visually-hidden"{% endif %}>{{ profile.name }}</span></a></li>
+{% for profile in list %}<li><a href="{{ profile.href }}"{% if me %} rel="me"{% endif %}{% if profile.icon %} data-icon="{{ profile.icon }}"{% endif %}>{% if profile.icon %}{{ profile_icon(profile.icon) }}{% endif %}<span{% if profile.icon and not named %} class="visually-hidden"{% endif %}>{{ profile.name }}</span></a></li>
 {% endfor %}</ul>
 {%- endmacro %}

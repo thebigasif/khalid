@@ -159,8 +159,12 @@ fn almanac_options_drop_the_closing_byline_and_the_lead_picture() {
     let (_temp, out) = built_with("almanac", "byline_end = false\nlead_image = false");
     let post = page(&out, POST);
     assert!(!post.contains("al-byline-end"), "{post}");
+    // Almanac ends a post with the author box, so the shorter line of
+    // writers shows only when the box is off.
     let (_temp, plain) = built("almanac");
-    assert!(page(&plain, POST).contains("al-byline-end"));
+    let plain = page(&plain, POST);
+    assert!(plain.contains("<section class=\"author-box\">"), "{plain}");
+    assert!(!plain.contains("al-byline-end"), "{plain}");
 }
 
 /// A long guide keeps its contents beside the text, where the reader can

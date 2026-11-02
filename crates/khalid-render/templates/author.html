@@ -20,7 +20,7 @@
 {{ page.bio }}
 </div>
 </article>
-<section class="author-posts" aria-labelledby="author-posts">
+<section aria-labelledby="author-posts">
 <h2 id="author-posts">{{ t.posts_by | replace("{name}", page.name) }}</h2>
 {% if page.posts %}{{ cards(page.posts, 3) }}
 {% else %}<p>{{ t.no_posts }}</p>
