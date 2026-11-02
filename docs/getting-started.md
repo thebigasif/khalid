@@ -108,6 +108,10 @@ khalid --site blog staff owner --email you@example.com --name "Sam Rivera"
 
 Khalid prints a sign-in link once. It works for 15 minutes, and only once. It shows the link twice: on the address in `site.toml`, and on `localhost` for this computer. While you try Khalid on your own computer, open the `localhost` link while `khalid serve` runs. It names the port `serve` last ran on, so a blog started with `--listen` gets the right link too. Once signed in, choose a password or add a passkey. To sign in again later, run the same command.
 
+The sign-in page leads with **Sign in with a passkey**, then your email and password. Someone with no account asks the owner to add them under **Team**.
+
+A staff token is a long code that lets one person into the admin without an account, such as for a quick fix from the server. Make one with `khalid --site blog keys create --kind staff --role editor --name "Sam Rivera"`. Khalid shows it once. On the sign-in page, press **Sign in with a staff token** and paste it.
+
 If the admin says it is not built, your copy of Khalid was built without it: see [CONTRIBUTING.md](../CONTRIBUTING.md#build-khalid-from-source).
 
 ## 8. Check the site
