@@ -19,6 +19,7 @@ use crate::keys::{Principal, Scope};
 use crate::link_suggestions::LinkSuggestion;
 use crate::post_check::{PostCheck, PostChecks};
 use crate::problem::{Problem, ProblemType};
+use crate::site_issues::SiteIssue;
 
 /// The site's post checks, or `None` for a server that makes none.
 pub(crate) type Checks = Option<Arc<dyn PostChecks>>;
@@ -29,6 +30,7 @@ pub(crate) fn routes(checks: Checks, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(check_post))
         .routes(routes!(suggest_links))
+        .routes(routes!(list_issues))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
         .with_state(checks)
@@ -111,6 +113,40 @@ async fn suggest_links(
         .map_err(|e| Problem::internal(&e))?
         .ok_or_else(|| missing(uri.path()))?;
     Ok(Json(AdminLinkSuggestions { suggestions }))
+}
+
+/// Issues as the Admin API wraps them.
+#[derive(Debug, Serialize, ToSchema)]
+pub(crate) struct AdminIssues {
+    /// Up to ten problems, those that stop posts going live first.
+    issues: Vec<SiteIssue>,
+}
+
+/// The live site's most common lint problems, for the dashboard's task
+/// list: each rule that fires, on how many posts, with what, why and fix
+/// and one post to open first. Those that stop posts going live come
+/// first, then those on the most posts. Every rule runs on every post, as
+/// `khalid lint` does, so the dashboard asks for it after the rest. Needs
+/// `posts:write`.
+#[utoipa::path(
+    get, path = "/lint/issues/", tag = "admin posts",
+    security(("admin_key" = [])),
+    responses(
+        (status = 200, description = "Up to ten problems, most pressing first", body = AdminIssues),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "This server checks no posts", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn list_issues(
+    State(checks): State<Checks>,
+    Extension(principal): Extension<Principal>,
+) -> Result<Json<AdminIssues>, Problem> {
+    require(&principal, Scope::PostsWrite)?;
+    let checks = checks.ok_or_else(no_checks)?;
+    let issues = checks.site_issues().await;
+    let issues = issues.map_err(|e| Problem::internal(&e))?;
+    Ok(Json(AdminIssues { issues }))
 }
 
 fn no_checks() -> Problem {

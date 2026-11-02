@@ -11,6 +11,7 @@ use khalid_api::link_suggestions::{LinkSuggestion, Topics, suggest};
 use khalid_api::post_check::{PostCheck, PostChecks, Snippet};
 use khalid_api::post_store::PostStoreError;
 use khalid_api::resources::PostStatus;
+use khalid_api::site_issues::{SiteIssue, top_issues};
 use khalid_content::parse_post;
 use khalid_core::Slug;
 use khalid_seo::{HeadTag, SeoPage, SeoSite, head_tags, page_graph};
@@ -138,5 +139,12 @@ impl PostChecks for SitePosts {
     ) -> BoxFuture<'a, Result<Option<Vec<LinkSuggestion>>, PostStoreError>> {
         let id = id.to_owned();
         Box::pin(blocking(&self.0, move |site| site.suggestions_now(&id)))
+    }
+
+    fn site_issues(&self) -> BoxFuture<'_, Result<Vec<SiteIssue>, PostStoreError>> {
+        Box::pin(blocking(&self.0, |site| {
+            let judge = site.judge(&site.content()?)?;
+            Ok(top_issues(&judge.linter.lint_site(&judge.site)))
+        }))
     }
 }

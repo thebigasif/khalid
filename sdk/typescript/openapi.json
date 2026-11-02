@@ -1839,6 +1839,73 @@
         ]
       }
     },
+    "/api/admin/v1/lint/issues/": {
+      "get": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "The live site's most common lint problems, for the dashboard's task\nlist: each rule that fires, on how many posts, with what, why and fix\nand one post to open first. Those that stop posts going live come\nfirst, then those on the most posts. Every rule runs on every post, as\n`khalid lint` does, so the dashboard asks for it after the rest. Needs\n`posts:write`.",
+        "operationId": "list_issues",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Up to ten problems, most pressing first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminIssues"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server checks no posts",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/media/": {
       "get": {
         "tags": [
@@ -11226,6 +11293,22 @@
           }
         }
       },
+      "AdminIssues": {
+        "type": "object",
+        "description": "Issues as the Admin API wraps them.",
+        "required": [
+          "issues"
+        ],
+        "properties": {
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SiteIssue"
+            },
+            "description": "Up to ten problems, those that stop posts going live first."
+          }
+        }
+      },
       "AdminKey": {
         "type": "object",
         "description": "A key that works, in Admin API shape. The secret is shown once, when\nthe key is made, and never again.",
@@ -13473,6 +13556,14 @@
           }
         },
         "additionalProperties": false
+      },
+      "IssueWeight": {
+        "type": "string",
+        "description": "How much a problem matters.",
+        "enum": [
+          "block",
+          "warn"
+        ]
       },
       "LinkRedeem": {
         "type": "object",
@@ -16304,6 +16395,52 @@
           "home": {
             "type": "boolean",
             "description": "Whether it is the home site, where this panel lives."
+          }
+        }
+      },
+      "SiteIssue": {
+        "type": "object",
+        "description": "One lint rule that fires on the site, as one task.",
+        "required": [
+          "rule",
+          "weight",
+          "posts",
+          "what",
+          "why",
+          "fix",
+          "example"
+        ],
+        "properties": {
+          "example": {
+            "type": "string",
+            "description": "The identity of one post it fires on, to open first.",
+            "example": "en.choosing-anchor-text"
+          },
+          "fix": {
+            "type": "string",
+            "description": "What to do."
+          },
+          "posts": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many posts it fires on.",
+            "minimum": 0
+          },
+          "rule": {
+            "type": "string",
+            "description": "The rule, such as `missing-alt`."
+          },
+          "weight": {
+            "$ref": "#/components/schemas/IssueWeight",
+            "description": "Whether it stops posts going live or warns."
+          },
+          "what": {
+            "type": "string",
+            "description": "What is wrong, in one sentence."
+          },
+          "why": {
+            "type": "string",
+            "description": "Why it matters."
           }
         }
       },

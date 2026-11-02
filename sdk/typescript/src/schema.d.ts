@@ -163,6 +163,12 @@ export type AdminDelivery = {
   state_at: string;
 };
 
+/** Issues as the Admin API wraps them. */
+export type AdminIssues = {
+  /** Up to ten problems, those that stop posts going live first. */
+  issues: SiteIssue[];
+};
+
 /** A key that works, in Admin API shape. The secret is shown once, when the key is made, and never again. */
 export type AdminKey = {
   /** When the key was made. */
@@ -912,6 +918,9 @@ export type Invite = {
   /** `admin`, `editor`, `writer` or `contributor`. */
   role: string;
 };
+
+/** How much a problem matters. */
+export type IssueWeight = "block" | "warn";
 
 /** The token from a sign-in link, which the admin's sign-in page reads after the `#` and posts here. */
 export type LinkRedeem = {
@@ -1801,6 +1810,24 @@ export type SiteAnswer = {
   home: boolean;
 };
 
+/** One lint rule that fires on the site, as one task. */
+export type SiteIssue = {
+  /** The identity of one post it fires on, to open first. */
+  example: string;
+  /** What to do. */
+  fix: string;
+  /** How many posts it fires on. */
+  posts: number;
+  /** The rule, such as `missing-alt`. */
+  rule: string;
+  /** Whether it stops posts going live or warns. */
+  weight: IssueWeight;
+  /** What is wrong, in one sentence. */
+  what: string;
+  /** Why it matters. */
+  why: string;
+};
+
 /** Every site the process serves. */
 export type SiteList = {
   /** The sites, the home site first. */
@@ -2290,6 +2317,16 @@ export interface Operations {
       };
     };
     output: null;
+  };
+  /** The live site's most common lint problems, for the dashboard's task list: each rule that fires, on how many posts, with what, why and fix and one post to open first. Those that stop posts going live come first, then those on the most posts. Every rule runs on every post, as `khalid lint` does, so the dashboard asks for it after the rest. Needs `posts:write`. */
+  list_issues: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminIssues;
   };
   /** Lists the media library, newest upload first, with the shared list grammar: `filter`, `order`, `limit` and `page` (RULES.md BL-API-5). `filter=alt:null+kind:image` finds images still waiting for alt text. Needs `media:write`. */
   list_media: {

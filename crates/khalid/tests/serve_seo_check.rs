@@ -304,3 +304,31 @@ fn a_copy_of_a_live_post_is_saved_as_a_new_draft_file() {
         "the text: {text}"
     );
 }
+
+#[test]
+fn the_site_issues_list_the_most_pressing_problems_first() {
+    let site = demo_site();
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let (status, json) = send(&server, &key, ("GET", "/api/admin/v1/lint/issues/"), "");
+    assert_eq!(status, 200, "{json}");
+    let issues = json["issues"].as_array().unwrap();
+    assert!(issues.len() <= 10, "{json}");
+    for issue in issues {
+        assert!(issue["posts"].as_u64().unwrap() >= 1, "{json}");
+        assert!(issue["example"].as_str().unwrap().contains('.'), "{json}");
+        assert!(!issue["fix"].as_str().unwrap().is_empty(), "{json}");
+    }
+    let counts: Vec<(u8, u64)> = (issues.iter())
+        .map(|issue| {
+            (
+                u8::from(issue["weight"] != "block"),
+                issue["posts"].as_u64().unwrap(),
+            )
+        })
+        .collect();
+    let ranked = counts
+        .windows(2)
+        .all(|pair| pair[0].0 < pair[1].0 || (pair[0].0 == pair[1].0 && pair[0].1 >= pair[1].1));
+    assert!(ranked, "blocks first, then the most posts: {json}");
+}

@@ -25,6 +25,7 @@ export const operations = {
   list_keys: { method: "GET", path: "/api/admin/v1/keys/", key: "admin", body: null },
   create_key: { method: "POST", path: "/api/admin/v1/keys/", key: "admin", body: "application/json" },
   revoke_key: { method: "DELETE", path: "/api/admin/v1/keys/{id}/", key: "admin", body: null },
+  list_issues: { method: "GET", path: "/api/admin/v1/lint/issues/", key: "admin", body: null },
   list_media: { method: "GET", path: "/api/admin/v1/media/", key: "admin", body: null },
   upload_media: { method: "POST", path: "/api/admin/v1/media/", key: "admin", body: "application/octet-stream" },
   search_pictures: { method: "GET", path: "/api/admin/v1/media/search/", key: "admin", body: null },

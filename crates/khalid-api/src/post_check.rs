@@ -11,6 +11,7 @@ use crate::content_store::BoxFuture;
 use crate::link_suggestions::LinkSuggestion;
 use crate::post_store::PostStoreError;
 use crate::resources::SeoScores;
+use crate::site_issues::SiteIssue;
 
 /// Checks posts as they would go live now, writing nothing. `khalid serve`
 /// implements it with the publish gate's linter and the build's head and
@@ -37,6 +38,15 @@ pub trait PostChecks: Send + Sync {
         &'a self,
         id: &'a str,
     ) -> BoxFuture<'a, Result<Option<Vec<LinkSuggestion>>, PostStoreError>>;
+
+    /// The live site's most common lint problems, as
+    /// [`top_issues`](crate::site_issues::top_issues) ranks them.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`PostStoreError`] when the posts or the site's settings
+    /// cannot be read.
+    fn site_issues(&self) -> BoxFuture<'_, Result<Vec<SiteIssue>, PostStoreError>>;
 }
 
 /// The lines of a search result: the title, the address and the
@@ -127,7 +137,7 @@ pub use memory::MemoryPostChecks;
 
 #[cfg(any(test, feature = "test-util"))]
 mod memory {
-    use super::{BoxFuture, LinkSuggestion, PostCheck, PostChecks, PostStoreError};
+    use super::{BoxFuture, LinkSuggestion, PostCheck, PostChecks, PostStoreError, SiteIssue};
 
     /// Checks made up front, for tests.
     #[derive(Debug, Default)]
@@ -158,6 +168,11 @@ mod memory {
         ) -> BoxFuture<'a, Result<Option<Vec<LinkSuggestion>>, PostStoreError>> {
             let known = self.checks.iter().any(|check| check.id == id);
             Box::pin(async move { Ok(known.then(Vec::new)) })
+        }
+
+        /// No issues here; ranking is tested on its own.
+        fn site_issues(&self) -> BoxFuture<'_, Result<Vec<SiteIssue>, PostStoreError>> {
+            Box::pin(std::future::ready(Ok(Vec::new())))
         }
     }
 }
