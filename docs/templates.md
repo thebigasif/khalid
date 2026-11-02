@@ -24,7 +24,7 @@ These eleven templates are built in. Every template but classic has its own page
 - `keystone`: a personal guide site with one big featured post, a grid of pictures and numbered chapters. See [Keystone](templates/keystone.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
-- `wire`: a news and columns site with a lead story beside tabs of the latest posts and editor's picks, and a fast feed. See [Wire](templates/wire.md).
+- `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 
 ## Options
