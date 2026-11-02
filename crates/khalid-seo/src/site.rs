@@ -1,11 +1,15 @@
 //! [`SeoSite`]: the site-wide settings every SEO output reads.
 
+use std::borrow::Cow;
+use std::collections::BTreeMap;
+
+use chrono::NaiveDate;
 use khalid_core::{AbsoluteUrl, Locale};
 
 use crate::{
     CrawlerPolicy, CustomSchema, FeedOptions, IndexPolicy, LinkPolicy, LocalBusiness,
     MetaTemplates, Publisher, PublisherKind, RootFile, SchemaTemplate, SeoError, ShareImage,
-    SiteSearch, SiteVerification, TwitterHandle, UrlPath,
+    SiteSearch, SiteVerification, TemplateWords, TwitterHandle, UrlPath,
 };
 
 /// The site-wide settings every SEO output reads.
@@ -59,6 +63,12 @@ pub struct SeoSite {
     pub schema_templates: Vec<SchemaTemplate>,
     /// JSON-LD written by hand that every page carries.
     pub custom_schema: CustomSchema,
+    /// The day the pages are made, for `{currentyear}` and `{currentmonth}`.
+    /// `None` leaves both empty. The wiring sets it from the `Clock`.
+    pub today: Option<NaiveDate>,
+    /// The words dates and page lines are written with, per language. A
+    /// language not listed uses the English [`TemplateWords::default`].
+    pub words: BTreeMap<Locale, TemplateWords>,
 }
 
 impl SeoSite {
@@ -88,7 +98,16 @@ impl SeoSite {
             locations: Vec::new(),
             schema_templates: Vec::new(),
             custom_schema: CustomSchema::default(),
+            today: None,
+            words: BTreeMap::new(),
         }
+    }
+
+    /// The words of `language`, or English when it has none of its own.
+    pub fn words_for(&self, language: &Locale) -> Cow<'_, TemplateWords> {
+        self.words
+            .get(language)
+            .map_or_else(|| Cow::Owned(TemplateWords::default()), Cow::Borrowed)
     }
 
     /// The absolute URL of `path` in `language`: the address, then the mount

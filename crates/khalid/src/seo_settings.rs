@@ -12,8 +12,8 @@ use khalid_seo::{LinkPolicy, MetaTemplate, PageKind, SeoSite, TemplatePair};
 use crate::{config_message, seo_crawl_settings, seo_graph_settings, seo_head_settings};
 
 /// What a title or description template may use, for the fix.
-pub(crate) const TEMPLATE: &str =
-    "a template using {title}, {site}, {tagline}, {sep}, {excerpt}, {category} or {author}";
+pub(crate) const TEMPLATE: &str = "a template using {title}, {site}, {sep}, {excerpt} or another \
+     variable listed in docs/seo-settings.md";
 
 /// A value in an `[seo]` table that `khalid-seo` refuses.
 #[derive(Debug, Clone, PartialEq, Eq)]

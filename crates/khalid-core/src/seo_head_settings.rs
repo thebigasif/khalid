@@ -15,7 +15,10 @@ use crate::AbsoluteUrl;
 /// Title and description templates, from `[seo.titles]`.
 ///
 /// A template is text with variables in braces: `{title}`, `{site}`,
-/// `{tagline}`, `{sep}`, `{excerpt}`, `{category}` and `{author}`. A page
+/// `{tagline}`, `{sep}`, `{excerpt}`, `{category}`, `{author}`, `{date}`,
+/// `{modified}`, `{page}`, `{term}`, `{term_description}`,
+/// `{searchphrase}`, `{currentyear}`, `{currentmonth}`, `{tag}` and
+/// `{focuskw}`, each explained in `docs/seo-settings.md`. A page
 /// type left out keeps its default, `{title} {sep} {site}` with `{excerpt}`,
 /// or on the home page `{site} {sep} {tagline}` with `{tagline}`:
 ///

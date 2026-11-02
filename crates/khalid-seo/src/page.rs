@@ -4,8 +4,8 @@ use chrono::{DateTime, Utc};
 use khalid_core::{AbsoluteUrl, Locale, RobotsDirectives};
 
 use crate::{
-    Alternate, AuthorProfile, CustomSchema, Entity, MetaTemplate, SchemaBlock, SeoComment,
-    ShareImage, TranslationKey, UrlPath, Video,
+    Alternate, AuthorProfile, CustomSchema, Entity, MetaTemplate, PageNumber, SchemaBlock,
+    SeoComment, ShareImage, TranslationKey, UrlPath, Video,
 };
 
 /// The kind of page, which picks its title template and index setting.
@@ -177,6 +177,23 @@ pub struct SeoPage {
     /// The approved comments readers left, oldest first, each with its
     /// replies, for the article's `comment` property.
     pub comments: Vec<SeoComment>,
+    /// The post's tag names, in the order written. The first is the
+    /// `{tag}` variable.
+    pub tags: Vec<String>,
+    /// The phrase the post wants to be found for, the `{focuskw}` variable.
+    pub focus_keyword: Option<String>,
+    /// On a tag or category archive, the term's name, the `{term}`
+    /// variable. `None` uses the title, which on page 2 and after also
+    /// names the page.
+    pub term: Option<String>,
+    /// On a tag or category archive, what the term covers, the
+    /// `{term_description}` variable.
+    pub term_description: Option<String>,
+    /// On a search results page, what the reader searched for, the
+    /// `{searchphrase}` variable.
+    pub search_phrase: Option<String>,
+    /// On a list split into pages, which page this is, the `{page}` variable.
+    pub page_number: Option<PageNumber>,
 }
 
 impl SeoPage {
@@ -216,6 +233,12 @@ impl SeoPage {
             blocks: Vec::new(),
             custom_schema: CustomSchema::default(),
             comments: Vec::new(),
+            tags: Vec::new(),
+            focus_keyword: None,
+            term: None,
+            term_description: None,
+            search_phrase: None,
+            page_number: None,
         }
     }
 }

@@ -15,7 +15,7 @@ use khalid_render::{
     RenderListing, Renderer,
 };
 use khalid_routes::{ChannelFilter, Routes};
-use khalid_seo::{PageKind as SeoKind, TranslationKey};
+use khalid_seo::{PageKind as SeoKind, PageNumber, TranslationKey};
 
 use crate::build_pages::{self, LanguagePages, Page};
 use crate::listed_post::ListedPost;
@@ -145,6 +145,12 @@ fn paged(
         let mut seo = build_seo::page(list.kind, locale, rest, &title)?;
         seo.excerpt = description;
         seo.item_count = total;
+        let pages_in_all = u32::try_from(rests.len()).unwrap_or(u32::MAX);
+        let current = u32::try_from(number).unwrap_or(u32::MAX);
+        seo.page_number = PageNumber::new(current, pages_in_all);
+        if matches!(list.kind, SeoKind::Tag | SeoKind::Category) {
+            seo.term = Some(list.title.clone());
+        }
         seo.robots.clone_from(&list.robots);
         seo.translation = list_key(&translation)?;
         let body = (list.body)(RenderListing {

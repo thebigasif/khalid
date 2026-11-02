@@ -232,7 +232,7 @@ impl SitePages {
         home_images::attach(folder, (config, routes), content, &mut languages)?;
         search_page::link(config, &mut languages);
         own_descriptions::fill(config, &theme.renderer, &mut languages)?;
-        let seo_site = build_seo::site(config)?;
+        let seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
         let cards = share_images::attach(folder, config, &theme.tokens, &seo_site, &mut languages)?;
         // The home pages answer first, so their cards are drawn now; the
         // rest warm in the background once the pages are live (G14).
@@ -446,7 +446,7 @@ impl SitePages {
         form_pages::subscribe_under(config, &mut languages);
         let beside = post_files::served(folder, config, assets, &mut languages, shown)?;
         post_gate::open(config, routes, content, &mut languages)?;
-        let seo_site = build_seo::site(config)?;
+        let seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
         let default_tokens = Tokens::default();
         let tokens = theme.as_ref().map_or(&default_tokens, |t| &t.tokens);
         let cards = share_images::attach(folder, config, tokens, &seo_site, &mut languages)?;

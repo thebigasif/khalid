@@ -6,14 +6,15 @@ use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use khalid_content::{PostFront, Sitemap};
 use khalid_core::{Config, Locale, UserMessage};
 use khalid_lint::StructuredDataGap;
-use khalid_render::HeadHtml;
+use khalid_render::{HeadHtml, builtin_strings};
 use khalid_seo::{
     IndexPolicy, IssueLevel, LinkPolicy, MetaTemplate, PageKind, SeoError, SeoPage, SeoSite,
-    SitemapListing, TranslationKey, UrlPath, check_graph, head_tags, link_translations, page_graph,
+    SitemapListing, TemplateWords, TranslationKey, UrlPath, check_graph, head_tags,
+    link_translations, page_graph,
 };
 
 use crate::build_pages::LanguagePages;
-use crate::{build_message, search_page, seo_settings};
+use crate::{build_message, search_page, seo_settings, serve_message};
 
 /// The site as the SEO outputs read it, from `site.toml`: its name, address,
 /// mount folder, languages, default first, and which archives are indexed.
@@ -29,10 +30,40 @@ pub(crate) fn site(config: &Config) -> Result<SeoSite, UserMessage> {
         .iter()
         .filter(|locale| *locale != config.default_language());
     site.languages.extend(others.cloned());
+    for language in &site.languages {
+        site.words.insert(language.clone(), words(language)?);
+    }
     site.indexing = IndexPolicy::from(&config.seo().index);
     seo_settings::apply(config.seo(), &mut site).map_err(|mistake| mistake.message())?;
     search_page::announce(config, &mut site)?;
     Ok(site)
+}
+
+/// The site for the pages made on `today`, which the `{currentyear}` and
+/// `{currentmonth}` title variables read.
+pub(crate) fn site_on(config: &Config, today: NaiveDate) -> Result<SeoSite, UserMessage> {
+    let mut site = site(config)?;
+    site.today = Some(today);
+    Ok(site)
+}
+
+/// The month names, date order and page line of `language`, from the
+/// built-in strings the templates show, for the title variables.
+fn words(language: &Locale) -> Result<TemplateWords, UserMessage> {
+    let strings = builtin_strings(language).map_err(|_| serve_message::internal())?;
+    let mut words = TemplateWords::default();
+    for (month, name) in words.months.iter_mut().enumerate() {
+        if let Some(text) = strings.get(&format!("month_{}", month.saturating_add(1))) {
+            name.clone_from(text);
+        }
+    }
+    if let Some(format) = strings.get("date_format") {
+        words.date_format.clone_from(format);
+    }
+    if let Some(page_of) = strings.get("page_of") {
+        words.page_of.clone_from(page_of);
+    }
+    Ok(words)
 }
 
 /// `html`, a rendered body, with each link given the `rel` and `target` the
@@ -141,6 +172,8 @@ pub(crate) fn from_front(seo: &mut SeoPage, front: &PostFront) -> Result<(), Use
         Sitemap::Unlisted => SitemapListing::Excluded,
         _ => SitemapListing::Listed,
     };
+    seo.tags.clone_from(&front.tags);
+    seo.focus_keyword.clone_from(&front.focus_keyword);
     Ok(())
 }
 
@@ -231,6 +264,24 @@ mod tests {
             structured_data_gaps(&site, &page),
             [StructuredDataGap::new("Event", "startDate")]
         );
+    }
+
+    #[test]
+    fn the_title_words_are_the_languages_own() {
+        let german = words(&Locale::try_new("de").unwrap()).unwrap();
+        assert_eq!(german.months[2], "März");
+        assert_eq!(german.page_of, "Seite {current} von {total}");
+    }
+
+    #[test]
+    fn a_posts_tags_and_focus_keyword_reach_its_seo_page() {
+        let text = "---\ntags: [crawl, links]\nfocus_keyword: internal links\n---\n";
+        let front = parse_post(Path::new("a.md"), text).unwrap().front;
+        let locale = Locale::try_new("en").unwrap();
+        let mut seo = page(PageKind::Post, &locale, "a/", "A").unwrap();
+        from_front(&mut seo, &front).unwrap();
+        assert_eq!(seo.tags, ["crawl", "links"]);
+        assert_eq!(seo.focus_keyword.as_deref(), Some("internal links"));
     }
 
     #[test]

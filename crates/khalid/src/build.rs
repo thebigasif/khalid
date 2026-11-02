@@ -155,7 +155,7 @@ fn build(
     for size in post_images::attach(site, config, &beside, &mut languages, &mut shown)? {
         copy(&size.path, out, &size.file)?;
     }
-    let seo_site = build_seo::site(config)?;
+    let seo_site = build_seo::site_on(config, today)?;
     let cards = share_images::attach(site, config, &tokens, &seo_site, &mut languages)?;
     for file in share_images::draw_now(site, cards)? {
         let mut from = site.to_path_buf();

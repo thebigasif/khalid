@@ -15,6 +15,18 @@ const FALLBACK_LANGUAGE: &str = "en";
 #[folder = "strings/"]
 struct Files;
 
+/// The built-in strings of `locale`'s language, as templates read them under
+/// `t`, or the English ones when the language has no file, for words
+/// written outside a template, such as the month names in a title.
+///
+/// # Errors
+///
+/// [`RenderError::Strings`] when a built-in strings file cannot be read.
+pub fn builtin_strings(locale: &Locale) -> Result<BTreeMap<String, String>, RenderError> {
+    let strings = Strings::load()?;
+    Ok(strings.for_locale(locale).cloned().unwrap_or_default())
+}
+
 /// Every built-in strings table, by language.
 #[derive(Debug, Clone)]
 pub(crate) struct Strings {
