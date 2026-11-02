@@ -96,6 +96,11 @@ pub struct Thresholds {
     /// The fewest words a pillar post, the main post of a topic group,
     /// should hold. Default 900, Yoast's floor for cornerstone content.
     pub pillar_min_words: usize,
+    /// The widest title search results show, in pixels of Arial at 20
+    /// pixels. Default 600, where Google cuts a desktop result's title.
+    /// `title-max-chars` still judges a title with characters the width
+    /// table lacks.
+    pub title_max_pixels: usize,
 }
 
 impl Default for Thresholds {
@@ -126,6 +131,7 @@ impl Default for Thresholds {
             focus_subheading_min_percent: 30,
             focus_subheading_max_percent: 75,
             pillar_min_words: 900,
+            title_max_pixels: 600,
         }
     }
 }

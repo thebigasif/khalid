@@ -53,6 +53,7 @@ mod snippet;
 mod stem;
 mod structure;
 mod thresholds;
+mod title_width;
 mod topics;
 mod words;
 mod writing;

@@ -8,7 +8,7 @@ use crate::{
     Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, focus_shape,
     focus_spread, headings, link_hygiene, link_targets, link_text, page_checks, page_or_section,
     page_shape, reading, site_content, site_links, site_sections, site_trust, snippet, structure,
-    topics, words, writing,
+    title_width, topics, words, writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
@@ -30,6 +30,9 @@ fn blocking_and_structure_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(blocking::InvalidStructuredData),
         Box::new(snippet::LongTitle {
             max: thresholds.title_max_chars,
+        }),
+        Box::new(title_width::TitleTooWide {
+            max: thresholds.title_max_pixels,
         }),
         Box::new(snippet::DuplicateTitle),
         Box::new(snippet::NoDescription),

@@ -133,6 +133,12 @@ why = "Google cuts long titles short, so readers may not see the end of yours."
 fix = "Shorten the title and keep the words that matter most at the start."
 guide = "post-titles"
 
+[title-too-wide]
+what = "The title search results show is wider than Google shows on a desktop result."
+why = "Google cuts a title at about 600 pixels, so readers may not see the end of yours."
+fix = "Shorten `seo_title:`, or `title:` when there is none, and keep the words that matter most at the start."
+guide = "post-titles"
+
 [long-description]
 what = "This post's description is longer than search results can show."
 why = "Google cuts long descriptions short, so the end of yours may never be read."
