@@ -67,6 +67,11 @@ pub struct LintPost {
     /// heading or list item, so a rule can find the first paragraph.
     #[serde(default)]
     pub body_text: String,
+    /// The writer's own prose, laid out like `body_text` but without code,
+    /// quotes, tables and the parts Khalid writes itself, such as the
+    /// table of contents. The readability rules read it, so a code line
+    /// is never a long sentence. `None` reads `body_text` instead.
+    pub prose_text: Option<String>,
     /// Old paths that redirect to this post, such as `/2019/05/old-title/`,
     /// from `aliases` in the header.
     #[serde(default)]
@@ -128,6 +133,7 @@ impl LintPost {
             wikilinks: Vec::new(),
             word_count: 0,
             body_text: String::new(),
+            prose_text: None,
             aliases: Vec::new(),
             forms: Vec::new(),
             tables: 0,

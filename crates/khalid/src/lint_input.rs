@@ -26,7 +26,7 @@ use khalid_routes::{PostAddress, Routes};
 use khalid_seo::{LinkPolicy, SeoPage, SeoSite};
 
 use crate::build_pages::{path_of, routed};
-use crate::lint_text::{plain_text, section_shapes, wikilinks};
+use crate::lint_text::{plain_text, prose_text, section_shapes, wikilinks};
 use crate::site_briefs::Briefs;
 use crate::{build_schema, build_seo};
 
@@ -254,6 +254,7 @@ pub(crate) fn lint_parts(
         .count();
     post.word_count = rendered.words;
     post.body_text = plain_text(&rendered.html);
+    post.prose_text = Some(prose_text(&rendered.html));
     Some(post)
 }
 
