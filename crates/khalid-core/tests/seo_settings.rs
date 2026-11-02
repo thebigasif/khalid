@@ -285,3 +285,18 @@ fn the_local_settings_are_on_by_default_and_a_location_reads_its_map_point() {
     .unwrap_err();
     assert!(wrong.contains("latitude"), "{wrong}");
 }
+
+#[test]
+fn the_search_filters_are_on_by_default_and_each_can_be_set() {
+    let plain = read("").unwrap();
+    let filter = &plain.seo().search_filter;
+    assert_eq!(filter.max_length, 50);
+    assert!(filter.symbols);
+    assert!(filter.spam);
+    let config =
+        read("\n[seo.search_filter]\nmax_length = 0\nsymbols = false\nspam = false\n").unwrap();
+    let filter = &config.seo().search_filter;
+    assert_eq!(filter.max_length, 0);
+    assert!(!filter.symbols);
+    assert!(!filter.spam);
+}

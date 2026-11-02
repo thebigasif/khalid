@@ -7,7 +7,8 @@ use serde::Deserialize;
 use crate::{
     AbsoluteUrl, AiPageSettings, BreadcrumbSettings, CrawlerSettings, FeedSettings, IndexNowKey,
     Indexing, LinkSettings, LlmsTxtSettings, LocalSettings, LocationSettings, PublisherSettings,
-    SchemaMapSettings, SchemaTemplateSettings, SocialSettings, TitleSettings, VerificationSettings,
+    SchemaMapSettings, SchemaTemplateSettings, SearchFilterSettings, SocialSettings, TitleSettings,
+    VerificationSettings,
 };
 
 /// The SEO settings. Every one has a default, so the table may be left out:
@@ -62,6 +63,9 @@ pub struct SeoSettings {
     /// The locations page and KML file, from `[seo.local]`. On by default
     /// for a site with locations.
     pub local: LocalSettings,
+    /// What the site's search refuses, from `[seo.search_filter]`. Every
+    /// filter is on by default.
+    pub search_filter: SearchFilterSettings,
 }
 
 /// `IndexNow`, switched on by its table in `site.toml`.

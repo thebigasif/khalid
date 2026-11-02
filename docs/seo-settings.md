@@ -110,6 +110,16 @@ share_labels = false
 | `disallow_search` | `true` | Keeps crawlers off the search page, so they do not spend their visits on endless result pages. |
 | `extra_lines` | none | Lines added as written, after the rules and before the sitemap, such as `Crawl-delay: 5`. Each must be one line. |
 
+## Search filters
+
+Bots fill a site's search page with long or spam queries, so the page shows their words and links. `[seo.search_filter]` refuses such searches before anything is looked up, as Yoast's crawl settings do. A refused search answers 400 (a bad request) with the empty search page, and the query is not shown back. Every filter is on.
+
+| Key | Default | What it does |
+|---|---|---|
+| `max_length` | `50` | The most characters a search may have. `0` sets no limit. |
+| `symbols` | `true` | Refuses a search with an emoji or another symbol that is not a letter, a digit or punctuation. |
+| `spam` | `true` | Refuses a search with a link, markup, a spam domain such as `.xyz`, or one character six times in a row. |
+
 ## llms.txt
 
 `llms.txt` is a short guide to the site for language models. `[seo.llms_txt]` shapes it.

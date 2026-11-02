@@ -12,7 +12,7 @@ use axum::routing::get;
 use khalid_core::{Config, Locale};
 use khalid_db::{Database, SearchResults, SiteId};
 use khalid_render::{Highlight, SearchResult};
-use khalid_search::{Analyzer, Completion, Language, Query, Snippet, SnippetPart};
+use khalid_search::{Analyzer, Completion, Language, Query, QueryFilter, Snippet, SnippetPart};
 use khalid_server::{MediaType, SecurityHeaders};
 use serde::{Deserialize, Serialize};
 
@@ -65,12 +65,22 @@ pub(crate) fn router(config: &Config, search: Search) -> Router {
         return router;
     }
     let search = Arc::new(search);
+    let filter = QueryFilter::from(&config.seo().search_filter);
     for locale in config.languages() {
         let path = build_pages::path_of(config, locale, search_page::REST);
         let (search, locale, at) = (Arc::clone(&search), locale.clone(), path.clone());
         let answer = move |Asked(words): Asked<Words>| {
             let (search, locale, at) = (Arc::clone(&search), locale.clone(), at.clone());
-            async move { answer(&search, &locale, &at, words).await }
+            async move {
+                if words
+                    .q
+                    .as_deref()
+                    .is_some_and(|q| filter.check(q.trim()).is_err())
+                {
+                    return refused(&search, &locale, &at, words.typing.as_deref());
+                }
+                answer(&search, &locale, &at, words).await
+            }
         };
         router = router.route(&path, get(answer));
     }
@@ -167,6 +177,22 @@ fn live(
         Ok(json) => page(&search.security, MediaType::Json, json),
         Err(_) => unavailable(&search.security),
     }
+}
+
+/// 400 for a search the site's filters refuse, such as spam or emoji: the
+/// empty search page at `path`, or while typing, no results. The query
+/// is never shown back, so a bot's words never reach the page.
+fn refused(search: &Search, locale: &Locale, path: &str, typing: Option<&str>) -> Response<Body> {
+    let mut response = if typing.is_some() {
+        live(search, locale, None, Vec::new())
+    } else {
+        match search.pages.render_search(path, None, Vec::new()) {
+            Ok(Some(html)) => page(&search.security, MediaType::Html, html),
+            Ok(None) | Err(_) => return unavailable(&search.security),
+        }
+    };
+    *response.status_mut() = StatusCode::BAD_REQUEST;
+    response
 }
 
 /// A results page, or results as `kind`, with the security headers, never

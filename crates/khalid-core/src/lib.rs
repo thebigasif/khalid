@@ -32,6 +32,7 @@ mod secret;
 mod seo_breadcrumb_settings;
 mod seo_head_settings;
 mod seo_publisher_settings;
+mod seo_search_settings;
 mod seo_settings;
 mod site_code;
 mod site_nav;
@@ -81,6 +82,7 @@ pub use seo_publisher_settings::{
     HoursSettings, LocalSettings, LocationSettings, PublisherSettings, PublisherType,
     SchemaMapSettings, SchemaTemplateSettings, WeekdaySetting,
 };
+pub use seo_search_settings::SearchFilterSettings;
 pub use seo_settings::{ArchiveIndex, ArchiveSetting, IndexNowSettings, SeoSettings};
 pub use site_code::{BodyCode, BodyCodeError, Consent, SiteCode};
 pub use site_nav::{
