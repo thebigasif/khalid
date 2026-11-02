@@ -120,6 +120,22 @@ fn atlas_front_page() {
 }
 
 #[test]
+fn atlas_shows_its_tagline_in_the_masthead_and_none_without_one() {
+    let (_temp, out) = built(
+        "\n[template]\nname = \"atlas\"\n[template.options]\ntagline = \"Plain notes on search\"\n",
+    );
+    let home = body(&out, "index.html");
+    let masthead = between(&home, "<div class=\"masthead\">", "<nav class=\"catbar\"");
+    assert!(
+        masthead.contains("<p class=\"tagline\">Plain notes on search</p>"),
+        "{masthead}"
+    );
+    let (_temp, out) = built(ATLAS);
+    let home = body(&out, "index.html");
+    assert!(!home.contains("class=\"tagline\""), "{home}");
+}
+
+#[test]
 fn atlas_without_featured_posts_opens_with_the_feed() {
     let (_temp, out) =
         built("\n[template]\nname = \"atlas\"\n[template.options]\nfeatured = false\npicks = 0\n");
@@ -142,18 +158,13 @@ fn atlas_post_page() {
     );
     let side = between(&post, "<nav class=\"toc-side\"", "</nav>");
     assert!(side.contains("<ol>"), "numbered: {side}");
-    assert_eq!(
-        post.matches("<div class=\"share\">").count(),
-        2,
-        "top and end"
-    );
+    assert_eq!(post.matches("<div class=\"share\">").count(), 1, "end only");
     let (_, header) = post.split_once("<header class=\"post-header\">").unwrap();
     let (title, rest) = header.split_once("</header>").unwrap();
     assert!(title.contains("<h1>"), "{title}");
-    assert!(
-        rest.trim_start().starts_with("<div class=\"share\">"),
-        "share under the title: {rest}"
-    );
+    let body = rest.find("<div class=\"post-body\">").unwrap();
+    let share = rest.find("<div class=\"share\">").unwrap();
+    assert!(body < share, "share after the body: {rest}");
     let author = post.find("<section class=\"author-box\">").unwrap();
     let band = post.find("<div class=\"cta-band\">").unwrap();
     let related = post.find("<section class=\"related\">").unwrap();
@@ -162,7 +173,10 @@ fn atlas_post_page() {
         "author, band, related: {post}"
     );
     let list = between(&post, "<section class=\"related\">", "</section>");
-    assert!(list.contains("<ul class=\"cards cards-text\""), "{list}");
+    assert!(
+        list.contains("<ul class=\"cards\" role=\"list\">"),
+        "{list}"
+    );
     assert!(list.matches("<li>").count() <= 3, "{list}");
     insta::assert_snapshot!(post);
 }
@@ -173,7 +187,7 @@ fn atlas_author_page() {
     let author = body(&out, "authors/asif/index.html");
     assert!(author.contains("<nav class=\"breadcrumbs\""), "{author}");
     assert!(
-        author.contains("<ul class=\"cards cards-text\""),
+        author.contains("<ul class=\"cards\" role=\"list\">"),
         "{author}"
     );
     assert!(

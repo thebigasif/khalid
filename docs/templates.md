@@ -17,7 +17,7 @@ These eleven templates are built in. Every template but classic has its own page
 
 - `classic`: a calm column of text, cards on the home page and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides, soft and roomy, with a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
-- `atlas`: a portal for a blog with many topics, with topic tabs, featured posts and editor's picks. See [Atlas](templates/atlas.md).
+- `atlas`: a publication for a blog with many topics, with a masthead, featured stories, picture cards and a topic index. See [Atlas](templates/atlas.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
 - `folio`: a product team's essays under their own masthead, with category pills, a featured story and a grid of outlined cards. See [Folio](templates/folio.md).
 - `harbor`: a busy marketing blog with featured posts, rows of recent posts, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).

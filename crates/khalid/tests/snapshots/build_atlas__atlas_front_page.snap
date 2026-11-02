@@ -13,6 +13,8 @@ expression: home
 
 
 <div class="front">
+<div class="masthead">
+<h1 class="front-title">Field Notes on SEO</h1>
 <nav class="catbar" aria-label="Topics">
 <ul>
 <li><a href="/blog/" aria-current="page">All posts</a></li>
@@ -21,96 +23,105 @@ expression: home
 <li><a href="/blog/category/content-strategy/">Content strategy</a></li>
 </ul>
 </nav>
-<h1 class="front-title">Field Notes on SEO</h1>
+</div>
 <section class="leads" aria-labelledby="leads-title">
 <h2 id="leads-title">Featured</h2>
 <article class="story story-lead">
 <p class="story-label">Content strategy</p>
 <h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
 <p class="story-excerpt">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
-<p class="story-meta"><span>Asif</span><span>1 min read</span><time datetime="2026-10-12">12 October 2026</time></p>
+<p class="story-meta"><span class="story-author">Asif</span><time datetime="2026-10-12">12 October 2026</time><span>1 min read</span></p>
 </article>
 <article class="story story-lead">
 <p class="story-label">Technical SEO</p>
 <h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
 <p class="story-excerpt">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
-<p class="story-meta"><span>Lena Vogt</span><span>1 min read</span><time datetime="2026-09-28">28 September 2026</time></p>
+<p class="story-meta"><span class="story-author">Lena Vogt</span><time datetime="2026-09-28">28 September 2026</time><span>1 min read</span></p>
 </article>
 </section>
 <section class="picks" aria-labelledby="picks-title">
 <h2 id="picks-title">Editor&#39;s picks</h2>
-<ul class="pick-grid" role="list">
+<ul class="story-grid" role="list">
 <li><article class="story">
 <p class="story-label">On-page SEO</p>
 <h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
 <p class="story-excerpt">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
-<p class="story-meta"><span>Asif</span><span>1 min read</span><time datetime="2026-09-21">21 September 2026</time></p>
+<p class="story-meta"><span class="story-author">Asif</span><time datetime="2026-09-21">21 September 2026</time><span>1 min read</span></p>
 </article></li>
 </ul>
 </section>
 <section class="feed" aria-labelledby="feed-title">
 <h2 id="feed-title">Latest posts</h2>
-<ul class="stories" role="list">
+<ul class="story-grid" role="list">
 <li><article class="story">
+<figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/320.png 320w, /blog/media/d9df18e6d7e8625d/480.png 480w, /blog/media/d9df18e6d7e8625d/640.png 640w, /blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
+</picture>
+</figure>
 <p class="story-label">Technical SEO</p>
 <h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
 <p class="story-excerpt">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
-<p class="story-meta"><span>Lena Vogt</span><span>2 min read</span><time datetime="2026-10-05">5 October 2026</time></p>
+<p class="story-meta"><span class="story-author">Lena Vogt</span><time datetime="2026-10-05">5 October 2026</time><span>2 min read</span></p>
 </article></li>
 <li><article class="story">
 <p class="story-label">On-page SEO</p>
 <h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
 <p class="story-excerpt">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
-<p class="story-meta"><span>Asif</span><span>1 min read</span><time datetime="2026-09-21">21 September 2026</time></p>
+<p class="story-meta"><span class="story-author">Asif</span><time datetime="2026-09-21">21 September 2026</time><span>1 min read</span></p>
 </article></li>
 <li><article class="story">
 <p class="story-label">On-page SEO</p>
 <h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
 <p class="story-excerpt">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
-<p class="story-meta"><span>Asif</span><span>1 min read</span><time datetime="2026-09-14">14 September 2026</time></p>
+<p class="story-meta"><span class="story-author">Asif</span><time datetime="2026-09-14">14 September 2026</time><span>1 min read</span></p>
 </article></li>
 </ul>
 </section>
+<section class="topic-index" aria-labelledby="topic-index-title">
+<h2 id="topic-index-title">Topics</h2>
 <div class="topic-blocks">
 <section class="topic-block">
-<h2>On-page SEO</h2>
+<h3><a href="/blog/category/on-page-seo/">On-page SEO</a></h3>
 <ul class="stories" role="list">
-<li><article class="story">
-<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
-<p class="story-meta"><span>Asif</span><span>1 min read</span><time datetime="2026-09-21">21 September 2026</time></p>
+<li><article class="story story-brief">
+<h4><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h4>
+<p class="story-meta"><time datetime="2026-09-21">21 September 2026</time></p>
 </article></li>
-<li><article class="story">
-<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
-<p class="story-meta"><span>Asif</span><span>1 min read</span><time datetime="2026-09-14">14 September 2026</time></p>
+<li><article class="story story-brief">
+<h4><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h4>
+<p class="story-meta"><time datetime="2026-09-14">14 September 2026</time></p>
 </article></li>
 </ul>
 <p class="view-all"><a href="/blog/category/on-page-seo/">View all posts in On-page SEO</a></p>
 </section>
 <section class="topic-block">
-<h2>Technical SEO</h2>
+<h3><a href="/blog/category/technical-seo/">Technical SEO</a></h3>
 <ul class="stories" role="list">
-<li><article class="story">
-<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
-<p class="story-meta"><span>Lena Vogt</span><span>2 min read</span><time datetime="2026-10-05">5 October 2026</time></p>
+<li><article class="story story-brief">
+<h4><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h4>
+<p class="story-meta"><time datetime="2026-10-05">5 October 2026</time></p>
 </article></li>
-<li><article class="story">
-<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
-<p class="story-meta"><span>Lena Vogt</span><span>1 min read</span><time datetime="2026-09-28">28 September 2026</time></p>
+<li><article class="story story-brief">
+<h4><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h4>
+<p class="story-meta"><time datetime="2026-09-28">28 September 2026</time></p>
 </article></li>
 </ul>
 <p class="view-all"><a href="/blog/category/technical-seo/">View all posts in Technical SEO</a></p>
 </section>
 <section class="topic-block">
-<h2>Content strategy</h2>
+<h3><a href="/blog/category/content-strategy/">Content strategy</a></h3>
 <ul class="stories" role="list">
-<li><article class="story">
-<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
-<p class="story-meta"><span>Asif</span><span>1 min read</span><time datetime="2026-10-12">12 October 2026</time></p>
+<li><article class="story story-brief">
+<h4><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h4>
+<p class="story-meta"><time datetime="2026-10-12">12 October 2026</time></p>
 </article></li>
 </ul>
 <p class="view-all"><a href="/blog/category/content-strategy/">View all posts in Content strategy</a></p>
 </section>
 </div>
+</section>
 <div class="cta-band">
 <p class="cta-note">One page, free.</p>
 <p><a class="button" href="https://www.example.com/checklist/">Get the checklist</a></p>
