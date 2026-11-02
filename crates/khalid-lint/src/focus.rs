@@ -58,6 +58,16 @@ impl<'p> Keyword<'p> {
         Self::new(text, &post.keyword_synonyms, post.locale.language())
     }
 
+    /// The post's secondary keywords that hold a word, in the header's
+    /// order, each without synonyms.
+    pub(crate) fn secondary(post: &'p LintPost) -> Vec<Self> {
+        let language = post.locale.language();
+        post.secondary_keywords
+            .iter()
+            .filter_map(|text| Self::new(text, &[], language))
+            .collect()
+    }
+
     /// Whether `text` holds the keyword or a synonym, in any word form.
     pub(crate) fn found_in(&self, text: &str) -> bool {
         self.found_in_words(&words(text))

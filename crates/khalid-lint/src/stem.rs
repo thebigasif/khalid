@@ -101,7 +101,10 @@ mod tests {
         let phrase = forms.phrase("internal link");
         assert!(forms.holds(&words("Linking with internal links"), &phrase));
         assert!(!forms.holds(&words("internal lines"), &phrase));
-        assert_eq!(forms.uses(&words("internal link, internal links"), &phrase), 2);
+        assert_eq!(
+            forms.uses(&words("internal link, internal links"), &phrase),
+            2
+        );
     }
 
     #[test]

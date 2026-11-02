@@ -3,6 +3,7 @@
 use chrono::NaiveDate;
 
 use crate::focus::{FocusNotIn, FocusTooOften, FocusTooRare, Place, SecondaryKeywordUnused};
+use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
     Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, headings,
     link_hygiene, link_targets, link_text, page_or_section, page_shape, reading, site_content,
@@ -109,6 +110,15 @@ fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
             max: thresholds.focus_max_per_thousand_words,
         }),
         Box::new(SecondaryKeywordUnused),
+        Box::new(SecondaryNotIn(Place::Title)),
+        Box::new(SecondaryNotIn(Place::FirstParagraph)),
+        Box::new(SecondaryNotIn(Place::Subheading)),
+        Box::new(SecondaryTooRare {
+            min: thresholds.focus_min_per_thousand_words,
+        }),
+        Box::new(SecondaryTooOften {
+            max: thresholds.focus_max_per_thousand_words,
+        }),
         Box::new(brief::QuestionUnanswered),
         Box::new(brief::TermMissing),
         Box::new(brief::LinkMissing),

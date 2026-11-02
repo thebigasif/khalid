@@ -409,6 +409,36 @@ why = "A close phrase only helps the post when readers and Google can find it in
 fix = "Use the words this message names at least once, or remove them from `secondary_keywords:`."
 guide = "focus-keyword"
 
+[secondary-not-in-title]
+what = "The title search results show does not hold this secondary keyword."
+why = "A close phrase in the title helps the post show up for that search too."
+fix = "Use the named words in `seo_title:` or `title:` if they fit, or leave the title as it is."
+guide = "focus-keyword"
+
+[secondary-not-in-first-paragraph]
+what = "The first paragraph does not hold this secondary keyword."
+why = "Readers who searched for the close phrase look for it in the opening lines."
+fix = "Use the named words in the first paragraph if they read naturally there."
+guide = "focus-keyword"
+
+[secondary-not-in-subheading]
+what = "None of the subheadings holds this secondary keyword."
+why = "A subheading with the close phrase shows readers where the post covers it."
+fix = "Rewrite one subheading so it holds the named words, if a section is about them."
+guide = "focus-keyword"
+
+[secondary-too-rare]
+what = "This secondary keyword appears only rarely in the text."
+why = "A close phrase used once in a long post says little about what the post covers."
+fix = "Use the named words a few more times where they fit, about once every 200 words."
+guide = "keyword-density"
+
+[secondary-too-often]
+what = "This secondary keyword appears so often that the text reads as if written for machines."
+why = "Google treats heavy repetition as spam, whichever phrase is repeated."
+fix = "Replace some repeats of the named words with other words or a pronoun."
+guide = "keyword-density"
+
 [overlapping-collections]
 what = "Two collections, the folders that group your posts, could give two posts the same address."
 why = "Only one post can live at an address, so the other could vanish from your site and from Google."

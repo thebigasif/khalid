@@ -39,6 +39,7 @@ mod page_shape;
 mod reading;
 mod rule;
 mod score;
+mod secondary;
 mod severity;
 mod shingles;
 mod site_content;
