@@ -91,6 +91,20 @@ export function SearchPreview({ snippet, settings, onSetting, onBlur }: Props) {
         <SettingField id="setting-focusKeyword" label={words.focus} hint={words.focusHint}>
           <input {...bind("focusKeyword")} />
         </SettingField>
+        <SettingField
+          id="setting-secondaryKeywords"
+          label={seoEditorWords.secondary}
+          hint={seoEditorWords.secondaryHint}
+        >
+          <textarea
+            id="setting-secondaryKeywords"
+            rows={3}
+            aria-describedby="setting-secondaryKeywords-hint"
+            value={settings.secondaryKeywords}
+            onChange={(event) => onSetting("secondaryKeywords", event.target.value)}
+            onBlur={onBlur}
+          />
+        </SettingField>
       </div>
     </details>
   );

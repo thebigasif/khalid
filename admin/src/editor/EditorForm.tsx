@@ -18,6 +18,7 @@ import { RichText } from "./RichText";
 import { fitsRichText } from "./richText";
 import { SchemaPanel } from "./SchemaPanel";
 import { SearchPreview } from "./SearchPreview";
+import { SharePreview } from "./SharePreview";
 import { scheduledAt } from "./schedule";
 import { type SettingsDraft, withSetting } from "./settings";
 import { type SaveState, useAutosave } from "./useAutosave";
@@ -175,6 +176,11 @@ export function EditorForm({ post }: Props) {
               words={checked?.words ?? null}
             />
             <SearchPreview snippet={checked?.snippet ?? null} {...fields} />
+            <SharePreview
+              title={draft.title}
+              url={checked?.snippet.url ?? ""}
+              settings={draft.settings}
+            />
             <SchemaPanel check={checked} live={publishing.status === "published"} {...fields} />
             <PostSettings settings={draft.settings} onSetting={setSetting} onBlur={onBlur}>
               {publishing.status === "published" ? null : <GoLive at={at} onAt={setAt} />}

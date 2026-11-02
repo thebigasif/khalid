@@ -150,4 +150,45 @@ describe("the editor's search fields and schema", () => {
     ]);
     expect(await axeViolations()).toEqual([]);
   });
+
+  it("saves secondary keywords one per line, and the rarer robots choices", async () => {
+    signedIn();
+    const edits = blog(() => json(200, { checks: [CHECK] }));
+    renderAt(`/posts/${POST.id}`);
+    const secondary = await screen.findByLabelText(seoEditorWords.secondary);
+    fireEvent.change(secondary, { target: { value: "link text\n\nsite structure" } });
+    fireEvent.click(screen.getByText(en.settings.more.title));
+    fireEvent.click(screen.getByText(seoEditorWords.advanced));
+    fireEvent.click(screen.getByLabelText(seoEditorWords.restrictions.noarchive));
+    const size = screen.getByLabelText(seoEditorWords.maxImage);
+    fireEvent.change(size, { target: { value: "standard" } });
+    fireEvent.blur(size);
+    await waitFor(() => expect(edits).toHaveLength(1));
+    expect(edits[0]).toMatchObject({
+      settings: {
+        secondary_keywords: ["link text", "site structure"],
+        robots: "noarchive, max-image-preview:standard",
+      },
+    });
+  });
+
+  it("shows the post shared on Facebook and X, with a card's own title", async () => {
+    signedIn();
+    blog(() => json(200, { checks: [CHECK] }));
+    renderAt(`/posts/${POST.id}`);
+    fireEvent.click(await screen.findByText(seoEditorWords.share));
+    const facebook = screen.getByText(seoEditorWords.facebook).closest("figure");
+    expect(facebook).toHaveTextContent("WWW.EXAMPLE.COM");
+    expect(facebook).toHaveTextContent(POST.title);
+    expect(facebook).toHaveTextContent(seoEditorWords.noImage);
+    fireEvent.click(screen.getByText(en.settings.more.title));
+    const fields = en.settings.more.fields;
+    fireEvent.change(screen.getByLabelText(fields.xTitle.label), {
+      target: { value: "Internal links, plainly" },
+    });
+    const x = screen.getByText(seoEditorWords.x).closest("figure");
+    expect(x).toHaveTextContent("Internal links, plainly");
+    expect(facebook).toHaveTextContent(POST.title);
+    expect(await axeViolations()).toEqual([]);
+  });
 });

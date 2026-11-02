@@ -15,4 +15,26 @@ export const seoEditorWords = {
   mobile: "Mobile",
   titleCut: "Google cuts this title here, so put the words that matter first.",
   descriptionCut: "Google cuts this description here, so put what matters first.",
+  secondary: "Secondary keywords",
+  secondaryHint:
+    "Up to four related phrases, one per line, such as a synonym of the focus keyword. The checks look for each one in the text.",
+  advanced: "More search engine choices",
+  advancedHint:
+    "Most posts need none of these. Each one stops search engines using this post in one more way.",
+  restrictions: {
+    noimageindex: "Keep this post's images out of image search",
+    noarchive: "Do not offer a cached copy of this post",
+    nosnippet: "Show no text from this post under its title in results",
+  },
+  maxSnippet: "Longest text shown in results",
+  maxSnippetHint: "In characters. Leave it empty for any length.",
+  maxImage: "Largest picture shown in results",
+  maxImageHint: "Large pictures win more clicks, and Google Discover needs them.",
+  imageSizes: { "": "Any size", large: "Large", standard: "Standard", none: "None" },
+  share: "How it looks when shared",
+  shareLede:
+    "A link to this post on Facebook and X, made from the share settings, or else the post's own title, description and image.",
+  facebook: "Facebook",
+  x: "X",
+  noImage: "No picture yet. Add a feature image, or one for each network in More settings.",
 } as const;
