@@ -141,72 +141,203 @@ main > .intro { margin-block-end: calc(var(--space) * 6); color: var(--color-mut
 .pagination { margin-block-start: calc(var(--space) * 8); padding-block-start: calc(var(--space) * 3); border-block-start: var(--keystone-line); font-size: var(--text-small); }
 .page-numbers a { color: var(--color-text); text-decoration: none; border-radius: 999px; }
 
-/* One reading column for posts, pages, authors and what follows a post. */
-.page, .author, .post-header > :not(.image), .post > :not(.post-header, .post-columns, .toc-side), .post-columns,
-main > :is(.mentions, .related, .comments, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
-.post-header { margin-block-end: calc(var(--space) * 5); padding-block-start: calc(var(--space) * 3); text-align: center; }
-.post-header h1 { margin-block-end: calc(var(--space) * 2.5); font-size: calc(var(--text-h1) * 1.05); }
-.post-header .people { justify-content: center; }
-.post-header .person { text-align: start; }
-.post-header .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
-.post-header .image { margin-block: calc(var(--space) * 5) 0; }
-.post-header .image img { max-block-size: 36rem; object-fit: cover; border-radius: calc(var(--radius) * 1.5); background: var(--color-surface); box-shadow: 0 1.5rem 3rem -1.5rem color-mix(in oklab, var(--color-text) 30%, transparent); }
-.post-body > p:first-child { font-size: calc(var(--text-body) * 1.15); }
-.post-body blockquote { color: var(--color-text); border-inline-start-color: var(--color-accent); font-size: var(--text-h4); font-weight: 600; }
-.post-body a { text-decoration-color: color-mix(in oklab, var(--color-link) 45%, transparent); }
-.post-body a:hover { text-decoration-color: currentColor; }
+/* A post: the title block and the reading column share one left edge;
+   the lead picture breaks out to the wide frame. */
+.page, .author, .post-header, .post > :not(.post-header, .post-columns, .toc-side), .post-columns,
+main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inline-size: var(--measure); margin-inline: auto; }
+.post-header { margin-block-end: calc(var(--space) * 7); padding-block-start: calc(var(--space) * 8); }
+.eyebrow { margin-block-end: calc(var(--space) * 2); font-size: var(--text-small); font-weight: 600; }
+.eyebrow a { color: var(--color-link); text-decoration: none; }
+.eyebrow a:hover { text-decoration: underline; }
+.post-header h1 { margin-block: 0 calc(var(--space) * 2.5); }
+.dek { margin-block: 0; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem); line-height: 1.5; }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--space) * 1) calc(var(--space) * 1.5); margin-block-start: calc(var(--space) * 5); padding-block: calc(var(--space) * 2); border-block: var(--keystone-line); }
+.post-meta p, .post-meta address { margin: 0; }
+.post-meta address { flex-basis: 100%; margin-block-end: calc(var(--space) * 0.5); }
+.post-meta .reviewed-by { flex-basis: 100%; }
+.post-meta > .reviewed-by::before { content: none; }
+.post-meta .people { margin: 0; gap: calc(var(--space) * 1) calc(var(--space) * 3); }
+.post-meta .person { line-height: 1.35; }
+.post-meta .person a { min-block-size: 0; color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); }
+.post-meta .person-role { margin: 0; }
+.post-meta .avatar { inline-size: 2.75rem; block-size: 2.75rem; }
+.post-meta > p + p::before { content: "\00b7" / ""; margin-inline-end: calc(var(--space) * 1.5); }
+.post-meta .reviewed-by a { color: var(--color-text); font-weight: 500; }
+.post-date time { white-space: nowrap; }
+.post-header .image { margin-block: calc(var(--space) * 6) 0; margin-inline: calc(50% - min(50vw - 1rem, var(--keystone-wide) / 2)); }
+.post-header .image img { border-radius: calc(var(--radius) * 1.4); box-shadow: var(--keystone-frame); background: var(--color-surface); }
 
-/* The share rail: a row under the picture, and beside the body, sticky,
-   when there is room. The body stays centred either way. */
-.share-rail { margin-block: 0 calc(var(--space) * 4); }
-.share-title { color: var(--color-muted); font-size: var(--text-small); letter-spacing: 0.06em; text-transform: uppercase; }
-@media screen and (min-width: 70rem) {
-  .post-columns { display: grid; grid-template-columns: 9rem minmax(0, var(--measure)) 9rem; justify-content: center; column-gap: calc(var(--space) * 5); max-inline-size: none; }
-  .post-with-toc .post-columns { grid-template-columns: 9rem minmax(0, 1fr); }
-  .share-rail { position: sticky; inset-block-start: calc(var(--space) * 4); align-self: start; flex-direction: column; align-items: stretch; margin: 0; }
+/* The share rail: one row over the body on a phone, a sticky column
+   beside it when there is room. The body stays centred either way. */
+.share-rail { margin-block: 0 calc(var(--space) * 5); padding-block-end: calc(var(--space) * 2); border-block-end: var(--keystone-line); }
+.share-title { color: var(--color-muted); font-size: var(--text-small); font-weight: 500; }
+.share a { min-block-size: 2.75rem; padding-inline: calc(var(--space) * 1.5); border-color: var(--color-border); border-radius: 999px; color: var(--color-text); font-size: var(--text-small); }
+@media (min-width: 72rem) {
+  .post-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, var(--measure)) minmax(0, 1fr); column-gap: calc(var(--space) * 6); max-inline-size: none; }
+  .post-columns > .post-body { grid-column: 2; }
+  .share-rail { position: sticky; inset-block-start: calc(var(--space) * 4); grid-column: 1; justify-self: end; align-self: start; flex-direction: column; align-items: start; gap: calc(var(--space) * 0.5); inline-size: 9rem; margin: 0; padding: 0; border: 0; }
   .share-rail ul { flex-direction: column; gap: 0; }
-  .share-rail a { padding-inline: 0; border: 0; color: var(--color-muted); font-size: var(--text-small); }
+  .share-rail a { padding-inline: 0; border: 0; color: var(--color-muted); }
   .share-rail a:hover, .share-rail a:focus-visible { color: var(--color-link); }
+  .post-with-toc .post-columns { grid-template-columns: 9rem minmax(0, 1fr); }
   .post-toc-start .post-columns { display: block; }
 }
 
-/* Numbered chapters: the number sits over each main heading on a short
-   accent bar. Screen readers skip it; the heading says the rest. */
+/* The body: generous space before each heading, little after it. */
+.post-body > p:first-child { font-size: 1.1875rem; line-height: 1.6; }
+.post-body h2 { margin-block: 2.25em 0.6em; font-size: var(--text-h2); letter-spacing: -0.02em; line-height: 1.22; }
+.post-body h3 { margin-block: 2em 0.5em; font-size: var(--text-h3); }
+.post-body :is(ul, ol):not([class]) { padding-inline-start: 1.25rem; }
+.post-body li { margin-block-end: calc(var(--space) * 0.75); padding-inline-start: 0.25rem; }
+.post-body li::marker { color: var(--color-muted); }
+.heading-link { margin-inline-start: 0.125rem; color: var(--color-muted); font-size: 0.7em; font-weight: 400; }
+.heading-link:hover, .heading-link:focus-visible { color: var(--color-link); }
+.post-body blockquote { padding-inline-start: 1.25rem; border-inline-start: 2px solid var(--color-accent); color: var(--color-text); }
+.post-body img { border-radius: var(--radius); }
+.post-body figure > img, .post-body figure > picture img { box-shadow: var(--keystone-frame); }
+.post-body figcaption, .post-body figcaption p { margin-block: calc(var(--space) * 1.5) 0; color: var(--color-muted); font-size: var(--text-small); }
+.post-body hr { margin-block: 3rem; }
+pre { padding: 1.25rem 1.5rem; background: var(--color-surface); border: var(--keystone-line); font-size: 0.875rem; line-height: 1.6; }
+:not(pre) > code { padding: 0.125em 0.375em; border: var(--keystone-line); border-radius: 0.375rem; font-size: 0.875em; }
+
+/* Numbered chapters, when a site turns them on: a small number before
+   each main heading. Screen readers skip it; the heading says the rest. */
 .post-numbered { counter-reset: chapter; }
-.post-numbered > h2 { counter-increment: chapter; margin-block-start: 2.5em; }
-.post-numbered > h2::before { content: counter(chapter, decimal-leading-zero) / ""; display: block; inline-size: fit-content; margin-block-end: calc(var(--space) * 1.5); padding-block-start: var(--space); border-block-start: 3px solid var(--color-accent); color: var(--color-muted); font-family: var(--font-body); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.12em; }
+.post-numbered > h2 { counter-increment: chapter; }
+.post-numbered > h2::before { content: counter(chapter, decimal-leading-zero) / ""; display: block; margin-block-end: calc(var(--space) * 1); color: var(--color-link); font-family: var(--font-mono); font-size: var(--text-small); font-weight: 500; letter-spacing: 0; }
 
-/* Callouts: a soft tint, no border, and a drawn icon for each kind. */
-.post-body .callout { padding: 1.25rem 1.5rem; background: color-mix(in oklab, var(--color-accent) 6%, var(--color-background)); border: 0; }
-.post-body :is(.callout-note, .callout-tip, .callout-read) { position: relative; padding-inline-start: 3.5rem; border-block: 0; border-radius: var(--radius); }
-.post-body :is(.callout-note, .callout-tip, .callout-read)::before { content: ""; position: absolute; inset-inline-start: 1.25rem; inset-block-start: 1.45rem; inline-size: 1.25rem; block-size: 1.25rem; background: var(--color-accent); mask: var(--icon) no-repeat center / contain; }
-.callout-note { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='8.5' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M10 9v5M10 6v.5' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); }
-.callout-tip { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.5 15.5h5M8.5 18.5h3M10 1.5a6 6 0 0 0-3.5 10.9v1.6h7v-1.6A6 6 0 0 0 10 1.5z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-.callout-read { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1.5 4h6a2.5 2.5 0 0 1 2.5 2.5V17a2 2 0 0 0-2-2H1.5zM18.5 4h-6A2.5 2.5 0 0 0 10 6.5V17a2 2 0 0 1 2-2h6.5z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-.post-body .callout-warning { border-inline-start: 6px solid var(--color-text); }
-.callout-stat strong:first-child { font-weight: var(--heading-weight); letter-spacing: -0.02em; }
+/* The contents block in a post: a framed list with quiet numbers. */
+.post-body .toc { margin-block: calc(var(--space) * 4); padding: calc(var(--space) * 2.5) calc(var(--space) * 3); background: none; border: var(--keystone-line); border-radius: var(--radius); }
+.post-body .toc ol { counter-reset: toc; padding: 0; list-style: none; }
+.post-body .toc li { counter-increment: toc; margin: 0; padding: 0; }
+.post-body .toc a { gap: calc(var(--space) * 1.5); color: var(--color-text); font-size: 0.9375rem; font-weight: 400; text-decoration: none; min-block-size: 2.75rem; padding-block: 0.375rem; line-height: 1.4; align-items: baseline; }
+.post-body .toc a::before { content: counter(toc, decimal-leading-zero) / ""; min-inline-size: 1.5rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; }
+.post-body .toc a:hover { color: var(--color-link); }
+.toc-box, .toc-inline { background: none; border: var(--keystone-line); }
 
-/* Tables, such as a checklist, sit in a soft frame. */
-.post-body table { border: 1px solid var(--color-border); border-radius: var(--radius); }
-.post-body th { background: var(--color-surface); }
+/* Callouts: a surface box with a drawn icon; each kind differs by its
+   icon and edge, not by colour alone. */
+.post-body .callout { position: relative; margin-block: calc(var(--space) * 4); padding-block: 1.25rem; padding-inline: 3.5rem 1.5rem; background: var(--color-surface); border: 0; border-radius: var(--radius); font-size: 1rem; }
+.post-body .callout::before { content: ""; position: absolute; inset-inline-start: 1.25rem; inset-block-start: 1.55rem; inline-size: 1.125rem; block-size: 1.125rem; background: var(--color-link); mask: var(--icon) no-repeat center / contain; }
+.post-body .callout-tip { background: var(--keystone-tint); }
+.post-body .callout-warning { box-shadow: inset 3px 0 0 var(--color-text); font-weight: 400; }
+[dir="rtl"] .post-body .callout-warning { box-shadow: inset -3px 0 0 var(--color-text); }
+.post-body .callout-warning::before { background: var(--color-text); }
+.post-body .callout-read { background: none; border-block: var(--keystone-line); border-radius: 0; }
+.post-body .callout-summary { padding-inline-start: 1.5rem; background: var(--keystone-tint); }
+.post-body .callout-summary::before, .post-body .callout-stat::before { content: none; }
+.post-body .callout-summary ul { margin: 0; padding: 0; list-style: none; }
+.post-body .callout-summary li { position: relative; padding-inline-start: 1.75rem; }
+.post-body .callout-summary li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.35em; inline-size: 1rem; block-size: 1rem; background: var(--color-link); mask: var(--check) no-repeat center / contain; }
+.post-body .callout-stat { display: grid; padding: 1.75rem 0; background: none; border-block: var(--keystone-line); border-radius: 0; }
+.callout-stat strong:first-child { color: var(--color-link); font-size: 3rem; font-weight: 600; letter-spacing: -0.04em; line-height: 1; margin-block-end: 0.5rem; }
+.callout { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='8.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3Cpath d='M10 9v5M10 6v.5' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); --check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.callout-tip { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.5 15.5h5M8.5 18.5h3M10 1.5a6 6 0 0 0-3.5 10.9v1.6h7v-1.6A6 6 0 0 0 10 1.5z' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.callout-read { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1.5 4h6a2.5 2.5 0 0 1 2.5 2.5V17a2 2 0 0 0-2-2H1.5zM18.5 4h-6A2.5 2.5 0 0 0 10 6.5V17a2 2 0 0 1 2-2h6.5z' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.callout-warning { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 2L1.5 17.5h17z' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M10 8v4.5M10 14.5v.5' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.callout-read::before { inset-inline-start: 0.25rem; }
+.post-body .callout-read { padding-inline-start: 2.5rem; }
+
+/* A pull quote: larger words, a fine accent rule, the name under it. */
+.post-body .pullquote { margin-block: calc(var(--space) * 6); padding-inline-start: 1.75rem; border-inline-start: 2px solid var(--color-accent); }
+.post-body .pullquote blockquote { padding: 0; border: 0; }
+.pullquote blockquote { font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.75rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.35; }
+.pullquote figcaption { color: var(--color-muted); }
+
+/* Steps: a quiet numbered circle beside each, joined by a hairline. */
+.post-body .howto { counter-reset: step; padding: 0; list-style: none; }
+.post-body .howto > li { counter-increment: step; position: relative; margin: 0; padding: 0 0 calc(var(--space) * 2) 3rem; }
+.post-body .howto > li::before { content: counter(step) / ""; position: absolute; inset-inline-start: 0; inset-block-start: 0; display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; background: var(--color-background); border: var(--keystone-line); border-radius: 50%; color: var(--color-link); font-size: var(--text-small); font-weight: 600; }
+.post-body .howto > li:not(:last-child)::after { content: ""; position: absolute; inset-inline-start: 1rem; inset-block: 2.25rem 0.25rem; border-inline-start: var(--keystone-line); }
+.howto-step { font-weight: 600; line-height: 2rem; }
+.post-body .howto > li > p:last-child { margin-block-end: 0; color: var(--color-muted); }
+
+/* Tables: hairline rows in a framed box, a quiet header. */
+.post-body table { font-size: 0.9375rem; border: var(--keystone-line); border-radius: var(--radius); }
+.post-body th { background: var(--color-surface); font-size: var(--text-small); font-weight: 600; }
+.post-body th, .post-body td { padding: 0.75rem 1rem; }
 .post-body tr:last-child td { border-block-end: 0; }
-.post-body figcaption { text-align: center; }
 
-/* The site's own lines after a post. */
-.about-site { margin-block-start: var(--space-section); padding-block-start: calc(var(--space) * 3); border-block-start: 1px solid var(--color-border); color: var(--color-muted); font-style: italic; }
-.about-site p { margin-block-end: var(--space); }
+/* Questions: one hairline between each, a plus that turns to a minus. */
+.faq { border-block-start: var(--keystone-line); }
+.faq summary { display: flex; justify-content: space-between; gap: 1rem; padding-block: 1rem; font-family: var(--font-body); font-weight: 600; list-style: none; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+" / ""; color: var(--color-muted); font-weight: 400; }
+.faq details[open] > summary::after { content: "\2212" / ""; }
+.faq details > p { color: var(--color-muted); }
 
-/* The newsletter between sections, on a soft band. */
-.newsletter-mid { margin-block: var(--space-section); padding: clamp(1.25rem, 5vw, 3rem); background: var(--keystone-tint); border-radius: calc(var(--radius) * 2); }
-.newsletter-mid .newsletter-slot { max-inline-size: var(--measure); margin: 0; padding: 0; background: none; }
-.subscriber-line { margin-block-end: var(--space); font-weight: 700; }
+/* Bookmarks, columns and pros and cons share the frame. */
+.post-body :is(.bookmark a, .pros, .cons, .review, .product, .recipe, .business) { border-color: var(--color-border); border-radius: var(--radius); }
+.post-body .column { background: var(--color-surface); }
 
-/* After a post: the author on a warm card, the related posts under a
-   heavy heading, and a lock card on a tint. */
-.author-box { padding: calc(var(--space) * 4); background: var(--keystone-tint); border-radius: calc(var(--radius) * 2); }
-.author-box h2 { color: var(--color-link); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
-.author-box .person-name { font-size: var(--text-h4); }
-.author-box .avatar { inline-size: 4.5rem; block-size: 4.5rem; }
-.related { margin-block-start: var(--space-section); }
-.related > h2 { font-size: var(--text-h2); }
-.lock { background: var(--keystone-tint); border: 0; border-radius: calc(var(--radius) * 1.5); }
+/* A lock card: one quiet line where a feature needs a running server. */
+.lock, .locked { padding: 1rem 1.25rem; background: var(--color-surface); border: 0; border-radius: var(--radius); color: var(--color-muted); font-size: var(--text-small); }
+main > .lock { margin-block: var(--space-section); }
+
+/* After a post: tags, the site's own lines and the author, each set off
+   by a hairline, nothing boxed. */
+.post-footer { margin-block-start: calc(var(--space) * 6); }
+.post-footer h2 { margin-block: 0 calc(var(--space) * 1.5); color: var(--color-muted); font-family: var(--font-body); font-size: var(--text-small); font-weight: 500; letter-spacing: 0; }
+.tags a { padding-inline: 1rem; background: var(--color-surface); border-radius: 999px; color: var(--color-text); font-size: var(--text-small); }
+.about-site { margin-block-start: calc(var(--space) * 6); color: var(--color-muted); font-size: var(--text-small); }
+.author-box { margin-block-start: calc(var(--space) * 7); padding: calc(var(--space) * 4) 0 0; background: none; border-block-start: var(--keystone-line); border-radius: 0; }
+.author-box h2 { margin-block-end: calc(var(--space) * 2.5); color: var(--color-muted); font-family: var(--font-body); font-size: var(--text-small); font-weight: 500; letter-spacing: 0; }
+.author-box .person-card { gap: calc(var(--space) * 2.5); }
+.author-box .avatar { flex-shrink: 0; inline-size: 4rem; block-size: 4rem; }
+.author-box .person-card > picture { flex-shrink: 0; }
+.author-box .person-name { font-size: 1.0625rem; }
+.author-box .person-name a { color: var(--color-text); text-decoration: none; }
+.author-box .person-role { margin: -0.5rem 0 calc(var(--space) * 1); color: var(--color-muted); font-size: var(--text-small); }
+.author-box p { font-size: 0.9375rem; }
+.author-box .reviewed-by { margin-block-start: calc(var(--space) * 2); color: var(--color-muted); font-size: var(--text-small); }
+.author-box .reviewed-by a { color: var(--color-text); font-weight: 500; }
+.author-profiles a { font-size: var(--text-small); }
+
+/* The newsletter on a plain framed panel, the call to action on a light
+   tint: the words on one side and the action on the other. */
+.newsletter-slot, .cta-band, .newsletter-mid { padding: clamp(1.5rem, 4vw, 3rem); background: linear-gradient(135deg, var(--keystone-tint), var(--color-surface)); border: 1px solid color-mix(in oklab, var(--color-accent) 12%, var(--color-border)); border-radius: calc(var(--radius) * 1.6); }
+.newsletter-slot, .newsletter-mid { background: var(--color-background); border-color: var(--color-border); box-shadow: 0 1.5rem 3rem -2rem color-mix(in oklab, var(--color-text) 18%, transparent); }
+.newsletter-mid { margin-block: 0 var(--space-section); }
+.newsletter-mid .newsletter-slot { max-inline-size: none; margin: 0; padding: 0; background: none; border: 0; box-shadow: none; }
+main > :is(.newsletter-slot, .cta-band) { max-inline-size: var(--keystone-wide); margin-block: var(--space-section); }
+main:has(.home-head) > .cta-band { max-inline-size: none; }
+.newsletter-slot h2 { margin-block-end: calc(var(--space) * 1); font-size: var(--text-h3); }
+.newsletter-slot > p { color: var(--color-muted); }
+.subscribe { display: flex; flex-wrap: wrap; align-items: end; gap: calc(var(--space) * 1.5); }
+.subscribe p { margin: 0; }
+.subscribe p:first-child { flex: 1 1 16rem; }
+.subscribe label { font-size: var(--text-small); font-weight: 500; }
+.subscribe input { border-color: color-mix(in oklab, var(--color-muted) 70%, var(--color-background)); border-radius: 999px; padding-inline: 1.125rem; background: var(--color-background); }
+.subscriber-line { margin-block-end: calc(var(--space) * 1); color: var(--color-link); font-size: var(--text-small); font-weight: 600; }
+@media (min-width: 52rem) {
+  .newsletter-slot { display: grid; grid-template-columns: 1fr 1fr; column-gap: calc(var(--space) * 6); align-items: center; }
+  .newsletter-slot > :not(form) { grid-column: 1; }
+  .newsletter-slot > form { grid-column: 2; grid-row: 1 / span 3; }
+}
+.cta-band { gap: calc(var(--space) * 2) calc(var(--space) * 4); }
+.cta-note { flex: 1 1 20rem; font-size: var(--text-h3); font-weight: var(--heading-weight); letter-spacing: -0.015em; line-height: 1.35; }
+.cta-band .button { min-block-size: 3rem; padding-inline: 1.5rem; }
+
+/* Links from other posts, and related posts, after a post. */
+main > .mentions, main > .related { max-inline-size: var(--keystone-page); margin-block: var(--space-section) 0; }
+main > .mentions { max-inline-size: var(--keystone-wide); }
+.mentions ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); column-gap: calc(var(--space) * 4); }
+.mentions li { border-block-end: var(--keystone-line); }
+.mentions a { inline-size: 100%; padding-block: 0.75rem; color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.mentions a:hover { color: var(--color-link); }
+
+/* Authors and plain pages read in the same column as a post, and a list
+   on them takes the home page's section heading. */
+.page, .author { padding-block-start: calc(var(--space) * 8); }
+.page > h1:first-child, .author h1 { margin-block-start: 0; }
+.author-header .image { margin-block-end: calc(var(--space) * 3); }
+.author-role { margin-block-start: calc(var(--space) * -1); font-size: 1.125rem; }
+main > section:not([class]) { margin-block: var(--space-section) 0; }
+main > section:not([class]) > h2 { margin-block: 0 calc(var(--space) * 4); padding-block-start: calc(var(--space) * 2); border-block-start: var(--keystone-line); font-size: 1.25rem; letter-spacing: -0.015em; }
+.people-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: calc(var(--space) * 3); }
+.people-list .person-name a { color: var(--color-text); text-decoration: none; }
+.people-list .person-name a:hover { color: var(--color-link); }
+.people-list .person-role { color: var(--color-muted); font-size: var(--text-small); }
+.author-header .image img { box-shadow: var(--keystone-frame); }
+.page-body h2 { margin-block-start: 2.25em; }
