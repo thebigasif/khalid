@@ -4,6 +4,7 @@ import { endSession } from "../api/account";
 import { forgetKey, readCsrf } from "../auth/session";
 import { en } from "../strings/en";
 import { shellWords } from "../strings/shellWords";
+import { CommandSearch } from "./CommandSearch";
 import { Icon } from "./Icon";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
@@ -50,6 +51,7 @@ export function Shell() {
         <Sidebar open={open} close={() => setOpen(false)} closer={closer} />
         <div className="app-main">
           <TopBar open={open} onMenu={() => setOpen(true)} opener={opener}>
+            <CommandSearch />
             <Link to="/new" className="btn primary">
               <Icon name="plus" />
               <span className="new-words">{shellWords.newPost}</span>

@@ -13,4 +13,12 @@ export const shellWords = {
   accountMenu: "Your account menu",
   byEmail: "You signed in with your email.",
   byToken: "You signed in with a staff token.",
+  search: {
+    open: "Search",
+    label: "Search posts and screens",
+    screens: "Screens",
+    posts: "Posts",
+    latest: "Latest posts",
+    nothing: "Nothing matches those words. Try fewer words, or part of a title.",
+  },
 } as const;
