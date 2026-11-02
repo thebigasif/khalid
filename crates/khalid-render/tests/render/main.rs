@@ -30,6 +30,8 @@ mod contents_parts;
 #[cfg(test)]
 mod contents_sheet;
 #[cfg(test)]
+mod copy_link;
+#[cfg(test)]
 mod cta;
 #[cfg(test)]
 mod dek;

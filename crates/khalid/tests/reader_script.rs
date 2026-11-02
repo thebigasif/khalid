@@ -119,7 +119,10 @@ fn a_built_page_links_the_script_the_build_wrote() {
     let post = fs::read_to_string(at(&out, "what-a-sitemap-does/index.html")).unwrap();
     let (src, _) = script(&post).expect("the post links the reader script");
     assert!(src.starts_with("/blog/assets/reader."), "{src}");
-    assert!(post.contains("defer data-copied="), "{post}");
+    assert!(
+        post.contains("defer data-copy=\"Copy link\" data-copied="),
+        "{post}"
+    );
     let file = fs::read_to_string(at(&out, src.trim_start_matches("/blog/"))).unwrap();
     assert!(file.contains("\"use strict\""), "{file}");
     let home = fs::read_to_string(at(&out, "index.html")).unwrap();

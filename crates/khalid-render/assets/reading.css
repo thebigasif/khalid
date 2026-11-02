@@ -31,3 +31,15 @@
 .toc-sheet a:hover { color: var(--color-link); text-decoration: underline; }
 .toc-sheet a[aria-current], .toc-box a[aria-current], .toc-inline a[aria-current] { color: var(--color-link); font-weight: 700; }
 @media print { .toc-button, .toc-sheet { display: none; } }
+
+/* The copy link button that takes the place of each heading's # link when
+   scripts run. A template's own .heading-link rules still style it; these
+   only undo a button's look. Its words show on pointing, on focus and for
+   a moment after a copy, growing towards the text so they never widen the
+   page. */
+.copy-link { position: relative; padding: 0; color: var(--color-muted); background: none; border: 0; font-family: inherit; font-size: inherit; line-height: inherit; cursor: pointer; }
+.copy-link::after { content: attr(data-tip); position: absolute; inset-block-end: calc(100% + 0.25rem); right: 0; display: none; padding: 0.25rem 0.5rem; color: var(--color-background); background: var(--color-text); border-radius: var(--radius); font-family: var(--font-body); font-size: 0.8125rem; font-weight: 600; letter-spacing: normal; line-height: 1.4; text-transform: none; white-space: nowrap; pointer-events: none; }
+[dir="rtl"] .copy-link::after { right: auto; left: 0; }
+.copy-link:hover::after, .copy-link:focus-visible::after, .copy-link[data-done]::after { display: block; }
+.copy-link:hover, .copy-link:focus-visible, .copy-link[data-done] { color: var(--color-link); opacity: 1; }
+body:has(.copy-link) .reader-status { clip-path: inset(50%); padding: 0; }

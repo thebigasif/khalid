@@ -64,6 +64,8 @@ form_trap = "Leave this empty"
 heading_link = "Link to this section"
 # Said and shown for a moment after a heading's address is copied.
 link_copied = "Link copied"
+# The button beside each heading that copies the section's address.
+copy_link = "Copy link"
 # The button that closes an enlarged image.
 close = "Close"
 no_posts = "There are no posts here yet."

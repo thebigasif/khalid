@@ -38,17 +38,35 @@
     fill();
   }
 
-  // A heading's # link copies the section's address and says so.
-  document.addEventListener("click", (event) => {
-    const link = event.target.closest(".heading-link");
-    if (!link || !navigator.clipboard) return;
-    event.preventDefault();
-    const address = new URL(link.getAttribute("href"), location.href).href;
-    navigator.clipboard.writeText(address).then(() => {
-      history.replaceState(null, "", link.getAttribute("href"));
-      say(words.copied || "");
+  // Each heading's # link becomes a button that copies the section's
+  // address and says so. Where the page cannot copy, the link stays.
+  if (navigator.clipboard) {
+    for (const link of document.querySelectorAll("a.heading-link")) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "heading-link copy-link";
+      button.textContent = "#";
+      button.dataset.href = link.getAttribute("href");
+      button.dataset.tip = words.copy || "";
+      button.setAttribute("aria-label", words.copy || "");
+      link.replaceWith(button);
+    }
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("button.copy-link");
+      if (!button) return;
+      const hash = button.dataset.href;
+      navigator.clipboard.writeText(new URL(hash, location.href).href).then(() => {
+        history.replaceState(null, "", hash);
+        button.dataset.tip = words.copied || "";
+        button.dataset.done = "";
+        say(words.copied || "");
+        setTimeout(() => {
+          button.dataset.tip = words.copy || "";
+          delete button.dataset.done;
+        }, 2000);
+      });
     });
-  });
+  }
 
   // A reduced image opens at full size in a dialog that Escape closes.
   // The browser returns focus to the image's link when it closes.

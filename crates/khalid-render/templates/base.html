@@ -26,7 +26,7 @@
 <meta name="twitter:image:alt" content="{{ image.alt }}">
 {% else %}<meta name="twitter:card" content="summary">
 {% endif %}{% endif %}{% if brand.icon %}<link rel="icon" href="{{ brand.icon }}">
-{% endif %}{% if site.script %}<script src="{{ site.script.src }}" integrity="{{ site.script.integrity }}" defer data-copied="{{ t.link_copied }}" data-close="{{ t.close }}" data-contents="{{ t.contents }}"{% if "link_previews" in site.features %} data-previews{% endif %}></script>
+{% endif %}{% if site.script %}<script src="{{ site.script.src }}" integrity="{{ site.script.integrity }}" defer data-copy="{{ t.copy_link }}" data-copied="{{ t.link_copied }}" data-close="{{ t.close }}" data-contents="{{ t.contents }}"{% if "link_previews" in site.features %} data-previews{% endif %}></script>
 {% endif %}</head>
 <body>
 <a class="skip-link" href="#main">{{ t.skip_link }}</a>
