@@ -41,6 +41,7 @@ use crate::session_check::{SessionCheck, StaffRoutes};
 use crate::settings_store::SettingsStore;
 use crate::tag_store::TagStore;
 use crate::webhook_store::WebhookStore;
+use crate::{admin_ai, ai::AiDesk};
 use crate::{
     admin_analytics, admin_api, admin_api_keys, admin_audit, admin_authors, admin_calendar,
     admin_categories, admin_check, admin_comments, admin_draft_comments, admin_draft_threads,
@@ -288,6 +289,9 @@ pub struct AdminDesks {
     /// The `SerpDad` connection, or `None` when the `SerpDad` route answers
     /// that the site keeps no database.
     pub serpdad: Option<Arc<dyn SerpdadStore>>,
+    /// Who writes the editor's suggestions, under `/api/admin/v1/ai/`;
+    /// [`AiDesk::off`] sends nothing anywhere.
+    pub ai: AiDesk,
 }
 
 impl std::fmt::Debug for AdminDesks {
@@ -304,7 +308,7 @@ impl AdminDesks {
     /// audit log, no trash, no post checks, no schema templates, no pages,
     /// no snippets, no authors, no tags, no categories, no settings, no
     /// templates, no counted views, no comments on drafts, no Search Console connection
-    /// and no `SerpDad` connection.
+    /// no `SerpDad` connection and no writing suggestions.
     pub fn none() -> Self {
         Self {
             comments: Arc::new(NoComments),
@@ -326,6 +330,7 @@ impl AdminDesks {
             draft_comments: None,
             follow_ups: Arc::new(NoSearchConsole),
             serpdad: None,
+            ai: AiDesk::off(),
         }
     }
 }
@@ -481,6 +486,11 @@ fn assemble(
         limits,
     };
     let redirects = desks.redirects;
+    let ai = admin_ai::AiRoute {
+        desk: desks.ai,
+        serpdad: desks.serpdad.clone(),
+        posts: Arc::clone(&posts),
+    };
     let serpdad = admin_serpdad::Serpdad::new(desks.serpdad, Arc::clone(&keys));
     let mut admin = admin_api::routes(Arc::clone(&posts), serpdad.clone(), door.clone())
         .merge(admin_audit::routes(desks.audit, door.clone()))
@@ -517,7 +527,8 @@ fn assemble(
         .merge(admin_api_keys::routes(keys, door.clone()))
         .merge(admin_analytics::routes(desks.analytics, door.clone()))
         .merge(admin_follow_ups::routes(desks.follow_ups, door.clone()))
-        .merge(admin_serpdad::routes(serpdad, door.clone()));
+        .merge(admin_serpdad::routes(serpdad, door.clone()))
+        .merge(admin_ai::routes(ai, door.clone()));
     if let Some(staff) = routes {
         let signed_in = staff
             .signed_in

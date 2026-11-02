@@ -30,6 +30,7 @@ pub(super) const BLOCKS: [&str; 30] = [
     "review",
     "snippet",
     "table",
+    "takeaways",
     "toc",
     "toggle",
     "video",

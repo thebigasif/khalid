@@ -12,6 +12,7 @@
 
 mod absolute_url;
 mod ai_page_settings;
+mod ai_settings;
 mod alert_settings;
 mod clock;
 mod config;
@@ -47,6 +48,7 @@ mod visitor_log_settings;
 
 pub use absolute_url::{AbsoluteUrl, ParseUrlError};
 pub use ai_page_settings::{AiPageSettings, LlmsTxtSettings};
+pub use ai_settings::{AiProvider, AiSettings};
 pub use alert_settings::AlertSettings;
 #[cfg(any(test, feature = "test-util"))]
 pub use clock::FixedClock;

@@ -78,6 +78,8 @@ pub(crate) struct Keys {
     pub(crate) follow_ups: SiteFollowUps,
     /// The keys photo and GIF search ask Unsplash and GIPHY with.
     pub(crate) pictures: PictureKeys,
+    /// The writer of the editor's suggestions, asked with `KHALID_AI_KEY`.
+    pub(crate) ai: khalid_api::ai::AiDesk,
 }
 
 impl Keys {
@@ -89,6 +91,7 @@ impl Keys {
             mail: mail_secret(env, config),
             git_hook: env.git_hook_secret(),
             follow_ups: SiteFollowUps::new(folder, config, env, cli),
+            ai: crate::serve_apis::ai_writer::desk(config, env, cli),
             pictures: PictureKeys {
                 unsplash: env.unsplash_key(),
                 giphy: env.giphy_key(),
@@ -227,12 +230,11 @@ fn serve_with(
             (files, previews, search_route::router(config, search)),
             (comments, posted, pages),
         );
-        let (desks, helpers) = ((moderation, media, desk, keys.follow_ups), (panel, mailer));
         let apis = (
             (content, door, posts),
-            desks,
+            (moderation, media, desk, keys.follow_ups, keys.ai),
             (database, id, (site, config)),
-            helpers,
+            (panel, mailer),
         );
         let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook));
         // The rest renders once the routes are ready, so it does not slow

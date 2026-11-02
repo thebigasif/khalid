@@ -41,6 +41,11 @@ Read the [sitemap guide](/guides/sitemaps/).
 No post should be more than two clicks from the home page.
 :::
 
+:::takeaways
+- Link words say where the link goes.
+- Vary the words across a site.
+:::
+
 :::proscons
 + Sets up in five minutes
 - No phone support

@@ -4,7 +4,7 @@
 
 use khalid_core::{AbsoluteUrl, RobotsDirectives};
 
-use crate::wordpress::seo_plugins::{Fields, PLUGINS};
+use crate::wordpress::seo_plugins::{Card, Fields, PLUGINS};
 use crate::wordpress::seo_text::{Vars, fill};
 use crate::wordpress::{Item, Site};
 
@@ -43,9 +43,37 @@ pub struct SeoMeta {
     pub focus_keywords: Vec<String>,
     /// The id of the category breadcrumbs should show.
     pub primary_category: Option<u64>,
+    /// The Open Graph card, for Facebook and the sites that read it.
+    pub facebook: ShareWords,
+    /// The X card.
+    pub x: ShareWords,
+    /// Whether a plugin marked the post as cornerstone or pillar content.
+    pub pillar: bool,
+    /// Related keyphrases and synonyms, beyond the focus keywords.
+    pub related_keywords: Vec<String>,
     /// Fields the plugins set that Khalid cannot carry over as they are,
     /// so the report can list them.
     pub unread: Vec<UnreadField>,
+}
+
+/// A share card as a plugin kept it. Anything left out comes from the
+/// post's own title, description and lead image.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[non_exhaustive]
+pub struct ShareWords {
+    /// The headline on the card, with its variables filled in.
+    pub title: Option<String>,
+    /// The line under the headline, with its variables filled in.
+    pub description: Option<String>,
+    /// The card's image address.
+    pub image: Option<String>,
+}
+
+impl ShareWords {
+    /// Whether the plugin set nothing on this card.
+    pub fn is_empty(&self) -> bool {
+        self == &Self::default()
+    }
 }
 
 /// A plugin field that could not be carried over.
@@ -106,6 +134,57 @@ impl SeoMeta {
         }
         if self.robots.is_none() {
             self.robots(item, fields);
+        }
+        self.social(item, fields, vars);
+    }
+
+    /// Fills the share cards, the pillar mark and the related keyphrases
+    /// still empty from one plugin, and lists the fields Khalid has no
+    /// place for.
+    fn social(&mut self, item: &Item, fields: &Fields, vars: &Vars<'_>) {
+        let facebook = std::mem::take(&mut self.facebook);
+        self.facebook = self.card(item, fields, &fields.facebook, vars, facebook);
+        let x = std::mem::take(&mut self.x);
+        self.x = self.card(item, fields, &fields.x, vars, x);
+        let marked = |(key, on): (&str, &str)| item.meta(key).map(str::trim) == Some(on);
+        self.pillar = self.pillar || fields.pillar.is_some_and(marked);
+        if self.related_keywords.is_empty() {
+            let related = (fields.related)(item);
+            for word in related.iter().map(|word| word.trim()) {
+                if !word.is_empty() && !self.related_keywords.iter().any(|seen| seen == word) {
+                    self.related_keywords.push(word.to_owned());
+                }
+            }
+        }
+        for key in fields.set_aside {
+            if let Some((key, value)) = set(item, &[key]) {
+                self.unread(fields.plugin, key, value);
+            }
+        }
+    }
+
+    /// `had`, with each part it lacks taken from one plugin's `card`.
+    fn card(
+        &mut self,
+        item: &Item,
+        fields: &Fields,
+        card: &Card,
+        vars: &Vars<'_>,
+        had: ShareWords,
+    ) -> ShareWords {
+        let title = had
+            .title
+            .or_else(|| self.text(item, fields, card.title, vars));
+        let description = had
+            .description
+            .or_else(|| self.text(item, fields, card.description, vars));
+        let image = had
+            .image
+            .or_else(|| set(item, card.image).map(|(_, image)| image.to_owned()));
+        ShareWords {
+            title,
+            description,
+            image,
         }
     }
 

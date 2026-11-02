@@ -527,6 +527,21 @@ export type AdminWebhooks = {
   webhooks: AdminWebhook[];
 };
 
+/** Whether suggestions are on, and who writes them. */
+export type AiState = {
+  /** The provider's name as people know it. */
+  label: string;
+  /** Whether the owner named a provider in `[ai]`. */
+  on: boolean;
+  /** `off`, `serpdad`, `anthropic` or `openai`. */
+  provider: string;
+  /** Whether the server holds the key it asks with, so a button can ask. */
+  ready: boolean;
+};
+
+/** What a suggestion is for. */
+export type AiTask = "seo_title" | "meta_description" | "share_title" | "share_description" | "alt_text" | "lint_fix" | "takeaways";
+
 /** An old address on this site that redirects to the post, such as `/2019/05/old-title/`, so a moved post keeps its links. */
 export type Alias = string;
 
@@ -815,6 +830,14 @@ export type FeatureImage = {
   caption?: NonBlank | null;
   /** A media path such as `/media/anchor-text.jpg`, or a full address. */
   src: NonBlank;
+};
+
+/** A failing check a fix is written for. */
+export type FindingWords = {
+  /** What the check found, as the editor shows it. */
+  message: string;
+  /** The rule's name. */
+  rule: string;
 };
 
 /** A point in an image in thousandths of its width and height, from the top left. `{ "x": 500, "y": 500 }` is the centre. */
@@ -1198,6 +1221,18 @@ export type NewWebhooks = {
 /** Text with something in it other than spaces. */
 export type NonBlank = string;
 
+/** The options to pick from, fitting ones first. Nothing in a post changes until a writer picks one. */
+export type Offered = {
+  /** The label every suggestion is shown with. */
+  label: string;
+  /** For `takeaways`: the points as a `:::takeaways` block to add to the post. */
+  markdown?: string | null;
+  /** The options. */
+  suggestions: Suggestion[];
+  /** What they are for. */
+  task: AiTask;
+};
+
 /** The values one option takes, and its default. */
 export type OptionTakes = {
   /** The value when not set. */
@@ -1323,6 +1358,16 @@ export type PictureSearch = {
   pictures: StockPicture[];
   /** Whether the owner turned photo search on Unsplash on. */
   unsplash: boolean;
+};
+
+/** A picture alt text is written for. */
+export type PictureWords = {
+  /** The alt text it has now, if any. */
+  alt?: string | null;
+  /** Its caption, if it has one. */
+  caption?: string | null;
+  /** Its file name. */
+  name: string;
 };
 
 /** A published post in API shape. Bodies are present only when asked for with `formats`. */
@@ -1918,6 +1963,36 @@ export type StockPicture = {
 /** Where to look for a picture. */
 export type StockSource = "unsplash" | "gifs";
 
+/** One option, with its length checked. */
+export type Suggestion = {
+  /** How many characters it has. */
+  characters: number;
+  /** Whether it fits the length rule for its task. */
+  fits: boolean;
+  /** Why it does not fit, in plain words, or `null` when it does. */
+  note?: string | null;
+  /** The words. */
+  text: string;
+};
+
+/** What to write and the words to write it from. With `post`, the saved post's title, text, language and focus keyword are used, and any of them given here win, so unsaved changes count. */
+export type SuggestionRequest = {
+  finding?: FindingWords | null;
+  /** The post's focus keyword. */
+  focus_keyword?: string | null;
+  /** The post's language, such as `en`. */
+  language?: string | null;
+  picture?: PictureWords | null;
+  /** A post's identity, such as `en.choosing-anchor-text`. */
+  post?: string | null;
+  /** What the suggestion is for. */
+  task: AiTask;
+  /** The post's text, in markdown. */
+  text?: string | null;
+  /** The post's title. */
+  title?: string | null;
+};
+
 /** A new name for a tag, written into every post that has it. */
 export type TagEdit = {
   /** The new name, such as `internal linking`. A name another tag in the language has merges the two. */
@@ -2016,6 +2091,27 @@ export type UsedPhoto = {
 
 /** What each operation takes and what it answers on success. */
 export interface Operations {
+  /** Reads whether suggestions are on, so the admin shows its buttons only then. Needs `posts:write`. */
+  read_ai: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AiState;
+  };
+  /** Asks the owner's provider for options: five for titles, descriptions and alt text, three fixes, or up to five takeaways. Needs `posts:write`. The bulk SEO editor calls it once per post with `post`. */
+  suggest: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: SuggestionRequest;
+    };
+    output: Offered;
+  };
   /** Lists how many readers each AI assistant sent in the last `days` days, against the days before, with the pages they landed on. Needs `settings:write`. */
   ai_visitors: {
     input: {
