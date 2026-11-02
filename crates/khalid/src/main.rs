@@ -23,6 +23,7 @@ mod bing;
 mod bing_report;
 mod build;
 mod build_ai_page;
+mod build_entries;
 mod build_files;
 mod build_gate;
 mod build_glossary;

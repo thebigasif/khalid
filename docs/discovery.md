@@ -18,3 +18,22 @@ Start with the terms you meet most often.
 ```
 
 Search engines read the page as a `DefinedTermSet` (a schema.org list of defined words) that names every term. The page is in the XML sitemap and on the HTML sitemap at `/sitemap/`.
+
+## Case studies and the changelog
+
+Put case studies in `content/en/case-studies/` and changelog entries in `content/en/changelog/`. Khalid makes:
+
+- `/case-studies/`, a card for each study with its client, its result and its summary, newest first, and a page for each study.
+- `/changelog/`, every entry under its month, newest first, with its version and its whole text, and a page for each entry.
+
+```markdown
+---
+title: How a small bakery doubled its search traffic
+date: 2026-10-20
+client: Northfield Bakery
+outcome: Search visits doubled in four months.
+description: One topic cluster on sourdough, every post linked to it.
+---
+```
+
+A changelog entry needs a `date` and a `title` or a `version`. Each folder may hold an `_index.md` with a title, a description and an intro, as the glossary does. Search engines read each list as an `ItemList` (a schema.org list of pages in order).

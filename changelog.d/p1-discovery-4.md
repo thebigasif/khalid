@@ -1,0 +1,2 @@
+Added
+- **Case study and changelog pages.** Case studies and changelog entries, which the Content API already served, now have pages in every template: `/case-studies/` lists each study as a card with its client and result, `/changelog/` lists each change under its month with its version and its whole text, and each entry has a page of its own with a link back. Each list is an `ItemList` in its JSON-LD and may take a title, description and intro from its folder's `_index.md` (KH-CON-1, KH-CON-2, KH-SEO-3).

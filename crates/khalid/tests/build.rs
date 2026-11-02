@@ -51,7 +51,7 @@ fn build_renders_every_post_and_home_page_of_the_demo_site() {
     let output = khalid(&["--site", path(&demo), "build", "--out", path(out.path())]);
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
     assert!(
-        text(&output.stdout).contains("39 pages"),
+        text(&output.stdout).contains("43 pages"),
         "{}",
         text(&output.stdout)
     );
@@ -135,9 +135,9 @@ fn a_site_can_switch_the_ai_page_off() {
         path(out.path()),
     ]);
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
-    // Without the page: 38 pages, no ai/ folder, no footer link.
+    // Without the page: 42 pages, no ai/ folder, no footer link.
     assert!(
-        text(&output.stdout).contains("38 pages"),
+        text(&output.stdout).contains("42 pages"),
         "{}",
         text(&output.stdout)
     );

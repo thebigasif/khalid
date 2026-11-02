@@ -27,10 +27,10 @@ use crate::site_files::HEADLESS_NOT_FOUND;
 use crate::site_html::{SearchShell, Unrendered, Which, html_pages, search_shells};
 use crate::unlock::Gate;
 use crate::{
-    assets, build_gate, build_glossary, build_home, build_lists, build_message, build_pages,
-    build_seo, build_sitemap, categories, content_message, home_images, look, own_descriptions,
-    post_categories, post_files, post_gate, post_lock, search_page, serve_message, share_images,
-    site_files, site_outline, trails,
+    assets, build_entries, build_gate, build_glossary, build_home, build_lists, build_message,
+    build_pages, build_seo, build_sitemap, categories, content_message, home_images, look,
+    own_descriptions, post_categories, post_files, post_gate, post_lock, search_page,
+    serve_message, share_images, site_files, site_outline, trails,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -435,6 +435,7 @@ impl SitePages {
                 let sources = (content, categories.as_slice());
                 build_lists::add((config, routes), &theme.renderer, sources, &mut languages)?;
                 build_glossary::add((config, routes), &theme.renderer, content, &mut languages)?;
+                build_entries::add((config, routes), &theme.renderer, content, &mut languages)?;
                 build_sitemap::add(config, &theme.renderer, &mut languages)?;
             }
             own_descriptions::fill(config, &theme.renderer, &mut languages)?;

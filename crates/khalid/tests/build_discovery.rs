@@ -179,3 +179,60 @@ fn the_glossary_index_file_names_and_introduces_the_glossary() {
         )
     );
 }
+
+/// A site with one case study and two changelog entries in two months.
+#[cfg(test)]
+fn with_entries() -> TempDir {
+    let site = site();
+    put(
+        site.path(),
+        "content/en/case-studies/northfield-bakery.md",
+        "---\ntitle: How a bakery doubled its traffic\nslug: northfield-bakery\n\
+         date: 2026-10-20\nclient: Northfield Bakery\noutcome: Search visits doubled.\n\
+         description: One topic cluster on sourdough.\n---\n\nThe whole story.\n",
+    );
+    for (file, title, date, version) in [
+        ("2026-09", "Search pages", "2026-09-14", "1.1.0"),
+        ("2026-10", "Glossary pages", "2026-10-28", "1.3.0"),
+    ] {
+        put(
+            site.path(),
+            &format!("content/en/changelog/{file}.md"),
+            &format!(
+                "---\ntitle: {title}\ndate: {date}\nversion: {version}\n---\n\n{title} ship.\n"
+            ),
+        );
+    }
+    site
+}
+
+#[test]
+fn case_studies_have_a_list_and_a_page_each() {
+    let site = with_entries();
+    build(&site);
+    let list = page(&site, "case-studies/index.html").unwrap();
+    assert!(list.contains("<h1>Case studies</h1>"), "{list}");
+    assert!(list.contains(r#"<p class="entry-label">Northfield Bakery</p>"#));
+    assert!(list.contains("<p>One topic cluster on sourdough.</p>"));
+    assert!(list.contains(r#""@type":"ItemList""#), "{list}");
+    let study = page(&site, "case-studies/northfield-bakery/index.html").unwrap();
+    assert!(study.contains("<h1>How a bakery doubled its traffic</h1>"));
+    assert!(study.contains(r#"<a href="/blog/case-studies/">All case studies</a>"#));
+    assert_eq!(page(&site, "de/case-studies/index.html"), None);
+}
+
+#[test]
+fn the_changelog_lists_each_month_newest_first() {
+    let site = with_entries();
+    build(&site);
+    let list = page(&site, "changelog/index.html").unwrap();
+    let main = main_of(&list);
+    let october = main.find("October 2026").unwrap();
+    let september = main.find("September 2026").unwrap();
+    assert!(october < september, "{main}");
+    assert!(main.contains("<p>Glossary pages ship.</p>"), "{main}");
+    assert!(main.contains(r#"<p class="entry-label">Version 1.3.0</p>"#));
+    assert!(page(&site, "changelog/glossary-pages/index.html").is_some());
+    let archives = page(&site, "sitemaps/archives-en-1.xml").unwrap();
+    assert!(archives.contains("<loc>https://www.example.com/blog/changelog/</loc>"));
+}
