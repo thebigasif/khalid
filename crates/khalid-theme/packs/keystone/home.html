@@ -1,24 +1,27 @@
-{#- Keystone's front page: the featured post large, a row of topics that
-    starts with "All", the newest posts as a grid of pictures, the
-    newsletter between sections, then one row of three per section. -#}
+{#- Keystone's front page: the blog's name and its topics on one quiet
+    line, the featured post as a lead story with a large picture, the
+    newest posts as a grid of framed pictures, the newsletter on a calm
+    band, one row of three per home section, then the call to action. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
+<div class="home-head">
 <h1>{{ page.title }}</h1>
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
-{% endif %}{% set slot = page.featured if template.options.featured else none -%}
-{% if slot %}{{ featured_slot(slot) }}
 {% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="topic-row" aria-label="{{ t.topics }}">
 <ul>
 {% if "archive" in site.features %}<li><a href="{{ site.home }}archive/">{{ t.all_topics }}</a></li>
 {% endif %}{% for group in page.topics %}{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
 {% endfor %}{% endfor %}</ul>
 </nav>
+{% endif %}</div>
+{% set slot = page.featured if template.options.featured else none -%}
+{% if slot %}{{ featured_slot(slot) }}
 {% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
-{% if posts %}<section class="home-section recent" aria-labelledby="recent-title">
+{% if posts %}<section class="home-section" aria-labelledby="recent-title">
 <h2 id="recent-title">{{ t.recent_posts }}</h2>
 {{ cards(posts, 3) }}
 {% if page.pagination %}{{ pages(page.pagination) }}
