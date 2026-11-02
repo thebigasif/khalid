@@ -2,6 +2,7 @@ import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
 import { records } from "./records";
 import { serpdadWords } from "./serpdadWords";
+import { signInWords } from "./signInWords";
 import { sitesWords } from "./sites";
 import { teamWords } from "./teamWords";
 import { webhookWords } from "./webhookWords";
@@ -31,7 +32,7 @@ export const en = {
     webhooks: "Webhooks",
     team: "Team",
     look: "Look",
-    settings: "Settings",
+    settings: "Blog settings",
     serpdad: "SerpDad",
   },
   templates: {
@@ -233,6 +234,9 @@ export const en = {
       language: "Language",
       role: "Role",
       noRole: "No role yet",
+      posts: "Posts",
+      count: (posts: number) => (posts === 1 ? "1 post" : `${posts} posts`),
+      countUnknown: "Not counted",
       action: "Action",
       edit: "Edit",
       editLabel: (name: string, language: string) => `Edit ${name}, ${language}`,
@@ -250,12 +254,29 @@ export const en = {
           label: "Why to trust them",
           hint: "Such as ten years running SEO for small teams. Search engines read it.",
         },
-        photo: { label: "Photo", hint: "A media path or a full address. Leave it empty for none." },
         bio: { label: "Bio", hint: "A few sentences about them, in markdown." },
         sameAs: {
           label: "Profiles elsewhere",
           hint: "Full addresses, one per line, such as their LinkedIn page. Search engines use them to tell people apart.",
         },
+      },
+      photo: {
+        label: "Photo",
+        hint: "Shown round beside their name on every post and large on their page. Khalid crops it square and makes the small sizes.",
+        upload: "Upload a photo",
+        uploading: "Uploading the photo",
+        choose: "Choose from Media",
+        chooseTitle: "Pictures in your media library",
+        pick: (name: string) => `Use ${name}`,
+        none: "Your media library has no pictures yet. Upload one instead.",
+        remove: "Remove photo",
+        preview: "The author's photo as readers see it",
+        ready: "Photo ready. Save the author to show it on the blog.",
+        removed: "Photo removed. Save the author to take it off the blog.",
+        failed: "The photo could not be saved. Check the blog is running, then try again.",
+        path: "Or type a file name",
+        pathLabel: "Photo file",
+        pathHint: "A file beside the author's file, such as lena.jpg, or a full address.",
       },
       save: "Save author",
       saved: "Saved. Every post that names this author shows the change.",
@@ -362,6 +383,13 @@ export const en = {
       title: "Passkeys",
       lede: "A passkey lets you sign in with your fingerprint, your face or your device's PIN instead of a password. It cannot be guessed or stolen by a fake sign-in page.",
       link: "Add, rename or remove your passkeys",
+    },
+    profile: {
+      title: "Your author profile",
+      lede: "Readers see this beside every post you write, and on your own author page. New posts you start name you as their author.",
+      loading: "Reading your author profile",
+      none: "Your account has no author profile yet, so your posts have no byline. Ask the owner to link one, or add yourself on the Authors screen.",
+      authors: "Open Authors",
     },
     password: {
       title: "Change your password",
@@ -491,28 +519,15 @@ export const en = {
     },
   },
   dashboard: {
-    title: "Your blog today",
+    title: "Welcome back",
     loading: "Reading your posts",
-    calm: "Nothing is blocked from publishing. Start a new post, or pick up a recent one below.",
+    calm: "Nothing is blocked from publishing. Start a new post, or pick up a draft below.",
     blockedLede: (count: number) =>
       count === 1
-        ? "One post has a problem that stops it from publishing."
-        : `${count} posts have a problem that stops them from publishing.`,
-    blockedTitle: (count: number) =>
-      count === 1 ? "1 post cannot go live" : `${count} posts cannot go live`,
-    blockedWhy:
-      "Khalid's checks found a problem in each one. Readers see none of them until it is fixed.",
-    blockedFix: "Open a post. Its checks say what to change.",
+        ? "One post has a problem that stops it from publishing. Its checks say what to change."
+        : `${count} posts have a problem that stops them from publishing. Their checks say what to change.`,
     showBlocked: "Show every blocked post",
-    glance: "At a glance",
-    live: (count: number) => (count === 1 ? "post live on the blog" : "posts live on the blog"),
-    scheduled: (count: number) =>
-      count === 1 ? "post scheduled to go live" : "posts scheduled to go live",
-    drafts: (count: number) => (count === 1 ? "draft" : "drafts"),
-    blocked: (count: number) =>
-      count === 1 ? "post blocked from publishing" : "posts blocked from publishing",
-    recent: "Recent changes",
-    noPosts: "No posts yet. The first one you start shows here.",
+    firstPost: "Start a draft",
     post: "Post",
     stands: "Where it stands",
     who: "Who",
@@ -959,27 +974,7 @@ export const en = {
     ownHint:
       "For a type Khalid does not write, such as an Event. Paste JSON-LD here; Khalid checks it before it saves. Most posts need nothing here.",
   },
-  signIn: {
-    title: "Sign in to your blog's admin",
-    lede: "The admin works with a staff token, a key that lets one person edit this blog.",
-    label: "Staff token",
-    hint: "Make one on the server with khalid keys create --kind staff --role editor --name followed by your name. It is shown once.",
-    submit: "Sign in",
-    checking: "Checking the token",
-    email: {
-      title: "Or sign in with your email",
-      lede: "For an account the owner made for you. It lets you add a passkey under Your account.",
-      address: "Email",
-      password: "Password",
-      submit: "Sign in with email",
-      checking: "Checking your email and password",
-    },
-    link: {
-      title: "Signing you in",
-      checking: "Checking your sign-in link",
-      back: "Go to the sign-in page",
-    },
-  },
+  signIn: signInWords,
   sites: sitesWords,
   serpdad: serpdadWords,
   look: lookWords,
@@ -987,7 +982,7 @@ export const en = {
     rejected: {
       what: "The blog did not accept this token.",
       why: "It may be mistyped, revoked, or made for another blog.",
-      fix: "Paste it again, or make a new one with khalid keys create.",
+      fix: "Paste it again, or ask the blog's owner for a new one.",
     },
     lacksScope: {
       what: "This key cannot edit posts.",
@@ -1040,9 +1035,9 @@ export const en = {
       fix: "Sign out, then sign in with your email or with a sign-in link.",
     },
     badLink: {
-      what: "This sign-in link no longer works.",
+      what: "This link has expired or was used.",
       why: "Each link works once, for a short time, so nobody else can use it later.",
-      fix: "Ask the blog's owner for a new link, or sign in with your email and password.",
+      fix: "Run khalid staff owner again for a new one, or ask the blog's owner for a new link.",
     },
     badAlias: {
       what: "The old address is not a path on this blog.",

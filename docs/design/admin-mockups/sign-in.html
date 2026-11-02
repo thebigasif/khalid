@@ -27,38 +27,45 @@ label{display:block;font-weight:600;margin:0 0 .25rem}
 input{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--field);border-radius:var(--radius);padding:.5rem .7rem;min-height:44px;width:100%}
 .field{margin:0 0 1.25rem;max-width:36rem}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;background:var(--surface);padding:.05rem .3rem;border-radius:.25rem}
-.email{margin-top:2rem;max-width:40rem}
+.sign-in{display:grid;place-items:center;padding:2rem 1rem;background:var(--surface);border-radius:var(--radius)}
+.sign-card{width:100%;max-width:26rem;padding:2rem 1.5rem;border:1px solid var(--border);border-radius:.75rem;background:var(--bg);box-shadow:0 .5rem 1.5rem rgb(31 35 40 / .12)}
+.sign-card h1{font-size:1.5rem;text-align:center;margin:0 0 1.5rem}
+.sign-card .btn{width:100%}
+.sign-card .field,.sign-card .problem{max-width:none}
+.sign-initial{display:grid;place-items:center;width:3rem;height:3rem;margin:0 auto 1rem;border-radius:.75rem;background:var(--tint);color:var(--link);font-size:1.5rem;font-weight:700}
+.center{text-align:center;margin:.5rem 0 0}
+.sign-or{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0;color:var(--muted);font-size:.875rem}
+.sign-or::before,.sign-or::after{content:"";flex:1;border-top:1px solid var(--border)}
+.sign-token{margin:1.5rem 0 0;padding:.75rem 0 0;border-top:1px solid var(--border);text-align:center}
+.quiet-link{min-height:44px;padding:.5rem;border:0;background:none;color:var(--link);text-decoration:underline;font:inherit;font-size:.9375rem;cursor:pointer}
+.sign-new{margin:1rem 0 0;color:var(--muted);font-size:.875rem;text-align:center}
 hr{border:0;border-top:1px solid var(--border);margin:3rem 0}
 .note{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.9375rem}
 </style>
 </head>
 <body>
 <main id="main">
-  <h1>Sign in to your blog's admin</h1>
-  <p class="lede">The admin works with a staff token, a key that lets one person edit this blog.</p>
-  <div class="problem" role="alert">
-    <p><strong>The blog did not accept this token.</strong></p>
-    <p>It may be mistyped, revoked, or made for another blog.</p>
-    <p>Paste it again, or make a new one with khalid keys create.</p>
-  </div>
-  <form class="focus">
-    <div class="field">
-      <label for="key">Staff token</label>
-      <span class="hint" id="key-hint">Make one on the server with <code>khalid keys create --kind staff --role editor --name</code> followed by your name. It is shown once.</span>
-      <input id="key" type="password" aria-describedby="key-hint" value="kx_0000000000000000_mockup">
+  <div class="sign-in">
+    <div class="sign-card">
+      <span class="sign-initial" aria-hidden="true">F</span>
+      <h1>Sign in to Field notes</h1>
+      <button class="btn primary" type="button">Sign in with a passkey</button>
+      <p class="hint center">A passkey signs you in with your fingerprint, your face or your device's PIN.</p>
+      <p class="sign-or">or use your email</p>
+      <div class="problem" role="alert">
+        <p><strong>The email and password do not match.</strong></p>
+        <p>Khalid found no account with both.</p>
+        <p>Check both and try again.</p>
+      </div>
+      <form aria-label="Sign in with your email">
+        <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" value="lena@example.com"></div>
+        <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password"></div>
+        <button class="btn" type="button">Sign in</button>
+      </form>
+      <div class="sign-token"><button class="quiet-link" type="button" aria-expanded="false">Sign in with a staff token</button></div>
+      <p class="sign-new">No account yet? Ask the blog's owner to add you. Owners get their first sign-in link from <code>khalid staff owner</code>.</p>
     </div>
-    <button class="btn primary" type="button">Sign in</button>
-  </form>
-
-  <section class="email" aria-labelledby="email-title">
-    <h2 id="email-title">Or sign in with your email</h2>
-    <p class="hint">For an account the owner made for you. It lets you add a passkey under Your account.</p>
-    <form>
-      <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email"></div>
-      <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password"></div>
-      <button class="btn" type="button">Sign in with email</button>
-    </form>
-  </section>
+  </div>
 
   <hr>
 
@@ -74,7 +81,7 @@ hr{border:0;border-top:1px solid var(--border);margin:3rem 0}
     <button class="btn primary" type="button">Start writing</button>
   </form>
 
-  <p class="note">Mockup for the founder's review. Nothing on this page saves. Two screens the admin needs before the Dashboard: signing in, shown with the message a wrong token gets, and the first screen after it, until the Dashboard can list posts. The token shown is made up. <a href="index.html">All mockups</a></p>
+  <p class="note">Mockup for the founder's review. Nothing on this page saves. Two screens the admin needs before the Dashboard: signing in, shown for a blog called Field notes with no logo and the message a wrong password gets, and the first screen after it, until the Dashboard can list posts. A blog with a logo shows the logo where the F badge is. <a href="index.html">All mockups</a></p>
 </main>
 </body>
 </html>

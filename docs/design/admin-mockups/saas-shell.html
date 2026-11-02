@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The admin's frame and dashboard · Khalid admin mockup</title>
+<style>
+/* The admin's frame in the calm SaaS look: tokens as in admin/src/styles/tokens.css. */
+*{box-sizing:border-box}
+:root{color-scheme:light;--app:#f7f8fa;--bg:#fff;--surface:#f2f4f7;--text:#1b1f24;--muted:#59636e;--link:#0b57d0;--border:#e3e6ea;--field:#7d8590;--tint:#e8effb;--block:#b42318;--block-bg:#fef3f2;--block-line:#fbd5d1;--warn:#8a4b00;--warn-bg:#fff8eb;--warn-line:#f5dfb3;--ok:#1a7f37;--ok-bg:#edfaf0;--ok-line:#c3ebcd;--radius:8px;--card:0 1px 2px rgb(16 24 40 / .04);--raised:0 1px 2px rgb(16 24 40 / .06),0 1px 3px rgb(16 24 40 / .08)}
+html{background:var(--app);color:var(--text);font:400 1rem/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;font-size:.875rem;line-height:1.55}
+a{color:var(--link);text-underline-offset:.15em}
+:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.icon{width:1rem;height:1rem;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.app{display:grid;grid-template-columns:minmax(0,1fr);min-height:100vh}
+@media (min-width:60em){.app{grid-template-columns:15rem minmax(0,1fr)}.menu{display:none}}
+.side{display:none;flex-direction:column;gap:1.25rem;padding:.75rem .5rem 1.5rem;background:var(--bg);border-right:1px solid var(--border)}
+@media (min-width:60em){.side{display:flex;position:sticky;top:0;height:100vh;overflow-y:auto}}
+.brand{display:flex;align-items:center;gap:.625rem;padding:.25rem .5rem;min-height:2.5rem;color:var(--text);font-weight:600;text-decoration:none}
+.initial{display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:6px;background:var(--link);color:#fff;font-size:.875rem}
+.label{margin:0 0 .25rem;padding:0 .75rem;color:var(--muted);font-size:.75rem;font-weight:500}
+.side ul{display:grid;gap:1px;list-style:none;margin:0;padding:0}
+.side ul a{display:flex;align-items:center;gap:.625rem;min-height:2rem;padding:.375rem .75rem;border-radius:6px;color:var(--text);font-weight:500;text-decoration:none}
+.side ul a .icon{color:var(--muted)}
+.side ul a:hover{background:var(--surface)}
+.side ul a[aria-current]{background:var(--tint);color:var(--link)}
+.side ul a[aria-current] .icon{color:var(--link)}
+.top{position:sticky;top:0;display:flex;align-items:center;gap:.5rem;min-height:3.5rem;padding:.5rem 1rem;background:var(--bg);border-bottom:1px solid var(--border)}
+.crumb{margin:0;font-weight:500}.crumb span{color:var(--muted)}
+.actions{display:flex;align-items:center;gap:.5rem;margin-left:auto}
+.search{display:inline-flex;align-items:center;gap:.5rem;min-width:14rem;min-height:2.25rem;padding:.375rem .625rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--app);color:var(--muted);font:inherit}
+.search kbd{margin-left:auto;padding:0 .375rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);font:500 .75rem/1.5 inherit}
+@media (max-width:47.9375em){.search{min-width:0}.search span,.search kbd{display:none}}
+.btn{display:inline-flex;align-items:center;gap:.5rem;min-height:2.25rem;padding:.375rem .875rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font:500 .875rem/1.25 inherit;text-decoration:none;box-shadow:var(--card)}
+.btn.primary{background:var(--link);border-color:var(--link);color:#fff;box-shadow:var(--raised)}
+.btn.ghost{border-color:transparent;background:transparent;box-shadow:none}
+.avatar{display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:50%;background:var(--tint);color:var(--link)}
+main{max-width:72rem;margin:0 auto;padding:2rem 1rem 4rem}
+@media (min-width:40em){main{padding:2rem 2rem 4rem}}
+h1{font-size:1.5rem;line-height:1.25;font-weight:600;letter-spacing:-.015em;margin:0 0 .25rem}
+h2{font-size:.9375rem;font-weight:600;margin:0 0 .75rem}
+.lede{color:var(--muted);font-size:.9375rem;margin:0 0 1.5rem}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(13rem,100%),1fr));gap:1rem;list-style:none;margin:0 0 1.5rem;padding:0}
+.metric{display:flex;flex-direction:column;gap:.25rem;padding:1rem 1.25rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--card)}
+.metric-label{display:flex;align-items:center;gap:.5rem;color:var(--muted);font-size:.8125rem;font-weight:500}
+.metric strong{font-size:1.75rem;line-height:1.2;font-weight:600;letter-spacing:-.02em}
+.metric.failing strong{color:var(--block)}
+.metric a{font-size:.8125rem}
+.board{display:grid;gap:1.5rem;margin:0 0 1.5rem}
+@media (min-width:64em){.board{grid-template-columns:1fr 1fr}}
+.panel{padding:1rem 1.25rem 1.25rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--card)}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem .75rem;padding:.625rem 0;border-bottom:1px solid var(--border)}
+.rows li:last-child{border-bottom:0}
+.pill{display:inline-flex;align-items:center;gap:.375rem;padding:.125rem .5rem;border:1px solid transparent;border-radius:999px;font-size:.75rem;font-weight:500}
+.pill::before{content:"";width:.375rem;height:.375rem;border-radius:50%;background:currentColor}
+.pill.block{color:var(--block);background:var(--block-bg);border-color:var(--block-line)}
+.pill.warn{color:var(--warn);background:var(--warn-bg);border-color:var(--warn-line)}
+.pill.info{color:var(--link);background:var(--tint);border-color:#c7d8f6}
+.pill.quiet{color:var(--muted);background:var(--surface);border-color:var(--border)}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:.625rem .75rem;border-bottom:1px solid var(--border)}
+th{font-size:.75rem;font-weight:500;color:var(--muted)}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--app)}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:.75rem;list-style:none;margin:0;padding:0}
+.quick a{display:flex;align-items:center;gap:.625rem;padding:.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--card);color:var(--text);font-weight:500;text-decoration:none}
+.quick .icon{color:var(--link)}
+.note{max-width:72rem;margin:0 auto 2rem;padding:0 2rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="side" aria-label="Admin">
+    <a class="brand" href="#"><span class="initial" aria-hidden="true">F</span>Field notes</a>
+    <div><p class="label" id="g1">Write</p><ul aria-labelledby="g1">
+      <li><a href="#" aria-current="page"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Dashboard</a></li>
+      <li><a href="posts.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h6"/></svg>Posts</a></li>
+      <li><a href="media.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 16l5-5 4 4 2-2 5 5"/></svg>Media</a></li>
+      <li><a href="comments.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Comments</a></li>
+      <li><a href="trash.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Trash</a></li>
+    </ul></div>
+    <div><p class="label" id="g2">Grow</p><ul aria-labelledby="g2">
+      <li><a href="analytics.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-9M12 20V4M19 20v-6"/></svg>Analytics</a></li>
+      <li><a href="search-console.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14zM16 16l5 5"/></svg>Search Console</a></li>
+      <li><a href="serpdad.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>SerpDad</a></li>
+    </ul></div>
+    <div><p class="label" id="g3">Site</p><ul aria-labelledby="g3">
+      <li><a href="look.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>Look</a></li>
+      <li><a href="authors.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0"/></svg>Authors</a></li>
+      <li><a href="redirects.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Redirects</a></li>
+      <li><a href="settings.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M9 4v6M15 14v6"/></svg>Blog settings</a></li>
+    </ul></div>
+    <div><p class="label" id="g4">Settings</p><ul aria-labelledby="g4">
+      <li><a href="team.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21a7 7 0 0 1 14 0"/></svg>Team</a></li>
+      <li><a href="api-keys.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21a5 5 0 1 1 3.5-8.5L20 4M16 8l3 3"/></svg>API keys</a></li>
+      <li><a href="webhooks.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Webhooks</a></li>
+      <li><a href="account.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>Your account</a></li>
+    </ul></div>
+  </nav>
+  <div>
+    <header class="top">
+      <button class="btn ghost menu" type="button" aria-label="Open the menu"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <p class="crumb"><span>Write</span> <span aria-hidden="true">/</span> Dashboard</p>
+      <div class="actions">
+        <button class="search" type="button" aria-label="Search posts and screens"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14zM16 16l5 5"/></svg><span>Search</span><kbd aria-hidden="true">⌘K</kbd></button>
+        <a class="btn primary" href="editor.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New post</a>
+        <button class="btn ghost" type="button" aria-label="Your account menu"><span class="avatar"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0"/></svg></span></button>
+      </div>
+    </header>
+    <main id="main">
+      <h1>Welcome back to Field notes</h1>
+      <p class="lede">One post has a problem that stops it from publishing. Its checks say what to change.</p>
+      <ul class="metrics" aria-label="Your blog in numbers">
+        <li class="metric"><span class="metric-label">Live posts</span><strong>24</strong><a href="posts.html">See live posts</a></li>
+        <li class="metric"><span class="metric-label">Drafts</span><strong>6</strong><a href="posts.html">See every post</a></li>
+        <li class="metric failing"><span class="metric-label">Failing checks</span><strong>1</strong><a href="posts.html">Fix them</a></li>
+        <li class="metric"><span class="metric-label">Visits, last 28 days</span><strong>3,214</strong><a href="analytics.html">See analytics</a></li>
+      </ul>
+      <div class="board">
+        <section class="panel" aria-labelledby="attention">
+          <h2 id="attention">Needs attention</h2>
+          <ul class="rows">
+            <li><a href="editor.html">Planning a topic cluster in an afternoon</a><span class="pill block">Fails checks</span></li>
+            <li><a href="posts.html">Show every blocked post</a></li>
+            <li><a href="posts.html">2 posts are scheduled to go live</a><span class="pill info">Scheduled</span></li>
+            <li><a href="comments.html">3 comments are waiting for your yes</a><span class="pill warn">Waiting</span></li>
+          </ul>
+        </section>
+        <section class="panel" aria-labelledby="drafts">
+          <h2 id="drafts">Recent drafts</h2>
+          <table>
+            <thead><tr><th scope="col">Post</th><th scope="col">Where it stands</th><th scope="col">Who</th><th scope="col">When</th></tr></thead>
+            <tbody>
+              <tr><td><a href="editor.html">Notes on anchor text</a></td><td><span class="pill quiet">Draft</span></td><td>Asif</td><td>12 October 2026</td></tr>
+              <tr><td><a href="editor.html">What a sitemap does</a></td><td><span class="pill quiet">Draft</span></td><td>Lena</td><td>9 October 2026</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+      <h2>Quick actions</h2>
+      <ul class="quick">
+        <li><a href="editor.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Write a post</a></li>
+        <li><a href="media.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 16l5-5 4 4 2-2 5 5"/></svg>Add a picture or file</a></li>
+        <li><a href="comments.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Answer comments</a></li>
+        <li><a href="look.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>Change the look</a></li>
+      </ul>
+    </main>
+    <p class="note">On a phone the side menu hides behind the menu button at the top left and slides over the page. The blue is the blog's own accent when its theme has one dark enough to read on white.</p>
+  </div>
+</div>
+</body>
+</html>

@@ -95,7 +95,7 @@ Workbench sets these defaults. A value in your `theme/tokens.toml` wins.
 | Body text | 1.0625rem to 1.125rem |
 | `h1`, `h2`, `h3` | 2.25rem to 3rem, 1.625rem to 2rem, 1.25rem |
 | Line height | 1.65 |
-| Line length (`measure`) | 72ch |
+| Line length (`measure`) | 42rem |
 | Corners (`radius`) | 0.625rem |
 
 ## Good to know

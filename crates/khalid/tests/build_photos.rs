@@ -139,6 +139,54 @@ fn an_svg_lead_image_and_photo_are_drawn_at_their_own_size() {
     assert!(card.contains(lead) && card.contains(photo), "{card}");
 }
 
+#[test]
+fn a_photo_from_the_media_library_shows_like_one_beside_the_author() {
+    let site = tempfile::tempdir().unwrap();
+    let demo = at(
+        Path::new(env!("CARGO_MANIFEST_DIR")),
+        "../../fixtures/demo-site",
+    );
+    copy(&demo, site.path());
+    // The admin's photo picker saves the address the library serves.
+    let key = "3f2a9c1e0b57d0aa";
+    let library = at(site.path(), &format!("media/{key}"));
+    fs::create_dir_all(&library).unwrap();
+    let chart = "content/en/posts/2026-10-05-fixing-slow-pages/page-weight.png";
+    fs::copy(at(site.path(), chart), at(&library, "lena.png")).unwrap();
+    let file = at(site.path(), "content/en/authors/lena-vogt.md");
+    let text = fs::read_to_string(&file).unwrap();
+    let photo = format!("---\nphoto: /blog/media/library/{key}/lena.png\n");
+    fs::write(&file, text.replacen("---\n", &photo, 1)).unwrap();
+    let out = build(site.path());
+    let author = page(out.path(), "authors/lena-vogt/index.html");
+    assert!(author.contains("alt=\"Lena Vogt\""), "{author}");
+    assert!(author.contains("fetchpriority=\"high\""), "{author}");
+    assert!(author.contains("image/webp"), "{author}");
+    let post = page(out.path(), "fixing-slow-pages/index.html");
+    let byline = post.split_once("rel=\"author\"").unwrap().0;
+    let avatar = byline.rsplit_once("<img class=\"avatar\"").unwrap().1;
+    assert!(avatar.contains("sizes=\"2.75rem\""), "{avatar}");
+    // The original is published at the address the photo names.
+    assert!(at(out.path(), &format!("media/library/{key}/lena.png")).is_file());
+}
+
+#[test]
+fn a_library_photo_that_is_not_on_disk_is_left_out_without_failing() {
+    let site = tempfile::tempdir().unwrap();
+    let demo = at(
+        Path::new(env!("CARGO_MANIFEST_DIR")),
+        "../../fixtures/demo-site",
+    );
+    copy(&demo, site.path());
+    let file = at(site.path(), "content/en/authors/lena-vogt.md");
+    let text = fs::read_to_string(&file).unwrap();
+    let photo = "---\nphoto: /blog/media/library/3f2a9c1e0b57d0aa/gone.png\n";
+    fs::write(&file, text.replacen("---\n", photo, 1)).unwrap();
+    let out = build(site.path());
+    let author = page(out.path(), "authors/lena-vogt/index.html");
+    assert!(!author.contains("gone.png"), "{author}");
+}
+
 /// The card on `html` that links `href`, up to its link.
 #[cfg(test)]
 fn card_of<'a>(html: &'a str, href: &str) -> &'a str {

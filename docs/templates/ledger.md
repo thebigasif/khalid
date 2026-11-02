@@ -87,7 +87,7 @@ heading = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, \"Book Antiqua\
 
 [shape]
 radius = "0.375rem"
-measure = "70ch"
+measure = "42rem"
 
 [type]
 body = "1.0625rem 1.125rem"

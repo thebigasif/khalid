@@ -55,6 +55,8 @@ Sam writes about running a small business website.
 
 `slug` is what posts put after `author:`. The text under the front matter appears on the author's page.
 
+Three more lines make the author page and the box under each post complete. `credentials:` says why to trust them, such as `Ten years running a bakery`. `photo:` names a picture beside the file, or one you chose in the admin's Media. `same_as:` lists their profiles elsewhere, one address per line starting with `  - `; LinkedIn, X, GitHub, YouTube, Instagram, Facebook, Mastodon and a personal site's home page get their own icon. If you made the owner with `khalid staff owner`, a profile with your name is already there, and "Your account" in the admin edits it.
+
 ## 4. Write your first post as a draft
 
 A draft goes in `drafts/<language>/<slug>.md`, with no `date:` line. Save this as `blog/drafts/en/why-internal-links-matter.md`:
@@ -107,6 +109,10 @@ khalid --site blog staff owner --email you@example.com --name "Sam Rivera"
 ```
 
 Khalid prints a sign-in link once. It works for 15 minutes, and only once. It shows the link twice: on the address in `site.toml`, and on `localhost` for this computer. While you try Khalid on your own computer, open the `localhost` link while `khalid serve` runs. It names the port `serve` last ran on, so a blog started with `--listen` gets the right link too. Once signed in, choose a password or add a passkey. To sign in again later, run the same command.
+
+The sign-in page leads with **Sign in with a passkey**, then your email and password. Someone with no account asks the owner to add them under **Team**.
+
+A staff token is a long code that lets one person into the admin without an account, such as for a quick fix from the server. Make one with `khalid --site blog keys create --kind staff --role editor --name "Sam Rivera"`. Khalid shows it once. On the sign-in page, press **Sign in with a staff token** and paste it.
 
 If the admin says it is not built, your copy of Khalid was built without it: see [CONTRIBUTING.md](../CONTRIBUTING.md#build-khalid-from-source).
 

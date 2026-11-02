@@ -3,6 +3,7 @@ import { useState } from "react";
 import { failureMessage, isData } from "../api/call";
 import { changeSite, readSite } from "../api/site";
 import { readTemplates, type Template } from "../api/templates";
+import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { LookForm } from "../look/LookForm";
 import { lookChange, startOf, type Values } from "../look/lookChange";
@@ -60,8 +61,7 @@ export function Look() {
   }
   return (
     <>
-      <h1>{words.title}</h1>
-      <p className="lede">{words.lede}</p>
+      <PageHeader title={words.title} lede={words.lede} />
       {shown}
     </>
   );

@@ -16,15 +16,15 @@ Without a `[template]` table your blog uses `classic`, the look Khalid has alway
 These eleven templates are built in. Every template but classic has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default.
 
 - `classic`: a calm column of text, cards on the home page and the contents beside long posts. It takes no options.
-- `almanac`: a library of long guides, soft and roomy, with a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
-- `atlas`: a portal for a blog with many topics, with topic tabs, featured posts and editor's picks. See [Atlas](templates/atlas.md).
+- `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
+- `atlas`: a publication for a blog with many topics, with a masthead, featured stories, picture cards and a topic index. See [Atlas](templates/atlas.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
-- `folio`: a product team's essays under their own masthead, with category pills, a featured story and a grid of outlined cards. See [Folio](templates/folio.md).
-- `harbor`: a busy marketing blog with featured posts, rows of recent posts, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
-- `keystone`: a personal guide site with one big featured post, a grid of pictures and numbered chapters. See [Keystone](templates/keystone.md).
+- `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
+- `harbor`: a busy marketing blog with a featured post beside smaller posts, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
+- `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
-- `wire`: a news and columns site with a lead story beside tabs of the latest posts and editor's picks, and a fast feed. See [Wire](templates/wire.md).
+- `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 
 ## Options
@@ -175,3 +175,16 @@ A file named `theme/site.css` adds your own rules to the blog's one stylesheet, 
 - Comments and blank lines are removed when the site is built.
 - The whole stylesheet must stay small: Khalid's own pages keep it under 20 KB once compressed.
 - The file must sit inside the site folder. A link to a file elsewhere stops the build with a message.
+
+## Checking every screen size
+
+`scripts/responsive-check.mjs` opens each template's home page, `/seo-writing-guide/`, a category page and the German home in a real browser, at 320, 360, 375, 390 and 414 pixels (phones), 768 and 1024 (tablets), and 1280, 1440, 1920 and 2560 (desktops, up to a 27 inch iMac). It fails when a page scrolls sideways, when reading text on a phone is under 15 pixels or a menu link is under 40 by 40, and when on a wide screen the reading column passes about 80 characters, the content runs edge to edge or sits off centre, or a picture is drawn larger than its own pixels. It saves a screenshot of each page at each width, so you can look for what a script cannot see.
+
+It needs Node and Playwright. Build the sites, then run the script from a folder where Playwright is installed:
+
+```sh
+scripts/pages.sh target/debug/khalid target/pages
+cd ~/pw && node ~/khalid/scripts/responsive-check.mjs --dir ~/khalid/target/pages --out ~/shots
+```
+
+Add `--templates harbor` to check one template, and `--widths 390,2560@2` to pick widths; `2560@2` is a 5120 pixel iMac screen at device scale 2. For the admin, start `khalid serve`, save the link `khalid staff owner` prints to a file, and pass `--admin http://localhost:8080/blog/admin/ --sign-in-file <that file>`; it checks sign-in, the dashboard, posts, the editor, media and Look. Delete the file afterwards, since the link signs in as the owner.

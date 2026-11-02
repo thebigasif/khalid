@@ -70,6 +70,10 @@ pub(crate) struct StaffAccount {
     name: String,
     /// `owner`, `admin`, `editor`, `writer` or `contributor`.
     role: String,
+    /// The author profile they write as, such as `en.asif`, or `null`
+    /// when they have none yet.
+    #[schema(example = "en.asif")]
+    author: Option<String>,
 }
 
 impl From<&Account> for StaffAccount {
@@ -79,6 +83,7 @@ impl From<&Account> for StaffAccount {
             email: account.email().as_str().to_owned(),
             name: account.name().to_owned(),
             role: account.role().as_str().to_owned(),
+            author: account.author().map(str::to_owned),
         }
     }
 }
@@ -147,7 +152,9 @@ async fn sign_in(
 }
 
 /// Who the session cookie signs in, with its CSRF token again, for an
-/// admin page that was reloaded. Needs the session cookie.
+/// admin page that was reloaded. An account made before accounts had
+/// author profiles is linked to its own here, the first time it is read.
+/// Needs the session cookie.
 #[utoipa::path(
     get, path = "/session/", tag = "staff",
     security(("staff_session" = [])),
@@ -161,7 +168,10 @@ async fn current_session(State(accounts): State<Accounts>, headers: HeaderMap) -
         return refused();
     };
     match accounts.session(&token).await {
-        Ok(signed_in) => Json(SessionAnswer::from(&signed_in)).into_response(),
+        Ok(mut signed_in) => {
+            signed_in.account = accounts.link_author(signed_in.account).await;
+            Json(SessionAnswer::from(&signed_in)).into_response()
+        }
         Err(error) => problem(&error),
     }
 }

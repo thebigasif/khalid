@@ -102,6 +102,15 @@ fn an_author_page_is_a_profile_page_about_its_person() {
         main.as_str(),
         "https://www.example.com/blog/author/asif/#person"
     );
+    // The person writes for the site's publisher.
+    let Some(SchemaValue::Reference(works_for)) = person.get("worksFor") else {
+        panic!("the person names no employer");
+    };
+    assert!(
+        works_for
+            .as_str()
+            .starts_with("https://www.example.com/blog/#")
+    );
 }
 
 #[test]

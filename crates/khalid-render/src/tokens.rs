@@ -177,7 +177,9 @@ pub struct Metrics {
 pub struct Shape {
     /// How round corners are, such as `0.375rem`.
     pub radius: Length,
-    /// The widest a line of text may run, such as `68ch`.
+    /// The widest a line of text may run, such as `40rem`: about 75
+    /// characters of body text. A `ch` is the width of a zero, wider than
+    /// the average letter, so `68ch` runs to about 90.
     pub measure: Length,
 }
 
@@ -410,7 +412,7 @@ impl Default for Shape {
     fn default() -> Self {
         Self {
             radius: Length::trusted("0.375rem"),
-            measure: Length::trusted("68ch"),
+            measure: Length::trusted("40rem"),
         }
     }
 }

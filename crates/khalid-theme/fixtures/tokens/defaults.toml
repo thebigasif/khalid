@@ -19,4 +19,4 @@ mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
 
 [shape]
 radius = "0.375rem"
-measure = "68ch"
+measure = "40rem"

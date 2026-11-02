@@ -1,0 +1,54 @@
+{#- Meridian's front page (templates spec 3.9): a masthead with the
+    blog's name and its own intro, the category tabs, the newest post
+    as the lead story, the editor's picks, then every other post as a row.
+    Sections, topics, the newsletter and the call to action work as on
+    the shared front page. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, featured_slot, pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+<header class="masthead">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}</header>
+{% if template.options.category_tabs and page.categories %}<nav class="category-tabs" aria-label="{{ t.categories }}">
+<ul>
+<li><a href="{{ site.home }}" aria-current="page">{{ t.all_topics }}</a></li>
+{% for category in page.categories %}<li><a href="{{ category.href }}">{{ category.name }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}{% set slot = page.featured if template.options.featured else none -%}
+{% if slot %}{{ featured_slot(slot) }}
+{% endif %}{% set picks = page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks -%}
+{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
+{% set newer = page.pagination and page.pagination.previous -%}
+{% set lead = posts[:1] if posts and not page.sections and not newer else [] -%}
+{% set rest = posts[lead | length:] -%}
+{% if lead %}<div class="lead">
+{{ cards(lead) }}
+</div>
+{% endif %}{% if template.options.picks and picks %}<section class="picks">
+<h2>{{ t.editors_picks }}</h2>
+{{ cards(picks[:template.options.picks], 3, "text") }}
+</section>
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif rest %}{{ cards(rest) }}
+{% elif not slot and not lead %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
+<h2>{{ t.topics }}</h2>
+{% for group in page.topics %}{% if group.name %}<h3>{{ group.name }}</h3>
+{% endif %}<ul class="tags">
+{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}</ul>
+{% endfor %}</nav>
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}

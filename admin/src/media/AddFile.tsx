@@ -4,6 +4,7 @@ import { uploadMedia } from "../api/media";
 import { problemMessage } from "../api/posts";
 import { isData } from "../api/redirects";
 import { Problem } from "../components/Problem";
+import { Toast } from "../components/Toast";
 import { en, type UserMessage } from "../strings/en";
 
 /** The screen's one focus: a file into the library, with what became of it. */
@@ -80,7 +81,7 @@ export function AddFile() {
         </form>
       </section>
       {failed === null ? null : <Problem message={failed} />}
-      <p role="status">{busy ? words.uploading : done}</p>
+      <Toast message={busy ? words.uploading : done} />
     </>
   );
 }

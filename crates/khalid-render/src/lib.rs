@@ -63,7 +63,7 @@ pub use pack::{RenderCta, RenderPack, TemplateOption};
 pub use page_body::PageBody;
 pub use page_meta::{Alternate, HeadHtml, PageKind, PageMeta, Robots, ShareImage};
 pub use parts::part_keys;
-pub use person::Person;
+pub use person::{Person, Profile, ProfileIcon};
 pub use post::{BodyHtml, Link, RenderPost};
 pub use reading_time::ReadingTime;
 pub use related::{MOST_RELATED, PostTopics, related, related_up_to};

@@ -1,3 +1,4 @@
+import type { UsedPasskey } from "../passkeys/webauthn";
 import { call, nothing, type Reply, sending } from "./call";
 import type { components } from "./schema";
 
@@ -18,6 +19,17 @@ export function signInWithEmail(email: string, password: string): Promise<Reply<
 export function redeemLink(token: string): Promise<Reply<SessionAnswer>> {
   const body: components["schemas"]["LinkRedeem"] = { token };
   return call("/session/link/redeem/", sending("POST", body), session);
+}
+
+/** Starts a passkey sign-in: the options for `navigator.credentials.get`; 404 with no passkeys. */
+export function passkeySignInOptions(): Promise<Reply<unknown>> {
+  return call("/session/passkey/options/", { method: "POST" }, (response) => response.json());
+}
+
+/** Signs in with the passkey this device chose; the browser keeps the session cookie. */
+export function signInWithPasskey(used: UsedPasskey): Promise<Reply<SessionAnswer>> {
+  const body: components["schemas"]["PasskeySignIn"] = used;
+  return call("/session/passkey/", sending("POST", body), session);
 }
 
 /** Who this tab's session cookie signs in; a 401 when the tab signed in with a token. */

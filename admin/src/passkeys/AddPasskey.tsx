@@ -1,9 +1,6 @@
 import { type FormEvent, useState } from "react";
-import { addPasskey, passkeyOptions } from "../api/passkeys";
-import { problemMessage } from "../api/posts";
-import { isData } from "../api/redirects";
 import { en, type UserMessage } from "../strings/en";
-import { makePasskey } from "./webauthn";
+import { addThisDevice } from "./addThisDevice";
 
 type Props = {
   /** Called with the new passkey's name once the blog has it, or with what went wrong. */
@@ -16,20 +13,6 @@ export function AddPasskey({ onDone }: Props) {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
 
-  // Each step stops at the first problem: the options, the device, the blog.
-  const add = async (label: string): Promise<UserMessage | null> => {
-    const options = await passkeyOptions();
-    if (!isData(options)) {
-      return problemMessage(options.problem, en.problems.unreachable);
-    }
-    const made = await makePasskey(options.data);
-    if (made === null) {
-      return words.problems.noPasskey;
-    }
-    const added = await addPasskey(label, made);
-    return isData(added) ? null : problemMessage(added.problem, en.problems.unreachable);
-  };
-
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const label = name.trim();
@@ -41,7 +24,7 @@ export function AddPasskey({ onDone }: Props) {
       return;
     }
     setBusy(true);
-    const problem = await add(label);
+    const problem = await addThisDevice(label);
     setBusy(false);
     if (problem === null) {
       setName("");

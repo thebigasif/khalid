@@ -1,15 +1,18 @@
-//! Atlas: a portal look for a blog with many topics (templates spec 3.2).
-//! A bar of topic tabs, featured posts and editor's picks lead the front
-//! page; posts open with breadcrumbs, share links and their contents in a
-//! sticky column.
+//! Atlas: a publication look for a blog with many topics (templates spec
+//! 3.2). A masthead with the topics, the featured posts, picture cards and
+//! an index of every topic lead the front page; posts open with
+//! breadcrumbs and a large title, with their contents in a sticky rail.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{Pack, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
+
+/// The longest tagline, about two lines under the name on a phone.
+const TAGLINE_CHARACTERS: usize = 140;
 
 /// The Atlas pack.
 pub(crate) static ATLAS: Pack = Pack {
     name: "atlas",
-    summary: "A portal for a blog with many topics: topic tabs, featured posts, editor's picks and breadcrumbs.",
+    summary: "A publication for a blog with many topics: a masthead, featured stories, picture cards and a topic index.",
     stylesheet: include_str!("../packs/atlas/atlas.css"),
     templates: &[PackTemplate {
         name: "home.html",
@@ -18,20 +21,27 @@ pub(crate) static ATLAS: Pack = Pack {
     tokens: include_str!("../packs/atlas/tokens.toml"),
     reader: &[],
     options: &[
+        OptionSpec {
+            key: "tagline",
+            help: "One line under the blog's name on the front page, such as what the blog is about.",
+            kind: OptionKind::Line {
+                most: TAGLINE_CHARACTERS,
+            },
+        },
         parts::on(parts::LOGO),
         parts::on(parts::BREADCRUMBS),
         parts::on(parts::FEATURED),
         parts::picks(4),
         parts::UPDATED_NOTE,
-        parts::cards(CardShape::Text),
+        parts::cards(CardShape::Image),
         parts::on(parts::CARD_READING_TIME),
         parts::CARD_AUTHOR_ROLE,
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::SideStart),
         parts::contents_numbers(ContentsNumbers::Numbered),
-        parts::related(RelatedLayout::List),
+        parts::related(RelatedLayout::Grid),
         parts::related_count(3),
-        slot::share("both"),
+        slot::share("end"),
         slot::share_networks(&["x", "linkedin", "facebook", "email"]),
         slot::newsletter("none"),
         slot::cta_band("both"),

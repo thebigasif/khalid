@@ -4,9 +4,10 @@
 use std::collections::BTreeMap;
 
 use chrono::NaiveDate;
+use khalid_core::AbsoluteUrl;
 use khalid_render::{
-    BodyHtml, Feature, Features, Link, PageBody, PageKind, Person, ReadingTime, RenderPost,
-    RenderSite, Renderer,
+    BodyHtml, Feature, Features, Link, PageBody, PageKind, Person, Profile, ReadingTime,
+    RenderPost, RenderSite, Renderer,
 };
 
 use crate::common::{demo_site, locale, meta};
@@ -19,12 +20,18 @@ pub(crate) fn link(name: &str, href: &str) -> Link {
     }
 }
 
+/// The profile at `href`, with the icon of its site.
+pub(crate) fn profile(href: &str) -> Profile {
+    Profile::of(&AbsoluteUrl::parse(href).unwrap())
+}
+
 /// An author with a role and nothing else.
 pub(crate) fn person(name: &str, slug: &str, role: Option<&str>) -> Person {
     Person {
         name: name.to_owned(),
         href: format!("/blog/authors/{slug}/"),
         role: role.map(str::to_owned),
+        credentials: None,
         image: None,
         bio: None,
         profiles: Vec::new(),

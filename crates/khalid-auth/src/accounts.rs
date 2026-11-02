@@ -8,6 +8,7 @@ use std::sync::Arc;
 use chrono::{DateTime, TimeDelta, Utc};
 use khalid_core::Clock;
 
+pub(crate) mod author_link;
 mod links;
 mod passkeys;
 mod take_back;
@@ -44,6 +45,7 @@ pub struct Accounts {
     limiter: Arc<SignInLimiter>,
     links: Option<Links>,
     passkeys: Option<Passkeys>,
+    profiles: Option<Arc<dyn author_link::AuthorProfiles>>,
 }
 
 impl fmt::Debug for Accounts {
@@ -71,6 +73,7 @@ impl Accounts {
             limiter: Arc::new(SignInLimiter::new()),
             links: None,
             passkeys: None,
+            profiles: None,
         }
     }
 

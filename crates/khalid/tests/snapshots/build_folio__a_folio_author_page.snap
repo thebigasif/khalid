@@ -8,12 +8,22 @@ expression: "shown(&out, \"authors/lena-vogt/index.html\")"
 <a class="button header-button" href="https://www.example.com/signup/">Try it free</a>
 </header>
 <main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><a href="/blog/authors/lena-vogt/" aria-current="page">Lena Vogt</a></li>
+</ol>
+</nav>
+
 
 
 <article class="author">
 <header class="author-header">
+<div class="author-intro">
 <h1>Lena Vogt</h1>
 <p class="author-role">Technical SEO editor</p>
+<p class="author-count">2 posts</p>
+</div>
 </header>
 <div class="author-bio">
 <p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees before a reader does. She writes in English and German.</p>
@@ -31,7 +41,7 @@ expression: "shown(&out, \"authors/lena-vogt/index.html\")"
 <img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/320.png 320w, /blog/media/d9df18e6d7e8625d/480.png 480w, /blog/media/d9df18e6d7e8625d/640.png 640w, /blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
 </picture>
 </figure>
-<p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
 <time datetime="2026-10-05">5 October 2026</time>
 <a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
@@ -40,7 +50,7 @@ expression: "shown(&out, \"authors/lena-vogt/index.html\")"
 </li>
 <li>
 <article class="card">
-<p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
 <time datetime="2026-09-28">28 September 2026</time>
 <a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>

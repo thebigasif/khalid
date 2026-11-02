@@ -123,7 +123,7 @@ fn every_token_can_be_locked() {
         ("heading = 'system-ui", "heading = 'Fraunces, system-ui"),
         ("mono = \"ui-monospace", "mono = \"Menlo, ui-monospace"),
         ("0.375rem", "2px"),
-        ("68ch", "40rem"),
+        ("measure = \"40rem", "measure = \"36rem"),
     ] {
         text = text.replace(from, to);
     }

@@ -33,8 +33,8 @@ pub struct RenderPost {
     /// Who wrote it, first author first.
     pub authors: Vec<Person>,
     /// Who checked it, from `reviewed_by` in its front matter, linked to
-    /// their author pages.
-    pub reviewers: Vec<Link>,
+    /// their author pages with their photos, as the byline shows authors.
+    pub reviewers: Vec<Person>,
     /// The one category it belongs to, if any.
     pub category: Option<Link>,
     /// Its tags, in the order the writer gave them.

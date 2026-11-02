@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { CommentStatus } from "../api/comments";
 import { CommentQueue } from "../comments/CommentQueue";
+import { PageHeader } from "../components/PageHeader";
 import { en } from "../strings/en";
 
 const STATUSES: CommentStatus[] = ["pending", "approved", "spam", "trash"];
@@ -11,8 +12,7 @@ export function Comments() {
   const [status, setStatus] = useState<CommentStatus>("pending");
   return (
     <>
-      <h1>{words.title}</h1>
-      <p className="lede">{words.lede}</p>
+      <PageHeader title={words.title} lede={words.lede} />
       <fieldset className="switch spaced" aria-label={words.which}>
         {STATUSES.map((each) => (
           <button

@@ -41,11 +41,10 @@ expression: "main_of(&page(&out, POST))"
 <section class="author-box">
 <h2>About the author</h2>
 <div class="person-card">
-<div>
+<div class="person-about">
 <p class="person-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a></p>
 <p class="person-role">Technical SEO editor</p>
-<p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees before a reader does. She writes in English and German.</p>
-
+<div class="person-bio"><p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees before a reader does. She writes in English and German.</p></div>
 </div>
 </div>
 </section>

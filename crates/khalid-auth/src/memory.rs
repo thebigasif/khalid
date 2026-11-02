@@ -125,6 +125,17 @@ impl AccountStore for MemoryAccounts {
         ready(Ok(self.change(id, |row| row.password = Some(hash.clone()))))
     }
 
+    fn set_author<'a>(
+        &'a self,
+        id: AccountId,
+        author: &'a str,
+    ) -> BoxFuture<'a, Result<bool, AccountStoreError>> {
+        let linked = |row: &mut StoredAccount| {
+            row.account = row.account.clone().with_author(Some(author.to_owned()));
+        };
+        ready(Ok(self.change(id, linked)))
+    }
+
     fn remove(&self, id: AccountId) -> BoxFuture<'_, Result<bool, AccountStoreError>> {
         let mut rows = self.rows();
         let before = rows.len();

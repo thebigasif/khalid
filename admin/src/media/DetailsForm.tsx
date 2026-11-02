@@ -4,6 +4,7 @@ import { editMedia, type MediaEdit, type MediaItem } from "../api/media";
 import { problemMessage } from "../api/posts";
 import { isData } from "../api/redirects";
 import { Problem } from "../components/Problem";
+import { Toast } from "../components/Toast";
 import { en, type UserMessage } from "../strings/en";
 import { FocalFields } from "./FocalFields";
 import { FocalPicture } from "./FocalPicture";
@@ -127,7 +128,7 @@ export function DetailsForm({ item }: Props) {
             {words.save}
           </button>
         </form>
-        <p role="status">{busy ? words.saving : done}</p>
+        <Toast message={busy ? words.saving : done} />
       </section>
     </div>
   );

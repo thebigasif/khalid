@@ -8,95 +8,27 @@ expression: "shown(&out, \"index.html\")"
 </header>
 <main id="main" tabindex="-1">
 
-<div class="masthead">
-<h1>Field Notes on SEO</h1>
-</div>
+<h1 class="masthead-title">Field Notes on SEO</h1>
 <div class="front">
-<article class="card front-lead">
+<article class="front-lead">
 <figure class="image">
 <picture>
 <source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
 <img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/320.png 320w, /blog/media/d9df18e6d7e8625d/480.png 480w, /blog/media/d9df18e6d7e8625d/640.png 640w, /blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
 </picture>
 </figure>
-<p class="card-meta"><span class="card-author">Lena Vogt</span>
-<time datetime="2026-10-05">5 October 2026</time>
-<span class="card-reading-time">2 min read</span>
-<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<div class="front-text">
+<p class="kicker"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h2><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
-<p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
-</article>
-<div class="front-tabs">
-<nav class="tab-names" aria-label="Latest posts, Editor&#39;s picks">
-<ul>
-<li><a href="#front-latest">Latest posts</a></li>
-<li><a href="#front-picks">Editor&#39;s picks</a></li>
-</ul>
-</nav>
-<section class="tab-panel" id="front-latest" aria-labelledby="front-latest-title">
-<h2 id="front-latest-title">Latest posts</h2>
-<ul class="cards cards-compact" role="list">
-<li>
-<article class="card">
-<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
-<p><time datetime="2026-10-12">12 October 2026</time></p>
-</article>
-</li>
-<li>
-<article class="card">
-<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
-<p><time datetime="2026-09-28">28 September 2026</time></p>
-</article>
-</li>
-<li>
-<article class="card">
-<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
-<p><time datetime="2026-09-21">21 September 2026</time></p>
-</article>
-</li>
-<li>
-<article class="card">
-<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
-<p><time datetime="2026-09-14">14 September 2026</time></p>
-</article>
-</li>
-</ul>
-</section>
-<section class="tab-panel" id="front-picks" aria-labelledby="front-picks-title">
-<h2 id="front-picks-title">Editor&#39;s picks</h2>
-<ol class="cards cards-ranked" role="list">
-<li>
-<article class="card">
-<p class="card-meta"><span class="card-author">Asif</span>
-<time datetime="2026-09-21">21 September 2026</time>
-<span class="card-reading-time">1 min read</span>
-<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
-<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
-</article>
-</li>
-<li>
-<article class="card">
-<p class="card-meta"><span class="card-author">Asif</span>
-<time datetime="2026-09-14">14 September 2026</time>
-<span class="card-reading-time">1 min read</span>
-<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
-<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
-</article>
-</li>
-</ol>
-</section>
+<p class="front-dek">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="byline"><span class="byline-name">Lena Vogt</span>
+<time datetime="2026-10-05">5 October 2026</time>
+<span>2 min read</span></p>
 </div>
-</div>
-<nav class="filters" aria-label="Topics">
-<ul class="tags">
-<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
-<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
-<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
-</ul>
-</nav>
-<section class="feed" aria-labelledby="feed-title">
-<h2 id="feed-title">All posts</h2>
-<ul class="cards cards-row" role="list">
+</article>
+<section class="front-latest" aria-labelledby="front-latest-title">
+<h2 id="front-latest-title" class="band-title">Latest posts</h2>
+<ul class="cards cards-text" role="list">
 <li>
 <article class="card">
 <p class="card-meta"><span class="card-author">Asif</span>
@@ -139,3 +71,39 @@ expression: "shown(&out, \"index.html\")"
 </li>
 </ul>
 </section>
+</div>
+<div class="latest-more">
+<aside class="rail">
+<section aria-labelledby="rail-picks-title">
+<h2 id="rail-picks-title" class="band-title">Editor&#39;s picks</h2>
+<ol class="cards cards-ranked" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-21">21 September 2026</time>
+<span class="card-reading-time">1 min read</span>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-14">14 September 2026</time>
+<span class="card-reading-time">1 min read</span>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+</article>
+</li>
+</ol>
+</section>
+<nav class="topic-list" aria-label="Topics">
+<h2 id="rail-topics-title" class="band-title">Topics</h2>
+<ul>
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>
+</aside>
+</div>

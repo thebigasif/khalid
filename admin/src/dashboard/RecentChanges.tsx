@@ -1,14 +1,26 @@
 import { Link } from "@tanstack/react-router";
 import type { PostRow } from "../api/rows";
+import { EmptyState } from "../components/EmptyState";
+import { StatusPill } from "../components/StatusPill";
 import { day } from "../strings/dates";
 import { en } from "../strings/en";
 
-type Props = { rows: PostRow[] };
+type Props = {
+  rows: PostRow[];
+  /** What to say when there are no rows, such as "No drafts". */
+  empty: string;
+};
 
 /** The posts changed last: what each is now, who changed it and when. */
-export function RecentChanges({ rows }: Props) {
+export function RecentChanges({ rows, empty }: Props) {
   if (rows.length === 0) {
-    return <p>{en.dashboard.noPosts}</p>;
+    return (
+      <EmptyState icon="posts" title={empty}>
+        <Link to="/new" className="btn primary">
+          {en.dashboard.firstPost}
+        </Link>
+      </EmptyState>
+    );
   }
   return (
     <div className="scroll">
@@ -29,7 +41,9 @@ export function RecentChanges({ rows }: Props) {
                   {row.title}
                 </Link>
               </td>
-              <td data-label={en.dashboard.stands}>{en.status[row.status]}</td>
+              <td data-label={en.dashboard.stands}>
+                <StatusPill status={row.status} />
+              </td>
               <td data-label={en.dashboard.who}>{row.updated_by ?? en.dashboard.nobody}</td>
               <td data-label={en.dashboard.when}>
                 <time dateTime={row.updated_at}>{day(row.updated_at)}</time>

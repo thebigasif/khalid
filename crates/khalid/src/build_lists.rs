@@ -188,11 +188,12 @@ fn authors(
                     name: author.name.clone(),
                     href: page.meta.path.clone(),
                     role: author.role.clone(),
+                    credentials: author.credentials.clone(),
                     image: author.image.clone(),
                     bio: None,
                     profiles: Vec::new(),
                 },
-                posts: author.posts.len(),
+                posts: author.post_count,
             }),
             _ => None,
         })

@@ -390,6 +390,7 @@ impl Demo {
                 name: author.field("name"),
                 href: format!("{}authors/{}/", lang.prefix, author.field("slug")),
                 role: Some(author.field("role")),
+                credentials: None,
                 image: None,
                 bio: None,
                 profiles: Vec::new(),
@@ -414,9 +415,11 @@ impl Demo {
             let page = RenderAuthor {
                 name: author.field("name"),
                 role: Some(author.field("role")),
+                credentials: None,
                 image: None,
                 bio: markdown(&author.body, &format!("{}glossary/", lang.prefix)),
                 profiles: Vec::new(),
+                post_count: posts_by(&slug).len(),
                 posts: posts_by(&slug),
                 pagination: None,
                 others: people
@@ -544,6 +547,7 @@ impl Demo {
                 name: file.map_or(author.clone(), |a| a.field("name")),
                 href: format!("{}authors/{author}/", lang.prefix),
                 role: file.map(|a| a.field("role")),
+                credentials: None,
                 image: None,
                 bio: None,
                 profiles: Vec::new(),

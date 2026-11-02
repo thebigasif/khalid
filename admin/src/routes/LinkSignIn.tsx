@@ -1,13 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, Navigate, useLocation } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { redeemLink } from "../api/account";
 import { isData } from "../api/call";
-import { problemMessage } from "../api/posts";
+import { blogName } from "../auth/blog";
 import { saveCsrf } from "../auth/session";
 import { Problem } from "../components/Problem";
+import { SignInCard } from "../components/SignInCard";
+import { Welcome } from "../components/Welcome";
 import { en } from "../strings/en";
 
-/** Signs in with a link someone was sent, then opens their account. */
+/** Signs in with a link someone was sent, then offers a passkey for next time. */
 export function LinkSignIn() {
   const words = en.signIn.link;
   // The token sits after the #, so it never reaches a server log.
@@ -26,22 +28,27 @@ export function LinkSignIn() {
     staleTime: Number.POSITIVE_INFINITY,
   }).data;
 
-  let shown = <p role="status">{words.checking}</p>;
   if (isData(redeemed)) {
-    // Someone signed in by link may have no password yet, so their account opens first.
-    shown = <Navigate to="/account" />;
-  } else if (redeemed !== undefined) {
-    shown = (
-      <>
-        <Problem message={problemMessage(redeemed.problem, en.problems.badLink)} />
-        <Link to="/sign-in">{words.back}</Link>
-      </>
+    // Someone signed in by link may have no passkey or password yet, so they choose one first.
+    return <Welcome />;
+  }
+  if (redeemed === undefined) {
+    return (
+      <SignInCard title={words.title}>
+        <p className="sign-lede" role="status">
+          {words.checking}
+        </p>
+      </SignInCard>
     );
   }
+  // Any answer but none at all means the link is spent: used, expired or mistyped.
+  const problem = redeemed.status === 0 ? en.problems.unreachable : en.problems.badLink;
   return (
-    <main id="main" className="page">
-      <h1>{words.title}</h1>
-      {shown}
-    </main>
+    <SignInCard title={en.signIn.title(blogName() ?? en.signIn.thisBlog)}>
+      <Problem message={problem} />
+      <Link to="/sign-in" className="btn">
+        {words.back}
+      </Link>
+    </SignInCard>
   );
 }

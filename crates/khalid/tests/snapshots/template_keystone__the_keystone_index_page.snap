@@ -4,7 +4,17 @@ expression: "main_of(&page(&out, \"index.html\"))"
 ---
  id="main" tabindex="-1">
 
+<div class="home-head">
 <h1>Field Notes on SEO</h1>
+<nav class="topic-row" aria-label="Topics">
+<ul>
+<li><a href="/blog/archive/">All</a></li>
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>
+</div>
 <section class="featured" aria-labelledby="featured-title">
 <h2 id="featured-title">Featured</h2>
 <article class="card card-featured">
@@ -15,15 +25,7 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
 </article>
 </section>
-<nav class="topic-row" aria-label="Topics">
-<ul>
-<li><a href="/blog/archive/">All</a></li>
-<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
-<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
-<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
-</ul>
-</nav>
-<section class="home-section recent" aria-labelledby="recent-title">
+<section class="home-section" aria-labelledby="recent-title">
 <h2 id="recent-title">Recently published</h2>
 <ul class="cards" role="list">
 <li>

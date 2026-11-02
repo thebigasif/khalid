@@ -22,6 +22,7 @@ use khalid_db::{
 };
 use khalid_newsletter::Mailer;
 
+use crate::account_author::SiteAuthorProfiles;
 use crate::search_console_finder::SiteFollowUps;
 use crate::site_categories::SiteCategories;
 use crate::site_content::LiveContent;
@@ -63,7 +64,8 @@ pub(crate) fn api_router(
     (database, id, (site, config)): (&Database, SiteId, (&Path, &Config)),
     (panel, mailer): (Arc<dyn SiteDirectory>, Option<Arc<dyn Mailer>>),
 ) -> Router {
-    let accounts = staff::accounts(database, id, config);
+    let profiles = Arc::new(SiteAuthorProfiles::new(site, config));
+    let accounts = staff::accounts(database, id, config).with_author_profiles(profiles);
     let sessions: Arc<dyn SessionCheck> = Arc::new(accounts.clone());
     let routes = khalid_auth::staff_routes(accounts.clone());
     let staff = (khalid_auth::with_sites(routes, accounts, panel), sessions);

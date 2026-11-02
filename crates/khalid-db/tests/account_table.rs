@@ -53,6 +53,21 @@ async fn an_account_reads_back_by_email_and_by_row() {
 }
 
 #[tokio::test]
+async fn an_account_keeps_the_author_profile_it_writes_as() {
+    let (_dir, demo, other, owner) = opened().await;
+    assert_eq!(owner.author(), None);
+    assert!(demo.set_author(owner.id(), "en.asif").await.unwrap());
+    let found = demo.find(owner.id()).await.unwrap().unwrap();
+    assert_eq!(found.author(), Some("en.asif"));
+    let listed = demo.list().await.unwrap();
+    assert_eq!(listed[0].author(), Some("en.asif"));
+    // Another site's account with the same row is not touched.
+    assert!(!other.set_author(owner.id(), "en.mara").await.unwrap());
+    // The column refuses anything that is not a language and a slug.
+    assert!(demo.set_author(owner.id(), "asif").await.is_err());
+}
+
+#[tokio::test]
 async fn an_email_holds_one_account_and_a_site_one_owner() {
     let (_dir, demo, _, _) = opened().await;
     let again = demo

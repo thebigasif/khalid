@@ -32,7 +32,7 @@ pub(crate) static COMPASS: Pack = Pack {
         parts::cards(CardShape::Image),
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::Inline),
-        parts::contents_numbers(ContentsNumbers::None),
+        parts::contents_numbers(ContentsNumbers::Numbered),
         slot::share("end"),
         slot::share_networks(&["linkedin", "x", "facebook", "email"]),
         slot::newsletter("both"),
@@ -44,29 +44,29 @@ pub(crate) static COMPASS: Pack = Pack {
 /// `theme/tokens.toml` wins.
 const TOKENS: &str = "[colors]
 background = \"#ffffff\"
-surface = \"#eef6f7\"
-text = \"#0f2328\"
-muted = \"#4b6167\"
-link = \"#0b6580\"
+surface = \"#f3f7f7\"
+text = \"#10272b\"
+muted = \"#4f6468\"
+link = \"#0b6474\"
 accent = \"#0e7490\"
-border = \"#d2e3e7\"
+border = \"#cfdcde\"
 
 [fonts]
 heading = \"ui-rounded, \\\"SF Pro Rounded\\\", \\\"Segoe UI Variable Display\\\", \\\"Segoe UI\\\", system-ui, sans-serif\"
 
 [type]
 body = \"1.0625rem 1.125rem\"
-h1 = \"2rem 3rem\"
-h2 = \"1.5rem 2rem\"
-h3 = \"1.25rem\"
+h1 = \"2.25rem 3.25rem\"
+h2 = \"1.5rem 1.875rem\"
+h3 = \"1.25rem 1.375rem\"
 h4 = \"1.125rem\"
 line_height = 1.7
 
 [space]
 unit = \"0.5rem\"
-section = \"3.5rem\"
+section = \"4.5rem\"
 
 [shape]
-radius = \"0.5rem\"
-measure = \"68ch\"
+radius = \"0.75rem\"
+measure = \"44rem\"
 ";

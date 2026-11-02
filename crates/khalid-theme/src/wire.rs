@@ -1,6 +1,7 @@
 //! Wire: a news and columns site (templates spec 3.6). A lead story beside
-//! tabs of the latest posts and the editor's picks, a fast one-column
-//! feed, and posts that open with a subtitle and the writer's card.
+//! the latest headlines, a feed where each story's date stands in its own
+//! column with the editor's picks in a rail, and posts that open with a
+//! subtitle and the writer's card.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
@@ -8,7 +9,7 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 /// The Wire pack.
 pub(crate) static WIRE: Pack = Pack {
     name: "wire",
-    summary: "A news and columns site: a lead story beside tabs of the latest posts and the editor's picks, a fast one-column feed, and posts that open with a subtitle and the writer's card.",
+    summary: "A news and columns site: a lead story beside the latest headlines, a dated feed with the editor's picks in a rail, and posts that open with a subtitle and the writer's card.",
     stylesheet: include_str!("../packs/wire/wire.css"),
     templates: &[
         PackTemplate {

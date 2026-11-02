@@ -3,13 +3,13 @@
 {% block main %}
 {% from "image.html" import avatar -%}
 <h1>{{ page.title }}</h1>
-{% if page.authors %}<ul class="people-list" role="list">
+{% if page.authors %}<ul class="people-list authors-list" role="list">
 {% for entry in page.authors %}<li class="person-card">
 {% if entry.person.image %}{{ avatar(entry.person.image) }}
 {% endif %}<div>
 <p class="person-name"><a href="{{ entry.person.href }}">{{ entry.person.name }}</a></p>
 {% if entry.person.role %}<p class="person-role">{{ entry.person.role }}</p>
-{% endif %}<p>{% if entry.posts == 1 %}{{ t.post_count_one }}{% else %}{{ t.post_count | replace("{count}", entry.posts | string) }}{% endif %}</p>
+{% endif %}<p class="person-count">{% if entry.posts == 1 %}{{ t.post_count_one }}{% else %}{{ t.post_count | replace("{count}", entry.posts | string) }}{% endif %}</p>
 </div>
 </li>
 {% endfor %}</ul>

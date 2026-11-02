@@ -5,6 +5,8 @@
 //! read. It must not know business rules. Those live in the library crates,
 //! which this binary calls the same way the API does.
 
+mod account_author;
+mod admin_blog;
 mod agents;
 mod ai_visitors;
 mod alert_watch;
