@@ -70,7 +70,8 @@ describe("your account", () => {
     renderAt("/account");
     const words = en.account.everywhere;
     await userEvent.click(await screen.findByRole("button", { name: words.submit }));
-    expect(await screen.findByRole("heading", { level: 1, name: en.signIn.title })).toBeVisible();
+    const title = en.signIn.title(en.signIn.thisBlog);
+    expect(await screen.findByRole("heading", { level: 1, name: title })).toBeVisible();
     expect(sent.some((request) => request.method === "DELETE")).toBe(true);
     expect(sessionStorage.getItem("khalid-admin-csrf")).toBeNull();
   });

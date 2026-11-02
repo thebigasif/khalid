@@ -2,6 +2,7 @@ import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
 import { records } from "./records";
 import { serpdadWords } from "./serpdadWords";
+import { signInWords } from "./signInWords";
 import { sitesWords } from "./sites";
 import { teamWords } from "./teamWords";
 import { webhookWords } from "./webhookWords";
@@ -959,27 +960,7 @@ export const en = {
     ownHint:
       "For a type Khalid does not write, such as an Event. Paste JSON-LD here; Khalid checks it before it saves. Most posts need nothing here.",
   },
-  signIn: {
-    title: "Sign in to your blog's admin",
-    lede: "The admin works with a staff token, a key that lets one person edit this blog.",
-    label: "Staff token",
-    hint: "Make one on the server with khalid keys create --kind staff --role editor --name followed by your name. It is shown once.",
-    submit: "Sign in",
-    checking: "Checking the token",
-    email: {
-      title: "Or sign in with your email",
-      lede: "For an account the owner made for you. It lets you add a passkey under Your account.",
-      address: "Email",
-      password: "Password",
-      submit: "Sign in with email",
-      checking: "Checking your email and password",
-    },
-    link: {
-      title: "Signing you in",
-      checking: "Checking your sign-in link",
-      back: "Go to the sign-in page",
-    },
-  },
+  signIn: signInWords,
   sites: sitesWords,
   serpdad: serpdadWords,
   look: lookWords,
@@ -987,7 +968,7 @@ export const en = {
     rejected: {
       what: "The blog did not accept this token.",
       why: "It may be mistyped, revoked, or made for another blog.",
-      fix: "Paste it again, or make a new one with khalid keys create.",
+      fix: "Paste it again, or ask the blog's owner for a new one.",
     },
     lacksScope: {
       what: "This key cannot edit posts.",

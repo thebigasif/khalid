@@ -7,8 +7,13 @@ import { saveCsrf } from "../auth/session";
 import { en, type UserMessage } from "../strings/en";
 import { Problem } from "./Problem";
 
+type Props = {
+  /** Whether this is the main way in, as in a browser without passkeys. */
+  primary: boolean;
+};
+
 /** Signing in with an account's email and password, for someone the owner invited. */
-export function EmailSignIn() {
+export function EmailSignIn({ primary }: Props) {
   const words = en.signIn.email;
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -31,37 +36,33 @@ export function EmailSignIn() {
   };
 
   return (
-    <section className="mt-8 max-w-160" aria-labelledby="email-title">
-      <h2 id="email-title">{words.title}</h2>
-      <p className="hint">{words.lede}</p>
+    <form className="sign-way" aria-label={words.form} onSubmit={submit}>
       {problem === null ? null : <Problem message={problem} />}
-      <form onSubmit={submit}>
-        <div className="field">
-          <label htmlFor="email">{words.address}</label>
-          <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="password">{words.password}</label>
-          <input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </div>
-        <button type="submit" className="btn" disabled={checking}>
-          {checking ? words.checking : words.submit}
-        </button>
-      </form>
-    </section>
+      <div className="field">
+        <label htmlFor="email">{words.address}</label>
+        <input
+          id="email"
+          type="email"
+          autoComplete="username"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+      </div>
+      <div className="field">
+        <label htmlFor="password">{words.password}</label>
+        <input
+          id="password"
+          type="password"
+          autoComplete="current-password"
+          required
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+      </div>
+      <button type="submit" className={primary ? "btn primary" : "btn"} disabled={checking}>
+        {checking ? words.checking : words.submit}
+      </button>
+    </form>
   );
 }
