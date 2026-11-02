@@ -3,7 +3,8 @@
 use khalid_core::AbsoluteUrl;
 
 use crate::schema::node_id;
-use crate::{SchemaNode, SchemaValue, SeoError, Video};
+use crate::schema::site_graph::byline;
+use crate::{SchemaNode, SchemaValue, SeoError, SeoSite, Video};
 
 /// A score out of a best possible score, such as 4.5 out of 5.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -123,6 +124,7 @@ pub(crate) fn video_node(
 /// inside the item reviewed, where Google reads it.
 pub(crate) fn review_node(
     review: &Review,
+    site: &SeoSite,
     page: &AbsoluteUrl,
     number: usize,
 ) -> Result<SchemaNode, SeoError> {
@@ -134,7 +136,6 @@ pub(crate) fn review_node(
             SchemaValue::Node(Box::new(aggregate.node())),
         );
     }
-    let author = SchemaNode::new("Person").with("name", SchemaValue::text(&review.author));
     let mut node = SchemaNode::new("Review")
         .with_id(node_id(page, &format!("review-{number}"))?)
         .with("itemReviewed", SchemaValue::Node(Box::new(item)))
@@ -142,7 +143,7 @@ pub(crate) fn review_node(
             "reviewRating",
             SchemaValue::Node(Box::new(review.rating.node("Rating"))),
         )
-        .with("author", SchemaValue::Node(Box::new(author)));
+        .with("author", byline(site, &review.author)?);
     if !review.body.is_empty() {
         node.set("reviewBody", SchemaValue::text(&review.body));
     }

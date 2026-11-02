@@ -3,7 +3,8 @@
 use khalid_core::AbsoluteUrl;
 
 use crate::schema::node_id;
-use crate::{AggregateRating, Offer, Rating, SchemaNode, SchemaValue, SeoError};
+use crate::schema::site_graph::byline;
+use crate::{AggregateRating, Offer, Rating, SchemaNode, SchemaValue, SeoError, SeoSite};
 
 /// One person's score of a product, written inside it as a `Review`.
 #[derive(Debug, Clone, PartialEq)]
@@ -63,6 +64,7 @@ impl Product {
 /// The `Product` at `<page>#product-<number>`.
 pub(crate) fn product_node(
     product: &Product,
+    site: &SeoSite,
     page: &AbsoluteUrl,
     number: usize,
 ) -> Result<SchemaNode, SeoError> {
@@ -80,7 +82,7 @@ pub(crate) fn product_node(
         node.set("offers", SchemaValue::Node(Box::new(offer.node())));
     }
     if let Some(review) = &product.review {
-        node.set("review", review_node(review));
+        node.set("review", review_node(review, byline(site, &review.author)?));
     }
     if let Some(aggregate) = product.aggregate {
         node.set(
@@ -91,14 +93,14 @@ pub(crate) fn product_node(
     Ok(node)
 }
 
-/// The writer's score as a `Review` written inside the thing it scores.
-pub(crate) fn review_node(review: &ProductReview) -> SchemaValue {
-    let author = SchemaNode::new("Person").with("name", SchemaValue::text(&review.author));
+/// The writer's score as a `Review` written inside the thing it scores, by
+/// `author`.
+pub(crate) fn review_node(review: &ProductReview, author: SchemaValue) -> SchemaValue {
     let node = SchemaNode::new("Review")
         .with(
             "reviewRating",
             SchemaValue::Node(Box::new(review.rating.node("Rating"))),
         )
-        .with("author", SchemaValue::Node(Box::new(author)));
+        .with("author", author);
     SchemaValue::Node(Box::new(node))
 }

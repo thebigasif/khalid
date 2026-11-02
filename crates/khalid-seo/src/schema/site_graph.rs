@@ -30,6 +30,26 @@ pub(crate) fn site_home(site: &SeoSite) -> Result<AbsoluteUrl, SeoError> {
     site.url_for(&site.default_language, &UrlPath::root())
 }
 
+/// Who wrote a review or a score, as its `author`: the publisher's node
+/// when `name` is the publisher's, as on a page with no author of its own,
+/// and a `Person` called `name` otherwise.
+///
+/// # Errors
+///
+/// [`SeoError::Url`] when the publisher's address cannot be built.
+pub(crate) fn byline(site: &SeoSite, name: &str) -> Result<SchemaValue, SeoError> {
+    if name == site.publisher.name {
+        return Ok(SchemaValue::Reference(publisher_id(site)?));
+    }
+    Ok(person(name))
+}
+
+/// A `Person` called `name`, written inside the node that names them.
+pub(crate) fn person(name: &str) -> SchemaValue {
+    let node = SchemaNode::new("Person").with("name", SchemaValue::text(name));
+    SchemaValue::Node(Box::new(node))
+}
+
 /// The `@id` of the publisher node, which every article points to.
 pub(crate) fn publisher_id(site: &SeoSite) -> Result<AbsoluteUrl, SeoError> {
     let fragment = match site.publisher.kind {

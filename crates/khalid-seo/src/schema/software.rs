@@ -4,6 +4,7 @@ use khalid_core::AbsoluteUrl;
 
 use crate::schema::node_id;
 use crate::schema::product::review_node;
+use crate::schema::site_graph::person;
 use crate::{AggregateRating, Offer, ProductReview, SchemaNode, SchemaValue, SeoError};
 
 /// Where an app runs, which picks its schema.org type.
@@ -88,7 +89,7 @@ pub(crate) fn app_node(
     }
     node.set("offers", SchemaValue::Node(Box::new(app.offer.node())));
     if let Some(review) = &app.review {
-        node.set("review", review_node(review));
+        node.set("review", review_node(review, person(&review.author)));
     }
     if let Some(aggregate) = app.aggregate {
         node.set(
