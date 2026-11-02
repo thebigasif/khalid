@@ -41,6 +41,10 @@ Set these under `[template.options]`. Each line shows the default.
 
 | Option | Default | What it changes |
 |---|---|---|
+| `hero_stats` | none | Up to four numbers under the front page's title, each written `number \| what it counts`. Nothing shows until you write them. |
+| `topic_tabs` | `false` | Tabs on the front page, one per topic, each with its four newest posts. They work with scripts off. |
+| `video_section` | `true` | A row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `tagline` | empty | One line under the blog's name on the front page, up to 140 characters. |
 | `stats` | none | Up to three short facts beside the tagline, such as `["12,000 readers", "Weekly since 2024"]`. |
 | `lead_image` | `true` | Whether a post shows its lead image under its title. |

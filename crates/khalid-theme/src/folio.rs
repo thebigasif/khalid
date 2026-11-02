@@ -48,6 +48,10 @@ pub(crate) static FOLIO: Pack = Pack {
         slot::newsletter("none"),
         slot::cta_band("post"),
         slot::CTA_BUTTON_ON,
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };
 
