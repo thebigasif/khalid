@@ -1,4 +1,4 @@
-# The showcase site's four categories, with a name per language.
+# The showcase site's five categories, with a name per language.
 
 [[categories]]
 slug = "seo-writing"
@@ -19,3 +19,8 @@ de = "Technisches SEO"
 slug = "ai-search"
 en = "AI search"
 de = "KI-Suche"
+
+[[categories]]
+slug = "seo-tools"
+en = "SEO tools"
+de = "SEO-Tools"

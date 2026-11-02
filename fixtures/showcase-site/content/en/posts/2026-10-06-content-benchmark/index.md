@@ -79,7 +79,7 @@ Titles fared better, but many were vague labels like "Our thoughts on pricing". 
 
 ## Sources and AI search
 
-Only 19% of the blogs in 2026 linked their numbers to a source. That matters more each year. AI search tools prefer passages that state a fact plainly and show where it comes from, so an unsourced number is less likely to be quoted. Read [how AI search picks which pages to quote](/blog/ai-search-sources/) for the full picture.
+Only 19% of the blogs in 2026 linked their numbers to a source. That matters more each year. AI search tools prefer passages that state a fact plainly and show where it comes from, so an unsourced number is less likely to be quoted. Read [how AI search picks which pages to quote](/blog/ai-search-sources/) for the full picture, and [our guide to writing for AI search](/blog/ai-search-guide/) for what to change. Sample rows from this study are now [free to download](/blog/news/benchmark-data-open/).
 
 :::gated{note="Members can read the full benchmark tables by category." label="Your email address" button="Read the full tables"}
 ## The content benchmark by category

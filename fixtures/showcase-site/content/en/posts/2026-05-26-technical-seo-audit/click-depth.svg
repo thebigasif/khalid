@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Example data bar chart: pages by click depth on a made-up blog of 1,200 pages. Depth 1: 40 pages, depth 2: 310, depth 3: 520, depth 4: 230, depth 5 or more: 100</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <text x="320" y="36" font-family="Georgia, serif" font-size="19" text-anchor="middle" fill="#2b2540">Example data: pages by click depth</text>
+  <line x1="70" y1="300" x2="600" y2="300" stroke="#2b2540" stroke-opacity="0.3"/>
+  <g fill="#6b5ca5">
+    <rect x="95" y="292" width="70" height="8" rx="3"/>
+    <rect x="200" y="238" width="70" height="62" rx="3"/>
+    <rect x="305" y="196" width="70" height="104" rx="3"/>
+  </g>
+  <g fill="#ffb38a">
+    <rect x="410" y="254" width="70" height="46" rx="3"/>
+    <rect x="515" y="280" width="70" height="20" rx="3"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="15" fill="#2b2540" text-anchor="middle">
+    <text x="130" y="284">40</text>
+    <text x="235" y="230">310</text>
+    <text x="340" y="188">520</text>
+    <text x="445" y="246">230</text>
+    <text x="550" y="272">100</text>
+    <text x="130" y="324">1 click</text>
+    <text x="235" y="324">2 clicks</text>
+    <text x="340" y="324">3 clicks</text>
+    <text x="445" y="324">4 clicks</text>
+    <text x="550" y="324">5 or more</text>
+  </g>
+  <rect x="380" y="70" width="14" height="14" fill="#6b5ca5"/>
+  <text x="402" y="82" font-family="Georgia, serif" font-size="14" fill="#2b2540">Within three clicks</text>
+  <rect x="380" y="96" width="14" height="14" fill="#ffb38a"/>
+  <text x="402" y="108" font-family="Georgia, serif" font-size="14" fill="#2b2540">Too deep: 330 pages</text>
+  <text x="70" y="350" font-family="Georgia, serif" font-size="13" fill="#2b2540">Made-up blog of 1,200 pages, for illustration only</text>
+</svg>

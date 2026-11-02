@@ -8,6 +8,8 @@ same_as:
   - https://www.linkedin.com/in/maren-okafor-example
   - https://x.com/marenokafor
   - https://marenokafor.example/
+  - https://www.example.com/team/maren-okafor/
+  - https://mastodon.example/@maren
 ---
 
 Maren runs the writing desk at Larkspur. Before that she spent eight years cutting other people's copy to fit a newspaper page, which is where she learned that every sentence has to earn its place. She writes about planning posts, structuring them and editing them until a busy reader can act on them.

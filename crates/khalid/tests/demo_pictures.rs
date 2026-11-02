@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 /// The collections whose entries show on cards, so each needs a cover.
-const CARDS: [&str; 3] = ["posts", "updates", "work"];
+const CARDS: [&str; 4] = ["news", "posts", "updates", "work"];
 
 /// What no picture here may hold: anything that runs, loads another file
 /// or needs a font. A cover holds no words either, so one picture serves

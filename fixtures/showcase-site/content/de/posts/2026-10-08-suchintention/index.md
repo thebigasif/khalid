@@ -64,7 +64,7 @@ Ein gutes Zeichen sind die Fragen, die Google selbst unter den Treffern zeigt. W
 
 ## Was die Suchintention für Ihren Text bedeutet
 
-Haben Sie die Absicht erkannt, folgt alles andere daraus. Die Überschrift verspricht genau das, was gesucht wird. Die Antwort steht weit oben. Das Format folgt dem, was die Ergebnisse belohnen.
+Haben Sie die Absicht erkannt, folgt alles andere daraus. Die Überschrift verspricht genau das, was gesucht wird. Die Antwort steht weit oben. Das Format folgt dem, was die Ergebnisse belohnen, nicht einer festen Länge, wie unser [Faktencheck zur Wortanzahl](/blog/de/faktencheck-wortanzahl/) zeigt.
 
 Danach kommt die Technik. Ein Beitrag, der die Absicht trifft, muss auch schnell laden. Wie das geht, steht in [Core Web Vitals einfach erklärt](/blog/de/core-web-vitals/). Und weil KI-Antworten genau die Seiten zitieren, die eine Frage direkt beantworten, lohnt sich ein Blick auf [die Quellenwahl der KI-Suchdienste](/blog/de/ki-suche-quellen/).
 

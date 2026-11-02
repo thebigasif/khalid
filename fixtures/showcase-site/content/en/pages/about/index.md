@@ -7,17 +7,18 @@ translation: about
 
 Larkspur Studio is a small content studio. We plan, write and edit blogs for companies that sell to other businesses, and we publish what we learn here, in Larkspur Ledger.
 
-Everything on this blog is written by the three people below. We do not publish guest posts, and nobody pays to be mentioned.
+Everything on this blog is written by the four people below. We do not publish guest posts, and nobody pays to be mentioned.
 
 ## Who writes here
 
 - **Maren Okafor** runs the writing desk. She spent eight years as a newspaper sub-editor before she moved to content.
 - **Tomas Lindqvist** leads technical SEO: page speed, structured data and everything a crawler sees.
 - **Priya Raman** is our research editor. She runs the yearly content benchmark and checks every number we publish.
+- **Dalia Moreno** edits our tool reviews. She tests every tool on client work before she writes a word about it.
 
 ## How we check what we publish
 
-Every post has an author and a second reader. Every number links to its source or names the year it comes from. When we change a post in a way that matters, we show the date and say what changed at the top.
+Every post has an author and a second reader. Every number links to its source or names the year it comes from. When we change a post in a way that matters, we show the date and say what changed at the top. Our [editorial policy](/blog/editorial-policy/) sets out the whole process, including how we correct mistakes.
 
 New here? Start with [our complete guide to SEO writing](/blog/seo-writing-guide/).
 
@@ -27,10 +28,4 @@ New here? Start with [our complete guide to SEO writing](/blog/seo-writing-guide
 
 ## Write to us
 
-Questions about a post, a correction, or a project you would like help with: send us a note and one of us will reply within two working days.
-
-:::form{id="contact" button="Send your note"}
-- text name: Your name
-- email reply_to: Your email address
-- textarea message: Your note
-:::
+Questions about a post, a correction, or a project you would like help with: [send us a note](/blog/contact/) and one of us will reply within two working days.

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Example data: one tool's estimated monthly searches for six phrases. Temperature sensor 2,400; HACCP temperature records 480; cold room temperature log 320; fridge temperature alarm 260; walk-in fridge temperature sensor 140; wireless fridge thermometer for restaurants 50. The three best-fit phrases for the example company are marked</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <text x="320" y="32" font-family="Georgia, serif" font-size="17" text-anchor="middle" fill="#2b2540">Example data: monthly search estimates in one tool</text>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540" text-anchor="end">
+    <text x="250" y="78">temperature sensor</text>
+    <text x="250" y="124">HACCP temperature records</text>
+    <text x="250" y="170">cold room temperature log</text>
+    <text x="250" y="216">fridge temperature alarm</text>
+    <text x="250" y="262">walk-in fridge temperature sensor</text>
+    <text x="250" y="308">wireless fridge thermometer...</text>
+  </g>
+  <g fill="#6b5ca5">
+    <rect x="262" y="60" width="300" height="26" rx="4"/>
+    <rect x="262" y="106" width="60" height="26" rx="4"/>
+    <rect x="262" y="198" width="32.5" height="26" rx="4"/>
+  </g>
+  <g fill="#5b45d6">
+    <rect x="262" y="152" width="40" height="26" rx="4"/>
+    <rect x="262" y="244" width="17.5" height="26" rx="4"/>
+    <rect x="262" y="290" width="6.3" height="26" rx="4"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <text x="570" y="78">2,400</text>
+    <text x="330" y="124">480</text>
+    <text x="310" y="170">320</text>
+    <text x="302" y="216">260</text>
+    <text x="288" y="262">140</text>
+    <text x="276" y="308">50</text>
+  </g>
+  <g fill="#ffb38a">
+    <circle cx="360" cy="165" r="7"/>
+    <circle cx="346" cy="257" r="7"/>
+    <circle cx="334" cy="303" r="7"/>
+  </g>
+  <circle cx="276" cy="341" r="7" fill="#ffb38a"/>
+  <text x="290" y="346" font-family="Georgia, serif" font-size="12" fill="#2b2540">best fit for what the example company sells</text>
+</svg>

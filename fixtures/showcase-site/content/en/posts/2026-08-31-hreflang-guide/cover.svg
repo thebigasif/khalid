@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#eafaf3"/>
+  <circle cx="1040" cy="140" r="100" fill="#8fa2ff" opacity="0.3"/>
+  <circle cx="160" cy="540" r="110" fill="#ffb38a" opacity="0.3"/>
+  <ellipse cx="600" cy="575" rx="380" ry="20" fill="#1f1b3a" opacity="0.08"/>
+  <rect x="190" y="170" width="260" height="360" rx="16" fill="#ffffff"/>
+  <rect x="190" y="170" width="260" height="56" rx="16" fill="#5b45d6"/>
+  <rect x="220" y="260" width="200" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="220" y="290" width="170" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="220" y="320" width="190" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="220" y="370" width="200" height="110" rx="10" fill="#8fa2ff" opacity="0.35"/>
+  <rect x="750" y="170" width="260" height="360" rx="16" fill="#ffffff"/>
+  <rect x="750" y="170" width="260" height="56" rx="16" fill="#8fd9bd"/>
+  <rect x="780" y="260" width="200" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="780" y="290" width="170" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="780" y="320" width="190" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="780" y="370" width="200" height="110" rx="10" fill="#8fd9bd" opacity="0.4"/>
+  <path d="M470 250 C 560 170 640 170 730 250" fill="none" stroke="#5b45d6" stroke-width="10" stroke-linecap="round"/>
+  <polygon points="742,262 712,258 735,232" fill="#5b45d6"/>
+  <path d="M730 450 C 640 530 560 530 470 450" fill="none" stroke="#ffb38a" stroke-width="10" stroke-linecap="round"/>
+  <polygon points="458,438 488,442 465,468" fill="#ffb38a"/>
+  <circle cx="600" cy="350" r="62" fill="#ffffff" stroke="#5b45d6" stroke-width="8"/>
+  <ellipse cx="600" cy="350" rx="26" ry="62" fill="none" stroke="#5b45d6" stroke-width="6"/>
+  <path d="M540 330 H660 M540 370 H660" stroke="#5b45d6" stroke-width="6"/>
+  <circle cx="1080" cy="560" r="8" fill="#5b45d6"/>
+  <circle cx="110" cy="130" r="7" fill="#5b45d6" opacity="0.5"/>
+  <path d="M120 300 L127 320 L147 327 L127 334 L120 354 L113 334 L93 327 L113 320 Z" fill="#5b45d6"/>
+</svg>

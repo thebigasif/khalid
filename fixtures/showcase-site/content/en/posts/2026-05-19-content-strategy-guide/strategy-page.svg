@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="t">
+  <title id="t">Annotated mock of a one-page content strategy with four numbered labels: 1 the goal with a number and a date, 2 the readers, 3 the clusters, 4 the review date</title>
+  <rect width="640" height="400" fill="#f7f4ee"/>
+  <rect x="60" y="24" width="360" height="356" rx="10" fill="#ffffff" stroke="#2b2540" stroke-opacity="0.2"/>
+  <text x="84" y="58" font-family="Georgia, serif" font-size="17" fill="#2b2540">One-page content strategy</text>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <text x="84" y="96">Goal: 8 demo requests a month by March</text>
+    <text x="84" y="160">Readers: clinic manager, owner</text>
+    <text x="84" y="224">Clusters: Setup, Choosing a system</text>
+    <text x="84" y="288">Pace: 2 new posts, 1 refresh</text>
+    <text x="84" y="352">Review: first Monday of each quarter</text>
+  </g>
+  <g fill="#2b2540" opacity="0.12">
+    <rect x="84" y="108" width="280" height="9" rx="4"/>
+    <rect x="84" y="172" width="240" height="9" rx="4"/>
+    <rect x="84" y="236" width="300" height="9" rx="4"/>
+    <rect x="84" y="300" width="220" height="9" rx="4"/>
+  </g>
+  <g stroke="#5b45d6" stroke-width="2" fill="none">
+    <rect x="76" y="80" width="330" height="44" rx="6"/>
+    <rect x="76" y="144" width="330" height="44" rx="6"/>
+    <rect x="76" y="208" width="330" height="44" rx="6"/>
+    <rect x="76" y="336" width="330" height="30" rx="6"/>
+  </g>
+  <g fill="#ffb38a">
+    <circle cx="450" cy="102" r="15"/>
+    <circle cx="450" cy="166" r="15"/>
+    <circle cx="450" cy="230" r="15"/>
+    <circle cx="450" cy="351" r="15"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="15" fill="#2b2540" text-anchor="middle">
+    <text x="450" y="107">1</text>
+    <text x="450" y="171">2</text>
+    <text x="450" y="235">3</text>
+    <text x="450" y="356">4</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <text x="474" y="98">A number</text>
+    <text x="474" y="114">and a date</text>
+    <text x="474" y="162">Real people,</text>
+    <text x="474" y="178">named by job</text>
+    <text x="474" y="226">Two or three</text>
+    <text x="474" y="242">hubs at most</text>
+    <text x="474" y="347">Booked now,</text>
+    <text x="474" y="363">not later</text>
+  </g>
+</svg>

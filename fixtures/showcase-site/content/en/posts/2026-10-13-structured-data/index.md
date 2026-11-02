@@ -21,7 +21,7 @@ This post explains what to put in it for a blog post, how to add it, and how to 
 
 ## What structured data does for a post
 
-A search engine can read your page and work out most of the facts. Structured data removes the guesswork. It states the headline, the author, the publish date and the image in a fixed format called schema.org vocabulary, usually written as JSON-LD inside the page.
+A search engine can read your page and work out most of the facts. [Data in this structured form](/blog/glossary/structured-data/) removes the guesswork. It states the headline, the author, the publish date and the image in a fixed format called schema.org vocabulary, usually written as JSON-LD inside the page.
 
 That certainty pays off in three places:
 

@@ -8,6 +8,7 @@ same_as:
   - https://www.linkedin.com/in/priya-raman-example
   - https://github.com/priya-raman-example
   - https://mastodon.social/@priyaraman
+  - https://www.example.com/team/priya-raman/
 ---
 
 Priya turns questions about content into numbers you can trust. She designs the yearly Larkspur content benchmark, checks every statistic we publish against its source, and writes about measuring what content earns and how AI search chooses what to quote.

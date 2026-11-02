@@ -334,6 +334,17 @@ Each script gets the page's nonce, a random value the browser checks against the
 
 A static site cannot keep a reader's choice, so Khalid refuses to start in `mode = "static"` with code that waits for consent. Set `consent = "not-needed"` or switch to `mode = "server"`. Site verification tags belong in `[seo]`, which never waits.
 
+## A copy search engines should skip
+
+A staging copy or a sample blog should not show up in search results. Add this to its `site.toml`:
+
+```toml
+[seo.index]
+site = "noindex"
+```
+
+Every page then carries `<meta name="robots" content="noindex, follow">`, whatever a post's own `robots` says, and the sitemaps list no page. `robots.txt` still lets crawlers in, because a crawler that cannot read a page never sees its noindex tag. Khalid's own demos are built this way.
+
 ## Bing Webmaster Tools
 
 Bing Webmaster Tools is Bing's dashboard for site owners. Add the site there with the address in `site.toml`, put the code Bing gives you as `bing` under `[seo.verification]` in `site.toml`, and verify. Then make an API key, the password a program uses to reach Bing for you, under Settings, API Access, and set it as `KHALID_BING_API_KEY` in the environment, the same way as the mail secrets above. The key never goes in `site.toml`.

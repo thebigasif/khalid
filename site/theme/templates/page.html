@@ -27,7 +27,7 @@
   ("almanac", "A resource library of long list guides, each with an \"On this page\" box and many related links.", "a shop or platform that teaches its customers"),
   ("meridian", "A calm company journal, with a second layout for long reference pages.", "a company that writes thoughtful posts and evergreen explainers"),
   ("folio", "A product team's essays and engineering notes under its own masthead.", "a team that writes about how it builds"),
-] %}{% set title = name | capitalize %}{% set demo = site.home ~ ("demo/" if name == "classic" else "templates/" ~ name ~ "/") %}<li><article class="tile look">
+] %}{% set title = name | capitalize %}{% set demo = site.home ~ "templates/" ~ name ~ "/" %}<li><article class="tile look">
 <div class="look-shots">
 <img src="{{ site.home }}templates/{{ name }}-home.svg" alt="The {{ title }} demo's home page" width="1280" height="800"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">
 <img class="look-post" src="{{ site.home }}templates/{{ name }}-post.svg" alt="A post in the {{ title }} demo" width="1280" height="800"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">

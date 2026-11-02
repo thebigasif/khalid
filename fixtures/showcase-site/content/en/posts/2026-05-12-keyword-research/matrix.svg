@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="t">
+  <title id="t">A two by two grid for choosing what to write first. Across: chance of ranking, low to high. Up: business value, low to high. High value and high chance: write now. High value and low chance: plan for later. Low value and high chance: only if quick. Low value and low chance: skip. Example phrases sit in each square</title>
+  <rect width="640" height="400" fill="#f7f4ee"/>
+  <rect x="110" y="40" width="250" height="150" fill="#ffb38a" opacity="0.35"/>
+  <rect x="360" y="40" width="250" height="150" fill="#8fd9bd" opacity="0.6"/>
+  <rect x="110" y="190" width="250" height="150" fill="#2b2540" opacity="0.06"/>
+  <rect x="360" y="190" width="250" height="150" fill="#8fa2ff" opacity="0.3"/>
+  <g font-family="Georgia, serif" fill="#2b2540">
+    <text x="485" y="70" font-size="16" text-anchor="middle">Write now</text>
+    <text x="235" y="70" font-size="16" text-anchor="middle">Plan for later</text>
+    <text x="485" y="220" font-size="16" text-anchor="middle">Only if quick</text>
+    <text x="235" y="220" font-size="16" text-anchor="middle">Skip</text>
+    <g font-size="12">
+      <text x="380" y="105">cold room temperature log</text>
+      <text x="380" y="130">walk-in fridge temperature alarm</text>
+      <text x="380" y="155">wireless fridge sensor compared</text>
+      <text x="130" y="105">temperature sensor</text>
+      <text x="130" y="130">food safety software</text>
+      <text x="380" y="255">how long to keep fridge records</text>
+      <text x="130" y="255">what temperature should a fridge be</text>
+      <text x="130" y="280">fridge repair near me</text>
+    </g>
+    <text x="360" y="372" font-size="14" text-anchor="middle">Chance of ranking: low to high</text>
+    <text x="70" y="190" font-size="14" text-anchor="middle" transform="rotate(-90 70 190)">Business value: low to high</text>
+  </g>
+  <g stroke="#2b2540" stroke-width="2">
+    <line x1="110" y1="340" x2="615" y2="340"/>
+    <line x1="110" y1="340" x2="110" y2="35"/>
+  </g>
+  <polygon points="620,340 608,334 608,346" fill="#2b2540"/>
+  <polygon points="110,30 104,42 116,42" fill="#2b2540"/>
+</svg>

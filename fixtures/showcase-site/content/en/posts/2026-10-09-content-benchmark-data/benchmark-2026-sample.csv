@@ -1,0 +1,21 @@
+blog_id,sector,posts_published_12m,has_author_names,blank_meta_share,updated_in_12m,shared_calendar,sourced_numbers
+LB001,software,36,yes,0.10,yes,yes,yes
+LB002,professional services,12,no,0.40,no,no,no
+LB003,manufacturing,9,yes,0.25,yes,no,yes
+LB004,logistics,20,no,0.60,no,no,no
+LB005,software,45,yes,0.05,yes,yes,no
+LB006,professional services,24,no,0.30,no,no,no
+LB007,logistics,14,no,0.55,yes,no,no
+LB008,manufacturing,6,no,0.20,no,no,yes
+LB009,software,52,yes,0.15,yes,yes,no
+LB010,professional services,18,yes,0.35,no,no,no
+LB011,software,28,no,0.20,yes,no,no
+LB012,logistics,22,no,0.70,no,no,no
+LB013,manufacturing,11,yes,0.10,yes,no,yes
+LB014,software,38,yes,0.00,yes,yes,no
+LB015,professional services,16,no,0.45,no,no,no
+LB016,logistics,26,no,0.50,yes,no,no
+LB017,software,33,no,0.25,yes,no,no
+LB018,manufacturing,24,yes,0.15,no,no,no
+LB019,professional services,30,no,0.40,yes,no,no
+LB020,software,41,yes,0.05,yes,no,no

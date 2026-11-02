@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Diagram of four stages a page passes through, crawl, index, render and rank, with the audit checks listed under each stage</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <text x="320" y="36" font-family="Georgia, serif" font-size="19" text-anchor="middle" fill="#2b2540">Where each audit check fits</text>
+  <g fill="#6b5ca5">
+    <rect x="24" y="64" width="128" height="52" rx="10"/>
+    <rect x="178" y="64" width="128" height="52" rx="10"/>
+    <rect x="332" y="64" width="128" height="52" rx="10"/>
+    <rect x="486" y="64" width="128" height="52" rx="10"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="18" fill="#ffffff" text-anchor="middle">
+    <text x="88" y="96">1. Crawl</text>
+    <text x="242" y="96">2. Index</text>
+    <text x="396" y="96">3. Render</text>
+    <text x="550" y="96">4. Rank</text>
+  </g>
+  <g fill="#5b45d6">
+    <path d="M156 90 L174 90 L168 84 M174 90 L168 96" stroke="#5b45d6" stroke-width="3" fill="none"/>
+    <path d="M310 90 L328 90 L322 84 M328 90 L322 96" stroke="#5b45d6" stroke-width="3" fill="none"/>
+    <path d="M464 90 L482 90 L476 84 M482 90 L476 96" stroke="#5b45d6" stroke-width="3" fill="none"/>
+  </g>
+  <g fill="#ffffff" stroke="#6b5ca5" stroke-opacity="0.3">
+    <rect x="24" y="132" width="128" height="170" rx="10"/>
+    <rect x="178" y="132" width="128" height="170" rx="10"/>
+    <rect x="332" y="132" width="128" height="170" rx="10"/>
+    <rect x="486" y="132" width="128" height="170" rx="10"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="14" fill="#2b2540">
+    <text x="36" y="162">robots.txt</text>
+    <text x="36" y="190">Status codes</text>
+    <text x="36" y="218">Redirects</text>
+    <text x="36" y="246">HTTPS</text>
+    <text x="190" y="162">Noindex</text>
+    <text x="190" y="190">Canonicals</text>
+    <text x="190" y="218">Duplicates</text>
+    <text x="190" y="246">Sitemap</text>
+    <text x="190" y="274">Indexing report</text>
+    <text x="344" y="162">Mobile view</text>
+    <text x="344" y="190">Blocked CSS, JS</text>
+    <text x="344" y="218">Structured data</text>
+    <text x="344" y="246">Hreflang</text>
+    <text x="498" y="162">Core Web Vitals</text>
+    <text x="498" y="190">Click depth</text>
+    <text x="498" y="218">Internal links</text>
+  </g>
+  <rect x="24" y="318" width="128" height="8" rx="4" fill="#ffb38a"/>
+  <text x="164" y="327" font-family="Georgia, serif" font-size="14" fill="#2b2540">A failure here blocks every stage to its right</text>
+</svg>

@@ -36,7 +36,7 @@ Every brief has the same seven parts, always in this order:
 
 Writing the answer before the post feels backwards. It is the most useful line in the brief. If the person writing the brief cannot answer the question in three sentences, the writer will not manage it in two thousand words. Fix the thinking in the brief, where it is cheap, not in the third draft.
 
-This habit comes straight from our [guide to writing posts that rank](/blog/seo-writing-guide/), which builds every post around one question.
+This habit comes straight from our [guide to writing posts that rank](/blog/seo-writing-guide/), which builds every post around one question. Priya and I also talk it through in [our podcast episode on answering first](/blog/podcast-answer-first/).
 
 ## A filled-in content brief
 

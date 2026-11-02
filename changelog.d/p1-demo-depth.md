@@ -1,0 +1,2 @@
+Changed
+- **The showcase demo** now shows every feature at the depth of a large SEO blog: 33 English posts across five sections, six full guides of 3,000 words or more with charts and diagrams, a topic hub for each section, a review, a comparison, a best-of list, a fact check, a dataset, a course, a podcast episode, a self-hosted video and a news post. It also has four authors with profile links, 27 glossary terms, six German posts, editorial policy and contact pages, and a feature tour page that links each feature to the page that shows it.

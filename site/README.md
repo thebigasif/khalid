@@ -1,6 +1,6 @@
 # Khalid's website
 
-This folder is Khalid's own website, built with Khalid and published at https://thebigasif.github.io/khalid/. It tells the story of the product: who it is for, every feature group, the templates, the use cases, how to start and how it compares.
+This folder is Khalid's own website, built with Khalid and published at https://thebigasif.github.io/khalid/, with every page pointing search engines to https://serpdad.com/khalid/. It tells the story of the product: who it is for, every feature group, the templates, the use cases, how to start and how it compares.
 
 ## What is where
 
@@ -28,6 +28,12 @@ The pages link to sites built from other folders and published under the same ad
 | `/khalid/demo/` | the showcase demo site |
 | `/khalid/templates/<name>/` | the demo site in each template |
 | `/khalid/examples/<slug>/` | the use case example sites |
+
+## The copy on serpdad.com
+
+Khalid's main home is https://serpdad.com/khalid/, SerpDad's product page, and the demos live below it. `scripts/demos-bundle.sh <khalid binary> <new folder>` builds the demos, the template gallery and its pictures for that address and packs them as `khalid-demos.tar.gz`, with `demo/`, `templates/` and `examples/` at the top. The website's other pages are left out. The Pages workflow publishes the archive at https://thebigasif.github.io/khalid/khalid-demos.tar.gz for the serpdad.com build to download.
+
+The demos are made-up sample blogs, so every demo page, in both copies, carries `noindex, follow` and no demo sitemap lists a page. The gallery stays indexable. On GitHub Pages every page names its serpdad.com address as the canonical one, so search engines credit serpdad.com, and the header and the hero link there.
 
 ## Checking it
 
