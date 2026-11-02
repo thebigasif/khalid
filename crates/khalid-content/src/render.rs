@@ -1,15 +1,12 @@
 //! Markdown to HTML, with the facts templates and the linter need beside it.
 
-use std::collections::BTreeMap;
-use std::fmt;
 use std::sync::{Mutex, OnceLock, PoisonError};
 
-use comrak::adapters::{HeadingAdapter, HeadingMeta};
-use comrak::nodes::{AstNode, NodeValue, Sourcepos};
+use comrak::nodes::{AstNode, NodeValue};
 use comrak::options::Plugins;
 use comrak::plugins::syntect::{SyntectAdapter, SyntectAdapterBuilder};
 use comrak::{Arena, Options, format_html_with_plugins, parse_document};
-use khalid_core::{AbsoluteUrl, DomainName, Locale, Slug, SlugMode};
+use khalid_core::{AbsoluteUrl, DomainName, Locale, SlugMode};
 
 use crate::{
     Block, BlockError, BlockKind, StructuredBlock, Wikilinks, maths, parse_blocks, wikilink,
@@ -20,7 +17,10 @@ mod chart;
 mod chart_plot;
 mod forms;
 mod formula;
+mod heading_ids;
 mod layout;
+
+use heading_ids::HeadingIds;
 
 pub use forms::Gated;
 mod media;
@@ -564,48 +564,4 @@ fn text_of<'a>(node: &'a AstNode<'a>) -> String {
             _ => None,
         })
         .collect()
-}
-
-/// Writes `<hN id="...">` and records each heading as it is written.
-struct HeadingIds {
-    locale: Locale,
-    slugs: SlugMode,
-    state: Mutex<IdState>,
-}
-
-#[derive(Default)]
-struct IdState {
-    headings: Vec<Heading>,
-    seen: BTreeMap<String, usize>,
-}
-
-impl HeadingAdapter for HeadingIds {
-    fn enter(
-        &self,
-        output: &mut dyn fmt::Write,
-        heading: &HeadingMeta,
-        _: Option<Sourcepos>,
-    ) -> fmt::Result {
-        let mut state = self.state.lock().unwrap_or_else(PoisonError::into_inner);
-        let base = Slug::from_title(&heading.content, &self.locale, self.slugs)
-            .map_or_else(|_| "section".to_owned(), |slug| slug.as_str().to_owned());
-        let count = state.seen.entry(base.clone()).or_insert(0);
-        *count += 1;
-        let id = if *count == 1 {
-            base
-        } else {
-            format!("{base}-{count}")
-        };
-        write!(output, "<h{} id=\"{id}\">", heading.level)?;
-        state.headings.push(Heading {
-            level: heading.level,
-            id,
-            text: heading.content.clone(),
-        });
-        Ok(())
-    }
-
-    fn exit(&self, output: &mut dyn fmt::Write, heading: &HeadingMeta) -> fmt::Result {
-        write!(output, "</h{}>", heading.level)
-    }
 }
