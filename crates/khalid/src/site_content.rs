@@ -13,7 +13,7 @@ use khalid_api::content_store::{
     BoxFuture, ContentStore, ContentStoreError, Listed, MemoryContentStore, PostKey, SiteResources,
 };
 use khalid_api::query::ListQuery;
-use khalid_api::resources::{Bodies, Collection, Post};
+use khalid_api::resources::{Bodies, Collection, Post, PostSeries};
 use khalid_content::{SiteContent, parse_post, render};
 use khalid_core::{AbsoluteUrl, Config, Locale, SitePath, SlugMode, UserMessage};
 use khalid_db::{ContentIndex, IndexedPost, PostChanges};
@@ -24,7 +24,7 @@ use crate::post_heads::PostHeads;
 use crate::post_lock::Lock;
 use crate::settings_events::Settings;
 use crate::tag_events::Tags;
-use crate::{build_message, build_pages, index, site_lists};
+use crate::{build_message, build_pages, build_series, index, site_lists};
 
 /// What one render of the pages read for the Content API, without a single
 /// post body: the content index, which posts are featured, and the lists.
@@ -38,6 +38,8 @@ pub(crate) struct Catalog {
     /// Content API says when a post last really changed and a new one can
     /// be sent to `IndexNow`.
     pub(crate) updated: BTreeMap<String, NaiveDate>,
+    /// The series of each post that is part of one, by path.
+    series: BTreeMap<String, PostSeries>,
     lists: SiteResources,
     /// The pages, glossary terms, case studies and changelog entries.
     pub(crate) entries: Entries,
@@ -74,11 +76,13 @@ impl Catalog {
             .iter()
             .filter_map(|doc| Some((index::slashed(&doc.path)?, doc.front.updated?)))
             .collect();
+        let series = build_series::by_path(config, content);
         let lists = site_lists::of(config, &index, content)?;
         Ok(Self {
             index,
             featured,
             updated,
+            series,
             lists,
             entries: Entries::of(content).with_drafts(folder),
             tags: Tags::of(config, content),
@@ -361,6 +365,7 @@ fn listings<'a>(
         if let Some(day) = catalog.updated.get(&row.path).filter(|day| **day > date) {
             post = post.with_updated_at(midnight(*day));
         }
+        post = post.with_series(catalog.series.get(&row.path).cloned());
         let locale = row.locale.clone();
         found.push((row.path.clone(), Listing { post, locale, date }));
     }
@@ -557,6 +562,31 @@ mod tests {
         live.fail();
         let listed = live.list(Collection::Posts, &english()).await.unwrap();
         assert_eq!(listed.total(), 5);
+    }
+
+    #[tokio::test]
+    async fn a_post_in_a_series_names_it_in_the_content_api() {
+        let (folder, config, _) = demo();
+        let mut content = read_content(&ContentTree::walk(&folder).unwrap()).unwrap();
+        let text = "---\nseries:\n  name: Topic clusters from scratch\n  order: 2\n---\n";
+        let part = parse_post(Path::new("a.md"), text).unwrap().front.series;
+        content
+            .posts
+            .iter_mut()
+            .find(|doc| doc.path.ends_with("2026-10-12-planning-a-topic-cluster.md"))
+            .unwrap()
+            .front
+            .series = part;
+        let catalog = Catalog::of(&folder, &config, &content).unwrap();
+        let published = Published::of(&folder, &config, &catalog).unwrap();
+        let listed = published.store.list(Collection::Posts, &english()).await;
+        let json = serde_json::to_value(listed.unwrap().items()).unwrap();
+        assert_eq!(
+            json[0]["series"]["slug"], "topic-clusters-from-scratch",
+            "{json}"
+        );
+        assert_eq!(json[0]["series"]["order"], 2);
+        assert!(json[1].get("series").is_none(), "a post in no series");
     }
 
     #[test]

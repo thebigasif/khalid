@@ -49,3 +49,5 @@ series:
 ```
 
 Each part then shows a box at the top with "Part 2 of 5", the series' name and every part, and links to the part before and the part after at the end. The series gets its own page at `/series/topic-clusters-from-scratch/` that lists the parts in order. Parts with no `order` follow the numbered ones, oldest first.
+
+The Content API gives each part a `series` object with its `name`, the `slug` of the series page and its `order`, so a site with its own front end can show the same.

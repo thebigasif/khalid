@@ -7,7 +7,8 @@
 use std::collections::BTreeMap;
 
 use chrono::NaiveDate;
-use khalid_content::SiteContent;
+use khalid_api::resources::PostSeries;
+use khalid_content::{Document, PostFront, SiteContent};
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
 use khalid_render::{
     BodyHtml, Link, PageBody, PageKind, PostCard, RenderListing, RenderSeries, Renderer,
@@ -15,7 +16,7 @@ use khalid_render::{
 use khalid_seo::{ItemList, ListEntry, PageKind as SeoKind, SchemaBlock};
 
 use crate::build_pages::{self, LanguagePages, Page};
-use crate::{build_lists, build_message, build_seo};
+use crate::{build_lists, build_message, build_seo, index};
 
 /// One part of a series, before the series is put in order.
 struct Part {
@@ -27,6 +28,23 @@ struct Part {
 
 /// The parts of one series, by the series' name.
 type Series = BTreeMap<String, Vec<Part>>;
+
+/// The series of each post of `content` that is part of one, as the
+/// Content API shows it, by the post's path in the content index. A
+/// series whose name makes no address is left out, as `khalid build`
+/// refuses it.
+pub(crate) fn by_path(config: &Config, content: &SiteContent) -> BTreeMap<String, PostSeries> {
+    let of = |doc: &Document<PostFront>| {
+        let series = doc.front.series.as_ref()?;
+        let slug = Slug::from_title(&series.name, &doc.locale, config.slugs()).ok()?;
+        let order = series.order.map(u32::from);
+        Some((
+            index::slashed(&doc.path)?,
+            PostSeries::new(&series.name, slug, order),
+        ))
+    };
+    content.posts.iter().filter_map(of).collect()
+}
 
 /// Gives each post of `languages` that `content` puts in a series its
 /// place in it, and adds the page of each series, introduced in its

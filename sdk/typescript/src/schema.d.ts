@@ -1304,6 +1304,7 @@ export type Post = Bodies & ({
   language: string;
   /** When it went live. */
   published_at: string;
+  series?: PostSeries | null;
   /** The last part of its address. */
   slug: string;
   /** Tag slugs, in the order the writer gave them. */
@@ -1400,6 +1401,16 @@ export type PostRows = {
   meta: Meta;
   /** The rows on this page. */
   posts: PostRow[];
+};
+
+/** The series a post is one part of: posts written to be read in order. */
+export type PostSeries = {
+  /** The series' name, the same on every part. */
+  name: string;
+  /** The post's place in the series, counted from 1, as the writer set it. Absent when the writer left the order to the dates. */
+  order?: number | null;
+  /** The end of the series page's address. */
+  slug: string;
 };
 
 /** A post's settings beside its title and body. Every setting has a value: empty lists, `false`, `draft` and `null` when never set. */
