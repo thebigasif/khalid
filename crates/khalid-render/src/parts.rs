@@ -16,6 +16,8 @@ enum Off {
     Word(&'static str),
     /// A whole number, such as how many picks.
     Number(i64),
+    /// Lines the owner writes, none until they do.
+    Lines,
 }
 
 /// Every part by its option key, with the value that keeps classic's look.
@@ -57,6 +59,16 @@ const PARTS: &[(&str, Off)] = &[
     ("contents", Off::Word("side-end")),
     // How the contents are numbered: numbered, nested or none.
     ("contents_numbers", Off::Word("numbered")),
+    // A row of numbers under the home page's title, each line
+    // `number | label`, written by the owner and never made up.
+    ("hero_stats", Off::Lines),
+    // Tabs on the home page, one per topic, each an anchor to its newest
+    // posts, so they work with scripts off.
+    ("topic_tabs", Off::Switch(false)),
+    // A row of the newest posts with a video on the home page.
+    ("video_section", Off::Switch(false)),
+    // A row of the newest posts with a sound player on the home page.
+    ("podcast_section", Off::Switch(false)),
 ];
 
 /// The option key of every part the shared templates read.
@@ -74,6 +86,7 @@ pub(crate) fn with_parts(
             Off::Switch(on) => TemplateOption::Switch(on),
             Off::Word(word) => TemplateOption::Word(word.to_owned()),
             Off::Number(number) => TemplateOption::Number(number),
+            Off::Lines => TemplateOption::Lines(Vec::new()),
         });
     }
     options

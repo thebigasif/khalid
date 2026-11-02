@@ -80,11 +80,14 @@ impl PageBody {
     pub(crate) fn cards(&self) -> usize {
         match self {
             Self::Home(home) => {
-                let sections = home.sections.iter().map(|section| section.posts.len());
+                let sections =
+                    (home.sections.iter().chain(&home.tabs)).map(|section| section.posts.len());
                 let listing = &home.listing;
                 listing.posts.len()
                     + usize::from(listing.featured.is_some())
                     + home.picks.len()
+                    + home.videos.len()
+                    + home.podcasts.len()
                     + sections.sum::<usize>()
             }
             Self::Collection(listing)

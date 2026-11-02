@@ -355,6 +355,9 @@ impl Demo {
                 links: topics.clone(),
             }],
             categories: topics,
+            tabs: Vec::new(),
+            videos: Vec::new(),
+            podcasts: Vec::new(),
         });
         self.page(lang, (lang.prefix, None), "Field Notes on SEO", &home)?;
         self.author_pages(lang, &authors, &cards)?;

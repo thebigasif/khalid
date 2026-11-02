@@ -77,6 +77,10 @@ Every template shares one set of page parts. A template switches on the ones it 
 | `related_count` | `3` to `10` | How many related posts show. |
 | `contents` | `side-end`, `side-start`, `inline`, `inline-folded`, `none` | Where a long post's contents go: a column beside the post on wide screens (on the end or start side), an open box at the top, a folded box at the top, or nowhere. |
 | `contents_numbers` | `numbered`, `nested`, `none` | How the contents are numbered: 1, 2, 3, or 1, 1.1, 2, or not at all. |
+| `hero_stats` | up to four lines | Numbers under the home page's title, each written `number \| what it counts`, such as `"140 \| blogs studied"`. Khalid never makes one up: with no lines, nothing shows. |
+| `topic_tabs` | `true`, `false` | The home page shows tabs, one per topic, each with that topic's four newest posts. Each tab is a link to its panel, so the tabs work with scripts off. |
+| `video_section` | `true`, `false` | The home page shows a row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true`, `false` | The home page shows a row of the newest posts with a podcast or other sound player, when there are any. |
 
 Every part reads with scripts off. Every page also shows `[brand] icon` in the browser tab, in every template.
 

@@ -38,6 +38,9 @@ pub(crate) fn home(listing: RenderListing) -> RenderHome {
         picks: Vec::new(),
         topics: Vec::new(),
         categories: Vec::new(),
+        tabs: Vec::new(),
+        videos: Vec::new(),
+        podcasts: Vec::new(),
     }
 }
 

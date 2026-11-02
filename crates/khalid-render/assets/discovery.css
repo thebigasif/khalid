@@ -67,3 +67,18 @@
 .hub-link { margin-block: 0 1.5rem; }
 .hub-link a { display: inline-flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; align-items: center; min-block-size: 44px; padding: 0.5rem 1rem; border: 1px solid var(--color-accent); border-radius: var(--radius); font-weight: 700; text-decoration: none; }
 .hub-link span { color: var(--color-muted); font-size: var(--text-small); font-weight: 400; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* The home page: the owner's numbers, tabs per topic, rows of media. */
+.hero-stats { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); margin-block: 1.5rem 2.5rem; }
+.hero-stats div { display: flex; flex-direction: column-reverse; padding-inline-start: 1rem; border-inline-start: 3px solid var(--color-accent); }
+.hero-stats dt { color: var(--color-muted); font-size: var(--text-small); font-weight: 400; margin: 0; }
+.hero-stats dd { margin: 0; font-family: var(--font-heading); font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem); font-weight: 700; line-height: 1.1; }
+.topic-tabs, .media-row { margin-block: var(--space-section); }
+.topic-tab-list { display: flex; gap: 0.5rem; overflow-x: auto; margin: 0 0 1.5rem; padding: 0 0 0.25rem; list-style: none; border-block-end: 1px solid var(--color-border); }
+.topic-tab-list a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: 1rem; border-block-end: 3px solid transparent; color: var(--color-muted); font-weight: 700; text-decoration: none; white-space: nowrap; }
+.topic-tab-list a:hover, .topic-tab-list a:focus-visible { color: var(--color-text); }
+.topic-panel { scroll-margin-block-start: 6rem; }
+.topic-panel h3 { margin-block: 0 1rem; }
+.topic-panels:has(.topic-panel:target) .topic-panel:not(:target), .topic-panels:not(:has(.topic-panel:target)) .topic-panel ~ .topic-panel { display: none; }
+.topic-tabs:not(:has(.topic-panel:target)) li:first-child a, .topic-tabs:has([id="topic-1"]:target) [href$="-1"], .topic-tabs:has([id="topic-2"]:target) [href$="-2"], .topic-tabs:has([id="topic-3"]:target) [href$="-3"], .topic-tabs:has([id="topic-4"]:target) [href$="-4"], .topic-tabs:has([id="topic-5"]:target) [href$="-5"], .topic-tabs:has([id="topic-6"]:target) [href$="-6"] { border-color: var(--color-accent); color: var(--color-text); }
+@media print { .topic-panels .topic-panel { display: block; } }
