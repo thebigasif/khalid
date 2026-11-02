@@ -2,7 +2,7 @@
 
 Meridian is a calm company journal. It suits a product or services company that publishes a few considered posts a month, often written by more than one person, and keeps a handful of long guides that it updates over time.
 
-Pick it when you want the blog to feel quiet and trustworthy: lots of white space, large titles, one column of text, and colour used only where a reader can act. If you publish many short news items a day, or want pictures to lead every list, another template will suit you better.
+Pick it when you want the blog to feel quiet and trustworthy: lots of room, large serif titles over a plain sans text, one column to read, hairlines instead of boxes, and one accent colour used only where a reader can act. If you publish many short news items a day, another template will suit you better.
 
 ## How to switch it on
 
@@ -12,24 +12,26 @@ Pick it when you want the blog to feel quiet and trustworthy: lots of white spac
 name = "meridian"
 ```
 
-Build or restart the blog. Your colours, fonts, logo and corner rounding still come from `theme/tokens.toml`, so Meridian takes on your main site's look.
+Build or restart the blog. Meridian brings its own palette (ink on a warm paper colour, one deep indigo accent) and serif titles. Any value in your own `theme/tokens.toml` wins, so a blog synced with its main site keeps that site's colours, fonts, logo and corners.
 
 ## What readers see
 
 **The front page**
 
-- Your logo in the header, with your call to action as a button beside the menu.
-- A row of tabs under the blog's name: "All", then each category your posts use. On a phone the row scrolls sideways inside its own strip.
-- Editor's picks: up to three posts you marked `featured: true`, as short text cards.
-- Every post as a wide row: the author with their role, the date, a large title and the summary, with the post's picture as a square on the far side. Rows are split by thin lines.
+- Your logo in the header, the menu at its end and your call to action as an outlined button. On a phone the menu is one row that scrolls, and the button gives way to the band further down.
+- The blog's name as a large serif title, with the intro from your front page's `_index.md` beside it when you write one.
+- A row of tabs under the name: "All", then each category your posts use. On a phone the tabs become small rounded buttons that wrap.
+- The newest post as the lead story: a large picture beside a large title, its summary and its author.
+- Editor's picks: up to three posts you marked `featured: true`, as short text cards on a soft band across the page.
+- Every other post as a wide row: the category in small capitals, the date, the title, the summary and the author with their role, with the post's picture cropped to 3 by 2 on the far side. On a phone the picture sits above the text.
 - A newsletter form, when your blog takes sign-ups (see below), and numbered page links under long lists.
 
 **A journal post** (every post, unless it asks for the reference layout)
 
-- Breadcrumbs: the blog, the post's category, the post.
-- The title, then every author with their round photo, name and role, then the dates.
-- One quiet column of text. Figures keep their captions. No table of contents, no reading time and no author box, so nothing competes with the words.
-- After the post: the call-to-action band, then the newsletter form.
+- Breadcrumbs as one small label: the blog and the post's category.
+- A large serif title, then the authors with their round photo, name and role on one side and the dates on the other, between two hairlines.
+- The cover a little wider than the text, then one quiet column of text. Callouts are soft panels or a thin rule, quotes are centred, steps are numbered in circles and questions open and close with a plus.
+- After the post: the author box, the call-to-action band, the newsletter form, the posts that link here, then three related posts with their pictures across the page.
 
 **A reference guide** (a post with `template: reference` in its front matter)
 
@@ -77,7 +79,7 @@ Set any of these under `[template.options]` in `site.toml`. A line you leave out
 | `category_tabs` | `true` | The front page shows the row of category tabs. |
 | `picks` | `3` | How many posts marked `featured: true` the front page shows as editor's picks, from 0 for none to 8. |
 | `pagination` | `numbered` | The links under a long list: `pages` for newer and older, or `numbered` for a link to each page. |
-| `related` | `list` | How related posts are laid out when you turn them on for journal posts: `grid`, `list`, `row`, `scroll` or `links`. |
+| `related` | `scroll` | How related posts are laid out under journal posts: `grid`, `list`, `row`, `scroll` or `links`. Meridian shows `scroll` as three cards side by side on a wide screen. |
 | `related_count` | `3` | How many related posts show, from 3 to 10. |
 | `contents` | `none` | Where a journal post's contents go: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. A reference guide always shows its contents open. |
 | `contents_numbers` | `nested` | How a journal post's contents are numbered when you turn them on: `numbered`, `nested` or `none`. |
@@ -97,7 +99,7 @@ picks = 5
 
 ## Reader features Meridian changes
 
-Meridian turns three `[reader]` features off by default: `reading_time`, `author_box` and `related_posts`. Write any of them in `[reader]` to turn it back on. Your line always wins. A reference guide shows its three related articles either way.
+Meridian turns `reading_time` off by default, so the byline stays short. Write it in `[reader]` to turn it back on. Your line always wins. The author box and related posts stay on. A reference guide shows its three related articles either way.
 
 ## Your call to action and newsletter
 
@@ -118,24 +120,35 @@ Meridian sets these in place of the shared defaults. A value in your own `theme/
 
 | Token | Meridian's value |
 |---|---|
+| `[fonts] heading` | Iowan Old Style, Charter, Sitka Text, Cambria or Georgia: a serif every computer already has, so nothing is downloaded |
 | `[type] body` | 1.0625rem on a phone to 1.1875rem on a wide screen |
 | `[type] h1` | 2.5rem to 4rem |
-| `[type] h2` | 1.75rem to 2.25rem |
-| `[type] h3` | 1.3125rem |
+| `[type] h2` | 1.625rem to 2rem |
+| `[type] h3` | 1.25rem to 1.375rem |
+| `[type] small` | 0.875rem |
 | `[type] line_height` | 1.7 |
-| `[space] section` | 4.5rem between sections |
-| `[shape] radius` | 0.5rem corners |
-| `[shape] measure` | 64ch, the width of a line of text |
+| `[type] heading_weight` | 600 |
+| `[space] section` | 5rem between sections |
+| `[shape] radius` | 0.375rem corners |
+| `[shape] measure` | 42rem, about 70 letters a line |
 
-The page itself is up to 72rem wide, so rows have room; the text of a post keeps to the 64ch measure.
+The page itself is up to 72rem wide, so rows have room; the text of a post keeps to the 42rem measure and its cover runs a little wider.
 
 ## Colours
 
-Text is `--color-text` on `--color-background`. The accent appears only on links, buttons, the current tab and the edge of a summary box. The call-to-action band is your accent mixed at 7% into the background. Buttons pick black or white text, whichever reads better on your accent.
+| Token | Meridian's value |
+|---|---|
+| `background` | `#fcfbf8`, a warm paper colour |
+| `surface` | `#f3f0e9`, for bands and panels |
+| `text` | `#17191e`, ink |
+| `muted` | `#585c64` |
+| `link` and `accent` | `#2c3f9c`, a deep indigo |
+| `border` | `#e2ddd2` |
+
+The accent appears only on links, small labels, buttons, the current tab and the short rule before each label. Buttons pick black or white text, whichever reads better on the accent. Every pair passes WCAG 2.2 AA.
 
 ## What Meridian does not do yet
 
-- A post's category does not show on its card or above its title yet. The breadcrumbs and the tabs carry it.
-- A row's square picture is the post's lead picture (`image:` in a folder post). It shows on category, tag and archive pages and on author pages. The front page shows rows without pictures for now, because `khalid serve` sends the front page before pictures have their sizes.
 - The front page does not group posts under category headings yet. It will once the shared home sections are filled from `site.toml`.
 - Each post has one call to action. Several different banners per site are a later step.
+- The footer shows the footer menus only; it cannot show the blog's name or logo without a change to the shared page frame.
