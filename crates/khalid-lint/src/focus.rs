@@ -3,6 +3,7 @@
 
 use khalid_core::{Slug, SlugMode};
 
+use crate::stem::WordForms;
 use crate::{Hit, LintPost, Rule, RuleId, Severity, SiteView};
 
 /// The words of `text` in lowercase, split at anything that is not a letter
@@ -17,6 +18,67 @@ pub(crate) fn words(text: &str) -> Vec<String> {
 /// Whether `topic` appears in `text` as whole words, in order.
 pub(crate) fn holds(text: &[String], topic: &[String]) -> bool {
     !topic.is_empty() && text.windows(topic.len()).any(|run| run == topic)
+}
+
+/// A keyword and its synonyms, each kept as the stems of its words, so it
+/// is found in any word form: "internal link" in "internal links", and a
+/// synonym such as "site links" counts as the keyword.
+#[derive(Debug)]
+pub(crate) struct Keyword<'p> {
+    /// The keyword as written, without outer spaces, for the finding.
+    pub(crate) text: &'p str,
+    /// The keyword's stems first, then each synonym's.
+    phrases: Vec<Vec<String>>,
+    forms: WordForms,
+}
+
+impl<'p> Keyword<'p> {
+    /// `text` with `synonyms`, in the post's `language`, or `None` when
+    /// `text` holds no word, as a draft from another caller may.
+    pub(crate) fn new(text: &'p str, synonyms: &[String], language: &str) -> Option<Self> {
+        let forms = WordForms::of(language);
+        let first = forms.phrase(text);
+        if first.is_empty() {
+            return None;
+        }
+        let mut phrases = vec![first];
+        let synonyms = synonyms.iter().map(|synonym| forms.phrase(synonym));
+        phrases.extend(synonyms.filter(|stems| !stems.is_empty()));
+        Some(Self {
+            text: text.trim(),
+            phrases,
+            forms,
+        })
+    }
+
+    /// The post's focus keyword with its synonyms, or `None` when it has
+    /// none or it holds no word.
+    pub(crate) fn focus(post: &'p LintPost) -> Option<Self> {
+        let text = post.focus_keyword.as_deref()?;
+        Self::new(text, &post.keyword_synonyms, post.locale.language())
+    }
+
+    /// Whether `text` holds the keyword or a synonym, in any word form.
+    pub(crate) fn found_in(&self, text: &str) -> bool {
+        self.found_in_words(&words(text))
+    }
+
+    /// Whether `text`, its words in lowercase, holds the keyword or a
+    /// synonym, in any word form.
+    pub(crate) fn found_in_words(&self, text: &[String]) -> bool {
+        self.phrases
+            .iter()
+            .any(|phrase| self.forms.holds(text, phrase))
+    }
+
+    /// How many times `text`, its words in lowercase, holds the keyword
+    /// or a synonym, in any word form.
+    pub(crate) fn uses(&self, text: &[String]) -> usize {
+        self.phrases
+            .iter()
+            .map(|phrase| self.forms.uses(text, phrase))
+            .sum()
+    }
 }
 
 /// A place in a post where the focus keyword belongs, each checked by its
@@ -55,11 +117,11 @@ impl Place {
         })
     }
 
-    /// Whether this place in `post` holds `keyword`, whose words are
-    /// `topic`, or `None` when the post does not have the place yet, which
-    /// is left to the rule about that place.
-    fn holds(self, post: &LintPost, keyword: &str, topic: &[String]) -> Option<bool> {
-        let found = |text: &str| holds(&words(text), topic);
+    /// Whether this place in `post` holds `keyword`, or `None` when the
+    /// post does not have the place yet, which is left to the rule about
+    /// that place.
+    pub(crate) fn holds(self, post: &LintPost, keyword: &Keyword<'_>) -> Option<bool> {
+        let found = |text: &str| keyword.found_in(text);
         match self {
             Self::Title => search_title(post).or(post.title.as_deref()).map(found),
             Self::Headline => search_title(post).and(post.title.as_deref()).map(found),
@@ -67,7 +129,7 @@ impl Place {
             Self::FirstParagraph => first_paragraph(post).map(found),
             Self::Subheading => (!post.headings.is_empty())
                 .then(|| post.headings.iter().any(|heading| found(&heading.text))),
-            Self::Address => Some(in_address(post, keyword, topic)),
+            Self::Address => Some(in_address(post, keyword)),
             Self::ImageAlt => {
                 let mut described = post
                     .images
@@ -82,7 +144,7 @@ impl Place {
 }
 
 /// The post's search title, when it sets one with any text in it.
-fn search_title(post: &LintPost) -> Option<&str> {
+pub(crate) fn search_title(post: &LintPost) -> Option<&str> {
     post.seo_title
         .as_deref()
         .filter(|title| !title.trim().is_empty())
@@ -90,7 +152,7 @@ fn search_title(post: &LintPost) -> Option<&str> {
 
 /// The first line of the body's text that is not a heading. The plain text
 /// holds one line per paragraph, heading or list item.
-fn first_paragraph(post: &LintPost) -> Option<&str> {
+pub(crate) fn first_paragraph(post: &LintPost) -> Option<&str> {
     post.body_text
         .lines()
         .map(str::trim)
@@ -100,21 +162,12 @@ fn first_paragraph(post: &LintPost) -> Option<&str> {
 
 /// Whether the post's address holds the keyword as written, or in its plain
 /// form, such as `ueber` for "über".
-fn in_address(post: &LintPost, keyword: &str, topic: &[String]) -> bool {
+fn in_address(post: &LintPost, keyword: &Keyword<'_>) -> bool {
     let address = words(post.slug.as_str());
-    let plain = Slug::from_title(keyword, &post.locale, SlugMode::Ascii)
+    let plain = Slug::from_title(keyword.text, &post.locale, SlugMode::Ascii)
         .map(|slug| words(slug.as_str()))
         .unwrap_or_default();
-    holds(&address, topic) || holds(&address, &plain)
-}
-
-/// The post's focus keyword without outer spaces, or `None` when it has
-/// none or it holds no word, as a draft from another caller may.
-fn focus_keyword(post: &LintPost) -> Option<&str> {
-    post.focus_keyword
-        .as_deref()
-        .filter(|keyword| !words(keyword).is_empty())
-        .map(str::trim)
+    keyword.found_in_words(&address) || holds(&address, &plain)
 }
 
 /// A post with no focus keyword, so none of the focus checks can run and
@@ -132,7 +185,7 @@ impl Rule for NoFocusKeyword {
     }
 
     fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
-        focus_keyword(post)
+        Keyword::focus(post)
             .is_none()
             .then(Hit::post)
             .into_iter()
@@ -155,11 +208,11 @@ impl Rule for FocusNotIn {
     }
 
     fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
-        let Some(keyword) = focus_keyword(post) else {
+        let Some(keyword) = Keyword::focus(post) else {
             return Vec::new();
         };
-        if self.0.holds(post, keyword, &words(keyword)) == Some(false) {
-            vec![Hit::about(keyword)]
+        if self.0.holds(post, &keyword) == Some(false) {
+            vec![Hit::about(keyword.text)]
         } else {
             Vec::new()
         }
@@ -170,20 +223,27 @@ impl Rule for FocusNotIn {
 /// because one use more or less swings the share of a short text too far.
 const DENSITY_MIN_WORDS: usize = 100;
 
-/// The post's focus keyword and how many times per thousand words its body
-/// holds it, or `None` when it has no keyword or too few words to judge.
-fn per_thousand(post: &LintPost) -> Option<(&str, usize)> {
-    let keyword = focus_keyword(post)?;
+/// How many times per thousand words the post's body holds `keyword` or
+/// one of its synonyms, or `None` when it has too few words to judge.
+pub(crate) fn per_thousand(post: &LintPost, keyword: &Keyword<'_>) -> Option<usize> {
     let text = words(&post.body_text);
     if text.len() < DENSITY_MIN_WORDS {
         return None;
     }
-    let topic = words(keyword);
-    let uses = text
-        .windows(topic.len())
-        .filter(|run| *run == topic)
-        .count();
-    Some((keyword, uses * 1000 / text.len()))
+    Some(keyword.uses(&text) * 1000 / text.len())
+}
+
+/// One hit naming the focus keyword when its rate per thousand words is
+/// `outside` the band.
+fn density_hit(post: &LintPost, outside: impl Fn(usize) -> bool) -> Vec<Hit> {
+    let Some(keyword) = Keyword::focus(post) else {
+        return Vec::new();
+    };
+    per_thousand(post, &keyword)
+        .filter(|rate| outside(*rate))
+        .map(|_| Hit::about(keyword.text))
+        .into_iter()
+        .collect()
 }
 
 /// The focus keyword appears fewer times per thousand words than the
@@ -204,11 +264,7 @@ impl Rule for FocusTooRare {
     }
 
     fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
-        per_thousand(post)
-            .filter(|&(_, rate)| rate < self.min)
-            .map(|(keyword, _)| Hit::about(keyword))
-            .into_iter()
-            .collect()
+        density_hit(post, |rate| rate < self.min)
     }
 }
 
@@ -230,11 +286,7 @@ impl Rule for FocusTooOften {
     }
 
     fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
-        per_thousand(post)
-            .filter(|&(_, rate)| rate > self.max)
-            .map(|(keyword, _)| Hit::about(keyword))
-            .into_iter()
-            .collect()
+        density_hit(post, |rate| rate > self.max)
     }
 }
 
@@ -258,8 +310,8 @@ impl Rule for SecondaryKeywordUnused {
             .iter()
             .map(|keyword| keyword.trim())
             .filter(|keyword| {
-                let topic = words(keyword);
-                !topic.is_empty() && !holds(&text, &topic)
+                Keyword::new(keyword, &[], post.locale.language())
+                    .is_some_and(|keyword| !keyword.found_in_words(&text))
             })
             .map(Hit::about)
             .collect()
@@ -311,6 +363,35 @@ mod tests {
         let hits = FocusNotIn(Place::Title).check(&post, &site);
         assert_eq!(hits, [Hit::about("internal links")]);
         assert_eq!(FocusNotIn(Place::Headline).check(&post, &site), []);
+    }
+
+    #[test]
+    fn another_word_form_of_the_keyword_counts_in_english_and_german() {
+        let site = crate::LintSite::default();
+        let mut post = LintPost::new(Locale::try_new("en").unwrap(), Slug::try_new("a").unwrap());
+        post.focus_keyword = Some("internal link".to_owned());
+        post.title = Some("Linking with internal links".to_owned());
+        assert_eq!(FocusNotIn(Place::Title).check(&post, &site), []);
+        let mut german = LintPost::new(Locale::try_new("de").unwrap(), Slug::try_new("a").unwrap());
+        german.focus_keyword = Some("interner Link".to_owned());
+        german.title = Some("Warum interne Links helfen".to_owned());
+        assert_eq!(FocusNotIn(Place::Title).check(&german, &site), []);
+        german.title = Some("Warum Verweise helfen".to_owned());
+        let hits = FocusNotIn(Place::Title).check(&german, &site);
+        assert_eq!(hits, [Hit::about("interner Link")]);
+    }
+
+    #[test]
+    fn a_synonym_counts_as_the_keyword_in_every_place_and_the_density() {
+        let site = crate::LintSite::default();
+        let mut post = LintPost::new(Locale::try_new("en").unwrap(), Slug::try_new("a").unwrap());
+        post.focus_keyword = Some("internal links".to_owned());
+        post.keyword_synonyms = vec!["site links".to_owned()];
+        post.title = Some("Why site links matter".to_owned());
+        assert_eq!(FocusNotIn(Place::Title).check(&post, &site), []);
+        post.body_text = format!("{} internal links and site links.", ["word"; 96].join(" "));
+        let keyword = Keyword::focus(&post).unwrap();
+        assert_eq!(per_thousand(&post, &keyword), Some(2000 / 101));
     }
 
     #[test]

@@ -80,7 +80,7 @@ fn allows_the_fields_the_linter_checks_to_be_missing() {
 fn refuses_an_unknown_field() {
     assert_eq!(
         message("---\ntitle: A\ncolour: blue\n---\n"),
-        "posts/a.md, line 3, field \"colour\": unknown field `colour`, expected one of title, slug, date, updated, updated_note, reviewed, topic_group, main_post, author, category, description, translation, aliases, featured, robots, canonical, reviewed_by, related, focus_keyword, secondary_keywords, cluster, image, seo_title, tags, sitemap, access, template, password_hash, head_code, co_authors, review_state, share_cards, schema"
+        "posts/a.md, line 3, field \"colour\": unknown field `colour`, expected one of title, slug, date, updated, updated_note, reviewed, topic_group, main_post, author, category, description, translation, aliases, featured, robots, canonical, reviewed_by, related, focus_keyword, secondary_keywords, keyword_synonyms, cluster, image, seo_title, tags, sitemap, access, template, password_hash, head_code, co_authors, review_state, share_cards, schema"
     );
 }
 
@@ -98,6 +98,23 @@ fn reads_the_focus_keyword_and_secondary_keywords_as_one_or_a_list() {
     assert_eq!(one.front.secondary_keywords, ["link text"]);
     let plain = parse_post(Path::new("posts/a.md"), GOOD).unwrap();
     assert!(plain.front.focus_keyword.is_none() && plain.front.secondary_keywords.is_empty());
+}
+
+#[test]
+fn reads_keyword_synonyms_as_one_or_a_list_each_with_a_word() {
+    let text =
+        "---\nfocus_keyword: internal links\nkeyword_synonyms: [site links, Verweise]\n---\n";
+    let post = parse_post(Path::new("posts/a.md"), text).unwrap();
+    assert_eq!(post.front.keyword_synonyms, ["site links", "Verweise"]);
+    let one = parse_post(
+        Path::new("posts/a.md"),
+        "---\nkeyword_synonyms: site links\n---\n",
+    );
+    assert_eq!(one.unwrap().front.keyword_synonyms, ["site links"]);
+    assert_eq!(
+        message("---\nkeyword_synonyms: [\" \"]\n---\n"),
+        "posts/a.md, line 2, field \"keyword_synonyms\": a keyword needs at least one word, such as internal links; remove the field if the post has none"
+    );
 }
 
 #[test]

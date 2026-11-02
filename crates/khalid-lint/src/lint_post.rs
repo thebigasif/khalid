@@ -84,6 +84,11 @@ pub struct LintPost {
     /// as "link text", from `secondary_keywords` in the header.
     #[serde(default)]
     pub secondary_keywords: Vec<String>,
+    /// Other words for the focus keyword that count as using it, such as
+    /// "site links" for "internal links", from `keyword_synonyms` in the
+    /// header.
+    #[serde(default)]
+    pub keyword_synonyms: Vec<String>,
     /// The collection the post belongs to, such as `guides`, from the
     /// folder it lives in.
     pub collection: Option<String>,
@@ -124,6 +129,7 @@ impl LintPost {
             reviews: 0,
             focus_keyword: None,
             secondary_keywords: Vec::new(),
+            keyword_synonyms: Vec::new(),
             collection: None,
             structured_data_gaps: Vec::new(),
             brief: None,

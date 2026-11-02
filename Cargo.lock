@@ -2829,6 +2829,7 @@ version = "0.2.0"
 dependencies = [
  "chrono",
  "khalid-core",
+ "rust-stemmers",
  "serde",
  "serde_json",
  "thiserror 2.0.21",

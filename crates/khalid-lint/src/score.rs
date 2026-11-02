@@ -62,7 +62,7 @@ impl Score {
             let points = match finding.severity() {
                 Severity::Block => BLOCK_POINTS,
                 Severity::Warn => WARN_POINTS,
-                Severity::Off => 0,
+                Severity::Info | Severity::Off => 0,
             };
             refused |= finding.severity() == Severity::Block;
             if points > 0 && lost.iter().all(|loss| loss.rule != finding.rule()) {

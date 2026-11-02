@@ -217,6 +217,7 @@ pub(crate) fn lint_parts(
     post.focus_keyword.clone_from(&front.focus_keyword);
     post.secondary_keywords
         .clone_from(&front.secondary_keywords);
+    post.keyword_synonyms.clone_from(&front.keyword_synonyms);
     post.cluster = front
         .cluster
         .as_ref()

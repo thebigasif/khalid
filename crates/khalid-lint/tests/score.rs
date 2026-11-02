@@ -51,6 +51,20 @@ fn each_warning_costs_five_points_and_names_its_rule() {
 }
 
 #[test]
+fn a_tip_costs_no_points() {
+    let mut post = clean();
+    post.description = None;
+    let clock = FixedClock::new(Utc.with_ymd_and_hms(2026, 10, 26, 9, 0, 0).unwrap());
+    let config = LintConfig::parse("[rules]\nno-description = \"info\"\n").unwrap();
+    let linter = Linter::new(&config, &clock).unwrap();
+    let mut site = LintSite::default();
+    site.posts.push(post.clone());
+    let report = linter.lint_post(&post, &site);
+    assert_eq!(report.findings().len(), 1);
+    assert_eq!(report.score(&post).value(), 100);
+}
+
+#[test]
 fn a_rule_costs_points_once_however_often_it_fires() {
     let mut post = clean();
     post.images = vec![

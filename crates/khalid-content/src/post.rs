@@ -90,6 +90,10 @@ pub struct PostFront {
     /// such as "link text". At most [`MAX_SECONDARY_KEYWORDS`].
     #[serde(default, deserialize_with = "secondary_keywords")]
     pub secondary_keywords: Vec<String>,
+    /// Other words for the focus keyword that count as using it, such as
+    /// "site links" for "internal links": one phrase or a list.
+    #[serde(default, deserialize_with = "keyword_synonyms")]
+    pub keyword_synonyms: Vec<String>,
     /// The topic cluster the post belongs to and its role in it, which the
     /// linter checks: a member links to its pillar.
     pub cluster: Option<TopicCluster>,
@@ -331,6 +335,15 @@ fn keyword<E: serde::de::Error>(text: String) -> Result<String, E> {
 /// Reads the focus keyword: one phrase with at least one word.
 fn focus_keyword<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Option<String>, D::Error> {
     keyword(String::deserialize(deserializer)?).map(Some)
+}
+
+/// Reads the keyword synonyms: one phrase or a list, each with at least
+/// one word.
+fn keyword_synonyms<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<String>, D::Error> {
+    one_or_many(deserializer)?
+        .into_iter()
+        .map(keyword)
+        .collect()
 }
 
 /// Reads the secondary keywords: one phrase or a list, each with at least
