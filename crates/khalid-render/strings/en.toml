@@ -173,3 +173,18 @@ consent_change = "You can change your choice about code from other companies tha
 consent_allow = "Allow"
 consent_refuse = "Do not allow"
 all_posts = "All posts"
+
+# A location card, where a post places ::location (Yoast Local).
+location_hours = "Opening hours"
+location_open_now = "Open now"
+location_closed_now = "Closed now"
+location_closed = "Closed"
+location_map = "Map and directions"
+location_time_range = "{opens} to {closes}"
+weekday_1 = "Monday"
+weekday_2 = "Tuesday"
+weekday_3 = "Wednesday"
+weekday_4 = "Thursday"
+weekday_5 = "Friday"
+weekday_6 = "Saturday"
+weekday_7 = "Sunday"

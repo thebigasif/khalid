@@ -26,6 +26,7 @@ mod heading_links;
 mod home;
 mod image;
 mod listing;
+mod location;
 mod pack;
 mod page_body;
 mod page_meta;
@@ -59,6 +60,7 @@ pub use glossary::{
 pub use home::{HomeSectionPosts, MOST_PICKS, RenderHome, TopicGroup};
 pub use image::{ImageCandidate, ImageSet, Loading, RenderImage};
 pub use listing::{Pagination, PostCard, RenderListing};
+pub use location::{LocationWords, location_card, place_locations};
 pub use pack::{RenderCta, RenderPack, TemplateOption};
 pub use page_body::PageBody;
 pub use page_meta::{Alternate, HeadHtml, PageKind, PageMeta, Robots, ShareImage};
