@@ -103,7 +103,7 @@ fn theme(site: &Path, config: &Config) -> Result<(Option<(Renderer, Asset)>, Tok
     }
     let look = look::of(site, config)?;
     let tokens = look::tokens(site, &look)?;
-    let renderer = Renderer::with_pack(site, &look::render_pack(&look))
+    let renderer = Renderer::with_pack(site, &look::render_pack(&look, config))
         .map_err(|error| build_message::render(&error))?
         .with_brand(&tokens.brand);
     let css = assets::site_stylesheet(site, &look)?;

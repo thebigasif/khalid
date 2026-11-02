@@ -19,6 +19,7 @@ mod environment;
 mod head_code;
 mod indexnow_key;
 mod link_settings;
+mod link_tracking;
 mod locale;
 mod mail_settings;
 mod media_settings;
@@ -51,6 +52,7 @@ pub use environment::Environment;
 pub use head_code::{HeadCode, HeadCodeError};
 pub use indexnow_key::{IndexNowKey, ParseIndexNowKeyError};
 pub use link_settings::{DomainName, ExternalRel, LinkOpening, LinkSettings, ParseDomainNameError};
+pub use link_tracking::{LinkTracking, ParseTagValueError, TagValue};
 pub use locale::{Locale, ParseLocaleError};
 pub use mail_settings::{
     MailSettings, MailTransport, PostmarkSettings, SmtpSecurity, SmtpSettings,

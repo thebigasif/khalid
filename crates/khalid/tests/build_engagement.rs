@@ -111,3 +111,28 @@ fn build_frames_a_page_only_on_a_domain_the_site_allows() {
     let link = "<p class=\"bookmark\"><a href=\"https://other.example.com/roi\"";
     assert!(page.contains(link), "{page}");
 }
+
+#[test]
+fn build_tags_links_to_the_owners_product_and_no_other_link() {
+    let temp = tempfile::tempdir().unwrap();
+    let body = "Start on [the app](https://app.example.com/signup#plans), read \
+                [the guide](https://developers.google.com/search) or go back to \
+                [the home page](/).\n\n\
+                ::button{href=\"https://app.example.com/trial\" label=\"Start a trial\"}\n\n::cta\n";
+    post(temp.path(), "tagged", body, &[]);
+    let settings = "\n[template.cta]\nlabel = \"Try the app\"\nhref = \"https://app.example.com/\"\n\n\
+                    [seo.links.tracking]\ndomains = [\"app.example.com\"]\n";
+    let page = built(temp.path(), settings, "tagged/index.html");
+    let tags = "utm_source=blog&amp;utm_medium=content&amp;utm_campaign=tagged";
+    let app = format!("<a href=\"https://app.example.com/signup?{tags}#plans\">the app</a>");
+    assert!(page.contains(&app), "{page}");
+    let button = format!("href=\"https://app.example.com/trial?{tags}\">Start a trial</a>");
+    assert!(page.contains(&button), "{page}");
+    let cta = "href=\"https://app.example.com/?utm_source=blog&amp;utm_medium=content&amp;utm_campaign=cta\">Try the app</a>";
+    assert!(page.contains(cta), "{page}");
+    assert!(
+        page.contains("<a href=\"https://developers.google.com/search\">"),
+        "{page}"
+    );
+    assert_eq!(page.matches("utm_source").count(), 3, "{page}");
+}

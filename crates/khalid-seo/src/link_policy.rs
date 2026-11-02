@@ -40,7 +40,7 @@ impl Domain {
     }
 
     /// Whether `host` is this domain or one of its subdomains.
-    fn covers(&self, host: &str) -> bool {
+    pub(crate) fn covers(&self, host: &str) -> bool {
         host == self.0
             || host
                 .strip_suffix(self.0.as_str())

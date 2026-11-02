@@ -11,7 +11,7 @@ use khalid_core::{Config, ConfigError, UserMessage, toml_location};
 use khalid_render::{RenderCta, RenderPack, TemplateOption, Tokens};
 use khalid_theme::{CheckedOption, Look, LookError, OptionKind};
 
-use crate::{build_message, config_message};
+use crate::{build_message, build_seo, config_message};
 
 /// The look of the `site` folder whose settings are `config`.
 ///
@@ -34,8 +34,9 @@ pub(crate) fn apply(site: &Path, config: Config) -> Result<Config, UserMessage> 
     Ok(config.with_reader_defaults(look.pack().reader))
 }
 
-/// The look's pack as the renderer takes it.
-pub(crate) fn render_pack(look: &Look) -> RenderPack<'static> {
+/// The look's pack as the renderer takes it, its call to action tagged
+/// as `[seo.links.tracking]` in `config` says.
+pub(crate) fn render_pack(look: &Look, config: &Config) -> RenderPack<'static> {
     let pack = look.pack();
     let option = |value: &CheckedOption| match value {
         CheckedOption::Switch(on) => TemplateOption::Switch(*on),
@@ -53,7 +54,7 @@ pub(crate) fn render_pack(look: &Look) -> RenderPack<'static> {
             .collect(),
         cta: look.cta().map(|cta| RenderCta {
             label: cta.label.to_string(),
-            href: cta.href.to_string(),
+            href: build_seo::tracked_cta(config, cta.href.to_string()),
             note: cta.note.as_ref().map(ToString::to_string),
         }),
     }

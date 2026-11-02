@@ -126,7 +126,7 @@ impl SitePages {
         let theme = if config.mode().has_pages() {
             let look = look::of(folder, &config)?;
             let tokens = look::tokens(folder, &look)?;
-            let renderer = Renderer::with_pack(folder, &look::render_pack(&look))
+            let renderer = Renderer::with_pack(folder, &look::render_pack(&look, &config))
                 .map_err(|error| build_message::render(&error))?
                 .with_brand(&tokens.brand);
             let rules = assets::rules(folder, &look)?;

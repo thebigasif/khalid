@@ -203,7 +203,7 @@ fn post_pages(
         let gated = Gated::Locked {
             back: back.as_deref(),
         };
-        let rendered = rendered(config, links, doc, gated)?;
+        let rendered = rendered(config, links, doc, (gated, slug.as_str()))?;
         drafts.push(Draft {
             doc,
             date,
@@ -412,24 +412,25 @@ pub(crate) fn body_html<F>(
     links: &Wikilinks,
     doc: &Document<F>,
 ) -> Result<BodyHtml, UserMessage> {
-    let rendered = rendered(config, links, doc, Gated::Locked { back: None })?;
+    let rendered = rendered(config, links, doc, (Gated::Locked { back: None }, "blog"))?;
     Ok(BodyHtml::from_sanitised(rendered.html))
 }
 
 /// A document's body rendered with its gated blocks as `gated` says, the
 /// pages of the domains `[media] embed_domains` allows in frames, and
-/// each link given the site's link policy.
+/// each link given the site's link policy and tracking tags, named
+/// `campaign`.
 fn rendered<F>(
     config: &Config,
     links: &Wikilinks,
     doc: &Document<F>,
-    gated: Gated<'_>,
+    (gated, campaign): (Gated<'_>, &str),
 ) -> Result<Rendered, UserMessage> {
     let frames = &config.media().embed_domains;
     let slugs = config.slugs();
     let mut rendered = render_framed(&doc.body, &doc.locale, slugs, links, gated, frames)
         .map_err(|error| build_message::block(&doc.path, &error))?;
-    rendered.html = build_seo::with_link_policy(config, mem::take(&mut rendered.html));
+    rendered.html = build_seo::with_link_rules(config, mem::take(&mut rendered.html), campaign);
     Ok(rendered)
 }
 

@@ -65,7 +65,13 @@ pub(crate) fn open(
             let rendered =
                 render_framed(&doc.body, &doc.locale, config.slugs(), links, open, frames)
                     .map_err(|error| build_message::block(&doc.path, &error))?;
-            let parts = build_seo::with_link_policy(config, rendered.html);
+            // The post's slug is the last folder of its page's file.
+            let folders = page
+                .file
+                .trim_end_matches("index.html")
+                .trim_end_matches('/');
+            let slug = folders.rsplit('/').next().unwrap_or("blog");
+            let parts = build_seo::with_link_rules(config, rendered.html, slug);
             let Some(html) = opened(post.body.as_str(), &parts) else {
                 continue;
             };
