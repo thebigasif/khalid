@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#f4f1ff"/>
+  <circle cx="190" cy="160" r="95" fill="#8fd9bd" opacity="0.35"/>
+  <circle cx="1040" cy="530" r="110" fill="#ffb38a" opacity="0.3"/>
+  <ellipse cx="560" cy="590" rx="290" ry="18" fill="#1f1b3a" opacity="0.08"/>
+  <rect x="330" y="110" width="440" height="460" rx="18" fill="#ffffff"/>
+  <rect x="380" y="160" width="220" height="18" rx="9" fill="#5b45d6"/>
+  <rect x="380" y="210" width="340" height="12" rx="6" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="380" y="240" width="300" height="12" rx="6" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="380" y="270" width="340" height="16" rx="8" fill="#ffb38a"/>
+  <rect x="380" y="304" width="260" height="12" rx="6" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="380" y="334" width="320" height="12" rx="6" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="380" y="364" width="340" height="16" rx="8" fill="#ffb38a"/>
+  <rect x="380" y="398" width="280" height="12" rx="6" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="380" y="428" width="310" height="12" rx="6" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="380" y="458" width="200" height="12" rx="6" fill="#1f1b3a" opacity="0.15"/>
+  <rect x="380" y="500" width="120" height="30" rx="15" fill="#8fa2ff" opacity="0.5"/>
+  <circle cx="720" cy="330" r="120" fill="#8fa2ff" opacity="0.25"/>
+  <circle cx="720" cy="330" r="120" fill="none" stroke="#5b45d6" stroke-width="22"/>
+  <rect x="800" y="420" width="44" height="170" rx="22" fill="#5b45d6" transform="rotate(-45 822 505)"/>
+  <circle cx="680" cy="290" r="22" fill="#ffffff" opacity="0.7"/>
+  <path d="M930 170 L948 210 L992 214 L958 243 L968 286 L930 263 L892 286 L902 243 L868 214 L912 210 Z" fill="#ffb38a"/>
+  <circle cx="990" cy="330" r="10" fill="#5b45d6"/>
+  <circle cx="1020" cy="360" r="6" fill="#8fd9bd"/>
+  <circle cx="230" cy="470" r="8" fill="#5b45d6" opacity="0.5"/>
+  <path d="M200 330 L206 346 L222 352 L206 358 L200 374 L194 358 L178 352 L194 346 Z" fill="#5b45d6"/>
+</svg>

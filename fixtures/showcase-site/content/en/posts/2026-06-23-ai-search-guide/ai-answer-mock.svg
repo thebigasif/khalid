@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="t">
+  <title id="t">Annotated mock of an AI answer screen. Label 1 marks the answer text lifted from one page, label 2 marks the source link to that page, label 3 marks the follow-up questions</title>
+  <rect width="640" height="400" fill="#f7f4ee"/>
+  <rect x="40" y="20" width="440" height="360" rx="12" fill="#ffffff" stroke="#2b2540" stroke-opacity="0.2"/>
+  <rect x="60" y="38" width="400" height="36" rx="18" fill="#f7f4ee"/>
+  <text x="78" y="61" font-family="Georgia, serif" font-size="14" fill="#2b2540">How often should a small blog publish?</text>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <text x="64" y="106">A small team does best with a pace it can keep,</text>
+    <text x="64" y="126">often two to four posts a month, plus time to</text>
+    <text x="64" y="146">refresh older posts. [1]</text>
+  </g>
+  <rect x="60" y="88" width="404" height="68" rx="6" fill="none" stroke="#5b45d6" stroke-width="2"/>
+  <text x="64" y="186" font-family="Georgia, serif" font-size="13" fill="#2b2540">Sources</text>
+  <rect x="60" y="196" width="196" height="54" rx="8" fill="#f7f4ee" stroke="#5b45d6" stroke-width="2"/>
+  <text x="72" y="219" font-family="Georgia, serif" font-size="13" fill="#2b2540">[1] Larkspur Ledger</text>
+  <rect x="72" y="230" width="150" height="8" rx="4" fill="#2b2540" opacity="0.15"/>
+  <rect x="266" y="196" width="196" height="54" rx="8" fill="#f7f4ee"/>
+  <text x="278" y="219" font-family="Georgia, serif" font-size="13" fill="#2b2540">[2] Another blog</text>
+  <rect x="278" y="230" width="150" height="8" rx="4" fill="#2b2540" opacity="0.15"/>
+  <text x="64" y="282" font-family="Georgia, serif" font-size="13" fill="#2b2540">People also ask</text>
+  <rect x="60" y="292" width="404" height="30" rx="15" fill="none" stroke="#2b2540" stroke-opacity="0.25"/>
+  <text x="78" y="312" font-family="Georgia, serif" font-size="13" fill="#2b2540">How do we keep a publishing pace?</text>
+  <rect x="60" y="330" width="404" height="30" rx="15" fill="none" stroke="#2b2540" stroke-opacity="0.25"/>
+  <text x="78" y="350" font-family="Georgia, serif" font-size="13" fill="#2b2540">What should a content calendar include?</text>
+  <g fill="#ffb38a">
+    <circle cx="510" cy="122" r="15"/>
+    <circle cx="510" cy="223" r="15"/>
+    <circle cx="510" cy="326" r="15"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="15" fill="#2b2540" text-anchor="middle">
+    <text x="510" y="127">1</text>
+    <text x="510" y="228">2</text>
+    <text x="510" y="331">3</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <text x="532" y="118">Passage</text>
+    <text x="532" y="134">lifted</text>
+    <text x="532" y="219">Link</text>
+    <text x="532" y="235">earned</text>
+    <text x="532" y="322">More</text>
+    <text x="532" y="338">chances</text>
+  </g>
+</svg>

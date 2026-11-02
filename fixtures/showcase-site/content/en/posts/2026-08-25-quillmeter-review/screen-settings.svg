@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Mock screenshot of the Quillmeter settings panel: long sentence limit set to 25 words, rare word check on, and a personal word list with three words</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <rect x="120" y="20" width="400" height="320" rx="10" fill="#ffffff" stroke="#2b2540" stroke-opacity="0.2"/>
+  <rect x="120" y="20" width="400" height="34" rx="10" fill="#6b5ca5"/>
+  <text x="320" y="42" font-family="Georgia, serif" font-size="14" text-anchor="middle" fill="#ffffff">Quillmeter settings</text>
+  <g font-family="Georgia, serif" font-size="14" fill="#2b2540">
+    <text x="145" y="92">Long sentence limit</text>
+    <rect x="390" y="74" width="60" height="28" rx="4" fill="#f7f4ee" stroke="#5b45d6"/>
+    <text x="420" y="93" text-anchor="middle">25</text>
+    <text x="458" y="93">words</text>
+    <text x="145" y="140">Mark rare words</text>
+    <rect x="420" y="124" width="50" height="24" rx="12" fill="#8fd9bd"/>
+    <circle cx="458" cy="136" r="9" fill="#ffffff"/>
+    <text x="145" y="188">Words never to mark</text>
+    <rect x="145" y="200" width="350" height="76" rx="4" fill="#f7f4ee"/>
+    <text x="158" y="222">schema</text>
+    <text x="158" y="244">markup</text>
+    <text x="158" y="266">canonical</text>
+  </g>
+  <rect x="145" y="292" width="140" height="30" rx="15" fill="#5b45d6"/>
+  <text x="215" y="312" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#ffffff">Add a word</text>
+  <circle cx="530" cy="238" r="13" fill="#ffb38a"/>
+  <text x="530" y="243" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#2b2540">2</text>
+  <text x="300" y="312" font-family="Georgia, serif" font-size="12" fill="#2b2540" opacity="0.75">2. The list stays on this machine only.</text>
+</svg>

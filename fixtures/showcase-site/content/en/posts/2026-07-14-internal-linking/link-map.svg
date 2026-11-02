@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 380" width="640" height="380" role="img" aria-labelledby="t">
+  <title id="t">A link map of one topic cluster. A pillar guide sits in the centre with links to and from five member posts. Two members also link to each other. One post on the right has no links in at all and is marked as an orphan page</title>
+  <rect width="640" height="380" fill="#f7f4ee"/>
+  <text x="320" y="30" font-family="Georgia, serif" font-size="17" text-anchor="middle" fill="#2b2540">A hub and spoke cluster, with one orphan</text>
+  <g stroke="#6b5ca5" stroke-width="3">
+    <line x1="270" y1="200" x2="120" y2="90"/>
+    <line x1="270" y1="200" x2="420" y2="90"/>
+    <line x1="270" y1="200" x2="90" y2="230"/>
+    <line x1="270" y1="200" x2="150" y2="330"/>
+    <line x1="270" y1="200" x2="390" y2="330"/>
+  </g>
+  <line x1="150" y1="330" x2="390" y2="330" stroke="#8fd9bd" stroke-width="3"/>
+  <circle cx="270" cy="200" r="52" fill="#5b45d6"/>
+  <g font-family="Georgia, serif" font-size="13" fill="#ffffff" text-anchor="middle">
+    <text x="270" y="196">Pillar</text>
+    <text x="270" y="213">guide</text>
+  </g>
+  <g fill="#ffffff" stroke="#6b5ca5" stroke-width="2">
+    <rect x="70" y="70" width="100" height="40" rx="8"/>
+    <rect x="370" y="70" width="100" height="40" rx="8"/>
+    <rect x="40" y="210" width="100" height="40" rx="8"/>
+    <rect x="100" y="310" width="100" height="40" rx="8"/>
+    <rect x="340" y="310" width="100" height="40" rx="8"/>
+  </g>
+  <rect x="510" y="180" width="110" height="40" rx="8" fill="#ffffff" stroke="#ffb38a" stroke-width="3" stroke-dasharray="6 5"/>
+  <g font-family="Georgia, serif" font-size="12" fill="#2b2540" text-anchor="middle">
+    <text x="120" y="95">Audit how-to</text>
+    <text x="420" y="95">Sitemaps</text>
+    <text x="90" y="235">Redirects</text>
+    <text x="150" y="335">Page speed</text>
+    <text x="390" y="335">Schema</text>
+    <text x="565" y="205">Old case study</text>
+    <text x="565" y="245">Orphan: no</text>
+    <text x="565" y="261">links point here</text>
+    <text x="270" y="363">Member posts that cover related steps link to each other too</text>
+  </g>
+</svg>

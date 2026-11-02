@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Diagram joining five jobs to the kind of tool that does each: rank and click data to the search consoles, crawling to crawlers, keyword research and link data to all-in-one suites and link indexes, content checks to content tools. Jobs with a strong free option are marked in mint</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <text x="320" y="34" font-family="Georgia, serif" font-size="19" text-anchor="middle" fill="#2b2540">Five jobs and the tools that do them</text>
+  <g font-family="Georgia, serif" font-size="14" fill="#2b2540">
+    <text x="40" y="66">The job</text>
+    <text x="400" y="66">The kind of tool</text>
+  </g>
+  <g>
+    <rect x="40" y="80" width="200" height="40" rx="8" fill="#8fd9bd"/>
+    <rect x="40" y="134" width="200" height="40" rx="8" fill="#8fd9bd"/>
+    <rect x="40" y="188" width="200" height="40" rx="8" fill="#ffffff" stroke="#6b5ca5"/>
+    <rect x="40" y="242" width="200" height="40" rx="8" fill="#ffffff" stroke="#6b5ca5"/>
+    <rect x="40" y="296" width="200" height="40" rx="8" fill="#ffffff" stroke="#6b5ca5"/>
+  </g>
+  <g fill="#6b5ca5">
+    <rect x="400" y="80" width="200" height="40" rx="8"/>
+    <rect x="400" y="134" width="200" height="40" rx="8"/>
+    <rect x="400" y="215" width="200" height="40" rx="8"/>
+    <rect x="400" y="296" width="200" height="40" rx="8"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="14" fill="#2b2540">
+    <text x="54" y="105">Rank and click data</text>
+    <text x="54" y="159">Crawling</text>
+    <text x="54" y="213">Keyword research</text>
+    <text x="54" y="267">Link data</text>
+    <text x="54" y="321">Content checks</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="14" fill="#ffffff">
+    <text x="414" y="105">Search consoles (free)</text>
+    <text x="414" y="159">Crawlers</text>
+    <text x="414" y="240">Suites, link indexes</text>
+    <text x="414" y="321">Content tools</text>
+  </g>
+  <g stroke="#5b45d6" stroke-width="2.5" fill="none">
+    <path d="M240 100 L400 100"/>
+    <path d="M240 154 L400 154"/>
+    <path d="M240 208 C320 208 320 235 400 235"/>
+    <path d="M240 262 C320 262 320 235 400 235"/>
+    <path d="M240 316 L400 316"/>
+  </g>
+  <rect x="270" y="56" width="14" height="14" fill="#8fd9bd"/>
+  <text x="290" y="68" font-family="Georgia, serif" font-size="12" fill="#2b2540">Strong free option</text>
+</svg>

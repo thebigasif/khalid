@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Example data bar chart of hours per month a made-up two-person team spends on four jobs, before and after a paid suite. Reporting: 9 before, 2 after. Keyword research: 5 before, 2 after. Link checks: 4 before, 2 after. Content checks: 6 before, 6 after</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <text x="320" y="34" font-family="Georgia, serif" font-size="19" text-anchor="middle" fill="#2b2540">Example data: hours a month, before and after</text>
+  <rect x="380" y="52" width="14" height="14" fill="#6b5ca5"/>
+  <text x="400" y="64" font-family="Georgia, serif" font-size="13" fill="#2b2540">Before</text>
+  <rect x="470" y="52" width="14" height="14" fill="#8fd9bd"/>
+  <text x="490" y="64" font-family="Georgia, serif" font-size="13" fill="#2b2540">With the suite</text>
+  <g font-family="Georgia, serif" font-size="15" fill="#2b2540" text-anchor="end">
+    <text x="190" y="112">Client reporting</text>
+    <text x="190" y="172">Keyword research</text>
+    <text x="190" y="232">Broken link checks</text>
+    <text x="190" y="292">Content checks</text>
+  </g>
+  <g fill="#6b5ca5">
+    <rect x="205" y="90" width="324" height="18" rx="3"/>
+    <rect x="205" y="150" width="180" height="18" rx="3"/>
+    <rect x="205" y="210" width="144" height="18" rx="3"/>
+    <rect x="205" y="270" width="216" height="18" rx="3"/>
+  </g>
+  <g fill="#8fd9bd">
+    <rect x="205" y="111" width="72" height="18" rx="3"/>
+    <rect x="205" y="171" width="72" height="18" rx="3"/>
+    <rect x="205" y="231" width="72" height="18" rx="3"/>
+    <rect x="205" y="291" width="216" height="18" rx="3"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <text x="537" y="104">9 h</text>
+    <text x="285" y="125">2 h</text>
+    <text x="393" y="164">5 h</text>
+    <text x="285" y="185">2 h</text>
+    <text x="357" y="224">4 h</text>
+    <text x="285" y="245">2 h</text>
+    <text x="429" y="284">6 h</text>
+    <text x="429" y="305">6 h</text>
+  </g>
+  <text x="40" y="345" font-family="Georgia, serif" font-size="13" fill="#2b2540">Made-up team, for illustration only. Saved: 12 of 24 hours.</text>
+</svg>

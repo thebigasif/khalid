@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="t">
+  <title id="t">A made-up results page for the search cold room temperature log, with five numbered labels: a short answer box, a box of related questions, small sites in the top results, old dates on those results, and related searches at the foot</title>
+  <rect width="640" height="400" fill="#f7f4ee"/>
+  <rect x="40" y="20" width="440" height="360" rx="10" fill="#ffffff" stroke="#2b2540" stroke-opacity="0.15"/>
+  <rect x="60" y="36" width="300" height="24" rx="12" fill="#f7f4ee" stroke="#2b2540" stroke-opacity="0.2"/>
+  <text x="74" y="53" font-family="Georgia, serif" font-size="12" fill="#2b2540">cold room temperature log</text>
+  <rect x="60" y="74" width="400" height="56" rx="6" fill="#8fd9bd" opacity="0.35"/>
+  <text x="72" y="94" font-family="Georgia, serif" font-size="12" fill="#2b2540">A temperature log is a dated record of...</text>
+  <rect x="72" y="106" width="260" height="8" rx="4" fill="#2b2540" opacity="0.15"/>
+  <rect x="60" y="142" width="400" height="58" rx="6" fill="#f7f4ee"/>
+  <text x="72" y="160" font-family="Georgia, serif" font-size="12" fill="#2b2540">People also ask</text>
+  <rect x="72" y="170" width="300" height="8" rx="4" fill="#2b2540" opacity="0.15"/>
+  <rect x="72" y="184" width="250" height="8" rx="4" fill="#2b2540" opacity="0.15"/>
+  <g font-family="Georgia, serif" font-size="12" fill="#5b45d6">
+    <text x="60" y="222">Free log sheet to print | smallcafeblog</text>
+    <text x="60" y="270">Our fridge checks, explained | a trade forum</text>
+    <text x="60" y="318">Temperature records guide | a council site</text>
+  </g>
+  <g fill="#2b2540" opacity="0.15">
+    <rect x="60" y="230" width="340" height="8" rx="4"/>
+    <rect x="60" y="278" width="320" height="8" rx="4"/>
+    <rect x="60" y="326" width="330" height="8" rx="4"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="11" fill="#2b2540">
+    <text x="410" y="222">2019</text>
+    <text x="410" y="270">2020</text>
+    <text x="410" y="318">2018</text>
+    <text x="60" y="362">Related: fridge log template, freezer log sheet</text>
+  </g>
+  <g fill="#ffb38a">
+    <circle cx="470" cy="90" r="13"/>
+    <circle cx="470" cy="160" r="13"/>
+    <circle cx="30" cy="250" r="13"/>
+    <circle cx="460" cy="250" r="13"/>
+    <circle cx="470" cy="358" r="13"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540" text-anchor="middle">
+    <text x="470" y="95">1</text>
+    <text x="470" y="165">2</text>
+    <text x="30" y="255">3</text>
+    <text x="460" y="255">4</text>
+    <text x="470" y="363">5</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="12" fill="#2b2540">
+    <text x="500" y="70">1 A short answer</text>
+    <text x="500" y="86">wins the top spot</text>
+    <text x="500" y="140">2 Questions to</text>
+    <text x="500" y="156">answer in the post</text>
+    <text x="500" y="210">3 Small sites rank:</text>
+    <text x="500" y="226">the phrase is open</text>
+    <text x="500" y="270">4 Old pages:</text>
+    <text x="500" y="286">a gap to fill</text>
+    <text x="500" y="340">5 Phrases for the</text>
+    <text x="500" y="356">same post</text>
+  </g>
+</svg>

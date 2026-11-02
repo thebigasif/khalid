@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="t">
+  <title id="t">Impact against effort grid with example findings. Quick wins, high impact and low effort: stray noindex, wrong canonical host. Big projects, high impact and high effort: rebuild navigation. Fill-ins, low impact and low effort: redirect chains on old links. Skip, low impact and high effort: rewrite old archive pages</title>
+  <rect width="640" height="400" fill="#f7f4ee"/>
+  <text x="340" y="30" font-family="Georgia, serif" font-size="19" text-anchor="middle" fill="#2b2540">Impact and effort, with example findings</text>
+  <rect x="90" y="50" width="250" height="150" fill="#8fd9bd" opacity="0.45"/>
+  <rect x="340" y="50" width="250" height="150" fill="#8fa2ff" opacity="0.3"/>
+  <rect x="90" y="200" width="250" height="150" fill="#ffffff"/>
+  <rect x="340" y="200" width="250" height="150" fill="#ffb38a" opacity="0.3"/>
+  <rect x="90" y="50" width="500" height="300" fill="none" stroke="#2b2540" stroke-opacity="0.3"/>
+  <line x1="340" y1="50" x2="340" y2="350" stroke="#2b2540" stroke-opacity="0.3"/>
+  <line x1="90" y1="200" x2="590" y2="200" stroke="#2b2540" stroke-opacity="0.3"/>
+  <g font-family="Georgia, serif" font-size="15" fill="#2b2540">
+    <text x="102" y="74">Quick wins: do first</text>
+    <text x="352" y="74">Big projects: plan</text>
+    <text x="102" y="224">Fill-ins: batch</text>
+    <text x="352" y="224">Skip or question</text>
+  </g>
+  <g fill="#5b45d6">
+    <circle cx="130" cy="110" r="8"/>
+    <circle cx="160" cy="160" r="8"/>
+    <circle cx="470" cy="120" r="8"/>
+    <circle cx="200" cy="280" r="8"/>
+    <circle cx="500" cy="300" r="8"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <text x="144" y="115">Stray noindex</text>
+    <text x="174" y="165">Wrong canonical host</text>
+    <text x="370" y="148">Rebuild navigation</text>
+    <text x="214" y="285">Old redirect chains</text>
+    <text x="380" y="328">Rewrite old archives</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="14" fill="#2b2540">
+    <text x="340" y="378" text-anchor="middle">Effort: low to high</text>
+    <text x="40" y="200" text-anchor="middle" transform="rotate(-90 40 200)">Impact: low to high</text>
+  </g>
+</svg>
