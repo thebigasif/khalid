@@ -98,6 +98,43 @@ fn an_authors_photo_and_a_posts_lead_image_show_wherever_they_go() {
 }
 
 #[test]
+fn a_site_that_asks_for_avif_offers_it_before_webp() {
+    let site = tempfile::tempdir().unwrap();
+    let demo = at(
+        Path::new(env!("CARGO_MANIFEST_DIR")),
+        "../../fixtures/demo-site",
+    );
+    copy(&demo, site.path());
+    let settings = at(site.path(), "site.toml");
+    let text = fs::read_to_string(&settings).unwrap();
+    fs::write(&settings, format!("{text}\n[media]\navif = true\n")).unwrap();
+    let out = build(site.path());
+    let post = page(out.path(), "fixing-slow-pages/index.html");
+    let avif = post.find("<source type=\"image/avif\"");
+    let webp = post.find("<source type=\"image/webp\"");
+    assert!(avif.is_some() && avif < webp, "{post}");
+    let address = post
+        .split_once("<source type=\"image/avif\" srcset=\"/blog/")
+        .and_then(|(_, rest)| rest.split_once(' '))
+        .map(|(file, _)| file.to_owned())
+        .unwrap_or_default();
+    let extension = Path::new(&address).extension();
+    assert_eq!(
+        extension.and_then(|e| e.to_str()),
+        Some("avif"),
+        "{address}"
+    );
+    assert!(at(out.path(), &address).is_file(), "{address} is written");
+}
+
+#[test]
+fn a_site_that_does_not_ask_makes_no_avif() {
+    let (_site, out) = built();
+    let post = page(out.path(), "fixing-slow-pages/index.html");
+    assert!(!post.contains("image/avif"), "{post}");
+}
+
+#[test]
 fn an_svg_lead_image_and_photo_are_drawn_at_their_own_size() {
     let (site, _) = built();
     let post = at(site.path(), "content/en/posts/2026-10-05-fixing-slow-pages");
