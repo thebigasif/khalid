@@ -71,7 +71,7 @@ describe("starting a post", () => {
       }
       return json(request.method === "POST" ? 201 : 200, { posts: [DRAFT] });
     });
-    renderAt("/");
+    renderAt("/new");
     await userEvent.type(await screen.findByLabelText(en.start.label), "Why dough sticks");
     await userEvent.click(screen.getByRole("button", { name: en.start.submit }));
     expect(await screen.findByLabelText(en.editor.title)).toHaveValue("Why dough sticks");
