@@ -10,6 +10,9 @@ pub enum Severity {
     Block,
     /// The writer sees the message, and the post can still be published.
     Warn,
+    /// The writer sees the message as a tip: it costs no points and never
+    /// stops a publish.
+    Info,
     /// The rule does not run.
     Off,
 }

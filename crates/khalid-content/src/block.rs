@@ -83,6 +83,12 @@ pub enum BlockKind {
         /// The snippet's slug, the name it has in `snippets/`.
         slug: String,
     },
+    /// `::location{name="..."}`: one of the site's `[[seo.locations]]`,
+    /// its address, opening hours and map link drawn in place.
+    Location {
+        /// The location's name, as written in `site.toml`.
+        name: String,
+    },
     /// `::button{href="..." label="..."}`: a link styled as a button.
     Button {
         /// Where it leads.
@@ -114,7 +120,8 @@ pub enum BlockKind {
         /// The frame's height in pixels for an allowed site's page.
         height: Option<u16>,
     },
-    /// `::video{src="..." title="..." poster="..."}`: a video file with
+    /// `::video{src="..." title="..." poster="..."}`, with an optional
+    /// `thumbnail` for search results: a video file with
     /// controls, which search engines read as a `VideoObject`.
     Video(VideoBlock),
     /// `::audio{src="..." title="..."}`: a sound file with controls.
@@ -208,6 +215,12 @@ pub enum BlockKind {
     PullQuote {
         /// Who said it, shown under the words, when it is a quote.
         by: Option<String>,
+    },
+    /// `:::takeaways{title="..."}`: a boxed list of a post's key points,
+    /// its body one markdown list. Its markup claims no schema type.
+    Takeaways {
+        /// The words over the list, `Key takeaways` unless set.
+        title: String,
     },
     /// `:::proscons{pros="..." cons="..."}`: a list of pros beside a list of
     /// cons.

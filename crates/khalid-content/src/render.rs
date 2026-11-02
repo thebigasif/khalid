@@ -256,6 +256,7 @@ impl Renderer<'_> {
             BlockKind::Toc => self.html.push_str(TOC_MARK),
             BlockKind::Cta => self.html.push_str(CTA_MARK),
             BlockKind::Snippet { slug } => self.snippet(slug),
+            BlockKind::Location { name } => self.location(name),
             BlockKind::Button { href, label } => self.button(href, label),
             BlockKind::Bookmark {
                 href,
@@ -275,7 +276,7 @@ impl Renderer<'_> {
             BlockKind::Gallery { images } => self.gallery(images),
             BlockKind::Maths { label, formula } => self.maths(label.as_deref(), formula),
             BlockKind::Chart(chart) => self.chart(chart),
-            BlockKind::PullQuote { by } => self.pull_quote(block, by.as_deref()),
+            BlockKind::PullQuote { .. } | BlockKind::Takeaways { .. } => self.set_apart(block),
             BlockKind::ProsCons(pros_cons) => self.pros_cons(pros_cons),
             BlockKind::Columns { columns } => self.columns(columns),
             BlockKind::FoldingTable { fold, more } => {
@@ -304,17 +305,6 @@ impl Renderer<'_> {
             }
             _ => {}
         }
-    }
-
-    /// Writes a body a reader opens and closes by its summary line.
-    fn toggle(&mut self, block: &Block, summary: &str) {
-        self.push(&[
-            "<details open>\n<summary>",
-            &attribute(summary),
-            "</summary>\n",
-        ]);
-        self.markdown(&inside(&block.source));
-        self.html.push_str("</details>\n");
     }
 
     /// Writes a link styled as a button.
@@ -448,6 +438,10 @@ const TOC_MARK: &str = "<!--khalid-toc-->\n";
 /// band from `[template.cta]`. Raw HTML in markdown is escaped, so no post
 /// can write it itself.
 pub const CTA_MARK: &str = "<!--khalid-cta-->\n";
+
+/// How `::location` starts its mark: the location's name, escaped as an
+/// attribute, and `-->` follow. The build swaps the mark for the card.
+pub const LOCATION_MARK: &str = "<!--khalid-location:";
 
 /// The classes of the elements a block writes itself rather than the
 /// writer: the contents list, which repeats every heading, a score,

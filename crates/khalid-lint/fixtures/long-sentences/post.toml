@@ -1,0 +1,16 @@
+# Eight sentences of 25 words and two short ones: 80 percent are long.
+# The body also holds a code line, which prose_text leaves out.
+extends = "clean"
+body_text = "Internal links help readers.\nfn main() { let total = add(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth, eleventh, twelfth); }"
+prose_text = """
+Internal links help readers. \
+Internal links help a reader who finishes one post find the next useful one on your site without going back to search for it again. \
+Internal links help a reader who finishes one post find the next useful one on your site without going back to search for it again. \
+Internal links help a reader who finishes one post find the next useful one on your site without going back to search for it again. \
+Internal links help a reader who finishes one post find the next useful one on your site without going back to search for it again. \
+Internal links help a reader who finishes one post find the next useful one on your site without going back to search for it again. \
+Internal links help a reader who finishes one post find the next useful one on your site without going back to search for it again. \
+Internal links help a reader who finishes one post find the next useful one on your site without going back to search for it again. \
+Internal links help a reader who finishes one post find the next useful one on your site without going back to search for it again. \
+Add one today.
+"""

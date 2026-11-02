@@ -1,0 +1,14 @@
+# The only link to another site carries nofollow, so the post vouches
+# for none of its sources. The internal link does not count.
+extends = "clean"
+
+[[links]]
+kind = "internal"
+target = "/blog/choosing-link-text/"
+text = "how to choose link text"
+
+[[links]]
+kind = "external"
+target = "https://developers.google.com/search/docs/crawling-indexing/links-crawlable"
+text = "Google's guide to links"
+rel = ["nofollow"]

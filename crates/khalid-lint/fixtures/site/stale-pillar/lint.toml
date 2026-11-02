@@ -1,0 +1,6 @@
+# Today is 2026-10-26 and pillars go stale after six months. The pillar
+# was last updated in March; the member post from the same day is not a
+# pillar, so only the twelve month rule for every post would judge it.
+[rules]
+orphan-post = "off"
+review-due = "off"

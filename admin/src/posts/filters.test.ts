@@ -30,4 +30,11 @@ describe("the posts screen's address", () => {
     const live = rowQuery({ checks: "clear", stage: "live" });
     expect(live.filter).toBe("gate:passes+status:published");
   });
+
+  it("reads and asks for the SEO filters", () => {
+    expect(postSearch({ seo: "orphan" }).seo).toBe("orphan");
+    expect(postSearch({ seo: "nope" }).seo).toBeUndefined();
+    expect(rowQuery({ seo: "no_keyword" }).filter).toBe("has_focus_keyword:false");
+    expect(rowQuery({ stage: "live", seo: "pillar" }).filter).toBe("status:published+pillar:true");
+  });
 });

@@ -1,0 +1,6 @@
+# The main post of its topic group, at 640 words, under the floor of 900.
+extends = "clean"
+
+[cluster]
+name = "internal-links"
+role = "pillar"

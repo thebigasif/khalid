@@ -4,10 +4,12 @@ expression: "fs::read_to_string(at(out.path(), \"robots.txt\")).unwrap()"
 ---
 User-agent: *
 Disallow: /blog/drafts/
+Disallow: /blog/search/
 Allow: /blog/
 
 User-agent: Googlebot
 Disallow: /blog/drafts/
+Disallow: /blog/search/
 Allow: /blog/
 
 User-agent: CCBot

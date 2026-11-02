@@ -6,7 +6,7 @@
 use std::path::Path;
 
 use khalid_content::parse_post;
-use khalid_core::{AbsoluteUrl, Slug};
+use khalid_core::{AbsoluteUrl, ArticleSchemaType, PageSchemaType, Slug};
 
 const GOOD: &str = "---
 title: Why internal links matter
@@ -80,8 +80,26 @@ fn allows_the_fields_the_linter_checks_to_be_missing() {
 fn refuses_an_unknown_field() {
     assert_eq!(
         message("---\ntitle: A\ncolour: blue\n---\n"),
-        "posts/a.md, line 3, field \"colour\": unknown field `colour`, expected one of title, slug, date, updated, updated_note, reviewed, topic_group, main_post, author, category, description, translation, aliases, featured, robots, canonical, reviewed_by, related, focus_keyword, secondary_keywords, cluster, series, image, seo_title, tags, sitemap, access, template, password_hash, head_code, co_authors, review_state, share_cards, schema"
+        "posts/a.md, line 3, field \"colour\": unknown field `colour`, expected one of title, slug, date, updated, updated_note, reviewed, topic_group, main_post, author, category, description, translation, aliases, featured, robots, canonical, reviewed_by, related, focus_keyword, secondary_keywords, keyword_synonyms, cluster, series, image, seo_title, tags, sitemap, access, template, password_hash, head_code, co_authors, review_state, share_cards, schema, breadcrumb_title, page_type, article_type, news, stock_tickers"
     );
+}
+
+#[test]
+fn reads_the_page_and_article_type_and_the_news_fields() {
+    let text = "---\npage_type: FAQPage\narticle_type: Report\nnews: false\n\
+                stock_tickers: [\"NASDAQ:GOOG\", \"NYSE:IBM\"]\n---\n";
+    let front = parse_post(Path::new("posts/a.md"), text).unwrap().front;
+    assert_eq!(front.page_type, Some(PageSchemaType::FaqPage));
+    assert_eq!(front.article_type, Some(ArticleSchemaType::Report));
+    assert_eq!(front.news, Some(false));
+    assert_eq!(front.stock_tickers, ["NASDAQ:GOOG", "NYSE:IBM"]);
+    let six = "---\nstock_tickers: [A:A, B:B, C:C, D:D, E:E, F:F]\n---\n";
+    assert!(
+        message(six).contains("at most 5 stock tickers"),
+        "{}",
+        message(six)
+    );
+    assert!(message("---\npage_type: HomePage\n---\n").contains("FAQPage"));
 }
 
 #[test]
@@ -98,6 +116,23 @@ fn reads_the_focus_keyword_and_secondary_keywords_as_one_or_a_list() {
     assert_eq!(one.front.secondary_keywords, ["link text"]);
     let plain = parse_post(Path::new("posts/a.md"), GOOD).unwrap();
     assert!(plain.front.focus_keyword.is_none() && plain.front.secondary_keywords.is_empty());
+}
+
+#[test]
+fn reads_keyword_synonyms_as_one_or_a_list_each_with_a_word() {
+    let text =
+        "---\nfocus_keyword: internal links\nkeyword_synonyms: [site links, Verweise]\n---\n";
+    let post = parse_post(Path::new("posts/a.md"), text).unwrap();
+    assert_eq!(post.front.keyword_synonyms, ["site links", "Verweise"]);
+    let one = parse_post(
+        Path::new("posts/a.md"),
+        "---\nkeyword_synonyms: site links\n---\n",
+    );
+    assert_eq!(one.unwrap().front.keyword_synonyms, ["site links"]);
+    assert_eq!(
+        message("---\nkeyword_synonyms: [\" \"]\n---\n"),
+        "posts/a.md, line 2, field \"keyword_synonyms\": a keyword needs at least one word, such as internal links; remove the field if the post has none"
+    );
 }
 
 #[test]

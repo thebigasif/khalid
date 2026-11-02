@@ -1,6 +1,8 @@
 import { calendarWords } from "../strings/calendarWords";
 import { en } from "../strings/en";
 import { searchConsoleWords } from "../strings/searchConsoleWords";
+import { seoToolWords } from "../strings/seoToolWords";
+import { seoWords } from "../strings/seoWords";
 import { shellWords } from "../strings/shellWords";
 import type { IconName } from "./Icon";
 
@@ -20,6 +22,9 @@ export type NavPath =
   | "/redirects"
   | "/schema-templates"
   | "/settings"
+  | "/seo"
+  | "/bulk-seo"
+  | "/workouts"
   | "/team"
   | "/keys"
   | "/webhooks"
@@ -52,6 +57,8 @@ export const NAV: NavGroup[] = [
       { to: "/analytics", label: en.nav.analytics, icon: "analytics" },
       { to: "/search-console", label: searchConsoleWords.title, icon: "search" },
       { to: "/serpdad", label: en.nav.serpdad, icon: "link" },
+      { to: "/bulk-seo", label: seoToolWords.bulk.nav, icon: "table" },
+      { to: "/workouts", label: seoToolWords.workouts.nav, icon: "steps" },
     ],
   },
   {
@@ -61,6 +68,7 @@ export const NAV: NavGroup[] = [
       { to: "/authors", label: en.nav.authors, icon: "person" },
       { to: "/redirects", label: en.nav.redirects, icon: "redirect" },
       { to: "/schema-templates", label: en.nav.templates, icon: "braces" },
+      { to: "/seo", label: seoWords.title, icon: "target" },
       { to: "/settings", label: en.nav.settings, icon: "sliders" },
     ],
   },

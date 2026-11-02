@@ -12,10 +12,12 @@
 
 mod absolute_url;
 mod ai_page_settings;
+mod ai_settings;
 mod alert_settings;
 mod clock;
 mod config;
 mod environment;
+mod geo_point;
 mod head_code;
 mod indexnow_key;
 mod link_settings;
@@ -26,10 +28,13 @@ mod media_settings;
 mod post_access;
 mod reader;
 mod robots;
+mod schema_types;
 mod search_console_settings;
 mod secret;
+mod seo_breadcrumb_settings;
 mod seo_head_settings;
 mod seo_publisher_settings;
+mod seo_search_settings;
 mod seo_settings;
 mod site_code;
 mod site_nav;
@@ -37,18 +42,21 @@ mod site_path;
 mod slug;
 mod slug_from_title;
 mod template_choice;
+mod term_seo;
 pub mod toml_location;
 mod user_message;
 mod visitor_log_settings;
 
 pub use absolute_url::{AbsoluteUrl, ParseUrlError};
-pub use ai_page_settings::AiPageSettings;
+pub use ai_page_settings::{AiPageSettings, LlmsTxtSettings};
+pub use ai_settings::{AiProvider, AiSettings};
 pub use alert_settings::AlertSettings;
 #[cfg(any(test, feature = "test-util"))]
 pub use clock::FixedClock;
 pub use clock::{Clock, SystemClock};
 pub use config::{Config, ConfigError, Mode, SlugMode};
 pub use environment::Environment;
+pub use geo_point::{GeoPoint, GeoPointError};
 pub use head_code::{HeadCode, HeadCodeError};
 pub use indexnow_key::{IndexNowKey, ParseIndexNowKeyError};
 pub use link_settings::{DomainName, ExternalRel, LinkOpening, LinkSettings, ParseDomainNameError};
@@ -66,17 +74,20 @@ pub use robots::{
     Following, ImagePreview, Indexing, ParseRobotsError, PreviewLimit, Restriction,
     RobotsDirectives,
 };
+pub use schema_types::{ArticleSchemaType, PageSchemaType};
 pub use search_console_settings::{SearchConsoleProperty, SearchConsoleSettings};
 pub use secret::Secret;
+pub use seo_breadcrumb_settings::{BreadcrumbSettings, BreadcrumbTaxonomy};
 pub use seo_head_settings::{
-    CrawlerSettings, FeedContentSetting, FeedSettings, ImageSettings, SocialSettings,
+    CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings, ImageSettings, SocialSettings,
     TemplateSettings, TitleSettings, VerificationSettings,
 };
 pub use seo_publisher_settings::{
-    HoursSettings, LocationSettings, PublisherSettings, PublisherType, SchemaTemplateSettings,
-    WeekdaySetting,
+    HoursSettings, LocalSettings, LocationSettings, PublisherSettings, PublisherType,
+    SchemaMapSettings, SchemaTemplateSettings, WeekdaySetting,
 };
-pub use seo_settings::{ArchiveIndex, IndexNowSettings, SeoSettings};
+pub use seo_search_settings::SearchFilterSettings;
+pub use seo_settings::{ArchiveIndex, ArchiveSetting, IndexNowSettings, SeoSettings};
 pub use site_code::{BodyCode, BodyCodeError, Consent, SiteCode};
 pub use site_nav::{
     Announcement, FooterGroup, MenuLink, NavSettings, OneLine, SiteHref, SiteNavError,
@@ -84,5 +95,6 @@ pub use site_nav::{
 pub use site_path::{SitePath, SitePathError};
 pub use slug::{ParseSlugError, Slug};
 pub use template_choice::{CallToAction, OptionValue, PackName, SourcePlace, TemplateChoice};
+pub use term_seo::TermSeo;
 pub use user_message::UserMessage;
 pub use visitor_log_settings::VisitorLogSettings;

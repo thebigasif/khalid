@@ -42,6 +42,27 @@ pub struct RenderSite {
     /// `/blog/subscribe`. `None` when the site takes no sign-ups, such as a
     /// static site, so no template shows the form.
     pub subscribe: Option<String>,
+    /// How the breadcrumb trail looks, when a template shows it.
+    pub breadcrumbs: BreadcrumbStyle,
+}
+
+/// How the breadcrumb trail looks: what stands between two steps, and
+/// whether the page itself is bold.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct BreadcrumbStyle {
+    /// What stands between two steps, such as `/` or `»`.
+    pub separator: String,
+    /// Whether the last step, the page itself, is shown in bold.
+    pub bold_last: bool,
+}
+
+impl Default for BreadcrumbStyle {
+    fn default() -> Self {
+        Self {
+            separator: "/".to_owned(),
+            bold_last: false,
+        }
+    }
 }
 
 /// The site's menus. An empty menu renders nothing.

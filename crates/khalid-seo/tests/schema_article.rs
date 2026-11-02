@@ -32,6 +32,7 @@ fn the_content_type_picks_the_article_type() {
         (ArticleType::BlogPosting, "BlogPosting"),
         (ArticleType::NewsArticle, "NewsArticle"),
         (ArticleType::TechArticle, "TechArticle"),
+        (ArticleType::Report, "Report"),
     ] {
         let mut post = internal_links_post();
         post.article_type = article_type;

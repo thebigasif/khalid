@@ -195,6 +195,21 @@ The AVIF encoder runs when an image is saved, never on a reader's path. At `"z"`
 - **Unwind tables** (1.5 MB) can only be dropped with a `rustflags` setting for every build, and backtraces need them.
 - **The embedded admin** is only in a binary built after `npm run build`, which CI's size step does not run.
 
+### Integration 30: Yoast analysis and SEO screens
+
+On 2026-11-02 integration branch 30 merged with main built 31,525,496 bytes on this server with `admin/dist` empty, about 780 KB more than main. The growth is ordinary code: the analysis in `khalid-lint`, the SEO endpoints in `khalid-api`, the commands in `khalid` and the head tags in `khalid-seo`. Each step below is `cargo build --release -p khalid` on this server:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before | 31,525,496 | |
+| Import, MCP, mail, sign-in, Search Console, webhooks, alerts and HTTPS crates at `"z"` (kept) | 31,422,840 | 102,656 |
+| Plus audit, newsletter and outbound crates, `lettre`, `webauthn-rs`, `htmd`, `utoipa`, `instant-acme`, `rcgen`, `x509-parser`, `der-parser` and `reqwest` at `"z"` (kept) | 31,280,568 | 142,272 more |
+| Plus `khalid-db`, analytics, comments and forms crates, `sqlx-core` and `sqlx-sqlite` at `"z"` (kept) | 31,233,272 | 47,296 more |
+| Plus `khalid-lint` at `"s"` instead of 3 | 31,129,080 | 104,192 more, not kept |
+| Plus `khalid-seo` and the share image stack (`khalid-share-image`, `rustybuzz`, `tiny-skia`, `ttf-parser`) at `"z"`, linter at 3 (kept) | 31,032,440 | 200,832 more |
+
+All kept: 31,032,440 bytes, 493,056 less than before. The linter stays at 3: at `"s"` lint one post took 14.89 and 14.77 ms against 8.87 and 9.01 ms at 3, back to back. With every kept change `scripts/perf.sh` measured idle memory 49.39 MB, lint one post 9.04 ms, a full 10,000-post rebuild 14.84 s and the first byte 64.36 ms, every budget held.
+
 ## Fast to build
 
 - `sccache` and `mold` in CI. `cargo nextest` with the default partitioning.

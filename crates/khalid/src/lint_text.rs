@@ -6,6 +6,10 @@
 use khalid_content::ENGINE_TEXT;
 use khalid_lint::SectionShape;
 
+mod prose;
+
+pub(crate) use prose::prose_text;
+
 /// The target of each `[[target]]` and `[[target|text]]` in `body`, as
 /// written, in order. Code, fenced or inline, holds none.
 pub(crate) fn wikilinks(body: &str) -> Vec<String> {

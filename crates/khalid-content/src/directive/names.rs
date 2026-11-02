@@ -2,7 +2,7 @@
 //! typing slip.
 
 /// Every block name, for messages.
-pub(super) const BLOCKS: [&str; 30] = [
+pub(super) const BLOCKS: [&str; 32] = [
     "audio",
     "bookmark",
     "business",
@@ -21,6 +21,7 @@ pub(super) const BLOCKS: [&str; 30] = [
     "header",
     "howto",
     "html",
+    "location",
     "maths",
     "newsletter",
     "product",
@@ -30,6 +31,7 @@ pub(super) const BLOCKS: [&str; 30] = [
     "review",
     "snippet",
     "table",
+    "takeaways",
     "toc",
     "toggle",
     "video",
@@ -37,7 +39,7 @@ pub(super) const BLOCKS: [&str; 30] = [
 
 /// Blocks with no body, written on one line as `::name{...}`. Every other
 /// block opens with `:::name{...}` and closes with `:::`.
-pub(super) const LEAVES: [&str; 11] = [
+pub(super) const LEAVES: [&str; 12] = [
     "audio",
     "bookmark",
     "business",
@@ -45,6 +47,7 @@ pub(super) const LEAVES: [&str; 11] = [
     "cta",
     "embed",
     "file",
+    "location",
     "newsletter",
     "snippet",
     "toc",

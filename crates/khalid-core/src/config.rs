@@ -11,9 +11,9 @@ use crate::mail_settings::MailTable;
 use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
-    AbsoluteUrl, AiPageSettings, AlertSettings, Announcement, Environment, Locale, MailSettings,
-    MediaSettings, NavSettings, ParseUrlError, Reader, ReaderSwitch, SearchConsoleSettings,
-    SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
+    AbsoluteUrl, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment, Locale,
+    MailSettings, MediaSettings, NavSettings, ParseUrlError, Reader, ReaderSwitch,
+    SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
 };
 
 /// Every setting Khalid reads, checked once at start and then passed by
@@ -44,6 +44,7 @@ pub struct Config {
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
     preview_link_lifetime: Duration,
+    ai: AiSettings,
 }
 
 /// Whether Khalid runs a server, writes plain HTML, or leaves the pages to
@@ -115,6 +116,8 @@ struct SiteFile {
     search_console: Option<SearchConsoleTable>,
     #[serde(default)]
     visitor_log: VisitorLogSettings,
+    #[serde(default)]
+    ai: AiSettings,
     preview_link_days: Option<u64>,
     preview_link_hours: Option<u64>,
 }
@@ -233,6 +236,9 @@ fn tables_mistake(
     if let Some((key, problem)) = file.visitor_log.mistake(file.mode) {
         return Err(in_table(path, text, "[visitor_log", key, problem));
     }
+    if let Some((key, problem)) = file.ai.mistake() {
+        return Err(in_table(path, text, "[ai", key, problem));
+    }
     if file.mode == Mode::Static && file.code.waits_for_consent() {
         return Err(static_consent(path, text));
     }
@@ -331,6 +337,7 @@ impl Config {
             search_console,
             visitor_log: file.visitor_log,
             preview_link_lifetime,
+            ai: file.ai,
         })
     }
 
@@ -355,6 +362,12 @@ impl Config {
     /// when the owner has not opted in.
     pub fn search_console(&self) -> Option<&SearchConsoleSettings> {
         self.search_console.as_ref()
+    }
+
+    /// Who writes the editor's suggestions, from `[ai]`; off unless the
+    /// owner names a provider.
+    pub fn ai(&self) -> &AiSettings {
+        &self.ai
     }
 
     /// Where the media library keeps its files, from `[media]`.

@@ -25,6 +25,9 @@ struct File {
 #[derive(Deserialize)]
 struct Entry {
     slug: Option<String>,
+    /// The category page's own search settings, read by `term_seo`.
+    #[serde(default, rename = "seo")]
+    _seo: Option<toml::Value>,
     #[serde(flatten)]
     names: BTreeMap<String, toml::Value>,
 }

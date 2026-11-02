@@ -23,6 +23,8 @@ published = "Published"
 updated = "Updated"
 # How long a post takes to read. {minutes} is filled in.
 reading_time = "{minutes} min read"
+# Names how long a post takes to read, in its link preview on X and Slack.
+reading_time_label = "Reading time"
 in_category = "Filed under"
 tags = "Tags"
 # The heading of a post's table of contents.
@@ -183,6 +185,27 @@ consent_change = "You can change your choice about code from other companies tha
 consent_allow = "Allow"
 consent_refuse = "Do not allow"
 all_posts = "All posts"
+
+# A location card, where a post places ::location (Yoast Local).
+location_hours = "Opening hours"
+location_open_now = "Open now"
+location_closed_now = "Closed now"
+location_closed = "Closed"
+location_map = "Map and directions"
+location_time_range = "{opens} to {closes}"
+weekday_1 = "Monday"
+weekday_2 = "Tuesday"
+weekday_3 = "Wednesday"
+weekday_4 = "Thursday"
+weekday_5 = "Friday"
+weekday_6 = "Saturday"
+weekday_7 = "Sunday"
+# The locations page, at /locations/ (Yoast Local).
+locations_title = "Our locations"
+locations_intro = "Every place you can find us, with its address, phone number and opening hours."
+locations_nearest = "Show the nearest first"
+locations_sorted = "The nearest location is now first."
+locations_refused = "Your browser did not share where you are, so the list keeps its order."
 
 # Case studies and the changelog.
 case_studies_title = "Case studies"

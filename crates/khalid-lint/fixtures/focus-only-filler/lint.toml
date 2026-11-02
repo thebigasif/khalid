@@ -1,0 +1,10 @@
+# The place checks have their own fixtures; this one is about the
+# keyword alone.
+[rules]
+focus-not-in-title = "off"
+focus-not-in-description = "off"
+focus-not-in-first-paragraph = "off"
+focus-not-in-subheading = "off"
+focus-not-in-address = "off"
+focus-not-in-image-alt = "off"
+link-text-is-own-focus = "off"

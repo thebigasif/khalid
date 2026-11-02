@@ -1,6 +1,8 @@
 //! The public site's one script: polish on top of pages that read
 //! completely without it.
 
+use std::sync::LazyLock;
+
 use serde::Serialize;
 
 use crate::asset::{hashed_name, integrity_of};
@@ -10,6 +12,20 @@ use crate::{Asset, RenderError};
 /// heading's address, open an enlarged image in a dialog, open search with
 /// `/` or Ctrl+K, and mark the section being read.
 const READER_JS: &str = include_str!("../assets/reader.js");
+
+/// The script as served: [`READER_JS`] without its comment lines, which
+/// explain the code to the people who change it but not to browsers. Every
+/// comment in the file is a whole line, so no code is touched.
+static SERVED_JS: LazyLock<String> = LazyLock::new(|| {
+    READER_JS
+        .lines()
+        .filter(|line| !line.trim_start().starts_with("//"))
+        .fold(String::with_capacity(READER_JS.len()), |mut out, line| {
+            out.push_str(line);
+            out.push('\n');
+            out
+        })
+});
 
 /// The script's name before its hash, and its extension.
 const STEM: &str = "reader";
@@ -26,7 +42,7 @@ pub fn reader_script() -> Result<Asset, RenderError> {
         STEM,
         EXTENSION,
         "text/javascript; charset=utf-8",
-        READER_JS.as_bytes().to_vec(),
+        SERVED_JS.as_bytes().to_vec(),
     )
 }
 
@@ -34,7 +50,7 @@ pub fn reader_script() -> Result<Asset, RenderError> {
 /// value [`reader_script`] gives it, and its bytes. Making them costs one
 /// hash, so a server that compresses as it answers can start at once.
 pub fn reader_script_file() -> ScriptFile {
-    let body = READER_JS.as_bytes();
+    let body = SERVED_JS.as_bytes();
     ScriptFile {
         name: hashed_name(STEM, EXTENSION, body),
         integrity: integrity_of(body),

@@ -32,6 +32,9 @@ const PATHS = {
   alert:
     "M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z",
   clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2",
+  target: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 12h.01",
+  table: "M4 5h16v14H4zM4 10h16M4 15h16M10 5v14",
+  steps: "M4 20h5v-5h5v-5h5V5",
   calendar: "M4 6h16v14H4zM4 10h16M8 3v4M16 3v4",
 } as const;
 

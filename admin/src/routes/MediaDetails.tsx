@@ -4,7 +4,7 @@ import { useState } from "react";
 import { readMedia } from "../api/media";
 import { isData } from "../api/redirects";
 import { Problem } from "../components/Problem";
-import { DetailsForm } from "../media/DetailsForm";
+import { DetailsForm } from "../editor/ai/AiDetailsForm";
 import { fileSummary } from "../media/MediaTable";
 import { day } from "../strings/dates";
 import { en } from "../strings/en";

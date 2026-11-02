@@ -21,6 +21,16 @@ pub(super) fn snippet(attributes: &Attributes) -> Result<BlockKind, BlockError> 
     Ok(BlockKind::Snippet { slug })
 }
 
+/// Reads a location's place: the name of one of the site's locations.
+pub(super) fn location(attributes: &Attributes) -> Result<BlockKind, BlockError> {
+    attributes.only("location", &["name"], "name")?;
+    let name = attributes.need(
+        "name",
+        "a location needs name, as written in [[seo.locations]] in site.toml",
+    )?;
+    Ok(BlockKind::Location { name })
+}
+
 /// Reads a business card: the name and postal address, and how to reach it.
 pub(super) fn business(attributes: &Attributes) -> Result<BlockKind, BlockError> {
     attributes.only(

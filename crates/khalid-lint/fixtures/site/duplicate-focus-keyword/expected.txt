@@ -1,0 +1,1 @@
+en/internal-linking-guide: warn duplicate-focus-keyword: internal link (suggest: /blog/why-internal-links-matter/)

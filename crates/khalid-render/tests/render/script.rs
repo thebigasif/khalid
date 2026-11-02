@@ -79,3 +79,16 @@ fn the_script_is_small_and_writes_no_markup_from_strings() {
         assert!(!text.contains(risky), "the script uses {risky}");
     }
 }
+
+#[test]
+fn the_served_script_leaves_out_its_comment_lines_and_keeps_its_code() {
+    let script = reader_script().unwrap();
+    let text = std::str::from_utf8(script.body()).unwrap();
+    assert!(
+        text.lines()
+            .all(|line| !line.trim_start().starts_with("//")),
+        "{text}"
+    );
+    assert!(text.starts_with("(() => {\n  \"use strict\";\n"), "{text}");
+    assert!(text.ends_with("})();\n"), "{text}");
+}

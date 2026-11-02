@@ -30,6 +30,7 @@ pub(crate) fn plain_pages(
         let mut seo = build_seo::page(SeoKind::Page, locale, &rest, &title)?;
         seo.excerpt.clone_from(&description);
         seo.translation = build_seo::translation(front.translation.as_deref())?;
+        seo.page_type = front.page_type;
         let rendered = render_linked(&doc.body, &doc.locale, config.slugs(), links)
             .map_err(|error| build_message::block(&doc.path, &error))?;
         // A page has no author, so a review or a score on it is the publisher's.

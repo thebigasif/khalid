@@ -19,6 +19,12 @@
 .pullquote blockquote > :last-child { margin-block-end: 0; }
 .pullquote figcaption { margin-block-start: 0.75rem; }
 
+/* Key takeaways: the post's points in a tinted box, titled in the heading font. */
+.takeaways { margin-block: 1.5rem; padding: 1rem 1.25rem; background: color-mix(in oklab, var(--color-accent) 6%, var(--color-background)); border: 1px solid var(--color-border); border-inline-start: 4px solid var(--color-accent); border-radius: var(--radius); }
+.takeaways-title { margin-block-end: 0.5rem; font-family: var(--font-heading); font-size: 1.125rem; font-weight: 700; }
+.takeaways ul, .takeaways ol { margin: 0; padding-inline-start: 1.25rem; }
+.takeaways li { margin-block-end: 0.25rem; }
+
 /* Pros and cons: two titled lists, side by side when there is room. A drawn
    check or cross in the text colour marks each line; the titles carry the meaning. */
 .proscons { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin-block: 0 1.5rem; }
@@ -122,6 +128,17 @@ figure > img { inline-size: 100%; border-radius: var(--radius); }
 .recipe-description { color: var(--color-muted); }
 .recipe-facts { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; color: var(--color-muted); font-size: 0.9375rem; }
 .recipe-servings, .recipe-prep, .recipe-cook { white-space: nowrap; }
+/* A location card: address, open now, hours, map link. */
+.location { margin-block: 0 1.5rem; padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.location address { font-style: normal; }
+.location-now { margin-block: 0.75rem 0; font-weight: 700; }
+.location-now[data-state="closed"] { color: var(--color-muted); }
+.location-hours { margin-block: 0.75rem; border-collapse: collapse; }
+.location-hours caption { text-align: start; font-weight: 700; }
+.locations { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.locations .location { margin: 0; }
+.locations-nearest { min-block-size: 2.75rem; padding: 0.5rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); color: inherit; font: inherit; cursor: pointer; }
+.location-hours th, .location-hours td { padding: 0.125rem 1rem 0.125rem 0; border: 0; text-align: start; font-weight: 400; }
 .recipe-ingredients, .recipe-method { padding-inline-start: 1.25rem; }
 
 /* Forms in the body. The spam trap never shows to people. */

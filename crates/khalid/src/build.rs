@@ -21,6 +21,7 @@ use crate::newsletter_files::archive_pages;
 use crate::page_code::PageCode;
 use crate::post_files::{Assets, charts, library_photo};
 use crate::post_photos::Shown;
+use crate::seo_extras::{self, archives_off, term_seo};
 use crate::site_page::HeadNonce;
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
@@ -144,6 +145,8 @@ fn build(
         build_sitemap::add(config, renderer, &mut languages)?;
         own_descriptions::fill(config, renderer, &mut languages)?;
     }
+    let (gone, bare) = seo_extras::arrange(site, (config, routes), &mut languages)?;
+    term_seo::note(&bare);
     // A headless site's heads carry the same trail as its pages would.
     trails::fill(site, (config, routes), &mut languages)?;
     post_categories::fill((config, routes), &categories, &mut languages);
@@ -159,7 +162,7 @@ fn build(
     for size in post_images::attach(site, config, &beside, &mut languages, &mut shown)? {
         copy(&size.path, out, &size.file)?;
     }
-    let seo_site = build_seo::site(config)?;
+    let seo_site = build_seo::site_on(config, today)?;
     let cards = share_images::attach(site, config, &tokens, &seo_site, &mut languages)?;
     for file in share_images::draw_now(site, cards)? {
         let mut from = site.to_path_buf();
@@ -187,6 +190,7 @@ fn build(
         }
     }
     let redirects = build_redirects::file(site, config, routes, content)?;
+    let redirects = archives_off::with_redirects(redirects, &gone);
     let files = build_files::files(
         &seo_site,
         &seo_pages,

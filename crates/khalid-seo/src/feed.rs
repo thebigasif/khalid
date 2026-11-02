@@ -32,6 +32,8 @@ pub struct FeedOptions {
     pub source_line: Option<MetaTemplate>,
     /// How many of the newest posts a feed holds.
     pub limit: usize,
+    /// The formats not written at all. Empty by default.
+    pub off: Vec<FeedFormat>,
 }
 
 impl Default for FeedOptions {
@@ -42,6 +44,7 @@ impl Default for FeedOptions {
             after_item: String::new(),
             source_line: None,
             limit: 20,
+            off: Vec::new(),
         }
     }
 }

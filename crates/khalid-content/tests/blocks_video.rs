@@ -31,6 +31,7 @@ fn tour() -> VideoBlock {
         src: "/media/site-tour.mp4".to_owned(),
         title: "A tour of the site".to_owned(),
         poster: "/media/site-tour.jpg".to_owned(),
+        thumbnail: None,
         description: Some("Where posts, pages and settings live.".to_owned()),
         duration: Some(Duration::from_secs(125)),
     }
@@ -39,6 +40,23 @@ fn tour() -> VideoBlock {
 #[test]
 fn a_video_round_trips() {
     assert_eq!(round_trip(VIDEO), BlockKind::Video(tour()));
+}
+
+#[test]
+fn a_video_may_name_its_own_search_thumbnail() {
+    let markdown = "::video{src=\"/media/a.mp4\" title=\"A\" poster=\"/media/a.jpg\" thumbnail=\"/media/a-thumb.jpg\"}\n";
+    let BlockKind::Video(video) = round_trip(markdown) else {
+        panic!("not a video");
+    };
+    assert_eq!(video.thumbnail.as_deref(), Some("/media/a-thumb.jpg"));
+    assert!(
+        !rendered(markdown).html.contains("a-thumb"),
+        "the page shows the poster"
+    );
+    assert!(
+        error("::video{src=\"/a.mp4\" title=\"A\" poster=\"/a.jpg\" thumbnail=\"javascript:alert(1)\"}\n")
+            .contains("thumbnail")
+    );
 }
 
 #[test]

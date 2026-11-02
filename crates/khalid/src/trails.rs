@@ -6,11 +6,11 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
-use khalid_core::{Config, Locale, UserMessage};
+use khalid_core::{BreadcrumbSettings, BreadcrumbTaxonomy, Config, Locale, UserMessage};
 use khalid_db::IndexedTerm;
 use khalid_render::{Link, PageBody};
 use khalid_routes::Routes;
-use khalid_seo::{Crumb, UrlPath};
+use khalid_seo::{Crumb, PageKind, SeoPage, UrlPath};
 
 use crate::build_pages::{LanguagePages, path_of};
 use crate::{build_message, categories};
@@ -30,14 +30,24 @@ pub(crate) fn fill(
     languages: &mut [LanguagePages],
 ) -> Result<(), UserMessage> {
     let categories = categories::of(site)?;
+    let settings = &config.seo().breadcrumbs;
     for language in languages {
         let locale = &language.site.locale;
         let home = Link {
-            name: config.name().to_owned(),
+            name: (settings.home.clone()).unwrap_or_else(|| config.name().to_owned()),
             href: language.site.home.clone(),
         };
         let category_of: BTreeMap<&str, &str> = (language.listed.iter())
             .filter_map(|post| Some((post.card.href.as_str(), post.topics.category.as_deref()?)))
+            .collect();
+        let tag_of: BTreeMap<&str, (&str, &str)> = (language.listed.iter())
+            .filter_map(|post| {
+                let tag = post.tags.first()?;
+                Some((
+                    post.card.href.as_str(),
+                    (tag.slug.as_str(), tag.name.as_str()),
+                ))
+            })
             .collect();
         let tabs = tabs(
             (config, routes),
@@ -53,14 +63,21 @@ pub(crate) fn fill(
                 continue;
             }
             let mut trail = vec![home.clone()];
-            let category = (matches!(page.body, PageBody::Post(_)))
-                .then(|| category_of.get(page.meta.path.as_str()))
-                .flatten();
-            if let Some(&slug) = category {
-                let rest = format!("{}/{slug}/", routes.category_prefix());
-                let name = (categories.iter())
-                    .find(|term| &term.locale == locale && term.slug.as_str() == slug)
-                    .map_or(slug, |term| term.name.as_str());
+            let is_post = matches!(page.body, PageBody::Post(_));
+            let here = page.meta.path.as_str();
+            let term = match settings.taxonomy {
+                _ if !is_post => None,
+                BreadcrumbTaxonomy::Category => category_of.get(here).map(|&slug| {
+                    let name = (categories.iter())
+                        .find(|term| &term.locale == locale && term.slug.as_str() == slug)
+                        .map_or(slug, |term| term.name.as_str());
+                    (format!("{}/{slug}/", routes.category_prefix()), name)
+                }),
+                BreadcrumbTaxonomy::Tag => (tag_of.get(here))
+                    .map(|&(slug, name)| (format!("{}/{slug}/", routes.tag_prefix()), name)),
+                BreadcrumbTaxonomy::None => None,
+            };
+            if let Some((rest, name)) = term {
                 let path = UrlPath::try_new(&format!("/{rest}"))
                     .map_err(|error| build_message::seo(&error))?;
                 page.seo.breadcrumbs = vec![Crumb::new(name, path)];
@@ -70,13 +87,31 @@ pub(crate) fn fill(
                 });
             }
             trail.push(Link {
-                name: page.seo.title.clone(),
+                name: last_name(settings, &page.seo),
                 href: page.meta.path.clone(),
             });
             page.meta.breadcrumbs = trail;
         }
     }
     Ok(())
+}
+
+/// The trail's last step for `page`: its breadcrumb title or its title,
+/// after the archive or search prefix `settings` give its kind.
+fn last_name(settings: &BreadcrumbSettings, page: &SeoPage) -> String {
+    let name = page.breadcrumb_title.as_ref().unwrap_or(&page.title);
+    let prefix = match page.kind {
+        PageKind::Tag | PageKind::Category | PageKind::Author | PageKind::Date => {
+            &settings.archive_prefix
+        }
+        PageKind::Search => &settings.search_prefix,
+        _ => return name.clone(),
+    };
+    if prefix.is_empty() {
+        name.clone()
+    } else {
+        format!("{prefix} {name}")
+    }
 }
 
 /// A link to each category of `used` (the slugs posts name), in the order

@@ -1,0 +1,17 @@
+/* The AI suggestions: a small button marked AI beside a field, and the
+   options it brings back in a tinted card. Light theme only. */
+.ai-host { display: contents; }
+.ai-suggest { margin-block: .5rem 0; }
+.ai-button { padding-inline: .75rem; box-shadow: none; }
+.ai-badge { display: inline-grid; place-items: center; min-width: 1.5rem; height: 1.25rem; padding: 0 .25rem; border-radius: 4px; background: var(--color-tint); color: var(--color-link); font-size: .6875rem; font-weight: 700; letter-spacing: .02em; }
+.ai-suggest .hint:empty { display: none; }
+.ai-options { margin-block-start: .5rem; padding: .75rem; border: 1px solid var(--color-border); border-radius: var(--radius-field); background: var(--color-bg); }
+.ai-label { margin: 0 0 .25rem; color: var(--color-link); font-size: .75rem; font-weight: 600; }
+.ai-options ul { margin: 0; padding: 0; list-style: none; }
+.ai-options li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .125rem .75rem; align-items: center; padding-block: .5rem; border-top: 1px solid var(--color-border); }
+.ai-options li > p { margin: 0; grid-column: 1; }
+.ai-options li > .btn { grid-column: 2; grid-row: 1 / span 2; }
+.ai-misfit { color: var(--color-warn); }
+.ai-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-block-start: .5rem; }
+.bar [data-ai="summarize"] .ai-suggest { margin: 0; }
+.bar [data-ai="summarize"] .ai-options { position: absolute; z-index: 20; width: min(32rem, calc(100vw - 2rem)); box-shadow: var(--shadow-menu); }

@@ -21,6 +21,15 @@ const ABBREVIATIONS: &[(&str, &[&str])] = &[
     ("de", german::ABBREVIATIONS),
 ];
 
+/// The short forms of `language` that end with a full stop inside a
+/// sentence, in lowercase. None for a language without a list.
+pub(crate) fn short_forms(language: &str) -> &'static [&'static str] {
+    ABBREVIATIONS
+        .iter()
+        .find(|(lang, _)| *lang == language)
+        .map_or(&[][..], |(_, forms)| *forms)
+}
+
 /// A word longer than this many letters counts as long, as LIX defines it.
 const LONG_WORD_LETTERS: usize = 6;
 
@@ -51,10 +60,7 @@ impl Counts {
 /// word that is not a short form, and at a line break, which ends a
 /// heading, a list item or a paragraph without a full stop.
 fn count(text: &str, language: &str) -> Counts {
-    let short_forms = ABBREVIATIONS
-        .iter()
-        .find(|(lang, _)| *lang == language)
-        .map_or(&[][..], |(_, forms)| *forms);
+    let short_forms = short_forms(language);
     let mut counts = Counts::default();
     for line in text.lines() {
         let mut open = false;
@@ -98,17 +104,22 @@ impl Rule for HardToRead {
     }
 
     fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
-        let counts = count(&post.body_text, post.locale.language());
-        if counts.words < MIN_WORDS {
-            return Vec::new();
-        }
-        counts
-            .index()
+        index(crate::readability::prose(post), post.locale.language())
             .filter(|index| *index > self.max)
             .map(|index| Hit::about(format!("reading index {index}")))
             .into_iter()
             .collect()
     }
+}
+
+/// The LIX of `text` in `language`, or `None` under 100 words, where the
+/// index means little.
+pub(crate) fn index(text: &str, language: &str) -> Option<usize> {
+    let counts = count(text, language);
+    if counts.words < MIN_WORDS {
+        return None;
+    }
+    counts.index()
 }
 
 #[cfg(test)]

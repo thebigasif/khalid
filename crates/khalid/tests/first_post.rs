@@ -25,23 +25,25 @@ const FOLLOWED: &str = "description: Internal links help readers and search engi
 focus_keyword: internal links
 ---
 
-Internal links are links from one page on your site to another page on the same site. They sound too simple to matter. They matter a lot, and this post explains why and how to add them.
+Internal links are links from one page on your site to another page on the same site. They sound too simple to matter. However, they matter a lot, so this post explains why and how to add them.
+
+![A map of internal links between five posts](https://example.org/link-map.png)
 
 ## Readers use internal links to keep going
 
-Someone who finishes a post is interested. If the post ends without pointing anywhere, they leave. One link to a related post gives them a next step, and gives you a second page view. Over a year, those second page views add up to a real share of your traffic, and they cost you nothing but a sentence.
+Someone who finishes a post is interested. If the post ends without pointing anywhere, they leave. One of your internal links gives them a next step, and it also gives you a second page view. Over a year, those second page views add up to a real share of your traffic, because they cost you nothing but a sentence.
 
-A good link sits where the reader needs it. If a paragraph mentions a term you explain elsewhere, link the term there. If a post ends with a question, link the post that answers it.
+A good link sits where the reader needs it. For example, if a paragraph mentions a term you explain elsewhere, link the term there. Similarly, if a post ends with a question, link the post that answers it.
 
 ## Search engines use internal links to find pages
 
-A crawler finds new pages by following links. A post that nothing links to is hard to find and looks unimportant. Google says as much in its [guide to links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable): it finds most pages through links from pages it already knows.
+A crawler finds new pages by following internal links. A post that nothing links to is hard to find and looks unimportant. Google says as much in its [guide to links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable): it finds most pages through links from pages it already knows.
 
-The words you link with matter too. They tell the search engine what the page on the other end is about, in the same way they tell the reader.
+The words you link with matter too. They tell the search engine what the page on the other end is about, in the same way they tell the reader, so choose them with care.
 
 ## How to add internal links well
 
-- Link from new posts to older ones, and go back to add links from older posts to new ones.
+- Link from new posts to older ones, and go back to add internal links from older posts to new ones.
 - Use link words that say what the reader gets, never \"click here\".
 - Use the same link words for the same page every time, so one phrase means one page.
 
@@ -49,7 +51,7 @@ Start with one link per post. While this blog is new, every post can link back t
 
 ## What to do next
 
-Pick your three oldest posts. Add one link from each to a newer post on a related topic. Then do the same in the other direction. It takes ten minutes, and it is the cheapest thing you can do for a small site this week.
+Pick your three oldest posts. Then add one link from each to a newer post on a related topic. Next, do the same in the other direction. It takes ten minutes, and therefore it is the cheapest thing you can do for your internal links this week.
 ";
 
 /// The About page the `no-about-page` warning asks for.

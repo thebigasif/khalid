@@ -1,10 +1,16 @@
-//! The HTML of the business card, header and HTML blocks.
+//! The HTML of the business card, location, header and HTML blocks.
 
-use super::{Image, Link, Renderer, attribute, inside};
+use super::{Image, LOCATION_MARK, Link, Renderer, attribute, inside};
 use crate::{Block, Visibility};
 use crate::{BusinessBlock, StructuredBlock};
 
 impl Renderer<'_> {
+    /// Writes the mark of a location's card, which the build swaps for the
+    /// card of the location `name` names in `site.toml`.
+    pub(super) fn location(&mut self, name: &str) {
+        self.push(&[LOCATION_MARK, &attribute(name), "-->\n"]);
+    }
+
     /// Writes a business card as an `<address>`: name, street, town and
     /// postcode, then phone, email and website as links.
     pub(super) fn business(&mut self, card: &BusinessBlock) {

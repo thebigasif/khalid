@@ -1,0 +1,1 @@
+warn repeated-openers: 3 sentences in a row start with "links"

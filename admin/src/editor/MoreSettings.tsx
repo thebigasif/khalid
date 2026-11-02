@@ -1,5 +1,6 @@
 import type { ChangeEvent } from "react";
 import { en } from "../strings/en";
+import { RobotsFields } from "./RobotsFields";
 import { SettingField } from "./SettingField";
 import type { SettingsDraft, TextSetting } from "./settings";
 
@@ -42,21 +43,13 @@ export function MoreSettings({ settings, onSetting, onBlur }: Props) {
         onSetting(key, event.target.value),
       onBlur,
     };
+    if (key === "robots") {
+      const change = (value: string) => onSetting("robots", value);
+      return <RobotsFields key={key} value={settings.robots} onChange={change} onBlur={onBlur} />;
+    }
     let control = <input {...bind} type={shape.type ?? "text"} />;
     if (shape.rows !== undefined) {
       control = <textarea {...bind} rows={shape.rows} />;
-    } else if (key === "robots") {
-      const known = words.robots.some((option) => option.value === settings.robots);
-      control = (
-        <select {...bind}>
-          {words.robots.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-          {known ? null : <option value={settings.robots}>{settings.robots}</option>}
-        </select>
-      );
     }
     return (
       <SettingField key={key} id={id} label={words.fields[key].label} hint={words.fields[key].hint}>

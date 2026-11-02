@@ -1,0 +1,4 @@
+# 75 characters, 663 pixels of Arial at 20 pixels, past the 600
+# Google shows. The character rule leaves a measured title to this one.
+extends = "clean"
+title = "Why internal links matter for readers, search engines and your own archive"

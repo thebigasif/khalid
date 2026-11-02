@@ -4,8 +4,8 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_api::resources::{
-    CustomJsonLd, FeatureImage, NonBlank, PostSettings, PostStatus, ReviewState, SearchTitle,
-    ShareCard,
+    CustomJsonLd, FeatureImage, MAX_SECONDARY_KEYWORDS, NonBlank, PostSettings, PostStatus,
+    ReviewState, SearchTitle, ShareCard,
 };
 use khalid_content::parse_post;
 use khalid_core::Slug;
@@ -85,6 +85,21 @@ fn settings_put_back_to_their_defaults_leave_no_line() {
     let defaults = PostSettings::default();
     write_settings(&mut text, &set, &defaults, PostStatus::Draft).unwrap();
     assert_eq!(text.to_text(), FILE);
+}
+
+#[test]
+fn secondary_keywords_read_back_the_same_as_a_quoted_list() {
+    let mut after = PostSettings::default();
+    after.focus_keyword = Some(text("anchor text"));
+    after.secondary_keywords = vec![text("link text"), text("words: that link")];
+    let (written, read) = round_trip(&after);
+    assert_eq!(read, after, "{written}");
+    let line = "secondary_keywords: [\"link text\", \"words: that link\"]\n";
+    assert!(written.contains(line), "{written}");
+    assert_eq!(
+        MAX_SECONDARY_KEYWORDS,
+        khalid_content::MAX_SECONDARY_KEYWORDS
+    );
 }
 
 #[test]

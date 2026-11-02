@@ -200,6 +200,7 @@ fn sample_site(source: Source<'_>) -> RenderSite {
         search: None,
         script: None,
         subscribe: None,
+        breadcrumbs: khalid_render::BreadcrumbStyle::default(),
     }
 }
 

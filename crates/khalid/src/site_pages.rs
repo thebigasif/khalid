@@ -30,8 +30,8 @@ use crate::unlock::Gate;
 use crate::{
     assets, build_gate, build_home, build_lists, build_message, build_pages, build_seo,
     build_sitemap, categories, content_message, home_images, look, own_descriptions,
-    post_categories, post_files, post_gate, post_lock, search_page, serve_message, share_images,
-    site_files, site_outline, trails,
+    post_categories, post_files, post_gate, post_lock, search_page, seo_extras, serve_message,
+    share_images, site_files, site_outline, trails,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -233,7 +233,7 @@ impl SitePages {
         home_images::attach(folder, (config, routes), content, &mut languages)?;
         search_page::link(config, &mut languages);
         own_descriptions::fill(config, &theme.renderer, &mut languages)?;
-        let seo_site = build_seo::site(config)?;
+        let seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
         let cards = share_images::attach(folder, config, &theme.tokens, &seo_site, &mut languages)?;
         // The home pages answer first, so their cards are drawn now; the
         // rest warm in the background once the pages are live (G14).
@@ -443,6 +443,7 @@ impl SitePages {
             }
             own_descriptions::fill(config, &theme.renderer, &mut languages)?;
         }
+        let (gone, _) = seo_extras::arrange(folder, (config, routes), &mut languages)?;
         // A headless site's heads carry the same trail as its pages would.
         trails::fill(folder, (config, routes), &mut languages)?;
         post_categories::fill((config, routes), &categories, &mut languages);
@@ -451,7 +452,7 @@ impl SitePages {
         form_pages::subscribe_under(config, &mut languages);
         let beside = post_files::served(folder, config, assets, &mut languages, shown)?;
         post_gate::open(config, routes, content, &mut languages)?;
-        let seo_site = build_seo::site(config)?;
+        let seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
         let default_tokens = Tokens::default();
         let tokens = theme.as_ref().map_or(&default_tokens, |t| &t.tokens);
         let cards = share_images::attach(folder, config, tokens, &seo_site, &mut languages)?;
@@ -472,6 +473,7 @@ impl SitePages {
             served.pages = site_files::files(config, &seo_site, &seo_pages, self.0.clock.now())?;
             served.pages.extend(beside);
             served.moves = site_files::moves(config, routes, content)?;
+            served.moves.extend(seo_extras::archives_off::moves(&gone)?);
         }
         if let Some(theme) = theme {
             if which == Which::All {

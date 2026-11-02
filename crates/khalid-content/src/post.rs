@@ -4,7 +4,8 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_core::{
-    AbsoluteUrl, HeadCode, PasswordHash, PostAccess, RobotsDirectives, Slug, TemplateName,
+    AbsoluteUrl, ArticleSchemaType, HeadCode, PageSchemaType, PasswordHash, PostAccess,
+    RobotsDirectives, Slug, TemplateName,
 };
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer};
@@ -92,6 +93,10 @@ pub struct PostFront {
     /// such as "link text". At most [`MAX_SECONDARY_KEYWORDS`].
     #[serde(default, deserialize_with = "secondary_keywords")]
     pub secondary_keywords: Vec<String>,
+    /// Other words for the focus keyword that count as using it, such as
+    /// "site links" for "internal links": one phrase or a list.
+    #[serde(default, deserialize_with = "keyword_synonyms")]
+    pub keyword_synonyms: Vec<String>,
     /// The topic cluster the post belongs to and its role in it, which the
     /// linter checks: a member links to its pillar.
     pub cluster: Option<TopicCluster>,
@@ -135,6 +140,34 @@ pub struct PostFront {
     /// or a `Course`, added to the page's structured data.
     #[serde(default, deserialize_with = "post_fields::schema")]
     pub schema: Option<String>,
+    /// A shorter name for the post in breadcrumb trails, such as "Internal
+    /// links" for "Internal links, the complete guide for 2026".
+    pub breadcrumb_title: Option<String>,
+    /// The kind of web page, such as `FAQPage` or `AboutPage`, in place of
+    /// `WebPage`.
+    pub page_type: Option<PageSchemaType>,
+    /// The kind of article, such as `Report`, in place of the collection's.
+    pub article_type: Option<ArticleSchemaType>,
+    /// `false` leaves a news post out of the news sitemap.
+    pub news: Option<bool>,
+    /// The stock tickers a news post is about, such as `NASDAQ:GOOG`, for
+    /// Google News. At most [`MAX_STOCK_TICKERS`].
+    #[serde(default, deserialize_with = "stock_tickers")]
+    pub stock_tickers: Vec<String>,
+}
+
+/// The most stock tickers Google News reads for one article.
+pub const MAX_STOCK_TICKERS: usize = 5;
+
+fn stock_tickers<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<String>, D::Error> {
+    let tickers = Vec::<String>::deserialize(deserializer)?;
+    if tickers.len() > MAX_STOCK_TICKERS {
+        return Err(serde::de::Error::custom(format!(
+            "Google News reads at most 5 stock tickers, and this lists {}; keep the 5 the post is most about",
+            tickers.len()
+        )));
+    }
+    Ok(tickers)
 }
 
 /// The most related posts a post shows, and so the most it may pin.
@@ -336,6 +369,15 @@ fn keyword<E: serde::de::Error>(text: String) -> Result<String, E> {
 /// Reads the focus keyword: one phrase with at least one word.
 fn focus_keyword<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Option<String>, D::Error> {
     keyword(String::deserialize(deserializer)?).map(Some)
+}
+
+/// Reads the keyword synonyms: one phrase or a list, each with at least
+/// one word.
+fn keyword_synonyms<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<String>, D::Error> {
+    one_or_many(deserializer)?
+        .into_iter()
+        .map(keyword)
+        .collect()
 }
 
 /// Reads the secondary keywords: one phrase or a list, each with at least

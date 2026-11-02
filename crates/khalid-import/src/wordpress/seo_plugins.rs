@@ -1,4 +1,7 @@
-//! Where each SEO plugin keeps its fields, and how it writes robots settings.
+//! Where each SEO plugin keeps its fields, and how it writes robots
+//! settings, share cards, cornerstone posts and related keyphrases.
+
+use serde_json::Value;
 
 use crate::wordpress::seo_text::Syntax;
 use crate::wordpress::{Item, SeoPlugin, php};
@@ -19,6 +22,36 @@ pub(crate) struct Fields {
     /// The field named when the robots words contradict each other.
     pub(crate) robots_key: &'static str,
     pub(crate) robots: fn(&Item) -> RobotsWords,
+    /// The Open Graph card, for Facebook and the sites that read it.
+    pub(crate) facebook: Card,
+    /// The X card.
+    pub(crate) x: Card,
+    /// The field and value that mark a cornerstone or pillar post.
+    pub(crate) pillar: Option<(&'static str, &'static str)>,
+    /// Fields Khalid has no place for, such as the breadcrumb title and
+    /// the schema page and article types, listed in the report.
+    pub(crate) set_aside: &'static [&'static str],
+    /// The related keyphrases and synonyms, beyond the focus keywords.
+    pub(crate) related: fn(&Item) -> Vec<String>,
+}
+
+/// Where one plugin keeps a share card's title, description and image.
+#[derive(Debug)]
+pub(crate) struct Card {
+    pub(crate) title: &'static [&'static str],
+    pub(crate) description: &'static [&'static str],
+    pub(crate) image: &'static [&'static str],
+}
+
+/// The card kept in the fields `title`, `description` and `image`.
+macro_rules! card {
+    ($title:literal, $description:literal, $image:literal) => {
+        Card {
+            title: &[$title],
+            description: &[$description],
+            image: &[$image],
+        }
+    };
 }
 
 /// Every plugin, in the order their fields win. Yoast comes last: the other
@@ -34,6 +67,23 @@ pub(crate) const PLUGINS: [Fields; 4] = [
         primary_category: &["rank_math_primary_category"],
         robots_key: "rank_math_robots",
         robots: rank_math_robots,
+        facebook: card!(
+            "rank_math_facebook_title",
+            "rank_math_facebook_description",
+            "rank_math_facebook_image"
+        ),
+        x: card!(
+            "rank_math_twitter_title",
+            "rank_math_twitter_description",
+            "rank_math_twitter_image"
+        ),
+        pillar: Some(("rank_math_pillar_content", "on")),
+        set_aside: &[
+            "rank_math_breadcrumb_title",
+            "rank_math_rich_snippet",
+            "rank_math_snippet_article_type",
+        ],
+        related: |_| Vec::new(),
     },
     Fields {
         plugin: SeoPlugin::AllInOneSeo,
@@ -45,6 +95,19 @@ pub(crate) const PLUGINS: [Fields; 4] = [
         primary_category: &[],
         robots_key: "_aioseop_noindex",
         robots: |item| Ok(flags(item, AIOSEO_FLAGS)),
+        facebook: card!(
+            "_aioseo_og_title",
+            "_aioseo_og_description",
+            "_aioseo_og_image_custom_url"
+        ),
+        x: card!(
+            "_aioseo_twitter_title",
+            "_aioseo_twitter_description",
+            "_aioseo_twitter_image_custom_url"
+        ),
+        pillar: None,
+        set_aside: &[],
+        related: aioseo_related,
     },
     Fields {
         plugin: SeoPlugin::SeoPress,
@@ -56,6 +119,19 @@ pub(crate) const PLUGINS: [Fields; 4] = [
         primary_category: &["_seopress_robots_primary_cat"],
         robots_key: "_seopress_robots_index",
         robots: |item| Ok(flags(item, SEOPRESS_FLAGS)),
+        facebook: card!(
+            "_seopress_social_fb_title",
+            "_seopress_social_fb_desc",
+            "_seopress_social_fb_img"
+        ),
+        x: card!(
+            "_seopress_social_twitter_title",
+            "_seopress_social_twitter_desc",
+            "_seopress_social_twitter_img"
+        ),
+        pillar: None,
+        set_aside: &[],
+        related: |_| Vec::new(),
     },
     Fields {
         plugin: SeoPlugin::Yoast,
@@ -67,6 +143,23 @@ pub(crate) const PLUGINS: [Fields; 4] = [
         primary_category: &["_yoast_wpseo_primary_category"],
         robots_key: "_yoast_wpseo_meta-robots-noindex",
         robots: |item| Ok(yoast_robots(item)),
+        facebook: card!(
+            "_yoast_wpseo_opengraph-title",
+            "_yoast_wpseo_opengraph-description",
+            "_yoast_wpseo_opengraph-image"
+        ),
+        x: card!(
+            "_yoast_wpseo_twitter-title",
+            "_yoast_wpseo_twitter-description",
+            "_yoast_wpseo_twitter-image"
+        ),
+        pillar: Some(("_yoast_wpseo_is_cornerstone", "1")),
+        set_aside: &[
+            "_yoast_wpseo_bctitle",
+            "_yoast_wpseo_schema_page_type",
+            "_yoast_wpseo_schema_article_type",
+        ],
+        related: yoast_related,
     },
 ];
 
@@ -136,4 +229,42 @@ fn yoast_robots(item: &Item) -> Vec<String> {
         words.extend(listed.filter(|word| !["", "none", "-"].contains(word)));
     }
     words.into_iter().map(str::to_owned).collect()
+}
+
+/// Yoast Premium keeps related keyphrases as JSON objects with a
+/// `keyword`, and synonyms as JSON text, commas between them.
+fn yoast_related(item: &Item) -> Vec<String> {
+    let mut words = Vec::new();
+    if let Some(related) = json(item, "_yoast_wpseo_focuskeywords") {
+        let listed = related.as_array().into_iter().flatten();
+        words.extend(listed.filter_map(|phrase| text(phrase, "keyword")));
+    }
+    if let Some(synonyms) = json(item, "_yoast_wpseo_keywordsynonyms") {
+        let listed = synonyms.as_array().into_iter().flatten();
+        let listed = listed.filter_map(Value::as_str);
+        words.extend(listed.flat_map(|text| text.split(',')).map(str::to_owned));
+    }
+    words
+}
+
+/// All in One SEO 4 keeps its additional keyphrases in JSON.
+fn aioseo_related(item: &Item) -> Vec<String> {
+    let Some(phrases) = json(item, "_aioseo_keyphrases") else {
+        return Vec::new();
+    };
+    let additional = phrases.get("additional").and_then(Value::as_array);
+    let listed = additional.into_iter().flatten();
+    listed
+        .filter_map(|phrase| text(phrase, "keyphrase"))
+        .collect()
+}
+
+/// A custom field read as JSON, or `None` when it is unset or not JSON.
+fn json(item: &Item, key: &str) -> Option<Value> {
+    serde_json::from_str(item.meta(key)?).ok()
+}
+
+/// The text `key` holds in a JSON object.
+fn text(object: &Value, key: &str) -> Option<String> {
+    object.get(key)?.as_str().map(str::to_owned)
 }

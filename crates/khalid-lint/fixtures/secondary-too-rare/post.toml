@@ -1,0 +1,5 @@
+# "next useful post" appears once in about 120 words, 8 times per
+# thousand, under this fixture's floor of 20. The place tips and the
+# focus keyword's own density rule are off, so only this tip shows.
+extends = "focus-too-rare"
+secondary_keywords = ["next useful post"]

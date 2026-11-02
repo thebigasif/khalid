@@ -53,6 +53,10 @@ pub struct LintPost {
     /// The images in the body, in order.
     #[serde(default)]
     pub images: Vec<Image>,
+    /// Whether the header sets a lead image, the picture at the top of the
+    /// post and on its cards.
+    #[serde(default)]
+    pub lead_image: bool,
     /// The targets of the `[[slug]]` links in the body, as written, in order.
     #[serde(default)]
     pub wikilinks: Vec<String>,
@@ -63,6 +67,11 @@ pub struct LintPost {
     /// heading or list item, so a rule can find the first paragraph.
     #[serde(default)]
     pub body_text: String,
+    /// The writer's own prose, laid out like `body_text` but without code,
+    /// quotes, tables and the parts Khalid writes itself, such as the
+    /// table of contents. The readability rules read it, so a code line
+    /// is never a long sentence. `None` reads `body_text` instead.
+    pub prose_text: Option<String>,
     /// Old paths that redirect to this post, such as `/2019/05/old-title/`,
     /// from `aliases` in the header.
     #[serde(default)]
@@ -84,6 +93,11 @@ pub struct LintPost {
     /// as "link text", from `secondary_keywords` in the header.
     #[serde(default)]
     pub secondary_keywords: Vec<String>,
+    /// Other words for the focus keyword that count as using it, such as
+    /// "site links" for "internal links", from `keyword_synonyms` in the
+    /// header.
+    #[serde(default)]
+    pub keyword_synonyms: Vec<String>,
     /// The collection the post belongs to, such as `guides`, from the
     /// folder it lives in.
     pub collection: Option<String>,
@@ -115,15 +129,18 @@ impl LintPost {
             headings: Vec::new(),
             links: Vec::new(),
             images: Vec::new(),
+            lead_image: false,
             wikilinks: Vec::new(),
             word_count: 0,
             body_text: String::new(),
+            prose_text: None,
             aliases: Vec::new(),
             forms: Vec::new(),
             tables: 0,
             reviews: 0,
             focus_keyword: None,
             secondary_keywords: Vec::new(),
+            keyword_synonyms: Vec::new(),
             collection: None,
             structured_data_gaps: Vec::new(),
             brief: None,

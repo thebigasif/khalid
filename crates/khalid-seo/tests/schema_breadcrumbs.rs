@@ -35,6 +35,20 @@ fn the_home_page_breadcrumb_is_the_home_page_alone() {
 }
 
 #[test]
+fn the_home_label_and_a_breadcrumb_title_name_the_ends_of_the_trail() {
+    let mut site = demo_site();
+    site.breadcrumb_home = Some("Home".to_owned());
+    let mut post = internal_links_post();
+    post.breadcrumb_title = Some("Internal links".to_owned());
+    let node = breadcrumb_list(&site, &post).unwrap();
+    let json: serde_json::Value =
+        serde_json::from_str(&SchemaGraph::new(vec![node]).to_json()).unwrap();
+    let items = &json["@graph"][0]["itemListElement"];
+    assert_eq!(items[0]["name"], "Home");
+    assert_eq!(items[1]["name"], "Internal links");
+}
+
+#[test]
 fn a_german_page_starts_at_the_german_home_page() {
     let items = items(&internal_links_post_de());
     assert_eq!(items[0]["item"], "https://www.example.com/blog/de/");

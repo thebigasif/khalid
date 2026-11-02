@@ -1,8 +1,8 @@
 //! Robots directives per page and the index policy per page type (task 1.13, KH-SEO-9).
 
 use khalid_core::{
-    ArchiveIndex, Following, ImagePreview, Indexing, Locale, PreviewLimit, Restriction,
-    RobotsDirectives,
+    ArchiveIndex, ArchiveSetting, Following, ImagePreview, Indexing, Locale, PreviewLimit,
+    Restriction, RobotsDirectives,
 };
 use khalid_seo::{IndexPolicy, PageKind, SeoPage, UrlPath};
 
@@ -114,8 +114,8 @@ fn each_archive_setting_reaches_its_page_type() {
     let mut settings = ArchiveIndex::default();
     settings.tags = Indexing::NoIndex;
     settings.categories = Indexing::NoIndex;
-    settings.authors = Indexing::NoIndex;
-    settings.dates = Indexing::Index;
+    settings.authors = ArchiveSetting::NoIndex;
+    settings.dates = ArchiveSetting::Index;
     settings.search = Indexing::Index;
     settings.thin_archives_below = 0;
     let policy = IndexPolicy::from(&settings);
@@ -150,4 +150,41 @@ fn a_site_set_to_noindex_keeps_every_page_out_but_follows_links() {
     let mut own = page(PageKind::Post, None);
     own.robots = Some(RobotsDirectives::default());
     assert_eq!(policy.directives_for(&own).indexing, Indexing::NoIndex);
+}
+
+#[test]
+fn posts_pages_and_each_collection_follow_their_own_setting() {
+    let mut settings = ArchiveIndex::default();
+    settings.pages = Indexing::NoIndex;
+    settings
+        .collections
+        .insert("news".to_owned(), Indexing::NoIndex);
+    settings.authors = ArchiveSetting::Off;
+    let policy = IndexPolicy::from(&settings);
+    let in_collection = |name: &str| {
+        let mut post = page(PageKind::Post, None);
+        post.collection = Some(name.to_owned());
+        post
+    };
+    let indexing = |policy: &IndexPolicy, page: &SeoPage| policy.directives_for(page).indexing;
+    assert_eq!(indexing(&policy, &in_collection("news")), Indexing::NoIndex);
+    assert_eq!(indexing(&policy, &in_collection("guides")), Indexing::Index);
+    assert_eq!(
+        indexing(&policy, &page(PageKind::Page, None)),
+        Indexing::NoIndex
+    );
+    assert_eq!(
+        indexing(&policy, &page(PageKind::Author, Some(9))),
+        Indexing::NoIndex
+    );
+    settings.posts = Indexing::NoIndex;
+    settings
+        .collections
+        .insert("guides".to_owned(), Indexing::Index);
+    let policy = IndexPolicy::from(&settings);
+    assert_eq!(indexing(&policy, &in_collection("guides")), Indexing::Index);
+    assert_eq!(
+        indexing(&policy, &page(PageKind::Post, None)),
+        Indexing::NoIndex
+    );
 }

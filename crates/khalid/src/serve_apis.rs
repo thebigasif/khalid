@@ -7,6 +7,7 @@ use std::path::Path;
 use std::sync::Arc;
 
 use axum::Router;
+use khalid_api::ai::AiDesk;
 use khalid_api::analytics_desk::AnalyticsDesk;
 use khalid_api::api::{self, AdminDesks, AuditDesk};
 use khalid_api::comment_moderation::CommentModeration;
@@ -33,14 +34,17 @@ use crate::site_settings::SiteSettings;
 use crate::site_tags::SiteTags;
 use crate::{draft_comment_mail, late_api, look, mounted, staff};
 
+pub(crate) mod ai_writer;
+
 /// The desks `khalid serve` keeps in memory for the Admin API: comment
 /// moderation, the media library, stored redirects and the Search Console
-/// follow-ups.
+/// follow-ups and the writer of the editor's suggestions.
 pub(crate) type Desks = (
     Arc<dyn CommentModeration>,
     MediaLibrary,
     RedirectDesk,
     SiteFollowUps,
+    AiDesk,
 );
 
 /// What [`api_router`] is built from: its four argument groups.
@@ -60,7 +64,7 @@ pub(crate) type ApiParts<'a> = (
 /// site sends mail.
 pub(crate) fn api_router(
     (content, door, posts): (LiveContent, Arc<PublishDoor>, SitePosts),
-    (comments, media, redirects, follow_ups): Desks,
+    (comments, media, redirects, follow_ups, ai): Desks,
     (database, id, (site, config)): (&Database, SiteId, (&Path, &Config)),
     (panel, mailer): (Arc<dyn SiteDirectory>, Option<Arc<dyn Mailer>>),
 ) -> Router {
@@ -103,6 +107,7 @@ pub(crate) fn api_router(
             id,
             SystemClock,
         ))),
+        ai,
     };
     let keys = Arc::new(KeyTable::new(database.clone(), id, SystemClock));
     let (api, _) = api::router_for_serve(Arc::new(content), door, keys, desks, staff);

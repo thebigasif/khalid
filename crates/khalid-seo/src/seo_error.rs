@@ -77,6 +77,12 @@ pub enum SeoError {
         /// The rule, as given.
         path: String,
     },
+    /// An extra robots.txt line is empty or holds a line break or tab.
+    #[error("the robots.txt line {line:?} must be one line of text with no tabs")]
+    RobotsLine {
+        /// The line, as given.
+        line: String,
+    },
     /// Two redirect rules start from the same path.
     #[error("the path {from:?} has more than one redirect rule")]
     RedirectDuplicate {

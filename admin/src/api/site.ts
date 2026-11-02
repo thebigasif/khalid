@@ -3,6 +3,7 @@
 // this document gains them only when that stack lands
 // (docs/decisions/2026-10-31-admin-screens.md). The answer wraps one
 // object, `{ "settings": AdminSettings }`, as G24's handlers write it.
+import type { Part, SeoTable } from "../seo/parts";
 import { call, type Reply, sending } from "./call";
 import type { TemplateSetting } from "./templates";
 
@@ -17,6 +18,11 @@ export type SiteSettings = {
   languages: string[];
   /** The template the blog uses and the options `site.toml` sets for it. */
   template: TemplateSetting;
+  /**
+   * The `[seo]` table as `site.toml` writes it, one key per part such as
+   * `titles`. A server from before the SEO settings screen sends none.
+   */
+  seo?: SeoTable;
   /** When `site.toml` last changed; a change sends it back. */
   updated_at: string;
   /** Whether the running server needs a restart to use what `site.toml` says. */
@@ -33,6 +39,8 @@ export type SiteChange = {
   languages?: string[] | null;
   /** A new template; it replaces the name and every option. */
   template?: TemplateSetting | null;
+  /** New parts of `[seo]`, each replacing its part whole; `null` removes one. */
+  seo?: Record<string, Part | null>;
 };
 
 async function settings(response: Response): Promise<SiteSettings> {

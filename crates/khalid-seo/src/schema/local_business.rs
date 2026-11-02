@@ -1,7 +1,7 @@
 //! `LocalBusiness`: a site's shops, offices or clinics, one node each.
 
 use chrono::{NaiveTime, Weekday};
-use khalid_core::AbsoluteUrl;
+use khalid_core::{AbsoluteUrl, GeoPoint};
 
 use crate::schema::{node_id, publisher_id, site_home};
 use crate::{SchemaNode, SchemaValue, SeoError, SeoSite};
@@ -77,6 +77,8 @@ pub struct LocalBusiness {
     pub price_range: Option<String>,
     /// A map of where it is.
     pub map: Option<AbsoluteUrl>,
+    /// Its point on the map, for `geo` and `locations.kml`.
+    pub geo: Option<GeoPoint>,
 }
 
 impl LocalBusiness {
@@ -90,6 +92,7 @@ impl LocalBusiness {
             opening_hours: Vec::new(),
             price_range: None,
             map: None,
+            geo: None,
         }
     }
 }
@@ -164,6 +167,12 @@ pub(crate) fn business_nodes(site: &SeoSite) -> Result<Vec<SchemaNode>, SeoError
         }
         if let Some(map) = &business.map {
             node.set("hasMap", SchemaValue::Url(map.clone()));
+        }
+        if let Some(geo) = business.geo {
+            let point = SchemaNode::new("GeoCoordinates")
+                .with("latitude", SchemaValue::Number(geo.latitude()))
+                .with("longitude", SchemaValue::Number(geo.longitude()));
+            node.set("geo", SchemaValue::Node(Box::new(point)));
         }
         nodes.push(node);
     }

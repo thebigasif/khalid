@@ -2,7 +2,7 @@
 //! name, stylesheet, reader script, menus and announcement, from `site.toml`.
 
 use khalid_core::{Config, FooterGroup, Locale, MenuLink, Mode};
-use khalid_render::{AnnouncementBar, Nav, NavGroup, NavLink, RenderSite};
+use khalid_render::{AnnouncementBar, BreadcrumbStyle, Nav, NavGroup, NavLink, RenderSite};
 
 use crate::build_pages::path_of;
 use crate::{assets, build_ai_page, build_reader};
@@ -29,6 +29,10 @@ pub(crate) fn render_site(config: &Config, locale: &Locale, stylesheet: &str) ->
         features,
         search: None,
         subscribe: subscribe(config),
+        breadcrumbs: BreadcrumbStyle {
+            separator: config.seo().breadcrumbs.separator.clone(),
+            bold_last: config.seo().breadcrumbs.bold_last,
+        },
     }
 }
 

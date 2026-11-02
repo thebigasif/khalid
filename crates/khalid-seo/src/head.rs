@@ -4,7 +4,7 @@ use khalid_core::AbsoluteUrl;
 
 use crate::escape::escape_markup;
 use crate::social::push_social_tags;
-use crate::{PageKind, SeoError, SeoPage, SeoSite};
+use crate::{PageKind, SeoError, SeoPage, SeoSite, schema_map_url};
 
 /// One tag in a page's `<head>`.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -40,6 +40,14 @@ pub enum HeadTag {
         /// The `href` attribute.
         href: AbsoluteUrl,
     },
+    /// `<link rel="alternate" type="..." href="...">`, another format of
+    /// the page, such as the language's whole-site schema file.
+    Format {
+        /// The `type` attribute, such as `application/ld+json`.
+        media_type: &'static str,
+        /// The `href` attribute.
+        href: AbsoluteUrl,
+    },
 }
 
 impl HeadTag {
@@ -67,6 +75,13 @@ impl HeadTag {
             Self::Alternate { hreflang, href } => {
                 out.push_str("<link rel=\"alternate\" hreflang=\"");
                 escape_markup(hreflang, out);
+                out.push_str("\" href=\"");
+                escape_markup(href.as_str(), out);
+                out.push_str("\">");
+            }
+            Self::Format { media_type, href } => {
+                out.push_str("<link rel=\"alternate\" type=\"");
+                escape_markup(media_type, out);
                 out.push_str("\" href=\"");
                 escape_markup(href.as_str(), out);
                 out.push_str("\">");
@@ -104,7 +119,8 @@ impl HeadTags {
 }
 
 /// The SEO tags for `page` on `site`: title, description, robots, canonical, hreflang,
-/// the verification tags on the home page, then Open Graph and the Twitter card.
+/// the schema file link and the verification tags on the home page, then Open
+/// Graph and the Twitter card.
 ///
 /// A page's own title, description, robots directives and canonical address
 /// win over the site's templates and index policy. A description template
@@ -149,6 +165,12 @@ pub fn head_tags(site: &SeoSite, page: &SeoPage) -> Result<HeadTags, SeoError> {
         });
     }
     if page.kind == PageKind::Home {
+        if site.schema_map.writes_files() {
+            tags.push(HeadTag::Format {
+                media_type: "application/ld+json",
+                href: schema_map_url(site, &page.language)?,
+            });
+        }
         site.verification.push_tags(&mut tags);
     }
     push_social_tags(site, page, &canonical, &description, &mut tags);
