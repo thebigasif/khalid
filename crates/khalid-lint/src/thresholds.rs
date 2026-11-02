@@ -93,6 +93,9 @@ pub struct Thresholds {
     /// subheadings that may hold the focus keyword before they read as
     /// repetitive. Default 75, as in Yoast.
     pub focus_subheading_max_percent: usize,
+    /// The fewest words a pillar post, the main post of a topic group,
+    /// should hold. Default 900, Yoast's floor for cornerstone content.
+    pub pillar_min_words: usize,
 }
 
 impl Default for Thresholds {
@@ -122,6 +125,7 @@ impl Default for Thresholds {
             focus_max_words: 4,
             focus_subheading_min_percent: 30,
             focus_subheading_max_percent: 75,
+            pillar_min_words: 900,
         }
     }
 }

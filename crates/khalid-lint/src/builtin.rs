@@ -6,9 +6,9 @@ use crate::focus::{FocusNotIn, FocusTooOften, FocusTooRare, Place, SecondaryKeyw
 use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
     Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, focus_shape,
-    focus_spread, headings, link_hygiene, link_targets, link_text, page_or_section, page_shape,
-    reading, site_content, site_links, site_sections, site_trust, snippet, structure, topics,
-    words, writing,
+    focus_spread, headings, link_hygiene, link_targets, link_text, page_checks, page_or_section,
+    page_shape, reading, site_content, site_links, site_sections, site_trust, snippet, structure,
+    topics, words, writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
@@ -45,8 +45,12 @@ fn blocking_and_structure_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         }),
         Box::new(structure::HeadingOrder),
         Box::new(structure::MissingAlt),
+        Box::new(page_checks::NoImage),
         Box::new(structure::ThinPost {
             min_words: thresholds.thin_post_words,
+        }),
+        Box::new(page_checks::PillarMinWords {
+            min: thresholds.pillar_min_words,
         }),
         Box::new(link_text::ReusedLinkText),
         Box::new(link_text::RepeatedLinkText {
@@ -58,6 +62,7 @@ fn blocking_and_structure_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(link_text::LinkTextMissesTarget),
         Box::new(link_text::LinkTextIsOwnFocus),
         Box::new(structure::NoOutboundLink),
+        Box::new(page_checks::AllOutboundNofollow),
         Box::new(link_hygiene::NofollowInternalLink),
         Box::new(link_hygiene::InsecureInternalLink),
         Box::new(link_hygiene::TooManyLinks {

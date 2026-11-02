@@ -245,6 +245,7 @@ pub(crate) fn lint_parts(
         .iter()
         .map(|image| Image::new(image.src.clone(), image.alt.clone()))
         .collect();
+    post.lead_image = front.image.is_some();
     post.tables = rendered.html.matches("<table").count();
     post.reviews = rendered
         .structured

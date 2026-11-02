@@ -103,6 +103,24 @@ why = "Links to good sources show readers and Google where your facts come from.
 fix = "Add a link to a trusted source that backs up a claim in the post."
 guide = "citing-sources"
 
+[all-outbound-nofollow]
+what = "Every link from this post to another website tells Google not to follow it."
+why = "A post that vouches for none of its sources looks less trustworthy to readers and Google."
+fix = "Remove `nofollow` from the links to sources you trust, and keep it only for paid or untrusted links."
+guide = "citing-sources"
+
+[no-image]
+what = "This post has no image."
+why = "A picture helps readers understand and share a post, and it can bring visitors from image search."
+fix = "Add an image to the text or set `image:` in the header, with a short description."
+guide = "image-descriptions"
+
+[pillar-min-words]
+what = "This pillar post, the main post of its topic group, is shorter than the minimum this site sets for pillar posts."
+why = "The main post should cover the whole topic, so readers and Google treat it as the best page on it."
+fix = "Add the parts of the topic the group's other posts cover, with a link to each of them."
+guide = "post-length"
+
 [no-description]
 what = "This post has no description."
 why = "Search results show a description under the title, so without one Google picks any sentence."

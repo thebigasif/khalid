@@ -24,6 +24,7 @@ fn site_with_post(date: Option<NaiveDate>) -> LintSite {
     post.author = Some("Amira Haddad".to_owned());
     post.date = date;
     post.word_count = 640;
+    post.lead_image = true;
     post.links.push(LintLink::new(
         LinkKind::Internal,
         "/blog/link-text/",

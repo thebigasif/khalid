@@ -53,6 +53,10 @@ pub struct LintPost {
     /// The images in the body, in order.
     #[serde(default)]
     pub images: Vec<Image>,
+    /// Whether the header sets a lead image, the picture at the top of the
+    /// post and on its cards.
+    #[serde(default)]
+    pub lead_image: bool,
     /// The targets of the `[[slug]]` links in the body, as written, in order.
     #[serde(default)]
     pub wikilinks: Vec<String>,
@@ -120,6 +124,7 @@ impl LintPost {
             headings: Vec::new(),
             links: Vec::new(),
             images: Vec::new(),
+            lead_image: false,
             wikilinks: Vec::new(),
             word_count: 0,
             body_text: String::new(),
