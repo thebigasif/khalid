@@ -1,4 +1,5 @@
 import { getRouteApi } from "@tanstack/react-router";
+import { PageHeader } from "../components/PageHeader";
 import { AddFile } from "../media/AddFile";
 import { Library } from "../media/Library";
 import { en } from "../strings/en";
@@ -10,8 +11,7 @@ export function Media() {
   const search = route.useSearch();
   return (
     <>
-      <h1>{en.media.title}</h1>
-      <p className="lede">{en.media.lede}</p>
+      <PageHeader title={en.media.title} lede={en.media.lede} />
       <AddFile />
       <Library search={search} />
     </>

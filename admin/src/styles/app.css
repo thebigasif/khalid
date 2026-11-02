@@ -225,7 +225,23 @@
   .pill.warn{color:var(--color-warn);background:var(--color-warn-bg);border-color:var(--color-warn-line)}
   .pill.ok{color:var(--color-ok);background:var(--color-ok-bg);border-color:var(--color-ok-line)}
   .pill.quiet{color:var(--color-muted);background:var(--color-surface);border-color:var(--color-border)}
-  .heading{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:flex-start}
+  .pill.info{color:var(--color-link);background:var(--color-tint);border-color:var(--color-tint-line)}
+  /* The top of a screen: heading and lede on the left, its actions on the right. */
+  .page-head{display:flex;flex-wrap:wrap;gap:1rem 1.5rem;align-items:flex-end;justify-content:space-between;margin:0 0 1.5rem}
+  .page-head>div:first-child{flex:1 1 24rem}
+  .page-head .lede{margin:0}
+  .page-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+  /* An empty list: an icon, what is empty, and one next step, centred on a dashed card. */
+  .empty{display:grid;justify-items:center;gap:.5rem;padding:2rem 1rem;border:1px dashed var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);text-align:center}
+  .empty-icon{display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:50%;background:var(--color-surface);color:var(--color-muted)}
+  .empty-icon .icon{width:1.25rem;height:1.25rem}
+  .empty-title{margin:0;color:var(--color-muted);max-width:40ch}
+  /* A message raised at the foot of the screen, which fades by itself. */
+  .toast-region{margin:0}
+  .toast{position:fixed;right:1rem;bottom:1rem;z-index:50;display:flex;align-items:center;gap:.5rem;max-width:min(24rem,calc(100vw - 2rem));padding:.625rem 1rem;border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);box-shadow:var(--shadow-menu);font-weight:500;animation:toast-out .3s ease-in 5s forwards}
+  .toast .icon{color:var(--color-ok)}
+  @keyframes toast-out{to{opacity:0;visibility:hidden}}
+  @media (prefers-reduced-motion:reduce){.toast{animation-duration:0s}}
   .terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:.25rem 2rem;margin:0 0 1.5rem;font-size:.875rem}
   .terms dt{font-weight:600}
   .terms dd{margin:0 0 .5rem;color:var(--color-muted)}

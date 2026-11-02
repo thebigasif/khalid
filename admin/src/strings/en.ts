@@ -514,6 +514,7 @@ export const en = {
       count === 1 ? "post blocked from publishing" : "posts blocked from publishing",
     recent: "Recent changes",
     noPosts: "No posts yet. The first one you start shows here.",
+    firstPost: "Write your first post",
     post: "Post",
     stands: "Where it stands",
     who: "Who",

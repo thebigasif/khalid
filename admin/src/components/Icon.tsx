@@ -23,6 +23,7 @@ const PATHS = {
   account:
     "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6.5 18.5a6 6 0 0 1 11 0",
   plus: "M12 5v14M5 12h14",
+  check: "M5 12.5 9.5 17 19 7",
   menu: "M4 6h16M4 12h16M4 18h16",
   close: "M6 6l12 12M18 6 6 18",
   chevron: "M6 9l6 6 6-6",

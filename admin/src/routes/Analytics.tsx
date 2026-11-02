@@ -9,6 +9,7 @@ import { UncitedPages } from "../analytics/UncitedPages";
 import { type Days, readAiVisitors, readUncited, readVisitors } from "../api/analytics";
 import { problemMessage } from "../api/posts";
 import { type Failure, isData } from "../api/redirects";
+import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { en } from "../strings/en";
 
@@ -56,8 +57,7 @@ export function Analytics() {
   }
   return (
     <>
-      <h1>{en.analytics.title}</h1>
-      <p className="lede">{en.analytics.lede}</p>
+      <PageHeader title={en.analytics.title} lede={en.analytics.lede} />
       {body}
     </>
   );

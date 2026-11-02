@@ -13,6 +13,7 @@
   --color-border: #e3e6ea;
   --color-field: #7d8590;
   --color-tint: color-mix(in srgb, var(--color-link) 9%, #fff);
+  --color-tint-line: color-mix(in srgb, var(--color-link) 22%, #fff);
   --color-link-hover: color-mix(in srgb, var(--color-link) 85%, #000);
   --color-block: #b42318;
   --color-block-bg: #fef3f2;

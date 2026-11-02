@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { failureMessage, isData } from "../api/call";
 import { changeSite, readSite, type SiteSettings } from "../api/site";
+import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { PictureSearches } from "../site/PictureSearches";
 import { SiteForm } from "../site/SiteForm";
@@ -47,8 +48,7 @@ export function Site() {
   }
   return (
     <>
-      <h1>{words.title}</h1>
-      <p className="lede">{words.lede}</p>
+      <PageHeader title={words.title} lede={words.lede} />
       {shown}
     </>
   );
