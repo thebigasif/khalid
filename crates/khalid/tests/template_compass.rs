@@ -109,7 +109,7 @@ fn a_compass_post_opens_with_its_trail_and_contents_and_ends_with_its_author() {
     let author = post.find("<section class=\"author-box\">").unwrap();
     assert!(crumbs < contents && contents < body, "{post}");
     assert!(body < share && share < author, "{post}");
-    assert!(post.contains("<ol class=\"toc-plain\">"), "{post}");
+    assert!(post.contains("<nav class=\"toc-box\" aria-label=\"Contents\">\n<p class=\"toc-title\">Contents</p>\n<ol>"), "{post}");
     assert!(!post.contains("<ul class=\"people\""), "{post}");
     assert!(!post.contains("class=\"related"), "{post}");
     assert!(!post.contains("class=\"reading-time\""), "{post}");

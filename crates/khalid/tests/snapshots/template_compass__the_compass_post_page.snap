@@ -22,7 +22,7 @@ expression: "main_of(&page(&out, \"what-a-sitemap-does/index.html\"))"
 </header>
 <nav class="toc-box" aria-label="Contents">
 <p class="toc-title">Contents</p>
-<ol class="toc-plain">
+<ol>
 <li><a href="#what-it-does">What it does</a></li>
 <li><a href="#what-it-does-not-do">What it does not do</a></li>
 <li><a href="#keep-it-clean">Keep it clean</a></li>
