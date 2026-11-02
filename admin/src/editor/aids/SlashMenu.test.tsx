@@ -10,8 +10,10 @@ describe("the slash menu", () => {
     type("/");
     expect(menu()).toBeInTheDocument();
     type("quo");
+    // A name that starts with the query comes before one with a later word that does.
     expect(screen.getAllByRole("button").map((line) => line.textContent)).toEqual([
       "QuoteWords from someone else. In markdown, start the line with >",
+      "Pull quoteOne short line from the post, shown large to catch the eye",
     ]);
   });
 
