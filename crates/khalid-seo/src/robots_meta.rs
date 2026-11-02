@@ -18,6 +18,9 @@ pub struct IndexPolicy {
     pub by_kind: BTreeMap<PageKind, Indexing>,
     /// A tag or author archive listing fewer posts than this is `noindex`.
     pub thin_archive_below: u32,
+    /// The whole site. `NoIndex` keeps every page out, over the setting per
+    /// type and a page's own directives, as a demo or staging copy needs.
+    pub whole_site: Indexing,
 }
 
 impl Default for IndexPolicy {
@@ -29,6 +32,7 @@ impl Default for IndexPolicy {
                 (PageKind::NotFound, Indexing::NoIndex),
             ]),
             thin_archive_below: 3,
+            whole_site: Indexing::Index,
         }
     }
 }
@@ -47,14 +51,24 @@ impl From<&ArchiveIndex> for IndexPolicy {
                 (PageKind::NotFound, Indexing::NoIndex),
             ]),
             thin_archive_below: settings.thin_archives_below,
+            whole_site: settings.site,
         }
     }
 }
 
 impl IndexPolicy {
     /// The directives for `page`: its own when it has them, otherwise the
-    /// defaults with this policy's index setting.
+    /// defaults with this policy's index setting. A site set to `noindex`
+    /// keeps the page out either way.
     pub fn directives_for(&self, page: &SeoPage) -> RobotsDirectives {
+        let mut directives = self.own_or_by_kind(page);
+        if self.whole_site == Indexing::NoIndex {
+            directives.indexing = Indexing::NoIndex;
+        }
+        directives
+    }
+
+    fn own_or_by_kind(&self, page: &SeoPage) -> RobotsDirectives {
         if let Some(own) = &page.robots {
             return own.clone();
         }

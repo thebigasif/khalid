@@ -120,6 +120,7 @@ main > .breadcrumbs + .page-hero, main > .breadcrumbs + * > :is(.page-hero, .pos
 main > .hero:first-child { margin-block-start: -1rem; }
 .hero h1 { max-inline-size: 16ch; margin: 0 0 1.25rem; font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem); line-height: 1.05; letter-spacing: -0.025em; }
 .hero .lead { margin: 0 0 2rem; }
+.hero-moved { margin: 1.5rem 0 0; color: var(--color-muted); }
 .pen { background: linear-gradient(transparent 62%, color-mix(in oklab, var(--color-accent) 30%, transparent) 62%, color-mix(in oklab, var(--color-accent) 30%, transparent) 92%, transparent 92%); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 @media (min-width: 64rem) { .hero { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); } }
 

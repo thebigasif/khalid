@@ -2,6 +2,8 @@
 # at https://thebigasif.github.io/khalid/. The showcase demo sits at
 # /khalid/demo/, the template demos at /khalid/templates/<name>/ and the
 # use case sites at /khalid/examples/<slug>/, each built from its own folder.
+# The demos and the template gallery are also served at
+# https://serpdad.com/khalid/, see scripts/demos-bundle.sh.
 
 name = "Khalid"
 address = "https://thebigasif.github.io"
@@ -42,6 +44,12 @@ href = "/khalid/start/"
 [[nav.primary]]
 label = "Compare"
 href = "/khalid/compare/"
+
+# Khalid's main home is on serpdad.com, and every page here names its
+# serpdad.com copy as the canonical address, so search engines credit it.
+[[nav.primary]]
+label = "Khalid on SerpDad"
+href = "https://serpdad.com/khalid/"
 
 [[nav.footer]]
 label = "See the demo blog"

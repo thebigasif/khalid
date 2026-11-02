@@ -147,3 +147,40 @@ fn a_noindex_post_says_so_and_leaves_the_sitemap() {
     let sitemap = fs::read_to_string(at(out.path(), "sitemaps/posts-en-1.xml")).unwrap();
     assert!(!sitemap.contains("why-internal-links-matter"), "{sitemap}");
 }
+
+/// Every file under `dir` whose name ends in `suffix`, with its text.
+#[cfg(test)]
+fn files_ending(dir: &Path, suffix: &str, found: &mut Vec<(PathBuf, String)>) {
+    for entry in fs::read_dir(dir).unwrap() {
+        let path = entry.unwrap().path();
+        if path.is_dir() {
+            files_ending(&path, suffix, found);
+        } else if path.to_string_lossy().ends_with(suffix) {
+            let text = fs::read_to_string(&path).unwrap();
+            found.push((path, text));
+        }
+    }
+}
+
+#[test]
+fn a_site_set_to_noindex_keeps_every_page_out_of_search_and_sitemaps() {
+    let (_site, out) = built_with_front("[seo.index]\nsite = \"noindex\"\n", "robots: index\n");
+    let mut pages = Vec::new();
+    files_ending(out.path(), ".html", &mut pages);
+    assert!(pages.len() > 10, "{} pages", pages.len());
+    for (path, html) in &pages {
+        assert!(
+            html.contains(r#"<meta name="robots" content="noindex, follow">"#),
+            "{} has no noindex tag",
+            path.display()
+        );
+    }
+    let mut sitemaps = Vec::new();
+    files_ending(out.path(), ".xml", &mut sitemaps);
+    for (path, xml) in &sitemaps {
+        assert!(!xml.contains("<url>"), "{} lists pages", path.display());
+    }
+    // Crawlers may still read the pages, or they would never see the tag.
+    let robots = fs::read_to_string(at(out.path(), "robots.txt")).unwrap();
+    assert!(!robots.contains("Disallow: /blog/\n"), "{robots}");
+}
