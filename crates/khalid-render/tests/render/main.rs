@@ -28,6 +28,8 @@ mod contents;
 #[cfg(test)]
 mod contents_parts;
 #[cfg(test)]
+mod contents_sheet;
+#[cfg(test)]
 mod cta;
 #[cfg(test)]
 mod dek;

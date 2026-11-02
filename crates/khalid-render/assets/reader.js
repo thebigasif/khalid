@@ -1,7 +1,8 @@
 // Polish on top of pages that read completely without it (RULES.md BL-WEB-2):
 // fill the reading progress bar, copy a heading's address, open an enlarged image in a dialog, open search
-// with / or Ctrl+K, show results while typing a search, and mark the
-// section being read in the contents, and preview a linked post.
+// with / or Ctrl+K, show results while typing a search, mark the section
+// being read in the contents, open the contents as a sheet on a phone, and
+// preview a linked post.
 // The words it shows come from the script tag's data attributes.
 (() => {
   "use strict";
@@ -156,26 +157,76 @@
     });
   }
 
-  // The contents column marks the section on screen.
-  const side = document.querySelector(".toc-side");
-  if (side && "IntersectionObserver" in window) {
-    const links = new Map(
-      [...side.querySelectorAll("a[href^='#']")].map((a) => [a.getAttribute("href").slice(1), a]),
-    );
-    const seen = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          for (const link of links.values()) link.removeAttribute("aria-current");
-          links.get(entry.target.id)?.setAttribute("aria-current", "location");
-        }
-      },
-      { rootMargin: "0px 0px -70% 0px" },
-    );
-    for (const id of links.keys()) {
-      const heading = document.getElementById(id);
-      if (heading) seen.observe(heading);
+  // Every contents list marks the section on screen: the column, the box
+  // and the sheet below.
+  const contents = document.querySelector(".toc-side, .toc-box, .toc-inline nav");
+  let reading = "";
+  const mark = () => {
+    for (const link of document.querySelectorAll(".toc-side a, .toc-box a, .toc-inline a, .toc-sheet a")) {
+      if (reading && link.getAttribute("href") === `#${reading}`) {
+        link.setAttribute("aria-current", "location");
+      } else link.removeAttribute("aria-current");
     }
+  };
+  if (contents) {
+    // The section being read is the last one whose heading has passed the
+    // top third of the window.
+    const headings = [...contents.querySelectorAll("a[href^='#']")]
+      .map((link) => document.getElementById(link.getAttribute("href").slice(1)))
+      .filter(Boolean);
+    let queued = false;
+    const find = () => {
+      queued = false;
+      const line = innerHeight / 3;
+      const passed = headings.filter((heading) => heading.getBoundingClientRect().top < line);
+      const now = passed.length ? passed[passed.length - 1].id : "";
+      if (now !== reading) {
+        reading = now;
+        mark();
+      }
+    };
+    addEventListener(
+      "scroll",
+      () => {
+        if (!queued) requestAnimationFrame(find);
+        queued = true;
+      },
+      { passive: true },
+    );
+    find();
+  }
+
+  // On a narrow screen a floating button opens the contents as a sheet: a
+  // modal dialog, so focus stays inside and Escape closes it. Picking a
+  // section closes it and goes there.
+  if (contents && typeof HTMLDialogElement === "function") {
+    const open = document.createElement("button");
+    open.type = "button";
+    open.className = "toc-button";
+    open.textContent = words.contents || "";
+    open.setAttribute("aria-haspopup", "dialog");
+    const sheet = document.createElement("dialog");
+    sheet.className = "toc-sheet";
+    sheet.setAttribute("aria-label", words.contents || "");
+    const top = document.createElement("div");
+    top.className = "toc-sheet-top";
+    const title = document.createElement("p");
+    title.textContent = words.contents || "";
+    const close = document.createElement("button");
+    close.type = "button";
+    close.textContent = words.close || "";
+    close.addEventListener("click", () => sheet.close());
+    top.append(title, close);
+    sheet.append(top, contents.querySelector("ol").cloneNode(true));
+    sheet.addEventListener("click", (event) => {
+      if (event.target === sheet || event.target.closest("a")) sheet.close();
+    });
+    open.addEventListener("click", () => {
+      mark();
+      sheet.showModal();
+      sheet.querySelector("[aria-current]")?.scrollIntoView({ block: "center" });
+    });
+    document.body.append(open, sheet);
   }
 
   // A link in a post's body to another page of the site shows that page's
