@@ -8,6 +8,7 @@ use serde_json::Value;
 use utoipa::ToSchema;
 
 use crate::content_store::BoxFuture;
+use crate::link_suggestions::LinkSuggestion;
 use crate::post_store::PostStoreError;
 use crate::resources::SeoScores;
 
@@ -24,6 +25,18 @@ pub trait PostChecks: Send + Sync {
     /// cannot be read.
     fn check<'a>(&'a self, id: &'a str)
     -> BoxFuture<'a, Result<Option<PostCheck>, PostStoreError>>;
+
+    /// Up to ten posts that post `id` should link to and does not yet,
+    /// best first, or `None` when no post has that identity.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`PostStoreError`] when the posts or the site's settings
+    /// cannot be read.
+    fn link_suggestions<'a>(
+        &'a self,
+        id: &'a str,
+    ) -> BoxFuture<'a, Result<Option<Vec<LinkSuggestion>>, PostStoreError>>;
 }
 
 /// The lines of a search result: the title, the address and the
@@ -114,7 +127,7 @@ pub use memory::MemoryPostChecks;
 
 #[cfg(any(test, feature = "test-util"))]
 mod memory {
-    use super::{BoxFuture, PostCheck, PostChecks, PostStoreError};
+    use super::{BoxFuture, LinkSuggestion, PostCheck, PostChecks, PostStoreError};
 
     /// Checks made up front, for tests.
     #[derive(Debug, Default)]
@@ -136,6 +149,15 @@ mod memory {
         ) -> BoxFuture<'a, Result<Option<PostCheck>, PostStoreError>> {
             let found = self.checks.iter().find(|check| check.id == id).cloned();
             Box::pin(async move { Ok(found) })
+        }
+
+        /// A checked post has no suggestions here; ranking is tested on its own.
+        fn link_suggestions<'a>(
+            &'a self,
+            id: &'a str,
+        ) -> BoxFuture<'a, Result<Option<Vec<LinkSuggestion>>, PostStoreError>> {
+            let known = self.checks.iter().any(|check| check.id == id);
+            Box::pin(async move { Ok(known.then(Vec::new)) })
         }
     }
 }

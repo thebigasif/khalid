@@ -4048,6 +4048,82 @@
         ]
       }
     },
+    "/api/admin/v1/posts/{id}/link-suggestions/": {
+      "get": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "The blog's other posts in the same language that this post does not\nlink to yet, ranked by what they share with it: its category, its tags,\nits topic cluster, with the cluster's pillar first, and their focus\nkeyword in this post's text, given back as the words to link. A draft\nis weighed as if published today. Needs `posts:write`.",
+        "operationId": "suggest_links",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The post's identity",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Up to ten posts to link to, best first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminLinkSuggestions"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No post has this identity, or this server checks no posts",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/posts/{id}/presence/": {
       "post": {
         "tags": [
@@ -11135,6 +11211,22 @@
           }
         }
       },
+      "AdminLinkSuggestions": {
+        "type": "object",
+        "description": "Suggestions as the Admin API wraps them.",
+        "required": [
+          "suggestions"
+        ],
+        "properties": {
+          "suggestions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkSuggestion"
+            },
+            "description": "Up to ten posts, best first."
+          }
+        }
+      },
       "AdminMedia": {
         "type": "object",
         "description": "A file in the media library with the details kept beside it.",
@@ -13323,6 +13415,50 @@
           }
         },
         "additionalProperties": false
+      },
+      "LinkSuggestion": {
+        "type": "object",
+        "description": "One post worth linking to from the post being written.",
+        "required": [
+          "id",
+          "title",
+          "path",
+          "score",
+          "shares"
+        ],
+        "properties": {
+          "anchor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The words of the post being written that name it, as written,\nready to become the link's words."
+          },
+          "id": {
+            "type": "string",
+            "description": "The post's identity, as in `/posts/{id}/`.",
+            "example": "en.choosing-anchor-text"
+          },
+          "path": {
+            "type": "string",
+            "description": "The address to link to.",
+            "example": "/blog/choosing-anchor-text/"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How closely it matches; the list sends the highest first.",
+            "minimum": 0
+          },
+          "shares": {
+            "$ref": "#/components/schemas/Shares",
+            "description": "What it shares with the post being written."
+          },
+          "title": {
+            "type": "string",
+            "description": "Its title."
+          }
+        }
       },
       "LintCounts": {
         "type": "object",
@@ -15982,6 +16118,48 @@
           }
         },
         "additionalProperties": false
+      },
+      "Shares": {
+        "type": "object",
+        "description": "What a suggested post shares with the post being written.",
+        "required": [
+          "tags",
+          "pillar"
+        ],
+        "properties": {
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The category both are in."
+          },
+          "cluster": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The topic cluster both are in."
+          },
+          "keyword": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The suggested post's focus keyword, when this post's text names it."
+          },
+          "pillar": {
+            "type": "boolean",
+            "description": "Whether the suggested post is that cluster's pillar."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The tags both have."
+          }
+        }
       },
       "SignInBody": {
         "type": "object",

@@ -249,3 +249,35 @@ fn the_posts_list_counts_links_and_finds_orphans() {
     assert!(ids.contains(&"en.what-a-sitemap-does"), "{json}");
     assert!(!ids.contains(&"en.anchor-words"), "{json}");
 }
+
+#[test]
+fn link_suggestions_rank_other_posts_this_one_does_not_link_to_yet() {
+    let site = demo_site();
+    write_draft(site.path());
+    let key = writer_key(site.path());
+    let server = start(site.path());
+
+    let route = "/api/admin/v1/posts/en.anchor-words/link-suggestions/";
+    let (status, json) = send(&server, &key, ("GET", route), "");
+    assert_eq!(status, 200, "{json}");
+    let ids: Vec<&str> = (json["suggestions"].as_array().unwrap().iter())
+        .map(|each| each["id"].as_str().unwrap())
+        .collect();
+    let same_category = [
+        "en.how-to-write-a-title-tag",
+        "en.why-internal-links-matter",
+    ];
+    assert_eq!(ids, same_category, "by title: {json}");
+    assert_eq!(json["suggestions"][0]["shares"]["category"], "on-page-seo");
+    let path = &json["suggestions"][0]["path"];
+    assert_eq!(path, "/blog/how-to-write-a-title-tag/", "{json}");
+
+    // The demo post already links to the other post in its category.
+    let route = format!("{ROUTE}link-suggestions/");
+    let (status, json) = send(&server, &key, ("GET", &route), "");
+    assert_eq!(status, 200, "{json}");
+    assert_eq!(json["suggestions"], json!([]), "{json}");
+    let missing = "/api/admin/v1/posts/en.no-such-post/link-suggestions/";
+    let (status, _) = send(&server, &key, ("GET", missing), "");
+    assert_eq!(status, 404);
+}

@@ -48,6 +48,7 @@ export const operations = {
   list_draft_comments: { method: "GET", path: "/api/admin/v1/posts/{id}/draft-comments/", key: "admin", body: null },
   add_draft_comment: { method: "POST", path: "/api/admin/v1/posts/{id}/draft-comments/", key: "admin", body: "application/json" },
   resolve_draft_comment: { method: "PUT", path: "/api/admin/v1/posts/{id}/draft-comments/{comment}/", key: "admin", body: "application/json" },
+  suggest_links: { method: "GET", path: "/api/admin/v1/posts/{id}/link-suggestions/", key: "admin", body: null },
   check_in: { method: "POST", path: "/api/admin/v1/posts/{id}/presence/", key: "admin", body: "application/json" },
   leave: { method: "DELETE", path: "/api/admin/v1/posts/{id}/presence/", key: "admin", body: null },
   make_preview_link: { method: "POST", path: "/api/admin/v1/posts/{id}/preview-link/", key: "admin", body: null },

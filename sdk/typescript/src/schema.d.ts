@@ -187,6 +187,12 @@ export type AdminKeys = {
   keys: AdminKey[];
 };
 
+/** Suggestions as the Admin API wraps them. */
+export type AdminLinkSuggestions = {
+  /** Up to ten posts, best first. */
+  suggestions: LinkSuggestion[];
+};
+
 /** A file in the media library with the details kept beside it. */
 export type AdminMedia = {
   /** What an image shows, for readers who cannot see it. */
@@ -917,6 +923,22 @@ export type LinkRedeem = {
 export type LinkRequest = {
   /** The address the account signs in with. */
   email: string;
+};
+
+/** One post worth linking to from the post being written. */
+export type LinkSuggestion = {
+  /** The words of the post being written that name it, as written, ready to become the link's words. */
+  anchor?: string | null;
+  /** The post's identity, as in `/posts/{id}/`. */
+  id: string;
+  /** The address to link to. */
+  path: string;
+  /** How closely it matches; the list sends the highest first. */
+  score: number;
+  /** What it shares with the post being written. */
+  shares: Shares;
+  /** Its title. */
+  title: string;
 };
 
 /** How many lint findings a post has, by severity. A post with any `blocks` cannot be published. */
@@ -1743,6 +1765,20 @@ export type ShareCard = {
 export type ShareCards = {
   facebook?: ShareCard | null;
   x?: ShareCard | null;
+};
+
+/** What a suggested post shares with the post being written. */
+export type Shares = {
+  /** The category both are in. */
+  category?: string | null;
+  /** The topic cluster both are in. */
+  cluster?: string | null;
+  /** The suggested post's focus keyword, when this post's text names it. */
+  keyword?: string | null;
+  /** Whether the suggested post is that cluster's pillar. */
+  pillar: boolean;
+  /** The tags both have. */
+  tags: string[];
 };
 
 /** An email and password to sign in with. */
@@ -2603,6 +2639,20 @@ export interface Operations {
       body: ResolveThreads;
     };
     output: null;
+  };
+  /** The blog's other posts in the same language that this post does not link to yet, ranked by what they share with it: its category, its tags, its topic cluster, with the cluster's pillar first, and their focus keyword in this post's text, given back as the words to link. A draft is weighed as if published today. Needs `posts:write`. */
+  suggest_links: {
+    input: {
+      path: {
+        /** The post's identity */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminLinkSuggestions;
   };
   /** Notes that the caller has the post open and answers who holds its lock. The editor checks in every 20 seconds; someone who stops for a minute lets go. The lock tells the editor who may type: the Admin API still takes any edit and refuses a stale one with 409. Needs `posts:write`. */
   check_in: {
