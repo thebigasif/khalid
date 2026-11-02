@@ -24,6 +24,13 @@ pub struct TemplateWords {
     /// The page line, with `{current}` and `{total}`, such as
     /// `Page {current} of {total}`.
     pub page_of: String,
+    /// The label before a post's author in its X and Slack preview, such as
+    /// `Written by`.
+    pub written_by: String,
+    /// The label before a post's reading time in its X and Slack preview.
+    pub reading_time_label: String,
+    /// The reading time, with `{minutes}`, such as `{minutes} min read`.
+    pub reading_time: String,
 }
 
 impl Default for TemplateWords {
@@ -32,6 +39,9 @@ impl Default for TemplateWords {
             months: ENGLISH_MONTHS.map(str::to_owned),
             date_format: "{day} {month} {year}".to_owned(),
             page_of: "Page {current} of {total}".to_owned(),
+            written_by: "Written by".to_owned(),
+            reading_time_label: "Reading time".to_owned(),
+            reading_time: "{minutes} min read".to_owned(),
         }
     }
 }

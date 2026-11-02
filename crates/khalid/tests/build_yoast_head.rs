@@ -103,6 +103,30 @@ fn author_and_date_archives_switched_off_are_not_built_and_redirect_home() {
 }
 
 #[test]
+fn robots_txt_takes_extra_lines() {
+    let site = site("\n[seo.crawlers]\nextra_lines = [\"Crawl-delay: 5\"]\n");
+    build(&site);
+    let robots = file(&site, "robots.txt").unwrap();
+    assert!(robots.contains("Crawl-delay: 5\n"), "{robots}");
+}
+
+#[test]
+fn a_post_preview_on_x_and_slack_names_its_author_and_reading_time() {
+    let site = site("");
+    build(&site);
+    let post = file(&site, "post-1/index.html").unwrap();
+    assert!(
+        post.contains("<meta name=\"twitter:label1\" content=\"Written by\">\n<meta name=\"twitter:data1\" content=\"Asif\">"),
+        "{post}"
+    );
+    assert!(post.contains("<meta name=\"twitter:data2\" content=\"1 min read\">"));
+    let off = self::site("\n[seo.social]\nshare_labels = false\n");
+    build(&off);
+    let post = file(&off, "post-1/index.html").unwrap();
+    assert!(!post.contains("twitter:label1"), "{post}");
+}
+
+#[test]
 fn a_collection_and_pages_can_leave_search_and_a_feed_format_can_go() {
     let site =
         site("\n[seo.index.collections]\nnews = \"noindex\"\n\n[seo.feeds]\noff = [\"atom\"]\n");

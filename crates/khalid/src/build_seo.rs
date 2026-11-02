@@ -62,8 +62,16 @@ fn words(language: &Locale) -> Result<TemplateWords, UserMessage> {
     if let Some(format) = strings.get("date_format") {
         words.date_format.clone_from(format);
     }
-    if let Some(page_of) = strings.get("page_of") {
-        words.page_of.clone_from(page_of);
+    let fields = [
+        ("page_of", &mut words.page_of),
+        ("written_by", &mut words.written_by),
+        ("reading_time_label", &mut words.reading_time_label),
+        ("reading_time", &mut words.reading_time),
+    ];
+    for (key, field) in fields {
+        if let Some(text) = strings.get(key) {
+            field.clone_from(text);
+        }
     }
     Ok(words)
 }

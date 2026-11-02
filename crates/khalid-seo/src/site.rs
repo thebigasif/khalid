@@ -71,6 +71,9 @@ pub struct SeoSite {
     pub words: BTreeMap<Locale, TemplateWords>,
     /// The first step of every breadcrumb trail. `None` uses the site name.
     pub breadcrumb_home: Option<String>,
+    /// Whether a post's X and Slack preview names its author and reading
+    /// time, Yoast's "enhanced Slack sharing". On by default.
+    pub share_labels: bool,
 }
 
 impl SeoSite {
@@ -103,6 +106,7 @@ impl SeoSite {
             today: None,
             words: BTreeMap::new(),
             breadcrumb_home: None,
+            share_labels: true,
         }
     }
 

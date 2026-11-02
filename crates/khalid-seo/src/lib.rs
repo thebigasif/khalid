@@ -86,7 +86,7 @@ pub use redirects::{
 };
 pub use robots_meta::IndexPolicy;
 pub use robots_txt::{
-    BotAccess, CrawlerPolicy, KNOWN_AI_CRAWLERS, RobotsPath, RobotsTxt, UserAgent,
+    BotAccess, CrawlerPolicy, KNOWN_AI_CRAWLERS, RobotsLine, RobotsPath, RobotsTxt, UserAgent,
 };
 pub use schema::{
     AggregateRating, AppKind, AuthorProfile, Availability, Book, ClaimReview, Course, CustomSchema,

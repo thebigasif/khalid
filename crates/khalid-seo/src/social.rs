@@ -151,4 +151,39 @@ pub(crate) fn push_social_tags(
             content: handle.as_str().to_owned(),
         });
     }
+    if is_article && site.share_labels {
+        push_share_labels(site, page, out);
+    }
+}
+
+/// The two lines Slack and X show under a shared post's title: who wrote
+/// it and how long it takes to read, in the page's language.
+fn push_share_labels(site: &SeoSite, page: &SeoPage, out: &mut Vec<HeadTag>) {
+    let words = site.words_for(&page.language);
+    let meta = |out: &mut Vec<HeadTag>, name, content: String| {
+        out.push(HeadTag::Meta { name, content });
+    };
+    let mut labels = [
+        ("twitter:label1", "twitter:data1"),
+        ("twitter:label2", "twitter:data2"),
+    ]
+    .into_iter();
+    if let Some(author) = page.author.as_ref().filter(|author| !author.is_empty())
+        && let Some((label, data)) = labels.next()
+    {
+        meta(out, label, words.written_by.clone());
+        meta(out, data, author.clone());
+    }
+    if let Some(minutes) = page.reading_minutes
+        && let Some((label, data)) = labels.next()
+    {
+        meta(out, label, words.reading_time_label.clone());
+        meta(
+            out,
+            data,
+            words
+                .reading_time
+                .replace("{minutes}", &minutes.to_string()),
+        );
+    }
 }

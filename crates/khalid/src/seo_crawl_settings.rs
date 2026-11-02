@@ -4,7 +4,7 @@
 
 use khalid_core::{CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings};
 use khalid_seo::{
-    BotAccess, FeedContent, FeedFormat, MetaTemplate, RobotsPath, SeoSite, UserAgent,
+    BotAccess, FeedContent, FeedFormat, MetaTemplate, RobotsLine, RobotsPath, SeoSite, UserAgent,
 };
 
 use crate::seo_settings::{SettingMistake, TEMPLATE};
@@ -43,6 +43,12 @@ pub(crate) fn crawlers(
             }
             site.crawlers.bots.insert(agent, access);
         }
+    }
+    site.crawlers.disallow_search = settings.disallow_search;
+    for line in &settings.extra_lines {
+        let line = RobotsLine::try_new(line)
+            .map_err(|error| SettingMistake::new(TABLE, "extra_lines", &error, None))?;
+        site.crawlers.extra_lines.push(line);
     }
     Ok(())
 }

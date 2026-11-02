@@ -23,6 +23,8 @@ published = "Published"
 updated = "Updated"
 # How long a post takes to read. {minutes} is filled in.
 reading_time = "{minutes} min read"
+# Names how long a post takes to read, in its link preview on X and Slack.
+reading_time_label = "Reading time"
 in_category = "Filed under"
 tags = "Tags"
 # The heading of a post's table of contents.

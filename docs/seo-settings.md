@@ -89,3 +89,23 @@ off = ["atom", "json"]
 | `taxonomy` | `category` | Which term a post's trail passes through: `category`, `tag` (its first tag) or `none`. |
 
 A post may set `breadcrumb_title:` in its front matter to name itself more briefly in the trail, such as `Sitemaps` for a long headline.
+
+## Link previews on X and Slack
+
+A post's preview on X and Slack shows two short lines under its title: who wrote it and how long it takes to read, in the page's language. This is Yoast's "enhanced Slack sharing". A site that hides reading time (`[reader] reading_time = false`) hides it here too. To turn both lines off:
+
+```toml
+[seo.social]
+share_labels = false
+```
+
+## robots.txt
+
+`[seo.crawlers]` shapes `robots.txt`.
+
+| Key | Default | What it does |
+|---|---|---|
+| `disallow` | none | Paths no crawler may read, such as `/preview/`. |
+| `allow`, `block` | none | Crawlers allowed or blocked by name, such as `GPTBot`. |
+| `disallow_search` | `true` | Keeps crawlers off the search page, so they do not spend their visits on endless result pages. |
+| `extra_lines` | none | Lines added as written, after the rules and before the sitemap, such as `Crawl-delay: 5`. Each must be one line. |

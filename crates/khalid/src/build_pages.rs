@@ -349,6 +349,8 @@ fn post_page(
         body: html,
     };
     seo.author = post.authors.first().map(|author| author.name.clone());
+    // A site that hides reading time hides it from link previews too.
+    seo.reading_minutes = (config.reader().reading_time).then(|| post.reading_time.minutes());
     let name = seo.author.clone().unwrap_or_default();
     seo.author_profile = build_reader::author_profile(config, locale, (front, &name), authors)?;
     let body = (&rendered.structured[..], &rendered.links[..]);

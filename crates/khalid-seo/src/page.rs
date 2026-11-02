@@ -197,6 +197,9 @@ pub struct SeoPage {
     /// A shorter name for the page in its breadcrumb trail, in place of
     /// its title.
     pub breadcrumb_title: Option<String>,
+    /// For a post, how many minutes it takes to read, for its X and Slack
+    /// preview.
+    pub reading_minutes: Option<u32>,
 }
 
 impl SeoPage {
@@ -243,6 +246,7 @@ impl SeoPage {
             search_phrase: None,
             page_number: None,
             breadcrumb_title: None,
+            reading_minutes: None,
         }
     }
 }

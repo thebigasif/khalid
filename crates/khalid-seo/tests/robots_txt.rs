@@ -8,7 +8,9 @@
 mod common;
 
 use common::{demo_site, internal_links_post, internal_links_post_de, path};
-use khalid_seo::{BotAccess, RobotsPath, RobotsTxt, SeoError, SeoSite, UserAgent};
+use khalid_seo::{
+    BotAccess, RobotsLine, RobotsPath, RobotsTxt, SeoError, SeoSite, SiteSearch, UserAgent,
+};
 use robotstxt::DefaultMatcher;
 
 fn agent(token: &str) -> UserAgent {
@@ -78,6 +80,38 @@ fn a_blog_in_a_folder_says_nothing_about_the_rest_of_the_site() {
         "GPTBot",
         "https://www.example.com/pricing/"
     ));
+}
+
+#[test]
+fn search_results_are_kept_from_crawlers_unless_the_site_lets_them_in() {
+    let mut site = demo_policy_site();
+    site.search = SiteSearch::On(path("/search/"));
+    let robots = RobotsTxt::for_site(&site).unwrap().to_string();
+    let results = "https://www.example.com/blog/search/?q=links";
+    assert!(!allowed(&robots, "Googlebot", results), "{robots}");
+    assert!(!allowed(&robots, "Claude-SearchBot", results), "{robots}");
+    site.crawlers.disallow_search = false;
+    let robots = RobotsTxt::for_site(&site).unwrap().to_string();
+    assert!(allowed(&robots, "Googlebot", results), "{robots}");
+}
+
+#[test]
+fn extra_lines_go_after_the_groups_and_before_the_sitemap() {
+    let mut site = demo_site();
+    site.crawlers.extra_lines = vec![
+        RobotsLine::try_new("# Ask before you copy").unwrap(),
+        RobotsLine::try_new("Crawl-delay: 5").unwrap(),
+    ];
+    let robots = RobotsTxt::for_site(&site).unwrap().to_string();
+    assert!(
+        robots.ends_with(
+            "# Ask before you copy\nCrawl-delay: 5\n\nSitemap: https://www.example.com/blog/sitemap.xml\n"
+        ),
+        "{robots}"
+    );
+    for bad in ["Crawl-delay: 5\nDisallow: /", "", "Crawl\tdelay"] {
+        assert!(RobotsLine::try_new(bad).is_err(), "{bad:?}");
+    }
 }
 
 #[test]
