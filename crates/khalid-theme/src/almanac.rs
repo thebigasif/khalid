@@ -39,6 +39,7 @@ pub(crate) static ALMANAC: Pack = Pack {
         parts::related_count(10),
         parts::contents(ContentsPlacement::SideEnd),
         parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::None),
         slot::share("end"),
         slot::share_networks(&["x", "linkedin", "facebook", "email"]),

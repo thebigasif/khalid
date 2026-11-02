@@ -43,3 +43,21 @@
 .copy-link:hover::after, .copy-link:focus-visible::after, .copy-link[data-done]::after { display: block; }
 .copy-link:hover, .copy-link:focus-visible, .copy-link[data-done] { color: var(--color-link); opacity: 1; }
 body:has(.copy-link) .reader-status { clip-path: inset(50%); padding: 0; }
+
+/* The search dialog the header's search link opens: a panel near the top
+   of the window holding the search form, with results under it as the
+   reader types. The page behind fades, as behind an enlarged image. The
+   link carries a magnifier unless the template draws its own. */
+:where(.search-link[data-dialog])::before { content: ""; flex: none; inline-size: 1rem; block-size: 1rem; margin-inline-end: 0.375rem; background: currentColor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='8.5' cy='8.5' r='5.5' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='m13 13 4.5 4.5' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+.search-dialog { box-sizing: border-box; inline-size: min(100% - 2rem, 40rem); max-inline-size: 100%; max-block-size: min(80vh, 46rem); margin: max(1rem, 10vh) auto auto; padding: 0.75rem 1.25rem 1.25rem; color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-border); border-radius: calc(var(--radius) * 2); box-shadow: 0 16px 48px color-mix(in srgb, var(--color-text) 18%, transparent); overscroll-behavior: contain; }
+.search-dialog::backdrop { background: color-mix(in srgb, var(--color-background) 70%, transparent); }
+.search-close { display: block; min-inline-size: 44px; min-block-size: 44px; margin-inline-start: auto; padding-inline: 0.75rem; color: var(--color-text); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); font: inherit; font-size: var(--text-small); cursor: pointer; }
+.search-dialog .search { margin-block-start: -2.75rem; }
+.search-dialog .search label { min-block-size: 44px; display: flex; align-items: center; padding-inline-end: 4rem; }
+.search-dialog .search input { flex-basis: 8rem; min-inline-size: 0; }
+.search-dialog .search button { padding-inline: 1rem; }
+.search-dialog h2 { margin-block: 1.25rem 0.5rem; font-size: var(--text-small); color: var(--color-muted); }
+.search-dialog .results { margin: 0; padding: 0; list-style: none; }
+.search-dialog .results li { padding-block: 0.75rem; border-block-start: 1px solid var(--color-border); }
+.search-dialog .results h3 { margin: 0 0 0.25rem; font-size: 1.0625rem; }
+.search-dialog .results p { margin: 0; color: var(--color-muted); font-size: var(--text-small); }

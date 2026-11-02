@@ -59,6 +59,7 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 | `pagination` | `numbered` | `pages`, `numbered` | The links under a long list: newer and older, or a link to each page. |
 | `contents` | `inline` | `inline`, `inline-folded`, `side-end`, `side-start`, `none` | Where a long post's contents go. `inline` is the open box at the top. |
 | `reading_progress` | `bar` | `bar`, `none` | A thin line at the top of a post that fills as the reader scrolls. |
+| `header_search` | `button` | `button`, `link`, `none` | What the header's search does on a served blog: open a search dialog, open the search page, or nothing. |
 | `contents_numbers` | `numbered` | `none`, `numbered`, `nested` | How the contents are numbered: not at all, as a route (01, 02, 03), or 1, 1.1, 2. |
 | `share` | `end` | `none`, `top`, `end`, `both` | Where a post shows its share links. |
 | `share_networks` | `["linkedin", "x", "facebook", "email"]` | any of `x`, `linkedin`, `facebook`, `bluesky`, `reddit`, `hacker-news`, `whatsapp`, `email` | Which networks the share links go to, in order. |

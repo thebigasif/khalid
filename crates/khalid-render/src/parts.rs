@@ -60,6 +60,9 @@ const PARTS: &[(&str, Off)] = &[
     // The thin line at the top of a post that fills as the reader
     // scrolls: bar or none. Every template shows it unless told not to.
     ("reading_progress", Off::Word("bar")),
+    // The search in the header of a site that answers searches: button
+    // (a dialog with results while typing), link (the search page) or none.
+    ("header_search", Off::Word("button")),
 ];
 
 /// The option key of every part the shared templates read.

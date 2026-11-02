@@ -39,6 +39,7 @@ pub(crate) static ATLAS: Pack = Pack {
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::SideStart),
         parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::Numbered),
         parts::related(RelatedLayout::Grid),
         parts::related_count(3),

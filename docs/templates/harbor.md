@@ -78,6 +78,7 @@ Set any of these under `[template.options]`. An option you leave out takes the d
 | `related_count` | `10` | How many related posts show, from `3` to `10`. |
 | `contents` | `"inline"` | Where a long post's contents go: `inline`, `inline-folded`, `side-end`, `side-start` or `none`. |
 | `reading_progress` | `"bar"` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
+| `header_search` | `"button"` | What the header's search does on a served blog: `button` opens a search dialog, `link` opens the search page, `none` hides it. |
 | `contents_numbers` | `"none"` | How the contents are numbered: `none`, `numbered`, or `nested` for 1, 1.1. |
 | `share` | `"end"` | Where a post shows its share links: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["linkedin", "x", "facebook", "email"]` | The networks the share links go to, in order. |

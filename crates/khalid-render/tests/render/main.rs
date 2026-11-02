@@ -42,6 +42,8 @@ mod featured;
 #[cfg(test)]
 mod glossary;
 #[cfg(test)]
+mod header_search;
+#[cfg(test)]
 mod heading_links;
 #[cfg(test)]
 mod home;

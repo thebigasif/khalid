@@ -1,8 +1,9 @@
 // Polish on top of pages that read completely without it (RULES.md BL-WEB-2):
-// fill the reading progress bar, copy a heading's address, open an enlarged image in a dialog, open search
+// fill the reading progress bar, copy a heading's address, open an
+// enlarged image in a dialog, open search in a dialog from the header or
 // with / or Ctrl+K, show results while typing a search, mark the section
-// being read in the contents, open the contents as a sheet on a phone, and
-// preview a linked post.
+// being read in the contents, open the contents as a sheet on a phone,
+// and preview a linked post.
 // The words it shows come from the script tag's data attributes.
 (() => {
   "use strict";
@@ -106,27 +107,27 @@
     const slash = event.key === "/" && !typing && !event.ctrlKey && !event.metaKey;
     const command = event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey);
     if (!slash && !command) return;
-    const box = document.querySelector("input[type=search]");
+    const box = document.querySelector("main input[type=search]");
     const page = document.querySelector("a.search-link");
     if (!box && !page) return;
     event.preventDefault();
     if (box) box.focus();
+    else if (page.hasAttribute("data-dialog") && openSearch) openSearch();
     else location.href = page.href;
   });
 
-  // Results while typing on the search page. The server answers the form's
+  // Results while typing in a search form. The server answers the form's
   // own address with `typing=1` as JSON, and the list is built from text,
   // never from markup. Without the script the form submits as before.
-  const form = document.querySelector("form.search");
-  const query = form?.querySelector("input[type=search]");
-  if (query && window.fetch) {
+  const live = (form, id) => {
+    const query = form.querySelector("input[type=search]");
     let timer = 0;
     let asked = 0;
     const show = (found) => {
       const section = document.createElement("section");
-      section.setAttribute("aria-labelledby", "search-results");
+      section.setAttribute("aria-labelledby", id);
       const heading = document.createElement("h2");
-      heading.id = "search-results";
+      heading.id = id;
       heading.textContent = found.heading;
       section.append(heading);
       if (found.results.length === 0) {
@@ -154,7 +155,7 @@
         }
         section.append(list);
       }
-      document.querySelector("section[aria-labelledby=search-results]")?.remove();
+      document.querySelector(`section[aria-labelledby=${id}]`)?.remove();
       form.after(section);
     };
     query.addEventListener("input", () => {
@@ -173,7 +174,60 @@
           .catch(() => {});
       }, 250);
     });
-  }
+  };
+  const pageForm = document.querySelector("main form.search");
+  if (pageForm && window.fetch) live(pageForm, "search-results");
+
+  // The header's search link opens a search dialog with results while
+  // typing. It is modal, so focus stays inside and Escape closes it.
+  // Without the script the link opens the search page.
+  const searchLink = document.querySelector("a.search-link[data-dialog]");
+  let searchDialog = null;
+  const openSearch =
+    searchLink && window.fetch && typeof HTMLDialogElement === "function"
+      ? () => {
+          if (!searchDialog) {
+            searchDialog = document.createElement("dialog");
+            searchDialog.className = "search-dialog";
+            searchDialog.setAttribute("aria-label", words.search || "");
+            const close = document.createElement("button");
+            close.type = "button";
+            close.className = "search-close";
+            close.textContent = words.close || "";
+            close.addEventListener("click", () => searchDialog.close());
+            const form = document.createElement("form");
+            form.className = "search";
+            form.setAttribute("role", "search");
+            form.action = searchLink.href;
+            form.method = "get";
+            const label = document.createElement("label");
+            label.htmlFor = "search-dialog-query";
+            label.textContent = words.search || "";
+            const input = document.createElement("input");
+            input.id = "search-dialog-query";
+            input.type = "search";
+            input.name = "q";
+            input.autocomplete = "off";
+            const find = document.createElement("button");
+            find.type = "submit";
+            find.textContent = words.find || "";
+            form.append(label, input, find);
+            searchDialog.append(close, form);
+            searchDialog.addEventListener("click", (click) => {
+              if (click.target === searchDialog) searchDialog.close();
+            });
+            document.body.append(searchDialog);
+            live(form, "search-dialog-results");
+          }
+          searchDialog.showModal();
+          searchDialog.querySelector("input").focus();
+        }
+      : null;
+  searchLink?.addEventListener("click", (event) => {
+    if (!openSearch) return;
+    event.preventDefault();
+    openSearch();
+  });
 
   // Every contents list marks the section on screen: the column, the box
   // and the sheet below.

@@ -75,6 +75,7 @@ Set these under `[template.options]`. An option you leave out takes the default.
 | `related_count` | `10` | How many related posts show in all, from 3 to 10. |
 | `contents` | `side-end` | Where "On this page" goes: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. |
 | `reading_progress` | `bar` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
+| `header_search` | `button` | What the header's search does on a served blog: `button` opens a search dialog, `link` opens the search page, `none` hides it. |
 | `contents_numbers` | `none` | How the contents are numbered: `none`, `numbered` or `nested`. With `none`, Almanac shows its own section numbers. |
 | `share` | `end` | Where share links show: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["x", "linkedin", "facebook", "email"]` | Which networks the share links go to, in order. |

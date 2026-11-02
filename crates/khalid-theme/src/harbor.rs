@@ -40,6 +40,7 @@ pub(crate) static HARBOR: Pack = Pack {
         parts::related_count(10),
         parts::contents(ContentsPlacement::Inline),
         parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::None),
         slot::share("end"),
         slot::share_networks(&["linkedin", "x", "facebook", "email"]),

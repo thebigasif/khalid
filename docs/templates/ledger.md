@@ -51,6 +51,7 @@ Set these under `[template.options]`. Each line shows the default.
 | `pagination` | `"numbered"` | The links under a long list: `pages` for newer and older, or `numbered` for a link to each page. |
 | `contents` | `"inline"` | Where a post's contents go: `inline`, `inline-folded`, `side-start`, `side-end` or `none`. |
 | `reading_progress` | `"bar"` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
+| `header_search` | `"button"` | What the header's search does on a served blog: `button` opens a search dialog, `link` opens the search page, `none` hides it. |
 | `contents_numbers` | `"none"` | How the contents are numbered: `numbered`, `nested` or `none`. |
 | `related` | `"list"` | How the related posts are laid out: `grid`, `list`, `row`, `scroll` or `links`. |
 | `related_count` | `5` | How many related posts show, from 3 to 10. |

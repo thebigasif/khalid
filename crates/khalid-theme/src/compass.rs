@@ -33,6 +33,7 @@ pub(crate) static COMPASS: Pack = Pack {
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::Inline),
         parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::Numbered),
         slot::share("end"),
         slot::share_networks(&["linkedin", "x", "facebook", "email"]),

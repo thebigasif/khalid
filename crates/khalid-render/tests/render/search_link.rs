@@ -10,13 +10,13 @@ use crate::post::{render, render_on, site_without, sitemap_post};
 fn every_page_links_to_search_from_its_header_in_its_language() {
     let english = render("en", sitemap_post());
     assert_valid_page(&english);
-    assert!(
-        english.contains(
-            "</nav>\n<a class=\"search-link\" href=\"/blog/search/\">Search</a>\n</header>"
-        )
-    );
+    assert!(english.contains(
+        "</nav>\n<a class=\"search-link\" href=\"/blog/search/\" data-dialog>Search</a>\n</header>"
+    ));
     let german = render("de", sitemap_post());
-    assert!(german.contains("<a class=\"search-link\" href=\"/blog/de/search/\">Suche</a>"));
+    assert!(
+        german.contains("<a class=\"search-link\" href=\"/blog/de/search/\" data-dialog>Suche</a>")
+    );
 }
 
 #[test]
