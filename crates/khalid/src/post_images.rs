@@ -19,7 +19,7 @@ use khalid_server::MediaType;
 use crate::build_pages::{LanguagePages, Page};
 use crate::post_files::{self, IMAGE, PostFile};
 use crate::post_photos::{self, Shown};
-use crate::vector_size;
+use crate::{library_photo, vector_size};
 
 /// The folder under the mount, and in the output folder, that holds every size.
 const FOLDER: &str = "media/";
@@ -103,17 +103,19 @@ pub(crate) fn attach(
 
 /// Draws the lead image of a post, or the photo of an author, at the top
 /// of `page`, when it is a file beside the page's file with its sizes among
-/// `pictures`: fetched at once with high priority, as the one large image
-/// at the top (BL-WEB-5), and shared as the page's Open Graph and X image.
-/// Returns what it drew. An image anywhere else is left out until it has
-/// sizes, so no page shifts while it loads.
+/// `pictures`, or a file in the media library: fetched at once with high
+/// priority, as the one large image at the top (BL-WEB-5), and shared as
+/// the page's Open Graph and X image. Returns what it drew. An image
+/// anywhere else is left out until it has sizes, so no page shifts while
+/// it loads.
 fn lead(
     config: &Config,
     page: &mut Page,
     (pictures, vectors): (&BTreeMap<String, Picture>, &BTreeMap<String, Picture>),
 ) -> Option<RenderImage> {
     let image = page.lead.as_ref()?;
-    let address = format!("{}{}", page.meta.path, lead_name(image));
+    let address = library_photo::address(config, &image.src)
+        .unwrap_or_else(|| format!("{}{}", page.meta.path, lead_name(image)));
     let Some(picture) = pictures.get(&address).or_else(|| vectors.get(&address)) else {
         tracing::warn!(image = %image.src, page = %page.meta.path, "the lead image is not a file beside its page, so it is left out");
         return None;

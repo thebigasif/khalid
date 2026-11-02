@@ -79,6 +79,7 @@ mod init_prompt;
 mod keys;
 mod keys_message;
 mod late_api;
+mod library_photo;
 mod link_graph;
 mod lint;
 mod lint_fix;
