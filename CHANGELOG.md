@@ -4,6 +4,48 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.2.0
+
+Ten professionally redesigned templates, checked on every screen size from a 320 pixel phone to a 27 inch iMac, a modern admin with a new sign-in page, and finished author profiles: your own profile, photo upload, designed author pages and bylines with photos.
+What is new, in plain words: `docs/releases/1.2.0.md`.
+
+### Added
+
+#### Authors
+
+- **Author pages are finished.** Each author page shows a large photo, the name, role, how many posts they wrote, why to trust them (their credentials) and icons for their profiles on LinkedIn, X, GitHub, YouTube, Instagram, Facebook, Mastodon or their own site, then their posts as the template's own cards. The authors page shows every author with photo, role and post count. Search engines get the author as a Person with their job, bio, photo, profiles, the publisher they write for and the topics they write about.
+- **Bylines and the author box show who wrote and checked a post.** Every byline shows the author's photo linked to their page, and "Reviewed by" shows the reviewer's photo too. The box at the end of a post shows photo, role, credentials, a short bio and profile icons, in every template, Almanac included.
+- **Your account is your author profile.** `khalid staff owner` and inviting someone make an author profile named after the person, or use the one that already has their name, and link the account to it. An existing owner is linked the next time they open the admin. "Your account" edits the profile, and a post you start in the admin names you as its author.
+- **Author photos by upload or from Media.** The author form uploads a photo through the media library, crops it square around its focal point, or picks one from Media, with a preview and remove. A photo chosen this way now shows on the blog; before, only a file beside the author's file did.
+- The Authors list in the admin shows each author's photo and how many posts they published.
+
+#### Templates
+
+- **`scripts/responsive-check.mjs`** checks each template and the admin at eleven widths in a real browser and saves a screenshot of each. See "Checking every screen size" in docs/templates.md.
+
+### Changed
+
+#### Templates
+
+- **Every template fits every screen, from a 320 pixel phone to a 27 inch iMac.** Keystone's topic tabs are full size finger targets again, Wire's latest headlines keep their reading time inside the column on a tablet, Harbor's tablet header puts the menu on its own line under the logo and the offer, and admin text is 15 pixels on a phone.
+- The Almanac template is redesigned as a field guide: a warm paper palette with a deep green accent, numbered sections in every post with the same numbers in a contents column that stays beside the text, a featured guide with its picture beside its title, a numbered row of the newest posts, picture cards two to a row beside numbered editor's picks, and calmer headers, call-to-action bands and footers. Long posts now show "On this page" beside the text on a large screen; set `contents = "inline"` under `[template.options]` for the old box.
+- **Atlas** is redesigned as a publication for SEO and content teams: a masthead with the blog's name large, an optional `tagline` and the topics as links; the featured story large beside the next one; the newest posts as picture cards; an index of every topic; and long posts with a large title on a light band, a measured reading column, a numbered contents rail, calm callouts and tables, and related posts as picture cards. Lists and author pages show picture cards too, and share links now sit after the post. Set `cards = "text"`, `related = "list"` or `share = "both"` under `[template.options]` to keep the old choices.
+- The Compass template has a new design, checked in a real browser at 1440, 768, 390 and 320 pixels wide: a calm header and footer, list titles on a pale map panel with a drawn compass, the newest post leading each list, cards with the topic above the title, a numbered contents route, numbered steps joined by a line, a drawn mark for each kind of callout, framed screenshots and tables, and an author page with a profile panel. Its contents are now numbered by default; set `contents_numbers = "none"` for a plain list.
+- **Folio** is redesigned as a product team's notebook. The front page opens with the blog's name set very large on faint ruled paper, category tabs on a hairline, a featured story beside its picture, and cards without outlines: a framed picture, the category and date, the title, a short summary and the author. Posts get a large left-aligned title with its summary, one quiet line of meta, a lead picture wider than the text, a contents rail beside the text, framed code and tables, an author box and related posts. Folio now brings its own neutral palette with a violet accent, the reader's own interface font, and a tighter type scale; your `theme/tokens.toml` still wins.
+- Harbor has a new design. A deep harbour blue on white with light tints, a clear type scale and one card style everywhere: the topic over the title, a short summary and the author and date at the foot.
+- Harbor's front page shows the featured post large with a column of smaller posts beside it (the editor's picks, or else the newest posts), then a grid of picture cards. With sign-ups on, the newsletter form sits in a raised card under the blog's name.
+- Harbor's posts have a centred title block, a calm offer card, a two-column contents box on wide screens, full-width tables, and an author box and reading time by default.
+- Harbor's list and author pages centre their name over the cards.
+- The Keystone template is redesigned as a calm, picture-led blog for a product or a company: a quiet header with a swipeable menu on phones, the lead story beside its large picture, framed picture cards with the category over each title, a reading column with the category, summary and one line of author, date and reading time over it, its own look for contents, callouts, steps, tables, quotes and questions, and a framed newsletter panel and call to action band. It now uses the system's own font, a blue accent on a white page, and keeps the author box, related posts and reading time on. Chapter numbers are off by default; `numbered_headings = true` brings them back.
+- Meridian has a new, finished look: serif titles over a plain sans text, ink on a warm paper colour with one indigo accent, a lead story and editor's picks on the front page, wider covers, calmer callouts, an author box and three related posts with pictures after each post, and a warm footer band. It reads well on phones down to 320 px wide.
+- **Wire looks like a newsroom now.** The front page opens with the lead story beside the latest headlines, each led by its date; then four more posts with pictures; then a feed where every story's date stands in its own column, beside a rail with the editor's picks and the topics. Headlines are set large and heavy in the reader's own sans, subtitles and posts in the reader's own serif, with tiny labels and a red rule over each section. Posts get a wide title block, the picture across the page and the writer's card beside the text. Topic and tag pages show their featured post as a lead. The tabs on the front page are gone, so nothing jumps when a reader clicks.
+
+#### Admin
+
+- The admin looks like a modern app: a calm grey background with white cards, a slim side menu in four groups with icons (a menu button on phones), a top bar with search (Cmd K or Ctrl K), New post and your account, and the blog's own accent colour.
+- The dashboard greets the blog by name, shows live posts, drafts, failing checks and visits as number cards, and lists what needs attention beside your recent drafts.
+- The admin's sign-in page is one clear card with the blog's name and logo: sign in with a passkey first, then email and password. The staff token moves behind a small link, and a sign-in link now ends on a welcome step that offers to add a passkey.
+
 ## 1.1.1
 
 The same as 1.1.0, which was tagged but never published: its last release check still asked for the admin at `/admin/`, and the demo blog it starts sits under `/blog/`, where 1.1.0 moved the admin. The check now follows that move. Everything new is listed under 1.1.0 below.
