@@ -83,6 +83,6 @@ pub use site_nav::{
 };
 pub use site_path::{SitePath, SitePathError};
 pub use slug::{ParseSlugError, Slug};
-pub use template_choice::{CallToAction, OptionValue, PackName, TemplateChoice};
+pub use template_choice::{CallToAction, OptionValue, PackName, SourcePlace, TemplateChoice};
 pub use user_message::UserMessage;
 pub use visitor_log_settings::VisitorLogSettings;

@@ -136,3 +136,33 @@ fn build_tags_links_to_the_owners_product_and_no_other_link() {
     );
     assert_eq!(page.matches("utm_source").count(), 3, "{page}");
 }
+
+#[test]
+fn build_shows_the_preferred_source_button_where_the_table_places_it() {
+    let button = "<p class=\"preferred-source\"><a href=\"https://www.google.com/preferences/source?q=www.example.com\" rel=\"noopener\">";
+    let words = "<span>Add us as a preferred source on Google</span>";
+    let body = "Read on, as [the home page](/) says.\n";
+    for (template, place, in_post, in_footer) in [
+        ("classic", "", 1, 1),
+        ("atlas", "place = \"post\"\n", 1, 0),
+        ("ledger", "place = \"footer\"\n", 0, 1),
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        post(temp.path(), "source", body, &[]);
+        let settings =
+            format!("\n[template]\nname = \"{template}\"\n\n[template.preferred_source]\n{place}");
+        let page = built(temp.path(), &settings, "source/index.html");
+        let (main, footer) = page.split_once("<footer class=\"site-footer\">").unwrap();
+        assert_eq!(main.matches(button).count(), in_post, "{template}: {main}");
+        assert_eq!(
+            footer.matches(button).count(),
+            in_footer,
+            "{template}: {footer}"
+        );
+        assert!(in_post + in_footer == 0 || page.contains(words), "{page}");
+    }
+    let temp = tempfile::tempdir().unwrap();
+    post(temp.path(), "source", body, &[]);
+    let page = built(temp.path(), "", "source/index.html");
+    assert!(!page.contains("preferred-source"), "off without the table");
+}

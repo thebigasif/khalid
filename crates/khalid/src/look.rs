@@ -51,6 +51,7 @@ pub(crate) fn render_pack(look: &Look, config: &Config) -> RenderPack<'static> {
             .collect(),
         options: (look.options().iter())
             .map(|(key, value)| ((*key).to_owned(), option(value)))
+            .chain(preferred_source(config))
             .collect(),
         cta: look.cta().map(|cta| RenderCta {
             label: cta.label.to_string(),
@@ -58,6 +59,27 @@ pub(crate) fn render_pack(look: &Look, config: &Config) -> RenderPack<'static> {
             note: cta.note.as_ref().map(ToString::to_string),
         }),
     }
+}
+
+/// The template options `[template.preferred_source]` in `config` sets,
+/// which every template reads: where the button shows, and Google's page
+/// for adding the site's domain as a preferred source.
+fn preferred_source(config: &Config) -> Vec<(String, TemplateOption)> {
+    let Some(place) = config.template().preferred_source() else {
+        return Vec::new();
+    };
+    let host = config.address().host();
+    let href = format!("https://www.google.com/preferences/source?q={host}");
+    vec![
+        (
+            "preferred_source".to_owned(),
+            TemplateOption::Word(place.as_str().to_owned()),
+        ),
+        (
+            "preferred_source_href".to_owned(),
+            TemplateOption::Word(href),
+        ),
+    ]
 }
 
 /// The tokens of the `site` folder over its look's defaults.

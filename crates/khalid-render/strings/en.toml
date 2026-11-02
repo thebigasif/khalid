@@ -53,6 +53,8 @@ mentions = "Posts that link here"
 share = "Share this post"
 # The share link that opens an email.
 share_email = "Email"
+# The button that opens Google's page for adding the site as a preferred source.
+preferred_source = "Add us as a preferred source on Google"
 # The newsletter form a template shows after a post or on the front page.
 newsletter_title = "Get new posts by email"
 newsletter_text = "New posts in your inbox. Every email has a link to leave."

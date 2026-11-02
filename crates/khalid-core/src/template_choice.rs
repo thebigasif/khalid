@@ -37,6 +37,8 @@ pub struct TemplateChoice {
     options: BTreeMap<String, OptionValue>,
     #[serde(default)]
     cta: Option<CallToAction>,
+    #[serde(default)]
+    preferred_source: Option<PreferredSource>,
 }
 
 impl TemplateChoice {
@@ -53,6 +55,52 @@ impl TemplateChoice {
     /// The site's one call to action, if `[template.cta]` sets it.
     pub fn cta(&self) -> Option<&CallToAction> {
         self.cta.as_ref()
+    }
+
+    /// Where the button that adds the site as a preferred source on Google
+    /// shows, if `[template.preferred_source]` turns it on.
+    pub fn preferred_source(&self) -> Option<SourcePlace> {
+        self.preferred_source.as_ref().map(|source| source.place)
+    }
+}
+
+/// `[template.preferred_source]`: a button that opens Google's page for
+/// adding the site as a preferred source, so Google shows its posts more
+/// often in Top stories. Every template draws it; the table alone shows it
+/// after each post and in the footer:
+///
+/// ```toml
+/// [template.preferred_source]
+/// place = "post"
+/// ```
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PreferredSource {
+    #[serde(default)]
+    place: SourcePlace,
+}
+
+/// Where the preferred source button shows.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SourcePlace {
+    /// After each post.
+    Post,
+    /// In the footer of every page.
+    Footer,
+    /// After each post and in the footer.
+    #[default]
+    Both,
+}
+
+impl SourcePlace {
+    /// The place as written after `place =`.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Post => "post",
+            Self::Footer => "footer",
+            Self::Both => "both",
+        }
     }
 }
 
