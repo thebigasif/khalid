@@ -55,6 +55,7 @@ Set these under `[template.options]`. Each line shows the default.
 | `card_author_role` | `false` | Whether each card shows its author's role after their name. |
 | `pagination` | `"numbered"` | The links under a long list: `pages` for newer and older, or `numbered` for a link to each page. |
 | `contents` | `"side-start"` | Where a post's contents go: `side-start`, `side-end`, `inline`, `inline-folded` or `none`. |
+| `reading_progress` | `"bar"` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
 | `contents_numbers` | `"numbered"` | How the contents are numbered: `numbered`, `nested` or `none`. |
 | `related` | `"grid"` | How the related posts are laid out: `grid`, `list`, `row`, `scroll` or `links`. |
 | `related_count` | `3` | How many related posts show, from 3 to 10. |

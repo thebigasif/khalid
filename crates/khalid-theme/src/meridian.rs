@@ -35,6 +35,7 @@ pub(crate) static MERIDIAN: Pack = Pack {
         parts::related(RelatedLayout::Scroll),
         parts::related_count(3),
         parts::contents(ContentsPlacement::None),
+        parts::READING_PROGRESS,
         parts::contents_numbers(ContentsNumbers::Nested),
         slot::share("none"),
         slot::share_networks(&["linkedin", "x", "email"]),

@@ -88,6 +88,7 @@ Set any of these under `[template.options]`. An option you leave out takes the d
 | `related` | `"row"` | How related posts are laid out: `row`, `grid`, `list`, `scroll` or `links`. |
 | `related_count` | `3` | How many related posts show, from `3` to `10`. |
 | `contents` | `"none"` | Where a long post's contents go: `none`, `inline`, `inline-folded`, `side-end` or `side-start`. |
+| `reading_progress` | `"bar"` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
 | `contents_numbers` | `"numbered"` | How the contents are numbered: `numbered`, `nested` for 1, 1.1, or `none`. |
 | `newsletter` | `"both"` | Where the newsletter form shows: `none`, `post`, `home` or `both`. |
 | `newsletter_after` | `8` | After how many posts in the front page's list the newsletter form shows, from `2` to `20`. |

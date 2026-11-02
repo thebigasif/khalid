@@ -18,6 +18,7 @@ expression: post
 </ol>
 </nav>
 
+<div class="reading-progress" aria-hidden="true"></div>
 <article class="post post-with-toc post-toc-start">
 <header class="post-header">
 <h1>What a sitemap does, and what it does not</h1>

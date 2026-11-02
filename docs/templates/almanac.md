@@ -74,6 +74,7 @@ Set these under `[template.options]`. An option you leave out takes the default.
 | `related` | `grid` | How related posts are laid out. `grid` shows four as short rows, then the rest as picture cards. `list`, `row`, `scroll` and `links` show one set. |
 | `related_count` | `10` | How many related posts show in all, from 3 to 10. |
 | `contents` | `side-end` | Where "On this page" goes: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. |
+| `reading_progress` | `bar` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
 | `contents_numbers` | `none` | How the contents are numbered: `none`, `numbered` or `nested`. With `none`, Almanac shows its own section numbers. |
 | `share` | `end` | Where share links show: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["x", "linkedin", "facebook", "email"]` | Which networks the share links go to, in order. |

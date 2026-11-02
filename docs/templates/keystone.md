@@ -49,6 +49,7 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 | `cards` | `image` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists. |
 | `pagination` | `numbered` | `pages`, `numbered` | The links under a long list: newer and older, or a link to each page. |
 | `contents` | `none` | `none`, `inline`, `inline-folded`, `side-end`, `side-start` | Where a long post's contents list goes. A post can also carry its own contents block. |
+| `reading_progress` | `bar` | `bar`, `none` | A thin line at the top of a post that fills as the reader scrolls. |
 | `share` | `top` | `none`, `top`, `end`, `both` | Where a post shows its share links. `top` is the column beside the post. |
 | `share_networks` | `["x", "linkedin", "facebook", "email"]` | any of `x`, `linkedin`, `facebook`, `bluesky`, `reddit`, `hacker-news`, `whatsapp`, `email` | Which networks the share links go to, in order. |
 | `newsletter` | `both` | `none`, `post`, `home`, `both` | Where the newsletter form shows. It shows only when your blog takes sign-ups. |

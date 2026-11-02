@@ -57,6 +57,9 @@ const PARTS: &[(&str, Off)] = &[
     ("contents", Off::Word("side-end")),
     // How the contents are numbered: numbered, nested or none.
     ("contents_numbers", Off::Word("numbered")),
+    // The thin line at the top of a post that fills as the reader
+    // scrolls: bar or none. Every template shows it unless told not to.
+    ("reading_progress", Off::Word("bar")),
 ];
 
 /// The option key of every part the shared templates read.

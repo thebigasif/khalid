@@ -37,6 +37,7 @@ pub(crate) static WIRE: Pack = Pack {
         parts::related(RelatedLayout::Row),
         parts::related_count(3),
         parts::contents(ContentsPlacement::None),
+        parts::READING_PROGRESS,
         parts::contents_numbers(ContentsNumbers::Numbered),
         slot::newsletter("both"),
         slot::cta_band("none"),

@@ -62,6 +62,8 @@ mod parts;
 #[cfg(test)]
 mod post;
 #[cfg(test)]
+mod reading_progress;
+#[cfg(test)]
 mod reading_time;
 #[cfg(test)]
 mod related;

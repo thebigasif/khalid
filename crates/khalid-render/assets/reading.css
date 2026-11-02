@@ -1,0 +1,13 @@
+/* The reading aids every template shares. Each reads without scripts; the
+   reader script only adds to them. */
+
+/* The reading progress bar: a thin accent line along the top of the
+   window that fills as the reader scrolls a post. The scroll drives it
+   where the browser can; elsewhere the reader script sets its scale. */
+.reading-progress { position: fixed; inset-block-start: 0; inset-inline: 0; z-index: 20; block-size: 3px; background: var(--color-accent); transform: scaleX(var(--read, 0)); transform-origin: 0 50%; pointer-events: none; }
+[dir="rtl"] .reading-progress { transform-origin: 100% 50%; }
+@supports (animation-timeline: scroll()) {
+  .reading-progress { animation: reading-progress linear both; animation-timeline: scroll(root); }
+}
+@keyframes reading-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce), print { .reading-progress { display: none; } }

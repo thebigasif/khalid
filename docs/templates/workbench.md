@@ -65,6 +65,7 @@ Set these under `[template.options]`. An option you leave out takes the default.
 | `related` | `links` | How related posts are laid out: `grid`, `list`, `row`, `scroll` or `links`. |
 | `related_count` | `6` | How many related posts show, from 3 to 10. |
 | `contents` | `inline` | Where the contents go: `inline`, `inline-folded`, `side-end`, `side-start` or `none`. |
+| `reading_progress` | `bar` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
 | `contents_numbers` | `numbered` | How the contents are numbered: `numbered`, `nested` or `none`. |
 | `share` | `end` | Where share links show: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["linkedin", "x", "email"]` | Which networks the share links go to, in order. |

@@ -1,5 +1,5 @@
 // Polish on top of pages that read completely without it (RULES.md BL-WEB-2):
-// copy a heading's address, open an enlarged image in a dialog, open search
+// fill the reading progress bar, copy a heading's address, open an enlarged image in a dialog, open search
 // with / or Ctrl+K, show results while typing a search, and mark the
 // section being read in the contents, and preview a linked post.
 // The words it shows come from the script tag's data attributes.
@@ -18,6 +18,24 @@
       status.textContent = "";
     }, 3000);
   };
+
+  // The progress bar fills with the scroll where CSS alone cannot drive it.
+  const bar = document.querySelector(".reading-progress");
+  if (bar && !(window.CSS && CSS.supports("animation-timeline: scroll()"))) {
+    let queued = false;
+    const fill = () => {
+      queued = false;
+      const room = document.documentElement.scrollHeight - innerHeight;
+      bar.style.setProperty("--read", room > 0 ? Math.min(1, scrollY / room) : 1);
+    };
+    const queue = () => {
+      if (!queued) requestAnimationFrame(fill);
+      queued = true;
+    };
+    addEventListener("scroll", queue, { passive: true });
+    addEventListener("resize", queue);
+    fill();
+  }
 
   // A heading's # link copies the section's address and says so.
   document.addEventListener("click", (event) => {

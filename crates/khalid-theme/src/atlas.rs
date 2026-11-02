@@ -38,6 +38,7 @@ pub(crate) static ATLAS: Pack = Pack {
         parts::CARD_AUTHOR_ROLE,
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::SideStart),
+        parts::READING_PROGRESS,
         parts::contents_numbers(ContentsNumbers::Numbered),
         parts::related(RelatedLayout::Grid),
         parts::related_count(3),
