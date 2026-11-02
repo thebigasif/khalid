@@ -11,6 +11,7 @@ expression: "main_of(&page(&out, \"what-a-sitemap-does/index.html\"))"
 </ol>
 </nav>
 
+<div class="reading-progress" aria-hidden="true"></div>
 <article class="post">
 <header class="post-header">
 <h1>What a sitemap does, and what it does not</h1>

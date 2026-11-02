@@ -4,7 +4,7 @@ expression: "shown(&out, \"authors/asif/index.html\")"
 ---
 <header class="site-header">
 <a class="site-name site-logo" href="/blog/"><img src="https://www.example.com/logo.svg" alt="Field Notes on SEO" decoding="async"></a>
-<a class="search-link" href="/blog/search/">Search</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
 <a class="button header-button" href="https://www.example.com/checklist/">Get the free checklist</a>
 </header>
 <main id="main" tabindex="-1">

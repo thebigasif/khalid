@@ -295,6 +295,29 @@ pub const fn contents_numbers(numbers: ContentsNumbers) -> OptionSpec {
     }
 }
 
+/// The thin accent line at the top of a post that fills as the reader
+/// scrolls. Every template, classic too, shows it unless the site says
+/// `none`.
+pub const READING_PROGRESS: OptionSpec = OptionSpec {
+    key: "reading_progress",
+    help: "Whether a post shows a thin line at the top that fills as the reader scrolls: bar or none.",
+    kind: OptionKind::Choice {
+        allowed: &["bar", "none"],
+        default: "bar",
+    },
+};
+
+/// The search in the header of a site that answers searches: a link that
+/// opens a search dialog, a plain link to the search page, or none.
+pub const HEADER_SEARCH: OptionSpec = OptionSpec {
+    key: "header_search",
+    help: "What the header's search does: button opens a search dialog, link opens the search page, none hides it.",
+    kind: OptionKind::Choice {
+        allowed: &["button", "link", "none"],
+        default: "button",
+    },
+};
+
 /// `spec` turned on by default, when it is an on or off option. Any other
 /// option comes back as it is.
 pub const fn on(spec: OptionSpec) -> OptionSpec {
@@ -327,5 +350,7 @@ pub fn all() -> Vec<OptionSpec> {
         related_count(5),
         contents(ContentsPlacement::SideEnd),
         contents_numbers(ContentsNumbers::Numbered),
+        READING_PROGRESS,
+        HEADER_SEARCH,
     ]
 }

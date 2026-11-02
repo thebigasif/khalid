@@ -49,6 +49,8 @@ pub(crate) static LEDGER: Pack = Pack {
         parts::CARD_READING_TIME,
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::Inline),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::None),
         parts::related(RelatedLayout::List),
         parts::related_count(5),

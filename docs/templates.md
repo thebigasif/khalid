@@ -57,7 +57,7 @@ The screen reads two Admin API routes, which need `settings:write`:
 
 ## Parts a template can switch on
 
-Every template shares one set of page parts. A template switches on the ones it uses, and offers each as an option with its own default. Classic switches none of them on, so it looks as it always has. The words below are the option keys and the values each takes; a template lists only the parts it offers.
+Every template shares one set of page parts. A template switches on the ones it uses, and offers each as an option with its own default. Classic switches none of them on but the reading progress bar. The words below are the option keys and the values each takes; a template lists only the parts it offers.
 
 | Option | Values | What it changes |
 |---|---|---|
@@ -77,6 +77,10 @@ Every template shares one set of page parts. A template switches on the ones it 
 | `related_count` | `3` to `10` | How many related posts show. |
 | `contents` | `side-end`, `side-start`, `inline`, `inline-folded`, `none` | Where a long post's contents go: a column beside the post on wide screens (on the end or start side), an open box at the top, a folded box at the top, or nowhere. |
 | `contents_numbers` | `numbered`, `nested`, `none` | How the contents are numbered: 1, 2, 3, or 1, 1.1, 2, or not at all. |
+| `reading_progress` | `bar`, `none` | A thin accent line at the top of a post that fills as the reader scrolls. Every template shows it, classic too; `none` turns it off in any template but classic, which takes no options. It hides when the reader asks for less motion, and in print. |
+| `header_search` | `button`, `link`, `none` | What the search in the header does on a blog that answers searches (`mode = "server"`): `button` opens a search dialog that shows results as the reader types, and the search page with scripts off; `link` always opens the search page; `none` hides it. Classic uses `button`. A static blog has no search, so its header shows none. |
+
+What the reading progress bar, the contents sheet, the copy link button and the header search do for a reader is in [Reading aids](reading.md).
 
 Every part reads with scripts off. Every page also shows `[brand] icon` in the browser tab, in every template.
 

@@ -24,7 +24,9 @@ fn a_page_loads_the_script_deferred_with_its_hash_and_words() {
     let tag = part(&page, "<script", "</script>");
     assert!(tag.contains(&format!("src=\"/blog/assets/{}\"", script.name())));
     assert!(tag.contains(&format!("integrity=\"{}\"", script.integrity())));
-    assert!(tag.contains(" defer data-copied=\"Link copied\" data-close=\"Close\" data-previews>"));
+    assert!(tag.contains(
+        " defer data-copy=\"Copy link\" data-copied=\"Link copied\" data-close=\"Close\" data-contents=\"Contents\" data-search=\"Search this blog\" data-find=\"Search\" data-previews>"
+    ));
 }
 
 #[test]

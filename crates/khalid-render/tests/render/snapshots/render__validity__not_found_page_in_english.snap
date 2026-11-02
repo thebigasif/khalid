@@ -1,5 +1,6 @@
 ---
 source: crates/khalid-render/tests/render/validity.rs
+assertion_line: 22
 expression: page
 ---
 <!doctype html>
@@ -36,7 +37,7 @@ expression: page
 <li><a href="/blog/glossary/">Glossary</a></li>
 </ul>
 </nav>
-<a class="search-link" href="/blog/search/">Search</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
 </header>
 <main id="main" tabindex="-1">
 

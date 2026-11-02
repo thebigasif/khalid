@@ -162,7 +162,9 @@ mod tests {
         assert!(german.contains("<h1>Suche</h1>"), "{german}");
         assert!(german.contains(r#"action="/blog/de/search/""#));
         let home = served(&demo(), "/blog/");
-        assert!(home.contains(r#"<a class="search-link" href="/blog/search/">Search</a>"#));
+        assert!(
+            home.contains(r#"<a class="search-link" href="/blog/search/" data-dialog>Search</a>"#)
+        );
         assert!(
             home.contains(
                 r#""urlTemplate":"https://www.example.com/blog/search/?q={search_term_string}""#

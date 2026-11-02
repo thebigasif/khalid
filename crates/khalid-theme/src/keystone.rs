@@ -32,6 +32,8 @@ pub(crate) static KEYSTONE: Pack = Pack {
         parts::cards(CardShape::Image),
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::None),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         slot::share("top"),
         slot::share_networks(&["x", "linkedin", "facebook", "email"]),
         slot::newsletter("both"),

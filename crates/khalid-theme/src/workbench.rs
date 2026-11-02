@@ -39,6 +39,8 @@ pub(crate) static WORKBENCH: Pack = Pack {
         parts::related(RelatedLayout::Links),
         parts::related_count(6),
         parts::contents(ContentsPlacement::Inline),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::Numbered),
         slot::share("end"),
         slot::share_networks(&["linkedin", "x", "email"]),

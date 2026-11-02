@@ -28,6 +28,10 @@ mod contents;
 #[cfg(test)]
 mod contents_parts;
 #[cfg(test)]
+mod contents_sheet;
+#[cfg(test)]
+mod copy_link;
+#[cfg(test)]
 mod cta;
 #[cfg(test)]
 mod dek;
@@ -37,6 +41,8 @@ mod enlarge;
 mod featured;
 #[cfg(test)]
 mod glossary;
+#[cfg(test)]
+mod header_search;
 #[cfg(test)]
 mod heading_links;
 #[cfg(test)]
@@ -61,6 +67,8 @@ mod pages;
 mod parts;
 #[cfg(test)]
 mod post;
+#[cfg(test)]
+mod reading_progress;
 #[cfg(test)]
 mod reading_time;
 #[cfg(test)]

@@ -82,6 +82,8 @@ Set any of these under `[template.options]` in `site.toml`. A line you leave out
 | `related` | `scroll` | How related posts are laid out under journal posts: `grid`, `list`, `row`, `scroll` or `links`. Meridian shows `scroll` as three cards side by side on a wide screen. |
 | `related_count` | `3` | How many related posts show, from 3 to 10. |
 | `contents` | `none` | Where a journal post's contents go: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. A reference guide always shows its contents open. |
+| `reading_progress` | `bar` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
+| `header_search` | `button` | What the header's search does on a served blog: `button` opens a search dialog, `link` opens the search page, `none` hides it. |
 | `contents_numbers` | `nested` | How a journal post's contents are numbered when you turn them on: `numbered`, `nested` or `none`. |
 | `share` | `none` | Where a post shows share links: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["linkedin", "x", "email"]` | Which networks the share links go to, in order. |

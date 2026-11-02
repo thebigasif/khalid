@@ -59,6 +59,8 @@ Set any of these under `[template.options]` in `site.toml`. A line you leave out
 | `related` | `grid` | How related posts are laid out: `grid`, `list`, `row`, `scroll` or `links`. |
 | `related_count` | `3` | How many related posts show, from 3 to 10. |
 | `contents` | `side-end` | Where a post's contents go: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. |
+| `reading_progress` | `bar` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
+| `header_search` | `button` | What the header's search does on a served blog: `button` opens a search dialog, `link` opens the search page, `none` hides it. |
 | `share` | `end` | Where a post shows share links: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["x", "linkedin", "bluesky", "email"]` | Which networks the share links go to, in order. |
 | `newsletter` | `none` | Where the newsletter form shows: `none`, `post`, `home` or `both`. |
