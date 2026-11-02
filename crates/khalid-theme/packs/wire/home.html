@@ -1,67 +1,79 @@
-{#- Wire's front page (templates spec 3.6): the lead story beside two tabs,
-    the latest posts and the editor's picks, switched by CSS with no
-    script; the topic links as pills; then every post as rows, with the
-    newsletter form once inside the feed; then each home section. -#}
+{#- Wire's front page (templates spec 3.6): a news front in three bands.
+    The lead story beside the latest headlines, each led by its date; four
+    more posts with pictures; then the rest as a feed where each story's
+    date stands in its own column, beside a rail with the editor's picks
+    ranked and the topics. Then each home section. No script anywhere. -#}
 {% extends "base.html" %}
 {% block main %}
-{% from "card.html" import cards, card_meta, pages -%}
+{% from "card.html" import cards, pages -%}
 {% from "image.html" import picture -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
-<div class="masthead">
+{% if page.intro %}<div class="masthead">
 <h1>{{ page.title }}</h1>
-{% if page.intro %}<div class="intro">
+<div class="intro">
 {{ page.intro }}
 </div>
-{% endif %}</div>
-{% set slot = page.featured if template.options.featured else none -%}
+</div>
+{% else %}<h1 class="masthead-title">{{ page.title }}</h1>
+{% endif %}{% set slot = page.featured if template.options.featured else none -%}
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% set picks = (page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks)[:template.options.picks] -%}
-{% if slot or posts %}<div class="front">
-{% if slot %}<article class="card front-lead">
+{% set topics = page.topics if "topic_links" in site.features else [] -%}
+{% set first = posts[:4] if slot else [] -%}
+{% set posts = posts[4:] if slot else posts -%}
+{% if slot %}<div class="front">
+<article class="front-lead">
 {% if slot.image %}{{ picture(slot.image) }}
-{% endif %}{{ card_meta(slot) }}
-<h2><a href="{{ slot.href }}">{{ slot.title }}</a></h2>
-<p>{{ slot.excerpt }}</p>
+{% endif %}<div class="front-text">
+{% if slot.category %}<p class="kicker"><a href="{{ slot.category.href }}">{{ slot.category.name }}</a></p>
+{% endif %}<h2><a href="{{ slot.href }}">{{ slot.title }}</a></h2>
+<p class="front-dek">{{ slot.excerpt }}</p>
+<p class="byline">{% if slot.author %}<span class="byline-name">{{ slot.author.name }}</span>
+{% endif %}<time datetime="{{ slot.date }}">{{ slot.date | date }}</time>{% if slot.reading_time %}
+<span>{{ t.reading_time | replace("{minutes}", slot.reading_time.minutes | string) }}</span>{% endif %}</p>
+</div>
 </article>
-{% endif %}{% if posts %}<div class="front-tabs">
-{% if picks %}<nav class="tab-names" aria-label="{{ t.latest }}, {{ t.editors_picks }}">
-<ul>
-<li><a href="#front-latest">{{ t.latest }}</a></li>
-<li><a href="#front-picks">{{ t.editors_picks }}</a></li>
-</ul>
-</nav>
-{% endif %}<section class="tab-panel" id="front-latest" aria-labelledby="front-latest-title">
-<h2 id="front-latest-title">{{ t.latest }}</h2>
-{{ cards(posts[:5], 3, "compact") }}
+{% if first %}<section class="front-latest" aria-labelledby="front-latest-title">
+<h2 id="front-latest-title" class="band-title">{{ t.latest }}</h2>
+{{ cards(first, 3, "text") }}
 </section>
-{% if picks %}<section class="tab-panel" id="front-picks" aria-labelledby="front-picks-title">
-<h2 id="front-picks-title">{{ t.editors_picks }}</h2>
+{% endif %}</div>
+{% endif %}{% set signup = site.subscribe and template.options.newsletter in ["home", "both"] -%}
+{% set shown = first | length + 4 -%}
+{% set after = template.options.newsletter_after -%}
+{% set cut = after - shown if after > shown else 0 -%}
+{% set rest = posts[4:] -%}
+{% if posts %}<section class="latest" aria-labelledby="latest-title">
+<h2 id="latest-title" class="band-title">{% if first %}{{ t.more_posts }}{% else %}{{ t.latest }}{% endif %}</h2>
+{{ cards(posts[:4], 3, "image") }}
+</section>
+{% elif not slot %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if rest or topics or picks or signup %}<div class="latest-more">
+{% if rest or signup %}<div class="river">
+{% if rest and signup and rest | length > cut %}{% if cut %}{{ cards(rest[:cut], 3, "row") }}
+{% endif %}{{ newsletter_form(site.subscribe, t) }}
+{{ cards(rest[cut:], 3, "row") }}
+{% else %}{% if rest %}{{ cards(rest, 3, "row") }}
+{% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endif %}</div>
+{% endif %}{% if topics or picks %}<aside class="rail">
+{% if picks %}<section aria-labelledby="rail-picks-title">
+<h2 id="rail-picks-title" class="band-title">{{ t.editors_picks }}</h2>
 {{ cards(picks, 3, "ranked") }}
 </section>
-{% endif %}</div>
-{% endif %}</div>
-{% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="filters" aria-label="{{ t.topics }}">
-<ul class="tags">
-{% for group in page.topics %}{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endif %}{% if topics %}<nav class="topic-list" aria-label="{{ t.topics }}">
+<h2 id="rail-topics-title" class="band-title">{{ t.topics }}</h2>
+<ul>
+{% for group in topics %}{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
 {% endfor %}{% endfor %}</ul>
 </nav>
-{% endif %}{% set signup = site.subscribe and template.options.newsletter in ["home", "both"] -%}
-{% set after = template.options.newsletter_after -%}
-{% if posts %}<section class="feed" aria-labelledby="feed-title">
-<h2 id="feed-title">{{ t.all_posts }}</h2>
-{% if signup and posts | length > after %}{{ cards(posts[:after], 3) }}
-{{ newsletter_form(site.subscribe, t) }}
-{{ cards(posts[after:], 3) }}
-{% else %}{{ cards(posts, 3) }}
-{% if signup %}{{ newsletter_form(site.subscribe, t) }}
-{% endif %}{% endif %}</section>
-{% elif not slot %}<p>{{ t.no_posts }}</p>
+{% endif %}</aside>
+{% endif %}</div>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}{% for section in page.sections %}<section class="home-section">
-<h2>{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts[:1], 3, "image") }}
-{% if section.posts | length > 1 %}{{ cards(section.posts[1:5], 3, "compact") }}
-{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+<h2 class="band-title">{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts[:4], 3, "image") }}
+{% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
 {% endfor %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}

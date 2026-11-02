@@ -3,9 +3,9 @@ source: crates/khalid/tests/build_every_template.rs
 expression: pages
 ---
 # index.html
-h1: Field Notes on SEO
-section.tab-panel
-  h2: Latest posts
+h1.masthead-title: Field Notes on SEO
+section.latest
+  h2.band-title: Latest posts
   article.card
     h3: Planning a topic cluster in an afternoon
   article.card
@@ -14,21 +14,11 @@ section.tab-panel
     h3: What a sitemap does, and what it does not
   article.card
     h3: How to write a title tag
-  article.card
-    h3: Why internal links matter
-nav.filters "Topics"
-section.feed
-  h2: All posts
-  article.card
-    h3: Planning a topic cluster in an afternoon
-  article.card
-    h3: Fixing slow pages, starting with the biggest win
-  article.card
-    h3: What a sitemap does, and what it does not
-  article.card
-    h3: How to write a title tag
-  article.card
-    h3: Why internal links matter
+article.card
+  h3: Why internal links matter
+aside.rail
+  nav.topic-list "Topics"
+    h2.band-title: Topics
 
 # why-internal-links-matter/index.html
 nav.breadcrumbs "Breadcrumbs"
