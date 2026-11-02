@@ -177,6 +177,208 @@ main > h1 + .intro { max-inline-size: 38rem; margin-block-end: calc(var(--space)
 main > h1 ~ .featured { margin-block-start: calc(var(--space) * 5); }
 main > h1 ~ .cards { padding-block-start: calc(var(--space) * 5); border-block-start: 1px solid var(--color-border); }
 
+/* A post's title block: the label, the title, the subtitle, then the
+   facts on one ruled line and the picture a little wider than the text. */
+.post-header { margin-block: calc(var(--space) * 7) calc(var(--space) * 5); }
+.post-header h1, .page > h1 { margin-block: calc(var(--space) * 1.5) calc(var(--space) * 2); font-size: var(--text-h1); line-height: 1.08; letter-spacing: -0.03em; }
+.page > h1 { margin-block-start: calc(var(--space) * 7); }
+.dek { margin-block: 0 calc(var(--space) * 3); color: var(--color-muted); font-size: 1.25rem; line-height: 1.5; }
+.post-meta { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.25rem calc(var(--space) * 3); padding-block: calc(var(--space) * 2); border-block: 1px solid var(--color-border); }
+.post-meta > *, .post-meta .people { margin: 0; }
+.post-meta address { grid-row: 1 / span 2; }
+.post-meta > p:not([class]) { grid-column: 2; grid-row: 1; align-self: end; color: var(--color-muted); text-align: end; }
+.post-meta .reviewed-by { grid-column: 2; grid-row: 2; align-self: start; color: var(--color-muted); text-align: end; }
+.post-meta .updated-note { grid-column: 1 / -1; }
+@media (max-width: 40rem) {
+  .post-meta { grid-template-columns: minmax(0, 1fr); }
+  .post-meta address, .post-meta > p:not([class]), .post-meta .reviewed-by { grid-column: 1; grid-row: auto; text-align: start; }
+}
+.person > picture { flex: none; }
+.post-meta .avatar { inline-size: 2.5rem; block-size: 2.5rem; background: var(--color-surface); }
+.post-meta .person a { color: var(--color-text); font-size: 1rem; font-weight: 700; text-decoration: none; }
+.post-meta .person a:hover { text-decoration: underline; }
+.post-meta .person-role { margin: 0; font-size: var(--text-small); }
+.post-meta .reviewed-by a { color: var(--color-text); }
+.updated-note { flex-basis: 100%; }
+.post-header .image { margin-block: calc(var(--space) * 4) 0; margin-inline: min(0px, max((var(--measure) - 100vw) / 2 + 1rem, (var(--measure) - 56rem) / 2)); }
+.post-header .image img { border: 1px solid var(--color-border); }
+.post-header figcaption { margin-block-start: var(--space); }
+
+/* The contents: a panel of numbered links, two columns when there is room.
+   The body's own contents list hides when the panel shows. */
+.toc-box { margin-block: 0 calc(var(--space) * 6); padding: calc(var(--space) * 2.5) calc(var(--space) * 3); background: var(--color-surface); border-radius: var(--radius); }
+.toc-title { margin: 0 0 var(--space); color: var(--color-muted); }
+.toc-box > ol { counter-reset: step; margin: 0; padding: 0; list-style: none; }
+.toc-box > ol > li { counter-increment: step; break-inside: avoid; }
+.toc-box > ol > li > a { gap: 0.75rem; min-block-size: 44px; padding-block: 0.25rem; color: var(--color-text); font-size: 0.9375rem; font-weight: 500; line-height: 1.35; text-decoration: none; }
+.toc-box > ol > li > a::before { content: counter(step) / ""; flex: none; display: inline-grid; place-items: center; inline-size: 1.5rem; block-size: 1.5rem; color: var(--color-link); background: var(--color-background); border: 1px solid var(--color-border); border-radius: 50%; font-size: 0.75rem; font-weight: 700; }
+.toc-box > ol > li > a:hover { color: var(--color-link); text-decoration: underline; }
+.toc-box ol ol { padding-inline-start: 2.25rem; list-style: none; }
+.toc-box ol ol a { color: var(--color-muted); font-size: 0.875rem; text-decoration: none; }
+@media (min-width: 40rem) { .toc-box > ol { columns: 2; column-gap: calc(var(--space) * 4); } }
+.post:has(> .toc-box) .post-body > nav.toc { display: none; }
+
+/* The body: sections open on the bench rule, the heading link small. */
+.post-body h2, .page-body h2 { margin-block: calc(var(--space) * 7) calc(var(--space) * 2); padding-block-start: calc(var(--space) * 1.5); border-block-start: 3px solid var(--color-text); line-height: 1.15; letter-spacing: -0.025em; }
+.post-body h3, .page-body h3 { margin-block: calc(var(--space) * 5) var(--space); letter-spacing: -0.015em; }
+.heading-link { margin-inline-start: 0.125rem; font-size: 0.6em; vertical-align: 0.15em; }
+.post-body strong { font-weight: 700; }
+.post-body a, .page-body a { text-decoration-color: color-mix(in oklab, var(--color-link) 45%, transparent); }
+.post-body a:hover, .page-body a:hover { text-decoration-color: currentColor; }
+.post-body > :is(ul, ol):not([class]) > li { margin-block-end: 0.375rem; padding-inline-start: 0.25rem; }
+.post-body > ul:not([class]) > li::marker { color: var(--color-accent); }
+.post-body > blockquote, .page-body > blockquote { padding-inline-start: 1.25rem; border-inline-start: 3px solid var(--color-border); color: var(--color-text); }
+.post-body > details, .page-body > details { padding-inline: calc(var(--space) * 2.5); background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); }
+.post-body > details > summary, .page-body > details > summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; list-style: none; }
+.post-body > details > summary::-webkit-details-marker, .page-body > details > summary::-webkit-details-marker { display: none; }
+.post-body > details > summary::after, .page-body > details > summary::after { content: "+" / ""; flex: none; display: grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; color: var(--color-link); border: 1px solid var(--color-border); border-radius: 50%; font-weight: 400; }
+.post-body > details[open] > summary::after, .page-body > details[open] > summary::after { content: "−" / ""; }
+.post-body figure:not([class]) img, .post-body .figure img { inline-size: 100%; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.post-body figure:not([class]), .post-body .figure { margin-block: calc(var(--space) * 4); }
+figcaption, figcaption p { font-size: var(--text-small); line-height: 1.5; }
+:not(pre) > code { padding: 0.125em 0.375em; border: 1px solid var(--color-border); font-size: 0.85em; }
+pre { padding: calc(var(--space) * 2) calc(var(--space) * 2.5); border: 1px solid var(--color-border); font-size: 0.875rem; line-height: 1.6; }
+
+/* Callouts: panels on the surface. A tip carries the accent's edge, a
+   warning an ink frame, a summary checks off its points, a figure stands
+   large in the accent's colour, a further-reading note sits between
+   hairlines. */
+.callout { margin-block: calc(var(--space) * 4); padding: calc(var(--space) * 2.5) calc(var(--space) * 3); background: var(--color-surface); border: 0; border-radius: var(--radius); font-size: 1rem; }
+.callout-tip { background: color-mix(in oklab, var(--color-accent) 7%, var(--color-background)); border-inline-start: 4px solid var(--color-accent); border-start-start-radius: 0; border-end-start-radius: 0; }
+.callout-note { background: var(--color-surface); }
+.callout-warning { background: var(--color-background); border: 2px solid var(--color-text); font-weight: 500; }
+.callout-summary { padding: calc(var(--space) * 3); background: var(--color-background); border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); }
+.callout-summary ul { margin: 0; padding: 0; list-style: none; }
+.post-body .callout-summary li, .callout-summary li { position: relative; margin-block-end: var(--space); padding-inline-start: 2rem; }
+.callout-summary li:last-child { margin-block-end: 0; }
+.callout-summary li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.2em; inline-size: 1.25rem; block-size: 1.25rem; background: var(--color-accent); border-radius: 50%; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cmask id='m'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23fff'/%3E%3Cpath d='M5.5 10.5l3 3 6-7' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/mask%3E%3Ccircle cx='10' cy='10' r='10' mask='url(%23m)'/%3E%3C/svg%3E") no-repeat center / contain; }
+.callout-stat { display: grid; gap: var(--space); background: color-mix(in oklab, var(--color-accent) 7%, var(--color-background)); }
+.callout-stat strong:first-child { color: var(--color-link); font-size: 3rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.callout-read { padding: calc(var(--space) * 2) 0; background: none; border-block: 1px solid var(--color-border); border-radius: 0; color: var(--color-muted); }
+
+/* A pull quote: large words under a short bar of the accent. */
+.pullquote { margin-block: calc(var(--space) * 6); padding: 0; border: 0; }
+.pullquote blockquote { font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem); font-weight: 800; line-height: 1.25; letter-spacing: -0.02em; }
+.pullquote blockquote::before { content: ""; display: block; inline-size: 3rem; block-size: 4px; margin-block-end: calc(var(--space) * 2); background: var(--color-accent); border-radius: 2px; }
+.pullquote figcaption { margin-block-start: calc(var(--space) * 1.5); color: var(--color-muted); font-size: var(--text-small); font-weight: 600; }
+
+/* Numbered steps: each number in a ring on a thread down the side. */
+.howto { counter-reset: howto; margin-block: calc(var(--space) * 4); padding: 0; list-style: none; }
+.howto > li { position: relative; counter-increment: howto; margin: 0; padding-block-end: calc(var(--space) * 3); padding-inline-start: 3.25rem; }
+.howto > li::before { content: counter(howto) / ""; position: absolute; inset-inline-start: 0; inset-block-start: 0; display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 50%; font-weight: 800; font-size: 0.9375rem; }
+.howto > li:not(:last-child)::after { content: ""; position: absolute; inset-inline-start: calc(1.125rem - 1px); inset-block: 2.5rem 0.25rem; border-inline-start: 2px solid var(--color-border); }
+.howto-step { margin-block: 0.25rem 0.25rem; font-size: 1.125rem; }
+.howto > li > :last-child { margin-block-end: 0; }
+
+/* The FAQ: hairline rows, a plus that turns into a minus. */
+.faq { margin-block: calc(var(--space) * 3); border-block-start: 1px solid var(--color-border); }
+.faq details { border-block-end: 1px solid var(--color-border); }
+.faq summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: calc(var(--space) * 2); font-size: 1.125rem; list-style: none; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+" / ""; flex: none; display: grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; color: var(--color-link); border: 1px solid var(--color-border); border-radius: 50%; font-weight: 400; }
+.faq details[open] summary::after { content: "−" / ""; }
+.faq details > :not(summary) { margin-block-start: 0; }
+
+/* Comparison tables: a framed grid, the header row on the surface, the
+   first column bold, hairlines between rows. On a wide screen a table
+   may grow past the text, up to 60rem. */
+.post-body table, .page-body table { inline-size: max-content; min-inline-size: 100%; margin-block: calc(var(--space) * 4); border: 1px solid var(--color-border); border-collapse: separate; border-spacing: 0; border-radius: var(--radius); font-size: 0.9375rem; line-height: 1.5; }
+.post-body th, .page-body th { padding: 0.875rem 1rem; background: var(--color-surface); border-block-end: 1px solid var(--color-border); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; vertical-align: bottom; }
+.post-body td, .page-body td { padding: 0.875rem 1rem; vertical-align: top; }
+.post-body tr:last-child > td, .page-body tr:last-child > td { border-block-end: 0; }
+.post-body td:first-child, .page-body td:first-child { font-weight: 700; }
+.post-body tbody tr:hover td { background: color-mix(in oklab, var(--color-accent) 4%, var(--color-background)); }
+.table-fold { margin-block: calc(var(--space) * 4); }
+.table-fold table { margin: 0; }
+.table-fold summary { padding-inline: 1rem; font-size: 0.9375rem; }
+@media (min-width: 64rem) {
+  .post-body > table { max-inline-size: 60rem; margin-inline-start: 50%; translate: -50% 0; }
+  [dir="rtl"] .post-body > table { translate: 50% 0; }
+}
+
+/* Pros and cons: two panels, the pros on a tint of the accent with its
+   ticks, the cons on the surface with crosses. */
+.proscons { gap: calc(var(--space) * 2); margin-block: calc(var(--space) * 4); }
+.pros, .cons { padding: calc(var(--space) * 2.5) calc(var(--space) * 3); border: 0; border-radius: var(--radius); font-size: 1rem; }
+.pros { background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); box-shadow: inset 0 3px 0 var(--color-accent); }
+.cons { background: var(--color-surface); box-shadow: inset 0 3px 0 var(--color-muted); }
+.proscons-title { margin-block-end: calc(var(--space) * 1.5); }
+.pros .proscons-title, .pros li::before { color: var(--color-link); }
+.cons .proscons-title { color: var(--color-text); }
+.cons li::before { color: var(--color-muted); }
+.proscons li { margin-block-end: var(--space); padding-inline-start: 1.75rem; }
+.proscons li:last-child { margin-block-end: 0; }
+
+/* The verdict box: the tool's name and its score on one line, framed in
+   ink, the verdict under a hairline. The product box puts its picture
+   beside the facts. */
+.review, .product { margin-block: calc(var(--space) * 4); padding: calc(var(--space) * 3); background: var(--color-background); border: 2px solid var(--color-text); border-radius: var(--radius); }
+.review { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 calc(var(--space) * 2); }
+.review > :not(.review-item, .review-rating) { grid-column: 1 / -1; }
+.review-item, .product-name { margin: 0; font-size: 1.5rem; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
+.review-rating, .product-rating { display: inline-flex; align-items: center; gap: 0.375rem; margin: 0; padding: 0.375rem 0.875rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 999px; font-size: 1rem; font-weight: 800; white-space: nowrap; }
+.review-rating::before, .product-rating::before { content: ""; inline-size: 1rem; block-size: 1rem; background: currentColor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1l2.1 4.6 5 .5-3.8 3.4 1.1 5L8 12l-4.4 2.5 1.1-5L.9 6.1l5-.5z'/%3E%3C/svg%3E") no-repeat center / contain; }
+.review > .review-rating + * { margin-block-start: calc(var(--space) * 2); padding-block-start: calc(var(--space) * 2); border-block-start: 1px solid var(--color-border); }
+.product { display: grid; gap: var(--space) calc(var(--space) * 3); }
+.product img { margin: 0; aspect-ratio: 4 / 3; object-fit: contain; background: var(--color-surface); border-radius: var(--radius); }
+.product-rating { justify-self: start; }
+.product-price { margin: 0; font-size: 1.375rem; font-weight: 800; }
+.product > p { margin: 0; }
+@container (min-width: 34rem) {
+  .product:has(> img) { grid-template-columns: 13rem minmax(0, 1fr); }
+  .product > img { grid-row: 1 / span 6; align-self: start; }
+}
+.page-body, .post-body { container-type: inline-size; }
+
+/* Columns and bookmarks: quiet panels. */
+.column { padding: calc(var(--space) * 2.5); border: 1px solid var(--color-border); background: var(--color-background); }
+.bookmark a:has(.bookmark-title) { padding: calc(var(--space) * 2); }
+
+/* After the body: the closing line, share links, tags, the author. */
+.wb-closing { margin-block: calc(var(--space) * 6) 0; padding-block-start: calc(var(--space) * 2); border-block-start: 1px solid var(--color-border); color: var(--color-muted); font-size: var(--text-small); }
+.share { gap: var(--space) calc(var(--space) * 1.5); margin-block: calc(var(--space) * 3); }
+.share-title { margin-inline-end: var(--space); color: var(--color-muted); }
+.share a { color: var(--color-text); font-size: 0.875rem; font-weight: 600; border-radius: 999px; }
+.share a:hover, .share a:focus-visible { color: var(--color-link); border-color: var(--color-link); }
+.post-footer { margin-block-start: calc(var(--space) * 4); }
+.post-footer h2 { margin: 0 0 var(--space); color: var(--color-muted); }
+.tags a { color: var(--color-text); font-size: 0.875rem; border: 1px solid var(--color-border); background: var(--color-background); border-radius: 999px; }
+.tags a:hover { border-color: var(--color-text); }
+.author-box { margin-block-start: calc(var(--space) * 6); padding: calc(var(--space) * 3); background: var(--color-surface); border-radius: var(--radius); }
+.author-box h2 { margin: 0 0 calc(var(--space) * 2); color: var(--color-muted); }
+.author-box .person-card { gap: calc(var(--space) * 2); }
+.author-box .avatar { inline-size: 4rem; block-size: 4rem; flex: none; background: var(--color-background); }
+.author-box .person-card > picture { flex: none; }
+.author-box .person-name a { color: var(--color-text); font-size: 1.1875rem; font-weight: 800; text-decoration: none; }
+.author-box .person-name a:hover { text-decoration: underline; }
+.author-box .person-role { margin: 0.125rem 0 var(--space); color: var(--color-muted); font-size: var(--text-small); }
+.author-box .person-card p { font-size: 1rem; line-height: 1.6; }
+.author-box .reviewed-by { margin: 0; padding-block-start: calc(var(--space) * 2); border-block-start: 1px solid var(--color-border); font-size: var(--text-small); }
+.lock, .locked { color: var(--color-muted); font-size: var(--text-small); background: var(--color-surface); border-color: var(--color-border); }
+
+/* Posts that link here and related posts: numbered rows, the title in
+   ink, not a column of underlined links. */
+.related, .mentions { margin-block: calc(var(--space) * 8) 0; }
+.mentions + * { margin-block-start: calc(var(--space) * 4); }
+.mentions ul { display: grid; gap: 0 calc(var(--space) * 4); }
+.mentions li, .related-links li { border-block-end: 1px solid var(--color-border); }
+.mentions a, .related-links a { display: flex; min-block-size: 3.25rem; padding-block: 0.5rem; color: var(--color-text); font-weight: 600; line-height: 1.35; text-decoration: none; }
+.mentions a { font-size: 0.9375rem; font-weight: 500; }
+.mentions a:hover, .related-links a:hover { color: var(--color-link); text-decoration: underline; }
+@media (min-width: 40rem) { .mentions ul { grid-template-columns: 1fr 1fr; } }
+.related-links { padding: 0; list-style: none; counter-reset: link; border-block-start: 1px solid var(--color-border); }
+.related-links li { counter-increment: link; }
+.related-links a { align-items: center; gap: 1rem; }
+.related-links a::before { content: counter(link, decimal-leading-zero) / ""; flex: none; color: var(--color-muted); font-size: var(--text-small); font-variant-numeric: tabular-nums; font-weight: 600; }
+
+/* The footer: a hairline edge to edge, the links small and plain. */
+.site-footer { gap: calc(var(--space) * 2); padding-block: calc(var(--space) * 6) calc(var(--space) * 8); background: var(--color-surface); border-block-start: 1px solid var(--color-border); border-image: linear-gradient(var(--color-border) 0 0) 1 0 0 / 1px 0 0 / 0 100vmax; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax -100vmax); }
+.site-footer nav ul { gap: 0 calc(var(--space) * 3); }
+.site-footer nav[aria-label] + nav { padding-block-start: calc(var(--space) * 2); border-block-start: 1px solid var(--color-border); }
+.site-footer nav a { color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
+.site-footer nav a[aria-current] { color: var(--color-link); }
+.site-footer nav a:hover { color: var(--color-text); text-decoration: underline; }
+
 /* Phones: the header stacks and its button fills the row, the frame's
    tab keeps to its corner, the panels give up some padding. */
 @media (max-width: 40rem) {

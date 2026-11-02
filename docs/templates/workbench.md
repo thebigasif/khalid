@@ -17,13 +17,21 @@ It suits writing with clear sections and tables. For long essays with few headin
 name = "workbench"
 ```
 
-Your colours, fonts and logo still come from theme sync. Workbench draws no colour of its own: labels, borders and panels are your tokens, and light tints of your accent colour.
+Your colours, fonts and logo still come from theme sync. Workbench brings its own palette for a site with no colours yet: a warm paper page, near-black ink and a deep green accent. Once your `theme/tokens.toml` sets colours, labels, rules and panels use yours, with light tints of your accent colour.
+
+## How it looks
+
+- Heavy, tight headings over an open body, and a thick ink rule over each section of a post and each section of the front page.
+- Small spaced capitals for categories and section labels, in your link colour.
+- The featured post in a frame of your accent, with a "Featured" tab on its top edge.
+- Hairlines between rows and around pictures, one corner radius, and no shadows.
+- Components with their own shape: a contents panel with numbered rings, pros on a tint of your accent with ticks beside cons on the surface with crosses, a verdict box framed in ink with the score as a star badge, numbered steps on a thread, and FAQ rows that open with a plus.
 
 ## What the front page shows
 
 1. Your blog's name, and a "Categories" button that opens a menu of your categories. The menu works without scripts.
 2. The newest post marked `featured: true`, large.
-3. "Latest posts": the next three posts as rows, each with its category, title, date and reading time.
+3. "Latest posts": the next three posts side by side, each with its category, title, date and reading time.
 4. The newsletter form.
 5. "More posts": the rest as picture cards, up to three in a row.
 6. The newsletter form again, then the page links and "See all posts", which opens the archive.
@@ -31,11 +39,12 @@ Your colours, fonts and logo still come from theme sync. Workbench draws no colo
 ## What a post shows
 
 1. The category as a small label, the title, and the post's `description` as a subtitle.
-2. The writers, the date and the reading time.
-3. The contents in an open box at the top.
-4. The body. Wide tables can grow past the text, up to 60rem on large screens, so a comparison table has room. The header row sits on your surface colour.
-5. A closing line in italics: who wrote it, when it was published and when it was updated.
-6. Share links, the author box, the newsletter form, and six related posts as plain links.
+2. The writers on the left, the date, the reading time and the reviewer on the right, between two hairlines.
+3. The lead picture, a little wider than the text.
+4. The contents in a panel at the top, in two columns when there is room.
+5. The body. Wide tables can grow past the text, up to 60rem on large screens, so a comparison table has room. The header row sits on your surface colour, in small capitals.
+6. A closing line: who wrote it, when it was published and when it was updated.
+7. Share links, the author box, the newsletter form, and six related posts as numbered rows.
 
 ## Writing a comparison post
 
@@ -71,7 +80,7 @@ Set these under `[template.options]`. An option you leave out takes the default.
 | `newsletter` | `both` | Where the newsletter form shows: `none`, `post`, `home` or `both`. On the front page, `home` and `both` show it twice. |
 | `cta_band` | `none` | Where the band with your `[template.cta]` shows: `none`, `post`, `home` or `both`. |
 | `cta_button` | `true` | The header shows your `[template.cta]` as a button. |
-| `lead_image` | `true` | A post shows its lead picture under its title, framed on a shadow of the accent. Turn it off when your comparison posts open with their table. |
+| `lead_image` | `true` | A post shows its lead picture under its title, on a hairline frame. Turn it off when your comparison posts open with their table. |
 | `closing_line` | `true` | A post ends with one line naming its writers and its dates. Turned off, the updated date shows beside the published date instead. |
 | `newsletter_note` | none | One line under the front page's newsletter forms, such as how often you send. |
 
@@ -92,11 +101,15 @@ Workbench sets these defaults. A value in your `theme/tokens.toml` wins.
 
 | Token | Workbench |
 |---|---|
+| Colours | page `#fcfbf8`, surface `#f3f1eb`, text `#1a1a17`, quiet text `#5b5850`, links `#0b5c44`, accent `#0d7553`, lines `#e1ddd2` |
 | Body text | 1.0625rem to 1.125rem |
-| `h1`, `h2`, `h3` | 2.25rem to 3rem, 1.625rem to 2rem, 1.25rem |
-| Line height | 1.65 |
-| Line length (`measure`) | 72ch |
-| Corners (`radius`) | 0.625rem |
+| `h1`, `h2`, `h3`, `h4` | 2.25rem to 3.25rem, 1.5rem to 1.875rem, 1.1875rem to 1.3125rem, 1.0625rem to 1.125rem |
+| Small text | 0.875rem |
+| Heading weight | 800 |
+| Line height | 1.7 |
+| Line length (`measure`) | 44rem |
+| Corners (`radius`) | 0.5rem |
+| Space unit, space between sections | 0.5rem, 4rem |
 
 ## Good to know
 
