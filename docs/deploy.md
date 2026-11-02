@@ -418,3 +418,22 @@ gifs = true
 Each needs a key, the password the blog uses to ask for you. Make an app at unsplash.com/developers and set its access key as `KHALID_UNSPLASH_ACCESS_KEY`, and make one at developers.giphy.com and set its key as `KHALID_GIPHY_API_KEY`, the same way as the mail secrets above. The keys never go in `site.toml` and never reach the writer's browser. Run `khalid doctor` afterwards: its "Picture search" line says which searches are on and names any key the server cannot see. It only checks that the key is set; it does not send it to Unsplash or GIPHY.
 
 A chosen photo or GIF loads from Unsplash or GIPHY, as their terms ask, so readers' browsers fetch that picture from there. A photo gets its photographer's name and links under it.
+
+## Writing suggestions in the editor
+
+The editor can suggest an SEO title, a meta description, share titles and descriptions, alt text for a picture, a fix for a check that failed, and a short list of key takeaways. Khalid has no AI model inside it. A suggestion is written by a service you choose, and nothing is sent anywhere until you choose one in `site.toml`:
+
+```toml
+[ai]
+provider = "anthropic"   # "serpdad", "anthropic", "openai", or "off", the default
+model = "claude-haiku-5-5"   # optional, except for "openai"
+endpoint = "https://api.example.com/v1/chat/completions"   # optional
+```
+
+- `serpdad` asks your SerpDad account. It works only while SerpDad is connected on the admin's SerpDad page.
+- `anthropic` asks Anthropic's Messages API with your own key. Without `model`, it uses `claude-haiku-5-5`, which is quick and cheap.
+- `openai` asks any service that speaks OpenAI's chat completions, with your own key. It needs `model`, the model's name as that service spells it, and `endpoint` when the service is not OpenAI itself.
+
+The key is the password the blog uses to ask that service. Set it as `KHALID_AI_KEY` in the server's environment, the same way as the mail secrets above. It never goes in `site.toml`, never reaches a writer's browser and is never logged.
+
+When it is on, each suggestion sends the words it needs and nothing more: the post's title, text and focus keyword for a title or description, the failing check's message for a fix, and the file name, caption and the post's title for alt text. Every button is marked "AI suggestion", and nothing changes in a post until the writer picks one. Set `provider = "off"`, or remove the table, to switch it off again.
