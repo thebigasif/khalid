@@ -2,12 +2,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { wearAccent } from "./auth/blog";
 import { makeRouter } from "./routes/router";
 import "./styles/app.css";
 
 const queries = new QueryClient();
 const router = makeRouter();
 const root = document.getElementById("root");
+
+wearAccent(document.documentElement);
 
 if (root !== null) {
   createRoot(root).render(

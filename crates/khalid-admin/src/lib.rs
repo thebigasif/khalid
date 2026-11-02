@@ -64,6 +64,9 @@ pub struct Blog<'a> {
     /// The full address of the main site's logo, when there is one the
     /// admin's own policy lets it show.
     pub logo: Option<&'a str>,
+    /// The theme's accent as `#rrggbb`, when it reads well on white, so
+    /// the admin's buttons and links wear the blog's own colour.
+    pub accent: Option<&'a str>,
 }
 
 /// The routes that answer the admin of `blog` under its mount, such as
@@ -115,7 +118,7 @@ pub fn router(files: &'static [Asset], blog: Blog<'_>) -> Router {
 /// binary holds no admin. Vite names the built files from the page's own
 /// folder, which differs on each screen's address, so they are named from
 /// the host's root instead, and the mount goes in a `khalid-mount` meta,
-/// after the blog's name and logo in their own.
+/// after the blog's name, logo and accent in their own.
 fn page_in(files: &[Asset], blog: Blog<'_>) -> Option<Bytes> {
     let index = files.iter().find(|asset| asset.path == "index.html")?;
     let html = String::from_utf8_lossy(index.body);
@@ -126,7 +129,12 @@ fn page_in(files: &[Asset], blog: Blog<'_>) -> Option<Bytes> {
         .logo
         .map(|logo| meta("khalid-logo", logo))
         .unwrap_or_default();
-    let named = format!("{name}{logo}<meta name=\"khalid-mount\" content=\"{mount}\">\n</head>");
+    let accent = blog
+        .accent
+        .map(|accent| meta("khalid-accent", accent))
+        .unwrap_or_default();
+    let named =
+        format!("{name}{logo}{accent}<meta name=\"khalid-mount\" content=\"{mount}\">\n</head>");
     let html = html
         .replace("=\"./", &folder)
         .replace("=\"/admin/", &folder)

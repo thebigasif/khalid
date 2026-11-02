@@ -5,16 +5,20 @@
    the approved mockups write them. */
 @layer base {
   :root{color-scheme:light}
-  html{background:var(--color-bg);color:var(--color-text);font:400 1rem/1.5 var(--font-sans)}
-  body{overflow-wrap:break-word}
-  a{color:var(--color-link);text-decoration:underline}
-  :focus-visible{outline:3px solid var(--color-link);outline-offset:2px}
-  h1{font-size:clamp(1.5rem,1.2rem + 1.2vw,2rem);line-height:1.2;font-weight:700;margin:0 0 .5rem}
-  h2{font-size:1.25rem;line-height:1.3;font-weight:700;margin:2rem 0 .5rem}
+  /* The root stays at 16 px so spacing keeps its 4 and 8 px steps; text is 14 px. */
+  html{background:var(--color-app);color:var(--color-text);font:400 1rem/1.5 var(--font-sans);-webkit-font-smoothing:antialiased}
+  body{overflow-wrap:break-word;font-size:.875rem;line-height:1.55}
+  a{color:var(--color-link);text-decoration:underline;text-underline-offset:.15em}
+  :focus-visible{outline:2px solid var(--color-link);outline-offset:2px}
+  h1{font-size:1.5rem;line-height:1.25;font-weight:600;letter-spacing:-.015em;margin:0 0 .25rem}
+  h2{font-size:1rem;line-height:1.4;font-weight:600;margin:2rem 0 .5rem}
   p{margin:0 0 1rem}
-  label{display:block;font-weight:600;margin:0 0 .25rem}
-  input,select,textarea{width:100%;min-height:44px;padding:.5rem .7rem;border:1px solid var(--color-field);border-radius:var(--radius-field);background:var(--color-bg)}
-  code{font-family:var(--font-mono);font-size:.9em;background:var(--color-surface);padding:.05rem .3rem;border-radius:.25rem}
+  label{display:block;font-weight:500;margin:0 0 .25rem}
+  input,select,textarea{width:100%;min-height:44px;padding:.5rem .75rem;border:1px solid var(--color-field);border-radius:var(--radius-field);background:var(--color-bg);color:inherit;font:inherit}
+  input:focus-visible,select:focus-visible,textarea:focus-visible{outline-offset:0;border-color:var(--color-link)}
+  code{font-family:var(--font-mono);font-size:.9em;background:var(--color-surface);padding:.1rem .3rem;border-radius:4px}
+  /* A mouse or trackpad needs smaller targets than a finger, so desktop rows sit tighter. */
+  @media (pointer:fine){input,select{min-height:2.25rem;padding:.375rem .75rem}}
 }
 
 @layer components {
@@ -32,27 +36,35 @@
     .side{border-right:1px solid var(--color-border);min-height:calc(100vh - 3.6rem)}
     .side ul{flex-direction:column}
   }
-  .page{padding:1.5rem 1.25rem 3rem;max-width:72rem}
-  .lede{color:var(--color-muted);max-width:68ch;font-size:1.0625rem}
-  .hint{display:block;color:var(--color-muted);font-weight:400;font-size:.9375rem;margin:0 0 .4rem}
+  .page{padding:1.5rem 1rem 3rem;max-width:72rem;margin:0 auto}
+  @media (min-width:40em){.page{padding:2rem 2rem 4rem}}
+  .lede{color:var(--color-muted);max-width:68ch;font-size:.9375rem}
+  .hint{display:block;color:var(--color-muted);font-weight:400;font-size:.8125rem;margin:0 0 .25rem}
   .field{margin:0 0 1.25rem;max-width:36rem}
-  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;border-radius:var(--radius-field);border:1px solid var(--color-field);background:var(--color-bg);color:var(--color-text);font-weight:600;text-decoration:none;cursor:pointer}
-  .btn.primary{background:var(--color-link);border-color:var(--color-link);color:var(--color-on-link)}
-  .btn:disabled{color:var(--color-muted);background:var(--color-surface);border-color:var(--color-border);cursor:not-allowed}
-  .focus{border:2px solid var(--color-link);background:var(--color-tint);border-radius:var(--radius-field);padding:1.5rem;max-width:40rem}
+  /* Buttons: primary for the one main action, secondary for the rest, ghost inside toolbars. */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:44px;padding:.5rem 1rem;border-radius:var(--radius-field);border:1px solid var(--color-border);background:var(--color-bg);color:var(--color-text);font:500 .875rem/1.25 var(--font-sans);text-decoration:none;cursor:pointer;box-shadow:var(--shadow-card);transition:background-color .12s,border-color .12s}
+  .btn:hover{background:var(--color-surface)}
+  .btn.primary{background:var(--color-link);border-color:var(--color-link);color:var(--color-on-link);box-shadow:var(--shadow-raised)}
+  .btn.primary:hover{background:var(--color-link-hover);border-color:var(--color-link-hover)}
+  .btn.ghost{border-color:transparent;background:transparent;box-shadow:none}
+  .btn.ghost:hover{background:var(--color-surface)}
+  .btn:disabled{color:var(--color-muted);background:var(--color-surface);border-color:var(--color-border);box-shadow:none;cursor:not-allowed}
+  @media (pointer:fine){.btn{min-height:2.25rem;padding:.375rem .875rem}.switch button{min-height:2rem}}
+  .focus{border:1px solid var(--color-border);background:var(--color-bg);border-radius:var(--radius-field);padding:1.5rem;max-width:40rem;box-shadow:var(--shadow-card)}
   .focus.wide{max-width:56rem}
   .focus>h2:first-child{margin-top:0}
-  .once{border-left:4px solid var(--color-link);background:var(--color-bg);border-radius:var(--radius-field);padding:.75rem 1rem;max-width:68ch}
+  .once{border:1px solid var(--color-border);border-left:3px solid var(--color-link);background:var(--color-bg);border-radius:var(--radius-field);padding:.75rem 1rem;max-width:68ch}
   .pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:0 1.5rem}
-  .problem{border-left:4px solid var(--color-block);background:var(--color-block-bg);border-radius:var(--radius-field);padding:1rem 1.25rem;margin:0 0 1.25rem;max-width:40rem}
+  .problem{border:1px solid var(--color-block-line);background:var(--color-block-bg);border-radius:var(--radius-field);padding:.75rem 1rem;margin:0 0 1.25rem;max-width:40rem}
   .problem p:last-child{margin:0}
-  .done{border-left:4px solid var(--color-ok);background:var(--color-ok-bg);border-radius:var(--radius-field);padding:1rem 1.25rem;margin:1.25rem 0;max-width:40rem}
+  .done{border:1px solid var(--color-ok-line);background:var(--color-ok-bg);border-radius:var(--radius-field);padding:.75rem 1rem;margin:1.25rem 0;max-width:40rem}
   .done p{margin:0 0 .4rem}
   .done p:last-child{margin:0}
   .bar{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;align-items:center;justify-content:space-between;padding:0 0 1rem;margin:0 0 1rem;border-bottom:1px solid var(--color-border)}
-  .switch{display:inline-flex;border:1px solid var(--color-field);border-radius:var(--radius-field);overflow:hidden;padding:0;margin:0}
-  .switch button{min-height:44px;padding:.5rem 1rem;background:var(--color-bg);font-weight:600;cursor:pointer}
-  .switch button[aria-pressed="true"]{background:var(--color-tint);color:var(--color-link)}
+  /* Tabs and segmented choices: one quiet track, the chosen one raised on it. */
+  .switch{display:inline-flex;gap:2px;border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-surface);overflow:hidden;padding:2px;margin:0}
+  .switch button{min-height:44px;padding:.375rem .875rem;border-radius:6px;background:transparent;color:var(--color-muted);font-weight:500;cursor:pointer}
+  .switch button[aria-pressed="true"]{background:var(--color-bg);color:var(--color-text);box-shadow:var(--shadow-raised)}
   .title{font-size:clamp(1.5rem,1.2rem + 1.2vw,2rem);font-weight:700;line-height:1.2;border:0;border-bottom:1px solid var(--color-border);border-radius:0;padding:.5rem 0;margin:0 0 1rem;max-width:68ch}
   .text{max-width:68ch;min-height:20rem;line-height:1.7}
   .text p,.text ul,.text ol,.text blockquote,.text pre{margin:0 0 1rem}
@@ -131,7 +143,7 @@
   .serp .url{font-size:.8125rem;color:var(--color-muted)}
   .serp .head{font-size:1.25rem;line-height:1.3;color:var(--color-link)}
   .serp .desc{font-size:.875rem;line-height:1.55;color:var(--color-muted);margin:0}
-  .saved{border-left:4px solid var(--color-ok);background:var(--color-ok-bg);border-radius:var(--radius-field);padding:.75rem 1rem;max-width:68ch}
+  .saved{border:1px solid var(--color-ok-line);background:var(--color-ok-bg);border-radius:var(--radius-field);padding:.75rem 1rem;max-width:68ch}
   .template{margin:0 0 1rem;max-width:44rem}
   .template dl{display:grid;grid-template-columns:max-content 1fr;gap:.25rem 1rem;margin:.5rem 0 .75rem;font-size:.9375rem}
   .template dt{font-weight:600}
@@ -140,33 +152,37 @@
   .types li{background:var(--color-surface);border:1px solid var(--color-border);border-radius:999px;padding:.15rem .7rem;font-size:.875rem}
   .json{font-family:var(--font-mono);font-size:.875rem;background:var(--color-surface);border-radius:var(--radius-field);padding:.75rem;overflow:auto;max-height:16rem;margin:0}
   .muted{color:var(--color-muted)}
-  .card{border:1px solid var(--color-border);border-radius:var(--radius-field);padding:1.25rem}
+  .card{border:1px solid var(--color-border);border-radius:var(--radius-field);padding:1.25rem;background:var(--color-bg);box-shadow:var(--shadow-card)}
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:1rem;margin:0;padding:0;list-style:none}
-  .stats strong{display:block;font-size:1.75rem;line-height:1.2}
+  .stats strong{display:block;font-size:1.75rem;line-height:1.2;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
   .posts{list-style:none;padding:0;margin:0 0 1.25rem}
   .posts li{padding:.6rem 0;border-bottom:1px solid var(--color-border)}
   .posts li:last-child{border-bottom:0}
-  .scroll{overflow-x:auto}
-  table{border-collapse:collapse;width:100%}
-  th,td{text-align:left;padding:.7rem .75rem;border-bottom:1px solid var(--color-border);vertical-align:top}
-  th{font-size:.875rem;color:var(--color-muted);font-weight:600}
+  /* A table sits on its own white card, with quiet headings and a hover on each row. */
+  .scroll{overflow-x:auto;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-field);box-shadow:var(--shadow-card)}
+  table{border-collapse:collapse;width:100%;background:var(--color-bg)}
+  th,td{text-align:left;padding:.625rem .75rem;border-bottom:1px solid var(--color-border);vertical-align:middle}
+  thead th{font-size:.75rem;color:var(--color-muted);font-weight:500;background:var(--color-app);white-space:nowrap}
+  tbody tr:last-child>*{border-bottom:0}
+  tbody tr:hover{background:var(--color-app)}
   table.wide{min-width:50rem}
-  .pill{display:inline-block;padding:.1rem .6rem;border-radius:999px;font-size:.875rem;font-weight:600;white-space:nowrap}
-  .pill.block{color:var(--color-block);background:var(--color-block-bg)}
-  .pill.warn{color:var(--color-warn);background:var(--color-warn-bg)}
-  .pill.ok{color:var(--color-ok);background:var(--color-ok-bg)}
-  .pill.quiet{color:var(--color-muted);background:var(--color-surface)}
+  .pill{display:inline-flex;align-items:center;gap:.375rem;padding:.125rem .5rem;border:1px solid transparent;border-radius:999px;font-size:.75rem;font-weight:500;line-height:1.4;white-space:nowrap}
+  .pill::before{content:"";width:.375rem;height:.375rem;border-radius:50%;background:currentColor}
+  .pill.block{color:var(--color-block);background:var(--color-block-bg);border-color:var(--color-block-line)}
+  .pill.warn{color:var(--color-warn);background:var(--color-warn-bg);border-color:var(--color-warn-line)}
+  .pill.ok{color:var(--color-ok);background:var(--color-ok-bg);border-color:var(--color-ok-line)}
+  .pill.quiet{color:var(--color-muted);background:var(--color-surface);border-color:var(--color-border)}
   .heading{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:flex-start}
-  .terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:.25rem 2rem;margin:0 0 1.5rem;font-size:.9375rem}
+  .terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:.25rem 2rem;margin:0 0 1.5rem;font-size:.875rem}
   .terms dt{font-weight:600}
   .terms dd{margin:0 0 .5rem;color:var(--color-muted)}
-  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:1rem;align-items:end;background:var(--color-surface);border-radius:var(--radius-field);padding:1rem;margin:0 0 1rem}
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:1rem;align-items:end;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-field);padding:1rem;margin:0 0 1rem}
   .filters .field{margin:0}
-  .bulk{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:1rem;align-items:end;border:1px solid var(--color-border);border-radius:var(--radius-field);padding:1rem;margin:0 0 1rem}
+  .bulk{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:1rem;align-items:end;border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);padding:1rem;margin:0 0 1rem}
   .bulk p,.bulk .field{margin:0}
   .bulk p{grid-column:1/-1}
-  details{border:1px solid var(--color-border);border-radius:var(--radius-field);margin:0 0 1rem}
-  summary{cursor:pointer;font-weight:600;padding:.75rem 1rem;min-height:44px}
+  details{border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);margin:0 0 1rem}
+  summary{cursor:pointer;font-weight:500;padding:.75rem 1rem;min-height:44px}
   details>div{padding:0 1rem 1rem}
   details details{margin:1rem 0 0}
   fieldset{border:0;margin:0 0 1.25rem;padding:0}
@@ -190,9 +206,9 @@
   .queue{list-style:none;margin:0 0 1rem;padding:0;max-width:56rem}
   .queue>li{margin:0 0 1rem}
   .said{white-space:pre-line;max-width:68ch}
-  .careful{border-left:4px solid var(--color-warn);background:var(--color-warn-bg);border-radius:var(--radius-field);padding:.75rem 1rem;max-width:40rem}
+  .careful{border:1px solid var(--color-warn-line);background:var(--color-warn-bg);border-radius:var(--radius-field);padding:.75rem 1rem;max-width:40rem}
   .looks{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(17rem,100%),1fr));gap:1rem;list-style:none;margin:0 0 1rem;padding:0}
-  .look{border:1px solid var(--color-border);border-radius:var(--radius-field);padding:1rem}
+  .look{border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);box-shadow:var(--shadow-card);padding:1rem}
   .look:has(input:checked){border:2px solid var(--color-link);background:var(--color-tint);padding:calc(1rem - 1px)}
   .look p{color:var(--color-muted);margin:0 0 .5rem}
   .look-head{display:flex;align-items:center;flex-wrap:wrap;gap:.25rem .5rem;min-height:44px;font-size:1.0625rem;font-weight:700;cursor:pointer}
@@ -222,7 +238,8 @@
     table,tbody,tr,td{display:block}
     table.wide{min-width:0}
     thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-    tr{border:1px solid var(--color-border);border-radius:var(--radius-field);margin:0 0 .75rem;padding:.4rem 0}
+    .scroll{background:none;border:0;box-shadow:none}
+    tr{border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);margin:0 0 .75rem;padding:.4rem 0}
     td,tbody th{border:0;padding:.35rem .9rem}
     tbody th{display:block;font-size:1rem;color:var(--color-text)}
     td[data-label]::before{content:attr(data-label);display:block;font-size:.875rem;font-weight:600;color:var(--color-muted)}

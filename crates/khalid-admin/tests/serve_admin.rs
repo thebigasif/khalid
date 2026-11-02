@@ -39,6 +39,7 @@ async fn get_under(
         mount,
         name: "Field notes",
         logo: None,
+        accent: None,
     };
     send(router(files, blog), path).await
 }
@@ -78,12 +79,33 @@ async fn the_page_names_the_blog_and_its_logo_for_the_sign_in_screen() {
         mount: "/",
         name: "Lena's \"Bakes\" & <Cakes>",
         logo: Some("https://example.com/logo.svg"),
+        accent: None,
     };
     let (_, _, body) = send(router(BUILT, blog), "/admin/sign-in").await;
     let name = "content=\"Lena's &quot;Bakes&quot; &amp; &lt;Cakes&gt;\"";
     assert!(body.contains(name), "{body}");
     assert!(
         body.contains("<meta name=\"khalid-logo\" content=\"https://example.com/logo.svg\">"),
+        "{body}"
+    );
+}
+
+#[tokio::test]
+async fn the_page_names_the_themes_accent_so_the_admin_wears_it() {
+    let (_, _, body) = get(BUILT, "/admin/").await;
+    assert!(
+        !body.contains("khalid-accent"),
+        "no accent, no meta: {body}"
+    );
+    let blog = Blog {
+        mount: "/",
+        name: "Field notes",
+        logo: None,
+        accent: Some("#7c3aed"),
+    };
+    let (_, _, body) = send(router(BUILT, blog), "/admin/").await;
+    assert!(
+        body.contains("<meta name=\"khalid-accent\" content=\"#7c3aed\">"),
         "{body}"
     );
 }

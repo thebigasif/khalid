@@ -17,3 +17,20 @@ export function blogLogo(): string | null {
   const logo = named("khalid-logo");
   return logo.startsWith("https://") || logo.startsWith("http://") ? logo : null;
 }
+
+/**
+ * The theme's accent as `#rrggbb`; `null` when the page names none. The
+ * server names it only when it reads well on white.
+ */
+export function blogAccent(): string | null {
+  const accent = named("khalid-accent");
+  return /^#[0-9a-fA-F]{6}$/.test(accent) ? accent : null;
+}
+
+/** Gives the admin's buttons, links and highlights the theme's accent, when there is one. */
+export function wearAccent(root: HTMLElement): void {
+  const accent = blogAccent();
+  if (accent !== null) {
+    root.style.setProperty("--color-link", accent);
+  }
+}
