@@ -1,74 +1,254 @@
-/* Compass (templates spec 3.4): a teaching blog. Lists use the full
-   width with outlined picture cards; a guide reads in one column that
-   opens with its trail, its contents and its key points. Every colour is
-   a token or a tint of one; the sizes come from the [type] and [space]
-   tokens. */
+/* Compass (templates spec 3.4): a teaching blog. Its one idea is the
+   trail: where a guide sits (breadcrumbs), where it goes (numbered
+   contents) and how far along a step is (numbered, joined steps), drawn
+   over a faint map grid in the site's accent. Lines are hairlines and
+   boxes are tints. Every colour is a token or a tint of one. */
 
-:root { --compass-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); }
-.site-header, main, .site-footer { max-inline-size: 72rem; }
-.tags a { background: none; border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-text); }
-.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; }
+:root {
+  --compass-tint: color-mix(in oklab, var(--color-accent) 7%, var(--color-background));
+  --compass-line: color-mix(in oklab, var(--color-border) 70%, var(--color-background));
+  --compass-grid: color-mix(in oklab, var(--color-accent) 11%, transparent);
+  --compass-wide: 74rem;
+  --compass-pill: 999px;
+}
+.site-header, main, .site-footer { max-inline-size: var(--compass-wide); }
 
-/* Header and footer: a strip of the accent along the top of the window,
-   the name after a drawn compass, menus in the text colour. */
-body { border-block-start: 4px solid var(--color-accent); }
-.site-header { padding-block: 1rem; }
-.site-name { gap: 0.5rem; font-size: 1.375rem; }
-.site-name::before { content: ""; inline-size: 1.5rem; block-size: 1.5rem; background: var(--color-accent); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M15.5 8.5l-2 5-5 2 2-5z' fill='black'/%3E%3C/svg%3E") no-repeat center / contain; }
-.site-header nav a { color: var(--color-text); font-weight: 600; text-decoration: none; }
-.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px 0 var(--color-accent); }
-.announcement { margin-block-end: 0; background: var(--compass-tint); border: 0; font-weight: 600; }
-.announcement a { color: var(--color-text); }
-.site-footer { margin-block-start: var(--space-section); padding-block: calc(var(--space) * 5); background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
-.site-footer a { color: var(--color-text); }
+/* Shared drawings, used as masks so they take the colour of the text. */
+.breadcrumbs li + li::before, .toc-box .toc-title::before, .callout-tip::before, .callout-note::before, .callout-warning::before, .callout-read::before, .mentions a::before, .pullquote::before, .site-name:not(.site-logo)::before, .site-footer::before, .search-link::before {
+  content: "" / "";
+  display: inline-block;
+  flex: none;
+  background: currentColor;
+  mask: var(--compass-mark) no-repeat center / contain;
+}
+.site-name:not(.site-logo)::before, .toc-box .toc-title::before, .site-footer::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M15.5 8.5l-2 5-5 2 2-5z' fill='black'/%3E%3C/svg%3E"); }
+.breadcrumbs li + li::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6 3.5l4.5 4.5L6 12.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.callout-read::before, .mentions a::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 10h13M11 5l5 5-5 5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.callout-tip::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 2.2a5.8 5.8 0 0 0-3.4 10.5V15h6.8v-2.3A5.8 5.8 0 0 0 10 2.2zM7.4 17.8h5.2' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.callout-note::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='8' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M10 9v5' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3Ccircle cx='10' cy='6.2' r='1.1' fill='black'/%3E%3C/svg%3E"); }
+.callout-warning::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 2.5l8.2 14.5H1.8z' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M10 8v4.2' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3Ccircle cx='10' cy='14.6' r='1.1' fill='black'/%3E%3C/svg%3E"); }
+.pullquote::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'%3E%3Cpath d='M0 24V14C0 6 4 1.5 12 0l1.5 3.5C9 5 7 8 7 11h6v13zm18 0V14c0-8 4-12.5 12-14l1.5 3.5C27 5 25 8 25 11h6v13z' fill='black'/%3E%3C/svg%3E"); }
+[dir="rtl"] :is(.breadcrumbs li + li, .callout-read, .mentions a)::before { transform: scaleX(-1); }
 
-/* One column for reading, wider only when the contents sit beside it. */
-.page, .author, .post:not(.post-with-toc), main > :is(.mentions, .comments, .newsletter-slot, .cta-band),
-main:has(> :is(.post, .page)) > .breadcrumbs { max-inline-size: var(--measure); margin-inline: auto; }
-.post-with-toc { max-inline-size: calc(var(--measure) + 18rem); margin-inline: auto; }
+/* The announcement and the header: one quiet row each, hairlines that run
+   to the edges of the window, the call to action as the one solid button. */
+.announcement { margin-block-end: 0; padding-block: 0.625rem; background: var(--compass-tint); border: 0; box-shadow: 0 0 0 100vmax var(--compass-tint); clip-path: inset(0 -100vmax); font-size: 0.875rem; font-weight: 500; }
+.announcement a { color: var(--color-text); text-decoration-color: color-mix(in oklab, var(--color-accent) 60%, transparent); }
+.site-header { flex-wrap: nowrap; gap: 0.5rem 2rem; padding-block: 0.875rem; border-block-end: 1px solid; border-image: linear-gradient(var(--compass-line), var(--compass-line)) 0 0 1 0 / 0 0 1px 0 / 0 100vmax; }
+.site-name { gap: 0.5rem; font-size: 1.25rem; letter-spacing: -0.01em; }
+.site-name:not(.site-logo)::before { inline-size: 1.5rem; block-size: 1.5rem; color: var(--color-accent); }
+.site-header nav { margin-inline-start: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a { color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); }
+.site-header nav a[aria-current] { color: var(--color-link); font-weight: 600; box-shadow: inset 0 -2px 0 var(--color-accent); }
+.search-link { gap: 0.375rem; color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; white-space: nowrap; }
+.search-link:hover { color: var(--color-link); }
+.search-link::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='8.5' cy='8.5' r='5.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3Cpath d='M12.6 12.6l4.4 4.4' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); inline-size: 1.125rem; block-size: 1.125rem; }
+.site-header nav + .search-link { margin-inline-start: -0.5rem; }
+.button, .subscribe button { justify-content: center; padding-block: 0.625rem; color: var(--color-on-accent); border-radius: var(--compass-pill); line-height: 1.3; text-align: center; }
+.button:hover, .subscribe button:hover { background: color-mix(in oklab, var(--color-accent) 85%, var(--color-text)); }
+.header-button { min-block-size: 2.75rem; padding-inline: 1.125rem; font-size: 0.9375rem; line-height: 1.25; }
+@media (max-width: 55.99rem) {
+  .site-header { flex-wrap: wrap; }
+  .site-header nav { flex-basis: 100%; order: 3; margin: -0.25rem 0 -0.5rem; }
+  .site-header nav ul { gap: 0 1.125rem; }
+  .site-header .search-link { margin-inline-start: auto; }
+}
+/* On a phone the call to action waits for its band on the page, so the
+   header stays one short block. */
+@media (max-width: 39.99rem) { .header-button { display: none; } }
 
-/* Breadcrumbs: a drawn house before the first step. */
-.breadcrumbs li:first-child a::before { content: ""; inline-size: 1rem; block-size: 1rem; margin-inline-end: 0.375rem; background: currentColor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 7.5L8 2l6 5.5M3.5 6.5V14h3.5v-4h2v4h3.5V6.5' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain; }
+/* The footer: one section gap below the last thing on the page, then a
+   pale band to the edges with one row of links. */
+main { padding-block-end: 0; }
+main > :last-child { margin-block-end: 0; }
+.site-footer { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1rem 1.5rem; margin-block-start: var(--space-section); padding-block: 2.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.site-footer > * { grid-column: 2; }
+.site-footer::before { grid-row: 1; align-self: start; inline-size: 2rem; block-size: 2rem; margin-block-start: 0.375rem; color: var(--color-accent); }
+.site-footer nav ul { gap: 0 1.75rem; }
+.site-footer a { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.site-footer a:hover { color: var(--color-link); text-decoration: underline; }
+.site-footer a[aria-current] { color: var(--color-link); }
+.footer-groups h2 { color: var(--color-muted); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
 
-/* The top of a guide: title, author and dates, then the picture. */
-.post-header h1 { margin-block: 0.25em 0.5em; font-size: calc(var(--text-h1) * 1.05); letter-spacing: -0.02em; }
-.post-meta address { color: var(--color-text); font-weight: 600; }
-.post-meta a { font-weight: 600; }
-.post-header .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--compass-tint); border: 1px solid var(--color-border); }
+/* One column for reading: the trail, the guide and what follows it. */
+.page, .post, main:has(> :is(.post, .page)) > :is(.breadcrumbs, .mentions, .comments, .newsletter-slot, .cta-band, .lock) { max-inline-size: var(--measure); margin-inline: auto; }
+.post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
 
-/* The contents, open under an accent rule, then the key points. */
-.toc-box { padding: calc(var(--space) * 2) calc(var(--space) * 2.5); background: var(--color-background); border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); }
-.toc-title { color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-h4); }
-.toc-box a { color: var(--color-text); }
-.toc-box a:hover { color: var(--color-link); }
-.post-body .callout { padding: 1.25rem; }
-.post-body .callout-summary { background: var(--compass-tint); border: 0; border-inline-start: 4px solid var(--color-accent); }
+/* Breadcrumbs: small, muted, joined by drawn chevrons; the page itself is
+   cut short, since its title follows. */
+.breadcrumbs { margin-block: 1.5rem 0; }
+.breadcrumbs ol { flex-wrap: nowrap; align-items: center; gap: 0 0.375rem; min-inline-size: 0; }
+.breadcrumbs li { min-inline-size: 0; display: flex; align-items: center; }
+.breadcrumbs li + li::before { inline-size: 0.875rem; block-size: 0.875rem; margin-inline-end: 0.375rem; color: var(--color-muted); }
+.breadcrumbs a { text-decoration: none; white-space: nowrap; }
+.breadcrumbs a:hover { color: var(--color-link); text-decoration: underline; }
+.breadcrumbs li:last-child { flex: 1; }
+.breadcrumbs li:last-child a { display: block; overflow: hidden; line-height: 44px; text-overflow: ellipsis; color: var(--color-muted); font-weight: 400; }
+@media (max-width: 39.99rem) { .breadcrumbs li:last-child:not(:first-child) { display: none; } }
+
+/* The top of a guide: title, one quiet line of who and when, the picture. */
+.post-header { margin-block-end: 2.5rem; }
+.post-header h1, .page h1 { margin-block: 1rem 1.25rem; font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; }
+.post-header .dek { margin-block: -0.25rem 1.5rem; font-size: 1.25rem; }
+/* Each item has a dot in the gap before it; the row starts one gap early
+   and clips that strip, so a wrapped line never opens with a dot. */
+.post-meta { display: flex; flex-wrap: wrap; align-items: baseline; row-gap: 0.25rem; margin-inline-start: -1.5rem; clip-path: inset(0 0 0 1.5rem); font-size: 0.9375rem; }
+[dir="rtl"] .post-meta { clip-path: inset(0 1.5rem 0 0); }
+.post-meta > :is(p, address) { position: relative; margin: 0; margin-inline-start: 1.5rem; }
+.post-meta > *::before { content: "" / ""; position: absolute; inset-inline-start: -0.875rem; inset-block-start: calc(0.85em - 0.125rem); inline-size: 0.25rem; block-size: 0.25rem; background: var(--color-border); border-radius: 50%; }
+.post-meta a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .people { margin: 0; }
+.post-header .image { margin-block: 2rem 0; }
+.post-header .image img, .card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--compass-tint); border: 1px solid var(--compass-line); border-radius: var(--radius); }
+@media (min-width: 64rem) { .post:not(.post-with-toc) .post-header .image { margin-inline: -3rem; } }
+
+/* The contents: a numbered route, two columns when there is room. */
+.toc-box { margin-block: 0 2.5rem; padding: 1.5rem 1.75rem 1.25rem; background: var(--color-surface); border: 0; border-radius: var(--radius); }
+.toc-box .toc-title { display: flex; align-items: center; gap: 0.5rem; margin-block-end: 0.5rem; color: var(--color-muted); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.toc-box .toc-title::before { inline-size: 1.125rem; block-size: 1.125rem; color: var(--color-accent); }
+.toc-box ol:not(.toc-nested) { list-style: none; padding-inline-start: 0; }
+.toc-box > ol:not([class]) { counter-reset: compass-route; }
+.toc-box > ol > li { break-inside: avoid; }
+.toc-box > ol:not([class]) > li { counter-increment: compass-route; }
+.toc-box > ol > li > a { gap: 0.75rem; align-items: baseline; padding-block: 0.625rem; color: var(--color-text); font-size: 0.9375rem; font-weight: 500; line-height: 1.4; text-decoration: none; }
+.toc-box ol ol { padding-inline-start: 2.25rem; }
+.toc-box ol ol a { color: var(--color-muted); font-size: 0.875rem; }
+.toc-box > ol:not([class]) > li > a::before { content: counter(compass-route, decimal-leading-zero); flex: none; min-inline-size: 1.5rem; color: var(--color-link); font-size: 0.8125rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.toc-box a:hover { color: var(--color-link); text-decoration: underline; }
+@media (min-width: 48rem) { .toc-box > ol { columns: 2; column-gap: 2.5rem; } }
+/* The guide's own contents block repeats the box above it, so it shows
+   only where the box does not. */
+.post:has(.toc-box) .post-body > .toc { display: none; }
+.post-body .toc { padding: 1rem 1.5rem; border-radius: var(--radius); }
+
+/* The words: a calm column with room above each heading. */
+.post-body > h2 { margin-block: 3.5rem 1rem; letter-spacing: -0.015em; }
+.post-body > h3 { margin-block: 2.25rem 0.75rem; }
+.post-body a:not(.heading-link, .button) { text-decoration-color: color-mix(in oklab, var(--color-link) 40%, transparent); }
+.post-body a:not(.heading-link, .button):hover { text-decoration-color: currentColor; }
+.heading-link { font-size: 0.75em; }
+.post-body :is(ul, ol):not([class]) > li + li { margin-block-start: 0.375rem; }
+.post-body ul:not([class]) > li::marker { color: var(--color-accent); }
+
+/* Callouts: a tint, a drawn mark at the start, a size smaller than the
+   text. Each kind has its own mark, so none differs by colour alone. */
+.post-body .callout { position: relative; margin-block: 2rem; padding: 1.25rem 1.5rem; background: var(--compass-tint); border: 0; border-radius: var(--radius); font-size: 0.9688rem; line-height: 1.65; }
+.post-body :is(.callout-tip, .callout-note, .callout-warning, .callout-read) { padding-inline-start: 3.5rem; }
+.callout-tip::before, .callout-note::before, .callout-warning::before, .callout-read::before { position: absolute; inset-inline-start: 1.25rem; inset-block-start: 1.375rem; inline-size: 1.25rem; block-size: 1.25rem; color: var(--color-accent); }
+@media (max-width: 29.99rem) {
+  .post-body .callout { padding: 1rem 1.125rem; }
+  .post-body :is(.callout-tip, .callout-note, .callout-warning, .callout-read) { padding-inline-start: 2.875rem; }
+  .callout-tip::before, .callout-note::before, .callout-warning::before, .callout-read::before { inset-inline-start: 1rem; inset-block-start: 1.125rem; }
+}
+.post-body .callout-note { background: var(--color-surface); }
+.callout-note::before { color: var(--color-muted); }
+.post-body .callout-warning { background: color-mix(in oklab, var(--color-text) 5%, var(--color-background)); font-weight: 500; }
+.callout-warning::before { color: var(--color-text); }
+.post-body .callout-read { background: none; border: 1px solid var(--compass-line); font-weight: 500; }
+.post-body .callout-summary { padding: clamp(1.125rem, 4vw, 1.5rem) clamp(1.125rem, 4vw, 1.75rem); border: 1px solid color-mix(in oklab, var(--color-accent) 22%, var(--color-background)); }
 .callout-summary :is(ul, ol) { padding-inline-start: 0; list-style: none; }
-.callout-summary li { position: relative; padding-inline-start: 1.75rem; }
-.callout-summary li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.3em; inline-size: 1.125rem; block-size: 1.125rem; background: var(--color-accent); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Ccircle cx='9' cy='9' r='8' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M5.2 9.2l2.6 2.6 5-5.4' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / contain; }
-.callout-summary li + li { margin-block-start: calc(var(--space) * 0.75); }
-.post-body .callout-read { padding: 1rem 1.25rem; background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); border: 0; border-inline-start: 4px solid var(--color-accent); border-radius: var(--radius); font-weight: 600; }
-.post-body .callout-tip { background: var(--color-surface); border: 0; }
-.post-body blockquote { padding-block: var(--space); border-inline-start-color: var(--color-accent); color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-h4); font-style: italic; }
-.post-body figure > img, .post-body .image img { border: 1px solid var(--color-border); }
-.post-body .banner { padding: clamp(1.25rem, 4vw, 2.5rem); background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); text-align: center; }
-.post-body h2 { margin-block-start: 2em; }
+.callout-summary li { position: relative; padding-inline-start: 2rem; }
+.callout-summary li + li { margin-block-start: 0.75rem; }
+.callout-summary li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.2em; inline-size: 1.25rem; block-size: 1.25rem; background: var(--color-accent); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='8.8' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M6 10.3l2.7 2.7 5.3-5.8' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain; }
+.post-body .callout-stat { display: grid; padding: clamp(1rem, 4vw, 1.5rem) clamp(1.125rem, 4vw, 1.75rem); background: none; border: 1px solid var(--compass-line); }
+.callout-stat strong:first-child { margin-block-end: 0.25rem; color: var(--color-link); font-size: 2.75rem; font-weight: 800; letter-spacing: -0.03em; }
 
-/* The FAQ: each question opens with a plus and closes with a minus. */
-.faq summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space); list-style: none; }
+/* A pull quote: big words in the heading font under a drawn quote mark. */
+.post-body .pullquote { margin-block: 3rem; padding: 0; border: 0; }
+.pullquote::before { inline-size: 2.25rem; block-size: 1.75rem; margin-block-end: 1rem; color: var(--color-accent); }
+.post-body .pullquote blockquote { font-size: clamp(1.375rem, 1.1rem + 1vw, 1.75rem); font-weight: 700; line-height: 1.3; letter-spacing: -0.015em; }
+.pullquote figcaption { display: flex; align-items: center; gap: 0.75rem; margin-block-start: 1rem; color: var(--color-muted); font-size: 0.9375rem; }
+.pullquote figcaption::before { content: ""; inline-size: 1.5rem; border-block-start: 2px solid var(--color-accent); }
+
+/* Figures and screenshots: matted on the surface with a hairline, so a
+   pale screenshot never melts into the page; the caption under it. */
+.post-body figure:not(.pullquote, .image) { margin-block: 2.25rem; padding: 0.625rem; background: var(--color-surface); border: 1px solid var(--compass-line); border-radius: calc(var(--radius) + 0.25rem); }
+.post-body figure:not(.pullquote) img { background: var(--color-background); border-radius: var(--radius); }
+.post-body figure:not(.pullquote) figcaption { margin: 0; padding: 0.75rem 0.5rem 0.25rem; line-height: 1.5; }
+.post-body figcaption p { margin: 0; }
+
+/* Steps: numbered stops joined by a line, the route through the task. */
+.post-body .howto { counter-reset: compass-step; margin-block: 2rem; padding: 0; list-style: none; }
+.howto > li { counter-increment: compass-step; position: relative; margin: 0; padding-inline-start: 3.25rem; padding-block-end: 1.75rem; }
+.howto > li::before { content: counter(compass-step); position: absolute; inset-inline-start: 0; inset-block-start: 0; display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 50%; font-weight: 700; font-variant-numeric: tabular-nums; }
+.howto > li:not(:last-child)::after { content: ""; position: absolute; inset-inline-start: calc(1.125rem - 1px); inset-block: 2.75rem 0.5rem; inline-size: 2px; background: color-mix(in oklab, var(--color-accent) 25%, var(--color-background)); border-radius: 2px; }
+.howto > li > :last-child { margin-block-end: 0; }
+.howto-step { margin-block: 0.2rem 0.375rem; font-family: var(--font-heading); font-size: 1.1875rem; line-height: 1.35; }
+
+/* Tables and code: inside the column, quiet lines. */
+.post-body table { margin-block: 2rem; border: 1px solid var(--compass-line); border-collapse: separate; border-spacing: 0; border-radius: var(--radius); font-size: 0.9375rem; line-height: 1.5; }
+@media (min-width: 48rem) { .post-body table { display: table; inline-size: 100%; overflow: hidden; } }
+.post-body th { background: var(--color-surface); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.post-body th, .post-body td { padding: 0.75rem 1rem; border-color: var(--compass-line); }
+.post-body tr:last-child > td { border-block-end: 0; }
+.post-body td { font-variant-numeric: tabular-nums; }
+.post-body ol:not([class]) > li::marker { color: var(--color-link); font-weight: 700; }
+.post-body pre { padding: 1.25rem 1.5rem; border: 1px solid var(--compass-line); line-height: 1.6; }
+
+/* The FAQ: questions between hairlines, a plus that turns to a minus. */
+.post-body .faq { margin-block: 1.5rem 2.5rem; border-block-start: 1px solid var(--compass-line); }
+.faq details { border-color: var(--compass-line); }
+.faq summary { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding-block: 1.125rem; font-size: 1.125rem; line-height: 1.4; list-style: none; }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: "+" / ""; color: var(--color-link); font-size: 1.5rem; font-weight: 400; }
+.faq summary::after { content: "+" / ""; display: grid; flex: none; place-items: center; inline-size: 2rem; block-size: 2rem; color: var(--color-link); background: var(--compass-tint); border-radius: 50%; font-size: 1.25rem; font-weight: 500; line-height: 1; }
 .faq details[open] summary::after { content: "\2212" / ""; }
+.faq details > :not(summary) { margin-block: 0 1.25rem; color: var(--color-muted); }
 
-/* After the guide: share links between rules, the author, the newsletter. */
-.post .share { padding-block: calc(var(--space) * 1.5); border-block: 1px solid var(--color-border); }
-.author-box { padding: 1.5rem; background: none; border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); }
-.author-box h2 { color: var(--color-link); font-size: var(--text-h4); }
-.author-box .avatar { inline-size: 4rem; block-size: 4rem; }
-.share a { border-radius: 999px; color: var(--color-text); }
-.share a:hover, .share a:focus-visible { background: var(--compass-tint); }
-.lock { background: var(--compass-tint); border-color: color-mix(in oklab, var(--color-accent) 25%, var(--color-background)); }
-main > .newsletter-slot { padding: calc(var(--space) * 4) 0; background: none; border-block: 1px solid var(--color-border); border-radius: 0; }
+/* After the guide: share links, the author, then the call to action. */
+.post .share { margin-block: 3rem 0; padding-block: 1.25rem; border-block: 1px solid var(--compass-line); }
+.share-title, .author-box h2 { color: var(--color-muted); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.share ul { gap: 0.5rem; }
+.share a { padding-inline: 1rem; color: var(--color-text); border-color: var(--compass-line); border-radius: var(--compass-pill); font-size: 0.875rem; font-weight: 600; }
+.share a:hover, .share a:focus-visible { background: var(--compass-tint); border-color: var(--color-accent); }
+.author-box { margin-block-start: 2.5rem; padding: 0; background: none; border-radius: 0; }
+.author-box h2 { margin-block-end: 1rem; }
+.person-card { gap: 1.25rem; }
+.person-card > picture { flex: none; }
+.reviewed-by a { color: var(--color-text); text-decoration: none; }
+.reviewed-by a:hover { color: var(--color-link); text-decoration: underline; }
+.author-box .avatar { inline-size: 4rem; block-size: 4rem; background: var(--compass-tint); }
+.author-box .person-name { font-size: 1.125rem; }
+.person-name a { color: var(--color-text); text-decoration: none; }
+.person-name a:hover { color: var(--color-link); text-decoration: underline; }
+.author-box .person-role { margin-block: -0.5rem 0.5rem; color: var(--color-muted); font-size: 0.9375rem; }
+.author-box .person-card p:not([class]) { font-size: 0.9688rem; line-height: 1.65; }
+.author-box .reviewed-by { color: var(--color-muted); font-size: 0.9375rem; }
+.post .post-footer h2 { font-size: var(--text-h4); }
+.tags a { background: none; border: 1px solid var(--compass-line); border-radius: var(--compass-pill); color: var(--color-text); font-size: 0.875rem; }
+.lock { color: var(--color-muted); background: var(--color-surface); border: 0; font-size: 0.9375rem; }
+main > .lock { margin-block: 2.5rem; }
+
+/* The call to action and the newsletter: tinted panels over the map grid. */
+.cta-band, .newsletter-band, main > .newsletter-slot { position: relative; isolation: isolate; overflow: hidden; background: var(--compass-tint); border-radius: calc(var(--radius) * 1.5); }
+.cta-band::before, .newsletter-band::before, main > .newsletter-slot::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(var(--compass-grid) 1px, transparent 1px) 0 0 / 1.5rem 1.5rem, linear-gradient(90deg, var(--compass-grid) 1px, transparent 1px) 0 0 / 1.5rem 1.5rem; mask: linear-gradient(to left, currentColor, transparent 65%); }
+[dir="rtl"] :is(.cta-band, .newsletter-band, main > .newsletter-slot)::before { mask: linear-gradient(to right, currentColor, transparent 65%); }
+.cta-band { gap: 1.25rem 2rem; padding: clamp(1.5rem, 4vw, 2.5rem); }
+.cta-note { flex: 1 1 18rem; max-inline-size: 30ch; font-family: var(--font-heading); font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }
+.newsletter-band, main > .newsletter-slot { background: var(--color-surface); border: 1px solid var(--compass-line); }
+.newsletter-band { margin-block-start: var(--space-section); padding: clamp(1.5rem, 5vw, 3rem); }
+.newsletter-band .newsletter-slot { margin: 0 auto; padding: 0; background: none; }
+main > .newsletter-slot { margin-block: var(--space-section); padding: clamp(1.5rem, 4vw, 2.5rem); }
+.newsletter-slot h2 { margin-block-end: 0.5rem; font-size: var(--text-h3); }
+.newsletter-slot > p { color: var(--color-muted); }
+.subscribe { display: flex; flex-wrap: wrap; align-items: end; gap: 0.5rem 0.75rem; }
+.subscribe > p { margin: 0; }
+.subscribe > p:first-child { flex: 1 1 16rem; }
+.subscribe input { border-color: var(--color-border); border-radius: var(--compass-pill); padding-inline: 1.125rem; }
+.subscribe button { padding-inline: 1.5rem; }
+
+/* Posts that link here: two columns of links between hairlines. */
+main > .mentions { margin-block: var(--space-section) 0; }
+.mentions h2 { margin-block-end: 0.75rem; font-size: var(--text-h4); }
+.mentions ul { display: grid; column-gap: 2rem; }
+@media (min-width: 40rem) { .mentions ul { grid-template-columns: 1fr 1fr; } }
+.mentions li { border-block-start: 1px solid var(--compass-line); }
+.mentions a { gap: 0.625rem; inline-size: 100%; padding-block: 0.625rem; color: var(--color-text); font-size: 0.9375rem; font-weight: 500; line-height: 1.4; text-decoration: none; }
+.mentions a::before { inline-size: 1rem; block-size: 1rem; color: var(--color-accent); }
+.mentions a:hover { color: var(--color-link); }
+
 
 /* The front page: the intro, the row of links to its sections. */
 main > h1:first-child { margin-block: -1rem calc(var(--space) * 4); padding-block: calc(var(--space) * 7); background: radial-gradient(circle at 100% 0, color-mix(in oklab, var(--color-accent) 16%, var(--color-background)) 0 18rem, transparent 18rem), var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: calc(var(--text-h1) * 1.15); letter-spacing: -0.03em; }
@@ -98,7 +278,3 @@ main > h1 + .intro { max-inline-size: var(--measure); font-size: var(--text-h4);
 .cards > li:nth-child(even) .card:not(:has(.image))::before { background: repeating-linear-gradient(45deg, transparent 0 0.875rem, color-mix(in oklab, var(--color-accent) 12%, transparent) 0.875rem 1rem), linear-gradient(200deg, var(--color-surface), color-mix(in oklab, var(--color-accent) 16%, var(--color-background))); }
 .card h2, .card h3 { font-size: var(--text-h4); line-height: 1.3; }
 .card-meta > a { color: var(--color-link); font-weight: 700; text-decoration: none; }
-
-/* The newsletter as a band before the footer. */
-.newsletter-band { margin-block-start: var(--space-section); padding: clamp(1.25rem, 5vw, 3rem); background: var(--compass-tint); border-radius: var(--radius); }
-.newsletter-band .newsletter-slot { max-inline-size: var(--measure); margin: 0 auto; padding: 0; background: none; }

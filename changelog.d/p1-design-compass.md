@@ -1,0 +1,2 @@
+Changed
+- The Compass template has a new design, checked in a real browser at 1440, 768, 390 and 320 pixels wide: a calm header and footer, list titles on a pale map panel with a drawn compass, the newest post leading each list, cards with the topic above the title, a numbered contents route, numbered steps joined by a line, a drawn mark for each kind of callout, framed screenshots and tables, and an author page with a profile panel. Its contents are now numbered by default; set `contents_numbers = "none"` for a plain list.
