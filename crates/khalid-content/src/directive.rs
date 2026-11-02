@@ -194,15 +194,29 @@ fn bookmark(attributes: &Attributes) -> Result<BlockKind, BlockError> {
 }
 
 fn embed(attributes: &Attributes) -> Result<BlockKind, BlockError> {
-    attributes.only("embed", &["src", "title"], "src and title")?;
+    attributes.only(
+        "embed",
+        &["src", "title", "height"],
+        "src, title and height",
+    )?;
     let src = attributes.need("src", "an embed needs src, the page of the video or sound")?;
     let title = attributes.need(
         "title",
         "an embed needs title, the name a screen reader says for the player",
     )?;
+    let height = attributes.parsed(
+        "height",
+        |text| {
+            text.parse::<u16>()
+                .ok()
+                .filter(|px| (120..=2000).contains(px))
+        },
+        "an embed's height is the frame's height in pixels, a whole number from 120 to 2000",
+    )?;
     Ok(BlockKind::Embed {
         src: attributes.address("embed", "src", &src)?,
         title,
+        height,
     })
 }
 

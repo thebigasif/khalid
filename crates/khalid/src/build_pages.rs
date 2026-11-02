@@ -8,8 +8,7 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_content::{
-    AuthorFront, Document, Gated, PostFront, Rendered, SiteContent, Wikilinks, render_gated,
-    render_linked,
+    AuthorFront, Document, Gated, PostFront, Rendered, SiteContent, Wikilinks, render_framed,
 };
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
 use khalid_render::{
@@ -204,9 +203,7 @@ fn post_pages(
         let gated = Gated::Locked {
             back: back.as_deref(),
         };
-        let mut rendered = render_gated(&doc.body, &doc.locale, config.slugs(), links, gated)
-            .map_err(|error| build_message::block(&doc.path, &error))?;
-        rendered.html = build_seo::with_link_policy(config, mem::take(&mut rendered.html));
+        let rendered = rendered(config, links, doc, gated)?;
         drafts.push(Draft {
             doc,
             date,
@@ -407,7 +404,7 @@ pub(crate) fn routed(
 
 /// A document's body as HTML, with raw HTML escaped, maths drawn as `MathML`
 /// and each wikilink a link to the page `links` gives it, by
-/// `khalid_content::render_linked`, and each link given the site's link
+/// `khalid_content::render_framed`, and each link given the site's link
 /// policy. `main` has checked every wikilink reaches a page, so none falls
 /// back to plain text.
 pub(crate) fn body_html<F>(
@@ -415,11 +412,25 @@ pub(crate) fn body_html<F>(
     links: &Wikilinks,
     doc: &Document<F>,
 ) -> Result<BodyHtml, UserMessage> {
-    render_linked(&doc.body, &doc.locale, config.slugs(), links)
-        .map(|rendered| {
-            BodyHtml::from_sanitised(build_seo::with_link_policy(config, rendered.html))
-        })
-        .map_err(|error| build_message::block(&doc.path, &error))
+    let rendered = rendered(config, links, doc, Gated::Locked { back: None })?;
+    Ok(BodyHtml::from_sanitised(rendered.html))
+}
+
+/// A document's body rendered with its gated blocks as `gated` says, the
+/// pages of the domains `[media] embed_domains` allows in frames, and
+/// each link given the site's link policy.
+fn rendered<F>(
+    config: &Config,
+    links: &Wikilinks,
+    doc: &Document<F>,
+    gated: Gated<'_>,
+) -> Result<Rendered, UserMessage> {
+    let frames = &config.media().embed_domains;
+    let slugs = config.slugs();
+    let mut rendered = render_framed(&doc.body, &doc.locale, slugs, links, gated, frames)
+        .map_err(|error| build_message::block(&doc.path, &error))?;
+    rendered.html = build_seo::with_link_policy(config, mem::take(&mut rendered.html));
+    Ok(rendered)
 }
 
 /// The head of a page at `path`, indexable, with no alternates yet.

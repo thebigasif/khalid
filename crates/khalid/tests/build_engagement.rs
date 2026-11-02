@@ -94,3 +94,20 @@ fn build_draws_a_chart_from_the_csv_file_beside_its_post() {
         "the post's file is never changed"
     );
 }
+
+#[test]
+fn build_frames_a_page_only_on_a_domain_the_site_allows() {
+    let temp = tempfile::tempdir().unwrap();
+    let body = "Try it, as [the home page](/) says.\n\n\
+                ::embed{src=\"https://tools.example.com/roi\" title=\"ROI calculator\" height=\"600\"}\n\n\
+                ::embed{src=\"https://other.example.com/roi\" title=\"Another tool\"}\n";
+    post(temp.path(), "roi", body, &[]);
+    let settings = "\n[media]\nembed_domains = [\"tools.example.com\"]\n";
+    let page = built(temp.path(), settings, "roi/index.html");
+    let frame = "<iframe src=\"https://tools.example.com/roi\" title=\"ROI calculator\" width=\"560\" height=\"600\" loading=\"lazy\"";
+    assert!(page.contains(frame), "{page}");
+    let sandbox = "sandbox=\"allow-scripts allow-same-origin allow-forms allow-popups\"";
+    assert!(page.contains(sandbox), "{page}");
+    let link = "<p class=\"bookmark\"><a href=\"https://other.example.com/roi\"";
+    assert!(page.contains(link), "{page}");
+}

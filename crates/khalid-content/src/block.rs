@@ -103,14 +103,16 @@ pub enum BlockKind {
         /// The page's preview image.
         image: Option<AbsoluteUrl>,
     },
-    /// `::embed{src="..." title="..."}`: a player from one of the
-    /// [`EMBED_PROVIDERS`](crate::EMBED_PROVIDERS) in a frame, or a plain link
-    /// for any other address.
+    /// `::embed{src="..." title="..." height="..."}`: a player from one of
+    /// the [`EMBED_PROVIDERS`](crate::EMBED_PROVIDERS) or a page on a domain
+    /// the site allows in a frame, or a plain link for any other address.
     Embed {
         /// The page a writer pasted, such as a video's page.
         src: AbsoluteUrl,
         /// The name a screen reader says for the player.
         title: String,
+        /// The frame's height in pixels for an allowed site's page.
+        height: Option<u16>,
     },
     /// `::video{src="..." title="..." poster="..."}`: a video file with
     /// controls, which search engines read as a `VideoObject`.

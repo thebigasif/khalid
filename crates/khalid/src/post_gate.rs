@@ -4,7 +4,7 @@
 //! which `khalid serve` sends only to a reader with the reader cookie (ADR
 //! "gated content opens with a signed reader cookie").
 
-use khalid_content::{Gated, SiteContent, Wikilinks, render_gated};
+use khalid_content::{Gated, SiteContent, Wikilinks, render_framed};
 use khalid_core::{Config, UserMessage};
 use khalid_render::{BodyHtml, PageBody, ReadingTime};
 use khalid_routes::Routes;
@@ -60,8 +60,11 @@ pub(crate) fn open(
             let links = links.get_or_insert_with(|| {
                 Wikilinks::for_language(content, config, routes, &site.locale)
             });
-            let rendered = render_gated(&doc.body, &doc.locale, config.slugs(), links, Gated::Open)
-                .map_err(|error| build_message::block(&doc.path, &error))?;
+            let frames = &config.media().embed_domains;
+            let open = Gated::Open;
+            let rendered =
+                render_framed(&doc.body, &doc.locale, config.slugs(), links, open, frames)
+                    .map_err(|error| build_message::block(&doc.path, &error))?;
             let parts = build_seo::with_link_policy(config, rendered.html);
             let Some(html) = opened(post.body.as_str(), &parts) else {
                 continue;
