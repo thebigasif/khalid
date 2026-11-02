@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendar · Khalid admin mockup</title>
+<style>
+/* The content calendar, as admin/src/calendar/ and the calendar rules in admin/src/styles/app.css draw it. */
+*{box-sizing:border-box}
+:root{color-scheme:light;--app:#f7f8fa;--bg:#fff;--surface:#f2f4f7;--text:#1b1f24;--muted:#59636e;--link:#0b57d0;--border:#e3e6ea;--field:#7d8590;--tint:#e8effb;--tint-line:#c7d8f6;--ok:#1a7f37;--ok-bg:#edfaf0;--warn:#8a4b00;--warn-bg:#fff8eb;--radius:.5rem;--card:0 1px 2px rgb(16 24 40 / .04);--raised:0 1px 2px rgb(16 24 40 / .06),0 1px 3px rgb(16 24 40 / .08)}
+html{background:var(--app);color:var(--text);font:400 1rem/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;font-size:.875rem;line-height:1.55}
+@media (max-width:40em){body{font-size:.9375rem}}
+a{color:var(--link);text-underline-offset:.15em}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.icon{width:1rem;height:1rem;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.app{display:grid;grid-template-columns:minmax(0,1fr);min-height:100vh}
+@media (min-width:60em){.app{grid-template-columns:15rem minmax(0,1fr)}}
+.side{display:none;flex-direction:column;gap:1.25rem;padding:.75rem .5rem 1.5rem;background:var(--bg);border-right:1px solid var(--border)}
+@media (min-width:60em){.side{display:flex;position:sticky;top:0;height:100vh}}
+.brand{display:flex;align-items:center;gap:.625rem;padding:.25rem .5rem;min-height:2.5rem;color:var(--text);font-weight:600;text-decoration:none}
+.initial{display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:6px;background:var(--link);color:#fff}
+.label{margin:0 0 .25rem;padding:0 .75rem;color:var(--muted);font-size:.75rem;font-weight:500}
+.side ul{display:grid;gap:1px;list-style:none;margin:0;padding:0}
+.side ul a{display:flex;align-items:center;gap:.625rem;min-height:2rem;padding:.375rem .75rem;border-radius:6px;color:var(--text);font-weight:500;text-decoration:none}
+.side ul a .icon{color:var(--muted)}
+.side ul a[aria-current]{background:var(--tint);color:var(--link)}
+.side ul a[aria-current] .icon{color:var(--link)}
+.top{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:.5rem;min-height:3.5rem;padding:.5rem 1rem;background:var(--bg);border-bottom:1px solid var(--border)}
+.crumb{margin:0;font-weight:500}.crumb span{color:var(--muted)}
+main{max-width:72rem;margin:0 auto;padding:1.5rem 1rem 3rem}
+@media (min-width:40em){main{padding:2rem 2rem 4rem}}
+h1{font-size:1.5rem;line-height:1.25;font-weight:600;letter-spacing:-.015em;margin:0 0 .25rem}
+h2{font-size:1rem;line-height:1.4;font-weight:600;margin:0 0 .5rem}
+.lede{color:var(--muted);max-width:68ch;font-size:.9375rem;margin:0}
+.hint{display:block;color:var(--muted);font-size:.8125rem;margin:0 0 .25rem}
+.page-head{display:flex;flex-wrap:wrap;gap:1rem 1.5rem;align-items:flex-end;justify-content:space-between;margin:0 0 1.5rem}
+.page-head>div:first-child{flex:1 1 24rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.25rem;padding:.375rem .875rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font:500 .875rem/1.4 inherit;box-shadow:var(--card);cursor:pointer}
+.btn.primary{background:var(--link);border-color:var(--link);color:#fff;box-shadow:var(--raised)}
+@media (pointer:coarse){.btn{min-height:44px}}
+.switch{display:inline-flex;gap:2px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:2px}
+.switch button{min-height:2rem;padding:.375rem .875rem;border:0;border-radius:6px;background:transparent;color:var(--muted);font:500 .875rem/1.4 inherit}
+.switch button[aria-pressed="true"]{background:var(--bg);color:var(--text);box-shadow:var(--raised)}
+.bar{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;align-items:center;justify-content:space-between;padding:0 0 1rem;margin:0 0 1rem;border-bottom:1px solid var(--border)}
+.bar .buttons{display:flex;flex-wrap:wrap;gap:.5rem}
+.month-title{margin:0;font-size:1.125rem}
+.done{border:1px solid #c3ebcd;background:var(--ok-bg);border-radius:var(--radius);padding:.75rem 1rem;margin:0 0 1.25rem;max-width:40rem}
+.scroll{overflow-x:auto;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--card)}
+table{border-collapse:collapse;width:100%;background:var(--bg)}
+th,td{text-align:left;padding:.625rem .75rem;border-bottom:1px solid var(--border)}
+thead th{font-size:.75rem;color:var(--muted);font-weight:500;background:var(--app)}
+abbr{text-decoration:none}
+tbody tr:last-child>*{border-bottom:0}
+.calendar-layout{display:grid;gap:1.5rem;align-items:start}
+@media (min-width:75em){.calendar-layout{grid-template-columns:minmax(0,1fr) 17rem}}
+table.month{table-layout:fixed;min-width:42rem}
+table.month th{text-align:center}
+table.month td{height:7.5rem;padding:.375rem;vertical-align:top;border-right:1px solid var(--border)}
+table.month td:last-child{border-right:0}
+table.month td[data-outside]{background:var(--app)}
+table.month td[data-outside] .month-date{color:var(--muted);font-weight:400}
+table.month td[data-today] .month-date{background:var(--link);color:#fff}
+.month-date{display:inline-grid;place-items:center;min-width:1.625rem;height:1.625rem;margin:0 0 .25rem;border-radius:999px;font-size:.8125rem;font-weight:600;font-variant-numeric:tabular-nums}
+.month ul,.drafts ul{display:grid;gap:.25rem;list-style:none;margin:0;padding:0}
+.chip{display:grid;gap:.125rem;min-width:0;padding:.25rem .5rem;border:1px solid var(--border);border-left-width:3px;border-radius:6px;background:var(--bg);font-size:.8125rem;line-height:1.35}
+.chip a{flex:1 1 auto;min-width:0;color:var(--text);font-weight:500;text-decoration:none;overflow-wrap:break-word;hyphens:auto}
+.chip time{color:var(--muted);font-size:.75rem;font-variant-numeric:tabular-nums}
+.chip-published{border-left-color:var(--ok)}
+.chip-scheduled{border-left-color:var(--link);background:var(--tint)}
+.chip-draft{border-left-color:var(--warn);background:var(--warn-bg)}
+.legend{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;grid-column:1/-1;list-style:none;margin:0;padding:0;color:var(--muted);font-size:.8125rem}
+.legend li{display:flex;align-items:center;gap:.375rem}
+:where(.chip-key){width:.875rem;height:.875rem;border:1px solid var(--border);border-left-width:3px;border-radius:3px}
+.drafts{padding:1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);box-shadow:var(--card)}
+.drafts li{display:grid;gap:.5rem;padding:.625rem 0;border-bottom:1px solid var(--border)}
+.drafts li:last-child{border-bottom:0;padding-bottom:0}
+.drafts .btn{justify-self:start}
+.day-form{display:grid;gap:.5rem}
+.day-form label{font-weight:500}
+.day-form input{width:100%;min-height:2.25rem;padding:.375rem .75rem;border:1px solid var(--field);border-radius:var(--radius);font:inherit}
+.day-form .buttons{display:flex;flex-wrap:wrap;gap:.75rem}
+@media (max-width:40em){
+  table.month,table.month tbody,table.month tr,table.month td{display:block;min-width:0}
+  table.month thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .scroll{background:none;border:0;box-shadow:none}
+  table.month td{height:auto;margin:0 0 .5rem;padding:.625rem .75rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg)}
+  table.month td:not(:has(li)):not([data-today]){display:none}
+  table.month td::before{content:attr(data-label);display:block;margin:0 0 .375rem;font-size:.875rem;font-weight:600;color:var(--muted)}
+  table.month .month-date{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="side" aria-label="Admin">
+    <a class="brand" href="#"><span class="initial">L</span><span>Larkspur Ledger</span></a>
+    <div>
+      <p class="label">Write</p>
+      <ul>
+        <li><a href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Dashboard</a></li>
+        <li><a href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h6"/></svg>Posts</a></li>
+        <li><a href="#" aria-current="page"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg>Calendar</a></li>
+        <li><a href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 16l5-5 4 4 2-2 5 5"/></svg>Media</a></li>
+        <li><a href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Comments</a></li>
+        <li><a href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Trash</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div>
+    <header class="top"><p class="crumb"><span>Write /</span> Calendar</p></header>
+    <main>
+      <div class="page-head">
+        <div>
+          <h1>Calendar</h1>
+          <p class="lede">Every scheduled and live post on the day it goes live, and every draft on the day planned for it. Drag a draft onto a day, or use its Schedule button, to publish it that day at 12:00.</p>
+        </div>
+        <div class="switch" role="group" aria-label="Show the calendar as"><button type="button" aria-pressed="true">Month</button><button type="button" aria-pressed="false">List</button></div>
+      </div>
+      <div class="bar">
+        <h2 id="month-title" class="month-title">November 2026</h2>
+        <div class="buttons"><button class="btn" type="button">Previous month</button><button class="btn" type="button">This month</button><button class="btn" type="button">Next month</button></div>
+      </div>
+      <p class="done" role="status">Choosing anchor text is scheduled for 12 November 2026 at 12:00.</p>
+      <div class="calendar-layout">
+        <ul class="legend" aria-label="What the colours mean"><li><span class="chip-key chip-published" aria-hidden="true"></span>Live</li><li><span class="chip-key chip-scheduled" aria-hidden="true"></span>Scheduled</li><li><span class="chip-key chip-draft" aria-hidden="true"></span>Draft</li></ul>
+        <div class="scroll">
+          <table class="month" aria-labelledby="month-title">
+            <thead><tr><th scope="col"><abbr title="Monday">Mon</abbr></th><th scope="col"><abbr title="Tuesday">Tue</abbr></th><th scope="col"><abbr title="Wednesday">Wed</abbr></th><th scope="col"><abbr title="Thursday">Thu</abbr></th><th scope="col"><abbr title="Friday">Fri</abbr></th><th scope="col"><abbr title="Saturday">Sat</abbr></th><th scope="col"><abbr title="Sunday">Sun</abbr></th></tr></thead>
+            <tbody>
+              <tr>
+                <td data-outside data-label="26 October 2026"><span class="month-date">26</span></td>
+                <td data-outside data-label="27 October 2026"><span class="month-date">27</span></td>
+                <td data-outside data-label="28 October 2026"><span class="month-date">28</span></td>
+                <td data-outside data-label="29 October 2026"><span class="month-date">29</span><ul><li><span class="chip chip-published"><a href="#">Where AI search finds its sources</a><time>09:30</time></span></li></ul></td>
+                <td data-outside data-label="30 October 2026"><span class="month-date">30</span></td>
+                <td data-outside data-label="31 October 2026"><span class="month-date">31</span></td>
+                <td data-label="1 November 2026"><span class="month-date">1</span></td>
+              </tr>
+              <tr>
+                <td data-label="2 November 2026"><span class="month-date">2</span></td>
+                <td data-label="3 November 2026"><span class="month-date">3</span><ul><li><span class="chip chip-published"><a href="#">Why internal links matter</a><time>09:30</time></span></li></ul></td>
+                <td data-label="4 November 2026"><span class="month-date">4</span></td>
+                <td data-label="5 November 2026"><span class="month-date">5</span></td>
+                <td data-label="6 November 2026"><span class="month-date">6</span><ul><li><span class="chip chip-published"><a href="#">How to write a meta description</a><time>10:00</time></span></li></ul></td>
+                <td data-label="7 November 2026"><span class="month-date">7</span></td>
+                <td data-label="8 November 2026"><span class="month-date">8</span></td>
+              </tr>
+              <tr>
+                <td data-label="9 November 2026"><span class="month-date">9</span></td>
+                <td data-today data-label="10 November 2026, today"><span class="month-date">10</span></td>
+                <td data-label="11 November 2026"><span class="month-date">11</span></td>
+                <td data-label="12 November 2026"><span class="month-date">12</span><ul><li><span class="chip chip-scheduled"><a href="#">Choosing anchor text</a><time>12:00</time></span></li></ul></td>
+                <td data-label="13 November 2026"><span class="month-date">13</span></td>
+                <td data-label="14 November 2026"><span class="month-date">14</span></td>
+                <td data-label="15 November 2026"><span class="month-date">15</span></td>
+              </tr>
+              <tr>
+                <td data-label="16 November 2026"><span class="month-date">16</span></td>
+                <td data-label="17 November 2026"><span class="month-date">17</span><ul><li><span class="chip chip-scheduled"><a href="#">A content brief template</a><time>12:00</time></span></li><li><span class="chip chip-draft"><a href="#">Planning a topic cluster</a></span></li></ul></td>
+                <td data-label="18 November 2026"><span class="month-date">18</span></td>
+                <td data-label="19 November 2026"><span class="month-date">19</span></td>
+                <td data-label="20 November 2026"><span class="month-date">20</span><ul><li><span class="chip chip-scheduled"><a href="#">Core Web Vitals in plain words</a><time>12:00</time></span></li></ul></td>
+                <td data-label="21 November 2026"><span class="month-date">21</span></td>
+                <td data-label="22 November 2026"><span class="month-date">22</span></td>
+              </tr>
+              <tr>
+                <td data-label="23 November 2026"><span class="month-date">23</span></td>
+                <td data-label="24 November 2026"><span class="month-date">24</span></td>
+                <td data-label="25 November 2026"><span class="month-date">25</span></td>
+                <td data-label="26 November 2026"><span class="month-date">26</span><ul><li><span class="chip chip-draft"><a href="#">The content refresh checklist</a></span></li></ul></td>
+                <td data-label="27 November 2026"><span class="month-date">27</span></td>
+                <td data-label="28 November 2026"><span class="month-date">28</span></td>
+                <td data-label="29 November 2026"><span class="month-date">29</span></td>
+              </tr>
+              <tr>
+                <td data-label="30 November 2026"><span class="month-date">30</span></td>
+                <td data-outside data-label="1 December 2026"><span class="month-date">1</span><ul><li><span class="chip chip-scheduled"><a href="#">Measuring content ROI</a><time>12:00</time></span></li></ul></td>
+                <td data-outside data-label="2 December 2026"><span class="month-date">2</span></td>
+                <td data-outside data-label="3 December 2026"><span class="month-date">3</span></td>
+                <td data-outside data-label="4 December 2026"><span class="month-date">4</span></td>
+                <td data-outside data-label="5 December 2026"><span class="month-date">5</span></td>
+                <td data-outside data-label="6 December 2026"><span class="month-date">6</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <section class="drafts" aria-labelledby="drafts-title">
+          <h2 id="drafts-title">Drafts to schedule</h2>
+          <p class="hint">Drag one onto a day, or press Schedule and pick the day. Publishing checks the post first, so one the checks block stays a draft.</p>
+          <ul>
+            <li><span class="chip chip-draft"><a href="#">Writing headlines that earn the click</a></span>
+              <form class="day-form" aria-label="Schedule Writing headlines that earn the click">
+                <label for="day">Day it goes live</label>
+                <span class="hint" id="day-hint">It goes live at 12:00 that day, in your time zone.</span>
+                <input id="day" type="date" min="2026-11-10" value="2026-11-24" aria-describedby="day-hint">
+                <div class="buttons"><button class="btn primary" type="submit">Schedule it</button><button class="btn" type="button">Cancel</button></div>
+              </form>
+            </li>
+            <li><span class="chip chip-draft"><a href="#">Search intent, explained with examples</a></span><button class="btn" type="button">Schedule</button></li>
+            <li><span class="chip chip-draft"><a href="#">Planning a topic cluster</a></span><button class="btn" type="button">Schedule</button></li>
+            <li><span class="chip chip-draft"><a href="#">The content refresh checklist</a></span><button class="btn" type="button">Schedule</button></li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

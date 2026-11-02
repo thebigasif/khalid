@@ -81,6 +81,14 @@ export function Calendar() {
   } else if (isData(calendar)) {
     shown = (
       <div className="calendar-layout">
+        <ul className="legend" aria-label={words.legend}>
+          {(["published", "scheduled", "draft"] as const).map((status) => (
+            <li key={status}>
+              <span className={`chip-key chip-${status}`} aria-hidden="true" />
+              {en.status[status]}
+            </li>
+          ))}
+        </ul>
         <MonthGrid
           month={month}
           today={today}

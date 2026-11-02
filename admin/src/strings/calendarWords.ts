@@ -7,6 +7,7 @@ export const calendarWords = {
   lede: "Every scheduled and live post on the day it goes live, and every draft on the day planned for it. Drag a draft onto a day, or use its Schedule button, to publish it that day at 12:00.",
   loading: "Reading the calendar",
   views: "Show the calendar as",
+  legend: "What the colours mean",
   month: "Month",
   list: "List",
   previous: "Previous month",
