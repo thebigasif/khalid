@@ -4,7 +4,6 @@
 //! picks, and posts that open with an "On this page" box and end with two
 //! sets of further reading.
 
-
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 

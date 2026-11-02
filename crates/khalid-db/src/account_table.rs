@@ -68,7 +68,7 @@ impl AccountTable {
 
     async fn find_by_email_now(&self, email: &Email) -> Result<Option<StoredAccount>, DbError> {
         let row = sqlx::query(
-            "SELECT id, email, name, role, password_hash FROM users WHERE site_id = ?1 AND email = ?2",
+            "SELECT id, email, name, role, password_hash, author FROM users WHERE site_id = ?1 AND email = ?2",
         )
         .bind(self.site.as_row())
         .bind(email.as_str())
@@ -79,7 +79,7 @@ impl AccountTable {
 
     async fn find_now(&self, id: AccountId) -> Result<Option<Account>, DbError> {
         let row = sqlx::query(
-            "SELECT id, email, name, role, password_hash FROM users WHERE site_id = ?1 AND id = ?2",
+            "SELECT id, email, name, role, password_hash, author FROM users WHERE site_id = ?1 AND id = ?2",
         )
         .bind(self.site.as_row())
         .bind(id.as_row())
@@ -91,7 +91,7 @@ impl AccountTable {
 
     async fn list_now(&self) -> Result<Vec<Account>, DbError> {
         let rows = sqlx::query(
-            "SELECT id, email, name, role, password_hash FROM users WHERE site_id = ?1 ORDER BY email",
+            "SELECT id, email, name, role, password_hash, author FROM users WHERE site_id = ?1 ORDER BY email",
         )
         .bind(self.site.as_row())
         .fetch_all(&self.db.readers)
@@ -167,7 +167,8 @@ fn stored(row: &SqliteRow) -> Result<StoredAccount, DbError> {
         email,
         row.try_get("name")?,
         role,
-    );
+    )
+    .with_author(row.try_get("author")?);
     Ok(StoredAccount { account, password })
 }
 
@@ -227,6 +228,15 @@ impl AccountStore for AccountTable {
     ) -> BoxFuture<'a, Result<bool, AccountStoreError>> {
         let sql = "UPDATE users SET password_hash = ?3 WHERE site_id = ?1 AND id = ?2";
         Box::pin(async move { Ok(self.change(sql, id, hash.as_str()).await?) })
+    }
+
+    fn set_author<'a>(
+        &'a self,
+        id: AccountId,
+        author: &'a str,
+    ) -> BoxFuture<'a, Result<bool, AccountStoreError>> {
+        let sql = "UPDATE users SET author = ?3 WHERE site_id = ?1 AND id = ?2";
+        Box::pin(async move { Ok(self.change(sql, id, author).await?) })
     }
 
     fn remove(&self, id: AccountId) -> BoxFuture<'_, Result<bool, AccountStoreError>> {

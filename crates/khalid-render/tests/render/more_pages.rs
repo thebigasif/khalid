@@ -50,7 +50,10 @@ fn author_page_in_english() {
 #[test]
 fn an_author_page_says_why_to_trust_them_and_where_else_they_are() {
     let page = render(&PageBody::Author(Box::new(lena())), "en");
-    assert!(page.contains("<p class=\"author-count\">12 posts</p>"), "{page}");
+    assert!(
+        page.contains("<p class=\"author-count\">12 posts</p>"),
+        "{page}"
+    );
     assert!(page.contains("<strong>Experience</strong> Ten years running crawls"));
     // Each known profile draws its icon, with its name beside it, rel="me".
     assert!(page.contains("rel=\"me\" class=\"profile-mastodon\"><svg class=\"icon\""));

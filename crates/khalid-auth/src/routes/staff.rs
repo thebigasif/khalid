@@ -80,7 +80,9 @@ pub(super) async fn list_staff(
 }
 
 /// Invites a person with a role the caller may manage. They have no
-/// password until they choose one.
+/// password until they choose one. When the site keeps author profiles,
+/// the account writes as the one named after the person, made when no
+/// profile has that name's slug.
 #[utoipa::path(
     post, path = "/staff/", tag = "staff",
     security(("staff_session" = []), ("admin_key" = [])),
@@ -114,7 +116,11 @@ pub(super) async fn invite(
     }
     let now = accounts.clock().now();
     match accounts.store().create(&email, name, role, now).await {
-        Ok(account) => Ok((StatusCode::CREATED, Json(StaffList::of(&account)))),
+        Ok(account) => {
+            // The new person gets a byline and an author page from the start.
+            let account = accounts.link_author(account).await;
+            Ok((StatusCode::CREATED, Json(StaffList::of(&account))))
+        }
         Err(CreateAccountError::Unavailable { source }) => Err(Problem::internal(&source)),
         Err(_) => Err(taken()),
     }

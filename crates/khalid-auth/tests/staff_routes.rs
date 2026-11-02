@@ -8,18 +8,29 @@ use axum::body::{Body, to_bytes};
 use axum::http::{Request, StatusCode};
 use chrono::{TimeZone, Utc};
 use khalid_api::api;
-use khalid_api::content_store::MemoryContentStore;
+use khalid_api::content_store::{BoxFuture, MemoryContentStore};
 use khalid_api::keys::{MemoryKeyStore, Role};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_auth::{
-    AccountStore, Accounts, MemoryAccounts, MemorySessions, Password, PasswordHashing, may_assign,
-    may_manage, staff_routes,
+    AccountStore, Accounts, AuthorProfiles, MemoryAccounts, MemorySessions, Password,
+    PasswordHashing, may_assign, may_manage, staff_routes,
 };
 use khalid_core::FixedClock;
 use serde_json::{Value, json};
 use tower::ServiceExt;
 
 const PASSWORD: &str = "correct horse battery";
+
+/// Author profiles named by lowercasing a name and joining its words, in
+/// English, except for "Nobody", who cannot have one.
+struct Profiles;
+
+impl AuthorProfiles for Profiles {
+    fn profile_for<'a>(&'a self, name: &'a str) -> BoxFuture<'a, Option<String>> {
+        let slug = name.to_lowercase().replace(' ', "-");
+        Box::pin(async move { (name != "Nobody").then(|| format!("en.{slug}")) })
+    }
+}
 
 /// A site with one account per role, each with the same password.
 #[cfg(test)]
@@ -41,7 +52,8 @@ async fn router() -> Router {
         Arc::new(MemorySessions::new()),
         hashing,
         Arc::new(FixedClock::new(at)),
-    );
+    )
+    .with_author_profiles(Arc::new(Profiles));
     let (router, _) = api::router_with_staff(
         Arc::new(MemoryContentStore::new(Vec::new())),
         Arc::new(MemoryPostStore::default()),
@@ -115,6 +127,29 @@ async fn each_role_invites_exactly_the_roles_it_may_manage() {
             assert_eq!(status, want, "{actor:?} inviting {target:?}: {json}");
         }
     }
+}
+
+#[tokio::test]
+async fn an_invited_person_writes_as_the_author_profile_named_after_them() {
+    let router = router().await;
+    let session = sign_in(&router, Role::Owner).await;
+    let mara = json!({ "email": "mara@example.com", "name": "Mara Lind", "role": "editor" });
+    let (status, json) = send(
+        &router,
+        as_staff("POST", "/api/admin/v1/staff/", &session, Some(mara)),
+    )
+    .await;
+    assert_eq!(status, StatusCode::CREATED, "{json}");
+    assert_eq!(json["staff"][0]["author"], "en.mara-lind");
+    // Without a profile the account is still made, with no author yet.
+    let nobody = json!({ "email": "nobody@example.com", "name": "Nobody", "role": "writer" });
+    let (status, json) = send(
+        &router,
+        as_staff("POST", "/api/admin/v1/staff/", &session, Some(nobody)),
+    )
+    .await;
+    assert_eq!(status, StatusCode::CREATED, "{json}");
+    assert_eq!(json["staff"][0]["author"], Value::Null);
 }
 
 #[tokio::test]
