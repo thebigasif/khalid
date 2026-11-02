@@ -92,10 +92,12 @@ fn collect(
     }
     files.insert(0, file("sitemap.xml", index.to_xml()));
     files.push(file("robots.txt", RobotsTxt::for_site(site)?.to_string()));
-    files.push(file(
-        "llms.txt",
-        LlmsTxt::for_site(site, pages)?.to_string(),
-    ));
+    if site.llms_txt.enabled {
+        files.push(file(
+            "llms.txt",
+            LlmsTxt::for_site(site, pages)?.to_string(),
+        ));
+    }
     for language in &site.languages {
         let feed = Feed::for_pages(site, pages, &FeedScope::language(language.clone()), now)?;
         let folder = prefix(site, language);

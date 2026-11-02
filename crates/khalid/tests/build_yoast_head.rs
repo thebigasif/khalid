@@ -103,11 +103,25 @@ fn author_and_date_archives_switched_off_are_not_built_and_redirect_home() {
 }
 
 #[test]
-fn robots_txt_takes_extra_lines() {
-    let site = site("\n[seo.crawlers]\nextra_lines = [\"Crawl-delay: 5\"]\n");
+fn robots_txt_and_llms_txt_follow_their_settings() {
+    let site = site(
+        "\n[seo.crawlers]\nextra_lines = [\"Crawl-delay: 5\"]\n\n\
+         [seo.llms_txt]\nintro = \"Two people write Field Notes.\"\npages = [\"/post-2/\"]\n\
+         exclude = [\"/news/\"]\n",
+    );
     build(&site);
     let robots = file(&site, "robots.txt").unwrap();
     assert!(robots.contains("Crawl-delay: 5\n"), "{robots}");
+    let llms = file(&site, "llms.txt").unwrap();
+    assert!(llms.contains("Two people write Field Notes."), "{llms}");
+    assert!(
+        llms.contains("## Key pages\n\n- [Post 2](https://www.example.com/blog/post-2/)"),
+        "{llms}"
+    );
+    assert!(!llms.contains("Launch day"), "{llms}");
+    let off = self::site("\n[seo.llms_txt]\noff = true\n");
+    build(&off);
+    assert!(file(&off, "llms.txt").is_none());
 }
 
 #[test]

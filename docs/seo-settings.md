@@ -109,3 +109,14 @@ share_labels = false
 | `allow`, `block` | none | Crawlers allowed or blocked by name, such as `GPTBot`. |
 | `disallow_search` | `true` | Keeps crawlers off the search page, so they do not spend their visits on endless result pages. |
 | `extra_lines` | none | Lines added as written, after the rules and before the sitemap, such as `Crawl-delay: 5`. Each must be one line. |
+
+## llms.txt
+
+`llms.txt` is a short guide to the site for language models. `[seo.llms_txt]` shapes it.
+
+| Key | Default | What it does |
+|---|---|---|
+| `off` | `false` | `true` stops writing the file. |
+| `intro` | none | Text after the tagline, such as who writes the site and how to cite it. |
+| `pages` | none | Paths listed first, under "Key pages", in the order given, such as `["/about/"]`. |
+| `exclude` | none | Paths left out, with every page below them, such as `["/tag/"]`. |

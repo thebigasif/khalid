@@ -68,7 +68,7 @@ pub use html_sitemap::{HtmlSitemap, HtmlSitemapGroup, HtmlSitemapLink};
 pub use indexnow::{IndexNow, KeyFile, Submission};
 pub use indexnow_send::{Retries, SendIndexNowError, Sent};
 pub use link_policy::{Domain, LinkAttributes, LinkPolicy, LinkRel, LinkTarget};
-pub use llms_txt::{LlmsTxt, llms_txt_url};
+pub use llms_txt::{LlmsTxt, LlmsTxtOptions, llms_txt_url};
 pub use meta_template::MetaTemplate;
 pub use meta_templates::{MetaTemplates, TemplatePair};
 pub use news_sitemap::{NewsEntry, NewsSitemap};

@@ -7,9 +7,9 @@ use chrono::NaiveDate;
 use khalid_core::{AbsoluteUrl, Locale};
 
 use crate::{
-    CrawlerPolicy, CustomSchema, FeedOptions, IndexPolicy, LinkPolicy, LocalBusiness,
-    MetaTemplates, Publisher, PublisherKind, RootFile, SchemaTemplate, SeoError, ShareImage,
-    SiteSearch, SiteVerification, TemplateWords, TwitterHandle, UrlPath,
+    CrawlerPolicy, CustomSchema, FeedOptions, IndexPolicy, LinkPolicy, LlmsTxtOptions,
+    LocalBusiness, MetaTemplates, Publisher, PublisherKind, RootFile, SchemaTemplate, SeoError,
+    ShareImage, SiteSearch, SiteVerification, TemplateWords, TwitterHandle, UrlPath,
 };
 
 /// The site-wide settings every SEO output reads.
@@ -74,6 +74,8 @@ pub struct SeoSite {
     /// Whether a post's X and Slack preview names its author and reading
     /// time, Yoast's "enhanced Slack sharing". On by default.
     pub share_labels: bool,
+    /// What `llms.txt` holds, and whether it is written.
+    pub llms_txt: LlmsTxtOptions,
 }
 
 impl SeoSite {
@@ -107,6 +109,7 @@ impl SeoSite {
             words: BTreeMap::new(),
             breadcrumb_home: None,
             share_labels: true,
+            llms_txt: LlmsTxtOptions::default(),
         }
     }
 

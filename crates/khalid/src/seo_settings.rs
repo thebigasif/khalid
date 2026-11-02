@@ -110,6 +110,7 @@ pub(crate) fn apply(settings: &SeoSettings, site: &mut SeoSite) -> Result<(), Se
     seo_head_settings::verification(&settings.verification, site)?;
     seo_crawl_settings::crawlers(&settings.crawlers, site)?;
     seo_crawl_settings::feeds(&settings.feeds, site)?;
+    seo_crawl_settings::llms_txt(&settings.llms_txt, site)?;
     site.links = LinkPolicy::from(&settings.links);
     seo_graph_settings::publisher(&settings.publisher, site)?;
     seo_graph_settings::locations(&settings.locations, site)?;
