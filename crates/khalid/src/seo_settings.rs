@@ -112,6 +112,7 @@ pub(crate) fn apply(settings: &SeoSettings, site: &mut SeoSite) -> Result<(), Se
     seo_crawl_settings::feeds(&settings.feeds, site)?;
     seo_crawl_settings::llms_txt(&settings.llms_txt, site)?;
     site.schema_map = !settings.schema_map.off;
+    site.local_kml = settings.local.kml;
     site.links = LinkPolicy::from(&settings.links);
     seo_graph_settings::publisher(&settings.publisher, site)?;
     seo_graph_settings::locations(&settings.locations, site)?;

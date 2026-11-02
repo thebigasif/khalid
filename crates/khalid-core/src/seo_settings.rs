@@ -6,7 +6,7 @@ use serde::Deserialize;
 
 use crate::{
     AbsoluteUrl, AiPageSettings, BreadcrumbSettings, CrawlerSettings, FeedSettings, IndexNowKey,
-    Indexing, LinkSettings, LlmsTxtSettings, LocationSettings, PublisherSettings,
+    Indexing, LinkSettings, LlmsTxtSettings, LocalSettings, LocationSettings, PublisherSettings,
     SchemaMapSettings, SchemaTemplateSettings, SocialSettings, TitleSettings, VerificationSettings,
 };
 
@@ -59,6 +59,9 @@ pub struct SeoSettings {
     pub llms_txt: LlmsTxtSettings,
     /// The whole-site schema files, from `[seo.schema_map]`. On by default.
     pub schema_map: SchemaMapSettings,
+    /// The locations page and KML file, from `[seo.local]`. On by default
+    /// for a site with locations.
+    pub local: LocalSettings,
 }
 
 /// `IndexNow`, switched on by its table in `site.toml`.

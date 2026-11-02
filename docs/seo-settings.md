@@ -130,6 +130,43 @@ Each language's pages that search engines may list have one JSON-LD graph togeth
 off = true
 ```
 
+## Local business
+
+A shop, office or clinic lists each of its locations in a `[[seo.locations]]` table. Each one becomes a schema.org node on the home page, so search engines can show its address and hours.
+
+```toml
+[[seo.locations]]
+type = "Dentist"
+name = "Mill Lane Dental"
+street = "12 Mill Lane"
+locality = "Leeds"
+postal_code = "LS1 4AB"
+country = "GB"
+telephone = "+44 113 496 0000"
+map = "https://maps.example.com/mill-lane"
+geo = { latitude = 53.7997, longitude = -1.5492 }
+
+[[seo.locations.hours]]
+days = ["mon", "tue", "wed", "thu", "fri"]
+opens = "09:00"
+closes = "17:30"
+```
+
+| Key | What it does |
+|---|---|
+| `type` | The schema.org type, such as `Dentist`. `LocalBusiness` when left out. |
+| `name`, `street`, `locality`, `postal_code`, `country` | The name and address. The country is two capital letters, such as `GB`. |
+| `region`, `telephone`, `price_range`, `map` | Optional: the county or state, the phone number, how expensive it is, a link to a map. |
+| `geo` | Optional: the point on the map. It puts the location in `locations.kml`. |
+| `hours` | When it is open, one table per group of days, on a 24-hour clock. |
+
+`[seo.local]` switches what a site with locations gets. Both are on by default.
+
+| Key | Default | What it does |
+|---|---|---|
+| `kml` | `true` | Writes `locations.kml`, a geo sitemap with a pin for each location that has a `geo` point, and lists it in the sitemap index, as Yoast Local does. |
+| `page` | `true` | Builds the locations page at `/locations/`. |
+
 ## Category and tag pages
 
 Each category or tag page can have its own search settings, one table per language under `seo`. Categories live in `categories.toml` and tags in `tags.toml`, both in the site folder. A tag needs an entry in `tags.toml` only when it has settings: its name still comes from the posts.

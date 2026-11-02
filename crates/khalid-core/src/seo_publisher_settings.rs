@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 
 use serde::Deserialize;
 
-use crate::{AbsoluteUrl, ImageSettings};
+use crate::{AbsoluteUrl, GeoPoint, ImageSettings};
 
 /// Who publishes the site, from `[seo.publisher]`. By default an
 /// organisation named after the site:
@@ -102,6 +102,10 @@ pub struct LocationSettings {
     /// When it is open.
     #[serde(default)]
     pub hours: Vec<HoursSettings>,
+    /// Where it is on the map, for its pin in `locations.kml` and the
+    /// nearest-first list.
+    #[serde(default)]
+    pub geo: Option<GeoPoint>,
 }
 
 fn local_business() -> String {
@@ -185,4 +189,32 @@ pub struct SchemaTemplateSettings {
 pub struct SchemaMapSettings {
     /// Switch the files off. `false`, the default, writes them.
     pub off: bool,
+}
+
+/// What a site with `[[seo.locations]]` gets, from `[seo.local]`, as
+/// Yoast Local has it. Both are on by default:
+///
+/// ```toml
+/// [seo.local]
+/// page = false
+/// kml = false
+/// ```
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+#[non_exhaustive]
+pub struct LocalSettings {
+    /// The `/locations/` page that lists every location, nearest first.
+    pub page: bool,
+    /// The `locations.kml` file of every location with a `geo` point,
+    /// listed in the sitemap index.
+    pub kml: bool,
+}
+
+impl Default for LocalSettings {
+    fn default() -> Self {
+        Self {
+            page: true,
+            kml: true,
+        }
+    }
 }

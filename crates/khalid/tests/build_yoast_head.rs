@@ -240,6 +240,32 @@ fn category_and_tag_pages_use_their_own_title_description_robots_image_and_intro
     assert!(!crawl.contains(r#"<div class="intro">"#), "{crawl}");
 }
 
+/// Two locations in `site.toml`, one with a map point.
+const LOCATIONS: &str = "\n[[seo.locations]]\ntype = \"Dentist\"\nname = \"Mill Lane Dental\"\n\
+     street = \"12 Mill Lane\"\nlocality = \"Leeds\"\npostal_code = \"LS1 4AB\"\ncountry = \"GB\"\n\
+     telephone = \"+44 113 496 0000\"\ngeo = { latitude = 53.7997, longitude = -1.5492 }\n\n\
+     [[seo.locations.hours]]\ndays = [\"mon\", \"tue\"]\nopens = \"09:00\"\ncloses = \"17:30\"\n\n\
+     [[seo.locations]]\nname = \"Quay Street Dental\"\nstreet = \"3 Quay Street\"\n\
+     locality = \"Bristol\"\npostal_code = \"BS1 4DJ\"\ncountry = \"GB\"\n";
+
+#[test]
+fn the_locations_with_a_map_point_are_in_a_kml_file_the_sitemap_index_lists() {
+    let site = site(LOCATIONS);
+    build(&site);
+    let kml = file(&site, "locations.kml").unwrap();
+    assert!(kml.contains("<name>Mill Lane Dental</name>"), "{kml}");
+    assert!(!kml.contains("Quay Street"), "{kml}");
+    let index = file(&site, "sitemap.xml").unwrap();
+    assert!(
+        index.contains("<loc>https://www.example.com/blog/locations.kml</loc>"),
+        "{index}"
+    );
+    let off = self::site(&format!("{LOCATIONS}\n[seo.local]\nkml = false\n"));
+    build(&off);
+    assert!(file(&off, "locations.kml").is_none());
+    assert!(!file(&off, "sitemap.xml").unwrap().contains("locations.kml"));
+}
+
 #[test]
 fn a_collection_and_pages_can_leave_search_and_a_feed_format_can_go() {
     let site =

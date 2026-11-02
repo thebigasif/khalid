@@ -16,6 +16,7 @@ mod alert_settings;
 mod clock;
 mod config;
 mod environment;
+mod geo_point;
 mod head_code;
 mod indexnow_key;
 mod link_settings;
@@ -51,6 +52,7 @@ pub use clock::FixedClock;
 pub use clock::{Clock, SystemClock};
 pub use config::{Config, ConfigError, Mode, SlugMode};
 pub use environment::Environment;
+pub use geo_point::{GeoPoint, GeoPointError};
 pub use head_code::{HeadCode, HeadCodeError};
 pub use indexnow_key::{IndexNowKey, ParseIndexNowKeyError};
 pub use link_settings::{DomainName, ExternalRel, LinkOpening, LinkSettings, ParseDomainNameError};
@@ -76,8 +78,8 @@ pub use seo_head_settings::{
     TemplateSettings, TitleSettings, VerificationSettings,
 };
 pub use seo_publisher_settings::{
-    HoursSettings, LocationSettings, PublisherSettings, PublisherType, SchemaMapSettings,
-    SchemaTemplateSettings, WeekdaySetting,
+    HoursSettings, LocalSettings, LocationSettings, PublisherSettings, PublisherType,
+    SchemaMapSettings, SchemaTemplateSettings, WeekdaySetting,
 };
 pub use seo_settings::{ArchiveIndex, ArchiveSetting, IndexNowSettings, SeoSettings};
 pub use site_code::{BodyCode, BodyCodeError, Consent, SiteCode};

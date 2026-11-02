@@ -1,5 +1,5 @@
 //! The files `khalid build` writes beside the pages, from `khalid-seo`: the
-//! sitemap index and its sitemaps, the news sitemap, `robots.txt`, `llms.txt`, the RSS,
+//! sitemap index and its sitemaps, the news sitemap, `locations.kml`, `robots.txt`, `llms.txt`, the RSS,
 //! Atom and JSON feeds of each language, and the `IndexNow` key file
 //! (KH-SEO-5, KH-SEO-6, KH-SEO-7, KH-SEO-11).
 
@@ -7,7 +7,7 @@ use chrono::{DateTime, Utc};
 use khalid_core::{IndexNowSettings, Locale, UserMessage};
 use khalid_seo::{
     ArticleType, Feed, FeedFormat, FeedScope, IndexNow, LlmsTxt, NewsSitemap, RobotsTxt, SeoError,
-    SeoPage, SeoSite, SitemapSet, UrlPath, site_schema,
+    SeoPage, SeoSite, SitemapSet, UrlPath, locations_kml, locations_kml_url, site_schema,
 };
 
 use crate::build_message;
@@ -89,6 +89,10 @@ fn collect(
         let lastmod = news.entries().iter().map(|entry| entry.published).max();
         index.push(site.url_for(&site.default_language, &path)?, lastmod);
         files.push(file(NEWS_SITEMAP.trim_start_matches('/'), news.to_xml()));
+    }
+    if let Some(kml) = locations_kml(site) {
+        index.push(locations_kml_url(site)?, None);
+        files.push(file("locations.kml", kml));
     }
     files.insert(0, file("sitemap.xml", index.to_xml()));
     files.push(file("robots.txt", RobotsTxt::for_site(site)?.to_string()));

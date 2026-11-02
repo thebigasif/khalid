@@ -6,7 +6,8 @@ use std::path::Path;
 
 use khalid_core::{
     AbsoluteUrl, ArchiveIndex, ArchiveSetting, BreadcrumbTaxonomy, Config, DomainName, Environment,
-    ExternalRel, FeedKind, IndexNowKey, IndexNowSettings, Indexing, LinkOpening, LinkSettings,
+    ExternalRel, FeedKind, GeoPoint, IndexNowKey, IndexNowSettings, Indexing, LinkOpening,
+    LinkSettings,
 };
 
 const SITE: &str = r#"name = "Field Notes on SEO"
@@ -260,4 +261,27 @@ fn the_breadcrumb_settings_have_defaults_and_read_each_key() {
     assert_eq!(crumbs.search_prefix, "You searched for");
     assert!(crumbs.bold_last);
     assert_eq!(crumbs.taxonomy, BreadcrumbTaxonomy::Tag);
+}
+
+#[test]
+fn the_local_settings_are_on_by_default_and_a_location_reads_its_map_point() {
+    let plain = read("").unwrap();
+    assert!(plain.seo().local.page);
+    assert!(plain.seo().local.kml);
+    let location = "\n[[seo.locations]]\nname = \"Mill Lane Dental\"\nstreet = \"12 Mill Lane\"\n\
+                    locality = \"Leeds\"\npostal_code = \"LS1 4AB\"\ncountry = \"GB\"\n";
+    let config = read(&format!(
+        "\n[seo.local]\npage = false\nkml = false\n{location}\
+         geo = {{ latitude = 53.7997, longitude = -1.5492 }}\n"
+    ))
+    .unwrap();
+    assert!(!config.seo().local.page);
+    assert!(!config.seo().local.kml);
+    let geo = config.seo().locations[0].geo.unwrap();
+    assert_eq!(geo, GeoPoint::new(53.7997, -1.5492).unwrap());
+    let wrong = read(&format!(
+        "{location}geo = {{ latitude = 120.0, longitude = 0.0 }}\n"
+    ))
+    .unwrap_err();
+    assert!(wrong.contains("latitude"), "{wrong}");
 }

@@ -79,6 +79,9 @@ pub struct SeoSite {
     /// Whether each language's whole-site graph is written to
     /// `schema.json` and named in robots.txt. On by default.
     pub schema_map: bool,
+    /// Whether the locations with a map point are written to
+    /// `locations.kml`. On by default.
+    pub local_kml: bool,
 }
 
 impl SeoSite {
@@ -114,6 +117,7 @@ impl SeoSite {
             share_labels: true,
             llms_txt: LlmsTxtOptions::default(),
             schema_map: true,
+            local_kml: true,
         }
     }
 
