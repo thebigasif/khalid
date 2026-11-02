@@ -88,5 +88,18 @@ export const records = {
     working: "Changing the posts",
     done: (n: number) => (n === 1 ? "Changed 1 post." : `Changed ${n} posts.`),
     left: (title: string, why: string) => `${title} was left as it is. ${why}`,
+    farewell: "What should the old addresses of live posts do?",
+    farewellHint:
+      "Readers and search engines may still follow links to these posts. Tell them what happened.",
+    gone: "Say the page is gone for good",
+    goneHint: "Search engines drop the address quickly. This is a 410 answer.",
+    moved: "Send readers to another post",
+    movedHint:
+      "Search engines move the old address's standing to the new post. This is a 301 redirect.",
+    target: "Post to send readers to",
+    targetHint: "Pick the live post closest to what the old ones covered.",
+    noTarget: "There is no other live post to send readers to.",
+    noFarewell: (title: string, from: string, why: string) =>
+      `${title} is in the trash, but ${from} was not redirected. ${why} Add it under Redirects.`,
   },
 } as const;

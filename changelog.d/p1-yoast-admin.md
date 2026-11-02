@@ -15,3 +15,4 @@ Added
 - The posts list shows each post's SEO and readability lights and how many posts link in and out, and filters posts with no focus keyword, posts no other post links to, and the main posts of topic clusters.
 - The SEO settings screen sets what feeds carry and how many posts they list, and switches IndexNow on with one tick that makes its key.
 - Each row of the posts list carries the post's `path` on the site. The dashboard lists the checks that fail on most posts as tasks, "Fix these first", each with its fix and a post to start on.
+- Moving live posts to the trash asks what their old addresses should do: say the page is gone for good (410), the default, or send readers to another live post you pick (301). The answer is stored as a redirect.
