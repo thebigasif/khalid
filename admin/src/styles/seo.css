@@ -23,6 +23,7 @@
   .serp .desc b{color:var(--color-text)}
   .serp.mobile{max-width:24rem;border-radius:1rem}
   .serp.mobile .head{font-size:1.125rem}
+  .score-cell{display:inline-flex;align-items:center;gap:.375rem;white-space:nowrap}
   /* A shared link as Facebook and X draw it: the picture, then the site and the words. */
   .share{margin:0 0 1rem;max-width:32rem}
   .share img,.share-none{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;margin:0;border:1px solid var(--color-border);border-bottom:0;border-radius:var(--radius-field) var(--radius-field) 0 0;background:var(--color-surface)}

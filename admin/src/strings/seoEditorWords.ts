@@ -51,6 +51,17 @@ export const seoEditorWords = {
     pillar: "The main post of this topic cluster",
     keyword: (keyword: string) => `Your text names its focus keyword, "${keyword}"`,
   },
+  // The posts list's SEO columns and filter.
+  linksColumn: "Links",
+  linksInOut: (inbound: number, outbound: number) => `${inbound} in, ${outbound} out`,
+  notCounted: "Not counted",
+  seoFilter: "SEO",
+  anySeo: "Any post",
+  seoFilters: {
+    no_keyword: "No focus keyword",
+    orphan: "No other post links here",
+    pillar: "Main posts of topic clusters",
+  },
   copy: "Copy as a new draft",
   copyHint:
     "Makes a new draft with this post's text and settings, to start a similar post or rework this one safely.",

@@ -1,7 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { en } from "../strings/en";
-import { CHECKS, INDEX, type PostSearch, postSearch } from "./filters";
+import { seoEditorWords } from "../strings/seoEditorWords";
+import { CHECKS, INDEX, type PostSearch, postSearch, SEO } from "./filters";
 import { SelectFilter } from "./SelectFilter";
 import { STAGES } from "./stages";
 
@@ -13,10 +14,11 @@ export function PostFilters({ search }: Props) {
   const [checks, setChecks] = useState<string>(search.checks ?? "");
   const [stage, setStage] = useState<string>(search.stage ?? "");
   const [index, setIndex] = useState<string>(search.index ?? "");
+  const [seo, setSeo] = useState<string>(search.seo ?? "");
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    void navigate({ to: "/posts", search: postSearch({ checks, stage, index }) });
+    void navigate({ to: "/posts", search: postSearch({ checks, stage, index, seo }) });
   };
 
   return (
@@ -44,6 +46,14 @@ export function PostFilters({ search }: Props) {
         value={index}
         options={INDEX.map((value) => ({ value, label: en.index[value] }))}
         onChange={setIndex}
+      />
+      <SelectFilter
+        id="seo"
+        label={seoEditorWords.seoFilter}
+        any={seoEditorWords.anySeo}
+        value={seo}
+        options={SEO.map((value) => ({ value, label: seoEditorWords.seoFilters[value] }))}
+        onChange={setSeo}
       />
       <button type="submit" className="btn">
         {en.filters.show}
