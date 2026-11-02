@@ -91,6 +91,20 @@ The blue link in search results.
 ![The linter's findings](/media/lint.png)
 :::
 
+:::chart{type="line" title="Visits from search" unit="k"}
+Month, Google, Bing, Other, Direct
+Jan, 12, 2, 1, 4
+Feb, 14, 3, 1, 5
+:::
+
+:::chart{type="bar" title="Time to first click" unit="s"}
+Page, Time
+Home, 2
+:::
+
+:::chart{type="column" title="Posts per month" src="posts.csv"}
+:::
+
 :::maths{label="Compound growth"}
 A = P(1 + r/n)^{nt}
 :::

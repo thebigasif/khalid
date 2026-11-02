@@ -16,6 +16,7 @@ use crate::{
 };
 
 mod cards;
+mod chart;
 mod forms;
 mod formula;
 mod layout;
@@ -230,15 +231,7 @@ impl Renderer<'_> {
                 self.markdown(&inside(&block.source));
                 self.html.push_str("</figcaption>\n</figure>\n");
             }
-            BlockKind::Toggle { summary } => {
-                self.push(&[
-                    "<details open>\n<summary>",
-                    &attribute(summary),
-                    "</summary>\n",
-                ]);
-                self.markdown(&inside(&block.source));
-                self.html.push_str("</details>\n");
-            }
+            BlockKind::Toggle { summary } => self.toggle(block, summary),
             BlockKind::Toc => self.html.push_str(TOC_MARK),
             BlockKind::Cta => self.html.push_str(CTA_MARK),
             BlockKind::Snippet { slug } => self.snippet(slug),
@@ -260,6 +253,7 @@ impl Renderer<'_> {
             BlockKind::File { src, title } => self.file(src, title),
             BlockKind::Gallery { images } => self.gallery(images),
             BlockKind::Maths { label, formula } => self.maths(label.as_deref(), formula),
+            BlockKind::Chart(chart) => self.chart(chart),
             BlockKind::PullQuote { by } => self.pull_quote(block, by.as_deref()),
             BlockKind::ProsCons(pros_cons) => self.pros_cons(pros_cons),
             BlockKind::Columns { columns } => self.columns(columns),
@@ -289,6 +283,17 @@ impl Renderer<'_> {
             }
             _ => {}
         }
+    }
+
+    /// Writes a body a reader opens and closes by its summary line.
+    fn toggle(&mut self, block: &Block, summary: &str) {
+        self.push(&[
+            "<details open>\n<summary>",
+            &attribute(summary),
+            "</summary>\n",
+        ]);
+        self.markdown(&inside(&block.source));
+        self.html.push_str("</details>\n");
     }
 
     /// Writes a link styled as a button.

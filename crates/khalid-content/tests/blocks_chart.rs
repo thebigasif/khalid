@@ -100,3 +100,42 @@ fn a_chart_takes_at_most_four_series_and_forty_rows() {
         error(&format!(":::chart{{title=\"T\"}}\nA, B\n{rows}\n:::\n")).contains("one to 40 rows")
     );
 }
+
+#[cfg(test)]
+fn html(markdown: &str) -> String {
+    let en = khalid_core::Locale::try_new("en").unwrap();
+    khalid_content::render(markdown, &en, khalid_core::SlugMode::Ascii)
+        .unwrap()
+        .html
+}
+
+#[test]
+fn a_bar_chart_puts_each_label_over_its_bar_and_the_value_after_it() {
+    let html = html(
+        ":::chart{type=\"bar\" title=\"Time to first click\" unit=\"seconds\"}\nPage, Time\nHome, 2\n\"Pricing <new>\", 4\n:::\n",
+    );
+    assert!(
+        html.contains("<figure class=\"chart chart-bar\">"),
+        "{html}"
+    );
+    assert!(
+        !html.contains("chart-legend"),
+        "one series needs no legend: {html}"
+    );
+    assert!(html.contains(">Pricing &lt;new&gt;</text>"), "{html}");
+    assert!(
+        html.contains("width=\"78.00%\" height=\"18\""),
+        "the longest bar: {html}"
+    );
+    assert!(html.contains(">4 seconds</text>"), "{html}");
+    insta::assert_snapshot!(html);
+}
+
+#[test]
+fn a_chart_whose_file_was_not_found_keeps_its_caption_and_file_link() {
+    let html = html(":::chart{title=\"Traffic\" src=\"traffic.csv\"}\n:::\n");
+    assert_eq!(
+        html,
+        "<figure class=\"chart chart-column\">\n<figcaption>Traffic <a class=\"chart-file\" href=\"traffic.csv\" download>CSV</a></figcaption>\n</figure>\n"
+    );
+}
