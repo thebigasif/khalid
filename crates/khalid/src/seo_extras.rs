@@ -14,7 +14,8 @@ use khalid_routes::Routes;
 use crate::build_pages::LanguagePages;
 
 /// Removes the archives switched off, gives category and tag pages their
-/// own settings and draws each location block's card. Returns the pages removed, for their redirects,
+/// own settings, draws each location block's card and adds the
+/// locations page. Returns the pages removed, for their redirects,
 /// and the first term pages that have no intro, for the build's note.
 ///
 /// # Errors
@@ -28,5 +29,6 @@ pub(crate) fn arrange(
     let gone = archives_off::remove(config, languages);
     let bare = term_seo::fill(site, (config, routes), languages)?;
     locations::fill(config, languages)?;
+    locations::add_page(config, languages)?;
     Ok((gone, bare))
 }

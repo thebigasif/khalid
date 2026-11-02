@@ -168,6 +168,8 @@ A post or page shows one location's card with the location block, by its name as
 
 The card shows the address, the phone number as a link, the opening hours day by day and a link to `map`, or to OpenStreetMap at the `geo` point. With scripts on, it also says "Open now" or "Closed now" by the reader's clock. A name `site.toml` does not list shows nothing, and `khalid build` warns about it.
 
+A site with locations also gets a locations page at `/locations/` in each language. It lists every location's card in the order of `site.toml`, so it works with scripts off. When two or more locations have a `geo` point and the browser can tell where the reader is, a button sorts the list nearest first. The page is in the sitemap. A page of your own at `/locations/` takes its place.
+
 `[seo.local]` switches what a site with locations gets. Both are on by default.
 
 | Key | Default | What it does |

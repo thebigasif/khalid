@@ -287,6 +287,33 @@ fn a_location_block_shows_the_address_hours_and_map_of_the_location_it_names() {
 }
 
 #[test]
+fn the_locations_page_lists_every_location_and_can_sort_the_nearest_first() {
+    // Quay Street, the last location, gets a point too.
+    let site = site(&format!(
+        "{LOCATIONS}geo = {{ latitude = 51.4545, longitude = -2.5879 }}\n"
+    ));
+    build(&site);
+    let page = file(&site, "locations/index.html").unwrap();
+    assert!(page.contains("<h1>Our locations</h1>"), "{page}");
+    let mill = page.find("<strong>Mill Lane Dental</strong>").unwrap();
+    let quay = page.find("<strong>Quay Street Dental</strong>").unwrap();
+    assert!(mill < quay, "in the order of site.toml: {page}");
+    assert!(page.contains("data-geo=\"53.7997,-1.5492\""), "{page}");
+    assert!(page.contains("<button type=\"button\" class=\"locations-nearest\" hidden"));
+    let sitemaps = fs::read_dir(at(site.path(), "public/sitemaps")).unwrap();
+    let listed = sitemaps
+        .map(|sitemap| fs::read_to_string(sitemap.unwrap().path()).unwrap())
+        .any(|text| text.contains("https://www.example.com/blog/locations/"));
+    assert!(listed, "the page is in a sitemap");
+    let off = self::site(&format!("{LOCATIONS}\n[seo.local]\npage = false\n"));
+    build(&off);
+    assert!(file(&off, "locations/index.html").is_none());
+    let none = self::site("");
+    build(&none);
+    assert!(file(&none, "locations/index.html").is_none());
+}
+
+#[test]
 fn a_collection_and_pages_can_leave_search_and_a_feed_format_can_go() {
     let site =
         site("\n[seo.index.collections]\nnews = \"noindex\"\n\n[seo.feeds]\noff = [\"atom\"]\n");
