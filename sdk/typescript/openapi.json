@@ -15140,6 +15140,14 @@
             "$ref": "#/components/schemas/LintCounts",
             "description": "Its lint findings, counted. Counting takes every rule, so a list\ncounts only the rows on the page it sends, and cannot filter or\norder by the counts."
           },
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Where readers find it on the site, such as a redirect leads to.",
+            "example": "/blog/choosing-anchor-text/"
+          },
           "published_at": {
             "type": [
               "string",

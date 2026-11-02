@@ -14,3 +14,4 @@ Added
 - The editor suggests internal links to add, says why each post is suggested, and adds a link with one press: on the words of the text that name the post, or as a Related line at the end. A Copy as a new draft button opens the copy.
 - The posts list shows each post's SEO and readability lights and how many posts link in and out, and filters posts with no focus keyword, posts no other post links to, and the main posts of topic clusters.
 - The SEO settings screen sets what feeds carry and how many posts they list, and switches IndexNow on with one tick that makes its key.
+- Each row of the posts list carries the post's `path` on the site. The dashboard lists the checks that fail on most posts as tasks, "Fix these first", each with its fix and a post to start on.

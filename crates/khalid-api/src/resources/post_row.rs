@@ -134,6 +134,9 @@ pub struct PostRow {
     slug: Slug,
     /// The title.
     title: String,
+    /// Where readers find it on the site, such as a redirect leads to.
+    #[schema(example = "/blog/choosing-anchor-text/")]
+    path: Option<String>,
     /// The author's slug, if any.
     #[serde(serialize_with = "display_option")]
     #[schema(value_type = Option<String>, example = "asif")]
@@ -223,6 +226,7 @@ impl PostRow {
             id: post.id().to_owned(),
             slug: post.slug().clone(),
             title: post.title().to_owned(),
+            path: None,
             author: post.author().cloned(),
             status: post.status(),
             review_state: post.settings().review_state,
@@ -256,6 +260,12 @@ impl PostRow {
             }),
             ..self
         }
+    }
+
+    /// The same row with the `path` readers find the post at, when known.
+    #[must_use]
+    pub fn with_path(self, path: Option<String>) -> Self {
+        Self { path, ..self }
     }
 
     /// The same row with its findings counted as `lint`.

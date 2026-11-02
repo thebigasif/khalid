@@ -1427,6 +1427,8 @@ export type PostRow = {
   links: PostLinks;
   /** Its lint findings, counted. Counting takes every rule, so a list counts only the rows on the page it sends, and cannot filter or order by the counts. */
   lint: LintCounts;
+  /** Where readers find it on the site, such as a redirect leads to. */
+  path?: string | null;
   /** When it went or goes live; empty for a draft. */
   published_at?: string | null;
   /** Whether the post is due for review: more than six months since it was last reviewed or published, whichever came last. A list filters by this, such as `filter=review:due`. */

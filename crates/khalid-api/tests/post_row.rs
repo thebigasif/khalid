@@ -83,7 +83,7 @@ fn a_row_has_the_columns_and_no_body() {
             .unwrap();
     let want = json!({
         "id": "anchor-text", "slug": "anchor-text", "title": "Choosing anchor text",
-        "author": null, "status": "draft", "review_state": "in_review", "reviewed": null,
+        "path": null, "author": null, "status": "draft", "review_state": "in_review", "reviewed": null,
         "review_due": false, "featured": false,
         "published_at": null, "updated_at": "2026-10-20T08:30:00Z", "updated_by": "Asif",
         "gate": "refuses", "lint": {"blocks": 2, "warnings": 1}, "scores": null, "words": 0,

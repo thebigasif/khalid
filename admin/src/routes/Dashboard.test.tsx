@@ -4,6 +4,7 @@ import { visitors } from "../../test/analytics";
 import { axeViolations, json, renderAt, serve, signedIn } from "../../test/render";
 import { listing, row, rowsPage } from "../../test/rows";
 import type { PostRow } from "../api/rows";
+import type { SiteIssue } from "../api/seo";
 import { dashboardWords as words } from "../strings/dashboardWords";
 import { en } from "../strings/en";
 
@@ -25,14 +26,30 @@ type Blog = {
   waiting?: number;
   /** Whether the blog counts its visits. */
   counts?: boolean;
+  /** The site's lint issues; none when the blog cannot send them. */
+  issues?: SiteIssue[];
+};
+
+const ISSUE: SiteIssue = {
+  rule: "missing-alt",
+  what: "A picture has no alt text.",
+  why: "Screen readers and search engines cannot tell what it shows.",
+  fix: "Describe each picture in a short sentence.",
+  weight: "warn",
+  posts: 4,
+  example: "en.anchor-words",
 };
 
 /** A blog with five live posts and what `blog` says, which records every request. */
-function blog({ blocked = [], drafts = [DRAFT], scheduled = 0, waiting, counts }: Blog = {}) {
+function blog(given: Blog = {}) {
+  const { blocked = [], drafts = [DRAFT], scheduled = 0, waiting, counts, issues } = given;
   const sent: Request[] = [];
   serve((request) => {
     sent.push(request);
     const path = new URL(request.url).pathname;
+    if (path === "/api/admin/v1/lint/issues/" && issues !== undefined) {
+      return json(200, { issues });
+    }
     if (path === "/api/admin/v1/comments/" && waiting !== undefined) {
       const comment = { id: 1, text: "Thanks", status: "pending" };
       return json(200, { comments: Array.from({ length: waiting }, () => comment) });
@@ -137,6 +154,26 @@ describe("the dashboard", () => {
       "/admin/posts?checks=blocked",
     );
     expect(await axeViolations()).toEqual([]);
+  });
+
+  it("lists the site's lint issues as tasks, each opening a post it fires on", async () => {
+    signedIn();
+    blog({ issues: [ISSUE] });
+    renderAt("/");
+    const tasks = await screen.findByRole("region", { name: words.issues });
+    expect(within(tasks).getByText(ISSUE.what)).toBeVisible();
+    expect(within(tasks).getByText(words.onPosts(4))).toBeVisible();
+    const start = within(tasks).getByRole("link", { name: words.startOn(ISSUE.what) });
+    expect(start).toHaveAttribute("href", "/admin/posts/en.anchor-words");
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("leaves the task list out when the blog sends no issues", async () => {
+    signedIn();
+    blog();
+    renderAt("/");
+    await screen.findByText(en.dashboard.calm);
+    expect(screen.queryByRole("region", { name: words.issues })).toBeNull();
   });
 
   it("gives one next step when nothing needs you and there are no drafts", async () => {

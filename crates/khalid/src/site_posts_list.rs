@@ -66,6 +66,7 @@ impl Site {
             );
             let role = candidate.cluster.as_ref().map(|cluster| cluster.role);
             let row = PostRow::new(&post, gate).with_review_due(today);
+            let row = row.with_path(candidate.path.clone());
             rows.push(row.with_reach(candidate.word_count, counts, role));
             files.insert(post.id().to_owned(), found);
         }

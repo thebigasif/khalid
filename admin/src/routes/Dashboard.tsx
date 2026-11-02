@@ -11,6 +11,7 @@ import { Metrics } from "../dashboard/Metrics";
 import { NeedsAttention } from "../dashboard/NeedsAttention";
 import { QuickActions } from "../dashboard/QuickActions";
 import { RecentChanges } from "../dashboard/RecentChanges";
+import { SiteIssues } from "../dashboard/SiteIssues";
 import { dashboardWords as words } from "../strings/dashboardWords";
 import { en } from "../strings/en";
 
@@ -71,6 +72,7 @@ export function Dashboard() {
           <RecentChanges rows={drafts.rows} empty={words.noDrafts} />
         </section>
       </div>
+      <SiteIssues />
       <QuickActions />
     </>
   );

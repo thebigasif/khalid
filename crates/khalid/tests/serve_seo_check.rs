@@ -248,6 +248,10 @@ fn the_posts_list_counts_links_and_finds_orphans() {
         .collect();
     assert!(ids.contains(&"en.what-a-sitemap-does"), "{json}");
     assert!(!ids.contains(&"en.anchor-words"), "{json}");
+    let live = (json["posts"].as_array().unwrap().iter())
+        .find(|row| row["id"] == "en.what-a-sitemap-does")
+        .unwrap();
+    assert_eq!(live["path"], "/blog/what-a-sitemap-does/", "{json}");
 }
 
 #[test]
