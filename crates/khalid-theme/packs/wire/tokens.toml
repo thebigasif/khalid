@@ -1,14 +1,32 @@
+[colors]
+background = "#ffffff"
+surface = "#f6f5f2"
+text = "#141414"
+muted = "#5c5c5c"
+link = "#c22a16"
+accent = "#d92e17"
+border = "#e5e2dc"
+
+# Headlines, labels and the menu in the reader's own sans; the posts and
+# every subtitle in the reader's own serif. Nothing is downloaded.
+[fonts]
+heading = "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+body = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, \"Noto Serif\", Georgia, serif"
+
 [shape]
-radius = "0.25rem"
-measure = "68ch"
+radius = "0.125rem"
+measure = "40rem"
 
 [type]
-body = "1.0625rem 1.125rem"
-h1 = "2rem 3rem"
-h2 = "1.5rem 1.75rem"
-h4 = "1.25rem 1.375rem"
-line_height = 1.6
+body = "1.0625rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
+h2 = "1.5rem 2rem"
+h3 = "1.1875rem 1.3125rem"
+h4 = "1.125rem 1.25rem"
+small = "0.8125rem"
+line_height = 1.65
+heading_weight = 800
 
 [space]
 unit = "0.5rem"
-section = "2.5rem"
+section = "4rem"
