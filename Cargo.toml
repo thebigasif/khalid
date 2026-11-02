@@ -195,6 +195,81 @@ opt-level = "z"
 [profile.release.package.ravif]
 opt-level = "z"
 
+# Integration 30's analysis and SEO screens pushed the binary over budget
+# again. These run for a command, an import, mail, a sign-in, an outside
+# service, the admin or a form, or once per page at build time, never on a
+# reader's request, so they are sized smallest too. The linter stays at 3:
+# at "s" it linted a post about 66% slower (docs/standards/performance.md,
+# "Integration 30").
+[profile.release.package.khalid-import]
+opt-level = "z"
+[profile.release.package.khalid-mcp]
+opt-level = "z"
+[profile.release.package.khalid-mail]
+opt-level = "z"
+[profile.release.package.khalid-auth]
+opt-level = "z"
+[profile.release.package.khalid-search-console]
+opt-level = "z"
+[profile.release.package.khalid-webhooks]
+opt-level = "z"
+[profile.release.package.khalid-alerts]
+opt-level = "z"
+[profile.release.package.khalid-https]
+opt-level = "z"
+[profile.release.package.khalid-audit]
+opt-level = "z"
+[profile.release.package.khalid-newsletter]
+opt-level = "z"
+[profile.release.package.khalid-outbound]
+opt-level = "z"
+[profile.release.package.lettre]
+opt-level = "z"
+[profile.release.package.webauthn-rs]
+opt-level = "z"
+[profile.release.package.webauthn-rs-core]
+opt-level = "z"
+[profile.release.package.webauthn-rs-proto]
+opt-level = "z"
+[profile.release.package.htmd]
+opt-level = "z"
+[profile.release.package.utoipa]
+opt-level = "z"
+[profile.release.package.instant-acme]
+opt-level = "z"
+[profile.release.package.rcgen]
+opt-level = "z"
+[profile.release.package.x509-parser]
+opt-level = "z"
+[profile.release.package.der-parser]
+opt-level = "z"
+[profile.release.package.reqwest]
+opt-level = "z"
+[profile.release.package.khalid-db]
+opt-level = "z"
+[profile.release.package.khalid-analytics]
+opt-level = "z"
+[profile.release.package.khalid-comments]
+opt-level = "z"
+[profile.release.package.khalid-forms]
+opt-level = "z"
+[profile.release.package.sqlx-core]
+opt-level = "z"
+[profile.release.package.sqlx-sqlite]
+opt-level = "z"
+[profile.release.package.khalid-seo]
+opt-level = "z"
+[profile.release.package.khalid-share-image]
+opt-level = "z"
+[profile.release.package.rustybuzz]
+opt-level = "z"
+[profile.release.package.tiny-skia]
+opt-level = "z"
+[profile.release.package.tiny-skia-path]
+opt-level = "z"
+[profile.release.package.ttf-parser]
+opt-level = "z"
+
 [profile.dev]
 debug = "line-tables-only"
 
