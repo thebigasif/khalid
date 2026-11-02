@@ -91,6 +91,8 @@ figure > img { inline-size: 100%; border-radius: var(--radius); }
 .banner img, .product img, .recipe img { inline-size: 100%; margin-block-end: 1rem; border-radius: var(--radius); }
 .review-item, .product-name, .recipe-name { margin-block-end: 0.25rem; font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; }
 .review-rating, .product-rating, .product-price { font-weight: 700; }
+.review-rating:has(+ .rating-readers), .product-rating:has(+ .rating-readers) { margin-block-end: 0.125rem; }
+.rating-readers { color: var(--color-muted); font-size: 0.9375rem; }
 .recipe-description { color: var(--color-muted); }
 .recipe-facts { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; color: var(--color-muted); font-size: 0.9375rem; }
 .recipe-servings, .recipe-prep, .recipe-cook { white-space: nowrap; }
