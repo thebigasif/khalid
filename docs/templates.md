@@ -19,7 +19,7 @@ These eleven templates are built in. Every template but classic has its own page
 - `almanac`: a library of long guides, soft and roomy, with a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
 - `atlas`: a portal for a blog with many topics, with topic tabs, featured posts and editor's picks. See [Atlas](templates/atlas.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
-- `folio`: a product team's essays under their own masthead, with category pills, a featured story and a grid of outlined cards. See [Folio](templates/folio.md).
+- `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
 - `harbor`: a busy marketing blog with featured posts, rows of recent posts, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
 - `keystone`: a personal guide site with one big featured post, a grid of pictures and numbered chapters. See [Keystone](templates/keystone.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).

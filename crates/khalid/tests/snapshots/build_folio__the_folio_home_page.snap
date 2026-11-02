@@ -24,7 +24,7 @@ expression: "shown(&out, \"index.html\")"
 <section class="featured" aria-labelledby="featured-title">
 <h2 id="featured-title">Featured</h2>
 <article class="card card-featured">
-<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<p class="card-meta"><span class="card-author">Asif</span>
 <time datetime="2026-09-21">21 September 2026</time>
 <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
 <h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
@@ -34,7 +34,7 @@ expression: "shown(&out, \"index.html\")"
 <ul class="cards" role="list">
 <li>
 <article class="card">
-<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<p class="card-meta"><span class="card-author">Asif</span>
 <time datetime="2026-10-12">12 October 2026</time>
 <a href="/blog/category/content-strategy/">Content strategy</a></p>
 <h2><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
@@ -49,7 +49,7 @@ expression: "shown(&out, \"index.html\")"
 <img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/320.png 320w, /blog/media/d9df18e6d7e8625d/480.png 480w, /blog/media/d9df18e6d7e8625d/640.png 640w, /blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
 </picture>
 </figure>
-<p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
 <time datetime="2026-10-05">5 October 2026</time>
 <a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h2><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
@@ -58,7 +58,7 @@ expression: "shown(&out, \"index.html\")"
 </li>
 <li>
 <article class="card">
-<p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
 <time datetime="2026-09-28">28 September 2026</time>
 <a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h2><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h2>
@@ -67,7 +67,7 @@ expression: "shown(&out, \"index.html\")"
 </li>
 <li>
 <article class="card">
-<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<p class="card-meta"><span class="card-author">Asif</span>
 <time datetime="2026-09-14">14 September 2026</time>
 <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
 <h2><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h2>

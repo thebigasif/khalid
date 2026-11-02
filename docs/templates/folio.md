@@ -1,8 +1,8 @@
 # Folio
 
-Folio is a product team's notebook: essays, engineering notes and announcements under the blog's own masthead. It suits a software or design team whose posts are written by the people who built the thing, and who want each post to read like a short magazine piece.
+Folio is a product team's notebook: essays, engineering notes with code, and announcements under the blog's own masthead. It suits a software or design team whose posts are written by the people who built the thing.
 
-Pick it when your posts have good pictures and you want the front page to look like a cover: a big name, a short line about the blog, one featured story and a grid of cards. If your posts have no pictures, or you publish long how-to guides with a table of contents, Meridian or Classic will suit you better.
+Pick it when you want the front page to open with a confident name, one featured story and a grid of picture cards, and want long notes to read well: a contents rail beside the text, framed code and tables, an author box and related posts. If your posts are short news items with no pictures, Wire or Classic will suit you better.
 
 ## How to switch it on
 
@@ -12,40 +12,31 @@ Pick it when your posts have good pictures and you want the front page to look l
 name = "folio"
 ```
 
-Build or restart the blog. Your colours, fonts, logo and corner rounding still come from `theme/tokens.toml`, so Folio takes on your main site's look.
+Build or restart the blog. Folio brings its own neutral palette and type scale; a value in your `theme/tokens.toml` wins, so a synced theme still gives Folio your main site's colours and fonts.
 
 ## What readers see
 
 **The front page**
 
-- Your logo in the header, with your call to action as a button beside the menu.
-- A centred masthead: the blog's name in large type, a one-line tagline, and a row of rounded links: "All", then each category your posts use.
-- The newest post you marked `featured: true`, large, with its picture beside the text on a wide screen.
-- Every other post as an outlined card: the picture on top, the title, the summary, then the author's round photo, name and role. Cards sit two to a row, three on a wide screen, one on a phone. The outline turns to your accent colour when a reader points at a card or tabs to it. Cards show no date.
-- An optional quote, centred, in large type.
-- Numbered page links with arrows under long lists.
+- A slim announcement line, then your logo, a quiet menu and your call to action as a small rounded button. On a phone the menu takes its own line and the button stays in the band at the end of the page.
+- The masthead: the blog's name set very large and tight on faint ruled paper (a fine grid that fades out), an optional tagline, and the categories as tabs on a hairline: "All", then each category your posts use. On a phone the tabs become small rounded chips.
+- The newest post you marked `featured: true`: its picture large on the left, the category and date, the title, the summary and the author on the right.
+- Every other post as a card without an outline: the picture in a thin frame, the category in the accent and the date, the title, up to three lines of summary, then the author's round photo and name. Three cards to a row on a wide screen, two on a tablet, one on a phone.
+- An optional quote, centred, in large type under a short accent rule.
+- Numbered page links under long lists, and the band with your call to action.
 
-**An essay** (every post)
+**A post**
 
-- An "All posts" link back to the front page, in place of breadcrumbs.
-- A centred title, then every author with their round photo, name and role, then the dates.
-- Share links under the title and again after the essay.
-- One column of text. Pictures and animated pictures keep their captions. Quotes are set large in the heading font.
-- After the essay: the share links, then the band with your call to action.
+- The breadcrumbs as a small line above the title: the blog, then the post's category.
+- A large left-aligned title, the post's summary (`dek:`) under it, then a hairline, the authors with their photos and roles, and one line with the reviewer, the dates and the reading time.
+- The lead picture, wider than the text.
+- The text in one column of about 70 characters. On a wide screen the contents sit in a quiet rail beside it, with the section being read marked in the accent; on a phone they fold into a box above the text.
+- Code in a framed sheet, tables with hairline rows inside one frame, callouts with a thin accent edge, and quotes set large under a short accent rule.
+- After the text: the share links, the author box, the band with your call to action, the posts that link here, and three related posts as cards.
 
-End an essay with its takeaways. Folio sets a summary box as a closing section under a rule:
+**A list page** (a category, a tag or the archive) shows the name in large type, then the cards under a hairline.
 
-```markdown
-:::callout{kind=summary}
-**Takeaways**
-
-- What a reader should remember, one line each.
-:::
-
-*Thanks to Lena for reading drafts of this post.*
-```
-
-**An author page** shows the author's photo, name, role, bio and profile links, then their posts as the same outlined cards.
+**An author page** shows the author's photo beside their name and role, the bio, then their posts as the same cards and the other authors.
 
 ## Options
 
@@ -57,23 +48,24 @@ Set any of these under `[template.options]` in `site.toml`. A line you leave out
 | `tagline` | none | One line under the name, such as `["Notes from the team that builds Acme."]`. Without it, the blog's intro shows. |
 | `quote` | none | A quote centred under the cards: the words, then who said them, such as `["Ship small, ship often.", "Lena Vogt"]`. |
 | `logo` | `true` | The header shows your logo from `[brand] logo`. Without a logo, the blog's name shows. |
-| `back_link` | `true` | A post shows an "All posts" link back to the front page above its title. |
-| `breadcrumbs` | `false` | Each page shows the trail of links from the front page to it. |
-| `category_tabs` | `true` | The masthead shows the row of category links. |
+| `back_link` | `false` | A post shows an "All posts" link back to the front page above its title. |
+| `breadcrumbs` | `true` | Each page shows the trail of links from the front page to it. |
+| `dek` | `true` | A post shows its `dek:` summary under the title. |
+| `category_tabs` | `true` | The masthead shows the row of category tabs. |
 | `cards` | `image` | The shape of post cards in lists: `image`, `text`, `row`, `compact` or `ranked`. |
-| `card_author_role` | `true` | Each card shows its author's role under their name. |
+| `card_author_role` | `false` | Each card shows its author's role beside their name. |
 | `featured` | `true` | The newest post marked `featured: true` shows large above the cards, and not again below. |
 | `pagination` | `numbered` | The links under a long list: `pages` for newer and older, or `numbered` for a link to each page. |
-| `related` | `grid` | How related posts are laid out when you turn them on: `grid`, `list`, `row`, `scroll` or `links`. |
+| `related` | `grid` | How related posts are laid out: `grid`, `list`, `row`, `scroll` or `links`. |
 | `related_count` | `3` | How many related posts show, from 3 to 10. |
-| `contents` | `none` | Where a post's contents go: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. |
-| `share` | `both` | Where a post shows share links: `none`, `top`, `end` or `both`. |
+| `contents` | `side-end` | Where a post's contents go: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. |
+| `share` | `end` | Where a post shows share links: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["x", "linkedin", "bluesky", "email"]` | Which networks the share links go to, in order. |
 | `newsletter` | `none` | Where the newsletter form shows: `none`, `post`, `home` or `both`. |
 | `cta_band` | `post` | Where the band with your call to action shows: `none`, `post`, `home` or `both`. |
 | `cta_button` | `true` | Whether the header shows your call to action as a button. |
 
-For example, a masthead with its own name, a tagline and the newsletter after each essay:
+For example, a masthead with its own name, a tagline and the newsletter after each post:
 
 ```toml
 [template.options]
@@ -82,13 +74,13 @@ tagline = ["Notes from the team that builds Acme."]
 newsletter = "post"
 ```
 
-## Reader features Folio changes
+## Reader features
 
-Folio turns three `[reader]` features off by default: `reading_time`, `author_box` and `related_posts`. Write any of them in `[reader]` to turn it back on, such as `related_posts = true` for three related essays as cards. Your line always wins.
+Folio keeps every `[reader]` feature on, as Classic does: the reading time, the contents, the author box and related posts all show. Write a feature in `[reader]` to turn it off, such as `related_posts = false`. Your line always wins.
 
 ## Your call to action and newsletter
 
-The header button and the band after each essay show the call to action you write once:
+The header button and the band after each post show the call to action you write once:
 
 ```toml
 [template.cta]
@@ -97,31 +89,28 @@ href = "https://example.com/signup/"
 note = "Set up in five minutes."
 ```
 
-Without `[template.cta]`, neither shows. The newsletter form is off in Folio. When you turn it on, it shows only on a blog that can take sign-ups: `mode = "server"` with a `[mail]` table.
+Without `[template.cta]`, neither shows. The band is a sheet of the ruled paper with your note set large and the button beside it. The newsletter form is off in Folio. When you turn it on, it shows as a white sheet with the field and the button on one line, and only on a blog that can take sign-ups: `mode = "server"` with a `[mail]` table.
 
-## Sizes and spacing
+## Colours, type and spacing
 
 Folio sets these in place of the shared defaults. A value in your own `theme/tokens.toml` wins.
 
 | Token | Folio's value |
 |---|---|
-| `[type] body` | 1.0625rem on a phone to 1.125rem on a wide screen |
-| `[type] h1` | 2.5rem to 3.5rem, also the masthead's name |
+| `[colors]` | a white page, a soft grey surface (`#f4f4f2`), ink text (`#141418`), grey quiet text (`#5b5b66`), a violet accent and links (`#4b36d1`), light hairlines (`#e4e4df`) |
+| `[fonts] heading` and `body` | the reader's own interface face: Inter where it is installed, else San Francisco, Segoe UI or Roboto |
+| `[fonts] mono` | JetBrains Mono where installed, else the system's code face |
+| `[type] body` | 1rem on a phone to 1.0625rem on a wide screen; a post's text is set a step larger |
+| `[type] h1` | 2.25rem to 3.5rem, a post's title. The masthead's name runs larger, up to 5.75rem |
 | `[type] h2` | 1.5rem to 1.875rem |
-| `[type] line_height` | 1.7 |
-| `[space] section` | 4rem between sections |
-| `[shape] radius` | 0.75rem corners |
-| `[shape] measure` | 66ch, the width of a line of text |
+| `[type] line_height` | 1.65 |
+| `[space] section` | 5rem between sections |
+| `[shape] radius` | 0.75rem corners on every frame: pictures, code, tables, callouts and bands |
+| `[shape] measure` | 42rem, about 70 characters, the width of a post's text |
 
-The page itself is up to 76rem wide, with 2rem between cards; the text of an essay keeps to the 66ch measure.
-
-## Colours
-
-Cards and bands sit on `--color-background` with a `--color-border` outline. The accent marks links, buttons, the current category and a card's outline when a reader points at it. Buttons pick black or white text, whichever reads better on your accent.
+The page itself is up to 76rem wide. The accent marks the category on each card, links, buttons, the current tab and the section being read; everything else is neutral. All colours pass the WCAG AA contrast check.
 
 ## What Folio does not do yet
 
-- A post's category does not show on its card or above its title yet. The masthead's category links carry it.
-- A card's picture is the post's lead picture (`image:` in a folder post). It shows on category, tag and archive pages and on author pages. The front page shows its cards and featured story without pictures for now, because `khalid serve` sends the front page before pictures have their sizes.
 - Share links are the networks' names, not their logos.
-- A large lead picture at the top of an essay needs the post's picture in the page, which Khalid does not pass to templates yet.
+- The footer shows your footer links in one row; it has no columns of its own unless you add `[[nav.footer_groups]]`.
