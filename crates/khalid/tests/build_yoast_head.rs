@@ -150,6 +150,43 @@ fn the_whole_site_schema_is_one_file_named_in_robots_txt() {
 }
 
 #[test]
+fn a_post_and_a_page_choose_their_schema_types_and_news_fields() {
+    let site = site("");
+    put(
+        site.path(),
+        "routes.toml",
+        "[collections.news]\npermalink = \"/news/{year}/{month}/{slug}/\"\nnews = true\n",
+    );
+    put(
+        site.path(),
+        "content/en/pages/contact.md",
+        "---\ntitle: Contact\nslug: contact\npage_type: ContactPage\n---\n\nWrite to us.\n",
+    );
+    let news = "---\ntitle: Quarterly report\nslug: quarterly\ndate: 2026-09-04\nauthor: asif\n\
+                article_type: Report\nstock_tickers: [\"NASDAQ:GOOG\"]\n---\n\n\
+                The report links to [the home page](/blog/).\n\n\
+                ::video{src=\"/media/a.mp4\" title=\"A tour\" poster=\"/media/a.jpg\" thumbnail=\"/media/a-thumb.jpg\"}\n";
+    put(site.path(), "content/en/news/quarterly.md", news);
+    put(
+        site.path(),
+        "content/en/news/launch.md",
+        "---\ntitle: Launch day\nslug: launch\ndate: 2026-09-03\nauthor: asif\nnews: false\n---\n\n\
+         The launch links to [the home page](/blog/).\n",
+    );
+    build(&site);
+    let contact = file(&site, "contact/index.html").unwrap();
+    assert!(contact.contains("\"@type\":\"ContactPage\""), "{contact}");
+    let report = file(&site, "news/2026/09/quarterly/index.html").unwrap();
+    assert!(report.contains("\"@type\":\"Report\""), "{report}");
+    assert!(
+        report.contains("\"thumbnailUrl\":\"https://www.example.com/media/a-thumb.jpg\""),
+        "{report}"
+    );
+    let launch = file(&site, "news/2026/09/launch/index.html").unwrap();
+    assert!(launch.contains("\"@type\":\"NewsArticle\""), "{launch}");
+}
+
+#[test]
 fn a_post_preview_on_x_and_slack_names_its_author_and_reading_time() {
     let site = site("");
     build(&site);

@@ -7,3 +7,6 @@ Added
 - **robots.txt**: the search page is kept from crawlers by default (`[seo.crawlers] disallow_search`), and `extra_lines` adds lines as written.
 - **llms.txt options** in `[seo.llms_txt]`: an intro, key pages listed first, paths to leave out, and `off`.
 - **Schema aggregation**: the whole site's structured data in one file per language, at `schema.json`, named in `robots.txt` on a `Schemamap:` line. `[seo.schema_map] off = true` turns it off.
+- **Schema type per post and page**: `page_type:` (`FAQPage`, `ContactPage`, `AboutPage`, `QAPage`, `ItemPage`, `CollectionPage`) and `article_type:` (`BlogPosting`, `Article`, `NewsArticle`, `TechArticle`, `Report`) override the defaults.
+- **News**: `news: false` keeps a post out of the news sitemap, and `stock_tickers:` adds up to five tickers to it.
+- **Video**: `thumbnail=` on the video block sets the picture search results show.

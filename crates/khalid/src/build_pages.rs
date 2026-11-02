@@ -249,9 +249,7 @@ fn post_pages(
             .into_iter()
             .filter_map(|index| among.get(index).map(|post| post.card.clone()))
             .collect();
-        let news = routes
-            .collection(&draft.doc.collection)
-            .is_some_and(Collection::is_news);
+        let news = news_by_collection(routes, draft.doc);
         let authors = &content.authors;
         let mut page = post_page(config, locale, draft, related, people, authors)?;
         if let PageBody::Post(post) = &mut page.body {
@@ -264,6 +262,13 @@ fn post_pages(
         pages.push(page);
     }
     Ok((pages, listed))
+}
+
+/// Whether `doc` is a news article because its collection is a news one.
+/// A post that names its own `article_type` is what it says.
+fn news_by_collection(routes: &Routes, doc: &Document<PostFront>) -> bool {
+    doc.front.article_type.is_none()
+        && (routes.collection(&doc.collection)).is_some_and(Collection::is_news)
 }
 
 /// A post as lists and the related-posts choice read it, its links found

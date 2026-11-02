@@ -188,15 +188,16 @@ fn product_of(
     Ok(Some(product))
 }
 
-/// The video block as `Video`, its file and poster made full addresses by
-/// `full`.
+/// The video block as `Video`, its file and thumbnail made full addresses
+/// by `full`. The thumbnail is the block's own, else its poster.
 fn video_of(
     block: &VideoBlock,
     full: impl Fn(&str) -> Result<AbsoluteUrl, UserMessage>,
 ) -> Result<Video, UserMessage> {
     let description = block.description.as_deref().unwrap_or(&block.title);
     let source = VideoSource::File(full(&block.src)?);
-    let mut video = Video::new(&block.title, description, full(&block.poster)?, source);
+    let thumbnail = full(block.thumbnail.as_ref().unwrap_or(&block.poster))?;
+    let mut video = Video::new(&block.title, description, thumbnail, source);
     video.duration = block.duration;
     Ok(video)
 }

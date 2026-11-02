@@ -129,3 +129,29 @@ Each language's pages that search engines may list have one JSON-LD graph togeth
 [seo.schema_map]
 off = true
 ```
+
+## Front matter for search
+
+These fields go in a post's front matter, between the `---` lines. `page_type` also works on a page in `pages/`.
+
+| Field | What it does |
+|---|---|
+| `breadcrumb_title` | A shorter name for the post in its breadcrumb trail. |
+| `page_type` | The kind of web page in structured data: `WebPage` (the default), `FAQPage`, `ContactPage`, `AboutPage`, `QAPage`, `ItemPage` or `CollectionPage`. |
+| `article_type` | The kind of article: `BlogPosting` (the default), `Article`, `NewsArticle`, `TechArticle` or `Report`. It wins over the collection's default, so a report in a news collection stays a report. |
+| `news` | `false` leaves a post of a news collection out of the news sitemap. |
+| `stock_tickers` | Up to five stock tickers a news post is about, such as `["NASDAQ:GOOG"]`, for Google News. |
+
+```yaml
+---
+title: Our 2026 survey of 500 SEO teams
+article_type: Report
+stock_tickers: ["NASDAQ:GOOG"]
+---
+```
+
+The video block takes an optional `thumbnail`, the picture search results show for the video when it should not be the poster:
+
+```markdown
+::video{src="/media/tour.mp4" title="A tour" poster="/media/tour.jpg" thumbnail="/media/tour-thumb.jpg"}
+```

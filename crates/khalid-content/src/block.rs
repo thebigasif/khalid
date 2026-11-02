@@ -112,7 +112,8 @@ pub enum BlockKind {
         /// The name a screen reader says for the player.
         title: String,
     },
-    /// `::video{src="..." title="..." poster="..."}`: a video file with
+    /// `::video{src="..." title="..." poster="..."}`, with an optional
+    /// `thumbnail` for search results: a video file with
     /// controls, which search engines read as a `VideoObject`.
     Video(VideoBlock),
     /// `::audio{src="..." title="..."}`: a sound file with controls.

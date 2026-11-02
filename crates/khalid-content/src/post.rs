@@ -4,7 +4,8 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_core::{
-    AbsoluteUrl, HeadCode, PasswordHash, PostAccess, RobotsDirectives, Slug, TemplateName,
+    AbsoluteUrl, ArticleSchemaType, HeadCode, PageSchemaType, PasswordHash, PostAccess,
+    RobotsDirectives, Slug, TemplateName,
 };
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer};
@@ -133,6 +134,31 @@ pub struct PostFront {
     /// A shorter name for the post in breadcrumb trails, such as "Internal
     /// links" for "Internal links, the complete guide for 2026".
     pub breadcrumb_title: Option<String>,
+    /// The kind of web page, such as `FAQPage` or `AboutPage`, in place of
+    /// `WebPage`.
+    pub page_type: Option<PageSchemaType>,
+    /// The kind of article, such as `Report`, in place of the collection's.
+    pub article_type: Option<ArticleSchemaType>,
+    /// `false` leaves a news post out of the news sitemap.
+    pub news: Option<bool>,
+    /// The stock tickers a news post is about, such as `NASDAQ:GOOG`, for
+    /// Google News. At most [`MAX_STOCK_TICKERS`].
+    #[serde(default, deserialize_with = "stock_tickers")]
+    pub stock_tickers: Vec<String>,
+}
+
+/// The most stock tickers Google News reads for one article.
+pub const MAX_STOCK_TICKERS: usize = 5;
+
+fn stock_tickers<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<String>, D::Error> {
+    let tickers = Vec::<String>::deserialize(deserializer)?;
+    if tickers.len() > MAX_STOCK_TICKERS {
+        return Err(serde::de::Error::custom(format!(
+            "Google News reads at most 5 stock tickers, and this lists {}; keep the 5 the post is most about",
+            tickers.len()
+        )));
+    }
+    Ok(tickers)
 }
 
 /// The most related posts a post shows, and so the most it may pin.

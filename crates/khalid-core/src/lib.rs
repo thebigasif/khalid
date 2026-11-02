@@ -25,6 +25,7 @@ mod media_settings;
 mod post_access;
 mod reader;
 mod robots;
+mod schema_types;
 mod search_console_settings;
 mod secret;
 mod seo_breadcrumb_settings;
@@ -65,6 +66,7 @@ pub use robots::{
     Following, ImagePreview, Indexing, ParseRobotsError, PreviewLimit, Restriction,
     RobotsDirectives,
 };
+pub use schema_types::{ArticleSchemaType, PageSchemaType};
 pub use search_console_settings::{SearchConsoleProperty, SearchConsoleSettings};
 pub use secret::Secret;
 pub use seo_breadcrumb_settings::{BreadcrumbSettings, BreadcrumbTaxonomy};

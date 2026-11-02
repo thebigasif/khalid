@@ -1,7 +1,7 @@
 //! [`SeoPage`]: what the SEO outputs need to know about one page.
 
 use chrono::{DateTime, Utc};
-use khalid_core::{AbsoluteUrl, Locale, RobotsDirectives};
+use khalid_core::{AbsoluteUrl, Locale, PageSchemaType, RobotsDirectives};
 
 use crate::{
     Alternate, AuthorProfile, CustomSchema, Entity, MetaTemplate, PageNumber, SchemaBlock,
@@ -56,6 +56,8 @@ pub enum ArticleType {
     NewsArticle,
     /// A technical guide or reference.
     TechArticle,
+    /// A report, such as a study or a yearly review.
+    Report,
 }
 
 /// One step in a page's breadcrumb trail, between the home page and the page.
@@ -200,6 +202,13 @@ pub struct SeoPage {
     /// For a post, how many minutes it takes to read, for its X and Slack
     /// preview.
     pub reading_minutes: Option<u32>,
+    /// The schema.org type of the page node the page chose, in place of
+    /// the one its kind gives it.
+    pub page_type: Option<PageSchemaType>,
+    /// Whether a news article is listed in the news sitemap.
+    pub news: SitemapListing,
+    /// The stock tickers a news article is about, such as `NASDAQ:GOOG`.
+    pub stock_tickers: Vec<String>,
 }
 
 impl SeoPage {
@@ -247,6 +256,9 @@ impl SeoPage {
             page_number: None,
             breadcrumb_title: None,
             reading_minutes: None,
+            page_type: None,
+            news: SitemapListing::Listed,
+            stock_tickers: Vec::new(),
         }
     }
 }

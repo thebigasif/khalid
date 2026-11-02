@@ -4,12 +4,12 @@
 
 use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use khalid_content::{PostFront, Sitemap};
-use khalid_core::{Config, Locale, UserMessage};
+use khalid_core::{ArticleSchemaType, Config, Locale, UserMessage};
 use khalid_lint::StructuredDataGap;
 use khalid_render::{HeadHtml, builtin_strings};
 use khalid_seo::{
-    IndexPolicy, IssueLevel, LinkPolicy, MetaTemplate, PageKind, SeoError, SeoPage, SeoSite,
-    SitemapListing, TemplateWords, TranslationKey, UrlPath, check_graph, head_tags,
+    ArticleType, IndexPolicy, IssueLevel, LinkPolicy, MetaTemplate, PageKind, SeoError, SeoPage,
+    SeoSite, SitemapListing, TemplateWords, TranslationKey, UrlPath, check_graph, head_tags,
     link_translations, page_graph,
 };
 
@@ -185,7 +185,26 @@ pub(crate) fn from_front(seo: &mut SeoPage, front: &PostFront) -> Result<(), Use
     seo.tags.clone_from(&front.tags);
     seo.focus_keyword.clone_from(&front.focus_keyword);
     seo.breadcrumb_title.clone_from(&front.breadcrumb_title);
+    seo.page_type = front.page_type;
+    if let Some(kind) = front.article_type {
+        seo.article_type = article_type(kind);
+    }
+    if front.news == Some(false) {
+        seo.news = SitemapListing::Excluded;
+    }
+    seo.stock_tickers.clone_from(&front.stock_tickers);
     Ok(())
+}
+
+/// The article type a post's `article_type:` names.
+fn article_type(kind: ArticleSchemaType) -> ArticleType {
+    match kind {
+        ArticleSchemaType::Article => ArticleType::Article,
+        ArticleSchemaType::NewsArticle => ArticleType::NewsArticle,
+        ArticleSchemaType::TechArticle => ArticleType::TechArticle,
+        ArticleSchemaType::Report => ArticleType::Report,
+        _ => ArticleType::BlogPosting,
+    }
 }
 
 /// The `translation` key from front matter, which pairs language versions.
@@ -286,13 +305,16 @@ mod tests {
 
     #[test]
     fn a_posts_tags_and_focus_keyword_reach_its_seo_page() {
-        let text = "---\ntags: [crawl, links]\nfocus_keyword: internal links\n---\n";
+        let text = "---\ntags: [crawl, links]\nfocus_keyword: internal links\nnews: false\n\
+                    article_type: TechArticle\n---\n";
         let front = parse_post(Path::new("a.md"), text).unwrap().front;
         let locale = Locale::try_new("en").unwrap();
         let mut seo = page(PageKind::Post, &locale, "a/", "A").unwrap();
         from_front(&mut seo, &front).unwrap();
         assert_eq!(seo.tags, ["crawl", "links"]);
         assert_eq!(seo.focus_keyword.as_deref(), Some("internal links"));
+        assert_eq!(seo.news, SitemapListing::Excluded);
+        assert_eq!(seo.article_type, ArticleType::TechArticle);
     }
 
     #[test]
