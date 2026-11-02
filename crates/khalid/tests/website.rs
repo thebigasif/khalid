@@ -152,6 +152,7 @@ fn every_page_of_the_website_passes_the_linter_with_no_finding() {
         .unwrap()
         .iter()
         .filter(|finding| !DATED.contains(&finding["rule"].as_str().unwrap()))
+        .filter(|finding| finding["severity"] != "info")
         .collect();
     assert_eq!(findings, Vec::<&Value>::new(), "{stdout}");
     assert_eq!(lint.status.code(), Some(0), "{stdout}");

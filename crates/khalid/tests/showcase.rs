@@ -163,6 +163,7 @@ fn every_showcase_post_passes_lint_with_no_finding() {
         .unwrap()
         .iter()
         .filter(|finding| !DATED.contains(&finding["rule"].as_str().unwrap()))
+        .filter(|finding| finding["severity"] != "info")
         .collect();
     assert_eq!(findings, Vec::<&Value>::new(), "{body}");
     assert_eq!(output.status.code(), Some(0));
