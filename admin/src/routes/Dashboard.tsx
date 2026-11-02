@@ -1,56 +1,77 @@
+import { useQuery } from "@tanstack/react-query";
+import { readVisitors } from "../api/analytics";
+import { isData } from "../api/call";
+import { listComments } from "../api/comments";
 import { problemMessage } from "../api/posts";
 import { isFailure, isPage, useRows } from "../api/rows";
+import { blogName } from "../auth/blog";
+import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
-import { StartPost } from "../components/StartPost";
-import { BlockedFocus } from "../dashboard/BlockedFocus";
+import { Metrics } from "../dashboard/Metrics";
+import { NeedsAttention } from "../dashboard/NeedsAttention";
+import { QuickActions } from "../dashboard/QuickActions";
 import { RecentChanges } from "../dashboard/RecentChanges";
+import { dashboardWords as words } from "../strings/dashboardWords";
 import { en } from "../strings/en";
 
-/** The first screen after signing in: the blog at a glance and the one thing to do next. */
+/** The first screen after signing in: the blog's numbers, what needs the writer, and the drafts. */
 export function Dashboard() {
   // A list counts its whole length, so one row is enough to learn a total.
   const blocked = useRows({ filter: "gate:refuses", limit: 5 });
-  const recent = useRows({ order: "updated_at desc", limit: 5 });
+  const drafts = useRows({ filter: "status:draft", order: "updated_at desc", limit: 5 });
   const live = useRows({ filter: "status:published", limit: 1 });
   const scheduled = useRows({ filter: "status:scheduled", limit: 1 });
-  const drafts = useRows({ filter: "status:draft", limit: 1 });
+  // The same queries as the Comments and Analytics screens, so each keeps the other fresh.
+  const waiting = useQuery({
+    queryKey: ["comments", "pending"],
+    queryFn: () => listComments("pending"),
+  }).data;
+  const visits = useQuery({ queryKey: ["visitors", 28], queryFn: () => readVisitors(28) }).data;
 
-  const failed = [blocked, recent, live, scheduled, drafts].find(isFailure);
+  const title = words.greeting(blogName());
+  const failed = [blocked, drafts, live, scheduled].find(isFailure);
   if (failed !== undefined) {
     return (
       <>
-        <h1>{en.dashboard.title}</h1>
+        <PageHeader title={title} />
         <Problem message={problemMessage(failed.problem, en.problems.unreachable)} />
       </>
     );
   }
-  if (!(isPage(blocked) && isPage(recent) && isPage(live) && isPage(scheduled) && isPage(drafts))) {
-    return <p role="status">{en.dashboard.loading}</p>;
+  if (!(isPage(blocked) && isPage(drafts) && isPage(live) && isPage(scheduled))) {
+    return (
+      <>
+        <PageHeader title={title} />
+        <p role="status">{en.dashboard.loading}</p>
+      </>
+    );
   }
 
   const stuck = blocked.pagination.total;
-  const stats = [
-    { count: live.pagination.total, label: en.dashboard.live },
-    { count: scheduled.pagination.total, label: en.dashboard.scheduled },
-    { count: drafts.pagination.total, label: en.dashboard.drafts },
-    { count: stuck, label: en.dashboard.blocked },
-  ];
   return (
     <>
-      <h1>{en.dashboard.title}</h1>
-      <p className="lede">{stuck === 0 ? en.dashboard.calm : en.dashboard.blockedLede(stuck)}</p>
-      {stuck === 0 ? <StartPost /> : <BlockedFocus page={blocked} />}
-      <h2>{en.dashboard.glance}</h2>
-      <ul className="stats">
-        {stats.map(({ count, label }) => (
-          <li key={label(2)} className="card">
-            <strong>{count}</strong>
-            {label(count)}
-          </li>
-        ))}
-      </ul>
-      <h2>{en.dashboard.recent}</h2>
-      <RecentChanges rows={recent.rows} />
+      <PageHeader
+        title={title}
+        lede={stuck === 0 ? en.dashboard.calm : en.dashboard.blockedLede(stuck)}
+      />
+      <Metrics
+        live={live.pagination.total}
+        drafts={drafts.pagination.total}
+        failing={stuck}
+        visits={isData(visits) ? visits.data : null}
+      />
+      <div className="board">
+        <NeedsAttention
+          blocked={blocked}
+          scheduled={scheduled.pagination.total}
+          waiting={isData(waiting) ? waiting.data.length : null}
+        />
+        <section className="panel" aria-labelledby="drafts-title">
+          <h2 id="drafts-title">{words.recentDrafts}</h2>
+          <RecentChanges rows={drafts.rows} empty={words.noDrafts} />
+        </section>
+      </div>
+      <QuickActions />
     </>
   );
 }

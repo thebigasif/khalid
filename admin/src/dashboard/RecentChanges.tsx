@@ -5,13 +5,17 @@ import { StatusPill } from "../components/StatusPill";
 import { day } from "../strings/dates";
 import { en } from "../strings/en";
 
-type Props = { rows: PostRow[] };
+type Props = {
+  rows: PostRow[];
+  /** What to say when there are no rows, such as "No drafts". */
+  empty: string;
+};
 
 /** The posts changed last: what each is now, who changed it and when. */
-export function RecentChanges({ rows }: Props) {
+export function RecentChanges({ rows, empty }: Props) {
   if (rows.length === 0) {
     return (
-      <EmptyState icon="posts" title={en.dashboard.noPosts}>
+      <EmptyState icon="posts" title={empty}>
         <Link to="/new" className="btn primary">
           {en.dashboard.firstPost}
         </Link>

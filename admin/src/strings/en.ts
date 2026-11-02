@@ -492,29 +492,15 @@ export const en = {
     },
   },
   dashboard: {
-    title: "Your blog today",
+    title: "Welcome back",
     loading: "Reading your posts",
-    calm: "Nothing is blocked from publishing. Start a new post, or pick up a recent one below.",
+    calm: "Nothing is blocked from publishing. Start a new post, or pick up a draft below.",
     blockedLede: (count: number) =>
       count === 1
-        ? "One post has a problem that stops it from publishing."
-        : `${count} posts have a problem that stops them from publishing.`,
-    blockedTitle: (count: number) =>
-      count === 1 ? "1 post cannot go live" : `${count} posts cannot go live`,
-    blockedWhy:
-      "Khalid's checks found a problem in each one. Readers see none of them until it is fixed.",
-    blockedFix: "Open a post. Its checks say what to change.",
+        ? "One post has a problem that stops it from publishing. Its checks say what to change."
+        : `${count} posts have a problem that stops them from publishing. Their checks say what to change.`,
     showBlocked: "Show every blocked post",
-    glance: "At a glance",
-    live: (count: number) => (count === 1 ? "post live on the blog" : "posts live on the blog"),
-    scheduled: (count: number) =>
-      count === 1 ? "post scheduled to go live" : "posts scheduled to go live",
-    drafts: (count: number) => (count === 1 ? "draft" : "drafts"),
-    blocked: (count: number) =>
-      count === 1 ? "post blocked from publishing" : "posts blocked from publishing",
-    recent: "Recent changes",
-    noPosts: "No posts yet. The first one you start shows here.",
-    firstPost: "Write your first post",
+    firstPost: "Start a draft",
     post: "Post",
     stands: "Where it stands",
     who: "Who",
