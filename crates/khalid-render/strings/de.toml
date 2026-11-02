@@ -137,3 +137,10 @@ entry_result = "Ergebnis"
 entry_version = "Version {version}"
 no_entries = "Hier gibt es noch nichts."
 entries_description = "{title} von {site}, die neuesten zuerst."
+
+# Eine Serie von Beiträgen.
+series_label = "Dieser Beitrag gehört zu einer Serie"
+series_part = "Teil {part} von {total}"
+series_steps = "Die Teile vor und nach diesem"
+series_previous = "Vorheriger Teil"
+series_next = "Nächster Teil"

@@ -344,6 +344,7 @@ fn post_page(
         contents: build_reader::contents(&rendered.headings),
         originals: BTreeMap::new(),
         related,
+        series: None,
         mentions: Vec::new(),
         comments: None,
         body: html,

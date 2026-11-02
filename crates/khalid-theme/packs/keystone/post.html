@@ -11,6 +11,7 @@
 {% from "card.html" import cards -%}
 {% from "comments.html" import comments_section -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
+{% from "series.html" import series_box, series_steps -%}
 {% set placement = template.options.contents -%}
 {% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
 {% set side = toc and placement in ["side-start", "side-end"] -%}
@@ -56,7 +57,7 @@
 {{ share_list }}
 </div>
 {% endif %}{% if template.options.numbered_headings %}<div class="post-body post-numbered">{% else %}<div class="post-body">{% endif %}
-{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}
+{{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
 </div>
 {% if share in ["top", "both"] %}</div>
 {% endif %}{% if share in ["end", "both"] %}<div class="share">

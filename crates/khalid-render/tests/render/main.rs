@@ -72,6 +72,8 @@ mod related_layouts;
 #[cfg(test)]
 mod sandbox;
 #[cfg(test)]
+mod series;
+#[cfg(test)]
 mod script;
 #[cfg(test)]
 mod search_link;
