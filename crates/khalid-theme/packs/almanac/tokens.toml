@@ -9,7 +9,7 @@ border = "#e2ddd1"
 
 [shape]
 radius = "0.5rem"
-measure = "68ch"
+measure = "42rem"
 
 [type]
 body = "1.0625rem 1.125rem"

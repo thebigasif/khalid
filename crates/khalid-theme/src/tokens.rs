@@ -182,7 +182,7 @@ impl Default for ThemeTokens {
             },
             shape: Shape {
                 radius: Length::trusted("0.375rem"),
-                measure: Length::trusted("68ch"),
+                measure: Length::trusted("40rem"),
             },
             type_scale: None,
             space: None,

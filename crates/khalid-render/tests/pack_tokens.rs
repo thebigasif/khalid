@@ -30,7 +30,7 @@ fn a_pack_default_fills_what_the_site_leaves_out_and_the_site_wins() {
         "--text-h1: clamp(2rem, 1.6667rem + 1.6667vw, 3rem);",
         "--text-h2: clamp(2rem, 1.8333rem + 0.8333vw, 2.5rem);",
         "--radius: 0px;",
-        "--measure: 68ch;",
+        "--measure: 40rem;",
     ] {
         assert!(css.contains(line), "{line} in {css}");
     }

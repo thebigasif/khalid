@@ -29,7 +29,7 @@ fn a_file_with_an_unknown_field_or_a_bad_value_is_refused_with_its_line() {
     let alpha = defaults_file().replace("link = \"#0b57d0\"", "link = \"#0b57d0ff\"");
     let bad_font =
         defaults_file().replace("mono = \"ui-monospace", "mono = \"ui-monospace; } body { x");
-    let bad_length = defaults_file().replace("\"68ch\"", "\"68vw\"");
+    let bad_length = defaults_file().replace("\"40rem\"", "\"40vw\"");
 
     let cases = [
         (unknown, 21),

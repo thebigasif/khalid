@@ -106,7 +106,7 @@ Almanac sets these defaults. A value in your `theme/tokens.toml` wins.
 | `h1`, `h2`, `h3`, `h4` | 2.25rem to 3.375rem, 1.5rem to 2rem, 1.1875rem to 1.375rem, 1.0625rem to 1.125rem |
 | Heading weight | 800 |
 | Line height | 1.7 |
-| Line length (`measure`) | 68ch |
+| Line length (`measure`) | 42rem |
 | Corners (`radius`) | 0.5rem |
 | Space between sections | 4.5rem |
 

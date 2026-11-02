@@ -175,3 +175,16 @@ A file named `theme/site.css` adds your own rules to the blog's one stylesheet, 
 - Comments and blank lines are removed when the site is built.
 - The whole stylesheet must stay small: Khalid's own pages keep it under 20 KB once compressed.
 - The file must sit inside the site folder. A link to a file elsewhere stops the build with a message.
+
+## Checking every screen size
+
+`scripts/responsive-check.mjs` opens each template's home page, `/seo-writing-guide/`, a category page and the German home in a real browser, at 320, 360, 375, 390 and 414 pixels (phones), 768 and 1024 (tablets), and 1280, 1440, 1920 and 2560 (desktops, up to a 27 inch iMac). It fails when a page scrolls sideways, when reading text on a phone is under 15 pixels or a menu link is under 40 by 40, and when on a wide screen the reading column passes about 80 characters, the content runs edge to edge or sits off centre, or a picture is drawn larger than its own pixels. It saves a screenshot of each page at each width, so you can look for what a script cannot see.
+
+It needs Node and Playwright. Build the sites, then run the script from a folder where Playwright is installed:
+
+```sh
+scripts/pages.sh target/debug/khalid target/pages
+cd ~/pw && node ~/khalid/scripts/responsive-check.mjs --dir ~/khalid/target/pages --out ~/shots
+```
+
+Add `--templates harbor` to check one template, and `--widths 390,2560@2` to pick widths; `2560@2` is a 5120 pixel iMac screen at device scale 2. For the admin, start `khalid serve`, save the link `khalid staff owner` prints to a file, and pass `--admin http://localhost:8080/blog/admin/ --sign-in-file <that file>`; it checks sign-in, the dashboard, posts, the editor, media and Look. Delete the file afterwards, since the link signs in as the owner.

@@ -70,7 +70,7 @@ main > .intro { margin-block-end: calc(var(--space) * 6); color: var(--color-mut
 .home-head { margin-block-end: calc(var(--space) * 6); }
 .topic-row { margin-block-start: calc(var(--space) * 3); border-block-end: var(--keystone-line); }
 .topic-row ul { gap: 0 calc(var(--space) * 3); }
-.topic-row a { color: var(--color-muted); font-size: 0.9375rem; font-weight: 500; text-decoration: none; border-block-end: 2px solid transparent; margin-block-end: -1px; min-inline-size: 0; }
+.topic-row a { color: var(--color-muted); font-size: 0.9375rem; font-weight: 500; text-decoration: none; border-block-end: 2px solid transparent; margin-block-end: -1px; justify-content: center; }
 .topic-row a:hover { color: var(--color-text); border-block-end-color: var(--color-text); }
 @media (max-width: 52rem) {
   .topic-row ul { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
