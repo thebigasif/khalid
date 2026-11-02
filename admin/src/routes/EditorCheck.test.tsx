@@ -4,6 +4,7 @@ import { axeViolations, json, renderAt, serve, signedIn } from "../../test/rende
 import type { PostCheck } from "../api/check";
 import type { AdminPost } from "../api/posts";
 import { en } from "../strings/en";
+import { seoEditorWords } from "../strings/seoEditorWords";
 
 const POST: AdminPost = {
   id: "en.why-internal-links-matter",
@@ -41,6 +42,8 @@ const CHECK: PostCheck = {
     findings: [NO_SOURCE],
     score: { value: 95, lost: [{ rule: "no-external-link", points: 5 }] },
   },
+  scores: { seo: 95, readability: 60 },
+  words: 640,
   snippet: {
     title: "Why internal links matter | Field Notes on SEO",
     url: "https://www.example.com/blog/why-internal-links-matter/",
@@ -87,6 +90,38 @@ describe("the editor's score and search result", () => {
     expect(await screen.findByText(en.editor.noChecks)).toBeVisible();
     expect(screen.getByLabelText(en.search.focus)).toBeVisible();
     expect(screen.queryByRole("region", { name: en.search.result })).toBeNull();
+  });
+});
+
+describe("the editor's two lights and the result on each device", () => {
+  it("names each score's light in words, and counts the words", async () => {
+    signedIn();
+    blog(() => json(200, { checks: [CHECK] }));
+    renderAt(`/posts/${POST.id}`);
+    const lights = await screen.findByRole("list", { name: seoEditorWords.lights });
+    expect(lights).toHaveTextContent(`${seoEditorWords.seo} ${seoEditorWords.outOf(95)}`);
+    expect(lights).toHaveTextContent(seoEditorWords.state.good);
+    expect(lights).toHaveTextContent(seoEditorWords.state.ok);
+    expect(lights).toHaveTextContent(seoEditorWords.words(640));
+  });
+
+  it("bolds the focus keyword, and gives a long title two lines on a phone", async () => {
+    signedIn();
+    const title = "Why internal links matter, and how to add the right ones | Field Notes";
+    const snippet = { ...CHECK.snippet, title };
+    blog(() => json(200, { checks: [{ ...CHECK, snippet }] }));
+    renderAt(`/posts/${POST.id}`);
+    const result = await screen.findByRole("region", { name: en.search.result });
+    fireEvent.change(screen.getByLabelText(en.search.focus), {
+      target: { value: "internal links" },
+    });
+    expect(result.querySelector(".desc b")).toHaveTextContent("Internal links");
+    // About 611 pixels wide at Google's desktop size, past its 600.
+    expect(screen.getByText(seoEditorWords.titleCut)).toBeVisible();
+    expect(result).toHaveTextContent("right ones | Field …");
+    fireEvent.click(screen.getByRole("button", { name: seoEditorWords.mobile }));
+    expect(screen.queryByText(seoEditorWords.titleCut)).toBeNull();
+    expect(result).toHaveClass("mobile");
   });
 });
 

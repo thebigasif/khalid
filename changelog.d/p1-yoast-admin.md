@@ -9,4 +9,5 @@ Added
 - `GET /api/admin/v1/lint/issues/` lists the live blog's ten most pressing lint problems, those that stop posts going live first, each with how many posts it fires on, what, why and fix, and a post to open first.
 - `POST /api/admin/v1/posts/{id}/duplicate/` copies a post as a new draft, with its text, author and settings, but not its date, review, old addresses or head code.
 - `GET /api/admin/v1/posts/{id}/link-suggestions/` ranks up to ten posts in the same language that a post does not link to yet, by shared category, tags and topic cluster, with the cluster's pillar first, and gives back the post's own words that name each one's focus keyword.
+- The editor's checks show two lights, SEO and readability, each with its score and what it means in words, and the post's word count. The Google preview switches between desktop and mobile, cuts the title and description where Google would by their width in pixels, shows the post's date, and puts the focus keyword in bold.
 - The SEO settings screen sets what feeds carry and how many posts they list, and switches IndexNow on with one tick that makes its key.

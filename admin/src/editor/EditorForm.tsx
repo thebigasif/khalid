@@ -168,7 +168,12 @@ export function EditorForm({ post }: Props) {
           <LivePage id={post.id} version={updatedAt.current} />
         ) : (
           <div inert={locked}>
-            <LintPanel findings={findings} score={scoreOf(checked?.lint)} />
+            <LintPanel
+              findings={findings}
+              score={scoreOf(checked?.lint)}
+              scores={checked?.scores ?? null}
+              words={checked?.words ?? null}
+            />
             <SearchPreview snippet={checked?.snippet ?? null} {...fields} />
             <SchemaPanel check={checked} live={publishing.status === "published"} {...fields} />
             <PostSettings settings={draft.settings} onSetting={setSetting} onBlur={onBlur}>
