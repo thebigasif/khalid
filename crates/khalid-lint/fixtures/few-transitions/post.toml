@@ -1,0 +1,17 @@
+# About 210 words in 34 sentences, and only four hold a linking word,
+# such as "next" or "then": under the 30 percent floor.
+extends = "clean"
+prose_text = """
+Internal links help readers find the next useful post on your site.
+A reader finishes one post. The reader wants more. A link shows the way.
+Search engines read links too. They follow each link to a new page. They learn which pages matter.
+Good link words name the page they open. Vague words like click here say nothing. Readers skip them.
+Put a link where a question comes up. Keep the sentence short. Name the target in plain words.
+Old posts need links to new work. New posts need links to old work. A site with many links feels alive.
+Check your posts each month. Look for pages with no links in. Add one link to each of them.
+Use your menu for the main topics. Use the text for the details. Readers then move through the site with ease.
+Count the links on a long page. Fifty links are too many for most readers. Ten good links do more.
+Write the post first. Add the links last. Read the post aloud once more.
+A clear link earns a click. A hidden link earns nothing. Your readers will notice the difference.
+Plan three links for each new post. Pick pages that answer the next question. Keep a list of them in a note.
+"""

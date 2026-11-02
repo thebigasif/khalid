@@ -114,6 +114,14 @@ pub struct Thresholds {
     /// The most words of prose between two second or third level
     /// subheadings. Default 300, as in Yoast.
     pub section_max_words: usize,
+    /// The smallest share in percent of sentences that should hold a
+    /// linking word, such as "because" or "zum Beispiel", in a text of 200
+    /// words or more. Default 30, as in Yoast.
+    pub transition_min_percent: usize,
+    /// The largest share in percent of sentences that may be in the
+    /// passive voice, in a text of 200 words or more. Default 10, as in
+    /// Yoast.
+    pub passive_max_percent: usize,
 }
 
 impl Default for Thresholds {
@@ -149,6 +157,8 @@ impl Default for Thresholds {
             sentence_max_words: 20,
             long_sentences_max_percent: 25,
             section_max_words: 300,
+            transition_min_percent: 30,
+            passive_max_percent: 10,
         }
     }
 }

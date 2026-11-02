@@ -8,7 +8,7 @@ use crate::{
     Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, focus_shape,
     focus_spread, headings, link_hygiene, link_targets, link_text, page_checks, page_or_section,
     page_shape, readability, reading, site_content, site_keywords, site_links, site_sections,
-    site_trust, snippet, structure, title_width, topics, words, writing,
+    site_trust, snippet, structure, title_width, topics, voice, words, writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
@@ -30,6 +30,12 @@ fn readability_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         }),
         Box::new(readability::LongSection {
             max_words: thresholds.section_max_words,
+        }),
+        Box::new(voice::FewTransitions {
+            min_percent: thresholds.transition_min_percent,
+        }),
+        Box::new(voice::PassiveVoice {
+            max_percent: thresholds.passive_max_percent,
         }),
     ]
 }

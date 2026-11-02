@@ -391,6 +391,18 @@ why = "Readers scan subheadings to find their part, and a long stretch hides wha
 fix = "Add a `##` subheading where the topic of this stretch changes."
 guide = "readability"
 
+[few-transitions]
+what = "Fewer than three in ten sentences use a linking word such as \"because\", \"so\" or \"for example\"."
+why = "Linking words show how one idea leads to the next, so readers follow the thread."
+fix = "Add linking words where one sentence explains, contrasts or follows from the one before."
+guide = "readability"
+
+[passive-voice]
+what = "More than one in ten sentences are in the passive voice, such as \"the post was written\"."
+why = "Passive sentences hide who does what, and they are longer and harder to read."
+fix = "Rewrite these sentences so the one who acts comes first, such as \"we wrote the post\"."
+guide = "readability"
+
 [no-focus-keyword]
 what = "This post has no focus keyword, the phrase you want it to be found for."
 why = "Without one, Khalid cannot check that the title, description and text are about one topic."
