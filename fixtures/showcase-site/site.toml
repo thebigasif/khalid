@@ -1,5 +1,6 @@
 # The showcase site: a fictional content studio's blog that uses every
-# block and reader feature Khalid has. It is the public demo. Tests that
+# block, schema type and reader feature Khalid has. The feature tour page,
+# /blog/feature-tour/, links each feature to the page that shows it. It is the public demo. Tests that
 # need a small, stable site use fixtures/demo-site instead.
 
 name = "Larkspur Ledger"
@@ -74,12 +75,37 @@ href = "/blog/category/ai-search/"
 language = "en"
 
 [[nav.primary]]
+label = "Tools"
+href = "/blog/category/seo-tools/"
+language = "en"
+
+[[nav.primary]]
+label = "Feature tour"
+href = "/blog/feature-tour/"
+language = "en"
+
+[[nav.primary]]
 label = "Auf Deutsch"
 href = "/blog/de/"
 
 [[nav.footer]]
 label = "About Larkspur"
 href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Editorial policy"
+href = "/blog/editorial-policy/"
+language = "en"
+
+[[nav.footer]]
+label = "Contact"
+href = "/blog/contact/"
+language = "en"
+
+[[nav.footer]]
+label = "Feature tour"
+href = "/blog/feature-tour/"
 language = "en"
 
 [[nav.footer]]

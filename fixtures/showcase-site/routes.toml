@@ -1,0 +1,7 @@
+# Studio news lives in its own folder, at /blog/news/<slug>/. Its posts are
+# news: their structured data says NewsArticle and the news sitemap lists
+# them for two days after they go live.
+
+[collections.news]
+permalink = "/news/{slug}/"
+news = true
