@@ -44,7 +44,7 @@ function Fields({ first }: { first: AdminPost }) {
   const field = (name: keyof SeoFields, label: string, most: number) => (
     <td data-label={label}>
       <textarea
-        rows={name === "description" ? 3 : 2}
+        rows={name === "description" ? 4 : 2}
         aria-label={words.labelFor(label, post.title)}
         value={now[name]}
         onChange={(event) => set(name)(event.target.value)}
