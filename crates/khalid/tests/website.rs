@@ -21,22 +21,9 @@ const DATED: [&str; 3] = ["review-due", "stale-post", "stale-page"];
 /// The site's home, as its pages link to it.
 const HOME: &str = "https://thebigasif.github.io/khalid/";
 
-/// The ten templates, each with a demo at `/khalid/templates/<name>/`.
-const TEMPLATES: [&str; 10] = [
-    "ledger",
-    "atlas",
-    "keystone",
-    "compass",
-    "harbor",
-    "wire",
-    "workbench",
-    "almanac",
-    "meridian",
-    "folio",
-];
-
-/// Every look the template gallery shows, each with a picture of its
-/// demo's home page and of a post: Classic, then the ten templates.
+/// Every look the template gallery shows, each with a demo at
+/// `/khalid/templates/<name>/` and a picture of that demo's home page and
+/// of a post: Classic, then the ten templates.
 const LOOKS: [&str; 11] = [
     "classic",
     "ledger",
@@ -146,7 +133,7 @@ fn is_sibling(target: &str) -> bool {
         return false;
     };
     rest.starts_with("demo/")
-        || TEMPLATES
+        || LOOKS
             .iter()
             .any(|name| rest == format!("templates/{name}/"))
         || EXAMPLES
@@ -200,7 +187,7 @@ fn the_audit_finds_nothing_but_the_demo_sites_published_beside_it() {
         assert!(is_sibling(target), "{issue}");
         siblings.insert(target.to_owned());
     }
-    for name in TEMPLATES {
+    for name in LOOKS {
         assert!(
             siblings.contains(&format!("{HOME}templates/{name}/")),
             "{name}"
@@ -212,6 +199,18 @@ fn the_audit_finds_nothing_but_the_demo_sites_published_beside_it() {
             "{example}"
         );
     }
+}
+
+#[test]
+fn the_header_and_the_hero_link_khalid_s_main_home_on_serpdad() {
+    let site = site_copy();
+    let built = khalid(site.path(), &["build"]);
+    assert!(built.status.success(), "{built:?}");
+    let home = built_page(site.path(), "");
+    assert_eq!(
+        home.matches("href=\"https://serpdad.com/khalid/\"").count(),
+        2
+    );
 }
 
 #[test]
@@ -272,7 +271,7 @@ fn every_page_the_brief_asks_for_is_built_and_links_its_live_demo() {
     }
 
     let templates = built_page(site.path(), "templates/");
-    for name in TEMPLATES {
+    for name in LOOKS {
         assert!(
             templates.contains(&format!("href=\"/khalid/templates/{name}/\"")),
             "{name}"

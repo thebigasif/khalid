@@ -6,10 +6,31 @@
 #   <mount>examples/<slug>/      each site in fixtures/examples/
 #   <mount>templates/<name>/     the showcase once per template the binary has
 #
-# Usage: scripts/pages.sh <khalid binary> <output folder> [address] [mount]
+# Usage: scripts/pages.sh [options] <khalid binary> <output folder> [address] [mount]
 # The address defaults to https://thebigasif.github.io and the mount to
 # /khalid/. The output folder must not exist yet. Run from anywhere.
+#
+# The demos, templates and examples are sample blogs, so each is built with
+# `[seo.index] site = "noindex"`: every page says noindex, follow, and the
+# sitemaps list nothing. The website's own pages stay indexable.
+#
+#   --canonical <address>  every page names this address, with the same
+#                          path, as its canonical one, such as
+#                          https://serpdad.com for the GitHub Pages copy
+#   --demos-only           leaves out the website's pages but the template
+#                          gallery at <mount>templates/, for the copy
+#                          scripts/demos-bundle.sh packs for serpdad.com
 set -euo pipefail
+
+canonical=""
+demos_only=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --canonical) canonical="${2:?Name the canonical address, such as https://serpdad.com.}"; canonical="${canonical%/}"; shift 2 ;;
+    --demos-only) demos_only=1; shift ;;
+    *) break ;;
+  esac
+done
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 khalid="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
@@ -43,6 +64,25 @@ without_template() {
     !skip
   ' "$1" >"$1.new"
   mv "$1.new" "$1"
+}
+
+# Keeps every page of the site whose site.toml is $1 out of search results
+# and sitemaps, with the setting `[seo.index] site = "noindex"`.
+noindex() {
+  if grep -qx '\[seo\.index\]' "$1"; then
+    sed -i '/^\[seo\.index\]$/a site = "noindex"' "$1"
+  else
+    printf '\n[seo.index]\nsite = "noindex"\n' >>"$1"
+  fi
+}
+
+# Points the canonical and language links of every page in the built folder
+# $1 at the same path on the --canonical address, so search engines credit
+# that copy. Links between the pages stay as they are, so the copy here
+# keeps working.
+with_canonical() {
+  find "$1" -type f -name '*.html' -exec \
+    sed -i -E "s#(<link rel=\"(canonical|alternate)\"[^>]* href=\")${address%/}/#\1${canonical}/#g" {} +
 }
 
 # Builds the site folder $1 at the mount $2 into $out/$3, with the template
@@ -92,15 +132,43 @@ build() {
       without_template "$site/site.toml"
     fi
   fi
+  if [ "$into" != "." ]; then
+    noindex "$site/site.toml"
+  fi
   "$khalid" --site "$site" build
   # Project pages cannot serve files at the host root.
   rm -rf "$site/public/_root"
+  if [ -n "$canonical" ]; then
+    with_canonical "$site/public"
+  fi
   if [ "$into" = "." ]; then
     cp -r "$site/public" "$out"
   else
     mkdir -p "$(dirname "$out/$into")"
     cp -r "$site/public" "$out/$into"
   fi
+}
+
+# The website's template gallery alone at <mount>templates/, for a copy
+# without the website's other pages. Its menu leads to the product page at
+# the mount and to the demos, any other link to the website's own pages
+# leads to the mount, and its stylesheet and script move into
+# templates/assets/, so the copy holds only demo/, templates/ and examples/.
+gallery() {
+  local src="$work/gallery-src" built="$work/gallery-out" keep="$out" file
+  cp -r "$root/site" "$src"
+  awk '/^\[/ { skip = ($0 ~ /^\[\[nav\.(primary|footer_groups)/) } !skip' "$src/site.toml" >"$src/site.toml.new"
+  mv "$src/site.toml.new" "$src/site.toml"
+  printf '\n[[nav.primary]]\nlabel = "Khalid"\nhref = "/khalid/"\n\n[[nav.primary]]\nlabel = "Templates"\nhref = "/khalid/templates/"\n\n[[nav.primary]]\nlabel = "Demo blog"\nhref = "/khalid/demo/"\n' >>"$src/site.toml"
+  out="$built"
+  build "$src" "$mount" "."
+  out="$keep"
+  mkdir -p "$out/templates/assets"
+  cp "$built/templates/index.html" "$built/templates/"*.svg "$out/templates/"
+  for file in $(grep -oE "\"${mount}assets/[^\"]+\"" "$built/templates/index.html" | tr -d '"' | sort -u); do
+    cp "$built/${file#"$mount"}"* "$out/templates/assets/"
+  done
+  sed -i -E "s%\"${mount}assets/%\"${mount}templates/assets/%g; s%href=\"${mount}(demo|templates|examples)/%href=\"KEEP-MOUNT\1/%g; s%href=\"${mount}[^\"]+/(#[^\"]*)?\"%href=\"${mount}\"%g; s%KEEP-MOUNT%${mount}%g" "$out/templates/index.html"
 }
 
 templates >"$work/templates"
@@ -111,7 +179,12 @@ fi
 echo "Templates: $(paste -sd ' ' "$work/templates")"
 
 mkdir -p "$(dirname "$out")"
-build "$root/site" "$mount" "."
+if [ -n "$demos_only" ]; then
+  mkdir -p "$out"
+  gallery
+else
+  build "$root/site" "$mount" "."
+fi
 build "$root/fixtures/showcase-site" "${mount}demo/" "demo"
 for example in "$root"/fixtures/examples/*/; do
   [ -f "$example/site.toml" ] || continue
