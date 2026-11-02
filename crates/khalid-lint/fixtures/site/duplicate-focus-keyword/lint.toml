@@ -1,0 +1,6 @@
+# Two English posts aim at "internal links", in two word forms. The
+# older one keeps it; the newer one is named. A German post with the same
+# words is another language and does not count.
+[rules]
+orphan-post = "off"
+review-due = "off"

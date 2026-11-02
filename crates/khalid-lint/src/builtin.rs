@@ -7,8 +7,8 @@ use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
     Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, focus_shape,
     focus_spread, headings, link_hygiene, link_targets, link_text, page_checks, page_or_section,
-    page_shape, reading, site_content, site_links, site_sections, site_trust, snippet, structure,
-    title_width, topics, words, writing,
+    page_shape, reading, site_content, site_keywords, site_links, site_sections, site_trust,
+    snippet, structure, title_width, topics, words, writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
@@ -214,5 +214,10 @@ pub(crate) fn site_rules(thresholds: Thresholds, today: NaiveDate) -> Vec<Box<dy
             min_words: thresholds.thin_post_words,
         }),
         Box::new(site_content::UpdatedDateWrong { today }),
+        Box::new(site_keywords::DuplicateFocusKeyword),
+        Box::new(site_keywords::StalePillar {
+            months: thresholds.pillar_stale_months,
+            today,
+        }),
     ]
 }

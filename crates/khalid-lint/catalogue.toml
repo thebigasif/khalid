@@ -241,6 +241,18 @@ why = "Readers and Google trust recent information more, and old facts may now b
 fix = "Refresh this post: check its facts, update what changed and set `updated:` to today."
 guide = "refreshing-posts"
 
+[stale-pillar]
+what = "This pillar post, the main post of its topic group, has not been updated for longer than this site allows."
+why = "The main post should be the best and most current page on its topic, for readers and Google."
+fix = "Refresh this post: add what the group's newer posts cover and set `updated:` to today."
+guide = "refreshing-posts"
+
+[duplicate-focus-keyword]
+what = "An older post on your site already uses this focus keyword."
+why = "Two posts aimed at the same search compete, and Google may show neither of them well."
+fix = "Change `focus_keyword:` to a different angle, or merge this post into the older one and redirect it."
+guide = "focus-keyword"
+
 [updated-date-wrong]
 what = "This post's `updated:` date is before its publish date or still to come."
 why = "A date that cannot be true makes readers and search engines doubt the whole page."

@@ -46,6 +46,7 @@ mod secondary;
 mod severity;
 mod shingles;
 mod site_content;
+mod site_keywords;
 mod site_links;
 mod site_sections;
 mod site_trust;

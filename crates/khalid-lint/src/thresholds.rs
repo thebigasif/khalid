@@ -101,6 +101,10 @@ pub struct Thresholds {
     /// `title-max-chars` still judges a title with characters the width
     /// table lacks.
     pub title_max_pixels: usize,
+    /// How many months a pillar post may go without an update before it
+    /// is stale. Default 6, as Yoast flags stale cornerstone content:
+    /// the main post of a topic should stay current.
+    pub pillar_stale_months: u32,
 }
 
 impl Default for Thresholds {
@@ -132,6 +136,7 @@ impl Default for Thresholds {
             focus_subheading_max_percent: 75,
             pillar_min_words: 900,
             title_max_pixels: 600,
+            pillar_stale_months: 6,
         }
     }
 }

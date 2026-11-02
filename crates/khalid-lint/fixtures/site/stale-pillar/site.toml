@@ -1,0 +1,22 @@
+[[posts]]
+locale = "en"
+slug = "internal-links"
+date = "2026-01-10"
+updated = "2026-03-02"
+
+[posts.cluster]
+name = "internal-links"
+role = "pillar"
+
+[[posts]]
+locale = "en"
+slug = "link-text"
+date = "2026-03-02"
+
+[posts.cluster]
+name = "internal-links"
+role = "member"
+
+[[pages]]
+locale = "en"
+slug = "about"
