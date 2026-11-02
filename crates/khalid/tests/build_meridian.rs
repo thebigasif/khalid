@@ -154,8 +154,49 @@ fn meridian_ships_its_own_rules_after_the_shared_ones() {
         .unwrap();
     let css = fs::read_to_string(css).unwrap();
     assert!(css.contains("--text-h1: clamp(2.5rem,"), "{css}");
-    assert!(css.contains("--measure: 64ch;"), "{css}");
+    assert!(css.contains("--measure: 42rem;"), "{css}");
+    assert!(css.contains("--font-heading: \"Iowan Old Style\""), "{css}");
+    assert!(css.contains("--color-accent: #2c3f9c;"), "{css}");
     assert!(css.contains("minmax(0, 38%)"), "{css}");
+}
+
+/// The home page opens with the newest post as the lead story, then the
+/// editor's picks as text, then the rest of the posts as rows.
+#[test]
+fn the_meridian_home_page_leads_with_the_newest_post() {
+    let (_temp, out) = built("", &[]);
+    let home = shown(&out, "index.html");
+    let lead = home
+        .find("<div class=\"lead\">")
+        .unwrap_or_else(|| panic!("{home}"));
+    let picks = home
+        .find("<section class=\"picks\">")
+        .unwrap_or_else(|| panic!("{home}"));
+    assert!(lead < picks, "{home}");
+    assert!(home.contains("<ul class=\"cards cards-text\""), "{home}");
+    assert_eq!(home.matches("<div class=\"lead\">").count(), 1, "{home}");
+}
+
+/// The masthead shows a home intro the site wrote, and never the built-in
+/// description every blog gets.
+#[test]
+fn the_meridian_masthead_shows_only_the_site_s_own_intro() {
+    let (_temp, out) = built("", &[]);
+    let home = shown(&out, "index.html");
+    assert!(home.contains("<header class=\"masthead\">"), "{home}");
+    assert!(!home.contains("The newest posts on"), "{home}");
+}
+
+/// A post ends with its author and three related posts with pictures.
+#[test]
+fn a_meridian_post_ends_with_its_author_and_related_posts() {
+    let (_temp, out) = built("", &[]);
+    let post = shown(&out, "why-internal-links-matter/index.html");
+    assert!(post.contains("<section class=\"author-box\">"), "{post}");
+    assert!(
+        post.contains("<section class=\"related related-scroll\">"),
+        "{post}"
+    );
 }
 
 #[test]

@@ -9,7 +9,9 @@ expression: "shown(&out, \"index.html\")"
 </header>
 <main id="main" tabindex="-1">
 
+<header class="masthead">
 <h1>Field Notes on SEO</h1>
+</header>
 <nav class="category-tabs" aria-label="Categories">
 <ul>
 <li><a href="/blog/" aria-current="page">All</a></li>
@@ -18,9 +20,22 @@ expression: "shown(&out, \"index.html\")"
 <li><a href="/blog/category/content-strategy/">Content strategy</a></li>
 </ul>
 </nav>
+<div class="lead">
+<ul class="cards cards-row" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<time datetime="2026-10-12">12 October 2026</time>
+<a href="/blog/category/content-strategy/">Content strategy</a></p>
+<h2><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
+<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+</ul>
+</div>
 <section class="picks">
 <h2>Editor&#39;s picks</h2>
-<ul class="cards cards-row" role="list">
+<ul class="cards cards-text" role="list">
 <li>
 <article class="card">
 <p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
@@ -33,15 +48,6 @@ expression: "shown(&out, \"index.html\")"
 </ul>
 </section>
 <ul class="cards cards-row" role="list">
-<li>
-<article class="card">
-<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
-<time datetime="2026-10-12">12 October 2026</time>
-<a href="/blog/category/content-strategy/">Content strategy</a></p>
-<h2><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
-<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
-</article>
-</li>
 <li>
 <article class="card">
 <figure class="image">

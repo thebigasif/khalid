@@ -44,6 +44,20 @@ expression: "shown(&out, \"why-internal-links-matter/index.html\")"
 <p>Start with one link per post. For example, once your links are in place, read <a href="/blog/how-to-write-a-title-tag/">how to write a title tag</a> next.</p>
 
 </div>
+<section class="author-box">
+<h2>About the author</h2>
+<div class="person-card">
+<div>
+<p class="person-name"><a href="/blog/authors/asif/">Asif</a></p>
+<p class="person-role">Founder of SerpDad</p>
+<p>Asif writes about search from the side of the people who have to do the work: small teams with a website, a blog and not much time. He likes advice you can act on before lunch.</p>
+
+<ul class="author-profiles">
+<li><a href="https://serpdad.com/">serpdad.com</a></li>
+</ul>
+</div>
+</div>
+</section>
 </article>
 <div class="cta-band">
 <p class="cta-note">See your own blog in Meridian.</p>
@@ -55,5 +69,37 @@ expression: "shown(&out, \"why-internal-links-matter/index.html\")"
 <li><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></li>
 <li><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></li>
 <li><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></li>
+</ul>
+</section>
+<section class="related related-scroll">
+<h2>Related posts</h2>
+<ul class="cards" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<time datetime="2026-09-21">21 September 2026</time>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<time datetime="2026-10-12">12 October 2026</time>
+<a href="/blog/category/content-strategy/">Content strategy</a></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
+<time datetime="2026-09-28">28 September 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</article>
+</li>
 </ul>
 </section>
