@@ -5,7 +5,7 @@ expression: pages
 # index.html
 h1: Field Notes on SEO
 nav.topic-row "Topics"
-section.home-section.recent
+section.home-section
   h2: Recently published
   article.card
     h3: Planning a topic cluster in an afternoon
