@@ -34,6 +34,10 @@
   .share-title{font-weight:600}
   .share-desc{color:var(--color-muted);font-size:.8125rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .share.x .share-words{background:var(--color-bg)}
+  /* The bulk SEO editor: a field per cell, its length under it, red past the limit. */
+  .bulk-seo textarea{width:100%;min-width:12rem;resize:vertical}
+  .bulk-seo td{vertical-align:top}
+  .bulk-seo .hint.over{color:var(--color-block)}
   /* One switch per AI crawler, in two columns where there is room. */
   .bots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(19rem,100%),1fr));gap:0 1.5rem;margin:1rem 0 0}
 }
