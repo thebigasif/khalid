@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { readPost } from "../api/posts";
 import { Problem } from "../components/Problem";
-import { EditorForm } from "../editor/EditorForm";
+import { EditorForm } from "../editor/ai/AiEditorForm";
 import { en } from "../strings/en";
 
 const route = getRouteApi("/signed-in/posts/$id");
