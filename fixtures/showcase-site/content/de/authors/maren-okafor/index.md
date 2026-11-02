@@ -8,6 +8,8 @@ same_as:
   - https://www.linkedin.com/in/maren-okafor-example
   - https://x.com/marenokafor
   - https://marenokafor.example/
+  - https://www.example.com/team/maren-okafor/
+  - https://mastodon.example/@maren
 ---
 
 Maren leitet die Schreibabteilung von Larkspur. Vorher hat sie acht Jahre lang Texte für eine Zeitungsseite gekürzt. Dort hat sie gelernt, dass jeder Satz seinen Platz verdienen muss. Sie schreibt über das Planen, Gliedern und Redigieren von Beiträgen.

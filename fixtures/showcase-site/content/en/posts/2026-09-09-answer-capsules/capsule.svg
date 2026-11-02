@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Annotated mock page: a question heading labelled 1, a highlighted answer capsule under it labelled 2, and the longer detail below labelled 3</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <rect x="60" y="24" width="400" height="316" rx="10" fill="#ffffff" stroke="#6b5ca5" stroke-opacity="0.4"/>
+  <text x="84" y="64" font-family="Georgia, serif" font-size="18" fill="#2b2540">Should a post have a table of contents?</text>
+  <rect x="76" y="82" width="368" height="92" rx="6" fill="#8fd9bd" opacity="0.45"/>
+  <text font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <tspan x="88" y="104">Yes, for any post long enough to need</tspan>
+    <tspan x="88" y="124">scrolling. A table of contents lets a skimmer</tspan>
+    <tspan x="88" y="144">jump to the part they need. Skip it on</tspan>
+    <tspan x="88" y="164">short posts.</tspan>
+  </text>
+  <g fill="#2b2540" opacity="0.15">
+    <rect x="88" y="196" width="340" height="10" rx="5"/>
+    <rect x="88" y="216" width="310" height="10" rx="5"/>
+    <rect x="88" y="236" width="330" height="10" rx="5"/>
+    <rect x="88" y="268" width="300" height="10" rx="5"/>
+    <rect x="88" y="288" width="320" height="10" rx="5"/>
+    <rect x="88" y="308" width="200" height="10" rx="5"/>
+  </g>
+  <g stroke="#5b45d6" stroke-width="2" fill="none">
+    <path d="M444 58 H500"/>
+    <path d="M444 128 H500"/>
+    <path d="M430 260 H500"/>
+  </g>
+  <g fill="#5b45d6">
+    <circle cx="516" cy="58" r="15"/>
+    <circle cx="516" cy="128" r="15"/>
+    <circle cx="516" cy="260" r="15"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="15" fill="#ffffff" text-anchor="middle">
+    <text x="516" y="63">1</text>
+    <text x="516" y="133">2</text>
+    <text x="516" y="265">3</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <text x="538" y="54">The question,</text>
+    <text x="538" y="70">as typed</text>
+    <text x="538" y="124">The capsule:</text>
+    <text x="538" y="140">a short answer</text>
+    <text x="538" y="256">The detail,</text>
+    <text x="538" y="272">examples, caveats</text>
+  </g>
+</svg>

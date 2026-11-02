@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Example data: how many of 60 posts on a small blog sit at each click depth from the home page, before and after adding hub links. Before: 6 at one click, 12 at two, 14 at three, 16 at four, 12 at five or more. After: 10 at one click, 34 at two, 16 at three, none deeper</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <text x="320" y="30" font-family="Georgia, serif" font-size="17" text-anchor="middle" fill="#2b2540">Example data: posts at each click depth, 60 posts</text>
+  <line x1="70" y1="300" x2="610" y2="300" stroke="#2b2540" stroke-opacity="0.4"/>
+  <g fill="#ffb38a">
+    <rect x="90" y="276" width="36" height="24"/>
+    <rect x="195" y="252" width="36" height="48"/>
+    <rect x="300" y="244" width="36" height="56"/>
+    <rect x="405" y="236" width="36" height="64"/>
+    <rect x="510" y="252" width="36" height="48"/>
+  </g>
+  <g fill="#6b5ca5">
+    <rect x="128" y="260" width="36" height="40"/>
+    <rect x="233" y="164" width="36" height="136"/>
+    <rect x="338" y="236" width="36" height="64"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="12" fill="#2b2540" text-anchor="middle">
+    <text x="108" y="270">6</text>
+    <text x="146" y="254">10</text>
+    <text x="213" y="246">12</text>
+    <text x="251" y="158">34</text>
+    <text x="318" y="238">14</text>
+    <text x="356" y="230">16</text>
+    <text x="423" y="230">16</text>
+    <text x="461" y="294">0</text>
+    <text x="528" y="246">12</text>
+    <text x="566" y="294">0</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540" text-anchor="middle">
+    <text x="127" y="320">1 click</text>
+    <text x="232" y="320">2 clicks</text>
+    <text x="337" y="320">3 clicks</text>
+    <text x="442" y="320">4 clicks</text>
+    <text x="547" y="320">5 or more</text>
+  </g>
+  <rect x="200" y="336" width="14" height="14" fill="#ffb38a"/>
+  <text x="220" y="348" font-family="Georgia, serif" font-size="13" fill="#2b2540">Before</text>
+  <rect x="300" y="336" width="14" height="14" fill="#6b5ca5"/>
+  <text x="320" y="348" font-family="Georgia, serif" font-size="13" fill="#2b2540">After adding hub links</text>
+</svg>

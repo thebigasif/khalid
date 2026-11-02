@@ -17,7 +17,7 @@ image:
 
 AI search tools answer a question in a few sentences and name a handful of pages as their sources. Being one of those sources is the new first place. This post explains what those tools look for when they choose a page, and how to write posts they can quote with confidence.
 
-None of this replaces good writing for people. The pages AI search quotes are, almost without exception, pages a human reader would also find clear.
+None of this replaces good writing for people. The pages AI search quotes are, almost without exception, pages a human reader would also find clear. For the whole plan, from crawler access to measuring visits, see our [complete guide to optimising content](/blog/ai-search-guide/).
 
 :::callout{kind=summary}
 - **Answer early.** A self-contained answer right under a question heading is the easiest passage to quote.
@@ -70,16 +70,16 @@ AI search tools want to tell their readers who said something and how recent it 
 
 The habits that help AI search are the same habits our [SEO writing guide](/blog/seo-writing-guide/) teaches for people: one question per post, the answer near the top, and short paragraphs with one idea each.
 
-Start from the reader's goal. A post that matches [what the searcher really wants](/blog/search-intent/) is the post a tool can quote, because it answers the question that was asked. Then read your draft as a tool would: cover each paragraph under a question heading and ask whether it still answers the question on its own.
+Start from the reader's goal. A post that matches [what the searcher really wants](/blog/search-intent/) is the post a tool can quote, because it answers the question that was asked. Then read your draft as a tool would: cover each paragraph under a question heading and ask whether it still answers the question on its own. Maren and I talk this habit through in [our first podcast episode](/blog/podcast-answer-first/).
 
 ## Questions about AI search
 
 ::::faq
 :::question{text="Can I block AI search tools from my blog?"}
-You can. Most AI search tools respect the rules in your [robots.txt file](https://developers.google.com/search/docs/crawling-indexing/robots/intro), and each names its own crawler. Blocking them keeps your posts out of their answers, which also means no citations and no visits from them. For a blog that wants readers, we recommend letting them in.
+You can. Most AI search tools respect the rules in your [robots.txt file](https://developers.google.com/search/docs/crawling-indexing/robots/intro), and each names its own crawler; our [[robots-txt|note on robots rules]] explains how they work. Blocking them keeps your posts out of their answers, which also means no citations and no visits from them. For a blog that wants readers, we recommend letting them in.
 :::
 :::question{text="Do AI search tools send visitors?"}
-They send fewer visitors than a top result in ordinary search, because the answer is often enough. The visitors they do send arrive already convinced the page is worth reading, so they stay longer. A citation also puts your brand name in front of every reader who sees the answer.
+They send fewer visitors than a top result in ordinary search, because the answer is often enough. The visitors they do send arrive already convinced the page is worth reading, so they stay longer. A citation also puts your brand name in front of every reader who sees the answer. Our post on [finding AI visits in your analytics](/blog/ai-referral-traffic/) shows how to count them.
 :::
 :::question{text="Should I write shorter posts for AI search?"}
 No. Write posts as long as the question needs, and make every section easy to quote on its own. A long guide with a clear answer under each heading gives a tool many passages to choose from. A short post with no clear answer gives it nothing to lift.

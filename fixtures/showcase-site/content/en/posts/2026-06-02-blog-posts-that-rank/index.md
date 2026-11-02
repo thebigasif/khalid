@@ -24,7 +24,7 @@ image:
 
 SEO writing is the craft of answering a real question so well that search engines choose your page to show for it. It is not a trick played on an algorithm. It is ordinary good writing, planned around what people search for and shaped so that a busy reader can act on it.
 
-This guide is the hub of our writing series. It walks through the whole job, from the question to the final edit, and it links to a shorter post for each step that needs more depth.
+This guide is the hub of our writing series. It walks through the whole job, from the question to the final edit, and it links to a shorter post for each step that needs more depth. To work through the series in order, with an exercise for each step, take our [free course in seven lessons](/blog/seo-writing-course/).
 
 ::toc
 
@@ -118,7 +118,7 @@ Do not publish a post you have only read on the screen you wrote it on. Read it 
 
 ## Write for AI search as well
 
-AI search tools quote pages that answer plainly and name their sources. The habits of SEO writing in this guide already help: an answer near the top, one idea per paragraph, and a source for every number. Our study of [how AI search picks the pages it quotes](/blog/ai-search-sources/) has the details.
+AI search tools quote pages that answer plainly and name their sources. The habits of SEO writing in this guide already help: an answer near the top, one idea per paragraph, and a source for every number. Our study of [how AI search picks the pages it quotes](/blog/ai-search-sources/) has the details, and our [complete guide to AI search](/blog/ai-search-guide/) covers the rest.
 
 ## Keep the post current
 
@@ -128,7 +128,7 @@ Search engines and readers both notice when a post goes stale. Put a date in you
 
 ::::faq
 :::question{text="How long should a blog post be for SEO?"}
-As long as the answer needs and no longer. Search engines do not reward length for its own sake. Look at the pages that rank for your question: if they all answer in a short page, a long one will not beat them. If they all walk through a process, match that depth.
+As long as the answer needs and no longer. Search engines do not reward length for its own sake. Look at the pages that rank for your question: if they all answer in a short page, a long one will not beat them. If they all walk through a process, match that depth. Our [fact check on word count](/blog/fact-check-word-count/) sets out what Google itself says.
 :::
 :::question{text="Should I write for search engines or for people?"}
 Write for people, and make it easy for search engines to understand what you wrote. The two goals rarely clash. A clear title, plain headings and an answer near the top help readers, and they are exactly what search engines look for when they choose a page.

@@ -26,8 +26,8 @@ This post explains each measure in plain words, shows the scores that count as g
 Each measure answers one question a reader would ask if they could.
 
 - **Does the page show up soon?** That is [[largest-contentful-paint|the largest contentful paint]], the moment the biggest image or text block on the screen appears.
-- **Does it react when I tap?** That is Interaction to Next Paint, or INP. It times the gap between a click or tap and the next change on the screen.
-- **Does it stay still?** That is Cumulative Layout Shift, or CLS. It adds up how far things move while the page is still loading.
+- **Does it react when I tap?** That is [[interaction-to-next-paint|Interaction to Next Paint]], or INP. It times the gap between a click or tap and the next change on the screen.
+- **Does it stay still?** That is [[cumulative-layout-shift|Cumulative Layout Shift]], or CLS. It adds up how far things move while the page is still loading.
 
 :::figure{src="lcp.svg" alt="Three stages of a page load that the Core Web Vitals time, from a blank screen to the largest element"}
 The largest contentful paint is the third frame: the moment the biggest element on the screen has arrived.
@@ -100,6 +100,8 @@ A good template reserves the space for each of these before they load. If your b
 The Chrome team explains in this talk from 2024 how to find the slow interactions behind a poor INP score, with examples from real sites.
 
 ::embed{src="https://www.youtube.com/watch?v=xfjumh8ySRY" title="New field insights for debugging INP"}
+
+Our [video notes on debugging INP](/blog/inp-video-notes/) pull out what to check on a blog. This post also has a German version, and our [step-by-step guide for a two-language blog](/blog/hreflang-guide/) shows how the two are tied together.
 
 ## Check your own Core Web Vitals
 

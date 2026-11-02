@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Diagram of hreflang links: the English post and the German post each point to themselves and to each other, and both name the English post as x-default</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#5b45d6"/></marker>
+  </defs>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <text x="320" y="32" font-family="Georgia, serif" font-size="18" text-anchor="middle" fill="#2b2540">One post, two languages, links both ways</text>
+  <rect x="60" y="120" width="180" height="120" rx="10" fill="#ffffff" stroke="#6b5ca5" stroke-width="2"/>
+  <text x="150" y="160" font-family="Georgia, serif" font-size="16" text-anchor="middle" fill="#2b2540">English post</text>
+  <text x="150" y="186" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#2b2540">/blog/core-web-vitals/</text>
+  <text x="150" y="214" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#5b45d6">hreflang="en"</text>
+  <rect x="400" y="120" width="180" height="120" rx="10" fill="#ffffff" stroke="#8fd9bd" stroke-width="2"/>
+  <text x="490" y="160" font-family="Georgia, serif" font-size="16" text-anchor="middle" fill="#2b2540">German post</text>
+  <text x="490" y="186" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#2b2540">/blog/de/core-web-vitals/</text>
+  <text x="490" y="214" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#5b45d6">hreflang="de"</text>
+  <path d="M250 150 C 300 120 340 120 390 150" fill="none" stroke="#5b45d6" stroke-width="2.5" marker-end="url(#a)"/>
+  <path d="M390 210 C 340 240 300 240 250 210" fill="none" stroke="#5b45d6" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="320" y="112" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#2b2540">names its partner</text>
+  <text x="320" y="262" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#2b2540">return link</text>
+  <path d="M100 120 C 70 70 130 70 120 115" fill="none" stroke="#ffb38a" stroke-width="2.5" marker-end="url(#a)"/>
+  <path d="M440 120 C 410 70 470 70 460 115" fill="none" stroke="#ffb38a" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="150" y="70" font-family="Georgia, serif" font-size="13" fill="#2b2540">names itself</text>
+  <text x="490" y="70" font-family="Georgia, serif" font-size="13" fill="#2b2540">names itself</text>
+  <rect x="220" y="300" width="200" height="40" rx="20" fill="#8fd9bd"/>
+  <text x="320" y="325" font-family="Georgia, serif" font-size="14" text-anchor="middle" fill="#2b2540">x-default: English post</text>
+  <path d="M150 240 L150 320 L210 320" fill="none" stroke="#6b5ca5" stroke-width="2" stroke-dasharray="5 5"/>
+  <path d="M490 240 L490 320 L430 320" fill="none" stroke="#6b5ca5" stroke-width="2" stroke-dasharray="5 5"/>
+</svg>

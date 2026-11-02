@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="t">
+  <title id="t">Flow diagram: six blog pages pass three gates, main version, open to search, and loads without a redirect; drafts, a noindex tag page and a redirected address drop out, and three posts reach the sitemap</title>
+  <rect width="640" height="360" fill="#f7f4ee"/>
+  <text x="320" y="32" font-family="Georgia, serif" font-size="18" text-anchor="middle" fill="#2b2540">Three gates before a page enters the sitemap</text>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540">
+    <rect x="20" y="70" width="110" height="34" rx="6" fill="#ffffff" stroke="#6b5ca5"/>
+    <text x="75" y="92" text-anchor="middle">Published post</text>
+    <rect x="20" y="114" width="110" height="34" rx="6" fill="#ffffff" stroke="#6b5ca5"/>
+    <text x="75" y="136" text-anchor="middle">Published post</text>
+    <rect x="20" y="158" width="110" height="34" rx="6" fill="#ffffff" stroke="#6b5ca5"/>
+    <text x="75" y="180" text-anchor="middle">Published post</text>
+    <rect x="20" y="202" width="110" height="34" rx="6" fill="#ffffff" stroke="#ffb38a"/>
+    <text x="75" y="224" text-anchor="middle">Draft</text>
+    <rect x="20" y="246" width="110" height="34" rx="6" fill="#ffffff" stroke="#ffb38a"/>
+    <text x="75" y="268" text-anchor="middle">Noindex tag page</text>
+    <rect x="20" y="290" width="110" height="34" rx="6" fill="#ffffff" stroke="#ffb38a"/>
+    <text x="75" y="312" text-anchor="middle">Old address</text>
+  </g>
+  <g fill="#6b5ca5">
+    <rect x="170" y="70" width="14" height="254" rx="4"/>
+    <rect x="290" y="70" width="14" height="254" rx="4"/>
+    <rect x="410" y="70" width="14" height="254" rx="4"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540" text-anchor="middle">
+    <text x="177" y="60">1 Main version</text>
+    <text x="297" y="60">2 Open to search</text>
+    <text x="417" y="60">3 No redirect</text>
+  </g>
+  <g stroke="#2b2540" stroke-opacity="0.35" stroke-width="2" fill="none">
+    <path d="M130 87 H500"/>
+    <path d="M130 131 H500"/>
+    <path d="M130 175 H500"/>
+    <path d="M130 219 H170"/>
+    <path d="M130 263 H290"/>
+    <path d="M130 307 H410"/>
+  </g>
+  <g fill="#ffb38a">
+    <circle cx="160" cy="219" r="7"/>
+    <circle cx="280" cy="263" r="7"/>
+    <circle cx="400" cy="307" r="7"/>
+  </g>
+  <rect x="500" y="66" width="122" height="130" rx="8" fill="#8fd9bd"/>
+  <text x="561" y="120" font-family="Georgia, serif" font-size="16" text-anchor="middle" fill="#2b2540">sitemap.xml</text>
+  <text x="561" y="144" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#2b2540">3 posts listed</text>
+  <text x="561" y="300" font-family="Georgia, serif" font-size="13" text-anchor="middle" fill="#5b45d6">Dropped at a gate</text>
+  <circle cx="500" cy="296" r="7" fill="#ffb38a"/>
+</svg>

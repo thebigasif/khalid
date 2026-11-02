@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="t">
+  <title id="t">The same paragraph before and after a link edit. Before: the link sits at the foot of the post and says click here. After: the link sits in the sentence where the reader needs it and its words name the page. Three numbered labels point out the changes</title>
+  <rect width="640" height="400" fill="#f7f4ee"/>
+  <g font-family="Georgia, serif" fill="#2b2540">
+    <text x="160" y="34" font-size="16" text-anchor="middle">Before</text>
+    <text x="480" y="34" font-size="16" text-anchor="middle">After</text>
+  </g>
+  <rect x="20" y="50" width="280" height="320" rx="10" fill="#ffffff" stroke="#2b2540" stroke-opacity="0.15"/>
+  <rect x="340" y="50" width="280" height="320" rx="10" fill="#ffffff" stroke="#2b2540" stroke-opacity="0.15"/>
+  <g fill="#2b2540" opacity="0.15">
+    <rect x="40" y="76" width="200" height="12" rx="6"/>
+    <rect x="40" y="104" width="240" height="8" rx="4"/>
+    <rect x="40" y="120" width="230" height="8" rx="4"/>
+    <rect x="40" y="136" width="240" height="8" rx="4"/>
+    <rect x="40" y="152" width="180" height="8" rx="4"/>
+    <rect x="40" y="184" width="240" height="8" rx="4"/>
+    <rect x="40" y="200" width="220" height="8" rx="4"/>
+    <rect x="40" y="216" width="240" height="8" rx="4"/>
+    <rect x="360" y="76" width="200" height="12" rx="6"/>
+    <rect x="360" y="104" width="240" height="8" rx="4"/>
+    <rect x="360" y="152" width="180" height="8" rx="4"/>
+    <rect x="360" y="184" width="240" height="8" rx="4"/>
+    <rect x="360" y="200" width="220" height="8" rx="4"/>
+    <rect x="360" y="216" width="240" height="8" rx="4"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="12" fill="#2b2540">
+    <text x="40" y="300">For more on sitemaps,</text>
+    <text x="360" y="125">Every post belongs in the sitemap.</text>
+    <text x="360" y="141">Follow our</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="12" fill="#5b45d6" text-decoration="underline">
+    <text x="166" y="300">click here.</text>
+    <text x="424" y="141">guide to XML sitemaps</text>
+  </g>
+  <g fill="#ffb38a">
+    <circle cx="278" cy="296" r="13"/>
+    <circle cx="20" cy="296" r="13"/>
+    <circle cx="610" cy="137" r="13"/>
+  </g>
+  <g font-family="Georgia, serif" font-size="13" fill="#2b2540" text-anchor="middle">
+    <text x="278" y="301">1</text>
+    <text x="20" y="301">2</text>
+    <text x="610" y="142">3</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="12" fill="#2b2540">
+    <text x="40" y="334">1 Link words say nothing</text>
+    <text x="40" y="352">2 Buried at the foot of the post</text>
+    <text x="360" y="300">3 In the sentence that needs it,</text>
+    <text x="360" y="318">with words that name the page</text>
+  </g>
+</svg>

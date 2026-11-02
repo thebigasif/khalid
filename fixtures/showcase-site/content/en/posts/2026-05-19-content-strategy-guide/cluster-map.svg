@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="t">
+  <title id="t">Diagram of a topic cluster: the content strategy guide in the centre, joined to eight shorter posts on calendars, return, refreshing, the benchmark, benchmark data, briefs, keyword research and SEO writing</title>
+  <rect width="640" height="400" fill="#f7f4ee"/>
+  <text x="320" y="30" font-family="Georgia, serif" font-size="17" text-anchor="middle" fill="#2b2540">One pillar, eight members, links both ways</text>
+  <g stroke="#6b5ca5" stroke-width="2" opacity="0.6">
+    <line x1="320" y1="215" x2="320" y2="70"/>
+    <line x1="320" y1="215" x2="510" y2="110"/>
+    <line x1="320" y1="215" x2="560" y2="215"/>
+    <line x1="320" y1="215" x2="510" y2="320"/>
+    <line x1="320" y1="215" x2="320" y2="365"/>
+    <line x1="320" y1="215" x2="130" y2="320"/>
+    <line x1="320" y1="215" x2="80" y2="215"/>
+    <line x1="320" y1="215" x2="130" y2="110"/>
+  </g>
+  <g fill="#ffffff" stroke="#6b5ca5" stroke-width="2">
+    <rect x="255" y="52" width="130" height="34" rx="17"/>
+    <rect x="445" y="92" width="130" height="34" rx="17"/>
+    <rect x="495" y="198" width="130" height="34" rx="17"/>
+    <rect x="445" y="303" width="130" height="34" rx="17"/>
+    <rect x="255" y="348" width="130" height="34" rx="17"/>
+    <rect x="65" y="303" width="130" height="34" rx="17"/>
+    <rect x="15" y="198" width="130" height="34" rx="17"/>
+    <rect x="65" y="92" width="130" height="34" rx="17"/>
+  </g>
+  <circle cx="320" cy="215" r="62" fill="#5b45d6"/>
+  <g font-family="Georgia, serif" font-size="14" fill="#2b2540" text-anchor="middle">
+    <text x="320" y="74">Calendar</text>
+    <text x="510" y="114">Return</text>
+    <text x="560" y="220">Refreshing</text>
+    <text x="510" y="325">Benchmark</text>
+    <text x="320" y="370">Benchmark data</text>
+    <text x="130" y="325">Brief template</text>
+    <text x="80" y="220">Keyword research</text>
+    <text x="130" y="114">SEO writing</text>
+  </g>
+  <g font-family="Georgia, serif" font-size="15" fill="#ffffff" text-anchor="middle">
+    <text x="320" y="210">Content</text>
+    <text x="320" y="230">strategy guide</text>
+  </g>
+</svg>

@@ -1,7 +1,7 @@
 //! The showcase site, end to end: every post passes `khalid lint` with no
-//! finding, the built site passes `khalid audit` with no warning but the
-//! known home page pair, and the posts use every block the showcase
-//! promises to show.
+//! finding, the built site passes `khalid audit` with no warning but pages
+//! that share a title with their own translation, the posts use every block
+//! the showcase promises to show, and the demo keeps the depth it promises.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -14,15 +14,16 @@ use tempfile::TempDir;
 /// written today is due for review in six months and stale in twelve.
 const DATED: [&str; 3] = ["review-due", "stale-post", "stale-page"];
 
-/// Every block the showcase shows. Audio, video files and recipes are left
-/// out: the fixture keeps no sound or film files, and recipe markup on a
+/// Every block the showcase shows. Recipes are left out: recipe markup on a
 /// page that is not a recipe breaks the search engines' rules.
-const BLOCKS: [&str; 24] = [
+const BLOCKS: [&str; 28] = [
+    "audio",
     "bookmark",
     "business",
     "button",
     "callout",
     "columns",
+    "cta",
     "embed",
     "faq",
     "figure",
@@ -42,22 +43,51 @@ const BLOCKS: [&str; 24] = [
     "snippet",
     "table",
     "toc",
+    "toggle",
+    "video",
 ];
 
-/// The one known warning: each language's home page takes its title and
-/// description from the site's name and tagline, so the English and German
-/// home pages match. A fix to the home page leaves this test green.
-const HOMES: [&str; 2] = [
-    "https://www.example.com/blog/",
+/// The fewest of each kind of file the demo promises: posts in English and
+/// German, glossary terms and authors, by folder under `content/`.
+const DEPTH: [(&str, usize); 4] = [
+    ("en/posts", 30),
+    ("de/posts", 5),
+    ("en/glossary", 20),
+    ("en/authors", 4),
+];
+
+/// The structured data types the showcase writes by hand in a post's
+/// `schema` field, one page each.
+const SCHEMA_TYPES: [&str; 5] = [
+    "ClaimReview",
+    "Course",
+    "Dataset",
+    "ItemList",
+    "PodcastEpisode",
+];
+
+/// The English and German address of the same page differ only in this
+/// part.
+const GERMAN: (&str, &str) = (
     "https://www.example.com/blog/de/",
-];
+    "https://www.example.com/blog/",
+);
 
-/// Whether `issue` is the known duplicate between the two home pages.
+/// Whether `issue` is a page sharing its title or description with its own
+/// German translation, the one known warning. Each language's home page
+/// takes both from the site's name and tagline, and an author's page is
+/// named after the person in every language. A fix to either leaves this
+/// test green.
 #[cfg(test)]
-fn home_pair(issue: &Value) -> bool {
+fn translation_pair(issue: &Value) -> bool {
+    let english = |url: &str| url.replacen(GERMAN.0, GERMAN.1, 1);
+    let (url, detail) = (
+        issue["url"].as_str().unwrap(),
+        issue["detail"].as_str().unwrap(),
+    );
     ["title-duplicate", "description-duplicate"].contains(&issue["check"].as_str().unwrap())
-        && HOMES.contains(&issue["url"].as_str().unwrap())
-        && HOMES.contains(&issue["detail"].as_str().unwrap())
+        && url != detail
+        && english(url) == english(detail)
 }
 
 #[cfg(test)]
@@ -137,7 +167,7 @@ fn every_showcase_post_passes_lint_with_no_finding() {
     assert_eq!(findings, Vec::<&Value>::new(), "{body}");
     assert_eq!(output.status.code(), Some(0));
     let scores = body["scores"].as_array().unwrap();
-    assert!(scores.len() >= 15, "{body}");
+    assert!(scores.len() >= 35, "{body}");
 }
 
 #[test]
@@ -151,7 +181,7 @@ fn the_built_showcase_passes_the_audit_with_no_new_warning() {
         .iter()
         .filter(|issue| ["error", "warning"].contains(&issue["severity"].as_str().unwrap()))
         .filter(|issue| !DATED.contains(&issue["check"].as_str().unwrap()))
-        .filter(|issue| !home_pair(issue))
+        .filter(|issue| !translation_pair(issue))
         .collect();
     assert_eq!(problems, Vec::<&Value>::new(), "{body}");
     assert_eq!(body["score"], 100, "{body}");
@@ -178,6 +208,33 @@ fn the_showcase_uses_every_block_it_promises() {
     }
     for feature in ["[[", "updated_note:", "access: members", "role: pillar"] {
         assert!(all.contains(feature), "{feature}");
+    }
+    for kind in SCHEMA_TYPES {
+        assert!(all.contains(&format!("\"@type\":\"{kind}\"")), "{kind}");
+    }
+}
+
+#[test]
+fn the_showcase_keeps_the_depth_it_promises() {
+    for (folder, fewest) in DEPTH {
+        let mut path = showcase();
+        path.push("content");
+        path.push(folder);
+        // Each entry is a post, a term or an author, as a folder or one
+        // file; `_index.md` is the folder's own page.
+        let found = fs::read_dir(&path)
+            .unwrap()
+            .filter(|entry| {
+                !entry
+                    .as_ref()
+                    .unwrap()
+                    .file_name()
+                    .to_str()
+                    .unwrap()
+                    .starts_with('_')
+            })
+            .count();
+        assert!(found >= fewest, "{folder}: {found} of {fewest}");
     }
 }
 

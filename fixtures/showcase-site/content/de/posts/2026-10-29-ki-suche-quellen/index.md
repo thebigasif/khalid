@@ -44,7 +44,7 @@ Viele KI-Dienste halten sich an die Regeln in Ihrer Datei robots.txt. Wie diese 
 
 ## Etwas bieten, das sonst niemand hat
 
-Wenn zehn Seiten dasselbe sagen, kann der Dienst jede davon nennen. Oft wählt er dann den bekanntesten Namen. Ein kleiner Blog gewinnt mit etwas Eigenem: einem eigenen Test, einer selbst gezählten Zahl, einem durchgerechneten Beispiel.
+Wenn zehn Seiten dasselbe sagen, kann der Dienst jede davon nennen. Oft wählt er dann den bekanntesten Namen. Ein kleiner Blog gewinnt mit etwas Eigenem: einem eigenen Test, einer selbst gezählten Zahl, einem durchgerechneten Beispiel. Darum haben wir auch [unsere Benchmark-Daten geöffnet](/blog/de/news/benchmark-daten-offen/).
 
 Auch die Technik zählt. Seiten, die schnell und stabil laden, werden leichter abgerufen. Was dabei wichtig ist, steht in unserem Beitrag über [Ladezeit und Core Web Vitals](/blog/de/core-web-vitals/).
 
@@ -66,6 +66,6 @@ Ja. Die meisten Dienste halten sich an die Regeln in Ihrer robots.txt, und jeder
 Sie bringt weniger Besucher als ein Spitzenplatz in der normalen Suche, weil die Antwort oft schon genügt. Wer trotzdem klickt, ist aber schon überzeugt und liest länger. Außerdem sieht jeder Leser der Antwort Ihren Namen als Quelle. Das stärkt Ihre Marke auch ohne Klick.
 :::
 :::question{text="Sollte ich für die KI-Suche kürzer schreiben?"}
-Nein. Schreiben Sie so lang, wie die Frage es verlangt. Sorgen Sie aber dafür, dass jeder Abschnitt für sich allein verständlich ist. Ein langer Ratgeber mit klaren Antworten unter jeder Überschrift bietet viele zitierbare Stellen. Ein kurzer Text ohne klare Antwort bietet keine.
+Nein. Schreiben Sie so lang, wie die Frage es verlangt. Sorgen Sie aber dafür, dass jeder Abschnitt für sich allein verständlich ist. Ein langer Ratgeber mit klaren Antworten unter jeder Überschrift bietet viele zitierbare Stellen. Ein kurzer Text ohne klare Antwort bietet keine. Zu lange Sätze finden Sie schnell mit einem Lesbarkeitsprüfer wie [Quillmeter](/blog/de/quillmeter-test/).
 :::
 ::::
