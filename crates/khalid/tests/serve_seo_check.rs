@@ -281,3 +281,26 @@ fn link_suggestions_rank_other_posts_this_one_does_not_link_to_yet() {
     let (status, _) = send(&server, &key, ("GET", missing), "");
     assert_eq!(status, 404);
 }
+
+#[test]
+fn a_copy_of_a_live_post_is_saved_as_a_new_draft_file() {
+    let site = demo_site();
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let route = format!("{ROUTE}duplicate/");
+    let (status, json) = send(&server, &key, ("POST", &route), "");
+    assert_eq!(status, 201, "{json}");
+    assert_eq!(json["posts"][0]["id"], "en.why-internal-links-matter-copy");
+    assert_eq!(json["posts"][0]["status"], "draft", "{json}");
+    let mut file = site.path().to_path_buf();
+    file.push("drafts/en/why-internal-links-matter-copy.md");
+    let text = fs::read_to_string(&file).unwrap();
+    assert!(
+        text.contains("title: \"Why internal links matter (copy)\""),
+        "{text}"
+    );
+    assert!(
+        text.contains("](/blog/how-to-write-a-title-tag/)"),
+        "the text: {text}"
+    );
+}

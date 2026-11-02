@@ -2644,6 +2644,20 @@ export interface Operations {
     };
     output: null;
   };
+  /** Copies a post, in any status, as a new draft: its title with "(copy)" after it, its text, its author, and every setting but its date, its review, its old addresses and its head code. The copy's slug is the post's with `-copy`, or `-copy-2` and on when that is taken. Answers like a create, with the copy's lint findings and where it opens in the admin. Needs `posts:write`. */
+  duplicate_admin_post: {
+    input: {
+      path: {
+        /** The identity of the post to copy */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: CreatedPosts;
+  };
   /** The blog's other posts in the same language that this post does not link to yet, ranked by what they share with it: its category, its tags, its topic cluster, with the cluster's pillar first, and their focus keyword in this post's text, given back as the words to link. A draft is weighed as if published today. Needs `posts:write`. */
   suggest_links: {
     input: {

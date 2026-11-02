@@ -96,6 +96,30 @@ pub struct SettingsEdit {
 }
 
 impl SettingsEdit {
+    /// An edit that gives a copy of a post the post's `settings`: all but
+    /// its date, its review, its old addresses, which stay with the post,
+    /// and its head code, which only owners and admins may set.
+    #[must_use]
+    pub fn copying(settings: &PostSettings) -> Self {
+        Self {
+            co_authors: Some(settings.co_authors.clone()),
+            excerpt: kept(settings.excerpt.as_ref()),
+            feature_image: kept(settings.feature_image.as_ref()),
+            featured: Some(settings.featured),
+            canonical: kept(settings.canonical.as_ref()),
+            robots: kept(settings.robots.as_ref()),
+            share_cards: Some(settings.share_cards.clone()),
+            access: Some(settings.access),
+            password_hash: kept(settings.password.as_ref()),
+            template: kept(settings.template.as_ref()),
+            seo_title: kept(settings.seo_title.as_ref()),
+            focus_keyword: kept(settings.focus_keyword.as_ref()),
+            secondary_keywords: Some(settings.secondary_keywords.clone()),
+            schema: kept(settings.schema.as_ref()),
+            ..Self::default()
+        }
+    }
+
     /// The review state the edit asks for, if it names one.
     pub fn review_state(&self) -> Option<ReviewState> {
         self.review_state
@@ -181,6 +205,11 @@ impl<T> Change<T> {
             Self::Set(value) => Some(value),
         }
     }
+}
+
+/// A change that sets `value`, or keeps the setting when there is none.
+fn kept<T: Clone>(value: Option<&T>) -> Change<T> {
+    value.cloned().map_or(Change::Keep, Change::Set)
 }
 
 /// Reads a list of secondary keywords, refusing more than

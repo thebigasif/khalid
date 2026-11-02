@@ -19,6 +19,7 @@ mod admin_delete;
 mod admin_deliveries;
 mod admin_draft_comments;
 mod admin_draft_threads;
+mod admin_duplicate;
 mod admin_entries;
 mod admin_follow_ups;
 mod admin_key;
