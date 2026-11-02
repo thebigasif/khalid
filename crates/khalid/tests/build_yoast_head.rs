@@ -203,6 +203,44 @@ fn a_post_preview_on_x_and_slack_names_its_author_and_reading_time() {
 }
 
 #[test]
+fn category_and_tag_pages_use_their_own_title_description_robots_image_and_intro() {
+    let site = site("");
+    put(
+        site.path(),
+        "categories.toml",
+        "[[categories]]\nslug = \"links\"\nen = \"Links\"\n\n\
+         [categories.seo.en]\ntitle = \"Every link guide {sep} {site}\"\n\
+         description = \"Guides on earning and checking links.\"\n\
+         intro = \"Start with **the basics**.\"\n\n\
+         [categories.seo.en.image]\nurl = \"https://www.example.com/media/links.png\"\n\
+         alt = \"A chain of links\"\n",
+    );
+    put(
+        site.path(),
+        "tags.toml",
+        "[[tags]]\nslug = \"crawl\"\n\n[tags.seo.en]\nrobots = \"noindex\"\n",
+    );
+    put(
+        site.path(),
+        "content/en/posts/linked.md",
+        "---\ntitle: Linked\nslug: linked\ndate: 2026-09-20\nauthor: asif\ncategory: links\n\
+         tags: [crawl]\n---\n\nLinked points to [the home page](/blog/).\n",
+    );
+    build(&site);
+    let links = file(&site, "category/links/index.html").unwrap();
+    assert!(
+        links.contains("<title>Every link guide | Field Notes on SEO</title>"),
+        "{links}"
+    );
+    assert!(links.contains(r#"content="Guides on earning and checking links.""#));
+    assert!(links.contains(r#"content="https://www.example.com/media/links.png""#));
+    assert!(links.contains("<strong>the basics</strong>"), "{links}");
+    let crawl = file(&site, "tag/crawl/index.html").unwrap();
+    assert!(crawl.contains(r#"content="noindex"#), "{crawl}");
+    assert!(!crawl.contains(r#"<div class="intro">"#), "{crawl}");
+}
+
+#[test]
 fn a_collection_and_pages_can_leave_search_and_a_feed_format_can_go() {
     let site =
         site("\n[seo.index.collections]\nnews = \"noindex\"\n\n[seo.feeds]\noff = [\"atom\"]\n");

@@ -87,4 +87,10 @@ impl PageNumber {
             .contains(&current)
             .then_some(Self { current, total })
     }
+
+    /// Whether this is the list's first page.
+    #[must_use]
+    pub const fn is_first(self) -> bool {
+        self.current == 1
+    }
 }

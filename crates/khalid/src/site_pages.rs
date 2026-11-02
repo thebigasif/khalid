@@ -438,7 +438,7 @@ impl SitePages {
             }
             own_descriptions::fill(config, &theme.renderer, &mut languages)?;
         }
-        let gone = seo_extras::archives_off::remove(config, &mut languages);
+        let (gone, _) = seo_extras::arrange(folder, (config, routes), &mut languages)?;
         // A headless site's heads carry the same trail as its pages would.
         trails::fill(folder, (config, routes), &mut languages)?;
         post_categories::fill((config, routes), &categories, &mut languages);

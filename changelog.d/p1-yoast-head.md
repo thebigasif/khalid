@@ -9,4 +9,5 @@ Added
 - **Schema aggregation**: the whole site's structured data in one file per language, at `schema.json`, named in `robots.txt` on a `Schemamap:` line. `[seo.schema_map] off = true` turns it off.
 - **Schema type per post and page**: `page_type:` (`FAQPage`, `ContactPage`, `AboutPage`, `QAPage`, `ItemPage`, `CollectionPage`) and `article_type:` (`BlogPosting`, `Article`, `NewsArticle`, `TechArticle`, `Report`) override the defaults.
 - **News**: `news: false` keeps a post out of the news sitemap, and `stock_tickers:` adds up to five tickers to it.
+- **Category and tag SEO**: each term page can have its own title, description, robots, share image and intro, in `categories.toml` and `tags.toml`. The build names term pages that have no intro.
 - **Video**: `thumbnail=` on the video block sets the picture search results show.

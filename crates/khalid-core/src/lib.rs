@@ -38,6 +38,7 @@ mod site_path;
 mod slug;
 mod slug_from_title;
 mod template_choice;
+mod term_seo;
 pub mod toml_location;
 mod user_message;
 mod visitor_log_settings;
@@ -86,5 +87,6 @@ pub use site_nav::{
 pub use site_path::{SitePath, SitePathError};
 pub use slug::{ParseSlugError, Slug};
 pub use template_choice::{CallToAction, OptionValue, PackName, TemplateChoice};
+pub use term_seo::TermSeo;
 pub use user_message::UserMessage;
 pub use visitor_log_settings::VisitorLogSettings;

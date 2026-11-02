@@ -130,6 +130,35 @@ Each language's pages that search engines may list have one JSON-LD graph togeth
 off = true
 ```
 
+## Category and tag pages
+
+Each category or tag page can have its own search settings, one table per language under `seo`. Categories live in `categories.toml` and tags in `tags.toml`, both in the site folder. A tag needs an entry in `tags.toml` only when it has settings: its name still comes from the posts.
+
+```toml
+[[tags]]
+slug = "crawl-budget"
+
+[tags.seo.en]
+title = "Crawl budget guides {sep} {site}"
+description = "How search engines decide how much of a site to read."
+intro = "Every guide on **crawl budget**, newest first."
+robots = "noindex"
+
+[tags.seo.en.image]
+url = "https://www.example.com/media/crawl.png"
+alt = "A spider on a sitemap"
+```
+
+| Key | What it does |
+|---|---|
+| `title` | The page's title, with the same variables as `[seo.titles]`. |
+| `description` | The meta description. Titles can use it as `{term_description}`. |
+| `robots` | The page's own robots directives, such as `noindex`. |
+| `intro` | Markdown shown above the posts on the first page of the list. |
+| `image` | The picture link previews show, with `url`, `alt` and optional `width` and `height`. |
+
+A term page with no intro shows search engines only a list of links. `khalid build` names such pages in one note, and still builds.
+
 ## Front matter for search
 
 These fields go in a post's front matter, between the `---` lines. `page_type` also works on a page in `pages/`.

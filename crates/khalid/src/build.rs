@@ -20,7 +20,7 @@ use crate::exit::Exit;
 use crate::page_code::PageCode;
 use crate::post_files::{Assets, library_photo};
 use crate::post_photos::Shown;
-use crate::seo_extras::archives_off;
+use crate::seo_extras::{self, archives_off, term_seo};
 use crate::site_page::HeadNonce;
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
@@ -141,7 +141,8 @@ fn build(
         build_sitemap::add(config, renderer, &mut languages)?;
         own_descriptions::fill(config, renderer, &mut languages)?;
     }
-    let gone = archives_off::remove(config, &mut languages);
+    let (gone, bare) = seo_extras::arrange(site, (config, routes), &mut languages)?;
+    term_seo::note(&bare);
     // A headless site's heads carry the same trail as its pages would.
     trails::fill(site, (config, routes), &mut languages)?;
     post_categories::fill((config, routes), &categories, &mut languages);
