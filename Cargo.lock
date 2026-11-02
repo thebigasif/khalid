@@ -2770,6 +2770,7 @@ dependencies = [
  "ammonia",
  "argon2 0.6.0",
  "axum",
+ "brotli",
  "chrono",
  "getrandom 0.4.3",
  "hmac",

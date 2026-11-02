@@ -186,9 +186,11 @@ impl Post {
         Self { updated_at, ..self }
     }
 
-    /// The same post with the head of its page, or none.
+    /// The same post with the head of its page, or none, held packed: a
+    /// store keeps a head for every post and sends few of them.
     #[must_use]
-    pub fn with_head(self, head: Option<PostHead>) -> Self {
+    pub fn with_head(self, head: Option<&PostHead>) -> Self {
+        let head = head.map(PostHead::packed);
         Self { head, ..self }
     }
 

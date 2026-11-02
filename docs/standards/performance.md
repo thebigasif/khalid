@@ -77,7 +77,7 @@ The live heap at idle was 22.8 MB. The largest holders were the API router's Ope
 
 The cold start moved within the noise between runs. Left as they are, with the reason:
 
-- **Post heads (4.9 MB).** Every site's Content API hands them out. Kept as JSON text instead of tags they come to about the same size, since the JSON-LD graph is most of it, and making them on request would render at request time (BL-PERF-2).
+- **Post heads (4.9 MB).** Every site's Content API hands them out. Kept as JSON text instead of tags they come to about the same size, since the JSON-LD graph is most of it, and making them on request would render at request time (BL-PERF-2). Update 2026-11-02, integration 29: the Content API's store now keeps each head as Brotli-compressed JSON, packed while the store is built off the render path and decoded when a post is asked for. Idle memory on the 1,000-post site went from 52.89 and 52.82 MB to 49.40 and 49.38 MB, with first byte and rebuild unchanged.
 - **SQLite's page cache** (4.5 MB in the C library's heap), the database track's setting.
 - **The Content API store** keeps each post twice, once by file and once in the store (about 1 MB).
 

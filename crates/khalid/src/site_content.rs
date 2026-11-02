@@ -286,7 +286,7 @@ impl Published {
                 files.entry(id).or_insert_with(|| path.clone());
                 // Every post takes its head from this render, since a new
                 // translation changes the heads of posts left as they were.
-                let head = catalog.heads.get(listing.post.url().as_str()).cloned();
+                let head = catalog.heads.get(listing.post.url().as_str());
                 entries.push((Collection::Posts, listing.post.clone().with_head(head)));
             }
         }
