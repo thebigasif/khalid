@@ -300,18 +300,31 @@ fn a_series_page_lists_its_parts_in_order_as_an_item_list() {
     assert!(series.contains(r#""@type":"ItemList""#), "{series}");
 }
 
-#[test]
-fn a_hub_opens_its_topic_and_its_category_links_to_it() {
+/// Replaces `from` with `to` in the post `slug` of `site`.
+#[cfg(test)]
+fn edit(site: &TempDir, slug: &str, (from, to): (&str, &str)) {
+    let file = at(site.path(), &format!("content/en/posts/{slug}.md"));
+    let text = fs::read_to_string(&file).unwrap();
+    fs::write(&file, text.replace(from, to)).unwrap();
+}
+
+/// The series site with every part in the `clusters` category.
+#[cfg(test)]
+fn in_clusters() -> TempDir {
     let site = with_series();
     for slug in ["plan-the-posts", "pick-the-subject", "link-the-cluster"] {
-        let file = at(site.path(), &format!("content/en/posts/{slug}.md"));
-        let text = fs::read_to_string(&file).unwrap();
-        fs::write(
-            &file,
-            text.replace("author: asif\n", "author: asif\ncategory: clusters\n"),
-        )
-        .unwrap();
+        edit(
+            &site,
+            slug,
+            ("author: asif\n", "author: asif\ncategory: clusters\n"),
+        );
     }
+    site
+}
+
+#[test]
+fn a_hub_opens_its_topic_and_its_category_links_to_it() {
+    let site = in_clusters();
     put(
         site.path(),
         "content/en/pages/clusters.md",
@@ -334,4 +347,43 @@ fn a_hub_opens_its_topic_and_its_category_links_to_it() {
     let category = page(&site, "category/clusters/index.html").unwrap();
     let link = r#"<p class="hub-link"><a href="/blog/clusters/"><span>Start here</span> Topic clusters</a></p>"#;
     assert!(category.contains(link), "{category}");
+}
+
+#[test]
+fn the_home_page_shows_the_owner_numbers_topic_tabs_and_media_rows() {
+    let site = in_clusters();
+    let video =
+        "::video{src=\"/media/tour.mp4\" title=\"A tour of a cluster\" poster=\"/media/tour.jpg\"}";
+    edit(
+        &site,
+        "plan-the-posts",
+        ("A part that", &format!("{video}\n\nA part that")),
+    );
+    let audio = "::audio{src=\"/media/episode.mp3\" title=\"Episode 1\"}";
+    edit(
+        &site,
+        "link-the-cluster",
+        ("A part that", &format!("{audio}\n\nA part that")),
+    );
+    let options = "\n[template]\nname = \"atlas\"\n\n[template.options]\n\
+                   hero_stats = [\"140 | blogs studied\"]\n";
+    let toml = at(site.path(), "site.toml");
+    let text = fs::read_to_string(&toml).unwrap();
+    fs::write(&toml, format!("{text}{options}")).unwrap();
+    build(&site);
+    let home = page(&site, "index.html").unwrap();
+    let main = main_of(&home);
+    assert!(
+        main.contains("<dt>blogs studied</dt>\n<dd>140</dd>"),
+        "{main}"
+    );
+    assert!(
+        main.contains(r##"<li><a href="#topic-1">clusters</a></li>"##),
+        "{main}"
+    );
+    let (_, videos) = main.split_once(r#"<h2 id="home-videos">"#).unwrap();
+    let (videos, podcasts) = videos.split_once(r#"<h2 id="home-podcasts">"#).unwrap();
+    assert!(videos.contains("/blog/plan-the-posts/"), "{main}");
+    assert!(!videos.contains("/blog/link-the-cluster/"), "{main}");
+    assert!(podcasts.contains("/blog/link-the-cluster/"), "{main}");
 }

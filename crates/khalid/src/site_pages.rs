@@ -29,8 +29,9 @@ use crate::unlock::Gate;
 use crate::{
     assets, build_entries, build_gate, build_glossary, build_home, build_hubs, build_lists,
     build_message, build_pages, build_seo, build_series, build_sitemap, categories,
-    content_message, home_images, look, own_descriptions, post_categories, post_files, post_gate,
-    post_lock, search_page, serve_message, share_images, site_files, site_outline, trails,
+    content_message, home_images, home_rows, look, own_descriptions, post_categories, post_files,
+    post_gate, post_lock, search_page, serve_message, share_images, site_files, site_outline,
+    trails,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -438,6 +439,7 @@ impl SitePages {
                 build_entries::add((config, routes), &theme.renderer, content, &mut languages)?;
                 build_series::add(config, &theme.renderer, content, &mut languages)?;
                 build_hubs::fill((config, routes), content, &mut languages);
+                home_rows::fill(&mut languages);
                 build_sitemap::add(config, &theme.renderer, &mut languages)?;
             }
             own_descriptions::fill(config, &theme.renderer, &mut languages)?;

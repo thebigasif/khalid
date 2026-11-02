@@ -73,6 +73,7 @@ mod export;
 mod form_delivery;
 mod form_pages;
 mod home_images;
+mod home_rows;
 mod https_message;
 mod import;
 mod import_held;
