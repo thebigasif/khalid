@@ -181,7 +181,8 @@ pub struct PostRow {
     has_focus_keyword: bool,
     /// Its role in a topic cluster, or `null` outside one: the `pillar`,
     /// the main post the others link to, or a `member`. A list filters
-    /// pillars by `pillar:true`.
+    /// pillars by `pillar:true`, and either role by `cluster:member` or
+    /// `cluster:pillar`.
     cluster: Option<ClusterPlace>,
     /// Whether search engines may list it.
     index_status: IndexStatus,
@@ -366,6 +367,11 @@ impl FieldValues for PostRow {
             "has_focus_keyword" => vec![Literal::Bool(self.has_focus_keyword)],
             "orphan" => vec![Literal::Bool(self.links.inbound == 0)],
             "pillar" => vec![Literal::Bool(self.cluster == Some(ClusterPlace::Pillar))],
+            "cluster" => match self.cluster {
+                Some(ClusterPlace::Pillar) => text("pillar"),
+                Some(ClusterPlace::Member) => text("member"),
+                None => Vec::new(),
+            },
             _ => Vec::new(),
         }
     }
@@ -389,6 +395,7 @@ impl Listable for PostRow {
         "has_focus_keyword",
         "orphan",
         "pillar",
+        "cluster",
     ];
 
     fn id(&self) -> &str {

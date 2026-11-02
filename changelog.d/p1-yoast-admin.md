@@ -17,3 +17,4 @@ Added
 - Each row of the posts list carries the post's `path` on the site. The dashboard lists the checks that fail on most posts as tasks, "Fix these first", each with its fix and a post to start on.
 - Moving live posts to the trash asks what their old addresses should do: say the page is gone for good (410), the default, or send readers to another live post you pick (301). The answer is stored as a redirect.
 - A Bulk SEO screen edits the SEO title, description and focus keyword of many posts in one table, shows each field's length, saves each row on its own, and can show only the posts that lack one of the three.
+- The posts list filters posts by their role in a topic cluster: `cluster:member` or `cluster:pillar`.

@@ -15105,7 +15105,7 @@
             "oneOf": [
               {
                 "$ref": "#/components/schemas/ClusterPlace",
-                "description": "Its role in a topic cluster, or `null` outside one: the `pillar`,\nthe main post the others link to, or a `member`. A list filters\npillars by `pillar:true`."
+                "description": "Its role in a topic cluster, or `null` outside one: the `pillar`,\nthe main post the others link to, or a `member`. A list filters\npillars by `pillar:true`, and either role by `cluster:member` or\n`cluster:pillar`."
               },
               {
                 "type": "null"

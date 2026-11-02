@@ -4,9 +4,10 @@
 use chrono::{NaiveDate, TimeZone, Utc};
 use khalid_api::query::{FieldValues, Filter};
 use khalid_api::resources::{
-    AdminPost, Gate, IndexStatus, LintCounts, PostRow, PostSettings, ReviewState,
+    AdminPost, Gate, IndexStatus, LintCounts, PostLinks, PostRow, PostSettings, ReviewState,
 };
 use khalid_core::Slug;
+use khalid_lint::ClusterRole;
 use serde_json::json;
 
 #[cfg(test)]
@@ -119,7 +120,11 @@ fn the_shared_filter_grammar_reaches_every_column() {
     featured.review_state = ReviewState::Ready;
     let rows = [
         PostRow::new(&draft("weak"), Gate::Refuses),
-        PostRow::new(&live("strong", featured), Gate::Passes),
+        PostRow::new(&live("strong", featured), Gate::Passes).with_reach(
+            0,
+            PostLinks::default(),
+            Some(ClusterRole::Member),
+        ),
     ];
     let cases = [
         ("gate:refuses", "weak"),
@@ -130,6 +135,7 @@ fn the_shared_filter_grammar_reaches_every_column() {
         ("published_at:null", "weak"),
         ("published_at:>'2026-09-01'", "strong"),
         ("author:null+slug:~'wea'", "weak"),
+        ("cluster:member", "strong"),
     ];
     for (filter, want) in cases {
         let filter: Filter = filter.parse().unwrap();
