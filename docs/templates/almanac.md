@@ -17,14 +17,16 @@ For short news posts, `classic` or Workbench fit better.
 name = "almanac"
 ```
 
-Your colours, fonts and logo still come from theme sync. Almanac draws no colour of its own: the call-to-action bands sit on your surface colour with the button in your accent colour.
+Your colours, fonts and logo still come from theme sync. Until you sync a theme, Almanac uses its own palette: warm paper, ink-dark text and a deep green accent. The accent marks numbers, labels, links and the one button; tints of it shade the call-to-action band, the newsletter band and callouts.
+
+Almanac numbers everything a reader may want to find again: each section of a post opens with its number, the contents beside the post show the same numbers, and the newest posts and the editor's picks on the front page are numbered lists.
 
 ## What the front page shows
 
 1. A row of your category links, with the rest under "More". The menu works without scripts.
-2. The newest post marked `featured: true`, large, then a band with your call to action.
-3. "Latest posts": the next four posts as short rows, each with its category, title and date.
-4. "More posts": up to six more as picture cards, three in a row, with the editor's picks as a list of links beside them.
+2. The newest post marked `featured: true`, its picture beside its title on a wide screen, then a band with your call to action.
+3. "Latest posts": the next four posts as a numbered row, each with its category, title and date.
+4. "More posts": up to six more as picture cards, two in a row, with the editor's picks as a numbered list beside them.
 5. The newsletter form.
 6. Your home sections, each with up to four cards and a link to see all.
 7. The page links, then your call to action again to close the page.
@@ -33,9 +35,9 @@ Your colours, fonts and logo still come from theme sync. Almanac draws no colour
 
 1. Breadcrumbs: the front page, the category, the post.
 2. The title, the post's `description` as a subtitle, the writers with their photos, the date and the reading time.
-3. The lead picture, wider than the text on large screens.
-4. "On this page": the contents in an open box, without numbers.
-5. The body.
+3. The lead picture, across the text and the contents on large screens.
+4. "On this page": on a large screen a column beside the text that stays in view as the reader scrolls; on a phone a folded box above the text. Each section shows its number.
+5. The body, each section opened by a thin rule and its number.
 6. The writers again with their roles, the date it was last updated, and why, from `updated_note`.
 7. Share links, the newsletter form and your call to action.
 8. "Keep reading": four related posts as short rows. Then "Related posts": up to six more as picture cards.
@@ -71,8 +73,8 @@ Set these under `[template.options]`. An option you leave out takes the default.
 | `pagination` | `numbered` | The links under a long list: `numbered`, or `pages` for newer and older only. |
 | `related` | `grid` | How related posts are laid out. `grid` shows four as short rows, then the rest as picture cards. `list`, `row`, `scroll` and `links` show one set. |
 | `related_count` | `10` | How many related posts show in all, from 3 to 10. |
-| `contents` | `inline` | Where "On this page" goes: `inline`, `inline-folded`, `side-end`, `side-start` or `none`. |
-| `contents_numbers` | `none` | How the contents are numbered: `none`, `numbered` or `nested`. |
+| `contents` | `side-end` | Where "On this page" goes: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. |
+| `contents_numbers` | `none` | How the contents are numbered: `none`, `numbered` or `nested`. With `none`, Almanac shows its own section numbers. |
 | `share` | `end` | Where share links show: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["x", "linkedin", "facebook", "email"]` | Which networks the share links go to, in order. |
 | `newsletter` | `both` | Where the newsletter form shows: `none`, `post`, `home` or `both`. |
@@ -99,11 +101,14 @@ Almanac sets these defaults. A value in your `theme/tokens.toml` wins.
 
 | Token | Almanac |
 |---|---|
+| Colours | background `#fcfbf8`, surface `#f3f0e8`, text `#1c201d`, muted `#575c56`, link `#17604a`, accent `#1d6b53`, border `#e2ddd1` |
 | Body text | 1.0625rem to 1.125rem |
-| `h1`, `h2`, `h3` | 2.25rem to 3.5rem, 1.625rem to 2.25rem, 1.25rem to 1.375rem |
-| Line height | 1.65 |
-| Line length (`measure`) | 70ch |
-| Corners (`radius`) | 1rem |
+| `h1`, `h2`, `h3`, `h4` | 2.25rem to 3.375rem, 1.5rem to 2rem, 1.1875rem to 1.375rem, 1.0625rem to 1.125rem |
+| Heading weight | 800 |
+| Line height | 1.7 |
+| Line length (`measure`) | 68ch |
+| Corners (`radius`) | 0.5rem |
+| Space between sections | 4.5rem |
 
 ## Good to know
 

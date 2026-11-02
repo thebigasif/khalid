@@ -16,7 +16,7 @@ Without a `[template]` table your blog uses `classic`, the look Khalid has alway
 These eleven templates are built in. Every template but classic has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default.
 
 - `classic`: a calm column of text, cards on the home page and the contents beside long posts. It takes no options.
-- `almanac`: a library of long guides, soft and roomy, with a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
+- `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
 - `atlas`: a portal for a blog with many topics, with topic tabs, featured posts and editor's picks. See [Atlas](templates/atlas.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
 - `folio`: a product team's essays under their own masthead, with category pills, a featured story and a grid of outlined cards. See [Folio](templates/folio.md).

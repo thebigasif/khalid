@@ -11,7 +11,7 @@ expression: "main_of(&page(&out, POST))"
 </ol>
 </nav>
 
-<article class="post">
+<article class="post post-with-toc">
 <header class="post-header">
 <h1>What a sitemap does, and what it does not</h1>
 <p class="dek">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
@@ -24,7 +24,17 @@ expression: "main_of(&page(&out, POST))"
 <p><time datetime="2026-09-28">28 September 2026</time><span class="reading-time"><time datetime="PT1M">1 min read</time></span></p>
 </div>
 </header>
-<nav class="toc-box" aria-label="On this page">
+<details class="toc-inline">
+<summary>On this page</summary>
+<nav aria-label="On this page">
+<ol class="toc-plain">
+<li><a href="#what-it-does">What it does</a></li>
+<li><a href="#what-it-does-not-do">What it does not do</a></li>
+<li><a href="#keep-it-clean">Keep it clean</a></li>
+</ol>
+</nav>
+</details>
+<nav class="toc-side" aria-label="On this page">
 <p class="toc-title">On this page</p>
 <ol class="toc-plain">
 <li><a href="#what-it-does">What it does</a></li>

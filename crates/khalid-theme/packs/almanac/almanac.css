@@ -1,104 +1,158 @@
-/* Almanac (templates spec 3.8): a resource library of long guides. Soft,
-   roomy and rounded: large panels on tints of the accent, pill labels,
-   picture cards with round corners, bands that reach the screen's edges,
-   a wide lead picture. Every colour, font and corner comes from the
-   tokens; tints are color-mix() of them, with text in the text colour. */
+/* Almanac (templates spec 3.8): a field guide for libraries of long guides.
+   Warm paper, ink headings, one accent for numbers, labels and links.
+   Every chapter carries a number, in the post, in its contents and in the
+   lists, so a long guide reads like a book with a thumb index. Colours,
+   fonts and the corner come from the tokens; tints are color-mix() of them. */
 
-/* Lists use the full width for their grid; a post keeps its measure. */
-.site-header, .site-footer, main { max-inline-size: 80rem; }
+:root {
+  --al-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background));
+  --al-wide: 76rem;
+  --al-gap: calc(var(--space) * 4);
+}
+::selection { background: color-mix(in oklab, var(--color-accent) 22%, var(--color-background)); }
+
+/* One wide frame for lists, the measure plus a rail for a guide. */
+.site-header, .site-footer, main { max-inline-size: var(--al-wide); }
 main:has(> .post), main:has(> .page) { max-inline-size: var(--measure); }
-.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; }
+main { padding-block: 0 var(--space-section); }
 
-/* The header: the name, the menu as soft pills, the button round. */
-.site-header { padding-block: 1.25rem; border-block-end: 0; }
-.site-name { font-size: 1.375rem; letter-spacing: -0.02em; }
-.site-header nav ul { gap: 0.25rem; }
-.site-header nav a { padding-inline: 0.875rem; border-radius: 999px; color: var(--color-text); font-weight: 600; text-decoration: none; }
-.site-header nav a:hover, .site-header nav [aria-current] { background: color-mix(in oklab, var(--color-accent) 12%, var(--color-background)); }
-.search-link { padding-inline: 1rem; background: var(--color-surface); border-radius: 999px; color: var(--color-text); font-weight: 600; text-decoration: none; }
-.header-button { padding-inline: 1.25rem; }
-.announcement { margin: 0; background: color-mix(in oklab, var(--color-accent) 12%, var(--color-background)); border: 0; box-shadow: 0 0 0 100vmax color-mix(in oklab, var(--color-accent) 12%, var(--color-background)); clip-path: inset(0 -100vmax); font-weight: 600; }
-.announcement a { color: var(--color-text); }
-
-/* The row of category links, with the rest under "More". */
-.al-subnav { margin-block: 0.25rem 1rem; padding-block: 0.25rem; border-block: 1px solid var(--color-border); }
-.al-subnav > ul { align-items: center; gap: 0 1.5rem; }
-.al-subnav a { color: var(--color-text); font-weight: 600; text-decoration: none; }
-.al-subnav a:hover { color: var(--color-link); text-decoration: underline; }
-.al-subnav details { position: relative; }
-.al-subnav summary { display: inline-flex; align-items: center; min-block-size: 44px; font-weight: 600; cursor: pointer; }
-.al-subnav details ul { position: absolute; z-index: 2; inset-inline-start: 0; display: grid; gap: 0; min-inline-size: 14rem; padding: 0.5rem 1rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); }
-
-.al-title { margin-block: 2rem 0.5rem; font-size: var(--text-h1); letter-spacing: -0.025em; }
-main > .intro { max-inline-size: 42rem; margin-block-end: 2rem; font-size: var(--text-h4); }
-.al-pill { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-text); font-size: var(--text-small); font-weight: 700; text-decoration: none; }
-.al-pill::before { content: ""; inline-size: 0.625rem; block-size: 0.625rem; margin-inline-end: 0.5rem; background: var(--color-accent); border-radius: 50%; }
-.card-meta a { padding-inline: 0.75rem; background: color-mix(in oklab, var(--color-accent) 12%, var(--color-background)); border-radius: 999px; color: var(--color-text); font-weight: 600; text-decoration: none; }
-
-/* The featured guide: a large rounded panel on a tint of the accent, the
-   picture on the page colour inside it, with a soft shadow. */
-.featured { margin-block: 0 1.5rem; }
-.featured > h2 { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; white-space: nowrap; }
-.card-featured { container-type: inline-size; display: grid; gap: 0.75rem 3rem; padding: clamp(1.25rem, 4vw, 3rem); background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border-radius: calc(var(--radius) * 1.5); }
-.card-featured .image img { aspect-ratio: 4 / 3; object-fit: cover; background: var(--color-background); border-radius: var(--radius); box-shadow: 0 1.5rem 3rem -1.5rem color-mix(in oklab, var(--color-text) 35%, transparent); }
-.card-featured h3 { margin-block: 0.25rem 0.5rem; font-size: var(--text-h1); line-height: 1.08; letter-spacing: -0.025em; }
-.card-featured h3 a:hover { text-decoration: underline; text-decoration-thickness: 0.06em; }
-.card-featured > p:last-child { margin: 0; font-size: var(--text-h4); }
-.card-featured .card-meta a { background: var(--color-background); }
-@container (min-width: 48rem) {
-  .card-featured:has(.image) { grid-template-columns: 1fr 1fr; align-items: center; }
-  .card-featured .image { grid-row: span 4; }
+/* Labels: small, tracked capitals that name each part of a page. */
+.al-label, .featured > h2, .al-latest > h2, .al-grid > h2, .al-picks > h2, .al-keep > h2, .al-related > h2, .toc-title, .toc-inline summary, .share-title, .post-footer h2, .footer-groups h2 {
+  margin: 0 0 calc(var(--space) * 2);
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
 }
 
-/* The call to action: a band on the surface, the button in the accent. */
-.cta-band { padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 4vw, 3rem); border-radius: calc(var(--radius) * 1.5); }
-.cta-note { font-family: var(--font-heading); font-size: var(--text-h4); }
-.al-closing .cta-band { flex-direction: column; justify-content: center; text-align: center; padding-block: clamp(2rem, 6vw, 4rem); background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); }
+/* The header: the name, a quiet menu, one small button. */
+.site-header { gap: var(--space) calc(var(--space) * 4); padding-block: calc(var(--space) * 2.5); border-block-end: 1px solid var(--color-border); }
+.site-header nav { margin-inline-end: auto; }
+.site-name { font-size: 1.25rem; letter-spacing: -0.02em; }
+.site-header nav ul { gap: 0 calc(var(--space) * 0.5); }
+.site-header nav a { padding-inline: calc(var(--space) * 1.25); color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; border-radius: var(--radius); }
+.site-header nav a:hover { background: var(--color-surface); }
+.site-header nav [aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); border-radius: 0; }
+.search-link { padding-inline: calc(var(--space) * 2); border: 1px solid var(--color-border); border-radius: var(--radius); color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+.button, .subscribe button { color: var(--color-on-accent); border-radius: var(--radius); }
+.button:hover, .subscribe button:hover { background: color-mix(in oklab, var(--color-accent) 85%, var(--color-text)); }
+.header-button { min-block-size: 44px; padding: 0.375rem calc(var(--space) * 2); font-size: 0.9375rem; }
+.announcement { margin: 0; padding-block: calc(var(--space) * 1.25); background: var(--al-tint); border: 0; box-shadow: 0 0 0 100vmax var(--al-tint); clip-path: inset(0 -100vmax); font-size: 0.9375rem; font-weight: 600; }
+.announcement a { color: var(--color-text); text-decoration-color: var(--color-accent); }
+@media (max-width: 47.99rem) {
+  .site-header { gap: 0 var(--space); padding-block: var(--space); }
+  .site-header nav { order: 3; flex-basis: 100%; margin-inline: -0.5rem; }
+  .site-header nav ul, .al-subnav > ul { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .site-header nav a { white-space: nowrap; }
+  .header-button { font-size: var(--text-small); }
+}
+@media (max-width: 29.99rem) { .header-button { display: none; } }
 
-/* The newest posts as short panels, each topped with a line of the accent. */
+/* The row of category links under the header, the rest under "More". */
+.al-subnav { margin-block: 0 calc(var(--space) * 5); border-block-end: 1px solid var(--color-border); }
+.al-subnav > ul { align-items: center; gap: 0 calc(var(--space) * 3); }
+.al-subnav a, .al-subnav summary { color: var(--color-muted); font-size: 0.9375rem; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.al-subnav a:hover, .al-subnav summary:hover { color: var(--color-text); }
+.al-subnav details { position: relative; }
+.al-subnav summary { display: inline-flex; align-items: center; min-block-size: 44px; cursor: pointer; }
+.al-subnav details ul { position: absolute; z-index: 2; inset-inline-start: 0; display: grid; gap: 0; min-inline-size: 14rem; padding: var(--space) calc(var(--space) * 2); background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); box-shadow: 0 0.75rem 2rem -1rem color-mix(in oklab, var(--color-text) 30%, transparent); }
+
+/* The front page's title and line under it. */
+.al-title, main > h1 { max-inline-size: 20ch; margin-block: calc(var(--space) * 6) calc(var(--space) * 2); font-size: var(--text-h1); line-height: 1.05; letter-spacing: -0.035em; }
+.al-subnav + .al-title { margin-block-start: 0; }
+.al-title + .featured, .al-title + .cta-band { margin-block-start: calc(var(--space) * 5); }
+main > .intro { max-inline-size: 40rem; margin-block-end: calc(var(--space) * 6); font-size: 1.25rem; line-height: 1.5; }
+main > .intro > :last-child { margin-block-end: 0; }
+
+/* A post's category: a small tracked label in the link colour. */
+.al-pill { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-link); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
+.al-pill:hover { text-decoration: underline; }
+.card-meta a { order: -1; flex-basis: 100%; color: var(--color-link); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
+.card-meta a:hover { text-decoration: underline; }
+
+/* The featured guide: labelled above, the picture beside the words on a
+   wide screen. */
+.featured { container-type: inline-size; margin-block: 0 calc(var(--space) * 6); }
+.featured + .cta-band { margin-block-start: 0; }
+.card-featured { display: grid; gap: calc(var(--space) * 2) calc(var(--space) * 6); padding: 0; background: none; border-radius: 0; }
+.card-featured .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface); border: 1px solid var(--color-border); }
+.featured .card-featured h3 { margin: 0; font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.025em; }
+.card-featured h3 a:hover { text-decoration: underline; text-decoration-thickness: 0.06em; }
+.featured .card-featured > p:last-child { margin: 0; font-size: 1.125rem; -webkit-line-clamp: 4; }
+@container (min-width: 48rem) {
+  .card-featured:has(.image) { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-rows: 1fr auto auto auto 1fr; row-gap: calc(var(--space) * 1.5); }
+  .card-featured .image { grid-row: 1 / -1; align-self: center; }
+  .card-featured:has(.image) > :not(.image) { grid-column: 2; }
+  .card-featured > .card-meta { grid-row: 2; }
+  .card-featured > h3 { grid-row: 3; }
+  .card-featured > p:last-child { grid-row: 4; }
+}
+
+/* The call to action: a ruled band, the words then the button. */
+.cta-band { gap: calc(var(--space) * 2) calc(var(--space) * 4); margin-block: calc(var(--space) * 4) var(--space-section); padding: calc(var(--space) * 3) calc(var(--space) * 4); background: var(--al-tint); border: 1px solid color-mix(in oklab, var(--color-accent) 25%, var(--color-background)); border-radius: var(--radius); }
+.cta-note { max-inline-size: 36rem; font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; line-height: 1.35; letter-spacing: -0.01em; }
+.al-closing .cta-band { flex-direction: column; justify-content: center; margin-block-end: 0; padding-block: calc(var(--space) * 8); text-align: center; }
+.al-closing .cta-note { font-size: var(--text-h2); line-height: 1.2; letter-spacing: -0.025em; }
+
+/* The newest guides as a numbered index, four across. */
 .al-latest, .al-library { margin-block: var(--space-section); }
-.al-latest > h2, .al-grid > h2, .al-picks > h2, .al-keep > h2, .al-related > h2, .home-section h2 { margin-block: 0 1rem; font-size: var(--text-h2); letter-spacing: -0.02em; }
-.al-rows { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
-.al-rows > li { padding: 0.75rem 1.25rem 1.25rem; background: var(--color-surface); border-block-start: 4px solid var(--color-accent); border-radius: var(--radius); }
-.al-rows h3 { margin-block: 0 0.5rem; font-size: 1.125rem; line-height: 1.35; }
+.al-latest > h2, .al-grid > h2, .al-picks > h2 { margin-block-end: calc(var(--space) * 3); padding-block-end: calc(var(--space) * 1.5); border-block-end: 2px solid var(--color-text); }
+.al-rows { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: calc(var(--space) * 2) var(--al-gap); margin: 0; padding: 0; list-style: none; counter-reset: row; }
+.al-rows > li { display: grid; align-content: start; padding-block-start: calc(var(--space) * 1.5); counter-increment: row; }
+.al-rows > li::before { content: counter(row, decimal-leading-zero) / ""; color: var(--color-accent); font-family: var(--font-heading); font-size: 2.25rem; font-weight: var(--heading-weight); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.al-rows h3 { margin: 0 0 var(--space); font-size: 1.1875rem; line-height: 1.3; letter-spacing: -0.015em; }
 .al-rows h3 a { color: var(--color-text); text-decoration: none; }
 .al-rows h3 a:hover { text-decoration: underline; }
 .al-rows p { margin: 0; color: var(--color-muted); font-size: var(--text-small); }
 
-/* The library: picture cards, with the editor's picks beside them. */
-.al-library { display: grid; gap: 1.5rem 3rem; }
+/* The library: picture cards in two columns beside the editor's picks. */
+.al-library { display: grid; gap: var(--space-section) var(--al-gap); }
 @media (min-width: 64rem) {
-  .al-library:has(.al-grid):has(.al-picks) { grid-template-columns: minmax(0, 3fr) minmax(15rem, 1fr); }
+  .al-library:has(.al-grid):has(.al-picks) { grid-template-columns: minmax(0, 1fr) 20rem; }
+  .al-library .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 1.5rem; }
-.cards .card { block-size: 100%; padding: 1.25rem; background: var(--color-surface); border-radius: var(--radius); transition: background-color 0.15s; }
-.cards .card:hover, .cards .card:focus-within { background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); }
-.cards .card:has(.image) { display: block; }
-.cards .card .image { margin: -1.25rem -1.25rem 1rem; }
-.cards .card .image img { aspect-ratio: 16 / 10; object-fit: cover; background: var(--color-background); border-radius: var(--radius) var(--radius) 0 0; }
-.card :is(h2, h3) { margin-block: 0.5rem; font-size: var(--text-h4); line-height: 1.3; }
-.card > p:last-child { color: var(--color-muted); }
-.al-picks { padding: 1.5rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); align-self: start; }
-.al-picks ul { counter-reset: pick; }
-.al-picks li { display: flex; align-items: center; gap: 0.75rem; counter-increment: pick; }
-.al-picks li::before { content: counter(pick) / ""; display: grid; place-items: center; flex: none; inline-size: 2rem; block-size: 2rem; background: color-mix(in oklab, var(--color-accent) 14%, var(--color-background)); border-radius: 50%; font-size: var(--text-small); font-weight: 700; }
-.al-picks li + li { border-block-start: 1px solid var(--color-border); }
-.al-picks a { display: flex; align-items: center; min-block-size: 44px; padding-block: 0.5rem; color: var(--color-text); font-weight: 600; text-decoration: none; }
+.home-section h2, .comments > h2 { margin-block: 0 calc(var(--space) * 3); font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.025em; }
+.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: calc(var(--space) * 6) var(--al-gap); }
+.cards .card:has(.image) { display: flex; flex-direction: column; }
+.cards .card .image { order: -2; margin: 0 0 calc(var(--space) * 2); }
+.cards .card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface); border: 1px solid var(--color-border); transition: border-color 0.15s; }
+.cards .card:hover .image img { border-color: var(--color-accent); }
+.card-meta { gap: 0 calc(var(--space) * 1.5); }
+.card :is(h2, h3) { margin-block: calc(var(--space) * 0.5) var(--space); font-size: 1.25rem; line-height: 1.3; letter-spacing: -0.015em; }
+.card > p:last-child { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; color: var(--color-muted); font-size: 1rem; line-height: 1.6; }
+
+/* The editor's picks: a numbered list in a ruled column. */
+.al-picks { position: sticky; inset-block-start: calc(var(--space) * 3); align-self: start; }
+.al-picks ul { margin: 0; padding: 0; list-style: none; counter-reset: pick; }
+.al-picks li { display: grid; grid-template-columns: 2.25rem 1fr; align-items: baseline; padding-block: calc(var(--space) * 0.5); border-block-end: 1px solid var(--color-border); counter-increment: pick; }
+.al-picks li::before { content: counter(pick, decimal-leading-zero) / ""; color: var(--color-link); font-size: 0.9375rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.al-picks a { display: flex; align-items: center; min-block-size: 44px; color: var(--color-text); font-weight: 700; line-height: 1.4; text-decoration: none; }
 .al-picks a:hover { color: var(--color-link); text-decoration: underline; }
 
-/* The newsletter: a tinted band across the screen, the form centred. */
-.newsletter-slot { margin-block: var(--space-section); padding: clamp(2rem, 6vw, 4rem) 0; background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border-radius: 0; box-shadow: 0 0 0 100vmax color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); clip-path: inset(0 -100vmax); text-align: center; }
-.newsletter-slot h2 { font-size: var(--text-h2); letter-spacing: -0.02em; }
-.newsletter-slot .subscribe { display: flex; flex-wrap: wrap; justify-content: center; align-items: end; gap: 0.5rem; max-inline-size: 32rem; margin-inline: auto; text-align: start; }
+/* The newsletter: a tinted band across the screen, the form in one row. */
+.newsletter-slot { margin-block: var(--space-section); padding: calc(var(--space) * 8) 0; background: var(--al-tint); border-radius: 0; box-shadow: 0 0 0 100vmax var(--al-tint); clip-path: inset(0 -100vmax); text-align: center; }
+.newsletter-slot h2 { margin-block-end: var(--space); font-size: var(--text-h2); letter-spacing: -0.025em; }
+.newsletter-slot > p { max-inline-size: 34rem; margin-inline: auto; }
+.newsletter-slot .subscribe { display: flex; flex-wrap: wrap; justify-content: center; align-items: end; gap: var(--space); max-inline-size: 32rem; margin: calc(var(--space) * 3) auto 0; text-align: start; }
 .newsletter-slot .subscribe > p:first-child { flex: 1 1 14rem; margin: 0; }
-.newsletter-slot input { border-radius: 999px; padding-inline: 1.25rem; }
-.newsletter-note { margin-block-start: 1rem; }
-.al-section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 1rem; }
-.al-section-head h2 { margin-block-end: 1rem; }
-.view-all a { font-weight: 700; text-decoration: none; }
+.newsletter-slot .subscribe > p:last-child { margin: 0; }
+.newsletter-slot label { font-size: var(--text-small); font-weight: 700; }
+.newsletter-slot input { display: block; inline-size: 100%; min-block-size: 44px; padding-inline: calc(var(--space) * 1.5); font: inherit; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); }
+.newsletter-note { margin-block-start: calc(var(--space) * 2); }
+.newsletter-slot .lock { max-inline-size: 32rem; margin: calc(var(--space) * 3) auto 0; background: var(--color-background); }
+
+/* Home sections and the pages. */
+.home-section { margin-block: var(--space-section); }
+.al-section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 calc(var(--space) * 2); margin-block-end: calc(var(--space) * 3); padding-block-end: calc(var(--space) * 1.5); border-block-end: 2px solid var(--color-text); }
+.al-section-head h2 { margin: 0; }
+.view-all a { font-size: 0.9375rem; font-weight: 700; text-decoration: none; }
 .view-all a::after { content: " →" / ""; white-space: pre; }
 [dir="rtl"] .view-all a::after { content: " ←" / ""; }
-.page-numbers a { border-radius: 999px; }
+.pagination { margin-block-start: var(--space-section); padding-block-start: calc(var(--space) * 3); border-block-start: 1px solid var(--color-border); }
+.page-numbers a { font-weight: 700; text-decoration: none; }
 
 /* A post: the byline on one line, a wide rounded lead picture, "On this
    page" in a tinted panel. */

@@ -24,9 +24,7 @@ pub(crate) static ALMANAC: Pack = Pack {
             source: include_str!("../packs/almanac/post.html"),
         },
     ],
-    tokens: "[shape]\nradius = \"1rem\"\nmeasure = \"70ch\"\n\n\
-             [type]\nbody = \"1.0625rem 1.125rem\"\nh1 = \"2.25rem 3.5rem\"\n\
-             h2 = \"1.625rem 2.25rem\"\nh3 = \"1.25rem 1.375rem\"\nline_height = 1.65\n",
+    tokens: include_str!("../packs/almanac/tokens.toml"),
     // The writers show again after the body, so the author box is off.
     reader: &[(ReaderSwitch::AuthorBox, false)],
     options: &[
@@ -42,7 +40,7 @@ pub(crate) static ALMANAC: Pack = Pack {
         parts::pagination(PageLinks::Numbered),
         parts::related(RelatedLayout::Grid),
         parts::related_count(10),
-        parts::contents(ContentsPlacement::Inline),
+        parts::contents(ContentsPlacement::SideEnd),
         parts::contents_numbers(ContentsNumbers::None),
         slot::share("end"),
         slot::share_networks(&["x", "linkedin", "facebook", "email"]),
