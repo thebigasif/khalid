@@ -76,8 +76,9 @@ describe("the dashboard", () => {
     renderAt("/");
     const title = words.greeting("Field notes");
     expect(await screen.findByRole("heading", { level: 1, name: title })).toBeVisible();
+    // The greeting shows while the posts load, so wait for the line that needs them.
+    expect(await screen.findByText(en.dashboard.calm)).toBeVisible();
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
-    expect(screen.getByText(en.dashboard.calm)).toBeVisible();
     expect(card(words.live)).toHaveTextContent("5");
     expect(card(words.drafts)).toHaveTextContent("2");
     expect(card(words.failing)).toHaveTextContent(`0${words.allPass}`);

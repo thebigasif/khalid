@@ -43,4 +43,10 @@ describe("the comment routes", () => {
     adminBlog({ "GET /comments/": () => Promise.reject(new TypeError("offline")) });
     expect(await listComments("pending")).toEqual({ problem: null, status: 0 });
   });
+
+  it("counts an answer with no list of comments as a failure", async () => {
+    signedIn();
+    adminBlog({ "GET /comments/": () => json(200, { posts: [] }) });
+    expect(isData(await listComments("pending"))).toBe(false);
+  });
 });

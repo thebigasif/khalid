@@ -6,8 +6,12 @@ export type AdminComment = components["schemas"]["AdminComment"];
 /** Where a comment stands in moderation: pending, approved, spam or trash. */
 export type CommentStatus = components["schemas"]["CommentStatus"];
 
+// An answer with no list counts as a failure, so a screen hides the count instead of breaking.
 async function comments(response: Response): Promise<AdminComment[]> {
-  const body: components["schemas"]["AdminComments"] = await response.json();
+  const body: Partial<components["schemas"]["AdminComments"]> = await response.json();
+  if (!Array.isArray(body.comments)) {
+    throw new TypeError("The answer has no list of comments.");
+  }
   return body.comments;
 }
 

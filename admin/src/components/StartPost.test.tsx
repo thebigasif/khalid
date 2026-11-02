@@ -34,7 +34,7 @@ describe("starting a post", () => {
       sent.push(request);
       return json(request.method === "POST" ? 201 : 200, { posts: [DRAFT] });
     });
-    const { router } = renderAt("/");
+    const { router } = renderAt("/new");
     await userEvent.type(await screen.findByLabelText(en.start.label), "Why dough sticks");
     await userEvent.click(screen.getByRole("button", { name: en.start.submit }));
     expect(await screen.findByLabelText(en.editor.title)).toHaveValue("Why dough sticks");
@@ -51,7 +51,7 @@ describe("starting a post", () => {
       }
       throw new TypeError("Failed to fetch");
     });
-    renderAt("/");
+    renderAt("/new");
     await userEvent.type(await screen.findByLabelText(en.start.label), "Why dough sticks");
     await userEvent.click(screen.getByRole("button", { name: en.start.submit }));
     expect(await screen.findByRole("alert")).toHaveTextContent(en.problems.unreachable.what);
