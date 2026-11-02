@@ -1,0 +1,17 @@
+/* The pages that help a reader find their way: the glossary from A to Z,
+   series, hubs, case studies and the changelog. Every template shares
+   these rules; a pack's own sheet comes after and may refine them. */
+
+/* The glossary: a row of letters, then each letter's terms in a grid. */
+.letters { position: sticky; inset-block-start: 0; z-index: 1; margin-block: 1rem 2rem; padding-block: 0.5rem; background: var(--color-background); border-block-end: 1px solid var(--color-border); }
+.letters ul { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.letters a { min-inline-size: 44px; border-radius: var(--radius); font-weight: 700; text-decoration: none; }
+.letters a:hover, .letters a:focus-visible { background: var(--color-surface); }
+.glossary-letter { margin-block-end: var(--space-section); }
+.glossary-letter h2 { margin-block: 0 1rem; scroll-margin-block-start: 5rem; color: var(--color-accent); font-size: var(--text-h2); }
+.terms { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); margin: 0; }
+.term { padding: 1rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); }
+.term dt { margin: 0 0 0.25rem; font-family: var(--font-heading); font-size: 1.125rem; }
+.term dt a { color: var(--color-text); text-decoration: none; }
+.term dt a:hover { text-decoration: underline; }
+.term dd { margin: 0; color: var(--color-muted); font-size: var(--text-small); }

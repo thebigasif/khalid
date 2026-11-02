@@ -11,6 +11,10 @@ const BLOCKS_CSS: &str = include_str!("../assets/blocks.css");
 /// The styles of the parts a template switches on, such as the logo.
 const PARTS_CSS: &str = include_str!("../assets/parts.css");
 
+/// The styles of the pages that help readers find their way, such as the
+/// glossary.
+const DISCOVERY_CSS: &str = include_str!("../assets/discovery.css");
+
 /// Builds the one public stylesheet (RULES.md BL-WEB-7): the tokens as
 /// CSS variables, then the shared page and block rules with comments and indentation
 /// removed, as a hashed asset with its compressed copies.
@@ -48,6 +52,7 @@ pub fn stylesheet_text_with(tokens: &Tokens, pack_css: &str) -> String {
     css.push_str(&minify(SITE_CSS));
     css.push_str(&minify(BLOCKS_CSS));
     css.push_str(&minify(PARTS_CSS));
+    css.push_str(&minify(DISCOVERY_CSS));
     css.push_str(&minify(pack_css));
     css
 }

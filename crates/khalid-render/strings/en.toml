@@ -95,6 +95,7 @@ no_authors = "This blog has no authors yet."
 credentials = "Experience"
 # Names the list of an author's profiles on other sites. {name} is filled in.
 profiles_of = "{name} elsewhere"
+glossary_title = "Glossary"
 glossary_letters = "Jump to a letter"
 no_terms = "The glossary has no terms yet."
 search_label = "Search this blog"
