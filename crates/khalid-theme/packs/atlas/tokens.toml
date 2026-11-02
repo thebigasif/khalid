@@ -1,24 +1,24 @@
 [colors]
 background = "#ffffff"
-surface = "#f3f4fb"
-text = "#151a2d"
-muted = "#575e75"
-link = "#3337b5"
-accent = "#3c40c6"
-border = "#dde0ee"
+surface = "#f4f5fa"
+text = "#131a2c"
+muted = "#535a6e"
+link = "#4338ca"
+accent = "#4f46e5"
+border = "#e0e2ec"
 
 [shape]
-radius = "0.5rem"
-measure = "72ch"
+radius = "0.75rem"
+measure = "42rem"
 
 [type]
-body = "1rem 1.0625rem"
-h1 = "2rem 2.75rem"
-h2 = "1.5rem 1.875rem"
-h3 = "1.25rem"
+body = "1.0625rem 1.125rem"
+h1 = "2.25rem 3.25rem"
+h2 = "1.5rem 2rem"
+h3 = "1.1875rem 1.375rem"
 small = "0.875rem"
-line_height = 1.6
+line_height = 1.65
 
 [space]
 unit = "0.5rem"
-section = "3rem"
+section = "4rem"

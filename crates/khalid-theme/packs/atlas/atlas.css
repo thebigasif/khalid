@@ -92,7 +92,7 @@ main:has(.front), main:has(> .post) { padding-block-start: 0; }
 
 /* Picture cards in a grid: three across on a laptop, one on a phone. */
 .story-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 3rem var(--atlas-gap); margin: 0; padding: 0; list-style: none; }
-.picks .story-grid, .pick-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); }
+.picks .story-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); }
 .story-grid > li { display: flex; }
 .feed .pagination { margin-block-start: 3.5rem; padding-block-start: 1.5rem; border-block-start: 1px solid var(--color-border); }
 .topic-index > h2 { margin-block-end: 1.5rem; }

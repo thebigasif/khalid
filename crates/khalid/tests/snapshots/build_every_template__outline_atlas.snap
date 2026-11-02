@@ -3,8 +3,8 @@ source: crates/khalid/tests/build_every_template.rs
 expression: pages
 ---
 # index.html
-nav.catbar "Topics"
 h1.front-title: Field Notes on SEO
+nav.catbar "Topics"
 section.feed
   h2: Latest posts
   article.story
@@ -17,22 +17,19 @@ section.feed
     h3: How to write a title tag
   article.story
     h3: Why internal links matter
-section.topic-block
-  h2: On-page SEO
-  article.story
-    h3: How to write a title tag
-  article.story
-    h3: Why internal links matter
-section.topic-block
-  h2: Technical SEO
-  article.story
-    h3: Fixing slow pages, starting with the biggest win
-  article.story
-    h3: What a sitemap does, and what it does not
-section.topic-block
-  h2: Content strategy
-  article.story
-    h3: Planning a topic cluster in an afternoon
+section.topic-index
+  h2: Topics
+  section.topic-block
+    h3: On-page SEO
+    article.story.story-brief
+    article.story.story-brief
+  section.topic-block
+    h3: Technical SEO
+    article.story.story-brief
+    article.story.story-brief
+  section.topic-block
+    h3: Content strategy
+    article.story.story-brief
 
 # why-internal-links-matter/index.html
 nav.breadcrumbs "Breadcrumbs"
