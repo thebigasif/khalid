@@ -249,32 +249,85 @@ main > .mentions { margin-block: var(--space-section) 0; }
 .mentions a::before { inline-size: 1rem; block-size: 1rem; color: var(--color-accent); }
 .mentions a:hover { color: var(--color-link); }
 
-
-/* The front page: the intro, the row of links to its sections. */
-main > h1:first-child { margin-block: -1rem calc(var(--space) * 4); padding-block: calc(var(--space) * 7); background: radial-gradient(circle at 100% 0, color-mix(in oklab, var(--color-accent) 16%, var(--color-background)) 0 18rem, transparent 18rem), var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: calc(var(--text-h1) * 1.15); letter-spacing: -0.03em; }
-[dir="rtl"] main > h1:first-child { background-image: radial-gradient(circle at 0 0, color-mix(in oklab, var(--color-accent) 16%, var(--color-background)) 0 18rem, transparent 18rem); }
-main > h1 + .intro { max-inline-size: var(--measure); font-size: var(--text-h4); }
-.jump-links { margin-block: 0 var(--space-section); padding-block: var(--space); border-block: 1px solid var(--color-border); }
-.jump-links ul { gap: 0 calc(var(--space) * 3); }
-.jump-links a { font-weight: 600; text-decoration: none; }
-.home-section { margin-block: var(--space-section); scroll-margin-block-start: var(--space); }
-.home-section > h2 { inline-size: fit-content; margin-block: 0 calc(var(--space) * 3); padding-block-end: var(--space); border-block-end: 3px solid var(--color-accent); font-size: var(--text-h3); }
+/* Lists: the title on a panel drawn as a map, the newest post as the
+   lead, then three across. */
+main > h1:first-child, main > .breadcrumbs + h1 { position: relative; isolation: isolate; overflow: hidden; margin-block: 2rem 0; padding: clamp(2rem, 6vw, 4rem) clamp(1.25rem, 4vw, 3rem); background: var(--color-surface); border-radius: calc(var(--radius) * 1.5); font-size: calc(var(--text-h1) * 1.1); font-weight: 800; letter-spacing: -0.03em; }
+main > .breadcrumbs + h1 { margin-block-start: 0.5rem; }
+main > h1:first-child::before, main > .breadcrumbs + h1::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(var(--compass-grid) 1px, transparent 1px) 0 0 / 2rem 2rem, linear-gradient(90deg, var(--compass-grid) 1px, transparent 1px) 0 0 / 2rem 2rem; mask: linear-gradient(to left, currentColor, transparent 70%); }
+[dir="rtl"] :is(main > h1:first-child, main > .breadcrumbs + h1)::before { mask: linear-gradient(to right, currentColor, transparent 70%); }
+@media (min-width: 40rem) {
+  main > h1:first-child, main > .breadcrumbs + h1 { padding-inline-end: clamp(9rem, 22vw, 16rem); }
+  main > h1:first-child::after, main > .breadcrumbs + h1::after { content: "" / ""; position: absolute; inset-inline-end: clamp(1.5rem, 5vw, 4rem); inset-block-start: 50%; inline-size: clamp(6rem, 14vw, 10rem); aspect-ratio: 1; translate: 0 -50%; background: color-mix(in oklab, var(--color-accent) 55%, var(--color-background)); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='none' stroke='black' stroke-width='2'/%3E%3Ccircle cx='50' cy='50' r='37' fill='none' stroke='black' stroke-width='1' stroke-dasharray='2 4'/%3E%3Cpath d='M50 1v9M50 90v9M1 50h9M90 50h9' stroke='black' stroke-width='2'/%3E%3Cpath d='M50 16l7 34H43z' fill='black'/%3E%3Cpath d='M43 50h14l-7 34z' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='3.5' fill='black'/%3E%3C/svg%3E") no-repeat center / contain; }
+}
+main > h1 + .intro { max-inline-size: var(--measure); margin-block: 1.5rem 0; font-size: 1.1875rem; }
+main > h1 + :is(p, ul, ol, div:not(.intro), nav, form) { margin-block-start: 2rem; }
+.jump-links { margin-block: 2rem 0; padding-block: 0.25rem; border-block: 1px solid var(--compass-line); }
+.jump-links ul { gap: 0 2rem; }
+.jump-links a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.jump-links a:hover { color: var(--color-link); }
+.home-section { margin-block: 3.5rem var(--space-section); scroll-margin-block-start: var(--space); }
+.home-section > h2 { display: flex; align-items: center; gap: 1.25rem; margin-block: 0 2rem; font-size: var(--text-h3); }
+.home-section > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--compass-line); }
 .view-all a { font-weight: 600; }
+main > h1 ~ .cards { margin-block-start: 3rem; }
 
-/* Picture cards, outlined, up to three across, on every list. */
-.cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: calc(var(--space) * 5) calc(var(--space) * 4); }
-.cards:is(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: minmax(0, 1fr); gap: calc(var(--space) * 3); }
-.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card { display: flex; flex-direction: column; block-size: 100%; padding-block-end: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
-.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card > :not(.image) { margin-inline: 1.25rem; }
-.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card > :first-child:not(.image) { margin-block-start: 1.25rem; }
-.cards .card { position: relative; transition: border-color 0.15s, box-shadow 0.15s; }
+/* Picture cards: the picture, the topic, the title, two or three lines,
+   then who and when. The topic line is lifted out of the meta line. */
+.cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 3rem 2rem; }
+.cards:is(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+.cards .card { position: relative; }
 .cards .card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
 .cards .card .card-meta a { position: relative; z-index: 1; }
-.cards .card:focus-within, .cards .card:hover { border-color: var(--color-accent); box-shadow: 0 0.75rem 2rem -0.75rem color-mix(in oklab, var(--color-accent) 35%, transparent); }
-.cards .card:hover :is(h2, h3) a { color: var(--color-link); }
-.cards .card .image { margin: 0 0 calc(var(--space) * 2); }
-.cards .card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--compass-tint); border-radius: 0; }
-.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card:not(:has(.image))::before { content: ""; display: block; aspect-ratio: 16 / 9; margin-block-end: calc(var(--space) * 2); background: radial-gradient(color-mix(in oklab, var(--color-accent) 30%, var(--color-background)) 1.5px, transparent 2px) 0 0 / 1.25rem 1.25rem, linear-gradient(135deg, var(--compass-tint), color-mix(in oklab, var(--color-accent) 20%, var(--color-background))); }
-.cards > li:nth-child(even) .card:not(:has(.image))::before { background: repeating-linear-gradient(45deg, transparent 0 0.875rem, color-mix(in oklab, var(--color-accent) 12%, transparent) 0.875rem 1rem), linear-gradient(200deg, var(--color-surface), color-mix(in oklab, var(--color-accent) 16%, var(--color-background))); }
-.card h2, .card h3 { font-size: var(--text-h4); line-height: 1.3; }
-.card-meta > a { color: var(--color-link); font-weight: 700; text-decoration: none; }
+.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "picture picture" "topic topic" "title title" "words words" "who when"; align-content: start; block-size: 100%; }
+.card .image { grid-area: picture; margin: 0 0 1.25rem; }
+.card .card-meta { display: contents; }
+.card-meta > a { grid-area: topic; justify-self: start; min-block-size: 1.75rem; margin-block-end: 0.25rem; color: var(--color-link); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
+.card-meta > a:hover { text-decoration: underline; }
+.cards .card :is(h2, h3) { grid-area: title; margin-block: 0 0.5rem; font-size: 1.3125rem; line-height: 1.3; letter-spacing: -0.01em; }
+.card :is(h2, h3) a:hover, .cards .card:hover :is(h2, h3) a { color: var(--color-link); }
+.card > p:last-child { grid-area: words; margin-block-end: 1rem; color: var(--color-muted); font-size: 0.9688rem; line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+.card-author { grid-area: who; align-self: center; color: var(--color-text); font-size: 0.875rem; font-weight: 600; }
+.card-meta time { grid-area: when; align-self: center; display: flex; align-items: center; font-size: 0.875rem; }
+.card-author + time::before { content: "" / ""; inline-size: 0.25rem; block-size: 0.25rem; margin-inline: 0.625rem; background: var(--color-border); border-radius: 50%; }
+.card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; background: var(--compass-tint); }
+.card .image img { transition: border-color 0.2s; }
+.cards .card:hover .image img { border-color: var(--color-accent); }
+.card:not(:has(.image))::before { content: ""; grid-area: picture; aspect-ratio: 16 / 9; margin-block-end: 1.25rem; background: linear-gradient(var(--compass-grid) 1px, transparent 1px) 0 0 / 1.5rem 1.5rem, linear-gradient(90deg, var(--compass-grid) 1px, transparent 1px) 0 0 / 1.5rem 1.5rem, var(--compass-tint); border-radius: var(--radius); }
+.cards-text .card::before, .cards-row .card::before, .cards-compact .card::before, .cards-ranked .card::before { content: none; }
+
+/* The lead card: the first of four or more, across the whole row. */
+@media (min-width: 52rem) {
+  .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked):has(> li:nth-child(4)) > li:first-child { grid-column: 1 / -1; padding-block-end: 3rem; border-block-end: 1px solid var(--compass-line); }
+  .cards:has(> li:nth-child(4)) > li:first-child .card { grid-template-columns: minmax(0, 1.35fr) auto minmax(0, 1fr); grid-template-areas: "picture topic topic" "picture title title" "picture words words" "picture who when"; align-content: center; }
+  .cards:has(> li:nth-child(4)) > li:first-child .image { grid-row: 1 / span 5; margin: 0 3rem 0 0; }
+  [dir="rtl"] .cards:has(> li:nth-child(4)) > li:first-child .image { margin: 0 0 0 3rem; }
+  .cards:has(> li:nth-child(4)) > li:first-child :is(h2, h3) { font-size: clamp(1.75rem, 1rem + 1.5vw, 2.25rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; margin-block-end: 1rem; }
+  .cards:has(> li:nth-child(4)) > li:first-child .card > p:last-child { font-size: 1.0625rem; -webkit-line-clamp: 4; line-clamp: 4; margin-block-end: 1.5rem; }
+}
+
+/* An author: a profile panel, then their posts and the other authors
+   under the same hairline headings as the front page. */
+.author { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(1.25rem, 4vw, 2.5rem); align-items: start; margin-block: 0.5rem var(--space-section); padding: clamp(1.5rem, 4vw, 2.5rem); background: var(--color-surface); border-radius: calc(var(--radius) * 1.5); }
+.author > * { grid-column: 2; max-inline-size: var(--measure); }
+.author-header { display: contents; }
+.author-header .image { grid-column: 1; grid-row: 1 / span 4; inline-size: clamp(5rem, 14vw, 8rem); margin: 0; }
+.author-header .image img { border: 3px solid var(--color-background); }
+.author-header h1 { margin-block: 0 0.25rem; font-weight: 800; letter-spacing: -0.025em; }
+.author .author-role { margin-block: 0 1rem; font-weight: 500; }
+@media (max-width: 39.99rem) {
+  .author { grid-template-columns: minmax(0, 1fr); }
+  .author > *, .author-header .image { grid-column: 1; grid-row: auto; }
+  .author-header .image { margin-block-end: 1rem; }
+}
+.author-bio > :last-child { margin-block-end: 0; }
+.author-profiles { margin-block-start: 1rem; }
+main > section > h2 { display: flex; align-items: center; gap: 1.25rem; margin-block: 0 2rem; font-size: var(--text-h3); }
+main > section > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--compass-line); }
+main > section + section { margin-block-start: var(--space-section); }
+.people-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1rem 2rem; }
+.people-list .person-card { align-items: center; padding: 1rem 1.25rem; border: 1px solid var(--compass-line); border-radius: var(--radius); }
+.people-list .person-role { margin: 0; color: var(--color-muted); font-size: 0.9375rem; }
+
+/* Numbered pages: round stops, the current one filled. */
+.page-numbers a { border-radius: 50%; text-decoration: none; }
+.pagination a { font-weight: 600; }
