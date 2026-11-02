@@ -111,6 +111,17 @@ Templates show it as a band after a post or on the front page (`cta_band`), and 
 
 To place the band inside a post or page, write `::cta` on a line of its own. It works in every template, classic too. Without `[template.cta]` the line shows nothing. Feeds and the Content API keep it as the comment `<!--khalid-cta-->`, so another front end can put its own band there.
 
+## A preferred source on Google
+
+Google lets each reader pick news sources it shows more often in Top stories. To ask your readers, turn on the button:
+
+```toml
+[template.preferred_source]
+place = "both"   # optional: post after each post, footer on every page, or both (the default)
+```
+
+The button reads "Add us as a preferred source on Google" and opens Google's page for your blog's domain. Every template shows it, classic too. It is a plain link: no script, no Google logo, and nothing loads from Google until a reader follows it. Without the table it shows nowhere.
+
 ## Footer links in groups
 
 Besides the one row of `[[nav.footer]]` links, the footer can hold columns of links, each under its own heading. Every template shows them.
