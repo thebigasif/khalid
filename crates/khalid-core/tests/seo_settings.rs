@@ -69,6 +69,13 @@ fn a_setting_left_out_keeps_its_default() {
 }
 
 #[test]
+fn the_whole_site_is_indexed_unless_it_says_noindex() {
+    assert_eq!(read("").unwrap().seo().index.site, Indexing::Index);
+    let config = read("\n[seo.index]\nsite = \"noindex\"\n").unwrap();
+    assert_eq!(config.seo().index.site, Indexing::NoIndex);
+}
+
+#[test]
 fn refuses_a_value_that_is_not_index_or_noindex() {
     assert_eq!(
         read("\n[seo.index]\ntags = \"hidden\"\n").unwrap_err(),
@@ -201,6 +208,6 @@ fn domain_names_are_letters_digits_hyphens_and_inner_dots() {
 fn refuses_an_archive_type_it_does_not_know() {
     assert_eq!(
         read("\n[seo.index]\nmonths = \"noindex\"\n").unwrap_err(),
-        "site.toml, line 8, field \"months\": unknown field `months`, expected one of `tags`, `categories`, `authors`, `dates`, `search`, `thin_archives_below`"
+        "site.toml, line 8, field \"months\": unknown field `months`, expected one of `tags`, `categories`, `authors`, `dates`, `search`, `thin_archives_below`, `site`"
     );
 }

@@ -132,3 +132,22 @@ fn each_archive_setting_reaches_its_page_type() {
         assert_eq!(got, want, "{kind:?}");
     }
 }
+
+#[test]
+fn a_site_set_to_noindex_keeps_every_page_out_but_follows_links() {
+    let mut settings = ArchiveIndex::default();
+    settings.site = Indexing::NoIndex;
+    let policy = IndexPolicy::from(&settings);
+    for kind in [
+        PageKind::Home,
+        PageKind::Post,
+        PageKind::Page,
+        PageKind::Tag,
+    ] {
+        let got = policy.directives_for(&page(kind, Some(10))).to_string();
+        assert_eq!(got, "noindex, follow", "{kind:?}");
+    }
+    let mut own = page(PageKind::Post, None);
+    own.robots = Some(RobotsDirectives::default());
+    assert_eq!(policy.directives_for(&own).indexing, Indexing::NoIndex);
+}

@@ -89,7 +89,8 @@ impl IndexNowSettings {
 /// By default tag, category and author archives are indexed, and date
 /// archives and search results are not. A tag or author archive with fewer
 /// posts than `thin_archives_below` is never indexed, because a page with
-/// one or two links looks thin to a search engine.
+/// one or two links looks thin to a search engine. `site = "noindex"` keeps
+/// the whole site out, as Khalid's demo blogs are.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(default, deny_unknown_fields)]
 #[non_exhaustive]
@@ -107,6 +108,10 @@ pub struct ArchiveIndex {
     /// A tag or author archive listing fewer posts than this is `noindex`.
     /// `0` turns the rule off.
     pub thin_archives_below: u32,
+    /// The whole site. `"noindex"` keeps every page out of search results
+    /// and sitemaps, whatever the other settings and a post's own `robots`
+    /// say, for a sample or staging copy. Links are still followed.
+    pub site: Indexing,
 }
 
 impl Default for ArchiveIndex {
@@ -118,6 +123,7 @@ impl Default for ArchiveIndex {
             dates: Indexing::NoIndex,
             search: Indexing::NoIndex,
             thin_archives_below: 3,
+            site: Indexing::Index,
         }
     }
 }
