@@ -13170,6 +13170,27 @@
         },
         "additionalProperties": false
       },
+      "FindingWords": {
+        "type": "object",
+        "description": "A failing check a fix is written for.",
+        "required": [
+          "rule",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "What the check found, as the editor shows it.",
+            "example": "The title has 72 characters; search results show about 60."
+          },
+          "rule": {
+            "type": "string",
+            "description": "The rule's name.",
+            "example": "title-too-long"
+          }
+        },
+        "additionalProperties": false
+      },
       "FocalPointBody": {
         "type": "object",
         "description": "A point in an image in thousandths of its width and height, from the top\nleft. `{ \"x\": 500, \"y\": 500 }` is the centre.",
@@ -14250,6 +14271,13 @@
             "description": "The label every suggestion is shown with.",
             "example": "AI suggestion from Anthropic"
           },
+          "markdown": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "For `takeaways`: the points as a `:::takeaways` block to add to\nthe post."
+          },
           "suggestions": {
             "type": "array",
             "items": {
@@ -14705,6 +14733,35 @@
             "description": "Whether the owner turned photo search on Unsplash on."
           }
         }
+      },
+      "PictureWords": {
+        "type": "object",
+        "description": "A picture alt text is written for.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "alt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The alt text it has now, if any."
+          },
+          "caption": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Its caption, if it has one."
+          },
+          "name": {
+            "type": "string",
+            "description": "Its file name.",
+            "example": "link-map.png"
+          }
+        },
+        "additionalProperties": false
       },
       "Post": {
         "allOf": [
@@ -16412,6 +16469,17 @@
           "task"
         ],
         "properties": {
+          "finding": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FindingWords",
+                "description": "For `lint_fix`: the check that failed."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "focus_keyword": {
             "type": [
               "string",
@@ -16425,6 +16493,17 @@
               "null"
             ],
             "description": "The post's language, such as `en`."
+          },
+          "picture": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PictureWords",
+                "description": "For `alt_text`: the picture."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "post": {
             "type": [

@@ -815,6 +815,14 @@ export type FeatureImage = {
   src: NonBlank;
 };
 
+/** A failing check a fix is written for. */
+export type FindingWords = {
+  /** What the check found, as the editor shows it. */
+  message: string;
+  /** The rule's name. */
+  rule: string;
+};
+
 /** A point in an image in thousandths of its width and height, from the top left. `{ "x": 500, "y": 500 }` is the centre. */
 export type FocalPointBody = {
   /** Thousandths of the width from the left, 0 to 1000. */
@@ -1181,6 +1189,8 @@ export type NonBlank = string;
 export type Offered = {
   /** The label every suggestion is shown with. */
   label: string;
+  /** For `takeaways`: the points as a `:::takeaways` block to add to the post. */
+  markdown?: string | null;
   /** The options. */
   suggestions: Suggestion[];
   /** What they are for. */
@@ -1312,6 +1322,16 @@ export type PictureSearch = {
   pictures: StockPicture[];
   /** Whether the owner turned photo search on Unsplash on. */
   unsplash: boolean;
+};
+
+/** A picture alt text is written for. */
+export type PictureWords = {
+  /** The alt text it has now, if any. */
+  alt?: string | null;
+  /** Its caption, if it has one. */
+  caption?: string | null;
+  /** Its file name. */
+  name: string;
 };
 
 /** A published post in API shape. Bodies are present only when asked for with `formats`. */
@@ -1853,10 +1873,12 @@ export type Suggestion = {
 
 /** What to write and the words to write it from. With `post`, the saved post's title, text, language and focus keyword are used, and any of them given here win, so unsaved changes count. */
 export type SuggestionRequest = {
+  finding?: FindingWords | null;
   /** The post's focus keyword. */
   focus_keyword?: string | null;
   /** The post's language, such as `en`. */
   language?: string | null;
+  picture?: PictureWords | null;
   /** A post's identity, such as `en.choosing-anchor-text`. */
   post?: string | null;
   /** What the suggestion is for. */

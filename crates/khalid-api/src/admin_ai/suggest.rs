@@ -19,6 +19,31 @@ use crate::keys::{Principal, Scope};
 use crate::problem::{Problem, ProblemType};
 use crate::publish_door::PublishDoor;
 
+/// A failing check a fix is written for.
+#[derive(Debug, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct FindingWords {
+    /// The rule's name.
+    #[schema(example = "title-too-long")]
+    rule: String,
+    /// What the check found, as the editor shows it.
+    #[schema(example = "The title has 72 characters; search results show about 60.")]
+    message: String,
+}
+
+/// A picture alt text is written for.
+#[derive(Debug, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct PictureWords {
+    /// Its file name.
+    #[schema(example = "link-map.png")]
+    name: String,
+    /// Its caption, if it has one.
+    caption: Option<String>,
+    /// The alt text it has now, if any.
+    alt: Option<String>,
+}
+
 /// What to write and the words to write it from. With `post`, the saved
 /// post's title, text, language and focus keyword are used, and any of
 /// them given here win, so unsaved changes count.
@@ -37,6 +62,10 @@ pub(crate) struct SuggestionRequest {
     focus_keyword: Option<String>,
     /// The post's language, such as `en`.
     language: Option<String>,
+    /// For `lint_fix`: the check that failed.
+    finding: Option<FindingWords>,
+    /// For `alt_text`: the picture.
+    picture: Option<PictureWords>,
 }
 
 /// One option, with its length checked.
@@ -63,6 +92,9 @@ pub(crate) struct Offered {
     label: String,
     /// The options.
     suggestions: Vec<Suggestion>,
+    /// For `takeaways`: the points as a `:::takeaways` block to add to
+    /// the post.
+    markdown: Option<String>,
 }
 
 /// Asks the owner's provider for options: five for titles, descriptions
@@ -93,12 +125,7 @@ pub(super) async fn suggest(
     let task = request.task;
     let words = words(&route.posts, request).await?;
     let lengths = route.desk.lengths;
-    let ask = AiAsk {
-        task,
-        system: task.system(&lengths),
-        prompt: task.prompt(&words),
-        count: task.count(),
-    };
+    let ask = AiAsk::new(task, task.system(&lengths), task.prompt(&words));
     let written = writer.write(&ask).await.map_err(|failed| {
         let error: &(dyn Error + 'static) = &failed;
         tracing::warn!(error, "the AI service wrote no suggestions");
@@ -122,12 +149,23 @@ pub(super) async fn suggest(
         return Err(Problem::new(ProblemType::Upstream, &nothing_written()));
     }
     suggestions.sort_by_key(|suggestion| !suggestion.fits);
+    let markdown = (task == AiTask::Takeaways).then(|| takeaways_block(&suggestions));
     let label = format!("AI suggestion from {}", route.desk.provider.label());
     Ok(Json(Offered {
         task,
         label,
         suggestions,
+        markdown,
     }))
+}
+
+/// The points as a `:::takeaways` block.
+fn takeaways_block(suggestions: &[Suggestion]) -> String {
+    let points: Vec<String> = suggestions
+        .iter()
+        .map(|suggestion| format!("- {}", suggestion.text))
+        .collect();
+    format!(":::takeaways\n{}\n:::", points.join("\n"))
 }
 
 /// The writer, once suggestions are on, the key is set and, for
@@ -183,6 +221,12 @@ async fn words(posts: &PublishDoor, request: SuggestionRequest) -> Result<AiWord
     words.title = request.title.or(words.title);
     words.text = request.text.or(words.text);
     words.focus_keyword = request.focus_keyword.or(words.focus_keyword);
+    words.finding = request
+        .finding
+        .map(|finding| (finding.rule, finding.message));
+    words.picture = request
+        .picture
+        .map(|picture| (picture.name, picture.caption, picture.alt));
     let needs = match request.task {
         AiTask::LintFix if words.finding.is_none() => Some("the failing check, in finding"),
         AiTask::AltText if words.picture.is_none() => Some("the picture, in picture"),

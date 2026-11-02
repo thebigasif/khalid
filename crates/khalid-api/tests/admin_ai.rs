@@ -201,6 +201,41 @@ async fn words_come_from_the_saved_post_and_given_words_win() {
 }
 
 #[tokio::test]
+async fn each_task_needs_its_words() {
+    let writer = Arc::new(FakeWriter::answering(&TITLES));
+    let router = router(desk(AiProvider::Anthropic, &writer), None);
+    for (ask, needs) in [
+        (json!({"task": "seo_title"}), "the post's title or text"),
+        (
+            json!({"task": "lint_fix", "title": "A"}),
+            "the failing check",
+        ),
+        (json!({"task": "alt_text", "title": "A"}), "the picture"),
+    ] {
+        let (status, json) = send(&router, WRITER, SUGGEST, Some(&ask)).await;
+        assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{json}");
+        assert!(json["detail"].as_str().unwrap().contains(needs), "{json}");
+    }
+    assert!(writer.asked().is_empty(), "nothing was sent");
+}
+
+#[tokio::test]
+async fn alt_text_and_a_fix_send_what_they_need() {
+    let writer = Arc::new(FakeWriter::answering(&["A chart of links between posts"]));
+    let router = router(desk(AiProvider::Anthropic, &writer), None);
+    let ask = json!({"task": "alt_text", "picture": {"name": "link-map.png", "caption": "Links"}});
+    let (status, json) = send(&router, WRITER, SUGGEST, Some(&ask)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let ask = json!({"task": "lint_fix", "title": "Anchors", "finding": {"rule": "title-too-long", "message": "The title has 72 characters."}});
+    let (status, json) = send(&router, WRITER, SUGGEST, Some(&ask)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let asked = writer.asked();
+    assert!(asked[0].prompt.contains("Picture file: link-map.png"));
+    assert!(asked[1].prompt.contains("Failed check: title-too-long"));
+    assert_eq!(asked[1].count, 3);
+}
+
+#[tokio::test]
 async fn without_a_key_the_route_names_the_variable() {
     let router = router(
         AiDesk::new(AiProvider::Anthropic, None, Lengths::default()),
@@ -243,4 +278,20 @@ async fn serpdad_writes_only_while_it_is_connected() {
         .unwrap();
     let (status, json) = send(&router, WRITER, SUGGEST, Some(&ask)).await;
     assert_eq!(status, StatusCode::OK, "{json}");
+}
+#[tokio::test]
+async fn takeaways_come_back_as_a_block() {
+    let points = [
+        "Link words say where the link goes.",
+        "Vary the words across a site.",
+    ];
+    let writer = Arc::new(FakeWriter::answering(&points));
+    let router = router(desk(AiProvider::Openai, &writer), None);
+    let ask = json!({"task": "takeaways", "title": "Anchors", "text": "A post about anchor text."});
+    let (status, json) = send(&router, WRITER, SUGGEST, Some(&ask)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(
+        json["markdown"],
+        ":::takeaways\n- Link words say where the link goes.\n- Vary the words across a site.\n:::"
+    );
 }

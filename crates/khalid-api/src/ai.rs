@@ -31,6 +31,20 @@ pub struct AiAsk {
     pub count: u8,
 }
 
+impl AiAsk {
+    /// A request for `task`, with its `system` instructions and `prompt`,
+    /// asking for as many options as the task takes.
+    pub fn new(task: AiTask, system: String, prompt: String) -> Self {
+        let count = task.count();
+        Self {
+            task,
+            system,
+            prompt,
+            count,
+        }
+    }
+}
+
 /// The service that writes suggestions. The HTTP writers ask Anthropic, an
 /// OpenAI-compatible service or `SerpDad`; `FakeWriter`, from the
 /// `test-util` feature, answers set options for tests.
