@@ -15186,6 +15186,16 @@
               }
             ]
           },
+          "secondary_keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Up to [`MAX_SECONDARY_KEYWORDS`] related phrases the post also\nanswers, such as synonyms of the focus keyword, which the linter\nlooks for in the text. Left out when there are none.",
+            "example": [
+              "link text"
+            ]
+          },
           "seo_title": {
             "oneOf": [
               {
@@ -16019,6 +16029,19 @@
             ],
             "description": "New hand-written JSON-LD, or `null` for none.",
             "example": "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}"
+          },
+          "secondary_keywords": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every secondary keyword, at most four; an empty list for none.",
+            "example": [
+              "link text"
+            ]
           },
           "seo_title": {
             "type": [

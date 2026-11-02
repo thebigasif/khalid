@@ -1478,6 +1478,8 @@ export type PostSettings = {
   /** The post's own robots directives, in place of the site's. */
   robots?: string | null;
   schema?: CustomJsonLd | null;
+  /** Up to [`MAX_SECONDARY_KEYWORDS`] related phrases the post also answers, such as synonyms of the focus keyword, which the linter looks for in the text. Left out when there are none. */
+  secondary_keywords?: string[];
   seo_title?: SearchTitle | null;
   /** How the post looks when shared on X and Facebook. */
   share_cards: ShareCards;
@@ -1747,6 +1749,8 @@ export type SettingsEdit = {
   robots?: string | null;
   /** New hand-written JSON-LD, or `null` for none. */
   schema?: string | null;
+  /** Every secondary keyword, at most four; an empty list for none. */
+  secondary_keywords?: string[] | null;
   /** A new search title, or `null` for the site's title template. */
   seo_title?: string | null;
   share_cards?: ShareCards | null;

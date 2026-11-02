@@ -9,7 +9,9 @@ use utoipa::ToSchema;
 
 use super::post_settings::access_schema;
 use super::seo_fields::{CustomJsonLd, SearchTitle};
-use super::{Alias, FeatureImage, NonBlank, PostSettings, ReviewState, ShareCards};
+use super::{
+    Alias, FeatureImage, MAX_SECONDARY_KEYWORDS, NonBlank, PostSettings, ReviewState, ShareCards,
+};
 use crate::post_password::{HashPasswordError, NewPassword};
 
 /// New values for some of a post's settings. A setting left out keeps
@@ -83,6 +85,10 @@ pub struct SettingsEdit {
     #[serde(default)]
     #[schema(value_type = Option<String>, example = "anchor text")]
     focus_keyword: Change<NonBlank>,
+    /// Every secondary keyword, at most four; an empty list for none.
+    #[serde(default, deserialize_with = "at_most_four")]
+    #[schema(value_type = Option<Vec<String>>, example = json!(["link text"]))]
+    secondary_keywords: Option<Vec<NonBlank>>,
     /// New hand-written JSON-LD, or `null` for none.
     #[serde(default)]
     #[schema(value_type = Option<String>, example = "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}")]
@@ -148,6 +154,7 @@ impl SettingsEdit {
             aliases: self.aliases.unwrap_or(settings.aliases),
             seo_title: self.seo_title.applied_to(settings.seo_title),
             focus_keyword: self.focus_keyword.applied_to(settings.focus_keyword),
+            secondary_keywords: (self.secondary_keywords).unwrap_or(settings.secondary_keywords),
             schema: self.schema.applied_to(settings.schema),
         }
     }
@@ -174,6 +181,23 @@ impl<T> Change<T> {
             Self::Set(value) => Some(value),
         }
     }
+}
+
+/// Reads a list of secondary keywords, refusing more than
+/// [`MAX_SECONDARY_KEYWORDS`]. Serde calls it only for a field that is
+/// present, so a field left out stays `None`.
+fn at_most_four<'de, D: Deserializer<'de>>(
+    deserializer: D,
+) -> Result<Option<Vec<NonBlank>>, D::Error> {
+    let keywords = Vec::<NonBlank>::deserialize(deserializer)?;
+    if keywords.len() > MAX_SECONDARY_KEYWORDS {
+        return Err(serde::de::Error::custom(format!(
+            "a post has at most {MAX_SECONDARY_KEYWORDS} secondary keywords, and this lists {}; \
+             keep the {MAX_SECONDARY_KEYWORDS} closest to the focus keyword",
+            keywords.len()
+        )));
+    }
+    Ok(Some(keywords))
 }
 
 /// Serde calls this only for a field that is present, so it reads `null`

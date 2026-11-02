@@ -51,7 +51,8 @@ pub use post::{Bodies, Post};
 pub use post_head::{HeadElement, HeadParts, PostHead};
 pub use post_row::{ClusterPlace, Gate, IndexStatus, LintCounts, PostLinks, PostRow};
 pub use post_settings::{
-    Alias, FeatureImage, NonBlank, PostSettings, ReviewState, ShareCard, ShareCards,
+    Alias, FeatureImage, MAX_SECONDARY_KEYWORDS, NonBlank, PostSettings, ReviewState, ShareCard,
+    ShareCards,
 };
 pub use real_update::{MAX_UPDATE_NOTE, NotRealUpdate, RealUpdate};
 pub use seo_fields::{CustomJsonLd, SearchTitle};

@@ -211,10 +211,20 @@ pub struct PostSettings {
     /// linter checks the title, description and text against.
     #[schema(value_type = Option<String>, example = "anchor text")]
     pub focus_keyword: Option<NonBlank>,
+    /// Up to [`MAX_SECONDARY_KEYWORDS`] related phrases the post also
+    /// answers, such as synonyms of the focus keyword, which the linter
+    /// looks for in the text. Left out when there are none.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[schema(value_type = Vec<String>, required = false, example = json!(["link text"]))]
+    pub secondary_keywords: Vec<NonBlank>,
     /// Hand-written JSON-LD the page carries beside the schema Khalid
     /// writes, for a type Khalid does not write itself.
     pub schema: Option<CustomJsonLd>,
 }
+
+/// The most secondary keywords a post may name, the same limit front
+/// matter keeps.
+pub const MAX_SECONDARY_KEYWORDS: usize = 4;
 
 /// The schema for [`PostAccess`]: one of its names.
 pub(super) fn access_schema() -> Schema {
