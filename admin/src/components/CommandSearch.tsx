@@ -47,7 +47,7 @@ export function CommandSearch() {
       >
         <Icon name="search" />
         <span className="search-words">{shellWords.search.open}</span>
-        <kbd aria-hidden="true">{APPLE ? "⌘K" : "Ctrl K"}</kbd>
+        <kbd>{APPLE ? "⌘K" : "Ctrl K"}</kbd>
       </button>
       {open ? <CommandPanel close={close} /> : null}
     </>
