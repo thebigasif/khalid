@@ -403,6 +403,24 @@ why = "Google treats heavy repetition as spam and may show the post less."
 fix = "Replace some repeats of `focus_keyword:` with other words, such as a close phrase or a pronoun."
 guide = "keyword-density"
 
+[focus-too-long]
+what = "Your focus keyword holds more than four words that carry meaning."
+why = "Few people search for a long phrase in exactly that order, so the post is checked against a search almost nobody makes."
+fix = "Shorten `focus_keyword:` to the two to four words a reader would type, and move the rest to `secondary_keywords:`."
+guide = "focus-keyword"
+
+[focus-only-filler]
+what = "Your focus keyword holds only small words, such as \"how to\", that name no topic."
+why = "Khalid and Google cannot tell what the post is about from words that appear in every text."
+fix = "Add the words that name your topic to `focus_keyword:`, such as \"how to bake bread\"."
+guide = "focus-keyword"
+
+[focus-not-at-title-start]
+what = "Your focus keyword sits late in the title search results show."
+why = "Searchers scan the first words of each result, and a long title may be cut before the keyword."
+fix = "Move the words of `focus_keyword:` toward the start of `seo_title:`, or of `title:` when there is none."
+guide = "focus-keyword"
+
 [secondary-keyword-unused]
 what = "One of your secondary keywords never appears in the text."
 why = "A close phrase only helps the post when readers and Google can find it in the text."

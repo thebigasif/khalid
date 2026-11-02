@@ -21,6 +21,7 @@ mod collections;
 mod facts;
 mod finding;
 mod focus;
+mod focus_shape;
 mod gate;
 mod german;
 mod headings;

@@ -5,9 +5,10 @@ use chrono::NaiveDate;
 use crate::focus::{FocusNotIn, FocusTooOften, FocusTooRare, Place, SecondaryKeywordUnused};
 use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
-    Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, headings,
-    link_hygiene, link_targets, link_text, page_or_section, page_shape, reading, site_content,
-    site_links, site_sections, site_trust, snippet, structure, topics, words, writing,
+    Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, focus_shape,
+    headings, link_hygiene, link_targets, link_text, page_or_section, page_shape, reading,
+    site_content, site_links, site_sections, site_trust, snippet, structure, topics, words,
+    writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
@@ -74,7 +75,7 @@ fn blocking_and_structure_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
 
 /// The rules that judge a post's writing, after the shape rules.
 fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
-    vec![
+    let mut rules: Vec<Box<dyn Rule>> = vec![
         Box::new(writing::AnswerCapsule {
             min_answer_words: thresholds.answer_min_words,
             max_answer_words: thresholds.answer_max_words,
@@ -95,6 +96,16 @@ fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
             table_words: headings::TABLE_WORDS.to_vec(),
         }),
         Box::new(facts::FactOldValue),
+    ];
+    rules.extend(keyword_rules(thresholds));
+    rules.extend(topic_rules(thresholds));
+    rules
+}
+
+/// The rules about the focus and secondary keywords, after the writing
+/// rules.
+fn keyword_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
+    vec![
         Box::new(crate::focus::NoFocusKeyword),
         Box::new(FocusNotIn(Place::Title)),
         Box::new(FocusNotIn(Place::Headline)),
@@ -109,6 +120,11 @@ fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(FocusTooOften {
             max: thresholds.focus_max_per_thousand_words,
         }),
+        Box::new(focus_shape::FocusTooLong {
+            max: thresholds.focus_max_words,
+        }),
+        Box::new(focus_shape::FocusOnlyFiller),
+        Box::new(focus_shape::FocusNotAtTitleStart),
         Box::new(SecondaryKeywordUnused),
         Box::new(SecondaryNotIn(Place::Title)),
         Box::new(SecondaryNotIn(Place::FirstParagraph)),
@@ -119,6 +135,13 @@ fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(SecondaryTooOften {
             max: thresholds.focus_max_per_thousand_words,
         }),
+    ]
+}
+
+/// The rules that compare a post with its brief, its site and its kind,
+/// last in the findings.
+fn topic_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
+    vec![
         Box::new(brief::QuestionUnanswered),
         Box::new(brief::TermMissing),
         Box::new(brief::LinkMissing),

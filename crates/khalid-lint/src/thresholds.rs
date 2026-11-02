@@ -1,12 +1,14 @@
 //! The numbers behind the rules that measure, set in `lint.toml`.
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// The limits a site can tune in the `[thresholds]` table of `lint.toml`.
 ///
 /// Each key is written in kebab-case, such as `thin-post-words = 500`. A key
-/// the file leaves out keeps the default documented on its field.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+/// the file leaves out keeps the default documented on its field. It
+/// serialises with the same keys, so a settings screen can show and write
+/// every limit with its current value.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields, rename_all = "kebab-case")]
 #[non_exhaustive]
 pub struct Thresholds {
@@ -79,6 +81,10 @@ pub struct Thresholds {
     /// before it reads as stuffing. Default 25, Rank Math's ceiling of two
     /// and a half percent.
     pub focus_max_per_thousand_words: usize,
+    /// The most words that carry meaning a focus keyword may hold before
+    /// few people search for exactly that phrase. Default 4, as in Yoast;
+    /// filler words such as "to" or "the" do not count.
+    pub focus_max_words: usize,
 }
 
 impl Default for Thresholds {
@@ -105,6 +111,7 @@ impl Default for Thresholds {
             hard_reading_index: 60,
             focus_min_per_thousand_words: 5,
             focus_max_per_thousand_words: 25,
+            focus_max_words: 4,
         }
     }
 }

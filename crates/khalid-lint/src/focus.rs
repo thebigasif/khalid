@@ -68,6 +68,22 @@ impl<'p> Keyword<'p> {
             .collect()
     }
 
+    /// Where in `text`, its words in lowercase, the keyword or a synonym
+    /// starts, in words from the start, in any word form, in order.
+    pub(crate) fn starts(&self, text: &[String]) -> Vec<usize> {
+        let at = |start: usize| {
+            let rest = text.get(start..).unwrap_or_default();
+            self.phrases.iter().any(|phrase| {
+                rest.len() >= phrase.len()
+                    && rest
+                        .iter()
+                        .zip(phrase)
+                        .all(|(word, stem)| self.forms.has_stem(word, stem))
+            })
+        };
+        (0..text.len()).filter(|&start| at(start)).collect()
+    }
+
     /// Whether `text` holds the keyword or a synonym, in any word form.
     pub(crate) fn found_in(&self, text: &str) -> bool {
         self.found_in_words(&words(text))
