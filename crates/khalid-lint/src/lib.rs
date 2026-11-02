@@ -13,6 +13,7 @@
 //! content track builds the input model from its own types (ADR 0019).
 
 mod address;
+mod analysis;
 mod blocking;
 mod brief;
 mod builtin;
@@ -64,6 +65,7 @@ mod words;
 mod writing;
 
 pub use address::flags_slug_part;
+pub use analysis::{Analysis, ProminentWord};
 pub use catalogue::{Catalogue, Message};
 pub use finding::{Finding, Location};
 pub use gate::{PublishGate, Verdict};

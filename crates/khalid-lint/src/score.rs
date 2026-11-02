@@ -3,6 +3,7 @@
 
 use serde::Serialize;
 
+use crate::analysis::is_readability;
 use crate::{Finding, LintPost, RuleId, Severity};
 
 /// What a rule set to block costs, once, however often it fires.
@@ -21,6 +22,10 @@ const REFUSED_MAX: u8 = 40;
 /// block, 5 for a warning. Twenty images without a description cost as much
 /// as one, because the writer fixes them with one lesson. A post with a
 /// block scores at most 40. The score never goes below 0.
+///
+/// This is the SEO score: the readability rules, such as `long-sentences`,
+/// count towards the readability score in [`Analysis`](crate::Analysis)
+/// instead, as Yoast keeps the two apart.
 ///
 /// Serialised as `{"value": 85, "lost": [{"rule": "missing-alt", "points": 5}]}`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -52,11 +57,22 @@ impl Score {
     /// The score of `post` from `findings`, which may hold findings about
     /// other posts too; only those about `post` count.
     pub(crate) fn of<'f>(post: &LintPost, findings: impl IntoIterator<Item = &'f Finding>) -> Self {
+        Self::of_rules(post, findings, |rule| !is_readability(rule))
+    }
+
+    /// The score of `post` from the findings of the rules `counts` keeps.
+    /// The SEO score keeps every rule but the readability ones, and the
+    /// readability score only those.
+    pub(crate) fn of_rules<'f>(
+        post: &LintPost,
+        findings: impl IntoIterator<Item = &'f Finding>,
+        counts: impl Fn(RuleId) -> bool,
+    ) -> Self {
         let mut lost: Vec<Loss> = Vec::new();
         let mut refused = false;
         let own = findings.into_iter().filter(|finding| {
             let at = finding.location();
-            at.locale == post.locale && at.slug == post.slug
+            at.locale == post.locale && at.slug == post.slug && counts(finding.rule())
         });
         for finding in own {
             let points = match finding.severity() {

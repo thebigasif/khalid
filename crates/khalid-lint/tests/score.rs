@@ -139,6 +139,39 @@ fn a_report_on_one_post_carries_its_score() {
 }
 
 #[test]
+fn readability_findings_cost_the_readability_score_and_not_the_seo_score() {
+    let mut post = clean();
+    let sentence = "Internal links help a reader who finishes one post find the next useful one on your site without going back to search again.";
+    post.prose_text = Some([sentence; 10].join(" "));
+    let mut site = LintSite::default();
+    site.posts.push(post.clone());
+    let clock = FixedClock::new(Utc.with_ymd_and_hms(2026, 10, 26, 9, 0, 0).unwrap());
+    let linter = Linter::new(&LintConfig::default(), &clock).unwrap();
+    let report = linter.lint_post(&post, &site);
+    assert_eq!(report.post_score().map(Score::value), Some(100));
+    let analysis = report.analysis().unwrap();
+    assert_eq!(analysis.readability().value(), 90);
+    let readability = lost(analysis.readability());
+    assert_eq!(
+        readability,
+        [("long-sentences", 5), ("repeated-openers", 5)]
+    );
+    assert_eq!(analysis.word_count(), 640);
+    assert!(analysis.reading_index().is_some());
+    let words = analysis.prominent_words();
+    assert_eq!(words.len(), 10, "at most ten");
+    assert!(
+        words
+            .iter()
+            .all(|word| word.uses() == 10 && word.word() != "one")
+    );
+    let json = serde_json::to_value(&report).unwrap();
+    assert_eq!(json["analysis"]["readability"]["value"], 90);
+    assert_eq!(json["analysis"]["prominent_words"][0]["uses"], 10);
+    assert_eq!(linter.lint_site(&site).analysis(), None);
+}
+
+#[test]
 fn a_report_on_a_site_scores_each_post_once_in_site_order() {
     let mut undated = clean();
     undated.date = None;

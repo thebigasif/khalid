@@ -66,6 +66,12 @@ pub(crate) const COMMON_LONG: &str = " ansprechpartner anforderungen beispielswe
      wahrscheinlich wirtschaftlich wissenschaft zahlreichen zusammenarbeit zusammenhang \
      zusätzliche zusätzlich ";
 
+/// Everyday words that are not filler words but never name a topic, in
+/// lowercase, between spaces, left out of the prominent words.
+pub(crate) const EVERYDAY: &str = " aber alle auch bei bis dass diese dieser dieses doch durch \
+     eine einem einen einer eines hier ihre immer jetzt können mehr muss nur schon sehr sein \
+     seine über unter viel vom war werden wurde ";
+
 /// Forms of "werden" that build the passive, "worden" included.
 pub(crate) const WERDEN: &[&str] = &[
     "werde", "wirst", "wird", "werden", "werdet", "wurde", "wurdest", "wurden", "wurdet", "würde",

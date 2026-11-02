@@ -104,17 +104,22 @@ impl Rule for HardToRead {
     }
 
     fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
-        let counts = count(&post.body_text, post.locale.language());
-        if counts.words < MIN_WORDS {
-            return Vec::new();
-        }
-        counts
-            .index()
+        index(crate::readability::prose(post), post.locale.language())
             .filter(|index| *index > self.max)
             .map(|index| Hit::about(format!("reading index {index}")))
             .into_iter()
             .collect()
     }
+}
+
+/// The LIX of `text` in `language`, or `None` under 100 words, where the
+/// index means little.
+pub(crate) fn index(text: &str, language: &str) -> Option<usize> {
+    let counts = count(text, language);
+    if counts.words < MIN_WORDS {
+        return None;
+    }
+    counts.index()
 }
 
 #[cfg(test)]
