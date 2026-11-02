@@ -62,6 +62,7 @@ fn demo() -> Router {
             name: "classic".to_owned(),
             options: BTreeMap::new(),
         },
+        seo: serde_json::Map::new(),
         updated_at: Utc.with_ymd_and_hms(2026, 10, 20, 9, 0, 0).unwrap(),
         restart_needed: false,
     };

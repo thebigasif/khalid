@@ -1,0 +1,21 @@
+Added
+- The settings API reads and saves the `[seo]` table of `site.toml` one part at a time, such as `titles` or `crawlers`, keeping every other line and comment of the file. `docs/seo-settings.md` lists every part and its defaults.
+- An SEO settings screen in the admin, under Site. Search appearance sets the separator, the tagline, and the title and description templates of each kind of page, with buttons that add each variable and a live search result.
+- The SEO settings screen also sets which list pages show in search, thin archives and the whole blog's switch; and who is behind the blog, with its logo and social profiles.
+- The SEO settings screen sets the X username and default share image; the verification codes for Google, Bing, Yandex, Baidu and Pinterest; a switch to block each known AI crawler, other blocked crawlers and paths, and the AI info page.
+- A post's check and each row of the posts list carry two scores out of 100, one for SEO and one for readability, split from the same lint findings; the check also counts the post's words.
+- Each row of the posts list carries its word count, how many posts link to it and how many it links to, whether it names a focus keyword, and its role in a topic cluster. A list filters by `orphan:true`, `has_focus_keyword:false` and `pillar:true`.
+- A post's settings in the Admin API carry its secondary keywords, up to four, read from and written to `secondary_keywords` in its front matter.
+- `GET /api/admin/v1/lint/issues/` lists the live blog's ten most pressing lint problems, those that stop posts going live first, each with how many posts it fires on, what, why and fix, and a post to open first.
+- `POST /api/admin/v1/posts/{id}/duplicate/` copies a post as a new draft, with its text, author and settings, but not its date, review, old addresses or head code.
+- `GET /api/admin/v1/posts/{id}/link-suggestions/` ranks up to ten posts in the same language that a post does not link to yet, by shared category, tags and topic cluster, with the cluster's pillar first, and gives back the post's own words that name each one's focus keyword.
+- The editor's checks show two lights, SEO and readability, each with its score and what it means in words, and the post's word count. The Google preview switches between desktop and mobile, cuts the title and description where Google would by their width in pixels, shows the post's date, and puts the focus keyword in bold.
+- The editor shows the post as shared on Facebook and X, takes up to four secondary keywords, and folds the rarer robots choices under the visibility setting: keep images out of image search, no cached copy, no text snippet, the longest snippet and the largest picture preview.
+- The editor suggests internal links to add, says why each post is suggested, and adds a link with one press: on the words of the text that name the post, or as a Related line at the end. A Copy as a new draft button opens the copy.
+- The posts list shows each post's SEO and readability lights and how many posts link in and out, and filters posts with no focus keyword, posts no other post links to, and the main posts of topic clusters.
+- The SEO settings screen sets what feeds carry and how many posts they list, and switches IndexNow on with one tick that makes its key.
+- Each row of the posts list carries the post's `path` on the site. The dashboard lists the checks that fail on most posts as tasks, "Fix these first", each with its fix and a post to start on.
+- Moving live posts to the trash asks what their old addresses should do: say the page is gone for good (410), the default, or send readers to another live post you pick (301). The answer is stored as a redirect.
+- A Bulk SEO screen edits the SEO title, description and focus keyword of many posts in one table, shows each field's length, saves each row on its own, and can show only the posts that lack one of the three.
+- The posts list filters posts by their role in a topic cluster: `cluster:member` or `cluster:pillar`.
+- An SEO workouts screen walks two jobs step by step: link each orphaned post from one of the posts closest to it, and link every post of a topic cluster to the cluster's main post, each with one press and a count of what is done.

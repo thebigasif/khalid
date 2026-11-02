@@ -43,6 +43,8 @@ pub(crate) fn settings_of(front: &PostFront) -> PostSettings {
     settings.seo_title = seo_title.and_then(|title| SearchTitle::try_new(title).ok());
     let keyword = front.focus_keyword.as_deref();
     settings.focus_keyword = keyword.and_then(NonBlank::try_new);
+    let related = front.secondary_keywords.iter();
+    settings.secondary_keywords = related.filter_map(|k| NonBlank::try_new(k)).collect();
     let schema = front.schema.as_deref();
     settings.schema = schema.and_then(|text| CustomJsonLd::try_new(text).ok());
     settings
@@ -135,6 +137,13 @@ fn write_search(text: &mut PostText, before: &PostSettings, after: &PostSettings
     if after.focus_keyword != before.focus_keyword {
         let keyword = after.focus_keyword.as_ref().map(|k| quoted(k.as_str()));
         put(text, "focus_keyword", keyword);
+    }
+    if after.secondary_keywords != before.secondary_keywords {
+        let quoted: Vec<String> = (after.secondary_keywords.iter())
+            .map(|keyword| quoted(keyword.as_str()))
+            .collect();
+        let keywords: Vec<&str> = quoted.iter().map(String::as_str).collect();
+        put(text, "secondary_keywords", list(&keywords));
     }
     if after.schema != before.schema {
         let schema = after.schema.as_ref().map(|s| lines_quoted(s.as_str()));

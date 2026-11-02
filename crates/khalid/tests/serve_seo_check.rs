@@ -131,6 +131,10 @@ fn the_check_follows_a_saved_search_title_and_custom_schema() {
     let first = check(&server, &key);
     let score = first["lint"]["score"]["value"].as_u64().unwrap();
     assert!(score <= 100, "{first}");
+    let scores = &first["scores"];
+    assert!(scores["seo"].as_u64().unwrap() <= 100, "{scores}");
+    assert!(scores["readability"].as_u64().unwrap() <= 100, "{scores}");
+    assert!(first["words"].as_u64().unwrap() > 100, "{first}");
     let snippet = &first["snippet"];
     let title = snippet["title"].as_str().unwrap();
     assert!(title.starts_with("Why internal links matter"), "{snippet}");
@@ -203,4 +207,132 @@ fn a_saved_schema_template_reaches_site_toml_and_the_check_after_a_restart() {
         types(&after["schema"]).contains(&"\"Course\"".to_owned()),
         "{after}"
     );
+}
+
+/// Writes the draft `en.anchor-words` into `site`: in the demo's
+/// `on-page-seo` category, with no focus keyword, linking to one post.
+#[cfg(test)]
+fn write_draft(site: &Path) {
+    let mut drafts = site.to_path_buf();
+    drafts.push("drafts");
+    drafts.push("en");
+    fs::create_dir_all(&drafts).unwrap();
+    drafts.push("anchor-words.md");
+    let draft = "---\ntitle: Anchor words\nslug: anchor-words\ncategory: on-page-seo\n---\n\n\
+                 Pick link words with care, as [sitemaps](/blog/what-a-sitemap-does/) show.\n";
+    fs::write(&drafts, draft).unwrap();
+}
+
+#[test]
+fn the_posts_list_counts_links_and_finds_orphans() {
+    let site = demo_site();
+    write_draft(site.path());
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let route = "/api/admin/v1/posts/?filter=orphan:true%2Bhas_focus_keyword:false%2Bpillar:false";
+    let (status, json) = send(&server, &key, ("GET", route), "");
+    assert_eq!(status, 200, "{json}");
+    let rows = json["posts"].as_array().unwrap();
+    let draft = rows.iter().find(|row| row["id"] == "en.anchor-words");
+    let draft = draft.unwrap_or_else(|| panic!("the draft is an orphan: {json}"));
+    assert_eq!(
+        draft["links"],
+        json!({"inbound": 0, "outbound": 1}),
+        "{json}"
+    );
+    assert!(draft["words"].as_u64().unwrap() > 5, "{json}");
+    let linked = "/api/admin/v1/posts/?filter=orphan:false";
+    let (_, json) = send(&server, &key, ("GET", linked), "");
+    let ids: Vec<&str> = (json["posts"].as_array().unwrap().iter())
+        .map(|row| row["id"].as_str().unwrap())
+        .collect();
+    assert!(ids.contains(&"en.what-a-sitemap-does"), "{json}");
+    assert!(!ids.contains(&"en.anchor-words"), "{json}");
+    let live = (json["posts"].as_array().unwrap().iter())
+        .find(|row| row["id"] == "en.what-a-sitemap-does")
+        .unwrap();
+    assert_eq!(live["path"], "/blog/what-a-sitemap-does/", "{json}");
+}
+
+#[test]
+fn link_suggestions_rank_other_posts_this_one_does_not_link_to_yet() {
+    let site = demo_site();
+    write_draft(site.path());
+    let key = writer_key(site.path());
+    let server = start(site.path());
+
+    let route = "/api/admin/v1/posts/en.anchor-words/link-suggestions/";
+    let (status, json) = send(&server, &key, ("GET", route), "");
+    assert_eq!(status, 200, "{json}");
+    let ids: Vec<&str> = (json["suggestions"].as_array().unwrap().iter())
+        .map(|each| each["id"].as_str().unwrap())
+        .collect();
+    let same_category = [
+        "en.how-to-write-a-title-tag",
+        "en.why-internal-links-matter",
+    ];
+    assert_eq!(ids, same_category, "by title: {json}");
+    assert_eq!(json["suggestions"][0]["shares"]["category"], "on-page-seo");
+    let path = &json["suggestions"][0]["path"];
+    assert_eq!(path, "/blog/how-to-write-a-title-tag/", "{json}");
+
+    // The demo post already links to the other post in its category.
+    let route = format!("{ROUTE}link-suggestions/");
+    let (status, json) = send(&server, &key, ("GET", &route), "");
+    assert_eq!(status, 200, "{json}");
+    assert_eq!(json["suggestions"], json!([]), "{json}");
+    let missing = "/api/admin/v1/posts/en.no-such-post/link-suggestions/";
+    let (status, _) = send(&server, &key, ("GET", missing), "");
+    assert_eq!(status, 404);
+}
+
+#[test]
+fn a_copy_of_a_live_post_is_saved_as_a_new_draft_file() {
+    let site = demo_site();
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let route = format!("{ROUTE}duplicate/");
+    let (status, json) = send(&server, &key, ("POST", &route), "");
+    assert_eq!(status, 201, "{json}");
+    assert_eq!(json["posts"][0]["id"], "en.why-internal-links-matter-copy");
+    assert_eq!(json["posts"][0]["status"], "draft", "{json}");
+    let mut file = site.path().to_path_buf();
+    file.push("drafts/en/why-internal-links-matter-copy.md");
+    let text = fs::read_to_string(&file).unwrap();
+    assert!(
+        text.contains("title: \"Why internal links matter (copy)\""),
+        "{text}"
+    );
+    assert!(
+        text.contains("](/blog/how-to-write-a-title-tag/)"),
+        "the text: {text}"
+    );
+}
+
+#[test]
+fn the_site_issues_list_the_most_pressing_problems_first() {
+    let site = demo_site();
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let (status, json) = send(&server, &key, ("GET", "/api/admin/v1/lint/issues/"), "");
+    assert_eq!(status, 200, "{json}");
+    let issues = json["issues"].as_array().unwrap();
+    assert!(issues.len() <= 10, "{json}");
+    for issue in issues {
+        assert!(issue["posts"].as_u64().unwrap() >= 1, "{json}");
+        assert!(issue["example"].as_str().unwrap().contains('.'), "{json}");
+        assert!(!issue["fix"].as_str().unwrap().is_empty(), "{json}");
+    }
+    let counts: Vec<(u8, u64)> = (issues.iter())
+        .map(|issue| {
+            (
+                u8::from(issue["weight"] != "block"),
+                issue["posts"].as_u64().unwrap(),
+            )
+        })
+        .collect();
+    let ranked = counts
+        .windows(2)
+        .all(|pair| pair[0].0 < pair[1].0 || (pair[0].0 == pair[1].0 && pair[0].1 >= pair[1].1));
+    assert!(ranked, "blocks first, then the most posts: {json}");
 }

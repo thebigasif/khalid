@@ -13,12 +13,14 @@ use khalid_api::content_store::BoxFuture;
 use khalid_api::entry_store::EntryStoreError;
 use khalid_api::resources::{AdminSettings, SettingsChange, TemplateSetting, TemplateValue};
 use khalid_api::settings_store::{SettingsError, SettingsStore};
-use khalid_core::{Config, ConfigError, Environment, OptionValue};
+use khalid_core::{Config, ConfigError, Environment, OptionValue, SeoSettings};
 use khalid_theme::Look;
 use toml_edit::{Array, DocumentMut, Item, Table, Value};
 
 use crate::atomic;
 use crate::site_config;
+
+mod seo;
 
 /// The settings of one site folder. Cloning shares it.
 #[derive(Debug, Clone)]
@@ -39,6 +41,7 @@ struct Core {
     default_language: String,
     languages: Vec<String>,
     template: TemplateSetting,
+    seo: SeoSettings,
 }
 
 impl Core {
@@ -69,6 +72,7 @@ impl Core {
                 .iter()
                 .map(|l| l.as_str().to_owned())
                 .collect(),
+            seo: config.seo().clone(),
         }
     }
 }
@@ -112,6 +116,7 @@ impl SiteSettings {
             default_language: core.default_language,
             languages: core.languages,
             template: core.template,
+            seo: seo::seo_table(text)?,
             updated_at: changed,
             restart_needed,
         })
@@ -163,6 +168,9 @@ impl SiteSettings {
         }
         if let Some(template) = change.template {
             set_template(&mut document, template);
+        }
+        if let Some(parts) = change.seo {
+            seo::set_seo(&mut document, parts)?;
         }
         let text = document.to_string();
         self.checked(&text)?;

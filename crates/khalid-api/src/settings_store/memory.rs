@@ -53,6 +53,12 @@ impl MemorySettings {
         next.default_language = change.default_language.unwrap_or(next.default_language);
         next.languages = change.languages.unwrap_or(next.languages);
         next.template = change.template.unwrap_or(next.template);
+        for (part, sent) in change.seo.unwrap_or_default() {
+            match sent {
+                Some(value) => next.seo.insert(part, value),
+                None => next.seo.remove(&part),
+            };
+        }
         if !next.languages.contains(&next.default_language) {
             return Err(SettingsError::Refused {
                 field: "default_language".to_owned(),

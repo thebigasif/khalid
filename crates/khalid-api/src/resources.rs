@@ -22,6 +22,7 @@ mod post_row;
 mod post_settings;
 mod real_update;
 mod seo_fields;
+mod seo_scores;
 mod settings;
 mod settings_edit;
 mod term;
@@ -48,12 +49,14 @@ pub use media::{
 pub use menu::{Menu, MenuLink};
 pub use post::{Bodies, Post};
 pub use post_head::{HeadElement, HeadParts, PostHead};
-pub use post_row::{Gate, IndexStatus, LintCounts, PostRow};
+pub use post_row::{ClusterPlace, Gate, IndexStatus, LintCounts, PostLinks, PostRow};
 pub use post_settings::{
-    Alias, FeatureImage, NonBlank, PostSettings, ReviewState, ShareCard, ShareCards,
+    Alias, FeatureImage, MAX_SECONDARY_KEYWORDS, NonBlank, PostSettings, ReviewState, ShareCard,
+    ShareCards,
 };
 pub use real_update::{MAX_UPDATE_NOTE, NotRealUpdate, RealUpdate};
 pub use seo_fields::{CustomJsonLd, SearchTitle};
+pub use seo_scores::{READABILITY_RULES, SeoScores};
 pub use settings::Settings;
 pub use settings_edit::SettingsEdit;
 pub use term::Term;

@@ -1839,6 +1839,73 @@
         ]
       }
     },
+    "/api/admin/v1/lint/issues/": {
+      "get": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "The live site's most common lint problems, for the dashboard's task\nlist: each rule that fires, on how many posts, with what, why and fix\nand one post to open first. Those that stop posts going live come\nfirst, then those on the most posts. Every rule runs on every post, as\n`khalid lint` does, so the dashboard asks for it after the rest. Needs\n`posts:write`.",
+        "operationId": "list_issues",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Up to ten problems, most pressing first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminIssues"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server checks no posts",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/media/": {
       "get": {
         "tags": [
@@ -4032,6 +4099,168 @@
           },
           "422": {
             "description": "The body could not be read, or the site keeps no comments on drafts",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/posts/{id}/duplicate/": {
+      "post": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "Copies a post, in any status, as a new draft: its title with\n\"(copy)\" after it, its text, its author, and every setting but its\ndate, its review, its old addresses and its head code. The copy's slug\nis the post's with `-copy`, or `-copy-2` and on when that is taken.\nAnswers like a create, with the copy's lint findings and where it\nopens in the admin. Needs `posts:write`.",
+        "operationId": "duplicate_admin_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identity of the post to copy",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The new draft, its lint findings and its admin path",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedPosts"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No post has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Every copy slug is taken",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/posts/{id}/link-suggestions/": {
+      "get": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "The blog's other posts in the same language that this post does not\nlink to yet, ranked by what they share with it: its category, its tags,\nits topic cluster, with the cluster's pillar first, and their focus\nkeyword in this post's text, given back as the words to link. A draft\nis weighed as if published today. Needs `posts:write`.",
+        "operationId": "suggest_links",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The post's identity",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Up to ten posts to link to, best first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminLinkSuggestions"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No post has this identity, or this server checks no posts",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -11064,6 +11293,22 @@
           }
         }
       },
+      "AdminIssues": {
+        "type": "object",
+        "description": "Issues as the Admin API wraps them.",
+        "required": [
+          "issues"
+        ],
+        "properties": {
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SiteIssue"
+            },
+            "description": "Up to ten problems, those that stop posts going live first."
+          }
+        }
+      },
       "AdminKey": {
         "type": "object",
         "description": "A key that works, in Admin API shape. The secret is shown once, when\nthe key is made, and never again.",
@@ -11132,6 +11377,22 @@
               "$ref": "#/components/schemas/AdminKey"
             },
             "description": "The key or keys."
+          }
+        }
+      },
+      "AdminLinkSuggestions": {
+        "type": "object",
+        "description": "Suggestions as the Admin API wraps them.",
+        "required": [
+          "suggestions"
+        ],
+        "properties": {
+          "suggestions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkSuggestion"
+            },
+            "description": "Up to ten posts, best first."
           }
         }
       },
@@ -11625,6 +11886,7 @@
           "default_language",
           "languages",
           "template",
+          "seo",
           "updated_at",
           "restart_needed"
         ],
@@ -11655,6 +11917,10 @@
           "restart_needed": {
             "type": "boolean",
             "description": "Whether `site.toml` says something the running server does not use\nyet, so a restart is needed to apply it."
+          },
+          "seo": {
+            "type": "object",
+            "description": "The `[seo]` table as `site.toml` writes it, one key per part such\nas `titles` or `crawlers`. A setting left out of the file is left\nout here too and keeps its default; `docs/seo-settings.md` lists\nevery part and its defaults."
           },
           "template": {
             "$ref": "#/components/schemas/TemplateSetting",
@@ -12536,6 +12802,14 @@
           "take_over"
         ]
       },
+      "ClusterPlace": {
+        "type": "string",
+        "description": "A post's role in its topic cluster.",
+        "enum": [
+          "pillar",
+          "member"
+        ]
+      },
       "Collections": {
         "type": "object",
         "required": [
@@ -13283,6 +13557,14 @@
         },
         "additionalProperties": false
       },
+      "IssueWeight": {
+        "type": "string",
+        "description": "How much a problem matters.",
+        "enum": [
+          "block",
+          "warn"
+        ]
+      },
       "LinkRedeem": {
         "type": "object",
         "description": "The token from a sign-in link, which the admin's sign-in page reads\nafter the `#` and posts here.",
@@ -13310,6 +13592,50 @@
           }
         },
         "additionalProperties": false
+      },
+      "LinkSuggestion": {
+        "type": "object",
+        "description": "One post worth linking to from the post being written.",
+        "required": [
+          "id",
+          "title",
+          "path",
+          "score",
+          "shares"
+        ],
+        "properties": {
+          "anchor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The words of the post being written that name it, as written,\nready to become the link's words."
+          },
+          "id": {
+            "type": "string",
+            "description": "The post's identity, as in `/posts/{id}/`.",
+            "example": "en.choosing-anchor-text"
+          },
+          "path": {
+            "type": "string",
+            "description": "The address to link to.",
+            "example": "/blog/choosing-anchor-text/"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How closely it matches; the list sends the highest first.",
+            "minimum": 0
+          },
+          "shares": {
+            "$ref": "#/components/schemas/Shares",
+            "description": "What it shares with the post being written."
+          },
+          "title": {
+            "type": "string",
+            "description": "Its title."
+          }
+        }
       },
       "LintCounts": {
         "type": "object",
@@ -14573,6 +14899,8 @@
         "required": [
           "id",
           "lint",
+          "scores",
+          "words",
           "snippet",
           "schema"
         ],
@@ -14589,9 +14917,20 @@
             "type": "object",
             "description": "The JSON-LD the page would carry: `@context` and `@graph`."
           },
+          "scores": {
+            "$ref": "#/components/schemas/SeoScores",
+            "description": "The SEO and readability scores, from the same findings."
+          },
           "snippet": {
             "$ref": "#/components/schemas/Snippet",
             "description": "The search result the page would make."
+          },
+          "words": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many words the post's text holds.",
+            "example": 1240,
+            "minimum": 0
           }
         }
       },
@@ -14686,6 +15025,28 @@
         },
         "additionalProperties": false
       },
+      "PostLinks": {
+        "type": "object",
+        "description": "How many of the blog's other posts a post links to, and how many link\nto it, each counted once.",
+        "required": [
+          "inbound",
+          "outbound"
+        ],
+        "properties": {
+          "inbound": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Posts that link to this one.",
+            "minimum": 0
+          },
+          "outbound": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Posts this one links to.",
+            "minimum": 0
+          }
+        }
+      },
       "PostPresence": {
         "type": "object",
         "description": "Who has a post open, as the one checking in sees it.",
@@ -14726,6 +15087,9 @@
           "updated_at",
           "gate",
           "lint",
+          "words",
+          "links",
+          "has_focus_keyword",
           "index_status"
         ],
         "properties": {
@@ -14737,6 +15101,17 @@
             "description": "The author's slug, if any.",
             "example": "asif"
           },
+          "cluster": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ClusterPlace",
+                "description": "Its role in a topic cluster, or `null` outside one: the `pillar`,\nthe main post the others link to, or a `member`. A list filters\npillars by `pillar:true`, and either role by `cluster:member` or\n`cluster:pillar`."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "featured": {
             "type": "boolean",
             "description": "Whether the post is featured."
@@ -14744,6 +15119,10 @@
           "gate": {
             "$ref": "#/components/schemas/Gate",
             "description": "Whether the lint publish gate lets it go live. A list filters by\nthis, such as `gate:refuses`."
+          },
+          "has_focus_keyword": {
+            "type": "boolean",
+            "description": "Whether it names a focus keyword. A list filters by this, such as\n`has_focus_keyword:false`."
           },
           "id": {
             "type": "string",
@@ -14753,9 +15132,21 @@
             "$ref": "#/components/schemas/IndexStatus",
             "description": "Whether search engines may list it."
           },
+          "links": {
+            "$ref": "#/components/schemas/PostLinks",
+            "description": "Its internal links to and from the blog's other posts. A list\nfilters posts no other post links to by `orphan:true`."
+          },
           "lint": {
             "$ref": "#/components/schemas/LintCounts",
             "description": "Its lint findings, counted. Counting takes every rule, so a list\ncounts only the rows on the page it sends, and cannot filter or\norder by the counts."
+          },
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Where readers find it on the site, such as a redirect leads to.",
+            "example": "/blog/choosing-anchor-text/"
           },
           "published_at": {
             "type": [
@@ -14782,6 +15173,17 @@
             "description": "The day it last came up for review (F3), if it ever has.",
             "example": "2026-05-02"
           },
+          "scores": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeoScores",
+                "description": "Its SEO and readability scores, counted with its findings, so only\nfor the rows on the page a list sends."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "slug": {
             "type": "string",
             "description": "The last part of its address.",
@@ -14806,6 +15208,12 @@
               "null"
             ],
             "description": "Who made the last change."
+          },
+          "words": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many words its text holds.",
+            "minimum": 0
           }
         }
       },
@@ -14961,6 +15369,16 @@
               {
                 "type": "null"
               }
+            ]
+          },
+          "secondary_keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Up to [`MAX_SECONDARY_KEYWORDS`] related phrases the post also\nanswers, such as synonyms of the focus keyword, which the linter\nlooks for in the text. Left out when there are none.",
+            "example": [
+              "link text"
             ]
           },
           "seo_title": {
@@ -15404,6 +15822,28 @@
         "description": "The title search results show for a post, in place of the site's title\ntemplate. It may use the template variables, such as `{site}`.",
         "example": "Anchor text that says where it goes {sep} {site}"
       },
+      "SeoScores": {
+        "type": "object",
+        "description": "A post's SEO and readability scores, each from 0 to 100.\n\nEach rule that found a problem costs points once, 30 for a block and 5\nfor a warning, as the post's one score counts them, and a group with a\nblock scores at most 40. The rules in [`READABILITY_RULES`] make the\nreadability score; every other rule makes the SEO score.",
+        "required": [
+          "seo",
+          "readability"
+        ],
+        "properties": {
+          "readability": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How easy the post is to read, from 0 to 100.",
+            "minimum": 0
+          },
+          "seo": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How well the post is set up to be found, from 0 to 100.",
+            "minimum": 0
+          }
+        }
+      },
       "SerpdadConnection": {
         "type": "object",
         "description": "The connection, or `null` while it is off.",
@@ -15595,6 +16035,13 @@
             ],
             "description": "A new name."
           },
+          "seo": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "New parts of the `[seo]` table, each replacing the part of that\nname whole, such as `{\"titles\": {\"separator\": \"·\"}}`. `null`\nremoves a part, so its settings go back to their defaults. Parts\nleft out stay as they are."
+          },
           "template": {
             "oneOf": [
               {
@@ -15768,6 +16215,19 @@
             "description": "New hand-written JSON-LD, or `null` for none.",
             "example": "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}"
           },
+          "secondary_keywords": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every secondary keyword, at most four; an empty list for none.",
+            "example": [
+              "link text"
+            ]
+          },
           "seo_title": {
             "type": [
               "string",
@@ -15867,6 +16327,48 @@
         },
         "additionalProperties": false
       },
+      "Shares": {
+        "type": "object",
+        "description": "What a suggested post shares with the post being written.",
+        "required": [
+          "tags",
+          "pillar"
+        ],
+        "properties": {
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The category both are in."
+          },
+          "cluster": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The topic cluster both are in."
+          },
+          "keyword": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The suggested post's focus keyword, when this post's text names it."
+          },
+          "pillar": {
+            "type": "boolean",
+            "description": "Whether the suggested post is that cluster's pillar."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The tags both have."
+          }
+        }
+      },
       "SignInBody": {
         "type": "object",
         "description": "An email and password to sign in with.",
@@ -15901,6 +16403,52 @@
           "home": {
             "type": "boolean",
             "description": "Whether it is the home site, where this panel lives."
+          }
+        }
+      },
+      "SiteIssue": {
+        "type": "object",
+        "description": "One lint rule that fires on the site, as one task.",
+        "required": [
+          "rule",
+          "weight",
+          "posts",
+          "what",
+          "why",
+          "fix",
+          "example"
+        ],
+        "properties": {
+          "example": {
+            "type": "string",
+            "description": "The identity of one post it fires on, to open first.",
+            "example": "en.choosing-anchor-text"
+          },
+          "fix": {
+            "type": "string",
+            "description": "What to do."
+          },
+          "posts": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many posts it fires on.",
+            "minimum": 0
+          },
+          "rule": {
+            "type": "string",
+            "description": "The rule, such as `missing-alt`."
+          },
+          "weight": {
+            "$ref": "#/components/schemas/IssueWeight",
+            "description": "Whether it stops posts going live or warns."
+          },
+          "what": {
+            "type": "string",
+            "description": "What is wrong, in one sentence."
+          },
+          "why": {
+            "type": "string",
+            "description": "Why it matters."
           }
         }
       },
