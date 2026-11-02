@@ -2,8 +2,10 @@
 //! blog and what every feed carries (audit G11, KH-SEO-6, KH-SEO-7).
 //! `[seo.links]` becomes the link policy through `LinkPolicy::from`.
 
-use khalid_core::{CrawlerSettings, FeedContentSetting, FeedSettings};
-use khalid_seo::{BotAccess, FeedContent, MetaTemplate, RobotsPath, SeoSite, UserAgent};
+use khalid_core::{CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings};
+use khalid_seo::{
+    BotAccess, FeedContent, FeedFormat, MetaTemplate, RobotsPath, SeoSite, UserAgent,
+};
 
 use crate::seo_settings::{SettingMistake, TEMPLATE};
 
@@ -92,6 +94,13 @@ pub(crate) fn feeds(settings: &FeedSettings, site: &mut SeoSite) -> Result<(), S
     feeds.after_item.clone_from(&settings.after_item);
     feeds.source_line = source_line;
     feeds.limit = limit;
+    feeds.off = (settings.off.iter())
+        .map(|kind| match kind {
+            FeedKind::Rss => FeedFormat::Rss,
+            FeedKind::Atom => FeedFormat::Atom,
+            FeedKind::Json => FeedFormat::Json,
+        })
+        .collect();
     Ok(())
 }
 

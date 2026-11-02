@@ -67,14 +67,14 @@ pub use robots::{
 pub use search_console_settings::{SearchConsoleProperty, SearchConsoleSettings};
 pub use secret::Secret;
 pub use seo_head_settings::{
-    CrawlerSettings, FeedContentSetting, FeedSettings, ImageSettings, SocialSettings,
+    CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings, ImageSettings, SocialSettings,
     TemplateSettings, TitleSettings, VerificationSettings,
 };
 pub use seo_publisher_settings::{
     HoursSettings, LocationSettings, PublisherSettings, PublisherType, SchemaTemplateSettings,
     WeekdaySetting,
 };
-pub use seo_settings::{ArchiveIndex, IndexNowSettings, SeoSettings};
+pub use seo_settings::{ArchiveIndex, ArchiveSetting, IndexNowSettings, SeoSettings};
 pub use site_code::{BodyCode, BodyCodeError, Consent, SiteCode};
 pub use site_nav::{
     Announcement, FooterGroup, MenuLink, NavSettings, OneLine, SiteHref, SiteNavError,

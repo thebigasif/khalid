@@ -37,3 +37,40 @@ description = "{excerpt}"
 title = "{term} {page} {sep} {site}"
 description = "{term_description}"
 ```
+
+## Show in search results
+
+`[seo.index]` says which pages search engines may list. Each value is `"index"` or `"noindex"`. A post's own `robots` field always wins.
+
+| Key | Default | What it covers |
+|---|---|---|
+| `posts` | `index` | Every post. |
+| `pages` | `index` | Every standalone page, such as About. |
+| `collections.<name>` | as `posts` | The posts of one collection, such as `news`. |
+| `tags`, `categories` | `index` | Tag and category pages. |
+| `authors` | `index` | Author pages. `"off"` builds none. |
+| `dates` | `noindex` | Year and month pages. `"off"` builds none. |
+| `search` | `noindex` | Search results. |
+| `thin_archives_below` | `3` | A tag or author page with fewer posts is `noindex`. |
+| `site` | `index` | `"noindex"` keeps the whole site out, for a staging copy. |
+
+An archive set to `"off"` has no pages and no sitemap entries, and each of its addresses sends readers to the home page with a permanent redirect. Use it on a blog with one author, where the author page only repeats the home page.
+
+```toml
+[seo.index]
+pages = "noindex"
+authors = "off"
+dates = "off"
+
+[seo.index.collections]
+news = "noindex"
+```
+
+## Feeds
+
+`[seo.feeds] off` lists the feed formats Khalid does not write: `"rss"` (`feed.xml`), `"atom"` (`atom.xml`) and `"json"` (`feed.json`). Every format is written by default.
+
+```toml
+[seo.feeds]
+off = ["atom", "json"]
+```

@@ -194,6 +194,9 @@ pub struct FeedSettings {
     pub source_line: Option<String>,
     /// How many of the newest posts a feed holds. 20 by default.
     pub limit: u32,
+    /// The feed formats not written at all, such as `["atom", "json"]`.
+    /// Empty by default: every format is written.
+    pub off: Vec<FeedKind>,
 }
 
 impl Default for FeedSettings {
@@ -204,8 +207,21 @@ impl Default for FeedSettings {
             after_item: String::new(),
             source_line: None,
             limit: 20,
+            off: Vec::new(),
         }
     }
+}
+
+/// One feed format, as `[seo.feeds] off` names it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum FeedKind {
+    /// RSS 2.0, `feed.xml`.
+    Rss,
+    /// Atom, `atom.xml`.
+    Atom,
+    /// JSON Feed, `feed.json`.
+    Json,
 }
 
 /// How much of each post a feed carries: `"full"` or `"excerpt"`.

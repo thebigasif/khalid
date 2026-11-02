@@ -5,8 +5,8 @@
 use std::path::Path;
 
 use khalid_core::{
-    AbsoluteUrl, ArchiveIndex, Config, DomainName, Environment, ExternalRel, IndexNowKey,
-    IndexNowSettings, Indexing, LinkOpening, LinkSettings,
+    AbsoluteUrl, ArchiveIndex, ArchiveSetting, Config, DomainName, Environment, ExternalRel,
+    FeedKind, IndexNowKey, IndexNowSettings, Indexing, LinkOpening, LinkSettings,
 };
 
 const SITE: &str = r#"name = "Field Notes on SEO"
@@ -30,8 +30,8 @@ fn a_site_without_the_table_gets_the_defaults() {
     assert_eq!(index, &ArchiveIndex::default());
     assert_eq!(index.tags, Indexing::Index);
     assert_eq!(index.categories, Indexing::Index);
-    assert_eq!(index.authors, Indexing::Index);
-    assert_eq!(index.dates, Indexing::NoIndex);
+    assert_eq!(index.authors, ArchiveSetting::Index);
+    assert_eq!(index.dates, ArchiveSetting::NoIndex);
     assert_eq!(index.search, Indexing::NoIndex);
     assert_eq!(index.thin_archives_below, 3);
 }
@@ -53,8 +53,8 @@ thin_archives_below = 0
     let index = &config.seo().index;
     assert_eq!(index.tags, Indexing::NoIndex);
     assert_eq!(index.categories, Indexing::NoIndex);
-    assert_eq!(index.authors, Indexing::NoIndex);
-    assert_eq!(index.dates, Indexing::Index);
+    assert_eq!(index.authors, ArchiveSetting::NoIndex);
+    assert_eq!(index.dates, ArchiveSetting::Index);
     assert_eq!(index.search, Indexing::Index);
     assert_eq!(index.thin_archives_below, 0);
 }
@@ -64,7 +64,7 @@ fn a_setting_left_out_keeps_its_default() {
     let config = read("\n[seo.index]\ntags = \"noindex\"\n").unwrap();
     let index = &config.seo().index;
     assert_eq!(index.tags, Indexing::NoIndex);
-    assert_eq!(index.dates, Indexing::NoIndex);
+    assert_eq!(index.dates, ArchiveSetting::NoIndex);
     assert_eq!(index.thin_archives_below, 3);
 }
 
@@ -73,6 +73,34 @@ fn the_whole_site_is_indexed_unless_it_says_noindex() {
     assert_eq!(read("").unwrap().seo().index.site, Indexing::Index);
     let config = read("\n[seo.index]\nsite = \"noindex\"\n").unwrap();
     assert_eq!(config.seo().index.site, Indexing::NoIndex);
+}
+
+#[test]
+fn each_content_type_and_feed_kind_can_be_switched() {
+    let config = read(
+        "\n[seo.index]\nposts = \"noindex\"\npages = \"noindex\"\nauthors = \"off\"\n\
+         dates = \"off\"\n\n[seo.index.collections]\nnews = \"noindex\"\n\n\
+         [seo.feeds]\noff = [\"atom\", \"json\"]\n",
+    )
+    .unwrap();
+    let index = &config.seo().index;
+    assert_eq!(
+        (index.posts, index.pages),
+        (Indexing::NoIndex, Indexing::NoIndex)
+    );
+    assert_eq!(
+        (index.authors, index.dates),
+        (ArchiveSetting::Off, ArchiveSetting::Off)
+    );
+    assert_eq!(ArchiveSetting::Off.indexing(), Indexing::NoIndex);
+    assert_eq!(index.collections.get("news"), Some(&Indexing::NoIndex));
+    assert_eq!(config.seo().feeds.off, [FeedKind::Atom, FeedKind::Json]);
+    let plain = read("").unwrap();
+    assert_eq!(
+        (plain.seo().index.posts, plain.seo().index.pages),
+        (Indexing::Index, Indexing::Index)
+    );
+    assert_eq!(plain.seo().feeds.off, []);
 }
 
 #[test]
@@ -208,6 +236,6 @@ fn domain_names_are_letters_digits_hyphens_and_inner_dots() {
 fn refuses_an_archive_type_it_does_not_know() {
     assert_eq!(
         read("\n[seo.index]\nmonths = \"noindex\"\n").unwrap_err(),
-        "site.toml, line 8, field \"months\": unknown field `months`, expected one of `tags`, `categories`, `authors`, `dates`, `search`, `thin_archives_below`, `site`"
+        "site.toml, line 8, field \"months\": unknown field `months`, expected one of `tags`, `categories`, `authors`, `dates`, `search`, `thin_archives_below`, `site`, `posts`, `pages`, `collections`"
     );
 }
