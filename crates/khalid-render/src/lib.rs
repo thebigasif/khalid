@@ -26,6 +26,8 @@ mod heading_links;
 mod home;
 mod image;
 mod listing;
+mod location;
+mod locations_page;
 mod pack;
 mod page_body;
 mod page_meta;
@@ -59,6 +61,8 @@ pub use glossary::{
 pub use home::{HomeSectionPosts, MOST_PICKS, RenderHome, TopicGroup};
 pub use image::{ImageCandidate, ImageSet, Loading, RenderImage};
 pub use listing::{Pagination, PostCard, RenderListing};
+pub use location::{LocationWords, location_card, place_locations};
+pub use locations_page::LocationsPage;
 pub use pack::{RenderCta, RenderPack, TemplateOption};
 pub use page_body::PageBody;
 pub use page_meta::{Alternate, HeadHtml, PageKind, PageMeta, Robots, ShareImage};
@@ -71,8 +75,9 @@ pub use render_error::RenderError;
 pub use renderer::Renderer;
 pub use script::{ScriptFile, ScriptTag, reader_script, reader_script_file};
 pub use share::SHARE_NETWORKS;
-pub use site::{AnnouncementBar, Nav, NavGroup, NavLink, RenderSite};
+pub use site::{AnnouncementBar, BreadcrumbStyle, Nav, NavGroup, NavLink, RenderSite};
 pub use sitemap::{RenderSitemap, SitemapGroup, SitemapSection};
+pub use strings::builtin_strings;
 pub use stylesheet::{stylesheet, stylesheet_text, stylesheet_text_with, stylesheet_with};
 pub use token_values::{Color, FontStack, Length, ParseTokenError};
 pub use tokens::{

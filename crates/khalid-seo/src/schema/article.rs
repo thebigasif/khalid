@@ -17,6 +17,7 @@ fn article_type(kind: ArticleType) -> &'static str {
         ArticleType::BlogPosting => "BlogPosting",
         ArticleType::NewsArticle => "NewsArticle",
         ArticleType::TechArticle => "TechArticle",
+        ArticleType::Report => "Report",
     }
 }
 

@@ -5,7 +5,7 @@
 //! Unknown fields and values of the wrong kind are refused.
 
 use chrono::NaiveDate;
-use khalid_core::{AbsoluteUrl, Slug};
+use khalid_core::{AbsoluteUrl, PageSchemaType, Slug};
 use serde::Deserialize;
 
 /// A page, such as About, in `pages/`.
@@ -21,6 +21,9 @@ pub struct PageFront {
     pub description: Option<String>,
     /// The key shared by the versions of this page in other languages.
     pub translation: Option<String>,
+    /// The kind of web page, such as `ContactPage` or `AboutPage`, in
+    /// place of `WebPage`.
+    pub page_type: Option<PageSchemaType>,
 }
 
 /// An author, in `authors/`. The body is the bio.

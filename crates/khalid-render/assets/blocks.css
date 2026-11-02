@@ -94,6 +94,17 @@ figure > img { inline-size: 100%; border-radius: var(--radius); }
 .recipe-description { color: var(--color-muted); }
 .recipe-facts { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; color: var(--color-muted); font-size: 0.9375rem; }
 .recipe-servings, .recipe-prep, .recipe-cook { white-space: nowrap; }
+/* A location card: address, open now, hours, map link. */
+.location { margin-block: 0 1.5rem; padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.location address { font-style: normal; }
+.location-now { margin-block: 0.75rem 0; font-weight: 700; }
+.location-now[data-state="closed"] { color: var(--color-muted); }
+.location-hours { margin-block: 0.75rem; border-collapse: collapse; }
+.location-hours caption { text-align: start; font-weight: 700; }
+.locations { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.locations .location { margin: 0; }
+.locations-nearest { min-block-size: 2.75rem; padding: 0.5rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); color: inherit; font: inherit; cursor: pointer; }
+.location-hours th, .location-hours td { padding: 0.125rem 1rem 0.125rem 0; border: 0; text-align: start; font-weight: 400; }
 .recipe-ingredients, .recipe-method { padding-inline-start: 1.25rem; }
 
 /* Forms in the body. The spam trap never shows to people. */

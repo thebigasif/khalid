@@ -63,6 +63,7 @@ impl Prepared {
             search: None,
             script: None,
             subscribe: None,
+            breadcrumbs: khalid_render::BreadcrumbStyle::default(),
         };
         let mut prepared = Self {
             site,

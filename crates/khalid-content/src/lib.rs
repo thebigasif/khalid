@@ -34,12 +34,15 @@ pub use content_hash::ContentHash;
 pub use embed::{EMBED_PROVIDERS, EmbedProvider};
 pub use form::{FieldKind, FormField};
 pub use layout::{Column, ProsConsBlock};
-pub use post::{MAX_RELATED, MAX_SECONDARY_KEYWORDS, Post, PostFront, parse_post};
+pub use post::{
+    MAX_RELATED, MAX_SECONDARY_KEYWORDS, MAX_STOCK_TICKERS, Post, PostFront, parse_post,
+};
 pub use post_fields::{
     LeadImage, ReviewState, ShareCard, ShareCards, Sitemap, TopicCluster, TopicRole,
 };
 pub use render::{
-    CTA_MARK, Gated, Heading, Image, Link, Rendered, render, render_gated, render_linked,
+    CTA_MARK, Gated, Heading, Image, LOCATION_MARK, Link, Rendered, render, render_gated,
+    render_linked,
 };
 pub use schemas::{
     AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, SnippetFront,

@@ -27,6 +27,7 @@ pub(crate) fn social(settings: &SocialSettings, site: &mut SeoSite) -> Result<()
     if let Some(image) = &settings.image {
         site.share_image = Some(share_image("seo.social.image", image)?);
     }
+    site.share_labels = settings.share_labels;
     Ok(())
 }
 

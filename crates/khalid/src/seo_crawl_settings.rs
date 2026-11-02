@@ -2,8 +2,11 @@
 //! blog and what every feed carries (audit G11, KH-SEO-6, KH-SEO-7).
 //! `[seo.links]` becomes the link policy through `LinkPolicy::from`.
 
-use khalid_core::{CrawlerSettings, FeedContentSetting, FeedSettings};
-use khalid_seo::{BotAccess, FeedContent, MetaTemplate, RobotsPath, SeoSite, UserAgent};
+use khalid_core::{CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings, LlmsTxtSettings};
+use khalid_seo::{
+    BotAccess, FeedContent, FeedFormat, MetaTemplate, RobotsLine, RobotsPath, SeoSite, UrlPath,
+    UserAgent,
+};
 
 use crate::seo_settings::{SettingMistake, TEMPLATE};
 
@@ -42,6 +45,38 @@ pub(crate) fn crawlers(
             site.crawlers.bots.insert(agent, access);
         }
     }
+    site.crawlers.disallow_search = settings.disallow_search;
+    for line in &settings.extra_lines {
+        let line = RobotsLine::try_new(line)
+            .map_err(|error| SettingMistake::new(TABLE, "extra_lines", &error, None))?;
+        site.crawlers.extra_lines.push(line);
+    }
+    Ok(())
+}
+
+/// Checks the `llms.txt` choices and sets them on `site`.
+///
+/// # Errors
+///
+/// A key page or excluded path that is not a path inside the mount folder.
+pub(crate) fn llms_txt(
+    settings: &LlmsTxtSettings,
+    site: &mut SeoSite,
+) -> Result<(), SettingMistake> {
+    let paths = |key: &str, paths: &[String]| -> Result<Vec<UrlPath>, SettingMistake> {
+        (paths.iter())
+            .map(|path| {
+                UrlPath::try_new(path).map_err(|error| {
+                    SettingMistake::new("seo.llms_txt", key, &error, Some("a path such as /about/"))
+                })
+            })
+            .collect()
+    };
+    let options = &mut site.llms_txt;
+    options.enabled = !settings.off;
+    options.intro.clone_from(&settings.intro);
+    options.key_pages = paths("pages", &settings.pages)?;
+    options.exclude = paths("exclude", &settings.exclude)?;
     Ok(())
 }
 
@@ -92,6 +127,13 @@ pub(crate) fn feeds(settings: &FeedSettings, site: &mut SeoSite) -> Result<(), S
     feeds.after_item.clone_from(&settings.after_item);
     feeds.source_line = source_line;
     feeds.limit = limit;
+    feeds.off = (settings.off.iter())
+        .map(|kind| match kind {
+            FeedKind::Rss => FeedFormat::Rss,
+            FeedKind::Atom => FeedFormat::Atom,
+            FeedKind::Json => FeedFormat::Json,
+        })
+        .collect();
     Ok(())
 }
 

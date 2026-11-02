@@ -24,6 +24,26 @@ fn a_post_gets_article_tags_and_the_default_share_image() {
 }
 
 #[test]
+fn a_post_tells_slack_and_x_who_wrote_it_and_how_long_it_takes() {
+    let mut post = internal_links_post();
+    post.author = Some("Asif".to_owned());
+    post.reading_minutes = Some(6);
+    let html = head_tags(&demo_site(), &post).unwrap().to_html();
+    let want = "<meta name=\"twitter:label1\" content=\"Written by\">\n\
+                <meta name=\"twitter:data1\" content=\"Asif\">\n\
+                <meta name=\"twitter:label2\" content=\"Reading time\">\n\
+                <meta name=\"twitter:data2\" content=\"6 min read\">\n";
+    assert!(html.contains(want), "{html}");
+    let mut site = demo_site();
+    site.share_labels = false;
+    let html = head_tags(&site, &post).unwrap().to_html();
+    assert!(!html.contains("twitter:label1"), "{html}");
+    let page = SeoPage::new(PageKind::Page, locale("en"), path("/about/"), "About");
+    let html = head_tags(&demo_site(), &page).unwrap().to_html();
+    assert!(!html.contains("twitter:label"), "{html}");
+}
+
+#[test]
 fn a_page_image_overrides_the_default() {
     let mut site = demo_site();
     site.share_image = Some(default_image());

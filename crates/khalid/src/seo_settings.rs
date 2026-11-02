@@ -12,8 +12,8 @@ use khalid_seo::{LinkPolicy, MetaTemplate, PageKind, SeoSite, TemplatePair};
 use crate::{config_message, seo_crawl_settings, seo_graph_settings, seo_head_settings};
 
 /// What a title or description template may use, for the fix.
-pub(crate) const TEMPLATE: &str =
-    "a template using {title}, {site}, {tagline}, {sep}, {excerpt}, {category} or {author}";
+pub(crate) const TEMPLATE: &str = "a template using {title}, {site}, {sep}, {excerpt} or another \
+     variable listed in docs/seo-settings.md";
 
 /// A value in an `[seo]` table that `khalid-seo` refuses.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -110,6 +110,9 @@ pub(crate) fn apply(settings: &SeoSettings, site: &mut SeoSite) -> Result<(), Se
     seo_head_settings::verification(&settings.verification, site)?;
     seo_crawl_settings::crawlers(&settings.crawlers, site)?;
     seo_crawl_settings::feeds(&settings.feeds, site)?;
+    seo_crawl_settings::llms_txt(&settings.llms_txt, site)?;
+    site.schema_map = !settings.schema_map.off;
+    site.local_kml = settings.local.kml;
     site.links = LinkPolicy::from(&settings.links);
     seo_graph_settings::publisher(&settings.publisher, site)?;
     seo_graph_settings::locations(&settings.locations, site)?;

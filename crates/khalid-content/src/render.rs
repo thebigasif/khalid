@@ -230,18 +230,11 @@ impl Renderer<'_> {
                 self.markdown(&inside(&block.source));
                 self.html.push_str("</figcaption>\n</figure>\n");
             }
-            BlockKind::Toggle { summary } => {
-                self.push(&[
-                    "<details open>\n<summary>",
-                    &attribute(summary),
-                    "</summary>\n",
-                ]);
-                self.markdown(&inside(&block.source));
-                self.html.push_str("</details>\n");
-            }
+            BlockKind::Toggle { summary } => self.toggle(block, summary),
             BlockKind::Toc => self.html.push_str(TOC_MARK),
             BlockKind::Cta => self.html.push_str(CTA_MARK),
             BlockKind::Snippet { slug } => self.snippet(slug),
+            BlockKind::Location { name } => self.location(name),
             BlockKind::Button { href, label } => self.button(href, label),
             BlockKind::Bookmark {
                 href,
@@ -422,6 +415,10 @@ const TOC_MARK: &str = "<!--khalid-toc-->\n";
 /// band from `[template.cta]`. Raw HTML in markdown is escaped, so no post
 /// can write it itself.
 pub const CTA_MARK: &str = "<!--khalid-cta-->\n";
+
+/// How `::location` starts its mark: the location's name, escaped as an
+/// attribute, and `-->` follow. The build swaps the mark for the card.
+pub const LOCATION_MARK: &str = "<!--khalid-location:";
 
 /// The list of `headings`, linked, for `::toc`.
 fn contents(headings: &[Heading]) -> String {

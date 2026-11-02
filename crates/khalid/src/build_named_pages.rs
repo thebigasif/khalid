@@ -30,6 +30,7 @@ pub(crate) fn plain_pages(
         let mut seo = build_seo::page(SeoKind::Page, locale, &rest, &title)?;
         seo.excerpt.clone_from(&description);
         seo.translation = build_seo::translation(front.translation.as_deref())?;
+        seo.page_type = front.page_type;
         let meta = meta(config, title.clone(), description, path, PageKind::Website)?;
         let body = RenderPage {
             title,

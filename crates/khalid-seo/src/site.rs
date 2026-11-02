@@ -1,11 +1,15 @@
 //! [`SeoSite`]: the site-wide settings every SEO output reads.
 
+use std::borrow::Cow;
+use std::collections::BTreeMap;
+
+use chrono::NaiveDate;
 use khalid_core::{AbsoluteUrl, Locale};
 
 use crate::{
-    CrawlerPolicy, CustomSchema, FeedOptions, IndexPolicy, LinkPolicy, LocalBusiness,
-    MetaTemplates, Publisher, PublisherKind, RootFile, SchemaTemplate, SeoError, ShareImage,
-    SiteSearch, SiteVerification, TwitterHandle, UrlPath,
+    CrawlerPolicy, CustomSchema, FeedOptions, IndexPolicy, LinkPolicy, LlmsTxtOptions,
+    LocalBusiness, MetaTemplates, Publisher, PublisherKind, RootFile, SchemaTemplate, SeoError,
+    ShareImage, SiteSearch, SiteVerification, TemplateWords, TwitterHandle, UrlPath,
 };
 
 /// The site-wide settings every SEO output reads.
@@ -59,6 +63,25 @@ pub struct SeoSite {
     pub schema_templates: Vec<SchemaTemplate>,
     /// JSON-LD written by hand that every page carries.
     pub custom_schema: CustomSchema,
+    /// The day the pages are made, for `{currentyear}` and `{currentmonth}`.
+    /// `None` leaves both empty. The wiring sets it from the `Clock`.
+    pub today: Option<NaiveDate>,
+    /// The words dates and page lines are written with, per language. A
+    /// language not listed uses the English [`TemplateWords::default`].
+    pub words: BTreeMap<Locale, TemplateWords>,
+    /// The first step of every breadcrumb trail. `None` uses the site name.
+    pub breadcrumb_home: Option<String>,
+    /// Whether a post's X and Slack preview names its author and reading
+    /// time, Yoast's "enhanced Slack sharing". On by default.
+    pub share_labels: bool,
+    /// What `llms.txt` holds, and whether it is written.
+    pub llms_txt: LlmsTxtOptions,
+    /// Whether each language's whole-site graph is written to
+    /// `schema.json` and named in robots.txt. On by default.
+    pub schema_map: bool,
+    /// Whether the locations with a map point are written to
+    /// `locations.kml`. On by default.
+    pub local_kml: bool,
 }
 
 impl SeoSite {
@@ -88,7 +111,21 @@ impl SeoSite {
             locations: Vec::new(),
             schema_templates: Vec::new(),
             custom_schema: CustomSchema::default(),
+            today: None,
+            words: BTreeMap::new(),
+            breadcrumb_home: None,
+            share_labels: true,
+            llms_txt: LlmsTxtOptions::default(),
+            schema_map: true,
+            local_kml: true,
         }
+    }
+
+    /// The words of `language`, or English when it has none of its own.
+    pub fn words_for(&self, language: &Locale) -> Cow<'_, TemplateWords> {
+        self.words
+            .get(language)
+            .map_or_else(|| Cow::Owned(TemplateWords::default()), Cow::Borrowed)
     }
 
     /// The absolute URL of `path` in `language`: the address, then the mount

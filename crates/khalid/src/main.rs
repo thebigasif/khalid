@@ -147,6 +147,7 @@ mod search_page;
 mod search_route;
 mod search_static;
 mod seo_crawl_settings;
+mod seo_extras;
 mod seo_graph_settings;
 mod seo_head_settings;
 mod seo_settings;
@@ -238,9 +239,8 @@ fn main() -> ExitCode {
     exit.into()
 }
 
-/// Readies the process for serving the site in `folder`, before anything
-/// is read: small memory pages only, and a look at the folder for the
-/// watch.
+/// Readies the process for serving the site in `folder` before anything is
+/// read: small memory pages only, and a look at the folder for the watch.
 fn serving(folder: &Path) -> FolderLook {
     memory::small_pages_only();
     FolderLook::take(folder)

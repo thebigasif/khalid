@@ -10,7 +10,7 @@ expression: "shown(&out, \"authors/asif/index.html\")"
 <nav class="breadcrumbs" aria-label="Breadcrumbs">
 <ol>
 <li><a href="/blog/">Field Notes on SEO</a></li>
-<li><a href="/blog/authors/asif/" aria-current="page">Asif</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/authors/asif/" aria-current="page">Asif</a></li>
 </ol>
 </nav>
 

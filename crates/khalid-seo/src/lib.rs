@@ -30,6 +30,7 @@ mod indexnow;
 mod indexnow_send;
 mod link_policy;
 mod llms_txt;
+mod locations_kml;
 mod meta_template;
 mod meta_templates;
 mod news_sitemap;
@@ -46,12 +47,14 @@ mod redirects;
 mod robots_meta;
 mod robots_txt;
 mod schema;
+mod schema_map;
 mod seo_error;
 mod site;
 mod sitemap;
 mod sitemap_index;
 mod sitemap_set;
 mod social;
+mod template_words;
 mod url_path;
 mod verification;
 mod video;
@@ -67,7 +70,8 @@ pub use html_sitemap::{HtmlSitemap, HtmlSitemapGroup, HtmlSitemapLink};
 pub use indexnow::{IndexNow, KeyFile, Submission};
 pub use indexnow_send::{Retries, SendIndexNowError, Sent};
 pub use link_policy::{Domain, LinkAttributes, LinkPolicy, LinkRel, LinkTarget};
-pub use llms_txt::{LlmsTxt, llms_txt_url};
+pub use llms_txt::{LlmsTxt, LlmsTxtOptions, llms_txt_url};
+pub use locations_kml::{locations_kml, locations_kml_url};
 pub use meta_template::MetaTemplate;
 pub use meta_templates::{MetaTemplates, TemplatePair};
 pub use news_sitemap::{NewsEntry, NewsSitemap};
@@ -85,7 +89,7 @@ pub use redirects::{
 };
 pub use robots_meta::IndexPolicy;
 pub use robots_txt::{
-    BotAccess, CrawlerPolicy, KNOWN_AI_CRAWLERS, RobotsPath, RobotsTxt, UserAgent,
+    BotAccess, CrawlerPolicy, KNOWN_AI_CRAWLERS, RobotsLine, RobotsPath, RobotsTxt, UserAgent,
 };
 pub use schema::{
     AggregateRating, AppKind, AuthorProfile, Availability, Book, ClaimReview, Course, CustomSchema,
@@ -96,12 +100,14 @@ pub use schema::{
     SiteSearch, SoftwareApplication, TemplateScope, breadcrumb_list, check_graph, page_graph,
     site_graph,
 };
+pub use schema_map::{schema_map_url, site_schema};
 pub use seo_error::SeoError;
 pub use site::SeoSite;
 pub use sitemap::{Sitemap, SitemapEntry};
 pub use sitemap_index::{IndexEntry, SitemapIndex, sitemap_index_url};
 pub use sitemap_set::{SitemapFile, SitemapSection, SitemapSet};
 pub use social::{ShareImage, TwitterHandle};
+pub use template_words::{PageNumber, TemplateWords};
 pub use url_path::UrlPath;
 pub use verification::{RootFile, SiteVerification, VerificationCode};
 pub use video::{Video, VideoSource};
