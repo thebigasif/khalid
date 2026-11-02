@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { adminBlog, noContent } from "../../test/blog";
 import { axeViolations, json, renderAt, serverAnswers } from "../../test/render";
 import { en } from "../strings/en";
+import { shellWords } from "../strings/shellWords";
 
 const LENA = { account: { id: 1, email: "lena@example.com", name: "Lena", role: "editor" } };
 const TITLE = en.signIn.title(en.signIn.thisBlog);
@@ -114,7 +115,9 @@ describe("signing in", () => {
     sessionStorage.setItem("khalid-admin-csrf", "csrf-test");
     const sent = adminBlog({ "DELETE /session/": noContent });
     renderAt("/");
-    await userEvent.click(await screen.findByRole("button", { name: en.signOut }));
+    await userEvent.click(await screen.findByRole("button", { name: shellWords.accountMenu }));
+    expect(screen.getByText(shellWords.byEmail)).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: en.signOut }));
     expect(await screen.findByRole("heading", { level: 1, name: TITLE })).toBeVisible();
     expect(sent.some((request) => request.method === "DELETE")).toBe(true);
     expect(sessionStorage.getItem("khalid-admin-csrf")).toBeNull();
@@ -123,7 +126,9 @@ describe("signing in", () => {
   it("signs out and forgets the token", async () => {
     sessionStorage.setItem("khalid-admin-key", "ks_0123_abcd");
     renderAt("/");
-    await userEvent.click(await screen.findByRole("button", { name: en.signOut }));
+    await userEvent.click(await screen.findByRole("button", { name: shellWords.accountMenu }));
+    expect(screen.getByText(shellWords.byToken)).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: en.signOut }));
     expect(await screen.findByRole("heading", { level: 1, name: TITLE })).toBeVisible();
     expect(sessionStorage.getItem("khalid-admin-key")).toBeNull();
   });

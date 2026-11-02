@@ -15,7 +15,7 @@ type Props = {
   children: ReactNode;
 };
 
-/** The bar above every screen: the menu button on small screens, where you are, then the actions. */
+/** The bar above every screen: the menu button on a small screen, where you are, the actions. */
 export function TopBar({ open, onMenu, opener, children }: Props) {
   const path = useRouterState({ select: (state) => state.location.pathname });
   const where = whereIs(path);

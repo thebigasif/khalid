@@ -9,4 +9,8 @@ export const shellWords = {
   },
   openMenu: "Open the menu",
   closeMenu: "Close the menu",
+  newPost: "New post",
+  accountMenu: "Your account menu",
+  byEmail: "You signed in with your email.",
+  byToken: "You signed in with a staff token.",
 } as const;

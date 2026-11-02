@@ -51,6 +51,36 @@ describe("the frame around every screen", () => {
     expect(opener).toHaveFocus();
   });
 
+  it("starts a new post from the top bar on every screen", async () => {
+    signedIn();
+    adminBlog({});
+    renderAt("/media");
+    const bar = await screen.findByRole("banner");
+    await userEvent.click(within(bar).getByRole("link", { name: shellWords.newPost }));
+    expect(await screen.findByRole("heading", { level: 1, name: en.posts.write })).toBeVisible();
+    expect(within(bar).getByText(en.nav.posts)).toBeInTheDocument();
+  });
+
+  it("opens the account menu, and closes it on Escape or a click elsewhere", async () => {
+    signedIn();
+    adminBlog({});
+    renderAt("/posts");
+    const button = await screen.findByRole("button", { name: shellWords.accountMenu });
+    expect(button).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("button", { name: en.signOut })).toBeNull();
+    await userEvent.click(button);
+    expect(button).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("link", { name: en.viewBlog })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("button", { name: en.signOut })).toBeVisible();
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.keyboard("{Escape}");
+    expect(button).toHaveAttribute("aria-expanded", "false");
+    expect(button).toHaveFocus();
+    await userEvent.click(button);
+    await userEvent.click(screen.getByRole("main"));
+    expect(screen.queryByRole("button", { name: en.signOut })).toBeNull();
+  });
+
   it("closes the menu once a screen is chosen", async () => {
     signedIn();
     adminBlog({});

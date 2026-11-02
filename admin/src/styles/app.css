@@ -48,6 +48,18 @@
   .crumb{display:flex;align-items:center;gap:.5rem;min-width:0;margin:0;font-weight:500;white-space:nowrap}
   .crumb-group,.crumb-line{color:var(--color-muted)}
   .top-actions{display:flex;align-items:center;gap:.5rem;margin-left:auto}
+  .user{position:relative}
+  .user-button{gap:.25rem;padding:0 .375rem}
+  .avatar{display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:50%;background:var(--color-tint);color:var(--color-link)}
+  /* A small panel raised over the page, such as the account menu. */
+  .pop{position:absolute;top:calc(100% + .375rem);right:0;z-index:30;min-width:15rem;padding:.25rem;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-field);box-shadow:var(--shadow-menu)}
+  .pop-note{margin:0 0 .25rem;padding:.5rem .75rem;border-bottom:1px solid var(--color-border);color:var(--color-muted);font-size:.8125rem}
+  .pop-item{display:flex;align-items:center;gap:.625rem;width:100%;min-height:44px;padding:.375rem .75rem;border:0;border-radius:6px;background:none;color:var(--color-text);font:inherit;text-align:left;text-decoration:none;cursor:pointer}
+  .pop-item:hover{background:var(--color-surface)}
+  .pop-item .icon{color:var(--color-muted)}
+  @media (pointer:fine){.pop-item{min-height:2.25rem}}
+  /* At phone width "New post" keeps its plus and its name for screen readers. */
+  @media (max-width:30em){.new-words{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}
   @media (pointer:fine){.side ul a{min-height:2rem}.side-brand{min-height:2.5rem}.side-close,.menu-button{width:2.25rem}}
   @media (max-width:30em){.crumb-group,.crumb-line{display:none}}
   /* A small screen keeps the menu behind a button; it slides over the page, the page dimmed behind it. */
