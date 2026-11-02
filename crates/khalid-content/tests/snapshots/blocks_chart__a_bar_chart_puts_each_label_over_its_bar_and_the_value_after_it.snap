@@ -1,0 +1,16 @@
+---
+source: crates/khalid-content/tests/blocks_chart.rs
+expression: html
+---
+<figure class="chart chart-bar">
+<figcaption>Time to first click</figcaption>
+<svg class="chart-drawing" width="100%" height="100" aria-hidden="true"><text class="chart-label" x="0" y="15">Home</text><rect class="s1" x="0.00%" y="22" width="39.00%" height="18" rx="3"></rect><text class="chart-value" x="39.00%" dx="6" y="35.5">2 seconds</text><text class="chart-label" x="0" y="65">Pricing &lt;new&gt;</text><rect class="s1" x="0.00%" y="72" width="78.00%" height="18" rx="3"></rect><text class="chart-value" x="78.00%" dx="6" y="85.5">4 seconds</text></svg>
+<table class="visually-hidden">
+<caption>Time to first click</caption>
+<thead><tr><th scope="col">Page</th><th scope="col">Time</th></tr></thead>
+<tbody>
+<tr><th scope="row">Home</th><td>2 seconds</td></tr>
+<tr><th scope="row">Pricing &lt;new&gt;</th><td>4 seconds</td></tr>
+</tbody>
+</table>
+</figure>

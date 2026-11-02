@@ -5,6 +5,8 @@ use std::fmt;
 
 use serde::Deserialize;
 
+use crate::LinkTracking;
+
 /// What every link to another site gets in the blog's posts and pages. By
 /// default it gets nothing added and opens in the same tab:
 ///
@@ -28,6 +30,9 @@ pub struct LinkSettings {
     pub affiliate_domains: Vec<DomainName>,
     /// Other domains that count as this site, such as the main site's shop.
     pub internal_domains: Vec<DomainName>,
+    /// The tracking tags links to the owner's products get, from
+    /// `[seo.links.tracking]`, or `None` to add none.
+    pub tracking: Option<LinkTracking>,
 }
 
 /// A `rel` value a site can put on every external link.

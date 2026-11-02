@@ -52,8 +52,32 @@ figure > img { inline-size: 100%; border-radius: var(--radius); }
 .embed iframe, .video video, .audio audio { display: block; inline-size: 100%; border: 0; border-radius: var(--radius); }
 .embed-wide iframe, .video video { block-size: auto; aspect-ratio: 16 / 9; background: var(--color-surface); }
 .embed-audio iframe { block-size: 152px; }
+.embed-site iframe { border: 1px solid var(--color-border); background: var(--color-background); }
 .audio figcaption { margin-block: 0 0.5rem; color: var(--color-text); font-weight: 700; }
 .maths { overflow-x: auto; text-align: center; }
+
+/* Charts, drawn at build time. Each series takes a theme colour; the tick
+   labels keep a ring of the page colour so a mark never hides them. */
+.chart { margin-block: 2rem; padding: 1rem 1.25rem 0.75rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.chart figcaption { margin-block-end: 0.75rem; color: var(--color-text); font-family: var(--font-heading); font-weight: 700; line-height: 1.3; }
+.chart-file { margin-inline-start: 0.5rem; font-family: var(--font-body); font-size: var(--text-small); font-weight: 400; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0 0 0.75rem; padding: 0; list-style: none; color: var(--color-muted); font-size: var(--text-small); }
+.chart-legend span { display: inline-block; inline-size: 0.75rem; block-size: 0.75rem; margin-inline-end: 0.375rem; border-radius: 2px; background: var(--series); vertical-align: -1px; }
+.chart-drawing { display: block; overflow: visible; font-size: 13px; }
+.chart-drawing text { fill: var(--color-muted); }
+.chart-drawing rect, .chart-drawing circle { fill: var(--series); }
+.chart-drawing circle { stroke: var(--color-background); stroke-width: 2px; }
+.chart-bar .chart-label, .chart-value { fill: var(--color-text); }
+.chart-value { font-weight: 700; }
+.chart-tick { paint-order: stroke; stroke: var(--color-background); stroke-width: 4px; stroke-linejoin: round; }
+.chart-grid { stroke: var(--color-border); }
+.chart-zero { stroke: var(--color-muted); }
+.chart-trace { stroke: var(--series); stroke-width: 2.5px; stroke-linecap: round; }
+.chart-column .chart-label, .chart-line .chart-label { font-size: 12px; }
+.chart .s1 { --series: var(--color-accent); }
+.chart .s2 { --series: color-mix(in oklab, var(--color-text) 70%, var(--color-background)); }
+.chart .s3 { --series: color-mix(in oklab, var(--color-accent) 55%, var(--color-text)); }
+.chart .s4 { --series: var(--color-muted); }
 
 /* Toggles and the FAQ open with scripts off; each summary is a 44 px target. */
 .post-body details, .page-body details { margin-block: 0 1.1em; }

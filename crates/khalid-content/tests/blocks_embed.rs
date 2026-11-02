@@ -1,9 +1,10 @@
 //! Embed blocks and the provider allowlist (task 1.7, KH-CON-5).
 
 use khalid_content::{
-    BlockKind, EMBED_PROVIDERS, EmbedProvider, parse_blocks, print_blocks, render,
+    BlockKind, EMBED_PROVIDERS, EmbedProvider, Gated, Wikilinks, parse_blocks, print_blocks,
+    render, render_framed,
 };
-use khalid_core::{AbsoluteUrl, Locale, SlugMode};
+use khalid_core::{AbsoluteUrl, DomainName, Locale, SlugMode};
 
 #[cfg(test)]
 fn round_trip(markdown: &str) -> BlockKind {
@@ -39,6 +40,7 @@ fn an_embed_round_trips() {
         BlockKind::Embed {
             src: url("https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
             title: "How search works".to_owned(),
+            height: None,
         }
     );
 }
@@ -107,5 +109,78 @@ fn an_embed_needs_a_title() {
     assert_eq!(
         error("::embed{src=\"https://vimeo.com/1\"}\n"),
         "line 1: an embed needs title, the name a screen reader says for the player"
+    );
+}
+
+/// `markdown` rendered on a site that allows frames from `domains`.
+#[cfg(test)]
+fn framed(markdown: &str, domains: &[&str]) -> String {
+    let domains: Vec<DomainName> = domains
+        .iter()
+        .map(|domain| DomainName::try_new(domain).unwrap())
+        .collect();
+    let en = Locale::try_new("en").unwrap();
+    let gated = Gated::Locked { back: None };
+    render_framed(
+        markdown,
+        &en,
+        SlugMode::Ascii,
+        &Wikilinks::new(),
+        gated,
+        &domains,
+    )
+    .unwrap()
+    .html
+}
+
+const CALCULATOR: &str = "::embed{src=\"https://tools.example.com/roi?plan=pro\" title=\"Content ROI calculator\" height=\"560\"}\n";
+
+#[test]
+fn an_embed_round_trips_with_its_height_and_refuses_a_wrong_one() {
+    assert_eq!(
+        round_trip(CALCULATOR),
+        BlockKind::Embed {
+            src: url("https://tools.example.com/roi?plan=pro"),
+            title: "Content ROI calculator".to_owned(),
+            height: Some(560),
+        }
+    );
+    for height in ["50", "3000", "tall"] {
+        let markdown =
+            format!("::embed{{src=\"https://a.example\" title=\"T\" height=\"{height}\"}}\n");
+        assert_eq!(
+            error(&markdown),
+            "line 1: an embed's height is the frame's height in pixels, a whole number from 120 to 2000"
+        );
+    }
+}
+
+#[test]
+fn a_page_on_an_allowed_domain_shows_in_a_lazy_sandboxed_frame_of_its_height() {
+    let html = framed(CALCULATOR, &["tools.example.com"]);
+    assert_eq!(
+        html,
+        "<figure class=\"embed embed-site\">\n<iframe src=\"https://tools.example.com/roi?plan=pro\" title=\"Content ROI calculator\" width=\"560\" height=\"560\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-forms allow-popups\"></iframe>\n<figcaption><a href=\"https://tools.example.com/roi?plan=pro\">Content ROI calculator</a></figcaption>\n</figure>\n"
+    );
+    let no_height = framed(
+        "::embed{src=\"https://tools.example.com/a\" title=\"A tool\"}\n",
+        &["tools.example.com"],
+    );
+    assert!(no_height.contains(" height=\"480\" "), "{no_height}");
+}
+
+#[test]
+fn a_page_on_any_other_domain_or_over_http_stays_a_link() {
+    let link = "<p class=\"bookmark\"><a href=";
+    assert!(html(CALCULATOR).starts_with(link), "no allowlist");
+    assert!(
+        framed(CALCULATOR, &["example.com"]).starts_with(link),
+        "a parent domain"
+    );
+    assert!(framed(CALCULATOR, &["evil-tools.example.com"]).starts_with(link));
+    let http = "::embed{src=\"http://tools.example.com/a\" title=\"T\"}\n";
+    assert!(
+        framed(http, &["tools.example.com"]).starts_with(link),
+        "http"
     );
 }

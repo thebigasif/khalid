@@ -53,11 +53,20 @@ mentions = "Posts that link here"
 share = "Share this post"
 # The share link that opens an email.
 share_email = "Email"
+# The button that opens Google's page for adding the site as a preferred source.
+preferred_source = "Add us as a preferred source on Google"
 # The newsletter form a template shows after a post or on the front page.
 newsletter_title = "Get new posts by email"
 newsletter_text = "New posts in your inbox. Every email has a link to leave."
 newsletter_label = "Your email address"
 newsletter_button = "Subscribe"
+# The newsletter's page and the page of each past issue.
+newsletter_sent = "Sent on"
+newsletter_all = "Every issue of the newsletter"
+newsletter_recent = "Read a recent issue"
+newsletter_whole = "Read the whole issue"
+newsletter_issues = "Past issues"
+newsletter_join = "Get the next issue by email"
 # A hidden field that catches spam robots. People never see it.
 form_trap = "Leave this empty"
 # Names the # link beside each heading for screen readers.

@@ -74,23 +74,26 @@ fn ends_line(tag: &str) -> bool {
 /// `&quot;`, replaced by a space, so neither is read as a word. The end of
 /// a block becomes a line break, so a heading never runs into the next
 /// sentence. A formula's `MathML` is left out, so its letters and signs are
-/// never read as words; a maths block's caption stays. So is every element
-/// a block writes itself ([`ENGINE_TEXT`]), such as the contents list or a
-/// review's score: the rules judge the writer's words, not the engine's.
+/// never read as words; a maths block's caption stays. A chart's drawing
+/// and its table for screen readers are left out the same way: they are
+/// the chart's data, and its caption, which stays, says what and when. So
+/// is every element a block writes itself ([`ENGINE_TEXT`]), such as the
+/// contents list or a review's score: the rules judge the writer's words,
+/// not the engine's.
 pub(crate) fn plain_text(html: &str) -> String {
     let html = without_engine_text(html);
     let mut text = String::with_capacity(html.len());
     let mut tag = String::new();
     let mut skip_until = None;
-    let mut in_maths = false;
+    let mut in_maths: Option<&str> = None;
     for c in html.chars() {
         match (skip_until, c) {
             (Some(end), _) if c == end => {
                 skip_until = None;
-                if end == '>' && tag == "/math" {
-                    in_maths = false;
-                } else if end == '>' && tag.split(' ').next() == Some("math") {
-                    in_maths = true;
+                if end == '>' && in_maths.is_some_and(|closing| tag == closing) {
+                    in_maths = None;
+                } else if end == '>' && in_maths.is_none() {
+                    in_maths = left_out(&tag);
                 }
                 text.push(if end == '>' && ends_line(&tag) {
                     '\n'
@@ -103,7 +106,7 @@ pub(crate) fn plain_text(html: &str) -> String {
             (Some(_), _) => {}
             (None, '<') => skip_until = Some('>'),
             (None, '&') => skip_until = Some(';'),
-            (None, _) if in_maths => {}
+            (None, _) if in_maths.is_some() => {}
             (None, _) => text.push(c),
         }
     }
@@ -172,6 +175,17 @@ fn element_end(element: &str) -> usize {
         }
     }
     element.len()
+}
+
+/// The closing tag of the element the opening `tag` starts when its words
+/// are left out of the text: a formula, a chart's drawing or its table.
+fn left_out(tag: &str) -> Option<&'static str> {
+    match tag.split(' ').next() {
+        Some("math") => Some("/math"),
+        Some("svg") => Some("/svg"),
+        Some("table") if tag.contains("class=\"visually-hidden\"") => Some("/table"),
+        _ => None,
+    }
 }
 
 /// The lists and tables under each heading of `html`, in heading order:
@@ -267,6 +281,16 @@ mod tests {
             .map(str::to_owned)
             .collect();
         assert_eq!(words, ["Growth", "compounds.", "Compound", "growth"]);
+    }
+
+    #[test]
+    fn plain_text_leaves_out_a_charts_drawing_and_table_and_keeps_its_caption() {
+        let html = "<figure class=\"chart chart-bar\">\n<figcaption>Visits in 2026</figcaption>\n<svg class=\"chart-drawing\" width=\"100%\" height=\"50\" aria-hidden=\"true\"><text>Home</text><text>4.2k</text></svg>\n<table class=\"visually-hidden\">\n<caption>Visits in 2026</caption>\n<tr><th>Home</th><td>4.2k</td></tr>\n</table>\n</figure>\n<table><tr><td>Kept</td></tr></table>";
+        let words: Vec<String> = plain_text(html)
+            .split_whitespace()
+            .map(str::to_owned)
+            .collect();
+        assert_eq!(words, ["Visits", "in", "2026", "Kept"]);
     }
 
     #[test]

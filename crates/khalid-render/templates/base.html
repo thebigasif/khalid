@@ -71,7 +71,7 @@
 {% endfor %}{% set sitemap = site.home ~ "sitemap/" %}<li><a href="{{ sitemap }}"{% if sitemap == meta.path %} aria-current="page"{% endif %}>{{ t.sitemap_title }}</a></li>
 </ul>
 </nav>
-{% if site.main_site %}<p><a href="{{ site.main_site.href }}">{{ site.main_site.label }}</a></p>
+{% from "slots.html" import preferred_source %}{{ preferred_source(template.options, t, "footer") }}{% if site.main_site %}<p><a href="{{ site.main_site.href }}">{{ site.main_site.label }}</a></p>
 {% endif %}</footer>
 </body>
 </html>

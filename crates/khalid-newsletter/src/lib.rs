@@ -11,6 +11,7 @@
 //! store lives in `khalid-db`, and sending goes through a transport the
 //! binary picks.
 
+mod archive;
 mod confirmation;
 mod email_address;
 mod issue;
@@ -25,6 +26,7 @@ mod store;
 mod token;
 mod welcome;
 
+pub use archive::{ArchivedIssue, NewsletterPage, archive};
 pub use confirmation::{ConfirmationLinks, NewsletterWords, SiteLinks, WordsError};
 pub use email_address::{EmailAddress, ParseEmailError};
 pub use issue::{Issue, PostalAddress, SendId, SendNumbers, SendTotals, Sent};

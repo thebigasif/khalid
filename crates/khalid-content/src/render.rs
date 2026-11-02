@@ -9,13 +9,15 @@ use comrak::nodes::{AstNode, NodeValue, Sourcepos};
 use comrak::options::Plugins;
 use comrak::plugins::syntect::{SyntectAdapter, SyntectAdapterBuilder};
 use comrak::{Arena, Options, format_html_with_plugins, parse_document};
-use khalid_core::{AbsoluteUrl, Locale, Slug, SlugMode};
+use khalid_core::{AbsoluteUrl, DomainName, Locale, Slug, SlugMode};
 
 use crate::{
     Block, BlockError, BlockKind, StructuredBlock, Wikilinks, maths, parse_blocks, wikilink,
 };
 
 mod cards;
+mod chart;
+mod chart_plot;
 mod forms;
 mod formula;
 mod layout;
@@ -138,6 +140,23 @@ pub fn render_gated(
     wikilinks: &Wikilinks,
     gated: Gated<'_>,
 ) -> Result<Rendered, BlockError> {
+    render_framed(body, locale, slugs, wikilinks, gated, &[])
+}
+
+/// Renders like [`render_gated`], and shows an `::embed` of a page on one
+/// of the `frames` domains, the site owner's allowlist, in a frame.
+///
+/// # Errors
+///
+/// Returns a [`BlockError`] when a directive block is wrong.
+pub fn render_framed(
+    body: &str,
+    locale: &Locale,
+    slugs: SlugMode,
+    wikilinks: &Wikilinks,
+    gated: Gated<'_>,
+    frames: &[DomainName],
+) -> Result<Rendered, BlockError> {
     let blocks = parse_blocks(body)?;
     let mut renderer = Renderer {
         ids: HeadingIds {
@@ -150,6 +169,7 @@ pub fn render_gated(
         html: String::new(),
         subscribe_forms: 0,
         gated,
+        frames,
         in_snippet: false,
     };
     renderer.blocks(&blocks);
@@ -202,6 +222,8 @@ struct Renderer<'links> {
     subscribe_forms: usize,
     /// How gated blocks are written.
     gated: Gated<'links>,
+    /// The domains whose pages an embed shows in a frame.
+    frames: &'links [DomainName],
     /// Whether a snippet's blocks are being written, so it places no other.
     in_snippet: bool,
 }
@@ -230,15 +252,7 @@ impl Renderer<'_> {
                 self.markdown(&inside(&block.source));
                 self.html.push_str("</figcaption>\n</figure>\n");
             }
-            BlockKind::Toggle { summary } => {
-                self.push(&[
-                    "<details open>\n<summary>",
-                    &attribute(summary),
-                    "</summary>\n",
-                ]);
-                self.markdown(&inside(&block.source));
-                self.html.push_str("</details>\n");
-            }
+            BlockKind::Toggle { summary } => self.toggle(block, summary),
             BlockKind::Toc => self.html.push_str(TOC_MARK),
             BlockKind::Cta => self.html.push_str(CTA_MARK),
             BlockKind::Snippet { slug } => self.snippet(slug),
@@ -254,12 +268,13 @@ impl Renderer<'_> {
                 description.as_deref(),
                 image.as_ref(),
             ),
-            BlockKind::Embed { src, title } => self.embed(src, title),
+            BlockKind::Embed { src, title, height } => self.embed(src, title, *height),
             BlockKind::Video(video) => self.video(video),
             BlockKind::Audio { src, title } => self.audio(src, title),
             BlockKind::File { src, title } => self.file(src, title),
             BlockKind::Gallery { images } => self.gallery(images),
             BlockKind::Maths { label, formula } => self.maths(label.as_deref(), formula),
+            BlockKind::Chart(chart) => self.chart(chart),
             BlockKind::PullQuote { by } => self.pull_quote(block, by.as_deref()),
             BlockKind::ProsCons(pros_cons) => self.pros_cons(pros_cons),
             BlockKind::Columns { columns } => self.columns(columns),
@@ -289,6 +304,17 @@ impl Renderer<'_> {
             }
             _ => {}
         }
+    }
+
+    /// Writes a body a reader opens and closes by its summary line.
+    fn toggle(&mut self, block: &Block, summary: &str) {
+        self.push(&[
+            "<details open>\n<summary>",
+            &attribute(summary),
+            "</summary>\n",
+        ]);
+        self.markdown(&inside(&block.source));
+        self.html.push_str("</details>\n");
     }
 
     /// Writes a link styled as a button.

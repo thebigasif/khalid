@@ -77,7 +77,13 @@ fn sites() -> Vec<PathBuf> {
 fn entries(site: &Path) -> Vec<(String, PathBuf)> {
     let mut found = Vec::new();
     for language in fs::read_dir(under(site, &["content"])).unwrap() {
-        for collection in fs::read_dir(language.unwrap().path()).unwrap() {
+        let language = language.unwrap().path();
+        // The newsletters' folder is not a language, and nothing in it has
+        // a cover.
+        if language.ends_with("newsletters") {
+            continue;
+        }
+        for collection in fs::read_dir(language).unwrap() {
             let collection = collection.unwrap().path();
             let name = collection.file_name().unwrap().to_str().unwrap().to_owned();
             for entry in fs::read_dir(&collection).unwrap() {

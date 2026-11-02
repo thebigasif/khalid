@@ -19,6 +19,7 @@ mod environment;
 mod head_code;
 mod indexnow_key;
 mod link_settings;
+mod link_tracking;
 mod locale;
 mod mail_settings;
 mod media_settings;
@@ -51,6 +52,7 @@ pub use environment::Environment;
 pub use head_code::{HeadCode, HeadCodeError};
 pub use indexnow_key::{IndexNowKey, ParseIndexNowKeyError};
 pub use link_settings::{DomainName, ExternalRel, LinkOpening, LinkSettings, ParseDomainNameError};
+pub use link_tracking::{LinkTracking, ParseTagValueError, TagValue};
 pub use locale::{Locale, ParseLocaleError};
 pub use mail_settings::{
     MailSettings, MailTransport, PostmarkSettings, SmtpSecurity, SmtpSettings,
@@ -81,6 +83,6 @@ pub use site_nav::{
 };
 pub use site_path::{SitePath, SitePathError};
 pub use slug::{ParseSlugError, Slug};
-pub use template_choice::{CallToAction, OptionValue, PackName, TemplateChoice};
+pub use template_choice::{CallToAction, OptionValue, PackName, SourcePlace, TemplateChoice};
 pub use user_message::UserMessage;
 pub use visitor_log_settings::VisitorLogSettings;

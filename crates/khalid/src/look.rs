@@ -11,7 +11,7 @@ use khalid_core::{Config, ConfigError, UserMessage, toml_location};
 use khalid_render::{RenderCta, RenderPack, TemplateOption, Tokens};
 use khalid_theme::{CheckedOption, Look, LookError, OptionKind};
 
-use crate::{build_message, config_message};
+use crate::{build_message, build_seo, config_message};
 
 /// The look of the `site` folder whose settings are `config`.
 ///
@@ -34,8 +34,9 @@ pub(crate) fn apply(site: &Path, config: Config) -> Result<Config, UserMessage> 
     Ok(config.with_reader_defaults(look.pack().reader))
 }
 
-/// The look's pack as the renderer takes it.
-pub(crate) fn render_pack(look: &Look) -> RenderPack<'static> {
+/// The look's pack as the renderer takes it, its call to action tagged
+/// as `[seo.links.tracking]` in `config` says.
+pub(crate) fn render_pack(look: &Look, config: &Config) -> RenderPack<'static> {
     let pack = look.pack();
     let option = |value: &CheckedOption| match value {
         CheckedOption::Switch(on) => TemplateOption::Switch(*on),
@@ -50,13 +51,35 @@ pub(crate) fn render_pack(look: &Look) -> RenderPack<'static> {
             .collect(),
         options: (look.options().iter())
             .map(|(key, value)| ((*key).to_owned(), option(value)))
+            .chain(preferred_source(config))
             .collect(),
         cta: look.cta().map(|cta| RenderCta {
             label: cta.label.to_string(),
-            href: cta.href.to_string(),
+            href: build_seo::tracked_cta(config, cta.href.to_string()),
             note: cta.note.as_ref().map(ToString::to_string),
         }),
     }
+}
+
+/// The template options `[template.preferred_source]` in `config` sets,
+/// which every template reads: where the button shows, and Google's page
+/// for adding the site's domain as a preferred source.
+fn preferred_source(config: &Config) -> Vec<(String, TemplateOption)> {
+    let Some(place) = config.template().preferred_source() else {
+        return Vec::new();
+    };
+    let host = config.address().host();
+    let href = format!("https://www.google.com/preferences/source?q={host}");
+    vec![
+        (
+            "preferred_source".to_owned(),
+            TemplateOption::Word(place.as_str().to_owned()),
+        ),
+        (
+            "preferred_source_href".to_owned(),
+            TemplateOption::Word(href),
+        ),
+    ]
 }
 
 /// The tokens of the `site` folder over its look's defaults.

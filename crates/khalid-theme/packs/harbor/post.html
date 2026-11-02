@@ -10,8 +10,8 @@
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "card.html" import cards -%}
 {% from "comments.html" import comments_section -%}
-{% from "slots.html" import newsletter_form, cta_band -%}
 {% from "series.html" import series_box, series_steps -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
 {% set placement = template.options.contents -%}
 {% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
 {% set side = toc and placement in ["side-start", "side-end"] -%}
@@ -67,7 +67,7 @@
 </ul>
 {% endif %}{% if share in ["end", "both"] %}{{ share_row }}{% endif %}</footer>
 {% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
-{% endif %}</article>
+{% endif %}{{ preferred_source(template.options, t, "post") }}</article>
 {% if site.subscribe and template.options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
 {% endif %}{% if template.cta and template.options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">

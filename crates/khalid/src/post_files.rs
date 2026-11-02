@@ -17,6 +17,7 @@ use crate::build_pages::{LanguagePages, Page};
 use crate::post_photos::Shown;
 use crate::{build_message, post_images};
 
+pub(crate) mod charts;
 pub(crate) mod library_photo;
 
 /// How a body image starts, up to its address, as `khalid_content::render`

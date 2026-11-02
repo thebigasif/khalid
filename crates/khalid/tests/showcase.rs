@@ -16,12 +16,13 @@ const DATED: [&str; 3] = ["review-due", "stale-post", "stale-page"];
 
 /// Every block the showcase shows. Recipes are left out: recipe markup on a
 /// page that is not a recipe breaks the search engines' rules.
-const BLOCKS: [&str; 28] = [
+const BLOCKS: [&str; 29] = [
     "audio",
     "bookmark",
     "business",
     "button",
     "callout",
+    "chart",
     "columns",
     "cta",
     "embed",
