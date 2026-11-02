@@ -110,7 +110,7 @@ describe("the editor's blocks", () => {
       ],
     };
     expect(write(doc)).toBe(
-      ':::pullquote{by=Maren}\nShort wins.\n:::\n\n:::proscons\n+ Fast\n- Dear\n:::\n\n::cta',
+      ":::pullquote{by=Maren}\nShort wins.\n:::\n\n:::proscons\n+ Fast\n- Dear\n:::\n\n::cta",
     );
   });
 

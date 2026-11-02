@@ -5,6 +5,7 @@ import { isData, type Reply } from "../api/call";
 import { problemMessage } from "../api/posts";
 import { DayList } from "../calendar/DayList";
 import { DraftList } from "../calendar/DraftList";
+import { MonthGrid } from "../calendar/MonthGrid";
 import {
   byDay,
   canSchedule,
@@ -15,7 +16,6 @@ import {
   shift,
   span,
 } from "../calendar/month";
-import { MonthGrid } from "../calendar/MonthGrid";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { calendarWords } from "../strings/calendarWords";
@@ -106,7 +106,7 @@ export function Calendar() {
   return (
     <>
       <PageHeader title={words.title} lede={words.lede}>
-        <div className="switch" role="group" aria-label={words.views}>
+        <fieldset className="switch" aria-label={words.views}>
           {(["month", "list"] as const).map((each) => (
             <button
               key={each}
@@ -117,7 +117,7 @@ export function Calendar() {
               {words[each]}
             </button>
           ))}
-        </div>
+        </fieldset>
       </PageHeader>
       <div className="bar">
         <h2 id="month-title" className="month-title">
