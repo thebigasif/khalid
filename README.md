@@ -4,7 +4,7 @@
 
 Khalid is an open-source blog engine you add to the website you already have. It ships with the SEO that big content teams build by hand, and it will not publish a post with the mistakes that hurt it in search.
 
-[Website](https://thebigasif.github.io/khalid/) · [Live demo](https://thebigasif.github.io/khalid/demo/) · [Templates](https://thebigasif.github.io/khalid/templates/) · [Use cases](https://thebigasif.github.io/khalid/examples/saas/) · [Latest release](https://github.com/thebigasif/khalid/releases/latest)
+[Website](https://serpdad.com/khalid/) · [Live blog](https://serpdad.com/blog/) · [Live demo](https://thebigasif.github.io/khalid/demo/) · [Templates](https://thebigasif.github.io/khalid/templates/) · [Use cases](https://thebigasif.github.io/khalid/examples/saas/) · [Latest release](https://github.com/thebigasif/khalid/releases/latest)
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/thebigasif/khalid/tree/main/deploy/cloudflare)
 
