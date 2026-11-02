@@ -1,13 +1,36 @@
-import { Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { Outlet, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import { endSession } from "../api/account";
 import { mountPath } from "../api/mount";
 import { forgetKey, readCsrf } from "../auth/session";
 import { en } from "../strings/en";
-import { searchConsoleWords } from "../strings/searchConsoleWords";
+import { Sidebar } from "./Sidebar";
+import { TopBar } from "./TopBar";
 
-/** The header and side navigation around every signed-in screen. */
+/** The side menu, the top bar and the screen inside them, around every signed-in screen. */
 export function Shell() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const opener = useRef<HTMLButtonElement>(null);
+  const closer = useRef<HTMLButtonElement>(null);
+
+  // On a small screen the menu covers the page: it takes the focus when it
+  // opens, and Escape gives the focus back to the button that opened it.
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    closer.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        opener.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   const signOut = async () => {
     // An email sign-in also ends on the server, so its cookie stops working.
     if (readCsrf() !== null) {
@@ -21,84 +44,21 @@ export function Shell() {
       <a className="skip" href="#main">
         {en.skip}
       </a>
-      <header className="top">
-        <div className="brand">{en.brand}</div>
-        <div className="flex flex-wrap items-center gap-3">
-          <a href={mountPath()}>{en.viewBlog}</a>
-          <Link to="/account">{en.account.nav}</Link>
-          <button type="button" className="btn" onClick={signOut}>
-            {en.signOut}
-          </button>
+      <div className="app">
+        <Sidebar open={open} close={() => setOpen(false)} closer={closer} />
+        <div className="app-main">
+          <TopBar open={open} onMenu={() => setOpen(true)} opener={opener}>
+            <a className="btn ghost" href={mountPath()}>
+              {en.viewBlog}
+            </a>
+            <button type="button" className="btn" onClick={signOut}>
+              {en.signOut}
+            </button>
+          </TopBar>
+          <main id="main" className="page">
+            <Outlet />
+          </main>
         </div>
-      </header>
-      <div className="shell">
-        <nav className="side" aria-label={en.nav.label}>
-          <ul>
-            <li>
-              <Link to="/" activeOptions={{ exact: true }}>
-                {en.nav.dashboard}
-              </Link>
-            </li>
-            <li>
-              <Link to="/posts" search={{}} activeOptions={{ includeSearch: false }}>
-                {en.nav.posts}
-              </Link>
-            </li>
-            <li>
-              <Link to="/media" search={{}} activeOptions={{ includeSearch: false }}>
-                {en.nav.media}
-              </Link>
-            </li>
-            <li>
-              <Link to="/comments">{en.nav.comments}</Link>
-            </li>
-            <li>
-              <Link to="/authors">{en.nav.authors}</Link>
-            </li>
-            <li>
-              <Link to="/trash">{en.nav.trash}</Link>
-            </li>
-            <li>
-              <Link to="/audit">{en.nav.audit}</Link>
-            </li>
-            <li>
-              <Link to="/redirects">{en.nav.redirects}</Link>
-            </li>
-            <li>
-              <Link to="/schema-templates">{en.nav.templates}</Link>
-            </li>
-            <li>
-              <Link to="/passkeys">{en.nav.passkeys}</Link>
-            </li>
-            <li>
-              <Link to="/analytics">{en.nav.analytics}</Link>
-            </li>
-            <li>
-              <Link to="/search-console">{searchConsoleWords.title}</Link>
-            </li>
-            <li>
-              <Link to="/keys">{en.nav.keys}</Link>
-            </li>
-            <li>
-              <Link to="/webhooks">{en.nav.webhooks}</Link>
-            </li>
-            <li>
-              <Link to="/team">{en.nav.team}</Link>
-            </li>
-            <li>
-              <Link to="/look">{en.nav.look}</Link>
-            </li>
-            <li>
-              <Link to="/settings">{en.nav.settings}</Link>
-            </li>
-            <li>
-              <Link to="/serpdad">{en.nav.serpdad}</Link>
-            </li>
-          </ul>
-        </nav>
-        <main id="main" className="page">
-          <Outlet />
-        </main>
       </div>
     </>
   );
