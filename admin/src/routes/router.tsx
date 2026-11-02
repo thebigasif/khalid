@@ -17,6 +17,7 @@ import { Account } from "./Account";
 import { Analytics } from "./Analytics";
 import { AuditLog } from "./AuditLog";
 import { AuthorPage } from "./AuthorPage";
+import { Calendar } from "./Calendar";
 import { Authors } from "./Authors";
 import { Comments } from "./Comments";
 import { Dashboard } from "./Dashboard";
@@ -80,6 +81,12 @@ const posts = createRoute({
   path: "/posts",
   validateSearch: postSearch,
   component: Posts,
+});
+
+const calendar = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/calendar",
+  component: Calendar,
 });
 
 const newPost = createRoute({ getParentRoute: () => signedIn, path: "/new", component: NewPost });
@@ -206,6 +213,7 @@ const routeTree = root.addChildren([
     dashboard,
     posts,
     newPost,
+    calendar,
     editor,
     media,
     mediaItem,
