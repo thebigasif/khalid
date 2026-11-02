@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { axeViolations, json, renderAt, serve, signedIn } from "../../test/render";
 import type { PostCheck } from "../api/check";
 import type { AdminPost } from "../api/posts";
+import type { LinkSuggestion } from "../api/seo";
 import { en } from "../strings/en";
 import { seoEditorWords } from "../strings/seoEditorWords";
 
@@ -54,12 +55,15 @@ const CHECK: PostCheck = {
 
 const EVENT = '{"@type": "Event", "name": "Internal links clinic"}';
 
-/** A blog holding the demo post, which answers its check with `check` and records edits. */
-function blog(check: () => Response) {
+/** A blog holding the demo post: its check is `check`, its link suggestions `suggestions`. */
+function blog(check: () => Response, suggestions: unknown[] = []) {
   const edits: unknown[] = [];
   serve(async (request) => {
     if (request.url.endsWith("/check/")) {
       return check();
+    }
+    if (request.url.endsWith("/link-suggestions/")) {
+      return json(200, { suggestions });
     }
     if (request.method === "PUT") {
       const body: { posts: unknown[] } = await request.json();
@@ -170,6 +174,29 @@ describe("the editor's search fields and schema", () => {
         robots: "noarchive, max-image-preview:standard",
       },
     });
+  });
+
+  it("says why a post is suggested, and links the words in the text that name it", async () => {
+    signedIn();
+    const sitemaps: LinkSuggestion = {
+      id: "en.what-a-sitemap-does",
+      title: "What a sitemap does",
+      path: "/blog/what-a-sitemap-does/",
+      score: 6,
+      shares: { tags: [], pillar: false, keyword: "search engines" },
+      anchor: "search engines",
+    };
+    const edits = blog(() => json(200, { checks: [CHECK] }), [sitemaps]);
+    renderAt(`/posts/${POST.id}`);
+    fireEvent.click(await screen.findByText(seoEditorWords.links));
+    expect(screen.getByText(seoEditorWords.why.keyword("search engines"))).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: seoEditorWords.addLink(sitemaps.title) }));
+    expect(screen.getByText(seoEditorWords.added)).toBeVisible();
+    fireEvent.blur(screen.getByLabelText(en.editor.title));
+    await waitFor(() => expect(edits).toHaveLength(1));
+    const linked = "[search engines](/blog/what-a-sitemap-does/)";
+    expect(edits[0]).toMatchObject({ markdown: expect.stringContaining(linked) });
+    expect(await axeViolations()).toEqual([]);
   });
 
   it("shows the post shared on Facebook and X, with a card's own title", async () => {

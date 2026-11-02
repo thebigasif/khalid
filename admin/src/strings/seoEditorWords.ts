@@ -37,4 +37,21 @@ export const seoEditorWords = {
   facebook: "Facebook",
   x: "X",
   noImage: "No picture yet. Add a feature image, or one for each network in More settings.",
+  links: "Internal links to add",
+  linksLede:
+    "Posts on your blog this one does not link to yet, the closest first. Links help readers and search engines find your other posts.",
+  noLinks: "No suggestions now. Add a category or tags, and posts on the same topic show up here.",
+  addLink: (title: string) => `Add a link to ${title}`,
+  addLinkShort: "Add a link",
+  added: "Added to the text. It is saved with your next change.",
+  why: {
+    category: "Same category",
+    tags: (tags: string) => `Shares the tags ${tags}`,
+    cluster: "Same topic cluster",
+    pillar: "The main post of this topic cluster",
+    keyword: (keyword: string) => `Your text names its focus keyword, "${keyword}"`,
+  },
+  copy: "Copy as a new draft",
+  copyHint:
+    "Makes a new draft with this post's text and settings, to start a similar post or rework this one safely.",
 } as const;

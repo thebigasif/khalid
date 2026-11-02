@@ -3,12 +3,16 @@ import { useBlocker } from "@tanstack/react-router";
 import { useState } from "react";
 import { readCheck } from "../api/check";
 import type { AdminPost } from "../api/posts";
+import type { LinkSuggestion } from "../api/seo";
 import type { PostVersion } from "../api/versions";
 import { Problem } from "../components/Problem";
 import { en } from "../strings/en";
+import { CopyPost } from "./CopyPost";
 import { GoLive } from "./GoLive";
+import { LinkSuggestions } from "./LinkSuggestions";
 import { LintPanel } from "./LintPanel";
 import { LivePage } from "./LivePage";
+import { withLink } from "./linkInsert";
 import { findingsOf, scoreOf } from "./lint";
 import { PostSettings } from "./PostSettings";
 import { Presence } from "./Presence";
@@ -77,6 +81,14 @@ export function EditorForm({ post }: Props) {
   const onBlur = () => void save();
   const setTitle = (title: string) => setDraft((current) => ({ ...current, title }));
   const setMarkdown = (markdown: string) => setDraft((current) => ({ ...current, markdown }));
+  // A suggested link goes into the text, and the rich-text view opens again on it.
+  const addLink = ({ anchor, title, path }: LinkSuggestion) => {
+    setDraft((current) => ({
+      ...current,
+      markdown: withLink(current.markdown, anchor ?? null, title, path),
+    }));
+    setRestored((count) => count + 1);
+  };
   const setSetting = <K extends keyof SettingsDraft>(key: K, value: SettingsDraft[K]) =>
     setDraft((current) => ({ ...current, settings: withSetting(current.settings, key, value) }));
   const fields = { settings: draft.settings, onSetting: setSetting, onBlur };
@@ -181,10 +193,12 @@ export function EditorForm({ post }: Props) {
               url={checked?.snippet.url ?? ""}
               settings={draft.settings}
             />
+            <LinkSuggestions id={post.id} version={updatedAt.current} onAdd={addLink} />
             <SchemaPanel check={checked} live={publishing.status === "published"} {...fields} />
             <PostSettings settings={draft.settings} onSetting={setSetting} onBlur={onBlur}>
               {publishing.status === "published" ? null : <GoLive at={at} onAt={setAt} />}
               <PreviewLink id={post.id} />
+              <CopyPost id={post.id} />
               <Versions id={post.id} version={updatedAt.current} now={draft} onRestore={restore} />
             </PostSettings>
           </div>
