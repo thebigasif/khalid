@@ -29,8 +29,8 @@ use crate::unlock::Gate;
 use crate::{
     assets, build_gate, build_home, build_lists, build_message, build_pages, build_seo,
     build_sitemap, categories, content_message, home_images, look, own_descriptions,
-    post_categories, post_files, post_gate, post_lock, search_page, serve_message, share_images,
-    site_files, site_outline, trails,
+    post_categories, post_files, post_gate, post_lock, search_page, seo_extras, serve_message,
+    share_images, site_files, site_outline, trails,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -438,6 +438,7 @@ impl SitePages {
             }
             own_descriptions::fill(config, &theme.renderer, &mut languages)?;
         }
+        let gone = seo_extras::archives_off::remove(config, &mut languages);
         // A headless site's heads carry the same trail as its pages would.
         trails::fill(folder, (config, routes), &mut languages)?;
         post_categories::fill((config, routes), &categories, &mut languages);
@@ -467,6 +468,7 @@ impl SitePages {
             served.pages = site_files::files(config, &seo_site, &seo_pages, self.0.clock.now())?;
             served.pages.extend(beside);
             served.moves = site_files::moves(config, routes, content)?;
+            served.moves.extend(seo_extras::archives_off::moves(&gone)?);
         }
         if let Some(theme) = theme {
             if which == Which::All {

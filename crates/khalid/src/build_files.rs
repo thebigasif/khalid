@@ -6,8 +6,8 @@
 use chrono::{DateTime, Utc};
 use khalid_core::{IndexNowSettings, Locale, UserMessage};
 use khalid_seo::{
-    ArticleType, Feed, FeedScope, IndexNow, LlmsTxt, NewsSitemap, RobotsTxt, SeoError, SeoPage,
-    SeoSite, SitemapSet, UrlPath,
+    ArticleType, Feed, FeedFormat, FeedScope, IndexNow, LlmsTxt, NewsSitemap, RobotsTxt, SeoError,
+    SeoPage, SeoSite, SitemapSet, UrlPath,
 };
 
 use crate::build_message;
@@ -99,9 +99,16 @@ fn collect(
     for language in &site.languages {
         let feed = Feed::for_pages(site, pages, &FeedScope::language(language.clone()), now)?;
         let folder = prefix(site, language);
-        files.push(file(&format!("{folder}feed.xml"), feed.to_rss()?));
-        files.push(file(&format!("{folder}atom.xml"), feed.to_atom()?));
-        files.push(file(&format!("{folder}feed.json"), feed.to_json()?));
+        let on = |format: FeedFormat| !site.feeds.off.contains(&format);
+        if on(FeedFormat::Rss) {
+            files.push(file(&format!("{folder}feed.xml"), feed.to_rss()?));
+        }
+        if on(FeedFormat::Atom) {
+            files.push(file(&format!("{folder}atom.xml"), feed.to_atom()?));
+        }
+        if on(FeedFormat::Json) {
+            files.push(file(&format!("{folder}feed.json"), feed.to_json()?));
+        }
     }
     if let Some(settings) = indexnow {
         let key = IndexNow::new(site, settings)?.key_file();
@@ -161,5 +168,21 @@ mod tests {
                 assert!(written.iter().any(|written| written.file == file), "{file}");
             }
         }
+    }
+
+    #[test]
+    fn a_feed_format_switched_off_is_not_written() {
+        let mut site = SeoSite::new(
+            "Field Notes on SEO",
+            AbsoluteUrl::parse("https://www.example.com").unwrap(),
+            Locale::try_new("en").unwrap(),
+        );
+        site.feeds.off = vec![FeedFormat::Atom, FeedFormat::Json];
+        let now = Utc.with_ymd_and_hms(2026, 10, 26, 12, 0, 0).unwrap();
+        let written: Vec<String> = (files(&site, &[], None, now).unwrap().into_iter())
+            .map(|file| file.file)
+            .filter(|file| file.contains("feed") || file.contains("atom"))
+            .collect();
+        assert_eq!(written, ["feed.xml"]);
     }
 }
