@@ -5,6 +5,7 @@ import { changeSite, readSite, type SiteSettings } from "../api/site";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { Crawlers } from "../seo/Crawlers";
+import { Feeds } from "../seo/Feeds";
 import { type Part, partOf, same } from "../seo/parts";
 import { Representation } from "../seo/Representation";
 import { SearchAppearance } from "../seo/SearchAppearance";
@@ -32,6 +33,7 @@ const SECTIONS: { tab: Tab; show: (props: SectionProps) => ReactNode }[] = [
   { tab: "social", show: (props) => <SocialSharing {...props} /> },
   { tab: "webmaster", show: (props) => <Webmaster {...props} /> },
   { tab: "crawlers", show: (props) => <Crawlers {...props} /> },
+  { tab: "feeds", show: (props) => <Feeds {...props} /> },
   // TODO(Yoast WP2): breadcrumbs and llms.txt get a tab here once their
   // settings are in SeoSettings on main; docs/seo-settings.md lists them.
 ];

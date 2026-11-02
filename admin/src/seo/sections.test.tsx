@@ -82,4 +82,20 @@ describe("the parts of the SEO settings", () => {
     expect(await screen.findByText(seoWords.saved)).toBeVisible();
     expect(changes[0]?.seo).toEqual({ crawlers: { block: ["GPTBot", "AhrefsBot"] } });
   });
+
+  it("makes an IndexNow key when the switch turns on, and saves excerpts", async () => {
+    signedIn();
+    const changes = seoBlog();
+    await openTab(seoWords.tabs.feeds);
+    await userEvent.click(screen.getByLabelText(seoWords.feeds.excerpt));
+    await userEvent.click(screen.getByLabelText(seoWords.feeds.indexnowOn));
+    const key = screen.getByLabelText(seoWords.feeds.key);
+    expect(key).toHaveValue(expect.stringMatching(/^[0-9a-f]{32}$/));
+    await save();
+    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(changes[0]?.seo).toEqual({
+      feeds: { content: "excerpt" },
+      indexnow: { key: (key as HTMLInputElement).value },
+    });
+  });
 });
