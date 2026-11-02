@@ -86,7 +86,8 @@ fn a_row_has_the_columns_and_no_body() {
         "author": null, "status": "draft", "review_state": "in_review", "reviewed": null,
         "review_due": false, "featured": false,
         "published_at": null, "updated_at": "2026-10-20T08:30:00Z", "updated_by": "Asif",
-        "gate": "refuses", "lint": {"blocks": 2, "warnings": 1}, "scores": null,
+        "gate": "refuses", "lint": {"blocks": 2, "warnings": 1}, "scores": null, "words": 0,
+        "links": {"inbound": 0, "outbound": 0}, "has_focus_keyword": false, "cluster": null,
         "index_status": "not_live",
     });
     assert_eq!(json, want);

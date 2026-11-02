@@ -4,4 +4,5 @@ Added
 - The SEO settings screen also sets which list pages show in search, thin archives and the whole blog's switch; and who is behind the blog, with its logo and social profiles.
 - The SEO settings screen sets the X username and default share image; the verification codes for Google, Bing, Yandex, Baidu and Pinterest; a switch to block each known AI crawler, other blocked crawlers and paths, and the AI info page.
 - A post's check and each row of the posts list carry two scores out of 100, one for SEO and one for readability, split from the same lint findings; the check also counts the post's words.
+- Each row of the posts list carries its word count, how many posts link to it and how many it links to, whether it names a focus keyword, and its role in a topic cluster. A list filters by `orphan:true`, `has_focus_keyword:false` and `pillar:true`.
 - The SEO settings screen sets what feeds carry and how many posts they list, and switches IndexNow on with one tick that makes its key.

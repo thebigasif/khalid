@@ -208,3 +208,44 @@ fn a_saved_schema_template_reaches_site_toml_and_the_check_after_a_restart() {
         "{after}"
     );
 }
+
+/// Writes the draft `en.anchor-words` into `site`: in the demo's
+/// `on-page-seo` category, with no focus keyword, linking to one post.
+#[cfg(test)]
+fn write_draft(site: &Path) {
+    let mut drafts = site.to_path_buf();
+    drafts.push("drafts");
+    drafts.push("en");
+    fs::create_dir_all(&drafts).unwrap();
+    drafts.push("anchor-words.md");
+    let draft = "---\ntitle: Anchor words\nslug: anchor-words\ncategory: on-page-seo\n---\n\n\
+                 Pick link words with care, as [sitemaps](/blog/what-a-sitemap-does/) show.\n";
+    fs::write(&drafts, draft).unwrap();
+}
+
+#[test]
+fn the_posts_list_counts_links_and_finds_orphans() {
+    let site = demo_site();
+    write_draft(site.path());
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let route = "/api/admin/v1/posts/?filter=orphan:true%2Bhas_focus_keyword:false%2Bpillar:false";
+    let (status, json) = send(&server, &key, ("GET", route), "");
+    assert_eq!(status, 200, "{json}");
+    let rows = json["posts"].as_array().unwrap();
+    let draft = rows.iter().find(|row| row["id"] == "en.anchor-words");
+    let draft = draft.unwrap_or_else(|| panic!("the draft is an orphan: {json}"));
+    assert_eq!(
+        draft["links"],
+        json!({"inbound": 0, "outbound": 1}),
+        "{json}"
+    );
+    assert!(draft["words"].as_u64().unwrap() > 5, "{json}");
+    let linked = "/api/admin/v1/posts/?filter=orphan:false";
+    let (_, json) = send(&server, &key, ("GET", linked), "");
+    let ids: Vec<&str> = (json["posts"].as_array().unwrap().iter())
+        .map(|row| row["id"].as_str().unwrap())
+        .collect();
+    assert!(ids.contains(&"en.what-a-sitemap-does"), "{json}");
+    assert!(!ids.contains(&"en.anchor-words"), "{json}");
+}

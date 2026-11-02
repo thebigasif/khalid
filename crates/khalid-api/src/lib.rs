@@ -53,6 +53,7 @@ mod etag;
 pub mod follow_ups;
 mod html_source;
 pub mod keys;
+pub mod link_map;
 pub mod media_api;
 mod media_picture;
 mod media_search;

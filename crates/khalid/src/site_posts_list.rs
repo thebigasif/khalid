@@ -5,9 +5,10 @@ use std::collections::BTreeMap;
 use std::fs;
 
 use khalid_api::content_store::{Listed, select};
+use khalid_api::link_map::LinkMap;
 use khalid_api::post_store::PostStoreError;
 use khalid_api::query::ListQuery;
-use khalid_api::resources::{AdminPost, Gate, PostRow, PostStatus};
+use khalid_api::resources::{AdminPost, Gate, PostLinks, PostRow, PostStatus};
 use khalid_content::{PostFront, SiteContent, parse_post};
 use khalid_core::Slug;
 
@@ -47,20 +48,25 @@ impl Site {
     pub(super) fn list_now(&self, query: &ListQuery) -> Result<Listed<PostRow>, PostStoreError> {
         let content = self.content()?;
         let judge = self.judge(&content)?;
+        let links = LinkMap::new(&judge.site.posts);
         let mut rows = Vec::new();
         let mut files = BTreeMap::new();
         for found in self.every_post(&content)? {
             let post = Self::admin_post(&found)?;
-            let gate = if judge
-                .linter
-                .refuses(&self.candidate_now(&judge, &found)?, &judge.site)
-            {
+            let candidate = self.candidate_now(&judge, &found)?;
+            let gate = if judge.linter.refuses(&candidate, &judge.site) {
                 Gate::Refuses
             } else {
                 Gate::Passes
             };
             let today = self.clock.now().date_naive();
-            rows.push(PostRow::new(&post, gate).with_review_due(today));
+            let counts = PostLinks::new(
+                links.inbound(&candidate).len(),
+                links.outbound(&candidate).len(),
+            );
+            let role = candidate.cluster.as_ref().map(|cluster| cluster.role);
+            let row = PostRow::new(&post, gate).with_review_due(today);
+            rows.push(row.with_reach(candidate.word_count, counts, role));
             files.insert(post.id().to_owned(), found);
         }
         let page = select(rows.iter(), query);

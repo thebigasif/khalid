@@ -3,7 +3,7 @@
 
 use chrono::{DateTime, NaiveDate, SecondsFormat, Utc};
 use khalid_core::{Indexing, Slug};
-use khalid_lint::{Report, Severity};
+use khalid_lint::{ClusterRole, Report, Severity};
 use serde::Serialize;
 use utoipa::ToSchema;
 
@@ -168,8 +168,51 @@ pub struct PostRow {
     /// Its SEO and readability scores, counted with its findings, so only
     /// for the rows on the page a list sends.
     scores: Option<SeoScores>,
+    /// How many words its text holds.
+    words: u32,
+    /// Its internal links to and from the blog's other posts. A list
+    /// filters posts no other post links to by `orphan:true`.
+    links: PostLinks,
+    /// Whether it names a focus keyword. A list filters by this, such as
+    /// `has_focus_keyword:false`.
+    has_focus_keyword: bool,
+    /// Its role in a topic cluster, or `null` outside one: the `pillar`,
+    /// the main post the others link to, or a `member`. A list filters
+    /// pillars by `pillar:true`.
+    cluster: Option<ClusterPlace>,
     /// Whether search engines may list it.
     index_status: IndexStatus,
+}
+
+/// A post's role in its topic cluster.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum ClusterPlace {
+    /// The cluster's main post, which covers the topic as a whole.
+    Pillar,
+    /// A post on one part of the topic, which links to the pillar.
+    Member,
+}
+
+/// How many of the blog's other posts a post links to, and how many link
+/// to it, each counted once.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, ToSchema)]
+pub struct PostLinks {
+    /// Posts that link to this one.
+    inbound: u32,
+    /// Posts this one links to.
+    outbound: u32,
+}
+
+impl PostLinks {
+    /// `inbound` posts link here, and this links to `outbound` posts.
+    pub fn new(inbound: usize, outbound: usize) -> Self {
+        let count = |n: usize| u32::try_from(n).unwrap_or(u32::MAX);
+        Self {
+            inbound: count(inbound),
+            outbound: count(outbound),
+        }
+    }
 }
 
 impl PostRow {
@@ -192,7 +235,26 @@ impl PostRow {
             gate,
             lint: LintCounts::default(),
             scores: None,
+            words: 0,
+            links: PostLinks::default(),
+            has_focus_keyword: post.settings().focus_keyword.is_some(),
+            cluster: None,
             index_status: IndexStatus::of(post),
+        }
+    }
+
+    /// The same row with the post's place on the site: its `words`, its
+    /// `links`, and its `role` in a topic cluster, if it is in one.
+    #[must_use]
+    pub fn with_reach(self, words: usize, links: PostLinks, role: Option<ClusterRole>) -> Self {
+        Self {
+            words: u32::try_from(words).unwrap_or(u32::MAX),
+            links,
+            cluster: role.map(|role| match role {
+                ClusterRole::Pillar => ClusterPlace::Pillar,
+                ClusterRole::Member => ClusterPlace::Member,
+            }),
+            ..self
         }
     }
 
@@ -291,6 +353,9 @@ impl FieldValues for PostRow {
             "updated_at" => time(&self.updated_at),
             "gate" => text(self.gate.as_str()),
             "index_status" => text(self.index_status.as_str()),
+            "has_focus_keyword" => vec![Literal::Bool(self.has_focus_keyword)],
+            "orphan" => vec![Literal::Bool(self.links.inbound == 0)],
+            "pillar" => vec![Literal::Bool(self.cluster == Some(ClusterPlace::Pillar))],
             _ => Vec::new(),
         }
     }
@@ -311,6 +376,9 @@ impl Listable for PostRow {
         "updated_at",
         "gate",
         "index_status",
+        "has_focus_keyword",
+        "orphan",
+        "pillar",
     ];
 
     fn id(&self) -> &str {

@@ -12541,6 +12541,14 @@
           "take_over"
         ]
       },
+      "ClusterPlace": {
+        "type": "string",
+        "description": "A post's role in its topic cluster.",
+        "enum": [
+          "pillar",
+          "member"
+        ]
+      },
       "Collections": {
         "type": "object",
         "required": [
@@ -14704,6 +14712,28 @@
         },
         "additionalProperties": false
       },
+      "PostLinks": {
+        "type": "object",
+        "description": "How many of the blog's other posts a post links to, and how many link\nto it, each counted once.",
+        "required": [
+          "inbound",
+          "outbound"
+        ],
+        "properties": {
+          "inbound": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Posts that link to this one.",
+            "minimum": 0
+          },
+          "outbound": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Posts this one links to.",
+            "minimum": 0
+          }
+        }
+      },
       "PostPresence": {
         "type": "object",
         "description": "Who has a post open, as the one checking in sees it.",
@@ -14744,6 +14774,9 @@
           "updated_at",
           "gate",
           "lint",
+          "words",
+          "links",
+          "has_focus_keyword",
           "index_status"
         ],
         "properties": {
@@ -14755,6 +14788,17 @@
             "description": "The author's slug, if any.",
             "example": "asif"
           },
+          "cluster": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ClusterPlace",
+                "description": "Its role in a topic cluster, or `null` outside one: the `pillar`,\nthe main post the others link to, or a `member`. A list filters\npillars by `pillar:true`."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "featured": {
             "type": "boolean",
             "description": "Whether the post is featured."
@@ -14763,6 +14807,10 @@
             "$ref": "#/components/schemas/Gate",
             "description": "Whether the lint publish gate lets it go live. A list filters by\nthis, such as `gate:refuses`."
           },
+          "has_focus_keyword": {
+            "type": "boolean",
+            "description": "Whether it names a focus keyword. A list filters by this, such as\n`has_focus_keyword:false`."
+          },
           "id": {
             "type": "string",
             "description": "The post's identity, as in `/posts/{id}/`."
@@ -14770,6 +14818,10 @@
           "index_status": {
             "$ref": "#/components/schemas/IndexStatus",
             "description": "Whether search engines may list it."
+          },
+          "links": {
+            "$ref": "#/components/schemas/PostLinks",
+            "description": "Its internal links to and from the blog's other posts. A list\nfilters posts no other post links to by `orphan:true`."
           },
           "lint": {
             "$ref": "#/components/schemas/LintCounts",
@@ -14835,6 +14887,12 @@
               "null"
             ],
             "description": "Who made the last change."
+          },
+          "words": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many words its text holds.",
+            "minimum": 0
           }
         }
       },

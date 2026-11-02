@@ -659,6 +659,9 @@ export type CheckIn = {
 /** What a check-in asks for. */
 export type Claim = "join" | "take_over";
 
+/** A post's role in its topic cluster. */
+export type ClusterPlace = "pillar" | "member";
+
 export type Collections = {
   /** The entries on this page, or the one entry asked for. */
   collections: ContentCollection[];
@@ -1356,6 +1359,14 @@ export type PostEdit = {
   updated_at: string;
 };
 
+/** How many of the blog's other posts a post links to, and how many link to it, each counted once. */
+export type PostLinks = {
+  /** Posts that link to this one. */
+  inbound: number;
+  /** Posts this one links to. */
+  outbound: number;
+};
+
 /** Who has a post open, as the one checking in sees it. */
 export type PostPresence = {
   /** Who holds the lock: the one person who may change the post now. */
@@ -1370,14 +1381,19 @@ export type PostPresence = {
 export type PostRow = {
   /** The author's slug, if any. */
   author?: string | null;
+  cluster?: ClusterPlace | null;
   /** Whether the post is featured. */
   featured: boolean;
   /** Whether the lint publish gate lets it go live. A list filters by this, such as `gate:refuses`. */
   gate: Gate;
+  /** Whether it names a focus keyword. A list filters by this, such as `has_focus_keyword:false`. */
+  has_focus_keyword: boolean;
   /** The post's identity, as in `/posts/{id}/`. */
   id: string;
   /** Whether search engines may list it. */
   index_status: IndexStatus;
+  /** Its internal links to and from the blog's other posts. A list filters posts no other post links to by `orphan:true`. */
+  links: PostLinks;
   /** Its lint findings, counted. Counting takes every rule, so a list counts only the rows on the page it sends, and cannot filter or order by the counts. */
   lint: LintCounts;
   /** When it went or goes live; empty for a draft. */
@@ -1399,6 +1415,8 @@ export type PostRow = {
   updated_at: string;
   /** Who made the last change. */
   updated_by?: string | null;
+  /** How many words its text holds. */
+  words: number;
 };
 
 /** One page of the admin's posts table, as every list is wrapped. */
