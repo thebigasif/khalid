@@ -234,6 +234,9 @@ export const en = {
       language: "Language",
       role: "Role",
       noRole: "No role yet",
+      posts: "Posts",
+      count: (posts: number) => (posts === 1 ? "1 post" : `${posts} posts`),
+      countUnknown: "Not counted",
       action: "Action",
       edit: "Edit",
       editLabel: (name: string, language: string) => `Edit ${name}, ${language}`,
@@ -363,6 +366,13 @@ export const en = {
       title: "Passkeys",
       lede: "A passkey lets you sign in with your fingerprint, your face or your device's PIN instead of a password. It cannot be guessed or stolen by a fake sign-in page.",
       link: "Add, rename or remove your passkeys",
+    },
+    profile: {
+      title: "Your author profile",
+      lede: "Readers see this beside every post you write, and on your own author page. New posts you start name you as their author.",
+      loading: "Reading your author profile",
+      none: "Your account has no author profile yet, so your posts have no byline. Ask the owner to link one, or add yourself on the Authors screen.",
+      authors: "Open Authors",
     },
     password: {
       title: "Change your password",

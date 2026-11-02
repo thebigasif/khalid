@@ -306,6 +306,10 @@
   .look-head input{width:1.25rem;min-height:1.25rem;margin:0;accent-color:var(--color-link);flex:none}
   .turns{margin:0;padding-left:1.1rem;font-size:.9375rem}
   .look .turns-title{color:var(--color-text);font-size:.875rem;font-weight:600;margin:.5rem 0 .15rem}
+  /* The Authors list: each author's round photo, or their initial, beside the name. */
+  .author-avatar{width:2.25rem;height:2.25rem;border-radius:50%;object-fit:cover;flex:none;background:var(--color-surface)}
+  .author-initial{display:inline-grid;place-items:center;color:var(--color-link);background:var(--color-tint);font-weight:600}
+  .author-cell{display:flex;align-items:center;gap:.75rem}
   /* Sign-in: one centred card on a light grey page, the blog's mark on top. */
   .sign-in{display:grid;place-items:center;min-height:100vh;padding:2rem 1rem;background:var(--color-surface)}
   .sign-card{width:100%;max-width:26rem;padding:2rem 1.5rem;border:1px solid var(--color-border);border-radius:.75rem;background:var(--color-bg);box-shadow:var(--shadow-menu)}

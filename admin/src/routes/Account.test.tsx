@@ -22,6 +22,48 @@ describe("your account", () => {
     expect(await axeViolations()).toEqual([]);
   });
 
+  it("shows and saves the person's own author profile", async () => {
+    saveCsrf("csrf-test");
+    const linked = { account: { ...LENA.account, author: "de.lena-vogt" }, csrf: "csrf-test" };
+    const profile = {
+      id: "de.lena-vogt",
+      slug: "lena-vogt",
+      language: "de",
+      name: "Lena Vogt",
+      role: "Technical SEO editor",
+      bio: "Lena looks after the technical side.\n",
+      same_as: [],
+      updated_at: "2026-10-30T09:00:00Z",
+    };
+    const edits: unknown[] = [];
+    adminBlog({
+      "GET /session/": () => json(200, linked),
+      "GET /authors/de.lena-vogt/": () => json(200, { authors: [profile] }),
+      "PUT /authors/de.lena-vogt/": async (request) => {
+        edits.push(await request.json());
+        return json(200, { authors: [profile] });
+      },
+    });
+    renderAt("/account");
+    const fields = en.authors.edit.fields;
+    expect(await screen.findByRole("heading", { name: en.account.profile.title })).toBeVisible();
+    await userEvent.type(await screen.findByLabelText(fields.credentials.label), "Ten years");
+    await userEvent.click(screen.getByRole("button", { name: en.authors.edit.save }));
+    expect(await screen.findByText(en.authors.edit.saved)).toBeVisible();
+    expect(edits).toEqual([
+      { authors: [{ updated_at: profile.updated_at, credentials: "Ten years" }] },
+    ]);
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("says how to get an author profile when the account has none", async () => {
+    saveCsrf("csrf-test");
+    adminBlog({ "GET /session/": () => json(200, { ...LENA, csrf: "csrf-test" }) });
+    renderAt("/account");
+    expect(await screen.findByText(en.account.profile.none)).toBeVisible();
+    expect(screen.getByRole("link", { name: en.account.profile.authors })).toBeVisible();
+  });
+
   it("sets a first password, sending no current one", async () => {
     saveCsrf("csrf-test");
     const changes: unknown[] = [];

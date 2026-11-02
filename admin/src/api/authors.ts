@@ -50,6 +50,12 @@ async function authors(response: Response): Promise<AdminAuthor[]> {
   return body.authors;
 }
 
+/** The slug posts name an author by, from their identity such as `en.asif`. */
+export function authorSlug(id: string | null | undefined): string | undefined {
+  const dot = id?.indexOf(".") ?? -1;
+  return id === null || id === undefined || dot < 0 ? undefined : id.slice(dot + 1);
+}
+
 /** Every author in every language. */
 export function listAuthors(): Promise<Reply<AdminAuthor[]>> {
   return call("/authors/", {}, authors);

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ChangePassword } from "../account/ChangePassword";
 import { SignOutEverywhere } from "../account/SignOutEverywhere";
+import { YourProfile } from "../account/YourProfile";
 import { readSession } from "../api/account";
 import { isData } from "../api/call";
 import { Problem } from "../components/Problem";
@@ -18,6 +19,7 @@ export function Account() {
     shown = (
       <>
         <p className="lede">{words.lede(account.name, account.email)}</p>
+        <YourProfile author={account.author ?? null} />
         <section className="max-w-160" aria-labelledby="passkeys-title">
           <h2 id="passkeys-title">{words.passkey.title}</h2>
           <p>{words.passkey.lede}</p>

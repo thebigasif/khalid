@@ -1,6 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
+import { readSession } from "../api/account";
+import { authorSlug } from "../api/authors";
+import { isData } from "../api/call";
 import { createPost, problemMessage, requestKey } from "../api/posts";
 import { en, type UserMessage } from "../strings/en";
 import { Problem } from "./Problem";
@@ -12,7 +15,17 @@ export function StartPost() {
   const [problem, setProblem] = useState<UserMessage | null>(null);
   // One key per attempt, so a double click or a lost answer makes one draft.
   const [key, setKey] = useState(requestKey);
-  const start = useMutation({ mutationFn: () => createPost(title.trim(), key) });
+  const queries = useQueryClient();
+  const start = useMutation({
+    mutationFn: async () => {
+      // A new post names the signed-in person's own author profile, when they have one.
+      const session = await queries
+        .fetchQuery({ queryKey: ["session"], queryFn: readSession })
+        .catch(() => undefined);
+      const author = isData(session) ? authorSlug(session.data.account.author) : undefined;
+      return createPost(title.trim(), key, author);
+    },
+  });
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
