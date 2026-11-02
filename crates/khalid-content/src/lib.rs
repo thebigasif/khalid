@@ -45,8 +45,7 @@ pub use post_fields::{
 };
 pub use render::{
     CTA_MARK, ENGINE_TEXT, Gated, Heading, Image, Link, Rendered, render, render_framed,
-    render_gated,
-    render_linked,
+    render_gated, render_linked,
 };
 pub use schemas::{
     AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, PageHub,
