@@ -90,6 +90,11 @@ fn name_page(body: &mut PageBody, named: &BTreeMap<String, (usize, &str)>) {
             post.related.iter_mut().for_each(name_card);
         }
         PageBody::Author(author) => author.posts.iter_mut().for_each(name_card),
+        PageBody::Hub(hub) => {
+            name(&mut hub.topic);
+            hub.chapters.iter_mut().for_each(name_card);
+            hub.latest.iter_mut().for_each(name_card);
+        }
         _ => {}
     }
 }

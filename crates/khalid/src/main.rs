@@ -28,6 +28,7 @@ mod build_files;
 mod build_gate;
 mod build_glossary;
 mod build_home;
+mod build_hubs;
 mod build_lists;
 mod build_message;
 mod build_named_pages;

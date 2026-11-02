@@ -51,3 +51,22 @@ series:
 Each part then shows a box at the top with "Part 2 of 5", the series' name and every part, and links to the part before and the part after at the end. The series gets its own page at `/series/topic-clusters-from-scratch/` that lists the parts in order. Parts with no `order` follow the numbered ones, oldest first.
 
 The Content API gives each part a `series` object with its `name`, the `slug` of the series page and its `order`, so a site with its own front end can show the same.
+
+## Hubs
+
+A hub is the front door to one topic. Any page can be one: add a `hub` table that names the topic's category and, if you like, the posts to read first, in order.
+
+```yaml
+---
+title: Technical SEO, from the ground up
+hub:
+  category: technical-seo
+  chapters:
+    - what-a-sitemap-does
+    - fixing-slow-pages
+---
+
+Technical SEO is how search engines find, read and store your pages.
+```
+
+The page shows its own text as the topic's introduction, then the chapters as a numbered list, then the six newest posts in the category that are not chapters. The category's own list shows "Start here" with a link to the hub above its posts.

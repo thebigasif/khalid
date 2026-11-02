@@ -299,3 +299,39 @@ fn a_series_page_lists_its_parts_in_order_as_an_item_list() {
     assert!(first < second && second < third, "{main}");
     assert!(series.contains(r#""@type":"ItemList""#), "{series}");
 }
+
+#[test]
+fn a_hub_opens_its_topic_and_its_category_links_to_it() {
+    let site = with_series();
+    for slug in ["plan-the-posts", "pick-the-subject", "link-the-cluster"] {
+        let file = at(site.path(), &format!("content/en/posts/{slug}.md"));
+        let text = fs::read_to_string(&file).unwrap();
+        fs::write(
+            &file,
+            text.replace("author: asif\n", "author: asif\ncategory: clusters\n"),
+        )
+        .unwrap();
+    }
+    put(
+        site.path(),
+        "content/en/pages/clusters.md",
+        "---\ntitle: Topic clusters\nslug: clusters\nhub:\n  category: clusters\n  chapters:\n    \
+         - link-the-cluster\n    - pick-the-subject\n---\n\nEverything about clusters.\n",
+    );
+    build(&site);
+    let hub = page(&site, "clusters/index.html").unwrap();
+    let main = main_of(&hub);
+    assert!(main.contains("<p>Everything about clusters.</p>"), "{main}");
+    let (chapters, latest) = main.split_once("hub-latest").unwrap();
+    let first = chapters.find("/blog/link-the-cluster/").unwrap();
+    let second = chapters.find("/blog/pick-the-subject/").unwrap();
+    assert!(first < second, "chapters keep the hub's order: {main}");
+    assert!(latest.contains("/blog/plan-the-posts/"), "{main}");
+    assert!(
+        !latest.contains("/blog/pick-the-subject/"),
+        "a chapter once"
+    );
+    let category = page(&site, "category/clusters/index.html").unwrap();
+    let link = r#"<p class="hub-link"><a href="/blog/clusters/"><span>Start here</span> Topic clusters</a></p>"#;
+    assert!(category.contains(link), "{category}");
+}

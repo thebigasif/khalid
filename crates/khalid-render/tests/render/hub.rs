@@ -43,7 +43,10 @@ fn a_category_list_links_to_its_hub_above_its_posts() {
         name: "Technical SEO, from the ground up".to_owned(),
         href: "/blog/technical-seo/".to_owned(),
     });
-    let page = render(&PageBody::Category(listing), "/blog/category/technical-seo/");
+    let page = render(
+        &PageBody::Category(listing),
+        "/blog/category/technical-seo/",
+    );
     assert_valid_page(&page);
     let link = r#"<p class="hub-link"><a href="/blog/technical-seo/"><span>Start here</span> Technical SEO, from the ground up</a></p>"#;
     assert!(page.contains(link), "{page}");
