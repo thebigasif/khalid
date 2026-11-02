@@ -22,6 +22,7 @@ mod post_row;
 mod post_settings;
 mod real_update;
 mod seo_fields;
+mod seo_scores;
 mod settings;
 mod settings_edit;
 mod term;
@@ -54,6 +55,7 @@ pub use post_settings::{
 };
 pub use real_update::{MAX_UPDATE_NOTE, NotRealUpdate, RealUpdate};
 pub use seo_fields::{CustomJsonLd, SearchTitle};
+pub use seo_scores::{READABILITY_RULES, SeoScores};
 pub use settings::Settings;
 pub use settings_edit::SettingsEdit;
 pub use term::Term;

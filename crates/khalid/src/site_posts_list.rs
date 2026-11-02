@@ -7,7 +7,7 @@ use std::fs;
 use khalid_api::content_store::{Listed, select};
 use khalid_api::post_store::PostStoreError;
 use khalid_api::query::ListQuery;
-use khalid_api::resources::{AdminPost, Gate, LintCounts, PostRow, PostStatus};
+use khalid_api::resources::{AdminPost, Gate, PostRow, PostStatus};
 use khalid_content::{PostFront, SiteContent, parse_post};
 use khalid_core::Slug;
 
@@ -70,8 +70,7 @@ impl Site {
             let found = files
                 .get(row.id())
                 .ok_or_else(|| failure("a listed post has no file"))?;
-            let lint = LintCounts::of(&self.report(&judge, found)?);
-            counted.push(row.with_lint(lint));
+            counted.push(row.with_report(&self.report(&judge, found)?));
         }
         Ok(Listed::new(counted, total))
     }

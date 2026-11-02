@@ -1326,8 +1326,12 @@ export type PostCheck = {
   lint: Record<string, unknown>;
   /** The JSON-LD the page would carry: `@context` and `@graph`. */
   schema: Record<string, unknown>;
+  /** The SEO and readability scores, from the same findings. */
+  scores: SeoScores;
   /** The search result the page would make. */
   snippet: Snippet;
+  /** How many words the post's text holds. */
+  words: number;
 };
 
 /** An edit to a post: the fields to change, and the `updated_at` of the copy it was made on. Fields left out keep their value, and `null` clears one that may be empty. A `status` of `published` publishes a draft, once the linter lets it through; `scheduled` with a future `published_at` publishes it then, and `draft` takes a scheduled post off its schedule and a live post down. */
@@ -1384,6 +1388,7 @@ export type PostRow = {
   review_state: ReviewState;
   /** The day it last came up for review (F3), if it ever has. */
   reviewed?: string | null;
+  scores?: SeoScores | null;
   /** The last part of its address. */
   slug: string;
   /** Draft, published or scheduled. */
@@ -1590,6 +1595,14 @@ export type SearchKeys = {
 
 /** The title search results show for a post, in place of the site's title template. It may use the template variables, such as `{site}`. */
 export type SearchTitle = string;
+
+/** A post's SEO and readability scores, each from 0 to 100. Each rule that found a problem costs points once, 30 for a block and 5 for a warning, as the post's one score counts them, and a group with a block scores at most 40. The rules in [`READABILITY_RULES`] make the readability score; every other rule makes the SEO score. */
+export type SeoScores = {
+  /** How easy the post is to read, from 0 to 100. */
+  readability: number;
+  /** How well the post is set up to be found, from 0 to 100. */
+  seo: number;
+};
 
 /** The connection, or `null` while it is off. */
 export type SerpdadConnection = {

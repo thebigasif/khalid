@@ -9,6 +9,7 @@ use utoipa::ToSchema;
 
 use crate::content_store::BoxFuture;
 use crate::post_store::PostStoreError;
+use crate::resources::SeoScores;
 
 /// Checks posts as they would go live now, writing nothing. `khalid serve`
 /// implements it with the publish gate's linter and the build's head and
@@ -50,6 +51,11 @@ pub struct PostCheck {
     /// cost it points.
     #[schema(value_type = Object)]
     lint: Report,
+    /// The SEO and readability scores, from the same findings.
+    scores: SeoScores,
+    /// How many words the post's text holds.
+    #[schema(example = 1240)]
+    words: u32,
     /// The search result the page would make.
     snippet: Snippet,
     /// The JSON-LD the page would carry: `@context` and `@graph`.
@@ -62,10 +68,24 @@ impl PostCheck {
     pub fn new(id: &str, lint: Report, snippet: Snippet, schema: Value) -> Self {
         Self {
             id: id.to_owned(),
+            scores: SeoScores::of(&lint),
             lint,
+            words: 0,
             snippet,
             schema,
         }
+    }
+
+    /// The same check, counting `words` in the post's text.
+    #[must_use]
+    pub fn with_words(self, words: usize) -> Self {
+        let words = u32::try_from(words).unwrap_or(u32::MAX);
+        Self { words, ..self }
+    }
+
+    /// The SEO and readability scores.
+    pub fn scores(&self) -> SeoScores {
+        self.scores
     }
 
     /// The post's identity.

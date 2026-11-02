@@ -14578,6 +14578,8 @@
         "required": [
           "id",
           "lint",
+          "scores",
+          "words",
           "snippet",
           "schema"
         ],
@@ -14594,9 +14596,20 @@
             "type": "object",
             "description": "The JSON-LD the page would carry: `@context` and `@graph`."
           },
+          "scores": {
+            "$ref": "#/components/schemas/SeoScores",
+            "description": "The SEO and readability scores, from the same findings."
+          },
           "snippet": {
             "$ref": "#/components/schemas/Snippet",
             "description": "The search result the page would make."
+          },
+          "words": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many words the post's text holds.",
+            "example": 1240,
+            "minimum": 0
           }
         }
       },
@@ -14786,6 +14799,17 @@
             "format": "date",
             "description": "The day it last came up for review (F3), if it ever has.",
             "example": "2026-05-02"
+          },
+          "scores": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeoScores",
+                "description": "Its SEO and readability scores, counted with its findings, so only\nfor the rows on the page a list sends."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "slug": {
             "type": "string",
@@ -15408,6 +15432,28 @@
         "type": "string",
         "description": "The title search results show for a post, in place of the site's title\ntemplate. It may use the template variables, such as `{site}`.",
         "example": "Anchor text that says where it goes {sep} {site}"
+      },
+      "SeoScores": {
+        "type": "object",
+        "description": "A post's SEO and readability scores, each from 0 to 100.\n\nEach rule that found a problem costs points once, 30 for a block and 5\nfor a warning, as the post's one score counts them, and a group with a\nblock scores at most 40. The rules in [`READABILITY_RULES`] make the\nreadability score; every other rule makes the SEO score.",
+        "required": [
+          "seo",
+          "readability"
+        ],
+        "properties": {
+          "readability": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How easy the post is to read, from 0 to 100.",
+            "minimum": 0
+          },
+          "seo": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How well the post is set up to be found, from 0 to 100.",
+            "minimum": 0
+          }
+        }
       },
       "SerpdadConnection": {
         "type": "object",

@@ -7,7 +7,7 @@ use khalid_lint::{Report, Severity};
 use serde::Serialize;
 use utoipa::ToSchema;
 
-use super::{AdminPost, Listable, PostStatus, ReviewState, display, display_option};
+use super::{AdminPost, Listable, PostStatus, ReviewState, SeoScores, display, display_option};
 use crate::query::{FieldValues, Literal};
 
 /// The lint publish gate's answer for a post as it stands.
@@ -165,6 +165,9 @@ pub struct PostRow {
     /// counts only the rows on the page it sends, and cannot filter or
     /// order by the counts.
     lint: LintCounts,
+    /// Its SEO and readability scores, counted with its findings, so only
+    /// for the rows on the page a list sends.
+    scores: Option<SeoScores>,
     /// Whether search engines may list it.
     index_status: IndexStatus,
 }
@@ -188,6 +191,7 @@ impl PostRow {
             updated_by: post.updated_by().map(str::to_owned),
             gate,
             lint: LintCounts::default(),
+            scores: None,
             index_status: IndexStatus::of(post),
         }
     }
@@ -196,6 +200,16 @@ impl PostRow {
     #[must_use]
     pub fn with_lint(self, lint: LintCounts) -> Self {
         Self { lint, ..self }
+    }
+
+    /// The same row with its findings counted and scored from `report`.
+    #[must_use]
+    pub fn with_report(self, report: &Report) -> Self {
+        Self {
+            lint: LintCounts::of(report),
+            scores: Some(SeoScores::of(report)),
+            ..self
+        }
     }
 
     /// The same row marked due for review when `today` is more than six

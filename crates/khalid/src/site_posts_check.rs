@@ -40,6 +40,7 @@ impl Site {
         };
         let judge = self.judge(&self.content()?)?;
         let report = self.report(&judge, &found)?;
+        let words = self.candidate_now(&judge, &found)?.word_count;
         let (text, relative) = self.as_now(&found)?;
         let post = parse_post(&relative, &text.to_text()).map_err(PostStoreError::new)?;
         let collection = relative.iter().nth(2).and_then(|part| part.to_str());
@@ -54,12 +55,8 @@ impl Site {
             .ok_or_else(|| failure("the post's page cannot be made for its search preview"))?;
         let graph = page_graph(site, &page).map_err(PostStoreError::new)?;
         let schema: Value = serde_json::from_str(&graph.to_json()).map_err(PostStoreError::new)?;
-        Ok(Some(PostCheck::new(
-            id,
-            report,
-            snippet(site, &page)?,
-            schema,
-        )))
+        let check = PostCheck::new(id, report, snippet(site, &page)?, schema);
+        Ok(Some(check.with_words(words)))
     }
 }
 

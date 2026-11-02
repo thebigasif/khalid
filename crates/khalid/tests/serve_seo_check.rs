@@ -131,6 +131,10 @@ fn the_check_follows_a_saved_search_title_and_custom_schema() {
     let first = check(&server, &key);
     let score = first["lint"]["score"]["value"].as_u64().unwrap();
     assert!(score <= 100, "{first}");
+    let scores = &first["scores"];
+    assert!(scores["seo"].as_u64().unwrap() <= 100, "{scores}");
+    assert!(scores["readability"].as_u64().unwrap() <= 100, "{scores}");
+    assert!(first["words"].as_u64().unwrap() > 100, "{first}");
     let snippet = &first["snippet"];
     let title = snippet["title"].as_str().unwrap();
     assert!(title.starts_with("Why internal links matter"), "{snippet}");

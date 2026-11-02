@@ -461,6 +461,7 @@ fn a_post_created_and_published_through_the_admin_api_is_served() {
         "{listed}"
     );
     assert_eq!(listed["posts"][0]["gate"], "passes", "{listed}");
+    assert!(listed["posts"][0]["scores"]["seo"].is_u64());
     assert_eq!(listed["meta"]["pagination"]["total"], 1, "{listed}");
 
     let path = "/api/admin/v1/posts/en.choosing-anchor-text/";
