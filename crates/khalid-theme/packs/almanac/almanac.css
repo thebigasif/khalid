@@ -44,7 +44,7 @@ main { padding-block: 0 var(--space-section); }
 .announcement a { color: var(--color-text); text-decoration-color: var(--color-accent); }
 @media (max-width: 47.99rem) {
   .site-header { gap: 0 var(--space); padding-block: var(--space); }
-  .site-header nav { order: 3; flex-basis: 100%; margin-inline: -0.5rem; }
+  .site-header nav { order: 3; flex-basis: 100%; min-inline-size: 0; margin-inline: -0.5rem; }
   .site-header nav ul, .al-subnav > ul { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .site-header nav a { white-space: nowrap; }
   .header-button { font-size: var(--text-small); }
