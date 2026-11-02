@@ -185,3 +185,142 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
   .cta-band, .newsletter-slot { border-radius: var(--radius); }
 }
 @media print { .masthead::before, .site-footer::before { display: none; } .cta-band, .newsletter-slot { background: none; } }
+
+/* A post: the title block across the page, the words in one column,
+   the contents in a quiet rail beside them on a wide screen. */
+.post, .page { max-inline-size: var(--measure); margin-inline: auto; }
+.breadcrumbs:has(+ :is(.post:not(.post-with-toc), .page)) { max-inline-size: var(--measure); margin-inline: auto; }
+.post:not(.post-with-toc) ~ :is(.cta-band, .newsletter-slot, .mentions, .comments, .lock) { max-inline-size: var(--measure); margin-inline: auto; }
+.page > h1 { line-height: 1.06; letter-spacing: -0.035em; }
+.post-header { margin-block: clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 3.5rem); }
+.post-header h1 { margin-block: 0 1.25rem; font-size: var(--text-h1); line-height: 1.06; letter-spacing: -0.035em; }
+.dek { margin-block: -0.25rem 1.75rem; font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.45; }
+.post-header .image { margin-block: clamp(2rem, 4vw, 3rem) 0; }
+.post-header .image img, .post-body img { border: var(--hair); border-radius: var(--radius); }
+@media (min-width: 70rem) {
+  main:has(.post-with-toc) { max-inline-size: calc(var(--measure) + 19rem); }
+  .post-with-toc { max-inline-size: none; grid-template-columns: minmax(0, var(--measure)) 15rem; column-gap: 4rem; }
+  .post-with-toc > .post-header { grid-column: 1 / -1; }
+  .post-with-toc > .post-header > :not(.image, h1) { max-inline-size: var(--measure); }
+  .post-with-toc > .post-header > h1 { max-inline-size: 52rem; }
+  .post-with-toc > .toc-side { grid-row: 2 / span 20; inset-block-start: 1.5rem; }
+  main:has(.post-with-toc) > :is(.cta-band, .newsletter-slot, .mentions, .comments) { max-inline-size: none; }
+}
+
+/* The meta under the title: the authors, then one quiet line with the
+   reviewer, the dates and the reading time. The category is already in
+   the breadcrumbs, so it shows only when they are off. */
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; row-gap: 0.25rem; padding-block-start: 1.25rem; border-block-start: var(--hair); }
+.post-meta address { flex-basis: 100%; margin-block-end: 0.5rem; }
+.post-meta > p { margin: 0; }
+.post-meta > p + p::before { content: "·" / ""; margin-inline: 0.625rem; }
+main:has(.breadcrumbs) .post-meta > p:not(.reviewed-by):has(> a) { display: none; }
+.post-meta a { color: var(--color-text); text-decoration: none; }
+.post-meta a:hover { text-decoration: underline; }
+.reviewed-by a { padding-block: 0.875rem; }
+.people { gap: 0.75rem 2rem; margin: 0; }
+.person { gap: 0.75rem; line-height: 1.3; }
+.person a { min-block-size: 0; margin-block: -0.75rem; padding-block: 0.75rem; color: var(--color-text); font-size: var(--text-body); font-weight: 600; }
+.person-role { margin: 0.125rem 0 0; font-size: var(--text-small); }
+.post-meta .avatar { inline-size: 2.5rem; block-size: 2.5rem; }
+@media (max-width: 40rem) {
+  .post-meta { flex-direction: column; align-items: start; }
+  .post-meta > p + p::before { content: none; }
+}
+
+/* The contents: a rail of quiet links with a hairline beside them, and
+   on a phone a folded box with a sign that says whether it is open. */
+.toc-side { padding-block: 0.25rem; }
+.toc-side .toc-title, .toc-box .toc-title { margin-block-end: 0.75rem; color: var(--color-text); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.toc-side ol { padding: 0; list-style: none; border-inline-start: var(--hair); }
+.toc-side a { display: flex; align-items: center; min-block-size: 2.75rem; margin-inline-start: -1px; padding-block: 0.25rem; padding-inline: 1rem 0; color: var(--color-muted); line-height: 1.4; text-decoration: none; border-inline-start: 2px solid transparent; }
+.toc-side a:hover { color: var(--color-text); }
+.toc-side a[aria-current] { color: var(--color-text); font-weight: 600; border-inline-start-color: var(--color-accent); }
+.toc-inline { padding-inline: 1.25rem; background: none; border: var(--hair); }
+.toc-inline summary { justify-content: space-between; font-size: var(--text-small); letter-spacing: 0.02em; }
+.toc-inline summary::after { content: "+" / ""; color: var(--color-muted); font-size: 1.25rem; font-weight: 400; }
+.toc-inline[open] summary::after { content: "−" / ""; }
+.toc-inline[open] nav { padding-block-end: 0.75rem; }
+.toc-box { background: none; border: var(--hair); }
+.toc-inline a, .toc-box a, .toc a { color: var(--color-text); text-decoration: none; }
+.toc-inline a:hover, .toc-box a:hover, .toc a:hover { text-decoration: underline; }
+
+/* The words. */
+.post-body, .page-body { font-size: 1.0625em; line-height: 1.75; }
+.post-body > h2, .page-body > h2 { margin-block: 3.5rem 1rem; font-size: var(--text-h2); line-height: 1.2; letter-spacing: -0.025em; }
+.post-body > h3, .page-body > h3 { margin-block: 2.5rem 0.75rem; font-size: var(--text-h3); line-height: 1.2; }
+.heading-link { color: var(--color-border); font-size: 0.8em; }
+h2:hover > .heading-link, h3:hover > .heading-link, .heading-link:focus-visible { color: var(--color-muted); }
+.post-body a, .page-body a { text-decoration-color: color-mix(in oklab, var(--color-link) 40%, transparent); text-decoration-thickness: 1px; }
+.post-body a:hover, .page-body a:hover { text-decoration-color: currentcolor; }
+.post-body li::marker { color: var(--color-muted); }
+.post-body li + li { margin-block-start: 0.375rem; }
+.post-body figure:not(.pullquote) { margin-block: 2.5rem; }
+figcaption { text-align: center; }
+hr { margin-block: 3rem; }
+
+/* Code: a framed sheet, the same corner as every other frame. */
+pre { padding: 1.25rem 1.5rem; background: color-mix(in oklab, var(--color-surface) 55%, var(--color-background)); border: var(--hair); font-size: 0.875rem; line-height: 1.7; }
+.post-body pre { margin-block: 2rem; }
+:not(pre) > code { padding: 0.125em 0.375em; background: var(--color-surface); border: var(--hair); border-radius: 0.375rem; font-size: 0.85em; }
+
+/* Tables: hairline rows, a soft header, inside one frame. */
+table { margin-block: 2rem; border: var(--hair); border-collapse: separate; border-spacing: 0; border-radius: var(--radius); font-size: 0.9375rem; line-height: 1.5; }
+th, td { padding: 0.75rem 1rem; vertical-align: top; }
+th { background: var(--color-surface); font-size: var(--text-small); font-weight: 600; }
+tr:last-child > td { border-block-end: 0; }
+.table-fold table { margin: 0; }
+@media (min-width: 48rem) { .post-body > table, .page-body > table { display: table; inline-size: 100%; } }
+
+/* Quotes, callouts and the other blocks share the frame and the tint. */
+.post-body > blockquote { margin-block: 2rem; padding-inline-start: 1.25rem; border-inline-start: 2px solid var(--color-text); color: var(--color-text); }
+.pullquote { margin-block: 3rem; padding: 0; border: 0; }
+.pullquote::before { content: ""; display: block; inline-size: 3rem; margin-block-end: 1.25rem; border-block-start: 3px solid var(--color-accent); }
+.pullquote figcaption { text-align: start; }
+.pullquote blockquote { font-size: clamp(1.375rem, 1.1rem + 1vw, 1.75rem); font-weight: var(--heading-weight); line-height: 1.3; letter-spacing: -0.02em; }
+.callout { margin-block: 2rem; padding: 1.25rem 1.5rem; background: var(--tint); border: var(--hair); border-inline-start: 3px solid var(--color-accent); font-size: 0.96em; }
+.callout-note { background: var(--color-surface); border-inline-start-color: var(--color-muted); }
+.callout-tip { border-inline-start-style: solid; border-inline-start-width: 3px; }
+.callout-warning { background: var(--color-background); border-inline-start-color: var(--color-text); font-weight: 400; }
+.callout-summary { padding: 1.5rem 1.75rem; background: var(--color-surface); border-inline-start: var(--hair); }
+.callout-summary li + li { margin-block-start: 0.5rem; }
+.callout-read { padding: 1.25rem 0; background: none; border-inline: 0; border-radius: 0; }
+.callout-stat { background: var(--color-background); border-inline-start-color: var(--color-link); }
+.callout-stat strong:first-child { color: var(--color-link); font-size: 2.75em; letter-spacing: -0.04em; }
+.toc { padding: 1rem 1.5rem; background: none; border: var(--hair); }
+.toc ol { padding-inline-start: 1.75rem; }
+.toc li::marker { color: var(--color-muted); font-weight: 400; }
+.toc-h2, .toc-h3 { font-weight: 500; }
+.toc a { min-block-size: 2.75rem; }
+.post-body .cta-band { margin-block: 3rem; padding: 2rem; }
+.post-body .cta-note { font-size: 1.375rem; }
+
+/* Share links: one small row at the end of the words. */
+.share { gap: 0.5rem; margin-block: 3rem 0; padding-block-start: 1.5rem; border-block-start: var(--hair); }
+.share-title { margin-inline-end: 0.5rem; color: var(--color-muted); font-size: var(--text-small); font-weight: 500; }
+.share ul { gap: 0.5rem; }
+.share a { min-block-size: 2.75rem; padding-inline: 1rem; border-radius: 999px; color: var(--color-text); font-size: var(--text-small); font-weight: 500; }
+
+/* Tags, the author box, the posts that link here and the notes where a
+   feature needs a server, after the words. */
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer h2 { margin-block: 0 0.75rem; font-size: var(--text-small); }
+.post-footer .tags a { padding-inline: 0.875rem; border-radius: 999px; color: var(--color-text); font-size: var(--text-small); }
+.author-box { margin-block-start: 3rem; padding: 2rem 0 0; background: none; border-block-start: var(--hair); border-radius: 0; }
+.author-box h2 { margin-block-end: 1.25rem; color: var(--color-muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.person-card { gap: 1.25rem; }
+.person-card > :first-child { flex: none; }
+.person-card .avatar { inline-size: 4rem; block-size: 4rem; }
+.person-card .person-name { font-size: 1.125rem; }
+.person-card .person-name a { min-block-size: 0; margin-block: -0.75rem; padding-block: 0.75rem; color: var(--color-text); text-decoration: none; }
+.person-card .person-role { margin-block: 0.125rem 0.5rem; color: var(--color-muted); font-size: var(--text-small); }
+.person-card p { font-size: 0.9875rem; }
+.author-box .reviewed-by { margin: 0.5rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-box .reviewed-by a { color: var(--color-text); text-decoration: none; }
+.related { margin-block-start: clamp(4rem, 8vw, 6rem); }
+.mentions ul { display: grid; gap: 0; border-block-start: var(--hair); }
+.mentions li { border-block-end: var(--hair); }
+.mentions a { min-block-size: 3.25rem; color: var(--color-text); font-weight: 500; text-decoration: none; }
+.mentions a:hover { color: var(--color-link); }
+.lock, .locked { background: none; border-style: dashed; color: var(--color-muted); font-size: var(--text-small); }
+main > .lock, main > .locked { margin-block: 3rem 0; }
