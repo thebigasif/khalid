@@ -3,12 +3,38 @@
 use std::num::NonZeroU8;
 
 use super::{Renderer, attribute, inside};
-use crate::{Block, Column, ProsConsBlock};
+use crate::{Block, BlockKind, Column, ProsConsBlock};
 
 impl Renderer<'_> {
+    /// Writes a block set apart from the text: a pull quote or key
+    /// takeaways.
+    pub(super) fn set_apart(&mut self, block: &Block) {
+        match &block.kind {
+            BlockKind::PullQuote { by } => self.pull_quote(block, by.as_deref()),
+            BlockKind::Takeaways { title } => self.takeaways(block, title),
+            _ => {}
+        }
+    }
+
+    /// Writes key takeaways as a boxed `<aside>` named by its title, the
+    /// points as the list written. It claims no schema type: the points
+    /// already sit in the post's text for search engines to read.
+    fn takeaways(&mut self, block: &Block, title: &str) {
+        let title = attribute(title);
+        self.push(&[
+            "<aside class=\"takeaways\" aria-label=\"",
+            &title,
+            "\">\n<p class=\"takeaways-title\">",
+            &title,
+            "</p>\n",
+        ]);
+        self.markdown(&inside(&block.source));
+        self.html.push_str("</aside>\n");
+    }
+
     /// Writes a pull quote as a `<figure>`: the words in a `<blockquote>`,
     /// and who said them as its caption.
-    pub(super) fn pull_quote(&mut self, block: &Block, by: Option<&str>) {
+    fn pull_quote(&mut self, block: &Block, by: Option<&str>) {
         self.html
             .push_str("<figure class=\"pullquote\">\n<blockquote>\n");
         self.markdown(&inside(&block.source));

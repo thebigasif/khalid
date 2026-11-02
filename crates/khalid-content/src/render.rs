@@ -260,7 +260,7 @@ impl Renderer<'_> {
             BlockKind::File { src, title } => self.file(src, title),
             BlockKind::Gallery { images } => self.gallery(images),
             BlockKind::Maths { label, formula } => self.maths(label.as_deref(), formula),
-            BlockKind::PullQuote { by } => self.pull_quote(block, by.as_deref()),
+            BlockKind::PullQuote { .. } | BlockKind::Takeaways { .. } => self.set_apart(block),
             BlockKind::ProsCons(pros_cons) => self.pros_cons(pros_cons),
             BlockKind::Columns { columns } => self.columns(columns),
             BlockKind::FoldingTable { fold, more } => {

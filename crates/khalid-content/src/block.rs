@@ -207,6 +207,12 @@ pub enum BlockKind {
         /// Who said it, shown under the words, when it is a quote.
         by: Option<String>,
     },
+    /// `:::takeaways{title="..."}`: a boxed list of a post's key points,
+    /// its body one markdown list. Its markup claims no schema type.
+    Takeaways {
+        /// The words over the list, `Key takeaways` unless set.
+        title: String,
+    },
     /// `:::proscons{pros="..." cons="..."}`: a list of pros beside a list of
     /// cons.
     ProsCons(ProsConsBlock),

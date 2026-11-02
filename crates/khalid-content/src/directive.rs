@@ -78,6 +78,7 @@ pub(crate) fn directive(
         "newsletter" | "gated" => forms::subscribe(name, &attributes),
         "maths" => formula::maths(&attributes, body),
         "pullquote" => layout::pull_quote(&attributes, body),
+        "takeaways" => layout::takeaways(&attributes, body),
         "proscons" => layout::pros_cons(&attributes, body),
         "columns" => nested::columns(&attributes, body),
         "table" => layout::table(&attributes, body),
