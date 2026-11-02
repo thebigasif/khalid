@@ -361,6 +361,8 @@ export type AdminSettings = {
   name: string;
   /** Whether `site.toml` says something the running server does not use yet, so a restart is needed to apply it. */
   restart_needed: boolean;
+  /** The `[seo]` table as `site.toml` writes it, one key per part such as `titles` or `crawlers`. A setting left out of the file is left out here too and keeps its default; `docs/seo-settings.md` lists every part and its defaults. */
+  seo: Record<string, unknown>;
   /** The template the site uses and the options it sets. */
   template: TemplateSetting;
   /** When `site.toml` last changed. A change sends it back. */
@@ -1649,6 +1651,8 @@ export type SettingsChange = {
   mount?: string | null;
   /** A new name. */
   name?: string | null;
+  /** New parts of the `[seo]` table, each replacing the part of that name whole, such as `{"titles": {"separator": "·"}}`. `null` removes a part, so its settings go back to their defaults. Parts left out stay as they are. */
+  seo?: Record<string, unknown> | null;
   template?: TemplateSetting | null;
   /** The `updated_at` of the copy this change was made on. */
   updated_at: string;

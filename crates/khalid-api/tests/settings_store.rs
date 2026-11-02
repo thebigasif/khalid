@@ -26,6 +26,7 @@ fn demo() -> MemorySettings {
             name: "classic".to_owned(),
             options: BTreeMap::new(),
         },
+        seo: serde_json::Map::new(),
         updated_at: at(20),
         restart_needed: false,
     };
@@ -45,7 +46,7 @@ async fn the_settings_are_sent_in_api_shape() {
         json!({
             "name": "Field Notes on SEO", "address": "https://www.example.com",
             "mount": "/blog/", "default_language": "en", "languages": ["en", "de"],
-            "template": {"name": "classic", "options": {}},
+            "template": {"name": "classic", "options": {}}, "seo": {},
             "updated_at": "2026-10-20T09:00:00Z", "restart_needed": false,
         })
     );
@@ -102,4 +103,25 @@ async fn a_stale_or_unstartable_change_saves_nothing() {
         json!({"mode": "static", "updated_at": "2026-10-20T09:00:00Z"}),
     );
     assert!(unknown.is_err(), "mode is not changed through the API");
+}
+
+#[tokio::test]
+async fn the_seo_table_changes_one_part_at_a_time_and_null_removes_a_part() {
+    let store = demo();
+    let first = json!({"seo": {
+        "titles": {"separator": "·", "post": {"title": "{title} {sep} {site}"}},
+        "crawlers": {"block": ["GPTBot"]},
+    }, "updated_at": "2026-10-20T09:00:00Z"});
+    let saved = store.change(change(first)).await.unwrap();
+    assert_eq!(saved.seo["titles"]["separator"], "·");
+    assert_eq!(saved.seo["crawlers"]["block"], json!(["GPTBot"]));
+    let second = json!({"seo": {"crawlers": null, "social": {"twitter": "@serpdad"}},
+        "updated_at": "2026-10-27T09:00:00Z"});
+    let saved = store.change(change(second)).await.unwrap();
+    assert_eq!(
+        saved.seo["titles"]["separator"], "·",
+        "a part left out stays"
+    );
+    assert_eq!(saved.seo["social"]["twitter"], "@serpdad");
+    assert!(!saved.seo.contains_key("crawlers"), "{:?}", saved.seo);
 }

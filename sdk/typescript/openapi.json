@@ -11625,6 +11625,7 @@
           "default_language",
           "languages",
           "template",
+          "seo",
           "updated_at",
           "restart_needed"
         ],
@@ -11655,6 +11656,10 @@
           "restart_needed": {
             "type": "boolean",
             "description": "Whether `site.toml` says something the running server does not use\nyet, so a restart is needed to apply it."
+          },
+          "seo": {
+            "type": "object",
+            "description": "The `[seo]` table as `site.toml` writes it, one key per part such\nas `titles` or `crawlers`. A setting left out of the file is left\nout here too and keeps its default; `docs/seo-settings.md` lists\nevery part and its defaults."
           },
           "template": {
             "$ref": "#/components/schemas/TemplateSetting",
@@ -15594,6 +15599,13 @@
               "null"
             ],
             "description": "A new name."
+          },
+          "seo": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "New parts of the `[seo]` table, each replacing the part of that\nname whole, such as `{\"titles\": {\"separator\": \"·\"}}`. `null`\nremoves a part, so its settings go back to their defaults. Parts\nleft out stay as they are."
           },
           "template": {
             "oneOf": [
