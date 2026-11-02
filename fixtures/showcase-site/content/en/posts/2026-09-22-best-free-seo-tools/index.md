@@ -26,7 +26,7 @@ Our top pick is Google Search Console: every blog that wants search traffic shou
 
 :::callout{kind=summary}
 - **Start with two:** Google Search Console and Bing Webmaster Tools give you search data and indexing checks for free.
-- **Add three checkers:** one for page speed and two for [[structured-data|structured data]].
+- **Add three checkers:** one for page speed and two for [[glossary:structured-data|structured data]].
 - **Add a crawler and a trends tool** when you have more than a handful of posts.
 - **None of them** needs a credit card to start.
 :::

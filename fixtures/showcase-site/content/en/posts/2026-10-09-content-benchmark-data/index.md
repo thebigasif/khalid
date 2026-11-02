@@ -106,7 +106,7 @@ Larkspur Studio (2026). Content benchmark 2026, sample rows. Larkspur Ledger. ht
 
 ## How this page is marked up
 
-This page carries [[structured-data|structured data for a dataset]]. It names the file, its licence, the month it covers and the columns it holds, so dataset search tools can list it. Khalid writes it from the post's settings.
+This page carries [[glossary:structured-data|structured data for a dataset]]. It names the file, its licence, the month it covers and the columns it holds, so dataset search tools can list it. Khalid writes it from the post's settings.
 
 If the numbers prompt you to act, our guides on [refreshing posts that slipped](/blog/content-refresh/) and [planning a calendar your team will keep](/blog/content-calendar/) are good next steps. The wider [content strategy guide](/blog/content-strategy-guide/) puts both in context.
 

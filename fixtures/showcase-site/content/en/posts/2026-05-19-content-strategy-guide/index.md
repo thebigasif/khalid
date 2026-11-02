@@ -79,7 +79,7 @@ Spend one hour gathering questions from four places:
 3. **Search data.** Which searches already bring people to your site? The queries in [Google Search Console](https://search.google.com/search-console/about) are free and specific to you.
 4. **Search suggestions.** Type your main topics into a search bar and note the questions people ask next.
 
-Then group the questions by the reader's goal. Some want to learn, some want to compare, and some want to act now. Reading the [[search-intent|intent behind each search]] tells you which kind of page to write. Our [guide to finding what people search for](/blog/keyword-research/) shows how to check demand for each question, including [[search-volume|how many people search for it]] and [[long-tail-keyword|the longer, more specific phrasings]] small blogs can win.
+Then group the questions by the reader's goal. Some want to learn, some want to compare, and some want to act now. Reading the [[glossary:search-intent|intent behind each search]] tells you which kind of page to write. Our [guide to finding what people search for](/blog/keyword-research/) shows how to check demand for each question, including [[search-volume|how many people search for it]] and [[long-tail-keyword|the longer, more specific phrasings]] small blogs can win.
 
 :::callout{kind=note}
 Your readers are not "everyone in marketing". Name two or three real types, such as "a practice manager at a small dental clinic", and write down what each one is trying to get done this week.

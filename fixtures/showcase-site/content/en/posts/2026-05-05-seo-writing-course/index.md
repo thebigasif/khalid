@@ -131,6 +131,6 @@ Take the SEO writing course again with a second topic. The lessons go faster the
 
 ## How this page is marked up
 
-This page carries [[structured-data|structured data for a course]]: a short block of code that names the course, says who runs it and states that it is free and online. Khalid writes it from the post's settings, so the page and the code always agree.
+This page carries [[glossary:structured-data|structured data for a course]]: a short block of code that names the course, says who runs it and states that it is free and online. Khalid writes it from the post's settings, so the page and the code always agree.
 
 ::newsletter{label="Your email address" button="Get one lesson a week by email"}

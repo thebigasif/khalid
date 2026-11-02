@@ -1,0 +1,8 @@
+# "crawl-budget" is both a post and a glossary term: the bare form is
+# flagged, the glossary form is not. "anchor-text" is only a term.
+extends = "clean"
+wikilinks = [
+  "crawl-budget",
+  "glossary:crawl-budget",
+  "anchor-text",
+]

@@ -114,6 +114,7 @@ fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(brief::LinkMissing),
         Box::new(collections::OverlappingCollections),
         Box::new(address::BrokenWikilink),
+        Box::new(address::AmbiguousWikilink),
         Box::new(words::KeywordStuffing {
             max_percent: thresholds.keyword_density_percent,
         }),
