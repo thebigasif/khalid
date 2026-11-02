@@ -8,7 +8,7 @@ function picture(width: number, height: number, x = 500, y = 500): MediaItem {
     id: "3f2a9c1e0b57d0aa",
     name: "lena.jpg",
     folder: "authors",
-    media_type: "image/jpeg",
+    type: "image/jpeg",
     kind: "image",
     bytes: 52_000,
     width,
@@ -48,6 +48,6 @@ describe("an author's photo", () => {
 
   it("takes only pictures the blog can draw in sizes", () => {
     expect(isPhoto(picture(600, 600))).toBe(true);
-    expect(isPhoto({ ...picture(600, 600), media_type: "application/pdf" })).toBe(false);
+    expect(isPhoto({ ...picture(600, 600), type: "application/pdf" })).toBe(false);
   });
 });

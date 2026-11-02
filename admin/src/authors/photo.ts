@@ -31,5 +31,5 @@ export function squareCrop(item: MediaItem): PictureEdit | null {
 
 /** Whether `item` can be an author's photo: a picture the blog can draw in sizes. */
 export function isPhoto(item: MediaItem): boolean {
-  return ["image/jpeg", "image/png", "image/webp"].includes(item.media_type);
+  return ["image/jpeg", "image/png", "image/webp"].includes(item.type);
 }

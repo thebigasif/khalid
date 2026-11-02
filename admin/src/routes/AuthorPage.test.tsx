@@ -43,7 +43,7 @@ const PICTURE: MediaItem = {
   id: "3f2a9c1e0b57d0aa",
   name: "lena.jpg",
   folder: "authors",
-  media_type: "image/jpeg",
+  type: "image/jpeg",
   kind: "image",
   bytes: 52_000,
   width: 800,
