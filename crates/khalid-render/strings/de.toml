@@ -127,3 +127,12 @@ consent_change = "Du kannst deine Wahl zu Code anderer Firmen, der Besuche zähl
 consent_allow = "Erlauben"
 consent_refuse = "Nicht erlauben"
 all_posts = "Alle Beiträge"
+
+# Fallstudien und Änderungen.
+case_studies_title = "Fallstudien"
+changelog_title = "Änderungen"
+all_case_studies = "Alle Fallstudien"
+all_changes = "Alle Änderungen"
+entry_result = "Ergebnis"
+entry_version = "Version {version}"
+no_entries = "Hier gibt es noch nichts."

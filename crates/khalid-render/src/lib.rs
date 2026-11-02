@@ -18,6 +18,7 @@ mod cta;
 mod dates;
 mod direction;
 mod enlarge;
+mod entries;
 mod escape;
 mod features;
 mod font_fallback;
@@ -52,6 +53,7 @@ pub use asset::Asset;
 pub use author::{AuthorEntry, RenderAuthor, RenderAuthors, RenderPage};
 pub use comments::{CommentWriter, RenderComment, RenderComments, RenderThread};
 pub use contents::{Contents, ContentsHeading, HeadingLevel};
+pub use entries::{EntryCard, EntryGroup, EntryKind, RenderEntries, RenderEntry};
 pub use features::{Feature, Features};
 pub use glossary::{
     GlossaryGroup, GlossaryTerm, Highlight, RenderGlossary, RenderSearch, SearchMode, SearchResult,

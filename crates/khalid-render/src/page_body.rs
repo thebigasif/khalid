@@ -4,8 +4,8 @@ use minijinja::Value;
 use minijinja::value::Serde;
 
 use crate::{
-    RenderAuthor, RenderAuthors, RenderGlossary, RenderHome, RenderListing, RenderPage, RenderPost,
-    RenderSearch, RenderSitemap,
+    RenderAuthor, RenderAuthors, RenderEntries, RenderEntry, RenderGlossary, RenderHome,
+    RenderListing, RenderPage, RenderPost, RenderSearch, RenderSitemap,
 };
 
 /// The main content of one page. The variant picks the template.
@@ -40,6 +40,10 @@ pub enum PageBody {
     Glossary(RenderGlossary),
     /// The search form and its results.
     Search(RenderSearch),
+    /// The list of case studies or of the changelog.
+    Entries(RenderEntries),
+    /// One case study or changelog entry.
+    Entry(Box<RenderEntry>),
     /// The page for an address with nothing behind it.
     NotFound,
 }
@@ -62,6 +66,8 @@ impl PageBody {
             Self::Authors(_) => "authors.html",
             Self::Glossary(_) => "glossary.html",
             Self::Search(_) => "search.html",
+            Self::Entries(_) => "entries.html",
+            Self::Entry(_) => "entry.html",
             Self::NotFound => "not_found.html",
         }
     }
@@ -85,6 +91,7 @@ impl PageBody {
             | Self::Channel(listing)
             | Self::Date(listing) => listing.posts.len() + usize::from(listing.featured.is_some()),
             Self::Author(author) => author.posts.len(),
+            Self::Entries(entries) => entries.groups.iter().map(|group| group.entries.len()).sum(),
             _ => 0,
         }
     }
@@ -106,6 +113,8 @@ impl PageBody {
             Self::Authors(authors) => Value::from(Serde(authors)),
             Self::Glossary(glossary) => Value::from(Serde(glossary)),
             Self::Search(search) => Value::from(Serde(search)),
+            Self::Entries(entries) => Value::from(Serde(entries)),
+            Self::Entry(entry) => Value::from(Serde(entry)),
             Self::NotFound => Value::UNDEFINED,
         }
     }

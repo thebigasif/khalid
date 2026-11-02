@@ -34,6 +34,8 @@ mod dek;
 #[cfg(test)]
 mod enlarge;
 #[cfg(test)]
+mod entries;
+#[cfg(test)]
 mod featured;
 #[cfg(test)]
 mod glossary;

@@ -172,3 +172,12 @@ consent_change = "You can change your choice about code from other companies tha
 consent_allow = "Allow"
 consent_refuse = "Do not allow"
 all_posts = "All posts"
+
+# Case studies and the changelog.
+case_studies_title = "Case studies"
+changelog_title = "Changelog"
+all_case_studies = "All case studies"
+all_changes = "All changes"
+entry_result = "Result"
+entry_version = "Version {version}"
+no_entries = "Nothing here yet."
