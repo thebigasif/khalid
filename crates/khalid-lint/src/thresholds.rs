@@ -105,6 +105,15 @@ pub struct Thresholds {
     /// is stale. Default 6, as Yoast flags stale cornerstone content:
     /// the main post of a topic should stay current.
     pub pillar_stale_months: u32,
+    /// A sentence with more words than this is long. Default 20, as in
+    /// Yoast for English and German.
+    pub sentence_max_words: usize,
+    /// The largest share in percent of sentences that may be long, in a
+    /// text of 200 words or more. Default 25, as in Yoast.
+    pub long_sentences_max_percent: usize,
+    /// The most words of prose between two second or third level
+    /// subheadings. Default 300, as in Yoast.
+    pub section_max_words: usize,
 }
 
 impl Default for Thresholds {
@@ -137,6 +146,9 @@ impl Default for Thresholds {
             pillar_min_words: 900,
             title_max_pixels: 600,
             pillar_stale_months: 6,
+            sentence_max_words: 20,
+            long_sentences_max_percent: 25,
+            section_max_words: 300,
         }
     }
 }

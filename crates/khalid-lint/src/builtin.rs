@@ -7,8 +7,8 @@ use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
     Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, focus_shape,
     focus_spread, headings, link_hygiene, link_targets, link_text, page_checks, page_or_section,
-    page_shape, reading, site_content, site_keywords, site_links, site_sections, site_trust,
-    snippet, structure, title_width, topics, words, writing,
+    page_shape, readability, reading, site_content, site_keywords, site_links, site_sections,
+    site_trust, snippet, structure, title_width, topics, words, writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
@@ -16,7 +16,22 @@ use crate::{
 pub(crate) fn rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
     let mut rules = blocking_and_structure_rules(thresholds);
     rules.extend(writing_and_reading_rules(thresholds));
+    rules.extend(readability_rules(thresholds));
     rules
+}
+
+/// Yoast's readability rules on the writer's own prose, last in the
+/// findings.
+fn readability_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
+    vec![
+        Box::new(readability::LongSentences {
+            max_words: thresholds.sentence_max_words,
+            max_percent: thresholds.long_sentences_max_percent,
+        }),
+        Box::new(readability::LongSection {
+            max_words: thresholds.section_max_words,
+        }),
+    ]
 }
 
 /// The rules that block or judge a post's shape, first in the findings.

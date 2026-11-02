@@ -379,6 +379,18 @@ why = "Readers who struggle leave early, and Google favours pages that answer pe
 fix = "Split long sentences, and use shorter everyday words where you can."
 guide = "readability"
 
+[long-sentences]
+what = "More than a quarter of this post's sentences run past 20 words."
+why = "Readers lose track of long sentences, most of all on a phone."
+fix = "Split the longest sentences in two, each with one idea."
+guide = "readability"
+
+[long-section]
+what = "A stretch of this post runs past 300 words without a subheading."
+why = "Readers scan subheadings to find their part, and a long stretch hides what it covers."
+fix = "Add a `##` subheading where the topic of this stretch changes."
+guide = "readability"
+
 [no-focus-keyword]
 what = "This post has no focus keyword, the phrase you want it to be found for."
 why = "Without one, Khalid cannot check that the title, description and text are about one topic."

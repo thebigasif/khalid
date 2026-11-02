@@ -39,6 +39,7 @@ mod page_checks;
 mod page_kind;
 mod page_or_section;
 mod page_shape;
+mod readability;
 mod reading;
 mod rule;
 mod score;

@@ -21,6 +21,15 @@ const ABBREVIATIONS: &[(&str, &[&str])] = &[
     ("de", german::ABBREVIATIONS),
 ];
 
+/// The short forms of `language` that end with a full stop inside a
+/// sentence, in lowercase. None for a language without a list.
+pub(crate) fn short_forms(language: &str) -> &'static [&'static str] {
+    ABBREVIATIONS
+        .iter()
+        .find(|(lang, _)| *lang == language)
+        .map_or(&[][..], |(_, forms)| *forms)
+}
+
 /// A word longer than this many letters counts as long, as LIX defines it.
 const LONG_WORD_LETTERS: usize = 6;
 
@@ -51,10 +60,7 @@ impl Counts {
 /// word that is not a short form, and at a line break, which ends a
 /// heading, a list item or a paragraph without a full stop.
 fn count(text: &str, language: &str) -> Counts {
-    let short_forms = ABBREVIATIONS
-        .iter()
-        .find(|(lang, _)| *lang == language)
-        .map_or(&[][..], |(_, forms)| *forms);
+    let short_forms = short_forms(language);
     let mut counts = Counts::default();
     for line in text.lines() {
         let mut open = false;
