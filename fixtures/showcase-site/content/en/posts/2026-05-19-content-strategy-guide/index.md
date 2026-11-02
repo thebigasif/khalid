@@ -95,6 +95,8 @@ Our own content strategy cluster. The hub covers the whole job. Each spoke goes 
 
 Topic clusters help readers first. Someone who lands on a short post can find the whole picture in one click. They also help search engines see that you cover a subject in depth, which builds [[topical-authority|authority on that subject]] over time. For a small team, they bring focus. Three clusters done well beat thirty scattered posts.
 
+To build one step by step, follow our three-part series: [[topic-cluster-subject|pick one subject]], [[topic-cluster-plan|plan the posts]], then [[topic-cluster-links|link the cluster]].
+
 To choose your first clusters, list the five to eight subjects where your business has real knowledge and your readers have real questions. Then score each candidate topic. We use a simple formula.
 
 :::maths{label="Topic priority score"}

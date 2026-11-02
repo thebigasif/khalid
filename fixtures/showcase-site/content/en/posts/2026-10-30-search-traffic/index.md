@@ -44,7 +44,7 @@ If most of your search traffic lands on a few guides, give them the most care: u
 
 ## How much comes from AI search
 
-The third chart is new this year. It shows the share of visits that came from AI search tools, such as answers that cite the blog, in each quarter of 2026 beside the same quarter of 2025.
+The third chart is new this year. It shows the share of visits that came from AI search tools, such as answers that cite the blog, in each quarter of 2026 beside the same quarter of 2025. To earn more of those visits, read [[ai-search-guide|our guide to writing for AI search]].
 
 :::chart{type="column" title="Share of visits from AI search by quarter, 2025 and 2026" unit="%"}
 Quarter, 2025, 2026
