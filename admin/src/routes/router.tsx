@@ -42,6 +42,7 @@ import { Team } from "./Team";
 import { Trash } from "./Trash";
 import { WebhookActivity } from "./WebhookActivity";
 import { Webhooks } from "./Webhooks";
+import { Workouts } from "./Workouts";
 
 const root = createRootRoute({ errorComponent: RouteError });
 
@@ -204,6 +205,13 @@ const bulkSeo = createRoute({
   component: BulkSeo,
 });
 
+// Step-by-step link work: orphaned posts and links to each cluster's main post.
+const workouts = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/workouts",
+  component: Workouts,
+});
+
 const serpdad = createRoute({
   getParentRoute: () => signedIn,
   path: "/serpdad",
@@ -240,6 +248,7 @@ const routeTree = root.addChildren([
     site,
     seo,
     bulkSeo,
+    workouts,
     account,
     serpdad,
   ]),

@@ -22,6 +22,7 @@ export type NavPath =
   | "/settings"
   | "/seo"
   | "/bulk-seo"
+  | "/workouts"
   | "/team"
   | "/keys"
   | "/webhooks"
@@ -54,6 +55,7 @@ export const NAV: NavGroup[] = [
       { to: "/search-console", label: searchConsoleWords.title, icon: "search" },
       { to: "/serpdad", label: en.nav.serpdad, icon: "link" },
       { to: "/bulk-seo", label: seoToolWords.bulk.nav, icon: "table" },
+      { to: "/workouts", label: seoToolWords.workouts.nav, icon: "steps" },
     ],
   },
   {
