@@ -125,6 +125,31 @@ fn robots_txt_and_llms_txt_follow_their_settings() {
 }
 
 #[test]
+fn the_whole_site_schema_is_one_file_named_in_robots_txt() {
+    let site = site("");
+    build(&site);
+    let schema: serde_json::Value =
+        serde_json::from_str(&file(&site, "schema.json").unwrap()).unwrap();
+    let graph = schema["@graph"].as_array().unwrap();
+    for post in ["post-1", "post-3", "news/2026/09/launch"] {
+        let id = format!("https://www.example.com/blog/{post}/");
+        assert!(
+            (graph.iter()).any(|node| node["@id"].as_str().is_some_and(|at| at.starts_with(&id))),
+            "{id}: {schema:#}"
+        );
+    }
+    let robots = file(&site, "robots.txt").unwrap();
+    assert!(
+        robots.contains("Schemamap: https://www.example.com/blog/schema.json\n"),
+        "{robots}"
+    );
+    let off = self::site("\n[seo.schema_map]\noff = true\n");
+    build(&off);
+    assert!(file(&off, "schema.json").is_none());
+    assert!(!file(&off, "robots.txt").unwrap().contains("Schemamap"));
+}
+
+#[test]
 fn a_post_preview_on_x_and_slack_names_its_author_and_reading_time() {
     let site = site("");
     build(&site);

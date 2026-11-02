@@ -120,3 +120,12 @@ share_labels = false
 | `intro` | none | Text after the tagline, such as who writes the site and how to cite it. |
 | `pages` | none | Paths listed first, under "Key pages", in the order given, such as `["/about/"]`. |
 | `exclude` | none | Paths left out, with every page below them, such as `["/tag/"]`. |
+
+## Whole-site schema
+
+Each language's pages that search engines may list have one JSON-LD graph together, at `schema.json` in the language's folder (`/blog/schema.json`, `/blog/de/schema.json`). Each node with an `@id` appears once. `robots.txt` names every file on a `Schemamap:` line, so an AI agent or a search engine reads all of the site's structured data in one request instead of one page at a time. This is Yoast's schema aggregation. To turn it off:
+
+```toml
+[seo.schema_map]
+off = true
+```

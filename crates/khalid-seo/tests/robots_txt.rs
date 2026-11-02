@@ -104,7 +104,7 @@ fn extra_lines_go_after_the_groups_and_before_the_sitemap() {
     ];
     let robots = RobotsTxt::for_site(&site).unwrap().to_string();
     assert!(
-        robots.ends_with(
+        robots.contains(
             "# Ask before you copy\nCrawl-delay: 5\n\nSitemap: https://www.example.com/blog/sitemap.xml\n"
         ),
         "{robots}"

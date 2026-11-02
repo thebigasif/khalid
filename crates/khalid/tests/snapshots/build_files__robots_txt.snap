@@ -7,3 +7,5 @@ Disallow: /blog/search/
 Allow: /blog/
 
 Sitemap: https://www.example.com/blog/sitemap.xml
+Schemamap: https://www.example.com/blog/schema.json
+Schemamap: https://www.example.com/blog/de/schema.json

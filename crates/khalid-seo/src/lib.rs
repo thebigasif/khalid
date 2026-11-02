@@ -46,6 +46,7 @@ mod redirects;
 mod robots_meta;
 mod robots_txt;
 mod schema;
+mod schema_map;
 mod seo_error;
 mod site;
 mod sitemap;
@@ -97,6 +98,7 @@ pub use schema::{
     SiteSearch, SoftwareApplication, TemplateScope, breadcrumb_list, check_graph, page_graph,
     site_graph,
 };
+pub use schema_map::{schema_map_url, site_schema};
 pub use seo_error::SeoError;
 pub use site::SeoSite;
 pub use sitemap::{Sitemap, SitemapEntry};

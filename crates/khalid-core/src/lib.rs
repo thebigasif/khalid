@@ -73,8 +73,8 @@ pub use seo_head_settings::{
     TemplateSettings, TitleSettings, VerificationSettings,
 };
 pub use seo_publisher_settings::{
-    HoursSettings, LocationSettings, PublisherSettings, PublisherType, SchemaTemplateSettings,
-    WeekdaySetting,
+    HoursSettings, LocationSettings, PublisherSettings, PublisherType, SchemaMapSettings,
+    SchemaTemplateSettings, WeekdaySetting,
 };
 pub use seo_settings::{ArchiveIndex, ArchiveSetting, IndexNowSettings, SeoSettings};
 pub use site_code::{BodyCode, BodyCodeError, Consent, SiteCode};

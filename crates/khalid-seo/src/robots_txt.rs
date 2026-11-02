@@ -6,7 +6,7 @@ use std::fmt;
 
 use khalid_core::AbsoluteUrl;
 
-use crate::{SeoError, SeoSite, SiteSearch, sitemap_index_url};
+use crate::{SeoError, SeoSite, SiteSearch, schema_map_url, sitemap_index_url};
 
 /// The user-agent tokens of crawlers that gather text for AI models or AI
 /// answers, as their operators publish them, for a site that wants to
@@ -156,6 +156,7 @@ pub struct RobotsTxt {
     groups: Vec<Group>,
     extra_lines: Vec<String>,
     sitemap: AbsoluteUrl,
+    schema_maps: Vec<AbsoluteUrl>,
 }
 
 impl RobotsTxt {
@@ -216,6 +217,13 @@ impl RobotsTxt {
                 .map(|line| line.0.clone())
                 .collect(),
             sitemap: sitemap_index_url(site)?,
+            schema_maps: if site.schema_map {
+                (site.languages.iter())
+                    .map(|language| schema_map_url(site, language))
+                    .collect::<Result<_, _>>()?
+            } else {
+                Vec::new()
+            },
         })
     }
 }
@@ -240,6 +248,10 @@ impl fmt::Display for RobotsTxt {
         if !self.extra_lines.is_empty() {
             writeln!(f)?;
         }
-        writeln!(f, "Sitemap: {}", self.sitemap)
+        writeln!(f, "Sitemap: {}", self.sitemap)?;
+        for map in &self.schema_maps {
+            writeln!(f, "Schemamap: {map}")?;
+        }
+        Ok(())
     }
 }

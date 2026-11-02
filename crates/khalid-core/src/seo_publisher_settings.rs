@@ -170,3 +170,19 @@ pub struct SchemaTemplateSettings {
     #[serde(default)]
     pub properties: BTreeMap<String, String>,
 }
+
+/// The whole-site schema files, from `[seo.schema_map]`. Each language's
+/// pages have one JSON-LD graph at `schema.json` in its folder, named in
+/// robots.txt, so an AI agent reads the site's structured data at once:
+///
+/// ```toml
+/// [seo.schema_map]
+/// off = true
+/// ```
+#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+#[non_exhaustive]
+pub struct SchemaMapSettings {
+    /// Switch the files off. `false`, the default, writes them.
+    pub off: bool,
+}

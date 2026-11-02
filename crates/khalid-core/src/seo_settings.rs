@@ -7,7 +7,7 @@ use serde::Deserialize;
 use crate::{
     AbsoluteUrl, AiPageSettings, BreadcrumbSettings, CrawlerSettings, FeedSettings, IndexNowKey,
     Indexing, LinkSettings, LlmsTxtSettings, LocationSettings, PublisherSettings,
-    SchemaTemplateSettings, SocialSettings, TitleSettings, VerificationSettings,
+    SchemaMapSettings, SchemaTemplateSettings, SocialSettings, TitleSettings, VerificationSettings,
 };
 
 /// The SEO settings. Every one has a default, so the table may be left out:
@@ -57,6 +57,8 @@ pub struct SeoSettings {
     pub breadcrumbs: BreadcrumbSettings,
     /// What `llms.txt` holds, from `[seo.llms_txt]`. Written by default.
     pub llms_txt: LlmsTxtSettings,
+    /// The whole-site schema files, from `[seo.schema_map]`. On by default.
+    pub schema_map: SchemaMapSettings,
 }
 
 /// `IndexNow`, switched on by its table in `site.toml`.

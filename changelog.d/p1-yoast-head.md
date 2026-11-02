@@ -6,3 +6,4 @@ Added
 - **Enhanced X and Slack previews**: a post's preview names its author and reading time (`twitter:label1` to `data2`). `[seo.social] share_labels = false` turns them off.
 - **robots.txt**: the search page is kept from crawlers by default (`[seo.crawlers] disallow_search`), and `extra_lines` adds lines as written.
 - **llms.txt options** in `[seo.llms_txt]`: an intro, key pages listed first, paths to leave out, and `off`.
+- **Schema aggregation**: the whole site's structured data in one file per language, at `schema.json`, named in `robots.txt` on a `Schemamap:` line. `[seo.schema_map] off = true` turns it off.

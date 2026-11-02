@@ -7,7 +7,7 @@ use chrono::{DateTime, Utc};
 use khalid_core::{IndexNowSettings, Locale, UserMessage};
 use khalid_seo::{
     ArticleType, Feed, FeedFormat, FeedScope, IndexNow, LlmsTxt, NewsSitemap, RobotsTxt, SeoError,
-    SeoPage, SeoSite, SitemapSet, UrlPath,
+    SeoPage, SeoSite, SitemapSet, UrlPath, site_schema,
 };
 
 use crate::build_message;
@@ -101,6 +101,10 @@ fn collect(
     for language in &site.languages {
         let feed = Feed::for_pages(site, pages, &FeedScope::language(language.clone()), now)?;
         let folder = prefix(site, language);
+        if site.schema_map {
+            let graph = site_schema(site, pages, language)?;
+            files.push(file(&format!("{folder}schema.json"), graph.to_json()));
+        }
         let on = |format: FeedFormat| !site.feeds.off.contains(&format);
         if on(FeedFormat::Rss) {
             files.push(file(&format!("{folder}feed.xml"), feed.to_rss()?));

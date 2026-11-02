@@ -76,6 +76,9 @@ pub struct SeoSite {
     pub share_labels: bool,
     /// What `llms.txt` holds, and whether it is written.
     pub llms_txt: LlmsTxtOptions,
+    /// Whether each language's whole-site graph is written to
+    /// `schema.json` and named in robots.txt. On by default.
+    pub schema_map: bool,
 }
 
 impl SeoSite {
@@ -110,6 +113,7 @@ impl SeoSite {
             breadcrumb_home: None,
             share_labels: true,
             llms_txt: LlmsTxtOptions::default(),
+            schema_map: true,
         }
     }
 
