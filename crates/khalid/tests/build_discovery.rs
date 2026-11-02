@@ -104,7 +104,7 @@ fn with_terms() -> TempDir {
             "Thin content",
             "A page with too little on it to help anyone.",
         ),
-        ("de", "Ankertext", "Die Wörter, auf die ein Leser klickt."),
+        ("de", "Ankertext", "Die Wörter, auf die Leser klicken."),
     ];
     for (language, name, definition) in terms {
         let slug = name.to_lowercase().replace(' ', "-");
@@ -124,7 +124,7 @@ fn the_glossary_lists_every_term_under_its_letter_with_its_definition() {
         german.contains(r##"<a href="#letter-a">A</a>"##),
         "{german}"
     );
-    assert!(german.contains("Die Wörter, auf die ein Leser klickt."));
+    assert!(german.contains("Die Wörter, auf die Leser klicken."));
 }
 
 #[test]

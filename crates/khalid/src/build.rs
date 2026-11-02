@@ -22,10 +22,10 @@ use crate::post_files::{Assets, library_photo};
 use crate::post_photos::Shown;
 use crate::site_page::HeadNonce;
 use crate::{
-    assets, build_entries, build_files, build_gate, build_glossary, build_hubs, build_lists,
-    build_message, build_pages, build_redirects, build_seo, build_series, build_sitemap,
-    categories, content_message, home_rows, look, own_descriptions, post_categories, post_files,
-    post_images, post_lock, report, search_page, search_static, share_images, static_mode, trails,
+    assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
+    build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_categories,
+    post_files, post_images, post_lock, report, search_page, search_static, share_images,
+    static_mode, trails,
 };
 
 /// The output folder inside a site when `--out` is not given.
@@ -137,11 +137,7 @@ fn build(
         search_page::add(config, renderer, &mut languages)?;
         let sources = (content, categories.as_slice());
         build_lists::add((config, routes), renderer, sources, &mut languages)?;
-        build_glossary::add((config, routes), renderer, content, &mut languages)?;
-        build_entries::add((config, routes), renderer, content, &mut languages)?;
-        build_series::add(config, renderer, content, &mut languages)?;
-        build_hubs::fill((config, routes), content, &mut languages);
-        home_rows::fill(&mut languages);
+        build_pages::discovery_pages((config, routes), renderer, content, &mut languages)?;
         build_sitemap::add(config, renderer, &mut languages)?;
         own_descriptions::fill(config, renderer, &mut languages)?;
     }

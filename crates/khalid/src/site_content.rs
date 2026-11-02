@@ -24,7 +24,7 @@ use crate::post_heads::PostHeads;
 use crate::post_lock::Lock;
 use crate::settings_events::Settings;
 use crate::tag_events::Tags;
-use crate::{build_message, build_pages, build_series, index, site_lists};
+use crate::{build_message, build_pages, index, site_lists};
 
 /// What one render of the pages read for the Content API, without a single
 /// post body: the content index, which posts are featured, and the lists.
@@ -76,7 +76,7 @@ impl Catalog {
             .iter()
             .filter_map(|doc| Some((index::slashed(&doc.path)?, doc.front.updated?)))
             .collect();
-        let series = build_series::by_path(config, content);
+        let series = build_pages::series::by_path(config, content);
         let lists = site_lists::of(config, &index, content)?;
         Ok(Self {
             index,
