@@ -5,7 +5,7 @@ expression: main_of(&page)
  id="main" tabindex="-1">
 
 <h1>Authors</h1>
-<ul class="people-list" role="list">
+<ul class="people-list authors-list" role="list">
 <li class="person-card">
 <picture>
 <source type="image/avif" srcset="/blog/media/lena-vogt-800.avif 800w, /blog/media/lena-vogt-1600.avif 1600w" sizes="2.75rem">
@@ -14,14 +14,14 @@ expression: main_of(&page)
 <div>
 <p class="person-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a></p>
 <p class="person-role">Technical SEO editor</p>
-<p>12 posts</p>
+<p class="person-count">12 posts</p>
 </div>
 </li>
 <li class="person-card">
 <div>
 <p class="person-name"><a href="/blog/authors/asif/">Asif</a></p>
 <p class="person-role">Founder, SerpDad</p>
-<p>1 post</p>
+<p class="person-count">1 post</p>
 </div>
 </li>
 </ul>

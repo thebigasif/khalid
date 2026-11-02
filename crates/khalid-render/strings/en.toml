@@ -91,6 +91,10 @@ other_authors = "Other authors"
 post_count_one = "1 post"
 post_count = "{count} posts"
 no_authors = "This blog has no authors yet."
+# Labels why to trust an author: their credentials, on their page and in the author box.
+credentials = "Experience"
+# Names the list of an author's profiles on other sites. {name} is filled in.
+profiles_of = "{name} elsewhere"
 glossary_letters = "Jump to a letter"
 no_terms = "The glossary has no terms yet."
 search_label = "Search this blog"

@@ -49,7 +49,7 @@ fn reviewers_show_only_when_there_are_some_and_the_feature_is_on() {
     post.reviewers = vec![person("Mara Lind", "mara-lind", None)];
     let shown = render("en", post.clone());
     assert!(shown.contains(
-        r#"<p class="reviewed-by">Reviewed by <a href="/blog/authors/mara-lind/">Mara Lind</a></p>"#
+        r#"<p class="reviewed-by">Reviewed by <span class="reviewer"><a href="/blog/authors/mara-lind/">Mara Lind</a></span></p>"#
     ));
     let off = render_on(&site_without(Feature::ReviewedBy), post);
     assert!(!off.contains("Reviewed by"));
@@ -60,5 +60,5 @@ fn reviewers_show_only_when_there_are_some_and_the_feature_is_on() {
 fn reviewers_read_in_the_page_language() {
     let mut post = sitemap_post();
     post.reviewers = vec![person("Mara Lind", "mara-lind", None)];
-    assert!(render("de", post).contains("Geprüft von <a"));
+    assert!(render("de", post).contains("Geprüft von <span class=\"reviewer\"><a"));
 }

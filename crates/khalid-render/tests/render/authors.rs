@@ -44,8 +44,8 @@ fn the_authors_page_lists_each_author_with_role_and_post_count() {
 #[test]
 fn post_counts_read_in_the_page_language() {
     let page = render(&demo_site("de"), &PageBody::Authors(authors()));
-    assert!(page.contains("<p>12 Beiträge</p>"));
-    assert!(page.contains("<p>1 Beitrag</p>"));
+    assert!(page.contains("<p class=\"person-count\">12 Beiträge</p>"));
+    assert!(page.contains("<p class=\"person-count\">1 Beitrag</p>"));
 }
 
 #[test]

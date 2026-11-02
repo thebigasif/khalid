@@ -9,15 +9,21 @@ expression: "part(&page, \"<section class=\\\"author-box\\\">\", \"</section>\")
 <source type="image/avif" srcset="/blog/media/lena-vogt-800.avif 800w, /blog/media/lena-vogt-1600.avif 1600w" sizes="2.75rem">
 <img class="avatar" src="/blog/media/lena-vogt-1600.jpg" srcset="/blog/media/lena-vogt-800.jpg 800w, /blog/media/lena-vogt-1600.jpg 1600w" sizes="2.75rem" width="1600" height="1600" alt="" loading="lazy" decoding="async">
 </picture>
-<div>
+<div class="person-about">
 <p class="person-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a></p>
 <p class="person-role">Technical SEO editor</p>
-<p>Lena has fixed crawl problems on sites with a million pages.</p>
-<ul class="author-profiles">
-<li><a href="https://www.linkedin.com/in/lena-vogt-example">LinkedIn</a></li>
-<li><a href="https://speakerdeck.com/lena-vogt-example">speakerdeck.com</a></li>
+<p class="person-credentials"><strong>Experience</strong> Ten years running crawls for news sites</p>
+<div class="person-bio"><p>Lena has fixed crawl problems on sites with a million pages.</p></div>
+<ul class="author-profiles" role="list" aria-label="Lena Vogt elsewhere">
+<li><a href="https://www.linkedin.com/in/lena-vogt-example" class="profile-linkedin"><svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4V21H3zm6.5 0h3.8v1.6h.06c.53-1 1.84-2.05 3.79-2.05 4.05 0 4.8 2.67 4.8 6.14V21h-4v-4.98c0-1.19-.02-2.72-1.66-2.72-1.66 0-1.91 1.3-1.91 2.63V21h-4z"/></svg><span class="visually-hidden">LinkedIn</span></a></li>
+<li><a href="https://speakerdeck.com/lena-vogt-example"><span>speakerdeck.com</span></a></li>
 </ul>
 </div>
 </div>
-<p class="reviewed-by">Reviewed by <a href="/blog/authors/mara-lind/">Mara Lind</a></p>
+<div class="reviewed-by">
+<p>Reviewed by</p>
+<ul class="people" role="list">
+<li class="person"><span><a href="/blog/authors/mara-lind/">Mara Lind</a></span></li>
+</ul>
+</div>
 </section>

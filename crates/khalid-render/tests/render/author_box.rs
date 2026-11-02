@@ -33,6 +33,20 @@ fn the_post_ends_with_the_author_and_the_reviewer() {
 }
 
 #[test]
+fn the_box_shows_credentials_and_icons_named_for_screen_readers() {
+    let page = render("en", post_with_profile());
+    let parts = part(&page, "<section class=\"author-box\">", "</section>");
+    assert!(parts.contains("<strong>Experience</strong> Ten years running crawls"));
+    let linkedin = "class=\"profile-linkedin\"><svg";
+    assert!(parts.contains(linkedin), "{parts}");
+    assert!(parts.contains("<span class=\"visually-hidden\">LinkedIn</span>"));
+    // A page with no known icon shows its host as a plain link.
+    assert!(parts.contains("<span>speakerdeck.com</span>"));
+    // Only the author's own page marks profiles rel="me".
+    assert!(!parts.contains("rel=\"me\""));
+}
+
+#[test]
 fn two_authors_get_the_plural_heading() {
     let mut post = post_with_profile();
     post.authors.push(person("Asif", "asif", None));
