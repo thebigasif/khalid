@@ -77,7 +77,7 @@ The live heap at idle was 22.8 MB. The largest holders were the API router's Ope
 
 The cold start moved within the noise between runs. Left as they are, with the reason:
 
-- **Post heads (4.9 MB).** Every site's Content API hands them out. Kept as JSON text instead of tags they come to about the same size, since the JSON-LD graph is most of it, and making them on request would render at request time (BL-PERF-2). Update 2026-11-02, integration 29: the Content API's store now keeps each head as Brotli-compressed JSON, packed while the store is built off the render path and decoded when a post is asked for. Idle memory on the 1,000-post site went from 52.89 and 52.82 MB to 49.40 and 49.38 MB, with first byte and rebuild unchanged.
+- **Post heads (4.9 MB).** Every site's Content API hands them out. Kept as JSON text instead of tags they come to about the same size, since the JSON-LD graph is most of it, and making them on request would render at request time (BL-PERF-2). Update 2026-11-02, integration 29: the Content API's store now keeps each head as compressed JSON, packed while the store is built off the render path and decoded when a post is asked for. Idle memory on the 1,000-post site went from 52.89 and 52.82 MB to 49.40 and 49.38 MB, with first byte and rebuild unchanged. The heads were first packed with Brotli; they now use deflate, already in the binary for gzip, which keeps 128 KB of Brotli encoder out of the binary (see "Binary size") and measured 48.64 and 49.88 MB idle.
 - **SQLite's page cache** (4.5 MB in the C library's heap), the database track's setting.
 - **The Content API store** keeps each post twice, once by file and once in the store (about 1 MB).
 
@@ -175,6 +175,23 @@ Looked at and left alone:
 - **Duplicate crate versions.** html5ever 0.38 (through htmd) beside 0.40 (through ammonia and scraper), png 0.17 (through tiny-skia) beside 0.18, and argon2 0.5 (through webauthn-rs) beside 0.6. Each older copy comes from a crate whose newest release still needs it, so removing one means dropping a feature or downgrading a security crate such as ammonia, for at most about 200 KB.
 - **Dependency features.** The direct dependencies already turn off default features and name only what the code uses.
 - **A non-PIE binary** would drop 1.4 MB of relocations but give up address space layout randomisation for the binary. No.
+
+### Integration 29: AVIF output
+
+On 2026-11-02 integration branch 29 (PR #924) built 31,655,096 bytes in CI at commit 3e389f0a, over the budget. The AVIF encoder (`ravif` with `rav1e`, in `khalid-media`) had added about 1.55 MB, and packing the Content API's post heads with Brotli about 154 KB more. AVIF output is a shipped feature, so it stays. Each step below is `cargo build --release -p khalid` on this server, which builds about 25 KB less than CI because `admin/dist` is empty here:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before (3e389f0a) | 31,630,520 | |
+| Post heads packed with deflate, `brotli` out of `khalid-api` (kept) | 31,502,776 | 127,744 |
+| Plus `rav1e`, `ravif`, `av-scenechange`, `av1-grain` and `v_frame` at `"z"` (kept) | 31,160,824 | 341,952 more |
+| Plus `fast_image_resize`, `image`, `zune-jpeg` and `image-webp` at `"z"` | 31,209,720 | none, 48,896 more |
+| Plus `fast_image_resize` alone at `"z"` | 31,159,800 | 1,024, not worth it |
+| Plus `khalid-api` at `"z"` instead of `"s"` (kept) | 30,746,872 | 413,952 more |
+
+All kept: 30,746,872 bytes, 883,648 less than before and 710,408 under the budget.
+
+The AVIF encoder runs when an image is saved, never on a reader's path. At `"z"` the test that makes every width of a 900 by 600 photo in AVIF, WebP and JPEG (`khalid-media`'s `a_site_that_asks_for_avif_gets_every_width_in_avif_first`, release build) went from 0.52 to 0.56 s to 0.66 to 0.71 s, about 28% slower. The API crate answers agents, scripts and the admin, and its answers carry ETags. Idle memory on the 1,000-post site, `khalid-perf serve` as `scripts/perf.sh` runs it, was 48.64 and 49.88 MB with every kept change, against 49.40 and 49.38 MB before.
 - **Unwind tables** (1.5 MB) can only be dropped with a `rustflags` setting for every build, and backtraces need them.
 - **The embedded admin** is only in a binary built after `npm run build`, which CI's size step does not run.
 

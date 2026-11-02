@@ -179,9 +179,21 @@ opt-level = 3
 
 # The Admin and Content APIs answer agents, scripts and the admin, never a
 # reader's page, and the Content API's answers are cached with ETags, so
-# the API crate is sized like the stacks above to keep the binary in budget.
+# the API crate is sized smallest to keep the binary in budget. The AVIF
+# encoder runs when an image is saved, never on a reader's path, so it is
+# sized smallest too (docs/standards/performance.md, "Binary size").
 [profile.release.package.khalid-api]
-opt-level = "s"
+opt-level = "z"
+[profile.release.package.rav1e]
+opt-level = "z"
+[profile.release.package.av-scenechange]
+opt-level = "z"
+[profile.release.package.av1-grain]
+opt-level = "z"
+[profile.release.package.v_frame]
+opt-level = "z"
+[profile.release.package.ravif]
+opt-level = "z"
 
 [profile.dev]
 debug = "line-tables-only"

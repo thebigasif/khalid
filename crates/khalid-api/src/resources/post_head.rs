@@ -2,9 +2,12 @@
 //! itself (headless mode, KH-INS-5).
 
 use std::borrow::Cow;
+use std::io::{Read as _, Write as _};
 use std::sync::Arc;
 
-use brotli::enc::BrotliEncoderParams;
+use flate2::Compression;
+use flate2::read::DeflateDecoder;
+use flate2::write::DeflateEncoder;
 use khalid_seo::{HeadTag, HeadTags, SchemaGraph};
 use serde::ser::Error as _;
 use serde::{Deserialize, Serialize, Serializer};
@@ -17,15 +20,11 @@ const SCRIPT_OPEN: &str = "<script type=\"application/ld+json\">";
 /// How it ends.
 const SCRIPT_CLOSE: &str = "</script>\n";
 
-/// Brotli quality for a packed head. A head is a few kilobytes that
-/// repeat the site's addresses, so quality 5 makes it about a third of
-/// its JSON in tens of microseconds.
-const QUALITY: i32 = 5;
-
-/// The Brotli window for a packed head, as a power of two: 128 KB, the
-/// smallest the `brotli` crate has a small hasher for at quality 5, and
-/// far more than a head needs.
-const WINDOW: i32 = 17;
+/// Deflate level for a packed head. A head is a few kilobytes that
+/// repeat the site's addresses, so level 6 makes it about a third of its
+/// JSON in tens of microseconds. Deflate is already in the binary for
+/// gzip, so packing adds no compressor of its own.
+const LEVEL: u32 = 6;
 
 /// What a post's page carries in its `<head>` for search engines and share
 /// cards: the tags in the order the theme writes them, then the JSON-LD
@@ -40,7 +39,7 @@ pub struct PostHead(Arc<Held>);
 enum Held {
     /// The tags and the graph, as made.
     Parts(HeadParts),
-    /// The parts as JSON, compressed with Brotli: a third of the memory
+    /// The parts as JSON, compressed with deflate: a third of the memory
     /// on an idle server, decoded when a front end asks for the post.
     Packed(Box<[u8]>),
 }
@@ -115,17 +114,13 @@ impl PostHead {
         let Held::Parts(parts) = &*self.0 else {
             return self.clone();
         };
-        let params = BrotliEncoderParams {
-            quality: QUALITY,
-            lgwin: WINDOW,
-            ..BrotliEncoderParams::default()
-        };
-        let mut output = Vec::new();
         let packed = serde_json::to_vec(parts).ok().and_then(|json| {
-            brotli::BrotliCompress(&mut json.as_slice(), &mut output, &params).ok()
+            let mut encoder = DeflateEncoder::new(Vec::new(), Compression::new(LEVEL));
+            encoder.write_all(&json).ok()?;
+            encoder.finish().ok()
         });
         match packed {
-            Some(_) => Self(Arc::new(Held::Packed(output.into_boxed_slice()))),
+            Some(bytes) => Self(Arc::new(Held::Packed(bytes.into_boxed_slice()))),
             None => self.clone(),
         }
     }
@@ -143,7 +138,9 @@ impl PostHead {
             Held::Parts(parts) => Some(Cow::Borrowed(parts)),
             Held::Packed(bytes) => {
                 let mut json = Vec::new();
-                brotli::BrotliDecompress(&mut &bytes[..], &mut json).ok()?;
+                DeflateDecoder::new(&bytes[..])
+                    .read_to_end(&mut json)
+                    .ok()?;
                 serde_json::from_slice(&json).ok().map(Cow::Owned)
             }
         }
