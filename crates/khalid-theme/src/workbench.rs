@@ -22,9 +22,7 @@ pub(crate) static WORKBENCH: Pack = Pack {
             source: include_str!("../packs/workbench/post.html"),
         },
     ],
-    tokens: "[shape]\nradius = \"0.625rem\"\nmeasure = \"72ch\"\n\n\
-             [type]\nbody = \"1.0625rem 1.125rem\"\nh1 = \"2.25rem 3rem\"\n\
-             h2 = \"1.625rem 2rem\"\nh3 = \"1.25rem\"\nline_height = 1.65\n",
+    tokens: include_str!("../packs/workbench/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

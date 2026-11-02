@@ -1,0 +1,26 @@
+[colors]
+background = "#fcfbf8"
+surface = "#f3f1eb"
+text = "#1a1a17"
+muted = "#5b5850"
+link = "#0b5c44"
+accent = "#0d7553"
+border = "#e1ddd2"
+
+[shape]
+radius = "0.5rem"
+measure = "44rem"
+
+[type]
+body = "1.0625rem 1.125rem"
+h1 = "2.25rem 3.25rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.1875rem 1.3125rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.7
+heading_weight = 800
+
+[space]
+unit = "0.5rem"
+section = "4rem"
