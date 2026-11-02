@@ -36,6 +36,7 @@ mod admin_templates;
 mod admin_trash;
 mod admin_versions;
 mod admin_webhooks;
+pub mod ai;
 pub mod analytics_desk;
 pub mod api;
 pub mod api_limits;
