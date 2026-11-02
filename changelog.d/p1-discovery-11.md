@@ -1,2 +1,0 @@
-Added
-- **Home page numbers, topic tabs and media rows.** Every template but classic takes four new options. `hero_stats` shows up to four numbers you write under the home page's title, such as `"140 | blogs studied"`; Khalid never makes one up. `topic_tabs` shows a tab per topic with its newest posts, as links that work with scripts off (on by default in Atlas, Compass, Meridian and Wire). `video_section` and `podcast_section` show a row of the newest posts with a video or a sound player, when there are any (on by default) (KH-WEB-2, KH-WEB-9).
