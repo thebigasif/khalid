@@ -23,7 +23,7 @@ toml = "1.1"
 
 [dev-dependencies]
 insta = "1"
-khalid-content = { path = "../khalid-content", version = "1.1.0" }
+khalid-content = { path = "../khalid-content", version = "1.1.1" }
 scraper = "0.29"
 serde_json.workspace = true
 tempfile = "3"

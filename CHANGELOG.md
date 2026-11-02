@@ -4,6 +4,16 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.1.1
+
+The same as 1.1.0, which was tagged but never published: its last release check still asked for the admin at `/admin/`, and the demo blog it starts sits under `/blog/`, where 1.1.0 moved the admin. The check now follows that move. Everything new is listed under 1.1.0 below.
+
+### Fixed
+
+#### Releases
+
+- The release check finds the admin of a blog under a folder, so a release is built and published again.
+
 ## 1.1.0
 
 Ten finished blog templates to choose from, a Look screen to pick one, pictures on every card and drawings as lead images, new blocks for posts, a fix for blogs under a folder of another site and for very large home pages, Khalid's own designed website with live demos, and a Deploy to Cloudflare button. Nothing changes for an existing blog until you pick a template. What is new, in plain words, with links to the live demos: `docs/releases/1.1.0.md`.

@@ -1,6 +1,6 @@
 # Khalid, by SerpDad
 
-**Status: 1.1.0.** What is new in it: [docs/releases/1.1.0.md](docs/releases/1.1.0.md). The first stable release, with how to install Khalid and what is still checked after launch: [docs/releases/1.0.0.md](docs/releases/1.0.0.md). Byline and Wellranked were working names; the product is Khalid.
+**Status: 1.1.1.** What is new in it: [docs/releases/1.1.0.md](docs/releases/1.1.0.md), released as [1.1.1](docs/releases/1.1.1.md). The first stable release, with how to install Khalid and what is still checked after launch: [docs/releases/1.0.0.md](docs/releases/1.0.0.md). Byline and Wellranked were working names; the product is Khalid.
 
 Khalid is an open-source blog engine any business can add to its website, whatever the site is built with. One Rust binary. Every post is a text file. The best SEO defaults are built in, including schema markup for every content type and a site audit that passes the Ahrefs and Semrush checks. A linter refuses to publish a post that breaks basic SEO hygiene, and every refusal teaches why. It is run from the command line and from a web editor, by people and by agents. There is no drag-and-drop page builder.
 
