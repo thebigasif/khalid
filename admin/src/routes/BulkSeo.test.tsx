@@ -71,6 +71,21 @@ describe("the bulk SEO editor", () => {
     });
   });
 
+  it("counts characters under the title and description but not the focus keyword", async () => {
+    signedIn();
+    blog();
+    renderAt("/bulk-seo");
+    const cell = async (field: string) =>
+      (await screen.findByRole("textbox", { name: words.labelFor(field, DONE.title) })).closest(
+        "td",
+      ) ?? document.body;
+    const title = DONE.settings.seo_title ?? "";
+    expect(
+      within(await cell(words.seoTitle)).getByText(words.length(title.length, 60)),
+    ).toBeVisible();
+    expect((await cell(words.keyword)).textContent).toBe("anchor text");
+  });
+
   it("shows only the posts with no SEO title when asked", async () => {
     signedIn();
     blog();

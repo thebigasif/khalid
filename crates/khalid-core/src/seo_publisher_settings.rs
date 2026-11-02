@@ -176,12 +176,13 @@ pub struct SchemaTemplateSettings {
 }
 
 /// The whole-site schema files, from `[seo.schema_map]`. Each language's
-/// pages have one JSON-LD graph at `schema.json` in its folder, named in
-/// robots.txt, so an AI agent reads the site's structured data at once:
+/// pages have one JSON-LD graph at `schema.json` in its folder, linked from
+/// its home page, so an AI agent reads the site's structured data at once:
 ///
 /// ```toml
 /// [seo.schema_map]
 /// off = true
+/// robots_txt = true
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
 #[serde(default, deny_unknown_fields)]
@@ -189,6 +190,10 @@ pub struct SchemaTemplateSettings {
 pub struct SchemaMapSettings {
     /// Switch the files off. `false`, the default, writes them.
     pub off: bool,
+    /// Also name the files in robots.txt on a `Schemamap:` line, as Yoast
+    /// does. `false` by default, because Lighthouse then marks robots.txt
+    /// invalid.
+    pub robots_txt: bool,
 }
 
 /// What a site with `[[seo.locations]]` gets, from `[seo.local]`, as

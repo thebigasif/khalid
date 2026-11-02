@@ -6,6 +6,7 @@ expression: tags.to_html()
 <meta name="description" content="Plain advice on search for small teams">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical" href="https://www.example.com/blog/">
+<link rel="alternate" type="application/ld+json" href="https://www.example.com/blog/schema.json">
 <meta property="og:site_name" content="Field Notes on SEO">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Field Notes on SEO">

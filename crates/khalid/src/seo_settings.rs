@@ -7,7 +7,7 @@ use std::fmt;
 
 use khalid_core::toml_location::line_of_key;
 use khalid_core::{SeoSettings, TitleSettings, UserMessage};
-use khalid_seo::{LinkPolicy, MetaTemplate, PageKind, SeoSite, TemplatePair};
+use khalid_seo::{LinkPolicy, MetaTemplate, PageKind, SchemaMap, SeoSite, TemplatePair};
 
 use crate::{config_message, seo_crawl_settings, seo_graph_settings, seo_head_settings};
 
@@ -111,7 +111,11 @@ pub(crate) fn apply(settings: &SeoSettings, site: &mut SeoSite) -> Result<(), Se
     seo_crawl_settings::crawlers(&settings.crawlers, site)?;
     seo_crawl_settings::feeds(&settings.feeds, site)?;
     seo_crawl_settings::llms_txt(&settings.llms_txt, site)?;
-    site.schema_map = !settings.schema_map.off;
+    site.schema_map = match (settings.schema_map.off, settings.schema_map.robots_txt) {
+        (true, _) => SchemaMap::Off,
+        (false, false) => SchemaMap::Files,
+        (false, true) => SchemaMap::FilesAndRobotsTxt,
+    };
     site.local_kml = settings.local.kml;
     site.links = LinkPolicy::from(&settings.links);
     seo_graph_settings::publisher(&settings.publisher, site)?;

@@ -7,7 +7,7 @@ Added
 - **robots.txt**: the search page is kept from crawlers by default (`[seo.crawlers] disallow_search`), and `extra_lines` adds lines as written.
 - **Search filters** in `[seo.search_filter]`: a search over 50 characters, with emoji or symbols, or that looks like spam answers 400 with the empty search page. Each filter can be switched off.
 - **llms.txt options** in `[seo.llms_txt]`: an intro, key pages listed first, paths to leave out, and `off`.
-- **Schema aggregation**: the whole site's structured data in one file per language, at `schema.json`, named in `robots.txt` on a `Schemamap:` line. `[seo.schema_map] off = true` turns it off.
+- **Schema aggregation**: the whole site's structured data in one file per language, at `schema.json`, linked from each language's home page. `[seo.schema_map] robots_txt = true` also names it in `robots.txt` on a `Schemamap:` line, as Yoast does, though Lighthouse then marks `robots.txt` invalid. `[seo.schema_map] off = true` turns it off.
 - **Schema type per post and page**: `page_type:` (`FAQPage`, `ContactPage`, `AboutPage`, `QAPage`, `ItemPage`, `CollectionPage`) and `article_type:` (`BlogPosting`, `Article`, `NewsArticle`, `TechArticle`, `Report`) override the defaults.
 - **News**: `news: false` keeps a post out of the news sitemap, and `stock_tickers:` adds up to five tickers to it.
 - **Category and tag SEO**: each term page can have its own title, description, robots, share image and intro, in `categories.toml` and `tags.toml`. The build names term pages that have no intro.

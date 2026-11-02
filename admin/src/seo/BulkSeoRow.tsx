@@ -41,7 +41,8 @@ function Fields({ first }: { first: AdminPost }) {
     }
   };
 
-  const field = (name: keyof SeoFields, label: string, most: number) => (
+  // A keyword is measured in words by the linter, so it gets no character count.
+  const field = (name: keyof SeoFields, label: string, most: number | null) => (
     <td data-label={label}>
       <textarea
         rows={name === "description" ? 5 : 2}
@@ -49,9 +50,11 @@ function Fields({ first }: { first: AdminPost }) {
         value={now[name]}
         onChange={(event) => set(name)(event.target.value)}
       />
-      <span className={now[name].length > most ? "hint over" : "hint"}>
-        {words.length(now[name].length, most)}
-      </span>
+      {most !== null && (
+        <span className={now[name].length > most ? "hint over" : "hint"}>
+          {words.length(now[name].length, most)}
+        </span>
+      )}
     </td>
   );
 
@@ -64,7 +67,7 @@ function Fields({ first }: { first: AdminPost }) {
       </th>
       {field("title", words.seoTitle, 60)}
       {field("description", words.description, 160)}
-      {field("keyword", words.keyword, 60)}
+      {field("keyword", words.keyword, null)}
       <td>
         <button
           type="button"

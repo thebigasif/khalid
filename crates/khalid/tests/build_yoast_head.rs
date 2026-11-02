@@ -125,7 +125,7 @@ fn robots_txt_and_llms_txt_follow_their_settings() {
 }
 
 #[test]
-fn the_whole_site_schema_is_one_file_named_in_robots_txt() {
+fn the_whole_site_schema_is_one_file_the_home_page_links() {
     let site = site("");
     build(&site);
     let schema: serde_json::Value =
@@ -138,7 +138,15 @@ fn the_whole_site_schema_is_one_file_named_in_robots_txt() {
             "{id}: {schema:#}"
         );
     }
+    let link = "<link rel=\"alternate\" type=\"application/ld+json\" \
+                href=\"https://www.example.com/blog/schema.json\">";
+    let home = file(&site, "index.html").unwrap();
+    assert!(home.contains(link), "{home}");
     let robots = file(&site, "robots.txt").unwrap();
+    assert!(!robots.contains("Schemamap"), "{robots}");
+    let yoast = self::site("\n[seo.schema_map]\nrobots_txt = true\n");
+    build(&yoast);
+    let robots = file(&yoast, "robots.txt").unwrap();
     assert!(
         robots.contains("Schemamap: https://www.example.com/blog/schema.json\n"),
         "{robots}"
@@ -147,6 +155,7 @@ fn the_whole_site_schema_is_one_file_named_in_robots_txt() {
     build(&off);
     assert!(file(&off, "schema.json").is_none());
     assert!(!file(&off, "robots.txt").unwrap().contains("Schemamap"));
+    assert!(!file(&off, "index.html").unwrap().contains("schema.json"));
 }
 
 #[test]

@@ -105,7 +105,7 @@ fn collect(
     for language in &site.languages {
         let feed = Feed::for_pages(site, pages, &FeedScope::language(language.clone()), now)?;
         let folder = prefix(site, language);
-        if site.schema_map {
+        if site.schema_map.writes_files() {
             let graph = site_schema(site, pages, language)?;
             files.push(file(&format!("{folder}schema.json"), graph.to_json()));
         }

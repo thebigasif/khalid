@@ -13,6 +13,7 @@ expression: "head(&built(), \"index.html\")"
 <link rel="alternate" hreflang="en" href="https://www.example.com/blog/">
 <link rel="alternate" hreflang="de" href="https://www.example.com/blog/de/">
 <link rel="alternate" hreflang="x-default" href="https://www.example.com/blog/">
+<link rel="alternate" type="application/ld+json" href="https://www.example.com/blog/schema.json">
 <meta property="og:site_name" content="Field Notes on SEO">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Field Notes on SEO">

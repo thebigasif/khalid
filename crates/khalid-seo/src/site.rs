@@ -8,8 +8,8 @@ use khalid_core::{AbsoluteUrl, Locale};
 
 use crate::{
     CrawlerPolicy, CustomSchema, FeedOptions, IndexPolicy, LinkPolicy, LlmsTxtOptions,
-    LocalBusiness, MetaTemplates, Publisher, PublisherKind, RootFile, SchemaTemplate, SeoError,
-    ShareImage, SiteSearch, SiteVerification, TemplateWords, TwitterHandle, UrlPath,
+    LocalBusiness, MetaTemplates, Publisher, PublisherKind, RootFile, SchemaMap, SchemaTemplate,
+    SeoError, ShareImage, SiteSearch, SiteVerification, TemplateWords, TwitterHandle, UrlPath,
 };
 
 /// The site-wide settings every SEO output reads.
@@ -77,8 +77,8 @@ pub struct SeoSite {
     /// What `llms.txt` holds, and whether it is written.
     pub llms_txt: LlmsTxtOptions,
     /// Whether each language's whole-site graph is written to
-    /// `schema.json` and named in robots.txt. On by default.
-    pub schema_map: bool,
+    /// `schema.json`, and whether robots.txt names it. Files only by default.
+    pub schema_map: SchemaMap,
     /// Whether the locations with a map point are written to
     /// `locations.kml`. On by default.
     pub local_kml: bool,
@@ -116,7 +116,7 @@ impl SeoSite {
             breadcrumb_home: None,
             share_labels: true,
             llms_txt: LlmsTxtOptions::default(),
-            schema_map: true,
+            schema_map: SchemaMap::Files,
             local_kml: true,
         }
     }

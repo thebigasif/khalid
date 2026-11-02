@@ -6,7 +6,7 @@ use std::fmt;
 
 use khalid_core::AbsoluteUrl;
 
-use crate::{SeoError, SeoSite, SiteSearch, schema_map_url, sitemap_index_url};
+use crate::{SchemaMap, SeoError, SeoSite, SiteSearch, schema_map_url, sitemap_index_url};
 
 /// The user-agent tokens of crawlers that gather text for AI models or AI
 /// answers, as their operators publish them, for a site that wants to
@@ -161,8 +161,8 @@ pub struct RobotsTxt {
 
 impl RobotsTxt {
     /// The robots.txt for `site`: a group for every crawler, a group for the
-    /// allowed crawlers named in the policy, one for the blocked ones, and
-    /// the sitemap index. Every path sits under the mount folder, so a blog
+    /// allowed crawlers named in the policy, one for the blocked ones, the
+    /// sitemap index, and the schema files when the site asks for them. Every path sits under the mount folder, so a blog
     /// in a folder says nothing about the rest of the site.
     ///
     /// # Errors
@@ -217,7 +217,7 @@ impl RobotsTxt {
                 .map(|line| line.0.clone())
                 .collect(),
             sitemap: sitemap_index_url(site)?,
-            schema_maps: if site.schema_map {
+            schema_maps: if site.schema_map == SchemaMap::FilesAndRobotsTxt {
                 (site.languages.iter())
                     .map(|language| schema_map_url(site, language))
                     .collect::<Result<_, _>>()?

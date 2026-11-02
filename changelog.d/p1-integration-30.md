@@ -4,3 +4,5 @@ Fixed
 - **The share previews show the post's own picture.** A picture beside the post, such as `cover.svg`, showed as a broken image in the Facebook and X cards.
 - **Admin polish.** A score of 100 fits its circle, the bulk SEO editor gives the description most of the row so it shows in full, and the posts list keeps "2 in, 3 out" on one line.
 - **An AI pick saves at once.** Picking a suggested title waited for the next autosave, because the editor had not drawn the new title when it tried to save.
+- **robots.txt passes Lighthouse again.** The `Schemamap:` line for the whole-site schema files is off by default, because Lighthouse marks it invalid. Each home page links its `schema.json` instead, and `[seo.schema_map] robots_txt = true` brings the line back.
+- **No character count under the focus keyword.** The bulk SEO editor said "11 of about 60 characters" under a keyword, which the linter measures in words, not characters.

@@ -1,7 +1,8 @@
 //! Schema aggregation: the whole site's JSON-LD in one graph per language,
 //! at `schema.json` beside each language's home page, so an AI agent or a
-//! search engine reads every page's structured data in one request. robots.txt
-//! names each file on a `Schemamap:` line, as Yoast does.
+//! search engine reads every page's structured data in one request. Each
+//! language's home page links its file. robots.txt names the files on a
+//! `Schemamap:` line, as Yoast does, only when the site asks for it.
 
 use std::collections::BTreeSet;
 
@@ -12,6 +13,27 @@ use crate::{SchemaGraph, SeoError, SeoPage, SeoSite, UrlPath, page_graph, site_g
 
 /// Where each language's file lives, inside its language folder.
 const SCHEMA_MAP_PATH: &str = "/schema.json";
+
+/// Whether each language's whole-site graph is written, and where it is named.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum SchemaMap {
+    /// No `schema.json` files.
+    Off,
+    /// The files, each linked from its language's home page. The default.
+    Files,
+    /// The files, linked from the home pages and also named in robots.txt on
+    /// a `Schemamap:` line, as Yoast does. Lighthouse marks such a
+    /// robots.txt invalid, because `Schemamap` is not a directive it knows.
+    FilesAndRobotsTxt,
+}
+
+impl SchemaMap {
+    /// Whether the `schema.json` files are written.
+    pub fn writes_files(self) -> bool {
+        self != Self::Off
+    }
+}
 
 /// The address of the schema file of `language`.
 ///

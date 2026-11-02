@@ -165,7 +165,21 @@ Bots fill a site's search page with long or spam queries, so the page shows thei
 
 ## Whole-site schema
 
-Each language's pages that search engines may list have one JSON-LD graph together, at `schema.json` in the language's folder (`/blog/schema.json`, `/blog/de/schema.json`). Each node with an `@id` appears once. `robots.txt` names every file on a `Schemamap:` line, so an AI agent or a search engine reads all of the site's structured data in one request instead of one page at a time. This is Yoast's schema aggregation. To turn it off:
+Each language's pages that search engines may list have one JSON-LD graph together, at `schema.json` in the language's folder (`/blog/schema.json`, `/blog/de/schema.json`). Each node with an `@id` appears once. An AI agent or a search engine reads all of the site's structured data in one request instead of one page at a time. This is Yoast's schema aggregation. Each language's home page points to its file with `<link rel="alternate" type="application/ld+json" href=".../schema.json">` in its head.
+
+Yoast also names each file in `robots.txt` on a `Schemamap:` line. Khalid leaves that line out by default, because Lighthouse marks a `robots.txt` with a line it does not know as invalid, and that costs the SEO score on every page. To add the line anyway, as Yoast does:
+
+```toml
+[seo.schema_map]
+robots_txt = true
+```
+
+| Key | Default | What it does |
+| --- | --- | --- |
+| `off` | `false` | `true` writes no `schema.json` files and no home page link. |
+| `robots_txt` | `false` | `true` also names each file in `robots.txt` on a `Schemamap:` line. Lighthouse then marks `robots.txt` invalid. |
+
+To turn the files off:
 
 ```toml
 [seo.schema_map]
