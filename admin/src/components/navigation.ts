@@ -1,5 +1,6 @@
 import { en } from "../strings/en";
 import { searchConsoleWords } from "../strings/searchConsoleWords";
+import { seoToolWords } from "../strings/seoToolWords";
 import { seoWords } from "../strings/seoWords";
 import { shellWords } from "../strings/shellWords";
 import type { IconName } from "./Icon";
@@ -20,6 +21,7 @@ export type NavPath =
   | "/schema-templates"
   | "/settings"
   | "/seo"
+  | "/bulk-seo"
   | "/team"
   | "/keys"
   | "/webhooks"
@@ -51,6 +53,7 @@ export const NAV: NavGroup[] = [
       { to: "/analytics", label: en.nav.analytics, icon: "analytics" },
       { to: "/search-console", label: searchConsoleWords.title, icon: "search" },
       { to: "/serpdad", label: en.nav.serpdad, icon: "link" },
+      { to: "/bulk-seo", label: seoToolWords.bulk.nav, icon: "table" },
     ],
   },
   {

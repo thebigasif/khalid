@@ -18,6 +18,7 @@ import { Analytics } from "./Analytics";
 import { AuditLog } from "./AuditLog";
 import { AuthorPage } from "./AuthorPage";
 import { Authors } from "./Authors";
+import { BulkSeo } from "./BulkSeo";
 import { Comments } from "./Comments";
 import { Dashboard } from "./Dashboard";
 import { HandOver } from "./HandOver";
@@ -196,6 +197,13 @@ const site = createRoute({ getParentRoute: () => signedIn, path: "/settings", co
 // Every [seo] setting of site.toml, saved through the same settings API.
 const seo = createRoute({ getParentRoute: () => signedIn, path: "/seo", component: SeoSettings });
 
+// Many posts' SEO titles, descriptions and focus keywords in one table.
+const bulkSeo = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/bulk-seo",
+  component: BulkSeo,
+});
+
 const serpdad = createRoute({
   getParentRoute: () => signedIn,
   path: "/serpdad",
@@ -231,6 +239,7 @@ const routeTree = root.addChildren([
     look,
     site,
     seo,
+    bulkSeo,
     account,
     serpdad,
   ]),
