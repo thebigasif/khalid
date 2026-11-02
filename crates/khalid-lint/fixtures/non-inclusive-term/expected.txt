@@ -1,0 +1,2 @@
+info non-inclusive-term: "blacklist" (suggest: blocklist, deny list)
+info non-inclusive-term: "sanity check" (suggest: quick check, confidence check)

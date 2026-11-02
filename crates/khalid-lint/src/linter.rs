@@ -39,7 +39,12 @@ impl Linter {
     pub fn new(config: &LintConfig, clock: &dyn Clock) -> Result<Self, LintError> {
         let thresholds = config.thresholds();
         let today = clock.now().date_naive();
-        Self::with_rules(config, builtin::rules(thresholds))?
+        let catalogue = Catalogue::builtin()?;
+        let terms = catalogue
+            .get("non-inclusive-term")
+            .map(|message| message.terms().to_vec())
+            .unwrap_or_default();
+        Self::with_catalogue(catalogue, config, builtin::rules(thresholds, terms))?
             .with_site_rules(config, builtin::site_rules(thresholds, today))
     }
 
@@ -51,8 +56,18 @@ impl Linter {
     /// Returns [`LintError::MissingMessage`] for a rule the catalogue has no
     /// message for.
     pub fn with_rules(config: &LintConfig, rules: Vec<Box<dyn Rule>>) -> Result<Self, LintError> {
+        Self::with_catalogue(Catalogue::builtin()?, config, rules)
+    }
+
+    /// A linter running `rules` with the messages in `catalogue`, read
+    /// once by the caller.
+    fn with_catalogue(
+        catalogue: Catalogue,
+        config: &LintConfig,
+        rules: Vec<Box<dyn Rule>>,
+    ) -> Result<Self, LintError> {
         let mut linter = Self {
-            catalogue: Catalogue::builtin()?,
+            catalogue,
             rules: Vec::new(),
             site_rules: Vec::new(),
         };

@@ -25,6 +25,23 @@ pub struct Message {
     #[serde(default)]
     fix_alone: Option<String>,
     guide: Slug,
+    /// The words a rule looks for, when its catalogue entry lists them,
+    /// such as the terms `non-inclusive-term` suggests other words for.
+    #[serde(default)]
+    terms: Vec<Swap>,
+}
+
+/// A word or phrase a rule looks for in one language, with the words to
+/// use instead.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct Swap {
+    /// The language, such as `en`.
+    pub(crate) lang: String,
+    /// The word or phrase, as a reader would find it.
+    pub(crate) term: String,
+    /// The words to use instead, as one suggestion.
+    pub(crate) instead: String,
 }
 
 impl Message {
@@ -63,6 +80,11 @@ impl Message {
     /// The guide that explains the rule at length.
     pub fn guide(&self) -> &Slug {
         &self.guide
+    }
+
+    /// The words the rule looks for, when its entry lists them.
+    pub(crate) fn terms(&self) -> &[Swap] {
+        &self.terms
     }
 
     /// The three sentences as the message every Khalid surface shows.

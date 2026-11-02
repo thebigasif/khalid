@@ -403,6 +403,47 @@ why = "Rare long words slow every reader down, and many readers skip what they c
 fix = "Replace the long words you can with short everyday ones, such as \"use\" for \"utilise\"."
 guide = "readability"
 
+[non-inclusive-term]
+what = "This post uses a word that can leave out or hurt some readers."
+why = "Readers who feel left out stop reading, and many sites now use other words."
+fix = "Replace the word with one of the suggested words if it fits what you mean."
+guide = "inclusive-language"
+terms = [
+  { lang = "en", term = "blacklist", instead = "blocklist, deny list" },
+  { lang = "en", term = "whitelist", instead = "allowlist, allow list" },
+  { lang = "en", term = "master and slave", instead = "primary and replica" },
+  { lang = "en", term = "slave", instead = "replica, secondary" },
+  { lang = "en", term = "manpower", instead = "workforce, staff" },
+  { lang = "en", term = "mankind", instead = "humankind, people" },
+  { lang = "en", term = "man-made", instead = "artificial, synthetic" },
+  { lang = "en", term = "chairman", instead = "chair, chairperson" },
+  { lang = "en", term = "policeman", instead = "police officer" },
+  { lang = "en", term = "fireman", instead = "firefighter" },
+  { lang = "en", term = "salesman", instead = "salesperson" },
+  { lang = "en", term = "spokesman", instead = "spokesperson" },
+  { lang = "en", term = "hey guys", instead = "hello everyone, hi all" },
+  { lang = "en", term = "crazy", instead = "wild, surprising" },
+  { lang = "en", term = "insane", instead = "extreme, unbelievable" },
+  { lang = "en", term = "lame", instead = "dull, weak" },
+  { lang = "en", term = "sanity check", instead = "quick check, confidence check" },
+  { lang = "en", term = "grandfathered", instead = "exempt, kept from before" },
+  { lang = "en", term = "illegal immigrant", instead = "undocumented immigrant" },
+  { lang = "en", term = "the elderly", instead = "older people" },
+  { lang = "en", term = "handicapped", instead = "disabled, people with disabilities" },
+  { lang = "en", term = "wheelchair-bound", instead = "wheelchair user" },
+  { lang = "de", term = "Blacklist", instead = "Sperrliste" },
+  { lang = "de", term = "Whitelist", instead = "Positivliste, Freigabeliste" },
+  { lang = "de", term = "Behinderte", instead = "Menschen mit Behinderung" },
+  { lang = "de", term = "Asylant", instead = "Asylsuchende, Geflüchtete" },
+  { lang = "de", term = "Putzfrau", instead = "Reinigungskraft" },
+  { lang = "de", term = "Krankenschwester", instead = "Pflegefachkraft" },
+  { lang = "de", term = "Milchmädchenrechnung", instead = "Fehlkalkulation" },
+  { lang = "de", term = "Zigeuner", instead = "Sinti und Roma" },
+  { lang = "de", term = "Farbige", instead = "Schwarze Menschen, People of Color" },
+  { lang = "de", term = "geistig behindert", instead = "Menschen mit Lernschwierigkeiten" },
+  { lang = "de", term = "verrückt", instead = "überraschend, erstaunlich" },
+]
+
 [few-transitions]
 what = "Fewer than three in ten sentences use a linking word such as \"because\", \"so\" or \"for example\"."
 why = "Linking words show how one idea leads to the next, so readers follow the thread."

@@ -2,27 +2,28 @@
 
 use chrono::NaiveDate;
 
+use crate::catalogue::Swap;
 use crate::focus::{FocusNotIn, FocusTooOften, FocusTooRare, Place, SecondaryKeywordUnused};
 use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
     Rule, SiteRule, Thresholds, address, blocking, brief, collections, complex, facts, focus_shape,
-    focus_spread, headings, link_hygiene, link_targets, link_text, page_checks, page_or_section,
-    page_shape, readability, reading, site_content, site_keywords, site_links, site_sections,
-    site_trust, snippet, structure, title_width, topics, voice, words, writing,
+    focus_spread, headings, inclusive, link_hygiene, link_targets, link_text, page_checks,
+    page_or_section, page_shape, readability, reading, site_content, site_keywords, site_links,
+    site_sections, site_trust, snippet, structure, title_width, topics, voice, words, writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
 /// findings are listed: the blocks first, then the warnings.
-pub(crate) fn rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
+pub(crate) fn rules(thresholds: Thresholds, terms: Vec<Swap>) -> Vec<Box<dyn Rule>> {
     let mut rules = blocking_and_structure_rules(thresholds);
     rules.extend(writing_and_reading_rules(thresholds));
-    rules.extend(readability_rules(thresholds));
+    rules.extend(readability_rules(thresholds, terms));
     rules
 }
 
 /// Yoast's readability rules on the writer's own prose, last in the
 /// findings.
-fn readability_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
+fn readability_rules(thresholds: Thresholds, terms: Vec<Swap>) -> Vec<Box<dyn Rule>> {
     vec![
         Box::new(readability::LongSentences {
             max_words: thresholds.sentence_max_words,
@@ -43,6 +44,7 @@ fn readability_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(complex::ComplexWords {
             max_percent: thresholds.complex_words_max_percent,
         }),
+        Box::new(inclusive::NonInclusiveTerm { terms }),
     ]
 }
 

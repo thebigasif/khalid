@@ -27,6 +27,7 @@ mod focus_spread;
 mod gate;
 mod german;
 mod headings;
+mod inclusive;
 mod link_graph;
 mod link_hygiene;
 mod link_targets;
