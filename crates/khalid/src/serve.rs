@@ -45,9 +45,9 @@ use crate::site_posts::SitePosts;
 use crate::site_watch::SiteWatch;
 use crate::tag_events::Tags;
 use crate::{
-    alert_watch, announce, assets, comment_pages, consent_route, db, db_message, form_pages,
-    media_library, newsletter, page_counts, preview, push_hook, redirect_route, report, scheduler,
-    search_route, serve_apis, serve_message, share_images, staff_toolbar, unlock,
+    admin_blog, alert_watch, announce, assets, comment_pages, consent_route, db, db_message,
+    form_pages, media_library, newsletter, page_counts, preview, push_hook, redirect_route, report,
+    scheduler, search_route, serve_apis, serve_message, share_images, staff_toolbar, unlock,
 };
 
 /// How often the site folder is looked at for a saved edit where the system
@@ -416,7 +416,7 @@ fn assembled(
         .merge(previews)
         .merge(searches)
         .merge(share_images::router(site, config, security.clone()))
-        .merge(khalid_admin::router(khalid_admin::built(), config.mount()))
+        .merge(admin_blog::router(site, config))
         .merge(comments)
         .merge(newsletters)
         .merge(consent_route::router(config, security.clone()))

@@ -52,16 +52,32 @@ pub fn built() -> &'static [Asset] {
     built::FILES
 }
 
-/// The routes that answer the admin of a blog under `mount`, such as
+/// The blog an admin belongs to, as its page names it, so the sign-in
+/// screen shows whose admin this is before anyone signs in.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Blog<'a> {
+    /// The folder the blog sits under on its host, such as `/blog/`, or
+    /// `/` for a blog that is the whole site.
+    pub mount: &'a str,
+    /// The blog's name, as `site.toml` gives it.
+    pub name: &'a str,
+    /// The full address of the main site's logo, when there is one the
+    /// admin's own policy lets it show.
+    pub logo: Option<&'a str>,
+}
+
+/// The routes that answer the admin of `blog` under its mount, such as
 /// `/blog/`, or `/` for a blog that is the whole site: `<mount>admin`
 /// moves to `<mount>admin/`, a built file answers as itself, and any other
 /// address under `<mount>admin/` gets the app's page, whose router shows
-/// the screen for it. The page names `mount`, so the app finds its files,
-/// screens and APIs there. Under a mount, an address under `/admin/` moves
-/// to the same one under `<mount>admin/`.
-pub fn router(files: &'static [Asset], mount: &str) -> Router {
+/// the screen for it. The page names the mount, so the app finds its
+/// files, screens and APIs there, and the blog's name and logo. Under a
+/// mount, an address under `/admin/` moves to the same one under
+/// `<mount>admin/`.
+pub fn router(files: &'static [Asset], blog: Blog<'_>) -> Router {
+    let mount = blog.mount;
     let home = Arc::<str>::from(format!("{mount}admin/"));
-    let shown = Arc::new(page_in(files, mount));
+    let shown = Arc::new(page_in(files, blog));
     let (to_home, at_home, anywhere) = (Arc::clone(&home), Arc::clone(&shown), shown);
     let router = Router::new()
         .route(
@@ -98,17 +114,34 @@ pub fn router(files: &'static [Asset], mount: &str) -> Router {
 /// The app's page as a blog under `mount` serves it, or `None` when this
 /// binary holds no admin. Vite names the built files from the page's own
 /// folder, which differs on each screen's address, so they are named from
-/// the host's root instead, and the mount goes in a `khalid-mount` meta.
-fn page_in(files: &[Asset], mount: &str) -> Option<Bytes> {
+/// the host's root instead, and the mount goes in a `khalid-mount` meta,
+/// after the blog's name and logo in their own.
+fn page_in(files: &[Asset], blog: Blog<'_>) -> Option<Bytes> {
     let index = files.iter().find(|asset| asset.path == "index.html")?;
     let html = String::from_utf8_lossy(index.body);
+    let mount = blog.mount;
     let folder = format!("=\"{mount}admin/");
-    let named = format!("<meta name=\"khalid-mount\" content=\"{mount}\">\n</head>");
+    let name = meta("khalid-name", blog.name);
+    let logo = blog
+        .logo
+        .map(|logo| meta("khalid-logo", logo))
+        .unwrap_or_default();
+    let named = format!("{name}{logo}<meta name=\"khalid-mount\" content=\"{mount}\">\n</head>");
     let html = html
         .replace("=\"./", &folder)
         .replace("=\"/admin/", &folder)
         .replacen("</head>", &named, 1);
     Some(Bytes::from(html))
+}
+
+/// One `<meta>` line, its content written so no name can end the attribute.
+fn meta(name: &str, content: &str) -> String {
+    let content = content
+        .replace('&', "&amp;")
+        .replace('"', "&quot;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;");
+    format!("<meta name=\"{name}\" content=\"{content}\">\n")
 }
 
 fn file(files: &[Asset], shown: Option<&Bytes>, path: &str) -> Response {

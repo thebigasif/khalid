@@ -5,7 +5,7 @@
 use axum::body::Body;
 use axum::http::{HeaderMap, Request, StatusCode, header};
 use http_body_util::BodyExt;
-use khalid_admin::{Asset, router};
+use khalid_admin::{Asset, Blog, router};
 use tower::ServiceExt;
 
 static BUILT: &[Asset] = &[
@@ -35,8 +35,18 @@ async fn get_under(
     files: &'static [Asset],
     path: &str,
 ) -> (StatusCode, HeaderMap, String) {
+    let blog = Blog {
+        mount,
+        name: "Field notes",
+        logo: None,
+    };
+    send(router(files, blog), path).await
+}
+
+#[cfg(test)]
+async fn send(app: axum::Router, path: &str) -> (StatusCode, HeaderMap, String) {
     let request = Request::get(path).body(Body::empty()).unwrap();
-    let response = router(files, mount).oneshot(request).await.unwrap();
+    let response = app.oneshot(request).await.unwrap();
     let status = response.status();
     let headers = response.headers().clone();
     let body = response.into_body().collect().await.unwrap().to_bytes();
@@ -52,6 +62,28 @@ async fn at_the_root_the_page_names_its_files_under_admin_and_the_root_as_its_mo
     );
     assert!(
         body.contains("<meta name=\"khalid-mount\" content=\"/\">\n</head>"),
+        "{body}"
+    );
+}
+
+#[tokio::test]
+async fn the_page_names_the_blog_and_its_logo_for_the_sign_in_screen() {
+    let (_, _, body) = get(BUILT, "/admin/sign-in").await;
+    assert!(
+        body.contains("<meta name=\"khalid-name\" content=\"Field notes\">"),
+        "{body}"
+    );
+    assert!(!body.contains("khalid-logo"), "no logo, no meta: {body}");
+    let blog = Blog {
+        mount: "/",
+        name: "Lena's \"Bakes\" & <Cakes>",
+        logo: Some("https://example.com/logo.svg"),
+    };
+    let (_, _, body) = send(router(BUILT, blog), "/admin/sign-in").await;
+    let name = "content=\"Lena's &quot;Bakes&quot; &amp; &lt;Cakes&gt;\"";
+    assert!(body.contains(name), "{body}");
+    assert!(
+        body.contains("<meta name=\"khalid-logo\" content=\"https://example.com/logo.svg\">"),
         "{body}"
     );
 }
