@@ -81,7 +81,7 @@ Set these under `[template.options]`. An option you leave out takes the default.
 | `cta_band` | `both` | Where the band with your `[template.cta]` shows: `none`, `post`, `home` or `both`. On the front page it shows twice: after the featured post and at the end. |
 | `cta_button` | `true` | The header shows your `[template.cta]` as a button. |
 | `lead_image` | `true` | A post shows its lead picture under the byline. |
-| `byline_end` | `true` | A post ends with its writers again and the date it was last updated. |
+| `byline_end` | `true` | When the author box is off, a post ends with its writers again and the date it was last updated. |
 | `newsletter_note` | none | One line under the newsletter form, such as what readers get and how you treat their address. |
 
 For example:
@@ -112,7 +112,7 @@ Almanac sets these defaults. A value in your `theme/tokens.toml` wins.
 
 ## Good to know
 
-- The author box is off in Almanac, because the writers show again at the end of each post. Write `author_box = true` under `[reader]` to show it as well.
+- Each post ends with the author box: the writers' photos, roles, why to trust them, a short bio and their profiles. Write `author_box = false` under `[reader]` to show the shorter line of writers and the date instead.
 - The row of category links and the category on each short row need your categories on the front page and on post cards. Khalid does not fill them in yet, so they stay hidden until it does.
 - The front page's home sections show once Khalid fills in `[[reader.home_sections]]`.
 - Some resource libraries show "Popular posts". Khalid has no reading counts on a built site, and shows no public view counts, so Almanac shows "Keep reading" from the related posts in their place.

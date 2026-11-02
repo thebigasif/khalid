@@ -9,7 +9,7 @@ use crate::schema::glossary::{term_node, term_set_node};
 use crate::schema::local_business::business_nodes;
 use crate::schema::reviewer::reviewers;
 use crate::schema::template::template_nodes;
-use crate::schema::{image_node, node_id, site_home};
+use crate::schema::{image_node, node_id, publisher_id, site_home};
 use crate::{
     AuthorProfile, PageKind, SchemaGraph, SchemaNode, SchemaValue, SeoError, SeoPage, SeoSite,
     breadcrumb_list, site_graph,
@@ -51,7 +51,9 @@ fn profile_person(site: &SeoSite, page: &SeoPage) -> Result<SchemaNode, SeoError
         .clone()
         .unwrap_or_else(|| AuthorProfile::new(name));
     profile.url = Some(url.clone());
-    person_node(&profile, &url)
+    // An author of the site writes for its publisher.
+    let publisher = SchemaValue::Reference(publisher_id(site)?);
+    Ok(person_node(&profile, &url)?.with("worksFor", publisher))
 }
 
 fn page_node(site: &SeoSite, page: &SeoPage) -> Result<SchemaNode, SeoError> {

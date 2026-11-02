@@ -33,10 +33,11 @@ pub struct Account {
     email: Email,
     name: String,
     role: Role,
+    author: Option<String>,
 }
 
 impl Account {
-    /// An account read back from the store.
+    /// An account read back from the store, linked to no author profile.
     #[must_use]
     pub fn new(id: AccountId, email: Email, name: String, role: Role) -> Self {
         Self {
@@ -44,7 +45,23 @@ impl Account {
             email,
             name,
             role,
+            author: None,
         }
+    }
+
+    /// The same account, writing as the author profile `author`, such as
+    /// `en.asif`, or as none.
+    #[must_use]
+    pub fn with_author(mut self, author: Option<String>) -> Self {
+        self.author = author;
+        self
+    }
+
+    /// The identity of the author profile they write as, such as
+    /// `en.asif`: their byline, and the profile "Your account" edits.
+    #[must_use]
+    pub fn author(&self) -> Option<&str> {
+        self.author.as_deref()
     }
 
     /// The row.
@@ -149,6 +166,18 @@ pub trait AccountStore: Send + Sync {
         &'a self,
         id: AccountId,
         hash: &'a PasswordHash,
+    ) -> BoxFuture<'a, Result<bool, AccountStoreError>>;
+
+    /// Links account `id` to the author profile `author`, such as
+    /// `en.asif`. Returns whether the account exists.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`AccountStoreError`] when the store cannot be written.
+    fn set_author<'a>(
+        &'a self,
+        id: AccountId,
+        author: &'a str,
     ) -> BoxFuture<'a, Result<bool, AccountStoreError>>;
 
     /// Removes account `id` with its sessions, passkeys and links. Returns

@@ -30,6 +30,7 @@ mod super_admin;
 pub use account::{
     Account, AccountId, AccountStore, AccountStoreError, CreateAccountError, StoredAccount,
 };
+pub use accounts::author_link::{AuthorProfiles, link_to_profile};
 pub use accounts::{Accounts, CEREMONY, FRESH, Links, Passkeys, SignInError, SignedIn};
 pub use email::{Email, ParseEmailError};
 pub use limiter::{MAX_FAILURES, SignInLimiter, WINDOW};

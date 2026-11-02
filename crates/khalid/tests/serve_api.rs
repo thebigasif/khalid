@@ -594,6 +594,29 @@ fn owner(site: &Path, email: &str, args: &[&str]) -> (Option<i32>, Value) {
 }
 
 #[test]
+fn a_new_owner_gets_an_author_file_named_after_them() {
+    let site = demo_copy();
+    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", site.path().to_str().unwrap(), "staff", "owner"])
+        .args(["--email", "noor@example.com", "--name", "Noor Haddad"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(0));
+    let mut file = site.path().to_path_buf();
+    file.push("content/en/authors/noor-haddad.md");
+    let text = std::fs::read_to_string(&file).unwrap();
+    assert!(text.contains("name: \"Noor Haddad\""), "{text}");
+    // Asking again signs the same owner in, and makes no second file.
+    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", site.path().to_str().unwrap(), "staff", "owner"])
+        .args(["--email", "noor@example.com", "--name", "Noor Haddad"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(0));
+    assert_eq!(std::fs::read_to_string(&file).unwrap(), text);
+}
+
+#[test]
 fn the_owner_link_also_names_where_khalid_serve_listens_by_default() {
     let site = demo_copy();
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
@@ -638,6 +661,8 @@ fn the_first_owner_signs_in_with_the_link_khalid_staff_owner_shows_once() {
     let (status, body) = request(&server, "POST", path, &[], Some(&redeem));
     assert_eq!(status, 200, "{body}");
     assert!(body.contains("\"role\":\"owner\""), "{body}");
+    // Asif already had an author file, so the owner writes as it.
+    assert!(body.contains("\"author\":\"en.asif\""), "{body}");
     let (status, _) = request(&server, "POST", path, &[], Some(&redeem));
     assert_eq!(status, 401, "the link works once");
 }

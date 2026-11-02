@@ -8,7 +8,8 @@ use chrono::NaiveDate;
 use khalid_content::{AuthorFront, Document, Heading, PostFront, Rendered, SiteContent, Wikilinks};
 use khalid_core::{AbsoluteUrl, Config, Locale, Reader, Slug, UserMessage};
 use khalid_render::{
-    Contents, ContentsHeading, Feature, Features, HeadingLevel, Link, Person, PostTopics,
+    BodyHtml, Contents, ContentsHeading, Feature, Features, HeadingLevel, Person, PostTopics,
+    Profile,
 };
 use khalid_seo::AuthorProfile;
 
@@ -55,16 +56,10 @@ pub(crate) fn people(
             name,
             href: path_of(config, locale, &format!("authors/{slug}/")),
             role: front.role.clone(),
+            credentials: front.credentials.clone(),
             image: None,
-            bio: Some(body_html(config, links, doc)?),
-            profiles: front
-                .same_as
-                .iter()
-                .map(|url| Link {
-                    name: url.host().to_owned(),
-                    href: url.to_string(),
-                })
-                .collect(),
+            bio: Some(first_paragraph(&body_html(config, links, doc)?)),
+            profiles: front.same_as.iter().map(Profile::of).collect(),
         };
         people.insert(slug, person);
     }
@@ -84,13 +79,25 @@ pub(crate) fn person(
         name: slug.to_string(),
         href: path_of(config, locale, &format!("authors/{slug}/")),
         role: None,
+        credentials: None,
         image: None,
         bio: None,
         profiles: Vec::new(),
     })
 }
 
-/// The reviewers `front` names that have an author file: links for the
+/// The first paragraph of the sanitised `bio`, the short bio an author box
+/// shows. Cutting after a closing `</p>` keeps the HTML whole, since a
+/// paragraph holds no other paragraph.
+fn first_paragraph(bio: &BodyHtml) -> BodyHtml {
+    let html = bio.as_str();
+    match html.split_once("</p>") {
+        Some((first, _)) => BodyHtml::from_sanitised(format!("{first}</p>")),
+        None => bio.clone(),
+    }
+}
+
+/// The reviewers `front` names that have an author file: people for the
 /// byline, and profiles for `reviewedBy`. A slug with no file is left out,
 /// so no page links to a missing author; the linter names it.
 ///
@@ -101,8 +108,8 @@ pub(crate) fn reviewers(
     front: &PostFront,
     people: &BTreeMap<Slug, Person>,
     config: &Config,
-) -> Result<(Vec<Link>, Vec<AuthorProfile>), UserMessage> {
-    let mut links = Vec::new();
+) -> Result<(Vec<Person>, Vec<AuthorProfile>), UserMessage> {
+    let mut reviewers = Vec::new();
     let mut profiles = Vec::new();
     for person in front.reviewed_by.iter().filter_map(|slug| people.get(slug)) {
         let address = format!(
@@ -114,13 +121,11 @@ pub(crate) fn reviewers(
         profile.url =
             Some(AbsoluteUrl::parse(&address).map_err(|_| build_message::address(&address))?);
         profile.job_title.clone_from(&person.role);
+        profile.credentials.clone_from(&person.credentials);
         profiles.push(profile);
-        links.push(Link {
-            name: person.name.clone(),
-            href: person.href.clone(),
-        });
+        reviewers.push(person.clone());
     }
-    Ok((links, profiles))
+    Ok((reviewers, profiles))
 }
 
 /// The table of contents of a body with `headings`: its H2s and H3s.

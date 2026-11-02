@@ -5231,7 +5231,7 @@
         "tags": [
           "staff"
         ],
-        "summary": "Who the session cookie signs in, with its CSRF token again, for an\nadmin page that was reloaded. Needs the session cookie.",
+        "summary": "Who the session cookie signs in, with its CSRF token again, for an\nadmin page that was reloaded. An account made before accounts had\nauthor profiles is linked to its own here, the first time it is read.\nNeeds the session cookie.",
         "operationId": "current_session",
         "parameters": [
           {
@@ -6827,7 +6827,7 @@
         "tags": [
           "staff"
         ],
-        "summary": "Invites a person with a role the caller may manage. They have no\npassword until they choose one.",
+        "summary": "Invites a person with a role the caller may manage. They have no\npassword until they choose one. When the site keeps author profiles,\nthe account writes as the one named after the person, made when no\nprofile has that name's slug.",
         "operationId": "invite",
         "parameters": [
           {
@@ -16018,6 +16018,14 @@
           "role"
         ],
         "properties": {
+          "author": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The author profile they write as, such as `en.asif`, or `null`\nwhen they have none yet.",
+            "example": "en.asif"
+          },
           "email": {
             "type": "string",
             "description": "The address they sign in with."

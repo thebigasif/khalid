@@ -225,7 +225,7 @@ pre { padding: 1.25rem 1.5rem; border: 1px solid var(--color-border); font-size:
 .person-card > picture, .person-card .avatar { flex: none; }
 .person-card .avatar { inline-size: 4.5rem; block-size: 4.5rem; background: var(--color-surface); }
 .person-name { margin-block-start: 0.25rem; font-family: var(--font-heading); font-size: 1.375rem; line-height: 1.3; }
-.person-name a { min-block-size: 0; color: var(--color-text); text-decoration: none; }
+.person-name a { min-block-size: 0; margin-block: -0.75rem; padding-block: 0.75rem; color: var(--color-text); text-decoration: none; }
 .person-name a:hover { text-decoration: underline; }
 .person-card .person-role { margin-block: 0.125rem 0.75rem; font-size: var(--text-small); }
 .person-card p { font-size: 1rem; }
@@ -282,8 +282,8 @@ pre { padding: 1.25rem 1.5rem; border: 1px solid var(--color-border); font-size:
 main > .author { max-inline-size: none; }
 .author-bio { max-inline-size: var(--measure); margin-block: 1.5rem 0; font-size: 1.125rem; }
 .author ~ section > h2, .author > section > h2 { display: flex; align-items: center; gap: 0.75rem; margin-block: clamp(3rem, 7vw, 4.5rem) 0; padding-block-end: 1.5rem; border-block-end: 1px solid var(--color-border); font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
-.author-header:has(.image) { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 0 1.5rem; margin-block-start: 1.5rem; }
-.author-header .image { grid-row: span 2; inline-size: clamp(5rem, 16vw, 7rem); margin: 0; }
+.author-header:has(.author-photo) { gap: 1.5rem clamp(1.5rem, 4vw, 2.5rem); margin-block-start: 1.5rem; }
+.author-photo { inline-size: clamp(6.5rem, 18vw, 10rem); }
 .author-header h1 { margin: 0; font-size: clamp(2.25rem, 1.5rem + 3vw, 3.25rem); font-weight: 400; letter-spacing: -0.025em; }
 .author-role { margin: 0; }
 

@@ -12,6 +12,7 @@ use khalid_render::{PageBody, PostCard};
 use khalid_routes::Routes;
 
 use crate::build_pages::{self, LanguagePages};
+use crate::post_files::library_photo;
 use crate::post_files::{self, PostFile};
 use crate::post_images;
 use crate::post_photos::{self, Shown};
@@ -95,13 +96,18 @@ fn shown_on(languages: &[LanguagePages]) -> BTreeSet<String> {
 
 /// The lead image `image` of `doc`, whose page is at `address`, drawn as
 /// the full render draws it: only when it is a file beside a folder
-/// entry, as `post_files` publishes those alone.
+/// entry, as `post_files` publishes those alone, or a file in the media
+/// library.
 fn drawn<F>(
     site: &Path,
     config: &Config,
     (doc, address): (&Document<F>, &str),
     image: &LeadImage,
 ) -> Result<Option<khalid_render::RenderImage>, UserMessage> {
+    if let Some(file) = library_photo::file(site, config, &image.src) {
+        let picture = post_images::picture_of(site, config, &file)?;
+        return Ok(picture.map(|(picture, _)| post_images::lead_image(&picture, image)));
+    }
     let folder = doc.path.parent().filter(|_| doc.path.ends_with("index.md"));
     let name = post_images::lead_name(image);
     let Some(folder) = folder.filter(|_| !name.starts_with('/')) else {

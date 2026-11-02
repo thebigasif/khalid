@@ -45,12 +45,6 @@ expression: "main_of(&page(&out, POST))"
 <div class="post-body">
 [the post's body]
 </div>
-<aside class="al-byline-end" aria-label="Written by">
-<ul class="people" role="list">
-<li class="person"><span><a rel="author" href="/blog/authors/lena-vogt/">Lena Vogt</a><span class="person-role">Technical SEO editor</span></span></li>
-</ul>
-<p>Published <time datetime="2026-09-28">28 September 2026</time></p>
-</aside>
 <div class="share">
 <p class="share-title">Share this post</p>
 <ul>
@@ -60,6 +54,16 @@ expression: "main_of(&page(&out, POST))"
 <li><a href="mailto:?subject=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not&amp;body=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">Email</a></li>
 </ul>
 </div>
+<section class="author-box">
+<h2>About the author</h2>
+<div class="person-card">
+<div class="person-about">
+<p class="person-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a></p>
+<p class="person-role">Technical SEO editor</p>
+<div class="person-bio"><p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees before a reader does. She writes in English and German.</p></div>
+</div>
+</div>
+</section>
 </article>
 <section class="newsletter-slot" aria-labelledby="newsletter-slot-title">
 <h2 id="newsletter-slot-title">Get new posts by email</h2>

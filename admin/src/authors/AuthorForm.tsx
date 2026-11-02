@@ -2,11 +2,12 @@ import { type FormEvent, useState } from "react";
 import type { AdminAuthor } from "../api/authors";
 import { en } from "../strings/en";
 import { type AuthorFields, fieldsOf } from "./edits";
+import { PhotoPicker } from "./PhotoPicker";
 
 type Props = { author: AdminAuthor; onSave: (fields: AuthorFields) => Promise<void> };
 
-// One-line fields first, then the two that take several lines.
-const LINES = ["name", "role", "credentials", "photo"] as const;
+// One-line fields first, then the photo, then the two that take several lines.
+const LINES = ["name", "role", "credentials"] as const;
 const BLOCKS = ["bio", "sameAs"] as const;
 
 /** Everything an author's file says about them, ready to change. */
@@ -42,6 +43,7 @@ export function AuthorForm({ author, onSave }: Props) {
           </div>
         ))}
       </div>
+      <PhotoPicker value={fields.photo} onChange={(photo) => set("photo", photo)} />
       {BLOCKS.map((key) => (
         <div className="field" key={key}>
           <label htmlFor={`edit-${key}`}>{words[key].label}</label>

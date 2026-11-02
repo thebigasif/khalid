@@ -24,7 +24,8 @@ article.post.post-with-toc
   nav "On this page"
   nav.toc-side "On this page"
   div.post-body: the text
-  aside.al-byline-end "Written by"
+  section.author-box
+    h2: About the author
 section.mentions
   h2: Posts that link here
 section.al-keep.related

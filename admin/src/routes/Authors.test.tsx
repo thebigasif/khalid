@@ -59,6 +59,33 @@ describe("the Authors screen", () => {
     expect(await axeViolations()).toEqual([]);
   });
 
+  it("shows each author's photo and how many posts they published", async () => {
+    signedIn();
+    const photo = "/blog/media/library/3f2a9c1e0b57d0aa/asif.jpg";
+    const filters: (string | null)[] = [];
+    adminBlog({
+      "GET /authors/": () => json(200, { authors: [author({ photo }), LENA] }),
+      "GET /posts/": (request) => {
+        const filter = new URL(request.url).searchParams.get("filter");
+        filters.push(filter);
+        const total = filter?.startsWith("author:asif+") ? 12 : 1;
+        return json(200, {
+          posts: [],
+          meta: { pagination: { page: 1, limit: 1, pages: total, total } },
+        });
+      },
+    });
+    renderAt("/authors");
+    const table = await screen.findByRole("table", { name: en.authors.list.title });
+    expect(await within(table).findByText("12 posts")).toBeVisible();
+    expect(await within(table).findByText("1 post")).toBeVisible();
+    expect(table.querySelectorAll("img")).toHaveLength(1);
+    expect(table.querySelector("img")).toHaveAttribute("src", photo);
+    expect(filters).toContain("author:asif+status:published");
+    expect(filters).toContain("author:lena-vogt+status:published");
+    expect(await axeViolations()).toEqual([]);
+  });
+
   it("adds an author, leaving out an empty role and language", async () => {
     signedIn();
     const made = blog([author()]);

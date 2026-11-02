@@ -1766,6 +1766,8 @@ export type SnippetEdits = {
 
 /** A staff account as the Admin API shows it. */
 export type StaffAccount = {
+  /** The author profile they write as, such as `en.asif`, or `null` when they have none yet. */
+  author?: string | null;
   /** The address they sign in with. */
   email: string;
   /** The account's number on this site. */
@@ -2755,7 +2757,7 @@ export interface Operations {
     };
     output: null;
   };
-  /** Who the session cookie signs in, with its CSRF token again, for an admin page that was reloaded. Needs the session cookie. */
+  /** Who the session cookie signs in, with its CSRF token again, for an admin page that was reloaded. An account made before accounts had author profiles is linked to its own here, the first time it is read. Needs the session cookie. */
   current_session: {
     input: {
       headers?: {
@@ -3030,7 +3032,7 @@ export interface Operations {
     };
     output: StaffList;
   };
-  /** Invites a person with a role the caller may manage. They have no password until they choose one. */
+  /** Invites a person with a role the caller may manage. They have no password until they choose one. When the site keeps author profiles, the account writes as the one named after the person, made when no profile has that name's slug. */
   invite: {
     input: {
       headers?: {

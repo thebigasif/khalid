@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { type Answers, adminBlog, noContent } from "../../test/blog";
 import { axeViolations, json, renderAt, signedIn } from "../../test/render";
 import type { AdminAuthor, AuthorEdit } from "../api/authors";
+import type { MediaItem } from "../api/media";
 import { en } from "../strings/en";
 
 const LENA: AdminAuthor = {
@@ -34,6 +35,28 @@ function blog(more: Answers = {}) {
 }
 
 const FIELDS = en.authors.edit.fields;
+const PHOTO = en.authors.edit.photo;
+const PICK = PHOTO.pick("Lena at her desk");
+
+/** A square photo of Lena in the media library. */
+const PICTURE: MediaItem = {
+  id: "3f2a9c1e0b57d0aa",
+  name: "lena.jpg",
+  folder: "authors",
+  media_type: "image/jpeg",
+  kind: "image",
+  bytes: 52_000,
+  width: 800,
+  height: 800,
+  alt: "Lena at her desk",
+  caption: "",
+  focal_point: { x: 500, y: 500 },
+  url: "/blog/media/library/3f2a9c1e0b57d0aa/lena.jpg",
+  uploaded_at: "2026-11-02T09:00:00Z",
+  uploaded_by: "owner",
+  updated_at: "2026-11-02T09:00:00Z",
+  updated_by: "owner",
+};
 
 describe("an author's page", () => {
   it("opens from the list and saves only the changed fields", async () => {
@@ -71,6 +94,50 @@ describe("an author's page", () => {
     await userEvent.clear(await screen.findByLabelText(FIELDS.role.label));
     await userEvent.click(screen.getByRole("button", { name: en.authors.edit.save }));
     expect(await screen.findByRole("alert")).toHaveTextContent(stale.title);
+  });
+
+  it("uploads a photo, crops it square, and saves where the square copy lives", async () => {
+    signedIn();
+    const wide: MediaItem = { ...PICTURE, width: 1600, height: 800 };
+    const square = "/blog/media/library/9c1e0b57d0aa3f2a/lena.jpg";
+    const crops: unknown[] = [];
+    const { edits } = blog({
+      "POST /media/": () => json(201, { media: [wide] }),
+      "POST /media/3f2a9c1e0b57d0aa/copies/": async (request) => {
+        crops.push(await request.json());
+        const copy = { ...wide, id: "9c1e0b57d0aa3f2a", url: square, width: 800 };
+        return json(201, { media: [copy] });
+      },
+    });
+    renderAt("/authors/de.lena-vogt");
+    const file = new File(["photo"], "lena.jpg", { type: "image/jpeg" });
+    await userEvent.upload(await screen.findByLabelText(PHOTO.upload), file);
+    expect(await screen.findByText(PHOTO.ready)).toBeVisible();
+    expect(crops).toEqual([{ turn: 0, crop: { left: 250, top: 0, width: 500, height: 1000 } }]);
+    expect(screen.getByRole("img", { name: PHOTO.preview })).toHaveAttribute("src", square);
+    await userEvent.click(screen.getByRole("button", { name: en.authors.edit.save }));
+    expect(await screen.findByText(en.authors.edit.saved)).toBeVisible();
+    expect(edits).toEqual([{ updated_at: LENA.updated_at, photo: square }]);
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("picks a square picture from Media as it is, and removes it again", async () => {
+    signedIn();
+    const { edits } = blog({
+      "GET /media/": () =>
+        json(200, { media: [PICTURE], meta: { pagination: { page: 1, pages: 1, total: 1 } } }),
+    });
+    renderAt("/authors/de.lena-vogt");
+    await userEvent.click(await screen.findByRole("button", { name: PHOTO.choose }));
+    await userEvent.click(await screen.findByRole("button", { name: PICK }));
+    expect(await screen.findByText(PHOTO.ready)).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: PHOTO.remove }));
+    expect(screen.queryByRole("img", { name: PHOTO.preview })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: PHOTO.choose }));
+    await userEvent.click(await screen.findByRole("button", { name: PICK }));
+    await userEvent.click(screen.getByRole("button", { name: en.authors.edit.save }));
+    expect(await screen.findByText(en.authors.edit.saved)).toBeVisible();
+    expect(edits).toEqual([{ updated_at: LENA.updated_at, photo: PICTURE.url }]);
   });
 
   it("deletes the author with the copy's time, and goes back to the list", async () => {

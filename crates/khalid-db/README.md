@@ -29,7 +29,7 @@ A test reads the table below and checks it lists every table in the schema, once
 | `search_terms` | derived | The search index: each term, the pages that hold it, and how often in the title, headings and body |
 | `redirects` | visitor | Redirects made in the admin, brought in by an import, or added when a slug changes |
 | `not_found_log` | visitor | Every address that answered 404, with its hit count and when it was first and last seen |
-| `users` | visitor | Staff accounts, with an Argon2id password hash when the account has a password |
+| `users` | visitor | Staff accounts, with an Argon2id password hash when the account has a password, and the author profile each writes as |
 | `sessions` | visitor | Signed-in sessions, stored as a hash of the session token, with when each was last used |
 | `passkeys` | visitor | Each staff passkey: the authenticator's name for it, its public key and its signature counter |
 | `magic_links` | visitor | Sign-in links sent by email, stored as a hash of the token, each usable once before it expires |

@@ -60,11 +60,15 @@ export async function readPost(id: string): Promise<Answer> {
   return answer(data, error, response);
 }
 
-/** Creates a draft with only a title; `key` makes a retry harmless. */
-export async function createPost(title: string, key: string): Promise<Answer> {
+/**
+ * Creates a draft with only a title, by `author` when given; `key` makes a
+ * retry harmless.
+ */
+export async function createPost(title: string, key: string, author?: string): Promise<Answer> {
+  const post = author === undefined ? { title, markdown: "" } : { title, markdown: "", author };
   const { data, error, response } = await api.POST("/api/admin/v1/posts/", {
     params: { header: { "Idempotency-Key": key } },
-    body: { posts: [{ title, markdown: "" }] },
+    body: { posts: [post] },
   });
   return answer(data, error, response);
 }

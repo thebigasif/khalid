@@ -5,11 +5,12 @@ use std::net::SocketAddr;
 use std::path::Path;
 
 use khalid_api::keys::Role;
-use khalid_auth::{AccountStore, CreateAccountError, Email, LinkStore, LinkToken};
+use khalid_auth::{AccountStore, CreateAccountError, Email, LinkStore, LinkToken, link_to_profile};
 use khalid_core::{Clock, Config, Slug, SystemClock, UserMessage};
 use khalid_db::{AccountTable, Database, LinkTable};
 use serde::Serialize;
 
+use crate::account_author::SiteAuthorProfiles;
 use crate::cli::{Output, OwnerArgs, StaffCommand};
 use crate::exit::Exit;
 use crate::{db, db_message, report, serve_address, staff, staff_message};
@@ -58,6 +59,11 @@ fn owner(site: &Path, config: &Config, args: &OwnerArgs, output: Output) -> Exit
             },
             Err(_) => return Err(staff_message::not_saved(site)),
         };
+        // The owner gets a byline and an author page from the start.
+        if owner.author().is_none() {
+            let profiles = SiteAuthorProfiles::new(site, config);
+            link_to_profile(accounts, &profiles, owner.clone()).await;
+        }
         let saved = links.create(token.hash(), owner.id(), now).await;
         saved.map_err(|_| staff_message::not_saved(site))
     });

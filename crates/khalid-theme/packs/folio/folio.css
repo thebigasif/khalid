@@ -134,11 +134,11 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
 /* An author: the portrait beside a large name, the bio under it, then
    their posts as cards across the page. */
 .author { max-inline-size: 46rem; margin-block: clamp(1rem, 3vw, 2rem) clamp(3.5rem, 7vw, 5rem); }
-.author-header { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 1.5rem; margin-block-end: 1.5rem; }
-.author-header .image { grid-row: span 2; inline-size: clamp(4.5rem, 10vw, 6.5rem); margin: 0; }
-.author-header .image img { border: var(--hair); }
-.author-header h1 { align-self: end; margin: 0; font-size: clamp(2.25rem, 1.5rem + 2.8vw, 3.5rem); line-height: 1.05; letter-spacing: -0.04em; }
-.author-role { align-self: start; margin: 0.375rem 0 0; }
+.author-header { column-gap: clamp(1.5rem, 4vw, 2.5rem); margin-block-end: 1.5rem; }
+.author-photo { inline-size: clamp(6.5rem, 16vw, 10rem); }
+.author-photo img { border: var(--hair); }
+.author-header h1 { margin: 0; font-size: clamp(2.25rem, 1.5rem + 2.8vw, 3.5rem); line-height: 1.05; letter-spacing: -0.04em; }
+.author-role { margin: 0.375rem 0 0.25rem; }
 .author-bio { font-size: 1.125rem; }
 .people-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1.5rem 2.5rem; }
 .people-list .person-card { align-items: center; }

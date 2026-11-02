@@ -1,15 +1,13 @@
 //! The author page, a plain page, and the tag and category lists.
 
 use chrono::NaiveDate;
-use khalid_render::{
-    BodyHtml, Link, Loading, PageBody, PageKind, RenderAuthor, RenderPage, Renderer,
-};
+use khalid_render::{BodyHtml, Loading, PageBody, PageKind, RenderAuthor, RenderPage, Renderer};
 
 use crate::common::{demo_site, meta};
 use crate::html_check::assert_valid_page;
 use crate::image::sitemap_image;
 use crate::listing::{first_page, main_of};
-use crate::post::person;
+use crate::post::{person, profile};
 
 fn render(body: &PageBody, tag: &str) -> String {
     let meta = meta("A page", "/blog/a-page/", PageKind::Website);
@@ -24,15 +22,18 @@ pub(crate) fn lena() -> RenderAuthor {
     RenderAuthor {
         name: "Lena Vogt".to_owned(),
         role: Some("Technical SEO editor".to_owned()),
+        credentials: Some("Ten years running crawls for news sites".to_owned()),
         image: None,
         bio: BodyHtml::from_sanitised(
             "<p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees.</p>"
                 .to_owned(),
         ),
-        profiles: vec![Link {
-            name: "Mastodon".to_owned(),
-            href: "https://mastodon.example/@lena".to_owned(),
-        }],
+        profiles: vec![
+            profile("https://mastodon.example/@lena"),
+            profile("https://github.com/lena-vogt-example"),
+            profile("https://lenavogt.example/"),
+        ],
+        post_count: 12,
         posts: first_page().posts,
         pagination: None,
         others: vec![person("Asif", "asif", Some("Founder, SerpDad"))],
@@ -44,6 +45,24 @@ fn author_page_in_english() {
     let page = render(&PageBody::Author(Box::new(lena())), "en");
     assert_valid_page(&page);
     insta::assert_snapshot!(main_of(&page));
+}
+
+#[test]
+fn an_author_page_says_why_to_trust_them_and_where_else_they_are() {
+    let page = render(&PageBody::Author(Box::new(lena())), "en");
+    assert!(
+        page.contains("<p class=\"author-count\">12 posts</p>"),
+        "{page}"
+    );
+    assert!(page.contains("<strong>Experience</strong> Ten years running crawls"));
+    // Each known profile draws its icon, with its name beside it, rel="me".
+    assert!(page.contains("rel=\"me\" data-icon=\"mastodon\"><svg class=\"icon\""));
+    assert!(page.contains("data-icon=\"github\"><svg"));
+    assert!(page.contains("data-icon=\"website\"><svg"));
+    assert!(page.contains("<span>lenavogt.example</span>"));
+    assert!(page.contains("aria-label=\"Lena Vogt elsewhere\""));
+    // No icon needs a script.
+    assert!(!main_of(&page).contains("<script"));
 }
 
 #[test]

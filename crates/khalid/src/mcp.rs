@@ -17,6 +17,7 @@ use khalid_mcp::{ApiTools, Server, SessionKeys};
 use serde_json::Value;
 use tokio::io::BufReader;
 
+use crate::account_author::SiteAuthorProfiles;
 use crate::cli::Output;
 use crate::exit::Exit;
 use crate::mcp_content::FreshContent;
@@ -103,7 +104,8 @@ fn api_router(
 ) -> Result<(Router, Value), UserMessage> {
     let content = FreshContent::new(site, config.clone());
     let door = Arc::new(PublishDoor::new(Arc::new(posts), Arc::new(Silent)));
-    let accounts = staff::accounts(database, id, config);
+    let profiles = Arc::new(SiteAuthorProfiles::new(site, config));
+    let accounts = staff::accounts(database, id, config).with_author_profiles(profiles);
     let sessions: Arc<dyn SessionCheck> = Arc::new(accounts.clone());
     let staff = (khalid_auth::staff_routes(accounts), sessions);
     let webhooks = WebhookTable::new(database.clone(), id, SystemClock);

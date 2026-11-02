@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 use serde::Serialize;
 
 use crate::serde_display::display_option;
-use crate::{BodyHtml, Link, Pagination, Person, PostCard, RenderImage};
+use crate::{BodyHtml, Pagination, Person, PostCard, Profile, RenderImage};
 
 /// An author's page: who they are, where else they write, and their posts.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -13,12 +13,16 @@ pub struct RenderAuthor {
     pub name: String,
     /// What they do, such as `Technical SEO editor`.
     pub role: Option<String>,
-    /// A photo, always lazy.
+    /// Why to trust them, such as `Ten years running crawls for news sites`.
+    pub credentials: Option<String>,
+    /// A photo, drawn large at the top and fetched at once.
     pub image: Option<RenderImage>,
     /// The author's own words about themselves, already sanitised.
     pub bio: BodyHtml,
     /// Their profiles elsewhere, marked `rel="me"`.
-    pub profiles: Vec<Link>,
+    pub profiles: Vec<Profile>,
+    /// How many published posts name them as their author, on every page.
+    pub post_count: usize,
     /// Their posts on this page, newest first.
     pub posts: Vec<PostCard>,
     /// Links to the other pages of their posts.

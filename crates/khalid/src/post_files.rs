@@ -17,6 +17,8 @@ use crate::build_pages::{LanguagePages, Page};
 use crate::post_photos::Shown;
 use crate::{build_message, post_images};
 
+pub(crate) mod library_photo;
+
 /// How a body image starts, up to its address, as `khalid_content::render`
 /// writes it.
 pub(crate) const IMAGE: &str = "<img src=\"";
@@ -167,7 +169,8 @@ pub(crate) fn served(
     shown: &mut Shown,
 ) -> Result<Vec<Served>, UserMessage> {
     let address = |text: &str| PagePath::try_new(text).map_err(|_| build_message::address(text));
-    let beside = attach(assets, languages);
+    let mut beside = attach(assets, languages);
+    beside.extend(library_photo::files(folder, config, languages));
     let mut pages = Vec::with_capacity(beside.len());
     for file in &beside {
         let kind = MediaType::for_file(&file.address);

@@ -109,6 +109,22 @@ pub struct NewAuthor {
 }
 
 impl NewAuthor {
+    /// An author called `name`, named by posts as `slug`, in the site's
+    /// default language, with nothing else said about them yet.
+    #[must_use]
+    pub fn named(slug: Slug, name: &str) -> Self {
+        Self {
+            language: None,
+            slug,
+            name: name.to_owned(),
+            role: None,
+            credentials: None,
+            same_as: Vec::new(),
+            photo: None,
+            bio: String::new(),
+        }
+    }
+
     /// The slug.
     pub fn slug(&self) -> &Slug {
         &self.slug

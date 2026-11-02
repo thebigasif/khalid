@@ -172,12 +172,13 @@ main > .cards { margin-block-start: 3rem; }
 /* An author: a centred header over the bio, then their posts as cards and
    the other authors as small cards in a row. */
 .author { max-inline-size: var(--measure); margin: 1.5rem auto var(--space-section); text-align: center; }
-.author-header .image { margin-inline: auto; max-inline-size: 7rem; }
-.author-header .image img { aspect-ratio: 1; background: var(--harbor-tint); }
-.author-header h1 { margin-block: 1.25rem 0.25rem; }
-.author-role { margin-block: 0 1.25rem; font-size: 1.125rem; }
-.author-bio { font-size: 1.125rem; }
-.author-profiles { justify-content: center; }
+.author-header, .author-header:has(.author-photo) { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 1.25rem; }
+.author-photo { inline-size: clamp(8rem, 24vw, 10rem); }
+.author-photo img { background: var(--harbor-tint); }
+.author-header h1 { margin-block: 0 0.25rem; }
+.author-role { font-size: 1.125rem; }
+.author-bio { margin-inline: auto; font-size: 1.125rem; }
+.author-intro .author-profiles { justify-content: center; }
 .author ~ section > h2, .people-list { margin-block-end: 1.5rem; }
 .author ~ section > h2 { font-size: calc(var(--text-h2) * 0.85); }
 .author ~ section + section { margin-block-start: var(--space-section); }

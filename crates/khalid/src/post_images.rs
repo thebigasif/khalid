@@ -17,6 +17,7 @@ use khalid_seo::ShareImage;
 use khalid_server::MediaType;
 
 use crate::build_pages::{LanguagePages, Page};
+use crate::post_files::library_photo;
 use crate::post_files::{self, IMAGE, PostFile};
 use crate::post_photos::{self, Shown};
 use crate::vector_size;
@@ -103,17 +104,19 @@ pub(crate) fn attach(
 
 /// Draws the lead image of a post, or the photo of an author, at the top
 /// of `page`, when it is a file beside the page's file with its sizes among
-/// `pictures`: fetched at once with high priority, as the one large image
-/// at the top (BL-WEB-5), and shared as the page's Open Graph and X image.
-/// Returns what it drew. An image anywhere else is left out until it has
-/// sizes, so no page shifts while it loads.
+/// `pictures`, or a file in the media library: fetched at once with high
+/// priority, as the one large image at the top (BL-WEB-5), and shared as
+/// the page's Open Graph and X image. Returns what it drew. An image
+/// anywhere else is left out until it has sizes, so no page shifts while
+/// it loads.
 fn lead(
     config: &Config,
     page: &mut Page,
     (pictures, vectors): (&BTreeMap<String, Picture>, &BTreeMap<String, Picture>),
 ) -> Option<RenderImage> {
     let image = page.lead.as_ref()?;
-    let address = format!("{}{}", page.meta.path, lead_name(image));
+    let address = library_photo::address(config, &image.src)
+        .unwrap_or_else(|| format!("{}{}", page.meta.path, lead_name(image)));
     let Some(picture) = pictures.get(&address).or_else(|| vectors.get(&address)) else {
         tracing::warn!(image = %image.src, page = %page.meta.path, "the lead image is not a file beside its page, so it is left out");
         return None;
@@ -136,6 +139,12 @@ fn lead(
         let height = u32::try_from(scaled.checked_div(u64::from(picture.width))?).ok()?;
         Some(ShareImage::new(url, file.width, height, &image.alt))
     });
+    // An author's photo is also the `image` of the Person their page is about.
+    if matches!(page.body, PageBody::Author(_))
+        && let Some(profile) = &mut page.seo.author_profile
+    {
+        profile.image.clone_from(&shared);
+    }
     page.seo.share_image = shared;
     Some(drawn)
 }
