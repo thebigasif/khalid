@@ -27,6 +27,8 @@ article.post
   nav.toc-box "Contents"
   div.post-body.post-marked: the text
   footer.post-footer
+  section.author-box
+    h2: About the author
 section.mentions
   h2: Posts that link here
 section.related.related-scroll

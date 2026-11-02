@@ -24,8 +24,8 @@ pub(crate) static HARBOR: Pack = Pack {
     ],
     tokens: include_str!("../packs/harbor/tokens.toml"),
     reader: &[
-        (ReaderSwitch::ReadingTime, false),
-        (ReaderSwitch::AuthorBox, false),
+        (ReaderSwitch::ReadingTime, true),
+        (ReaderSwitch::AuthorBox, true),
     ],
     options: &[
         parts::on(parts::LOGO),
