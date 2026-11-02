@@ -1,7 +1,7 @@
 [package]
 name = "khalid-media"
 version.workspace = true
-description = "The media library, and images resized and encoded at publish in responsive sizes, cached by content hash."
+description = "The media library, and images resized and encoded at publish in responsive sizes, AVIF and WebP, cached by content hash."
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -18,6 +18,7 @@ image = { version = "0.25", default-features = false, features = ["jpeg", "png",
 khalid-core.workspace = true
 khalid-outbound = { path = "../khalid-outbound", version = "1.2.0" }
 rayon = "1"
+ravif = { version = "0.13", default-features = false, features = ["threading"] }
 serde.workspace = true
 serde_json.workspace = true
 toml = "1.1"

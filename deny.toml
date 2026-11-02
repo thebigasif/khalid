@@ -25,6 +25,10 @@ ignore = [
   # to RustCrypto releases with the fixes.
   { id = "RUSTSEC-2023-0071", reason = "rsa: the Marvin attack needs private-key decryption or signing; Khalid only verifies RS256 passkey signatures with public keys" },
   { id = "RUSTSEC-2026-0387", reason = "crypto-bigint 0.5: the leaks are in arithmetic on secret integers; passkey checks use public keys and public signatures only" },
+  # The AVIF encoder, rav1e under ravif, builds with paste, which is flagged
+  # unmaintained, not vulnerable (ADR "AVIF images are made with ravif").
+  # Review again 2027-05-02, or when rav1e moves to pastey.
+  { id = "RUSTSEC-2024-0436", reason = "paste: a macro run at compile time inside rav1e; it reads no input of ours and is not in the binary" },
 ]
 
 [licenses]
@@ -69,6 +73,10 @@ exceptions = [
   { crate = "webauthn-rs", allow = ["MPL-2.0"] },
   { crate = "webauthn-rs-core", allow = ["MPL-2.0"] },
   { crate = "webauthn-rs-proto", allow = ["MPL-2.0"] },
+  # The AVIF encoder (ADR "AVIF images are made with ravif"): rav1e's fuzzing
+  # harness adds LLVM's NCSA licence, a permissive BSD-style one, on top of
+  # MIT or Apache-2.0.
+  { crate = "libfuzzer-sys", allow = ["NCSA"] },
 ]
 confidence-threshold = 0.9
 unused-allowed-license = "allow"
@@ -87,7 +95,9 @@ highlight = "all"
 deny = [
   { crate = "openssl", reason = "rustls everywhere; one TLS stack, no system library" },
   { crate = "openssl-sys", reason = "rustls everywhere; one TLS stack, no system library" },
-  { crate = "anyhow", wrappers = ["khalid"], reason = "libraries use thiserror enums (BL-ERR-1); only the binary may wrap" },
+  # av1-grain and av-scenechange are parts of the AVIF encoder; their errors
+  # end inside rav1e and reach khalid-media as ravif's own error type.
+  { crate = "anyhow", wrappers = ["khalid", "av1-grain", "av-scenechange"], reason = "libraries use thiserror enums (BL-ERR-1); only the binary may wrap" },
 ]
 
 [sources]
