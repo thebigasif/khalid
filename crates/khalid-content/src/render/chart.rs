@@ -5,7 +5,7 @@
 
 use std::fmt::Write as _;
 
-use super::{Renderer, attribute};
+use super::{Renderer, attribute, chart_plot};
 use crate::{ChartBlock, ChartKind, ChartTable, ChartValue};
 
 /// The share of the width the longest bar takes, leaving room for its value.
@@ -50,9 +50,9 @@ impl Renderer<'_> {
                 self.html.push_str("</ul>\n");
             }
             let unit = chart.unit.as_deref().unwrap_or_default();
-            // Columns and lines draw as bars until their plot is drawn.
             let drawing = match chart.kind {
-                ChartKind::Bar | ChartKind::Column | ChartKind::Line => bars(table, unit),
+                ChartKind::Bar => bars(table, unit),
+                ChartKind::Column | ChartKind::Line => chart_plot::plot(chart.kind, table, unit),
             };
             self.html.push_str(&drawing);
             self.html.push_str(&numbers(&title, table, unit));

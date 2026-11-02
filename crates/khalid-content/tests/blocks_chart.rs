@@ -1,5 +1,5 @@
 //! The chart block, `:::chart`, numbers written in the post or in a CSV
-//! file beside it (engagement task, part 1).
+//! file beside it (engagement task).
 
 use khalid_content::{BlockKind, ChartBlock, ChartKind, ChartTable, parse_blocks, print_blocks};
 
@@ -138,4 +138,41 @@ fn a_chart_whose_file_was_not_found_keeps_its_caption_and_file_link() {
         html,
         "<figure class=\"chart chart-column\">\n<figcaption>Traffic <a class=\"chart-file\" href=\"traffic.csv\" download>CSV</a></figcaption>\n</figure>\n"
     );
+}
+#[test]
+fn a_line_chart_draws_an_svg_with_a_legend_and_a_table_for_screen_readers() {
+    let html = html(VISITS);
+    assert!(
+        html.starts_with(
+            "<figure class=\"chart chart-line\">\n<figcaption>Visits from search</figcaption>\n"
+        ),
+        "{html}"
+    );
+    assert!(html.contains("<ul class=\"chart-legend\" aria-hidden=\"true\"><li><span class=\"s1\"></span>Google</li><li><span class=\"s2\"></span>Bing</li></ul>"), "{html}");
+    assert!(
+        html.contains(
+            "<svg class=\"chart-drawing\" width=\"100%\" height=\"268\" aria-hidden=\"true\">"
+        ),
+        "{html}"
+    );
+    assert!(html.contains("<line class=\"chart-trace s2\""), "{html}");
+    assert!(html.contains("<table class=\"visually-hidden\">\n<caption>Visits from search</caption>\n<thead><tr><th scope=\"col\">Month</th><th scope=\"col\">Google</th><th scope=\"col\">Bing</th></tr></thead>"), "{html}");
+    assert!(
+        html.contains("<tr><th scope=\"row\">Mar</th><td>17k</td><td>-2k</td></tr>"),
+        "{html}"
+    );
+    assert!(!html.contains("<script"), "{html}");
+    insta::assert_snapshot!(html);
+}
+
+#[test]
+fn a_column_chart_draws_round_gridlines_and_columns_below_zero() {
+    let html = html(
+        ":::chart{type=\"column\" title=\"Change in clicks\" unit=\"%\"}\nQuarter, Change\nQ1, 12\nQ2, -4\nQ3, 7.5\n:::\n",
+    );
+    for tick in [">-5%<", ">0%<", ">5%<", ">10%<", ">15%<"] {
+        assert!(html.contains(tick), "{tick}: {html}");
+    }
+    assert_eq!(html.matches("<rect class=\"s1\"").count(), 3, "{html}");
+    insta::assert_snapshot!(html);
 }

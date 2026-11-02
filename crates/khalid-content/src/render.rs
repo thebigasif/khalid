@@ -17,6 +17,7 @@ use crate::{
 
 mod cards;
 mod chart;
+mod chart_plot;
 mod forms;
 mod formula;
 mod layout;
