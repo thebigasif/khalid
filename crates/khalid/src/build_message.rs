@@ -39,6 +39,15 @@ pub(crate) fn no_slug(path: &Path) -> UserMessage {
     )
 }
 
+/// The message when a series' `name` has nothing to make an address from.
+pub(crate) fn no_series_slug(name: &str) -> UserMessage {
+    UserMessage::new(
+        format!("The series \"{name}\" has no letters or digits to make its address from."),
+        "Readers reach a series through its own page, so it needs an address.",
+        "Give the series a name with at least one letter or digit.",
+    )
+}
+
 /// The message when `routes.toml` gives the file at `path` no address.
 pub(crate) fn route(path: &Path, error: &AddressError) -> UserMessage {
     UserMessage::new(

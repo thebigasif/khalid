@@ -9,6 +9,7 @@
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
 {% endif %}{% set slot = page.featured if template.options.featured else none -%}
 {% if slot %}{{ featured_slot(slot) }}
 {% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}

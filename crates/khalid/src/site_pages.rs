@@ -19,7 +19,8 @@ use crate::comment_pages::{self, ShownComments};
 use crate::content_feed::ContentFeed;
 use crate::form_pages::{self, LiveForms};
 use crate::listed_post::ListedPost;
-use crate::post_files::Assets;
+use crate::newsletter_files::archive_pages;
+use crate::post_files::{Assets, charts};
 use crate::post_heads::{self, PostHeads};
 use crate::post_photos::Shown;
 use crate::site_content::Catalog;
@@ -126,7 +127,7 @@ impl SitePages {
         let theme = if config.mode().has_pages() {
             let look = look::of(folder, &config)?;
             let tokens = look::tokens(folder, &look)?;
-            let renderer = Renderer::with_pack(folder, &look::render_pack(&look))
+            let renderer = Renderer::with_pack(folder, &look::render_pack(&look, &config))
                 .map_err(|error| build_message::render(&error))?
                 .with_brand(&tokens.brand);
             let rules = assets::rules(folder, &look)?;
@@ -423,17 +424,21 @@ impl SitePages {
             .as_ref()
             .map_or("", |theme| theme.stylesheet.path().as_str());
         let today = self.0.clock.now().date_naive();
+        let content = &*charts::read(folder, content);
         let mut languages = build_pages::pages(config, routes, (content, others), href, today)?;
         let renderer = theme.as_ref().map(|theme| &theme.renderer);
         post_lock::lock(config, content, renderer, &mut languages);
         let categories = categories::of(folder)?;
         if let Some(theme) = theme {
             search_page::add(config, &theme.renderer, &mut languages)?;
+            archive_pages::add(folder, config, (&theme.renderer, today), &mut languages)?;
             // A saved post's page alone needs no list, and its content
             // holds too few posts to make one.
             if which == Which::All {
                 let sources = (content, categories.as_slice());
                 build_lists::add((config, routes), &theme.renderer, sources, &mut languages)?;
+                let renderer = &theme.renderer;
+                build_pages::discovery_pages((config, routes), renderer, content, &mut languages)?;
                 build_sitemap::add(config, &theme.renderer, &mut languages)?;
             }
             own_descriptions::fill(config, &theme.renderer, &mut languages)?;
@@ -492,58 +497,7 @@ impl SitePages {
         let listed = languages.into_iter().flat_map(|language| language.listed);
         Ok((served, listed.collect()))
     }
-
-    /// The saved `files`, relative to the site folder, and their other
-    /// language versions, read again as posts, with every author their
-    /// pages may name, and the dated posts of the last full render, which
-    /// their related posts are chosen from. `None` when a saved file is
-    /// not a post the last full render read, or one cannot be read now:
-    /// the full render then shows it, or says what is wrong.
-    ///
-    /// Also `None` when a post or an author's bio has a wikilink, which may
-    /// name a page outside these, so the page could differ from the full
-    /// render's.
-    fn saved_posts(&self, files: &[PathBuf]) -> Option<(SiteContent, Vec<ListedPost>)> {
-        let outline = self
-            .0
-            .outline
-            .lock()
-            .unwrap_or_else(PoisonError::into_inner);
-        let posts = &outline.content.posts;
-        let mut saved = SiteContent::default();
-        for file in files {
-            let mut doc = posts.iter().find(|doc| &doc.path == file)?.clone();
-            site_outline::read_again(&self.0.folder, &mut doc)?;
-            saved.posts.push(doc);
-        }
-        // A page's head links its other language versions, so they are
-        // rendered with it.
-        let keys: Vec<&String> = saved
-            .posts
-            .iter()
-            .filter_map(|doc| doc.front.translation.as_ref())
-            .collect();
-        let versions = posts.iter().filter(|doc| {
-            let key = doc.front.translation.as_ref();
-            key.is_some_and(|key| keys.contains(&key)) && !files.contains(&doc.path)
-        });
-        let mut versions: Vec<_> = versions.cloned().collect();
-        for doc in &mut versions {
-            site_outline::read_again(&self.0.folder, doc)?;
-        }
-        saved.posts.extend(versions);
-        saved.authors.clone_from(&outline.content.authors);
-        let bodies = saved.posts.iter().map(|doc| &doc.body);
-        let mut bodies = bodies.chain(saved.authors.iter().map(|doc| &doc.body));
-        if bodies.any(|body| body.contains(WIKILINK)) {
-            return None;
-        }
-        Some((saved, outline.listed.clone()))
-    }
 }
-
-/// How a wikilink starts in markdown, such as `[[link-equity]]`.
-const WIKILINK: &str = "[[";
 
 impl Render for SitePages {
     type Error = Unrendered;
@@ -595,3 +549,6 @@ mod tests;
 
 #[path = "site_pages_search.rs"]
 mod search;
+
+#[path = "site_pages_saved.rs"]
+mod saved;

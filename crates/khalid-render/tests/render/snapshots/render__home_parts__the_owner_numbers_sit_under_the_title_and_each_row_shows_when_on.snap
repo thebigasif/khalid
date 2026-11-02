@@ -1,0 +1,14 @@
+---
+source: crates/khalid-render/tests/render/home_parts.rs
+expression: "part(&page, r#\"<dl class=\"hero-stats\">\"#, \"</dl>\")"
+---
+<dl class="hero-stats">
+<div>
+<dt>small business blogs studied</dt>
+<dd>140</dd>
+</div>
+<div>
+<dt>posts read</dt>
+<dd>9,200</dd>
+</div>
+</dl>

@@ -2,6 +2,7 @@
 //! sitemap and the topic cluster. Each field has a test for what it reads
 //! and one for the exact message when it is wrong.
 
+use std::num::NonZeroU32;
 use std::path::Path;
 
 use khalid_content::{ReviewState, ShareCards, Sitemap, TopicRole, parse_post};
@@ -160,6 +161,30 @@ fn reads_a_topic_cluster_whose_role_is_member_unless_it_says_pillar() {
     assert_eq!(post.front.cluster.unwrap().role, TopicRole::Pillar);
     let plain = parse_post(Path::new("posts/a.md"), "---\ntitle: A\n---\n").unwrap();
     assert_eq!(plain.front.cluster, None);
+}
+
+#[test]
+fn reads_the_series_a_post_is_part_of_and_its_place_in_it() {
+    let text = "---\ntitle: A\nseries:\n  name: Topic clusters from scratch\n  order: 2\n---\n";
+    let post = parse_post(Path::new("posts/a.md"), text).unwrap();
+    let series = post.front.series.unwrap();
+    assert_eq!(series.name, "Topic clusters from scratch");
+    assert_eq!(series.order.map(NonZeroU32::get), Some(2));
+    let unordered = "---\nseries:\n  name: Topic clusters from scratch\n---\n";
+    let post = parse_post(Path::new("posts/a.md"), unordered).unwrap();
+    assert_eq!(post.front.series.unwrap().order, None);
+}
+
+#[test]
+fn refuses_a_series_without_a_name_or_with_part_zero() {
+    assert_eq!(
+        message("---\nseries:\n  order: 2\n---\n"),
+        "posts/a.md, line 3, field \"series\": missing field `name`"
+    );
+    assert_eq!(
+        message("---\nseries:\n  name: Clusters\n  order: 0\n---\n"),
+        "posts/a.md, line 4, field \"series\": invalid value: integer `0`, expected a nonzero u32"
+    );
 }
 
 #[test]

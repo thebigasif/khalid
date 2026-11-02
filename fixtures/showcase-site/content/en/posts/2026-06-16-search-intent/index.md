@@ -47,7 +47,7 @@ A blog is at its best on "know" and "compare". When a search is really about buy
 
 ## Read the results page first
 
-You do not need a tool to find the goal. The search engine has already worked it out, and it shows you on the results page. Search the phrase in a private window and study the first page for ten minutes.
+You do not need a tool to find the search intent. The search engine has already worked it out, and it shows you on the results page. Search the phrase in a private window and study the first page for ten minutes.
 
 Look for these signals:
 
@@ -87,7 +87,7 @@ If both goals are strong, write two posts. One answers "what is it", the other c
 
 ## Shape the page to the searcher's goal
 
-Once you know the goal, it decides most of your choices:
+Once you know the search intent, it decides most of your choices:
 
 - **The title.** It should promise the thing the searcher wants, in their words.
 - **The first lines.** Settle the question early for "know" searches. Name the options early for "compare" searches.

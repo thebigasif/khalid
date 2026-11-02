@@ -38,6 +38,8 @@ pub(crate) static ATLAS: Pack = Pack {
         parts::CARD_AUTHOR_ROLE,
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::SideStart),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::Numbered),
         parts::related(RelatedLayout::Grid),
         parts::related_count(3),
@@ -46,5 +48,9 @@ pub(crate) static ATLAS: Pack = Pack {
         slot::newsletter("none"),
         slot::cta_band("both"),
         slot::CTA_BUTTON_ON,
+        parts::HERO_STATS,
+        parts::on(parts::TOPIC_TABS),
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };

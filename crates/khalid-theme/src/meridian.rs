@@ -35,12 +35,18 @@ pub(crate) static MERIDIAN: Pack = Pack {
         parts::related(RelatedLayout::Scroll),
         parts::related_count(3),
         parts::contents(ContentsPlacement::None),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::Nested),
         slot::share("none"),
         slot::share_networks(&["linkedin", "x", "email"]),
         slot::newsletter("both"),
         slot::cta_band("post"),
         slot::CTA_BUTTON_ON,
+        parts::HERO_STATS,
+        parts::on(parts::TOPIC_TABS),
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };
 

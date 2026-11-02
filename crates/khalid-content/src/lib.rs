@@ -8,6 +8,7 @@
 
 mod block;
 mod body_check;
+mod chart;
 mod content_error;
 mod content_hash;
 mod directive;
@@ -29,6 +30,10 @@ pub use block::{
     Block, BlockError, BlockKind, CalloutKind, GalleryImage, Visibility, parse_blocks, print_blocks,
 };
 pub use body_check::check_bodies;
+pub use chart::{
+    ChartBlock, ChartKind, ChartRow, ChartTable, ChartValue, MAX_CHART_ROWS, MAX_CHART_SERIES,
+    with_chart_files,
+};
 pub use content_error::ContentError;
 pub use content_hash::ContentHash;
 pub use embed::{EMBED_PROVIDERS, EmbedProvider};
@@ -36,18 +41,20 @@ pub use form::{FieldKind, FormField};
 pub use layout::{Column, ProsConsBlock};
 pub use post::{MAX_RELATED, MAX_SECONDARY_KEYWORDS, Post, PostFront, parse_post};
 pub use post_fields::{
-    LeadImage, ReviewState, ShareCard, ShareCards, Sitemap, TopicCluster, TopicRole,
+    LeadImage, PostSeries, ReviewState, ShareCard, ShareCards, Sitemap, TopicCluster, TopicRole,
 };
 pub use render::{
-    CTA_MARK, Gated, Heading, Image, Link, Rendered, render, render_gated, render_linked,
+    CTA_MARK, ENGINE_TEXT, Gated, Heading, Image, Link, Rendered, render, render_framed,
+    render_gated, render_linked,
 };
 pub use schemas::{
-    AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, SnippetFront,
+    AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, PageHub,
+    SnippetFront,
 };
 pub use site_content::{Document, SiteContent, read_content};
 pub use structured::{
-    BusinessBlock, HowToBlock, ProductBlock, Question, REVIEW_TYPES, RecipeBlock, ReviewBlock,
-    Step, StructuredBlock, VideoBlock,
+    BusinessBlock, HowToBlock, ProductBlock, Question, REVIEW_TYPES, ReaderRatings, RecipeBlock,
+    ReviewBlock, Step, StructuredBlock, VideoBlock,
 };
 pub use tree::{Collection, ContentTree, Entry, Language};
-pub use wikilink::{WikiTarget, Wikilinks};
+pub use wikilink::{GLOSSARY, WikiTarget, Wikilinks};

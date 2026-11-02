@@ -1,0 +1,17 @@
+{#- One case study or changelog entry. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "slots.html" import cta_band -%}
+<article class="page entry-page">
+<p class="back-link"><a href="{{ page.back.href }}">{{ t.all_case_studies if page.kind == "case_studies" else t.all_changes }}</a></p>
+<header class="entry-head">
+{% if page.client or page.version %}<p class="entry-label">{{ page.client if page.client else t.entry_version | replace("{version}", page.version) }}</p>
+{% endif %}<h1>{{ page.title }}</h1>
+{% if page.date %}<p class="entry-date"><time datetime="{{ page.date }}">{{ page.date | date }}</time></p>
+{% endif %}{% if page.outcome %}<p class="entry-outcome"><span>{{ t.entry_result }}</span> {{ page.outcome }}</p>
+{% endif %}</header>
+<div class="page-body">
+{{ page.body | place_cta(cta_band(template.cta) if template.cta else "") }}
+</div>
+</article>
+{% endblock %}

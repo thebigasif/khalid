@@ -6,6 +6,7 @@
 use std::fs;
 use std::path::Path;
 
+use khalid_content::EMBED_PROVIDERS;
 use khalid_core::{Config, ConfigError, Environment, UserMessage};
 use khalid_seo::SeoSite;
 
@@ -49,4 +50,13 @@ pub(crate) fn check(site: &Path, config: &Config) -> Result<(), UserMessage> {
         field: mistake.key,
         problem: mistake.problem,
     }))
+}
+
+/// The origins a page may show in a frame: the embed providers' players
+/// and each host `[media] embed_domains` in `config` allows, for the
+/// Content Security Policy's `frame-src`.
+pub(crate) fn frame_origins(config: &Config) -> Vec<String> {
+    let players = EMBED_PROVIDERS.iter().map(|p| p.frame_origin().to_owned());
+    let allowed = (config.media().embed_domains.iter()).map(|host| format!("https://{host}"));
+    players.chain(allowed).collect()
 }

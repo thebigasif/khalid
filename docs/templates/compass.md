@@ -52,12 +52,18 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 
 | Option | Default | Values | What it changes |
 |---|---|---|---|
+| `hero_stats` | none | up to four lines | Numbers under the front page's title, each written `number \| what it counts`. Nothing shows until you write them. |
+| `topic_tabs` | `true` | `true`, `false` | Tabs on the front page, one per topic, each with its four newest posts. They work with scripts off. |
+| `video_section` | `true` | `true`, `false` | A row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true` | `true`, `false` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `logo` | `true` | `true`, `false` | The header shows the logo from your main site in place of the blog's name. Without a logo, the name shows. |
 | `cta_button` | `true` | `true`, `false` | The header shows your `[template.cta]` as a button. |
 | `breadcrumbs` | `true` | `true`, `false` | Each page shows the trail of links from the home page to it. |
 | `cards` | `image` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists. |
 | `pagination` | `numbered` | `pages`, `numbered` | The links under a long list: newer and older, or a link to each page. |
 | `contents` | `inline` | `inline`, `inline-folded`, `side-end`, `side-start`, `none` | Where a long post's contents go. `inline` is the open box at the top. |
+| `reading_progress` | `bar` | `bar`, `none` | A thin line at the top of a post that fills as the reader scrolls. |
+| `header_search` | `button` | `button`, `link`, `none` | What the header's search does on a served blog: open a search dialog, open the search page, or nothing. |
 | `contents_numbers` | `numbered` | `none`, `numbered`, `nested` | How the contents are numbered: not at all, as a route (01, 02, 03), or 1, 1.1, 2. |
 | `share` | `end` | `none`, `top`, `end`, `both` | Where a post shows its share links. |
 | `share_networks` | `["linkedin", "x", "facebook", "email"]` | any of `x`, `linkedin`, `facebook`, `bluesky`, `reddit`, `hacker-news`, `whatsapp`, `email` | Which networks the share links go to, in order. |

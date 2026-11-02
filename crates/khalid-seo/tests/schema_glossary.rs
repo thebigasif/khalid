@@ -5,7 +5,7 @@
 mod common;
 
 use common::{demo_site, internal_links_post, internal_links_post_de, locale, path};
-use khalid_seo::{PageKind, SchemaGraph, SchemaNode, SeoPage, page_graph};
+use khalid_seo::{ListEntry, PageKind, SchemaGraph, SchemaNode, SeoPage, page_graph};
 
 fn kinds(graph: &SchemaGraph) -> Vec<&str> {
     graph.nodes().iter().map(SchemaNode::kind).collect()
@@ -45,6 +45,29 @@ fn the_glossary_index_is_the_defined_term_set() {
         set.id().map(khalid_core::AbsoluteUrl::as_str),
         Some("https://www.example.com/blog/glossary/#termset")
     );
+}
+
+#[test]
+fn the_glossary_index_names_each_term_at_its_own_id() {
+    let mut index = SeoPage::new(
+        PageKind::GlossaryIndex,
+        locale("en"),
+        path("/glossary/"),
+        "Glossary",
+    );
+    let url = "https://www.example.com/blog/glossary/anchor-text/";
+    let url = khalid_core::AbsoluteUrl::parse(url).unwrap();
+    index.terms = vec![ListEntry::new("Anchor text", url)];
+    let graph = page_graph(&demo_site(), &index).unwrap();
+    let json: serde_json::Value = serde_json::from_str(&graph.to_json()).unwrap();
+    let set = json["@graph"].as_array().unwrap().last().unwrap().clone();
+    let term = &set["hasDefinedTerm"][0];
+    assert_eq!(term["@type"], "DefinedTerm");
+    assert_eq!(
+        term["@id"],
+        "https://www.example.com/blog/glossary/anchor-text/#term"
+    );
+    assert_eq!(term["name"], "Anchor text");
 }
 
 #[test]

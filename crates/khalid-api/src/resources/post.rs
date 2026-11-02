@@ -46,9 +46,40 @@ pub struct Post {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[schema(value_type = Option<HeadParts>)]
     head: Option<PostHead>,
+    /// The series the post is one part of, if any.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    series: Option<PostSeries>,
     /// The body, in the formats asked for.
     #[serde(flatten)]
     bodies: Bodies,
+}
+
+/// The series a post is one part of: posts written to be read in order.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, ToSchema)]
+pub struct PostSeries {
+    /// The series' name, the same on every part.
+    #[schema(example = "Topic clusters from scratch")]
+    name: String,
+    /// The end of the series page's address.
+    #[serde(serialize_with = "display")]
+    #[schema(value_type = String, example = "topic-clusters-from-scratch")]
+    slug: Slug,
+    /// The post's place in the series, counted from 1, as the writer set
+    /// it. Absent when the writer left the order to the dates.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    order: Option<u32>,
+}
+
+impl PostSeries {
+    /// The series called `name`, whose page ends in `slug`, with the post
+    /// at `order`.
+    pub fn new(name: &str, slug: Slug, order: Option<u32>) -> Self {
+        Self {
+            name: name.to_owned(),
+            slug,
+            order,
+        }
+    }
 }
 
 /// A post's body in each format. A format left out of `formats` is absent.
@@ -116,6 +147,7 @@ impl Post {
             published_at,
             updated_at: published_at,
             head: None,
+            series: None,
             bodies: Bodies::default(),
         }
     }
@@ -154,10 +186,18 @@ impl Post {
         Self { updated_at, ..self }
     }
 
-    /// The same post with the head of its page, or none.
+    /// The same post with the head of its page, or none, held packed: a
+    /// store keeps a head for every post and sends few of them.
     #[must_use]
-    pub fn with_head(self, head: Option<PostHead>) -> Self {
+    pub fn with_head(self, head: Option<&PostHead>) -> Self {
+        let head = head.map(PostHead::packed);
         Self { head, ..self }
+    }
+
+    /// The same post as a part of `series`, or of none.
+    #[must_use]
+    pub fn with_series(self, series: Option<PostSeries>) -> Self {
+        Self { series, ..self }
     }
 
     /// The same post with these bodies.

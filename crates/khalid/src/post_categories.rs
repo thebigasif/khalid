@@ -69,6 +69,14 @@ fn name_page(body: &mut PageBody, named: &BTreeMap<String, (usize, &str)>) {
             home.picks.iter_mut().for_each(name_card);
             (home.sections.iter_mut())
                 .for_each(|section| section.posts.iter_mut().for_each(name_card));
+            home.videos.iter_mut().for_each(name_card);
+            home.podcasts.iter_mut().for_each(name_card);
+            for tab in &mut home.tabs {
+                tab.posts.iter_mut().for_each(name_card);
+                if let Some((_, name)) = named.get(&tab.href) {
+                    (*name).clone_into(&mut tab.title);
+                }
+            }
             if home.topics.is_empty() {
                 let links = topics(&home.listing.posts, named);
                 if !links.is_empty() {
@@ -90,6 +98,11 @@ fn name_page(body: &mut PageBody, named: &BTreeMap<String, (usize, &str)>) {
             post.related.iter_mut().for_each(name_card);
         }
         PageBody::Author(author) => author.posts.iter_mut().for_each(name_card),
+        PageBody::Hub(hub) => {
+            name(&mut hub.topic);
+            hub.chapters.iter_mut().for_each(name_card);
+            hub.latest.iter_mut().for_each(name_card);
+        }
         _ => {}
     }
 }

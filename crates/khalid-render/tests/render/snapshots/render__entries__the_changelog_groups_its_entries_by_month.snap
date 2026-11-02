@@ -1,0 +1,20 @@
+---
+source: crates/khalid-render/tests/render/entries.rs
+expression: main_of(&page)
+---
+ id="main" tabindex="-1">
+
+<h1>Changelog</h1>
+<section class="entry-month" aria-labelledby="month-2026-10">
+<h2 id="month-2026-10">October 2026</h2>
+<div class="entries entries-changelog">
+<article class="entry">
+<p class="entry-label">Version 1.3.0</p>
+<h3><a href="/blog/changelog/glossary-pages/">Glossary pages from A to Z</a></h3>
+<time datetime="2026-10-28">28 October 2026</time>
+<div class="entry-body">
+<p>Every glossary gets a page.</p>
+</div>
+</article>
+</div>
+</section>

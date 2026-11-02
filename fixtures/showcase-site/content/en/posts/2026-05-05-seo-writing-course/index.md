@@ -34,7 +34,7 @@ This SEO writing course is free and has seven short lessons. Each one teaches a 
 
 It is for people who write for a small business blog and want the posts to be found. You might be a marketer who writes on the side, a founder, or a new writer on a content team. You do not need to know any code or own any paid tool.
 
-Pick one real topic before you start. Every exercise builds on the one before it, so by lesson seven you hold a finished draft about that topic.
+Pick one real topic before you start the SEO writing course. Every exercise builds on the one before it, so by lesson seven you hold a finished draft about that topic.
 
 ## How to take the course
 
@@ -126,11 +126,11 @@ Fresh eyes catch what you no longer see. Give them the question your post answer
 Publish the post, then put a date in your calendar to check it in three months. Look at the searches it shows up for in Google's free [Search Console](https://search.google.com/search-console/about). They tell you which questions to add next.
 
 :::callout{kind=tip}
-Take the course again with a second topic. The lessons go faster the second time, and you will spot what you skipped the first time.
+Take the SEO writing course again with a second topic. The lessons go faster the second time, and you will spot what you skipped the first time.
 :::
 
 ## How this page is marked up
 
-This page carries [[structured-data|structured data for a course]]: a short block of code that names the course, says who runs it and states that it is free and online. Khalid writes it from the post's settings, so the page and the code always agree.
+This page carries [[glossary:structured-data|structured data for a course]]: a short block of code that names the course, says who runs it and states that it is free and online. Khalid writes it from the post's settings, so the page and the code always agree.
 
 ::newsletter{label="Your email address" button="Get one lesson a week by email"}

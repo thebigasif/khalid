@@ -32,11 +32,17 @@ pub(crate) static COMPASS: Pack = Pack {
         parts::cards(CardShape::Image),
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::Inline),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::Numbered),
         slot::share("end"),
         slot::share_networks(&["linkedin", "x", "facebook", "email"]),
         slot::newsletter("both"),
         slot::cta_band("post"),
+        parts::HERO_STATS,
+        parts::on(parts::TOPIC_TABS),
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };
 

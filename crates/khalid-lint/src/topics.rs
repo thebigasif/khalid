@@ -85,7 +85,9 @@ impl Rule for GlossaryTermNotLinked {
     fn check(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Hit> {
         let body = post.body_text.to_lowercase();
         let linked = |slug: &str| {
-            post.wikilinks.iter().any(|target| target.trim() == slug)
+            post.wikilinks
+                .iter()
+                .any(|target| crate::address::wikilink_slug(target.trim()) == slug)
                 || post.links.iter().any(|link| {
                     link.kind == LinkKind::Internal
                         && page_key(&link.target).rsplit('/').next() == Some(slug)

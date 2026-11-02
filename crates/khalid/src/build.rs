@@ -17,8 +17,9 @@ use serde::Serialize;
 
 use crate::cli::Output;
 use crate::exit::Exit;
+use crate::newsletter_files::archive_pages;
 use crate::page_code::PageCode;
-use crate::post_files::{Assets, library_photo};
+use crate::post_files::{Assets, charts, library_photo};
 use crate::post_photos::Shown;
 use crate::site_page::HeadNonce;
 use crate::{
@@ -103,7 +104,7 @@ fn theme(site: &Path, config: &Config) -> Result<(Option<(Renderer, Asset)>, Tok
     }
     let look = look::of(site, config)?;
     let tokens = look::tokens(site, &look)?;
-    let renderer = Renderer::with_pack(site, &look::render_pack(&look))
+    let renderer = Renderer::with_pack(site, &look::render_pack(&look, config))
         .map_err(|error| build_message::render(&error))?
         .with_brand(&tokens.brand);
     let css = assets::site_stylesheet(site, &look)?;
@@ -122,6 +123,7 @@ fn build(
     out: &Path,
     clock: &dyn Clock,
 ) -> Result<usize, UserMessage> {
+    let content = &*charts::read(site, content);
     let (theme, tokens) = theme(site, config)?;
     let href = theme
         .as_ref()
@@ -135,8 +137,10 @@ fn build(
     let categories = categories::of(site)?;
     if let Some((renderer, _)) = &theme {
         search_page::add(config, renderer, &mut languages)?;
+        archive_pages::add(site, config, (renderer, today), &mut languages)?;
         let sources = (content, categories.as_slice());
         build_lists::add((config, routes), renderer, sources, &mut languages)?;
+        build_pages::discovery_pages((config, routes), renderer, content, &mut languages)?;
         build_sitemap::add(config, renderer, &mut languages)?;
         own_descriptions::fill(config, renderer, &mut languages)?;
     }

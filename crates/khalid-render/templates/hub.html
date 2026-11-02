@@ -1,0 +1,23 @@
+{#- A topic's hub: the pillar intro, the chapters to read in order, then
+    the topic's newest posts. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards -%}
+<article class="page hub">
+<h1>{{ page.title }}</h1>
+<div class="page-body">
+{{ page.body }}
+</div>
+{% if page.chapters %}<section class="hub-chapters" aria-labelledby="hub-chapters">
+<h2 id="hub-chapters">{{ t.hub_chapters }}</h2>
+<ol>
+{% for chapter in page.chapters %}<li><a href="{{ chapter.href }}"><span class="hub-step" aria-hidden="true">{{ loop.index }}</span><span class="hub-text"><strong>{{ chapter.title }}</strong>{% if chapter.excerpt %}<span>{{ chapter.excerpt }}</span>{% endif %}</span></a></li>
+{% endfor %}</ol>
+</section>
+{% endif %}</article>
+{% if page.latest %}<section class="hub-latest" aria-labelledby="hub-latest">
+<h2 id="hub-latest">{{ t.hub_latest | replace("{name}", page.topic.name) if page.topic else t.latest_posts }}</h2>
+{{ cards(page.latest, 3) }}
+{% if page.topic %}<p class="view-all"><a href="{{ page.topic.href }}">{{ t.view_all | replace("{name}", page.topic.name) }}</a></p>
+{% endif %}</section>
+{% endif %}{% endblock %}

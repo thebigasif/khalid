@@ -46,7 +46,7 @@ pub use media::{
     PictureEditBody,
 };
 pub use menu::{Menu, MenuLink};
-pub use post::{Bodies, Post};
+pub use post::{Bodies, Post, PostSeries};
 pub use post_head::{HeadElement, HeadParts, PostHead};
 pub use post_row::{Gate, IndexStatus, LintCounts, PostRow};
 pub use post_settings::{

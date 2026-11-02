@@ -1,6 +1,5 @@
 ---
 source: crates/khalid/tests/build_files.rs
-assertion_line: 46
 expression: "read(&built(), \"sitemap.xml\")"
 ---
 <?xml version="1.0" encoding="UTF-8"?>
@@ -15,6 +14,7 @@ expression: "read(&built(), \"sitemap.xml\")"
   </sitemap>
   <sitemap>
     <loc>https://www.example.com/blog/sitemaps/pages-en-1.xml</loc>
+    <lastmod>2026-10-26T00:00:00Z</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://www.example.com/blog/sitemaps/pages-de-1.xml</loc>

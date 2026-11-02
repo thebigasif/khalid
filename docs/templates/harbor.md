@@ -66,6 +66,10 @@ Set any of these under `[template.options]`. An option you leave out takes the d
 
 | Option | Default | What it changes |
 |---|---|---|
+| `hero_stats` | none | Up to four numbers under the front page's title, each written `number \| what it counts`. Nothing shows until you write them. |
+| `topic_tabs` | `false` | Tabs on the front page, one per topic, each with its four newest posts. They work with scripts off. |
+| `video_section` | `true` | A row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `logo` | `true` | The header shows your logo from `[brand] logo` in place of the blog's name. |
 | `breadcrumbs` | `true` | Each page shows the trail of links from the home page to it. |
 | `updated_note` | `false` | An updated post says why it was updated, from its `updated_note`. |
@@ -77,6 +81,8 @@ Set any of these under `[template.options]`. An option you leave out takes the d
 | `related` | `"scroll"` | How related posts are laid out: `scroll`, `grid`, `list`, `row` or `links`. |
 | `related_count` | `10` | How many related posts show, from `3` to `10`. |
 | `contents` | `"inline"` | Where a long post's contents go: `inline`, `inline-folded`, `side-end`, `side-start` or `none`. |
+| `reading_progress` | `"bar"` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
+| `header_search` | `"button"` | What the header's search does on a served blog: `button` opens a search dialog, `link` opens the search page, `none` hides it. |
 | `contents_numbers` | `"none"` | How the contents are numbered: `none`, `numbered`, or `nested` for 1, 1.1. |
 | `share` | `"end"` | Where a post shows its share links: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["linkedin", "x", "facebook", "email"]` | The networks the share links go to, in order. |

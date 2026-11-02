@@ -114,6 +114,18 @@ fn photo_and_gif_search_are_off_until_turned_on() {
 }
 
 #[test]
+fn avif_is_off_until_a_site_asks_for_it() {
+    let config = load(SITE, &Environment::empty()).unwrap();
+    assert!(!config.media().avif);
+    let on = load(
+        &format!("{SITE}\n[media]\navif = true\n"),
+        &Environment::empty(),
+    )
+    .unwrap();
+    assert!(on.media().avif);
+}
+
+#[test]
 fn the_search_keys_come_from_the_environment_and_never_print() {
     let env = Environment::from_pairs(&[
         (

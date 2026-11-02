@@ -1,0 +1,1 @@
+warn ambiguous-wikilink: crawl-budget (suggest: write [[glossary:crawl-budget]] to link the glossary term; [[crawl-budget]] links the post)

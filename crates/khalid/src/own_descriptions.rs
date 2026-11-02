@@ -55,6 +55,7 @@ fn key(page: &Page) -> Option<&'static str> {
         | PageBody::Archive(_)
         | PageBody::Channel(_)
         | PageBody::Date(_) => Some("list_description"),
+        PageBody::Entries(_) => Some("entries_description"),
         PageBody::Sitemap(_) => Some("sitemap_description"),
         PageBody::Authors(_) => Some("authors_description"),
         PageBody::Author(_) => Some("author_description"),

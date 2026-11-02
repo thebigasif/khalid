@@ -11,7 +11,7 @@ use std::path::{Path, PathBuf};
 
 use khalid_content::LeadImage;
 use khalid_core::{AbsoluteUrl, Config, UserMessage};
-use khalid_media::{DerivedImage, Format, MediaCache, MediaError, derive};
+use khalid_media::{Avif, DerivedImage, Format, MediaCache, MediaError, derive_with};
 use khalid_render::{ImageCandidate, ImageSet, Loading, PageBody, RenderImage};
 use khalid_seo::ShareImage;
 use khalid_server::MediaType;
@@ -47,6 +47,8 @@ pub(crate) struct MediaFile {
 /// Every size an image is offered in, as a page draws it.
 #[derive(Debug)]
 pub(crate) struct Picture {
+    /// The AVIF sizes, when the site makes them (`avif = true` in `[media]`).
+    avif: Option<ImageSet>,
     /// The WebP sizes. `None` for an SVG, which is its own one size and
     /// which no network takes as a share image.
     webp: Option<ImageSet>,
@@ -163,7 +165,7 @@ pub(crate) fn lead_image(picture: &Picture, image: &LeadImage) -> RenderImage {
         width: picture.width,
         height: picture.height,
         sizes: SIZES.to_owned(),
-        avif: None,
+        avif: picture.avif.clone(),
         webp: picture.webp.clone(),
         fallback: picture.fallback.clone(),
         loading: Loading::Eager,
@@ -187,7 +189,13 @@ pub(crate) fn picture_of(
         MediaType::Jpeg | MediaType::Png | MediaType::Webp => {
             let bytes = post_files::read(site, file)?;
             let cache = MediaCache::new(site);
-            let image = derive(&bytes, &cache).map_err(|error| unmade(&file.source, &error))?;
+            let avif = if config.media().avif {
+                Avif::Make
+            } else {
+                Avif::Skip
+            };
+            let image =
+                derive_with(&bytes, &cache, avif).map_err(|error| unmade(&file.source, &error))?;
             Ok(picture(config, &image))
         }
         MediaType::Svg => {
@@ -202,6 +210,7 @@ pub(crate) fn picture_of(
                 width,
             };
             let picture = Picture {
+                avif: None,
                 webp: None,
                 fallback: ImageSet::new(only, Vec::new()),
                 width,
@@ -216,6 +225,7 @@ pub(crate) fn picture_of(
 /// The picture `image` makes, and its files. `None` without the WebP and
 /// fallback files `derive` always makes.
 fn picture(config: &Config, image: &DerivedImage) -> Option<(Picture, Vec<MediaFile>)> {
+    let mut avif = Vec::new();
     let mut webp = Vec::new();
     let mut fallback = Vec::new();
     let mut made = Vec::with_capacity(image.files.len());
@@ -226,10 +236,10 @@ fn picture(config: &Config, image: &DerivedImage) -> Option<(Picture, Vec<MediaF
             url: address.clone(),
             width: derived.variant.width,
         };
-        if derived.variant.format == Format::Webp {
-            webp.push(candidate);
-        } else {
-            fallback.push(candidate);
+        match derived.variant.format {
+            Format::Avif => avif.push(candidate),
+            Format::Webp => webp.push(candidate),
+            _ => fallback.push(candidate),
         }
         made.push(MediaFile {
             path: derived.path.clone(),
@@ -242,6 +252,7 @@ fn picture(config: &Config, image: &DerivedImage) -> Option<(Picture, Vec<MediaF
         Some(ImageSet::new(first, candidates))
     };
     let picture = Picture {
+        avif: set(avif),
         webp: Some(set(webp)?),
         fallback: set(fallback)?,
         width: image.width,
@@ -309,12 +320,16 @@ fn draw(out: &mut String, picture: &Picture, alt: &str) {
     let srcset = attribute(&fallback.to_srcset());
     let (width, height) = (picture.width, picture.height);
     out.push_str("<picture>\n");
-    if let Some(webp) = &picture.webp {
-        let webp = attribute(&webp.to_srcset());
-        let _ = writeln!(
-            out,
-            "<source type=\"image/webp\" srcset=\"{webp}\" sizes=\"{SIZES}\">"
-        );
+    // The browser takes the first source it can read: the smallest first.
+    let sources = [("avif", &picture.avif), ("webp", &picture.webp)];
+    for (kind, set) in sources {
+        if let Some(set) = set {
+            let srcset = attribute(&set.to_srcset());
+            let _ = writeln!(
+                out,
+                "<source type=\"image/{kind}\" srcset=\"{srcset}\" sizes=\"{SIZES}\">"
+            );
+        }
     }
     let _ = write!(
         out,
@@ -361,6 +376,7 @@ mod tests {
 
     fn pictures(mount: &str) -> BTreeMap<String, Picture> {
         let picture = Picture {
+            avif: None,
             webp: Some(set(mount, "webp")),
             fallback: set(mount, "png"),
             width: 800,
@@ -381,6 +397,19 @@ mod tests {
              <img src=\"/blog/media/3f2a/800.png\" srcset=\"/blog/media/3f2a/320.png 320w, /blog/media/3f2a/800.png 800w\" sizes=\"(min-width: 48rem) 48rem, 100vw\" width=\"800\" height=\"450\" alt=\"A bar chart\" loading=\"lazy\" decoding=\"async\">\n\
              </picture>\n<p>After</p>"
         );
+    }
+
+    #[test]
+    fn avif_comes_first_then_webp_then_the_original_format() {
+        let mut pictures = pictures("/blog/");
+        for picture in pictures.values_mut() {
+            picture.avif = Some(set("/blog/", "avif"));
+        }
+        let html = drawn(&format!("<img src=\"{CHART}\" alt=\"\" />"), &pictures);
+        let avif = html.find("<source type=\"image/avif\" srcset=\"/blog/media/3f2a/320.avif 320w, /blog/media/3f2a/800.avif 800w\"");
+        let webp = html.find("<source type=\"image/webp\"");
+        let img = html.find("<img src=\"/blog/media/3f2a/800.png\"");
+        assert!(avif < webp && webp < img && avif.is_some(), "{html}");
     }
 
     #[test]

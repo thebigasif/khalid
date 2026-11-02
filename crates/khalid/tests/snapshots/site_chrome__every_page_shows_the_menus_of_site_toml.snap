@@ -10,7 +10,7 @@ expression: "format!(\"{header}\\n{footer}\")"
 <li><a href="https://shop.example.com/">Shop</a></li>
 </ul>
 </nav>
-<a class="search-link" href="/blog/search/">Search</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
 </header>
 <footer class="site-footer">
 <nav aria-label="Footer menu">

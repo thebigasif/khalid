@@ -6,13 +6,13 @@
 use std::path::Path;
 
 use khalid_content::{
-    HowToBlock, Image, LeadImage, Link, ProductBlock, RecipeBlock, ReviewBlock, StructuredBlock,
-    VideoBlock,
+    HowToBlock, Image, LeadImage, Link, ProductBlock, ReaderRatings, RecipeBlock, ReviewBlock,
+    StructuredBlock, VideoBlock,
 };
 use khalid_core::{AbsoluteUrl, Config, UserMessage};
 use khalid_seo::{
-    CustomSchema, Entity, EntityRole, FaqItem, HowTo, HowToStep, Money, Offer, Product,
-    ProductReview, Rating, Recipe, Review, SchemaBlock, SeoPage, Video, VideoSource,
+    AggregateRating, CustomSchema, Entity, EntityRole, FaqItem, HowTo, HowToStep, Money, Offer,
+    Product, ProductReview, Rating, Recipe, Review, SchemaBlock, SeoPage, Video, VideoSource,
 };
 
 use crate::build_message;
@@ -127,7 +127,23 @@ fn review_of(block: &ReviewBlock, author: &str) -> Result<Review, UserMessage> {
     let by = block.author.as_deref().unwrap_or(author);
     let mut review = Review::new(&block.item_type, &block.item, rating, by);
     review.body.clone_from(&block.body);
+    review.aggregate = aggregate_of(block.readers.as_ref(), &block.best)?;
     Ok(review)
+}
+
+/// Readers' scores out of `best` as an `AggregateRating`, when the block
+/// gives them.
+fn aggregate_of(
+    readers: Option<&ReaderRatings>,
+    best: &str,
+) -> Result<Option<AggregateRating>, UserMessage> {
+    let Some(readers) = readers else {
+        return Ok(None);
+    };
+    let number = |text: &str| text.parse::<f64>().unwrap_or(f64::NAN);
+    let rating = Rating::new(number(&readers.average), number(best))
+        .map_err(|error| build_message::seo(&error))?;
+    Ok(Some(AggregateRating::new(rating, readers.count)))
 }
 
 /// The recipe block as `Recipe`, its photo made a full address by `full`.
@@ -162,7 +178,7 @@ fn product_of(
     author: &str,
     full: impl Fn(&str) -> Result<AbsoluteUrl, UserMessage>,
 ) -> Result<Option<Product>, UserMessage> {
-    if block.price.is_none() && block.rating.is_none() {
+    if block.price.is_none() && block.rating.is_none() && block.readers.is_none() {
         return Ok(None);
     }
     let seo = |error| build_message::seo(&error);
@@ -185,6 +201,7 @@ fn product_of(
         let rating = Rating::new(number(rating), number(&block.best)).map_err(seo)?;
         product.review = Some(ProductReview::new(rating, author));
     }
+    product.aggregate = aggregate_of(block.readers.as_ref(), &block.best)?;
     Ok(Some(product))
 }
 

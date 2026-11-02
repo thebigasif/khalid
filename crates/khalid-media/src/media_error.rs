@@ -54,6 +54,12 @@ pub enum MediaError {
         /// The encoder's error code, such as `VP8_ENC_ERROR_OUT_OF_MEMORY`.
         code: String,
     },
+    /// The AVIF encoder failed.
+    #[error("the image could not be encoded as AVIF ({reason})")]
+    EncodeAvif {
+        /// What the encoder said.
+        reason: String,
+    },
     /// The blocking thread that makes images stopped before it finished.
     #[error("the image worker stopped before it finished")]
     Worker {

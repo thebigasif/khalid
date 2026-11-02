@@ -82,6 +82,8 @@ The linter blocks a post that links to no other page of your site. Your first po
 
 A post is plain markdown: `##` makes a heading, `[words](/address/)` makes a link, and `![description](picture.jpg)` adds a picture.
 
+`[[slug]]` links another post, page or glossary term by its slug, the last part of its address, and follows it if the address changes. `[[slug|your words]]` sets the link's words. When a post and a glossary term share a slug, `[[slug]]` links the post, so write `[[glossary:slug]]` to link the term. The linter's `ambiguous-wikilink` warning points out each `[[slug]]` that could mean either.
+
 `khalid --site blog new --draft "Your title" --author "Sam Rivera"` makes the same kind of draft for you, with the `author:` line, and makes the author's profile when there is none. Without `--draft`, `new` writes a dated post straight into `content/en/posts/`, so it is live at the next build.
 
 ## 5. Publish it
@@ -161,6 +163,7 @@ khalid restore blog.tar.gz blog-restored
 ## Where next
 
 - `docs/deploy.md`: run Khalid as a service, in Docker, or on Fly.io, Railway, Coolify or a Hetzner server.
-- `docs/newsletters.md`: send posts to subscribers by email.
+- `docs/newsletters.md`: send posts to subscribers by email, and give the newsletter a page with its past issues.
+- `docs/charts-embeds-tracking.md`: charts in posts, interactive tools from sites you allow, and tracking tags on links to your product.
 - `khalid --help` lists every command, and `khalid <command> --help` explains one.
 - `khalid agents` prints the guide for AI agents that write and publish through Khalid.

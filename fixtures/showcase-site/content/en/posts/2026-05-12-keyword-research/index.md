@@ -80,7 +80,7 @@ The results page is the most honest tool for keyword research you will ever use,
 Search each phrase in a private window. Spend two or three minutes on it and note five things:
 
 - **The kind of page.** Guides, lists, product pages, tools, videos or forum threads.
-- **The goal.** Do searchers want to learn, compare, buy or reach one site? This goal is called [[search-intent|search intent]], and our full explainer on it shows how to read the goal in ten minutes.
+- **The goal.** Do searchers want to learn, compare, buy or reach one site? This goal is called [[glossary:search-intent|search intent]], and our full explainer on it shows how to read the goal in ten minutes.
 - **The extra boxes.** A [[featured-snippet]] at the top means a short, direct answer wins. An [[ai-overview|AI Overview]] means the search engine answers before the links, so your page needs something a summary cannot give, such as a template, a worked case or real experience.
 - **Who ranks.** Small sites and forum threads near the top mean the phrase is open. A page full of famous brands and public bodies means it is not, at least not for a new post.
 - **How fresh the pages are.** Old dates on the pages that rank are a gap you can fill.

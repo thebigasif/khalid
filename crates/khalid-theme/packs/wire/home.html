@@ -8,6 +8,7 @@
 {% from "card.html" import cards, pages -%}
 {% from "image.html" import picture -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
 {% if page.intro %}<div class="masthead">
 <h1>{{ page.title }}</h1>
 <div class="intro">
@@ -15,7 +16,7 @@
 </div>
 </div>
 {% else %}<h1 class="masthead-title">{{ page.title }}</h1>
-{% endif %}{% set slot = page.featured if template.options.featured else none -%}
+{% endif %}{{ hero_stats(template.options) }}{% set slot = page.featured if template.options.featured else none -%}
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% set picks = (page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks)[:template.options.picks] -%}
 {% set topics = page.topics if "topic_links" in site.features else [] -%}
@@ -76,5 +77,5 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endfor %}{{ home_sections(page, template.options, t) }}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% endblock %}

@@ -64,7 +64,7 @@ fn every_row_reads_with_scripts_off() {
     let html = html(TABLE);
     assert!(!html.contains("<script"), "{html}");
     assert!(
-        html.contains("<summary>Show 2 more rows</summary>"),
+        html.contains("<summary class=\"table-fold-more\">Show 2 more rows</summary>"),
         "{html}"
     );
     for row in ["Rank Ledger", "Crawl Kit", "Link Atlas", "Page Scout"] {
@@ -83,7 +83,7 @@ fn a_short_table_does_not_fold() {
 fn one_more_row_is_one_row() {
     let html = html(":::table{fold=1}\n| A |\n|---|\n| 1 |\n| 2 |\n:::\n");
     assert!(
-        html.contains("<summary>Show 1 more row</summary>"),
+        html.contains("<summary class=\"table-fold-more\">Show 1 more row</summary>"),
         "{html}"
     );
 }

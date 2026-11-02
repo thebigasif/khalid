@@ -8,7 +8,8 @@
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "card.html" import cards -%}
 {% from "comments.html" import comments_section -%}
-{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "series.html" import series_box, series_steps -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
 {% set placement = template.options.contents -%}
 {% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
 {% set side = toc and placement in ["side-start", "side-end"] -%}
@@ -53,7 +54,7 @@
 {{ contents_list(page.contents) }}
 </nav>
 {% endif %}{% endif %}<div class="post-body">
-{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}
+{{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
 </div>
 {% if template.options.closing_line %}<p class="wb-closing">{{ t.by }} {% for author in page.authors %}{{ author.name }}{% if not loop.last %}, {% endif %}{% endfor %}. {{ t.published }} <time datetime="{{ page.date }}">{{ page.date | date }}</time>.{% if page.updated %} {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>.{% endif %}</p>
 {% endif %}{% if share in ["end", "both"] %}{{ share_row }}{% endif %}{% if page.tags %}<footer class="post-footer">
@@ -63,7 +64,7 @@
 {% endfor %}</ul>
 </footer>
 {% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
-{% endif %}</article>
+{% endif %}{{ preferred_source(template.options, t, "post") }}</article>
 {% if site.subscribe and template.options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
 {% endif %}{% if template.cta and template.options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">

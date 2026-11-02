@@ -1,0 +1,19 @@
+---
+source: crates/khalid-render/tests/render/hub.rs
+expression: main_of(&page)
+---
+ id="main" tabindex="-1">
+
+<article class="page hub">
+<h1>Technical SEO, from the ground up</h1>
+<div class="page-body">
+<p>Start with how search finds pages.</p>
+</div>
+<section class="hub-chapters" aria-labelledby="hub-chapters">
+<h2 id="hub-chapters">Start with these, in order</h2>
+<ol>
+<li><a href="/blog/what-a-sitemap-does/"><span class="hub-step" aria-hidden="true">1</span><span class="hub-text"><strong>What a sitemap does, and what it does not</strong><span>A sitemap lists the pages you want search engines to know about.</span></span></a></li>
+<li><a href="/blog/how-to-write-a-title-tag/"><span class="hub-step" aria-hidden="true">2</span><span class="hub-text"><strong>How to write a title tag</strong><span>The title tag is the blue link in search results.</span></span></a></li>
+</ol>
+</section>
+</article>

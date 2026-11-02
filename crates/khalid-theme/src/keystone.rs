@@ -32,6 +32,8 @@ pub(crate) static KEYSTONE: Pack = Pack {
         parts::cards(CardShape::Image),
         parts::pagination(PageLinks::Numbered),
         parts::contents(ContentsPlacement::None),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         slot::share("top"),
         slot::share_networks(&["x", "linkedin", "facebook", "email"]),
         slot::newsletter("both"),
@@ -51,6 +53,10 @@ pub(crate) static KEYSTONE: Pack = Pack {
             help: "Up to two lines about the site after each post, such as who writes it.",
             kind: OptionKind::Lines { most: 2 },
         },
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };
 

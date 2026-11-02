@@ -1,0 +1,8 @@
+---
+source: crates/khalid-render/tests/render/series.rs
+expression: "part(&page, r#\"<nav class=\"series-steps\"\"#, \"</nav>\")"
+---
+<nav class="series-steps" aria-label="The parts before and after this one">
+<a class="series-previous" href="/blog/pick-the-subject/" rel="prev"><span>Previous part</span> Pick the subject</a>
+<a class="series-next" href="/blog/link-the-cluster/" rel="next"><span>Next part</span> Link the cluster</a>
+</nav>

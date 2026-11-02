@@ -148,6 +148,7 @@ fn paged(
         seo.robots.clone_from(&list.robots);
         seo.translation = list_key(&translation)?;
         let body = (list.body)(RenderListing {
+            hub: None,
             title,
             intro: list.intro.clone().filter(|_| number == 1),
             posts,

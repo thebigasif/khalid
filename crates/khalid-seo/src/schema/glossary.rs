@@ -28,7 +28,9 @@ pub(crate) fn term_node(site: &SeoSite, page: &SeoPage) -> Result<SchemaNode, Se
     Ok(node)
 }
 
-/// The `DefinedTermSet` of the glossary's A to Z page.
+/// The `DefinedTermSet` of the glossary's A to Z page, with each term it
+/// lists as a `DefinedTerm` under `hasDefinedTerm`, at the `@id` the
+/// term's own page gives it.
 pub(crate) fn term_set_node(site: &SeoSite, page: &SeoPage) -> Result<SchemaNode, SeoError> {
     let mut node = SchemaNode::new("DefinedTermSet")
         .with_id(term_set_id(site, page)?)
@@ -40,6 +42,17 @@ pub(crate) fn term_set_node(site: &SeoSite, page: &SeoPage) -> Result<SchemaNode
         .with("inLanguage", SchemaValue::text(page.language.as_str()));
     if !page.excerpt.is_empty() {
         node.set("description", SchemaValue::text(&page.excerpt));
+    }
+    if !page.terms.is_empty() {
+        let mut terms = Vec::with_capacity(page.terms.len());
+        for entry in &page.terms {
+            let term = SchemaNode::new("DefinedTerm")
+                .with_id(node_id(&entry.url, "term")?)
+                .with("name", SchemaValue::text(&entry.name))
+                .with("url", SchemaValue::Url(entry.url.clone()));
+            terms.push(SchemaValue::Node(Box::new(term)));
+        }
+        node.set("hasDefinedTerm", SchemaValue::List(terms));
     }
     Ok(node)
 }

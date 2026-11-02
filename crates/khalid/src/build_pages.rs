@@ -1,6 +1,12 @@
 //! The pages `khalid build` renders: the site's content turned into the input
 //! records of `khalid-render` (ADR 0009), one language at a time.
 
+mod entries;
+mod glossary;
+mod home_rows;
+mod hubs;
+pub(crate) mod series;
+
 use std::cmp::Reverse;
 use std::collections::BTreeMap;
 use std::mem;
@@ -8,13 +14,13 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_content::{
-    AuthorFront, Document, Gated, PostFront, Rendered, SiteContent, Wikilinks, render_gated,
-    render_linked,
+    AuthorFront, Document, Gated, PostFront, Rendered, SiteContent, Wikilinks, render_framed,
 };
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
 use khalid_render::{
     BodyHtml, MOST_PICKS, MOST_RELATED, PageBody, PageKind, PageMeta, Person, PostCard, PostTopics,
-    ReadingTime, RenderHome, RenderListing, RenderPost, RenderSite, Robots, related_up_to,
+    ReadingTime, RenderHome, RenderListing, RenderPost, RenderSite, Renderer, Robots,
+    related_up_to,
 };
 use khalid_routes::{Collection, PostAddress, Routes};
 use khalid_seo::{ArticleType, MetaTemplate, PageKind as SeoKind, SeoPage};
@@ -115,6 +121,28 @@ fn language_pages(
     })
 }
 
+/// Adds the pages that help readers find their way, once the lists of
+/// `languages` are made: the glossary from A to Z, case studies and the
+/// changelog, series, hubs and the home page's topic tabs and media rows,
+/// worded in each language by `renderer`'s strings.
+///
+/// # Errors
+///
+/// Returns what, why and fix when one of those pages cannot be made.
+pub(crate) fn discovery_pages(
+    (config, routes): (&Config, &Routes),
+    renderer: &Renderer,
+    content: &SiteContent,
+    languages: &mut [LanguagePages],
+) -> Result<(), UserMessage> {
+    glossary::add((config, routes), renderer, content, languages)?;
+    entries::add((config, routes), renderer, content, languages)?;
+    series::add(config, renderer, content, languages)?;
+    hubs::fill((config, routes), content, languages);
+    home_rows::fill(languages);
+    Ok(())
+}
+
 /// The home page of `locale`, listing `cards`, newest first.
 pub(crate) fn home_page(
     config: &Config,
@@ -127,6 +155,7 @@ pub(crate) fn home_page(
         .cloned()
         .collect();
     let listing = RenderListing {
+        hub: None,
         title: config.name().to_owned(),
         intro: None,
         featured: picks.first().cloned(),
@@ -148,6 +177,9 @@ pub(crate) fn home_page(
         picks,
         topics: Vec::new(),
         categories: Vec::new(),
+        tabs: Vec::new(),
+        videos: Vec::new(),
+        podcasts: Vec::new(),
     });
     Ok(page(locale, config, "", meta, body, seo))
 }
@@ -204,9 +236,7 @@ fn post_pages(
         let gated = Gated::Locked {
             back: back.as_deref(),
         };
-        let mut rendered = render_gated(&doc.body, &doc.locale, config.slugs(), links, gated)
-            .map_err(|error| build_message::block(&doc.path, &error))?;
-        rendered.html = build_seo::with_link_policy(config, mem::take(&mut rendered.html));
+        let rendered = rendered(config, links, doc, (gated, slug.as_str()))?;
         drafts.push(Draft {
             doc,
             date,
@@ -344,6 +374,7 @@ fn post_page(
         contents: build_reader::contents(&rendered.headings),
         originals: BTreeMap::new(),
         related,
+        series: None,
         mentions: Vec::new(),
         comments: None,
         body: html,
@@ -407,7 +438,7 @@ pub(crate) fn routed(
 
 /// A document's body as HTML, with raw HTML escaped, maths drawn as `MathML`
 /// and each wikilink a link to the page `links` gives it, by
-/// `khalid_content::render_linked`, and each link given the site's link
+/// `khalid_content::render_framed`, and each link given the site's link
 /// policy. `main` has checked every wikilink reaches a page, so none falls
 /// back to plain text.
 pub(crate) fn body_html<F>(
@@ -415,11 +446,26 @@ pub(crate) fn body_html<F>(
     links: &Wikilinks,
     doc: &Document<F>,
 ) -> Result<BodyHtml, UserMessage> {
-    render_linked(&doc.body, &doc.locale, config.slugs(), links)
-        .map(|rendered| {
-            BodyHtml::from_sanitised(build_seo::with_link_policy(config, rendered.html))
-        })
-        .map_err(|error| build_message::block(&doc.path, &error))
+    let rendered = rendered(config, links, doc, (Gated::Locked { back: None }, "blog"))?;
+    Ok(BodyHtml::from_sanitised(rendered.html))
+}
+
+/// A document's body rendered with its gated blocks as `gated` says, the
+/// pages of the domains `[media] embed_domains` allows in frames, and
+/// each link given the site's link policy and tracking tags, named
+/// `campaign`.
+fn rendered<F>(
+    config: &Config,
+    links: &Wikilinks,
+    doc: &Document<F>,
+    (gated, campaign): (Gated<'_>, &str),
+) -> Result<Rendered, UserMessage> {
+    let frames = &config.media().embed_domains;
+    let slugs = config.slugs();
+    let mut rendered = render_framed(&doc.body, &doc.locale, slugs, links, gated, frames)
+        .map_err(|error| build_message::block(&doc.path, &error))?;
+    rendered.html = build_seo::with_link_rules(config, mem::take(&mut rendered.html), campaign);
+    Ok(rendered)
 }
 
 /// The head of a page at `path`, indexable, with no alternates yet.

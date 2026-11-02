@@ -44,6 +44,10 @@ Set these under `[template.options]`. Each line shows the default.
 
 | Option | Default | What it changes |
 |---|---|---|
+| `hero_stats` | none | Up to four numbers under the front page's title, each written `number \| what it counts`. Nothing shows until you write them. |
+| `topic_tabs` | `true` | Tabs on the front page, one per topic, each with its four newest posts. They work with scripts off. |
+| `video_section` | `true` | A row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `tagline` | `""` | One line under the blog's name on the front page, up to 140 characters, such as what the blog is about. |
 | `logo` | `true` | Whether the header shows your logo from `[brand] logo` in place of the blog's name. |
 | `breadcrumbs` | `true` | Whether each page shows the trail of links from the front page to it. |
@@ -55,6 +59,8 @@ Set these under `[template.options]`. Each line shows the default.
 | `card_author_role` | `false` | Whether each card shows its author's role after their name. |
 | `pagination` | `"numbered"` | The links under a long list: `pages` for newer and older, or `numbered` for a link to each page. |
 | `contents` | `"side-start"` | Where a post's contents go: `side-start`, `side-end`, `inline`, `inline-folded` or `none`. |
+| `reading_progress` | `"bar"` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
+| `header_search` | `"button"` | What the header's search does on a served blog: `button` opens a search dialog, `link` opens the search page, `none` hides it. |
 | `contents_numbers` | `"numbered"` | How the contents are numbered: `numbered`, `nested` or `none`. |
 | `related` | `"grid"` | How the related posts are laid out: `grid`, `list`, `row`, `scroll` or `links`. |
 | `related_count` | `3` | How many related posts show, from 3 to 10. |

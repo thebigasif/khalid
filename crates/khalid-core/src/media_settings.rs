@@ -3,7 +3,7 @@
 
 use serde::Deserialize;
 
-use crate::{AbsoluteUrl, Secret};
+use crate::{AbsoluteUrl, DomainName, Secret};
 
 /// The media library's settings. Leave the table out to keep every file on
 /// disk in the site's `media/` folder. Add `[media.s3]` to keep the files in
@@ -31,6 +31,17 @@ use crate::{AbsoluteUrl, Secret};
 /// unsplash = true
 /// gifs = true
 /// ```
+///
+/// Pictures are offered in WebP and their own format. `avif = true` adds
+/// AVIF, which is smaller and slower to make.
+///
+/// An `::embed` shows a page in a frame only when it is a known player or
+/// its host is listed here, such as a calculator the site owner runs:
+///
+/// ```toml
+/// [media]
+/// embed_domains = ["tools.example.com"]
+/// ```
 #[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
 #[serde(default, deny_unknown_fields)]
 #[non_exhaustive]
@@ -41,6 +52,16 @@ pub struct MediaSettings {
     pub unsplash: bool,
     /// Whether writers can find GIFs on GIPHY from the editor.
     pub gifs: bool,
+    /// Whether pictures are offered in AVIF too, before WebP. AVIF is about
+    /// half the size of JPEG, but takes about a second to make for each wide
+    /// picture, so it is off until a site asks with `avif = true`. Each
+    /// picture is made once and kept.
+    pub avif: bool,
+    /// The domains whose pages an `::embed` may show in a frame, beside
+    /// the video and sound players Khalid knows, such as an interactive
+    /// tool on `tools.example.com`. Each is an exact host, and only these
+    /// join the Content Security Policy's `frame-src`.
+    pub embed_domains: Vec<DomainName>,
 }
 
 /// An S3-compatible bucket that holds the media library's files.

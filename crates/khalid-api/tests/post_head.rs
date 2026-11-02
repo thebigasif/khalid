@@ -33,7 +33,8 @@ fn printed(head: &PostHead) -> String {
             .replace('\'', "&#39;")
     };
     let mut out = String::new();
-    for tag in head.tags() {
+    let parts = head.parts().unwrap();
+    for tag in parts.tags() {
         let line = match tag {
             HeadElement::Title { text } => format!("<title>{}</title>", escape(text)),
             HeadElement::Meta {
@@ -73,7 +74,7 @@ fn printed(head: &PostHead) -> String {
         out.push('\n');
     }
     out.push_str("<script type=\"application/ld+json\">");
-    out.push_str(head.json_ld());
+    out.push_str(parts.json_ld());
     out.push_str("</script>\n");
     out
 }
@@ -119,4 +120,21 @@ fn the_head_is_ordered_tags_and_the_graph_as_text() {
     assert!(!json_ld.contains('<'), "{json_ld}");
     let graph: Value = serde_json::from_str(json_ld).unwrap();
     assert_eq!(graph["@context"], "https://schema.org");
+}
+
+#[test]
+fn a_packed_head_reads_and_prints_as_the_head_it_was_made_from() {
+    let (site, page) = site_and_page();
+    let tags = head_tags(&site, &page).unwrap();
+    let graph = page_graph(&site, &page).unwrap();
+    let head = PostHead::new(&tags, &graph);
+    let packed = head.packed();
+
+    assert!(packed.is_packed() && !head.is_packed());
+    assert_eq!(printed(&packed), printed(&head));
+    assert_eq!(
+        serde_json::to_value(&packed).unwrap(),
+        serde_json::to_value(&head).unwrap()
+    );
+    assert!(packed.packed().is_packed(), "packing twice keeps it packed");
 }

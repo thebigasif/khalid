@@ -6,8 +6,9 @@
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
 <div class="wb-masthead">
-<h1>{{ page.title }}</h1>
+<h1>{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
@@ -45,5 +46,5 @@
 {% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t, id="newsletter-end", note=note) }}
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}{% if "archive" in site.features %}<p class="wb-all"><a href="{{ site.home }}archive/">{{ t.all_posts }}</a></p>
-{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{{ home_sections(page, template.options, t) }}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% endblock %}

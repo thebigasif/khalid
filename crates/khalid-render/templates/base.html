@@ -26,7 +26,7 @@
 <meta name="twitter:image:alt" content="{{ image.alt }}">
 {% else %}<meta name="twitter:card" content="summary">
 {% endif %}{% endif %}{% if brand.icon %}<link rel="icon" href="{{ brand.icon }}">
-{% endif %}{% if site.script %}<script src="{{ site.script.src }}" integrity="{{ site.script.integrity }}" defer data-copied="{{ t.link_copied }}" data-close="{{ t.close }}"{% if "link_previews" in site.features %} data-previews{% endif %}></script>
+{% endif %}{% if site.script %}<script src="{{ site.script.src }}" integrity="{{ site.script.integrity }}" defer data-copy="{{ t.copy_link }}" data-copied="{{ t.link_copied }}" data-close="{{ t.close }}" data-contents="{{ t.contents }}" data-search="{{ t.search_label }}" data-find="{{ t.search_button }}"{% if "link_previews" in site.features %} data-previews{% endif %}></script>
 {% endif %}</head>
 <body>
 <a class="skip-link" href="#main">{{ t.skip_link }}</a>
@@ -39,7 +39,7 @@
 {% for link in site.nav.primary %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>
 {% endfor %}</ul>
 </nav>
-{% endif %}{% if site.search and "search_shortcut" in site.features %}<a class="search-link" href="{{ site.search }}">{{ t.search_link }}</a>
+{% endif %}{% set finder = template.options.header_search %}{% if site.search and "search_shortcut" in site.features and finder != "none" %}<a class="search-link" href="{{ site.search }}"{% if finder == "button" %} data-dialog{% endif %}>{{ t.search_link }}</a>
 {% endif %}{% if template.cta and template.options.cta_button %}<a class="button header-button" href="{{ template.cta.href }}">{{ template.cta.label }}</a>
 {% endif %}</header>
 <main id="main" tabindex="-1">
@@ -71,7 +71,7 @@
 {% endfor %}{% set sitemap = site.home ~ "sitemap/" %}<li><a href="{{ sitemap }}"{% if sitemap == meta.path %} aria-current="page"{% endif %}>{{ t.sitemap_title }}</a></li>
 </ul>
 </nav>
-{% if site.main_site %}<p><a href="{{ site.main_site.href }}">{{ site.main_site.label }}</a></p>
+{% from "slots.html" import preferred_source %}{{ preferred_source(template.options, t, "footer") }}{% if site.main_site %}<p><a href="{{ site.main_site.href }}">{{ site.main_site.label }}</a></p>
 {% endif %}</footer>
 </body>
 </html>

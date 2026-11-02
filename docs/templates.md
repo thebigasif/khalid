@@ -57,7 +57,7 @@ The screen reads two Admin API routes, which need `settings:write`:
 
 ## Parts a template can switch on
 
-Every template shares one set of page parts. A template switches on the ones it uses, and offers each as an option with its own default. Classic switches none of them on, so it looks as it always has. The words below are the option keys and the values each takes; a template lists only the parts it offers.
+Every template shares one set of page parts. A template switches on the ones it uses, and offers each as an option with its own default. Classic switches none of them on but the reading progress bar. The words below are the option keys and the values each takes; a template lists only the parts it offers.
 
 | Option | Values | What it changes |
 |---|---|---|
@@ -77,6 +77,14 @@ Every template shares one set of page parts. A template switches on the ones it 
 | `related_count` | `3` to `10` | How many related posts show. |
 | `contents` | `side-end`, `side-start`, `inline`, `inline-folded`, `none` | Where a long post's contents go: a column beside the post on wide screens (on the end or start side), an open box at the top, a folded box at the top, or nowhere. |
 | `contents_numbers` | `numbered`, `nested`, `none` | How the contents are numbered: 1, 2, 3, or 1, 1.1, 2, or not at all. |
+| `reading_progress` | `bar`, `none` | A thin accent line at the top of a post that fills as the reader scrolls. Every template shows it, classic too; `none` turns it off in any template but classic, which takes no options. It hides when the reader asks for less motion, and in print. |
+| `header_search` | `button`, `link`, `none` | What the search in the header does on a blog that answers searches (`mode = "server"`): `button` opens a search dialog that shows results as the reader types, and the search page with scripts off; `link` always opens the search page; `none` hides it. Classic uses `button`. A static blog has no search, so its header shows none. |
+| `hero_stats` | up to four lines | Numbers under the home page's title, each written `number \| what it counts`, such as `"140 \| blogs studied"`. Khalid never makes one up: with no lines, nothing shows. |
+| `topic_tabs` | `true`, `false` | The home page shows tabs, one per topic, each with that topic's four newest posts. Each tab is a link to its panel, so the tabs work with scripts off. |
+| `video_section` | `true`, `false` | The home page shows a row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true`, `false` | The home page shows a row of the newest posts with a podcast or other sound player, when there are any. |
+
+What the reading progress bar, the contents sheet, the copy link button and the header search do for a reader is in [Reading aids](reading.md).
 
 Every part reads with scripts off. Every page also shows `[brand] icon` in the browser tab, in every template.
 
@@ -110,6 +118,17 @@ note = "No card needed."              # optional: one line beside the button
 Templates show it as a band after a post or on the front page (`cta_band`), and as a button in the header (`cta_button`). Without `[template.cta]` neither shows.
 
 To place the band inside a post or page, write `::cta` on a line of its own. It works in every template, classic too. Without `[template.cta]` the line shows nothing. Feeds and the Content API keep it as the comment `<!--khalid-cta-->`, so another front end can put its own band there.
+
+## A preferred source on Google
+
+Google lets each reader pick news sources it shows more often in Top stories. To ask your readers, turn on the button:
+
+```toml
+[template.preferred_source]
+place = "both"   # optional: post after each post, footer on every page, or both (the default)
+```
+
+The button reads "Add us as a preferred source on Google" and opens Google's page for your blog's domain. Every template shows it, classic too. It is a plain link: no script, no Google logo, and nothing loads from Google until a reader follows it. Without the table it shows nowhere.
 
 ## Footer links in groups
 

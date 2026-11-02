@@ -43,11 +43,17 @@ pub(crate) static FOLIO: Pack = Pack {
         parts::related(RelatedLayout::Grid),
         parts::related_count(3),
         parts::contents(ContentsPlacement::SideEnd),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         slot::share("end"),
         slot::share_networks(&["x", "linkedin", "bluesky", "email"]),
         slot::newsletter("none"),
         slot::cta_band("post"),
         slot::CTA_BUTTON_ON,
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };
 
