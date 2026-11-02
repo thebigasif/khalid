@@ -1,117 +1,187 @@
-/* Folio: a product team's essays under their own masthead (templates
-   spec 3.10). A centred masthead on a soft glow of the accent, outlined
-   picture cards that lift a little when pointed at, and essays in one
-   centred column under a wide rounded cover. Every colour, font and
-   corner comes from the tokens; tints are mixed from them. */
+/* Folio: a product team's notebook (templates spec 3.10). Essays,
+   engineering notes and announcements under a confident masthead drawn
+   on faint ruled paper. Neutral page, hairlines instead of boxes, one
+   accent for kickers, links and the current tab, one radius for every
+   frame. Every colour, font and corner comes from the tokens; tints are
+   mixed from them. */
 
-/* The page is wider than the reading column, so the grid has room. */
-.site-header, main, .site-footer { max-inline-size: 76rem; }
-.post, .page, .author, .back-link, .post ~ * { max-inline-size: var(--measure); margin-inline: auto; }
-.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; }
-h1, h2, h3 { letter-spacing: -0.02em; }
+:root {
+  --wide: 76rem;
+  --hair: 1px solid var(--color-border);
+  --tint: color-mix(in oklab, var(--color-accent) 6%, var(--color-background));
+  --rule: color-mix(in oklab, var(--color-border) 70%, var(--color-background));
+  --paper: linear-gradient(var(--rule) 1px, transparent 1px) 0 0 / 1.5rem 1.5rem, linear-gradient(90deg, var(--rule) 1px, transparent 1px) 0 0 / 1.5rem 1.5rem;
+}
+@media (min-width: 40rem) { body { padding-inline: 2rem; } }
+.site-header, main, .site-footer { max-inline-size: var(--wide); }
+h1, h2, h3, h4 { line-height: 1.15; letter-spacing: -0.02em; }
+::selection { background: color-mix(in oklab, var(--color-accent) 22%, var(--color-background)); }
 
-/* The header: no rule, the menu muted, the button a pill. */
-.site-header { padding-block: 1.25rem; border-block-end: 0; }
-.site-name { letter-spacing: -0.02em; }
-.site-header nav a { color: var(--color-muted); text-decoration: none; }
+/* The announcement: one quiet line on a band the width of the screen. */
+.announcement { margin: 0; padding-block: 0.625rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.announcement p { max-inline-size: none; }
+.announcement a { padding-block: 0.75rem; color: var(--color-text); font-weight: 500; text-decoration: none; }
+.announcement a::after { content: "  →" / ""; white-space: pre; color: var(--color-link); }
+[dir="rtl"] .announcement a::after { content: "  ←" / ""; }
+.announcement a:hover { text-decoration: underline; }
+
+/* The header: the name or logo, a quiet menu beside it, the button at
+   the far end. On a phone the menu takes its own line. */
+.site-header { flex-wrap: nowrap; gap: 0 2rem; padding-block: 0.75rem; border-block-end: var(--hair); }
+.site-name { font-size: 1.125rem; letter-spacing: -0.02em; }
+.site-logo img { block-size: 2.75rem; inline-size: 11rem; }
+.site-header nav { flex: 1; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a { color: var(--color-muted); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
 .site-header nav a:hover, .site-header nav [aria-current] { color: var(--color-text); }
-.search-link { padding-inline: 1rem; border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-text); text-decoration: none; }
-.header-button { padding-inline: 1.125rem; }
-.announcement { margin: 0; background: none; border: 0; font-size: var(--text-small); }
-.announcement a { display: inline-flex; align-items: center; min-block-size: 2.25rem; padding-inline: 1rem; border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-text); text-decoration: none; }
-.announcement a:hover { border-color: var(--color-accent); }
-
-/* The masthead: the blog's own name, its tagline and the category links,
-   centred on a glow of the accent that reaches the screen's edges. The
-   glow is a border image, which never makes the page scroll sideways. */
-.masthead { padding-block: clamp(3rem, 10vw, 6.5rem) clamp(2rem, 5vw, 3rem); margin-block-end: clamp(2rem, 5vw, 3.5rem); text-align: center; border-image: radial-gradient(ellipse 60% 100% at 50% 0%, color-mix(in oklab, var(--color-accent) 16%, var(--color-background)), var(--color-background)) fill 0 // 0 100vmax; }
-.masthead h1 { margin: 0; font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); line-height: 1; letter-spacing: -0.04em; }
-.masthead-tagline, .masthead .intro { max-inline-size: 36rem; margin: 1.25rem auto 0; color: var(--color-muted); font-size: var(--text-h4); }
-.masthead .category-tabs { margin-block: 2.25rem 0; border: 0; }
-.masthead .category-tabs ul { flex-wrap: wrap; justify-content: center; gap: 0.5rem; overflow: visible; }
-.masthead .category-tabs a { padding-inline: 1.125rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-text); font-weight: 600; }
-.masthead .category-tabs a:hover { border-color: var(--color-text); }
-.masthead .category-tabs a[aria-current] { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
-
-/* Cards: outlined, picture on top, the author at the foot. The outline
-   turns to the accent and the card rises on hover and when a link inside
-   has focus. */
-main > .cards, .home-section .cards, section > .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 2rem; }
-@media (min-width: 80rem) { main > .cards { grid-template-columns: repeat(3, 1fr); } }
-.cards .card, .card-featured { position: relative; display: flex; flex-direction: column; block-size: 100%; padding: 0 0 1.5rem; overflow: hidden; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); transition: border-color 0.2s, box-shadow 0.2s, translate 0.2s; }
-.cards .card:hover, .cards .card:focus-within, .card-featured:hover, .card-featured:focus-within { border-color: var(--color-accent); box-shadow: 0 1.25rem 2.5rem -1.5rem color-mix(in oklab, var(--color-text) 40%, transparent); translate: 0 -0.25rem; }
-.card > :not(.image) { margin-inline: 1.5rem; }
-.card .image { margin: 0 0 0.5rem; }
-.card .image img { aspect-ratio: 16 / 10; object-fit: cover; background: var(--color-surface); border-radius: 0; }
-.card :is(h2, h3) { margin-block: 1rem 0.5rem; font-size: var(--text-h3); line-height: 1.25; }
-.card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
-.card .card-meta a { position: relative; z-index: 1; }
-.card > p:not(.card-meta) { color: var(--color-muted); }
-.card .card-meta { order: 9; margin-block-start: auto; padding-block-start: 1rem; }
-.card-meta time { display: none; }
-.card-author .person-role { display: block; margin: 0; }
-.featured { margin-block: 0 3rem; }
-.featured > h2 { margin-block-end: 1rem; text-align: center; }
-.card-featured :is(h2, h3) { font-size: var(--text-h1); line-height: 1.05; letter-spacing: -0.03em; }
-.card-featured > p:not(.card-meta) { font-size: var(--text-h4); }
-@media (min-width: 60rem) {
-  .card-featured:has(.image) { display: grid; grid-template-columns: 3fr 2fr; align-content: center; padding: 0; }
-  .card-featured .image { grid-row: 1 / span 9; margin: 0; }
-  .card-featured .image img { block-size: 100%; min-block-size: 24rem; }
-  .card-featured > :not(.image) { grid-column: 2; margin-inline: 2.5rem; }
-  .card-featured .card-meta { padding-block-end: 2rem; }
+.search-link { padding-inline: 1rem; border: var(--hair); border-radius: 999px; color: var(--color-text); font-size: var(--text-small); text-decoration: none; }
+.header-button { min-block-size: 2.75rem; padding-inline: 1.125rem; border-radius: 999px; font-size: var(--text-small); font-weight: 600; }
+@media (max-width: 52rem) {
+  .site-header { flex-wrap: wrap; }
+  .site-header nav { order: 3; flex-basis: 100%; min-inline-size: 0; }
+  .site-header nav ul { flex-wrap: nowrap; gap: 0 1.25rem; overflow-x: auto; scrollbar-width: none; }
+  .site-header nav a { white-space: nowrap; }
+  .header-button { display: none; }
 }
 
-/* The quote from the options: large, centred, in the heading font. */
-.masthead-quote { max-inline-size: var(--measure); margin: var(--space-section) auto; text-align: center; }
-.masthead-quote blockquote { margin: 0; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-h2); line-height: 1.3; }
-.masthead-quote blockquote::before { content: "“" / ""; display: block; color: var(--color-link); font-size: 4rem; line-height: 0.8; }
-.masthead-quote figcaption { margin-block-start: 1rem; }
+/* The masthead: the blog's name set large and tight on ruled paper that
+   fades out, a tagline, and the categories as tabs on a hairline. */
+.masthead { position: relative; padding-block: clamp(3rem, 9vw, 6.5rem) 0; margin-block-end: clamp(2.5rem, 5vw, 4rem); }
+.masthead::before { content: ""; position: absolute; inset: 0 0 3.5rem; z-index: -1; background: var(--paper); mask-image: radial-gradient(ellipse 60% 75% at 22% 55%, black 20%, transparent 80%); }
+.masthead h1 { max-inline-size: 16ch; margin: 0; font-size: clamp(2.75rem, 1.5rem + 5vw, 5.75rem); line-height: 0.98; letter-spacing: -0.045em; }
+.masthead-tagline, .masthead .intro { max-inline-size: 38rem; margin: 1.25rem 0 0; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.45; }
+.masthead .intro > :last-child { margin-block-end: 0; }
+.masthead .category-tabs { margin-block: clamp(2rem, 5vw, 3.5rem) 0; }
+.category-tabs ul { gap: 0 1.75rem; }
+.category-tabs a { margin-block-end: -1px; font-size: 0.9375rem; font-weight: 500; }
+.category-tabs a[aria-current] { font-weight: 600; }
 
-/* Page links with arrows that point the way the page reads. */
+/* Cards: no outline. A framed picture, the category and date as a
+   kicker, the title, two or three lines of excerpt, the author. The
+   card's parts sit on its own grid, so their order is the design's. */
+main .cards:not(.cards-ranked, .cards-compact) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: clamp(2.5rem, 4vw, 3.5rem) clamp(1.5rem, 2.5vw, 2.5rem); }
+@media (min-width: 64rem) { main > .cards:not(.cards-ranked, .cards-compact), main > section > .cards:not(.cards-ranked, .cards-compact) { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cards .card, .card.card-featured { position: relative; display: grid; grid-template-columns: auto 1fr; grid-template-areas: "image image" "kicker date" "title title" "text text" "author author"; align-content: start; column-gap: 0.75rem; block-size: 100%; }
+.card .card-meta { display: contents; }
+.card .image { grid-area: image; margin: 0 0 1.25rem; }
+.card .image img { aspect-ratio: 16 / 10; object-fit: cover; background: var(--color-surface); border: var(--hair); border-radius: var(--radius); transition: border-color 0.2s; }
+.card-meta > a { grid-area: kicker; position: relative; z-index: 1; min-block-size: 0; margin-block: -0.75rem; padding-block: 0.75rem; color: var(--color-link); font-size: 0.8125rem; font-weight: 600; text-decoration: none; }
+.card-meta > a:hover { text-decoration: underline; }
+.card-meta > time { grid-area: date; align-self: center; color: var(--color-muted); font-size: 0.8125rem; }
+.card-meta > time::before { content: "·" / ""; margin-inline-end: 0.75rem; }
+.card-meta:not(:has(> a)) > time { grid-area: kicker; }
+.card-meta:not(:has(> a)) > time::before { content: none; }
+.card-meta > .card-reading-time { display: none; }
+.card :is(h2, h3) { grid-area: title; margin-block: 0.5rem; font-size: 1.3125rem; line-height: 1.25; letter-spacing: -0.02em; text-wrap: pretty; }
+.card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
+.card:hover :is(h2, h3) a { text-decoration: underline; text-decoration-thickness: 0.06em; }
+.card:hover .image img, .card:focus-within .image img { border-color: var(--color-muted); }
+.card > p:not(.card-meta) { grid-area: text; display: -webkit-box; margin: 0; overflow: hidden; color: var(--color-muted); font-size: 0.9875rem; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.card-author { grid-area: author; margin-block-start: 1.25rem; font-size: var(--text-small); font-weight: 500; }
+.card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; }
+
+/* Section titles: small capitals with a hairline running to the edge. */
+.featured > h2, .home-section > h2, .related > h2, .mentions > h2, main > section:not(.newsletter-slot) > h2 { display: flex; align-items: center; gap: 1rem; margin-block: 0 1.75rem; color: var(--color-text); font-size: var(--text-small); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+:is(.featured, .home-section, .related, .mentions, main > section:not(.newsletter-slot)) > h2::after { content: ""; flex: 1; border-block-start: var(--hair); }
+main > section + section { margin-block-start: clamp(4rem, 8vw, 6rem); }
+
+/* The featured story: the picture large, the words beside it. */
+.featured { margin-block: 0 clamp(4rem, 8vw, 6rem); }
+.card-featured { padding: 0; background: none; border-radius: 0; }
+.card-featured h3 { font-size: clamp(1.875rem, 1.2rem + 2.2vw, 3rem); line-height: 1.06; letter-spacing: -0.035em; }
+.card-featured > p:not(.card-meta) { font-size: 1.125rem; -webkit-line-clamp: 4; }
+@media (min-width: 56rem) {
+  .card-featured:has(.image) { grid-template-columns: minmax(0, 7fr) auto minmax(0, 5fr); grid-template-areas: "image . ." "image kicker date" "image title title" "image text text" "image author author" "image . ."; grid-template-rows: 1fr repeat(4, auto) 1fr; }
+  .card-featured .image { margin-block: 0; margin-inline-end: 2.5rem; }
+  .card-featured .image img { aspect-ratio: 3 / 2; }
+}
+
+/* Home sections and the link to each whole list. */
+.home-section { margin-block-end: clamp(4rem, 8vw, 6rem); }
+.view-all { margin-block: 1.5rem 0; font-weight: 600; }
+.view-all a { text-decoration: none; }
+.view-all a::after { content: " →" / ""; }
+[dir="rtl"] .view-all a::after { content: " ←" / ""; }
+
+/* The quote from the options: large, in the heading font, with a short
+   rule in the accent above it. */
+.masthead-quote { max-inline-size: 48rem; margin: clamp(4rem, 8vw, 6rem) auto; text-align: center; }
+.masthead-quote::before { content: ""; display: block; inline-size: 3rem; margin: 0 auto 2rem; border-block-start: 3px solid var(--color-accent); }
+.masthead-quote blockquote { margin: 0; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); font-weight: var(--heading-weight); line-height: 1.25; letter-spacing: -0.025em; }
+.masthead-quote blockquote > :last-child { margin: 0; }
+.masthead-quote figcaption { margin-block-start: 1.25rem; }
+
+/* Page links: round numbers, arrows that point the way the page reads. */
+.pagination { margin-block-start: clamp(3rem, 6vw, 4.5rem); }
 .pagination-numbered a[rel="prev"]::before { content: "← " / ""; }
 .pagination-numbered a[rel="next"]::after { content: " →" / ""; }
 [dir="rtl"] .pagination-numbered a[rel="prev"]::before { content: "→ " / ""; }
 [dir="rtl"] .pagination-numbered a[rel="next"]::after { content: " ←" / ""; }
-.page-numbers a { border-radius: 999px; }
+.pagination a { font-weight: 500; text-decoration: none; }
+.page-numbers a { border-radius: 999px; color: var(--color-text); }
+.page-numbers a:hover { background: var(--color-surface); }
 
-/* An essay: the back link, a centred title, the authors, share links,
-   and the cover wider than the text, rounded. */
-.back-link { margin-block: 1.5rem 0; font-size: var(--text-small); }
-.post-header { margin-block-end: 3rem; text-align: center; }
-.post-header h1 { margin-block: 2rem 1.25rem; font-size: var(--text-h1); line-height: 1.04; letter-spacing: -0.035em; }
-.post-meta { display: grid; justify-items: center; gap: 0.75rem; }
-.post-meta p { margin: 0; }
-.post-meta a { color: var(--color-text); }
-.people { justify-content: center; }
-.person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
-.post-header .image { margin-block-start: 2.5rem; text-align: start; }
-.post-header .image img { border-radius: var(--radius); box-shadow: 0 1.5rem 3rem -2rem color-mix(in oklab, var(--color-text) 45%, transparent); }
-.post-header figcaption { text-align: center; }
-@media (min-width: 64rem) {
-  .post-header .image { inline-size: min(60rem, 100% + 16rem); margin-inline-start: 50%; translate: -50% 0; }
-  [dir="rtl"] .post-header .image { translate: 50% 0; }
+/* A list page: its title in the same voice as the masthead, the cards
+   under a hairline, the breadcrumbs as a quiet line above. */
+main > h1 { margin-block: clamp(1rem, 3vw, 2rem) 0.75rem; font-size: clamp(2.25rem, 1.4rem + 3.4vw, 4rem); line-height: 1; letter-spacing: -0.04em; }
+main > .intro { max-inline-size: 40rem; font-size: 1.125rem; }
+main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { margin-block-start: clamp(2rem, 4vw, 3rem); padding-block-start: clamp(2rem, 4vw, 3rem); border-block-start: var(--hair); }
+.breadcrumbs { margin-block: 1.5rem 0; }
+.breadcrumbs a { color: var(--color-muted); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--color-text); }
+.breadcrumbs li:last-child:not(:first-child) { display: none; }
+
+/* An author: the portrait beside a large name, the bio under it, then
+   their posts as cards across the page. */
+.author { max-inline-size: 46rem; margin-block: clamp(1rem, 3vw, 2rem) clamp(3.5rem, 7vw, 5rem); }
+.author-header { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 1.5rem; margin-block-end: 1.5rem; }
+.author-header .image { grid-row: span 2; inline-size: clamp(4.5rem, 10vw, 6.5rem); margin: 0; }
+.author-header .image img { border: var(--hair); }
+.author-header h1 { align-self: end; margin: 0; font-size: clamp(2.25rem, 1.5rem + 2.8vw, 3.5rem); line-height: 1.05; letter-spacing: -0.04em; }
+.author-role { align-self: start; margin: 0.375rem 0 0; }
+.author-bio { font-size: 1.125rem; }
+.people-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1.5rem 2.5rem; }
+.people-list .person-card { align-items: center; }
+.people-list .avatar { flex: none; inline-size: 3rem; block-size: 3rem; }
+
+/* The call to action and the newsletter: the call to action on a sheet
+   of the ruled paper, the newsletter on a plain one, the words large on
+   the reading side and the button or form beside them. */
+.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; font-weight: 600; }
+.cta-band, .newsletter-slot { position: relative; gap: 1.5rem 3rem; margin-block: clamp(4rem, 8vw, 6rem); padding: clamp(2rem, 5vw, 3.5rem); background: var(--paper), var(--color-surface); border: var(--hair); border-radius: calc(var(--radius) * 1.5); }
+.cta-note, .newsletter-slot h2 { max-inline-size: 28ch; margin: 0; font-family: var(--font-heading); font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem); font-weight: var(--heading-weight); line-height: 1.15; letter-spacing: -0.03em; }
+.cta-note { flex: 1 1 18rem; }
+.cta-band > p:last-child { flex: 0 1 auto; max-inline-size: 100%; }
+.cta-band .button { min-block-size: 3rem; max-inline-size: 100%; padding-inline: 1.5rem; text-align: center; }
+.newsletter-slot { display: grid; align-items: end; background: var(--color-background); }
+.newsletter-slot > p { margin: 0; color: var(--color-muted); }
+.newsletter-slot .subscribe { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0 0.5rem; }
+.newsletter-slot .subscribe p { margin: 0; }
+.newsletter-slot .subscribe label { font-size: var(--text-small); }
+.newsletter-slot .subscribe :is(input, button) { min-block-size: 3rem; }
+.subscribe input { padding-inline: 1.125rem; border-radius: 999px; }
+@media (min-width: 52rem) {
+  .newsletter-slot { grid-template-columns: 1fr minmax(0, 24rem); }
+  .newsletter-slot > :not(form) { grid-column: 1; }
+  .newsletter-slot .subscribe { grid-column: 2; grid-row: 1 / span 3; }
 }
-.share { justify-content: center; }
-.share-title { flex-basis: 100%; text-align: center; font-size: var(--text-small); color: var(--color-muted); }
-.share a { border-radius: 999px; color: var(--color-text); font-size: var(--text-small); font-weight: 600; text-decoration: none; }
-.post-body h2 { margin-block-start: 2em; }
-.post-body img { border-radius: var(--radius); }
-.post-body figure:not(.pullquote) { margin-block: 2.5rem; }
-.post-body > blockquote { padding-inline-start: 1.5rem; border-inline-start-color: var(--color-accent); color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-h4); font-style: italic; }
-.callout { border-radius: var(--radius); }
-.callout-summary { margin-block: 3rem; padding: 1.5rem 0 0; background: none; border: 0; border-block-start: 2px solid var(--color-text); border-radius: 0; }
-.post-footer .tags a { border-radius: 999px; }
-.cta-band { flex-direction: column; padding: clamp(2rem, 6vw, 3.5rem); text-align: center; background: color-mix(in oklab, var(--color-accent) 7%, var(--color-background)); border: 1px solid var(--color-border); }
-.cta-note { font-family: var(--font-heading); font-size: var(--text-h3); }
-.newsletter-slot { text-align: center; border: 1px solid var(--color-border); }
-.newsletter-slot .subscribe { max-inline-size: 26rem; margin-inline: auto; text-align: start; }
 
-/* The footer: centred under a hairline. */
-.site-footer { margin-block-start: 3rem; justify-items: center; padding-block: 3rem 4rem; text-align: center; }
-.site-footer ul { justify-content: center; }
+/* The footer: the ruled paper again, fading up from the foot of the
+   page, the links in a row and the languages beside them. */
+.site-footer { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin-block-start: clamp(3rem, 6vw, 5rem); padding-block: 2.5rem 6rem; }
+.site-footer::before { content: ""; position: absolute; inset: 1px 0 0; z-index: -1; background: var(--paper); mask-image: linear-gradient(transparent, black); }
+.site-footer ul { gap: 0 1.5rem; }
 .site-footer a { color: var(--color-muted); text-decoration: none; }
-.site-footer a:hover { color: var(--color-text); text-decoration: underline; }
+.site-footer a:hover, .site-footer [aria-current] { color: var(--color-text); }
+.footer-groups { flex-basis: 100%; }
 
-@media (prefers-reduced-motion: reduce) { .cards .card:hover, .cards .card:focus-within, .card-featured:hover, .card-featured:focus-within { translate: none; } }
-@media print { .masthead { border-image: none; } }
+/* On a phone the category tabs wrap, so they become small rounded chips
+   and the rows read as one set. */
+@media (max-width: 30rem) {
+  .masthead .category-tabs { border: 0; }
+  .category-tabs ul { gap: 0.5rem; }
+  .category-tabs a { margin: 0; padding-inline: 1rem; border: var(--hair); border-radius: 999px; }
+  .category-tabs a[aria-current] { border-color: var(--color-accent); box-shadow: inset 0 0 0 1px var(--color-accent); }
+  .cta-band, .newsletter-slot { border-radius: var(--radius); }
+}
+@media print { .masthead::before, .site-footer::before { display: none; } .cta-band, .newsletter-slot { background: none; } }

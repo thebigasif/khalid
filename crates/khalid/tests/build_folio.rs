@@ -107,6 +107,7 @@ fn folio_ships_its_own_rules_after_the_shared_ones() {
     assert!(css.contains("--radius: 0.75rem;"), "{css}");
     assert!(css.contains("--color-accent: #4b36d1;"), "{css}");
     assert!(css.contains(".masthead-quote"), "{css}");
+    assert!(css.contains(".masthead::before"), "{css}");
 }
 
 #[test]
