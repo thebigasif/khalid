@@ -32,6 +32,7 @@ import { Posts } from "./Posts";
 import { Redirects } from "./Redirects";
 import { SchemaTemplates } from "./SchemaTemplates";
 import { SearchConsole } from "./SearchConsole";
+import { SeoSettings } from "./SeoSettings";
 import { Serpdad } from "./Serpdad";
 import { SignIn } from "./SignIn";
 import { Site } from "./Site";
@@ -192,6 +193,9 @@ const look = createRoute({ getParentRoute: () => signedIn, path: "/look", compon
 // The whole blog's settings; post settings live in the editor.
 const site = createRoute({ getParentRoute: () => signedIn, path: "/settings", component: Site });
 
+// Every [seo] setting of site.toml, saved through the same settings API.
+const seo = createRoute({ getParentRoute: () => signedIn, path: "/seo", component: SeoSettings });
+
 const serpdad = createRoute({
   getParentRoute: () => signedIn,
   path: "/serpdad",
@@ -226,6 +230,7 @@ const routeTree = root.addChildren([
     handOver,
     look,
     site,
+    seo,
     account,
     serpdad,
   ]),
