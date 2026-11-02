@@ -5,7 +5,9 @@ import { changeSite, readSite, type SiteSettings } from "../api/site";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { type Part, partOf, same } from "../seo/parts";
+import { Representation } from "../seo/Representation";
 import { SearchAppearance } from "../seo/SearchAppearance";
+import { ShowInSearch } from "../seo/ShowInSearch";
 import type { UserMessage } from "../strings/en";
 import { seoWords } from "../strings/seoWords";
 
@@ -22,6 +24,8 @@ type Tab = keyof typeof seoWords.tabs;
 // Each part of the screen, in the order its tabs show.
 const SECTIONS: { tab: Tab; show: (props: SectionProps) => ReactNode }[] = [
   { tab: "appearance", show: (props) => <SearchAppearance {...props} /> },
+  { tab: "index", show: (props) => <ShowInSearch {...props} /> },
+  { tab: "representation", show: (props) => <Representation {...props} /> },
 ];
 
 /** Every `[seo]` setting of site.toml, one part at a time, each saved on its own. */

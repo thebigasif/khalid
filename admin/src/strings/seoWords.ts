@@ -72,4 +72,63 @@ export const seoWords = {
     not_found: "Page not found",
   },
   sampleExcerpt: "Pick words that say where the link goes, so readers and Google know.",
+  index: {
+    lede: "Which list pages search engines may show. Posts and pages always may, unless a post's own settings say no.",
+    archives: "List pages in search results",
+    archive: {
+      categories: "Category archives, such as /category/technical-seo/",
+      tags: "Tag archives, such as /tag/crawl-budget/",
+      authors: "Author archives, such as /authors/asif/",
+      dates: "Date archives, such as /2026/10/",
+      search: "Search results pages",
+    },
+    thin: "Hide thin archives",
+    thinHint:
+      "A tag or author archive listing fewer posts than this stays out of search, since a page with one or two links looks thin. 0 turns this off.",
+    site: "Keep the whole blog out of search results",
+    siteHint:
+      "For a sample or staging copy. Search engines drop every page and nothing reaches the sitemap, whatever each post says.",
+  },
+  representation: {
+    lede: "Who is behind the blog. Search engines use it for the knowledge panel and to trust what you write.",
+    kind: "The blog belongs to",
+    organization: "A company or organisation",
+    person: "One person",
+    name: "Name",
+    nameHint: "The company's or the person's name. Leave it empty to use the blog's name.",
+    logo: "Logo or photo address",
+    logoHint: "The full address of a square image, such as https://www.example.com/logo.png.",
+    logoAlt: "What the logo shows",
+    logoAltHint: "One short sentence, for people who cannot see it.",
+    profiles: "Social profiles",
+    profilesHint:
+      "The full address of each profile, one per line, such as your LinkedIn or YouTube page.",
+    email: "Public email",
+    emailHint: "An address readers may write to.",
+    telephone: "Public phone number",
+    telephoneHint: "With the country code, such as +44 20 7946 0000.",
+    founded: "Founded",
+    foundedHint: "The day the company started. Leave it empty for a person.",
+  },
+  social: {
+    lede: "How a link to the blog looks when someone shares it on X, Facebook or LinkedIn. A post's own share card wins over these.",
+    twitter: "X username",
+    twitterHint: "Your account, such as @serpdad. X shows it on every shared card.",
+    image: "Default share image address",
+    imageHint:
+      "The picture a shared page shows when it has none of its own. 1200 by 630 pixels works everywhere.",
+    imageAlt: "What the share image shows",
+    imageAltHint: "One short sentence, for people who cannot see it.",
+  },
+  webmaster: {
+    lede: "Each search engine's tool for site owners asks you to prove the blog is yours. Paste the code it gives you; Khalid adds it to the home page.",
+    codeHint: (where: string) => `The content of the meta tag ${where} gives you, without the tag.`,
+    engines: {
+      google: "Google Search Console",
+      bing: "Bing Webmaster Tools",
+      yandex: "Yandex Webmaster",
+      baidu: "Baidu Search Resource Platform",
+      pinterest: "Pinterest",
+    },
+  },
 } as const;
