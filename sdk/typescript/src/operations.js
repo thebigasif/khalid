@@ -4,6 +4,7 @@
 /** @type {import("./index.js").Routes} */
 export const operations = {
   read_ai: { method: "GET", path: "/api/admin/v1/ai/", key: "admin", body: null },
+  suggest: { method: "POST", path: "/api/admin/v1/ai/suggestions/", key: "admin", body: "application/json" },
   ai_visitors: { method: "GET", path: "/api/admin/v1/analytics/ai-visitors/", key: "admin", body: null },
   uncited: { method: "GET", path: "/api/admin/v1/analytics/uncited/", key: "admin", body: null },
   visitors: { method: "GET", path: "/api/admin/v1/analytics/visitors/", key: "admin", body: null },

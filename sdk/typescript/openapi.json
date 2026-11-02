@@ -67,6 +67,113 @@
         ]
       }
     },
+    "/api/admin/v1/ai/suggestions/": {
+      "post": {
+        "tags": [
+          "admin ai"
+        ],
+        "summary": "Asks the owner's provider for options: five for titles, descriptions\nand alt text, three fixes, or up to five takeaways. Needs\n`posts:write`. The bulk SEO editor calls it once per post with `post`.",
+        "operationId": "suggest",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuggestionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The options",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Offered"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No post has the identity in post",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Suggestions are off, the key is not set, or SerpDad is not connected",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request lacks the words its task needs",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The AI service did not answer with suggestions",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/analytics/ai-visitors/": {
       "get": {
         "tags": [
@@ -12177,6 +12284,19 @@
           }
         }
       },
+      "AiTask": {
+        "type": "string",
+        "description": "What a suggestion is for.",
+        "enum": [
+          "seo_title",
+          "meta_description",
+          "share_title",
+          "share_description",
+          "alt_text",
+          "lint_fix",
+          "takeaways"
+        ]
+      },
       "Alias": {
         "type": "string",
         "description": "An old address on this site that redirects to the post, such as\n`/2019/05/old-title/`, so a moved post keeps its links.",
@@ -14115,6 +14235,33 @@
       "NonBlank": {
         "type": "string",
         "description": "Text with something in it other than spaces."
+      },
+      "Offered": {
+        "type": "object",
+        "description": "The options to pick from, fitting ones first. Nothing in a post changes\nuntil a writer picks one.",
+        "required": [
+          "task",
+          "label",
+          "suggestions"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The label every suggestion is shown with.",
+            "example": "AI suggestion from Anthropic"
+          },
+          "suggestions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Suggestion"
+            },
+            "description": "The options."
+          },
+          "task": {
+            "$ref": "#/components/schemas/AiTask",
+            "description": "What they are for."
+          }
+        }
       },
       "OptionTakes": {
         "oneOf": [
@@ -16226,6 +16373,86 @@
           "unsplash",
           "gifs"
         ]
+      },
+      "Suggestion": {
+        "type": "object",
+        "description": "One option, with its length checked.",
+        "required": [
+          "text",
+          "characters",
+          "fits"
+        ],
+        "properties": {
+          "characters": {
+            "type": "integer",
+            "description": "How many characters it has.",
+            "minimum": 0
+          },
+          "fits": {
+            "type": "boolean",
+            "description": "Whether it fits the length rule for its task."
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Why it does not fit, in plain words, or `null` when it does."
+          },
+          "text": {
+            "type": "string",
+            "description": "The words."
+          }
+        }
+      },
+      "SuggestionRequest": {
+        "type": "object",
+        "description": "What to write and the words to write it from. With `post`, the saved\npost's title, text, language and focus keyword are used, and any of\nthem given here win, so unsaved changes count.",
+        "required": [
+          "task"
+        ],
+        "properties": {
+          "focus_keyword": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The post's focus keyword."
+          },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The post's language, such as `en`."
+          },
+          "post": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A post's identity, such as `en.choosing-anchor-text`."
+          },
+          "task": {
+            "$ref": "#/components/schemas/AiTask",
+            "description": "What the suggestion is for."
+          },
+          "text": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The post's text, in markdown."
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The post's title."
+          }
+        },
+        "additionalProperties": false
       },
       "TagEdit": {
         "type": "object",

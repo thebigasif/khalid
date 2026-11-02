@@ -486,6 +486,11 @@ fn assemble(
         limits,
     };
     let redirects = desks.redirects;
+    let ai = admin_ai::AiRoute {
+        desk: desks.ai,
+        serpdad: desks.serpdad.clone(),
+        posts: Arc::clone(&posts),
+    };
     let serpdad = admin_serpdad::Serpdad::new(desks.serpdad, Arc::clone(&keys));
     let mut admin = admin_api::routes(Arc::clone(&posts), serpdad.clone(), door.clone())
         .merge(admin_audit::routes(desks.audit, door.clone()))
@@ -523,7 +528,7 @@ fn assemble(
         .merge(admin_analytics::routes(desks.analytics, door.clone()))
         .merge(admin_follow_ups::routes(desks.follow_ups, door.clone()))
         .merge(admin_serpdad::routes(serpdad, door.clone()))
-        .merge(admin_ai::routes(desks.ai, door.clone()));
+        .merge(admin_ai::routes(ai, door.clone()));
     if let Some(staff) = routes {
         let signed_in = staff
             .signed_in

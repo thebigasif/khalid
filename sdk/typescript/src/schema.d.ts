@@ -525,6 +525,9 @@ export type AiState = {
   ready: boolean;
 };
 
+/** What a suggestion is for. */
+export type AiTask = "seo_title" | "meta_description" | "share_title" | "share_description" | "alt_text" | "lint_fix" | "takeaways";
+
 /** An old address on this site that redirects to the post, such as `/2019/05/old-title/`, so a moved post keeps its links. */
 export type Alias = string;
 
@@ -1173,6 +1176,16 @@ export type NewWebhooks = {
 
 /** Text with something in it other than spaces. */
 export type NonBlank = string;
+
+/** The options to pick from, fitting ones first. Nothing in a post changes until a writer picks one. */
+export type Offered = {
+  /** The label every suggestion is shown with. */
+  label: string;
+  /** The options. */
+  suggestions: Suggestion[];
+  /** What they are for. */
+  task: AiTask;
+};
 
 /** The values one option takes, and its default. */
 export type OptionTakes = {
@@ -1826,6 +1839,34 @@ export type StockPicture = {
 /** Where to look for a picture. */
 export type StockSource = "unsplash" | "gifs";
 
+/** One option, with its length checked. */
+export type Suggestion = {
+  /** How many characters it has. */
+  characters: number;
+  /** Whether it fits the length rule for its task. */
+  fits: boolean;
+  /** Why it does not fit, in plain words, or `null` when it does. */
+  note?: string | null;
+  /** The words. */
+  text: string;
+};
+
+/** What to write and the words to write it from. With `post`, the saved post's title, text, language and focus keyword are used, and any of them given here win, so unsaved changes count. */
+export type SuggestionRequest = {
+  /** The post's focus keyword. */
+  focus_keyword?: string | null;
+  /** The post's language, such as `en`. */
+  language?: string | null;
+  /** A post's identity, such as `en.choosing-anchor-text`. */
+  post?: string | null;
+  /** What the suggestion is for. */
+  task: AiTask;
+  /** The post's text, in markdown. */
+  text?: string | null;
+  /** The post's title. */
+  title?: string | null;
+};
+
 /** A new name for a tag, written into every post that has it. */
 export type TagEdit = {
   /** The new name, such as `internal linking`. A name another tag in the language has merges the two. */
@@ -1933,6 +1974,17 @@ export interface Operations {
       };
     };
     output: AiState;
+  };
+  /** Asks the owner's provider for options: five for titles, descriptions and alt text, three fixes, or up to five takeaways. Needs `posts:write`. The bulk SEO editor calls it once per post with `post`. */
+  suggest: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: SuggestionRequest;
+    };
+    output: Offered;
   };
   /** Lists how many readers each AI assistant sent in the last `days` days, against the days before, with the pages they landed on. Needs `settings:write`. */
   ai_visitors: {

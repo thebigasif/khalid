@@ -5,6 +5,8 @@
 //! Every method needs `posts:write`. Nothing is sent anywhere until the
 //! owner names a provider in `[ai]`.
 
+use std::sync::Arc;
+
 use axum::extract::State;
 use axum::{Extension, Json, middleware};
 use khalid_core::AiProvider;
@@ -18,15 +20,29 @@ use crate::ai::AiDesk;
 use crate::api_version::negotiate_version;
 use crate::keys::{Principal, Scope};
 use crate::problem::Problem;
+use crate::publish_door::PublishDoor;
+use crate::serpdad_store::SerpdadStore;
+
+mod suggest;
+
+/// What the route reads: the writer, the `SerpDad` connection a `serpdad`
+/// provider needs, and the posts a request may name.
+#[derive(Clone)]
+pub(crate) struct AiRoute {
+    pub(crate) desk: AiDesk,
+    pub(crate) serpdad: Option<Arc<dyn SerpdadStore>>,
+    pub(crate) posts: Arc<PublishDoor>,
+}
 
 /// The `ai` route, declared with `utoipa::path` (RULES.md BL-API-4),
 /// behind an integration key or staff token.
-pub(crate) fn routes(desk: AiDesk, door: AdminDoor) -> OpenApiRouter {
+pub(crate) fn routes(route: AiRoute, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(read_ai))
+        .routes(routes!(suggest::suggest))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
-        .with_state(desk)
+        .with_state(route)
 }
 
 /// Whether suggestions are on, and who writes them.
@@ -56,16 +72,16 @@ pub(crate) struct AiState {
     )
 )]
 async fn read_ai(
-    State(desk): State<AiDesk>,
+    State(route): State<AiRoute>,
     Extension(principal): Extension<Principal>,
 ) -> Result<Json<AiState>, Problem> {
     require(&principal, Scope::PostsWrite)?;
-    let provider = desk.provider;
+    let provider = route.desk.provider;
     Ok(Json(AiState {
         on: provider != AiProvider::Off,
         provider: name(provider),
         label: provider.label(),
-        ready: provider != AiProvider::Off && desk.writer.is_some(),
+        ready: provider != AiProvider::Off && route.desk.writer.is_some(),
     }))
 }
 
