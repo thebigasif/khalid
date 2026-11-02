@@ -11,7 +11,7 @@ publish.workspace = true
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std"] }
 khalid-core.workspace = true
-khalid-outbound = { path = "../khalid-outbound", version = "1.1.0" }
+khalid-outbound = { path = "../khalid-outbound", version = "1.1.1" }
 regex = "1"
 serde.workspace = true
 serde_json.workspace = true
@@ -21,7 +21,7 @@ tokio = { version = "1", default-features = false, features = ["time"] }
 [dev-dependencies]
 atom_syndication = "0.12"
 insta = "1"
-khalid-outbound = { path = "../khalid-outbound", version = "1.1.0", features = ["test-util"] }
+khalid-outbound = { path = "../khalid-outbound", version = "1.1.1", features = ["test-util"] }
 tokio.workspace = true
 wiremock = "0.6"
 robotstxt = "0.3"

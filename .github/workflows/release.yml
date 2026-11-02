@@ -138,10 +138,10 @@ jobs:
           "$file" --site "$site" serve --listen 127.0.0.1:8099 > "$RUNNER_TEMP/serve.log" 2>&1 &
           server=$!
           for _ in $(seq 60); do
-            curl -fsS -o /dev/null http://127.0.0.1:8099/admin/ && break
+            curl -fsSL -o /dev/null http://127.0.0.1:8099/admin/ && break
             sleep 0.5
           done
-          status=$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8099/admin/ || true)
+          status=$(curl -sSL -o /dev/null -w '%{http_code}' http://127.0.0.1:8099/admin/ || true)
           kill "$server" || true
           if [ "$status" != "200" ]; then
             echo "/admin/ answered $status, not 200. The release would have no admin. Check the admin bundle step."

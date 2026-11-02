@@ -22,7 +22,7 @@ thiserror.workspace = true
 tokio = { workspace = true, features = ["net"] }
 
 [dev-dependencies]
-khalid-outbound = { path = ".", version = "1.1.0", features = ["test-util"] }
+khalid-outbound = { path = ".", version = "1.1.1", features = ["test-util"] }
 tokio.workspace = true
 wiremock = "0.6"
 
