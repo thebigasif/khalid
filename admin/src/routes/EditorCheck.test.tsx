@@ -205,7 +205,8 @@ describe("the editor's search fields and schema", () => {
     renderAt(`/posts/${POST.id}`);
     fireEvent.click(await screen.findByText(seoEditorWords.share));
     const facebook = screen.getByText(seoEditorWords.facebook).closest("figure");
-    expect(facebook).toHaveTextContent("WWW.EXAMPLE.COM");
+    // The site's name comes with the check, which may answer after the panel opens.
+    await waitFor(() => expect(facebook).toHaveTextContent("WWW.EXAMPLE.COM"));
     expect(facebook).toHaveTextContent(POST.title);
     expect(facebook).toHaveTextContent(seoEditorWords.noImage);
     fireEvent.click(screen.getByText(en.settings.more.title));

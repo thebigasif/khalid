@@ -19,6 +19,20 @@ pub enum IssueWeight {
     Block,
     /// A warning, which does not.
     Warn,
+    /// A tip, which costs no points and comes after every warning.
+    Tip,
+}
+
+impl IssueWeight {
+    /// The weight of a finding with `severity`, or `None` for a rule that is off.
+    const fn of(severity: Severity) -> Option<Self> {
+        match severity {
+            Severity::Block => Some(Self::Block),
+            Severity::Warn => Some(Self::Warn),
+            Severity::Info => Some(Self::Tip),
+            Severity::Off => None,
+        }
+    }
 }
 
 /// One lint rule that fires on the site, as one task.
@@ -42,32 +56,27 @@ pub struct SiteIssue {
 }
 
 /// Up to [`MOST_ISSUES`] rules of `report`, those that stop posts first,
-/// then those on the most posts.
+/// then warnings, then tips, each group with those on the most posts first.
 pub fn top_issues(report: &Report) -> Vec<SiteIssue> {
-    let mut by_rule: BTreeMap<&str, (&Finding, BTreeSet<String>)> = BTreeMap::new();
+    let mut by_rule: BTreeMap<&str, (IssueWeight, &Finding, BTreeSet<String>)> = BTreeMap::new();
     for finding in report.findings() {
-        let weight = match finding.severity() {
-            Severity::Block => IssueWeight::Block,
-            Severity::Warn => IssueWeight::Warn,
-            Severity::Off => continue,
+        let Some(weight) = IssueWeight::of(finding.severity()) else {
+            continue;
         };
         let at = finding.location();
         let entry = by_rule.entry(finding.rule().as_str());
-        let (first, posts) = entry.or_insert_with(|| (finding, BTreeSet::new()));
-        // A rule that blocks on one post counts as blocking, shown on that post.
-        if weight == IssueWeight::Block && first.severity() != Severity::Block {
+        let (kept, first, posts) = entry.or_insert_with(|| (weight, finding, BTreeSet::new()));
+        // A rule counts at its heaviest weight on any post, shown on that post.
+        if weight < *kept {
+            *kept = weight;
             *first = finding;
         }
         posts.insert(format!("{}.{}", at.locale, at.slug));
     }
     let mut issues: Vec<SiteIssue> = (by_rule.into_iter())
-        .map(|(rule, (first, posts))| SiteIssue {
+        .map(|(rule, (weight, first, posts))| SiteIssue {
             rule: rule.to_owned(),
-            weight: if first.severity() == Severity::Block {
-                IssueWeight::Block
-            } else {
-                IssueWeight::Warn
-            },
+            weight,
             posts: u32::try_from(posts.len()).unwrap_or(u32::MAX),
             what: first.message().what().to_owned(),
             why: first.message().why().to_owned(),
@@ -88,6 +97,13 @@ mod tests {
     use khalid_lint::{LintConfig, LintPost, LintSite, Linter};
 
     use super::*;
+
+    #[test]
+    fn tips_weigh_least_and_rules_that_are_off_are_left_out() {
+        assert_eq!(IssueWeight::of(Severity::Info), Some(IssueWeight::Tip));
+        assert_eq!(IssueWeight::of(Severity::Off), None);
+        assert!(IssueWeight::Block < IssueWeight::Warn && IssueWeight::Warn < IssueWeight::Tip);
+    }
 
     #[test]
     fn rules_that_stop_posts_come_first_counted_once_per_post() {

@@ -192,7 +192,7 @@
   .check.warn .tag{color:var(--color-warn)}
   .check p{margin:0 0 .5rem}
   .score{display:flex;gap:.75rem;align-items:center;margin:0 0 1rem}
-  .score b{font-size:1.75rem;line-height:1;color:var(--color-ok);border:2px solid var(--color-ok);border-radius:999px;padding:.6rem .5rem;min-width:3.5rem;text-align:center}
+  .score b{font-size:1.75rem;line-height:1;color:var(--color-ok);border:2px solid var(--color-ok);border-radius:999px;padding:.6rem .5rem;min-width:3.5rem;flex:none;white-space:nowrap;text-align:center}
   .score p{margin:0;font-size:.9375rem}
   .serp{border:1px solid var(--color-border);border-radius:var(--radius-field);padding:.75rem 1rem;margin:0 0 .75rem}
   .serp p{margin:0 0 .25rem}

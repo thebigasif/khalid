@@ -1,11 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { isData } from "../api/call";
-import { readSiteIssues } from "../api/seo";
+import { readSiteIssues, type SiteIssue } from "../api/seo";
 import { dashboardWords as words } from "../strings/dashboardWords";
 
 /** The most issues the dashboard lists; the posts list holds the rest. */
 const MOST = 5;
+
+/** The pill for each weight: red stops a post, amber warns, blue is a tip. */
+const PILL: Record<SiteIssue["weight"], string> = {
+  block: "pill block",
+  warn: "pill warn",
+  tip: "pill info",
+};
 
 /** The site's most pressing lint problems as a task list, each with its fix and a post to start on. */
 export function SiteIssues() {
@@ -27,9 +34,7 @@ export function SiteIssues() {
                 {issue.why} {issue.fix}
               </span>
             </div>
-            <span className={issue.weight === "block" ? "pill block" : "pill warn"}>
-              {words.onPosts(issue.posts)}
-            </span>
+            <span className={PILL[issue.weight]}>{words.onPosts(issue.posts)}</span>
             <Link
               to="/posts/$id"
               params={{ id: issue.example }}

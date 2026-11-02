@@ -8,7 +8,7 @@
   .seps label:has(input:focus-visible){outline:2px solid var(--color-link);outline-offset:2px}
   .seps input{position:absolute;inset:0;width:100%;min-height:0;height:100%;margin:0;opacity:0;cursor:pointer}
   /* The variables a template may hold, as a row of small buttons under its field. */
-  .vars{display:flex;flex-wrap:wrap;gap:.375rem;margin:.5rem 0 0}
+  .vars{display:flex;flex-wrap:wrap;gap:.375rem;min-inline-size:0;margin:.5rem 0 0}
   .vars .btn{font-size:.8125rem;box-shadow:none}
   @media (pointer:fine){.vars .btn{min-height:1.875rem;padding:.25rem .625rem}}
   /* The editor's two scores as lights, each with its number and its meaning in words. */
@@ -24,6 +24,7 @@
   .serp.mobile{max-width:24rem;border-radius:1rem}
   .serp.mobile .head{font-size:1.125rem}
   .score-cell{display:inline-flex;align-items:center;gap:.375rem;white-space:nowrap}
+  .link-count{white-space:nowrap}
   /* A shared link as Facebook and X draw it: the picture, then the site and the words. */
   .share{margin:0 0 1rem;max-width:32rem}
   .share img,.share-none{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;margin:0;border:1px solid var(--color-border);border-bottom:0;border-radius:var(--radius-field) var(--radius-field) 0 0;background:var(--color-surface)}
@@ -36,7 +37,12 @@
   .share.x .share-words{background:var(--color-bg)}
   /* The bulk SEO editor: a field per cell, its length under it, red past the limit. */
   .bulk-seo textarea{width:100%;min-width:12rem;resize:vertical}
-  .bulk-seo td{vertical-align:top}
+  .bulk-seo td,.bulk-seo tbody th{vertical-align:top}
+  /* As a table, the post's title stays narrow so the description gets the room. */
+  @media (min-width:40.01em){
+    .bulk-seo tbody th{width:22%;padding-top:1rem}
+    .bulk-seo td[data-label]:nth-child(3) textarea{min-width:20rem}
+  }
   .bulk-seo .hint.over{color:var(--color-block)}
   /* One switch per AI crawler, in two columns where there is room. */
   .bots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(19rem,100%),1fr));gap:0 1.5rem;margin:1rem 0 0}

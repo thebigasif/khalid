@@ -11,9 +11,7 @@ import { en } from "../strings/en";
 export type Farewell = { kind: "gone" } | { kind: "moved"; to: string };
 
 /** What one change to many posts does to each of them. */
-export type BulkAction =
-  | { kind: "author"; author: string }
-  | { kind: "trash"; farewell: Farewell };
+export type BulkAction = { kind: "author"; author: string } | { kind: "trash"; farewell: Farewell };
 
 /** What a change to many posts came to: how many changed, and what to say about the others. */
 export type BulkResult = { changed: number; left: string[] };

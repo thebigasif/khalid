@@ -943,7 +943,7 @@ export type Invite = {
 };
 
 /** How much a problem matters. */
-export type IssueWeight = "block" | "warn";
+export type IssueWeight = "block" | "warn" | "tip";
 
 /** The token from a sign-in link, which the admin's sign-in page reads after the `#` and posts here. */
 export type LinkRedeem = {

@@ -41,7 +41,8 @@ export function LinkSuggestions({ id, version, onAdd }: Props) {
       <summary>{words.links}</summary>
       <div>
         <p className="hint">{words.linksLede}</p>
-        <p role="status">{added.length > 0 ? words.added : null}</p>
+        {/* A polite live region, not a second role="status": the editor's save line is the status. */}
+        <p aria-live="polite">{added.length > 0 ? words.added : null}</p>
         {shown.length === 0 ? <p className="hint">{words.noLinks}</p> : null}
         <ul className="rows">
           {shown.map((suggestion) => (

@@ -13790,7 +13790,8 @@
         "description": "How much a problem matters.",
         "enum": [
           "block",
-          "warn"
+          "warn",
+          "tip"
         ]
       },
       "LinkRedeem": {

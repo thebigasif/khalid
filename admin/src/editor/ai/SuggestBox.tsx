@@ -72,7 +72,8 @@ export function SuggestBox({ label, name, ask, pick }: Props) {
         </span>
         {label}
       </button>
-      <p className="hint" role="status">
+      {/* A polite live region, not a second role="status": the editor's save line is the status. */}
+      <p className="hint" aria-live="polite">
         {state.kind === "asking" ? aiWords.asking : null}
         {state.kind === "done" ? state.note : null}
       </p>

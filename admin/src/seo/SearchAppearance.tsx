@@ -57,13 +57,13 @@ function TemplateField({ type, field, value, onChange }: FieldProps) {
         value={value}
         onChange={(event) => onChange(event.target.value)}
       />
-      <div className="vars" role="group" aria-label={words.addTo(label.toLowerCase())}>
+      <fieldset className="vars" aria-label={words.addTo(label.toLowerCase())}>
         {VARIABLES.map((variable) => (
           <button key={variable} type="button" className="btn" onClick={() => add(variable)}>
             {seoWords.variables[variable]}
           </button>
         ))}
-      </div>
+      </fieldset>
     </div>
   );
 }

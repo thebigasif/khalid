@@ -90,7 +90,8 @@ describe("the parts of the SEO settings", () => {
     await userEvent.click(screen.getByLabelText(seoWords.feeds.excerpt));
     await userEvent.click(screen.getByLabelText(seoWords.feeds.indexnowOn));
     const key = screen.getByLabelText(seoWords.feeds.key);
-    expect(key).toHaveValue(expect.stringMatching(/^[0-9a-f]{32}$/));
+    // jest-dom's toHaveValue compares strings with ===, so it cannot take a pattern.
+    expect((key as HTMLInputElement).value).toMatch(/^[0-9a-f]{32}$/);
     await save();
     expect(await screen.findByText(seoWords.saved)).toBeVisible();
     expect(changes[0]?.seo).toEqual({

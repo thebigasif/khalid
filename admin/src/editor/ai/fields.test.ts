@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { fillField, helps, paragraph, textField, withBlock } from "./fields";
 
 describe("filling a field from beside the form", () => {
-  it("sets the value and sends input then focusout, as typing and leaving would", () => {
+  it("sets the value and sends input then focusout, as typing and leaving would", async () => {
     document.body.innerHTML = '<div><input id="setting-seoTitle" value="Old" /></div>';
     const field = textField(document.body, "setting-seoTitle");
     if (field === null) {
@@ -12,6 +12,9 @@ describe("filling a field from beside the form", () => {
     field.addEventListener("input", () => seen.push(`input ${field.value}`));
     field.addEventListener("focusout", () => seen.push("focusout"));
     fillField(field, "Choosing anchor text that helps readers");
+    expect(seen).toEqual(["input Choosing anchor text that helps readers"]);
+    // Leaving waits a turn, so the form draws the new value before it saves.
+    await new Promise((done) => setTimeout(done, 0));
     expect(seen).toEqual(["input Choosing anchor text that helps readers", "focusout"]);
   });
 

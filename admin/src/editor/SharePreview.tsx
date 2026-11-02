@@ -25,6 +25,22 @@ function hostOf(url: string): string {
   }
 }
 
+/**
+ * Where the browser finds `image`: an address as written, or a file beside
+ * the post, such as `cover.svg`, read from the post's page on this server.
+ * Empty while the post's address is not known yet.
+ */
+function shownImage(image: string, url: string): string {
+  if (image === "" || /^(https?:)?\//.test(image)) {
+    return image;
+  }
+  try {
+    return new URL(image, new URL(new URL(url).pathname, window.location.origin)).href;
+  } catch {
+    return "";
+  }
+}
+
 /** One network's card: the picture, then the site and the words. */
 function SharedCard({ name, card, site }: { name: string; card: Card; site: string }) {
   return (
@@ -50,12 +66,12 @@ export function SharePreview({ title, url, settings }: Props) {
   const facebook: Card = {
     title: first(settings.facebookTitle, title),
     description: first(settings.facebookDescription, settings.excerpt),
-    image: first(settings.facebookImage, settings.imageSrc),
+    image: shownImage(first(settings.facebookImage, settings.imageSrc), url),
   };
   const x: Card = {
     title: first(settings.xTitle, title),
     description: first(settings.xDescription, settings.excerpt),
-    image: first(settings.xImage, settings.imageSrc),
+    image: shownImage(first(settings.xImage, settings.imageSrc), url),
   };
   const site = hostOf(url);
   return (

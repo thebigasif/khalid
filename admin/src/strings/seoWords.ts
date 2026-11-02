@@ -157,7 +157,8 @@ export const seoWords = {
     others: "Other crawlers to block",
     othersHint: "One crawler's name per line, as it names itself, such as AhrefsBot.",
     allow: "Crawlers named as allowed",
-    allowHint: "One name per line. Leave it empty unless a crawler needs its own line in robots.txt.",
+    allowHint:
+      "One name per line. Leave it empty unless a crawler needs its own line in robots.txt.",
     disallow: "Paths no crawler may read",
     disallowHint: "One path per line inside the blog, such as /drafts/.",
     page: "AI info page",

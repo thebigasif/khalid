@@ -89,7 +89,7 @@ export function PostTable({ rows, ticked, onTick }: Props) {
                 <td data-label={seoEditorWords.readability}>
                   <ScoreCell value={row.scores?.readability} />
                 </td>
-                <td data-label={seoEditorWords.linksColumn}>
+                <td className="link-count" data-label={seoEditorWords.linksColumn}>
                   {seoEditorWords.linksInOut(row.links.inbound, row.links.outbound)}
                 </td>
                 <td data-label={en.posts.changed}>

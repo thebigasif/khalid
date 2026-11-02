@@ -71,7 +71,8 @@ fn score(findings: &[&Finding]) -> u8 {
         let points = match finding.severity() {
             Severity::Block => BLOCK_POINTS,
             Severity::Warn => WARN_POINTS,
-            Severity::Off => 0,
+            // A tip costs nothing, as in the linter's own score.
+            Severity::Info | Severity::Off => 0,
         };
         match costs.iter_mut().find(|(rule, _)| *rule == finding.rule()) {
             Some((_, cost)) => *cost = (*cost).max(points),

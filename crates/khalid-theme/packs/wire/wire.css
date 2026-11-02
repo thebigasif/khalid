@@ -223,7 +223,7 @@ main > .cta-band:last-child { margin-block-end: 0; }
 main:has(> .post) > *, main:has(> .author) > *, main:has(> .page) > * { max-inline-size: calc(var(--measure) + 21rem); margin-inline: auto; }
 .breadcrumbs { margin-block: 1.5rem 0; }
 .breadcrumbs li:has([aria-current]) { display: none; }
-.breadcrumbs li + li::before { content: "/" / ""; color: var(--color-border); }
+.breadcrumbs .crumb-sep { color: var(--color-border); }
 .breadcrumbs a { color: var(--color-muted); text-decoration: none; }
 .breadcrumbs li:nth-last-child(2) a { color: var(--color-link); }
 .post-header { margin-block-end: 2.5rem; }

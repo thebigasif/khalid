@@ -13,13 +13,15 @@ export function textField(root: ParentNode, id: string): TextField | null {
 /**
  * Puts `value` in `field` as typing would, so the form's own state takes
  * it, then leaves the field, so the editor saves as it does after typing.
+ * Leaving waits a turn: a pick happens inside a click, and React draws the
+ * new value only after the click, so leaving at once would save the old one.
  */
 export function fillField(field: TextField, value: string): void {
   const kind = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement : HTMLInputElement;
   const setter = Object.getOwnPropertyDescriptor(kind.prototype, "value")?.set;
   setter?.call(field, value);
   field.dispatchEvent(new Event("input", { bubbles: true }));
-  field.dispatchEvent(new FocusEvent("focusout", { bubbles: true }));
+  setTimeout(() => field.dispatchEvent(new FocusEvent("focusout", { bubbles: true })), 0);
 }
 
 /** `markdown` with `block` added at its end, a blank line between. */

@@ -3,8 +3,8 @@ import { problemMessage } from "../api/posts";
 import { isFailure, isPage, useRows } from "../api/rows";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
-import { MISSING, type Missing } from "../seo/bulkSeo";
 import { BulkSeoRow } from "../seo/BulkSeoRow";
+import { MISSING, type Missing } from "../seo/bulkSeo";
 import { en } from "../strings/en";
 import { seoToolWords } from "../strings/seoToolWords";
 

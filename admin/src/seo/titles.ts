@@ -22,7 +22,15 @@ export const PAGE_TYPES = [
 export type PageType = (typeof PAGE_TYPES)[number];
 
 /** The variables a template may hold, in the order the picker shows them. */
-export const VARIABLES = ["title", "site", "sep", "tagline", "excerpt", "category", "author"] as const;
+export const VARIABLES = [
+  "title",
+  "site",
+  "sep",
+  "tagline",
+  "excerpt",
+  "category",
+  "author",
+] as const;
 
 /** A template variable. */
 export type Variable = (typeof VARIABLES)[number];

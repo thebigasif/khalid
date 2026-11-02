@@ -10,11 +10,7 @@ import { seoToolWords } from "../strings/seoToolWords";
 const words = seoToolWords.bulk;
 
 /** A post with a description and a focus keyword but no SEO title, unless `settings` say so. */
-function post(
-  id: string,
-  title: string,
-  settings: Partial<AdminPost["settings"]> = {},
-): AdminPost {
+function post(id: string, title: string, settings: Partial<AdminPost["settings"]> = {}): AdminPost {
   return {
     id,
     slug: id.toLowerCase(),
@@ -37,7 +33,8 @@ function post(
   };
 }
 
-const BARE = post("01JA", "Why internal links matter");
+// The bare post has no focus keyword either, so the keyword filter keeps it.
+const BARE = post("01JA", "Why internal links matter", { focus_keyword: null });
 const DONE = post("01JB", "Planning a topic cluster", { seo_title: "Topic clusters, planned" });
 
 /** A blog with both posts that records every request. */
