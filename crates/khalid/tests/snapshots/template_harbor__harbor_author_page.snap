@@ -31,7 +31,7 @@ expression: "shown(&out, \"authors/asif/index.html\")"
 </article>
 <section aria-labelledby="author-posts">
 <h2 id="author-posts">Posts by Asif</h2>
-<ul class="cards cards-row" role="list">
+<ul class="cards" role="list">
 <li>
 <article class="card">
 <p class="card-meta"><span class="card-author">Asif</span>

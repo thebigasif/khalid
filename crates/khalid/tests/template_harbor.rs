@@ -41,6 +41,13 @@ const FEATURED: [&str; 3] = [
 /// marked featured and a call to action.
 #[cfg(test)]
 fn built() -> (tempfile::TempDir, PathBuf) {
+    built_with(&FEATURED)
+}
+
+/// The demo site built with Harbor and the posts in `featured` marked
+/// featured.
+#[cfg(test)]
+fn built_with(featured: &[&str]) -> (tempfile::TempDir, PathBuf) {
     let temp = tempfile::tempdir().unwrap();
     let demo = at(
         Path::new(env!("CARGO_MANIFEST_DIR")),
@@ -58,7 +65,7 @@ fn built() -> (tempfile::TempDir, PathBuf) {
         "[brand]\nlogo = \"https://www.example.com/logo.svg\"\n",
     )
     .unwrap();
-    for rel in FEATURED {
+    for rel in featured {
         let path = at(temp.path(), rel);
         let text = fs::read_to_string(&path).unwrap();
         fs::write(path, text.replacen('\n', "\nfeatured: true\n", 1)).unwrap();
@@ -103,6 +110,29 @@ fn shown(out: &Path, rel: &str) -> String {
 fn harbor_front_page() {
     let (_temp, out) = built();
     insta::assert_snapshot!(shown(&out, "index.html"));
+}
+
+/// With one featured post there are no editor's picks, so the column
+/// beside it shows the newest posts, and no post shows twice.
+#[test]
+fn harbor_front_page_with_one_featured_post_lists_the_newest_beside_it() {
+    let (_temp, out) = built_with(&["content/en/posts/2026-10-05-fixing-slow-pages/index.md"]);
+    let page = shown(&out, "index.html");
+    let html = scraper::Html::parse_fragment(&page);
+    let texts = |css: &str| {
+        let selector = scraper::Selector::parse(css).unwrap();
+        html.select(&selector)
+            .map(|element| element.text().collect::<String>())
+            .collect::<Vec<_>>()
+    };
+    assert_eq!(texts(".lead-side > h2"), ["Latest posts"]);
+    assert_eq!(texts(".lead-side .card h3").len(), 4);
+    assert!(texts(".lead-title").len() == 1 && texts(".latest").is_empty());
+    let mut titles = texts("main h3");
+    let count = titles.len();
+    titles.sort_unstable();
+    titles.dedup();
+    assert_eq!(titles.len(), count, "a post shows twice: {titles:?}");
 }
 
 #[test]

@@ -26,6 +26,7 @@ expression: "shown(&out, \"fixing-slow-pages/index.html\")"
 </ul>
 </address>
 <p class="post-date">Published <time datetime="2026-10-05">5 October 2026</time></p>
+<p class="reading-time"><time datetime="PT2M">2 min read</time></p>
 </div>
 <div class="offer">
 <div class="cta-band">
@@ -85,6 +86,17 @@ expression: "shown(&out, \"fixing-slow-pages/index.html\")"
 </ul>
 </div>
 </footer>
+<section class="author-box">
+<h2>About the author</h2>
+<div class="person-card">
+<div>
+<p class="person-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a></p>
+<p class="person-role">Technical SEO editor</p>
+<p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees before a reader does. She writes in English and German.</p>
+
+</div>
+</div>
+</section>
 </article>
 <section class="related related-scroll">
 <h2>Related posts</h2>
