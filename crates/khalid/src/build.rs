@@ -137,6 +137,7 @@ fn build(
         search_page::add(config, renderer, &mut languages)?;
         let sources = (content, categories.as_slice());
         build_lists::add((config, routes), renderer, sources, &mut languages)?;
+        build_pages::discovery_pages((config, routes), renderer, content, &mut languages)?;
         build_sitemap::add(config, renderer, &mut languages)?;
         own_descriptions::fill(config, renderer, &mut languages)?;
     }

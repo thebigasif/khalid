@@ -116,6 +116,35 @@ pub const CATEGORY_TABS: OptionSpec = OptionSpec {
     kind: OptionKind::Switch { default: false },
 };
 
+/// The owner's numbers under the home page's title, such as how many
+/// clients the blog's team serves. Never filled in by Khalid.
+pub const HERO_STATS: OptionSpec = OptionSpec {
+    key: "hero_stats",
+    help: "Up to four numbers under the home page's title, each written as number | what it counts, such as 140 | blogs studied.",
+    kind: OptionKind::Lines { most: 4 },
+};
+
+/// Tabs on the home page, one per topic, each with its newest posts.
+pub const TOPIC_TABS: OptionSpec = OptionSpec {
+    key: "topic_tabs",
+    help: "Whether the home page shows tabs, one per topic, each with that topic's newest posts. They work with scripts off.",
+    kind: OptionKind::Switch { default: false },
+};
+
+/// A row of the newest posts with a video on the home page.
+pub const VIDEO_SECTION: OptionSpec = OptionSpec {
+    key: "video_section",
+    help: "Whether the home page shows a row of the newest posts with a video, when there are any.",
+    kind: OptionKind::Switch { default: false },
+};
+
+/// A row of the newest posts with a sound player on the home page.
+pub const PODCAST_SECTION: OptionSpec = OptionSpec {
+    key: "podcast_section",
+    help: "Whether the home page shows a row of the newest posts with a podcast or other sound player, when there are any.",
+    kind: OptionKind::Switch { default: false },
+};
+
 /// The newest featured post above the home page and each list.
 pub const FEATURED: OptionSpec = OptionSpec {
     key: "featured",
@@ -352,5 +381,9 @@ pub fn all() -> Vec<OptionSpec> {
         contents_numbers(ContentsNumbers::Numbered),
         READING_PROGRESS,
         HEADER_SEARCH,
+        HERO_STATS,
+        TOPIC_TABS,
+        VIDEO_SECTION,
+        PODCAST_SECTION,
     ]
 }

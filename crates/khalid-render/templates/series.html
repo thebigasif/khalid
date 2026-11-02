@@ -1,0 +1,17 @@
+{#- A post's place in its series: a box with "Part 2 of 5" and every part
+    in order, and the links to the parts on either side. Every post
+    template calls both, so a series reads the same in every look. -#}
+{% macro series_box(series, t) %}{% if series %}<nav class="series-box" aria-label="{{ t.series_label }}">
+<p class="series-part">{{ t.series_part | replace("{part}", series.part | string) | replace("{total}", series.total | string) }}</p>
+<p class="series-name"><a href="{{ series.href }}">{{ series.name }}</a></p>
+<ol>
+{% for part in series.parts %}{% if loop.index == series.part %}<li><span aria-current="page">{{ part.name }}</span></li>
+{% else %}<li><a href="{{ part.href }}">{{ part.name }}</a></li>
+{% endif %}{% endfor %}</ol>
+</nav>
+{% endif %}{% endmacro %}
+{% macro series_steps(series, t) %}{% if series and (series.previous or series.next) %}<nav class="series-steps" aria-label="{{ t.series_steps }}">
+{% if series.previous %}<a class="series-previous" href="{{ series.previous.href }}" rel="prev"><span>{{ t.series_previous }}</span> {{ series.previous.name }}</a>
+{% endif %}{% if series.next %}<a class="series-next" href="{{ series.next.href }}" rel="next"><span>{{ t.series_next }}</span> {{ series.next.name }}</a>
+{% endif %}</nav>
+{% endif %}{% endmacro %}

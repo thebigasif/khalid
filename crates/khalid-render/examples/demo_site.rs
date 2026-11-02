@@ -324,6 +324,7 @@ impl Demo {
             cards.push((post.field("author"), post.field("category"), card));
         }
         let pick = |title: &str, keep: &dyn Fn(&str, &str) -> bool| RenderListing {
+            hub: None,
             title: title.to_owned(),
             intro: None,
             posts: cards
@@ -354,6 +355,9 @@ impl Demo {
                 links: topics.clone(),
             }],
             categories: topics,
+            tabs: Vec::new(),
+            videos: Vec::new(),
+            podcasts: Vec::new(),
         });
         self.page(lang, (lang.prefix, None), "Field Notes on SEO", &home)?;
         self.author_pages(lang, &authors, &cards)?;
@@ -562,6 +566,7 @@ impl Demo {
             contents: None,
             originals: BTreeMap::new(),
             related: Vec::new(),
+            series: None,
             mentions: Vec::new(),
             comments: None,
             body,

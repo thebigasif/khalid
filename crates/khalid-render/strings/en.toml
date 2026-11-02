@@ -97,6 +97,7 @@ no_authors = "This blog has no authors yet."
 credentials = "Experience"
 # Names the list of an author's profiles on other sites. {name} is filled in.
 profiles_of = "{name} elsewhere"
+glossary_title = "Glossary"
 glossary_letters = "Jump to a letter"
 no_terms = "The glossary has no terms yet."
 search_label = "Search this blog"
@@ -173,3 +174,32 @@ consent_change = "You can change your choice about code from other companies tha
 consent_allow = "Allow"
 consent_refuse = "Do not allow"
 all_posts = "All posts"
+
+# Case studies and the changelog.
+case_studies_title = "Case studies"
+changelog_title = "Changelog"
+all_case_studies = "All case studies"
+all_changes = "All changes"
+entry_result = "Result"
+entry_version = "Version {version}"
+no_entries = "Nothing here yet."
+entries_description = "{title} from {site}, newest first."
+
+# A series of posts.
+series_label = "This post is part of a series"
+series_part = "Part {part} of {total}"
+series_steps = "The parts before and after this one"
+series_previous = "Previous part"
+series_next = "Next part"
+series_intro = "A series in {total} parts, best read in order."
+
+# A topic hub.
+hub_start = "Start here"
+hub_chapters = "Start with these, in order"
+hub_latest = "Latest in {name}"
+latest_posts = "Latest posts"
+
+# The home page's optional rows.
+topic_tabs = "Browse by topic"
+home_videos = "Videos"
+home_podcasts = "Podcast episodes"

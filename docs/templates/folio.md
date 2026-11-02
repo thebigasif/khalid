@@ -44,6 +44,10 @@ Set any of these under `[template.options]` in `site.toml`. A line you leave out
 
 | Option | Folio's default | What it changes |
 |---|---|---|
+| `hero_stats` | none | Up to four numbers under the front page's title, each written `number \| what it counts`. Nothing shows until you write them. |
+| `topic_tabs` | `false` | Tabs on the front page, one per topic, each with its four newest posts. They work with scripts off. |
+| `video_section` | `true` | A row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `masthead_name` | the blog's name | One line: the name the masthead shows, such as `["The Workshop"]`. |
 | `tagline` | none | One line under the name, such as `["Notes from the team that builds Acme."]`. Without it, the blog's intro shows. |
 | `quote` | none | A quote centred under the cards: the words, then who said them, such as `["Ship small, ship often.", "Lena Vogt"]`. |

@@ -79,6 +79,10 @@ Every template shares one set of page parts. A template switches on the ones it 
 | `contents_numbers` | `numbered`, `nested`, `none` | How the contents are numbered: 1, 2, 3, or 1, 1.1, 2, or not at all. |
 | `reading_progress` | `bar`, `none` | A thin accent line at the top of a post that fills as the reader scrolls. Every template shows it, classic too; `none` turns it off in any template but classic, which takes no options. It hides when the reader asks for less motion, and in print. |
 | `header_search` | `button`, `link`, `none` | What the search in the header does on a blog that answers searches (`mode = "server"`): `button` opens a search dialog that shows results as the reader types, and the search page with scripts off; `link` always opens the search page; `none` hides it. Classic uses `button`. A static blog has no search, so its header shows none. |
+| `hero_stats` | up to four lines | Numbers under the home page's title, each written `number \| what it counts`, such as `"140 \| blogs studied"`. Khalid never makes one up: with no lines, nothing shows. |
+| `topic_tabs` | `true`, `false` | The home page shows tabs, one per topic, each with that topic's four newest posts. Each tab is a link to its panel, so the tabs work with scripts off. |
+| `video_section` | `true`, `false` | The home page shows a row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true`, `false` | The home page shows a row of the newest posts with a podcast or other sound player, when there are any. |
 
 What the reading progress bar, the contents sheet, the copy link button and the header search do for a reader is in [Reading aids](reading.md).
 

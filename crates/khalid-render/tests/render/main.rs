@@ -38,6 +38,8 @@ mod dek;
 #[cfg(test)]
 mod enlarge;
 #[cfg(test)]
+mod entries;
+#[cfg(test)]
 mod featured;
 #[cfg(test)]
 mod glossary;
@@ -48,7 +50,11 @@ mod heading_links;
 #[cfg(test)]
 mod home;
 #[cfg(test)]
+mod home_parts;
+#[cfg(test)]
 mod html_check;
+#[cfg(test)]
+mod hub;
 #[cfg(test)]
 mod image;
 #[cfg(test)]
@@ -83,6 +89,8 @@ mod script;
 mod search_link;
 #[cfg(test)]
 mod seo_head;
+#[cfg(test)]
+mod series;
 #[cfg(test)]
 mod slots;
 #[cfg(test)]

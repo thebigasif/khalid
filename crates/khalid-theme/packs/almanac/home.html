@@ -7,6 +7,7 @@
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
 {% set groups = page.topics if "topic_links" in site.features else [] -%}
 {% set first = groups[0].links if groups else [] -%}
 {% if first %}<nav class="al-subnav" aria-label="{{ t.categories }}">
@@ -21,7 +22,7 @@
 </details></li>
 {% endif %}</ul>
 </nav>
-{% endif %}<h1 class="al-title">{{ page.title }}</h1>
+{% endif %}<h1 class="al-title">{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
@@ -55,7 +56,7 @@
 {% endfor %}</ul>
 </section>
 {% endif %}</div>
-{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t, note=template.options.newsletter_note | first if template.options.newsletter_note else none) }}
+{% endif %}{{ home_sections(page, template.options, t) }}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t, note=template.options.newsletter_note | first if template.options.newsletter_note else none) }}
 {% endif %}{% for section in page.sections %}<section class="home-section">
 <div class="al-section-head">
 <h2>{{ section.title }}</h2>

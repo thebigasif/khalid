@@ -10,7 +10,9 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer};
 
 use crate::front_matter::{Fence, split};
-use crate::post_fields::{self, LeadImage, ReviewState, ShareCards, Sitemap, TopicCluster};
+use crate::post_fields::{
+    self, LeadImage, PostSeries, ReviewState, ShareCards, Sitemap, TopicCluster,
+};
 use crate::{ContentError, parse_blocks};
 
 /// What a post's front matter may say.
@@ -93,6 +95,9 @@ pub struct PostFront {
     /// The topic cluster the post belongs to and its role in it, which the
     /// linter checks: a member links to its pillar.
     pub cluster: Option<TopicCluster>,
+    /// The series the post is one part of, and its place in it, which
+    /// gives it "Part 2 of 5" and links to the other parts.
+    pub series: Option<PostSeries>,
     /// The image at the top of the post and on its cards.
     pub image: Option<LeadImage>,
     /// The title for search results and the browser tab, in place of the

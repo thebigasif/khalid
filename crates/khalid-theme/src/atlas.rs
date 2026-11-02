@@ -48,5 +48,9 @@ pub(crate) static ATLAS: Pack = Pack {
         slot::newsletter("none"),
         slot::cta_band("both"),
         slot::CTA_BUTTON_ON,
+        parts::HERO_STATS,
+        parts::on(parts::TOPIC_TABS),
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };

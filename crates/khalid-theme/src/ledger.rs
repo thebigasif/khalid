@@ -57,5 +57,9 @@ pub(crate) static LEDGER: Pack = Pack {
         slot::newsletter("both"),
         slot::cta_band("none"),
         slot::CTA_BUTTON_OFF,
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };

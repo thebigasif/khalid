@@ -57,5 +57,9 @@ pub(crate) static HARBOR: Pack = Pack {
             help: "Whether a small drawn mark in your accent colour sits above each section heading of a post.",
             kind: OptionKind::Switch { default: true },
         },
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };

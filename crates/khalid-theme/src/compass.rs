@@ -39,6 +39,10 @@ pub(crate) static COMPASS: Pack = Pack {
         slot::share_networks(&["linkedin", "x", "facebook", "email"]),
         slot::newsletter("both"),
         slot::cta_band("post"),
+        parts::HERO_STATS,
+        parts::on(parts::TOPIC_TABS),
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };
 

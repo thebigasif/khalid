@@ -57,5 +57,9 @@ pub(crate) static WIRE: Pack = Pack {
             help: "Whether a post shows its writer's card, with a bio that folds open, right after the picture.",
             kind: OptionKind::Switch { default: true },
         },
+        parts::HERO_STATS,
+        parts::on(parts::TOPIC_TABS),
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };

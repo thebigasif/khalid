@@ -1,6 +1,12 @@
 //! The pages `khalid build` renders: the site's content turned into the input
 //! records of `khalid-render` (ADR 0009), one language at a time.
 
+mod entries;
+mod glossary;
+mod home_rows;
+mod hubs;
+pub(crate) mod series;
+
 use std::cmp::Reverse;
 use std::collections::BTreeMap;
 use std::mem;
@@ -14,7 +20,8 @@ use khalid_content::{
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
 use khalid_render::{
     BodyHtml, MOST_PICKS, MOST_RELATED, PageBody, PageKind, PageMeta, Person, PostCard, PostTopics,
-    ReadingTime, RenderHome, RenderListing, RenderPost, RenderSite, Robots, related_up_to,
+    ReadingTime, RenderHome, RenderListing, RenderPost, RenderSite, Renderer, Robots,
+    related_up_to,
 };
 use khalid_routes::{Collection, PostAddress, Routes};
 use khalid_seo::{ArticleType, MetaTemplate, PageKind as SeoKind, SeoPage};
@@ -115,6 +122,28 @@ fn language_pages(
     })
 }
 
+/// Adds the pages that help readers find their way, once the lists of
+/// `languages` are made: the glossary from A to Z, case studies and the
+/// changelog, series, hubs and the home page's topic tabs and media rows,
+/// worded in each language by `renderer`'s strings.
+///
+/// # Errors
+///
+/// Returns what, why and fix when one of those pages cannot be made.
+pub(crate) fn discovery_pages(
+    (config, routes): (&Config, &Routes),
+    renderer: &Renderer,
+    content: &SiteContent,
+    languages: &mut [LanguagePages],
+) -> Result<(), UserMessage> {
+    glossary::add((config, routes), renderer, content, languages)?;
+    entries::add((config, routes), renderer, content, languages)?;
+    series::add(config, renderer, content, languages)?;
+    hubs::fill((config, routes), content, languages);
+    home_rows::fill(languages);
+    Ok(())
+}
+
 /// The home page of `locale`, listing `cards`, newest first.
 pub(crate) fn home_page(
     config: &Config,
@@ -127,6 +156,7 @@ pub(crate) fn home_page(
         .cloned()
         .collect();
     let listing = RenderListing {
+        hub: None,
         title: config.name().to_owned(),
         intro: None,
         featured: picks.first().cloned(),
@@ -148,6 +178,9 @@ pub(crate) fn home_page(
         picks,
         topics: Vec::new(),
         categories: Vec::new(),
+        tabs: Vec::new(),
+        videos: Vec::new(),
+        podcasts: Vec::new(),
     });
     Ok(page(locale, config, "", meta, body, seo))
 }
@@ -344,6 +377,7 @@ fn post_page(
         contents: build_reader::contents(&rendered.headings),
         originals: BTreeMap::new(),
         related,
+        series: None,
         mentions: Vec::new(),
         comments: None,
         body: html,

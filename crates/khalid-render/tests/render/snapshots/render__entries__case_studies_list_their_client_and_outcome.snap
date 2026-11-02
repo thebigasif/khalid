@@ -1,0 +1,16 @@
+---
+source: crates/khalid-render/tests/render/entries.rs
+expression: main_of(&page)
+---
+ id="main" tabindex="-1">
+
+<h1>Case studies</h1>
+<div class="entries entries-case-studies">
+<article class="entry">
+<p class="entry-label">Northfield Bakery</p>
+<h2><a href="/blog/case-studies/northfield-bakery/">How a bakery doubled its search traffic</a></h2>
+<time datetime="2026-10-20">20 October 2026</time>
+<p class="entry-outcome"><span>Result</span> Search visits doubled in four months.</p>
+<p>One topic cluster on sourdough, every post linked to it.</p>
+</article>
+</div>

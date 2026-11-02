@@ -6,8 +6,9 @@
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
 <div class="home-head">
-<h1>{{ page.title }}</h1>
+<h1>{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
@@ -27,7 +28,7 @@
 {% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</section>
 {% elif not slot %}<p>{{ t.no_posts }}</p>
-{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<div class="newsletter-mid">
+{% endif %}{{ home_sections(page, template.options, t) }}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<div class="newsletter-mid">
 {% for line in template.options.subscriber_line %}<p class="subscriber-line">{{ line }}</p>
 {% endfor %}{{ newsletter_form(site.subscribe, t) }}
 </div>

@@ -62,5 +62,9 @@ pub(crate) static WORKBENCH: Pack = Pack {
             help: "One line under the newsletter form on the front page, such as how often it goes out.",
             kind: OptionKind::Lines { most: 1 },
         },
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };

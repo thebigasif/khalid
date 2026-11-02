@@ -53,6 +53,10 @@ pub(crate) static KEYSTONE: Pack = Pack {
             help: "Up to two lines about the site after each post, such as who writes it.",
             kind: OptionKind::Lines { most: 2 },
         },
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };
 

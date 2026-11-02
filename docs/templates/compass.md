@@ -52,6 +52,10 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 
 | Option | Default | Values | What it changes |
 |---|---|---|---|
+| `hero_stats` | none | up to four lines | Numbers under the front page's title, each written `number \| what it counts`. Nothing shows until you write them. |
+| `topic_tabs` | `true` | `true`, `false` | Tabs on the front page, one per topic, each with its four newest posts. They work with scripts off. |
+| `video_section` | `true` | `true`, `false` | A row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true` | `true`, `false` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `logo` | `true` | `true`, `false` | The header shows the logo from your main site in place of the blog's name. Without a logo, the name shows. |
 | `cta_button` | `true` | `true`, `false` | The header shows your `[template.cta]` as a button. |
 | `breadcrumbs` | `true` | `true`, `false` | Each page shows the trail of links from the home page to it. |

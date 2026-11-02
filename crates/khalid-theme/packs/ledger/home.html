@@ -7,6 +7,7 @@
 {% from "image.html" import avatar -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
 {% macro entries(posts, level) -%}
 <ol class="ledger-list" role="list">
 {% for post in posts %}<li>
@@ -20,7 +21,7 @@
 {% endfor %}</ol>
 {%- endmacro %}
 <header class="masthead">
-<h1>{{ page.title }}</h1>
+<h1>{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if template.options.tagline %}<p class="tagline">{{ template.options.tagline }}</p>
 {% endif %}{% if template.options.stats %}<ul class="stats" role="list">
 {% for stat in template.options.stats %}<li>{{ stat }}</li>
@@ -47,7 +48,7 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
 {% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
-{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<div class="band">
+{% endif %}{{ home_sections(page, template.options, t) }}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<div class="band">
 {{ newsletter_form(site.subscribe, t) }}
 </div>
 {% endif %}{% endblock %}

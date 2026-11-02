@@ -21,6 +21,9 @@ pub struct RenderListing {
     /// page only. A template with its `featured` part on shows it above
     /// the list and leaves it out of the list below.
     pub featured: Option<PostCard>,
+    /// The hub of this list's topic, if a page is one, linked above the
+    /// posts as the place to start.
+    pub hub: Option<Link>,
 }
 
 /// A post as a list shows it.

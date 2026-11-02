@@ -61,6 +61,7 @@ post_count = "{count} Beiträge"
 no_authors = "Dieser Blog hat noch keine Autorinnen und Autoren."
 credentials = "Erfahrung"
 profiles_of = "{name} im Netz"
+glossary_title = "Glossar"
 glossary_letters = "Zu einem Buchstaben springen"
 no_terms = "Das Glossar hat noch keine Begriffe."
 search_label = "Diesen Blog durchsuchen"
@@ -127,3 +128,32 @@ consent_change = "Du kannst deine Wahl zu Code anderer Firmen, der Besuche zähl
 consent_allow = "Erlauben"
 consent_refuse = "Nicht erlauben"
 all_posts = "Alle Beiträge"
+
+# Fallstudien und Änderungen.
+case_studies_title = "Fallstudien"
+changelog_title = "Änderungen"
+all_case_studies = "Alle Fallstudien"
+all_changes = "Alle Änderungen"
+entry_result = "Ergebnis"
+entry_version = "Version {version}"
+no_entries = "Hier gibt es noch nichts."
+entries_description = "{title} von {site}, die neuesten zuerst."
+
+# Eine Serie von Beiträgen.
+series_label = "Dieser Beitrag gehört zu einer Serie"
+series_part = "Teil {part} von {total}"
+series_steps = "Die Teile vor und nach diesem"
+series_previous = "Vorheriger Teil"
+series_next = "Nächster Teil"
+series_intro = "Eine Serie in {total} Teilen, am besten der Reihe nach gelesen."
+
+# Ein Themen-Hub.
+hub_start = "Hier beginnen"
+hub_chapters = "Zuerst diese, der Reihe nach"
+hub_latest = "Neu in {name}"
+latest_posts = "Neueste Beiträge"
+
+# Die zusätzlichen Reihen der Startseite.
+topic_tabs = "Nach Thema stöbern"
+home_videos = "Videos"
+home_podcasts = "Podcast-Folgen"
