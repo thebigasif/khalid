@@ -1,8 +1,8 @@
 # Khalid
 
-**A blog that checks every post before it goes live.**
+**The fast, secure WordPress alternative for blogs.**
 
-Khalid is an open-source blog engine you add to the website you already have. It ships with the SEO that big content teams build by hand, and it will not publish a post with the mistakes that hurt it in search.
+Khalid is one small program written in Rust. No plugins to patch, no PHP, no database server to run. SEO is built in, and a linter stops weak posts before they go live. Add it to the website you already have.
 
 [Website](https://serpdad.com/khalid/) · [Live blog](https://serpdad.com/blog/) · [Live demo](https://thebigasif.github.io/khalid/demo/) · [Templates](https://thebigasif.github.io/khalid/templates/) · [Use cases](https://thebigasif.github.io/khalid/examples/saas/) · [Latest release](https://github.com/thebigasif/khalid/releases/latest)
 
@@ -10,6 +10,8 @@ Khalid is an open-source blog engine you add to the website you already have. It
 
 ## Why Khalid
 
+- **Fast by design.** Pages are built when you publish, not when someone visits. Every release must pass speed limits in CI: a first page in under 100 ms and zero JavaScript needed to read a post.
+- **Secure by design.** Memory-safe Rust, one binary, no plugins and no PHP, so there is far less to attack and nothing to patch every week. Writers sign in with passkeys.
 - **SEO done for you.** Titles, descriptions, canonical links, sitemaps, schema markup for every kind of post, share images and redirects are all built in. Khalid's own site audit passes the Ahrefs and Semrush checks.
 - **A linter that guards every post.** A post with a missing description, a skipped heading level, a link to nowhere or too little to say does not go live. Every refusal says what is wrong, why it matters and how to fix it.
 - **Ready for AI search.** Answer-first writing checks, an AI info page and clean structured data help AI search find and quote your posts.
