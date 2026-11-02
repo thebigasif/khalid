@@ -208,9 +208,6 @@
   .card{border:1px solid var(--color-border);border-radius:var(--radius-field);padding:1.25rem;background:var(--color-bg);box-shadow:var(--shadow-card)}
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:1rem;margin:0;padding:0;list-style:none}
   .stats strong{display:block;font-size:1.75rem;line-height:1.2;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-  .posts{list-style:none;padding:0;margin:0 0 1.25rem}
-  .posts li{padding:.6rem 0;border-bottom:1px solid var(--color-border)}
-  .posts li:last-child{border-bottom:0}
   /* A table sits on its own white card, with quiet headings and a hover on each row. */
   .scroll{overflow-x:auto;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-field);box-shadow:var(--shadow-card)}
   table{border-collapse:collapse;width:100%;background:var(--color-bg)}
@@ -236,6 +233,29 @@
   .empty-icon{display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:50%;background:var(--color-surface);color:var(--color-muted)}
   .empty-icon .icon{width:1.25rem;height:1.25rem}
   .empty-title{margin:0;color:var(--color-muted);max-width:40ch}
+  /* The dashboard: a row of number cards, two panels side by side, then quick actions. */
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(13rem,100%),1fr));gap:1rem;list-style:none;margin:0 0 1.5rem;padding:0}
+  .metric{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;padding:1rem 1.25rem;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-field);box-shadow:var(--shadow-card)}
+  .metric-label{display:flex;align-items:center;gap:.5rem;color:var(--color-muted);font-size:.8125rem;font-weight:500}
+  .metric-value{font-size:1.75rem;line-height:1.2;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .metric.failing .metric-value{color:var(--color-block)}
+  .metric p,.metric a{margin:auto 0 0;font-size:.8125rem}
+  .metric p{color:var(--color-muted)}
+  .metric.connect{border-style:dashed}
+  .metric.connect p{margin:0}
+  .board{display:grid;grid-template-columns:minmax(0,1fr);gap:1.5rem;margin:0 0 1.5rem}
+  @media (min-width:64em){.board{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+  .panel{min-width:0;padding:1rem 1.25rem 1.25rem;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-field);box-shadow:var(--shadow-card)}
+  .panel>h2{margin:0 0 .75rem;font-size:.9375rem}
+  .panel .scroll{border:0;border-radius:0;box-shadow:none}
+  .panel thead th{background:var(--color-bg)}
+  .rows{list-style:none;margin:0;padding:0}
+  .rows li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem .75rem;padding:.625rem 0;border-bottom:1px solid var(--color-border)}
+  .rows li:last-child{border-bottom:0}
+  .quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:.75rem;list-style:none;margin:0;padding:0}
+  .quick a{display:flex;align-items:center;gap:.625rem;min-height:44px;padding:.75rem 1rem;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-field);box-shadow:var(--shadow-card);color:var(--color-text);font-weight:500;text-decoration:none}
+  .quick a:hover{border-color:var(--color-field)}
+  .quick .icon{color:var(--color-link)}
   /* A message raised at the foot of the screen, which fades by itself. */
   .toast-region{margin:0}
   .toast{position:fixed;right:1rem;bottom:1rem;z-index:50;display:flex;align-items:center;gap:.5rem;max-width:min(24rem,calc(100vw - 2rem));padding:.625rem 1rem;border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);box-shadow:var(--shadow-menu);font-weight:500;animation:toast-out .3s ease-in 5s forwards}
