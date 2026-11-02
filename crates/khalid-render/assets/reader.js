@@ -1,7 +1,8 @@
 // Polish on top of pages that read completely without it (RULES.md BL-WEB-2):
 // copy a heading's address, open an enlarged image in a dialog, open search
 // with / or Ctrl+K, show results while typing a search, and mark the
-// section being read in the contents, and preview a linked post.
+// section being read in the contents, preview a linked post, and say
+// whether a location is open now.
 // The words it shows come from the script tag's data attributes.
 (() => {
   "use strict";
@@ -224,5 +225,23 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") hidePreview();
     });
+  }
+
+  // A location card says whether it is open now, by the reader's clock.
+  // Its hours are "mon 09:00 17:30" entries; the table lists them anyway.
+  const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+  const now = new Date();
+  const today = days[now.getDay()];
+  const time = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  for (const card of document.querySelectorAll(".location[data-hours]")) {
+    const line = card.querySelector(".location-now");
+    if (!line) continue;
+    const open = card.dataset.hours.split(",").some((entry) => {
+      const [day, opens, closes] = entry.split(" ");
+      return day === today && opens <= time && time < closes;
+    });
+    line.textContent = open ? line.dataset.open : line.dataset.closed;
+    line.dataset.state = open ? "open" : "closed";
+    line.hidden = false;
   }
 })();

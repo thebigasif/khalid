@@ -267,6 +267,26 @@ fn the_locations_with_a_map_point_are_in_a_kml_file_the_sitemap_index_lists() {
 }
 
 #[test]
+fn a_location_block_shows_the_address_hours_and_map_of_the_location_it_names() {
+    let site = site(LOCATIONS);
+    put(
+        site.path(),
+        "content/en/pages/visit.md",
+        "---\ntitle: Visit us\nslug: visit\n---\n\nFind us here.\n\n\
+         ::location{name=\"Mill Lane Dental\"}\n",
+    );
+    build(&site);
+    let visit = file(&site, "visit/index.html").unwrap();
+    assert!(
+        visit.contains("<strong>Mill Lane Dental</strong>"),
+        "{visit}"
+    );
+    assert!(visit.contains("<th scope=\"row\">Monday</th><td>09:00 to 17:30</td>"));
+    assert!(visit.contains("Map and directions</a>"), "{visit}");
+    assert!(!visit.contains("khalid-location"), "{visit}");
+}
+
+#[test]
 fn a_collection_and_pages_can_leave_search_and_a_feed_format_can_go() {
     let site =
         site("\n[seo.index.collections]\nnews = \"noindex\"\n\n[seo.feeds]\noff = [\"atom\"]\n");

@@ -160,6 +160,14 @@ closes = "17:30"
 | `geo` | Optional: the point on the map. It puts the location in `locations.kml`. |
 | `hours` | When it is open, one table per group of days, on a 24-hour clock. |
 
+A post or page shows one location's card with the location block, by its name as written in `site.toml`:
+
+```markdown
+::location{name="Mill Lane Dental"}
+```
+
+The card shows the address, the phone number as a link, the opening hours day by day and a link to `map`, or to OpenStreetMap at the `geo` point. With scripts on, it also says "Open now" or "Closed now" by the reader's clock. A name `site.toml` does not list shows nothing, and `khalid build` warns about it.
+
 `[seo.local]` switches what a site with locations gets. Both are on by default.
 
 | Key | Default | What it does |

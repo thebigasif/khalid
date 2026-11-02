@@ -11,4 +11,5 @@ Added
 - **News**: `news: false` keeps a post out of the news sitemap, and `stock_tickers:` adds up to five tickers to it.
 - **Category and tag SEO**: each term page can have its own title, description, robots, share image and intro, in `categories.toml` and `tags.toml`. The build names term pages that have no intro.
 - **Local**: a location can have a `geo` point. Those with one go in `locations.kml`, a geo sitemap listed in the sitemap index, and their schema node names the point. `[seo.local] kml = false` turns the file off.
+- **The location block**: `::location{name="..."}` shows a location's address, phone, opening hours, a map link and, with scripts on, whether it is open now.
 - **Video**: `thumbnail=` on the video block sets the picture search results show.
