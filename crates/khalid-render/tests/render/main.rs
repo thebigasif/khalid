@@ -44,6 +44,8 @@ mod heading_links;
 #[cfg(test)]
 mod home;
 #[cfg(test)]
+mod hub;
+#[cfg(test)]
 mod html_check;
 #[cfg(test)]
 mod image;

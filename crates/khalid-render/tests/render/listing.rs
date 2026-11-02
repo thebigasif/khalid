@@ -45,6 +45,7 @@ pub(crate) fn home(listing: RenderListing) -> RenderHome {
 pub(crate) fn first_page() -> RenderListing {
     let pages = vec!["/blog/".to_owned(), "/blog/page/2/".to_owned()];
     RenderListing {
+        hub: None,
         title: "Field notes on SEO".to_owned(),
         intro: Some(BodyHtml::from_sanitised(
             "<p>Short, practical posts for small teams who look after their own website.</p>"

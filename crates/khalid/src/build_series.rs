@@ -148,6 +148,7 @@ fn series_page(
     // need no sanitising beyond escaping the one paragraph.
     let intro = BodyHtml::from_sanitised(format!("<p>{}</p>", escape(&intro)));
     let body = PageBody::Collection(RenderListing {
+        hub: None,
         title: name,
         intro: Some(intro),
         posts: cards,

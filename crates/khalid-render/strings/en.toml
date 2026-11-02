@@ -190,3 +190,9 @@ series_steps = "The parts before and after this one"
 series_previous = "Previous part"
 series_next = "Next part"
 series_intro = "A series in {total} parts, best read in order."
+
+# A topic hub.
+hub_start = "Start here"
+hub_chapters = "Start with these, in order"
+hub_latest = "Latest in {name}"
+latest_posts = "Latest posts"

@@ -324,6 +324,7 @@ impl Demo {
             cards.push((post.field("author"), post.field("category"), card));
         }
         let pick = |title: &str, keep: &dyn Fn(&str, &str) -> bool| RenderListing {
+            hub: None,
             title: title.to_owned(),
             intro: None,
             posts: cards

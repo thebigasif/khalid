@@ -21,6 +21,21 @@ pub struct PageFront {
     pub description: Option<String>,
     /// The key shared by the versions of this page in other languages.
     pub translation: Option<String>,
+    /// Makes the page the hub of a topic: its body is the topic's pillar
+    /// intro, followed by its chapters and the topic's latest posts.
+    pub hub: Option<PageHub>,
+}
+
+/// What makes a page a topic's hub.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct PageHub {
+    /// The category the hub is the front door to, such as `technical-seo`.
+    pub category: Slug,
+    /// The posts to read first, in order, by slug.
+    #[serde(default)]
+    pub chapters: Vec<Slug>,
 }
 
 /// An author, in `authors/`. The body is the bio.

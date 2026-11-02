@@ -145,3 +145,9 @@ series_steps = "Die Teile vor und nach diesem"
 series_previous = "Vorheriger Teil"
 series_next = "Nächster Teil"
 series_intro = "Eine Serie in {total} Teilen, am besten der Reihe nach gelesen."
+
+# Ein Themen-Hub.
+hub_start = "Hier beginnen"
+hub_chapters = "Zuerst diese, der Reihe nach"
+hub_latest = "Neu in {name}"
+latest_posts = "Neueste Beiträge"

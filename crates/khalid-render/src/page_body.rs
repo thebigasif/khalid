@@ -4,7 +4,7 @@ use minijinja::Value;
 use minijinja::value::Serde;
 
 use crate::{
-    RenderAuthor, RenderAuthors, RenderEntries, RenderEntry, RenderGlossary, RenderHome,
+    RenderAuthor, RenderAuthors, RenderEntries, RenderEntry, RenderGlossary, RenderHome, RenderHub,
     RenderListing, RenderPage, RenderPost, RenderSearch, RenderSitemap,
 };
 
@@ -44,6 +44,8 @@ pub enum PageBody {
     Entries(RenderEntries),
     /// One case study or changelog entry.
     Entry(Box<RenderEntry>),
+    /// The hub of a topic: its intro, chapters and newest posts.
+    Hub(Box<RenderHub>),
     /// The page for an address with nothing behind it.
     NotFound,
 }
@@ -68,6 +70,7 @@ impl PageBody {
             Self::Search(_) => "search.html",
             Self::Entries(_) => "entries.html",
             Self::Entry(_) => "entry.html",
+            Self::Hub(_) => "hub.html",
             Self::NotFound => "not_found.html",
         }
     }
@@ -92,6 +95,7 @@ impl PageBody {
             | Self::Date(listing) => listing.posts.len() + usize::from(listing.featured.is_some()),
             Self::Author(author) => author.posts.len(),
             Self::Entries(entries) => entries.groups.iter().map(|group| group.entries.len()).sum(),
+            Self::Hub(hub) => hub.chapters.len() + hub.latest.len(),
             _ => 0,
         }
     }
@@ -115,6 +119,7 @@ impl PageBody {
             Self::Search(search) => Value::from(Serde(search)),
             Self::Entries(entries) => Value::from(Serde(entries)),
             Self::Entry(entry) => Value::from(Serde(entry)),
+            Self::Hub(hub) => Value::from(Serde(hub)),
             Self::NotFound => Value::UNDEFINED,
         }
     }

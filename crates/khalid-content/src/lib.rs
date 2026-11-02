@@ -42,7 +42,8 @@ pub use render::{
     CTA_MARK, Gated, Heading, Image, Link, Rendered, render, render_gated, render_linked,
 };
 pub use schemas::{
-    AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, SnippetFront,
+    AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, PageHub,
+    SnippetFront,
 };
 pub use site_content::{Document, SiteContent, read_content};
 pub use structured::{

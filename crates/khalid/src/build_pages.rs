@@ -127,6 +127,7 @@ pub(crate) fn home_page(
         .cloned()
         .collect();
     let listing = RenderListing {
+        hub: None,
         title: config.name().to_owned(),
         intro: None,
         featured: picks.first().cloned(),
