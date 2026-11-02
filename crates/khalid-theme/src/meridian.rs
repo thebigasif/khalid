@@ -42,7 +42,7 @@ pub(crate) static MERIDIAN: Pack = Pack {
         slot::cta_band("post"),
         slot::CTA_BUTTON_ON,
         parts::HERO_STATS,
-        parts::TOPIC_TABS,
+        parts::on(parts::TOPIC_TABS),
         parts::on(parts::VIDEO_SECTION),
         parts::on(parts::PODCAST_SECTION),
     ],

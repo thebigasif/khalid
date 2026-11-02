@@ -56,7 +56,7 @@ pub(crate) static WIRE: Pack = Pack {
             kind: OptionKind::Switch { default: true },
         },
         parts::HERO_STATS,
-        parts::TOPIC_TABS,
+        parts::on(parts::TOPIC_TABS),
         parts::on(parts::VIDEO_SECTION),
         parts::on(parts::PODCAST_SECTION),
     ],
