@@ -99,7 +99,7 @@ export function PhotoPicker({ value, onChange }: Props) {
         <section aria-labelledby="photo-library-title">
           <h3 id="photo-library-title">{words.chooseTitle}</h3>
           {library !== undefined && pictures.length === 0 ? <p>{words.none}</p> : null}
-          <ul className="photo-grid" role="list">
+          <ul className="photo-grid">
             {pictures.map((item) => (
               <li key={item.id}>
                 <button
