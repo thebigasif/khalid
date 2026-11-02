@@ -236,3 +236,66 @@ fn the_changelog_lists_each_month_newest_first() {
     let archives = page(&site, "sitemaps/archives-en-1.xml").unwrap();
     assert!(archives.contains("<loc>https://www.example.com/blog/changelog/</loc>"));
 }
+
+/// A site with a series of three parts: two numbered, written out of
+/// order, and one with no number, which comes last.
+#[cfg(test)]
+fn with_series() -> TempDir {
+    let site = site();
+    put(
+        site.path(),
+        "content/en/authors/asif.md",
+        "---\nname: Asif\nslug: asif\n---\n\nAsif writes about links.\n",
+    );
+    for (slug, date, order) in [
+        ("plan-the-posts", "2026-09-10", "\n  order: 2"),
+        ("pick-the-subject", "2026-09-20", "\n  order: 1"),
+        ("link-the-cluster", "2026-09-05", ""),
+    ] {
+        let title = slug.replace('-', " ");
+        put(
+            site.path(),
+            &format!("content/en/posts/{slug}.md"),
+            &format!(
+                "---\ntitle: {title}\nslug: {slug}\ndate: {date}\nauthor: asif\n\
+                 series:\n  name: Topic clusters from scratch{order}\n---\n\n\
+                 A part that links to [the home page](/blog/).\n"
+            ),
+        );
+    }
+    site
+}
+
+#[test]
+fn each_part_of_a_series_knows_its_place_and_its_neighbours() {
+    let site = with_series();
+    build(&site);
+    let second = page(&site, "plan-the-posts/index.html").unwrap();
+    assert!(second.contains("Part 2 of 3"), "{second}");
+    assert!(second.contains(r#"href="/blog/series/topic-clusters-from-scratch/""#));
+    assert!(second.contains(r#"<a class="series-previous" href="/blog/pick-the-subject/""#));
+    assert!(second.contains(r#"<a class="series-next" href="/blog/link-the-cluster/""#));
+    let other = page(&site, "index.html").unwrap();
+    assert!(
+        !other.contains("series-box"),
+        "only a post shows its series"
+    );
+}
+
+#[test]
+fn a_series_page_lists_its_parts_in_order_as_an_item_list() {
+    let site = with_series();
+    build(&site);
+    let series = page(&site, "series/topic-clusters-from-scratch/index.html").unwrap();
+    let main = main_of(&series);
+    assert!(
+        main.contains("<h1>Topic clusters from scratch</h1>"),
+        "{main}"
+    );
+    assert!(main.contains("A series in 3 parts, best read in order."));
+    let first = main.find("/blog/pick-the-subject/").unwrap();
+    let second = main.find("/blog/plan-the-posts/").unwrap();
+    let third = main.find("/blog/link-the-cluster/").unwrap();
+    assert!(first < second && second < third, "{main}");
+    assert!(series.contains(r#""@type":"ItemList""#), "{series}");
+}

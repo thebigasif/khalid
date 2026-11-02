@@ -7,9 +7,7 @@ use minijinja::Value;
 use serde::Serialize;
 
 use crate::serde_display::{display, display_option};
-use crate::{
-    Contents, Person, PostCard, ReadingTime, RenderComments, RenderImage, RenderSeries,
-};
+use crate::{Contents, Person, PostCard, ReadingTime, RenderComments, RenderImage, RenderSeries};
 
 /// One post: its heading, dates, people, topics and body.
 ///

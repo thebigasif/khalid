@@ -37,3 +37,15 @@ description: One topic cluster on sourdough, every post linked to it.
 ```
 
 A changelog entry needs a `date` and a `title` or a `version`. Each folder may hold an `_index.md` with a title, a description and an intro, as the glossary does. Search engines read each list as an `ItemList` (a schema.org list of pages in order).
+
+## Series
+
+A series is a set of posts written to be read in order, such as a course in five parts. Give each part the same series name and its place:
+
+```yaml
+series:
+  name: Topic clusters from scratch
+  order: 2
+```
+
+Each part then shows a box at the top with "Part 2 of 5", the series' name and every part, and links to the part before and the part after at the end. The series gets its own page at `/series/topic-clusters-from-scratch/` that lists the parts in order. Parts with no `order` follow the numbered ones, oldest first.

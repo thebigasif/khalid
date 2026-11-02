@@ -36,6 +36,7 @@ mod build_reader;
 mod build_redirects;
 mod build_schema;
 mod build_seo;
+mod build_series;
 mod build_sitemap;
 mod categories;
 mod cli;
