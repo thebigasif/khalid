@@ -39,7 +39,8 @@ pub use post_fields::{
     LeadImage, ReviewState, ShareCard, ShareCards, Sitemap, TopicCluster, TopicRole,
 };
 pub use render::{
-    CTA_MARK, Gated, Heading, Image, Link, Rendered, render, render_gated, render_linked,
+    CTA_MARK, ENGINE_TEXT, Gated, Heading, Image, Link, Rendered, render, render_gated,
+    render_linked,
 };
 pub use schemas::{
     AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, SnippetFront,

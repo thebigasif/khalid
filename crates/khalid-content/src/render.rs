@@ -423,6 +423,19 @@ const TOC_MARK: &str = "<!--khalid-toc-->\n";
 /// can write it itself.
 pub const CTA_MARK: &str = "<!--khalid-cta-->\n";
 
+/// The classes of the elements a block writes itself rather than the
+/// writer: the contents list, which repeats every heading, a score, a price,
+/// a recipe's servings and times, and a folding table's "Show 3 more rows".
+/// A check on the writer's own words, such as the linter's, leaves them out.
+pub const ENGINE_TEXT: &[&str] = &[
+    "toc",
+    "review-rating",
+    "product-rating",
+    "product-price",
+    "recipe-facts",
+    "table-fold-more",
+];
+
 /// The list of `headings`, linked, for `::toc`.
 fn contents(headings: &[Heading]) -> String {
     let mut html = String::from("<nav class=\"toc\" aria-label=\"Contents\">\n<ol>\n");

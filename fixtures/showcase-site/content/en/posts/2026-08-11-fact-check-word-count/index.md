@@ -65,7 +65,7 @@ Sort the results for a broad query by length and long pages often sit near the t
 2. **More links.** Thorough guides are the pages other sites cite, so they earn more [[backlink|backlinks]]. Links help a page be found and trusted. The words do not earn them; the usefulness does.
 3. **More care.** Long guides are often a team's flagship pages. They get updated, linked from other posts and promoted. A short page with the same care would get much of the same lift.
 
-Take those three away and the length alone has nothing left to give. A short page that answers a narrow question well will beat a long page that buries the same answer under a history lesson.
+Take those three away and the word count alone has nothing left to give. A short page that answers a narrow question well will beat a long page that buries the same answer under a history lesson.
 
 :::pullquote{by="Priya Raman, research editor"}
 When two things rise together, ask what else is rising with them before you credit either one.
@@ -73,7 +73,7 @@ When two things rise together, ask what else is rising with them before you cred
 
 ## What this means for your brief
 
-Drop the target length from your briefs. Put a list of questions in its place. The post is done when it answers each of them clearly, once.
+Drop the target word count from your briefs. Put a list of questions in its place. The post is done when it answers each of them clearly, once.
 
 Start from the [[search-intent|goal behind the search]]. Someone who asks how long a meta description should be wants a number and a reason, then wants to leave. Our [meta description guide](/blog/meta-description/) answers in two lines and stays short on purpose. Someone who asks how to plan a year of content wants a method, and that post will run long because the method has many parts.
 

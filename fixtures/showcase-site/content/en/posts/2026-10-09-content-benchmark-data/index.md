@@ -49,7 +49,7 @@ Posts updated within the year earned, in 2026, 1.6 times the search clicks of un
 
 ## Data dictionary
 
-Each column in the file, what it holds and the values it can take.
+Each column in the benchmark data, what it holds and the values it can take.
 
 :::table{fold=3 more="Show the other columns"}
 | Column | What it means | Values |
@@ -94,7 +94,7 @@ The benchmark data has limits you should keep in mind. Our blogs are small and m
 
 ## Licence and reuse
 
-You may share and adapt the file for any purpose under the [Creative Commons Attribution 4.0 licence](https://creativecommons.org/licenses/by/4.0/). The one condition is credit: name Larkspur Studio and link to this page.
+You may share and adapt the benchmark data for any purpose under the [Creative Commons Attribution 4.0 licence](https://creativecommons.org/licenses/by/4.0/). The one condition is credit: name Larkspur Studio and link to this page.
 
 ## Credit us in your own work
 

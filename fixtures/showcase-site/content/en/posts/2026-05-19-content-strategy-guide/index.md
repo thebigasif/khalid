@@ -171,7 +171,7 @@ Example data: two plans that both publish twelve posts in six months. The steady
 Set your pace with a simple sum. Count the hours each person can give the blog in a normal month, not a good one. A well-edited post of 1,500 words takes most small teams eight to twelve hours from brief to publish. Divide, then take one post off for safety. Plan it all in [a calendar the whole team can see](/blog/content-calendar/), with an owner and a date on every post.
 
 :::callout{kind=warning}
-Do not set your pace in the first flush of a new plan. Set it from your worst normal month: holidays, launches and sick days. A pace you break in month two teaches the team that the plan is optional.
+Do not set your pace in the first flush of a new plan. Set it from your worst normal month: holidays, launches and sick days. A pace you break in month two teaches the team that the content strategy is optional.
 :::
 
 ## Brief every post
@@ -238,7 +238,7 @@ Make refreshing part of the publishing pace, not an extra. A good split for a sm
 
 ## The one-page content strategy template
 
-Copy this into a document, fill in every line, and share it with the whole team. If a line is hard to fill, that is the line your plan needs most.
+Copy this into a document, fill in every line, and share it with the whole team. If a line is hard to fill, that is the line your content strategy needs most.
 
 :::figure{src="strategy-page.svg" alt="Mock of a one-page strategy document with four numbered labels on the goal, the readers, the clusters and the review date"}
 The one-page plan as a team would see it. The four numbered parts carry the most weight: the goal with its number, the readers, the clusters, and the date you will look again.
@@ -327,10 +327,10 @@ Google's own advice agrees with the core of this plan: write for people first, s
 
 ::::faq
 :::question{text="How is a content strategy different from a content calendar?"}
-The content strategy decides why you publish, for whom and on what topics. The calendar decides what goes out on which date and who owns it. Write the strategy first, once a year, and review it each quarter. Then fill the calendar from it every month.
+The content strategy decides why you publish, for whom and on what topics. The calendar decides what goes out on which date and who owns it. Write the content strategy first, once a year, and review it each quarter. Then fill the calendar from it every month.
 :::
 :::question{text="How long before a content strategy shows results?"}
-Expect early signs in the first quarter, such as new search impressions and posts that sales start to share. Leads and other business results usually take six months to a year to build. Judge the plan on a full year, and judge single posts on a full quarter.
+Expect early signs in the first quarter, such as new search impressions and posts that sales start to share. Leads and other business results usually take six months to a year to build. Judge the content strategy on a full year, and judge single posts on a full quarter.
 :::
 :::question{text="Do we need an SEO tool to build a content strategy?"}
 No. Your sales notes, your support inbox and Google Search Console are enough to start. A paid tool helps later, when you want to size demand for new topics. Our guide to [choosing SEO tools](/blog/choosing-seo-tools/) explains what each kind does.
