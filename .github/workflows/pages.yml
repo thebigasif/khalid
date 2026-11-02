@@ -8,6 +8,11 @@ name: Pages
 #   /khalid/demo/               the showcase site (fixtures/showcase-site)
 #   /khalid/examples/<slug>/    each example in fixtures/examples/
 #   /khalid/templates/<name>/   the showcase in each template the binary has
+#   /khalid/khalid-demos.tar.gz the demos built for https://serpdad.com/khalid/,
+#                               which the serpdad.com build downloads
+#
+# Every page here names the same path on serpdad.com as its canonical
+# address, so search engines credit serpdad.com.
 #
 # A change to the sites publishes on its own. A change to the engine
 # publishes at the next release, or by running this workflow by hand, so
@@ -21,6 +26,7 @@ on:
       - "fixtures/examples/**"
       - "scripts/pages.sh"
       - "scripts/template-previews.sh"
+      - "scripts/demos-bundle.sh"
       - ".github/workflows/pages.yml"
   release:
     types: [published]
@@ -53,9 +59,13 @@ jobs:
           cargo build --release -p khalid
           ./target/release/khalid --version
       - name: Build every site for the Pages address
-        run: bash scripts/pages.sh ./target/release/khalid "$RUNNER_TEMP/pages" https://thebigasif.github.io /khalid/
+        run: bash scripts/pages.sh --canonical https://serpdad.com ./target/release/khalid "$RUNNER_TEMP/pages" https://thebigasif.github.io /khalid/
       - name: Template previews
         run: bash scripts/template-previews.sh "$RUNNER_TEMP/pages" /khalid/
+      - name: The demos for serpdad.com, with the same previews
+        run: |
+          bash scripts/demos-bundle.sh ./target/release/khalid "$RUNNER_TEMP/demos/khalid" "$RUNNER_TEMP/pages/templates"
+          cp "$RUNNER_TEMP/demos/khalid-demos.tar.gz" "$RUNNER_TEMP/pages/khalid-demos.tar.gz"
       - uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ runner.temp }}/pages
