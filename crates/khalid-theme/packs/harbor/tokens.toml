@@ -1,24 +1,25 @@
 [colors]
 background = "#ffffff"
-surface = "#fbf1f4"
-text = "#241519"
-muted = "#665159"
-link = "#a51f53"
-accent = "#b0225a"
-border = "#ecd6de"
+surface = "#f4f5fb"
+text = "#12162b"
+muted = "#4f566d"
+link = "#3237b8"
+accent = "#383dd0"
+border = "#e2e4f0"
 
 [shape]
-radius = "0.5rem"
-measure = "70ch"
+radius = "0.75rem"
+measure = "42rem"
 
 [type]
-body = "1.0625rem 1.1875rem"
+body = "1.0625rem 1.125rem"
 h1 = "2.25rem 3.25rem"
-h2 = "1.625rem 2.125rem"
-h3 = "1.3125rem"
-line_height = 1.6
-heading_weight = 800
+h2 = "1.5rem 1.875rem"
+h3 = "1.25rem"
+small = "0.875rem"
+line_height = 1.65
+heading_weight = 700
 
 [space]
 unit = "0.5rem"
-section = "3rem"
+section = "4.5rem"

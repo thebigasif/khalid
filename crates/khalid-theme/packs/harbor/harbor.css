@@ -1,72 +1,173 @@
-/* Harbor (templates spec 3.5): wide pages for lists, a readable column for
-   posts, cards on an outline that turns the accent colour on hover. Every
-   colour is a token or a tint of one. */
+/* Harbor (templates spec 3.5): a marketing blog with one offer. Wide pages
+   for lists, one readable column for posts, picture cards with the topic
+   above the title and the author at the foot, and light tinted bands for
+   the sign-up and the offer. Every colour is a token or a tint of one. */
+:root {
+  --harbor-tint: color-mix(in oklab, var(--color-accent) 7%, var(--color-background));
+  --harbor-wash: color-mix(in oklab, var(--color-accent) 4%, var(--color-background));
+  --harbor-line: color-mix(in oklab, var(--color-accent) 18%, var(--color-background));
+  --harbor-round: calc(var(--radius) * 1.5);
+  --harbor-lift: 0 1px 2px color-mix(in oklab, var(--color-text) 6%, transparent), 0 0.75rem 2rem -0.75rem color-mix(in oklab, var(--color-text) 16%, transparent);
+  --harbor-wide: 76rem;
+}
+body { overflow-x: clip; }
+.site-header, main, .site-footer { max-inline-size: var(--harbor-wide); }
+h1, h2, h3 { letter-spacing: -0.02em; text-wrap: balance; }
+h1 { letter-spacing: -0.03em; line-height: 1.08; }
+h2 { line-height: 1.2; }
 
-:root { --harbor-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); }
-.site-header, main, .site-footer { max-inline-size: 76rem; }
-.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; }
-.header-button { border-radius: 999px; }
+/* Bands across the window: the box keeps the column, its background runs
+   to both edges of the screen. */
+.announcement, .site-header, .masthead-signup, .site-footer { max-inline-size: none; margin-inline: calc(50% - 50vw); padding-inline: max(1rem, 50vw - var(--harbor-wide) / 2); }
 
-/* Header and footer: the name after a rounded tile of the accent, menus in
-   the text colour, a footer on the surface across the window. */
-.site-header { padding-block: 1rem; border-block-end: 1px solid var(--color-border); }
-.site-name { gap: 0.625rem; font-size: 1.375rem; font-weight: 800; letter-spacing: -0.02em; }
-.site-name::before { content: ""; inline-size: 1.25rem; block-size: 1.25rem; background: var(--color-accent); border-radius: 0.375rem; border-end-start-radius: 0; }
-.site-header nav a { color: var(--color-text); font-weight: 600; text-decoration: none; }
-.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-link); }
-.announcement { margin-block-end: 0; background: var(--harbor-tint); border: 0; font-weight: 600; }
-.announcement a { color: var(--color-link); }
-.site-footer { margin-block-start: var(--space-section); padding-block: calc(var(--space) * 5); background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
-.site-footer a { color: var(--color-text); }
+/* Buttons: one filled pill in the accent. */
+.button, .subscribe button, .header-button { min-block-size: 44px; padding: 0.625rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 999px; font-size: 0.9375rem; font-weight: 600; letter-spacing: 0; transition: background-color 0.15s, transform 0.15s; }
+.button { max-inline-size: 100%; justify-content: center; text-align: center; }
+.button:hover, .subscribe button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 86%, var(--color-text)); text-decoration: none; }
 
-/* Section labels: small capitals in the accent over each part of a page. */
-.lead-title, .latest > h2, .home-section > h2, .related > h2 { margin-block: 0 1rem; color: var(--color-link); font-family: var(--font-body); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+/* The announcement, then the header: the logo, the menu and the offer. */
+.announcement { padding-block: 0.625rem; background: var(--harbor-tint); border: 0; font-size: var(--text-small); }
+.announcement p { max-inline-size: none; }
+.announcement a { color: var(--color-text); font-weight: 600; text-decoration-color: var(--harbor-line); }
+.announcement a::after { content: " →" / ""; color: var(--color-link); }
+[dir="rtl"] .announcement a::after { content: " ←" / ""; }
+.site-header { gap: 0.5rem 2.5rem; padding-block: 0.875rem; background: var(--color-background); border-block-end: 1px solid var(--color-border); }
+.site-name { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
+.site-header nav { flex: 1 1 auto; }
+.site-header nav ul { gap: 0 1.75rem; }
+.site-header nav a { color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); }
+.site-header nav a[aria-current] { color: var(--color-link); font-weight: 600; box-shadow: inset 0 -2px 0 var(--color-accent); }
+.header-button { padding-block: 0.5rem; }
+.search-link { color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
+.search-link:hover { color: var(--color-link); text-decoration: underline; }
 
-/* The front page: the blog's name and intro beside the sign-up form, on a
-   tint of the accent across the window. */
-.masthead { display: grid; gap: 1.5rem 3rem; align-items: center; margin-block: -1rem var(--space-section); padding-block: 3.5rem; background: var(--harbor-tint); box-shadow: 0 0 0 100vmax var(--harbor-tint); clip-path: inset(0 -100vmax); }
+/* Section headings: a real heading in the text colour, the same on every
+   part of every page. */
+.lead-title, .lead-side > h2, .latest > h2, .home-section > h2, .related > h2, .topics > h2, .featured > h2 { margin-block: 0 1.5rem; color: var(--color-text); font-size: calc(var(--text-h2) * 0.85); letter-spacing: -0.02em; text-transform: none; }
+
+/* The front page: the blog's name, and with sign-ups on, the form beside
+   it on a light tint across the window. */
+main { padding-block: 0 var(--space-section); }
+.masthead { padding-block: 3rem 2rem; }
 .masthead-text { min-inline-size: 0; }
-.masthead h1 { margin: 0; font-size: calc(var(--text-h1) * 1.15); letter-spacing: -0.03em; line-height: 1.05; }
-.masthead .intro { margin-block-start: 0.75rem; font-size: var(--text-h4); }
-.masthead .newsletter-slot { margin: 0; background: var(--color-background); border: 1px solid var(--color-border); box-shadow: 0 1rem 2rem -1rem color-mix(in oklab, var(--color-accent) 35%, transparent); }
-@media (min-width: 60rem) { .masthead-signup { grid-template-columns: 3fr 2fr; } }
+.masthead h1 { margin: 0; font-size: var(--text-h1); }
+.masthead .intro { max-inline-size: 36rem; margin-block-start: 1rem; font-size: 1.25rem; line-height: 1.5; }
+.masthead-signup { margin-block-end: 3.5rem; padding-block: 3.5rem; background: var(--harbor-wash); border-block-end: 1px solid var(--color-border); text-align: center; }
+.masthead-signup h1 { font-size: calc(var(--text-h1) * 1.1); }
+.masthead-signup .intro { margin-inline: auto; }
+.masthead-signup .newsletter-slot { max-inline-size: 36rem; margin: 2rem auto 0; text-align: start; }
 
-/* Cards: an outline, the picture to the edge, the whole card one link. */
-.cards .card, .lead-card { position: relative; }
-.cards .card { block-size: 100%; padding: 1.25rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: calc(var(--radius) * 1.5); transition: border-color 0.15s, box-shadow 0.15s; }
-.cards .card:hover, .cards .card:focus-within { border-color: var(--color-accent); box-shadow: 0 0.5rem 1.5rem color-mix(in oklab, var(--color-text) 10%, transparent); }
-.cards .card > .image { margin: -1.25rem -1.25rem 1rem; }
-.cards .card > .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--harbor-tint); border-end-start-radius: 0; border-end-end-radius: 0; }
-.card h3 a::after, .card h2 a::after { content: ""; position: absolute; inset: 0; }
-.card-meta a { position: relative; z-index: 1; color: var(--color-link); font-weight: 700; text-decoration: none; }
-.card h2, .card h3 { line-height: 1.25; }
-.card:hover :is(h2, h3) a { color: var(--color-link); }
+/* The newsletter: a raised card with the field and the button on one line. */
+.newsletter-slot { padding: 2rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--harbor-round); box-shadow: var(--harbor-lift); }
+.newsletter-slot h2 { margin-block-end: 0.5rem; font-size: 1.375rem; }
+.newsletter-slot > p { color: var(--color-muted); }
+.subscribe { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.375rem 0.625rem; align-items: center; }
+.subscribe > p { margin: 0; }
+.subscribe > p:first-child { display: contents; }
+.subscribe label { grid-column: 1 / -1; font-size: var(--text-small); }
+.post-body .subscribe { margin-block: 2rem; padding: 1.5rem; background: var(--harbor-wash); border: 1px solid var(--harbor-line); border-radius: var(--harbor-round); }
+.subscribe input { border-color: var(--harbor-line); border-radius: 999px; padding-inline: 1.125rem; }
+.subscribe input:focus-visible { border-color: var(--color-accent); }
 
-/* A post with no lead image gets a drawn cover in tints of the accent, so
-   cards and rows line up; it is decoration only, with nothing to read. */
-.cards:not(.cards-text, .cards-compact, .cards-ranked) .card:not(:has(.image))::before { content: ""; display: block; aspect-ratio: 16 / 9; margin: -1.25rem -1.25rem 1rem; background: radial-gradient(circle at 85% 115%, color-mix(in oklab, var(--color-accent) 45%, var(--color-background)) 0 38%, transparent 38.5%), radial-gradient(circle at 15% -10%, color-mix(in oklab, var(--color-accent) 22%, var(--color-background)) 0 30%, transparent 30.5%), var(--harbor-tint); border-start-start-radius: calc(var(--radius) * 1.5); border-start-end-radius: calc(var(--radius) * 1.5); }
-.cards > li:nth-child(even) .card:not(:has(.image))::before { background: radial-gradient(circle at 20% 120%, color-mix(in oklab, var(--color-accent) 35%, var(--color-background)) 0 45%, transparent 45.5%), linear-gradient(160deg, var(--color-surface), color-mix(in oklab, var(--color-accent) 18%, var(--color-background))); }
-
-/* Featured: the newest featured post large, more featured posts in a row. */
-.lead { display: grid; gap: 1.5rem; margin-block-end: var(--space-section); }
-.lead-card { display: grid; gap: 1.5rem; align-items: center; padding: clamp(1rem, 3vw, 2rem); background: var(--color-surface); border-radius: calc(var(--radius) * 2); }
-.lead-card .image { margin: 0; }
-.lead-card .image img { border-radius: var(--radius); box-shadow: 0 1.25rem 2.5rem -1.25rem color-mix(in oklab, var(--color-text) 35%, transparent); }
-.lead-card h3 { margin-block: 0.5rem; font-size: calc(var(--text-h2) * 1.2); line-height: 1.1; letter-spacing: -0.02em; }
+/* The top of the front page: the lead post large, a column of smaller
+   posts beside it. */
+.top { margin-block-end: var(--space-section); }
+.top-split { display: grid; gap: 3rem; }
+@media (min-width: 60rem) { .top-split { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 3.5rem; } }
+.lead > article.lead-card { display: block; padding: 0; background: none; }
+.lead-card > figure.image { margin: 0 0 1.5rem; }
+.lead-card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--harbor-tint); border-radius: var(--harbor-round); }
+.lead .lead-card h3 { margin-block: 0.5rem 0.75rem; font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.375rem); letter-spacing: -0.025em; line-height: 1.12; }
 .lead-card h3 a { color: var(--color-text); text-decoration: none; }
-.lead-text > p:last-child { color: var(--color-muted); font-size: var(--text-h4); }
-.lead .cards, .home-section .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: 1.25rem; }
-@media (min-width: 60rem) { .lead-card:has(.image) { grid-template-columns: 3fr 2fr; gap: 2.5rem; } }
+.lead-card h3 a:hover { color: var(--color-link); }
+.lead-text > p:last-child { max-inline-size: 40rem; margin: 0; color: var(--color-muted); font-size: 1.125rem; line-height: 1.6; }
+.top:not(.top-split) .lead-pictured { display: grid; gap: 1.5rem 3rem; align-items: center; }
+@media (min-width: 60rem) { .top:not(.top-split) .lead-pictured { grid-template-columns: 7fr 5fr; } .top:not(.top-split) .lead-card > figure.image { margin: 0; } }
+.lead-side > h2 { padding-block-end: 1rem; border-block-end: 1px solid var(--color-border); margin-block-end: 0; }
 
-/* Rows: a small picture beside the words, split by a line. */
-.cards-row { grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 1fr)); gap: 0 3rem; }
-.cards-row .card { padding: 1.25rem 0; border: 0; border-block-end: 1px solid var(--color-border); border-radius: 0; }
-.cards-row .card:hover, .cards-row .card:focus-within { box-shadow: none; }
-.cards-row .card > .image { margin: 0; }
-.cards-row .card > .image img { border-radius: var(--radius); }
-.cards-row .card:not(:has(.image)) { display: grid; grid-template-columns: minmax(5rem, 30%) 1fr; gap: 0 1rem; }
-.cards.cards-row .card:not(:has(.image))::before { grid-row: span 4; align-self: start; margin: 0; border-radius: var(--radius); }
+/* The meta line of every card: the topic in small capitals, then the date;
+   the author sits at the foot of a picture card. */
+.card-meta { gap: 0 0.75rem; }
+.card-meta a { order: -1; min-block-size: 2rem; color: var(--color-link); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; position: relative; z-index: 1; }
+.card-meta a:hover { text-decoration: underline; }
+.card-author { font-weight: 500; }
+.card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; background: var(--harbor-tint); }
+.lead-card .card-meta { margin-block-end: 0.25rem; }
+.lead-card .card-meta .avatar { inline-size: 2rem; block-size: 2rem; }
+
+/* Picture cards: an outline with the picture to the top edge, the topic and
+   date, the title, a short excerpt and the author on a line at the foot.
+   The whole card is one link. */
+.cards { gap: 2rem 1.5rem; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
+ul.cards > li { display: flex; }
+ul.cards > li > .card { position: relative; flex: 1; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) > li > .card { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0; grid-template-rows: auto auto auto 1fr auto; align-content: start; padding: 0 1.375rem 1.25rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--harbor-round); overflow: hidden; transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) > li > .card:hover { border-color: var(--harbor-line); box-shadow: var(--harbor-lift); transform: translateY(-2px); }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card > figure.image { grid-column: 1 / -1; grid-row: 1; margin: 0 -1.375rem 1.125rem; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card > .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--harbor-tint); border-radius: 0; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card > .card-meta { display: contents; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card-meta > a { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card-meta > .card-reading-time { display: none; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card > :is(h2, h3) { grid-column: 1 / -1; grid-row: 3; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card > p:not(.card-meta) { grid-column: 1 / -1; grid-row: 4; }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card-meta > :is(.card-author, time) { grid-row: 5; margin-block-start: 1.125rem; padding-block-start: 1rem; border-block-start: 1px solid var(--color-border); }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card-meta > .card-author { grid-column: 1; padding-inline-end: 0.75rem; font-size: var(--text-small); }
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card-meta > time { grid-column: 2; display: flex; align-items: center; justify-content: flex-end; text-align: end; }
+.card :is(h2, h3) { margin-block: 0.25rem 0.5rem; font-size: 1.1875rem; letter-spacing: -0.015em; line-height: 1.3; }
+.card :is(h2, h3) a { color: var(--color-text); text-decoration: none; }
+.card h3 a::after, .card h2 a::after { content: ""; position: absolute; inset: 0; }
+.card:hover :is(h2, h3) a { color: var(--color-link); }
+.card h2 a:hover, .card h3 a:hover { text-decoration: none; }
+.card > p:not(.card-meta) { margin: 0; color: var(--color-muted); font-size: 0.9375rem; line-height: 1.55; }
+.card time { font-size: 0.8125rem; }
+
+/* A post with no picture gets a drawn cover in tints of the accent, so
+   cards line up; it is decoration only. */
+ul.cards:not(.cards-row, .cards-text, .cards-compact) .card:not(:has(.image))::before { content: ""; grid-column: 1 / -1; grid-row: 1; aspect-ratio: 16 / 9; margin: 0 -1.375rem 1.125rem; background: radial-gradient(circle at 85% 120%, var(--harbor-line) 0 40%, transparent 40.5%), radial-gradient(circle at 10% -10%, color-mix(in oklab, var(--color-accent) 12%, var(--color-background)) 0 32%, transparent 32.5%), var(--harbor-tint); }
+
+/* Rows: a small picture beside the topic, the title and the date, split by
+   a line. Used beside the lead post and for the cards option "row". */
+.cards-row { gap: 0; }
+.cards-row > li > .card { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); grid-auto-rows: min-content; gap: 0 1.125rem; align-content: start; padding-block: 1.125rem; border-block-end: 1px solid var(--color-border); }
+.cards-row .card > figure.image { grid-row: 1 / span 3; margin: 0; }
+.cards-row .card > .image img { aspect-ratio: 4 / 3; object-fit: cover; background: var(--harbor-tint); border-radius: var(--radius); }
+.cards-row .card > :not(.image) { grid-column: 2; }
+.cards-row .card-meta .card-author, .cards-row .card > p:not(.card-meta) { display: none; }
+.cards-row .card-meta a { min-block-size: 1.75rem; }
+.cards-row .card :is(h2, h3) { margin-block: 0; font-size: 1.0625rem; line-height: 1.35; }
+.cards-row .card:not(:has(.image))::before { content: ""; grid-row: 1 / span 3; aspect-ratio: 4 / 3; background: radial-gradient(circle at 85% 120%, var(--harbor-line) 0 45%, transparent 45.5%), var(--harbor-tint); border-radius: var(--radius); }
+.latest .cards-row { grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 1fr)); column-gap: 3rem; }
 .latest, .home-section { margin-block-end: var(--space-section); }
+.view-all a { font-weight: 600; }
+
+/* A list page: the name and intro centred over a featured panel and the
+   grid of cards. */
+.breadcrumbs { margin-block: 1.75rem 0; }
+.breadcrumbs ol { justify-content: center; }
+.breadcrumbs li:nth-child(n+3):last-child { display: none; }
+.breadcrumbs a { color: var(--color-muted); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--color-link); text-decoration: underline; }
+main > h1 { margin-block: 1rem 0.75rem; text-align: center; }
+main > h1 + .intro { max-inline-size: 40rem; margin-inline: auto; font-size: 1.1875rem; text-align: center; }
+main > h1 + .intro > :last-child { margin-block-end: 0; }
+main > .cards { margin-block-start: 3rem; }
+.featured { margin-block: 3rem 0; }
+.featured > h2 { margin-block-end: 1.25rem; }
+.featured > article.card-featured { display: grid; gap: 1.5rem 3rem; align-items: center; padding: 1.5rem; background: var(--harbor-wash); border: 1px solid var(--color-border); border-radius: calc(var(--radius) * 2); }
+.card-featured > figure.image { margin: 0; }
+.card-featured .image img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--harbor-round); }
+.featured .card-featured h3 { margin-block: 0.5rem 0.75rem; font-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.125rem); letter-spacing: -0.025em; line-height: 1.15; }
+@media (min-width: 60rem) {
+  .featured > article.card-featured { grid-template-columns: 7fr 5fr; grid-template-rows: 1fr auto auto auto 1fr; row-gap: 0; padding-inline: 1.5rem 3rem; }
+  .card-featured > figure.image { grid-row: 1 / -1; }
+  .card-featured > :not(.image) { grid-column: 2; }
+  .card-featured > .card-meta { grid-row: 2; }
+}
+.pagination { margin-block-start: 3.5rem; }
+.page-numbers a { border: 1px solid var(--color-border); border-radius: 999px; text-decoration: none; }
+.page-numbers a[aria-current] { border-color: var(--color-accent); }
 
 /* A post: one readable column, the lead picture wider than the words. */
 main:has(> .post) > :not(.related), main:has(> .author) > * { max-inline-size: var(--measure); margin-inline: auto; }
@@ -98,10 +199,67 @@ main:has(> .post-with-toc) > .post { max-inline-size: calc(var(--measure) + 18re
 .post-footer .share { margin: 0; }
 .post-footer .tags a { background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border-radius: 999px; color: var(--color-text); font-weight: 600; }
 
-/* Related posts: one row of small cards that scrolls sideways. */
-.related-scroll { margin-block-start: var(--space-section); padding-block-start: 2rem; border-block-start: 1px solid var(--color-border); }
-.related-scroll .cards { grid-auto-columns: minmax(13rem, 17rem); gap: 1.25rem; }
-.related-scroll .card h3 { font-size: var(--text-body); }
-.related-scroll .card > p:not(.card-meta) { display: none; }
+/* The call to action band: a light panel with the note large beside one
+   button. */
+.cta-band { gap: 1.5rem 3rem; margin-block: var(--space-section); padding: 2.5rem 3rem; background: radial-gradient(circle at 100% 100%, color-mix(in oklab, var(--color-accent) 11%, var(--color-background)) 0 9rem, transparent 9.1rem), var(--harbor-tint); border-radius: calc(var(--radius) * 2); }
+[dir="rtl"] .cta-band { background: radial-gradient(circle at 0% 100%, color-mix(in oklab, var(--color-accent) 11%, var(--color-background)) 0 9rem, transparent 9.1rem), var(--harbor-tint); }
+.offer .cta-band, [dir="rtl"] .offer .cta-band { background: var(--harbor-wash); }
+.cta-band .cta-note { flex: 1 1 18rem; font-size: clamp(1.375rem, 1rem + 1vw, 1.75rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; }
+.cta-band .button { padding: 0.875rem 1.75rem; font-size: 1rem; }
+main > .newsletter-slot { margin-block: var(--space-section); padding: 2.5rem; border-block-start: 4px solid var(--color-accent); }
+main > .newsletter-slot h2 { font-size: 1.625rem; }
 
-@media print { .offer, .related, .post-marked h2::before { display: none; } }
+.mentions { margin-block: var(--space-section); }
+.mentions > h2 { font-size: calc(var(--text-h2) * 0.85); }
+.mentions a { color: var(--color-text); text-decoration-color: var(--harbor-line); }
+.mentions a:hover { color: var(--color-link); }
+
+/* Related posts: small picture cards in one row that scrolls sideways. */
+.related { max-inline-size: var(--harbor-wide); margin-inline: auto; padding-block-start: 3rem; border-block-start: 1px solid var(--color-border); }
+.related-scroll ul.cards { grid-template-columns: none; grid-auto-columns: minmax(15rem, 18rem); gap: 1.25rem; padding-block-end: 1rem; }
+.related .card > p:not(.card-meta) { display: none; }
+.related .card :is(h2, h3) { font-size: 1.0625rem; }
+
+/* Topic links and the footer. */
+.topics { margin-block: 0; }
+.topics .tags { gap: 0.5rem; }
+.tags a { padding-inline: 1rem; background: var(--color-surface); border-radius: 999px; color: var(--color-text); font-size: var(--text-small); font-weight: 500; }
+.tags a:hover { background: var(--harbor-tint); color: var(--color-link); }
+.site-footer { justify-items: center; gap: 1rem; padding-block: 2.5rem; background: var(--color-surface); border-block-start: 1px solid var(--color-border); text-align: center; }
+.site-footer nav ul { justify-content: center; gap: 0 1.75rem; }
+.footer-groups { inline-size: 100%; text-align: start; }
+.site-footer a { color: var(--color-text); text-decoration: none; }
+.site-footer a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* Phones: tighter bands and a header that keeps the menu on one line of
+   its own. */
+@media (max-width: 40rem) {
+  .site-header { gap: 0.25rem 1rem; padding-block: 0.625rem; }
+  .site-header nav { order: 3; flex-basis: 100%; min-inline-size: 0; margin-inline: -1rem; }
+  .site-header nav ul { flex-wrap: nowrap; gap: 0 1.25rem; padding-inline: 1rem; overflow-x: auto; scrollbar-width: none; }
+  .site-header nav a { white-space: nowrap; }
+  .header-button { padding: 0.375rem 1rem; font-size: 0.875rem; }
+  .masthead { padding-block: 2rem 1.5rem; }
+  .masthead-signup { padding-block: 2.5rem; }
+  .newsletter-slot, main > .newsletter-slot { padding: 1.5rem; }
+  .subscribe { grid-template-columns: minmax(0, 1fr); }
+  .cta-band { padding: 2rem 1.5rem; }
+  .offer .cta-band { border-radius: var(--harbor-round); padding: 1rem 1.25rem; }
+  .post-header > figure.image { margin-inline: 0; }
+  .post-meta { gap: 0.25rem 1rem; }
+  .post-meta > p { padding: 0; border: 0; }
+  .toc-box { padding: 1.25rem; }
+}
+
+/* On a phone with an announcement above the header, the header keeps the
+   logo and the menu only; the offer still shows in each post and band. */
+@media (max-width: 30rem) {
+  .announcement ~ .site-header .header-button { display: none; }
+  .cards-row > li > .card { grid-template-columns: 6rem minmax(0, 1fr); gap: 0 0.875rem; }
+  .related-scroll ul.cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media print {
+  .offer, .related, .announcement a::after { display: none; }
+  .post-marked h2 { padding: 0; background: none; }
+}

@@ -1,6 +1,6 @@
 //! Harbor: a busy marketing blog (templates spec 3.5). A featured post with
-//! three more beside it, rows of recent posts, an offer in each post and a
-//! sideways row of related reading.
+//! a column of smaller posts beside it, a grid of picture cards, an offer
+//! in each post and a sideways row of related reading.
 
 use khalid_core::ReaderSwitch;
 
@@ -10,7 +10,7 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 /// The Harbor pack.
 pub(crate) static HARBOR: Pack = Pack {
     name: "harbor",
-    summary: "A busy marketing blog: a featured post with three more beside it, rows of recent posts, an offer in each post and a sideways row of related reading.",
+    summary: "A busy marketing blog: a featured post with a column of smaller posts beside it, a grid of picture cards, an offer in each post and a sideways row of related reading.",
     stylesheet: include_str!("../packs/harbor/harbor.css"),
     templates: &[
         PackTemplate {
@@ -31,7 +31,7 @@ pub(crate) static HARBOR: Pack = Pack {
         parts::on(parts::LOGO),
         parts::on(parts::BREADCRUMBS),
         parts::UPDATED_NOTE,
-        parts::cards(CardShape::Row),
+        parts::cards(CardShape::Image),
         parts::CARD_READING_TIME,
         parts::on(parts::FEATURED),
         parts::picks(3),

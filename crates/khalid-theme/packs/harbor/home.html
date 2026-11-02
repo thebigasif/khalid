@@ -1,7 +1,8 @@
 {#- Harbor's front page (templates spec 3.5): the blog's name and intro
-    beside the newsletter form, the newest featured post large with more
-    featured posts under it, the newest posts as rows, then each home
-    section's newest four. -#}
+    beside the newsletter form, then the newest featured post large with a
+    column of smaller posts beside it: the editor's picks when there are
+    two or more, else the newest posts. A grid of picture cards follows,
+    then each home section's newest four. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, card_meta, pages -%}
@@ -19,9 +20,15 @@
 {% endif %}</div>
 {% set slot = page.featured if template.options.featured else none -%}
 {% set picks = (page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks)[:template.options.picks] -%}
-{% if slot or picks %}<section class="lead" aria-labelledby="lead-title">
+{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
+{% set by_picks = picks | length > 1 -%}
+{% set side = picks if by_picks else (posts[:4] if slot else []) -%}
+{% set grid = posts if by_picks else posts[side | length:] -%}
+{% if slot and side %}<div class="top top-split">
+{% elif slot %}<div class="top">
+{% endif %}{% if slot %}<section class="lead" aria-labelledby="lead-title">
 <h2 id="lead-title" class="lead-title">{{ t.featured }}</h2>
-{% if slot %}<article class="card lead-card">
+{% if slot.image %}<article class="card lead-card lead-pictured">{% else %}<article class="card lead-card">{% endif %}
 {% if slot.image %}{{ picture(slot.image) }}
 {% endif %}<div class="lead-text">
 {{ card_meta(slot) }}
@@ -29,12 +36,15 @@
 <p>{{ slot.excerpt }}</p>
 </div>
 </article>
-{% endif %}{% if picks %}{{ cards(picks, 3, "image") }}
-{% endif %}</section>
-{% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
-{% if posts %}<section class="latest" aria-labelledby="latest-title">
-<h2 id="latest-title">{{ t.latest }}</h2>
-{{ cards(posts, 3) }}
+</section>
+{% if side %}<section class="lead-side" aria-labelledby="side-title">
+<h2 id="side-title">{{ t.editors_picks if by_picks else t.latest }}</h2>
+{{ cards(side, 3, "row") }}
+</section>
+{% endif %}</div>
+{% endif %}{% if grid %}<section class="latest" aria-labelledby="latest-title">
+<h2 id="latest-title">{{ t.more_posts if side and not by_picks else t.latest }}</h2>
+{{ cards(grid, 3) }}
 </section>
 {% elif not slot %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
@@ -44,12 +54,12 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
+{% endfor %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
 <h2>{{ t.topics }}</h2>
 {% for group in page.topics %}{% if group.name %}<h3>{{ group.name }}</h3>
 {% endif %}<ul class="tags">
 {% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
 {% endfor %}</ul>
 {% endfor %}</nav>
-{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% endblock %}
