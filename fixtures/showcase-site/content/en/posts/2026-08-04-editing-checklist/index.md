@@ -42,7 +42,7 @@ Read only the title and the first paragraph. Does a reader in a hurry get the an
 Read the headings alone, top to bottom. They should tell the whole story. Rewrite any heading that names a topic without saying anything about it.
 :::
 :::step{name="Cut the repeats"}
-Look for paragraphs that make the same point twice. Keep the better one. We usually cut about a fifth of the words here.
+Look for paragraphs that make the same point twice. Keep the better one. We usually cut about a fifth of the words here. Length alone does not help a post rank, as our [fact check on word count](/blog/fact-check-word-count/) shows.
 :::
 :::step{name="Shorten the sentences"}
 Split any sentence that runs past two lines. Swap long words for short ones where the meaning stays the same.

@@ -20,7 +20,7 @@ image:
 
 Search intent is the goal a person has when they type a search. They might want to learn something, reach a page, weigh options or buy. If your post serves a different goal from the one the searcher has, it will not rank for long, however well it is written.
 
-This post is part of [our guide to writing posts that rank](/blog/seo-writing-guide/). It shows how to read the goal behind a search before you plan a single heading.
+This post is part of [our guide to writing posts that rank](/blog/seo-writing-guide/), and lesson one of our [free SEO writing course](/blog/seo-writing-course/). It shows how to read the goal behind a search before you plan a single heading.
 
 ::toc
 
@@ -32,7 +32,7 @@ This post is part of [our guide to writing posts that rank](/blog/seo-writing-gu
 
 ## Four goals behind a search
 
-Writers sort search intent into four broad groups. Most searches fit one of them:
+Writers sort [searches by intent](/blog/glossary/search-intent/) into four broad groups. Most searches fit one of them:
 
 - **Know.** The searcher wants to learn or understand. "What is a canonical tag" or "why is my sourdough flat".
 - **Go.** They want a page they already have in mind, such as a login page or a brand's pricing page.
@@ -104,6 +104,6 @@ Check the results page again whenever an important post starts to slip. If the k
 
 ## Search intent and AI answers
 
-AI search tools read the goal too. For a "know" question they often give a short answer and quote the page that put it most plainly. Our research on [how AI tools pick the pages they quote](/blog/ai-search-sources/) shows what those pages have in common.
+AI search tools read the goal too. For a "know" question they often give a short answer and quote the page that put it most plainly. Our research on [how AI tools pick the pages they quote](/blog/ai-search-sources/) shows what those pages have in common, and our [guide to writing for AI search](/blog/ai-search-guide/) turns it into a plan.
 
 A page that serves the right goal, with a plain answer near the top, is the page both readers and AI tools want. Google's own guide to [how search works](https://developers.google.com/search/docs/fundamentals/how-search-works) describes the same idea: results are chosen for what the searcher meant, not just the words they typed.
