@@ -155,7 +155,7 @@ fn meridian_ships_its_own_rules_after_the_shared_ones() {
     let css = fs::read_to_string(css).unwrap();
     assert!(css.contains("--text-h1: clamp(2.5rem,"), "{css}");
     assert!(css.contains("--measure: 64ch;"), "{css}");
-    assert!(css.contains("minmax(6rem, 34%)"), "{css}");
+    assert!(css.contains("minmax(0, 38%)"), "{css}");
 }
 
 #[test]
