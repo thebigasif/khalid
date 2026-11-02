@@ -31,6 +31,9 @@ use crate::{AbsoluteUrl, Secret};
 /// unsplash = true
 /// gifs = true
 /// ```
+///
+/// Pictures are offered in WebP and their own format. `avif = true` adds
+/// AVIF, which is smaller and slower to make.
 #[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
 #[serde(default, deny_unknown_fields)]
 #[non_exhaustive]
@@ -41,6 +44,11 @@ pub struct MediaSettings {
     pub unsplash: bool,
     /// Whether writers can find GIFs on GIPHY from the editor.
     pub gifs: bool,
+    /// Whether pictures are offered in AVIF too, before WebP. AVIF is about
+    /// half the size of JPEG, but takes about a second to make for each wide
+    /// picture, so it is off until a site asks with `avif = true`. Each
+    /// picture is made once and kept.
+    pub avif: bool,
 }
 
 /// An S3-compatible bucket that holds the media library's files.

@@ -448,3 +448,39 @@ fn a_table_and_a_review_block_in_markdown_settle_the_page_shape_rules() {
         ["the review gives no rating"]
     );
 }
+
+#[test]
+fn the_contents_list_and_a_block_score_are_not_read_as_the_writer_text() {
+    // `::toc` repeats each heading, and a review prints its score: neither
+    // is the writer's answer or the writer's number (demo findings).
+    let answer = "Pick the checker your whole team will open each day, because a tool \
+                  nobody runs finds nothing. Choose one that flags long sentences and rare \
+                  words in place, leaves every rewrite to the writer, works offline, and \
+                  shares its settings across the team so each editor reads the same advice.";
+    let body = format!(
+        "::toc\n\n## Which readability checker should you use?\n\n{answer}\n\n\
+         :::review{{item=\"Quillmeter\" type=\"SoftwareApplication\" rating=\"4\" best=\"5\"}}\n\
+         Quick and plain.\n:::"
+    );
+    let site = site(
+        None,
+        &[(
+            "posts/checker.md",
+            &post(
+                "Readability checkers",
+                "slug: readability-checkers\n",
+                &body,
+            ),
+        )],
+    );
+    let report = lint(site.path());
+    let none = Vec::<String>::new();
+    assert_eq!(
+        found(&report, "answer-capsule", "readability-checkers"),
+        none
+    );
+    assert_eq!(
+        found(&report, "sourced-statistics", "readability-checkers"),
+        none
+    );
+}

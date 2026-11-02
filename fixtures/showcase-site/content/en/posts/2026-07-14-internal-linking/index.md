@@ -249,7 +249,7 @@ Six months is a good gap for a small blog. Add a short check of new posts to eac
 :::
 ::::
 
-If you want the bigger picture of what else to check while you are crawling, the technical audit series linked at the top of this guide covers speed, indexing and [[structured-data|structured data]] as well. The free crawlers and reports in our list of [no-cost SEO tools](/blog/best-free-seo-tools/) are enough for this audit.
+If you want the bigger picture of what else to check while you are crawling, the technical audit series linked at the top of this guide covers speed, indexing and [[glossary:structured-data|structured data]] as well. The free crawlers and reports in our list of [no-cost SEO tools](/blog/best-free-seo-tools/) are enough for this audit.
 
 :::toggle{summary="Why we do not use link-count formulas"}
 Some tools score each page by a model of how link value flows through a site, and suggest links to raise the score. We find these scores useful for spotting pages with no links at all, and of little use beyond that. A reader does not care about a score. Write the links a reader needs, then check that nothing is orphaned or deep.

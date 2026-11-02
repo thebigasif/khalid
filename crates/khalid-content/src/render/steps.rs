@@ -6,7 +6,9 @@ use comrak::{Arena, Options, parse_document};
 
 use super::{Image, Link};
 use super::{Renderer, attribute};
-use crate::{HowToBlock, ProductBlock, Question, ReviewBlock, Step, StructuredBlock};
+use crate::{
+    HowToBlock, ProductBlock, Question, ReaderRatings, ReviewBlock, Step, StructuredBlock,
+};
 
 impl Renderer<'_> {
     /// Writes each question as a summary with its answer open beside it.
@@ -46,6 +48,7 @@ impl Renderer<'_> {
             &attribute(&review.best),
             "</p>\n",
         ]);
+        self.readers(review.readers.as_ref(), &review.best);
         self.markdown(&review.body);
         self.html.push_str("</section>\n");
         self.facts
@@ -81,6 +84,7 @@ impl Renderer<'_> {
                 "</p>\n",
             ]);
         }
+        self.readers(product.readers.as_ref(), &product.best);
         if let (Some(price), Some(currency)) = (&product.price, &product.currency) {
             let (price, currency) = (attribute(price), attribute(currency));
             self.push(&[
@@ -115,6 +119,31 @@ impl Renderer<'_> {
                 description: plain(&product.description),
                 ..product.clone()
             }));
+    }
+
+    /// Writes readers' average score out of `best` and how many scored, when
+    /// the block gives them.
+    fn readers(&mut self, readers: Option<&ReaderRatings>, best: &str) {
+        let Some(readers) = readers else {
+            return;
+        };
+        let count = readers.count.to_string();
+        let noun = if readers.count == 1 {
+            "rating"
+        } else {
+            "ratings"
+        };
+        self.push(&[
+            "<p class=\"rating-readers\">Readers: ",
+            &attribute(&readers.average),
+            " / ",
+            &attribute(best),
+            " from ",
+            &count,
+            " ",
+            noun,
+            "</p>\n",
+        ]);
     }
 
     /// Writes a how-to as a numbered list of named steps.

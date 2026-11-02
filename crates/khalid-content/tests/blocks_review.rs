@@ -1,7 +1,9 @@
 //! Review blocks: a rating of one thing, which gives structured data (task
 //! 1.7, KH-CON-5).
 
-use khalid_content::{BlockKind, ReviewBlock, StructuredBlock, parse_blocks, print_blocks, render};
+use khalid_content::{
+    BlockKind, ReaderRatings, ReviewBlock, StructuredBlock, parse_blocks, print_blocks, render,
+};
 use khalid_core::{Locale, SlugMode};
 
 const REVIEW: &str = "\
@@ -18,6 +20,7 @@ fn review(body: &str) -> ReviewBlock {
         rating: "4.5".to_owned(),
         best: "5".to_owned(),
         author: Some("Asif".to_owned()),
+        readers: None,
         body: body.to_owned(),
     }
 }
@@ -68,6 +71,43 @@ fn the_best_score_is_five_unless_written() {
         panic!("{blocks:?}");
     };
     assert_eq!(review.best, "5");
+}
+
+#[test]
+fn readers_scores_round_trip_and_show_beside_the_rating() {
+    let text = ":::review{item=\"A book\" type=\"Book\" rating=\"4\" average=\"4.2\" ratings=\"310\"}\nGood.\n:::\n";
+    let blocks = parse_blocks(text).unwrap();
+    assert_eq!(print_blocks(&blocks), text);
+    let BlockKind::Review(review) = &blocks[0].kind else {
+        panic!("{blocks:?}");
+    };
+    let readers = ReaderRatings {
+        average: "4.2".to_owned(),
+        count: 310,
+    };
+    assert_eq!(review.readers, Some(readers));
+    assert!(
+        rendered(text)
+            .html
+            .contains("<p class=\"rating-readers\">Readers: 4.2 / 5 from 310 ratings</p>")
+    );
+}
+
+#[test]
+fn readers_scores_need_an_average_on_the_scale_and_a_count() {
+    let problem = "line 1: readers' scores need both average, from 0 to the best score, and ratings, how many there are, such as average=\"4.2\" ratings=\"310\"";
+    for attributes in [
+        "average=\"4.2\"",
+        "ratings=\"310\"",
+        "average=\"6\" ratings=\"310\"",
+        "average=\"4.2\" ratings=\"0\"",
+        "average=\"4.2\" ratings=\"many\"",
+    ] {
+        let text = format!(
+            ":::review{{item=\"A book\" type=\"Book\" rating=\"4\" {attributes}}}\nGood.\n:::\n"
+        );
+        assert_eq!(error(&text), problem, "{attributes}");
+    }
 }
 
 #[test]

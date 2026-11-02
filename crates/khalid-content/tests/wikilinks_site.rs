@@ -61,6 +61,49 @@ fn the_demo_glossary_links_resolve_in_german() {
 }
 
 #[test]
+fn the_glossary_form_reaches_a_term_that_shares_its_slug_with_a_post() {
+    let dir = tempfile::tempdir().unwrap();
+    let within = |parts: &[&str]| {
+        let mut path = dir.path().to_path_buf();
+        path.extend(parts);
+        path
+    };
+    std::fs::copy(format!("{DEMO}/site.toml"), within(&["site.toml"])).unwrap();
+    for (folder, text) in [
+        (
+            "posts",
+            "---\ntitle: Crawl budget\nslug: crawl-budget\ndate: 2026-09-01\ntranslation: crawl-budget\n---\n\n\
+             See [[glossary:crawl-budget]] and [[crawl-budget]].\n",
+        ),
+        (
+            "glossary",
+            "---\nterm: Crawl budget\nslug: crawl-budget\n---\n\nHow many pages a crawler fetches.\n",
+        ),
+    ] {
+        std::fs::create_dir_all(within(&["content", "en", folder])).unwrap();
+        std::fs::write(within(&["content", "en", folder, "crawl-budget.md"]), text).unwrap();
+    }
+    let config = Config::load(dir.path(), &Environment::empty()).unwrap();
+    let content = read_content(&ContentTree::walk(dir.path()).unwrap()).unwrap();
+    let en = Locale::try_new("en").unwrap();
+    let links = Wikilinks::for_language(&content, &config, &Routes::default(), &en);
+    assert_eq!(
+        links.get("crawl-budget").unwrap().address(),
+        "/blog/crawl-budget/"
+    );
+    assert_eq!(
+        links.get("glossary:crawl-budget").unwrap().address(),
+        "/blog/glossary/crawl-budget/"
+    );
+    let html = html_of(&config, &content, &en, "crawl-budget");
+    assert!(
+        html.contains("<a href=\"/blog/glossary/crawl-budget/\">Crawl budget</a> and <a href=\"/blog/crawl-budget/\">Crawl budget</a>"),
+        "{html}"
+    );
+    check_bodies(&content, &config, &Routes::default()).unwrap();
+}
+
+#[test]
 fn every_demo_wikilink_reaches_a_page() {
     let (config, content) = demo();
     check_bodies(&content, &config, &Routes::default()).unwrap();

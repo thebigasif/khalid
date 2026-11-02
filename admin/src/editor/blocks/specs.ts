@@ -32,7 +32,18 @@ const box = (
   fence,
 });
 
-const PRODUCT = ["name", "image", "price", "currency", "rating", "best", "href", "button"];
+const PRODUCT = [
+  "name",
+  "image",
+  "price",
+  "currency",
+  "rating",
+  "best",
+  "average",
+  "ratings",
+  "href",
+  "button",
+];
 
 const RECIPE = [
   "name",
@@ -60,6 +71,8 @@ export const BLOCK_SPECS: readonly BlockSpec[] = [
   ),
   leaf("button", ["href", "label"], "label"),
   box("callout", ["kind"], "kind"),
+  box("columns", [], null, "::::"),
+  leaf("cta", [], null),
   leaf("embed", ["src", "title"], "title"),
   box("faq", [], null, "::::"),
   box("figure", ["src", "alt"], "alt"),
@@ -73,8 +86,10 @@ export const BLOCK_SPECS: readonly BlockSpec[] = [
   box("maths", ["label"], "label"),
   leaf("newsletter", ["label", "button"], "label"),
   box("product", PRODUCT, "name"),
+  box("proscons", ["pros", "cons"], "pros"),
+  box("pullquote", ["by"], "by"),
   box("recipe", RECIPE, "name", "::::"),
-  box("review", ["item", "type", "rating", "best", "author"], "item"),
+  box("review", ["item", "type", "rating", "best", "average", "ratings", "author"], "item"),
   leaf("snippet", ["slug"], "slug"),
   leaf("toc", [], null),
   box("toggle", ["summary"], "summary"),
@@ -82,4 +97,10 @@ export const BLOCK_SPECS: readonly BlockSpec[] = [
 ];
 
 /** The names of blocks written inside another block, such as `:::question`. */
-export const INNER_BLOCKS: readonly string[] = ["question", "step", "ingredients", "method"];
+export const INNER_BLOCKS: readonly string[] = [
+  "question",
+  "step",
+  "ingredients",
+  "method",
+  "column",
+];

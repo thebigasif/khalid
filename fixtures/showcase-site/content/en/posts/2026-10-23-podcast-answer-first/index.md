@@ -124,6 +124,6 @@ Pick one post and try the exercise from the end of the episode: the answer first
 
 ## How this page is marked up
 
-This page carries [[structured-data|structured data for a podcast episode]]. It names the episode, its number, the show it belongs to and the audio file, so podcast apps and search engines can place it. Khalid writes it from the post's settings.
+This page carries [[glossary:structured-data|structured data for a podcast episode]]. It names the episode, its number, the show it belongs to and the audio file, so podcast apps and search engines can place it. Khalid writes it from the post's settings.
 
 ::newsletter{label="Your email address" button="Get the next episode by email"}

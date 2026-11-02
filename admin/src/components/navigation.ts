@@ -1,3 +1,4 @@
+import { calendarWords } from "../strings/calendarWords";
 import { en } from "../strings/en";
 import { searchConsoleWords } from "../strings/searchConsoleWords";
 import { shellWords } from "../strings/shellWords";
@@ -7,6 +8,7 @@ import type { IconName } from "./Icon";
 export type NavPath =
   | "/"
   | "/posts"
+  | "/calendar"
   | "/media"
   | "/comments"
   | "/trash"
@@ -38,6 +40,7 @@ export const NAV: NavGroup[] = [
     items: [
       { to: "/", label: en.nav.dashboard, icon: "home" },
       { to: "/posts", label: en.nav.posts, icon: "posts" },
+      { to: "/calendar", label: calendarWords.nav, icon: "calendar" },
       { to: "/media", label: en.nav.media, icon: "media" },
       { to: "/comments", label: en.nav.comments, icon: "comments" },
       { to: "/trash", label: en.nav.trash, icon: "trash" },

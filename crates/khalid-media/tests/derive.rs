@@ -3,7 +3,7 @@
 use std::io::Cursor;
 
 use image::{ImageFormat, Rgb, RgbImage};
-use khalid_media::{Format, MediaCache, derive, derive_in_background};
+use khalid_media::{Avif, Format, MediaCache, derive, derive_in_background, derive_with};
 
 /// A 900 by 600 JPEG photo stand-in, made in the test.
 #[cfg(test)]
@@ -56,6 +56,35 @@ fn every_width_is_made_in_webp_and_the_original_format() {
             file.path.display()
         );
     }
+}
+
+#[test]
+fn a_site_that_asks_for_avif_gets_every_width_in_avif_first() {
+    let site = tempfile::tempdir().unwrap();
+    let cache = MediaCache::new(site.path());
+    let derived = derive_with(&photo(90), &cache, Avif::Make).unwrap();
+    let avif: Vec<u32> = derived
+        .files
+        .iter()
+        .filter(|file| file.variant.format == Format::Avif)
+        .map(|file| file.variant.width)
+        .collect();
+    assert_eq!(avif, [320, 480, 640, 800, 900]);
+    assert_eq!(derived.files[0].variant.format, Format::Avif);
+    assert_eq!(derived.encoded, 15);
+    for file in derived
+        .files
+        .iter()
+        .filter(|f| f.variant.format == Format::Avif)
+    {
+        let bytes = std::fs::read(&file.path).unwrap();
+        // An AVIF file opens with an ISO box naming its brand, `ftypavif`.
+        assert_eq!(&bytes[4..12], b"ftypavif", "{}", file.path.display());
+        assert!(file.path.to_string_lossy().ends_with(".avif"));
+    }
+    let again = derive_with(&photo(90), &cache, Avif::Make).unwrap();
+    assert_eq!(again.encoded, 0, "every file came from the cache");
+    assert_eq!(Format::Avif.media_type(), "image/avif");
 }
 
 #[test]

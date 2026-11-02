@@ -51,11 +51,11 @@ Three more things stood out in our own use:
 
 No readability checker is perfect, and Quillmeter has two clear gaps. Each one cost us time on real work.
 
-**It treats technical terms as problems.** On a post about [[structured-data|structured data]] for a client, Quillmeter marked "schema", "markup" and "canonical" in almost every paragraph. Those are the words a specialist reader expects. You can add words to a personal list so it stops marking them, but you have to do it one word at a time, and the list does not travel with the draft.
+**It treats technical terms as problems.** On a post about [[glossary:structured-data|structured data]] for a client, Quillmeter marked "schema", "markup" and "canonical" in almost every paragraph. Those are the words a specialist reader expects. You can add words to a personal list so it stops marking them, but you have to do it one word at a time, and the list does not travel with the draft.
 
 **It has no team settings.** Each copy of Quillmeter keeps its own limits and word list. When three of our editors checked the same draft, they saw different marks, because one had set a lower limit for long sentences than the other two. We now keep the settings in a shared note and copy them by hand, which is a workaround, not a fix.
 
-Two smaller points. It reads plain text and common document files, but it cannot check a page straight from a website, so you copy the text out first. And it does not know anything about search: it will not tell you if a heading matches [[search-intent|what the searcher wants]]. That is fine, as long as you know it is a writing tool and not an SEO tool.
+Two smaller points. It reads plain text and common document files, but it cannot check a page straight from a website, so you copy the text out first. And it does not know anything about search: it will not tell you if a heading matches [[glossary:search-intent|what the searcher wants]]. That is fine, as long as you know it is a writing tool and not an SEO tool.
 
 :::proscons
 + Marks long sentences and rare words in place, and never rewrites

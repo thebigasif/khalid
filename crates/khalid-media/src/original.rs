@@ -13,7 +13,7 @@ use image::{
     RgbaImage, imageops,
 };
 
-use crate::{Crop, FocalPoint, Format, MediaError, PictureEdit, Pixels, Turn, Variant};
+use crate::{Crop, FocalPoint, Format, MediaError, PictureEdit, Pixels, Turn, Variant, avif};
 
 /// How hard an encoder may squeeze: derived files for pages, or the stored
 /// original every derived file is later made from, which loses less.
@@ -29,6 +29,15 @@ impl Quality {
         match self {
             Self::Derived => 78.0,
             Self::Kept => 90.0,
+        }
+    }
+
+    /// AVIF quality from 1 to 100. AVIF holds detail at lower numbers than
+    /// WebP, so 60 looks like WebP's 78.
+    fn avif(self) -> f32 {
+        match self {
+            Self::Derived => 60.0,
+            Self::Kept => 80.0,
         }
     }
 
@@ -218,6 +227,7 @@ impl Original {
     ) -> Result<Vec<u8>, MediaError> {
         let pixels = self.resize(width, height, crop)?;
         let encoded = match format {
+            Format::Avif => return avif::encode(&pixels, (width, height), quality.avif()),
             Format::Webp => {
                 return webp::Encoder::from_rgba(&pixels, width, height)
                     .encode_simple(false, quality.webp())

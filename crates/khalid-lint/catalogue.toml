@@ -181,6 +181,12 @@ why = "Readers who follow it land on a page that does not exist."
 fix = "Change it to the address of an existing page, or remove the brackets."
 guide = "wikilinks"
 
+[ambiguous-wikilink]
+what = "This `[[link]]` names both a post and a glossary term, and it links the post."
+why = "Readers who expect the term's short definition land on a whole post instead."
+fix = "Write `[[glossary:slug]]` to link the term, or keep `[[slug]]` if you meant the post."
+guide = "wikilinks"
+
 [orphan-post]
 what = "No other post on your site links to this post."
 why = "Readers and Google find posts by following links, so this one is hard to find."

@@ -21,6 +21,7 @@ fn kit(description: &str) -> ProductBlock {
         currency: Some("USD".to_owned()),
         rating: Some("4.5".to_owned()),
         best: "5".to_owned(),
+        readers: None,
         href: Some("https://shop.example.com/audit-kit".to_owned()),
         button: Some("Buy the kit".to_owned()),
         description: description.to_owned(),

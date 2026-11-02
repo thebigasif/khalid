@@ -81,8 +81,20 @@ pub struct ReviewBlock {
     pub best: String,
     /// Who wrote the review, when it is not the post's author.
     pub author: Option<String>,
+    /// Readers' own scores of the thing, when the site collects them.
+    pub readers: Option<ReaderRatings>,
     /// The review: markdown in a block, plain text in structured data.
     pub body: String,
+}
+
+/// Readers' scores of a reviewed thing, from a block's `average` and
+/// `ratings`: what search engines show as its `AggregateRating`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReaderRatings {
+    /// Their average, a number as written on the block's scale, such as `4.2`.
+    pub average: String,
+    /// How many scores it averages, at least one.
+    pub count: u32,
 }
 
 /// The schema.org types search engines show review stars for, so a review
@@ -149,6 +161,8 @@ pub struct ProductBlock {
     pub rating: Option<String>,
     /// The best possible score; `5` when not given.
     pub best: String,
+    /// Readers' own scores of it, when the site collects them.
+    pub readers: Option<ReaderRatings>,
     /// Where to buy it: a path on this site or a full address.
     pub href: Option<String>,
     /// The words on the button, always with `href`.

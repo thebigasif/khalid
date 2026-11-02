@@ -39,15 +39,16 @@ pub use post_fields::{
     LeadImage, ReviewState, ShareCard, ShareCards, Sitemap, TopicCluster, TopicRole,
 };
 pub use render::{
-    CTA_MARK, Gated, Heading, Image, Link, Rendered, render, render_gated, render_linked,
+    CTA_MARK, ENGINE_TEXT, Gated, Heading, Image, Link, Rendered, render, render_gated,
+    render_linked,
 };
 pub use schemas::{
     AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, SnippetFront,
 };
 pub use site_content::{Document, SiteContent, read_content};
 pub use structured::{
-    BusinessBlock, HowToBlock, ProductBlock, Question, REVIEW_TYPES, RecipeBlock, ReviewBlock,
-    Step, StructuredBlock, VideoBlock,
+    BusinessBlock, HowToBlock, ProductBlock, Question, REVIEW_TYPES, ReaderRatings, RecipeBlock,
+    ReviewBlock, Step, StructuredBlock, VideoBlock,
 };
 pub use tree::{Collection, ContentTree, Entry, Language};
-pub use wikilink::{WikiTarget, Wikilinks};
+pub use wikilink::{GLOSSARY, WikiTarget, Wikilinks};

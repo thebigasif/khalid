@@ -92,6 +92,6 @@ Make one change and record again. Then watch the field data, which takes weeks t
 
 ## Keep it fixed
 
-Most INP regressions on blogs arrive with a new widget, not with new writing. Add a check for new third-party scripts to your [technical SEO audit](/blog/technical-seo-audit/), and test the menu and search on a phone after every theme update. Good speed also supports the [[structured-data|structured data on your pages]] and content work you have already done, because a page that responds fast keeps the reader you earned.
+Most INP regressions on blogs arrive with a new widget, not with new writing. Add a check for new third-party scripts to your [technical SEO audit](/blog/technical-seo-audit/), and test the menu and search on a phone after every theme update. Good speed also supports the [[glossary:structured-data|structured data on your pages]] and content work you have already done, because a page that responds fast keeps the reader you earned.
 
 ::newsletter{label="Your email address" button="Get our technical SEO notes"}

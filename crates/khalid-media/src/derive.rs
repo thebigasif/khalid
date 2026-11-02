@@ -15,7 +15,8 @@ pub struct DerivedImage {
     pub width: u32,
     /// The original's height in pixels.
     pub height: u32,
-    /// Every file, WebP first, then the fallback, each from narrowest to widest.
+    /// Every file, AVIF first when asked for, then WebP, then the fallback,
+    /// each from narrowest to widest.
     pub files: Vec<DerivedFile>,
     /// How many files this call encoded. Zero when the cache had them all.
     pub encoded: usize,
@@ -41,10 +42,37 @@ pub struct DerivedFile {
 ///
 /// Returns the first [`MediaError`] from decoding, encoding or writing.
 pub fn derive(original: &[u8], cache: &MediaCache) -> Result<DerivedImage, MediaError> {
+    derive_with(original, cache, Avif::Skip)
+}
+
+/// Whether to make AVIF files too. AVIF is about half the size of JPEG but
+/// takes about a second for a wide image, so a site asks for it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum Avif {
+    /// WebP and the original's format only.
+    #[default]
+    Skip,
+    /// AVIF first, then WebP and the original's format.
+    Make,
+}
+
+/// Makes every variant of `original` as [`derive`](fn@derive) does, with the
+/// AVIF files first when `avif` asks for them.
+///
+/// # Errors
+///
+/// Returns the first [`MediaError`] from decoding, encoding or writing.
+pub fn derive_with(
+    original: &[u8],
+    cache: &MediaCache,
+    avif: Avif,
+) -> Result<DerivedImage, MediaError> {
     let key = ContentKey::of(original);
     let image = Original::decode(original)?;
-    let variants: Vec<Variant> = [Format::Webp, image.fallback()]
+    let avif = (avif == Avif::Make).then_some(Format::Avif);
+    let variants: Vec<Variant> = avif
         .into_iter()
+        .chain([Format::Webp, image.fallback()])
         .flat_map(|format| {
             widths(image.width())
                 .into_iter()
