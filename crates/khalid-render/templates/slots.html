@@ -22,3 +22,10 @@
 {% endif %}<p><a class="button" href="{{ cta.href }}">{{ cta.label }}</a></p>
 </div>
 {%- endmacro %}
+{#- The button that opens Google's page for adding the site as a preferred
+    source, where `[template.preferred_source]` places it; `place` is post
+    or footer. -#}
+{% macro preferred_source(options, t, place) -%}
+{% if options.preferred_source in [place, "both"] %}<p class="preferred-source"><a href="{{ options.preferred_source_href }}" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l2.8 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.4l-6 3.5 1.5-6.8-5.2-4.6 6.9-.7z"/></svg><span>{{ t.preferred_source }}</span></a></p>
+{% endif %}
+{%- endmacro %}

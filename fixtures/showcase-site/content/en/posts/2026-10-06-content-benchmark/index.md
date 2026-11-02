@@ -53,11 +53,11 @@ Readers trust a person more than a logo, and search engines look for signs that 
 In 2026, **61%** of the small business blogs we read put no author name on their posts.
 :::
 
-The fix takes an afternoon: a name on each post, a short bio, and a page per writer that says why they know the subject.
+The fix the content benchmark points to takes an afternoon: a name on each post, a short bio, and a page per writer that says why they know the subject.
 
 ## The forgotten archive
 
-The most common habit we found was neglect. Blogs kept publishing, but they rarely went back. In 2026, 38% had not changed a single post in the past twelve months, including posts that named prices or tools that no longer exist.
+The most common habit the content benchmark found was neglect. Blogs kept publishing, but they rarely went back. In 2026, 38% had not changed a single post in the past twelve months, including posts that named prices or tools that no longer exist.
 
 :::callout{kind=stat}
 In 2026, **1.6 times** the search clicks went to posts updated within the year, compared with untouched posts, at the median.

@@ -15,6 +15,9 @@ const BLOCKS: Record<string, string> = {
   button: '::button{href="/pricing/" label="See prices"}',
   callout:
     ":::callout{kind=tip}\nLink from new posts to old ones, then go back the other way.\n:::",
+  columns:
+    '::::columns\n:::column{title="Before"}\nOne link at the end.\n:::\n:::column{title="After"}\nThree links in the text.\n:::\n::::',
+  cta: "::cta",
   embed: '::embed{src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" title="How search works"}',
   faq: '::::faq\n:::question{text="Does it work offline?"}\nYes, every page works with scripts off.\n:::\n::::',
   figure:
@@ -32,10 +35,13 @@ const BLOCKS: Record<string, string> = {
   maths: ':::maths{label="Compound growth"}\nA = P(1 + r)^t\n:::',
   newsletter: '::newsletter{label="Your email address" button="Get the weekly links"}',
   product:
-    ':::product{name="Kit" image="/media/kit.jpg" price="49.00" currency="USD" rating="4.5" href="/kit/" button="Buy the kit"}\nEverything to start.\n:::',
+    ':::product{name="Kit" image="/media/kit.jpg" price="49.00" currency="USD" rating="4.5" average="4.6" ratings="52" href="/kit/" button="Buy the kit"}\nEverything to start.\n:::',
+  proscons: ':::proscons{pros="What works" cons="What does not"}\n+ Fast\n- No team settings\n:::',
+  pullquote: ':::pullquote{by="Maren Okafor"}\nA tool nobody runs finds nothing.\n:::',
   recipe:
     '::::recipe{name="Toast" servings="1"}\n:::ingredients\n- Bread\n:::\n:::method\n1. Toast it\n:::\n::::',
-  review: ':::review{item="A book" type="Book" rating="4" author="Asif"}\nClear and short.\n:::',
+  review:
+    ':::review{item="A book" type="Book" rating="4" average="4.2" ratings="310" author="Asif"}\nClear and short.\n:::',
   snippet: '::snippet{slug="affiliate-disclosure"}',
   toc: "::toc",
   toggle: ':::toggle{summary="Why does this matter?"}\nSearch engines read it.\n:::',
@@ -86,6 +92,26 @@ describe("the editor's blocks", () => {
   it("reads a block's attributes into the node", () => {
     const button = read(BLOCKS.button ?? "").content?.[0];
     expect(button?.attrs).toMatchObject({ href: "/pricing/", label: "See prices" });
+  });
+
+  it("reads the columns inside a columns block as its text", () => {
+    const columns = read(BLOCKS.columns ?? "").content?.[0];
+    expect(columns?.attrs?.fence).toBe("::::");
+    expect(columns?.attrs?.body).toContain(':::column{title="After"}');
+  });
+
+  it("writes new pros and cons, a pull quote and a call to action from their details", () => {
+    const doc = {
+      type: "doc",
+      content: [
+        { type: "pullquoteBlock", attrs: { by: "Maren", body: "Short wins." } },
+        { type: "prosconsBlock", attrs: { pros: null, cons: null, body: "+ Fast\n- Dear" } },
+        { type: "ctaBlock", attrs: {} },
+      ],
+    };
+    expect(write(doc)).toBe(
+      ":::pullquote{by=Maren}\nShort wins.\n:::\n\n:::proscons\n+ Fast\n- Dear\n:::\n\n::cta",
+    );
   });
 
   it("reads a table and a footnote as their own nodes", () => {

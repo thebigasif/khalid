@@ -4,8 +4,8 @@ use chrono::{DateTime, Utc};
 use khalid_core::{AbsoluteUrl, Locale, PageSchemaType, RobotsDirectives};
 
 use crate::{
-    Alternate, AuthorProfile, CustomSchema, Entity, MetaTemplate, PageNumber, SchemaBlock,
-    SeoComment, ShareImage, TranslationKey, UrlPath, Video,
+    Alternate, AuthorProfile, CustomSchema, Entity, ListEntry, MetaTemplate, PageNumber,
+    SchemaBlock, SeoComment, ShareImage, TranslationKey, UrlPath, Video,
 };
 
 /// The kind of page, which picks its title template and index setting.
@@ -209,6 +209,9 @@ pub struct SeoPage {
     pub news: SitemapListing,
     /// The stock tickers a news article is about, such as `NASDAQ:GOOG`.
     pub stock_tickers: Vec<String>,
+    /// For the glossary's A to Z page, every term it lists, for the
+    /// `hasDefinedTerm` of its `DefinedTermSet`.
+    pub terms: Vec<ListEntry>,
 }
 
 impl SeoPage {
@@ -259,6 +262,7 @@ impl SeoPage {
             page_type: None,
             news: SitemapListing::Listed,
             stock_tickers: Vec::new(),
+            terms: Vec::new(),
         }
     }
 }

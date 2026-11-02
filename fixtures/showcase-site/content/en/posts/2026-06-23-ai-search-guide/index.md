@@ -194,7 +194,7 @@ Make the people behind each post easy to find:
 3. **Clear dates**: published, updated, and a short note on what changed.
 4. **An about page and an editorial policy** that say who runs the site and how you check facts. Ours are on [the about page](/blog/about/) and in [our editorial policy](/blog/editorial-policy/).
 
-Then say the same thing to machines. [[structured-data|Structured data for each post]] is a small block of code that labels the author, the dates and the organisation in a format search engines read. It does not make a page eligible for AI features on its own, and Google says no special markup is needed. It does remove doubt. That linked post shows the code step by step, and [schema.org](https://schema.org/) holds the full vocabulary.
+Then say the same thing to machines. [[glossary:structured-data|Structured data for each post]] is a small block of code that labels the author, the dates and the organisation in a format search engines read. It does not make a page eligible for AI features on its own, and Google says no special markup is needed. It does remove doubt. That linked post shows the code step by step, and [schema.org](https://schema.org/) holds the full vocabulary.
 
 An entity, in this sense, is a thing a search engine can tell apart from other things: a person, a company, a product. Use the same name for your company and your authors everywhere: on the site, in the markup, and on profiles elsewhere. Consistent names help machines connect the dots.
 

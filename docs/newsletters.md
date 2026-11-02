@@ -18,7 +18,7 @@ Then name it in the sign-up block:
 ::newsletter{label="Your email address" button="Get the weekly links" list="weekly"}
 ```
 
-Leave `list` out and the form signs readers up for `main`. A form that names a newsletter with no folder saves nothing and tells the reader. Nothing in `content/newsletters/` becomes a page. One reader can get several newsletters, and unsubscribing stops all of them.
+Leave `list` out and the form signs readers up for `main`. A form that names a newsletter with no folder saves nothing and tells the reader. Only the main newsletter's page and past issues become pages, see "The newsletter page" below. One reader can get several newsletters, and unsubscribing stops all of them.
 
 ## Labels and segments
 
@@ -56,6 +56,25 @@ Every Friday you get five links worth your time, with a line on why each one mat
 ```
 
 Like every newsletter email, a welcome ends with the reader's one-click unsubscribe link and the postal address, so it goes out only once `postal_address` is set under `[mail]`. `khalid serve` reads the files when it starts.
+
+## The newsletter page
+
+Readers decide to sign up when they can see what they will get. Write `content/newsletters/main/page.md`: a `# ` heading with the newsletter's name, then what readers get and how often, in markdown. Any block works, such as a summary callout:
+
+```markdown
+# The Larkspur Letter
+
+One short email every other Tuesday, five minutes to read.
+
+:::callout{kind=summary}
+- **One lesson from client work**, with the before and after.
+- **Three links worth your time**, each with a line on why.
+:::
+```
+
+Then keep each issue you send as a file in `content/newsletters/main/issues/`, named by the day it went out and a slug, such as `2026-10-27-ai-search-quotes.md`. Its first line is a `# ` heading with the subject, and the rest is the text.
+
+With `page.md` in place, the blog has a page at `/newsletter/` in its main language: your text, the sign-up form, the newest issue's opening as a sample, and every past issue, newest first. Each issue gets its own page at `/newsletter/<slug>/`, with the day it went out, the form and a link back. An issue dated after today waits until that day. A static blog shows the same pages without the form, since nothing could take the sign-up. Add the page to your menu or footer with `href = "/blog/newsletter/"`.
 
 ## A sign-up form on your main website
 

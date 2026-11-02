@@ -10,6 +10,8 @@ use std::path::Path;
 use khalid_core::{SitePath, Slug};
 use khalid_newsletter::{Lists, Welcome};
 
+pub(crate) mod archive_pages;
+
 /// Where the newsletters' folders are, inside the site folder.
 const FOLDER: &str = "content/newsletters";
 

@@ -9,11 +9,13 @@
 {% for group in page.groups %}<li><a href="#letter-{{ group.anchor }}">{{ group.letter }}</a></li>
 {% endfor %}</ul>
 </nav>
-{% for group in page.groups %}<section aria-labelledby="letter-{{ group.anchor }}">
+{% for group in page.groups %}<section class="glossary-letter" aria-labelledby="letter-{{ group.anchor }}">
 <h2 id="letter-{{ group.anchor }}">{{ group.letter }}</h2>
-<dl>
-{% for term in group.terms %}<dt><a href="{{ term.href }}">{{ term.term }}</a></dt>
+<dl class="terms">
+{% for term in group.terms %}<div class="term">
+<dt><a href="{{ term.href }}">{{ term.term }}</a></dt>
 <dd>{{ term.summary }}</dd>
+</div>
 {% endfor %}</dl>
 </section>
 {% endfor %}{% else %}<p>{{ t.no_terms }}</p>

@@ -116,6 +116,35 @@ pub const CATEGORY_TABS: OptionSpec = OptionSpec {
     kind: OptionKind::Switch { default: false },
 };
 
+/// The owner's numbers under the home page's title, such as how many
+/// clients the blog's team serves. Never filled in by Khalid.
+pub const HERO_STATS: OptionSpec = OptionSpec {
+    key: "hero_stats",
+    help: "Up to four numbers under the home page's title, each written as number | what it counts, such as 140 | blogs studied.",
+    kind: OptionKind::Lines { most: 4 },
+};
+
+/// Tabs on the home page, one per topic, each with its newest posts.
+pub const TOPIC_TABS: OptionSpec = OptionSpec {
+    key: "topic_tabs",
+    help: "Whether the home page shows tabs, one per topic, each with that topic's newest posts. They work with scripts off.",
+    kind: OptionKind::Switch { default: false },
+};
+
+/// A row of the newest posts with a video on the home page.
+pub const VIDEO_SECTION: OptionSpec = OptionSpec {
+    key: "video_section",
+    help: "Whether the home page shows a row of the newest posts with a video, when there are any.",
+    kind: OptionKind::Switch { default: false },
+};
+
+/// A row of the newest posts with a sound player on the home page.
+pub const PODCAST_SECTION: OptionSpec = OptionSpec {
+    key: "podcast_section",
+    help: "Whether the home page shows a row of the newest posts with a podcast or other sound player, when there are any.",
+    kind: OptionKind::Switch { default: false },
+};
+
 /// The newest featured post above the home page and each list.
 pub const FEATURED: OptionSpec = OptionSpec {
     key: "featured",
@@ -295,6 +324,29 @@ pub const fn contents_numbers(numbers: ContentsNumbers) -> OptionSpec {
     }
 }
 
+/// The thin accent line at the top of a post that fills as the reader
+/// scrolls. Every template, classic too, shows it unless the site says
+/// `none`.
+pub const READING_PROGRESS: OptionSpec = OptionSpec {
+    key: "reading_progress",
+    help: "Whether a post shows a thin line at the top that fills as the reader scrolls: bar or none.",
+    kind: OptionKind::Choice {
+        allowed: &["bar", "none"],
+        default: "bar",
+    },
+};
+
+/// The search in the header of a site that answers searches: a link that
+/// opens a search dialog, a plain link to the search page, or none.
+pub const HEADER_SEARCH: OptionSpec = OptionSpec {
+    key: "header_search",
+    help: "What the header's search does: button opens a search dialog, link opens the search page, none hides it.",
+    kind: OptionKind::Choice {
+        allowed: &["button", "link", "none"],
+        default: "button",
+    },
+};
+
 /// `spec` turned on by default, when it is an on or off option. Any other
 /// option comes back as it is.
 pub const fn on(spec: OptionSpec) -> OptionSpec {
@@ -327,5 +379,11 @@ pub fn all() -> Vec<OptionSpec> {
         related_count(5),
         contents(ContentsPlacement::SideEnd),
         contents_numbers(ContentsNumbers::Numbered),
+        READING_PROGRESS,
+        HEADER_SEARCH,
+        HERO_STATS,
+        TOPIC_TABS,
+        VIDEO_SECTION,
+        PODCAST_SECTION,
     ]
 }

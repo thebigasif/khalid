@@ -39,6 +39,8 @@ pub(crate) static HARBOR: Pack = Pack {
         parts::related(RelatedLayout::Scroll),
         parts::related_count(10),
         parts::contents(ContentsPlacement::Inline),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::None),
         slot::share("end"),
         slot::share_networks(&["linkedin", "x", "facebook", "email"]),
@@ -55,5 +57,9 @@ pub(crate) static HARBOR: Pack = Pack {
             help: "Whether a small drawn mark in your accent colour sits above each section heading of a post.",
             kind: OptionKind::Switch { default: true },
         },
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };

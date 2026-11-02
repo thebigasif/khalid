@@ -9,8 +9,8 @@ use khalid_lint::StructuredDataGap;
 use khalid_render::{HeadHtml, builtin_strings};
 use khalid_seo::{
     ArticleType, IndexPolicy, IssueLevel, LinkPolicy, MetaTemplate, PageKind, SeoError, SeoPage,
-    SeoSite, SitemapListing, TemplateWords, TranslationKey, UrlPath, check_graph, head_tags,
-    link_translations, page_graph,
+    SeoSite, SitemapListing, TemplateWords, Tracking, TranslationKey, UrlPath, check_graph,
+    head_tags, link_translations, page_graph,
 };
 
 use crate::build_pages::LanguagePages;
@@ -85,6 +85,27 @@ pub(crate) fn with_link_policy(config: &Config, html: String) -> String {
         return html;
     }
     policy.apply_to_html(&site, &html)
+}
+
+/// `html`, a rendered body, with the link policy as [`with_link_policy`]
+/// gives it and each link to the owner's products tagged as
+/// `[seo.links.tracking]` says, named `campaign` unless the table names
+/// one.
+pub(crate) fn with_link_rules(config: &Config, html: String, campaign: &str) -> String {
+    let html = with_link_policy(config, html);
+    match &config.seo().links.tracking {
+        Some(tracking) => Tracking::from(tracking).apply_to_html(&html, campaign),
+        None => html,
+    }
+}
+
+/// `href`, the address of the call to action, tagged as
+/// `[seo.links.tracking]` says when it leads to the owner's products,
+/// with the campaign `cta` unless the table names one.
+pub(crate) fn tracked_cta(config: &Config, href: String) -> String {
+    (config.seo().links.tracking.as_ref())
+        .and_then(|tracking| Tracking::from(tracking).href(&href, "cta"))
+        .unwrap_or(href)
 }
 
 /// The link policy in `[seo.links]` and the site it tells own links from

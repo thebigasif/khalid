@@ -27,6 +27,16 @@ pub struct RenderHome {
     /// `categories.toml` lists them, for the tabs a template with its
     /// `category_tabs` part on shows.
     pub categories: Vec<Link>,
+    /// The newest posts of each topic, for the tabs a template with its
+    /// `topic_tabs` part on shows: each tab an anchor link to its panel,
+    /// so the tabs work with scripts off.
+    pub tabs: Vec<HomeSectionPosts>,
+    /// The newest posts with a video, for the row a template with its
+    /// `video_section` part on shows.
+    pub videos: Vec<PostCard>,
+    /// The newest posts with a sound player, such as a podcast episode,
+    /// for the row a template with its `podcast_section` part on shows.
+    pub podcasts: Vec<PostCard>,
 }
 
 /// One section of the front page: the newest posts of a category, a

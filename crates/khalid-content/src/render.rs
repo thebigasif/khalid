@@ -1,24 +1,26 @@
 //! Markdown to HTML, with the facts templates and the linter need beside it.
 
-use std::collections::BTreeMap;
-use std::fmt;
 use std::sync::{Mutex, OnceLock, PoisonError};
 
-use comrak::adapters::{HeadingAdapter, HeadingMeta};
-use comrak::nodes::{AstNode, NodeValue, Sourcepos};
+use comrak::nodes::{AstNode, NodeValue};
 use comrak::options::Plugins;
 use comrak::plugins::syntect::{SyntectAdapter, SyntectAdapterBuilder};
 use comrak::{Arena, Options, format_html_with_plugins, parse_document};
-use khalid_core::{AbsoluteUrl, Locale, Slug, SlugMode};
+use khalid_core::{AbsoluteUrl, DomainName, Locale, SlugMode};
 
 use crate::{
     Block, BlockError, BlockKind, StructuredBlock, Wikilinks, maths, parse_blocks, wikilink,
 };
 
 mod cards;
+mod chart;
+mod chart_plot;
 mod forms;
 mod formula;
+mod heading_ids;
 mod layout;
+
+use heading_ids::HeadingIds;
 
 pub use forms::Gated;
 mod media;
@@ -138,6 +140,23 @@ pub fn render_gated(
     wikilinks: &Wikilinks,
     gated: Gated<'_>,
 ) -> Result<Rendered, BlockError> {
+    render_framed(body, locale, slugs, wikilinks, gated, &[])
+}
+
+/// Renders like [`render_gated`], and shows an `::embed` of a page on one
+/// of the `frames` domains, the site owner's allowlist, in a frame.
+///
+/// # Errors
+///
+/// Returns a [`BlockError`] when a directive block is wrong.
+pub fn render_framed(
+    body: &str,
+    locale: &Locale,
+    slugs: SlugMode,
+    wikilinks: &Wikilinks,
+    gated: Gated<'_>,
+    frames: &[DomainName],
+) -> Result<Rendered, BlockError> {
     let blocks = parse_blocks(body)?;
     let mut renderer = Renderer {
         ids: HeadingIds {
@@ -150,6 +169,7 @@ pub fn render_gated(
         html: String::new(),
         subscribe_forms: 0,
         gated,
+        frames,
         in_snippet: false,
     };
     renderer.blocks(&blocks);
@@ -202,6 +222,8 @@ struct Renderer<'links> {
     subscribe_forms: usize,
     /// How gated blocks are written.
     gated: Gated<'links>,
+    /// The domains whose pages an embed shows in a frame.
+    frames: &'links [DomainName],
     /// Whether a snippet's blocks are being written, so it places no other.
     in_snippet: bool,
 }
@@ -247,12 +269,13 @@ impl Renderer<'_> {
                 description.as_deref(),
                 image.as_ref(),
             ),
-            BlockKind::Embed { src, title } => self.embed(src, title),
+            BlockKind::Embed { src, title, height } => self.embed(src, title, *height),
             BlockKind::Video(video) => self.video(video),
             BlockKind::Audio { src, title } => self.audio(src, title),
             BlockKind::File { src, title } => self.file(src, title),
             BlockKind::Gallery { images } => self.gallery(images),
             BlockKind::Maths { label, formula } => self.maths(label.as_deref(), formula),
+            BlockKind::Chart(chart) => self.chart(chart),
             BlockKind::PullQuote { .. } | BlockKind::Takeaways { .. } => self.set_apart(block),
             BlockKind::ProsCons(pros_cons) => self.pros_cons(pros_cons),
             BlockKind::Columns { columns } => self.columns(columns),
@@ -420,6 +443,21 @@ pub const CTA_MARK: &str = "<!--khalid-cta-->\n";
 /// attribute, and `-->` follow. The build swaps the mark for the card.
 pub const LOCATION_MARK: &str = "<!--khalid-location:";
 
+/// The classes of the elements a block writes itself rather than the
+/// writer: the contents list, which repeats every heading, a score,
+/// readers' average, a price, a recipe's servings and times, and a folding
+/// table's "Show 3 more rows".
+/// A check on the writer's own words, such as the linter's, leaves them out.
+pub const ENGINE_TEXT: &[&str] = &[
+    "toc",
+    "review-rating",
+    "product-rating",
+    "product-price",
+    "rating-readers",
+    "recipe-facts",
+    "table-fold-more",
+];
+
 /// The list of `headings`, linked, for `::toc`.
 fn contents(headings: &[Heading]) -> String {
     let mut html = String::from("<nav class=\"toc\" aria-label=\"Contents\">\n<ol>\n");
@@ -520,48 +558,4 @@ fn text_of<'a>(node: &'a AstNode<'a>) -> String {
             _ => None,
         })
         .collect()
-}
-
-/// Writes `<hN id="...">` and records each heading as it is written.
-struct HeadingIds {
-    locale: Locale,
-    slugs: SlugMode,
-    state: Mutex<IdState>,
-}
-
-#[derive(Default)]
-struct IdState {
-    headings: Vec<Heading>,
-    seen: BTreeMap<String, usize>,
-}
-
-impl HeadingAdapter for HeadingIds {
-    fn enter(
-        &self,
-        output: &mut dyn fmt::Write,
-        heading: &HeadingMeta,
-        _: Option<Sourcepos>,
-    ) -> fmt::Result {
-        let mut state = self.state.lock().unwrap_or_else(PoisonError::into_inner);
-        let base = Slug::from_title(&heading.content, &self.locale, self.slugs)
-            .map_or_else(|_| "section".to_owned(), |slug| slug.as_str().to_owned());
-        let count = state.seen.entry(base.clone()).or_insert(0);
-        *count += 1;
-        let id = if *count == 1 {
-            base
-        } else {
-            format!("{base}-{count}")
-        };
-        write!(output, "<h{} id=\"{id}\">", heading.level)?;
-        state.headings.push(Heading {
-            level: heading.level,
-            id,
-            text: heading.content.clone(),
-        });
-        Ok(())
-    }
-
-    fn exit(&self, output: &mut dyn fmt::Write, heading: &HeadingMeta) -> fmt::Result {
-        write!(output, "</h{}>", heading.level)
-    }
 }

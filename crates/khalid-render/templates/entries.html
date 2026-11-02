@@ -1,0 +1,24 @@
+{#- The list of case studies, or the changelog grouped by month. -#}
+{% extends "base.html" %}
+{% block main %}
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% for group in page.groups %}{% if group.month %}<section class="entry-month" aria-labelledby="month-{{ group.year }}-{{ group.month }}">
+<h2 id="month-{{ group.year }}-{{ group.month }}">{{ t["month_" ~ group.month] }} {{ group.year }}</h2>
+{% endif %}{% if page.kind == "changelog" %}<div class="entries entries-changelog">{% else %}<div class="entries entries-case-studies">{% endif %}
+{% for entry in group.entries %}{% set level = "h3" if group.month else "h2" %}<article class="entry">
+{% if entry.client or entry.version %}<p class="entry-label">{{ entry.client if entry.client else t.entry_version | replace("{version}", entry.version) }}</p>
+{% endif %}<{{ level }}><a href="{{ entry.href }}">{{ entry.title }}</a></{{ level }}>
+{% if entry.date %}<time datetime="{{ entry.date }}">{{ entry.date | date }}</time>
+{% endif %}{% if entry.outcome %}<p class="entry-outcome"><span>{{ t.entry_result }}</span> {{ entry.outcome }}</p>
+{% endif %}{% if entry.body %}<div class="entry-body">
+{{ entry.body }}
+</div>
+{% elif entry.summary %}<p>{{ entry.summary }}</p>
+{% endif %}</article>
+{% endfor %}</div>
+{% if group.month %}</section>
+{% endif %}{% else %}<p>{{ t.no_entries }}</p>
+{% endfor %}{% endblock %}

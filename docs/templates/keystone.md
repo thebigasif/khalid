@@ -42,6 +42,10 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 
 | Option | Default | Values | What it changes |
 |---|---|---|---|
+| `hero_stats` | none | up to four lines | Numbers under the front page's title, each written `number \| what it counts`. Nothing shows until you write them. |
+| `topic_tabs` | `false` | `true`, `false` | Tabs on the front page, one per topic, each with its four newest posts. They work with scripts off. |
+| `video_section` | `true` | `true`, `false` | A row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true` | `true`, `false` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `logo` | `true` | `true`, `false` | The header shows the logo from your main site in place of the blog's name. Without a logo, the name shows. |
 | `cta_button` | `true` | `true`, `false` | The header shows your `[template.cta]` as a button. |
 | `dek` | `true` | `true`, `false` | A post shows its summary under its title. |
@@ -49,6 +53,8 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 | `cards` | `image` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists. |
 | `pagination` | `numbered` | `pages`, `numbered` | The links under a long list: newer and older, or a link to each page. |
 | `contents` | `none` | `none`, `inline`, `inline-folded`, `side-end`, `side-start` | Where a long post's contents list goes. A post can also carry its own contents block. |
+| `reading_progress` | `bar` | `bar`, `none` | A thin line at the top of a post that fills as the reader scrolls. |
+| `header_search` | `button` | `button`, `link`, `none` | What the header's search does on a served blog: open a search dialog, open the search page, or nothing. |
 | `share` | `top` | `none`, `top`, `end`, `both` | Where a post shows its share links. `top` is the column beside the post. |
 | `share_networks` | `["x", "linkedin", "facebook", "email"]` | any of `x`, `linkedin`, `facebook`, `bluesky`, `reddit`, `hacker-news`, `whatsapp`, `email` | Which networks the share links go to, in order. |
 | `newsletter` | `both` | `none`, `post`, `home`, `both` | Where the newsletter form shows. It shows only when your blog takes sign-ups. |

@@ -105,6 +105,7 @@ impl Prepared {
             contents: None,
             originals: BTreeMap::new(),
             related: Vec::new(),
+            series: None,
             mentions: Vec::new(),
             comments: None,
             body,

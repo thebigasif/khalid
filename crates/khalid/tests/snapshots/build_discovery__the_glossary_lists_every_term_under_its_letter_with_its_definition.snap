@@ -1,0 +1,35 @@
+---
+source: crates/khalid/tests/build_discovery.rs
+expression: main_of(&glossary)
+---
+ id="main" tabindex="-1">
+
+<h1>Glossary</h1>
+<nav class="letters" aria-label="Jump to a letter">
+<ul>
+<li><a href="#letter-a">A</a></li>
+<li><a href="#letter-t">T</a></li>
+</ul>
+</nav>
+<section class="glossary-letter" aria-labelledby="letter-a">
+<h2 id="letter-a">A</h2>
+<dl class="terms">
+<div class="term">
+<dt><a href="/blog/glossary/anchor-text/">Anchor text</a></dt>
+<dd>The words a reader clicks to follow a link.</dd>
+</div>
+</dl>
+</section>
+<section class="glossary-letter" aria-labelledby="letter-t">
+<h2 id="letter-t">T</h2>
+<dl class="terms">
+<div class="term">
+<dt><a href="/blog/glossary/thin-content/">Thin content</a></dt>
+<dd>A page with too little on it to help anyone.</dd>
+</div>
+<div class="term">
+<dt><a href="/blog/glossary/topical-authority/">Topical authority</a></dt>
+<dd>How much a search engine trusts a site.</dd>
+</div>
+</dl>
+</section>

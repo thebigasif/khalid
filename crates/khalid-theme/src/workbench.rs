@@ -39,6 +39,8 @@ pub(crate) static WORKBENCH: Pack = Pack {
         parts::related(RelatedLayout::Links),
         parts::related_count(6),
         parts::contents(ContentsPlacement::Inline),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::Numbered),
         slot::share("end"),
         slot::share_networks(&["linkedin", "x", "email"]),
@@ -60,5 +62,9 @@ pub(crate) static WORKBENCH: Pack = Pack {
             help: "One line under the newsletter form on the front page, such as how often it goes out.",
             kind: OptionKind::Lines { most: 1 },
         },
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };

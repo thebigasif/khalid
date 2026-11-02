@@ -1,6 +1,8 @@
 //! The post fields that carry more than one value or a rule of their own:
-//! the lead image, the search title, tags, the sitemap choice and the topic
-//! cluster.
+//! the lead image, the search title, tags, the sitemap choice, the series
+//! and the topic cluster.
+
+use std::num::NonZeroU32;
 
 use khalid_core::Slug;
 use serde::{Deserialize, Deserializer};
@@ -126,6 +128,20 @@ pub enum ReviewState {
     InReview,
     /// An editor has said it may go live.
     Ready,
+}
+
+/// The series a post is one part of: posts written to be read in order,
+/// such as a course in five parts.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct PostSeries {
+    /// The series' name as readers see it, the same on every part, such
+    /// as `Topic clusters from scratch`.
+    pub name: String,
+    /// The post's place in the series, counted from 1. Parts without one
+    /// follow the numbered parts in date order.
+    pub order: Option<NonZeroU32>,
 }
 
 /// The topic cluster a post belongs to: a group of posts on one subject,

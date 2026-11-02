@@ -22,7 +22,7 @@ expression: html(TABLE)
 </tbody>
 </table>
 <details>
-<summary>Show 2 more rows</summary>
+<summary class="table-fold-more">Show 2 more rows</summary>
 <table>
 <thead>
 <tr>

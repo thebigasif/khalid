@@ -1,0 +1,84 @@
+/* The pages that help a reader find their way: the glossary from A to Z,
+   series, hubs, case studies and the changelog. Every template shares
+   these rules; a pack's own sheet comes after and may refine them. */
+
+/* The glossary: a row of letters, then each letter's terms in a grid. */
+.letters { position: sticky; inset-block-start: 0; z-index: 1; margin-block: 1rem 2rem; padding-block: 0.5rem; background: var(--color-background); border-block-end: 1px solid var(--color-border); }
+.letters ul { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.letters a { min-inline-size: 44px; border-radius: var(--radius); font-weight: 700; text-decoration: none; }
+.letters a:hover, .letters a:focus-visible { background: var(--color-surface); }
+.glossary-letter { margin-block-end: var(--space-section); }
+.glossary-letter h2 { margin-block: 0 1rem; scroll-margin-block-start: 5rem; color: var(--color-accent); font-size: var(--text-h2); }
+.terms { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); margin: 0; }
+.term { padding: 1rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); }
+.term dt { margin: 0 0 0.25rem; font-family: var(--font-heading); font-size: 1.125rem; }
+.term dt a { color: var(--color-text); text-decoration: none; }
+.term dt a:hover { text-decoration: underline; }
+.term dd { margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+
+/* Case studies and the changelog. Case studies are cards with the client
+   above and the result marked; changelog entries run down a month. */
+.entries { display: grid; gap: 1.25rem; margin-block-end: var(--space-section); }
+.entries-case-studies { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
+.entry { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.25rem 1.5rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); }
+.entry h2, .entry h3 { margin: 0; font-size: 1.25rem; }
+.entry h2 a, .entry h3 a { color: var(--color-text); text-decoration: none; }
+.entry h2 a:hover, .entry h3 a:hover { text-decoration: underline; }
+.entry time { color: var(--color-muted); font-size: var(--text-small); }
+.entry > p, .entry-body > :last-child { margin: 0; }
+.entry-label { margin: 0; color: var(--color-accent); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.entry-outcome { margin: 0; padding: 0.5rem 0.75rem; border-inline-start: 3px solid var(--color-accent); background: var(--color-background); }
+.entry-outcome span { display: block; color: var(--color-muted); font-size: var(--text-small); }
+.entries-changelog .entry { background: var(--color-background); }
+.entry-month h2 { margin-block: 0 1rem; font-size: var(--text-h3); }
+.entry-head { margin-block-end: 2rem; }
+.entry-head h1 { margin-block: 0.25rem 0.5rem; }
+.entry-page .back-link { margin-block-start: 0; }
+.entry-date { margin-block: 0 1rem; color: var(--color-muted); font-size: var(--text-small); }
+
+/* A series: the box at the top of a post, and the steps at its end. */
+.series-box { margin-block: 0 2rem; padding: 1rem 1.25rem; border: 1px solid var(--color-border); border-inline-start: 4px solid var(--color-accent); border-radius: var(--radius); background: var(--color-surface); font-size: var(--text-small); }
+.series-box p { margin: 0; }
+.series-part { color: var(--color-muted); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.series-name { font-family: var(--font-heading); font-size: 1.125rem; }
+.series-name a { color: var(--color-text); }
+.series-box ol { margin: 0.75rem 0 0; padding-inline-start: 1.5rem; }
+.series-box li { padding-block: 0.125rem; }
+.series-box li a, .series-box li span { display: inline-block; padding-block: 0.375rem; }
+.series-box [aria-current="page"] { color: var(--color-text); }
+.series-steps { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); margin-block: 2rem; }
+.series-steps a { display: block; padding: 0.75rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); color: var(--color-text); text-decoration: none; }
+.series-steps a:hover, .series-steps a:focus-visible { border-color: var(--color-accent); }
+.series-steps span { display: block; color: var(--color-muted); font-size: var(--text-small); }
+.series-previous { grid-column: 1; }
+.series-next { grid-column: -2; text-align: end; }
+
+/* A hub: numbered chapters to read in order, then the topic's newest
+   posts; a list links to its hub above its posts. */
+.hub .page-body { margin-block-end: 1rem; }
+.hub-chapters { margin-block: var(--space-section); }
+.hub-chapters ol { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.hub-chapters a { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); color: var(--color-text); text-decoration: none; }
+.hub-chapters a:hover, .hub-chapters a:focus-visible { border-color: var(--color-accent); }
+.hub-step { flex: none; display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; border-radius: 50%; background: var(--color-accent); color: var(--color-background); font-weight: 700; }
+.hub-text { display: grid; gap: 0.25rem; }
+.hub-text span { color: var(--color-muted); font-size: var(--text-small); }
+.hub-latest { margin-block-end: var(--space-section); }
+.hub-link { margin-block: 0 1.5rem; }
+.hub-link a { display: inline-flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; align-items: center; min-block-size: 44px; padding: 0.5rem 1rem; border: 1px solid var(--color-accent); border-radius: var(--radius); font-weight: 700; text-decoration: none; }
+.hub-link span { color: var(--color-muted); font-size: var(--text-small); font-weight: 400; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* The home page: the owner's numbers, tabs per topic, rows of media. */
+.hero-stats { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); margin-block: 1.5rem 2.5rem; }
+.hero-stats div { display: flex; flex-direction: column-reverse; padding-inline-start: 1rem; border-inline-start: 3px solid var(--color-accent); }
+.hero-stats dt { color: var(--color-muted); font-size: var(--text-small); font-weight: 400; margin: 0; }
+.hero-stats dd { margin: 0; font-family: var(--font-heading); font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem); font-weight: 700; line-height: 1.1; }
+.topic-tabs, .media-row { margin-block: var(--space-section); }
+.topic-tab-list { display: flex; gap: 0.5rem; overflow-x: auto; margin: 0 0 1.5rem; padding: 0 0 0.25rem; list-style: none; border-block-end: 1px solid var(--color-border); }
+.topic-tab-list a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: 1rem; border-block-end: 3px solid transparent; color: var(--color-muted); font-weight: 700; text-decoration: none; white-space: nowrap; }
+.topic-tab-list a:hover, .topic-tab-list a:focus-visible { color: var(--color-text); }
+.topic-panel { scroll-margin-block-start: 6rem; }
+.topic-panel h3 { margin-block: 0 1rem; }
+.topic-panels:has(.topic-panel:target) .topic-panel:not(:target), .topic-panels:not(:has(.topic-panel:target)) .topic-panel ~ .topic-panel { display: none; }
+.topic-tabs:not(:has(.topic-panel:target)) li:first-child a, .topic-tabs:has([id="topic-1"]:target) [href$="-1"], .topic-tabs:has([id="topic-2"]:target) [href$="-2"], .topic-tabs:has([id="topic-3"]:target) [href$="-3"], .topic-tabs:has([id="topic-4"]:target) [href$="-4"], .topic-tabs:has([id="topic-5"]:target) [href$="-5"], .topic-tabs:has([id="topic-6"]:target) [href$="-6"] { border-color: var(--color-accent); color: var(--color-text); }
+@media print { .topic-panels .topic-panel { display: block; } }

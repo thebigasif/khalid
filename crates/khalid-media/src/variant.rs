@@ -5,12 +5,13 @@
 /// browser never fetches much more than it draws.
 const BREAKPOINTS: [u32; 8] = [320, 480, 640, 800, 1024, 1280, 1600, 2048];
 
-/// A file format the site serves images in. AVIF joins when its encoder
-/// passes the dependency policy (see the questions in the phase brief);
-/// the enum is non-exhaustive so adding it breaks nobody.
+/// A file format the site serves images in.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[non_exhaustive]
 pub enum Format {
+    /// AVIF: about half the size of JPEG, read by current browsers, and slow
+    /// to make, so a site asks for it (ADR "AVIF images are made with ravif").
+    Avif,
     /// WebP: smaller than JPEG and PNG, read by every current browser.
     Webp,
     /// JPEG, for photos, when the original was a JPEG.
@@ -23,6 +24,7 @@ impl Format {
     /// The file extension, such as `webp`.
     pub fn extension(self) -> &'static str {
         match self {
+            Self::Avif => "avif",
             Self::Webp => "webp",
             Self::Jpeg => "jpg",
             Self::Png => "png",
@@ -32,6 +34,7 @@ impl Format {
     /// The media type, such as `image/webp`.
     pub fn media_type(self) -> &'static str {
         match self {
+            Self::Avif => "image/avif",
             Self::Webp => "image/webp",
             Self::Jpeg => "image/jpeg",
             Self::Png => "image/png",

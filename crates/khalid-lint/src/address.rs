@@ -1,6 +1,6 @@
 //! Rules about a post's web address and the `[[slug]]` links it holds.
 
-use khalid_core::{Slug, SlugMode};
+use khalid_core::{Locale, Slug, SlugMode};
 
 use crate::words::is_stopword;
 use crate::{Hit, LintPost, Rule, RuleId, Severity, SiteView};
@@ -141,27 +141,83 @@ impl Rule for BrokenWikilink {
     }
 
     fn check(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Hit> {
-        let here = &post.locale;
-        let exists = |target: &str| {
-            let posts = site.posts().iter().map(|p| (&p.locale, &p.slug));
-            let pages = site.pages().iter().map(|p| (&p.locale, &p.slug));
-            let terms = site.glossary().iter().map(|t| (&t.locale, &t.slug));
-            posts
-                .chain(pages)
-                .chain(terms)
-                .any(|(locale, slug)| locale == here && slug.as_str() == target)
-        };
         post.wikilinks
             .iter()
-            .filter(|target| !exists(target.trim()))
-            .map(|target| Hit::about(target.trim()))
+            .map(|target| target.trim())
+            .filter(|target| {
+                let reach = Reach::of(post, site, target);
+                !reach.page && !reach.term
+            })
+            .map(Hit::about)
             .collect()
+    }
+}
+
+/// A `[[slug]]` that names both a post or page and a glossary term in the
+/// post's language. It links the post, which may not be what the writer
+/// meant, so the rule asks for `[[glossary:slug]]` when the term is meant.
+#[derive(Debug)]
+pub(crate) struct AmbiguousWikilink;
+
+impl Rule for AmbiguousWikilink {
+    fn id(&self) -> RuleId {
+        RuleId::new("ambiguous-wikilink")
+    }
+
+    fn default_severity(&self) -> Severity {
+        Severity::Warn
+    }
+
+    fn check(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Hit> {
+        post.wikilinks
+            .iter()
+            .map(|target| target.trim())
+            .filter(|target| !target.starts_with(GLOSSARY))
+            .filter(|target| {
+                let reach = Reach::of(post, site, target);
+                reach.page && reach.term
+            })
+            .map(|slug| {
+                Hit::about(slug).suggesting(vec![format!(
+                    "write [[{GLOSSARY}{slug}]] to link the glossary term; [[{slug}]] links the post"
+                )])
+            })
+            .collect()
+    }
+}
+
+/// How a wikilink names a glossary term outright, as in
+/// `[[glossary:crawl-budget]]`, so a post with the same slug never takes it.
+const GLOSSARY: &str = "glossary:";
+
+/// The slug a wikilink `target` names, without the `glossary:` in front.
+pub(crate) fn wikilink_slug(target: &str) -> &str {
+    target.strip_prefix(GLOSSARY).unwrap_or(target).trim()
+}
+
+/// What one wikilink reaches in its post's language.
+struct Reach {
+    /// A post or page with its slug, unless it names a glossary term outright.
+    page: bool,
+    /// A glossary term with its slug.
+    term: bool,
+}
+
+impl Reach {
+    /// What `target`, written in `post`, reaches on `site`.
+    fn of(post: &LintPost, site: &dyn SiteView, target: &str) -> Self {
+        let slug = wikilink_slug(target);
+        let here = |locale: &Locale, found: &Slug| *locale == post.locale && found.as_str() == slug;
+        let page = !target.starts_with(GLOSSARY)
+            && (site.posts().iter().any(|p| here(&p.locale, &p.slug))
+                || site.pages().iter().any(|p| here(&p.locale, &p.slug)));
+        let term = site.glossary().iter().any(|t| here(&t.locale, &t.slug));
+        Self { page, term }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use khalid_core::Locale;
 
     use super::*;
     use crate::LintSite;

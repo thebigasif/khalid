@@ -3,6 +3,7 @@
 //! lists and tables under each heading. Kept apart from `lint_input.rs` so
 //! that file stays under 600 lines (BL-SIZE-1).
 
+use khalid_content::ENGINE_TEXT;
 use khalid_lint::SectionShape;
 
 mod prose;
@@ -77,20 +78,26 @@ fn ends_line(tag: &str) -> bool {
 /// `&quot;`, replaced by a space, so neither is read as a word. The end of
 /// a block becomes a line break, so a heading never runs into the next
 /// sentence. A formula's `MathML` is left out, so its letters and signs are
-/// never read as words; a maths block's caption stays.
+/// never read as words; a maths block's caption stays. A chart's drawing
+/// and its table for screen readers are left out the same way: they are
+/// the chart's data, and its caption, which stays, says what and when. So
+/// is every element a block writes itself ([`ENGINE_TEXT`]), such as the
+/// contents list or a review's score: the rules judge the writer's words,
+/// not the engine's.
 pub(crate) fn plain_text(html: &str) -> String {
+    let html = without_engine_text(html);
     let mut text = String::with_capacity(html.len());
     let mut tag = String::new();
     let mut skip_until = None;
-    let mut in_maths = false;
+    let mut in_maths: Option<&str> = None;
     for c in html.chars() {
         match (skip_until, c) {
             (Some(end), _) if c == end => {
                 skip_until = None;
-                if end == '>' && tag == "/math" {
-                    in_maths = false;
-                } else if end == '>' && tag.split(' ').next() == Some("math") {
-                    in_maths = true;
+                if end == '>' && in_maths.is_some_and(|closing| tag == closing) {
+                    in_maths = None;
+                } else if end == '>' && in_maths.is_none() {
+                    in_maths = left_out(&tag);
                 }
                 text.push(if end == '>' && ends_line(&tag) {
                     '\n'
@@ -103,11 +110,86 @@ pub(crate) fn plain_text(html: &str) -> String {
             (Some(_), _) => {}
             (None, '<') => skip_until = Some('>'),
             (None, '&') => skip_until = Some(';'),
-            (None, _) if in_maths => {}
+            (None, _) if in_maths.is_some() => {}
             (None, _) => text.push(c),
         }
     }
     text
+}
+
+/// `html` without each element whose class is one of [`ENGINE_TEXT`], its
+/// opening tag to its matching closing tag.
+fn without_engine_text(html: &str) -> String {
+    let mut kept = String::with_capacity(html.len());
+    let mut rest = html;
+    while let Some((before, element)) =
+        engine_element(rest).and_then(|at| rest.split_at_checked(at))
+    {
+        kept.push_str(before);
+        rest = element.get(element_end(element)..).unwrap_or_default();
+    }
+    kept.push_str(rest);
+    kept
+}
+
+/// Where the first tag of `html` with a class in [`ENGINE_TEXT`] starts.
+fn engine_element(html: &str) -> Option<usize> {
+    const CLASS: &str = " class=\"";
+    let mut from = 0;
+    while let Some(found) = html.get(from..)?.find(CLASS) {
+        let value_at = from + found + CLASS.len();
+        let value = html.get(value_at..)?.split('"').next()?;
+        if value.split(' ').any(|class| ENGINE_TEXT.contains(&class)) {
+            return html.get(..from + found)?.rfind('<');
+        }
+        from = value_at;
+    }
+    None
+}
+
+/// Where the element that `element` starts with ends: just past its closing
+/// tag, counting nested elements of the same name, or the end of `element`.
+fn element_end(element: &str) -> usize {
+    let name: String = element
+        .chars()
+        .skip(1)
+        .take_while(char::is_ascii_alphanumeric)
+        .collect();
+    let (open, close) = (format!("<{name}"), format!("</{name}>"));
+    let mut depth = 0_usize;
+    let mut at = 0;
+    while let Some(rest) = element.get(at..) {
+        let opens = rest.match_indices(&open).find(|(index, _)| {
+            rest.get(index + open.len()..)
+                .is_some_and(|after| after.starts_with([' ', '>']))
+        });
+        match (opens.map(|(index, _)| index), rest.find(&close)) {
+            (Some(opening), Some(closing)) if opening < closing => {
+                depth += 1;
+                at += opening + open.len();
+            }
+            (_, Some(closing)) => {
+                at += closing + close.len();
+                depth = depth.saturating_sub(1);
+                if depth == 0 {
+                    return at;
+                }
+            }
+            _ => break,
+        }
+    }
+    element.len()
+}
+
+/// The closing tag of the element the opening `tag` starts when its words
+/// are left out of the text: a formula, a chart's drawing or its table.
+fn left_out(tag: &str) -> Option<&'static str> {
+    match tag.split(' ').next() {
+        Some("math") => Some("/math"),
+        Some("svg") => Some("/svg"),
+        Some("table") if tag.contains("class=\"visually-hidden\"") => Some("/table"),
+        _ => None,
+    }
 }
 
 /// The lists and tables under each heading of `html`, in heading order:
@@ -179,6 +261,23 @@ mod tests {
     }
 
     #[test]
+    fn plain_text_leaves_out_what_the_engine_writes() {
+        // The contents list repeats each heading, and the scores, prices and
+        // row counts are the engine's digits, not the writer's claims.
+        let html = "<nav class=\"toc\" aria-label=\"Contents\">\n<ol>\n<li class=\"toc-h2\"><a href=\"#why\">Why?</a></li>\n</ol>\n</nav>\n\
+                    <h2 id=\"why\">Why?</h2>\n<section class=\"review\">\n<p class=\"review-item\">Quill</p>\n\
+                    <p class=\"review-rating\">4 / 5</p>\n<p>Quick.</p>\n</section>\n\
+                    <p class=\"product-price\"><data value=\"29.00\">GBP 29.00</data></p>\n\
+                    <p class=\"recipe-facts\"><span class=\"recipe-servings\">4</span></p>\n\
+                    <div class=\"table-fold\">\n<details>\n<summary class=\"table-fold-more\">Show 3 more rows</summary>\n</details>\n</div>\n";
+        let words: Vec<String> = plain_text(html)
+            .split_whitespace()
+            .map(str::to_owned)
+            .collect();
+        assert_eq!(words, ["Why?", "Quill", "Quick."]);
+    }
+
+    #[test]
     fn plain_text_leaves_out_formulas_and_keeps_their_captions() {
         let html = "<p>Growth <math><mi>x</mi></math> compounds.</p>\n<figure class=\"maths\">\n<math display=\"block\"><mi>A</mi><mo>=</mo><mi>P</mi></math>\n<figcaption>Compound growth</figcaption>\n</figure>\n";
         let words: Vec<String> = plain_text(html)
@@ -186,6 +285,16 @@ mod tests {
             .map(str::to_owned)
             .collect();
         assert_eq!(words, ["Growth", "compounds.", "Compound", "growth"]);
+    }
+
+    #[test]
+    fn plain_text_leaves_out_a_charts_drawing_and_table_and_keeps_its_caption() {
+        let html = "<figure class=\"chart chart-bar\">\n<figcaption>Visits in 2026</figcaption>\n<svg class=\"chart-drawing\" width=\"100%\" height=\"50\" aria-hidden=\"true\"><text>Home</text><text>4.2k</text></svg>\n<table class=\"visually-hidden\">\n<caption>Visits in 2026</caption>\n<tr><th>Home</th><td>4.2k</td></tr>\n</table>\n</figure>\n<table><tr><td>Kept</td></tr></table>";
+        let words: Vec<String> = plain_text(html)
+            .split_whitespace()
+            .map(str::to_owned)
+            .collect();
+        assert_eq!(words, ["Visits", "in", "2026", "Kept"]);
     }
 
     #[test]

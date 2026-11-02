@@ -68,10 +68,11 @@ fn the_first_pages_are_the_full_renders_home_pages_and_stylesheet() {
 fn served_pages_link_each_wikilink() {
     let pages = pages(&fixture("demo-site")).render_all().unwrap().pages;
     let link = "<a href=\"/blog/glossary/topical-authority/\">Topical authority</a>";
-    // The sitemap page links every page, so only bodies count.
+    // The sitemap page links every page and the glossary every term, so
+    // only bodies count.
     let linking = pages
         .iter()
-        .filter(|page| page.path().as_str() != "/blog/sitemap/")
+        .filter(|page| !["/blog/sitemap/", "/blog/glossary/"].contains(&page.path().as_str()))
         .filter(|page| String::from_utf8_lossy(&page.body().unwrap()).contains(link));
     assert_eq!(linking.count(), 2);
 }

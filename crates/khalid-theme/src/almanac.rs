@@ -38,6 +38,8 @@ pub(crate) static ALMANAC: Pack = Pack {
         parts::related(RelatedLayout::Grid),
         parts::related_count(10),
         parts::contents(ContentsPlacement::SideEnd),
+        parts::READING_PROGRESS,
+        parts::HEADER_SEARCH,
         parts::contents_numbers(ContentsNumbers::None),
         slot::share("end"),
         slot::share_networks(&["x", "linkedin", "facebook", "email"]),
@@ -59,5 +61,9 @@ pub(crate) static ALMANAC: Pack = Pack {
             help: "One line under the newsletter form, such as what readers get and how you treat their address.",
             kind: OptionKind::Lines { most: 1 },
         },
+        parts::HERO_STATS,
+        parts::TOPIC_TABS,
+        parts::on(parts::VIDEO_SECTION),
+        parts::on(parts::PODCAST_SECTION),
     ],
 };

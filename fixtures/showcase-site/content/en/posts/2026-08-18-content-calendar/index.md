@@ -75,7 +75,7 @@ Write each question into the calendar as it comes, then pick the best ones when 
 
 ## Run the calendar in one short meeting
 
-The calendar needs a rhythm, not a project manager. We use one fifteen-minute meeting a week:
+A content calendar needs a rhythm, not a project manager. We use one fifteen-minute meeting a week:
 
 1. Look at this week's row. Is the post on track? If not, move it now and say so.
 2. Look at next week's row. Does the author have what they need?
@@ -98,7 +98,7 @@ Old posts need time too. Our benchmark shows that in 2026, 38% of the blogs had 
 
 ## Check what the calendar produced
 
-At the end of each quarter, look back. Which posts brought readers, sign-ups or sales? Which questions led nowhere? Move more of next quarter's slots toward what worked. Our post on [measuring the return on content](/blog/content-roi/) shows a simple way to do this without a data team.
+At the end of each quarter, look back at the content calendar. Which posts brought readers, sign-ups or sales? Which questions led nowhere? Move more of next quarter's slots toward what worked. Our post on [measuring the return on content](/blog/content-roi/) shows a simple way to do this without a data team.
 
 ## Use our free template
 

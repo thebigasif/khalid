@@ -26,7 +26,7 @@ Our top pick is Google Search Console: every blog that wants search traffic shou
 
 :::callout{kind=summary}
 - **Start with two:** Google Search Console and Bing Webmaster Tools give you search data and indexing checks for free.
-- **Add three checkers:** one for page speed and two for [[structured-data|structured data]].
+- **Add three checkers:** one for page speed and two for [[glossary:structured-data|structured data]].
 - **Add a crawler and a trends tool** when you have more than a handful of posts.
 - **None of them** needs a credit card to start.
 :::
@@ -109,7 +109,7 @@ Our top pick is Google Search Console: every blog that wants search traffic shou
 
 ## Google Trends
 
-**Who it suits:** a writer planning when to publish, or choosing between two ways to name a topic.
+**Who it suits:** a writer planning when to publish, or choosing between two ways to name a topic. Of all the free SEO tools here, it is the one to open before a post is written.
 
 **What it does best:** it shows how interest in a search term rises and falls over time and by region. It is good for spotting a season, such as a topic that peaks every January, and for comparing two phrases.
 
@@ -121,6 +121,6 @@ Our top pick is Google Search Console: every blog that wants search traffic shou
 
 We picked free SEO tools that a small blog can use without paying and without a trial that ends. Every pick had to do one job better than the free part of any paid suite we know. Dalia Moreno, our tools and reviews editor, used each one on Larkspur's own site in September 2026, and Tomas Lindqvist checked the technical claims.
 
-We left out tools that only show data after you sign up for a paid plan, and tools that do the same job as a pick above. Nobody paid to be on this list, as [our policy on reviews and money](/blog/editorial-policy/) explains. If you want a writing tool too, see [our review of the Quillmeter readability checker](/blog/quillmeter-review/), and for the bigger picture on free and paid SEO tools, read [how we choose tools for a small team](/blog/choosing-seo-tools/).
+We left out tools that only show data after you sign up for a paid plan, and free SEO tools that do the same job as a pick above. Nobody paid to be on this list, as [our policy on reviews and money](/blog/editorial-policy/) explains. If you want a writing tool too, see [our review of the Quillmeter readability checker](/blog/quillmeter-review/), and for the bigger picture on free and paid SEO tools, read [how we choose tools for a small team](/blog/choosing-seo-tools/).
 
 ::newsletter{label="Your email address" button="Get one practical post a week"}

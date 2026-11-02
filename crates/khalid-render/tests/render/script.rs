@@ -24,7 +24,9 @@ fn a_page_loads_the_script_deferred_with_its_hash_and_words() {
     let tag = part(&page, "<script", "</script>");
     assert!(tag.contains(&format!("src=\"/blog/assets/{}\"", script.name())));
     assert!(tag.contains(&format!("integrity=\"{}\"", script.integrity())));
-    assert!(tag.contains(" defer data-copied=\"Link copied\" data-close=\"Close\" data-previews>"));
+    assert!(tag.contains(
+        " defer data-copy=\"Copy link\" data-copied=\"Link copied\" data-close=\"Close\" data-contents=\"Contents\" data-search=\"Search this blog\" data-find=\"Search\" data-previews>"
+    ));
 }
 
 #[test]
@@ -76,4 +78,17 @@ fn the_script_is_small_and_writes_no_markup_from_strings() {
     ] {
         assert!(!text.contains(risky), "the script uses {risky}");
     }
+}
+
+#[test]
+fn the_served_script_leaves_out_its_comment_lines_and_keeps_its_code() {
+    let script = reader_script().unwrap();
+    let text = std::str::from_utf8(script.body()).unwrap();
+    assert!(
+        text.lines()
+            .all(|line| !line.trim_start().starts_with("//")),
+        "{text}"
+    );
+    assert!(text.starts_with("(() => {\n  \"use strict\";\n"), "{text}");
+    assert!(text.ends_with("})();\n"), "{text}");
 }

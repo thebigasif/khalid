@@ -9,6 +9,10 @@ use khalid_routes::{PostAddress, Routes};
 
 use crate::SiteContent;
 
+/// How a wikilink names a glossary term outright, as in
+/// `[[glossary:crawl-budget]]`, so a post with the same slug never takes it.
+pub const GLOSSARY: &str = "glossary:";
+
 /// The pages a wikilink can reach in one language, by slug, and the
 /// snippets a `::snippet` block can place, by slug.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -28,7 +32,8 @@ impl Wikilinks {
     /// Every post, page and glossary term written in `locale`, at the address
     /// `routes` gives it on `site`, so a wikilink reaches pages in its own
     /// language only. When two share a slug, a post wins over a page and a
-    /// page over a glossary term. Pages sit at `/<slug>/` under the mount and
+    /// page over a glossary term; `[[glossary:slug]]` always reaches the
+    /// term, whatever shares its slug. Pages sit at `/<slug>/` under the mount and
     /// language prefix, where `khalid build` writes them. An undated post in a
     /// collection whose addresses carry the date has no address yet, so no
     /// wikilink reaches it. Every snippet written in `locale` is kept too.
@@ -78,7 +83,11 @@ impl Wikilinks {
             };
             let term = PostAddress::new(&doc.collection, locale, &slug, None);
             if let Ok(address) = routes.address(site, &term) {
-                links.insert(&slug, WikiTarget::new(address, title));
+                let target = WikiTarget::new(address, title);
+                links
+                    .targets
+                    .insert(format!("{GLOSSARY}{slug}"), target.clone());
+                links.insert(&slug, target);
             }
         }
         for doc in content.snippets.iter().filter(|doc| &doc.locale == locale) {

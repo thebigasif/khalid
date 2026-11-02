@@ -1,0 +1,8 @@
+---
+source: crates/khalid-render/tests/render/home_parts.rs
+expression: "part(&page, r#\"<ul class=\"topic-tab-list\">\"#, \"</ul>\")"
+---
+<ul class="topic-tab-list">
+<li><a href="#topic-1">Technical SEO</a></li>
+<li><a href="#topic-2">Writing</a></li>
+</ul>

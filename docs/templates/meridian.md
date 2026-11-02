@@ -71,6 +71,10 @@ Set any of these under `[template.options]` in `site.toml`. A line you leave out
 
 | Option | Meridian's default | What it changes |
 |---|---|---|
+| `hero_stats` | none | Up to four numbers under the front page's title, each written `number \| what it counts`. Nothing shows until you write them. |
+| `topic_tabs` | `true` | Tabs on the front page, one per topic, each with its four newest posts. They work with scripts off. |
+| `video_section` | `true` | A row of the newest posts with a video, when there are any. |
+| `podcast_section` | `true` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `logo` | `true` | The header shows your logo from `[brand] logo`. Without a logo, the blog's name shows. |
 | `breadcrumbs` | `true` | Each page shows the trail of links from the front page to it. |
 | `dek` | `false` | A post shows its `description` as a subtitle under its title. |
@@ -82,6 +86,8 @@ Set any of these under `[template.options]` in `site.toml`. A line you leave out
 | `related` | `scroll` | How related posts are laid out under journal posts: `grid`, `list`, `row`, `scroll` or `links`. Meridian shows `scroll` as three cards side by side on a wide screen. |
 | `related_count` | `3` | How many related posts show, from 3 to 10. |
 | `contents` | `none` | Where a journal post's contents go: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. A reference guide always shows its contents open. |
+| `reading_progress` | `bar` | A thin line at the top of a post that fills as the reader scrolls: `bar` or `none`. |
+| `header_search` | `button` | What the header's search does on a served blog: `button` opens a search dialog, `link` opens the search page, `none` hides it. |
 | `contents_numbers` | `nested` | How a journal post's contents are numbered when you turn them on: `numbered`, `nested` or `none`. |
 | `share` | `none` | Where a post shows share links: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["linkedin", "x", "email"]` | Which networks the share links go to, in order. |

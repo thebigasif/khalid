@@ -64,6 +64,7 @@ pub(crate) fn sitemap_post() -> RenderPost {
         contents: None,
         originals: BTreeMap::new(),
         related: Vec::new(),
+        series: None,
         mentions: Vec::new(),
         comments: None,
         body,

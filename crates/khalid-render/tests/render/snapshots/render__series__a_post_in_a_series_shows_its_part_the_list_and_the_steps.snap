@@ -1,0 +1,13 @@
+---
+source: crates/khalid-render/tests/render/series.rs
+expression: "part(&page, r#\"<nav class=\"series-box\"\"#, \"</nav>\")"
+---
+<nav class="series-box" aria-label="This post is part of a series">
+<p class="series-part">Part 2 of 3</p>
+<p class="series-name"><a href="/blog/series/topic-clusters-from-scratch/">Topic clusters from scratch</a></p>
+<ol>
+<li><a href="/blog/pick-the-subject/">Pick the subject</a></li>
+<li><span aria-current="page">Plan the posts</span></li>
+<li><a href="/blog/link-the-cluster/">Link the cluster</a></li>
+</ol>
+</nav>

@@ -6,6 +6,7 @@
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
 {% set options = template.options -%}
 <header class="masthead">
 <h1>{{ options.masthead_name[0] if options.masthead_name else page.title }}</h1>
@@ -13,7 +14,7 @@
 {% elif page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
-{% endif %}{% if options.category_tabs and page.categories %}<nav class="category-tabs" aria-label="{{ t.categories }}">
+{% endif %}{{ hero_stats(template.options) }}{% if options.category_tabs and page.categories %}<nav class="category-tabs" aria-label="{{ t.categories }}">
 <ul>
 <li><a href="{{ site.home }}" aria-current="page">{{ t.all_topics }}</a></li>
 {% for category in page.categories %}<li><a href="{{ category.href }}">{{ category.name }}</a></li>
@@ -38,6 +39,6 @@
 {% if options.quote | length > 1 %}<figcaption>{{ options.quote[1] }}</figcaption>
 {% endif %}</figure>
 {% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
-{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{{ home_sections(page, template.options, t) }}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
 {% endif %}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% endblock %}

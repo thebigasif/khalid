@@ -35,7 +35,7 @@ The largest contentful paint is the third frame: the moment the biggest element 
 
 ## The scores that count as good
 
-Google groups each score into good, needs improvement and poor. A page passes when most real visits score good. The table shows the line for good, from the [Web Vitals guide on web.dev](https://web.dev/articles/vitals).
+Google groups each of the Core Web Vitals into good, needs improvement and poor. A page passes when most real visits score good. The table shows the line for good, from the [Web Vitals guide on web.dev](https://web.dev/articles/vitals).
 
 | Measure | What it times | Good score |
 |---|---|---|
@@ -51,7 +51,7 @@ INP took over from First Input Delay as a Core Web Vital in March 2024, as the [
 
 ## Why writers move these scores more than they think
 
-A developer sets up the template once. A writer adds new things to it every week: a lead image, a chart, an embedded video, a quote from a social network. Each of those is a request the browser must make before the page feels finished.
+A developer sets up the template once, and it rarely fails the Core Web Vitals on its own. A writer adds new things to it every week: a lead image, a chart, an embedded video, a quote from a social network. Each of those is a request the browser must make before the page feels finished.
 
 The biggest one is almost always the lead image. On most posts it is the largest element on the screen, so its size decides the largest contentful paint. A photo saved straight from a camera can be ten times heavier than it needs to be.
 

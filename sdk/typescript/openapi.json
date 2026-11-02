@@ -15154,6 +15154,17 @@
                 "format": "date-time",
                 "description": "When it went live."
               },
+              "series": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/PostSeries",
+                    "description": "The series the post is one part of, if any."
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "slug": {
                 "type": "string",
                 "description": "The last part of its address.",
@@ -15527,6 +15538,35 @@
               "$ref": "#/components/schemas/PostRow"
             },
             "description": "The rows on this page."
+          }
+        }
+      },
+      "PostSeries": {
+        "type": "object",
+        "description": "The series a post is one part of: posts written to be read in order.",
+        "required": [
+          "name",
+          "slug"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The series' name, the same on every part.",
+            "example": "Topic clusters from scratch"
+          },
+          "order": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "The post's place in the series, counted from 1, as the writer set\nit. Absent when the writer left the order to the dates.",
+            "minimum": 0
+          },
+          "slug": {
+            "type": "string",
+            "description": "The end of the series page's address.",
+            "example": "topic-clusters-from-scratch"
           }
         }
       },

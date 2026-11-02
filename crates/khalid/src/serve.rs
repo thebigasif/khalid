@@ -12,7 +12,7 @@ use axum::Router;
 use khalid_analytics::VisitorLogStore;
 use khalid_api::publish_door::PublishDoor;
 use khalid_api::unlock::{Transport, UnlockSigner};
-use khalid_content::{EMBED_PROVIDERS, SiteContent};
+use khalid_content::SiteContent;
 use khalid_core::{Config, Environment, S3Keys, Secret, Slug, SystemClock, UserMessage};
 use khalid_db::{Database, NotFoundTable, ScheduleTable, SiteId, VersionTable, VisitorLogTable};
 use khalid_forms::FormDelivery;
@@ -47,7 +47,8 @@ use crate::tag_events::Tags;
 use crate::{
     admin_blog, alert_watch, announce, assets, comment_pages, consent_route, db, db_message,
     form_pages, media_library, newsletter, page_counts, preview, push_hook, redirect_route, report,
-    scheduler, search_route, serve_apis, serve_message, share_images, staff_toolbar, unlock,
+    scheduler, search_route, serve_apis, serve_message, share_images, site_config, staff_toolbar,
+    unlock,
 };
 
 /// How often the site folder is looked at for a saved edit where the system
@@ -190,7 +191,7 @@ fn serve_with(
     let (source, first) = first_pages((site, config, routes), feed, &checked)
         .and_then(|first| bodies.finish().map(|()| first))
         .map_err(|message| (message, Exit::Failure))?;
-    let security = security_headers()?;
+    let security = security_headers(config)?;
     let search = search_of(&source, (database, id), &security);
     let (posted, alerting) = mail_and_alerts(
         (site, config, listen, alert_every),
@@ -555,10 +556,10 @@ pub(crate) fn open(site: &Path, runtime: &Runtime) -> Result<(Database, SiteId),
 }
 
 /// The security headers of every page, letting in the frames of the embed
-/// providers and the reader script by its hash.
-fn security_headers() -> Result<SecurityHeaders, (UserMessage, Exit)> {
-    let origins: Vec<&str> = EMBED_PROVIDERS.iter().map(|p| p.frame_origin()).collect();
-    SecurityHeaders::new(&origins)
+/// providers and `[media] embed_domains`, and the reader script by its hash.
+fn security_headers(config: &Config) -> Result<SecurityHeaders, (UserMessage, Exit)> {
+    let origins = site_config::frame_origins(config);
+    SecurityHeaders::new(&origins.iter().map(String::as_str).collect::<Vec<_>>())
         .and_then(|headers| headers.with_script(&assets::reader().integrity))
         .map_err(|_| (serve_message::internal(), Exit::Internal))
 }

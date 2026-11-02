@@ -24,6 +24,21 @@ pub struct PageFront {
     /// The kind of web page, such as `ContactPage` or `AboutPage`, in
     /// place of `WebPage`.
     pub page_type: Option<PageSchemaType>,
+    /// Makes the page the hub of a topic: its body is the topic's pillar
+    /// intro, followed by its chapters and the topic's latest posts.
+    pub hub: Option<PageHub>,
+}
+
+/// What makes a page a topic's hub.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct PageHub {
+    /// The category the hub is the front door to, such as `technical-seo`.
+    pub category: Slug,
+    /// The posts to read first, in order, by slug.
+    #[serde(default)]
+    pub chapters: Vec<Slug>,
 }
 
 /// An author, in `authors/`. The body is the bio.

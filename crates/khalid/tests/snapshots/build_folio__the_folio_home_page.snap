@@ -4,7 +4,7 @@ expression: "shown(&out, \"index.html\")"
 ---
 <header class="site-header">
 <a class="site-name" href="/blog/">Field Notes on SEO</a>
-<a class="search-link" href="/blog/search/">Search</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
 <a class="button header-button" href="https://www.example.com/signup/">Try it free</a>
 </header>
 <main id="main" tabindex="-1">

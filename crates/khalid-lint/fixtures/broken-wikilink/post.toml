@@ -1,5 +1,6 @@
 # Three wikilinks resolve (a post, a page, a glossary term, all in English).
-# One matches nothing, and one matches only a German post.
+# One matches nothing, and one matches only a German post. The glossary
+# form reaches the term, and never a page with the same slug.
 extends = "clean"
 wikilinks = [
   "choosing-link-text",
@@ -7,4 +8,6 @@ wikilinks = [
   "anchor-text",
   "link-juice",
   "interne-links",
+  "glossary:anchor-text",
+  "glossary:about",
 ]

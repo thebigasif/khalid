@@ -55,17 +55,28 @@ mentions = "Posts that link here"
 share = "Share this post"
 # The share link that opens an email.
 share_email = "Email"
+# The button that opens Google's page for adding the site as a preferred source.
+preferred_source = "Add us as a preferred source on Google"
 # The newsletter form a template shows after a post or on the front page.
 newsletter_title = "Get new posts by email"
 newsletter_text = "New posts in your inbox. Every email has a link to leave."
 newsletter_label = "Your email address"
 newsletter_button = "Subscribe"
+# The newsletter's page and the page of each past issue.
+newsletter_sent = "Sent on"
+newsletter_all = "Every issue of the newsletter"
+newsletter_recent = "Read a recent issue"
+newsletter_whole = "Read the whole issue"
+newsletter_issues = "Past issues"
+newsletter_join = "Get the next issue by email"
 # A hidden field that catches spam robots. People never see it.
 form_trap = "Leave this empty"
 # Names the # link beside each heading for screen readers.
 heading_link = "Link to this section"
 # Said and shown for a moment after a heading's address is copied.
 link_copied = "Link copied"
+# The button beside each heading that copies the section's address.
+copy_link = "Copy link"
 # The button that closes an enlarged image.
 close = "Close"
 no_posts = "There are no posts here yet."
@@ -97,6 +108,7 @@ no_authors = "This blog has no authors yet."
 credentials = "Experience"
 # Names the list of an author's profiles on other sites. {name} is filled in.
 profiles_of = "{name} elsewhere"
+glossary_title = "Glossary"
 glossary_letters = "Jump to a letter"
 no_terms = "The glossary has no terms yet."
 search_label = "Search this blog"
@@ -194,3 +206,32 @@ locations_intro = "Every place you can find us, with its address, phone number a
 locations_nearest = "Show the nearest first"
 locations_sorted = "The nearest location is now first."
 locations_refused = "Your browser did not share where you are, so the list keeps its order."
+
+# Case studies and the changelog.
+case_studies_title = "Case studies"
+changelog_title = "Changelog"
+all_case_studies = "All case studies"
+all_changes = "All changes"
+entry_result = "Result"
+entry_version = "Version {version}"
+no_entries = "Nothing here yet."
+entries_description = "{title} from {site}, newest first."
+
+# A series of posts.
+series_label = "This post is part of a series"
+series_part = "Part {part} of {total}"
+series_steps = "The parts before and after this one"
+series_previous = "Previous part"
+series_next = "Next part"
+series_intro = "A series in {total} parts, best read in order."
+
+# A topic hub.
+hub_start = "Start here"
+hub_chapters = "Start with these, in order"
+hub_latest = "Latest in {name}"
+latest_posts = "Latest posts"
+
+# The home page's optional rows.
+topic_tabs = "Browse by topic"
+home_videos = "Videos"
+home_podcasts = "Podcast episodes"

@@ -130,7 +130,11 @@ impl Renderer<'_> {
             },
             str::to_owned,
         );
-        self.push(&["<details>\n<summary>", &attribute(&summary), "</summary>\n"]);
+        self.push(&[
+            "<details>\n<summary class=\"table-fold-more\">",
+            &attribute(&summary),
+            "</summary>\n",
+        ]);
         // The header shows twice but is read once.
         let header_words: usize = head.first().map_or(0, |header| {
             header

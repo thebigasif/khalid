@@ -17,6 +17,7 @@ ammonia = "4"
 argon2 = "0.6"
 axum = { version = "0.8", default-features = false, features = ["json", "matched-path", "original-uri", "query", "tokio"] }
 chrono = { version = "0.4", default-features = false, features = ["alloc", "serde"] }
+flate2 = "1"
 getrandom = "0.4"
 hmac = "0.13"
 htmd = "0.5"

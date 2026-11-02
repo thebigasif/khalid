@@ -150,3 +150,22 @@ fn an_author_has_a_photo_and_refuses_a_blank_one() {
         "content/en/authors/asif.md, line 2, field \"photo\": the photo needs a file name, such as asif.jpg; remove the field if the author has none"
     );
 }
+
+#[test]
+fn a_page_may_be_a_hub_for_a_category_with_chapters_in_order() {
+    let text = "---\ntitle: Technical SEO\nhub:\n  category: technical-seo\n  chapters:\n    - what-a-sitemap-does\n    - fixing-slow-pages\n---\n";
+    let dir = site_with("content/en/pages/technical-seo.md", text);
+    let content = read_content(&ContentTree::walk(dir.path()).unwrap()).unwrap();
+    let hub = content.pages[0].front.hub.as_ref().unwrap();
+    assert_eq!(hub.category.as_str(), "technical-seo");
+    let chapters: Vec<&str> = hub.chapters.iter().map(khalid_core::Slug::as_str).collect();
+    assert_eq!(chapters, ["what-a-sitemap-does", "fixing-slow-pages"]);
+    let lone = site_with(
+        "content/en/pages/hub.md",
+        "---\nhub:\n  chapters: []\n---\n",
+    );
+    let error = read_content(&ContentTree::walk(lone.path()).unwrap())
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("missing field `category`"), "{error}");
+}

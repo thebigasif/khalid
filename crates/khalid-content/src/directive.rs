@@ -5,11 +5,12 @@ use std::time::Duration;
 use khalid_core::AbsoluteUrl;
 
 use crate::{
-    BlockError, BlockKind, CalloutKind, GalleryImage, ProductBlock, REVIEW_TYPES, ReviewBlock,
-    VideoBlock,
+    BlockError, BlockKind, CalloutKind, GalleryImage, ProductBlock, REVIEW_TYPES, ReaderRatings,
+    ReviewBlock, VideoBlock,
 };
 
 mod cards;
+mod charts;
 mod forms;
 mod formula;
 mod layout;
@@ -78,6 +79,7 @@ pub(crate) fn directive(
         "form" => forms::form(&attributes, body),
         "newsletter" | "gated" => forms::subscribe(name, &attributes),
         "maths" => formula::maths(&attributes, body),
+        "chart" => charts::chart(&attributes, body),
         "pullquote" => layout::pull_quote(&attributes, body),
         "takeaways" => layout::takeaways(&attributes, body),
         "proscons" => layout::pros_cons(&attributes, body),
@@ -194,15 +196,29 @@ fn bookmark(attributes: &Attributes) -> Result<BlockKind, BlockError> {
 }
 
 fn embed(attributes: &Attributes) -> Result<BlockKind, BlockError> {
-    attributes.only("embed", &["src", "title"], "src and title")?;
+    attributes.only(
+        "embed",
+        &["src", "title", "height"],
+        "src, title and height",
+    )?;
     let src = attributes.need("src", "an embed needs src, the page of the video or sound")?;
     let title = attributes.need(
         "title",
         "an embed needs title, the name a screen reader says for the player",
     )?;
+    let height = attributes.parsed(
+        "height",
+        |text| {
+            text.parse::<u16>()
+                .ok()
+                .filter(|px| (120..=2000).contains(px))
+        },
+        "an embed's height is the frame's height in pixels, a whole number from 120 to 2000",
+    )?;
     Ok(BlockKind::Embed {
         src: attributes.address("embed", "src", &src)?,
         title,
+        height,
     })
 }
 
@@ -302,8 +318,10 @@ fn gallery(line: usize, body: &[&str]) -> Result<BlockKind, BlockError> {
 fn review(attributes: &Attributes, body: &[&str]) -> Result<BlockKind, BlockError> {
     attributes.only(
         "review",
-        &["item", "type", "rating", "best", "author"],
-        "item, type, rating, best and author",
+        &[
+            "item", "type", "rating", "best", "average", "ratings", "author",
+        ],
+        "item, type, rating, best, average, ratings and author",
     )?;
     let item = attributes.need("item", "a review needs item, the thing it reviews")?;
     let item_type = attributes.need(
@@ -331,6 +349,7 @@ fn review(attributes: &Attributes, body: &[&str]) -> Result<BlockKind, BlockErro
         item,
         item_type,
         rating,
+        readers: readers(attributes, &best)?,
         best,
         author: attributes.get("author"),
         body: body.join("\n"),
@@ -341,7 +360,7 @@ fn product(attributes: &Attributes, body: &[&str]) -> Result<BlockKind, BlockErr
     attributes.only(
         "product",
         &PRODUCT_ATTRIBUTES,
-        "name, image, price, currency, rating, best, href and button",
+        "name, image, price, currency, rating, best, average, ratings, href and button",
     )?;
     let name = attributes.need("name", "a product needs name, what it is called")?;
     let (price, currency) = (attributes.get("price"), attributes.get("currency"));
@@ -389,6 +408,7 @@ fn product(attributes: &Attributes, body: &[&str]) -> Result<BlockKind, BlockErr
         price,
         currency,
         rating,
+        readers: readers(attributes, &best)?,
         best,
         href: address("href")?,
         button: attributes.get("button"),
@@ -396,9 +416,33 @@ fn product(attributes: &Attributes, body: &[&str]) -> Result<BlockKind, BlockErr
     }))
 }
 
-const PRODUCT_ATTRIBUTES: [&str; 8] = [
-    "name", "image", "price", "currency", "rating", "best", "href", "button",
+const PRODUCT_ATTRIBUTES: [&str; 10] = [
+    "name", "image", "price", "currency", "rating", "best", "average", "ratings", "href", "button",
 ];
+
+/// Readers' scores from `average` and `ratings`, which come together: an
+/// average from 0 to `best`, and a whole count of at least one.
+fn readers(attributes: &Attributes, best: &str) -> Result<Option<ReaderRatings>, BlockError> {
+    let (average, ratings) = (attributes.get("average"), attributes.get("ratings"));
+    let count = ratings.as_deref().map(str::parse::<u32>);
+    let readers = match (average, count) {
+        (None, None) => return Ok(None),
+        (Some(average), Some(Ok(count))) if count > 0 => ReaderRatings { average, count },
+        _ => return Err(readers_problem(attributes)),
+    };
+    match (score(&readers.average), score(best)) {
+        (Some(value), Some(top)) if value <= top => Ok(Some(readers)),
+        _ => Err(readers_problem(attributes)),
+    }
+}
+
+/// The mistake in a block's readers' scores.
+fn readers_problem(attributes: &Attributes) -> BlockError {
+    BlockError::Value {
+        line: attributes.line,
+        problem: "readers' scores need both average, from 0 to the best score, and ratings, how many there are, such as average=\"4.2\" ratings=\"310\"",
+    }
+}
 
 /// Reads a score written with digits and at most one point, such as `4.5`.
 fn score(text: &str) -> Option<f64> {

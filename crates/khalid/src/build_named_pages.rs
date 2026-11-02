@@ -3,15 +3,15 @@
 
 use std::collections::BTreeMap;
 
-use khalid_content::{AuthorFront, LeadImage, SiteContent, Wikilinks};
+use khalid_content::{AuthorFront, LeadImage, SiteContent, Wikilinks, render_linked};
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
-use khalid_render::{PageBody, PageKind, Person, Profile, RenderAuthor, RenderPage};
+use khalid_render::{BodyHtml, PageBody, PageKind, Person, Profile, RenderAuthor, RenderPage};
 use khalid_routes::{PostAddress, Routes};
 use khalid_seo::{AuthorProfile, PageKind as SeoKind};
 
 use crate::build_pages::{Page, body_html, meta, named, page, path_of, routed};
 use crate::listed_post::ListedPost;
-use crate::{build_message, build_seo, definition_text};
+use crate::{build_message, build_schema, build_seo, definition_text};
 
 /// The page of every plain page in `locale`, such as About, at `/<slug>/`.
 pub(crate) fn plain_pages(
@@ -31,11 +31,22 @@ pub(crate) fn plain_pages(
         seo.excerpt.clone_from(&description);
         seo.translation = build_seo::translation(front.translation.as_deref())?;
         seo.page_type = front.page_type;
+        let rendered = render_linked(&doc.body, &doc.locale, config.slugs(), links)
+            .map_err(|error| build_message::block(&doc.path, &error))?;
+        // A page has no author, so a review or a score on it is the publisher's.
+        let publisher = config.seo().publisher.name.as_deref();
+        let by = (path.as_str(), publisher.unwrap_or(config.name()));
+        build_schema::fill(
+            &mut seo,
+            config,
+            by,
+            (&rendered.structured, &rendered.links),
+        )?;
         let meta = meta(config, title.clone(), description, path, PageKind::Website)?;
         let body = RenderPage {
             title,
             updated: None,
-            body: body_html(config, links, doc)?,
+            body: BodyHtml::from_sanitised(build_seo::with_link_policy(config, rendered.html)),
         };
         let body = PageBody::Page(body);
         pages.push(page(locale, config, &rest, meta, body, seo).made_from(&doc.path));
@@ -172,3 +183,7 @@ fn profile(
     }
     Ok(profile)
 }
+
+#[cfg(test)]
+#[path = "build_named_pages_tests.rs"]
+mod tests;

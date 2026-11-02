@@ -1,0 +1,35 @@
+{#- The home page's optional parts, which every home template calls so
+    they read the same in every look: the owner's numbers under the title,
+    then tabs per topic and rows of posts with a video or a sound player.
+    Each tab is an anchor link to its panel, so the tabs work with scripts
+    off; the stylesheet shows one panel at a time. -#}
+{% from "card.html" import cards -%}
+{% macro hero_stats(options) %}{% if options.hero_stats %}<dl class="hero-stats">
+{% for line in options.hero_stats %}{% set parts = line | split("|") | list %}<div>
+<dt>{{ parts[1:] | join("|") | trim }}</dt>
+<dd>{{ parts[0] | trim }}</dd>
+</div>
+{% endfor %}</dl>
+{% endif %}{% endmacro %}
+{% macro home_sections(page, options, t) %}{% if options.topic_tabs and page.tabs %}<section class="topic-tabs" aria-labelledby="topic-tabs">
+<h2 id="topic-tabs">{{ t.topic_tabs }}</h2>
+<ul class="topic-tab-list">
+{% for tab in page.tabs %}<li><a href="#topic-{{ loop.index }}">{{ tab.title }}</a></li>
+{% endfor %}</ul>
+<div class="topic-panels">
+{% for tab in page.tabs %}<section class="topic-panel" id="topic-{{ loop.index }}" aria-labelledby="topic-{{ loop.index }}-title">
+<h3 id="topic-{{ loop.index }}-title">{{ tab.title }}</h3>
+{{ cards(tab.posts, 4) }}
+<p class="view-all"><a href="{{ tab.href }}">{{ t.view_all | replace("{name}", tab.title) }}</a></p>
+</section>
+{% endfor %}</div>
+</section>
+{% endif %}{% if options.video_section and page.videos %}<section class="media-row" aria-labelledby="home-videos">
+<h2 id="home-videos">{{ t.home_videos }}</h2>
+{{ cards(page.videos, 3) }}
+</section>
+{% endif %}{% if options.podcast_section and page.podcasts %}<section class="media-row" aria-labelledby="home-podcasts">
+<h2 id="home-podcasts">{{ t.home_podcasts }}</h2>
+{{ cards(page.podcasts, 3) }}
+</section>
+{% endif %}{% endmacro %}

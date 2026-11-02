@@ -6,7 +6,8 @@
 {% block main %}
 {% from "card.html" import cards, pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
-<h1>{{ page.title }}</h1>
+{% from "home_parts.html" import hero_stats, home_sections -%}
+<h1>{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
@@ -29,7 +30,7 @@
 {% endif %}</section>
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
-{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<div class="newsletter-band">
+{% endif %}{{ home_sections(page, template.options, t) }}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<div class="newsletter-band">
 {{ newsletter_form(site.subscribe, t) }}
 </div>
 {% endif %}{% endblock %}

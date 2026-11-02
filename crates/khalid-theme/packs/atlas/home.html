@@ -7,6 +7,7 @@
 {% from "card.html" import pages -%}
 {% from "image.html" import picture, avatar -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
 {#- story(post, level, kind): a post as the front page shows it. A lead
     is large and names its author with a photo; a lead, a pick or a card
     shows its picture; a brief, in the topic index, shows only its title
@@ -27,7 +28,7 @@
 {% set topics = page.topics and "topic_links" in site.features -%}
 <div class="front">
 <div class="masthead">
-<h1 class="front-title">{{ page.title }}</h1>
+<h1 class="front-title">{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if template.options.tagline %}<p class="tagline">{{ template.options.tagline }}</p>
 {% endif %}{% if page.intro %}<div class="intro">
 {{ page.intro }}
@@ -77,6 +78,6 @@
 {% endfor %}{% endfor %}</div>
 </section>
 {% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
-{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{{ home_sections(page, template.options, t) }}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
 {% endif %}</div>
 {% endblock %}

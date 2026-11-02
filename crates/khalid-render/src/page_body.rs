@@ -4,8 +4,8 @@ use minijinja::Value;
 use minijinja::value::Serde;
 
 use crate::{
-    RenderAuthor, RenderAuthors, RenderGlossary, RenderHome, RenderListing, RenderPage, RenderPost,
-    RenderSearch, RenderSitemap,
+    RenderAuthor, RenderAuthors, RenderEntries, RenderEntry, RenderGlossary, RenderHome, RenderHub,
+    RenderListing, RenderPage, RenderPost, RenderSearch, RenderSitemap,
 };
 
 /// The main content of one page. The variant picks the template.
@@ -40,6 +40,12 @@ pub enum PageBody {
     Glossary(RenderGlossary),
     /// The search form and its results.
     Search(RenderSearch),
+    /// The list of case studies or of the changelog.
+    Entries(RenderEntries),
+    /// One case study or changelog entry.
+    Entry(Box<RenderEntry>),
+    /// The hub of a topic: its intro, chapters and newest posts.
+    Hub(Box<RenderHub>),
     /// The page for an address with nothing behind it.
     NotFound,
 }
@@ -62,6 +68,9 @@ impl PageBody {
             Self::Authors(_) => "authors.html",
             Self::Glossary(_) => "glossary.html",
             Self::Search(_) => "search.html",
+            Self::Entries(_) => "entries.html",
+            Self::Entry(_) => "entry.html",
+            Self::Hub(_) => "hub.html",
             Self::NotFound => "not_found.html",
         }
     }
@@ -71,11 +80,14 @@ impl PageBody {
     pub(crate) fn cards(&self) -> usize {
         match self {
             Self::Home(home) => {
-                let sections = home.sections.iter().map(|section| section.posts.len());
+                let sections =
+                    (home.sections.iter().chain(&home.tabs)).map(|section| section.posts.len());
                 let listing = &home.listing;
                 listing.posts.len()
                     + usize::from(listing.featured.is_some())
                     + home.picks.len()
+                    + home.videos.len()
+                    + home.podcasts.len()
                     + sections.sum::<usize>()
             }
             Self::Collection(listing)
@@ -85,6 +97,8 @@ impl PageBody {
             | Self::Channel(listing)
             | Self::Date(listing) => listing.posts.len() + usize::from(listing.featured.is_some()),
             Self::Author(author) => author.posts.len(),
+            Self::Entries(entries) => entries.groups.iter().map(|group| group.entries.len()).sum(),
+            Self::Hub(hub) => hub.chapters.len() + hub.latest.len(),
             _ => 0,
         }
     }
@@ -106,6 +120,9 @@ impl PageBody {
             Self::Authors(authors) => Value::from(Serde(authors)),
             Self::Glossary(glossary) => Value::from(Serde(glossary)),
             Self::Search(search) => Value::from(Serde(search)),
+            Self::Entries(entries) => Value::from(Serde(entries)),
+            Self::Entry(entry) => Value::from(Serde(entry)),
+            Self::Hub(hub) => Value::from(Serde(hub)),
             Self::NotFound => Value::UNDEFINED,
         }
     }

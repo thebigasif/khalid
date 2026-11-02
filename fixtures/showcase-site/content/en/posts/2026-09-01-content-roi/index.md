@@ -107,3 +107,5 @@ Here is how one row looks for a fictional software company. A how-to post took e
 The content ROI was well above zero. The post paid for itself about three times over in its first year. The same sheet showed that two other posts had not earned their cost, and both answered questions nobody had asked the sales team. The team dropped one and rewrote the other around a real customer question.
 
 For the wider theory of measuring marketing returns, Google's guide to [setting up key events in Analytics](https://support.google.com/analytics/answer/12844695) explains how to count the results you choose.
+
+To see where the readers behind those results come from, our [three monthly search traffic charts](/blog/search-traffic/) show the visits by month, by page and from AI search.

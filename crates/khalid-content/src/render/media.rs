@@ -6,6 +6,10 @@ use khalid_core::AbsoluteUrl;
 use super::{Image, Link, Renderer, attribute};
 use crate::{GalleryImage, StructuredBlock, VideoBlock, embed};
 
+/// The height of an allowed site's frame when its embed does not say, in
+/// pixels: room for a calculator or a chart with its controls.
+const DEFAULT_HEIGHT: u16 = 480;
+
 impl Renderer<'_> {
     /// Writes a video with controls that loads nothing until played, its
     /// file's link for browsers that cannot play it, and its caption.
@@ -85,9 +89,10 @@ impl Renderer<'_> {
         self.html.push_str("</div>\n");
     }
 
-    /// Writes an embed: an allowed provider's player in a lazy, sandboxed
-    /// frame of fixed size with the page's link under it, or the link alone.
-    pub(super) fn embed(&mut self, src: &AbsoluteUrl, title: &str) {
+    /// Writes an embed: an allowed provider's player, or a page on a domain
+    /// the site allows, in a lazy, sandboxed frame of fixed size with the
+    /// page's link under it, or the link alone.
+    pub(super) fn embed(&mut self, src: &AbsoluteUrl, title: &str, height: Option<u16>) {
         self.link_out(src, title);
         let link = [
             "<a href=\"",
@@ -98,7 +103,27 @@ impl Renderer<'_> {
         ]
         .concat();
         let Some((provider, player)) = embed::player(src) else {
-            self.push(&["<p class=\"bookmark\">", &link, "</p>\n"]);
+            if src.as_str().starts_with("https://")
+                && self
+                    .frames
+                    .iter()
+                    .any(|domain| domain.as_str() == src.host())
+            {
+                let height = height.unwrap_or(DEFAULT_HEIGHT).to_string();
+                self.push(&[
+                    "<figure class=\"embed embed-site\">\n<iframe src=\"",
+                    &attribute(src.as_str()),
+                    "\" title=\"",
+                    &attribute(title),
+                    "\" width=\"560\" height=\"",
+                    &height,
+                    "\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-forms allow-popups\"></iframe>\n<figcaption>",
+                    &link,
+                    "</figcaption>\n</figure>\n",
+                ]);
+            } else {
+                self.push(&["<p class=\"bookmark\">", &link, "</p>\n"]);
+            }
             return;
         };
         let (shape, height) = if provider.is_audio() {

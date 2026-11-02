@@ -405,6 +405,17 @@ The Analytics screen in the admin shows the same counts for the last 7, 28 or 90
 
 Programs read the same numbers from the Admin API with a key that has `settings:write`: `GET /api/admin/v1/analytics/visitors/?days=28`, `GET /api/admin/v1/analytics/ai-visitors/?days=28` and `GET /api/admin/v1/analytics/uncited/?days=30`. The OpenAPI document at `/api/openapi.json` describes each answer.
 
+## Smaller pictures with AVIF
+
+Khalid offers every picture in WebP, which every current browser reads, with the original JPEG or PNG for the rest. AVIF files are about half the size of a JPEG, so pages load faster on a slow phone, but each wide picture takes about a second to make. AVIF is off until you turn it on in `site.toml`:
+
+```toml
+[media]
+avif = true
+```
+
+The next build makes each picture's AVIF sizes once and keeps them in `data/media/`, so later builds only make them for new or changed pictures. Pages then offer AVIF first, WebP second and the original last, and each browser takes the first it can read.
+
 ## Photo and GIF search in the editor
 
 Writers can find a free photo on Unsplash or a GIF on GIPHY from the editor's block menu. Both are off until you turn them on in `site.toml`:
