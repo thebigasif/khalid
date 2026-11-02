@@ -85,6 +85,14 @@ pub struct Thresholds {
     /// few people search for exactly that phrase. Default 4, as in Yoast;
     /// filler words such as "to" or "the" do not count.
     pub focus_max_words: usize,
+    /// The smallest share in percent of the second and third level
+    /// subheadings that should hold the focus keyword, once a post has
+    /// three or more. Default 30, as in Yoast.
+    pub focus_subheading_min_percent: usize,
+    /// The largest share in percent of the second and third level
+    /// subheadings that may hold the focus keyword before they read as
+    /// repetitive. Default 75, as in Yoast.
+    pub focus_subheading_max_percent: usize,
 }
 
 impl Default for Thresholds {
@@ -112,6 +120,8 @@ impl Default for Thresholds {
             focus_min_per_thousand_words: 5,
             focus_max_per_thousand_words: 25,
             focus_max_words: 4,
+            focus_subheading_min_percent: 30,
+            focus_subheading_max_percent: 75,
         }
     }
 }

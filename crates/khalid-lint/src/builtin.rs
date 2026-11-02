@@ -6,9 +6,9 @@ use crate::focus::{FocusNotIn, FocusTooOften, FocusTooRare, Place, SecondaryKeyw
 use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
     Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, focus_shape,
-    headings, link_hygiene, link_targets, link_text, page_or_section, page_shape, reading,
-    site_content, site_links, site_sections, site_trust, snippet, structure, topics, words,
-    writing,
+    focus_spread, headings, link_hygiene, link_targets, link_text, page_or_section, page_shape,
+    reading, site_content, site_links, site_sections, site_trust, snippet, structure, topics,
+    words, writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
@@ -125,6 +125,11 @@ fn keyword_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         }),
         Box::new(focus_shape::FocusOnlyFiller),
         Box::new(focus_shape::FocusNotAtTitleStart),
+        Box::new(focus_spread::FocusDistribution),
+        Box::new(focus_spread::FocusSubheadingShare {
+            min_percent: thresholds.focus_subheading_min_percent,
+            max_percent: thresholds.focus_subheading_max_percent,
+        }),
         Box::new(SecondaryKeywordUnused),
         Box::new(SecondaryNotIn(Place::Title)),
         Box::new(SecondaryNotIn(Place::FirstParagraph)),

@@ -421,6 +421,18 @@ why = "Searchers scan the first words of each result, and a long title may be cu
 fix = "Move the words of `focus_keyword:` toward the start of `seo_title:`, or of `title:` when there is none."
 guide = "focus-keyword"
 
+[focus-distribution]
+what = "Your focus keyword appears in only a few parts of the text."
+why = "A post that names its topic only at the start or the end reads as being about it only in places."
+fix = "Use the words of `focus_keyword:` or a synonym in the parts of the text that lack it, where they fit."
+guide = "keyword-density"
+
+[focus-subheading-share]
+what = "Too few or too many of your subheadings hold your focus keyword."
+why = "Readers and Google use subheadings to see the topic, and the same words in all of them read as repetitive."
+fix = "Use the focus keyword or a synonym in about a third to three quarters of the subheadings."
+guide = "focus-keyword"
+
 [secondary-keyword-unused]
 what = "One of your secondary keywords never appears in the text."
 why = "A close phrase only helps the post when readers and Google can find it in the text."
