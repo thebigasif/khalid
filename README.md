@@ -1,10 +1,33 @@
-# Khalid, by SerpDad
+# Khalid
 
-**Status: 1.1.1.** What is new in it: [docs/releases/1.1.0.md](docs/releases/1.1.0.md), released as [1.1.1](docs/releases/1.1.1.md). The first stable release, with how to install Khalid and what is still checked after launch: [docs/releases/1.0.0.md](docs/releases/1.0.0.md). Byline and Wellranked were working names; the product is Khalid.
+**A blog that checks every post before it goes live.**
 
-Khalid is an open-source blog engine any business can add to its website, whatever the site is built with. One Rust binary. Every post is a text file. The best SEO defaults are built in, including schema markup for every content type and a site audit that passes the Ahrefs and Semrush checks. A linter refuses to publish a post that breaks basic SEO hygiene, and every refusal teaches why. It is run from the command line and from a web editor, by people and by agents. There is no drag-and-drop page builder.
+Khalid is an open-source blog engine you add to the website you already have. It ships with the SEO that big content teams build by hand, and it will not publish a post with the mistakes that hurt it in search.
 
-The one-line idea: get an Ahrefs- or Semrush-quality blog in one click.
+[Website](https://thebigasif.github.io/khalid/) · [Live demo](https://thebigasif.github.io/khalid/demo/) · [Templates](https://thebigasif.github.io/khalid/templates/) · [Use cases](https://thebigasif.github.io/khalid/examples/saas/) · [Latest release](https://github.com/thebigasif/khalid/releases/latest)
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/thebigasif/khalid/tree/main/deploy/cloudflare)
+
+## Why Khalid
+
+- **SEO done for you.** Titles, descriptions, canonical links, sitemaps, schema markup for every kind of post, share images and redirects are all built in. Khalid's own site audit passes the Ahrefs and Semrush checks.
+- **A linter that guards every post.** A post with a missing description, a skipped heading level, a link to nowhere or too little to say does not go live. Every refusal says what is wrong, why it matters and how to fix it.
+- **Ready for AI search.** Answer-first writing checks, an AI info page and clean structured data help AI search find and quote your posts.
+- **Templates that look professional.** Eleven layouts for every kind of blog, in your own colours, fonts and logo. [See them all](https://thebigasif.github.io/khalid/templates/).
+- **Fits any website.** Run it at `blog.example.com` or under `example.com/blog/`, next to any website. `khalid init` writes the rule for Nginx, Caddy, Apache or Traefik for you.
+- **One small program.** A single binary with no database server to run. Every post is a text file you can keep in git.
+- **A web editor and a command line.** Writers use the admin in the browser. Developers and AI agents use the command line, the APIs and the MCP server.
+- **Free and open source.** Run it yourself, on any server, in Docker, or free on Cloudflare.
+
+## Start in a minute
+
+```text
+curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/install.sh | sh
+khalid init blog --address https://blog.example.com --yes
+khalid --site blog serve
+```
+
+Your blog is now at `http://127.0.0.1:8080/`. The full steps, Windows and Docker are below.
 
 ## Install
 
