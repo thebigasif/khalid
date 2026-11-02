@@ -4,7 +4,6 @@
 //! picks, and posts that open with an "On this page" box and end with two
 //! sets of further reading.
 
-use khalid_core::ReaderSwitch;
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
@@ -25,8 +24,7 @@ pub(crate) static ALMANAC: Pack = Pack {
         },
     ],
     tokens: include_str!("../packs/almanac/tokens.toml"),
-    // The writers show again after the body, so the author box is off.
-    reader: &[(ReaderSwitch::AuthorBox, false)],
+    reader: &[],
     options: &[
         parts::on(parts::LOGO),
         parts::on(parts::BREADCRUMBS),

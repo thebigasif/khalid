@@ -310,15 +310,16 @@ main > h1 ~ .cards { margin-block-start: 3rem; }
 .author { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(1.25rem, 4vw, 2.5rem); align-items: start; margin-block: 0.5rem var(--space-section); padding: clamp(1.5rem, 4vw, 2.5rem); background: var(--color-surface); border-radius: calc(var(--radius) * 1.5); }
 .author > * { grid-column: 2; max-inline-size: var(--measure); }
 .author-header { display: contents; }
-.author-header .image { grid-column: 1; grid-row: 1 / span 4; inline-size: clamp(5rem, 14vw, 8rem); margin: 0; }
-.author-header .image img { border: 3px solid var(--color-background); }
+.author-photo { grid-column: 1; grid-row: 1 / span 2; inline-size: clamp(6rem, 16vw, 11rem); }
+.author-photo img { border: 4px solid var(--color-background); }
 .author-header h1 { margin-block: 0 0.25rem; font-weight: 800; letter-spacing: -0.025em; }
-.author .author-role { margin-block: 0 1rem; font-weight: 500; }
+.author .author-role { margin-block: 0 0.25rem; font-weight: 500; }
 @media (max-width: 39.99rem) {
   .author { grid-template-columns: minmax(0, 1fr); }
-  .author > *, .author-header .image { grid-column: 1; grid-row: auto; }
-  .author-header .image { margin-block-end: 1rem; }
+  .author > *, .author-photo { grid-column: 1; grid-row: auto; }
+  .author-photo { margin-block-end: 1rem; }
 }
+.author-bio { margin-block-start: 1.5rem; }
 .author-bio > :last-child { margin-block-end: 0; }
 .author-profiles { margin-block-start: 1rem; }
 main > section > h2 { display: flex; align-items: center; gap: 1.25rem; margin-block: 0 2rem; font-size: var(--text-h3); }

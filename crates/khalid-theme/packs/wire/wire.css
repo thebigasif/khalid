@@ -240,6 +240,7 @@ main:has(> .post) > *, main:has(> .author) > *, main:has(> .page) > * { max-inli
 .post-dates time, .post-dates .reading-time { white-space: nowrap; }
 .post-dates .reading-time::before { content: "·" / ""; margin-inline: 0.5rem; }
 .reviewed-by a { color: var(--color-text); }
+.author-box .reviewed-by { font-family: inherit; font-size: inherit; font-weight: 400; letter-spacing: normal; text-transform: none; }
 .updated-note { flex-basis: 100%; font-family: var(--font-body); }
 .post-header .image { margin-block: 2rem 0; }
 .post-header .image img { inline-size: 100%; }
