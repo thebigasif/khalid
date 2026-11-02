@@ -13,6 +13,9 @@ const PLOT: f64 = 220.0;
 const TOP: f64 = 20.0;
 /// The room under the plot for the row labels.
 const UNDER: f64 = 28.0;
+/// The share of the width at the start kept for the tick labels, so no
+/// column or point sits on one, even on a phone.
+const GUTTER: f64 = 9.0;
 
 /// Columns upwards or lines across a plot with gridlines, each labelled
 /// at its start, and the rows' labels under it.
@@ -50,7 +53,7 @@ pub(super) fn plot(kind: ChartKind, table: &ChartTable, unit: &str) -> String {
         );
     }
     let rows = table.rows.len();
-    let slot = 100.0 / count(rows).max(1.0);
+    let slot = (100.0 - GUTTER) / count(rows).max(1.0);
     // Every label shows when there is room; otherwise every few.
     let every = rows.div_ceil(8).max(1);
     for (index, row) in table
@@ -59,7 +62,7 @@ pub(super) fn plot(kind: ChartKind, table: &ChartTable, unit: &str) -> String {
         .enumerate()
         .filter(|(i, _)| i % every == 0)
     {
-        let centre = slot * (count(index) + 0.5);
+        let centre = GUTTER + slot * (count(index) + 0.5);
         let _ = write!(
             svg,
             "<text class=\"chart-label\" x=\"{centre:.2}%\" y=\"{}\" text-anchor=\"middle\">{}</text>",
@@ -82,7 +85,7 @@ fn columns(svg: &mut String, table: &ChartTable, slot: f64, y: &dyn Fn(f64) -> f
     let series = count(table.series.len()).max(1.0);
     let width = slot * 0.64 / series;
     for (index, row) in table.rows.iter().enumerate() {
-        let start = slot * count(index) + slot * 0.18;
+        let start = GUTTER + slot * count(index) + slot * 0.18;
         for (nth, value) in row.values.iter().enumerate() {
             let x = start + width * count(nth);
             let (top, bottom) = (y(value.number()), y(0.0));
@@ -107,7 +110,7 @@ fn lines(svg: &mut String, table: &ChartTable, slot: f64, y: &dyn Fn(f64) -> f64
         let points: Vec<(f64, f64)> = (table.rows.iter().enumerate())
             .filter_map(|(index, row)| {
                 let value = row.values.get(nth)?.number();
-                Some((slot * (count(index) + 0.5), y(value)))
+                Some((GUTTER + slot * (count(index) + 0.5), y(value)))
             })
             .collect();
         let class = series_class(nth);

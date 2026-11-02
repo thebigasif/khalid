@@ -17,11 +17,12 @@ const DATED: [&str; 3] = ["review-due", "stale-post", "stale-page"];
 /// Every block the showcase shows. Audio, video files and recipes are left
 /// out: the fixture keeps no sound or film files, and recipe markup on a
 /// page that is not a recipe breaks the search engines' rules.
-const BLOCKS: [&str; 24] = [
+const BLOCKS: [&str; 25] = [
     "bookmark",
     "business",
     "button",
     "callout",
+    "chart",
     "columns",
     "embed",
     "faq",

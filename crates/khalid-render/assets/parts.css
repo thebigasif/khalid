@@ -25,7 +25,7 @@
 /* The button that adds the site as a preferred source on Google: a pill
    with a star in the accent colour, a 44 px target that wraps on a phone. */
 .preferred-source { margin-block: calc(var(--space) * 3); }
-.preferred-source a { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; padding: 0.5rem 1.125rem 0.5rem 0.875rem; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-background); color: var(--color-text); font-size: var(--text-small); font-weight: 600; line-height: 1.3; text-decoration: none; }
+.preferred-source a { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; padding: 0.5rem 1.125rem 0.5rem 0.875rem; border: 1px solid var(--color-border); border-radius: 1.375rem; background: var(--color-background); color: var(--color-text); font-size: var(--text-small); font-weight: 600; line-height: 1.3; text-decoration: none; }
 .preferred-source a:hover, .preferred-source a:focus-visible { border-color: var(--color-accent); color: var(--color-text); }
 .preferred-source svg { flex: none; fill: var(--color-accent); }
 .site-footer .preferred-source { margin-block: var(--space); }
@@ -34,7 +34,8 @@
    its day and first line. An issue's page shows the day it went out. */
 .issue-sample { margin-block: var(--space-section); padding: 1.5rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
 .issue-sample h2 { margin-block: 0 0.25rem; color: var(--color-muted); font-size: var(--text-small); letter-spacing: 0.04em; text-transform: uppercase; }
-.issue-sample h3 { margin-block: 0 0.5rem; }
+.issue-sample h3 { margin-block: 0 0.25rem; }
+.issue-sample h4 { margin-block: 1rem 0.25rem; }
 .issue-sample p:last-child { margin-block-end: 0; }
 .issue-list { margin: 0; padding: 0; list-style: none; }
 .issue-list li { padding-block: 1rem; border-block-start: 1px solid var(--color-border); }
@@ -42,6 +43,8 @@
 .issue-list a { font-family: var(--font-heading); font-size: var(--text-h4); font-weight: 700; }
 .issue-list p { margin: 0.25rem 0 0; color: var(--color-muted); }
 .issue-back a { display: inline-flex; align-items: center; min-block-size: 44px; }
+.issue-join { margin-block: var(--space-section); }
+.issue-join h2 { margin-block-end: 0.5rem; }
 
 /* A post's subtitle under its title, and why it was updated. */
 .dek { margin-block: 0.5rem 1rem; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.4; }

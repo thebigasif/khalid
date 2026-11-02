@@ -66,6 +66,7 @@ newsletter_all = "Every issue of the newsletter"
 newsletter_recent = "Read a recent issue"
 newsletter_whole = "Read the whole issue"
 newsletter_issues = "Past issues"
+newsletter_join = "Get the next issue by email"
 # A hidden field that catches spam robots. People never see it.
 form_trap = "Leave this empty"
 # Names the # link beside each heading for screen readers.

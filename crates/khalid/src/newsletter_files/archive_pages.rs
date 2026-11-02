@@ -74,6 +74,9 @@ struct Shown {
     issue: ArchivedIssue,
     href: String,
     summary: String,
+    /// The issue's HTML up to its second section, its headings one
+    /// level down, as the sample on the newsletter's page shows it.
+    opening: String,
 }
 
 /// The page of `issue`, with the day it went out, a link back to every
@@ -95,22 +98,30 @@ fn issue_page(
         issue.date,
         issue.date.format("%-d %B %Y"),
     );
-    let _ = write!(
+    let _ = writeln!(
         body,
-        "<p class=\"issue-back\"><a href=\"{}\">{}</a></p>\n{form}",
+        "{form}<p class=\"issue-back\"><a href=\"{}\">{}</a></p>",
         path_of(config, locale, REST),
         words.all,
     );
     let page = made(config, (&rest, &issue.title, &summary), body, &source)?;
     let href = path_of(config, locale, &rest);
-    Ok((
-        page,
-        Shown {
-            issue,
-            href,
-            summary,
-        },
-    ))
+    let opening = opening(&text);
+    let shown = Shown {
+        issue,
+        href,
+        summary,
+        opening,
+    };
+    Ok((page, shown))
+}
+
+/// `html` up to its second `h2`, with each `h2` written as an `h4`, so the
+/// sample sits under the newsletter page's own headings.
+fn opening(html: &str) -> String {
+    let second = (html.match_indices("<h2").nth(1)).map_or(html.len(), |(at, _)| at);
+    let cut = html.get(..second).unwrap_or(html);
+    cut.replace("<h2", "<h4").replace("</h2>", "</h4>")
 }
 
 /// The newest issue as a sample to read, then every issue, newest first,
@@ -120,11 +131,13 @@ fn archive_html(listed: &[Shown], words: &Words) -> String {
         return String::new();
     };
     let mut html = format!(
-        "<section class=\"issue-sample\" aria-labelledby=\"issue-sample\">\n<h2 id=\"issue-sample\">{}</h2>\n<h3><a href=\"{}\">{}</a></h3>\n<p>{}</p>\n<p><a class=\"button\" href=\"{}\">{}</a></p>\n</section>\n",
+        "<section class=\"issue-sample\" aria-labelledby=\"issue-sample\">\n<h2 id=\"issue-sample\">{}</h2>\n<h3><a href=\"{}\">{}</a></h3>\n<p class=\"issue-date\"><time datetime=\"{}\">{}</time></p>\n{}<p><a class=\"button\" href=\"{}\">{}</a></p>\n</section>\n",
         words.recent,
         newest.href,
         escaped(&newest.issue.title),
-        escaped(&newest.summary),
+        newest.issue.date,
+        newest.issue.date.format("%-d %B %Y"),
+        newest.opening,
         newest.href,
         words.whole,
     );
@@ -157,6 +170,7 @@ struct Words {
     issues: String,
     label: String,
     button: String,
+    join: String,
 }
 
 impl Words {
@@ -175,6 +189,7 @@ impl Words {
             issues: text("newsletter_issues")?,
             label: text("newsletter_label")?,
             button: text("newsletter_button")?,
+            join: text("newsletter_join")?,
         })
     }
 }
@@ -189,7 +204,11 @@ fn sign_up(config: &Config, words: &Words) -> String {
         "::newsletter{{label=\"{}\" button=\"{}\"}}\n",
         words.label, words.button
     );
-    markdown(config, &block, Path::new(MAIN)).unwrap_or_default()
+    let form = markdown(config, &block, Path::new(MAIN)).unwrap_or_default();
+    format!(
+        "<section class=\"issue-join\" aria-labelledby=\"issue-join\">\n<h2 id=\"issue-join\">{}</h2>\n{form}</section>\n",
+        words.join
+    )
 }
 
 /// `body` as HTML in the site's main language, with the site's frames and

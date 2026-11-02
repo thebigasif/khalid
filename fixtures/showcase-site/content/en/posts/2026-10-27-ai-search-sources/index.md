@@ -85,3 +85,5 @@ They send fewer visitors than a top result in ordinary search, because the answe
 No. Write posts as long as the question needs, and make every section easy to quote on its own. A long guide with a clear answer under each heading gives a tool many passages to choose from. A short post with no clear answer gives it nothing to lift.
 :::
 ::::
+
+To see how much of a blog's readers already come from AI tools, read our [search traffic charts for one client](/blog/search-traffic/).

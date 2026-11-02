@@ -16,6 +16,20 @@ label = "Read the 2026 content benchmark"
 href = "/blog/content-benchmark/"
 note = "Numbers from 140 small business blogs, free to read."
 
+# A button after each post and in the footer that adds the blog as a
+# preferred source on Google.
+[template.preferred_source]
+
+# Pages an ::embed may show in a frame, beside the known video players:
+# the live map in the search traffic post.
+[media]
+embed_domains = ["www.openstreetmap.org"]
+
+# Links to the studio's own product carry utm tags, so its analytics
+# show which post sent each visitor. No other link gets one.
+[seo.links.tracking]
+domains = ["planner.example.com"]
+
 [seo.titles]
 separator = "·"
 tagline = "SEO and content writing notes from Larkspur Studio"
@@ -80,6 +94,11 @@ href = "/blog/de/"
 [[nav.footer]]
 label = "About Larkspur"
 href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "The newsletter"
+href = "/blog/newsletter/"
 language = "en"
 
 [[nav.footer]]
