@@ -513,6 +513,18 @@ export type AdminWebhooks = {
   webhooks: AdminWebhook[];
 };
 
+/** Whether suggestions are on, and who writes them. */
+export type AiState = {
+  /** The provider's name as people know it. */
+  label: string;
+  /** Whether the owner named a provider in `[ai]`. */
+  on: boolean;
+  /** `off`, `serpdad`, `anthropic` or `openai`. */
+  provider: string;
+  /** Whether the server holds the key it asks with, so a button can ask. */
+  ready: boolean;
+};
+
 /** An old address on this site that redirects to the post, such as `/2019/05/old-title/`, so a moved post keeps its links. */
 export type Alias = string;
 
@@ -1912,6 +1924,16 @@ export type UsedPhoto = {
 
 /** What each operation takes and what it answers on success. */
 export interface Operations {
+  /** Reads whether suggestions are on, so the admin shows its buttons only then. Needs `posts:write`. */
+  read_ai: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AiState;
+  };
   /** Lists how many readers each AI assistant sent in the last `days` days, against the days before, with the pages they landed on. Needs `settings:write`. */
   ai_visitors: {
     input: {

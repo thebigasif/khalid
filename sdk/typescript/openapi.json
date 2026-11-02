@@ -10,6 +10,63 @@
     "version": "1.2.0"
   },
   "paths": {
+    "/api/admin/v1/ai/": {
+      "get": {
+        "tags": [
+          "admin ai"
+        ],
+        "summary": "Reads whether suggestions are on, so the admin shows its buttons only\nthen. Needs `posts:write`.",
+        "operationId": "read_ai",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Whether suggestions are on",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiState"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/analytics/ai-visitors/": {
       "get": {
         "tags": [
@@ -12087,6 +12144,36 @@
               "$ref": "#/components/schemas/AdminWebhook"
             },
             "description": "The webhooks, oldest first."
+          }
+        }
+      },
+      "AiState": {
+        "type": "object",
+        "description": "Whether suggestions are on, and who writes them.",
+        "required": [
+          "on",
+          "provider",
+          "label",
+          "ready"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The provider's name as people know it.",
+            "example": "Anthropic"
+          },
+          "on": {
+            "type": "boolean",
+            "description": "Whether the owner named a provider in `[ai]`."
+          },
+          "provider": {
+            "type": "string",
+            "description": "`off`, `serpdad`, `anthropic` or `openai`.",
+            "example": "anthropic"
+          },
+          "ready": {
+            "type": "boolean",
+            "description": "Whether the server holds the key it asks with, so a button can ask."
           }
         }
       },

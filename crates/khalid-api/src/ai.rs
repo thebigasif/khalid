@@ -6,8 +6,9 @@
 //! answers against the length rules before a writer sees it.
 
 use std::error::Error;
+use std::sync::Arc;
 
-use khalid_core::UserMessage;
+use khalid_core::{AiProvider, UserMessage};
 
 use crate::content_store::BoxFuture;
 
@@ -77,6 +78,47 @@ impl AiError {
                 "It may be busy or down for a moment.",
                 "Try again in a minute. Nothing in the post changed.",
             ),
+        }
+    }
+}
+
+/// What the `ai` route needs: the provider the owner named, the writer
+/// that asks it, and the length rules each option is checked against.
+#[derive(Clone)]
+pub struct AiDesk {
+    pub(crate) provider: AiProvider,
+    pub(crate) writer: Option<Arc<dyn AiWriter>>,
+    pub(crate) lengths: Lengths,
+}
+
+impl std::fmt::Debug for AiDesk {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AiDesk")
+            .field("provider", &self.provider)
+            .field("writer", &self.writer.is_some())
+            .field("lengths", &self.lengths)
+            .finish_non_exhaustive()
+    }
+}
+
+impl AiDesk {
+    /// Suggestions off: nothing is ever sent.
+    pub fn off() -> Self {
+        Self {
+            provider: AiProvider::Off,
+            writer: None,
+            lengths: Lengths::default(),
+        }
+    }
+
+    /// Suggestions from `provider`, asked through `writer`, or `None` when
+    /// the server holds no key for it; each option checked against
+    /// `lengths`.
+    pub fn new(provider: AiProvider, writer: Option<Arc<dyn AiWriter>>, lengths: Lengths) -> Self {
+        Self {
+            provider,
+            writer,
+            lengths,
         }
     }
 }
