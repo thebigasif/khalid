@@ -49,6 +49,23 @@ pub(crate) const TRANSITIONS: &str = "aber|allerdings|also|anfangs|anschließend
      weiterhin|zudem|zuerst|zuletzt|zunächst|zweitens|zusammenfassend|aus diesem grund|\
      das heißt|im gegensatz|im vergleich|mit anderen worten|vor allem|zum beispiel|zum schluss";
 
+/// Long words that readers meet every day, more than ten letters, in
+/// lowercase, between spaces.
+pub(crate) const COMMON_LONG: &str = " ansprechpartner anforderungen beispielsweise \
+     beschreibung bestellungen beziehungsweise bundesregierung durchschnitt einstellungen \
+     empfehlungen entscheidung entsprechend entsprechende entsprechenden entwicklung \
+     entwicklungen erfahrungen gemeinsamen geschichten gesellschaft gleichzeitig grundsätzlich \
+     herausforderung herausforderungen informationen inhaltsverzeichnis insbesondere \
+     internetseite kommunikation kundenservice mitarbeiter mitarbeitern mitarbeiterinnen \
+     mittlerweile möglichkeit möglichkeiten nachrichten öffentlichkeit organisation \
+     persönlichen regelmäßig schließlich selbstverständlich suchergebnisse suchmaschine \
+     suchmaschinen tatsächlich teilnehmerin teilnehmern überschriften unterschied \
+     unterschiede unterschiedlich unterschiedliche unterschiedlichen unternehmen \
+     unternehmens unternehmer unterstützung untersuchung verantwortung veranstaltung \
+     verschiedene verschiedenen verschiedener verschiedenste voraussetzung voraussetzungen \
+     wahrscheinlich wirtschaftlich wissenschaft zahlreichen zusammenarbeit zusammenhang \
+     zusätzliche zusätzlich ";
+
 /// Forms of "werden" that build the passive, "worden" included.
 pub(crate) const WERDEN: &[&str] = &[
     "werde", "wirst", "wird", "werden", "werdet", "wurde", "wurdest", "wurden", "wurdet", "würde",

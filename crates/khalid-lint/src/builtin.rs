@@ -5,7 +5,7 @@ use chrono::NaiveDate;
 use crate::focus::{FocusNotIn, FocusTooOften, FocusTooRare, Place, SecondaryKeywordUnused};
 use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
-    Rule, SiteRule, Thresholds, address, blocking, brief, collections, facts, focus_shape,
+    Rule, SiteRule, Thresholds, address, blocking, brief, collections, complex, facts, focus_shape,
     focus_spread, headings, link_hygiene, link_targets, link_text, page_checks, page_or_section,
     page_shape, readability, reading, site_content, site_keywords, site_links, site_sections,
     site_trust, snippet, structure, title_width, topics, voice, words, writing,
@@ -31,11 +31,17 @@ fn readability_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(readability::LongSection {
             max_words: thresholds.section_max_words,
         }),
+        Box::new(readability::RepeatedOpeners {
+            min_run: thresholds.repeated_openers,
+        }),
         Box::new(voice::FewTransitions {
             min_percent: thresholds.transition_min_percent,
         }),
         Box::new(voice::PassiveVoice {
             max_percent: thresholds.passive_max_percent,
+        }),
+        Box::new(complex::ComplexWords {
+            max_percent: thresholds.complex_words_max_percent,
         }),
     ]
 }

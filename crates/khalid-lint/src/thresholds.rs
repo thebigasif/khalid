@@ -71,7 +71,8 @@ pub struct Thresholds {
     /// words with small grammar differences, not merely a topic.
     pub heading_duplicate_percent: usize,
     /// The most words one paragraph may hold before it buries its ideas.
-    /// Default 225, about the top of the 75 to 225 word target.
+    /// Default 150, as in Yoast. Sites that set `paragraph-max-words` keep
+    /// their own limit; before 1.3 the default was 225.
     pub paragraph_max_words: usize,
     /// The fewest times per thousand words the focus keyword should appear
     /// in a post of 100 words or more. Default 5, Rank Math's floor of half
@@ -114,6 +115,10 @@ pub struct Thresholds {
     /// The most words of prose between two second or third level
     /// subheadings. Default 300, as in Yoast.
     pub section_max_words: usize,
+    /// How many sentences in a row in one paragraph may start with the
+    /// same word before it reads as monotonous. Default 3, as in Yoast:
+    /// three in a row are flagged.
+    pub repeated_openers: usize,
     /// The smallest share in percent of sentences that should hold a
     /// linking word, such as "because" or "zum Beispiel", in a text of 200
     /// words or more. Default 30, as in Yoast.
@@ -122,6 +127,9 @@ pub struct Thresholds {
     /// passive voice, in a text of 200 words or more. Default 10, as in
     /// Yoast.
     pub passive_max_percent: usize,
+    /// The largest share in percent of words that may be long and rare,
+    /// in a text of 200 words or more. Default 10, as in Yoast.
+    pub complex_words_max_percent: usize,
 }
 
 impl Default for Thresholds {
@@ -130,7 +138,7 @@ impl Default for Thresholds {
             answer_min_words: 40,
             answer_max_words: 60,
             heading_duplicate_percent: 70,
-            paragraph_max_words: 225,
+            paragraph_max_words: 150,
             thin_post_words: 300,
             same_link_text_max: 3,
             title_max_chars: 60,
@@ -157,8 +165,10 @@ impl Default for Thresholds {
             sentence_max_words: 20,
             long_sentences_max_percent: 25,
             section_max_words: 300,
+            repeated_openers: 3,
             transition_min_percent: 30,
             passive_max_percent: 10,
+            complex_words_max_percent: 10,
         }
     }
 }

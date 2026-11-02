@@ -1,4 +1,4 @@
-# One paragraph of 250 words, past the 225 word target.
+# One paragraph of 250 words, past the 150 word default.
 extends = "clean"
 body_text = """
 Internal links help readers find the next useful post on your site.

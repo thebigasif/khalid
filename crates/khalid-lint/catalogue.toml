@@ -326,9 +326,9 @@ fix = "Write the whole answer in one paragraph of 40 to 60 words directly under 
 guide = "answer-capsule"
 
 [long-paragraph]
-what = "A paragraph runs past 225 words, so it holds more than one idea."
+what = "A paragraph runs past the word limit, 150 words unless this site sets another, so it holds more than one idea."
 why = "Readers lose the thread in a wall of text, and the paragraph's main point is hard for you or an engine to name."
-fix = "Split it at each change of idea, into paragraphs of 75 to 225 words, one idea each."
+fix = "Split it at each change of idea, into shorter paragraphs of one idea each."
 guide = "plain-writing"
 
 [no-about-page]
@@ -389,6 +389,18 @@ guide = "readability"
 what = "A stretch of this post runs past 300 words without a subheading."
 why = "Readers scan subheadings to find their part, and a long stretch hides what it covers."
 fix = "Add a `##` subheading where the topic of this stretch changes."
+guide = "readability"
+
+[repeated-openers]
+what = "Three or more sentences in a row start with the same word."
+why = "Sentences that all start alike read as monotonous, and readers start to skim."
+fix = "Rewrite one or two of these sentences so they start with another word."
+guide = "readability"
+
+[complex-words]
+what = "More than one in ten words in this post are long words readers rarely meet."
+why = "Rare long words slow every reader down, and many readers skip what they cannot follow."
+fix = "Replace the long words you can with short everyday ones, such as \"use\" for \"utilise\"."
 guide = "readability"
 
 [few-transitions]

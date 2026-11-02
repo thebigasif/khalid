@@ -2,8 +2,8 @@
 //!
 //! W1: a heading phrased as a question is followed by a standalone answer
 //! of 40 to 60 words, so a reader, and an AI answer engine, gets the
-//! answer before any detail. W2: a paragraph much past 225 words buries
-//! its ideas; the target is 75 to 225 words, one idea each. W3: hedge
+//! answer before any detail. W2: a paragraph past 150 words buries
+//! its ideas; the target is 75 to 150 words, one idea each. W3: hedge
 //! words, vague openers and trailing which-chains make an answer harder
 //! to trust and to lift; the word lists live in the catalogue so a site
 //! can read and change them. W4: a number a reader cannot check, with no
@@ -13,7 +13,7 @@
 //! guidance for answer engines, as the GEO phase records. Where their
 //! guidance gives no exact word counts, the counts come from the
 //! maintainer's brief: 40 to 60 words for the capsule (decision D3),
-//! about 225 for a paragraph.
+//! 150 for a paragraph, as Yoast sets it.
 
 use crate::{Hit, LintPost, Rule, RuleId, Severity, SiteView};
 
@@ -66,8 +66,8 @@ impl Rule for AnswerCapsule {
 
 /// **W2: paragraph length.**
 ///
-/// A paragraph over `max_paragraph_words` words (225 by default) buries
-/// more than one idea. The target is 75 to 225 words, one idea each.
+/// A paragraph over `max_paragraph_words` words (150 by default, as in Yoast) buries
+/// more than one idea. The target is 75 to 150 words, one idea each.
 #[derive(Debug)]
 pub(crate) struct LongParagraph {
     pub(crate) max_paragraph_words: usize,

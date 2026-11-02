@@ -144,6 +144,43 @@ impl Rule for LongSection {
     }
 }
 
+/// Several sentences in a row in one paragraph start with the same word.
+#[derive(Debug)]
+pub(crate) struct RepeatedOpeners {
+    /// From `Thresholds::repeated_openers`.
+    pub(crate) min_run: usize,
+}
+
+impl Rule for RepeatedOpeners {
+    fn id(&self) -> RuleId {
+        RuleId::new("repeated-openers")
+    }
+
+    fn default_severity(&self) -> Severity {
+        Severity::Warn
+    }
+
+    fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
+        let language = post.locale.language();
+        let mut hits = Vec::new();
+        for paragraph in paragraphs(post) {
+            let openers: Vec<String> = sentences(paragraph, language)
+                .iter()
+                .filter_map(|sentence| sentence.first().map(|word| word.to_lowercase()))
+                .collect();
+            for run in openers.chunk_by(|a, b| a == b) {
+                if let (Some(word), true) = (run.first(), run.len() >= self.min_run) {
+                    let n = run.len();
+                    hits.push(Hit::about(format!(
+                        "{n} sentences in a row start with \"{word}\""
+                    )));
+                }
+            }
+        }
+        hits
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use khalid_core::{Locale, Slug};
@@ -241,5 +278,23 @@ mod tests {
         );
         let en = post("en", &["word"; 301].join(" "));
         assert_eq!(hits(&rule, &en), [Hit::about("the opening runs 301 words")]);
+    }
+
+    #[test]
+    fn three_sentences_in_a_row_with_one_opener_are_one_hit() {
+        let rule = RepeatedOpeners { min_run: 3 };
+        let en = post(
+            "en",
+            "Links help. Links guide. links rank. Readers click.\nLinks a. Links b.",
+        );
+        assert_eq!(
+            hits(&rule, &en),
+            [Hit::about("3 sentences in a row start with \"links\"")]
+        );
+        let de = post("de", "Dann lesen. Dann klicken. Dann gehen. Dann bleiben.");
+        assert_eq!(
+            hits(&rule, &de),
+            [Hit::about("4 sentences in a row start with \"dann\"")]
+        );
     }
 }
