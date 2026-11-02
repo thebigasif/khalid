@@ -4,10 +4,13 @@ import { failureMessage, isData } from "../api/call";
 import { changeSite, readSite, type SiteSettings } from "../api/site";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
+import { Crawlers } from "../seo/Crawlers";
 import { type Part, partOf, same } from "../seo/parts";
 import { Representation } from "../seo/Representation";
 import { SearchAppearance } from "../seo/SearchAppearance";
 import { ShowInSearch } from "../seo/ShowInSearch";
+import { SocialSharing } from "../seo/SocialSharing";
+import { Webmaster } from "../seo/Webmaster";
 import type { UserMessage } from "../strings/en";
 import { seoWords } from "../strings/seoWords";
 
@@ -26,6 +29,11 @@ const SECTIONS: { tab: Tab; show: (props: SectionProps) => ReactNode }[] = [
   { tab: "appearance", show: (props) => <SearchAppearance {...props} /> },
   { tab: "index", show: (props) => <ShowInSearch {...props} /> },
   { tab: "representation", show: (props) => <Representation {...props} /> },
+  { tab: "social", show: (props) => <SocialSharing {...props} /> },
+  { tab: "webmaster", show: (props) => <Webmaster {...props} /> },
+  { tab: "crawlers", show: (props) => <Crawlers {...props} /> },
+  // TODO(Yoast WP2): breadcrumbs and llms.txt get a tab here once their
+  // settings are in SeoSettings on main; docs/seo-settings.md lists them.
 ];
 
 /** Every `[seo]` setting of site.toml, one part at a time, each saved on its own. */

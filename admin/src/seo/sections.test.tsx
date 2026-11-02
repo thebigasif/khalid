@@ -49,4 +49,37 @@ describe("the parts of the SEO settings", () => {
       },
     });
   });
+
+  it("adds a verification code and keeps the verification files", async () => {
+    signedIn();
+    const files = { "google1a2b.html": "google-site-verification: google1a2b.html" };
+    const changes = seoBlog({ ...SEO_DEMO, seo: { verification: { files } } });
+    await openTab(seoWords.tabs.webmaster);
+    await userEvent.type(screen.getByLabelText(seoWords.webmaster.engines.bing), "B1C2D3");
+    await save();
+    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(changes[0]?.seo).toEqual({ verification: { files, bing: "B1C2D3" } });
+  });
+
+  it("removes the social part when every field is emptied", async () => {
+    signedIn();
+    const changes = seoBlog({ ...SEO_DEMO, seo: { social: { twitter: "@serpdad" } } });
+    await openTab(seoWords.tabs.social);
+    await userEvent.clear(screen.getByLabelText(seoWords.social.twitter));
+    await save();
+    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(changes[0]?.seo).toEqual({ social: null });
+  });
+
+  it("blocks an AI crawler by its switch and keeps the other blocked names", async () => {
+    signedIn();
+    const changes = seoBlog({ ...SEO_DEMO, seo: { crawlers: { block: ["AhrefsBot"] } } });
+    await openTab(seoWords.tabs.crawlers);
+    expect(screen.getByLabelText(seoWords.crawlers.others)).toHaveValue("AhrefsBot");
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.click(screen.getByLabelText(seoWords.crawlers.block("GPTBot")));
+    await save();
+    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(changes[0]?.seo).toEqual({ crawlers: { block: ["GPTBot", "AhrefsBot"] } });
+  });
 });
