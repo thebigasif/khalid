@@ -40,13 +40,6 @@ body { font-family: var(--font-heading); }
 .masthead h1 { margin: 0; letter-spacing: -0.03em; }
 .intro { font-family: var(--font-body); font-size: 1.125rem; }
 
-/* Labels: small capitals over a heavy rule, with an accent square. */
-.feed > h2, .home-section > h2, .related > h2, .tab-panel > h2, .newsletter-slot h2 { display: flex; align-items: center; gap: 0.5rem; margin-block: 0 1rem; padding-block-end: 0.5rem; border-block-end: 3px solid var(--color-text); font-family: var(--font-body); font-size: var(--text-small); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-.feed > h2::before, .home-section > h2::before, .related > h2::before { content: ""; inline-size: 0.625rem; block-size: 0.625rem; background: var(--color-accent); }
-.masthead { margin-block: 1rem 2rem; }
-.masthead h1 { margin-block: 0.5rem 0; font-size: var(--text-h2); font-weight: 800; letter-spacing: -0.02em; }
-.masthead .intro { margin-block-start: 0.25rem; }
-
 /* Pictures: square corners, one shape per list. */
 .image img, figure > img { border-radius: 0; }
 .card .image { margin: 0; }
@@ -65,31 +58,39 @@ body { font-family: var(--font-heading); }
 .card { position: relative; }
 .card > p:last-child:not(.card-meta) { margin: 0; color: var(--color-muted); font-family: var(--font-body); font-size: 1rem; line-height: 1.5; }
 
-/* The lead story beside the tabs on wide screens. */
-.front { display: grid; gap: 2rem 3rem; margin-block-end: var(--space-section); }
-@media (min-width: 64rem) { .front:has(.front-lead) { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+/* The front: the lead story, and the latest headlines beside it, each led
+   by its date. */
+.front { display: grid; gap: 2.5rem 3rem; padding-block: 2rem 3rem; }
 .front-lead { position: relative; }
-.front-lead .image { margin-block-end: 1.25rem; }
-.front-lead .image img { border-radius: var(--radius); }
-.front-lead h2 { margin-block: 0.5rem; font-size: var(--text-h1); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; }
+.front-text { min-inline-size: 0; }
+.front-lead .image { margin: 0 0 1rem; }
+.front-lead .image img { aspect-ratio: 2 / 1; object-fit: cover; background: var(--color-surface); }
+.front-latest .cards { gap: 0; }
+.front-latest .card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "date read" "title title" "dek dek" "by by"; gap: 0 1rem; padding-block: 1rem; border-block-end: 1px solid var(--color-border); }
+.front-latest li:first-child .card { padding-block-start: 0; }
+.front-latest li:last-child .card { border: 0; }
+.front-latest .card :is(h2, h3) { grid-area: title; margin-block: 0.25rem 0.375rem; font-size: 1.125rem; line-height: 1.25; }
+.front-latest .card > p:last-child { grid-area: dek; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; margin-block-end: 0.5rem; font-size: 0.9375rem; }
+.front-latest .card-meta, .latest > .cards .card-meta, .home-section .card-meta { display: contents; }
+.front-latest .card-meta time { grid-area: date; color: var(--color-link); }
+.front-latest .card-reading-time { grid-area: read; }
+.front-latest .card-author { grid-area: by; }
+.front-latest .card-meta > a { display: none; }
+.kicker { margin: 0; }
+.kicker a { display: inline-flex; align-items: center; min-block-size: 44px; position: relative; z-index: 1; color: var(--color-link); text-decoration: none; }
+.front-lead h2 { margin-block: 0 0.75rem; font-size: clamp(2rem, 1.25rem + 2.5vw, 3.25rem); line-height: 1.04; letter-spacing: -0.03em; }
 .front-lead h2 a { color: var(--color-text); text-decoration: none; }
-.front-lead h2 a:hover { text-decoration: underline; text-decoration-thickness: 0.06em; }
 .front-lead h2 a::after { content: ""; position: absolute; inset: 0; }
-.front-lead .card-meta a { position: relative; z-index: 1; }
-.front-lead > p:last-child { color: var(--color-muted); font-size: var(--text-h4); }
-
-/* Two tabs, switched by the part named in the address, with no script. Without
-   :has() both lists show, one under the other. */
-.front-tabs { min-inline-size: 0; }
-.tab-names ul { gap: 0; border-block-end: 3px solid var(--color-text); }
-.tab-names a { padding-inline: 1rem; border-block-end: 4px solid transparent; margin-block-end: -3px; color: var(--color-muted); font-size: var(--text-small); font-weight: 800; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
-.front-tabs:not(:has(.tab-panel:target)) .tab-names li:first-child a, .front-tabs:has([id="front-picks"]:target) .tab-names li:last-child a { border-block-end-color: var(--color-accent); color: var(--color-text); }
-.front-tabs:has(.tab-names) .tab-panel > h2 { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; text-wrap: nowrap; }
-.front-tabs:not(:has(.tab-panel:target)) .tab-panel + .tab-panel, .front-tabs:has(.tab-panel:target) .tab-panel:not(:target) { display: none; }
-.tab-panel { padding-block-start: 0.5rem; scroll-margin-block-start: 1rem; }
-.tab-panel .cards { gap: 0; }
-.tab-panel .card { padding-block: 0.875rem; border-block-end: 1px solid var(--color-border); }
-.tab-panel .card :is(h2, h3), .cards-compact .card :is(h2, h3) { margin-block: 0 0.25rem; font-size: 1.0625rem; line-height: 1.3; }
+.front-lead h2 a:hover { text-decoration: underline 0.06em var(--color-accent); text-underline-offset: 0.12em; }
+.front-dek { max-inline-size: 36em; margin-block: 0 1rem; color: var(--color-muted); font-family: var(--font-body); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.45; }
+.byline { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; color: var(--color-muted); }
+.byline-name { color: var(--color-text); }
+@media (min-width: 64rem) {
+  .front:has(.front-latest) { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+  .front:not(:has(.front-latest)) .front-lead:has(.image) { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 2.5rem; align-items: center; }
+  .front:not(:has(.front-latest)) .front-lead .image { margin: 0; }
+  .front-latest { padding-inline-start: 3rem; border-inline-start: 1px solid var(--color-border); }
+}
 
 /* The ranked list: numerals in the link colour down the start side. */
 .cards-ranked { gap: 0; }
@@ -102,10 +103,36 @@ body { font-family: var(--font-heading); }
 .cards-ranked .card-meta { order: 2; margin-block-start: 0.375rem; }
 .cards-ranked .card-meta > a, .cards-ranked .card-reading-time { display: none; }
 
-/* Topic pills. */
-.filters { margin-block-end: var(--space-section); padding-block: 0.75rem; border-block: 1px solid var(--color-border); }
-.filters .tags a, .post-footer .tags a { padding-inline: 1rem; background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border-radius: 999px; color: var(--color-text); font-weight: 600; }
-.filters .tags a:hover, .post-footer .tags a:hover { background: color-mix(in oklab, var(--color-accent) 20%, var(--color-background)); }
+/* The latest posts: four with pictures, then the feed. */
+.latest > .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 2rem 1.75rem; padding-block-end: 2.5rem; border-block-end: 1px solid var(--color-border); }
+.latest > .cards .card, .home-section .cards .card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto 1fr auto; grid-template-areas: "image image" "kicker kicker" "title title" "dek dek" "by date"; gap: 0 0.875rem; }
+.latest > .cards .image, .home-section .cards .image { grid-area: image; margin-block-end: 0.25rem; }
+.latest > .cards .card-meta > a, .home-section .card-meta > a { grid-area: kicker; justify-self: start; }
+.latest > .cards :is(h2, h3), .home-section .cards :is(h2, h3) { grid-area: title; margin-block: 0 0.5rem; font-size: 1.1875rem; line-height: 1.22; }
+.latest > .cards .card > p:last-child, .home-section .cards .card > p:last-child { grid-area: dek; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; margin-block-end: 0.75rem; }
+.latest > .cards .card-author, .home-section .card-author { grid-area: by; }
+.latest > .cards .card-meta time, .home-section .card-meta time { grid-area: date; }
+.latest > .cards .card-reading-time, .home-section .card-reading-time { display: none; }
+@media (max-width: 40rem) {
+  .latest > .cards li + li .card { grid-template-columns: minmax(0, 1fr) 6.5rem; grid-template-rows: auto auto auto 1fr; grid-template-areas: "kicker image" "title image" "by image" "date image"; gap: 0 1rem; padding-block-start: 1.5rem; border-block-start: 1px solid var(--color-border); }
+  .latest > .cards li + li .image img { aspect-ratio: 1; }
+  .latest > .cards li + li .card > p:last-child { display: none; }
+  .latest > .cards { gap: 1.5rem; }
+}
+.latest-more { display: grid; gap: 3rem 4rem; margin-block-end: var(--space-section); }
+@media (min-width: 64rem) {
+  .latest-more:has(.river):has(.rail) { grid-template-columns: minmax(0, 1fr) 17rem; }
+  .river + .rail { position: sticky; inset-block-start: 1.5rem; align-self: start; padding-block-start: 1.5rem; }
+}
+.latest-more:not(:has(.river)) .rail { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 2.5rem 4rem; padding-block-start: 2.5rem; }
+.latest-more:not(:has(.river)) .rail > * { margin: 0; }
+.latest-more:not(:has(.river)) .topic-list ul { grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); column-gap: 2rem; }
+.rail section + nav { margin-block-start: 2.5rem; }
+.topic-list ul { display: grid; }
+.topic-list a { display: flex; justify-content: space-between; align-items: center; min-block-size: 44px; border-block-end: 1px solid var(--color-border); color: var(--color-text); font-weight: 700; text-decoration: none; }
+.topic-list a::after { content: "→" / ""; color: var(--color-link); }
+[dir="rtl"] .topic-list a::after { content: "←" / ""; }
+.topic-list a:hover { color: var(--color-link); }
 
 /* The feed: a row per story. On a phone the picture sits small on the end
    side; with room the date takes its own column on the start side. */
@@ -143,10 +170,12 @@ body { font-family: var(--font-heading); }
   .cards-row .card .image img { aspect-ratio: 3 / 2; }
 }
 
-/* A home section: its first story with a picture, then a list. */
-.home-section > .cards:not(.cards-compact) .card { padding-block-end: 1rem; }
-.home-section > .cards:not(.cards-compact) :is(h2, h3) { font-size: var(--text-h2); font-weight: 800; line-height: 1.1; }
-.home-section .cards-compact .card { padding-block: 0.75rem; border-block-start: 1px solid var(--color-border); }
+/* Numbered pages. */
+.pagination-numbered a { justify-content: center; padding-inline: 0.75rem; border: 1px solid var(--color-border); color: var(--color-text); font-weight: 700; text-decoration: none; }
+.pagination-numbered a[aria-current] { background: var(--color-text); border-color: var(--color-text); color: var(--color-background); }
+
+/* Home sections: a titled row of four. */
+.home-section .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 2rem 1.75rem; }
 .view-all a { font-weight: 700; }
 
 /* The newsletter: a band ruled in the accent. */
@@ -155,8 +184,6 @@ body { font-family: var(--font-heading); }
 .newsletter-slot .subscribe { display: flex; flex-wrap: wrap; align-items: end; gap: 0.5rem; }
 .newsletter-slot .subscribe > p:first-child { flex: 1 1 16rem; margin: 0; }
 .feed .newsletter-slot { margin-block: 1.5rem; }
-.pagination-numbered a { justify-content: center; padding-inline: 0.75rem; border: 1px solid var(--color-border); color: var(--color-text); font-weight: 700; text-decoration: none; }
-.pagination-numbered a[aria-current] { background: var(--color-text); border-color: var(--color-text); color: var(--color-background); }
 
 /* A post: one readable column, a heavy headline, the picture under it. */
 main:has(> .post) > *, main:has(> .author) > * { max-inline-size: var(--measure); margin-inline: auto; }
