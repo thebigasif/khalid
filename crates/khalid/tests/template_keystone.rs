@@ -1,7 +1,7 @@
 //! The Keystone template (templates spec 3.3), end to end: `khalid build`
 //! of the demo site with `[template] name = "keystone"` gives a featured
-//! post above a picture grid, numbered chapters, a share rail and no author
-//! box or related posts, and a site's own options and `[reader]` keys win.
+//! post above a picture grid, a share rail, the author box and related
+//! posts, and a site's own options and `[reader]` keys win.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -96,9 +96,9 @@ fn keystone_turns_on_its_parts_and_ships_its_own_rules() {
         "{home}"
     );
     let post = page(&out, "what-a-sitemap-does/index.html");
-    assert!(!post.contains("class=\"author-box\""), "{post}");
-    assert!(!post.contains("class=\"related"), "{post}");
-    assert!(!post.contains("class=\"reading-time\""), "{post}");
+    assert!(post.contains("class=\"author-box\""), "{post}");
+    assert!(post.contains("class=\"related"), "{post}");
+    assert!(post.contains("class=\"reading-time\""), "{post}");
     assert!(!post.contains("class=\"toc-"), "{post}");
     let (_, sheet) = post
         .split_once("<link rel=\"stylesheet\" href=\"/blog/")
@@ -111,13 +111,13 @@ fn keystone_turns_on_its_parts_and_ships_its_own_rules() {
 #[test]
 fn a_site_switches_keystone_options_off_and_its_reader_keys_win() {
     let (_temp, out) = built(
-        "[template.options]\nfeatured = false\nshare = \"none\"\n\n[reader]\nauthor_box = true\n",
+        "[template.options]\nfeatured = false\nshare = \"none\"\n\n[reader]\nauthor_box = false\n",
     );
     let home = page(&out, "index.html");
     assert!(!home.contains("class=\"featured\""), "{home}");
     let post = page(&out, "what-a-sitemap-does/index.html");
     assert!(!post.contains("class=\"share"), "{post}");
-    assert!(post.contains("class=\"author-box\""), "{post}");
+    assert!(!post.contains("class=\"author-box\""), "{post}");
 }
 
 #[test]
@@ -127,24 +127,31 @@ fn the_keystone_post_page() {
 }
 
 #[test]
-fn a_keystone_post_has_numbered_chapters_a_share_rail_and_one_date() {
+fn a_keystone_post_has_its_category_a_share_rail_and_one_date() {
     let (_temp, out) = built("");
     let post = page(&out, "what-a-sitemap-does/index.html");
+    let title = post.find("<h1>").unwrap();
+    let category = post.find("<p class=\"eyebrow\">").unwrap();
+    assert!(category < title, "{post}");
     let rail = post.find("<div class=\"share share-rail\">").unwrap();
-    let body = post
-        .find("<div class=\"post-body post-numbered\">")
-        .unwrap();
+    let body = post.find("<div class=\"post-body\">").unwrap();
     assert!(rail < body, "{post}");
-    assert_eq!(post.matches("<time datetime=").count(), 1, "{post}");
+    assert_eq!(post.matches("<p class=\"post-date\">").count(), 1, "{post}");
+    let (_, header) = post.split_once("<header class=\"post-header\">").unwrap();
+    let (header, _) = header.split_once("</header>").unwrap();
+    assert_eq!(header.matches("<time datetime=\"2").count(), 1, "{post}");
 }
 
 #[test]
-fn a_site_turns_keystone_chapters_off_and_adds_its_about_lines() {
+fn a_site_turns_keystone_chapters_on_and_adds_its_about_lines() {
     let (_temp, out) = built(
-        "[template.options]\nnumbered_headings = false\nshare = \"end\"\nabout = [\"Field Notes is written by two people who run SEO for small teams.\"]\n",
+        "[template.options]\nnumbered_headings = true\nshare = \"end\"\nabout = [\"Field Notes is written by two people who run SEO for small teams.\"]\n",
     );
     let post = page(&out, "what-a-sitemap-does/index.html");
-    assert!(post.contains("<div class=\"post-body\">"), "{post}");
+    assert!(
+        post.contains("<div class=\"post-body post-numbered\">"),
+        "{post}"
+    );
     assert!(!post.contains("share-rail"), "{post}");
     assert!(post.contains("</div>\n<div class=\"share\">"), "{post}");
     assert!(

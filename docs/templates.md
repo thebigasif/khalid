@@ -21,7 +21,7 @@ These eleven templates are built in. Every template but classic has its own page
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
 - `folio`: a product team's essays under their own masthead, with category pills, a featured story and a grid of outlined cards. See [Folio](templates/folio.md).
 - `harbor`: a busy marketing blog with featured posts, rows of recent posts, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
-- `keystone`: a personal guide site with one big featured post, a grid of pictures and numbered chapters. See [Keystone](templates/keystone.md).
+- `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
 - `wire`: a news and columns site with a lead story beside tabs of the latest posts and editor's picks, and a fast feed. See [Wire](templates/wire.md).
