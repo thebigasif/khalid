@@ -1,0 +1,2 @@
+Changed
+- The Almanac template is redesigned as a field guide: a warm paper palette with a deep green accent, numbered sections in every post with the same numbers in a contents column that stays beside the text, a featured guide with its picture beside its title, a numbered row of the newest posts, picture cards two to a row beside numbered editor's picks, and calmer headers, call-to-action bands and footers. Long posts now show "On this page" beside the text on a large screen; set `contents = "inline"` under `[template.options]` for the old box.

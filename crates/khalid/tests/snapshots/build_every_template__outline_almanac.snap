@@ -18,10 +18,11 @@ section.al-grid
 
 # why-internal-links-matter/index.html
 nav.breadcrumbs "Breadcrumbs"
-article.post
+article.post.post-with-toc
   header.post-header
     h1: Why internal links matter
-  nav.toc-box "On this page"
+  nav "On this page"
+  nav.toc-side "On this page"
   div.post-body: the text
   aside.al-byline-end "Written by"
 section.mentions

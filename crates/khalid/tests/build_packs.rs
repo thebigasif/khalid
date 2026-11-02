@@ -163,6 +163,25 @@ fn almanac_options_drop_the_closing_byline_and_the_lead_picture() {
     assert!(page(&plain, POST).contains("al-byline-end"));
 }
 
+/// A long guide keeps its contents beside the text, where the reader can
+/// jump between sections without scrolling back up, and folded above the
+/// text on a phone. `contents = "inline"` brings back the open box.
+#[test]
+fn almanac_posts_keep_their_contents_beside_the_text() {
+    let (_temp, out) = built("almanac");
+    let post = page(&out, POST);
+    assert!(
+        post.contains("<article class=\"post post-with-toc\">"),
+        "{post}"
+    );
+    assert!(post.contains("<nav class=\"toc-side\""), "{post}");
+    assert!(post.contains("<details class=\"toc-inline\">"), "{post}");
+    let (_temp, boxed) = built_with("almanac", "contents = \"inline\"");
+    let post = page(&boxed, POST);
+    assert!(post.contains("<nav class=\"toc-box\""), "{post}");
+    assert!(!post.contains("toc-side"), "{post}");
+}
+
 #[test]
 fn workbench_options_change_the_closing_line_and_the_newsletter_note() {
     let options = "closing_line = false\nnewsletter_note = [\"A new review every Tuesday.\"]";
