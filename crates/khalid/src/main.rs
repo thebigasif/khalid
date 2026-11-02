@@ -25,6 +25,7 @@ mod build;
 mod build_ai_page;
 mod build_files;
 mod build_gate;
+mod build_glossary;
 mod build_home;
 mod build_lists;
 mod build_message;
