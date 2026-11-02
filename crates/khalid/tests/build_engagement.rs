@@ -166,3 +166,99 @@ fn build_shows_the_preferred_source_button_where_the_table_places_it() {
     let page = built(temp.path(), "", "source/index.html");
     assert!(!page.contains("preferred-source"), "off without the table");
 }
+
+/// Writes the main newsletter's page and two sent issues and one planned
+/// for next year into the site in `folder`.
+#[cfg(test)]
+fn newsletter(folder: &Path) {
+    let main = at(folder, "content/newsletters/main");
+    fs::create_dir_all(at(&main, "issues")).unwrap();
+    let page =
+        "# The Field Letter\n\nFive links on search every other Tuesday, read in five minutes.\n";
+    fs::write(at(&main, "page.md"), page).unwrap();
+    for (name, text) in [
+        (
+            "2026-09-01-first-links.md",
+            "# The first links\n\nWhy titles matter.\n",
+        ),
+        (
+            "2026-10-06-sitemaps.md",
+            "# Sitemaps, plainly\n\nWhat a sitemap does.\n",
+        ),
+        ("2099-01-01-planned.md", "# Planned\n\nNot sent yet.\n"),
+        ("notes.md", "# Not an issue\n\nNo day in the name.\n"),
+    ] {
+        fs::write(at(&main, &format!("issues/{name}")), text).unwrap();
+    }
+}
+
+#[test]
+fn build_writes_the_newsletter_page_and_a_page_per_sent_issue() {
+    let temp = tempfile::tempdir().unwrap();
+    newsletter(temp.path());
+    let mail =
+        "\n[mail]\nfrom = \"letters@example.com\"\n\n[mail.smtp]\nhost = \"smtp.example.com\"\n";
+    let page = built(temp.path(), mail, "newsletter/index.html");
+    assert!(page.contains("<h1>The Field Letter</h1>"), "{page}");
+    assert!(page.contains("every other Tuesday"), "{page}");
+    assert!(
+        page.contains("<form class=\"subscribe\""),
+        "a server site takes sign-ups: {page}"
+    );
+    let (_, sample) = page.split_once("<section class=\"issue-sample\"").unwrap();
+    assert!(
+        sample.contains("<a href=\"/newsletter/sitemaps/\">Sitemaps, plainly</a>"),
+        "the newest is the sample: {page}"
+    );
+    let list = page.split("<ol class=\"issue-list\"").nth(1).unwrap();
+    let first = list.find("Sitemaps, plainly").unwrap();
+    assert!(
+        first < list.find("The first links").unwrap(),
+        "newest first: {list}"
+    );
+    assert!(
+        list.contains("<time datetime=\"2026-10-06\">6 October 2026</time>"),
+        "{list}"
+    );
+    assert!(
+        !page.contains("Planned") && !page.contains("Not an issue"),
+        "{page}"
+    );
+    let issue =
+        fs::read_to_string(at(temp.path(), "public/newsletter/sitemaps/index.html")).unwrap();
+    assert!(issue.contains("<h1>Sitemaps, plainly</h1>"), "{issue}");
+    assert!(
+        issue.contains("Sent on <time datetime=\"2026-10-06\">"),
+        "{issue}"
+    );
+    assert!(
+        issue.contains("<a href=\"/newsletter/\">Every issue of the newsletter</a>"),
+        "{issue}"
+    );
+    assert!(!at(temp.path(), "public/newsletter/planned").exists());
+}
+
+#[test]
+fn a_static_site_shows_the_newsletter_archive_without_the_form() {
+    let temp = tempfile::tempdir().unwrap();
+    newsletter(temp.path());
+    let settings =
+        "\n[mail]\nfrom = \"letters@example.com\"\n\n[mail.smtp]\nhost = \"smtp.example.com\"\n";
+    let toml = at(temp.path(), "site.toml");
+    let site = temp.path().to_str().unwrap();
+    khalid(&["init", site, "--address", "https://www.example.com"]);
+    let text = fs::read_to_string(&toml)
+        .unwrap()
+        .replace("mode = \"server\"", "mode = \"static\"");
+    fs::write(&toml, format!("{text}{settings}")).unwrap();
+    let output = khalid(&["--site", site, "build"]);
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let page = fs::read_to_string(at(temp.path(), "public/newsletter/index.html")).unwrap();
+    assert!(page.contains("Past issues"), "{page}");
+    assert!(!page.contains("<form"), "{page}");
+}

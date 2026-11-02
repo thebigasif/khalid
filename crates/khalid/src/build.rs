@@ -17,6 +17,7 @@ use serde::Serialize;
 
 use crate::cli::Output;
 use crate::exit::Exit;
+use crate::newsletter_files::archive_pages;
 use crate::page_code::PageCode;
 use crate::post_files::{Assets, charts, library_photo};
 use crate::post_photos::Shown;
@@ -136,6 +137,7 @@ fn build(
     let categories = categories::of(site)?;
     if let Some((renderer, _)) = &theme {
         search_page::add(config, renderer, &mut languages)?;
+        archive_pages::add(site, config, (renderer, today), &mut languages)?;
         let sources = (content, categories.as_slice());
         build_lists::add((config, routes), renderer, sources, &mut languages)?;
         build_sitemap::add(config, renderer, &mut languages)?;

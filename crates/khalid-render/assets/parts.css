@@ -30,6 +30,19 @@
 .preferred-source svg { flex: none; fill: var(--color-accent); }
 .site-footer .preferred-source { margin-block: var(--space); }
 
+/* The newsletter's page: a recent issue in a box, then every issue with
+   its day and first line. An issue's page shows the day it went out. */
+.issue-sample { margin-block: var(--space-section); padding: 1.5rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.issue-sample h2 { margin-block: 0 0.25rem; color: var(--color-muted); font-size: var(--text-small); letter-spacing: 0.04em; text-transform: uppercase; }
+.issue-sample h3 { margin-block: 0 0.5rem; }
+.issue-sample p:last-child { margin-block-end: 0; }
+.issue-list { margin: 0; padding: 0; list-style: none; }
+.issue-list li { padding-block: 1rem; border-block-start: 1px solid var(--color-border); }
+.issue-list time, .issue-date { display: block; color: var(--color-muted); font-size: var(--text-small); }
+.issue-list a { font-family: var(--font-heading); font-size: var(--text-h4); font-weight: 700; }
+.issue-list p { margin: 0.25rem 0 0; color: var(--color-muted); }
+.issue-back a { display: inline-flex; align-items: center; min-block-size: 44px; }
+
 /* A post's subtitle under its title, and why it was updated. */
 .dek { margin-block: 0.5rem 1rem; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.4; }
 .updated-note { color: var(--color-muted); font-size: var(--text-small); font-style: italic; }

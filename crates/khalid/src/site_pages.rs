@@ -19,6 +19,7 @@ use crate::comment_pages::{self, ShownComments};
 use crate::content_feed::ContentFeed;
 use crate::form_pages::{self, LiveForms};
 use crate::listed_post::ListedPost;
+use crate::newsletter_files::archive_pages;
 use crate::post_files::{Assets, charts};
 use crate::post_heads::{self, PostHeads};
 use crate::post_photos::Shown;
@@ -430,6 +431,7 @@ impl SitePages {
         let categories = categories::of(folder)?;
         if let Some(theme) = theme {
             search_page::add(config, &theme.renderer, &mut languages)?;
+            archive_pages::add(folder, config, (&theme.renderer, today), &mut languages)?;
             // A saved post's page alone needs no list, and its content
             // holds too few posts to make one.
             if which == Which::All {
