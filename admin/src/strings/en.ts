@@ -1021,9 +1021,9 @@ export const en = {
       fix: "Sign out, then sign in with your email or with a sign-in link.",
     },
     badLink: {
-      what: "This sign-in link no longer works.",
+      what: "This link has expired or was used.",
       why: "Each link works once, for a short time, so nobody else can use it later.",
-      fix: "Ask the blog's owner for a new link, or sign in with your email and password.",
+      fix: "Run khalid staff owner again for a new one, or ask the blog's owner for a new link.",
     },
     badAlias: {
       what: "The old address is not a path on this blog.",

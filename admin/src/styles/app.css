@@ -205,6 +205,8 @@
   .sign-card h1{font-size:1.5rem;text-align:center;margin:0 0 1.5rem}
   .sign-card .field,.sign-card .problem{max-width:none}
   .sign-card .btn{width:100%}
+  .sign-card .btn+.btn{margin-top:.75rem}
+  .sign-lede{text-align:center;margin:-.75rem 0 1.5rem}
   .sign-logo{display:block;height:3rem;width:auto;max-width:10rem;object-fit:contain;margin:0 auto 1rem}
   .sign-initial{display:grid;place-items:center;width:3rem;height:3rem;margin:0 auto 1rem;border-radius:.75rem;background:var(--color-tint);color:var(--color-link);font-size:1.5rem;font-weight:700}
   .sign-way>.hint{text-align:center;margin:.5rem 0 0}

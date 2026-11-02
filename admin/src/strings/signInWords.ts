@@ -31,6 +31,20 @@ export const signInWords = {
     checking: "Checking your sign-in link",
     back: "Go to the sign-in page",
   },
+  welcome: {
+    title: "You're signed in",
+    lede: "Add a passkey so you can sign in next time without a link.",
+    noPasskeys:
+      "This browser cannot make passkeys. Choose a password so you can sign in next time.",
+    add: "Add a passkey",
+    adding: "Waiting for this device",
+    passkeyName: "First passkey",
+    password: "Choose a password instead",
+    skip: "Skip for now and open the admin",
+    addedTitle: "Your passkey is ready",
+    added: "Next time, press Sign in with a passkey. You can rename this one under Passkeys.",
+    open: "Open the admin",
+  },
   problems: {
     noPasskey: {
       what: "This device did not sign you in.",

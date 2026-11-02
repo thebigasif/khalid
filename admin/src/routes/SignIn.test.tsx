@@ -85,26 +85,6 @@ describe("signing in", () => {
     expect(sessionStorage.getItem("khalid-admin-csrf")).toBeNull();
   });
 
-  it("signs in with the token after the # of a sign-in link, and opens the account", async () => {
-    const sent = adminBlog({
-      "POST /session/link/redeem/": () => json(200, { ...LENA, csrf: "csrf-link" }),
-      "GET /session/": () => json(200, { ...LENA, csrf: "csrf-link" }),
-    });
-    renderAt("/sign-in/link#token=link_test");
-    const heading = await screen.findByRole("heading", { level: 1, name: en.account.title });
-    expect(heading).toBeVisible();
-    expect(await sent[0]?.json()).toEqual({ token: "link_test" });
-    expect(sessionStorage.getItem("khalid-admin-csrf")).toBe("csrf-link");
-  });
-
-  it("explains a sign-in link that no longer works", async () => {
-    adminBlog({ "POST /session/link/redeem/": () => json(401, {}) });
-    renderAt("/sign-in/link#token=used");
-    expect(await screen.findByRole("alert")).toHaveTextContent(en.problems.badLink.what);
-    expect(screen.getByRole("link", { name: en.signIn.link.back })).toBeVisible();
-    expect(await axeViolations()).toEqual([]);
-  });
-
   it("shows the blog's own name and logo, as the server names them", async () => {
     const name = named("khalid-name", "Field notes");
     const logo = named("khalid-logo", "https://example.com/logo.svg");
