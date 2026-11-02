@@ -11,8 +11,8 @@ expression: "shown(&out, \"why-internal-links-matter/index.html\")"
 <nav class="breadcrumbs" aria-label="Breadcrumbs">
 <ol>
 <li><a href="/blog/">Field Notes on SEO</a></li>
-<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
-<li><a href="/blog/why-internal-links-matter/" aria-current="page">Why internal links matter</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/why-internal-links-matter/" aria-current="page">Why internal links matter</a></li>
 </ol>
 </nav>
 

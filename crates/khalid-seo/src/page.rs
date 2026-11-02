@@ -194,6 +194,9 @@ pub struct SeoPage {
     pub search_phrase: Option<String>,
     /// On a list split into pages, which page this is, the `{page}` variable.
     pub page_number: Option<PageNumber>,
+    /// A shorter name for the page in its breadcrumb trail, in place of
+    /// its title.
+    pub breadcrumb_title: Option<String>,
 }
 
 impl SeoPage {
@@ -239,6 +242,7 @@ impl SeoPage {
             term_description: None,
             search_phrase: None,
             page_number: None,
+            breadcrumb_title: None,
         }
     }
 }

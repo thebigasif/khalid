@@ -70,6 +70,7 @@ fn the_site_hides_its_locale_from_templates() {
         search: None,
         script: None,
         subscribe: None,
+        breadcrumbs: khalid_render::BreadcrumbStyle::default(),
     };
     let seen = serde_json::to_value(&site).unwrap();
     assert!(

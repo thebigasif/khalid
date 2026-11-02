@@ -74,3 +74,18 @@ news = "noindex"
 [seo.feeds]
 off = ["atom", "json"]
 ```
+
+## Breadcrumbs
+
+`[seo.breadcrumbs]` shapes the trail above each page, when the template shows it, and the `BreadcrumbList` search engines read.
+
+| Key | Default | What it does |
+|---|---|---|
+| `separator` | `/` | What stands between two steps. Screen readers skip it. |
+| `home` | the site name | The first step's name, such as `Home`. |
+| `archive_prefix` | none | Words before the last step on a tag, category, author or date page, such as `Archives for`. |
+| `search_prefix` | none | Words before the last step on the search page, such as `You searched for`. |
+| `bold_last` | `false` | Shows the last step, the page itself, in bold. |
+| `taxonomy` | `category` | Which term a post's trail passes through: `category`, `tag` (its first tag) or `none`. |
+
+A post may set `breadcrumb_title:` in its front matter to name itself more briefly in the trail, such as `Sitemaps` for a long headline.

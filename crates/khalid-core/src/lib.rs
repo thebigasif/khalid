@@ -27,6 +27,7 @@ mod reader;
 mod robots;
 mod search_console_settings;
 mod secret;
+mod seo_breadcrumb_settings;
 mod seo_head_settings;
 mod seo_publisher_settings;
 mod seo_settings;
@@ -66,6 +67,7 @@ pub use robots::{
 };
 pub use search_console_settings::{SearchConsoleProperty, SearchConsoleSettings};
 pub use secret::Secret;
+pub use seo_breadcrumb_settings::{BreadcrumbSettings, BreadcrumbTaxonomy};
 pub use seo_head_settings::{
     CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings, ImageSettings, SocialSettings,
     TemplateSettings, TitleSettings, VerificationSettings,

@@ -44,9 +44,9 @@
 {% endif %}</header>
 <main id="main" tabindex="-1">
 {% if template.options.back_link and meta.kind == "article" %}<p class="back-link"><a href="{{ site.home }}">{{ t.back_to_posts }}</a></p>
-{% endif %}{% if template.options.breadcrumbs and meta.breadcrumbs %}<nav class="breadcrumbs" aria-label="{{ t.breadcrumbs }}">
+{% endif %}{% if template.options.breadcrumbs and meta.breadcrumbs %}<nav class="breadcrumbs"{% if site.breadcrumbs.bold_last %} data-bold-last{% endif %} aria-label="{{ t.breadcrumbs }}">
 <ol>
-{% for crumb in meta.breadcrumbs %}<li><a href="{{ crumb.href }}"{% if loop.last %} aria-current="page"{% endif %}>{{ crumb.name }}</a></li>
+{% for crumb in meta.breadcrumbs %}<li>{% if not loop.first %}<span class="crumb-sep" aria-hidden="true">{{ site.breadcrumbs.separator }}</span>{% endif %}<a href="{{ crumb.href }}"{% if loop.last %} aria-current="page"{% endif %}>{{ crumb.name }}</a></li>
 {% endfor %}</ol>
 </nav>
 {% endif %}{% block main %}{% endblock %}

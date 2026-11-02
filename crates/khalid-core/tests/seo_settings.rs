@@ -5,8 +5,8 @@
 use std::path::Path;
 
 use khalid_core::{
-    AbsoluteUrl, ArchiveIndex, ArchiveSetting, Config, DomainName, Environment, ExternalRel,
-    FeedKind, IndexNowKey, IndexNowSettings, Indexing, LinkOpening, LinkSettings,
+    AbsoluteUrl, ArchiveIndex, ArchiveSetting, BreadcrumbTaxonomy, Config, DomainName, Environment,
+    ExternalRel, FeedKind, IndexNowKey, IndexNowSettings, Indexing, LinkOpening, LinkSettings,
 };
 
 const SITE: &str = r#"name = "Field Notes on SEO"
@@ -238,4 +238,26 @@ fn refuses_an_archive_type_it_does_not_know() {
         read("\n[seo.index]\nmonths = \"noindex\"\n").unwrap_err(),
         "site.toml, line 8, field \"months\": unknown field `months`, expected one of `tags`, `categories`, `authors`, `dates`, `search`, `thin_archives_below`, `site`, `posts`, `pages`, `collections`"
     );
+}
+
+#[test]
+fn the_breadcrumb_settings_have_defaults_and_read_each_key() {
+    let plain = read("").unwrap();
+    let defaults = &plain.seo().breadcrumbs;
+    assert_eq!(defaults.separator, "/");
+    assert_eq!(defaults.home, None);
+    assert_eq!(defaults.taxonomy, BreadcrumbTaxonomy::Category);
+    assert!(!defaults.bold_last);
+    let config = read(
+        "\n[seo.breadcrumbs]\nseparator = \"»\"\nhome = \"Home\"\narchive_prefix = \"Archives for\"\n\
+         search_prefix = \"You searched for\"\nbold_last = true\ntaxonomy = \"tag\"\n",
+    )
+    .unwrap();
+    let crumbs = &config.seo().breadcrumbs;
+    assert_eq!(crumbs.separator, "»");
+    assert_eq!(crumbs.home.as_deref(), Some("Home"));
+    assert_eq!(crumbs.archive_prefix, "Archives for");
+    assert_eq!(crumbs.search_prefix, "You searched for");
+    assert!(crumbs.bold_last);
+    assert_eq!(crumbs.taxonomy, BreadcrumbTaxonomy::Tag);
 }

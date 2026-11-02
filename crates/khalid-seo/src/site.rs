@@ -69,6 +69,8 @@ pub struct SeoSite {
     /// The words dates and page lines are written with, per language. A
     /// language not listed uses the English [`TemplateWords::default`].
     pub words: BTreeMap<Locale, TemplateWords>,
+    /// The first step of every breadcrumb trail. `None` uses the site name.
+    pub breadcrumb_home: Option<String>,
 }
 
 impl SeoSite {
@@ -100,6 +102,7 @@ impl SeoSite {
             custom_schema: CustomSchema::default(),
             today: None,
             words: BTreeMap::new(),
+            breadcrumb_home: None,
         }
     }
 

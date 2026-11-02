@@ -34,6 +34,8 @@ pub(crate) fn site(config: &Config) -> Result<SeoSite, UserMessage> {
         site.words.insert(language.clone(), words(language)?);
     }
     site.indexing = IndexPolicy::from(&config.seo().index);
+    site.breadcrumb_home
+        .clone_from(&config.seo().breadcrumbs.home);
     seo_settings::apply(config.seo(), &mut site).map_err(|mistake| mistake.message())?;
     search_page::announce(config, &mut site)?;
     Ok(site)
@@ -174,6 +176,7 @@ pub(crate) fn from_front(seo: &mut SeoPage, front: &PostFront) -> Result<(), Use
     };
     seo.tags.clone_from(&front.tags);
     seo.focus_keyword.clone_from(&front.focus_keyword);
+    seo.breadcrumb_title.clone_from(&front.breadcrumb_title);
     Ok(())
 }
 

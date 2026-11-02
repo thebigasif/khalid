@@ -5,9 +5,9 @@ use std::collections::BTreeMap;
 use serde::Deserialize;
 
 use crate::{
-    AbsoluteUrl, AiPageSettings, CrawlerSettings, FeedSettings, IndexNowKey, Indexing,
-    LinkSettings, LocationSettings, PublisherSettings, SchemaTemplateSettings, SocialSettings,
-    TitleSettings, VerificationSettings,
+    AbsoluteUrl, AiPageSettings, BreadcrumbSettings, CrawlerSettings, FeedSettings, IndexNowKey,
+    Indexing, LinkSettings, LocationSettings, PublisherSettings, SchemaTemplateSettings,
+    SocialSettings, TitleSettings, VerificationSettings,
 };
 
 /// The SEO settings. Every one has a default, so the table may be left out:
@@ -53,6 +53,8 @@ pub struct SeoSettings {
     pub schema: Vec<SchemaTemplateSettings>,
     /// The AI info page, from `[seo.ai_page]` (P3). On by default.
     pub ai_page: AiPageSettings,
+    /// How the breadcrumb trail reads, from `[seo.breadcrumbs]`.
+    pub breadcrumbs: BreadcrumbSettings,
 }
 
 /// `IndexNow`, switched on by its table in `site.toml`.

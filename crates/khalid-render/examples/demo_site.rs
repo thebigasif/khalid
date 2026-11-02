@@ -231,6 +231,7 @@ impl Demo {
             search: Some(format!("{}search/", lang.prefix)),
             script: Some(self.script.clone()),
             subscribe: None,
+            breadcrumbs: khalid_render::BreadcrumbStyle::default(),
         })
     }
 

@@ -130,6 +130,9 @@ pub struct PostFront {
     /// or a `Course`, added to the page's structured data.
     #[serde(default, deserialize_with = "post_fields::schema")]
     pub schema: Option<String>,
+    /// A shorter name for the post in breadcrumb trails, such as "Internal
+    /// links" for "Internal links, the complete guide for 2026".
+    pub breadcrumb_title: Option<String>,
 }
 
 /// The most related posts a post shows, and so the most it may pin.

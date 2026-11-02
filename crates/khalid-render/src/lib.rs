@@ -71,7 +71,7 @@ pub use render_error::RenderError;
 pub use renderer::Renderer;
 pub use script::{ScriptFile, ScriptTag, reader_script, reader_script_file};
 pub use share::SHARE_NETWORKS;
-pub use site::{AnnouncementBar, Nav, NavGroup, NavLink, RenderSite};
+pub use site::{AnnouncementBar, BreadcrumbStyle, Nav, NavGroup, NavLink, RenderSite};
 pub use sitemap::{RenderSitemap, SitemapGroup, SitemapSection};
 pub use strings::builtin_strings;
 pub use stylesheet::{stylesheet, stylesheet_text, stylesheet_text_with, stylesheet_with};
