@@ -138,6 +138,12 @@ fn lead(
         let height = u32::try_from(scaled.checked_div(u64::from(picture.width))?).ok()?;
         Some(ShareImage::new(url, file.width, height, &image.alt))
     });
+    // An author's photo is also the `image` of the Person their page is about.
+    if matches!(page.body, PageBody::Author(_))
+        && let Some(profile) = &mut page.seo.author_profile
+    {
+        profile.image.clone_from(&shared);
+    }
     page.seo.share_image = shared;
     Some(drawn)
 }

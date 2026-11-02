@@ -67,6 +67,7 @@ pub(crate) fn attach(languages: &mut [LanguagePages], shown: &Shown) {
             PageBody::Post(post) => {
                 post.authors
                     .iter_mut()
+                    .chain(&mut post.reviewers)
                     .for_each(|person| photo(person, shown));
                 cards(&mut post.related, shown);
             }

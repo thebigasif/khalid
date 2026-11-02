@@ -1,15 +1,13 @@
 //! The author page, a plain page, and the tag and category lists.
 
 use chrono::NaiveDate;
-use khalid_render::{
-    BodyHtml, Link, Loading, PageBody, PageKind, RenderAuthor, RenderPage, Renderer,
-};
+use khalid_render::{BodyHtml, Loading, PageBody, PageKind, RenderAuthor, RenderPage, Renderer};
 
 use crate::common::{demo_site, meta};
 use crate::html_check::assert_valid_page;
 use crate::image::sitemap_image;
 use crate::listing::{first_page, main_of};
-use crate::post::person;
+use crate::post::{person, profile};
 
 fn render(body: &PageBody, tag: &str) -> String {
     let meta = meta("A page", "/blog/a-page/", PageKind::Website);
@@ -24,15 +22,18 @@ pub(crate) fn lena() -> RenderAuthor {
     RenderAuthor {
         name: "Lena Vogt".to_owned(),
         role: Some("Technical SEO editor".to_owned()),
+        credentials: Some("Ten years running crawls for news sites".to_owned()),
         image: None,
         bio: BodyHtml::from_sanitised(
             "<p>Lena looks after the technical side: sitemaps, page speed and everything a crawler sees.</p>"
                 .to_owned(),
         ),
-        profiles: vec![Link {
-            name: "Mastodon".to_owned(),
-            href: "https://mastodon.example/@lena".to_owned(),
-        }],
+        profiles: vec![
+            profile("https://mastodon.example/@lena"),
+            profile("https://github.com/lena-vogt-example"),
+            profile("https://lenavogt.example/"),
+        ],
+        post_count: 12,
         posts: first_page().posts,
         pagination: None,
         others: vec![person("Asif", "asif", Some("Founder, SerpDad"))],

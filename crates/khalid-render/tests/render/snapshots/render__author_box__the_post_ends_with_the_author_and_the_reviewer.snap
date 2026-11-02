@@ -14,7 +14,8 @@ expression: "part(&page, \"<section class=\\\"author-box\\\">\", \"</section>\")
 <p class="person-role">Technical SEO editor</p>
 <p>Lena has fixed crawl problems on sites with a million pages.</p>
 <ul class="author-profiles">
-<li><a href="https://www.linkedin.com/in/lena-vogt-example">www.linkedin.com</a></li>
+<li><a href="https://www.linkedin.com/in/lena-vogt-example">LinkedIn</a></li>
+<li><a href="https://speakerdeck.com/lena-vogt-example">speakerdeck.com</a></li>
 </ul>
 </div>
 </div>

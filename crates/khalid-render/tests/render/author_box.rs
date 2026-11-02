@@ -1,11 +1,11 @@
 //! The author box at the end of a post: each author's photo, name, role,
 //! bio and profiles, then who reviewed it.
 
-use khalid_render::{BodyHtml, Feature, Link, RenderPost};
+use khalid_render::{BodyHtml, Feature, RenderPost};
 
 use crate::html_check::assert_valid_page;
 use crate::image::avatar_image;
-use crate::post::{link, part, person, render, render_on, site_without, sitemap_post};
+use crate::post::{part, person, profile, render, render_on, site_without, sitemap_post};
 
 /// The demo post by Lena Vogt with her photo, bio and profiles, reviewed by
 /// Mara Lind.
@@ -16,11 +16,12 @@ fn post_with_profile() -> RenderPost {
     lena.bio = Some(BodyHtml::from_sanitised(
         "<p>Lena has fixed crawl problems on sites with a million pages.</p>".to_owned(),
     ));
-    lena.profiles = vec![Link {
-        name: "www.linkedin.com".to_owned(),
-        href: "https://www.linkedin.com/in/lena-vogt-example".to_owned(),
-    }];
-    post.reviewers = vec![link("Mara Lind", "/blog/authors/mara-lind/")];
+    lena.credentials = Some("Ten years running crawls for news sites".to_owned());
+    lena.profiles = vec![
+        profile("https://www.linkedin.com/in/lena-vogt-example"),
+        profile("https://speakerdeck.com/lena-vogt-example"),
+    ];
+    post.reviewers = vec![person("Mara Lind", "mara-lind", None)];
     post
 }
 

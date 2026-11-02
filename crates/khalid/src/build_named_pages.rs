@@ -3,9 +3,9 @@
 
 use std::collections::BTreeMap;
 
-use khalid_content::{LeadImage, SiteContent, Wikilinks};
+use khalid_content::{AuthorFront, LeadImage, SiteContent, Wikilinks};
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
-use khalid_render::{Link, PageBody, PageKind, Person, PostCard, RenderAuthor, RenderPage};
+use khalid_render::{PageBody, PageKind, Person, Profile, RenderAuthor, RenderPage};
 use khalid_routes::{PostAddress, Routes};
 use khalid_seo::{AuthorProfile, PageKind as SeoKind};
 
@@ -93,10 +93,12 @@ pub(crate) fn author_pages(
         let (name, slug) = named(config, doc, front.slug.as_ref(), front.name.as_deref())?;
         let rest = format!("authors/{slug}/");
         let path = path_of(config, locale, &rest);
+        let bio = body_html(config, links, doc)?;
+        let description = definition_text::summary(bio.as_str());
         let meta = meta(
             config,
             name.clone(),
-            String::new(),
+            description.clone(),
             path.clone(),
             PageKind::Website,
         )?;
@@ -104,45 +106,28 @@ pub(crate) fn author_pages(
             .photo
             .as_deref()
             .and_then(|src| LeadImage::try_new(src, &name));
-        let profiles = front
-            .same_as
-            .iter()
-            .map(|url| Link {
-                name: url.host().to_owned(),
-                href: url.to_string(),
-            })
-            .collect();
-        let posts: Vec<PostCard> = listed
+        let theirs: Vec<&ListedPost> = listed
             .iter()
             .filter(|post| post.author.as_ref() == Some(&slug))
-            .map(|post| post.card.clone())
             .collect();
         let mut seo = build_seo::page(SeoKind::Author, locale, &rest, &name)?;
         seo.author = Some(name.clone());
-        seo.item_count = u32::try_from(posts.len()).ok();
+        seo.excerpt.clone_from(&description);
+        seo.item_count = u32::try_from(theirs.len()).ok();
         // An author is one person in every language, so their pages pair by slug.
         seo.translation = build_seo::translation(Some(&format!("author {slug}")))?;
-        let mut profile = AuthorProfile::new(&name);
-        // The author's own page is their `url`, so a reader, and an engine
-        // judging the post, can find who stands behind it (P5).
-        let address = format!(
-            "{}{}",
-            config.address().as_str().trim_end_matches('/'),
-            path
-        );
-        profile.url =
-            Some(AbsoluteUrl::parse(&address).map_err(|_| build_message::address(&address))?);
-        profile.job_title.clone_from(&front.role);
-        profile.credentials.clone_from(&front.credentials);
-        profile.same_as.clone_from(&front.same_as);
+        let mut profile = profile(config, front, (&name, &path), &theirs)?;
+        profile.bio = description;
         seo.author_profile = Some(profile);
         let author = RenderAuthor {
             name,
             role: front.role.clone(),
+            credentials: front.credentials.clone(),
             image: None,
-            bio: body_html(config, links, doc)?,
-            profiles,
-            posts,
+            bio,
+            profiles: front.same_as.iter().map(Profile::of).collect(),
+            post_count: theirs.len(),
+            posts: theirs.iter().map(|post| post.card.clone()).collect(),
             pagination: None,
             others: people
                 .iter()
@@ -156,4 +141,33 @@ pub(crate) fn author_pages(
         pages.push(page);
     }
     Ok(pages)
+}
+
+/// The `Person` an author page at `path` is about, from their file's
+/// `front` and `posts`: what they do, why to trust them, where else they
+/// are, and the categories they write in as what they know about.
+fn profile(
+    config: &Config,
+    front: &AuthorFront,
+    (name, path): (&str, &str),
+    posts: &[&ListedPost],
+) -> Result<AuthorProfile, UserMessage> {
+    let mut profile = AuthorProfile::new(name);
+    // The author's own page is their `url`, so a reader, and an engine
+    // judging the post, can find who stands behind it (P5).
+    let address = format!(
+        "{}{}",
+        config.address().as_str().trim_end_matches('/'),
+        path
+    );
+    profile.url = Some(AbsoluteUrl::parse(&address).map_err(|_| build_message::address(&address))?);
+    profile.job_title.clone_from(&front.role);
+    profile.credentials.clone_from(&front.credentials);
+    profile.same_as.clone_from(&front.same_as);
+    for category in posts.iter().filter_map(|post| post.card.category.as_ref()) {
+        if !profile.knows_about.contains(&category.name) {
+            profile.knows_about.push(category.name.clone());
+        }
+    }
+    Ok(profile)
 }

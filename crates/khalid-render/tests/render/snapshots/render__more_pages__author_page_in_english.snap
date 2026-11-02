@@ -15,6 +15,8 @@ expression: main_of(&page)
 </div>
 <ul class="author-profiles">
 <li><a href="https://mastodon.example/@lena" rel="me">Mastodon</a></li>
+<li><a href="https://github.com/lena-vogt-example" rel="me">GitHub</a></li>
+<li><a href="https://lenavogt.example/" rel="me">lenavogt.example</a></li>
 </ul>
 </article>
 <section aria-labelledby="author-posts">

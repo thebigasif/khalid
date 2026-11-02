@@ -1,6 +1,5 @@
 ---
 source: crates/khalid/tests/build_files.rs
-assertion_line: 68
 expression: "english.join(\"\\n\")"
 ---
 # Field Notes on SEO
@@ -23,7 +22,7 @@ expression: "english.join(\"\\n\")"
 
 ## Optional
 
-- [Asif](https://www.example.com/blog/authors/asif/): Asif writes for Field Notes on SEO. Here is who they are and every post they have written.
+- [Asif](https://www.example.com/blog/authors/asif/): Asif writes about search from the side of the people who have to do the work: small teams with a website, a blog and not much time.
 - [Content strategy](https://www.example.com/blog/category/content-strategy/): Content strategy: the posts on Field Notes on SEO in this list, newest first.
 - [Technical SEO](https://www.example.com/blog/category/technical-seo/): Technical SEO: the posts on Field Notes on SEO in this list, newest first.
 - [On-page SEO](https://www.example.com/blog/category/on-page-seo/): On-page SEO: the posts on Field Notes on SEO in this list, newest first.

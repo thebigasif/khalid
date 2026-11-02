@@ -221,6 +221,7 @@ fn sample_post(author: &str, locale: &Locale) -> RenderPost {
             name: author.to_owned(),
             href: PAGE.to_owned(),
             role: None,
+            credentials: None,
             image: None,
             bio: None,
             profiles: Vec::new(),
