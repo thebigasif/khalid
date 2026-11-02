@@ -1,7 +1,9 @@
 //! The chart block, `:::chart`, numbers written in the post or in a CSV
 //! file beside it (engagement task).
 
-use khalid_content::{BlockKind, ChartBlock, ChartKind, ChartTable, parse_blocks, print_blocks};
+use khalid_content::{
+    BlockKind, ChartBlock, ChartKind, ChartTable, parse_blocks, print_blocks, with_chart_files,
+};
 
 #[cfg(test)]
 fn chart(markdown: &str) -> ChartBlock {
@@ -175,4 +177,35 @@ fn a_column_chart_draws_round_gridlines_and_columns_below_zero() {
     }
     assert_eq!(html.matches("<rect class=\"s1\"").count(), 3, "{html}");
     insta::assert_snapshot!(html);
+}
+
+#[test]
+fn the_build_gives_a_file_chart_the_lines_of_its_file() {
+    let body = "Intro.\n\n:::chart{title=\"Traffic\" src=\"traffic.csv\"}\n:::\n\nAfter.\n";
+    let read = |name: &str| {
+        (name == "traffic.csv").then(|| "Month, Visits\r\nJan, 3\n\nFeb, 4\n".to_owned())
+    };
+    let full = with_chart_files(body, read);
+    let blocks = parse_blocks(&full).unwrap();
+    let BlockKind::Chart(chart) = &blocks[1].kind else {
+        panic!("{blocks:?}");
+    };
+    assert_eq!(chart.table.rows.len(), 2);
+    assert_eq!(chart.table.series, ["Visits"]);
+    assert!(full.ends_with(":::\n\nAfter.\n"), "{full}");
+}
+
+#[test]
+fn the_build_leaves_a_body_without_file_charts_as_it_is() {
+    let never = |_: &str| -> Option<String> { panic!("read") };
+    assert!(matches!(
+        with_chart_files("Plain text.\n", never),
+        std::borrow::Cow::Borrowed(_)
+    ));
+    let missing = with_chart_files(":::chart{title=\"T\" src=\"gone.csv\"}\n:::\n", |_| None);
+    assert_eq!(missing, ":::chart{title=\"T\" src=\"gone.csv\"}\n:::\n");
+    let elsewhere = with_chart_files(":::chart{title=\"T\" src=\"../x.csv\"}\n:::\n", |_| {
+        panic!("a file outside the post's folder is never read")
+    });
+    assert!(elsewhere.contains("../x.csv"));
 }

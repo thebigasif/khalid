@@ -19,7 +19,7 @@ use crate::comment_pages::{self, ShownComments};
 use crate::content_feed::ContentFeed;
 use crate::form_pages::{self, LiveForms};
 use crate::listed_post::ListedPost;
-use crate::post_files::Assets;
+use crate::post_files::{Assets, charts};
 use crate::post_heads::{self, PostHeads};
 use crate::post_photos::Shown;
 use crate::site_content::Catalog;
@@ -423,6 +423,7 @@ impl SitePages {
             .as_ref()
             .map_or("", |theme| theme.stylesheet.path().as_str());
         let today = self.0.clock.now().date_naive();
+        let content = &*charts::read(folder, content);
         let mut languages = build_pages::pages(config, routes, (content, others), href, today)?;
         let renderer = theme.as_ref().map(|theme| &theme.renderer);
         post_lock::lock(config, content, renderer, &mut languages);

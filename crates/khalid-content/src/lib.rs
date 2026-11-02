@@ -32,6 +32,7 @@ pub use block::{
 pub use body_check::check_bodies;
 pub use chart::{
     ChartBlock, ChartKind, ChartRow, ChartTable, ChartValue, MAX_CHART_ROWS, MAX_CHART_SERIES,
+    with_chart_files,
 };
 pub use content_error::ContentError;
 pub use content_hash::ContentHash;

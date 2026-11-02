@@ -1,6 +1,8 @@
 //! The chart block: numbers written in the post, or in a CSV file beside
 //! it, which the build draws as a picture with no script.
 
+use std::borrow::Cow;
+
 /// The most rows a chart draws, so every bar keeps room for its label.
 pub const MAX_CHART_ROWS: usize = 40;
 
@@ -193,4 +195,38 @@ fn cells(line: &str) -> Vec<String> {
     }
     cells.push(cell.trim().to_owned());
     cells
+}
+
+/// `body` with each `:::chart{src="..."}` block that has no lines of its
+/// own given the lines of its file, read by `read` from beside the post.
+/// The file on disk is never changed: the result is only rendered. A
+/// file `read` cannot find leaves the block as it is, and the chart
+/// shows its caption and the link to the file.
+pub fn with_chart_files(body: &str, read: impl Fn(&str) -> Option<String>) -> Cow<'_, str> {
+    if !body.contains(":::chart{") {
+        return Cow::Borrowed(body);
+    }
+    let mut out = String::with_capacity(body.len());
+    let mut lines = body.lines().peekable();
+    while let Some(line) = lines.next() {
+        out.push_str(line);
+        out.push('\n');
+        let closes_next = lines.peek().is_some_and(|next| next.trim() == ":::");
+        if let Some(text) = file_of(line).filter(|_| closes_next).and_then(&read) {
+            for row in text.lines().filter(|row| !row.trim().is_empty()) {
+                out.push_str(row);
+                out.push('\n');
+            }
+        }
+    }
+    Cow::Owned(out)
+}
+
+/// The `src` of a chart's opening `line`, when it names a file beside the
+/// post.
+fn file_of(line: &str) -> Option<&str> {
+    let rest = line.strip_prefix(":::chart{")?;
+    let (_, src) = rest.split_once("src=\"")?;
+    let (src, _) = src.split_once('"')?;
+    is_file_name(src).then_some(src)
 }

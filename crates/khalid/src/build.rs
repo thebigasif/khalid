@@ -18,7 +18,7 @@ use serde::Serialize;
 use crate::cli::Output;
 use crate::exit::Exit;
 use crate::page_code::PageCode;
-use crate::post_files::{Assets, library_photo};
+use crate::post_files::{Assets, charts, library_photo};
 use crate::post_photos::Shown;
 use crate::site_page::HeadNonce;
 use crate::{
@@ -122,6 +122,7 @@ fn build(
     out: &Path,
     clock: &dyn Clock,
 ) -> Result<usize, UserMessage> {
+    let content = &*charts::read(site, content);
     let (theme, tokens) = theme(site, config)?;
     let href = theme
         .as_ref()
