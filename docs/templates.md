@@ -207,3 +207,23 @@ cd ~/pw && node ~/khalid/scripts/responsive-check.mjs --dir ~/khalid/target/page
 ```
 
 Add `--templates harbor` to check one template, and `--widths 390,2560@2` to pick widths; `2560@2` is a 5120 pixel iMac screen at device scale 2. For the admin, start `khalid serve`, save the link `khalid staff owner` prints to a file, and pass `--admin http://localhost:8080/blog/admin/ --sign-in-file <that file>`; it checks sign-in, the dashboard, posts, the editor, media and Look. Delete the file afterwards, since the link signs in as the owner.
+
+## Checking that nothing covers anything
+
+`just layout-check` builds the showcase site once with every template, and once more with the contents list in a side column for each template that puts it elsewhere. It opens a home page, a post with a lead picture, a contents list and pros and cons, a page with a folded table, a category, a tag, an author, search and a glossary page, in Chromium, Firefox and WebKit at 390, 768 and 1440 pixels. It scrolls each page to the end and fails when:
+
+- the letters of one piece of text cover other text or a picture by more than 4 pixels;
+- a list marker covers the first letter of its item, or other text;
+- the page scrolls sideways;
+- a table column is narrower than its longest word, so the word breaks in the middle;
+- a picture did not load.
+
+Parts that stay on screen as you scroll, such as the floating contents button and the side contents column, are checked against what passes under them. Each failure names the template, the page, the browser, the width, the two elements and where on the page they meet. The Demo check runs it in CI. To run it yourself, install the tools and the browsers once:
+
+```sh
+npm install --prefix scripts/demo-check
+npx --prefix scripts/demo-check playwright install --with-deps chromium firefox webkit
+just layout-check --browsers chromium,firefox --packs keystone
+```
+
+`--packs` picks templates and `--widths` picks widths. A screenshot of each failing page goes to `target/layout-check/shots`, and every failure to `target/layout-check/report.json`.
