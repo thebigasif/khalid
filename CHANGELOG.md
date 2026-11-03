@@ -4,6 +4,148 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.3.0
+
+Yoast-style checks and settings: readability and keyword checks that know word forms and synonyms, two scores per post, search title templates, breadcrumbs, local business locations, an SEO settings screen, a bulk SEO editor, optional AI suggestions and richer WordPress imports.
+Better reading and discovery for your readers: a reading progress bar, live search, series, hub pages, a glossary, charts, a newsletter page and AVIF images, plus a Calendar in the admin. What is new, in plain words: `docs/releases/1.3.0.md`.
+
+### Added
+
+#### Checks and scores
+
+- **Yoast-style content analysis.** The focus keyword now counts in any word form ("internal link" for "internal links", in English and German), and `keyword_synonyms:` in the header lists other words that count as it. Each secondary keyword gets the title, first paragraph, subheading and density checks as tips. New checks warn when the keyword is too long, is only small words, is spread through only a few parts of the text, sits in too few or too many subheadings, or is already used by an older post, and a tip shows when it sits late in the title. The title is now measured in pixels, as Google cuts it. New checks also warn about a post with no image, a post whose links to other sites all carry `nofollow`, and pillar posts under 900 words or not updated for six months. See `docs/lint-analysis.md`.
+- **Readability checks** on your own prose, with code, quotes, tables and Khalid's own text left out: long sentences, long stretches without a subheading, three sentences in a row that start alike, too few linking words, too much passive voice and too many long rare words, in English and German, and a tip with other words for terms that can leave readers out.
+- **Two scores.** A post's lint result now carries a readability score apart from the SEO score, with its word count, its reading index and its ten most prominent words.
+- A fourth lint level, `info`, for tips that cost no points and never block.
+- `[[glossary:slug]]` always links the glossary term, even when a post has the same slug. A new `ambiguous-wikilink` warning shows each `[[slug]]` that names both a post and a term, because the bare form links the post.
+
+#### Search appearance
+
+- **Ten more title and description variables**, as Yoast has: `{date}`, `{modified}`, `{page}`, `{term}`, `{term_description}`, `{searchphrase}`, `{currentyear}`, `{currentmonth}`, `{tag}` and `{focuskw}`. Dates and month names are written in the page's language. Every variable is listed in `docs/seo-settings.md`.
+- **Show in search results per content type**: `[seo.index] posts`, `pages` and `collections.<name>`. **Author and date archives can be switched off** with `authors = "off"` and `dates = "off"`: their pages are not built and their addresses redirect to the home page.
+- **A whole site can stay out of search.** `[seo.index] site = "noindex"` gives every page `noindex, follow`, over a post's own `robots`, and empties the sitemaps, for a staging copy or a sample blog.
+- **Breadcrumb settings** in `[seo.breadcrumbs]`: the separator, the home step's name, a prefix for archive and search pages, a bold last step, and which term a post's trail passes through. A post can set a shorter `breadcrumb_title:`. The trail and its `BreadcrumbList` agree.
+- **Category and tag SEO**: each term page can have its own title, description, robots, share image and intro, in `categories.toml` and `tags.toml`. The build names term pages that have no intro.
+- **Schema type per post and page**: `page_type:` (`FAQPage`, `ContactPage`, `AboutPage`, `QAPage`, `ItemPage`, `CollectionPage`) and `article_type:` (`BlogPosting`, `Article`, `NewsArticle`, `TechArticle`, `Report`) override the defaults.
+- **Schema aggregation**: the whole site's structured data in one file per language, at `schema.json`, linked from each language's home page. `[seo.schema_map] robots_txt = true` also names it in `robots.txt` on a `Schemamap:` line, as Yoast does, though Lighthouse then marks `robots.txt` invalid. `[seo.schema_map] off = true` turns it off.
+- **Enhanced X and Slack previews**: a post's preview names its author and reading time (`twitter:label1` to `data2`). `[seo.social] share_labels = false` turns them off.
+- **robots.txt**: the search page is kept from crawlers by default (`[seo.crawlers] disallow_search`), and `extra_lines` adds lines as written.
+- **Search filters** in `[seo.search_filter]`: a search over 50 characters, with emoji or symbols, or that looks like spam answers 400 with the empty search page. Each filter can be switched off.
+- **llms.txt options** in `[seo.llms_txt]`: an intro, key pages listed first, paths to leave out, and `off`.
+- **Feeds per format**: `[seo.feeds] off = ["atom", "json"]` stops writing those feeds.
+- **News**: `news: false` keeps a post out of the news sitemap, and `stock_tickers:` adds up to five tickers to it.
+- **Video**: `thumbnail=` on the video block sets the picture search results show.
+- Review and product blocks on a page, such as a tools page, now write their `Review`, `Product` and `Offer` structured data, as they already did on posts. A page has no author, so its scores are credited to the site's publisher.
+- Review and product blocks take readers' scores, `average="4.2" ratings="310"`, shown as "Readers: 4.2 / 5 from 310 ratings" and written as the `AggregateRating` search engines show as stars.
+
+#### Local business
+
+- **Local**: a location can have a `geo` point. Those with one go in `locations.kml`, a geo sitemap listed in the sitemap index, and their schema node names the point. `[seo.local] kml = false` turns the file off.
+- **The location block**: `::location{name="..."}` shows a location's address, phone, opening hours, a map link and, with scripts on, whether it is open now.
+- **The locations page** at `/locations/` lists every location, and sorts them nearest first when the reader shares where they are. `[seo.local] page = false` turns it off.
+
+#### Reading
+
+- Posts show a reading progress bar: a thin line in your accent colour at the top of the window that fills as the reader scrolls. It needs no script in current browsers and hides for readers who ask for less motion and in print. Every template shows it; in any template but classic, `reading_progress = "none"` under `[template.options]` turns it off.
+- The contents of a long post mark the section being read, and on a phone a small "Contents" button opens them as a sheet from the bottom of the screen, closed by Escape or its Close button. With scripts off the contents box above the post still lists every section.
+- The `#` beside each H2 and H3 of a post is now a "Copy link" button: it copies the address of that section and says "Link copied", out loud for screen readers too. With scripts off it stays a plain link to the section.
+- On a served blog the header's search link opens a search box over the page that shows matching posts as the reader types; `/` and Ctrl+K open it too. With scripts off it opens the search page. The template option `header_search` picks `button` (the default), `link` or `none`. A static blog has no search, so its header shows none.
+
+#### Discovery
+
+- **Glossary from A to Z.** Every language with a glossary term now gets a page at `/glossary/`: a row of letters to jump to, then each term under its letter as a card with its one-sentence definition. Accented letters sort with their base letter, so German `Ähnlichkeit` sits under A. The page's JSON-LD is a `DefinedTermSet` that names every term, it is in the XML and HTML sitemaps, and `content/<lang>/glossary/_index.md` may give it a title, a description and an intro (KH-CON-1, KH-CON-2, KH-SEO-3, KH-SEO-5).
+- **Case study and changelog pages.** Case studies and changelog entries, which the Content API already served, now have pages in every template: `/case-studies/` lists each study as a card with its client and result, `/changelog/` lists each change under its month with its version and its whole text, and each entry has a page of its own with a link back. Each list is an `ItemList` in its JSON-LD and may take a title, description and intro from its folder's `_index.md` (KH-CON-1, KH-CON-2, KH-SEO-3).
+- **Series.** A post may name its series and its place in it with `series: { name, order }`. Each part shows "Part 2 of 5" with every part listed, links to the parts before and after, and the series gets a page at `/series/<name>/` that lists its parts in order as an `ItemList` in its JSON-LD. Every template shows it, with scripts on or off (KH-CON-4, KH-SEO-3, KH-WEB-2).
+- **Hub pages.** A page with a `hub` table (`category`, and `chapters` in reading order) becomes the front door to its topic: its own text as the introduction, the chapters as a numbered list, then the newest posts in the category. The category's list links to it as "Start here", and the chapters are an `ItemList` in the hub's JSON-LD (KH-CON-4, KH-SEO-3).
+- **Home page numbers, topic tabs and media rows.** Every template but classic takes four new options. `hero_stats` shows up to four numbers you write under the home page's title, such as `"140 | blogs studied"`; Khalid never makes one up. `topic_tabs` shows a tab per topic with its newest posts, as links that work with scripts off (on by default in Atlas, Compass, Meridian and Wire). `video_section` and `podcast_section` show a row of the newest posts with a video or a sound player, when there are any (on by default) (KH-WEB-2, KH-WEB-9).
+
+#### Engagement
+
+- Charts in posts: `:::chart` draws bar, column and line charts from numbers in the post or a CSV file beside it, as a picture with no script, in your template's colours, with a table for screen readers (`docs/charts-embeds-tracking.md`).
+- Embed interactive tools: `::embed` shows a page from any host you list in `[media] embed_domains` in a lazy, sandboxed frame of fixed height, and only those hosts join the Content Security Policy.
+- Tracking tags: `[seo.links.tracking]` adds `utm_source`, `utm_medium` and `utm_campaign` to links that point to your own product's domains, in posts, pages and the call to action, and to no other link.
+- A "preferred source on Google" button after each post and in the footer of every template, turned on with `[template.preferred_source]`.
+- A newsletter page at `/newsletter/` with what readers get, the sign-up form on a server, a recent issue and an archive of past issues, each with its own page, from `content/newsletters/main/` (`docs/newsletters.md`).
+- A key takeaways block, `:::takeaways`, drawn as a box in every template.
+
+#### Media
+
+- Khalid can make AVIF images, about half the size of JPEG, beside WebP. AVIF takes about a second per wide image, so it is off until a site turns it on; each image is made once and kept.
+- `avif = true` under `[media]` in `site.toml` offers every picture in AVIF first, then WebP, then its own format, so each browser takes the smallest file it can read. docs/deploy.md explains when to turn it on.
+
+#### Admin
+
+- An SEO settings screen in the admin, under Site. Search appearance sets the separator, the tagline, and the title and description templates of each kind of page, with buttons that add each variable and a live search result.
+- The SEO settings screen also sets which list pages show in search, thin archives and the whole blog's switch; who is behind the blog, with its logo and social profiles; the X username and default share image; the verification codes for Google, Bing, Yandex, Baidu and Pinterest; a switch to block each known AI crawler, other blocked crawlers and paths, and the AI info page; what feeds carry and how many posts they list; and IndexNow, switched on with one tick that makes its key.
+- The editor's checks show two lights, SEO and readability, each with its score and what it means in words, and the post's word count. The Google preview switches between desktop and mobile, cuts the title and description where Google would by their width in pixels, shows the post's date, and puts the focus keyword in bold.
+- The editor shows the post as shared on Facebook and X, takes up to four secondary keywords, and folds the rarer robots choices under the visibility setting: keep images out of image search, no cached copy, no text snippet, the longest snippet and the largest picture preview.
+- The editor suggests internal links to add, says why each post is suggested, and adds a link with one press: on the words of the text that name the post, or as a Related line at the end. A Copy as a new draft button opens the copy.
+- The editor's block menu now offers columns, pull quote, pros and cons, and the call to action box, each with its own form, and the review and product forms ask for readers' scores. A post with any of them opens in the rich-text view and saves back unchanged.
+- The posts list shows each post's SEO and readability lights and how many posts link in and out, and filters posts with no focus keyword, posts no other post links to, and the main posts or members of topic clusters.
+- The dashboard lists the checks that fail on most posts as tasks, "Fix these first", each with its fix and a post to start on.
+- A Bulk SEO screen edits the SEO title, description and focus keyword of many posts in one table, shows each field's length, saves each row on its own, and can show only the posts that lack one of the three.
+- An SEO workouts screen walks two jobs step by step: link each orphaned post from one of the posts closest to it, and link every post of a topic cluster to the cluster's main post, each with one press and a count of what is done.
+- A Calendar screen, under Write: every live and scheduled post on its day, every draft on its planned day, a month at a time or as a list. Drag a draft onto a day, or press its Schedule button and pick the day, to publish it that day at 12:00. Each post links to the editor.
+- Moving live posts to the trash asks what their old addresses should do: say the page is gone for good (410), the default, or send readers to another live post you pick (301). The answer is stored as a redirect.
+
+#### AI suggestions
+
+- Writing suggestions in the editor, off until you turn them on: an `[ai]` table in `site.toml` names SerpDad, Anthropic or any OpenAI-compatible service, and the key comes from `KHALID_AI_KEY`, never the file.
+- Suggest buttons, marked AI, beside the SEO title, the description and the X and Facebook titles and descriptions: five options, each checked against the length rules. Suggest a fix under checks about words, Summarize for key takeaways, and Suggest alt text in media details. Nothing changes until you pick one.
+
+#### Import
+
+- WordPress imports now carry Yoast, Rank Math and All in One SEO share cards for X and Facebook, cornerstone posts as the main post of a topic group, the focus keyword, and related keyphrases and synonyms as secondary keywords. Breadcrumb titles and schema types are listed in the report.
+
+#### API
+
+- The settings API reads and saves the `[seo]` table of `site.toml` one part at a time, such as `titles` or `crawlers`, keeping every other line and comment of the file. `docs/seo-settings.md` lists every part and its defaults.
+- A post's check and each row of the posts list carry two scores out of 100, one for SEO and one for readability, split from the same lint findings; the check also counts the post's words.
+- Each row of the posts list carries its `path` on the site, its word count, how many posts link to it and how many it links to, whether it names a focus keyword, and its role in a topic cluster. A list filters by `orphan:true`, `has_focus_keyword:false`, `pillar:true`, `cluster:member` and `cluster:pillar`.
+- A post's settings in the Admin API carry its secondary keywords, up to four, read from and written to `secondary_keywords` in its front matter.
+- `GET /api/admin/v1/lint/issues/` lists the live blog's ten most pressing lint problems, those that stop posts going live first, each with how many posts it fires on, what, why and fix, and a post to open first.
+- `POST /api/admin/v1/posts/{id}/duplicate/` copies a post as a new draft, with its text, author and settings, but not its date, review, old addresses or head code.
+- `GET /api/admin/v1/posts/{id}/link-suggestions/` ranks up to ten posts in the same language that a post does not link to yet, by shared category, tags and topic cluster, with the cluster's pillar first, and gives back the post's own words that name each one's focus keyword.
+- `POST /api/admin/v1/ai/suggestions/` for programs and the bulk SEO editor, and `GET /api/admin/v1/ai/` to see whether suggestions are on.
+- **Series in the Content API.** A post that is part of a series carries `series` with its `name`, the `slug` of the series page and its `order`, so a front end of its own can group and link the parts. The OpenAPI document and the TypeScript SDK's types include it (KH-API-1).
+
+#### Demos
+
+- **Every demo is also on serpdad.com.** `scripts/demos-bundle.sh` builds the showcase, the template gallery with its pictures, each template's demo and the six use case examples for https://serpdad.com/khalid/ and packs them as `khalid-demos.tar.gz`, which the Pages workflow publishes for the serpdad.com build to download. The demos stay out of search; the template gallery stays indexable.
+- The showcase demo has a "Readability checkers compared" page that shows the new pieces at once: a review and a product with readers' scores and their structured data on a page, pros and cons, a pull quote, columns, a contents list over a question heading, and a `[[glossary:...]]` link.
+
+### Changed
+
+#### Checks and scores
+
+- `paragraph-max-words` now defaults to 150, as in Yoast. A site that set its own number keeps it.
+- The post score is now the SEO score: the readability checks count towards the readability score instead.
+
+#### Demos
+
+- **The showcase demo** now shows every feature at the depth of a large SEO blog: 33 English posts across five sections, six full guides of 3,000 words or more with charts and diagrams, a topic hub for each section, a review, a comparison, a best-of list, a fact check, a dataset, a course, a podcast episode, a self-hosted video and a news post. It also has four authors with profile links, 27 glossary terms, six German posts, editorial policy and contact pages, and a feature tour page that links each feature to the page that shows it.
+- The GitHub Pages copy at thebigasif.github.io/khalid/ names the matching serpdad.com address as each page's canonical one, and its header and hero link to https://serpdad.com/khalid/.
+- Each card in the template gallery, Classic too, links to its demo at `/khalid/templates/<name>/`.
+
+### Fixed
+
+#### Checks and scores
+
+- The linter now reads only what the writer wrote. A `::toc` contents list no longer hides the answer under a question heading from `answer-capsule`, and the numbers a block prints itself (a review's score, a product's price, a recipe's servings, a folding table's "Show 3 more rows") no longer trip `sourced-statistics`.
+- **Tips no longer cost points or crowd out warnings.** The dashboard's "Fix these first" list shows tips last, in blue, and the SEO and readability scores leave them out, as the linter's own score does.
+
+#### Templates
+
+- **One breadcrumb separator.** Compass and Wire drew their own mark beside the one from the breadcrumb settings, so readers saw two. The setting now wins in every template.
+- **robots.txt passes Lighthouse again.** The `Schemamap:` line for the whole-site schema files is off by default, because Lighthouse marks it invalid. Each home page links its `schema.json` instead, and `[seo.schema_map] robots_txt = true` brings the line back.
+
+#### Admin
+
+- **The share previews show the post's own picture.** A picture beside the post, such as `cover.svg`, showed as a broken image in the Facebook and X cards.
+- **Admin polish.** A score of 100 fits its circle, the bulk SEO editor gives the description most of the row so it shows in full, and the posts list keeps "2 in, 3 out" on one line.
+- **An AI pick saves at once.** Picking a suggested title waited for the next autosave, because the editor had not drawn the new title when it tried to save.
+- **No character count under the focus keyword.** The bulk SEO editor said "11 of about 60 characters" under a keyword, which the linter measures in words, not characters.
+
 ## 1.2.0
 
 Ten professionally redesigned templates, checked on every screen size from a 320 pixel phone to a 27 inch iMac, a modern admin with a new sign-in page, and finished author profiles: your own profile, photo upload, designed author pages and bylines with photos.
