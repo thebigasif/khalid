@@ -326,6 +326,7 @@ impl Demo {
         }
         let pick = |title: &str, keep: &dyn Fn(&str, &str) -> bool| RenderListing {
             hub: None,
+            numbered: false,
             title: title.to_owned(),
             intro: None,
             posts: cards

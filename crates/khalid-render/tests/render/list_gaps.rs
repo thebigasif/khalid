@@ -1,5 +1,6 @@
-//! What a reader of a tag or sitemap page needs to know where they are:
-//! the tag's label, and categories and tags told apart.
+//! What a reader of a tag, series or sitemap page needs to know where
+//! they are: the tag's label, each part's number, and categories and tags
+//! told apart.
 
 use khalid_render::{
     Link, PageBody, PageKind, RenderSitemap, Renderer, SitemapGroup, SitemapSection,
@@ -45,6 +46,29 @@ fn a_tag_page_says_it_is_a_tag_above_its_name() {
     );
     let category = render("en", &PageBody::Category(listing));
     assert!(!category.contains("list-kind"), "{category}");
+}
+
+#[test]
+fn a_series_page_numbers_its_parts_in_order() {
+    let mut listing = first_page();
+    listing.numbered = true;
+    listing.pagination = None;
+    let page = render("en", &PageBody::Collection(listing.clone()));
+    assert_valid_page(&page);
+    let first = page
+        .find("<h2><span class=\"card-part\">Part 1</span> <a")
+        .unwrap();
+    let second = page
+        .find("<h2><span class=\"card-part\">Part 2</span> <a")
+        .unwrap();
+    assert!(first < second, "{page}");
+    let german = render("de", &PageBody::Collection(listing.clone()));
+    assert!(
+        german.contains("<span class=\"card-part\">Teil 2</span>"),
+        "{german}"
+    );
+    listing.numbered = false;
+    assert!(!render("en", &PageBody::Collection(listing)).contains("card-part"));
 }
 
 #[test]

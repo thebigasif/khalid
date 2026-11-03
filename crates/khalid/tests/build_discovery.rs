@@ -298,6 +298,18 @@ fn a_series_page_lists_its_parts_in_order_as_an_item_list() {
     let third = main.find("/blog/link-the-cluster/").unwrap();
     assert!(first < second && second < third, "{main}");
     assert!(series.contains(r#""@type":"ItemList""#), "{series}");
+    let one = main
+        .find(r#"<span class="card-part">Part 1</span> <a"#)
+        .unwrap();
+    let three = main
+        .find(r#"<span class="card-part">Part 3</span> <a"#)
+        .unwrap();
+    assert!(one < first && second < three && three < third, "{main}");
+    let home = page(&site, "index.html").unwrap();
+    assert!(
+        !home.contains("card-part"),
+        "only a series numbers its cards"
+    );
 }
 
 /// Replaces `from` with `to` in the post `slug` of `site`.

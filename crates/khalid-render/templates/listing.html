@@ -13,7 +13,7 @@
 {% endif %}{% set slot = page.featured if template.options.featured else none -%}
 {% if slot %}{{ featured_slot(slot) }}
 {% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
-{% if posts %}{{ cards(posts) }}
+{% if posts %}{{ cards(posts, numbered=page.numbered) }}
 {% elif not slot %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}{% endblock %}

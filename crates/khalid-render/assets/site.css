@@ -267,11 +267,14 @@ figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-size: v
 dt { font-weight: 700; margin-block-start: 1rem; }
 dd { margin-inline-start: 0; }
 
-/* Search: a plain form. */
-.search { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: end; }
-.search label { flex-basis: 100%; font-weight: 700; }
+/* Search: a plain form. The label sits above; the input and the button
+   share one line at every width, the input giving up room first. */
+.search { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.5rem; align-items: end; }
+.search label { grid-column: 1 / -1; font-weight: 700; }
 .search input {
-  flex: 1 1 12rem;
+  min-inline-size: 0;
+  inline-size: 100%;
+  box-sizing: border-box;
   min-block-size: 44px;
   padding: 0.5rem 0.75rem;
   font: inherit;

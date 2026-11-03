@@ -228,6 +228,8 @@ series_steps = "The parts before and after this one"
 series_previous = "Previous part"
 series_next = "Next part"
 series_intro = "A series in {total} parts, best read in order."
+# On each card of a series page.
+series_card_part = "Part {part}"
 
 # A topic hub.
 hub_start = "Start here"

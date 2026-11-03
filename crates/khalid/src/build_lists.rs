@@ -162,6 +162,7 @@ fn paged(
         }
         let body = (list.body)(RenderListing {
             hub: None,
+            numbered: false,
             title,
             intro: list.intro.clone().filter(|_| number == 1),
             posts,

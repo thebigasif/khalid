@@ -165,5 +165,7 @@ figure > img { inline-size: 100%; border-radius: var(--radius); }
   .callout, .review, .product, .recipe, .banner { break-inside: avoid; }
 }
 
-/* What a list is: the word above a tag's name. */
-.list-kind { margin-block: 0 0.25rem; line-height: 1.4; color: var(--color-muted); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+/* What a list is: the word above a tag's name, and each series card's
+   part. */
+.card-part { display: block; }
+.list-kind, .card-part { margin-block: 0 0.25rem; line-height: 1.4; color: var(--color-muted); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
