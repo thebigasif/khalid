@@ -7,7 +7,8 @@
 //! words, vague openers and trailing which-chains make an answer harder
 //! to trust and to lift; the word lists live in the catalogue so a site
 //! can read and change them. W4: a number a reader cannot check, with no
-//! source and no year, teaches doubt; the fix is a link or a date.
+//! source and no year, teaches doubt; the fix is a link or a date. W4
+//! lives in `statistics.rs`.
 //!
 //! The behaviour follows Steve Toth's and Koray Tugberk Gubur's writing
 //! guidance for answer engines, as the GEO phase records. Where their
@@ -112,7 +113,7 @@ fn count_words(line: &str) -> usize {
 }
 
 /// The first `n` words of `line`, with an ellipsis when it holds more.
-fn first_words(line: &str, n: usize) -> String {
+pub(crate) fn first_words(line: &str, n: usize) -> String {
     let mut words: Vec<&str> = line.split_whitespace().take(n).collect();
     if line.split_whitespace().count() > n {
         words.push("...");
@@ -150,7 +151,7 @@ fn answer_after<'a>(post: &'a LintPost, text: &str) -> Option<&'a str> {
 }
 
 /// Whether `line` is one of the post's headings, by its text.
-fn is_heading_line(post: &LintPost, line: &str) -> bool {
+pub(crate) fn is_heading_line(post: &LintPost, line: &str) -> bool {
     post.headings
         .iter()
         .any(|heading| heading.text == line.trim())
@@ -257,78 +258,6 @@ fn answer_paragraphs<'a>(post: &'a LintPost, text: &str) -> Vec<&'a str> {
         .skip(start + 1)
         .take_while(|line| !is_heading_line(post, line))
         .filter(|line| !line.trim().is_empty())
-        .collect()
-}
-
-/// **W4: sourced statistics.**
-///
-/// A number a reader cannot check, with no linked source near it and no
-/// year beside it, is flagged.
-#[derive(Debug)]
-pub(crate) struct SourcedStatistics;
-
-impl Rule for SourcedStatistics {
-    fn id(&self) -> RuleId {
-        RuleId::new("sourced-statistics")
-    }
-
-    fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
-        let linked = linked_lines(post);
-        post.body_text
-            .lines()
-            .filter(|line| !line.trim().is_empty())
-            .filter(|line| !is_heading_line(post, line))
-            .filter(|line| !linked.iter().any(|linked| linked == line))
-            .filter(|line| bare_number(line))
-            .map(|line| {
-                Hit::about(first_words(line, 8)).suggesting(vec![
-                    "link the number to its source, or name the year it held".to_owned(),
-                ])
-            })
-            .collect()
-    }
-
-    fn default_severity(&self) -> Severity {
-        Severity::Warn
-    }
-}
-
-/// Whether `line` holds a count or share with no year beside it.
-fn bare_number(line: &str) -> bool {
-    let words: Vec<&str> = line.split_whitespace().collect();
-    for (index, word) in words.iter().enumerate() {
-        if !word.chars().any(|c: char| c.is_ascii_digit()) {
-            continue;
-        }
-        let near_year = words
-            .iter()
-            .skip(index.saturating_sub(2))
-            .take(5)
-            .any(is_year);
-        if !near_year {
-            return true;
-        }
-    }
-    false
-}
-
-/// Whether `word` is a four-digit year a statistic can hang on, from 1900
-/// on, optionally with punctuation around it.
-fn is_year(word: &&str) -> bool {
-    let bare = word.trim_matches(|c: char| !c.is_ascii_digit());
-    (1900..=2200).contains(&bare.parse::<u16>().unwrap_or(0))
-}
-
-/// The lines of `post`'s body that carry a link, so a number in them is
-/// treated as sourced.
-fn linked_lines(post: &LintPost) -> Vec<&str> {
-    post.body_text
-        .lines()
-        .filter(|line| {
-            post.links
-                .iter()
-                .any(|link| !link.text.is_empty() && line.contains(link.text.as_str()))
-        })
         .collect()
 }
 

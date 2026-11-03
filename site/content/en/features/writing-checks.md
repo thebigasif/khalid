@@ -14,7 +14,7 @@ Khalid's writing checks read every post before it goes live, the way a careful e
 - **They stop the serious mistakes.** A post with no title, no date, no author, no link to another page of your site, two main headlines or broken structured data does not go live.
 - **They explain every finding.** Each message says what is wrong, why it matters and what to do, in one short sentence each.
 - **They give each post a score.** A post with no findings gets full marks, so you see at a glance which posts need work.
-- **They help AI search quote you.** They check that a question in a heading gets a short, clear answer right below it, and that a number names its source.
+- **They help AI search quote you.** They check that a question in a heading gets a short, clear answer in the first paragraph below it, and that a statistic names its source or its year. A statistic here means a percentage, a sum of money, a figure in millions, a multiple such as three times more, or a number from a study, survey or report.
 - **They teach as they go.** After a few posts, you write the way search engines and readers like without thinking about it.
 
 ## How the checks work
