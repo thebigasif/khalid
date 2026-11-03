@@ -7,7 +7,9 @@ use khalid_core::{Config, Locale};
 use khalid_routes::Routes;
 
 use crate::render::options;
-use crate::{BlockKind, ContentError, Document, SiteContent, Wikilinks, maths, parse_blocks};
+use crate::{
+    BlockKind, ContentError, Document, SiteContent, Wikilinks, maths, parse_blocks, wikilink,
+};
 
 /// Checks every content file of `site`'s languages: each wikilink reaches a
 /// page, as [`Wikilinks::for_language`] finds them with `routes`, and each
@@ -53,7 +55,8 @@ impl Check<'_> {
     fn all<F>(&self, docs: &[Document<F>]) -> Result<(), ContentError> {
         for doc in docs.iter().filter(|doc| &doc.locale == self.locale) {
             let arena = Arena::new();
-            let root = parse_document(&arena, &doc.body, &options());
+            let body = wikilink::guard_cells(&doc.body);
+            let root = parse_document(&arena, &body, &options());
             for node in root.descendants() {
                 let data = node.data.borrow();
                 let line = doc

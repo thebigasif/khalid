@@ -394,7 +394,8 @@ impl Renderer<'_> {
         }
         let options = options();
         let arena = Arena::new();
-        let root = parse_document(&arena, text, &options);
+        let text = wikilink::guard_cells(text);
+        let root = parse_document(&arena, &text, &options);
         wikilink::resolve(root, self.wikilinks);
         maths::draw(root);
         for node in root.descendants() {

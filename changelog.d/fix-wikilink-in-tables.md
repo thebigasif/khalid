@@ -1,0 +1,2 @@
+Fixed
+- A wikilink with a label, `[[slug|words]]`, now works inside a Markdown table cell. Before, the `|` split the cell in two and the link showed as raw text. The table keeps its columns and the link shows its label on the page, in the editor preview, in the linter's link checks and under "Posts that link here". `[[slug\|words]]`, the way GitHub writes it, gives the same link. A `|` outside `[[ ]]` still splits the cell.
