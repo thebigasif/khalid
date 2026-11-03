@@ -15,12 +15,12 @@ Each line below names one feature and links to a page where you can see it. Open
 - **A topic hub for each section:** a pillar guide linked to and from every post in its cluster, such as the [SEO writing guide](/blog/seo-writing-guide/).
 - **Sections, tags and an archive:** the [SEO tools section](/blog/category/seo-tools/), the [tools tag](/blog/tag/tools/) and the [archive of every post](/blog/archive/).
 - **A series as a course:** [seven lessons in SEO writing](/blog/seo-writing-course/), in order.
-- **Editor's picks:** posts marked as featured appear first on the [home page](/blog/).
+- **Featured posts:** the newest post marked as featured leads the [home page](/blog/).
 
 ## Blocks a writer can use
 
 - **Key takeaways, tips, notes, warnings, further reading and big numbers:** all six boxes in the [keyword research guide](/blog/keyword-research/).
-- **A table of contents:** at the top of the [technical SEO audit](/blog/technical-seo-audit/).
+- **A table of contents:** the writer's own, at the top of the [technical SEO audit](/blog/technical-seo-audit/). A template adds one to every long post by itself only when its `contents` option is set, such as `contents = "inline"` under `[template.options]`; Keystone leaves it off.
 - **Figures and charts with captions:** the [content benchmark](/blog/content-benchmark/).
 - **A gallery of screenshots:** the [Quillmeter review](/blog/quillmeter-review/).
 - **Tables, including one that folds its long rows away:** [writing headlines](/blog/writing-headlines/).
