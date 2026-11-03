@@ -274,15 +274,15 @@ main > h1 ~ .cards { margin-block-start: 3rem; }
 .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 3rem 2rem; }
 .cards:is(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
 .cards .card { position: relative; }
-.cards .card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
+.cards .card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
 .cards .card .card-meta a { position: relative; z-index: 1; }
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "picture picture" "topic topic" "title title" "words words" "who when"; align-content: start; block-size: 100%; }
 .card .image { grid-area: picture; margin: 0 0 1.25rem; }
 .card .card-meta { display: contents; }
 .card-meta > a { grid-area: topic; justify-self: start; min-block-size: 1.75rem; margin-block-end: 0.25rem; color: var(--color-link); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
 .card-meta > a:hover { text-decoration: underline; }
-.cards .card :is(h2, h3) { grid-area: title; margin-block: 0 0.5rem; font-size: 1.3125rem; line-height: 1.3; letter-spacing: -0.01em; }
-.card :is(h2, h3) a:hover, .cards .card:hover :is(h2, h3) a { color: var(--color-link); }
+.cards .card :is(h2, h3, h4) { grid-area: title; margin-block: 0 0.5rem; font-size: 1.3125rem; line-height: 1.3; letter-spacing: -0.01em; }
+.card :is(h2, h3, h4) a:hover, .cards .card:hover :is(h2, h3, h4) a { color: var(--color-link); }
 .card > p:last-child { grid-area: words; margin-block-end: 1rem; color: var(--color-muted); font-size: 0.9688rem; line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
 .card-author { grid-area: who; align-self: center; color: var(--color-text); font-size: 0.875rem; font-weight: 600; }
 .card-meta time { grid-area: when; align-self: center; display: flex; align-items: center; font-size: 0.875rem; }
@@ -299,7 +299,7 @@ main > h1 ~ .cards { margin-block-start: 3rem; }
   .cards:has(> li:nth-child(4)) > li:first-child .card { grid-template-columns: minmax(0, 1.35fr) auto minmax(0, 1fr); grid-template-areas: "picture topic topic" "picture title title" "picture words words" "picture who when"; align-content: center; }
   .cards:has(> li:nth-child(4)) > li:first-child .image { grid-row: 1 / span 5; margin: 0 3rem 0 0; }
   [dir="rtl"] .cards:has(> li:nth-child(4)) > li:first-child .image { margin: 0 0 0 3rem; }
-  .cards:has(> li:nth-child(4)) > li:first-child :is(h2, h3) { font-size: clamp(1.75rem, 1rem + 1.5vw, 2.25rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; margin-block-end: 1rem; }
+  .cards:has(> li:nth-child(4)) > li:first-child :is(h2, h3, h4) { font-size: clamp(1.75rem, 1rem + 1.5vw, 2.25rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; margin-block-end: 1rem; }
   .cards:has(> li:nth-child(4)) > li:first-child .card > p:last-child { font-size: 1.0625rem; -webkit-line-clamp: 4; line-clamp: 4; margin-block-end: 1.5rem; }
 }
 

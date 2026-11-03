@@ -121,7 +121,7 @@ main > .intro > :last-child { margin-block-end: 0; }
 .cards .card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface); border: 1px solid var(--color-border); transition: border-color 0.15s; }
 .cards .card:hover .image img { border-color: var(--color-accent); }
 .card-meta { gap: 0 calc(var(--space) * 1.5); }
-.card :is(h2, h3) { margin-block: calc(var(--space) * 0.5) var(--space); font-size: 1.25rem; line-height: 1.3; letter-spacing: -0.015em; }
+.card :is(h2, h3, h4) { margin-block: calc(var(--space) * 0.5) var(--space); font-size: 1.25rem; line-height: 1.3; letter-spacing: -0.015em; }
 .card > p:last-child { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; color: var(--color-muted); font-size: 1rem; line-height: 1.6; }
 
 /* The editor's picks: a numbered list in a ruled column. */
@@ -285,7 +285,7 @@ main > .post { margin-block-end: calc(var(--space) * 6); }
 .al-keep .cards-compact > li { counter-increment: keep; }
 .al-keep .card { display: grid; grid-template-columns: 2.75rem 1fr; padding-block: calc(var(--space) * 2); border-block-end: 1px solid var(--color-border); }
 .al-keep .card::before { content: counter(keep, decimal-leading-zero) / ""; grid-row: span 2; color: var(--color-link); font-size: 1.25rem; font-weight: 800; line-height: 1.3; font-variant-numeric: tabular-nums; }
-.al-keep .card :is(h2, h3) { margin: 0; font-size: 1.0625rem; line-height: 1.35; }
+.al-keep .card :is(h2, h3, h4) { margin: 0; font-size: 1.0625rem; line-height: 1.35; }
 .al-keep .card p { margin: calc(var(--space) * 0.5) 0 0; }
 .al-keep .card a:hover { text-decoration: underline; }
 .mentions { margin-block: var(--space-section); }

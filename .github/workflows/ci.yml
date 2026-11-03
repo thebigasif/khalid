@@ -244,8 +244,10 @@ jobs:
   # The demo, end to end (task 1.22, gap audit 2 G8, GEO P2): every page of
   # the demo site through the W3C validator, Lighthouse with 100 as the
   # floor, and axe and the layout checks at six widths, with scripts on and
-  # then off. A page that breaks with scripts off fails here. Slow, so on
-  # pull requests only, and not a required check.
+  # then off. A page that breaks with scripts off fails here. Then the
+  # layout check: the showcase in every template pack in Chromium, Firefox
+  # and WebKit at 390, 768 and 1440 px. Slow, so on pull requests only, and
+  # not a required check.
   demo:
     name: Demo check
     runs-on: ubuntu-latest
@@ -272,9 +274,13 @@ jobs:
       - name: Tools, at the versions scripts/demo-check/package.json pins
         run: |
           npm install --prefix scripts/demo-check --no-audit --no-fund
-          npx --prefix scripts/demo-check playwright install --with-deps chromium
+          npx --prefix scripts/demo-check playwright install --with-deps chromium firefox webkit
       - name: Demo check
         run: ./scripts/demo-check.sh
+      # Runs even when the demo check failed, so one run lists both.
+      - name: Layout check
+        if: success() || failure()
+        run: ./scripts/layout-check.sh
       - name: Keep the reports
         if: failure()
         uses: actions/upload-artifact@v7
@@ -283,6 +289,8 @@ jobs:
           path: |
             target/demo-check/lighthouse
             target/demo-check/serve.log
+            target/layout-check/report.json
+            target/layout-check/shots
           if-no-files-found: ignore
 
   # Getting and renewing a certificate, against pebble, Let's Encrypt's own

@@ -294,18 +294,55 @@ mod tests {
         }
     }
 
-    /// Keystone's lead picture breaks out to the wide frame, which ran
-    /// under the side contents column; with the column it keeps to the text.
+    /// A lead picture or a table that grows past the text ran under the
+    /// side contents column in Keystone, Harbor, Meridian and Workbench
+    /// (fix/layout-every-pack); the shared rule keeps both to the text
+    /// column in every pack, and no pack names them again beside the column.
     #[test]
-    fn keystones_lead_picture_stays_clear_of_the_side_contents() {
-        let keystone = (khalid_theme::packs().iter())
-            .find(|pack| pack.name == "keystone")
-            .unwrap();
-        let rule = rules_naming(keystone.stylesheet, ".post-with-toc .post-header .image");
-        assert_eq!(rule, [" margin-inline: 0; "]);
-        assert!(keystone.stylesheet.contains(
-            "@media (min-width: 70rem) { .post-with-toc .post-header .image { margin-inline: 0; } }"
-        ));
+    fn every_pack_keeps_the_lead_picture_and_tables_clear_of_the_side_contents() {
+        let site = tempfile::tempdir().unwrap();
+        let guard = ".post-with-toc :is(.post-header .image, .post-body > table)";
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let css = stylesheet_text_with(&tokens, pack.stylesheet);
+            let rule = rules_naming(&css, guard);
+            assert!(
+                rule.iter()
+                    .any(|r| r.contains("margin-inline: 0; translate: none")),
+                "{}",
+                pack.name
+            );
+            for (selector, declarations) in rules(pack.stylesheet) {
+                let beside = selector.contains(".post-with-toc")
+                    && !selector.contains(":not(.post-with-toc)")
+                    && (selector.contains(".image") || selector.contains("table"));
+                let moves =
+                    declarations.contains("margin-inline") || declarations.contains("translate");
+                assert!(!(beside && moves), "{}: {selector}", pack.name);
+            }
+        }
+    }
+
+    /// The topic tabs on the home page title their cards with h4. Compass
+    /// placed only h2 and h3 in its card grid, so the h4 took the author's
+    /// cell and pushed the date over the next card. Every pack's card
+    /// title rules name all three levels.
+    #[test]
+    fn every_pack_styles_card_titles_of_every_level() {
+        for pack in khalid_theme::packs() {
+            for (selector, _) in rules(pack.stylesheet) {
+                // The selector's own list, split where no bracket is open.
+                let mut depth = 0;
+                let list = selector.split(|c| {
+                    depth += i32::from(c == '(') - i32::from(c == ')');
+                    c == ',' && depth == 0
+                });
+                for one in list.filter(|one| one.contains(".card")) {
+                    let two_levels = one.contains("h2") && !one.contains("h4");
+                    assert!(!two_levels, "{}: {one}", pack.name);
+                }
+            }
+        }
     }
 
     #[test]

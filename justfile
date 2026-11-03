@@ -50,6 +50,13 @@ bench:
 demo-check:
     ./scripts/demo-check.sh
 
+# The showcase in every template pack, in Chromium, Firefox and WebKit at
+# 390, 768 and 1440 px: text over text or a picture, markers over text,
+# sideways scroll, crushed table columns and broken pictures. Pass options
+# on, such as `just layout-check --browsers chromium,firefox`.
+layout-check *options:
+    ./scripts/layout-check.sh {{options}}
+
 # Line coverage against the floor.
 coverage:
     cargo llvm-cov nextest --workspace --all-features --summary-only

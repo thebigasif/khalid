@@ -154,15 +154,15 @@ main > .cards, .featured { margin-block-start: var(--atlas-section); }
 .card { position: relative; display: flex; flex-direction: column; }
 .card .image { margin: 0 0 1.25rem; overflow: hidden; background: var(--color-surface); border-radius: var(--radius); }
 .card .image img { aspect-ratio: 16 / 10; object-fit: cover; border-radius: 0; }
-.card :is(h2, h3) { order: 1; margin: 0; font-size: 1.25rem; line-height: 1.25; letter-spacing: -0.015em; }
-.card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
+.card :is(h2, h3, h4) { order: 1; margin: 0; font-size: 1.25rem; line-height: 1.25; letter-spacing: -0.015em; }
+.card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
 .card > p:not(.card-meta) { order: 2; margin: 0.625rem 0 0; color: var(--color-muted); font-size: 1rem; line-height: 1.55; }
 .card-meta { order: 3; gap: 0.25rem 1.25rem; overflow: hidden; margin: auto 0 0; padding-block-start: 1rem; font-size: 0.8125rem; }
 .card-meta > * { position: relative; }
 .card-meta > :is(time, .card-reading-time)::before, .card-featured .card-meta > a::before { content: "\00b7" / ""; position: absolute; inset-inline-start: -0.75rem; }
 .card-meta a { z-index: 1; color: var(--color-link); font-weight: 700; text-decoration: none; }
 .card-meta a:hover { text-decoration: underline; }
-.cards .card:has(.card-meta > a) :is(h2, h3) { margin-block-start: 1.875rem; }
+.cards .card:has(.card-meta > a) :is(h2, h3, h4) { margin-block-start: 1.875rem; }
 .cards .card-meta > a { position: absolute; inset-block-start: 0; inset-inline-start: 0; min-block-size: 0; font-size: 0.75rem; letter-spacing: 0.09em; line-height: 1.2; text-transform: uppercase; }
 .cards .card:has(.image) .card-meta > a { inset-block-start: calc(62.5cqi + 1.25rem); }
 .card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; }
