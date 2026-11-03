@@ -24,7 +24,7 @@ Lists such as a category or the archive show the lead story and the same picture
 
 **A post**
 
-1. The category, the title and the summary (the post's `dek`), all on one left edge.
+1. The trail of links from the front page to the post, then the category, the title and the summary (the post's `dek`), all on one left edge.
 2. One line with the author's photo, name and role, then one date (the day it was last updated, or the day it was published if it never was) and the reading time.
 3. The lead picture, wider than the text, in a fine frame.
 4. Share links. On a wide screen they sit in a column beside the post and stay in view as you scroll. On a phone they sit in one row above the post.
@@ -48,6 +48,7 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 | `podcast_section` | `true` | `true`, `false` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `logo` | `true` | `true`, `false` | The header shows the logo from your main site in place of the blog's name. Without a logo, the name shows. |
 | `cta_button` | `true` | `true`, `false` | The header shows your `[template.cta]` as a button. |
+| `breadcrumbs` | `true` | `true`, `false` | Each page shows the trail of links from the front page to it. |
 | `dek` | `true` | `true`, `false` | A post shows its summary under its title. |
 | `featured` | `true` | `true`, `false` | The newest post marked `featured: true` shows large at the top of the front page and each list. |
 | `cards` | `image` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists. |

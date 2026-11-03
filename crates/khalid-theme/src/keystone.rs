@@ -27,6 +27,7 @@ pub(crate) static KEYSTONE: Pack = Pack {
     options: &[
         parts::on(parts::LOGO),
         slot::CTA_BUTTON_ON,
+        parts::on(parts::BREADCRUMBS),
         parts::on(parts::DEK),
         parts::on(parts::FEATURED),
         parts::cards(CardShape::Image),
