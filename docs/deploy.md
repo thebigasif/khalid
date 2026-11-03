@@ -208,6 +208,8 @@ Cloudflare builds a static blog from GitHub and serves its files for free. `depl
 
 The button copies the folder into a new repository in your GitHub account and deploys it as a Worker. For Cloudflare Pages, the build command is `sh build.sh`, the output folder is `public`, and the root folder is `deploy/cloudflare`. `docs/deploy/cloudflare.md` gives every step, the blog's address and your own domain.
 
+A blog behind Cloudflare's proxy, static or served, needs Cloudflare's Email Address Obfuscation turned off. In the domain's dashboard, go to **Security**, **Settings** (or **Scrape Shield** on older dashboards) and switch it off. It rewrites every email address and `mailto:` link and adds a script from `/cdn-cgi/`. Khalid's content security policy blocks that script, as it should, so addresses show as "[email protected]" and the share-by-email link opens a missing page.
+
 ## Sending email
 
 Khalid sends email when a reader signs up for the newsletter: one message with a link that confirms the address. It also sends you each answer to a form block. Until `site.toml` says how mail is sent, the sign-up form says sign-ups are not open yet and stores nothing.
