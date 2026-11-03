@@ -188,9 +188,9 @@ fn start(site: &Path) -> Server {
     Server { child, host }
 }
 
-/// The body `path` answers with, which must be a 200.
+/// The head and body `path` answers with.
 #[cfg(test)]
-fn get(server: &Server, path: &str) -> String {
+fn answer(server: &Server, path: &str) -> (String, String) {
     let host = &server.host;
     let mut stream = TcpStream::connect(host).unwrap();
     let request = format!("GET {path} HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n\r\n");
@@ -198,8 +198,15 @@ fn get(server: &Server, path: &str) -> String {
     let mut raw = String::new();
     stream.read_to_string(&mut raw).unwrap();
     let (head, body) = raw.split_once("\r\n\r\n").unwrap();
+    (head.to_owned(), body.to_owned())
+}
+
+/// The body `path` answers with, which must be a 200.
+#[cfg(test)]
+fn get(server: &Server, path: &str) -> String {
+    let (head, body) = answer(server, path);
     assert!(head.starts_with("HTTP/1.1 200"), "{path}: {head}");
-    body.to_owned()
+    body
 }
 
 #[test]
@@ -210,5 +217,116 @@ fn the_served_feeds_of_each_language_pass_the_feed_checks() {
         let feeds = ["feed.xml", "atom.xml", "feed.json"]
             .map(|name| get(&server, &format!("/blog/{language}{name}")));
         check(feeds, language);
+    }
+}
+
+/// The demo site with a channel of Lena's posts in `routes.toml` and a
+/// category no post is filed under in `categories.toml`.
+#[cfg(test)]
+fn site_with_lists() -> TempDir {
+    let site = demo_copy();
+    let mut routes = site.path().to_path_buf();
+    routes.push("routes.toml");
+    let channel =
+        "[channels.from-lena]\npath = \"/from-lena/\"\nfilter = { author = \"lena-vogt\" }\n";
+    fs::write(routes, channel).unwrap();
+    let mut categories = read(site.path(), "categories.toml");
+    categories.push_str("\n[[categories]]\nslug = \"link-building\"\nen = \"Link building\"\n");
+    let mut file = site.path().to_path_buf();
+    file.push("categories.toml");
+    fs::write(file, categories).unwrap();
+    site
+}
+
+/// Each category and channel folder below the blog's root, and the slugs
+/// of the posts its feeds hold, newest first.
+const LIST_FEEDS: [(&str, &[&str]); 6] = [
+    (
+        "category/on-page-seo/",
+        &["how-to-write-a-title-tag", "why-internal-links-matter"],
+    ),
+    (
+        "category/technical-seo/",
+        &["fixing-slow-pages", "what-a-sitemap-does"],
+    ),
+    ("category/content-strategy/", &["planning-a-topic-cluster"]),
+    (
+        "de/category/technical-seo/",
+        &[
+            "langsame-seiten-schneller-machen",
+            "was-eine-sitemap-leistet",
+        ],
+    ),
+    ("from-lena/", &["fixing-slow-pages", "what-a-sitemap-does"]),
+    (
+        "de/from-lena/",
+        &[
+            "langsame-seiten-schneller-machen",
+            "was-eine-sitemap-leistet",
+        ],
+    ),
+];
+
+/// Category folders with no posts in their language, so no feeds.
+const NO_FEEDS: [&str; 2] = ["category/link-building/", "de/category/link-building/"];
+
+/// Checks the three feeds of the list at `folder` and that they hold
+/// exactly the posts `slugs`, in order.
+#[cfg(test)]
+fn check_list(feeds: [String; 3], folder: &str, slugs: &[&str]) {
+    let channel = rss::Channel::read_from(feeds[0].as_bytes()).unwrap();
+    let held: Vec<&str> = (channel.items().iter())
+        .filter_map(|item| item.link())
+        .filter_map(|link| link.trim_end_matches('/').rsplit('/').next())
+        .collect();
+    assert_eq!(held, slugs, "{folder}feed.xml");
+    check(feeds, folder);
+}
+
+#[test]
+fn the_built_category_and_channel_feeds_hold_only_their_own_posts() {
+    let site = site_with_lists();
+    let out = tempfile::tempdir().unwrap();
+    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", site.path().to_str().unwrap(), "build", "--out"])
+        .arg(out.path())
+        .output()
+        .unwrap();
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(output.status.code(), Some(0), "{stderr}");
+    for (folder, slugs) in LIST_FEEDS {
+        let feeds = ["feed.xml", "atom.xml", "feed.json"]
+            .map(|name| read(out.path(), &format!("{folder}{name}")));
+        check_list(feeds, folder, slugs);
+        let page = read(out.path(), &format!("{folder}index.html"));
+        let href = format!("https://www.example.com/blog/{folder}");
+        for (media, name) in [
+            ("application/rss+xml", "feed.xml"),
+            ("application/atom+xml", "atom.xml"),
+            ("application/feed+json", "feed.json"),
+        ] {
+            let link = format!("<link rel=\"alternate\" type=\"{media}\" href=\"{href}{name}\">");
+            assert!(page.contains(&link), "{folder}index.html lacks {link}");
+        }
+    }
+    for folder in NO_FEEDS {
+        let mut feed = out.path().to_path_buf();
+        feed.push(format!("{folder}feed.xml"));
+        assert!(!feed.exists(), "{}", feed.display());
+    }
+}
+
+#[test]
+fn the_served_category_and_channel_feeds_hold_only_their_own_posts() {
+    let site = site_with_lists();
+    let server = start(site.path());
+    for (folder, slugs) in LIST_FEEDS {
+        let feeds = ["feed.xml", "atom.xml", "feed.json"]
+            .map(|name| get(&server, &format!("/blog/{folder}{name}")));
+        check_list(feeds, folder, slugs);
+    }
+    for folder in NO_FEEDS {
+        let (head, _) = answer(&server, &format!("/blog/{folder}feed.xml"));
+        assert!(head.starts_with("HTTP/1.1 404"), "{folder}: {head}");
     }
 }

@@ -1,6 +1,6 @@
 //! The files `khalid build` writes beside the pages, from `khalid-seo`: the
 //! sitemap index and its sitemaps, the news sitemap, `locations.kml`, `robots.txt`, `llms.txt`, the RSS,
-//! Atom and JSON feeds of each language, and the `IndexNow` key file
+//! Atom and JSON feeds of each language, category and channel, and the `IndexNow` key file
 //! (KH-SEO-5, KH-SEO-6, KH-SEO-7, KH-SEO-11).
 
 use chrono::{DateTime, Utc};
@@ -109,15 +109,14 @@ fn collect(
             let graph = site_schema(site, pages, language)?;
             files.push(file(&format!("{folder}schema.json"), graph.to_json()));
         }
-        let on = |format: FeedFormat| !site.feeds.off.contains(&format);
-        if on(FeedFormat::Rss) {
-            files.push(file(&format!("{folder}feed.xml"), feed.to_rss()?));
-        }
-        if on(FeedFormat::Atom) {
-            files.push(file(&format!("{folder}atom.xml"), feed.to_atom()?));
-        }
-        if on(FeedFormat::Json) {
-            files.push(file(&format!("{folder}feed.json"), feed.to_json()?));
+        push_feed(site, &feed, &folder, &mut files)?;
+    }
+    for page in pages {
+        if let Some(scope) = &page.feed {
+            let feed = Feed::for_pages(site, pages, scope, now)?;
+            let path = page.path.as_str().trim_start_matches('/');
+            let folder = format!("{}{path}", prefix(site, &page.language));
+            push_feed(site, &feed, &folder, &mut files)?;
         }
     }
     if let Some(settings) = indexnow {
@@ -126,6 +125,27 @@ fn collect(
         files.push(file(name, key.body().to_owned()));
     }
     Ok(files)
+}
+
+/// Adds `feed` in each format that is on to `files`, in `folder`, where
+/// [`Feed::url`] points.
+fn push_feed(
+    site: &SeoSite,
+    feed: &Feed,
+    folder: &str,
+    files: &mut Vec<SiteFile>,
+) -> Result<(), SeoError> {
+    let on = |format: FeedFormat| !site.feeds.off.contains(&format);
+    if on(FeedFormat::Rss) {
+        files.push(file(&format!("{folder}feed.xml"), feed.to_rss()?));
+    }
+    if on(FeedFormat::Atom) {
+        files.push(file(&format!("{folder}atom.xml"), feed.to_atom()?));
+    }
+    if on(FeedFormat::Json) {
+        files.push(file(&format!("{folder}feed.json"), feed.to_json()?));
+    }
+    Ok(())
 }
 
 fn file(name: &str, text: String) -> SiteFile {
