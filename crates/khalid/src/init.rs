@@ -67,6 +67,8 @@ struct ProxyBody {
     stack: String,
     mount: String,
     rule: String,
+    /// The line the host's own `robots.txt` needs to name the blog's sitemap.
+    sitemap_line: String,
     /// The blog address in the rule when Khalid guessed it, to be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     guessed: Option<String>,
@@ -202,6 +204,11 @@ impl Answers {
 pub(crate) struct Proxy {
     stack: Stack,
     rule: String,
+    /// The host's root, such as `https://www.example.com`, where search
+    /// engines read `robots.txt`.
+    host: String,
+    /// `Sitemap: <host><mount>sitemap.xml`, for the host's `robots.txt`.
+    sitemap_line: String,
     /// The blog address the rule names when Khalid had to guess it.
     guessed: Option<AbsoluteUrl>,
 }
@@ -233,9 +240,12 @@ impl Answers {
             }
         };
         let rule = proxy_rule(stack, &mount, &blog).map_err(|error| of_mount_error(&error))?;
+        let host = self.address.as_str().trim_end_matches('/').to_owned();
         Ok(Some(Proxy {
             stack,
             rule,
+            sitemap_line: format!("Sitemap: {host}{}sitemap.xml", self.mount),
+            host,
             guessed,
         }))
     }
@@ -402,6 +412,7 @@ fn success(output: Output, folder: &Path, answers: &Answers, created: Vec<String
                     stack: proxy.stack.name().to_owned(),
                     mount: answers.mount.clone(),
                     rule: proxy.rule,
+                    sitemap_line: proxy.sitemap_line,
                     guessed: proxy.guessed.map(|blog| blog.as_str().to_owned()),
                 }),
             },
@@ -430,8 +441,10 @@ fn proxy_text(proxy: &Proxy) -> String {
         )
     });
     format!(
-        "The blog lives under a folder, so {} must pass it to Khalid. Add this rule:\n\n{}\n{guess}",
-        proxy.stack, proxy.rule
+        "The blog lives under a folder, so {} must pass it to Khalid. Add this rule:\n\n{}\n{guess}\
+         Search engines read robots.txt only at the root of the host, so add this line to the \
+         robots.txt at {}/robots.txt to show them the blog's sitemap:\n\n{}\n\n",
+        proxy.stack, proxy.rule, proxy.host, proxy.sitemap_line
     )
 }
 

@@ -134,6 +134,14 @@ Khalid prints the rule to add to that program, for nginx, Caddy, Apache, Traefik
 
 Every address Khalid gives out names the folder too: sign-in links, preview links, the `site` in each webhook, `Location` headers, `admin_path`, and the address the Connect to SerpDad page shows. An old `/admin/` address moves to `/blog/admin/`. The APIs also still answer at `/api/` for a program that reaches Khalid directly, without the proxy in front.
 
+Search engines read `robots.txt` only at the root of a host, so the blog's own `robots.txt` under `/blog/` is never read. `khalid init` prints the line to add to the website's `robots.txt`, built from the site's address and mount:
+
+```text
+Sitemap: https://example.com/blog/sitemap.xml
+```
+
+Add it to `https://example.com/robots.txt`. `khalid doctor` fetches that file and says when the line is missing.
+
 ## Hosting platforms
 
 The repository holds a ready file for four hosts that run the server, and a ready static blog for Cloudflare, last below. Each of the four builds the `Dockerfile` or installs the binary, keeps the site on a disk that survives restarts, and makes the site on the first start. `KHALID_ADDRESS` says the blog's address. The image's command, `serve --init`, makes a site there when the disk is empty, and leaves a site it finds as it is.
