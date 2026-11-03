@@ -30,7 +30,7 @@ Lists such as a category or the archive show the lead story and the same picture
 4. Share links. On a wide screen they sit in a column beside the post and stay in view as you scroll. On a phone they sit in one row above the post.
 5. The post in one reading column. Callouts, steps, tables, quotes, questions and the contents block each have their own quiet look.
 6. Your own lines about the site, when you set them, then the author box.
-7. The newsletter form, your call to action, the posts that link here and three related posts.
+7. The newsletter form, your call to action, the posts that link here and up to five related posts, three across on a wide screen.
 
 **Callouts** (`:::callout{kind=note}`, `tip`, `warning` and `read`) each get a small drawn icon; a warning also gets a dark edge, so the kinds differ by more than colour.
 
@@ -54,6 +54,7 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 | `featured` | `true` | `true`, `false` | The newest post marked `featured: true` shows large at the top of the front page and each list. |
 | `cards` | `image` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists. |
 | `pagination` | `numbered` | `pages`, `numbered` | The links under a long list: newer and older, or a link to each page. |
+| `related_count` | `5` | 3 to 10 | How many related posts show after a post. Five is the most a post can pin with `related`. |
 | `contents` | `none` | `none`, `inline`, `inline-folded`, `side-end`, `side-start` | Where a long post's contents list goes. A post can also carry its own contents block. |
 | `reading_progress` | `bar` | `bar`, `none` | A thin line at the top of a post that fills as the reader scrolls. |
 | `header_search` | `button` | `button`, `link`, `none` | What the header's search does on a served blog: open a search dialog, open the search page, or nothing. |

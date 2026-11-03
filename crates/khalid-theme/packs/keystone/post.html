@@ -3,7 +3,7 @@
     was published), the reading time and why it was updated, the lead
     picture wider than the text, share links in a rail beside the body on
     wide screens, then the author, the newsletter, the call to action and
-    related posts. -#}
+    up to `related_count` related posts. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
@@ -87,6 +87,6 @@
 {% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
 {% endif %}{% if "related_posts" in site.features and page.related %}<section class="related">
 <h2>{{ t.related_posts }}</h2>
-{{ cards(page.related[:3], 3) }}
+{{ cards(page.related[:template.options.related_count], 3) }}
 </section>
 {% endif %}{% endblock %}

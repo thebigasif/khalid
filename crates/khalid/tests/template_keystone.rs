@@ -143,6 +143,47 @@ fn a_keystone_post_has_its_category_a_share_rail_and_one_date() {
 }
 
 #[test]
+fn a_keystone_post_shows_its_trail_why_it_changed_and_five_related_posts() {
+    let (temp, _) = built("");
+    let posts = at(temp.path(), "content/en/posts");
+    let cluster = page(&posts, "2026-10-12-planning-a-topic-cluster.md");
+    let sixth = cluster
+        .replacen("slug: planning-a-topic-cluster", "slug: pillar-pages", 1)
+        .replacen("title: ", "title: Pillar pages, ", 1)
+        .replacen("date: 2026-10-12", "date: 2026-10-13", 1)
+        .replacen("translation: topic-cluster", "translation: pillar-pages", 1);
+    fs::write(at(&posts, "2026-10-13-pillar-pages.md"), sixth).unwrap();
+    let sitemap = at(&posts, "2026-09-28-what-a-sitemap-does.md");
+    let front = "\nupdated: 2026-10-20\nupdated_note: Added the part on image sitemaps.\n\
+                 related: [why-internal-links-matter, how-to-write-a-title-tag, fixing-slow-pages, planning-a-topic-cluster, pillar-pages]\n";
+    let post = fs::read_to_string(&sitemap).unwrap();
+    fs::write(&sitemap, post.replacen('\n', front, 1)).unwrap();
+    let out = at(temp.path(), "again");
+    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", temp.path().to_str().unwrap(), "build", "--out"])
+        .arg(&out)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(0), "{output:?}");
+
+    let post = page(&out, "what-a-sitemap-does/index.html");
+    let trail = post.find("<nav class=\"breadcrumbs\"").unwrap();
+    assert!(trail < post.find("<h1>").unwrap(), "{post}");
+    let date = post.find("<p class=\"post-date\">").unwrap();
+    let note = post
+        .find("<p class=\"updated-note\">Added the part on image sitemaps.</p>")
+        .unwrap();
+    assert!(date < note, "{post}");
+    let (_, related) = post.split_once("<section class=\"related\">").unwrap();
+    let (related, _) = related.split_once("</section>").unwrap();
+    assert_eq!(
+        related.matches("<article class=\"card\">").count(),
+        5,
+        "{related}"
+    );
+}
+
+#[test]
 fn a_site_turns_keystone_chapters_on_and_adds_its_about_lines() {
     let (_temp, out) = built(
         "[template.options]\nnumbered_headings = true\nshare = \"end\"\nabout = [\"Field Notes is written by two people who run SEO for small teams.\"]\n",
