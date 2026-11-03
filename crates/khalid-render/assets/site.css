@@ -100,8 +100,10 @@ nav a { min-inline-size: 44px; }
   padding-block: 2rem 3rem;
   border-block-start: 1px solid var(--color-border);
   color: var(--color-muted);
-  font-size: var(--text-small);
 }
+/* The small text goes on the footer's parts, not the footer: a measure in ch
+   on the footer itself would make it narrower than the header. */
+.site-footer > * { font-size: var(--text-small); }
 .site-footer p { margin: 0; }
 .footer-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 1rem 1.5rem; }
 .footer-groups h2 { margin: 0; color: var(--color-text); font-size: var(--text-small); }

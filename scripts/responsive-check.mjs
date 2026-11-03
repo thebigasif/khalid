@@ -204,6 +204,16 @@ function measure({ phone, large, admin }) {
         if (gap > vw * 0.12) problems.push(`content off centre: ${Math.round(left)} px on the left, ${Math.round(vw - right)} px on the right`);
       }
     }
+    // The header and the footer share one column, so their edges line up.
+    const header = document.querySelector(".site-header");
+    const footer = document.querySelector(".site-footer");
+    if (!admin && header && footer && shown(header) && shown(footer)) {
+      const top = header.getBoundingClientRect();
+      const bottom = footer.getBoundingClientRect();
+      if (Math.abs(top.left - bottom.left) > 2 || Math.abs(top.right - bottom.right) > 2) {
+        problems.push(`footer ${Math.round(bottom.left)} to ${Math.round(bottom.right)} px does not line up with the header ${Math.round(top.left)} to ${Math.round(top.right)} px`);
+      }
+    }
   }
   return problems;
 }
