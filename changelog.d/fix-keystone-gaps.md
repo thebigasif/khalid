@@ -6,3 +6,4 @@ khalid init --stack prints the Sitemap line the main site's own robots.txt needs
 
 Fixed
 A post that pins five related posts shows all five in Keystone, not the first three.
+The demo's feature tour no longer sends you to Google's Rich Results Test for FAQ, how-to, fact check, course and podcast episode data, which Google stopped showing. It names the Schema Markup Validator for those.

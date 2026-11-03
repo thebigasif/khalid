@@ -52,22 +52,25 @@ Comments, sign-ups, forms, members-only parts and search need Khalid running as 
 
 ## Search results features
 
-Each page carries structured data, the code search engines read to understand it. You can see it with Google's [Rich Results Test](https://search.google.com/test/rich-results).
+Each page carries structured data, the code search engines read to understand it. Google still shows these types as rich results, so you can see them in Google's [Rich Results Test](https://search.google.com/test/rich-results):
 
 - **Article, author, publisher and breadcrumbs:** on every post, such as the [SEO writing guide](/blog/seo-writing-guide/).
-- **FAQ:** the [AI search guide](/blog/ai-search-guide/).
-- **How-to:** [set up Google Search Console](/blog/search-console-setup/).
 - **Review with a rating:** the [Quillmeter review](/blog/quillmeter-review/).
 - **Ranked list:** [the best free SEO tools](/blog/best-free-seo-tools/).
 - **Comparison, shaped the way the linter asks:** [Search Console against Bing Webmaster Tools](/blog/search-console-vs-bing-webmaster-tools/).
-- **Fact check:** [word count is not a ranking factor](/blog/fact-check-word-count/)
 - **Dataset:** [the benchmark data](/blog/content-benchmark-data/).
-- **Course:** [the SEO writing course](/blog/seo-writing-course/).
-- **Podcast episode:** [episode one](/blog/podcast-answer-first/).
 - **Video:** the animation in the [technical SEO audit](/blog/technical-seo-audit/).
 - **News article, with its own news sitemap:** [our benchmark data is free to download](/blog/news/benchmark-data-open/).
 - **Product:** [the tools we use](/blog/tools/).
 - **Local business:** [about Larkspur](/blog/about/).
+
+Google no longer shows rich results for the types below. Khalid still writes valid structured data for them, which other search engines and AI tools read, and the [Schema Markup Validator](https://validator.schema.org/) shows it:
+
+- **FAQ:** the [AI search guide](/blog/ai-search-guide/).
+- **How-to:** [set up Google Search Console](/blog/search-console-setup/).
+- **Fact check:** [word count is not a ranking factor](/blog/fact-check-word-count/).
+- **Course:** [the SEO writing course](/blog/seo-writing-course/).
+- **Podcast episode:** [episode one](/blog/podcast-answer-first/).
 
 ## Trust and people
 
