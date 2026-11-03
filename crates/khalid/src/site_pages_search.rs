@@ -20,7 +20,8 @@ impl SitePages {
         query: Option<String>,
         results: Vec<SearchResult>,
     ) -> Result<Option<String>, UserMessage> {
-        let Some(theme) = &self.0.theme else {
+        let settings = self.settings();
+        let Some(theme) = &settings.theme else {
             return Ok(None);
         };
         let shell = self
