@@ -137,7 +137,7 @@ What a settled server holds, from `/proc/<pid>/smaps` at 51 MB: 27 MB in mimallo
 
 ## Binary size
 
-The budget is 31,457,280 bytes (30 MB), checked by CI's "Binary size" step after `cargo build --release -p khalid`. On 2026-10-31 integration branch 15 built 33,249,512 bytes and integration branch 16 built 31,639,784. Both merged together built 33,755,112 bytes.
+The budget is 31,457,280 bytes (30 MB), checked by the "Binary size, budget under 30 MB" job in CI after `cargo build --release -p khalid`. On 2026-10-31 integration branch 15 built 33,249,512 bytes and integration branch 16 built 31,639,784. Both merged together built 33,755,112 bytes.
 
 What the release profile already did: fat LTO, one codegen unit, symbols stripped, `panic = "abort"`, and opt-level `"s"` for a few cold crates (the share image stack, the font reader, the import command's HTML reader, and on branch 15 the API crate). The panic behaviour is unchanged.
 
