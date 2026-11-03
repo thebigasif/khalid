@@ -625,6 +625,9 @@ async fn check_without_a_tokens_file_says_to_sync_first() {
 #[tokio::test(flavor = "multi_thread")]
 async fn sync_downloads_rehostable_fonts_and_the_build_serves_them() {
     let site = site();
+    // A tokens file with no font files is there already, so this sync is
+    // a resync that must still list the font files.
+    tokens_without_fonts(site.path()).await;
     // The home links a stylesheet that names a Google font, and the font's
     // CSS and file are on the same stand-in server.
     let server = MockServer::start().await;
@@ -698,4 +701,20 @@ async fn sync_downloads_rehostable_fonts_and_the_build_serves_them() {
         b"font bytes",
         "the built site serves the font file"
     );
+}
+
+/// Writes `theme/tokens.toml` in `site` from CSS alone, so it lists no
+/// font file.
+#[cfg(test)]
+async fn tokens_without_fonts(site: &Path) {
+    let first = within(site, "first.css");
+    fs::write(&first, STYLE).unwrap();
+    let args = ["theme", "sync", "https://www.example.com/", "--from-css"];
+    let made = khalid(
+        site,
+        &[&args[..], &[first.to_str().unwrap()]].concat(),
+        Names::Real,
+    )
+    .await;
+    assert_eq!(made.status.code(), Some(0), "{}", text(&made.stderr));
 }

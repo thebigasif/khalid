@@ -317,8 +317,9 @@ async fn a_real_face_is_measured_into_metric_overrides() {
             .unwrap();
 
     // The DejaVu Sans Bold face from the crate's fixtures, a real font with
-    // real tables, so the measurements are the true ones, not a mock's.
-    let face = include_bytes!("../fixtures/real/fonts/DejaVuSans-Bold.ttf");
+    // real tables packed as WOFF2 here, so the measurements are the true
+    // ones, not a mock's.
+    let face = woff2_of(include_bytes!("../fixtures/real/fonts/DejaVuSans-Bold.ttf"));
     let css = format!(
         "/* latin */\n@font-face {{ font-family: 'DejaVu Sans'; font-style: normal; font-weight: 700; src: url(http://fonts.gstatic.test:{port}/dejavu.woff2) format('woff2'); }}\n"
     );
@@ -407,4 +408,59 @@ async fn a_file_that_is_not_a_font_is_saved_but_not_measured() {
         within(into.path(), "not-a-font-latin.woff2").exists(),
         "the file itself is still saved and served"
     );
+}
+
+/// `ttf` packed as a WOFF2 file with no table transforms: each table's
+/// tag given in full, the glyph and glyph location tables marked as kept
+/// as they are, and the tables one Brotli stream.
+#[cfg(test)]
+fn woff2_of(ttf: &[u8]) -> Vec<u8> {
+    let be32 = |at: usize| u32::from_be_bytes(ttf[at..at + 4].try_into().unwrap());
+    let count = u16::from_be_bytes([ttf[4], ttf[5]]);
+    let (mut directory, mut tables) = (Vec::new(), Vec::new());
+    for index in 0..usize::from(count) {
+        let entry = 12 + 16 * index;
+        let tag = &ttf[entry..entry + 4];
+        let offset = usize::try_from(be32(entry + 8)).unwrap();
+        let length = be32(entry + 12);
+        let glyph_locations = [0x6c, 0x6f, 0x63, 0x61];
+        let kept_as_is = if tag == b"glyf" || tag == glyph_locations {
+            0xc0
+        } else {
+            0
+        };
+        directory.push(0x3f | kept_as_is);
+        directory.extend_from_slice(tag);
+        directory.extend(base128(length));
+        tables.extend_from_slice(&ttf[offset..offset + usize::try_from(length).unwrap()]);
+    }
+    let mut stream = Vec::new();
+    let params = brotli::enc::BrotliEncoderParams::default();
+    brotli::BrotliCompress(&mut tables.as_slice(), &mut stream, &params).unwrap();
+    let size = |n: usize| u32::try_from(n).unwrap().to_be_bytes();
+    let mut file = b"wOF2".to_vec();
+    file.extend(0x0001_0000_u32.to_be_bytes());
+    file.extend(size(48 + directory.len() + stream.len()));
+    file.extend(count.to_be_bytes());
+    file.extend([0, 0]);
+    file.extend(size(ttf.len()));
+    file.extend(size(stream.len()));
+    // Version 1.0, then no metadata block and no private block.
+    file.extend([0, 1, 0, 0]);
+    file.extend([0; 20]);
+    file.extend(directory);
+    file.extend(stream);
+    file
+}
+
+/// `value` as WOFF2's `UIntBase128`: seven bits a byte, high bits first.
+#[cfg(test)]
+fn base128(value: u32) -> Vec<u8> {
+    let mut bytes = vec![u8::try_from(value & 0x7f).unwrap()];
+    let mut rest = value >> 7;
+    while rest > 0 {
+        bytes.insert(0, u8::try_from(rest & 0x7f).unwrap() | 0x80);
+        rest >>= 7;
+    }
+    bytes
 }

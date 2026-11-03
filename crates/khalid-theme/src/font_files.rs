@@ -5,9 +5,11 @@
 
 use khalid_core::AbsoluteUrl;
 use khalid_outbound::Outbound;
-use read_fonts::TableProvider;
+use read_fonts::tables::{head::Head, hhea::Hhea, os2::Os2};
+use read_fonts::{FontData, FontRead};
 
 use crate::fonts::FontSource;
+use crate::woff2;
 
 /// The most bytes one downloaded font file may hold before it is skipped.
 /// A web font subset is tens of kilobytes; four megabytes leaves room for
@@ -155,9 +157,10 @@ pub async fn download_and_report(
 }
 
 /// The face's metric overrides for a local Arial fallback, as CSS
-/// percentages. `None` when the file is not a readable face. The formula
-/// is the one Capsize popularised: each override is the face's own value
-/// over its size, divided by Arial's, as a percentage of Arial's.
+/// percentages, from the WOFF2 file `bytes`. `None` when the file is not a
+/// readable face. The formula is the one Capsize popularised: each
+/// override is the face's own value over its size, divided by Arial's, as
+/// a percentage of Arial's.
 fn measure(bytes: &[u8]) -> Option<FontMetrics> {
     // Arial's metrics, in font units of 2048 per em: ascent 1854,
     // descent 434, line gap 67, average character width 1934.
@@ -167,10 +170,10 @@ fn measure(bytes: &[u8]) -> Option<FontMetrics> {
     const ARIAL_WIDTH: f64 = 1934.0;
     // The tables are read through read-fonts' typed API, so a malformed
     // file is an Err, never a panic or a wrong offset (maintainer review).
-    let font = read_fonts::FileRef::new(bytes).ok()?.fonts().next()?.ok()?;
-    let head = font.head().ok()?;
-    let hhea = font.hhea().ok()?;
-    let os2 = font.os2().ok()?;
+    let tables = woff2::tables(bytes)?;
+    let head = Head::read(FontData::new(&tables.head)).ok()?;
+    let hhea = Hhea::read(FontData::new(&tables.hhea)).ok()?;
+    let os2 = Os2::read(FontData::new(&tables.os2)).ok()?;
     let per_em = f64::from(head.units_per_em());
     let ascent = f64::from(hhea.ascender().to_i16()) / per_em;
     let descent = f64::from(hhea.descender().to_i16()).abs() / per_em;
