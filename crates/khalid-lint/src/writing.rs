@@ -25,7 +25,8 @@ const QUESTION_MARK: char = '?';
 /// A heading phrased as a question must be followed by a standalone
 /// answer of `min_answer_words` to `max_answer_words` words (40 to 60 by
 /// default, decision D3), so the answer is complete before any detail
-/// starts.
+/// starts. Only the first paragraph under the heading is counted: the
+/// detail after it may run as long as the section needs.
 #[derive(Debug)]
 pub(crate) struct AnswerCapsule {
     pub(crate) min_answer_words: usize,
@@ -40,13 +41,14 @@ impl Rule for AnswerCapsule {
     fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
         let mut hits = Vec::new();
         for heading in question_headings(post) {
-            let Some(words) = words_after(post, &heading.text) else {
+            let Some(answer) = answer_after(post, &heading.text) else {
                 continue;
             };
+            let words = count_words(answer);
             if words < self.min_answer_words || words > self.max_answer_words {
                 hits.push(
                     Hit::about(format!(
-                        "heading \"{}\" is followed by {words} words, not the {} to {} of a standalone answer",
+                        "heading \"{}\" is answered in a first paragraph of {words} words, not the {} to {} of a standalone answer",
                         heading.text, self.min_answer_words, self.max_answer_words
                     ))
                     .suggesting(vec![format!(
@@ -126,19 +128,24 @@ fn question_headings(post: &LintPost) -> Vec<&crate::Heading> {
         .collect()
 }
 
-/// How many words follow the heading `text` before the next heading, when
-/// the post's plain body names them. `None` when the heading's line
-/// cannot be found, so the rule stays quiet rather than guessing.
-fn words_after(post: &LintPost, text: &str) -> Option<usize> {
-    let mut lines = post.body_text.lines();
-    let start = lines.position(|line| line.trim() == text)?;
+/// The answer under the heading `text`: the first line of text after it,
+/// which is its first paragraph, so the detail after the answer is never
+/// counted. A list, table or box that comes first is read as its first
+/// item, cell or paragraph, one line each. Empty when the next heading
+/// comes first. `None` when the heading's line cannot be found, so the
+/// rule stays quiet rather than guessing.
+fn answer_after<'a>(post: &'a LintPost, text: &str) -> Option<&'a str> {
+    let start = post
+        .body_text
+        .lines()
+        .position(|line| line.trim() == text)?;
     Some(
         post.body_text
             .lines()
             .skip(start + 1)
             .take_while(|line| !is_heading_line(post, line))
-            .map(count_words)
-            .sum(),
+            .find(|line| !line.trim().is_empty())
+            .unwrap_or_default(),
     )
 }
 
@@ -323,4 +330,71 @@ fn linked_lines(post: &LintPost) -> Vec<&str> {
                 .any(|link| !link.text.is_empty() && line.contains(link.text.as_str()))
         })
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use khalid_core::{Locale, Slug};
+
+    use super::*;
+    use crate::{Heading, HeadingLevel, LintSite};
+
+    /// The usual capsule rule, 40 to 60 words.
+    const CAPSULE: AnswerCapsule = AnswerCapsule {
+        min_answer_words: 40,
+        max_answer_words: 60,
+    };
+
+    /// `n` plain words, as one paragraph.
+    fn paragraph(n: usize) -> String {
+        vec!["word"; n].join(" ")
+    }
+
+    /// A post with one question heading, the `lines` under it, then a
+    /// second heading and a short paragraph.
+    fn answered(lines: &[String]) -> LintPost {
+        let mut post = LintPost::new(Locale::try_new("en").unwrap(), Slug::try_new("a").unwrap());
+        post.body_text = format!(
+            "Intro.\nHow long is an answer?\n{}\nWhat comes next\nMore.",
+            lines.join("\n")
+        );
+        post.headings = vec![
+            Heading::new(HeadingLevel::H2, "How long is an answer?"),
+            Heading::new(HeadingLevel::H2, "What comes next"),
+        ];
+        post
+    }
+
+    /// What the capsule rule says about the `lines` under the question.
+    fn capsule_hits(lines: &[String]) -> Vec<String> {
+        let hits = CAPSULE.check(&answered(lines), &LintSite::default());
+        hits.iter()
+            .filter_map(Hit::subject)
+            .map(str::to_owned)
+            .collect()
+    }
+
+    #[test]
+    fn a_capsule_followed_by_300_words_of_detail_passes() {
+        let mut lines = vec![paragraph(50), String::new()];
+        lines.extend(vec![paragraph(100); 3]);
+        assert_eq!(capsule_hits(&lines), Vec::<String>::new());
+    }
+
+    /// A first paragraph of 15 or 120 words, a list of 6-word items, or
+    /// a heading straight after the question warns, whatever follows.
+    #[test]
+    fn a_first_paragraph_outside_40_to_60_words_warns() {
+        let first_lists_and_none = [
+            (vec![paragraph(15), paragraph(40)], 15),
+            (vec![paragraph(120)], 120),
+            (vec![paragraph(6); 10], 6),
+            (Vec::new(), 0),
+        ];
+        for (lines, words) in first_lists_and_none {
+            let hits = capsule_hits(&lines);
+            assert_eq!(hits.len(), 1, "{hits:?}");
+            assert!(hits[0].contains(&format!("of {words} words")), "{hits:?}");
+        }
+    }
 }

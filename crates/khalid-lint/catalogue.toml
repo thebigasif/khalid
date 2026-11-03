@@ -326,7 +326,7 @@ fix = "Give this form an email address or a service such as Zapier to send its a
 guide = "forms"
 
 [answer-capsule]
-what = "A question-style heading is not followed by a standalone answer of 40 to 60 words."
+what = "The first paragraph under a question-style heading is not a standalone answer of 40 to 60 words."
 why = "Answer engines lift the first complete answer under a question, and readers scan for it too."
 fix = "Write the whole answer in one paragraph of 40 to 60 words directly under the heading, before any detail or hedging."
 guide = "answer-capsule"
