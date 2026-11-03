@@ -140,7 +140,7 @@ impl Renderer<'_> {
             &attribute(title),
             "\" width=\"560\" height=\"",
             height,
-            "\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-popups allow-presentation\" allow=\"encrypted-media; fullscreen; picture-in-picture\"></iframe>\n<figcaption>",
+            "\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-popups\" allow=\"encrypted-media; fullscreen; picture-in-picture\"></iframe>\n<figcaption>",
             &link,
             "</figcaption>\n</figure>\n",
         ]);

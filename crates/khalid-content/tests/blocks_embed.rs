@@ -68,6 +68,25 @@ fn renders_each_provider_in_a_frame_and_any_other_address_as_a_link() {
     ));
 }
 
+/// Safari refuses a sandbox token it does not know, `allow-presentation`,
+/// and logs an error on every page with a player. Fullscreen comes from
+/// the `allow` list, which every browser reads.
+#[test]
+fn a_player_frame_carries_only_sandbox_tokens_every_browser_knows() {
+    let page = html(
+        "::embed{src=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" title=\"How search works\"}\n",
+    );
+    assert!(
+        page.contains("sandbox=\"allow-scripts allow-same-origin allow-popups\""),
+        "{page}"
+    );
+    assert!(!page.contains("allow-presentation"), "{page}");
+    assert!(
+        page.contains("allow=\"encrypted-media; fullscreen; picture-in-picture\""),
+        "{page}"
+    );
+}
+
 #[test]
 fn an_embed_joins_the_links() {
     let rendered = render(
