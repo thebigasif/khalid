@@ -39,6 +39,53 @@ pub struct RenderHome {
     pub podcasts: Vec<PostCard>,
 }
 
+impl RenderHome {
+    /// Every post card the page shows, in every part: the newest posts,
+    /// the featured post, the picks, the sections, the topic tabs and the
+    /// video and podcast rows. Whatever fills one card fills them all
+    /// through this, so a new part cannot be left with bare cards.
+    pub fn cards(&self) -> impl Iterator<Item = &PostCard> {
+        let Self {
+            listing,
+            sections,
+            picks,
+            topics: _,
+            categories: _,
+            tabs,
+            videos,
+            podcasts,
+        } = self;
+        let listed = listing.posts.iter().chain(&listing.featured);
+        let grouped = sections.iter().chain(tabs).flat_map(|group| &group.posts);
+        listed
+            .chain(picks)
+            .chain(grouped)
+            .chain(videos)
+            .chain(podcasts)
+    }
+
+    /// [`RenderHome::cards`], to change.
+    pub fn cards_mut(&mut self) -> impl Iterator<Item = &mut PostCard> {
+        let Self {
+            listing,
+            sections,
+            picks,
+            topics: _,
+            categories: _,
+            tabs,
+            videos,
+            podcasts,
+        } = self;
+        let listed = listing.posts.iter_mut().chain(&mut listing.featured);
+        let grouped = (sections.iter_mut().chain(tabs)).flat_map(|group| &mut group.posts);
+        listed
+            .chain(picks)
+            .chain(grouped)
+            .chain(videos)
+            .chain(podcasts)
+    }
+}
+
 /// One section of the front page: the newest posts of a category, a
 /// collection or a channel, and a link to all of them.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]

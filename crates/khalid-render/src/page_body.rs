@@ -79,17 +79,7 @@ impl PageBody {
     /// so a page's steps grow with the blog.
     pub(crate) fn cards(&self) -> usize {
         match self {
-            Self::Home(home) => {
-                let sections =
-                    (home.sections.iter().chain(&home.tabs)).map(|section| section.posts.len());
-                let listing = &home.listing;
-                listing.posts.len()
-                    + usize::from(listing.featured.is_some())
-                    + home.picks.len()
-                    + home.videos.len()
-                    + home.podcasts.len()
-                    + sections.sum::<usize>()
-            }
+            Self::Home(home) => home.cards().count(),
             Self::Collection(listing)
             | Self::Tag(listing)
             | Self::Category(listing)
