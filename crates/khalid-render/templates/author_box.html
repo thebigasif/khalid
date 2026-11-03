@@ -14,7 +14,7 @@
 {% if author.role %}<p class="person-role">{{ author.role }}</p>
 {% endif %}{% if author.credentials %}<p class="person-credentials"><strong>{{ t.credentials }}</strong> {{ author.credentials }}</p>
 {% endif %}{% if author.bio %}<div class="person-bio">{{ author.bio }}</div>
-{% endif %}{% if author.profiles %}{{ profiles(author.profiles, t.profiles_of | replace("{name}", author.name), false, false) }}
+{% endif %}{% if author.profiles %}{{ profiles(author.profiles, t.profiles_of | replace("{name}", author.name), false) }}
 {% endif %}</div>
 </div>
 {% endfor %}{% if reviewers %}<div class="reviewed-by">

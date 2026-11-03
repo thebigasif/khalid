@@ -7,7 +7,7 @@
 /* Lists use the full width for their grid; a post keeps its measure. */
 .site-header, .site-footer, main { max-inline-size: 76rem; }
 main:has(> .post), main:has(> .page) { max-inline-size: var(--measure); }
-.button, .subscribe button { color: var(--color-on-accent); }
+.button, .subscribe button, .comment-form button { color: var(--color-on-accent); }
 
 /* The header: the name in the code font after an accent square, a double
    rule under it. */

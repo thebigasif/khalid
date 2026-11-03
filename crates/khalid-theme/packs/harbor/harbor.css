@@ -21,9 +21,9 @@ h2 { line-height: 1.2; }
 .announcement, .site-header, .masthead-signup, .site-footer { max-inline-size: none; margin-inline: calc(50% - 50vw); padding-inline: max(1rem, 50vw - var(--harbor-wide) / 2); }
 
 /* Buttons: one filled pill in the accent. */
-.button, .subscribe button, .header-button { min-block-size: 44px; padding: 0.625rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 999px; font-size: 0.9375rem; font-weight: 600; letter-spacing: 0; transition: background-color 0.15s, transform 0.15s; }
+.button, .subscribe button, .comment-form button, .header-button { min-block-size: 44px; padding: 0.625rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 999px; font-size: 0.9375rem; font-weight: 600; letter-spacing: 0; transition: background-color 0.15s, transform 0.15s; }
 .button { max-inline-size: 100%; justify-content: center; text-align: center; }
-.button:hover, .subscribe button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 86%, var(--color-text)); text-decoration: none; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 86%, var(--color-text)); text-decoration: none; }
 
 /* The announcement, then the header: the logo, the menu and the offer. */
 .announcement { padding-block: 0.625rem; background: var(--harbor-tint); border: 0; font-size: var(--text-small); }
