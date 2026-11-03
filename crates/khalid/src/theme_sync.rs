@@ -204,6 +204,11 @@ pub(crate) fn run(
         Ok(Some(mut file)) => {
             fixes.retain(|fix| !file.locked.iter().any(|n| n.as_str() == fix.token().name()));
             let diff = file.resync(&fresh);
+            // The font files are not tokens: a sync that saved the site's
+            // fonts lists them, and one that saved none keeps the list.
+            if !fresh.fonts.files.is_empty() {
+                file.fonts.files.clone_from(&fresh.fonts.files);
+            }
             (file, Some(diff))
         }
         Ok(None) => (fresh, None),
