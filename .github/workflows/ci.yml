@@ -103,7 +103,7 @@ jobs:
           # inside the namespace, with nothing that needs it.
           floor=$(sed -n 's/^lines *= *\([0-9.]*\).*/\1/p' coverage.toml 2>/dev/null || echo 0)
           (
-            eval "$(cargo llvm-cov show-env --export-prefix)"
+            eval "$(cargo llvm-cov show-env --sh)"
             cargo llvm-cov clean --workspace
             cargo nextest run --workspace --all-features --no-run
             unshare -rn sh -c '
