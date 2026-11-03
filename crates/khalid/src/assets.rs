@@ -38,6 +38,9 @@ static READER: LazyLock<ScriptFile> = LazyLock::new(reader_script_file);
 /// The file in a site folder that holds the site's own CSS rules.
 const SITE_CSS: &str = "theme/site.css";
 
+/// The folder in a site folder that holds its self-hosted font files.
+const FONTS: &str = "theme/fonts/";
+
 /// The site's stylesheet: the values in `theme/tokens.toml` over the
 /// look's defaults, as CSS custom properties, then the shared rules, then
 /// the look's own rules and the site's own.
@@ -63,6 +66,62 @@ pub(crate) fn rules(site: &Path, look: &Look) -> Result<String, UserMessage> {
         Err(error) => return Err(build_message::site_css(SITE_CSS, &error)),
     };
     Ok([look.pack().stylesheet, &own].join("\n"))
+}
+
+/// One self-hosted font the stylesheet names: its file name in
+/// `theme/fonts/`, which is also its name under `<mount>assets/fonts/`,
+/// and its bytes.
+#[derive(Debug)]
+pub(crate) struct FontFile {
+    pub(crate) name: String,
+    pub(crate) bytes: Vec<u8>,
+}
+
+/// The font files `tokens` lists, read from `theme/fonts/` in the tokens'
+/// order, each once. Only a plain `*.woff2` name the tokens list is read,
+/// so nothing else in the folder, or outside it, is ever served. A file
+/// that cannot be read is left out with a warning, and the stylesheet's
+/// next font stands in (G20).
+pub(crate) fn fonts(site: &Path, tokens: &Tokens) -> Vec<FontFile> {
+    let mut found: Vec<FontFile> = Vec::new();
+    for listed in &tokens.fonts.files {
+        let name = listed.path.as_str();
+        let plain = !name.contains(['/', '\\']) && !name.starts_with('.');
+        let woff2 = Path::new(name)
+            .extension()
+            .is_some_and(|extension| extension.eq_ignore_ascii_case("woff2"));
+        if !plain || !woff2 || found.iter().any(|font| font.name == name) {
+            continue;
+        }
+        let read = SitePath::within(site, &format!("{FONTS}{name}"))
+            .ok()
+            .and_then(|path| path.resolve().ok())
+            .and_then(|path| fs::read(path).ok());
+        let Some(bytes) = read else {
+            tracing::warn!(file = name, "a listed font file could not be read");
+            continue;
+        };
+        found.push(FontFile {
+            name: name.to_owned(),
+            bytes,
+        });
+    }
+    found
+}
+
+/// The fonts as `khalid serve` holds them, at `<mount>assets/fonts/<file>`,
+/// where the stylesheet's `@font-face` rules point. Each is kept for a
+/// year: `theme sync` names a file by its face, and a new face gets a new
+/// name.
+pub(crate) fn font_pages(config: &Config, fonts: Vec<FontFile>) -> Result<Vec<Page>, UserMessage> {
+    fonts
+        .into_iter()
+        .map(|font| {
+            let href = format!("{}{FOLDER}fonts/{}", config.mount(), font.name);
+            let path = PagePath::try_new(&href).map_err(|_| build_message::address(&href))?;
+            Ok(Page::immutable(path, MediaType::Woff2, font.bytes))
+        })
+        .collect()
 }
 
 /// The reader script's name, integrity value and bytes.

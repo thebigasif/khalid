@@ -32,6 +32,8 @@ pub enum MediaType {
     Svg,
     /// A PDF document.
     Pdf,
+    /// A WOFF2 web font, the site's own from `theme/fonts/`.
+    Woff2,
     /// Any other file, sent as bytes for the reader to save.
     Binary,
 }
@@ -53,6 +55,7 @@ impl MediaType {
             Self::Gif => "image/gif",
             Self::Svg => "image/svg+xml",
             Self::Pdf => "application/pdf",
+            Self::Woff2 => "font/woff2",
             Self::Binary => "application/octet-stream",
         }
     }

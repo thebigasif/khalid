@@ -107,7 +107,7 @@ fn self_hosted_fonts_come_with_swap_and_their_subsets() {
     let css = stylesheet(&tokens).unwrap();
     let text = std::str::from_utf8(css.body()).unwrap();
     assert!(
-        text.contains(r#"@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-display: swap;"#),
+        text.contains(r#"@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; src: url("fonts/inter-latin.woff2") format("woff2"); font-display: swap;"#),
         "the face is served from the site, shown with a swap:\n{text}"
     );
     assert!(
