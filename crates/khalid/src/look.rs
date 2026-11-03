@@ -223,6 +223,91 @@ mod tests {
         }
     }
 
+    /// Each rule in `css` as its selector and its declarations.
+    fn rules(css: &str) -> Vec<(&str, &str)> {
+        (css.split('}'))
+            .filter_map(|rule| rule.rsplit_once('{'))
+            .map(|(selector, declarations)| (selector.trim(), declarations))
+            .collect()
+    }
+
+    /// Faults found on a served Keystone blog (fix/keystone-layout), held
+    /// for every pack: the pros and cons marks keep their room, the comment
+    /// form looks like the pack's other forms, a folded table sizes its
+    /// columns to its words, and an author's role never rides up into the
+    /// name.
+    #[test]
+    fn every_pack_keeps_block_lists_forms_tables_and_roles_readable() {
+        let site = tempfile::tempdir().unwrap();
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let css = stylesheet_text_with(&tokens, pack.stylesheet);
+            let name = pack.name;
+            let marks = rules_naming(&css, ".proscons :is(.pros, .cons) li");
+            let room = marks.iter().any(|r| r.contains("padding-inline-start"));
+            assert!(room, "{name}: no room for the marks");
+            for (selector, declarations) in rules(&css) {
+                let every_list = (selector.split(','))
+                    .any(|one| one.trim().ends_with(" li") && one.matches('.').count() > 1);
+                let generic =
+                    selector.contains(".post-body li") || selector.contains(".page-body li");
+                assert!(
+                    !(generic && every_list && declarations.contains("padding-inline-start")),
+                    "{name}: {selector} outranks the block lists"
+                );
+                // A rule for a post's plain lists outranked `.proscons ul`
+                // and moved the marks in from the title.
+                let plain_lists = selector.contains(".post-body :is(ul, ol):not([class])");
+                assert!(
+                    !(plain_lists && declarations.contains("padding")),
+                    "{name}: {selector} outranks the block lists"
+                );
+                if selector.contains(".author-role") {
+                    assert!(!declarations.contains("* -"), "{name}: {selector}");
+                }
+            }
+            let fields = rules_naming(&css, ".comment-form input");
+            assert!(
+                fields.iter().any(|r| r.contains("border: 1px solid")),
+                "{name}"
+            );
+            assert!(
+                fields.iter().any(|r| r.contains("appearance: none")),
+                "{name}"
+            );
+            for (selector, _) in rules(pack.stylesheet) {
+                if selector.starts_with(".button, .subscribe button") {
+                    assert!(
+                        selector.contains(".comment-form button"),
+                        "{name}: {selector}"
+                    );
+                }
+            }
+            for rule in rules_naming(&css, ".table-fold table") {
+                assert!(!rule.contains("table-layout: fixed"), "{name}: {rule}");
+            }
+            let summary = rules_naming(&css, ".table-fold .table-fold-more");
+            assert!(
+                summary.iter().any(|r| r.contains("cursor: pointer")),
+                "{name}"
+            );
+        }
+    }
+
+    /// Keystone's lead picture breaks out to the wide frame, which ran
+    /// under the side contents column; with the column it keeps to the text.
+    #[test]
+    fn keystones_lead_picture_stays_clear_of_the_side_contents() {
+        let keystone = (khalid_theme::packs().iter())
+            .find(|pack| pack.name == "keystone")
+            .unwrap();
+        let rule = rules_naming(keystone.stylesheet, ".post-with-toc .post-header .image");
+        assert_eq!(rule, [" margin-inline: 0; "]);
+        assert!(keystone.stylesheet.contains(
+            "@media (min-width: 70rem) { .post-with-toc .post-header .image { margin-inline: 0; } }"
+        ));
+    }
+
     #[test]
     fn a_pack_takes_every_colour_from_the_tokens_and_mirrors_for_right_to_left() {
         for pack in khalid_theme::packs() {

@@ -147,7 +147,7 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
 /* The call to action and the newsletter: the call to action on a sheet
    of the ruled paper, the newsletter on a plain one, the words large on
    the reading side and the button or form beside them. */
-.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; font-weight: 600; }
+.button, .subscribe button, .comment-form button { color: var(--color-on-accent); border-radius: 999px; font-weight: 600; }
 .cta-band, .newsletter-slot { position: relative; gap: 1.5rem 3rem; margin-block: clamp(4rem, 8vw, 6rem); padding: clamp(2rem, 5vw, 3.5rem); background: var(--paper), var(--color-surface); border: var(--hair); border-radius: calc(var(--radius) * 1.5); }
 .cta-note, .newsletter-slot h2 { max-inline-size: 28ch; margin: 0; font-family: var(--font-heading); font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem); font-weight: var(--heading-weight); line-height: 1.15; letter-spacing: -0.03em; }
 .cta-note { flex: 1 1 18rem; }

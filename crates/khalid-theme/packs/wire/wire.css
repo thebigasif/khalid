@@ -7,7 +7,7 @@
 
 body { font-family: var(--font-heading); }
 .site-header, main, .site-footer { max-inline-size: min(76rem, 100% - 4vw); }
-.button, .subscribe button { border-radius: var(--radius); color: var(--color-on-accent); font-family: var(--font-heading); }
+.button, .subscribe button, .comment-form button { border-radius: var(--radius); color: var(--color-on-accent); font-family: var(--font-heading); }
 
 /* One small label style for kickers, section titles and meta. */
 .kicker, .band-title, .card-meta, .byline, .breadcrumbs a, .post-dates, .reviewed-by, .toc::before, .site-footer h2 { font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; }
@@ -274,7 +274,7 @@ figcaption { font-family: var(--font-heading); font-size: 0.8125rem; }
 .post-body :is(h2, h3, h4), .page-body :is(h2, h3, h4) { font-family: var(--font-heading); letter-spacing: -0.02em; line-height: 1.15; }
 .post-body h2 { margin-block-start: 2.25em; }
 .heading-link { font-size: 0.75em; }
-.post-body :is(ul, ol):not([class]) { padding-inline-start: 1.25rem; }
+.post-body :where(ul:not([class]), ol:not([class])) { padding-inline-start: 1.25rem; }
 .post-body li::marker { color: var(--color-link); font-family: var(--font-heading); font-weight: 700; }
 
 /* Contents, callouts and quotes: rules and labels, not boxes. */

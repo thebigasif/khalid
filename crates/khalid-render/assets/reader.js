@@ -269,10 +269,12 @@
     find();
   }
 
-  // On a narrow screen a floating button opens the contents as a sheet: a
-  // modal dialog, so focus stays inside and Escape closes it. Picking a
-  // section closes it and goes there.
-  if (contents && typeof HTMLDialogElement === "function") {
+  // The folded contents list at the start of a post becomes a button in its
+  // place that opens the contents as a sheet: a modal dialog, so focus stays
+  // inside and Escape closes it. Picking a section closes it and goes there.
+  // The button sits in the page, so it never covers what the reader reads.
+  const folded = document.querySelector(".toc-inline");
+  if (contents && folded && typeof HTMLDialogElement === "function") {
     const open = document.createElement("button");
     open.type = "button";
     open.className = "toc-button";
@@ -299,7 +301,8 @@
       sheet.showModal();
       sheet.querySelector("[aria-current]")?.scrollIntoView({ block: "center" });
     });
-    document.body.append(open, sheet);
+    folded.replaceWith(open);
+    document.body.append(sheet);
   }
 
   // A link in a post's body to another page of the site shows that page's

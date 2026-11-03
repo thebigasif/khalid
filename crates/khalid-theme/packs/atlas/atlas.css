@@ -16,8 +16,8 @@
 }
 .site-header, .site-footer, main:has(.front), main:has(> .cards), main:has(> .featured) { max-inline-size: var(--atlas-wide); }
 main:has(.front), main:has(> .post) { padding-block-start: 0; }
-.button, .subscribe button, .search button { color: var(--color-on-accent); }
-.button, .header-button, .subscribe button { border-radius: var(--atlas-pill); }
+.button, .subscribe button, .comment-form button, .search button { color: var(--color-on-accent); }
+.button, .header-button, .subscribe button, .comment-form button { border-radius: var(--atlas-pill); }
 
 /* The header: the name or logo, the menu in pills, the call to action at
    the end, over a hairline across the window. */

@@ -123,7 +123,7 @@ nav .pill { min-block-size: 2rem; }
 .band { margin-block: var(--space-section) calc(var(--space) * -6); padding-block: calc(var(--space) * 5); background: color-mix(in oklab, var(--color-accent) 9%, var(--color-background)); box-shadow: 0 0 0 100vmax color-mix(in oklab, var(--color-accent) 9%, var(--color-background)); clip-path: inset(0 -100vmax); }
 .band .newsletter-slot { margin: 0; padding: 0; background: none; }
 .newsletter-slot h2 { font-size: var(--text-h2); }
-.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; }
+.button, .subscribe button, .comment-form button { color: var(--color-on-accent); border-radius: 999px; }
 .cta-band { background: var(--color-surface); border-block-start: 3px solid var(--color-accent); }
 
 @media print { .pills, .band, .site-name::before { display: none; } }
