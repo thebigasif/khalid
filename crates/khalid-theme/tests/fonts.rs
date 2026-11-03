@@ -128,7 +128,9 @@ async fn rehostable_fonts_are_downloaded_and_returned_as_files() {
         .mount(&server)
         .await;
     wiremock::Mock::given(wiremock::matchers::path("/inter-latin.woff2"))
-        .respond_with(wiremock::ResponseTemplate::new(200).set_body_bytes(b"font bytes".as_slice()))
+        .respond_with(
+            wiremock::ResponseTemplate::new(200).set_body_bytes(b"wOF2 font bytes".as_slice()),
+        )
         .mount(&server)
         .await;
 
@@ -143,14 +145,14 @@ async fn rehostable_fonts_are_downloaded_and_returned_as_files() {
         .unwrap();
     assert_eq!(files.len(), 1, "{files:?}");
     assert_eq!(files[0].family, "Inter");
-    assert_eq!(files[0].path, "inter-latin.woff2");
+    assert_eq!(files[0].path, "inter-latin-400.woff2");
     assert_eq!(
         files[0].range.as_deref(),
         Some("U+0000-00FF"),
         "the subset the file covers is kept"
     );
-    let saved = std::fs::read(within(into.path(), "inter-latin.woff2")).unwrap();
-    assert_eq!(saved, b"font bytes");
+    let saved = std::fs::read(within(into.path(), "inter-latin-400.woff2")).unwrap();
+    assert_eq!(saved, b"wOF2 font bytes");
 }
 
 #[tokio::test]
@@ -372,8 +374,8 @@ async fn a_file_that_is_not_a_font_is_saved_but_not_measured() {
         khalid_outbound::Outbound::with_resolver(khalid_outbound::Limits::default(), resolver)
             .unwrap();
 
-    // Bytes that are not any font: the parse fails, the file is still saved
-    // and served, but no fallback tuning is claimed for it.
+    // A WOFF2 signature on bytes that are no font: the parse fails, the
+    // file is still saved and served, but no fallback tuning is claimed.
     let css = format!(
         "/* latin */\n@font-face {{ font-family: 'Not A Font'; font-style: normal; font-weight: 400; src: url(http://fonts.gstatic.test:{port}/broken.woff2) format('woff2'); }}\n"
     );
@@ -384,7 +386,7 @@ async fn a_file_that_is_not_a_font_is_saved_but_not_measured() {
     wiremock::Mock::given(wiremock::matchers::path("/broken.woff2"))
         .respond_with(
             wiremock::ResponseTemplate::new(200)
-                .set_body_bytes(b"definitely not a font file".as_slice()),
+                .set_body_bytes(b"wOF2 but not a font file".as_slice()),
         )
         .mount(&server)
         .await;
@@ -405,7 +407,7 @@ async fn a_file_that_is_not_a_font_is_saved_but_not_measured() {
         "a file that does not parse as a face is never tuned"
     );
     assert!(
-        within(into.path(), "not-a-font-latin.woff2").exists(),
+        within(into.path(), "not-a-font-latin-400.woff2").exists(),
         "the file itself is still saved and served"
     );
 }
