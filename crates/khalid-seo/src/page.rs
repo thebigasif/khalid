@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use khalid_core::{AbsoluteUrl, Locale, PageSchemaType, RobotsDirectives};
 
 use crate::{
-    Alternate, AuthorProfile, CustomSchema, Entity, ListEntry, MetaTemplate, PageNumber,
+    Alternate, AuthorProfile, CustomSchema, Entity, FeedScope, ListEntry, MetaTemplate, PageNumber,
     SchemaBlock, SeoComment, ShareImage, TranslationKey, UrlPath, Video,
 };
 
@@ -212,6 +212,9 @@ pub struct SeoPage {
     /// For the glossary's A to Z page, every term it lists, for the
     /// `hasDefinedTerm` of its `DefinedTermSet`.
     pub terms: Vec<ListEntry>,
+    /// On the first page of a category or channel, the posts of its own
+    /// feed, which sits in its folder and its head links.
+    pub feed: Option<FeedScope>,
 }
 
 impl SeoPage {
@@ -263,6 +266,7 @@ impl SeoPage {
             news: SitemapListing::Listed,
             stock_tickers: Vec::new(),
             terms: Vec::new(),
+            feed: None,
         }
     }
 }
