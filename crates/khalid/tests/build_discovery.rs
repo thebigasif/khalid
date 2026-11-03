@@ -312,6 +312,61 @@ fn a_series_page_lists_its_parts_in_order_as_an_item_list() {
     );
 }
 
+#[test]
+fn a_term_links_back_to_the_glossary_its_related_terms_and_the_posts_using_it() {
+    let site = with_terms();
+    term(
+        &site,
+        "en",
+        ("Link equity", "link-equity"),
+        "What a link passes on, shaped by its [[anchor-text]].",
+    );
+    put(
+        site.path(),
+        "content/en/authors/asif.md",
+        "---\nname: Asif\nslug: asif\n---\n\nAsif writes about links.\n",
+    );
+    for (slug, day, link) in [
+        ("older-post", 2, "[[anchor-text]]"),
+        (
+            "newer-post",
+            3,
+            "[anchor text](https://www.example.com/blog/glossary/anchor-text/#use)",
+        ),
+    ] {
+        put(
+            site.path(),
+            &format!("content/en/posts/{slug}.md"),
+            &format!(
+                "---\ntitle: The {slug}\nslug: {slug}\ndate: 2026-09-0{day}\nauthor: asif\n---\n\n\
+                 A post that links to [the home page](/blog/) and uses {link}.\n"
+            ),
+        );
+    }
+    build(&site);
+    let anchor = page(&site, "glossary/anchor-text/index.html").unwrap();
+    let main = main_of(&anchor);
+    assert!(
+        main.contains(
+            r#"<p class="term-back"><a href="/blog/glossary/">Back to the glossary</a></p>"#
+        ),
+        "{main}"
+    );
+    assert!(
+        main.contains(r#"<li><a href="/blog/glossary/link-equity/">Link equity</a></li>"#),
+        "a term whose definition links here is related: {main}"
+    );
+    let newer = main.find("/blog/newer-post/").unwrap();
+    let older = main.find("/blog/older-post/").unwrap();
+    assert!(newer < older, "newest first: {main}");
+    let equity = page(&site, "glossary/link-equity/index.html").unwrap();
+    assert!(equity.contains(r#"<a href="/blog/glossary/anchor-text/">Anchor text</a></li>"#));
+    assert!(!equity.contains("term-posts"), "no post uses it: {equity}");
+    let thin = page(&site, "glossary/thin-content/index.html").unwrap();
+    assert!(thin.contains("term-back"), "{thin}");
+    assert!(!thin.contains("term-related"), "{thin}");
+}
+
 /// Replaces `from` with `to` in the post `slug` of `site`.
 #[cfg(test)]
 fn edit(site: &TempDir, slug: &str, (from, to): (&str, &str)) {

@@ -463,6 +463,7 @@ impl Demo {
                 title: term.field("term"),
                 updated: None,
                 body: markdown(&term.body, &glossary),
+                term: None,
             };
             let key = term.field("translation");
             self.page(

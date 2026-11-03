@@ -52,6 +52,7 @@ pub(crate) fn add_page(
             title: made.title,
             updated: None,
             body: BodyHtml::from_sanitised(made.body),
+            term: None,
         });
         language
             .pages

@@ -74,6 +74,7 @@ pub(crate) fn ai_page(
         title,
         updated: Some(today),
         body: BodyHtml::from_sanitised(body),
+        term: None,
     };
     Ok(Some(
         page(locale, config, REST, meta, PageBody::Page(body), seo)

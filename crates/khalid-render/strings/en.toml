@@ -113,6 +113,10 @@ profiles_of = "{name} elsewhere"
 glossary_title = "Glossary"
 glossary_letters = "Jump to a letter"
 no_terms = "The glossary has no terms yet."
+# On a term's own page.
+glossary_back = "Back to the glossary"
+glossary_related = "Related terms"
+glossary_posts = "Posts that use this term"
 search_label = "Search this blog"
 search_button = "Search"
 # The search link in the header of every page.
