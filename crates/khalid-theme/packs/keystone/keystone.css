@@ -168,8 +168,8 @@ main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inlin
 .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--space) * 1) calc(var(--space) * 1.5); margin-block-start: calc(var(--space) * 5); padding-block: calc(var(--space) * 2); border-block: var(--keystone-line); }
 .post-meta p, .post-meta address { margin: 0; }
 .post-meta address { flex-basis: 100%; margin-block-end: calc(var(--space) * 0.5); }
-.post-meta .reviewed-by { flex-basis: 100%; }
-.post-meta > .reviewed-by::before { content: none; }
+.post-meta :is(.reviewed-by, .updated-note) { flex-basis: 100%; }
+.post-meta > :is(.reviewed-by, .updated-note)::before { content: none; }
 .post-meta .people { margin: 0; gap: calc(var(--space) * 1) calc(var(--space) * 3); }
 .post-meta .person { line-height: 1.35; }
 .post-meta .person a { min-block-size: 0; color: var(--color-text); font-weight: 600; text-decoration: none; }

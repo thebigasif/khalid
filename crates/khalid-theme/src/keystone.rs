@@ -29,6 +29,7 @@ pub(crate) static KEYSTONE: Pack = Pack {
         slot::CTA_BUTTON_ON,
         parts::on(parts::BREADCRUMBS),
         parts::on(parts::DEK),
+        parts::on(parts::UPDATED_NOTE),
         parts::on(parts::FEATURED),
         parts::cards(CardShape::Image),
         parts::pagination(PageLinks::Numbered),

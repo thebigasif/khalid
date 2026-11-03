@@ -25,7 +25,7 @@ Lists such as a category or the archive show the lead story and the same picture
 **A post**
 
 1. The trail of links from the front page to the post, then the category, the title and the summary (the post's `dek`), all on one left edge.
-2. One line with the author's photo, name and role, then one date (the day it was last updated, or the day it was published if it never was) and the reading time.
+2. One line with the author's photo, name and role, then one date (the day it was last updated, or the day it was published if it never was) and the reading time. An updated post with an `updated_note` says why it changed on the next line.
 3. The lead picture, wider than the text, in a fine frame.
 4. Share links. On a wide screen they sit in a column beside the post and stay in view as you scroll. On a phone they sit in one row above the post.
 5. The post in one reading column. Callouts, steps, tables, quotes, questions and the contents block each have their own quiet look.
@@ -50,6 +50,7 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 | `cta_button` | `true` | `true`, `false` | The header shows your `[template.cta]` as a button. |
 | `breadcrumbs` | `true` | `true`, `false` | Each page shows the trail of links from the front page to it. |
 | `dek` | `true` | `true`, `false` | A post shows its summary under its title. |
+| `updated_note` | `true` | `true`, `false` | An updated post says why it was updated, from its `updated_note`, under its date. |
 | `featured` | `true` | `true`, `false` | The newest post marked `featured: true` shows large at the top of the front page and each list. |
 | `cards` | `image` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists. |
 | `pagination` | `numbered` | `pages`, `numbered` | The links under a long list: newer and older, or a link to each page. |
