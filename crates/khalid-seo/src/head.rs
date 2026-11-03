@@ -3,8 +3,9 @@
 use khalid_core::AbsoluteUrl;
 
 use crate::escape::escape_markup;
+use crate::feed::feed_url;
 use crate::social::push_social_tags;
-use crate::{PageKind, SeoError, SeoPage, SeoSite, schema_map_url};
+use crate::{FeedFormat, PageKind, SeoError, SeoPage, SeoSite, UrlPath, schema_map_url};
 
 /// One tag in a page's `<head>`.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -164,6 +165,7 @@ pub fn head_tags(site: &SeoSite, page: &SeoPage) -> Result<HeadTags, SeoError> {
             href: alternate.url.clone(),
         });
     }
+    push_feed_links(site, page, &mut tags)?;
     if page.kind == PageKind::Home {
         if site.schema_map.writes_files() {
             tags.push(HeadTag::Format {
@@ -175,4 +177,29 @@ pub fn head_tags(site: &SeoSite, page: &SeoPage) -> Result<HeadTags, SeoError> {
     }
     push_social_tags(site, page, &canonical, &description, &mut tags);
     Ok(HeadTags(tags))
+}
+
+/// Links each feed format that is on, so feed readers find the feed: the
+/// language's on the home page, and its own on a page with a feed.
+fn push_feed_links(
+    site: &SeoSite,
+    page: &SeoPage,
+    tags: &mut Vec<HeadTag>,
+) -> Result<(), SeoError> {
+    let folder = if page.feed.is_some() {
+        site.url_for(&page.language, &page.path)?
+    } else if page.kind == PageKind::Home {
+        site.url_for(&page.language, &UrlPath::root())?
+    } else {
+        return Ok(());
+    };
+    for format in FeedFormat::ALL {
+        if !site.feeds.off.contains(&format) {
+            tags.push(HeadTag::Format {
+                media_type: format.media_type(),
+                href: feed_url(&folder, format)?,
+            });
+        }
+    }
+    Ok(())
 }

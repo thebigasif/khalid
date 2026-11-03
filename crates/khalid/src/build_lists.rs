@@ -45,6 +45,8 @@ struct List {
     body: fn(RenderListing) -> PageBody,
     /// Its posts, newest first.
     cards: Vec<PostCard>,
+    /// Whether its first page has its own feed: a category's or a channel's.
+    feed: bool,
 }
 
 /// Adds the list pages to each of `languages`, titled in its language by
@@ -86,6 +88,7 @@ pub(crate) fn add(
                     .iter()
                     .map(|post| post.card.clone())
                     .collect(),
+                feed: false,
             });
         }
         let mut pages = Vec::new();
@@ -153,6 +156,10 @@ fn paged(
         }
         seo.robots.clone_from(&list.robots);
         seo.translation = list_key(&translation)?;
+        if number == 1 && list.feed {
+            let page = (list.title.as_str(), &seo.path);
+            seo.feed = Some(build_seo::list_feed(config, locale, page, &list.cards));
+        }
         let body = (list.body)(RenderListing {
             hub: None,
             title,
@@ -282,6 +289,7 @@ fn collections(
             robots: None,
             body: PageBody::Collection,
             cards: vec![post.card.clone()],
+            feed: false,
         });
     }
     Ok(lists)
@@ -442,7 +450,8 @@ fn add_card(lists: &mut Vec<List>, rest: String, card: &PostCard, new: impl FnOn
     lists.push(list);
 }
 
-/// A list titled `title` with no posts yet, no intro and no description.
+/// A list titled `title` with no posts yet, no intro and no description,
+/// and its own feed unless it is a tag's.
 fn term_list(
     title: String,
     translation: String,
@@ -459,6 +468,7 @@ fn term_list(
         robots: None,
         body,
         cards: Vec::new(),
+        feed: matches!(kind, SeoKind::Category | SeoKind::Collection),
     }
 }
 
