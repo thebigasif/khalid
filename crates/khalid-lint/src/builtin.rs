@@ -9,7 +9,8 @@ use crate::{
     Rule, SiteRule, Thresholds, address, blocking, brief, collections, complex, facts, focus_shape,
     focus_spread, headings, inclusive, link_hygiene, link_targets, link_text, page_checks,
     page_or_section, page_shape, readability, reading, site_content, site_keywords, site_links,
-    site_sections, site_trust, snippet, structure, title_width, topics, voice, words, writing,
+    site_sections, site_trust, snippet, statistics, structure, title_width, topics, voice, words,
+    writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
@@ -124,7 +125,7 @@ fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
             hedges: writing::HEDGE_WORDS.to_vec(),
             openers: writing::VAGUE_OPENERS.to_vec(),
         }),
-        Box::new(writing::SourcedStatistics),
+        Box::new(statistics::SourcedStatistics),
         Box::new(headings::HeadingAgrees {
             max_duplicate_percent: thresholds.heading_duplicate_percent,
         }),

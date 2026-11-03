@@ -55,6 +55,7 @@ mod site_links;
 mod site_sections;
 mod site_trust;
 mod snippet;
+mod statistics;
 mod stem;
 mod structure;
 mod thresholds;
