@@ -24,6 +24,9 @@ pub struct RenderListing {
     /// The hub of this list's topic, if a page is one, linked above the
     /// posts as the place to start.
     pub hub: Option<Link>,
+    /// Whether each card shows its place in the list, "Part 1" and on, as
+    /// a series page's cards do.
+    pub numbered: bool,
 }
 
 /// A post as a list shows it.

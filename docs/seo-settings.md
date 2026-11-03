@@ -237,7 +237,7 @@ A site with locations also gets a locations page at `/locations/` in each langua
 
 ## Category and tag pages
 
-Each category or tag page can have its own search settings, one table per language under `seo`. Categories live in `categories.toml` and tags in `tags.toml`, both in the site folder. A tag needs an entry in `tags.toml` only when it has settings: its name still comes from the posts.
+Each category or tag page can have its own search settings, one table per language under `seo`. Categories live in `categories.toml` and tags in `tags.toml`, both in the site folder. A tag needs an entry in `tags.toml` only when it has settings: its name still comes from the posts. A name written all in lowercase, such as `internal links`, titles its page as "Internal Links"; write any capital, such as `AI search`, and the page keeps your spelling.
 
 ```toml
 [[tags]]

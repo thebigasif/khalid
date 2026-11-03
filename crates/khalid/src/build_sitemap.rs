@@ -3,6 +3,8 @@
 //! topics and archives, at `/sitemap/`. It is made in two steps, because
 //! which pages a sitemap lists is known only once every page's head is.
 
+use std::collections::BTreeMap;
+
 use khalid_core::{Config, UserMessage};
 use khalid_render::{
     Link, PageBody, PageKind, RenderSitemap, Renderer, SitemapGroup, SitemapSection,
@@ -75,6 +77,10 @@ pub(crate) fn fill(
     let origin = config.address().as_str().trim_end_matches('/');
     for language in languages.iter_mut() {
         let locale = &language.site.locale;
+        let terms: BTreeMap<String, SeoKind> = (language.pages.iter())
+            .filter(|page| matches!(page.seo.kind, SeoKind::Category | SeoKind::Tag))
+            .map(|page| (page.meta.path.clone(), page.seo.kind))
+            .collect();
         let pages = language.pages.iter_mut();
         let Some(page) = pages
             .into_iter()
@@ -85,7 +91,8 @@ pub(crate) fn fill(
         let listed = HtmlSitemap::from_pages(site, seo, locale)
             .map_err(|error| build_message::seo(&error))?;
         let own = page.meta.path.clone();
-        let groups = listed.groups.into_iter().map(|group| {
+        let mut groups: Vec<SitemapGroup> = Vec::new();
+        for group in listed.groups {
             let links = group.links.into_iter().map(|link| {
                 let url = link.url.as_str();
                 Link {
@@ -93,12 +100,22 @@ pub(crate) fn fill(
                     name: link.title,
                 }
             });
-            SitemapGroup {
-                section: section(group.section),
-                links: links.filter(|link| link.href != own).collect(),
+            for link in links.filter(|link| link.href != own) {
+                let section = match terms.get(&link.href) {
+                    Some(SeoKind::Category) => SitemapSection::Categories,
+                    Some(SeoKind::Tag) => SitemapSection::Tags,
+                    _ => section(group.section),
+                };
+                match groups.iter_mut().find(|group| group.section == section) {
+                    Some(group) => group.links.push(link),
+                    None => groups.push(SitemapGroup {
+                        section,
+                        links: vec![link],
+                    }),
+                }
             }
-        });
-        let groups = groups.filter(|group| !group.links.is_empty()).collect();
+        }
+        groups.sort_by_key(|group| group.section);
         if let PageBody::Sitemap(sitemap) = &mut page.body {
             sitemap.groups = groups;
         }

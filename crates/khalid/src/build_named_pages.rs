@@ -47,6 +47,7 @@ pub(crate) fn plain_pages(
             title,
             updated: None,
             body: BodyHtml::from_sanitised(build_seo::with_link_policy(config, rendered.html)),
+            term: None,
         };
         let body = PageBody::Page(body);
         pages.push(page(locale, config, &rest, meta, body, seo).made_from(&doc.path));
@@ -82,6 +83,8 @@ pub(crate) fn glossary_pages(
             title: term,
             updated: None,
             body: definition,
+            // The glossary page, made once every term is, fills it in.
+            term: None,
         };
         let body = PageBody::Page(body);
         pages.push(page(locale, config, &rest, meta, body, seo).made_from(&doc.path));

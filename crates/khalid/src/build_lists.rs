@@ -162,6 +162,7 @@ fn paged(
         }
         let body = (list.body)(RenderListing {
             hub: None,
+            numbered: false,
             title,
             intro: list.intro.clone().filter(|_| number == 1),
             posts,
@@ -399,7 +400,7 @@ fn terms(
             let rest = format!("{}/{slug}/", routes.tag_prefix());
             add_card(&mut lists, rest, &post.card, || {
                 let key = format!("tag {slug}");
-                term_list(tag.name.clone(), key, SeoKind::Tag, PageBody::Tag)
+                term_list(tag.display_name(), key, SeoKind::Tag, PageBody::Tag)
             });
         }
     }
@@ -583,8 +584,8 @@ mod tests {
         assert_eq!(
             shown,
             [
-                "topic/links/ links 2",
-                "topic/speed/ speed 1",
+                "topic/links/ Links 2",
+                "topic/speed/ Speed 1",
                 "fast/ Need for speed 1"
             ]
         );

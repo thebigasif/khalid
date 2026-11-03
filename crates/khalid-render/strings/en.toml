@@ -27,6 +27,8 @@ reading_time = "{minutes} min read"
 reading_time_label = "Reading time"
 in_category = "Filed under"
 tags = "Tags"
+# The word above a tag page's name, so it reads as a tag.
+tag_kind = "Tag"
 # The heading of a post's table of contents.
 contents = "Contents"
 # The label of a front page's row of links to its own sections.
@@ -111,6 +113,10 @@ profiles_of = "{name} elsewhere"
 glossary_title = "Glossary"
 glossary_letters = "Jump to a letter"
 no_terms = "The glossary has no terms yet."
+# On a term's own page.
+glossary_back = "Back to the glossary"
+glossary_related = "Related terms"
+glossary_posts = "Posts that use this term"
 search_label = "Search this blog"
 search_button = "Search"
 # The search link in the header of every page.
@@ -158,6 +164,8 @@ month_year = "{month} {year}"
 sitemap_title = "Sitemap"
 sitemap_posts = "Posts"
 sitemap_pages = "Pages"
+sitemap_categories = "Categories"
+sitemap_tags = "Tags"
 sitemap_archives = "Topics and archives"
 sitemap_empty = "This blog has no pages to list yet."
 # The meta description of each page Khalid makes itself, so search results
@@ -224,6 +232,8 @@ series_steps = "The parts before and after this one"
 series_previous = "Previous part"
 series_next = "Next part"
 series_intro = "A series in {total} parts, best read in order."
+# On each card of a series page.
+series_card_part = "Part {part}"
 
 # A topic hub.
 hub_start = "Start here"

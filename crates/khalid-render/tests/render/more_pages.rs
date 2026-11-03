@@ -91,6 +91,7 @@ fn plain_page_in_english() {
         body: BodyHtml::from_sanitised(
             "<p>Field Notes on SEO is written by the team at SerpDad.</p>".to_owned(),
         ),
+        term: None,
     };
     let page = render(&PageBody::Page(about), "en");
     assert_valid_page(&page);

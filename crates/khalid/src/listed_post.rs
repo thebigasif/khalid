@@ -48,4 +48,43 @@ impl ListedTag {
         };
         names.iter().filter_map(tag).collect()
     }
+
+    /// The name its page is titled with: as written when the writer gave
+    /// it any capital, such as `SEO tools`, or else each word started with
+    /// a capital, so `internal links` reads `Internal Links`.
+    pub(crate) fn display_name(&self) -> String {
+        if self.name.chars().any(char::is_uppercase) {
+            return self.name.clone();
+        }
+        let mut shown = String::with_capacity(self.name.len());
+        let mut start = true;
+        for letter in self.name.chars() {
+            if start {
+                shown.extend(letter.to_uppercase());
+            } else {
+                shown.push(letter);
+            }
+            start = letter.is_whitespace() || letter == '-';
+        }
+        shown
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn tag(name: &str) -> ListedTag {
+        let english = Locale::try_new("en").unwrap();
+        let names = [name.to_owned()];
+        ListedTag::all(&names, &english, SlugMode::Ascii).remove(0)
+    }
+
+    #[test]
+    fn a_lowercase_tag_reads_in_title_case_and_a_capital_keeps_the_writers_name() {
+        assert_eq!(tag("internal links").display_name(), "Internal Links");
+        assert_eq!(tag("e-commerce").display_name(), "E-Commerce");
+        assert_eq!(tag("ähnliche seiten").display_name(), "Ähnliche Seiten");
+        assert_eq!(tag("SEO tools").display_name(), "SEO tools");
+    }
 }

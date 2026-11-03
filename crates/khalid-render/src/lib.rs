@@ -60,7 +60,8 @@ pub use contents::{Contents, ContentsHeading, HeadingLevel};
 pub use entries::{EntryCard, EntryGroup, EntryKind, RenderEntries, RenderEntry};
 pub use features::{Feature, Features};
 pub use glossary::{
-    GlossaryGroup, GlossaryTerm, Highlight, RenderGlossary, RenderSearch, SearchMode, SearchResult,
+    GlossaryGroup, GlossaryLinks, GlossaryTerm, Highlight, RenderGlossary, RenderSearch,
+    SearchMode, SearchResult,
 };
 pub use home::{HomeSectionPosts, MOST_PICKS, RenderHome, TopicGroup};
 pub use hub::RenderHub;

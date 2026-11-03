@@ -326,6 +326,7 @@ impl Demo {
         }
         let pick = |title: &str, keep: &dyn Fn(&str, &str) -> bool| RenderListing {
             hub: None,
+            numbered: false,
             title: title.to_owned(),
             intro: None,
             posts: cards
@@ -462,6 +463,7 @@ impl Demo {
                 title: term.field("term"),
                 updated: None,
                 body: markdown(&term.body, &glossary),
+                term: None,
             };
             let key = term.field("translation");
             self.page(

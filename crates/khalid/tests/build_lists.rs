@@ -247,7 +247,7 @@ fn a_dated_pattern_gets_year_and_month_pages_kept_out_of_search() {
 }
 
 #[test]
-fn each_tag_gets_a_page_at_its_slug_titled_as_the_posts_name_it() {
+fn each_tag_gets_a_page_at_its_slug_labelled_and_titled_in_title_case() {
     let site = site(1, "");
     for (slug, tags) in [
         ("one", "[internal links, Page speed]"),
@@ -266,7 +266,11 @@ fn each_tag_gets_a_page_at_its_slug_titled_as_the_posts_name_it() {
     }
     build(&site);
     let links = page(&site, "tag/internal-links/index.html").unwrap();
-    assert!(links.contains("<h1>internal links</h1>"), "{links}");
+    assert!(
+        links.contains("<p class=\"list-kind\">Tag</p>\n<h1>Internal Links</h1>"),
+        "{links}"
+    );
+    assert!(links.contains("<title>Internal Links"), "{links}");
     assert_eq!(links.matches(r#"<article class="card">"#).count(), 2);
     assert!(links.contains("noindex"), "two posts is a thin archive");
     let speed = page(&site, "tag/page-speed/index.html").unwrap();
@@ -288,4 +292,40 @@ fn the_sitemap_page_links_every_page_search_engines_may_list_by_section() {
         "the archive is noindex"
     );
     insta::assert_snapshot!(main_of(&sitemap));
+}
+
+#[test]
+fn the_sitemap_tells_a_category_and_a_tag_of_the_same_name_apart() {
+    let site = site(0, "");
+    put(
+        site.path(),
+        "categories.toml",
+        "[[categories]]\nslug = \"links\"\nen = \"Links\"\n",
+    );
+    for day in 1..=3 {
+        let text = format!(
+            "---\ntitle: Linked {day}\nslug: linked-{day}\ndate: 2026-09-0{day}\nauthor: asif\n\
+             category: links\ntags: [links]\n---\n\nLinked {day} points to [the home page](/blog/).\n"
+        );
+        put(
+            site.path(),
+            &format!("content/en/posts/linked-{day}.md"),
+            &text,
+        );
+    }
+    build(&site);
+    let sitemap = page(&site, "sitemap/index.html").unwrap();
+    let main = main_of(&sitemap);
+    let categories = main.find("<h2>Categories</h2>").unwrap();
+    let category = main
+        .find(r#"<a href="/blog/category/links/">Links</a>"#)
+        .unwrap();
+    let tags = main.find("<h2>Tags</h2>").unwrap();
+    let tag = main
+        .find(r#"<a href="/blog/tag/links/">Links</a>"#)
+        .unwrap();
+    assert!(
+        categories < category && category < tags && tags < tag,
+        "{main}"
+    );
 }
