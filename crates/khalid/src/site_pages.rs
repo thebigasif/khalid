@@ -98,6 +98,8 @@ struct Theme {
     renderer: Renderer,
     stylesheet: Page,
     script: Page,
+    /// The self-hosted font files the stylesheet names, read at start.
+    fonts: Vec<Page>,
     /// The tokens the stylesheet was built from, for the share cards.
     tokens: Tokens,
 }
@@ -136,6 +138,7 @@ impl SitePages {
                 renderer,
                 stylesheet,
                 script: assets::script_page(&config)?,
+                fonts: assets::font_pages(&config, assets::fonts(folder, &tokens))?,
                 tokens,
             })
         } else {
@@ -240,6 +243,7 @@ impl SitePages {
         share_images::draw_now(folder, cards)?;
         build_seo::heads(&seo_site, &mut languages)?;
         let mut pages = vec![theme.stylesheet.clone(), theme.script.clone()];
+        pages.extend(theme.fonts.iter().cloned());
         html_pages(&theme.renderer, config, &languages, Which::All, &mut pages)?;
         Ok(pages)
     }
@@ -478,6 +482,7 @@ impl SitePages {
         if let Some(theme) = theme {
             if which == Which::All {
                 (served.pages).extend([theme.stylesheet.clone(), theme.script.clone()]);
+                (served.pages).extend(theme.fonts.iter().cloned());
                 let shells = search_shells(&languages);
                 *self
                     .0

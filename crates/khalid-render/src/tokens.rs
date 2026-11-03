@@ -137,7 +137,7 @@ pub struct Fonts {
     pub files: Vec<FontFile>,
 }
 
-/// One self-hosted font file, served under `assets/fonts/`.
+/// One self-hosted font file, served under `<mount>assets/fonts/`.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct FontFile {
@@ -392,11 +392,13 @@ fn merge(under: &mut toml::Table, over: toml::Table) {
 }
 
 /// The `@font-face` rule of one self-hosted file, served with a swap so the
-/// text shows in the fallback while the file arrives (G20).
+/// text shows in the fallback while the file arrives (G20). A browser reads
+/// the `url()` against the stylesheet's own address, `<mount>assets/`, so
+/// `fonts/<file>` is `<mount>assets/fonts/<file>` with any mount.
 fn font_face(file: &FontFile) -> String {
     let mut rule = format!(
         "@font-face {{ font-family: \"{}\"; font-style: {}; font-weight: {}; \
-     src: url(\"assets/fonts/{}\") format(\"woff2\"); font-display: swap;",
+     src: url(\"fonts/{}\") format(\"woff2\"); font-display: swap;",
         file.family, file.style, file.weight, file.path
     );
     if let Some(range) = &file.range {

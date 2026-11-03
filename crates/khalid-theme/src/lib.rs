@@ -44,6 +44,7 @@ mod tokens_error;
 #[cfg(feature = "test-util")]
 mod trial;
 mod wire;
+mod woff2;
 mod workbench;
 
 pub use brand::Brand;

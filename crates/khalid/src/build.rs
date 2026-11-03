@@ -178,7 +178,7 @@ fn build(
     if let Some((renderer, css)) = &theme {
         write_asset(out, css)?;
         write_asset(out, &assets::reader_with_copies()?)?;
-        write_fonts(site, out)?;
+        write_fonts(site, &tokens, out)?;
         for language in &languages {
             for page in &language.pages {
                 let html = page.rendered(renderer, &language.site, &code)?;
@@ -225,30 +225,20 @@ fn write(out: &Path, relative: &str, text: &str) -> Result<(), UserMessage> {
         .map_err(|error| build_message::write(&file, &error))
 }
 
-/// Copies the site's self-hosted font files, `theme/fonts/*.woff2`, into
-/// `out/assets/fonts/`, where the stylesheet's `@font-face` rules point
-/// (G20). Anything else in the folder stays private.
-fn write_fonts(site: &Path, out: &Path) -> Result<(), UserMessage> {
-    let from = {
-        let mut folder = site.to_path_buf();
-        folder.push("theme");
-        folder.push("fonts");
-        folder
-    };
-    let Ok(entries) = fs::read_dir(&from) else {
+/// Writes the site's self-hosted font files, the `*.woff2` files in
+/// `theme/fonts/` that the tokens list, into `out/assets/fonts/`, where
+/// the stylesheet's `@font-face` rules point (G20). Anything else in the
+/// folder stays private.
+fn write_fonts(site: &Path, tokens: &Tokens, out: &Path) -> Result<(), UserMessage> {
+    let fonts = assets::fonts(site, tokens);
+    if fonts.is_empty() {
         return Ok(());
-    };
-    let into = within(out, "assets/fonts/");
+    }
+    let into = within(out, &format!("{}fonts/", assets::FOLDER));
     fs::create_dir_all(&into).map_err(|error| build_message::write(&into, &error))?;
-    for entry in entries {
-        let entry = entry.map_err(|error| build_message::write(&from, &error))?;
-        let name = entry.file_name();
-        let name = name.to_string_lossy();
-        if !name.ends_with(".woff2") {
-            continue;
-        }
-        let file = within(&into, &name);
-        fs::copy(entry.path(), &file).map_err(|error| build_message::write(&file, &error))?;
+    for font in fonts {
+        let file = within(&into, &font.name);
+        fs::write(&file, font.bytes).map_err(|error| build_message::write(&file, &error))?;
     }
     Ok(())
 }
