@@ -1,0 +1,2 @@
+Fixed
+- `khalid serve` now applies a saved `site.toml`, `routes.toml` or theme file (`tokens.toml`, `site.css`, fonts, templates) without a restart: it reads the settings again the way it does at start and renders the pages again. A file with a mistake keeps the last good pages and settings, and the log says which file and line to fix, in one line. `mount` and `mode` keep their start value, and the log says when a changed setting needs a restart. `docs/deploy.md` lists those settings.

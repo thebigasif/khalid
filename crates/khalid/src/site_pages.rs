@@ -5,7 +5,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::{Arc, Mutex, PoisonError};
+use std::sync::{Arc, Mutex, OnceLock, PoisonError, RwLock};
 
 use khalid_content::{
     ContentTree, Document, PostFront, SiteContent, check_bodies, parse_post, read_content,
@@ -37,18 +37,20 @@ use crate::{
 /// Renders every page of one site from its files. Cloning shares it.
 ///
 /// The settings, the routes and the theme, with the stylesheet built from
-/// it, are read once, when `khalid serve` starts. The content is read again
-/// on each render, so an edited post shows.
+/// it, are read when `khalid serve` starts, and again before a full render
+/// when one of their files changed (see `site_reload.rs`). The content is
+/// read again on each render, so an edited post shows.
 #[derive(Debug, Clone)]
 pub(crate) struct SitePages(Arc<Site>);
 
 #[derive(Debug)]
 struct Site {
     folder: PathBuf,
-    config: Config,
-    routes: Routes,
-    /// `None` on a headless site, whose theme is never read.
-    theme: Option<Theme>,
+    /// What the pages are made with now. Each render takes one copy, so a
+    /// reload never mixes two sets of settings in one render.
+    settings: RwLock<Arc<Settings>>,
+    /// How to read the settings again, set only by `khalid serve`.
+    reload: OnceLock<reload::Reload>,
     feed: Option<ContentFeed>,
     /// What the last full render read of the site, so a saved post's page
     /// can be rendered alone.
@@ -92,6 +94,15 @@ struct Outline {
     shown: Shown,
 }
 
+/// The settings, the routes and the theme the pages are made with.
+#[derive(Debug)]
+struct Settings {
+    config: Config,
+    routes: Routes,
+    /// `None` on a headless site, whose theme is never read.
+    theme: Option<Theme>,
+}
+
 /// The theme's renderer, and the stylesheet and reader script every page links.
 #[derive(Debug)]
 struct Theme {
@@ -102,6 +113,30 @@ struct Theme {
     fonts: Vec<Page>,
     /// The tokens the stylesheet was built from, for the share cards.
     tokens: Tokens,
+}
+
+impl Theme {
+    /// The theme of the site in `folder` with `config`, read from its
+    /// files, or `None` on a headless site.
+    fn read(folder: &Path, config: &Config) -> Result<Option<Self>, UserMessage> {
+        if !config.mode().has_pages() {
+            return Ok(None);
+        }
+        let look = look::of(folder, config)?;
+        let tokens = look::tokens(folder, &look)?;
+        let renderer = Renderer::with_pack(folder, &look::render_pack(&look, config))
+            .map_err(|error| build_message::render(&error))?
+            .with_brand(&tokens.brand);
+        let rules = assets::rules(folder, &look)?;
+        let stylesheet = assets::stylesheet_page(config, &tokens, &rules)?;
+        Ok(Some(Self {
+            renderer,
+            stylesheet,
+            script: assets::script_page(config)?,
+            fonts: assets::font_pages(config, assets::fonts(folder, &tokens))?,
+            tokens,
+        }))
+    }
 }
 
 /// One render of the site: what [`Rendered`] holds, kept apart so that
@@ -126,32 +161,19 @@ impl SitePages {
         feed: Option<ContentFeed>,
         clock: Arc<dyn Clock>,
     ) -> Result<Self, UserMessage> {
-        let theme = if config.mode().has_pages() {
-            let look = look::of(folder, &config)?;
-            let tokens = look::tokens(folder, &look)?;
-            let renderer = Renderer::with_pack(folder, &look::render_pack(&look, &config))
-                .map_err(|error| build_message::render(&error))?
-                .with_brand(&tokens.brand);
-            let rules = assets::rules(folder, &look)?;
-            let stylesheet = assets::stylesheet_page(&config, &tokens, &rules)?;
-            Some(Theme {
-                renderer,
-                stylesheet,
-                script: assets::script_page(&config)?,
-                fonts: assets::font_pages(&config, assets::fonts(folder, &tokens))?,
-                tokens,
-            })
-        } else {
-            None
-        };
+        let theme = Theme::read(folder, &config)?;
         let comments =
             (theme.is_some() && comment_pages::taken(config.mode())).then(ShownComments::default);
         let forms = comments.is_some().then(LiveForms::default);
-        Ok(Self(Arc::new(Site {
-            folder: folder.to_path_buf(),
+        let settings = Settings {
             config,
             routes,
             theme,
+        };
+        Ok(Self(Arc::new(Site {
+            folder: folder.to_path_buf(),
+            settings: RwLock::new(Arc::new(settings)),
+            reload: OnceLock::new(),
             feed,
             outline: Mutex::default(),
             assets: Mutex::default(),
@@ -165,10 +187,17 @@ impl SitePages {
         })))
     }
 
+    /// The settings, the routes and the theme the pages are made with now.
+    fn settings(&self) -> Arc<Settings> {
+        let settings = self.0.settings.read();
+        Arc::clone(&settings.unwrap_or_else(PoisonError::into_inner))
+    }
+
     /// The text `key` of the strings file for `locale`, as the theme's
     /// templates read it. `None` on a headless site.
     pub(crate) fn text(&self, locale: &Locale, key: &str) -> Option<String> {
-        let theme = self.0.theme.as_ref()?;
+        let settings = self.settings();
+        let theme = settings.theme.as_ref()?;
         theme.renderer.text(locale, key).map(str::to_owned)
     }
 
@@ -184,7 +213,8 @@ impl SitePages {
 
     /// The address of the stylesheet every page links; `None` when headless.
     pub(crate) fn stylesheet(&self) -> Option<String> {
-        (self.0.theme.as_ref()).map(|theme| theme.stylesheet.path().as_str().to_owned())
+        let settings = self.settings();
+        (settings.theme.as_ref()).map(|theme| theme.stylesheet.path().as_str().to_owned())
     }
 
     /// Every page of the site at its address, the stylesheet they link, the
@@ -195,12 +225,9 @@ impl SitePages {
     /// served stay. Reads files and renders,
     /// so it runs off the async runtime (RULES.md BL-RUN-7).
     pub(crate) fn render_all(&self) -> Result<Served, UserMessage> {
-        let Site {
-            folder,
-            config,
-            routes,
-            ..
-        } = &*self.0;
+        self.reload_if_changed();
+        let (folder, settings) = (&self.0.folder, self.settings());
+        let Settings { config, routes, .. } = &*settings;
         let read = self
             .0
             .reads
@@ -210,7 +237,7 @@ impl SitePages {
             .and_then(|tree| Ok((read_content(&tree)?, Assets::of(&tree))))
             .and_then(|read| check_bodies(&read.0, config, routes).map(|()| read))
             .map_err(|error| content_message::of(folder, &error))?;
-        self.render_read(&content, assets, read)
+        self.render_read(&settings, &content, (assets, read))
     }
 
     /// The first pages `khalid serve` answers with while the rest of the
@@ -219,13 +246,12 @@ impl SitePages {
     /// stylesheet they link. Each is byte for byte the page the full render
     /// makes. A headless site has none.
     pub(crate) fn render_first(&self, content: &SiteContent) -> Result<Vec<Page>, UserMessage> {
-        let Site {
-            folder,
+        let (folder, settings) = (&self.0.folder, self.settings());
+        let Settings {
             config,
             routes,
             theme,
-            ..
-        } = &*self.0;
+        } = &*settings;
         let Some(theme) = theme else {
             return Ok(Vec::new());
         };
@@ -285,10 +311,10 @@ impl SitePages {
         locale: &Locale,
         slug: &Slug,
     ) -> Result<Option<String>, UserMessage> {
-        let Site { folder, config, .. } = &*self.0;
+        let (folder, settings) = (&self.0.folder, self.settings());
         let mut file = folder.clone();
         file.push(format!("drafts/{locale}/{slug}.md"));
-        let (Some(_), Ok(text)) = (&self.0.theme, fs::read_to_string(&file)) else {
+        let (Some(_), Ok(text)) = (&settings.theme, fs::read_to_string(&file)) else {
             return Ok(None);
         };
         let unreadable = |error| content_message::of(folder, &error);
@@ -320,8 +346,9 @@ impl SitePages {
         let assets = Assets::of(&tree);
         let mut shown = Shown::default();
         let which = Which::Posts;
-        let (served, _) = self.render_of(&assets, (&content, &[]), which, &mut shown)?;
-        let address = build_pages::path_of(config, locale, &format!("{slug}/"));
+        let shown = (which, &mut shown);
+        let (served, _) = self.render_of(&settings, &assets, (&content, &[]), shown)?;
+        let address = build_pages::path_of(&settings.config, locale, &format!("{slug}/"));
         let page = served
             .pages
             .iter()
@@ -347,21 +374,20 @@ impl SitePages {
         content: &SiteContent,
         assets: Assets,
     ) -> Result<Served, UserMessage> {
-        self.render_read(content, assets, 0)
+        self.render_read(&self.settings(), content, (assets, 0))
     }
 
-    /// Renders `content`, which the folder's `read` gave, as
-    /// [`SitePages::render_content`] says.
+    /// Renders `content`, which the folder's `read` gave, with `settings`,
+    /// as [`SitePages::render_content`] says.
     fn render_read(
         &self,
+        settings: &Settings,
         content: &SiteContent,
-        assets: Assets,
-        read: u64,
+        (assets, read): (Assets, u64),
     ) -> Result<Served, UserMessage> {
+        let Settings { config, routes, .. } = settings;
         let Site {
             folder,
-            config,
-            routes,
             feed,
             outline,
             assets: kept,
@@ -381,7 +407,7 @@ impl SitePages {
         };
         let mut shown = Shown::default();
         let (mut rendered, listed) =
-            self.render_of(&assets, (content, &[]), Which::All, &mut shown)?;
+            self.render_of(settings, &assets, (content, &[]), (Which::All, &mut shown))?;
         let mut handed_on = handed_on.lock().unwrap_or_else(PoisonError::into_inner);
         if read < *handed_on {
             tracing::debug!(read, "a render of newer content already handed on its own");
@@ -401,7 +427,7 @@ impl SitePages {
         Ok(rendered)
     }
 
-    /// The `which` pages made from `content`, with the files `assets` lists
+    /// The `which` pages made from `content` with `settings`, with the files `assets` lists
     /// beside folder posts, the site's files, the moved addresses and the
     /// not-found page of the default language when `which` is
     /// [`Which::All`], and the dated posts of `content` as lists show them.
@@ -412,18 +438,17 @@ impl SitePages {
     /// gains the ones these pages draw.
     fn render_of(
         &self,
+        settings: &Settings,
         assets: &Assets,
         (content, others): (&SiteContent, &[ListedPost]),
-        which: Which,
-        shown: &mut Shown,
+        (which, shown): (Which, &mut Shown),
     ) -> Result<(Served, Vec<ListedPost>), UserMessage> {
-        let Site {
-            folder,
+        let folder = &self.0.folder;
+        let Settings {
             config,
             routes,
             theme,
-            ..
-        } = &*self.0;
+        } = settings;
         let href = theme
             .as_ref()
             .map_or("", |theme| theme.stylesheet.path().as_str());
@@ -510,7 +535,9 @@ impl Render for SitePages {
     type Error = Unrendered;
 
     fn render(&self) -> Result<Rendered, Unrendered> {
-        let served = self.render_all().map_err(Unrendered)?;
+        let served = (self.render_all())
+            .inspect_err(reload::keeps_last_good)
+            .map_err(Unrendered)?;
         Ok(Rendered::new(served.pages, served.not_found).with_moves(served.moves))
     }
 
@@ -543,8 +570,8 @@ impl Render for SitePages {
             .unwrap_or_else(PoisonError::into_inner)
             .shown
             .clone();
-        let (served, _) = self
-            .render_of(&assets, (&saved, &others), Which::Posts, &mut shown)
+        let (settings, saved) = (self.settings(), (&saved, others.as_slice()));
+        let (served, _) = (self.render_of(&settings, &assets, saved, (Which::Posts, &mut shown)))
             .map_err(Unrendered)?;
         Ok(Some(served.pages))
     }
@@ -559,3 +586,6 @@ mod search;
 
 #[path = "site_pages_saved.rs"]
 mod saved;
+
+#[path = "site_reload.rs"]
+mod reload;

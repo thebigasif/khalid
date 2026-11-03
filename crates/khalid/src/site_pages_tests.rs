@@ -277,3 +277,27 @@ fn a_served_feed_with_no_posts_is_dated_by_the_given_clock() {
         "{rss}"
     );
 }
+
+/// The text of the page at `path` among `pages`.
+fn text_at(pages: &[khalid_server::Page], path: &str) -> String {
+    let page = pages.iter().find(|page| page.path().as_str() == path);
+    String::from_utf8_lossy(&page.unwrap().body().unwrap()).into_owned()
+}
+
+#[test]
+fn a_full_render_reads_changed_settings_and_keeps_them_when_the_file_breaks() {
+    let site = demo_copy();
+    let source = pages(site.path());
+    source.reload_with(Environment::empty());
+    let mut file = site.path().to_path_buf();
+    file.push("site.toml");
+    let settings = fs::read_to_string(&file).unwrap();
+    let intro = "Two people write Field Notes, in Berlin.";
+    let added = format!("{settings}\n[seo.llms_txt]\nintro = \"{intro}\"\n");
+    fs::write(&file, added).unwrap();
+    let pages = source.render_all().unwrap().pages;
+    assert!(text_at(&pages, "/blog/llms.txt").contains(intro));
+    fs::write(&file, format!("{settings}\nname = [\n")).unwrap();
+    let pages = source.render_all().unwrap().pages;
+    assert!(text_at(&pages, "/blog/llms.txt").contains(intro));
+}
