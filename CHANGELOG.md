@@ -4,6 +4,20 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.3.1
+
+Two fixes: the classic template's footer lines up with the page again, and a blog's own fonts now load, as small files. What changed, in plain words: `docs/releases/1.3.1.md`.
+
+### Fixed
+
+#### Templates
+
+- The classic template's footer is as wide as the header and the page again, instead of narrower, when the site sets its line length in ch or em, such as measure = "68ch" in theme/tokens.toml.
+
+#### Theme and fonts
+
+- Self-hosted fonts now show on the blog. `khalid serve` answers the font files in `theme/fonts/` that `theme/tokens.toml` lists, kept by browsers for a year, and the stylesheet points at the right address with or without a mount such as `/blog/`, in both `khalid serve` and `khalid build`. Nothing else in that folder can be reached. `khalid theme sync` now writes the font entries even when `theme/tokens.toml` already exists, and saves each Google font as one small Latin file with its `unicode-range` (the letters it covers), one file per weight or one variable file for every weight, instead of one whole bold file. Run `khalid theme sync <your site>` again to pick up the smaller files.
+
 ## 1.3.0
 
 Yoast-style checks and settings: readability and keyword checks that know word forms and synonyms, two scores per post, search title templates, breadcrumbs, local business locations, an SEO settings screen, a bulk SEO editor, optional AI suggestions and richer WordPress imports.
