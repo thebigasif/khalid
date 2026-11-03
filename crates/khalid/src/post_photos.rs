@@ -86,13 +86,7 @@ pub(crate) fn attach(languages: &mut [LanguagePages], shown: &Shown) {
             | PageBody::Tag(listing)
             | PageBody::Category(listing)
             | PageBody::Archive(listing) => list(listing, shown),
-            PageBody::Home(home) => {
-                list(&mut home.listing, shown);
-                cards(&mut home.picks, shown);
-                for section in &mut home.sections {
-                    cards(&mut section.posts, shown);
-                }
-            }
+            PageBody::Home(home) => home.cards_mut().for_each(|post| card(post, shown)),
             _ => {}
         }
     }
@@ -107,13 +101,18 @@ fn list(listing: &mut RenderListing, shown: &Shown) {
 
 /// Gives each of `posts` its post's lead image and its author's photo.
 fn cards(posts: &mut [PostCard], shown: &Shown) {
-    for card in posts {
-        if let Some(image) = shown.cards.get(&card.href) {
-            card.image = Some(image.clone());
-        }
-        if let Some(author) = &mut card.author {
-            photo(author, shown);
-        }
+    for post in posts {
+        card(post, shown);
+    }
+}
+
+/// Gives `post` its post's lead image and its author's photo.
+fn card(post: &mut PostCard, shown: &Shown) {
+    if let Some(image) = shown.cards.get(&post.href) {
+        post.image = Some(image.clone());
+    }
+    if let Some(author) = &mut post.author {
+        photo(author, shown);
     }
 }
 

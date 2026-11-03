@@ -224,6 +224,60 @@ fn a_library_photo_that_is_not_on_disk_is_left_out_without_failing() {
     assert!(!author.contains("gone.png"), "{author}");
 }
 
+#[test]
+fn a_topic_tab_card_shows_the_posts_picture_like_every_other_card() {
+    let (site, _) = built();
+    let slow = at(site.path(), "content/en/posts/2026-10-05-fixing-slow-pages");
+    let text = fs::read_to_string(at(&slow, "index.md")).unwrap();
+    fs::write(
+        at(&slow, "index.md"),
+        text.replace("page-weight.png", "cover.png"),
+    )
+    .unwrap();
+    fs::copy(at(&slow, "page-weight.png"), at(&slow, "cover.png")).unwrap();
+    let posts = at(site.path(), "content/en/posts");
+    let plain = at(&posts, "2026-10-12-planning-a-topic-cluster.md");
+    let text = fs::read_to_string(&plain).unwrap();
+    let image = "---\nimage:\n  src: cover.svg\n  alt: A map of a topic cluster\n";
+    fs::remove_file(&plain).unwrap();
+    let cluster = at(&posts, "2026-10-12-planning-a-topic-cluster");
+    fs::create_dir_all(&cluster).unwrap();
+    fs::write(at(&cluster, "index.md"), text.replacen("---\n", image, 1)).unwrap();
+    let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1600 900\"><rect width=\"1600\" height=\"900\" fill=\"#e8f0ff\"/></svg>\n";
+    fs::write(at(&cluster, "cover.svg"), svg).unwrap();
+    let settings = at(site.path(), "site.toml");
+    let text = fs::read_to_string(&settings).unwrap();
+    let keystone = "\n[template]\nname = \"keystone\"\n\n[template.options]\ntopic_tabs = true\n";
+    fs::write(&settings, format!("{text}{keystone}")).unwrap();
+    let out = build(site.path());
+    let home = page(out.path(), "index.html");
+    let (rest, tabs) = home.split_once("<section class=\"topic-tabs\"").unwrap();
+    let tabs = tabs.split_once("</section>\n</div>").unwrap().0;
+    // A PNG is offered in sizes made from it, an SVG as itself.
+    for (href, mark) in [
+        (
+            "/blog/fixing-slow-pages/",
+            "alt=\"A bar chart of page weight by part\"",
+        ),
+        (
+            "/blog/planning-a-topic-cluster/",
+            "/blog/planning-a-topic-cluster/cover.svg",
+        ),
+    ] {
+        let recent = picture_of(card_of(rest, href));
+        assert!(recent.contains(mark), "{recent}");
+        let tab = card_of(tabs, href);
+        assert!(tab.contains(recent), "the tab card shows {recent}: {tab}");
+    }
+}
+
+/// The `<picture>` on `card`.
+#[cfg(test)]
+fn picture_of(card: &str) -> &str {
+    let from = card.split_once("<picture>").unwrap().1;
+    from.split_once("</picture>").unwrap().0
+}
+
 /// The card on `html` that links `href`, up to its link.
 #[cfg(test)]
 fn card_of<'a>(html: &'a str, href: &str) -> &'a str {

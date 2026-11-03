@@ -64,15 +64,8 @@ fn name_page(body: &mut PageBody, named: &BTreeMap<String, (usize, &str)>) {
     let name_card = |card: &mut PostCard| name(&mut card.category);
     match body {
         PageBody::Home(home) => {
-            home.listing.posts.iter_mut().for_each(name_card);
-            home.listing.featured.iter_mut().for_each(name_card);
-            home.picks.iter_mut().for_each(name_card);
-            (home.sections.iter_mut())
-                .for_each(|section| section.posts.iter_mut().for_each(name_card));
-            home.videos.iter_mut().for_each(name_card);
-            home.podcasts.iter_mut().for_each(name_card);
+            home.cards_mut().for_each(name_card);
             for tab in &mut home.tabs {
-                tab.posts.iter_mut().for_each(name_card);
                 if let Some((_, name)) = named.get(&tab.href) {
                     (*name).clone_into(&mut tab.title);
                 }
