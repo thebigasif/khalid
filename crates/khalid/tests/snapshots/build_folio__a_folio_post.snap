@@ -83,7 +83,7 @@ expression: "shown(&out, \"why-internal-links-matter/index.html\")"
 <p class="person-credentials"><strong>Experience</strong> Ten years running SEO for small teams</p>
 <div class="person-bio"><p>Asif writes about search from the side of the people who have to do the work: small teams with a website, a blog and not much time. He likes advice you can act on before lunch.</p></div>
 <ul class="author-profiles" role="list" aria-label="Asif elsewhere">
-<li><a href="https://serpdad.com/" data-icon="website"><svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></g></svg><span class="visually-hidden">serpdad.com</span></a></li>
+<li><a href="https://serpdad.com/" data-icon="website"><svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></g></svg><span>serpdad.com</span></a></li>
 </ul>
 </div>
 </div>

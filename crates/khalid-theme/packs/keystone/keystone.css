@@ -18,8 +18,8 @@ h1 { letter-spacing: -0.03em; line-height: 1.08; text-wrap: pretty; }
 .card :is(h2, h3), .faq summary, .person-name, .howto-step { font-weight: 600; }
 a { text-decoration-color: color-mix(in oklab, currentColor 35%, transparent); }
 a:hover { text-decoration-color: currentColor; }
-.button, .subscribe button, .header-button { justify-content: center; padding-inline: 1.25rem; color: var(--color-on-accent); font-size: var(--text-small); font-weight: 600; border-radius: 999px; transition: background 0.2s; }
-.button:hover, .subscribe button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 86%, var(--color-text)); }
+.button, .subscribe button, .comment-form button, .header-button { justify-content: center; padding-inline: 1.25rem; color: var(--color-on-accent); font-size: var(--text-small); font-weight: 600; border-radius: 999px; transition: background 0.2s; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 86%, var(--color-text)); }
 
 /* The announcement: one quiet line, the header under it with a hairline
    across the window. */
@@ -156,7 +156,8 @@ main > .intro { margin-block-end: calc(var(--space) * 6); color: var(--color-mut
 .page-numbers a { color: var(--color-text); text-decoration: none; border-radius: 999px; }
 
 /* A post: the title block and the reading column share one left edge;
-   the lead picture breaks out to the wide frame. */
+   the lead picture breaks out to the wide frame unless a side contents
+   column needs the room. */
 .page, .author, .post-header, .post > :not(.post-header, .post-columns, .toc-side), .post-columns,
 main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inline-size: var(--measure); margin-inline: auto; }
 .post-header { margin-block-end: calc(var(--space) * 7); padding-block-start: calc(var(--space) * 8); }
@@ -180,6 +181,9 @@ main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inlin
 .post-meta .reviewed-by a { color: var(--color-text); font-weight: 500; }
 .post-date time { white-space: nowrap; }
 .post-header .image { margin-block: calc(var(--space) * 6) 0; margin-inline: calc(50% - min(50vw - 1rem, var(--keystone-wide) / 2)); }
+/* Where the side contents column shows, the wide frame would run under it,
+   so the picture keeps to the text column. */
+@media (min-width: 70rem) { .post-with-toc .post-header .image { margin-inline: 0; } }
 .post-header .image img { border-radius: calc(var(--radius) * 1.4); box-shadow: var(--keystone-frame); background: var(--color-surface); }
 
 /* The share rail: one row over the body on a phone, a sticky column
@@ -202,7 +206,7 @@ main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inlin
 .post-body > p:first-child { font-size: 1.1875rem; line-height: 1.6; }
 .post-body h2 { margin-block: 2.25em 0.6em; font-size: var(--text-h2); letter-spacing: -0.02em; line-height: 1.22; }
 .post-body h3 { margin-block: 2em 0.5em; font-size: var(--text-h3); }
-.post-body :is(ul, ol):not([class]) { padding-inline-start: 1.25rem; }
+.post-body :where(ul:not([class]), ol:not([class])) { padding-inline-start: 1.25rem; }
 .post-body li { margin-block-end: calc(var(--space) * 0.75); padding-inline-start: 0.25rem; }
 .post-body li::marker { color: var(--color-muted); }
 .heading-link { margin-inline-start: 0.125rem; color: var(--color-muted); font-size: 0.7em; font-weight: 400; }
@@ -346,7 +350,7 @@ main > .mentions { max-inline-size: var(--keystone-wide); }
 .page, .author { padding-block-start: calc(var(--space) * 8); }
 .page > h1:first-child, .author h1 { margin-block-start: 0; }
 .author-header .image { margin-block-end: calc(var(--space) * 3); }
-.author-role { margin-block-start: calc(var(--space) * -1); font-size: 1.125rem; }
+.author-role { margin-block-start: calc(var(--space) * 0.75); font-size: 1.125rem; }
 main > section:not([class]) { margin-block: var(--space-section) 0; }
 main > section:not([class]) > h2 { margin-block: 0 calc(var(--space) * 4); padding-block-start: calc(var(--space) * 2); border-block-start: var(--keystone-line); font-size: 1.25rem; letter-spacing: -0.015em; }
 .people-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: calc(var(--space) * 3); }
