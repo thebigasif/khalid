@@ -193,6 +193,15 @@ pub(crate) fn ask(
     ))
 }
 
+/// The domain and the folder of its certificate, when `listen` serves
+/// HTTPS, for the certificate alert.
+pub(crate) fn certificate(site: &Path, listen: &Listen) -> Option<(Domain, HttpsFolder)> {
+    match listen {
+        Listen::Https(https) => Some((https.domain.clone(), HttpsFolder::new(folder(site)))),
+        Listen::Plain(_) => None,
+    }
+}
+
 /// `data/https/` in the site folder.
 pub(crate) fn folder(site: &Path) -> PathBuf {
     let mut folder = site.to_path_buf();

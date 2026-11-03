@@ -5,7 +5,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::{Arc, Mutex, PoisonError, RwLock};
+use std::sync::{Arc, Mutex, OnceLock, PoisonError, RwLock};
 
 use khalid_content::{
     ContentTree, Document, PostFront, SiteContent, check_bodies, parse_post, read_content,
@@ -37,8 +37,9 @@ use crate::{
 /// Renders every page of one site from its files. Cloning shares it.
 ///
 /// The settings, the routes and the theme, with the stylesheet built from
-/// it, are read once, when `khalid serve` starts. The content is read again
-/// on each render, so an edited post shows.
+/// it, are read when `khalid serve` starts, and again before a full render
+/// when one of their files changed (see `site_reload.rs`). The content is
+/// read again on each render, so an edited post shows.
 #[derive(Debug, Clone)]
 pub(crate) struct SitePages(Arc<Site>);
 
@@ -48,6 +49,8 @@ struct Site {
     /// What the pages are made with now. Each render takes one copy, so a
     /// reload never mixes two sets of settings in one render.
     settings: RwLock<Arc<Settings>>,
+    /// How to read the settings again, set only by `khalid serve`.
+    reload: OnceLock<reload::Reload>,
     feed: Option<ContentFeed>,
     /// What the last full render read of the site, so a saved post's page
     /// can be rendered alone.
@@ -170,6 +173,7 @@ impl SitePages {
         Ok(Self(Arc::new(Site {
             folder: folder.to_path_buf(),
             settings: RwLock::new(Arc::new(settings)),
+            reload: OnceLock::new(),
             feed,
             outline: Mutex::default(),
             assets: Mutex::default(),
@@ -221,6 +225,7 @@ impl SitePages {
     /// served stay. Reads files and renders,
     /// so it runs off the async runtime (RULES.md BL-RUN-7).
     pub(crate) fn render_all(&self) -> Result<Served, UserMessage> {
+        self.reload_if_changed();
         let (folder, settings) = (&self.0.folder, self.settings());
         let Settings { config, routes, .. } = &*settings;
         let read = self
@@ -530,7 +535,9 @@ impl Render for SitePages {
     type Error = Unrendered;
 
     fn render(&self) -> Result<Rendered, Unrendered> {
-        let served = self.render_all().map_err(Unrendered)?;
+        let served = (self.render_all())
+            .inspect_err(reload::keeps_last_good)
+            .map_err(Unrendered)?;
         Ok(Rendered::new(served.pages, served.not_found).with_moves(served.moves))
     }
 
@@ -579,3 +586,6 @@ mod search;
 
 #[path = "site_pages_saved.rs"]
 mod saved;
+
+#[path = "site_reload.rs"]
+mod reload;

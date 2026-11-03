@@ -82,6 +82,20 @@ The unit also sets `Environment=MIMALLOC_PURGE_DELAY=0`, the allocator setting `
 MIMALLOC_PURGE_DELAY=0 khalid --site /var/lib/khalid serve --listen 127.0.0.1:8080
 ```
 
+## Changing settings while the server runs
+
+`khalid serve` watches the site folder. When you save `site.toml`, `routes.toml`, `categories.toml`, `tags.toml` or any file under `theme/`, such as `tokens.toml`, `site.css` or a font, it reads the settings again the way it does at start and renders the pages again. You do not need to restart it. Several files saved at once cost one render.
+
+If a saved `site.toml` or theme file has a mistake, the blog keeps serving the last good pages and settings. The server writes one line to its log, the same message `khalid --site` gives, with the file and the line to fix. Fix the file and save it again.
+
+A few settings only take effect when the server starts:
+
+- `mount` and `mode` shape the server's own addresses, so it keeps the values it started with.
+- `address`, `languages`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
+- The `--listen` and `--domain` options, the environment variables, and the `data/` folder with its database are read once at start.
+
+When you change one of these, the log says a restart is needed. Restart with `systemctl restart khalid`, or stop and start the server.
+
 ## Docker
 
 Docker runs programs in containers, each with its own files. The `Dockerfile` at the top of the repository builds an image from scratch, which means the image starts empty. It holds the Khalid binary, built fully static so it needs no other library, and the certificates Khalid needs to make HTTPS requests. There is no shell and no package manager in it, so there is nothing else to patch.
