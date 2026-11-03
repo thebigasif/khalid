@@ -58,6 +58,8 @@ mod hub;
 #[cfg(test)]
 mod image;
 #[cfg(test)]
+mod list_gaps;
+#[cfg(test)]
 mod listing;
 #[cfg(test)]
 mod lists;

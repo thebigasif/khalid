@@ -27,6 +27,8 @@ reading_time = "{minutes} min read"
 reading_time_label = "Reading time"
 in_category = "Filed under"
 tags = "Tags"
+# The word above a tag page's name, so it reads as a tag.
+tag_kind = "Tag"
 # The heading of a post's table of contents.
 contents = "Contents"
 # The label of a front page's row of links to its own sections.
@@ -158,6 +160,8 @@ month_year = "{month} {year}"
 sitemap_title = "Sitemap"
 sitemap_posts = "Posts"
 sitemap_pages = "Pages"
+sitemap_categories = "Categories"
+sitemap_tags = "Tags"
 sitemap_archives = "Topics and archives"
 sitemap_empty = "This blog has no pages to list yet."
 # The meta description of each page Khalid makes itself, so search results
