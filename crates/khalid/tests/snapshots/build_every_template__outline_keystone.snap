@@ -19,6 +19,7 @@ section.home-section
     h3: Why internal links matter
 
 # why-internal-links-matter/index.html
+nav.breadcrumbs "Breadcrumbs"
 article.post
   header.post-header
     h1: Why internal links matter
@@ -37,6 +38,7 @@ section.related
     h3: What a sitemap does, and what it does not
 
 # authors/asif/index.html
+nav.breadcrumbs "Breadcrumbs"
 article.author
   header.author-header
     h1: Asif

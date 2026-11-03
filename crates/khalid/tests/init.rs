@@ -346,6 +346,33 @@ fn a_hosted_stack_is_told_the_blog_address_in_its_rule_is_a_guess() {
 }
 
 #[test]
+fn a_mounted_blog_is_told_the_sitemap_line_for_the_host_robots_txt() {
+    let temp = tempfile::tempdir().unwrap();
+    let args = ["init", path(temp.path()), "--address"];
+    let rest = ["--mount", "/blog/", "--stack", "caddy"];
+    let output = khalid(&[&args[..], &["https://www.example.com/"], &rest[..]].concat());
+    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
+    let said = text(&output.stdout);
+    assert!(
+        said.contains("robots.txt at https://www.example.com/robots.txt"),
+        "{said}"
+    );
+    assert!(
+        said.contains("\n\nSitemap: https://www.example.com/blog/sitemap.xml\n\n"),
+        "the line to copy, on its own:\n{said}"
+    );
+
+    let site = at(temp.path(), "json");
+    let args = ["init", path(&site), "--address", "https://www.example.com"];
+    let output = khalid(&[&args[..], &rest[..], &["--json"]].concat());
+    let json: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(
+        json["proxy"]["sitemap_line"], "Sitemap: https://www.example.com/blog/sitemap.xml",
+        "{json}"
+    );
+}
+
+#[test]
 fn init_prints_the_webflow_rule_for_a_mounted_webflow_site() {
     let temp = tempfile::tempdir().unwrap();
     let output = khalid(&[

@@ -1,8 +1,9 @@
 {#- Keystone's post page: the category over the title, the summary, one
     quiet line with the authors, one date (the last update, or the day it
-    was published) and the reading time, the lead picture wider than the
-    text, share links in a rail beside the body on wide screens, then the
-    author, the newsletter, the call to action and related posts. -#}
+    was published), the reading time and why it was updated, the lead
+    picture wider than the text, share links in a rail beside the body on
+    wide screens, then the author, the newsletter, the call to action and
+    up to `related_count` related posts. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
@@ -34,6 +35,7 @@
 {% else %}<address>{{ t.by }} {% for author in page.authors %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</address>
 {% endif %}<p class="post-date">{% if page.updated %}{{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% else %}{{ t.published }} <time datetime="{{ page.date }}">{{ page.date | date }}</time>{% endif %}</p>
 {% if "reading_time" in site.features %}<p class="reading-time"><time datetime="PT{{ page.reading_time.minutes }}M">{{ t.reading_time | replace("{minutes}", page.reading_time.minutes | string) }}</time></p>
+{% endif %}{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
 {% endif %}{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
 {% endif %}</div>
 {% if page.image %}{{ picture(page.image) }}
@@ -85,6 +87,6 @@
 {% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
 {% endif %}{% if "related_posts" in site.features and page.related %}<section class="related">
 <h2>{{ t.related_posts }}</h2>
-{{ cards(page.related[:3], 3) }}
+{{ cards(page.related[:template.options.related_count], 3) }}
 </section>
 {% endif %}{% endblock %}

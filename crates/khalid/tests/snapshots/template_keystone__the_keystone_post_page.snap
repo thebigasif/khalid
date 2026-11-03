@@ -3,6 +3,13 @@ source: crates/khalid/tests/template_keystone.rs
 expression: "main_of(&page(&out, \"what-a-sitemap-does/index.html\"))"
 ---
  id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/what-a-sitemap-does/" aria-current="page">What a sitemap does, and what it does not</a></li>
+</ol>
+</nav>
 
 <article class="post">
 <header class="post-header">

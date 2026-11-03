@@ -62,9 +62,23 @@ a:hover { text-decoration-color: currentColor; }
 .site-footer > nav:last-of-type li:last-child { margin-inline-start: auto; }
 
 /* Lists of posts: the page title, its topics, then cards. */
-main > h1:first-child, .home-head h1 { margin-block: calc(var(--space) * 7) calc(var(--space) * 2); font-size: var(--text-h1); }
-main > h1:first-child { margin-block-end: calc(var(--space) * 6); }
-main > h1:first-child:has(+ .intro) { margin-block-end: calc(var(--space) * 2); }
+main > :is(h1:first-child, .breadcrumbs + h1), .home-head h1 { margin-block: calc(var(--space) * 7) calc(var(--space) * 2); font-size: var(--text-h1); }
+main > :is(h1:first-child, .breadcrumbs + h1) { margin-block-end: calc(var(--space) * 6); }
+main > :is(h1:first-child, .breadcrumbs + h1):has(+ .intro) { margin-block-end: calc(var(--space) * 2); }
+main > .breadcrumbs + h1 { margin-block-start: calc(var(--space) * 2); }
+
+/* The trail from the home page, one quiet line above a list's title or on
+   the reading column's left edge above a post; a long last step is cut
+   with an ellipsis rather than wrapping. */
+.breadcrumbs { margin-block: calc(var(--space) * 4) 0; }
+main:has(> :is(.post, .page, .author)) > .breadcrumbs { max-inline-size: var(--measure); margin-inline: auto; }
+.breadcrumbs ol { flex-wrap: nowrap; }
+.breadcrumbs li { flex: none; }
+.breadcrumbs li:last-child { flex: 0 1 auto; min-inline-size: 0; }
+.breadcrumbs li:last-child a { display: block; overflow: hidden; line-height: 44px; text-overflow: ellipsis; white-space: nowrap; }
+.breadcrumbs a { text-decoration: none; }
+.breadcrumbs a:hover { color: var(--color-link); text-decoration: underline; }
+.breadcrumbs + .post > .post-header { padding-block-start: calc(var(--space) * 3); }
 main > .intro { margin-block-end: calc(var(--space) * 6); color: var(--color-muted); }
 .intro { max-inline-size: var(--measure); font-size: 1.125rem; }
 .home-head { margin-block-end: calc(var(--space) * 6); }
@@ -154,8 +168,8 @@ main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inlin
 .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--space) * 1) calc(var(--space) * 1.5); margin-block-start: calc(var(--space) * 5); padding-block: calc(var(--space) * 2); border-block: var(--keystone-line); }
 .post-meta p, .post-meta address { margin: 0; }
 .post-meta address { flex-basis: 100%; margin-block-end: calc(var(--space) * 0.5); }
-.post-meta .reviewed-by { flex-basis: 100%; }
-.post-meta > .reviewed-by::before { content: none; }
+.post-meta :is(.reviewed-by, .updated-note) { flex-basis: 100%; }
+.post-meta > :is(.reviewed-by, .updated-note)::before { content: none; }
 .post-meta .people { margin: 0; gap: calc(var(--space) * 1) calc(var(--space) * 3); }
 .post-meta .person { line-height: 1.35; }
 .post-meta .person a { min-block-size: 0; color: var(--color-text); font-weight: 600; text-decoration: none; }

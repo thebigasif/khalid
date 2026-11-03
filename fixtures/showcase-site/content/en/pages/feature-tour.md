@@ -15,12 +15,12 @@ Each line below names one feature and links to a page where you can see it. Open
 - **A topic hub for each section:** a pillar guide linked to and from every post in its cluster, such as the [SEO writing guide](/blog/seo-writing-guide/).
 - **Sections, tags and an archive:** the [SEO tools section](/blog/category/seo-tools/), the [tools tag](/blog/tag/tools/) and the [archive of every post](/blog/archive/).
 - **A series as a course:** [seven lessons in SEO writing](/blog/seo-writing-course/), in order.
-- **Editor's picks:** posts marked as featured appear first on the [home page](/blog/).
+- **Featured posts:** the newest post marked as featured leads the [home page](/blog/).
 
 ## Blocks a writer can use
 
 - **Key takeaways, tips, notes, warnings, further reading and big numbers:** all six boxes in the [keyword research guide](/blog/keyword-research/).
-- **A table of contents:** at the top of the [technical SEO audit](/blog/technical-seo-audit/).
+- **A table of contents:** the writer's own, at the top of the [technical SEO audit](/blog/technical-seo-audit/). A template adds one to every long post by itself only when its `contents` option is set, such as `contents = "inline"` under `[template.options]`; Keystone leaves it off.
 - **Figures and charts with captions:** the [content benchmark](/blog/content-benchmark/).
 - **A gallery of screenshots:** the [Quillmeter review](/blog/quillmeter-review/).
 - **Tables, including one that folds its long rows away:** [writing headlines](/blog/writing-headlines/).
@@ -52,22 +52,25 @@ Comments, sign-ups, forms, members-only parts and search need Khalid running as 
 
 ## Search results features
 
-Each page carries structured data, the code search engines read to understand it. You can see it with Google's [Rich Results Test](https://search.google.com/test/rich-results).
+Each page carries structured data, the code search engines read to understand it. Google still shows these types as rich results, so you can see them in Google's [Rich Results Test](https://search.google.com/test/rich-results):
 
 - **Article, author, publisher and breadcrumbs:** on every post, such as the [SEO writing guide](/blog/seo-writing-guide/).
-- **FAQ:** the [AI search guide](/blog/ai-search-guide/).
-- **How-to:** [set up Google Search Console](/blog/search-console-setup/).
 - **Review with a rating:** the [Quillmeter review](/blog/quillmeter-review/).
 - **Ranked list:** [the best free SEO tools](/blog/best-free-seo-tools/).
 - **Comparison, shaped the way the linter asks:** [Search Console against Bing Webmaster Tools](/blog/search-console-vs-bing-webmaster-tools/).
-- **Fact check:** [word count is not a ranking factor](/blog/fact-check-word-count/)
 - **Dataset:** [the benchmark data](/blog/content-benchmark-data/).
-- **Course:** [the SEO writing course](/blog/seo-writing-course/).
-- **Podcast episode:** [episode one](/blog/podcast-answer-first/).
 - **Video:** the animation in the [technical SEO audit](/blog/technical-seo-audit/).
 - **News article, with its own news sitemap:** [our benchmark data is free to download](/blog/news/benchmark-data-open/).
 - **Product:** [the tools we use](/blog/tools/).
 - **Local business:** [about Larkspur](/blog/about/).
+
+Google no longer shows rich results for the types below. Khalid still writes valid structured data for them, which other search engines and AI tools read, and the [Schema Markup Validator](https://validator.schema.org/) shows it:
+
+- **FAQ:** the [AI search guide](/blog/ai-search-guide/).
+- **How-to:** [set up Google Search Console](/blog/search-console-setup/).
+- **Fact check:** [word count is not a ranking factor](/blog/fact-check-word-count/).
+- **Course:** [the SEO writing course](/blog/seo-writing-course/).
+- **Podcast episode:** [episode one](/blog/podcast-answer-first/).
 
 ## Trust and people
 

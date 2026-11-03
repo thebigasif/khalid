@@ -24,13 +24,13 @@ Lists such as a category or the archive show the lead story and the same picture
 
 **A post**
 
-1. The category, the title and the summary (the post's `dek`), all on one left edge.
-2. One line with the author's photo, name and role, then one date (the day it was last updated, or the day it was published if it never was) and the reading time.
+1. The trail of links from the front page to the post, then the category, the title and the summary (the post's `dek`), all on one left edge.
+2. One line with the author's photo, name and role, then one date (the day it was last updated, or the day it was published if it never was) and the reading time. An updated post with an `updated_note` says why it changed on the next line.
 3. The lead picture, wider than the text, in a fine frame.
 4. Share links. On a wide screen they sit in a column beside the post and stay in view as you scroll. On a phone they sit in one row above the post.
 5. The post in one reading column. Callouts, steps, tables, quotes, questions and the contents block each have their own quiet look.
 6. Your own lines about the site, when you set them, then the author box.
-7. The newsletter form, your call to action, the posts that link here and three related posts.
+7. The newsletter form, your call to action, the posts that link here and up to five related posts, three across on a wide screen.
 
 **Callouts** (`:::callout{kind=note}`, `tip`, `warning` and `read`) each get a small drawn icon; a warning also gets a dark edge, so the kinds differ by more than colour.
 
@@ -48,10 +48,13 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 | `podcast_section` | `true` | `true`, `false` | A row of the newest posts with a podcast or other sound player, when there are any. |
 | `logo` | `true` | `true`, `false` | The header shows the logo from your main site in place of the blog's name. Without a logo, the name shows. |
 | `cta_button` | `true` | `true`, `false` | The header shows your `[template.cta]` as a button. |
+| `breadcrumbs` | `true` | `true`, `false` | Each page shows the trail of links from the front page to it. |
 | `dek` | `true` | `true`, `false` | A post shows its summary under its title. |
+| `updated_note` | `true` | `true`, `false` | An updated post says why it was updated, from its `updated_note`, under its date. |
 | `featured` | `true` | `true`, `false` | The newest post marked `featured: true` shows large at the top of the front page and each list. |
 | `cards` | `image` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists. |
 | `pagination` | `numbered` | `pages`, `numbered` | The links under a long list: newer and older, or a link to each page. |
+| `related_count` | `5` | 3 to 10 | How many related posts show after a post. Five is the most a post can pin with `related`. |
 | `contents` | `none` | `none`, `inline`, `inline-folded`, `side-end`, `side-start` | Where a long post's contents list goes. A post can also carry its own contents block. |
 | `reading_progress` | `bar` | `bar`, `none` | A thin line at the top of a post that fills as the reader scrolls. |
 | `header_search` | `button` | `button`, `link`, `none` | What the header's search does on a served blog: open a search dialog, open the search page, or nothing. |
