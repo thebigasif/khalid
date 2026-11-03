@@ -222,21 +222,50 @@ export function measure(stage) {
   }
 
   // 5. A table column is never narrower than its longest word, which would
-  // break the word mid-way or push it over the next cell.
+  // break the word mid-way or push it over the next cell. Each word is
+  // measured as drawn, each part in its own font: a word that starts in
+  // <code> and ends in the cell's text is narrower than in the cell's font.
   if (stage === "page") {
-    const canvas = document.createElement("canvas").getContext("2d");
+    const drawn = (node, from, to) => {
+      const range = document.createRange();
+      range.setStart(node, from);
+      range.setEnd(node, to);
+      return [...range.getClientRects()].reduce((sum, rect) => sum + rect.width, 0);
+    };
     for (const cell of document.querySelectorAll("td, th")) {
       if (!shown(cell) || cell.closest(skip)) continue;
       const s = style(cell);
       const room = cell.clientWidth - Number.parseFloat(s.paddingLeft) - Number.parseFloat(s.paddingRight);
       if (room <= 0) continue;
-      canvas.font = `${s.fontStyle} ${s.fontWeight} ${s.fontSize} ${s.fontFamily}`;
-      const spacing = Number.parseFloat(s.letterSpacing) || 0;
-      const words = (cell.innerText ?? "").split(/[\s/-]+/).filter(Boolean);
-      const widths = words.map((word) => canvas.measureText(word).width + spacing * word.length);
+      const words = [];
+      let word = { text: "", width: 0 };
+      const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        // Text a reader cannot see, such as a label for screen readers in
+        // a 1 px box, is no word of the column.
+        const area = clipOf(node.parentElement);
+        if (!shown(node.parentElement) || area.r - area.l < 2) continue;
+        const text = node.textContent ?? "";
+        let start = 0;
+        for (let i = 0; i <= text.length; i += 1) {
+          const gap = i === text.length || /[\s/-]/.test(text[i]);
+          if (!gap) continue;
+          if (i > start) {
+            word.text += text.slice(start, i);
+            word.width += drawn(node, start, i);
+          }
+          if (i < text.length && word.text) {
+            words.push(word);
+            word = { text: "", width: 0 };
+          }
+          start = i + 1;
+        }
+      }
+      if (word.text) words.push(word);
+      const widths = words.map((w) => w.width);
       const widest = Math.max(0, ...widths);
       if (widest > room + 1) {
-        problems.push({ check: "crushed-cell", a: name(cell), b: `the word "${words[widths.indexOf(widest)]}"`, detail: `the word needs ${Math.round(widest)} px and the column gives ${Math.round(room)} px, at ${Math.round(cell.getBoundingClientRect().left + sx)},${Math.round(cell.getBoundingClientRect().top + sy)}` });
+        problems.push({ check: "crushed-cell", a: name(cell), b: `the word "${words[widths.indexOf(widest)].text}"`, detail: `the word needs ${Math.round(widest)} px and the column gives ${Math.round(room)} px, at ${Math.round(cell.getBoundingClientRect().left + sx)},${Math.round(cell.getBoundingClientRect().top + sy)}` });
       }
     }
   }

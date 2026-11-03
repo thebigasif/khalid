@@ -76,7 +76,7 @@ main:has(> .post), main:has(> .page) { max-inline-size: var(--measure); }
 .cards .card:hover, .cards .card:focus-within { border-color: var(--color-text); box-shadow: 0.375rem 0.375rem 0 var(--color-accent); translate: -0.125rem -0.125rem; }
 .cards .card .image { order: -1; margin: -1.25rem -1.25rem 1rem; }
 .cards .card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface); border-block-end: 1px solid var(--color-border); border-radius: var(--radius) var(--radius) 0 0; }
-.card :is(h2, h3) { margin-block: 0.5rem; font-size: var(--text-h3); line-height: 1.25; letter-spacing: -0.01em; }
+.card :is(h2, h3, h4) { margin-block: 0.5rem; font-size: var(--text-h3); line-height: 1.25; letter-spacing: -0.01em; }
 .card > p:last-child { color: var(--color-muted); }
 .card-meta { font-family: var(--font-mono); font-size: 0.8125rem; }
 .card-meta a { color: var(--color-link); }

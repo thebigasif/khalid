@@ -72,9 +72,9 @@ main .cards:not(.cards-ranked, .cards-compact) { grid-template-columns: repeat(a
 .card-meta:not(:has(> a)) > time { grid-area: kicker; }
 .card-meta:not(:has(> a)) > time::before { content: none; }
 .card-meta > .card-reading-time { display: none; }
-.card :is(h2, h3) { grid-area: title; margin-block: 0.5rem; font-size: 1.3125rem; line-height: 1.25; letter-spacing: -0.02em; text-wrap: pretty; }
-.card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
-.card:hover :is(h2, h3) a { text-decoration: underline; text-decoration-thickness: 0.06em; }
+.card :is(h2, h3, h4) { grid-area: title; margin-block: 0.5rem; font-size: 1.3125rem; line-height: 1.25; letter-spacing: -0.02em; text-wrap: pretty; }
+.card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
+.card:hover :is(h2, h3, h4) a { text-decoration: underline; text-decoration-thickness: 0.06em; }
 .card:hover .image img, .card:focus-within .image img { border-color: var(--color-muted); }
 .card > p:not(.card-meta) { grid-area: text; display: -webkit-box; margin: 0; overflow: hidden; color: var(--color-muted); font-size: 0.9875rem; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 .card-author { grid-area: author; margin-block-start: 1.25rem; font-size: var(--text-small); font-weight: 500; }
