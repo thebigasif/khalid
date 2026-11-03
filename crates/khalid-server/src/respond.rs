@@ -13,6 +13,7 @@ use crate::clean_url::{Resolved, resolve};
 use crate::compress::{self, Compressed};
 use crate::consent::{self, Choice, HeldCode};
 use crate::page::NONCE_SLOT;
+use crate::range;
 use crate::security::fresh_nonce;
 use crate::{LivePages, MediaType, Page, Pages, SecurityHeaders, etag};
 
@@ -52,8 +53,10 @@ const BROTLI: HeaderValue = HeaderValue::from_static("br");
 /// for an address that moved, or the not-found page with status 404, except
 /// that `/favicon.ico` with no file there gets 204 No Content. A page carries an `ETag` made from its
 /// bytes, and a request whose `If-None-Match` names it gets 304 with no
-/// body. A page is cached as `no-cache`, and a [`Page::immutable`] file for
-/// a year. Any other method gets 405. Every response, whatever its status,
+/// body. A file that is not text, such as a video, answers a `GET` with a
+/// `Range` as [`ranged`](crate::ranged) does. A page is cached as
+/// `no-cache`, and a [`Page::immutable`] file for a year. Any other
+/// method gets 405. Every response, whatever its status,
 /// carries `security`.
 ///
 /// Each request reads the pages being served at that moment, so a
@@ -290,6 +293,12 @@ fn page_response(
         (false, Some(copy), _) => file(StatusCode::OK, page.media_type(), copy.body(), send),
         (false, None, SendBody::No) => head(StatusCode::OK, page.media_type(), page.len()),
         (false, None, SendBody::Yes) => match page.body() {
+            Ok(plain) if page.media_type().takes_ranges() => {
+                let mut response = range::ranged(request, plain, page.etag());
+                let kind = HeaderValue::from_static(page.media_type().as_header());
+                response.headers_mut().insert(header::CONTENT_TYPE, kind);
+                response
+            }
             Ok(plain) => file(StatusCode::OK, page.media_type(), &plain, send),
             Err(error) => {
                 tracing::error!(%error, "a page could not be sent plain");
@@ -310,6 +319,9 @@ fn page_response(
     }
     if brotli.is_some() && !current {
         headers.insert(header::CONTENT_ENCODING, BROTLI);
+    }
+    if page.media_type().takes_ranges() {
+        headers.insert(header::ACCEPT_RANGES, range::BYTES);
     }
     response
 }

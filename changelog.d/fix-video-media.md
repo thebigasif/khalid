@@ -1,0 +1,2 @@
+Fixed
+Videos, sound files, CSV tables and ZIP archives beside a post now go out with their own media type, such as video/mp4, instead of as unknown bytes, so browsers play and open them. Videos and other files that are not text answer Range requests with only the part asked for, which Safari needs before it plays a video, and media library files do the same. The video embed frame no longer carries allow-presentation, which Safari refused with a console error; full screen still works through the frame's allow list.
