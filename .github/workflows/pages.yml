@@ -11,6 +11,12 @@ name: Pages
 #   /khalid/khalid-demos.tar.gz the demos built for https://serpdad.com/khalid/,
 #                               which the serpdad.com build downloads
 #
+# The same bundles go to the GitHub release named "demos", which the
+# serpdad.com build reads instead of Pages. That release is a prerelease
+# and never "latest", so /releases/latest, scripts/install.sh and
+# `khalid update` still find the newest v release. Its files are replaced
+# in place; the release is never deleted.
+#
 # Every page here names the same path on serpdad.com as its canonical
 # address, so search engines credit serpdad.com.
 #
@@ -24,7 +30,10 @@ on:
       - "site/**"
       - "fixtures/showcase-site/**"
       - "fixtures/examples/**"
+      - "fixtures/showcase-brands/**"
+      - "fixtures/showcase-publications/**"
       - "scripts/pages.sh"
+      - "scripts/demo-brand.sh"
       - "scripts/template-previews.sh"
       - "scripts/demos-bundle.sh"
       - ".github/workflows/pages.yml"
@@ -44,6 +53,9 @@ concurrency:
 jobs:
   build:
     name: Build the website and demos
+    # Only a v release builds; the demos release this workflow fills is not
+    # a version of Khalid.
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -66,6 +78,21 @@ jobs:
         run: |
           bash scripts/demos-bundle.sh ./target/release/khalid "$RUNNER_TEMP/demos/khalid" "$RUNNER_TEMP/pages/templates"
           cp "$RUNNER_TEMP/demos/khalid-demos.tar.gz" "$RUNNER_TEMP/pages/khalid-demos.tar.gz"
+      # The docs pack joins once scripts/docs-bundle.sh is on main. It builds
+      # in the folder it is given and writes khalid-docs.tar.gz beside it. The demo photographs are not in git, so their
+      # archive is uploaded from the build server by hand, never from here.
+      - name: The bundles for the demos release
+        run: |
+          mkdir -p "$RUNNER_TEMP/release"
+          cp "$RUNNER_TEMP/demos/khalid-demos.tar.gz" "$RUNNER_TEMP/release/"
+          if [ -f scripts/docs-bundle.sh ]; then
+            bash scripts/docs-bundle.sh "$RUNNER_TEMP/release/docs"
+          fi
+      - uses: actions/upload-artifact@v7
+        with:
+          name: demos-release
+          path: ${{ runner.temp }}/release/*.tar.gz
+          if-no-files-found: error
       - uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ runner.temp }}/pages
@@ -79,3 +106,46 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # The bundles on the release named "demos". The first run creates it as a
+  # prerelease that is never "latest"; every run after replaces its files in
+  # place with --clobber. Files it does not upload, such as the demo
+  # photographs, stay as they are.
+  demos-release:
+    name: Bundles on the demos release
+    needs: build
+    # A hand run from another branch publishes its Pages build as now, but
+    # leaves the bundles serpdad.com reads alone.
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          name: demos-release
+          path: release
+      - name: Create the demos release once
+        run: |
+          if ! gh release view demos >/dev/null 2>&1; then
+            gh release create demos --prerelease --latest=false --target "$GITHUB_SHA" \
+              --title "Demos for serpdad.com" \
+              --notes "The demo sites, template list and preview pictures serpdad.com/khalid/ is built from. This is not a version of Khalid: install Khalid from the newest v release."
+          fi
+      - name: Replace the bundles
+        run: |
+          for file in khalid-demos.tar.gz khalid-docs.tar.gz demo-photos.tar.gz; do
+            if [ -f "release/$file" ]; then
+              gh release upload demos "release/$file" --clobber
+            fi
+          done
+      - name: The newest release is still a v release
+        run: |
+          latest="$(gh api "repos/$GH_REPO/releases/latest" --jq .tag_name)"
+          case "$latest" in
+            v[0-9]*) echo "The newest release is still $latest." ;;
+            *) echo "The newest release is now $latest, not a v release, so scripts/install.sh and khalid update would install the wrong thing. Mark $latest as not latest on GitHub."; exit 1 ;;
+          esac
