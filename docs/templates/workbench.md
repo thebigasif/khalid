@@ -131,13 +131,15 @@ This is Workbench's design brief. It fixes how the template should look, so ever
 | Part | Workbench |
 |---|---|
 | Type pairing | A technical grotesque for headings over a plain engineering sans for text, with mono details: prices, ratings, dates and labels. With no theme, the pack uses the system sans and the system mono. |
-| Type scale | Display type is heavy (800) with tight tracking (-0.04em to -0.05em). The front page's name runs from 3rem on a phone to 6.5rem on a wide screen, a list page's title to 5rem, a post's title to 3.75rem and the pick's title to 3.25rem. |
-| Front page structure | The masthead owns the top: the name on squared paper over a thick rule. Below it, a lead grid: the pick on the left, a numbered rail of the five newest posts on the right. Then the rest as ruled cells of one sheet. |
+| Type scale | Display type is heavy (800) with tight tracking (-0.04em to -0.05em). The front page's name runs from 3rem on a phone to 6.5rem on a wide screen, a list page's title to 5rem, a post's title to 3.75rem (5rem from 1280 px) and the pick's title to 3.25rem. |
+| Front page structure | The masthead owns the top: the name on squared paper over a thick rule. Below it, a lead grid: the pick on the left, a numbered rail of the five newest posts on the right. Then the rest as ruled cells of one sheet: twelve picture cells on a wide screen, then the sheet's ruled rows, two across, each a title, its date and its category. The front page still links every post. |
 | Colour | A grey-white bench ground, graphite text and one verdict colour (green) for picks, labels and pros. Panels a shade darker than the ground. Workbench now has a full palette of its own. |
 | Spacing rhythm | A base step of 0.5rem on a strict grid. Ruled sections 3.5rem apart. Table rows 0.75rem high in padding. |
 | Frame at 1440 px and wider | At least **80rem**. A comparison table may grow past the text to 60rem, so the frame leaves it room. |
+| Post at 1280 px and wider | A spec sheet across the frame: the title (up to 5rem) and a wider lead picture (2 by 1) span 61rem; below them the contents box sits in a rail that stays in view beside the text. The text grows to 1.25rem and its measure to 40rem, so a line still holds 60 to 75 letters. |
 | Cards and lists | Picture cards with square corners in ruled cells that share their rules, the category as a mono label, the title, the date. The featured picture keeps a fixed ratio (16 by 9) and never fills the window: on a list page it sits beside its words. |
-| Phone header and menu | The blog's name and the "Categories" button on one row; the menu opens below with no script. |
+| Phone header and menu | The blog's name and the "Categories" button on one row; the menu opens below with no script. The site menu is one row you can swipe, its last 2rem faded so it reads as more to see. |
+| Phone lists | The first six cells two across, as a contact sheet: picture, date and title. Every later post is a ruled row: the title and the date small. The 40-post demo's front page stays near 6,000 px. |
 | Tabs and indexes at 390 px | Topic tabs as one row you can swipe. A wide comparison table scrolls sideways inside its frame, with the first column fixed. |
 | Link, card and focus states | Links underlined in the verdict colour. A card's top rule turns the verdict colour on hover. Focus is a 2 px ring in the text colour. |
 | Signature details | The comparison table as the hero of a post: header row on the panel colour, the winning cell marked. Pros and cons as two ruled columns with plus and minus marks. Mono labels for prices and ratings, and for the bold label that opens a paragraph. Numbered rows (01, 02) in the newest posts, the contents and the related links. |
