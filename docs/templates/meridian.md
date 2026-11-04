@@ -182,11 +182,12 @@ This is Meridian's design brief. It fixes how the template should look, so every
 | Colour | A warm ivory ground, ink text and one deep accent (plum or indigo) used only where a reader can act. Hairlines in a warm grey. |
 | Spacing rhythm | A base step of 0.5rem. Very generous: 6rem between front page sections, 2.5rem between rows. |
 | Frame at 1440 px and wider | At least **80rem**: wide rows need the room. |
-| Front page structure | The masthead, the tabs, the lead story split beside its picture, two large stories side by side, the numbered editor's picks on a soft band, then the rows. The rhythm changes from one part to the next, so the page never reads as one long list. |
+| Front page structure | The masthead, the tabs, the lead story split beside its picture, two large stories side by side, the numbered editor's picks on a soft band, six rows, then every other post in a text-only index: the topic, the serif title and the date on one quiet line. The index lists every post, since the front page is the path to each one. The rhythm changes from one part to the next, so the page never reads as one long list. |
 | Cards and lists | Wide rows, not cards: on a wide screen a rail at the start holds the category in small capitals, the date and the author with their role, then a large serif title and the summary, and the picture cropped to 3 by 2 on the far side. Rows sit between hairlines. Topic, video and podcast rows are grids of picture cards. |
 | Phone header and menu | The logo and the menu, the menu as one row that scrolls. The outlined button gives way to the band further down. |
-| Tabs and indexes at 390 px | The category tabs become small rounded buttons that wrap. In a row, the picture sits above the text. |
+| Tabs and indexes at 390 px | The category tabs become small rounded buttons that wrap. A row is compact: a small square picture beside the title and the date, with the summary left for the post. The lead story keeps its large picture. |
 | Link, card and focus states | Links underlined in the accent. A row's serif title takes the underline on hover. Focus is a 2 px accent ring. |
+| Post page at 1440 px and wider | The text grows to 1.25rem on a 44rem measure, about 70 characters a line, and charts, pictures and quotes step out to a 60rem column, so the window never reads as half empty. |
 | Signature details | The masthead over its ink rule. The lead story with a large picture beside a large serif title, and a post's split header the same way. Editor's picks numbered 01 to 03 in the serif on a soft band. The reference guide layout with "Last updated" and numbered contents. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/meridian/theme/`: plum (`#7b2d6a` links, `#8a3378` accent) on warm ivory (`#fbf8f5`), DM Serif Display for titles and Work Sans for text, and a globe mark.

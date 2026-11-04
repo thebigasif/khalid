@@ -185,6 +185,54 @@ fn the_meridian_home_page_leads_with_the_newest_post() {
     assert_eq!(home.matches("<div class=\"lead\">").count(), 1, "{home}");
 }
 
+/// After six rows, every other post is a line of the text-only index, with
+/// no picture and no summary, and the home page still links every post.
+#[test]
+fn the_meridian_home_page_ends_with_a_text_index() {
+    let posts: Vec<(String, String)> = (1..=8)
+        .map(|n| {
+            (
+                format!("content/en/posts/2026-08-0{n}-index-note-{n}.md"),
+                format!(
+                    "---\ntitle: Index note number {n}\nslug: index-note-{n}\ndate: 2026-08-0{n}\nauthor: asif\ncategory: on-page-seo\ndescription: A short note that fills the front page, so the index below the rows has posts to list.\n---\n\nA short note for the index, number {n}. It says one thing and links [the title tag guide](/blog/how-to-write-a-title-tag/).\n"
+                ),
+            )
+        })
+        .collect();
+    let files: Vec<(&str, &str)> = posts
+        .iter()
+        .map(|(rel, text)| (rel.as_str(), text.as_str()))
+        .collect();
+    let (_temp, out) = built("", &files);
+    let home = shown(&out, "index.html");
+    let index = home
+        .find("<section class=\"index\"")
+        .unwrap_or_else(|| panic!("{home}"));
+    let rows = home
+        .get(..index)
+        .and_then(|before| before.rfind("<ul class=\"cards cards-row\""))
+        .unwrap_or_else(|| panic!("{home}"));
+    assert!(rows < index, "{home}");
+    let list = home.get(index..).unwrap_or_default();
+    let list = list
+        .get(..list.find("</section>").unwrap_or(list.len()))
+        .unwrap_or_default();
+    assert!(list.contains("<article class=\"index-row\">"), "{home}");
+    assert!(!list.contains("<picture"), "{home}");
+    let row_cards = home.get(rows..index).unwrap_or_default();
+    assert_eq!(
+        row_cards.matches("<article class=\"card\">").count(),
+        6,
+        "{home}"
+    );
+    for n in 1..=8 {
+        assert!(
+            home.contains(&format!("href=\"/blog/index-note-{n}/\"")),
+            "{n}: {home}"
+        );
+    }
+}
+
 /// The masthead shows a home intro the site wrote, and never the built-in
 /// description every blog gets.
 #[test]
