@@ -15,7 +15,7 @@ Keystone is a template for a product or company blog: a team that writes about w
 1. Your logo in the header, the menu as quiet links, and your call to action as a button when `[template.cta]` is set. On a phone the menu is one line you can swipe, and the button waits for the band further down.
 2. The blog's name, with its topics on one line under it, when your blog lists its topics.
 3. The newest post marked `featured: true` as the lead story: its picture large on one side on a wide screen, its title, summary and author on the other.
-4. "Recently published": your other posts, first two large framed picture cards, then rows of three, then from the ninth post a text-only index of titles in two columns. Each card shows the category, the title, two or three lines of summary, then the author and the date. A post with no picture gets a drawn cover in tints of your accent colour, so the grid stays even.
+4. "Recently published": your other posts, first two large framed picture cards, then rows of three, then from the ninth post a text-only index of titles in two columns. On a phone, posts three to six are small rows with the picture beside the title, and the index rows show just the title and the date. Each card shows the category, the title, two or three lines of summary, then the author and the date. A post with no picture gets a drawn cover in tints of your accent colour, so the grid stays even.
 5. The newsletter form on a framed panel, with one line over it such as "Join 4,000 readers", when your blog takes sign-ups.
 6. One row of three cards for each home section in `[reader]`, each with a "View all" link.
 7. Your call to action as a band, when `cta_band` is `home` or `both`.
@@ -27,7 +27,7 @@ Lists such as a category or the archive show the lead story and the same picture
 1. The trail of links from the front page to the post, then the category, the title and the summary (the post's `dek`), all on one left edge.
 2. One line with the author's photo, name and role, then one date (the day it was last updated, or the day it was published if it never was) and the reading time. An updated post with an `updated_note` says why it changed on the next line.
 3. The lead picture, wider than the text, in a fine frame.
-4. Share links. On a wide screen they sit in a column beside the post and stay in view as you scroll. On a phone they sit in one row above the post.
+4. Share links. On a wide screen they sit in a column on the far side of the text, behind a fine line, and stay in view as you scroll; the text and the column sit together in the middle of the page, under the title. On a phone they sit in one row above the post.
 5. The post in one reading column. Callouts, steps, tables, quotes, questions and the contents block each have their own quiet look.
 6. Your own lines about the site, when you set them, then the author box.
 7. The newsletter form, your call to action, the posts that link here and up to five related posts, three across on a wide screen.
@@ -96,7 +96,7 @@ Keystone sets a bold type scale on a wide frame: up to 90rem, with the blog's na
 
 | Token | Keystone |
 |---|---|
-| Body text | 1.0625rem on a phone to 1.1875rem on a wide screen |
+| Body text | 1.0625rem on a phone to 1.1875rem on a wide screen; a post's text grows to 1.25rem from 64rem and 1.3125rem from 100rem |
 | Main title (`h1`) | 2.375rem to 4.5rem |
 | Main headings (`h2`) | 1.625rem to 2.125rem |
 | Headings (`h3`) | 1.25rem to 1.375rem |
@@ -105,7 +105,7 @@ Keystone sets a bold type scale on a wide frame: up to 90rem, with the blog's na
 | Heading weight | 600, where your heading font has it; the blog's name on the front page uses 700 |
 | Space between sections | 5.5rem |
 | Corners | 0.75rem |
-| Line length | 35rem, about 65 to 75 characters a line at the wide screen's 19 px text |
+| Line length | 35rem, about 65 to 75 characters a line at the 19 px text; from 64rem the column grows with the larger post text, so a line keeps its length |
 
 Keystone uses your system's own interface font, so it looks native on every device and loads nothing. It brings calm colours: a cobalt accent (`#3355e0`) and deep ink text (`#0d1526`) on a white page, with a faint cool grey (`#f4f6fa`) for panels. Your colours, fonts and logo from your main site, through theme sync, replace them, as in every template.
 
@@ -129,11 +129,11 @@ This is Keystone's design brief. It fixes how the template should look, so every
 | The one idea | **The drawn frame.** Two fine guides run down the page at the frame's edges, as on a drafting sheet, and everything is built inside them: the name, the lead panel, the framed pictures, the index. You can name it from its thumbnail by the huge name over a ruled row of pills and the split lead panel. |
 | Type scale | The blog's name on the front page from 3rem on a phone to 6.5rem on a wide screen, weight 700, tracked tight (-0.05em). A post's title up to 4.5rem, the lead story's title up to 3.5rem, section headings up to 2.25rem over a full-width ink rule. |
 | Frame at 1440 px and wider | At least **80rem**; Keystone runs up to 90rem, so a 2000 px screen is filled. |
-| Front page structure | The masthead, then the lead story as one framed panel split in two (picture flush on one side, label, title, summary and a ruled author line on the other), then the newest posts: two large cards, two rows of three, and from the ninth post on a text-only index in two columns, each entry a hairline, the category, the title, the author and the date. Category lists follow the same order. |
+| Front page structure | The masthead, then the lead story as one framed panel split in two (picture flush on one side, label, title, summary and a ruled author line on the other), then the newest posts: two large cards, two rows of three, and from the ninth post on a text-only index in two columns, each entry a hairline, the category, the title, the author and the date. Category lists follow the same order. The front page lists every post, so it is the path to each one. On a phone: the lead story and two large cards, then four small rows with the picture beside the title and the date, then one ruled index row per post, its title on one line and the date under it, with no photo or label; a row of videos or podcasts starts with one small row. The 40-post demo stays near 6,000 px. |
 | Cards and lists | Framed picture cards: the picture inside a fine border with a small radius, then the category, a title of up to three lines, two or three lines of summary, the author and the date. |
-| Phone header and menu | The logo on the left and the menu as one line you can swipe; the button waits for the band further down. |
+| Phone header and menu | The logo on the left and the menu as one line you can swipe, its last 2rem fading out so it reads as more to swipe; the topic pills do the same. The button waits for the band further down. |
 | Tabs and indexes at 390 px | Topic tabs become one row you can swipe, the current tab underlined. Topic tab panels show their posts as one column of compact rows. |
 | Link, card and focus states | Links in the accent with an underline that appears at full strength on hover. A card's picture frame turns the accent on hover. Focus is a 2 px accent ring with 2 px of space. |
-| Signature details | The keystone wedge: a small accent shape, wider at the top, before each label (the lead story, a post's category, the subscriber line). The two frame guides. The lead story's split panel. Drawn covers in tints of the accent for posts with no picture, so the grid stays even. The share links in a column beside the post that stays in view. |
+| Signature details | The keystone wedge: a small accent shape, wider at the top, before each label (the lead story, a post's category, the subscriber line). The two frame guides. The lead story's split panel. Drawn covers in tints of the accent for posts with no picture, so the grid stays even. The share links in a column on the far side of the text that stays in view. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/keystone/theme/`: indigo (`#4338ca` links, `#4f46e5` accent) on white with a cool panel (`#f6f6fb`), Manrope for headings and Source Sans 3 for text, and an arch mark.

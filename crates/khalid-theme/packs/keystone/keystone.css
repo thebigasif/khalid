@@ -15,6 +15,18 @@
   --keystone-line: 1px solid var(--color-border);
   --keystone-frame: 0 0 0 1px var(--color-border);
   --keystone-wedge: polygon(0 0, 100% 0, 78% 100%, 22% 100%);
+  --keystone-measure: var(--measure);
+  --keystone-read: calc(var(--keystone-measure) + 18rem);
+}
+/* On a wide screen a post reads in larger text, and its column grows by
+   the same ratio, so a line keeps its length in characters. */
+@media (min-width: 64rem) {
+  :root { --keystone-measure: calc(var(--measure) * 1.25 / 1.1875); }
+  .post-body { font-size: 1.25rem; }
+}
+@media (min-width: 100rem) {
+  :root { --keystone-measure: calc(var(--measure) * 1.3125 / 1.1875); }
+  .post-body { font-size: 1.3125rem; }
 }
 body { overflow-x: clip; -webkit-font-smoothing: antialiased; }
 @media (min-width: 48rem) {
@@ -58,9 +70,9 @@ a:hover { text-decoration-color: currentColor; }
 .search-link:hover { color: var(--color-text); }
 @media (max-width: 52rem) {
   .site-header { padding-block-end: 0; }
-  .site-header nav { order: 3; flex-basis: 100%; min-inline-size: 0; margin-inline: -0.875rem; mask-image: linear-gradient(90deg, currentColor 85%, transparent); }
-  [dir="rtl"] .site-header nav { mask-image: linear-gradient(270deg, currentColor 85%, transparent); }
-  .site-header nav ul { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; }
+  .site-header nav { order: 3; flex-basis: 100%; min-inline-size: 0; margin-inline: -0.875rem; mask-image: linear-gradient(90deg, currentColor calc(100% - 2rem), transparent); }
+  [dir="rtl"] .site-header nav { mask-image: linear-gradient(270deg, currentColor calc(100% - 2rem), transparent); }
+  .site-header nav ul { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; padding-inline-end: 2rem; scrollbar-width: none; }
   .site-header nav a { white-space: nowrap; }
 }
 @media (max-width: 30rem) {
@@ -90,7 +102,7 @@ main > .breadcrumbs + h1 { margin-block-start: calc(var(--space) * 2); }
    the reading column's left edge above a post; a long last step is cut
    with an ellipsis rather than wrapping. */
 .breadcrumbs { margin-block: calc(var(--space) * 4) 0; }
-main:has(> :is(.post, .page, .author)) > .breadcrumbs { max-inline-size: var(--measure); margin-inline: auto; }
+main:has(> :is(.post, .page, .author)) > .breadcrumbs { max-inline-size: var(--keystone-measure); margin-inline: auto; }
 .breadcrumbs ol { flex-wrap: nowrap; }
 .breadcrumbs li { flex: none; }
 .breadcrumbs li:last-child { flex: 0 1 auto; min-inline-size: 0; }
@@ -111,7 +123,8 @@ main > .hub-link { margin-block: calc(var(--space) * -3) calc(var(--space) * 6);
 .topic-row a[href$="/archive/"]:hover { color: var(--color-background); }
 @media (max-width: 52rem) {
   .topic-row { margin-inline: calc(-1 * var(--keystone-gutter)); padding-inline: var(--keystone-gutter); }
-  .topic-row ul { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .topic-row ul { flex-wrap: nowrap; overflow-x: auto; padding-inline-end: 2rem; scrollbar-width: none; mask-image: linear-gradient(90deg, currentColor calc(100% - 2rem), transparent); }
+  [dir="rtl"] .topic-row ul { mask-image: linear-gradient(270deg, currentColor calc(100% - 2rem), transparent); }
   .topic-row a { white-space: nowrap; }
 }
 
@@ -183,6 +196,27 @@ main > .hub-link { margin-block: calc(var(--space) * -3) calc(var(--space) * 6);
 }
 :is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+9) .card > :is(.image, p:not(.card-meta)), :is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+9) .card::before { display: none; }
 :is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+9) .card :is(h2, h3, h4) { margin-block-end: calc(var(--space) * 1.5); font-size: var(--text-h4); }
+/* On a phone or a tablet the index starts after six pictures, a video row's
+   after one: per post its title on one line and the date under it. */
+@media (max-width: 59.99rem) {
+  :is(:is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+7), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:nth-child(n+2)):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) { grid-column: 1 / -1; padding-block-start: calc(var(--space) * 1.5); border-block-start: var(--keystone-line); }
+  :is(:is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+8), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:nth-child(n+3)):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) { margin-block-start: calc(var(--space) * -6.5); }
+  :is(:is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+7), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:nth-child(n+2)):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) .card { display: flex; flex-direction: column; align-items: start; }
+  :is(:is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+7), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:nth-child(n+2)):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) :is(.card > .image, .card > p:not(.card-meta), .card-meta > :not(time)), :is(:is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+7), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:nth-child(n+2)) .card::before { display: none; }
+  :is(:is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+7), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:nth-child(n+2)):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) .card :is(h2, h3, h4) { order: -1; max-inline-size: 100%; margin-block: 0 calc(var(--space) * 0.5); overflow: hidden; font-size: 1.0625rem; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+  :is(:is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(n+7), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:nth-child(n+2)):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) .card-meta > time::before { content: none; }
+}
+/* On a phone posts three to six, and a row of videos' first, are small
+   rows: the picture beside the title and the date. */
+@media (max-width: 39.99rem) {
+  :is(main, [aria-labelledby="recent-title"]) > .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+4):nth-child(-n+6) { margin-block-start: calc(var(--space) * -4); }
+  :is(:is(main, [aria-labelledby="recent-title"]) > .cards > li:nth-child(n+3):nth-child(-n+6), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:first-child):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) .card { grid-template-columns: 7rem minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: calc(var(--space) * 2); align-items: start; }
+  :is(:is(main, [aria-labelledby="recent-title"]) > .cards > li:nth-child(n+3):nth-child(-n+6), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:first-child):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) .card > .image, :is(:is(main, [aria-labelledby="recent-title"]) > .cards > li:nth-child(n+3):nth-child(-n+6), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:first-child) .card::before { grid-column: 1; grid-row: 1 / span 2; margin: 0; }
+  :is(:is(main, [aria-labelledby="recent-title"]) > .cards > li:nth-child(n+3):nth-child(-n+6), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:first-child):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) .card > :is(h2, h3, h4) { grid-column: 2; grid-row: 1; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; font-size: 1.0625rem; line-height: 1.35; }
+  :is(:is(main, [aria-labelledby="recent-title"]) > .cards > li:nth-child(n+3):nth-child(-n+6), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:first-child):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) .card-meta > time { grid-column: 2; grid-row: 2; align-self: start; }
+  :is(:is(main, [aria-labelledby="recent-title"]) > .cards > li:nth-child(n+3):nth-child(-n+6), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:first-child):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) :is(.card > p:not(.card-meta), .card-meta > :not(time)) { display: none; }
+  :is(:is(main, [aria-labelledby="recent-title"]) > .cards > li:nth-child(n+3):nth-child(-n+6), :is(.media-row, .home-section:not([aria-labelledby="recent-title"])) > .cards > li:first-child):is(.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li) .card-meta > time::before { content: none; }
+}
 .cards:is(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: minmax(0, 1fr); gap: calc(var(--space) * 3); }
 .cards .card { position: relative; }
 .cards .card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
@@ -229,7 +263,7 @@ main > .hub-link { margin-block: calc(var(--space) * -3) calc(var(--space) * 6);
    the lead picture breaks out to the wide frame unless a side contents
    column needs the room. */
 .page, .author, .post-header, .post > :not(.post-header, .post-columns, .toc-side), .post-columns,
-main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inline-size: var(--measure); margin-inline: auto; }
+main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inline-size: var(--keystone-measure); margin-inline: auto; }
 .post-header { margin-block-end: calc(var(--space) * 7); padding-block-start: calc(var(--space) * 8); }
 .eyebrow { margin-block-end: calc(var(--space) * 2.5); font-size: var(--text-small); font-weight: 600; }
 .eyebrow a { display: inline-flex; align-items: center; color: var(--color-link); text-decoration: none; }
@@ -240,8 +274,8 @@ main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inlin
    on the same left edge, as far as the frame allows, so a long title
    takes two or three lines, not five. */
 @media (min-width: 64rem) {
-  .post:not(.post-with-toc) > .post-header > h1 { inline-size: min(54rem, 50vw + var(--measure) / 2 - var(--keystone-gutter) - 2rem); }
-  .post:not(.post-with-toc) > .post-header > .dek { inline-size: min(46rem, 50vw + var(--measure) / 2 - var(--keystone-gutter) - 2rem); }
+  .post:not(.post-with-toc) > .post-header > h1 { inline-size: min(54rem, 50vw + var(--keystone-measure) / 2 - var(--keystone-gutter) - 2rem); }
+  .post:not(.post-with-toc) > .post-header > .dek { inline-size: min(46rem, 50vw + var(--keystone-measure) / 2 - var(--keystone-gutter) - 2rem); }
 }
 .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--space) * 1) calc(var(--space) * 1.5); margin-block-start: calc(var(--space) * 5); padding-block: calc(var(--space) * 2); border-block: var(--keystone-line); }
 .post-meta p, .post-meta address { margin: 0; }
@@ -263,31 +297,40 @@ main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inlin
 .post-header .image { margin-block: calc(var(--space) * 6) 0; margin-inline: calc(50% - min(50vw - 1rem, var(--keystone-wide) / 2)); }
 .post-header .image img { border-radius: calc(var(--radius) * 1.4); box-shadow: var(--keystone-frame); background: var(--color-surface); }
 
-/* The share rail: one row over the body on a phone, a sticky column
-   beside it when there is room. The body stays centred either way. */
+/* The share rail: one row over the body on a phone, a sticky column on
+   the text's far side when there is room. */
 .share-rail { margin-block: 0 calc(var(--space) * 5); padding-block-end: calc(var(--space) * 2); border-block-end: var(--keystone-line); }
 .share-title { color: var(--color-muted); font-size: var(--text-small); font-weight: 500; }
 .share a { min-block-size: 2.75rem; padding-inline: calc(var(--space) * 1.5); border-color: var(--color-border); border-radius: 999px; color: var(--color-text); font-size: var(--text-small); }
 @media (min-width: 70rem) {
-  .post-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, var(--measure)) minmax(0, 1fr); column-gap: calc(var(--space) * 6); max-inline-size: none; }
+  .post-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, var(--keystone-measure)) minmax(0, 1fr); column-gap: calc(var(--space) * 6); max-inline-size: none; }
   .post-columns > .post-body { grid-column: 2; }
   .share-rail { position: sticky; inset-block-start: calc(var(--space) * 4); grid-column: 1; justify-self: end; align-self: start; flex-direction: column; align-items: start; gap: calc(var(--space) * 0.5); inline-size: 9rem; margin: 0; padding: 0; border: 0; }
   .share-rail ul { flex-direction: column; gap: 0; }
-  .share-rail a { padding-inline: 0; border: 0; color: var(--color-muted); }
+  .share-rail a { padding-inline: 0; background: none; border: 0; color: var(--color-muted); }
   .share-rail a:hover, .share-rail a:focus-visible { color: var(--color-link); }
+  /* With no contents list, the text and its rail sit together in the
+     middle, under the title, and what follows starts on the text's edge. */
+  .post:not(.post-with-toc) > *, main:has(> .post:not(.post-with-toc)) > :is(.breadcrumbs, .comments, .lock) { max-inline-size: var(--keystone-read); margin-inline: auto; }
+  .post:not(.post-with-toc) > :not(.post-header, .post-columns), main:has(> .post:not(.post-with-toc)) > :is(.breadcrumbs, .comments, .lock) { padding-inline-end: calc(var(--keystone-read) - var(--keystone-measure)); }
+  .post:not(.post-with-toc) > .post-header > :is(h1, .dek) { inline-size: auto; }
+  .post:not(.post-with-toc) > .post-header > .dek { max-inline-size: 46rem; }
+  .post:not(.post-with-toc) .post-columns { grid-template-columns: minmax(0, var(--keystone-measure)) minmax(0, 1fr); column-gap: 4rem; }
+  .post:not(.post-with-toc) .post-columns > .post-body { grid-row: 1; grid-column: 1; }
+  .post:not(.post-with-toc) .share-rail { grid-row: 1; grid-column: 2; justify-self: stretch; inline-size: auto; padding-inline-start: calc(var(--space) * 3); border-inline-start: var(--keystone-line); }
   .post-with-toc .post-columns { grid-template-columns: 9rem minmax(0, 1fr); }
   .post-toc-start .post-columns { display: block; }
   /* With the contents list at the end, the page widens by the share rail,
      so the text keeps its full line length; the header and footer keep
      the frame, and everything in the post starts on the text's edge. */
-  main:has(.post-with-toc:not(.post-toc-start)) { max-inline-size: calc(var(--measure) + 30rem); }
+  main:has(.post-with-toc:not(.post-toc-start)) { max-inline-size: calc(var(--keystone-measure) + 30rem); }
   :where(body:has(.post-with-toc)) :is(.site-header, .site-footer) { max-inline-size: var(--keystone-page); }
-  .post-with-toc:not(.post-toc-start) > :not(.toc-side, .post-columns), main:has(.post-with-toc:not(.post-toc-start)) > :is(.breadcrumbs, .mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inline-size: var(--measure); margin-inline: 12rem 0; }
+  .post-with-toc:not(.post-toc-start) > :not(.toc-side, .post-columns), main:has(.post-with-toc:not(.post-toc-start)) > :is(.breadcrumbs, .mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inline-size: var(--keystone-measure); margin-inline: 12rem 0; }
   .post-with-toc:not(.post-toc-start) > .post-columns { max-inline-size: none; margin-inline: 0; }
 }
 
 /* The body: generous space before each heading, little after it. */
-.post-body > p:first-child { font-size: 1.1875rem; line-height: 1.6; }
+.post-body > p:first-child { font-size: 1.125em; line-height: 1.6; }
 .post-body h2 { margin-block: 2.25em 0.6em; font-size: var(--text-h2); letter-spacing: -0.02em; line-height: 1.22; }
 .post-body h3 { margin-block: 2em 0.5em; font-size: var(--text-h3); }
 .post-body :where(ul:not([class]), ol:not([class])) { padding-inline-start: 1.25rem; }
@@ -320,7 +363,7 @@ pre { padding: 1.25rem 1.5rem; background: var(--color-surface); border: var(--k
 
 /* Callouts: a surface box with a drawn icon; each kind differs by its
    icon and edge, not by colour alone. */
-.post-body .callout { position: relative; margin-block: calc(var(--space) * 4); padding-block: 1.25rem; padding-inline: 3.5rem 1.5rem; background: var(--color-surface); border: 0; border-radius: var(--radius); font-size: 1rem; }
+.post-body .callout { position: relative; margin-block: calc(var(--space) * 4); padding-block: 1.25rem; padding-inline: 3.5rem 1.5rem; background: var(--color-surface); border: 0; border-radius: var(--radius); font-size: 0.85em; }
 .post-body .callout::before { content: ""; position: absolute; inset-inline-start: 1.25rem; inset-block-start: 1.55rem; inline-size: 1.125rem; block-size: 1.125rem; background: var(--color-link); mask: var(--icon) no-repeat center / contain; }
 .post-body .callout-tip { background: var(--keystone-tint); }
 .post-body .callout-warning { box-shadow: inset 3px 0 0 var(--color-text); font-weight: 400; }
@@ -334,10 +377,10 @@ pre { padding: 1.25rem 1.5rem; background: var(--color-surface); border: var(--k
 .post-body .callout-summary li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.35em; inline-size: 1rem; block-size: 1rem; background: var(--color-link); mask: var(--check) no-repeat center / contain; }
 .post-body .callout-stat { display: grid; padding: 1.75rem 0; background: none; border-block: var(--keystone-line); border-radius: 0; }
 .callout-stat strong:first-child { color: var(--color-link); font-size: 3rem; font-weight: 600; letter-spacing: -0.04em; line-height: 1; margin-block-end: 0.5rem; }
-.callout { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='8.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3Cpath d='M10 9v5M10 6v.5' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); --check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-.callout-tip { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.5 15.5h5M8.5 18.5h3M10 1.5a6 6 0 0 0-3.5 10.9v1.6h7v-1.6A6 6 0 0 0 10 1.5z' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-.callout-read { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1.5 4h6a2.5 2.5 0 0 1 2.5 2.5V17a2 2 0 0 0-2-2H1.5zM18.5 4h-6A2.5 2.5 0 0 0 10 6.5V17a2 2 0 0 1 2-2h6.5z' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-.callout-warning { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 2L1.5 17.5h17z' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M10 8v4.5M10 14.5v.5' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.callout { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='8.5' fill='none' stroke='currentColor' stroke-width='1.8'/%3E%3Cpath d='M10 9v5M10 6v.5' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); --check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.callout-tip { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.5 15.5h5M8.5 18.5h3M10 1.5a6 6 0 0 0-3.5 10.9v1.6h7v-1.6A6 6 0 0 0 10 1.5z' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.callout-read { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1.5 4h6a2.5 2.5 0 0 1 2.5 2.5V17a2 2 0 0 0-2-2H1.5zM18.5 4h-6A2.5 2.5 0 0 0 10 6.5V17a2 2 0 0 1 2-2h6.5z' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.callout-warning { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 2L1.5 17.5h17z' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M10 8v4.5M10 14.5v.5' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); }
 .callout-read::before { inset-inline-start: 0.25rem; }
 .post-body .callout-read { padding-inline-start: 2.5rem; }
 
