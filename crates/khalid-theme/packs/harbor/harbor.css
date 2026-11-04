@@ -430,7 +430,7 @@ main + .site-footer, .site-footer { margin-block-start: 0; }
    the title, the topic and the date on one line, and on a phone the title
    and the date. */
 .latest .cards > li:nth-child(n+10) { grid-column: 1 / -1; }
-.latest .cards > li:nth-child(n+10) .card { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding: 0.875rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; transform: none; }
+.latest .cards > li:nth-child(n+10) .card { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding: 0.875rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; transform: none; }
 .latest .cards > li:nth-child(10) .card { border-block-start-color: var(--color-text); }
 .latest .cards > li:nth-child(n+10) .card > :is(.image, p:not(.card-meta)), .latest .cards > li:nth-child(n+10) .card-author { display: none; }
 .latest .cards > li:nth-child(n+10) .card-meta { display: contents; }
@@ -444,4 +444,38 @@ main + .site-footer, .site-footer { margin-block-start: 0; }
 @media (max-width: 47.99rem) {
   :is(.site-header nav ul, .topic-tab-list) { mask-image: linear-gradient(to left, transparent, var(--color-text) 3rem); padding-inline-end: 2rem; }
   [dir="rtl"] :is(.site-header nav ul, .topic-tab-list) { mask-image: linear-gradient(to right, transparent, var(--color-text) 3rem); }
+}
+
+/* On a phone the front page stays short: after three cards the newest
+   posts are tight ruled rows of title and date, and the video and podcast
+   rows become one strip you swipe sideways. Every post is still linked. */
+@media (max-width: 47.99rem) {
+  .latest .cards > li:nth-child(n+4) { grid-column: 1 / -1; }
+  .latest .cards > li:nth-child(n+4) .card { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0.125rem 1rem; padding: 0.625rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; }
+  .latest .cards > li:nth-child(n+4) .card > :is(.image, p:not(.card-meta)) { display: none; }
+  .latest .cards > li:nth-child(n+4) .card h3 { order: -1; flex: 1 1 100%; margin: 0; font-size: 1.0625rem; line-height: 1.3; }
+  .latest .cards > li:nth-child(n+4) .card .card-meta { display: contents; }
+  .latest .cards > li:nth-child(n+4) .card :is(.card-author, .card-reading-time, .card-meta > a) { display: none; }
+  .latest .cards > li:nth-child(n+4) .card .card-meta > time { order: 2; margin: 0; font-size: 0.8125rem; }
+  .media-row > .cards { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(80%, 18rem); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-block-end: 0.25rem; }
+  .media-row > .cards > li { scroll-snap-align: start; }
+}
+
+/* On a phone each index row is one line, title then date, and at least
+   44 px tall; a long title ends in an ellipsis. Rows of cards that would
+   stack down the screen become strips you swipe sideways. */
+@media (max-width: 47.99rem) {
+  .latest .cards > li:nth-child(n+4) .card { flex-wrap: nowrap; align-items: center; gap: 1rem; padding: 0; }
+  .latest .cards > li:nth-child(n+4) .card h3 { flex: 1 1 auto; min-inline-size: 0; }
+  .latest .cards > li:nth-child(n+4) .card h3 a { display: block; overflow: hidden; line-height: 2.75rem; white-space: nowrap; text-overflow: ellipsis; }
+  .latest .cards > li:nth-child(n+4) .card .card-meta > time { flex: none; white-space: nowrap; }
+}
+
+/* On a phone the rows never widen the list past the screen (a long title
+   ends in its ellipsis instead), and the gap between cards is not repeated
+   between rows: the first three cards keep their own space below. */
+@media (max-width: 47.99rem) {
+  .latest .cards { row-gap: 0; }
+  .latest .cards > li:nth-child(-n+3) { margin-block-end: 2rem; }
+  .latest .cards > li:nth-child(n+4), .latest .cards > li:nth-child(n+4) .card { min-inline-size: 0; }
 }
