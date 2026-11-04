@@ -62,7 +62,7 @@ Add a file to `content/en/posts/` in your repository, as the welcome post shows,
 
 ## Update Khalid
 
-`build.sh` names the Khalid release it installs, such as `version="v1.3.1"`. A new release never changes your blog until you change that line to the newer release from the [releases page](https://github.com/thebigasif/khalid/releases) and commit.
+`build.sh` names the Khalid release it installs, such as `version="v1.3.2"`. A new release never changes your blog until you change that line to the newer release from the [releases page](https://github.com/thebigasif/khalid/releases) and commit.
 
 ## What is free
 

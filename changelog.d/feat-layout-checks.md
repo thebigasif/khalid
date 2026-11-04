@@ -1,2 +1,0 @@
-Added
-- A layout check, `just layout-check`, opens the showcase in every template in Chromium, Firefox and WebKit at 390, 768 and 1440 px. It fails when text covers other text or a picture, a list marker covers text, a page scrolls sideways, a table column is narrower than its longest word, or a picture does not load, and it names the template, page, browser, width and the two elements. The floating contents button and the side contents column are checked against what passes under them as the page scrolls.

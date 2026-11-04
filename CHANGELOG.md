@@ -4,6 +4,76 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.3.2
+
+Fixes found by running a live blog on Khalid 1.3.1 and testing it in Chrome, Firefox and Safari: layout faults in every template, videos that would not play in Safari, feeds for each category, settings that apply without a restart, fairer writing checks, and a layout check in three browsers so these faults are caught before a release. What changed, in plain words: `docs/releases/1.3.2.md`.
+
+### Added
+
+#### Feeds
+
+- Each category and each channel now has its own RSS, Atom and JSON feed in its folder, such as `/blog/category/technical-seo/feed.xml`, in every language it has posts in. The home page, each category page and each channel page link their feeds in the page head, so feed readers find them from the page address. A category with no posts in a language gets no feed there.
+
+#### Templates
+
+- Keystone shows the trail of links from the front page above each post, page, list and author page. Turn it off with `breadcrumbs = false` under `[template.options]`.
+- Keystone shows why a post was updated, from its `updated_note`, under its date. Turn it off with `updated_note = false`.
+- Keystone takes `related_count`, from 3 to 10, and shows five related posts by default instead of three.
+
+#### Deploying
+
+- `khalid init --stack` prints the Sitemap line the main site's own robots.txt needs when the blog lives under a folder, and the deploy guide says where it goes.
+
+#### Checks
+
+- A layout check, `just layout-check`, opens the showcase in every template in Chromium, Firefox and WebKit at 390, 768 and 1440 px. It fails when text covers other text or a picture, a list marker covers text, a page scrolls sideways, a table column is narrower than its longest word, or a picture does not load, and it names the template, page, browser, width and the two elements. CI runs it in the Demo check.
+
+### Fixed
+
+#### Templates
+
+- The lead picture and wide tables keep to the text column while the side contents list shows, in every template, so the list never runs over them as you scroll.
+- The tick and cross in a pros and cons block no longer cover the first letters of each line, in every template.
+- A folded table sizes its columns to its words, so no word breaks in the middle on a phone. A wide one scrolls sideways inside its own box, and "Show the rest" looks like a button.
+- The Contents button no longer floats over text, tables and buttons on phones and tablets. It takes the folded contents list's place at the start of the post.
+- The comment form's fields and send button look like the template's other forms, with borders in Safari too.
+- Every profile link in the author box and on the author page shows its icon and its name, so a bare globe never reads as part of the next link.
+- On a Keystone author page the role sits under the name with space between them, instead of touching it.
+- A post that pins five related posts shows all five in Keystone, not the first three.
+- The cards in the home page's topic tabs show each post's own lead image, a PNG or an SVG, like every other card, in every template. The video and podcast rows on the home page get their pictures and author photos too.
+- Post cards in the topic tabs keep the author and the date side by side in Compass, instead of pushing the date over the next card. Harbor's cards keep the date on its own side of the author.
+- Meridian's byline stacks the author, the dates and the category when the side contents list leaves it little room, instead of printing them over each other.
+- The topic tabs on the home page scroll inside their own row, so the page no longer scrolls sideways on a phone or a tablet.
+
+#### List pages and search
+
+- A tag page says "Tag" above its name and shows the name in title case, so `internal links` reads "Internal Links"; a tag written with a capital keeps the writer's spelling.
+- The HTML sitemap lists categories and tags under their own headings, so a category and a tag with the same name are told apart.
+- Each card on a series page says "Part 1", "Part 2" and on, in series order.
+- A glossary term's page links back to the glossary and lists its related terms and the posts that use it, up to ten, newest first.
+- Search results put a dot between blocks, so a bookmark card's title, description and site never run into one sentence, and the search input and button stay on one line at every width. Older search indexes show this after the next re-index.
+
+#### Media
+
+- Videos, sound files, CSV tables and ZIP archives beside a post now go out with their own media type, such as `video/mp4`, instead of as unknown bytes, so browsers play and open them.
+- Videos and other files that are not text answer Range requests with only the part asked for, which Safari needs before it plays a video. Media library files do the same.
+- The video embed frame no longer carries `allow-presentation`, which Safari refused with a console error; full screen still works through the frame's allow list.
+
+#### Writing
+
+- A wikilink with a label, `[[slug|words]]`, now works inside a Markdown table cell, on the page, in the editor preview, in the linter's link checks and under "Posts that link here". `[[slug\|words]]`, the way GitHub writes it, gives the same link. A `|` outside `[[ ]]` still splits the cell.
+- The `answer-capsule` check counts only the first paragraph under a question heading, as its message always said, so a correct 40 to 60 word answer followed by detail no longer warns.
+- The `sourced-statistics` check warns only on statistics: a percentage, a sum of money, a figure in millions or billions, a multiple such as 3x, or a number near "study", "survey", "report", "found" or "according to". Step names, counts of words or minutes, version numbers, dates, headings and code no longer warn.
+
+#### Serving
+
+- `khalid serve` now applies a saved `site.toml`, `routes.toml` or theme file (`tokens.toml`, `site.css`, fonts, templates) without a restart. A file with a mistake keeps the last good pages and settings, and the log says which file and line to fix, in one line. `mount` and `mode` keep their start value, and the log says when a changed setting needs a restart. `docs/deploy.md` lists those settings.
+
+#### Docs
+
+- The Cloudflare deploy guides say to turn off Email Address Obfuscation, which Khalid's security policy blocks, so email addresses and the share-by-email link work.
+- The demo's feature tour no longer sends you to Google's Rich Results Test for FAQ, how-to, fact check, course and podcast episode data, which Google stopped showing. It names the Schema Markup Validator for those, and says the automatic table of contents needs the `contents` option.
+
 ## 1.3.1
 
 Two fixes: the classic template's footer lines up with the page again, and a blog's own fonts now load, as small files. What changed, in plain words: `docs/releases/1.3.1.md`.
