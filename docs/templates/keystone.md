@@ -27,7 +27,7 @@ Lists such as a category or the archive show the lead story and the same picture
 1. The trail of links from the front page to the post, then the category, the title and the summary (the post's `dek`), all on one left edge.
 2. One line with the author's photo, name and role, then one date (the day it was last updated, or the day it was published if it never was) and the reading time. An updated post with an `updated_note` says why it changed on the next line.
 3. The lead picture, wider than the text, in a fine frame.
-4. Share links. On a wide screen they sit in a column on the far side of the text, behind a fine line, and stay in view as you scroll; the text and the column sit together in the middle of the page, under the title. On a phone they sit in one row above the post.
+4. The contents and the share links. On a wide screen (from 70rem) they sit in a column on the far side of the text, behind a fine line, and stay in view as you scroll: first "On this page", the post's main sections numbered 01, 02, 03 with the one you are reading in the accent, then the share links. The text and the column sit together in the middle of the page, under the title, and a contents block in the post's own text hides, as the column shows the same list. On a phone the share links sit in one row above the post, and the contents block in the text, or else a folded contents box, comes first.
 5. The post in one reading column. Callouts, steps, tables, quotes, questions and the contents block each have their own quiet look.
 6. Your own lines about the site, when you set them, then the author box.
 7. The newsletter form, your call to action, the posts that link here and up to five related posts, three across on a wide screen.
@@ -55,7 +55,7 @@ Set these under `[template.options]` in `site.toml`. An option you leave out tak
 | `cards` | `image` | `image`, `text`, `row`, `compact`, `ranked` | The shape of the post cards in lists. |
 | `pagination` | `numbered` | `pages`, `numbered` | The links under a long list: newer and older, or a link to each page. |
 | `related_count` | `5` | 3 to 10 | How many related posts show after a post. Five is the most a post can pin with `related`. |
-| `contents` | `none` | `none`, `inline`, `inline-folded`, `side-end`, `side-start` | Where a long post's contents list goes. A post can also carry its own contents block. |
+| `contents` | `side-end` | `none`, `inline`, `inline-folded`, `side-end`, `side-start` | Where a long post's contents list goes. `side-end` puts it at the top of the column beside the text on a wide screen, over the share links. A post can also carry its own contents block, which then shows only on a phone. Before November 2026 the default was `none`. |
 | `reading_progress` | `bar` | `bar`, `none` | A thin line at the top of a post that fills as the reader scrolls. |
 | `header_search` | `button` | `button`, `link`, `none` | What the header's search does on a served blog: open a search dialog, open the search page, or nothing. |
 | `share` | `top` | `none`, `top`, `end`, `both` | Where a post shows its share links. `top` is the column beside the post. |
@@ -134,6 +134,6 @@ This is Keystone's design brief. It fixes how the template should look, so every
 | Phone header and menu | The logo on the left and the menu as one line you can swipe, its last 2rem fading out so it reads as more to swipe; the topic pills do the same. The button waits for the band further down. |
 | Tabs and indexes at 390 px | Topic tabs become one row you can swipe, the current tab underlined. Topic tab panels show their posts as one column of compact rows. |
 | Link, card and focus states | Links in the accent with an underline that appears at full strength on hover. A card's picture frame turns the accent on hover. Focus is a 2 px accent ring with 2 px of space. |
-| Signature details | The keystone wedge: a small accent shape, wider at the top, before each label (the lead story, a post's category, the subscriber line). The two frame guides. The lead story's split panel. Drawn covers in tints of the accent for posts with no picture, so the grid stays even. The share links in a column on the far side of the text that stays in view. |
+| Signature details | The keystone wedge: a small accent shape, wider at the top, before each label (the lead story, a post's category, the subscriber line). The two frame guides. The lead story's split panel. Drawn covers in tints of the accent for posts with no picture, so the grid stays even. The post's contents and share links in a column on the far side of the text that stays in view. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/keystone/theme/`: indigo (`#4338ca` links, `#4f46e5` accent) on white with a cool panel (`#f6f6fb`), Manrope for headings and Source Sans 3 for text, and an arch mark.

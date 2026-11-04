@@ -35,7 +35,7 @@ pub(crate) static KEYSTONE: Pack = Pack {
         parts::cards(CardShape::Image),
         parts::pagination(PageLinks::Numbered),
         parts::related_count(5),
-        parts::contents(ContentsPlacement::None),
+        parts::contents(ContentsPlacement::SideEnd),
         parts::READING_PROGRESS,
         parts::HEADER_SEARCH,
         slot::share("top"),

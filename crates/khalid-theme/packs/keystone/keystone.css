@@ -297,15 +297,19 @@ main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inlin
 .post-header .image { margin-block: calc(var(--space) * 6) 0; margin-inline: calc(50% - min(50vw - 1rem, var(--keystone-wide) / 2)); }
 .post-header .image img { border-radius: calc(var(--radius) * 1.4); box-shadow: var(--keystone-frame); background: var(--color-surface); }
 
-/* The share rail: one row over the body on a phone, a sticky column on
-   the text's far side when there is room. */
+/* The rail: the share links in one row over the body on a phone; on a
+   wide screen a sticky column on the text's far side, with the post's
+   contents over the share links. A contents block in the body then
+   hides, and on a phone the folded contents box gives way to it. */
+.post:has(.post-body > .toc) :is(.toc-inline, .toc-button) { display: none; }
 .share-rail { margin-block: 0 calc(var(--space) * 5); padding-block-end: calc(var(--space) * 2); border-block-end: var(--keystone-line); }
 .share-title { color: var(--color-muted); font-size: var(--text-small); font-weight: 500; }
 .share a { min-block-size: 2.75rem; padding-inline: calc(var(--space) * 1.5); border-color: var(--color-border); border-radius: 999px; color: var(--color-text); font-size: var(--text-small); }
 @media (min-width: 70rem) {
   .post-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, var(--keystone-measure)) minmax(0, 1fr); column-gap: calc(var(--space) * 6); max-inline-size: none; }
   .post-columns > .post-body { grid-column: 2; }
-  .share-rail { position: sticky; inset-block-start: calc(var(--space) * 4); grid-column: 1; justify-self: end; align-self: start; flex-direction: column; align-items: start; gap: calc(var(--space) * 0.5); inline-size: 9rem; margin: 0; padding: 0; border: 0; }
+  .post-rail { position: sticky; inset-block-start: calc(var(--space) * 4); grid-column: 1; justify-self: end; align-self: start; inline-size: 9rem; }
+  .share-rail { flex-direction: column; align-items: start; gap: calc(var(--space) * 0.5); margin: 0; padding: 0; border: 0; }
   .share-rail ul { flex-direction: column; gap: 0; }
   .share-rail a { padding-inline: 0; background: none; border: 0; color: var(--color-muted); }
   .share-rail a:hover, .share-rail a:focus-visible { color: var(--color-link); }
@@ -317,16 +321,18 @@ main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inlin
   .post:not(.post-with-toc) > .post-header > .dek { max-inline-size: 46rem; }
   .post:not(.post-with-toc) .post-columns { grid-template-columns: minmax(0, var(--keystone-measure)) minmax(0, 1fr); column-gap: 4rem; }
   .post:not(.post-with-toc) .post-columns > .post-body { grid-row: 1; grid-column: 1; }
-  .post:not(.post-with-toc) .share-rail { grid-row: 1; grid-column: 2; justify-self: stretch; inline-size: auto; padding-inline-start: calc(var(--space) * 3); border-inline-start: var(--keystone-line); }
-  .post-with-toc .post-columns { grid-template-columns: 9rem minmax(0, 1fr); }
+  .post:not(.post-with-toc) .post-rail { grid-row: 1; grid-column: 2; justify-self: stretch; inline-size: auto; max-block-size: calc(100vh - var(--space) * 8); overflow-y: auto; padding-inline-start: calc(var(--space) * 3); border-inline-start: var(--keystone-line); }
+  .post-rail .toc-side { display: block; margin-block-end: calc(var(--space) * 3); padding-block-end: calc(var(--space) * 2); border-block-end: var(--keystone-line); }
+  .post-rail .toc-title { margin-block-end: calc(var(--space) * 0.5); color: var(--color-muted); font-size: var(--text-small); font-weight: 500; }
+  .post-rail .toc-side ol { counter-reset: toc; padding: 0; list-style: none; }
+  .post-rail .toc-side ol ol { display: none; }
+  .post-rail .toc-side li { counter-increment: toc; margin: 0; }
+  .post-rail .toc-side a { display: flex; align-items: baseline; gap: calc(var(--space) * 1.25); min-block-size: 2.75rem; padding-block: 0.625rem; color: var(--color-muted); font-size: var(--text-small); line-height: 1.35; text-decoration: none; }
+  .post-rail .toc-side > ol:not(.toc-plain, .toc-nested) a::before { content: counter(toc, decimal-leading-zero) / ""; flex: none; font-family: var(--font-mono); font-size: 0.75rem; }
+  .post-rail .toc-side a:hover, .post-rail .toc-side a[aria-current] { color: var(--color-link); }
+  .post-rail-contents .post-body > .toc, body:has(.post-rail .toc-side) .toc-button { display: none; }
   .post-toc-start .post-columns { display: block; }
-  /* With the contents list at the end, the page widens by the share rail,
-     so the text keeps its full line length; the header and footer keep
-     the frame, and everything in the post starts on the text's edge. */
-  main:has(.post-with-toc:not(.post-toc-start)) { max-inline-size: calc(var(--keystone-measure) + 30rem); }
   :where(body:has(.post-with-toc)) :is(.site-header, .site-footer) { max-inline-size: var(--keystone-page); }
-  .post-with-toc:not(.post-toc-start) > :not(.toc-side, .post-columns), main:has(.post-with-toc:not(.post-toc-start)) > :is(.breadcrumbs, .mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inline-size: var(--keystone-measure); margin-inline: 12rem 0; }
-  .post-with-toc:not(.post-toc-start) > .post-columns { max-inline-size: none; margin-inline: 0; }
 }
 
 /* The body: generous space before each heading, little after it. */
