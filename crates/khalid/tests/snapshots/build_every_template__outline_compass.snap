@@ -4,6 +4,8 @@ expression: pages
 ---
 # index.html
 h1: Field Notes on SEO
+nav.route "Topics"
+  h2: Topics
 section.home-section
   h2: Recently published
   article.card

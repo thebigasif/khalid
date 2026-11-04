@@ -170,6 +170,56 @@ fn when_no_shade_can_pass_it_gets_the_closest_and_says_what_to_change() {
     );
 }
 
+/// One pack's colours: its own `[colors]` over the renderer's defaults,
+/// as a site with no theme of its own draws them.
+#[cfg(test)]
+fn pack_colors(tokens: &str) -> khalid_theme::Colors {
+    let mut colors = ThemeTokens::default().colors;
+    let table: toml::Table = toml::from_str(tokens).unwrap();
+    let Some(own) = table.get("colors").and_then(toml::Value::as_table) else {
+        return colors;
+    };
+    let read = |key: &str, fallback: Rgb| {
+        own.get(key)
+            .and_then(toml::Value::as_str)
+            .map_or(fallback, hex)
+    };
+    colors.background = read("background", colors.background);
+    colors.surface = read("surface", colors.surface);
+    colors.text = read("text", colors.text);
+    colors.muted = read("muted", colors.muted);
+    colors.link = read("link", colors.link);
+    colors.accent = read("accent", colors.accent);
+    colors
+}
+
+#[test]
+fn every_pack_palette_meets_aa_on_its_background_and_surface() {
+    for pack in khalid_theme::packs() {
+        let colors = pack_colors(pack.tokens);
+        let checked = [
+            (ColorToken::Text, colors.text),
+            (ColorToken::Muted, colors.muted),
+            (ColorToken::Link, colors.link),
+            (ColorToken::Accent, colors.accent),
+        ];
+        for (token, color) in checked {
+            for ground in [colors.background, colors.surface] {
+                let ratio = color.contrast(ground);
+                assert!(
+                    ratio >= token.target(),
+                    "{}: {} {} on {} is {ratio:.2}, below {}",
+                    pack.name,
+                    token.name(),
+                    color.to_hex(),
+                    ground.to_hex(),
+                    token.target()
+                );
+            }
+        }
+    }
+}
+
 #[tokio::test]
 async fn every_failing_pair_in_the_fixture_sites_passes_after_the_pass() {
     for (site, stylesheet) in SITES {

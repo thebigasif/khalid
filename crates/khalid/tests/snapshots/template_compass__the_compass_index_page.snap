@@ -4,7 +4,17 @@ expression: "main_of(&page(&out, \"index.html\"))"
 ---
  id="main" tabindex="-1">
 
+<div class="masthead">
 <h1>Field Notes on SEO</h1>
+<nav class="route" aria-label="Topics">
+<h2>Topics</h2>
+<ol>
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ol>
+</nav>
+</div>
 <section class="home-section" id="latest" aria-labelledby="latest-title">
 <h2 id="latest-title">Recently published</h2>
 <ul class="cards" role="list">
