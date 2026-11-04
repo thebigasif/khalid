@@ -51,11 +51,24 @@ demo-check:
     ./scripts/demo-check.sh
 
 # The showcase in every template pack, in Chromium, Firefox and WebKit at
-# 390, 768 and 1440 px: text over text or a picture, markers over text,
-# sideways scroll, crushed table columns and broken pictures. Pass options
-# on, such as `just layout-check --browsers chromium,firefox`.
+# 390, 768, 1440 and 2000 px: text over text or a picture, markers over
+# text, sideways scroll, crushed table columns, broken pictures, a frame
+# narrower than the template's brief, post text too small or lines too
+# short or long, and stylesheets of 20 KB or more. Pass options on, such
+# as `just layout-check --browsers chromium,firefox`.
 layout-check *options:
     ./scripts/layout-check.sh {{options}}
+
+# Proves the layout check's frame, reading and stylesheet checks on small
+# sites with a planted fault each, in Chromium.
+layout-selftest:
+    node scripts/demo-check/layout-selftest.mjs
+
+# Full-page pictures of each template's demo at 2000, 1440 and 390 px, as
+# one sheet per template, for the founder to approve. Pass --out, outside
+# the repository, such as `just demo-pictures --out ~/shots --packs wire`.
+demo-pictures *options:
+    ./scripts/demo-pictures.sh {{options}}
 
 # Line coverage against the floor.
 coverage:

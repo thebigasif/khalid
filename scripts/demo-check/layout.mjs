@@ -10,7 +10,15 @@
 //   - broken-picture: a picture that did not load;
 //   - crushed-cell: a table column narrower than its longest word, which
 //     breaks the word mid-way;
-//   - squashed-avatar: a person's photo not drawn square, within 1 px.
+//   - squashed-avatar: a person's photo not drawn square, within 1 px;
+//   - frame-fill: at 1440 px and wider, the site header, or <main> on the
+//     home page or a list of posts, is narrower than the minimum frame the
+//     template's design brief sets, read from --frames;
+//   - reading-size, reading-column: at 1440 px and wider, a post's body
+//     text is under 18 px, or a full line of it holds fewer than 60 or
+//     more than 75 characters;
+//   - stylesheet-size: a stylesheet the home page links is 20 KB or more
+//     with Brotli, checked once per pack.
 //
 // The page is scrolled down a window at a time first, so lazy pictures
 // load. At each stop the parts that move with the window, fixed like the
@@ -22,15 +30,20 @@
 // failure to report.json beside the sites folder.
 //
 // Usage: node layout.mjs --sites <folder> [--browsers chromium,firefox,webkit]
-//          [--widths 390,768,1440] [--packs keystone,wire] [--shots <folder>]
-//          [--tabs 4]
+//          [--widths 390,768,1440,2000] [--packs keystone,wire] [--shots <folder>]
+//          [--tabs 4] [--frames frames.json]
 // Each folder in --sites holds a site.toml and the site built into public/.
 // A folder whose name ends in -side-contents is a pack built with its
 // contents in a side column, and only its posts are checked.
-import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+// --frames names a JSON file whose "frames" maps each pack to its minimum
+// frame in px; by default frames.json beside this script.
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { extname, join } from "node:path";
-import { measure, walkDownScript } from "./layout-measure.mjs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { brotliCompressSync, constants } from "node:zlib";
+import { frame, measure, reading, walkDownScript } from "./layout-measure.mjs";
+import { answerFrom, builtSites } from "./site-files.mjs";
 
 // The pages each pack is checked on, by what they show.
 const PAGES = [
@@ -46,10 +59,18 @@ const PAGES = [
   ["glossary", "glossary/answer-capsule/"],
 ];
 const POSTS = new Set(["post", "folded table"]);
+// The home page and lists of posts, dense by design, whose <main> fills the
+// frame. Posts are held to the reading check instead, and the author,
+// search and glossary pages are a single column of text.
+const LISTS = new Set(["home", "category", "tag"]);
 const SIDE = "-side-contents";
 const walkDown = walkDownScript();
 const STEP_LIMIT = 90_000;
-const TYPES = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript", ".mjs": "text/javascript", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".avif": "image/avif", ".gif": "image/gif", ".woff2": "font/woff2", ".json": "application/json", ".xml": "application/xml", ".txt": "text/plain", ".ico": "image/x-icon", ".mp4": "video/mp4", ".webm": "video/webm", ".vtt": "text/vtt" };
+// The frame and reading checks start at this width, and the bounds they
+// hold a post's reading text to (FRONTEND.md, R4 of the design plan).
+const WIDE = 1440;
+const READING = { size: 18, fewest: 60, most: 75 };
+const CSS_BUDGET = 20 * 1024;
 
 const options = {};
 for (let i = 2; i < process.argv.length; i += 1) {
@@ -59,7 +80,7 @@ for (let i = 2; i < process.argv.length; i += 1) {
 }
 const list = (value, fallback) => (value || fallback).split(",").map((s) => s.trim()).filter(Boolean);
 const browsers = list(options.browsers, "chromium,firefox,webkit");
-const widths = list(options.widths, "390,768,1440").map(Number);
+const widths = list(options.widths, "390,768,1440,2000").map(Number);
 const packs = options.packs ? new Set(list(options.packs)) : null;
 const tabs = Number(options.tabs) || 4;
 const shots = options.shots;
@@ -70,31 +91,66 @@ if (!options.sites || !existsSync(options.sites)) {
 // Playwright comes from scripts/demo-check/node_modules, or from NODE_PATH.
 const playwright = createRequire(import.meta.url)("playwright");
 
+const framesFile = options.frames || join(dirname(fileURLToPath(import.meta.url)), "frames.json");
+const framesData = JSON.parse(readFileSync(framesFile, "utf8"));
+const frames = framesData.frames ?? {};
+// Templates whose reading check waits for their redesign (frames.json).
+const readingPending = new Set(framesData.reading_pending ?? []);
+
 // Every site to check: its pack, address, mount, files and pages.
-const sites = readdirSync(options.sites)
-  .filter((name) => existsSync(join(options.sites, name, "public")))
-  .sort()
-  .map((name) => {
-    const toml = readFileSync(join(options.sites, name, "site.toml"), "utf8");
-    const field = (key) => toml.match(new RegExp(`^${key} = "(.*)"`, "m"))?.[1] ?? "";
-    const pack = name.endsWith(SIDE) ? name.slice(0, -SIDE.length) : name;
-    const pages = PAGES.filter(([what]) => !name.endsWith(SIDE) || POSTS.has(what));
-    return { name, pack, origin: new URL(field("address")).origin, mount: field("mount") || "/", files: join(options.sites, name, "public"), pages };
+const sites = builtSites(options.sites)
+  .map((site) => {
+    const side = site.name.endsWith(SIDE);
+    const pages = PAGES.filter(([what]) => !side || POSTS.has(what));
+    return { ...site, pack: side ? site.name.slice(0, -SIDE.length) : site.name, side, pages };
   })
   .filter((site) => !packs || packs.has(site.pack));
-const byOrigin = new Map(sites.map((site) => [site.origin, site]));
+const answer = answerFrom(sites);
 
-// Answers a request for a site's own file from its folder. Nothing leaves
-// the computer: a request to any other address is refused.
-const answer = async (route) => {
-  const url = new URL(route.request().url());
-  const site = byOrigin.get(url.origin);
-  if (!site) return route.abort("blockedbyclient");
-  const path = decodeURIComponent(url.pathname);
-  let file = path.startsWith(site.mount) ? join(site.files, path.slice(site.mount.length)) : "";
-  if (file && existsSync(file) && statSync(file).isDirectory()) file = join(file, "index.html");
-  if (!file || !existsSync(file)) return route.fulfill({ status: 404, contentType: TYPES[".html"], body: "Not found" });
-  return route.fulfill({ status: 200, contentType: TYPES[extname(file)] ?? "application/octet-stream", body: readFileSync(file) });
+// The checks of a wide window: the frame the page fills against the
+// minimum in --frames, and on a post its reading text.
+const wideChecks = async (tab, site, what) => {
+  const problems = [];
+  const least = frames[site.pack];
+  const sizes = await tab.evaluate(frame);
+  const parts = LISTS.has(what) ? ["header", "main"] : ["header"];
+  if (typeof least !== "number") {
+    problems.push({ check: "frame-fill", a: site.pack, b: "", detail: `${framesFile} sets no minimum frame for this pack; add the one its design brief sets` });
+  }
+  for (const part of typeof least === "number" ? parts : []) {
+    if (sizes[part] < least) {
+      problems.push({ check: "frame-fill", a: part === "header" ? "<header.site-header>" : "<main>", b: "", detail: `what it draws is ${sizes[part]} px wide, and the template's brief sets a frame of at least ${least} px` });
+    }
+  }
+  if (!POSTS.has(what) || readingPending.has(site.pack)) return problems;
+  const text = await tab.evaluate(reading);
+  if (!text) {
+    problems.push({ check: "reading-size", a: "<main>", b: "", detail: "the post has no .post-body with paragraphs to measure" });
+  } else {
+    if (text.size < READING.size) problems.push({ check: "reading-size", a: "<div.post-body>", b: "", detail: `its paragraphs are ${text.size} px, and post text needs at least ${READING.size} px on a wide screen` });
+    if (text.chars < READING.fewest || text.chars > READING.most) {
+      problems.push({ check: "reading-column", a: "<div.post-body>", b: "", detail: `a full line holds about ${text.chars} characters in a ${text.column} px column, and a comfortable line holds ${READING.fewest} to ${READING.most}` });
+    }
+  }
+  return problems;
+};
+
+// Each stylesheet a pack's home page links, compressed with Brotli at its
+// best quality, as Khalid serves it, against the 20 KB budget.
+const stylesheetChecks = (site) => {
+  const home = readFileSync(join(site.files, "index.html"), "utf8");
+  const found = [];
+  for (const [, href] of home.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)) {
+    const path = new URL(href, `${site.origin}${site.mount}`).pathname;
+    const file = join(site.files, decodeURIComponent(path.slice(site.mount.length)));
+    if (!path.startsWith(site.mount) || !existsSync(file)) {
+      found.push({ check: "stylesheet-size", a: href, b: "", detail: "the home page links it, and the build has no such file" });
+      continue;
+    }
+    const size = brotliCompressSync(readFileSync(file), { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } }).length;
+    if (size >= CSS_BUDGET) found.push({ check: "stylesheet-size", a: href, b: "", detail: `${(size / 1024).toFixed(1)} KB with Brotli, and a stylesheet must stay under 20 KB` });
+  }
+  return found.map((p) => ({ pack: site.name, page: "home", browser: "", width: 0, ...p }));
 };
 
 // `work` finished, or a failure naming `what` once STEP_LIMIT has passed.
@@ -124,6 +180,7 @@ const checkPage = async (tab, job) => {
   const found = await tab.evaluate(walkDown);
   await tab.evaluate(() => Promise.race([Promise.all([...document.images].map((img) => img.decode().catch(() => {}))), new Promise((done) => setTimeout(done, 3000))]));
   found.push(...(await tab.evaluate(measure, "page")));
+  if (width >= WIDE) found.push(...(await wideChecks(tab, site, what)));
   const problems = [];
   const seen = new Map();
   for (const p of found) {
@@ -188,6 +245,7 @@ const run = async (browser, type, width) => {
 
 const total = sites.reduce((n, site) => n + site.pages.length, 0) * widths.length * browsers.length;
 console.log(`Layout check: ${sites.length} sites, ${total} page views in ${browsers.join(", ")} at ${widths.join(", ")} px.`);
+for (const site of sites.filter((s) => !s.side)) failures.push(...stylesheetChecks(site));
 await Promise.all(
   browsers.map(async (type) => {
     const browser = await playwright[type].launch();
@@ -208,7 +266,8 @@ failures.sort((x, y) => {
 });
 writeFileSync(join(options.sites, "..", "report.json"), `${JSON.stringify(failures, null, 1)}\n`);
 for (const f of failures) {
-  console.log(`${f.pack}, ${f.page}, ${f.browser}, ${f.width} px: ${f.check}: ${f.a}${f.b ? ` and ${f.b}` : ""} (${f.detail})`);
+  const where = [f.pack, f.page, f.browser, f.width && `${f.width} px`].filter(Boolean).join(", ");
+  console.log(`${where}: ${f.check}: ${f.a}${f.b ? ` and ${f.b}` : ""} (${f.detail})`);
 }
 if (failures.length > 0) {
   const checks = [...new Set(failures.map((f) => f.check))].map((c) => `${failures.filter((f) => f.check === c).length} ${c}`);
