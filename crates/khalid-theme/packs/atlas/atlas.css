@@ -348,7 +348,7 @@ main:has(> .post) .cta-band { margin-block: 3rem; }
    and the date. */
 @media (min-width: 48rem) {
   .feed li:nth-child(n+10) { grid-column: 1 / -1; }
-  .feed li:nth-child(n+10) .story { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding: 0.75rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; }
+  .feed li:nth-child(n+10) .story { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding: 0.75rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; }
   .feed li:nth-child(n+10) .story > :is(.image, .story-excerpt) { display: none; }
   .feed li:nth-child(n+10) .story h3 { order: -1; flex: 1 1 22rem; margin: 0; font-size: 1.125rem; line-height: 1.35; }
   .feed li:nth-child(n+10) .story .story-label { order: 1; margin: 0; font-size: 0.875rem; }
@@ -357,11 +357,57 @@ main:has(> .post) .cta-band { margin-block: 3rem; }
 }
 @media (max-width: 47.99rem) {
   .feed li:nth-child(n+7) { grid-column: 1 / -1; }
-  .feed li:nth-child(n+7) .story { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding: 0.75rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; }
+  .feed li:nth-child(n+7) .story { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding: 0.75rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; }
   .feed li:nth-child(n+7) .story > :is(.image, .story-excerpt) { display: none; }
   .feed li:nth-child(n+7) .story h3 { order: -1; flex: 1 1 22rem; margin: 0; font-size: 1.125rem; line-height: 1.35; }
   .feed li:nth-child(n+7) .story .story-label { order: 1; margin: 0; font-size: 0.875rem; }
   .feed li:nth-child(n+7) .story .story-meta { order: 2; margin: 0; font-size: 0.875rem; white-space: nowrap; }
   .feed li:nth-child(n+7) .story .story-meta > :not(time) { display: none; }
   .feed li:nth-child(n+7) .story .story-label { display: none; }
+}
+
+/* On a phone the front page stays short: after three cards the newest
+   posts are tight ruled rows of title and date, and the video and podcast
+   rows become one strip you swipe sideways. Every post is still linked. */
+@media (max-width: 47.99rem) {
+  .feed li:nth-child(n+4) { grid-column: 1 / -1; }
+  .feed li:nth-child(n+4) .story { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0.125rem 1rem; padding: 0.625rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; }
+  .feed li:nth-child(n+4) .story > :is(.image, .story-excerpt) { display: none; }
+  .feed li:nth-child(n+4) .story h3 { order: -1; flex: 1 1 100%; margin: 0; font-size: 1.0625rem; line-height: 1.3; }
+  .feed li:nth-child(n+4) .story .story-label { display: none; }
+  .feed li:nth-child(n+4) .story .story-meta { order: 2; margin: 0; font-size: 0.8125rem; }
+  .feed li:nth-child(n+4) .story .story-meta > :not(time) { display: none; }
+  .media-row > .cards { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(80%, 18rem); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-block-end: 0.25rem; }
+  .media-row > .cards > li { scroll-snap-align: start; }
+}
+
+/* On a phone each index row is one line, title then date, and at least
+   44 px tall; a long title ends in an ellipsis. Rows of cards that would
+   stack down the screen become strips you swipe sideways. */
+@media (max-width: 47.99rem) {
+  .feed li:nth-child(n+4) .story { flex-wrap: nowrap; align-items: center; gap: 1rem; padding: 0; }
+  .feed li:nth-child(n+4) .story h3 { flex: 1 1 auto; min-inline-size: 0; }
+  .feed li:nth-child(n+4) .story h3 a { display: block; overflow: hidden; line-height: 2.75rem; white-space: nowrap; text-overflow: ellipsis; }
+  .feed li:nth-child(n+4) .story .story-meta { flex: none; white-space: nowrap; }
+  .picks .story-grid { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(80%, 18rem); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-block-end: 0.25rem; }
+  .picks .story-grid > li { scroll-snap-align: start; }
+  .topic-panel > :is(.cards, .story-grid) { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(80%, 18rem); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-block-end: 0.25rem; }
+  .topic-panel > :is(.cards, .story-grid) > li { scroll-snap-align: start; }
+}
+
+/* On a phone the topic index is the topics alone, two to a row: their
+   newest posts are already in the list above it. */
+@media (max-width: 47.99rem) {
+  .topic-blocks { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--atlas-gap); }
+  .topic-block .stories { display: none; }
+  .topic-block h3 { font-size: 1.125rem; }
+}
+
+/* On a phone the rows never widen the list past the screen (a long title
+   ends in its ellipsis instead), and the gap between cards is not repeated
+   between rows: the first three cards keep their own space below. */
+@media (max-width: 47.99rem) {
+  .feed .story-grid { row-gap: 0; }
+  .feed .story-grid > li:nth-child(-n+3) { margin-block-end: 2rem; }
+  .feed .story-grid > li:nth-child(n+4), .feed .story-grid > li:nth-child(n+4) .story { min-inline-size: 0; }
 }
