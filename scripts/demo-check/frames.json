@@ -11,7 +11,7 @@
     "ledger": 660,
     "meridian": 1150,
     "wire": 1210,
-    "workbench": 1210
+    "workbench": 1280
   },
   "reading_pending": [
     "almanac",
@@ -22,7 +22,6 @@
     "keystone",
     "ledger",
     "meridian",
-    "wire",
-    "workbench"
+    "wire"
   ]
 }
