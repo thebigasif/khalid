@@ -303,6 +303,14 @@ main > .breadcrumbs:has(+ h1) { margin-block: 0; padding-block-start: 1.5rem; bo
 [dir="rtl"] .route a { padding: 0.3125rem 0.3125rem 0.3125rem 1.125rem; }
 .route a::before { content: counter(compass-stop, decimal-leading-zero) / ""; display: grid; place-items: center; flex: none; inline-size: 2rem; block-size: 2rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 50%; font-size: 0.8125rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 .route a:hover { color: var(--color-link); border-color: var(--color-accent); }
+/* On a laptop the drawn compass narrows and the dashes shorten, so five
+   topics still fit on one row of the trail. */
+@media (min-width: 64rem) and (max-width: 99.99rem) {
+  .masthead { padding-inline-end: clamp(11rem, 14vw, 14rem); }
+  .masthead::after { inline-size: clamp(9rem, 12.5vw, 12.5rem); }
+  .route li + li::before { inline-size: 0.875rem; }
+  .route a { gap: 0.5rem; }
+}
 /* On a wide screen the stops grow, so the trail fills the band's foot. */
 @media (min-width: 100rem) {
   .route h2 { font-size: 0.875rem; }
@@ -399,20 +407,24 @@ main > h1 ~ .cards { margin-block-start: 3.5rem; }
   :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card-meta time { justify-self: start; font-size: 0.8125rem; }
 }
 
-/* On a phone the six picture cards after the lead become short rows, a
-   small picture at the start, so the index arrives sooner. */
+/* On a phone every picture card after a list's lead, and every card in
+   the topic tabs and the media rows, is one compact row: a small square
+   picture beside the title, the date under it. The index rows tighten to
+   the title and the date, so the front page stays short. */
 @media (max-width: 39.99rem) {
-  :is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { row-gap: 1.5rem; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+9) { margin-block-start: -1.5rem; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+2):nth-child(-n+7) .card { grid-template-columns: 6.5rem minmax(0, 1fr); grid-template-areas: "picture topic" "picture title" "picture when"; column-gap: 1rem; align-content: start; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7) .card :is(.card-author, p:last-child) { display: none; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7) .card .image { margin: 0; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7) .card .image img { aspect-ratio: 1; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7) .card::before { aspect-ratio: 1; margin: 0; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7) .card :is(h2, h3, h4) { margin-block-end: 0.25rem; font-size: 1.125rem; line-height: 1.3; text-wrap: pretty; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7) .card-meta > a { min-block-size: 0; font-size: 0.75rem; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7) .card-meta time { justify-self: start; font-size: 0.8125rem; }
-  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7) .card-meta time::before { content: none; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards, .topic-panel .cards, .media-row .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { row-gap: 1.25rem; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+9) { margin-block-start: -1.25rem; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card { grid-template-columns: 4.5rem minmax(0, 1fr); grid-template-areas: "picture title" "picture when" "picture ."; grid-template-rows: auto auto 1fr; column-gap: 1rem; align-content: start; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card :is(.card-author, .card-meta > a, p:last-child) { display: none; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card .image { margin: 0; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card .image img { aspect-ratio: 1; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card::before { aspect-ratio: 1; margin: 0; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card :is(h2, h3, h4) { margin-block: 0 0.25rem; font-size: 1.0625rem; line-height: 1.3; letter-spacing: -0.01em; text-wrap: pretty; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card-meta time { justify-self: start; font-size: 0.8125rem; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card-meta time::before { content: none; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+8) .card { padding-block: 0.625rem; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card :is(h2, h3, h4) { font-size: 1rem; line-height: 1.3; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card::before { font-size: 1rem; line-height: 1.3; }
 }
 
 /* An author: a profile panel, then their posts and the other authors
