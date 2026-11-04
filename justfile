@@ -64,6 +64,11 @@ layout-check *options:
 layout-selftest:
     node scripts/demo-check/layout-selftest.mjs
 
+# Proves the demo publication step and the layout check's second pass on
+# the sample publication in fixtures/test-publications/, with no browser.
+publication-selftest:
+    bash scripts/demo-check/publication-selftest.sh
+
 # Full-page pictures of each template's demo at 2000, 1440 and 390 px, as
 # one sheet per template, for the founder to approve. Pass --out, outside
 # the repository, such as `just demo-pictures --out ~/shots --packs wire`.

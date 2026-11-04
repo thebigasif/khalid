@@ -1,0 +1,17 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+
+[[photos]]
+file = "en/posts/2026-10-06-plan-a-week-of-dinners/lead.png"
+sha256 = "23d50f6150653f170992cd42c935e47de7e6c532c93f01943a36b99bdc892747"
+source = "Drawn for the Khalid tests: one teal colour, 1200 by 630 px"
+licence = "AGPL-3.0-or-later, as part of Khalid"
+credit = "Khalid"
+
+[[photos]]
+file = "en/posts/2026-10-13-herbs-in-paper/lead.png"
+sha256 = "584f6784574359ecae034e9b30bcee3a224239914ccff402da62fff6321d3329"
+source = "Drawn for the Khalid tests: one orange colour, 1200 by 630 px"
+licence = "AGPL-3.0-or-later, as part of Khalid"
+credit = "Khalid"

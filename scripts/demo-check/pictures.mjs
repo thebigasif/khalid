@@ -71,6 +71,10 @@ const walkDown = async () => {
   await Promise.race([Promise.all([...document.images].map((img) => img.decode().catch(() => {}))), new Promise((done) => setTimeout(done, 3000))]);
 };
 
+// The pages pictured on `site`: PAGES, or for a demo publication the first
+// page of each of those kinds its check-pages.txt names.
+const pagesOf = (site) => PAGES.map(([page, path]) => [page, site.checkPages?.find(([kind]) => kind === page)?.[1] ?? path]);
+
 // One pack's pictures at every width, by `${page}-${width}-${look}`.
 const shoot = async (pack) => {
   const taken = new Map();
@@ -81,7 +85,7 @@ const shoot = async (pack) => {
     for (const [look] of LOOKS) {
       const site = sites.find((s) => s.name === (look === "brand" ? pack : `${pack}${PLAIN}`));
       if (!site) continue;
-      for (const [page, path] of PAGES) {
+      for (const [page, path] of pagesOf(site)) {
         const response = await tab.goto(`${site.origin}${site.mount}${path}`, { waitUntil: "load" });
         if (!response || response.status() !== 200) {
           console.log(`  ${pack}: ${path || "the home page"} answered ${response?.status() ?? "nothing"}, so it has no picture.`);
@@ -129,7 +133,8 @@ const tile = (pack, label, file, width) => {
 // The sheet of one pack, as HTML, then as a PNG of it.
 const sheet = async (pack, taken) => {
   const { placed, other } = references(pack);
-  const rows = PAGES.flatMap(([page, path]) =>
+  const branded = sites.find((s) => s.name === pack);
+  const rows = (branded ? pagesOf(branded) : PAGES).flatMap(([page, path]) =>
     widths.map((width) => {
       const tiles = LOOKS.map(([look, label]) => tile(pack, label, taken.get(`${page}-${width}-${look}`), width));
       const refs = placed.get(`${page}-${width}`) ?? [""];

@@ -5,7 +5,9 @@
 #   <mount>demo/                 the showcase site, fixtures/showcase-site
 #   <mount>examples/<slug>/      each site in fixtures/examples/
 #   <mount>templates/<name>/     the showcase once per template the binary has,
-#                                in its sample brand (scripts/demo-brand.sh)
+#                                or the template's ready demo publication
+#                                (scripts/demo-publication.sh), in its
+#                                sample brand (scripts/demo-brand.sh)
 #
 # Usage: scripts/pages.sh [options] <khalid binary> <output folder> [address] [mount]
 # The address defaults to https://thebigasif.github.io and the mount to
@@ -98,9 +100,11 @@ build() {
   echo "==> ${at}"
   cp -r "$from" "$site"
   rm -rf "$site/public" "$site/data"
-  # A template demo wears the template's sample brand, before the address
-  # moves, so the brand's own addresses move with it.
+  # A template demo shows the template's own publication, where it has a
+  # ready one (scripts/demo-publication.sh), then wears its sample brand,
+  # both before the address moves, so their own addresses move with it.
   if [ -n "$template" ]; then
+    bash "$root/scripts/demo-publication.sh" "$site" "$template"
     bash "$root/scripts/demo-brand.sh" "$site" "$template"
   fi
   # Pages serves files only, so every copy is a static site: forms show a
