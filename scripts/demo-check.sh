@@ -36,8 +36,15 @@ command -v java >/dev/null || stop "Java is missing. The W3C HTML validator runs
 [ -d "$tools/node_modules" ] || stop "The check tools are not installed. Lighthouse, axe and the validator come from them. Run: npm install --prefix scripts/demo-check"
 [ -f "$site/site.toml" ] || stop "$site has no site.toml. The check needs a site folder. Pass one, or run this from the repository with the demo site in it."
 
-cargo build --release -p khalid
-bin="${CARGO_TARGET_DIR:-$root/target}/release/khalid"
+# CI hands over the release binary it already built as KHALID_BIN, so this
+# check does not build it again. Without it, the binary is built here.
+if [ -n "${KHALID_BIN:-}" ]; then
+  [ -x "$KHALID_BIN" ] || stop "KHALID_BIN is $KHALID_BIN, which is not a program this check can run. Point it at a built khalid, or unset it to build one."
+  bin="$KHALID_BIN"
+else
+  cargo build --release -p khalid
+  bin="${CARGO_TARGET_DIR:-$root/target}/release/khalid"
+fi
 
 # The site answers at its own address, so canonical links stay on the
 # domain Lighthouse checks, and localhost counts as secure without HTTPS.
