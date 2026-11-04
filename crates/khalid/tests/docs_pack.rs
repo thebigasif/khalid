@@ -18,11 +18,12 @@ use tempfile::TempDir;
 const BASE: &str = "/khalid/docs/";
 
 /// The docs R13 publishes, with the guides under `deploy` and `templates`.
-const DOCS: [&str; 20] = [
+const DOCS: [&str; 21] = [
     "getting-started",
     "deploy",
     "deploy/cloudflare",
     "templates",
+    "templates/classic",
     "templates/almanac",
     "templates/atlas",
     "templates/compass",
