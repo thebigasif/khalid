@@ -1,0 +1,2 @@
+Changed
+- Almanac has a new design, set like a reference book. The front page opens with the blog name very large between two rules, over a numbered row of topics. Latest posts, editor picks and the contents of a post are numbered, ruled rows instead of boxes, and on a wide screen each section number of a post hangs in the margin. A blog with no theme now reads in the system book serif instead of a sans.
