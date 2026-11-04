@@ -69,6 +69,12 @@ layout-selftest:
 publication-selftest:
     bash scripts/demo-check/publication-selftest.sh
 
+# Ghost's own Content API client, at the version
+# scripts/ghost-client/package.json pins, against the showcase with
+# Ghost's Content API switched on (docs/ghost-api.md).
+ghost-client:
+    ./scripts/ghost-client.sh
+
 # Full-page pictures of each template's demo at 2000, 1440 and 390 px, as
 # one sheet per template, for the founder to approve. Pass --out, outside
 # the repository, such as `just demo-pictures --out ~/shots --packs wire`.
