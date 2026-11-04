@@ -36,8 +36,15 @@ source "$tools/showcase.sh"
 command -v node >/dev/null || stop "Node is missing. The browser checks run on it. Install Node 22 or later, then run this again."
 (cd "$tools" && node -e 'require("playwright")' 2>/dev/null) || stop "Playwright is not installed. The browsers come from it. Run: npm install --prefix scripts/demo-check"
 
-cargo build --release -p khalid
-bin="${CARGO_TARGET_DIR:-$root/target}/release/khalid"
+# CI hands over the release binary it already built as KHALID_BIN, so this
+# check does not build it again. Without it, the binary is built here.
+if [ -n "${KHALID_BIN:-}" ]; then
+  [ -x "$KHALID_BIN" ] || stop "KHALID_BIN is $KHALID_BIN, which is not a program this check can run. Point it at a built khalid, or unset it to build one."
+  bin="$KHALID_BIN"
+else
+  cargo build --release -p khalid
+  bin="${CARGO_TARGET_DIR:-$root/target}/release/khalid"
+fi
 rm -rf "$work"
 since=$SECONDS
 mkdir -p "$work/sites"

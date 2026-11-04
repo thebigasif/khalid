@@ -49,6 +49,12 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <p class="wb-latest-meta"><time datetime="2026-09-28">28 September 2026</time>
 <span>1 min read</span></p>
 </li>
+<li>
+<a class="wb-label" href="/blog/category/on-page-seo/">On-page SEO</a>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="wb-latest-meta"><time datetime="2026-09-14">14 September 2026</time>
+<span>1 min read</span></p>
+</li>
 </ol>
 </section>
 <section class="newsletter-slot" aria-labelledby="newsletter-slot-title">
@@ -61,21 +67,6 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <input id="newsletter-slot-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
 <p><button type="submit">Subscribe</button></p>
 </form>
-</section>
-<section class="wb-more" aria-labelledby="wb-more-title">
-<h2 id="wb-more-title">More posts</h2>
-<ul class="cards" role="list">
-<li>
-<article class="card">
-<p class="card-meta"><span class="card-author">Asif</span>
-<time datetime="2026-09-14">14 September 2026</time>
-<span class="card-reading-time">1 min read</span>
-<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
-<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
-<p>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
-</article>
-</li>
-</ul>
 </section>
 <section class="newsletter-slot" aria-labelledby="newsletter-end-title">
 <h2 id="newsletter-end-title">Get new posts by email</h2>
