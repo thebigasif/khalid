@@ -102,8 +102,8 @@ for entry in listed:
     if demo is None or not (demo / "index.html").is_file():
         faults.append(f"{name}'s demo {entry.get('demo')} has no front page in the bundle.")
     pictures = entry.get("pictures") or {}
-    if set(pictures) != {"home", "post"}:
-        faults.append(f"{name} should have a home and a post picture, and has {sorted(pictures)}.")
+    if set(pictures) != {"home", "post", "phone"}:
+        faults.append(f"{name} should have a home, a post and a phone picture, and has {sorted(pictures)}.")
     for kind, path in pictures.items():
         file = inside(path)
         if file is None or not file.is_file() or file.stat().st_size == 0:
@@ -133,7 +133,7 @@ pictures="${3:-}"
 
 bash "$root/scripts/pages.sh" --demos-only "$khalid" "$out" https://serpdad.com /khalid/
 if [ -n "$pictures" ]; then
-  cp "$pictures"/*-home.svg "$pictures"/*-post.svg "$out/templates/"
+  cp "$pictures"/*-home.svg "$pictures"/*-post.svg "$pictures"/*-phone.svg "$out/templates/"
 else
   bash "$root/scripts/template-previews.sh" "$out" /khalid/
 fi
@@ -158,15 +158,15 @@ done
     fi
     if [ -d "$out/$demo" ]; then
       mkdir -p "$out/${demo}_previews"
-      for page in home post; do
+      for page in home post phone; do
         if [ -f "$out/templates/$name-$page.svg" ]; then
           cp "$out/templates/$name-$page.svg" "$out/${demo}_previews/$page.svg"
         fi
       done
     fi
     kind="$(kind_of "$name")"
-    printf '%s\n    {"name": "%s", "title": "%s", "kind": "%s", "kind_label": "%s", "publication_ready": %s, "demo": "%s", "pictures": {"home": "%s_previews/home.svg", "post": "%s_previews/post.svg"}}' \
-      "$separator" "$name" "$(title "$name")" "$kind" "$(kind_label "$kind")" "$ready" "$demo" "$demo" "$demo"
+    printf '%s\n    {"name": "%s", "title": "%s", "kind": "%s", "kind_label": "%s", "publication_ready": %s, "demo": "%s", "pictures": {"home": "%s_previews/home.svg", "post": "%s_previews/post.svg", "phone": "%s_previews/phone.svg"}}' \
+      "$separator" "$name" "$(title "$name")" "$kind" "$(kind_label "$kind")" "$ready" "$demo" "$demo" "$demo" "$demo"
     separator=","
   done
   printf '\n  ]\n}\n'
