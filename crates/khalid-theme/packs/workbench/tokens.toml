@@ -1,0 +1,36 @@
+# Workbench's own look, for a blog that has not run theme sync: a
+# grey-white bench, graphite text and one verdict green for picks, labels
+# and pros. The system sans for headings and text, the system mono for
+# prices, ratings, dates and labels. A value in the site's own
+# theme/tokens.toml wins over each of these.
+[colors]
+background = "#f7f7f5"
+surface = "#ecedea"
+text = "#1a1c1e"
+muted = "#52575c"
+link = "#0d6a43"
+accent = "#11794c"
+border = "#d3d6d0"
+
+[fonts]
+heading = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+mono = "ui-monospace, \"SF Mono\", \"Cascadia Mono\", \"Roboto Mono\", Menlo, Consolas, monospace"
+
+[shape]
+radius = "0.125rem"
+measure = "38rem"
+
+[type]
+body = "1.0625rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
+h2 = "1.5rem 2rem"
+h3 = "1.1875rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 700
+
+[space]
+unit = "0.5rem"
+section = "3.5rem"

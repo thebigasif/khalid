@@ -170,36 +170,36 @@ fn when_no_shade_can_pass_it_gets_the_closest_and_says_what_to_change() {
     );
 }
 
-/// A pack's own colours over the stock ones, as a site with no theme of
-/// its own gets them: a pack may set only some of the colours.
+/// A pack's own colours over the stock ones, as the renderer lays a
+/// pack's tokens over its defaults: a colour the pack leaves out stays.
 #[cfg(test)]
-fn pack_colors(pack: &khalid_theme::Pack) -> ThemeTokens {
+fn pack_tokens(pack: &khalid_theme::Pack) -> ThemeTokens {
     let mut tokens = ThemeTokens::default();
     let table: toml::Table = toml::from_str(pack.tokens).unwrap();
     let Some(colors) = table.get("colors").and_then(toml::Value::as_table) else {
         return tokens;
     };
-    let color = |key: &str| colors.get(key).and_then(toml::Value::as_str).map(hex);
-    let slots = [
-        ("background", &mut tokens.colors.background),
-        ("surface", &mut tokens.colors.surface),
-        ("text", &mut tokens.colors.text),
-        ("muted", &mut tokens.colors.muted),
-        ("link", &mut tokens.colors.link),
-        ("accent", &mut tokens.colors.accent),
-    ];
-    for (key, slot) in slots {
-        if let Some(value) = color(key) {
-            *slot = value;
+    let set = &mut tokens.colors;
+    for (name, value) in colors {
+        let color = hex(value.as_str().unwrap());
+        match name.as_str() {
+            "background" => set.background = color,
+            "surface" => set.surface = color,
+            "text" => set.text = color,
+            "muted" => set.muted = color,
+            "link" => set.link = color,
+            "accent" => set.accent = color,
+            "border" => set.border = color,
+            other => panic!("{}: unknown colour {other}", pack.name),
         }
     }
     tokens
 }
 
 #[test]
-fn every_pack_palette_meets_aa_on_its_own_grounds() {
+fn every_pack_reads_at_aa_in_its_own_colours() {
     for pack in khalid_theme::packs() {
-        let tokens = pack_colors(pack);
+        let tokens = pack_tokens(pack);
 
         assert_all_pass(&tokens, pack.name);
     }
