@@ -299,5 +299,16 @@ export function measure(stage) {
       }
     }
   }
+
+  // 5. A person's photo is drawn square, so its circle stays round. In a
+  // flex row the <picture> around it shrank beside a long name.
+  if (stage === "page") {
+    for (const img of document.querySelectorAll("img.avatar")) {
+      const r = img.getBoundingClientRect();
+      if (!shown(img) || r.width < 1 || r.height < 1 || Math.abs(r.width - r.height) <= 1) continue;
+      const by = img.closest("[class]:not(img, picture)") ?? img.parentElement;
+      problems.push({ check: "squashed-avatar", a: name(img), b: name(by), detail: `drawn ${Math.round(r.width)} by ${Math.round(r.height)} px, at ${Math.round(r.left + sx)},${Math.round(r.top + sy)}` });
+    }
+  }
   return problems;
 }

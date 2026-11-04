@@ -216,7 +216,8 @@ Add `--templates harbor` to check one template, and `--widths 390,2560@2` to pic
 - a list marker covers the first letter of its item, or other text;
 - the page scrolls sideways;
 - a table column is narrower than its longest word, so the word breaks in the middle;
-- a picture did not load.
+- a picture did not load;
+- a person's photo is not drawn square, to within 1 pixel, so its circle turns into an oval.
 
 Parts that stay on screen as you scroll, such as the floating contents button and the side contents column, are checked against what passes under them. Each failure names the template, the page, the browser, the width, the two elements and where on the page they meet. The Demo check runs it in CI. To run it yourself, install the tools and the browsers once:
 
