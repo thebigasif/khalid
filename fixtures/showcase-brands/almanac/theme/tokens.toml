@@ -1,0 +1,58 @@
+# The sample brand for the Almanac demo: a field guide publisher. Moss
+# green on warm paper, a soft display serif for headings and a reading
+# serif for long guides. Only the brand lives here: the template keeps its
+# own shape, type sizes and spacing.
+[colors]
+background = "#f9f6ee"
+surface = "#f1ecdd"
+text = "#22261c"
+muted = "#5a5e4f"
+link = "#4a6418"
+accent = "#56731c"
+border = "#ddd6c1"
+
+[fonts]
+heading = "Fraunces, \"Iowan Old Style\", Georgia, serif"
+body = "\"Source Serif 4\", \"Iowan Old Style\", Georgia, serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Fraunces"
+style = "normal"
+weight = "600"
+path = "fraunces-latin-600.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "108.03%"
+descent = "120.33%"
+line_gap = "0.00%"
+size_adjust = "59.83%"
+
+[[fonts.files]]
+family = "Source Serif 4"
+style = "italic"
+weight = "400"
+path = "source-serif-4-latin-italic-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "114.44%"
+descent = "158.08%"
+line_gap = "0.00%"
+size_adjust = "54.01%"
+
+[[fonts.files]]
+family = "Source Serif 4"
+style = "normal"
+weight = "400 700"
+path = "source-serif-4-latin-400-700.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "114.44%"
+descent = "158.08%"
+line_gap = "0.00%"
+size_adjust = "54.32%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

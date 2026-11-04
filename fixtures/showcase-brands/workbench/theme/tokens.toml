@@ -1,0 +1,46 @@
+# The sample brand for the Workbench demo: a team that tests tools and
+# compares them. Verdict green on a grey-white bench, a technical grotesque
+# for headings and a plain engineering sans for text. Only the brand lives
+# here: the template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#fafaf8"
+surface = "#f0f1ec"
+text = "#17191a"
+muted = "#575b57"
+link = "#10744a"
+accent = "#117d50"
+border = "#d9dbd3"
+
+[fonts]
+heading = "\"Space Grotesk\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+body = "\"IBM Plex Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Space Grotesk"
+style = "normal"
+weight = "500 700"
+path = "space-grotesk-latin-500-700.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "108.70%"
+descent = "137.79%"
+line_gap = "0.00%"
+size_adjust = "59.20%"
+
+[[fonts.files]]
+family = "IBM Plex Sans"
+style = "normal"
+weight = "400 600"
+path = "ibm-plex-sans-latin-400-600.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "113.23%"
+descent = "129.77%"
+line_gap = "0.00%"
+size_adjust = "56.44%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

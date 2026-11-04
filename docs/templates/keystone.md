@@ -108,3 +108,28 @@ Keystone sets a tight type scale on wide space. Your own `theme/tokens.toml` win
 | Line length | 42rem |
 
 Keystone uses your system's own interface font, so it looks native on every device and loads nothing. It brings calm colours: a blue accent (`#3355e0`) and deep ink text (`#0d1526`) on a white page, with a faint grey (`#f5f7fa`) for panels. Your colours, fonts and logo from your main site, through theme sync, replace them, as in every template.
+
+## Design
+
+This is Keystone's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A software company, studio or agency that wants its blog as calm and finished as its main site. Several writers, a good lead picture on each post.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A payments company's blog. The lead story on a raised white card with its picture beside it, faint vertical guide lines behind the page, category tabs as small pills, then each post as a wide row: title and summary on one side, the date and the author's photo and role in a narrow column, the picture framed below. Refined type at medium weights and very even spacing. Its frame is near 67rem; Keystone runs wider so a large screen is not left empty.
+- A note-taking software company's blog. Simple picture cards in a grid, friendly drawn covers, and a quiet reading column.
+
+| Part | Keystone |
+|---|---|
+| Type pairing | A modern sans for headings at weight 600 or 700 over a humanist sans for text. With no theme, the pack uses the system interface font for both. |
+| Colour | White ground, deep ink text and one calm accent (blue or indigo). A faint cool grey for panels and frames. |
+| Spacing rhythm | A base step of 0.5rem. Even and calm: 5rem between sections, 2rem grid gaps, 1.25rem inside cards. |
+| Frame at 1440 px and wider | At least **80rem**. |
+| Cards and lists | Framed picture cards: the picture inside a fine border with a small radius, then the category, a title of up to three lines, two or three lines of summary, the author and the date. Three across. |
+| Phone header and menu | The logo on the left and the menu as one line you can swipe; the button waits for the band further down. |
+| Tabs and indexes at 390 px | Topic tabs become one row you can swipe, the current tab underlined. Topic tab panels show their posts as one column of compact rows. |
+| Link, card and focus states | Links in the accent with an underline that appears at full strength on hover. A card's picture frame turns the accent on hover. Focus is a 2 px accent ring with 2 px of space. |
+| Signature details | The lead story with its picture large on one side. Drawn covers in tints of the accent for posts with no picture, so the grid stays even. The share links in a column beside the post that stays in view. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/keystone/theme/`: indigo (`#4338ca` links, `#4f46e5` accent) on white with a cool panel (`#f6f6fb`), Manrope for headings and Source Sans 3 for text, and an arch mark.

@@ -111,3 +111,28 @@ section = "3rem"
 ## Reader features
 
 Ledger keeps every `[reader]` feature as it is. Turn the topics row off with `topic_links = false`, and comments stay off unless your site runs as a server with comments on.
+
+## Design
+
+This is Ledger's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A team that publishes research, data studies and long how-tos, where the words and the numbers matter more than pictures.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A large nonpartisan research centre. Serif headlines over small capital labels with the kind of report and its date, ruled rows of publications with a short summary, a numbered "most read" rail, and a frame near 75rem on a laptop.
+- A data publication about the world's large problems. Serif titles over a plain sans text in a narrow column, each chart framed with its title, its key in coloured words and a "Data source" line, and the topic of a page as a small pill.
+
+| Part | Ledger |
+|---|---|
+| Type pairing | A strong gothic sans for headings over a sturdy text serif. With no theme, the pack uses the system sans for headings and the system serif (Charter, Georgia) for text. |
+| Colour | Near-white ground, ink text and one deep, serious accent (petrol or ink green). Panels are a very faint grey. Tables use hairlines, never fills, except the header row. |
+| Spacing rhythm | A base step of 0.5rem. Rows in lists 1.25rem apart, separated by hairlines. Sections 4rem apart. |
+| Frame at 1440 px and wider | At least **75rem**: the narrowest of the ten, because Ledger leads with text. |
+| Cards and lists | No boxes around list items. Each post is a ruled row: a number in the margin, then author, date and topic, then the title, then (on lists) the summary. |
+| Phone header and menu | The logo and the menu on one row; the menu wraps under it. |
+| Tabs and indexes at 390 px | Topic pills wrap onto lines. The contents box stays open as a plain list. |
+| Link, card and focus states | Links underlined in the accent; on hover the underline thickens. A row's title is the target and underlines on hover. Focus is a 2 px accent ring. |
+| Signature details | Numbers 01, 02, 03 in the margin of every list. The "bottom line" summary under a heavy rule at the end of a post. Tables with tabular figures, right-aligned numbers and hairline rows. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/ledger/theme/`: petrol (`#0d5c66` links, `#0f6c78` accent) on near white (`#fdfdfc`), Libre Franklin for headings and PT Serif for text, and a bar-chart mark.

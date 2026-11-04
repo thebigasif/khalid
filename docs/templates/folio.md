@@ -120,3 +120,28 @@ The page itself is up to 76rem wide. The accent marks the category on each card,
 
 - Share links are the networks' names, not their logos.
 - The footer shows your footer links in one row; it has no columns of its own unless you add `[[nav.footer_groups]]`.
+
+## Design
+
+This is Folio's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A product or engineering team whose posts are written by the people who built the thing: essays, release notes and engineering notes with code.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A CSS framework company's blog. The page is drawn on faint ruled lines like graph paper, the title set very large and tight, the date in small mono capitals above it, the author in a column beside the text, and plenty of room around few elements.
+- A web hosting platform's blog. A grid of posts on a precise, ruled page, small mono labels for dates and categories, and posts in a clean column with framed code.
+
+| Part | Folio |
+|---|---|
+| Type pairing | A tight display sans for headings, set large with slight negative tracking, over a neutral text sans. With no theme, the pack uses the system sans (San Francisco, Segoe UI Variable, Roboto). |
+| Colour | Quiet monochrome: white ground, near-black ink, warm grey panels and hairlines. One accent only, used where a reader can act and on the section being read. |
+| Spacing rhythm | A base step of 0.5rem on a strict grid. Large gaps (6rem) between front page sections, tight gaps (0.75rem) inside a card. |
+| Frame at 1440 px and wider | At least **80rem**. |
+| Cards and lists | Cards without an outline: a picture in a thin frame, a small category and date line, the title, up to three lines of summary, the author's photo and name. Three across on a wide screen. |
+| Phone header and menu | The logo and the menu on one row; the menu wraps to its own line under the logo, with no script. The call to action waits for the band at the end. |
+| Tabs and indexes at 390 px | The category tabs become small rounded chips that wrap. The contents rail folds into one box above the text. |
+| Link, card and focus states | Links underlined with a thin line that turns the accent on hover. A card's title turns the accent on hover. Focus is a 2 px ring in the text colour, so it shows on any accent. |
+| Signature details | The masthead: the blog's name very large and tight on faint ruled paper that fades out. Hairlines everywhere a box would be. Code in a framed sheet with a small label. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/folio/theme/`: graphite ink (`#111113`) on white with warm grey panels (`#f5f4f0`) and one gold accent (`#755600` links, `#876400` accent), Inter Tight for headings and Inter for text, and a ruled-sheet mark.

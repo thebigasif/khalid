@@ -121,3 +121,28 @@ section = "4rem"
 ## Reader features
 
 Atlas keeps every `[reader]` feature as it is. The topic links in the masthead and the topic index follow `topic_links`, so `topic_links = false` turns both off.
+
+## Design
+
+This is Atlas's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A publication with many topics and several writers, such as a large marketing or SEO team's blog. Readers come to browse: they want to see a lot at once and jump to a topic.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A large technology news magazine. A loud masthead, a dense grid of picture stories in several sizes, bold condensed headlines and small coloured topic labels. The page fills a wide screen.
+- An SEO software company's blog. A masthead band on a soft tint with the blog's name, one line on what it covers and its popular topics as solid pills, then picture cards three across: bright drawn pictures, two or three small capital topic labels, a bold title, two lines of summary, then the author's photo, name and date.
+
+| Part | Atlas |
+|---|---|
+| Type pairing | A heavy, characterful grotesque for headlines over a plain, sturdy sans for text. With no theme, the pack uses the system sans at weight 800 for headlines. |
+| Colour | White ground and near-black text with one loud accent used in large areas: the masthead tint, topic labels, the topic index rules. Panels take a faint tint of the accent. |
+| Spacing rhythm | A base step of 0.5rem. Tight inside cards (1rem), wide between sections (4rem). Grid gaps of 2rem on a wide screen, 1.25rem on a phone. |
+| Frame at 1440 px and wider | At least **88rem**: four picture cards across, the widest of the ten. |
+| Cards and lists | Picture cards with the picture edge to edge on top, the topic as a small coloured label, a bold title of up to three lines, then the byline. The first story in a grid may span two columns. |
+| Phone header and menu | The logo and the call to action on one row. The topic links under the masthead become one row you can swipe, so every topic stays one tap away. |
+| Tabs and indexes at 390 px | Topic tabs scroll sideways in one row. The topic index becomes one column of topics, each with its three newest titles as a plain list. |
+| Link, card and focus states | A card lifts its title into the accent on hover and the picture darkens slightly; the whole card is the target. Links in text are underlined in the accent. Focus is a 3 px accent ring. |
+| Signature details | The masthead band in a tint of the accent with the faint map grid and the blog's name very large. Topic labels as solid accent chips with white text. The topic index under a heavy accent rule, one column per topic. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/atlas/theme/`: magenta (`#b0124f` links, `#c8155c` accent) on white, Bricolage Grotesque for headlines and Public Sans for text, and a split-square mark.

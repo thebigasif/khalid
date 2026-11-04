@@ -110,3 +110,29 @@ related_count = 5
 - The newsletter form shows only when your blog can take sign-ups: `mode = "server"` with a `[mail]` table. It signs readers up to your default list.
 - The front page shows the form once, at the top. One form per page keeps the page simple and every field label unique.
 - A post marks no category above its title yet, because posts do not carry their category to the page. The breadcrumbs name it.
+
+## Design
+
+This is Harbor's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A marketing team that publishes several posts a week, grows a mailing list and has one offer to put in front of every reader.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A large marketing software company's blog. Bright and busy but ordered: picture cards, topic links across the top, and offers drawn as part of the page, not as pop-ups.
+- A work-automation software company's blog. The featured article beside a framed product picture, a row of four quick picks, a sign-up band on a peach tint, then picture cards three across with one sign-up card placed inside the grid. Underlined category labels over bold titles.
+- A large SEO software company's blog. A bold header, a grid of picture cards and offers as designed bands between the posts.
+
+| Part | Harbor |
+|---|---|
+| Type pairing | A round geometric sans for headings over a friendly sans for text. With no theme, the pack uses the system sans at weight 700 for headings. |
+| Colour | White ground, warm near-black text and one bright accent. Light tints of the accent for the hero, the offer card and tips. No grey panels. |
+| Spacing rhythm | A base step of 0.5rem. Cards and boxes with 1.5rem inside, 4.5rem between sections. Pill buttons 2.75rem high. |
+| Frame at 1440 px and wider | At least **84rem**. |
+| Cards and lists | Rounded picture cards with a soft border: the picture on top, the topic and date, the title, two lines of summary, the author at the foot. Rows with a small picture in the column beside the featured post. |
+| Phone header and menu | The logo and a pill call-to-action button on one row; the menu opens below with no script. The sign-up form sits under the blog's name. |
+| Tabs and indexes at 390 px | Topic tabs become pills you can swipe in one row. The contents box shows one column. The related posts row keeps its sideways scroll. |
+| Link, card and focus states | A card rises one step (its border turns the accent) on hover. Links in text are underlined in the accent. Buttons darken on hover. Focus is a 3 px accent ring. |
+| Signature details | The hero: the blog's name large beside a raised sign-up card on a light tint of the accent. The offer card under the author's name in every post. A short accent bar above each section heading. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/harbor/theme/`: warm orange (`#b33a09` links, `#c9440b` accent) on white with peach panels (`#fff4ec`), Outfit for headings and DM Sans for text, and a wave mark.

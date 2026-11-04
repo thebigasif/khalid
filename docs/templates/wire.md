@@ -118,3 +118,28 @@ newsletter_after = 4
 - Everything reads with scripts off. Wire adds no script.
 - The newsletter form shows only when your blog can take sign-ups: `mode = "server"` with a `[mail]` table. It shows once per page, so every field label stays unique.
 - A writer's role comes from `role` in their file under `content/<language>/authors/`.
+
+## Design
+
+This is Wire's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A newsroom-style blog that publishes often, with several named writers. Readers scan for what is new and who wrote it.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A daily search marketing news site. The newest story leads with its picture beside it, then a dense two-column feed: a coloured topic kicker over each bold headline, the picture, two or three lines of story, then the date, the time, the comment count and the writer. Hairlines between rows, and a sign-up box in its own panel at the top of the rail.
+- A technology startup news site. Very large section titles, a lead story with its headline on a big picture, a long feed of ruled rows with a coloured topic kicker and the time in plain sight, a numbered "most popular" rail, and a frame near 85rem on a laptop.
+
+| Part | Wire |
+|---|---|
+| Type pairing | A condensed bold sans for headlines, labels and the menu, over a news serif for posts and subtitles. With no theme, the pack uses the system sans and the system serif (Charter, Georgia). |
+| Colour | Pure white ground, black ink and one signal accent (red or vermilion) for kickers, rules and the current menu item. |
+| Spacing rhythm | A base step of 0.5rem, tight: rows 1rem apart under hairlines, sections 3rem apart under heavy rules. |
+| Frame at 1440 px and wider | At least **84rem**: the feed and the rail beside it. |
+| Cards and lists | Rows, not cards: the date in its own column on the start side, the kicker, the headline, one line of summary and the writer, the picture on the end side. Square corners. |
+| Phone header and menu | The logo and the menu on one row, the menu as one line you can swipe with the current item underlined in the accent. |
+| Tabs and indexes at 390 px | Topic tabs as one row you can swipe. The rail drops under the feed. Dates move above each headline. |
+| Link, card and focus states | Headlines underline on hover. Links in text are underlined in the accent. Focus is a 2 px ring in the text colour. |
+| Signature details | Section titles under a heavy rule in the accent. Kickers in small capitals above each headline. Pull quotes between two heavy rules. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/wire/theme/`: signal red (`#b3141f` links, `#d0161f` accent) on white, Barlow Condensed for headlines and Newsreader for text, and a square mark.
