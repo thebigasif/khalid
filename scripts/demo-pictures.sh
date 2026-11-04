@@ -42,8 +42,15 @@ esac
 command -v node >/dev/null || stop "Node is missing. The pictures are taken with it. Install Node 22 or later, then run this again."
 (cd "$tools" && node -e 'require("playwright")' 2>/dev/null) || stop "Playwright is not installed. The browser comes from it. Run: npm install --prefix scripts/demo-check"
 
-cargo build --release -p khalid
-bin="${CARGO_TARGET_DIR:-$root/target}/release/khalid"
+# A release binary handed over as KHALID_BIN is used as it is, as the
+# layout check does. Without it, the binary is built here.
+if [ -n "${KHALID_BIN:-}" ]; then
+  [ -x "$KHALID_BIN" ] || stop "KHALID_BIN is $KHALID_BIN, which is not a program these pictures can be taken with. Point it at a built khalid, or unset it to build one."
+  bin="$KHALID_BIN"
+else
+  cargo build --release -p khalid
+  bin="${CARGO_TARGET_DIR:-$root/target}/release/khalid"
+fi
 rm -rf "$work"
 mkdir -p "$work/sites"
 packs="$(showcase_packs "$bin" "$work")"

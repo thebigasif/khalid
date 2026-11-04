@@ -24,13 +24,23 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
 
-# Built one at a time, so khalid-perf's dependencies cannot change the
-# features, and so the size, of the binary being measured.
-cargo build --release -p khalid
-cargo build --release -p khalid-perf
-release="${CARGO_TARGET_DIR:-$root/target}/release"
-bin="$release/khalid"
-perf="$release/khalid-perf"
+# CI hands over the release binaries it already built, one at a time, as
+# KHALID_BIN and KHALID_PERF_BIN. Without them they are built here, one at a
+# time, so khalid-perf's dependencies cannot change the features, and so the
+# size, of the binary being measured.
+if [ -n "${KHALID_BIN:-}" ] && [ -n "${KHALID_PERF_BIN:-}" ]; then
+  for given in "$KHALID_BIN" "$KHALID_PERF_BIN"; do
+    [ -x "$given" ] || { echo "$given is not a program the budgets can run. Point KHALID_BIN and KHALID_PERF_BIN at built binaries, or unset both to build them."; exit 1; }
+  done
+  bin="$KHALID_BIN"
+  perf="$KHALID_PERF_BIN"
+else
+  cargo build --release -p khalid
+  cargo build --release -p khalid-perf
+  release="${CARGO_TARGET_DIR:-$root/target}/release"
+  bin="$release/khalid"
+  perf="$release/khalid-perf"
+fi
 
 # The generated sites (docs/adr, generated perf fixtures). Never under
 # fixtures/ or a content/ folder.
