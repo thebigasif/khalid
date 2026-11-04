@@ -262,7 +262,7 @@ jobs:
             echo "build=false" >> "$GITHUB_OUTPUT"
             echo "Nothing the image is built from changed, so it is not built again." | tee -a "$GITHUB_STEP_SUMMARY"
           fi
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
         if: steps.inputs.outputs.build == 'true'
       - uses: docker/build-push-action@v6
         if: steps.inputs.outputs.build == 'true'
