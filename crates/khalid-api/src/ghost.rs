@@ -10,7 +10,9 @@
 
 mod door;
 mod error;
+mod people;
 mod post;
+mod query;
 mod routes;
 mod settings;
 

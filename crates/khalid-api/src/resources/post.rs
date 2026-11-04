@@ -253,6 +253,16 @@ impl Post {
         self.featured
     }
 
+    /// Tag slugs, in the writer's order.
+    pub(crate) fn tags(&self) -> &[String] {
+        &self.tags
+    }
+
+    /// Author slugs, in the writer's order.
+    pub(crate) fn authors(&self) -> &[String] {
+        &self.authors
+    }
+
     /// When it went live and when it last changed.
     pub(crate) fn times(&self) -> (DateTime<Utc>, DateTime<Utc>) {
         (self.published_at, self.updated_at)

@@ -35,6 +35,16 @@ impl Term {
             language,
         }
     }
+
+    /// The name readers see in its language.
+    pub(crate) fn name(&self) -> &str {
+        &self.name
+    }
+
+    /// The language.
+    pub(crate) fn language(&self) -> &Locale {
+        &self.language
+    }
 }
 
 impl Listable for Term {

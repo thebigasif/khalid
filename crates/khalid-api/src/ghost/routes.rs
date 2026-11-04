@@ -1,22 +1,24 @@
-//! The routes under `/ghost/api/content/`: browse and read for posts and
-//! pages, and the settings.
+//! The routes under `/ghost/api/content/`: browse, read by id and read by
+//! slug for posts, pages, tags and authors, and the settings.
 
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
 use axum::routing::get;
 use axum::{Json, Router};
-use khalid_core::{Slug, UserMessage};
-use serde::Deserialize;
+use khalid_core::Slug;
+use serde::Serialize;
 use serde_json::{Map, Value, json};
 
 use super::error::GhostError;
+use super::people::{GhostAuthor, GhostTag, Include, add_included};
 use super::post::GhostPost;
+use super::query::GhostQuery;
 use super::settings::GhostSite;
-use crate::content_store::{ContentStore, PostKey};
+use crate::content_store::{ContentStore, PostKey, SiteResources, select};
 use crate::pagination::Meta;
-use crate::query::{ListQuery, RawListQuery};
-use crate::resources::{Collection, Post};
+use crate::query::ListQuery;
+use crate::resources::{Collection, Listable, Post};
 
 /// What every route reads: the published content and the site.
 #[derive(Clone)]
@@ -25,163 +27,217 @@ pub(super) struct GhostState {
     pub(super) site: Arc<GhostSite>,
 }
 
-/// The parameters Ghost's client sends. Others, such as `key` and the
-/// `slug` the client repeats on a read, are left alone.
-#[derive(Debug, Default, Deserialize)]
-pub(super) struct GhostQuery {
-    filter: Option<String>,
-    order: Option<String>,
-    formats: Option<String>,
-    limit: Option<String>,
-    page: Option<String>,
+/// The resources with browse and read routes.
+#[derive(Debug, Clone, Copy)]
+enum Kind {
+    Posts,
+    Pages,
+    Tags,
+    Authors,
 }
 
-impl GhostQuery {
-    /// The checked list query, with fields the posts do not have refused.
-    fn list_query(&self) -> Result<ListQuery, GhostError> {
-        let raw = RawListQuery {
-            filter: self.filter.clone(),
-            include: None,
-            fields: None,
-            order: self.order.clone(),
-            formats: self.formats.clone(),
-            limit: self.limit.clone(),
-            page: self.page.clone(),
-        };
-        let query = ListQuery::try_from(&raw)?;
-        let fields: &[&str] = &Post::FILTER_FIELDS;
-        let unknown = |parameter: &str, field: &str| {
-            GhostError::bad_request(UserMessage::new(
-                format!("The {parameter} uses {field}, which this API cannot sort or filter by."),
-                "The list cannot be sent until it is fixed.",
-                format!("Use one of these fields: {}.", fields.join(", ")),
-            ))
-        };
-        if let Some(filter) = query.filter() {
-            filter
-                .check_fields(fields)
-                .map_err(|error| unknown("filter", error.field()))?;
+impl Kind {
+    /// The plural in the path and the wrapper, and one entry's name.
+    fn names(self) -> (&'static str, &'static str) {
+        match self {
+            Self::Posts => ("posts", "post"),
+            Self::Pages => ("pages", "page"),
+            Self::Tags => ("tags", "tag"),
+            Self::Authors => ("authors", "author"),
         }
-        if let Some(key) = query
-            .order()
-            .iter()
-            .find(|key| !fields.contains(&key.field()))
-        {
-            return Err(unknown("order", key.field()));
-        }
-        Ok(query)
     }
 }
 
 /// Every route, with `state`.
 pub(super) fn routes(state: GhostState) -> Router {
-    Router::new()
-        .route("/posts/", get(browse_posts))
-        .route("/posts/{id}/", get(read_post))
-        .route("/posts/slug/{slug}/", get(read_post_by_slug))
-        .route("/pages/", get(browse_pages))
-        .route("/pages/{id}/", get(read_page))
-        .route("/pages/slug/{slug}/", get(read_page_by_slug))
+    let router = [Kind::Posts, Kind::Pages, Kind::Tags, Kind::Authors]
+        .into_iter()
+        .fold(Router::new(), resource);
+    router
         .route("/settings/", get(read_settings))
         .with_state(state)
 }
 
+/// `router` with the three routes of `kind`.
+fn resource(router: Router<GhostState>, kind: Kind) -> Router<GhostState> {
+    let (name, _) = kind.names();
+    let browse_one = move |State(state): State<GhostState>, Query(raw): Query<GhostQuery>| async move {
+        browse(&state, kind, &raw).await
+    };
+    let by_id = move |State(state): State<GhostState>,
+                      Path(id): Path<String>,
+                      Query(raw): Query<GhostQuery>| async move {
+        read(&state, kind, Some(PostKey::Id(id)), &raw).await
+    };
+    let by_slug = move |State(state): State<GhostState>,
+                        Path(slug): Path<String>,
+                        Query(raw): Query<GhostQuery>| async move {
+        let key = Slug::try_new(&slug).ok().map(PostKey::Slug);
+        read(&state, kind, key, &raw).await
+    };
+    router
+        .route(&format!("/{name}/"), get(browse_one))
+        .route(&format!("/{name}/{{id}}/"), get(by_id))
+        .route(&format!("/{name}/slug/{{slug}}/"), get(by_slug))
+}
+
 /// What a route answers: Ghost's JSON, or Ghost's error.
 type Answer = Result<Json<Value>, GhostError>;
-
-async fn browse_posts(State(state): State<GhostState>, Query(raw): Query<GhostQuery>) -> Answer {
-    browse(&state, Collection::Posts, "posts", &raw).await
-}
-
-async fn read_post(
-    State(state): State<GhostState>,
-    Path(id): Path<String>,
-    Query(raw): Query<GhostQuery>,
-) -> Answer {
-    read(&state, Collection::Posts, Some(PostKey::Id(id)), &raw).await
-}
-
-async fn read_post_by_slug(
-    State(state): State<GhostState>,
-    Path(slug): Path<String>,
-    Query(raw): Query<GhostQuery>,
-) -> Answer {
-    let key = Slug::try_new(&slug).ok().map(PostKey::Slug);
-    read(&state, Collection::Posts, key, &raw).await
-}
-
-async fn browse_pages(State(state): State<GhostState>, Query(raw): Query<GhostQuery>) -> Answer {
-    browse(&state, Collection::Pages, "pages", &raw).await
-}
-
-async fn read_page(
-    State(state): State<GhostState>,
-    Path(id): Path<String>,
-    Query(raw): Query<GhostQuery>,
-) -> Answer {
-    read(&state, Collection::Pages, Some(PostKey::Id(id)), &raw).await
-}
-
-async fn read_page_by_slug(
-    State(state): State<GhostState>,
-    Path(slug): Path<String>,
-    Query(raw): Query<GhostQuery>,
-) -> Answer {
-    let key = Slug::try_new(&slug).ok().map(PostKey::Slug);
-    read(&state, Collection::Pages, key, &raw).await
-}
 
 /// The settings, as Ghost sends them: one object, not a list.
 async fn read_settings(State(state): State<GhostState>) -> Answer {
     Ok(Json(json!({ "settings": *state.site, "meta": {} })))
 }
 
-/// One page of `collection` under `name`, with Ghost's pagination.
-async fn browse(
+/// One page of `kind` under its name, with Ghost's pagination.
+async fn browse(state: &GhostState, kind: Kind, raw: &GhostQuery) -> Answer {
+    let (entries, meta) = match kind {
+        Kind::Posts => browse_posts(state, Collection::Posts, raw).await?,
+        Kind::Pages => browse_posts(state, Collection::Pages, raw).await?,
+        Kind::Tags => browse_site(state, SiteResources::tags, GhostTag::new, raw).await?,
+        Kind::Authors => browse_site(state, SiteResources::authors, GhostAuthor::new, raw).await?,
+    };
+    Ok(wrapped(
+        kind.names().0,
+        Value::Array(entries),
+        Some(json!(meta)),
+    ))
+}
+
+/// The entry of `kind` at `key`, as a list of one with no `meta`, or
+/// Ghost's 404. A slug that cannot be a slug is `None`: nothing is at it.
+async fn read(state: &GhostState, kind: Kind, key: Option<PostKey>, raw: &GhostQuery) -> Answer {
+    let (name, one) = kind.names();
+    let not_found = || GhostError::not_found(one);
+    let key = key.ok_or_else(not_found)?;
+    let entry = match kind {
+        Kind::Posts => read_post(state, Collection::Posts, &key, raw).await?,
+        Kind::Pages => read_post(state, Collection::Pages, &key, raw).await?,
+        Kind::Tags => read_site(state, SiteResources::tags, GhostTag::new, &key, raw).await?,
+        Kind::Authors => {
+            read_site(state, SiteResources::authors, GhostAuthor::new, &key, raw).await?
+        }
+    };
+    let entry = entry.ok_or_else(not_found)?;
+    Ok(wrapped(name, Value::Array(vec![entry]), None))
+}
+
+/// The tags and authors `include` asks for, offered on posts and pages.
+const POST_INCLUDE: Include = Include {
+    tags: true,
+    authors: true,
+};
+
+async fn browse_posts(
     state: &GhostState,
     collection: Collection,
-    name: &str,
     raw: &GhostQuery,
-) -> Answer {
-    let query = raw.list_query()?;
+) -> Result<(Vec<Value>, Meta), GhostError> {
+    let include = raw.include(POST_INCLUDE)?;
+    let query = raw.list_query(&Post::FILTER_FIELDS)?;
     let listed = state
         .content
         .list(collection, &query)
         .await
         .map_err(|error| GhostError::internal(&error))?;
     let meta = Meta::new(query.page(), query.limit(), listed.total());
-    let entries: Vec<GhostPost> = listed
-        .into_items()
-        .iter()
-        .map(|post| GhostPost::new(post, query.formats()))
-        .collect();
-    Ok(wrapped(name, json!(entries), Some(json!(meta))))
+    let site = site_for(state, include).await?;
+    let shaped = (&query, site.as_ref(), include);
+    let posts = listed.into_items();
+    let entries = posts.iter().map(|post| shape_post(post, shaped, raw));
+    Ok((entries.collect(), meta))
 }
 
-/// The entry of `collection` at `key`, as a list of one with no `meta`,
-/// or Ghost's 404. A slug that cannot be a slug is `None`: nothing is at it.
-async fn read(
+async fn read_post(
     state: &GhostState,
     collection: Collection,
-    key: Option<PostKey>,
+    key: &PostKey,
     raw: &GhostQuery,
-) -> Answer {
-    let (name, one) = match collection {
-        Collection::Pages => ("pages", "page"),
-        _ => ("posts", "post"),
-    };
-    let query = raw.list_query()?;
-    let Some(key) = key else {
-        return Err(GhostError::not_found(one));
-    };
+) -> Result<Option<Value>, GhostError> {
+    let include = raw.include(POST_INCLUDE)?;
+    let query = raw.list_query(&Post::FILTER_FIELDS)?;
     let found = state
         .content
-        .find(collection, &key)
+        .find(collection, key)
         .await
         .map_err(|error| GhostError::internal(&error))?;
-    let post = found.ok_or_else(|| GhostError::not_found(one))?;
-    let entry = GhostPost::new(&post, query.formats());
-    Ok(wrapped(name, json!([entry]), None))
+    let site = site_for(state, include).await?;
+    let shaped = (&query, site.as_ref(), include);
+    Ok(found.map(|post| shape_post(&post, shaped, raw)))
+}
+
+/// The site's lists, when `include` needs them to name tags or authors.
+async fn site_for(
+    state: &GhostState,
+    include: Include,
+) -> Result<Option<SiteResources>, GhostError> {
+    if !include.any() {
+        return Ok(None);
+    }
+    let site = state.content.site().await;
+    site.map(Some).map_err(|error| GhostError::internal(&error))
+}
+
+/// `post` in Ghost's shape, in the formats the query asks for, with what
+/// `include` adds from `site`, cut to the fields `raw` asks for.
+fn shape_post(
+    post: &Post,
+    (query, site, include): (&ListQuery, Option<&SiteResources>, Include),
+    raw: &GhostQuery,
+) -> Value {
+    let mut entry = object(&GhostPost::new(post, query.formats()));
+    if let Some(site) = site {
+        add_included(&mut entry, post, site, include);
+    }
+    raw.keep_fields(entry, include)
+}
+
+async fn browse_site<T: Listable, G: Serialize>(
+    state: &GhostState,
+    pick: fn(&SiteResources) -> &[T],
+    shape: fn(&T) -> G,
+    raw: &GhostQuery,
+) -> Result<(Vec<Value>, Meta), GhostError> {
+    let include = raw.include(Include::default())?;
+    let query = raw.list_query(T::FIELDS)?;
+    let site = state
+        .content
+        .site()
+        .await
+        .map_err(|error| GhostError::internal(&error))?;
+    let listed = select(pick(&site).iter(), &query);
+    let meta = Meta::new(query.page(), query.limit(), listed.total());
+    let entries = listed.into_items().into_iter();
+    let entries = entries.map(|entry| raw.keep_fields(object(&shape(&entry)), include));
+    Ok((entries.collect(), meta))
+}
+
+async fn read_site<T: Listable, G: Serialize>(
+    state: &GhostState,
+    pick: fn(&SiteResources) -> &[T],
+    shape: fn(&T) -> G,
+    key: &PostKey,
+    raw: &GhostQuery,
+) -> Result<Option<Value>, GhostError> {
+    let include = raw.include(Include::default())?;
+    let site = state
+        .content
+        .site()
+        .await
+        .map_err(|error| GhostError::internal(&error))?;
+    let found = pick(&site).iter().find(|entry| match key {
+        PostKey::Id(id) => entry.id() == id,
+        PostKey::Slug(slug) => entry.slug() == slug,
+    });
+    Ok(found.map(|entry| raw.keep_fields(object(&shape(entry)), include)))
+}
+
+/// `entry` as a JSON object; anything else is an empty one.
+fn object(entry: &impl Serialize) -> Map<String, Value> {
+    match serde_json::to_value(entry) {
+        Ok(Value::Object(fields)) => fields,
+        _ => Map::new(),
+    }
 }
 
 /// `entries` under `name`, with `meta` beside them on a list.
