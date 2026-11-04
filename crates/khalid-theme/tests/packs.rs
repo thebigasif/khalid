@@ -6,10 +6,13 @@ use khalid_core::ReaderSwitch;
 use khalid_theme::{OptionKind, classic, packs};
 
 #[test]
-fn classic_is_todays_look_and_changes_nothing() {
+fn classic_is_the_default_look_and_only_restyles() {
     let pack = classic();
     assert_eq!(pack.name, "classic");
-    assert!(pack.stylesheet.is_empty(), "classic adds no rules");
+    assert!(
+        pack.stylesheet.contains("--frame"),
+        "classic sets its own frame"
+    );
     assert!(pack.templates.is_empty(), "classic replaces no template");
     assert!(pack.tokens.is_empty(), "classic keeps today's sizes");
     assert!(pack.reader.is_empty(), "classic keeps today's switches");

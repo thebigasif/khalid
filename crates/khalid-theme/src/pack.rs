@@ -105,8 +105,8 @@ pub enum OptionKind {
 /// Classic: the look every site had before packs, and every site's default.
 static CLASSIC: Pack = Pack {
     name: PackName::CLASSIC,
-    summary: "Today's look: a calm column of text, cards on the home page and the contents beside long posts.",
-    stylesheet: "",
+    summary: "The default look: a lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts.",
+    stylesheet: include_str!("../packs/classic/classic.css"),
     templates: &[],
     tokens: "",
     reader: &[],

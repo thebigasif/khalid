@@ -1,0 +1,2 @@
+Changed
+- Classic, the look every blog starts with, has a new design. The header, lists and footer use a wide frame (72rem) instead of one narrow column. List pages open with one large lead story, then a grid of cards with category labels above each title. The menu links are quiet, the announcement is a dark band, titles are larger, and long posts have a calmer contents list beside them. Only the tokens set colours and type, so a synced theme still recolours it all.

@@ -11,11 +11,11 @@ Every template is built into Khalid. You pick one in `site.toml` and adjust that
 name = "classic"
 ```
 
-Without a `[template]` table your blog uses `classic`, the look Khalid has always had. Updating Khalid never changes your template.
+Without a `[template]` table your blog uses `classic`, Khalid's default look. Updating Khalid never switches your template to another one, but a release may restyle a template.
 
 These eleven templates are built in. Every template but classic has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default.
 
-- `classic`: a calm column of text, cards on the home page and the contents beside long posts. It takes no options.
+- `classic`: a wide frame with a large lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
 - `atlas`: a publication for a blog with many topics, with a masthead, featured stories, picture cards and a topic index. See [Atlas](templates/atlas.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
