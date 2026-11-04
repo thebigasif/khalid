@@ -1,0 +1,36 @@
+# Folio's own look (docs/templates/folio.md, "Design"): a quiet
+# monochrome page, near-black ink, warm grey panels and hairlines, and one
+# ochre accent where a reader can act. The fonts are the system's own
+# interface sans, set tight and large for headings. A value in the site's
+# own theme/tokens.toml wins.
+[colors]
+background = "#ffffff"
+surface = "#f5f4f1"
+text = "#111113"
+muted = "#5c5c66"
+link = "#8a4f00"
+accent = "#9a5900"
+border = "#e3e1db"
+
+[fonts]
+heading = "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI Variable Display\", \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+body = "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"Segoe UI Variable Text\", \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+mono = "ui-monospace, \"SF Mono\", Menlo, Consolas, \"Liberation Mono\", monospace"
+
+[type]
+body = "1.0625rem 1.1875rem"
+h1 = "2.5rem 4.5rem"
+h2 = "1.625rem 2.125rem"
+h3 = "1.25rem 1.4375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.7
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "6rem"
+
+[shape]
+radius = "0.5rem"
+measure = "40rem"

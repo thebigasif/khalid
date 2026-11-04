@@ -19,7 +19,9 @@
 #                          path, as its canonical one, such as
 #                          https://serpdad.com for the GitHub Pages copy
 #   --demos-only           leaves out the website's pages but the template
-#                          gallery at <mount>templates/, for the copy
+#                          gallery at <mount>templates/, and builds each
+#                          template but classic once more at
+#                          <mount>demos/<name>/, for the copy
 #                          scripts/demos-bundle.sh packs for serpdad.com
 set -euo pipefail
 
@@ -199,5 +201,8 @@ for example in "$root"/fixtures/examples/*/; do
 done
 for name in $(cat "$work/templates"); do
   build "$root/fixtures/showcase-site" "${mount}templates/$name/" "templates/$name" "$name"
+  if [ -n "$demos_only" ] && [ "$name" != classic ]; then
+    build "$root/fixtures/showcase-site" "${mount}demos/$name/" "demos/$name" "$name"
+  fi
 done
 echo "Pages are ready in $out."

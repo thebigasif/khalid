@@ -30,6 +30,8 @@ Pick a folder name, here `blog`, and the address the blog will have on the inter
 khalid init blog --address https://blog.example.com --yes
 ```
 
+The blog starts in `classic`, Khalid's default look. To start in another template, such as one you saw in a demo, add `--template` and its name, such as `--template atlas`. [templates.md](templates.md) lists every name.
+
 Leave out `--yes` to answer the questions one by one: the address, the folder of the website the blog lives under (such as `/blog/`), the languages and whether Khalid runs as a server or writes plain files.
 
 The folder now holds:
