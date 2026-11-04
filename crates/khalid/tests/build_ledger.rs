@@ -72,7 +72,14 @@ fn ledger_front_page() {
     let home = body(&out, "index.html");
     assert!(home.contains("<p class=\"tagline\">Plain advice on search for small teams</p>"));
     assert!(home.contains("<li>5 field-tested guides</li>"), "{home}");
-    assert!(home.contains("<nav class=\"pills\""), "topic pills: {home}");
+    assert!(
+        home.contains("<nav class=\"pills ledger-rail\" aria-label=\"Topics\">"),
+        "topic rail: {home}"
+    );
+    assert!(
+        home.contains("<section class=\"home-section home-latest\""),
+        "lead list: {home}"
+    );
     assert!(home.contains("<ol class=\"ledger-list\""), "{home}");
     insta::assert_snapshot!(home);
 }

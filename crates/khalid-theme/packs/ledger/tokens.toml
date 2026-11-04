@@ -1,27 +1,30 @@
 [colors]
-background = "#fcfbf7"
-surface = "#f3efe3"
-text = "#1b2420"
-muted = "#55605a"
-link = "#0d6b4c"
-accent = "#0d6b4c"
-border = "#dcd6c6"
+background = "#fcfcfa"
+surface = "#f1f3f1"
+text = "#161d1a"
+muted = "#4e5853"
+link = "#0b5c44"
+accent = "#0b6a4e"
+border = "#d3d9d5"
 
 [fonts]
-heading = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, \"Book Antiqua\", Georgia, serif"
+heading = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+body = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
 
 [shape]
-radius = "0.375rem"
-measure = "42rem"
+radius = "0.25rem"
+measure = "38rem"
 
 [type]
-body = "1.0625rem 1.125rem"
-h1 = "2.25rem 3.25rem"
+body = "1.0625rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
 h2 = "1.5rem 2rem"
-h3 = "1.25rem"
+h3 = "1.1875rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
 small = "0.9375rem"
 line_height = 1.65
+heading_weight = 700
 
 [space]
 unit = "0.5rem"
-section = "3rem"
+section = "4rem"

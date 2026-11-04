@@ -17,8 +17,8 @@ Pick another template if your posts lead with photos, or if you want a large fea
 
 **Front page**
 - The blog's name in large type under a short accent bar, your tagline, and up to three short facts such as "12,000 readers".
-- A row of topics, one for each category your posts use, as small tinted labels called pills.
-- The latest posts as a list split by thin lines, numbered 01, 02 and on in the margin: author, date and topic above each title. No pictures and no summaries, so a reader scans many titles at once.
+- The topics, one for each category your posts use. On a wide screen they stand in a numbered index beside the list; on a phone they are small rounded labels, called pills, that wrap onto lines.
+- The latest posts as a list split by thin lines, numbered 01, 02 and on in the margin: author, date and topic beside each title. The newest post leads with its title set large. No pictures and no summaries, so a reader scans many titles at once.
 - When `[[reader.home_sections]]` lists sections, five posts for each, with a "View all" link.
 - A newsletter band across the full width at the end, when your site takes sign-ups.
 
@@ -33,7 +33,7 @@ Pick another template if your posts lead with photos, or if you want a large fea
 
 **Lists and author pages** show posts as the same ruled list, each with its summary.
 
-Everything reads with scripts off. Ledger brings its own look: ink green on warm paper, with serif headings. Your theme tokens, such as the ones theme sync writes, replace any of those colours and fonts, and the logo comes from them too.
+Everything reads with scripts off. Ledger brings its own look: ink green on near white, a heavy sans for headings over a sturdy text serif. Your theme tokens, such as the ones theme sync writes, replace any of those colours and fonts, and the logo comes from them too.
 
 ## Options
 
@@ -80,33 +80,38 @@ Ledger sets these in place of classic's. A value in your own `theme/tokens.toml`
 
 ```toml
 [colors]
-background = "#fcfbf7"
-surface = "#f3efe3"
-text = "#1b2420"
-muted = "#55605a"
-link = "#0d6b4c"
-accent = "#0d6b4c"
-border = "#dcd6c6"
+background = "#fcfcfa"
+surface = "#f1f3f1"
+text = "#161d1a"
+muted = "#4e5853"
+link = "#0b5c44"
+accent = "#0b6a4e"
+border = "#d3d9d5"
 
 [fonts]
-heading = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, \"Book Antiqua\", Georgia, serif"
+heading = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+body = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
 
 [shape]
-radius = "0.375rem"
-measure = "42rem"
+radius = "0.25rem"
+measure = "38rem"
 
 [type]
-body = "1.0625rem 1.125rem"
-h1 = "2.25rem 3.25rem"
+body = "1.0625rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
 h2 = "1.5rem 2rem"
-h3 = "1.25rem"
+h3 = "1.1875rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
 small = "0.9375rem"
 line_height = 1.65
+heading_weight = 700
 
 [space]
 unit = "0.5rem"
-section = "3rem"
+section = "4rem"
 ```
+
+The stylesheet adds its own display sizes on top of these: the blog's name on the front page grows to 7.5rem on a wide screen, a post's title to 4.5rem, and a list page's title to 5rem. The frame is 75rem; a post is a 62rem block, its title across all of it and its text at the measure.
 
 ## Reader features
 
@@ -133,6 +138,8 @@ This is Ledger's design brief. It fixes how the template should look, so every c
 | Phone header and menu | The logo and the menu on one row; the menu wraps under it. |
 | Tabs and indexes at 390 px | Topic pills wrap onto lines. The contents box stays open as a plain list. |
 | Link, card and focus states | Links underlined in the accent; on hover the underline thickens. A row's title is the target and underlines on hover. Focus is a 2 px accent ring. |
+| The one idea | The front page is a ledger: the blog's name set as large as the screen allows (up to 7.5rem, weight 800, tracking near -0.045em) over a double rule, like the totals line of an account book, then numbered ruled rows beside a numbered index of topics. Someone shown only the thumbnail should name it by that giant name, the double rule and the column of numbers. |
+| Type scale | Display sizes sit well above the token scale: the front page name 3 to 7.5rem, a post title 2.25 to 4.5rem, a list title 2.5 to 5rem, the lead row's title 1.875 to 3.25rem. Other rows' titles use h2. Display type is tight, 1 to 1.05 line height. |
 | Signature details | Numbers 01, 02, 03 in the margin of every list. The "bottom line" summary under a heavy rule at the end of a post. Tables with tabular figures, right-aligned numbers and hairline rows. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/ledger/theme/`: petrol (`#0d5c66` links, `#0f6c78` accent) on near white (`#fdfdfc`), Libre Franklin for headings and PT Serif for text, and a bar-chart mark.

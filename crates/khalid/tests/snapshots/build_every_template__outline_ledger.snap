@@ -5,18 +5,19 @@ expression: pages
 # index.html
 header.masthead
   h1: Field Notes on SEO
-nav.pills "Topics"
-section.home-section
+nav.ledger-rail.pills "Topics"
+  h2: Topics
+section.home-latest.home-section
   h2: Latest posts
-  article.entry
+  article.ledger-entry
     h3: Planning a topic cluster in an afternoon
-  article.entry
+  article.ledger-entry
     h3: Fixing slow pages, starting with the biggest win
-  article.entry
+  article.ledger-entry
     h3: What a sitemap does, and what it does not
-  article.entry
+  article.ledger-entry
     h3: How to write a title tag
-  article.entry
+  article.ledger-entry
     h3: Why internal links matter
 
 # why-internal-links-matter/index.html

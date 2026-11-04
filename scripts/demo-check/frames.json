@@ -8,7 +8,7 @@
     "folio": 1210,
     "harbor": 850,
     "keystone": 1210,
-    "ledger": 660,
+    "ledger": 1200,
     "meridian": 1150,
     "wire": 1210,
     "workbench": 1210
@@ -20,7 +20,6 @@
     "folio",
     "harbor",
     "keystone",
-    "ledger",
     "meridian",
     "wire",
     "workbench"

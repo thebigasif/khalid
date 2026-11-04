@@ -19,18 +19,21 @@ expression: home
 <li>Two writers</li>
 </ul>
 </header>
-<nav class="pills" aria-label="Topics">
-<ul>
+<div class="ledger-front">
+<nav class="pills ledger-rail" aria-label="Topics">
+<h2>Topics</h2>
+<ol role="list">
 <li><a class="pill" href="/blog/category/on-page-seo/">On-page SEO</a></li>
 <li><a class="pill" href="/blog/category/technical-seo/">Technical SEO</a></li>
 <li><a class="pill" href="/blog/category/content-strategy/">Content strategy</a></li>
-</ul>
+</ol>
 </nav>
-<section class="home-section" aria-labelledby="latest-title">
+<div class="ledger-main">
+<section class="home-section home-latest" aria-labelledby="latest-title">
 <h2 id="latest-title">Latest posts</h2>
 <ol class="ledger-list" role="list">
 <li>
-<article class="entry">
+<article class="ledger-entry">
 <p class="card-meta"><span class="card-author">Asif</span>
 <time datetime="2026-10-12">12 October 2026</time>
 <a class="pill" href="/blog/category/content-strategy/">Content strategy</a></p>
@@ -38,7 +41,7 @@ expression: home
 </article>
 </li>
 <li>
-<article class="entry">
+<article class="ledger-entry">
 <p class="card-meta"><span class="card-author">Lena Vogt</span>
 <time datetime="2026-10-05">5 October 2026</time>
 <a class="pill" href="/blog/category/technical-seo/">Technical SEO</a></p>
@@ -46,7 +49,7 @@ expression: home
 </article>
 </li>
 <li>
-<article class="entry">
+<article class="ledger-entry">
 <p class="card-meta"><span class="card-author">Lena Vogt</span>
 <time datetime="2026-09-28">28 September 2026</time>
 <a class="pill" href="/blog/category/technical-seo/">Technical SEO</a></p>
@@ -54,7 +57,7 @@ expression: home
 </article>
 </li>
 <li>
-<article class="entry">
+<article class="ledger-entry">
 <p class="card-meta"><span class="card-author">Asif</span>
 <time datetime="2026-09-21">21 September 2026</time>
 <a class="pill" href="/blog/category/on-page-seo/">On-page SEO</a></p>
@@ -62,7 +65,7 @@ expression: home
 </article>
 </li>
 <li>
-<article class="entry">
+<article class="ledger-entry">
 <p class="card-meta"><span class="card-author">Asif</span>
 <time datetime="2026-09-14">14 September 2026</time>
 <a class="pill" href="/blog/category/on-page-seo/">On-page SEO</a></p>
@@ -71,6 +74,8 @@ expression: home
 </li>
 </ol>
 </section>
+</div>
+</div>
 
 </main>
 <footer class="site-footer">

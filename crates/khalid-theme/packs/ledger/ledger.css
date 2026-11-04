@@ -1,129 +1,223 @@
-/* Ledger: a text-led look on warm paper. Serif headings, an ink-green
-   accent, thin rules in place of boxes, topics as tinted pills, and lists
-   numbered like the lines of a ledger, so the words lead. Every colour,
-   font and size comes from the tokens or a tint of one. */
+/* Ledger: a text-led look for studies and long how-tos. A wide frame of
+   ruled rows, numbered 01, 02 in the margin like the lines of a ledger,
+   a strong sans for headings over a sturdy text serif, hairlines in place
+   of boxes, and one deep accent. Every colour, font and size comes from
+   the tokens or a tint of one, so a synced theme recolours it all. */
 
-/* Header and footer: the name with a small accent mark, a double rule under
-   the header, and a footer on the surface colour across the window. */
-.site-header { padding-block: 1.25rem; border-block-end: 3px double var(--color-text); }
-.site-name { gap: 0.625rem; font-size: 1.375rem; letter-spacing: -0.01em; }
-.site-name::before { content: ""; inline-size: 0.875rem; block-size: 0.875rem; background: var(--color-accent); border-radius: 2px; }
-.site-header nav a { color: var(--color-text); font-weight: 500; text-decoration: none; }
-.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px 0 var(--color-accent); }
-.announcement { margin-block-end: 0; background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border: 0; font-size: var(--text-small); font-weight: 600; }
+:root { --frame: 75rem; --rule: 2px solid var(--color-text); }
+
+/* The frame. Lists use all of it. A post is a block of 62rem, centred:
+   its title runs across it, its text keeps to the measure, and on a wide
+   screen the open contents stand in the margin beside the text. */
+.site-header, main, .site-footer { max-inline-size: var(--frame); }
+main > :is(.page, .author, .newsletter-slot, .mentions, .comments) { max-inline-size: var(--measure); margin-inline: auto; }
+main > :is(.post, .related, .back-link, .breadcrumbs) { max-inline-size: 62rem; margin-inline: auto; }
+.post > :not(.post-header, .toc-box), .related > * { max-inline-size: var(--measure); }
+@media (min-width: 75rem) {
+  .post:has(> .toc-box) { display: grid; grid-template-columns: minmax(0, var(--measure)) minmax(0, 1fr); column-gap: calc(var(--space) * 6); }
+  .post:has(> .toc-box) > * { grid-column: 1; }
+  .post:has(> .toc-box) > .post-header { grid-column: 1 / -1; }
+  .post > .toc-box { grid-column: 2; grid-row: 2 / span 12; align-self: start; position: sticky; inset-block-start: calc(var(--space) * 3); max-block-size: calc(100vh - 3rem); overflow-y: auto; }
+  .post > .toc-box ol { columns: auto; }
+}
+main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
+main > :is(p, .intro, .search, .results, dl) { max-inline-size: var(--measure); }
+
+/* Header: an accent bar across the window, the name, then the menu in
+   the heading face. On a phone the menu wraps under the name. */
+body { border-block-start: 4px solid var(--color-accent); }
+.site-header { gap: 0 2rem; padding-block: 1rem; border-block-end: 1px solid var(--color-border); }
+.site-name { gap: 0.625rem; font-size: 1.375rem; font-weight: 800; letter-spacing: -0.02em; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 600; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 2px; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -3px 0 var(--color-accent); }
+.announcement { margin-block-end: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; font-family: var(--font-heading); font-size: var(--text-small); font-weight: 600; }
 .announcement a { color: var(--color-text); }
-.site-footer { margin-block-start: var(--space-section); padding-block: calc(var(--space) * 5); background: var(--color-surface); border-block-start: 3px double var(--color-text); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
-.site-footer a { color: var(--color-text); }
-h1, h2, h3 { letter-spacing: -0.01em; }
 
-/* Pills: a topic's name on a light tint of the accent. The pill is drawn
-   small; its hit area reaches 44 px. */
-.pills { display: flex; flex-wrap: wrap; gap: var(--space); margin-block: 0 calc(var(--space) * 3); padding: 0; }
-.pills ul { gap: var(--space); }
+/* Headings: the sans, set tight. Labels are small capitals in the heading
+   face, the way a report names its kind and date. */
+h1, h2, h3, h4 { letter-spacing: -0.012em; }
+h1 { letter-spacing: -0.025em; }
+.toc-title, .home-section > h2, .related > h2, .author-box > h2, .media-row > h2, .topic-tabs > h2 { font-family: var(--font-heading); }
+a { text-decoration-color: color-mix(in oklab, var(--color-link) 45%, transparent); }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline-width: 2px; }
+
+/* Pills: a topic's name, small, on a hairline. The hit area reaches 44 px. */
+.pills { margin-block: 0 calc(var(--space) * 2); }
 .pill, .card-meta > a {
   position: relative;
   display: inline-flex;
   align-items: center;
   min-block-size: 2rem;
   padding-inline: calc(var(--space) * 1.5);
-  background: color-mix(in oklab, var(--color-accent) 12%, var(--color-background));
+  background: var(--color-background);
   color: var(--color-text);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
+  font-family: var(--font-heading);
   font-size: var(--text-small);
   font-weight: 600;
   line-height: 1.2;
   text-decoration: none;
 }
-nav .pill { min-block-size: 2rem; }
 .pill::after, .card-meta > a::after { content: ""; position: absolute; inset: -0.375rem 0; }
-.pill:hover, .card-meta > a:hover { background: var(--color-accent); color: var(--color-on-accent); }
-.card-meta > a { min-block-size: 1.75rem; }
+.pill:hover, .card-meta > a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.card-meta > a { min-block-size: 1.75rem; padding-inline: var(--space); }
 
-/* The front page: a kicker rule, the name large, a tagline and up to three
-   facts set as figures. */
-.masthead { padding-block: calc(var(--space) * 6) calc(var(--space) * 4); }
-.masthead::before { content: ""; display: block; inline-size: 3rem; block-size: 4px; margin-block-end: calc(var(--space) * 3); background: var(--color-accent); }
-.masthead h1 { margin: 0; font-size: calc(var(--text-h1) * 1.15); letter-spacing: -0.025em; line-height: 1.05; }
-.tagline { margin: calc(var(--space) * 2) 0 0; max-inline-size: 46ch; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.45; }
-.stats { display: flex; flex-wrap: wrap; gap: calc(var(--space) * 2); margin: calc(var(--space) * 4) 0 0; padding: 0; list-style: none; }
-.stats li { padding: var(--space) calc(var(--space) * 2); background: var(--color-background); border-inline-start: 3px solid var(--color-accent); box-shadow: 0 0 0 1px var(--color-border); font-family: var(--font-heading); font-size: var(--text-h4); font-variant-numeric: lining-nums tabular-nums; }
-.home-section > h2, .related > h2, .author-box > h2 { display: flex; align-items: center; gap: calc(var(--space) * 2); margin-block: calc(var(--space) * 3) var(--space); color: var(--color-link); font-family: var(--font-body); font-size: var(--text-small); letter-spacing: 0.1em; text-transform: uppercase; }
-.home-section > h2::after, .related > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--color-border); }
+/* The front page: the name set as large as the screen allows, tight, the
+   way a report names itself on its cover, then the double rule a ledger
+   draws under its totals. The tagline and facts sit on that rule. */
+.masthead { display: grid; gap: calc(var(--space) * 3) calc(var(--space) * 6); padding-block: calc(var(--space) * 7) calc(var(--space) * 4); border-block-end: 6px double var(--color-text); }
+.masthead::before { content: ""; inline-size: 4rem; block-size: 6px; background: var(--color-accent); }
+.masthead h1 { margin: 0; font-size: clamp(3rem, 1.2rem + 6.2vw, 7.5rem); font-weight: 800; letter-spacing: -0.045em; line-height: 0.95; overflow-wrap: anywhere; }
+.tagline { margin: 0; max-inline-size: 36ch; font-size: var(--text-h3); line-height: 1.45; }
+.stats { display: flex; flex-wrap: wrap; gap: 0; margin: 0; padding: 0; list-style: none; }
+.stats li { padding: 0 calc(var(--space) * 3); border-inline-start: 1px solid var(--color-border); font-family: var(--font-heading); font-weight: 700; font-variant-numeric: lining-nums tabular-nums; }
+.stats li:first-child { padding-inline-start: 0; border: 0; }
+main > .intro, main > h1 + .intro { max-inline-size: 46rem; margin-block-start: calc(var(--space) * 4); font-size: var(--text-h4); }
+@media (min-width: 60rem) {
+  .masthead { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+  .masthead::before, .masthead h1 { grid-column: 1 / -1; }
+}
 
-/* The ruled list: posts one under another, each numbered in the margin in
-   the heading face, split by thin rules. */
-.ledger-list, .cards-text { counter-reset: line; gap: 0; margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--color-border); }
-.ledger-list > li, .cards-text > li { counter-increment: line; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); padding-block: calc(var(--space) * 3); border-block-end: 1px solid var(--color-border); }
-.ledger-list > li::before, .cards-text > li::before { content: counter(line, decimal-leading-zero) / ""; padding-block-start: 0.15rem; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-h4); font-variant-numeric: lining-nums tabular-nums; }
-.entry .card-meta, .cards-text .card-meta { gap: calc(var(--space) / 2) calc(var(--space) * 2); margin: 0; }
-.entry :is(h2, h3), .cards-text .card :is(h2, h3, h4) { margin: var(--space) 0 0; font-size: var(--text-h3); line-height: 1.3; }
-.entry :is(h2, h3) a { color: var(--color-text); text-decoration: none; }
-.entry :is(h2, h3) a:hover, .cards-text .card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 1px; }
-.cards-text .card p:last-child { margin: var(--space) 0 0; color: var(--color-muted); }
-.card time, .post-dates { font-variant-numeric: tabular-nums; }
-.view-all a { font-weight: 600; }
+/* The topics: wrapping pills on a phone, and from 64rem a numbered index
+   in a rail beside the list, the way a report lists its chapters. */
+.ledger-rail > h2 { margin: calc(var(--space) * 4) 0 var(--space); font-size: var(--text-small); }
+.ledger-rail ol { display: flex; flex-wrap: wrap; gap: var(--space); margin: 0; padding: 0; list-style: none; counter-reset: topic; }
+@media (min-width: 64rem) {
+  .ledger-front { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; grid-template-areas: "list rail"; gap: 0 calc(var(--space) * 8); align-items: start; }
+  .ledger-main { grid-area: list; }
+  .ledger-rail { grid-area: rail; position: sticky; inset-block-start: calc(var(--space) * 3); }
+  .ledger-rail > h2 { margin-block: calc(var(--space) * 6) 0; padding-block-end: var(--space); border-block-end: var(--rule); font-size: var(--text-h4); }
+  .ledger-rail ol { display: block; }
+  .ledger-rail li { counter-increment: topic; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); align-items: center; border-block-end: 1px solid var(--color-border); }
+  .ledger-rail li::before { content: counter(topic, decimal-leading-zero) / ""; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .ledger-rail .pill { min-block-size: 3rem; padding: 0; background: none; border: 0; border-radius: 0; font-size: var(--text-body); }
+  .ledger-rail .pill::after { inset: 0; }
+  .ledger-rail .pill:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+}
+
+/* The lead: the newest post's row, its title set near display size. */
+.home-latest .ledger-list > li:first-child { padding-block: calc(var(--space) * 4); }
+.home-latest .ledger-list > li:first-child .ledger-entry :is(h2, h3, h4) { font-size: clamp(1.875rem, 1.1rem + 2.2vw, 3.25rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+
+/* Section titles: the heading face over a heavy rule, as a report
+   heads a table. */
+.home-section > h2, .related > h2, .media-row > h2, .topic-tabs > h2 { margin-block: calc(var(--space) * 6) 0; padding-block-end: var(--space); border-block-end: var(--rule); color: var(--color-text); font-size: var(--text-h4); letter-spacing: 0; text-transform: none; }
+.home-section { margin-block-end: 0; }
+.home-section + .home-section > h2 { margin-block-start: calc(var(--space) * 8); }
+
+/* The ruled list: posts one under another, each numbered in the margin,
+   split by hairlines. No boxes. Wide rows put the who, when and topic in
+   a column of their own before the title, like the columns of a ledger. */
+.ledger-list, .cards-text { counter-reset: line; display: block; margin: 0; padding: 0; list-style: none; }
+main > .cards-text { border-block-start: var(--rule); }
+.ledger-list > li, .cards-text > li { counter-increment: line; container-type: inline-size; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); padding-block: 1.25rem; border-block-end: 1px solid var(--color-border); }
+.ledger-list > li::before, .cards-text > li::before { content: counter(line, decimal-leading-zero) / ""; padding-block-start: 0.2rem; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; font-variant-numeric: lining-nums tabular-nums; }
+.ledger-entry .card-meta, .cards-text .card-meta { gap: 0.25rem 1rem; margin: 0; font-family: var(--font-heading); }
+.ledger-entry .card-meta time, .cards-text .card-meta time { font-size: inherit; font-variant-numeric: tabular-nums; }
+.card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; }
+.ledger-entry :is(h2, h3, h4), .cards-text .card :is(h2, h3, h4) { margin: 0.375rem 0 0; font-size: var(--text-h3); line-height: 1.3; }
+.ledger-entry :is(h2, h3, h4) a, .cards-text .card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.ledger-entry :is(h2, h3, h4) a:hover, .cards-text .card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 2px; }
+.cards-text .card p:last-child { margin: 0.5rem 0 0; max-inline-size: 62ch; color: var(--color-muted); }
+@container (min-width: 46rem) {
+  .ledger-entry, .cards-text .card { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 0 2.5rem; align-items: start; }
+  .ledger-entry .card-meta, .cards-text .card-meta { flex-direction: column; align-items: start; grid-row: span 3; }
+  .ledger-entry :is(h2, h3, h4), .cards-text .card :is(h2, h3, h4) { margin: 0; font-size: var(--text-h2); line-height: 1.2; }
+  .cards-text .card :is(h2, h3, h4) { font-size: calc(var(--text-h3) * 1.15); }
+  .ledger-list > li, .cards-text > li { grid-template-columns: 4rem minmax(0, 1fr); padding-block: 1.5rem; }
+  .ledger-list > li::before, .cards-text > li::before { padding-block-start: 0.1rem; font-size: var(--text-h4); }
+}
+.view-all { margin-block-start: var(--space); }
+.view-all a { font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; }
 .view-all a::after { content: " \2192" / ""; white-space: pre; }
 [dir="rtl"] .view-all a::after { content: " \2190" / ""; }
-.page-numbers a[aria-current] { border-radius: 999px; }
+.pagination { font-family: var(--font-heading); }
+.page-numbers a[aria-current] { color: var(--color-text); box-shadow: inset 0 -3px 0 var(--color-accent); }
 
-/* A post: pill, title, byline, then the lead picture in a soft frame. */
-.post-header { padding-block-end: calc(var(--space) * 3); border-block-end: 1px solid var(--color-border); }
-.post-header .pills { margin-block: calc(var(--space) * 2) 0; }
-.post-header h1 { margin-block: calc(var(--space) * 1.5) calc(var(--space) * 2); font-size: calc(var(--text-h1) * 1.05); letter-spacing: -0.02em; line-height: 1.1; }
-.post-meta { font-size: var(--text-small); }
-.post-meta .person a { color: var(--color-text); font-weight: 600; }
-.post-dates { display: flex; flex-wrap: wrap; gap: 0 calc(var(--space) * 2); }
-.post-dates > * + *::before { content: "\00b7" / ""; margin-inline-end: calc(var(--space) * 2); }
+/* List pages: the title large over the list's heavy rule. */
+main > h1 { margin-block: calc(var(--space) * 6) calc(var(--space) * 3); font-size: clamp(2.5rem, 1.3rem + 4.2vw, 5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+main > :is(.cards-text, .featured) { margin-block-start: calc(var(--space) * 4); }
+
+/* A post: pill, title, byline, then the lead picture in a light frame. */
+.post-header { margin-block-end: calc(var(--space) * 4); padding-block: calc(var(--space) * 3); border-block-end: 1px solid var(--color-border); }
+.post-header .pills { margin-block: 0 calc(var(--space) * 2); }
+.post-header h1 { margin-block: 0 calc(var(--space) * 3); max-inline-size: 22ch; font-size: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.5rem; font-family: var(--font-heading); }
+.post-meta > :is(address, .reviewed-by, .updated-note) { flex-basis: 100%; }
+.post-meta > p { margin: 0; }
+.post-meta .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-meta .person a:hover { text-decoration: underline; }
+.post-dates { display: flex; flex-wrap: wrap; gap: 0 1rem; font-variant-numeric: tabular-nums; }
+.post-dates > * + *::before { content: "\00b7" / ""; margin-inline-end: 1rem; }
 .post-header .image { margin-block-start: calc(var(--space) * 3); }
-.post-header .image img { padding: calc(var(--space) * 1.5); background: var(--color-surface); border: 1px solid var(--color-border); }
-.post-body > p:first-child { font-size: calc(var(--text-body) * 1.12); }
-.post-body > h2 { padding-block-start: calc(var(--space) * 2); border-block-start: 1px solid var(--color-border); }
-.post-body blockquote { color: var(--color-text); border-inline-start-color: var(--color-accent); font-family: var(--font-heading); font-size: var(--text-h4); }
+.post-header .image img { border: 1px solid var(--color-border); border-radius: 0; }
+.post-body > p:first-child { font-size: calc(var(--text-body) * 1.1); }
+.post-body > h2 { margin-block-start: 2.25em; padding-block-start: calc(var(--space) * 2); border-block-start: var(--rule); }
+.post-body > h3 { margin-block-start: 1.75em; }
+.post-body blockquote { padding-block: var(--space); color: var(--color-text); border-inline-start: 3px solid var(--color-accent); font-size: var(--text-h4); font-style: italic; }
+.post-body figure figcaption { padding-block-start: var(--space); border-block-start: 1px solid var(--color-border); }
 
-/* The contents: an open, ruled box with an accent edge, in two columns when
-   there is room. */
-.toc-box { padding: calc(var(--space) * 2.5) calc(var(--space) * 3); background: var(--color-surface); border: 0; border-block-start: 3px solid var(--color-accent); border-radius: 0 0 var(--radius) var(--radius); }
-.toc-box ol { columns: 2 16rem; column-gap: calc(var(--space) * 4); }
+/* The contents: an open, faint panel after the title, a plain list in two
+   columns when there is room. */
+.toc-box { margin-block-end: calc(var(--space) * 5); padding: calc(var(--space) * 2.5) calc(var(--space) * 3); background: var(--color-surface); border-block-start: var(--rule); }
+.toc-box ol { margin: var(--space) 0 0; padding: 0; list-style: none; columns: 2 15rem; column-gap: calc(var(--space) * 4); }
 .toc-box li { break-inside: avoid; }
-.toc-box a { color: var(--color-text); text-decoration-color: var(--color-border); }
-.toc-box a:hover { color: var(--color-link); }
-.toc-title { color: var(--color-link); font-size: var(--text-small); letter-spacing: 0.1em; text-transform: uppercase; }
+.toc-box li ol { columns: auto; padding-inline-start: 1rem; }
+.toc-box a { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-text); font-size: var(--text-small); line-height: 1.35; text-decoration: none; }
+.toc-box a:hover { color: var(--color-link); text-decoration: underline; }
+.toc-title { margin: 0; color: var(--color-text); font-size: var(--text-small); font-weight: 700; }
+.toc-inline { background: var(--color-surface); border-block-start: var(--rule); border-radius: 0; }
 
-/* Body furniture: tips and further reading as ruled notes, a figure that
-   leads the eye, the key points as a closing "bottom line", numbered
-   steps, plain questions. */
-.post-body .callout, .author-box { border-start-start-radius: 0; border-end-start-radius: 0; }
-.post-body .callout-tip { background: color-mix(in oklab, var(--color-accent) 7%, var(--color-background)); border-inline-start: 4px solid var(--color-accent); }
-.callout-summary { margin-block: calc(var(--space) * 5) calc(var(--space) * 3); padding: calc(var(--space) * 2.5) 0 0; background: none; border: 0; border-block-start: 3px double var(--color-text); }
+/* Body furniture: tips as ruled notes, the key points as a closing
+   "bottom line" under a heavy rule, tables of hairlines with figures that
+   line up, large step numbers and plain questions. */
+.post-body .callout, .author-box { border-radius: 0; }
+.post-body .callout-tip, .post-body .callout-read { background: none; border: 0; border-block: 1px solid var(--color-border); border-inline-start: 3px solid var(--color-accent); }
+.callout-summary { margin-block: calc(var(--space) * 6) calc(var(--space) * 3); padding: calc(var(--space) * 2.5) 0 0; background: none; border: 0; border-block-start: 5px solid var(--color-text); }
 .post-body .callout-summary { border-radius: 0; }
 .callout-summary li::marker { color: var(--color-link); }
 .callout-read { font-size: var(--text-small); }
-.callout-stat strong:first-child { color: var(--color-link); font-family: var(--font-heading); font-variant-numeric: lining-nums; }
-.post-body table { font-size: var(--text-small); }
-.post-body th { background: none; border-block-end: 2px solid var(--color-text); }
-.post-body tbody tr:nth-child(even) { background: var(--color-surface); }
-.post-body td { font-variant-numeric: tabular-nums; }
+.callout-stat strong:first-child { color: var(--color-link); font-family: var(--font-heading); font-variant-numeric: lining-nums tabular-nums; }
+.post-body table { font-family: var(--font-heading); font-size: var(--text-small); font-variant-numeric: lining-nums tabular-nums; }
+.post-body th { background: var(--color-surface); border-block: var(--rule); border-block-end-width: 1px; font-weight: 700; }
+.post-body tr:last-child > td { border-block-end: var(--rule); }
+.post-body td { border-block-end-color: var(--color-border); }
+.post-body :is(th, td)[style*="right"] { text-align: end; }
 .howto { counter-reset: step; padding: 0; list-style: none; }
-.howto > li { counter-increment: step; position: relative; padding-inline-start: 3rem; }
-.howto > li::before { content: counter(step) / ""; position: absolute; inset-inline-start: 0; inline-size: 2rem; block-size: 2rem; display: grid; place-items: center; background: var(--color-accent); color: var(--color-on-accent); border-radius: 50%; font-family: var(--font-heading); font-weight: var(--heading-weight); }
-.faq details { padding-block: var(--space); }
-.faq summary { list-style: none; font-size: var(--text-h4); cursor: text; }
+.howto > li { counter-increment: step; position: relative; padding-inline-start: 3.5rem; }
+.howto > li::before { content: counter(step, decimal-leading-zero) / ""; position: absolute; inset-inline-start: 0; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-h3); font-weight: 800; font-variant-numeric: lining-nums tabular-nums; line-height: 1.2; }
+.faq details { padding-block: var(--space); border-block-end: 1px solid var(--color-border); }
+.faq summary { list-style: none; font-family: var(--font-heading); font-size: var(--text-h4); font-weight: 700; cursor: text; }
 .faq summary::-webkit-details-marker { display: none; }
-.lock { background: color-mix(in oklab, var(--color-accent) 6%, var(--color-background)); border-style: dashed; }
+.lock { background: var(--color-surface); border-style: dashed; }
+.post-footer h2 { font-size: var(--text-small); }
+.tags a { background: none; border: 1px solid var(--color-border); border-radius: 999px; font-family: var(--font-heading); font-size: var(--text-small); }
 
-/* After the post: the author on the surface with an accent edge, then the
-   related posts. */
-.author-box { padding: calc(var(--space) * 3); background: var(--color-surface); border: 0; border-inline-start: 4px solid var(--color-accent); }
-.author-box > h2 { margin-block-start: 0; }
-.author-box .person-name { font-family: var(--font-heading); font-size: var(--text-h4); }
+/* After the post: the author between hairlines, then the related posts in
+   the same ruled list. */
+.author-box { padding: calc(var(--space) * 3) 0; background: none; border-block: var(--rule); border-block-end: 1px solid var(--color-border); }
+.author-box > h2 { color: var(--color-text); font-weight: 700; letter-spacing: 0; text-transform: none; }
+.author-box .person-name { font-size: var(--text-h4); }
 .related { margin-block-start: var(--space-section); }
+.related > h2 { margin-block-start: 0; }
 
-/* The newsletter band runs the full width of the window, without making
-   the page scroll sideways. */
-.band { margin-block: var(--space-section) calc(var(--space) * -6); padding-block: calc(var(--space) * 5); background: color-mix(in oklab, var(--color-accent) 9%, var(--color-background)); box-shadow: 0 0 0 100vmax color-mix(in oklab, var(--color-accent) 9%, var(--color-background)); clip-path: inset(0 -100vmax); }
-.band .newsletter-slot { margin: 0; padding: 0; background: none; }
-.newsletter-slot h2 { font-size: var(--text-h2); }
-.button, .subscribe button, .comment-form button { color: var(--color-on-accent); border-radius: 999px; }
-.cta-band { background: var(--color-surface); border-block-start: 3px solid var(--color-accent); }
+/* The newsletter: a faint panel on a hairline, inside the frame. */
+.band { margin-block: var(--space-section) 0; }
+.newsletter-slot, .band .newsletter-slot { padding: calc(var(--space) * 4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0; }
+main > .band .newsletter-slot { margin: 0; }
+.newsletter-slot h2 { font-size: var(--text-h3); }
+.button, .subscribe button, .comment-form button { color: var(--color-on-accent); border-radius: var(--radius); font-family: var(--font-heading); }
+.cta-band { background: var(--color-surface); border: 0; border-block-start: var(--rule); border-radius: 0; }
 
-@media print { .pills, .band, .site-name::before { display: none; } }
+/* The footer: a heavy rule, then quiet links across the frame. */
+.site-footer { margin-block-start: var(--space-section); padding-block: calc(var(--space) * 4) calc(var(--space) * 6); border-block-start: var(--rule); font-family: var(--font-heading); }
+.site-footer a { color: var(--color-text); text-decoration: none; }
+.site-footer a:hover { color: var(--color-link); text-decoration: underline; }
+.footer-groups h2 { font-weight: 700; }
+
+@media print { .pills, .band { display: none; } body { border: 0; } }
