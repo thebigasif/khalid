@@ -16,7 +16,7 @@ related: [answer-capsules, ai-search-sources, ai-search-guide]
 tags: [ai search, writing]
 image:
   src: cover.svg
-  alt: Two microphones facing each other over a speech bubble with the answer first, a short block of text below a quote mark
+  alt: A studio microphone beside a page of notes, with the answer in its first two lines highlighted in orange
 schema: '{"@context":"https://schema.org","@type":"PodcastEpisode","name":"Episode one: put the answer first for AI search","episodeNumber":1,"description":"Priya Raman and Maren Okafor talk through how to write answers that AI search tools can find, trust and quote: the answer first, one idea per paragraph, a source for every number, and a named author.","datePublished":"2026-10-23","url":"https://www.example.com/blog/podcast-answer-first/","partOfSeries":{"@type":"PodcastSeries","name":"The Ledger, out loud","url":"https://www.example.com/blog/category/ai-search/"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://www.example.com/blog/podcast-answer-first/episode-1-sample.wav","encodingFormat":"audio/wav"}}'
 ---
 
