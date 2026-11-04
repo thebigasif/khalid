@@ -16,7 +16,7 @@ related: [technical-seo-audit, xml-sitemaps, core-web-vitals]
 tags: [crawling, translation]
 image:
   src: cover.svg
-  alt: Two page cards in violet and mint joined by a pair of curved arrows, with a small globe between them
+  alt: Two versions of a post in two languages, joined by arrows that turn around an orange globe
 ---
 
 Hreflang is a short tag that tells search engines a page exists in other languages, and where each version lives. Get it right and a reader in Hamburg sees the German post while a reader in Leeds sees the English one. Get it wrong and search engines quietly ignore the lot.

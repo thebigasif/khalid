@@ -1,23 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
   <rect width="1200" height="675" fill="#f4f1ea"/>
-  <rect x="268" y="82" width="200" height="535" rx="6" fill="#eba63f"/>
-  <g fill="none" stroke="#1f2428" stroke-linecap="round" stroke-linejoin="round">
-    <path stroke-width="4" d="M450 171H660M450 251H660M450 331H660M450 411H660M450 491H660M450 571H660"/>
-    <rect stroke-width="5" x="280" y="70" width="200" height="535" rx="6"/>
-    <path stroke-width="9" d="M308 108h120"/>
-    <path stroke-width="4" d="M308 163h100M308 179h70M308 243h100M308 259h70M308 323h100M308 339h70M308 403h100M308 419h70M308 483h100M308 499h70M308 563h100M308 579h70"/>
+  <rect x="184" y="111" width="260" height="470" rx="8" fill="#eba63f"/>
+  <g fill="none" stroke="#1f2428" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M420 182H690M420 252H690M420 322H690M420 392H690M420 462H690M420 532H690"/>
+    <rect x="200" y="95" width="260" height="470" rx="8"/>
+    <path stroke-width="14" d="M236 135h150"/>
+    <path stroke-width="6" d="M236 182h130M236 252h130M236 322h130M236 392h130M236 462h130M236 532h130"/>
+    <g fill="#fffdf8">
+      <rect x="690" y="155" width="310" height="54" rx="8"/>
+      <rect x="690" y="225" width="310" height="54" rx="8"/>
+      <rect x="690" y="295" width="310" height="54" rx="8"/>
+      <rect x="690" y="365" width="310" height="54" rx="8"/>
+      <rect x="690" y="435" width="310" height="54" rx="8"/>
+      <rect x="690" y="505" width="310" height="54" rx="8"/>
+    </g>
+    <path stroke-width="6" d="M718 182h170M718 252h130M718 322h160M718 392h120M718 462h150M718 532h140"/>
   </g>
   <g fill="#1f2428">
-    <circle cx="450" cy="171" r="7"/><circle cx="450" cy="251" r="7"/><circle cx="450" cy="331" r="7"/>
-    <circle cx="450" cy="411" r="7"/><circle cx="450" cy="491" r="7"/><circle cx="450" cy="571" r="7"/>
+    <circle cx="420" cy="182" r="11"/><circle cx="420" cy="252" r="11"/><circle cx="420" cy="322" r="11"/>
+    <circle cx="420" cy="392" r="11"/><circle cx="420" cy="462" r="11"/><circle cx="420" cy="532" r="11"/>
   </g>
-  <g fill="#fffdf8" stroke="#1f2428" stroke-width="5" stroke-linejoin="round">
-    <rect x="660" y="140" width="260" height="62" rx="6"/>
-    <rect x="660" y="220" width="260" height="62" rx="6"/>
-    <rect x="660" y="300" width="260" height="62" rx="6"/>
-    <rect x="660" y="380" width="260" height="62" rx="6"/>
-    <rect x="660" y="460" width="260" height="62" rx="6"/>
-    <rect x="660" y="540" width="260" height="62" rx="6"/>
-  </g>
-  <path fill="none" stroke="#1f2428" stroke-width="4" stroke-linecap="round" d="M686 163h110M686 179h70M686 243h110M686 259h70M686 323h110M686 339h70M686 403h110M686 419h70M686 483h110M686 499h70M686 563h110M686 579h70"/>
 </svg>

@@ -11,7 +11,7 @@ tags: [planning]
 focus_keyword: topic cluster
 image:
   src: cover.svg
-  alt: One large circle for the topic cluster subject, with faint dots where its posts will go
+  alt: One large orange circle with a question mark, the topic cluster subject, ringed by dashed circles where its posts will go
 series:
   name: Your first topic cluster
   order: 1

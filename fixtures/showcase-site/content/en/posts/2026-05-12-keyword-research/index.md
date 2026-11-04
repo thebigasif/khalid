@@ -19,7 +19,7 @@ related: [search-intent, seo-writing-guide, content-brief-template, content-cale
 tags: [research, planning]
 image:
   src: cover.svg
-  alt: A large magnifying glass over a scatter of white cards, a picture of keyword research, with one peach card lit up inside the lens
+  alt: A magnifying glass over scattered phrase cards, a picture of keyword research, with the one card inside the lens in orange
 ---
 
 Keyword research is the work of finding the words your readers type into a search box, then deciding which of those searches deserve a post on your blog. For a small blog it is less about big numbers and more about fit: the phrases your buyers use, the goal behind each one, and whether you can write the best page for it.

@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
   <rect width="1200" height="675" fill="#f4f1ea"/>
-  <rect x="624" y="214" width="384" height="84" rx="4" fill="#eba63f"/>
-  <g fill="none" stroke="#1f2428" stroke-linecap="round" stroke-linejoin="round">
-    <rect stroke-width="5" x="290" y="130" width="130" height="230" rx="65" fill="#fffdf8"/>
-    <path stroke-width="4" d="M300 200h110M296 230h118M296 260h118M300 290h110"/>
-    <path stroke-width="5" d="M250 260v20a105 105 0 0 0 210 0v-20M355 385v130M285 525h140"/>
-    <path stroke-width="4" d="M500 210a90 90 0 0 1 0 130M530 180a130 130 0 0 1 0 190"/>
-    <path stroke-width="7" d="M640 236h340M640 270h260"/>
-    <path stroke-width="4" d="M640 332h360M640 364h330M640 396h350M640 428h240M640 476h320M640 508h200"/>
+  <rect x="604" y="112" width="416" height="126" rx="6" fill="#eba63f"/>
+  <g fill="none" stroke="#1f2428" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="270" y="95" width="160" height="280" rx="80" fill="#fffdf8"/>
+    <path stroke-width="6" d="M294 190h112M290 245h120M294 300h112"/>
+    <path d="M220 270v20a130 130 0 0 0 260 0v-20M350 420v130M260 555h180"/>
+    <path stroke-width="6" d="M520 180a90 90 0 0 1 0 130M556 145a140 140 0 0 1 0 200"/>
+    <path stroke-width="12" d="M634 152h340M634 200h250"/>
+    <path stroke-width="6" d="M634 300h360M634 355h320M634 410h350M634 465h230M634 540h310"/>
   </g>
 </svg>

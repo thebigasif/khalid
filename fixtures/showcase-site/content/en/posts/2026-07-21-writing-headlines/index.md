@@ -15,7 +15,7 @@ cluster:
 tags: [writing, headlines]
 image:
   src: cover.svg
-  alt: A page with a bold headline across the top and a fountain pen leaning in to write
+  alt: A page whose bold headline is highlighted in orange, with a fountain pen finishing its second line
 ---
 
 Writing headlines is the shortest piece of writing you do for a post, and the one that decides whether anyone reads the rest. A good headline tells the right reader, in a few words, that this page holds what they came for. A bad one either hides the value or promises more than the page can give.

@@ -1,22 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
   <rect width="1200" height="675" fill="#f4f1ea"/>
-  <g stroke="#1f2428" stroke-width="5" stroke-linejoin="round">
-    <path fill="#fffdf8" d="M170 200a24 24 0 0 1 24-24h252a24 24 0 0 1 24 24v136a24 24 0 0 1-24 24H260l-56 48v-48h-10a24 24 0 0 1-24-24z"/>
-    <rect fill="#fffdf8" x="640" y="140" width="400" height="400" rx="10"/>
-  </g>
-  <rect x="652" y="378" width="376" height="52" fill="#eba63f"/>
-  <g fill="none" stroke="#1f2428" stroke-linecap="round" stroke-linejoin="round">
-    <path stroke-width="5" d="M640 196h400"/>
-    <path stroke-width="4" d="M208 222h200M208 250h170M208 278h120"/>
-    <path stroke-width="6" d="M208 316h150"/>
-    <path stroke-width="4" d="M676 248h60M676 300h60M676 352h60M676 404h60M676 456h60M676 508h60"/>
-    <rect stroke-width="4" x="770" y="236" width="230" height="24" rx="3"/>
-    <rect stroke-width="4" x="770" y="288" width="180" height="24" rx="3"/>
-    <rect stroke-width="4" x="770" y="340" width="140" height="24" rx="3"/>
-    <rect stroke-width="4" x="770" y="392" width="110" height="24" rx="3" fill="#fffdf8"/>
-    <rect stroke-width="4" x="770" y="444" width="80" height="24" rx="3"/>
-    <rect stroke-width="4" x="770" y="496" width="50" height="24" rx="3"/>
-    <path stroke-width="4" stroke-dasharray="1 14" d="M372 316c120 0 130 88 246 88"/>
-    <path stroke-width="5" d="M598 386l26 18-26 18"/>
+  <g fill="none" stroke="#1f2428" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path fill="#fffdf8" d="M212 140h276a32 32 0 0 1 32 32v178a32 32 0 0 1-32 32H300l-72 62v-62h-16a32 32 0 0 1-32-32V172a32 32 0 0 1 32-32z"/>
+    <path stroke-width="6" d="M222 205h230M222 255h180"/>
+    <path stroke-width="12" d="M222 312h140"/>
+    <rect x="600" y="95" width="420" height="485" rx="14" fill="#fffdf8"/>
+    <rect x="608" y="394" width="404" height="88" fill="#eba63f" stroke="none"/>
+    <path d="M600 175H1020"/>
+    <path stroke-width="6" d="M640 240h60M640 330h60M640 438h60M640 528h60"/>
+    <g stroke-width="6">
+      <rect x="740" y="222" width="230" height="36" rx="6"/>
+      <rect x="740" y="312" width="180" height="36" rx="6"/>
+      <rect x="740" y="420" width="140" height="36" rx="6" fill="#fffdf8"/>
+      <rect x="740" y="510" width="90" height="36" rx="6"/>
+    </g>
+    <path stroke-dasharray="0 20" d="M392 312c90 0 110 30 130 70s40 56 68 56"/>
+    <path d="M566 412l26 26-26 26"/>
   </g>
 </svg>

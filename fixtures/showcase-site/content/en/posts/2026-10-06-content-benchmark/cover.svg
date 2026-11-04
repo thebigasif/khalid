@@ -1,12 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
   <rect width="1200" height="675" fill="#f4f1ea"/>
-  <rect x="556" y="197" width="64" height="323" rx="3" fill="#eba63f"/>
-  <path fill="#fffdf8" stroke="#1f2428" stroke-width="5" stroke-linejoin="round" d="M192 370h48l16 16v134h-64zM286 305h48l16 16v199h-64zM380 340h48l16 16v164h-64zM474 270h48l16 16v234h-64zM662 325h48l16 16v179h-64zM756 285h48l16 16v219h-64zM850 355h48l16 16v149h-64zM944 310h48l16 16v194h-64z"/>
-  <g fill="none" stroke="#1f2428" stroke-linecap="round" stroke-linejoin="round">
-    <path stroke-width="5" d="M568 185h48l16 16v319h-64z"/>
-    <path stroke-width="4" d="M240 370v16h16M334 305v16h16M428 340v16h16M522 270v16h16M616 185v16h16M710 325v16h16M804 285v16h16M898 355v16h16M992 310v16h16"/>
-    <path stroke-width="4" d="M206 398h30M206 414h22M300 333h30M300 349h22M394 368h30M394 384h22M488 298h30M488 314h22M582 213h30M582 229h22M582 245h30M676 353h30M676 369h22M770 313h30M770 329h22M864 383h30M864 399h22M958 338h30M958 354h22"/>
-    <path stroke-width="5" d="M150 520h900"/>
-    <path stroke-width="4" stroke-dasharray="1 16" d="M150 250h900"/>
+  <rect x="544" y="126" width="80" height="449" fill="#eba63f"/>
+  <g fill="none" stroke="#1f2428" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-dasharray="0 24" d="M180 210H1020"/>
+    <g fill="#fffdf8">
+      <path d="M215 575V380h58l22 22v173M330 575V300h58l22 22v253M445 575V340h58l22 22v213M675 575V260h58l22 22v293M790 575V320h58l22 22v233M905 575V280h58l22 22v273"/>
+    </g>
+    <path d="M560 575V110h58l22 22v443"/>
+    <path stroke-width="6" d="M273 380v22h22M388 300v22h22M503 340v22h22M618 110v22h22M733 260v22h22M848 320v22h22M963 280v22h22M235 430h36M235 456h22M350 350h36M350 376h22M465 390h36M465 416h22M580 160h36M580 186h22M695 310h36M695 336h22M810 370h36M810 396h22M925 330h36M925 356h22"/>
+    <path d="M180 575H1020"/>
   </g>
 </svg>
