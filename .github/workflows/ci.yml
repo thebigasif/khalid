@@ -172,6 +172,24 @@ jobs:
           size=$(stat -c %s target/release/khalid)
           echo "binary: $size bytes" | tee -a "$GITHUB_STEP_SUMMARY"
           test "$size" -lt 31457280
+      # The demo check and the budgets reuse these binaries instead of each
+      # building them again on a shared runner, which took ten minutes each.
+      # khalid-perf is built after the size is read, one at a time as
+      # scripts/perf.sh builds them, so it cannot change the measured binary.
+      - name: Release binaries for the demo check and the budgets
+        if: steps.crates.outputs.present == 'true' && github.event_name == 'pull_request'
+        run: |
+          mkdir -p target/handover
+          cp target/release/khalid target/handover/khalid
+          cargo build --release -p khalid-perf
+          cp target/release/khalid-perf target/handover/khalid-perf
+      - uses: actions/upload-artifact@v7
+        if: steps.crates.outputs.present == 'true' && github.event_name == 'pull_request'
+        with:
+          name: release-binaries
+          path: target/handover/
+          retention-days: 1
+          if-no-files-found: error
       - name: No crates yet
         if: steps.crates.outputs.present == 'false'
         run: echo "The size budget starts with the first crate (Phase 0)."
@@ -230,8 +248,24 @@ jobs:
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      # The image build takes about 17 minutes. It runs only when something
+      # the image is built from changed; the release workflow always builds it.
+      - name: Did the image's inputs change?
+        id: inputs
+        run: |
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          if printf '%s\n' "$changed" | grep -Eq '^(Dockerfile|\.dockerignore|Cargo\.lock|rust-toolchain\.toml|(.*/)?Cargo\.toml|admin/package(-lock)?\.json|\.github/workflows/ci\.yml)$'; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing the image is built from changed, so it is not built again." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
       - uses: docker/setup-buildx-action@v3
+        if: steps.inputs.outputs.build == 'true'
       - uses: docker/build-push-action@v6
+        if: steps.inputs.outputs.build == 'true'
         with:
           context: .
           load: true
@@ -239,6 +273,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: The image answers
+        if: steps.inputs.outputs.build == 'true'
         run: docker run --rm khalid:check --version
 
   # The demo, end to end (task 1.22, gap audit 2 G8, GEO P2): every page of
@@ -254,15 +289,19 @@ jobs:
     # It hung once for 90 minutes on a shared runner; a run never needs 30.
     timeout-minutes: 30
     if: github.event_name == 'pull_request'
+    # Uses the release binary the size budget built on a maintainer runner.
+    needs: binary-size
     steps:
       - uses: actions/checkout@v7
-      - name: Toolchain from rust-toolchain.toml
-        uses: dtolnay/rust-toolchain@master
+      - uses: actions/download-artifact@v7
         with:
-          toolchain: 1.99.1
-      - uses: Swatinem/rust-cache@v2
-        with:
-          key: demo
+          name: release-binaries
+          path: target/handover
+      - name: The handed-over binary
+        run: |
+          chmod +x target/handover/khalid
+          target/handover/khalid --version
+          echo "KHALID_BIN=$PWD/target/handover/khalid" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -352,7 +391,19 @@ jobs:
     name: Performance budgets
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    # The binaries come from the size budget's build; they are measured
+    # here, on GitHub's runner, as before.
+    needs: binary-size
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v7
+        with:
+          name: release-binaries
+          path: target/handover
+      - name: The handed-over binaries
+        run: |
+          chmod +x target/handover/khalid target/handover/khalid-perf
+          echo "KHALID_BIN=$PWD/target/handover/khalid" >> "$GITHUB_ENV"
+          echo "KHALID_PERF_BIN=$PWD/target/handover/khalid-perf" >> "$GITHUB_ENV"
       - name: Budgets (docs/standards/performance.md)
         run: ./scripts/perf.sh
