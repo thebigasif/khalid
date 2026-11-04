@@ -312,3 +312,86 @@ export function measure(stage) {
   }
   return problems;
 }
+
+// How wide the page's frame is: the left and right edges of everything
+// drawn in the site header and in <main>, as text, pictures and boxes
+// with a background or a border. A band as wide as the window is
+// decoration, not frame, so only what is inside it counts. Returns the
+// width of each in px, 0 when the part is missing.
+export function frame() {
+  const vw = document.documentElement.clientWidth;
+  const shown = (el) => (el.checkVisibility ? el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) : true);
+  // Text a reader cannot see, such as a label for screen readers in a
+  // 1 px box, draws nothing.
+  const tiny = (el, root) => {
+    for (let at = el; at && at !== root; at = at.parentElement) {
+      const r = at.getBoundingClientRect();
+      if (r.width <= 1 || r.height <= 1) return true;
+    }
+    return false;
+  };
+  const extent = (root) => {
+    if (!root || !shown(root)) return 0;
+    let left = Number.POSITIVE_INFINITY;
+    let right = Number.NEGATIVE_INFINITY;
+    const take = (r) => {
+      if (r.width <= 1 || r.height <= 1 || r.right <= 0 || r.left >= vw) return;
+      left = Math.min(left, Math.max(0, r.left));
+      right = Math.max(right, Math.min(vw, r.right));
+    };
+    const range = document.createRange();
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => ((n.textContent ?? "").trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT),
+    });
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const el = node.parentElement;
+      if (!el || el.closest("script, style, noscript, template") || !shown(el) || tiny(el, root)) continue;
+      range.selectNodeContents(node);
+      for (const r of range.getClientRects()) take(r);
+    }
+    for (const el of root.querySelectorAll("*")) {
+      if (el.parentElement?.closest("svg") || !shown(el)) continue;
+      const r = el.getBoundingClientRect();
+      const s = getComputedStyle(el);
+      const picture = ["IMG", "VIDEO", "IFRAME", "CANVAS", "svg"].includes(el.tagName);
+      const painted = /rgba\(.*, 0\)|transparent/.test(s.backgroundColor) ? s.backgroundImage !== "none" : true;
+      const ruled = ["Top", "Right", "Bottom", "Left"].some((side) => Number.parseFloat(s[`border${side}Width`]) > 0 && s[`border${side}Style`] !== "none");
+      if (picture || ((painted || ruled) && r.width < vw - 1)) take(r);
+    }
+    return right > left ? Math.round(right - left) : 0;
+  };
+  return { header: extent(document.querySelector("header.site-header")), main: extent(document.querySelector("main")) };
+}
+
+// A post's reading text, measured as drawn: the size of its paragraphs'
+// letters, and how many characters a full line of them holds, from the
+// column's width and the width the paragraphs' own text takes per
+// character. Paragraphs in tables, lists, asides, figures and quotes, and
+// short ones, are not the reading text. Returns null without a post body.
+export function reading() {
+  const body = document.querySelector("main .post-body");
+  if (!body) return null;
+  const paragraphs = [...body.querySelectorAll("p")].filter(
+    (p) => !p.closest("table, li, aside, figure, blockquote, details, nav") && (p.textContent ?? "").trim().length >= 80 && (p.checkVisibility ? p.checkVisibility() : true),
+  );
+  if (paragraphs.length === 0) return null;
+  const middle = (list) => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
+  const range = document.createRange();
+  const sizes = [];
+  const columns = [];
+  let chars = 0;
+  let drawn = 0;
+  for (const p of paragraphs) {
+    const s = getComputedStyle(p);
+    sizes.push(Number.parseFloat(s.fontSize));
+    columns.push(p.clientWidth - Number.parseFloat(s.paddingLeft) - Number.parseFloat(s.paddingRight));
+    const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      range.selectNodeContents(node);
+      chars += (node.textContent ?? "").replace(/\s+/g, " ").length;
+      drawn += [...range.getClientRects()].reduce((sum, r) => sum + r.width, 0);
+    }
+  }
+  const column = middle(columns);
+  return { size: middle(sizes), column: Math.round(column), chars: drawn > 0 ? Math.round((column * chars) / drawn) : 0 };
+}

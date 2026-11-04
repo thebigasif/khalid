@@ -210,14 +210,17 @@ Add `--templates harbor` to check one template, and `--widths 390,2560@2` to pic
 
 ## Checking that nothing covers anything
 
-`just layout-check` builds the showcase site once with every template, and once more with the contents list in a side column for each template that puts it elsewhere. It opens a home page, a post with a lead picture, a contents list and pros and cons, a page with a folded table, a category, a tag, an author, search and a glossary page, in Chromium, Firefox and WebKit at 390, 768 and 1440 pixels. It scrolls each page to the end and fails when:
+`just layout-check` builds the showcase site once with every template, and once more with the contents list in a side column for each template that puts it elsewhere. It opens a home page, a post with a lead picture, a contents list and pros and cons, a page with a folded table, a category, a tag, an author, search and a glossary page, in Chromium, Firefox and WebKit at 390, 768, 1440 and 2000 pixels. Each template wears its sample brand from `fixtures/showcase-brands/<name>/theme/` when it has one, as its demo on GitHub Pages does. It scrolls each page to the end and fails when:
 
 - the letters of one piece of text cover other text or a picture by more than 4 pixels;
 - a list marker covers the first letter of its item, or other text;
 - the page scrolls sideways;
 - a table column is narrower than its longest word, so the word breaks in the middle;
 - a picture did not load;
-- a person's photo is not drawn square, to within 1 pixel, so its circle turns into an oval.
+- a person's photo is not drawn square, to within 1 pixel, so its circle turns into an oval;
+- at 1440 pixels and wider, the site header, or the main part of the home page or a category or tag page, is narrower than the template's minimum frame, the width its design brief sets, kept in `scripts/demo-check/frames.json`;
+- at 1440 pixels and wider, a post's body text is smaller than 18 pixels, or a full line of it holds fewer than 60 or more than 75 characters;
+- a stylesheet the home page links is 20 KB or more once compressed with Brotli.
 
 Parts that stay on screen as you scroll, such as the floating contents button and the side contents column, are checked against what passes under them. Each failure names the template, the page, the browser, the width, the two elements and where on the page they meet. The Demo check runs it in CI. To run it yourself, install the tools and the browsers once:
 
@@ -227,4 +230,8 @@ npx --prefix scripts/demo-check playwright install --with-deps chromium firefox 
 just layout-check --browsers chromium,firefox --packs keystone
 ```
 
-`--packs` picks templates and `--widths` picks widths. A screenshot of each failing page goes to `target/layout-check/shots`, and every failure to `target/layout-check/report.json`.
+`--packs` picks templates and `--widths` picks widths. A screenshot of each failing page goes to `target/layout-check/shots`, and every failure to `target/layout-check/report.json`. `--frames <file>` reads the minimum frames from another file, to try a stricter one. `just layout-selftest` proves the frame, reading and stylesheet checks on two small sites with a planted fault each.
+
+## Pictures for review
+
+A template's design is approved from pictures, not from the checks alone. `just demo-pictures --out <folder>` builds the showcase with each template twice, in its sample brand and with the template's own defaults and no theme, and takes full-page pictures of the home page, the post `/content-benchmark/` and `/category/content-strategy/` at 2000, 1440 and 390 pixels. Each template gets a sheet, `sheet.html` and `sheet.png`, with the branded demo, the default and a reference picture side by side for each page and width. Add `--refs <folder>` to place stored reference pictures: one folder per template, each file named such as `<source>-<page>-<width>.png`, where the page is `home`, `post` or `list`. Keep `--out` outside the repository, since the pictures are never committed.

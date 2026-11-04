@@ -1,0 +1,28 @@
+{
+  "about": "Each template's minimum frame in px at 1440 px and wider: the narrowest the site header, and the main part of the home, category and tag pages, may draw. layout.mjs fails a page below it. These are today's frames, measured on 2026-11-04 in Chromium and Firefox; each template's design brief in docs/templates/ sets the number that replaces it. \"reading_pending\" lists the templates whose post reading check is not enforced yet, because their redesign has not landed; each redesign removes its own name. Until then a template reads in system fonts, whose widths differ from machine to machine, so its line length is not stable enough to check.",
+  "frames": {
+    "almanac": 890,
+    "atlas": 930,
+    "classic": 1150,
+    "compass": 1180,
+    "folio": 1210,
+    "harbor": 850,
+    "keystone": 1210,
+    "ledger": 660,
+    "meridian": 1150,
+    "wire": 1210,
+    "workbench": 1210
+  },
+  "reading_pending": [
+    "almanac",
+    "atlas",
+    "compass",
+    "folio",
+    "harbor",
+    "keystone",
+    "ledger",
+    "meridian",
+    "wire",
+    "workbench"
+  ]
+}
