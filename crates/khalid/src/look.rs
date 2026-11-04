@@ -323,6 +323,32 @@ mod tests {
         }
     }
 
+    /// A person's photo sits in a `<picture>`, and in a flex row it is the
+    /// picture that shrinks: beside a long name on a phone, Keystone's card
+    /// photos were drawn 18 by 28 px. The shared rule keeps every picture
+    /// around a photo at its size, and no pack lets one shrink again.
+    #[test]
+    fn every_pack_keeps_author_photos_square() {
+        let site = tempfile::tempdir().unwrap();
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let css = stylesheet_text_with(&tokens, pack.stylesheet);
+            let held = rules_naming(&css, "picture:has(> .avatar)");
+            assert!(
+                held.iter().any(|r| r.contains("flex: none")),
+                "{}",
+                pack.name
+            );
+            for (selector, declarations) in rules(pack.stylesheet) {
+                let shrinks = ["flex: 1", "flex: auto", "flex-shrink: 1"]
+                    .iter()
+                    .any(|grow| declarations.contains(grow));
+                let photo = selector.contains("picture") || selector.contains(".avatar");
+                assert!(!(photo && shrinks), "{}: {selector}", pack.name);
+            }
+        }
+    }
+
     /// The topic tabs on the home page title their cards with h4. Compass
     /// placed only h2 and h3 in its card grid, so the h4 took the author's
     /// cell and pushed the date over the next card. Every pack's card

@@ -147,6 +147,8 @@ main > .intro { margin-block-end: calc(var(--space) * 6); color: var(--color-mut
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card > p:not(.card-meta) { grid-row: 4; align-self: start; }
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card-meta > :is(.card-author, time, .card-reading-time) { grid-row: 5; color: var(--color-muted); white-space: nowrap; }
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card-author { min-block-size: 2rem; color: var(--color-text); }
+/* A long name wraps on a narrow phone, so the row fits beside the photo. */
+.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card-meta > .card-author { white-space: normal; }
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card:not(:has(.image))::before { content: ""; grid-row: 1; aspect-ratio: 16 / 10; margin-block-end: calc(var(--space) * 2.5); background: radial-gradient(circle at 75% 35%, color-mix(in oklab, var(--color-accent) 30%, var(--color-background)) 0 16%, transparent 16.5%), linear-gradient(160deg, var(--color-surface), color-mix(in oklab, var(--color-accent) 14%, var(--color-background))); border-radius: var(--radius); box-shadow: var(--keystone-frame); }
 .view-all { margin-block-start: calc(var(--space) * 3); }
 .view-all a { font-size: var(--text-small); font-weight: 600; text-decoration: none; }

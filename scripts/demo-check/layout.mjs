@@ -9,7 +9,8 @@
 //   - sideways-scroll: the page is wider than the window;
 //   - broken-picture: a picture that did not load;
 //   - crushed-cell: a table column narrower than its longest word, which
-//     breaks the word mid-way.
+//     breaks the word mid-way;
+//   - squashed-avatar: a person's photo not drawn square, within 1 px.
 //
 // The page is scrolled down a window at a time first, so lazy pictures
 // load. At each stop the parts that move with the window, fixed like the

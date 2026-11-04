@@ -121,7 +121,10 @@ nav a { min-inline-size: 44px; }
 .reviewed-by a { font-weight: 600; }
 .reading-time time { white-space: nowrap; }
 .avatar { flex: none; inline-size: 2.75rem; block-size: 2.75rem; border-radius: 50%; object-fit: cover; }
-.person-card > picture, .person > picture, .reviewer > picture { flex: none; }
+/* A photo's flex item is the <picture> around it, which shrank beside a
+   long name and squashed the photo. Named rows first, then any row. */
+.person-card > picture, .person > picture, .reviewer > picture, .card-author > picture { flex: none; }
+picture:has(> .avatar) { flex: none; }
 .post-body > :first-child, .page-body > :first-child { margin-block-start: 0; }
 .post-footer { margin-block-start: var(--space-section); }
 .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
