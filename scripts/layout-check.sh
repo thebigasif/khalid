@@ -14,6 +14,11 @@
 # the side column is checked in every pack. The second build checks posts
 # only. Each site is static, as GitHub Pages serves the demos.
 #
+# A second pass checks each template's ready demo publication
+# (fixtures/showcase-publications/, scripts/demo-publication.sh) in its own
+# pack, as <pack>-publication, on the pages its check-pages.txt names. The
+# showcase pass above stays the floor every pack is held to.
+#
 # Needs Node 22 or later and the pinned tools, with the browsers:
 #   npm install --prefix scripts/demo-check
 #   npx --prefix scripts/demo-check playwright install --with-deps chromium firefox webkit
@@ -61,6 +66,12 @@ for pack in $packs; do
   fi
 done
 showcase_finish
-echo "Built the showcase with $(echo "$packs" | wc -w) packs in $((SECONDS - since)) seconds."
+# The second pass: each ready demo publication in its own pack, on the
+# pages its check-pages.txt names. With none ready it builds nothing.
+# shellcheck disable=SC2086 # one pack per word
+publications="$(showcase_publications $packs)"
+for pack in $publications; do showcase_start "$bin" "$work" "$pack-publication" "$pack" brand "" publication; done
+showcase_finish
+echo "Built the showcase with $(echo "$packs" | wc -w) packs and $(echo "$publications" | wc -w) demo publications in $((SECONDS - since)) seconds."
 
 node "$tools/layout.mjs" --sites "$work/sites" --shots "$work/shots" "$@"
