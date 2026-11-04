@@ -1,6 +1,7 @@
 {#- Meridian's front page (templates spec 3.9): a masthead with the
     blog's name and its own intro, the category tabs, the newest post
-    as the lead story, the editor's picks, then every other post as a row.
+    as the lead story, the next two side by side when the page has more
+    to come, the editor's picks, then every other post as a row.
     Sections, topics, the newsletter and the call to action work as on
     the shared front page. -#}
 {% extends "base.html" %}
@@ -26,9 +27,13 @@
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% set newer = page.pagination and page.pagination.previous -%}
 {% set lead = posts[:1] if posts and not page.sections and not newer else [] -%}
-{% set rest = posts[lead | length:] -%}
+{% set pair = posts[1:3] if lead and posts | length > 4 else [] -%}
+{% set rest = posts[(lead | length) + (pair | length):] -%}
 {% if lead %}<div class="lead">
 {{ cards(lead) }}
+</div>
+{% endif %}{% if pair %}<div class="pair">
+{{ cards(pair, 2, "image") }}
 </div>
 {% endif %}{% if template.options.picks and picks %}<section class="picks">
 <h2>{{ t.editors_picks }}</h2>

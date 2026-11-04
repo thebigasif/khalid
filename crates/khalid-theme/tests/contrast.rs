@@ -192,3 +192,39 @@ async fn every_failing_pair_in_the_fixture_sites_passes_after_the_pass() {
         }
     }
 }
+
+/// A pack's own colours over the shared defaults, as a site with no
+/// `theme/tokens.toml` of its own gets them.
+#[cfg(test)]
+fn pack_tokens(text: &str) -> ThemeTokens {
+    let mut tokens = ThemeTokens::default();
+    let table: toml::Table = toml::from_str(text).unwrap();
+    let Some(colors) = table.get("colors").and_then(toml::Value::as_table) else {
+        return tokens;
+    };
+    let read = |key: &str| colors.get(key).and_then(toml::Value::as_str).map(hex);
+    let found = &mut tokens.colors;
+    for (key, slot) in [
+        ("background", &mut found.background),
+        ("surface", &mut found.surface),
+        ("text", &mut found.text),
+        ("muted", &mut found.muted),
+        ("link", &mut found.link),
+        ("accent", &mut found.accent),
+    ] {
+        if let Some(color) = read(key) {
+            *slot = color;
+        }
+    }
+    tokens
+}
+
+#[test]
+fn every_packs_own_colours_pass_on_its_own_grounds() {
+    for pack in khalid_theme::packs() {
+        let mut tokens = pack_tokens(pack.tokens);
+
+        assert_all_pass(&tokens, pack.name);
+        assert_eq!(tokens.fix_contrast(), [], "{}", pack.name);
+    }
+}

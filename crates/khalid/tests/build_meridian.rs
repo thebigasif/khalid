@@ -153,15 +153,18 @@ fn meridian_ships_its_own_rules_after_the_shared_ones() {
         })
         .unwrap();
     let css = fs::read_to_string(css).unwrap();
-    assert!(css.contains("--text-h1: clamp(2.5rem,"), "{css}");
+    assert!(css.contains("--text-h1: clamp(2.75rem,"), "{css}");
     assert!(css.contains("--measure: 42rem;"), "{css}");
     assert!(css.contains("--font-heading: \"Iowan Old Style\""), "{css}");
-    assert!(css.contains("--color-accent: #2c3f9c;"), "{css}");
-    assert!(css.contains("minmax(0, 38%)"), "{css}");
+    assert!(css.contains("--font-body: system-ui"), "{css}");
+    assert!(css.contains("--color-accent: #2b3c96;"), "{css}");
+    assert!(css.contains("--frame: 80rem;"), "{css}");
+    assert!(css.contains("\"rail title image\""), "{css}");
 }
 
 /// The home page opens with the newest post as the lead story, then the
-/// editor's picks as text, then the rest of the posts as rows.
+/// the next two side by side, the editor's picks as text, then the rest of
+/// the posts as rows.
 #[test]
 fn the_meridian_home_page_leads_with_the_newest_post() {
     let (_temp, out) = built("", &[]);
@@ -169,10 +172,15 @@ fn the_meridian_home_page_leads_with_the_newest_post() {
     let lead = home
         .find("<div class=\"lead\">")
         .unwrap_or_else(|| panic!("{home}"));
+    let pair = home
+        .find("<div class=\"pair\">")
+        .unwrap_or_else(|| panic!("{home}"));
     let picks = home
         .find("<section class=\"picks\">")
         .unwrap_or_else(|| panic!("{home}"));
-    assert!(lead < picks, "{home}");
+    assert!(lead < pair && pair < picks, "{home}");
+    let two = home.get(pair..picks).unwrap_or_default();
+    assert_eq!(two.matches("<article class=\"card\">").count(), 2, "{home}");
     assert!(home.contains("<ul class=\"cards cards-text\""), "{home}");
     assert_eq!(home.matches("<div class=\"lead\">").count(), 1, "{home}");
 }

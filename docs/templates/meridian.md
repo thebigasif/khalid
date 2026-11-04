@@ -18,19 +18,21 @@ Build or restart the blog. Meridian brings its own palette (ink on a warm paper 
 
 **The front page**
 
-- Your logo in the header, the menu at its end and your call to action as an outlined button. On a phone the menu is one row that scrolls, and the button gives way to the band further down.
-- The blog's name as a large serif title, with the intro from your front page's `_index.md` beside it when you write one.
-- A row of tabs under the name: "All", then each category your posts use. On a phone the tabs become small rounded buttons that wrap.
+- Your logo in the header, the menu at its end and your call to action as an outlined button, on one line on a wide screen. On a smaller screen the menu takes its own row; on a phone it is one row that scrolls, and the button gives way to the band further down.
+- The blog's name as a very large serif title over a heavy ink rule, like a journal's masthead, with the intro from your front page's `_index.md` beside it when you write one.
+- A row of tabs under the rule: "All", then each category your posts use. On a phone the tabs become small rounded buttons that wrap.
 - The newest post as the lead story: a large picture beside a large title, its summary and its author.
-- Editor's picks: up to three posts you marked `featured: true`, as short text cards on a soft band across the page.
-- Every other post as a wide row: the category in small capitals, the date, the title, the summary and the author with their role, with the post's picture cropped to 3 by 2 on the far side. On a phone the picture sits above the text.
+- The next two posts side by side with large pictures and titles, when the page has at least five posts.
+- Editor's picks: up to three posts you marked `featured: true`, numbered 01, 02, 03 in the serif, as short text cards on a soft band across the page.
+- Every other post as a wide row, like an index: on a wide screen the category in small capitals, the date and the author with their role sit in a narrow column at the start, then the title and the summary, with the post's picture cropped to 3 by 2 on the far side. On a phone the picture sits above the text.
 - A newsletter form, when your blog takes sign-ups (see below), and numbered page links under long lists.
 
 **A journal post** (every post, unless it asks for the reference layout)
 
 - Breadcrumbs as one small label: the blog and the post's category.
 - A large serif title, then the authors with their round photo, name and role on one side and the dates on the other, between two hairlines.
-- The cover a little wider than the text, then one quiet column of text. Callouts are soft panels or a thin rule, quotes are centred, steps are numbered in circles and questions open and close with a plus.
+- On a wide screen a post with a cover opens split across the page: the title and byline on one side, the cover on the other, over a heavy ink rule. On a smaller screen the cover sits under the byline, a little wider than the text.
+- Then one quiet column of text. Callouts are soft panels or a thin rule, quotes are centred, steps are numbered in circles and questions open and close with a plus.
 - After the post: the author box, the call-to-action band, the newsletter form, the posts that link here, then three related posts with their pictures across the page.
 
 **A reference guide** (a post with `template: reference` in its front matter)
@@ -127,29 +129,31 @@ Meridian sets these in place of the shared defaults. A value in your own `theme/
 | Token | Meridian's value |
 |---|---|
 | `[fonts] heading` | Iowan Old Style, Charter, Sitka Text, Cambria or Georgia: a serif every computer already has, so nothing is downloaded |
+| `[fonts] body` | The computer's own sans: system-ui, Segoe UI, Roboto, Helvetica Neue or Arial |
 | `[type] body` | 1.0625rem on a phone to 1.1875rem on a wide screen |
-| `[type] h1` | 2.5rem to 4rem |
-| `[type] h2` | 1.625rem to 2rem |
-| `[type] h3` | 1.25rem to 1.375rem |
+| `[type] h1` | 2.75rem to 5rem |
+| `[type] h2` | 1.75rem to 2.25rem |
+| `[type] h3` | 1.25rem to 1.5rem |
+| `[type] h4` | 1.125rem to 1.25rem |
 | `[type] small` | 0.875rem |
 | `[type] line_height` | 1.7 |
 | `[type] heading_weight` | 600 |
-| `[space] section` | 5rem between sections |
+| `[space] section` | 6rem between sections |
 | `[shape] radius` | 0.375rem corners |
 | `[shape] measure` | 42rem, about 70 letters a line |
 
-The page itself is up to 72rem wide, so rows have room; the text of a post keeps to the 42rem measure and its cover runs a little wider.
+The page itself is up to 80rem wide, so rows have room; the text of a post keeps to the 42rem measure. The blog's name on the front page grows to 7.5rem on a wide screen, and the lead story's title to 4rem.
 
 ## Colours
 
 | Token | Meridian's value |
 |---|---|
-| `background` | `#fcfbf8`, a warm paper colour |
-| `surface` | `#f3f0e9`, for bands and panels |
-| `text` | `#17191e`, ink |
-| `muted` | `#585c64` |
-| `link` and `accent` | `#2c3f9c`, a deep indigo |
-| `border` | `#e2ddd2` |
+| `background` | `#fbf9f4`, a warm ivory |
+| `surface` | `#f2eee4`, for bands and panels |
+| `text` | `#16181d`, ink |
+| `muted` | `#57585c` |
+| `link` and `accent` | `#2b3c96`, a deep indigo |
+| `border` | `#e0d9cb`, a warm grey |
 
 The accent appears only on links, small labels, buttons, the current tab and the short rule before each label. Buttons pick black or white text, whichever reads better on the accent. Every pair passes WCAG 2.2 AA.
 
@@ -170,16 +174,19 @@ This is Meridian's design brief. It fixes how the template should look, so every
 - A team software company's journal. A large lead story beside a two by two grid of smaller stories, small "article in" labels with the topic as an outlined pill, "Latest by topic" as a row of pill tabs, and a sign-up card placed inside the grid.
 - A file-sharing company's journal. A lead story with a very tall title beside a large picture, then an editorial grid whose rhythm changes row by row: two large stories, then three smaller ones set at different heights, each with its topics as one quiet line under the title. Its dark lead band is not part of this brief.
 
+**The one idea.** A journal's masthead. You can name Meridian from a thumbnail of its front page: the blog's name set very large in the serif, from 3rem on a phone to 7.5rem on a wide screen, with tight letter spacing, over a heavy ink rule. Every list and post repeats that ink rule, and the rows below read as the journal's index.
+
 | Part | Meridian |
 |---|---|
 | Type pairing | A high-contrast display serif for titles over a clean sans for text. With no theme, the pack uses the system's book serif for titles (Iowan Old Style, Charter, Georgia) and the system sans for text. |
 | Colour | A warm ivory ground, ink text and one deep accent (plum or indigo) used only where a reader can act. Hairlines in a warm grey. |
 | Spacing rhythm | A base step of 0.5rem. Very generous: 6rem between front page sections, 2.5rem between rows. |
 | Frame at 1440 px and wider | At least **80rem**: wide rows need the room. |
-| Cards and lists | Wide rows, not cards: the category in small capitals, the date, a large serif title, the summary, the author and role, and the picture cropped to 3 by 2 on the far side. Rows sit between hairlines. |
+| Front page structure | The masthead, the tabs, the lead story split beside its picture, two large stories side by side, the numbered editor's picks on a soft band, then the rows. The rhythm changes from one part to the next, so the page never reads as one long list. |
+| Cards and lists | Wide rows, not cards: on a wide screen a rail at the start holds the category in small capitals, the date and the author with their role, then a large serif title and the summary, and the picture cropped to 3 by 2 on the far side. Rows sit between hairlines. Topic, video and podcast rows are grids of picture cards. |
 | Phone header and menu | The logo and the menu, the menu as one row that scrolls. The outlined button gives way to the band further down. |
 | Tabs and indexes at 390 px | The category tabs become small rounded buttons that wrap. In a row, the picture sits above the text. |
 | Link, card and focus states | Links underlined in the accent. A row's serif title takes the underline on hover. Focus is a 2 px accent ring. |
-| Signature details | The lead story with a large picture beside a large serif title. Editor's picks as text cards on a soft band. The reference guide layout with "Last updated" and numbered contents. |
+| Signature details | The masthead over its ink rule. The lead story with a large picture beside a large serif title, and a post's split header the same way. Editor's picks numbered 01 to 03 in the serif on a soft band. The reference guide layout with "Last updated" and numbered contents. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/meridian/theme/`: plum (`#7b2d6a` links, `#8a3378` accent) on warm ivory (`#fbf8f5`), DM Serif Display for titles and Work Sans for text, and a globe mark.
