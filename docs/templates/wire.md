@@ -1,3 +1,8 @@
+---
+title: "Wire"
+order: 90
+---
+
 # Wire
 
 Wire is a template for a news and columns site: a blog that publishes often, has several writers, and wants readers to see at a glance what is new and who wrote it.

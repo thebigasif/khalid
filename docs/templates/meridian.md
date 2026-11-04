@@ -1,3 +1,8 @@
+---
+title: "Meridian"
+order: 80
+---
+
 # Meridian
 
 Meridian is a calm company journal. It suits a product or services company that publishes a few considered posts a month, often written by more than one person, and keeps a handful of long guides that it updates over time.

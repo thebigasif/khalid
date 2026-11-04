@@ -1,3 +1,8 @@
+---
+title: "Getting started with Khalid"
+order: 10
+---
+
 # Getting started with Khalid
 
 This page takes you from nothing to a published post, then shows how to check the site, sign in to the admin, bring in an old blog, and back up and restore. Every command on this page is run by a test (`crates/khalid/tests/getting_started.rs`), so it works as written.

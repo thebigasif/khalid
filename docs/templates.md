@@ -1,3 +1,8 @@
+---
+title: "Templates: the look of your blog"
+order: 30
+---
+
 # Templates: the look of your blog
 
 A template sets the layout and features of your blog's pages: where the contents list sits, which cards the home page shows, and the sizes of text and space. Your colours, fonts and logo still come from your main site through theme sync, so every template looks like your brand.
@@ -13,7 +18,7 @@ name = "classic"
 
 Without a `[template]` table your blog uses `classic`, Khalid's default look. Updating Khalid never switches your template to another one, but a release may restyle a template.
 
-These eleven templates are built in. Every template but classic has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default.
+These eleven templates are built in. Every template but classic has its own page, linked below, which says who it suits, what each page shows, and every option it takes with its default.
 
 - `classic`: a wide frame with a large lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).

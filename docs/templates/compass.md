@@ -1,3 +1,8 @@
+---
+title: "Compass"
+order: 30
+---
+
 # Compass
 
 Compass is a template for a teaching blog: guides that explain how to do something, step by step. Every guide opens with where it sits on your site, what it covers and its key points, so a reader knows in seconds whether it answers their question. It ends with share links, the author and the newsletter.
