@@ -5,20 +5,28 @@
    the tokens or a tint of one, so a synced theme recolours it all. */
 
 :root { --frame: 75rem; --rule: 2px solid var(--color-text); }
+@media (min-width: 110rem) { :root { --frame: 84rem; } }
 
 /* The frame. Lists use all of it. A post is a block of 62rem, centred:
    its title runs across it, its text keeps to the measure, and on a wide
-   screen the open contents stand in the margin beside the text. */
+   screen the lead picture and the open contents stand in the margin
+   beside the byline and the text, so the text starts on the first
+   screen. */
 .site-header, main, .site-footer { max-inline-size: var(--frame); }
 main > :is(.page, .author, .newsletter-slot, .mentions, .comments) { max-inline-size: var(--measure); margin-inline: auto; }
 main > :is(.post, .related, .back-link, .breadcrumbs) { max-inline-size: 62rem; margin-inline: auto; }
 .post > :not(.post-header, .toc-box), .related > * { max-inline-size: var(--measure); }
+main > .post:not(.post-with-toc, :has(> .toc-box)), main > .post:not(.post-with-toc, :has(> .toc-box)) ~ :is(.related, .back-link, .newsletter-slot) { max-inline-size: var(--measure); }
 @media (min-width: 75rem) {
   .post:has(> .toc-box) { display: grid; grid-template-columns: minmax(0, var(--measure)) minmax(0, 1fr); column-gap: calc(var(--space) * 6); }
   .post:has(> .toc-box) > * { grid-column: 1; }
   .post:has(> .toc-box) > .post-header { grid-column: 1 / -1; }
   .post > .toc-box { grid-column: 2; grid-row: 2 / span 12; align-self: start; position: sticky; inset-block-start: calc(var(--space) * 3); max-block-size: calc(100vh - 3rem); overflow-y: auto; }
   .post > .toc-box ol { columns: auto; }
+  .post:has(> .toc-box) > .post-header { display: grid; grid-template-columns: minmax(0, var(--measure)) minmax(0, 1fr); column-gap: calc(var(--space) * 6); align-items: end; }
+  .post:has(> .toc-box) > .post-header > * { grid-column: 1 / -1; }
+  .post:has(> .toc-box) > .post-header > .post-meta { grid-column: 1; }
+  .post:has(> .toc-box) > .post-header > .image { grid-column: 2; margin-block-start: 0; }
 }
 main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
 main > :is(p, .intro, .search, .results, dl) { max-inline-size: var(--measure); }
@@ -84,20 +92,33 @@ main > .intro, main > h1 + .intro { max-inline-size: 46rem; margin-block-start: 
 }
 
 /* The topics: wrapping pills on a phone, and from 64rem a numbered index
-   in a rail beside the list, the way a report lists its chapters. */
-.ledger-rail > h2 { margin: calc(var(--space) * 4) 0 var(--space); font-size: var(--text-small); }
-.ledger-rail ol { display: flex; flex-wrap: wrap; gap: var(--space); margin: 0; padding: 0; list-style: none; counter-reset: topic; }
+   in a rail beside the list, the way a report lists its chapters, each
+   topic over its newest post, then the editor's picks. The rail stays in
+   view while the rows scroll, on a screen tall enough to hold it. */
+.ledger-topics > h2 { margin: calc(var(--space) * 4) 0 var(--space); font-size: var(--text-small); }
+.ledger-topics ol { display: flex; flex-wrap: wrap; gap: var(--space); margin: 0; padding: 0; list-style: none; counter-reset: topic; }
+.ledger-newest, .ledger-picks { display: none; }
 @media (min-width: 64rem) {
-  .ledger-front { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; grid-template-areas: "list rail"; gap: 0 calc(var(--space) * 8); align-items: start; }
+  .ledger-front { display: grid; grid-template-columns: minmax(0, 1fr) 19rem; grid-template-areas: "list rail"; gap: 0 calc(var(--space) * 8); align-items: start; }
   .ledger-main { grid-area: list; }
-  .ledger-rail { grid-area: rail; position: sticky; inset-block-start: calc(var(--space) * 3); }
-  .ledger-rail > h2 { margin-block: calc(var(--space) * 6) 0; padding-block-end: var(--space); border-block-end: var(--rule); font-size: var(--text-h4); }
-  .ledger-rail ol { display: block; }
-  .ledger-rail li { counter-increment: topic; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); align-items: center; border-block-end: 1px solid var(--color-border); }
-  .ledger-rail li::before { content: counter(topic, decimal-leading-zero) / ""; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; font-variant-numeric: tabular-nums; }
-  .ledger-rail .pill { min-block-size: 3rem; padding: 0; background: none; border: 0; border-radius: 0; font-size: var(--text-body); }
-  .ledger-rail .pill::after { inset: 0; }
-  .ledger-rail .pill:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+  .ledger-rail { grid-area: rail; }
+  .ledger-rail h2 { margin-block: calc(var(--space) * 6) 0; padding-block-end: var(--space); border-block-end: var(--rule); font-size: var(--text-h4); }
+  .ledger-topics ol { display: block; }
+  .ledger-topics li { counter-increment: topic; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); align-items: center; padding-block-end: var(--space); border-block-end: 1px solid var(--color-border); }
+  .ledger-topics li::before { content: counter(topic, decimal-leading-zero) / ""; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .ledger-topics .pill { min-block-size: 2.75rem; padding: 0; background: none; border: 0; border-radius: 0; font-size: var(--text-body); }
+  .ledger-topics .pill::after { inset: 0; }
+  .ledger-topics .pill:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+  .ledger-newest { display: block; grid-column: 2; color: var(--color-muted); font-size: var(--text-small); line-height: 1.4; text-decoration: none; }
+  .ledger-newest:hover { color: var(--color-link); text-decoration: underline; }
+  .ledger-picks { display: block; }
+  .ledger-picks ol { margin: 0; padding: 0; list-style: none; }
+  .ledger-picks li { border-block-end: 1px solid var(--color-border); }
+  .ledger-picks a { display: block; padding-block: calc(var(--space) * 1.25); color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; line-height: 1.35; text-decoration: none; }
+  .ledger-picks a:hover { color: var(--color-link); text-decoration: underline; }
+}
+@media (min-width: 64rem) and (min-height: 56rem) {
+  .ledger-rail { position: sticky; inset-block-start: 0; }
 }
 
 /* The lead: the newest post's row, its title set near display size. */
@@ -132,6 +153,17 @@ main > .cards-text { border-block-start: var(--rule); }
   .ledger-list > li, .cards-text > li { grid-template-columns: 4rem minmax(0, 1fr); padding-block: 1.5rem; }
   .ledger-list > li::before, .cards-text > li::before { padding-block-start: 0.1rem; font-size: var(--text-h4); }
 }
+
+/* From the eleventh row, the index: one line per post, number, title and
+   date, under a heavy rule, so a long list keeps its rhythm. */
+.ledger-list > li:not(.ledger-line) + .ledger-line { border-block-start: var(--rule); }
+.ledger-list > .ledger-line { align-items: baseline; padding-block: 0.25rem 0.375rem; }
+.ledger-list > .ledger-line::before { padding-block-start: 0; font-size: var(--text-small); }
+.ledger-short { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 calc(var(--space) * 3); }
+.ledger-short :is(h2, h3, h4) { margin: 0; flex: 1 1 18rem; font-size: var(--text-h4); font-weight: 700; line-height: 1.3; }
+.ledger-short :is(h2, h3, h4) a { display: inline-flex; align-items: center; min-block-size: 2.75rem; color: var(--color-text); text-decoration: none; }
+.ledger-short :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 2px; }
+.ledger-short time { color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); font-variant-numeric: tabular-nums; line-height: 1.3; white-space: nowrap; }
 .view-all { margin-block-start: var(--space); }
 .view-all a { font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; }
 .view-all a::after { content: " \2192" / ""; white-space: pre; }
@@ -143,7 +175,9 @@ main > .cards-text { border-block-start: var(--rule); }
 main > h1 { margin-block: calc(var(--space) * 6) calc(var(--space) * 3); font-size: clamp(2.5rem, 1.3rem + 4.2vw, 5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
 main > :is(.cards-text, .featured) { margin-block-start: calc(var(--space) * 4); }
 
-/* A post: pill, title, byline, then the lead picture in a light frame. */
+/* A post: pill, title, byline, then the lead picture in a light frame at
+   the text's width, uncropped, so the first paragraph shows on the first
+   screen. A post with no contents is one centred column. */
 .post-header { margin-block-end: calc(var(--space) * 4); padding-block: calc(var(--space) * 3); border-block-end: 1px solid var(--color-border); }
 .post-header .pills { margin-block: 0 calc(var(--space) * 2); }
 .post-header h1 { margin-block: 0 calc(var(--space) * 3); max-inline-size: 22ch; font-size: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; }
@@ -154,7 +188,7 @@ main > :is(.cards-text, .featured) { margin-block-start: calc(var(--space) * 4);
 .post-meta .person a:hover { text-decoration: underline; }
 .post-dates { display: flex; flex-wrap: wrap; gap: 0 1rem; font-variant-numeric: tabular-nums; }
 .post-dates > * + *::before { content: "\00b7" / ""; margin-inline-end: 1rem; }
-.post-header .image { margin-block-start: calc(var(--space) * 3); }
+.post-header .image { max-inline-size: var(--measure); margin-block-start: calc(var(--space) * 3); }
 .post-header .image img { border: 1px solid var(--color-border); border-radius: 0; }
 .post-body > p:first-child { font-size: calc(var(--text-body) * 1.1); }
 .post-body > h2 { margin-block-start: 2.25em; padding-block-start: calc(var(--space) * 2); border-block-start: var(--rule); }

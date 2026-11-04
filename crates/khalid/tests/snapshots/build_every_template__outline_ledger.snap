@@ -5,7 +5,7 @@ expression: pages
 # index.html
 header.masthead
   h1: Field Notes on SEO
-nav.ledger-rail.pills "Topics"
+nav.ledger-topics.pills "Topics"
   h2: Topics
 section.home-latest.home-section
   h2: Latest posts

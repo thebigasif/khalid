@@ -73,7 +73,7 @@ fn ledger_front_page() {
     assert!(home.contains("<p class=\"tagline\">Plain advice on search for small teams</p>"));
     assert!(home.contains("<li>5 field-tested guides</li>"), "{home}");
     assert!(
-        home.contains("<nav class=\"pills ledger-rail\" aria-label=\"Topics\">"),
+        home.contains("<nav class=\"pills ledger-topics\" aria-label=\"Topics\">"),
         "topic rail: {home}"
     );
     assert!(
@@ -82,6 +82,82 @@ fn ledger_front_page() {
     );
     assert!(home.contains("<ol class=\"ledger-list\""), "{home}");
     insta::assert_snapshot!(home);
+}
+
+/// Adds `count` more English posts to the demo copy at `site`, one a day
+/// in August, so the front page lists more than ten.
+#[cfg(test)]
+fn more_posts(site: &Path, count: u32) {
+    for day in 1..=count {
+        let post = format!(
+            "---\ntitle: Field note number {day} on search\nslug: field-note-{day}\n\
+             date: 2026-08-{day:02}\nauthor: asif\ncategory: on-page-seo\n\
+             description: A short field note on search for small teams, number {day} of a series.\n---\n\n\
+             This field note covers one small fix a small team can make to its pages this week. \
+             Start with [how to write a title tag](/blog/how-to-write-a-title-tag/).\n"
+        );
+        fs::write(
+            at(
+                site,
+                &format!("content/en/posts/2026-08-{day:02}-field-note-{day}.md"),
+            ),
+            post,
+        )
+        .unwrap();
+    }
+}
+
+#[test]
+fn ledger_draws_the_rows_after_the_tenth_as_one_line_each() {
+    let temp = tempfile::tempdir().unwrap();
+    let demo = at(
+        Path::new(env!("CARGO_MANIFEST_DIR")),
+        "../../fixtures/demo-site",
+    );
+    copy_dir(&demo, temp.path());
+    more_posts(temp.path(), 7);
+    let settings = at(temp.path(), "site.toml");
+    let mut toml = fs::read_to_string(&settings).unwrap();
+    toml.push_str(LEDGER);
+    fs::write(&settings, toml).unwrap();
+    let out = at(temp.path(), "out");
+    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", temp.path().to_str().unwrap(), "build", "--out"])
+        .arg(&out)
+        .output()
+        .unwrap();
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let home = body(&out, "index.html");
+    let (_, list) = home.split_once("<ol class=\"ledger-list\"").unwrap();
+    let (list, _) = list.split_once("</ol>").unwrap();
+    assert_eq!(
+        list.matches("<article class=\"ledger-entry\">").count(),
+        10,
+        "{list}"
+    );
+    assert_eq!(
+        list.matches("<li class=\"ledger-line\">").count(),
+        2,
+        "{list}"
+    );
+    let (_, short) = list.split_once("<li class=\"ledger-line\">").unwrap();
+    assert!(
+        !short.contains("class=\"pill\""),
+        "no topic on a short row: {short}"
+    );
+    assert!(
+        !short.contains("card-author"),
+        "no author on a short row: {short}"
+    );
+    assert!(
+        short.contains("<time datetime="),
+        "a short row keeps its date: {short}"
+    );
 }
 
 #[test]

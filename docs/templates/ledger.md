@@ -17,8 +17,8 @@ Pick another template if your posts lead with photos, or if you want a large fea
 
 **Front page**
 - The blog's name in large type under a short accent bar, your tagline, and up to three short facts such as "12,000 readers".
-- The topics, one for each category your posts use. On a wide screen they stand in a numbered index beside the list; on a phone they are small rounded labels, called pills, that wrap onto lines.
-- The latest posts as a list split by thin lines, numbered 01, 02 and on in the margin: author, date and topic beside each title. The newest post leads with its title set large. No pictures and no summaries, so a reader scans many titles at once.
+- The topics, one for each category your posts use. On a wide screen they stand in a numbered index beside the list, each over the title of its newest post, then your editor's picks (up to four posts marked `featured`). The index stays in view as the list scrolls. On a phone the topics are small rounded labels, called pills, that wrap onto lines.
+- The latest posts as a list split by thin lines, numbered 01, 02 and on in the margin. The first ten show the author, date and topic beside each title, and the newest leads with its title set large. From the eleventh, each post is one line, its title and date, like the index of a study. Every post stays on the front page, so a search engine reaches them all. No pictures and no summaries, so a reader scans many titles at once.
 - When `[[reader.home_sections]]` lists sections, five posts for each, with a "View all" link.
 - A newsletter band across the full width at the end, when your site takes sign-ups.
 
@@ -29,7 +29,7 @@ Pick another template if your posts lead with photos, or if you want a large fea
 - The contents as an open box after the title, without numbers.
 - The body. Tips and further reading show as ruled notes, a `summary` callout shows as a closing "bottom line" under a heavy rule, how-to steps get large numbers, and FAQ questions read as plain questions with their answers always shown.
 - After the body: the author box, then five related posts in the same ruled list, then the newsletter form.
-- The lead image under the byline, in a light frame, unless you turn it off. No share links.
+- The lead image under the byline, in a light frame at the width of the text and never cropped, unless you turn it off. No share links.
 
 **Lists and author pages** show posts as the same ruled list, each with its summary.
 
@@ -94,10 +94,10 @@ body = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
 
 [shape]
 radius = "0.25rem"
-measure = "38rem"
+measure = "40rem"
 
 [type]
-body = "1.0625rem 1.1875rem"
+body = "1.0625rem 1.25rem"
 h1 = "2.25rem 3.5rem"
 h2 = "1.5rem 2rem"
 h3 = "1.1875rem 1.375rem"
@@ -111,7 +111,7 @@ unit = "0.5rem"
 section = "4rem"
 ```
 
-The stylesheet adds its own display sizes on top of these: the blog's name on the front page grows to 7.5rem on a wide screen, a post's title to 4.5rem, and a list page's title to 5rem. The frame is 75rem; a post is a 62rem block, its title across all of it and its text at the measure.
+The stylesheet adds its own display sizes on top of these: the blog's name on the front page grows to 7.5rem on a wide screen, a post's title to 4.5rem, and a list page's title to 5rem. The frame is 75rem; a post is a 62rem block, its title across all of it and its text and lead image at the measure, with the contents beside the text on a wide screen. A post with no contents is one centred column at the measure. The text grows to 1.25rem on a wide screen and the measure grows with it, so a line keeps about 70 characters.
 
 ## Reader features
 
@@ -134,7 +134,8 @@ This is Ledger's design brief. It fixes how the template should look, so every c
 | Colour | Near-white ground, ink text and one deep, serious accent (petrol or ink green). Panels are a very faint grey. Tables use hairlines, never fills, except the header row. |
 | Spacing rhythm | A base step of 0.5rem. Rows in lists 1.25rem apart, separated by hairlines. Sections 4rem apart. |
 | Frame at 1440 px and wider | At least **75rem**: the narrowest of the ten, because Ledger leads with text. |
-| Cards and lists | No boxes around list items. Each post is a ruled row: a number in the margin, then author, date and topic, then the title, then (on lists) the summary. |
+| Cards and lists | No boxes around list items. Each post is a ruled row: a number in the margin, then author, date and topic, then the title, then (on lists) the summary. On the front page, rows 11 and on are one line each, number, title and date, under a heavy rule, so 40 posts read as a study's index and a phone page stays near 5,000 px. |
+| Rail | On a wide screen the numbered topics stand beside the rows, each over its newest post's title, then the editor's picks. It stays in view as the rows scroll, on a screen at least 56rem tall. |
 | Phone header and menu | The logo and the menu on one row; the menu wraps under it. |
 | Tabs and indexes at 390 px | Topic pills wrap onto lines. The contents box stays open as a plain list. |
 | Link, card and focus states | Links underlined in the accent; on hover the underline thickens. A row's title is the target and underlines on hover. Focus is a 2 px accent ring. |

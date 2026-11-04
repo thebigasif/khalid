@@ -13,10 +13,10 @@ body = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
 
 [shape]
 radius = "0.25rem"
-measure = "38rem"
+measure = "40rem"
 
 [type]
-body = "1.0625rem 1.1875rem"
+body = "1.0625rem 1.25rem"
 h1 = "2.25rem 3.5rem"
 h2 = "1.5rem 2rem"
 h3 = "1.1875rem 1.375rem"

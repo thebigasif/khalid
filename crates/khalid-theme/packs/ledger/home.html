@@ -1,9 +1,11 @@
 {#- Ledger's front page: a masthead with the blog's name set large over a
     double rule, its tagline and up to three facts, a numbered index of
-    topics (a rail beside the list on wide screens, wrapping pills on a
-    phone), then the latest posts as a ruled list with no pictures, its
-    first row the lead. Five posts per home section, then the newsletter
-    band. -#}
+    topics (a rail beside the list on wide screens, with each topic's
+    newest post and the editor's picks; wrapping pills on a phone), then
+    the latest posts as a ruled list with no pictures, its first row the
+    lead. The first ten rows carry the author, date and topic; the rest
+    are one line each, title and date, like a study's index. Five posts
+    per home section, then the newsletter band. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import avatar -%}
@@ -12,7 +14,7 @@
 {% from "home_parts.html" import hero_stats, home_sections -%}
 {% macro entries(posts, level) -%}
 <ol class="ledger-list" role="list">
-{% for post in posts %}<li>
+{% for post in posts %}{% if loop.index <= 10 %}<li>
 <article class="ledger-entry">
 <p class="card-meta">{% if post.author %}<span class="card-author">{% if post.author.image %}{{ avatar(post.author.image) }}{% endif %}{{ post.author.name }}</span>
 {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %}
@@ -20,7 +22,13 @@
 <h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 </article>
 </li>
-{% endfor %}</ol>
+{% else %}<li class="ledger-line">
+<article class="ledger-short">
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<time datetime="{{ post.date }}">{{ post.date | date }}</time>
+</article>
+</li>
+{% endif %}{% endfor %}</ol>
 {%- endmacro %}
 {% set topics = page.topics and "topic_links" in site.features -%}
 <header class="masthead">
@@ -34,12 +42,21 @@
 {{ page.intro }}
 </div>
 {% endif %}{% if topics %}<div class="ledger-front">
-<nav class="pills ledger-rail" aria-label="{{ t.topics }}">
+<div class="ledger-rail">
+<nav class="pills ledger-topics" aria-label="{{ t.topics }}">
 <h2>{{ t.topics }}</h2>
 <ol role="list">
-{% for group in page.topics %}{% for topic in group.links %}<li><a class="pill" href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% for group in page.topics %}{% for topic in group.links %}{% set tab = page.tabs | selectattr("href", "eq", topic.href) | first %}<li><a class="pill" href="{{ topic.href }}">{{ topic.name }}</a>{% if tab and tab.posts %}
+<a class="ledger-newest" href="{{ tab.posts[0].href }}">{{ tab.posts[0].title }}</a>{% endif %}</li>
 {% endfor %}{% endfor %}</ol>
 </nav>
+{% if page.picks %}<section class="ledger-picks" aria-labelledby="ledger-picks-title">
+<h2 id="ledger-picks-title">{{ t.editors_picks }}</h2>
+<ol role="list">
+{% for post in page.picks[:4] %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
+{% endfor %}</ol>
+</section>
+{% endif %}</div>
 {% endif %}<div class="ledger-main">
 {% if page.sections %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
