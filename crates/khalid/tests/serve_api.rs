@@ -3,7 +3,7 @@
 //! saved edit without a restart, and a post made and published through the
 //! Admin API is served, or refused by the linter (KH-API-1, KH-API-2). The
 //! `OpenAPI` document it serves is the SDK's, and its routes keep it
-//! (KH-API-4).
+//! (KH-API-4). The tags the posts name and the plain pages are listed too.
 
 use std::fs;
 use std::io::{BufRead, BufReader, Read, Write};
@@ -843,4 +843,117 @@ fn raw_head(server: &Server, path: &str) -> String {
     stream.read_to_string(&mut raw).unwrap();
     raw.split_once("\r\n\r\n")
         .map_or(String::new(), |(head, _)| head.to_owned())
+}
+
+/// `resource` of the Content API under the demo site's mount, read with
+/// the content `key`.
+#[cfg(test)]
+fn content(server: &Server, key: &str, resource: &str) -> Value {
+    let joint = if resource.contains('?') { '&' } else { '?' };
+    let path = format!("/blog/api/content/v1/{resource}{joint}key={key}");
+    let (status, body) = request(server, "GET", &path, &[], None);
+    assert_eq!(status, 200, "{resource}: {body}");
+    serde_json::from_str(&body).unwrap()
+}
+
+/// The `field` of every entry under `list` in `json`.
+#[cfg(test)]
+fn each(json: &Value, list: &str, field: &str) -> Vec<String> {
+    let entries = json[list].as_array().unwrap();
+    entries
+        .iter()
+        .map(|entry| entry[field].as_str().unwrap_or_default().to_owned())
+        .collect()
+}
+
+/// Writes `tags` into the front matter of the post at `file` in `site`.
+#[cfg(test)]
+fn tag(site: &Path, file: &str, tags: &str) {
+    let mut path = site.to_path_buf();
+    path.push(file);
+    let text = fs::read_to_string(&path).unwrap();
+    let tagged = text.replacen("---\n", &format!("---\ntags: [{tags}]\n"), 1);
+    fs::write(&path, tagged).unwrap();
+}
+
+#[test]
+fn the_content_api_lists_the_tags_the_posts_name_each_in_its_language() {
+    let site = demo_copy();
+    tag(
+        site.path(),
+        "content/en/posts/2026-09-28-what-a-sitemap-does.md",
+        "crawl budget, Sitemaps",
+    );
+    tag(
+        site.path(),
+        "content/en/posts/2026-09-21-how-to-write-a-title-tag.md",
+        "crawl budget",
+    );
+    tag(
+        site.path(),
+        "content/de/posts/2026-09-28-was-eine-sitemap-leistet.md",
+        "crawl budget",
+    );
+    let key = new_key(site.path(), &["--kind", "content", "--name", "Web page"]);
+    let server = start(site.path());
+
+    let tags = content(&server, &key, "tags/?limit=all");
+    assert_eq!(
+        each(&tags, "tags", "id"),
+        ["de.crawl-budget", "en.crawl-budget", "en.sitemaps"],
+        "{tags}"
+    );
+    assert_eq!(
+        each(&tags, "tags", "name"),
+        ["crawl budget", "crawl budget", "Sitemaps"]
+    );
+    let english = content(&server, &key, "tags/?filter=language:en");
+    assert_eq!(english["meta"]["pagination"]["total"], 2, "{english}");
+
+    let post = content(&server, &key, "posts/slug/what-a-sitemap-does/");
+    assert_eq!(
+        post["posts"][0]["tags"],
+        serde_json::json!(["crawl-budget", "sitemaps"]),
+        "{post}"
+    );
+    let untagged = content(&server, &key, "posts/slug/fixing-slow-pages/");
+    assert_eq!(untagged["posts"][0]["tags"], serde_json::json!([]));
+    let tagged = content(&server, &key, "posts/?filter=tag:crawl-budget");
+    assert_eq!(
+        each(&tagged, "posts", "id"),
+        [
+            "en.what-a-sitemap-does",
+            "de.was-eine-sitemap-leistet",
+            "en.how-to-write-a-title-tag",
+        ],
+        "{tagged}"
+    );
+}
+
+#[test]
+fn the_content_api_lists_the_plain_pages_at_their_built_addresses() {
+    let site = demo_copy();
+    let key = new_key(site.path(), &["--kind", "content", "--name", "Web page"]);
+    let server = start(site.path());
+
+    let pages = content(&server, &key, "pages/");
+    let mut ids = each(&pages, "pages", "id");
+    ids.sort();
+    assert_eq!(ids, ["de.ueber-uns", "en.about"], "{pages}");
+    let about = content(&server, &key, "pages/en.about/?formats=html,markdown");
+    let about = &about["pages"][0];
+    assert_eq!(about["title"], "About Field Notes");
+    assert_eq!(about["excerpt"], "Who writes Field Notes on SEO, and why.");
+    assert_eq!(about["url"], "https://www.example.com/blog/about/");
+    let html = about["html"].as_str().unwrap();
+    assert!(html.contains("<p>Field Notes is"), "{about}");
+    let markdown = about["markdown"].as_str().unwrap();
+    assert!(markdown.trim_start().starts_with("Field Notes"), "{about}");
+    let german = content(&server, &key, "pages/slug/ueber-uns/");
+    assert_eq!(
+        german["pages"][0]["url"],
+        "https://www.example.com/blog/de/ueber-uns/"
+    );
+    let posts = content(&server, &key, "posts/?filter=slug:about");
+    assert_eq!(posts["meta"]["pagination"]["total"], 0, "a page is no post");
 }
