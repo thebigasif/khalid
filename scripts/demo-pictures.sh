@@ -24,6 +24,8 @@ tools="$root/scripts/demo-check"
 work="$root/target/demo-pictures"
 # shellcheck source=demo-check/showcase.sh
 source "$tools/showcase.sh"
+# The review shows every sample brand, ready or not (scripts/demo-brand.sh).
+export DEMO_BRAND_ALL=1
 
 only=""
 args=("$@")

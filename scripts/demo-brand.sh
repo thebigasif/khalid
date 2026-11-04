@@ -17,9 +17,19 @@ pack="${2:?Name the template whose sample brand to use.}"
 brand="$root/fixtures/showcase-brands/$pack/theme"
 
 [ -d "$brand" ] || exit 0
+# A brand dresses the Pages demo and the layout check only once its
+# template's redesign has landed, which adds the file "ready" beside
+# theme/. The picture review sets DEMO_BRAND_ALL=1 to show every brand.
+[ -f "$brand/../ready" ] || [ "${DEMO_BRAND_ALL:-}" = 1 ] || exit 0
 if [ ! -f "$copy/site.toml" ]; then
   echo "$copy holds no site.toml, so it is not a copy of the showcase site. Name the copy the build makes, then run this again."
   exit 1
 fi
 mkdir -p "$copy/theme"
 cp -R "$brand/." "$copy/theme/"
+# The brand names its logo at the about page's address, so the logo goes
+# there too, in place of the showcase's own.
+if [ -f "$brand/logo.svg" ]; then
+  cp "$brand/logo.svg" "$copy/content/en/pages/about/logo.svg"
+  rm -f "$copy/theme/logo.svg"
+fi
