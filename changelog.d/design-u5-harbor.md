@@ -1,0 +1,2 @@
+Changed
+- Harbor has a new design for busy marketing blogs. Each page opens on a light tint of the accent, with the page title set very large and the featured post, editor picks or the offer on white cards resting on it. Below come rounded picture cards that lift on hover, section headings under a short accent bar, and the offer as a band in the full accent colour. The header keeps the logo, menu and button on one row on a laptop, and a post column holds a comfortable line length.
