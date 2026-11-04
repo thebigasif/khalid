@@ -1,8 +1,8 @@
 /* Harbor (templates spec 3.5): a marketing blog with one offer. The idea
    is a harbour wall of colour: the top of every page sits on a light tint
    of the accent, with the blog's name or the post's title set large and
-   tight, and white cards resting on it. Below the tint, picture cards on
-   white, bold section headings under a short accent bar, and the offer as
+   tight, and plain cards resting on it. Below the tint, picture cards on
+   the background, bold section headings under a short accent bar, and the offer as
    a band in the full accent. Every colour is a token or a mix of tokens. */
 :root {
   --hb-tint: color-mix(in oklab, var(--color-accent) 9%, var(--color-background));
@@ -52,7 +52,7 @@ h2 { line-height: 1.15; }
 .site-header nav a { color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; white-space: nowrap; }
 .site-header nav a:hover { color: var(--color-link); }
 .site-header nav a[aria-current] { font-weight: 700; box-shadow: inset 0 -3px 0 var(--color-accent); }
-.header-button { flex: none; white-space: nowrap; }
+.header-button { flex: none; }
 .search-link { flex: none; color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
 .search-link:hover { color: var(--color-link); text-decoration: underline; }
 
@@ -65,7 +65,7 @@ h2 { line-height: 1.15; }
 .lead-title::before, .lead-side > h2::before { content: ""; inline-size: 1.5rem; block-size: 0.25rem; border-radius: 999px; background: var(--color-accent); }
 
 /* The hero: the blog's name very large on the tint, the sign-up card
-   raised beside it, then the lead post and the picks as white cards on
+   raised beside it, then the lead post and the picks as plain cards on
    the same tint. */
 .masthead { display: grid; gap: 2rem 4rem; align-items: center; padding-block: clamp(2.5rem, 1.5rem + 3vw, 4.5rem) 2.5rem; }
 .masthead-text { min-inline-size: 0; }
@@ -76,7 +76,7 @@ h2 { line-height: 1.15; }
 @media (min-width: 60rem) { .masthead-signup { grid-template-columns: minmax(0, 1fr) minmax(22rem, 30rem); } }
 .masthead .newsletter-slot { margin: 0; box-shadow: var(--hb-raise); }
 
-/* The newsletter: a white card, the field and the button on one line. */
+/* The newsletter: a plain card, the field and the button on one line. */
 .newsletter-slot { padding: 2rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--hb-big); }
 .newsletter-slot h2 { margin-block: 0 0.5rem; font-size: 1.5rem; letter-spacing: -0.02em; }
 .newsletter-slot > p { color: var(--color-muted); }
@@ -90,7 +90,7 @@ h2 { line-height: 1.15; }
 main > .newsletter-slot { margin-block: var(--space-section); padding: 2.5rem; background: var(--hb-tint); border: 0; }
 main > .newsletter-slot h2 { font-size: 1.875rem; }
 
-/* The lead post and the picks: white cards on the hero's tint. */
+/* The lead post and the picks: plain cards on the hero's tint. */
 .top { display: grid; gap: 2.5rem; margin-block-end: var(--space-section); padding-block: 0 clamp(3rem, 2rem + 3vw, 5rem); }
 @media (min-width: 60rem) { .top-split { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 2rem; } }
 .lead, .lead-side { display: flex; flex-direction: column; min-inline-size: 0; }
@@ -154,7 +154,7 @@ ul.cards:not(.cards-row, .cards-text, .cards-compact) .card-meta > time { grid-c
 ul.cards:not(.cards-row, .cards-text, .cards-compact) .card:not(:has(.image))::before { content: ""; grid-column: 1 / -1; grid-row: 1; aspect-ratio: 16 / 9; margin: 0 -1.5rem 1.25rem; background: radial-gradient(circle at 85% 120%, var(--hb-line) 0 40%, transparent 40.5%), radial-gradient(circle at 10% -10%, color-mix(in oklab, var(--color-accent) 14%, var(--color-background)) 0 32%, transparent 32.5%), var(--hb-tint); }
 
 /* Rows: a small picture beside the topic, the title and two lines of
-   summary. Beside the lead post they share one white card. */
+   summary. Beside the lead post they share one plain card. */
 .cards-row { gap: 0; }
 .cards-row > li > .card { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); grid-auto-rows: min-content; gap: 0 1.25rem; align-content: start; padding-block: 1.25rem; border-block-end: 1px solid var(--color-border); }
 .cards-row .card > figure.image { grid-row: 1 / span 4; margin: 0; }
@@ -232,6 +232,12 @@ main > .cards { margin-block-start: 3.5rem; }
 /* A post: the trail and the title block on the tint, the lead picture
    half on it and half below, then one readable column. */
 .post > *, .post-footer, .author-box, main > .newsletter-slot, main > .cta-band, main > .lock, .comments, .mentions { max-inline-size: var(--measure); margin-inline: auto; }
+/* On a large screen the post column widens with its text (set below), so a
+   line keeps about 70 characters and the column fills more of the window.
+   Beside the side contents list the column keeps its width. */
+@media (min-width: 64rem) {
+  main:not(:has(.toc-side)) :is(.post > *, .post-footer, .author-box, .newsletter-slot, .cta-band, .lock, .comments, .mentions) { max-inline-size: calc(var(--measure) * 1.125); }
+}
 .masthead ~ .cta-band { max-inline-size: none; }
 main > .breadcrumbs:has(+ .post) ol { justify-content: center; }
 .post > .post-header { --hb-image: calc(min(60rem, 100vw - 2rem) * 0.28125); max-inline-size: 56rem; margin-block: 0 3rem; padding-block: 1rem 0; text-align: center; border-image: linear-gradient(var(--hb-tint), var(--hb-tint)) fill 0 / 0 / 0 100vmax; }
@@ -252,7 +258,7 @@ main > .breadcrumbs:has(+ .post) ol { justify-content: center; }
 .post-header > figure.image { margin-block: 2.5rem 0; margin-inline: calc(50% - min(50vw - 1rem, 30rem)); }
 .post-header .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--hb-wash); border-radius: var(--hb-big); box-shadow: var(--hb-raise); }
 
-/* The offer: a white card under the byline, the note beside one button. */
+/* The offer: a plain card under the byline, the note beside one button. */
 .offer { max-inline-size: 40rem; margin: 2rem auto 0; text-align: start; }
 .offer .cta-band { margin: 0; padding: 0.625rem 0.625rem 0.625rem 1.5rem; background: var(--color-background); border-radius: 999px; box-shadow: var(--hb-raise); }
 .offer .cta-band .cta-note { flex: 1 1 14rem; color: var(--color-text); font-family: var(--font-body); font-size: 0.9375rem; font-weight: 600; letter-spacing: 0; line-height: 1.4; }
@@ -271,6 +277,7 @@ main > .breadcrumbs:has(+ .post) ol { justify-content: center; }
 
 /* The post's words. */
 .post-body { font-size: 1.125rem; line-height: 1.75; }
+@media (min-width: 64rem) { .post-body { font-size: 1.25rem; } }
 .post-body > p:first-child { color: var(--color-text); font-size: 1.3125rem; line-height: 1.6; }
 .post-body h2 { margin-block: 3.5rem 0.875rem; font-size: var(--text-h2); letter-spacing: -0.03em; }
 .post-body h3 { margin-block: 2.25rem 0.5rem; }
@@ -416,4 +423,25 @@ main + .site-footer, .site-footer { margin-block-start: 0; }
   .offer, .related, .announcement a::after { display: none; }
   .post-marked h2, :is(.latest, .home-section, .related, .featured) > h2 { padding: 0; background: none; }
   .post > .post-header { border-image: none; }
+}
+
+/* Past the first nine, the newest posts carry on as an index of ruled rows,
+   so the front page still links to every post without a wall of cards:
+   the title, the topic and the date on one line, and on a phone the title
+   and the date. */
+.latest .cards > li:nth-child(n+10) { grid-column: 1 / -1; }
+.latest .cards > li:nth-child(n+10) .card { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding: 0.875rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; transform: none; }
+.latest .cards > li:nth-child(10) .card { border-block-start-color: var(--color-text); }
+.latest .cards > li:nth-child(n+10) .card > :is(.image, p:not(.card-meta)), .latest .cards > li:nth-child(n+10) .card-author { display: none; }
+.latest .cards > li:nth-child(n+10) .card-meta { display: contents; }
+.latest .cards > li:nth-child(n+10) .card h3 { order: -1; flex: 1 1 24rem; margin: 0; padding: 0; font-size: 1.125rem; line-height: 1.35; }
+.latest .cards > li:nth-child(n+10) .card-meta > a { order: 1; margin: 0; font-size: 0.875rem; }
+.latest .cards > li:nth-child(n+10) .card-meta > time { order: 2; margin: 0; font-size: 0.875rem; white-space: nowrap; }
+@media (max-width: 40rem) { .latest .cards > li:nth-child(n+10) .card-meta > a { display: none; } }
+
+/* On a phone, rows that scroll sideways fade out at the end edge, so a
+   word cut by the screen edge reads as more to swipe, not as broken. */
+@media (max-width: 47.99rem) {
+  :is(.site-header nav ul, .topic-tab-list) { mask-image: linear-gradient(to left, transparent, var(--color-text) 3rem); padding-inline-end: 2rem; }
+  [dir="rtl"] :is(.site-header nav ul, .topic-tab-list) { mask-image: linear-gradient(to right, transparent, var(--color-text) 3rem); }
 }
