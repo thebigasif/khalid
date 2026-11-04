@@ -15,7 +15,7 @@ Compass is a template for a teaching blog: guides that explain how to do somethi
 1. Your logo in the header, and your call to action as a button when `[template.cta]` is set. On a phone the button waits for the band further down, so the header stays short.
 2. A masthead that fills the top of the screen: the blog's title, very large, on a pale band drawn as a map grid that runs to the edges of the window, with a drawn compass in your accent colour. Under the title, every topic of your blog as a numbered stop (01, 02, 03) on one dashed trail, each a link to its topic. On a phone the trail runs down the screen.
 3. When the page has two or more home sections, a row of links that jump to each one.
-4. Each home section as three picture cards (topic, title, summary, then author and date), ending in a link to the rest. Without home sections, your newest posts under "Recently published", with numbered page links. In a list of four or more, the newest post leads across the whole row, its picture beside a large title. A post with no picture gets a drawn cover in tints of your accent colour, so the cards line up. In a long list, after the lead and six picture cards, the rest is a numbered index: one ruled row per post with its number, topic, title and date, and no picture.
+4. Each home section as three picture cards (topic, title, summary, then author and date), ending in a link to the rest. Without home sections, your newest posts under "Recently published", with numbered page links. In a list of four or more, the newest post leads across the whole row, its picture beside a large title. A post with no picture gets a drawn cover in tints of your accent colour, so the cards line up. In a long list, after the lead and six picture cards, the rest is a numbered index: one ruled row per post with its number, topic, title and date, and no picture. On a phone the six cards become short rows with a small picture at the start, and each index row is the number and the title with the date small under it, so every post stays linked on a page of reasonable length.
 5. Topic tabs as rounded pills, the open one filled in your accent colour, then the video and podcast rows.
 6. The newsletter as a band before the footer, when your blog takes sign-ups.
 
@@ -25,7 +25,7 @@ Lists such as a category, the archive or an author's posts show the same cards a
 
 1. Breadcrumbs: your blog's home, the post's category, then the post, centred on a pale band that runs to the edges of the window.
 2. The title, large and centred on the same band, then one quiet line with the author's name (without a photo), the reviewer, the dates and the category.
-3. The lead picture, wider than the text on a large screen, with the band stopping halfway down it.
+3. The lead picture, wider than the text on a large screen, with the band stopping halfway down it. From 1024 px the text grows to 1.25rem in a wider column, so a wide window still reads at 60 to 75 characters a line.
 4. The contents: an open box listing the main headings as a numbered route (01, 02, 03), each number in a small circle, in two columns when there is room. A `::toc` block in the post repeats it, so Compass shows that block only when the box is off.
 5. The post. Write a summary callout first and it sits right after the contents as the key points, each with a drawn check mark:
 
@@ -104,7 +104,7 @@ Your own `theme/tokens.toml` wins over each value.
 
 | Token | Compass |
 |---|---|
-| Body text | 1.0625rem on a phone to 1.1875rem on a wide screen |
+| Body text | 1.0625rem on a phone to 1.1875rem on a wide screen; a guide's text 1.25rem from 1024 px |
 | Main title (`h1`) | 2.5rem to 4rem; a guide's title 4.5rem and the front page's title up to 6.75rem on a wide screen |
 | Main headings (`h2`) | 1.625rem to 2.125rem |
 | Headings (`h3`) | 1.25rem to 1.5rem |
@@ -112,7 +112,7 @@ Your own `theme/tokens.toml` wins over each value.
 | Line height | 1.7 |
 | Space between sections | 4.5rem |
 | Corners | 0.75rem |
-| Text column | 36rem, about 70 characters |
+| Text column | 36rem, about 70 characters; a guide's column 39rem from 1024 px, where its text is larger |
 | Lists and header | 80rem, and 88rem on a screen 1760 px or wider |
 
 Compass brings its own colours and type: a teal accent (`#0e7490`), a near-black ink with a hint of teal, a pale cool surface, heavy rounded headings where the reader's system has them, and the system's own sans for the text. Lines are hairlines and boxes are tints; there is no dark section anywhere. Your colours, fonts and logo from your main site, through theme sync, replace them, as in every template.
@@ -136,7 +136,7 @@ This is Compass's design brief. It fixes how the template should look, so every 
 | Type scale | Bold and large: the front page's title 3rem on a phone to 6.75rem, tight tracking (-0.045em) on every display title, card titles heavy (800). The type carries the idea: a map title, then numbered stops. |
 | Frame at 1440 px and wider | At least **76rem** for the front page and lists: 80rem, and 88rem from 1760 px. A guide's text keeps its own reading column inside it, under a wider title. |
 | Cards and lists | Rounded picture cards on a white ground with a thin border, the topic in small capitals, the title heavy in the heading font, two or three lines of summary. No shadows. The newest post leads with a large title. A long list turns into a numbered index after seven posts. |
-| Phone header and menu | The logo on the left and the menu on the right in one short row; the menu scrolls sideways and fades at its edge. The call to action waits for the band further down. |
+| Phone header and menu | The logo on the left and the menu on the right in one short row; the menu scrolls sideways and its last 2rem fades out, so a cut word reads as more to scroll. The call to action waits for the band further down. |
 | Tabs and indexes at 390 px | Topic tabs become rounded pills that wrap onto two rows at most. The numbered contents box stays open in one column, with each number in a small circle on the pale box. The topic trail in the masthead runs down the screen. |
 | Link, card and focus states | Links underlined in the accent; on hover the underline becomes a pale accent highlight. A card's border turns the accent on hover. Focus is a 3 px accent ring with rounded corners. |
 | Signature details | The masthead as a full-width pale map grid with the drawn compass, and the blog's topics as numbered stops on a dashed trail. The contents as a numbered route (01, 02, 03) in two columns. Key points with drawn check marks, how-to steps as numbered stops joined by a line, and a long list as a numbered index. |
