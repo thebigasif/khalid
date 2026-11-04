@@ -1,3 +1,8 @@
+---
+title: "Folio"
+order: 40
+---
+
 # Folio
 
 Folio is a product team's notebook: essays, engineering notes with code, and announcements under the blog's own masthead. It suits a software or design team whose posts are written by the people who built the thing.

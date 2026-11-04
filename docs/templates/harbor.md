@@ -1,3 +1,8 @@
+---
+title: "Harbor"
+order: 50
+---
+
 # Harbor
 
 Harbor is a template for a busy marketing blog: a team that publishes often, wants readers to sign up, and has one offer to put in front of every reader, such as a free checklist or a trial.

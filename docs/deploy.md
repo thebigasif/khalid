@@ -1,3 +1,8 @@
+---
+title: "Running Khalid on a server"
+order: 20
+---
+
 # Running Khalid on a server
 
 Khalid is one file. Put it on a machine, point it at a site folder, and it serves the blog and the admin. This page shows the ways to keep it running. The files it names are in `packaging/` in the repository.
