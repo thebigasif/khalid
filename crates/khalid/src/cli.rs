@@ -472,6 +472,11 @@ pub(crate) struct InitArgs {
     #[arg(long, value_name = "URL")]
     pub(crate) blog: Option<AbsoluteUrl>,
 
+    /// The template the blog starts with, such as atlas, with its colours and
+    /// shape; docs/templates.md lists them all [default: classic]
+    #[arg(long, value_name = "NAME")]
+    pub(crate) template: Option<String>,
+
     /// Ask nothing: take the flags, and the defaults for the rest
     #[arg(
         long = "yes",
