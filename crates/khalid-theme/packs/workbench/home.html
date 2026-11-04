@@ -1,5 +1,5 @@
 {#- Workbench's front page (templates spec 3.7): the categories in one
-    menu that opens without a script, the featured post, the newest three
+    menu that opens without a script, the featured post, the newest five
     posts as a list, the newsletter, the rest as picture cards, the
     newsletter again, and a link to every post. -#}
 {% extends "base.html" %}
@@ -29,7 +29,7 @@
 {% if posts %}<section class="wb-latest" aria-labelledby="wb-latest-title">
 <h2 id="wb-latest-title">{{ t.latest }}</h2>
 <ol class="wb-latest-list" role="list">
-{% for post in posts[:3] %}<li>
+{% for post in posts[:5] %}<li>
 {% if post.category %}<a class="wb-label" href="{{ post.category.href }}">{{ post.category.name }}</a>
 {% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
 <p class="wb-latest-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.reading_time %}
@@ -39,9 +39,9 @@
 </section>
 {% elif not slot %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t, note=note) }}
-{% endif %}{% if posts[3:] %}<section class="wb-more" aria-labelledby="wb-more-title">
+{% endif %}{% if posts[5:] %}<section class="wb-more" aria-labelledby="wb-more-title">
 <h2 id="wb-more-title">{{ t.more_posts }}</h2>
-{{ cards(posts[3:], 3) }}
+{{ cards(posts[5:], 3) }}
 </section>
 {% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t, id="newsletter-end", note=note) }}
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
