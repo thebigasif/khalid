@@ -53,7 +53,9 @@ h1, h2, h3, h4 { letter-spacing: -0.025em; }
 @media (max-width: 52rem) {
   .site-header { flex-wrap: wrap; padding-block: 0.5rem 0.25rem; }
   .site-header nav { order: 3; flex-basis: 100%; min-inline-size: 0; }
-  .site-header nav ul { gap: 0 1.25rem; }
+  .site-header nav ul { flex-wrap: nowrap; gap: 0 1.25rem; overflow-x: auto; scrollbar-width: none; padding-inline-end: 2rem; mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent); }
+  [dir="rtl"] .site-header nav ul { mask-image: linear-gradient(to left, black calc(100% - 2rem), transparent); }
+  .site-header nav a { white-space: nowrap; }
   .header-button { display: none; }
 }
 
@@ -65,7 +67,7 @@ h1, h2, h3, h4 { letter-spacing: -0.025em; }
    hairlines that run to the screen's edge. */
 .masthead { position: relative; padding-block: clamp(3rem, 10vw, 11rem) 0; margin-block-end: clamp(2.5rem, 5vw, 4.5rem); }
 .masthead::before { content: ""; position: absolute; inset: 0 0 4rem; z-index: -1; background: var(--paper); mask-image: radial-gradient(ellipse 75% 85% at 35% 50%, black 20%, transparent 78%); }
-.masthead h1 { max-inline-size: 12ch; margin: 0 0 0 -0.04em; font-size: clamp(3.25rem, 0.25rem + 9vw, 12rem); line-height: 0.9; letter-spacing: -0.06em; text-wrap: balance; }
+.masthead h1 { max-inline-size: 12ch; margin: 0 0 0 -0.04em; font-size: clamp(3.25rem, 0.25rem + 9vw, 12rem); line-height: 0.9; letter-spacing: -0.05em; text-wrap: balance; }
 .masthead-tagline, .masthead .intro { max-inline-size: 40rem; margin: clamp(1.25rem, 2.5vw, 2rem) 0 0; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem); line-height: 1.45; letter-spacing: -0.01em; }
 .masthead .intro > :last-child { margin-block-end: 0; }
 .masthead .category-tabs { position: relative; margin-block: clamp(2.5rem, 6vw, 4.5rem) 0; border: 0; }
@@ -108,7 +110,7 @@ main > section + section { margin-block-start: clamp(4rem, 8vw, 6rem); }
 /* The featured story: the picture large, the words beside it. */
 .featured { margin-block: 0 clamp(4rem, 8vw, 6rem); }
 .card-featured { padding: 0; background: none; border-radius: 0; }
-.card-featured h3 { font-size: clamp(2rem, 1.1rem + 2.8vw, 3.75rem); line-height: 1.02; letter-spacing: -0.045em; }
+.card-featured h3 { font-size: clamp(2rem, 1.1rem + 2.8vw, 3.75rem); line-height: 1.02; letter-spacing: -0.038em; }
 .card-featured > p:not(.card-meta) { font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); -webkit-line-clamp: 4; }
 @media (min-width: 56rem) {
   .card-featured:has(.image) { grid-template-columns: minmax(0, 8fr) auto minmax(0, 5fr); grid-template-areas: "image . ." "image kicker date" "image title title" "image text text" "image author author" "image . ."; grid-template-rows: 1fr repeat(4, auto) 1fr; }
@@ -128,7 +130,7 @@ main > section + section { margin-block-start: clamp(4rem, 8vw, 6rem); }
   .lead .card-featured .image { margin: 0 0 1.75rem; }
   .lead .card-featured .image img { aspect-ratio: 16 / 9; }
 }
-.lead .card-featured h3 { max-inline-size: 22ch; font-size: clamp(2.125rem, 0.8rem + 3.4vw, 5rem); line-height: 0.98; letter-spacing: -0.05em; }
+.lead .card-featured h3 { max-inline-size: 22ch; font-size: clamp(2.125rem, 0.8rem + 3.4vw, 5rem); line-height: 0.98; letter-spacing: -0.042em; }
 .lead .card-featured > p:not(.card-meta) { max-inline-size: 40rem; }
 .lead-rail > h2 { margin-block-end: 0.5rem; }
 .lead-grid > h2::after { content: none; }
@@ -148,7 +150,21 @@ main .cards-compact { gap: 0 clamp(2rem, 4vw, 4rem); border-block-start: var(--h
 .cards-compact .card > p { grid-area: date; margin: 0; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
 .cards-compact .card :is(h2, h3, h4) { grid-area: title; margin: 0; font-size: 1.0625rem; font-weight: 550; line-height: 1.35; letter-spacing: -0.015em; }
 @media (max-width: 30rem) {
-  .cards-compact .card { grid-template-columns: 1fr; grid-template-areas: "date" "title"; row-gap: 0.25rem; }
+  .cards-compact .card { grid-template-columns: 1fr; grid-template-areas: "title" "date"; row-gap: 0.375rem; padding-block: 0.875rem; }
+}
+
+/* On a phone every picture card is a ruled row: the title, the date
+   small under it and a small square picture at the end, so the front
+   page lists every post without turning into a long wall. */
+@media (max-width: 40rem) {
+  main .cards:not(.cards-ranked, .cards-compact) { gap: 0; border-block-end: var(--hair); }
+  main .cards:not(.cards-ranked, .cards-compact) > li { padding-block: 1rem; }
+  main .cards:not(.cards-ranked, .cards-compact) .card { grid-template-columns: minmax(0, 1fr) 5rem; grid-template-areas: "title image" "date image"; grid-template-rows: auto 1fr; column-gap: 1rem; row-gap: 0.375rem; }
+  main .cards:not(.cards-ranked, .cards-compact) .card .image { margin: 0; }
+  main .cards:not(.cards-ranked, .cards-compact) .card .image img { aspect-ratio: 1; }
+  main .cards:not(.cards-ranked, .cards-compact) .card :is(h2, h3, h4) { margin: 0; font-size: 1.0625rem; line-height: 1.3; }
+  main .cards:not(.cards-ranked, .cards-compact) .card-meta > time, main .cards:not(.cards-ranked, .cards-compact) .card > p:not(.card-meta) { grid-area: date; align-self: start; }
+  main .cards:not(.cards-ranked, .cards-compact) :is(.card-meta > a, .card-author, .card > p:not(.card-meta):last-child) { display: none; }
 }
 
 /* Home sections and the link to each whole list. */
@@ -178,7 +194,7 @@ main .cards-compact { gap: 0 clamp(2rem, 4vw, 4rem); border-block-start: var(--h
 
 /* A list page: its title in the masthead's voice, the cards under it,
    the breadcrumbs as a quiet mono line above. */
-main > h1 { position: relative; max-inline-size: 14ch; margin-block: clamp(2.5rem, 7vw, 7rem) 1.5rem; font-size: clamp(2.75rem, 0.75rem + 6vw, 8rem); line-height: 0.92; letter-spacing: -0.06em; }
+main > h1 { position: relative; max-inline-size: 14ch; margin-block: clamp(2.5rem, 7vw, 7rem) 1.5rem; font-size: clamp(2.75rem, 0.75rem + 6vw, 8rem); line-height: 0.92; letter-spacing: -0.05em; }
 main > h1::before, .post-header::before { content: ""; position: absolute; inset: -4rem 0 -2rem; z-index: -1; background: var(--paper); mask-image: radial-gradient(ellipse 70% 80% at 30% 50%, black 15%, transparent 75%); pointer-events: none; }
 .hub-link { margin-block: 0 clamp(2.5rem, 5vw, 4rem); }
 .hub-link a { border-color: var(--color-border); border-radius: 999px; font-weight: 600; }
@@ -248,24 +264,36 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
 @media print { .masthead::before, .site-footer::before { display: none; } .cta-band, .newsletter-slot { background: none; } }
 
 /* A post: the title block across the page, the words in one column,
-   the contents in a quiet rail beside them on a wide screen. */
-.post, .page { max-inline-size: var(--measure); margin-inline: auto; }
-.breadcrumbs:has(+ :is(.post:not(.post-with-toc), .page)) { max-inline-size: var(--measure); margin-inline: auto; }
-.post:not(.post-with-toc) ~ :is(.cta-band, .newsletter-slot, .mentions, .comments, .lock) { max-inline-size: var(--measure); margin-inline: auto; }
+   the contents in a quiet rail beside them on a wide screen. From 64rem
+   the words grow and the column widens with them, so a line keeps the
+   same count of letters and the column fills more of a wide window. */
+:root { --col: var(--measure); }
+@media (min-width: 64rem) {
+  :root { --col: calc(var(--measure) * 1.1); }
+  .post-body, .page-body { font-size: 1.25rem; }
+}
+.post, .page { max-inline-size: var(--col); margin-inline: auto; }
+.breadcrumbs:has(+ :is(.post:not(.post-with-toc), .page)) { max-inline-size: var(--col); margin-inline: auto; }
+.post:not(.post-with-toc) ~ :is(.cta-band, .newsletter-slot, .mentions, .comments, .lock) { max-inline-size: var(--col); margin-inline: auto; }
+/* On a wide screen the lead picture leaves the column and spans most of
+   the frame, centred on it. */
+@media (min-width: 80rem) {
+  .post-header .image { margin-inline: calc(50% - min(38rem, 50vw - var(--pad) - 1rem)); }
+}
 .page > h1 { line-height: 1.02; letter-spacing: -0.045em; }
 .post-header { position: relative; margin-block: clamp(1.5rem, 5vw, 4.5rem) clamp(2.5rem, 5vw, 4rem); }
 .post-header::before { inset-block-end: auto; block-size: clamp(14rem, 30vw, 26rem); }
-.post-header h1 { max-inline-size: 22ch; margin-block: 0 1.75rem; font-size: clamp(2.375rem, 0.9rem + 4.2vw, 5.5rem); line-height: 0.98; letter-spacing: -0.05em; text-wrap: balance; }
+.post-header h1 { max-inline-size: 22ch; margin-block: 0 1.75rem; font-size: clamp(2.375rem, 0.9rem + 4.2vw, 5.5rem); line-height: 0.98; letter-spacing: -0.042em; text-wrap: balance; }
 .dek { max-inline-size: 40rem; margin-block: -0.25rem 2rem; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem); line-height: 1.45; letter-spacing: -0.01em; }
 .post-header .image { margin-block: clamp(2rem, 4vw, 3.5rem) 0; }
 .post-header .image img, .post-body img { border: var(--hair); border-radius: var(--radius); }
 @media (min-width: 70rem) {
   main:has(.post-with-toc) { max-inline-size: var(--wide); }
-  .post-with-toc { max-inline-size: calc(var(--measure) + 21rem); grid-template-columns: minmax(0, var(--measure)) 15rem; column-gap: 6rem; }
+  .post-with-toc { max-inline-size: calc(var(--col) + 22rem); grid-template-columns: minmax(0, var(--col)) 17rem; column-gap: 5rem; }
   .post-with-toc > .post-header { grid-column: 1 / -1; }
-  .post-with-toc > .post-header > :not(.image, h1) { max-inline-size: var(--measure); }
+  .post-with-toc > .post-header > :not(.image, h1) { max-inline-size: var(--col); }
   .post-with-toc > .toc-side { grid-row: 2 / span 20; inset-block-start: 1.5rem; }
-  main:has(.post-with-toc) > .breadcrumbs { max-inline-size: calc(var(--measure) + 21rem); margin-inline: auto; }
+  main:has(.post-with-toc) > .breadcrumbs { max-inline-size: calc(var(--col) + 22rem); margin-inline: auto; }
   main:has(.post-with-toc) > :is(.cta-band, .newsletter-slot, .mentions, .comments, .related) { max-inline-size: none; }
 }
 
