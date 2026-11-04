@@ -132,6 +132,8 @@ Evidence gathered on 4 November 2026 (research dossiers listed under Sources):
   - the Astro and Next.js starter kits, both built in CI.
 - R13. Khalid's user docs (`getting-started`, `deploy` and its guides, `templates`, `routes`, `seo-settings`, `seo-tools`, `reading`, `newsletters` and `charts-embeds-tracking`) are published at /khalid/docs/ from the Khalid repository, so they stay one source. Each doc is in the sitemap and `llms-full.txt`.
 
+- R15. Front ends built on Ghost's Content API v5 move to Khalid by changing only their address and content key. A Ghost-compatible, read-only Content API serves posts, pages, tags, authors and settings in Ghost's response shape, takes Ghost's content key and the common parts of its filter language, and is proven by running Ghost's own client library against Khalid in CI. The pages say plainly that Ghost's Handlebars themes do not run on Khalid.
+
 **Quality floor**
 
 - R14. Every new or changed page passes:
@@ -287,6 +289,16 @@ Evidence gathered on 4 November 2026 (research dossiers listed under Sources):
   - **The gallery:** it groups templates by the kind of blog they suit (news, magazine, company and studio, guides and teaching, reviews, personal journal) under plain headings, each card with a one-line "pick this if".
   - **Inside each demo:** the announcement line carries one link back to its template page.
 
+- KTD13. **A Ghost-compatible Content API, read-only and behind its own setting.** Added at the founder's request on 4 November 2026, after a scoping note from the CTO session.
+  - **Where it lives:** in `khalid-api`, under `/ghost/api/content/` on the blog's address, switched on by one `site.toml` setting and off by default.
+  - **What it answers:** posts, pages, tags, authors and `/settings/`, with browse and read by id or slug, `limit` (including `all`), `page`, `order`, `formats=plaintext`, `include=tags,authors` and `fields`.
+  - **The response shape:** Ghost's wrapper (`{"posts": [...], "meta": {"pagination": {...}}}`) and Ghost's field names, mapped from Khalid's model: `html`, `feature_image`, `custom_excerpt`, `published_at`, `reading_time`, `primary_tag`, `primary_author`, and `authors` with `profile_image`. Fields Khalid has no meaning for, such as members-only visibility and code injection, get Ghost's neutral defaults (public, empty), and the docs list them.
+  - **The key:** the request's `?key=` is checked against a content key the site makes with `khalid keys create --kind content`.
+  - **Versions:** `Accept-Version` v5.x is accepted on this path only. The existing `/api/content/v1/` is unchanged.
+  - **Filters:** a parser for the common part of Ghost's filter language: `tag`, `author`, `featured`, `slug`, `status`, `published_at` and `primary_tag.slug`, joined with `+` and `,`, with `-` for "not", `[a,b]` lists and `>`/`<` dates. Anything else answers Ghost's own 400 error shape, with a message naming the part not supported.
+  - **The guard:** a CI job installs Ghost's official `@tryghost/content-api` client at a pinned version and runs it against the showcase, browsing and reading each resource, so a break shows at once.
+  - **Not covered:** Ghost's Handlebars themes, the Admin API's Ghost shape, and the look of Ghost's card classes (`kg-*`). Each is a separate job.
+
 ### High-Level Technical Design
 
 ```mermaid
@@ -345,6 +357,7 @@ sequenceDiagram
    - U15, the release and bundles;
    - U17, the version and build order;
    - U22, the docs pack;
+   - U26, the Ghost-compatible Content API, which runs independently in `khalid-api`;
    - and the founder's approval of the KTD3 list.
 2. **Wave 2,** after U8 and the KTD3 approval: U9, the ten publications, one agent per template, ten at once. In the website repository, at the same time:
    - U19, the comparisons;
@@ -747,6 +760,39 @@ sequenceDiagram
 
 ---
 
+### U26. Ghost-compatible Content API
+
+**Goal:** Front ends built on Ghost's Content API move to Khalid by changing their address and key (R15, KTD13).
+
+**Requirements:** R15
+
+**Dependencies:** None
+
+**Files:**
+- Create: a `ghost` module in `khalid:crates/khalid-api/src/` (routes, response mapping, filter parser), its contract tests in `khalid:crates/khalid-api/tests/`, and `khalid:docs/ghost-api.md`
+- Modify: the site settings that switch it on, `khalid:.github/workflows/ci.yml` (a job running Ghost's client), `khalid:docs/standards/api.md`, the OpenAPI document
+
+**Execution note:** Start with the CI job's client calls failing against Khalid, then make each resource pass in turn.
+
+**Approach:**
+1. Add the setting and the `/ghost/api/content/` routes, off by default.
+2. Map Khalid's post, page, tag and author models to Ghost's fields, with neutral defaults where Khalid has no meaning.
+3. Write the filter parser for the KTD13 subset, with Ghost's error shape for anything outside it.
+4. Add `/settings/` from `site.toml`: title, description, logo, navigation, timezone and language.
+5. Add the CI job with Ghost's pinned client.
+
+**Test scenarios:**
+- Ghost's client browses posts with `limit`, `page` and `include=tags,authors`, and reads one by slug, getting Ghost's shape.
+- `filter=tag:news+featured:true`, `filter=tag:[a,b]` and `filter=primary_tag.slug:-x` return what Ghost would.
+- An unsupported filter answers Ghost's 400 shape with a plain message.
+- A missing or wrong `key` answers Ghost's 401 shape.
+- With the setting off, `/ghost/api/content/` answers 404, and `/api/content/v1/` is unchanged.
+- The response is cacheable with an ETag, as the native API is.
+
+**Verification:** The CI job with Ghost's real client is green, `just check` is green, and the speed budgets hold. Once it lands, the comparison and developer pages (U19, U21) gain one line on it, and the founder approves that wording.
+
+---
+
 ## Verification Contract
 
 **Khalid**
@@ -769,6 +815,7 @@ sequenceDiagram
 - serpdad.com holds every page in R5. GitHub Pages only forwards.
 - The version shown matches the newest `v` release.
 - `khalid init --template` is released.
+- The Ghost-compatible Content API is released, with Ghost's client passing in CI.
 - The founder has approved every comparison, guide and developer page text.
 - The U25 report is written and sent.
 - No abandoned experiments, spare photos or draft files are left in either repository.
