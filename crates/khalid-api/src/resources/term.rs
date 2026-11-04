@@ -67,6 +67,8 @@ impl FieldValues for Term {
             "slug" => text(self.slug.as_str()),
             "name" => text(&self.name),
             "language" => text(self.language.as_str()),
+            // Ghost's name, which only its compatible API lets a filter use.
+            "visibility" => text("public"),
             _ => Vec::new(),
         }
     }

@@ -307,6 +307,12 @@ impl FieldValues for Post {
             "author" | "authors" => all(&self.authors),
             "published_at" => time(&self.published_at),
             "updated_at" => time(&self.updated_at),
+            // Ghost's names, which only its compatible API lets a filter
+            // use: every post served is published and public.
+            "primary_tag" => all(self.tags.get(..1).unwrap_or_default()),
+            "primary_author" => all(self.authors.get(..1).unwrap_or_default()),
+            "status" => text("published"),
+            "visibility" => text("public"),
             _ => Vec::new(),
         }
     }

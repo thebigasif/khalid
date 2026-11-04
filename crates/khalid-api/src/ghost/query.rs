@@ -6,6 +6,7 @@ use serde::Deserialize;
 use serde_json::{Map, Value};
 
 use super::error::GhostError;
+use super::filter::{Names, translate};
 use super::people::Include;
 use crate::query::{ListQuery, RawListQuery};
 
@@ -23,11 +24,16 @@ pub(super) struct GhostQuery {
 }
 
 impl GhostQuery {
-    /// The checked list query for a resource whose filter and order may
-    /// name `fields`.
-    pub(super) fn list_query(&self, fields: &[&str]) -> Result<ListQuery, GhostError> {
+    /// The checked list query for a resource whose filter may name the
+    /// Ghost fields in `names` and whose order may name `fields`.
+    pub(super) fn list_query(
+        &self,
+        names: Names,
+        fields: &[&str],
+    ) -> Result<ListQuery, GhostError> {
+        let filter = self.filter.as_deref().map(|text| translate(text, names));
         let raw = RawListQuery {
-            filter: self.filter.clone(),
+            filter: filter.transpose()?,
             include: None,
             fields: None,
             order: self.order.clone(),
@@ -36,26 +42,21 @@ impl GhostQuery {
             page: self.page.clone(),
         };
         let query = ListQuery::try_from(&raw)?;
-        let unknown = |parameter: &str, field: &str| {
-            GhostError::bad_request(UserMessage::new(
-                format!("The {parameter} uses {field}, which this API cannot sort or filter by."),
-                "The list cannot be sent until it is fixed.",
-                format!("Use one of these fields: {}.", fields.join(", ")),
-            ))
-        };
-        if let Some(filter) = query.filter() {
-            filter
-                .check_fields(fields)
-                .map_err(|error| unknown("filter", error.field()))?;
-        }
-        if let Some(key) = query
+        match query
             .order()
             .iter()
             .find(|key| !fields.contains(&key.field()))
         {
-            return Err(unknown("order", key.field()));
+            Some(key) => Err(GhostError::bad_request(UserMessage::new(
+                format!(
+                    "The order uses {}, which this API cannot sort by.",
+                    key.field()
+                ),
+                "The list cannot be sent until it is fixed.",
+                format!("Use one of these fields: {}.", fields.join(", ")),
+            ))),
+            None => Ok(query),
         }
-        Ok(query)
     }
 
     /// What `include` asks for, out of `offered`: `tags` and `authors` on

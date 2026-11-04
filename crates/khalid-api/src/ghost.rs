@@ -10,6 +10,7 @@
 
 mod door;
 mod error;
+mod filter;
 mod people;
 mod post;
 mod query;

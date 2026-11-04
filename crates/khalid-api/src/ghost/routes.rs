@@ -11,6 +11,7 @@ use serde::Serialize;
 use serde_json::{Map, Value, json};
 
 use super::error::GhostError;
+use super::filter::{self, Names};
 use super::people::{GhostAuthor, GhostTag, Include, add_included};
 use super::post::GhostPost;
 use super::query::GhostQuery;
@@ -84,6 +85,9 @@ fn resource(router: Router<GhostState>, kind: Kind) -> Router<GhostState> {
 /// What a route answers: Ghost's JSON, or Ghost's error.
 type Answer = Result<Json<Value>, GhostError>;
 
+/// Which of the site's lists a route reads.
+type Pick<T> = fn(&SiteResources) -> &[T];
+
 /// The settings, as Ghost sends them: one object, not a list.
 async fn read_settings(State(state): State<GhostState>) -> Answer {
     Ok(Json(json!({ "settings": *state.site, "meta": {} })))
@@ -94,8 +98,24 @@ async fn browse(state: &GhostState, kind: Kind, raw: &GhostQuery) -> Answer {
     let (entries, meta) = match kind {
         Kind::Posts => browse_posts(state, Collection::Posts, raw).await?,
         Kind::Pages => browse_posts(state, Collection::Pages, raw).await?,
-        Kind::Tags => browse_site(state, SiteResources::tags, GhostTag::new, raw).await?,
-        Kind::Authors => browse_site(state, SiteResources::authors, GhostAuthor::new, raw).await?,
+        Kind::Tags => {
+            browse_site(
+                state,
+                (SiteResources::tags, GhostTag::new),
+                filter::TAGS,
+                raw,
+            )
+            .await?
+        }
+        Kind::Authors => {
+            browse_site(
+                state,
+                (SiteResources::authors, GhostAuthor::new),
+                filter::AUTHORS,
+                raw,
+            )
+            .await?
+        }
     };
     Ok(wrapped(
         kind.names().0,
@@ -134,7 +154,7 @@ async fn browse_posts(
     raw: &GhostQuery,
 ) -> Result<(Vec<Value>, Meta), GhostError> {
     let include = raw.include(POST_INCLUDE)?;
-    let query = raw.list_query(&Post::FILTER_FIELDS)?;
+    let query = raw.list_query(filter::POSTS, &Post::FILTER_FIELDS)?;
     let listed = state
         .content
         .list(collection, &query)
@@ -155,7 +175,7 @@ async fn read_post(
     raw: &GhostQuery,
 ) -> Result<Option<Value>, GhostError> {
     let include = raw.include(POST_INCLUDE)?;
-    let query = raw.list_query(&Post::FILTER_FIELDS)?;
+    let query = raw.list_query(filter::POSTS, &Post::FILTER_FIELDS)?;
     let found = state
         .content
         .find(collection, key)
@@ -192,14 +212,16 @@ fn shape_post(
     raw.keep_fields(entry, include)
 }
 
+/// One page of a site list `pick`ed from the store and `shape`d for Ghost,
+/// filtered by the Ghost fields in `names`.
 async fn browse_site<T: Listable, G: Serialize>(
     state: &GhostState,
-    pick: fn(&SiteResources) -> &[T],
-    shape: fn(&T) -> G,
+    (pick, shape): (Pick<T>, fn(&T) -> G),
+    names: Names,
     raw: &GhostQuery,
 ) -> Result<(Vec<Value>, Meta), GhostError> {
     let include = raw.include(Include::default())?;
-    let query = raw.list_query(T::FIELDS)?;
+    let query = raw.list_query(names, T::FIELDS)?;
     let site = state
         .content
         .site()
@@ -214,7 +236,7 @@ async fn browse_site<T: Listable, G: Serialize>(
 
 async fn read_site<T: Listable, G: Serialize>(
     state: &GhostState,
-    pick: fn(&SiteResources) -> &[T],
+    pick: Pick<T>,
     shape: fn(&T) -> G,
     key: &PostKey,
     raw: &GhostQuery,
