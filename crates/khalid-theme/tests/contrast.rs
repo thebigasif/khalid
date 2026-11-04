@@ -170,45 +170,38 @@ fn when_no_shade_can_pass_it_gets_the_closest_and_says_what_to_change() {
     );
 }
 
-/// A pack's colour, or Khalid's own when the pack leaves it out.
+/// A pack's own colours over the stock ones, as the renderer lays a
+/// pack's tokens over its defaults: a colour the pack leaves out stays.
 #[cfg(test)]
-fn pack_color(colors: Option<&toml::Table>, key: &str, fallback: Rgb) -> Rgb {
-    colors
-        .and_then(|table| table.get(key))
-        .and_then(toml::Value::as_str)
-        .map_or(fallback, hex)
+fn pack_tokens(pack: &khalid_theme::Pack) -> ThemeTokens {
+    let mut tokens = ThemeTokens::default();
+    let table: toml::Table = toml::from_str(pack.tokens).unwrap();
+    let Some(colors) = table.get("colors").and_then(toml::Value::as_table) else {
+        return tokens;
+    };
+    let set = &mut tokens.colors;
+    for (name, value) in colors {
+        let color = hex(value.as_str().unwrap());
+        match name.as_str() {
+            "background" => set.background = color,
+            "surface" => set.surface = color,
+            "text" => set.text = color,
+            "muted" => set.muted = color,
+            "link" => set.link = color,
+            "accent" => set.accent = color,
+            "border" => set.border = color,
+            other => panic!("{}: unknown colour {other}", pack.name),
+        }
+    }
+    tokens
 }
 
 #[test]
-fn every_pack_palette_meets_aa_on_its_own_grounds() {
-    let stock = ThemeTokens::default().colors;
+fn every_pack_reads_at_aa_in_its_own_colours() {
     for pack in khalid_theme::packs() {
-        let tokens: toml::Table = toml::from_str(pack.tokens).unwrap();
-        let colors = tokens.get("colors").and_then(toml::Value::as_table);
-        let checked = [
-            (ColorToken::Text, "text", stock.text),
-            (ColorToken::Muted, "muted", stock.muted),
-            (ColorToken::Link, "link", stock.link),
-            (ColorToken::Accent, "accent", stock.accent),
-        ];
-        let grounds = [
-            pack_color(colors, "background", stock.background),
-            pack_color(colors, "surface", stock.surface),
-        ];
-        for (token, key, fallback) in checked {
-            let color = pack_color(colors, key, fallback);
-            for ground in grounds {
-                let ratio = color.contrast(ground);
-                assert!(
-                    ratio >= token.target(),
-                    "{}: {} {} on {} is {ratio:.2}",
-                    pack.name,
-                    token.name(),
-                    color.to_hex(),
-                    ground.to_hex()
-                );
-            }
-        }
+        let tokens = pack_tokens(pack);
+
+        assert_all_pass(&tokens, pack.name);
     }
 }
 
