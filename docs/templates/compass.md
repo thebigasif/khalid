@@ -115,3 +115,28 @@ Your own `theme/tokens.toml` wins over each value.
 | Lists and header | 74rem |
 
 Compass brings its own colours and heading type: a teal accent (`#0e7490`), a near-black ink with a hint of teal, a pale cool surface, and rounded headings where the reader's system has them. Lines are hairlines and boxes are tints; there is no dark section anywhere. Your colours, fonts and logo from your main site, through theme sync, replace them, as in every template.
+
+## Design
+
+This is Compass's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A team that teaches its subject in guides. Readers want to know in seconds whether a guide answers their question, then follow it step by step.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A large SEO software company's free course pages. Courses as big cards in two staggered columns: a bold colour picture, a large title, one or two lines on what you learn, then a small button with the number of lessons and the time it takes. Plenty of white space. Its dark header band is not part of this brief.
+- An SEO expert's library of long guides. Very large titles, chapters as numbered cards, key points in designed panels, and drawn diagrams instead of photos.
+
+| Part | Compass |
+|---|---|
+| Type pairing | A rounded, heavy sans for headings over a sans drawn for easy reading. With no theme, the pack uses the system's rounded face for headings (`ui-rounded`) and the system sans for text. |
+| Colour | White ground, deep blue-black text and a clear sky or teal accent. Pale tints of the accent for panels: the masthead map, key points and steps. |
+| Spacing rhythm | A base step of 0.5rem. Generous: 1.5rem inside panels, 4.5rem between sections. Steps sit 2rem apart so each reads as one stop. |
+| Frame at 1440 px and wider | At least **76rem** for the front page and lists. A guide's text keeps its own reading column inside it. |
+| Cards and lists | Rounded picture cards on a white ground with a thin border, the topic as a pale accent pill, the title in the heading font, two lines of summary. No shadows. |
+| Phone header and menu | The logo on the left and the menu on the right; the call to action waits for the band further down, so the header stays one short row. |
+| Tabs and indexes at 390 px | Topic tabs become rounded pills that wrap onto two rows at most. The numbered contents box stays open in one column, with each number in a pale accent circle. |
+| Link, card and focus states | Links underlined in the accent; on hover the underline becomes a pale accent highlight. A card's border turns the accent on hover. Focus is a 3 px accent ring with rounded corners. |
+| Signature details | The masthead panel drawn as a pale map grid with the drawn compass. The contents as a numbered route (01, 02, 03) in two columns. Key points with drawn check marks, and how-to steps as numbered stops joined by a line. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/compass/theme/`: sky blue (`#03679d` links, `#0277b6` accent) with pale blue panels (`#eef7fc`), Nunito for headings and Atkinson Hyperlegible for text, and a rising-trail mark.

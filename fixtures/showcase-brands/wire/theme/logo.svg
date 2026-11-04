@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="18" width="44" height="44" fill="#d0161f"/>
+  <path d="M20 28 V52 H30 M34 28 V52 H44" fill="none" stroke="#ffffff" stroke-width="4"/>
+  <text textLength="236" lengthAdjust="spacingAndGlyphs" x="66" y="52" font-family="'Barlow Condensed', 'Arial Narrow', Arial, sans-serif" font-size="31" font-weight="700" letter-spacing="0.5" fill="#111111">LARKSPUR LEDGER</text>
+</svg>

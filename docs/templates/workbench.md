@@ -109,3 +109,28 @@ Workbench sets these defaults. A value in your `theme/tokens.toml` wins.
 - The "Categories" menu needs your categories on the front page. Khalid does not fill them in yet, so the menu stays hidden until it does.
 - The category on the rows under "Latest posts" and above a post's title works the same way: it shows once Khalid fills in a post's category.
 - Workbench reads with scripts off, and adds no script.
+
+## Design
+
+This is Workbench's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A team that tests tools or products and publishes "best of" lists and head-to-head comparisons. Readers scan a table first and read the detail second.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A product testing lab's review site. A count of products bought and tested above every guide, each pick under a heavy accent rule with its name, its test pictures and a row of scores, the specs as short labelled pairs, and a note on how the lab tests.
+- A consumer technology review site. Buying guides with a quick list of picks, specs tables and ratings, and lists of reviews as rows.
+
+| Part | Workbench |
+|---|---|
+| Type pairing | A technical grotesque for headings over a plain engineering sans for text, with mono details: prices, ratings, dates and labels. With no theme, the pack uses the system sans and the system mono. |
+| Colour | A grey-white bench ground, graphite text and one verdict colour (green) for picks, labels and pros. Panels a shade darker than the ground. Workbench now has a full palette of its own. |
+| Spacing rhythm | A base step of 0.5rem on a strict grid. Ruled sections 3.5rem apart. Table rows 0.75rem high in padding. |
+| Frame at 1440 px and wider | At least **80rem**. A comparison table may grow past the text to 60rem, so the frame leaves it room. |
+| Cards and lists | Picture cards with square corners and a 1 px rule, the category as a mono label, the title, the date. The featured picture keeps a fixed ratio (16 by 9) and never fills the window. |
+| Phone header and menu | The blog's name and the "Categories" button on one row; the menu opens below with no script. |
+| Tabs and indexes at 390 px | Topic tabs as one row you can swipe. A wide comparison table scrolls sideways inside its frame, with the first column fixed. |
+| Link, card and focus states | Links underlined in the verdict colour. A card's rule turns the verdict colour on hover. Focus is a 2 px ring in the text colour. |
+| Signature details | The comparison table as the hero of a post: header row on the panel colour, the winning column marked. Pros and cons as two ruled columns with plus and minus marks. Mono labels for prices and ratings. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/workbench/theme/`: verdict green (`#10744a` links, `#117d50` accent) on a grey-white bench (`#fafaf8`), Space Grotesk for headings and IBM Plex Sans for text, and a hex-and-check mark.

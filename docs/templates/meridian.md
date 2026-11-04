@@ -158,3 +158,28 @@ The accent appears only on links, small labels, buttons, the current tab and the
 - The front page does not group posts under category headings yet. It will once the shared home sections are filled from `site.toml`.
 - Each post has one call to action. Several different banners per site are a later step.
 - The footer shows the footer menus only; it cannot show the blog's name or logo without a change to the shared page frame.
+
+## Design
+
+This is Meridian's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A product or services company that publishes a few considered posts a month and keeps some long guides up to date.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A team software company's journal. A large lead story beside a two by two grid of smaller stories, small "article in" labels with the topic as an outlined pill, "Latest by topic" as a row of pill tabs, and a sign-up card placed inside the grid.
+- A file-sharing company's journal. A lead story with a very tall title beside a large picture, then an editorial grid whose rhythm changes row by row: two large stories, then three smaller ones set at different heights, each with its topics as one quiet line under the title. Its dark lead band is not part of this brief.
+
+| Part | Meridian |
+|---|---|
+| Type pairing | A high-contrast display serif for titles over a clean sans for text. With no theme, the pack uses the system's book serif for titles (Iowan Old Style, Charter, Georgia) and the system sans for text. |
+| Colour | A warm ivory ground, ink text and one deep accent (plum or indigo) used only where a reader can act. Hairlines in a warm grey. |
+| Spacing rhythm | A base step of 0.5rem. Very generous: 6rem between front page sections, 2.5rem between rows. |
+| Frame at 1440 px and wider | At least **80rem**: wide rows need the room. |
+| Cards and lists | Wide rows, not cards: the category in small capitals, the date, a large serif title, the summary, the author and role, and the picture cropped to 3 by 2 on the far side. Rows sit between hairlines. |
+| Phone header and menu | The logo and the menu, the menu as one row that scrolls. The outlined button gives way to the band further down. |
+| Tabs and indexes at 390 px | The category tabs become small rounded buttons that wrap. In a row, the picture sits above the text. |
+| Link, card and focus states | Links underlined in the accent. A row's serif title takes the underline on hover. Focus is a 2 px accent ring. |
+| Signature details | The lead story with a large picture beside a large serif title. Editor's picks as text cards on a soft band. The reference guide layout with "Last updated" and numbered contents. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/meridian/theme/`: plum (`#7b2d6a` links, `#8a3378` accent) on warm ivory (`#fbf8f5`), DM Serif Display for titles and Work Sans for text, and a globe mark.
