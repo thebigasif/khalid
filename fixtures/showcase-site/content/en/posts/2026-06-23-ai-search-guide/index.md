@@ -20,7 +20,7 @@ related: [ai-search-sources, answer-capsules, ai-referral-traffic, podcast-answe
 tags: [ai search, citations]
 image:
   src: cover.svg
-  alt: An answer panel with a sparkle, joined by three dotted lines to three page cards, one of them marked with a tick
+  alt: A blog page whose orange first paragraph is carried by an arrow into an AI search answer that links back to it
 ---
 
 AI search is any search tool that answers a question in its own words and names a few web pages as its sources. Google's AI features, ChatGPT search, Perplexity and others work this way. To optimise for AI search, a page has to be easy to find, easy to read in parts, and worth quoting.

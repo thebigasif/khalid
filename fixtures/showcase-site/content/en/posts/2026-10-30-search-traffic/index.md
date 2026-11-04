@@ -11,7 +11,7 @@ focus_keyword: search traffic
 tags: [research, measurement]
 image:
   src: cover.svg
-  alt: A rising line over a grid of month columns, the shape of a year of search traffic
+  alt: A line chart of search traffic rising over a year, with the area under the line in orange
 ---
 
 Every month we send each client the same three charts about their search traffic. They answer the questions owners ask most: is the blog growing, which pages bring readers in, and how much of it now comes from AI search. This post shows the three charts for a typical client in 2026 and how to read them.

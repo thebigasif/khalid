@@ -11,7 +11,7 @@ tags: [workflow]
 focus_keyword: topic cluster
 image:
   src: cover.svg
-  alt: A linked topic cluster, six post circles joined to the main post and to each other
+  alt: A linked topic cluster, six post circles joined to the orange main post and to each other
 series:
   name: Your first topic cluster
 ---

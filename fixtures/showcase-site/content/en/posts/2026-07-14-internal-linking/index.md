@@ -19,7 +19,7 @@ related: [technical-seo-audit, xml-sitemaps, seo-writing-guide, keyword-research
 tags: [links, crawling]
 image:
   src: cover.svg
-  alt: A violet hub joined by lines to five white page cards, with one dashed card on the edge that nothing links to
+  alt: A main page joined by internal links to three pages, and one orange page with a dashed edge that nothing links to
 ---
 
 Internal linking is the practice of linking from one page of your site to another. It decides how readers move through your blog, how search engines find your posts, and which pages they treat as your most important. It is the cheapest SEO work there is: no budget, no outreach, just better links between pages you already own.

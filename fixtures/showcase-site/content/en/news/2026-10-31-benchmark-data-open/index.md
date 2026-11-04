@@ -11,7 +11,7 @@ focus_keyword: benchmark data
 tags: [research, measurement]
 image:
   src: cover.svg
-  alt: A folder of spreadsheet sheets sliding out of an open box, with a small download arrow above it
+  alt: A spreadsheet of benchmark data beside an open orange padlock, free to download under an open licence
 ---
 
 From today, anyone can download sample benchmark data from our 2026 content benchmark, free and under an open licence. The file sits on a new page with a data dictionary, our method and a note on how to cite it.
