@@ -1,7 +1,7 @@
 //! The command line, as `clap` parses it.
 
 use std::net::SocketAddr;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use clap::builder::{BoolValueParser, TypedValueParser};
 use clap::{ArgAction, Args, Parser, Subcommand, ValueEnum};
@@ -14,7 +14,7 @@ use khalid_webhooks::Event;
 pub(crate) use crate::cli_access::{
     KeyKindArg, KeysCommand, NewKeyArgs, OwnerArgs, SitesCommand, StaffCommand,
 };
-pub(crate) use crate::cli_import::{ImportArgs, ImportSource, Run};
+pub(crate) use crate::cli_import::{Images, ImportArgs, ImportSource, Run};
 use crate::new::NewArgs;
 use crate::newsletter_cli::NewsletterCommand;
 use crate::update::UpdateTarget;
@@ -42,6 +42,7 @@ pub(crate) struct Cli {
     pub(crate) output: Output,
 
     /// The site folder, holding site.toml. Its settings are checked first.
+    /// [default: this folder, when it holds site.toml]
     #[arg(long, global = true, value_name = "FOLDER")]
     pub(crate) site: Option<PathBuf>,
 
@@ -71,6 +72,41 @@ pub(crate) struct Cli {
     #[cfg(feature = "test-util")]
     #[arg(long, global = true, hide = true, value_name = "URL")]
     pub(crate) test_releases: Option<String>,
+}
+
+impl Cli {
+    /// The same command line with `--site` set to the current folder when
+    /// it was left out and the current folder holds site.toml, so every
+    /// command works from inside the blog's folder. Bare `khalid`, which
+    /// prints the help, never reads the folder.
+    pub(crate) fn here(mut self) -> Self {
+        let asks_for_a_command = self.command.is_some();
+        if asks_for_a_command && self.site.is_none() && Path::new("site.toml").is_file() {
+            self.site = Some(PathBuf::from("."));
+        }
+        self
+    }
+}
+
+/// `khalid <rest>` as it runs from the folder the person is in: with
+/// `--site` unless the site is that folder.
+pub(crate) fn command_for(site: &Path, rest: &str) -> String {
+    if site == Path::new(".") {
+        format!("khalid {rest}")
+    } else {
+        format!("khalid --site {} {rest}", site.display())
+    }
+}
+
+/// `file`, a path from the site folder, as a path from the folder the
+/// person is in.
+pub(crate) fn path_for(site: &Path, file: &str) -> String {
+    let mut path = site.to_path_buf();
+    path.push(file);
+    path.strip_prefix(".")
+        .unwrap_or(&path)
+        .display()
+        .to_string()
 }
 
 /// How a command prints its results and messages.
