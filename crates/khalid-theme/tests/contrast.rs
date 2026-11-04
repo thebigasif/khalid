@@ -170,6 +170,41 @@ fn when_no_shade_can_pass_it_gets_the_closest_and_says_what_to_change() {
     );
 }
 
+/// A pack's own colours over the stock ones, as a site with no theme of
+/// its own gets them: a pack may set only some of the colours.
+#[cfg(test)]
+fn pack_colors(pack: &khalid_theme::Pack) -> ThemeTokens {
+    let mut tokens = ThemeTokens::default();
+    let table: toml::Table = toml::from_str(pack.tokens).unwrap();
+    let Some(colors) = table.get("colors").and_then(toml::Value::as_table) else {
+        return tokens;
+    };
+    let color = |key: &str| colors.get(key).and_then(toml::Value::as_str).map(hex);
+    let slots = [
+        ("background", &mut tokens.colors.background),
+        ("surface", &mut tokens.colors.surface),
+        ("text", &mut tokens.colors.text),
+        ("muted", &mut tokens.colors.muted),
+        ("link", &mut tokens.colors.link),
+        ("accent", &mut tokens.colors.accent),
+    ];
+    for (key, slot) in slots {
+        if let Some(value) = color(key) {
+            *slot = value;
+        }
+    }
+    tokens
+}
+
+#[test]
+fn every_pack_palette_meets_aa_on_its_own_grounds() {
+    for pack in khalid_theme::packs() {
+        let tokens = pack_colors(pack);
+
+        assert_all_pass(&tokens, pack.name);
+    }
+}
+
 #[tokio::test]
 async fn every_failing_pair_in_the_fixture_sites_passes_after_the_pass() {
     for (site, stylesheet) in SITES {
