@@ -44,6 +44,16 @@ impl GhostError {
         Self::new(StatusCode::UNAUTHORIZED, "UnauthorizedError", message)
     }
 
+    /// The 404 for an address with nothing published at it.
+    pub(crate) fn not_found(resource: &str) -> Self {
+        let message = UserMessage::new(
+            format!("Resource not found error, cannot read {resource}."),
+            "It may still be a draft, or its slug may have changed.",
+            format!("Check the address, or browse the list of {resource}s."),
+        );
+        Self::new(StatusCode::NOT_FOUND, "NotFoundError", message)
+    }
+
     /// The 500 for a store that cannot be read, logged once here.
     pub(crate) fn internal(error: &(dyn std::error::Error + 'static)) -> Self {
         tracing::error!(error, "the Ghost-compatible API could not answer");

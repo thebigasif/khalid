@@ -237,6 +237,37 @@ impl Post {
     pub fn language(&self) -> &Locale {
         &self.language
     }
+
+    /// The title.
+    pub(crate) fn title(&self) -> &str {
+        &self.title
+    }
+
+    /// The writer's summary, if any.
+    pub(crate) fn excerpt(&self) -> Option<&str> {
+        self.excerpt.as_deref()
+    }
+
+    /// Whether it is marked as featured.
+    pub(crate) fn is_featured(&self) -> bool {
+        self.featured
+    }
+
+    /// When it went live and when it last changed.
+    pub(crate) fn times(&self) -> (DateTime<Utc>, DateTime<Utc>) {
+        (self.published_at, self.updated_at)
+    }
+
+    /// The head of its page, when the pages have been made.
+    pub(crate) fn head(&self) -> Option<&PostHead> {
+        self.head.as_ref()
+    }
+
+    /// The rendered HTML and the plain text, when the store holds them.
+    pub(crate) fn html_and_text(&self) -> (Option<&str>, Option<&str>) {
+        let bodies = &self.bodies;
+        (bodies.html.as_deref(), bodies.plaintext.as_deref())
+    }
 }
 
 impl Listable for Post {
