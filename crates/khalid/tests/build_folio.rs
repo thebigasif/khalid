@@ -102,12 +102,13 @@ fn folio_ships_its_own_rules_after_the_shared_ones() {
         })
         .unwrap();
     let css = fs::read_to_string(css).unwrap();
-    assert!(css.contains("--text-h1: clamp(2.25rem,"), "{css}");
-    assert!(css.contains("--measure: 42rem;"), "{css}");
-    assert!(css.contains("--radius: 0.75rem;"), "{css}");
-    assert!(css.contains("--color-accent: #4b36d1;"), "{css}");
+    assert!(css.contains("--text-h1: clamp(2.5rem,"), "{css}");
+    assert!(css.contains("--measure: 40rem;"), "{css}");
+    assert!(css.contains("--radius: 0.5rem;"), "{css}");
+    assert!(css.contains("--color-accent: #9a5900;"), "{css}");
     assert!(css.contains(".masthead-quote"), "{css}");
     assert!(css.contains(".masthead::before"), "{css}");
+    assert!(css.contains(".lead-rail .cards-ranked"), "{css}");
 }
 
 #[test]
