@@ -22,10 +22,6 @@ expression: "main_of(&page(&out, \"index.html\"))"
 <p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
 </article>
 </section>
-<div class="cta-band">
-<p class="cta-note">No card needed.</p>
-<p><a class="button" href="https://www.example.com/signup/">Start a free trial</a></p>
-</div>
 <section class="al-latest" aria-labelledby="al-latest-title">
 <h2 id="al-latest-title">Latest posts</h2>
 <ul class="al-rows" role="list">

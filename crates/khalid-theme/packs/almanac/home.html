@@ -29,7 +29,6 @@
 {% endif %}{% set slot = page.featured if template.options.featured else none -%}
 {% set band = template.cta and template.options.cta_band in ["home", "both"] -%}
 {% if slot %}{{ featured_slot(slot) }}
-{% endif %}{% if band %}{{ cta_band(template.cta) }}
 {% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% if posts %}<section class="al-latest" aria-labelledby="al-latest-title">
 <h2 id="al-latest-title">{{ t.latest }}</h2>
@@ -47,7 +46,7 @@
 {% if posts[4:] or picks %}<div class="al-library">
 {% if posts[4:] %}<section class="al-grid" aria-labelledby="al-more-title">
 <h2 id="al-more-title">{{ t.more_posts }}</h2>
-{{ cards(posts[4:10], 3) }}
+{{ cards(posts[4:], 3) }}
 </section>
 {% endif %}{% if picks %}<section class="al-picks" aria-labelledby="al-picks-title">
 <h2 id="al-picks-title">{{ t.editors_picks }}</h2>

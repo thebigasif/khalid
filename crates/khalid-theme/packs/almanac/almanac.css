@@ -67,7 +67,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .search-link { padding-inline: calc(var(--space) * 2); border: var(--al-rule); border-radius: var(--radius); color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
 .button, .subscribe button, .comment-form button { color: var(--color-on-accent); border-radius: var(--radius); font-weight: 700; }
 .button:hover, .subscribe button:hover, .comment-form button:hover { background: color-mix(in oklab, var(--color-accent) 82%, var(--color-text)); }
-.header-button { flex: none; min-block-size: 44px; padding: 0.375rem calc(var(--space) * 2.25); font-size: 0.9375rem; white-space: nowrap; }
+.header-button { flex: none; min-block-size: 44px; padding: 0.375rem calc(var(--space) * 2.25); font-size: 0.9375rem; }
 @media (min-width: 48rem) { .site-header { flex-wrap: nowrap; } .site-header nav { flex: 1 1 auto; min-inline-size: 0; } }
 @media (max-width: 63.99rem) { .header-button { display: none; } }
 .announcement { margin: 0; padding-block: calc(var(--space) * 1.25); background: var(--al-tint); border: 0; box-shadow: 0 0 0 100vmax var(--al-tint); clip-path: inset(0 -100vmax); font-size: 0.9375rem; font-weight: 600; }
@@ -79,8 +79,8 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   .site-header { flex-wrap: nowrap; gap: calc(var(--space) * 2); padding-block: var(--space); }
   .site-header > .site-name { flex: none; }
   .site-header nav { flex: 1 1 0; min-inline-size: 0; margin: 0; }
-  .site-header nav ul { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; mask-image: linear-gradient(to left, transparent, #000 2rem); }
-  [dir="rtl"] .site-header nav ul { mask-image: linear-gradient(to right, transparent, #000 2rem); }
+  .site-header nav ul { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; mask-image: linear-gradient(to left, transparent, var(--color-text) 3.5rem); padding-inline-end: 2rem; }
+  [dir="rtl"] .site-header nav ul { mask-image: linear-gradient(to right, transparent, var(--color-text) 3.5rem); }
   .site-header nav a { white-space: nowrap; }
   .site-logo img { max-block-size: 2rem; }
   .header-button { display: none; }
@@ -101,7 +101,9 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .al-subnav details[open] summary::after { content: "\2212" / ""; }
 .al-subnav details ul { position: absolute; z-index: 2; inset-inline-start: 0; display: grid; min-inline-size: 14rem; margin: 0; padding: var(--space) calc(var(--space) * 2); list-style: none; background: var(--color-background); border: var(--al-rule); border-radius: var(--radius); }
 @media (max-width: 47.99rem) {
-  .al-subnav > ul { flex-wrap: nowrap; gap: 0 calc(var(--space) * 3); overflow-x: auto; scrollbar-width: none; }
+  .al-subnav > ul { flex-wrap: nowrap; gap: 0 calc(var(--space) * 3); overflow-x: auto; scrollbar-width: none; padding-inline-end: 2.5rem; }
+  .al-subnav::after { content: ""; position: absolute; z-index: 1; inset-block: 0; inset-inline-end: 0; inline-size: 3.5rem; pointer-events: none; background: linear-gradient(to left, var(--color-background), transparent); }
+  [dir="rtl"] .al-subnav::after { background: linear-gradient(to right, var(--color-background), transparent); }
   .al-subnav details { position: static; }
   .al-subnav details ul { inset-inline: 0; inset-block-start: 100%; }
 }
@@ -159,14 +161,14 @@ main > .intro > :last-child { margin-block-end: 0; }
 .featured > h2 { display: flex; align-items: center; gap: calc(var(--space) * 1.5); }
 .featured > h2::before { content: ""; inline-size: 2rem; block-size: 2px; background: var(--color-accent); }
 .card-featured { padding: 0; background: none; border-radius: 0; }
-.featured .card-featured :is(h2, h3) { margin-block: var(--space) calc(var(--space) * 2); font-size: clamp(2rem, 1.25rem + 2.25vw, 3.5rem); line-height: 1.05; letter-spacing: -0.035em; }
+.featured .card-featured :is(h2, h3, h4) { margin-block: var(--space) calc(var(--space) * 2); font-size: clamp(2rem, 1.25rem + 2.25vw, 3.5rem); line-height: 1.05; letter-spacing: -0.035em; }
 .featured .card-featured > p:last-child { font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.55; -webkit-line-clamp: 4; }
 @container (min-width: 48rem) {
   .featured .card-featured:has(.image) { grid-template-columns: minmax(0, 7fr) auto minmax(0, 4.5fr); grid-template-rows: 1fr repeat(4, auto) 1fr; column-gap: 0; }
   .featured .card-featured > .image { grid-column: 1; grid-row: 1 / -1; align-self: center; margin: 0 clamp(2rem, 4cqi, 4rem) 0 0; }
   [dir="rtl"] .featured .card-featured > .image { margin: 0 0 0 clamp(2rem, 4cqi, 4rem); }
   .featured .card-featured:has(.image) .card-meta > a { grid-column: 2 / -1; grid-row: 2; }
-  .featured .card-featured:has(.image) > :is(h2, h3) { grid-column: 2 / -1; grid-row: 3; }
+  .featured .card-featured:has(.image) > :is(h2, h3, h4) { grid-column: 2 / -1; grid-row: 3; }
   .featured .card-featured:has(.image) > p:last-child { grid-column: 2 / -1; grid-row: 4; }
   .featured .card-featured:has(.image) .card-author { grid-column: 2; grid-row: 5; }
   .featured .card-featured:has(.image) .card-meta > :is(time, .card-reading-time) { grid-column: 3; grid-row: 5; justify-self: start; }
@@ -431,3 +433,16 @@ main > .post { margin-block-end: var(--al-section); }
   .post-body > h2 { margin-block-start: calc(var(--space) * 7); }
 }
 @media print { .newsletter-slot, .site-footer, .announcement { box-shadow: none; } .toc-side { display: none; } }
+
+/* Past the first six, "More posts" carries on as an index of ruled rows,
+   so the front page links to every post without a wall of cards: the
+   title, the topic and the date on one line, and on a phone the title and
+   the date. */
+.al-grid .cards > li:nth-child(n+7) { grid-column: 1 / -1; }
+.al-grid .cards > li:nth-child(n+7) .card { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding: 0.75rem 0; background: none; border: 0; border-block-start: var(--al-rule); border-radius: 0; box-shadow: none; }
+.al-grid .cards > li:nth-child(n+7) .card > :is(.image, p:not(.card-meta)), .al-grid .cards > li:nth-child(n+7) .card-author { display: none; }
+.al-grid .cards > li:nth-child(n+7) .card-meta { display: contents; }
+.al-grid .cards > li:nth-child(n+7) .card h3 { order: -1; flex: 1 1 22rem; margin: 0; font-size: 1.0625rem; line-height: 1.35; }
+.al-grid .cards > li:nth-child(n+7) .card-meta > :is(a, time) { order: 1; margin: 0; font-size: 0.875rem; white-space: nowrap; }
+@media (max-width: 40rem) { .al-grid .cards > li:nth-child(n+7) .card-meta > a { display: none; } }
+
