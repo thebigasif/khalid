@@ -170,6 +170,48 @@ fn when_no_shade_can_pass_it_gets_the_closest_and_says_what_to_change() {
     );
 }
 
+/// A pack's colour, or Khalid's own when the pack leaves it out.
+#[cfg(test)]
+fn pack_color(colors: Option<&toml::Table>, key: &str, fallback: Rgb) -> Rgb {
+    colors
+        .and_then(|table| table.get(key))
+        .and_then(toml::Value::as_str)
+        .map_or(fallback, hex)
+}
+
+#[test]
+fn every_pack_palette_meets_aa_on_its_own_grounds() {
+    let stock = ThemeTokens::default().colors;
+    for pack in khalid_theme::packs() {
+        let tokens: toml::Table = toml::from_str(pack.tokens).unwrap();
+        let colors = tokens.get("colors").and_then(toml::Value::as_table);
+        let checked = [
+            (ColorToken::Text, "text", stock.text),
+            (ColorToken::Muted, "muted", stock.muted),
+            (ColorToken::Link, "link", stock.link),
+            (ColorToken::Accent, "accent", stock.accent),
+        ];
+        let grounds = [
+            pack_color(colors, "background", stock.background),
+            pack_color(colors, "surface", stock.surface),
+        ];
+        for (token, key, fallback) in checked {
+            let color = pack_color(colors, key, fallback);
+            for ground in grounds {
+                let ratio = color.contrast(ground);
+                assert!(
+                    ratio >= token.target(),
+                    "{}: {} {} on {} is {ratio:.2}",
+                    pack.name,
+                    token.name(),
+                    color.to_hex(),
+                    ground.to_hex()
+                );
+            }
+        }
+    }
+}
+
 #[tokio::test]
 async fn every_failing_pair_in_the_fixture_sites_passes_after_the_pass() {
     for (site, stylesheet) in SITES {

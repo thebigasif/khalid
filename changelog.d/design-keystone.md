@@ -1,0 +1,2 @@
+Changed
+- Keystone has a new design. The page fills a wide frame (up to 90rem) drawn with two fine guides, the blog's name runs large across the top over a row of topic pills, and the lead story sits on one framed panel split in two. The newest posts open with two large cards, then rows of three, then a text-only index of titles. Post titles are larger, and a small keystone wedge marks each label. Keystone's own colours, fonts and sizes now live in its tokens file, so a blog without theme sync gets the full look, and a synced theme still recolours it all.
