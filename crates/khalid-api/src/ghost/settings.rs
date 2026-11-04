@@ -38,6 +38,12 @@ struct GhostLink {
 }
 
 impl GhostSite {
+    /// The site's default language, the one language Ghost's path answers
+    /// in, since a Ghost site has one.
+    pub(super) fn language(&self) -> &str {
+        &self.lang
+    }
+
     /// The settings Ghost's front ends read, from `config`: the name, the
     /// tagline as the description, the publisher's logo, the share image
     /// as the cover, the X account, the default language, the header menu

@@ -43,8 +43,9 @@ pub(crate) struct GhostPost {
     neutral: Neutral,
 }
 
-/// Ghost's fields with no meaning in Khalid: every post is public and
-/// open, with no code injection, members' email or custom template.
+/// Ghost's fields with no meaning in Khalid, or with one value: no code
+/// injection, members' email or custom template. `visibility` and `access`
+/// say whether the post is open to everyone or for members only.
 #[derive(Debug, Default, Serialize)]
 struct Neutral {
     visibility: &'static str,
@@ -71,6 +72,11 @@ impl GhostPost {
     pub(crate) fn new(post: &Post, formats: &[Format]) -> Self {
         let (published, updated) = post.times();
         let (html, text) = post.html_and_text();
+        // Khalid hands no body for a members-only post. Ghost answers a key
+        // with no member the same way: members visibility, no access and
+        // empty bodies.
+        let for_members = html.is_none();
+        let html = html.or(for_members.then_some(""));
         let text = text.unwrap_or_default();
         let head = Head::of(post);
         let excerpt = match post.excerpt() {
@@ -101,8 +107,8 @@ impl GhostPost {
             meta_title: head.title,
             meta_description: head.description,
             neutral: Neutral {
-                visibility: "public",
-                access: true,
+                visibility: if for_members { "members" } else { "public" },
+                access: !for_members,
                 ..Neutral::default()
             },
         }
@@ -188,6 +194,19 @@ mod tests {
             .map(|count| reading_time(&words(count)))
             .into();
         assert_eq!(minutes, [0, 1, 1, 2, 2, 10]);
+    }
+
+    #[test]
+    fn a_post_without_a_body_is_for_members_as_ghost_shows_it() {
+        let en = khalid_core::Locale::try_new("en").unwrap();
+        let url = khalid_core::AbsoluteUrl::parse("https://example.com/blog/brief/").unwrap();
+        let slug = khalid_core::Slug::try_new("brief").unwrap();
+        let at = DateTime::<Utc>::from_timestamp(1_790_000_000, 0).unwrap();
+        let post = Post::new("en.brief", slug, "Brief", url, en, at);
+        let ghost = serde_json::to_value(GhostPost::new(&post, &[Format::Html])).unwrap();
+        assert_eq!(ghost["visibility"], "members");
+        assert_eq!(ghost["access"], false);
+        assert_eq!(ghost["html"], "");
     }
 
     #[test]

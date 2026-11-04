@@ -18,7 +18,7 @@ use super::query::GhostQuery;
 use super::settings::GhostSite;
 use crate::content_store::{ContentStore, PostKey, SiteResources, select};
 use crate::pagination::Meta;
-use crate::query::ListQuery;
+use crate::query::{Condition, ListQuery};
 use crate::resources::{Collection, Listable, Post};
 
 /// What every route reads: the published content and the site.
@@ -88,6 +88,25 @@ type Answer = Result<Json<Value>, GhostError>;
 /// Which of the site's lists a route reads.
 type Pick<T> = fn(&SiteResources) -> &[T];
 
+impl GhostState {
+    /// What every list holds to: the site's default language. A Ghost site
+    /// has one language, so posts in the others, which may share a slug
+    /// with their translation, stay out.
+    fn scope(&self) -> Vec<Condition> {
+        vec![filter::is("language", self.site.language())]
+    }
+
+    /// [`Self::scope`] and the entry at `key`.
+    fn scope_at(&self, key: &PostKey) -> Vec<Condition> {
+        let mut scope = self.scope();
+        scope.push(match key {
+            PostKey::Id(id) => filter::is("id", id),
+            PostKey::Slug(slug) => filter::is("slug", slug.as_str()),
+        });
+        scope
+    }
+}
+
 /// The settings, as Ghost sends them: one object, not a list.
 async fn read_settings(State(state): State<GhostState>) -> Answer {
     Ok(Json(json!({ "settings": *state.site, "meta": {} })))
@@ -133,9 +152,25 @@ async fn read(state: &GhostState, kind: Kind, key: Option<PostKey>, raw: &GhostQ
     let entry = match kind {
         Kind::Posts => read_post(state, Collection::Posts, &key, raw).await?,
         Kind::Pages => read_post(state, Collection::Pages, &key, raw).await?,
-        Kind::Tags => read_site(state, SiteResources::tags, GhostTag::new, &key, raw).await?,
+        Kind::Tags => {
+            read_site(
+                state,
+                (SiteResources::tags, GhostTag::new),
+                filter::TAGS,
+                &key,
+                raw,
+            )
+            .await?
+        }
         Kind::Authors => {
-            read_site(state, SiteResources::authors, GhostAuthor::new, &key, raw).await?
+            read_site(
+                state,
+                (SiteResources::authors, GhostAuthor::new),
+                filter::AUTHORS,
+                &key,
+                raw,
+            )
+            .await?
         }
     };
     let entry = entry.ok_or_else(not_found)?;
@@ -154,7 +189,7 @@ async fn browse_posts(
     raw: &GhostQuery,
 ) -> Result<(Vec<Value>, Meta), GhostError> {
     let include = raw.include(POST_INCLUDE)?;
-    let query = raw.list_query(filter::POSTS, &Post::FILTER_FIELDS)?;
+    let query = raw.list_query(filter::POSTS, &Post::FILTER_FIELDS, state.scope())?;
     let listed = state
         .content
         .list(collection, &query)
@@ -175,14 +210,16 @@ async fn read_post(
     raw: &GhostQuery,
 ) -> Result<Option<Value>, GhostError> {
     let include = raw.include(POST_INCLUDE)?;
-    let query = raw.list_query(filter::POSTS, &Post::FILTER_FIELDS)?;
-    let found = state
+    let scope = state.scope_at(key);
+    let query = raw.list_query(filter::POSTS, &Post::FILTER_FIELDS, scope)?;
+    let listed = state
         .content
-        .find(collection, key)
+        .list(collection, &query)
         .await
         .map_err(|error| GhostError::internal(&error))?;
     let site = site_for(state, include).await?;
     let shaped = (&query, site.as_ref(), include);
+    let found = listed.into_items().into_iter().next();
     Ok(found.map(|post| shape_post(&post, shaped, raw)))
 }
 
@@ -221,7 +258,7 @@ async fn browse_site<T: Listable, G: Serialize>(
     raw: &GhostQuery,
 ) -> Result<(Vec<Value>, Meta), GhostError> {
     let include = raw.include(Include::default())?;
-    let query = raw.list_query(names, T::FIELDS)?;
+    let query = raw.list_query(names, T::FIELDS, state.scope())?;
     let site = state
         .content
         .site()
@@ -236,22 +273,23 @@ async fn browse_site<T: Listable, G: Serialize>(
 
 async fn read_site<T: Listable, G: Serialize>(
     state: &GhostState,
-    pick: Pick<T>,
-    shape: fn(&T) -> G,
+    (pick, shape): (Pick<T>, fn(&T) -> G),
+    names: Names,
     key: &PostKey,
     raw: &GhostQuery,
 ) -> Result<Option<Value>, GhostError> {
     let include = raw.include(Include::default())?;
+    let query = raw.list_query(names, T::FIELDS, state.scope_at(key))?;
     let site = state
         .content
         .site()
         .await
         .map_err(|error| GhostError::internal(&error))?;
-    let found = pick(&site).iter().find(|entry| match key {
-        PostKey::Id(id) => entry.id() == id,
-        PostKey::Slug(slug) => entry.slug() == slug,
-    });
-    Ok(found.map(|entry| raw.keep_fields(object(&shape(entry)), include)))
+    let found = select(pick(&site).iter(), &query)
+        .into_items()
+        .into_iter()
+        .next();
+    Ok(found.map(|entry| raw.keep_fields(object(&shape(&entry)), include)))
 }
 
 /// `entry` as a JSON object; anything else is an empty one.

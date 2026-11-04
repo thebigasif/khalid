@@ -53,9 +53,28 @@ const DATE: &str = "published_at";
 ///
 /// Returns Ghost's 400 when the filter cannot be read or uses a part
 /// outside the common one.
-pub(super) fn translate(text: &str, names: Names) -> Result<String, GhostError> {
-    let filter: Filter = text.parse().map_err(|error| cannot_read(&error))?;
-    Ok(rename(filter, names)?.to_string())
+pub(super) fn translate(
+    text: Option<&str>,
+    names: Names,
+    scope: Vec<Condition>,
+) -> Result<Option<String>, GhostError> {
+    let read = |text: &str| -> Result<Filter, GhostError> {
+        let filter: Filter = text.parse().map_err(|error| cannot_read(&error))?;
+        rename(filter, names)
+    };
+    let asked = text.map(read).transpose()?;
+    let mut parts: Vec<Filter> = asked.into_iter().collect();
+    parts.extend(scope.into_iter().map(Filter::Condition));
+    Ok(match parts.len() {
+        0 => None,
+        1 => parts.pop().map(|part| part.to_string()),
+        _ => Some(Filter::And(parts).to_string()),
+    })
+}
+
+/// The condition that Khalid's `field` is the text `value`.
+pub(super) fn is(field: &str, value: &str) -> Condition {
+    Condition::new(field, Predicate::Is(Literal::Text(value.to_owned())))
 }
 
 fn rename(filter: Filter, names: Names) -> Result<Filter, GhostError> {

@@ -8,7 +8,7 @@ use serde_json::{Map, Value};
 use super::error::GhostError;
 use super::filter::{Names, translate};
 use super::people::Include;
-use crate::query::{ListQuery, RawListQuery};
+use crate::query::{Condition, ListQuery, RawListQuery};
 
 /// The parameters Ghost's client sends. Others, such as `key` and the
 /// `slug` the client repeats on a read, are left alone.
@@ -25,15 +25,16 @@ pub(super) struct GhostQuery {
 
 impl GhostQuery {
     /// The checked list query for a resource whose filter may name the
-    /// Ghost fields in `names` and whose order may name `fields`.
+    /// Ghost fields in `names` and whose order may name `fields`. Every
+    /// condition in `scope` must hold as well, such as the site's language.
     pub(super) fn list_query(
         &self,
         names: Names,
         fields: &[&str],
+        scope: Vec<Condition>,
     ) -> Result<ListQuery, GhostError> {
-        let filter = self.filter.as_deref().map(|text| translate(text, names));
         let raw = RawListQuery {
-            filter: filter.transpose()?,
+            filter: translate(self.filter.as_deref(), names, scope)?,
             include: None,
             fields: None,
             order: self.order.clone(),
