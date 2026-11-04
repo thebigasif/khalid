@@ -7,7 +7,7 @@ order: 40
 
 Folio is a product team's notebook: essays, engineering notes with code, and announcements under the blog's own masthead. It suits a software or design team whose posts are written by the people who built the thing.
 
-Pick it when you want the front page to open with a confident name, one featured story and a grid of picture cards, and want long notes to read well: a contents rail beside the text, framed code and tables, an author box and related posts. If your posts are short news items with no pictures, Wire or Classic will suit you better.
+Pick it when you want the front page to open with a confident name, one featured story beside a numbered list of the newest posts, a row of picture cards and an index of the rest, and want long notes to read well: a contents rail beside the text, framed code and tables, an author box and related posts. If your posts are short news items with no pictures, Wire or Classic will suit you better.
 
 ## How to switch it on
 
@@ -23,10 +23,12 @@ Build or restart the blog. Folio brings its own neutral palette and type scale; 
 
 **The front page**
 
-- A slim announcement line, then your logo, a quiet menu and your call to action as a small rounded button. On a phone the menu takes its own line and the button stays in the band at the end of the page.
+- A slim announcement line, then your logo, a quiet menu and your call to action as a small rounded button. On a phone the menu takes its own line, scrolls sideways and fades at the end to show there is more, and the button stays in the band at the end of the page.
 - The masthead: the blog's name set very large and tight on faint ruled paper (a fine grid that fades out), an optional tagline, and the categories as tabs on a hairline: "All", then each category your posts use. On a phone the tabs become small rounded chips.
-- The newest post you marked `featured: true`: its picture large on the left, the category and date, the title, the summary and the author on the right.
-- Every other post as a card without an outline: the picture in a thin frame, the category in the accent and the date, the title, up to three lines of summary, then the author's round photo and name. Three cards to a row on a wide screen, two on a tablet, one on a phone.
+- The lead: the newest post you marked `featured: true`, its picture large with the title set big under it, and beside it a numbered rail of the five newest posts, 01 to 05, each with its category and date. On a phone the rail follows the featured post.
+- The next six posts as cards without an outline: the picture in a thin frame, the category in the accent and the date, the title, up to three lines of summary, then the author's round photo and name. Three cards to a row on a wide screen, two on a tablet. On a phone each card is a ruled row instead: the title, the date under it and a small square picture at the end.
+- Every older post on the page as a text-only index: one ruled row each, the date in small mono capitals beside the title, two columns on a wide screen. On a phone the date sits under the title. The front page lists every post, so readers and search engines can reach each one.
+- Without a featured post, or with `topic_tabs` on, the posts show as cards in the shape `cards` sets.
 - An optional quote, centred, in large type under a short accent rule.
 - Numbered page links under long lists, and the band with your call to action.
 
@@ -34,8 +36,8 @@ Build or restart the blog. Folio brings its own neutral palette and type scale; 
 
 - The breadcrumbs as a small line above the title: the blog, then the post's category.
 - A large left-aligned title, the post's summary (`dek:`) under it, then a hairline, the authors with their photos and roles, and one line with the reviewer, the dates and the reading time.
-- The lead picture, wider than the text.
-- The text in one column of about 70 characters. On a wide screen the contents sit in a quiet rail beside it, with the section being read marked in the accent; on a phone they fold into a box above the text.
+- The lead picture, wider than the text. On a wide screen it spans most of the page, centred.
+- The text in one column of about 70 characters. From a laptop up the text is larger (1.25rem) and the column widens with it, so lines keep their length. On a wide screen the contents sit in a quiet rail beside it, with the section being read marked in the accent; on a phone they fold into a box above the text.
 - Code in a framed sheet, tables with hairline rows inside one frame, callouts with a thin accent edge, and quotes set large under a short accent rule.
 - After the text: the share links, the author box, the band with your call to action, the posts that link here, and three related posts as cards.
 
@@ -108,18 +110,18 @@ Folio sets these in place of the shared defaults. A value in your own `theme/tok
 
 | Token | Folio's value |
 |---|---|
-| `[colors]` | a white page, a soft grey surface (`#f4f4f2`), ink text (`#141418`), grey quiet text (`#5b5b66`), a violet accent and links (`#4b36d1`), light hairlines (`#e4e4df`) |
-| `[fonts] heading` and `body` | the reader's own interface face: Inter where it is installed, else San Francisco, Segoe UI or Roboto |
-| `[fonts] mono` | JetBrains Mono where installed, else the system's code face |
-| `[type] body` | 1rem on a phone to 1.0625rem on a wide screen; a post's text is set a step larger |
-| `[type] h1` | 2.25rem to 3.5rem, a post's title. The masthead's name runs larger, up to 5.75rem |
-| `[type] h2` | 1.5rem to 1.875rem |
-| `[type] line_height` | 1.65 |
-| `[space] section` | 5rem between sections |
-| `[shape] radius` | 0.75rem corners on every frame: pictures, code, tables, callouts and bands |
-| `[shape] measure` | 42rem, about 70 characters, the width of a post's text |
+| `[colors]` | a white page, a warm grey surface (`#f5f4f1`), graphite text (`#111113`), grey quiet text (`#5c5c66`), an ochre accent (`#9a5900`) and links (`#8a4f00`), light hairlines (`#e3e1db`) |
+| `[fonts] heading` and `body` | the reader's own interface face: San Francisco, Segoe UI Variable or Roboto |
+| `[fonts] mono` | the system's code face: SF Mono, Menlo or Consolas |
+| `[type] body` | 1.0625rem on a phone to 1.1875rem on a wide screen |
+| `[type] h1` | 2.5rem to 4.5rem. A post's title runs up to 5.5rem and the masthead's name up to 12rem |
+| `[type] h2` | 1.625rem to 2.125rem |
+| `[type] line_height` | 1.7 |
+| `[space] section` | 6rem between sections |
+| `[shape] radius` | 0.5rem corners on every frame: pictures, code, tables, callouts and bands |
+| `[shape] measure` | 40rem, about 70 characters, the width of a post's text |
 
-The page itself is up to 76rem wide. The accent marks the category on each card, links, buttons, the current tab and the section being read; everything else is neutral. All colours pass the WCAG AA contrast check.
+The page itself is up to 88rem wide. The accent marks the category on each card, links, buttons, the current tab and the section being read; everything else is neutral. All colours pass the WCAG AA contrast check.
 
 ## What Folio does not do yet
 
@@ -141,12 +143,15 @@ This is Folio's design brief. It fixes how the template should look, so every ch
 |---|---|
 | Type pairing | A tight display sans for headings, set large with slight negative tracking, over a neutral text sans. With no theme, the pack uses the system sans (San Francisco, Segoe UI Variable, Roboto). |
 | Colour | Quiet monochrome: white ground, near-black ink, warm grey panels and hairlines. One accent only, used where a reader can act and on the section being read. |
+| The one idea | A notebook's index. The front page is a masthead that owns the top of the screen, then a lead story beside a numbered rail, a short row of cards, and a text-only index of ruled rows with mono dates. You can name it from its thumbnail: a huge name, one big picture, a column of numbers, and ruled lines. |
+| Display type | The masthead's name from 3.25rem on a phone to 12rem on a wide screen, tracked tight (-0.05em, loose enough for a serif brand face too). Post and list titles up to 5.5rem and 8rem. A post's text is 1.25rem from 64rem up, in a column 1.1 times the measure. |
 | Spacing rhythm | A base step of 0.5rem on a strict grid. Large gaps (6rem) between front page sections, tight gaps (0.75rem) inside a card. |
 | Frame at 1440 px and wider | At least **80rem**. |
 | Cards and lists | Cards without an outline: a picture in a thin frame, a small category and date line, the title, up to three lines of summary, the author's photo and name. Three across on a wide screen. |
-| Phone header and menu | The logo and the menu on one row; the menu wraps to its own line under the logo, with no script. The call to action waits for the band at the end. |
+| Phone header and menu | The logo on one row; the menu on its own line under it as one row that scrolls sideways, its last 2rem faded so no word looks cut. No script. The call to action waits for the band at the end. |
+| Phone lists | Picture cards become ruled rows (title, date under it, a small square picture at the end); the index puts the date under the title. The front page still lists every post, at about 6,000 px for 40 posts. |
 | Tabs and indexes at 390 px | The category tabs become small rounded chips that wrap. The contents rail folds into one box above the text. |
 | Link, card and focus states | Links underlined with a thin line that turns the accent on hover. A card's title turns the accent on hover. Focus is a 2 px ring in the text colour, so it shows on any accent. |
-| Signature details | The masthead: the blog's name very large and tight on faint ruled paper that fades out. Hairlines everywhere a box would be. Code in a framed sheet with a small label. |
+| Signature details | The masthead: the blog's name very large and tight on faint ruled paper that fades out, and the same paper behind each post and list title. Numbers 01 to 05 in mono down the lead rail. Hairlines everywhere a box would be. Code in a framed sheet with a small label. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/folio/theme/`: graphite ink (`#111113`) on white with warm grey panels (`#f5f4f0`) and one gold accent (`#755600` links, `#876400` accent), Inter Tight for headings and Inter for text, and a ruled-sheet mark.

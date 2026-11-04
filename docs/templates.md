@@ -32,6 +32,18 @@ These eleven templates are built in. Every template but classic has its own page
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 
+## Starting a blog in a template
+
+To start a new blog in the template you liked in its demo, name it when you make the site:
+
+```text
+khalid init blog --address https://blog.example.com --template atlas --yes
+```
+
+`--template` takes any name from the list above. It writes the `[template]` table into the new `site.toml`, and starts `theme/tokens.toml` with that template's own colours, text sizes and spacing, so the new blog looks like the demo. `khalid theme sync` or a hand edit changes them later, as on any site.
+
+A name Khalid does not know stops `init` before it makes anything, and the message lists every name. Without `--template`, the blog starts in `classic`.
+
 ## Options
 
 Each template has its own options, set under `[template.options]`:
