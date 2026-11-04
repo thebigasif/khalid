@@ -1,0 +1,2 @@
+Changed
+- Atlas has a new design for publications with many topics. The home page opens with a masthead band on a tint of the accent with a faint map grid, the blog name set very large, and the topics as square chips under a heavy accent rule. Stories follow in several sizes: a wide lead with a second story beside it, numbered editor picks, and four cards across with the first spanning two. Topic labels are solid accent chips, and the topic index sits in columns under heavy rules. On a large screen post text is bigger, so a line keeps a comfortable length.
