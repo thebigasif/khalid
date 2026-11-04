@@ -10,7 +10,7 @@
     "keystone": 1210,
     "ledger": 660,
     "meridian": 1150,
-    "wire": 1210,
+    "wire": 1344,
     "workbench": 1210
   },
   "reading_pending": [
@@ -22,7 +22,6 @@
     "keystone",
     "ledger",
     "meridian",
-    "wire",
     "workbench"
   ]
 }
