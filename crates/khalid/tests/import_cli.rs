@@ -101,9 +101,11 @@ fn a_wordpress_import_writes_posts_and_stores_its_redirects() {
     let noun = if rows == 1 { "redirect" } else { "redirects" };
     let told = format!("Wrote 7 files and stored {rows} {noun}.");
     assert!(printed.starts_with(&told), "{printed}");
-    assert!(printed.contains(
-        "held in import/held-redirects.csv, because they lie outside the blog's folder: 2."
-    ));
+    let held_in = format!(
+        "held in {}/import/held-redirects.csv, because they lie outside the blog's folder: 2.",
+        site.path().display()
+    );
+    assert!(printed.contains(&held_in), "{printed}");
     let (code, stored) = khalid(site.path(), &["redirects", "export"]);
     assert_eq!(code, 0, "{stored}");
     assert_eq!(stored.lines().count(), rows + 1, "{stored}\n{map}");
@@ -302,7 +304,39 @@ fn redirects_that_clash_with_stored_ones_are_named() {
     let (code, printed) = khalid(site.path(), &["import", "ghost", &export]);
     assert_eq!(code, 1, "{printed}");
     assert!(printed.contains("were not stored"), "{printed}");
-    assert!(printed.contains("khalid redirects import import/ghost-redirects.csv"));
+    let shown = site.path().display();
+    let fix = format!("khalid --site {shown} redirects import {shown}/import/ghost-redirects.csv");
+    assert!(printed.contains(&fix), "{printed}");
+}
+
+#[test]
+fn the_closing_commands_work_from_the_folder_the_import_ran_in() {
+    let above = tempfile::tempdir().unwrap();
+    let site = file(above.path(), "blog");
+    // The demo's blog lives under /blog/, so the old addresses outside it
+    // wait in the held file.
+    fs::rename(self::site().keep(), &site).unwrap();
+    let export = fixture("wordpress/basic.xml");
+    let run = |args: &[&str]| {
+        let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+            .current_dir(above.path())
+            .args(args)
+            .output()
+            .unwrap();
+        let mut printed = String::from_utf8(output.stdout).unwrap();
+        printed.push_str(&String::from_utf8(output.stderr).unwrap());
+        (output.status.code().unwrap(), printed)
+    };
+    let (code, printed) = run(&["--site", "blog", "import", "wordpress", &export]);
+    assert_eq!(code, 0, "{printed}");
+    let lint = "Run `khalid --site blog lint` to see how each post scores.";
+    assert!(printed.contains(lint), "{printed}");
+    let store = "`khalid --site blog redirects import blog/import/held-redirects.csv`";
+    assert!(printed.contains(store), "{printed}");
+    let words: Vec<&str> = store.trim_matches('`').split(' ').skip(1).collect();
+    let (code, stored) = run(&words);
+    assert_eq!(code, 0, "{stored}");
+    assert!(!stored.contains("could not read"), "{stored}");
 }
 
 #[test]

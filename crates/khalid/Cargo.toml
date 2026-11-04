@@ -149,6 +149,10 @@ name = "import_site"
 required-features = ["test-util"]
 
 [[test]]
+name = "import_images"
+required-features = ["test-util"]
+
+[[test]]
 name = "audit_outside"
 required-features = ["test-util"]
 

@@ -16,7 +16,7 @@ A post's identity is `<language>.<slug>`, such as `en.choosing-anchor-text`. It 
 
 ## Two ways in
 
-**The command line.** Every command takes `--site <folder>` and `--json`. With `--json`, the result is one JSON value on stdout, and a failure is `{"error": {"what": ..., "why": ..., "fix": ...}}`. The exit code is 0 when it worked, 1 when something blocks and you must act, 2 when the command line was wrong, and 3 for a fault inside Khalid. Run `khalid --help` for every command. The ones you will use most:
+**The command line.** Every command takes `--site <folder>` and `--json`. Inside the folder that holds site.toml, `--site` can be left out. With `--json`, the result is one JSON value on stdout, and a failure is `{"error": {"what": ..., "why": ..., "fix": ...}}`. The exit code is 0 when it worked, 1 when something blocks and you must act, 2 when the command line was wrong, and 3 for a fault inside Khalid. Run `khalid --help` for every command. The ones you will use most:
 
 - `khalid lint [post]` checks one post or the whole site. `--fix` makes the safe repairs.
 - `khalid build` writes the site as HTML. It leaves out each dated post the linter blocks and lists it with its findings, under `left_out` with `--json`. With `mode = "static"` in `site.toml`, every form that would send to the site becomes a short note, and the output lists the features a static site has off, under `off` with `--json`.
