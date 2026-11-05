@@ -123,7 +123,7 @@ facts:
 - A post lists at most four facts, in the order they should show.
 - A label has 1 to 24 characters. A value has 1 to 40 characters.
 - Each label and value is one line of plain text. Spaces at either end are dropped.
-- Put a value in quotes when it is only a number or holds a colon.
+- Put a label or value in quotes when it holds a colon, or to keep a number exactly as written, such as `"2.50"`.
 - An empty list is the same as no facts.
 
 `khalid build` stops and names the line when a fact breaks one of these rules.
