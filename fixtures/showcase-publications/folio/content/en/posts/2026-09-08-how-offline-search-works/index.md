@@ -63,7 +63,7 @@ We left "how often you open a note" out of the ranking on purpose. It made resul
 
 ## Searching as you type
 
-Offline search shows results as you type, which means running a new search after every letter. To keep that fast, Tern treats the last word you are typing as the start of a word. Typing "gard" finds "garden" and "gardening". Earlier words must match in full.
+Offline search shows results as you type, which means running a new search after every letter. To keep that fast, Tern treats the last word you are typing as the start of a word. Typing "gar" finds "garden" and "gardening". Earlier words must match in full.
 
 If you type a word that is not in the index at all, Tern tries the closest words that are, allowing one wrong letter for words of five letters or more. That catches most typing mistakes without filling the results with noise.
 
