@@ -1,0 +1,269 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-01-13-budgeting-methods-compared/lead.jpg"
+sha256 = "2ce0635bc1c71bb61cfeff5e98769b6da5f8015113588796863db8b325c4eff0"
+source = "https://commons.wikimedia.org/wiki/File:Pencil_on_notebook.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Pencil on notebook by WikiGrower1, via Wikimedia Commons"
+title = "Pencil on notebook"
+creator = "WikiGrower1"
+openverse = "commons:File:Pencil on notebook.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-01-13-budgeting-methods-compared/envelopes.jpg"
+sha256 = "9cf7445de016a6cf094f84b3e908da4b93db4830acfbb03a8d6bc881119039dc"
+source = "https://commons.wikimedia.org/wiki/File:Stack_of_Envelopes_by_Martin_Vorel.jpeg"
+licence = "Public Domain, read on the photo's page 2026-11-05: https://web.archive.org/web/20230926203737/https://creativecommons.org/licenses/publicdomain/"
+credit = "Stack of Envelopes by Martin Vorel by Martin Vorel, via Wikimedia Commons"
+title = "Stack of Envelopes by Martin Vorel"
+creator = "Martin Vorel"
+openverse = "commons:File:Stack of Envelopes by Martin Vorel.jpeg"
+needs_credit = false
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-02-03-emergency-fund-size/lead.jpg"
+sha256 = "d093cb370c8cb7cbf6b9e44d3b11bb98aeea3ee98a1597b07ac3ead6e6da7610"
+source = "https://commons.wikimedia.org/wiki/File:19th_century_money_box.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "19th century money box by Prolete, via Wikimedia Commons"
+title = "19th century money box"
+creator = "Prolete"
+openverse = "commons:File:19th century money box.jpg"
+needs_credit = false
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-02-03-emergency-fund-size/jars-by-window.jpg"
+sha256 = "5211337ec071d89b5ac3cf2c3e7c29bc98d95a5fe670f04644f4ba2e6b133709"
+source = "https://commons.wikimedia.org/wiki/File:Jars_by_the_window_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Jars by the window (Unsplash) by Ewa Stepkowska ewastepkowska, via Wikimedia Commons"
+title = "Jars by the window (Unsplash)"
+creator = "Ewa Stepkowska ewastepkowska"
+openverse = "commons:File:Jars by the window (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-02-24-read-payslip/lead.jpg"
+sha256 = "c7d6783ee359582ef57194261ecfd305498da0837a992dd896a68c29a53d92f2"
+source = "https://commons.wikimedia.org/wiki/File:Silver_Pen_and_Envelopes_in_Office_by_Martin_Vorel.jpeg"
+licence = "Public Domain, read on the photo's page 2026-11-05: https://web.archive.org/web/20230926203737/https://creativecommons.org/licenses/publicdomain/"
+credit = "Silver Pen and Envelopes in Office by Martin Vorel by Martin Vorel, via Wikimedia Commons"
+title = "Silver Pen and Envelopes in Office by Martin Vorel"
+creator = "Martin Vorel"
+openverse = "commons:File:Silver Pen and Envelopes in Office by Martin Vorel.jpeg"
+needs_credit = false
+size = "2000x1401"
+
+[[photos]]
+file = "en/posts/2026-03-17-debt-avalanche-snowball/lead.jpg"
+sha256 = "ec438e350755c7aea0b72104f1f41baf8408ac83bd159f4d4afd915d39203aa7"
+source = "https://commons.wikimedia.org/wiki/File:Stacks_of_Coins.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Stacks of Coins by Kevin Schneider, via Wikimedia Commons"
+title = "Stacks of Coins"
+creator = "Kevin Schneider"
+openverse = "commons:File:Stacks of Coins.jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-04-07-investment-fees-thirty-years/lead.jpg"
+sha256 = "cc077aa2d7be63c55eae7048033845f2a60c11d0c542bd94a7ff31a028e86bc7"
+source = "https://commons.wikimedia.org/wiki/File:Hourglass_1.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Hourglass 1 by Suohros, via Wikimedia Commons"
+title = "Hourglass 1"
+creator = "Suohros"
+openverse = "commons:File:Hourglass 1.jpg"
+needs_credit = false
+size = "2000x1506"
+
+[[photos]]
+file = "en/posts/2026-04-28-saving-home-deposit/lead.jpg"
+sha256 = "9cd2111a730ba0277bc6ab03d7cc03e670dfb97224ac92d1c99b97fb0d78aa17"
+source = "https://commons.wikimedia.org/wiki/File:Bud%C5%BCet_domowy.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Budżet domowy by AlexanderStein / Pixabay, via Wikimedia Commons"
+title = "Budżet domowy"
+creator = "AlexanderStein / Pixabay"
+openverse = "commons:File:Budżet domowy.jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-04-28-saving-home-deposit/green-shutters.jpg"
+sha256 = "c4ef50e700b2f4e28c158028d0fe5834d1e6c1a9a0ae8b6dc031f79b59016c04"
+source = "https://commons.wikimedia.org/wiki/File:House-3086960.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "House-3086960 by dimitrisvetsikas1969, via Wikimedia Commons"
+title = "House-3086960"
+creator = "dimitrisvetsikas1969"
+openverse = "commons:File:House-3086960.jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-19-credit-card-minimum-payments/lead.jpg"
+sha256 = "b702f6feba51a81f4608ef23840c0d11047d0a7d435e495809af3833ce41cda8"
+source = "https://commons.wikimedia.org/wiki/File:Legal_pad_and_pencil.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Legal pad and pencil by Jonas Petersson (UU), via Wikimedia Commons"
+title = "Legal pad and pencil"
+creator = "Jonas Petersson (UU)"
+openverse = "commons:File:Legal pad and pencil.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-06-09-sinking-funds-yearly-bills/lead.jpg"
+sha256 = "e5798d5d8228b1c8bee4aca60bc5dd5b7feb433c07e1c96a43a135b7761dcbc8"
+source = "https://commons.wikimedia.org/wiki/File:Mason_jar_array.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Mason jar array by Grorp, via Wikimedia Commons"
+title = "Mason jar array"
+creator = "Grorp"
+openverse = "commons:File:Mason jar array.jpg"
+needs_credit = true
+size = "2000x1200"
+
+[[photos]]
+file = "en/posts/2026-06-30-check-every-number/lead.jpg"
+sha256 = "10ba07383b48d31e2349466737d9be087354e77d1d3626f565b549709ca0bbbf"
+source = "https://commons.wikimedia.org/wiki/File:Sharpener_with_Pencil.jpg"
+licence = "CC BY 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/3.0"
+credit = "Sharpener with Pencil by Alexander Klink, via Wikimedia Commons"
+title = "Sharpener with Pencil"
+creator = "Alexander Klink"
+openverse = "commons:File:Sharpener with Pencil.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-07-21-compound-interest-explained/lead.jpg"
+sha256 = "a6fac281e2c33f059f1e043a03fcec8aae9fd0f0f89116d46ce72fa47803ee58"
+source = "https://commons.wikimedia.org/wiki/File:A_pile_of_coins_demonstrating_the_divergence_of_a_harmonic_series.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "A pile of coins demonstrating the divergence of a harmonic series by Aleksandr Berdnikov, via Wikimedia Commons"
+title = "A pile of coins demonstrating the divergence of a harmonic series"
+creator = "Aleksandr Berdnikov"
+openverse = "commons:File:A pile of coins demonstrating the divergence of a harmonic series.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-08-11-inflation-cash-savings/lead.jpg"
+sha256 = "3198d86e39ec3c4ef9bac8c0c4305a0555826d532dfe71e355a6dc3b2cbe68f7"
+source = "https://commons.wikimedia.org/wiki/File:Healthy_Grocery_Shopping_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Healthy Grocery Shopping (Unsplash) by leonie wise leoniewise, via Wikimedia Commons"
+title = "Healthy Grocery Shopping (Unsplash)"
+creator = "leonie wise leoniewise"
+openverse = "commons:File:Healthy Grocery Shopping (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-01-track-spending-thirty-days/lead.jpg"
+sha256 = "86f05521869885b594455e137a122c9ebe0d116d96b5235c4296ed16d79f23df"
+source = "https://commons.wikimedia.org/wiki/File:A_notebook.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "A notebook by Jan Kahánek, via Wikimedia Commons"
+title = "A notebook"
+creator = "Jan Kahánek"
+openverse = "commons:File:A notebook.jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-22-debt-consolidation-loan/lead.jpg"
+sha256 = "00a3f8fc250f3838c021c0f91eff78e3b54d8703c9ed6b4c4c1a73a0647cec3b"
+source = "https://commons.wikimedia.org/wiki/File:Desktop_with_laptop_and_calculator_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Desktop with laptop and calculator (Unsplash) by AnonymousUnknown author, via Wikimedia Commons"
+title = "Desktop with laptop and calculator (Unsplash)"
+creator = "AnonymousUnknown author"
+openverse = "commons:File:Desktop with laptop and calculator (Unsplash).jpg"
+needs_credit = false
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-10-06-apr-interest-rate/lead.jpg"
+sha256 = "b4b8de6bb50e4746a9a2a71582e6d127c1d1ce2ee9b7cd4a929eee3a796f3a24"
+source = "https://commons.wikimedia.org/wiki/File:Office_supplies_and_coffee_(Unsplash_xxeAftHHq6E).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Office supplies and coffee (Unsplash xxeAftHHq6E) by Bench Accounting benchaccounting, via Wikimedia Commons"
+title = "Office supplies and coffee (Unsplash xxeAftHHq6E)"
+creator = "Bench Accounting benchaccounting"
+openverse = "commons:File:Office supplies and coffee (Unsplash xxeAftHHq6E).jpg"
+needs_credit = false
+size = "2000x1334"
+
+[[photos]]
+file = "en/posts/2026-10-20-home-buying-costs/lead.jpg"
+sha256 = "44d6bf4449f8c999c41d6ae8ed3bcde9ffd0c61b79f5c288ff6e3aaede5c689c"
+source = "https://commons.wikimedia.org/wiki/File:Key-182922.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Key-182922 by Hans, via Wikimedia Commons"
+title = "Key-182922"
+creator = "Hans"
+openverse = "commons:File:Key-182922.jpg"
+needs_credit = false
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-10-20-home-buying-costs/terraced-street.jpg"
+sha256 = "e124f27228c73a4a7bbd997e9e35390e9972bcca9215cede6d83700026945e1d"
+source = "https://commons.wikimedia.org/wiki/File:Terraced_houses_in_Wavertree_-_geograph.org.uk_-_3764047.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Terraced houses in Wavertree - geograph.org.uk - 3764047 by Bill Boaden, via Wikimedia Commons"
+title = "Terraced houses in Wavertree - geograph.org.uk - 3764047"
+creator = "Bill Boaden"
+openverse = "commons:File:Terraced houses in Wavertree - geograph.org.uk - 3764047.jpg"
+needs_credit = true
+size = "2000x1339"
+
+[[photos]]
+file = "en/posts/2026-10-27-yearly-budget-check/lead.jpg"
+sha256 = "0efc353cc3647ef6b80f387825e06aa4b28a79dfeeb37ed5e90b2e55831fd2c9"
+source = "https://commons.wikimedia.org/wiki/File:Glasses_and_notebook_on_a_wooden_table_in_a_bright_room.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Glasses and notebook on a wooden table in a bright room by Shixart1985, via Wikimedia Commons"
+title = "Glasses and notebook on a wooden table in a bright room"
+creator = "Shixart1985"
+openverse = "commons:File:Glasses and notebook on a wooden table in a bright room.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-10-27-yearly-budget-check/kitchen-table.jpg"
+sha256 = "af93107f06e242c95d778a65e3d0fb229733ee568b4f1b777a3c374c8b706922"
+source = "https://commons.wikimedia.org/wiki/File:Modern_kitchen_and_dining_area_with_wooden_table_and_chairs_during_daytime.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Modern kitchen and dining area with wooden table and chairs during daytime by Shixart1985, via Wikimedia Commons"
+title = "Modern kitchen and dining area with wooden table and chairs during daytime"
+creator = "Shixart1985"
+openverse = "commons:File:Modern kitchen and dining area with wooden table and chairs during daytime.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-11-04-account-fees-ten-years/lead.jpg"
+sha256 = "a8ab3fd774e6a7610aafc9aa7086293c43e08c0c59a1a4e7e7cc4f69e2fc02a6"
+source = "https://commons.wikimedia.org/wiki/File:Macro_Coin_(14486258579).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Macro Coin (14486258579) by Cory Denton from Saskatoon, via Wikimedia Commons"
+title = "Macro Coin (14486258579)"
+creator = "Cory Denton from Saskatoon"
+openverse = "commons:File:Macro Coin (14486258579).jpg"
+needs_credit = true
+size = "2000x1139"

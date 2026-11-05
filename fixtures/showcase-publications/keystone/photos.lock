@@ -1,0 +1,341 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-01-20-fernhill-bakery-identity/lead.jpg"
+sha256 = "316dea7a0fdb8175db6f4aa5f97e4a524c289975b02358ba2040ae0bbf0f1b08"
+source = "https://commons.wikimedia.org/wiki/File:Fresh_Rustic_Bread_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Fresh Rustic Bread (Unsplash) by Artur Rutkowski alienowicz, via Wikimedia Commons"
+title = "Fresh Rustic Bread (Unsplash)"
+creator = "Artur Rutkowski alienowicz"
+openverse = "commons:File:Fresh Rustic Bread (Unsplash).jpg"
+needs_credit = false
+size = "2000x1324"
+
+[[photos]]
+file = "en/posts/2026-02-10-first-client-workshop/lead.jpg"
+sha256 = "4643dbdaa03f3455444ca3f9c7a27ad9db636ea27114b4afa173b80222edbd5d"
+source = "https://commons.wikimedia.org/wiki/File:Chairs_in_a_meeting_room_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Chairs in a meeting room (Unsplash) by Breather breather, via Wikimedia Commons"
+title = "Chairs in a meeting room (Unsplash)"
+creator = "Breather breather"
+openverse = "commons:File:Chairs in a meeting room (Unsplash).jpg"
+needs_credit = false
+size = "2000x1335"
+
+[[photos]]
+file = "en/posts/2026-02-10-first-client-workshop/notes.jpg"
+sha256 = "853191571ab880783bd305dfa1d626a9e457b9306d65d400ff9d404a346aaa5a"
+source = "https://commons.wikimedia.org/wiki/File:Brainstorming_over_paper_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Brainstorming over paper (Unsplash) by Helloquence helloquence, via Wikimedia Commons"
+title = "Brainstorming over paper (Unsplash)"
+creator = "Helloquence helloquence"
+openverse = "commons:File:Brainstorming over paper (Unsplash).jpg"
+needs_credit = false
+size = "2000x1335"
+
+[[photos]]
+file = "en/posts/2026-03-03-calder-street-library-wayfinding/lead.jpg"
+sha256 = "b56d2826ee85e689963ce5c502c73bded9955aa829359d09f975a0c0840f8022"
+source = "https://commons.wikimedia.org/wiki/File:White_library_tall_windows_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "White library tall windows (Unsplash) by Tu Tram Pham tutrampham, via Wikimedia Commons"
+title = "White library tall windows (Unsplash)"
+creator = "Tu Tram Pham tutrampham"
+openverse = "commons:File:White library tall windows (Unsplash).jpg"
+needs_credit = false
+size = "2000x1330"
+
+[[photos]]
+file = "en/posts/2026-03-24-small-design-studio/lead.jpg"
+sha256 = "4a5947e3decdf35aa2f0999e10b0d47705faf739422d4cd5bcfedcb574eb931f"
+source = "https://commons.wikimedia.org/wiki/File:Karton_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Karton (Unsplash) by Harprit Bola studiorla, via Wikimedia Commons"
+title = "Karton (Unsplash)"
+creator = "Harprit Bola studiorla"
+openverse = "commons:File:Karton (Unsplash).jpg"
+needs_credit = false
+size = "2000x1319"
+
+[[photos]]
+file = "en/posts/2026-04-14-tidewater-ferry-timetables/lead.jpg"
+sha256 = "a31366b580124f1eedaf03713a1450aeba2bd4853be2ee2a8897ae80d1318964"
+source = "https://commons.wikimedia.org/wiki/File:Ferry_deck_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Ferry deck (Unsplash) by Ryan Wilson rbwilson, via Wikimedia Commons"
+title = "Ferry deck (Unsplash)"
+creator = "Ryan Wilson rbwilson"
+openverse = "commons:File:Ferry deck (Unsplash).jpg"
+needs_credit = false
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-04-14-tidewater-ferry-timetables/rope.jpg"
+sha256 = "00760e7f888389066d76c85afbd0aeb3cdf95f764aeee5cb989fa682397fd138"
+source = "https://commons.wikimedia.org/wiki/File:Rope_coil_on_deck_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Rope coil on deck (Unsplash) by Matt Haggerty matthaggerty, via Wikimedia Commons"
+title = "Rope coil on deck (Unsplash)"
+creator = "Matt Haggerty matthaggerty"
+openverse = "commons:File:Rope coil on deck (Unsplash).jpg"
+needs_credit = false
+size = "2000x1329"
+
+[[photos]]
+file = "en/posts/2026-05-05-typeface-for-signs/lead.jpg"
+sha256 = "2d2cf651df12d3d02579b8e7b875b734fcb358dece516265410089f94d1f6d76"
+source = "https://commons.wikimedia.org/wiki/File:Weldon_Spring_letterpress_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Weldon Spring letterpress (Unsplash) by Rodney Truitt Jr rodneytruittjr, via Wikimedia Commons"
+title = "Weldon Spring letterpress (Unsplash)"
+creator = "Rodney Truitt Jr rodneytruittjr"
+openverse = "commons:File:Weldon Spring letterpress (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-05-typeface-for-signs/wood-type.jpg"
+sha256 = "1351ce0d876cddd68d3c4504bf66430fb69503a28aadf29f13bcbce60aefe088"
+source = "https://commons.wikimedia.org/wiki/File:Typesetting_in_wood_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Typesetting in wood (Unsplash) by Raphael Schaller raphaelphotoch, via Wikimedia Commons"
+title = "Typesetting in wood (Unsplash)"
+creator = "Raphael Schaller raphaelphotoch"
+openverse = "commons:File:Typesetting in wood (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-26-orchard-lane-cider-packaging/lead.jpg"
+sha256 = "44781341677d87d8fdb3a8861d3c1cc288ffdab8f753911d2425171036992d90"
+source = "https://commons.wikimedia.org/wiki/File:Freshly_Picked_Apples_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Freshly Picked Apples (Unsplash) by sydney zentz srz, via Wikimedia Commons"
+title = "Freshly Picked Apples (Unsplash)"
+creator = "sydney zentz srz"
+openverse = "commons:File:Freshly Picked Apples (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-26-orchard-lane-cider-packaging/kraft.jpg"
+sha256 = "d739b754f5d821ace18bc99d7ca5edc613e3923cc3a1c37cae43d528806066eb"
+source = "https://commons.wikimedia.org/wiki/File:Craft_supplies_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Craft supplies (Unsplash) by Joanna Kosinska joannakosinska, via Wikimedia Commons"
+title = "Craft supplies (Unsplash)"
+creator = "Joanna Kosinska joannakosinska"
+openverse = "commons:File:Craft supplies (Unsplash).jpg"
+needs_credit = false
+size = "2000x1335"
+
+[[photos]]
+file = "en/posts/2026-06-16-choose-paper-stock/lead.jpg"
+sha256 = "e20e2fe36c3c7115f3f5fc014704f878792034c5781a9ae5f3434ff159d8cc85"
+source = "https://commons.wikimedia.org/wiki/File:Envelopes_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Envelopes (Unsplash) by Joanna Kosinska joannakosinska, via Wikimedia Commons"
+title = "Envelopes (Unsplash)"
+creator = "Joanna Kosinska joannakosinska"
+openverse = "commons:File:Envelopes (Unsplash).jpg"
+needs_credit = false
+size = "2000x1335"
+
+[[photos]]
+file = "en/posts/2026-07-07-pell-hardware-website/lead.jpg"
+sha256 = "a81a352540748865f92609fd36b4eebbf2ae5b08cedd519eaaa65a2e7413b792"
+source = "https://commons.wikimedia.org/wiki/File:Toolkit_and_tools_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Toolkit and tools (Unsplash) by Todd Quackenbush toddquackenbush, via Wikimedia Commons"
+title = "Toolkit and tools (Unsplash)"
+creator = "Todd Quackenbush toddquackenbush"
+openverse = "commons:File:Toolkit and tools (Unsplash).jpg"
+needs_credit = false
+size = "2000x1624"
+
+[[photos]]
+file = "en/posts/2026-07-28-what-a-project-costs/lead.jpg"
+sha256 = "10b0aa7d347aa6cd8982969feb72299af8c8627233503f0dad0f8a67193a09ae"
+source = "https://commons.wikimedia.org/wiki/File:2023_Metr_krawiecki.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "2023 Metr krawiecki by Jacek Halicki, via Wikimedia Commons"
+title = "2023 Metr krawiecki"
+creator = "Jacek Halicki"
+openverse = "commons:File:2023 Metr krawiecki.jpg"
+needs_credit = true
+size = "2000x1098"
+
+[[photos]]
+file = "en/posts/2026-08-18-wrenfield-allotment-signs/lead.jpg"
+sha256 = "e33ad7e5998c4edc27d971bac1b001034f0e14314e08024beebcda97d0309f23"
+source = "https://commons.wikimedia.org/wiki/File:Kumpula_Allotment_Garden.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Kumpula Allotment Garden by /kallu from Helsinki, Finland, via Wikimedia Commons"
+title = "Kumpula Allotment Garden"
+creator = "/kallu from Helsinki, Finland"
+openverse = "commons:File:Kumpula Allotment Garden.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-08-18-wrenfield-allotment-signs/seedling.jpg"
+sha256 = "73c6f120d25dca9499eab821026283985d3c44aadf281c32c65b5b183e9223be"
+source = "https://commons.wikimedia.org/wiki/File:Markus_Spiske_2016-06-23_(Unsplash_vrbZVyX2k4I).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Markus Spiske 2016-06-23 (Unsplash vrbZVyX2k4I) by Markus Spiske markusspiske, via Wikimedia Commons"
+title = "Markus Spiske 2016-06-23 (Unsplash vrbZVyX2k4I)"
+creator = "Markus Spiske markusspiske"
+openverse = "commons:File:Markus Spiske 2016-06-23 (Unsplash vrbZVyX2k4I).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-08-18-wrenfield-allotment-signs/weathered-wood.jpg"
+sha256 = "d9f82182f1e6b65f265d1499cc42e560de2fa03f02e6db52981068096fee493d"
+source = "https://commons.wikimedia.org/wiki/File:Old_shed_wall_in_close-up_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Old shed wall in close-up (Unsplash) by Zbysiu Rodak zbigniew, via Wikimedia Commons"
+title = "Old shed wall in close-up (Unsplash)"
+creator = "Zbysiu Rodak zbigniew"
+openverse = "commons:File:Old shed wall in close-up (Unsplash).jpg"
+needs_credit = false
+size = "2000x1330"
+
+[[photos]]
+file = "en/posts/2026-09-08-test-signs-on-site/lead.jpg"
+sha256 = "e7099abb744d4bffda54d52cb70ee7a8703578cea60981418de7da64e8071d4b"
+source = "https://commons.wikimedia.org/wiki/File:Concrete_arrow_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Concrete arrow (Unsplash) by Steinar Engeland steinart, via Wikimedia Commons"
+title = "Concrete arrow (Unsplash)"
+creator = "Steinar Engeland steinart"
+openverse = "commons:File:Concrete arrow (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-08-test-signs-on-site/folded-facade.jpg"
+sha256 = "1d71d9d2739858fd691a2798f2a79501dea76bd43142959a0addc9073cbecd80"
+source = "https://commons.wikimedia.org/wiki/File:Triangles_in_a_white_facade_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Triangles in a white facade (Unsplash) by Samuel Zeller samuelzeller, via Wikimedia Commons"
+title = "Triangles in a white facade (Unsplash)"
+creator = "Samuel Zeller samuelzeller"
+openverse = "commons:File:Triangles in a white facade (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-22-saltmarsh-pool-signs/lead.jpg"
+sha256 = "c7a0cead6c035f04d751a838c02a62191ba88ff14fe7a6a1260d6271db34c9e8"
+source = "https://commons.wikimedia.org/wiki/File:A_close_up_of_a_swimming_pool_with_water_by_Markus_Spiske_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "A close up of a swimming pool with water by Markus Spiske (Unsplash) by Markus Spiske markusspiske, via Wikimedia Commons"
+title = "A close up of a swimming pool with water by Markus Spiske (Unsplash)"
+creator = "Markus Spiske markusspiske"
+openverse = "commons:File:A close up of a swimming pool with water by Markus Spiske (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-22-saltmarsh-pool-signs/perforated-panels.jpg"
+sha256 = "4359916de2d2dc8883aae0aa23e1d962d1bad39b811954adbad1cf369024e4a7"
+source = "https://commons.wikimedia.org/wiki/File:Monochrome_tile_pattern_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Monochrome tile pattern (Unsplash) by Samuel Zeller samuelzeller, via Wikimedia Commons"
+title = "Monochrome tile pattern (Unsplash)"
+creator = "Samuel Zeller samuelzeller"
+openverse = "commons:File:Monochrome tile pattern (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-10-06-northgate-theatre-posters/lead.jpg"
+sha256 = "6caef3eaa20e135f60bd809b54cd6760d8c77bb6e9ef8ec869e48db4583bcb99"
+source = "https://commons.wikimedia.org/wiki/File:Screen_print_hand_bench_proffesional_print_bench_in_Squeegee_%26_Ink_studio.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Screen print hand bench proffesional print bench in Squeegee & Ink studio by Scrud123, via Wikimedia Commons"
+title = "Screen print hand bench proffesional print bench in Squeegee & Ink studio"
+creator = "Scrud123"
+openverse = "commons:File:Screen print hand bench proffesional print bench in Squeegee & Ink studio.jpg"
+needs_credit = true
+size = "2000x1464"
+
+[[photos]]
+file = "en/posts/2026-10-13-build-colour-palette/lead.jpg"
+sha256 = "9220312caf3f18c284c4159549dca2998a38fd1eed1ddb568ddfa21cdcf8b4a9"
+source = "https://commons.wikimedia.org/wiki/File:Colored_Pencils_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Colored Pencils (Unsplash) by Joe Shillington joeshillington, via Wikimedia Commons"
+title = "Colored Pencils (Unsplash)"
+creator = "Joe Shillington joeshillington"
+openverse = "commons:File:Colored Pencils (Unsplash).jpg"
+needs_credit = false
+size = "2000x1339"
+
+[[photos]]
+file = "en/posts/2026-10-13-build-colour-palette/paints.jpg"
+sha256 = "5107cee45d270ed25c7e8aea7f45ed5fdbe007c0bdddeeed080ab9779a5662a2"
+source = "https://commons.wikimedia.org/wiki/File:Mix_of_paints_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Mix of paints (Unsplash) by Mike Petrucci mikepetrucci, via Wikimedia Commons"
+title = "Mix of paints (Unsplash)"
+creator = "Mike Petrucci mikepetrucci"
+openverse = "commons:File:Mix of paints (Unsplash).jpg"
+needs_credit = false
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-10-20-studio-workshop-tools/lead.jpg"
+sha256 = "f98e677639e67ac3dfac7d16e79d2f89e186184472a3c3ab763dbf92a891e536"
+source = "https://commons.wikimedia.org/wiki/File:Workbench_and_tools_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Workbench and tools (Unsplash) by Jeff Sheldon ugmonk, via Wikimedia Commons"
+title = "Workbench and tools (Unsplash)"
+creator = "Jeff Sheldon ugmonk"
+openverse = "commons:File:Workbench and tools (Unsplash).jpg"
+needs_credit = false
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-10-20-studio-workshop-tools/cutting-mat.jpg"
+sha256 = "35ce2dae80b459dab6bf45a06f05479b03b63929d5bc6ce9d76231f5a5b162c7"
+source = "https://commons.wikimedia.org/wiki/File:Everything_you_need_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Everything you need (Unsplash) by Jo Szczepanska joszczepanska, via Wikimedia Commons"
+title = "Everything you need (Unsplash)"
+creator = "Jo Szczepanska joszczepanska"
+openverse = "commons:File:Everything you need (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-10-27-lantern-bookshop-sign-website/lead.jpg"
+sha256 = "da88c167acb0c3a2f266fde88fb31639a156f89b30267f044785cfaca924a77b"
+source = "https://commons.wikimedia.org/wiki/File:Hanging_paper_lanterns_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Hanging paper lanterns (Unsplash) by Alphacolor 13 duck58cth, via Wikimedia Commons"
+title = "Hanging paper lanterns (Unsplash)"
+creator = "Alphacolor 13 duck58cth"
+openverse = "commons:File:Hanging paper lanterns (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-11-04-brand-guidelines-handover/lead.jpg"
+sha256 = "6595754f92e0d8483490ad8990d530725063c62efc24fdd63e425c08c687d806"
+source = "https://commons.wikimedia.org/wiki/File:Rainbow_paint_swatches.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Rainbow paint swatches by Joyful spherical creature, via Wikimedia Commons"
+title = "Rainbow paint swatches"
+creator = "Joyful spherical creature"
+openverse = "commons:File:Rainbow paint swatches.jpg"
+needs_credit = true
+size = "1936x1936"

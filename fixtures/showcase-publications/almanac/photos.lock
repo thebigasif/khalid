@@ -1,0 +1,397 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Three entries by
+# Kolforn had a contact note in the creator field, which was trimmed by
+# hand to the name.
+
+[[photos]]
+file = "en/posts/2026-01-13-plan-vegetable-plot/lead.jpg"
+sha256 = "474389b71162822de26e1a034a6e1fdafcfceb9870cc3cdc2212514773cc2b84"
+source = "https://commons.wikimedia.org/wiki/File:-2020-07-01_Vegetable_garden_with_raised_beds,_Trimingham,_Norfolk.JPG"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "-2020-07-01 Vegetable garden with raised beds, Trimingham, Norfolk by Kolforn, via Wikimedia Commons"
+title = "-2020-07-01 Vegetable garden with raised beds, Trimingham, Norfolk"
+creator = "Kolforn"
+openverse = "commons:File:-2020-07-01 Vegetable garden with raised beds, Trimingham, Norfolk.JPG"
+needs_credit = true
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-01-13-plan-vegetable-plot/raised-bed.jpg"
+sha256 = "135e788729e28d16826839cf4c1fbadbfb2f34f8d6f8e719cd1b21d8493b315d"
+source = "https://commons.wikimedia.org/wiki/File:Raised_vegetable_bed_1.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Raised vegetable bed 1 by Kerstin Namuth, via Wikimedia Commons"
+title = "Raised vegetable bed 1"
+creator = "Kerstin Namuth"
+openverse = "commons:File:Raised vegetable bed 1.jpg"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-02-03-read-improve-soil/earthworm.jpg"
+sha256 = "9b4d4deabfbb1b8e4b096c1eea0754076f7594e39f75c48801e141f5c84d6a27"
+source = "https://commons.wikimedia.org/wiki/File:Earthworm_in_a_No-till_Field_near_Brookings,_SD_(14366341997).jpg"
+licence = "Public domain, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Earthworm in a No-till Field near Brookings, SD (14366341997) by USDA NRCS South Dakota, via Wikimedia Commons"
+title = "Earthworm in a No-till Field near Brookings, SD (14366341997)"
+creator = "USDA NRCS South Dakota"
+openverse = "commons:File:Earthworm in a No-till Field near Brookings, SD (14366341997).jpg"
+needs_credit = false
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-02-03-read-improve-soil/lead.jpg"
+sha256 = "ee946ce0b2ea07faea8a4adeb8233ff6953afd6c58c00cb02e89d22f76051a1c"
+source = "https://commons.wikimedia.org/wiki/File:Loam_soil_of_Hesbaye.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Loam soil of Hesbaye by Peter Van den Bossche, via Wikimedia Commons"
+title = "Loam soil of Hesbaye"
+creator = "Peter Van den Bossche"
+openverse = "commons:File:Loam soil of Hesbaye.jpg"
+needs_credit = true
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-02-24-chit-plant-seed-potatoes/lead.jpg"
+sha256 = "feee06652258446c42093119ee62a342603f299fe21475519a74810c3387bab9"
+source = "https://commons.wikimedia.org/wiki/File:Chitted_seed_potatoes.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Chitted seed potatoes by Kangarooth, via Wikimedia Commons"
+title = "Chitted seed potatoes"
+creator = "Kangarooth"
+openverse = "commons:File:Chitted seed potatoes.jpg"
+needs_credit = true
+size = "2000x1502"
+
+
+[[photos]]
+file = "en/posts/2026-03-10-sow-seeds-indoors/cress.jpg"
+sha256 = "bc842bc0da19376404a173517ea2ebbd6c08cdcc593d3cd48871fd018fe824a2"
+source = "https://commons.wikimedia.org/wiki/File:Close-up_of_garden_cress_(Lepidium_Sativum),_2025-01-19.jpeg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Close-up of garden cress (Lepidium Sativum), 2025-01-19 by Nylki, via Wikimedia Commons"
+title = "Close-up of garden cress (Lepidium Sativum), 2025-01-19"
+creator = "Nylki"
+openverse = "commons:File:Close-up of garden cress (Lepidium Sativum), 2025-01-19.jpeg"
+needs_credit = false
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-03-10-sow-seeds-indoors/lead.jpg"
+sha256 = "2edac2a1d5b8475300b3974efa0b8160d977832f53fd6c72a5069ffe48470199"
+source = "https://commons.wikimedia.org/wiki/File:Lettuce_Emerging_(7185254128).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Lettuce Emerging (7185254128) by Dwight Sipler from Stow, MA, USA, via Wikimedia Commons"
+title = "Lettuce Emerging (7185254128)"
+creator = "Dwight Sipler from Stow, MA, USA"
+openverse = "commons:File:Lettuce Emerging (7185254128).jpg"
+needs_credit = true
+size = "2000x1331"
+
+
+[[photos]]
+file = "en/posts/2026-03-31-vegetable-sowing-calendar/lead.jpg"
+sha256 = "ba56c144d08f0993e529c1ab215cd74bc981547c6cdecf23c18e94d8e3ffe07b"
+source = "https://commons.wikimedia.org/wiki/File:Lettuce_a_week_old_(7185255750).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Lettuce a week old (7185255750) by Dwight Sipler from Stow, MA, USA, via Wikimedia Commons"
+title = "Lettuce a week old (7185255750)"
+creator = "Dwight Sipler from Stow, MA, USA"
+openverse = "commons:File:Lettuce a week old (7185255750).jpg"
+needs_credit = true
+size = "2000x1331"
+
+
+[[photos]]
+file = "en/posts/2026-03-31-vegetable-sowing-calendar/seeds.jpg"
+sha256 = "5754815d532168a76ca456216cedda9f7ab2e79fc38bf10f6d85c2b8adde38f1"
+source = "https://commons.wikimedia.org/wiki/File:Vegetable_seeds.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Vegetable seeds by Oregon State University, via Wikimedia Commons"
+title = "Vegetable seeds"
+creator = "Oregon State University"
+openverse = "commons:File:Vegetable seeds.jpg"
+needs_credit = true
+size = "2000x1328"
+
+
+[[photos]]
+file = "en/posts/2026-04-14-harden-off-seedlings/lead.jpg"
+sha256 = "0d565413815014a316bf9d0b348d7b10e8c5b346ff423dfa4008ac9b1e17b3fe"
+source = "https://commons.wikimedia.org/wiki/File:Squash_Seedlings_(49741265228).jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Squash Seedlings (49741265228) by Amanda Slater from Coventry, West Midlands, UK, via Wikimedia Commons"
+title = "Squash Seedlings (49741265228)"
+creator = "Amanda Slater from Coventry, West Midlands, UK"
+openverse = "commons:File:Squash Seedlings (49741265228).jpg"
+needs_credit = true
+size = "2000x1443"
+
+
+[[photos]]
+file = "en/posts/2026-04-28-make-compost/bays.jpg"
+sha256 = "ac41df402432bd5388bcc6eb3233a864adf85be374ffad45dd6743b52a3a1921"
+source = "https://commons.wikimedia.org/wiki/File:Compost_bins_in_Brighthelm_Garden_(close_up)_2023-06-16.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Compost bins in Brighthelm Garden (close up) 2023-06-16 by Andy Li, via Wikimedia Commons"
+title = "Compost bins in Brighthelm Garden (close up) 2023-06-16"
+creator = "Andy Li"
+openverse = "commons:File:Compost bins in Brighthelm Garden (close up) 2023-06-16.jpg"
+needs_credit = false
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-04-28-make-compost/lead.jpg"
+sha256 = "0eb4ff4c4d176ca1a2346de0089afa8aaa637fa21a75ed3db846414b05e931a6"
+source = "https://commons.wikimedia.org/wiki/File:Compost_pile.JPG"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Compost pile by Ksd5, via Wikimedia Commons"
+title = "Compost pile"
+creator = "Ksd5"
+openverse = "commons:File:Compost pile.JPG"
+needs_credit = false
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-05-12-grow-tomatoes-outdoors/flower.jpg"
+sha256 = "b3ec77b73e795cffdaca4214c387e407bcd1cd31bc469e4ffaa0dfc8346a1732"
+source = "https://commons.wikimedia.org/wiki/File:Heirloom_Tomato_Grown_from_Seed.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Heirloom Tomato Grown from Seed by SMadsenHardy, via Wikimedia Commons"
+title = "Heirloom Tomato Grown from Seed"
+creator = "SMadsenHardy"
+openverse = "commons:File:Heirloom Tomato Grown from Seed.jpg"
+needs_credit = true
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-05-12-grow-tomatoes-outdoors/lead.jpg"
+sha256 = "205db737506959bfe38eb6a05fc6cb69d9da8bae3652f662f2fdeda308696dbd"
+source = "https://commons.wikimedia.org/wiki/File:Tomatoes_in_basket_2026_G3.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Tomatoes in basket 2026 G3 by George Chernilevsky, via Wikimedia Commons"
+title = "Tomatoes in basket 2026 G3"
+creator = "George Chernilevsky"
+openverse = "commons:File:Tomatoes in basket 2026 G3.jpg"
+needs_credit = true
+size = "2000x1481"
+
+
+[[photos]]
+file = "en/posts/2026-05-26-slugs-without-pellets/lead.jpg"
+sha256 = "1e92c3db980bbddac90b6604c0cea2f7527d6f5a91ce514c76237d610484c3ba"
+source = "https://commons.wikimedia.org/wiki/File:Arion_distinctus_(26732813176).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Arion distinctus (26732813176) by Donald Hobern from Copenhagen, Denmark, via Wikimedia Commons"
+title = "Arion distinctus (26732813176)"
+creator = "Donald Hobern from Copenhagen, Denmark"
+openverse = "commons:File:Arion distinctus (26732813176).jpg"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-06-16-water-vegetable-garden/lead.jpg"
+sha256 = "316c46104c93b1a6a9612874066e0150f8a2748700dcaa2e13021bc3f0867594"
+source = "https://commons.wikimedia.org/wiki/File:MetalwateringcansDec08.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "MetalwateringcansDec08 by Bas Leenders at https://www.flickr.com/photos/basl/, via Wikimedia Commons"
+title = "MetalwateringcansDec08"
+creator = "Bas Leenders at https://www.flickr.com/photos/basl/"
+openverse = "commons:File:MetalwateringcansDec08.jpg"
+needs_credit = true
+size = "2000x1339"
+
+
+[[photos]]
+file = "en/posts/2026-06-30-grow-climbing-beans/lead.jpg"
+sha256 = "9325a5dea1817b5c27622cd3bd45cc15fe93e8d39222e7ae54801aa92503a99c"
+source = "https://commons.wikimedia.org/wiki/File:-2020-08-02_Runner_bean_harvest_(Phaseolus_coccineus),_Trimingham,_Norfolk.JPG"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "-2020-08-02 Runner bean harvest (Phaseolus coccineus), Trimingham, Norfolk by Kolforn, via Wikimedia Commons"
+title = "-2020-08-02 Runner bean harvest (Phaseolus coccineus), Trimingham, Norfolk"
+creator = "Kolforn"
+openverse = "commons:File:-2020-08-02 Runner bean harvest (Phaseolus coccineus), Trimingham, Norfolk.JPG"
+needs_credit = true
+size = "2000x1331"
+
+
+[[photos]]
+file = "en/posts/2026-07-21-sow-salad-little-often/lead.jpg"
+sha256 = "bdee474c0b1361761a44138047db0cbf35e318be3874245b41439c3e8b14b4b7"
+source = "https://commons.wikimedia.org/wiki/File:Australe_lettuce_(5596426954).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Australe lettuce (5596426954) by Dwight Sipler from Stow, MA, USA, via Wikimedia Commons"
+title = "Australe lettuce (5596426954)"
+creator = "Dwight Sipler from Stow, MA, USA"
+openverse = "commons:File:Australe lettuce (5596426954).jpg"
+needs_credit = true
+size = "2000x1331"
+
+
+[[photos]]
+file = "en/posts/2026-08-11-save-seed-beans-tomatoes/lead.jpg"
+sha256 = "8482e5e858e70871b4c6543ed3f97c3325e00196ff4bfac282c68702dacb7c92"
+source = "https://commons.wikimedia.org/wiki/File:Phaseolus_vulgaris_white_beans,_witte_boon.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Phaseolus vulgaris white beans, witte boon by Rasbak, via Wikimedia Commons"
+title = "Phaseolus vulgaris white beans, witte boon"
+creator = "Rasbak"
+openverse = "commons:File:Phaseolus vulgaris white beans, witte boon.jpg"
+needs_credit = true
+size = "2000x1598"
+
+
+[[photos]]
+file = "en/posts/2026-08-11-save-seed-beans-tomatoes/runner-seeds.jpg"
+sha256 = "52c19da8c42f847f7e18cc9e021080671b7e6f531e76ed3d1a806a41bdb4909d"
+source = "https://commons.wikimedia.org/wiki/File:Scarlet_Runner_beans.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Scarlet Runner beans by Unknown, via Wikimedia Commons"
+title = "Scarlet Runner beans"
+creator = "Unknown"
+openverse = "commons:File:Scarlet Runner beans.jpg"
+needs_credit = false
+size = "2000x1337"
+
+
+[[photos]]
+file = "en/posts/2026-08-25-harvest-cure-onions-garlic/lead.jpg"
+sha256 = "c40debe9d104a7e6ad574a984f45cf58b43a4ac1d64a1fbfea89d49a082f551e"
+source = "https://commons.wikimedia.org/wiki/File:Manadas-de-ajos-allium-sativum-sandoval-de-la-reina-julio-2021-a.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Manadas-de-ajos-allium-sativum-sandoval-de-la-reina-julio-2021-a by MottaW, via Wikimedia Commons"
+title = "Manadas-de-ajos-allium-sativum-sandoval-de-la-reina-julio-2021-a"
+creator = "MottaW"
+openverse = "commons:File:Manadas-de-ajos-allium-sativum-sandoval-de-la-reina-julio-2021-a.jpg"
+needs_credit = true
+size = "1900x1258"
+
+
+[[photos]]
+file = "en/posts/2026-08-25-harvest-cure-onions-garlic/onions-drying.jpg"
+sha256 = "bac1cf5ce9852fc8c89678da3283247d3007f514efb71dc1904ed789b04cf102"
+source = "https://commons.wikimedia.org/wiki/File:Drying_onions_-_geograph.org.uk_-_3699550.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Drying onions - geograph.org.uk - 3699550 by Tim Heaton, via Wikimedia Commons"
+title = "Drying onions - geograph.org.uk - 3699550"
+creator = "Tim Heaton"
+openverse = "commons:File:Drying onions - geograph.org.uk - 3699550.jpg"
+needs_credit = true
+size = "2000x1335"
+
+
+[[photos]]
+file = "en/posts/2026-09-15-pick-store-apples/lead.jpg"
+sha256 = "ad693cc523cea6c1f1bd2144424d46cba01c51813c132c8c7127224dce43f1d1"
+source = "https://commons.wikimedia.org/wiki/File:Apples_in_basket_2018_G1.jpg"
+licence = "Public domain, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Apples in basket 2018 G1 by George Chernilevsky, via Wikimedia Commons"
+title = "Apples in basket 2018 G1"
+creator = "George Chernilevsky"
+openverse = "commons:File:Apples in basket 2018 G1.jpg"
+needs_credit = false
+size = "2000x1739"
+
+
+[[photos]]
+file = "en/posts/2026-09-15-pick-store-apples/tree.jpg"
+sha256 = "4cd81b6ed4126cff4d4707ab5ced4fedb21f17fa4972036584b065b8c1a483c3"
+source = "https://commons.wikimedia.org/wiki/File:Tree_with_red_apples_in_Barkedal_4.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Tree with red apples in Barkedal 4 by W.carter, via Wikimedia Commons"
+title = "Tree with red apples in Barkedal 4"
+creator = "W.carter"
+openverse = "commons:File:Tree with red apples in Barkedal 4.jpg"
+needs_credit = false
+size = "2000x2000"
+
+
+[[photos]]
+file = "en/posts/2026-10-06-sow-green-manure/clover.jpg"
+sha256 = "32b51de191724277df035d154336e3d0d856a76757d2d4e235f8ec74772e0633"
+source = "https://commons.wikimedia.org/wiki/File:Crimson_Clover_(55214247775).jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Crimson Clover (55214247775) by Willie Luker from USA, via Wikimedia Commons"
+title = "Crimson Clover (55214247775)"
+creator = "Willie Luker from USA"
+openverse = "commons:File:Crimson Clover (55214247775).jpg"
+needs_credit = true
+size = "2000x1335"
+
+
+[[photos]]
+file = "en/posts/2026-10-06-sow-green-manure/lead.jpg"
+sha256 = "dcf41768b2c9a8cc5823f20a60ed0fc4fd670edca7a779cce3af0ab3f9b36fa7"
+source = "https://commons.wikimedia.org/wiki/File:Phacelia_tanacetifolia_Feld.jpg"
+licence = "CC BY 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/3.0"
+credit = "Phacelia tanacetifolia Feld by Photo: Andreas Praefcke, via Wikimedia Commons"
+title = "Phacelia tanacetifolia Feld"
+creator = "Photo: Andreas Praefcke"
+openverse = "commons:File:Phacelia tanacetifolia Feld.jpg"
+needs_credit = true
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-10-20-plant-garlic-autumn/lead.jpg"
+sha256 = "515160de38acc1fa8ed39435079cdc5c104a79596c76cb1aea0d3c46947e6a14"
+source = "https://commons.wikimedia.org/wiki/File:Garlic_bulbs_and_cloves.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Garlic bulbs and cloves by Ivar Leidus, via Wikimedia Commons"
+title = "Garlic bulbs and cloves"
+creator = "Ivar Leidus"
+openverse = "commons:File:Garlic bulbs and cloves.jpg"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-10-20-plant-garlic-autumn/spade-fork.jpg"
+sha256 = "0bc684368f5467ead9c69b411c83a8ca237669676d59ad049bf67ed22a0db6a7"
+source = "https://commons.wikimedia.org/wiki/File:-2023-01-23_Garden_Spade_and_Fork,_Trimingham,_Norfolk.JPG"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "-2023-01-23 Garden Spade and Fork, Trimingham, Norfolk by Kolforn, via Wikimedia Commons"
+title = "-2023-01-23 Garden Spade and Fork, Trimingham, Norfolk"
+creator = "Kolforn"
+openverse = "commons:File:-2023-01-23 Garden Spade and Fork, Trimingham, Norfolk.JPG"
+needs_credit = true
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-11-04-november-jobs/beetroot.jpg"
+sha256 = "eb22c507d380f01648c9d41150e84bfdfb4c26750cb072ad608947b59b19b85f"
+source = "https://commons.wikimedia.org/wiki/File:Beetroots_in_a_basket.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Beetroots in a basket by W.carter, via Wikimedia Commons"
+title = "Beetroots in a basket"
+creator = "W.carter"
+openverse = "commons:File:Beetroots in a basket.jpg"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-11-04-november-jobs/lead.jpg"
+sha256 = "0299650e5de7fed723bfcbc7e27f844f7e64f184f5f6abb48cec6c20a1d2b455"
+source = "https://commons.wikimedia.org/wiki/File:Frozen_kale_(23753909205).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Frozen kale (23753909205) by Ruth Hartnup from Vancouver, Canada, via Wikimedia Commons"
+title = "Frozen kale (23753909205)"
+creator = "Ruth Hartnup from Vancouver, Canada"
+openverse = "commons:File:Frozen kale (23753909205).jpg"
+needs_credit = true
+size = "2000x1427"
+

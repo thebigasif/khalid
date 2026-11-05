@@ -1,0 +1,407 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-10-01-winter-ferry-timetable/car-ramp.jpg"
+sha256 = "47b629c3eaa2e3c3f6668c4415e61317a174dc056775ad5eb71e071d4908963f"
+source = "https://commons.wikimedia.org/wiki/File:Tallink_MyStar_aft_vehicle_ramps.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Tallink MyStar aft vehicle ramps by VynedJ, via Wikimedia Commons"
+title = "Tallink MyStar aft vehicle ramps"
+creator = "VynedJ"
+openverse = "commons:File:Tallink MyStar aft vehicle ramps.jpg"
+needs_credit = false
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-10-01-winter-ferry-timetable/lead.jpg"
+sha256 = "5db64995fa81366e0c137497b6277072a323c2b9aaabec71c20af6046022d624"
+source = "https://commons.wikimedia.org/wiki/File:Raymond_Island_(Gippsland,_Viictoria,_Australia)_Chain_Ferry.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Raymond Island (Gippsland, Viictoria, Australia) Chain Ferry by Brycewhite, via Wikimedia Commons"
+title = "Raymond Island (Gippsland, Viictoria, Australia) Chain Ferry"
+creator = "Brycewhite"
+openverse = "commons:File:Raymond Island (Gippsland, Viictoria, Australia) Chain Ferry.jpg"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-10-03-library-opening-date/lead.jpg"
+sha256 = "cbdee265c7449eb254213d3a0c3055434e1415b38b75f55f1d2db313fbe647d2"
+source = "https://commons.wikimedia.org/wiki/File:Bookshelves_and_interior_of_the_library_of_the_Academy_for_Judiciary.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Bookshelves and interior of the library of the Academy for Judiciary by Szeronine, via Wikimedia Commons"
+title = "Bookshelves and interior of the library of the Academy for Judiciary"
+creator = "Szeronine"
+openverse = "commons:File:Bookshelves and interior of the library of the Academy for Judiciary.jpg"
+needs_credit = true
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-10-06-council-budget/chamber.jpg"
+sha256 = "bb1f61b7926d0a763e6fa740aa04bfb6d6fcb86ef00610f0c09b9ed7163bae0e"
+source = "https://commons.wikimedia.org/wiki/File:S%C3%A4yn%C3%A4tsalo_Town_Hall_council_chamber_towards_front.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Säynätsalo Town Hall council chamber towards front by Antti Leppänen, via Wikimedia Commons"
+title = "Säynätsalo Town Hall council chamber towards front"
+creator = "Antti Leppänen"
+openverse = "commons:File:Säynätsalo Town Hall council chamber towards front.jpg"
+needs_credit = true
+size = "2000x1327"
+
+
+[[photos]]
+file = "en/posts/2026-10-06-council-budget/lead.jpg"
+sha256 = "71709488f3a342f50bd478efc644a03febd7bbb97988c0468a5bf8c25375331c"
+source = "https://commons.wikimedia.org/wiki/File:CPH_Frederiksberg_Town_Hall_Exterior_01.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "CPH Frederiksberg Town Hall Exterior 01 by DemieK07, via Wikimedia Commons"
+title = "CPH Frederiksberg Town Hall Exterior 01"
+creator = "DemieK07"
+openverse = "commons:File:CPH Frederiksberg Town Hall Exterior 01.jpg"
+needs_credit = true
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-10-08-storm-warning-coast/lead.jpg"
+sha256 = "63e8629eb9c70fc65665d61c50242af81d989b689126090588a28a8c7c8c43c1"
+source = "https://commons.wikimedia.org/wiki/File:Waves_breaking_over_the_sea_wall_at_Dawlish_(2025e).JPG"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Waves breaking over the sea wall at Dawlish (2025e) by Geof Sheppard, via Wikimedia Commons"
+title = "Waves breaking over the sea wall at Dawlish (2025e)"
+creator = "Geof Sheppard"
+openverse = "commons:File:Waves breaking over the sea wall at Dawlish (2025e).JPG"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-10-10-harbour-works-phase-two/excavator.jpg"
+sha256 = "386986fc3ca7723ea2d1089284706ecbeb41fc0d009e2c934377a19681b0a79c"
+source = "https://commons.wikimedia.org/wiki/File:Excavator_at_Maidens_Harbour_-_geograph.org.uk_-_2068062.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Excavator at Maidens Harbour - geograph.org.uk - 2068062 by Humphrey Bolton, via Wikimedia Commons"
+title = "Excavator at Maidens Harbour - geograph.org.uk - 2068062"
+creator = "Humphrey Bolton"
+openverse = "commons:File:Excavator at Maidens Harbour - geograph.org.uk - 2068062.jpg"
+needs_credit = true
+size = "2000x1474"
+
+
+[[photos]]
+file = "en/posts/2026-10-10-harbour-works-phase-two/lead.jpg"
+sha256 = "7fd99254384d6a69245c5c47be8fd7ed0f0a487b748bd4922d2a1811e3c75ee3"
+source = "https://commons.wikimedia.org/wiki/File:Amphibious_excavator,_West_Bay_harbour_-_geograph.org.uk_-_3882702.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Amphibious excavator, West Bay harbour - geograph.org.uk - 3882702 by John Stephen, via Wikimedia Commons"
+title = "Amphibious excavator, West Bay harbour - geograph.org.uk - 3882702"
+creator = "John Stephen"
+openverse = "commons:File:Amphibious excavator, West Bay harbour - geograph.org.uk - 3882702.jpg"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-10-13-rovers-county-cup-win/ball.jpg"
+sha256 = "a4c72a2b9908a50f20f3107e7130358a2c18c0b4bddf189020b312ab6efb438f"
+source = "https://commons.wikimedia.org/wiki/File:Soccer_Ball_(27181880724).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Soccer Ball (27181880724) by USARJ NCO CORPS, via Wikimedia Commons"
+title = "Soccer Ball (27181880724)"
+creator = "USARJ NCO CORPS"
+openverse = "commons:File:Soccer Ball (27181880724).jpg"
+needs_credit = true
+size = "2000x1351"
+
+
+[[photos]]
+file = "en/posts/2026-10-13-rovers-county-cup-win/lead.jpg"
+sha256 = "25bc8cf078f77555c0a753d59e3aca266daedc5f418f20c8fe431ccf877070e3"
+source = "https://commons.wikimedia.org/wiki/File:Football_match_at_Western_Park,_Northstowe_-_geograph.org.uk_-_7937302.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Football match at Western Park, Northstowe - geograph.org.uk - 7937302 by Hugh Venables, via Wikimedia Commons"
+title = "Football match at Western Park, Northstowe - geograph.org.uk - 7937302"
+creator = "Hugh Venables"
+openverse = "commons:File:Football match at Western Park, Northstowe - geograph.org.uk - 7937302.jpg"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-10-15-ferry-queue-column/bollard.jpg"
+sha256 = "ee88b2a0bed2889ae29a7ebed16c33f32c2f8bc3129bc655a9dc3380472960c4"
+source = "https://commons.wikimedia.org/wiki/File:Mooring_bollard_at_sunset,_Lyme_Regis.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Mooring bollard at sunset, Lyme Regis by MichaelMaggs, via Wikimedia Commons"
+title = "Mooring bollard at sunset, Lyme Regis"
+creator = "MichaelMaggs"
+openverse = "commons:File:Mooring bollard at sunset, Lyme Regis.jpg"
+needs_credit = true
+size = "2000x1476"
+
+
+[[photos]]
+file = "en/posts/2026-10-15-ferry-queue-column/lead.jpg"
+sha256 = "4ac45ff5d44e58c68869405642078b8e7dcf128a22b9c7b90c7e92829cb7e09e"
+source = "https://commons.wikimedia.org/wiki/File:Queuing_area_at_Mukilteo%27s_new_ferry_terminal.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Queuing area at Mukilteo's new ferry terminal by SounderBruce, via Wikimedia Commons"
+title = "Queuing area at Mukilteo's new ferry terminal"
+creator = "SounderBruce"
+openverse = "commons:File:Queuing area at Mukilteo's new ferry terminal.jpg"
+needs_credit = true
+size = "2000x1274"
+
+
+[[photos]]
+file = "en/posts/2026-10-17-fish-market-hours/boats.jpg"
+sha256 = "cda065e58bb2f19ef242bbab5b4ea5709cfb3d70f2293f73e0cb7ba4acd3295d"
+source = "https://commons.wikimedia.org/wiki/File:Fishing_boats_in_Fishing_Boat_Harbour.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Fishing boats in Fishing Boat Harbour by Sam Wilson  (taken with Sony RX100 mk.V), via Wikimedia Commons"
+title = "Fishing boats in Fishing Boat Harbour"
+creator = "Sam Wilson  (taken with Sony RX100 mk.V)"
+openverse = "commons:File:Fishing boats in Fishing Boat Harbour.jpg"
+needs_credit = true
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-10-17-fish-market-hours/lead.jpg"
+sha256 = "655e6c993bc5fe26c7cec59625a2c9d59109e01ec019e21651f79f07f1dea0ce"
+source = "https://commons.wikimedia.org/wiki/File:Fish_on_ice._(15490845981).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Fish on ice. (15490845981) by Bernard Spragg. NZ from Christchurch, New Zealand, via Wikimedia Commons"
+title = "Fish on ice. (15490845981)"
+creator = "Bernard Spragg. NZ from Christchurch, New Zealand"
+openverse = "commons:File:Fish on ice. (15490845981).jpg"
+needs_credit = false
+size = "2000x1349"
+
+
+[[photos]]
+file = "en/posts/2026-10-20-half-term-dates/lead.jpg"
+sha256 = "6a0722084317274b7256da1bf58b2e8c0ac368de9043b39150dec4418048b636"
+source = "https://commons.wikimedia.org/wiki/File:Empty_schoolyard_(41555015420).jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Empty schoolyard (41555015420) by Enoch Leung from Canada, via Wikimedia Commons"
+title = "Empty schoolyard (41555015420)"
+creator = "Enoch Leung from Canada"
+openverse = "commons:File:Empty schoolyard (41555015420).jpg"
+needs_credit = true
+size = "2000x1125"
+
+
+[[photos]]
+file = "en/posts/2026-10-22-new-bakery-quay-street/lead.jpg"
+sha256 = "f1e3ea46a403819dbb4200d5eb049a05a613f7b7a7350767bd1c1e38b6f57ac9"
+source = "https://commons.wikimedia.org/wiki/File:Freshly_baked_bread_loaves.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Freshly baked bread loaves by Flickr.com user 'FotoDawg', via Wikimedia Commons"
+title = "Freshly baked bread loaves"
+creator = "Flickr.com user 'FotoDawg'"
+openverse = "commons:File:Freshly baked bread loaves.jpg"
+needs_credit = true
+size = "2000x989"
+
+
+[[photos]]
+file = "en/posts/2026-10-22-new-bakery-quay-street/loaves.jpg"
+sha256 = "10a8148aa7270ca6ef66b048e569309e06c5119f43eaba6115a7eee16f003d02"
+source = "https://commons.wikimedia.org/wiki/File:Sourdough_bread_on_cooling_rack.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Sourdough bread on cooling rack by Nutrition, Food Safety &amp; Health, via Wikimedia Commons"
+title = "Sourdough bread on cooling rack"
+creator = "Nutrition, Food Safety &amp; Health"
+openverse = "commons:File:Sourdough bread on cooling rack.jpg"
+needs_credit = false
+size = "2000x1853"
+
+
+[[photos]]
+file = "en/posts/2026-10-24-parking-charges-vote/lead.jpg"
+sha256 = "57653bfadc306e5f2424f53fd1817585317866e91ae0ef37cea4a23de05fe38d"
+source = "https://commons.wikimedia.org/wiki/File:Ossett_Town_Hall_-_2.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Ossett Town Hall - 2 by Tim Green, via Wikimedia Commons"
+title = "Ossett Town Hall - 2"
+creator = "Tim Green"
+openverse = "commons:File:Ossett Town Hall - 2.jpg"
+needs_credit = true
+size = "2000x1630"
+
+
+[[photos]]
+file = "en/posts/2026-10-26-old-library-column/lead.jpg"
+sha256 = "59336d7adb104d6988ff5fa4cbf7137a2822c5c57c0e44f18bcd5e644bf01a44"
+source = "https://commons.wikimedia.org/wiki/File:Card_catalogue_drawers.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Card catalogue drawers by Carolina Prysyazhnyuk, via Wikimedia Commons"
+title = "Card catalogue drawers"
+creator = "Carolina Prysyazhnyuk"
+openverse = "commons:File:Card catalogue drawers.jpg"
+needs_credit = true
+size = "2000x1339"
+
+
+[[photos]]
+file = "en/posts/2026-10-28-crane-removal-road-closures/dusk.jpg"
+sha256 = "29f7a8d781c1048501472383be840520893e9fd87cf08278cc84df6289814ae4"
+source = "https://commons.wikimedia.org/wiki/File:Lascar_Aegina_harbour_at_dusk_(4519071060).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Lascar Aegina harbour at dusk (4519071060) by Jorge Láscar from Australia, via Wikimedia Commons"
+title = "Lascar Aegina harbour at dusk (4519071060)"
+creator = "Jorge Láscar from Australia"
+openverse = "commons:File:Lascar Aegina harbour at dusk (4519071060).jpg"
+needs_credit = true
+size = "2000x1328"
+
+
+[[photos]]
+file = "en/posts/2026-10-28-crane-removal-road-closures/lead.jpg"
+sha256 = "2e108c0f573d61e7a2e3a9978bf01f9e4d20f0e8685ccb64827107b0312398df"
+source = "https://commons.wikimedia.org/wiki/File:Coastal_East_Lothian_,_Mobile_Crane_At_Victoria_Harbour,_Dunbar_-_geograph.org.uk_-_4036069.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Coastal East Lothian , Mobile Crane At Victoria Harbour, Dunbar - geograph.org.uk - 4036069 by Richard West, via Wikimedia Commons"
+title = "Coastal East Lothian , Mobile Crane At Victoria Harbour, Dunbar - geograph.org.uk - 4036069"
+creator = "Richard West"
+openverse = "commons:File:Coastal East Lothian , Mobile Crane At Victoria Harbour, Dunbar - geograph.org.uk - 4036069.jpg"
+needs_credit = true
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-10-29-harriers-cross-country/lead.jpg"
+sha256 = "4af9a188717e14295e2ef67137feefadce8692ebafdf07572ef7be3df67b4a61"
+source = "https://commons.wikimedia.org/wiki/File:Cross_country_runners_at_MACCL_Heaton_Park.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Cross country runners at MACCL Heaton Park by King Februarius, via Wikimedia Commons"
+title = "Cross country runners at MACCL Heaton Park"
+creator = "King Februarius"
+openverse = "commons:File:Cross country runners at MACCL Heaton Park.jpg"
+needs_credit = false
+size = "2000x1125"
+
+
+[[photos]]
+file = "en/posts/2026-10-30-inside-new-library/lead.jpg"
+sha256 = "305d5fee9ee041748bb9fc91d0771e0546dc1ffc5bbbe72b2ff2138bbb6e6abc"
+source = "https://commons.wikimedia.org/wiki/File:Westmount_Public_Library_by_Rodrigo_Tetsuo_Argenton_(03).jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Westmount Public Library by Rodrigo Tetsuo Argenton (03) by Rodrigo.Argenton, via Wikimedia Commons"
+title = "Westmount Public Library by Rodrigo Tetsuo Argenton (03)"
+creator = "Rodrigo.Argenton"
+openverse = "commons:File:Westmount Public Library by Rodrigo Tetsuo Argenton (03).jpg"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-10-30-inside-new-library/roof.jpg"
+sha256 = "901fbf208c529fd607a973c81451d7d190d75f152d7e9f46c00e221b344f08a3"
+source = "https://commons.wikimedia.org/wiki/File:Sherwood_Public_Library_Interior_2022.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Sherwood Public Library Interior 2022 by Simon Tsu, via Wikimedia Commons"
+title = "Sherwood Public Library Interior 2022"
+creator = "Simon Tsu"
+openverse = "commons:File:Sherwood Public Library Interior 2022.jpg"
+needs_credit = true
+size = "2000x1500"
+
+
+[[photos]]
+file = "en/posts/2026-11-01-promenade-storm-damage/lead.jpg"
+sha256 = "76753b25ef163cc9b2ebb88d42b6d895f789a17af2d6e4967d229b6cc7042b51"
+source = "https://commons.wikimedia.org/wiki/File:Storm_damage_on_the_promenade_-_geograph.org.uk_-_3879979.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Storm damage on the promenade - geograph.org.uk - 3879979 by David P Howard, via Wikimedia Commons"
+title = "Storm damage on the promenade - geograph.org.uk - 3879979"
+creator = "David P Howard"
+openverse = "commons:File:Storm damage on the promenade - geograph.org.uk - 3879979.jpg"
+needs_credit = true
+size = "2000x1333"
+
+
+[[photos]]
+file = "en/posts/2026-11-01-promenade-storm-damage/railings.jpg"
+sha256 = "6071628f5a766fe12275b76180b0476413b642090a22de3cd0194f6669f0be42"
+source = "https://commons.wikimedia.org/wiki/File:Storm_damage_on_the_promenade_-_geograph.org.uk_-_3871687.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Storm damage on the promenade - geograph.org.uk - 3871687 by David P Howard, via Wikimedia Commons"
+title = "Storm damage on the promenade - geograph.org.uk - 3871687"
+creator = "David P Howard"
+openverse = "commons:File:Storm damage on the promenade - geograph.org.uk - 3871687.jpg"
+needs_credit = true
+size = "2000x1363"
+
+
+[[photos]]
+file = "en/posts/2026-11-02-council-reporting/lead.jpg"
+sha256 = "13a3c475283298d20c770815194cbfdede0b36e752ddade8434ce26123c0b7f4"
+source = "https://commons.wikimedia.org/wiki/File:Press_and_public_gallery_Council_Chamber_R%C3%A5dhuset_Aarhus_City_Hall_Denmark_02.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Press and public gallery Council Chamber Rådhuset Aarhus City Hall Denmark 02 by Ciara Ní Riain, via Wikimedia Commons"
+title = "Press and public gallery Council Chamber Rådhuset Aarhus City Hall Denmark 02"
+creator = "Ciara Ní Riain"
+openverse = "commons:File:Press and public gallery Council Chamber Rådhuset Aarhus City Hall Denmark 02.jpg"
+needs_credit = true
+size = "2000x1196"
+
+[[photos]]
+file = "en/posts/2026-11-03-ferries-cancelled-gales/lead.jpg"
+sha256 = "6349dcf8f6476cb97b58bf434a7d7197937746681e956f7c3ffe3aa2dacca762"
+source = "https://commons.wikimedia.org/wiki/File:Storm_at_North_Harbor_Lysekil.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Storm at North Harbor Lysekil by W.carter, via Wikimedia Commons"
+title = "Storm at North Harbor Lysekil"
+creator = "W.carter"
+openverse = "commons:File:Storm at North Harbor Lysekil.jpg"
+needs_credit = true
+size = "2000x1486"
+
+
+[[photos]]
+file = "en/posts/2026-11-03-ferries-cancelled-gales/rain.jpg"
+sha256 = "d63172b3e403cb403ba8a1f16be6a1635f299b1048e91a28e2e439fcb01ba04d"
+source = "https://commons.wikimedia.org/wiki/File:Rain_on_a_window_pane.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Rain on a window pane by Theactivistuk, via Wikimedia Commons"
+title = "Rain on a window pane"
+creator = "Theactivistuk"
+openverse = "commons:File:Rain on a window pane.jpg"
+needs_credit = true
+size = "2000x1506"
+
+
+[[photos]]
+file = "en/posts/2026-11-04-cycle-lane-approved/bike-rack.jpg"
+sha256 = "e02f3b030f041a696b3f084085be99462c2a5609972e219897a55826e1de76d6"
+source = "https://commons.wikimedia.org/wiki/File:Colorful_metal_bicycle_parking_rack_in_Lysekil_2.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Colorful metal bicycle parking rack in Lysekil 2 by W.carter, via Wikimedia Commons"
+title = "Colorful metal bicycle parking rack in Lysekil 2"
+creator = "W.carter"
+openverse = "commons:File:Colorful metal bicycle parking rack in Lysekil 2.jpg"
+needs_credit = true
+size = "2000x1334"
+
+
+[[photos]]
+file = "en/posts/2026-11-04-cycle-lane-approved/lead.jpg"
+sha256 = "6127ddc79cd8a4339d24104144973a0d5024b976c47e0896c253d27a3dc7bd9d"
+source = "https://commons.wikimedia.org/wiki/File:Stencils_crossbike_driveway_bidirectional_rio_grande_austin.jpg"
+licence = "Public domain, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Stencils crossbike driveway bidirectional rio grande austin by Green Lane Project, via Wikimedia Commons"
+title = "Stencils crossbike driveway bidirectional rio grande austin"
+creator = "Green Lane Project"
+openverse = "commons:File:Stencils crossbike driveway bidirectional rio grande austin.jpg"
+needs_credit = false
+size = "2000x1185"
+

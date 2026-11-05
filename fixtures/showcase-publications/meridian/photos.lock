@@ -1,0 +1,365 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-05-05-power-station-gallery/exterior.jpg"
+sha256 = "d1f26b31464363b52aec2a6798971916ac7dae192c9bbb2e957176369e6bb3cf"
+source = "https://commons.wikimedia.org/wiki/File:London_-_Hopton_Street_-_View_ESE_on_Tate_Modern_1947-63_(_Bankside_Power_Station)_by_Sir_Giles_Gilbert_Scott.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "London - Hopton Street - View ESE on Tate Modern 1947-63 ( Bankside Power Station) by Sir Giles Gilbert Scott by Txllxt TxllxT, via Wikimedia Commons"
+title = "London - Hopton Street - View ESE on Tate Modern 1947-63 ( Bankside Power Station) by Sir Giles Gilbert Scott"
+creator = "Txllxt TxllxT"
+openverse = "commons:File:London - Hopton Street - View ESE on Tate Modern 1947-63 ( Bankside Power Station) by Sir Giles Gilbert Scott.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-05-power-station-gallery/lead.jpg"
+sha256 = "4c7c6c3ab64a77d061c8b7edd7c8024e7c546592d54adf61fe491870b97b1e27"
+source = "https://commons.wikimedia.org/wiki/File:The_Tate_Modern_Turbine_Hall_-_2012-12-28.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "The Tate Modern Turbine Hall - 2012-12-28 by Daniel X. O'Neil, via Wikimedia Commons"
+title = "The Tate Modern Turbine Hall - 2012-12-28"
+creator = "Daniel X. O'Neil"
+openverse = "commons:File:The Tate Modern Turbine Hall - 2012-12-28.jpg"
+needs_credit = true
+size = "2000x1348"
+
+[[photos]]
+file = "en/posts/2026-05-12-vienna-council-housing/archway.jpg"
+sha256 = "d02f8254e46bed7c6f7fc122c6c0f026647da3523d310199a1d10cd24a79cd50"
+source = "https://commons.wikimedia.org/wiki/File:Wien-Breitensee_-_Gemeindebau_Breitenseer_Stra%C3%9Fe_110-112_-_Durchgang_und_Innenhof.jpg"
+licence = "CC BY-SA 3.0 at, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0/at/deed.en"
+credit = "Wien-Breitensee - Gemeindebau Breitenseer Straße 110-112 - Durchgang und Innenhof by Häferl, via Wikimedia Commons"
+title = "Wien-Breitensee - Gemeindebau Breitenseer Straße 110-112 - Durchgang und Innenhof"
+creator = "Häferl"
+openverse = "commons:File:Wien-Breitensee - Gemeindebau Breitenseer Straße 110-112 - Durchgang und Innenhof.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-05-12-vienna-council-housing/facade-detail.jpg"
+sha256 = "848e1688aa737a5a28e8103d99beb1d30e658731d991cb25e88f0d07cb9f0896"
+source = "https://commons.wikimedia.org/wiki/File:Karl_Marx_Hof_-_Fassadendetail.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Karl Marx Hof - Fassadendetail by Gerald Wintersperger, via Wikimedia Commons"
+title = "Karl Marx Hof - Fassadendetail"
+creator = "Gerald Wintersperger"
+openverse = "commons:File:Karl Marx Hof - Fassadendetail.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-12-vienna-council-housing/lead.jpg"
+sha256 = "04b3a8ccf68555167c8cf487f0ba09789eff3275283c9f616bdee1f5536628bb"
+source = "https://commons.wikimedia.org/wiki/File:Karl_Marx_Hof.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Karl Marx Hof by Thomas Ledl, via Wikimedia Commons"
+title = "Karl Marx Hof"
+creator = "Thomas Ledl"
+openverse = "commons:File:Karl Marx Hof.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-26-barcelona-superblocks/lead.jpg"
+sha256 = "1ddc1c2c2a2ac87b6eddc624d00cc38929b926eba02f2ac087d613d9b5db31e9"
+source = "https://commons.wikimedia.org/wiki/File:Superilla_del_barri_de_Sant_Antoni,_Barcelona.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Superilla del barri de Sant Antoni, Barcelona by Cataleirxs, via Wikimedia Commons"
+title = "Superilla del barri de Sant Antoni, Barcelona"
+creator = "Cataleirxs"
+openverse = "commons:File:Superilla del barri de Sant Antoni, Barcelona.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-06-02-read-neighbourhood-change/lead.jpg"
+sha256 = "bdd9fc12b376d094e2ec9c25f6ab1dca521d207f4c714c8131f5e503102b41c4"
+source = "https://commons.wikimedia.org/wiki/File:Colourful_terraced_houses,_Station_Road,_St_Blazey,_Cornwall_-_February_2024.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Colourful terraced houses, Station Road, St Blazey, Cornwall - February 2024 by Mutney, via Wikimedia Commons"
+title = "Colourful terraced houses, Station Road, St Blazey, Cornwall - February 2024"
+creator = "Mutney"
+openverse = "commons:File:Colourful terraced houses, Station Road, St Blazey, Cornwall - February 2024.jpg"
+needs_credit = false
+size = "2000x1181"
+
+[[photos]]
+file = "en/posts/2026-06-09-copenhagen-cycle-tracks/lead.jpg"
+sha256 = "5477395a74c0b304bf92a2c4c687c3f8174db24bb01075751afab2e6a4bf15af"
+source = "https://commons.wikimedia.org/wiki/File:Dronning_Louises_Bro_2012.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Dronning Louises Bro 2012 by heb@Wikimedia Commons (mail), via Wikimedia Commons"
+title = "Dronning Louises Bro 2012"
+creator = "heb@Wikimedia Commons (mail)"
+openverse = "commons:File:Dronning Louises Bro 2012.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-06-23-brick-buildings-last/flemish-bond.jpg"
+sha256 = "790cfff7e93253beb20b2ac39752ba011ca5580267d418d69933c66432b55588"
+source = "https://commons.wikimedia.org/wiki/File:Flemish_bond_weathered_brick_wall_Harlow_Museum_%26_Walled_Gardens,_Essex_03.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Flemish bond weathered brick wall Harlow Museum & Walled Gardens, Essex 03 by Acabashi, via Wikimedia Commons"
+title = "Flemish bond weathered brick wall Harlow Museum & Walled Gardens, Essex 03"
+creator = "Acabashi"
+openverse = "commons:File:Flemish bond weathered brick wall Harlow Museum & Walled Gardens, Essex 03.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-06-23-brick-buildings-last/lead.jpg"
+sha256 = "4a21380de2feaf2d1801d912904337df40c2636770413d8481be4e25a6a88472"
+source = "https://commons.wikimedia.org/wiki/File:20230317_Chilehaus_02.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "20230317 Chilehaus 02 by Flocci Nivis, via Wikimedia Commons"
+title = "20230317 Chilehaus 02"
+creator = "Flocci Nivis"
+openverse = "commons:File:20230317 Chilehaus 02.jpg"
+needs_credit = true
+size = "2000x1335"
+
+[[photos]]
+file = "en/posts/2026-07-07-courtyard-blocks/lead.jpg"
+sha256 = "34b5a83b9ed4d171e9be26504ea7840a07e99b2bcb168da00c5a0732215bb247"
+source = "https://commons.wikimedia.org/wiki/File:Gemeindebau_Wohlmutstra%C3%9Fe_14_05.jpg"
+licence = "Public domain, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Gemeindebau Wohlmutstraße 14 05 by Peter Gugerell, via Wikimedia Commons"
+title = "Gemeindebau Wohlmutstraße 14 05"
+creator = "Peter Gugerell"
+openverse = "commons:File:Gemeindebau Wohlmutstraße 14 05.jpg"
+needs_credit = false
+size = "2000x1125"
+
+[[photos]]
+file = "en/posts/2026-07-21-railway-viaduct-parks/arches.jpg"
+sha256 = "7c1172fbdf3fe7a239a4ae0740000e0b9cf83b0f66cdbe34a0624ae8bd221e2c"
+source = "https://commons.wikimedia.org/wiki/File:Start_of_the_viaduc_des_Arts_(Paris).jpg"
+licence = "Public domain, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Start of the viaduc des Arts (Paris) by Tangopaso, via Wikimedia Commons"
+title = "Start of the viaduc des Arts (Paris)"
+creator = "Tangopaso"
+openverse = "commons:File:Start of the viaduc des Arts (Paris).jpg"
+needs_credit = false
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-07-21-railway-viaduct-parks/lead.jpg"
+sha256 = "3dd60ea350b66498425500f424a253a06f5739f743b0eb6b7b3707efd05ce146"
+source = "https://commons.wikimedia.org/wiki/File:La_promenade_Plant%C3%A9e_et_rue_Moreau,_Paris_2010.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "La promenade Plantée et rue Moreau, Paris 2010 by besopha, via Wikimedia Commons"
+title = "La promenade Plantée et rue Moreau, Paris 2010"
+creator = "besopha"
+openverse = "commons:File:La promenade Plantée et rue Moreau, Paris 2010.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-08-04-rotterdam-centre-rebuilt/lead.jpg"
+sha256 = "ce40fe2d9a1106a701d19db4e21dc9520eb0515f45aecd09ab22adbc7567834f"
+source = "https://commons.wikimedia.org/wiki/File:Cube_houses_(DSC_3076).jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Cube houses (DSC 3076) by Trougnouf (Benoit Brummer), via Wikimedia Commons"
+title = "Cube houses (DSC 3076)"
+creator = "Trougnouf (Benoit Brummer)"
+openverse = "commons:File:Cube houses (DSC 3076).jpg"
+needs_credit = true
+size = "2000x1167"
+
+[[photos]]
+file = "en/posts/2026-08-04-rotterdam-centre-rebuilt/market-hall.jpg"
+sha256 = "dc115a724040fd41d181740eeedda89e92fbcef0c9aa99165d7e0f08f7883f69"
+source = "https://commons.wikimedia.org/wiki/File:Rotterdam_-_Markthal_(9).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Rotterdam - Markthal (9) by Fred Romero from Paris, France, via Wikimedia Commons"
+title = "Rotterdam - Markthal (9)"
+creator = "Fred Romero from Paris, France"
+openverse = "commons:File:Rotterdam - Markthal (9).jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-08-11-street-trees/lead.jpg"
+sha256 = "70f394bec9fe1cb6b87271fdb1127fcf987ade9cb2de0edb2fb73ecc946f4461"
+source = "https://commons.wikimedia.org/wiki/File:Joshua_Street,_Goulburn,_New_South_Wales,_Australia_-_an_avenue_of_plane_trees_in_summer.JPG"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Joshua Street, Goulburn, New South Wales, Australia - an avenue of plane trees in summer by CephasOz, via Wikimedia Commons"
+title = "Joshua Street, Goulburn, New South Wales, Australia - an avenue of plane trees in summer"
+creator = "CephasOz"
+openverse = "commons:File:Joshua Street, Goulburn, New South Wales, Australia - an avenue of plane trees in summer.JPG"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-08-25-tall-timber-buildings/lead.jpg"
+sha256 = "c17a44514c1a38c23e68690ac435c7d00ae801de9d1597b1f6b076577df371c1"
+source = "https://commons.wikimedia.org/wiki/File:Brettsperrholzkonstruktion.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Brettsperrholzkonstruktion by RoterRolf, via Wikimedia Commons"
+title = "Brettsperrholzkonstruktion"
+creator = "RoterRolf"
+openverse = "commons:File:Brettsperrholzkonstruktion.jpg"
+needs_credit = false
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-08-25-tall-timber-buildings/panel.jpg"
+sha256 = "c905c4650a51cb59dc4d4bdfc1bf07dc077a1031de3ce0715ad5215bdb337068"
+source = "https://commons.wikimedia.org/wiki/File:Fichte_Dreischichtplatte_2009.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Fichte Dreischichtplatte 2009 by Elke Wetzig (elya), via Wikimedia Commons"
+title = "Fichte Dreischichtplatte 2009"
+creator = "Elke Wetzig (elya)"
+openverse = "commons:File:Fichte Dreischichtplatte 2009.jpg"
+needs_credit = true
+size = "2000x1158"
+
+[[photos]]
+file = "en/posts/2026-09-01-station-neighbourhood/lead.jpg"
+sha256 = "19c96afb074791829eac8387fc72544dde059fa5c9799189462fd1be935efaf7"
+source = "https://commons.wikimedia.org/wiki/File:Li%C3%A8ge-Guillemins_railway_station_roof.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Liège-Guillemins railway station roof by Choinowski, via Wikimedia Commons"
+title = "Liège-Guillemins railway station roof"
+creator = "Choinowski"
+openverse = "commons:File:Liège-Guillemins railway station roof.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-15-small-squares/edge.jpg"
+sha256 = "a5f3f0bb28e6f1e726bf8bcd40df9603e98b419763b5e636d682af5af10d2c99"
+source = "https://commons.wikimedia.org/wiki/File:Place_Dauphine_at_8am.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Place Dauphine at 8am by ParisSharing, via Wikimedia Commons"
+title = "Place Dauphine at 8am"
+creator = "ParisSharing"
+openverse = "commons:File:Place Dauphine at 8am.jpg"
+needs_credit = true
+size = "2000x1237"
+
+[[photos]]
+file = "en/posts/2026-09-15-small-squares/lead.jpg"
+sha256 = "8d2008ddfa8713081e1b149214b95c7733ed6a799856a810f3e491932956617f"
+source = "https://commons.wikimedia.org/wiki/File:Paris_Place_Dauphine.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Paris Place Dauphine by Myrabella, via Wikimedia Commons"
+title = "Paris Place Dauphine"
+creator = "Myrabella"
+openverse = "commons:File:Paris Place Dauphine.jpg"
+needs_credit = true
+size = "2000x1328"
+
+[[photos]]
+file = "en/posts/2026-09-22-reuse-old-buildings/lead.jpg"
+sha256 = "e1ca986f3d6ff4e3b3e3f9affd68550c94f81b2c4624fadfb4d49e230a80f20b"
+source = "https://commons.wikimedia.org/wiki/File:Hamburg,_Speicherstadt,_Block_D%2BL_--_2023_--_6577.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Hamburg, Speicherstadt, Block D+L -- 2023 -- 6577 by Dietmar Rabich, via Wikimedia Commons"
+title = "Hamburg, Speicherstadt, Block D+L -- 2023 -- 6577"
+creator = "Dietmar Rabich"
+openverse = "commons:File:Hamburg, Speicherstadt, Block D+L -- 2023 -- 6577.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-22-reuse-old-buildings/timber-roof.jpg"
+sha256 = "5690e77076d3e8a9730bc6d69a6c55ee0392dc200104ec242bdce9d8454d2f65"
+source = "https://commons.wikimedia.org/wiki/File:Cluny_-_Farinier_de_l%27abbaye_-_09.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Cluny - Farinier de l'abbaye - 09 by Benjamin Smith, via Wikimedia Commons"
+title = "Cluny - Farinier de l'abbaye - 09"
+creator = "Benjamin Smith"
+openverse = "commons:File:Cluny - Farinier de l'abbaye - 09.jpg"
+needs_credit = true
+size = "2000x1600"
+
+[[photos]]
+file = "en/posts/2026-10-06-offices-into-homes/lead.jpg"
+sha256 = "04c3804f8aef17cf33600b23b883e86af7e6231d1f9df82ac5e9a39c9a3bca1b"
+source = "https://commons.wikimedia.org/wiki/File:Gray_office_building_facade_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Gray office building facade (Unsplash) by Echo Grid echogrid, via Wikimedia Commons"
+title = "Gray office building facade (Unsplash)"
+creator = "Echo Grid echogrid"
+openverse = "commons:File:Gray office building facade (Unsplash).jpg"
+needs_credit = false
+size = "2000x1334"
+
+[[photos]]
+file = "en/posts/2026-10-06-offices-into-homes/stair.jpg"
+sha256 = "9950c4e38e4d983ab180a79b13c927e190dad57d28b9fe332b525632cb43278d"
+source = "https://commons.wikimedia.org/wiki/File:Spiral_Staircase,_Keck_Center_(U.S._National_Academies)_(Landscape_View).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Spiral Staircase, Keck Center (U.S. National Academies) (Landscape View) by Jorge Mendoza, via Wikimedia Commons"
+title = "Spiral Staircase, Keck Center (U.S. National Academies) (Landscape View)"
+creator = "Jorge Mendoza"
+openverse = "commons:File:Spiral Staircase, Keck Center (U.S. National Academies) (Landscape View).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-10-13-barbican-concrete/hammered-concrete.jpg"
+sha256 = "abf6a986be2e202ecaa6977b7e20f5eb2be91ae47143020ec5b8f817a83b0e05"
+source = "https://commons.wikimedia.org/wiki/File:Barbican_Concrete_finish_(8085917893).jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Barbican Concrete finish (8085917893) by Images George Rex from London, England, via Wikimedia Commons"
+title = "Barbican Concrete finish (8085917893)"
+creator = "Images George Rex from London, England"
+openverse = "commons:File:Barbican Concrete finish (8085917893).jpg"
+needs_credit = true
+size = "2000x3008"
+
+[[photos]]
+file = "en/posts/2026-10-13-barbican-concrete/lead.jpg"
+sha256 = "7e7a274dcb0d25d1c620810116224d0d8cd79a2484b6ae5e1240219733516c52"
+source = "https://commons.wikimedia.org/wiki/File:Barbican_Estate_City_of_London_2026_04.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Barbican Estate City of London 2026 04 by Julian Herzog (Website), via Wikimedia Commons"
+title = "Barbican Estate City of London 2026 04"
+creator = "Julian Herzog (Website)"
+openverse = "commons:File:Barbican Estate City of London 2026 04.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-10-20-pavement-details/cobbles.jpg"
+sha256 = "ebd17510ef6586ae9d486fdac9ed2db235ba453bdd336d4e1c0e0f5f909560fc"
+source = "https://commons.wikimedia.org/wiki/File:Cobblestone_street_(close)_in_Savannah,_GA,_US.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Cobblestone street (close) in Savannah, GA, US by Bubba73 (Jud McCranie), via Wikimedia Commons"
+title = "Cobblestone street (close) in Savannah, GA, US"
+creator = "Bubba73 (Jud McCranie)"
+openverse = "commons:File:Cobblestone street (close) in Savannah, GA, US.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-10-20-pavement-details/lead.jpg"
+sha256 = "0b60ef76751cf5e009d90756adf24470ab3f577b59565860b8659aed24855140"
+source = "https://commons.wikimedia.org/wiki/File:Germany,_Lubeck,_Street_Scene,_Cobblestones_150503-48.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Germany, Lubeck, Street Scene, Cobblestones 150503-48 by Richardmaackphotography, via Wikimedia Commons"
+title = "Germany, Lubeck, Street Scene, Cobblestones 150503-48"
+creator = "Richardmaackphotography"
+openverse = "commons:File:Germany, Lubeck, Street Scene, Cobblestones 150503-48.jpg"
+needs_credit = true
+size = "2000x1346"
+
+[[photos]]
+file = "en/posts/2026-11-04-trams-return/lead.jpg"
+sha256 = "257ec80be4d91b42ff58b2751d60138198bd74cd2215b65313a0b04573be1d95"
+source = "https://commons.wikimedia.org/wiki/File:Stra%C3%9Fenbahn_Freiburg_Weingarten_01.JPG"
+licence = "Public domain, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Straßenbahn Freiburg Weingarten 01 by Grauer Elefant, via Wikimedia Commons"
+title = "Straßenbahn Freiburg Weingarten 01"
+creator = "Grauer Elefant"
+openverse = "commons:File:Straßenbahn Freiburg Weingarten 01.JPG"
+needs_credit = false
+size = "2000x1500"

@@ -226,7 +226,7 @@ Evidence gathered on 4 November 2026 (research dossiers listed under Sources):
   **Display scale:** each template's desktop display size follows its pair. That is 60 px or more for pairs set that large, and Proza's 40 px title for Folio, with Folio's character carried by its mono labels and changelog rule instead.
 
 - KTD4. **Photographs are art-directed, licensed and kept outside git history.**
-  - **Sources:** Unsplash and Pexels. Each photo's licence page is read when it is chosen and recorded in `photos.lock`.
+  - **Sources:** Openverse, mostly its Wikimedia Commons and WordPress photo directory files, as the founder chose on 5 November 2026 ("or any free image site"; Unsplash and Pexels stay allowed). Only CC0, the Public Domain Mark, CC BY and CC BY-SA, never NC or ND; CC BY and CC BY-SA photos are credited on each demo's photo credits page. Each photo's licence is read on its own page when it is chosen and recorded in `photos.lock`, by `scripts/demo-photo.py`.
   - **Not under the AGPL:** the photos are not part of the AGPL-covered code. `fixtures/showcase-publications/README.md` and the repository's licence notice say so, and no packaging step ships them.
   - **Where they live:** a `demo-photos` asset on the `demos` release. `demo-publication.sh` downloads them and checks them against `photos.lock`. Only `photos.lock` and `ATTRIBUTION.md` are committed, so replacing a photo adds no weight to git history.
   - **Art direction per publication:**

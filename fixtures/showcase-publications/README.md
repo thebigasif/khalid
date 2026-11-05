@@ -14,10 +14,12 @@ The photographs the demo publications show are not part of Khalid and are not un
 
 - `site.toml`: the settings this publication owns, which replace the showcase's. It holds `name`, `languages`, `[[nav.primary]]`, `[[nav.footer]]`, `[announcement]` and `[template.cta]`. The showcase's own name, languages, menus, announcement and call to action are taken out even where this file leaves one out. Set `[seo.titles]`, `[seo.publisher]` and `[seo.ai_page]` too, so the publication's own name shows in search results and its page for AI tools. Every other table of the showcase stays: a table set here replaces the showcase's table of that name and every table inside it.
 - `categories.toml` and `routes.toml`, which replace the showcase's. Without one, the showcase's is taken out.
+- `[mail]` and `[mail.smtp]` in `site.toml` too: the showcase's own sign newsletters with the showcase's name.
 - `content/`: the whole content folder, every language, with the authors in `content/<language>/authors/`. It replaces the showcase's. It needs an about page at `content/en/pages/about/` with the slug `about`, where the sample brand puts its logo. Link to the publication's own pages by their path on the showcase's mount, such as `/blog/about/`, as the showcase does. The build moves every such path to the demo's own address.
 - `photos.lock`: each photograph the publication shows, as a `[[photos]]` entry. The photographs themselves are never committed.
 - `ATTRIBUTION.md`: each photograph's credit and licence, in plain words, as its licence asks.
 - `check-pages.txt`: the pages the layout check and the picture review open for this publication.
+- `ART-DIRECTION.md`: the publication's photo tone and palette, its subject mix, one image ratio per slot and how each crops on a phone (plan KTD4).
 - `ready`: a file, empty or with a note, that marks the publication approved. Until it is there, the publication shows in the picture review only. The Pages demo and the layout check keep the showcase until then.
 
 ## photos.lock
@@ -53,3 +55,11 @@ Name a post with its lead picture (`post`), a post with a long table (`table`), 
 ## Trying a publication
 
 `DEMO_PUBLICATION_ALL=1` puts every publication in place, ready or not, as the picture review does. `DEMO_PUBLICATIONS` names another folder of publications. The tests use the sample in `fixtures/test-publications/`, which never moves here.
+
+## Writing a publication
+
+- Name each post's folder `<date>-<slug>/`, with the slug its front matter gives.
+- Put a front matter `description` that holds a colon in quotes. An unquoted second colon stops the whole build.
+- The showcase's `lint.toml` still applies, so the linter's scores are measured under it. Every post must lint with no block and score at least 90.
+- Never use an em dash. Author pictures are drawn marks, never photographs of people.
+- `scripts/demo-photo.py` finds, fetches and credits the photographs: `search` looks in Openverse for photos under CC0, the Public Domain Mark, CC BY or CC BY-SA; `fetch` checks the licence on the photo's own page, keeps the photo at most 2000 px wide in the cache and prints its `photos.lock` entry; `credits` writes `ATTRIBUTION.md` and the visible photo credits page, `content/en/pages/photo-credits/`; `pack` builds `demo-photos.tar.gz`. It needs Pillow for `fetch`. Openverse refuses some data centre addresses, so run it from a home or office connection.

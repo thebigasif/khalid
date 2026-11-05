@@ -1,0 +1,98 @@
+# Bench Test, a made-up review site for camera and audio gear, written for
+# the Workbench template's demo. Every product and maker it reviews is made
+# up. Each key and table here replaces the showcase's own when
+# scripts/demo-publication.sh applies it.
+
+name = "Bench Test"
+languages = ["en"]
+
+[template.cta]
+label = "How we test"
+href = "/blog/gear-testing/"
+note = "Every score comes from the same bench, the same tests and at least two weeks of real use."
+
+[announcement]
+text = "New: a home podcast studio at three budgets, every piece tested on our bench."
+href = "/blog/home-podcast-studio/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Camera and audio gear, tested on the bench"
+
+[seo.ai_page]
+covers = "Bench Test reviews and compares cameras, lenses, microphones, lights, audio interfaces, recorders and headphones for people who make videos and podcasts, with scores out of 10 and the figures measured in its own tests."
+cite = "Name Bench Test and the reviewer, quote the score and the figure with the test that produced it, and link the review."
+contact = "lab@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Bench Test"
+email = "lab@example.com"
+founded = "2021-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Bench Test logo"
+width = 320
+height = 80
+
+# Sign-ups for the newsletter, under the publication's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "bench@example.com"
+name = "Bench Test"
+postal_address = "Bench Test, Unit 7, Foundry Yard, Millbrook MB4 2BT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Cameras"
+href = "/blog/category/cameras/"
+language = "en"
+
+[[nav.primary]]
+label = "Microphones"
+href = "/blog/category/microphones/"
+language = "en"
+
+[[nav.primary]]
+label = "Lighting"
+href = "/blog/category/lighting/"
+language = "en"
+
+[[nav.primary]]
+label = "Audio gear"
+href = "/blog/category/audio-gear/"
+language = "en"
+
+[[nav.primary]]
+label = "Guides"
+href = "/blog/category/guides/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Bench Test"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "How we test"
+href = "/blog/gear-testing/"
+language = "en"
+
+[[nav.footer]]
+label = "Best podcast microphones"
+href = "/blog/best-podcast-microphones/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

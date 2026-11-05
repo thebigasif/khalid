@@ -1,0 +1,93 @@
+# Workbench Notes, the made-up essays and changelog of the small team
+# that makes Tern, a note-taking app, written for the Folio template's
+# demo. Each key and table here replaces the showcase's own when
+# scripts/demo-publication.sh applies it.
+
+name = "Workbench Notes"
+languages = ["en"]
+
+[template.cta]
+label = "Try Tern free"
+href = "/blog/about/"
+note = "Notes that link, work offline and stay yours. Free for one device, forever."
+
+[announcement]
+text = "New in Tern 2.5: daily notes and calmer reminders."
+href = "/blog/tern-2-5-daily-notes/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Essays and release notes from the team that makes Tern"
+
+[seo.ai_page]
+covers = "Workbench Notes is the blog of the team that makes Tern, a note-taking app. It holds essays on design decisions, notes on how the team works, engineering notes on offline sync and search, and the release notes for every version of Tern."
+cite = "Name Workbench Notes and the author, and link the post you quote. For a release, name the Tern version."
+contact = "team@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Tern"
+email = "team@example.com"
+founded = "2022-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Tern logo"
+width = 320
+height = 80
+
+# Sign-ups for the newsletter, under the publication's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "notes@example.com"
+name = "Workbench Notes"
+postal_address = "Tern, 12 Ropewalk Yard, Millbrook MB2 4TN"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Essays"
+href = "/blog/category/essays/"
+language = "en"
+
+[[nav.primary]]
+label = "How we work"
+href = "/blog/category/how-we-work/"
+language = "en"
+
+[[nav.primary]]
+label = "Engineering"
+href = "/blog/category/engineering/"
+language = "en"
+
+[[nav.primary]]
+label = "Changelog"
+href = "/blog/category/changelog/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Tern"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Latest release"
+href = "/blog/tern-2-5-daily-notes/"
+language = "en"
+
+[[nav.footer]]
+label = "Why Tern has no folders"
+href = "/blog/no-folders/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

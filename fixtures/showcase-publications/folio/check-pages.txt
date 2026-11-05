@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /sketch-on-paper/
+table /how-offline-search-works/
+category /category/changelog/
+tag /tag/offline/
+author /authors/ines-halloran/
