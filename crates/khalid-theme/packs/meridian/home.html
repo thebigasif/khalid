@@ -1,6 +1,9 @@
 {#- Meridian's front page (templates spec 3.9): a masthead with the
     blog's name and its own intro, the category tabs, the newest post
-    as the lead story, the editor's picks, then every other post as a row.
+    as the lead story, the next two side by side when the page has more
+    to come, the editor's picks, six posts as rows, then every other
+    post in a text-only index: title, topic and date on one line. The
+    index keeps every post linked, the crawl path to each one.
     Sections, topics, the newsletter and the call to action work as on
     the shared front page. -#}
 {% extends "base.html" %}
@@ -26,9 +29,15 @@
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% set newer = page.pagination and page.pagination.previous -%}
 {% set lead = posts[:1] if posts and not page.sections and not newer else [] -%}
-{% set rest = posts[lead | length:] -%}
+{% set pair = posts[1:3] if lead and posts | length > 4 else [] -%}
+{% set rest = posts[(lead | length) + (pair | length):] -%}
+{% set rows = rest[:6] -%}
+{% set index = rest[6:] -%}
 {% if lead %}<div class="lead">
 {{ cards(lead) }}
+</div>
+{% endif %}{% if pair %}<div class="pair">
+{{ cards(pair, 2, "image") }}
 </div>
 {% endif %}{% if template.options.picks and picks %}<section class="picks">
 <h2>{{ t.editors_picks }}</h2>
@@ -40,8 +49,18 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif rest %}{{ cards(rest) }}
-{% elif not slot and not lead %}<p>{{ t.no_posts }}</p>
+{% endfor %}{% elif rest %}{{ cards(rows) }}
+{% if index %}<section class="index" aria-labelledby="index-title">
+<h2 id="index-title">{{ t.more_posts }}</h2>
+<ol class="index-list" role="list">
+{% for post in index %}<li><article class="index-row">
+<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p>{% if post.category %}<a href="{{ post.category.href }}">{{ post.category.name }}</a>
+{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+</article></li>
+{% endfor %}</ol>
+</section>
+{% endif %}{% elif not slot and not lead %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
 {% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
 <h2>{{ t.topics }}</h2>

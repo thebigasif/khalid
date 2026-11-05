@@ -1,3 +1,8 @@
+---
+title: "Reading aids"
+order: 70
+---
+
 # Reading aids
 
 Four small aids help a reader find their way through a long post. Every template has them, classic too. Each one works without scripts where it can; the reader script, a small file that loads after the page, only adds to it. Nothing here needs a setting to start.

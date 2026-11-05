@@ -3,6 +3,9 @@
 //! redirect map in `data/site.db` through the redirect desk (plan section
 //! 5.7, KH-API-7, KH-SEO-8).
 
+mod images;
+
+use std::collections::BTreeMap;
 use std::fmt::{Display, Write as _};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -14,7 +17,10 @@ use khalid_routes::Routes;
 use khalid_seo::{Matching, RedirectEntry, read_redirects_csv};
 use serde::Serialize;
 
-use crate::cli::{Cli, ImportArgs, ImportSource, Output, Run};
+use self::images::Images;
+use crate::cli::{
+    Cli, Images as ImagesChoice, ImportArgs, ImportSource, Output, Run, command_for, path_for,
+};
 use crate::doctor_files::counted;
 use crate::exit::Exit;
 use crate::import_held::{HELD_CSV, Held};
@@ -64,6 +70,68 @@ impl Plan {
         }
     }
 
+    fn files_mut(&mut self) -> &mut [PlannedFile] {
+        match self {
+            Self::Wordpress(plan) => &mut plan.files,
+            Self::Ghost(plan) => &mut plan.files,
+            Self::Medium(plan) => &mut plan.files,
+            Self::Substack(plan) => &mut plan.files,
+            Self::Folder(plan) => &mut plan.files,
+        }
+    }
+
+    /// The feature image of each post that has one, by the post's file.
+    /// Only `WordPress` and Ghost exports name one.
+    fn leads(&self) -> BTreeMap<PathBuf, String> {
+        let mut leads = BTreeMap::new();
+        match self {
+            Self::Wordpress(plan) => {
+                for item in &plan.items {
+                    for held in &item.held {
+                        if let wordpress::Held::FeatureImage(image) = held {
+                            leads.insert(item.path.clone(), image.as_str().to_owned());
+                        }
+                    }
+                }
+            }
+            Self::Ghost(plan) => {
+                for post in &plan.posts {
+                    for held in &post.held {
+                        if let ghost::Held::FeatureImage(image) = held {
+                            leads.insert(post.path.clone(), image.as_str().to_owned());
+                        }
+                    }
+                }
+            }
+            Self::Medium(_) | Self::Substack(_) | Self::Folder(_) => {}
+        }
+        leads
+    }
+
+    /// Downloads the images the plan's posts show into their folders, so
+    /// the report no longer lists a feature image that became a lead image.
+    fn download_images(&mut self, site: &Path, cli: &Cli) -> Result<Images, (UserMessage, Exit)> {
+        let leads = self.leads();
+        let images = images::bring_in(self.files_mut(), &leads, site, cli)?;
+        let taken = |path: &PathBuf| images.leads.contains(path);
+        match self {
+            Self::Wordpress(plan) => {
+                for item in plan.items.iter_mut().filter(|item| taken(&item.path)) {
+                    item.held
+                        .retain(|held| !matches!(held, wordpress::Held::FeatureImage(_)));
+                }
+            }
+            Self::Ghost(plan) => {
+                for post in plan.posts.iter_mut().filter(|post| taken(&post.path)) {
+                    post.held
+                        .retain(|held| !matches!(held, ghost::Held::FeatureImage(_)));
+                }
+            }
+            Self::Medium(_) | Self::Substack(_) | Self::Folder(_) => {}
+        }
+        Ok(images)
+    }
+
     fn write(&self, site: &Path) -> Result<Vec<PathBuf>, WriteError> {
         match self {
             Self::Wordpress(plan) => plan.write(site),
@@ -93,26 +161,54 @@ type Done = Result<Exit, (UserMessage, Exit)>;
 pub(crate) fn run(site: &Path, checked: (&Config, &Routes), args: &ImportArgs, cli: &Cli) -> Exit {
     let (config, routes, output) = (checked.0, checked.1, cli.output);
     planned(args, (config, routes), cli)
-        .and_then(|plan| match args.run {
-            Run::Dry => Ok(answer(&plan.report(), None, output)),
-            Run::Write => import(site, (config, routes), &plan, output),
+        .and_then(|mut plan| match (args.run, args.images) {
+            (Run::Dry, choice) => {
+                let mut said = plan.report();
+                if choice == ImagesChoice::Download {
+                    let count = images::count(plan.files(), &plan.leads());
+                    let images = counted(count, "image");
+                    let _ = writeln!(
+                        said,
+                        "With --download-images, the import would download {images}."
+                    );
+                }
+                Ok(answer(&said, None, output))
+            }
+            (Run::Write, ImagesChoice::Download) => {
+                let images = plan.download_images(site, cli)?;
+                import(site, (config, routes), (&plan, Some(&images)), output)
+            }
+            (Run::Write, ImagesChoice::Link) => {
+                import(site, (config, routes), (&plan, None), output)
+            }
         })
         .unwrap_or_else(|(message, exit)| report::failure(output, &message, exit))
 }
 
-/// Writes the plan's files, then stores the redirects that start on this
-/// site's host, but those that lead to an imported post the publish gate
-/// blocks, which wait in its aliases.
-fn import(site: &Path, (config, routes): (&Config, &Routes), plan: &Plan, output: Output) -> Done {
-    let written = plan
+/// Writes the plan's files and the images it downloaded, then stores the
+/// redirects that start on this site's host, but those that lead to an
+/// imported post the publish gate blocks, which wait in its aliases.
+fn import(
+    site: &Path,
+    (config, routes): (&Config, &Routes),
+    (plan, images): (&Plan, Option<&Images>),
+    output: Output,
+) -> Done {
+    let mut written = plan
         .write(site)
         .map_err(|error| (not_written(&error), Exit::Failure))?;
+    if let Some(images) = images {
+        written.extend(images::write(site, images)?);
+    }
     let map = plan.map_file();
     let not_stored = |why: String, exit| {
         let message = UserMessage::new(
             format!("The posts came in, but the redirects in {map} were not stored."),
             why,
-            format!("Fix that, then run `khalid redirects import {map}`."),
+            format!(
+                "Fix that, then run `{}`.",
+                command_for(site, &format!("redirects import {}", path_for(site, map)))
+            ),
         );
         (message, exit)
     };
@@ -131,8 +227,30 @@ fn import(site: &Path, (config, routes): (&Config, &Routes), plan: &Plan, output
     let stored = store(site, entries).map_err(|(why, exit)| not_stored(why, exit))?;
     // The report's first sentence is for a dry run only.
     let said = plan.report();
-    let said = said.split_once('\n').map_or("", |(_, rest)| rest);
-    Ok(answer(said, Some((&written, stored, &held)), output))
+    let mut said = said
+        .split_once('\n')
+        .map_or("", |(_, rest)| rest)
+        .to_owned();
+    if let Some(images) = images {
+        said.push_str(&images_text(images));
+    }
+    Ok(answer(&said, Some((site, &written, stored, &held)), output))
+}
+
+/// What became of the images the posts show, in plain sentences.
+fn images_text(images: &Images) -> String {
+    let fetched = counted(images.fetched, "image");
+    let mut text = format!(
+        "Downloaded {fetched} from the old site, each into the folder of the post that shows it.\n"
+    );
+    // Writing to a String cannot fail.
+    for (address, why) in &images.kept {
+        let _ = writeln!(
+            text,
+            "Kept at its old address, so it goes when the old site goes: {address} ({why})."
+        );
+    }
+    text
 }
 
 /// Stores `entries` through the redirect desk, and returns how many, or
@@ -180,11 +298,11 @@ fn ours(csv: &str) -> String {
 
 /// Prints what would come in, or with `done`, the files written, the
 /// redirects stored and what was held back.
-fn answer(said: &str, done: Option<(&[PathBuf], usize, &Held)>, output: Output) -> Exit {
+fn answer(said: &str, done: Option<(&Path, &[PathBuf], usize, &Held)>, output: Output) -> Exit {
     match (output, done) {
         (Output::Json, _) => {
             let none = Held::default();
-            let (written, stored, held) = done.unwrap_or((&[], 0, &none));
+            let (_, written, stored, held) = done.unwrap_or((Path::new("."), &[], 0, &none));
             let body = ImportedBody {
                 dry_run: done.is_none(),
                 report: said,
@@ -196,13 +314,14 @@ fn answer(said: &str, done: Option<(&[PathBuf], usize, &Held)>, output: Output) 
             report::json(&body, Exit::Success)
         }
         (Output::Human, None) => report::text(said, Exit::Success),
-        (Output::Human, Some((written, stored, held))) => {
+        (Output::Human, Some((site, written, stored, held))) => {
             let files = counted(written.len(), "file");
             let stored = counted(stored, "redirect");
-            let held = held_text(held);
+            let held = held_text(site, held);
+            let lint = command_for(site, "lint");
             let text = format!(
                 "Wrote {files} and stored {stored}.\n{held}{said}\
-                 Run `khalid lint` to see how each post scores.\n"
+                 Run `{lint}` to see how each post scores.\n"
             );
             report::text(&text, Exit::Success)
         }
@@ -210,8 +329,9 @@ fn answer(said: &str, done: Option<(&[PathBuf], usize, &Held)>, output: Output) 
 }
 
 /// The imported posts the linter blocks and where their old addresses
-/// wait, in plain sentences, or nothing when every post went live.
-fn held_text(held: &Held) -> String {
+/// wait, in plain sentences, or nothing when every post went live. The
+/// commands it names run from the folder the import ran in.
+fn held_text(site: &Path, held: &Held) -> String {
     let paths: Vec<String> = held.posts.iter().map(|p| p.display().to_string()).collect();
     let mut text = match paths.len() {
         0 => return String::new(),
@@ -233,9 +353,11 @@ fn held_text(held: &Held) -> String {
         );
     }
     if held.outside > 0 {
+        let file = path_for(site, HELD_CSV);
+        let store = command_for(site, &format!("redirects import {file}"));
         let _ = writeln!(
             text,
-            "Old addresses held in {HELD_CSV}, because they lie outside the blog's folder: {}. Store them with `khalid redirects import {HELD_CSV}` once their posts are live.",
+            "Old addresses held in {file}, because they lie outside the blog's folder: {}. Store them with `{store}` once their posts are live.",
             held.outside
         );
     }

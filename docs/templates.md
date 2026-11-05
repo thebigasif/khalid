@@ -1,3 +1,8 @@
+---
+title: "Templates: the look of your blog"
+order: 30
+---
+
 # Templates: the look of your blog
 
 A template sets the layout and features of your blog's pages: where the contents list sits, which cards the home page shows, and the sizes of text and space. Your colours, fonts and logo still come from your main site through theme sync, so every template looks like your brand.
@@ -13,7 +18,7 @@ name = "classic"
 
 Without a `[template]` table your blog uses `classic`, Khalid's default look. Updating Khalid never switches your template to another one, but a release may restyle a template.
 
-These eleven templates are built in. Every template but classic has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default.
+These eleven templates are built in. Every template but classic has its own page, linked below, which says who it suits, what each page shows, and every option it takes with its default.
 
 - `classic`: a wide frame with a large lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
@@ -26,6 +31,18 @@ These eleven templates are built in. Every template but classic has its own page
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
+
+## Starting a blog in a template
+
+To start a new blog in the template you liked in its demo, name it when you make the site:
+
+```text
+khalid init blog --address https://blog.example.com --template atlas --yes
+```
+
+`--template` takes any name from the list above. It writes the `[template]` table into the new `site.toml`, and starts `theme/tokens.toml` with that template's own colours, text sizes and spacing, so the new blog looks like the demo. `khalid theme sync` or a hand edit changes them later, as on any site.
+
+A name Khalid does not know stops `init` before it makes anything, and the message lists every name. Without `--template`, the blog starts in `classic`.
 
 ## Options
 
@@ -232,6 +249,8 @@ just layout-check --browsers chromium,firefox --packs keystone
 
 `--packs` picks templates and `--widths` picks widths. A screenshot of each failing page goes to `target/layout-check/shots`, and every failure to `target/layout-check/report.json`. `--frames <file>` reads the minimum frames from another file, to try a stricter one. `just layout-selftest` proves the frame, reading and stylesheet checks on two small sites with a planted fault each.
 
+A template whose demo has a ready publication of its own, in `fixtures/showcase-publications/<name>/`, is checked a second time with that publication in place of the showcase's posts, on the pages its `check-pages.txt` names. The showcase pass stays as it is for every template, so its long tables, glossary and long lists remain the floor. `just publication-selftest` proves the publication step and the second pass on a small sample publication, with no browser. `fixtures/showcase-publications/README.md` sets out what a publication holds.
+
 ## Pictures for review
 
-A template's design is approved from pictures, not from the checks alone. `just demo-pictures --out <folder>` builds the showcase with each template twice, in its sample brand and with the template's own defaults and no theme, and takes full-page pictures of the home page, the post `/content-benchmark/` and `/category/content-strategy/` at 2000, 1440 and 390 pixels. Each template gets a sheet, `sheet.html` and `sheet.png`, with the branded demo, the default and a reference picture side by side for each page and width. Add `--refs <folder>` to place stored reference pictures: one folder per template, each file named such as `<source>-<page>-<width>.png`, where the page is `home`, `post` or `list`. Keep `--out` outside the repository, since the pictures are never committed.
+A template's design is approved from pictures, not from the checks alone. `just demo-pictures --out <folder>` builds the showcase with each template twice, in its sample brand and with the template's own defaults and no theme, and takes full-page pictures of the home page, the post `/content-benchmark/` and `/category/content-strategy/` at 2000, 1440 and 390 pixels. Each template gets a sheet, `sheet.html` and `sheet.png`, with the branded demo, the default and a reference picture side by side for each page and width. Add `--refs <folder>` to place stored reference pictures: one folder per template, each file named such as `<source>-<page>-<width>.png`, where the page is `home`, `post` or `list`. Keep `--out` outside the repository, since the pictures are never committed. A template with a demo publication, ready or not, is pictured with it, on the home page and the first post and category its `check-pages.txt` names.

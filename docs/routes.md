@@ -1,3 +1,8 @@
+---
+title: "The blog's addresses: routes.toml"
+order: 40
+---
+
 # The blog's addresses: `routes.toml`
 
 `routes.toml` sits beside `site.toml` and sets how the blog's web addresses look. `khalid init` writes it with only a comment, and that is enough: a post sits at `/<slug>/`, tags at `/tag/<tag>/` and categories at `/category/<category>/`, all under the blog's mount path, such as `/blog/`.

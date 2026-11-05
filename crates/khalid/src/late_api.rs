@@ -18,7 +18,7 @@ use tower::ServiceExt as _;
 use tower::service_fn;
 
 /// Where the APIs answer. Every route of `khalid_api` sits under it.
-const UNDER: &str = "/api/";
+pub(crate) const UNDER: &str = "/api/";
 
 /// What makes the APIs' router.
 type Build = Box<dyn FnOnce() -> Router + Send>;
@@ -50,11 +50,24 @@ impl Late {
     }
 }
 
-/// `app`, with every request under `/api/` sent instead to the router
-/// `build` makes, built when the first of them arrives. Nothing is routed on
-/// the way, so the APIs see each request as they would have in one merged
-/// router.
-pub(crate) fn router(app: Router, build: impl FnOnce() -> Router + Send + 'static) -> Router {
+/// [`router_under`] for `/api/` alone, as the tests use it.
+#[cfg(test)]
+fn router(app: Router, build: impl FnOnce() -> Router + Send + 'static) -> Router {
+    router_under(app, &[UNDER], build)
+}
+
+/// Where Ghost's Content API answers when the site switches it on.
+pub(crate) const GHOST: &str = "/ghost/api/content/";
+
+/// `app`, with every request under any path in `under`, such as `/api/`
+/// and [`GHOST`], sent instead to the router `build` makes, built when the
+/// first of them arrives. Nothing is routed on the way, so the APIs see each
+/// request as they would have in one merged router.
+pub(crate) fn router_under(
+    app: Router,
+    under: &'static [&'static str],
+    build: impl FnOnce() -> Router + Send + 'static,
+) -> Router {
     let (tell, ready) = watch::channel(None);
     let build: Build = Box::new(build);
     let late = Arc::new(Late {
@@ -64,7 +77,8 @@ pub(crate) fn router(app: Router, build: impl FnOnce() -> Router + Send + 'stati
     let answer = service_fn(move |request: Request<Body>| {
         let (app, late) = (app.clone(), Arc::clone(&late));
         async move {
-            if request.uri().path().starts_with(UNDER) {
+            let path = request.uri().path();
+            if under.iter().any(|root| path.starts_with(root)) {
                 apis(&late, request).await
             } else {
                 app.oneshot(request).await
@@ -123,6 +137,16 @@ mod tests {
     async fn every_other_address_is_the_sites() {
         let app = router(site(), Router::new);
         assert_eq!(status(app, "/blog/").await, StatusCode::IM_A_TEAPOT);
+    }
+
+    #[tokio::test]
+    async fn ghosts_path_reaches_the_apis_only_when_it_is_listed() {
+        let apis = || Router::new().route("/ghost/api/content/posts/", get(|| async { "posts" }));
+        let off = router(site(), apis);
+        let at = "/ghost/api/content/posts/";
+        assert_eq!(status(off, at).await, StatusCode::IM_A_TEAPOT);
+        let on = router_under(site(), &[UNDER, GHOST], apis);
+        assert_eq!(status(on, at).await, StatusCode::OK);
     }
 
     /// A build of an empty router that counts how often it ran.

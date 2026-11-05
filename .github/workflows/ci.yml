@@ -332,6 +332,115 @@ jobs:
             target/layout-check/shots
           if-no-files-found: ignore
 
+  # The Astro and Next.js starter kits (U14, R12), built against the
+  # showcase site served in headless mode, as their READMEs say. Each kit's
+  # home page and one post must carry a title, a meta description and
+  # JSON-LD schema. The job always runs, so it always reports, but does the
+  # work only when the kits, the API, the renderer or this file changed.
+  # On pull requests only, and not a required check.
+  starters:
+    name: Starter kits
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event_name == 'pull_request'
+    # Uses the release binary the size budget built on a maintainer runner.
+    needs: binary-size
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Did the kits or what they read change?
+        id: inputs
+        run: |
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          if printf '%s\n' "$changed" | grep -Eq '^(starters/|crates/khalid-api/|crates/khalid-render/|scripts/starters-check\.(sh|mjs)$|\.github/workflows/ci\.yml$)'; then
+            echo "check=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "check=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing the starter kits use changed, so they are not built again." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/download-artifact@v7
+        if: steps.inputs.outputs.check == 'true'
+        with:
+          name: release-binaries
+          path: target/handover
+      - name: The handed-over binary
+        if: steps.inputs.outputs.check == 'true'
+        run: |
+          chmod +x target/handover/khalid
+          target/handover/khalid --version
+          echo "KHALID_BIN=$PWD/target/handover/khalid" >> "$GITHUB_ENV"
+      # The newest Node 22, which meets the Astro kit's 22.23.4 or later.
+      - uses: actions/setup-node@v7
+        if: steps.inputs.outputs.check == 'true'
+        with:
+          node-version: 22
+      - name: Build and check both kits
+        if: steps.inputs.outputs.check == 'true'
+        run: ./scripts/starters-check.sh
+      - name: Keep the logs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: starters-check
+          path: |
+            target/starters-check/*.log
+          if-no-files-found: ignore
+
+  # Ghost's own Content API client (U26, KTD13), at the version
+  # scripts/ghost-client/package.json pins, against the showcase site with
+  # ghost_content_api switched on. It browses and reads every resource and
+  # checks the filters and errors a Ghost front end relies on. The job
+  # always runs, so it always reports, but does the work only when the API,
+  # the server, the check or this file changed. On pull requests only, and
+  # not a required check.
+  ghost-client:
+    name: Ghost client
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name == 'pull_request'
+    # Uses the release binary the size budget built on a maintainer runner.
+    needs: binary-size
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Did the API or the check change?
+        id: inputs
+        run: |
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          if printf '%s\n' "$changed" | grep -Eq '^(crates/khalid-api/|crates/khalid-core/|crates/khalid/src/|scripts/ghost-client|\.github/workflows/ci\.yml$)'; then
+            echo "check=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "check=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing Ghost's client reads changed, so it is not run again." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/download-artifact@v7
+        if: steps.inputs.outputs.check == 'true'
+        with:
+          name: release-binaries
+          path: target/handover
+      - name: The handed-over binary
+        if: steps.inputs.outputs.check == 'true'
+        run: |
+          chmod +x target/handover/khalid
+          target/handover/khalid --version
+          echo "KHALID_BIN=$PWD/target/handover/khalid" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v7
+        if: steps.inputs.outputs.check == 'true'
+        with:
+          node-version: 22
+      - name: Run Ghost's client against Khalid
+        if: steps.inputs.outputs.check == 'true'
+        run: ./scripts/ghost-client.sh
+      - name: Keep the server log
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ghost-client
+          path: target/ghost-client/serve.log
+          if-no-files-found: ignore
+
   # Getting and renewing a certificate, against pebble, Let's Encrypt's own
   # test server (task 5.13, gap audit 2 G35). The tests in
   # crates/khalid-https/tests/pebble.rs are ignored elsewhere because they

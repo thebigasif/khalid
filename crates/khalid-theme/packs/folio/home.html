@@ -1,7 +1,8 @@
-{#- Folio's front page (templates spec 3.10): its own masthead with the
-    blog's name, a tagline and the category links, the newest
-    featured post large, then a grid of picture cards, an optional quote,
-    and numbered page links. -#}
+{#- Folio's front page (docs/templates/folio.md, "Design"): its own
+    masthead with the blog's name, a tagline and the category links; the
+    lead, the newest featured post large beside a numbered rail of the
+    newest posts; a grid of picture cards; the rest as a text-only index
+    of ruled rows; an optional quote and numbered page links. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
@@ -22,16 +23,32 @@
 </nav>
 {% endif %}</header>
 {% set slot = page.featured if options.featured else none -%}
-{% if slot %}{{ featured_slot(slot) }}
-{% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
-{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
+{% if page.sections %}{% if slot %}{{ featured_slot(slot) }}
+{% endif %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts, 3) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif posts %}{{ cards(posts) }}
-{% elif not slot %}<p>{{ t.no_posts }}</p>
+{% endfor %}{% elif slot and posts %}<div class="lead">
+{{ featured_slot(slot) }}
+<section class="lead-rail" aria-labelledby="lead-rail-title">
+<h2 id="lead-rail-title">{{ t.latest }}</h2>
+{{ cards(posts[:5], 3, "ranked") }}
+</section>
+</div>
+{% if posts | length > 5 %}<section class="lead-grid" aria-labelledby="lead-grid-title">
+<h2 id="lead-grid-title">{{ t.more_posts }}</h2>
+{{ cards(posts[5:11], 3) }}
+</section>
+{% endif %}{% if posts | length > 11 %}<section class="lead-index" aria-labelledby="lead-index-title">
+<h2 id="lead-index-title">{{ t.archive_title }}</h2>
+{{ cards(posts[11:], 3, "compact") }}
+</section>
+{% endif %}{% elif slot %}{{ featured_slot(slot) }}
+{% elif posts %}{{ cards(posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if options.quote %}<figure class="masthead-quote">
 <blockquote>
 <p>{{ options.quote[0] }}</p>

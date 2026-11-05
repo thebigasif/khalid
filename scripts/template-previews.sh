@@ -29,6 +29,9 @@ set -euo pipefail
 names=(classic ledger atlas keystone compass harbor wire workbench almanac meridian folio)
 width=1280
 height=800
+# The phone picture: a 390 px wide screen, as the layout check's phone.
+phone_width=390
+phone_height=844
 
 # The name with a capital first letter, as the gallery writes it.
 title() { printf '%s%s' "$(printf '%s' "${1:0:1}" | tr '[:lower:]' '[:upper:]')" "${1:1}"; }
@@ -37,6 +40,16 @@ title() { printf '%s%s' "$(printf '%s' "${1:0:1}" | tr '[:lower:]' '[:upper:]')"
 # with the template's name and the outline of the page it stands for.
 card() {
   local name="$1" kind="$2" file="$3" label shape
+  if [ "$kind" = phone ]; then
+    cat >"$file" <<CARD
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 $phone_width $phone_height" width="$phone_width" height="$phone_height" role="img"><title>The $(title "$name") template: On a phone</title>
+<rect width="$phone_width" height="$phone_height" fill="#f7f5f0"/><rect x="20" y="20" width="350" height="804" rx="36" fill="#fff" stroke="#e4dfd4" stroke-width="2"/>
+<text x="195" y="300" text-anchor="middle" font-family="Georgia, serif" font-size="44" font-weight="700" fill="#16181d">$(title "$name")</text><text x="195" y="350" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22" fill="#4f5563">On a phone</text>
+<g fill="#efebe3"><rect x="56" y="420" width="278" height="150" rx="12"/><rect x="56" y="600" width="278" height="14" rx="7"/><rect x="56" y="630" width="220" height="14" rx="7"/></g>
+</svg>
+CARD
+    return
+  fi
   if [ "$kind" = home ]; then
     label="Home page"
     shape='<rect x="96" y="392" width="336" height="200" rx="14"/><rect x="472" y="392" width="336" height="200" rx="14"/><rect x="848" y="392" width="336" height="200" rx="14"/>'
@@ -59,6 +72,7 @@ if [ "${1:-}" = "--cards" ]; then
   for name in "${names[@]}"; do
     card "$name" home "$into/$name-home.svg"
     card "$name" post "$into/$name-post.svg"
+    card "$name" phone "$into/$name-phone.svg"
   done
   echo "Wrote ${#names[@]} pairs of plain cards into $into."
   exit 0
@@ -126,12 +140,16 @@ done
 magick=""
 if command -v magick >/dev/null 2>&1; then magick="magick"; elif command -v convert >/dev/null 2>&1; then magick="convert"; fi
 
-# shot <name> <home|post> <address>: the picture of one page, or the plain
-# card when the browser draws nothing.
+# shot <name> <home|post|phone> <address>: the picture of one page, or the
+# plain card when the browser draws nothing. The phone picture is the home
+# page in a 390 px window, drawn at full size.
 shot() {
   local name="$1" kind="$2" address="$3" png="$work/$1-$2.png" file="$pages/templates/$1-$2.svg" kind_of="image/png" data
+  local w="$width" h="$height" scale=0.5 label
+  if [ "$kind" = phone ]; then w="$phone_width" h="$phone_height" scale=1; fi
+  case "$kind" in home) label="Home page" ;; post) label="A post" ;; *) label="On a phone" ;; esac
   timeout 90 "$chrome" --headless --no-sandbox --disable-gpu --hide-scrollbars \
-    --force-device-scale-factor=0.5 --window-size="$width,$height" \
+    --force-device-scale-factor="$scale" --window-size="$w,$h" \
     --run-all-compositor-stages-before-draw --virtual-time-budget=3000 \
     --screenshot="$png" "$base$address" >/dev/null 2>&1 || true
   if [ ! -s "$png" ]; then
@@ -145,8 +163,8 @@ shot() {
   fi
   data="$(base64 <"$png" | tr -d '\n')"
   printf '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %s %s" width="%s" height="%s" role="img"><title>The %s template: %s</title><image width="%s" height="%s" href="data:%s;base64,%s"/></svg>\n' \
-    "$width" "$height" "$width" "$height" "$(title "$name")" "$([ "$kind" = home ] && echo "Home page" || echo "A post")" \
-    "$width" "$height" "$kind_of" "$data" >"$file"
+    "$w" "$h" "$w" "$h" "$(title "$name")" "$label" \
+    "$w" "$h" "$kind_of" "$data" >"$file"
   echo "Drew $name's $kind page."
 }
 
@@ -156,9 +174,11 @@ for name in "${names[@]}"; do
     echo "There is no $name demo in $pages, so its pictures are plain cards."
     card "$name" home "$pages/templates/$name-home.svg"
     card "$name" post "$pages/templates/$name-post.svg"
+    card "$name" phone "$pages/templates/$name-phone.svg"
     continue
   fi
   shot "$name" home "$demo"
   shot "$name" post "$demo$post"
+  shot "$name" phone "$demo"
 done
 echo "The template previews are in $pages/templates."

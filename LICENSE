@@ -660,3 +660,9 @@ if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
 
+                     Photographs in the demo publications
+
+  The photographs used by Khalid's demo publications are not part of
+Khalid and are not under the AGPL. Each keeps its own licence, credited in
+its publication's ATTRIBUTION.md under fixtures/showcase-publications/.
+

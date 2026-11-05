@@ -1,3 +1,8 @@
+---
+title: "Ledger"
+order: 70
+---
+
 # Ledger
 
 A calm, text-led blog with no pictures in its lists, for studies and long how-tos.
