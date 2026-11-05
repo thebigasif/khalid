@@ -12,7 +12,7 @@
   --hb-round: calc(var(--radius) + 0.25rem);
   --hb-big: calc(var(--radius) * 2);
   --hb-lift: 0 1px 2px color-mix(in oklab, var(--color-text) 6%, transparent), 0 1rem 2.5rem -1rem color-mix(in oklab, var(--color-text) 22%, transparent);
-  --hb-raise: 0 1px 2px color-mix(in oklab, var(--color-text) 5%, transparent), 0 1.5rem 3rem -1.5rem color-mix(in oklab, var(--color-accent) 40%, transparent);
+  --hb-raise: 0 1px 2px color-mix(in oklab, var(--color-text) 5%, transparent), 0 1.5rem 3rem -1.5rem color-mix(in oklab, var(--color-text) 16%, transparent);
   --hb-wide: 84rem;
   --hb-display: clamp(2.75rem, 1.4rem + 4.6vw, 5.25rem);
   --hb-title: clamp(2.25rem, 1.45rem + 2.6vw, 3.75rem);
@@ -479,3 +479,8 @@ main + .site-footer, .site-footer { margin-block-start: 0; }
   .latest .cards > li:nth-child(-n+3) { margin-block-end: 2rem; }
   .latest .cards > li:nth-child(n+4), .latest .cards > li:nth-child(n+4) .card { min-inline-size: 0; }
 }
+
+/* A post reads on the plain background, as the best Ghost themes do: the
+   tinted band stays on the front page and the list pages. */
+main:has(> .post) > .breadcrumbs { background: none; box-shadow: none; }
+.post > .post-header, .post > .post-header:has(> figure.image) { border-image: none; }

@@ -34,13 +34,22 @@
 {% endif %}<header class="site-header">
 {% if template.options.logo and brand.logo %}<a class="site-name site-logo" href="{{ site.home }}"><img src="{{ brand.logo }}" alt="{{ site.name }}" decoding="async"></a>
 {% else %}<a class="site-name" href="{{ site.home }}">{{ site.name }}</a>
-{% endif %}{% if site.nav.primary %}<nav aria-label="{{ t.nav_primary }}">
+{% endif %}{% if site.nav.primary %}<nav class="nav-bar" aria-label="{{ t.nav_primary }}">
 <ul>
 {% for link in site.nav.primary %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>
 {% endfor %}</ul>
 </nav>
 {% endif %}{% set finder = template.options.header_search %}{% if site.search and "search_shortcut" in site.features and finder != "none" %}<a class="search-link" href="{{ site.search }}"{% if finder == "button" %} data-dialog{% endif %}>{{ t.search_link }}</a>
 {% endif %}{% if template.cta and template.options.cta_button %}<a class="button header-button" href="{{ template.cta.href }}">{{ template.cta.label }}</a>
+{% endif %}{% if site.nav.primary %}<details class="nav-menu">
+<summary>{{ t.menu }}</summary>
+<nav aria-label="{{ t.nav_primary }}">
+<ul>
+{% for link in site.nav.primary %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>
+{% endfor %}</ul>
+{% if template.cta and template.options.cta_button %}<a class="button menu-button" href="{{ template.cta.href }}">{{ template.cta.label }}</a>
+{% endif %}</nav>
+</details>
 {% endif %}</header>
 <main id="main" tabindex="-1">
 {% if template.options.back_link and meta.kind == "article" %}<p class="back-link"><a href="{{ site.home }}">{{ t.back_to_posts }}</a></p>

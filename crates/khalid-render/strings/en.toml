@@ -3,6 +3,8 @@
 
 skip_link = "Skip to the content"
 nav_primary = "Main menu"
+# The button that opens the main menu on a phone.
+menu = "Menu"
 nav_footer = "Footer menu"
 # The list of links from the home page to the page, for screen readers.
 breadcrumbs = "Breadcrumbs"

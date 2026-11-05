@@ -141,7 +141,7 @@ This is Atlas's design brief. It fixes how the template should look, so every ch
 | Part | Atlas |
 |---|---|
 | Type pairing | A heavy, characterful grotesque for headlines over a plain, sturdy sans for text. With no theme, the pack uses the system sans at weight 800 for headlines. |
-| Colour | White ground and near-black text with one loud accent used in large areas: the masthead tint, topic labels, the topic index rules. Panels take a faint tint of the accent. |
+| Colour | White ground and near-black text with one loud accent used in large areas: the masthead tint, topic labels, the topic index rules. Panels take a faint tint of the accent. A post reads on the plain white ground, with no band behind its title. |
 | Spacing rhythm | A base step of 0.5rem. Tight inside cards (1rem), wide between sections (4rem). Grid gaps of 2rem on a wide screen, 1.25rem on a phone. |
 | Frame at 1440 px and wider | At least **88rem**: four picture cards across, the widest of the ten. |
 | Cards and lists | Picture cards with the picture edge to edge on top, the topic as a small coloured label, a bold title of up to three lines, then the byline. The first story in a grid may span two columns. |

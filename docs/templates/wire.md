@@ -40,7 +40,7 @@ There is no view count anywhere. Wire's numbered list is the editor's picks, not
 2. The title, large, and its subtitle, from the post's `description`.
 3. The writer's row: a round photo, their name and role, the date, when it was updated, the reading time and who reviewed it.
 4. The lead picture across the page, with its caption as the credit line under it. Write the credit in the picture's `caption`.
-5. The post in a reading column, with the writer's card beside it on a wide screen: photo, name, role, a short bio that folds open, and their profile links. On a phone the card sits above the post.
+5. The post in a reading column, with the writer's card beside it on a wide screen: photo, name, role, a short bio that folds open, and their profile links. Below 64rem the card hides, so the text starts right under the picture; the byline names the writer and the author box after the post carries the bio.
 6. Inside the post: subheads in the heading font, links underlined in your accent colour, the contents box under a heavy rule in two columns, a summary under an accent rule, pull quotes between two heavy rules, numbers in a stat callout set large, and "see also" lines (`:::callout{kind=read}`) quietly between two hairlines.
 7. The post's tags.
 8. The author box with the full bio.
@@ -104,7 +104,7 @@ Set any of these under `[template.options]`. An option you leave out takes the d
 | `newsletter_after` | `8` | After how many posts in the front page's list the newsletter form shows, from `2` to `20`. |
 | `cta_band` | `"none"` | Where the band with your call to action shows: `none`, `post`, `home` or `both`. |
 | `cta_button` | `false` | The header shows your call to action as a button. |
-| `author_card` | `true` | A post shows the writer's card, with a bio that folds open, right after the picture. |
+| `author_card` | `true` | A post shows the writer's card, with a bio that folds open, beside the text on a wide screen. |
 
 The call to action comes from `[template.cta]`; see [the templates guide](../templates.md#your-call-to-action).
 

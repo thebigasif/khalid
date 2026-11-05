@@ -131,7 +131,7 @@ This is Harbor's design brief. It fixes how the template should look, so every c
 | Part | Harbor |
 |---|---|
 | Type pairing | A round geometric sans for headings over a friendly sans for text. With no theme, the pack uses the system sans at weight 700 for headings. |
-| Colour | White ground, warm near-black text and one bright accent. Light tints of the accent for the hero, the offer card and tips. No grey panels. |
+| Colour | White ground, warm near-black text and one bright accent. Light tints of the accent for the hero, the offer card and tips. No grey panels. A post reads on the plain white ground, with no band behind its title. |
 | Spacing rhythm | A base step of 0.5rem. Cards and boxes with 1.5rem inside, 4.5rem between sections. Pill buttons 2.75rem high. |
 | Frame at 1440 px and wider | At least **84rem**. |
 | Cards and lists | Rounded picture cards with a soft border: the picture on top, the topic and date, the title, two lines of summary, the author at the foot. Rows with a small picture in the column beside the featured post. |

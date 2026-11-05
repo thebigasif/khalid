@@ -10,6 +10,9 @@
   --atlas-gap: clamp(1.25rem, 0.9rem + 1vw, 2rem);
   --atlas-section: clamp(3rem, 2rem + 3vw, 5rem);
   --atlas-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background));
+  /* Panels in a post and beside the lead story: a quieter tint, so one
+     accent leads and the text reads on near white. */
+  --atlas-panel: color-mix(in oklab, var(--color-accent) 4%, var(--color-background));
   --atlas-minor: color-mix(in oklab, var(--color-accent) 11%, var(--color-background));
   --atlas-major: color-mix(in oklab, var(--color-accent) 22%, var(--color-background));
   --atlas-display: clamp(3rem, 0.5rem + 8.4vw, 10rem);
@@ -106,7 +109,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .story-lead .story-label { margin-block-end: 0.875rem; }
 .story-lead .story-excerpt { max-inline-size: 40rem; margin-block-start: 0.875rem; font-size: clamp(1rem, 0.9rem + 0.3vw, 1.1875rem); -webkit-line-clamp: 4; }
 .story-lead .image { margin-block-end: 1.25rem; }
-.story-lead + .story-lead { padding: 1rem 1rem 1.25rem; background: var(--atlas-tint); border-radius: var(--radius); }
+.story-lead + .story-lead { padding: 1rem 1rem 1.25rem; background: var(--atlas-panel); border-radius: var(--radius); }
 .story-lead + .story-lead :is(h2, h3) { font-size: clamp(1.5rem, 1.1rem + 1vw, 2.125rem); line-height: 1.08; letter-spacing: -0.035em; }
 .story-lead + .story-lead .story-excerpt { font-size: 1rem; }
 @media (min-width: 56rem) {
@@ -271,7 +274,7 @@ main:has(> .post) > .breadcrumbs { margin: 0; padding-block: 1.25rem 0; backgrou
 .toc-side > ol:not(.toc-plain, .toc-nested) { counter-reset: atlas-toc; }
 .toc-side > ol:not(.toc-plain, .toc-nested) > li { counter-increment: atlas-toc; }
 .toc-side > ol:not(.toc-plain, .toc-nested) > li > a::before { content: counter(atlas-toc, decimal-leading-zero) / ""; flex: none; inline-size: 1.75rem; color: var(--color-link); font-size: 0.75rem; font-weight: 800; font-variant-numeric: tabular-nums; }
-.toc-inline { padding-inline: 1.25rem; background: var(--atlas-tint); border-radius: var(--radius); }
+.toc-inline { padding-inline: 1.25rem; background: var(--atlas-panel); border-radius: var(--radius); }
 .toc-inline summary { font-size: var(--text-small); font-weight: 700; }
 @media (min-width: 70rem) {
   .post-toc-start { column-gap: 4rem; }
@@ -290,14 +293,14 @@ main:has(> .post) > .breadcrumbs { margin: 0; padding-block: 1.25rem 0; backgrou
 .post-body a { text-decoration-color: var(--color-accent); text-underline-offset: 0.18em; }
 .heading-link { font-size: 0.75em; opacity: 0.6; }
 .post-body li { margin-block-end: 0.375rem; }
-.toc { margin-block: 2rem; padding: 1rem 1.5rem; background: var(--atlas-tint); }
+.toc { margin-block: 2rem; padding: 1rem 1.5rem; background: var(--atlas-panel); }
 .toc ol { padding-inline-start: 1.5rem; }
 @media (min-width: 40rem) { .toc > ol { columns: 2; column-gap: 2rem; } }
 .toc li { break-inside: avoid; color: var(--color-muted); font-size: 0.9375rem; }
 .toc .toc-h2 { font-weight: 400; }
 .toc a { min-block-size: 2.75rem; color: var(--color-text); line-height: 1.35; text-decoration: none; }
 .toc a:hover { color: var(--color-link); text-decoration: underline; }
-.callout { margin-block: 2rem; padding: 1.25rem 1.5rem; background: var(--atlas-tint); border: 0; border-inline-start: 0.25rem solid var(--color-accent); border-radius: 0; }
+.callout { margin-block: 2rem; padding: 1.25rem 1.5rem; background: var(--atlas-panel); border: 0; border-inline-start: 0.25rem solid var(--color-accent); border-radius: 0; }
 .callout-read { padding-inline: 0; background: none; border-inline-start: 0; font-style: italic; }
 .callout-stat strong:first-child { color: var(--color-link); font-weight: 800; letter-spacing: -0.04em; }
 .pullquote { margin-block: 2.5rem; padding: 0; border: 0; }
@@ -314,7 +317,7 @@ main:has(> .post) > .breadcrumbs { margin: 0; padding-block: 1.25rem 0; backgrou
 
 /* After the post: the author on a tint, the band, the posts that link
    here as a list of titles, then related posts as picture cards. */
-.author-box { margin-block-start: 3rem; padding: 2rem; background: var(--atlas-tint); border: 0; border-block-start: 0.25rem solid var(--color-accent); border-radius: 0; }
+.author-box { margin-block-start: 3rem; padding: 2rem; background: var(--atlas-panel); border: 0; border-block-start: 0.25rem solid var(--color-accent); border-radius: 0; }
 .author-box h2 { margin-block: 0 1.25rem; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-body); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
 .author-box .avatar { inline-size: 4rem; block-size: 4rem; }
 .person-card { gap: 1.25rem; }
@@ -411,3 +414,8 @@ main:has(> .post) .cta-band { margin-block: 3rem; }
   .feed .story-grid > li:nth-child(-n+3) { margin-block-end: 2rem; }
   .feed .story-grid > li:nth-child(n+4), .feed .story-grid > li:nth-child(n+4) .story { min-inline-size: 0; }
 }
+
+/* A post reads on the plain background: the tinted band stays on the front
+   page's masthead and the list pages. */
+main:has(> .post) > .breadcrumbs { background: none; box-shadow: none; }
+.post > .post-header, .post > .post-header:has(> .image) { border-image: none; }

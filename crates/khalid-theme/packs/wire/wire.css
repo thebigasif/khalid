@@ -288,6 +288,10 @@ figcaption { font-family: var(--font-heading); font-size: 0.8125rem; }
 /* The writer's card: in a rail with room, a slim block on a phone. */
 .author-card { margin-block: 0 2rem; padding-block-start: 1rem; border-block-start: var(--rule) solid var(--color-accent); font-size: var(--text-small); }
 .author-card .person-card { margin: 0; }
+/* The card stands beside the text only; where it would sit above the text,
+   it hides, and the author box after the post carries the bio. */
+@media (max-width: 63.99rem) { .post > .author-card { display: none; } }
+.post-with-toc > .author-card { display: none; }
 .author-card .person-card + .person-card { margin-block-start: 1.25rem; }
 .author-card .person-name { font-size: 1.0625rem; }
 .author-card .person-name a { min-block-size: 0; color: var(--color-text); font-weight: 800; text-decoration: none; }

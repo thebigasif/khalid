@@ -17,8 +17,9 @@
 //   - reading-size, reading-column: at 1440 px and wider, a post's body
 //     text is under 18 px, or a full line of it holds fewer than 60 or
 //     more than 75 characters;
-//   - contents-twice: a post shows more than one list of its contents at
-//     once, such as the template's own and the ::toc a writer placed;
+//   - contents-twice, contents-hidden: a post shows more than one list of
+//     its contents at once, such as the template's own and the ::toc a
+//     writer placed, or hides every one it has;
 //   - stylesheet-size: a stylesheet the home page links is 20 KB or more
 //     with Brotli, checked once per pack.
 //
@@ -194,6 +195,12 @@ const checkPage = async (tab, job) => {
   if (POSTS.has(what)) {
     const lists = await tab.evaluate(contentsLists);
     if (lists.length > 1) found.push({ check: "contents-twice", a: `<${lists[0]}>`, b: `<${lists[1]}>`, detail: `the post shows ${lists.length} contents lists at once, and a reader needs one` });
+    // A floating contents button opens the list in a sheet, so it counts as
+    // a way in, though not as a second list.
+    const button = await tab.evaluate(() => [...document.querySelectorAll(".toc-button")].some((b) => (b.checkVisibility ? b.checkVisibility() : b.offsetParent !== null)));
+    if (lists.length === 0 && !button && (await tab.evaluate(() => document.querySelector("main :is(.toc-inline, .toc-box, .toc-side, .post-body .toc)") !== null))) {
+      found.push({ check: "contents-hidden", a: "<main>", b: "", detail: "the post has contents, and every list of them is hidden" });
+    }
   }
   const problems = [];
   const seen = new Map();
