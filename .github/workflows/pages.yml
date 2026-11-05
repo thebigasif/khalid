@@ -75,7 +75,10 @@ jobs:
       - name: Build the old Pages copy, whose pages are the old addresses
         run: bash scripts/pages.sh --canonical https://serpdad.com ./target/release/khalid "$RUNNER_TEMP/pages" https://thebigasif.github.io /khalid/
       - name: Template previews
-        run: bash scripts/template-previews.sh "$RUNNER_TEMP/pages" /khalid/
+        # cwebp keeps each full-size preview to a hundred or two kilobytes.
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends webp
+          bash scripts/template-previews.sh "$RUNNER_TEMP/pages" /khalid/
       - name: The demos for serpdad.com, with the same previews
         run: |
           bash scripts/demos-bundle.sh ./target/release/khalid "$RUNNER_TEMP/demos/khalid" "$RUNNER_TEMP/pages/templates"

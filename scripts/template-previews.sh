@@ -9,7 +9,8 @@
 # in a headless Chromium and writes <pages folder>/templates/<name>-home.svg
 # and <name>-post.svg, where the gallery reads them. Classic's demo is the
 # showcase at <mount>demo/. The mount defaults to /khalid/ and the post to
-# seo-writing-guide/. Set CHROME to the browser to use; otherwise the first
+# seo-writing-guide/, except where a template's demo shows its own
+# publication, which draws the post its check-pages.txt names. Set CHROME to the browser to use; otherwise the first
 # of google-chrome, chromium and chrome on the path runs. The server is
 # Python's, which GitHub's runners have, as they have Chrome.
 #
@@ -85,6 +86,7 @@ if [ "${1:-}" = "--cards" ]; then
   exit 0
 fi
 
+repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 pages="${1:?Name the folder scripts/pages.sh built.}"
 mount="${2:-/khalid/}"
 post="${3:-seo-writing-guide/}"
@@ -230,6 +232,19 @@ shot() {
   echo "Drew $name's $kind page."
 }
 
+# post_of <name> <demo>: the post to draw for a template. A demo that shows
+# the template's own publication draws the post its check-pages.txt names;
+# any other draws the showcase's post.
+post_of() {
+  local list="$repo/fixtures/showcase-publications/$1/check-pages.txt" path
+  path="$(sed -n 's#^post /##p' "$list" 2>/dev/null | head -n 1)"
+  if [ -n "$path" ] && [ -f "$pages/${2#"$mount"}${path}index.html" ]; then
+    printf '%s' "$path"
+  else
+    printf '%s' "$post"
+  fi
+}
+
 for name in "${names[@]}"; do
   if [ "$name" = classic ]; then demo="${mount}demo/"; else demo="${mount}templates/$name/"; fi
   if [ ! -f "$pages/${demo#"$mount"}index.html" ]; then
@@ -240,7 +255,7 @@ for name in "${names[@]}"; do
     continue
   fi
   shot "$name" home "$demo"
-  shot "$name" post "$demo$post"
+  shot "$name" post "$demo$(post_of "$name" "$demo")"
   shot "$name" phone "$demo"
 done
 # A browser asks every host for /favicon.ico, which a site under a mount
