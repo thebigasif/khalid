@@ -395,3 +395,12 @@ export function reading() {
   const column = middle(columns);
   return { size: middle(sizes), column: Math.round(column), chars: drawn > 0 ? Math.round((column * chars) / drawn) : 0 };
 }
+
+// The lists of a post's contents a reader can see: the template's own,
+// folded, inline or beside the post, and the ::toc a writer placed in the
+// body. Returns each one's tag and class.
+export function contentsLists() {
+  return [...document.querySelectorAll("main :is(.toc-inline, .toc-box, .toc-side, .post-body .toc)")]
+    .filter((list) => (list.checkVisibility ? list.checkVisibility() : list.offsetParent !== null))
+    .map((list) => `${list.tagName.toLowerCase()}.${[...list.classList].join(".")}`);
+}
