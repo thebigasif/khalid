@@ -195,7 +195,10 @@ const checkPage = async (tab, job) => {
   if (POSTS.has(what)) {
     const lists = await tab.evaluate(contentsLists);
     if (lists.length > 1) found.push({ check: "contents-twice", a: `<${lists[0]}>`, b: `<${lists[1]}>`, detail: `the post shows ${lists.length} contents lists at once, and a reader needs one` });
-    if (lists.length === 0 && (await tab.evaluate(() => document.querySelector("main :is(.toc-inline, .toc-box, .toc-side, .post-body .toc)") !== null))) {
+    // A floating contents button opens the list in a sheet, so it counts as
+    // a way in, though not as a second list.
+    const button = await tab.evaluate(() => [...document.querySelectorAll(".toc-button")].some((b) => (b.checkVisibility ? b.checkVisibility() : b.offsetParent !== null)));
+    if (lists.length === 0 && !button && (await tab.evaluate(() => document.querySelector("main :is(.toc-inline, .toc-box, .toc-side, .post-body .toc)") !== null))) {
       found.push({ check: "contents-hidden", a: "<main>", b: "", detail: "the post has contents, and every list of them is hidden" });
     }
   }
