@@ -9,7 +9,7 @@
   --al-wide: 76rem;
   --al-gap: clamp(1.5rem, 0.75rem + 2vw, 3rem);
   --al-section: clamp(3rem, 1rem + 4vw, 5rem);
-  --al-display: clamp(3rem, 0.5rem + 6.5vw, 8rem);
+  --al-display: clamp(2.625rem, 0.5rem + 6.5vw, 8rem);
   --al-title: clamp(2.375rem, 1.25rem + 3.25vw, 4.5rem);
   --al-head: clamp(1.625rem, 1.25rem + 1vw, 2.25rem);
   --al-panel: color-mix(in oklab, var(--color-surface) 65%, var(--color-background));
@@ -219,6 +219,33 @@ main > .intro > :last-child { margin-block-end: 0; }
   .al-library .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+/* "In the garden this month": the month set large over a strip of the
+   year, its current month filled and the months with guides dotted, then
+   that month's guides as a numbered list of jobs. */
+.al-month { display: grid; gap: calc(var(--space) * 3) var(--al-gap); margin-block: var(--al-section); padding-block-start: calc(var(--space) * 1.5); border-block-start: var(--al-ink); }
+.al-month h2 { margin: 0; color: var(--color-accent); font-size: clamp(2.25rem, 1.5rem + 4vw, 6rem); line-height: 0.92; letter-spacing: -0.045em; }
+.al-month h2 span { display: block; margin-block-start: var(--space); color: var(--color-muted); font-family: var(--font-body); font-size: 1rem; letter-spacing: 0.2em; }
+.al-year { display: grid; grid-template-columns: repeat(12, 1fr); max-inline-size: 24rem; margin: calc(var(--space) * 3) 0 0; padding: 0; list-style: none; color: var(--color-muted); font-size: 0.875rem; font-weight: 700; text-align: center; }
+.al-year li { padding-block: 0.375rem 0.5rem; border-block-start: 2px solid var(--color-border); }
+.al-year .al-has { border-color: color-mix(in oklab, var(--color-accent) 45%, var(--color-background)); color: var(--color-text); }
+.al-year .al-now { background: color-mix(in oklab, var(--color-accent) 22%, var(--color-background)); border-color: var(--color-accent); color: var(--color-text); }
+.al-jobs { margin: 0; padding: 0; list-style: none; counter-reset: job; }
+.al-jobs li { position: relative; display: grid; grid-template-columns: 3.25rem minmax(0, 1fr); column-gap: calc(var(--space) * 2); padding-block: calc(var(--space) * 2.5); border-block-start: var(--al-rule); counter-increment: job; }
+.al-jobs li:first-child { padding-block-start: 0; border: 0; }
+.al-jobs li::before { content: counter(job, decimal-leading-zero) / ""; grid-row: span 2; color: var(--color-accent); font-family: var(--font-heading); font-size: 2.25rem; font-weight: var(--heading-weight); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: lining-nums tabular-nums; }
+.al-jobs h3 { margin: 0; font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem); line-height: 1.2; letter-spacing: -0.025em; }
+.al-jobs h3 a { color: var(--color-text); text-decoration: none; }
+.al-jobs h3 a::after { content: ""; position: absolute; inset: 0; }
+.al-jobs li:hover h3 a { text-decoration: underline; text-decoration-color: var(--color-accent); }
+.al-jobs p { display: flex; flex-wrap: wrap; align-items: center; gap: 0 calc(var(--space) * 2); margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.al-jobs .al-pill { position: relative; z-index: 1; }
+@media (min-width: 56rem) {
+  .al-month { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+  .al-month > header { position: sticky; inset-block-start: calc(var(--space) * 3); align-self: start; }
+  .al-jobs li::before { font-size: 3rem; }
+  .al-jobs li { grid-template-columns: 4.5rem minmax(0, 1fr); }
+}
+
 /* The editor's picks: a short numbered contents, held in view. */
 .al-picks { position: sticky; inset-block-start: calc(var(--space) * 3); align-self: start; }
 .al-picks ul { margin: 0; padding: 0; list-style: none; counter-reset: pick; }
@@ -321,15 +348,24 @@ main:has(> .newsletter-slot:last-child) { padding-block-end: 0; }
   .post-toc-start { grid-template-columns: 18rem minmax(0, var(--measure)) 6rem; }
   .post-toc-start > .toc-side { grid-column: 1; }
   .post-with-toc > :is(.post-header, .comments, .related) { grid-column: 1 / -1; }
-  .post-with-toc .post-body > h2::before { position: absolute; inset-inline-end: calc(100% + 2rem); inset-block-start: calc(var(--space) * 2.5); margin: 0; font-size: 3.25rem; }
 }
 
-/* The body: numbered chapters, each opened by a thin rule and its
-   number set large in the accent. */
+/* The body: numbered chapters, each opened by a thin rule. On a phone the
+   number leads the heading on its line; on a wide screen it hangs in the
+   margin under its own short accent rule, as in a printed book. */
 .post-body { counter-reset: chapter; }
 .post-body a { text-decoration-color: var(--color-accent); }
 .post-body > h2 { position: relative; counter-increment: chapter; margin-block: calc(var(--space) * 9) calc(var(--space) * 2.5); padding-block-start: calc(var(--space) * 2.5); border-block-start: var(--al-rule); font-size: var(--text-h2); line-height: 1.12; letter-spacing: -0.03em; }
-.post-body > h2::before { content: counter(chapter, decimal-leading-zero) / ""; display: block; margin-block-end: calc(var(--space) * 1.5); color: var(--color-accent); font-size: clamp(2.25rem, 1.75rem + 1.5vw, 3rem); line-height: 0.9; letter-spacing: -0.04em; font-variant-numeric: lining-nums tabular-nums; }
+.post .post-body > h2 { padding-inline-start: 1.5em; text-indent: -1.5em; }
+.post .post-body > h2::before { content: counter(chapter, decimal-leading-zero) / ""; position: static; display: inline-block; inline-size: 1.5em; margin: 0; padding: 0; border: 0; color: var(--color-accent); font-size: 1em; line-height: inherit; letter-spacing: -0.02em; text-indent: 0; font-variant-numeric: lining-nums tabular-nums; }
+@media (min-width: 64rem) {
+  .post .post-body > h2 { padding-inline-start: 0; text-indent: 0; }
+  .post .post-body > h2::before { position: absolute; inset-inline-end: calc(100% + 1.75rem); inset-block-start: -1px; display: block; inline-size: auto; min-inline-size: 4.5rem; padding-block-start: calc(var(--space) * 0.5); border-block-start: 2px solid var(--color-accent); font-size: 3.25rem; line-height: 1; letter-spacing: -0.04em; text-align: end; }
+}
+@media (min-width: 70rem) and (max-width: 85.99rem) {
+  .post-with-toc .post-body > h2 { padding-inline-start: 1.5em; text-indent: -1.5em; }
+  .post-with-toc .post-body > h2::before { position: static; display: inline-block; inline-size: 1.5em; min-inline-size: 0; padding: 0; border: 0; font-size: 1em; line-height: inherit; text-align: start; }
+}
 .post-body h3 { margin-block: calc(var(--space) * 5) calc(var(--space) * 1.5); letter-spacing: -0.015em; }
 .post-body h2 + h3 { margin-block-start: calc(var(--space) * 3); }
 .heading-link { min-inline-size: 2rem; color: color-mix(in oklab, var(--color-muted) 60%, var(--color-background)); font-size: 0.75em; text-decoration: none; }
