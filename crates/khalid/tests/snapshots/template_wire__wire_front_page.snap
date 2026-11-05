@@ -9,6 +9,8 @@ expression: "shown(&out, \"index.html\")"
 <main id="main" tabindex="-1">
 
 <h1 class="masthead-title">Field Notes on SEO</h1>
+<p class="edition"><span aria-hidden="true">Field Notes on SEO</span>
+<span>Updated <time datetime="2026-10-12">12 October 2026</time></span></p>
 <div class="front">
 <article class="front-lead">
 <figure class="image">

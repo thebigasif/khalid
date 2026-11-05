@@ -19,10 +19,25 @@ body { font-family: var(--font-heading); }
 .card-meta, .card-meta * { overflow-wrap: normal; word-break: normal; hyphens: none; }
 
 /* The bar above the masthead: the surface colour edge to edge. */
-.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: 0.9375rem; }
 .announcement p { max-inline-size: none; }
 .announcement p::before { content: ""; display: inline-block; inline-size: 0.5rem; block-size: 0.5rem; margin-inline-end: 0.625rem; background: var(--color-accent); vertical-align: 0.0625rem; }
 .announcement a { color: var(--color-text); font-weight: 700; text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
+
+/* The front's edition line and breaking strip, under the masthead like a
+   paper's folio line and banner. The strip is still: a label block in ink,
+   then the headline. It stands in for the bar above the masthead. */
+body:has(main .breaking) > .announcement { display: none; }
+.edition { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 1.5rem; max-inline-size: none; margin: 0; padding-block: 0.625rem; border-block-end: 1px solid var(--color-text); font-size: 0.9375rem; font-weight: 700; letter-spacing: 0.08em; line-height: 1.3; text-transform: uppercase; }
+.edition time { color: var(--color-link); white-space: nowrap; }
+@media (max-width: 47.99rem) { .edition > [aria-hidden] { display: none; } }
+.breaking { margin-block: clamp(1rem, 2vw, 1.5rem) 0; }
+.breaking p { display: flex; flex-wrap: wrap; max-inline-size: none; margin: 0; border: 2px solid var(--color-text); }
+.breaking strong { display: flex; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--color-text); color: var(--color-background); font-size: 1.0625rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.breaking strong::before { content: ""; inline-size: 0.625rem; block-size: 0.625rem; background: var(--color-accent); }
+.breaking :is(a, span) { flex: 1 1 18rem; align-self: center; padding: 0.625rem 1rem; color: var(--color-text); font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.625rem); font-weight: 700; line-height: 1.15; text-wrap: pretty; text-decoration: underline 2px var(--color-accent); text-underline-offset: 0.18em; }
+.breaking a:hover { text-decoration-thickness: 4px; }
+.breaking a:focus-visible { outline-offset: -4px; }
 
 /* The masthead. On a phone: the logo and the menu on one row, the menu a
    line you swipe. With room: the logo large in the middle, then the menu
