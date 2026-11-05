@@ -215,7 +215,7 @@ Evidence gathered on 4 November 2026 (research dossiers listed under Sources):
 | Almanac | The Field Almanac | Long guides to growing food | Proza (Aura) | Hanging section numbers and a seasonal "In the garden this month" index |
 | Atlas | Meridian Atlas | Travel and cities | Feedora (Kontur) | The map-grid masthead with a destination index by region |
 | Compass | Northbound | Learning to code, step by step | Kontur | The dashed trail of numbered stops, carried into each guide's steps |
-| Folio | Workbench Notes | A product team's changelog and essays | Proza | A dated changelog column with version tags beside the essays |
+| Folio | Tern Notes | A product team's changelog and essays | Proza | A dated changelog column with version tags beside the essays |
 | Harbor | Harbor Kitchen | A meal-kit company's marketing blog | Aura | A recipe card strip with time and serving tags under the hero |
 | Keystone | Keystone Studio | A design studio's company blog | Kontur | A project index with client, year and discipline columns |
 | Ledger | The Ledger Review | Personal finance research | Xpresiva | An edition line with volume and number, and a "This issue" index |
