@@ -245,18 +245,23 @@ def fetch(args: argparse.Namespace) -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(data)
     today = datetime.date.today().isoformat()
-    title = (photo.get("title") or "Untitled").replace('"', "'")
-    creator = (photo.get("creator") or "unknown").replace('"', "'")
+    # A source's field can hold several lines, such as a contact note under
+    # the author's name: the credit keeps the first.
+    first = lambda text, fallback: (str(text or "").strip().splitlines() or [fallback])[0].strip() or fallback
+    title = first(photo.get("title"), "Untitled")
+    creator = first(photo.get("creator"), "unknown")
     provider = photo.get("source") or photo.get("provider") or "Openverse"
+    # A TOML basic string, with quotes and backslashes escaped.
+    text = lambda value: json.dumps(str(value), ensure_ascii=False)
     print("[[photos]]")
-    print(f'file = "{args.file}"')
+    print(f"file = {text(args.file)}")
     print(f'sha256 = "{hashlib.sha256(data).hexdigest()}"')
-    print(f'source = "{photo.get("foreign_landing_url")}"')
-    print(f'licence = "{name}, read on the photo\'s page {today}: {url}"')
-    print(f'credit = "{title} by {creator}, via {provider}"')
-    print(f'title = "{title}"')
-    print(f'creator = "{creator}"')
-    print(f'openverse = "{args.id}"')
+    print(f"source = {text(photo.get('foreign_landing_url'))}")
+    print(f"licence = {text(f'{name}, read on the photo' + chr(39) + f's page {today}: {url}')}")
+    print(f"credit = {text(f'{title} by {creator}, via {provider}')}")
+    print(f"title = {text(title)}")
+    print(f"creator = {text(creator)}")
+    print(f"openverse = {text(args.id)}")
     print(f"needs_credit = {'true' if needs_credit else 'false'}")
     print(f"size = \"{picture.width}x{picture.height}\"")
     print()
