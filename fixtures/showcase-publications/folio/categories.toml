@@ -1,0 +1,18 @@
+# Workbench Notes' four categories: three for essays and one for the
+# release notes.
+
+[[categories]]
+slug = "essays"
+en = "Essays"
+
+[[categories]]
+slug = "how-we-work"
+en = "How we work"
+
+[[categories]]
+slug = "engineering"
+en = "Engineering"
+
+[[categories]]
+slug = "changelog"
+en = "Changelog"

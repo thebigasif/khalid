@@ -1,0 +1,15 @@
+# Keystone Studio's three categories. "Projects" holds the case studies,
+# each of which states its client, year and discipline in a facts table
+# near the top, for the project index the Keystone demo will show.
+
+[[categories]]
+slug = "projects"
+en = "Projects"
+
+[[categories]]
+slug = "process"
+en = "Process"
+
+[[categories]]
+slug = "studio"
+en = "Studio"

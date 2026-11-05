@@ -1,0 +1,401 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-01-20-lisbon-walking-route/lead.jpg"
+sha256 = "2ede4370c9c4b990dba9891eda3066adf78df2fbd392eb331718cef907571602"
+source = "https://commons.wikimedia.org/wiki/File:View_from_Miradouro_de_Santa_Luzia_over_Alfama,_Lisbon_(54734717169).jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "View from Miradouro de Santa Luzia over Alfama, Lisbon (54734717169) by Dale Cruse - 10M views from San Francisco, CA, USA, via Wikimedia Commons"
+title = "View from Miradouro de Santa Luzia over Alfama, Lisbon (54734717169)"
+creator = "Dale Cruse - 10M views from San Francisco, CA, USA"
+openverse = "commons:File:View from Miradouro de Santa Luzia over Alfama, Lisbon (54734717169).jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-01-20-lisbon-walking-route/calcada.jpg"
+sha256 = "c92ebe93036684091a1d093cd3236c6c62a6f9c487a94c427d8c25d527ad7741"
+source = "https://commons.wikimedia.org/wiki/File:Cal%C3%A7ada_portuguesa_6.JPG"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Calçada portuguesa 6 by Yelkrokoyade, via Wikimedia Commons"
+title = "Calçada portuguesa 6"
+creator = "Yelkrokoyade"
+openverse = "commons:File:Calçada portuguesa 6.JPG"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-02-10-porto-prices-week/lead.jpg"
+sha256 = "21f680975f730c343b56d17fadd1a6963e1db20b20419dd20234d3df301e0aeb"
+source = "https://commons.wikimedia.org/wiki/File:Rabelo_boats_and_Ribeira_seen_from_Cais_de_Gaia,_20250605_1623_9879.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Rabelo boats and Ribeira seen from Cais de Gaia, 20250605 1623 9879 by Jakub Hałun, via Wikimedia Commons"
+title = "Rabelo boats and Ribeira seen from Cais de Gaia, 20250605 1623 9879"
+creator = "Jakub Hałun"
+openverse = "commons:File:Rabelo boats and Ribeira seen from Cais de Gaia, 20250605 1623 9879.jpg"
+needs_credit = true
+size = "2000x1335"
+
+[[photos]]
+file = "en/posts/2026-02-10-porto-prices-week/garlic-stall.jpg"
+sha256 = "138ca0abec0fb1865296044e696875ea622e48d536c8fa27b6df9f7a9d9bc0fb"
+source = "https://commons.wikimedia.org/wiki/File:Trudging_Through_Porto;_Mercada_do_Bolh%C3%A3o_Market_(54455330463).jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Trudging Through Porto; Mercada do Bolhão Market (54455330463) by londonexpat, via Wikimedia Commons"
+title = "Trudging Through Porto; Mercada do Bolhão Market (54455330463)"
+creator = "londonexpat"
+openverse = "commons:File:Trudging Through Porto; Mercada do Bolhão Market (54455330463).jpg"
+needs_credit = true
+size = "2000x1469"
+
+[[photos]]
+file = "en/posts/2026-02-10-porto-prices-week/tiled-street.jpg"
+sha256 = "462dfdf08a17b17a2a11f65c807ff34fc8165709381affe9585576fb748cab5b"
+source = "https://commons.wikimedia.org/wiki/File:Porto,_houses_with_tiled_facades.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Porto, houses with tiled facades by Gerda Arendt, via Wikimedia Commons"
+title = "Porto, houses with tiled facades"
+creator = "Gerda Arendt"
+openverse = "commons:File:Porto, houses with tiled facades.jpg"
+needs_credit = false
+size = "2000x1501"
+
+[[photos]]
+file = "en/posts/2026-03-03-best-months-visit-seville/lead.jpg"
+sha256 = "1a723f6430ceb0c90755d7c2044986740da9f99af0e7d830b0a971b2b3d7ba17"
+source = "https://commons.wikimedia.org/wiki/File:Seville_trip256.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Seville trip256 by Tibor Kovacs, via Wikimedia Commons"
+title = "Seville trip256"
+creator = "Tibor Kovacs"
+openverse = "commons:File:Seville trip256.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-03-03-best-months-visit-seville/triana-tiles.jpg"
+sha256 = "77c1583ae9b4105f49e20131f45bd0c75ac26d616d7dbb549e448a90cfa8ba60"
+source = "https://commons.wikimedia.org/wiki/File:Puente_de_Triana_(azulejo).jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Puente de Triana (azulejo) by CarlosVdeHabsburgo, via Wikimedia Commons"
+title = "Puente de Triana (azulejo)"
+creator = "CarlosVdeHabsburgo"
+openverse = "commons:File:Puente de Triana (azulejo).jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-03-24-tokyo-neighbourhoods-first-visit/lead.jpg"
+sha256 = "31042721ab2a531944f814aa11330c9f7ab4d33b2e52cc1cad2394fc8ce175a9"
+source = "https://commons.wikimedia.org/wiki/File:2024-10-20_Tokyo,_Yanaka_5.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "2024-10-20 Tokyo, Yanaka 5 by Alexkom000, via Wikimedia Commons"
+title = "2024-10-20 Tokyo, Yanaka 5"
+creator = "Alexkom000"
+openverse = "commons:File:2024-10-20 Tokyo, Yanaka 5.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-03-24-tokyo-neighbourhoods-first-visit/yanaka-houses.jpg"
+sha256 = "4ced1514855bdcaf92d8626c6eca58be4dd7add80aecb192c0dba01b0831e182"
+source = "https://commons.wikimedia.org/wiki/File:2024-10-20_Tokyo,_Yanaka_2.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "2024-10-20 Tokyo, Yanaka 2 by Alexkom000, via Wikimedia Commons"
+title = "2024-10-20 Tokyo, Yanaka 2"
+creator = "Alexkom000"
+openverse = "commons:File:2024-10-20 Tokyo, Yanaka 2.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-04-14-getting-around-copenhagen/lead.jpg"
+sha256 = "b84f1f10e36cccc376f12b08b7c5f8386d6539fe34e9e843ff1dafcd73889fc0"
+source = "https://commons.wikimedia.org/wiki/File:Holmens_Kanal_Bike_Lanes_(15289686124).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Holmens Kanal Bike Lanes (15289686124) by Tony Webster from Portland, Oregon, United States, via Wikimedia Commons"
+title = "Holmens Kanal Bike Lanes (15289686124)"
+creator = "Tony Webster from Portland, Oregon, United States"
+openverse = "commons:File:Holmens Kanal Bike Lanes (15289686124).jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-05-mexico-city-markets/lead.jpg"
+sha256 = "88548b5c0dc39ecd91b4a1f4af236871febd8ab42cd41a518846a6ebd39f102d"
+source = "https://commons.wikimedia.org/wiki/File:Vasos_llenos_de_diferentes_furtas_en_el_Mercado_de_Medell%C3%ADn.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Vasos llenos de diferentes furtas en el Mercado de Medellín by Katia Flores Torres, via Wikimedia Commons"
+title = "Vasos llenos de diferentes furtas en el Mercado de Medellín"
+creator = "Katia Flores Torres"
+openverse = "commons:File:Vasos llenos de diferentes furtas en el Mercado de Medellín.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-05-mexico-city-markets/flower-stall.jpg"
+sha256 = "ad9bfb11a545822cb4bfe0ece4d2c3d579a5a04f6cedb946ec071ada90eac349"
+source = "https://commons.wikimedia.org/wiki/File:Flores_en_el_Mercado_Medell%C3%ADn.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Flores en el Mercado Medellín by Stellarc, via Wikimedia Commons"
+title = "Flores en el Mercado Medellín"
+creator = "Stellarc"
+openverse = "commons:File:Flores en el Mercado Medellín.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-26-hanoi-old-quarter-walk/lead.jpg"
+sha256 = "eb69324f38819acb384da2ec3f4cfb8b300994ed1b24bd40b2e46870ecab6aff"
+source = "https://commons.wikimedia.org/wiki/File:Long-bien-bridge-3371615.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Long-bien-bridge-3371615 by Quangpraha, via Wikimedia Commons"
+title = "Long-bien-bridge-3371615"
+creator = "Quangpraha"
+openverse = "commons:File:Long-bien-bridge-3371615.jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-26-hanoi-old-quarter-walk/pho.jpg"
+sha256 = "82c6b18a0405da3cdd6acd9a73edddc9f6d54dfdb0ff9ab7ed0ad5eb89840ef9"
+source = "https://commons.wikimedia.org/wiki/File:Ph%E1%BB%9F_b%C3%B2,_C%E1%BA%A7u_Gi%E1%BA%A5y,_H%C3%A0_N%E1%BB%99i.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Phở bò, Cầu Giấy, Hà Nội by Codename5281, via Wikimedia Commons"
+title = "Phở bò, Cầu Giấy, Hà Nội"
+creator = "Codename5281"
+openverse = "commons:File:Phở bò, Cầu Giấy, Hà Nội.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-06-16-stockholm-oslo-train/lead.jpg"
+sha256 = "9e03b0274792d9c97c430b4bd1219638ea9971bf542e71e904e4a50d565bd1a7"
+source = "https://commons.wikimedia.org/wiki/File:House_and_lake_from_passing_train_-_panoramio.jpg"
+licence = "CC BY 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/3.0"
+credit = "House and lake from passing train - panoramio by Olof Lagerkvist, via Wikimedia Commons"
+title = "House and lake from passing train - panoramio"
+creator = "Olof Lagerkvist"
+openverse = "commons:File:House and lake from passing train - panoramio.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-06-16-stockholm-oslo-train/arvika-station.jpg"
+sha256 = "73cafbc05432a5a3eeeb5dca2d4d82321800889d96626d25d9ec4a234628f89b"
+source = "https://commons.wikimedia.org/wiki/File:Arvika_j%C3%A4rnv%C3%A4gsstation.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Arvika järnvägsstation by Fredrik Rubensson, via Wikimedia Commons"
+title = "Arvika järnvägsstation"
+creator = "Fredrik Rubensson"
+openverse = "commons:File:Arvika järnvägsstation.jpg"
+needs_credit = true
+size = "2000x1481"
+
+[[photos]]
+file = "en/posts/2026-07-07-montreal-neighbourhoods-walk/lead.jpg"
+sha256 = "63c8a1f3eb7d9bad1e7d32b4b55fa33947a63df8af55bf60e2113adba43e35e7"
+source = "https://commons.wikimedia.org/wiki/File:20181013_-_37_-_Montreal_(Plateau).jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "20181013 - 37 - Montreal (Plateau) by Andre Carrotflower, via Wikimedia Commons"
+title = "20181013 - 37 - Montreal (Plateau)"
+creator = "Andre Carrotflower"
+openverse = "commons:File:20181013 - 37 - Montreal (Plateau).jpg"
+needs_credit = true
+size = "1920x1440"
+
+[[photos]]
+file = "en/posts/2026-07-07-montreal-neighbourhoods-walk/berries.jpg"
+sha256 = "7b56cdc145f104e0e5ed4a3a133ad7e7c7b4c7834c953e8c76c0bdc5a4add76e"
+source = "https://commons.wikimedia.org/wiki/File:Jean-Talon_Market_MTL_FruitBoxes_20060927.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Jean-Talon Market MTL FruitBoxes 20060927 by Niranjan Arminius, via Wikimedia Commons"
+title = "Jean-Talon Market MTL FruitBoxes 20060927"
+creator = "Niranjan Arminius"
+openverse = "commons:File:Jean-Talon Market MTL FruitBoxes 20060927.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-07-28-edinburgh-festivals-august/lead.jpg"
+sha256 = "5d0dbf72c9514034bce0e275725939d4abe7ab9e37b1bb86df45ae55ee518bb3"
+source = "https://commons.wikimedia.org/wiki/File:Victoria_Street_in_Edinburgh,_Scotland,_United_Kingdom_-_50436347402.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Victoria Street in Edinburgh, Scotland, United Kingdom - 50436347402 by Ralf Steinberger, via Wikimedia Commons"
+title = "Victoria Street in Edinburgh, Scotland, United Kingdom - 50436347402"
+creator = "Ralf Steinberger"
+openverse = "commons:File:Victoria Street in Edinburgh, Scotland, United Kingdom - 50436347402.jpg"
+needs_credit = true
+size = "2000x1331"
+
+[[photos]]
+file = "en/posts/2026-08-18-valencia-central-market/lead.jpg"
+sha256 = "e78540c51bd6d8a59c431bef95a0cc8cd0001eb1e36f2c01102a6bfac94dbd20"
+source = "https://commons.wikimedia.org/wiki/File:Valencia_market_-_artichokes.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Valencia market - artichokes by Hans Hillewaert, via Wikimedia Commons"
+title = "Valencia market - artichokes"
+creator = "Hans Hillewaert"
+openverse = "commons:File:Valencia market - artichokes.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-08-18-valencia-central-market/paella.jpg"
+sha256 = "e577e401eb30ace687261c1ad5a830fcff982ebb7d6b59233351fecc5dfe3e2b"
+source = "https://commons.wikimedia.org/wiki/File:Cocci%C3%B3n_de_una_paella_en_Torrente.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Cocción de una paella en Torrente by Jo sóc de torrent, via Wikimedia Commons"
+title = "Cocción de una paella en Torrente"
+creator = "Jo sóc de torrent"
+openverse = "commons:File:Cocción de una paella en Torrente.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-08-getting-around-kyoto/lead.jpg"
+sha256 = "6278c0701d8d6b73d4e8c4c6284bcb807f634adad614db61a529e7df7fa0c96a"
+source = "https://commons.wikimedia.org/wiki/File:Tetsugaku-no-michi_-_Philosopher%27s_Walk_-_Kyoto.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Tetsugaku-no-michi - Philosopher's Walk - Kyoto by Gzzz, via Wikimedia Commons"
+title = "Tetsugaku-no-michi - Philosopher's Walk - Kyoto"
+creator = "Gzzz"
+openverse = "commons:File:Tetsugaku-no-michi - Philosopher's Walk - Kyoto.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-29-valparaiso-hills-walk/lead.jpg"
+sha256 = "5addc2363a40e359e97a2427cc798a72ae485ea6b5d4b7985e3c17c4de9dde40"
+source = "https://commons.wikimedia.org/wiki/File:Ascensor_Concepci%C3%B3n,_Valpara%C3%ADso_-_un_ascensor.JPG"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Ascensor Concepción, Valparaíso - un ascensor by Nereidas, via Wikimedia Commons"
+title = "Ascensor Concepción, Valparaíso - un ascensor"
+creator = "Nereidas"
+openverse = "commons:File:Ascensor Concepción, Valparaíso - un ascensor.JPG"
+needs_credit = true
+size = "2000x1329"
+
+[[photos]]
+file = "en/posts/2026-09-29-valparaiso-hills-walk/bay.jpg"
+sha256 = "3904e7effeb1c146a49259848e7d83b973e5e3d28ccd0e2f238acb9ee997633a"
+source = "https://commons.wikimedia.org/wiki/File:Cerro_Concepci%C3%B3n,_Valpara%C3%ADso_(40047308772).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Cerro Concepción, Valparaíso (40047308772) by Deensel, via Wikimedia Commons"
+title = "Cerro Concepción, Valparaíso (40047308772)"
+creator = "Deensel"
+openverse = "commons:File:Cerro Concepción, Valparaíso (40047308772).jpg"
+needs_credit = true
+size = "2000x1499"
+
+[[photos]]
+file = "en/posts/2026-10-13-helsinki-markets-guide/lead.jpg"
+sha256 = "c6cd6c721dab994a86858504d6b39f5b4ef5d3c66b4e2a9b6fbfa47c09e7e846"
+source = "https://commons.wikimedia.org/wiki/File:Old_market_hall_in_Helsinki_in_Kaartinkaupunki,_Helsinki,_Finland,_2024_June.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Old market hall in Helsinki in Kaartinkaupunki, Helsinki, Finland, 2024 June by Scott Edmunds, via Wikimedia Commons"
+title = "Old market hall in Helsinki in Kaartinkaupunki, Helsinki, Finland, 2024 June"
+creator = "Scott Edmunds"
+openverse = "commons:File:Old market hall in Helsinki in Kaartinkaupunki, Helsinki, Finland, 2024 June.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-10-13-helsinki-markets-guide/market-square.jpg"
+sha256 = "9ce96b35953f70d93de9d7efefefec21cb488fa7934b77b8a179166f6bb1ba48"
+source = "https://commons.wikimedia.org/wiki/File:Market_Square_in_Helsinki,_Finland,_2024_May.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0"
+credit = "Market Square in Helsinki, Finland, 2024 May by Tuula Sipilä, via Wikimedia Commons"
+title = "Market Square in Helsinki, Finland, 2024 May"
+creator = "Tuula Sipilä"
+openverse = "commons:File:Market Square in Helsinki, Finland, 2024 May.jpg"
+needs_credit = true
+size = "2000x1271"
+
+[[photos]]
+file = "en/posts/2026-10-13-helsinki-markets-guide/salmon-soup.jpg"
+sha256 = "fcfdbd86747ebfc190f69fad6af846e17dfbf38e362792c6b99ddd5c632136ee"
+source = "https://commons.wikimedia.org/wiki/File:Finnish_salmon_soup_at_restaurant_Fregatti.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Finnish salmon soup at restaurant Fregatti by JIP, via Wikimedia Commons"
+title = "Finnish salmon soup at restaurant Fregatti"
+creator = "JIP"
+openverse = "commons:File:Finnish salmon soup at restaurant Fregatti.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-10-22-bangkok-river-boats/lead.jpg"
+sha256 = "c65f168c6bfe905a4db0c1b83bcd491e8e93b4cd858fcb72fe91cc87c69e8fd8"
+source = "https://commons.wikimedia.org/wiki/File:Wat_Arun_on_the_sunset.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Wat Arun on the sunset by Trip.with.taste, via Wikimedia Commons"
+title = "Wat Arun on the sunset"
+creator = "Trip.with.taste"
+openverse = "commons:File:Wat Arun on the sunset.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-10-22-bangkok-river-boats/express-boat.jpg"
+sha256 = "2a4715535a913e2b24622fbd7dae03f19eceaa28f4b22bbd6f28a50a65d55849"
+source = "https://commons.wikimedia.org/wiki/File:Bangkok,_Chao_Phraya_Express_Boat_(6223565866).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Bangkok, Chao Phraya Express Boat (6223565866) by Fabio Achilli from Milano, Italy, via Wikimedia Commons"
+title = "Bangkok, Chao Phraya Express Boat (6223565866)"
+creator = "Fabio Achilli from Milano, Italy"
+openverse = "commons:File:Bangkok, Chao Phraya Express Boat (6223565866).jpg"
+needs_credit = true
+size = "2000x1261"
+
+[[photos]]
+file = "en/posts/2026-10-29-tokyo-food-budget/lead.jpg"
+sha256 = "f1cfa02da362f4e75c23d20d35a194ffb8a3d2049da050aef8f5b631a0fef41d"
+source = "https://commons.wikimedia.org/wiki/File:Bento_by_OiMax_in_Tokyo.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Bento by OiMax in Tokyo by OiMax from Tokyo, via Wikimedia Commons"
+title = "Bento by OiMax in Tokyo"
+creator = "OiMax from Tokyo"
+openverse = "commons:File:Bento by OiMax in Tokyo.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-10-29-tokyo-food-budget/onigiri.jpg"
+sha256 = "56a72464c8d049400efe9b7484f0fd8610999233f47c6acdf7f1978399864359"
+source = "https://commons.wikimedia.org/wiki/File:Onigiri_and_miso_soup_by_OiMax_in_Tokyo.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Onigiri and miso soup by OiMax in Tokyo by OiMax from Tokyo, via Wikimedia Commons"
+title = "Onigiri and miso soup by OiMax in Tokyo"
+creator = "OiMax from Tokyo"
+openverse = "commons:File:Onigiri and miso soup by OiMax in Tokyo.jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-11-04-chicago-l-train-day/lead.jpg"
+sha256 = "a44720cb38ffaa01ed45d656c06163c024622940a99c1384cb742b5f01f8f1e4"
+source = "https://commons.wikimedia.org/wiki/File:Brown_Line_Train_Crossing_Chicago_River.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Brown Line Train Crossing Chicago River by GazeboJake, via Wikimedia Commons"
+title = "Brown Line Train Crossing Chicago River"
+creator = "GazeboJake"
+openverse = "commons:File:Brown Line Train Crossing Chicago River.jpg"
+needs_credit = false
+size = "2000x1290"
+
+[[photos]]
+file = "en/posts/2026-11-04-chicago-l-train-day/platform.jpg"
+sha256 = "e360871beca6c093b39e68a7b62c7132becd2e2f8dda98b2df709d894937b4bb"
+source = "https://commons.wikimedia.org/wiki/File:Brown_Line-Irving_Park.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Brown Line-Irving Park by Tripp from Chicago, via Wikimedia Commons"
+title = "Brown Line-Irving Park"
+creator = "Tripp from Chicago"
+openverse = "commons:File:Brown Line-Irving Park.jpg"
+needs_credit = true
+size = "2000x1339"

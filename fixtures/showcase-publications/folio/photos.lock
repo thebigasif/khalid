@@ -1,0 +1,318 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-01-20-no-folders/lead.jpg"
+sha256 = "0fd2730c97d35a3318bbb5ef62b3483b3aeac05db51b2de2f67aafaeaa3c6293"
+source = "https://commons.wikimedia.org/wiki/File:White_architecture_concept_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "White architecture concept (Unsplash) by Tobias van Schneider vanschneider, via Wikimedia Commons"
+title = "White architecture concept (Unsplash)"
+creator = "Tobias van Schneider vanschneider"
+openverse = "commons:File:White architecture concept (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-02-10-tern-2-0-linked-notes/lead.jpg"
+sha256 = "d8778a7c7a32567212e7b339139454d73081aaa1889669f33737857958a4f4a1"
+source = "https://commons.wikimedia.org/wiki/File:Pile_of_thread_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Pile of thread (Unsplash) by Terri Bleeker terri_bleeker, via Wikimedia Commons"
+title = "Pile of thread (Unsplash)"
+creator = "Terri Bleeker terri_bleeker"
+openverse = "commons:File:Pile of thread (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-03-03-one-page-spec/lead.jpg"
+sha256 = "9238293cc372c73ad4fa05aadc5530880e875dfc48ae0b52ef782da7ec71bb11"
+source = "https://commons.wikimedia.org/wiki/File:Pen_on_a_notebook_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Pen on a notebook (Unsplash) by Thomas Martinsen faceline, via Wikimedia Commons"
+title = "Pen on a notebook (Unsplash)"
+creator = "Thomas Martinsen faceline"
+openverse = "commons:File:Pen on a notebook (Unsplash).jpg"
+needs_credit = false
+size = "2000x1182"
+
+[[photos]]
+file = "en/posts/2026-03-03-one-page-spec/pencil-notes.jpg"
+sha256 = "12b29d1ed1041c3a62357263523f4470e8150b16efeaa7e131885ae845afcfc2"
+source = "https://commons.wikimedia.org/wiki/File:Taking_notes_with_a_pencil_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Taking notes with a pencil (Unsplash) by Thought Catalog thoughtcatalog, via Wikimedia Commons"
+title = "Taking notes with a pencil (Unsplash)"
+creator = "Thought Catalog thoughtcatalog"
+openverse = "commons:File:Taking notes with a pencil (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-03-24-offline-first/lead.jpg"
+sha256 = "73705300b441f144bb6cb17555d39f0009392eaa9833574e78db354c97355a13"
+source = "https://commons.wikimedia.org/wiki/File:Wicker_plant_and_big_window_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Wicker plant and big window (Unsplash) by Amanda Mocci amandamocci, via Wikimedia Commons"
+title = "Wicker plant and big window (Unsplash)"
+creator = "Amanda Mocci amandamocci"
+openverse = "commons:File:Wicker plant and big window (Unsplash).jpg"
+needs_credit = false
+size = "2000x1342"
+
+[[photos]]
+file = "en/posts/2026-03-24-offline-first/spiral-stairs.jpg"
+sha256 = "4abc934525d602972aabef8e65cecb819eab4bf512570d2fdf66408abd6701b0"
+source = "https://commons.wikimedia.org/wiki/File:Wooden_spiral_stairs_(Neboti%C4%8Dnik,_Ljubljana).jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Wooden spiral stairs (Nebotičnik, Ljubljana) by Petar Milošević, via Wikimedia Commons"
+title = "Wooden spiral stairs (Nebotičnik, Ljubljana)"
+creator = "Petar Milošević"
+openverse = "commons:File:Wooden spiral stairs (Nebotičnik, Ljubljana).jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-04-14-tern-2-1-quick-capture/lead.jpg"
+sha256 = "fa50710feff1f503556e57f17c798caa9be55fcb16b804a6471a8f6dcc5af308"
+source = "https://commons.wikimedia.org/wiki/File:Stack_of_four_sticky_notes.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Stack of four sticky notes by J.P. C., via Wikimedia Commons"
+title = "Stack of four sticky notes"
+creator = "J.P. C."
+openverse = "commons:File:Stack of four sticky notes.jpg"
+needs_credit = true
+size = "2000x1499"
+
+[[photos]]
+file = "en/posts/2026-05-05-six-week-cycles/lead.jpg"
+sha256 = "4fb0a13ab86f01407d548821fed7eabf9e179c4b2f5a22e43be57af43d8af434"
+source = "https://commons.wikimedia.org/wiki/File:Monthly_schedule_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Monthly schedule (Unsplash) by Eric Rothermel erothermel, via Wikimedia Commons"
+title = "Monthly schedule (Unsplash)"
+creator = "Eric Rothermel erothermel"
+openverse = "commons:File:Monthly schedule (Unsplash).jpg"
+needs_credit = false
+size = "2000x1339"
+
+[[photos]]
+file = "en/posts/2026-05-05-six-week-cycles/pencils.jpg"
+sha256 = "59171ae876f686094dd4e5ad05c3565b32297f01ecf6fcb9ed61a9b5066c2309"
+source = "https://commons.wikimedia.org/wiki/File:Minimal_pencils_on_yellow_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Minimal pencils on yellow (Unsplash) by Joanna Kosinska joannakosinska, via Wikimedia Commons"
+title = "Minimal pencils on yellow (Unsplash)"
+creator = "Joanna Kosinska joannakosinska"
+openverse = "commons:File:Minimal pencils on yellow (Unsplash).jpg"
+needs_credit = false
+size = "2000x1335"
+
+[[photos]]
+file = "en/posts/2026-05-26-sketch-on-paper/lead.jpg"
+sha256 = "f5b0f42522173c3831b4cdd004f88165f9ca27ea146cbd168bf8b67d4b2f4cb2"
+source = "https://commons.wikimedia.org/wiki/File:Designer_sketching_Wireframes_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Designer sketching Wireframes (Unsplash) by Green Chameleon craftedbygc, via Wikimedia Commons"
+title = "Designer sketching Wireframes (Unsplash)"
+creator = "Green Chameleon craftedbygc"
+openverse = "commons:File:Designer sketching Wireframes (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-05-26-sketch-on-paper/shavings.jpg"
+sha256 = "4dcbd3db9c1d0ec2582724e9226addd156ecd1ba4dd3563f0e4961dba8c9707b"
+source = "https://commons.wikimedia.org/wiki/File:Pencil_shavings_on_a_notebook_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Pencil shavings on a notebook (Unsplash) by Angelina Litvin linalitvina, via Wikimedia Commons"
+title = "Pencil shavings on a notebook (Unsplash)"
+creator = "Angelina Litvin linalitvina"
+openverse = "commons:File:Pencil shavings on a notebook (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-06-09-tern-2-2-tables/lead.jpg"
+sha256 = "153ed8daf931ee116d10a7ada30dc754a13054e9f52b671a2100f87eb7eb838e"
+source = "https://commons.wikimedia.org/wiki/File:Precise_drawing_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Precise drawing (Unsplash) by Tamarcus Brown tamarcusbrown, via Wikimedia Commons"
+title = "Precise drawing (Unsplash)"
+creator = "Tamarcus Brown tamarcusbrown"
+openverse = "commons:File:Precise drawing (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-06-30-everyone-answers-support/lead.jpg"
+sha256 = "24a23261d23b5c332c555bb2002923d683cc6c50425b95fd1160aa0551df1e4d"
+source = "https://commons.wikimedia.org/wiki/File:Papierflieger_--_2021_--_7215_(high_key).jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Papierflieger -- 2021 -- 7215 (high key) by Dietmar Rabich, via Wikimedia Commons"
+title = "Papierflieger -- 2021 -- 7215 (high key)"
+creator = "Dietmar Rabich"
+openverse = "commons:File:Papierflieger -- 2021 -- 7215 (high key).jpg"
+needs_credit = true
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-06-30-everyone-answers-support/notebooks.jpg"
+sha256 = "bb3834f916b5661e50d94c35bb7a6bcc3469a17c467feb65bb726e0cd804e494"
+source = "https://commons.wikimedia.org/wiki/File:Coffee,_notebooks_and_pen_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Coffee, notebooks and pen (Unsplash) by Freddy Castro readysetfreddy, via Wikimedia Commons"
+title = "Coffee, notebooks and pen (Unsplash)"
+creator = "Freddy Castro readysetfreddy"
+openverse = "commons:File:Coffee, notebooks and pen (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-07-14-removed-tags/lead.jpg"
+sha256 = "c53c3bfcd84e0cbdaf34e4b8346edf6d68c25e98e84e087bdae7eb659e92e085"
+source = "https://commons.wikimedia.org/wiki/File:Shaving_wood_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Shaving wood (Unsplash) by fireskystudios.com asthetik, via Wikimedia Commons"
+title = "Shaving wood (Unsplash)"
+creator = "fireskystudios.com asthetik"
+openverse = "commons:File:Shaving wood (Unsplash).jpg"
+needs_credit = false
+size = "2000x1215"
+
+[[photos]]
+file = "en/posts/2026-08-04-tern-2-3-version-history/lead.jpg"
+sha256 = "979399e790a54fff51d2ced96a0ea9112d0d7ac479bdd416e66af4c71bf0b5f6"
+source = "https://commons.wikimedia.org/wiki/File:Spiral_staircase_in_the_Vatican_Museums_from_bottom_02.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Spiral staircase in the Vatican Museums from bottom 02 by Wilfredor, via Wikimedia Commons"
+title = "Spiral staircase in the Vatican Museums from bottom 02"
+creator = "Wilfredor"
+openverse = "commons:File:Spiral staircase in the Vatican Museums from bottom 02.jpg"
+needs_credit = false
+size = "2000x1334"
+
+[[photos]]
+file = "en/posts/2026-08-25-naming-features/lead.jpg"
+sha256 = "6643008fbbb1622228c7a0ebb46a5e4f78ec5c2b6fce5b18b19c53f45603afd4"
+source = "https://commons.wikimedia.org/wiki/File:Paper_crane_table_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Paper crane table (Unsplash) by Dev Benjamin dev_irl, via Wikimedia Commons"
+title = "Paper crane table (Unsplash)"
+creator = "Dev Benjamin dev_irl"
+openverse = "commons:File:Paper crane table (Unsplash).jpg"
+needs_credit = false
+size = "2000x1125"
+
+[[photos]]
+file = "en/posts/2026-09-08-how-offline-search-works/books-shelf.jpg"
+sha256 = "9661bfb3f94e3dcff7d163296957809f404f31c44b75a1c4e375fae9ac28babf"
+source = "https://commons.wikimedia.org/wiki/File:Old_books_on_a_shelf_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Old books on a shelf (Unsplash) by Roman Kraft romankraft, via Wikimedia Commons"
+title = "Old books on a shelf (Unsplash)"
+creator = "Roman Kraft romankraft"
+openverse = "commons:File:Old books on a shelf (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-09-08-how-offline-search-works/lead.jpg"
+sha256 = "d8e481e553ba3969f4648495f8ef9b17f52cee832f72d7319e84fbab34c80ddd"
+source = "https://commons.wikimedia.org/wiki/File:GU_Library_Card_catalog_3.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "GU Library Card catalog 3 by Alicia Fagerving, via Wikimedia Commons"
+title = "GU Library Card catalog 3"
+creator = "Alicia Fagerving"
+openverse = "commons:File:GU Library Card catalog 3.jpg"
+needs_credit = true
+size = "2000x1500"
+
+[[photos]]
+file = "en/posts/2026-09-22-tern-2-4-offline-search/lead.jpg"
+sha256 = "48939b633b124a051d875ef6f92d2475029785a5c4af95641735c057a51f3d77"
+source = "https://commons.wikimedia.org/wiki/File:Concrete_architecture_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Concrete architecture (Unsplash) by Lance Anderson lanceanderson, via Wikimedia Commons"
+title = "Concrete architecture (Unsplash)"
+creator = "Lance Anderson lanceanderson"
+openverse = "commons:File:Concrete architecture (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-10-06-release-checklist/lead.jpg"
+sha256 = "514434e2e5c44c80e415d187aa51962eb6a41ce116ce5724dc73cd047848667f"
+source = "https://commons.wikimedia.org/wiki/File:Angled_metal_architecture_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Angled metal architecture (Unsplash) by Craig Davis _craigdavis, via Wikimedia Commons"
+title = "Angled metal architecture (Unsplash)"
+creator = "Craig Davis _craigdavis"
+openverse = "commons:File:Angled metal architecture (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-10-20-quiet-reminders/lead.jpg"
+sha256 = "dccfe096faa4bf5102bf4e829ba28c159cf261656e6138f9b5d98e0cf473908d"
+source = "https://commons.wikimedia.org/wiki/File:Desk_Orchid.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Desk Orchid by El Lubo, via Wikimedia Commons"
+title = "Desk Orchid"
+creator = "El Lubo"
+openverse = "commons:File:Desk Orchid.jpg"
+needs_credit = false
+size = "2000x1331"
+
+[[photos]]
+file = "en/posts/2026-10-20-quiet-reminders/window-shadow.jpg"
+sha256 = "e8f3d3b01e5b0c60ce518a3551bb4a53defbbac36c0dfefdcc16ce43fe9d79f0"
+source = "https://commons.wikimedia.org/wiki/File:Window_frame_shadow_on_a_curtain_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Window frame shadow on a curtain (Unsplash) by Steinar Engeland steinart, via Wikimedia Commons"
+title = "Window frame shadow on a curtain (Unsplash)"
+creator = "Steinar Engeland steinart"
+openverse = "commons:File:Window frame shadow on a curtain (Unsplash).jpg"
+needs_credit = false
+size = "2000x1292"
+
+[[photos]]
+file = "en/posts/2026-11-03-tern-2-5-daily-notes/lead.jpg"
+sha256 = "7aa213d7c0591c4e2530528093f786ed702ed367477ed8f21ea3e057b731e0d5"
+source = "https://commons.wikimedia.org/wiki/File:Green_House_Plant_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Green House Plant (Unsplash) by Peter Žagar ortodummie, via Wikimedia Commons"
+title = "Green House Plant (Unsplash)"
+creator = "Peter Žagar ortodummie"
+openverse = "commons:File:Green House Plant (Unsplash).jpg"
+needs_credit = false
+size = "2000x1350"
+
+[[photos]]
+file = "en/posts/2026-11-04-forty-interviews/lead.jpg"
+sha256 = "b0830163c3e7f05faf82afda37734f2c35c0eb6338937e92120b632af27146b7"
+source = "https://commons.wikimedia.org/wiki/File:Succulent_office_plants_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Succulent office plants (Unsplash) by Alvin Engler englr, via Wikimedia Commons"
+title = "Succulent office plants (Unsplash)"
+creator = "Alvin Engler englr"
+openverse = "commons:File:Succulent office plants (Unsplash).jpg"
+needs_credit = false
+size = "2000x1333"
+
+[[photos]]
+file = "en/posts/2026-11-04-forty-interviews/seedling.jpg"
+sha256 = "478cb4ca75486c81cfcea2a1b1b14079ef8203c1994922abf508738d37717d14"
+source = "https://commons.wikimedia.org/wiki/File:Little_Leafy_Plant_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Little Leafy Plant (Unsplash) by Austin D adelau1, via Wikimedia Commons"
+title = "Little Leafy Plant (Unsplash)"
+creator = "Austin D adelau1"
+openverse = "commons:File:Little Leafy Plant (Unsplash).jpg"
+needs_credit = false
+size = "2000x1324"
+
