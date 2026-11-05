@@ -265,11 +265,11 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
 
 /* A post: the title block across the page, the words in one column,
    the contents in a quiet rail beside them on a wide screen. From 64rem
-   the words grow and the column widens with them, so a line keeps the
-   same count of letters and the column fills more of a wide window. */
+   the words grow and the column widens a little less, so a line keeps
+   to 75 letters at most and the column fills more of a wide window. */
 :root { --col: var(--measure); }
 @media (min-width: 64rem) {
-  :root { --col: calc(var(--measure) * 1.1); }
+  :root { --col: calc(var(--measure) * 1.05); }
   .post-body, .page-body { font-size: 1.25rem; }
 }
 .post, .page { max-inline-size: var(--col); margin-inline: auto; }
