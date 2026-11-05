@@ -6,9 +6,10 @@
 #                        is Classic's demo
 #   demos/<name>/        the demo of each designed template, every template
 #                        but classic, with its preview pictures in _previews/
-#   templates/           the template gallery, its pictures and its assets
-#   templates/<name>/    the showcase once per template the binary has, kept
-#                        until serpdad.com serves the demos from demos/
+#   templates/           the template gallery, its pictures and its assets.
+#                        The build's templates/<name>/ copies of each demo
+#                        stay out of the archive: serpdad.com serves the
+#                        demos from demos/.
 #   examples/<slug>/     each site in fixtures/examples/
 #   templates.json       every template: its name, the kind of blog it suits,
 #                        whether its demo publication is ready, its demo and
@@ -63,7 +64,8 @@ kind_label() {
 title() { printf '%s%s' "$(printf '%s' "${1:0:1}" | tr '[:lower:]' '[:upper:]')" "${1:1}"; }
 
 # check <folder>: stops with what is wrong unless templates.json in the
-# built bundle <folder> lists every template under templates/, gives each a
+# built bundle <folder> lists every template with a demo, Classic's at
+# demo/ and each other one under demos/, gives each a
 # known kind and a demo that has a front page, and names picture files that
 # are in the bundle.
 check() {
@@ -84,12 +86,14 @@ def inside(path):
     file = (bundle / path).resolve()
     return file if file.is_relative_to(bundle) else None
 
-built = {p.name for p in (bundle / "templates").iterdir() if p.is_dir() and p.name != "assets"}
+built = {p.name for p in (bundle / "demos").iterdir() if p.is_dir()}
+if (bundle / "demo" / "index.html").is_file():
+    built.add("classic")
 names = [entry.get("name") for entry in listed]
 for name in sorted(built - set(names)):
-    faults.append(f"{name} is built under templates/ but templates.json leaves it out.")
+    faults.append(f"{name} has a demo in the bundle, but templates.json leaves it out.")
 for name in sorted(set(names) - built):
-    faults.append(f"templates.json lists {name}, but the bundle has no templates/{name}/.")
+    faults.append(f"templates.json lists {name}, but the bundle has no demo for it.")
 if len(names) != len(set(names)):
     faults.append("templates.json lists a template twice.")
 for entry in listed:
@@ -143,9 +147,8 @@ fi
 # fixtures/showcase-publications/ has a ready file; Classic's demo is the
 # showcase itself, so it is always ready.
 names=(classic)
-for dir in "$out"/templates/*/; do
-  name="$(basename "$dir")"
-  case "$name" in classic | assets) ;; *) names+=("$name") ;; esac
+for dir in "$out"/demos/*/; do
+  names+=("$(basename "$dir")")
 done
 {
   printf '{\n  "templates": ['
@@ -174,5 +177,8 @@ done
 check "$out"
 
 tarball="$(cd "$(dirname "$out")" && pwd)/khalid-demos.tar.gz"
-tar --sort=name --owner=0 --group=0 --numeric-owner -czf "$tarball" -C "$out" demo demos templates examples templates.json
+# The gallery's own files, without the build's templates/<name>/ copies.
+mapfile -t gallery < <(cd "$out" && find templates -maxdepth 1 -type f | LC_ALL=C sort)
+tar --sort=name --owner=0 --group=0 --numeric-owner -czf "$tarball" -C "$out" \
+  demo demos "${gallery[@]}" templates/assets examples templates.json
 echo "The demos for https://serpdad.com/khalid/ are packed in $tarball."

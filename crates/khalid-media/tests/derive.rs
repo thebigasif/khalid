@@ -21,7 +21,7 @@ fn photo(shade: u8) -> Vec<u8> {
 }
 
 #[test]
-fn every_width_is_made_in_webp_and_the_original_format() {
+fn every_width_is_made_in_webp_and_one_in_the_original_format() {
     let site = tempfile::tempdir().unwrap();
     let derived = derive(&photo(90), &MediaCache::new(site.path())).unwrap();
     assert_eq!((derived.width, derived.height), (900, 600));
@@ -38,14 +38,10 @@ fn every_width_is_made_in_webp_and_the_original_format() {
             (Format::Webp, 640, 427),
             (Format::Webp, 800, 533),
             (Format::Webp, 900, 600),
-            (Format::Jpeg, 320, 213),
-            (Format::Jpeg, 480, 320),
-            (Format::Jpeg, 640, 427),
-            (Format::Jpeg, 800, 533),
             (Format::Jpeg, 900, 600),
         ]
     );
-    assert_eq!(derived.encoded, 10);
+    assert_eq!(derived.encoded, 6);
     for file in &derived.files {
         let bytes = std::fs::read(&file.path).unwrap();
         let decoded = image::load_from_memory(&bytes).unwrap();
@@ -71,7 +67,7 @@ fn a_site_that_asks_for_avif_gets_every_width_in_avif_first() {
         .collect();
     assert_eq!(avif, [320, 480, 640, 800, 900]);
     assert_eq!(derived.files[0].variant.format, Format::Avif);
-    assert_eq!(derived.encoded, 15);
+    assert_eq!(derived.encoded, 11);
     for file in derived
         .files
         .iter()
@@ -104,7 +100,7 @@ fn a_changed_image_gets_new_files_beside_the_old() {
     let before = derive(&photo(90), &cache).unwrap();
     let after = derive(&photo(200), &cache).unwrap();
     assert_ne!(before.key, after.key);
-    assert_eq!(after.encoded, 10);
+    assert_eq!(after.encoded, 6);
     assert!(
         before.files.iter().all(|file| file.path.is_file()),
         "old pages keep working"
@@ -116,7 +112,7 @@ async fn images_are_made_off_the_async_runtime() {
     let site = tempfile::tempdir().unwrap();
     let cache = MediaCache::new(site.path());
     let derived = derive_in_background(photo(90), cache).await.unwrap();
-    assert_eq!(derived.encoded, 10);
+    assert_eq!(derived.encoded, 6);
 }
 
 #[test]

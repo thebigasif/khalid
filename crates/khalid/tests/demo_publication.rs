@@ -236,6 +236,33 @@ fn the_brand_logo_lands_on_the_publications_about_page() {
     assert!(page(out.path(), "about/").contains("About Harbor Kitchen"));
 }
 
+/// Wire's logo sets the showcase's name in capitals, so the publication's
+/// name goes in as capitals too.
+#[test]
+fn a_logo_in_capitals_spells_the_publications_name_in_capitals() {
+    let site = showcase_copy();
+    let toml = within(site.path(), "site.toml");
+    let settings = fs::read_to_string(&toml).unwrap();
+    let renamed = settings.replacen("name = \"Larkspur Ledger\"", "name = \"Port City Wire\"", 1);
+    assert_ne!(renamed, settings);
+    fs::write(&toml, renamed).unwrap();
+    let brand = Command::new("bash")
+        .arg(repo_file("scripts/demo-brand.sh"))
+        .arg(site.path())
+        .arg("wire")
+        .env("DEMO_BRAND_ALL", "1")
+        .output()
+        .unwrap();
+    assert!(brand.status.success(), "{brand:?}");
+    let logo =
+        fs::read_to_string(repo_file("fixtures/showcase-brands/wire/theme/logo.svg")).unwrap();
+    assert!(logo.contains(">LARKSPUR LEDGER<"), "{logo}");
+    let placed =
+        fs::read_to_string(within(site.path(), "content/en/pages/about/logo.svg")).unwrap();
+    assert!(placed.contains(">PORT CITY WIRE<"), "{placed}");
+    assert!(!placed.to_uppercase().contains("LARKSPUR"), "{placed}");
+}
+
 /// A template whose sample brand is not ready keeps the showcase's theme,
 /// which names its logo on the about page, so the logo stays there when
 /// the publication's about page brings none.

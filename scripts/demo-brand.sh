@@ -45,13 +45,15 @@ site, logo = sys.argv[1], sys.argv[2]
 with open(site, "rb") as file:
     name = tomllib.load(file).get("name", "")
 svg = open(logo, encoding="utf-8").read()
-old = "Larkspur Ledger"
-if name and name != old and old in svg:
+# A logo set in capitals spells the name in capitals too.
+old = next((spelling for spelling in ("Larkspur Ledger", "LARKSPUR LEDGER") if spelling in svg), "")
+if name and old and name.casefold() != old.casefold():
+    new = name.upper() if old.isupper() else name
     def fit(match):
-        width = float(match.group(1)) * len(name) / len(old)
+        width = float(match.group(1)) * len(new) / len(old)
         return f'textLength="{min(width, 250):g}"'
     svg = re.sub(r'textLength="([0-9.]+)"', fit, svg, count=1)
-    svg = svg.replace(old, html.escape(name))
+    svg = svg.replace(old, html.escape(new))
     open(logo, "w", encoding="utf-8").write(svg)
 PY
 fi

@@ -4,7 +4,9 @@ use std::path::PathBuf;
 
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 
-use crate::{ContentKey, Format, MediaCache, MediaError, Original, Variant, widths};
+use crate::{
+    ContentKey, Format, MediaCache, MediaError, Original, Variant, fallback_widths, widths,
+};
 
 /// Everything made from one original: its key, its size and its files.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -15,8 +17,8 @@ pub struct DerivedImage {
     pub width: u32,
     /// The original's height in pixels.
     pub height: u32,
-    /// Every file, AVIF first when asked for, then WebP, then the fallback,
-    /// each from narrowest to widest.
+    /// Every file, AVIF first when asked for, then WebP, each from narrowest
+    /// to widest, then the one fallback file.
     pub files: Vec<DerivedFile>,
     /// How many files this call encoded. Zero when the cache had them all.
     pub encoded: usize,
@@ -70,13 +72,17 @@ pub fn derive_with(
     let key = ContentKey::of(original);
     let image = Original::decode(original)?;
     let avif = (avif == Avif::Make).then_some(Format::Avif);
+    let fallback = image.fallback();
     let variants: Vec<Variant> = avif
         .into_iter()
-        .chain([Format::Webp, image.fallback()])
+        .chain([Format::Webp, fallback])
         .flat_map(|format| {
-            widths(image.width())
-                .into_iter()
-                .map(move |width| (format, width))
+            let sizes = if format == fallback {
+                fallback_widths(image.width())
+            } else {
+                widths(image.width())
+            };
+            sizes.into_iter().map(move |width| (format, width))
         })
         .map(|(format, width)| image.variant(format, width))
         .collect();

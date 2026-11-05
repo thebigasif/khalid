@@ -20,11 +20,17 @@ is for whoever writes a publication:
 
   demo-photo.py fetch <template> <openverse id> <file> [--width N]
       Reads the photo's licence from Openverse and checks it again on the
-      photo's own page, downloads it, makes it at most N px wide (2000 by
+      photo's own page, downloads it, makes it at most N px wide (1600 by
       default) as a JPEG, keeps it in the photo cache at <template>/<file>,
       and prints its photos.lock entry. A photo narrower than --min-width
       (1200 by default) is refused: some sources hand out small copies only.
       Needs Pillow.
+
+  demo-photo.py shrink <publications folder> [--width N]
+      Makes every cached photo the publications' photos.lock files name at
+      most N px wide (1600 by default) and writes its new checksum and size
+      into photos.lock. Khalid makes each photo in up to eight widths, so a
+      narrower original keeps the demos small. Then pack them again.
 
   demo-photo.py credits <publication folder>
       Writes ATTRIBUTION.md and the publication's photo credits page,
@@ -58,6 +64,11 @@ import urllib.request
 API = "https://api.openverse.org/v1/images/"
 COMMONS = "https://commons.wikimedia.org/w/api.php"
 AGENT = "khalid-demo-photos/1.0 (https://github.com/thebigasif/khalid)"
+# The widest a demo photo is kept, and its JPEG quality. The widest picture
+# a template draws is about 1216 px, and Khalid makes every smaller width
+# from this one, so 1600 px looks sharp and keeps the demos small.
+WIDTH = 1600
+QUALITY = 80
 LICENCES = {
     "cc0": ("CC0 1.0", "https://creativecommons.org/publicdomain/zero/1.0/", False),
     "pdm": ("Public Domain Mark 1.0", "https://creativecommons.org/publicdomain/mark/1.0/", False),
@@ -239,7 +250,7 @@ def fetch(args: argparse.Namespace) -> None:
     if picture.width > args.width:
         picture = picture.resize((args.width, round(picture.height * args.width / picture.width)), Image.LANCZOS)
     out = io.BytesIO()
-    picture.save(out, "JPEG", quality=82, optimize=True, progressive=True)
+    picture.save(out, "JPEG", quality=QUALITY, optimize=True, progressive=True)
     data = out.getvalue()
     target = cache() / args.template / args.file
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -305,6 +316,40 @@ def credits(args: argparse.Namespace) -> None:
     print(f"Credited {len(photos)} photographs in {folder / 'ATTRIBUTION.md'} and {target / 'index.md'}.")
 
 
+def shrink(args: argparse.Namespace) -> None:
+    from PIL import Image
+
+    shrunk = 0
+    for lock_file in sorted(pathlib.Path(args.publications).glob("*/photos.lock")):
+        template = lock_file.parent.name
+        lock = lock_file.read_text(encoding="utf-8")
+        for photo in tomllib.loads(lock).get("photos", []):
+            path = cache() / template / photo["file"]
+            data = path.read_bytes() if path.is_file() else b""
+            if hashlib.sha256(data).hexdigest() != photo["sha256"]:
+                sys.exit(f"{template}/{photo['file']} is missing from {cache()} or differs from its photos.lock checksum. Fetch it again.")
+            picture = Image.open(io.BytesIO(data))
+            if picture.width <= args.width:
+                continue
+            picture = picture.convert("RGB").resize((args.width, round(picture.height * args.width / picture.width)), Image.LANCZOS)
+            out = io.BytesIO()
+            picture.save(out, "JPEG", quality=QUALITY, optimize=True, progressive=True)
+            path.write_bytes(out.getvalue())
+            entry = f'file = {json.dumps(photo["file"], ensure_ascii=False)}\nsha256 = "{photo["sha256"]}"'
+            if lock.count(entry) != 1:
+                sys.exit(f"{lock_file} does not hold one entry for {photo['file']} with its file and sha256 lines together. Fix the entry, then run this again.")
+            lock = lock.replace(entry, f'file = {json.dumps(photo["file"], ensure_ascii=False)}\nsha256 = "{hashlib.sha256(out.getvalue()).hexdigest()}"')
+            lock = re.sub(
+                rf'(file = {re.escape(json.dumps(photo["file"], ensure_ascii=False))}\n(?:.*\n)*?size = )"[0-9]+x[0-9]+"',
+                lambda match: f'{match.group(1)}"{picture.width}x{picture.height}"',
+                lock,
+                count=1,
+            )
+            shrunk += 1
+        lock_file.write_text(lock, encoding="utf-8")
+    print(f"Made {shrunk} photographs at most {args.width} px wide. Pack them again and upload the archive.")
+
+
 def pack(args: argparse.Namespace) -> None:
     root = pathlib.Path(args.publications)
     entries = []
@@ -342,15 +387,18 @@ def main() -> None:
     f.add_argument("template")
     f.add_argument("id")
     f.add_argument("file")
-    f.add_argument("--width", type=int, default=2000)
+    f.add_argument("--width", type=int, default=WIDTH)
     f.add_argument("--min-width", type=int, default=1200)
+    r = sub.add_parser("shrink")
+    r.add_argument("publications")
+    r.add_argument("--width", type=int, default=WIDTH)
     c = sub.add_parser("credits")
     c.add_argument("publication")
     p = sub.add_parser("pack")
     p.add_argument("publications")
     p.add_argument("out")
     args = parser.parse_args()
-    {"commons": commons, "search": search, "fetch": fetch, "credits": credits, "pack": pack}[args.command](args)
+    {"commons": commons, "search": search, "fetch": fetch, "shrink": shrink, "credits": credits, "pack": pack}[args.command](args)
 
 
 if __name__ == "__main__":
