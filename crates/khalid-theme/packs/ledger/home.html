@@ -1,7 +1,11 @@
-{#- Ledger's front page: a masthead with the blog's name, its tagline and
-    up to three facts, a row of topic pills, the latest posts as a ruled
-    list with no pictures, five posts per home section, then the
-    newsletter band. -#}
+{#- Ledger's front page: a masthead with the blog's name set large over a
+    double rule, its tagline and up to three facts, a numbered index of
+    topics (a rail beside the list on wide screens, with each topic's
+    newest post and the editor's picks; wrapping pills on a phone), then
+    the latest posts as a ruled list with no pictures, its first row the
+    lead. The first ten rows carry the author, date and topic; the rest
+    are one line each, title and date, like a study's index. Five posts
+    per home section, then the newsletter band. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import avatar -%}
@@ -10,16 +14,23 @@
 {% from "home_parts.html" import hero_stats, home_sections -%}
 {% macro entries(posts, level) -%}
 <ol class="ledger-list" role="list">
-{% for post in posts %}<li>
-<article class="entry">
+{% for post in posts %}{% if loop.index <= 10 %}<li>
+<article class="ledger-entry">
 <p class="card-meta">{% if post.author %}<span class="card-author">{% if post.author.image %}{{ avatar(post.author.image) }}{% endif %}{{ post.author.name }}</span>
 {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %}
 <a class="pill" href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}</p>
 <h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 </article>
 </li>
-{% endfor %}</ol>
+{% else %}<li class="ledger-line">
+<article class="ledger-short">
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<time datetime="{{ post.date }}">{{ post.date | date }}</time>
+</article>
+</li>
+{% endif %}{% endfor %}</ol>
 {%- endmacro %}
+{% set topics = page.topics and "topic_links" in site.features -%}
 <header class="masthead">
 <h1>{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if template.options.tagline %}<p class="tagline">{{ template.options.tagline }}</p>
@@ -30,23 +41,37 @@
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
-{% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="pills" aria-label="{{ t.topics }}">
-<ul>
-{% for group in page.topics %}{% for topic in group.links %}<li><a class="pill" href="{{ topic.href }}">{{ topic.name }}</a></li>
-{% endfor %}{% endfor %}</ul>
+{% endif %}{% if topics %}<div class="ledger-front">
+<div class="ledger-rail">
+<nav class="pills ledger-topics" aria-label="{{ t.topics }}">
+<h2>{{ t.topics }}</h2>
+<ol role="list">
+{% for group in page.topics %}{% for topic in group.links %}{% set tab = page.tabs | selectattr("href", "eq", topic.href) | first %}<li><a class="pill" href="{{ topic.href }}">{{ topic.name }}</a>{% if tab and tab.posts %}
+<a class="ledger-newest" href="{{ tab.posts[0].href }}">{{ tab.posts[0].title }}</a>{% endif %}</li>
+{% endfor %}{% endfor %}</ol>
 </nav>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+{% if page.picks %}<section class="ledger-picks" aria-labelledby="ledger-picks-title">
+<h2 id="ledger-picks-title">{{ t.editors_picks }}</h2>
+<ol role="list">
+{% for post in page.picks[:4] %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
+{% endfor %}</ol>
+</section>
+{% endif %}</div>
+{% endif %}<div class="ledger-main">
+{% if page.sections %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ entries(section.posts[:5], 3) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}<section class="home-section" aria-labelledby="latest-title">
+{% endfor %}{% elif page.posts %}<section class="home-section home-latest" aria-labelledby="latest-title">
 <h2 id="latest-title">{{ t.latest }}</h2>
 {{ entries(page.posts, 3) }}
 </section>
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}</div>
+{% if topics %}</div>
 {% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{{ home_sections(page, template.options, t) }}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<div class="band">
 {{ newsletter_form(site.subscribe, t) }}

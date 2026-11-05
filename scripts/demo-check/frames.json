@@ -8,12 +8,10 @@
     "folio": 1280,
     "harbor": 1344,
     "keystone": 1280,
-    "ledger": 660,
+    "ledger": 1200,
     "meridian": 1280,
     "wire": 1344,
     "workbench": 1280
   },
-  "reading_pending": [
-    "ledger"
-  ]
+  "reading_pending": []
 }
