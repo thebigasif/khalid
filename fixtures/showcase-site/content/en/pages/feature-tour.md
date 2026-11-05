@@ -94,7 +94,7 @@ Google no longer shows rich results for the types below. Khalid still writes val
 
 ## Ten looks for the same blog
 
-The same posts, built with each of Khalid's templates: [Almanac](https://thebigasif.github.io/khalid/templates/almanac/), [Atlas](https://thebigasif.github.io/khalid/templates/atlas/), [Compass](https://thebigasif.github.io/khalid/templates/compass/), [Folio](https://thebigasif.github.io/khalid/templates/folio/), [Harbor](https://thebigasif.github.io/khalid/templates/harbor/), [Keystone](https://thebigasif.github.io/khalid/templates/keystone/), [Ledger](https://thebigasif.github.io/khalid/templates/ledger/), [Meridian](https://thebigasif.github.io/khalid/templates/meridian/), [Wire](https://thebigasif.github.io/khalid/templates/wire/) and [Workbench](https://thebigasif.github.io/khalid/templates/workbench/).
+The same posts, built with each of Khalid's templates: [Almanac](https://serpdad.com/khalid/templates/almanac/), [Atlas](https://serpdad.com/khalid/templates/atlas/), [Compass](https://serpdad.com/khalid/templates/compass/), [Folio](https://serpdad.com/khalid/templates/folio/), [Harbor](https://serpdad.com/khalid/templates/harbor/), [Keystone](https://serpdad.com/khalid/templates/keystone/), [Ledger](https://serpdad.com/khalid/templates/ledger/), [Meridian](https://serpdad.com/khalid/templates/meridian/), [Wire](https://serpdad.com/khalid/templates/wire/) and [Workbench](https://serpdad.com/khalid/templates/workbench/).
 
 ## What you cannot see on a page
 

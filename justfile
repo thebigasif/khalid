@@ -69,6 +69,11 @@ layout-selftest:
 publication-selftest:
     bash scripts/demo-check/publication-selftest.sh
 
+# Proves the map scripts/pages-forward.sh uses to send each old GitHub
+# Pages address to serpdad.com, with no network.
+pages-forward-selftest:
+    bash scripts/pages-forward.sh --selftest
+
 # Ghost's own Content API client, at the version
 # scripts/ghost-client/package.json pins, against the showcase with
 # Ghost's Content API switched on (docs/ghost-api.md).
