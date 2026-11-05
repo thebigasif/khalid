@@ -10,7 +10,7 @@ use crate::{Pack, PackTemplate, slot};
 pub(crate) static MERIDIAN: Pack = Pack {
     name: "meridian",
     summary: "A calm company journal: serif titles, a lead story, category tabs, wide rows with a picture, several authors with their roles, and a reference layout for long guides.",
-    stylesheet: include_str!("../packs/meridian/meridian.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/meridian/meridian.css")),
     templates: &[
         PackTemplate {
             name: "home.html",

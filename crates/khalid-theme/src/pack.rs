@@ -106,7 +106,7 @@ pub enum OptionKind {
 static CLASSIC: Pack = Pack {
     name: PackName::CLASSIC,
     summary: "The default look: a lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts.",
-    stylesheet: include_str!("../packs/classic/classic.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/classic/classic.css")),
     templates: &[],
     tokens: "",
     reader: &[],

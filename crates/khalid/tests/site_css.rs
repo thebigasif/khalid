@@ -90,11 +90,13 @@ fn a_site_without_the_file_gets_the_template_alone() {
     let site = demo_in_atlas();
     let (output, out) = build(site.path());
     assert_eq!(output.status.code(), Some(0), "{output:?}");
-    assert!(
-        stylesheet(&out)
-            .trim_end()
-            .ends_with("@media print { .catbar, .masthead::before, .cta-band::before, .site-footer::before { display: none; } }")
-    );
+    let atlas = khalid_theme::packs()
+        .iter()
+        .find(|pack| pack.name == "atlas")
+        .unwrap();
+    let last = atlas.stylesheet.trim_end().lines().last().unwrap();
+    let css = stylesheet(&out);
+    assert!(css.trim_end().ends_with(last), "{css}");
 }
 
 #[cfg(unix)]

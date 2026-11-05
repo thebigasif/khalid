@@ -13,7 +13,7 @@ const TAGLINE_CHARACTERS: usize = 140;
 pub(crate) static ATLAS: Pack = Pack {
     name: "atlas",
     summary: "A publication for a blog with many topics: a masthead, featured stories, picture cards and a topic index.",
-    stylesheet: include_str!("../packs/atlas/atlas.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/atlas/atlas.css")),
     templates: &[PackTemplate {
         name: "home.html",
         source: include_str!("../packs/atlas/home.html"),
