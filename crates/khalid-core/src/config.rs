@@ -45,6 +45,7 @@ pub struct Config {
     visitor_log: VisitorLogSettings,
     preview_link_lifetime: Duration,
     ai: AiSettings,
+    ghost_content_api: bool,
 }
 
 /// Whether Khalid runs a server, writes plain HTML, or leaves the pages to
@@ -118,6 +119,8 @@ struct SiteFile {
     visitor_log: VisitorLogSettings,
     #[serde(default)]
     ai: AiSettings,
+    #[serde(default)]
+    ghost_content_api: bool,
     preview_link_days: Option<u64>,
     preview_link_hours: Option<u64>,
 }
@@ -338,6 +341,7 @@ impl Config {
             visitor_log: file.visitor_log,
             preview_link_lifetime,
             ai: file.ai,
+            ghost_content_api: file.ghost_content_api,
         })
     }
 
@@ -385,6 +389,14 @@ impl Config {
     /// off unless the site switches it on.
     pub fn visitor_log(&self) -> &VisitorLogSettings {
         &self.visitor_log
+    }
+
+    /// Whether a copy of Ghost's Content API answers under
+    /// `/ghost/api/content/`, from `ghost_content_api`; off unless the site
+    /// switches it on, so front ends built for Ghost move by changing only
+    /// their address and key (`docs/ghost-api.md`).
+    pub fn ghost_content_api(&self) -> bool {
+        self.ghost_content_api
     }
 
     /// The site's name, shown in titles and feeds.

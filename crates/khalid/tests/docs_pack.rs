@@ -18,7 +18,7 @@ use tempfile::TempDir;
 const BASE: &str = "/khalid/docs/";
 
 /// The docs R13 publishes, with the guides under `deploy` and `templates`.
-const DOCS: [&str; 21] = [
+const DOCS: [&str; 22] = [
     "getting-started",
     "deploy",
     "deploy/cloudflare",
@@ -40,6 +40,7 @@ const DOCS: [&str; 21] = [
     "reading",
     "newsletters",
     "charts-embeds-tracking",
+    "ghost-api",
 ];
 
 /// The front matter of a page in the pack.
