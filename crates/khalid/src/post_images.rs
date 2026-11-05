@@ -288,11 +288,20 @@ fn drawn(html: &str, pictures: &BTreeMap<String, Picture>) -> String {
 /// For each picture drawn in `html` that is wider than the text column and
 /// not inside a link, the address its image shows, as `html` writes it,
 /// and the address of its widest size, which click to enlarge links to.
+/// The widest size is a WebP: the fallback format is made in one width of
+/// at most 1280 px only.
 fn originals(html: &str, pictures: &BTreeMap<String, Picture>) -> BTreeMap<String, String> {
     let wide = pictures.values().filter(|picture| picture.width > COLUMN);
-    let widest = wide.filter_map(|picture| picture.fallback.widest());
+    let widest = wide.filter_map(|picture| {
+        let shown = picture.fallback.widest()?;
+        let largest = picture
+            .webp
+            .as_ref()
+            .and_then(ImageSet::widest)
+            .unwrap_or(shown);
+        Some((attribute(&shown.url), largest.url.clone()))
+    });
     widest
-        .map(|size| (attribute(&size.url), size.url.clone()))
         .filter(|(shown, _)| {
             let at = html.find(&format!("{IMAGE}{shown}\""));
             at.is_some_and(|at| !inside_link(html.split_at(at).0))
@@ -419,13 +428,15 @@ mod tests {
     }
 
     #[test]
-    fn a_picture_wider_than_the_column_links_to_its_widest_size() {
+    fn a_picture_wider_than_the_column_links_to_its_widest_webp() {
         let pictures = pictures("/blog/");
         let html = drawn(&format!("<img src=\"{CHART}\" alt=\"\" />"), &pictures);
-        let widest = "/blog/media/3f2a/800.png".to_owned();
         assert_eq!(
             originals(&html, &pictures),
-            BTreeMap::from([(widest.clone(), widest)])
+            BTreeMap::from([(
+                "/blog/media/3f2a/800.png".to_owned(),
+                "/blog/media/3f2a/800.webp".to_owned()
+            )])
         );
     }
 
