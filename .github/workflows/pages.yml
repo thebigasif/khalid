@@ -1,24 +1,25 @@
 name: Pages
 
-# Publishes Khalid's website and its demos to GitHub Pages under
-# https://thebigasif.github.io/khalid/, all built by the binary from this
-# commit, so a template that lands shows at once:
+# Builds Khalid's demos with the binary from this commit and publishes them
+# to the GitHub release named "demos", which the serpdad.com build reads.
 #
-#   /khalid/                    the website (site/)
-#   /khalid/demo/               the showcase site (fixtures/showcase-site)
-#   /khalid/examples/<slug>/    each example in fixtures/examples/
-#   /khalid/templates/<name>/   the showcase in each template the binary has
-#   /khalid/khalid-demos.tar.gz the demos built for https://serpdad.com/khalid/,
-#                               which the serpdad.com build downloads
+# GitHub Pages, https://thebigasif.github.io/khalid/, only forwards to
+# serpdad.com/khalid/, Khalid's one home (plan U16). The workflow still
+# builds the old Pages copy, since its pages are the old addresses, and
+# scripts/pages-forward.sh turns each into a small page that sends visitors
+# and search engines to the new address. Pages publishes nothing else:
 #
-# The same bundles go to the GitHub release named "demos", which the
-# serpdad.com build reads instead of Pages. That release is a prerelease
-# and never "latest", so /releases/latest, scripts/install.sh and
-# `khalid update` still find the newest v release. Its files are replaced
-# in place; the release is never deleted.
+#   /khalid/                    the website's pages, to the landing page,
+#                               the docs and the comparison
+#   /khalid/demo/               the showcase site, to the same page
+#   /khalid/examples/<slug>/    each example, to the same page
+#   /khalid/templates/<name>/   each template's demo, to its template page
+#                               and to the same page of its new demo
 #
-# Every page here names the same path on serpdad.com as its canonical
-# address, so search engines credit serpdad.com.
+# The release named "demos" is a prerelease and never "latest", so
+# /releases/latest, scripts/install.sh and `khalid update` still find the
+# newest v release.
+# Its files are replaced in place; the release is never deleted.
 #
 # A change to the sites publishes on its own. A change to the engine
 # publishes at the next release, or by running this workflow by hand, so
@@ -36,6 +37,7 @@ on:
       - "scripts/demo-brand.sh"
       - "scripts/template-previews.sh"
       - "scripts/demos-bundle.sh"
+      - "scripts/pages-forward.sh"
       - ".github/workflows/pages.yml"
   release:
     types: [published]
@@ -70,14 +72,17 @@ jobs:
         run: |
           cargo build --release -p khalid
           ./target/release/khalid --version
-      - name: Build every site for the Pages address
+      - name: Build the old Pages copy, whose pages are the old addresses
         run: bash scripts/pages.sh --canonical https://serpdad.com ./target/release/khalid "$RUNNER_TEMP/pages" https://thebigasif.github.io /khalid/
       - name: Template previews
         run: bash scripts/template-previews.sh "$RUNNER_TEMP/pages" /khalid/
       - name: The demos for serpdad.com, with the same previews
         run: |
           bash scripts/demos-bundle.sh ./target/release/khalid "$RUNNER_TEMP/demos/khalid" "$RUNNER_TEMP/pages/templates"
-          cp "$RUNNER_TEMP/demos/khalid-demos.tar.gz" "$RUNNER_TEMP/pages/khalid-demos.tar.gz"
+      - name: A forwarder to serpdad.com for every old address
+        run: |
+          bash scripts/pages-forward.sh --selftest
+          bash scripts/pages-forward.sh "$RUNNER_TEMP/pages" "$RUNNER_TEMP/demos/khalid" "$RUNNER_TEMP/forward"
       # The docs pack joins once scripts/docs-bundle.sh is on main. It builds
       # in the folder it is given and writes khalid-docs.tar.gz beside it. The demo photographs are not in git, so their
       # archive is uploaded from the build server by hand, never from here.
@@ -95,7 +100,7 @@ jobs:
           if-no-files-found: error
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: ${{ runner.temp }}/pages
+          path: ${{ runner.temp }}/forward
   deploy:
     name: Publish
     needs: build

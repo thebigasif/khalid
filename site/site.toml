@@ -1,9 +1,9 @@
-# Khalid's own website, built with Khalid. It is published on GitHub Pages
-# at https://thebigasif.github.io/khalid/. The showcase demo sits at
-# /khalid/demo/, the template demos at /khalid/templates/<name>/ and the
-# use case sites at /khalid/examples/<slug>/, each built from its own folder.
-# The demos and the template gallery are also served at
-# https://serpdad.com/khalid/, see scripts/demos-bundle.sh.
+# Khalid's old website, built with Khalid. Khalid's home is now
+# https://serpdad.com/khalid/. GitHub Pages, at the address below, only
+# forwards there: the Pages workflow builds this site, the showcase demo at
+# /khalid/demo/, the template demos at /khalid/templates/<name>/ and the use
+# case sites at /khalid/examples/<slug>/ for their old addresses, and
+# scripts/pages-forward.sh turns each page into a forwarder.
 
 name = "Khalid"
 address = "https://thebigasif.github.io"
