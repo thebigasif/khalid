@@ -2,7 +2,10 @@
     masthead with the blog's name, a tagline and the category links; the
     lead, the newest featured post large beside a numbered rail of the
     newest posts; a grid of picture cards; the rest as a text-only index
-    of ruled rows; an optional quote and numbered page links. -#}
+    of ruled rows; an optional quote and numbered page links. When some
+    posts carry facts, those are the releases: the essays lead and the
+    releases run beside them as a dated log, each tagged with its first
+    fact (the version), and the rail and grid make way for it. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
@@ -31,7 +34,35 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif slot and posts %}<div class="lead">
+{% endfor %}{% elif posts | selectattr("facts") | list %}{% set releases = posts | selectattr("facts") | list -%}
+{% set essays = posts | rejectattr("facts") | list -%}
+{% set rest = (essays[4:] + releases[8:]) | sort(attribute="date", reverse=true) -%}
+<div class="lead lead-log">
+<div class="lead-essays">
+{% if slot %}{{ featured_slot(slot) }}
+{% endif %}{% if essays %}<section class="lead-grid" aria-labelledby="lead-grid-title">
+<h2 id="lead-grid-title">{{ t.more_posts if slot else t.latest }}</h2>
+{{ cards(essays[:4], 3) }}
+</section>
+{% endif %}</div>
+{% set log = releases[0].category -%}
+<section class="release-log" aria-labelledby="release-log-title">
+<h2 id="release-log-title">{% if log %}<a href="{{ log.href }}">{{ log.name }}</a>{% else %}{{ t.latest }}{% endif %}</h2>
+<ol role="list">
+{% for post in releases[:8] %}<li>
+<p class="release-tag"><span class="visually-hidden">{{ post.facts[0].label }} </span>{{ post.facts[0].value }}</p>
+<time datetime="{{ post.date }}">{{ post.date | date }}</time>
+<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+</li>
+{% endfor %}</ol>
+{% if log %}<p class="view-all"><a href="{{ log.href }}">{{ t.view_all | replace("{name}", log.name) }}</a></p>
+{% endif %}</section>
+</div>
+{% if rest %}<section class="lead-index" aria-labelledby="lead-index-title">
+<h2 id="lead-index-title">{{ t.archive_title }}</h2>
+{{ cards(rest, 3, "compact") }}
+</section>
+{% endif %}{% elif slot and posts %}<div class="lead">
 {{ featured_slot(slot) }}
 <section class="lead-rail" aria-labelledby="lead-rail-title">
 <h2 id="lead-rail-title">{{ t.latest }}</h2>

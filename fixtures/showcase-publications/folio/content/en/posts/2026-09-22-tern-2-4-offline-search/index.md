@@ -5,6 +5,13 @@ date: 2026-09-22
 author: ada-kerrow
 reviewed_by: greta-voss
 category: changelog
+facts:
+  - label: Version
+    value: "2.4"
+  - label: Changes
+    value: "6"
+  - label: Fixes
+    value: "4"
 description: "Tern 2.4 brings offline search: every search now runs on your device, works without a connection and returns results in under 50 milliseconds."
 focus_keyword: offline search
 tags: [v2.4, offline, search]

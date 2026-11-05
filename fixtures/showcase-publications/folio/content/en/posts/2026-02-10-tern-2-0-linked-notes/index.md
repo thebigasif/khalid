@@ -6,6 +6,11 @@ reviewed: 2026-10-05
 author: greta-voss
 reviewed_by: ada-kerrow
 category: changelog
+facts:
+  - label: Version
+    value: "2.0"
+  - label: Changes
+    value: "6"
 description: "Tern 2.0 brings linked notes, a rebuilt editor and backlinks on every note, and turns tags into notes you can link to."
 focus_keyword: linked notes
 tags: [v2.0, linking, editor]
