@@ -208,14 +208,16 @@ fn the_header_and_the_hero_link_khalid_s_main_home_on_serpdad() {
     let built = khalid(site.path(), &["build"]);
     assert!(built.status.success(), "{built:?}");
     let home = built_page(site.path(), "");
-    // The header's button, its copy in the phone menu, and the hero.
+    // The header's menu link, its copy in the phone menu, and the hero.
     assert_eq!(
         home.matches("href=\"https://serpdad.com/khalid/\"").count(),
         3
     );
-    assert!(
-        home.contains("<a class=\"button menu-button\" href=\"https://serpdad.com/khalid/\">"),
-        "the phone menu carries the header's button"
+    assert_eq!(
+        home.matches("<a href=\"https://serpdad.com/khalid/\">Khalid on SerpDad</a>")
+            .count(),
+        2,
+        "the menu link shows in the header and in the phone menu"
     );
 }
 
