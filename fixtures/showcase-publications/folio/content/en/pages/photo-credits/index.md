@@ -1,10 +1,10 @@
 ---
 title: Photo credits
 slug: photo-credits
-description: Who took the photographs in Workbench Notes, and under which licence each one is shared.
+description: Who took the photographs in Tern Notes, and under which licence each one is shared.
 ---
 
-The photographs in Workbench Notes come from photographers who share their work under open licences. Each one is listed here with its licence and a link to where it was first published. The photographs are cropped and resized to fit this site.
+The photographs in Tern Notes come from photographers who share their work under open licences. Each one is listed here with its licence and a link to where it was first published. The photographs are cropped and resized to fit this site.
 
 - "[White architecture concept (Unsplash)](https://commons.wikimedia.org/wiki/File:White_architecture_concept_(Unsplash).jpg)" by Tobias van Schneider vanschneider, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
 - "[Pile of thread (Unsplash)](https://commons.wikimedia.org/wiki/File:Pile_of_thread_(Unsplash).jpg)" by Terri Bleeker terri_bleeker, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).

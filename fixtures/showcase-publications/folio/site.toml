@@ -1,9 +1,9 @@
-# Workbench Notes, the made-up essays and changelog of the small team
+# Tern Notes, the made-up essays and changelog of the small team
 # that makes Tern, a note-taking app, written for the Folio template's
 # demo. Each key and table here replaces the showcase's own when
 # scripts/demo-publication.sh applies it.
 
-name = "Workbench Notes"
+name = "Tern Notes"
 languages = ["en"]
 
 [template.cta]
@@ -21,8 +21,8 @@ separator = "·"
 tagline = "Essays and release notes from the team that makes Tern"
 
 [seo.ai_page]
-covers = "Workbench Notes is the blog of the team that makes Tern, a note-taking app. It holds essays on design decisions, notes on how the team works, engineering notes on offline sync and search, and the release notes for every version of Tern."
-cite = "Name Workbench Notes and the author, and link the post you quote. For a release, name the Tern version."
+covers = "Tern Notes is the blog of the team that makes Tern, a note-taking app. It holds essays on design decisions, notes on how the team works, engineering notes on offline sync and search, and the release notes for every version of Tern."
+cite = "Name Tern Notes and the author, and link the post you quote. For a release, name the Tern version."
 contact = "team@example.com"
 
 [seo.publisher]
@@ -41,7 +41,7 @@ height = 80
 # server is a reserved example name, so nothing is ever sent.
 [mail]
 from = "notes@example.com"
-name = "Workbench Notes"
+name = "Tern Notes"
 postal_address = "Tern, 12 Ropewalk Yard, Millbrook MB2 4TN"
 
 [mail.smtp]
