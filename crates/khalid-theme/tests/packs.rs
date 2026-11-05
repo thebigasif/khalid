@@ -73,7 +73,9 @@ fn classic_comes_first_and_names_are_unique() {
 fn every_pack_stylesheet_reads_back_from_the_binary() {
     for pack in khalid_theme::packs() {
         let css = pack.stylesheet();
-        if pack.name == "classic" && css.is_empty() {
+        if css.is_empty() {
+            // Only the test build's sampler has no rules of its own.
+            assert_eq!(pack.name, "sampler");
             continue;
         }
         assert!(css.contains('{'), "{} has no rules", pack.name);

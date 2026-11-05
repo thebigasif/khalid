@@ -67,7 +67,8 @@ impl PackCss {
         }
     }
 
-    /// A stylesheet with no rules.
+    /// A stylesheet with no rules, for the test build's sampler pack.
+    #[cfg(feature = "test-util")]
     pub(crate) const fn empty() -> Self {
         Self::compressed(&[])
     }
