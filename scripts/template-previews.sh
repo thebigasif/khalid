@@ -213,9 +213,11 @@ shot() {
   local w="$width" h="$height" scale=1 label
   if [ "$kind" = phone ]; then w="$phone_width" h="$phone_height" scale=2; fi
   case "$kind" in home) label="Home page" ;; post) label="A post" ;; *) label="On a phone" ;; esac
+  # Ten seconds of page time lets every photo in the first screen arrive
+  # and draw; three left Harbor's phone picture with an empty photo box.
   timeout 90 "$chrome" --headless --no-sandbox --disable-gpu --hide-scrollbars \
     --force-device-scale-factor="$scale" --window-size="$w,$h" \
-    --run-all-compositor-stages-before-draw --virtual-time-budget=3000 \
+    --run-all-compositor-stages-before-draw --virtual-time-budget=10000 \
     --screenshot="$png" "$base$address" >/dev/null 2>&1 || true
   if [ ! -s "$png" ]; then
     echo "Chromium drew nothing for $address, so $name's $kind picture is the plain card."
