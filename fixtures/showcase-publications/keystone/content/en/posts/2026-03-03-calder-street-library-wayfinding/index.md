@@ -10,16 +10,19 @@ description: How we planned the library wayfinding for Calder Street Library, a 
 focus_keyword: library wayfinding
 featured: true
 tags: [wayfinding, signage, case study]
+facts:
+  - label: Client
+    value: Eastbridge Council
+  - label: Year
+    value: 2025 to 2026
+  - label: Discipline
+    value: Wayfinding, signage
 image:
   src: lead.jpg
   alt: The bright main hall of a library in a converted church, with tall arched windows, white walls, low white shelving and a round desk, the kind of open hall library wayfinding has to serve
 ---
 
 We planned the library wayfinding for Calder Street Library in 2025 and 2026, and the 64 new signs went up in February. The building has grown in four stages since 1898, and the new signs give visitors one simple route through all of them, so the staff now answer far fewer questions about where things are.
-
-| Client | Year | Discipline |
-|---|---|---|
-| Calder Street Library, Eastbridge Council | 2025 to 2026 | Wayfinding, signage |
 
 ::toc
 

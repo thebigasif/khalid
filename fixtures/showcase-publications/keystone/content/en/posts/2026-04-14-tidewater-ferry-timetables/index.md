@@ -10,16 +10,19 @@ description: How we redesigned the Tidewater Ferries timetables in 2026 so a pas
 focus_keyword: ferry timetables
 featured: true
 tags: [wayfinding, information design, case study]
+facts:
+  - label: Client
+    value: Tidewater Ferries, Eastbridge
+  - label: Year
+    value: "2026"
+  - label: Discipline
+    value: Information design, signage
 image:
   src: lead.jpg
   alt: The open upper deck of a white passenger ferry on a misty grey morning, its green railings running towards the bow and the shore lost in fog
 ---
 
 We redesigned the Tidewater Ferries timetables in 2026 so that a passenger at the pier can find the next boat in a few seconds. The new ferry timetables show one route per panel, the next departures first, and the same layout on the pier boards, the printed leaflets and the website.
-
-| Client | Year | Discipline |
-|---|---|---|
-| Tidewater Ferries, Eastbridge | 2026 | Information design, signage |
 
 ## The problem with the old ferry timetables
 

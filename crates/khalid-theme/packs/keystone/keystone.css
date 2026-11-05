@@ -93,7 +93,7 @@ a:hover { text-decoration-color: currentColor; }
 /* Lists of posts: the page title, its topics, then cards. */
 main > :is(h1:first-child, .breadcrumbs + h1) { margin-block: calc(var(--space) * 7) calc(var(--space) * 6); font-size: clamp(2.5rem, 1.6rem + 3vw, 4.25rem); }
 /* The masthead: the blog's name in large tight type across the top. */
-.home-head h1 { margin-block: clamp(2.5rem, 1rem + 5vw, 6rem) 0; font-size: clamp(3rem, 1.4rem + 5.4vw, 6.5rem); font-weight: 700; letter-spacing: -0.05em; line-height: 0.95; }
+.home-head h1 { margin-block: clamp(2.5rem, 1rem + 5vw, 6rem) 0; font-size: clamp(2.5rem, 1.25rem + 5.4vw, 6.5rem); font-weight: 700; letter-spacing: -0.05em; line-height: 0.95; }
 .home-head .intro { margin-block-start: calc(var(--space) * 3); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); color: var(--color-muted); }
 main > :is(h1:first-child, .breadcrumbs + h1):has(+ .intro) { margin-block-end: calc(var(--space) * 2); }
 main > .breadcrumbs + h1 { margin-block-start: calc(var(--space) * 2); }
@@ -496,3 +496,43 @@ main > section:not([class]) > h2 { margin-block: 0 calc(var(--space) * 4); paddi
 .people-list .person-role { color: var(--color-muted); font-size: var(--text-small); }
 .author-header .image img { box-shadow: var(--keystone-frame); }
 .page-body h2 { margin-block-start: 2.25em; }
+
+/* The project index: a studio's printed portfolio index. A heavy rule
+   over small column heads, then one hairline row per project, the name in
+   ink and the rest of the title quiet, the facts in their own columns in
+   tabular figures. The whole row is the link. On a phone each row stacks:
+   the title, then the facts on one line. */
+.project-index table { display: table; inline-size: 100%; margin: 0; font-variant-numeric: tabular-nums lining-nums; counter-reset: project; }
+.project-index :is(th, td) { padding: 1.125rem 1.5rem 1.125rem 0; border: 0; vertical-align: baseline; font-weight: 400; }
+.project-index thead th { padding-block: 0 0.75rem; color: var(--color-muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.project-index tr { position: relative; border-block-end: var(--keystone-line); }
+.project-index thead tr { border-color: var(--color-text); }
+.project-index tbody tr:hover { background: var(--keystone-tint); }
+.project-index tbody th { inline-size: 48%; }
+.project-index tr > :first-child { padding-inline-start: 2.75rem; }
+.project-index tbody th::before { counter-increment: project; content: counter(project, decimal-leading-zero) / ""; display: inline-block; inline-size: 2.25rem; margin-inline-start: -2.25rem; color: var(--color-muted); font-family: var(--font-body); font-size: 0.8125rem; }
+.project-index a { color: var(--color-muted); text-decoration: none; }
+.project-index a span { color: var(--color-text); font-family: var(--font-heading); font-weight: 600; letter-spacing: -0.01em; }
+.project-index a::after { content: ""; position: absolute; inset: 0; }
+.project-index tr:hover a span { color: var(--color-link); }
+.project-index td { font-size: 0.9375rem; }
+.project-index td:nth-child(3) { white-space: nowrap; }
+@media (max-width: 47.99rem) {
+  .project-index :is(table, tbody) { display: block; }
+  .project-index tbody { border-block-start: 1px solid var(--color-text); }
+  .project-index thead { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; }
+  .project-index tr { display: block; padding: 1rem 0 1rem 2.25rem; }
+  .project-index :is(th, td) { display: inline; padding: 0; }
+  .project-index tbody th { display: block; inline-size: auto; padding: 0 0 0.375rem; }
+  .project-index tr > :first-child { padding-inline-start: 0; }
+  .project-index td { color: var(--color-muted); font-size: 0.875rem; white-space: normal; }
+  .project-index td:nth-child(3) { white-space: normal; }
+  .project-index td:not(:empty) ~ td:not(:empty)::before { content: "\00b7" / ""; margin-inline: 0.5rem; }
+}
+
+/* The credits line on a project: its facts in a row under the summary,
+   each a small label over its value, ruled off above the byline. */
+.credits { display: flex; flex-wrap: wrap; gap: 0.75rem 2.5rem; margin-block: calc(var(--space) * 5) 0; padding-block: 1rem; border-block-start: var(--keystone-line); font-variant-numeric: tabular-nums lining-nums; }
+.credits + .post-meta { margin-block-start: 0; }
+.credits dt { color: var(--color-muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.credits dd { margin: 0.125rem 0 0; font-size: 0.9375rem; font-weight: 500; }

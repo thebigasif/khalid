@@ -8,16 +8,19 @@ category: projects
 description: How we designed cider packaging for Orchard Lane Cider in 2026, with one label system for six ciders, each named after the orchard its apples come from.
 focus_keyword: cider packaging
 tags: [packaging, print, case study]
+facts:
+  - label: Client
+    value: Orchard Lane Cider, Wrenfield
+  - label: Year
+    value: "2026"
+  - label: Discipline
+    value: Packaging, print
 image:
   src: lead.jpg
   alt: A crate filled to the brim with freshly picked red and deep crimson cider apples, some still with green leaves, seen from directly above
 ---
 
 We designed new cider packaging for Orchard Lane Cider in 2026: one label system for six ciders, each named after the orchard its apples come from. The labels, gift boxes and crates now share a layout, so a customer can tell the ciders apart at a glance and still see they come from one maker.
-
-| Client | Year | Discipline |
-|---|---|---|
-| Orchard Lane Cider, Wrenfield | 2026 | Packaging, print |
 
 ## The brief
 

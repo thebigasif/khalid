@@ -8,16 +8,19 @@ category: projects
 description: How we built a small hardware website for Pell and Sons in 2026 that answers the questions customers phone about, and that the owners update themselves.
 focus_keyword: hardware website
 tags: [websites, case study]
+facts:
+  - label: Client
+    value: Pell and Sons Hardware, Eastbridge
+  - label: Year
+    value: "2026"
+  - label: Discipline
+    value: Website
 image:
   src: lead.jpg
   alt: Old hand tools laid out in rows on dark wooden floorboards in morning light, including hammers, an axe, ice tongs, a torch, leather gloves and a tape measure, for the hardware website
 ---
 
 We built a small hardware website for Pell and Sons in 2026 that answers the five questions customers used to phone about, and that the owners update themselves in a few minutes. It has four pages, loads fast on a phone in the shop's car park and costs less to run each year than one delivery of nails.
-
-| Client | Year | Discipline |
-|---|---|---|
-| Pell and Sons Hardware, Eastbridge | 2026 | Website |
 
 ## What the shop needed
 

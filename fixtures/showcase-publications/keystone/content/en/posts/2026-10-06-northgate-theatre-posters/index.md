@@ -8,16 +8,19 @@ category: projects
 description: How we designed and screen printed the theatre posters for Northgate Theatre's 2026 season, with one grid, two inks and a new colour for each play.
 focus_keyword: theatre posters
 tags: [print, brand identity, case study]
+facts:
+  - label: Client
+    value: Northgate Community Theatre
+  - label: Year
+    value: "2026"
+  - label: Discipline
+    value: Season identity, print
 image:
   src: lead.jpg
   alt: A blue screen-printing press with its frame raised over a pale print bed, beside a tall white drying rack, in a bright white print room of the kind where theatre posters are printed
 ---
 
 We designed and screen printed the theatre posters for Northgate Theatre's 2026 autumn season: six plays, six posters, one shared grid and two inks per poster. The posters run in the theatre's glass cases, in cafés and shops across Eastbridge and as a set the theatre sells in its foyer.
-
-| Client | Year | Discipline |
-|---|---|---|
-| Northgate Community Theatre | 2026 | Season identity, print |
 
 ## The brief
 

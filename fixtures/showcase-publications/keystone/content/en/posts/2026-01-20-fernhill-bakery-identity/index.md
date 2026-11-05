@@ -9,16 +9,19 @@ category: projects
 description: How we drew a new bakery identity for Fernhill Bakery from its own shop window, flour sacks and price cards, with the scope and timeline.
 focus_keyword: bakery identity
 tags: [brand identity, case study]
+facts:
+  - label: Client
+    value: Fernhill Bakery, Eastbridge
+  - label: Year
+    value: "2025"
+  - label: Discipline
+    value: Brand identity, packaging
 image:
   src: lead.jpg
   alt: A long rye loaf with a cracked, flour-dusted crust on a worn wooden board, a bread knife with a wooden handle laid above it, on a coarse hessian cloth
 ---
 
 We gave Fernhill Bakery a new bakery identity in 2025 by drawing it from things the shop already had: the gold lettering on its window, the stamp on its flour sacks and the price cards the owner writes by hand. The result is a wordmark, a stamp, two colours and a set of paper bags and labels that look as if they have always belonged to the shop.
-
-| Client | Year | Discipline |
-|---|---|---|
-| Fernhill Bakery, Eastbridge | 2025 | Brand identity, packaging |
 
 ## The brief
 
