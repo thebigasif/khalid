@@ -8,8 +8,9 @@ is for whoever writes a publication:
 
   demo-photo.py search <words> [--wide] [--count N] [--source S]
       Openverse photos that allow commercial use and changes, with a
-      licence of CC0, the Public Domain Mark, CC BY or CC BY-SA. --source
-      keeps one source, such as wikimedia, whose files are full size.
+      licence of CC0, the Public Domain Mark, CC BY or CC BY-SA. It looks
+      in Wikimedia Commons and the WordPress photo directory, which hand
+      out full-size files; --source names others, or "any" for every one.
 
   demo-photo.py fetch <template> <openverse id> <file> [--width N]
       Reads the photo's licence from Openverse and checks it again on the
@@ -93,7 +94,7 @@ def search(args: argparse.Namespace) -> None:
     }
     if args.wide:
         query["aspect_ratio"] = "wide"
-    if args.source:
+    if args.source != "any":
         query["source"] = args.source
     found = json.loads(get(API + "?" + urllib.parse.urlencode(query)))
     for photo in found.get("results", []):
@@ -243,7 +244,7 @@ def main() -> None:
     s.add_argument("words", nargs="+")
     s.add_argument("--wide", action="store_true")
     s.add_argument("--count", type=int, default=10)
-    s.add_argument("--source")
+    s.add_argument("--source", default="wikimedia,wordpress")
     f = sub.add_parser("fetch")
     f.add_argument("template")
     f.add_argument("id")
