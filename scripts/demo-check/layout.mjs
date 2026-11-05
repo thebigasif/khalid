@@ -17,6 +17,8 @@
 //   - reading-size, reading-column: at 1440 px and wider, a post's body
 //     text is under 18 px, or a full line of it holds fewer than 60 or
 //     more than 75 characters;
+//   - contents-twice: a post shows more than one list of its contents at
+//     once, such as the template's own and the ::toc a writer placed;
 //   - stylesheet-size: a stylesheet the home page links is 20 KB or more
 //     with Brotli, checked once per pack.
 //
@@ -45,7 +47,7 @@ import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { brotliCompressSync, constants } from "node:zlib";
-import { frame, measure, reading, walkDownScript } from "./layout-measure.mjs";
+import { contentsLists, frame, measure, reading, walkDownScript } from "./layout-measure.mjs";
 import { answerFrom, builtSites } from "./site-files.mjs";
 
 // The pages each pack is checked on, by what they show.
@@ -189,6 +191,10 @@ const checkPage = async (tab, job) => {
   await tab.evaluate(() => Promise.race([Promise.all([...document.images].map((img) => img.decode().catch(() => {}))), new Promise((done) => setTimeout(done, 3000))]));
   found.push(...(await tab.evaluate(measure, "page")));
   if (width >= WIDE) found.push(...(await wideChecks(tab, site, what)));
+  if (POSTS.has(what)) {
+    const lists = await tab.evaluate(contentsLists);
+    if (lists.length > 1) found.push({ check: "contents-twice", a: `<${lists[0]}>`, b: `<${lists[1]}>`, detail: `the post shows ${lists.length} contents lists at once, and a reader needs one` });
+  }
   const problems = [];
   const seen = new Map();
   for (const p of found) {
