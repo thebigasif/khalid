@@ -1,11 +1,14 @@
-{#- Ledger's front page: a masthead with the blog's name set large over a
-    double rule, its tagline and up to three facts, a numbered index of
-    topics (a rail beside the list on wide screens, with each topic's
-    newest post and the editor's picks; wrapping pills on a phone), then
-    the latest posts as a ruled list with no pictures, its first row the
+{#- Ledger's front page: a masthead opened by the edition line (the
+    announcement read as volume and number, then its cover story and the
+    newest post's date), the blog's name set large over a double rule, its
+    tagline and up to three facts, a numbered index of topics (a rail
+    beside the list on wide screens, with each topic's newest post and the
+    editor's picks; wrapping pills on a phone), then the latest posts as
+    this issue's contents: a ruled list with no pictures, its first row the
     lead. The first ten rows carry the author, date and topic; the rest
-    are one line each, title and date, like a study's index. Five posts
-    per home section, then the newsletter band. -#}
+    are one line each, title, dotted leader and date, like a journal's
+    contents page. Five posts per home section, then the newsletter
+    band. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import avatar -%}
@@ -32,7 +35,10 @@
 {%- endmacro %}
 {% set topics = page.topics and "topic_links" in site.features -%}
 <header class="masthead">
-<h1>{{ page.title }}</h1>{{ hero_stats(template.options) }}
+{% if site.announcement %}{% set edition = site.announcement.text | split(":") | list %}<p class="edition">{% if edition | length > 1 %}<span class="edition-number">{{ edition[0] | trim }}</span>
+{% endif %}{% set cover = edition[1:] | join(":") | trim if edition | length > 1 else site.announcement.text %}{% if site.announcement.href %}<a class="edition-cover" href="{{ site.announcement.href }}">{{ cover }}</a>{% else %}<span class="edition-cover">{{ cover }}</span>{% endif %}{% if page.posts and not (page.pagination and page.pagination.previous) %}
+<time datetime="{{ page.posts[0].date }}">{{ page.posts[0].date | date }}</time>{% endif %}</p>
+{% endif %}<h1>{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if template.options.tagline %}<p class="tagline">{{ template.options.tagline }}</p>
 {% endif %}{% if template.options.stats %}<ul class="stats" role="list">
 {% for stat in template.options.stats %}<li>{{ stat }}</li>
@@ -65,7 +71,7 @@
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
 {% endfor %}{% elif page.posts %}<section class="home-section home-latest" aria-labelledby="latest-title">
-<h2 id="latest-title">{{ t.latest }}</h2>
+<h2 id="latest-title">{{ t.contents }}</h2>
 {{ entries(page.posts, 3) }}
 </section>
 {% else %}<p>{{ t.no_posts }}</p>

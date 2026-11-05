@@ -8,7 +8,7 @@ header.masthead
 nav.ledger-topics.pills "Topics"
   h2: Topics
 section.home-latest.home-section
-  h2: Latest posts
+  h2: Contents
   article.ledger-entry
     h3: Planning a topic cluster in an afternoon
   article.ledger-entry
