@@ -7,14 +7,13 @@
     "compass": 1216,
     "folio": 1280,
     "harbor": 1344,
-    "keystone": 1210,
+    "keystone": 1280,
     "ledger": 660,
     "meridian": 1280,
     "wire": 1344,
     "workbench": 1280
   },
   "reading_pending": [
-    "keystone",
     "ledger"
   ]
 }

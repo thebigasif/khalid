@@ -1,8 +1,9 @@
 //! Keystone (templates spec 3.3): a calm, picture-led blog for a product or
 //! a company, with a lead story, a grid of framed pictures and a reading
 //! column with share links beside it. It replaces the home and post pages,
-//! keeps every reader feature on, and sets a tight type scale on a white
-//! page with one blue accent.
+//! keeps every reader feature on, and sets a bold type scale on a wide,
+//! drawn frame with one cobalt accent. Its own look is in
+//! `packs/keystone/tokens.toml`.
 
 use crate::parts::{self, CardShape, ContentsPlacement, PageLinks};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
@@ -22,7 +23,7 @@ pub(crate) static KEYSTONE: Pack = Pack {
             source: include_str!("../packs/keystone/post.html"),
         },
     ],
-    tokens: TOKENS,
+    tokens: include_str!("../packs/keystone/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),
@@ -34,7 +35,7 @@ pub(crate) static KEYSTONE: Pack = Pack {
         parts::cards(CardShape::Image),
         parts::pagination(PageLinks::Numbered),
         parts::related_count(5),
-        parts::contents(ContentsPlacement::None),
+        parts::contents(ContentsPlacement::SideEnd),
         parts::READING_PROGRESS,
         parts::HEADER_SEARCH,
         slot::share("top"),
@@ -62,37 +63,3 @@ pub(crate) static KEYSTONE: Pack = Pack {
         parts::on(parts::PODCAST_SECTION),
     ],
 };
-
-/// Keystone's type scale, spacing and shape. A value in the site's own
-/// `theme/tokens.toml` wins.
-const TOKENS: &str = "[colors]
-background = \"#ffffff\"
-surface = \"#f5f7fa\"
-text = \"#0d1526\"
-muted = \"#4f5b6d\"
-link = \"#2340c4\"
-accent = \"#3355e0\"
-border = \"#e3e8ef\"
-
-[fonts]
-body = \"-apple-system, BlinkMacSystemFont, \\\"Segoe UI Variable Text\\\", \\\"Segoe UI\\\", system-ui, Roboto, \\\"Helvetica Neue\\\", sans-serif\"
-heading = \"-apple-system, BlinkMacSystemFont, \\\"Segoe UI Variable Display\\\", \\\"Segoe UI\\\", system-ui, Roboto, \\\"Helvetica Neue\\\", sans-serif\"
-
-[type]
-body = \"1.0625rem 1.125rem\"
-h1 = \"2.25rem 3.25rem\"
-h2 = \"1.5rem 1.875rem\"
-h3 = \"1.1875rem 1.3125rem\"
-h4 = \"1.0625rem\"
-small = \"0.875rem 0.9375rem\"
-line_height = 1.65
-heading_weight = 500
-
-[space]
-unit = \"0.5rem\"
-section = \"5rem\"
-
-[shape]
-radius = \"0.625rem\"
-measure = \"42rem\"
-";
