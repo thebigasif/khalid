@@ -10,8 +10,9 @@
 # and <name>-post.svg, where the gallery reads them. Classic's demo is the
 # showcase at <mount>demo/. The mount defaults to /khalid/ and the post to
 # seo-writing-guide/, except where a template's demo shows its own
-# publication, which draws the post its check-pages.txt names. Set CHROME to the browser to use; otherwise the first
-# of google-chrome, chromium and chrome on the path runs. The server is
+# publication, which draws the post its check-pages.txt names. Set CHROME
+# to the browser to use; otherwise the first of google-chrome, chromium
+# and chrome on the path runs. The server is
 # Python's, which GitHub's runners have, as they have Chrome.
 #
 # Each picture is an SVG that holds the screenshot, so the gallery's
