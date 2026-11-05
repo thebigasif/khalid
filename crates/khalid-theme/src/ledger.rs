@@ -12,7 +12,7 @@ const TAGLINE_CHARACTERS: usize = 140;
 pub(crate) static LEDGER: Pack = Pack {
     name: "ledger",
     summary: "A calm, text-led blog with no pictures in its lists, for studies and long how-tos.",
-    stylesheet: include_str!("../packs/ledger/ledger.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/ledger/ledger.css")),
     templates: &[
         PackTemplate {
             name: "home.html",

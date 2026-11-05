@@ -11,7 +11,7 @@ expression: "main_of(&page(&out, \"what-a-sitemap-does/index.html\"))"
 </ol>
 </nav>
 
-<article class="post">
+<article class="post post-rail-contents">
 <header class="post-header">
 <p class="eyebrow"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
 <h1>What a sitemap does, and what it does not</h1>
@@ -26,7 +26,26 @@ expression: "main_of(&page(&out, \"what-a-sitemap-does/index.html\"))"
 <p class="reading-time"><time datetime="PT1M">1 min read</time></p>
 </div>
 </header>
+<details class="toc-inline">
+<summary>Contents</summary>
+<nav aria-label="Contents">
+<ol>
+<li><a href="#what-it-does">What it does</a></li>
+<li><a href="#what-it-does-not-do">What it does not do</a></li>
+<li><a href="#keep-it-clean">Keep it clean</a></li>
+</ol>
+</nav>
+</details>
 <div class="post-columns">
+<div class="post-rail">
+<nav class="toc-side" aria-label="On this page">
+<p class="toc-title">On this page</p>
+<ol>
+<li><a href="#what-it-does">What it does</a></li>
+<li><a href="#what-it-does-not-do">What it does not do</a></li>
+<li><a href="#keep-it-clean">Keep it clean</a></li>
+</ol>
+</nav>
 <div class="share share-rail">
 <p class="share-title">Share this post</p>
 <ul>
@@ -35,6 +54,7 @@ expression: "main_of(&page(&out, \"what-a-sitemap-does/index.html\"))"
 <li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">Facebook</a></li>
 <li><a href="mailto:?subject=What%20a%20sitemap%20does%2C%20and%20what%20it%20does%20not&amp;body=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhat-a-sitemap-does%2F" rel="nofollow noreferrer">Email</a></li>
 </ul>
+</div>
 </div>
 <div class="post-body">
 <p>A sitemap is a file, usually at <code>/sitemap.xml</code>, that lists the addresses of the pages on your site. Search engines read it to find pages they might otherwise miss.</p>

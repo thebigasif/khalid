@@ -99,7 +99,11 @@ fn keystone_turns_on_its_parts_and_ships_its_own_rules() {
     assert!(post.contains("class=\"author-box\""), "{post}");
     assert!(post.contains("class=\"related"), "{post}");
     assert!(post.contains("class=\"reading-time\""), "{post}");
-    assert!(!post.contains("class=\"toc-"), "{post}");
+    // The contents sit at the top of the rail, over the share links.
+    let contents = post.find("<nav class=\"toc-side\"").unwrap();
+    let rail = post.find("<div class=\"post-rail\">").unwrap();
+    let share = post.find("<div class=\"share share-rail\">").unwrap();
+    assert!(rail < contents && contents < share, "{post}");
     let (_, sheet) = post
         .split_once("<link rel=\"stylesheet\" href=\"/blog/")
         .unwrap();

@@ -15,7 +15,7 @@ use crate::{Pack, PackTemplate, slot};
 pub(crate) static COMPASS: Pack = Pack {
     name: "compass",
     summary: "A teaching blog: breadcrumbs, the contents and key points before each guide, share links, the author and the newsletter after it.",
-    stylesheet: include_str!("../packs/compass/compass.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/compass/compass.css")),
     templates: &[PackTemplate {
         name: "home.html",
         source: include_str!("../packs/compass/home.html"),
