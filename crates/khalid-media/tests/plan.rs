@@ -39,7 +39,7 @@ fn the_fallback_format_gets_one_width_of_1280_or_less() {
     assert_eq!(fallback_widths(4000), [1280]);
     assert_eq!(fallback_widths(1280), [1280]);
     assert_eq!(fallback_widths(1500), [1280]);
-    assert_eq!(fallback_widths(900), [900]);
+    assert_eq!(fallback_widths(1000), [1000]);
     assert_eq!(fallback_widths(300), [300]);
     assert_eq!(fallback_widths(0), [0_u32; 0]);
 }

@@ -6,7 +6,7 @@
 
 [[photos]]
 file = "en/posts/2026-08-04-hold-chefs-knife/lead.jpg"
-sha256 = "641587e01e8ef998aa7e9700652b33a94fd730a3f817194319b815b20686f966"
+sha256 = "4ca47ae399bb4c340d8b31f596af892006f67bd9f7343922acfae4b36ce2ff06"
 source = "https://commons.wikimedia.org/w/index.php?curid=87522123"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0/"
 credit = "9. Diced onion by Mark Mrwizard, via wikimedia"
@@ -14,11 +14,11 @@ title = "9. Diced onion"
 creator = "Mark Mrwizard"
 openverse = "b27c6bfb-fedc-480a-abf9-2e92478e8b95"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-08-04-hold-chefs-knife/knife-on-board.jpg"
-sha256 = "f2be02334096a8924ee7721790a7049ed5035046c2cee97078693f80902723a6"
+sha256 = "a02ea73e6d8b7fa1a6a1fd9aa530685245a8f12d2370e4ffcac5e6e0b6fb3908"
 source = "https://wordpress.org/photos/photo/42267aba73/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "A kitchen knife in the foreground on a cutting board with a cook in the background. by Roberto Vazquez, via wordpress"
@@ -26,11 +26,11 @@ title = "A kitchen knife in the foreground on a cutting board with a cook in the
 creator = "Roberto Vazquez"
 openverse = "64867892-642e-49fa-b7aa-bec5041d8ff5"
 needs_credit = false
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-08-11-roast-vegetables-one-tray/lead.jpg"
-sha256 = "b2e9a192c27b14ca6abfd7974ce68aa1f734b0cb6c74375abc463f02f18197bb"
+sha256 = "3d03f0ff7ac5c02567226825bb13a8ec747c363a0e6937ee74922efe2be795f3"
 source = "https://commons.wikimedia.org/w/index.php?curid=109917254"
 licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0/"
 credit = "Roasted Vegetables (2897937502) by Mack Male from Edmonton, AB, Canada, via wikimedia"
@@ -38,11 +38,11 @@ title = "Roasted Vegetables (2897937502)"
 creator = "Mack Male from Edmonton, AB, Canada"
 openverse = "4df94008-217b-4d12-8f45-8f59e0f664e4"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-08-11-roast-vegetables-one-tray/roasted-carrots.jpg"
-sha256 = "f7daa7130daaea2dc03f5b8b3e81e45ef07b23cf7554c621ee65f62b5e2de21c"
+sha256 = "0cfcc939a8d53f6b147374eda93088dd7022434e54a9e9d1ec8803c40e3e55f6"
 source = "https://commons.wikimedia.org/w/index.php?curid=143651412"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0/"
 credit = "Roasted Vegetables (14186768489) by Iain Cameron, via wikimedia"
@@ -50,11 +50,11 @@ title = "Roasted Vegetables (14186768489)"
 creator = "Iain Cameron"
 openverse = "8a5e70e0-260f-4f69-b835-fd051beeca4a"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-08-18-choose-ripe-tomatoes/lead.jpg"
-sha256 = "205da94fb5d6f3ea889dfad6b54adcd93d606c5dd4f3e71e62320613dc99a2f2"
+sha256 = "c8eda338c516cb0c99802aa561dd1cc92eddfc3e93710ea3d21a13a4a446e8d5"
 source = "https://wordpress.org/photos/photo/4806995e21/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "A mix of red and yellow freshly harvested tomatoes arranged neatly in Perumanna, Kozhikode, showing freshness and vibrant farm colours. by Bigul Malayi, via wordpress"
@@ -62,11 +62,11 @@ title = "A mix of red and yellow freshly harvested tomatoes arranged neatly in P
 creator = "Bigul Malayi"
 openverse = "d43b6b8b-b73a-493d-b179-2c7c510a9d56"
 needs_credit = false
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-08-18-choose-ripe-tomatoes/on-the-vine.jpg"
-sha256 = "546a1b14359e4ec7f4f805f7a96192d3d8d31dfc1c8857a36c75f353d41feba1"
+sha256 = "38a0eaf87ddffeb168f8952bea918814fc2bbcefc51591353a62cae54f9e1c34"
 source = "https://wordpress.org/photos/photo/280694afd3/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "A cluster of ripe red tomatoes hanging on the vine, smooth and shiny with bright green stems. by Nawodi Herath, via wordpress"
@@ -74,11 +74,11 @@ title = "A cluster of ripe red tomatoes hanging on the vine, smooth and shiny wi
 creator = "Nawodi Herath"
 openverse = "2939d5d0-7365-4918-82e7-46d03cde6fb4"
 needs_credit = false
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-08-25-packing-day/lead.jpg"
-sha256 = "8f5e806503bbb0178ddbf3e99bba1d5cb759da0008f9afda6cbd70d7e8cd411a"
+sha256 = "e8f9824f8823fcb28503578d95c37f7bd12c8d78e3d62d4c377fecda202c7fce"
 source = "https://commons.wikimedia.org/w/index.php?curid=160158215"
 licence = "CC BY 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/4.0/"
 credit = "Vegetable box by Pbtaussie, via wikimedia"
@@ -86,11 +86,11 @@ title = "Vegetable box"
 creator = "Pbtaussie"
 openverse = "808ec0ee-9778-4e5d-8052-d9194dc6236e"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-08-25-packing-day/packed-box.jpg"
-sha256 = "f141abf0603e9ac1bc0f2323c78d9fb3b5e6538268d1fab1ed6c44ecd767d714"
+sha256 = "8ab3221e08be123f3df1efe13e822abfd5818ccc9784098049d538b321e6388b"
 source = "https://commons.wikimedia.org/w/index.php?curid=98163786"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0/"
 credit = "Vegetables Box 2 by Andy Roberts, via wikimedia"
@@ -98,11 +98,11 @@ title = "Vegetables Box 2"
 creator = "Andy Roberts"
 openverse = "d9c671b8-749d-4144-89c1-f47634f45927"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-09-01-plan-week-dinners/lead.jpg"
-sha256 = "cd74372594b000fd3d5f87d3f80477228df4153ad422df11d8964ac30a022826"
+sha256 = "30f76738c6a7f44aba938d032a721530faf65c53b19a23631fc6c4813146760d"
 source = "https://wordpress.org/photos/photo/950657f3cf/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "Fresh vegetables in a country-style kitchen. by Roy Tanck, via wordpress"
@@ -110,11 +110,11 @@ title = "Fresh vegetables in a country-style kitchen."
 creator = "Roy Tanck"
 openverse = "f04711ca-482b-4286-a92b-7c816d2836ef"
 needs_credit = false
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-09-08-herbs-paper-storage/lead.jpg"
-sha256 = "628bd6a2718d2e3cf526415250066e24fd6f9eda73d6a1a0512883ee52a0c0e7"
+sha256 = "24729d38bc11caa4468dabad0fa3b6cdae8bd5645fa1231b634aaf3e07ea7aa8"
 source = "https://commons.wikimedia.org/w/index.php?curid=154733277"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "Parsley bunches - Wellington, New Zealand by Daderot, via wikimedia"
@@ -122,11 +122,11 @@ title = "Parsley bunches - Wellington, New Zealand"
 creator = "Daderot"
 openverse = "f8535ed5-de60-42fa-a84e-c85b39e5b825"
 needs_credit = false
-size = "2000x1000"
+size = "1600x800"
 
 [[photos]]
 file = "en/posts/2026-09-08-herbs-paper-storage/chopped-herbs.jpg"
-sha256 = "7caefc83cd07a4c407cb2e1246426f52769a834dc59bf39b1a5dfb3c88b960c5"
+sha256 = "db7e5b74874b5491f989f4ac5c5abf9b1cc25ad17f89a496f8280c8e4ad36824"
 source = "https://commons.wikimedia.org/w/index.php?curid=65374951"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0/"
 credit = "Chopping Fresh Herbs by Leecason, via wikimedia"
@@ -134,11 +134,11 @@ title = "Chopping Fresh Herbs"
 creator = "Leecason"
 openverse = "269cc01a-75ab-475a-ba16-b1b73434a132"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-09-15-cook-rice-pan/lead.jpg"
-sha256 = "a957b543ab917a3cb77a27158982e5e92bf3943a81e6b3463b722016690379b4"
+sha256 = "729f33d0ee98d56dd77609ee71ffd7fe23b3f5fcf7c1a8d2c8bc64e81be6d68b"
 source = "https://commons.wikimedia.org/w/index.php?curid=158198806"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0/"
 credit = "Bowl of Cooked Brown Rice by Ceeseven, via wikimedia"
@@ -146,11 +146,11 @@ title = "Bowl of Cooked Brown Rice"
 creator = "Ceeseven"
 openverse = "cc95e2e0-aec9-4652-905d-746232120c21"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-09-15-cook-rice-pan/lid-on.jpg"
-sha256 = "69607b184d9a5361596d8e9eec7ab0b5f8e384f50b293c3cac248665402d9e06"
+sha256 = "650acf8834591c2693731c294dde9b66e110fccba98d9c41656e09216f85e624"
 source = "https://commons.wikimedia.org/w/index.php?curid=4331439"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0/"
 credit = "2008-07-05 Water boiling in cooking pot by Ildar Sagdejev (Specious), via wikimedia"
@@ -158,11 +158,11 @@ title = "2008-07-05 Water boiling in cooking pot"
 creator = "Ildar Sagdejev (Specious)"
 openverse = "f453ce5f-0974-4d60-a85c-914617380730"
 needs_credit = true
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-09-22-pantry-pasta/lead.jpg"
-sha256 = "0edc4972136a432df53ddea46f69ba5d6fed98c590975e7bc1f3e141a726def9"
+sha256 = "b5524a799a8ef384e9b4eee8d7a0b3e451fa53f35478263d3a08613bb6321581"
 source = "https://commons.wikimedia.org/w/index.php?curid=5779941"
 licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0/"
 credit = "Spaghetti aglio olio e peperoncino by matsuyuki retouched by matsuyuki, via wikimedia"
@@ -170,11 +170,11 @@ title = "Spaghetti aglio olio e peperoncino by matsuyuki retouched"
 creator = "matsuyuki"
 openverse = "9ff7d55b-42a8-41e6-bc2a-9f75bcb02d26"
 needs_credit = true
-size = "2000x1745"
+size = "1600x1396"
 
 [[photos]]
 file = "en/posts/2026-09-22-pantry-pasta/garlic.jpg"
-sha256 = "2f056ac7720d09af2f1d56e40ce1d5a79547997c4873f9d114ff390a6e8b08ec"
+sha256 = "852f5b555898be05f2ad65f7a1bf272184786d119aaad87bc220ebffe8719fc6"
 source = "https://wordpress.org/photos/photo/1076596f66/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "Basket full of garlic bulbs. by Topher, via wordpress"
@@ -182,11 +182,11 @@ title = "Basket full of garlic bulbs."
 creator = "Topher"
 openverse = "c4a3d6f7-29a3-4dcf-a828-4997126a3ac5"
 needs_credit = false
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-09-29-apples-pears/lead.jpg"
-sha256 = "7a8ae38c0a6254be853219427d4ba72123757dcaaed6ab851cf00460faca7122"
+sha256 = "fd08ce64aa8c0f3ed796157dea8d88faea4f3dc043a59286944879f94382f5d3"
 source = "https://wordpress.org/photos/photo/41869e4c6c/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "A close-up view of numerous bright red apples stacked closely together, showcasing their shiny skins with hints of yellow and green near the stems. by Vishnu Chandra, via wordpress"
@@ -194,11 +194,11 @@ title = "A close-up view of numerous bright red apples stacked closely together,
 creator = "Vishnu Chandra"
 openverse = "3512c5ab-a284-4131-9cfa-dead28bd70dc"
 needs_credit = false
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-09-29-apples-pears/pears.jpg"
-sha256 = "2d67e4add9eb5f96fd1ee40b51c5e0414c63960b30c1508a6737d23c3d7190d3"
+sha256 = "426d59fd626f576e553503688fd6bc8c49af84889224c84cce0d3aa2ed72485c"
 source = "https://wordpress.org/photos/photo/560690e732/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "Fresh green pears with smooth skin and a few red patches, laid out on a newspaper, captured in Perumanna, Kozhikode, Kerala. by Bigul Malayi, via wordpress"
@@ -206,11 +206,11 @@ title = "Fresh green pears with smooth skin and a few red patches, laid out on a
 creator = "Bigul Malayi"
 openverse = "89b0963a-9dca-4bb1-8bd0-f51b91c9ae24"
 needs_credit = false
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-10-06-test-every-recipe/lead.jpg"
-sha256 = "83e0329eff94654be81942e6a36baed15dfb733a01d6942abd2bd7ce4c7bf3bd"
+sha256 = "3dca30f64eea13d915fd29a84db03c5d86a58a27717e661f88ed02f7a3db53fd"
 source = "https://commons.wikimedia.org/w/index.php?curid=35488828"
 licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0/"
 credit = "Mise en place for hot station by Charles Haynes, via wikimedia"
@@ -218,11 +218,11 @@ title = "Mise en place for hot station"
 creator = "Charles Haynes"
 openverse = "87df6827-81be-4922-a71e-5d5678dabeb4"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-10-06-test-every-recipe/wooden-spoons.jpg"
-sha256 = "39b684e493a84877d862c5051e4b8f4ea8a49b3845590d288cb05a4543a02baa"
+sha256 = "d09718326d935aae471b4b1446efeb618d5580157ce814a8d9e7f6e443cbb1b9"
 source = "https://commons.wikimedia.org/w/index.php?curid=39924700"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0/"
 credit = "Handmade wooden spoons by Gabriela sellart, via wikimedia"
@@ -230,11 +230,11 @@ title = "Handmade wooden spoons"
 creator = "Gabriela sellart"
 openverse = "e2a066f0-7757-4676-a5a6-d54d052e5511"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-10-13-honing-sharpening/lead.jpg"
-sha256 = "20e6a4b01b45fc9d1d31544bda9483f97707374ffdb172662fa281423ddd36e0"
+sha256 = "65ef74d7b4764ad4ded7bbd6693386d8adfa354b22513ef7ee1c5c466ae7c503"
 source = "https://commons.wikimedia.org/w/index.php?curid=87950517"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0/"
 credit = "Whetstone Knife Sharpening, 2015-(01) by Didriks, via wikimedia"
@@ -242,11 +242,11 @@ title = "Whetstone Knife Sharpening, 2015-(01)"
 creator = "Didriks"
 openverse = "d3b20b07-cf4b-49f8-84b8-fc9fe1f2a1e9"
 needs_credit = true
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-10-16-cut-roast-winter-squash/lead.jpg"
-sha256 = "1f92c425ef7c66dbc9e8cc3462d7ffcb17614f92c9d95c43636ef044aeea0c7f"
+sha256 = "e2e60b298b9619243182e9908957ab0c7fb4c7a067abebf24e87dd6bfbd228e6"
 source = "https://wordpress.org/photos/photo/8876382238/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "Pumpkins and chestnuts on a table by Roy Tanck, via wordpress"
@@ -254,11 +254,11 @@ title = "Pumpkins and chestnuts on a table"
 creator = "Roy Tanck"
 openverse = "bcdfc745-6bfa-475e-8ad7-af1c68aba007"
 needs_credit = false
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-10-16-cut-roast-winter-squash/roasted-squash.jpg"
-sha256 = "54aa553f13904d4abe4581ddde94b92b9790b94465cc8ceae1ab7ba998127fcf"
+sha256 = "38d551b21136a31679c6fd0692b117c17c64e9624c2cbc4db48838998f18cacb"
 source = "https://commons.wikimedia.org/w/index.php?curid=35653517"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0/"
 credit = "Roasted Vegetables with Pesto (4161643087) by Vegan Feast Catering, via wikimedia"
@@ -266,11 +266,11 @@ title = "Roasted Vegetables with Pesto (4161643087)"
 creator = "Vegan Feast Catering"
 openverse = "605a8895-7488-430e-ae98-f9ac7182ce18"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-10-20-sunday-batch-cooking/lead.jpg"
-sha256 = "9f722dfd747b56dbf5d50bffbc746932ade77d7231131bec29d7f166a3a5ade9"
+sha256 = "a339464b9783e1379d74af85b33f598ec2be70089463658f756c14dcab7715c8"
 source = "https://commons.wikimedia.org/w/index.php?curid=83080796"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0/"
 credit = "Meal prep glass container (45165270525) by Ella Olsson from Stockholm, Sweden, via wikimedia"
@@ -278,11 +278,11 @@ title = "Meal prep glass container (45165270525)"
 creator = "Ella Olsson from Stockholm, Sweden"
 openverse = "bf75d33f-b488-4804-b99c-049dd3616c4a"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-10-20-sunday-batch-cooking/two-lunches.jpg"
-sha256 = "96d78821a23282e700f31ea0b5ac390cec45635395fd2c602b5d60e65f557d57"
+sha256 = "5f59448016914097e7e2d7598d1efdfa8fa67a4294d76b56ae3acf3e24737b6f"
 source = "https://commons.wikimedia.org/w/index.php?curid=83080792"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0/"
 credit = "Meal prep container (44260855980) by Ella Olsson from Stockholm, Sweden, via wikimedia"
@@ -290,11 +290,11 @@ title = "Meal prep container (44260855980)"
 creator = "Ella Olsson from Stockholm, Sweden"
 openverse = "8483367b-cf79-4a78-8c00-05cdad928f51"
 needs_credit = true
-size = "2000x1600"
+size = "1600x1280"
 
 [[photos]]
 file = "en/posts/2026-10-23-stock-vegetable-scraps/lead.jpg"
-sha256 = "b06646eb2b80031f0f9914a9eafea53b6ec666f8749c48d0949063c14ca9a479"
+sha256 = "89be4ef391c87135734b8eee1ecd67353430542cb9ba1829d10ae60894c58ab4"
 source = "https://commons.wikimedia.org/w/index.php?curid=157385810"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0/"
 credit = "Veggies for Chicken Stock (3138717954) by Ryan Snyder, via wikimedia"
@@ -302,11 +302,11 @@ title = "Veggies for Chicken Stock (3138717954)"
 creator = "Ryan Snyder"
 openverse = "a3be929a-8a60-4ebb-ac03-cb2f00e04b64"
 needs_credit = true
-size = "2000x1497"
+size = "1600x1198"
 
 [[photos]]
 file = "en/posts/2026-10-23-stock-vegetable-scraps/soup.jpg"
-sha256 = "1cfe3b10d13037b870ff80194d3f2ba3f49be7c531400c7d745ad01aaa8e3b53"
+sha256 = "54230ea3ede1027b29209cb138e8b6fba34badd477fa67703ffc536cbec13588"
 source = "https://wordpress.org/photos/photo/8516a28f6b/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "A bowl of chicken soup with carrots, greens, and herbs in a clear broth, served on a white plate. by Jackson Monichan, via wordpress"
@@ -314,11 +314,11 @@ title = "A bowl of chicken soup with carrots, greens, and herbs in a clear broth
 creator = "Jackson Monichan"
 openverse = "f6d0b302-e5ba-468f-ab57-89505acf3007"
 needs_credit = false
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-10-27-choose-farms/lead.jpg"
-sha256 = "944df16fc9abd2fd1b0a3fbfe0484eab07831f3ba728ac5d0e28d52eddbafce8"
+sha256 = "611cef758c3145a07199e0afaf4b71e57c59836deafdc22a0fd8be3db57ca82d"
 source = "https://commons.wikimedia.org/w/index.php?curid=122708714"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0/"
 credit = "Leaf-Lettuce-field by MaedaAkihiko, via wikimedia"
@@ -326,11 +326,11 @@ title = "Leaf-Lettuce-field"
 creator = "MaedaAkihiko"
 openverse = "435b174e-40da-4eb4-8dbd-6e105365cd48"
 needs_credit = true
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-10-27-choose-farms/lettuce.jpg"
-sha256 = "668195caabe939c8581eac49012c4ce15f0ce59274be560d0a997e8c81cafaaa"
+sha256 = "d9de24a5334ff8f545e072561b81e227f7f369eef4c6786df3d5c0605f1702cf"
 source = "https://commons.wikimedia.org/w/index.php?curid=151679511"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0/"
 credit = "Lettuce field, Ponte de Sor, Portugal (approx. GPS location) julesvernex2 by Jules Verne Times Two, via wikimedia"
@@ -338,11 +338,11 @@ title = "Lettuce field, Ponte de Sor, Portugal (approx. GPS location) julesverne
 creator = "Jules Verne Times Two"
 openverse = "3708ec9b-664d-424c-9980-bc8ebb2aca4c"
 needs_credit = true
-size = "2000x1361"
+size = "1600x1089"
 
 [[photos]]
 file = "en/posts/2026-10-27-choose-farms/carrots.jpg"
-sha256 = "4f9730482c8f06b1f56aca4d3a33b60473c35c046b8fdb497816cbf71f28d4b9"
+sha256 = "a7da6034e1c047f577a9bde8c7715903a740f2aafae785ca743ae283e2b05760"
 source = "https://wordpress.org/photos/photo/33269ded16/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "A close-up view of a bundle of fresh, vibrant orange carrots with lush green tops, arranged neatly on a textured surfac by Vishnu Chandra, via wordpress"
@@ -350,11 +350,11 @@ title = "A close-up view of a bundle of fresh, vibrant orange carrots with lush 
 creator = "Vishnu Chandra"
 openverse = "4ecf6e11-e95f-40a4-a273-769a0d338020"
 needs_credit = false
-size = "2000x1506"
+size = "1600x1205"
 
 [[photos]]
 file = "en/posts/2026-10-30-one-pan-dinners/lead.jpg"
-sha256 = "0c372a504c1d33e21eec289f8f4d2a1ff7cdb2e7d84fb164a1b0fef17ccde0cf"
+sha256 = "5c66e618c0ea2585d437887bc8a2dac595a198ec928cb4d8bf5156f7dec4a13f"
 source = "https://wordpress.org/photos/photo/86862d6bda/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "Asparagus & tomatoes cooking in an cast iron skillet by ChrisEdwardsCE, via wordpress"
@@ -362,11 +362,11 @@ title = "Asparagus & tomatoes cooking in an cast iron skillet"
 creator = "ChrisEdwardsCE"
 openverse = "3b7463e2-5d0b-4fdc-9078-34adce125233"
 needs_credit = false
-size = "2000x1502"
+size = "1600x1202"
 
 [[photos]]
 file = "en/posts/2026-11-02-store-root-vegetables/lead.jpg"
-sha256 = "23655ce55cf4faa35ada8e7126c037e03efa1e0ebd3ac18c2067139e1dc7e75c"
+sha256 = "b593545985002174b7d268f0f62f53547b54bf188eb16a83c2b8312ea4cf4e0d"
 source = "https://commons.wikimedia.org/w/index.php?curid=12407347"
 licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0/"
 credit = "File:Uncommon beetroot colours.jpg by Beet man, via wikimedia"
@@ -374,11 +374,11 @@ title = "File:Uncommon beetroot colours.jpg"
 creator = "Beet man"
 openverse = "fbb0c9d1-3be7-4532-891e-0abb6d84e32b"
 needs_credit = true
-size = "2000x1198"
+size = "1600x958"
 
 [[photos]]
 file = "en/posts/2026-11-02-store-root-vegetables/onions.jpg"
-sha256 = "23d7d6b384f0f55627c3a35259d810db4a6fc53089210ed6789170c6c00c216b"
+sha256 = "39d3650d52e90c64e051c4c2bcdd233d92c6d8998a43f474b8eb45f38fe641ee"
 source = "https://wordpress.org/photos/photo/71461f5988/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "Farmers’ Market Yellow Onions by Jennifer Bourn, via wordpress"
@@ -386,11 +386,11 @@ title = "Farmers’ Market Yellow Onions"
 creator = "Jennifer Bourn"
 openverse = "5b453b17-5c80-440b-b22c-0f10a481be98"
 needs_credit = false
-size = "2000x1498"
+size = "1600x1198"
 
 [[photos]]
 file = "en/posts/2026-11-04-less-plastic-boxes/lead.jpg"
-sha256 = "63cfb42ec2e0319f95dce0eb5b581031946fe9fdc3f6dfbad58edb1b374ae4dd"
+sha256 = "f5c33311c9fdebca7e5bae2ebc04edbdcce0910e949e1c438135f8e0de6b7c51"
 source = "https://wordpress.org/photos/photo/34965c1f9c/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "Crate of ripe cherry tomatoes on the vine by Nilo Velez, via wordpress"
@@ -398,5 +398,5 @@ title = "Crate of ripe cherry tomatoes on the vine"
 creator = "Nilo Velez"
 openverse = "652c512e-57d1-4999-8075-a0219d93d995"
 needs_credit = false
-size = "2000x1333"
+size = "1600x1066"
 

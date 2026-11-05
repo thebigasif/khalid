@@ -243,11 +243,7 @@ fn a_logo_in_capitals_spells_the_publications_name_in_capitals() {
     let site = showcase_copy();
     let toml = within(site.path(), "site.toml");
     let settings = fs::read_to_string(&toml).unwrap();
-    let renamed = settings.replacen(
-        "name = \"Larkspur Ledger\"",
-        "name = \"Port City Wire\"",
-        1,
-    );
+    let renamed = settings.replacen("name = \"Larkspur Ledger\"", "name = \"Port City Wire\"", 1);
     assert_ne!(renamed, settings);
     fs::write(&toml, renamed).unwrap();
     let brand = Command::new("bash")
@@ -258,7 +254,8 @@ fn a_logo_in_capitals_spells_the_publications_name_in_capitals() {
         .output()
         .unwrap();
     assert!(brand.status.success(), "{brand:?}");
-    let logo = fs::read_to_string(repo_file("fixtures/showcase-brands/wire/theme/logo.svg")).unwrap();
+    let logo =
+        fs::read_to_string(repo_file("fixtures/showcase-brands/wire/theme/logo.svg")).unwrap();
     assert!(logo.contains(">LARKSPUR LEDGER<"), "{logo}");
     let placed =
         fs::read_to_string(within(site.path(), "content/en/pages/about/logo.svg")).unwrap();

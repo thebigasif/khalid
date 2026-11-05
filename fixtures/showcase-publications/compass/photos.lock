@@ -6,7 +6,7 @@
 
 [[photos]]
 file = "en/posts/2026-05-12-start-coding/lead.jpg"
-sha256 = "34345ae7467825e23e1c2d7fc1318158f604b975327f2e054348df7750ce9205"
+sha256 = "576148349b909a76d3e5eae7547759a738296260def366d22850c6b61be38c79"
 source = "https://commons.wikimedia.org/wiki/File:Handheld_compass_with_a_magnetic_needle.jpg"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
 credit = "Handheld compass with a magnetic needle by Sneha G Gupta, via Wikimedia Commons"
@@ -14,11 +14,11 @@ title = "Handheld compass with a magnetic needle"
 creator = "Sneha G Gupta"
 openverse = "commons:File:Handheld compass with a magnetic needle.jpg"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-05-12-start-coding/trail-marker.jpg"
-sha256 = "2962797984b56bebe532e7dc7f21f659f89bab7c6066e7f9bf0ceeb33969b17c"
+sha256 = "e0de4b0b0a8096cb48698fe3151b51e937d5585c161572e0359f776ae07eec1e"
 source = "https://commons.wikimedia.org/wiki/File:Trail_marker_4218.jpg"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
 credit = "Trail marker 4218 by Chris Light, via Wikimedia Commons"
@@ -26,11 +26,11 @@ title = "Trail marker 4218"
 creator = "Chris Light"
 openverse = "commons:File:Trail marker 4218.jpg"
 needs_credit = true
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-05-26-first-program/lead.jpg"
-sha256 = "7c0da45f6d95e52af01bc1e819ab63e2cf034fc5b0b9399aa7ee20fee9bea5f4"
+sha256 = "1872a6ea134a20c4e9e1ef2241f2a25b02b8d3fdad1531294af69489015731d1"
 source = "https://commons.wikimedia.org/wiki/File:Laptop_and_a_mug_(Unsplash).jpg"
 licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
 credit = "Laptop and a mug (Unsplash) by Ryan Riggins ryan_riggins, via Wikimedia Commons"
@@ -38,11 +38,11 @@ title = "Laptop and a mug (Unsplash)"
 creator = "Ryan Riggins ryan_riggins"
 openverse = "commons:File:Laptop and a mug (Unsplash).jpg"
 needs_credit = false
-size = "2000x1324"
+size = "1600x1059"
 
 [[photos]]
 file = "en/posts/2026-06-09-read-error-messages/lead.jpg"
-sha256 = "f215f25d1cc97562204ff4538eeff6a7b114da577e2723f94ad11df6b4b46c87"
+sha256 = "8a806bd505ab9a3434cb7b0f5534226fef9f9df092ea6d57fc80815a1c61ce96"
 source = "https://commons.wikimedia.org/wiki/File:Magnifying_glass_(2026).jpg"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
 credit = "Magnifying glass (2026) by Gpkp, via Wikimedia Commons"
@@ -50,11 +50,11 @@ title = "Magnifying glass (2026)"
 creator = "Gpkp"
 openverse = "commons:File:Magnifying glass (2026).jpg"
 needs_credit = true
-size = "2000x1243"
+size = "1600x994"
 
 [[photos]]
 file = "en/posts/2026-06-09-read-error-messages/puzzle-piece.jpg"
-sha256 = "3a5b89e49e57f03822f7b68b6912f469d23bd3404684911abaedf6e0ea164b34"
+sha256 = "c46c0dc4bd4297e6ed7a24cb3f6b99750f7d7f018407020b0ca6529b0a712407"
 source = "https://commons.wikimedia.org/wiki/File:Red_jigsaw_puzzle_piece_on_green_pieces.jpg"
 licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
 credit = "Red jigsaw puzzle piece on green pieces by Profpcde, via Wikimedia Commons"
@@ -62,11 +62,11 @@ title = "Red jigsaw puzzle piece on green pieces"
 creator = "Profpcde"
 openverse = "commons:File:Red jigsaw puzzle piece on green pieces.jpg"
 needs_credit = false
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-06-23-practice-schedule/lead.jpg"
-sha256 = "38760b7f9ab0db24801aa5e7806ba5e36f1a9b6027f5cb3c75832004e080b8d6"
+sha256 = "2578fbe0e5ddcdd9068cd5d33d742ce78919353b25769b5a5fd100585ebc29f1"
 source = "https://commons.wikimedia.org/wiki/File:Alarm_clock_on_a_chair_(Unsplash).jpg"
 licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
 credit = "Alarm clock on a chair (Unsplash) by Szűcs László szucslaszlo, via Wikimedia Commons"
@@ -74,7 +74,7 @@ title = "Alarm clock on a chair (Unsplash)"
 creator = "Szűcs László szucslaszlo"
 openverse = "commons:File:Alarm clock on a chair (Unsplash).jpg"
 needs_credit = false
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-07-07-how-web-works/connector.jpg"
@@ -90,7 +90,7 @@ size = "1540x1193"
 
 [[photos]]
 file = "en/posts/2026-07-07-how-web-works/lead.jpg"
-sha256 = "e9a59900aacab7d325e506d96fb4417e817812831c9933f16d7468dfe0c7a63d"
+sha256 = "61a7b441c576ba958f5406c0c5ba8c3937a15e89fc3f5fb89842c6aa9790bc70"
 source = "https://commons.wikimedia.org/wiki/File:CAT8_Ethernet_Cable-5839.jpg"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
 credit = "CAT8 Ethernet Cable-5839 by Raimond Spekking, via Wikimedia Commons"
@@ -98,11 +98,11 @@ title = "CAT8 Ethernet Cable-5839"
 creator = "Raimond Spekking"
 openverse = "commons:File:CAT8 Ethernet Cable-5839.jpg"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-07-21-first-html-page/lead.jpg"
-sha256 = "cc9d20eccd834427852288ea2e42a9e528b7780ed839d4a25f72b7dc7ae54cbc"
+sha256 = "f20c670a2ebd9b074ef570320c251299204102641737489fe76bd655a4367f77"
 source = "https://commons.wikimedia.org/wiki/File:Typing_on_a_laptop_(Unsplash).jpg"
 licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
 credit = "Typing on a laptop (Unsplash) by Simon Hattinga Verschure webmarbles, via Wikimedia Commons"
@@ -110,11 +110,11 @@ title = "Typing on a laptop (Unsplash)"
 creator = "Simon Hattinga Verschure webmarbles"
 openverse = "commons:File:Typing on a laptop (Unsplash).jpg"
 needs_credit = false
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-08-04-css-basics/lead.jpg"
-sha256 = "7863af1676afbb71b3a49c193b44670ad889a3106caf58991608fd37478e83ee"
+sha256 = "51ad154bdfce16ab85d8b24180c519fdfbcda72e91dcfbf80867caf4954cbbfe"
 source = "https://commons.wikimedia.org/wiki/File:Buntstifte_--_2021_--_9164.jpg"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
 credit = "Buntstifte -- 2021 -- 9164 by Dietmar Rabich, via Wikimedia Commons"
@@ -122,11 +122,11 @@ title = "Buntstifte -- 2021 -- 9164"
 creator = "Dietmar Rabich"
 openverse = "commons:File:Buntstifte -- 2021 -- 9164.jpg"
 needs_credit = true
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-08-04-css-basics/spiral-binding.jpg"
-sha256 = "489e8c6f1c0fb05e73fa494d76f1fed5b9fbb40197233d88ce9e30e3c9d56dd2"
+sha256 = "dae9e21dfdeb4da9bd4d683218cb8559e159408062da75a2767bb69176a54e07"
 source = "https://commons.wikimedia.org/wiki/File:Spiralbinder%C3%BCcken_--_2022_--_9722.jpg"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
 credit = "Spiralbinderücken -- 2022 -- 9722 by Dietmar Rabich, via Wikimedia Commons"
@@ -134,11 +134,11 @@ title = "Spiralbinderücken -- 2022 -- 9722"
 creator = "Dietmar Rabich"
 openverse = "commons:File:Spiralbinderücken -- 2022 -- 9722.jpg"
 needs_credit = true
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-08-18-flexbox-layout/lead.jpg"
-sha256 = "1a0752f9ec1362e866110153435d53e2f0b1bf98a0adf206016bbf1d2f18d014"
+sha256 = "f73dc54dde1ac00f20c7c602afd79ed94eeebbeef13260dd2a4c1b4274410d54"
 source = "https://commons.wikimedia.org/wiki/File:Type_case_with_movable_types_for_letterpress_printing_in_the_Gutenberg_Museum,_Mainz,_Germany_(48988492232).jpg"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
 credit = "Type case with movable types for letterpress printing in the Gutenberg Museum, Mainz, Germany (48988492232) by dronepicr, via Wikimedia Commons"
@@ -146,11 +146,11 @@ title = "Type case with movable types for letterpress printing in the Gutenberg 
 creator = "dronepicr"
 openverse = "commons:File:Type case with movable types for letterpress printing in the Gutenberg Museum, Mainz, Germany (48988492232).jpg"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-09-01-first-javascript/lead.jpg"
-sha256 = "b8bb89afa5e1ca618861a0fb9d06785b7fea6a5a0a484ee6517e9b6f8408386f"
+sha256 = "3e08f99698ca69336371420bdba702dbd04af026b31386b9d8a7e0921bc518aa"
 source = "https://commons.wikimedia.org/wiki/File:Laptop_and_coffee_on_a_desk.jpg"
 licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
 credit = "Laptop and coffee on a desk by Lauren Mancke, via Wikimedia Commons"
@@ -158,11 +158,11 @@ title = "Laptop and coffee on a desk"
 creator = "Lauren Mancke"
 openverse = "commons:File:Laptop and coffee on a desk.jpg"
 needs_credit = false
-size = "2000x1330"
+size = "1600x1064"
 
 [[photos]]
 file = "en/posts/2026-09-15-terminal-basics/lead.jpg"
-sha256 = "e838fc7a45781753c8f689a759183f6d4af01f7284b8516b027a7f2026dbd1f9"
+sha256 = "df16ade97255bc712c4e2dea06c8b9132eb62f2f4876f12e86df00ef165e09fc"
 source = "https://commons.wikimedia.org/wiki/File:Keyboard_Close_Up.jpg"
 licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
 credit = "Keyboard Close Up by Alexander-design, via Wikimedia Commons"
@@ -170,11 +170,11 @@ title = "Keyboard Close Up"
 creator = "Alexander-design"
 openverse = "commons:File:Keyboard Close Up.jpg"
 needs_credit = false
-size = "2000x1072"
+size = "1600x858"
 
 [[photos]]
 file = "en/posts/2026-09-22-code-editor-setup/lead.jpg"
-sha256 = "d8f87a2782ad3f10ca4056e81ffe9cfdd6d4d3ce514055c173e44af57032e473"
+sha256 = "9f03cd3d8779abff8756cf21c48f5fcc694664c54099f32acfcc9cc710e89240"
 source = "https://commons.wikimedia.org/wiki/File:Laptop_and_books_(Unsplash).jpg"
 licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
 credit = "Laptop and books (Unsplash) by Kari Shea karishea, via Wikimedia Commons"
@@ -182,11 +182,11 @@ title = "Laptop and books (Unsplash)"
 creator = "Kari Shea karishea"
 openverse = "commons:File:Laptop and books (Unsplash).jpg"
 needs_credit = false
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-10-06-git-first-steps/lead.jpg"
-sha256 = "88356621a065262c332f98e15a78e113332d05dddd5396864b56983e6e210e4d"
+sha256 = "196f83a1ac000eaa4216f52fd2ae31080ebddf7452da7312b9a4a10bde016ef0"
 source = "https://commons.wikimedia.org/wiki/File:Fork_in_the_path_-_geograph.org.uk_-_7617883.jpg"
 licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
 credit = "Fork in the path - geograph.org.uk - 7617883 by Scott Cormie, via Wikimedia Commons"
@@ -194,11 +194,11 @@ title = "Fork in the path - geograph.org.uk - 7617883"
 creator = "Scott Cormie"
 openverse = "commons:File:Fork in the path - geograph.org.uk - 7617883.jpg"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-10-06-git-first-steps/second-fork.jpg"
-sha256 = "a0eb23d40ea31969893340ab397f66cd9ecccede564e09498331ca9675fbd84e"
+sha256 = "cb2132aec3598550b1bbef366c1fc345ccefc5f837d2fd328f70abc6f50e5cf8"
 source = "https://commons.wikimedia.org/wiki/File:Fork_in_the_Path_-_geograph.org.uk_-_5326538.jpg"
 licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
 credit = "Fork in the Path - geograph.org.uk - 5326538 by Billy McCrorie, via Wikimedia Commons"
@@ -206,11 +206,11 @@ title = "Fork in the Path - geograph.org.uk - 5326538"
 creator = "Billy McCrorie"
 openverse = "commons:File:Fork in the Path - geograph.org.uk - 5326538.jpg"
 needs_credit = true
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-10-06-git-first-steps/stone-steps.jpg"
-sha256 = "31f33c1241c4776a428173a4e6b0d867d5d439178642cdb24a810f9879be3fd9"
+sha256 = "168be14c2c41d909a3fbe27b517b006e5ac6e269e1f28139a7dd02c3d09f9617"
 source = "https://commons.wikimedia.org/wiki/File:Stone_Steps_on_the_Path_to_Smyrton_-_geograph.org.uk_-_4784842.jpg"
 licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
 credit = "Stone Steps on the Path to Smyrton - geograph.org.uk - 4784842 by Billy McCrorie, via Wikimedia Commons"
@@ -218,11 +218,11 @@ title = "Stone Steps on the Path to Smyrton - geograph.org.uk - 4784842"
 creator = "Billy McCrorie"
 openverse = "commons:File:Stone Steps on the Path to Smyrton - geograph.org.uk - 4784842.jpg"
 needs_credit = true
-size = "1920x1280"
+size = "1600x1067"
 
 [[photos]]
 file = "en/posts/2026-10-13-browser-developer-tools/lead.jpg"
-sha256 = "f4e4e02a233f019352dae462cc87156496155943b1045758263d74f236971751"
+sha256 = "a74476d9e581e6638189e8b224628953a82826a4a1454624536945e05e6a925e"
 source = "https://commons.wikimedia.org/wiki/File:White_work_table_with_notes,_smartphone_and_laptop_(Unsplash).jpg"
 licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
 credit = "White work table with notes, smartphone and laptop (Unsplash) by JESHOOTS.COM jeshoots, via Wikimedia Commons"
@@ -230,11 +230,11 @@ title = "White work table with notes, smartphone and laptop (Unsplash)"
 creator = "JESHOOTS.COM jeshoots"
 openverse = "commons:File:White work table with notes, smartphone and laptop (Unsplash).jpg"
 needs_credit = false
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-10-20-plan-first-website/lead.jpg"
-sha256 = "27db694c66672ddb0c7d676cf81325730712f59c0c9966adcf7d29cc2936e402"
+sha256 = "c32ed45533bdab9bedf084c95be26282056dc7659a96bd773c39137ffdd1edee"
 source = "https://commons.wikimedia.org/wiki/File:Working_on_a_planning_session_with_stationery_items,_notebook,_and_colorful_pencils_on_a_wooden_desk.jpg"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
 credit = "Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk by Shixart1985, via Wikimedia Commons"
@@ -242,11 +242,11 @@ title = "Working on a planning session with stationery items, notebook, and colo
 creator = "Shixart1985"
 openverse = "commons:File:Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg"
 needs_credit = true
-size = "2000x1335"
+size = "1600x1068"
 
 [[photos]]
 file = "en/posts/2026-10-20-plan-first-website/orienteering-map.jpg"
-sha256 = "734c11874155d51a8d0c5b6d86706e21e001a0b023b6d71625e32c04a33aca1f"
+sha256 = "0c45162db8c0032f30245eaacc7856819358c43364bc0d693ce06f16a50597ad"
 source = "https://commons.wikimedia.org/wiki/File:Plaadikas.jpg"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
 credit = "Plaadikas by Yx teine, via Wikimedia Commons"
@@ -254,11 +254,11 @@ title = "Plaadikas"
 creator = "Yx teine"
 openverse = "commons:File:Plaadikas.jpg"
 needs_credit = true
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-10-23-build-first-website/lead.jpg"
-sha256 = "92999cdbfc38757a33ffe442c9fd83e8271288fdd9276613f5dd890d2021b1c6"
+sha256 = "00b5dd9d11ceb91de1652373ff1069ca3446dbc753d6aa65e3184d255cbddfbd"
 source = "https://commons.wikimedia.org/wiki/File:Desk_with_notebook_pens_and_glasses.jpg"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
 credit = "Desk with notebook pens and glasses by Shixart1985, via Wikimedia Commons"
@@ -266,11 +266,11 @@ title = "Desk with notebook pens and glasses"
 creator = "Shixart1985"
 openverse = "commons:File:Desk with notebook pens and glasses.jpg"
 needs_credit = true
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-10-23-build-first-website/notebook.jpg"
-sha256 = "8611d21e0f660daae43e4e63aeb5ccde2354a2f4a2f9f28a97e390355f18286c"
+sha256 = "be22fd3dd9ef3109edf5b26a48d8fd9eb6993dfc8a93fc5172318de205e9f46b"
 source = "https://commons.wikimedia.org/wiki/File:Blank_Pages_In_An_Open_Notebook_(4812269151).jpg"
 licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
 credit = "Blank Pages In An Open Notebook (4812269151) by Pink Sherbet Photography from USA, via Wikimedia Commons"
@@ -278,11 +278,11 @@ title = "Blank Pages In An Open Notebook (4812269151)"
 creator = "Pink Sherbet Photography from USA"
 openverse = "commons:File:Blank Pages In An Open Notebook (4812269151).jpg"
 needs_credit = true
-size = "2000x1333"
+size = "1600x1066"
 
 [[photos]]
 file = "en/posts/2026-10-27-responsive-website/lead.jpg"
-sha256 = "f40479727d6374fce54e1d4ccc0bbe469d747064f815d4e48b734c80ae0af034"
+sha256 = "631728b5d01963d8b46fb2718cf5feed55a0ff362fe58f55ca2d4cbb9d30b3f8"
 source = "https://commons.wikimedia.org/wiki/File:Smartphone_with_case_cover_on_table.jpg"
 licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
 credit = "Smartphone with case cover on table by Santeri Viinamäki, via Wikimedia Commons"
@@ -290,11 +290,11 @@ title = "Smartphone with case cover on table"
 creator = "Santeri Viinamäki"
 openverse = "commons:File:Smartphone with case cover on table.jpg"
 needs_credit = true
-size = "2000x1502"
+size = "1600x1202"
 
 [[photos]]
 file = "en/posts/2026-10-30-publish-website/lead.jpg"
-sha256 = "79cadbe480618abaeda34406b9e0f7eab77e1231a04062624db3a6a88fb4f298"
+sha256 = "4fce158488297443a50ec3747efb9360847044c1c5b23d2219d44a2c856deb79"
 source = "https://wordpress.org/photos/photo/2065c51b5f/"
 licence = "CC0 1.0, read on the photo's page 2026-11-05: https://creativecommons.org/publicdomain/zero/1.0/"
 credit = "Memories bring back your childhood, A paper boat floating in a puddle of water after the rain. by harshz123, via wordpress"
@@ -302,11 +302,11 @@ title = "Memories bring back your childhood, A paper boat floating in a puddle o
 creator = "harshz123"
 openverse = "6df627ab-59c3-43f0-b1da-faa06b8adc9b"
 needs_credit = false
-size = "2000x1500"
+size = "1600x1200"
 
 [[photos]]
 file = "en/posts/2026-11-04-learn-next/boots.jpg"
-sha256 = "e3a19940e3a731277caa79d7de6003fd58adb097c6abd810ca8a75ff6af49f35"
+sha256 = "6af5aa6275eaa9ccd3f8ff1ab9c97c1ad31ade733d974cfcc0b7922485f3bdfb"
 source = "https://commons.wikimedia.org/wiki/File:Hiking_boots_on_sand.jpg"
 licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
 credit = "Hiking boots on sand by Florian Prischl, via Wikimedia Commons"
@@ -314,11 +314,11 @@ title = "Hiking boots on sand"
 creator = "Florian Prischl"
 openverse = "commons:File:Hiking boots on sand.jpg"
 needs_credit = true
-size = "2000x1339"
+size = "1600x1071"
 
 [[photos]]
 file = "en/posts/2026-11-04-learn-next/lead.jpg"
-sha256 = "b50de241ded4a2543a62d838a65b749ead8e113b24a8a9a8838b5627aca2a4f5"
+sha256 = "c5179b625dc8571ccc14e8fc2320bf131f35c0f32f8e9bee645ba3c30625e9d8"
 source = "https://commons.wikimedia.org/wiki/File:Slate_Mountain_Trail_(36756900292).jpg"
 licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
 credit = "Slate Mountain Trail (36756900292) by Coconino National Forest, via Wikimedia Commons"
@@ -326,4 +326,4 @@ title = "Slate Mountain Trail (36756900292)"
 creator = "Coconino National Forest"
 openverse = "commons:File:Slate Mountain Trail (36756900292).jpg"
 needs_credit = false
-size = "2000x1335"
+size = "1600x1068"

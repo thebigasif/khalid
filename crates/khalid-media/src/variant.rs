@@ -77,10 +77,11 @@ pub fn widths(width: u32) -> Vec<u32> {
     widths
 }
 
-/// The widest file the fallback format may have: a browser that reads
+/// The widest file the fallback format may have. A browser that reads
 /// neither AVIF nor WebP is an old one, so it gets one file of this width or
 /// less instead of every width, which would double the files each image
-/// keeps on disk.
+/// keeps on disk. The same file is the image a post shares on social
+/// networks, which ask for at least 1200 px.
 const FALLBACK_MAX: u32 = 1280;
 
 /// The widths to make in the fallback format for an original `width`
