@@ -1,3 +1,8 @@
+---
+title: "Keystone"
+order: 60
+---
+
 # Keystone
 
 Keystone is a template for a product or company blog: a team that writes about what it builds and what it learns, and wants the blog to look as calm and finished as its main site. It leads with one big story, shows the rest as a grid of framed pictures, and gives each post a quiet reading column with the author and related posts after it.

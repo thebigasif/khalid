@@ -5,11 +5,11 @@
     "atlas": 930,
     "classic": 1150,
     "compass": 1180,
-    "folio": 1210,
+    "folio": 1280,
     "harbor": 850,
     "keystone": 1210,
     "ledger": 1200,
-    "meridian": 1150,
+    "meridian": 1280,
     "wire": 1210,
     "workbench": 1280
   },
@@ -17,10 +17,8 @@
     "almanac",
     "atlas",
     "compass",
-    "folio",
     "harbor",
     "keystone",
-    "meridian",
     "wire"
   ]
 }

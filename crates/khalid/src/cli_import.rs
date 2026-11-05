@@ -35,6 +35,18 @@ pub(crate) struct ImportArgs {
         help = "The Redirection plugin's JSON export, whose rules come in with a WordPress export"
     )]
     pub(crate) redirection: Option<PathBuf>,
+
+    /// Copy each post's images and its feature image from the old site into the post's own folder
+    #[arg(long = "download-images", action = ArgAction::SetTrue, value_parser = BoolValueParser::new().map(|copy| if copy { Images::Download } else { Images::Link }))]
+    pub(crate) images: Images,
+}
+
+/// Whether `khalid import` copies the images posts show, or links to them
+/// where they are.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Images {
+    Link,
+    Download,
 }
 
 /// Whether `khalid import` writes, or only says what it would write.

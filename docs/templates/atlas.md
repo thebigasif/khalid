@@ -1,3 +1,8 @@
+---
+title: "Atlas"
+order: 20
+---
+
 # Atlas
 
 A publication for a blog with many topics: a masthead, featured stories, picture cards and a topic index.
