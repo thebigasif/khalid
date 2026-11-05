@@ -10,7 +10,7 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 pub(crate) static WIRE: Pack = Pack {
     name: "wire",
     summary: "A news and columns site: a lead story beside the latest headlines, a dated feed with the editor's picks in a rail, and posts that open with a subtitle and the writer's card.",
-    stylesheet: include_str!("../packs/wire/wire.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/wire/wire.css")),
     templates: &[
         PackTemplate {
             name: "home.html",

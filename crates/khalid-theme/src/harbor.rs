@@ -11,7 +11,7 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 pub(crate) static HARBOR: Pack = Pack {
     name: "harbor",
     summary: "A busy marketing blog: a featured post with a column of smaller posts beside it, a grid of picture cards, an offer in each post and a sideways row of related reading.",
-    stylesheet: include_str!("../packs/harbor/harbor.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/harbor/harbor.css")),
     templates: &[
         PackTemplate {
             name: "home.html",

@@ -11,7 +11,7 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 pub(crate) static WORKBENCH: Pack = Pack {
     name: "workbench",
     summary: "For reviews and comparisons of tools: a featured post, the newest posts, wide comparison tables, pros and cons, and the newsletter twice on the front page.",
-    stylesheet: include_str!("../packs/workbench/workbench.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/workbench/workbench.css")),
     templates: &[
         PackTemplate {
             name: "home.html",

@@ -11,7 +11,7 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 pub(crate) static ALMANAC: Pack = Pack {
     name: "almanac",
     summary: "For a library of long guides: category links, a featured guide, a grid of guides beside the editor's picks, and posts with an \"On this page\" box and two sets of further reading.",
-    stylesheet: include_str!("../packs/almanac/almanac.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/almanac/almanac.css")),
     templates: &[
         PackTemplate {
             name: "home.html",

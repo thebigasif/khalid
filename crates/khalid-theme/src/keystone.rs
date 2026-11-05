@@ -12,7 +12,7 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
 pub(crate) static KEYSTONE: Pack = Pack {
     name: "keystone",
     summary: "A product or company blog: a lead story, a grid of framed pictures, a calm reading column with share links beside it, the author and related posts after it.",
-    stylesheet: include_str!("../packs/keystone/keystone.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/keystone/keystone.css")),
     templates: &[
         PackTemplate {
             name: "home.html",

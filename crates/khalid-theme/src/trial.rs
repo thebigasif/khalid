@@ -39,7 +39,7 @@ pub(crate) static SAMPLER: Pack = Pack {
 pub(crate) static TRIAL: Pack = Pack {
     name: "trial",
     summary: "A throwaway look for tests.",
-    stylesheet: include_str!("../packs/trial/trial.css"),
+    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/trial/trial.css")),
     templates: &[PackTemplate {
         name: "not_found.html",
         source: include_str!("../packs/trial/not_found.html"),
