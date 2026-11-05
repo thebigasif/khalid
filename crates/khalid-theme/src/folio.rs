@@ -12,10 +12,16 @@ pub(crate) static FOLIO: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/folio/folio.css.br"
     ))),
-    templates: &[PackTemplate {
-        name: "home.html",
-        source: include_str!("../packs/folio/home.html"),
-    }],
+    templates: &[
+        PackTemplate {
+            name: "home.html",
+            source: include_str!("../packs/folio/home.html"),
+        },
+        PackTemplate {
+            name: "post.html",
+            source: include_str!("../packs/folio/post.html"),
+        },
+    ],
     tokens: include_str!("../packs/folio/tokens.toml"),
     reader: &[],
     options: &[
