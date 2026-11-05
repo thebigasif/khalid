@@ -5,13 +5,16 @@
 use khalid_core::ReaderSwitch;
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
 
 /// The Harbor pack.
 pub(crate) static HARBOR: Pack = Pack {
     name: "harbor",
     summary: "A busy marketing blog: a featured post with a column of smaller posts beside it, a grid of picture cards, an offer in each post and a sideways row of related reading.",
-    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/harbor/harbor.css")),
+    css: PackCss::compressed(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/packs/harbor/harbor.css.br"
+    ))),
     templates: &[
         PackTemplate {
             name: "home.html",

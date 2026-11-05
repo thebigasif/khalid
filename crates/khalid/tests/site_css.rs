@@ -94,7 +94,7 @@ fn a_site_without_the_file_gets_the_template_alone() {
         .iter()
         .find(|pack| pack.name == "atlas")
         .unwrap();
-    let last = atlas.stylesheet.trim_end().lines().last().unwrap();
+    let last = atlas.stylesheet().trim_end().lines().last().unwrap();
     let css = stylesheet(&out);
     assert!(css.trim_end().ends_with(last), "{css}");
 }

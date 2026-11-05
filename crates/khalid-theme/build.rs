@@ -1,10 +1,13 @@
 //! Writes each template's stylesheet without its comments, indentation and
-//! blank lines into cargo's output folder, where the packs embed it from.
-//! The renderer strips the same things when it builds a site's stylesheet,
-//! and stripping twice gives what stripping once gives, so every site's
-//! stylesheet is unchanged; the binary just stops carrying the comments.
+//! blank lines into cargo's output folder, and beside it the same text
+//! compressed with Brotli, which the packs embed (`PackCss`). The renderer
+//! strips the same things when it builds a site's stylesheet, and stripping
+//! twice gives what stripping once gives, so every site's stylesheet is
+//! unchanged; the binary just stops carrying the comments, and carries the
+//! rest compressed.
 
 use std::ffi::OsString;
+use std::io::Write as _;
 use std::path::PathBuf;
 use std::{fs, io};
 
@@ -26,9 +29,14 @@ fn main() -> io::Result<()> {
             let file = file?;
             let path = file.path();
             if path.extension().is_some_and(|extension| extension == "css") {
+                let css = minify(&fs::read_to_string(&path)?);
                 let mut target = into.clone();
                 target.push(file.file_name());
-                fs::write(target, minify(&fs::read_to_string(&path)?))?;
+                fs::write(&target, &css)?;
+                let mut name = file.file_name();
+                name.push(".br");
+                target.set_file_name(name);
+                fs::write(target, brotli(css.as_bytes())?)?;
             }
         }
     }
@@ -42,6 +50,18 @@ fn out_dir() -> io::Result<OsString> {
     std::env::vars_os()
         .find_map(|(name, value)| (name == "OUT_DIR").then_some(value))
         .ok_or_else(|| io::Error::other("cargo did not set OUT_DIR"))
+}
+
+/// `text` compressed with Brotli at its highest quality: the build pays
+/// once, and every binary is smaller.
+fn brotli(text: &[u8]) -> io::Result<Vec<u8>> {
+    let mut out = Vec::with_capacity(text.len() / 4);
+    {
+        let mut writer = brotli::CompressorWriter::new(&mut out, 4096, 11, 22);
+        writer.write_all(text)?;
+        writer.flush()?;
+    }
+    Ok(out)
 }
 
 /// Removes comments, indentation and blank lines, as

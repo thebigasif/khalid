@@ -9,13 +9,16 @@
 use khalid_core::ReaderSwitch;
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks};
-use crate::{Pack, PackTemplate, slot};
+use crate::{Pack, PackCss, PackTemplate, slot};
 
 /// The Compass pack.
 pub(crate) static COMPASS: Pack = Pack {
     name: "compass",
     summary: "A teaching blog: breadcrumbs, the contents and key points before each guide, share links, the author and the newsletter after it.",
-    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/compass/compass.css")),
+    css: PackCss::compressed(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/packs/compass/compass.css.br"
+    ))),
     templates: &[PackTemplate {
         name: "home.html",
         source: include_str!("../packs/compass/home.html"),
