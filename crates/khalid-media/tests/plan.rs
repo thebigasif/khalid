@@ -2,7 +2,7 @@
 
 use std::fs;
 
-use khalid_media::{ContentKey, Format, MediaCache, Variant, widths};
+use khalid_media::{ContentKey, Format, MediaCache, Variant, fallback_widths, widths};
 
 #[test]
 fn the_same_bytes_get_the_same_key_and_any_change_a_new_one() {
@@ -32,6 +32,16 @@ fn an_image_is_never_scaled_up() {
     assert_eq!(widths(300), [300]);
     assert_eq!(widths(320), [320]);
     assert_eq!(widths(0), [0_u32; 0]);
+}
+
+#[test]
+fn the_fallback_format_gets_one_width_of_1280_or_less() {
+    assert_eq!(fallback_widths(4000), [1280]);
+    assert_eq!(fallback_widths(1280), [1280]);
+    assert_eq!(fallback_widths(1500), [1280]);
+    assert_eq!(fallback_widths(900), [900]);
+    assert_eq!(fallback_widths(300), [300]);
+    assert_eq!(fallback_widths(0), [0_u32; 0]);
 }
 
 #[test]
