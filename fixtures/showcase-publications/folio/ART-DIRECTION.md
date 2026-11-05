@@ -1,6 +1,6 @@
-# Workbench Notes: art direction
+# Tern Notes: art direction
 
-Workbench Notes is the blog of the made-up team that makes Tern, a note-taking app. Its photographs should look like the desk and the building of a small, careful product team: paper, pencils, plain tools, a plant by the window and the quiet details of the rooms they work in. Nothing in them should look like a software advert.
+Tern Notes is the blog of the made-up team that makes Tern, a note-taking app. Its photographs should look like the desk and the building of a small, careful product team: paper, pencils, plain tools, a plant by the window and the quiet details of the rooms they work in. Nothing in them should look like a software advert.
 
 ## Tone
 

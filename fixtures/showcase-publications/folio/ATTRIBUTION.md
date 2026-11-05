@@ -1,6 +1,6 @@
-# Photographs in Workbench Notes
+# Photographs in Tern Notes
 
-Workbench Notes is a made-up publication that shows Khalid's Folio template. Its photographs are not part of Khalid and are not under the AGPL. Each keeps the licence its photographer gave it, listed here. The photographs are cropped and resized for the demo.
+Tern Notes is a made-up publication that shows Khalid's Folio template. Its photographs are not part of Khalid and are not under the AGPL. Each keeps the licence its photographer gave it, listed here. The photographs are cropped and resized for the demo.
 
 - `en/posts/2026-01-20-no-folders/lead.jpg`: "White architecture concept (Unsplash)" by Tobias van Schneider vanschneider, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:White_architecture_concept_(Unsplash).jpg
 - `en/posts/2026-02-10-tern-2-0-linked-notes/lead.jpg`: "Pile of thread (Unsplash)" by Terri Bleeker terri_bleeker, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Pile_of_thread_(Unsplash).jpg

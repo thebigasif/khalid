@@ -1,12 +1,12 @@
 ---
-title: About Tern and Workbench Notes
+title: About Tern and its blog
 slug: about
-description: Who makes Tern, the note-taking app that links notes and works offline, who writes Workbench Notes and how to reach the team.
+description: Who makes Tern, the note-taking app that links notes and works offline, who writes Tern Notes and how to reach the team.
 ---
 
 Tern is a note-taking app for people who think in small pieces. You write short notes, link them to each other, and find them again with search that works on your device, with or without a connection. Tern runs on computers, phones and tablets, and it is free on one device, for as long as you like.
 
-Workbench Notes is our blog. We write it for anyone who uses Tern, and for anyone who builds software in a small team and wants to compare notes.
+Tern Notes is our blog. We write it for anyone who uses Tern, and for anyone who builds software in a small team and wants to compare notes.
 
 ## Who makes Tern
 
