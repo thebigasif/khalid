@@ -4,7 +4,7 @@
     "almanac": 890,
     "atlas": 930,
     "classic": 1150,
-    "compass": 1180,
+    "compass": 1216,
     "folio": 1280,
     "harbor": 850,
     "keystone": 1210,
@@ -16,7 +16,6 @@
   "reading_pending": [
     "almanac",
     "atlas",
-    "compass",
     "harbor",
     "keystone",
     "wire"

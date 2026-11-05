@@ -1,17 +1,26 @@
-{#- Compass's front page: the title and intro, a row of links to the
-    sections on the page when there are two or more, each section as
-    three picture cards with a link to the rest, then the newsletter as a
-    band before the footer. -#}
+{#- Compass's front page: a map of the blog across the top (the title, the
+    intro and every topic as a numbered stop on one trail), a row of links
+    to the sections on the page when there are two or more, each section
+    as three picture cards with a link to the rest, then the newsletter as
+    a band before the footer. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
+<div class="masthead">
 <h1>{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
 </div>
-{% endif %}{% if page.sections | length > 1 %}<nav class="jump-links" aria-label="{{ t.on_this_page }}">
+{% endif %}{% if page.topics %}<nav class="route" aria-label="{{ t.topics }}">
+<h2>{{ t.topics }}</h2>
+<ol>
+{% for group in page.topics %}{% for link in group.links %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}{% endfor %}</ol>
+</nav>
+{% endif %}</div>
+{% if page.sections | length > 1 %}<nav class="jump-links" aria-label="{{ t.on_this_page }}">
 <ul>
 {% for section in page.sections %}<li><a href="#section-{{ loop.index }}">{{ section.title }}</a></li>
 {% endfor %}</ul>
