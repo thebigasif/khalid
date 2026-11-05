@@ -9,6 +9,15 @@ category: lighting
 description: "Our Plover L60 review: a 60 watt LED light, bright enough for a small room and quiet enough for a podcast. Score: 7.9 out of 10."
 focus_keyword: Plover L60
 tags: [reviews, LED lights, key lights]
+facts:
+  - label: Score
+    value: "7.9"
+  - label: Brightness
+    value: "2,150 lux"
+  - label: TLCI
+    value: "96"
+  - label: Fan noise
+    value: "21 dB-A"
 image:
   src: lead.jpg
   alt: A small home studio with two LED lights like the Plover L60 on stands, each firing through a square softbox at a black backdrop, white boards clamped to stands at the sides

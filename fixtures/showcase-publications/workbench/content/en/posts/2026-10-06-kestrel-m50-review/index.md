@@ -8,6 +8,15 @@ category: audio-gear
 description: "Our Kestrel M50 review: closed-back studio headphones that leak almost nothing into your microphone and play voices evenly. Score: 8.0."
 focus_keyword: Kestrel M50
 tags: [reviews, headphones, podcasting]
+facts:
+  - label: Score
+    value: "8.0"
+  - label: Isolation
+    value: "21 dB"
+  - label: Impedance
+    value: "38 ohms"
+  - label: Weight
+    value: "290 g"
 image:
   src: lead.jpg
   alt: A pair of black closed-back headphones like the Kestrel M50, with padded leather ear cups and a braided cable, resting on a dark wooden desk, in black and white

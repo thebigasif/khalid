@@ -9,6 +9,15 @@ category: audio-gear
 description: "Our Heron R4 review: a mixer for four microphones that records each one to a memory card. Clean preamps, cramped menus. Score: 7.6 out of 10."
 focus_keyword: Heron R4
 tags: [reviews, mixers, recorders, podcasting]
+facts:
+  - label: Score
+    value: "7.6"
+  - label: Preamp noise
+    value: "−127 dBu"
+  - label: Max gain
+    value: "65 dB"
+  - label: Battery
+    value: "6.7 h"
 image:
   src: lead.jpg
   alt: Faders on a dark blue mixing desk like the one on the Heron R4, the grey fader caps at different heights beside their printed level scales, one orange light glowing behind

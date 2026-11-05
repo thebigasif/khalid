@@ -8,7 +8,6 @@ category: guides
 description: "How to build a home podcast studio at three budgets, using only gear that passed our bench tests, and what each step up changes in the sound."
 focus_keyword: home podcast studio
 tags: [buying guides, podcasting, studio setup]
-featured: true
 image:
   src: lead.jpg
   alt: A home podcast studio with microphones on four boom arms around a curved wooden table, headphones hanging from the arms, a monitor and a speaker on the desk and a window behind

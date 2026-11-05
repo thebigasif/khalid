@@ -10,6 +10,15 @@ description: "Our Wren D7 review: a dynamic microphone that hears your voice and
 focus_keyword: Wren D7
 tags: [reviews, dynamic microphones, podcasting]
 featured: true
+facts:
+  - label: Score
+    value: "8.8"
+  - label: Room pickup
+    value: "8.9/10"
+  - label: Gain needed
+    value: "58 dB"
+  - label: Weight
+    value: "380 g"
 image:
   src: lead.jpg
   alt: The head of a gold dynamic microphone like the Wren D7, with a round steel mesh grille and a band of vent holes, lit from the side against a dark grey background

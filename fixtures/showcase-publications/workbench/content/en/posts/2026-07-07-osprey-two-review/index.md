@@ -8,6 +8,15 @@ category: audio-gear
 description: "Our Osprey Two review: a two-input USB audio interface clean enough for gain-hungry dynamic microphones. Score: 8.5 out of 10."
 focus_keyword: Osprey Two
 tags: [reviews, audio interfaces, podcasting]
+facts:
+  - label: Score
+    value: "8.5"
+  - label: Preamp noise
+    value: "−128 dBu"
+  - label: Max gain
+    value: "66 dB"
+  - label: Latency
+    value: "4.1 ms"
 image:
   src: lead.jpg
   alt: A dozen small black control knobs and rotary potentiometers with white shafts, the parts behind an interface's gain controls like the Osprey Two's, laid out in rows on a white table

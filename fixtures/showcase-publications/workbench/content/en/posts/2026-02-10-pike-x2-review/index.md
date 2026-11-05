@@ -12,6 +12,15 @@ description: "Our Pike X2 review: a small mirrorless camera with the most reliab
 focus_keyword: Pike X2
 tags: [reviews, mirrorless cameras, vlogging]
 featured: true
+facts:
+  - label: Score
+    value: "8.7"
+  - label: Tracking
+    value: "97%"
+  - label: 4K battery
+    value: "64 min"
+  - label: Weight
+    value: "415 g"
 image:
   src: lead.jpg
   alt: A close view into the open lens mount of a mirrorless camera body like the Pike X2, showing the silver bayonet ring, the gold contact pins and the image sensor

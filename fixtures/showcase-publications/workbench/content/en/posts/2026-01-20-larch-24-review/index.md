@@ -10,6 +10,15 @@ description: "Our Larch 24 review: a warm, very quiet condenser microphone for v
 focus_keyword: Larch 24
 tags: [reviews, condenser microphones, podcasting]
 featured: true
+facts:
+  - label: Score
+    value: "8.4"
+  - label: Self-noise
+    value: "9 dB-A"
+  - label: Gain needed
+    value: "38 dB"
+  - label: Weight
+    value: "520 g"
 image:
   src: lead.jpg
   alt: A silver studio microphone with a long mesh grille in a spider shock mount on a boom arm, like the Larch 24, in front of a perforated acoustic wall panel
