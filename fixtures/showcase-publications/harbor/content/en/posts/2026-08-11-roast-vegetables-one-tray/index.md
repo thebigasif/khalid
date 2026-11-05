@@ -12,6 +12,13 @@ description: How to roast vegetables on one tray so they finish together, with a
 focus_keyword: roast vegetables
 featured: true
 tags: [roasting, weeknights]
+facts:
+  - label: Time
+    value: "55 min"
+  - label: Serves
+    value: "4"
+  - label: Difficulty
+    value: "Easy"
 image:
   src: lead.jpg
   alt: A tray of roast vegetables, courgette, red and yellow pepper and onion, glossy with oil and flecked with dried herbs

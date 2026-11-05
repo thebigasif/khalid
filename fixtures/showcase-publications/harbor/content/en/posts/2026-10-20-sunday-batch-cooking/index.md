@@ -10,6 +10,13 @@ description: A Sunday batch cooking plan that takes two hours and leaves four we
 focus_keyword: batch cooking
 featured: true
 tags: [batch cooking, meal planning]
+facts:
+  - label: Time
+    value: "2 hr"
+  - label: Makes
+    value: "4 dinners for 2"
+  - label: Difficulty
+    value: "Medium"
 image:
   src: lead.jpg
   alt: Three glass meal-prep boxes of red rice, lentils, sweetcorn, tomatoes, cucumber and olives, with three small pots of dips and seeds below them, on a white counter

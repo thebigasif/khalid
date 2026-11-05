@@ -8,6 +8,13 @@ category: weeknight-cooking
 description: How to cook one-pan dinners that finish together, with the order to add each ingredient to the pan and a table of how long common ingredients take.
 focus_keyword: one-pan dinners
 tags: [weeknights, roasting]
+facts:
+  - label: Time
+    value: "30 min"
+  - label: Serves
+    value: "2"
+  - label: Difficulty
+    value: "Easy"
 image:
   src: lead.jpg
   alt: Bright green asparagus spears and red, yellow and dark cherry tomatoes cooking together in a black cast iron pan

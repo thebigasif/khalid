@@ -1,9 +1,10 @@
 /* Harbor (templates spec 3.5): a marketing blog with one offer. The idea
-   is a harbour wall of colour: the top of every page sits on a light tint
-   of the accent, with the blog's name or the post's title set large and
-   tight, and plain cards resting on it. Below the tint, picture cards on
-   the background, bold section headings under a short accent bar, and the offer as
-   a band in the full accent. Every colour is a token or a mix of tokens. */
+   is a harbour wall of colour: one band of a light tint of the accent at
+   the top of the front page and of each list, with the blog's name set
+   large and tight and a strip of recipe cards resting on it. Below it,
+   picture cards on white, bold section headings under a short accent bar,
+   and the offer as a band in the full accent. Every colour is a token or
+   a mix of tokens. */
 :root {
   --hb-tint: color-mix(in oklab, var(--color-accent) 9%, var(--color-background));
   --hb-wash: color-mix(in oklab, var(--color-accent) 4%, var(--color-background));
@@ -14,7 +15,7 @@
   --hb-lift: 0 1px 2px color-mix(in oklab, var(--color-text) 6%, transparent), 0 1rem 2.5rem -1rem color-mix(in oklab, var(--color-text) 22%, transparent);
   --hb-raise: 0 1px 2px color-mix(in oklab, var(--color-text) 5%, transparent), 0 1.5rem 3rem -1.5rem color-mix(in oklab, var(--color-text) 16%, transparent);
   --hb-wide: 84rem;
-  --hb-display: clamp(2.75rem, 1.4rem + 4.6vw, 5.25rem);
+  --hb-display: clamp(2.5rem, 1.4rem + 4.6vw, 5.25rem);
   --hb-title: clamp(2.25rem, 1.45rem + 2.6vw, 3.75rem);
   --hb-section: clamp(1.75rem, 1.25rem + 1.4vw, 2.5rem);
 }
@@ -27,7 +28,7 @@ h2 { line-height: 1.15; }
 
 /* A band: the box keeps the column, its colour runs to both edges of the
    window. The shadow draws the colour; it never widens the page. */
-.announcement, .masthead, .top, main > .breadcrumbs, main > h1, main > h1 ~ :is(.intro, .hub-link), .site-footer { box-shadow: 0 0 0 100vmax var(--hb-band, var(--hb-tint)); clip-path: inset(0 -100vmax); background: var(--hb-band, var(--hb-tint)); }
+.announcement, .masthead, .recipe-strip, main > .breadcrumbs:not(:has(+ .post)), main > h1, main > h1 ~ :is(.intro, .hub-link), .site-footer { box-shadow: 0 0 0 100vmax var(--hb-band, var(--hb-tint)); clip-path: inset(0 -100vmax); background: var(--hb-band, var(--hb-tint)); }
 
 /* Buttons: one filled pill in the accent, 2.75rem high. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-block-size: 2.75rem; padding: 0.5rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 999px; font-family: var(--font-body); font-size: 0.9375rem; font-weight: 700; line-height: 1.2; letter-spacing: 0; text-align: center; text-decoration: none; cursor: pointer; transition: background-color 0.15s; }
@@ -72,7 +73,7 @@ h2 { line-height: 1.15; }
 .masthead h1 { margin: 0; font-size: var(--hb-display); font-weight: 800; line-height: 0.98; letter-spacing: -0.045em; }
 .masthead .intro { max-inline-size: 36rem; margin-block-start: 1.25rem; color: var(--hb-ink); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.5; }
 .masthead .intro > :last-child { margin-block-end: 0; }
-.masthead:not(:has(+ .top)) { margin-block-end: var(--space-section); padding-block-end: clamp(2.5rem, 1.5rem + 3vw, 4.5rem); }
+.masthead:not(:has(+ :is(.top, .recipe-strip))), .recipe-strip { margin-block-end: var(--space-section); padding-block-end: clamp(2.5rem, 1.5rem + 3vw, 4.5rem); }
 @media (min-width: 60rem) { .masthead-signup { grid-template-columns: minmax(0, 1fr) minmax(22rem, 30rem); } }
 .masthead .newsletter-slot { margin: 0; box-shadow: var(--hb-raise); }
 
@@ -87,24 +88,63 @@ h2 { line-height: 1.15; }
 .subscribe input { min-block-size: 2.75rem; padding-inline: 1.125rem; border: 1px solid var(--hb-line); border-radius: 999px; font: inherit; }
 .subscribe input:focus-visible { border-color: var(--color-accent); }
 .post-body .subscribe { margin-block: 2rem; padding: 1.5rem; background: var(--hb-wash); border: 1px solid var(--hb-line); border-radius: var(--hb-round); }
-main > .newsletter-slot { margin-block: var(--space-section); padding: 2.5rem; background: var(--hb-tint); border: 0; }
+main > .newsletter-slot { margin-block: var(--space-section); padding: 2.5rem; border-color: var(--hb-line); }
 main > .newsletter-slot h2 { font-size: 1.875rem; }
 
-/* The lead post and the picks: plain cards on the hero's tint. */
-.top { display: grid; gap: 2.5rem; margin-block-end: var(--space-section); padding-block: 0 clamp(3rem, 2rem + 3vw, 5rem); }
+/* The lead post and the picks, on white under the band. */
+.top { display: grid; gap: 2.5rem; margin-block-end: var(--space-section); padding: 0; background: none; box-shadow: none; clip-path: none; }
+.masthead:has(+ .recipe-strip) { margin-block-end: 0; }
+.masthead:has(+ .top) { margin-block-end: clamp(2.5rem, 1.5rem + 3vw, 4.5rem); padding-block-end: clamp(2.5rem, 1.5rem + 3vw, 4.5rem); }
 @media (min-width: 60rem) { .top-split { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 2rem; } }
 .lead, .lead-side { display: flex; flex-direction: column; min-inline-size: 0; }
-.lead > article.lead-card, .lead-side > .cards { flex: 1; background: var(--color-background); border-radius: var(--hb-big); box-shadow: var(--hb-raise); }
-.lead > article.lead-card { display: block; padding: 0.75rem; }
+.lead > article.lead-card, .lead-side > .cards { flex: 1; box-shadow: none; }
+.lead > article.lead-card { position: relative; display: block; padding: 0; }
 .lead-card > figure.image { margin: 0; }
 .lead-card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--hb-wash); border-radius: var(--hb-round); }
-.lead-text { padding: 1.5rem 1.25rem 1rem; }
+.lead-text { padding: 1.5rem 0 0; }
 .lead .lead-card h3 { margin-block: 0.75rem; font-size: clamp(1.75rem, 1.1rem + 1.9vw, 2.75rem); letter-spacing: -0.035em; line-height: 1.06; }
 .lead-card h3 a { color: var(--color-text); text-decoration: none; }
 .lead-card h3 a:hover { color: var(--color-link); }
 .lead-text > p:last-child { max-inline-size: 40rem; margin: 0; color: var(--color-muted); font-size: 1.125rem; line-height: 1.6; }
 .top:not(.top-split) .lead-pictured { display: grid; gap: 0 2rem; align-items: center; }
 @media (min-width: 60rem) { .top:not(.top-split) .lead-pictured { grid-template-columns: 7fr 5fr; } }
+
+/* The recipe strip: up to four small cards on the band, the picture
+   beside the title and two tags. Four across on a wide screen, two on a
+   tablet; on a phone a row that swipes sideways, snapping card by card,
+   with the next card showing at the edge. */
+.recipe-strip { display: grid; gap: 1rem; margin-block-start: 0; padding-inline: 0; list-style: none; }
+@media (min-width: 40rem) { .recipe-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .recipe-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.recipe { position: relative; display: grid; grid-template-columns: 4.75rem minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 0.875rem; block-size: 100%; margin: 0; padding: 0.75rem; background: var(--color-background); border: 1px solid var(--hb-line); border-radius: var(--hb-round); transition: border-color 0.15s; }
+.recipe:hover { border-color: var(--color-accent); }
+.recipe:has(a:focus-visible) { outline: 3px solid var(--color-text); outline-offset: 3px; }
+.recipe > .image { margin: 0; }
+.recipe picture, .recipe img { display: block; }
+.recipe img { aspect-ratio: 1; margin: 0; object-fit: cover; border-radius: var(--radius); }
+.recipe .fact-tags { grid-column: 1 / -1; align-self: end; }
+.recipe h2 { align-self: center; margin: 0; font-size: 1.0625rem; letter-spacing: -0.015em; line-height: 1.25; }
+.recipe h2 a { color: var(--color-text); text-decoration: none; }
+.recipe h2 a::after { content: ""; position: absolute; inset: 0; }
+.recipe:hover h2 a { color: var(--color-link); }
+.recipe h2 a:focus-visible { outline: 0; }
+.recipe:not(:has(.image)) { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 39.99rem) {
+  .recipe-strip { grid-auto-flow: column; grid-auto-columns: min(82%, 20rem); margin-inline: -1rem; padding-inline: 1rem; padding-block-start: 0.375rem; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: 1rem; scrollbar-width: thin; }
+  .recipe-strip > li { scroll-snap-align: start; }
+}
+
+/* A post's facts as small pill tags, each led by a line icon chosen by
+   its place: a clock, then a knife and fork, then three bars, then a tag. */
+.fact-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; margin: 0; padding: 0; list-style: none; }
+.fact-tags li { display: inline-flex; align-items: center; gap: 0.3125rem; min-block-size: 1.75rem; padding: 0.125rem 0.625rem 0.125rem 0.5rem; color: var(--hb-ink); background: var(--hb-tint); border-radius: 999px; font-size: 0.8125rem; line-height: 1.2; }
+.fact-tags b { color: var(--color-text); }
+.fact-tags li::before { content: ""; flex: none; inline-size: 1rem; block-size: 1rem; background: var(--color-link); -webkit-mask: var(--hb-icon) center / contain no-repeat; mask: var(--hb-icon) center / contain no-repeat; --hb-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z'/><circle cx='7.5' cy='7.5' r='.5'/></svg>"); }
+.fact-tags li:nth-child(1)::before { --hb-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M12 6v6l4 2'/></svg>"); }
+.fact-tags li:nth-child(2)::before { --hb-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7'/></svg>"); }
+.fact-tags li:nth-child(3)::before { --hb-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 21v-6M12 21V3M19 21V9'/></svg>"); }
+.post-header .fact-tags { justify-content: center; margin-block: -0.5rem 1.75rem; }
+.post-header .fact-tags li { min-block-size: 2rem; padding-inline: 0.625rem 0.75rem; font-size: 0.9375rem; }
 
 /* The meta line of every card: the topic underlined in the accent, then
    the author and the date. */
@@ -165,8 +205,9 @@ ul.cards:not(.cards-row, .cards-text, .cards-compact) .card:not(:has(.image))::b
 .cards-row .card :is(h2, h3, h4) { margin-block: 0.125rem 0.375rem; font-size: 1.1875rem; line-height: 1.25; }
 .cards-row .card > p:not(.card-meta) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; font-size: 0.9375rem; }
 .cards-row .card:not(:has(.image))::before { content: ""; grid-row: 1 / span 4; aspect-ratio: 4 / 3; background: radial-gradient(circle at 85% 120%, var(--hb-line) 0 45%, transparent 45.5%), var(--hb-tint); border-radius: var(--radius); }
-.lead-side > .cards-row { display: flex; flex-direction: column; justify-content: space-between; padding: 0.5rem 1.5rem; }
-.lead-side .cards-row > li { flex: 1; }
+.lead-side > .cards-row { display: flex; flex-direction: column; justify-content: flex-start; padding: 0; }
+.lead-side .cards-row > li { flex: none; }
+.lead-side .cards-row > li:first-child > .card { padding-block-start: 0; }
 .lead-side .cards-row > li:last-child > .card { border: 0; }
 .lead-side .cards-row > li > .card { align-content: center; }
 .latest .cards-row { grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 1fr)); column-gap: 3rem; }
@@ -240,8 +281,7 @@ main > .cards { margin-block-start: 3.5rem; }
 }
 .masthead ~ .cta-band { max-inline-size: none; }
 main > .breadcrumbs:has(+ .post) ol { justify-content: center; }
-.post > .post-header { --hb-image: calc(min(60rem, 100vw - 2rem) * 0.28125); max-inline-size: 56rem; margin-block: 0 3rem; padding-block: 1rem 0; text-align: center; border-image: linear-gradient(var(--hb-tint), var(--hb-tint)) fill 0 / 0 / 0 100vmax; }
-.post > .post-header:has(> figure.image) { border-image: linear-gradient(var(--hb-tint) 0 calc(100% - var(--hb-image)), transparent 0) fill 0 / 0 / 0 100vmax; }
+.post > .post-header { max-inline-size: 56rem; margin-block: 0 3rem; padding-block: 1rem 0; text-align: center; border-image: none; }
 .post > .post-header:not(:has(> figure.image)) { padding-block-end: 3rem; }
 .post-header h1 { margin-block: 0 1.75rem; font-size: var(--hb-title); font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; }
 .post-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.25rem 1.25rem; color: var(--hb-ink); }
@@ -266,7 +306,7 @@ main > .breadcrumbs:has(+ .post) ol { justify-content: center; }
 
 /* The contents: a light box with the sections in two columns on wide
    screens. */
-.toc-box, .post-body .toc { padding: 1.5rem 1.75rem; background: var(--hb-wash); border: 1px solid var(--hb-line); border-radius: var(--hb-round); }
+.toc-box, .post-body .toc { padding: 1.5rem 1.75rem; background: var(--color-background); border: 1px solid var(--hb-line); border-radius: var(--hb-round); }
 .toc-box { margin-block-end: 2.5rem; }
 .toc-title { margin-block-end: 0.5rem; color: var(--color-text); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
 .toc-box ol, .post-body .toc ol { padding-inline-start: 1.25rem; }
@@ -373,7 +413,7 @@ main > .breadcrumbs:has(+ .post) ol { justify-content: center; }
 .topic-tab-list a[aria-selected="true"], .topic-tab-list a[aria-current] { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
 .hero-stats { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; margin-block: 1.5rem 0; }
 .hero-stats dd { font-family: var(--font-heading); font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; }
-.site-footer { --hb-band: var(--hb-wash); justify-items: center; gap: 1.25rem; padding-block: 3rem; border-block-start: 0; box-shadow: 0 0 0 100vmax var(--hb-wash), 0 -1px 0 100vmax var(--color-border); clip-path: inset(-1px -100vmax 0); text-align: center; }
+.site-footer { justify-items: center; gap: 1.25rem; padding-block: 3rem; border-block-start: 0; background: none; box-shadow: 0 0 0 100vmax var(--color-background), 0 -1px 0 100vmax var(--color-border); clip-path: inset(-1px -100vmax 0); text-align: center; }
 main + .site-footer, .site-footer { margin-block-start: 0; }
 .site-footer nav ul { justify-content: center; gap: 0 1.75rem; }
 .footer-groups { inline-size: 100%; text-align: start; }
@@ -394,9 +434,7 @@ main + .site-footer, .site-footer { margin-block-start: 0; }
   .header-button { min-block-size: 2.75rem; padding-inline: 1rem; font-size: 0.875rem; }
   .masthead { padding-block: 2.25rem 1.75rem; }
   .top { gap: 2rem; }
-  .lead > article.lead-card { padding: 0.5rem; }
-  .lead-text { padding: 1.25rem 0.75rem 0.75rem; }
-  .lead-side > .cards-row { padding: 0.25rem 1rem; }
+  .lead-text { padding-block-start: 1.25rem; }
   .cards-row > li > .card { grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0 1rem; }
   .cards-row .card > p:not(.card-meta) { display: none; }
   .newsletter-slot, main > .newsletter-slot { padding: 1.5rem; }
@@ -404,7 +442,6 @@ main + .site-footer, .site-footer { margin-block-start: 0; }
   .offer .cta-band { padding: 1.25rem; border-radius: var(--hb-big); }
   .offer .cta-band .button { inline-size: 100%; }
   .post-header > figure.image { margin-inline: 0; }
-  .post > .post-header { --hb-image: calc((100vw - 2rem) * 0.28125); }
   .post-meta { gap: 0.25rem 1rem; }
   .post-meta > p { padding: 0; border: 0; }
   .toc-box, .post-body .toc { padding: 1.25rem; }
