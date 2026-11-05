@@ -105,6 +105,35 @@ What the reading progress bar, the contents sheet, the copy link button and the 
 
 Every part reads with scripts off. Every page also shows `[brand] icon` in the browser tab, in every template.
 
+## Facts on a post
+
+A post can list a few short facts in its front matter. A template can show them on the post's cards and on its page. A review might list its scores, a project its client and year, and a recipe its time and servings.
+
+```yaml
+---
+title: A reading room for Calder Street
+facts:
+  - label: Client
+    value: Calder Street Library
+  - label: Year
+    value: "2025"
+---
+```
+
+- A post lists at most four facts, in the order they should show.
+- A label has 1 to 24 characters. A value has 1 to 40 characters.
+- Each label and value is one line of plain text. Spaces at either end are dropped.
+- Put a value in quotes when it is only a number or holds a colon.
+- An empty list is the same as no facts.
+
+`khalid build` stops and names the line when a fact breaks one of these rules.
+
+No template shows facts yet. A template that wants them reads `post.facts` on a card and `page.facts` on a post page. Each fact has a `label` and a `value`:
+
+```html
+{% for fact in page.facts %}<dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd>{% endfor %}
+```
+
 ## Options many templates share
 
 Some parts of a page work the same in every template that has them. Each template lists the ones it takes, with its own defaults. Classic takes none of them, so it shows none of them.

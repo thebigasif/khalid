@@ -92,6 +92,7 @@ impl Prepared {
             updated: None,
             updated_note: None,
             dek: None,
+            facts: Vec::new(),
             reading_time: ReadingTime::of(&body, &post.locale),
             authors: front
                 .author

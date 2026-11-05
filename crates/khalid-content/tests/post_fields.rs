@@ -198,3 +198,61 @@ fn refuses_a_cluster_without_a_name_or_with_an_unknown_role() {
         "posts/a.md, line 4, field \"cluster\": unknown variant `leader`, expected one of pillar, member"
     );
 }
+
+#[test]
+fn reads_facts_in_order_and_trims_them() {
+    let text = "---\ntitle: A\nfacts:\n  - label: Client\n    value: Calder Street Library\n  - label: \" Year \"\n    value: \"2025\"\n  - label: Serves\n    value: 4\n---\n";
+    let post = parse_post(Path::new("posts/a.md"), text).unwrap();
+    let facts: Vec<(&str, &str)> = (post.front.facts.iter())
+        .map(|fact| (fact.label.as_str(), fact.value.as_str()))
+        .collect();
+    assert_eq!(
+        facts,
+        [
+            ("Client", "Calder Street Library"),
+            ("Year", "2025"),
+            ("Serves", "4")
+        ]
+    );
+}
+
+#[test]
+fn no_facts_and_an_empty_list_read_the_same() {
+    let plain = parse_post(Path::new("posts/a.md"), "---\ntitle: A\n---\n").unwrap();
+    assert!(plain.front.facts.is_empty());
+    let empty = parse_post(Path::new("posts/a.md"), "---\ntitle: A\nfacts: []\n---\n").unwrap();
+    assert!(empty.front.facts.is_empty());
+}
+
+#[test]
+fn refuses_a_fifth_fact() {
+    let five = "  - {label: A, value: one}\n".repeat(5);
+    assert_eq!(
+        message(&format!("---\nfacts:\n{five}---\n")),
+        "posts/a.md, line 3, field \"facts\": a post has at most 4 facts, and this lists 5; keep the 4 a reader most needs"
+    );
+}
+
+#[test]
+fn refuses_a_fact_label_over_24_characters() {
+    assert_eq!(
+        message(
+            "---\nfacts:\n  - label: The discipline this project used\n    value: Print\n---\n"
+        ),
+        "posts/a.md, line 3, field \"facts\": the fact label \"The discipline this project used\" has 32 characters; keep it to 24 or fewer, such as label: Client"
+    );
+}
+
+#[test]
+fn refuses_a_fact_value_over_two_lines_or_blank() {
+    assert_eq!(
+        message(
+            "---\nfacts:\n  - label: Client\n    value: |\n      Calder Street\n      Library\n---\n"
+        ),
+        "posts/a.md, line 3, field \"facts\": the fact value \"Calder Street\\nLibrary\" runs over more than one line; write it on one line"
+    );
+    assert_eq!(
+        message("---\nfacts:\n  - label: Client\n    value: \" \"\n---\n"),
+        "posts/a.md, line 3, field \"facts\": a fact needs a value with at least one word, such as value: Calder Street Library"
+    );
+}

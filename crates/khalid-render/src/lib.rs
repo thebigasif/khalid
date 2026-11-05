@@ -66,7 +66,7 @@ pub use glossary::{
 pub use home::{HomeSectionPosts, MOST_PICKS, RenderHome, TopicGroup};
 pub use hub::RenderHub;
 pub use image::{ImageCandidate, ImageSet, Loading, RenderImage};
-pub use listing::{Pagination, PostCard, RenderListing};
+pub use listing::{Fact, Pagination, PostCard, RenderListing};
 pub use location::{LocationWords, location_card, place_locations};
 pub use locations_page::LocationsPage;
 pub use pack::{RenderCta, RenderPack, TemplateOption};

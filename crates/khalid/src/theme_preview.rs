@@ -217,6 +217,7 @@ fn sample_post(author: &str, locale: &Locale) -> RenderPost {
         updated: None,
         updated_note: None,
         dek: None,
+        facts: Vec::new(),
         reading_time: ReadingTime::of(&body, locale),
         authors: vec![Person {
             name: author.to_owned(),
