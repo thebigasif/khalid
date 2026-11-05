@@ -4,13 +4,22 @@ expression: "format!(\"{header}\\n{footer}\")"
 ---
 <header class="site-header">
 <a class="site-name" href="/blog/">Field Notes on SEO</a>
-<nav aria-label="Main menu">
+<nav class="nav-bar" aria-label="Main menu">
 <ul>
 <li><a href="/blog/guides/">Guides</a></li>
 <li><a href="https://shop.example.com/">Shop</a></li>
 </ul>
 </nav>
 <a class="search-link" href="/blog/search/" data-dialog>Search</a>
+<details class="nav-menu">
+<summary>Menu</summary>
+<nav aria-label="Main menu">
+<ul>
+<li><a href="/blog/guides/">Guides</a></li>
+<li><a href="https://shop.example.com/">Shop</a></li>
+</ul>
+</nav>
+</details>
 </header>
 <footer class="site-footer">
 <nav aria-label="Footer menu">
