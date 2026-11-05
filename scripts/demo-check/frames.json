@@ -6,7 +6,7 @@
     "classic": 1150,
     "compass": 1216,
     "folio": 1280,
-    "harbor": 850,
+    "harbor": 1344,
     "keystone": 1210,
     "ledger": 660,
     "meridian": 1280,
@@ -15,7 +15,6 @@
   },
   "reading_pending": [
     "atlas",
-    "harbor",
     "keystone",
     "ledger",
     "wire"

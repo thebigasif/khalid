@@ -9,12 +9,12 @@ border = "#e2e4f0"
 
 [shape]
 radius = "0.75rem"
-measure = "42rem"
+measure = "36rem"
 
 [type]
 body = "1.0625rem 1.125rem"
 h1 = "2.25rem 3.25rem"
-h2 = "1.5rem 1.875rem"
+h2 = "1.625rem 2.125rem"
 h3 = "1.25rem"
 small = "0.875rem"
 line_height = 1.65
