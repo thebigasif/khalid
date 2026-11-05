@@ -5,7 +5,7 @@
 use std::num::NonZeroU32;
 use std::path::Path;
 
-use khalid_content::{ReviewState, ShareCards, Sitemap, TopicRole, parse_post};
+use khalid_content::{PostFact, ReviewState, ShareCards, Sitemap, TopicRole, parse_post};
 use khalid_core::Slug;
 
 #[cfg(test)]
@@ -219,9 +219,9 @@ fn reads_facts_in_order_and_trims_them() {
 #[test]
 fn no_facts_and_an_empty_list_read_the_same() {
     let plain = parse_post(Path::new("posts/a.md"), "---\ntitle: A\n---\n").unwrap();
-    assert!(plain.front.facts.is_empty());
+    assert_eq!(plain.front.facts, Vec::<PostFact>::new());
     let empty = parse_post(Path::new("posts/a.md"), "---\ntitle: A\nfacts: []\n---\n").unwrap();
-    assert!(empty.front.facts.is_empty());
+    assert_eq!(empty.front.facts, Vec::<PostFact>::new());
 }
 
 #[test]
