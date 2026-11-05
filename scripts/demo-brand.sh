@@ -32,4 +32,26 @@ cp -R "$brand/." "$copy/theme/"
 if [ -f "$brand/logo.svg" ]; then
   cp "$brand/logo.svg" "$copy/content/en/pages/about/logo.svg"
   rm -f "$copy/theme/logo.svg"
+  # A logo spells the showcase's name. Where a demo publication has put its
+  # own name in site.toml, the logo spells that one, its letters spaced to
+  # the same width per letter.
+  python3 -I - "$copy/site.toml" "$copy/content/en/pages/about/logo.svg" <<'PY'
+import html
+import re
+import sys
+import tomllib
+
+site, logo = sys.argv[1], sys.argv[2]
+with open(site, "rb") as file:
+    name = tomllib.load(file).get("name", "")
+svg = open(logo, encoding="utf-8").read()
+old = "Larkspur Ledger"
+if name and name != old and old in svg:
+    def fit(match):
+        width = float(match.group(1)) * len(name) / len(old)
+        return f'textLength="{min(width, 250):g}"'
+    svg = re.sub(r'textLength="([0-9.]+)"', fit, svg, count=1)
+    svg = svg.replace(old, html.escape(name))
+    open(logo, "w", encoding="utf-8").write(svg)
+PY
 fi
