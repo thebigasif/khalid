@@ -294,7 +294,11 @@ fn originals(html: &str, pictures: &BTreeMap<String, Picture>) -> BTreeMap<Strin
     let wide = pictures.values().filter(|picture| picture.width > COLUMN);
     let widest = wide.filter_map(|picture| {
         let shown = picture.fallback.widest()?;
-        let largest = picture.webp.as_ref().and_then(ImageSet::widest).unwrap_or(shown);
+        let largest = picture
+            .webp
+            .as_ref()
+            .and_then(ImageSet::widest)
+            .unwrap_or(shown);
         Some((attribute(&shown.url), largest.url.clone()))
     });
     widest
