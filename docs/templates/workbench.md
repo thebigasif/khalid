@@ -1,3 +1,8 @@
+---
+title: "Workbench"
+order: 100
+---
+
 # Workbench
 
 Workbench is the template for blogs that review and compare tools or products. It is built for the post that weighs five options against each other: a table that shows them at a glance, a section per option with its pros and cons and its price, and a plain list of further reading at the end.

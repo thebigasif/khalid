@@ -167,6 +167,10 @@ fn start_only(was: &Config, now: &Config) -> Vec<&'static str> {
         ("[visitor_log]", was.visitor_log() != now.visitor_log()),
         ("[ai]", was.ai() != now.ai()),
         (
+            "ghost_content_api",
+            was.ghost_content_api() != now.ghost_content_api(),
+        ),
+        (
             "preview_link_days",
             was.preview_link_lifetime() != now.preview_link_lifetime(),
         ),

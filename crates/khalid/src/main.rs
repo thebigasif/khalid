@@ -233,7 +233,7 @@ static ALLOCATOR: mimalloc::MiMalloc = mimalloc::MiMalloc;
 fn main() -> ExitCode {
     let args: Vec<OsString> = std::env::args_os().collect();
     let exit = match Cli::try_parse_from(&args) {
-        Ok(cli) => run(&cli),
+        Ok(cli) => run(&cli.here()),
         Err(error) => parse_failure(&error, Output::requested_in(&args)),
     };
     exit.into()
@@ -543,7 +543,7 @@ fn needs_site(command: &Command) -> UserMessage {
         ),
         "It works on the files inside one site, so Khalid has to know which one.",
         format!(
-            "Run `khalid --site <folder> {}` with the folder that holds site.toml.",
+            "Run it inside the folder that holds site.toml, or run `khalid --site <folder> {}`.",
             command.name()
         ),
     )

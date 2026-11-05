@@ -1,6 +1,11 @@
 import "@testing-library/jest-dom/vitest";
-import { cleanup } from "@testing-library/react";
+import { cleanup, configure } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
+
+// A route's code loads on first use. On a busy CI runner that first load
+// took longer than Testing Library's 1 s wait, so a findBy* saw an empty
+// page. Five seconds still fails fast when the text truly never comes.
+configure({ asyncUtilTimeout: 5000 });
 
 afterEach(async () => {
   cleanup();

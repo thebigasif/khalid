@@ -1,0 +1,52 @@
+# The site.toml fragment of the sample publication the tests apply with
+# scripts/demo-publication.sh. Each key and table here replaces the
+# showcase's own; everything else in the showcase's site.toml stays.
+
+name = "Harbor Kitchen Notes"
+languages = ["en"]
+
+[template.cta]
+label = "See this week's Harbor Kitchen box"
+href = "/blog/about/"
+note = "Five dinners, every herb packed in paper."
+
+[announcement]
+text = "New: our guide to planning a week of dinners in twenty minutes."
+href = "/blog/plan-a-week-of-dinners/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Weeknight cooking notes from Harbor Kitchen"
+
+[seo.ai_page]
+covers = "Harbor Kitchen writes about planning weeknight dinners, keeping produce fresh and cooking with little time."
+cite = "Name Harbor Kitchen Notes and the author, and link the post you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Harbor Kitchen"
+email = "hello@example.com"
+founded = "2019-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Harbor Kitchen logo"
+width = 320
+height = 80
+
+[[nav.primary]]
+label = "Weeknights"
+href = "/blog/category/weeknight-cooking/"
+language = "en"
+
+[[nav.primary]]
+label = "About the kitchen"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Harbor Kitchen"
+href = "/blog/about/"
+language = "en"

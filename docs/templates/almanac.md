@@ -1,3 +1,8 @@
+---
+title: "Almanac"
+order: 10
+---
+
 # Almanac
 
 Almanac is the template for a library of long guides. It suits the post that is a numbered list of forty ideas or a step-by-step guide of five thousand words: readers jump to the part they need, and when they finish, they find the next guide straight away.

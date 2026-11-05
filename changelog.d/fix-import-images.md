@@ -1,0 +1,2 @@
+Added
+- `khalid import --download-images` copies the images each imported post and page shows from the old site into the post's own folder, and points the links at the copies. From WordPress and Ghost, the feature image comes too and becomes the post's lead image. An image that cannot be fetched keeps its old address and is listed with the reason, the same image is fetched once, and `--dry-run` only says how many it would fetch.

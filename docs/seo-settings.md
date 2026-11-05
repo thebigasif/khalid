@@ -1,3 +1,8 @@
+---
+title: "SEO settings"
+order: 50
+---
+
 # SEO settings
 
 Every SEO setting lives in `site.toml`, under `[seo]`. Each one has a default, so a site works with none of them set. The admin's SEO settings screen edits the same values. This page explains each setting added for the Yoast comparison of 2 November 2026; the Rust docs of `khalid_core::SeoSettings` cover the rest.

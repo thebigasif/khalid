@@ -1,3 +1,8 @@
+---
+title: "The admin's SEO tools"
+order: 60
+---
+
 # The admin's SEO tools
 
 The admin carries the tools the Yoast SEO plugin gives a WordPress site,
@@ -54,5 +59,5 @@ Two jobs, one step at a time:
   cluster's main post yet. "Link to" adds that link.
 
 A link goes on words of the text that name the target when there are some
-outside a link, or else on a line "Related: [title](path)." at the end.
+outside a link, or else on a line `Related: [title](path).` at the end.
 Open the post to move it where it reads best.

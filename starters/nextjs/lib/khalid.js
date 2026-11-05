@@ -102,29 +102,74 @@ export function routeOf(post, base) {
  * @returns {Element[]}
  */
 export function headElements(head) {
-  /** @type {Element[]} */
-  const elements = head.tags.flatMap((tag) => {
-    switch (tag.tag) {
-      case "title":
-        return [{ type: "title", props: { children: tag.text } }];
-      case "meta":
-        return tag.name === undefined
-          ? [{ type: "meta", props: { property: tag.property, content: tag.content } }]
-          : [{ type: "meta", props: { name: tag.name, content: tag.content } }];
-      case "link":
-        return tag.hreflang === undefined
-          ? [{ type: "link", props: { rel: tag.rel, href: tag.href } }]
-          : [{ type: "link", props: { rel: tag.rel, hrefLang: tag.hreflang, href: tag.href } }];
-      default:
-        // A kind of tag newer than this file: left out, not guessed at.
-        return [];
-    }
-  });
+  const elements = head.tags.flatMap(tagElements);
   elements.push({
     type: "script",
     props: { type: "application/ld+json", dangerouslySetInnerHTML: { __html: head.json_ld } },
   });
   return elements;
+}
+
+/**
+ * The head of the blog's front page, which the Content API does not write:
+ * its title, a description, its address and `Blog` schema listing `posts`.
+ *
+ * @param {Settings} settings
+ * @param {Post[]} posts
+ * @returns {Head}
+ */
+export function homeHead(settings, posts) {
+  const description = `The newest posts from ${settings.title}.`;
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: settings.title,
+    description,
+    url: settings.url,
+    inLanguage: settings.default_language,
+    blogPost: posts.map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      url: post.url,
+      datePublished: post.published_at,
+    })),
+  };
+  return {
+    tags: [
+      { tag: "title", text: settings.title },
+      { tag: "meta", name: "description", content: description },
+      { tag: "link", rel: "canonical", href: settings.url },
+      { tag: "meta", property: "og:type", content: "website" },
+      { tag: "meta", property: "og:title", content: settings.title },
+      { tag: "meta", property: "og:url", content: settings.url },
+    ],
+    // `<` written as an escape, so no title can close the script early.
+    json_ld: JSON.stringify(schema).replaceAll("<", "\\u003c"),
+  };
+}
+
+/**
+ * The element for `tag`, or none for a kind of tag newer than this file,
+ * which is left out rather than guessed at.
+ *
+ * @param {HeadTag} tag
+ * @returns {Element[]}
+ */
+function tagElements(tag) {
+  switch (tag.tag) {
+    case "title":
+      return [{ type: "title", props: { children: tag.text } }];
+    case "meta":
+      return tag.name === undefined
+        ? [{ type: "meta", props: { property: tag.property, content: tag.content } }]
+        : [{ type: "meta", props: { name: tag.name, content: tag.content } }];
+    case "link":
+      return tag.hreflang === undefined
+        ? [{ type: "link", props: { rel: tag.rel, href: tag.href } }]
+        : [{ type: "link", props: { rel: tag.rel, hrefLang: tag.hreflang, href: tag.href } }];
+    default:
+      return [];
+  }
 }
 
 /**

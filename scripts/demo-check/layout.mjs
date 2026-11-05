@@ -34,7 +34,10 @@
 //          [--tabs 4] [--frames frames.json]
 // Each folder in --sites holds a site.toml and the site built into public/.
 // A folder whose name ends in -side-contents is a pack built with its
-// contents in a side column, and only its posts are checked.
+// contents in a side column, and only its posts are checked. A folder
+// whose name ends in -publication is a pack's demo publication, checked on
+// the pages its check-pages.txt names (site-files.mjs) in place of PAGES:
+// a "post" or "table" page is held to the reading check, as a post is.
 // --frames names a JSON file whose "frames" maps each pack to its minimum
 // frame in px; by default frames.json beside this script.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -58,12 +61,16 @@ const PAGES = [
   ["search", "search/"],
   ["glossary", "glossary/answer-capsule/"],
 ];
-const POSTS = new Set(["post", "folded table"]);
+const POSTS = new Set(["post", "folded table", "table"]);
 // The home page and lists of posts, dense by design, whose <main> fills the
 // frame. Posts are held to the reading check instead, and the author,
 // search and glossary pages are a single column of text.
 const LISTS = new Set(["home", "category", "tag"]);
 const SIDE = "-side-contents";
+const PUBLICATION = "-publication";
+// The order failures are listed in: the showcase's pages, then the kinds
+// a publication may add.
+const ORDER = [...PAGES.map(([what]) => what), "table"];
 const walkDown = walkDownScript();
 const STEP_LIMIT = 90_000;
 // The frame and reading checks start at this width, and the bounds they
@@ -101,8 +108,9 @@ const readingPending = new Set(framesData.reading_pending ?? []);
 const sites = builtSites(options.sites)
   .map((site) => {
     const side = site.name.endsWith(SIDE);
-    const pages = PAGES.filter(([what]) => !side || POSTS.has(what));
-    return { ...site, pack: side ? site.name.slice(0, -SIDE.length) : site.name, side, pages };
+    const suffix = side ? SIDE : site.name.endsWith(PUBLICATION) ? PUBLICATION : "";
+    const pages = site.checkPages ?? PAGES.filter(([what]) => !side || POSTS.has(what));
+    return { ...site, pack: site.name.slice(0, site.name.length - suffix.length), side, pages };
   })
   .filter((site) => !packs || packs.has(site.pack));
 const answer = answerFrom(sites);
@@ -172,7 +180,7 @@ const checkPage = async (tab, job) => {
   const url = `${site.origin}${site.mount}${path}`;
   const response = await tab.goto(url, { waitUntil: "load" });
   if (!response || response.status() !== 200) {
-    return [{ check: "missing-page", a: url, b: "", detail: `the page answered ${response?.status() ?? "nothing"}, so the showcase no longer has it; pick another page in PAGES` }];
+    return [{ check: "missing-page", a: url, b: "", detail: `the page answered ${response?.status() ?? "nothing"}${site.checkPages ? "; fix its line in the publication's check-pages.txt" : ", so the showcase no longer has it; pick another page in PAGES"}` }];
   }
   await tab.evaluate(() => document.fonts.ready.then(() => undefined));
   // Down the page a window at a time: lazy pictures load, and each moving
@@ -257,7 +265,7 @@ await Promise.all(
   }),
 );
 
-const order = (f) => [f.check, f.pack, PAGES.findIndex(([w]) => w === f.page), browsers.indexOf(f.browser), f.width];
+const order = (f) => [f.check, f.pack, ORDER.indexOf(f.page), browsers.indexOf(f.browser), f.width];
 failures.sort((x, y) => {
   const a = order(x);
   const b = order(y);
