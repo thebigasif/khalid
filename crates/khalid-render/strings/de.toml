@@ -2,6 +2,8 @@
 
 skip_link = "Zum Inhalt springen"
 nav_primary = "Hauptmenü"
+# The button that opens the main menu on a phone.
+menu = "Menü"
 nav_footer = "Fußzeilenmenü"
 breadcrumbs = "Navigationspfad"
 announcement = "Mitteilung"
