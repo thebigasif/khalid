@@ -211,15 +211,27 @@ fn the_built_demo_links_to_no_showcase_only_page() {
 #[test]
 fn the_brand_logo_lands_on_the_publications_about_page() {
     let (site, out) = sample_demo();
-    let logo = fs::read(repo_file(&format!(
+    let logo = fs::read_to_string(repo_file(&format!(
         "fixtures/showcase-brands/{TEMPLATE}/theme/logo.svg"
     )))
     .unwrap();
-    let placed = fs::read(within(site.path(), "content/en/pages/about/logo.svg")).unwrap();
-    assert_eq!(placed, logo);
+    let placed =
+        fs::read_to_string(within(site.path(), "content/en/pages/about/logo.svg")).unwrap();
+    // The brand's logo spells the publication's name, not the showcase's,
+    // and is otherwise the brand's own.
+    assert!(logo.contains(">Larkspur Ledger<"), "{logo}");
+    assert!(placed.contains(">Harbor Kitchen Notes<"), "{placed}");
+    assert!(!placed.contains("Larkspur Ledger"), "{placed}");
+    let shape = |svg: &str| {
+        svg.lines()
+            .filter(|line| !line.contains("<text"))
+            .collect::<Vec<_>>()
+            .join("\n")
+    };
+    assert_eq!(shape(&placed), shape(&logo));
     assert_eq!(
-        fs::read(within(out.path(), "about/logo.svg")).unwrap(),
-        logo
+        fs::read_to_string(within(out.path(), "about/logo.svg")).unwrap(),
+        placed
     );
     assert!(page(out.path(), "about/").contains("About Harbor Kitchen"));
 }
