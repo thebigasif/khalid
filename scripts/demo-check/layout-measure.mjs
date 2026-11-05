@@ -226,11 +226,13 @@ export function measure(stage) {
   // measured as drawn, each part in its own font: a word that starts in
   // <code> and ends in the cell's text is narrower than in the cell's font.
   if (stage === "page") {
+    // The width a piece of text draws, and the lines it sits on.
     const drawn = (node, from, to) => {
       const range = document.createRange();
       range.setStart(node, from);
       range.setEnd(node, to);
-      return [...range.getClientRects()].reduce((sum, rect) => sum + rect.width, 0);
+      const rects = [...range.getClientRects()].filter((rect) => rect.width > 0);
+      return { width: rects.reduce((sum, rect) => sum + rect.width, 0), tops: rects.map((rect) => Math.round(rect.top)) };
     };
     for (const cell of document.querySelectorAll("td, th")) {
       if (!shown(cell) || cell.closest(skip)) continue;
@@ -238,7 +240,7 @@ export function measure(stage) {
       const room = cell.clientWidth - Number.parseFloat(s.paddingLeft) - Number.parseFloat(s.paddingRight);
       if (room <= 0) continue;
       const words = [];
-      let word = { text: "", width: 0 };
+      let word = { text: "", width: 0, lines: new Set() };
       const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
       for (let node = walker.nextNode(); node; node = walker.nextNode()) {
         // Text a reader cannot see, such as a label for screen readers in
@@ -251,21 +253,27 @@ export function measure(stage) {
           const gap = i === text.length || /[\s/-]/.test(text[i]);
           if (!gap) continue;
           if (i > start) {
+            const part = drawn(node, start, i);
             word.text += text.slice(start, i);
-            word.width += drawn(node, start, i);
+            word.width += part.width;
+            for (const top of part.tops) word.lines.add(top);
           }
           if (i < text.length && word.text) {
             words.push(word);
-            word = { text: "", width: 0 };
+            word = { text: "", width: 0, lines: new Set() };
           }
           start = i + 1;
         }
       }
       if (word.text) words.push(word);
-      const widths = words.map((w) => w.width);
-      const widest = Math.max(0, ...widths);
-      if (widest > room + 1) {
-        problems.push({ check: "crushed-cell", a: name(cell), b: `the word "${words[widths.indexOf(widest)].text}"`, detail: `the word needs ${Math.round(widest)} px and the column gives ${Math.round(room)} px, at ${Math.round(cell.getBoundingClientRect().left + sx)},${Math.round(cell.getBoundingClientRect().top + sy)}` });
+      // A word is crushed when it is wider than the column and the column
+      // broke it onto a second line. The width alone is not enough: the
+      // column's width is rounded to a whole pixel, so a word that just
+      // fits can measure a pixel wider than its column.
+      const crushed = words.filter((w) => w.width > room + 1 && w.lines.size > 1).sort((a, b) => b.width - a.width);
+      if (crushed.length > 0) {
+        const [worst] = crushed;
+        problems.push({ check: "crushed-cell", a: name(cell), b: `the word "${worst.text}"`, detail: `the word needs ${Math.round(worst.width)} px and the column gives ${Math.round(room)} px, so it breaks onto a second line, at ${Math.round(cell.getBoundingClientRect().left + sx)},${Math.round(cell.getBoundingClientRect().top + sy)}` });
       }
     }
   }
