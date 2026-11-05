@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /roast-vegetables-one-tray/
+table /store-root-vegetables/
+category /category/weeknight-cooking/
+tag /tag/weeknights/
+author /authors/ruth-calder/

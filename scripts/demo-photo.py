@@ -6,6 +6,12 @@ publication's photos.lock names them, and demo-photos.tar.gz on the demos
 release holds them (fixtures/showcase-publications/README.md). This tool
 is for whoever writes a publication:
 
+  demo-photo.py commons <words> [--count N]
+      Wikimedia Commons photos under CC0, public domain, CC BY or CC BY-SA,
+      read from Commons' own file pages. Commons needs no key and allows
+      far more searches a day than Openverse's 200, so start here. Each
+      result's id starts with "commons:" and works with fetch.
+
   demo-photo.py search <words> [--wide] [--count N] [--source S]
       Openverse photos that allow commercial use and changes, with a
       licence of CC0, the Public Domain Mark, CC BY or CC BY-SA. It looks
@@ -50,6 +56,7 @@ import urllib.parse
 import urllib.request
 
 API = "https://api.openverse.org/v1/images/"
+COMMONS = "https://commons.wikimedia.org/w/api.php"
 AGENT = "khalid-demo-photos/1.0 (https://github.com/thebigasif/khalid)"
 LICENCES = {
     "cc0": ("CC0 1.0", "https://creativecommons.org/publicdomain/zero/1.0/", False),
@@ -81,6 +88,78 @@ def get(url: str, limit: int = 60_000_000) -> bytes:
     if len(body) > limit:
         sys.exit(f"{url} is larger than {limit} bytes, so it was not fetched.")
     return body
+
+
+def commons_licence(meta: dict) -> str | None:
+    """The demo licence code of a Commons file, or None when it is not one."""
+    short = (meta.get("LicenseShortName", {}).get("value") or "").lower()
+    code = (meta.get("License", {}).get("value") or "").lower()
+    both = f"{short} {code}"
+    if re.search(r"\bnc\b|-nc|nd\b|-nd|noncommercial|noderiv", both):
+        return None
+    if "cc0" in both:
+        return "cc0"
+    if "public domain" in both or code in ("pd", "pdm") or code.startswith("pd-"):
+        return "pdm"
+    if re.search(r"cc[- ]by[- ]sa", both):
+        return "by-sa"
+    if re.search(r"cc[- ]by\b|cc-by-[0-9]", both):
+        return "by"
+    return None
+
+
+def commons_photo(title: str) -> dict:
+    """A Commons file as Openverse describes a photo, from Commons itself."""
+    query = {
+        "action": "query", "format": "json", "titles": title, "prop": "imageinfo",
+        "iiprop": "url|size|extmetadata", "iiurlwidth": "2000",
+    }
+    pages = json.loads(get(COMMONS + "?" + urllib.parse.urlencode(query)))["query"]["pages"]
+    info = next(iter(pages.values()))["imageinfo"][0]
+    meta = info.get("extmetadata", {})
+    code = commons_licence(meta)
+    version = re.search(r"(\d\.\d)", meta.get("LicenseShortName", {}).get("value") or "")
+    plain = lambda html: re.sub(r"<[^>]+>", "", html or "").strip()
+    return {
+        "id": "commons:" + title,
+        "license": code or "unknown",
+        "license_version": version.group(1) if version else None,
+        "url": info.get("thumburl") or info["url"],
+        "width": info.get("width"),
+        "title": plain(meta.get("ObjectName", {}).get("value")) or title.removeprefix("File:").rsplit(".", 1)[0],
+        "creator": plain(meta.get("Artist", {}).get("value")) or "unknown",
+        "foreign_landing_url": info.get("descriptionurl"),
+        "source": "Wikimedia Commons",
+        "checked": code is not None,
+        "licence_name": meta.get("LicenseShortName", {}).get("value"),
+        "licence_url": meta.get("LicenseUrl", {}).get("value"),
+    }
+
+
+def commons(args: argparse.Namespace) -> None:
+    query = {
+        "action": "query", "format": "json", "generator": "search", "gsrnamespace": "6",
+        "gsrsearch": " ".join(args.words) + " filetype:bitmap", "gsrlimit": str(args.count * 3),
+        "prop": "imageinfo", "iiprop": "size|extmetadata",
+    }
+    pages = json.loads(get(COMMONS + "?" + urllib.parse.urlencode(query))).get("query", {}).get("pages", {})
+    shown = 0
+    for page in sorted(pages.values(), key=lambda page: page.get("index", 0)):
+        info = page.get("imageinfo", [{}])[0]
+        meta = info.get("extmetadata", {})
+        code = commons_licence(meta)
+        if code is None or (info.get("width") or 0) < 1200:
+            continue
+        print(json.dumps({
+            "id": "commons:" + page["title"],
+            "licence": meta.get("LicenseShortName", {}).get("value"),
+            "size": f'{info.get("width")}x{info.get("height")}',
+            "title": page["title"],
+            "creator": re.sub(r"<[^>]+>", "", meta.get("Artist", {}).get("value") or "").strip()[:80],
+        }, ensure_ascii=False))
+        shown += 1
+        if shown == args.count:
+            break
 
 
 def search(args: argparse.Namespace) -> None:
@@ -140,9 +219,15 @@ def fetch(args: argparse.Namespace) -> None:
         sys.exit(f"{args.file} is not a path inside content/. Name it as en/posts/<post>/lead.jpg.")
     if not args.file.endswith(".jpg"):
         sys.exit(f"{args.file} should end in .jpg: every demo photo is kept as a JPEG.")
-    photo = json.loads(get(API + urllib.parse.quote(args.id) + "/"))
+    if args.id.startswith("commons:"):
+        photo = commons_photo(args.id.removeprefix("commons:"))
+    else:
+        photo = json.loads(get(API + urllib.parse.quote(args.id) + "/"))
     name, url, needs_credit = licence_of(photo)
-    if not checked_on_page(photo):
+    # A Commons file names its exact licence, such as a country's version.
+    name = photo.get("licence_name") or name
+    url = photo.get("licence_url") or url
+    if not photo.get("checked") and not checked_on_page(photo):
         sys.exit(
             f'The page of photo {args.id}, {photo.get("foreign_landing_url")}, does not show its {name} licence where this tool can read it. '
             "Open the page, and only use the photo when the page says the same licence; otherwise pick another."
@@ -245,6 +330,9 @@ def main() -> None:
     s.add_argument("--wide", action="store_true")
     s.add_argument("--count", type=int, default=10)
     s.add_argument("--source", default="wikimedia,wordpress")
+    m = sub.add_parser("commons")
+    m.add_argument("words", nargs="+")
+    m.add_argument("--count", type=int, default=10)
     f = sub.add_parser("fetch")
     f.add_argument("template")
     f.add_argument("id")
@@ -257,7 +345,7 @@ def main() -> None:
     p.add_argument("publications")
     p.add_argument("out")
     args = parser.parse_args()
-    {"search": search, "fetch": fetch, "credits": credits, "pack": pack}[args.command](args)
+    {"commons": commons, "search": search, "fetch": fetch, "credits": credits, "pack": pack}[args.command](args)
 
 
 if __name__ == "__main__":
