@@ -47,7 +47,8 @@
 <ul>
 {% for link in site.nav.primary %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>
 {% endfor %}</ul>
-</nav>
+{% if template.cta and template.options.cta_button %}<a class="button menu-button" href="{{ template.cta.href }}">{{ template.cta.label }}</a>
+{% endif %}</nav>
 </details>
 {% endif %}</header>
 <main id="main" tabindex="-1">

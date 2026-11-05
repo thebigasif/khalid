@@ -379,6 +379,9 @@ mark { color: inherit; background: var(--color-surface); font-weight: 700; }
 .nav-menu { display: none; }
 @media (max-width: 40rem) {
   .site-header > .nav-bar { display: none; }
+  /* The header's button moves into the menu, where it has room. */
+  .site-header:has(> .nav-menu) > .header-button { display: none; }
+  .site-header .nav-menu .menu-button { display: flex; justify-content: center; margin: 0.5rem 0 0; }
   .site-header > .nav-menu { position: relative; display: block; margin-inline-start: auto; }
   .nav-menu summary { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; padding-inline: 0.875rem; border: 1px solid var(--color-border); border-radius: var(--radius); font-size: var(--text-small); font-weight: 600; list-style: none; cursor: pointer; }
   .nav-menu summary::-webkit-details-marker { display: none; }
