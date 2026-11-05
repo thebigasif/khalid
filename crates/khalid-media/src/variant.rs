@@ -85,8 +85,8 @@ pub fn widths(width: u32) -> Vec<u32> {
 const FALLBACK_MAX: u32 = 1280;
 
 /// The widths to make in the fallback format for an original `width`
-/// pixels wide: one, the widest of [`widths`] at [`FALLBACK_MAX`] or below,
-/// or the narrowest when every width is wider.
+/// pixels wide: one, the widest of [`widths`] at 1280 px or below, or the
+/// narrowest when every width is wider.
 pub fn fallback_widths(width: u32) -> Vec<u32> {
     let all = widths(width);
     all.iter()
