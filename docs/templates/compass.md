@@ -18,7 +18,7 @@ Compass is a template for a teaching blog: guides that explain how to do somethi
 **The front page**
 
 1. Your logo in the header, and your call to action as a button when `[template.cta]` is set. On a phone the button waits for the band further down, so the header stays short.
-2. A masthead that fills the top of the screen: the blog's title, very large, on a pale band drawn as a map grid that runs to the edges of the window, with a drawn compass in your accent colour. Under the title, every topic of your blog as a numbered stop (01, 02, 03) on one dashed trail, each a link to its topic. From 1024 px to 1600 px the drawn compass is smaller, so five topics fit on one row of the trail. On a phone the trail runs down the screen.
+2. A masthead that fills the top of the screen: the blog's title, very large, on a pale band drawn as a map grid that runs to the edges of the window, with a drawn compass in your accent colour. Under the title, every topic of your blog as a numbered stop (01, 02, 03) on one dashed trail across the masthead, each a link to its topic. The trail ends at a small drawn flag. From 1024 px to 1600 px the drawn compass is smaller, so five topics fit on one row of the trail. On a phone the trail runs down the screen and ends at the same flag.
 3. When the page has two or more home sections, a row of links that jump to each one.
 4. Each home section as three picture cards (topic, title, summary, then author and date), ending in a link to the rest. Without home sections, your newest posts under "Recently published", with numbered page links. In a list of four or more, the newest post leads across the whole row, its picture beside a large title. A post with no picture gets a drawn cover in tints of your accent colour, so the cards line up. In a long list, after the lead and six picture cards, the rest is a numbered index: one ruled row per post with its number, topic, title and date, and no picture. On a phone the six cards become compact rows, a small square picture beside the title and the date under it, and each index row is the number and the title with the date small under it, so every post stays linked on a page of reasonable length.
 5. Topic tabs as rounded pills, the open one filled in your accent colour, then the video and podcast rows. On a phone their cards are the same compact rows.
@@ -41,6 +41,8 @@ Lists such as a category, the archive or an author's posts show the same cards a
    :::
    ```
 
+   Each main heading (`##`) is a numbered stop: 01, 02, 03. The numbers match the contents box, so the contents are the route and the headings are its stops. From 1024 px, when the contents are not beside the text, the stops sit in the left margin on a dashed trail. The trail starts at the first stop and runs to a drawn flag at the end of the guide. On a phone, and when the contents sit beside the text, the number sits at the start of each heading and there is no trail.
+
 6. Share links as round buttons between two thin rules.
 7. The author box: the author's round photo, name, role and short bio.
 8. The newsletter on a pale panel when your blog takes sign-ups, and the band with your call to action when `[template.cta]` is set.
@@ -48,7 +50,7 @@ Lists such as a category, the archive or an author's posts show the same cards a
 
 Compass shows no reading time and no related posts. Each can come back: see "Turning features back on" below.
 
-**In the body**, how-to steps (`::::howto`) are numbered stops joined by a line. Each callout has its own drawn mark: a bulb for a tip, an "i" for a note, a triangle for a warning, an arrow for a read callout. A stat callout shows its number large. Quotes sit under a drawn quote mark in your heading font, screenshots and figures sit on a pale mat with a thin frame and the caption under them, tables fill the column with a pale header row, and FAQ questions open with a plus.
+**In the body**, how-to steps (`::::howto`) are smaller open stops, numbered, on their own dashed trail, like a short route inside one stop. Each callout has its own drawn mark: a bulb for a tip, an "i" for a note, a triangle for a warning, an arrow for a read callout. A stat callout shows its number large. Quotes sit under a drawn quote mark in your heading font, screenshots and figures sit on a pale mat with a thin frame and the caption under them, tables fill the column with a pale header row, and FAQ questions open with a plus.
 
 Everything reads with scripts off. Compass adds no script.
 
@@ -110,7 +112,7 @@ Your own `theme/tokens.toml` wins over each value.
 | Token | Compass |
 |---|---|
 | Body text | 1.0625rem on a phone to 1.1875rem on a wide screen; a guide's text 1.25rem from 1024 px |
-| Main title (`h1`) | 2.5rem to 4rem; a guide's title 4.5rem and the front page's title up to 6.75rem on a wide screen |
+| Main title (`h1`) | 2.5rem to 4rem; a guide's title 4.5rem and the front page's title 2.5rem on a phone up to 6.75rem on a wide screen |
 | Main headings (`h2`) | 1.625rem to 2.125rem |
 | Headings (`h3`) | 1.25rem to 1.5rem |
 | Small headings (`h4`) | 1.125rem |
@@ -138,12 +140,12 @@ This is Compass's design brief. It fixes how the template should look, so every 
 | Type pairing | A rounded, heavy sans for headings over a sans drawn for easy reading. With no theme, the pack uses the system's rounded face for headings (`ui-rounded`) and the system sans for text. |
 | Colour | White ground, deep blue-black text and a clear sky or teal accent. Pale tints of the accent for panels: the masthead map, key points and steps. |
 | Spacing rhythm | A base step of 0.5rem. Generous: 1.5rem inside panels, 4.5rem between sections. Steps sit 2rem apart so each reads as one stop. |
-| Type scale | Bold and large: the front page's title 3rem on a phone to 6.75rem, tight tracking (-0.045em) on every display title, card titles heavy (800). The type carries the idea: a map title, then numbered stops. |
+| Type scale | Bold and large: the front page's title 2.5rem on a phone to 6.75rem, tight tracking (-0.045em) on every display title, card titles heavy (800). The type carries the idea: a map title, then numbered stops. |
 | Frame at 1440 px and wider | At least **76rem** for the front page and lists: 80rem, and 88rem from 1760 px. A guide's text keeps its own reading column inside it, under a wider title. |
 | Cards and lists | Rounded picture cards on a white ground with a thin border, the topic in small capitals, the title heavy in the heading font, two or three lines of summary. No shadows. The newest post leads with a large title. A long list turns into a numbered index after seven posts. |
 | Phone header and menu | The logo on the left and the menu on the right in one short row; the menu scrolls sideways and its last 2rem fades out, so a cut word reads as more to scroll. The call to action waits for the band further down. |
 | Tabs and indexes at 390 px | Topic tabs become rounded pills that wrap onto two rows at most. The numbered contents box stays open in one column, with each number in a small circle on the pale box. The topic trail in the masthead runs down the screen. |
 | Link, card and focus states | Links underlined in the accent; on hover the underline becomes a pale accent highlight. A card's border turns the accent on hover. Focus is a 3 px accent ring with rounded corners. |
-| Signature details | The masthead as a full-width pale map grid with the drawn compass, and the blog's topics as numbered stops on a dashed trail. The contents as a numbered route (01, 02, 03) in two columns. Key points with drawn check marks, how-to steps as numbered stops joined by a line, and a long list as a numbered index. |
+| Signature details | The masthead as a full-width pale map grid with the drawn compass, and the blog's topics as numbered stops on a dashed trail that ends at a drawn flag. The same trail in every guide: the contents as a numbered route (01, 02, 03) in two columns, and each main heading as a matching numbered stop, in the margin on a wide screen. Key points with drawn check marks, how-to steps as smaller open stops on their own dashed trail, and a long list as a numbered index. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/compass/theme/`: sky blue (`#03679d` links, `#0277b6` accent) with pale blue panels (`#eef7fc`), Nunito for headings and Atkinson Hyperlegible for text, and a rising-trail mark.

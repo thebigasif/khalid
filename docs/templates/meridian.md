@@ -30,6 +30,8 @@ Build or restart the blog. Meridian brings its own palette (ink on a warm paper 
 - The next two posts side by side with large pictures and titles, when the page has at least five posts.
 - Editor's picks: up to three posts you marked `featured: true`, numbered 01, 02, 03 in the serif, as short text cards on a soft band across the page.
 - Every other post as a wide row, like an index: on a wide screen the category in small capitals, the date and the author with their role sit in a narrow column at the start, then the title and the summary, with the post's picture cropped to 3 by 2 on the far side. On a phone the picture sits above the text.
+- When `[[reader.home_sections]]` lists sections, they take the place of these rows. Each section opens like a section of a magazine: its name set very large in the serif over a thin ink line, then its posts and a "View all" link.
+- Tabs by topic, when `topic_tabs` is on: one tab per topic, each with its four newest posts. Each panel opens the same way as a section, with the topic's name set very large in the serif over a thin ink line. Names of one word, such as "Housing" or "Transit", suit this best. A long word breaks across lines rather than running off a phone screen.
 - A newsletter form, when your blog takes sign-ups (see below), and numbered page links under long lists.
 
 **A journal post** (every post, unless it asks for the reference layout)
@@ -164,7 +166,6 @@ The accent appears only on links, small labels, buttons, the current tab and the
 
 ## What Meridian does not do yet
 
-- The front page does not group posts under category headings yet. It will once the shared home sections are filled from `site.toml`.
 - Each post has one call to action. Several different banners per site are a later step.
 - The footer shows the footer menus only; it cannot show the blog's name or logo without a change to the shared page frame.
 
@@ -179,7 +180,7 @@ This is Meridian's design brief. It fixes how the template should look, so every
 - A team software company's journal. A large lead story beside a two by two grid of smaller stories, small "article in" labels with the topic as an outlined pill, "Latest by topic" as a row of pill tabs, and a sign-up card placed inside the grid.
 - A file-sharing company's journal. A lead story with a very tall title beside a large picture, then an editorial grid whose rhythm changes row by row: two large stories, then three smaller ones set at different heights, each with its topics as one quiet line under the title. Its dark lead band is not part of this brief.
 
-**The one idea.** A journal's masthead. You can name Meridian from a thumbnail of its front page: the blog's name set very large in the serif, from 3rem on a phone to 7.5rem on a wide screen, with tight letter spacing, over a heavy ink rule. Every list and post repeats that ink rule, and the rows below read as the journal's index.
+**The one idea.** A journal's masthead. You can name Meridian from a thumbnail of its front page: the blog's name set very large in the serif, from 2.375rem on a phone to 7.5rem on a wide screen, with tight letter spacing, over a heavy ink rule. Every list and post repeats that ink rule, and the rows below read as the journal's index.
 
 | Part | Meridian |
 |---|---|
@@ -193,6 +194,6 @@ This is Meridian's design brief. It fixes how the template should look, so every
 | Tabs and indexes at 390 px | The category tabs become small rounded buttons that wrap. A row is compact: a small square picture beside the title and the date, with the summary left for the post. The lead story keeps its large picture. |
 | Link, card and focus states | Links underlined in the accent. A row's serif title takes the underline on hover. Focus is a 2 px accent ring. |
 | Post page at 1440 px and wider | The text grows to 1.25rem on a 44rem measure, about 70 characters a line, and charts, pictures and quotes step out to a 60rem column, so the window never reads as half empty. |
-| Signature details | The masthead over its ink rule. The lead story with a large picture beside a large serif title, and a post's split header the same way. Editor's picks numbered 01 to 03 in the serif on a soft band. The reference guide layout with "Last updated" and numbered contents. |
+| Signature details | The masthead over its ink rule. Each topic panel and home section opens on its one-word name, set from 2.75rem on a phone to 9.5rem on a wide screen, over a hairline. The lead story with a large picture beside a large serif title, and a post's split header the same way. Editor's picks numbered 01 to 03 in the serif on a soft band. The reference guide layout with "Last updated" and numbered contents. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/meridian/theme/`: plum (`#7b2d6a` links, `#8a3378` accent) on warm ivory (`#fbf8f5`), DM Serif Display for titles and Work Sans for text, and a globe mark.
