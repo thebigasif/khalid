@@ -42,7 +42,8 @@ kind_of() {
   case "$1" in
     wire) echo news ;;
     atlas | meridian) echo magazine ;;
-    folio | harbor | keystone) echo company ;;
+    folio | keystone) echo company ;;
+    harbor) echo food ;;
     almanac | compass) echo guides ;;
     workbench) echo reviews ;;
     classic | ledger) echo journal ;;
@@ -54,6 +55,7 @@ kind_label() {
     news) echo "News" ;;
     magazine) echo "Magazine" ;;
     company) echo "Company and studio" ;;
+    food) echo "Food and recipes" ;;
     guides) echo "Guides and teaching" ;;
     reviews) echo "Reviews" ;;
     journal) echo "Personal journal" ;;
