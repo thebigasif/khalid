@@ -21,7 +21,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 
 ## Rules for a part
 
-- One macro per file, named as the file. A part never imports another part, so the build always finds every part a pack uses. To put one part inside another, call it with `{% call %}`, as the hero does.
+- One macro per file, named as the file, plus small helpers it calls or that its callers need, such as `schedule_day`. A part never imports another part, so the build always finds every part a pack uses. To put one part inside another, call it with `{% call %}`, as the hero does.
 - Plain HTML that works with scripts off. Logical properties only. Colours, fonts, sizes and radius come from the tokens (`var(--color-*)`, `var(--font-*)`, `var(--text-*)`, `var(--radius)`), never fixed values.
 - Every class the macro writes has a rule in its CSS file. Titles in a part are styled as `:is(h2, h3, h4)`, since the caller picks the level.
 - Words come from `t` (the strings in `crates/khalid-render/strings/`), never English in the macro.
@@ -43,6 +43,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | Cover shelf | `cover_shelf(posts, level=3, fact=1)`; `fact` is the place of the fact shown under the title, counted from 0, such as the year | Covers in portrait (`--cover-ratio`, 2 / 3 by default), each with its title and one fact | Author's books, musician's releases (ratio 1), film and TV reviews, games |
 | Contents page | `contents_page(posts, level=3)` | Numbered entries like a book's contents: the title, a dotted leader to the date, then the category and description | Author's excerpts and essays, online course lessons, podcast episodes, newsletter issues |
 | Event list | `event_list(posts, level=3)`; facts by position: 1 when, 2 the venue, 3 the town or city, 4 a tickets link (its label is the link's text) or a short fact | Dated rows: when, the title, the venue and city, the tickets link | Author's readings, musician's tour dates, charity events |
+| Schedule | `schedule(posts, level=3, by_day=true, sorted=true, place_fact=2, kind_fact=3)`, with `schedule_days(posts)` for links to each day and `schedule_day(day)` for a day's name; facts by position: 1 the day (`2027-05-13`), 2 the time (`09:30`), then the place and the kind | A timetable on a rail: rows by day and time, each with the time, title, author, place with the category, and a kind tag, grouped under each day's date | Conference (Summit), sports club fixtures, musician tour dates, online course weeks |
 
 ## Planned parts
 

@@ -52,6 +52,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `wave`: an interview show's blog on a quiet white page, with the newest episode in a slim player card, then every episode as a row with square artwork and a round play mark. Based on Ghost's Wave theme (MIT). See [Wave](templates/wave.md).
 - `taste`: a baking blog with a centred header and sign-up field, a magazine block of five posts and a picture grid for each main topic. Based on Ghost's Taste theme (MIT). See [Taste](templates/taste.md).
 - `ticker`: a markets newsletter, with a dark tape of figures, each issue's moves as a bar chart drawn without script, and every list as a data table shaded by how far each figure moved. See [Ticker](templates/ticker.md).
+- `summit`: a conference, festival or event, with the programme as a timetable by day and time, speakers, venues with their sessions and a ticket stub on every session. See [Summit](templates/summit.md).
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 

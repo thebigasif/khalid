@@ -1,0 +1,60 @@
+{#- schedule(posts, level=3, by_day=true, sorted=true, place_fact=2, kind_fact=3):
+    a timetable. Each post is one row, its facts read by position: 1 the
+    day, best written 2027-05-13, 2 the time, such as 09:30, then the
+    place (`place_fact`) and the kind of entry (`kind_fact`), such as a
+    room and a format, a ground and a competition, or a venue and a city.
+    A row shows the time, the title, the author, the place with the post's
+    category (after the day, without `by_day`), and the kind as a tag. With `sorted`, rows run by day, then
+    time, so write times with two digits for the hour. With `by_day`, each
+    day opens a group under its date (one heading level above `level`),
+    whose id `day-<day>` the day links of `schedule_days` point to.
+    `schedule_day(day)` writes a day as the weekday and the date when it
+    is written 2027-05-13, and as written otherwise. -#}
+{% macro schedule_day(day) -%}
+{% if day | length == 10 and day[4:5] == "-" and day[7:8] == "-" -%}
+{% set month = day[5:7] | int -%}
+{% set year = (day[:4] | int) - (1 if month < 3 else 0) -%}
+{% set weekday = (year + year // 4 - year // 100 + year // 400 + [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4][month - 1] + (day[8:10] | int)) % 7 -%}
+<span class="schedule-weekday">{{ t["weekday_" ~ (weekday or 7)] }}</span> <span class="schedule-date">{{ day | date }}</span>
+{%- else %}<span class="schedule-date">{{ day }}</span>{% endif %}
+{%- endmacro %}
+{% macro schedule_days(posts) -%}
+{% set days = posts | selectattr("facts") | map(attribute="facts.0.value") | unique | sort | list -%}
+{% if days | length > 1 %}<nav class="schedule-days" aria-label="{{ t.schedule_days }}">
+<ul role="list">
+{% for day in days %}<li><a href="#day-{{ day | lower | replace(" ", "-") }}">{{ schedule_day(day) }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}
+{%- endmacro %}
+{% macro schedule_row(post, level, place_fact, kind_fact, by_day) -%}
+{% set facts = post.facts -%}
+{% set time = facts[1].value if facts | length > 1 else "" -%}
+{% set place = facts[place_fact].value if facts | length > place_fact else none -%}
+<li class="slot">
+<p class="slot-time">{% if facts[0].value | length == 10 and facts[0].value[4:5] == "-" and time | length == 5 %}<time datetime="{{ facts[0].value }}T{{ time }}">{{ time }}</time>{% else %}{{ time }}{% endif %}</p>
+<div class="slot-body">
+<h{{ level }} class="slot-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.author %}<p class="slot-who">{{ post.author.name }}</p>
+{% endif %}{% if not by_day or place or post.category %}<p class="slot-where">{% if not by_day %}{{ schedule_day(facts[0].value) }}{% if place or post.category %}, {% endif %}{% endif %}{% if place %}{{ place }}{% endif %}{% if place and post.category %}, {% endif %}{% if post.category %}<a href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}</p>
+{% endif %}{% if facts | length > kind_fact %}<p class="slot-kind">{{ facts[kind_fact].value }}</p>
+{% endif %}</div>
+</li>
+{%- endmacro %}
+{% macro schedule(posts, level=3, by_day=true, sorted=true, place_fact=2, kind_fact=3) -%}
+{% set rows = posts | selectattr("facts") | list -%}
+{% set rows = rows | sort(attribute="facts.0.value, facts.1.value") | list if sorted else rows -%}
+{% if by_day %}{% for post in rows %}{% set day = post.facts[0].value -%}
+{% if loop.changed(day) %}{% if not loop.first %}</ol>
+</section>
+{% endif %}<section class="schedule-group" aria-labelledby="day-{{ day | lower | replace(" ", "-") }}">
+<h{{ level - 1 }} id="day-{{ day | lower | replace(" ", "-") }}" class="schedule-heading">{{ schedule_day(day) }}</h{{ level - 1 }}>
+<ol class="schedule" role="list">
+{% endif %}{{ schedule_row(post, level, place_fact, kind_fact, by_day) }}
+{% if loop.last %}</ol>
+</section>
+{% endif %}{% endfor %}{% elif rows %}<ol class="schedule" role="list">
+{% for post in rows %}{{ schedule_row(post, level, place_fact, kind_fact, by_day) }}
+{% endfor %}</ol>
+{% endif %}
+{%- endmacro %}
