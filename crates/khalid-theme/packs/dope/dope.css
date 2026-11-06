@@ -1,0 +1,213 @@
+/* Based on Ghost's Dope theme, MIT licence, see LICENSE-ghost.txt.
+   Dope: a blog arranged by topic. The front page is a sideways shelf of
+   topic tiles as tall as the window; every list is a column of wide rows,
+   a large picture beside each summary; a post opens on its picture from
+   edge to edge. Square corners, heavy headings, quiet lower-case meta in
+   bold grey, and one soft accent on the topic pills. The menu sits behind
+   a square button and slides in from the end side. Every colour comes
+   from the tokens or a tint of one, so a synced theme recolours it all. */
+
+:root { --frame: 75rem; --gutter: clamp(0rem, 2.5vw, 1.25rem); }
+
+/* The frame: the header across the whole window, as Ghost's, lists in
+   75rem, a post's words in one column of the measure. The front page's
+   shelf and a post's lead picture run from edge to edge. */
+.site-header { max-inline-size: none; }
+.site-footer { max-inline-size: var(--frame); }
+main { max-inline-size: var(--frame); padding-block: clamp(1rem, 4vw, 2.5rem) 0; }
+main:has(> .shelf), main:has(> .post) { max-inline-size: none; padding-block-start: 0; }
+main:has(> .shelf) > :not(.shelf) { max-inline-size: var(--frame); margin-inline: auto; }
+main:has(> .post) > :not(.post-media) { max-inline-size: var(--measure); margin-inline: auto; }
+main:has(> .post) > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
+
+/* Type: heavy, tight headings; the meta in small bold lower case. */
+h1, h2, h3, h4 { line-height: 1.15; letter-spacing: -0.02em; word-break: break-word; }
+a { text-decoration: none; }
+a:hover { opacity: 0.8; }
+
+/* Buttons: square, in ink, as Dope draws its burger and frames. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.625rem 1.25rem; color: var(--color-background); background: var(--color-text); border: 0; border-radius: 0; font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 700; line-height: 1.2; text-decoration: none; cursor: pointer; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { opacity: 0.85; }
+
+/* The header: 100 px tall, the name in heavy type on the start side; the
+   search link and the square menu button on the end side. */
+.site-header { gap: 0.5rem 1.25rem; min-block-size: 6.25rem; padding: 0.5rem var(--gutter); border-block-end: 0; }
+.site-name { margin-inline-end: auto; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+.site-logo img { block-size: 2.5rem; inline-size: auto; max-inline-size: none; }
+.site-header > .nav-bar { display: none; }
+.search-link { color: var(--color-text); font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 700; }
+.header-button { min-block-size: 2.75rem; }
+@media (max-width: 47.99rem) { .site-header { min-block-size: 5rem; } }
+
+/* The menu: one square button with two short lines, at every width. It
+   opens a white panel on the end side over a dark veil, with a close
+   cross where the button was, as Dope's off-canvas menu. */
+.site-header > .nav-menu { position: relative; display: block; }
+.site-header .nav-menu summary { display: grid; place-items: center; inline-size: 2.75rem; block-size: 2.75rem; padding: 0; color: var(--color-text); background: var(--color-background); border: 2px solid var(--color-border); border-radius: 0; font-size: 0; list-style: none; cursor: pointer; }
+.site-header .nav-menu summary::-webkit-details-marker { display: none; }
+.site-header .nav-menu summary::before { content: ""; inline-size: 0.75rem; block-size: 0.625rem; background: linear-gradient(currentColor 0 0) top / 100% 2px no-repeat, linear-gradient(currentColor 0 0) bottom / 100% 2px no-repeat; }
+.site-header .nav-menu[open] summary { position: fixed; inset-block-start: 1.25rem; inset-inline-end: 1rem; z-index: 32; border-color: transparent; }
+.site-header .nav-menu[open] summary::before { inline-size: 1.25rem; block-size: 1.25rem; background: linear-gradient(45deg, transparent calc(50% - 1px), currentColor 0 calc(50% + 1px), transparent 0), linear-gradient(-45deg, transparent calc(50% - 1px), currentColor 0 calc(50% + 1px), transparent 0); }
+.site-header .nav-menu nav { position: fixed; inset-block: 0; inset-inline: auto 0; z-index: 31; inline-size: min(21.875rem, 100vw); min-inline-size: 0; margin: 0; padding: 6rem 1.875rem 1.875rem; overflow-y: auto; overscroll-behavior: contain; background: var(--color-background); border: 0; border-radius: 0; box-shadow: 0 0 0 100vmax color-mix(in oklab, var(--color-text) 70%, transparent); }
+.site-header .nav-menu nav::before { content: attr(aria-label); display: block; margin-block-end: 1rem; color: var(--color-muted); font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+.site-header .nav-menu nav ul { display: flex; flex-direction: column; flex-wrap: nowrap; gap: 0.25rem; margin: 0; padding: 0; }
+.site-header .nav-menu nav a { display: flex; align-items: center; min-block-size: 44px; padding: 0; color: var(--color-text); font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 700; }
+.site-header .nav-menu .menu-button { display: none; }
+@media (max-width: 40rem) { .site-header .nav-menu .menu-button { display: flex; margin-block-start: 2rem; } }
+
+/* The announcement: a quiet strip above the header. */
+.announcement { margin-block-end: 0; border: 0; font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; }
+
+/* The front page's shelf: one tile per topic, as tall as the window
+   under the header, sliding sideways and snapping to each tile. One tile
+   to a phone, two from 64rem, three from 120rem and four from 160rem. */
+.shelf { margin-inline: -1rem; }
+.shelf-list { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; block-size: max(26rem, calc(100svh - 5rem)); margin: 0; padding: 0; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: inline mandatory; scrollbar-width: thin; scrollbar-color: var(--color-border) transparent; }
+.shelf-tile { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; min-inline-size: 0; overflow: hidden; scroll-snap-align: start; background: var(--color-surface); }
+.shelf-tile .image, .shelf-blank { min-block-size: 0; margin: 0; overflow: hidden; }
+.shelf-tile picture { display: block; block-size: 100%; }
+.shelf-tile .image img { inline-size: 100%; block-size: 100%; border-radius: 0; object-fit: cover; transition: scale 0.6s ease; }
+.shelf-tile:hover .image img { scale: 1.04; }
+.shelf-tile figcaption { display: none; }
+.shelf-text { padding: 2.25rem 2.8125rem 2.75rem; color: var(--color-background); background: var(--color-text); }
+.shelf-text h2 { display: flex; align-items: center; margin: 0; color: inherit; font-size: clamp(1.875rem, 1.2rem + 1.6vw, 2.1875rem); font-weight: 800; letter-spacing: -0.01em; }
+.shelf-text h2::before { content: ""; flex: none; inline-size: 0; block-size: 3px; background: currentColor; transition: 0.4s ease; transition-property: inline-size, margin-inline-end; }
+.shelf-tile:hover h2::before, .shelf-tile:focus-within h2::before { inline-size: 1.875rem; margin-inline-end: 0.625rem; }
+.shelf-text h2 a { color: inherit; }
+.shelf-text h2 a::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.shelf-text h2 a:hover { opacity: 1; }
+.shelf-text h2 a:focus-visible { outline: 0; }
+.shelf-tile:has(a:focus-visible) { outline: 3px solid var(--color-accent); outline-offset: -3px; }
+.shelf-text p { margin: 0.75rem 0 0; color: color-mix(in oklab, var(--color-background) 75%, var(--color-text)); font-size: 1.0625rem; line-height: 1.4; }
+@media (min-width: 48rem) { .shelf-list { block-size: max(30rem, calc(100svh - 6.25rem)); } }
+@media (min-width: 64rem) { .shelf-list { grid-auto-columns: 50%; } }
+@media (min-width: 120rem) { .shelf-list { grid-auto-columns: calc(100% / 3); } }
+@media (min-width: 160rem) { .shelf-list { grid-auto-columns: 25%; } }
+@media (max-width: 47.99rem) { .shelf-text { padding: 1.5rem 1.875rem 2rem; } }
+
+/* A list's head: its name large and heavy, a short line under it, as
+   Dope's topic and author heads. */
+.dope-head { max-inline-size: 35rem; margin-block: 4rem; }
+.dope-head h1, .dope-head h2, main > h1 { margin: 0; font-size: clamp(1.75rem, 1rem + 3vw, 2.875rem); font-weight: 800; }
+.dope-head .intro, main > h1 + .intro { margin-block-start: 0.75rem; color: var(--color-text); font-size: 1.0625rem; line-height: 1.5; }
+.dope-head .intro p, main > h1 + .intro p { margin: 0; }
+main > h1 { max-inline-size: 35rem; margin-block: 4rem 0; }
+main > h1 + .intro { max-inline-size: 35rem; }
+main > :is(h1, .intro, .hub-link) + .cards, main > .featured { margin-block-start: 4rem; }
+.feed > .dope-head + .cards { margin-block-start: 0; }
+@media (max-width: 47.99rem) { .dope-head, main > h1 { margin-block: 1rem 2rem; } main > :is(h1, .intro, .hub-link) + .cards { margin-block-start: 2rem; } }
+
+/* Lists: wide rows, a picture of 500 px beside the meta, a heavy title,
+   the summary and the writer, 75 px apart. */
+.cards { gap: 4.6875rem; }
+.card .image { order: -2; margin: 0; }
+.card .image img { inline-size: 100%; aspect-ratio: 8 / 5; border-radius: 0; object-fit: cover; background: var(--color-surface); }
+.card :is(h2, h3, h4) { margin-block: 0 0.75rem; font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
+.card :is(h2, h3, h4) a:hover { text-decoration: none; opacity: 0.8; }
+.card p { margin-block-end: 0; }
+.card > p:last-child { font-family: var(--font-body); line-height: 1.6; }
+.card-meta, .card > p:has(> time) { order: -1; margin-block-end: 0.625rem; color: var(--color-muted); font-family: var(--font-heading); font-size: 0.875rem; font-weight: 700; text-transform: lowercase; }
+.card-meta { gap: 0 0.5rem; }
+.card-meta time, .card > p > time, .card-reading-time { color: var(--color-muted); font-size: 0.875rem; }
+.card-meta > * + *::before, .card > p > time + .card-reading-time::before { content: "\2022" / ""; margin-inline-end: 0.5rem; }
+.card-reading-time::before { margin-inline-start: 0.5rem; }
+.card-meta > * + .card-reading-time::before { margin-inline-start: 0; }
+.card-author { color: var(--color-text); text-transform: none; }
+.card-meta .avatar { inline-size: 1.875rem; block-size: 1.875rem; border: 2px solid var(--color-background); }
+.card-meta > a { color: var(--color-link); }
+.card:has(.image), .cards-row .card:has(.image) { display: flex; flex-direction: column; gap: 0; }
+.card:has(.image) .image { margin-block-end: 1.25rem; }
+@media (min-width: 48rem) {
+  .cards-row .card:has(.image) { display: grid; grid-template-columns: 15.625rem minmax(0, 1fr); align-content: start; gap: 0 1.875rem; }
+  .cards-row .card .image { grid-row: span 4; margin: 0; }
+  .cards-row .card:has(.image) > :not(.image) { grid-column: 2; }
+}
+@media (min-width: 62rem) {
+  .cards-row .card:has(.image) { grid-template-columns: 31.25rem minmax(0, 45rem); gap: 0 2.5rem; }
+  .cards-row .card:has(.image) > :is(.card-meta, p:has(> time)) { margin-block-start: 1.25rem; }
+}
+@media (max-width: 47.99rem) { .card :is(h2, h3, h4) { font-size: 1.25rem; letter-spacing: 0; } .cards { gap: 3rem; } }
+
+/* Page links: square numbers in the heading font. */
+.pagination { margin-block-start: 5rem; font-family: var(--font-heading); font-weight: 700; }
+.page-numbers a[aria-current] { color: var(--color-background); background: var(--color-text); border-radius: 0; }
+
+/* The author page: the name as large as a topic's, the photo round. */
+.author { margin-block: 4rem 3rem; }
+.author-header { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1.25rem; }
+.author-photo { inline-size: 4.375rem; }
+.author-photo img { aspect-ratio: 1; border-radius: 50%; object-fit: cover; }
+.author-intro h1 { margin: 0; font-size: clamp(1.75rem, 1rem + 3vw, 2.875rem); font-weight: 800; }
+.author-role, .author-count { margin-block: 0.5rem 0; color: var(--color-muted); font-family: var(--font-heading); font-size: 0.875rem; font-weight: 700; }
+.author-bio { max-inline-size: 35rem; font-size: 1.0625rem; }
+.author + section > h2, .home-section > h2, .related > h2, .mentions > h2 { margin-block-end: 2.5rem; color: var(--color-muted); font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+@media (max-width: 40rem) { .author-header { grid-template-columns: minmax(0, 1fr); } }
+
+/* The post: the lead picture from edge to edge, at least 560 px tall on
+   a wide screen, then the header in the column. */
+.post-media { margin: 0 -1rem 3rem; background: var(--color-surface); }
+.post-media .image { margin: 0; }
+.post-media .image img { inline-size: 100%; block-size: clamp(18.75rem, 70vh, 35rem); border-radius: 0; object-fit: cover; }
+.post-media figcaption { max-inline-size: var(--measure); margin-inline: auto; padding-inline: 1rem; }
+main:has(> .post):not(:has(> .post-media)) { padding-block-start: 2rem; }
+.post-header { margin-block-end: 2.5rem; }
+.post-tags { margin-block-end: 1rem; }
+.post-tag { display: inline-flex; align-items: center; min-block-size: 1.75rem; padding: 0.25rem 0.75rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 1rem; font-family: var(--font-heading); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.01em; }
+.post-tag:hover { opacity: 0.85; }
+.post-header h1 { margin: 0; font-size: var(--text-h1); font-weight: 800; letter-spacing: -0.01em; line-height: 1.1; }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; margin-block-start: 1.25rem; font-family: var(--font-heading); font-size: 0.875rem; font-weight: 700; }
+.post-meta > :is(p, address) { margin: 0; }
+.post-meta > * + *::before { content: "\2022" / ""; margin-inline-end: 0.5rem; }
+.post-meta time { text-transform: lowercase; }
+.post-meta a { color: var(--color-text); }
+.post-meta > .reviewed-by { flex-basis: 100%; }
+.post-meta > .reviewed-by::before { content: none; }
+.updated-note { margin-block: 1rem 0; color: var(--color-muted); font-size: var(--text-small); }
+
+/* The words: the body font, 18 px and up, links underlined in the link
+   colour. */
+.post-body { font-size: var(--text-body); }
+.post-body :is(h2, h3, h4) { margin-block: 1.6em 0.6em; font-weight: 800; }
+.post-body h2 { font-size: 1.6em; }
+.post-body h3 { font-size: 1.4em; }
+.post-body a { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 1px; }
+.post-body blockquote { color: var(--color-text); border-inline-start-color: var(--color-text); }
+.post-body img { margin-inline: auto; border-radius: 0; }
+
+/* Share: one row of round, outlined buttons, as Dope's "Share" button. */
+.share { margin-block: 2rem 0; }
+.share-title { font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 700; }
+.share a { min-block-size: 2.5rem; padding-inline: 1.125rem; color: var(--color-text); border-color: color-mix(in oklab, var(--color-text) 15%, transparent); border-radius: 999px; font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 600; }
+.share a:hover { border-color: color-mix(in oklab, var(--color-text) 50%, transparent); opacity: 1; }
+
+/* The author: a round photo of 70 px beside the name and bio, no panel. */
+.author-box { margin-block-start: 4rem; padding: 0; background: none; border-radius: 0; }
+.author-box h2 { margin-block-end: 1.5rem; font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; }
+.author-box .person-card { flex-wrap: nowrap; }
+.author-box .avatar { inline-size: 4.375rem; block-size: 4.375rem; }
+.author-box .person-name { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em; }
+.author-box .person-name a { color: var(--color-text); }
+.person-bio { margin-block-start: 0.5rem; }
+@media (max-width: 30rem) { .author-box .person-card { flex-wrap: wrap; } }
+
+/* After the post: the newsletter form and the call to action on a
+   hairline, then related posts as rows with a picture of 300 px. */
+main > :is(.newsletter-slot, .cta-band, .comments, .mentions, .related) { margin-block-start: 5.5rem; }
+main > :is(.newsletter-slot, .cta-band) { padding: 3rem 0 0; background: none; border-block-start: 1px solid var(--color-border); border-radius: 0; }
+main > .newsletter-slot h2 { font-size: 1.5rem; font-weight: 800; }
+.subscribe input, .comment-form :is(input, textarea) { border-radius: 0; }
+main:has(> .post) > .related { max-inline-size: calc(var(--measure) + 12rem); }
+.related .cards { gap: 1.875rem; }
+.related .card :is(h2, h3, h4) { font-size: 1.25rem; letter-spacing: 0; }
+.related .card > p:last-child { display: none; }
+.related .card-author { display: none; }
+.related .card-author + *::before { content: none; }
+@media (min-width: 48rem) { .related .cards-row .card:has(.image) { grid-template-columns: 18.75rem minmax(0, 1fr); gap: 0 1.875rem; } .related .cards-row .card:has(.image) > :is(.card-meta, p:has(> time)) { margin-block-start: 0; } }
+
+/* The footer: small and quiet, centred, the links split by dots. */
+.site-footer { justify-items: center; gap: 1.5rem; padding-block: 5rem; text-align: center; border-block-start: 0; }
+.site-footer ul { justify-content: center; }
+.site-footer a { color: var(--color-muted); font-size: 0.8125rem; }
+.site-footer a:hover { color: var(--color-text); opacity: 1; }
+.site-footer nav li { display: flex; }
+.site-footer nav li + li::before { content: "\2022" / ""; display: inline-flex; align-items: center; min-block-size: 44px; margin-inline-end: 1rem; color: var(--color-muted); font-size: 0.5625rem; }
