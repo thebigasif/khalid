@@ -60,21 +60,20 @@ pub mod slot;
 mod solo;
 mod source;
 mod split;
-mod taste;
-mod ticker;
 mod summit;
 mod syllabus;
+mod taste;
+mod ticker;
 mod token_name;
 mod token_values;
 mod tokens;
 mod tokens_error;
-#[cfg(feature = "test-util")]
 mod trial;
 mod wave;
 mod wire;
 mod woff2;
 mod workbench;
-
+#[cfg(feature = "test-util")]
 pub use brand::Brand;
 pub use color::Rgb;
 pub use contrast::{ColorToken, ContrastFix, MARK_CONTRAST, TEXT_CONTRAST};
