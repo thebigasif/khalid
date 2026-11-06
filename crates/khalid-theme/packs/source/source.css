@@ -3,7 +3,7 @@
    the middle of the header, small capital labels over a hairline above
    each list, cards with no box around them and hairlines between them,
    pill buttons and pill forms on a grey field, and a post in one calm
-   column of 720 px under a picture 1120 px wide. Every colour is a token
+   column of 600 px under a picture 1120 px wide. Every colour is a token
    or a mix of tokens. */
 :root {
   --sc-wide: 82.5rem;
@@ -263,8 +263,10 @@ main > .post { max-inline-size: var(--sc-post); }
 .sc-share ul { position: absolute; inset-block-start: calc(100% + 0.5rem); inset-inline-end: 0; z-index: 30; display: grid; min-inline-size: 12rem; margin: 0; padding: 0.5rem; list-style: none; background: var(--color-background); border: 1px solid var(--color-border); box-shadow: 0 0.5rem 1.5rem color-mix(in oklab, var(--color-text) 14%, transparent); }
 .sc-share a { display: flex; align-items: center; min-block-size: 44px; padding-inline: 0.75rem; color: var(--color-text); text-decoration: none; }
 
-/* The text: 17 px with room between parts and more before each heading. */
-.post-body { font-size: 1.0625rem; letter-spacing: -0.01em; }
+/* The text: 18 px with room between parts and more before each heading.
+   Source sets 17 px in 720 px; Khalid's reading check asks for 18 px and
+   at most 75 characters a line, so the column is 600 px. */
+.post-body { font-size: 1.125rem; letter-spacing: -0.01em; }
 .post-body > p { margin-block-end: 1.75rem; }
 .post-body > :is(h2, h3) { margin-block: 3.5rem 0.75rem; }
 .post-body a { color: var(--color-link); text-decoration: underline; }
