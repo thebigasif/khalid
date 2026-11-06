@@ -93,7 +93,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .front .leads > h2, .featured > h2 { justify-self: start; margin-block-end: 0; padding: 0; color: var(--color-text); background: none; border: 0; font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 0.1em; line-height: 1.2; text-transform: uppercase; }
 /* The key square: the accent's one mark below the masthead, before a
    topic or a section's label, like the key of a map. */
-:is(.story-label, .cards .card-meta > a, .front .leads > h2, .featured > h2)::before { content: ""; display: inline-block; inline-size: 0.5rem; block-size: 0.5rem; margin-inline-end: 0.5rem; background: var(--color-accent); }
+:is(.story-label, .front .leads > h2, .featured > h2)::before, .cards .card-meta > a::before { content: ""; display: inline-block; inline-size: 0.5rem; block-size: 0.5rem; margin-inline-end: 0.5rem; background: var(--color-accent); }
 
 /* A story or a card: the picture edge to edge on top, the topic as a solid
    chip, a bold title of up to three lines, the summary, then who, when and

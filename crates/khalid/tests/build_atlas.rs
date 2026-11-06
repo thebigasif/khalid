@@ -92,12 +92,9 @@ const ATLAS: &str = "\n[template]\nname = \"atlas\"\n\n[template.cta]\n\
 fn atlas_front_page() {
     let (_temp, out) = built(ATLAS);
     let home = body(&out, "index.html");
-    let bar = between(&home, "<nav class=\"catbar\"", "</nav>");
-    assert!(
-        bar.contains("<a href=\"/blog/\" aria-current=\"page\">All posts</a>"),
-        "{bar}"
-    );
-    assert!(bar.contains(">Technical SEO</a>"), "{bar}");
+    let index = between(&home, "<nav class=\"atlas-index\"", "</nav>");
+    assert!(index.contains(">Technical SEO</a></h2>"), "{index}");
+    assert_eq!(index.matches("<ol class=\"places\"").count(), 3, "{index}");
     let leads = between(&home, "<section class=\"leads\"", "</section>");
     assert_eq!(leads.matches("story-lead").count(), 2, "{leads}");
     assert!(
@@ -108,7 +105,6 @@ fn atlas_front_page() {
     assert!(picks.contains("How to write a title tag"), "{picks}");
     let feed = between(&home, "<section class=\"feed\"", "</section>");
     assert_eq!(feed.matches("<li>").count(), 3, "leads stay out: {feed}");
-    assert_eq!(home.matches("<section class=\"topic-block\"").count(), 3);
     assert!(home.contains("<div class=\"cta-band\">"), "{home}");
     assert!(
         home.contains(
@@ -125,7 +121,7 @@ fn atlas_shows_its_tagline_in_the_masthead_and_none_without_one() {
         "\n[template]\nname = \"atlas\"\n[template.options]\ntagline = \"Plain notes on search\"\n",
     );
     let home = body(&out, "index.html");
-    let masthead = between(&home, "<div class=\"masthead\">", "<nav class=\"catbar\"");
+    let masthead = between(&home, "<div class=\"masthead\">", "<nav class=\"atlas-index\"");
     assert!(
         masthead.contains("<p class=\"tagline\">Plain notes on search</p>"),
         "{masthead}"
