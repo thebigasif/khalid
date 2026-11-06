@@ -14,8 +14,8 @@
   --compass-wide: 80rem;
   --compass-pill: 999px;
   --compass-trail: color-mix(in oklab, var(--color-accent) 55%, var(--color-background));
-  --compass-dash-x: repeating-linear-gradient(to right, #000 0 0.375rem, transparent 0 0.6875rem);
-  --compass-dash-y: repeating-linear-gradient(#000 0 0.375rem, transparent 0 0.6875rem);
+  --compass-dash-x: repeating-linear-gradient(to right, currentcolor 0 0.375rem, transparent 0 0.6875rem);
+  --compass-dash-y: repeating-linear-gradient(currentcolor 0 0.375rem, transparent 0 0.6875rem);
   --compass-flag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cpath d='M15 28V3' stroke='black' stroke-width='2'/%3E%3Cpath d='M16 3h10l-3 4.5 3 4.5H16z'/%3E%3Ccircle cx='15' cy='26' r='2'/%3E%3C/svg%3E");
   --compass-map: linear-gradient(var(--compass-grid) 1px, transparent 1px) 0 0 / 2rem 2rem, linear-gradient(90deg, var(--compass-grid) 1px, transparent 1px) 0 0 / 2rem 2rem;
 }
