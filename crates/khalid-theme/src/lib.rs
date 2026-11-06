@@ -55,6 +55,7 @@ pub mod slot;
 mod solo;
 mod source;
 mod split;
+mod taste;
 mod token_name;
 mod token_values;
 mod tokens;
