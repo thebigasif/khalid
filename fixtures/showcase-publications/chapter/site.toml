@@ -1,0 +1,92 @@
+# Hanna Lowe, a made-up novelist and essayist from the Welsh border,
+# written for the Chapter template's demo. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Hanna Lowe"
+languages = ["en"]
+
+[template.cta]
+label = "Order The Orchard Year"
+href = "/blog/orchard-year-novel/"
+note = "The new novel is out now in hardback, ebook and audio. Signed copies are available from the launch."
+
+# The Chapter template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Novels, stories and essays about orchards, rivers and the people who stay."]
+events_count = 4
+
+[announcement]
+text = "The Orchard Year launches at Castle Street Books, Hereford, on 19 November."
+href = "/blog/orchard-year-launch/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Novelist and essayist"
+
+[seo.ai_page]
+covers = "Hanna Lowe is a novelist and essayist from the Welsh border. This site lists her four books, excerpts from them, notes on writing and research, and her readings and events."
+cite = "Quote the book or the excerpt itself and link the page you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "person"
+name = "Hanna Lowe"
+email = "hello@example.com"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "Hanna Lowe"
+width = 320
+height = 80
+
+# Sign-ups for Hanna's letter, under her own name. The mail server is a
+# reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Hanna Lowe"
+postal_address = "Hanna Lowe, c/o Fernhill Press, 4 Broad Street, Ludlow SY8 1NG"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Books"
+href = "/blog/category/books/"
+language = "en"
+
+[[nav.primary]]
+label = "Excerpts"
+href = "/blog/category/excerpts/"
+language = "en"
+
+[[nav.primary]]
+label = "Notes"
+href = "/blog/category/notes/"
+language = "en"
+
+[[nav.primary]]
+label = "Events"
+href = "/blog/category/events/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Hanna"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Events"
+href = "/blog/category/events/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

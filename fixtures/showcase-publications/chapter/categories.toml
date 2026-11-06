@@ -1,0 +1,36 @@
+# Hanna Lowe's categories. The Chapter template shows the books category
+# as a shelf of covers, the events category as dated rows and every other
+# post as a contents page. Its options name the books, events and
+# excerpts categories by these slugs, which are also its defaults.
+
+[[categories]]
+slug = "books"
+en = "Books"
+
+[categories.seo.en]
+description = "Hanna Lowe's books: four novels and collections, with what each is about and where to order it."
+intro = "Two novels, a book of essays and a book of stories, all set in the hills and river valleys of the Welsh border."
+
+[[categories]]
+slug = "excerpts"
+en = "Excerpts"
+
+[categories.seo.en]
+description = "Excerpts from Hanna Lowe's books, from The Orchard Year and Salt Road to the novel she is writing now."
+intro = "Pages from the books, chosen by Hanna, and now and then a page from the next one."
+
+[[categories]]
+slug = "notes"
+en = "Notes"
+
+[categories.seo.en]
+description = "Hanna Lowe's notes on writing, research and the places her books are set."
+intro = "Short essays on how the books get written, the research behind them and the places they are set."
+
+[[categories]]
+slug = "events"
+en = "Events"
+
+[categories.seo.en]
+description = "Where to meet Hanna Lowe: readings, launches and festival talks, with dates and tickets."
+intro = "Readings, launches and talks. Each event lists the date, the place and how to book."
