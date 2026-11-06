@@ -1,0 +1,74 @@
+{#- Ticker's front page (docs/templates/ticker.md): the tape of figures,
+    from the `hero_stats` lines or else the latest issue's facts; the
+    newsletter's name and tagline beside the sign-up form; the latest
+    issue (the newest post with facts) beside its facts as a bar chart;
+    every other post as a data table shaded by how far each figure
+    moved; the desks (categories); then the page links, the call to
+    action and the disclaimer line. Later pages show the table only.
+    With home sections in site.toml, each section is a table of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/bar_chart.html" import bar_chart -%}
+{% from "sections/fact_table.html" import fact_table -%}
+{% macro tape_figure(label, value) -%}
+{% set value = value | trim -%}
+<div class="tape-figure" data-move="{% if value is startingwith("+") %}up{% elif value is startingwith("-") or value is startingwith("−") %}down{% else %}flat{% endif %}">
+<dt>{{ label | trim }}</dt>
+<dd>{{ value }}</dd>
+</div>
+{%- endmacro %}
+{% set options = template.options -%}
+{% set disclaimer = options.disclaimer[0] if options.disclaimer else none -%}
+{% set first = not page.pagination or page.pagination.current == 1 -%}
+{% set issues = page.posts | selectattr("facts") | list -%}
+{% set lead = issues[0] if first and issues else none -%}
+{% set rest = page.posts | rejectattr("href", "equalto", lead.href) | list if lead else page.posts -%}
+{% if first and (options.hero_stats or lead) %}<section class="tape" aria-label="{{ t.market_tape }}">
+<dl class="tape-figures">
+{% if options.hero_stats %}{% for line in options.hero_stats %}{% set parts = line | split("|") | list %}{{ tape_figure(parts[1:] | join("|"), parts[0]) }}
+{% endfor %}{% else %}{% for fact in lead.facts %}{{ tape_figure(fact.label, fact.value) }}
+{% endfor %}{% endif %}</dl>
+</section>
+{% endif %}{% set signup = site.subscribe and options.newsletter in ["home", "both"] -%}
+{% if signup %}<div class="masthead masthead-signup">{% else %}<div class="masthead">{% endif %}
+{{ hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) }}
+{% if signup %}{{ newsletter_form(site.subscribe, t, "masthead-signup") }}
+{% endif %}</div>
+{% if page.sections %}{% for section in page.sections %}<section class="board" aria-labelledby="board-{{ loop.index }}">
+<h2 id="board-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ fact_table(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}{% if lead %}<section class="lead-issue" aria-labelledby="lead-issue-title">
+<div class="lead-text">
+<p class="lead-kicker"><span>{{ t.latest_issue }}</span>{% if lead.category %} <a href="{{ lead.category.href }}">{{ lead.category.name }}</a>{% endif %}</p>
+<h2 id="lead-issue-title"><a href="{{ lead.href }}">{{ lead.title }}</a></h2>
+<p class="lead-excerpt">{{ lead.excerpt }}</p>
+<p class="lead-meta"><time datetime="{{ lead.date }}">{{ lead.date | date }}</time>{% if lead.author %} <span>{{ t.by }} {{ lead.author.name }}</span>{% endif %}</p>
+<p class="lead-read"><a class="button" href="{{ lead.href }}">{{ t.read_issue }}</a></p>
+</div>
+<div class="lead-chart">
+<h3>{{ t.in_numbers }}</h3>
+{{ bar_chart(lead.facts, t.in_numbers, disclaimer) }}
+</div>
+</section>
+{% endif %}{% if rest %}<section class="board" aria-labelledby="board-title">
+<h2 id="board-title">{{ t.recent_issues }}</h2>
+{{ fact_table(rest) }}
+</section>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if first and page.categories %}<nav class="desks" aria-labelledby="desks-title">
+<h2 id="desks-title">{{ t.desks }}</h2>
+<ul role="list">
+{% for desk in page.categories %}<li><a href="{{ desk.href }}">{{ desk.name }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if disclaimer %}<p class="disclaimer">{{ disclaimer }}</p>
+{% endif %}{% endblock %}

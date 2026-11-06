@@ -49,6 +49,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `source`: a general publication with the logo in the middle of the header, a front page that opens with a landing, highlight or magazine header, a list or a grid of posts with hairlines between them, and a calm column for each post. Based on Ghost's Source theme (MIT). See [Source](templates/source.md).
 - `wave`: an interview show's blog on a quiet white page, with the newest episode in a slim player card, then every episode as a row with square artwork and a round play mark. Based on Ghost's Wave theme (MIT). See [Wave](templates/wave.md).
 - `taste`: a baking blog with a centred header and sign-up field, a magazine block of five posts and a picture grid for each main topic. Based on Ghost's Taste theme (MIT). See [Taste](templates/taste.md).
+- `ticker`: a markets newsletter, with a dark tape of figures, each issue's moves as a bar chart drawn without script, and every list as a data table shaded by how far each figure moved. See [Ticker](templates/ticker.md).
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 
@@ -149,10 +150,12 @@ facts:
 `khalid build` stops and names the line when a fact breaks one of these rules.
 
 These templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+Several templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
 
 - [Folio](templates/folio.md#release-notes) treats posts with facts as releases. The front page lists them in a dated release log beside the essays, tagged with the first fact, such as the version. A release's page shows its facts above the title.
 - [Workbench](templates/workbench.md#score-panels) shows a score panel on review cards and at the top of a review: the first fact large, with a meter when it is a score out of ten, then up to three figures.
 - [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.
+- [Ticker](templates/ticker.md#issues-are-posts-with-facts) treats posts with facts as issues, each fact a market and its move. It draws a post's facts as a bar chart and lists posts in a table with one column per fact, each figure cell shaded by how far it moved.
 - [Harbor](templates/harbor.md#recipe-facts) shows up to four posts with facts in a recipe card strip on the front page, with the first two facts as tags, and all the facts as tags under a post's title.
 - [Respawn](templates/respawn.md#reviews-are-posts-with-facts) treats posts with facts as reviews. The first fact is the score out of 10, shown as a dark square and a health bar on cards, lists and the review, and the second, the platforms, shows under it.
 
