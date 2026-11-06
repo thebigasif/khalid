@@ -123,7 +123,11 @@ fn edition_cover_takes_the_featured_posts_picture() {
         page.contains("<div class=\"cover cover-pictured\">"),
         "{page}"
     );
-    let cover = page.split("<div class=\"cover-content\">").next().unwrap();
+    let cover = page
+        .split("<div class=\"cover-image\"")
+        .nth(1)
+        .and_then(|rest| rest.split("class=\"featured-strip\"").next())
+        .unwrap();
     assert!(
         cover.contains("alt=\"A bar chart of page weight by part\""),
         "{cover}"
@@ -138,7 +142,7 @@ fn edition_cover_takes_the_featured_posts_picture() {
     assert!(latest.len() > 1, "{latest:?}");
 }
 
-/// The cover_text option is the cover's large line, and the blog's name
+/// The `cover_text` option is the cover's large line, and the blog's name
 /// stays the page's one heading for screen readers. A half cover and the
 /// minimal feed with its day and month block follow the options.
 #[test]

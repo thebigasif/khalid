@@ -1,8 +1,9 @@
 {#- Based on Ghost's Edition theme, MIT licence, see LICENSE-ghost.txt.
-    Edition's front page, for a newsletter: a cover from edge to edge, with
-    the picture of the newest featured post (or else the newest post with
-    a picture) behind a dark veil, the cover_text option or the intro set
-    large in the middle and the sign-up form under it. The cover option
+    Edition's front page, for a newsletter: a cover from edge to edge. A
+    dark band carries the cover_text option or the intro, set large in the
+    middle, and the sign-up form under it; the picture of the newest
+    featured post (or else the newest post with a picture) runs under the
+    band to the foot of the screen, with no text on it. The cover option
     makes it fill the screen, half of it, or leaves it out. Then a strip
     of featured posts that scrolls sideways, then the latest posts under a
     small capital heading, in the layout the feed_layout option names:
@@ -26,8 +27,7 @@
 {{ page.intro }}
 </div>
 {% endif %}{% else %}{% if backdrop and cover == "half" %}<div class="cover cover-pictured cover-half">{% elif backdrop %}<div class="cover cover-pictured">{% else %}<div class="cover">{% endif %}
-{% if backdrop %}<div class="cover-image" aria-hidden="true">{{ picture(backdrop) }}</div>
-{% endif %}<div class="cover-content">
+<div class="cover-content">
 {% if pitch or page.intro %}<h1 class="visually-hidden">{{ page.title }}</h1>
 {% if pitch %}<p class="cover-text">{{ pitch }}</p>
 {% else %}<div class="cover-text">
@@ -36,7 +36,8 @@
 {% endif %}{% else %}<h1 class="cover-text">{{ page.title }}</h1>
 {% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t, "cover-signup") }}
 {% endif %}</div>
-{% if backdrop and cover == "full" %}<a class="cover-arrow" href="#latest-title"><span class="visually-hidden">{{ t.latest }}</span></a>
+{% if backdrop %}<div class="cover-image" aria-hidden="true">{{ picture(backdrop) }}</div>
+{% endif %}{% if backdrop and cover == "full" %}<a class="cover-arrow" href="#latest-title"><span class="visually-hidden">{{ t.latest }}</span></a>
 {% endif %}</div>
 {% endif %}{% set picks = page.picks[:template.options.picks] if first else [] -%}
 {% if picks %}<section class="featured-strip" aria-labelledby="featured-strip-title">

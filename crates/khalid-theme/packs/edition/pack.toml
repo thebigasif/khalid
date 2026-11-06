@@ -2,4 +2,4 @@
 # See scripts/template-packs.sh.
 kind = "newsletter"
 kind_label = "Newsletters"
-frame = 1200
+frame = 720
