@@ -132,7 +132,7 @@ fn plinth_front_page_splits_projects_from_notes() {
     );
     assert_eq!(texts(&page, ".spread .title-block-sheet dd"), ["01", "02"]);
     let notes = texts(&page, ".notes .feed-item h3");
-    assert!(!notes.is_empty());
+    assert!(!notes.is_empty(), "expected something here");
     assert!(
         notes.iter().all(|title| !projects.contains(title)),
         "{notes:?}"

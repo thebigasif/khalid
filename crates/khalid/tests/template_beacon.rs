@@ -135,7 +135,7 @@ fn beacon_front_page_leads_with_the_newest_campaign() {
         ["How to write a title tag", "Why internal links matter"]
     );
     let news = texts(&page, ".bc-news .feed-item h3");
-    assert!(!news.is_empty());
+    assert!(!news.is_empty(), "expected something here");
     assert!(
         news.iter()
             .all(|title| !cards.contains(title) && !lead.contains(title)),

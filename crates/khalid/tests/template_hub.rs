@@ -169,7 +169,10 @@ fn the_main_menu_fills_the_stack_when_no_links_are_set() {
     let page = shown(&out, "index.html");
     assert_eq!(texts(&page, ".link-stack .link-label"), ["Guides", "About"]);
     let post = shown(&out, "fixing-slow-pages/index.html");
-    assert!(texts(&post, ".post-links").is_empty());
+    assert!(
+        texts(&post, ".post-links").is_empty(),
+        "expected nothing here"
+    );
 }
 
 #[test]
@@ -192,5 +195,8 @@ fn a_post_ends_with_the_links_again() {
         texts(&post, ".post-links .link-label"),
         ["Watch the videos", "Read the newsletter", "About"]
     );
-    assert!(texts(&post, ".post-links .link-tile-lead").is_empty());
+    assert!(
+        texts(&post, ".post-links .link-tile-lead").is_empty(),
+        "expected nothing here"
+    );
 }

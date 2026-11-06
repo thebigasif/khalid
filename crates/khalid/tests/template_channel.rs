@@ -118,7 +118,7 @@ fn now_showing_is_the_newest_post_with_a_video() {
     let page = shown(&out, "index.html");
     assert_eq!(texts(&page, ".lead-video h3"), ["How to write a title tag"]);
     let latest = texts(&page, ".latest-videos .video-card h3");
-    assert!(!latest.is_empty());
+    assert!(!latest.is_empty(), "expected something here");
     assert!(
         !latest.contains(&"How to write a title tag".to_owned()),
         "{latest:?}"
@@ -141,7 +141,10 @@ fn a_video_post_opens_on_its_video() {
     let body = page.split("<div class=\"post-body\">").nth(1).unwrap();
     assert!(body.trim_start().starts_with("<figure class=\"video\">"));
     assert_eq!(texts(&page, ".video-facts dd"), ["4:05", "Beginner"]);
-    assert!(texts(&page, ".post-header .image").is_empty());
+    assert!(
+        texts(&page, ".post-header .image").is_empty(),
+        "expected nothing here"
+    );
 }
 
 #[test]

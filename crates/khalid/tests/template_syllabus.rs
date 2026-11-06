@@ -193,8 +193,14 @@ fn a_lesson_shows_its_progress_through_the_course() {
     assert_eq!(texts(&page, ".lesson-facts dd"), ["9 min", "Video"]);
     assert!(!page.contains("<script"), "no script on a lesson");
     let news = shown(&out, "fixing-slow-pages/index.html");
-    assert!(texts(&news, ".lesson-progress").is_empty());
-    assert!(texts(&news, ".lesson-steps").is_empty());
+    assert!(
+        texts(&news, ".lesson-progress").is_empty(),
+        "expected nothing here"
+    );
+    assert!(
+        texts(&news, ".lesson-steps").is_empty(),
+        "expected nothing here"
+    );
 }
 
 #[test]

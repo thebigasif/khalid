@@ -116,41 +116,6 @@ fn texts(html: &str, css: &str) -> Vec<String> {
         .collect()
 }
 
-/// The page at `rel`, checked for one `h1` and unique ids, cut to its
-/// header and main part: what a template changes.
-#[cfg(test)]
-fn shown(out: &Path, rel: &str) -> String {
-    let page = fs::read_to_string(at(out, rel)).unwrap();
-    let html = scraper::Html::parse_document(&page);
-    assert!(html.errors.is_empty(), "{rel}: {:?}", html.errors);
-    let select = |css: &str| {
-        let selector = scraper::Selector::parse(css).unwrap();
-        html.select(&selector)
-            .filter_map(|element| element.value().attr("id").or(Some("")))
-            .map(str::to_owned)
-            .collect::<Vec<_>>()
-    };
-    assert_eq!(select("h1").len(), 1, "{rel}: one h1");
-    let mut ids = select("[id]");
-    let count = ids.len();
-    ids.sort_unstable();
-    ids.dedup();
-    assert_eq!(ids.len(), count, "{rel}: unique ids");
-    let start = page.find("<header class=\"site-header\">").unwrap();
-    let end = page.find("</main>").unwrap();
-    page.get(start..end).unwrap().to_owned()
-}
-
-/// The texts of every element `css` selects in `html`.
-#[cfg(test)]
-fn texts(html: &str, css: &str) -> Vec<String> {
-    let html = scraper::Html::parse_fragment(html);
-    let selector = scraper::Selector::parse(css).unwrap();
-    html.select(&selector)
-        .map(|element| element.text().collect::<String>())
-        .collect()
-}
-
 #[test]
 fn locale_front_page() {
     let (_temp, out) = built();
@@ -171,7 +136,7 @@ fn locale_front_page_lists_places_by_area() {
     let places = texts(&page, ".lc-area .lc-line h4");
     assert_eq!(places, ["How to write a title tag", "Fixing slow pages"]);
     let notes = texts(&page, ".lc-note h3");
-    assert!(!notes.is_empty());
+    assert!(!notes.is_empty(), "expected something here");
     assert!(
         notes
             .iter()
@@ -238,7 +203,10 @@ fn a_place_shows_its_name_and_the_card() {
     );
     let note = shown(&out, "what-a-sitemap-does/index.html");
     assert!(texts(&note, ".lc-glance").is_empty(), "a note has no card");
-    assert!(texts(&note, ".lc-title-rest").is_empty());
+    assert!(
+        texts(&note, ".lc-title-rest").is_empty(),
+        "expected nothing here"
+    );
 }
 
 #[test]

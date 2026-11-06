@@ -142,7 +142,7 @@ fn the_front_page_leads_with_the_newest_issue_and_its_tape() {
         ["up", "down", "up"]
     );
     let rows = texts(&page, ".fact-table tbody th a");
-    assert!(!rows.is_empty());
+    assert!(!rows.is_empty(), "expected something here");
     assert!(!rows.contains(&lead[0]), "{rows:?}");
     assert!(page.contains("The week in markets."));
     assert_eq!(texts(&page, ".disclaimer"), ["Not investment advice."]);

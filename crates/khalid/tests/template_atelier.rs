@@ -185,7 +185,10 @@ fn a_look_opens_as_a_spread_with_its_pieces() {
         ]
     );
     let note = shown(&out, "what-a-sitemap-does/index.html");
-    assert!(texts(&note, ".spread-ledger").is_empty());
+    assert!(
+        texts(&note, ".spread-ledger").is_empty(),
+        "expected nothing here"
+    );
 }
 
 /// A list numbers its looks and lists its other posts as a dated feed.

@@ -125,7 +125,7 @@ fn the_featured_post_leads_with_its_key_numbers() {
         ["2.3 MB", "about half"]
     );
     let plates = texts(&page, ".lt-section .card h3");
-    assert!(!plates.is_empty());
+    assert!(!plates.is_empty(), "expected something here");
     assert!(!plates.contains(&lead[0]), "{plates:?}");
     assert!(page.contains("Science explained plainly."));
 }
@@ -161,7 +161,10 @@ fn a_post_shows_key_numbers_figures_notes_and_terms() {
         "glossary link"
     );
     let other = shown(&out, "what-a-sitemap-does/index.html");
-    assert!(texts(&other, ".lt-key-numbers").is_empty());
+    assert!(
+        texts(&other, ".lt-key-numbers").is_empty(),
+        "expected nothing here"
+    );
 }
 
 #[test]

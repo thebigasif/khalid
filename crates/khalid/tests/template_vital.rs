@@ -133,7 +133,7 @@ fn vital_front_page_splits_routines_from_notes() {
     let rings = texts(&page, ".routines .session-ring");
     assert_eq!(rings, ["Time: 10 min", "Time: 5 min"]);
     let notes = texts(&page, ".notes .feed-item h3");
-    assert!(!notes.is_empty());
+    assert!(!notes.is_empty(), "expected something here");
     assert!(
         notes.iter().all(|title| !routines.contains(title)),
         "{notes:?}"
