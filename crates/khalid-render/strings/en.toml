@@ -385,3 +385,11 @@ projects = "Projects"
 studio_notes = "Studio notes"
 types_of_work = "Types of work"
 sheet = "Sheet"
+# The atelier template's lookbook: the numbered looks, the pieces worn
+# in each, the collections and the journal of notes.
+lookbook = "The lookbook"
+look_number = "Look {number}"
+the_pieces = "The pieces"
+collections = "Collections"
+journal = "Journal"
+more_looks = "More looks"

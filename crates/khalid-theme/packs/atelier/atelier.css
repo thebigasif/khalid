@@ -1,0 +1,123 @@
+/* Atelier (docs/templates/atelier.md): a printed lookbook. A wide warm
+   white frame, the label's name centred in the serif, labels in spaced
+   small capitals, and every look as a plate: a tall picture with its
+   number, title and pieces beside or under it, never on it. The section
+   parts' own rules come first (the build adds the parts this pack's
+   templates import); these set the lookbook's look over them. Every
+   colour is a token or a mix of tokens. */
+:root {
+  --at-frame: 80rem;
+  --at-rule: color-mix(in oklab, var(--color-text) 80%, var(--color-background));
+  --hero-title: clamp(2.75rem, 1.5rem + 5vw, 6rem);
+  --spread-columns: minmax(0, 7fr) minmax(0, 5fr);
+}
+.site-header, main, main:has(.post-with-toc), .site-footer { max-inline-size: var(--at-frame); }
+main { padding-block: 0 var(--space-section); }
+main > .page { max-inline-size: var(--measure); margin-inline: auto; }
+h1, h2, h3 { letter-spacing: -0.01em; }
+
+/* The header: the name centred in the serif over a row of spaced menu
+   links, between two hairlines. */
+.site-header { flex-direction: column; justify-content: center; gap: 0.25rem; padding-block: 1.5rem 0.5rem; border-block-end: 1px solid var(--color-border); text-align: center; }
+.site-name { font-family: var(--font-heading); font-size: clamp(1.625rem, 1.25rem + 1vw, 2.125rem); font-weight: var(--heading-weight); letter-spacing: 0.02em; color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 3rem; inline-size: auto; }
+.site-header nav ul { justify-content: center; gap: 0 1.75rem; }
+.site-header nav a { color: var(--color-text); font-size: var(--text-small); letter-spacing: 0.12em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover { color: var(--color-link); }
+.site-header nav a[aria-current] { box-shadow: inset 0 -1px var(--color-text); }
+.search-link { color: var(--color-text); font-size: var(--text-small); letter-spacing: 0.12em; text-decoration: none; text-transform: uppercase; }
+.search-link:hover { color: var(--color-link); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); letter-spacing: 0.04em; }
+
+/* Buttons: square, ink, spaced capitals. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.5rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: var(--radius); font: 500 0.8125rem/1.2 var(--font-body); letter-spacing: 0.14em; text-align: center; text-decoration: none; text-transform: uppercase; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { color: var(--color-accent); background: var(--color-background); text-decoration: none; }
+
+/* Section labels: spaced small capitals centred over a hairline. */
+:is(.at-section, .at-lookbook, .at-collections, .at-journal, .related, .mentions, .author-looks, .author-others, .topic-tabs, .media-row) > h2, .post-footer > h2 { margin-block: 0 2rem; padding-block-start: 0.75rem; border-block-start: 1px solid var(--at-rule); font-family: var(--font-body); font-size: var(--text-small); font-weight: 500; letter-spacing: 0.16em; line-height: 1.3; text-transform: uppercase; }
+.at-lookbook > h2, .at-section > h2, .related > h2 { text-align: center; }
+
+/* The front page: the name large and centred, the tagline under it. */
+.hero { margin-block-end: clamp(2.5rem, 1.5rem + 3vw, 4.5rem); padding-block: clamp(2rem, 1rem + 4vw, 5rem) 0; text-align: center; }
+.hero-title { max-inline-size: none; font-weight: var(--heading-weight); letter-spacing: -0.02em; line-height: 1; }
+.hero-intro { margin-inline: auto; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.55; }
+.at-lookbook, .at-section, .at-more { margin-block-end: var(--space-section); }
+.at-lookbook > .spread { margin-block-end: clamp(3rem, 2rem + 3vw, 5rem); }
+.at-cover-collection { margin-block: 1.5rem 0; font-size: var(--text-small); letter-spacing: 0.12em; text-transform: uppercase; }
+.at-section .view-all { margin-block: 1.25rem 0; text-align: center; }
+.at-more { display: grid; gap: var(--space-section) 4rem; }
+@media (min-width: 56rem) { .at-more:has(.at-collections + .at-journal) { grid-template-columns: minmax(14rem, 1fr) minmax(0, 2fr); } }
+.at-collections, .at-journal { min-inline-size: 0; }
+.at-collection-list { margin: 0; padding: 0; list-style: none; }
+.at-collection-list a { display: flex; align-items: center; min-block-size: 3.5rem; border-block-end: 1px solid var(--color-border); color: var(--color-text); font-family: var(--font-heading); font-size: 1.375rem; text-decoration: none; }
+.at-collection-list a:hover { color: var(--color-link); }
+.feed-item :is(h2, h3, h4) { font-family: var(--font-heading); font-size: 1.25rem; font-weight: var(--heading-weight); }
+
+/* The look plate: the spread and the grid. Labels in spaced capitals,
+   titles in the serif, the pieces as a ledger. */
+.spread-title { font-size: var(--text-h1); }
+.at-lookbook .spread-title { font-size: clamp(1.75rem, 1.25rem + 1.6vw, 2.75rem); }
+.spread-text { padding-block-start: 0.25rem; }
+@media (min-width: 48rem) { .spread-text { position: sticky; inset-block-start: 1.5rem; } }
+.spread-kicker { color: var(--color-text); }
+.spread-dek { color: var(--color-muted); }
+.spread-ledger { border-block-start-color: var(--at-rule); }
+.picture-grid { gap: 3rem 1.5rem; }
+@media (max-width: 39.99rem) { .picture-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1rem; } .picture-grid-item :is(h2, h3, h4) { font-size: 1.0625rem; } }
+.picture-grid-item :is(h2, h3, h4) { font-family: var(--font-heading); font-weight: var(--heading-weight); }
+.picture-grid-number { color: var(--color-text); }
+.image figcaption { font-size: var(--text-small); }
+
+/* Lists: the kind, the name, the collection's note, centred. */
+.list-header { margin-block: clamp(2rem, 1rem + 3vw, 4rem) 3rem; padding-block-end: 2rem; border-block-end: 1px solid var(--color-border); text-align: center; }
+.list-header h1 { margin: 0; }
+.list-header .list-kind { margin-block: 0 0.75rem; color: var(--color-muted); font-size: var(--text-small); letter-spacing: 0.16em; text-transform: uppercase; }
+.list-header .intro { max-inline-size: var(--measure); margin: 1rem auto 0; color: var(--color-muted); }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+main > .at-journal { max-inline-size: var(--measure); margin: var(--space-section) auto 0; }
+
+/* A post: the spread across the frame, then one column of text. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) var(--space-section); }
+.post-header .spread-title { line-height: 1.05; }
+.post-meta { margin-block-start: 1.75rem; color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta .person a { color: var(--color-text); font-weight: 500; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; }
+.post > :not(.post-header, .toc-side), main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
+@media (min-width: 70rem) {
+  .post-with-toc { grid-template-columns: minmax(0, 1fr) 15rem; }
+  .post-with-toc > .post-header { grid-column: 1 / -1; }
+  .post-with-toc > .toc-side { grid-row: 2 / span 9; }
+}
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer { margin-block-start: 3rem; }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); font-size: var(--text-small); letter-spacing: 0.04em; }
+.post-footer .tags a:hover { border-color: var(--color-text); }
+.related { margin-block-start: var(--space-section); }
+
+/* A person: the mark beside the name, then their looks. */
+.author { max-inline-size: 52rem; margin-inline: auto; }
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(2rem, 1rem + 2vw, 3.5rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); letter-spacing: 0.12em; text-transform: uppercase; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-looks, .author-others { margin-block-start: var(--space-section); }
+.author-notes-title { margin-block: 3rem 1rem; font-size: var(--text-small); font-family: var(--font-body); font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; font-weight: var(--heading-weight); line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter: a band on the surface. */
+.cta-band { background: var(--color-surface); border: 0; border-radius: 0; text-align: center; }
+.newsletter-slot { padding: 2rem; background: var(--color-surface); border: 0; border-radius: var(--radius); }
+
+/* The footer: one hairline, quiet links. */
+.site-footer { border-block-start: 1px solid var(--color-border); }

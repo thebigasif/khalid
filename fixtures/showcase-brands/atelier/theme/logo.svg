@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <g fill="none" stroke="#8c3a22" stroke-width="3" stroke-linecap="round">
+    <path d="M22 22 V58"/><path d="M14 22 H30"/><path d="M14 58 H30"/>
+  </g>
+  <text textLength="250" lengthAdjust="spacingAndGlyphs" x="52" y="52" font-family="Bodoni Moda, Didot, Georgia, serif" font-size="30" font-weight="500" letter-spacing="2" fill="#1e1c1a">STUDIO ILVANE</text>
+</svg>
