@@ -37,8 +37,10 @@ h1 { font-size: var(--sl-display); font-weight: 800; line-height: 1; letter-spac
 .announcement a { color: inherit; }
 .announcement :focus-visible { outline-color: var(--color-background); }
 
-/* The header: the name or logo, the menu beside it, search at the end.
-   No rule under it; the page is one sheet. */
+/* The header spans Solo's whole container, as Ghost's does: the name or
+   logo, the menu beside it, and search or the call to action at the end.
+   A header with nothing for the end sets the menu there instead, so the
+   row still reaches both edges. No rule under it; the page is one sheet. */
 .site-header { justify-content: flex-start; gap: 0.5rem 2rem; padding-block: 1.75rem; border: 0; }
 .site-name { font-size: 1.625rem; font-weight: 800; letter-spacing: -0.03em; }
 .site-logo img { max-block-size: 3rem; inline-size: auto; }
@@ -49,6 +51,7 @@ h1 { font-size: var(--sl-display); font-weight: 800; line-height: 1; letter-spac
 .search-link { margin-inline-start: auto; }
 .nav-menu summary { border-radius: 999px; }
 .nav-bar ~ .search-link { margin-inline-start: 0; }
+.site-header:not(:has(> .search-link, > .header-button)) > .nav-bar { margin-inline: auto 0; }
 
 /* The about block: the headline, the intro and the sign-up pill. */
 .about { padding-block: clamp(2.5rem, 1.5rem + 4.4vw, 5rem) clamp(3rem, 2.5rem + 2.5vw, 5rem); }
