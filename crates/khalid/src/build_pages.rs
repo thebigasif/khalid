@@ -181,6 +181,7 @@ pub(crate) fn home_page(
         tabs: Vec::new(),
         videos: Vec::new(),
         podcasts: Vec::new(),
+        podcast_player: None,
     });
     Ok(page(locale, config, "", meta, body, seo))
 }

@@ -3,7 +3,7 @@
 
 use serde::Serialize;
 
-use crate::{Link, PostCard, RenderListing};
+use crate::{BodyHtml, Link, PostCard, RenderListing};
 
 /// The most editor's picks the home page carries, the most the `picks`
 /// part may show.
@@ -37,6 +37,11 @@ pub struct RenderHome {
     /// The newest posts with a sound player, such as a podcast episode,
     /// for the row a template with its `podcast_section` part on shows.
     pub podcasts: Vec<PostCard>,
+    /// The sound player of the first of [`RenderHome::podcasts`], as its
+    /// post shows it, with its file's address made to work from the home
+    /// page. A template that leads with the newest episode, such as
+    /// Episode, plays it there.
+    pub podcast_player: Option<BodyHtml>,
 }
 
 impl RenderHome {
@@ -54,6 +59,7 @@ impl RenderHome {
             tabs,
             videos,
             podcasts,
+            podcast_player: _,
         } = self;
         let listed = listing.posts.iter().chain(&listing.featured);
         let grouped = sections.iter().chain(tabs).flat_map(|group| &group.posts);
@@ -75,6 +81,7 @@ impl RenderHome {
             tabs,
             videos,
             podcasts,
+            podcast_player: _,
         } = self;
         let listed = listing.posts.iter_mut().chain(&mut listing.featured);
         let grouped = (sections.iter_mut().chain(tabs)).flat_map(|group| &mut group.posts);
