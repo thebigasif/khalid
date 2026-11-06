@@ -1,0 +1,2 @@
+Added
+- A new template, `ruby`, for a magazine of picture cards: a grid of white cards, four across on a wide screen, on a page that fades to light grey. Each card shows its picture, its topic, its title, a short summary, the date and the author's photo. A post reads in one column under its meta line, with more cards in a grey band after it. It needs no script. Pick it with `[template] name = "ruby"`; see docs/templates/ruby.md. Based on Ghost's Ruby theme (MIT).
