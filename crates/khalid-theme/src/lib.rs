@@ -16,6 +16,7 @@ mod atlas;
 mod brand;
 mod bulletin;
 mod casper;
+mod channel;
 mod color;
 mod compass;
 mod contrast;
