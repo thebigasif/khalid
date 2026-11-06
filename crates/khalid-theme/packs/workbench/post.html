@@ -15,7 +15,7 @@
 {% macro score(facts) -%}
 {% set lead = facts[0] -%}
 {% set rated = (lead.value | trim("0123456789.")) == "" and (lead.value | length == 1 or (lead.value | length == 3 and lead.value[1:2] == ".") or lead.value in ["10", "10.0"]) -%}
-<dl class="wb-score{% if not rated %} wb-score-text{% endif %}">
+{% if rated %}<dl class="wb-score">{% else %}<dl class="wb-score wb-score-text">{% endif %}
 <div class="wb-score-lead"><dt>{{ lead.label }}</dt><dd><span>{{ lead.value }}</span>{% if rated %}<small>/10</small><meter min="0" max="10" value="{{ lead.value }}" aria-hidden="true"></meter>{% endif %}</dd></div>
 {% for fact in facts[1:4] %}<div><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
 {% endfor %}</dl>
