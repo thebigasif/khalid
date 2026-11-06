@@ -1,0 +1,51 @@
+{#- Based on Ghost's Alto theme, MIT licence, see LICENSE-ghost.txt.
+    Alto's front page: on the first page, a strip of the posts marked
+    featured (option picks, up to eight), each a square picture, its
+    topic as a small pill, the title and the date. The strip scrolls
+    sideways with snap points and needs no script. Then the newest posts
+    one under another, each a wide picture with its meta line, title and
+    summary in the narrower column under it, and the older and newer page
+    links. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+{% from "image.html" import picture -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+<h1 class="visually-hidden">{{ page.title }}</h1>
+{% set first = not (page.pagination and page.pagination.previous) -%}
+{% set picks = page.picks[:template.options.picks] if first else [] -%}
+{% if picks %}<section class="al-featured" aria-labelledby="al-featured-title">
+<h2 id="al-featured-title" class="visually-hidden">{{ t.featured }}</h2>
+<ul class="al-strip" role="list">
+{% for post in picks %}<li>
+<article class="al-pick">
+{% if post.image %}{{ picture(post.image) }}
+{% else %}<div class="al-blank"></div>
+{% endif %}{% if post.category %}<p class="al-tag"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p class="al-date"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+</article>
+</li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% if page.posts and not page.sections %}<h2 class="visually-hidden">{{ t.latest }}</h2>
+{{ cards(page.posts, 3) }}
+{% elif not page.sections %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, template.options, t) }}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
+<h2>{{ t.topics }}</h2>
+{% for group in page.topics %}{% if group.name %}<h3>{{ group.name }}</h3>
+{% endif %}<ul class="tags">
+{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}</ul>
+{% endfor %}</nav>
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}
