@@ -1,0 +1,77 @@
+{#- Based on Ghost's Dawn theme, MIT licence, see LICENSE-ghost.txt.
+    Dawn's front page: a small centred cover with the site's icon, the
+    front page's intro (or else the site's description) and the sign-up
+    form, or a button to the call to action when the site takes no
+    sign-ups. Then the featured posts under a small capital heading, three
+    across in a row that scrolls sideways, each a wide picture over a bold
+    title. Then the latest posts in one narrow column, one line a post:
+    a day and month block, the title, a star on a featured post, the
+    reading time and an arrow. Numbered pages, each home section and the
+    topics follow. Pages after the first show only the title and the
+    list. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% macro rows(posts, level) -%}
+<ul class="dawn-feed" role="list">
+{% for post in posts %}{% set month = t["month_" ~ (post.date[5:7] | int)] %}<li>
+<article class="dawn-row">
+<p class="dawn-date"><time datetime="{{ post.date }}"><span>{{ post.date[8:10] }}</span> <span>{{ month[:3] }}</span></time></p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.featured %}<svg class="dawn-star" width="16" height="16" viewBox="0 0 24 24" role="img" aria-label="{{ t.featured }}"><path d="M12 2.5l2.8 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.4l-6 3.5 1.5-6.8-5.2-4.6 6.9-.7z"/></svg>
+{% endif %}{% if template.options.card_reading_time and post.reading_time %}<p class="dawn-length">{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</p>
+{% endif %}</article>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}
+{% set first = not page.pagination or page.pagination.current == 1 -%}
+{% set signup = site.subscribe and template.options.newsletter in ["home", "both"] -%}
+{% set described = page.intro or meta.description -%}
+{% if first %}<div class="cover">
+{% if brand.icon %}<img class="cover-icon" src="{{ brand.icon }}" alt="" decoding="async">
+{% endif %}{% if described %}<h1 class="visually-hidden">{{ page.title }}</h1>
+{% if page.intro %}<div class="cover-description">
+{{ page.intro }}
+</div>
+{% else %}<p class="cover-description">{{ meta.description }}</p>
+{% endif %}{% else %}<h1 class="cover-description">{{ page.title }}</h1>
+{% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t, "cover-signup") }}
+{% elif template.cta and template.options.cta_button %}<p class="cover-cta"><a class="dawn-button" href="{{ template.cta.href }}">{{ template.cta.label }}</a></p>
+{% endif %}</div>
+{% else %}<h1>{{ page.title }}</h1>
+{% endif %}{% set picks = page.picks[:template.options.picks] if first else [] -%}
+{% if picks %}<section class="featured-strip" aria-labelledby="featured-strip-title">
+<h2 id="featured-strip-title" class="dawn-label">{{ template.options.featured_title or t.featured }}</h2>
+<ul class="featured-feed" role="list">
+{% for post in picks %}<li>
+<article class="featured-post">
+{% if post.image %}{{ picture(post.image) }}
+{% else %}<div class="featured-blank"></div>
+{% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+</article>
+</li>
+{% endfor %}</ul>
+</section>
+{% endif %}<section class="feed" aria-labelledby="latest-title">
+<h2 id="latest-title" class="visually-hidden">{{ t.latest }}</h2>
+{% if page.posts %}{{ rows(page.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% for section in page.sections %}<section class="home-section">
+<h2 class="dawn-label">{{ section.title }}</h2>
+{% if section.posts %}{{ rows(section.posts[:5], 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
+<h2 class="dawn-label">{{ t.topics }}</h2>
+{% for group in page.topics %}{% if group.name %}<h3>{{ group.name }}</h3>
+{% endif %}<ul class="tags">
+{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}</ul>
+{% endfor %}</nav>
+{% endif %}{% endblock %}
