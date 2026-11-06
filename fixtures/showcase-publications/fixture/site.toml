@@ -1,0 +1,101 @@
+# Larkmoor Rovers, a made-up amateur football club in a made-up league,
+# written for the Fixture template's demo. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies
+# it.
+
+name = "Larkmoor Rovers"
+languages = ["en"]
+
+[template.cta]
+label = "Join the club"
+href = "/blog/pre-season-training-and-new-kit/"
+note = "New players are welcome at any level. Training is on Tuesdays and Thursdays at 7pm at Larkmoor Fields."
+
+# The Fixture template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Amateur football at Larkmoor Fields since 1974. First team, reserves and juniors, open to everyone."]
+hero_stats = ["6 | played", "4 | won", "13 | goals scored", "2nd | in the league"]
+results_count = 6
+news_count = 4
+
+[announcement]
+text = "Next match: Larkmoor Rovers v Wexcombe Town, Saturday 7 November, 2:30pm."
+href = "/blog/wexcombe-town-preview/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Amateur football club at Larkmoor Fields"
+
+[seo.ai_page]
+covers = "Larkmoor Rovers is an amateur football club. Its site has match reports with the score, previews of the next fixtures, the league table, junior football and club news."
+cite = "Link the match report or post you quote."
+contact = "secretary@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Larkmoor Rovers"
+email = "secretary@example.com"
+founded = "1974-08-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Larkmoor Rovers crest and name"
+width = 320
+height = 80
+
+# Sign-ups for the club's newsletter, under its own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "secretary@example.com"
+name = "Larkmoor Rovers"
+postal_address = "Larkmoor Rovers, The Pavilion, Larkmoor Fields, Mill Lane, Larkmoor LK3 9RF"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "First team"
+href = "/blog/category/first-team/"
+language = "en"
+
+[[nav.primary]]
+label = "Squad"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "Juniors"
+href = "/blog/category/juniors/"
+language = "en"
+
+[[nav.primary]]
+label = "Club news"
+href = "/blog/category/club-news/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the club"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Squad and staff"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "League table"
+href = "/blog/league-table-after-nine-weeks/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

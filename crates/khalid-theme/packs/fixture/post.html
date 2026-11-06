@@ -1,0 +1,102 @@
+{#- Fixture's post (docs/templates/fixture.md). A match is a post with
+    facts, read by position: 1 the opponent, 2 the result (W, D or L, a
+    space and the score with the club's goals first, such as `W 3-1`) or
+    the kick-off, 3 the ground, 4 the competition. It opens with the
+    category, the title and the dek, then the scoreboard: the home side
+    first, so a ground that starts with A (away) puts the opponent first,
+    with each side's goals in large figures, or "v" for a preview. A strip
+    under it gives the result word or the kick-off, the competition and
+    the ground. Then the author and date, the lead picture, the report,
+    the tags, the share links, the author box and related posts as
+    scoreboard rows. A news post, without facts, has no scoreboard. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture, avatar -%}
+{% from "contents.html" import contents_list -%}
+{% from "author_box.html" import author_box, reviewed_line -%}
+{% from "comments.html" import comments_section -%}
+{% from "series.html" import series_box, series_steps -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
+{% from "sections/results_list.html" import results_list -%}
+{% set placement = template.options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% set share = template.options.share -%}
+{% if share != "none" %}{% set share_row %}<div class="share">
+<p class="share-title">{{ t.share }}</p>
+<ul>
+{% for link in share_links(meta.canonical, page.title, template.options.share_networks) %}<li><a href="{{ link.href }}" rel="nofollow noreferrer">{{ t.share_email if link.key == "email" else link.name }}</a></li>
+{% endfor %}</ul>
+</div>
+{% endset %}{% endif -%}
+{% set facts = page.facts -%}
+{% set second = facts[1].value if facts | length > 1 else "" -%}
+{% set result = second[:2] in ["W ", "D ", "L "] -%}
+{% set kind = "fixture" if not result else ("win" if second[:1] == "W" else ("draw" if second[:1] == "D" else "loss")) -%}
+{% set away = facts | length > 2 and facts[2].value[:1] in ["A", "a"] -%}
+{% set goals = (second[2:] | split("-") | list) if result else [] -%}
+{% set ours = goals[0] | trim if goals else "" -%}
+{% set theirs = goals[1] | trim if goals | length > 1 else "" -%}
+{% if side and placement == "side-start" %}<article class="post post-with-toc post-toc-start">{% elif side %}<article class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post post-toc-folded">{% else %}<article class="post">{% endif %}
+<header class="post-header">
+{% if page.category %}<p class="post-kicker"><a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
+{% endif %}<h1>{{ page.title }}</h1>
+{% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}{% if facts %}<div class="scoreboard" data-match="{{ kind }}">
+<p class="score-side score-home"><span class="score-name">{{ facts[0].value if away else site.name }}</span>{% if result %} <span class="score-goals">{{ theirs if away else ours }}</span>{% endif %}</p>
+{% if not result %}<p class="score-v">{{ t.versus }}</p>
+{% endif %}<p class="score-side score-away">{% if result %}<span class="score-goals">{{ ours if away else theirs }}</span> {% endif %}<span class="score-name">{{ site.name if away else facts[0].value }}</span></p>
+<p class="score-strip">{% if result %}<span class="score-result">{{ t.result_win if kind == "win" else (t.result_draw if kind == "draw" else t.result_loss) }}</span>{% elif second %}<span class="score-result"><span class="visually-hidden">{{ t.kick_off }} </span>{{ second }}</span>{% endif %}{% for fact in facts[2:] | reverse %}<span>{{ fact.value }}</span>{% endfor %}</p>
+</div>
+{% endif %}<div class="post-meta">
+{% if "byline" in site.features %}<address>
+<ul class="people" role="list" aria-label="{{ t.written_by }}">
+{% for author in page.authors %}<li class="person">{% if author.image %}{{ avatar(author.image) }}{% endif %}<span><a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if author.role %}<span class="person-role">{{ author.role }}</span>{% endif %}</span></li>
+{% endfor %}</ul>
+</address>
+{% else %}<address>{{ t.by }} {% for author in page.authors %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</address>
+{% endif %}{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
+{% endif %}<p class="post-date">{{ t.published }} <time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}</p>
+{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}</div>
+{% if page.image %}{{ picture(page.image) }}
+{% endif %}</header>
+{% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.contents }}</summary>
+<nav aria-label="{{ t.contents }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}<div class="post-body">
+{{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
+</div>
+{% if page.tags or share in ["end", "both"] %}<footer class="post-footer">
+{% if page.tags %}<h2>{{ t.tags }}</h2>
+<ul class="tags">
+{% for tag in page.tags %}<li><a href="{{ tag.href }}" rel="tag">{{ tag.name }}</a></li>
+{% endfor %}</ul>
+{% endif %}{% if share in ["end", "both"] %}{{ share_row }}{% endif %}</footer>
+{% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
+{% endif %}{{ preferred_source(template.options, t, "post") }}</article>
+{% if site.subscribe and template.options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
+<h2>{{ t.mentions }}</h2>
+<ul>
+{% for link in page.mentions %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
+{% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
+<h2 id="related-title">{{ t.related_posts }}</h2>
+{{ results_list(page.related[:template.options.related_count]) }}
+</section>
+{% endif %}{% endblock %}

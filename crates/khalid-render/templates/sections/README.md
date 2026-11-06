@@ -37,6 +37,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | People grid | `people_grid(people, level=3)`; takes the authors page's entries (with post counts) or plain people | Photo or mark, name, role, post count | Research people, conference speakers, sports club squad, charity team, course tutors, musician's band |
 | Publication list | `publication_list(posts, level=3, by_year=false, start=1)`; facts by position: 1 venue, 2 year, 3 DOI or link, 4 citations | A numbered reference list, grouped by year with `by_year` | Research papers, author's books, musician's releases, science explainer sources |
 | Cite box | `cite_box(page, venue_fact=0, year_fact=1, link_fact=2)` | "Cite this": the reference in one line and a BibTeX entry, from the post's own data | Research papers, science explainer, author |
+| Results list | `results_list(posts, level=3, by_month=false)`; facts by position: 1 opponent, 2 result (`W 3-1`, `D 2-2`, `L 0-1`) or kick-off, 3 ground, 4 competition | Scoreboard rows: a W, D, L or "v" chip, the opponent, the ground and competition, the score in large figures; a post without facts is a news row. With `by_month`, grouped under month headings like a fixture list | Sports club fixtures and results, any league or match site such as gaming tournaments |
 
 ## Planned parts
 
@@ -44,7 +45,7 @@ Not built yet. The first template that needs one adds it here, with its CSS file
 
 | Part | What it will show | Kinds of site |
 |---|---|---|
-| Schedule or timeline | Dated rows with a time, a title and a place | Conference, sports club fixtures, online course weeks, musician tour dates |
-| Data table | A ruled table with a sticky first column and numbers aligned | Markets newsletter, sports club results, science explainer |
+| Schedule or timeline | Dated rows with a time, a title and a place | Conference, online course weeks, musician tour dates |
+| Data table | A ruled table with a sticky first column and numbers aligned | Markets newsletter, sports club league tables, science explainer |
 | Rating block | A score out of a scale with a few labelled scores under it | Film reviews, gaming, product reviews |
 | Call-to-action band | The site's `[template.cta]` as a band; today `cta_band` in `slots.html` does this for every template | Charity donate, course enrol, conference tickets |

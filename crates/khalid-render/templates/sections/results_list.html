@@ -1,0 +1,42 @@
+{#- results_list(posts, level=3, by_month=false): fixtures and results as
+    scoreboard rows. A post's facts are read by position: 1 the opponent,
+    2 the result or the kick-off, 3 the ground, 4 the competition. A second
+    fact that starts with W, D or L and a space, such as `W 3-1`, is a
+    result: the row shows the letter in a square chip and the score, the
+    club's goals first. Any other second fact, such as `Sat 7 Nov, 14:30`,
+    is a kick-off, and the row is an upcoming fixture. A post without
+    facts is news: its date, title and category. With `by_month`, a new
+    group starts under a month heading (one level above `level`) at each
+    new month of the posts' dates, like a fixture list. -#}
+{% macro match_row(post, level) -%}
+{% set facts = post.facts -%}
+{% set second = facts[1].value if facts | length > 1 else "" -%}
+{% set mark = second[:2] -%}
+{% set result = mark in ["W ", "D ", "L "] -%}
+{% set kind = "news" if not facts else ("fixture" if not result else ("win" if mark == "W " else ("draw" if mark == "D " else "loss"))) -%}
+<li class="match" data-match="{{ kind }}">
+<time class="match-date" datetime="{{ post.date }}">{{ post.date | date }}</time>
+{% if kind == "news" %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.category %}<p class="match-meta">{{ post.category.name }}</p>
+{% endif %}{% else %}<span class="match-mark" aria-hidden="true">{{ second[:1] if result else t.versus }}</span>
+<h{{ level }}><a href="{{ post.href }}">{{ facts[0].value }}</a></h{{ level }}>
+{% if facts | length > 2 %}<p class="match-meta">{% for fact in facts[2:] %}<span>{{ fact.value }}</span>{% endfor %}</p>
+{% endif %}<p class="match-score">{% if result %}<span class="visually-hidden">{{ t.result_win if kind == "win" else (t.result_draw if kind == "draw" else t.result_loss) }} </span>{{ second[2:] }}{% else %}<span class="visually-hidden">{{ t.kick_off }} </span>{{ second }}{% endif %}</p>
+<p class="match-headline">{{ post.title }}</p>
+{% endif %}</li>
+{%- endmacro %}
+{% macro results_list(posts, level=3, by_month=false) -%}
+{% if by_month %}{% for post in posts %}{% set month = (post.date | string)[:7] -%}
+{% if loop.changed(month) %}{% if not loop.first %}</ol>
+</section>
+{% endif %}<section class="results-month" aria-labelledby="results-month-{{ month }}">
+<h{{ level - 1 }} id="results-month-{{ month }}">{{ t["month_" ~ (month[5:] | int)] }} {{ month[:4] }}</h{{ level - 1 }}>
+<ol class="results-list" role="list">
+{% endif %}{{ match_row(post, level) }}
+{% if loop.last %}</ol>
+</section>
+{% endif %}{% endfor %}{% else %}<ol class="results-list" role="list">
+{% for post in posts %}{{ match_row(post, level) }}
+{% endfor %}</ol>
+{% endif %}
+{%- endmacro %}

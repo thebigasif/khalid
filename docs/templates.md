@@ -29,6 +29,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `ease`: a help centre or documentation site, with a large search box on a band in your accent colour, a strip of featured articles, then each category as a list of links, two across. Based on Ghost's Ease theme (MIT). See [Ease](templates/ease.md).
 - `edition`: a newsletter with a big cover, a picture from edge to edge with your pitch and the sign-up form, then a row of featured posts and a quiet list of the latest. Based on Ghost's Edition theme (MIT). See [Edition](templates/edition.md).
 - `episode`: a podcast's blog that leads with the newest episode and its player, under a dark band with the show's name and where to listen, then every episode as a boxed row with a square picture. Based on Ghost's Episode theme (MIT). See [Episode](templates/episode.md).
+- `fixture`: a sports club, with the next match and the club's form on the front page, results as scoreboard rows with the score in large figures, upcoming fixtures, club news, a squad page and a scoreboard on every match report. See [Fixture](templates/fixture.md).
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
 - `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
@@ -136,8 +137,9 @@ facts:
 
 `khalid build` stops and names the line when a fact breaks one of these rules.
 
-Four templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+Five templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
 
+- [Fixture](templates/fixture.md#matches-are-posts-with-facts) treats posts with facts as matches: the opponent, the result or kick-off, the ground and the competition. Results show as scoreboard rows with a W, D or L chip, the front page shows the next match and the club's form, and a match report opens with a scoreboard.
 - [Folio](templates/folio.md#release-notes) treats posts with facts as releases. The front page lists them in a dated release log beside the essays, tagged with the first fact, such as the version. A release's page shows its facts above the title.
 - [Workbench](templates/workbench.md#score-panels) shows a score panel on review cards and at the top of a review: the first fact large, with a meter when it is a score out of ten, then up to three figures.
 - [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.
