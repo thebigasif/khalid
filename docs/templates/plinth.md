@@ -74,7 +74,7 @@ Plinth frames every figure in a post as a drawing sheet: a ruled frame on your s
 1. The trail from the home page to the post's category.
 2. The type of work as a small label, the title, and the post's description as a one-line summary.
 3. **The project spread:** the lead photograph on its ink bar, and beside it on a wide screen the title block with the facts, the author and the date. A studio note shows its author and date under the title, and its photograph alone.
-4. The post in one column about 40rem wide, with a folded contents list for long posts. Each figure is a numbered drawing sheet.
+4. The post in one column about 37rem wide, with a folded contents list for long posts. Each figure is a numbered drawing sheet.
 5. The materials (tags), the share links and the author box.
 6. Related posts as a row of numbered sheets.
 
@@ -103,7 +103,7 @@ Plinth's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.65` |
 | `[type] heading_weight` | `500` |
 | `[shape] radius` | `0px`, square |
-| `[shape] measure` | `40rem` |
+| `[shape] measure` | `37rem` |
 | `[space] section` | `4.5rem`, the space between the parts of a page |
 
 ## Options
