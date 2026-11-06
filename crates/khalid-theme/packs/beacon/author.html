@@ -1,0 +1,46 @@
+{#- Beacon's person page: their photo or mark, name, role, experience and
+    profiles, their bio, then their posts as cards, a campaign's with its
+    goal meter, and the rest of the team. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture %}
+{% from "icons.html" import profiles %}
+{% from "card.html" import pages -%}
+{% from "sections/goal_meter.html" import goal_meter -%}
+{% from "sections/people_grid.html" import people_grid -%}
+<article class="author">
+<header class="author-header">
+{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% endif %}<div class="author-intro">
+<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}<p class="author-count">{% if page.post_count == 1 %}{{ t.post_count_one }}{% else %}{{ t.post_count | replace("{count}", page.post_count | string) }}{% endif %}</p>
+{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</div>
+</header>
+<div class="author-bio">
+{{ page.bio }}
+</div>
+</article>
+<section class="author-posts" aria-labelledby="author-posts">
+<h2 id="author-posts">{{ t.posts_by | replace("{name}", page.name) }}</h2>
+{% if page.posts %}<ul class="bc-cards" role="list">
+{% for post in page.posts %}<li><article class="bc-card">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}<div class="bc-card-text">
+{% if post.category %}<p class="bc-area"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+{% if post.facts %}{{ goal_meter(post.facts) }}
+{% else %}<p class="bc-card-date"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+{% endif %}</div>
+</article></li>
+{% endfor %}</ul>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% if page.others and "authors_page" in site.features %}<section class="author-others" aria-labelledby="other-authors">
+<h2 id="other-authors">{{ t.other_authors }}</h2>
+{{ people_grid(page.others) }}
+</section>
+{% endif %}{% endblock %}

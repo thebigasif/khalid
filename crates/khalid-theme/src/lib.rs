@@ -14,6 +14,7 @@
 mod almanac;
 mod alto;
 mod atlas;
+mod beacon;
 mod brand;
 mod bulletin;
 mod casper;
