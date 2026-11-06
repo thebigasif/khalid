@@ -1,0 +1,51 @@
+{#- Itinerary's writer page: their photo or mark, name, role, experience
+    and profiles, their bio, then their trips and notes as tickets, and
+    the other writers of the diary. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture %}
+{% from "icons.html" import profiles %}
+{% from "card.html" import pages -%}
+{% from "sections/people_grid.html" import people_grid -%}
+<article class="author">
+<header class="author-header">
+{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% endif %}<div class="author-intro">
+<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}<p class="author-count">{% if page.post_count == 1 %}{{ t.post_count_one }}{% else %}{{ t.post_count | replace("{count}", page.post_count | string) }}{% endif %}</p>
+{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</div>
+</header>
+<div class="author-bio">
+{{ page.bio }}
+</div>
+</article>
+<section class="author-trips" aria-labelledby="author-posts">
+<h2 id="author-posts">{{ t.trip_diaries }}</h2>
+{% if page.posts %}<ul class="tickets" role="list">
+{% for post in page.posts %}<li><article class="ticket">
+{% if post.image %}<div class="ticket-photo">{{ picture(post.image) }}</div>
+{% endif %}<div class="ticket-main">
+{% if post.category %}<p class="ticket-country">{{ post.category.name }}</p>
+{% endif %}<h3 class="ticket-title"><a href="{{ post.href }}">{{ post.title }}</a></h3>
+{% if post.facts[1:] %}<dl class="ticket-facts">
+{% for fact in post.facts[1:] %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endfor %}</dl>
+{% elif not post.facts %}<p class="ticket-excerpt">{{ post.excerpt }}</p>
+{% endif %}</div>
+<p class="ticket-stub">{% if post.facts %}<span class="stub-number">{{ post.facts[0].value }}</span> <span class="stub-label">{{ post.facts[0].label }}</span>{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+</article></li>
+{% endfor %}</ul>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% if page.others and "authors_page" in site.features %}<section class="author-others" aria-labelledby="other-authors">
+<h2 id="other-authors">{{ t.other_authors }}</h2>
+{{ people_grid(page.others) }}
+</section>
+{% endif %}{% endblock %}

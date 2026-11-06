@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /georgia-itinerary/
+table /morocco-train-trip/
+category /category/georgia/
+tag /tag/hiking/
+author /authors/nadia-brandt/

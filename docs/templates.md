@@ -31,6 +31,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `episode`: a podcast's blog that leads with the newest episode and its player, under a dark band with the show's name and where to listen, then every episode as a boxed row with a square picture. Based on Ghost's Episode theme (MIT). See [Episode](templates/episode.md).
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
 - `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
+- `itinerary`: a travel diary with trips filed by country as passport stamps, each trip a ticket with its days, route, season and cost, a day-by-day route on every trip and checklists for packing. See [Itinerary](templates/itinerary.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
