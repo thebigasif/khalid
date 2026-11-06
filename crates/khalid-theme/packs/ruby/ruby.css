@@ -151,3 +151,6 @@ body:has(.rb-article) main > :is(.cta-band, .newsletter-slot, .comments, .mentio
 .site-footer nav a { color: var(--color-text); font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; text-decoration: none; }
 .site-footer nav a:hover { color: var(--color-link); }
 .footer-groups { justify-items: center; }
+/* The post text keeps 60 to 75 characters a line in whatever font a
+   reader's system falls back to, so its width follows the font itself. */
+.post-body { max-inline-size: 60ch; margin-inline: auto; }

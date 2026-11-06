@@ -195,3 +195,6 @@ h1, h2, h3, h4 { letter-spacing: -0.005em; }
   .ease-topics { gap: 3.75rem; }
   .site-footer { padding-block: 3rem; }
 }
+/* The post text keeps 60 to 75 characters a line in whatever font a
+   reader's system falls back to, so its width follows the font itself. */
+.post-body { max-inline-size: 60ch; margin-inline: auto; }
