@@ -40,7 +40,11 @@ fn collect(folder: &Path, prefix: &str, files: &mut Vec<(String, String)>) -> io
         let name = format!("{prefix}{}", entry.file_name().to_string_lossy());
         if entry.file_type()?.is_dir() {
             collect(&entry.path(), &format!("{name}/"), files)?;
-        } else if name.ends_with(".html") {
+        } else if entry
+            .path()
+            .extension()
+            .is_some_and(|extension| extension == "html")
+        {
             files.push((name, strip_comments(&fs::read_to_string(entry.path())?)));
         }
     }
