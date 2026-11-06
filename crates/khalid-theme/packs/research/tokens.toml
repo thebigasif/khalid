@@ -19,7 +19,7 @@ radius = "0.125rem"
 measure = "42rem"
 
 [type]
-body = "1rem 1.0625rem"
+body = "1.0625rem 1.125rem"
 h1 = "2rem 3rem"
 h2 = "1.375rem 1.75rem"
 h3 = "1.125rem 1.25rem"

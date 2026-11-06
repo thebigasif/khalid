@@ -1,6 +1,7 @@
 /* Based on Ghost's Casper theme, MIT licence, see LICENSE-ghost.txt.
    Casper: a classic blog. A frame of 1200 px, a cover band in the accent
-   colour or over a picture with the blog's name set large in the middle,
+   colour with the blog's name set large in the middle and a picture
+   under it,
    a feed of cards with no box around them (one large card, two half
    cards, then three across), titles in a heavy sans, and a post in one
    serif column of 720 px. On every other page the header is a bar in the
@@ -58,25 +59,23 @@ a:hover { text-decoration-thickness: 0.08em; }
 
 /* With a cover, every other page's header is a bar in the accent colour,
    its button turned to the page's colour. */
-:is([data-cover="picture"], [data-cover="accent"]) .site-header { color: var(--color-on-accent); background: var(--color-accent); box-shadow: 0 0 0 100vmax var(--color-accent); clip-path: inset(0 -100vmax); }
+:is([data-cover="picture"], [data-cover="accent"]) .site-header { color: var(--color-on-accent); background: var(--color-accent); box-shadow: 0 1px 0 100vmax var(--color-accent); clip-path: inset(0 -100vmax -1px); }
 :is([data-cover="picture"], [data-cover="accent"]) .site-logo img, body:has(.cv-band) .site-logo img { filter: brightness(0) invert(1); }
 :is([data-cover="picture"], [data-cover="accent"]) .site-header > .header-button, body:has(.cv-band) .site-header > .header-button { color: var(--color-text); background: var(--color-background); }
 
-/* The front page's header lies over its cover. With the logo on the
-   cover, the header leaves the name out. */
-body:has(.cv-band) .site-header { position: absolute; z-index: 2; inset-inline: 0; margin-inline: auto; padding-inline: var(--cv-gutter); max-inline-size: calc(var(--cv-wide) + 2 * var(--cv-gutter)); color: var(--cv-on); background: none; box-shadow: none; clip-path: none; }
-body:has(.cv-band) { --cv-on: var(--color-on-accent); }
+/* On the front page the accent header runs straight into the cover's
+   band. With the logo on the cover, the header leaves the name out. */
 [data-nav="cover"]:has(.cv-cover h1:not(.visually-hidden)) .site-header > .site-name { display: none; }
 
 /* The cover: the name and intro in the middle of a band in the accent,
-   the picture laid over that colour, darkened by it. */
+   then the picture as a strip of its own under the band, tinted by the
+   accent, with no words on it. */
 .cv-cover { position: relative; display: flex; align-items: center; justify-content: center; margin-inline: calc(50% - 50vw); padding: calc(12vmin + 2rem) var(--cv-gutter) 12vmin; text-align: center; }
-.cv-band { min-block-size: 35rem; padding-block: calc(19vmin + 5.5rem) 19vmin; color: var(--cv-on); background: var(--color-accent); }
-.cv-cover > .image { position: absolute; inset: 0; margin: 0; }
-.cv-cover > .image :is(picture, img) { display: block; inline-size: 100%; block-size: 100%; }
-.cv-cover > .image img { object-fit: cover; border-radius: 0; }
-.cv-cover figcaption { display: none; }
-.cv-band[data-look="picture"] img { opacity: 0.5; mix-blend-mode: multiply; }
+.cv-band { min-block-size: 22rem; padding-block: 15vmin; color: var(--color-on-accent); background: var(--color-accent); }
+.cv-cover-image { position: relative; block-size: clamp(9rem, 20vw, 18rem); margin-inline: calc(50% - 50vw); background: var(--color-accent); }
+.cv-cover-image .image, .cv-cover-image picture { position: absolute; inset: 0; margin: 0; }
+.cv-cover-image img { inline-size: 100%; block-size: 100%; object-fit: cover; border-radius: 0; mix-blend-mode: multiply; }
+.cv-cover-image figcaption { display: none; }
 .cv-cover-text { position: relative; z-index: 1; inline-size: 100%; max-inline-size: var(--cv-wide); }
 .cv-cover h1 { margin: 0; font-size: var(--cv-title); font-weight: 800; line-height: 1.05; letter-spacing: -0.025em; }
 .cv-cover .intro { max-inline-size: 40rem; margin: 1rem auto 0; color: inherit; font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem); line-height: 1.4; }
@@ -86,7 +85,7 @@ body:has(.cv-band) { --cv-on: var(--color-on-accent); }
 .cv-cover h1.visually-hidden + .intro { max-inline-size: 60rem; margin-block-start: 0; font-family: var(--font-heading); font-size: var(--cv-title); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
 .cv-cover[data-align="start"] { justify-content: flex-start; text-align: start; }
 .cv-cover[data-align="start"] .intro { margin-inline: 0; }
-.cv-band[data-align="start"] { align-items: flex-end; padding-block-end: max(4vmin, 2rem); }
+.cv-band[data-align="start"] { align-items: flex-end; }
 
 /* Cards: no box. The picture, the topic and a Featured mark, the title,
    the summary, then the date and reading time in small grey type. */
@@ -245,7 +244,7 @@ main > .related { margin-block-start: max(8vmin, 4rem); }
 @media (max-width: 40rem) {
   .site-header { gap: 0.5rem 1rem; min-block-size: 4rem; padding-block: 0.5rem; }
   .site-name { font-size: 1.375rem; }
-  .cv-band { min-block-size: 15rem; padding-block: calc(10vmin + 4.5rem) 10vmin; }
+  .cv-band { min-block-size: 15rem; padding-block: 12vmin; }
   .post-header .dek { margin-block-start: 0.875rem; font-size: 1.0625rem; }
   .cv-byline { flex-wrap: wrap; }
   .cv-byline .post-meta { flex: 1 1 14rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
