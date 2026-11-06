@@ -90,7 +90,7 @@ Chapter's own defaults, which any value in your `theme/tokens.toml` replaces:
 |---|---|
 | `[fonts] heading` | Garamond, then other book faces and Georgia |
 | `[fonts] body` | Gill Sans, then other humanist sans |
-| `[type] body` | `1.125rem` on a phone to `1.1875rem` on a wide screen |
+| `[type] body` | `1.1875rem` on a phone to `1.25rem` on a wide screen |
 | `[type] h1` | `2.25rem` to `3.25rem` |
 | `[type] h2` | `1.5rem` to `1.875rem` |
 | `[type] h3` | `1.25rem` to `1.375rem` |
@@ -98,7 +98,7 @@ Chapter's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.6` |
 | `[type] heading_weight` | `500` |
 | `[shape] radius` | `0px`, square |
-| `[shape] measure` | `38rem` |
+| `[shape] measure` | `32rem`, about 70 characters a line |
 | `[space] section` | `4.5rem`, the space between the parts of a page |
 
 ## Options

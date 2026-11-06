@@ -24,7 +24,6 @@ pub(crate) static CHAPTER: Pack = Pack {
         PackTemplate::file("listing.html", "chapter/listing.html"),
         PackTemplate::file("authors.html", "chapter/authors.html"),
         PackTemplate::file("author.html", "chapter/author.html"),
-        PackTemplate::file("chapter_parts.html", "chapter/chapter_parts.html"),
     ],
     tokens: include_str!("../packs/chapter/tokens.toml"),
     reader: &[],
