@@ -142,7 +142,7 @@ fn source_highlight_front_page_lists_the_next_posts_beside_the_lead() {
     assert_eq!(texts(&page, ".sc-lead-card h2").len(), 1);
     assert_eq!(texts(&page, ".sc-middle .card h2").len(), 3);
     assert_eq!(texts(&page, ".sc-side .card h2").len(), 1);
-    assert!(texts(&page, ".sc-hero").is_empty());
+    assert_eq!(texts(&page, ".sc-hero"), Vec::<String>::new());
     assert_each_post_once(&page);
 }
 
