@@ -71,7 +71,7 @@ The front page lists the posts of its first page, 20 at most, so a course of up 
 3. The tutor, who reviewed it, and the date.
 4. **The progress ruler** on a pale panel: the course's name, "Lesson 5 of 13", how much of the course that is, such as "38% of the course", and one square per lesson. The lessons before this one are filled in ink, this one in your accent colour, and the rest are open. Under the squares, "Every lesson" opens a list of every lesson, linked.
 5. **At a glance:** the lesson's facts in a ruled row of cells.
-6. The lead picture, then the lesson in one column about 40rem wide, with a folded contents list for long lessons.
+6. The lead picture, then the lesson in one column about 36rem wide, with a folded contents list for long lessons.
 7. **Previous lesson** and **Next lesson** as two large blocks. The next one is filled in your accent colour.
 8. The tags, the share links and the tutor box, then related posts as outline rows.
 
@@ -102,7 +102,7 @@ Syllabus's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.65` |
 | `[type] heading_weight` | `600` |
 | `[shape] radius` | `0.25rem` |
-| `[shape] measure` | `40rem` |
+| `[shape] measure` | `36rem` |
 | `[space] section` | `4rem`, the space between the parts of a page |
 
 ## Options
