@@ -4,6 +4,8 @@
 //! resolves inside it or is a full address. A link or picture that does not
 //! resolve stops the pack.
 
+mod shipped;
+
 use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -17,23 +19,18 @@ use tempfile::TempDir;
 /// Where the website serves the docs.
 const BASE: &str = "/khalid/docs/";
 
-/// The docs R13 publishes, with the guides under `deploy` and `templates`.
-const DOCS: [&str; 22] = [
+/// The docs R13 publishes before the template guides, with the guides
+/// under `deploy`. A guide for each template follows `templates`
+/// (`shipped::templates`).
+const BEFORE_GUIDES: [&str; 4] = [
     "getting-started",
     "deploy",
     "deploy/cloudflare",
     "templates",
-    "templates/classic",
-    "templates/almanac",
-    "templates/atlas",
-    "templates/compass",
-    "templates/folio",
-    "templates/harbor",
-    "templates/keystone",
-    "templates/ledger",
-    "templates/meridian",
-    "templates/wire",
-    "templates/workbench",
+];
+
+/// The docs R13 publishes after the template guides.
+const AFTER_GUIDES: [&str; 7] = [
     "routes",
     "seo-settings",
     "seo-tools",
@@ -143,7 +140,27 @@ fn the_pack_lists_every_doc_in_sidebar_order_with_its_title() {
         .iter()
         .map(|doc| doc["slug"].as_str().unwrap())
         .collect();
-    assert_eq!(slugs, DOCS);
+    // The guides sit between the other docs, Classic's first and the rest
+    // in the order their front matter gives, one for each template.
+    let guides: Vec<String> = shipped::templates()
+        .iter()
+        .map(|name| format!("templates/{name}"))
+        .collect();
+    let (before, rest) = slugs.split_at(BEFORE_GUIDES.len());
+    let (listed, after) = rest.split_at(guides.len());
+    assert_eq!(before, BEFORE_GUIDES.as_slice(), "{slugs:?}");
+    assert_eq!(after, AFTER_GUIDES.as_slice(), "{slugs:?}");
+    assert_eq!(listed.first(), Some(&"templates/classic"), "{slugs:?}");
+    let mut sorted = listed.to_vec();
+    sorted.sort_unstable();
+    assert_eq!(sorted, guides, "{slugs:?}");
+    let orders: Vec<u64> = docs
+        .iter()
+        .skip(BEFORE_GUIDES.len())
+        .take(guides.len())
+        .map(|doc| doc["order"].as_u64().unwrap())
+        .collect();
+    assert!(orders.is_sorted(), "{orders:?}");
     for doc in &docs {
         let slug = doc["slug"].as_str().unwrap();
         assert_eq!(doc["url"], format!("{BASE}{slug}/"));

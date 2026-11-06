@@ -75,7 +75,10 @@ rm "$work/review/harbor/ready"
 [ "$(DEMO_PUBLICATIONS="$work/review" DEMO_PUBLICATION_ALL=1 showcase_publications harbor)" = harbor ] || fail "DEMO_PUBLICATION_ALL=1 left the publication out"
 real="$root/fixtures/showcase-publications"
 want="$(for folder in "$real"/*/; do [ -f "$folder/ready" ] && basename "$folder"; done || true)"
-[ "$(DEMO_PUBLICATIONS="$real" showcase_publications almanac atlas compass folio harbor keystone ledger meridian wire workbench)" = "$want" ] ||
+# shellcheck source=../template-packs.sh
+source "$root/scripts/template-packs.sh"
+read -ra every_pack <<<"$(template_packs | tr '\n' ' ')"
+[ "$(DEMO_PUBLICATIONS="$real" showcase_publications "${every_pack[@]}")" = "$want" ] ||
   fail "the second pass does not match the ready publications in $real"
 
 # layout.mjs and pictures.mjs read the copy's check-pages.txt, home first.

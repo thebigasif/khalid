@@ -34,8 +34,10 @@
 # a card for each template before the screenshots replace them on Pages.
 set -euo pipefail
 
-# Every look the gallery shows: classic first, then the ten templates.
-names=(classic ledger atlas keystone compass harbor wire workbench almanac meridian folio)
+# Every look the gallery shows: each template in crates/khalid-theme/packs/.
+# shellcheck source=template-packs.sh
+source "$(dirname "${BASH_SOURCE[0]}")/template-packs.sh"
+read -ra names <<<"$(template_packs | tr '\n' ' ')"
 width=1280
 height=800
 # The phone picture: a 390 px wide screen, as the layout check's phone.

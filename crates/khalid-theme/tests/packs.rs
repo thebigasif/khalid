@@ -2,8 +2,16 @@
 //! site picks one pack by name, and each option is checked against the
 //! pack's own list (templates spec 4.1).
 
+use std::collections::BTreeSet;
+use std::fs;
+use std::path::PathBuf;
+
 use khalid_core::ReaderSwitch;
 use khalid_theme::{OptionKind, classic, packs};
+
+/// The packs built only for tests, which ship in no binary and have no
+/// `pack.toml`.
+const TEST_ONLY: [&str; 2] = ["trial", "sampler"];
 
 #[test]
 fn classic_is_the_default_look_and_only_restyles() {
@@ -101,4 +109,47 @@ fn every_pack_template_reads_back_as_its_file() {
             assert_eq!(file.source(), written, "{path}");
         }
     }
+}
+
+/// The scripts list the shipped templates from the folders in `packs/` that
+/// hold a `pack.toml` (`scripts/template-packs.sh`), so those folders are
+/// exactly the packs a binary ships, and each file gives the kind of blog
+/// the template suits, its heading and its minimum frame.
+#[test]
+fn every_shipped_pack_and_no_other_has_a_pack_toml() {
+    let mut folder = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    folder.push("packs");
+    let mut described = BTreeSet::new();
+    for entry in fs::read_dir(&folder).unwrap() {
+        let entry = entry.unwrap();
+        let name = entry.file_name().into_string().unwrap();
+        let mut file = entry.path();
+        file.push("pack.toml");
+        let Ok(text) = fs::read_to_string(&file) else {
+            continue;
+        };
+        let table: toml::Table = toml::from_str(&text).unwrap();
+        for key in ["kind", "kind_label"] {
+            let value = table.get(key).and_then(toml::Value::as_str);
+            assert!(
+                value.is_some_and(|value| !value.is_empty()),
+                "{}: {key}",
+                file.display()
+            );
+        }
+        let frame = table.get("frame").and_then(toml::Value::as_integer);
+        assert!(
+            frame.is_some_and(|frame| frame > 0),
+            "{}: frame",
+            file.display()
+        );
+        described.insert(name);
+    }
+    let shipped: BTreeSet<String> = packs()
+        .iter()
+        .map(|pack| pack.name)
+        .filter(|name| !TEST_ONLY.contains(name))
+        .map(str::to_owned)
+        .collect();
+    assert_eq!(described, shipped);
 }

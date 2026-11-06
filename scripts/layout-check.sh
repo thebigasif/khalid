@@ -7,7 +7,8 @@
 # template's brief on a wide screen, post text too small or lines too short
 # or long on a wide screen, and a stylesheet of 20 KB or more with Brotli.
 # scripts/demo-check/layout.mjs does the checking and says what each check
-# means, and scripts/demo-check/frames.json holds each pack's minimum frame.
+# means, and each pack's pack.toml in crates/khalid-theme/packs/ holds its
+# minimum frame.
 #
 # Each pack is built with its own options, then once more with the contents
 # list in a side column, where the pack's own default puts it elsewhere, so

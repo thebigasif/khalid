@@ -62,7 +62,7 @@
 <li><strong>1</strong> program runs the whole blog</li>
 <li><strong>0 KB</strong> of script to read a post</li>
 <li><strong>100</strong> Lighthouse score we hold the demo to</li>
-<li><strong>11</strong> looks to pick from: Classic and ten templates</li>
+<li><strong>1</strong> line in site.toml picks your blog's look</li>
 </ul>
 
 <section class="section" aria-labelledby="features-title">
@@ -125,7 +125,7 @@
 <header class="section-head">
 <p class="eyebrow">Templates</p>
 <h2 id="looks-title">Pick a look, keep your brand</h2>
-<p class="lead">Ten templates and Classic, each in your own colours, fonts and logo through theme sync. Each one has a live demo.</p>
+<p class="lead">Every template, Classic too, wears your own colours, fonts and logo through theme sync. Each one has a live demo.</p>
 </header>
 <ul class="looks" role="list">
 {% for name in ["atlas", "ledger", "keystone", "harbor", "wire", "folio"] %}{% set title = name | capitalize %}<li><article class="tile look">
@@ -133,7 +133,7 @@
 <h3><a href="{{ home }}templates/{{ name }}/">{{ title }}</a></h3>
 </article></li>
 {% endfor %}</ul>
-<p class="more"><a class="arrow-link" href="{{ home }}templates/">Browse all eleven looks {{ arrow() }}</a></p>
+<p class="more"><a class="arrow-link" href="{{ home }}templates/">Browse all the looks {{ arrow() }}</a></p>
 </section>
 
 <section class="section" aria-labelledby="who-title">
