@@ -158,7 +158,7 @@ fn the_outline_numbers_lessons_across_modules_in_course_order() {
         news.contains(&"Fixing slow pages, starting with the biggest win".to_owned()),
         "{news:?}"
     );
-    assert!(page.contains("href=\"/why-internal-links-matter/\">Start with lesson 1</a>"));
+    assert!(page.contains("href=\"/blog/why-internal-links-matter/\">Start with lesson 1</a>"));
     assert_eq!(texts(&page, ".figure dd"), ["2", "3"]);
 }
 
