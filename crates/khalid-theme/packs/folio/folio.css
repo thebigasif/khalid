@@ -122,6 +122,7 @@ main > section + section { margin-block-start: clamp(4rem, 8vw, 6rem); }
    of the newest posts, then six cards and a text-only index of the rest. */
 .lead { margin-block-end: clamp(4rem, 8vw, 7rem); }
 .lead > .featured { margin: 0; }
+.lead-essays { min-inline-size: 0; }
 .lead-rail { margin-block-start: clamp(3rem, 6vw, 4rem); }
 @media (min-width: 64rem) {
   .lead { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); column-gap: clamp(2.5rem, 4.5vw, 5rem); }
