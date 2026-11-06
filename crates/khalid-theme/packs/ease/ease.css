@@ -197,4 +197,4 @@ h1, h2, h3, h4 { letter-spacing: -0.005em; }
 }
 /* The post text keeps 60 to 75 characters a line in whatever font a
    reader's system falls back to, so its width follows the font itself. */
-.post-body { max-inline-size: 60ch; margin-inline: auto; }
+main .post > .post-body { max-inline-size: 52ch; margin-inline: auto; }
