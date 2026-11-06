@@ -140,7 +140,9 @@ main > h1 + .intro { margin-block-end: 3rem; text-align: center; font-size: 1.12
 .post-kicker > * + *::before { content: "\2022"; padding-inline: 0.35rem; }
 .post-kicker a { color: inherit; text-decoration: none; }
 .post-kicker a:hover { color: var(--color-text); }
-.post-header > :is(h1, .dek) { margin-inline: calc(50% - min(22.5rem, 50vw - 1rem)); }
+/* Beside a side contents column the title and description stay in the
+   text column. */
+main > .post:not(.post-with-toc) .post-header > :is(h1, .dek) { margin-inline: calc(50% - min(22.5rem, 50vw - 1rem)); }
 .post-header h1 { margin-block: 0; font-size: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem); line-height: 1.2; letter-spacing: -0.02em; }
 .post-header .dek { margin-block: 1.25rem 0; font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.125rem); }
 .post-meta { display: flex; flex-direction: column; align-items: center; margin-block-start: 1.5rem; }
