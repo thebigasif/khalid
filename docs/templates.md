@@ -26,17 +26,17 @@ These templates are built in. Every template but classic has its own page, linke
 - `bulletin`: a newsletter-first blog with a sign-up panel in your accent colour beside the latest issue, a ruled list of every other issue and a centred reading column. Based on Ghost's Bulletin theme (MIT). See [Bulletin](templates/bulletin.md).
 - `casper`: a classic blog with a cover band over a picture, one large card, two half cards and then a grid, and a calm serif column for each post. Based on Ghost's Casper theme (MIT). See [Casper](templates/casper.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
-- `episode`: a podcast's blog that leads with the newest episode and its player, under a dark band with the show's name and where to listen, then every episode as a boxed row with a square picture. Based on Ghost's Episode theme (MIT). See [Episode](templates/episode.md).
 - `ease`: a help centre or documentation site, with a large search box on a band in your accent colour, a strip of featured articles, then each category as a list of links, two across. Based on Ghost's Ease theme (MIT). See [Ease](templates/ease.md).
 - `edition`: a newsletter with a big cover, a picture from edge to edge with your pitch and the sign-up form, then a row of featured posts and a quiet list of the latest. Based on Ghost's Edition theme (MIT). See [Edition](templates/edition.md).
+- `episode`: a podcast's blog that leads with the newest episode and its player, under a dark band with the show's name and where to listen, then every episode as a boxed row with a square picture. Based on Ghost's Episode theme (MIT). See [Episode](templates/episode.md).
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
 - `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
+- `research`: a research lab or academic group, with papers as a numbered reference list with venue, DOI and citations, a news feed, research areas, a people page and a cite box on every paper. See [Research](templates/research.md).
 - `solo`: a personal site for one writer or creator, with a large headline and a sign-up field over a feed of posts with large titles. Based on Ghost's Solo theme (MIT). See [Solo](templates/solo.md).
 - `source`: a general publication with the logo in the middle of the header, a front page that opens with a landing, highlight or magazine header, a list or a grid of posts with hairlines between them, and a calm column for each post. Based on Ghost's Source theme (MIT). See [Source](templates/source.md).
-- `research`: a research lab or academic group, with papers as a numbered reference list with venue, DOI and citations, a news feed, research areas, a people page and a cite box on every paper. See [Research](templates/research.md).
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 
