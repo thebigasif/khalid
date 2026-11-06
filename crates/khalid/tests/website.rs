@@ -208,6 +208,29 @@ fn the_header_and_the_hero_link_khalid_s_main_home_on_serpdad() {
     );
 }
 
+/// The gallery shows every look, Classic and every template, with a
+/// picture of its demo's home page and of a post.
+fn gallery_shows_every_look(site: &Path, home: &str) {
+    let looks = shipped::templates();
+    let templates = built_page(site, "templates/");
+    let heading = format!("{} looks, each with a live demo", looks.len());
+    assert!(templates.contains(&heading), "{heading}");
+    for name in &looks {
+        assert!(
+            templates.contains(&format!("href=\"/khalid/templates/{name}/\"")),
+            "{name}"
+        );
+    }
+    for name in &looks {
+        for kind in ["home", "post"] {
+            let picture = format!("templates/{name}-{kind}.svg");
+            assert!(templates.contains(&format!("src=\"/khalid/{picture}\"")));
+            assert!(within(site, &format!("public/{picture}")).is_file());
+        }
+    }
+    assert_eq!(home.matches("class=\"look-shots\"").count(), 6);
+}
+
 #[test]
 fn every_page_the_brief_asks_for_is_built_and_links_its_live_demo() {
     let site = site_copy();
@@ -265,26 +288,7 @@ fn every_page_the_brief_asks_for_is_built_and_links_its_live_demo() {
         );
     }
 
-    // The gallery shows every look, Classic and every template, with a
-    // picture of its demo's home page and of a post.
-    let looks = shipped::templates();
-    let templates = built_page(site.path(), "templates/");
-    let heading = format!("{} looks, each with a live demo", looks.len());
-    assert!(templates.contains(&heading), "{heading}");
-    for name in &looks {
-        assert!(
-            templates.contains(&format!("href=\"/khalid/templates/{name}/\"")),
-            "{name}"
-        );
-    }
-    for name in &looks {
-        for kind in ["home", "post"] {
-            let picture = format!("templates/{name}-{kind}.svg");
-            assert!(templates.contains(&format!("src=\"/khalid/{picture}\"")));
-            assert!(within(site.path(), &format!("public/{picture}")).is_file());
-        }
-    }
-    assert_eq!(home.matches("class=\"look-shots\"").count(), 6);
+    gallery_shows_every_look(site.path(), &home);
 
     let start = built_page(site.path(), "start/");
     for way in [
