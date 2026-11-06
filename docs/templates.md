@@ -65,6 +65,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `summit`: a conference, festival or event, with the programme as a timetable by day and time, speakers, venues with their sessions and a ticket stub on every session. See [Summit](templates/summit.md).
 - `syllabus`: an online course, with a course map of one square per lesson, an outline of modules and lessons, course news, and on every lesson a progress ruler that shows how far through the course it is. See [Syllabus](templates/syllabus.md).
 - `vital`: a health and wellness site of programmes and routines, with each routine's time in a ring on its picture card, a session panel and a care note on every routine, its steps drawn as a track, and a notes feed. See [Vital](templates/vital.md).
+- `versions`: a software product's changelog, with every change on a version rail, a filter row for each type of change (new, improved, fixed) that works without a script, the versions as anchor links and a box to get updates by email or feed. See [Versions](templates/versions.md).
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 
@@ -175,6 +176,7 @@ Five templates show facts. Each reads them by their place in the list, not by th
 - [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.
 - [Ticker](templates/ticker.md#issues-are-posts-with-facts) treats posts with facts as issues, each fact a market and its move. It draws a post's facts as a bar chart and lists posts in a table with one column per fact, each figure cell shaded by how far it moved.
 - [Lattice](templates/lattice.md#what-you-write) shows a post's facts as a row of key numbers under its lead picture, the value large and the label under it, and does the same for the lead explainer on the front page.
+- [Versions](templates/versions.md#changes-are-posts) reads the first fact as the version a change shipped in, and groups the changes of each version on its version rail. A change's page shows every fact in a ruled row.
 - [Harbor](templates/harbor.md#recipe-facts) shows up to four posts with facts in a recipe card strip on the front page, with the first two facts as tags, and all the facts as tags under a post's title.
 - [Respawn](templates/respawn.md#reviews-are-posts-with-facts) treats posts with facts as reviews. The first fact is the score out of 10, shown as a dark square and a health bar on cards, lists and the review, and the second, the platforms, shows under it.
 

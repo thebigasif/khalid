@@ -78,6 +78,7 @@ mod tokens_error;
 mod trial;
 mod wave;
 mod vital;
+mod versions;
 mod wire;
 mod woff2;
 mod workbench;
