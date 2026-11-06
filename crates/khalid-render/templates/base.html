@@ -28,7 +28,7 @@
 {% endif %}{% endif %}{% if brand.icon %}<link rel="icon" href="{{ brand.icon }}">
 {% endif %}{% if site.script %}<script src="{{ site.script.src }}" integrity="{{ site.script.integrity }}" defer data-copy="{{ t.copy_link }}" data-copied="{{ t.link_copied }}" data-close="{{ t.close }}" data-contents="{{ t.contents }}" data-search="{{ t.search_label }}" data-find="{{ t.search_button }}"{% if "link_previews" in site.features %} data-previews{% endif %}></script>
 {% endif %}</head>
-<body>
+<body{% include "body_attrs.html" %}>
 <a class="skip-link" href="#main">{{ t.skip_link }}</a>
 {% if site.announcement %}<aside class="announcement" aria-label="{{ t.announcement }}"><p>{% if site.announcement.href %}<a href="{{ site.announcement.href }}">{{ site.announcement.text }}</a>{% else %}{{ site.announcement.text }}{% endif %}</p></aside>
 {% endif %}<header class="site-header">

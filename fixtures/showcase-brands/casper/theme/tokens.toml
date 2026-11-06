@@ -1,0 +1,24 @@
+# The sample brand for the Casper demo: a personal blog in Casper's first
+# colours. White paper, near-black ink, cool grey lines and one sky blue
+# accent for the cover, the header bar and the buttons. The system's sans
+# for titles and Georgia for a post's text, as Casper sets them, so the
+# brand needs no font files. Only the brand lives here: the template keeps
+# its own shape, type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#f4f6f8"
+text = "#15171a"
+muted = "#5b6770"
+link = "#1468a3"
+accent = "#1672b0"
+border = "#e3e8ec"
+
+[fonts]
+heading = "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", sans-serif"
+body = "Georgia, Times, serif"
+mono = "Menlo, Courier, monospace"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"
