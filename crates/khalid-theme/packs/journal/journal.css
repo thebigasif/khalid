@@ -1,0 +1,208 @@
+/* Based on Ghost's Journal theme, MIT licence, see LICENSE-ghost.txt.
+   Journal: one writer's newsletter, set in type alone. A stacked header
+   with the name in the middle, the latest issue in very large type, every
+   other issue as text beside a side column, small capitals for every label
+   and date, and one band in the accent colour that asks for the email.
+   Every colour comes from the tokens or a tint of one, so a synced theme
+   recolours it all. */
+
+:root { --frame: 75rem; --column: 45rem; --text: 38rem; }
+
+/* The frame: header, footer and lists across 75rem, as Ghost's container.
+   A post's words keep to 38rem, about 65 letters a line. */
+.site-header, main, .site-footer { max-inline-size: var(--frame); }
+main { padding-block: clamp(1.5rem, 4vw, 3rem) 0; }
+
+/* Labels, dates, menus and meta: small capitals in the body font, as
+   Ghost's sans. */
+.site-header nav a, .search-link, .journal-kicker, .journal-facts, .journal-label, .card-meta, .card > p:not(:last-child), .post-meta, .journal-turn-label, .list-kind, .author-count, .pagination { font-family: var(--font-body); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
+a { text-decoration: none; }
+.announcement { font-size: var(--text-small); }
+
+/* Buttons: round, in the accent, as Ghost's primary button. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 999px; font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; line-height: 1.2; cursor: pointer; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 85%, var(--color-text)); }
+
+/* The header, stacked: search on the start side, the name in the middle,
+   the call to action on the end side, and the menu centred under them
+   between two hairlines. */
+.site-header { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 0 1.5rem; padding-block: clamp(1.25rem, 3vw, 2.5rem) 0; border-block-end: 0; }
+.site-name { grid-area: 1 / 2; justify-self: center; font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem); font-weight: 700; letter-spacing: -0.02em; text-align: center; }
+.site-logo img { display: block; block-size: 3.5rem; inline-size: auto; max-inline-size: none; }
+.site-header > .search-link { grid-area: 1 / 1; justify-self: start; color: var(--color-text); }
+.site-header > .header-button { grid-area: 1 / 3; justify-self: end; }
+.site-header > .nav-bar { grid-area: 2 / 1 / 3 / 4; margin-block-start: clamp(1rem, 2.5vw, 2rem); border-block: 1px solid var(--color-border); }
+.site-header > .nav-bar ul { justify-content: center; gap: 0 2rem; }
+.site-header nav a { color: var(--color-text); }
+.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-link); }
+@media (max-width: 40rem) {
+  .site-header { grid-template-columns: minmax(0, 1fr) auto auto; gap: 0 0.5rem; padding-block-end: 1rem; border-block-end: 1px solid var(--color-border); }
+  .site-name { grid-area: 1 / 1; justify-self: start; text-align: start; }
+  .site-logo img { block-size: 2.5rem; }
+  .site-header > .search-link { grid-area: 1 / 2; }
+  .site-header > .nav-menu { grid-area: 1 / 3; }
+}
+
+/* The latest issue: no picture, only type. The date line in the link
+   colour, a very large title, a large summary, then small grey facts. */
+.journal-latest { margin-block: clamp(1rem, 3vw, 2.5rem) clamp(4rem, 9vw, 7.5rem); }
+.journal-kicker { margin: 0 0 1.25rem; color: var(--color-link); }
+.journal-latest h2 { max-inline-size: 22ch; margin: 0; font-size: var(--text-h1); line-height: 1.02; letter-spacing: -0.03em; }
+.journal-latest h2 a, .journal-side h2, .card :is(h2, h3, h4) a { color: var(--color-text); }
+.journal-latest h2 a:hover, .card :is(h2, h3, h4) a:hover { text-decoration: none; opacity: 0.8; }
+.journal-excerpt { max-inline-size: 57.5rem; margin: 1.25rem 0 0; font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem); line-height: 1.35; }
+.journal-facts { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; margin: 1.75rem 0 0; color: var(--color-muted); }
+.journal-facts > * + *::before, .card-meta > :not(time, .card-author)::before { content: ""; display: inline-block; inline-size: 3px; block-size: 3px; margin-inline-end: 0.5rem; vertical-align: middle; background: currentColor; border-radius: 50%; }
+
+/* Two columns from 48rem: the issues on the start side, the side column
+   on the end side, sticky while the list scrolls. */
+.journal-columns { display: grid; gap: 4rem 1.5rem; }
+.journal-issues { min-inline-size: 0; max-inline-size: var(--column); }
+@media (min-width: 48rem) {
+  .journal-columns:not(.journal-single) { grid-template-columns: minmax(0, 4fr) minmax(0, 2fr); }
+  .journal-side { position: sticky; inset-block-start: 3rem; align-self: start; padding-inline-start: clamp(1rem, 3vw, 2.5rem); }
+}
+
+/* Section labels: small capitals followed by a hairline to the edge. */
+.journal-label { display: flex; align-items: center; gap: 1rem; margin: 0 0 1.75rem; color: var(--color-text); }
+.journal-label::after { content: ""; flex: 1; block-size: 1px; background: var(--color-border); }
+
+/* Issues: text only, far apart. The title, the summary, then the date in
+   the link colour and the reading time. */
+.cards { display: block; }
+.cards > li + li { margin-block-start: clamp(3rem, 6vw, 5rem); }
+.card { display: flex; flex-direction: column; }
+.card > :is(h2, h3, h4) { order: -1; margin: 0; font-size: var(--text-h2); line-height: 1.15; word-break: break-word; }
+.card > p:last-child { margin: 0.75rem 0 0; font-size: 1.125rem; line-height: 1.5; }
+.card > p:not(:last-child) { order: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; margin: 1.25rem 0 0; color: var(--color-muted); }
+.card .image, .card-meta .card-author { display: none; }
+.card-meta time, .card > p > time { order: -1; color: var(--color-link); font-size: inherit; }
+.card-meta > * { display: inline-flex; align-items: center; }
+.card-meta > a { display: none; }
+.pagination { margin-block-start: clamp(3rem, 6vw, 5rem); }
+.page-numbers a, .page-numbers span { border: 1px solid var(--color-border); border-radius: var(--radius); }
+.page-numbers a[aria-current] { color: var(--color-background); background: var(--color-text); border-color: var(--color-text); }
+
+/* The side column: the blog's name and intro, the form drawn as one field
+   with the button inside it, featured posts small, and the topics. */
+.journal-side { font-size: 0.9375rem; }
+.journal-side > * + * { margin-block-start: clamp(3rem, 6vw, 5rem); }
+.journal-about { display: flex; gap: 1.25rem; align-items: center; }
+.journal-icon { flex: none; inline-size: 4rem; block-size: 4rem; object-fit: cover; }
+.journal-about h2 { margin: 0; font-size: 1.3125rem; }
+.journal-about .intro { margin-block-start: 0.25rem; color: var(--color-muted); line-height: 1.55; }
+.journal-about .intro p { margin: 0; }
+.journal-about .hero-stats { margin-block: 1rem; }
+.journal-side .newsletter-slot { margin-block-start: 1.75rem; padding: 0; background: none; }
+.journal-side .newsletter-slot h2 { margin: 0; font-size: 1.0625rem; }
+.journal-side .newsletter-slot > p { margin-block: 0.25rem 0; color: var(--color-muted); line-height: 1.55; }
+.journal-archive a { font-weight: 600; }
+.journal-featured .cards > li + li { margin-block-start: 1.75rem; }
+.journal-featured .card > :is(h2, h3, h4) { font-size: 1.1875rem; line-height: 1.25; }
+.journal-featured .card > p:last-child { margin-block-start: 0.5rem; color: var(--color-muted); font-size: 0.9375rem; line-height: 1.55; }
+.journal-featured .card > p:not(:last-child) { margin-block-start: 0.75rem; }
+.journal-topics ul { display: grid; gap: 0; }
+.journal-topics li { border-block-end: 1px solid var(--color-border); }
+.journal-topics a { display: flex; justify-content: space-between; align-items: center; gap: 1rem; color: var(--color-text); font-family: var(--font-heading); font-size: 1.0625rem; font-weight: 600; }
+.journal-topics a::after { content: "\2192" / ""; display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; color: var(--color-muted); border: 1px solid var(--color-border); border-radius: 2rem; font-family: var(--font-body); font-size: 0.8125rem; font-weight: 400; }
+[dir="rtl"] .journal-topics a::after { content: "\2190" / ""; }
+.journal-topics a:hover { color: var(--color-link); }
+
+/* The form: one bordered field with the email and a quiet button inside,
+   as Ghost's sign-up box. */
+.newsletter-slot .subscribe { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; margin-block-start: 1rem; padding: 0.25rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); }
+.newsletter-slot .subscribe > p { margin: 0; }
+.newsletter-slot .subscribe > p:first-child { display: contents; }
+.newsletter-slot .subscribe label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.newsletter-slot .subscribe input { min-block-size: 2.75rem; padding-inline: 0.75rem; background: none; border: 0; }
+.newsletter-slot .subscribe button { color: var(--color-link); background: none; font-size: 0.8125rem; letter-spacing: 0.02em; text-transform: uppercase; }
+.newsletter-slot .subscribe button:hover { color: var(--color-text); background: none; }
+
+/* The sign-up band: the accent colour from edge to edge before the
+   footer, its heading and form centred. */
+.journal-band { margin-block-start: var(--space-section); padding-block: clamp(3.5rem, 7vw, 4.5rem); color: var(--color-on-accent); background: var(--color-accent); box-shadow: 0 0 0 100vmax var(--color-accent); clip-path: inset(0 -100vmax); }
+.journal-band .newsletter-slot { max-inline-size: 32.5rem; margin: 0 auto; padding: 0; text-align: center; background: none; }
+.journal-band .newsletter-slot h2 { margin: 0; font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.25rem); font-weight: 700; }
+.journal-band .newsletter-slot > p { margin-block: 1rem 0; font-size: 1.1875rem; line-height: 1.4; }
+.journal-band .subscribe { max-inline-size: 27.5rem; margin: 2.5rem auto 0; border: 0; }
+.journal-band :focus-visible { outline-color: var(--color-on-accent); }
+
+/* List pages: the name, its label and intro in a narrow column on the
+   start side, the posts beside it, as Ghost's topic and author pages. */
+main:has(> .cards) > h1, .author-intro h1 { margin: 0; font-size: 1.3125rem; letter-spacing: -0.02em; }
+main:has(> .cards) > .intro { margin-block: 0.75rem 3rem; font-size: 0.9375rem; line-height: 1.5; }
+main:has(> .cards) > .intro p { margin: 0; }
+.list-kind { margin: 0 0 0.75rem; color: var(--color-link); }
+main:has(> .cards) > .cards { padding-block-start: 2.5rem; border-block-start: 1px solid var(--color-border); }
+main:has(> .cards) > .cards > li, .author + section > .cards > li { max-inline-size: var(--column); }
+@media (min-width: 62rem) {
+  main:has(> .cards), main:has(> .author) { display: grid; grid-template-columns: 12.5rem minmax(0, 1fr); grid-template-rows: repeat(3, auto) 1fr; column-gap: clamp(3rem, 8vw, 8rem); align-content: start; }
+  main:has(> .cards) > * { grid-column: 1; }
+  main:has(> .cards) > :is(.cards, .featured) { grid-area: 1 / 2 / 5 / 3; }
+  main:has(> .cards) > .pagination, main:has(> .author) > :not(.author) { grid-column: 2; }
+  main:has(> .author) > .author { grid-area: 1 / 1 / 5 / 2; }
+  main:has(> .author) > .author + section { grid-row: 1 / 5; }
+}
+
+/* The author: a round photo over the name, the count and the bio. */
+.author-header { display: block; margin-block-end: 1rem; }
+.author-photo { inline-size: 5rem; margin-block-end: 1.5rem; }
+.author-role { font-size: 0.9375rem; }
+.author-bio { font-size: 0.9375rem; line-height: 1.55; color: var(--color-muted); }
+.author + section > h2, .mentions > h2 { margin-block: 0 2.5rem; padding-block-end: 1rem; border-block-end: 1px solid var(--color-border); font-family: var(--font-body); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
+.related > h2 { margin-block: 0 1.75rem; }
+
+/* The post: the meta line, the title and the subtitle set to the start
+   of the wide frame, the picture across it, the words in a centred
+   column. */
+.post > * { max-inline-size: var(--text); margin-inline: auto; }
+.post > .post-header, .post > .journal-turn { max-inline-size: none; }
+.post-header { margin-block-end: clamp(2.5rem, 5vw, 4rem); }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; margin-block-end: 1.25rem; }
+.post-meta > :is(p, address) { margin: 0; }
+.post-meta > * + *::before { content: ""; display: inline-block; inline-size: 3px; block-size: 3px; margin-inline-end: 0.5rem; vertical-align: middle; background: currentColor; border-radius: 50%; }
+.post-meta a { color: var(--color-text); font-weight: 600; }
+.post-meta > .reviewed-by { flex-basis: 100%; text-transform: none; }
+.post-meta > .reviewed-by::before { content: none; }
+.post-header h1 { max-inline-size: 18ch; margin: 0; font-size: var(--text-h1); line-height: 1.02; letter-spacing: -0.03em; word-break: break-word; }
+.dek { max-inline-size: 57.5rem; margin-block: 1.25rem 0; color: var(--color-text); font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem); line-height: 1.35; }
+.updated-note { margin-block: 1rem 0; color: var(--color-muted); font-size: var(--text-small); }
+.post-header .image { margin-block: clamp(2rem, 4vw, 3rem) 0; }
+.post-header .image img { inline-size: 100%; }
+
+/* The words: the body font at full size, links underlined. */
+.post-body { font-size: var(--text-body); }
+.post-body :is(h2, h3, h4) { margin-block: 1.8em 0.6em; }
+.post-body a { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.post-body blockquote { color: var(--color-text); border-inline-start-color: var(--color-text); }
+
+/* After the post: a ruled row of three, back to every issue, the share
+   links, and the next post to read, as Ghost's issue navigation. */
+.journal-turn { display: grid; gap: 2rem; margin-block-start: clamp(4rem, 8vw, 5rem); padding-block-start: 2rem; border-block-start: 1px solid var(--color-border); }
+.journal-turn > p { margin: 0; }
+.journal-turn a { display: grid; gap: 0.5rem; color: var(--color-text); }
+.journal-turn-label { color: var(--color-text); font-weight: 700; }
+.journal-back .journal-turn-label::before { content: "\2190\a0" / ""; }
+.journal-next .journal-turn-label::after { content: "\a0\2192" / ""; }
+[dir="rtl"] .journal-back .journal-turn-label::before { content: "\2192\a0" / ""; }
+[dir="rtl"] .journal-next .journal-turn-label::after { content: "\a0\2190" / ""; }
+.journal-turn a:hover { color: var(--color-link); }
+.journal-turn .share { justify-content: center; margin: 0; }
+.share-title { font-size: 0.875rem; }
+.share a { color: var(--color-text); border-radius: 999px; font-size: 0.875rem; }
+@media (min-width: 48rem) {
+  .journal-turn { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: start; }
+  .journal-turn .share { grid-column: 2; flex-direction: column; gap: 0.5rem; }
+  .journal-next { grid-column: 3; text-align: end; }
+  .journal-next a { justify-items: end; }
+}
+main > :is(.mentions, .comments, .related, .cta-band) { max-inline-size: var(--text); margin-inline: auto; }
+.related, .mentions { margin-block-start: var(--space-section); }
+.author-box { border-radius: 0; }
+
+/* The footer: one quiet row on a hairline. */
+.site-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem 2rem; margin-block-start: var(--space-section); padding-block: 2.5rem 3rem; }
+main:has(> .journal-band:last-child) + .site-footer { margin-block-start: 0; border-block-start: 0; }
+.site-footer a { color: var(--color-muted); }
+.site-footer a:hover { color: var(--color-text); }
