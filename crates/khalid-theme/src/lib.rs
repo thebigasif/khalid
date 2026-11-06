@@ -47,6 +47,7 @@ mod palette;
 pub mod parts;
 mod properties;
 mod research;
+mod respawn;
 mod resync;
 mod ruby;
 mod site_theme;

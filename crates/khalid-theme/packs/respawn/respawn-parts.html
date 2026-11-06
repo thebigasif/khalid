@@ -1,0 +1,38 @@
+{#- Respawn's own parts (docs/templates/respawn.md), shared by its pages.
+    post_rows(posts, level): each post as a row, a small picture, the
+    category and date, the title and, on a review (a post with facts), its
+    score meter and platforms. release_calendar(lines, level): the
+    `release_calendar` option as date tiles, each line written
+    `date | game | platforms | link`, with only the date and game needed. A
+    date written YYYY-MM-DD shows its month and day large; any other date,
+    such as "Spring 2027", shows as written. -#}
+{% from "image.html" import picture -%}
+{% from "sections/score_meter.html" import score_meter -%}
+{% macro post_rows(posts, level=3) -%}
+<ol class="rs-rows" role="list">
+{% for post in posts %}<li>
+<article class="rs-row">
+{% if post.image %}<a class="rs-row-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}<div class="rs-row-text">
+<p class="rs-meta">{% if post.category %}<a class="rs-label" href="{{ post.category.href }}">{{ post.category.name }}</a> {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.facts %}<div class="rs-row-score">{{ score_meter(post.facts[0].value, post.facts[0].label) }}{% if post.facts | length > 1 %}<p class="rs-platforms">{{ post.facts[1].value }}</p>{% endif %}</div>
+{% else %}<p class="rs-excerpt">{{ post.excerpt }}</p>
+{% endif %}</div>
+</article>
+</li>
+{% endfor %}</ol>
+{%- endmacro %}
+{% macro release_calendar(lines, level=3) -%}
+<ol class="rs-dates" role="list">
+{% for line in lines %}{% set parts = line | split("|") | map("trim") | list -%}
+{% set when = parts[0] -%}
+{% set dated = when | length == 10 and when[4:5] == "-" and when[7:8] == "-" and (when | trim("0123456789-")) == "" -%}
+<li class="rs-date">
+{% if dated %}<p class="rs-day"><time datetime="{{ when }}"><span class="rs-month">{{ t["month_" ~ (when[5:7] | int)][:3] }}</span> <span class="rs-day-number">{{ when[8:10] | int }}</span></time></p>
+{% else %}<p class="rs-day rs-day-text">{{ when }}</p>
+{% endif %}<h{{ level }}>{% if parts | length > 3 and parts[3] %}<a href="{{ parts[3] }}">{{ parts[1] }}</a>{% else %}{{ parts[1] }}{% endif %}</h{{ level }}>
+{% if parts | length > 2 and parts[2] %}<p class="rs-platforms">{{ parts[2] }}</p>
+{% endif %}</li>
+{% endfor %}</ol>
+{%- endmacro %}

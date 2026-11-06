@@ -1,0 +1,19 @@
+{#- score_meter(value, label=none, scale=10): a review's score as a square
+    tile with the number, then a bar of `scale` square cells filled up to
+    the score, with a half cell for a half point. `value` is a fact's
+    value, such as 8.5; `label` is the fact's label, read out before the
+    number. A value that is not a number from 0 to `scale`, such as
+    "Recommended", shows in the tile alone, with no bar. -#}
+{% macro score_meter(value, label=none, scale=10) -%}
+{% set text = value | trim -%}
+{% set rated = text and (text | trim("0123456789.")) == "" and text | length <= 4 and (text | split(".") | list | length) <= 2 and text[:1] != "." and text[-1:] != "." -%}
+{% set score = text | float if rated else 0 -%}
+{% if rated and score <= scale %}<div class="score-meter">
+<p class="score-tile">{% if label %}<span class="visually-hidden">{{ label }} </span>{% endif %}{{ text }}<span class="visually-hidden"> {{ t.score_scale | replace("{scale}", scale | string) }}</span></p>
+<p class="score-bar" aria-hidden="true">{% for cell in range(1, scale + 1) %}{% if score >= cell %}<span class="score-cell score-full"></span>{% elif score >= cell - 0.5 %}<span class="score-cell score-half"></span>{% else %}<span class="score-cell"></span>{% endif %}{% endfor %}</p>
+</div>
+{%- else %}<div class="score-meter score-meter-text">
+<p class="score-tile">{% if label %}<span class="visually-hidden">{{ label }} </span>{% endif %}{{ text }}</p>
+</div>
+{%- endif %}
+{%- endmacro %}

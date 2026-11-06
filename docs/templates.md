@@ -44,6 +44,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
 - `research`: a research lab or academic group, with papers as a numbered reference list with venue, DOI and citations, a news feed, research areas, a people page and a cite box on every paper. See [Research](templates/research.md).
 - `ruby`: a magazine of picture cards, four white cards across on a page that fades to light grey, and a calm column for each post with more cards after it. Based on Ghost's Ruby theme (MIT). See [Ruby](templates/ruby.md).
+- `respawn`: a games site with news, reviews and a release calendar, where every review shows its score as a dark square and a health bar of ten cells, on cards, lists and the review itself. See [Respawn](templates/respawn.md).
 - `solo`: a personal site for one writer or creator, with a large headline and a sign-up field over a feed of posts with large titles. Based on Ghost's Solo theme (MIT). See [Solo](templates/solo.md).
 - `source`: a general publication with the logo in the middle of the header, a front page that opens with a landing, highlight or magazine header, a list or a grid of posts with hairlines between them, and a calm column for each post. Based on Ghost's Source theme (MIT). See [Source](templates/source.md).
 - `wave`: an interview show's blog on a quiet white page, with the newest episode in a slim player card, then every episode as a row with square artwork and a round play mark. Based on Ghost's Wave theme (MIT). See [Wave](templates/wave.md).
@@ -146,12 +147,13 @@ facts:
 
 `khalid build` stops and names the line when a fact breaks one of these rules.
 
-Four templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+These templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
 
 - [Folio](templates/folio.md#release-notes) treats posts with facts as releases. The front page lists them in a dated release log beside the essays, tagged with the first fact, such as the version. A release's page shows its facts above the title.
 - [Workbench](templates/workbench.md#score-panels) shows a score panel on review cards and at the top of a review: the first fact large, with a meter when it is a score out of ten, then up to three figures.
 - [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.
 - [Harbor](templates/harbor.md#recipe-facts) shows up to four posts with facts in a recipe card strip on the front page, with the first two facts as tags, and all the facts as tags under a post's title.
+- [Respawn](templates/respawn.md#reviews-are-posts-with-facts) treats posts with facts as reviews. The first fact is the score out of 10, shown as a dark square and a health bar on cards, lists and the review, and the second, the platforms, shows under it.
 
 The other templates do not show facts. A custom template that wants them reads `post.facts` on a card and `page.facts` on a post page. Each fact has a `label` and a `value`:
 

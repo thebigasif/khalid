@@ -257,6 +257,7 @@ static PACKS: &[&Pack] = &[
     &crate::meridian::MERIDIAN,
     &crate::research::RESEARCH,
     &crate::ruby::RUBY,
+    &crate::respawn::RESPAWN,
     &crate::solo::SOLO,
     &crate::source::SOURCE,
     &crate::wave::WAVE,

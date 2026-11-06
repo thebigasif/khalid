@@ -259,3 +259,11 @@ recent_publications = "Recent publications"
 news = "News"
 research_areas = "Research areas"
 people = "People"
+# The score meter part (a review's score), and the respawn template's
+# front page and reviews.
+score_scale = "out of {scale}"
+latest_news = "Latest news"
+latest_reviews = "Latest reviews"
+more_stories = "More stories"
+release_calendar = "Release calendar"
+verdict = "Verdict"
