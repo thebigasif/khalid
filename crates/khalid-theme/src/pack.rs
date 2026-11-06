@@ -239,6 +239,7 @@ static PACKS: &[&Pack] = &[
     &crate::compass::COMPASS,
     &crate::folio::FOLIO,
     &crate::harbor::HARBOR,
+    &crate::headline::HEADLINE,
     &crate::keystone::KEYSTONE,
     &crate::ledger::LEDGER,
     &crate::meridian::MERIDIAN,
