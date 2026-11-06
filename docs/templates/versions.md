@@ -68,7 +68,7 @@ change_types = ["new", "improved", "fixed"]
 2. The type chip, which opens every change of that type, and the version.
 3. The title, the post's description as a one-line summary, the date and the author with their role.
 4. **The facts row:** the version in monospace, then the other facts, in one ruled panel.
-5. The lead picture, such as a screenshot, framed by a hairline. Then the text in one column about 41rem wide, at 18px, with a folded contents list for long posts.
+5. The lead picture, such as a screenshot, framed by a hairline. Then the text in one column about 37rem wide, at 18px, with a folded contents list for long posts.
 6. The areas (tags) as chips, the author box and the newsletter form.
 7. More changes as a short version rail.
 

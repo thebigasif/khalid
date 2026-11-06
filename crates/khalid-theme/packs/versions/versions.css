@@ -12,11 +12,11 @@
   --vs-line: color-mix(in oklab, var(--color-text) 18%, var(--color-background));
   --hero-title: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
 }
-.site-header, main, .site-footer { max-inline-size: var(--vs-frame); }
+.site-header, main, .site-footer { box-sizing: border-box; inline-size: 100%; max-inline-size: var(--vs-frame); margin-inline: auto; }
 main { padding-block: 0 var(--space-section); }
-main > :is(.post, .page) { max-inline-size: 41rem; margin-inline: auto; }
-main > .post-with-toc { max-inline-size: calc(41rem + 18rem); }
-main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band, .lock) { max-inline-size: 41rem; margin-inline: auto; }
+main > :is(.post, .page) { max-inline-size: 37rem; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(37rem + 18rem); }
+main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band, .lock) { max-inline-size: 37rem; margin-inline: auto; }
 h1 { letter-spacing: -0.02em; }
 
 /* The header: the name or logo, quiet menu links, the call to action. */

@@ -32,7 +32,7 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</div>
-{% if template.options.version_index %}<aside class="changelog-side" aria-label="{{ t.version_index }}">
+{% if template.options.version_index and page.posts | selectattr("facts") | list %}<aside class="changelog-side" aria-label="{{ t.version_index }}">
 {{ release_index(page.posts, t.version_index) }}
 </aside>
 {% endif %}</div>

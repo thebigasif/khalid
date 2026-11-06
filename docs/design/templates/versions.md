@@ -31,7 +31,7 @@ Versions adds no front matter. It reads what Khalid already has:
 1. The type chip and the version above the title.
 2. The title, the summary (dek), the date and the author with their role.
 3. **The facts row:** the version in the monospace, then the other facts, in one ruled panel.
-4. The text in one column of about 41rem, at 18px.
+4. The text in one column of about 37rem, at 18px.
 5. The areas (tags) as chips, the author box, the newsletter form.
 6. More changes as a short version rail.
 
