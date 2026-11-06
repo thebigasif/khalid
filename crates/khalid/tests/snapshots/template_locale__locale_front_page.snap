@@ -1,0 +1,97 @@
+---
+source: crates/khalid/tests/template_locale.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+A guide to the city, area by area.
+</div>
+<nav class="lc-chips" aria-label="Jump to an area">
+<ul role="list">
+<li><a href="#area-1"><span class="lc-pin" aria-hidden="true"></span>On-page SEO <span class="lc-count">1</span></a></li>
+<li><a href="#area-2"><span class="lc-pin" aria-hidden="true"></span>Technical SEO <span class="lc-count">1</span></a></li>
+</ul>
+</nav>
+</header>
+<h2 class="lc-heading">Places by area</h2>
+<section class="lc-area" id="area-1" aria-labelledby="area-title-1">
+<header class="lc-area-head">
+<h3 id="area-title-1"><span class="lc-pin" aria-hidden="true"></span>On-page SEO</h3>
+<p class="lc-count-line">1 place</p>
+<p class="lc-area-all"><a href="/blog/category/on-page-seo/">Every place in On-page SEO</a></p>
+</header>
+<ol class="lc-places" role="list">
+<li>
+<article class="lc-place">
+<div class="lc-place-text">
+<div class="lc-line">
+<h4><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h4>
+<span class="lc-leader" aria-hidden="true"></span>
+<span class="price-meter"><span class="visually-hidden">Price level 3 of 4</span><span class="price-marks" aria-hidden="true"><span class="price-coin price-on"></span><span class="price-coin price-on"></span><span class="price-coin price-on"></span><span class="price-coin"></span></span></span>
+</div>
+<p class="lc-key"><span class="lc-kind">Park</span></p>
+</div>
+</article>
+</li>
+</ol>
+</section>
+<section class="lc-area" id="area-2" aria-labelledby="area-title-2">
+<header class="lc-area-head">
+<h3 id="area-title-2"><span class="lc-pin" aria-hidden="true"></span>Technical SEO</h3>
+<p class="lc-count-line">1 place</p>
+<p class="lc-area-all"><a href="/blog/category/technical-seo/">Every place in Technical SEO</a></p>
+</header>
+<ol class="lc-places" role="list">
+<li>
+<article class="lc-place">
+<a class="lc-thumb" href="/blog/fixing-slow-pages/" tabindex="-1" aria-hidden="true"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></a>
+<div class="lc-place-text">
+<div class="lc-line">
+<h4><a href="/blog/fixing-slow-pages/">Fixing slow pages</a></h4>
+<span class="lc-leader" aria-hidden="true"></span>
+<span class="price-meter"><span class="visually-hidden">Price level 2 of 4</span><span class="price-marks" aria-hidden="true"><span class="price-mark price-on">£</span><span class="price-mark price-on">£</span><span class="price-mark">£</span><span class="price-mark">£</span></span></span>
+</div>
+<p class="lc-key"><span class="lc-kind">Bakery</span><span class="lc-hours"><span class="visually-hidden">Hours: </span>Tue to Sun, 7:30 to 15:00</span></p>
+</div>
+</article>
+</li>
+</ol>
+</section>
+<section class="lc-notes-block" aria-labelledby="lc-notes-title">
+<h2 id="lc-notes-title" class="lc-heading">Notes from the city</h2>
+<ul class="lc-notes" role="list">
+<li>
+<article class="lc-note">
+<p class="lc-meta"><a href="/blog/category/content-strategy/">Content strategy</a> <time datetime="2026-10-12">12 October 2026</time></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="lc-excerpt">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+<li>
+<article class="lc-note">
+<p class="lc-meta"><a href="/blog/category/technical-seo/">Technical SEO</a> <time datetime="2026-09-28">28 September 2026</time></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="lc-excerpt">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</article>
+</li>
+<li>
+<article class="lc-note">
+<p class="lc-meta"><a href="/blog/category/on-page-seo/">On-page SEO</a> <time datetime="2026-09-14">14 September 2026</time></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="lc-excerpt">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</article>
+</li>
+</ul>
+</section>

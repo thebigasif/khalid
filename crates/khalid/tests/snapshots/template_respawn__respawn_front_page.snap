@@ -1,0 +1,86 @@
+---
+source: crates/khalid/tests/template_respawn.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="rs-masthead">
+<h1>Field Notes on SEO</h1>
+<p class="rs-tagline">Games news and honest reviews.</p>
+</header>
+<div class="rs-front rs-front-news">
+<article class="rs-lead">
+<div class="rs-lead-text">
+<p class="rs-meta"><a class="rs-label" href="/blog/category/content-strategy/">Content strategy</a> <time datetime="2026-10-12">12 October 2026</time></p>
+<h2><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
+<p class="rs-excerpt">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</div>
+</article>
+<section class="rs-news" aria-labelledby="rs-news-title">
+<h2 id="rs-news-title">Latest news</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-14">14 September 2026</time>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="feed-category"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+</ol>
+</section>
+</div>
+<section class="rs-calendar" aria-labelledby="rs-calendar-title">
+<h2 id="rs-calendar-title">Release calendar</h2>
+<ol class="rs-dates" role="list">
+<li class="rs-date">
+<p class="rs-day"><time datetime="2026-11-20"><span class="rs-month">Nov</span> <span class="rs-day-number">20</span></time></p>
+<h3><a href="/blog/fixing-slow-pages/">Hollowmere</a></h3>
+<p class="rs-platforms">PC, consoles</p>
+</li>
+<li class="rs-date">
+<p class="rs-day rs-day-text">Spring 2027</p>
+<h3>Kitebound: Updraft</h3>
+<p class="rs-platforms">PC</p>
+</li>
+</ol>
+</section>
+<section class="rs-reviews" aria-labelledby="rs-reviews-title">
+<h2 id="rs-reviews-title">Latest reviews</h2>
+<ul class="rs-grid" role="list">
+<li>
+<article class="rs-card">
+<figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure>
+<div class="score-meter">
+<p class="score-tile"><span class="visually-hidden">Score </span>8.5<span class="visually-hidden"> out of 10</span></p>
+<p class="score-bar" aria-hidden="true"><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-half"></span><span class="score-cell"></span></p>
+</div>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="rs-platforms">PC, consoles</p>
+</article>
+</li>
+<li>
+<article class="rs-card">
+<div class="score-meter score-meter-text">
+<p class="score-tile"><span class="visually-hidden">Verdict </span>Recommended</p>
+</div>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="rs-platforms">PC</p>
+</article>
+</li>
+</ul>
+</section>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/scores/">How we score</a></p>
+</div>

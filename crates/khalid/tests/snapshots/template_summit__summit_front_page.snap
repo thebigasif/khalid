@@ -1,0 +1,113 @@
+---
+source: crates/khalid/tests/template_summit.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<p class="hero-kicker">13 to 14 May 2027, Easthaven</p>
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+Two days on how the web is read.
+</div>
+<p class="hero-action"><a class="button" href="https://www.example.com/tickets/">Book a ticket</a></p>
+<dl class="figure-strip">
+<div class="figure">
+<dt>days</dt>
+<dd>2</dd>
+</div>
+<div class="figure">
+<dt>sessions</dt>
+<dd>2</dd>
+</div>
+</dl>
+</header>
+<section class="summit-programme" aria-labelledby="summit-programme-title">
+<h2 id="summit-programme-title">Programme</h2>
+<nav class="schedule-days" aria-label="Days">
+<ul role="list">
+<li><a href="#day-2027-05-13"><span class="schedule-weekday">Thursday</span> <span class="schedule-date">13 May 2027</span></a></li>
+<li><a href="#day-2027-05-14"><span class="schedule-weekday">Friday</span> <span class="schedule-date">14 May 2027</span></a></li>
+</ul>
+</nav>
+
+<section class="schedule-group" aria-labelledby="day-2027-05-13">
+<h2 id="day-2027-05-13" class="schedule-heading"><span class="schedule-weekday">Thursday</span> <span class="schedule-date">13 May 2027</span></h2>
+<ol class="schedule" role="list">
+<li class="slot">
+<p class="slot-time"><time datetime="2027-05-13T09:30">09:30</time></p>
+<div class="slot-body">
+<h3 class="slot-title"><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="slot-who">Asif</p>
+<p class="slot-where">Main hall, <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<p class="slot-kind">Keynote</p>
+</div>
+</li>
+</ol>
+</section>
+<section class="schedule-group" aria-labelledby="day-2027-05-14">
+<h2 id="day-2027-05-14" class="schedule-heading"><span class="schedule-weekday">Friday</span> <span class="schedule-date">14 May 2027</span></h2>
+<ol class="schedule" role="list">
+<li class="slot">
+<p class="slot-time"><time datetime="2027-05-14T14:00">14:00</time></p>
+<div class="slot-body">
+<h3 class="slot-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="slot-who">Lena Vogt</p>
+<p class="slot-where">Studio 2, <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<p class="slot-kind">Workshop</p>
+</div>
+</li>
+</ol>
+</section>
+
+</section>
+<section class="summit-speakers" aria-labelledby="summit-speakers-title">
+<h2 id="summit-speakers-title">Speakers</h2>
+<ul class="people-grid" role="list">
+<li class="people-grid-person">
+<h3><a href="/blog/authors/lena-vogt/">Lena Vogt</a></h3>
+<p class="people-grid-role">Technical SEO editor</p>
+</li>
+<li class="people-grid-person">
+<h3><a href="/blog/authors/asif/">Asif</a></h3>
+<p class="people-grid-role">Founder of SerpDad</p>
+</li>
+</ul>
+<p class="view-all"><a href="/blog/authors/">All speakers</a></p>
+</section>
+<div class="summit-more">
+<section class="summit-venues" aria-labelledby="summit-venues-title">
+<h2 id="summit-venues-title">Venues</h2>
+<ol class="venue-index" role="list">
+<li><a href="/blog/category/on-page-seo/"><span class="venue-number" aria-hidden="true">01</span> <span class="venue-name">On-page SEO</span> <span class="venue-count">1 session</span></a></li>
+<li><a href="/blog/category/technical-seo/"><span class="venue-number" aria-hidden="true">02</span> <span class="venue-name">Technical SEO</span> <span class="venue-count">1 session</span></a></li>
+</ol>
+</section>
+<section class="summit-updates" aria-labelledby="summit-updates-title">
+<h2 id="summit-updates-title">Updates</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-10-12">12 October 2026</time>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="feed-category"><a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-14">14 September 2026</time>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="feed-category"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+</ol>
+</section>
+</div>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/tickets/">Book a ticket</a></p>
+</div>

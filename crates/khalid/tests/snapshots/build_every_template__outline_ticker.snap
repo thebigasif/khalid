@@ -1,0 +1,37 @@
+---
+source: crates/khalid/tests/build_every_template.rs
+expression: pages
+---
+# index.html
+header.hero
+  h1.hero-title: Field Notes on SEO
+section.board
+  h2: Recent issues
+nav.desks "Desks"
+  h2: Desks
+
+# why-internal-links-matter/index.html
+nav.breadcrumbs "Breadcrumbs"
+article.post.post-toc-folded
+  header.post-header
+    h1: Why internal links matter
+  nav "Contents"
+  div.post-body: the text
+  footer.post-footer
+  section.author-box
+    h2: About the author
+section.mentions
+  h2: Posts that link here
+section.related
+  h2: Related posts
+
+# authors/asif/index.html
+nav.breadcrumbs "Breadcrumbs"
+article.author
+  header.author-header
+    h1: Asif
+section.author-posts
+  h2: Posts by Asif
+section.author-others
+  h2: Other authors
+  h3: Lena Vogt

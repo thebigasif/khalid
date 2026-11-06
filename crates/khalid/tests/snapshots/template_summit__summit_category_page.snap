@@ -1,0 +1,46 @@
+---
+source: crates/khalid/tests/template_summit.rs
+expression: "shown(&out, \"category/technical-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/technical-seo/" aria-current="page">Technical SEO</a></li>
+</ol>
+</nav>
+
+<header class="list-header">
+<p class="list-kind">Programme</p>
+<h1>Technical SEO</h1>
+
+</header>
+<section class="schedule-group" aria-labelledby="day-2027-05-14">
+<h2 id="day-2027-05-14" class="schedule-heading"><span class="schedule-weekday">Friday</span> <span class="schedule-date">14 May 2027</span></h2>
+<ol class="schedule" role="list">
+<li class="slot">
+<p class="slot-time"><time datetime="2027-05-14T14:00">14:00</time></p>
+<div class="slot-body">
+<h3 class="slot-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="slot-who">Lena Vogt</p>
+<p class="slot-where">Studio 2, <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<p class="slot-kind">Workshop</p>
+</div>
+</li>
+</ol>
+</section>
+
+<section class="summit-updates" aria-labelledby="list-updates-title">
+<h2 id="list-updates-title">Updates</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+</ol>
+</section>

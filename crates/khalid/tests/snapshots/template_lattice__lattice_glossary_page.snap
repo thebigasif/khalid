@@ -1,0 +1,31 @@
+---
+source: crates/khalid/tests/template_lattice.rs
+expression: "shown(&out, \"glossary/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/glossary/" aria-current="page">Glossary</a></li>
+</ol>
+</nav>
+
+<h1>Glossary</h1>
+<nav class="letters" aria-label="Jump to a letter">
+<ul>
+<li><a href="#letter-t">T</a></li>
+</ul>
+</nav>
+<section class="glossary-letter" aria-labelledby="letter-t">
+<h2 id="letter-t">T</h2>
+<dl class="terms">
+<div class="term">
+<dt><a href="/blog/glossary/topical-authority/">Topical authority</a></dt>
+<dd>Topical authority is how much a search engine trusts a site on one subject.</dd>
+</div>
+</dl>
+</section>

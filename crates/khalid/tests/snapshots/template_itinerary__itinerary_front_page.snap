@@ -1,0 +1,105 @@
+---
+source: crates/khalid/tests/template_itinerary.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+Two of us, one bag each, day by day.
+</div>
+<dl class="figure-strip">
+<div class="figure">
+<dt>countries</dt>
+<dd>5</dd>
+</div>
+<div class="figure">
+<dt>days on the road</dt>
+<dd>56</dd>
+</div>
+</dl>
+</header>
+<section class="trip-lead" aria-labelledby="trip-lead-title">
+<h2 id="trip-lead-title">Latest trip</h2>
+<article class="ticket ticket-wide">
+<div class="ticket-photo"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></div>
+<div class="ticket-main">
+<p class="ticket-country">Technical SEO</p>
+<h3 class="ticket-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<dl class="ticket-facts">
+<div>
+<dt>Route</dt>
+<dd>Tbilisi to Kazbegi</dd>
+</div>
+<div>
+<dt>When</dt>
+<dd>May 2026</dd>
+</div>
+<div>
+<dt>Cost for two</dt>
+<dd>£1,180</dd>
+</div>
+</dl>
+</div>
+<p class="ticket-stub"><span class="stub-number">10</span> <span class="stub-label">Days</span><time datetime="2026-10-05">5 October 2026</time></p>
+</article>
+</section>
+<section class="trip-countries" aria-labelledby="trip-countries-title">
+<h2 id="trip-countries-title">Countries</h2>
+<ul class="stamps" role="list">
+<li><a class="stamp" href="/blog/category/on-page-seo/"><span class="stamp-name">On-page SEO</span> <span class="stamp-count">1 trip</span></a></li>
+<li><a class="stamp" href="/blog/category/technical-seo/"><span class="stamp-name">Technical SEO</span> <span class="stamp-count">1 trip</span></a></li>
+</ul>
+</section>
+<section class="trip-list" aria-labelledby="trip-list-title">
+<h2 id="trip-list-title">Trip diaries</h2>
+<ul class="tickets" role="list">
+<li><article class="ticket">
+<div class="ticket-main">
+<p class="ticket-country">On-page SEO</p>
+<h3 class="ticket-title"><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<dl class="ticket-facts">
+<div>
+<dt>Route</dt>
+<dd>Mestia to Ushguli</dd>
+</div>
+</dl>
+</div>
+<p class="ticket-stub"><span class="stub-number">4</span> <span class="stub-label">Nights</span><time datetime="2026-09-21">21 September 2026</time></p>
+</article></li>
+</ul>
+</section>
+<section class="trip-notes" aria-labelledby="trip-notes-title">
+<h2 id="trip-notes-title">Notes from the road</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-10-12">12 October 2026</time>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="feed-category"><a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-14">14 September 2026</time>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="feed-category"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+</ol>
+</section>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/packing/">Get the packing list</a></p>
+</div>
