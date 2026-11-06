@@ -7,27 +7,15 @@
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 
-/// The template files the workbench pack replaces.
-static WORKBENCH_TEMPLATES: [PackTemplate; 2] = [
-    PackTemplate::compressed(
-        "home.html",
-        include_bytes!(concat!(env!("OUT_DIR"), "/packs/workbench/home.html.br")),
-    ),
-    PackTemplate::compressed(
-        "post.html",
-        include_bytes!(concat!(env!("OUT_DIR"), "/packs/workbench/post.html.br")),
-    ),
-];
-
 /// The Workbench pack.
 pub(crate) static WORKBENCH: Pack = Pack {
     name: "workbench",
     summary: "For reviews and comparisons of tools: a featured post, the newest posts, wide comparison tables, pros and cons, and the newsletter twice on the front page.",
-    css: PackText::compressed(include_bytes!(concat!(
-        env!("OUT_DIR"),
-        "/packs/workbench/workbench.css.br"
-    ))),
-    templates: &WORKBENCH_TEMPLATES,
+    css: PackText::file("workbench/workbench.css"),
+    templates: &[
+        PackTemplate::file("home.html", "workbench/home.html"),
+        PackTemplate::file("post.html", "workbench/post.html"),
+    ],
     tokens: include_str!("../packs/workbench/tokens.toml"),
     reader: &[],
     options: &[

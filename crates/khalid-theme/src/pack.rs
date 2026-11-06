@@ -7,7 +7,9 @@
 //! token defaults, the reader switches it turns on or off, and its
 //! options. A site's own `theme/` still wins over all of it.
 
+use std::collections::BTreeMap;
 use std::io::Read as _;
+use std::ops::Range;
 use std::sync::OnceLock;
 
 use khalid_core::{PackName, ReaderSwitch};
@@ -39,56 +41,94 @@ pub struct Pack {
 
 impl Pack {
     /// The pack's own CSS rules, as the build script minified them.
-    pub fn stylesheet(&self) -> &str {
+    pub fn stylesheet(&self) -> &'static str {
         self.css.text()
     }
 }
 
-/// A pack's stylesheet or template file as the binary carries it. The
-/// build script compresses each with Brotli (a stylesheet after it
-/// minifies it), because the packs' files are most of the text built into
-/// the binary, and the binary has a size budget. The text is read out the
-/// first time a build asks for it and kept, so every site is the same as
-/// before.
+/// Every pack's stylesheet and template files in one text, compressed
+/// with Brotli by the build script. One archive for all packs is much
+/// smaller than one per file, because the packs share many patterns, and
+/// the binary has a size budget.
+static ARCHIVE: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/packs.br"));
+
+/// Where each file starts and ends in the archive's text: one line per
+/// file, `<pack>/<file>`, its start and its end, split by tabs.
+static INDEX: &str = include_str!(concat!(env!("OUT_DIR"), "/packs.index"));
+
+/// The archive, read out the first time a build asks for a pack's file and
+/// kept, so every site is the same as before.
+#[derive(Debug, Default)]
+struct Archive {
+    /// Every file's text, one after the other.
+    text: String,
+    /// Each file's place in `text`, by `<pack>/<file>`.
+    files: BTreeMap<&'static str, Range<usize>>,
+}
+
+impl Archive {
+    /// The archive the build script wrote. Were its bytes ever damaged,
+    /// every pack would fall back to the shared look and files, which a
+    /// test of every pack would catch first.
+    fn read() -> Self {
+        let mut text = String::new();
+        if brotli::Decompressor::new(ARCHIVE, 4096)
+            .read_to_string(&mut text)
+            .is_err()
+        {
+            return Self::default();
+        }
+        let files = INDEX
+            .lines()
+            .filter_map(|line| {
+                let mut parts = line.split('\t');
+                let name = parts.next()?;
+                let start = parts.next()?.parse().ok()?;
+                let end = parts.next()?.parse().ok()?;
+                Some((name, start..end))
+            })
+            .collect();
+        Self { text, files }
+    }
+
+    /// The text of `file`, or nothing when the archive has no such file.
+    fn file(&self, file: &str) -> &str {
+        self.files
+            .get(file)
+            .and_then(|place| self.text.get(place.clone()))
+            .unwrap_or_default()
+    }
+}
+
+/// The archive, once read out.
+fn archive() -> &'static Archive {
+    static ARCHIVE_TEXT: OnceLock<Archive> = OnceLock::new();
+    ARCHIVE_TEXT.get_or_init(Archive::read)
+}
+
+/// A pack's stylesheet or template file, by its place in the archive.
 #[derive(Debug)]
 pub(crate) struct PackText {
-    /// The text, compressed with Brotli. Empty for a pack with no rules of
-    /// its own.
-    compressed: &'static [u8],
-    /// The text, once read out.
-    text: OnceLock<String>,
+    /// The file, as `<pack>/<file>`, such as `harbor/harbor.css`. Empty
+    /// for a pack with no rules of its own.
+    file: &'static str,
 }
 
 impl PackText {
-    /// The text whose Brotli bytes are `compressed`.
-    pub(crate) const fn compressed(compressed: &'static [u8]) -> Self {
-        Self {
-            compressed,
-            text: OnceLock::new(),
-        }
+    /// The file `file`, as `<pack>/<file>` under `packs/`.
+    pub(crate) const fn file(file: &'static str) -> Self {
+        Self { file }
     }
 
     /// A stylesheet with no rules, for the test build's sampler pack.
     #[cfg(feature = "test-util")]
     pub(crate) const fn empty() -> Self {
-        Self::compressed(&[])
+        Self::file("")
     }
 
-    /// The text. The build script wrote the bytes, so they always read
-    /// back; were they ever damaged, the pack would fall back to the shared
-    /// look and files, which a test of every pack would catch first.
-    fn text(&self) -> &str {
-        self.text.get_or_init(|| {
-            let mut text = String::new();
-            if !self.compressed.is_empty()
-                && brotli::Decompressor::new(self.compressed, 4096)
-                    .read_to_string(&mut text)
-                    .is_err()
-            {
-                text.clear();
-            }
-            text
-        })
+    /// The text: a stylesheet minified, a template file as written.
+    fn text(&self) -> &'static str {
+        archive().file(self.file)
     }
 }
 
@@ -104,17 +144,17 @@ pub struct PackTemplate {
 }
 
 impl PackTemplate {
-    /// The file `name` whose source, compressed with Brotli, is
-    /// `compressed`.
-    pub(crate) const fn compressed(name: &'static str, compressed: &'static [u8]) -> Self {
+    /// The file `name`, whose source is `file` (`<pack>/<file>`) in the
+    /// archive.
+    pub(crate) const fn file(name: &'static str, file: &'static str) -> Self {
         Self {
             name,
-            text: PackText::compressed(compressed),
+            text: PackText::file(file),
         }
     }
 
     /// The pack's template source for the file.
-    pub fn source(&'static self) -> &'static str {
+    pub fn source(&self) -> &'static str {
         self.text.text()
     }
 }
@@ -182,10 +222,7 @@ pub enum OptionKind {
 static CLASSIC: Pack = Pack {
     name: PackName::CLASSIC,
     summary: "The default look: a lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts.",
-    css: PackText::compressed(include_bytes!(concat!(
-        env!("OUT_DIR"),
-        "/packs/classic/classic.css.br"
-    ))),
+    css: PackText::file("classic/classic.css"),
     templates: &[],
     tokens: "",
     reader: &[],
