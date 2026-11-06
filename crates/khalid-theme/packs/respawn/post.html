@@ -16,7 +16,7 @@
 {% from "series.html" import series_box, series_steps -%}
 {% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
 {% from "sections/score_meter.html" import score_meter -%}
-{% from "respawn-parts.html" import post_rows -%}
+{% from "parts-respawn.html" import post_rows -%}
 {% set placement = template.options.contents -%}
 {% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
 {% set side = toc and placement in ["side-start", "side-end"] -%}

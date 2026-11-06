@@ -6,7 +6,7 @@
 {% block main %}
 {% from "card.html" import pages -%}
 {% from "sections/feed_list.html" import feed_list -%}
-{% from "locale-parts.html" import place_rows -%}
+{% from "parts-locale.html" import place_rows -%}
 {% set places = page.posts | selectattr("facts") | list -%}
 {% set notes = page.posts | rejectattr("facts") | list -%}
 <header class="list-header">

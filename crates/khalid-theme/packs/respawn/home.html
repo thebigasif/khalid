@@ -13,7 +13,7 @@
 {% from "home_parts.html" import home_sections -%}
 {% from "sections/feed_list.html" import feed_list -%}
 {% from "sections/score_meter.html" import score_meter -%}
-{% from "respawn-parts.html" import release_calendar -%}
+{% from "parts-respawn.html" import release_calendar -%}
 {% set options = template.options -%}
 {% set lead = page.featured if options.featured and page.featured else (page.posts | first) -%}
 {% set rest = page.posts | rejectattr("href", "eq", lead.href) | list if lead else [] -%}

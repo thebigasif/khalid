@@ -8,7 +8,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
-{% from "lesson_rows.html" import lesson_rows -%}
+{% from "parts-lesson-rows.html" import lesson_rows -%}
 {% set lessons = page.posts | selectattr("facts") | list -%}
 <header class="list-header">
 {% block kind %}{% set in_title = page.posts | selectattr("category") | map(attribute="category.name") | select("eq", page.title) | list -%}

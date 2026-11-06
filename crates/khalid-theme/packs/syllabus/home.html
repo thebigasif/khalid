@@ -16,7 +16,7 @@
 {% from "sections/figure_strip.html" import figure_strip -%}
 {% from "sections/feed_list.html" import feed_list -%}
 {% from "sections/progress_strip.html" import progress_strip -%}
-{% from "lesson_rows.html" import lesson_rows -%}
+{% from "parts-lesson-rows.html" import lesson_rows -%}
 {% set options = template.options -%}
 {% set lessons = page.posts | selectattr("facts") | reverse | list -%}
 {% set news = (page.posts | rejectattr("facts") | list)[:options.news_count] -%}

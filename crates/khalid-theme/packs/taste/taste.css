@@ -226,3 +226,5 @@ main > .related { margin-block-start: var(--ts-apart); }
   .post-body > :is(p, ul, ol, dl, blockquote), .page-body > :is(p, ul, ol, dl, blockquote) { font-size: 1.1875rem; }
   .site-footer { padding-block: 4rem; }
 }
+/* Each topic grid can be the target of a link, so it clears the header. */
+.ts-topic { scroll-margin-block-start: 2rem; }

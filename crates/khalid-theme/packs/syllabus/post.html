@@ -15,7 +15,7 @@
 {% from "comments.html" import comments_section -%}
 {% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
 {% from "sections/progress_strip.html" import progress_strip -%}
-{% from "lesson_rows.html" import lesson_rows -%}
+{% from "parts-lesson-rows.html" import lesson_rows -%}
 {% set placement = template.options.contents -%}
 {% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
 {% set side = toc and placement in ["side-start", "side-end"] -%}

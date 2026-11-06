@@ -12,7 +12,7 @@
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
 {% from "sections/hero.html" import hero -%}
-{% from "locale-parts.html" import place_rows, note_cards -%}
+{% from "parts-locale.html" import place_rows, note_cards -%}
 {% set options = template.options -%}
 {% set places = page.posts | selectattr("facts") | selectattr("category") | list -%}
 {% set notes = page.posts | rejectattr("facts") | list -%}

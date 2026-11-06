@@ -78,4 +78,4 @@ The demo's sample brand, a city guide called The Varrow List, uses a brick red (
 - **Itinerary** (built at the same time) is a set of trip diaries across countries, day by day, with a packing list. Locale stays in one city and is ordered by area, not by day or trip. It has no dates on its listings and no route.
 - **Harbor** shows facts as tags on recipe cards. Locale draws the price as a meter and lines up hours and kind on a ruled listing row.
 
-Locale adds no shared section part. The listing row and the price meter stay in the pack (`locale-parts.html`), since no other template on the list lists places. It reuses the hero, the feed list and the people grid.
+Locale adds no shared section part. The listing row and the price meter stay in the pack (`parts-locale.html`), since no other template on the list lists places. It reuses the hero, the feed list and the people grid.

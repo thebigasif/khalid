@@ -16,7 +16,7 @@
 {% from "comments.html" import comments_section -%}
 {% from "series.html" import series_box, series_steps -%}
 {% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
-{% from "locale-parts.html" import price_meter, place_rows, note_cards -%}
+{% from "parts-locale.html" import price_meter, place_rows, note_cards -%}
 {% set placement = template.options.contents -%}
 {% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
 {% set side = toc and placement in ["side-start", "side-end"] -%}

@@ -19,7 +19,7 @@ pub(crate) static SYLLABUS: Pack = Pack {
         PackTemplate::file("listing.html", "syllabus/listing.html"),
         PackTemplate::file("authors.html", "syllabus/authors.html"),
         PackTemplate::file("author.html", "syllabus/author.html"),
-        PackTemplate::file("lesson_rows.html", "syllabus/lesson_rows.html"),
+        PackTemplate::file("parts-lesson-rows.html", "syllabus/parts-lesson-rows.html"),
     ],
     tokens: include_str!("../packs/syllabus/tokens.toml"),
     reader: &[],

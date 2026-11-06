@@ -91,6 +91,17 @@ pub(crate) fn is_default(name: &str) -> bool {
     Defaults::get(name).is_some()
 }
 
+/// Whether `name` is a pack's own part, such as `parts-locale.html`: a file
+/// of macros the pack's other templates import. Only a built-in pack adds
+/// one; a site's `theme/templates/` cannot.
+pub(crate) fn is_pack_part(name: &str) -> bool {
+    name.strip_prefix("parts-")
+        .and_then(|rest| rest.strip_suffix(".html"))
+        .is_some_and(|inner| {
+            !inner.is_empty() && inner.bytes().all(|b| b.is_ascii_lowercase() || b == b'-')
+        })
+}
+
 /// Whether `name` is a post template a post may ask for, such as
 /// `post-wide.html` for `template: wide`.
 pub(crate) fn is_post_template(name: &str) -> bool {

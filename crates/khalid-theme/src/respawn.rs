@@ -22,7 +22,7 @@ pub(crate) static RESPAWN: Pack = Pack {
         PackTemplate::file("listing.html", "respawn/listing.html"),
         PackTemplate::file("authors.html", "respawn/authors.html"),
         PackTemplate::file("author.html", "respawn/author.html"),
-        PackTemplate::file("respawn-parts.html", "respawn/respawn-parts.html"),
+        PackTemplate::file("parts-respawn.html", "respawn/parts-respawn.html"),
     ],
     tokens: include_str!("../packs/respawn/tokens.toml"),
     reader: &[],
