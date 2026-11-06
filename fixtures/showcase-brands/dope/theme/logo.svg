@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="18" width="20" height="20" fill="#9c3a7b"/><rect x="34" y="18" width="20" height="20" fill="#1d1620"/>
+  <rect x="10" y="42" width="20" height="20" fill="#1d1620"/><rect x="34" y="42" width="20" height="20" fill="#9c3a7b"/>
+  <text textLength="236" lengthAdjust="spacingAndGlyphs" x="68" y="50" font-family="Raleway, 'Segoe UI', Arial, sans-serif" font-size="26" font-weight="800" letter-spacing="-0.5" fill="#1d1620">Larkspur Ledger</text>
+</svg>

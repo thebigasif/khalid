@@ -1,0 +1,57 @@
+{#- Based on Ghost's Dope theme, MIT licence, see LICENSE-ghost.txt.
+    Dope's front page (docs/templates/dope.md): a sideways shelf of topic
+    tiles as tall as the window, one per topic, each the newest picture of
+    that topic over a band in ink with the topic's name and its newest
+    title. The shelf scrolls and snaps with no script, two tiles to a wide
+    screen and one to a phone. Under it the newest posts as wide rows, a
+    picture beside each summary, then the page links. A later page, or a
+    blog with no topics, shows the blog's name over the rows alone. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+{% from "image.html" import picture -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
+{% set later = page.pagination and page.pagination.current > 1 -%}
+{% set shelf = [] if later else page.tabs -%}
+{% if shelf %}<h1 class="visually-hidden">{{ page.title }}</h1>
+<section class="shelf" aria-label="{{ t.topics }}">
+<ul class="shelf-list" role="list">
+{% for tab in shelf %}{% set lead = tab.posts[0] %}<li class="shelf-tile">
+{% if lead.image %}{{ picture(lead.image) }}
+{% else %}<div class="shelf-blank"></div>
+{% endif %}<div class="shelf-text">
+<h2><a href="{{ tab.href }}">{{ tab.title }}</a></h2>
+<p>{{ lead.title }}</p>
+</div>
+</li>
+{% endfor %}</ul>
+</section>
+<section class="feed" aria-labelledby="feed-title">
+<header class="dope-head">
+<h2 id="feed-title">{{ t.latest }}</h2>{{ hero_stats(template.options) }}
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}</header>
+{% if page.posts %}{{ cards(page.posts, 3) }}
+{% elif not page.sections %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% else %}<header class="dope-head">
+<h1>{{ page.title }}</h1>{% if not later %}{{ hero_stats(template.options) }}{% endif %}
+{% if page.intro and not later %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}</header>
+{% if page.posts %}{{ cards(page.posts) }}
+{% elif not page.sections %}<p>{{ t.no_posts }}</p>
+{% endif %}{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if not later %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{{ home_sections(page, template.options, t) }}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endif %}{% endblock %}
