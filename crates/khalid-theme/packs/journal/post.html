@@ -1,0 +1,93 @@
+{#- Based on Ghost's Journal theme, MIT licence, see LICENSE-ghost.txt.
+    Journal's post (docs/templates/journal.md): one line in small capitals
+    with the writers, the topic, the date and the reading time, then the
+    title very large and the subtitle large, all set to the start of the
+    wide frame, and the lead picture across it. The post reads in one
+    centred column. After it, the author box and a ruled row of three: a
+    link back to every issue, the share links, and the next post to read.
+    Comments, related posts, the call to action and a sign-up band in the
+    accent colour follow. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "contents.html" import contents_list -%}
+{% from "author_box.html" import author_box, reviewed_line -%}
+{% from "card.html" import cards -%}
+{% from "comments.html" import comments_section -%}
+{% from "series.html" import series_box, series_steps -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
+{% set placement = template.options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% set share = template.options.share -%}
+{% set related = page.related if "related_posts" in site.features else [] -%}
+{% set upnext = related[0] if related else none -%}
+{% if share != "none" %}{% set share_row %}<div class="share">
+<p class="share-title">{{ t.share }}</p>
+<ul>
+{% for link in share_links(meta.canonical, page.title, template.options.share_networks) %}<li><a href="{{ link.href }}" rel="nofollow noreferrer">{{ t.share_email if link.key == "email" else link.name }}</a></li>
+{% endfor %}</ul>
+</div>
+{% endset %}{% endif -%}
+{% if side and placement == "side-start" %}<article class="post post-with-toc post-toc-start">{% elif side %}<article class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post post-toc-folded">{% else %}<article class="post">{% endif %}
+<header class="post-header">
+<div class="post-meta">
+<address>{{ t.by }} {% for author in page.authors %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</address>
+{% if page.category %}<p><a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
+{% endif %}<p><time datetime="{{ page.date }}">{{ page.date | date }}</time></p>
+{% if page.updated %}<p>{{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time></p>
+{% endif %}{% if "reading_time" in site.features %}<p class="reading-time"><time datetime="PT{{ page.reading_time.minutes }}M">{{ t.reading_time | replace("{minutes}", page.reading_time.minutes | string) }}</time></p>
+{% endif %}{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
+{% endif %}</div>
+<h1>{{ page.title }}</h1>
+{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}{% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}{% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if page.image %}{{ picture(page.image) }}
+{% endif %}</header>
+{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.contents }}</summary>
+<nav aria-label="{{ t.contents }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}<div class="post-body">
+{{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
+</div>
+{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
+{% endif %}{{ preferred_source(template.options, t, "post") }}<nav class="journal-turn" aria-label="{{ t.pagination }}">
+<p class="journal-back"><a href="{{ site.home }}"><span class="journal-turn-label">{{ t.back_to_posts }}</span>{{ site.name }}</a></p>
+{% if share in ["end", "both"] %}{{ share_row }}{% endif %}{% if upnext %}<p class="journal-next"><a href="{{ upnext.href }}"><span class="journal-turn-label">{{ t.keep_reading }}</span>{{ upnext.title }}</a></p>
+{% endif %}</nav>
+</article>
+{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
+<h2>{{ t.mentions }}</h2>
+<ul>
+{% for link in page.mentions %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
+{% endif %}{% set shown = related[1:][:template.options.related_count] -%}
+{% if shown %}{% set layout = template.options.related -%}
+{% if layout == "scroll" %}<section class="related related-scroll">{% else %}<section class="related">{% endif %}
+<h2 class="journal-label">{{ t.related_posts }}</h2>
+{% if layout == "links" %}<ul class="related-links">
+{% for post in shown %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
+{% endfor %}</ul>
+{% elif layout == "list" %}{{ cards(shown, 3, "text") }}
+{% elif layout == "row" %}{{ cards(shown, 3, "row") }}
+{% elif layout == "scroll" %}{{ cards(shown, 3, "image") }}
+{% else %}{{ cards(shown, 3) }}
+{% endif %}</section>
+{% endif %}{% if template.cta and template.options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and template.options.newsletter in ["post", "both"] %}<div class="journal-band">
+{{ newsletter_form(site.subscribe, t) }}
+</div>
+{% endif %}{% endblock %}

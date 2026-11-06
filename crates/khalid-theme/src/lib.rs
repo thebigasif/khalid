@@ -32,6 +32,7 @@ mod font_files;
 mod fonts;
 mod harbor;
 mod headline;
+mod journal;
 mod keystone;
 mod ledger;
 mod links;
