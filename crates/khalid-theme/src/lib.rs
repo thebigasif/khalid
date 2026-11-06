@@ -45,6 +45,7 @@ pub mod slot;
 mod solo;
 mod source;
 mod split;
+mod ticker;
 mod token_name;
 mod token_values;
 mod tokens;
