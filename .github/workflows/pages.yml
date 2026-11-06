@@ -36,6 +36,8 @@ on:
       - "scripts/pages.sh"
       - "scripts/demo-brand.sh"
       - "scripts/template-previews.sh"
+      - "scripts/template-packs.sh"
+      - "crates/khalid-theme/packs/*/pack.toml"
       - "scripts/demos-bundle.sh"
       - "scripts/pages-forward.sh"
       - ".github/workflows/pages.yml"
