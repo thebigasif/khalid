@@ -29,6 +29,7 @@ mod folio;
 mod font_files;
 mod fonts;
 mod harbor;
+mod hub;
 mod keystone;
 mod ledger;
 mod links;

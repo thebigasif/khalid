@@ -1,0 +1,45 @@
+{#- Hub's front page (docs/templates/hub.md): a creator's link-in-bio home
+    in one narrow column. First the profile: the creator's round photo,
+    their name large, one line about them and up to four numbers. The
+    creator is the author the `creator` option names, or else the newest
+    post's author. Then the link stack: the call to action leads (the
+    `cta_tile` option), then each line of the `links` option as a large
+    tile, or the main menu when no links are set. Then the newsletter
+    form, and the latest posts as rows with a square picture. Sections
+    set in site.toml take the latest posts' place, as on every front
+    page. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+{% from "image.html" import avatar -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
+{% from "sections/link_stack.html" import link_stack -%}
+{% set options = template.options -%}
+{% set authors = page.posts | selectattr("author") | map(attribute="author") | list -%}
+{% set named = authors | selectattr("href", "endingwith", "/" ~ options.creator ~ "/") | list if options.creator else [] -%}
+{% set creator = named[0] if named else (authors[0] if authors else none) -%}
+<header class="profile">
+{% if creator and creator.image %}<div class="profile-photo">{{ avatar(creator.image) }}</div>
+{% endif %}<h1 class="profile-name">{{ page.title }}</h1>
+{% if page.intro %}<div class="profile-intro">
+{{ page.intro }}
+</div>
+{% elif options.tagline %}<p class="profile-intro">{{ options.tagline[0] }}</p>
+{% endif %}{{ hero_stats(options) }}</header>
+{{ link_stack(options.links, site.nav.primary, template.cta if options.cta_tile else none, t.link_stack) }}
+{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}<section class="latest" aria-labelledby="latest-title">
+<h2 id="latest-title">{{ t.latest_posts }}</h2>
+{{ cards(page.posts, 3) }}
+</section>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}

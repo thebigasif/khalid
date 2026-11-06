@@ -259,3 +259,7 @@ recent_publications = "Recent publications"
 news = "News"
 research_areas = "Research areas"
 people = "People"
+# The hub template's stack of link buttons, for screen readers, and its
+# heading under a post, where {name} is the site's name.
+link_stack = "Links"
+link_stack_more = "More from {name}"
