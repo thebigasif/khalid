@@ -2,4 +2,4 @@
 # See scripts/template-packs.sh.
 kind = "research"
 kind_label = "Research and academic"
-frame = 1216
+frame = 1200
