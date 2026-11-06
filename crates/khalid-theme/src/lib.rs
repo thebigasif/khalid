@@ -50,6 +50,7 @@ mod pack;
 mod palette;
 pub mod parts;
 mod properties;
+mod reel;
 mod research;
 mod respawn;
 mod resync;

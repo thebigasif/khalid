@@ -1,0 +1,93 @@
+{#- Reel's front page (docs/templates/reel.md): the site's name and
+    tagline; Now showing, the featured review or the newest one, in a
+    letterbox frame beside its ticket; the latest reviews as poster cards;
+    the score sheet, the reviews on this page ranked by their rating; then
+    the features feed, the page links and the call to action. A review is
+    a post with facts (1 the rating, 2 the release, 3 the cast, 4 where to
+    watch). A site with no reviews shows its posts as poster cards under
+    plain headings, with no score sheet. With home sections in site.toml, each section is a
+    poster grid of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "image.html" import picture -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% from "sections/poster_grid.html" import poster_grid -%}
+{% from "sections/rating.html" import rating -%}
+{% set options = template.options -%}
+{% macro stub(post) -%}
+{% if post.facts %}<div class="stub">
+{{ rating(post.facts[0].value) }}
+{% if post.facts | length > 1 %}<p class="stub-release">{{ post.facts[1].value }}</p>
+{% endif %}{% if post.facts | length > 3 %}<p class="stub-watch">{{ post.facts[3].value }}</p>
+{% endif %}</div>
+{% elif post.category %}<p class="stub-release">{{ post.category.name }}</p>
+{% endif %}
+{%- endmacro %}
+{% macro ticket(facts) -%}
+<div class="ticket">
+<div class="ticket-stub">{{ rating(facts[0].value, facts[0].label) }}</div>
+{% if facts | length > 1 %}<dl class="ticket-facts">
+{% for fact in facts[1:] %}<div{% if loop.index == 3 %} class="ticket-watch"{% endif %}>
+<dt>{{ fact.label }}</dt>
+<dd>{% if loop.index == 2 %}<ul class="cast-names" role="list">{% for name in fact.value | split(",") %}<li>{{ name | trim }}</li>{% endfor %}</ul>{% elif loop.index == 3 %}<ul class="watch-list" role="list">{% for service in fact.value | split(",") %}<li>{{ service | trim }}</li>{% endfor %}</ul>{% else %}{{ fact.value }}{% endif %}</dd>
+</div>
+{% endfor %}</dl>
+{% endif %}</div>
+{%- endmacro %}
+{{ hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) }}
+{% set reviews = page.posts | selectattr("facts") | list -%}
+{% set others = page.posts | rejectattr("facts") | list -%}
+{% set rated = reviews | length > 0 -%}
+{% if not rated %}{% set reviews = others %}{% set others = [] %}{% endif -%}
+{% set lead = page.featured if options.featured and page.featured else (reviews[0] if reviews else none) -%}
+{% set rest = reviews | rejectattr("href", "eq", lead.href) | list if lead else reviews -%}
+{% set features = (others | rejectattr("href", "eq", lead.href) | list if lead else others)[:options.features_count] -%}
+{% set ranked = (reviews | selectattr("facts") | sort(attribute="facts.0.value", reverse=true) | list)[:options.score_sheet] -%}
+{% if page.sections %}{% for section in page.sections %}<section class="reel-section" aria-labelledby="reel-section-{{ loop.index }}">
+<h2 id="reel-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{% call(post) poster_grid(section.posts) %}{{ stub(post) }}{% endcall %}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif lead %}<section class="now-showing" aria-labelledby="now-showing-title">
+<h2 id="now-showing-title">{{ t.now_showing if rated else t.featured }}</h2>
+<article class="lead-review">
+{% if lead.image %}<div class="screen">{{ picture(lead.image) }}</div>
+{% endif %}<div class="lead-text">
+{% if lead.category %}<p class="kind"><a href="{{ lead.category.href }}">{{ lead.category.name }}</a></p>
+{% endif %}<h3><a href="{{ lead.href }}">{{ lead.title }}</a></h3>
+<p class="lead-excerpt">{{ lead.excerpt }}</p>
+{% if lead.facts %}{{ ticket(lead.facts) }}
+{% endif %}</div>
+</article>
+</section>
+{% if rest %}<section class="latest-reviews" aria-labelledby="latest-reviews-title">
+<h2 id="latest-reviews-title">{{ t.latest_reviews if rated else t.latest }}</h2>
+{% call(post) poster_grid(rest) %}{{ stub(post) }}{% endcall %}
+</section>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if ranked and not page.sections %}<section class="score-sheet" aria-labelledby="score-sheet-title">
+<h2 id="score-sheet-title">{{ t.score_sheet }}</h2>
+<ol class="score-list" role="list">
+{% for post in ranked %}<li class="score-row">
+<span class="score-rank" aria-hidden="true">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span>
+<div class="score-what">
+<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p class="score-meta">{% if post.category %}<span>{{ post.category.name }}</span>{% endif %}{% if post.facts | length > 1 %}<span>{{ post.facts[1].value }}</span>{% endif %}{% if post.facts | length > 3 %}<span>{{ post.facts[3].value }}</span>{% endif %}</p>
+</div>
+{{ rating(post.facts[0].value) }}
+</li>
+{% endfor %}</ol>
+</section>
+{% endif %}{% if features %}<section class="features" aria-labelledby="features-title">
+<h2 id="features-title">{{ t.features }}</h2>
+{{ feed_list(features) }}
+</section>
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}
