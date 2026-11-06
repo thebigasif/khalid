@@ -44,6 +44,7 @@ mod headline;
 mod journal;
 mod hub;
 mod keystone;
+mod lattice;
 mod ledger;
 mod links;
 mod london;

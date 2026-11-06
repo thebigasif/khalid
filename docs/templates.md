@@ -47,6 +47,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `journal`: one writer's newsletter, with the latest issue in large type, every other issue as text beside a side column about the writer, and a sign-up band in your accent colour. Based on Ghost's Journal theme (MIT). See [Journal](templates/journal.md).
 - `hub`: a creator's link-in-bio home in one narrow column, with the creator's photo and name, a stack of large link buttons led by the call to action, and the latest posts as rows with a square picture. See [Hub](templates/hub.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
+- `lattice`: a science explainer site, with every picture a numbered figure, key numbers from each post's facts, footnotes as numbered tabs and marked glossary terms. See [Lattice](templates/lattice.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `london`: a picture-led blog or portfolio with the blog's description set large in the middle, tall picture tiles from edge to edge, two side by side and every third across the whole width, and a centred reading column. Based on Ghost's London theme (MIT). See [London](templates/london.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
@@ -171,6 +172,7 @@ Five templates show facts. Each reads them by their place in the list, not by th
 - [Workbench](templates/workbench.md#score-panels) shows a score panel on review cards and at the top of a review: the first fact large, with a meter when it is a score out of ten, then up to three figures.
 - [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.
 - [Ticker](templates/ticker.md#issues-are-posts-with-facts) treats posts with facts as issues, each fact a market and its move. It draws a post's facts as a bar chart and lists posts in a table with one column per fact, each figure cell shaded by how far it moved.
+- [Lattice](templates/lattice.md#what-you-write) shows a post's facts as a row of key numbers under its lead picture, the value large and the label under it, and does the same for the lead explainer on the front page.
 - [Harbor](templates/harbor.md#recipe-facts) shows up to four posts with facts in a recipe card strip on the front page, with the first two facts as tags, and all the facts as tags under a post's title.
 - [Respawn](templates/respawn.md#reviews-are-posts-with-facts) treats posts with facts as reviews. The first fact is the score out of 10, shown as a dark square and a health bar on cards, lists and the review, and the second, the platforms, shows under it.
 
