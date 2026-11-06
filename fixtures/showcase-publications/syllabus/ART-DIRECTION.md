@@ -25,7 +25,7 @@ Of the 15 pictures, 3 show materials, 4 are modern abstract watercolours and 8 a
 
 | Slot | Ratio | Source size | Notes |
 |---|---|---|---|
-| Lead picture on a lesson | as the source, mostly 4:3 or 3:2 | 1600 px wide, or the source's width when smaller | Shown at the text width, about 40rem. Three are upright: the paper, the palette and Dürer's grasses. |
+| Lead picture on a lesson | as the source, mostly 4:3 or 3:2 | 1600 px wide, or the source's width when smaller | Shown at the text width, about 36rem. Three are upright: the paper, the palette and Dürer's grasses. |
 | Tutor mark | 1:1 | 160 px SVG | Drawn, one ink colour on a light tint of the same ink. No photographs of people. |
 
 The Syllabus template shows no pictures in its lists: the outline is a text list of lessons. Only the lesson page shows the lead picture.
