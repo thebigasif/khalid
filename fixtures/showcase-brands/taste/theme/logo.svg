@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <ellipse cx="36" cy="44" rx="26" ry="20" fill="#a8461a"/>
+  <path d="M22 38 C26 34 30 34 34 38 M34 36 C38 32 42 32 46 36 M28 48 C32 44 36 44 40 48" fill="none" stroke="#fdf8f1" stroke-width="3.5" stroke-linecap="round"/>
+  <text textLength="236" lengthAdjust="spacingAndGlyphs" x="72" y="51" font-family="Poppins, Arial, sans-serif" font-size="27" font-weight="700" fill="#2a1d16">Larkspur Ledger</text>
+</svg>

@@ -1,0 +1,2 @@
+Added
+- A new template, Taste, based on Ghost's Taste theme (MIT), for a baking or recipe blog. The front page opens with a large centred header between two thin rules and a sign-up field, then a magazine block of five posts, then a picture grid for each main topic, three and four across. Each post is centred, with a wide lead picture and a sign-up box after it. Its sample brand serves Poppins and EB Garamond from the blog itself, taken from each font's own project with its OFL licence. Pick it with `[template] name = "taste"`; see docs/templates/taste.md.
