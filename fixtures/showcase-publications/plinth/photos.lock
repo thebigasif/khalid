@@ -1,0 +1,138 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. The plans are
+# drawings made for this publication and live beside each post.
+
+[[photos]]
+file = "en/posts/2025-03-12-quarry-lane-library/lead.jpg"
+sha256 = "a301cae29193b4caf1a719e3f0e1f3589fc29373221458c44aabdb5f7e54320e"
+source = "https://wordpress.org/photos/photo/9416532b8f/"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "library window in a brick wall by bibliotekarz, via wordpress"
+title = "library window in a brick wall"
+creator = "bibliotekarz"
+openverse = "ec328d8a-432e-4f44-a569-873e7220be78"
+needs_credit = false
+size = "1600x900"
+
+[[photos]]
+file = "en/posts/2025-05-14-whitecross-house/lead.jpg"
+sha256 = "d905c5af3b257a8eeb0a172dadd646434e039ef318ece4c4c088f0f164e4df7e"
+source = "https://wordpress.org/photos/photo/1967a9df80/"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A modern, minimalist white house with rectangular windows and a chimney against a clear blue sky. by Nilo Velez, via wordpress"
+title = "A modern, minimalist white house with rectangular windows and a chimney against a clear blue sky."
+creator = "Nilo Velez"
+openverse = "7d4100d9-43b0-4e9e-8c98-ff003bde6370"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2025-07-02-mill-street-flat/lead.jpg"
+sha256 = "4cfc6fed00ab810d9db4cf09aa3d0f6914b0e73313ffdd5f407d890113f37d06"
+source = "https://commons.wikimedia.org/wiki/File:Modern_living_room_with_stylish_furniture_and_a_view_of_the_outdoors_in_a_cozy_apartment_setting.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Modern living room with stylish furniture and a view of the outdoors in a cozy apartment setting by Shixart1985, via Wikimedia Commons"
+title = "Modern living room with stylish furniture and a view of the outdoors in a cozy apartment setting"
+creator = "Shixart1985"
+openverse = "commons:File:Modern living room with stylish furniture and a view of the outdoors in a cozy apartment setting.jpg"
+needs_credit = true
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2025-09-17-ropewalk-workshops/lead.jpg"
+sha256 = "1a14592cb75bb60180b8f93ddfbf63c0d5bba686cbc07889e3f564b3036e5373"
+source = "https://wordpress.org/photos/photo/996a6549d6/"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Modern open-sided building with a metal structure and rooftop solar panels, surrounded by landscaped gardens and concrete walkways. by franyeri, via wordpress"
+title = "Modern open-sided building with a metal structure and rooftop solar panels, surrounded by landscaped gardens and concrete walkways."
+creator = "franyeri"
+openverse = "3e877a17-edb8-4db6-a437-4822f4c1c74d"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2025-11-05-bow-lane-townhouse/lead.jpg"
+sha256 = "1f97eab8d7972f31c493c74012e0cdf80ebfdf4337a06b737c9ac646bc936ce7"
+source = "https://commons.wikimedia.org/wiki/File:Henrietta_Street_Area_-_Dublin_6005817512.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Henrietta Street Area - Dublin 6005817512 by William Murphy, via Wikimedia Commons"
+title = "Henrietta Street Area - Dublin 6005817512"
+creator = "William Murphy"
+openverse = "commons:File:Henrietta Street Area - Dublin 6005817512.jpg"
+needs_credit = true
+size = "1600x1001"
+
+[[photos]]
+file = "en/posts/2026-01-21-net-store-cafe/lead.jpg"
+sha256 = "e770c3442b5f4ce24d9179f46b0384309921b71f2c97e9c7491c8a2ed040db4f"
+source = "https://wordpress.org/photos/photo/5386a30566/"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Cafe interior with a long blue bench, small tables, light brown chairs, and abstract gold wall art on a white wall. by Iyundhu Kennedy, via wordpress"
+title = "Cafe interior with a long blue bench, small tables, light brown chairs, and abstract gold wall art on a white wall."
+creator = "Iyundhu Kennedy"
+openverse = "1df9ff78-1d5a-4605-ad71-f61e8393be93"
+needs_credit = false
+size = "1600x1205"
+
+[[photos]]
+file = "en/posts/2026-02-25-drawing-by-hand/lead.jpg"
+sha256 = "156f76d39e7b20e2d77aaf5482247c4af6a9f666f79670b0b912b78f26b51b5d"
+source = "https://commons.wikimedia.org/wiki/File:Technical_drawing,_drawing_board,_workplace,_planning,_men,_work_Fortepan_3557.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Technical drawing, drawing board, workplace, planning, men, work Fortepan 3557 by Fortepan, ID 3557, donor unknown, via Wikimedia Commons"
+title = "Technical drawing, drawing board, workplace, planning, men, work Fortepan 3557"
+creator = "Fortepan, ID 3557, donor unknown"
+openverse = "commons:File:Technical drawing, drawing board, workplace, planning, men, work Fortepan 3557.jpg"
+needs_credit = false
+size = "1600x1027"
+
+[[photos]]
+file = "en/posts/2026-04-08-chapel-gallery-stair/lead.jpg"
+sha256 = "1cab71836a076e0f17aaee266bff8e750c50a0536cb2a896c0e47a8ecc882c5a"
+source = "https://wordpress.org/photos/photo/82064e4dbd/"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A wide staircase hallway with a red exit sign above the stairs. by Allie Nimmons, via wordpress"
+title = "A wide staircase hallway with a red exit sign above the stairs."
+creator = "Allie Nimmons"
+openverse = "4a09a6a9-7288-452d-9986-ef460ca957a6"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-05-27-lime-plaster/lead.jpg"
+sha256 = "c9b84b95efef84df40a0b9219c7ad0097d848bc572a5b94c72d92ff54544bd44"
+source = "https://commons.wikimedia.org/wiki/File:Lime_plastered_wall,_Tinos,_Greece_julesvernex2.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Lime plastered wall, Tinos, Greece julesvernex2 by Jules Verne Times Two, via Wikimedia Commons"
+title = "Lime plastered wall, Tinos, Greece julesvernex2"
+creator = "Jules Verne Times Two"
+openverse = "commons:File:Lime plastered wall, Tinos, Greece julesvernex2.jpg"
+needs_credit = true
+size = "1600x1042"
+
+[[photos]]
+file = "en/posts/2026-08-19-brook-row-almshouses/lead.jpg"
+sha256 = "07b595b59123ce2ec00ec64269cd5d1ed74a86d42408a9478ea232749b02d888"
+source = "https://wordpress.org/photos/photo/78869aaeff/"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A calm landscaped area with grassy patches and stone pathways leading to modern red-brick buildings with large windows, surrounded by trees including tall slender ones, and a small wooden sign in the foreground reading “Be friendly and approachable,” under an overcast sky. by Kipyeko Kenneth, via wordpress"
+title = "A calm landscaped area with grassy patches and stone pathways leading to modern red-brick buildings with large windows, surrounded by trees including tall slender ones, and a small wooden sign in the foreground reading “Be friendly and approachable,” under an overcast sky."
+creator = "Kipyeko Kenneth"
+openverse = "ba71f937-8ec0-44ce-b50b-0fd5e70866c5"
+needs_credit = false
+size = "1600x1066"
+
+[[photos]]
+file = "en/posts/2026-10-07-hiring-architectural-assistant/lead.jpg"
+sha256 = "1f4b6b2fc44c834b365ba8be28260f6d3ae3198b0507aa06e4f997f91f62efdc"
+source = "https://wordpress.org/photos/photo/99269940c5/"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A glowing Edison-style hanging light bulb on a plain white wall. by dhrashtidev, via wordpress"
+title = "A glowing Edison-style hanging light bulb on a plain white wall."
+creator = "dhrashtidev"
+openverse = "1b6a5285-b1d6-4a12-8ac6-fd9ed71031d9"
+needs_credit = false
+size = "1600x1066"

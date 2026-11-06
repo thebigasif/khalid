@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 976 624" width="976" height="624" role="img" aria-labelledby="t">
+<title id="t">Ground floor plan of Quarry Lane Library: the old library on the left, the new reading room on the right, joined by a glazed entrance</title>
+<rect width="976" height="624" fill="#fbfaf6"/>
+<g fill="none" stroke="#262624" stroke-width="2.5">
+<rect x="46.0" y="46.0" width="340.0" height="476.0"/>
+<rect x="386.0" y="46.0" width="136.0" height="170.0"/>
+<rect x="386.0" y="216.0" width="136.0" height="136.0"/>
+<rect x="386.0" y="352.0" width="68.0" height="170.0"/>
+<rect x="454.0" y="352.0" width="68.0" height="170.0"/>
+<rect x="522.0" y="46.0" width="408.0" height="306.0"/>
+<rect x="522.0" y="352.0" width="238.0" height="170.0"/>
+<rect x="760.0" y="352.0" width="170.0" height="170.0"/>
+</g>
+<rect x="46" y="46" width="884" height="476" fill="none" stroke="#262624" stroke-width="7"/>
+<line x1="114" y1="46" x2="318" y2="46" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="114" y1="46" x2="318" y2="46" stroke="#262624" stroke-width="1.2"/>
+<line x1="590" y1="46" x2="896" y2="46" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="590" y1="46" x2="896" y2="46" stroke="#262624" stroke-width="1.2"/>
+<line x1="930" y1="80" x2="930" y2="318" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="930" y1="80" x2="930" y2="318" stroke="#262624" stroke-width="1.2"/>
+<line x1="522" y1="522" x2="726" y2="522" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="522" y1="522" x2="726" y2="522" stroke="#262624" stroke-width="1.2"/>
+<line x1="454" y1="46" x2="508.4" y2="46" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="454" y1="46" x2="454" y2="-8.400000000000006" stroke="#262624" stroke-width="1.5"/>
+<path d="M508.4 46 A54.400000000000006 54.400000000000006 0 0 0 454 -8.400000000000006" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="386" y1="114" x2="386" y2="148" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="386" y1="114" x2="420" y2="114" stroke="#262624" stroke-width="1.5"/>
+<path d="M386 148 A34 34 0 0 0 420 114" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="590" y1="352" x2="624" y2="352" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="590" y1="352" x2="590" y2="386" stroke="#262624" stroke-width="1.5"/>
+<path d="M624 352 A34 34 0 0 1 590 386" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="828" y1="352" x2="858.6" y2="352" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="828" y1="352" x2="828" y2="382.6" stroke="#262624" stroke-width="1.5"/>
+<path d="M858.6 352 A30.6 30.6 0 0 1 828 382.6" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<g font-family="'Hanken Grotesk', Arial, sans-serif" fill="#262624" text-anchor="middle">
+<text x="216.0" y="284.0" font-size="13" font-weight="600">Old library</text>
+<text x="216.0" y="299.0" font-size="10.5" fill="#8a867c">140 m²</text>
+<text x="454.0" y="131.0" font-size="13" font-weight="600">Entrance</text>
+<text x="454.0" y="146.0" font-size="10.5" fill="#8a867c">20 m²</text>
+<text x="454.0" y="284.0" font-size="13" font-weight="600">Desk</text>
+<text x="454.0" y="299.0" font-size="10.5" fill="#8a867c">16 m²</text>
+<text x="420.0" y="437.0" font-size="11" font-weight="600">WC</text>
+<text x="420.0" y="452.0" font-size="10.5" fill="#8a867c">10 m²</text>
+<text x="488.0" y="437.0" font-size="11" font-weight="600">Store</text>
+<text x="488.0" y="452.0" font-size="10.5" fill="#8a867c">10 m²</text>
+<text x="726.0" y="199.0" font-size="13" font-weight="600">Reading room</text>
+<text x="726.0" y="214.0" font-size="10.5" fill="#8a867c">108 m²</text>
+<text x="641.0" y="437.0" font-size="13" font-weight="600">Children</text>
+<text x="641.0" y="452.0" font-size="10.5" fill="#8a867c">35 m²</text>
+<text x="845.0" y="437.0" font-size="13" font-weight="600">Study room</text>
+<text x="845.0" y="452.0" font-size="10.5" fill="#8a867c">25 m²</text>
+</g>
+<g transform="translate(947.0 33.0) rotate(0)"><circle r="13" fill="none" stroke="#262624" stroke-width="1.2"/><path d="M0 -11 L5 7 L0 3 L-5 7 Z" fill="#262624"/></g>
+<text x="947.0" y="61.0" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#262624">N</text>
+<g stroke="#262624" stroke-width="1">
+<rect x="46" y="594" width="34" height="6" fill="#262624"/>
+<rect x="80" y="594" width="34" height="6" fill="#fbfaf6"/>
+<rect x="114" y="594" width="34" height="6" fill="#262624"/>
+<rect x="148" y="594" width="34" height="6" fill="#fbfaf6"/>
+<rect x="182" y="594" width="34" height="6" fill="#262624"/>
+</g>
+<g font-family="Arial, sans-serif" font-size="10" fill="#262624"><text x="46" y="614">0</text><text x="216" y="614" text-anchor="middle">5 m</text></g>
+
+</svg>

@@ -52,6 +52,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | Link stack | `link_stack(lines, nav=[], cta=none, label=none)`; `lines` written `label \| address` or `label \| address \| note`, `nav` the links used when there are no lines, `cta` the call to action that leads | Large link buttons, one under another, each as wide as the column | Creator hub, musician (streaming links), podcast (where to listen), course (enrol links) |
 | Video grid | `video_grid(posts, level=3, numbered=false, shelf=false)`; the first fact is the running time | Thumbnail cards cut to 16:9, each with a play bar under the picture (a play mark, a track and the running time), the title, date and category; with `shelf`, one row that scrolls sideways | Video creator (Channel), creator hub, online course lessons |
 | Session cards | `session_cards(posts, level=3)`; facts by position: 1 in the ring (such as the time), 2 and 3 beside it | Picture cards; the first fact in a ring that widens to a pill, the next two beside it; the date when a post has no facts | Health routines, online course lessons, recipes, workshops |
+| Title block | `title_block(facts, sheet=none)`; call it with `{% call %}` to add cells, each a `<div>` with a `<dt>` and a `<dd>` | A post's facts in ruled cells, each label small over its value, with an optional sheet number in a cell of its own | Architecture projects, fashion looks (credits), travel trips (dates and distances) |
 
 ## Planned parts
 

@@ -1,0 +1,43 @@
+# Tessel Rowe Architects' types of work. The Plinth template lists each
+# one that holds projects on the front page, and each category page shows
+# its projects as numbered sheets, with its intro on top.
+
+[[categories]]
+slug = "houses"
+en = "Houses"
+
+[categories.seo.en]
+description = "Houses by Tessel Rowe Architects: new houses on awkward plots and old houses repaired and extended."
+intro = "New houses on narrow or sloping plots, and old houses repaired and opened up. Most of our houses are for families who want more light, not more rooms."
+
+[[categories]]
+slug = "interiors"
+en = "Interiors"
+
+[categories.seo.en]
+description = "Interiors by Tessel Rowe Architects: flats, shops and cafes fitted into existing buildings."
+intro = "Flats, shops and cafes fitted into rooms that were built for something else. We design the joinery, the lighting and the finishes as one piece."
+
+[[categories]]
+slug = "workplaces"
+en = "Workplaces"
+
+[categories.seo.en]
+description = "Workplaces by Tessel Rowe Architects: workshops and studios in old industrial buildings."
+intro = "Workshops, studios and small offices, mostly in old sheds and warehouses that still have good bones."
+
+[[categories]]
+slug = "public-buildings"
+en = "Public buildings"
+
+[categories.seo.en]
+description = "Public buildings by Tessel Rowe Architects: libraries, galleries and homes for older people."
+intro = "Libraries, galleries and housing for the town. These projects take longest, and they are the ones we are proudest of."
+
+[[categories]]
+slug = "studio-notes"
+en = "Studio notes"
+
+[categories.seo.en]
+description = "Notes from the Tessel Rowe Architects studio: materials, methods and news."
+intro = "What we are testing, how we work and who we are looking for."

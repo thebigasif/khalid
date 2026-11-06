@@ -311,3 +311,7 @@ routine_notes = "Notizen"
 # The lattice template's key numbers and its front page.
 key_numbers = "Zahlen im Überblick"
 latest_explainers = "Neueste Erklärungen"
+projects = "Projekte"
+studio_notes = "Notizen aus dem Büro"
+types_of_work = "Arbeitsbereiche"
+sheet = "Blatt"

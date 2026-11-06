@@ -264,6 +264,7 @@ static PACKS: &[&Pack] = &[
     &crate::london::LONDON,
     &crate::meridian::MERIDIAN,
     &crate::reel::REEL,
+    &crate::plinth::PLINTH,
     &crate::research::RESEARCH,
     &crate::ruby::RUBY,
     &crate::respawn::RESPAWN,
