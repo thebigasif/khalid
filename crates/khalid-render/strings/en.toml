@@ -360,3 +360,8 @@ column_title = "Title"
 # heading under a post, where {name} is the site's name.
 link_stack = "Links"
 link_stack_more = "More from {name}"
+# The aperture template's exposure plate, contact sheet and author page.
+camera_details = "Camera details"
+contact_sheet = "Contact sheet"
+more_pictures = "More pictures"
+stories = "Stories"

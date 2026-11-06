@@ -13,6 +13,7 @@
 
 mod almanac;
 mod alto;
+mod aperture;
 mod atlas;
 mod beacon;
 mod brand;

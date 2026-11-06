@@ -1,0 +1,146 @@
+/* Aperture (docs/templates/aperture.md): one photographer's site. One
+   picture at a time, the full width of a wide frame on a warm white like
+   a print's border, the words in a book serif under it, and the camera
+   details in a monospace plate like the edge of a film strip. Older
+   pictures sit in a light contact sheet. Every colour is a token or a mix
+   of tokens. */
+:root {
+  --ap-frame: 81rem;
+  --ap-hair: color-mix(in oklab, var(--color-text) 14%, var(--color-background));
+  --ap-ink-soft: color-mix(in oklab, var(--color-text) 72%, var(--color-background));
+}
+.site-header, main, .site-footer, main:has(.post-with-toc), :where(body:has(.post-with-toc)) :is(.site-header, .site-footer) { max-inline-size: var(--ap-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: var(--measure); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
+main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
+h1, h2, h3 { letter-spacing: -0.01em; }
+
+/* The header: the name on the start side, the menu in small spaced
+   capitals on the end side, one hairline under them. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.25rem; border-block-end: 1px solid var(--ap-hair); }
+.site-name { font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); letter-spacing: -0.01em; color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.5rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.75rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); }
+.site-header nav a[aria-current] { color: var(--color-link); font-weight: 400; box-shadow: inset 0 -1px var(--color-accent); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; font-size: var(--text-small); }
+
+/* Buttons: square ink blocks. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-background); background: var(--color-text); border: 0; border-radius: var(--radius); font: 400 0.8125rem/1.2 var(--font-mono); letter-spacing: 0.08em; text-align: center; text-decoration: none; text-transform: uppercase; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: var(--color-accent); color: var(--color-on-accent); text-decoration: none; }
+
+/* Section labels: small spaced capitals in the monospace. */
+:is(.contact-sheet, .sheet-section, .author-stories, .author-others, .mentions, .topic-tabs, .media-row) > h2, .post-footer > h2 { margin-block: 0 1.25rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 400; letter-spacing: 0.1em; line-height: 1.4; text-transform: uppercase; }
+
+/* The front page: the name and the tagline on one ruled line. */
+.masthead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 2rem; margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) clamp(1.5rem, 1rem + 2vw, 3rem); }
+.masthead-name { margin: 0; font-size: clamp(2rem, 1.5rem + 2vw, 3.25rem); line-height: 1.05; }
+.masthead-line { flex: 1 1 22rem; max-inline-size: 40rem; margin: 0; color: var(--color-muted); font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); font-style: italic; line-height: 1.45; }
+.masthead-line > * { margin: 0; }
+.masthead > .hero-stats { flex-basis: 100%; }
+
+/* A story: the picture the full width of the frame, then the caption row
+   with the words on the start side and the plate on the end side. */
+.stories { display: grid; gap: clamp(4rem, 2rem + 6vw, 8rem); }
+.story, .story-words, .row-words { min-inline-size: 0; }
+.story-picture { display: block; }
+.story-picture .image, .print .image, .row-picture .image { margin: 0; }
+.story-picture img, .print img { display: block; inline-size: 100%; block-size: auto; max-block-size: 88vh; object-fit: contain; }
+.story-caption { display: grid; gap: 1.25rem 4rem; margin-block-start: 1.25rem; }
+@media (min-width: 60rem) { .story-caption { grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); align-items: start; } }
+.story-meta { margin: 0 0 0.5rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.story-meta a { color: var(--color-link); text-decoration: none; }
+.story-meta a:hover { text-decoration: underline; }
+.story-title { margin: 0; font-size: var(--text-h2); line-height: 1.15; }
+.story-title a { color: var(--color-text); text-decoration: none; }
+.story-title a:hover { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.story-summary { max-inline-size: var(--measure); margin: 0.75rem 0 0; color: var(--ap-ink-soft); }
+
+/* The exposure plate: the camera details as a strip of ruled cells in the
+   monospace, like the edge of a film. */
+.plate { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border-block: 1px solid var(--color-text); font-family: var(--font-mono); }
+.plate-cell { min-inline-size: 0; padding: 0.625rem 0.75rem 0.75rem 0; }
+.plate-cell:nth-child(even) { padding-inline-start: 0.75rem; border-inline-start: 1px solid var(--ap-hair); }
+.plate-cell:nth-child(n + 3) { border-block-start: 1px solid var(--ap-hair); }
+.plate dt { color: var(--color-muted); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.plate dd { margin: 0.125rem 0 0; font-size: 0.875rem; line-height: 1.4; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.print { margin-block: clamp(1rem, 0.5rem + 1.5vw, 2rem) 2.5rem; }
+.print figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.04em; text-align: end; }
+@media (min-width: 48rem) {
+  .print .plate { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-block-start: 1rem; }
+  .print .plate-cell { padding-inline-start: 0.75rem; border-block-start: 0; border-inline-start: 1px solid var(--ap-hair); }
+  .print .plate-cell:first-child { padding-inline-start: 0; border-inline-start: 0; }
+}
+.post-header .plate { margin-block-start: 1.5rem; }
+
+/* The contact sheet: a light strip of small pictures on the surface that
+   scrolls sideways, each with its title and place under it. */
+.contact-sheet, .sheet-section { margin-block: var(--space-section) 0; padding: 1.5rem 0 1rem; border-block-start: 1px solid var(--color-text); }
+.sheet { display: grid; grid-auto-columns: minmax(13rem, 18rem); grid-auto-flow: column; gap: 1.5rem; margin: 0; padding: 0 0 1rem; list-style: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; }
+.sheet-frame { scroll-snap-align: start; }
+.sheet-frame article { padding: 0.5rem 0.5rem 0.75rem; background: var(--color-surface); }
+.sheet-link { display: block; color: var(--color-text); text-decoration: none; }
+.sheet-link .image { margin: 0; }
+.sheet-link img { aspect-ratio: 3 / 2; object-fit: cover; }
+.sheet-blank { display: block; aspect-ratio: 3 / 2; background: var(--ap-hair); }
+.sheet-title { margin: 0.625rem 0 0; font-size: 1.0625rem; line-height: 1.3; }
+.sheet-link:hover .sheet-title { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 1px; }
+.sheet-meta { margin: 0.25rem 0 0; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.04em; }
+.sheet-section .view-all { margin-block: 0.5rem 0; }
+.contact-sheet + .pagination, .stories + .pagination { margin-block-start: 3rem; }
+
+/* Lists and the author page: one picture a row, the words beside it. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 3rem; padding-block-end: 1.5rem; border-block-end: 1px solid var(--color-text); }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 0.75rem; color: var(--ap-ink-soft); }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.rows { display: grid; gap: clamp(3rem, 2rem + 3vw, 5rem); margin: 0; padding: 0; list-style: none; }
+.row { display: grid; gap: 1.25rem 3rem; }
+@media (min-width: 60rem) { .row { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: end; } }
+.row-picture { display: block; }
+.row-picture img { display: block; max-block-size: 80vh; object-fit: contain; object-position: left center; }
+.row-words .plate { margin-block-start: 1.25rem; }
+.row-words .story-summary { margin-block-start: 0.5rem; }
+
+/* A post: the place, the title, the summary and one line of meta over a
+   calm column of text. */
+.post-header { margin-block: 0 2rem; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.1; }
+.post-place { margin-block: 0 0.75rem; font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.post-place a { text-decoration: none; }
+.post-place a:hover { text-decoration: underline; }
+.post-header .dek { margin-block: 0 1rem; color: var(--ap-ink-soft); font-size: 1.25rem; font-style: italic; line-height: 1.45; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-byline { margin: 0; }
+.post-byline a { color: var(--color-text); text-decoration: none; }
+.post-byline a:hover { color: var(--color-link); text-decoration: underline; }
+.updated-note { font-size: var(--text-small); }
+.post-body :is(h2, h3) { margin-block-start: 1.75em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer { margin-block-start: 3rem; }
+.post-footer .tags a { padding-inline: 0.75rem; border: 1px solid var(--ap-hair); background: transparent; color: var(--color-text); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
+.post-footer .tags a:hover { border-color: var(--color-text); }
+
+/* A person: the mark beside the name, then their stories. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 7.5rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; }
+.author-bio { max-inline-size: var(--measure); }
+.author-stories, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter: a quiet band on the surface. */
+.cta-band { background: var(--color-surface); border: 0; border-block-start: 1px solid var(--color-text); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 0; border-radius: 0; }
+
+/* The footer: one hairline, quiet links. */
+.site-footer { border-block-start: 1px solid var(--ap-hair); }

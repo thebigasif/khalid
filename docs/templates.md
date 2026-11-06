@@ -23,6 +23,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `classic`: a wide frame with a large lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
 - `alto`: a clean, minimal blog with a sideways strip of featured posts, then one post under another with a wide picture, and a calm column for each post. Based on Ghost's Alto theme (MIT). See [Alto](templates/alto.md).
+- `aperture`: one photographer's site, with each post one picture the full width of the page, its story and a plate of its camera, lens and exposure, and older pictures in a light contact sheet. See [Aperture](templates/aperture.md).
 - `atlas`: a publication for a blog with many topics, with a map-sheet masthead that indexes every topic, featured stories and picture cards. See [Atlas](templates/atlas.md).
 - `beacon`: a charity or a cause, with campaigns that each carry a goal meter, impact figures, a news feed and a donate call in the header, the hero and a band on every page. See [Beacon](templates/beacon.md).
 - `bulletin`: a newsletter-first blog with a sign-up panel in your accent colour beside the latest issue, a ruled list of every other issue and a centred reading column. Based on Ghost's Bulletin theme (MIT). See [Bulletin](templates/bulletin.md).
@@ -162,6 +163,7 @@ Several templates show facts. Each reads them by their place in the list, not by
 Five templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
 
 - [Fixture](templates/fixture.md#matches-are-posts-with-facts) treats posts with facts as matches: the opponent, the result or kick-off, the ground and the competition. Results show as scoreboard rows with a W, D or L chip, the front page shows the next match and the club's form, and a match report opens with a scoreboard.
+- [Aperture](templates/aperture.md#camera-details-are-facts) shows the facts as a plate of camera details under each picture: the camera, the lens, the exposure and the date it was taken.
 - [Folio](templates/folio.md#release-notes) treats posts with facts as releases. The front page lists them in a dated release log beside the essays, tagged with the first fact, such as the version. A release's page shows its facts above the title.
 - [Workbench](templates/workbench.md#score-panels) shows a score panel on review cards and at the top of a review: the first fact large, with a meter when it is a score out of ten, then up to three figures.
 - [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.

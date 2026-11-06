@@ -1,0 +1,2 @@
+Added
+- The Aperture template, for one photographer. Each post is one picture and its story: the front page shows the newest posts as full-width single-image stories, each with a plate of its camera, lens, exposure and the date it was taken, read from the post's facts, and the older posts in a light contact sheet that scrolls sideways. A post opens with its picture the full width of the frame, then the story in one calm column. Lists show one picture a row, never a grid.
