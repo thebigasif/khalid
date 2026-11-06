@@ -72,7 +72,7 @@ With `[[reader.home_sections]]` in `site.toml`, each section is a shelf in place
 2. The playlist as a small label, the title, and the post's description under it.
 3. The host with their mark and role, the date, and the facts as small labels.
 4. **The screen:** the video, on your surface colour, wider than the text on a laptop. A post without a video shows its lead picture there.
-5. The notes in one column about 40rem wide.
+5. The notes in one column about 37rem wide.
 6. The series box and the links to the parts before and after, when the post is part of a series.
 7. The tags, the share links and the author box.
 8. **Up next:** related posts as thumbnail cards with their play bars.
@@ -101,7 +101,7 @@ Channel's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.65` |
 | `[type] heading_weight` | `600` |
 | `[shape] radius` | `0.5rem` |
-| `[shape] measure` | `40rem` |
+| `[shape] measure` | `37rem` |
 | `[space] section` | `4rem`, the space between the parts of a page |
 
 ## Options
