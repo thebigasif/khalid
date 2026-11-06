@@ -24,7 +24,7 @@ Of the 10 photographs, 3 are close or framed details and 7 are wider scenes.
 
 | Slot | Ratio | Source size | Notes |
 |---|---|---|---|
-| Lead picture on a post | 3:2 | 1600 px wide | Shown at the text width, about 46rem. Sources are 3:2 or 4:3, so a 3:2 crop loses little. |
+| Lead picture on a post | 3:2 | 1600 px wide | Shown at the text width, about 36rem. Sources are 3:2 or 4:3, so a 3:2 crop loses little. |
 | Author mark | 1:1 | 160 px SVG | Drawn, one ink colour on a light tint of the same ink: a bar chart and a rising line. No photographs of people. |
 
 The Ticker template shows no pictures on its front page or in its lists: those are the tape, the chart and the issue table. Only the post page shows the lead picture.

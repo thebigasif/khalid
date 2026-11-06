@@ -8,6 +8,9 @@
    over them. Every colour is a token or a mix of tokens. */
 :root {
   --tk-frame: 76rem;
+  /* The reading column: about 68 characters a line of the body serif at
+     19px, with or without the side contents. */
+  --tk-column: 36rem;
   --tk-ink: var(--color-text);
   --tk-paper: var(--color-background);
   --tk-up-on-ink: color-mix(in oklab, var(--color-accent) 40%, var(--color-background));
@@ -16,15 +19,15 @@
 }
 .site-header, main, .site-footer { max-inline-size: var(--tk-frame); }
 main { padding-block: 0 var(--space-section); }
-main > :is(.post, .page) { max-inline-size: 46rem; margin-inline: auto; }
-main > .post-with-toc { max-inline-size: calc(46rem + 18rem); }
-main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band) { max-inline-size: 46rem; margin-inline: auto; }
+main > :is(.post, .page) { max-inline-size: var(--tk-column); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--tk-column) + 18rem); }
+main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band) { max-inline-size: var(--tk-column); margin-inline: auto; }
 h1, h2, h3, h4 { letter-spacing: -0.01em; }
 
 /* The header: a heavy ink rule across the window, the name in the
    heading font, the menu in small type. */
 body { border-block-start: 6px solid var(--tk-ink); }
-.site-header { gap: 0.5rem 2rem; padding-block: 1rem; border-block-end: 1px solid var(--tk-ink); }
+.site-header { box-sizing: border-box; inline-size: min(100%, var(--tk-frame)); margin-inline: auto; gap: 0.5rem 2rem; padding-block: 1rem; border-block-end: 1px solid var(--tk-ink); }
 .site-name { font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); letter-spacing: -0.02em; color: var(--color-text); text-decoration: none; }
 .site-logo img { block-size: 2.5rem; inline-size: auto; }
 .site-header nav ul { gap: 0 1.5rem; }
