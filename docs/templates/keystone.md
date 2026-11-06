@@ -20,22 +20,42 @@ Keystone is a template for a product or company blog: a team that writes about w
 1. Your logo in the header, the menu as quiet links, and your call to action as a button when `[template.cta]` is set. On a phone the menu is one line you can swipe, and the button waits for the band further down.
 2. The blog's name, with its topics on one line under it, when your blog lists its topics.
 3. The newest post marked `featured: true` as the lead story: its picture large on one side on a wide screen, its title, summary and author on the other.
-4. "Recently published": your other posts, first two large framed picture cards, then rows of three, then from the ninth post a text-only index of titles in two columns. On a phone, posts three to six are small rows with the picture beside the title, and the index rows show just the title and the date. Each card shows the category, the title, two or three lines of summary, then the author and the date. A post with no picture gets a drawn cover in tints of your accent colour, so the grid stays even.
-5. The newsletter form on a framed panel, with one line over it such as "Join 4,000 readers", when your blog takes sign-ups.
-6. One row of three cards for each home section in `[reader]`, each with a "View all" link.
-7. Your call to action as a band, when `cta_band` is `home` or `both`.
+4. "Case studies": a project index, like the index at the end of a studio's printed portfolio, when some posts list `facts`. Each of those posts gets one ruled row: a quiet number, the title, then its facts in their own columns, such as client, year and discipline. The part of a title before ": " is the project's name, set in ink in the heading font, and the rest of the title follows in the muted colour. The column heads come from the first project's fact labels, and the title column is headed by that project's category. The whole row is a link. Below 48rem each row stacks: the number and title, then the facts on one muted line with dots between them. An "All case studies" link to the first project's category follows. The index shows only on the first page of the front page (see "Project credits" below).
+5. "Recently published": your other posts, first two large framed picture cards, then rows of three, then from the ninth post a text-only index of titles in two columns. On a phone, posts three to six are small rows with the picture beside the title, and the index rows show just the title and the date. Each card shows the category, the title, two or three lines of summary, then the author and the date. A post with no picture gets a drawn cover in tints of your accent colour, so the grid stays even.
+6. The newsletter form on a framed panel, with one line over it such as "Join 4,000 readers", when your blog takes sign-ups.
+7. One row of three cards for each home section in `[reader]`, each with a "View all" link.
+8. Your call to action as a band, when `cta_band` is `home` or `both`.
 
 Lists such as a category or the archive show the lead story and the same picture cards, with numbered page links under them.
 
 **A post**
 
 1. The trail of links from the front page to the post, then the category, the title and the summary (the post's `dek`), all on one left edge.
+   A post with `facts` then shows them as a credits line, ruled off above the byline: each fact's label in small capitals over its value. A post with no facts shows nothing extra.
 2. One line with the author's photo, name and role, then one date (the day it was last updated, or the day it was published if it never was) and the reading time. An updated post with an `updated_note` says why it changed on the next line.
 3. The lead picture, wider than the text, in a fine frame.
 4. The contents and the share links. On a wide screen (from 70rem) they sit in a column on the far side of the text, behind a fine line, and stay in view as you scroll: first "On this page", the post's main sections numbered 01, 02, 03 with the one you are reading in the accent, then the share links. The text and the column sit together in the middle of the page, under the title, and a contents block in the post's own text hides, as the column shows the same list. Below 70rem the folded contents box comes first, and the share links sit in one row after the text, so the text starts right under the picture, as the best Ghost themes do.
 5. The post in one reading column. Callouts, steps, tables, quotes, questions and the contents block each have their own quiet look.
 6. Your own lines about the site, when you set them, then the author box.
 7. The newsletter form, your call to action, the posts that link here and up to five related posts, three across on a wide screen.
+
+**Project credits.** List a project's credits as `facts` in its front matter, in the same order on every project, since the index's columns follow the first project's labels:
+
+```yaml
+---
+title: "Wrenfield Allotments: allotment signs and a plot map anyone can follow"
+category: projects
+facts:
+  - label: Client
+    value: Wrenfield Allotment Society
+  - label: Year
+    value: "2026"
+  - label: Discipline
+    value: Signage, website
+---
+```
+
+Keystone reads facts by their place in the list, not by their label, so the labels can be in any language. See [Facts on a post](../templates.md#facts-on-a-post) for the limits.
 
 **Callouts** (`:::callout{kind=note}`, `tip`, `warning` and `read`) each get a small drawn icon; a warning also gets a dark edge, so the kinds differ by more than colour.
 
@@ -132,13 +152,13 @@ This is Keystone's design brief. It fixes how the template should look, so every
 | Colour | White ground, deep ink text and one calm accent (blue or indigo). A faint cool grey for panels and frames. |
 | Spacing rhythm | A base step of 0.5rem. Even and calm: 5rem between sections, 2rem grid gaps, 1.25rem inside cards. |
 | The one idea | **The drawn frame.** Two fine guides run down the page at the frame's edges, as on a drafting sheet, and everything is built inside them: the name, the lead panel, the framed pictures, the index. You can name it from its thumbnail by the huge name over a ruled row of pills and the split lead panel. |
-| Type scale | The blog's name on the front page from 3rem on a phone to 6.5rem on a wide screen, weight 700, tracked tight (-0.05em). A post's title up to 4.5rem, the lead story's title up to 3.5rem, section headings up to 2.25rem over a full-width ink rule. |
+| Type scale | The blog's name on the front page from 2.5rem on a phone to 6.5rem on a wide screen, weight 700, tracked tight (-0.05em). A post's title up to 4.5rem, the lead story's title up to 3.5rem, section headings up to 2.25rem over a full-width ink rule. |
 | Frame at 1440 px and wider | At least **80rem**; Keystone runs up to 90rem, so a 2000 px screen is filled. |
 | Front page structure | The masthead, then the lead story as one framed panel split in two (picture flush on one side, label, title, summary and a ruled author line on the other), then the newest posts: two large cards, two rows of three, and from the ninth post on a text-only index in two columns, each entry a hairline, the category, the title, the author and the date. Category lists follow the same order. The front page lists every post, so it is the path to each one. On a phone: the lead story and two large cards, then four small rows with the picture beside the title and the date, then one ruled index row per post, its title on one line and the date under it, with no photo or label; a row of videos or podcasts starts with one small row. The 40-post demo stays near 6,000 px. |
 | Cards and lists | Framed picture cards: the picture inside a fine border with a small radius, then the category, a title of up to three lines, two or three lines of summary, the author and the date. |
 | Phone header and menu | The logo on the left and the menu as one line you can swipe, its last 2rem fading out so it reads as more to swipe; the topic pills do the same. The button waits for the band further down. |
 | Tabs and indexes at 390 px | Topic tabs become one row you can swipe, the current tab underlined. Topic tab panels show their posts as one column of compact rows. |
 | Link, card and focus states | Links in the accent with an underline that appears at full strength on hover. A card's picture frame turns the accent on hover. Focus is a 2 px accent ring with 2 px of space. |
-| Signature details | The keystone wedge: a small accent shape, wider at the top, before each label (the lead story, a post's category, the subscriber line). The two frame guides. The lead story's split panel. Drawn covers in tints of the accent for posts with no picture, so the grid stays even. The post's contents and share links in a column on the far side of the text that stays in view. |
+| Signature details | The keystone wedge: a small accent shape, wider at the top, before each label (the lead story, a post's category, the subscriber line). The two frame guides. The lead story's split panel. The project index: ruled rows of project names in ink, with their client, year and discipline in columns of tabular figures, and the same facts as a credits line on each project. Drawn covers in tints of the accent for posts with no picture, so the grid stays even. The post's contents and share links in a column on the far side of the text that stays in view. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/keystone/theme/`: indigo (`#4338ca` links, `#4f46e5` accent) on white with a cool panel (`#f6f6fb`), Manrope for headings and Source Sans 3 for text, and an arch mark.
