@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="16" width="48" height="48" fill="#0c5a78"/>
+  <path d="M16 34 Q22 29 28 34 T40 34 T52 34 M16 44 Q22 39 28 44 T40 44 T52 44 M16 54 Q22 49 28 54 T40 54 T52 54" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  <text textLength="238" lengthAdjust="spacingAndGlyphs" x="72" y="50" font-family="Literata, Georgia, serif" font-size="26" font-weight="600" fill="#13212b">Tidemark Coastal Lab</text>
+</svg>

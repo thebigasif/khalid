@@ -418,16 +418,31 @@ mod tests {
             let css = stylesheet_with(&tokens, pack.stylesheet()).unwrap();
             let css = String::from_utf8(css.body().to_vec()).unwrap();
             for file in pack.templates {
-                let classes = (file.source().split("class=\"").skip(1))
-                    .filter_map(|attribute| attribute.split('"').next())
-                    .flat_map(str::split_whitespace);
-                for class in classes {
-                    let needle = format!(".{class}");
-                    let styled = css.match_indices(&needle).any(|(at, _)| {
-                        let next = css.get(at + needle.len()..).and_then(|r| r.chars().next());
-                        !next.is_some_and(|c| c.is_alphanumeric() || c == '-' || c == '_')
-                    });
-                    assert!(styled, "{}: .{class} in {}", pack.name, file.name);
+                // The pack's own file, and each shared section part it
+                // imports, whose rules the build adds to the pack's.
+                let mut sources = vec![(file.name.to_owned(), file.source().to_owned())];
+                for (at, _) in file.source().match_indices("\"sections/") {
+                    let rest = file.source().get(at + 1..).unwrap_or_default();
+                    let name = rest.split('"').next().unwrap_or_default();
+                    let path = format!(
+                        "{}/../khalid-render/templates/{name}",
+                        env!("CARGO_MANIFEST_DIR")
+                    );
+                    let text = std::fs::read_to_string(&path).unwrap();
+                    sources.push((name.to_owned(), text));
+                }
+                for (name, source) in &sources {
+                    let classes = (source.split("class=\"").skip(1))
+                        .filter_map(|attribute| attribute.split('"').next())
+                        .flat_map(str::split_whitespace);
+                    for class in classes {
+                        let needle = format!(".{class}");
+                        let styled = css.match_indices(&needle).any(|(at, _)| {
+                            let next = css.get(at + needle.len()..).and_then(|r| r.chars().next());
+                            !next.is_some_and(|c| c.is_alphanumeric() || c == '-' || c == '_')
+                        });
+                        assert!(styled, "{}: .{class} in {name}", pack.name);
+                    }
                 }
             }
         }

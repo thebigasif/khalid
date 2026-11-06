@@ -1,0 +1,54 @@
+{#- Research's front page (docs/templates/research.md): the lab's name,
+    its tagline and the figure strip of its own numbers; the newest papers (posts with facts) as a
+    numbered reference list beside a dated news feed (posts without
+    facts); every research area as a numbered index; then the page links
+    and the call to action. A research area is a category; one whose
+    posts on this page are all news (no facts), such as a lab news
+    category, is left out of the index, by the same rule as the news
+    column, not by its name. With home sections in site.toml,
+    each section is a reference list of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/figure_strip.html" import figure_strip -%}
+{% from "sections/publication_list.html" import publication_list -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% set options = template.options -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{{ figure_strip(options.hero_stats) }}{% endcall %}
+{% set papers = page.posts | selectattr("facts") | list -%}
+{% set all_news = page.posts | rejectattr("facts") | list -%}
+{% set news = all_news[:options.news_count] -%}
+{% set paper_areas = papers | selectattr("category") | map(attribute="category.href") | list -%}
+{% set news_areas = all_news | selectattr("category") | map(attribute="category.href") | list -%}
+{% set areas = page.categories | rejectattr("href", "in", news_areas | reject("in", paper_areas) | list) | list -%}
+{% if page.sections %}{% for section in page.sections %}<section class="lab-section" aria-labelledby="lab-section-{{ loop.index }}">
+<h2 id="lab-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ publication_list(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif papers or news %}{% if news %}<div class="lab-front lab-front-news">{% else %}<div class="lab-front">{% endif %}
+<section class="lab-papers" aria-labelledby="lab-papers-title">
+<h2 id="lab-papers-title">{{ t.recent_publications }}</h2>
+{% if papers %}{{ publication_list(papers) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% if news %}<section class="lab-news" aria-labelledby="lab-news-title">
+<h2 id="lab-news-title">{{ t.news }}</h2>
+{{ feed_list(news) }}
+</section>
+{% endif %}</div>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if areas %}<section class="lab-areas" aria-labelledby="lab-areas-title">
+<h2 id="lab-areas-title">{{ t.research_areas }}</h2>
+<ol class="area-index" role="list">
+{% for area in areas %}<li><a href="{{ area.href }}"><span class="area-number" aria-hidden="true">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span> <span class="area-name">{{ area.name }}</span></a></li>
+{% endfor %}</ol>
+</section>
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

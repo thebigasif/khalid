@@ -1,0 +1,121 @@
+/* Research (docs/templates/research.md): a lab site, not a blog. A wide
+   white frame under a thin accent rule, serif titles, section labels in
+   small capitals over a dark rule, and the papers as a numbered reference
+   register. The section parts' own rules come first (the build adds the
+   parts this pack's templates import); these set the lab's look over
+   them. Every colour is a token or a mix of tokens. */
+:root {
+  --rs-frame: 76rem;
+  --rs-rule: color-mix(in oklab, var(--color-text) 85%, var(--color-background));
+  --rs-tint: color-mix(in oklab, var(--color-accent) 6%, var(--color-background));
+  --hero-title: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--rs-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: 46rem; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(46rem + 18rem); }
+main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band) { max-inline-size: 46rem; margin-inline: auto; }
+h1 { letter-spacing: -0.015em; }
+
+/* The header: a thin accent rule across the window, the name in the
+   serif, quiet menu links in small type. */
+body { border-block-start: 3px solid var(--color-accent); }
+.site-header { gap: 0.5rem 2rem; padding-block: 1.125rem; border-block-end: 1px solid var(--color-border); }
+.site-name { font-family: var(--font-heading); font-size: 1.375rem; font-weight: var(--heading-weight); letter-spacing: -0.01em; color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+.search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.search-link:hover { color: var(--color-link); text-decoration: underline; }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--rs-tint); border: 0; box-shadow: 0 0 0 100vmax var(--rs-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: square, filled with the accent. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 600 0.9375rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* Section labels: small capitals over a dark rule, as in a journal. */
+:is(.lab-section, .lab-papers, .lab-news, .lab-areas, .related, .mentions, .author-papers, .author-others, .topic-tabs, .media-row) > h2, .post-footer > h2 { margin-block: 0 1.25rem; padding-block-start: 0.625rem; border-block-start: 2px solid var(--rs-rule); font-family: var(--font-body); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; line-height: 1.3; text-transform: uppercase; }
+
+/* The front page. */
+.hero { padding-block-end: 0; }
+.hero-title { font-weight: var(--heading-weight); letter-spacing: -0.02em; }
+.hero-intro { color: var(--color-text); font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem); line-height: 1.55; }
+.hero > .figure-strip { border-block-start-color: var(--rs-rule); }
+.lab-front, .lab-section, .lab-areas { margin-block-end: var(--space-section); }
+.lab-front { display: grid; gap: var(--space-section) 4rem; }
+@media (min-width: 60rem) { .lab-front-news { grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr); } }
+.lab-papers, .lab-news { min-inline-size: 0; }
+.lab-section .view-all { margin-block: 0.75rem 0; }
+
+/* The research areas: a numbered index of every category. */
+.area-index { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0 2rem; margin: 0; padding: 0; list-style: none; }
+.area-index a { display: flex; align-items: baseline; gap: 1rem; min-block-size: 3.5rem; padding-block: 0.875rem; border-block-end: 1px solid var(--color-border); color: var(--color-text); text-decoration: none; }
+.area-index a:hover .area-name { color: var(--color-link); text-decoration: underline; }
+.area-number { flex: none; color: var(--color-accent); font-family: var(--font-mono); font-size: var(--text-small); }
+.area-name { font-family: var(--font-heading); font-size: 1.1875rem; line-height: 1.3; }
+
+/* The reference register: the paper's title in the serif. */
+.pub-title { font-family: var(--font-heading); font-weight: var(--heading-weight); }
+.pub::before { color: var(--color-accent); }
+.pub-links a { color: var(--color-link); }
+
+/* Lists and the people page: the kind, the name, the intro, a rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; padding-block-end: 1.5rem; border-block-end: 2px solid var(--rs-rule); }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 1rem; color: var(--color-text); font-size: 1.0625rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-header .list-kind { color: var(--color-accent); }
+
+/* A paper: the area, the title, the summary, the authors, the panel. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.12; }
+.paper-area { margin-block: 0 0.75rem; font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.paper-area a { text-decoration: none; }
+.paper-area a:hover { text-decoration: underline; }
+.post-header .dek { font-size: 1.1875rem; line-height: 1.5; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta .person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; }
+.paper-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin-block: 1.75rem; border-block: 1px solid var(--color-border); border-block-start: 2px solid var(--rs-rule); }
+@media (min-width: 40rem) { .paper-facts { display: flex; flex-wrap: wrap; } .paper-facts > div { flex: 1 1 auto; } }
+.paper-facts > div { min-inline-size: 0; padding: 0.75rem 1rem 0.875rem 0; }
+.paper-facts > div + div { padding-inline-start: 1rem; border-inline-start: 1px solid var(--color-border); }
+@media (max-width: 39.99rem) { .paper-facts > div:nth-child(odd) { padding-inline-start: 0; border-inline-start: 0; } .paper-facts > div:nth-child(n + 3) { border-block-start: 1px solid var(--color-border); } }
+.paper-facts dt { color: var(--color-muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.paper-facts dd { margin: 0.25rem 0 0; font-size: 1rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+@media (min-width: 40rem) { .paper-facts dd { overflow-wrap: normal; white-space: nowrap; } }
+.post-header .image img { border-radius: var(--radius); }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+
+/* A person: the mark beside the name, the papers by year. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-photo img { border-radius: var(--radius); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.0625rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-papers, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.1875rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action: a ruled band on the surface. */
+.cta-band { background: var(--color-surface); border: 0; border-block-start: 3px solid var(--color-accent); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); }
+
+/* The footer: one hairline, quiet links. */
+.site-footer { border-block-start: 1px solid var(--color-border); }

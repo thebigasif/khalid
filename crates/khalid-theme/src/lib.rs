@@ -33,6 +33,7 @@ mod pack;
 mod palette;
 pub mod parts;
 mod properties;
+mod research;
 mod resync;
 mod site_theme;
 pub mod slot;
