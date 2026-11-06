@@ -93,7 +93,38 @@ fn every_pack_stylesheet_reads_back_from_the_binary() {
 }
 
 /// The binary carries each pack's template files compressed, and reads
-/// them back as the very text of the files in `packs/`.
+/// them back as the text of the files in `packs/`, with each comment
+/// emptied as the build script empties it.
+/// Empties every `{# … #}` comment of a template and keeps its `-` marks,
+/// which trim the space around it. A comment renders nothing either way, so
+/// every page is the same; the binary just stops carrying the comments'
+/// words.
+fn strip_comments(template: &str) -> String {
+    let mut out = String::with_capacity(template.len());
+    let mut rest = template;
+    while let Some(start) = rest.find("{#") {
+        out.push_str(rest.get(..start).unwrap_or_default());
+        let comment = rest.get(start..).unwrap_or_default();
+        let Some(end) = comment.find("#}") else {
+            out.push_str(comment);
+            return out;
+        };
+        let inner = comment.get(2..end).unwrap_or_default();
+        out.push_str("{#");
+        if inner.starts_with('-') {
+            out.push('-');
+        }
+        out.push(' ');
+        if inner.len() > 1 && inner.ends_with('-') {
+            out.push('-');
+        }
+        out.push_str("#}");
+        rest = comment.get(end.saturating_add(2)..).unwrap_or_default();
+    }
+    out.push_str(rest);
+    out
+}
+
 #[test]
 fn every_pack_template_reads_back_as_its_file() {
     for pack in khalid_theme::packs() {
@@ -106,7 +137,7 @@ fn every_pack_template_reads_back_as_its_file() {
             );
             let written =
                 std::fs::read_to_string(&path).unwrap_or_else(|error| panic!("{path}: {error}"));
-            assert_eq!(file.source(), written, "{path}");
+            assert_eq!(file.source(), strip_comments(&written), "{path}");
         }
     }
 }
