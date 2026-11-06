@@ -2,4 +2,4 @@
 # See scripts/template-packs.sh.
 kind = "journal"
 kind_label = "Personal journal"
-frame = 1320
+frame = 984
