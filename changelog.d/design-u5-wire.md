@@ -1,2 +1,0 @@
-Changed
-- Wire has a new design, set like a newspaper. A centred masthead sits above a menu in capitals between a hairline and a heavy rule. The lead story has a very large condensed headline with the latest posts ruled off beside it, section titles sit under a heavy accent rule, and the feed is dense ruled rows with the date in plain sight and the editor picks numbered in a rail. Dates and names on cards no longer break inside a word.
