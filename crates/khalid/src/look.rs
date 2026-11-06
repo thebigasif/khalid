@@ -178,7 +178,7 @@ mod tests {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
             let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
-            let css = stylesheet_with(&tokens, pack.stylesheet).unwrap();
+            let css = stylesheet_with(&tokens, pack.stylesheet()).unwrap();
             let bytes = css.brotli().len();
             assert!(bytes < BUDGET_BYTES, "{}: {bytes} bytes", pack.name);
             println!("{}: {bytes} bytes of CSS, compressed", pack.name);
@@ -212,7 +212,7 @@ mod tests {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
             let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
-            let css = stylesheet_text_with(&tokens, pack.stylesheet);
+            let css = stylesheet_text_with(&tokens, pack.stylesheet());
             let rules = rules_naming(&css, ".header-button");
             let capped = rules
                 .iter()
@@ -241,7 +241,7 @@ mod tests {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
             let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
-            let css = stylesheet_text_with(&tokens, pack.stylesheet);
+            let css = stylesheet_text_with(&tokens, pack.stylesheet());
             let name = pack.name;
             let marks = rules_naming(&css, ".proscons :is(.pros, .cons) li");
             let room = marks.iter().any(|r| r.contains("padding-inline-start"));
@@ -275,7 +275,7 @@ mod tests {
                 fields.iter().any(|r| r.contains("appearance: none")),
                 "{name}"
             );
-            for (selector, _) in rules(pack.stylesheet) {
+            for (selector, _) in rules(pack.stylesheet()) {
                 if selector.starts_with(".button, .subscribe button") {
                     assert!(
                         selector.contains(".comment-form button"),
@@ -304,7 +304,7 @@ mod tests {
         let guard = ".post-with-toc :is(.post-header .image, .post-body > table)";
         for pack in khalid_theme::packs() {
             let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
-            let css = stylesheet_text_with(&tokens, pack.stylesheet);
+            let css = stylesheet_text_with(&tokens, pack.stylesheet());
             let rule = rules_naming(&css, guard);
             assert!(
                 rule.iter()
@@ -312,7 +312,7 @@ mod tests {
                 "{}",
                 pack.name
             );
-            for (selector, declarations) in rules(pack.stylesheet) {
+            for (selector, declarations) in rules(pack.stylesheet()) {
                 let beside = selector.contains(".post-with-toc")
                     && !selector.contains(":not(.post-with-toc)")
                     && (selector.contains(".image") || selector.contains("table"));
@@ -332,14 +332,14 @@ mod tests {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
             let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
-            let css = stylesheet_text_with(&tokens, pack.stylesheet);
+            let css = stylesheet_text_with(&tokens, pack.stylesheet());
             let held = rules_naming(&css, "picture:has(> .avatar)");
             assert!(
                 held.iter().any(|r| r.contains("flex: none")),
                 "{}",
                 pack.name
             );
-            for (selector, declarations) in rules(pack.stylesheet) {
+            for (selector, declarations) in rules(pack.stylesheet()) {
                 let shrinks = ["flex: 1", "flex: auto", "flex-shrink: 1"]
                     .iter()
                     .any(|grow| declarations.contains(grow));
@@ -356,7 +356,7 @@ mod tests {
     #[test]
     fn every_pack_styles_card_titles_of_every_level() {
         for pack in khalid_theme::packs() {
-            for (selector, _) in rules(pack.stylesheet) {
+            for (selector, _) in rules(pack.stylesheet()) {
                 // The selector's own list, split where no bracket is open.
                 let mut depth = 0;
                 let list = selector.split(|c| {
@@ -374,7 +374,7 @@ mod tests {
     #[test]
     fn a_pack_takes_every_colour_from_the_tokens_and_mirrors_for_right_to_left() {
         for pack in khalid_theme::packs() {
-            let css = pack.stylesheet;
+            let css = pack.stylesheet();
             for fixed in ["#", "rgb(", "hsl(", "oklch(", "white", "black;"] {
                 let found = css
                     .lines()
@@ -415,7 +415,7 @@ mod tests {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
             let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
-            let css = stylesheet_with(&tokens, pack.stylesheet).unwrap();
+            let css = stylesheet_with(&tokens, pack.stylesheet()).unwrap();
             let css = String::from_utf8(css.body().to_vec()).unwrap();
             for file in pack.templates {
                 let classes = (file.source.split("class=\"").skip(1))

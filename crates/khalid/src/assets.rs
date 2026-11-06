@@ -65,7 +65,7 @@ pub(crate) fn rules(site: &Path, look: &Look) -> Result<String, UserMessage> {
         Err(error) if error.kind() == io::ErrorKind::NotFound => String::new(),
         Err(error) => return Err(build_message::site_css(SITE_CSS, &error)),
     };
-    Ok([look.pack().stylesheet, &own].join("\n"))
+    Ok([look.pack().stylesheet(), &own].join("\n"))
 }
 
 /// One self-hosted font the stylesheet names: its file name in

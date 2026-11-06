@@ -16,7 +16,20 @@
 </div>
 </div>
 {% else %}<h1 class="masthead-title">{{ page.title }}</h1>
-{% endif %}{{ hero_stats(template.options) }}{% set slot = page.featured if template.options.featured else none -%}
+{% endif %}{#- Under the masthead, on the front's first page only: the edition
+    line (the name, and the date of the newest post), then the site's
+    announcement as a still breaking strip. A short lead-in before ": ",
+    such as "Breaking", becomes the label block; else the label is the
+    announcement string. The strip replaces the bar above the masthead. -#}
+{% set newest = page.posts[0] if page.posts else page.featured -%}
+{% if not (page.pagination and page.pagination.previous) %}{% if newest %}<p class="edition">{% if not page.intro %}<span aria-hidden="true">{{ page.title }}</span>
+{% endif %}<span>{{ t.updated }} <time datetime="{{ newest.date }}">{{ newest.date | date }}</time></span></p>
+{% endif %}{% if site.announcement %}{% set parts = site.announcement.text | split(": ", 1) | list -%}
+{% set labelled = parts | length == 2 and parts[0] | length <= 24 -%}
+{% set headline = parts[1] if labelled else site.announcement.text -%}
+<aside class="breaking" aria-label="{{ t.announcement }}"><p><strong>{{ parts[0] if labelled else t.announcement }}</strong>
+{% if site.announcement.href %}<a href="{{ site.announcement.href }}">{{ headline }}</a>{% else %}<span>{{ headline }}</span>{% endif %}</p></aside>
+{% endif %}{% endif %}{{ hero_stats(template.options) }}{% set slot = page.featured if template.options.featured else none -%}
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% set picks = (page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks)[:template.options.picks] -%}
 {% set topics = page.topics if "topic_links" in site.features else [] -%}

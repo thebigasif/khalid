@@ -10,7 +10,7 @@ fn classic_is_the_default_look_and_only_restyles() {
     let pack = classic();
     assert_eq!(pack.name, "classic");
     assert!(
-        pack.stylesheet.contains("--frame"),
+        pack.stylesheet().contains("--frame"),
         "classic sets its own frame"
     );
     assert!(pack.templates.is_empty(), "classic replaces no template");
@@ -22,7 +22,7 @@ fn classic_is_the_default_look_and_only_restyles() {
 #[test]
 fn the_trial_pack_changes_a_template_a_rule_a_size_and_a_switch() {
     let trial = packs().iter().find(|pack| pack.name == "trial").unwrap();
-    assert!(trial.stylesheet.contains(".trial-greeting"));
+    assert!(trial.stylesheet().contains(".trial-greeting"));
     let names: Vec<&str> = trial.templates.iter().map(|file| file.name).collect();
     assert_eq!(names, ["not_found.html"]);
     assert!(trial.tokens.contains("[type]"));
@@ -65,4 +65,21 @@ fn classic_comes_first_and_names_are_unique() {
     sorted.sort_unstable();
     sorted.dedup();
     assert_eq!(sorted.len(), names.len());
+}
+
+/// Every pack's stylesheet reads back from the compressed copy the binary
+/// carries, as the minified text with no comment left in it.
+#[test]
+fn every_pack_stylesheet_reads_back_from_the_binary() {
+    for pack in khalid_theme::packs() {
+        let css = pack.stylesheet();
+        if css.is_empty() {
+            // Only the test build's sampler has no rules of its own.
+            assert_eq!(pack.name, "sampler");
+            continue;
+        }
+        assert!(css.contains('{'), "{} has no rules", pack.name);
+        assert!(!css.contains("/*"), "{} kept a comment", pack.name);
+        assert!(css.ends_with('\n'), "{}", pack.name);
+    }
 }

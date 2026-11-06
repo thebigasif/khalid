@@ -7,6 +7,9 @@
 //! token defaults, the reader switches it turns on or off, and its
 //! options. A site's own `theme/` still wins over all of it.
 
+use std::io::Read as _;
+use std::sync::OnceLock;
+
 use khalid_core::{PackName, ReaderSwitch};
 
 /// One built-in look.
@@ -19,7 +22,8 @@ pub struct Pack {
     pub summary: &'static str,
     /// The pack's own CSS rules, added after the shared ones. A site ships
     /// the shared rules and its own pack's rules, and no other pack's.
-    pub stylesheet: &'static str,
+    /// Read them with [`Pack::stylesheet`].
+    pub(crate) css: PackCss,
     /// The template files the pack replaces, by the shared file's name.
     /// Any other file comes from the shared set.
     pub templates: &'static [PackTemplate],
@@ -31,6 +35,60 @@ pub struct Pack {
     pub reader: &'static [(ReaderSwitch, bool)],
     /// Every option `[template.options]` may set for this pack.
     pub options: &'static [OptionSpec],
+}
+
+impl Pack {
+    /// The pack's own CSS rules, as the build script minified them.
+    pub fn stylesheet(&self) -> &str {
+        self.css.text()
+    }
+}
+
+/// A pack's stylesheet as the binary carries it. The build script minifies
+/// each pack's CSS and compresses it with Brotli, because the eleven
+/// stylesheets are most of the text built into the binary, and the binary
+/// has a size budget. The text is read out the first time a build asks for
+/// it and kept, so a site's stylesheet is the same as before.
+#[derive(Debug)]
+pub(crate) struct PackCss {
+    /// The minified CSS, compressed with Brotli. Empty for a pack with no
+    /// rules of its own.
+    compressed: &'static [u8],
+    /// The minified CSS, once read out.
+    text: OnceLock<String>,
+}
+
+impl PackCss {
+    /// The stylesheet whose Brotli bytes are `compressed`.
+    pub(crate) const fn compressed(compressed: &'static [u8]) -> Self {
+        Self {
+            compressed,
+            text: OnceLock::new(),
+        }
+    }
+
+    /// A stylesheet with no rules, for the test build's sampler pack.
+    #[cfg(feature = "test-util")]
+    pub(crate) const fn empty() -> Self {
+        Self::compressed(&[])
+    }
+
+    /// The minified CSS. The build script wrote the bytes, so they always
+    /// read back; were they ever damaged, the pack would show the shared
+    /// look only, which a test of every pack would catch first.
+    fn text(&self) -> &str {
+        self.text.get_or_init(|| {
+            let mut text = String::new();
+            if !self.compressed.is_empty()
+                && brotli::Decompressor::new(self.compressed, 4096)
+                    .read_to_string(&mut text)
+                    .is_err()
+            {
+                text.clear();
+            }
+            text
+        })
+    }
 }
 
 /// One template file a pack replaces.
@@ -106,7 +164,10 @@ pub enum OptionKind {
 static CLASSIC: Pack = Pack {
     name: PackName::CLASSIC,
     summary: "The default look: a lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts.",
-    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/classic/classic.css")),
+    css: PackCss::compressed(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/packs/classic/classic.css.br"
+    ))),
     templates: &[],
     tokens: "",
     reader: &[],
