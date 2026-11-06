@@ -137,7 +137,7 @@ fn reel_front_page_splits_reviews_from_features() {
         ]
     );
     let features = texts(&page, ".features .feed-item h3");
-    assert!(!features.is_empty());
+    assert!(!features.is_empty(), "expected something here");
     assert!(
         features.iter().all(|title| !title.contains("title tag")),
         "{features:?}"

@@ -132,7 +132,7 @@ fn respawn_front_page_splits_reviews_from_news() {
     let lead = texts(&page, ".rs-lead h2");
     assert_eq!(lead, ["Planning a topic cluster in an afternoon"]);
     let news = texts(&page, ".rs-news .feed-item h3");
-    assert!(!news.is_empty());
+    assert!(!news.is_empty(), "expected something here");
     assert!(
         news.iter().all(|title| !reviews.contains(title)),
         "{news:?}"

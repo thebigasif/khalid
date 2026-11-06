@@ -181,7 +181,10 @@ fn the_scoreboard_puts_the_home_side_first() {
         texts(&preview, ".score-home .score-name"),
         ["Field Notes on SEO"]
     );
-    assert!(texts(&preview, ".score-goals").is_empty());
+    assert!(
+        texts(&preview, ".score-goals").is_empty(),
+        "expected nothing here"
+    );
     let news = shown(&out, "what-a-sitemap-does/index.html");
     assert!(
         texts(&news, ".scoreboard").is_empty(),

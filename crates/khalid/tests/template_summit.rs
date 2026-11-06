@@ -138,7 +138,7 @@ fn the_programme_runs_by_day_and_time() {
     assert!(page.contains("href=\"#day-2027-05-14\""));
     let sessions = texts(&page, ".slot-title");
     let updates = texts(&page, ".summit-updates .feed-item h3");
-    assert!(!updates.is_empty());
+    assert!(!updates.is_empty(), "expected something here");
     assert!(
         updates.iter().all(|title| !sessions.contains(title)),
         "{updates:?}"
@@ -183,7 +183,10 @@ fn a_session_shows_its_pass() {
         ["14:00", "Studio 2", "Workshop"]
     );
     let update = shown(&out, "what-a-sitemap-does/index.html");
-    assert!(texts(&update, ".session-pass").is_empty());
+    assert!(
+        texts(&update, ".session-pass").is_empty(),
+        "expected nothing here"
+    );
 }
 
 #[test]
