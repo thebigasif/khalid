@@ -9,6 +9,10 @@ extend-ignore-re = [
 # Project words typos would otherwise flag.
 serpdad = "serpdad"
 khalid = "khalid"
+# Partick is a part of Glasgow, in the Encore demo.
+partick = "partick"
+# The varn is the made-up currency of the Ticker demo.
+varn = "varn"
 hreflang = "hreflang"
 minijinja = "minijinja"
 # The German transliteration of ü, as in "ueber" for "über" (slugs, task 1.3).

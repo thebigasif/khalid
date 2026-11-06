@@ -1,22 +1,77 @@
 //! The default templates built into the binary, and a theme's replacements for them.
 
+use std::collections::BTreeMap;
 use std::fs;
 use std::io;
+use std::io::Read as _;
+use std::ops::Range;
 use std::path::Path;
+use std::sync::OnceLock;
 
 use khalid_core::{SitePath, TemplateName};
-use rust_embed::RustEmbed;
 
 use crate::RenderError;
 
 /// Where a site keeps the templates that replace the defaults.
 const THEME_TEMPLATES: &str = "theme/templates";
 
-/// The default templates. `debug-embed` builds them in for debug builds too,
+/// Every default template in one text, compressed with Brotli by the build
+/// script, with each comment emptied. Debug builds carry the same archive,
 /// so development renders exactly what production renders.
-#[derive(RustEmbed)]
-#[folder = "templates/"]
-struct Defaults;
+static ARCHIVE: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/templates.br"));
+
+/// Where each template starts and ends in the archive's text: one line per
+/// file, its name, its start and its end, split by tabs.
+static INDEX: &str = include_str!(concat!(env!("OUT_DIR"), "/templates.index"));
+
+/// The default templates, read out of the archive the first time a renderer
+/// asks for them and kept.
+#[derive(Debug, Default)]
+struct Defaults {
+    /// Every template's text, one after the other.
+    text: String,
+    /// Each template's place in `text`, by name, such as `post.html` or
+    /// `sections/hero.html`.
+    files: BTreeMap<&'static str, Range<usize>>,
+}
+
+impl Defaults {
+    /// The archive the build script wrote. Were its bytes ever damaged, no
+    /// default template would exist, which every test of a page catches.
+    fn read() -> Self {
+        let mut text = String::new();
+        if brotli::Decompressor::new(ARCHIVE, 4096)
+            .read_to_string(&mut text)
+            .is_err()
+        {
+            return Self::default();
+        }
+        let files = INDEX
+            .lines()
+            .filter_map(|line| {
+                let mut parts = line.split('\t');
+                let name = parts.next()?;
+                let start = parts.next()?.parse().ok()?;
+                let end = parts.next()?.parse().ok()?;
+                Some((name, start..end))
+            })
+            .collect();
+        Self { text, files }
+    }
+
+    /// The template `name`, when there is a default of that name.
+    fn get(&self, name: &str) -> Option<&str> {
+        self.files
+            .get(name)
+            .and_then(|place| self.text.get(place.clone()))
+    }
+}
+
+/// The default templates, once read out.
+fn built_in() -> &'static Defaults {
+    static DEFAULTS: OnceLock<Defaults> = OnceLock::new();
+    DEFAULTS.get_or_init(Defaults::read)
+}
 
 /// One template: its name and its source.
 pub(crate) struct Source {
@@ -29,13 +84,12 @@ pub(crate) struct Source {
 /// which pack templates import. Only `.html` files are templates, so the
 /// parts' README stays out.
 pub(crate) fn defaults() -> Vec<Source> {
-    let mut sources: Vec<Source> = Defaults::iter()
-        .filter(|name| name.ends_with(".html"))
-        .filter_map(|name| {
-            let file = Defaults::get(&name)?;
+    let defaults = built_in();
+    let mut sources: Vec<Source> = (defaults.files.keys())
+        .filter_map(|&name| {
             Some(Source {
-                text: String::from_utf8_lossy(&file.data).into_owned(),
-                name: name.into_owned(),
+                text: defaults.get(name)?.to_owned(),
+                name: name.to_owned(),
             })
         })
         .collect();
@@ -74,7 +128,7 @@ pub(crate) fn overrides(site_root: &Path) -> Result<Vec<Source>, RenderError> {
             source,
         })?;
         let name = entry.file_name().to_string_lossy().into_owned();
-        if Defaults::get(&name).is_none() && !is_post_template(&name) {
+        if built_in().get(&name).is_none() && !is_post_template(&name) {
             return Err(RenderError::UnknownTemplate { name });
         }
         let path = SitePath::within(site_root, &format!("{THEME_TEMPLATES}/{name}"))?.resolve()?;
@@ -88,7 +142,7 @@ pub(crate) fn overrides(site_root: &Path) -> Result<Vec<Source>, RenderError> {
 
 /// Whether `name` is one of the default templates, such as `post.html`.
 pub(crate) fn is_default(name: &str) -> bool {
-    Defaults::get(name).is_some()
+    built_in().get(name).is_some()
 }
 
 /// Whether `name` is a pack's own part, such as `parts-locale.html`: a file
