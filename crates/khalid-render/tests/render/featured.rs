@@ -2,11 +2,14 @@
 //! list below it, and the editor's picks on the home page, both switched
 //! on by a template's parts.
 
-use khalid_render::{PageBody, PageKind, RenderPack, TemplateOption};
+use khalid_render::{Loading, PageBody, PageKind, RenderPack, TemplateOption};
 
 use crate::common::{demo_site, meta};
 use crate::html_check::assert_valid_page;
-use crate::listing::{card, first_page, home, main_of};
+use crate::image::sitemap_image;
+use crate::listing::{
+    assert_only_the_first_picture_loads_at_once, card, first_page, home, main_of, with_pictures,
+};
 use crate::parts::{pack_with, renderer};
 
 fn render(pack: &RenderPack<'_>, body: &PageBody) -> String {
@@ -91,4 +94,24 @@ fn classic_shows_neither() {
         1,
         "{html}"
     );
+}
+
+#[test]
+fn the_featured_post_above_the_list_is_the_picture_that_loads_at_once() {
+    let on = pack_with(&[("featured", TemplateOption::Switch(true))]);
+    let mut listing = with_pictures(first_page());
+    let mut star = card(
+        "Core Web Vitals in plain words",
+        "core-web-vitals",
+        30,
+        "Three numbers.",
+    );
+    star.image = Some(sitemap_image(Loading::Lazy));
+    listing.featured = Some(star);
+    let html = render(&on, &PageBody::Collection(listing));
+    assert!(html.contains("card card-featured"), "{html}");
+    let (featured, list) = html.split_once("<ul class=\"cards\"").unwrap();
+    assert!(featured.contains(r#"fetchpriority="high""#), "{featured}");
+    assert!(!list.contains("fetchpriority"), "{list}");
+    assert_only_the_first_picture_loads_at_once(&html, 3);
 }
