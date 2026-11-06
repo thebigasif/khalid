@@ -1,7 +1,8 @@
 {#- Based on Ghost's Casper theme, MIT licence, see LICENSE-ghost.txt.
     Casper's front page: the cover, then the feed. The cover (option
-    cover) shows the newest featured post's picture, or the accent colour,
-    behind the blog's name and intro; with the logo in the header's middle
+    cover) sets the blog's name and intro on a band in the accent colour,
+    with the newest featured post's picture as a strip under the band and
+    no words on it; with the logo in the header's middle
     or stacked (option navigation) it shows the intro alone, large. The
     feed (option feed) is classic on the first page: one large card, two
     half cards, then three across. Each card: its picture, its topic and a
@@ -30,8 +31,7 @@
 {% set title_shown = template.options.navigation == "cover" or not (page.intro or meta.description) -%}
 {% if look == "none" %}<h1 class="visually-hidden">{{ page.title }}</h1>
 {% else %}{% if look == "plain" %}<div class="cv-cover" data-look="plain" data-align="{{ template.options.cover_align }}">{% elif image %}<div class="cv-cover cv-band" data-look="picture" data-align="{{ template.options.cover_align }}">{% else %}<div class="cv-cover cv-band" data-look="accent" data-align="{{ template.options.cover_align }}">{% endif %}
-{% if image %}{{ picture(image) }}
-{% endif %}<div class="cv-cover-text">
+<div class="cv-cover-text">
 {% if title_shown %}<h1>{{ page.title }}</h1>
 {% else %}<h1 class="visually-hidden">{{ page.title }}</h1>
 {% endif %}{% if page.intro %}<div class="intro">
@@ -40,7 +40,8 @@
 {% elif meta.description %}<div class="intro"><p>{{ meta.description }}</p></div>
 {% endif %}</div>
 </div>
-{% endif %}{% for section in page.sections %}<section class="home-section">
+{% if image %}<div class="cv-cover-image" aria-hidden="true">{{ picture(image) }}</div>
+{% endif %}{% endif %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts, 3) }}
 {% else %}<p>{{ t.no_posts }}</p>

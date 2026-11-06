@@ -132,7 +132,11 @@ fn casper_front_page_opens_with_a_picture_cover_and_a_classic_feed() {
         1
     );
     assert_eq!(
-        count(&out, rel, ".cv-band[data-look=picture] .image img"),
+        count(
+            &out,
+            rel,
+            ".cv-band[data-look=picture] + .cv-cover-image .image img"
+        ),
         1
     );
     assert_eq!(count(&out, rel, ".cv-cover h1:not(.visually-hidden)"), 1);

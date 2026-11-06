@@ -23,7 +23,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `classic`: a wide frame with a large lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
 - `atlas`: a publication for a blog with many topics, with a map-sheet masthead that indexes every topic, featured stories and picture cards. See [Atlas](templates/atlas.md).
-- `casper`: a classic blog with a cover band over a picture, one large card, two half cards and then a grid, and a calm serif column for each post. Based on Ghost's Casper theme (MIT). See [Casper](templates/casper.md).
+- `casper`: a classic blog with a coloured cover band and a picture under it, one large card, two half cards and then a grid, and a calm serif column for each post. Based on Ghost's Casper theme (MIT). See [Casper](templates/casper.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
 - `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
