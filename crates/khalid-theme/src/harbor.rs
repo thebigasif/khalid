@@ -1,4 +1,4 @@
-//! Harbor: a busy marketing blog (templates spec 3.5). A featured post with
+//! Harbor: a food and recipe blog (templates spec 3.5). A featured post with
 //! a column of smaller posts beside it, a grid of picture cards, an offer
 //! in each post and a sideways row of related reading.
 
@@ -10,7 +10,7 @@ use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
 /// The Harbor pack.
 pub(crate) static HARBOR: Pack = Pack {
     name: "harbor",
-    summary: "A busy marketing blog: a featured post with a column of smaller posts beside it, a grid of picture cards, an offer in each post and a sideways row of related reading.",
+    summary: "A food and recipe blog: a featured post with smaller posts beside it, a strip of recipe cards with time and serving tags, a grid of picture cards, an offer in each post and a sideways row of related reading.",
     css: PackCss::compressed(include_bytes!(concat!(
         env!("OUT_DIR"),
         "/packs/harbor/harbor.css.br"

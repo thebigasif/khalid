@@ -5,7 +5,7 @@ order: 50
 
 # Harbor
 
-Harbor is a template for a busy marketing blog: a team that publishes often, wants readers to sign up, and has one offer to put in front of every reader, such as a free checklist or a trial.
+Harbor is a template for a food and recipe blog that publishes often, wants readers to sign up, and has one offer to put in front of every reader, such as a free meal plan or a cookbook.
 
 ```toml
 [template]
@@ -14,6 +14,7 @@ name = "harbor"
 
 ## Who it suits
 
+- A cooking or recipe blog: posts with `facts`, such as the time and the servings, show in a recipe card strip on the front page.
 - A company blog that publishes several posts a week and wants the newest ones easy to scan.
 - A blog that grows a mailing list: the sign-up form sits at the top of the front page and after each post.
 - A blog with one call to action: Harbor shows it in the header, in each post under the author's name, and on the front page.
