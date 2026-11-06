@@ -114,7 +114,7 @@ Respawn's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.6` |
 | `[type] heading_weight` | `700` |
 | `[shape] radius` | `0px`, square |
-| `[shape] measure` | `38rem` |
+| `[shape] measure` | `36rem` |
 | `[space] section` | `3.5rem`, the space between the parts of a page |
 
 ## Options
