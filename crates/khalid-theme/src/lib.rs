@@ -25,6 +25,7 @@ mod ease;
 mod edition;
 mod episode;
 mod digest;
+mod edge;
 mod fetch;
 mod fetch_error;
 mod folio;

@@ -1,0 +1,37 @@
+# Based on Ghost's Edge theme, MIT licence, see LICENSE-ghost.txt.
+# Edge's own look (docs/templates/edge.md, "Design"): a white page with no
+# accent colour, near-black ink for text, links and buttons, a faint grey
+# for tiles and panels, hairlines in light grey, square corners, and one
+# modern sans for everything. A value in the site's own theme/tokens.toml
+# wins.
+[colors]
+background = "#ffffff"
+surface = "#f6f6f6"
+text = "#15171a"
+muted = "#5f6368"
+link = "#15171a"
+accent = "#15171a"
+border = "#e6e6e6"
+
+[fonts]
+heading = "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+body = "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+mono = "Menlo, Consolas, Monaco, \"Liberation Mono\", \"Lucida Console\", monospace"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "1.75rem 2rem"
+h2 = "1.375rem 1.625rem"
+h3 = "1.1875rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "6rem"
+
+[shape]
+radius = "0px"
+measure = "40rem"
