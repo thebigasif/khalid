@@ -1,4 +1,0 @@
-Added
-- The layout check, `just layout-check`, now also opens every template at 2000 px, the width of a large desktop screen. On wide screens it fails when a template's frame is narrower than its design brief sets, when a post's text is under 18 px, and when a post's lines hold fewer than 60 or more than 75 characters. It also fails when a template's stylesheet is 20 KB or more compressed. `just layout-selftest` proves these checks on sites with a planted fault each.
-- `just demo-pictures --out <folder>` takes full-page pictures of every template's demo at 2000, 1440 and 390 px, in its sample brand and with its own defaults, and lays them out as one sheet per template beside reference pictures, for review.
-- Each template demo can wear a sample brand from `fixtures/showcase-brands/<name>/theme/`. GitHub Pages, the layout check and the pictures all use it.
