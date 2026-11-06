@@ -1,0 +1,59 @@
+# The sample brand for the Syllabus demo: First Washes, an online
+# watercolour course. Ultramarine on white with a pale blue surface,
+# like paint on paper. Lexend for titles and Figtree for the text, two
+# clear sans faces made for easy reading. Only the brand lives here: the
+# template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#f1f3f9"
+text = "#171a2b"
+muted = "#4f5468"
+link = "#2a4896"
+accent = "#2a4896"
+border = "#d5dae8"
+
+[fonts]
+heading = "Lexend, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+body = "Figtree, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Lexend"
+style = "normal"
+weight = "600"
+path = "lexend-latin-600.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "110.46%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "64.38%"
+
+[[fonts.files]]
+family = "Figtree"
+style = "normal"
+weight = "400"
+path = "figtree-latin-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "104.94%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "56.76%"
+
+[[fonts.files]]
+family = "Figtree"
+style = "normal"
+weight = "700"
+path = "figtree-latin-700.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "104.94%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "58.45%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

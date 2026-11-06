@@ -60,6 +60,7 @@ mod split;
 mod taste;
 mod ticker;
 mod summit;
+mod syllabus;
 mod token_name;
 mod token_values;
 mod tokens;

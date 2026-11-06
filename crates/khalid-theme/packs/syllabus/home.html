@@ -1,0 +1,65 @@
+{#- Syllabus's front page (docs/templates/syllabus.md): the course's name,
+    its intro, a button to the first lesson and the figure strip; the
+    course map, one square per lesson grouped by module; then the course
+    outline beside the course news. A lesson is a post with facts and a
+    module is a category, in the order categories.toml gives. Lessons are
+    listed oldest first, the order a course is published in, and numbered
+    on across the modules. Course news is the posts without facts. With
+    home sections in site.toml, each section is a block of outline rows
+    of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/figure_strip.html" import figure_strip -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% from "sections/progress_strip.html" import progress_strip -%}
+{% from "lesson_rows.html" import lesson_rows -%}
+{% set options = template.options -%}
+{% set lessons = page.posts | selectattr("facts") | reverse | list -%}
+{% set news = (page.posts | rejectattr("facts") | list)[:options.news_count] -%}
+{% set lesson_modules = lessons | selectattr("category") | map(attribute="category.href") | list -%}
+{% set modules = page.categories | selectattr("href", "in", lesson_modules) | list -%}
+{% set loose = lessons | rejectattr("category") | list -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{% if lessons and options.start_button %}<p class="course-start"><a class="button" href="{{ lessons[0].href }}">{{ t.course_start }}</a></p>
+{% endif %}{{ figure_strip(options.hero_stats) }}{% endcall %}
+{% if page.sections %}{% for section in page.sections %}<section class="course-section" aria-labelledby="course-section-{{ loop.index }}">
+<h2 id="course-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ lesson_rows(section.posts | reverse | list, 3, 1, false) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif lessons or news %}{% if modules and options.course_map %}<section class="course-map" aria-labelledby="course-map-title">
+<h2 id="course-map-title">{{ t.course_map }}</h2>
+<ol class="map-modules" role="list">
+{% for module in modules %}{% set count = lesson_modules | select("eq", module.href) | list | length %}<li class="map-module">
+<p class="map-name"><span class="map-number">{{ t.course_module | replace("{number}", loop.index | string) }}</span> <a href="{{ module.href }}">{{ module.name }}</a></p>
+{{ progress_strip(count) }}
+</li>
+{% endfor %}</ol>
+</section>
+{% endif %}{% if news %}<div class="course-front course-front-news">{% else %}<div class="course-front">{% endif %}
+<section class="course-outline" aria-labelledby="course-outline-title">
+<h2 id="course-outline-title">{{ t.course_outline }}</h2>
+{% set ns = namespace(first=1) -%}
+{% for module in modules %}{% set count = lesson_modules | select("eq", module.href) | list | length %}<section class="module" aria-labelledby="module-{{ loop.index }}">
+<p class="module-number">{{ t.course_module | replace("{number}", loop.index | string) }}</p>
+<h3 id="module-{{ loop.index }}"><a href="{{ module.href }}">{{ module.name }}</a></h3>
+<p class="module-range">{% if count == 1 %}{{ t.course_lesson | replace("{number}", ns.first | string) }}{% else %}{{ t.course_lesson_range | replace("{first}", ns.first | string) | replace("{last}", (ns.first + count - 1) | string) }}{% endif %}</p>
+{{ lesson_rows(lessons, 4, ns.first, true, module.href) }}
+</section>
+{% set ns.first = ns.first + count %}{% endfor %}{% if loose %}{{ lesson_rows(loose, 3, ns.first) }}
+{% endif %}{% if not lessons %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% if news %}<section class="course-news" aria-labelledby="course-news-title">
+<h2 id="course-news-title">{{ t.course_news }}</h2>
+{{ feed_list(news) }}
+</section>
+{% endif %}</div>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

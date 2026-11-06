@@ -1,0 +1,34 @@
+# Syllabus: an online course. White page, near-black ink, one deep
+# viridian accent and a warm paper surface for the course map and the
+# lesson panel. A clear sans for titles and text alike, so lesson
+# numbers and labels read at a glance.
+[colors]
+background = "#ffffff"
+surface = "#f3f0e8"
+text = "#1c1b22"
+muted = "#57555f"
+link = "#1d5d4b"
+accent = "#1d5d4b"
+border = "#dcd6c8"
+
+[fonts]
+heading = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0.25rem"
+measure = "40rem"
+
+[type]
+body = "1.0625rem 1.1875rem"
+h1 = "2rem 2.875rem"
+h2 = "1.375rem 1.625rem"
+h3 = "1.1875rem 1.3125rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.65
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "4rem"
