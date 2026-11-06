@@ -367,6 +367,7 @@ fn post_page(
             .description
             .clone()
             .filter(|dek| !dek.trim().is_empty()),
+        facts: build_reader::facts(front),
         reading_time: ReadingTime::of(&html, locale),
         authors: front
             .author

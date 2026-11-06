@@ -550,6 +550,7 @@ mod tests {
                 category: None,
                 featured: false,
                 reading_time: None,
+                facts: Vec::new(),
             },
             author: None,
         }

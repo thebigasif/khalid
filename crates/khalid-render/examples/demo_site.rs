@@ -549,6 +549,7 @@ impl Demo {
             updated: None,
             updated_note: None,
             dek: None,
+            facts: Vec::new(),
             reading_time: ReadingTime::of(&body, &Locale::try_new(lang.tag)?),
             authors: vec![Person {
                 name: file.map_or(author.clone(), |a| a.field("name")),
@@ -585,6 +586,7 @@ impl Demo {
             category: record.category.clone(),
             featured: false,
             reading_time: Some(record.reading_time),
+            facts: Vec::new(),
         };
         let body = PageBody::Post(Box::new(record));
         self.page(lang, (&path, Some(&key)), &title, &body)?;

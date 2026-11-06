@@ -92,6 +92,7 @@ impl Prepared {
             updated: None,
             updated_note: None,
             dek: None,
+            facts: Vec::new(),
             reading_time: ReadingTime::of(&body, &post.locale),
             authors: front
                 .author
@@ -133,22 +134,7 @@ impl Prepared {
         lint.description.clone_from(&front.description);
         lint.date = Some(date);
         lint.author = front.author.as_ref().map(Slug::to_string);
-        lint.headings = rendered
-            .headings
-            .iter()
-            .filter_map(|h| {
-                let level = match h.level {
-                    1 => HeadingLevel::H1,
-                    2 => HeadingLevel::H2,
-                    3 => HeadingLevel::H3,
-                    4 => HeadingLevel::H4,
-                    5 => HeadingLevel::H5,
-                    6 => HeadingLevel::H6,
-                    _ => return None,
-                };
-                Some(Heading::new(level, h.text.clone()))
-            })
-            .collect();
+        lint.headings = rendered.headings.iter().filter_map(lint_heading).collect();
         lint.links = rendered
             .links
             .iter()
@@ -159,6 +145,20 @@ impl Prepared {
         self.lint.posts.push(lint);
         Ok(())
     }
+}
+
+/// A rendered heading as the linter reads it, or `None` past `h6`.
+fn lint_heading(heading: &khalid_content::Heading) -> Option<Heading> {
+    let level = match heading.level {
+        1 => HeadingLevel::H1,
+        2 => HeadingLevel::H2,
+        3 => HeadingLevel::H3,
+        4 => HeadingLevel::H4,
+        5 => HeadingLevel::H5,
+        6 => HeadingLevel::H6,
+        _ => return None,
+    };
+    Some(Heading::new(level, heading.text.clone()))
 }
 
 /// The author with `slug`, named by it, linked to their author page.
