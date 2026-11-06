@@ -18,7 +18,7 @@ h1, h2, h3 { letter-spacing: -0.01em; }
 
 /* The header: the name centred in the serif over a row of spaced menu
    links, between two hairlines. */
-.site-header { flex-direction: column; justify-content: center; gap: 0.25rem; padding-block: 1.5rem 0.5rem; border-block-end: 1px solid var(--color-border); text-align: center; }
+.site-header { inline-size: min(100%, var(--at-frame)); max-inline-size: var(--at-frame); margin-inline: auto; flex-direction: column; justify-content: center; gap: 0.25rem; padding-block: 1.5rem 0.5rem; border-block-end: 1px solid var(--color-border); text-align: center; }
 .site-name { font-family: var(--font-heading); font-size: clamp(1.625rem, 1.25rem + 1vw, 2.125rem); font-weight: var(--heading-weight); letter-spacing: 0.02em; color: var(--color-text); text-decoration: none; }
 .site-logo img { block-size: 3rem; inline-size: auto; }
 .site-header nav ul { justify-content: center; gap: 0 1.75rem; }

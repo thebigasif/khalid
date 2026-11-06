@@ -96,7 +96,7 @@ Atelier's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.7` |
 | `[type] heading_weight` | `500` |
 | `[shape] radius` | `0px`, square like a printed page |
-| `[shape] measure` | `38rem` |
+| `[shape] measure` | `36rem` |
 | `[space] section` | `5rem`, the space between the parts of a page |
 
 ## Options
