@@ -23,7 +23,7 @@
 {% set routine_areas = routines | selectattr("category") | map(attribute="category.href") | list -%}
 {% set note_areas = all_notes | selectattr("category") | map(attribute="category.href") | list -%}
 {% set programmes = page.categories | rejectattr("href", "in", note_areas | reject("in", routine_areas) | list) | list -%}
-{% if programmes %}<nav class="programmes" aria-labelledby="programmes-title">
+{% if programmes %}<nav class="programmes" aria-label="{{ t.programmes }}">
 <h2 id="programmes-title">{{ t.programmes }}</h2>
 <ul class="programme-chips" role="list">
 {% for programme in programmes %}<li><a href="{{ programme.href }}"><span class="programme-mark" aria-hidden="true"></span>{{ programme.name }}</a></li>

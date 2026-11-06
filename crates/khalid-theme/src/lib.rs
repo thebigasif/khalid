@@ -76,6 +76,7 @@ mod token_name;
 mod token_values;
 mod tokens;
 mod tokens_error;
+#[cfg(feature = "test-util")]
 mod trial;
 mod versions;
 mod vital;
@@ -83,7 +84,7 @@ mod wave;
 mod wire;
 mod woff2;
 mod workbench;
-#[cfg(feature = "test-util")]
+
 pub use brand::Brand;
 pub use color::Rgb;
 pub use contrast::{ColorToken, ContrastFix, MARK_CONTRAST, TEXT_CONTRAST};

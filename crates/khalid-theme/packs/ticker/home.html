@@ -63,7 +63,7 @@
 </section>
 {% endif %}{% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
-{% endif %}{% if first and page.categories %}<nav class="desks" aria-labelledby="desks-title">
+{% endif %}{% if first and page.categories %}<nav class="desks" aria-label="{{ t.desks }}">
 <h2 id="desks-title">{{ t.desks }}</h2>
 <ul role="list">
 {% for desk in page.categories %}<li><a href="{{ desk.href }}">{{ desk.name }}</a></li>

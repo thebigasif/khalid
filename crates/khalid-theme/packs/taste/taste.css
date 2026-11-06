@@ -228,3 +228,5 @@ main > .related { margin-block-start: var(--ts-apart); }
 }
 /* Each topic grid can be the target of a link, so it clears the header. */
 .ts-topic { scroll-margin-block-start: 2rem; }
+/* The last list of posts on the front page can be linked to as well. */
+.ts-more { scroll-margin-block-start: 2rem; }
