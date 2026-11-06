@@ -25,6 +25,10 @@ main > .post ~ * { max-inline-size: 48rem; margin-inline: auto; }
 .site-header nav a, .search-link { color: var(--color-text); font-size: 0.9375rem; font-weight: 700; text-decoration: none; }
 .site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
 .site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+/* The header spans the frame: the last menu link sets its words at the
+   end of its 44 px target, so a short last word still meets the edge. */
+.site-header { inline-size: 100%; }
+.site-header nav li:last-child a { justify-content: flex-end; }
 
 /* Buttons: the accent, rounded a little, the label in bold. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 700 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
