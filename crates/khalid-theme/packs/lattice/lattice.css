@@ -142,7 +142,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
    entry on a hairline. A term's page keeps to the reading column. */
 /* On a phone the row of letters wraps to several lines, so it stays in
    place instead of riding over the terms as the page scrolls. */
-@media (max-width: 47.99rem) { .letters { position: static; } }
+@media (max-width: 63.99rem) { .letters { position: static; } }
 .letters a { min-block-size: 44px; font-family: var(--font-mono); font-weight: 500; border: 1px solid var(--color-border); }
 .letters a:hover, .letters a:focus-visible { background: var(--color-text); color: var(--color-background); }
 .glossary-letter h2 { display: flex; align-items: center; justify-content: center; inline-size: 3rem; block-size: 3rem; color: var(--color-background); background: var(--color-text); font-family: var(--font-mono); font-size: 1.5rem; }

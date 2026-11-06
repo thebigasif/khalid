@@ -171,3 +171,5 @@ body { border-block-start: 6px solid var(--tk-ink); }
 
 /* The footer: one ink rule, quiet links. */
 .site-footer { border-block-start: 1px solid var(--tk-ink); font-family: var(--font-heading); }
+/* The last menu word ends at the frame's edge, not 44 px into its target. */
+.site-header nav li:last-child a { justify-content: flex-end; }

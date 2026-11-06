@@ -145,3 +145,5 @@ h1 { letter-spacing: -0.02em; }
 
 /* The footer: one hairline, quiet links. */
 .site-footer { border-block-start: 1px solid var(--color-border); }
+/* A list page opens over a hairline as wide as the frame. */
+.list-header { padding-block-end: 1.5rem; border-block-end: 1px solid var(--color-border); }

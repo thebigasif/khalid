@@ -121,3 +121,5 @@ main > .at-journal { max-inline-size: var(--measure); margin: var(--space-sectio
 
 /* The footer: one hairline, quiet links. */
 .site-footer { border-block-start: 1px solid var(--color-border); }
+/* The menu sits on a hairline that spans the whole frame, under the name. */
+.site-header nav { align-self: stretch; padding-block-start: 0.5rem; border-block-start: 1px solid var(--color-border); }
