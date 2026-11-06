@@ -1,0 +1,59 @@
+# The sample brand for the Edition demo: a weekly newsletter about
+# writing for search. A deep teal on white with a pale green-grey field,
+# a heavy, open sans for headings and a humanist sans for text. Only the
+# brand lives here: the template keeps its own shape, type sizes and
+# spacing.
+[colors]
+background = "#ffffff"
+surface = "#f3f7f6"
+text = "#16201f"
+muted = "#59646a"
+link = "#0d6b63"
+accent = "#0f766e"
+border = "#dfe7e5"
+
+[fonts]
+heading = "Nunito, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+body = "\"Source Sans 3\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Nunito"
+style = "normal"
+weight = "800"
+path = "nunito-latin-800.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "111.68%"
+descent = "166.58%"
+line_gap = "0.00%"
+size_adjust = "57.92%"
+
+[[fonts.files]]
+family = "Source Sans 3"
+style = "italic"
+weight = "400"
+path = "source-sans-3-latin-italic-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "113.11%"
+descent = "188.76%"
+line_gap = "0.00%"
+size_adjust = "47.97%"
+
+[[fonts.files]]
+family = "Source Sans 3"
+style = "normal"
+weight = "400 600"
+path = "source-sans-3-latin-400-600.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "113.11%"
+descent = "188.76%"
+line_gap = "0.00%"
+size_adjust = "52.21%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

@@ -21,6 +21,7 @@ mod contrast;
 mod css;
 mod episode;
 mod ease;
+mod edition;
 mod fetch;
 mod fetch_error;
 mod folio;

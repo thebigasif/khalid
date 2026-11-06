@@ -240,6 +240,7 @@ static PACKS: &[&Pack] = &[
     &crate::compass::COMPASS,
     &crate::episode::EPISODE,
     &crate::ease::EASE,
+    &crate::edition::EDITION,
     &crate::folio::FOLIO,
     &crate::harbor::HARBOR,
     &crate::keystone::KEYSTONE,
