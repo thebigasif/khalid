@@ -192,9 +192,10 @@ static CLASSIC: Pack = Pack {
     options: &[],
 };
 
-/// Every built-in pack, classic first.
-#[cfg(not(feature = "test-util"))]
-static PACKS: [&Pack; 11] = [
+/// Every built-in pack, classic first, then the rest by name, and with the
+/// `test-util` feature the throwaway packs the tests switch to. A slice, so
+/// a new pack is one line here and no count changes.
+static PACKS: &[&Pack] = &[
     &CLASSIC,
     &crate::almanac::ALMANAC,
     &crate::atlas::ATLAS,
@@ -206,30 +207,15 @@ static PACKS: [&Pack; 11] = [
     &crate::meridian::MERIDIAN,
     &crate::wire::WIRE,
     &crate::workbench::WORKBENCH,
-];
-
-/// Every built-in pack, classic first, and the throwaway packs the tests
-/// switch to.
-#[cfg(feature = "test-util")]
-static PACKS: [&Pack; 13] = [
-    &CLASSIC,
-    &crate::almanac::ALMANAC,
-    &crate::atlas::ATLAS,
-    &crate::compass::COMPASS,
-    &crate::folio::FOLIO,
-    &crate::harbor::HARBOR,
-    &crate::keystone::KEYSTONE,
-    &crate::ledger::LEDGER,
-    &crate::meridian::MERIDIAN,
-    &crate::wire::WIRE,
-    &crate::workbench::WORKBENCH,
+    #[cfg(feature = "test-util")]
     &crate::trial::TRIAL,
+    #[cfg(feature = "test-util")]
     &crate::trial::SAMPLER,
 ];
 
 /// Every built-in pack, classic first.
 pub fn packs() -> &'static [&'static Pack] {
-    &PACKS
+    PACKS
 }
 
 /// Classic, the look a site gets without `[template]`.

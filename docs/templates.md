@@ -18,7 +18,7 @@ name = "classic"
 
 Without a `[template]` table your blog uses `classic`, Khalid's default look. Updating Khalid never switches your template to another one, but a release may restyle a template.
 
-These eleven templates are built in. Every template but classic has its own page, linked below, which says who it suits, what each page shows, and every option it takes with its default.
+These templates are built in. Every template but classic has its own page, linked below, which says who it suits, what each page shows, and every option it takes with its default.
 
 - `classic`: a wide frame with a large lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
@@ -271,7 +271,7 @@ Add `--templates harbor` to check one template, and `--widths 390,2560@2` to pic
 - a table column is narrower than its longest word, so the word breaks in the middle;
 - a picture did not load;
 - a person's photo is not drawn square, to within 1 pixel, so its circle turns into an oval;
-- at 1440 pixels and wider, the site header, or the main part of the home page or a category or tag page, is narrower than the template's minimum frame, the width its design brief sets, kept in `scripts/demo-check/frames.json`;
+- at 1440 pixels and wider, the site header, or the main part of the home page or a category or tag page, is narrower than the template's minimum frame, the width its design brief sets, kept as `frame` in `crates/khalid-theme/packs/<name>/pack.toml`;
 - at 1440 pixels and wider, a post's body text is smaller than 18 pixels, or a full line of it holds fewer than 60 or more than 75 characters;
 - a stylesheet the home page links is 20 KB or more once compressed with Brotli.
 

@@ -13,7 +13,7 @@
 //   - squashed-avatar: a person's photo not drawn square, within 1 px;
 //   - frame-fill: at 1440 px and wider, the site header, or <main> on the
 //     home page or a list of posts, is narrower than the minimum frame the
-//     template's design brief sets, read from --frames;
+//     template's design brief sets, read from its pack.toml;
 //   - reading-size, reading-column: at 1440 px and wider, a post's body
 //     text is under 18 px, or a full line of it holds fewer than 60 or
 //     more than 75 characters;
@@ -41,9 +41,11 @@
 // whose name ends in -publication is a pack's demo publication, checked on
 // the pages its check-pages.txt names (site-files.mjs) in place of PAGES:
 // a "post" or "table" page is held to the reading check, as a post is.
-// --frames names a JSON file whose "frames" maps each pack to its minimum
-// frame in px; by default frames.json beside this script.
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+// Each pack's minimum frame in px is the frame in its pack.toml, in
+// crates/khalid-theme/packs/<pack>/. --frames names a JSON file whose
+// "frames" maps each pack to its minimum frame in place of those, as the
+// self-test does; frames.json beside this script, the default, has none.
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -101,9 +103,21 @@ if (!options.sites || !existsSync(options.sites)) {
 // Playwright comes from scripts/demo-check/node_modules, or from NODE_PATH.
 const playwright = createRequire(import.meta.url)("playwright");
 
-const framesFile = options.frames || join(dirname(fileURLToPath(import.meta.url)), "frames.json");
+const here = dirname(fileURLToPath(import.meta.url));
+const packsFolder = join(here, "..", "..", "crates", "khalid-theme", "packs");
+const framesFile = options.frames || join(here, "frames.json");
 const framesData = JSON.parse(readFileSync(framesFile, "utf8"));
-const frames = framesData.frames ?? {};
+// The frame line of each pack.toml, such as `frame = 1280`.
+const packFrames = () =>
+  Object.fromEntries(
+    readdirSync(packsFolder, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && existsSync(join(packsFolder, entry.name, "pack.toml")))
+      .map((entry) => [entry.name, readFileSync(join(packsFolder, entry.name, "pack.toml"), "utf8").match(/^frame = (\d+)$/m)])
+      .filter(([, found]) => found)
+      .map(([name, found]) => [name, Number(found[1])]),
+  );
+const frames = framesData.frames ?? packFrames();
+const framesFrom = framesData.frames ? framesFile : "its pack.toml";
 // Templates whose reading check waits for their redesign (frames.json).
 const readingPending = new Set(framesData.reading_pending ?? []);
 
@@ -126,7 +140,7 @@ const wideChecks = async (tab, site, what) => {
   const sizes = await tab.evaluate(frame);
   const parts = LISTS.has(what) ? ["header", "main"] : ["header"];
   if (typeof least !== "number") {
-    problems.push({ check: "frame-fill", a: site.pack, b: "", detail: `${framesFile} sets no minimum frame for this pack; add the one its design brief sets` });
+    problems.push({ check: "frame-fill", a: site.pack, b: "", detail: `${framesFrom} sets no minimum frame for this pack; add the frame its design brief sets` });
   }
   for (const part of typeof least === "number" ? parts : []) {
     if (sizes[part] < least) {

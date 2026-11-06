@@ -3,6 +3,8 @@
 //! no finding, the audit finds nothing to fix but the links to the demo
 //! sites published beside it, and every page the brief asks for is there.
 
+mod shipped;
+
 use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -20,23 +22,6 @@ const DATED: [&str; 3] = ["review-due", "stale-post", "stale-page"];
 
 /// The site's home, as its pages link to it.
 const HOME: &str = "https://thebigasif.github.io/khalid/";
-
-/// Every look the template gallery shows, each with a demo at
-/// `/khalid/templates/<name>/` and a picture of that demo's home page and
-/// of a post: Classic, then the ten templates.
-const LOOKS: [&str; 11] = [
-    "classic",
-    "ledger",
-    "atlas",
-    "keystone",
-    "compass",
-    "harbor",
-    "wire",
-    "workbench",
-    "almanac",
-    "meridian",
-    "folio",
-];
 
 /// Where the gallery's plain cards sit, beside the Templates page.
 const CARDS: &str = "site/content/en/pages/templates";
@@ -133,7 +118,7 @@ fn is_sibling(target: &str) -> bool {
         return false;
     };
     rest.starts_with("demo/")
-        || LOOKS
+        || shipped::templates()
             .iter()
             .any(|name| rest == format!("templates/{name}/"))
         || EXAMPLES
@@ -188,7 +173,9 @@ fn the_audit_finds_nothing_but_the_demo_sites_published_beside_it() {
         assert!(is_sibling(target), "{issue}");
         siblings.insert(target.to_owned());
     }
-    for name in LOOKS {
+    // Every look the template gallery shows has a demo at
+    // `/khalid/templates/<name>/`: Classic and every template.
+    for name in shipped::templates() {
         assert!(
             siblings.contains(&format!("{HOME}templates/{name}/")),
             "{name}"
@@ -278,14 +265,19 @@ fn every_page_the_brief_asks_for_is_built_and_links_its_live_demo() {
         );
     }
 
+    // The gallery shows every look, Classic and every template, with a
+    // picture of its demo's home page and of a post.
+    let looks = shipped::templates();
     let templates = built_page(site.path(), "templates/");
-    for name in LOOKS {
+    let heading = format!("{} looks, each with a live demo", looks.len());
+    assert!(templates.contains(&heading), "{heading}");
+    for name in &looks {
         assert!(
             templates.contains(&format!("href=\"/khalid/templates/{name}/\"")),
             "{name}"
         );
     }
-    for name in LOOKS {
+    for name in &looks {
         for kind in ["home", "post"] {
             let picture = format!("templates/{name}-{kind}.svg");
             assert!(templates.contains(&format!("src=\"/khalid/{picture}\"")));
@@ -329,7 +321,8 @@ fn the_gallery_cards_are_the_preview_scripts_plain_cards() {
         .output()
         .unwrap();
     assert!(script.status.success(), "{script:?}");
-    for name in LOOKS {
+    let looks = shipped::templates();
+    for name in &looks {
         for kind in ["home", "post"] {
             let file = format!("{name}-{kind}.svg");
             let committed = fs::read_to_string(within(&repo_file(CARDS), &file)).unwrap();
@@ -338,7 +331,7 @@ fn the_gallery_cards_are_the_preview_scripts_plain_cards() {
         }
     }
     let beside = fs::read_dir(repo_file(CARDS)).unwrap().count();
-    assert_eq!(beside, LOOKS.len() * 2 + 1, "the cards and index.md");
+    assert_eq!(beside, looks.len() * 2 + 1, "the cards and index.md");
 }
 
 /// The class names a stylesheet gives rules to, such as `gallery` for

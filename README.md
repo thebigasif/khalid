@@ -15,7 +15,7 @@ Khalid is one small program written in Rust. No plugins to patch, no PHP, no dat
 - **SEO done for you.** Titles, descriptions, canonical links, sitemaps, schema markup for every kind of post, share images and redirects are all built in. Khalid's own site audit passes the Ahrefs and Semrush checks.
 - **A linter that guards every post.** A post with a missing description, a skipped heading level, a link to nowhere or too little to say does not go live. Every refusal says what is wrong, why it matters and how to fix it.
 - **Ready for AI search.** Answer-first writing checks, an AI info page and clean structured data help AI search find and quote your posts.
-- **Templates that look professional.** Eleven layouts for every kind of blog, in your own colours, fonts and logo. [See them all](https://serpdad.com/khalid/templates/).
+- **Templates that look professional.** Layouts for every kind of blog, in your own colours, fonts and logo. [See them all](https://serpdad.com/khalid/templates/).
 - **Fits any website.** Run it at `blog.example.com` or under `example.com/blog/`, next to any website. `khalid init` writes the rule for Nginx, Caddy, Apache or Traefik for you.
 - **One small program.** A single binary with no database server to run. Every post is a text file you can keep in git.
 - **A web editor and a command line.** Writers use the admin in the browser. Developers and AI agents use the command line, the APIs and the MCP server.
