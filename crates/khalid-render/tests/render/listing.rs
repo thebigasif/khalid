@@ -42,6 +42,7 @@ pub(crate) fn home(listing: RenderListing) -> RenderHome {
         tabs: Vec::new(),
         videos: Vec::new(),
         podcasts: Vec::new(),
+        podcast_player: None,
     }
 }
 

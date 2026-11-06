@@ -18,6 +18,7 @@ mod color;
 mod compass;
 mod contrast;
 mod css;
+mod episode;
 mod fetch;
 mod fetch_error;
 mod folio;
