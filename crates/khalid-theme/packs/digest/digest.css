@@ -1,0 +1,187 @@
+/* Based on Ghost's Digest theme, MIT licence, see LICENSE-ghost.txt.
+   Digest: a compact newsletter look. One 45rem column throughout; the
+   front page leads with the latest issue set like a post; lists are
+   ruled rows of a heavy title over a grey summary and a small date;
+   labels are small capitals in the link colour over a hairline with a
+   thick accent bar under the word; soft grey panels hold the featured
+   issues, the subscribe box and the author; a post opens on a grey band
+   with its picture overlapping the band's foot. Every colour comes from
+   the tokens or a tint of one, so a synced theme recolours it all. */
+
+:root { --frame: 75rem; --column: 45rem; --text: 37.5rem; --panel: linear-gradient(315deg, color-mix(in oklab, var(--color-surface) 96%, var(--color-text)), var(--color-surface)); }
+
+/* The frame: the header and footer across 75rem, lists in one 45rem
+   column, as Ghost's canvas, and a post's words in 37.5rem, about 68
+   letters a line. */
+.site-header, .site-footer { max-inline-size: var(--frame); }
+main { max-inline-size: var(--column); padding-block: clamp(2.5rem, 6vw, 4.5rem) 0; }
+main:has(> .post) { max-inline-size: var(--frame); padding-block-start: 0; }
+main:has(> .issue-image-wide) { max-inline-size: var(--frame); }
+main:has(> .post-image-full), main:has(> .issue-image-full) { max-inline-size: none; }
+main:has(> .post) > *, .post > :not(.post-header), .post-header > * { max-inline-size: var(--text); margin-inline: auto; }
+main:has(> :is(.issue-image-wide, .issue-image-full)) > :not(.issue), .issue > * { max-inline-size: var(--column); margin-inline: auto; }
+main > .post { max-inline-size: none; }
+body { font-feature-settings: "lnum"; }
+
+/* Type: heavy, tight headings; labels, menus and dates in small bold
+   capitals with a little tracking, as Ghost's Digest sets them. */
+h1, h2, h3, h4 { line-height: 1.15; letter-spacing: -0.015em; }
+.site-header nav a, .search-link, .issue-meta, .post-meta, .issue-nav, .section-title, .card > p:has(> time), .card-meta, .pagination, .share-title { font-family: var(--font-heading); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.5; text-transform: uppercase; }
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Buttons: round pills in the accent, in small capitals. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.4em; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 999px; font-family: var(--font-heading); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1; text-transform: uppercase; text-decoration: none; cursor: pointer; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 85%, var(--color-text)); text-decoration: none; }
+
+/* The header: across the whole window, as Ghost's. The name on the
+   start side, the menu beside it in small capitals, search and the call
+   to action on the end side. No rule under it. */
+.site-header { max-inline-size: none; gap: 0.5rem 2rem; min-block-size: 5.5rem; padding: 1rem clamp(0rem, 2vw, 2.5rem); border-block-end: 0; }
+@media (min-width: 80rem) { .site-header { flex-wrap: nowrap; } }
+.site-name { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+.site-logo img { block-size: 2.25rem; inline-size: auto; max-inline-size: none; }
+.site-header > .nav-bar { flex: 1 1 auto; }
+.site-header nav a, .search-link { color: var(--color-text); }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a[aria-current] { color: var(--color-link); }
+@media (max-width: 40rem) { .site-header { gap: 0.5rem 1rem; min-block-size: 0; } .site-name { font-size: 1.25rem; } .site-logo img { block-size: 1.75rem; } .site-header > .search-link { margin-inline-start: auto; } .site-header:has(> .search-link) > .nav-menu { margin-inline-start: 0; } }
+.announcement { margin-block-end: 0; border: 0; font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; }
+
+/* The section label: small capitals in the link colour over a hairline,
+   with a thick accent bar under the word alone, as Ghost's. */
+.section-title { display: flex; margin-block: 0 3rem; border-block-end: 1px solid var(--color-border); }
+.section-title span { padding-block-end: 0.75rem; margin-block-end: -2.5px; color: var(--color-link); border-block-end: 4px solid var(--color-accent); }
+
+/* The latest issue on the front page: set like a post's head. */
+.issue-header { display: block; }
+.issue-meta { display: flex; flex-wrap: wrap; gap: 0 1rem; margin: 0 0 1rem; color: var(--color-muted); }
+.issue-label { color: var(--color-link); }
+.issue-title { margin: 0; font-size: var(--text-h1); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; word-break: break-word; }
+.issue-title a { color: var(--color-text); }
+.issue-excerpt { margin-block: 1.25rem 0; color: var(--color-muted); font-size: clamp(1.1875rem, 1rem + 0.5vw, 1.375rem); line-height: 1.5; }
+.issue > .image { margin-block: 2.5rem 0; }
+.issue > .image img, .post > .image img { inline-size: 100%; border-radius: 0.25rem; }
+.issue-image-wide > .image, .post-image-wide > .image { max-inline-size: var(--frame); }
+.issue-image-full > .image, .post-image-full > .image { max-inline-size: none; margin-inline: -1rem; }
+.issue-image-full > .image img, .post-image-full > .image img { border-radius: 0; }
+.image figcaption { color: var(--color-muted); font-size: var(--text-small); text-align: center; }
+
+/* The ruled line of issue links: a 2px rule, small capitals, the first
+   link in ink and the last in the link colour, each with a chevron. */
+.issue-nav { margin-block-start: 3.5rem; padding-block-start: 1.25rem; border-block-start: 2px solid var(--color-text); }
+.issue-nav ul { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; margin: 0; padding: 0; list-style: none; }
+.issue-nav a { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-text); }
+.issue-nav li + li a { color: var(--color-link); }
+.issue-nav li:first-child a::after { content: "\a0\203a" / ""; font-size: 1.25em; }
+.issue-nav li + li a::after { content: "\a0\2192" / ""; }
+[dir="rtl"] .issue-nav li:first-child a::after { content: "\a0\2039" / ""; }
+[dir="rtl"] .issue-nav li + li a::after { content: "\a0\2190" / ""; }
+
+/* Lists: ruled rows, each a heavy title, the summary in grey, then the
+   date in small capitals, as Ghost's archive. */
+.cards { display: block; }
+.cards > li + li .card { margin-block-start: 3rem; padding-block-start: 3rem; border-block-start: 1px solid var(--color-border); }
+.card { display: flex; flex-direction: column; }
+.card > .image { margin: 0 0 1.5rem; }
+.card .image img { inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0.25rem; }
+.card :is(h2, h3, h4) { margin: 0 0 0.75rem; font-size: clamp(1.625rem, 1.3rem + 1vw, 2rem); font-weight: 800; line-height: 1.15; word-break: break-word; }
+.card :is(h2, h3, h4) a { color: var(--color-text); }
+.card > p { margin: 0; color: var(--color-muted); font-size: 1.125rem; line-height: 1.5; }
+.card > p:has(> time), .card-meta { order: 1; display: flex; flex-wrap: wrap; gap: 0 1rem; margin-block-start: 1.25rem; font-size: 0.75rem; }
+.card-meta picture { display: none; }
+.card-meta > a { color: var(--color-link); }
+.cards-row .card:has(.image) { display: flex; }
+.issues, .picks, .home-section { margin-block-start: var(--space-section); }
+
+/* Featured issues: each row in a soft grey panel, a little wider than
+   the column on a wide screen, as Ghost's featured cards. */
+.picks .cards > li + li .card { margin-block-start: 1.5rem; padding-block-start: 2.25rem; border: 0; }
+.picks .card, .card-featured { padding: 2.25rem 2rem; background: var(--panel); border-radius: var(--radius); }
+@media (min-width: 52rem) { .picks .card, .card-featured { margin-inline: -2rem; } }
+@media (max-width: 51.99rem) { .picks .card, .newsletter-slot, .author { margin-inline: -1rem; padding-inline: 1rem; border-radius: 0; } }
+.featured > h2, .related > h2:not(.section-title), .home-section > h2, .mentions > h2, .author + section > h2 { margin-block: 0 2rem; padding-block-end: 0.75rem; color: var(--color-link); border-block-end: 1px solid var(--color-border); font-family: var(--font-heading); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.01em; text-transform: uppercase; }
+.view-all a { font-family: var(--font-heading); font-weight: 700; }
+
+/* List pages: the name large and heavy, a grey line under it. */
+main > h1, .pagehead h1 { margin-block: 0 0.75rem; font-size: var(--text-h1); font-weight: 800; letter-spacing: -0.02em; }
+:is(main > h1, .pagehead h1) + .intro { color: var(--color-muted); font-size: 1.125rem; line-height: 1.5; }
+.intro p { margin: 0; }
+.pagehead { margin-block-end: var(--space-section); }
+main > h1 + .cards, main > .hub-link + .cards, main > .featured { margin-block-start: 3rem; }
+
+/* Page links: numbers in small capitals, the current one in a pill. */
+.pagination { margin-block-start: 4rem; }
+.page-numbers a[aria-current] { border-radius: 999px; }
+
+/* The author page: a soft panel with the round photo overlapping its
+   top edge, as Ghost's author head. */
+.author { position: relative; margin-block: 4.5rem 0; padding: 2.5rem 2rem; background: var(--panel); border-radius: var(--radius); }
+.author:has(.author-photo) { padding-block-start: 5rem; }
+@media (min-width: 52rem) { .author { margin-inline: -2rem; } }
+.author-header { display: block; }
+.author-photo { position: absolute; inset-block-start: -3.75rem; inset-inline-start: 2rem; inline-size: 7.5rem; }
+@media (max-width: 51.99rem) { .author-photo { inset-inline-start: 1rem; inline-size: 5.5rem; inset-block-start: -2.75rem; } .author:has(.author-photo) { padding-block-start: 4rem; } }
+.author-photo img { aspect-ratio: 1; object-fit: cover; border: 4px solid var(--color-background); border-radius: 50%; }
+.author-intro h1 { margin: 0; font-size: var(--text-h1); font-weight: 800; }
+.author-bio { color: var(--color-muted); font-size: 1.125rem; }
+.author + section > h2 { margin-block-start: var(--space-section); }
+
+/* The post: a grey band from edge to edge behind the header and the
+   post's head, the lead picture overlapping its foot. */
+body:has(.post-header) .site-header, .post-header { background: var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.post-header { padding-block: clamp(2.5rem, 6vw, 5rem); }
+.post-header:has(+ .image) { padding-block-end: clamp(5rem, 10vw, 8rem); }
+.post > .image { position: relative; margin-block: calc(-1 * clamp(3rem, 6vw, 5rem)) 0; }
+.post-header h1 { margin-block: 0; font-size: var(--text-h1); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; word-break: break-word; }
+.post-meta { display: flex; flex-wrap: wrap; gap: 0 1rem; margin-block-end: 1rem; color: var(--color-muted); }
+.post-meta > :is(p, address) { margin: 0; font-style: normal; }
+.post-meta a { color: inherit; }
+.post-meta .post-topic a { color: var(--color-link); }
+.post-meta > .reviewed-by { flex-basis: 100%; text-transform: none; }
+.updated-note { margin-block: 1rem 0; color: var(--color-muted); font-size: var(--text-small); }
+.dek { margin-block: 1.25rem 0; color: var(--color-muted); font-size: clamp(1.1875rem, 1rem + 0.5vw, 1.375rem); line-height: 1.5; }
+.post-header .share { margin-block: 1.75rem 0; }
+.post-with-toc .post-header, body:has(.post-with-toc) .site-header { box-shadow: none; clip-path: none; background: none; }
+.post-with-toc .post-header { padding-block-end: 2rem; }
+.post-with-toc > .image { margin-block-start: 0; }
+
+/* Share: one row of quiet pill links. */
+.share-title { color: var(--color-muted); }
+.share a { min-block-size: 2.5rem; color: var(--color-text); background: var(--color-background); border-color: var(--color-border); border-radius: 999px; font-size: 0.875rem; font-weight: 600; }
+.share a:hover { border-color: var(--color-muted); text-decoration: none; }
+
+/* The words: the body font at its full size, links underlined in the
+   link colour. */
+.post-body { margin-block-start: 3rem; font-size: var(--text-body); }
+.post-body :is(h2, h3, h4) { margin-block: 1.6em 0.6em; font-weight: 800; }
+.post-body h2 { font-size: 1.6em; }
+.post-body h3 { font-size: 1.3em; }
+.post-body a { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 1px; }
+.post-body blockquote { color: var(--color-text); border-inline-start-color: var(--color-accent); }
+.post-body img { margin-inline: auto; border-radius: 0.25rem; }
+.post .issue-nav { margin-block-start: 4rem; }
+.author-box { border-radius: var(--radius); }
+
+/* The subscribe box: a soft grey panel, centred, a heavy title, and the
+   email field as a pill in the page colour with the button inside its end. */
+.newsletter-slot { margin-block-start: var(--space-section); padding: clamp(3rem, 6vw, 4rem) 1.5rem; text-align: center; background: var(--panel); border: 0; border-radius: var(--radius); }
+.newsletter-slot h2 { margin: 0; font-size: clamp(1.875rem, 1.4rem + 1.6vw, 2.75rem); font-weight: 800; letter-spacing: -0.02em; }
+.newsletter-slot > p { max-inline-size: 30rem; margin: 1rem auto 0; color: var(--color-muted); font-size: 1.125rem; line-height: 1.45; }
+.newsletter-slot .subscribe { position: relative; max-inline-size: 35rem; margin: 2.5rem auto 0; text-align: start; }
+.newsletter-slot .subscribe > p { margin: 0; }
+.newsletter-slot .subscribe label { display: block; margin-block-end: 0.5rem; padding-inline-start: 1.5rem; color: var(--color-muted); font-size: var(--text-small); font-weight: 600; }
+.newsletter-slot .subscribe input { inline-size: 100%; min-block-size: 3.5rem; padding-inline: 1.5rem 9rem; color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-border); border-radius: 999px; font-size: 1.0625rem; }
+.newsletter-slot .subscribe > p:last-child { position: absolute; inset-block-end: 0.375rem; inset-inline-end: 0.375rem; }
+.newsletter-slot .subscribe button { min-block-size: 2.75rem; }
+.newsletter-slot .subscribe button::after { content: "\a0\203a" / ""; font-size: 1.25em; }
+[dir="rtl"] .newsletter-slot .subscribe button::after { content: "\a0\2039" / ""; }
+@media (min-width: 52rem) { main:not(:has(> .post)) > .newsletter-slot { margin-inline: -2rem; } }
+main > .cta-band { justify-content: center; margin-block-start: var(--space-section); padding: 3rem 1.5rem; text-align: center; background: var(--panel); border: 0; border-radius: var(--radius); }
+.related { margin-block-start: var(--space-section); }
+
+/* The footer: one row, the name and year's links quiet and small. */
+.site-footer { gap: 1.25rem; margin-block-start: var(--space-section); padding-block: 3rem; border-block-start: 1px solid var(--color-border); }
+.site-footer a { color: var(--color-muted); font-size: 0.875rem; }
+.site-footer a:hover { color: var(--color-text); }
+@media (min-width: 52rem) { .site-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; } }

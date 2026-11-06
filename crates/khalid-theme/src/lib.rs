@@ -23,6 +23,7 @@ mod css;
 mod ease;
 mod edition;
 mod episode;
+mod digest;
 mod fetch;
 mod fetch_error;
 mod folio;

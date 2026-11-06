@@ -1,0 +1,69 @@
+{#- Based on Ghost's Digest theme, MIT licence, see LICENSE-ghost.txt.
+    Digest's front page (docs/templates/digest.md): one column that leads
+    with the latest issue, set like a post. A line in small capitals with
+    "Sent on" in the link colour and the date, the title large, the
+    summary and the lead picture, small, wide or full as `image_width`
+    says, then a ruled line of links to read the issue and to every
+    issue. The subscribe box follows in a soft panel, then the featured
+    issues in soft panels and every other post on the page as a ruled
+    list, each title over its summary and its date. A later page shows
+    its name and the list alone. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+{% from "image.html" import picture -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% set later = page.pagination and page.pagination.current > 1 -%}
+{% set archive = site.home ~ "archive/" if "archive" in site.features else (page.pagination.next if page.pagination else none) -%}
+{% if later %}<header class="pagehead">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}</header>
+<section class="issues" aria-labelledby="issues-title">
+<h2 id="issues-title" class="section-title"><span>{{ t.newsletter_issues }}</span></h2>
+{% if page.posts %}{{ cards(page.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% else %}{% set latest = page.posts[0] if page.posts else none -%}
+{% set rest = page.posts[1:] -%}
+<h1 class="visually-hidden">{{ page.title }}</h1>
+{% if latest %}{% set width = template.options.image_width -%}
+{% if width == "full" %}<article class="issue issue-image-full">{% elif width == "wide" %}<article class="issue issue-image-wide">{% else %}<article class="issue">{% endif %}
+<header class="issue-header">
+<p class="issue-meta"><span class="issue-label">{{ t.newsletter_sent }}</span> <time datetime="{{ latest.date }}">{{ latest.date | date }}</time></p>
+<h2 class="issue-title"><a href="{{ latest.href }}">{{ latest.title }}</a></h2>
+<p class="issue-excerpt">{{ latest.excerpt }}</p>
+</header>
+{% if latest.image %}{{ picture(latest.image) }}
+{% endif %}<nav class="issue-nav" aria-label="{{ t.pagination }}">
+<ul>
+<li><a href="{{ latest.href }}">{{ t.newsletter_whole }}</a></li>
+{% if archive %}<li><a href="{{ archive }}">{{ t.newsletter_all }}</a></li>
+{% endif %}</ul>
+</nav>
+</article>
+{% elif not page.sections %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t, "digest-signup") }}
+{% elif template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% set picks = page.picks | rejectattr("href", "eq", latest.href) | list if latest else page.picks -%}
+{% set picks = picks[:template.options.picks] -%}
+{% if picks %}<section class="picks" aria-labelledby="picks-title">
+<h2 id="picks-title" class="section-title"><span>{{ t.featured }}</span></h2>
+{{ cards(picks, 3, "text") }}
+</section>
+{% endif %}{% if rest %}<section class="issues" aria-labelledby="issues-title">
+<h2 id="issues-title" class="section-title"><span>{{ t.newsletter_issues }}</span></h2>
+{{ cards(rest, 3) }}
+</section>
+{% endif %}{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if not later %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{{ home_sections(page, template.options, t) }}{% if template.cta and template.options.cta_band in ["home", "both"] and site.subscribe and template.options.newsletter in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endif %}{% endblock %}
