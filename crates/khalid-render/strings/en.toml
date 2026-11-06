@@ -259,3 +259,7 @@ recent_publications = "Recent publications"
 news = "News"
 research_areas = "Research areas"
 people = "People"
+# The vital template's front page, lists and coach pages.
+programmes = "Programmes"
+routines = "Routines"
+routine_notes = "Notes"
