@@ -38,7 +38,7 @@ const SETTINGS: &str = "\n[template]\nname = \"hub\"\n[template.options]\ncreato
 /// fill the stack.
 const NO_LINKS: &str = "\n[template]\nname = \"hub\"\n\n[[nav.primary]]\nlabel = \"Guides\"\nhref = \"/blog/archive/\"\n\n[[nav.primary]]\nlabel = \"About\"\nhref = \"/blog/about/\"\n";
 
-/// A drawn mark for Lena, beside her author file.
+/// A drawn mark for Lena, beside her author file in her own folder.
 const MARK: &str = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 160\" width=\"160\" height=\"160\"><rect width=\"160\" height=\"160\" fill=\"#eee\"/><circle cx=\"80\" cy=\"70\" r=\"30\" fill=\"#333\"/></svg>\n";
 
 /// The demo site built with Hub and `settings`, with a photo for Lena.
@@ -54,10 +54,19 @@ fn built(settings: &str) -> (tempfile::TempDir, PathBuf) {
     let mut toml = fs::read_to_string(&site).unwrap();
     toml.push_str(settings);
     fs::write(&site, toml).unwrap();
-    let lena = at(temp.path(), "content/en/authors/lena-vogt.md");
-    let text = fs::read_to_string(&lena).unwrap();
-    fs::write(&lena, text.replacen('\n', "\nphoto: lena-vogt.svg\n", 1)).unwrap();
-    fs::write(at(temp.path(), "content/en/authors/lena-vogt.svg"), MARK).unwrap();
+    // A photo is found only beside an author's `index.md`, so Lena moves
+    // into a folder of her own with her mark.
+    let flat = at(temp.path(), "content/en/authors/lena-vogt.md");
+    let text = fs::read_to_string(&flat).unwrap();
+    fs::remove_file(&flat).unwrap();
+    let folder = at(temp.path(), "content/en/authors/lena-vogt");
+    fs::create_dir_all(&folder).unwrap();
+    fs::write(
+        at(&folder, "index.md"),
+        text.replacen('\n', "\nphoto: mark.svg\n", 1),
+    )
+    .unwrap();
+    fs::write(at(&folder, "mark.svg"), MARK).unwrap();
     let out = at(temp.path(), "out");
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
         .args(["--site", temp.path().to_str().unwrap(), "build", "--out"])
