@@ -1,0 +1,99 @@
+# Slow Clay, a made-up pottery channel, written for the Channel
+# template's demo. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "Slow Clay"
+languages = ["en"]
+
+[template.cta]
+label = "Subscribe to the channel"
+href = "/blog/about/"
+note = "A new pottery video every other Wednesday, from wedging to the kiln."
+
+# The Channel template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Pottery from a small studio, one slow step at a time: throwing, trimming, glazing and the kiln, filmed so you can follow along."]
+hero_stats = ["9 | videos", "1 | series", "4 | playlists", "12,400 | subscribers"]
+shelves = 4
+
+[announcement]
+text = "New video: pulling handles for mugs that feel right."
+href = "/blog/pulling-handles-mugs/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Pottery videos from a small studio"
+
+[seo.ai_page]
+covers = "Slow Clay is a pottery channel. Each post is one video with its notes: throwing on the wheel, trimming, glazing and firing a gas kiln, plus the odd written post about the studio."
+cite = "Link the post you quote, and name the video's host."
+contact = "studio@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Slow Clay"
+email = "studio@example.com"
+founded = "2021-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Slow Clay logo"
+width = 240
+height = 80
+
+# Sign-ups for the channel's newsletter, under its own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "studio@example.com"
+name = "Slow Clay"
+postal_address = "Slow Clay, Unit 4, Mill Yard, Easthope EH2 9LB"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Videos"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "Throwing"
+href = "/blog/category/throwing/"
+language = "en"
+
+[[nav.primary]]
+label = "Glazing"
+href = "/blog/category/glazing/"
+language = "en"
+
+[[nav.primary]]
+label = "Kiln days"
+href = "/blog/category/kiln-days/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the channel"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Hosts"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Your first bowl series"
+href = "/blog/series/your-first-bowl/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

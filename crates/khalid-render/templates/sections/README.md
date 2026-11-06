@@ -50,6 +50,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | Rating | `rating(value, label=none, scale=5)`; `value` as a review's first fact gives it, such as `4`, `3.5` or `8/10` | Five stars filled up to the score, the score beside them, and the score in words for screen readers; a value that is not a number shows as words | Film and TV reviews, gaming reviews, product reviews |
 | Poster grid | `poster_grid(posts, level=3)`; call it with `{% call(post) poster_grid(posts) %}` to add a rating or details under each title | Tall 2:3 cover cards with the title under the picture, linking the whole card | Film and TV reviews, gaming, author's books, musician's releases |
 | Link stack | `link_stack(lines, nav=[], cta=none, label=none)`; `lines` written `label \| address` or `label \| address \| note`, `nav` the links used when there are no lines, `cta` the call to action that leads | Large link buttons, one under another, each as wide as the column | Creator hub, musician (streaming links), podcast (where to listen), course (enrol links) |
+| Video grid | `video_grid(posts, level=3, numbered=false, shelf=false)`; the first fact is the running time | Thumbnail cards cut to 16:9, each with a play bar under the picture (a play mark, a track and the running time), the title, date and category; with `shelf`, one row that scrolls sideways | Video creator (Channel), creator hub, online course lessons |
 
 ## Planned parts
 

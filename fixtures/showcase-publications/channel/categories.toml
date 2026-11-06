@@ -1,0 +1,35 @@
+# Slow Clay's playlists. The Channel template shows each as a shelf of
+# its newest videos on the front page, and each category page is that
+# playlist, with its intro as the description.
+
+[[categories]]
+slug = "throwing"
+en = "Throwing"
+
+[categories.seo.en]
+description = "Slow Clay's videos on throwing pottery on the wheel: wedging, centring, pulling walls, trimming and handles."
+intro = "Everything at the wheel, from a ball of clay to a trimmed pot. Start with the first bowl series if you are new."
+
+[[categories]]
+slug = "glazing"
+en = "Glazing"
+
+[categories.seo.en]
+description = "Slow Clay's videos on glazing pottery: mixing glazes from raw materials, testing them and dipping bowls."
+intro = "Mixing, testing and applying the glazes we use in the studio, with every recipe written out under its video."
+
+[[categories]]
+slug = "kiln-days"
+en = "Kiln days"
+
+[categories.seo.en]
+description = "Slow Clay's videos on firing a gas kiln: loading it, reading cones and finding out why pots crack."
+intro = "What happens in and around our gas kiln: packing it, firing it and learning from what comes out."
+
+[[categories]]
+slug = "studio-notes"
+en = "Studio notes"
+
+[categories.seo.en]
+description = "Slow Clay's studio notes: vlogs of a week in the studio and posts about how we film and run the channel."
+intro = "A week in the studio, how we film the wheel and the other things that happen between the pots."

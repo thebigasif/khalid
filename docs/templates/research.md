@@ -64,7 +64,7 @@ Categories are your projects or research areas, and tags are a paper's keywords.
 2. The research area as a small label, the title, and the post's description as a one-line summary.
 3. The author with their mark and role, who reviewed it, and the date.
 4. **The paper panel:** the facts in a ruled row of cells, with the DOI linked.
-5. The lead picture, then the post in one column about 46rem wide, with a folded contents list for long posts.
+5. The lead picture, then the post in one column about 37.5rem wide, about 72 characters a line, with a folded contents list for long posts.
 6. **Cite this:** the reference in one line, built from the author, year, title, venue and DOI, and a BibTeX entry folded under it. A reader selects it and copies it. It needs no script.
 7. The keywords (tags), the share links and the author box.
 8. Related posts as a short reference list.
@@ -87,7 +87,7 @@ Research's own defaults, which any value in your `theme/tokens.toml` replaces:
 |---|---|
 | `[fonts] heading` | Charter, then Georgia and other serifs |
 | `[fonts] body` | The system's own sans |
-| `[type] body` | `1rem` on a phone to `1.0625rem` on a wide screen |
+| `[type] body` | `1.0625rem` on a phone to `1.125rem` on a wide screen |
 | `[type] h1` | `2rem` to `3rem` |
 | `[type] h2` | `1.375rem` to `1.75rem` |
 | `[type] h3` | `1.125rem` to `1.25rem` |

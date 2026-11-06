@@ -1,6 +1,6 @@
 //! Casper: a classic blog, based on Ghost's Casper theme (MIT licence, see
 //! `packs/casper/LICENSE-ghost.txt`). A cover band with the blog's name
-//! over a picture or the accent colour, a feed with one large card, two
+//! on the accent colour and a picture under it, a feed with one large card, two
 //! half cards and then three across, and a post in one serif column with
 //! the sign-up box and three more posts under it.
 
@@ -12,7 +12,7 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 /// The Casper pack.
 pub(crate) static CASPER: Pack = Pack {
     name: "casper",
-    summary: "A classic blog based on Ghost's Casper theme: a cover band with the blog's name over a picture, a feed with one large card and then a grid, and a calm serif column for each post.",
+    summary: "A classic blog based on Ghost's Casper theme: a cover band with the blog's name on the accent colour and a picture under it, a feed with one large card and then a grid, and a calm serif column for each post.",
     css: PackText::file("casper/casper.css"),
     templates: &[
         PackTemplate::file("body_attrs.html", "casper/body_attrs.html"),
@@ -32,7 +32,7 @@ pub(crate) static CASPER: Pack = Pack {
         },
         OptionSpec {
             key: "cover",
-            help: "How the front page opens: picture (the newest featured post's picture behind the blog's name), accent (the accent colour behind it), plain (the name on the page's own colour) or none.",
+            help: "How the front page opens: picture (the blog's name on the accent colour, the newest featured post's picture under it), accent (the accent colour alone), plain (the name on the page's own colour) or none.",
             kind: OptionKind::Choice {
                 allowed: &["picture", "accent", "plain", "none"],
                 default: "picture",

@@ -20,6 +20,7 @@ mod brand;
 mod bulletin;
 mod casper;
 mod chapter;
+mod channel;
 mod color;
 mod compass;
 mod contrast;

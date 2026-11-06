@@ -5,7 +5,7 @@ order: 25
 
 # Casper
 
-Casper is a template for a classic blog. The front page opens with a cover band: the blog's name over a picture or the accent colour. A feed of picture cards follows, with one large card, two half cards and then three across. Each post reads in one serif column under a wide picture, with a sign-up box and three more posts after it.
+Casper is a template for a classic blog. The front page opens with a cover band: the blog's name on the accent colour, with a picture under it. A feed of picture cards follows, with one large card, two half cards and then three across. Each post reads in one serif column under a wide picture, with a sign-up box and three more posts after it.
 
 Based on Ghost's Casper theme (MIT). Khalid's copy is rewritten for Khalid's templates and keeps the theme's licence beside its files.
 
@@ -23,9 +23,9 @@ name = "casper"
 
 ## What the front page shows
 
-1. The header, laid over the cover. With the logo on the cover (the default `navigation`), the header shows only the menu, the search link and your call to action as a pill in the page's colour.
+1. The header, a bar in the accent colour that runs straight into the cover. With the logo on the cover (the default `navigation`), the header shows only the menu, the search link and your call to action as a pill in the page's colour.
 2. The cover, picked with `cover`:
-   - **Picture**, the default: the newest featured post's picture, darkened by the accent colour, behind the blog's name set large and its intro. A blog with no featured post with a picture gets the accent colour alone.
+   - **Picture**, the default: the blog's name set large and its intro on a band in the accent colour, then the newest featured post's picture as a wide strip under the band, tinted by the accent colour. No words sit on the picture. A blog with no featured post with a picture gets the band alone.
    - **Accent**: the accent colour behind the name and intro.
    - **Plain**: the name and intro on the page's own colour.
    - **None**: no cover; the feed starts at the top.
