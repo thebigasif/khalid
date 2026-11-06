@@ -86,7 +86,9 @@ fn section_rules(packs: &Path, pack: &Path) -> io::Result<String> {
     }
     let mut rules = String::new();
     for name in parts {
-        let path = packs.join("_sections").join(format!("{name}.css"));
+        let mut path = packs.to_path_buf();
+        path.push("_sections");
+        path.push(format!("{name}.css"));
         let text = fs::read_to_string(&path)
             .map_err(|error| io::Error::other(format!("{}: {error}", path.display())))?;
         rules.push_str(&text);
