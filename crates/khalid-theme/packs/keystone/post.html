@@ -1,9 +1,11 @@
 {#- Keystone's post page: the category over the title, the summary, one
-    quiet line with the authors, one date (the last update, or the day it
-    was published), the reading time and why it was updated, the lead
-    picture wider than the text, the contents and the share links in a
-    rail beside the body on wide screens, then the author, the newsletter, the call to action and
-    up to `related_count` related posts. -#}
+    credits line with the post's facts (a project's client, year and
+    discipline), one quiet line with the authors, one date (the last
+    update, or the day it was published), the reading time and why it was
+    updated, the lead picture wider than the text, the contents and the
+    share links in a rail beside the body on wide screens, then the
+    author, the newsletter, the call to action and up to `related_count`
+    related posts. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
@@ -29,6 +31,9 @@
 {% if page.category %}<p class="eyebrow"><a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
 {% endif %}<h1>{{ page.title }}</h1>
 {% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}{% if page.facts %}<dl class="credits">
+{% for fact in page.facts %}<div><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
+{% endfor %}</dl>
 {% endif %}<div class="post-meta">
 {% if "byline" in site.features %}<address>
 <ul class="people" role="list" aria-label="{{ t.written_by }}">

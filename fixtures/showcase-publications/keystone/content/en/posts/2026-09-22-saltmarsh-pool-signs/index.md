@@ -8,16 +8,19 @@ category: projects
 description: How we designed the pool signs for Saltmarsh Lido in 2026, with materials that survive sea air, chlorine and sun, and symbols swimmers read without glasses.
 focus_keyword: pool signs
 tags: [signage, wayfinding, materials, case study]
+facts:
+  - label: Client
+    value: Saltmarsh Lido Trust
+  - label: Year
+    value: "2026"
+  - label: Discipline
+    value: Wayfinding, signage
 image:
   src: lead.jpg
   alt: The cream end of a diving board stretching out over rippling lilac-blue pool water, seen from above in bright sun, the setting pool signs have to survive
 ---
 
 We designed 28 pool signs for Saltmarsh Lido in 2026, made from materials that survive sea air, chlorine and summer sun, with large symbols that swimmers can read without their glasses. The lido reopened in May with the new signs, after a two-year restoration.
-
-| Client | Year | Discipline |
-|---|---|---|
-| Saltmarsh Lido Trust | 2026 | Wayfinding, signage |
 
 ## A hard place for a sign
 

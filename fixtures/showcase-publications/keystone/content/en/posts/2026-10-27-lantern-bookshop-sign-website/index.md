@@ -9,16 +9,19 @@ description: How we designed a hanging bookshop sign and a small events website 
 focus_keyword: bookshop sign
 featured: true
 tags: [signage, websites, brand identity, case study]
+facts:
+  - label: Client
+    value: The Lantern Bookshop, Eastbridge
+  - label: Year
+    value: "2026"
+  - label: Discipline
+    value: Signage, website, brand identity
 image:
   src: lead.jpg
   alt: Dozens of round paper lanterns in cream, green and red hanging from a web of black cords against a glowing orange canopy, seen from below, the idea behind the bookshop sign
 ---
 
 We designed a new hanging bookshop sign and a small events website for the Lantern Bookshop in 2026, as one piece of work, so the shop looks the same on Quay Street and on a phone. The sign is a painted lantern shape that hangs over the pavement, and the website shows the week's events in two clicks.
-
-| Client | Year | Discipline |
-|---|---|---|
-| The Lantern Bookshop, Eastbridge | 2026 | Signage, website, brand identity |
 
 ## Two problems, one shop
 

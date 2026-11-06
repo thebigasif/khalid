@@ -8,16 +8,19 @@ category: projects
 description: How we made allotment signs and a plot map for Wrenfield Allotments in 2026, built from oak by volunteers, with a map page that stays up to date.
 focus_keyword: allotment signs
 tags: [signage, websites, case study]
+facts:
+  - label: Client
+    value: Wrenfield Allotment Society
+  - label: Year
+    value: "2026"
+  - label: Discipline
+    value: Signage, website
 image:
   src: lead.jpg
   alt: An allotment garden seen from the air in late light, a grid of small green plots and garden sheds divided by straight paths, with blocks of flats beyond the trees
 ---
 
 We made new allotment signs and a plot map for Wrenfield Allotments in 2026, so that a new plot holder or a visitor can find any of the 212 plots without help. The signs are oak, cut and fitted by the society's own volunteers from our drawings, and the map lives on a single web page the society keeps up to date.
-
-| Client | Year | Discipline |
-|---|---|---|
-| Wrenfield Allotment Society | 2026 | Signage, website |
 
 ## A grid nobody could read
 
