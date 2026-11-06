@@ -4,26 +4,32 @@
 use khalid_core::ReaderSwitch;
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{Pack, PackCss, PackTemplate, slot};
+use crate::{Pack, PackTemplate, PackText, slot};
+
+/// The template files the meridian pack replaces.
+static MERIDIAN_TEMPLATES: [PackTemplate; 2] = [
+    PackTemplate::compressed(
+        "home.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/meridian/home.html.br")),
+    ),
+    PackTemplate::compressed(
+        "post-reference.html",
+        include_bytes!(concat!(
+            env!("OUT_DIR"),
+            "/packs/meridian/post-reference.html.br"
+        )),
+    ),
+];
 
 /// The Meridian pack.
 pub(crate) static MERIDIAN: Pack = Pack {
     name: "meridian",
     summary: "A calm company journal: serif titles, a lead story, category tabs, wide rows with a picture, several authors with their roles, and a reference layout for long guides.",
-    css: PackCss::compressed(include_bytes!(concat!(
+    css: PackText::compressed(include_bytes!(concat!(
         env!("OUT_DIR"),
         "/packs/meridian/meridian.css.br"
     ))),
-    templates: &[
-        PackTemplate {
-            name: "home.html",
-            source: include_str!("../packs/meridian/home.html"),
-        },
-        PackTemplate {
-            name: "post-reference.html",
-            source: include_str!("../packs/meridian/post-reference.html"),
-        },
-    ],
+    templates: &MERIDIAN_TEMPLATES,
     tokens: include_str!("../packs/meridian/tokens.toml"),
     reader: &[(ReaderSwitch::ReadingTime, false)],
     options: &[

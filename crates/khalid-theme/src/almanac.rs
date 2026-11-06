@@ -5,26 +5,29 @@
 //! sets of further reading.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
+
+/// The template files the almanac pack replaces.
+static ALMANAC_TEMPLATES: [PackTemplate; 2] = [
+    PackTemplate::compressed(
+        "home.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/almanac/home.html.br")),
+    ),
+    PackTemplate::compressed(
+        "post.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/almanac/post.html.br")),
+    ),
+];
 
 /// The Almanac pack.
 pub(crate) static ALMANAC: Pack = Pack {
     name: "almanac",
     summary: "For a library of long guides: category links, a featured guide, a grid of guides beside the editor's picks, and posts with an \"On this page\" box and two sets of further reading.",
-    css: PackCss::compressed(include_bytes!(concat!(
+    css: PackText::compressed(include_bytes!(concat!(
         env!("OUT_DIR"),
         "/packs/almanac/almanac.css.br"
     ))),
-    templates: &[
-        PackTemplate {
-            name: "home.html",
-            source: include_str!("../packs/almanac/home.html"),
-        },
-        PackTemplate {
-            name: "post.html",
-            source: include_str!("../packs/almanac/post.html"),
-        },
-    ],
+    templates: &ALMANAC_TEMPLATES,
     tokens: include_str!("../packs/almanac/tokens.toml"),
     reader: &[],
     options: &[

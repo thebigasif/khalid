@@ -1,10 +1,10 @@
-//! Writes each template's stylesheet without its comments, indentation and
-//! blank lines into cargo's output folder, and beside it the same text
-//! compressed with Brotli, which the packs embed (`PackCss`). The renderer
-//! strips the same things when it builds a site's stylesheet, and stripping
-//! twice gives what stripping once gives, so every site's stylesheet is
-//! unchanged; the binary just stops carrying the comments, and carries the
-//! rest compressed.
+//! Writes each template's stylesheet, without its comments, indentation and
+//! blank lines and compressed with Brotli, into cargo's output folder, and
+//! each of its template files compressed the same way. The packs embed
+//! those bytes (`PackText`). The renderer strips the same things when it
+//! builds a site's stylesheet, and stripping twice gives what stripping
+//! once gives, so every site's stylesheet is unchanged; the binary just
+//! stops carrying the comments, and carries the rest compressed.
 
 use std::ffi::OsString;
 use std::io::Write as _;
@@ -28,15 +28,18 @@ fn main() -> io::Result<()> {
         for file in fs::read_dir(pack.path())? {
             let file = file?;
             let path = file.path();
+            let mut name = file.file_name();
+            name.push(".br");
+            let mut target = into.clone();
+            target.push(name);
             if path.extension().is_some_and(|extension| extension == "css") {
                 let css = minify(&fs::read_to_string(&path)?);
-                let mut target = into.clone();
-                target.push(file.file_name());
-                fs::write(&target, &css)?;
-                let mut name = file.file_name();
-                name.push(".br");
-                target.set_file_name(name);
-                fs::write(target, brotli(css.as_bytes())?)?;
+                fs::write(&target, brotli(css.as_bytes())?)?;
+            } else if path
+                .extension()
+                .is_some_and(|extension| extension == "html")
+            {
+                fs::write(&target, brotli(&fs::read(&path)?)?)?;
             }
         }
     }

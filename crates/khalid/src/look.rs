@@ -47,7 +47,7 @@ pub(crate) fn render_pack(look: &Look, config: &Config) -> RenderPack<'static> {
     RenderPack {
         name: pack.name,
         templates: (pack.templates.iter())
-            .map(|file| (file.name, file.source))
+            .map(|file| (file.name, file.source()))
             .collect(),
         options: (look.options().iter())
             .map(|(key, value)| ((*key).to_owned(), option(value)))
@@ -185,7 +185,7 @@ mod tests {
             let chosen = RenderPack {
                 name: pack.name,
                 templates: (pack.templates.iter())
-                    .map(|file| (file.name, file.source))
+                    .map(|file| (file.name, file.source()))
                     .collect(),
                 options: BTreeMap::new(),
                 cta: None,
@@ -418,7 +418,7 @@ mod tests {
             let css = stylesheet_with(&tokens, pack.stylesheet()).unwrap();
             let css = String::from_utf8(css.body().to_vec()).unwrap();
             for file in pack.templates {
-                let classes = (file.source.split("class=\"").skip(1))
+                let classes = (file.source().split("class=\"").skip(1))
                     .filter_map(|attribute| attribute.split('"').next())
                     .flat_map(str::split_whitespace);
                 for class in classes {
