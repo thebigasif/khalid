@@ -1,0 +1,21 @@
+{#- Based on Ghost's London theme, MIT licence, see LICENSE-ghost.txt.
+    Every list of posts in London, such as a category or a tag: the name
+    large and centred, its description in grey under it, then the posts as
+    London's picture tiles, two side by side and every third across the
+    whole width, and numbered pages. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+{% block kind %}{% endblock %}<header class="ln-head">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}<div class="ln-feed">
+{{ cards(page.posts, 2, numbered=page.numbered) }}
+</div>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

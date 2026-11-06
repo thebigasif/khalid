@@ -36,6 +36,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `headline`: a local news site with the logo over the menu, the latest stories, a section for each topic with a lead story and small rows, short lists of headlines for more topics, and a dark footer. Based on Ghost's Headline theme (MIT). See [Headline](templates/headline.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
+- `london`: a picture-led blog or portfolio with the blog's description set large in the middle, tall picture tiles from edge to edge, two side by side and every third across the whole width, and a centred reading column. Based on Ghost's London theme (MIT). See [London](templates/london.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
 - `research`: a research lab or academic group, with papers as a numbered reference list with venue, DOI and citations, a news feed, research areas, a people page and a cite box on every paper. See [Research](templates/research.md).
 - `solo`: a personal site for one writer or creator, with a large headline and a sign-up field over a feed of posts with large titles. Based on Ghost's Solo theme (MIT). See [Solo](templates/solo.md).
