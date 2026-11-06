@@ -40,13 +40,22 @@ const EPISODE: &str = "content/en/posts/2026-10-05-fixing-slow-pages";
 /// sound player in the post at [`EPISODE`].
 #[cfg(test)]
 fn built() -> (tempfile::TempDir, PathBuf) {
-    built_with(true)
+    built_with(Player::In)
 }
 
-/// The demo site built with Episode, with the sound player when `episode`
-/// is set and none at all when it is not.
+/// Whether the demo post at [`EPISODE`] carries a sound player.
 #[cfg(test)]
-fn built_with(episode: bool) -> (tempfile::TempDir, PathBuf) {
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Player {
+    /// The post has the sound player.
+    In,
+    /// No post has a sound player.
+    Out,
+}
+
+/// The demo site built with Episode, with the sound player or without it.
+#[cfg(test)]
+fn built_with(player: Player) -> (tempfile::TempDir, PathBuf) {
     let temp = tempfile::tempdir().unwrap();
     let repo = Path::new(env!("CARGO_MANIFEST_DIR"));
     copy_dir(&at(repo, "../../fixtures/demo-site"), temp.path());
@@ -61,7 +70,7 @@ fn built_with(episode: bool) -> (tempfile::TempDir, PathBuf) {
         "[brand]\nlogo = \"https://www.example.com/logo.svg\"\n",
     )
     .unwrap();
-    if episode {
+    if player == Player::In {
         let folder = at(temp.path(), EPISODE);
         fs::copy(
             at(
@@ -159,7 +168,7 @@ fn episode_front_page_leads_with_the_newest_episode_and_its_player() {
 /// and lists every post.
 #[test]
 fn episode_front_page_without_an_episode_lists_every_post() {
-    let (_temp, out) = built_with(false);
+    let (_temp, out) = built_with(Player::Out);
     let page = shown(&out, "index.html");
     assert!(!page.contains("episode-lead"), "{page}");
     assert!(!page.contains("<audio"), "{page}");
