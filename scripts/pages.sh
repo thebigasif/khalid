@@ -71,6 +71,15 @@ without_template() {
   mv "$1.new" "$1"
 }
 
+# Prints the lines of the [template.options] table in the site.toml $1,
+# without its heading, or nothing when it has none.
+template_options() {
+  awk '
+    /^\[/ { in_options = ($0 == "[template.options]"); next }
+    in_options && NF
+  ' "$1"
+}
+
 # Keeps every page of the site whose site.toml is $1 out of search results
 # and sitemaps, with the setting `[seo.index] site = "noindex"`.
 noindex() {
@@ -128,13 +137,23 @@ build() {
       sed -i "s#${origin}${was}#${address}${at}#g" {} +
   fi
   if [ -n "$template" ]; then
+    # The options a template's publication sets, such as its tagline, stay.
+    # The showcase sets none, so a demo without a publication has none.
+    local options
+    options="$(template_options "$site/site.toml")"
     without_template "$site/site.toml"
     printf '\n[template]\nname = "%s"\n' "$template" >>"$site/site.toml"
     # Each demo shows the showcase's call to action as a band on its front
-    # page and after each post, so every template shows off that part.
-    # Classic has no options at all.
+    # page and after each post, so every template shows off that part,
+    # unless its publication chose otherwise. Classic has no options at all.
     if [ "$template" != "classic" ]; then
-      printf '\n[template.options]\ncta_band = "both"\n' >>"$site/site.toml"
+      printf '\n[template.options]\n' >>"$site/site.toml"
+      if ! grep -q '^cta_band *=' <<<"$options"; then
+        printf 'cta_band = "both"\n' >>"$site/site.toml"
+      fi
+      if [ -n "$options" ]; then
+        printf '%s\n' "$options" >>"$site/site.toml"
+      fi
     fi
   else
     local named
