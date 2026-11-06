@@ -206,3 +206,6 @@ recent_publications = "Neue Publikationen"
 news = "Neuigkeiten"
 research_areas = "Forschungsbereiche"
 people = "Personen"
+# The lattice template's key numbers and its front page.
+key_numbers = "Zahlen im Überblick"
+latest_explainers = "Neueste Erklärungen"

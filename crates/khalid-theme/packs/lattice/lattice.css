@@ -1,0 +1,165 @@
+/* Lattice (docs/templates/lattice.md): a science explainer. A wide frame,
+   grotesque titles, a serif reading column, mono labels with a
+   small accent square, and every picture a numbered figure plate on a
+   lattice mat: a fine grid drawn from the border colour. Footnote marks
+   are small numbered tabs, the notes a ruled panel, and glossary links
+   marked terms. The section parts' rules come first (the build adds the
+   parts this pack's templates import). Every colour is a token or a mix
+   of tokens. */
+:root {
+  --lt-frame: 76rem;
+  --lt-read: 36rem;
+  --lt-grid: color-mix(in oklab, var(--color-border) 75%, var(--color-surface));
+  --lt-mat: linear-gradient(var(--lt-grid) 1px, transparent 1px) 0 0 / 1rem 1rem, linear-gradient(90deg, var(--lt-grid) 1px, transparent 1px) 0 0 / 1rem 1rem, var(--color-surface);
+  --hero-title: clamp(2.5rem, 1.5rem + 4vw, 4.75rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--lt-frame); }
+main { padding-block: 0 var(--space-section); counter-reset: lt-plate; }
+main > :is(.post, .page) { max-inline-size: var(--lt-read); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--lt-read) + 18rem); }
+main > .post ~ :is(.mentions, .comments, .comments-none, .newsletter-slot, .cta-band) { max-inline-size: var(--lt-read); margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
+
+/* The header: the name in the grotesque, the menu in small mono capitals. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1rem; border-block-end: 1px solid var(--color-text); }
+.site-name { color: var(--color-text); font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); letter-spacing: -0.03em; text-decoration: none; }
+.site-logo img { block-size: 2.5rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-family: var(--font-mono); font-size: 0.875rem; letter-spacing: 0.04em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: square, in the text colour. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-background); background: var(--color-text); border: 0; border-radius: var(--radius); font: 500 0.875rem/1.2 var(--font-mono); letter-spacing: 0.04em; text-align: center; text-decoration: none; text-transform: uppercase; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: var(--color-link); text-decoration: none; }
+
+/* Labels: small mono capitals after a square of the accent. */
+.lt-label, :is(.mentions, .topic-tabs, .media-row) > h2, .post-footer > h2 { display: flex; align-items: center; gap: 0.625rem; margin-block: 0 1.25rem; color: var(--color-text); font-family: var(--font-mono); font-size: 0.875rem; font-weight: 500; letter-spacing: 0.06em; line-height: 1.3; text-transform: uppercase; }
+.lt-label::before, :is(.mentions, .topic-tabs, .media-row) > h2::before, .post-footer > h2::before { content: ""; flex: none; inline-size: 0.5rem; block-size: 0.5rem; background: var(--color-accent); }
+
+/* The figure plate: a picture on the lattice mat, with its number in a
+   small tab above it, never over it. Plates count through the page. */
+:is(.card .image, .post-header .image, .lt-lead-picture .image, .post-body > figure) { display: flex; flex-direction: column; gap: 0.625rem; margin: 0; padding: 0.75rem; background: var(--lt-mat); border: 1px solid var(--color-border); }
+:is(.post-header .image, .lt-lead-picture .image, .post-body > figure) { counter-increment: lt-plate; }
+:is(.post-header .image, .lt-lead-picture .image, .post-body > figure)::before, .cards > li:has(.card > .image)::before { content: counter(lt-plate, decimal-leading-zero); align-self: flex-start; padding: 0.125rem 0.375rem; color: var(--color-background); background: var(--color-text); font: 500 0.75rem/1.4 var(--font-mono); letter-spacing: 0.04em; }
+:is(.card .image, .post-header .image, .lt-lead-picture .image, .post-body > figure) img { display: block; inline-size: 100%; border-radius: 0; }
+:is(.post-header .image, .post-body > figure) figcaption { margin: 0; padding: 0.5rem 0.75rem; color: var(--color-text); background: var(--color-background); border-inline-start: 2px solid var(--color-accent); font-size: 0.9375rem; line-height: 1.5; }
+.post-body > figure figcaption > :first-child { margin-block-start: 0; }
+.post-body > figure figcaption > :last-child { margin-block-end: 0; }
+
+/* The front page. */
+.hero { margin-block-end: 3rem; padding-block-start: clamp(2rem, 1rem + 3vw, 4rem); }
+.hero-title { max-inline-size: 16ch; font-weight: var(--heading-weight); letter-spacing: -0.035em; }
+.hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; }
+.hero > .figure-strip { margin-block-start: 2rem; }
+.lt-lead, .lt-topics, .lt-section { margin-block-end: var(--space-section); }
+.lt-lead-plate { display: grid; gap: 1.5rem 3rem; align-items: center; }
+@media (min-width: 60rem) { .lt-lead-plate { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); } }
+.lt-lead-text { min-inline-size: 0; }
+.lt-lead-text .card-meta { margin-block: 0 0.75rem; }
+.lt-lead-text h3 { margin: 0 0 1rem; font-size: clamp(1.75rem, 1.25rem + 1.6vw, 2.75rem); line-height: 1.08; }
+.lt-lead-text h3 a { color: var(--color-text); text-decoration: none; }
+.lt-lead-text h3 a:hover { color: var(--color-link); text-decoration: underline; }
+.lt-lead-excerpt { margin-block: 0 1.5rem; font-size: 1.125rem; line-height: 1.55; }
+
+/* Topics: ruled tiles, each with its number. */
+.lt-topics ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--color-text); border-inline-start: 1px solid var(--color-border); }
+.lt-topics a { display: flex; align-items: baseline; gap: 0.75rem; min-block-size: 4rem; padding: 1rem 1.25rem; color: var(--color-text); border-block-end: 1px solid var(--color-border); border-inline-end: 1px solid var(--color-border); font-family: var(--font-heading); font-size: 1.1875rem; font-weight: var(--heading-weight); line-height: 1.25; text-decoration: none; }
+.lt-topics a:hover { background: var(--color-surface); color: var(--color-link); }
+.lt-topic-number { flex: none; color: var(--color-accent); font-family: var(--font-mono); font-size: 0.875rem; font-weight: 500; }
+.lt-section .view-all { margin-block: 1.5rem 0; }
+
+/* Key numbers, in the hero, the lead and under a post's lead figure. */
+.figure-strip { border-block: 1px solid var(--color-text); }
+.figure dt { color: var(--color-muted); font-size: 0.9375rem; }
+.figure dd { color: var(--color-accent); font-family: var(--font-mono); font-size: clamp(1.5rem, 1.2rem + 1vw, 2.125rem); font-weight: 500; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.lt-key-numbers { margin-block: 2rem 0; }
+.lt-key-numbers .lt-label { margin-block-end: 0.75rem; }
+.lt-lead-text .figure dd { font-size: clamp(1.25rem, 1rem + 0.6vw, 1.625rem); }
+
+/* Cards: figure plates in a grid. A card holds its own layout, which
+   keeps counters inside it, so the list item counts and draws the tab in
+   the mat's top padding, above the picture. */
+.cards > li:has(.card > .image) { position: relative; counter-increment: lt-plate; }
+.cards > li:has(.card > .image)::before { position: absolute; inset-block-start: 0.75rem; inset-inline-start: 0.75rem; }
+.card .image { padding-block-start: 2.375rem; }
+.cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 3rem 2rem; }
+.card .image { margin-block-end: 1rem; }
+.card :is(h2, h3, h4) { margin-block: 0.25rem 0.5rem; font-size: 1.3125rem; line-height: 1.2; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.card > p:last-child { margin-block: 0; color: var(--color-muted); font-size: 1rem; }
+.card-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.02em; text-transform: uppercase; }
+.card-meta a { color: var(--color-accent); text-decoration: none; }
+.card-meta a:hover { text-decoration: underline; }
+
+/* Lists: what the list is, the name, the intro, a rule. */
+.list-header { margin-block: clamp(2rem, 1rem + 3vw, 4rem) 3rem; padding-block-end: 1.5rem; border-block-end: 1px solid var(--color-text); }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--lt-read); margin-block-start: 1rem; color: var(--color-text); font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-kind { color: var(--color-accent); font-family: var(--font-mono); font-weight: 500; }
+
+/* An explainer: the topic, the title, the answer, the byline. */
+.post-header { margin-block: clamp(2rem, 1rem + 3vw, 4rem) 2.5rem; }
+.post-header h1 { margin-block: 0 1rem; line-height: 1.06; }
+.lt-topic { margin-block: 0 1rem; font-family: var(--font-mono); font-size: 0.875rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.lt-topic a { color: var(--color-accent); text-decoration: none; }
+.lt-topic a:hover { text-decoration: underline; }
+.post-header .dek { margin-block: 0 1.5rem; font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); line-height: 1.4; }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.5rem; margin-block-end: 2rem; padding-block: 0.75rem; border-block: 1px solid var(--color-border); color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta p { margin: 0; }
+.post-meta .person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.02em; text-transform: uppercase; }
+.reading-time { margin-inline-start: 1rem; }
+
+/* The reading column: headings in the grotesque, marked glossary terms,
+   footnote tabs and the notes panel. */
+.post-body :is(h2, h3) { margin-block: 2.25em 0.5em; line-height: 1.2; }
+.post-body > figure { margin-block: 2.5rem; }
+.post-body a[href*="/glossary/"] { color: var(--color-text); text-decoration: underline dotted var(--color-accent); text-decoration-thickness: 2px; text-underline-offset: 0.22em; }
+.post-body a[href*="/glossary/"]:hover { color: var(--color-link); text-decoration-style: solid; }
+.footnote-ref { line-height: 0; }
+.footnote-ref a { display: inline-block; min-inline-size: 1.5em; margin-inline-start: 0.125em; padding: 0.125em 0.25em; color: var(--color-background); background: var(--color-text); font: 500 0.6875rem/1.2 var(--font-mono); text-align: center; text-decoration: none; }
+.footnote-ref a:hover, .footnote-ref a:focus-visible { background: var(--color-link); }
+.footnotes { margin-block-start: 3rem; padding: 1.25rem 1.5rem 0.5rem; color: var(--color-text); background: var(--lt-mat); border: 1px solid var(--color-border); border-block-start: 2px solid var(--color-text); font-size: 1rem; line-height: 1.55; }
+.footnotes ol { margin: 0; padding-inline-start: 1.75rem; }
+.footnotes li { margin-block-end: 0.75rem; padding: 0.5rem 0.75rem; background: var(--color-background); }
+.footnotes li::marker { color: var(--color-accent); font-family: var(--font-mono); font-weight: 500; }
+.footnotes li p { margin: 0; }
+.footnote-backref { color: var(--color-link); }
+.post-footer { margin-block-start: 3rem; }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-text); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+
+/* The glossary: the letters as square mono tabs, each term a dictionary
+   entry on a hairline. A term's page keeps to the reading column. */
+.letters a { min-block-size: 44px; font-family: var(--font-mono); font-weight: 500; border: 1px solid var(--color-border); }
+.letters a:hover, .letters a:focus-visible { background: var(--color-text); color: var(--color-background); }
+.glossary-letter h2 { display: flex; align-items: center; justify-content: center; inline-size: 3rem; block-size: 3rem; color: var(--color-background); background: var(--color-text); font-family: var(--font-mono); font-size: 1.5rem; }
+@media (min-width: 48rem) { .glossary-letter { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 0 2rem; align-items: start; } }
+.terms { grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 0 2.5rem; }
+.term { padding: 1rem 0; background: none; border: 0; border-block-end: 1px solid var(--color-border); border-radius: 0; }
+.term dt { margin: 0 0 0.25rem; font-size: 1.25rem; }
+.term dt a { text-decoration: underline dotted var(--color-accent); text-decoration-thickness: 2px; text-underline-offset: 0.22em; }
+.term dd { font-size: 1rem; line-height: 1.5; }
+.term-back a { font-family: var(--font-mono); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.term-related, .term-posts { padding-block-start: 1rem; border-block-start: 1px solid var(--color-text); }
+
+/* A person. */
+.author-header { margin-block-start: clamp(2rem, 1rem + 3vw, 4rem); }
+.author-header h1 { margin: 0; }
+.author-photo img { border-radius: 0; }
+
+/* The call to action and the sign-up: a ruled band on the lattice mat. */
+.cta-band { background: var(--lt-mat); border: 1px solid var(--color-border); border-block-start: 2px solid var(--color-text); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0; }
+
+/* The footer: one rule, quiet links. */
+.site-footer { border-block-start: 1px solid var(--color-text); }

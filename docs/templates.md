@@ -32,6 +32,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
 - `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
+- `lattice`: a science explainer site, with every picture a numbered figure, key numbers from each post's facts, footnotes as numbered tabs and marked glossary terms. See [Lattice](templates/lattice.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
 - `research`: a research lab or academic group, with papers as a numbered reference list with venue, DOI and citations, a news feed, research areas, a people page and a cite box on every paper. See [Research](templates/research.md).
@@ -136,11 +137,12 @@ facts:
 
 `khalid build` stops and names the line when a fact breaks one of these rules.
 
-Four templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+These templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
 
 - [Folio](templates/folio.md#release-notes) treats posts with facts as releases. The front page lists them in a dated release log beside the essays, tagged with the first fact, such as the version. A release's page shows its facts above the title.
 - [Workbench](templates/workbench.md#score-panels) shows a score panel on review cards and at the top of a review: the first fact large, with a meter when it is a score out of ten, then up to three figures.
 - [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.
+- [Lattice](templates/lattice.md#what-you-write) shows a post's facts as a row of key numbers under its lead picture, the value large and the label under it, and does the same for the lead explainer on the front page.
 - [Harbor](templates/harbor.md#recipe-facts) shows up to four posts with facts in a recipe card strip on the front page, with the first two facts as tags, and all the facts as tags under a post's title.
 
 The other templates do not show facts. A custom template that wants them reads `post.facts` on a card and `page.facts` on a post page. Each fact has a `label` and a `value`:

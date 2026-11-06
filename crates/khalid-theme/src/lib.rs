@@ -30,6 +30,7 @@ mod font_files;
 mod fonts;
 mod harbor;
 mod keystone;
+mod lattice;
 mod ledger;
 mod links;
 mod look;
