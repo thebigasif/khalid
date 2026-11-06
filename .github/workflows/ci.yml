@@ -286,8 +286,9 @@ jobs:
   demo:
     name: Demo check
     runs-on: ubuntu-latest
-    # It hung once for 90 minutes on a shared runner; a run never needs 30.
-    timeout-minutes: 30
+    # The layout check covers 49 templates in three browsers, about 45
+    # minutes in all; a hung run still stops at 75.
+    timeout-minutes: 75
     if: github.event_name == 'pull_request'
     # Uses the release binary the size budget built on a maintainer runner.
     needs: binary-size

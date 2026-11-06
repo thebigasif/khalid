@@ -13,6 +13,7 @@ khalid = "khalid"
 partick = "partick"
 # The varn is the made-up currency of the Ticker demo.
 varn = "varn"
+varns = "varns"
 hreflang = "hreflang"
 minijinja = "minijinja"
 # The German transliteration of ü, as in "ueber" for "über" (slugs, task 1.3).
