@@ -1,0 +1,29 @@
+{#- Based on Ghost's London theme, MIT licence, see LICENSE-ghost.txt.
+    An author's page in London: a round photo, the name large and centred,
+    the role and the bio in grey, and their profiles as one line of names
+    split by slashes. Then every post they wrote as London's picture tiles,
+    and numbered pages. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import avatar %}
+{% from "icons.html" import profiles %}
+{% from "card.html" import cards, pages -%}
+<article class="author ln-head">
+{% if page.image %}{{ avatar(page.image) }}
+{% endif %}<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}<div class="intro">
+{{ page.bio }}
+</div>
+{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</article>
+<section aria-labelledby="author-posts">
+<h2 id="author-posts" class="visually-hidden">{{ t.posts_by | replace("{name}", page.name) }}</h2>
+{% if page.posts %}<div class="ln-feed">
+{{ cards(page.posts, 3) }}
+</div>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% endblock %}
