@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="16" width="48" height="48" rx="6" fill="#2b6a36"/>
+  <rect x="18" y="24" width="8" height="32" rx="2" fill="#fcfcfa"/>
+  <rect x="30" y="24" width="8" height="22" rx="2" fill="#fcfcfa"/>
+  <rect x="42" y="24" width="8" height="14" rx="2" fill="#fcfcfa"/>
+  <text textLength="196" lengthAdjust="spacingAndGlyphs" x="72" y="50" font-family="Instrument Sans, system-ui, sans-serif" font-size="28" font-weight="600" fill="#172018">Mossboard</text>
+</svg>

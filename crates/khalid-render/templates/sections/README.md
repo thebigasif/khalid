@@ -37,6 +37,8 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | People grid | `people_grid(people, level=3)`; takes the authors page's entries (with post counts) or plain people | Photo or mark, name, role, post count | Research people, conference speakers, sports club squad, charity team, course tutors, musician's band |
 | Publication list | `publication_list(posts, level=3, by_year=false, start=1)`; facts by position: 1 venue, 2 year, 3 DOI or link, 4 citations | A numbered reference list, grouped by year with `by_year` | Research papers, author's books, musician's releases, science explainer sources |
 | Cite box | `cite_box(page, venue_fact=0, year_fact=1, link_fact=2)` | "Cite this": the reference in one line and a BibTeX entry, from the post's own data | Research papers, science explainer, author |
+| Release log | `release_log(posts, marks=[], level=2)`; helpers `type_chip(category, marks=[])` and `release_index(posts, title)` in the same file | A timeline: each run of posts with the same first fact, such as a version, under that fact and the date on a rail, each post with its category chip, title and summary; `release_index` lists the releases as anchor links | Product changelog, musician's releases, online course versions, game patch notes |
+| Filter row | `filter_row(label, all_href, all_name, links, current, marks=[])` | Chips in a row, "All" then each link, each opening a list; this page's chip is marked | Product changelog (types), reviews (genres), gaming (platforms), course (levels) |
 
 ## Planned parts
 

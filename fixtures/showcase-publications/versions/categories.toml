@@ -1,0 +1,28 @@
+# Mossboard's types of change. The Versions template marks each change by
+# its type: the first slug of its change_types option (new) is filled,
+# the second (improved) is tinted and the third (fixed) is plain. Each
+# category page is the filter for that type, with its own feed.
+
+[[categories]]
+slug = "new"
+en = "New"
+
+[categories.seo.en]
+description = "Every new feature in Mossboard, newest first, by version."
+intro = "Features Mossboard did not have before, such as a new view or a new way to share a board."
+
+[[categories]]
+slug = "improved"
+en = "Improved"
+
+[categories.seo.en]
+description = "Every improvement to Mossboard, newest first, by version."
+intro = "Things that already worked and now work better: faster, clearer or with fewer steps."
+
+[[categories]]
+slug = "fixed"
+en = "Fixed"
+
+[categories.seo.en]
+description = "Every bug fixed in Mossboard, newest first, by version."
+intro = "Bugs we fixed, what went wrong and who it affected. Follow this page's feed to hear only about fixes."

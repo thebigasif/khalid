@@ -1,0 +1,59 @@
+# The sample brand for the Versions demo: Mossboard, a made-up project
+# board for small teams. Moss green on warm white with a pale leaf
+# surface, Instrument Sans for titles and text, and Red Hat Mono for
+# version numbers. Only the brand lives here: the template keeps its own
+# shape, type sizes and spacing.
+[colors]
+background = "#fcfcfa"
+surface = "#eff3ec"
+text = "#172018"
+muted = "#4b574c"
+link = "#2b6a36"
+accent = "#2b6a36"
+border = "#d7ded3"
+
+[fonts]
+heading = "\"Instrument Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+body = "\"Instrument Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "\"Red Hat Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Instrument Sans"
+style = "normal"
+weight = "400"
+path = "instrument-sans-latin-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "107.15%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "60.25%"
+
+[[fonts.files]]
+family = "Instrument Sans"
+style = "normal"
+weight = "600"
+path = "instrument-sans-latin-600.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "107.15%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "61.74%"
+
+[[fonts.files]]
+family = "Red Hat Mono"
+style = "normal"
+weight = "500"
+path = "red-hat-mono-latin-500.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "112.45%"
+descent = "143.93%"
+line_gap = "0.00%"
+size_adjust = "63.54%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"
