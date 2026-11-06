@@ -58,6 +58,7 @@ pub use font_files::{FontMetrics, MAX_FONT_BYTES, SavedFont, download, download_
 pub use fonts::{FontHost, FontSource, HeldFont, Typography};
 pub use links::{PageStyle, SkipReason, Skipped, page_styles};
 pub use look::{CheckedOption, Look, LookError};
+pub(crate) use pack::PackCss;
 pub use pack::{OptionKind, OptionSpec, Pack, PackTemplate, classic, packs};
 pub use palette::Palette;
 pub use properties::CustomProperties;

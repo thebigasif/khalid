@@ -6,13 +6,16 @@
 //! `packs/keystone/tokens.toml`.
 
 use crate::parts::{self, CardShape, ContentsPlacement, PageLinks};
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
 
 /// The Keystone pack.
 pub(crate) static KEYSTONE: Pack = Pack {
     name: "keystone",
     summary: "A product or company blog: a lead story, a grid of framed pictures, a calm reading column with share links beside it, the author and related posts after it.",
-    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/keystone/keystone.css")),
+    css: PackCss::compressed(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/packs/keystone/keystone.css.br"
+    ))),
     templates: &[
         PackTemplate {
             name: "home.html",

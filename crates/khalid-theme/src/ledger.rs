@@ -3,7 +3,7 @@
 //! the topics lead.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
 
 /// The longest tagline, about one line on a phone.
 const TAGLINE_CHARACTERS: usize = 140;
@@ -12,7 +12,10 @@ const TAGLINE_CHARACTERS: usize = 140;
 pub(crate) static LEDGER: Pack = Pack {
     name: "ledger",
     summary: "A calm, text-led blog with no pictures in its lists, for studies and long how-tos.",
-    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/ledger/ledger.css")),
+    css: PackCss::compressed(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/packs/ledger/ledger.css.br"
+    ))),
     templates: &[
         PackTemplate {
             name: "home.html",

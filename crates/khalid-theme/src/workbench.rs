@@ -5,13 +5,16 @@
 //! of six related links.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
 
 /// The Workbench pack.
 pub(crate) static WORKBENCH: Pack = Pack {
     name: "workbench",
     summary: "For reviews and comparisons of tools: a featured post, the newest posts, wide comparison tables, pros and cons, and the newsletter twice on the front page.",
-    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/workbench/workbench.css")),
+    css: PackCss::compressed(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/packs/workbench/workbench.css.br"
+    ))),
     templates: &[
         PackTemplate {
             name: "home.html",
