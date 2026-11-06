@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <path d="M10 22 H58 V34 A6 6 0 0 0 58 46 V58 H10 V46 A6 6 0 0 0 10 34 Z" fill="#8a1a2b"/>
+  <path d="M24 26 V54" stroke="#fcfaf6" stroke-width="2" stroke-dasharray="3 3"/>
+  <path d="M41 31 L43.6 37.2 L50.2 37.6 L45.1 41.8 L46.7 48.3 L41 44.7 L35.3 48.3 L36.9 41.8 L31.8 37.6 L38.4 37.2 Z" fill="#fcfaf6"/>
+  <text textLength="190" lengthAdjust="spacingAndGlyphs" x="72" y="53" font-family="Oswald, 'Arial Narrow', sans-serif" font-size="32" font-weight="600" letter-spacing="2" fill="#1a1617">TENTH ROW</text>
+</svg>

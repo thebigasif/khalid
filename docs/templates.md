@@ -34,6 +34,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
+- `reel`: film and TV reviews, with a star rating on a ticket, the cast and where to watch on every review, poster cards and a score sheet ranked by rating. See [Reel](templates/reel.md).
 - `research`: a research lab or academic group, with papers as a numbered reference list with venue, DOI and citations, a news feed, research areas, a people page and a cite box on every paper. See [Research](templates/research.md).
 - `solo`: a personal site for one writer or creator, with a large headline and a sign-up field over a feed of posts with large titles. Based on Ghost's Solo theme (MIT). See [Solo](templates/solo.md).
 - `source`: a general publication with the logo in the middle of the header, a front page that opens with a landing, highlight or magazine header, a list or a grid of posts with hairlines between them, and a calm column for each post. Based on Ghost's Source theme (MIT). See [Source](templates/source.md).
