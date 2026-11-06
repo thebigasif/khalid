@@ -37,6 +37,7 @@ mod meridian;
 mod pack;
 mod palette;
 pub mod parts;
+mod plinth;
 mod properties;
 mod research;
 mod resync;
