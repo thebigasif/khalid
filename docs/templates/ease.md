@@ -32,7 +32,7 @@ Pick another template if your posts are long reads that people browse by picture
 
 **A post**
 - A large title, then one grey line with the date it was last updated and its category, and the share links.
-- The lead picture, then the text in one column of 45rem, a little larger than the rest of the site.
+- The lead picture, then the text in one column of 40rem, about 70 characters a line, a little larger than the rest of the site. With `contents` set to a side placement, the contents sit in a column beside the text and the post grows by that column, so the text keeps its width.
 - The author box, when the site shows it. Then up to `related_count` related articles, two across, each with its category as a small grey label over its title in bold. Then comments when they are open.
 
 **Lists**, such as a category or a tag, show the name and its description in grey, then each post as a plain row: the title in bold and two lines of its summary, with a grey line between rows. The whole row opens the post. Numbered page links follow.
@@ -54,6 +54,8 @@ Set these under `[template.options]`. Each line shows the default.
 | `picks` | `4` | How many featured posts the front page shows in its strip, from 0 for none to 8. |
 | `pagination` | `"numbered"` | The links under a long list: `pages` for newer and older, or `numbered` for a link to each page. |
 | `related_count` | `4` | How many related articles show under a post, from 3 to 10. |
+| `contents` | `"none"` | Where a long post's contents go: `side-end`, `side-start`, `inline`, `inline-folded` or `none`. Ghost's Ease has no contents list, so none shows until you set it. |
+| `contents_numbers` | `"numbered"` | How the contents are numbered: `numbered`, `nested` for 1.1, or `none`. |
 | `header_search` | `"button"` | What the header's search does on a served blog: `button` opens a search dialog, `link` opens the search page, `none` hides it. |
 | `share` | `"top"` | Where a post shows its share links: `none`, `top`, `end` or `both`. |
 | `share_networks` | `["x", "linkedin", "facebook", "email"]` | The networks the share links go to, in the order they show. |
@@ -97,7 +99,7 @@ body = "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-
 
 [shape]
 radius = "0.3125rem"
-measure = "45rem"
+measure = "40rem"
 
 [type]
 body = "1rem 1.0625rem"
@@ -114,7 +116,7 @@ unit = "0.5rem"
 section = "4.5rem"
 ```
 
-The stylesheet adds a few sizes of its own, as Ghost's Ease sets them: the band is 25 to 31.25rem tall, the search box 25rem wide and 3.125rem tall, section headings 1.375rem, and a list page's title 1.75rem. The frame is 75rem. A post, a list and an author's page keep to the 45rem measure.
+The stylesheet adds a few sizes of its own, as Ghost's Ease sets them: the band is 25 to 31.25rem tall, the search box 25rem wide and 3.125rem tall, section headings 1.375rem, and a list page's title 1.75rem. The frame is 75rem. A post, a list and an author's page keep to the 40rem measure, about 70 characters a line; Ghost's Ease uses 45rem, which holds more than 75. With the contents beside a post, the post grows by 18rem so the text keeps that measure.
 
 ## Reader features
 
@@ -132,6 +134,7 @@ Ease is a rewrite of Ghost's Ease theme for Khalid's templates and tokens. Some 
 - Ghost's members sign-up is Khalid's newsletter form. Ghost's comments are Khalid's own.
 - Ghost's cover picture with a dark layer over it is a band in your accent colour, as Ghost draws it when the site has no cover picture.
 - Ghost's settings for the header layout and the title and body fonts come from your theme tokens.
+- Ghost's Ease has no contents list. The `contents` option adds Khalid's, in the text or in a column beside it.
 - Ghost's gallery lightbox and its scripts are left out. A post page runs no script of its own.
 
 ## Design
@@ -147,7 +150,7 @@ This is Ease's design brief. It fixes how the template should look, so every cha
 | Type pairing | One plain sans for headings and text. With no theme, the pack uses the system sans for both, headings at weight 700. |
 | Colour | White with dark grey text and light grey lines, and one accent for the band, the search button and the "View all" links. |
 | Spacing rhythm | A base step of 0.5rem. Links in a topic 0.875rem apart. Topics 5rem apart down and 3.75rem across. |
-| Frame at 1440 px and wider | **75rem**, as Ghost's Ease sets it. The band runs the full width of the screen. Posts and lists keep to 45rem. |
+| Frame at 1440 px and wider | **75rem**, as Ghost's Ease sets it. The band runs the full width of the screen. Posts and lists keep to 40rem. |
 | Cards and lists | Featured cards: a 2:1 picture with square corners, a title in 1.0625rem and a small round-ended label. Lists: plain rows with a bold title and two grey lines of summary, a hairline between. |
 | Phone header and menu | The logo, a search mark and the menu button on one row. Topics stack one under another; the featured strip shows one card and the edge of the next. |
 | Link, card and focus states | Titles take the link colour on hover. Topic links underline on hover. Focus is a 3 px accent ring; in the band, a ring in the text colour. |

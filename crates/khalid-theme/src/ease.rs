@@ -3,7 +3,7 @@
 //! large search box, a strip of featured articles, then one section per
 //! category, two across, each a list of its newest articles.
 
-use crate::parts::{self, PageLinks};
+use crate::parts::{self, ContentsNumbers, ContentsPlacement, PageLinks};
 use crate::{Pack, PackTemplate, PackText, slot};
 
 /// The Ease pack.
@@ -27,6 +27,8 @@ pub(crate) static EASE: Pack = Pack {
         parts::picks(4),
         parts::pagination(PageLinks::Numbered),
         parts::related_count(4),
+        parts::contents(ContentsPlacement::None),
+        parts::contents_numbers(ContentsNumbers::Numbered),
         parts::HEADER_SEARCH,
         slot::share("top"),
         slot::share_networks(&["x", "linkedin", "facebook", "email"]),

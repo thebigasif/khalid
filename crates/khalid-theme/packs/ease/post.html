@@ -3,14 +3,20 @@
     date it was last updated and the share links beside it, the lead
     picture, then the text in one column. Ease's links to the previous
     and next article become the related articles, two across, each with
-    its category as a small label over its title. Then the comments. -#}
+    its category as a small label over its title. Then the comments.
+    Ease has no contents list, so none shows unless the contents option
+    places one, in the text or in a column beside it. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture -%}
+{% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box -%}
 {% from "comments.html" import comments_section -%}
 {% from "series.html" import series_box, series_steps -%}
 {% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
+{% set placement = template.options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
 {% set share = template.options.share -%}
 {% if share != "none" %}{% set share_row %}<div class="share">
 <p class="share-title">{{ t.share }}</p>
@@ -19,7 +25,7 @@
 {% endfor %}</ul>
 </div>
 {% endset %}{% endif -%}
-<article class="post">
+{% if side and placement == "side-start" %}<article class="post post-with-toc post-toc-start">{% elif side %}<article class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post post-toc-folded">{% else %}<article class="post">{% endif %}
 <header class="post-header">
 <h1>{{ page.title }}</h1>
 {% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
@@ -29,7 +35,21 @@
 {% endif %}{% if share in ["top", "both"] %}{{ share_row }}{% endif %}</div>
 {% if page.image %}{{ picture(page.image) }}
 {% endif %}</header>
-<div class="post-body">
+{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.contents }}</summary>
+<nav aria-label="{{ t.contents }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}<div class="post-body">
 {{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
 </div>
 {% if share in ["end", "both"] %}{{ share_row }}{% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
