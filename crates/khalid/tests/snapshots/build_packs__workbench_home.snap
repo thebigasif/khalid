@@ -4,6 +4,7 @@ expression: "main_of(&page(&out, \"index.html\"))"
 ---
 <main id="main" tabindex="-1">
 
+
 <div class="wb-masthead">
 <h1>Field Notes on SEO</h1>
 <details class="wb-topics">

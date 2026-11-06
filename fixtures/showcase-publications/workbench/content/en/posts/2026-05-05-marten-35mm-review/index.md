@@ -9,6 +9,15 @@ category: cameras
 description: "Our Marten 35mm review: a small, bright prime lens that blurs the background and focuses in silence. Score: 8.2 out of 10."
 focus_keyword: Marten 35mm
 tags: [reviews, lenses, vlogging]
+facts:
+  - label: Score
+    value: "8.2"
+  - label: Sharpness
+    value: "8.6/10"
+  - label: Breathing
+    value: "4%"
+  - label: Weight
+    value: "170 g"
 image:
   src: lead.jpg
   alt: A black prime lens with a deep rubber lens hood, of the kind we tested for the Marten 35mm review, lying on its side on a white table with its focus scale in white, yellow and green
