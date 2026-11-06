@@ -8,6 +8,13 @@ category: weeknight-cooking
 description: A fifteen-minute pantry pasta made with spaghetti, garlic, chilli and good oil, plus the five cupboard items that turn it into a different dinner each time.
 focus_keyword: pantry pasta
 tags: [pantry, weeknights]
+facts:
+  - label: Time
+    value: "15 min"
+  - label: Serves
+    value: "2"
+  - label: Cost
+    value: "About £4"
 image:
   src: lead.jpg
   alt: A bowl of spaghetti glossy with olive oil, flecked with sliced garlic, red chilli and parsley, with a fork on a black tray

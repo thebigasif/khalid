@@ -8,6 +8,13 @@ category: produce
 description: How to cut a winter squash safely with a flat base and a heavy knife, then roast it until it is soft and caramelised, with or without the skin.
 focus_keyword: winter squash
 tags: [autumn, roasting, knife skills]
+facts:
+  - label: Time
+    value: "50 min"
+  - label: Serves
+    value: "4"
+  - label: Difficulty
+    value: "Medium"
 image:
   src: lead.jpg
   alt: Three orange pumpkins on a weathered wooden garden table scattered with autumn leaves, beside a bowl of chestnuts in their spiky shells

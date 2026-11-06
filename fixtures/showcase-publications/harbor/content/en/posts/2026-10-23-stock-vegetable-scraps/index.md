@@ -8,6 +8,13 @@ category: kitchen-skills
 description: How to make stock from vegetable scraps you would otherwise throw away, which scraps to keep and which to leave out, in one pot and under an hour.
 focus_keyword: stock from vegetable scraps
 tags: [less waste, pantry]
+facts:
+  - label: Time
+    value: "1 hr"
+  - label: Makes
+    value: "2 litres"
+  - label: Difficulty
+    value: "Easy"
 image:
   src: lead.jpg
   alt: Sprigs of thyme and rosemary, a bunch of parsley, carrots, cut celery and a halved onion laid out on a white chopping board

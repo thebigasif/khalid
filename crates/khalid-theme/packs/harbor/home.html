@@ -1,5 +1,8 @@
 {#- Harbor's front page (templates spec 3.5): the blog's name and intro
-    beside the newsletter form, then the newest featured post large with a
+    beside the newsletter form, then a strip of up to four recipe cards:
+    the newest posts with facts, each with its first two facts (the time,
+    then the servings) as small tags. Posts without facts stay out of the
+    strip. Then the newest featured post large with a
     column of smaller posts beside it: the editor's picks when there are
     two or more, else the newest posts. A grid of picture cards follows,
     then each home section's newest four. -#}
@@ -19,7 +22,19 @@
 {% endif %}</div>
 {% if signup %}{{ newsletter_form(site.subscribe, t) }}
 {% endif %}</div>
-{% set slot = page.featured if template.options.featured else none -%}
+{% set recipes = (page.posts | selectattr("facts") | list)[:4] -%}
+{% if recipes %}<ul class="recipe-strip" role="list">
+{% for post in recipes %}<li>
+<article class="recipe">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}<h2><a href="{{ post.href }}">{{ post.title }}</a></h2>
+<ul class="fact-tags" role="list">
+{% for fact in post.facts[:2] %}<li>{% if loop.first %}<span class="visually-hidden">{{ fact.label }}</span> {% else %}{{ fact.label }} {% endif %}<b>{{ fact.value }}</b></li>
+{% endfor %}</ul>
+</article>
+</li>
+{% endfor %}</ul>
+{% endif %}{% set slot = page.featured if template.options.featured else none -%}
 {% set picks = (page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks)[:template.options.picks] -%}
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% set by_picks = picks | length > 1 -%}

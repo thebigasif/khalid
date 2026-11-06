@@ -8,6 +8,13 @@ category: kitchen-skills
 description: How to cook rice in a pan with the absorption method, with the right water for each kind of rice, a tight lid and ten minutes of rest.
 focus_keyword: cook rice in a pan
 tags: [pantry, weeknights]
+facts:
+  - label: Time
+    value: "25 min"
+  - label: Serves
+    value: "2"
+  - label: Difficulty
+    value: "Easy"
 image:
   src: lead.jpg
   alt: A grey bowl of cooked white and red rice, the grains separate and fluffy, on a grey stone counter
