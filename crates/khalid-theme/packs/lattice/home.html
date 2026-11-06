@@ -34,7 +34,7 @@
 {% endif %}</div>
 </article>
 </section>
-{% endif %}{% if front and page.categories %}<nav class="lt-topics" aria-labelledby="lt-topics-title">
+{% endif %}{% if front and page.categories %}<nav class="lt-topics" aria-label="{{ t.topics }}">
 <h2 id="lt-topics-title" class="lt-label">{{ t.topics }}</h2>
 <ul role="list">
 {% for topic in page.categories %}<li><a href="{{ topic.href }}"><span class="lt-topic-number" aria-hidden="true">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span> {{ topic.name }}</a></li>
