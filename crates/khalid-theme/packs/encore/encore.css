@@ -1,0 +1,182 @@
+/* Encore (docs/templates/encore.md): a band's site like a gig poster on a
+   record shelf. The name in a tall condensed face in capitals, section
+   labels over a heavy ink rule, the tour as a poster list of big day
+   numbers, and every release as a cover on its sleeve with the record
+   half out. The section parts' rules come first (the build adds the parts
+   this pack's templates import); these set the band's look over them.
+   Every colour is a token or a mix of tokens. */
+:root {
+  --en-frame: 76rem;
+  --en-read: 36rem;
+  --en-rule: 3px solid var(--color-text);
+  --en-vinyl: color-mix(in oklab, var(--color-text) 94%, var(--color-background));
+  --en-groove: color-mix(in oklab, var(--color-text) 78%, var(--color-background));
+  --hero-title: clamp(3.75rem, 1.25rem + 9vw, 9.5rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--en-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: var(--en-read); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--en-read) + 18rem); }
+main:has(.post-with-toc) { max-inline-size: var(--en-frame); }
+.post-with-toc > .toc-side { margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--en-read); margin-inline: auto; }
+h1, h2, h3 { text-wrap: balance; }
+
+/* The header: the name in the poster face, menu links in small bold
+   capitals, a heavy ink rule under it. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.25rem; border-block-end: var(--en-rule); }
+.site-name { color: var(--color-text); font-family: var(--font-heading); font-size: 1.75rem; letter-spacing: 0.01em; line-height: 1; text-decoration: none; text-transform: uppercase; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); }
+.site-header nav a[aria-current] { box-shadow: inset 0 -3px var(--color-accent); }
+.announcement { margin: 0; padding-block: 0.625rem; color: var(--color-background); background: var(--color-text); border: 0; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.04em; }
+.announcement a { color: var(--color-background); }
+
+/* Buttons: square ink blocks in capitals that turn vermilion. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-background); background: var(--color-text); border: 0; border-radius: var(--radius); font: 700 0.875rem/1.2 var(--font-body); letter-spacing: 0.08em; text-align: center; text-decoration: none; text-transform: uppercase; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { color: var(--color-on-accent); background: var(--color-accent); text-decoration: none; }
+
+/* Section labels: the poster face in capitals over a heavy ink rule. */
+.label, :is(.mentions, .topic-tabs, .media-row) > h2 { margin-block: 0 1.75rem; padding-block-end: 0.5rem; border-block-end: var(--en-rule); font-family: var(--font-heading); font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem); font-weight: var(--heading-weight); letter-spacing: 0.01em; line-height: 1.05; text-transform: uppercase; }
+.view-all { margin-block: 1.25rem 0; font-weight: 700; }
+
+/* The hero: the band's name as big as a poster, the tagline, the places
+   to listen as ruled links. */
+.hero { margin-block-end: calc(var(--space-section) * 0.75); }
+.hero-title { max-inline-size: none; font-weight: var(--heading-weight); letter-spacing: -0.005em; line-height: 0.9; overflow-wrap: anywhere; text-transform: uppercase; }
+.hero-intro { max-inline-size: 38rem; color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.45; }
+.listen-on { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.75rem 0 0; padding: 0; list-style: none; }
+.listen-on a { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding: 0.375rem 1rem; color: var(--color-text); border: 2px solid var(--color-text); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; }
+.listen-on a:hover { color: var(--color-background); background: var(--color-text); }
+.out-now, .tour, .home-shelf, .home-notes, .list-part, .author-part { margin-block-end: var(--space-section); }
+
+/* The sleeve: the cover with a record half out of its side, drawn from
+   the tokens: grooves in the ink, a label in the accent, a spindle hole
+   in the paper. On hover the record slides further out. */
+.sleeve-art { position: relative; isolation: isolate; margin-inline-end: 30%; }
+.sleeve-art::before { content: ""; position: absolute; z-index: -1; inset-block-start: 3%; inset-inline-start: 44%; inline-size: 94%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, var(--color-background) 0 3%, var(--color-accent) 3.5% 30%, var(--en-vinyl) 31% 33%, transparent 34%), repeating-radial-gradient(circle, var(--en-vinyl) 0 3px, var(--en-groove) 3px 4px); transition: inset-inline-start 0.35s ease; }
+:is(.sleeve, .out-now-body, .release-head):hover .sleeve-art::before { inset-inline-start: 50%; }
+.sleeve-art .image { margin: 0; }
+.sleeve-art img, .sleeve-blank { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 1; object-fit: cover; border-radius: 0; box-shadow: 0 0 0 1px var(--color-border); }
+.sleeve-blank { background: var(--color-surface); }
+@media (prefers-reduced-motion: reduce) { .sleeve-art::before { transition: none; } }
+
+/* The shelf: every release as a sleeve, its title in the poster face. */
+.shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 3rem 2.5rem; margin: 0; padding: 0; list-style: none; }
+.sleeve { position: relative; }
+.sleeve-title { margin: 1.125rem 0 0; font-size: 1.5rem; font-weight: var(--heading-weight); line-height: 1.05; text-transform: uppercase; }
+.sleeve :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.sleeve :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
+.sleeve:hover :is(h2, h3, h4) a { color: var(--color-link); }
+.sleeve-meta { margin: 0.375rem 0 0; color: var(--color-muted); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Out now: the newest release large beside its liner notes. */
+.out-now-body { display: grid; gap: 2rem 3.5rem; align-items: center; }
+@media (min-width: 48rem) { .out-now-body { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); } }
+.out-now-text :is(h2, h3, h4) { margin: 0; font-size: clamp(2.5rem, 1.5rem + 3vw, 4.5rem); font-weight: var(--heading-weight); line-height: 0.95; text-transform: uppercase; }
+.out-now-text :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.out-now-text :is(h2, h3, h4) a:hover { color: var(--color-link); }
+.out-now-excerpt { max-inline-size: 34rem; margin-block: 1.25rem 0; font-size: 1.125rem; }
+.out-now-links, .release-links { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-block: 1.5rem 0; }
+
+/* Liner notes: the release's facts as ruled rows. */
+.liner { margin-block: 1.5rem 0; border-block-start: var(--en-rule); }
+.liner > div { display: grid; grid-template-columns: minmax(6rem, 1fr) 2fr; align-items: baseline; gap: 1rem; padding-block: 0.625rem; border-block-end: 1px solid var(--color-border); }
+.liner dt { color: var(--color-muted); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.liner dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* The tour: a poster list, the day large, the city in capitals, the
+   venue under it and the ticket link at the end of the row. */
+.tour-list { margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--color-border); }
+.tour-show { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) auto; gap: 0.5rem 1.5rem; align-items: center; padding-block: 1rem; border-block-end: 1px solid var(--color-border); }
+.tour-when { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; justify-content: start; column-gap: 0.5rem; margin: 0; line-height: 1; }
+.tour-day { grid-row: 1 / span 2; font-family: var(--font-heading); font-size: 3.25rem; font-variant-numeric: tabular-nums; line-height: 0.85; }
+.tour-month { align-self: end; color: var(--color-link); font-family: var(--font-heading); font-size: 1.25rem; text-transform: uppercase; }
+.tour-year { color: var(--color-muted); font-size: 0.8125rem; font-weight: 700; }
+.tour-place { min-inline-size: 0; }
+.tour-city { margin: 0; font-size: clamp(1.5rem, 1.25rem + 0.75vw, 2rem); font-weight: var(--heading-weight); line-height: 1; text-transform: uppercase; }
+.tour-venue { margin: 0.25rem 0 0; color: var(--color-muted); }
+.tour-tickets { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding: 0.375rem 1.125rem; color: var(--color-text); border: 2px solid var(--color-text); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; }
+.tour-tickets:hover { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
+.tour-note { margin: 0; padding: 0.375rem 0.75rem; color: var(--color-muted); border: 2px dashed var(--color-border); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+@media (max-width: 40rem) {
+  .tour-show { grid-template-columns: 5.5rem minmax(0, 1fr); }
+  .tour-day { font-size: 2.5rem; }
+  .tour-show > :is(.tour-tickets, .tour-note) { grid-column: 2; justify-self: start; }
+}
+
+/* Notes: picture cards, the date and category over a bold title. */
+.notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 2.5rem 2rem; margin: 0; padding: 0; list-style: none; }
+.note { position: relative; }
+.note .image { margin: 0 0 1rem; }
+.note .image img { aspect-ratio: 3 / 2; object-fit: cover; }
+.note-meta { margin: 0; color: var(--color-muted); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.note-category { color: var(--color-link); }
+.note-category::before { content: "/ "; color: var(--color-muted); }
+.note :is(h2, h3, h4) { margin: 0.5rem 0 0; font-family: var(--font-body); font-size: 1.3125rem; font-weight: 700; line-height: 1.25; }
+.note :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.note :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
+.note:hover :is(h2, h3, h4) a { color: var(--color-link); text-decoration: underline; }
+
+/* Lists, the band page: the name in the poster face over the rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; padding-block-end: 1.25rem; border-block-end: var(--en-rule); }
+.list-header h1 { margin: 0; line-height: 0.95; text-transform: uppercase; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 1rem; font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-link); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.people-grid-person .avatar { border-radius: 0; }
+.people-grid-person :is(h2, h3, h4) { font-size: 1.625rem; font-weight: var(--heading-weight); text-transform: uppercase; }
+
+/* A post: the category, the title in the poster face, the meta line,
+   and for a release its sleeve beside the liner notes. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.25rem; }
+.post-kicker { margin-block: 0 0.75rem; font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.post-kicker a { text-decoration: none; }
+.post-kicker a:hover { text-decoration: underline; }
+.post-header h1 { margin-block: 0 1rem; line-height: 0.98; text-transform: uppercase; }
+.post-header .dek { font-size: 1.25rem; line-height: 1.45; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; }
+.post-header > .image { margin-block: 2rem 0; }
+.release-head { display: grid; gap: 2rem; margin-block-start: 2rem; }
+.release-liner .liner { margin-block-start: 0; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body h2 { font-size: var(--text-h2); text-transform: uppercase; }
+.post-body ol li::marker { color: var(--color-link); font-weight: 700; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { color: var(--color-text); background: var(--color-background); border: 2px solid var(--color-text); border-radius: 0; font-size: var(--text-small); font-weight: 700; text-transform: uppercase; }
+.post-footer .tags a:hover { color: var(--color-background); background: var(--color-text); }
+.related { margin-block-start: var(--space-section); }
+.related .notes { margin-block-start: 2.5rem; }
+
+/* A member: the mark beside the name. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; text-transform: uppercase; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-link); font-weight: 700; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-part:first-of-type { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-family: var(--font-body); font-size: 1.25rem; font-weight: 700; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the mailing list: ruled boxes on the surface. */
+.cta-band { background: var(--color-surface); border: 0; border-block-start: var(--en-rule); border-radius: 0; }
+.newsletter-slot { padding: 1.75rem; background: var(--color-surface); border: var(--en-rule); border-radius: 0; }
+.newsletter-slot h2 { font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem); text-transform: uppercase; }
+
+/* The footer: paper on ink, like the back of the poster. */
+.site-footer { color: var(--color-background); background: var(--color-text); box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax -100vmax); }
+.site-footer :is(nav, p:not(.preferred-source)) a { color: var(--color-background); }
+.site-footer :is(nav, p:not(.preferred-source)) a:hover { color: var(--color-surface); }

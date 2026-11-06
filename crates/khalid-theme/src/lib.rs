@@ -22,6 +22,7 @@ mod contrast;
 mod css;
 mod ease;
 mod edition;
+mod encore;
 mod episode;
 mod fetch;
 mod fetch_error;
