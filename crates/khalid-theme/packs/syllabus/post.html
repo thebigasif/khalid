@@ -1,0 +1,109 @@
+{#- Syllabus's lesson (docs/templates/syllabus.md). The course is a
+    series, so a lesson knows its place: its module (category) above the
+    title, then the title, the dek as the lesson's aim, the tutor and the
+    date. The progress ruler follows: "Lesson 5 of 13", how much of the
+    course that is, one square per lesson, and a folded list of every
+    lesson. Then the facts as an "at a glance" row, the lead picture and
+    the text, and the previous and next lessons as two large blocks. A
+    post outside a series, such as course news, has no ruler and no
+    steps. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture, avatar -%}
+{% from "contents.html" import contents_list -%}
+{% from "author_box.html" import author_box, reviewed_line -%}
+{% from "comments.html" import comments_section -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
+{% from "sections/progress_strip.html" import progress_strip -%}
+{% from "lesson_rows.html" import lesson_rows -%}
+{% set placement = template.options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% set share = template.options.share -%}
+{% set course = page.series -%}
+{% if share != "none" %}{% set share_row %}<div class="share">
+<p class="share-title">{{ t.share }}</p>
+<ul>
+{% for link in share_links(meta.canonical, page.title, template.options.share_networks) %}<li><a href="{{ link.href }}" rel="nofollow noreferrer">{{ t.share_email if link.key == "email" else link.name }}</a></li>
+{% endfor %}</ul>
+</div>
+{% endset %}{% endif -%}
+{% if side and placement == "side-start" %}<article class="post post-with-toc post-toc-start">{% elif side %}<article class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post post-toc-folded">{% else %}<article class="post">{% endif %}
+<header class="post-header">
+{% if page.category %}<p class="lesson-module"><span class="lesson-mark" aria-hidden="true"></span><a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
+{% endif %}<h1>{{ page.title }}</h1>
+{% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}<div class="post-meta">
+{% if "byline" in site.features %}<address>
+<ul class="people" role="list" aria-label="{{ t.written_by }}">
+{% for author in page.authors %}<li class="person">{% if author.image %}{{ avatar(author.image) }}{% endif %}<span><a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if author.role %}<span class="person-role">{{ author.role }}</span>{% endif %}</span></li>
+{% endfor %}</ul>
+</address>
+{% else %}<address>{{ t.by }} {% for author in page.authors %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</address>
+{% endif %}{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
+{% endif %}<p class="post-date">{{ t.published }} <time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}</p>
+{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}{% if "reading_time" in site.features %}<p class="reading-time"><time datetime="PT{{ page.reading_time.minutes }}M">{{ t.reading_time | replace("{minutes}", page.reading_time.minutes | string) }}</time></p>
+{% endif %}</div>
+{% if course %}<nav class="lesson-progress" aria-label="{{ t.series_label }}">
+<p class="lesson-course"><a href="{{ course.href }}">{{ course.name }}</a></p>
+{{ progress_strip(course.total, course.part, t.course_progress | replace("{part}", course.part | string) | replace("{total}", course.total | string), t.course_percent | replace("{percent}", (course.part * 100 // course.total) | string)) }}
+<details class="lesson-list">
+<summary>{{ t.course_every_lesson }}</summary>
+<ol>
+{% for part in course.parts %}{% if loop.index == course.part %}<li><span aria-current="page">{{ part.name }}</span></li>
+{% else %}<li><a href="{{ part.href }}">{{ part.name }}</a></li>
+{% endif %}{% endfor %}</ol>
+</details>
+</nav>
+{% endif %}{% if page.facts %}<dl class="lesson-facts" aria-label="{{ t.course_glance }}">
+{% for fact in page.facts %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endfor %}</dl>
+{% endif %}{% if page.image %}{{ picture(page.image) }}
+{% endif %}</header>
+{% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.contents }}</summary>
+<nav aria-label="{{ t.contents }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}<div class="post-body">
+{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}
+</div>
+{% if course and (course.previous or course.next) %}<nav class="lesson-steps" aria-label="{{ t.course_steps }}">
+{% if course.previous %}<a class="lesson-previous" href="{{ course.previous.href }}" rel="prev"><span>{{ t.course_previous }}</span> {{ course.previous.name }}</a>
+{% endif %}{% if course.next %}<a class="lesson-next" href="{{ course.next.href }}" rel="next"><span>{{ t.course_next }}</span> {{ course.next.name }}</a>
+{% endif %}</nav>
+{% endif %}{% if page.tags or share in ["end", "both"] %}<footer class="post-footer">
+{% if page.tags %}<h2>{{ t.tags }}</h2>
+<ul class="tags">
+{% for tag in page.tags %}<li><a href="{{ tag.href }}" rel="tag">{{ tag.name }}</a></li>
+{% endfor %}</ul>
+{% endif %}{% if share in ["end", "both"] %}{{ share_row }}{% endif %}</footer>
+{% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
+{% endif %}{{ preferred_source(template.options, t, "post") }}</article>
+{% if site.subscribe and template.options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
+<h2>{{ t.mentions }}</h2>
+<ul>
+{% for link in page.mentions %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
+{% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
+<h2 id="related-title">{{ t.related_posts }}</h2>
+{{ lesson_rows(page.related[:template.options.related_count], 3, 1, false) }}
+</section>
+{% endif %}{% endblock %}
