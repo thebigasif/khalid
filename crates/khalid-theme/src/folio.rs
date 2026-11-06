@@ -2,13 +2,16 @@
 //! own masthead (templates spec 3.10).
 
 use crate::parts::{self, CardShape, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
 
 /// The Folio pack.
 pub(crate) static FOLIO: Pack = Pack {
     name: "folio",
     summary: "A product team's notebook under a large masthead on ruled paper: a featured story, picture cards, and notes with a contents rail, framed code and an author box.",
-    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/folio/folio.css")),
+    css: PackCss::compressed(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/packs/folio/folio.css.br"
+    ))),
     templates: &[PackTemplate {
         name: "home.html",
         source: include_str!("../packs/folio/home.html"),

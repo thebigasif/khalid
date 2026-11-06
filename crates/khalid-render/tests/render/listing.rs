@@ -27,6 +27,7 @@ pub(crate) fn card(title: &str, slug: &str, day: u32, excerpt: &str) -> PostCard
         category: Some(link("Technical SEO", "/blog/category/technical-seo/")),
         featured: false,
         reading_time: None,
+        facts: Vec::new(),
     }
 }
 

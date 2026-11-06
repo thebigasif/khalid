@@ -12,7 +12,7 @@ use serde::{Deserialize, Deserializer};
 
 use crate::front_matter::{Fence, split};
 use crate::post_fields::{
-    self, LeadImage, PostSeries, ReviewState, ShareCards, Sitemap, TopicCluster,
+    self, LeadImage, PostFact, PostSeries, ReviewState, ShareCards, Sitemap, TopicCluster,
 };
 use crate::{ContentError, parse_blocks};
 
@@ -109,6 +109,11 @@ pub struct PostFront {
     /// headline, such as "Internal links, a guide for 2026".
     #[serde(default, deserialize_with = "post_fields::seo_title")]
     pub seo_title: Option<String>,
+    /// Short label and value pairs a template may show on the post's card
+    /// and page, such as `Client: Calder Street Library` or `Serves: 4`,
+    /// in the order written. At most [`MAX_FACTS`](post_fields::MAX_FACTS).
+    #[serde(default, deserialize_with = "post_fields::facts")]
+    pub facts: Vec<PostFact>,
     /// The tags' names, such as "internal links", in the order written.
     #[serde(default, deserialize_with = "post_fields::tags")]
     pub tags: Vec<String>,

@@ -35,7 +35,7 @@ expression: home
 </div>
 <div class="ledger-main">
 <section class="home-section home-latest" aria-labelledby="latest-title">
-<h2 id="latest-title">Latest posts</h2>
+<h2 id="latest-title">Contents</h2>
 <ol class="ledger-list" role="list">
 <li>
 <article class="ledger-entry">

@@ -5,13 +5,16 @@
 //! sets of further reading.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
 
 /// The Almanac pack.
 pub(crate) static ALMANAC: Pack = Pack {
     name: "almanac",
     summary: "For a library of long guides: category links, a featured guide, a grid of guides beside the editor's picks, and posts with an \"On this page\" box and two sets of further reading.",
-    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/almanac/almanac.css")),
+    css: PackCss::compressed(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/packs/almanac/almanac.css.br"
+    ))),
     templates: &[
         PackTemplate {
             name: "home.html",

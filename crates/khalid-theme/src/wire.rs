@@ -4,13 +4,16 @@
 //! subtitle and the writer's card.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
 
 /// The Wire pack.
 pub(crate) static WIRE: Pack = Pack {
     name: "wire",
     summary: "A news and columns site: a lead story beside the latest headlines, a dated feed with the editor's picks in a rail, and posts that open with a subtitle and the writer's card.",
-    stylesheet: include_str!(concat!(env!("OUT_DIR"), "/packs/wire/wire.css")),
+    css: PackCss::compressed(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/packs/wire/wire.css.br"
+    ))),
     templates: &[
         PackTemplate {
             name: "home.html",
