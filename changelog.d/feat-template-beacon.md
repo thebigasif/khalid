@@ -1,0 +1,3 @@
+Added
+- The Beacon template, for a charity or a cause. A post with facts is a campaign: its first two facts, the amount raised and the goal, draw a goal meter on its card and in a campaign panel beside its picture, with the donate button. The front page shows the charity's name and donate button beside the lead appeal, its impact figures in a band, the campaigns as cards, a news feed and every area of work, and every page ends with a donate band. The donate button only links to a page the charity owns; Beacon takes no payments.
+- A goal meter section part, `sections/goal_meter.html`, which shows how far a number has come towards a target from two facts.

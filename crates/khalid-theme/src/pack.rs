@@ -236,6 +236,7 @@ static PACKS: &[&Pack] = &[
     &CLASSIC,
     &crate::almanac::ALMANAC,
     &crate::atlas::ATLAS,
+    &crate::beacon::BEACON,
     &crate::bulletin::BULLETIN,
     &crate::casper::CASPER,
     &crate::compass::COMPASS,

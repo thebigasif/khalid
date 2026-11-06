@@ -37,6 +37,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | People grid | `people_grid(people, level=3)`; takes the authors page's entries (with post counts) or plain people | Photo or mark, name, role, post count | Research people, conference speakers, sports club squad, charity team, course tutors, musician's band |
 | Publication list | `publication_list(posts, level=3, by_year=false, start=1)`; facts by position: 1 venue, 2 year, 3 DOI or link, 4 citations | A numbered reference list, grouped by year with `by_year` | Research papers, author's books, musician's releases, science explainer sources |
 | Cite box | `cite_box(page, venue_fact=0, year_fact=1, link_fact=2)` | "Cite this": the reference in one line and a BibTeX entry, from the post's own data | Research papers, science explainer, author |
+| Goal meter | `goal_meter(facts, done=0, goal=1)`; the facts at places `done` and `goal`, counted from 0, read for their digits, so "£61,850" counts as 61850 | Both facts with their labels, a meter and the share reached, such as "68% of the goal"; nothing without two numbers | Charity campaigns (raised of goal), online course (lessons done), health programme (weeks done) |
 
 ## Planned parts
 
