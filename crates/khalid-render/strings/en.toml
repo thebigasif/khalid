@@ -259,3 +259,11 @@ recent_publications = "Recent publications"
 news = "News"
 research_areas = "Research areas"
 people = "People"
+# The atelier template's lookbook: the numbered looks, the pieces worn
+# in each, the collections and the journal of notes.
+lookbook = "The lookbook"
+look_number = "Look {number}"
+the_pieces = "The pieces"
+collections = "Collections"
+journal = "Journal"
+more_looks = "More looks"

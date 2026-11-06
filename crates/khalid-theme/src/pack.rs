@@ -235,6 +235,7 @@ static CLASSIC: Pack = Pack {
 static PACKS: &[&Pack] = &[
     &CLASSIC,
     &crate::almanac::ALMANAC,
+    &crate::atelier::ATELIER,
     &crate::atlas::ATLAS,
     &crate::bulletin::BULLETIN,
     &crate::casper::CASPER,
