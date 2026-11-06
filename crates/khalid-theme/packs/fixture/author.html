@@ -1,0 +1,35 @@
+{#- Fixture's person page: their photo or mark, name, role and profiles,
+    their bio, then the matches and news they wrote as scoreboard rows by
+    month, when they wrote any, and the rest of the squad and staff. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture %}
+{% from "icons.html" import profiles %}
+{% from "card.html" import pages -%}
+{% from "sections/results_list.html" import results_list -%}
+{% from "sections/people_grid.html" import people_grid -%}
+<article class="author">
+<header class="author-header">
+{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% endif %}<div class="author-intro">
+<p class="list-kind">{{ t.squad }}</p>
+<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</div>
+</header>
+<div class="author-bio">
+{{ page.bio }}
+</div>
+</article>
+{% if page.posts %}<section class="author-posts" aria-labelledby="author-posts">
+<h2 id="author-posts">{{ t.posts_by | replace("{name}", page.name) }}</h2>
+{{ results_list(page.posts, 4, true) }}
+{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% endif %}{% if page.others and "authors_page" in site.features %}<section class="author-others" aria-labelledby="other-authors">
+<h2 id="other-authors">{{ t.other_authors }}</h2>
+{{ people_grid(page.others) }}
+</section>
+{% endif %}{% endblock %}

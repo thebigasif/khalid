@@ -45,6 +45,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | Event list | `event_list(posts, level=3)`; facts by position: 1 when, 2 the venue, 3 the town or city, 4 a tickets link (its label is the link's text) or a short fact | Dated rows: when, the title, the venue and city, the tickets link | Author's readings, musician's tour dates, charity events |
 | Schedule | `schedule(posts, level=3, by_day=true, sorted=true, place_fact=2, kind_fact=3)`, with `schedule_days(posts)` for links to each day and `schedule_day(day)` for a day's name; facts by position: 1 the day (`2027-05-13`), 2 the time (`09:30`), then the place and the kind | A timetable on a rail: rows by day and time, each with the time, title, author, place with the category, and a kind tag, grouped under each day's date | Conference (Summit), sports club fixtures, musician tour dates, online course weeks |
 | Progress strip | `progress_strip(total, current=0, label=none, note=none)` | A row of small squares, one per step: done, the one the reader is on, and the ones ahead, under words such as "Lesson 5 of 13". With `current` 0, an open map of the steps | Online course lessons, health programme days, trip diary days |
+| Results list | `results_list(posts, level=3, by_month=false)`; facts by position: 1 opponent, 2 result (`W 3-1`, `D 2-2`, `L 0-1`) or kick-off, 3 ground, 4 competition | Scoreboard rows: a W, D, L or "v" chip, the opponent, the ground and competition, the score in large figures; a post without facts is a news row. With `by_month`, grouped under month headings like a fixture list | Sports club fixtures and results, any league or match site such as gaming tournaments |
 
 ## Planned parts
 
@@ -54,5 +55,7 @@ Not built yet. The first template that needs one adds it here, with its CSS file
 |---|---|---|
 | Schedule or timeline | A day's timetable: rows with a time, a title and a room or place (one-off dated events use the event list) | Conference, sports club fixtures, online course weeks |
 | Data table | A ruled table with a sticky first column and numbers aligned | Markets newsletter, sports club results, science explainer |
+| Schedule or timeline | Dated rows with a time, a title and a place | Conference, online course weeks, musician tour dates |
+| Data table | A ruled table with a sticky first column and numbers aligned | Markets newsletter, sports club league tables, science explainer |
 | Rating block | A score out of a scale with a few labelled scores under it | Film reviews, gaming, product reviews |
 | Call-to-action band | The site's `[template.cta]` as a band; today `cta_band` in `slots.html` does this for every template | Charity donate, course enrol, conference tickets |

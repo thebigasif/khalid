@@ -1,0 +1,3 @@
+Added
+- The Fixture template, for a sports club. A post with facts is a match: the front page shows the next match beside the club's name, the form guide of the last five results, results as scoreboard rows with the score in large figures, upcoming fixtures and club news, and each match report opens with a scoreboard with the home side first. Lists group matches by month like a fixture list, and the squad page shows the players and staff in a grid.
+- A shared section part for templates, the results list (`sections/results_list.html`): scoreboard rows with a W, D, L or "v" chip, read from a post's facts.

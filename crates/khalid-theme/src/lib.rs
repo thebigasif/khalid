@@ -32,6 +32,7 @@ mod encore;
 mod episode;
 mod fetch;
 mod fetch_error;
+mod fixture;
 mod folio;
 mod font_files;
 mod fonts;
