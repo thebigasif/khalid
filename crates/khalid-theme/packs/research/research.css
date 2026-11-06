@@ -6,15 +6,19 @@
    them. Every colour is a token or a mix of tokens. */
 :root {
   --rs-frame: 76rem;
+  /* A post's column: about 72 characters a line at 18 px. */
+  --rs-column: 37.5rem;
   --rs-rule: color-mix(in oklab, var(--color-text) 85%, var(--color-background));
   --rs-tint: color-mix(in oklab, var(--color-accent) 6%, var(--color-background));
   --hero-title: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
 }
 .site-header, main, .site-footer { max-inline-size: var(--rs-frame); }
 main { padding-block: 0 var(--space-section); }
-main > :is(.post, .page) { max-inline-size: 46rem; margin-inline: auto; }
-main > .post-with-toc { max-inline-size: calc(46rem + 18rem); }
-main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band) { max-inline-size: 46rem; margin-inline: auto; }
+main > :is(.post, .page) { max-inline-size: var(--rs-column); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--rs-column) + 18rem); }
+main > .post ~ * { max-inline-size: var(--rs-column); margin-inline: auto; }
+/* Beside side contents the post sits at the start of a wider box; what follows it lines up with the post. */
+main > .post-with-toc ~ * { margin-inline: max(0px, calc((100% - var(--rs-column) - 18rem) / 2)) auto; }
 h1 { letter-spacing: -0.015em; }
 
 /* The header: a thin accent rule across the window, the name in the

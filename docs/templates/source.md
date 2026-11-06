@@ -44,7 +44,7 @@ A post shows once on the page. An editor's pick that is already at the top is le
 3. One row with the authors' round photos overlapping, their names, the date (the date of the last update when there is one), the reading time and, under it, the date it was first published and who reviewed it. At the end of the row, a **Share this post** pill opens the share links in a small menu. It needs no script.
 4. The lead picture, wider than the text: up to 1120 px.
 5. The contents, folded under one line.
-6. The post in one column 720 px wide, 17 px text. With `drop_cap` on, its first letter is set large over the first lines.
+6. The post in one column 600 px wide, 18 px text. With `drop_cap` on, its first letter is set large over the first lines.
 7. The tags as pills.
 8. The newsletter form as a grey band, then the posts that link here and the comments.
 9. Four related posts as a row of picture cards, across the whole width, under **Related posts**.
@@ -68,7 +68,7 @@ Source's own defaults, which any value in your `theme/tokens.toml` replaces:
 | Token | Source's default |
 |---|---|
 | `[fonts] heading` and `body` | Inter where the reader has it, else the system's sans |
-| `[type] body` | `1rem`; a post's text is 17 px |
+| `[type] body` | `1rem`; a post's text is 18 px |
 | `[type] h1` | `2.125rem` on a phone to `2.875rem` on a wide screen |
 | `[type] h2` | `1.5rem` to `1.75rem` |
 | `[type] h3` | `1.25rem` to `1.375rem` |
@@ -76,7 +76,7 @@ Source's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.6` |
 | `[type] heading_weight` | `700` |
 | `[shape] radius` | `0px`: pictures and bands have square corners |
-| `[shape] measure` | `45rem`, the width of a post's text |
+| `[shape] measure` | `37.5rem`, the width of a post's text |
 | `[space] section` | `4rem` |
 
 ## Options
@@ -153,7 +153,7 @@ This is Source's design brief. It fixes how the template should look, so every c
 | Type pairing | Inter for headings and text, weight 700 for titles and 550 for the menu. With no theme, the system's sans. |
 | Colour | White ground, near-black ink, grey hairlines and a grey field for forms and bands. One accent for buttons and the topic over a post's title. |
 | Spacing rhythm | A 42 px gap between columns and between posts, with a hairline in the middle of each gap. 120 px before the footer. |
-| Frame at 1440 px and wider | At least **82.5rem** (1320 px). |
+| Frame at 1440 px and wider | The header at **82.5rem** (1320 px); lists and the front page's list at **61.5rem** (984 px), as Source centres them. |
 | Cards and lists | No box: a picture, the title, two lines of summary and a small meta line. Lists put a 220 px picture beside the words; grids put it on top. |
 | Phone header and menu | The logo at the start and a Menu button at the end; the call to action moves into the menu. |
 | Tabs and indexes at 390 px | Every column stacks; the small picks rows keep their square picture at the end. |

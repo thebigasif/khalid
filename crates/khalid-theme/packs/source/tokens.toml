@@ -19,7 +19,7 @@ mono = "\"JetBrains Mono\", Menlo, Consolas, Monaco, \"Liberation Mono\", monosp
 
 [shape]
 radius = "0px"
-measure = "45rem"
+measure = "37.5rem"
 
 [type]
 body = "1rem"

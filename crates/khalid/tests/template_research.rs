@@ -130,7 +130,7 @@ fn research_front_page_splits_papers_from_news() {
         ]
     );
     let news = texts(&page, ".lab-news .feed-item h3");
-    assert!(!news.is_empty());
+    assert_ne!(news, Vec::<String>::new(), "the news column is empty");
     assert!(news.iter().all(|title| !papers.contains(title)), "{news:?}");
     assert_eq!(texts(&page, ".figure dd"), ["12", "5"]);
     assert!(page.contains("We study how the web is read."));

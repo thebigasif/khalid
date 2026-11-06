@@ -29,7 +29,7 @@ Of the 11 photographs, 5 are close details and 6 are wider scenes.
 
 | Slot | Ratio | Source size | Notes |
 |---|---|---|---|
-| Lead picture on a post | 3:2 | 1600 px wide | Shown at the text width, about 46rem. Sources are 4:3 or close to 3:2, so a 3:2 crop loses little. |
+| Lead picture on a post | 3:2 | 1600 px wide | Shown at the text width, about 37.5rem. Sources are 4:3 or close to 3:2, so a 3:2 crop loses little. |
 | Author mark | 1:1 | 160 px SVG | Drawn, one ink colour on a light tint of the same ink. No photographs of people. |
 
 The Research template shows no pictures in its lists: papers are a text register. Only the post page shows the lead picture.
