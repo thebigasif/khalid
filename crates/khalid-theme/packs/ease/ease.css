@@ -16,12 +16,17 @@ main { padding-block: 0 var(--space-section); }
 main > :where(.post, .page, .ease-next, .newsletter-slot, .cta-band, .comments, .mentions, .lock, .search, .results, .ease-term, .ease-term ~ *, .author ~ section, .breadcrumbs, .pagination) { max-inline-size: var(--measure); margin-inline: auto; }
 main > h1 { max-inline-size: var(--measure); margin: 3.75rem auto 1.5rem; font-size: 1.75rem; }
 h1, h2, h3, h4 { letter-spacing: -0.005em; }
+.announcement p { max-inline-size: 60rem; }
 
 /* The header: Ghost's 100px bar. The name, the menu beside it, and the
    search with a magnifier at the end. */
 .site-header { flex-wrap: nowrap; gap: 0.5rem 2.25rem; min-block-size: 6.25rem; padding-block: 1rem; border-block-end: 0; }
 .site-name { flex: none; margin-inline-end: auto; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
-.site-header > .nav-bar ul { flex-wrap: nowrap; gap: 0 1.75rem; }
+.site-header > .nav-bar { flex: 1 1 auto; min-inline-size: 0; }
+/* A menu too long for the row scrolls sideways inside its own box, and
+   the page never does. */
+.site-header > .nav-bar ul { flex-wrap: nowrap; gap: 0 1.75rem; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; }
+.site-header > .nav-bar li:first-child { margin-inline-start: auto; }
 .site-header nav a { color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; white-space: nowrap; }
 .site-header nav a:hover { color: var(--color-link); }
 .search-link { flex: none; gap: 0.5rem; color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
@@ -101,6 +106,17 @@ h1, h2, h3, h4 { letter-spacing: -0.005em; }
 .ease-row :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
 .ease-row:hover :is(h2, h3, h4) a { color: var(--color-link); }
 .ease-row p { display: -webkit-box; margin: 0.5rem 0 0; overflow: hidden; color: var(--color-muted); -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+
+/* A category or a tag on a wide screen: the name over the full frame,
+   then the rows two across, as the front page sets its topics, with a
+   hairline over each pair. */
+@media (min-width: 64rem) {
+  main > :is(header.ease-term, header.ease-term ~ *) { max-inline-size: none; }
+  main > header.ease-term ~ .ease-feed { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3.75rem; }
+  main > header.ease-term ~ .ease-feed > li + li { border-block-start: 0; }
+  main > header.ease-term ~ .ease-feed > li:nth-child(n + 3) { border-block-start: var(--ease-line); }
+  main > header.ease-term ~ .ease-feed > li:nth-child(2) .ease-row { padding-block-start: 0.5rem; }
+}
 
 /* A category, tag or author: the name at 28px over its description. */
 .ease-term { margin-block: 3.75rem 1.5rem; }
