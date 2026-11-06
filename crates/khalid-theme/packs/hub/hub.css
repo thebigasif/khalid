@@ -12,8 +12,13 @@
   --hb-lift-down: 0.1875rem;
 }
 
-/* The header: the name and the menu on the column, no rule under it. */
-.site-header { padding-block: 1rem 0.25rem; border-block-end: 0; }
+/* The header: the name at the start and the menu at the end, across the
+   whole column over a hairline, however short the menu is. */
+.site-header { inline-size: 100%; padding-block: 1rem 0.5rem; border-block-end: 1px solid var(--color-border); }
+/* A long menu wraps onto its own line and still ends at the column's end. */
+.site-header > .nav-bar { flex: 1 1 auto; }
+.site-header > .nav-bar ul { justify-content: flex-end; }
+.site-header > .nav-menu { margin-inline-start: auto; }
 .site-name { font-size: 1.0625rem; letter-spacing: -0.01em; }
 .site-logo img { block-size: 2.25rem; inline-size: auto; }
 .site-header nav a, .search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
