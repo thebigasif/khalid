@@ -252,6 +252,3 @@ main > .related { margin-block-start: max(8vmin, 4rem); }
   .post-body > blockquote:not([class])::before, .page-body > blockquote:not([class])::before { inset-inline-start: min(-4vmin, -1rem); }
   .site-footer { padding-block-end: 4rem; }
 }
-/* The post text keeps 60 to 75 characters a line in whatever font a
-   reader's system falls back to, so its width follows the font itself. */
-main .post > .post-body { max-inline-size: 64ch; margin-inline: auto; }

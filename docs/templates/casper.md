@@ -89,7 +89,7 @@ Casper's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.6` |
 | `[type] heading_weight` | `800` |
 | `[shape] radius` | `0px`: pictures have square corners |
-| `[shape] measure` | `42rem`, the width of a post's text |
+| `[shape] measure` | `40rem`, the width of a post's text |
 | `[space] section` | `4rem` |
 
 ## Options
