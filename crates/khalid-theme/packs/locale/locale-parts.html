@@ -1,0 +1,56 @@
+{#- Locale's own parts (docs/templates/locale.md), shared by its pages. A
+    place is a post with facts, read by position: 1 the kind of place, 2
+    the price level, 3 the opening hours, 4 the address.
+    price_meter(fact): the price level as four marks, the ones up to the
+    level in ink. A level written 1 to 4 draws round coins; one to four of
+    the same sign, such as ££, draws that sign. Screen readers hear the
+    level, not the marks. Any other value, such as Free, shows as written.
+    place_rows(posts, level): each place as a listing row: a small square
+    picture, the name, a dotted leader and the price meter on one line,
+    then the kind and the opening hours. The name is the part of the
+    title before a colon, so "Saggar Bakehouse: sourdough from the kiln"
+    lists as "Saggar Bakehouse". A post without facts is left out.
+    note_cards(posts, level): notes, posts without facts, as picture
+    cards with their area and date. -#}
+{% from "image.html" import picture -%}
+{% macro price_meter(fact) -%}
+{% set value = fact.value | trim -%}
+{% set first = value[:1] -%}
+{% set signs = value | length <= 4 and (value | replace(first, "")) == "" and (first | lower) == (first | upper) and (first | trim("0123456789")) != "" -%}
+{% set level = value | int if value in ["1", "2", "3", "4"] else (value | length if signs else 0) -%}
+{% if level %}<span class="price-meter"><span class="visually-hidden">{{ t.price_level | replace("{level}", level | string) }}</span><span class="price-marks" aria-hidden="true">{% for mark in range(1, 5) %}{% if signs and mark <= level %}<span class="price-mark price-on">{{ first }}</span>{% elif signs %}<span class="price-mark">{{ first }}</span>{% elif mark <= level %}<span class="price-coin price-on"></span>{% else %}<span class="price-coin"></span>{% endif %}{% endfor %}</span></span>
+{%- else %}<span class="price-meter price-text"><span class="visually-hidden">{{ fact.label }}: </span>{{ value }}</span>
+{%- endif %}
+{%- endmacro %}
+{% macro place_key(post) -%}
+{% if post.facts[0] is defined or post.facts[2] is defined %}<p class="lc-key">{% if post.facts[0] is defined %}<span class="lc-kind">{{ post.facts[0].value }}</span>{% endif %}{% if post.facts[2] is defined %}<span class="lc-hours"><span class="visually-hidden">{{ post.facts[2].label }}: </span>{{ post.facts[2].value }}</span>{% endif %}</p>
+{% endif %}
+{%- endmacro %}
+{% macro place_rows(posts, level=3) -%}
+<ol class="lc-places" role="list">
+{% for post in posts if post.facts %}<li>
+<article class="lc-place">
+{% if post.image %}<a class="lc-thumb" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}<div class="lc-place-text">
+<div class="lc-line">
+<h{{ level }}><a href="{{ post.href }}">{{ post.title | split(":") | list | first }}</a></h{{ level }}>
+<span class="lc-leader" aria-hidden="true"></span>
+{% if post.facts[1] is defined %}{{ price_meter(post.facts[1]) }}{% endif %}
+</div>
+{{ place_key(post) }}</div>
+</article>
+</li>
+{% endfor %}</ol>
+{%- endmacro %}
+{% macro note_cards(posts, level=3) -%}
+<ul class="lc-notes" role="list">
+{% for post in posts %}<li>
+<article class="lc-note">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}<p class="lc-meta">{% if post.category %}<a href="{{ post.category.href }}">{{ post.category.name }}</a> {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="lc-excerpt">{{ post.excerpt }}</p>
+</article>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}

@@ -50,6 +50,7 @@ mod lattice;
 mod ledger;
 mod links;
 mod london;
+mod locale;
 mod look;
 mod meridian;
 mod pack;

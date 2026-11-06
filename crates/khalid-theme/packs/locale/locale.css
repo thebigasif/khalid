@@ -1,0 +1,171 @@
+/* Locale (docs/templates/locale.md): a city guide. Warm paper, a sturdy
+   serif for names, and every place as a listing row set like a printed
+   guide: the name, a dotted leader and the price meter, then the kind
+   and the opening hours in small capitals. Areas carry a map pin. The
+   section parts' own rules come first (the build adds the parts this
+   pack's templates import); these set the look over them. Every colour
+   is a token or a mix of tokens. */
+:root {
+  --lc-frame: 76rem;
+  --lc-faint: color-mix(in oklab, var(--color-text) 22%, var(--color-background));
+  --lc-tint: color-mix(in oklab, var(--color-accent) 7%, var(--color-background));
+}
+.site-header, main, .site-footer { max-inline-size: var(--lc-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: 48rem; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(48rem + 18rem); }
+main > .post ~ * { max-inline-size: 48rem; margin-inline: auto; }
+
+/* The header: the name in the serif over a double rule, like the top of
+   a guidebook page. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.125rem; border-block-end: 3px double var(--color-text); }
+.site-name { color: var(--color-text); font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.9375rem; font-weight: 700; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+
+/* Buttons: the accent, rounded a little, the label in bold. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 700 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: var(--color-text); text-decoration: none; }
+
+/* The map pin: a small teardrop in the accent beside every area. */
+.lc-pin { display: inline-block; flex: none; inline-size: 0.75rem; block-size: 0.75rem; margin-inline-end: 0.5rem; background: radial-gradient(circle, var(--color-background) 0 26%, var(--color-accent) 30%); border-radius: 50% 50% 50% 0; transform: translateY(-0.0625rem) rotate(-45deg); }
+
+/* Section headings: the serif over a hairline. */
+.lc-heading, :is(.related, .mentions, .author-posts, .author-others, .topic-tabs, .media-row) > h2, .post-footer > h2 { margin-block: 0 1.5rem; padding-block-end: 0.625rem; border-block-end: 1px solid var(--color-text); font-size: var(--text-h2); line-height: 1.2; }
+.post-footer > h2 { font-size: 1.25rem; }
+
+/* The front page: the name large, the intro, the area chips. */
+.hero { margin-block-end: 2.5rem; }
+.hero-title { max-inline-size: 18ch; }
+.lc-chips { margin-block-start: 1.75rem; }
+.lc-chips ul { display: flex; flex-wrap: wrap; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.lc-chips a { display: inline-flex; align-items: center; gap: 0.25rem; min-block-size: 2.75rem; padding-block: 0.375rem; padding-inline: 1rem 0.5rem; color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-text); border-radius: 999px; font-weight: 700; text-decoration: none; }
+.lc-chips a:hover { background: var(--lc-tint); border-color: var(--color-link); }
+.lc-count { display: inline-flex; align-items: center; justify-content: center; min-inline-size: 1.75rem; block-size: 1.75rem; margin-inline-start: 0.25rem; padding-inline: 0.375rem; background: var(--color-surface); border-radius: 999px; font-size: var(--text-small); font-variant-numeric: tabular-nums; }
+
+/* An area: its name, count and link on the start side, its places as
+   listing rows beside them on wide screens. */
+.lc-area { display: grid; gap: 1rem 2.5rem; margin-block-end: 3rem; scroll-margin-block-start: 1.5rem; }
+@media (min-width: 60rem) { .lc-area { grid-template-columns: 14rem minmax(0, 1fr); } }
+.lc-area-head { display: flex; flex-direction: column; gap: 0.25rem; }
+.lc-area-head :is(h2, h3, h4) { display: flex; align-items: center; margin: 0; font-size: 1.5rem; line-height: 1.2; }
+.lc-count-line, .lc-area-all { margin: 0; color: var(--color-muted); font-size: 1rem; }
+.lc-area-all a { font-weight: 700; }
+.lc-notes-block, .lc-list-notes { margin-block: var(--space-section); }
+
+/* The listing row: picture, name, dotted leader, price, then the kind
+   and the hours. One column, or as many as fit at 24rem each. */
+.lc-places { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr)); gap: 0 2.5rem; margin: 0; padding: 0; list-style: none; }
+.lc-place { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; align-items: center; padding-block: 1rem; border-block-end: 1px solid var(--color-border); }
+.lc-place:has(.lc-thumb) { grid-template-columns: 4.5rem minmax(0, 1fr); }
+.lc-thumb { display: block; }
+.lc-thumb .image { margin: 0; }
+.lc-thumb img { inline-size: 100%; block-size: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); }
+.lc-place-text { display: flex; flex-direction: column; gap: 0.375rem; min-inline-size: 0; }
+.lc-line { display: flex; align-items: flex-end; gap: 0.5rem; }
+.lc-line :is(h2, h3, h4) { margin: 0; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.25rem); line-height: 1.25; }
+.lc-line :is(h2, h3, h4) a, .lc-note :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.lc-line :is(h2, h3, h4) a:hover, .lc-note :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.lc-leader { flex: 1 1 1.5rem; min-inline-size: 1rem; margin-block-end: 0.3125rem; border-block-end: 2px dotted var(--lc-faint); }
+.lc-key { display: flex; flex-wrap: wrap; gap: 0 0.5rem; margin: 0; color: var(--color-muted); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; line-height: 1.5; text-transform: uppercase; }
+.lc-kind { color: var(--color-link); }
+.lc-hours { font-variant-numeric: tabular-nums; }
+.lc-kind:has(+ .lc-hours)::after { content: "\00b7"; margin-inline-start: 0.5rem; color: var(--color-muted); }
+
+/* The price meter: four marks, the ones up to the level in ink. */
+.price-meter { display: inline-flex; flex: none; align-items: center; margin-block-end: 0.125rem; color: var(--color-text); font-weight: 700; line-height: 1; white-space: nowrap; }
+.price-marks { display: inline-flex; align-items: center; gap: 0.125rem; }
+.price-mark { color: var(--lc-faint); font-size: 1.0625rem; font-variant-numeric: tabular-nums; }
+.price-mark.price-on { color: var(--color-text); }
+.price-coin { inline-size: 0.625rem; block-size: 0.625rem; border: 2px solid var(--lc-faint); border-radius: 50%; }
+.price-coin.price-on { background: var(--color-accent); border-color: var(--color-accent); }
+.price-text { font-size: 0.9375rem; }
+
+/* Notes: picture cards with their area and date. */
+.lc-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 2.5rem 2rem; margin: 0; padding: 0; list-style: none; }
+.lc-note { display: flex; flex-direction: column; gap: 0.625rem; }
+.lc-note .image { margin: 0 0 0.25rem; }
+.lc-note .image img { inline-size: 100%; block-size: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radius); }
+.lc-note :is(h2, h3, h4) { margin: 0; font-size: 1.3125rem; line-height: 1.25; }
+.lc-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.lc-meta a { font-weight: 700; }
+.lc-excerpt { margin: 0; color: var(--color-muted); font-size: 1rem; line-height: 1.5; }
+
+/* Lists and the writers page: the name and intro over a double rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 1.5rem; padding-block-end: 1.25rem; border-block-end: 3px double var(--color-text); }
+.list-header h1 { margin: 0; line-height: 1.1; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 0.75rem; color: var(--color-muted); }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-kind { margin-block: 0 0.5rem; color: var(--color-link); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* A post: the area label, the name, the byline, then the picture beside
+   the At a glance card. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.lc-area-label { margin-block: 0 0.75rem; font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.lc-area-label a { display: inline-flex; align-items: center; text-decoration: none; }
+.lc-area-label a:hover { text-decoration: underline; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.08; }
+.lc-title-rest { display: block; margin-block-start: 0.5rem; color: var(--color-muted); font-size: 0.5em; line-height: 1.25; }
+.lc-title-rest::first-letter { text-transform: uppercase; }
+.post-header .dek { color: var(--color-muted); font-size: 1.25rem; line-height: 1.45; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; }
+.post-header .image { margin-block: 1.75rem 0; }
+.post-header .image img { inline-size: 100%; border-radius: var(--radius); }
+.lc-glance-row { display: grid; gap: 1.5rem; margin-block-start: 1.75rem; }
+@media (min-width: 44rem) { .lc-glance-row:has(.image) { grid-template-columns: minmax(0, 1.55fr) minmax(14rem, 1fr); align-items: start; } }
+.lc-glance-row .image { margin: 0; }
+.lc-glance { padding: 1.25rem 1.25rem 0.5rem; background: var(--color-surface); border-block-start: 4px solid var(--color-accent); border-radius: var(--radius); }
+.lc-glance > h2 { margin: 0 0 0.75rem; font-family: var(--font-body); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.lc-glance-price { margin: 0 0 0.5rem; }
+.lc-glance-price .price-mark { font-size: 1.75rem; }
+.lc-glance-price .price-coin { inline-size: 1.125rem; block-size: 1.125rem; }
+.lc-glance-price .price-marks { gap: 0.3125rem; }
+.lc-glance dl { margin: 0; }
+.lc-glance dl > div { padding-block: 0.625rem; border-block-start: 1px solid var(--color-border); }
+.lc-glance dt { color: var(--color-muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.lc-glance dd { margin: 0.125rem 0 0; font-size: 1.0625rem; line-height: 1.4; }
+.post-body { font-size: var(--text-body); }
+.post-body > * { max-inline-size: var(--measure); }
+.post-body > :is(table, figure, .image) { max-inline-size: none; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body h2 { font-size: var(--text-h2); }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-body table { font-size: 1rem; font-variant-numeric: tabular-nums; }
+.post-body th { text-align: start; }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { padding: 0.25rem 0.75rem; color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-border); border-radius: 999px; font-size: var(--text-small); font-weight: 700; }
+.post-footer .tags a:hover { color: var(--color-link); border-color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+.related .lc-notes { margin-block-start: 2rem; }
+
+/* A writer: the mark beside the name, their places as rows. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.0625rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-posts, .author-others { margin-block-start: var(--space-section); }
+.author-posts .feed-list { margin-block-start: 1.5rem; }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter: soft panels on the surface. */
+.cta-band { background: var(--lc-tint); border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border-radius: var(--radius); }
+.pagination a[aria-current] { color: var(--color-on-accent); background: var(--color-accent); }
+
+/* The footer: a double rule, quiet links. */
+.site-footer { border-block-start: 3px double var(--color-text); }
