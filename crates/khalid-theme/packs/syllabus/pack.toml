@@ -2,4 +2,4 @@
 # See scripts/template-packs.sh.
 kind = "courses"
 kind_label = "Online courses"
-frame = 1200
+frame = 1192

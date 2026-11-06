@@ -32,7 +32,7 @@ Pick another template if your posts are long reads that people browse by picture
 
 **A post**
 - A large title, then one grey line with the date it was last updated and its category, and the share links.
-- The lead picture, then the text in one column of 40rem, about 70 characters a line, a little larger than the rest of the site. With `contents` set to a side placement, the contents sit in a column beside the text and the post grows by that column, so the text keeps its width.
+- The lead picture, then the text in one column of 38rem, about 70 characters a line, a little larger than the rest of the site. With `contents` set to a side placement, the contents sit in a column beside the text and the post grows by that column, so the text keeps its width.
 - The author box, when the site shows it. Then up to `related_count` related articles, two across, each with its category as a small grey label over its title in bold. Then comments when they are open.
 
 **Lists**, such as a category or a tag, show the name and its description in grey, then each post as a plain row: the title in bold and two lines of its summary, with a grey line between rows. On a wide screen the rows sit two across over the full frame, as the front page sets its topics; on a phone or tablet they form one column. The whole row opens the post. Numbered page links follow.
@@ -99,7 +99,7 @@ body = "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-
 
 [shape]
 radius = "0.3125rem"
-measure = "40rem"
+measure = "38rem"
 
 [type]
 body = "1rem 1.0625rem"

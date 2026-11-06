@@ -96,7 +96,7 @@ Locale's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.6` |
 | `[type] heading_weight` | `400` |
 | `[shape] radius` | `0.25rem` |
-| `[shape] measure` | `39.5rem` |
+| `[shape] measure` | `37.5rem` |
 | `[space] section` | `3.5rem`, the space between the parts of a page |
 
 ## Options

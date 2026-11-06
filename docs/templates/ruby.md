@@ -75,7 +75,7 @@ Ruby's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] h1` | `1.875rem` on a phone to `2.375rem` on a wide screen |
 | `[type] heading_weight` | `700` |
 | `[shape] radius` | `0.5rem`: cards and pictures have round corners |
-| `[shape] measure` | `40rem`, the width of a post's text |
+| `[shape] measure` | `38rem`, the width of a post's text |
 | `[space] section` | `4rem` |
 
 ## Options

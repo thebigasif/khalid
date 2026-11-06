@@ -2,4 +2,4 @@
 # See scripts/template-packs.sh.
 kind = "podcast"
 kind_label = "Podcasts"
-frame = 840
+frame = 832

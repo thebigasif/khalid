@@ -20,7 +20,7 @@ mono = "Menlo, Courier, monospace"
 
 [shape]
 radius = "0px"
-measure = "45rem"
+measure = "42rem"
 
 [type]
 body = "1rem"

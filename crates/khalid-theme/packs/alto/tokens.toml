@@ -19,7 +19,7 @@ mono = "Menlo, Consolas, Monaco, \"Liberation Mono\", \"Lucida Console\", monosp
 
 [shape]
 radius = "0px"
-measure = "40rem"
+measure = "38rem"
 
 [type]
 body = "1rem"
