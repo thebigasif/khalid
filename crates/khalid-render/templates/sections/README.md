@@ -51,6 +51,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | Poster grid | `poster_grid(posts, level=3)`; call it with `{% call(post) poster_grid(posts) %}` to add a rating or details under each title | Tall 2:3 cover cards with the title under the picture, linking the whole card | Film and TV reviews, gaming, author's books, musician's releases |
 | Link stack | `link_stack(lines, nav=[], cta=none, label=none)`; `lines` written `label \| address` or `label \| address \| note`, `nav` the links used when there are no lines, `cta` the call to action that leads | Large link buttons, one under another, each as wide as the column | Creator hub, musician (streaming links), podcast (where to listen), course (enrol links) |
 | Video grid | `video_grid(posts, level=3, numbered=false, shelf=false)`; the first fact is the running time | Thumbnail cards cut to 16:9, each with a play bar under the picture (a play mark, a track and the running time), the title, date and category; with `shelf`, one row that scrolls sideways | Video creator (Channel), creator hub, online course lessons |
+| Session cards | `session_cards(posts, level=3)`; facts by position: 1 in the ring (such as the time), 2 and 3 beside it | Picture cards; the first fact in a ring that widens to a pill, the next two beside it; the date when a post has no facts | Health routines, online course lessons, recipes, workshops |
 
 ## Planned parts
 

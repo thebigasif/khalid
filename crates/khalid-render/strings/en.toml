@@ -373,3 +373,7 @@ channel_watch = "Watch now"
 channel_up_next = "Up next"
 channel_videos = "Videos"
 channel_hosts = "Hosts"
+# The vital template's front page, lists and coach pages.
+programmes = "Programmes"
+routines = "Routines"
+routine_notes = "Notes"

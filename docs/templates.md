@@ -61,6 +61,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `ticker`: a markets newsletter, with a dark tape of figures, each issue's moves as a bar chart drawn without script, and every list as a data table shaded by how far each figure moved. See [Ticker](templates/ticker.md).
 - `summit`: a conference, festival or event, with the programme as a timetable by day and time, speakers, venues with their sessions and a ticket stub on every session. See [Summit](templates/summit.md).
 - `syllabus`: an online course, with a course map of one square per lesson, an outline of modules and lessons, course news, and on every lesson a progress ruler that shows how far through the course it is. See [Syllabus](templates/syllabus.md).
+- `vital`: a health and wellness site of programmes and routines, with each routine's time in a ring on its picture card, a session panel and a care note on every routine, its steps drawn as a track, and a notes feed. See [Vital](templates/vital.md).
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 
