@@ -79,7 +79,7 @@ fn the_sites_own_rules_come_after_the_templates() {
     let (output, out) = build(site.path());
     assert_eq!(output.status.code(), Some(0), "{output:?}");
     let css = stylesheet(&out);
-    let template = css.find(".catbar {").unwrap();
+    let template = css.find(".atlas-index {").unwrap();
     let own = css.find(".hero {\ncolor: #123456;\n}").unwrap();
     assert!(template < own, "{css}");
     assert!(!css.contains("The site's own hero"), "comments are removed");

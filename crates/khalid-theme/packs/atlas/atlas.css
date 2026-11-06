@@ -1,7 +1,9 @@
 /* Atlas: a magazine for a blog with many topics, built on one idea, the
    map. The front page opens on a sheet of map grid in a tint of the accent
-   with the blog's name set very large and tight; topics are solid accent
-   chips; each section starts under a heavy rule, like a plate in an atlas.
+   with the blog's name set very large and tight, over an index of every
+   topic like the index of an atlas. The tint stays on that sheet: below
+   it the page is white and ink, the accent only a small key square or a
+   rule; each section starts under a heavy rule, like a plate in an atlas.
    Every colour, font and size comes from the tokens or a mix of them, so a
    synced brand keeps the same character. */
 
@@ -9,13 +11,14 @@
   --atlas-wide: min(88rem, 100vw - 4rem);
   --atlas-gap: clamp(1.25rem, 0.9rem + 1vw, 2rem);
   --atlas-section: clamp(3rem, 2rem + 3vw, 5rem);
-  --atlas-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background));
-  /* Panels in a post and beside the lead story: a quieter tint, so one
-     accent leads and the text reads on near white. */
-  --atlas-panel: color-mix(in oklab, var(--color-accent) 4%, var(--color-background));
-  --atlas-minor: color-mix(in oklab, var(--color-accent) 11%, var(--color-background));
-  --atlas-major: color-mix(in oklab, var(--color-accent) 22%, var(--color-background));
-  --atlas-display: clamp(3rem, 0.5rem + 8.4vw, 10rem);
+  --atlas-tint: color-mix(in oklab, var(--color-accent) 5%, var(--color-background));
+  /* Panels in a post: a grey of the text colour, so the accent's tint
+     stays on the masthead sheet and the text reads on near white. */
+  --atlas-panel: color-mix(in oklab, var(--color-text) 3%, var(--color-background));
+  --atlas-minor: color-mix(in oklab, var(--color-accent) 9%, var(--color-background));
+  --atlas-major: color-mix(in oklab, var(--color-accent) 18%, var(--color-background));
+  --atlas-display: clamp(2.5rem, 0.5rem + 8.4vw, 10rem);
+  --atlas-blank: color-mix(in oklab, var(--color-text) 7%, var(--color-background));
   --atlas-title: clamp(2.25rem, 1.2rem + 2.9vw, 4.25rem);
   --atlas-chip: 0.125rem;
   /* The map grid: a major line every four cells over a fine one. */
@@ -24,7 +27,8 @@
 .site-header, .site-footer, main:has(.front), main:has(> .cards), main:has(> .featured) { max-inline-size: var(--atlas-wide); }
 main:has(.front), main:has(> .post), main:has(> .cards, > .featured) { padding-block-start: 0; }
 h1, h2, h3, h4 { letter-spacing: -0.02em; }
-.button, .subscribe button, .comment-form button, .search button { color: var(--color-on-accent); border-radius: var(--atlas-chip); }
+.button, .subscribe button, .comment-form button, .search button { color: var(--color-background); background: var(--color-text); border-color: var(--color-text); border-radius: var(--atlas-chip); }
+.button:hover, .subscribe button:hover { box-shadow: inset 0 -0.25rem var(--color-accent); }
 
 /* The announcement: one line on ink across the window. */
 .announcement { margin: 0; padding-block: 0.5rem; color: var(--color-background); background: var(--color-text); border: 0; font-size: 0.8125rem; font-weight: 600; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); }
@@ -55,41 +59,51 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 }
 
 /* The masthead: the blog's name at display size on a sheet of map grid in
-   a tint of the accent, the tagline and introduction beside it, and the
-   topics as chips, closed by a heavy accent rule across the window. */
+   a tint of the accent, fading out above the destination index: one
+   column per topic, lettered like the columns of a map, each with its
+   newest posts by name and numbered like an atlas index (A1, A2). A heavy
+   accent rule across the window closes the sheet. */
 .masthead { position: relative; isolation: isolate; margin-block-end: var(--atlas-section); padding-block: clamp(2.5rem, 1.25rem + 4.5vw, 6rem) clamp(2rem, 1.5rem + 2vw, 3.5rem); background: var(--atlas-tint); box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); border-block-end: 0.375rem solid var(--color-accent); border-image: linear-gradient(var(--color-accent), var(--color-accent)) 0 0 1 / 0 0 0.375rem / 0 100vmax; }
-.masthead::before { content: ""; position: absolute; z-index: -1; inset: 0; background: var(--atlas-map); background-size: 6rem 6rem, 6rem 6rem, 1.5rem 1.5rem, 1.5rem 1.5rem; background-position: 0 100%; mask-image: linear-gradient(90deg, transparent, var(--color-text) 12% 88%, transparent); }
+.masthead::before { content: ""; position: absolute; z-index: -1; inset: 0; background: var(--atlas-map); background-size: 6rem 6rem, 6rem 6rem, 1.5rem 1.5rem, 1.5rem 1.5rem; mask-image: linear-gradient(var(--color-text) 35%, transparent 80%); }
 .front-title { max-inline-size: 15ch; margin: 0; font-size: var(--atlas-display); font-weight: 800; line-height: 0.92; letter-spacing: -0.055em; }
 .masthead :is(.tagline, .intro) { max-inline-size: 36rem; margin-block: 1.5rem 0; color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.45; }
 .masthead .intro > :last-child { margin-block-end: 0; }
 .masthead .hero-stats { max-inline-size: 48rem; margin-block: 2rem 0; }
-.catbar { margin-block-start: clamp(1.75rem, 1rem + 2vw, 3rem); }
-.catbar ul { gap: 0.5rem; }
-.catbar a { padding-inline: 1rem; color: var(--color-text); font-size: 0.8125rem; font-weight: 800; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; background: var(--color-background); border: 2px solid var(--color-text); border-radius: var(--atlas-chip); }
-.catbar a:hover { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
-.catbar a[aria-current] { color: var(--color-background); background: var(--color-text); }
+.atlas-index { margin-block-start: clamp(2.5rem, 1.5rem + 3vw, 4.5rem); }
+.regions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 2rem var(--atlas-gap); margin: 0; padding: 0; list-style: none; counter-reset: atlas-region; }
+.regions > li { counter-increment: atlas-region; border-block-start: 2px solid var(--color-text); }
+.regions h2 { margin: 0; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; }
+.regions a { display: flex; align-items: center; gap: 0.625rem; min-block-size: 2.75rem; color: var(--color-text); text-decoration: none; }
+.regions a:hover { text-decoration: underline; text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
+.regions h2 a::before { content: counter(atlas-region, upper-alpha) / ""; display: grid; place-items: center; flex: none; inline-size: 1.75rem; block-size: 1.75rem; color: var(--color-background); background: var(--color-text); font-size: 0.875rem; letter-spacing: 0; }
+.places { margin: 0; padding: 0; list-style: none; counter-reset: atlas-place; }
+.places li { counter-increment: atlas-place; border-block-start: 1px solid var(--atlas-major); }
+.places a { align-items: baseline; min-block-size: 2.5rem; padding-block: 0.625rem; font-size: 0.9375rem; font-weight: 600; line-height: 1.3; }
+.places a::before { content: counter(atlas-region, upper-alpha) counter(atlas-place) / ""; flex: none; inline-size: 1.75rem; color: var(--color-muted); font-size: 0.75rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 @media (max-width: 47.99rem) {
-  .catbar { margin-inline: -1rem; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; }
-  .catbar ul { flex-wrap: nowrap; padding-inline: 1rem; }
-  .catbar li { flex: none; }
-  .catbar a { white-space: nowrap; }
+  .regions { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(80%, 18rem); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .regions > li { scroll-snap-align: start; }
+  .places li:nth-child(n + 4) { display: none; }
 }
 
 /* Section titles: large and tight under a heavy rule in the text colour.
    The featured posts open under a chip instead. */
 .front > section { margin-block: 0 var(--atlas-section); }
 .front section > h2, :is(.mentions, .related, .comments, .featured) > h2 { margin-block: 0 clamp(1.5rem, 1rem + 1vw, 2.25rem); padding-block-start: 1rem; border-block-start: 0.25rem solid var(--color-text); font-size: clamp(1.75rem, 1.2rem + 1.8vw, 3rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
-.front .leads > h2, .featured > h2 { justify-self: start; inline-size: fit-content; margin-block-end: 0; padding: 0.3125rem 0.625rem 0.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--atlas-chip); font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 0.1em; line-height: 1.2; text-transform: uppercase; }
+.front .leads > h2, .featured > h2 { justify-self: start; margin-block-end: 0; padding: 0; color: var(--color-text); background: none; border: 0; font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 0.1em; line-height: 1.2; text-transform: uppercase; }
+/* The key square: the accent's one mark below the masthead, before a
+   topic or a section's label, like the key of a map. */
+:is(.story-label, .front .leads > h2, .featured > h2)::before, .cards .card-meta > a::before { content: ""; display: inline-block; inline-size: 0.5rem; block-size: 0.5rem; margin-inline-end: 0.5rem; background: var(--color-accent); }
 
 /* A story or a card: the picture edge to edge on top, the topic as a solid
    chip, a bold title of up to three lines, the summary, then who, when and
    how long. The whole card is the link: on hover its title turns to the
    accent and its picture darkens a little. */
 :is(.story, .card) { position: relative; display: flex; flex-direction: column; }
-:is(.story, .card) .image { margin: 0 0 1rem; overflow: hidden; background: var(--color-surface); border-radius: var(--radius); }
+:is(.story, .card) .image { margin: 0 0 1rem; overflow: hidden; background: var(--atlas-blank); border-radius: var(--radius); }
 :is(.story, .card) .image img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0; transition: filter 0.2s ease; }
 :is(.story, .card):hover .image img { filter: brightness(0.9); }
-.story-label { align-self: flex-start; margin: 0 0 0.625rem; padding: 0.3125rem 0.5rem 0.25rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: var(--atlas-chip); font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.08em; line-height: 1.2; text-transform: uppercase; }
+.story-label { align-self: flex-start; margin: 0 0 0.5rem; padding: 0; color: var(--color-text); background: none; font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.08em; line-height: 1.2; text-transform: uppercase; }
 :is(.story, .card) :is(h2, h3, h4) { margin: 0; font-size: clamp(1.1875rem, 1.1rem + 0.25vw, 1.375rem); font-weight: 800; line-height: 1.18; letter-spacing: -0.025em; }
 :is(.story, .card) :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
 :is(.story, .card) :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
@@ -109,12 +123,12 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .story-lead .story-label { margin-block-end: 0.875rem; }
 .story-lead .story-excerpt { max-inline-size: 40rem; margin-block-start: 0.875rem; font-size: clamp(1rem, 0.9rem + 0.3vw, 1.1875rem); -webkit-line-clamp: 4; }
 .story-lead .image { margin-block-end: 1.25rem; }
-.story-lead + .story-lead { padding: 1rem 1rem 1.25rem; background: var(--atlas-panel); border-radius: var(--radius); }
+.story-lead + .story-lead { padding: 1.5rem 0 0; background: none; border-block-start: 1px solid var(--color-border); }
 .story-lead + .story-lead :is(h2, h3) { font-size: clamp(1.5rem, 1.1rem + 1vw, 2.125rem); line-height: 1.08; letter-spacing: -0.035em; }
 .story-lead + .story-lead .story-excerpt { font-size: 1rem; }
 @media (min-width: 56rem) {
   .leads:has(> .story-lead + .story-lead) { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
-  .story-lead + .story-lead { padding: 1.25rem 1.25rem 1.5rem; }
+  .story-lead + .story-lead { padding: 0 0 0 var(--atlas-gap); border: 0; border-inline-start: 1px solid var(--color-border); }
   .story-lead + .story-lead .image img { aspect-ratio: 4 / 3; }
 }
 
@@ -126,7 +140,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .story-grid > li { display: flex; }
 .story-grid .story { flex: 1; }
 .picks .story-grid > li { counter-increment: atlas-pick; padding-block-start: 0.75rem; border-block-start: 1px solid var(--color-text); }
-.picks .story::before { content: counter(atlas-pick, decimal-leading-zero) / ""; margin-block-end: 0.5rem; color: var(--color-link); font-family: var(--font-heading); font-size: 2rem; font-weight: 800; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.picks .story::before { content: counter(atlas-pick, decimal-leading-zero) / ""; margin-block-end: 0.5rem; color: var(--color-text); font-family: var(--font-heading); font-size: 2rem; font-weight: 800; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
 @media (min-width: 72rem) {
   .feed .story-grid, .home-section .story-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .feed .story-grid > li:first-child, .home-section .story-grid > li:first-child { grid-column: span 2; grid-row: span 2; }
@@ -142,36 +156,20 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .view-all a::after { content: "\2192" / ""; margin-inline-start: 0.375rem; }
 [dir="rtl"] .view-all a::after { content: "\2190" / ""; }
 
-/* The topic index: one column per topic under a heavy accent rule, its
-   three newest posts as a plain list of titles and dates. */
-.topic-index > h2 { margin-block-end: 1.5rem; }
-.topic-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 2.5rem var(--atlas-gap); }
-.topic-block { display: flex; flex-direction: column; border-block-start: 0.375rem solid var(--color-accent); }
-.topic-block h3 { margin: 0; padding-block: 0.75rem 0.5rem; font-size: 1.375rem; font-weight: 800; letter-spacing: -0.03em; }
-.topic-block h3 a { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-text); text-decoration: none; }
-.topic-block h3 a:hover { color: var(--color-link); }
-.topic-block .stories { margin: 0 0 auto; padding: 0; list-style: none; }
-.topic-block .stories > li { border-block-start: 1px solid var(--color-border); }
-.story-brief { padding-block: 0.875rem; }
-.story-brief :is(h3, h4) { font-size: 1rem; font-weight: 700; line-height: 1.35; letter-spacing: -0.01em; }
-.story-brief .story-meta { padding-block-start: 0.25rem; }
-
 /* Browse by topic: the tabs as chips in one row that scrolls sideways. */
 .topic-tab-list { gap: 0.5rem; margin-block-end: 2rem; padding-block-end: 0.75rem; border-block-end: 1px solid var(--color-border); scrollbar-width: none; }
 .topic-tab-list a { padding-inline: 1rem; color: var(--color-text); font-size: 0.8125rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; border: 2px solid var(--color-text); border-radius: var(--atlas-chip); }
-.topic-tab-list a:hover { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
+.topic-tab-list a:hover { box-shadow: inset 0 -0.25rem var(--color-accent); }
 .topic-tabs:not(:has(.topic-panel:target)) .topic-tab-list li:first-child a, .topic-tabs:has([id="topic-1"]:target) .topic-tab-list [href$="-1"], .topic-tabs:has([id="topic-2"]:target) .topic-tab-list [href$="-2"], .topic-tabs:has([id="topic-3"]:target) .topic-tab-list [href$="-3"], .topic-tabs:has([id="topic-4"]:target) .topic-tab-list [href$="-4"], .topic-tabs:has([id="topic-5"]:target) .topic-tab-list [href$="-5"], .topic-tabs:has([id="topic-6"]:target) .topic-tab-list [href$="-6"] { color: var(--color-background); background: var(--color-text); border-color: var(--color-text); }
 .topic-panel h3 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; }
 
-/* The call to action: a loud band in the accent with the map grid drawn in
-   the text colour on it, the note large over a button in the background
-   colour. */
-.cta-band { position: relative; isolation: isolate; overflow: hidden; flex-direction: column; align-items: flex-start; gap: 1.75rem; margin-block: var(--atlas-section); padding: clamp(2.5rem, 1.5rem + 4vw, 5rem) clamp(1.5rem, 1rem + 3vw, 4rem); color: var(--color-on-accent); background: var(--color-accent); border-radius: var(--radius); }
-.cta-band::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(color-mix(in oklab, var(--color-on-accent) 16%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--color-on-accent) 16%, transparent) 1px, transparent 1px); background-size: 3rem 3rem; mask-image: linear-gradient(90deg, transparent 30%, var(--color-text)); }
+/* The call to action: a band in ink with the map grid drawn faintly on
+   it and an accent rule on top, the note large over a white button. */
+.cta-band { position: relative; isolation: isolate; overflow: hidden; flex-direction: column; align-items: flex-start; gap: 1.75rem; margin-block: var(--atlas-section); padding: clamp(2.5rem, 1.5rem + 4vw, 5rem) clamp(1.5rem, 1rem + 3vw, 4rem); color: var(--color-background); background: var(--color-text); border: 0; border-block-start: 0.375rem solid var(--color-accent); border-radius: 0; }
+.cta-band::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(color-mix(in oklab, var(--color-background) 12%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--color-background) 12%, transparent) 1px, transparent 1px); background-size: 3rem 3rem; mask-image: linear-gradient(90deg, transparent 30%, var(--color-text)); }
 .cta-note { max-inline-size: 22ch; font-family: var(--font-heading); font-size: clamp(1.875rem, 1.1rem + 2.4vw, 3.5rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.045em; text-wrap: balance; }
 .cta-band .button { min-block-size: 3rem; padding-inline: 1.5rem; color: var(--color-text); background: var(--color-background); }
-.cta-band .button:hover { color: var(--color-background); background: var(--color-text); }
-.cta-band :focus-visible { outline-color: var(--color-on-accent); }
+.cta-band :focus-visible { outline-color: var(--color-background); }
 
 /* The footer: on ink across the window, links in a soft tint of the
    background. */
@@ -215,7 +213,7 @@ main > .cards, .featured { margin-block-start: 0; padding-block-start: var(--atl
 .card-meta a:hover { text-decoration: underline; }
 .card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; }
 .cards .card:has(.card-meta > a) :is(h2, h3, h4) { margin-block-start: 2.25rem; }
-.cards .card-meta > a { position: absolute; inset-block-start: 0; inset-inline-start: 0; min-block-size: 0; padding: 0.3125rem 0.5rem 0.25rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: var(--atlas-chip); font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.08em; line-height: 1.2; text-transform: uppercase; }
+.cards .card-meta > a { position: absolute; inset-block-start: 0; inset-inline-start: 0; min-block-size: 0; padding: 0; color: var(--color-text); background: none; font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.08em; line-height: 1.2; text-transform: uppercase; }
 .cards .card:has(.image) .card-meta > a { inset-block-start: calc(56.25cqi + 1rem); }
 .card-featured { padding: 0; background: none; }
 .card-featured h3 { font-size: clamp(1.875rem, 1rem + 2.6vw, 3.5rem); line-height: 1.02; letter-spacing: -0.045em; }
@@ -284,7 +282,7 @@ main:has(> .post) > .breadcrumbs { margin: 0; padding-block: 1.25rem 0; backgrou
 .share { gap: 0.5rem; margin-block: 2.5rem; }
 .share-title { color: var(--color-muted); font-size: var(--text-small); }
 .share a { padding-inline: 1rem; color: var(--color-text); font-size: 0.8125rem; font-weight: 800; background: none; border: 2px solid var(--color-text); border-radius: var(--atlas-chip); }
-.share a:hover, .share a:focus-visible { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
+.share a:hover, .share a:focus-visible { color: var(--color-background); background: var(--color-text); }
 
 /* The body: strong headings, tinted panels in place of boxes, tables on
    hairlines and a quote set large under an accent mark. */
@@ -311,9 +309,9 @@ main:has(> .post) > .breadcrumbs { margin: 0; padding-block: 1.25rem 0; backgrou
 .post-body :is(th, td) { padding-block: 0.75rem; padding-inline: 0 1rem; }
 .howto { padding-inline-start: 0; list-style: none; counter-reset: atlas-step; }
 .howto > li { position: relative; counter-increment: atlas-step; padding-inline-start: 3rem; }
-.howto > li::before { content: counter(atlas-step) / ""; position: absolute; inset-inline-start: 0; inset-block-start: -0.125rem; display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: var(--atlas-chip); font-size: 0.875rem; font-weight: 800; }
+.howto > li::before { content: counter(atlas-step) / ""; position: absolute; inset-inline-start: 0; inset-block-start: -0.125rem; display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; color: var(--color-background); background: var(--color-text); border-radius: var(--atlas-chip); font-size: 0.875rem; font-weight: 800; }
 .faq summary { font-size: 1.0625rem; font-weight: 700; }
-.lock, .locked { background: var(--atlas-tint); border: 0; color: var(--color-muted); font-size: var(--text-small); }
+.lock, .locked { background: var(--atlas-panel); border: 0; color: var(--color-muted); font-size: var(--text-small); }
 
 /* After the post: the author on a tint, the band, the posts that link
    here as a list of titles, then related posts as picture cards. */
@@ -336,13 +334,13 @@ main:has(> .post) .cta-band { margin-block: 3rem; }
 .comments > .lock, .mentions + .lock, .mentions + .locked { margin-block-start: 2rem; }
 
 @media (prefers-reduced-motion: reduce) { :is(.story, .card) .image img { transition: none; } }
-@media print { .catbar, .masthead::before, .cta-band::before { display: none; } .masthead, .cta-band { color: inherit; background: none; } }
+@media print { .masthead::before, .cta-band::before { display: none; } .masthead, .cta-band { color: inherit; background: none; } }
 
 /* On a phone, rows that scroll sideways fade out at the end edge, so a
    word cut by the screen edge reads as more to swipe, not as broken. */
 @media (max-width: 47.99rem) {
-  :is(.site-header nav ul, .catbar ul, .topic-tab-list) { mask-image: linear-gradient(to left, transparent, var(--color-text) 3rem); padding-inline-end: 2rem; }
-  [dir="rtl"] :is(.site-header nav ul, .catbar ul, .topic-tab-list) { mask-image: linear-gradient(to right, transparent, var(--color-text) 3rem); }
+  :is(.site-header nav ul, .topic-tab-list, .regions) { mask-image: linear-gradient(to left, transparent, var(--color-text) 3rem); padding-inline-end: 2rem; }
+  [dir="rtl"] :is(.site-header nav ul, .topic-tab-list, .regions) { mask-image: linear-gradient(to right, transparent, var(--color-text) 3rem); }
 }
 
 /* Past the first cards, the newest posts carry on as an index of ruled
@@ -354,7 +352,7 @@ main:has(> .post) .cta-band { margin-block: 3rem; }
   .feed li:nth-child(n+10) .story { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; padding: 0.75rem 0; background: none; border: 0; border-block-start: 1px solid var(--color-border); border-radius: 0; box-shadow: none; }
   .feed li:nth-child(n+10) .story > :is(.image, .story-excerpt) { display: none; }
   .feed li:nth-child(n+10) .story h3 { order: -1; flex: 1 1 22rem; margin: 0; font-size: 1.125rem; line-height: 1.35; }
-  .feed li:nth-child(n+10) .story .story-label { order: 1; margin: 0; font-size: 0.875rem; }
+  .feed li:nth-child(n+10) .story .story-label { order: 1; align-self: baseline; margin: 0; font-size: 0.875rem; }
   .feed li:nth-child(n+10) .story .story-meta { order: 2; margin: 0; font-size: 0.875rem; white-space: nowrap; }
   .feed li:nth-child(n+10) .story .story-meta > :not(time) { display: none; }
 }
@@ -396,14 +394,6 @@ main:has(> .post) .cta-band { margin-block: 3rem; }
   .picks .story-grid > li { scroll-snap-align: start; }
   .topic-panel > :is(.cards, .story-grid) { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(80%, 18rem); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-block-end: 0.25rem; }
   .topic-panel > :is(.cards, .story-grid) > li { scroll-snap-align: start; }
-}
-
-/* On a phone the topic index is the topics alone, two to a row: their
-   newest posts are already in the list above it. */
-@media (max-width: 47.99rem) {
-  .topic-blocks { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--atlas-gap); }
-  .topic-block .stories { display: none; }
-  .topic-block h3 { font-size: 1.125rem; }
 }
 
 /* On a phone the rows never widen the list past the screen (a long title
