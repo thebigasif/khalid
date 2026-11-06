@@ -1,0 +1,196 @@
+/* Based on Ghost's Edition theme, MIT licence, see LICENSE-ghost.txt.
+   Edition: a newsletter with a big cover. A 75rem frame, a cover from
+   edge to edge with the pitch large in the middle and the sign-up form
+   under it, a strip of featured posts, then the latest posts in a 45rem
+   column under small capital headings with hairlines. Posts are centred
+   under a large title. Only tokens set colours and type, so a synced
+   theme recolours it all. */
+
+:root { --frame: 75rem; --hairline: 1px solid var(--color-border); }
+
+/* The frame. Lists, posts and pages keep to the 45rem column; the cover
+   and the featured strip use the whole frame. */
+.site-header, main, .site-footer { max-inline-size: var(--frame); }
+main > * { max-inline-size: var(--measure); margin-inline: auto; }
+main > :is(.cover, .featured-strip) { max-inline-size: none; }
+@media (min-width: 70rem) { main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); } }
+h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+/* The header: the name in heavy type at the start, the menu in the
+   middle, search and the button at the end. */
+.site-header { min-block-size: 6.25rem; padding-block: 1rem; border-block-end: 0; }
+.site-name { margin-inline-end: auto; font-size: 1.375rem; font-weight: 800; }
+.site-header > .nav-bar { margin-inline-end: auto; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.9375rem; font-weight: 700; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { opacity: 0.8; }
+.header-button { font-size: 0.9375rem; font-weight: 800; }
+
+/* The cover: the pitch, large and centred, then the sign-up form. With
+   a picture it runs from edge to edge, fills the screen or half of it,
+   and the header sits on it in the page colour. */
+.cover { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-block: clamp(2.5rem, 9vmin, 5rem) 1rem; text-align: center; }
+.cover-content { inline-size: 100%; max-inline-size: 45rem; }
+.cover-text { margin: 0; font-family: var(--font-heading); font-size: clamp(1.6875rem, 1.2rem + 2vw, 2.25rem); font-weight: 800; line-height: 1.3; letter-spacing: -0.01em; }
+.cover-text p { margin: 0; }
+.cover-pictured { position: relative; isolation: isolate; min-block-size: 100svh; margin-inline: calc(50% - 50vw); padding: 7.5rem 1.25rem 6rem; overflow: hidden; color: var(--color-background); }
+.cover-half { min-block-size: 60svh; }
+.cover-pictured .cover-text a { color: inherit; }
+.cover-image { position: absolute; inset: 0; z-index: -1; }
+.cover-image .image, .cover-image picture { block-size: 100%; margin: 0; }
+.cover-image img { inline-size: 100%; block-size: 100%; object-fit: cover; border-radius: 0; }
+.cover-image figcaption { display: none; }
+.cover-image::after { content: ""; position: absolute; inset: 0; background: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.cover-arrow { position: absolute; inset-block-end: 2rem; inset-inline: 0; display: grid; place-items: center; inline-size: 44px; block-size: 44px; margin-inline: auto; color: var(--color-background); }
+.cover-arrow::before { content: ""; inline-size: 0.875rem; block-size: 0.875rem; margin-block-start: -0.5rem; border-block-end: 2px solid currentColor; border-inline-end: 2px solid currentColor; rotate: 45deg; }
+main:has(> .cover-pictured) { padding-block-start: 0; }
+body:has(.cover-pictured) { overflow-x: clip; }
+body:has(.cover-pictured) .site-header { position: absolute; inset-inline: 0; z-index: 2; max-inline-size: calc(var(--frame) + 2rem); padding-inline: 1rem; }
+body:has(.cover-pictured) .site-header :is(.site-name, .nav-bar a, .search-link, .nav-menu summary) { color: var(--color-background); }
+body:has(.cover-pictured) .site-header .nav-menu summary { border-color: color-mix(in srgb, var(--color-background) 50%, transparent); }
+body:has(.cover-pictured) .site-logo img { filter: brightness(0) invert(1); }
+body:has(.cover-pictured) .site-header > .header-button { color: var(--color-text); background: var(--color-background); }
+
+/* The sign-up form: the field and the button in one box, as Edition's.
+   On the cover the form stands alone under the pitch. */
+.newsletter-slot { padding: 3rem clamp(0rem, 4vw, 3rem); text-align: center; background: none; border-block-start: 5px solid var(--color-accent); border-block-end: var(--hairline); border-radius: 0; }
+.newsletter-slot h2 { margin-block-end: 0.75rem; font-size: 1.5rem; }
+.newsletter-slot > p { color: var(--color-muted); }
+.newsletter-slot .subscribe { display: flex; align-items: center; max-inline-size: 30rem; margin: 1.5rem auto 0; padding: 0.3125rem; background: var(--color-background); border: var(--hairline); border-radius: var(--radius); text-align: start; }
+.newsletter-slot .subscribe p { margin: 0; }
+.newsletter-slot .subscribe p:first-child { flex: 1; }
+.newsletter-slot .subscribe label, .cover .newsletter-slot > :is(h2, p) { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+.newsletter-slot .subscribe input { border: 0; }
+.newsletter-slot .subscribe button { font-size: 0.8125rem; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; }
+.cover .newsletter-slot { margin: 2.75rem auto 0; padding: 0; border: 0; }
+.cover .newsletter-slot .subscribe { margin: 0 auto; border-color: transparent; }
+.cover:not(.cover-pictured) .newsletter-slot .subscribe { border-color: var(--color-border); }
+
+/* Section headings: small capitals over a hairline. */
+.edition-label { margin-block: 0 1.5rem; padding-block-end: 1rem; font-size: 0.9375rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; border-block-end: var(--hairline); }
+.featured-strip, .feed, .home-section { margin-block-start: clamp(3rem, 7vmin, 4.5rem); }
+main > h1 { margin-block: clamp(2rem, 6vmin, 4rem) 1rem; text-align: center; font-size: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem); }
+main > h1 + .intro { margin-block-end: 3rem; text-align: center; font-size: 1.125rem; }
+
+/* Featured posts: three across a wide screen, in one row that scrolls
+   sideways, each a wide picture over a bold title. */
+.featured-strip { max-inline-size: var(--frame); }
+.featured-feed { display: grid; list-style: none; grid-auto-flow: column; grid-auto-columns: calc((100% - 3.75rem) / 3); gap: 1.875rem; margin: 0; padding: 0 0 0.75rem; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: inline mandatory; }
+.featured-feed > li { scroll-snap-align: start; }
+.featured-post { position: relative; }
+.featured-post .image { margin: 0 0 1.25rem; }
+.featured-post .image img, .featured-blank { inline-size: 100%; aspect-ratio: 2; object-fit: cover; border-radius: 0; }
+.featured-post figcaption { display: none; }
+.featured-blank { margin-block-end: 1.25rem; background: var(--color-surface); }
+.featured-post h3 { margin: 0; font-size: 1.125rem; line-height: 1.25; }
+.featured-post h3 a { color: var(--color-text); text-decoration: none; }
+.featured-post h3 a::after { content: ""; position: absolute; inset: 0; }
+.featured-post:hover h3 { opacity: 0.8; }
+
+/* The latest posts, as Edition's expanded feed: a picture at the start,
+   then the bold title, two lines of the summary and the date and length
+   under them. The whole row opens the post. */
+.cards-row, .cards-text { gap: 0; }
+:is(.cards-row, .cards-text) .card { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; padding-block: 1.25rem; }
+.cards-text > li + li { border-block-start: var(--hairline); }
+.cards-text .card { padding-block: 1.75rem; }
+.cards-row .card:has(.image) { grid-template-columns: 10rem minmax(0, 1fr); column-gap: 2.5rem; }
+.cards-row .card .image { grid-row: 1 / span 3; margin: 0; }
+.cards-row .card .image img { aspect-ratio: 1.6; object-fit: cover; border-radius: 0; }
+.cards-row .card figcaption { display: none; }
+.cards-row .card > :not(.image) { grid-column: -2; }
+:is(.cards-row, .cards-text) .card :is(h2, h3, h4) { order: 1; margin: 0; font-size: 1.125rem; font-weight: 800; line-height: 1.25; }
+:is(.cards-row, .cards-text) .card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
+:is(.cards-row, .cards-text) .card:hover :is(h2, h3, h4) { opacity: 0.8; }
+:is(.cards-row, .cards-text) .card > p:last-child { order: 2; display: -webkit-box; margin: 0.5rem 0 0; overflow: hidden; font-size: 0.9375rem; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+:is(.cards-row, .cards-text) .card > :is(.card-meta, p:has(> time)) { order: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 0; margin: 0.25rem 0 0; color: var(--color-muted); font-size: 0.8125rem; }
+:is(.cards-row, .cards-text) .card time { font-size: inherit; }
+:is(.cards-row, .cards-text) .card-author { display: none; }
+:is(.cards-row, .cards-text) .card-meta > a { position: relative; z-index: 1; color: var(--color-muted); text-decoration: none; }
+:is(.cards-row, .cards-text) .card-meta > a:hover { color: var(--color-text); }
+:is(.cards-row, .cards-text) :is(.card-reading-time, .card-meta > a)::before { content: "\2022"; padding-inline: 0.45rem; }
+.feed-thumbnail-end .cards-row .card:has(.image) { grid-template-columns: minmax(0, 1fr) 10rem; }
+.feed-thumbnail-end .cards-row .card .image { grid-column: 2; }
+.feed-thumbnail-end .cards-row .card > :not(.image) { grid-column: 1; }
+.feed-cards, .feed-text { margin-block-start: -1.25rem; }
+
+/* The minimal feed: one line a post, a date block in the link colour,
+   the title, the reading time and an arrow. */
+.feed-minimal { margin: -1rem 0 0; padding: 0; list-style: none; }
+.feed-minimal > li + li { border-block-start: var(--hairline); }
+.feed-row { position: relative; display: flex; align-items: center; gap: 1.5rem; padding-block: 1.25rem; }
+.feed-row::after { content: ""; flex: none; inline-size: 0.5rem; block-size: 0.5rem; border-block-start: 2px solid var(--color-muted); border-inline-end: 2px solid var(--color-muted); rotate: 45deg; }
+.feed-row:hover h3 { opacity: 0.8; }
+.feed-calendar { flex: none; margin: 0; color: var(--color-link); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; }
+.feed-calendar time { white-space: nowrap; }
+.feed-row h3 { flex: 1; min-inline-size: 0; margin: 0; overflow: hidden; font-family: var(--font-body); font-size: 1rem; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
+.feed-row h3 a { color: var(--color-text); text-decoration: none; }
+.feed-row h3 a::after { content: ""; position: absolute; inset: 0; }
+.feed-length { flex: none; margin: 0; color: var(--color-muted); font-size: 0.8125rem; }
+
+/* Numbered pages and the links under a section. */
+.pagination a { color: var(--color-text); font-weight: 700; }
+.view-all a { font-weight: 800; }
+.topics h3 { font-size: var(--text-small); }
+
+/* A post: a centred header with the date, length and topic in small
+   capitals, a large title and the description, then the lead picture,
+   wider than the text on a wide screen. */
+.post-header { margin-block: clamp(2rem, 6vmin, 4rem) 3rem; text-align: center; }
+.post-kicker { display: flex; flex-wrap: wrap; justify-content: center; margin: 0 0 1rem; color: var(--color-muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+.post-kicker > * + *::before { content: "\2022"; padding-inline: 0.35rem; }
+.post-kicker a { color: inherit; text-decoration: none; }
+.post-kicker a:hover { color: var(--color-text); }
+.post-header h1 { margin: 0; font-size: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem); line-height: 1.2; letter-spacing: -0.02em; }
+.post-header .dek { margin-block: 1.25rem 0; font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.125rem); }
+.post-meta { display: flex; flex-direction: column; align-items: center; margin-block-start: 1.5rem; }
+.post-meta .people { justify-content: center; }
+.post-meta a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-header .image { margin-block-start: 2.75rem; }
+.post-header .image img { border-radius: 0; }
+main > .post:not(.post-with-toc) .post-header .image { margin-inline: calc(50% - min(37.5rem, 50vw - 1rem)); }
+.post-body { font-size: 1.0625rem; }
+.post-footer { margin-block-start: 3rem; text-align: center; }
+.post-footer .tags { justify-content: center; }
+.tags a { padding-inline: 0.875rem; font-size: var(--text-small); font-weight: 700; color: var(--color-text); background: var(--color-surface); border-radius: var(--radius); text-decoration: none; }
+.share { justify-content: center; }
+.author-box { text-align: center; background: none; border-block: var(--hairline); border-radius: 0; }
+.author-box .person-card { justify-content: center; }
+
+/* Related posts: Edition's grey band across the window. */
+.related { margin-block-start: 5rem; padding-block: 3.5rem 2rem; background: var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.related > h2 { margin-block: 0 1rem; font-size: 1.3125rem; }
+
+/* An author's page: a round photo over the centred name and bio. */
+.author-header { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.author-photo { inline-size: 5.625rem; margin-block-end: 1.5rem; }
+.author-photo .image { margin: 0; }
+.author + section > h2 { margin-block: 0 1.5rem; padding-block-end: 1rem; font-size: 0.9375rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; border-block-end: var(--hairline); }
+.author-photo img { aspect-ratio: 1; object-fit: cover; border-radius: 50%; }
+.author-header h1 { margin-block: 0 0.5rem; font-size: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem); }
+.author-role, .author-count { color: var(--color-muted); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; }
+.author-bio { text-align: center; font-size: 1.125rem; }
+
+/* The call to action, as Edition's box after a post: centred between an
+   accent rule and a hairline. */
+.cta-band { flex-direction: column; justify-content: center; padding: 3rem 1.5rem; text-align: center; background: none; border-block-start: 5px solid var(--color-accent); border-block-end: var(--hairline); border-radius: 0; }
+.cta-note { font-family: var(--font-heading); font-size: 1.375rem; font-weight: 800; line-height: 1.3; }
+
+/* The footer: quiet, centred links with dots between them. */
+.site-footer { justify-items: center; padding-block: 5rem; border-block-start: 0; text-align: center; }
+.site-footer nav ul { justify-content: center; gap: 0; }
+.site-footer nav li + li::before { content: "\2022"; padding-inline: 0.75rem; }
+.site-footer a { color: var(--color-muted); text-decoration: none; }
+.site-footer a:hover { color: var(--color-text); }
+
+@media (max-width: 35.99rem) {
+  .site-header { column-gap: 0.75rem; }
+  .featured-feed { grid-auto-columns: 82%; gap: 1.25rem; }
+  .cards-row .card:has(.image), .feed-thumbnail-end .cards-row .card:has(.image) { grid-template-columns: minmax(0, 1fr); }
+  .cards-row .card .image, .feed-thumbnail-end .cards-row .card .image { grid-row: auto; grid-column: 1; margin-block-end: 1.5rem; }
+  .cards-row .card .image img { aspect-ratio: 1.6; }
+  .feed-row { gap: 1rem; }
+  .feed-length { display: none; }
+}
+@media (min-width: 36rem) and (max-width: 61.99rem) {
+  .featured-feed { grid-auto-columns: calc((100% - 1.875rem) / 2); }
+}
