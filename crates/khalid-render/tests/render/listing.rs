@@ -133,13 +133,35 @@ fn an_empty_list_says_so() {
     assert!(!page.contains("pagination"));
 }
 
-#[test]
-fn card_images_are_always_lazy() {
-    let mut listing = first_page();
+/// `listing` with a lazy picture on every card.
+pub(crate) fn with_pictures(mut listing: RenderListing) -> RenderListing {
     for post in &mut listing.posts {
         post.image = Some(sitemap_image(Loading::Lazy));
     }
-    let page = render(&PageBody::Home(home(listing)));
-    assert_valid_page(&page);
-    assert_eq!(page.matches(r#"loading="lazy""#).count(), 2);
+    listing
+}
+
+/// Asserts that the first picture of `page` loads at once with high
+/// priority and every later one waits until it nears the screen.
+pub(crate) fn assert_only_the_first_picture_loads_at_once(page: &str, pictures: usize) {
+    let images: Vec<&str> = page.split("<img ").skip(1).collect();
+    assert_eq!(images.len(), pictures, "{page}");
+    let (first, rest) = images.split_first().unwrap();
+    assert!(first.contains(r#"fetchpriority="high""#), "{first}");
+    assert!(!first.contains(r#"loading="lazy""#), "{first}");
+    for image in rest {
+        assert!(image.contains(r#"loading="lazy""#), "{image}");
+        assert!(!image.contains("fetchpriority"), "{image}");
+    }
+}
+
+#[test]
+fn the_first_card_picture_on_a_list_loads_at_once_and_the_rest_wait() {
+    let home_page = render(&PageBody::Home(home(with_pictures(first_page()))));
+    assert_valid_page(&home_page);
+    assert_only_the_first_picture_loads_at_once(&home_page, 2);
+    let tag = render(&PageBody::Tag(with_pictures(first_page())));
+    assert_only_the_first_picture_loads_at_once(&tag, 2);
+    let category = render(&PageBody::Category(with_pictures(first_page())));
+    assert_only_the_first_picture_loads_at_once(&category, 2);
 }
