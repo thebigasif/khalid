@@ -19,7 +19,7 @@ body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Aria
 
 [shape]
 radius = "0rem"
-measure = "42rem"
+measure = "40rem"
 
 [type]
 body = "1.0625rem 1.1875rem"

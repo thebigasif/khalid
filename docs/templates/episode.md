@@ -109,7 +109,7 @@ body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Aria
 
 [shape]
 radius = "0rem"
-measure = "42rem"
+measure = "40rem"
 
 [type]
 body = "1.0625rem 1.1875rem"
@@ -126,7 +126,7 @@ unit = "0.5rem"
 section = "4rem"
 ```
 
-The stylesheet adds its own display sizes on top of these: the show's name on the front page grows to 5.5rem on a wide screen, a post's title and a list page's title to 4rem, and the newest episode's title to 2.75rem. The frame is 60rem, as Ghost's Episode sets it. A post keeps to the 42rem measure.
+The stylesheet adds its own display sizes on top of these: the show's name on the front page grows to 5.5rem on a wide screen, a post's title and a list page's title to 4rem, and the newest episode's title to 2.75rem. The frame is 60rem, as Ghost's Episode sets it. A post keeps to the 40rem measure, about 70 characters a line; with the contents beside it, the post grows by 18rem so the text keeps that measure.
 
 ## Reader features
 

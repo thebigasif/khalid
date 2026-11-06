@@ -10,6 +10,9 @@
 /* The frame. Lists use all of it; a post keeps to the measure. */
 .site-header, main, .site-footer { max-inline-size: var(--frame); }
 main > :is(.post, .page, .mentions, .comments, .lock) { max-inline-size: var(--measure); margin-inline: auto; }
+/* Where the contents sit beside it, the post grows by their column, so
+   its text keeps the full measure. */
+@media (min-width: 70rem) { main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); } }
 h1, h2, h3, h4 { letter-spacing: -0.02em; }
 
 /* The header: the name in heavy type, then plain menu links in ink. */
