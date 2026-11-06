@@ -4,7 +4,7 @@
 //! breadcrumbs and a large title, with their contents in a sticky rail.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 
 /// The longest tagline, about two lines under the name on a phone.
 const TAGLINE_CHARACTERS: usize = 140;
@@ -13,14 +13,14 @@ const TAGLINE_CHARACTERS: usize = 140;
 pub(crate) static ATLAS: Pack = Pack {
     name: "atlas",
     summary: "A publication for a blog with many topics: a masthead, featured stories, picture cards and a topic index.",
-    css: PackCss::compressed(include_bytes!(concat!(
+    css: PackText::compressed(include_bytes!(concat!(
         env!("OUT_DIR"),
         "/packs/atlas/atlas.css.br"
     ))),
-    templates: &[PackTemplate {
-        name: "home.html",
-        source: include_str!("../packs/atlas/home.html"),
-    }],
+    templates: &[PackTemplate::compressed(
+        "home.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/atlas/home.html.br")),
+    )],
     tokens: include_str!("../packs/atlas/tokens.toml"),
     reader: &[],
     options: &[

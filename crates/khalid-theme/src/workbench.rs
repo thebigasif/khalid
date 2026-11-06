@@ -5,25 +5,25 @@
 //! of six related links.
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackCss, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 
 /// The Workbench pack.
 pub(crate) static WORKBENCH: Pack = Pack {
     name: "workbench",
     summary: "For reviews and comparisons of tools: a featured post, the newest posts, wide comparison tables, pros and cons, and the newsletter twice on the front page.",
-    css: PackCss::compressed(include_bytes!(concat!(
+    css: PackText::compressed(include_bytes!(concat!(
         env!("OUT_DIR"),
         "/packs/workbench/workbench.css.br"
     ))),
     templates: &[
-        PackTemplate {
-            name: "home.html",
-            source: include_str!("../packs/workbench/home.html"),
-        },
-        PackTemplate {
-            name: "post.html",
-            source: include_str!("../packs/workbench/post.html"),
-        },
+        PackTemplate::compressed(
+            "home.html",
+            include_bytes!(concat!(env!("OUT_DIR"), "/packs/workbench/home.html.br")),
+        ),
+        PackTemplate::compressed(
+            "post.html",
+            include_bytes!(concat!(env!("OUT_DIR"), "/packs/workbench/post.html.br")),
+        ),
     ],
     tokens: include_str!("../packs/workbench/tokens.toml"),
     reader: &[],

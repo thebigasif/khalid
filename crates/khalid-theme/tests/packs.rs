@@ -83,3 +83,17 @@ fn every_pack_stylesheet_reads_back_from_the_binary() {
         assert!(css.ends_with('\n'), "{}", pack.name);
     }
 }
+
+/// The binary carries each pack's template files compressed, and reads
+/// them back as the very text of the files in `packs/`.
+#[test]
+fn every_pack_template_reads_back_as_its_file() {
+    let packs = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("packs");
+    for pack in khalid_theme::packs() {
+        for file in pack.templates {
+            let written = std::fs::read_to_string(packs.join(pack.name).join(file.name))
+                .unwrap_or_else(|error| panic!("{}/{}: {error}", pack.name, file.name));
+            assert_eq!(file.source(), written, "{}/{}", pack.name, file.name);
+        }
+    }
+}

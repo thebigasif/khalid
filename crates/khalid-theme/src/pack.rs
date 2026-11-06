@@ -23,7 +23,7 @@ pub struct Pack {
     /// The pack's own CSS rules, added after the shared ones. A site ships
     /// the shared rules and its own pack's rules, and no other pack's.
     /// Read them with [`Pack::stylesheet`].
-    pub(crate) css: PackCss,
+    pub(crate) css: PackText,
     /// The template files the pack replaces, by the shared file's name.
     /// Any other file comes from the shared set.
     pub templates: &'static [PackTemplate],
@@ -44,22 +44,23 @@ impl Pack {
     }
 }
 
-/// A pack's stylesheet as the binary carries it. The build script minifies
-/// each pack's CSS and compresses it with Brotli, because the eleven
-/// stylesheets are most of the text built into the binary, and the binary
-/// has a size budget. The text is read out the first time a build asks for
-/// it and kept, so a site's stylesheet is the same as before.
+/// A pack's stylesheet or template file as the binary carries it. The
+/// build script compresses each with Brotli (a stylesheet after it
+/// minifies it), because the packs' files are most of the text built into
+/// the binary, and the binary has a size budget. The text is read out the
+/// first time a build asks for it and kept, so every site is the same as
+/// before.
 #[derive(Debug)]
-pub(crate) struct PackCss {
-    /// The minified CSS, compressed with Brotli. Empty for a pack with no
-    /// rules of its own.
+pub(crate) struct PackText {
+    /// The text, compressed with Brotli. Empty for a pack with no rules of
+    /// its own.
     compressed: &'static [u8],
-    /// The minified CSS, once read out.
+    /// The text, once read out.
     text: OnceLock<String>,
 }
 
-impl PackCss {
-    /// The stylesheet whose Brotli bytes are `compressed`.
+impl PackText {
+    /// The text whose Brotli bytes are `compressed`.
     pub(crate) const fn compressed(compressed: &'static [u8]) -> Self {
         Self {
             compressed,
@@ -73,9 +74,9 @@ impl PackCss {
         Self::compressed(&[])
     }
 
-    /// The minified CSS. The build script wrote the bytes, so they always
-    /// read back; were they ever damaged, the pack would show the shared
-    /// look only, which a test of every pack would catch first.
+    /// The text. The build script wrote the bytes, so they always read
+    /// back; were they ever damaged, the pack would fall back to the shared
+    /// look and files, which a test of every pack would catch first.
     fn text(&self) -> &str {
         self.text.get_or_init(|| {
             let mut text = String::new();
@@ -97,8 +98,25 @@ impl PackCss {
 pub struct PackTemplate {
     /// The shared file's name, such as `post.html`.
     pub name: &'static str,
-    /// The pack's template source for it.
-    pub source: &'static str,
+    /// The pack's template source for it. Read it with
+    /// [`PackTemplate::source`].
+    text: PackText,
+}
+
+impl PackTemplate {
+    /// The file `name` whose source, compressed with Brotli, is
+    /// `compressed`.
+    pub(crate) const fn compressed(name: &'static str, compressed: &'static [u8]) -> Self {
+        Self {
+            name,
+            text: PackText::compressed(compressed),
+        }
+    }
+
+    /// The pack's template source for the file.
+    pub fn source(&'static self) -> &'static str {
+        self.text.text()
+    }
 }
 
 /// One option of a pack: its key, what it does, and the values it takes.
@@ -164,7 +182,7 @@ pub enum OptionKind {
 static CLASSIC: Pack = Pack {
     name: PackName::CLASSIC,
     summary: "The default look: a lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts.",
-    css: PackCss::compressed(include_bytes!(concat!(
+    css: PackText::compressed(include_bytes!(concat!(
         env!("OUT_DIR"),
         "/packs/classic/classic.css.br"
     ))),
