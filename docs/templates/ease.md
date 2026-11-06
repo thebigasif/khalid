@@ -35,7 +35,7 @@ Pick another template if your posts are long reads that people browse by picture
 - The lead picture, then the text in one column of 40rem, about 70 characters a line, a little larger than the rest of the site. With `contents` set to a side placement, the contents sit in a column beside the text and the post grows by that column, so the text keeps its width.
 - The author box, when the site shows it. Then up to `related_count` related articles, two across, each with its category as a small grey label over its title in bold. Then comments when they are open.
 
-**Lists**, such as a category or a tag, show the name and its description in grey, then each post as a plain row: the title in bold and two lines of its summary, with a grey line between rows. The whole row opens the post. Numbered page links follow.
+**Lists**, such as a category or a tag, show the name and its description in grey, then each post as a plain row: the title in bold and two lines of its summary, with a grey line between rows. On a wide screen the rows sit two across over the full frame, as the front page sets its topics; on a phone or tablet they form one column. The whole row opens the post. Numbered page links follow.
 
 **An author's page** shows a small round photo, the name, the role and the bio, then the author's posts as the same plain rows.
 
@@ -116,7 +116,7 @@ unit = "0.5rem"
 section = "4.5rem"
 ```
 
-The stylesheet adds a few sizes of its own, as Ghost's Ease sets them: the band is 25 to 31.25rem tall, the search box 25rem wide and 3.125rem tall, section headings 1.375rem, and a list page's title 1.75rem. The frame is 75rem. A post, a list and an author's page keep to the 40rem measure, about 70 characters a line; Ghost's Ease uses 45rem, which holds more than 75. With the contents beside a post, the post grows by 18rem so the text keeps that measure.
+The stylesheet adds a few sizes of its own, as Ghost's Ease sets them: the band is 25 to 31.25rem tall, the search box 25rem wide and 3.125rem tall, section headings 1.375rem, and a list page's title 1.75rem. The frame is 75rem, and category and tag pages fill it with two columns of rows on a wide screen. A post and an author's page keep to the 40rem measure, about 70 characters a line; Ghost's Ease uses 45rem, which holds more than 75. With the contents beside a post, the post grows by 18rem so the text keeps that measure.
 
 ## Reader features
 
@@ -150,9 +150,9 @@ This is Ease's design brief. It fixes how the template should look, so every cha
 | Type pairing | One plain sans for headings and text. With no theme, the pack uses the system sans for both, headings at weight 700. |
 | Colour | White with dark grey text and light grey lines, and one accent for the band, the search button and the "View all" links. |
 | Spacing rhythm | A base step of 0.5rem. Links in a topic 0.875rem apart. Topics 5rem apart down and 3.75rem across. |
-| Frame at 1440 px and wider | **75rem**, as Ghost's Ease sets it. The band runs the full width of the screen. Posts and lists keep to 40rem. |
+| Frame at 1440 px and wider | **75rem**, as Ghost's Ease sets it. The band runs the full width of the screen. Category and tag pages fill it with rows two across. Posts and author pages keep to 40rem. |
 | Cards and lists | Featured cards: a 2:1 picture with square corners, a title in 1.0625rem and a small round-ended label. Lists: plain rows with a bold title and two grey lines of summary, a hairline between. |
-| Phone header and menu | The logo, a search mark and the menu button on one row. Topics stack one under another; the featured strip shows one card and the edge of the next. |
+| Phone header and menu | The logo, a search mark and the menu button on one row. On a tablet, a menu too long for the row scrolls sideways inside its own box. Topics stack one under another; the featured strip shows one card and the edge of the next. |
 | Link, card and focus states | Titles take the link colour on hover. Topic links underline on hover. Focus is a 3 px accent ring; in the band, a ring in the text colour. |
 | The one idea | A help centre's front page: one search box, then every topic at a glance. Someone shown only the thumbnail should name it by the coloured band with a white search box over two columns of link lists. |
 | Type scale | The blog's name in the band 1.5 to 2.25rem, post titles 2 to 2.375rem, section headings 1.375rem, topic links 0.9375rem. |
