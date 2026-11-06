@@ -22,6 +22,7 @@ These templates are built in. Every template but classic has its own page, linke
 
 - `classic`: a wide frame with a large lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
+- `alto`: a clean, minimal blog with a sideways strip of featured posts, then one post under another with a wide picture, and a calm column for each post. Based on Ghost's Alto theme (MIT). See [Alto](templates/alto.md).
 - `atlas`: a publication for a blog with many topics, with a map-sheet masthead that indexes every topic, featured stories and picture cards. See [Atlas](templates/atlas.md).
 - `bulletin`: a newsletter-first blog with a sign-up panel in your accent colour beside the latest issue, a ruled list of every other issue and a centred reading column. Based on Ghost's Bulletin theme (MIT). See [Bulletin](templates/bulletin.md).
 - `casper`: a classic blog with a cover band over a picture, one large card, two half cards and then a grid, and a calm serif column for each post. Based on Ghost's Casper theme (MIT). See [Casper](templates/casper.md).

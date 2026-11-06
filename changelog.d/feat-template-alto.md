@@ -1,0 +1,2 @@
+Added
+- A new template, Alto, based on Ghost's Alto theme (MIT). The front page opens with a strip of square cards for the posts marked featured, which scrolls sideways with no script, then shows one post under another: a wide picture, a small meta line, the title and a summary. Each post has a centred header, a wide lead picture, one calm column, a Share pill, the author box and three more posts. Pick it with `[template] name = "alto"`; see docs/templates/alto.md.
