@@ -259,6 +259,7 @@ static PACKS: &[&Pack] = &[
     &crate::headline::HEADLINE,
     &crate::journal::JOURNAL,
     &crate::hub::HUB,
+    &crate::itinerary::ITINERARY,
     &crate::keystone::KEYSTONE,
     &crate::lattice::LATTICE,
     &crate::ledger::LEDGER,

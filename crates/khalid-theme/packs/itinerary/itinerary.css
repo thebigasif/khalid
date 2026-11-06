@@ -1,0 +1,187 @@
+/* Itinerary (docs/templates/itinerary.md): a travel diary. Every trip is
+   a ticket with a perforated stub, every country a passport stamp, and on
+   a trip's own page the facts make a boarding pass and the days run down
+   a dashed route. The section parts' own rules come first (the build adds
+   the parts this pack's templates import); these set the diary's look
+   over them. Every colour is a token or a mix of tokens. */
+:root {
+  --it-frame: 76rem;
+  --it-perf: color-mix(in oklab, var(--color-muted) 55%, var(--color-background));
+  --it-tint: color-mix(in oklab, var(--color-accent) 7%, var(--color-background));
+  --it-notch: 1.25rem;
+  --hero-title: clamp(2.5rem, 1.5rem + 3.5vw, 4.25rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--it-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: 44rem; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(44rem + 18rem); }
+main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band) { max-inline-size: 44rem; margin-inline: auto; }
+main > .post ~ .related { max-inline-size: var(--it-frame); }
+h1 { letter-spacing: -0.01em; }
+
+/* The header: a strap of the accent across the window, the name in the
+   slab, quiet menu links. */
+body { border-block-start: 6px solid var(--color-accent); }
+.site-header { gap: 0.5rem 2rem; padding-block: 1.125rem; border-block-end: 2px dashed var(--it-perf); }
+.site-name { font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a { color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+.search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.search-link:hover { color: var(--color-link); text-decoration: underline; }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--it-tint); border: 0; box-shadow: 0 0 0 100vmax var(--it-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: filled with the accent, slightly rounded like a tag. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 700 0.9375rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* Section titles: the slab, then a dashed route to the end of the row. */
+:is(.trip-section, .trip-lead, .trip-countries, .trip-list, .trip-notes, .related, .author-trips, .author-others, .topic-tabs, .media-row) > h2 { display: flex; align-items: center; gap: 1rem; margin-block: 0 1.5rem; font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem); line-height: 1.2; }
+:is(.trip-section, .trip-lead, .trip-countries, .trip-list, .trip-notes, .related, .author-trips, .author-others, .topic-tabs, .media-row) > h2::after { content: ""; flex: 1; border-block-start: 2px dashed var(--it-perf); }
+:is(.trip-section, .trip-lead, .trip-countries, .trip-list, .trip-notes) { margin-block-end: var(--space-section); }
+.trip-section .view-all { margin-block: 1rem 0; }
+
+/* The front page's top. */
+.hero-title { font-weight: var(--heading-weight); letter-spacing: -0.02em; }
+.hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.55; }
+.hero > .figure-strip { border-block: 2px dashed var(--it-perf); }
+.figure dd { color: var(--color-accent); }
+
+/* A ticket: the picture, the country, the title and the facts, then the
+   stub behind a perforation with a notch cut at each end. */
+.tickets { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); gap: 2rem 1.75rem; margin: 0; padding: 0; list-style: none; }
+.tickets > li { display: flex; min-inline-size: 0; }
+.ticket { position: relative; display: flex; flex-direction: column; inline-size: 100%; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); }
+.ticket-photo { overflow: hidden; border-start-start-radius: var(--radius); border-start-end-radius: var(--radius); }
+.ticket-photo :is(picture, img) { display: block; inline-size: 100%; }
+.ticket-photo img { aspect-ratio: 3 / 2; block-size: auto; object-fit: cover; }
+.ticket-main { flex: 1; padding: 1.125rem 1.25rem 1.25rem; }
+.ticket-country, .trip-country { margin: 0 0 0.375rem; color: var(--color-link); font: 700 0.75rem/1.3 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.ticket-title { margin: 0; font-size: 1.25rem; line-height: 1.25; }
+.ticket-title a { color: var(--color-text); text-decoration: none; }
+.ticket-title a::after { content: ""; position: absolute; inset: 0; }
+.ticket:hover .ticket-title a { color: var(--color-link); text-decoration: underline; }
+.ticket-excerpt { margin: 0.625rem 0 0; color: var(--color-muted); font-size: 1rem; line-height: 1.5; }
+.ticket-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr)); gap: 0.75rem 1rem; margin: 1rem 0 0; }
+.ticket-facts dt, .pass-facts dt, .stub-label { color: var(--color-muted); font: 700 0.6875rem/1.2 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.ticket-facts dd { margin: 0.125rem 0 0; font-size: 0.9375rem; line-height: 1.35; }
+.ticket-stub { position: relative; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.5rem; margin: 0; padding: 0.875rem 1.25rem; border-block-start: 2px dashed var(--it-perf); color: var(--color-muted); font: 0.8125rem/1.3 var(--font-mono); }
+.ticket-stub time { margin-inline-start: auto; }
+.ticket-stub::before, .ticket-stub::after, .pass-stub::before, .pass-stub::after { content: ""; position: absolute; inline-size: var(--it-notch); block-size: var(--it-notch); background: var(--color-background); border-radius: 50%; }
+.ticket-stub::before, .ticket-stub::after { inset-block-start: calc(var(--it-notch) / -2 - 1px); }
+.ticket-stub::before { inset-inline-start: calc(var(--it-notch) / -2 - 1px); }
+.ticket-stub::after { inset-inline-end: calc(var(--it-notch) / -2 - 1px); }
+.stub-number { color: var(--color-text); font: var(--heading-weight) 1.75rem/1 var(--font-heading); font-variant-numeric: lining-nums; }
+
+/* The newest trip: a wide ticket, the stub standing at the end. */
+@media (min-width: 56rem) {
+  .ticket-wide { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) 10rem; }
+  .ticket-wide .ticket-photo { border-start-end-radius: 0; border-end-start-radius: var(--radius); }
+  .ticket-wide .ticket-photo :is(picture, img) { block-size: 100%; }
+  .ticket-wide .ticket-photo img { aspect-ratio: auto; min-block-size: 22rem; }
+  .ticket-wide .ticket-main { align-self: center; padding: 2rem; }
+  .ticket-wide .ticket-stub { flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem 1rem; border-block-start: 0; border-inline-start: 2px dashed var(--it-perf); }
+  .ticket-wide .ticket-stub::before { inset-block-start: calc(var(--it-notch) / -2 - 1px); inset-inline-start: calc(var(--it-notch) / -2 - 1px); }
+  .ticket-wide .ticket-stub::after { inset-block: auto calc(var(--it-notch) / -2 - 1px); inset-inline: calc(var(--it-notch) / -2 - 1px) auto; }
+  .ticket-wide .ticket-stub time { margin-inline-start: 0; margin-block-start: 0.75rem; }
+  .ticket-wide .stub-number { font-size: 4rem; }
+}
+.ticket-wide .ticket-title { font-size: clamp(1.5rem, 1.2rem + 1vw, 2.125rem); line-height: 1.15; }
+.ticket-wide .ticket-excerpt { font-size: 1.0625rem; }
+
+/* The countries: a passport page of stamps, each a little askew. */
+.stamps { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr)); gap: 1.25rem; margin: 0; padding: 0.5rem 0.25rem; list-style: none; }
+.stamp { display: flex; flex-direction: column; align-items: center; justify-content: center; min-block-size: 6.25rem; padding: 1rem 0.75rem; color: var(--color-accent); border: 2px solid var(--color-accent); border-radius: 0.75rem; outline: 1px dashed var(--color-accent); outline-offset: -8px; text-align: center; text-decoration: none; rotate: -2deg; }
+.stamps > li:nth-child(even) .stamp { border-radius: 3rem; rotate: 1.5deg; }
+.stamps > li:nth-child(3n) .stamp { rotate: -0.5deg; }
+.stamp:hover { background: var(--it-tint); rotate: 0deg; }
+.stamp-name { font: var(--heading-weight) 1.1875rem/1.15 var(--font-heading); letter-spacing: 0.05em; text-transform: uppercase; }
+.stamp-count { margin-block-start: 0.375rem; font: 700 0.75rem/1.2 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* The notes: a dated feed under the trips. */
+.trip-notes .feed-list { max-inline-size: 48rem; }
+.trip-notes .feed-item :is(h2, h3, h4) { font-family: var(--font-heading); font-size: 1.25rem; }
+
+/* Lists: the kind, then the name on a stamp, the intro. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; }
+.list-header h1 { display: inline-block; margin: 0.5rem 0 0; padding: 0.375rem 1.25rem; color: var(--color-accent); border: 3px solid var(--color-accent); border-radius: 0.75rem; outline: 1px dashed var(--color-accent); outline-offset: -9px; letter-spacing: 0.03em; text-transform: uppercase; rotate: -1deg; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 1.25rem; color: var(--color-text); font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-header .list-kind { margin: 0; color: var(--color-muted); font: 700 0.8125rem/1.3 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.list-header ~ .tickets .ticket-title { font-size: 1.25rem; }
+
+/* A trip: the country stamp, the title, the byline, the boarding pass. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.trip-country { margin-block-end: 1rem; }
+.trip-country a { display: inline-block; padding: 0.375rem 0.75rem; color: var(--color-accent); border: 2px solid var(--color-accent); border-radius: var(--radius); outline: 1px dashed var(--color-accent); outline-offset: -5px; text-decoration: none; rotate: -1.5deg; }
+.trip-country a:hover { background: var(--it-tint); }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.1; }
+.post-header .dek { font-size: clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem); line-height: 1.5; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; }
+.pass { display: grid; grid-template-columns: minmax(0, 1fr) auto; margin-block: 1.75rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); }
+.pass-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr)); gap: 1rem 1.5rem; margin: 0; padding: 1.25rem 1.5rem; }
+.pass-facts dd { margin: 0.25rem 0 0; font-size: 1.0625rem; font-weight: 700; line-height: 1.3; }
+.pass-stub { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem; min-inline-size: 7.5rem; margin: 0; padding: 1rem 1.5rem; border-inline-start: 2px dashed var(--it-perf); text-align: center; }
+.pass-stub::before { inset-block-start: calc(var(--it-notch) / -2 - 1px); inset-inline-start: calc(var(--it-notch) / -2 - 1px); }
+.pass-stub::after { inset-block-end: calc(var(--it-notch) / -2 - 1px); inset-inline-start: calc(var(--it-notch) / -2 - 1px); }
+.pass-stub .stub-number { font-size: 3rem; }
+@media (max-width: 30rem) {
+  .pass { grid-template-columns: minmax(0, 1fr); }
+  .pass-stub { flex-direction: row; align-items: baseline; border-inline-start: 0; border-block-start: 2px dashed var(--it-perf); }
+  .pass-stub::after { inset-block: calc(var(--it-notch) / -2 - 1px) auto; inset-inline: auto calc(var(--it-notch) / -2 - 1px); }
+  .pass-stub .stub-number { font-size: 2.25rem; }
+}
+.post-header .image img { border-radius: var(--radius); }
+
+/* The days: each main heading a stop on a dashed route. */
+.day-route { --it-gap: clamp(1.25rem, 0.75rem + 1.5vw, 2rem); padding-inline-start: var(--it-gap); border-inline-start: 2px dashed var(--it-perf); }
+@media (min-width: 70rem) { main:has(.post-with-toc .day-route) { max-inline-size: calc(var(--measure) + 20rem); } }
+.day-route > h2 { position: relative; }
+.day-route > h2::before { content: ""; position: absolute; inset-block-start: 0.3em; inset-inline-start: calc(var(--it-gap) * -1 - 0.5625rem - 1px); box-sizing: border-box; inline-size: 1.125rem; block-size: 1.125rem; background: var(--color-background); border: 4px solid var(--color-accent); border-radius: 50%; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+
+/* A task list, such as a packing list: a checklist in two columns. */
+.post-body ul:has(> li > input[type="checkbox"]) { columns: 2 14rem; column-gap: 2.5rem; padding-inline-start: 0; list-style: none; }
+.post-body li:has(> input[type="checkbox"]) { break-inside: avoid; margin: 0; padding-block: 0.375rem; border-block-end: 1px dashed var(--color-border); }
+.post-body input[type="checkbox"] { appearance: none; display: inline-block; inline-size: 1.125rem; block-size: 1.125rem; margin: 0; margin-inline-end: 0.625rem; vertical-align: -0.1875rem; background: var(--color-background); border: 2px solid var(--color-accent); border-radius: 0.25rem; }
+.post-body input[type="checkbox"]:checked { background: var(--color-accent); box-shadow: inset 0 0 0 2px var(--color-background); }
+
+/* The post's end. */
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer > h2 { margin-block: 0 0.75rem; font: 700 0.8125rem/1.3 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+.tickets-small .ticket-title { font-size: 1.125rem; }
+
+/* A writer: the mark beside the name, their trips as tickets. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-photo img { border-radius: 50%; }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.0625rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-trips, .author-others { margin-block-start: var(--space-section); }
+.people-grid-person .avatar { border-radius: 50%; }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the sign-up: a kraft band with a dashed edge. */
+.cta-band { background: var(--color-surface); border: 0; border-block: 2px dashed var(--it-perf); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); }
+
+/* The footer: a dashed line, quiet links. */
+.site-footer { border-block-start: 2px dashed var(--it-perf); }

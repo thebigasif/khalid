@@ -1,0 +1,77 @@
+{#- Itinerary's front page (docs/templates/itinerary.md): the diary's
+    name, its tagline and the figure strip of its own numbers; the newest
+    trip (a post with facts) as a wide ticket; every country (a category)
+    as a passport stamp with how many trips on this page it holds; the
+    other trips as a grid of tickets; then the notes (posts without facts),
+    such as packing lists, as a dated feed. A category whose posts on this
+    page are all notes is no country, so it gets no stamp. On a site with
+    no trips at all, every post is a ticket under plain section titles,
+    and each category a stamp. With home sections in
+    site.toml, each section is a grid of tickets of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "image.html" import picture -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/figure_strip.html" import figure_strip -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% macro ticket(post, level=3, wide=false) -%}
+{% if wide %}<article class="ticket ticket-wide">{% else %}<article class="ticket">{% endif %}
+{% if post.image %}<div class="ticket-photo">{{ picture(post.image) }}</div>
+{% endif %}<div class="ticket-main">
+{% if post.category %}<p class="ticket-country">{{ post.category.name }}</p>
+{% endif %}<h{{ level }} class="ticket-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.facts[1:] %}<dl class="ticket-facts">
+{% for fact in post.facts[1:] %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endfor %}</dl>
+{% elif wide or not post.facts %}<p class="ticket-excerpt">{{ post.excerpt }}</p>
+{% endif %}</div>
+<p class="ticket-stub">{% if post.facts %}<span class="stub-number">{{ post.facts[0].value }}</span> <span class="stub-label">{{ post.facts[0].label }}</span>{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+</article>
+{%- endmacro %}
+{% set options = template.options -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{{ figure_strip(options.hero_stats) }}{% endcall %}
+{% set trips = page.posts | selectattr("facts") | list -%}
+{% set all_notes = page.posts | rejectattr("facts") | list if trips else [] -%}
+{% set tickets = trips if trips else page.posts -%}
+{% set notes = all_notes[:options.notes_count] -%}
+{% set trip_countries = tickets | selectattr("category") | map(attribute="category.href") | list -%}
+{% set countries = page.categories | selectattr("href", "in", trip_countries) | list -%}
+{% if page.sections %}{% for section in page.sections %}<section class="trip-section" aria-labelledby="trip-section-{{ loop.index }}">
+<h2 id="trip-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}<ul class="tickets" role="list">
+{% for post in section.posts %}<li>{{ ticket(post) }}</li>
+{% endfor %}</ul>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif tickets %}<section class="trip-lead" aria-labelledby="trip-lead-title">
+<h2 id="trip-lead-title">{{ t.latest_trip if trips else t.recent_posts }}</h2>
+{{ ticket(tickets[0], 3, true) }}
+</section>
+{% if countries %}<section class="trip-countries" aria-labelledby="trip-countries-title">
+<h2 id="trip-countries-title">{{ t.countries if trips else t.topic_tabs }}</h2>
+<ul class="stamps" role="list">
+{% for country in countries %}{% set count = trip_countries | select("in", [country.href]) | list | length %}<li><a class="stamp" href="{{ country.href }}"><span class="stamp-name">{{ country.name }}</span> <span class="stamp-count">{% if count == 1 %}{{ t.trip_count_one if trips else t.post_count_one }}{% else %}{{ (t.trip_count if trips else t.post_count) | replace("{count}", count | string) }}{% endif %}</span></a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if tickets[1:] %}<section class="trip-list" aria-labelledby="trip-list-title">
+<h2 id="trip-list-title">{{ t.trip_diaries if trips else t.more_posts }}</h2>
+<ul class="tickets" role="list">
+{% for post in tickets[1:] %}<li>{{ ticket(post) }}</li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if notes %}<section class="trip-notes" aria-labelledby="trip-notes-title">
+<h2 id="trip-notes-title">{{ t.notes_from_the_road }}</h2>
+{{ feed_list(notes) }}
+</section>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

@@ -44,6 +44,7 @@ mod harbor;
 mod headline;
 mod journal;
 mod hub;
+mod itinerary;
 mod keystone;
 mod lattice;
 mod ledger;
