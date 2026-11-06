@@ -1,0 +1,153 @@
+/* Based on Ghost's Ruby theme, MIT licence, see LICENSE-ghost.txt.
+   Ruby: a magazine of picture cards. White cards with round corners and
+   a faint shadow sit four across on a page that fades from white at the
+   top to light grey. The header sets the logo in the middle with the menu
+   at the start, in small bold capitals. A post reads in one column on
+   plain white, then more cards fill a grey band across the window. Every
+   colour is a token or a mix of tokens. */
+:root {
+  --rb-gap: clamp(1.25rem, 0.9rem + 1.5vw, 2.25rem);
+  --rb-frame: 75rem;
+  --rb-shadow: 0 0 10px color-mix(in oklab, var(--color-text) 4%, transparent);
+  --rb-lift: 0 0 20px color-mix(in oklab, var(--color-text) 16%, transparent);
+  --rb-line: color-mix(in oklab, var(--color-surface) 70%, var(--color-background));
+}
+body { padding-inline: var(--rb-gap); background: linear-gradient(0deg, var(--color-surface) 65%, var(--color-background)); }
+body:has(.rb-article) { background: var(--color-background); }
+.site-header, main, .site-footer, main:has(.post-with-toc), :where(body:has(.post-with-toc)) :is(.site-header, .site-footer) { max-inline-size: var(--rb-frame); }
+main { padding-block: 1.875rem 4rem; }
+
+/* Buttons: Ruby's small bold capitals on the accent colour. */
+.button, .subscribe button, .comment-form button, .search button, .consent button { border-radius: var(--radius); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+
+/* The header: the menu at the start, the logo in the middle, search and
+   the call to action at the end, with no rule under it. The logo holds
+   the middle; the menu stops short of it and scrolls when long. */
+.site-header { position: relative; flex-wrap: nowrap; gap: 0.5rem 1.75rem; min-block-size: 6.25rem; padding-block: 1rem; background: none; border: 0; }
+.site-header > .site-name { position: absolute; inset-block: 0; inset-inline: 0; display: flex; align-items: center; justify-content: center; inline-size: fit-content; max-inline-size: 16rem; margin-inline: auto; font-size: 1.5rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; text-align: center; }
+.site-logo img { max-block-size: 2.5rem; inline-size: auto; }
+.site-header > .nav-bar { min-inline-size: 0; max-inline-size: calc(50% - 9.5rem); }
+.site-header > .nav-bar ul { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; }
+.site-header > .nav-bar li { flex: none; }
+.site-header > .search-link { margin-inline-start: auto; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); }
+.site-header nav a[aria-current] { color: var(--color-link); }
+.header-button { min-block-size: 2.5rem; max-inline-size: 100%; padding-inline: 1.25rem; }
+.site-header > .header-button { max-inline-size: calc(50% - 9.5rem); margin-inline-start: auto; }
+.site-header > .search-link + .header-button { margin-inline-start: 0; }
+@media (max-width: 40rem) {
+  .site-header { flex-wrap: wrap; min-block-size: 0; }
+  .site-header > .site-name { position: static; display: inline-flex; margin-inline: 0 auto; font-size: 1.375rem; }
+  .site-header > .header-button { max-inline-size: 100%; }
+}
+
+/* The card grid: four across, then three, two and one. */
+.rb-feed { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; margin: 0; padding: 0; list-style: none; }
+@media (max-width: 74.9375rem) { .rb-feed { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 61.9375rem) { .rb-feed { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 47.9375rem) { .rb-feed { grid-template-columns: minmax(0, 1fr); } }
+.rb-feed > li { display: flex; }
+.rb-card { position: relative; display: flex; flex-direction: column; inline-size: 100%; overflow: hidden; background: var(--color-background); border-radius: var(--radius); box-shadow: var(--rb-shadow); transition: box-shadow 0.3s ease-in-out; }
+.rb-card:hover, .rb-card:focus-within { box-shadow: var(--rb-lift); }
+.rb-card .image { margin: 0; background: var(--color-surface); }
+.rb-card .image img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0; }
+.rb-card .image figcaption { display: none; }
+.rb-text { flex-grow: 1; padding: 1.25rem; }
+.rb-tag { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; margin: 0 0 0.5rem; font-size: 0.6875rem; font-weight: 700; line-height: 1.2; letter-spacing: 0.02em; text-transform: uppercase; }
+.rb-tag a { position: relative; z-index: 1; display: inline-flex; align-items: center; min-block-size: 1.5rem; margin-block: -0.375rem; color: var(--color-link); text-decoration: none; }
+.rb-tag a:hover { text-decoration: underline; }
+.rb-featured { color: var(--color-text); }
+.rb-title { margin: 0; font-size: 1rem; line-height: 1.35; text-wrap: pretty; overflow-wrap: anywhere; }
+.rb-title a { color: var(--color-text); text-decoration: none; }
+.rb-title a::after { content: ""; position: absolute; inset: 0; }
+.rb-title a:focus-visible { outline: none; }
+.rb-card:has(.rb-title a:focus-visible) { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+.rb-excerpt { display: -webkit-box; margin: 0.75rem 0 0; overflow: hidden; color: var(--color-text); font-size: 0.875rem; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.rb-foot { display: flex; align-items: center; gap: 0.75rem; min-block-size: 2.625rem; margin: 0; padding-block: 0.25rem; padding-inline: 1.25rem; color: var(--color-text); border-block-start: 1px solid var(--rb-line); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+.rb-foot time { color: inherit; font-size: inherit; }
+.rb-author { display: flex; margin-inline-start: auto; }
+.rb-author .avatar { inline-size: 1.75rem; block-size: 1.75rem; border: 2px solid var(--color-background); }
+
+/* Every other list wears the same card: topic and author pages, sections
+   and tabs. The meta line's parts take their places around the title. */
+.cards:not(.cards-ranked) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr)); gap: 2rem; }
+.cards > li { display: flex; }
+.card, .card:has(.image) { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto auto 1fr auto; gap: 0; align-content: start; inline-size: 100%; overflow: hidden; background: var(--color-background); border-radius: var(--radius); box-shadow: var(--rb-shadow); }
+.card:hover { box-shadow: var(--rb-lift); }
+.card > * { grid-column: 1 / -1; margin-inline: 1.25rem; }
+.card .image, .card:has(.image) .image { grid-row: 1; grid-column: 1 / -1; margin: 0 0 1.25rem; }
+.card .image img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0; }
+.card:not(:has(.image))::before { content: ""; grid-row: 1; block-size: 1.25rem; }
+.card :is(h2, h3, h4) { grid-row: 3; margin-block: 0; font-size: 1rem; line-height: 1.35; text-wrap: pretty; overflow-wrap: anywhere; }
+.card :is(h2, h3, h4) a:hover { text-decoration: none; color: var(--color-link); }
+.card > p:last-child:not(.card-meta) { grid-row: 4; margin-block: 0.75rem 1.25rem; font-size: 0.875rem; line-height: 1.6; }
+.card-meta { display: contents; }
+.card-meta > a { grid-row: 2; justify-self: start; min-block-size: 1.5rem; margin: -0.375rem 1.25rem 0.125rem; color: var(--color-link); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; text-decoration: none; }
+.card-meta > :is(time, .card-reading-time) { grid-row: 5; grid-column: 1; align-self: center; margin: 0; padding-block: 0.875rem; padding-inline: 1.25rem; color: var(--color-text); border-block-start: 1px solid var(--rb-line); font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; }
+.card-meta > .card-reading-time { display: none; }
+.card-meta > .card-author { grid-row: 5; grid-column: 2; align-self: stretch; margin: 0; padding-inline-end: 1.25rem; border-block-start: 1px solid var(--rb-line); font-size: 0; }
+.card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; }
+.card-meta .card-author .person-role { display: none; }
+
+/* Small headings over lists: grey capitals, as Ruby's related title. */
+:is(.home-section, .topics, .media-row, .topic-tabs, .rb-related) > h2, .author + section > h2 { margin-block: 0 2rem; color: var(--color-muted); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+.home-section, .topics, .media-row, .topic-tabs { margin-block-start: var(--space-section); }
+.home-section:first-of-type { margin-block-start: 0; }
+.view-all { margin-block-start: 1.5rem; font-size: var(--text-small); font-weight: 700; text-transform: uppercase; }
+.tags a { border-radius: var(--radius); font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; }
+
+/* A list page's heading: Ruby's term block, small and at the start. */
+main > h1 { max-inline-size: 35rem; margin-block: 2rem 0; font-size: 1.5rem; }
+main > .intro, main > .hub-link { max-inline-size: 35rem; margin-block: 0.75rem 0; line-height: 1.5; }
+main > :is(h1, .intro, .hub-link):last-of-type { margin-block-end: 3rem; }
+main > .cards, main > .featured { margin-block-start: 3rem; }
+.pagination { margin-block-start: 3rem; font-size: var(--text-small); font-weight: 700; text-transform: uppercase; }
+
+/* An author's page: the round photo over the name, then the posts. */
+.author { max-inline-size: 35rem; margin-block: 2rem 3rem; }
+.author-header, .author-header:has(.author-photo) { grid-template-columns: minmax(0, 1fr); gap: 1rem; margin-block-end: 1rem; }
+.author-photo { inline-size: 3.5rem; }
+.author-intro h1 { font-size: 1.5rem; }
+.author-bio { font-size: 1rem; line-height: 1.5; }
+
+/* A post: one column on white, the meta line over the title. */
+.rb-article { max-inline-size: var(--measure); margin: 3.125rem auto 0; }
+.rb-article.post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
+.rb-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.375rem; margin-block-end: 0.75rem; color: var(--color-muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+.rb-meta > * { margin: 0; }
+.rb-meta address { font-style: normal; }
+.rb-meta a { color: var(--color-text); text-decoration: none; }
+.rb-meta a:hover { text-decoration: underline; }
+.rb-meta .rb-meta-tag a { color: var(--color-link); }
+.rb-meta > * + *::before { content: "/"; margin-inline-end: 0.375rem; color: var(--color-border); }
+.rb-article .post-header h1 { margin-block: 0; font-size: clamp(1.875rem, 1.6rem + 1.2vw, 2.375rem); line-height: 1.3; letter-spacing: -0.03em; }
+.rb-article .dek { margin-block: 1rem 0; color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem); line-height: 1.5; }
+.rb-article .post-header .image { margin-block: 2rem 0; }
+.rb-article .post-header .reviewed-by, .rb-article .updated-note { margin-block: 1rem 0; color: var(--color-muted); font-size: var(--text-small); }
+.rb-article .post-header { margin-block-end: 2.5rem; }
+.post-body { font-size: 1.125rem; line-height: 1.7; }
+.post-body a { color: var(--color-link); }
+.post-body blockquote { border-inline-start-color: var(--color-accent); }
+.post-footer h2 { color: var(--color-muted); font-size: 0.875rem; letter-spacing: 0.07em; text-transform: uppercase; }
+.share { display: flex; flex-direction: column; align-items: center; margin-block-start: 3rem; text-align: center; }
+.share-title { color: var(--color-muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+.share ul { justify-content: center; }
+.share a { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; }
+
+/* After a post: Ruby's grey band across the window, with more cards. The
+   shadow draws the band; it never widens the page. */
+.rb-related { margin-block: 6rem -4rem; padding-block: 3.75rem 4rem; background: var(--color-surface); box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); }
+.rb-related .rb-card, .rb-related .card { background: var(--color-background); }
+.related-links a { font-weight: 700; }
+
+/* The call to action and the newsletter: a white card like the others. */
+.cta-band, .newsletter-slot { background: var(--color-background); border-radius: var(--radius); box-shadow: var(--rb-shadow); }
+body:has(.rb-article) main > :is(.cta-band, .newsletter-slot, .comments, .mentions, .lock) { max-inline-size: var(--measure); margin-inline: auto; }
+
+/* The footer: the name at the start, the links in the middle. */
+.site-footer { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 1.5rem; padding-block: 5rem; color: var(--color-muted); background: none; border: 0; text-align: center; }
+.site-footer nav ul { justify-content: center; gap: 0.25rem 1.5rem; }
+.site-footer nav a { color: var(--color-text); font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; text-decoration: none; }
+.site-footer nav a:hover { color: var(--color-link); }
+.footer-groups { justify-items: center; }

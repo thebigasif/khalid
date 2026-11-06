@@ -34,6 +34,7 @@ mod palette;
 pub mod parts;
 mod properties;
 mod resync;
+mod ruby;
 mod site_theme;
 pub mod slot;
 mod split;

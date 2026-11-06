@@ -1,0 +1,53 @@
+{#- Based on Ghost's Ruby theme, MIT licence, see LICENSE-ghost.txt.
+    Ruby's front page is its card grid and nothing else: four cards across
+    on a wide screen, three, two and then one as the screen narrows. Each
+    card is white with round corners: the picture at 16 by 9, the topic in
+    small capitals, the title, a short summary, then a footer with the date
+    and the author's round photo. The title's link covers the whole card;
+    the topic keeps its own link. A featured post says so beside its topic.
+    Sections set in site.toml take the grid's place, each as its own grid.
+    Then the numbered pages, the topics and the call to action. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "image.html" import picture, avatar -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
+{% macro rb_cards(posts, level) -%}
+<ul class="rb-feed" role="list">
+{% for post in posts %}<li>
+<article class="rb-card">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}<div class="rb-text">
+{% if post.category or post.featured %}<p class="rb-tag">{% if post.featured %}<span class="rb-featured">{{ t.featured }}</span>{% endif %}{% if post.category %}<a href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}</p>
+{% endif %}<h{{ level }} class="rb-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="rb-excerpt">{{ post.excerpt }}</p>
+</div>
+<p class="rb-foot"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if template.options.card_reading_time and post.reading_time %}
+<span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}{% if post.author %}
+<span class="rb-author">{% if post.author.image %}{{ avatar(post.author.image) }}{% endif %}<span class="visually-hidden">{{ post.author.name }}</span></span>{% endif %}</p>
+</article>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}
+<h1 class="visually-hidden">{{ page.title }}</h1>
+{{ hero_stats(template.options) }}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ rb_cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}<h2 class="visually-hidden">{{ t.latest }}</h2>
+{{ rb_cards(page.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, template.options, t) }}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
+<h2>{{ t.topics }}</h2>
+{% for group in page.topics %}{% if group.name %}<h3>{{ group.name }}</h3>
+{% endif %}<ul class="tags">
+{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}</ul>
+{% endfor %}</nav>
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}
