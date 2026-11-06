@@ -37,6 +37,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | People grid | `people_grid(people, level=3)`; takes the authors page's entries (with post counts) or plain people | Photo or mark, name, role, post count | Research people, conference speakers, sports club squad, charity team, course tutors, musician's band |
 | Publication list | `publication_list(posts, level=3, by_year=false, start=1)`; facts by position: 1 venue, 2 year, 3 DOI or link, 4 citations | A numbered reference list, grouped by year with `by_year` | Research papers, author's books, musician's releases, science explainer sources |
 | Cite box | `cite_box(page, venue_fact=0, year_fact=1, link_fact=2)` | "Cite this": the reference in one line and a BibTeX entry, from the post's own data | Research papers, science explainer, author |
+| Score meter | `score_meter(value, label=none, scale=10)`; `value` is a fact's value, such as `8.5` | A dark square with the score, then a bar of `scale` square cells filled up to it, a half cell for a half point. Any other value, such as "Recommended", shows in the square alone | Gaming reviews, film and TV reviews, product reviews |
 
 ## Planned parts
 
@@ -46,5 +47,4 @@ Not built yet. The first template that needs one adds it here, with its CSS file
 |---|---|---|
 | Schedule or timeline | Dated rows with a time, a title and a place | Conference, sports club fixtures, online course weeks, musician tour dates |
 | Data table | A ruled table with a sticky first column and numbers aligned | Markets newsletter, sports club results, science explainer |
-| Rating block | A score out of a scale with a few labelled scores under it | Film reviews, gaming, product reviews |
 | Call-to-action band | The site's `[template.cta]` as a band; today `cta_band` in `slots.html` does this for every template | Charity donate, course enrol, conference tickets |
