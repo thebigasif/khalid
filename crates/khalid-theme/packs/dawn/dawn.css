@@ -16,7 +16,7 @@ main { padding-block: clamp(1.5rem, 5vmin, 3.75rem) 4rem; }
 main > * { max-inline-size: var(--measure); margin-inline: auto; }
 main > .post:not(.post-with-toc) { max-inline-size: 38rem; }
 main > .featured-strip { max-inline-size: none; }
-@media (min-width: 70rem) { main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); } }
+@media (min-width: 70rem) { main > .post-with-toc { max-inline-size: calc(38rem + 18rem); } }
 h1, h2, h3, h4 { letter-spacing: -0.01em; }
 
 /* The header: the name in heavy type at the start, the menu just after

@@ -51,7 +51,7 @@
 <h2 id="journal-featured-title" class="journal-label">{{ t.featured }}</h2>
 {{ cards(page.picks[:5], 3, "text") }}
 </section>
-{% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="journal-topics" aria-labelledby="journal-topics-title">
+{% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="journal-topics" aria-label="{{ t.topics }}">
 <h2 id="journal-topics-title" class="journal-label">{{ t.topics }}</h2>
 <ul>
 {% for group in page.topics %}{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
