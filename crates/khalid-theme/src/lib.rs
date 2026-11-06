@@ -27,6 +27,7 @@ mod episode;
 mod digest;
 mod edge;
 mod dope;
+mod dawn;
 mod fetch;
 mod fetch_error;
 mod folio;

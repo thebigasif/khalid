@@ -246,6 +246,7 @@ static PACKS: &[&Pack] = &[
     &crate::digest::DIGEST,
     &crate::edge::EDGE,
     &crate::dope::DOPE,
+    &crate::dawn::DAWN,
     &crate::folio::FOLIO,
     &crate::harbor::HARBOR,
     &crate::headline::HEADLINE,
