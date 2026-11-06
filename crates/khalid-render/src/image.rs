@@ -1,5 +1,6 @@
 //! A responsive image: every size and format, with the space it takes reserved.
 
+use minijinja::State;
 use serde::{Serialize, Serializer};
 
 /// An image as a page shows it: a `picture` with AVIF and WebP sources and a
@@ -37,8 +38,23 @@ pub struct RenderImage {
 pub enum Loading {
     /// At once, with high priority: the one large image at the top of a page.
     Eager,
-    /// When it nears the screen: every other image.
+    /// When it nears the screen: every other image. On a page that lists
+    /// posts, the first picture the page draws loads at once all the same.
     Lazy,
+}
+
+/// The mark a render keeps once its page has drawn a picture.
+struct PictureDrawn;
+
+/// Whether this is the first picture the page draws, which templates call
+/// as `first_picture()` from the `picture` macro. The first call of a
+/// render says yes and every later call says no. On a page that lists
+/// posts, the first card picture is the largest thing a reader sees at the
+/// top, so it loads at once instead of waiting until it nears the screen.
+pub(crate) fn first_picture(state: &mut State<'_, '_>) -> bool {
+    let first = state.get_extension::<PictureDrawn>().is_none();
+    state.get_or_insert_extension(PictureDrawn);
+    first
 }
 
 /// One format of an image in several widths. Never empty, and always sorted
