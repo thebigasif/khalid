@@ -37,30 +37,9 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # The kind of blog each template suits, as the gallery groups them, and the
-# heading it shows over each group. A new template needs a line here.
-kind_of() {
-  case "$1" in
-    wire) echo news ;;
-    atlas | meridian) echo magazine ;;
-    folio | keystone) echo company ;;
-    harbor) echo food ;;
-    almanac | compass) echo guides ;;
-    workbench) echo reviews ;;
-    classic | ledger) echo journal ;;
-    *) echo "" ;;
-  esac
-}
-kind_label() {
-  case "$1" in
-    news) echo "News" ;;
-    magazine) echo "Magazine" ;;
-    company) echo "Company and studio" ;;
-    food) echo "Food and recipes" ;;
-    guides) echo "Guides and teaching" ;;
-    reviews) echo "Reviews" ;;
-    journal) echo "Personal journal" ;;
-  esac
-}
+# heading it shows over each group, from the template's own pack.toml.
+# shellcheck source=template-packs.sh
+source "$root/scripts/template-packs.sh"
 
 # The name with a capital first letter, as the gallery writes it.
 title() { printf '%s%s' "$(printf '%s' "${1:0:1}" | tr '[:lower:]' '[:upper:]')" "${1:1}"; }
@@ -101,7 +80,7 @@ if len(names) != len(set(names)):
 for entry in listed:
     name = entry.get("name")
     if not entry.get("kind") or not entry.get("kind_label"):
-        faults.append(f"{name} has no kind. Give it one in kind_of in scripts/demos-bundle.sh.")
+        faults.append(f"{name} has no kind. Give it kind and kind_label in crates/khalid-theme/packs/{name}/pack.toml.")
     if not isinstance(entry.get("publication_ready"), bool):
         faults.append(f"{name} does not say whether its publication is ready.")
     demo = inside(entry.get("demo") or "/")
@@ -169,9 +148,8 @@ done
         fi
       done
     fi
-    kind="$(kind_of "$name")"
     printf '%s\n    {"name": "%s", "title": "%s", "kind": "%s", "kind_label": "%s", "publication_ready": %s, "demo": "%s", "pictures": {"home": "%s_previews/home.svg", "post": "%s_previews/post.svg", "phone": "%s_previews/phone.svg"}}' \
-      "$separator" "$name" "$(title "$name")" "$kind" "$(kind_label "$kind")" "$ready" "$demo" "$demo" "$demo" "$demo"
+      "$separator" "$name" "$(title "$name")" "$(template_pack_value "$name" kind)" "$(template_pack_value "$name" kind_label)" "$ready" "$demo" "$demo" "$demo" "$demo"
     separator=","
   done
   printf '\n  ]\n}\n'

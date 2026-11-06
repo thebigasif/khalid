@@ -1,12 +1,15 @@
-//! Writes each template's stylesheet, without its comments, indentation and
-//! blank lines and compressed with Brotli, into cargo's output folder, and
-//! each of its template files compressed the same way. The packs embed
-//! those bytes (`PackText`). The renderer strips the same things when it
+//! Writes every template's stylesheet, without its comments, indentation
+//! and blank lines, and every template file into one text, compressed with
+//! Brotli, in cargo's output folder, with an index of where each file
+//! starts and ends. The binary embeds both (`PackText`). One archive is
+//! about 40% smaller than one per file, because the templates share many
+//! patterns. The renderer strips the same things when it
 //! builds a site's stylesheet, and stripping twice gives what stripping
 //! once gives, so every site's stylesheet is unchanged; the binary just
 //! stops carrying the comments, and carries the rest compressed.
 
 use std::ffi::OsString;
+use std::fmt::Write as _;
 use std::io::Write as _;
 use std::path::PathBuf;
 use std::{fs, io};
@@ -15,34 +18,41 @@ fn main() -> io::Result<()> {
     let mut packs = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     packs.push("packs");
     println!("cargo::rerun-if-changed={}", packs.display());
-    let mut out = PathBuf::from(out_dir()?);
-    out.push("packs");
+    let mut files = Vec::new();
     for pack in fs::read_dir(&packs)? {
         let pack = pack?;
         if !pack.file_type()?.is_dir() {
             continue;
         }
-        let mut into = out.clone();
-        into.push(pack.file_name());
-        fs::create_dir_all(&into)?;
         for file in fs::read_dir(pack.path())? {
-            let file = file?;
-            let path = file.path();
-            let mut name = file.file_name();
-            name.push(".br");
-            let mut target = into.clone();
-            target.push(name);
-            if path.extension().is_some_and(|extension| extension == "css") {
-                let css = minify(&fs::read_to_string(&path)?);
-                fs::write(&target, brotli(css.as_bytes())?)?;
-            } else if path
-                .extension()
-                .is_some_and(|extension| extension == "html")
-            {
-                fs::write(&target, brotli(&fs::read(&path)?)?)?;
-            }
+            let path = file?.path();
+            let kind = path.extension().and_then(|extension| extension.to_str());
+            let text = match kind {
+                Some("css") => minify(&fs::read_to_string(&path)?),
+                Some("html") => fs::read_to_string(&path)?,
+                _ => continue,
+            };
+            let name = format!(
+                "{}/{}",
+                pack.file_name().to_string_lossy(),
+                path.file_name().unwrap_or_default().to_string_lossy()
+            );
+            files.push((name, text));
         }
     }
+    // The order is fixed, so every build writes the same archive.
+    files.sort();
+    let (mut all, mut index) = (String::new(), String::new());
+    for (name, text) in &files {
+        let start = all.len();
+        all.push_str(text);
+        writeln!(index, "{name}\t{start}\t{}", all.len()).map_err(io::Error::other)?;
+    }
+    let mut out = PathBuf::from(out_dir()?);
+    out.push("packs.br");
+    fs::write(&out, brotli(all.as_bytes())?)?;
+    out.set_file_name("packs.index");
+    fs::write(&out, index)?;
     Ok(())
 }
 
@@ -60,7 +70,7 @@ fn out_dir() -> io::Result<OsString> {
 fn brotli(text: &[u8]) -> io::Result<Vec<u8>> {
     let mut out = Vec::with_capacity(text.len() / 4);
     {
-        let mut writer = brotli::CompressorWriter::new(&mut out, 4096, 11, 22);
+        let mut writer = brotli::CompressorWriter::new(&mut out, 4096, 11, 24);
         writer.write_all(text)?;
         writer.flush()?;
     }

@@ -310,10 +310,20 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+      # The browser install sometimes stalls on a download and used to eat
+      # the job's whole 30 minutes. Each try gets 6 minutes; a stalled try
+      # is stopped and run once more. A normal install takes about 2.
       - name: Tools, at the versions scripts/demo-check/package.json pins
+        timeout-minutes: 14
         run: |
           npm install --prefix scripts/demo-check --no-audit --no-fund
-          npx --prefix scripts/demo-check playwright install --with-deps chromium firefox webkit
+          for try in 1 2; do
+            if timeout 360 npx --prefix scripts/demo-check playwright install --with-deps chromium firefox webkit; then
+              exit 0
+            fi
+            echo "The browser install stalled or failed (try $try of 2)."
+          done
+          exit 1
       - name: Demo check
         run: ./scripts/demo-check.sh
       # Runs even when the demo check failed, so one run lists both.

@@ -12,19 +12,14 @@ use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLink
 use crate::{Pack, PackTemplate, PackText, slot};
 
 /// The template files the compass pack replaces.
-static COMPASS_TEMPLATES: [PackTemplate; 1] = [PackTemplate::compressed(
-    "home.html",
-    include_bytes!(concat!(env!("OUT_DIR"), "/packs/compass/home.html.br")),
-)];
+static COMPASS_TEMPLATES: [PackTemplate; 1] =
+    [PackTemplate::file("home.html", "compass/home.html")];
 
 /// The Compass pack.
 pub(crate) static COMPASS: Pack = Pack {
     name: "compass",
     summary: "A teaching blog: breadcrumbs, the contents and key points before each guide, share links, the author and the newsletter after it.",
-    css: PackText::compressed(include_bytes!(concat!(
-        env!("OUT_DIR"),
-        "/packs/compass/compass.css.br"
-    ))),
+    css: PackText::file("compass/compass.css"),
     templates: &COMPASS_TEMPLATES,
     tokens: include_str!("../packs/compass/tokens.toml"),
     reader: &[
