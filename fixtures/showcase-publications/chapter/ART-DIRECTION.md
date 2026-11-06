@@ -30,7 +30,7 @@ Of the 12 photographs, 5 are covers or close details and 7 are wider scenes.
 | Slot | Ratio | Source size | Notes |
 |---|---|---|---|
 | Book cover (shelf, front page, book page) | 2:3 | 1600 px wide | Cropped to the middle. Every cover photo is an even texture or has its subject in the middle, so it crops well. |
-| Lead picture on an excerpt, note or event | as shot, about 3:2 or 4:3 | 1600 px wide | Shown at the text width, about 38rem. |
+| Lead picture on an excerpt, note or event | as shot, about 3:2 or 4:3 | 1600 px wide | Shown at the text width, about 32rem. |
 | Author mark | 1:1 | 160 px SVG | Drawn, one ink colour on a light tint of the same ink. |
 
 ## Phone crop
