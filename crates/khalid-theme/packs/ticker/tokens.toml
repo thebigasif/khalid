@@ -18,7 +18,7 @@ mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
 
 [shape]
 radius = "0px"
-measure = "40rem"
+measure = "36rem"
 
 [type]
 body = "1.125rem 1.1875rem"

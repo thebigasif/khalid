@@ -65,7 +65,7 @@ Later pages show the table only.
 1. The trail from the home page to the post's desk.
 2. The desk as a small label, the title, the description as a one-line summary, the writer and the date.
 3. **This issue in numbers:** the facts as a bar chart. Up bars are filled with your accent colour. Down bars are hatched in ink and grow the other way from a centre line, so a reader can tell them apart without colour. The `disclaimer` line sits under it.
-4. The lead picture, then the post in one column about 46rem wide.
+4. The lead picture, then the post in one column about 36rem wide.
 5. Tables in the post are data tables: a heavy rule over the head, figures in even-width numbers at the end of each cell, and a first column that stays in view while a wide table scrolls.
 6. The tags, the share links and the author box.
 7. Related posts as a small issue table.
@@ -99,7 +99,7 @@ Ticker's own defaults, which any value in your `theme/tokens.toml` replaces:
 | `[type] line_height` | `1.6` |
 | `[type] heading_weight` | `700` |
 | `[shape] radius` | `0px`, square |
-| `[shape] measure` | `40rem` |
+| `[shape] measure` | `36rem`, about 68 characters a line |
 | `[space] section` | `4rem`, the space between the parts of a page |
 
 ## Options
