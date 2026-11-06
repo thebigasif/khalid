@@ -93,6 +93,24 @@ impl PageBody {
         }
     }
 
+    /// Whether the page lists posts near its top, so its first card picture
+    /// may be the largest thing a reader sees. Templates read it as
+    /// `lists_posts`. A post is not one: its cards are related posts at the
+    /// end. A hub opens with its intro and chapters, not its cards.
+    pub(crate) fn lists_posts(&self) -> bool {
+        matches!(
+            self,
+            Self::Home(_)
+                | Self::Collection(_)
+                | Self::Tag(_)
+                | Self::Category(_)
+                | Self::Archive(_)
+                | Self::Channel(_)
+                | Self::Date(_)
+                | Self::Author(_)
+        )
+    }
+
     /// The page's own data, which templates read as `page`.
     pub(crate) fn value(&self) -> Value {
         match self {

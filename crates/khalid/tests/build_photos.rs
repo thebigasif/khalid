@@ -264,10 +264,10 @@ fn a_topic_tab_card_shows_the_posts_picture_like_every_other_card() {
             "/blog/planning-a-topic-cluster/cover.svg",
         ),
     ] {
-        let recent = picture_of(card_of(rest, href));
+        let recent = files_of(picture_of(card_of(rest, href)));
         assert!(recent.contains(mark), "{recent}");
-        let tab = card_of(tabs, href);
-        assert!(tab.contains(recent), "the tab card shows {recent}: {tab}");
+        let tab = files_of(picture_of(card_of(tabs, href)));
+        assert_eq!(tab, recent, "the tab card shows the same picture");
     }
 }
 
@@ -276,6 +276,15 @@ fn a_topic_tab_card_shows_the_posts_picture_like_every_other_card() {
 fn picture_of(card: &str) -> &str {
     let from = card.split_once("<picture>").unwrap().1;
     from.split_once("</picture>").unwrap().0
+}
+
+/// `picture` without when it loads: the page's first picture loads at
+/// once and a later copy of it waits, but both show the same files.
+#[cfg(test)]
+fn files_of(picture: &str) -> String {
+    picture
+        .replace(" fetchpriority=\"high\"", "")
+        .replace(" loading=\"lazy\"", "")
 }
 
 /// The card on `html` that links `href`, up to its link.
