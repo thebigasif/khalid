@@ -24,6 +24,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
 - `atlas`: a publication for a blog with many topics, with a map-sheet masthead that indexes every topic, featured stories and picture cards. See [Atlas](templates/atlas.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
+- `edge`: a picture-led site for creative work, with a wall of lead pictures packed like masonry on the front page and posts that open with a wide picture over one calm column. Based on Ghost's Edge theme (MIT). See [Edge](templates/edge.md).
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
 - `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
