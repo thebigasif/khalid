@@ -170,8 +170,8 @@ fn respawn_review() {
 
 /// A score of 8.5 fills eight cells and half of the ninth, in the score
 /// strip and again in the verdict, and reads out as a score out of 10. A
-/// word in place of a number shows alone, with no bar. A post without
-/// facts has neither strip nor verdict.
+/// word in place of a number shows alone, with no bar, in the strip and
+/// the verdict. A post without facts has neither strip nor verdict.
 #[test]
 fn a_review_draws_its_score_as_a_health_bar() {
     let (_temp, out) = built();
@@ -195,7 +195,16 @@ fn a_review_draws_its_score_as_a_health_bar() {
         texts(&word, ".rs-strip .score-tile"),
         ["Verdict Recommended"]
     );
-    assert!(texts(&word, ".score-bar").is_empty(), "a word has no bar");
+    // Only the review's own meters: its related rows hold other reviews,
+    // whose numeric scores draw bars.
+    assert!(
+        texts(&word, ".rs-strip .score-bar, .rs-verdict .score-bar").is_empty(),
+        "a word has no bar"
+    );
+    assert_eq!(
+        texts(&word, ".rs-verdict .score-tile"),
+        ["Verdict Recommended"]
+    );
     let news = shown(&out, "what-a-sitemap-does/index.html");
     assert!(
         texts(&news, ".rs-strip").is_empty(),
