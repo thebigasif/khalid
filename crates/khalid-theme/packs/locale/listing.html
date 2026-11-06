@@ -1,0 +1,26 @@
+{#- Locale's lists (an area, a tag, the archive, date and collection
+    pages): the list's kind (a tag page names itself a tag), name and
+    intro, then its places as listing rows, two across on wide screens,
+    then its notes (posts without facts) as a dated feed. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% from "locale-parts.html" import place_rows -%}
+{% set places = page.posts | selectattr("facts") | list -%}
+{% set notes = page.posts | rejectattr("facts") | list -%}
+<header class="list-header">
+{% block kind %}{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if places %}{{ place_rows(places, 2) }}
+{% endif %}{% if notes %}<section class="lc-list-notes" aria-labelledby="lc-list-notes-title">
+<h2 id="lc-list-notes-title" class="lc-heading">{{ t.city_notes }}</h2>
+{{ feed_list(notes) }}
+</section>
+{% endif %}{% if not page.posts %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

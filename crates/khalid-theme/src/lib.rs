@@ -32,6 +32,7 @@ mod harbor;
 mod keystone;
 mod ledger;
 mod links;
+mod locale;
 mod look;
 mod meridian;
 mod pack;
