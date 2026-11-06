@@ -12,6 +12,7 @@
 //! BL-RUN-8). The crate must not know about content, posts or the database.
 
 mod almanac;
+mod aperture;
 mod atlas;
 mod brand;
 mod bulletin;
