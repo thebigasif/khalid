@@ -7,3 +7,4 @@ table /how-offline-search-works/
 category /category/changelog/
 tag /tag/offline/
 author /authors/ines-halloran/
+release /tern-2-5-daily-notes/

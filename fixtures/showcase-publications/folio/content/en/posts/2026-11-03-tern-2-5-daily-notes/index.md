@@ -5,6 +5,13 @@ date: 2026-11-03
 author: greta-voss
 reviewed_by: ines-halloran
 category: changelog
+facts:
+  - label: Version
+    value: "2.5"
+  - label: Changes
+    value: "6"
+  - label: Fixes
+    value: "4"
 description: "Tern 2.5 adds daily notes, one note for each day that opens with a keystroke, and makes reminders calmer: silent by default, once only and easier to move."
 focus_keyword: daily notes
 tags: [v2.5, reminders, daily notes]

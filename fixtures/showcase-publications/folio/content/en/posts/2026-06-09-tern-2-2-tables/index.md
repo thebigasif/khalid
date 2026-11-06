@@ -5,6 +5,13 @@ date: 2026-06-09
 author: greta-voss
 reviewed_by: ada-kerrow
 category: changelog
+facts:
+  - label: Version
+    value: "2.2"
+  - label: Changes
+    value: "6"
+  - label: Fixes
+    value: "4"
 description: "Tern 2.2 adds tables to notes: type a pipe or paste from a spreadsheet, sort any column, and keep tables readable on a phone."
 focus_keyword: tables
 tags: [v2.2, editor]

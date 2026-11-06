@@ -5,6 +5,13 @@ date: 2026-08-04
 author: ada-kerrow
 reviewed_by: greta-voss
 category: changelog
+facts:
+  - label: Version
+    value: "2.3"
+  - label: Changes
+    value: "6"
+  - label: Fixes
+    value: "4"
 description: "Tern 2.3 syncs notes up to three times faster, keeps 90 days of version history for every note and adds saved searches."
 focus_keyword: version history
 tags: [v2.3, sync]

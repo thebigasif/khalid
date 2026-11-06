@@ -6,6 +6,13 @@ reviewed: 2026-10-01
 author: greta-voss
 reviewed_by: rafe-morrow
 category: changelog
+facts:
+  - label: Version
+    value: "2.1"
+  - label: Changes
+    value: "6"
+  - label: Fixes
+    value: "4"
 description: "Tern 2.1 adds quick capture: a small window that opens from anywhere, saves a note in one keystroke and files it in a capture inbox for later."
 focus_keyword: quick capture
 tags: [v2.1, capture]
