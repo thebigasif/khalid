@@ -121,7 +121,11 @@ fn atlas_shows_its_tagline_in_the_masthead_and_none_without_one() {
         "\n[template]\nname = \"atlas\"\n[template.options]\ntagline = \"Plain notes on search\"\n",
     );
     let home = body(&out, "index.html");
-    let masthead = between(&home, "<div class=\"masthead\">", "<nav class=\"atlas-index\"");
+    let masthead = between(
+        &home,
+        "<div class=\"masthead\">",
+        "<nav class=\"atlas-index\"",
+    );
     assert!(
         masthead.contains("<p class=\"tagline\">Plain notes on search</p>"),
         "{masthead}"
