@@ -71,6 +71,12 @@ fn every_class_a_default_template_uses_is_styled() {
     folder.push("templates");
     for entry in fs::read_dir(&folder).unwrap() {
         let path = entry.unwrap().path();
+        // The section parts in `sections/` are styled by the packs that
+        // import them, not by the shared stylesheet (khalid-theme's
+        // build script and look.rs check those).
+        if path.is_dir() {
+            continue;
+        }
         let template = fs::read_to_string(&path).unwrap();
         for attribute in template.split("class=\"").skip(1) {
             let classes = attribute.split('"').next().unwrap();

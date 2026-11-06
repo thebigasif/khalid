@@ -1,0 +1,17 @@
+{#- people_grid(people, level=3): a grid of people, each with their photo
+    or mark, name, role and, when known, how many posts they wrote. Takes
+    the authors page's entries (a person and their post count) or plain
+    people, such as an author page's other authors. Names use a heading of
+    `level`. -#}
+{% from "image.html" import avatar -%}
+{% macro people_grid(people, level=3) -%}
+<ul class="people-grid" role="list">
+{% for entry in people %}{% set person = entry.person if entry.person is defined else entry -%}
+<li class="people-grid-person">
+{% if person.image %}{{ avatar(person.image) }}
+{% endif %}<h{{ level }}><a href="{{ person.href }}">{{ person.name }}</a></h{{ level }}>
+{% if person.role %}<p class="people-grid-role">{{ person.role }}</p>
+{% endif %}{% if entry.posts is defined %}<p class="people-grid-count">{% if entry.posts == 1 %}{{ t.post_count_one }}{% else %}{{ t.post_count | replace("{count}", entry.posts | string) }}{% endif %}</p>
+{% endif %}</li>
+{% endfor %}</ul>
+{%- endmacro %}

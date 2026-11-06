@@ -24,9 +24,13 @@ pub(crate) struct Source {
     pub(crate) text: String,
 }
 
-/// Every default template, in name order.
+/// Every default template, in name order: the page templates, and the
+/// shared section parts under `sections/`, such as `sections/hero.html`,
+/// which pack templates import. Only `.html` files are templates, so the
+/// parts' README stays out.
 pub(crate) fn defaults() -> Vec<Source> {
     let mut sources: Vec<Source> = Defaults::iter()
+        .filter(|name| name.ends_with(".html"))
         .filter_map(|name| {
             let file = Defaults::get(&name)?;
             Some(Source {
