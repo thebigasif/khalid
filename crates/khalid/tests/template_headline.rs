@@ -120,7 +120,7 @@ fn headline_front_page_leads_each_section_with_one_large_story() {
     let large = texts(&page, ".hl-topic .hl-large h3");
     assert_eq!(large.len(), 4, "{large:?}");
     assert_eq!(texts(&page, ".hl-topic").len(), 4);
-    assert!(texts(&page, ".hl-lists").is_empty());
+    assert_eq!(texts(&page, ".hl-lists"), Vec::<String>::new());
 }
 
 /// With one topic section, the other categories show as short lists of
