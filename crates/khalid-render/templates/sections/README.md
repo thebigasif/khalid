@@ -49,6 +49,7 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | Goal meter | `goal_meter(facts, done=0, goal=1)`; the facts at places `done` and `goal`, counted from 0, read for their digits, so "£61,850" counts as 61850 | Both facts with their labels, a meter and the share reached, such as "68% of the goal"; nothing without two numbers | Charity campaigns (raised of goal), online course (lessons done), health programme (weeks done) |
 | Rating | `rating(value, label=none, scale=5)`; `value` as a review's first fact gives it, such as `4`, `3.5` or `8/10` | Five stars filled up to the score, the score beside them, and the score in words for screen readers; a value that is not a number shows as words | Film and TV reviews, gaming reviews, product reviews |
 | Poster grid | `poster_grid(posts, level=3)`; call it with `{% call(post) poster_grid(posts) %}` to add a rating or details under each title | Tall 2:3 cover cards with the title under the picture, linking the whole card | Film and TV reviews, gaming, author's books, musician's releases |
+| Link stack | `link_stack(lines, nav=[], cta=none, label=none)`; `lines` written `label \| address` or `label \| address \| note`, `nav` the links used when there are no lines, `cta` the call to action that leads | Large link buttons, one under another, each as wide as the column | Creator hub, musician (streaming links), podcast (where to listen), course (enrol links) |
 
 ## Planned parts
 

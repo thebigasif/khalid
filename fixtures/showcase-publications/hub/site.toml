@@ -1,0 +1,81 @@
+# Tamsin Hale, a made-up potter who makes videos, written for the Hub
+# template's demo. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "Tamsin Hale"
+languages = ["en"]
+
+# The call to action leads the stack of links on the front page.
+[template.cta]
+label = "Seconds sale: green bowls from £18"
+href = "/blog/seconds-sale-green-bowls/"
+note = "Until 30 November, while the bowls last"
+
+# The Hub template's options for this demo. scripts/pages.sh keeps them
+# (PR #1013). The call to action already leads the links, so no band.
+[template.options]
+creator = "tamsin-hale"
+tagline = ["Potter in Bristol. I make mugs and bowls, and a pottery video every other Wednesday."]
+links = [
+  "Watch my pottery videos | https://www.example.com/tamsin-hale/videos | A new video every other Wednesday",
+  "Shop mugs and bowls | https://www.example.com/tamsin-hale/shop | Small batches, posted from Bristol",
+  "Book a weekend wheel workshop | /blog/weekend-wheel-workshops/ | Six people, two days, all clay included",
+  "My glaze recipes | /blog/mixing-my-own-glazes/",
+  "About me and the studio | /blog/about/",
+]
+hero_stats = ["48k | subscribers", "120 | videos", "9 | years at the wheel"]
+cta_band = "none"
+
+[seo.titles]
+separator = "·"
+tagline = "Pottery videos, studio notes and handmade mugs from Bristol"
+
+[seo.ai_page]
+covers = "Tamsin Hale is a potter in Bristol who makes mugs and bowls and a pottery video every other Wednesday. Her posts explain how she throws, trims, glazes and fires her work, with notes from her studio assistant Dev Rao on glazes and the kiln."
+cite = "Link the post you quote and name Tamsin Hale or Dev Rao as its author."
+contact = "studio@example.com"
+
+[seo.publisher]
+type = "person"
+name = "Tamsin Hale"
+email = "studio@example.com"
+
+# Sign-ups for the studio's letter, under its own name. The mail server
+# is a reserved example name, so nothing is ever sent.
+[mail]
+from = "studio@example.com"
+name = "Tamsin Hale"
+postal_address = "Tamsin Hale Ceramics, Unit 4, Mill Yard, Bristol BS3 9XX"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Videos"
+href = "/blog/category/videos/"
+language = "en"
+
+[[nav.primary]]
+label = "All posts"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the studio"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Workshops"
+href = "/blog/category/workshops-and-shop/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

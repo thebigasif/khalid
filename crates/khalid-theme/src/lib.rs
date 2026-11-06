@@ -40,6 +40,7 @@ mod fonts;
 mod harbor;
 mod headline;
 mod journal;
+mod hub;
 mod keystone;
 mod ledger;
 mod links;

@@ -356,3 +356,7 @@ critics = "Critics"
 reviews = "Reviews"
 more_reviews = "More reviews"
 column_title = "Title"
+# The hub template's stack of link buttons, for screen readers, and its
+# heading under a post, where {name} is the site's name.
+link_stack = "Links"
+link_stack_more = "More from {name}"
