@@ -20,6 +20,7 @@ mod compass;
 mod contrast;
 mod css;
 mod episode;
+mod ease;
 mod fetch;
 mod fetch_error;
 mod folio;

@@ -1,0 +1,33 @@
+{#- Based on Ghost's Ease theme, MIT licence, see LICENSE-ghost.txt.
+    An author's page in Ease: a small round photo, the name, the role and
+    the bio in grey, then each of their posts as a plain row with its
+    title and summary, and numbered pages. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import avatar %}
+{% from "icons.html" import profiles %}
+{% from "card.html" import pages -%}
+<article class="author ease-term">
+{% if page.image %}{{ avatar(page.image) }}
+{% endif %}<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}<div class="intro">
+{{ page.bio }}
+</div>
+{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</article>
+<section aria-labelledby="author-posts">
+<h2 id="author-posts" class="visually-hidden">{{ t.posts_by | replace("{name}", page.name) }}</h2>
+{% if page.posts %}<ul class="ease-feed" role="list">
+{% for post in page.posts %}<li>
+<article class="ease-row">
+<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p>{{ post.excerpt }}</p>
+</article>
+</li>
+{% endfor %}</ul>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% endblock %}
