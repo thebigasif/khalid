@@ -40,6 +40,9 @@ Every pack's text goes into one Brotli archive, so a part's rules repeated in se
 | Score meter | `score_meter(value, label=none, scale=10)`; `value` is a fact's value, such as `8.5` | A dark square with the score, then a bar of `scale` square cells filled up to it, a half cell for a half point. Any other value, such as "Recommended", shows in the square alone | Gaming reviews, film and TV reviews, product reviews |
 | Bar chart | `bar_chart(rows, label=none, note=none)`; `rows` are label and value pairs, such as a post's facts | A bar per row, scaled to the largest value; bars grow both ways from a centre line when a value is below zero. A value that is not a number shows as text | Markets newsletter (each issue's moves), charity (impact), sports club (season record), science explainer (results) |
 | Fact table | `fact_table(posts, caption=none)` | Posts as a data table: title and category, date, then one column per fact, headed by the first post's labels. Figure cells carry `data-move` and `data-heat` for a heat map, and the first column stays in view while the table scrolls | Markets newsletter (issues), sports club (results), science explainer (data), any list of posts with facts |
+| Cover shelf | `cover_shelf(posts, level=3, fact=1)`; `fact` is the place of the fact shown under the title, counted from 0, such as the year | Covers in portrait (`--cover-ratio`, 2 / 3 by default), each with its title and one fact | Author's books, musician's releases (ratio 1), film and TV reviews, games |
+| Contents page | `contents_page(posts, level=3)` | Numbered entries like a book's contents: the title, a dotted leader to the date, then the category and description | Author's excerpts and essays, online course lessons, podcast episodes, newsletter issues |
+| Event list | `event_list(posts, level=3)`; facts by position: 1 when, 2 the venue, 3 the town or city, 4 a tickets link (its label is the link's text) or a short fact | Dated rows: when, the title, the venue and city, the tickets link | Author's readings, musician's tour dates, charity events |
 
 ## Planned parts
 
@@ -47,7 +50,7 @@ Not built yet. The first template that needs one adds it here, with its CSS file
 
 | Part | What it will show | Kinds of site |
 |---|---|---|
-| Schedule or timeline | Dated rows with a time, a title and a place | Conference, sports club fixtures, online course weeks, musician tour dates |
+| Schedule or timeline | A day's timetable: rows with a time, a title and a room or place (one-off dated events use the event list) | Conference, sports club fixtures, online course weeks |
 | Data table | A ruled table with a sticky first column and numbers aligned | Markets newsletter, sports club results, science explainer |
 | Rating block | A score out of a scale with a few labelled scores under it | Film reviews, gaming, product reviews |
 | Call-to-action band | The site's `[template.cta]` as a band; today `cta_band` in `slots.html` does this for every template | Charity donate, course enrol, conference tickets |
