@@ -27,6 +27,7 @@ mod dope;
 mod ease;
 mod edge;
 mod edition;
+mod encore;
 mod episode;
 mod fetch;
 mod fetch_error;
