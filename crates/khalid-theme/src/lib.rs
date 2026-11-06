@@ -14,6 +14,7 @@
 mod almanac;
 mod atlas;
 mod brand;
+mod casper;
 mod color;
 mod compass;
 mod contrast;
