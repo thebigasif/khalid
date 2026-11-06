@@ -256,6 +256,7 @@ static PACKS: &[&Pack] = &[
     &crate::solo::SOLO,
     &crate::source::SOURCE,
     &crate::ruby::RUBY,
+    &crate::wave::WAVE,
     &crate::wire::WIRE,
     &crate::workbench::WORKBENCH,
     #[cfg(feature = "test-util")]

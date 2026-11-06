@@ -57,6 +57,7 @@ mod tokens;
 mod tokens_error;
 #[cfg(feature = "test-util")]
 mod trial;
+mod wave;
 mod wire;
 mod woff2;
 mod workbench;

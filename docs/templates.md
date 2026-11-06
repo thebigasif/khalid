@@ -43,6 +43,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `solo`: a personal site for one writer or creator, with a large headline and a sign-up field over a feed of posts with large titles. Based on Ghost's Solo theme (MIT). See [Solo](templates/solo.md).
 - `source`: a general publication with the logo in the middle of the header, a front page that opens with a landing, highlight or magazine header, a list or a grid of posts with hairlines between them, and a calm column for each post. Based on Ghost's Source theme (MIT). See [Source](templates/source.md).
 - `ruby`: a magazine of picture cards, four white cards across on a page that fades to light grey, and a calm column for each post with more cards after it. Based on Ghost's Ruby theme (MIT). See [Ruby](templates/ruby.md).
+- `wave`: an interview show's blog on a quiet white page, with the newest episode in a slim player card, then every episode as a row with square artwork and a round play mark. Based on Ghost's Wave theme (MIT). See [Wave](templates/wave.md).
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 

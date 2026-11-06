@@ -1,0 +1,157 @@
+/* Based on Ghost's Wave theme, MIT licence, see LICENSE-ghost.txt.
+   Wave: an interview show's blog. One narrow 52.5rem column on a plain
+   page, the newest episode in a slim player card, and every episode as a
+   row with square artwork, soft corners and a round play mark in the
+   accent. Quiet grey text under dark titles. Only tokens set colours and
+   type, so a synced theme recolours it all. */
+
+:root { --frame: 52.5rem; --hairline: 1px solid var(--color-border); --play: 3rem; --spot: 6.25rem; }
+
+/* The frame. Lists use all of it; a post keeps to the measure. */
+.site-header, main, .site-footer { max-inline-size: var(--frame); }
+main > :is(.post, .page, .mentions, .comments, .lock) { max-inline-size: var(--measure); margin-inline: auto; }
+/* Where the contents sit beside it, the post and the frame round it grow
+   by their column, so its text keeps the full measure. */
+@media (min-width: 70rem) { main:has(> .post-with-toc), main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); } }
+h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+/* The header: the name in heavy type, then plain menu links. */
+.site-header { padding-block: 1.75rem; border-block-end: 0; }
+.site-name { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+.site-header nav ul { gap: 0 1.75rem; }
+.site-header nav a { color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
+.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-link); }
+.search-link { color: var(--color-text); font-weight: 500; text-decoration: none; }
+.button { border-radius: 999px; }
+
+/* The front page's opening: the show's name, a line about it, and the
+   places to listen, as Wave lists them in its footer. */
+.wave-intro { margin-block: clamp(1.5rem, 4vw, 3.5rem) clamp(2.5rem, 6vw, 4.5rem); }
+.wave-intro h1 { margin: 0; font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); line-height: 1.2; }
+.wave-intro .intro { max-inline-size: 40rem; margin-block-start: 0.75rem; color: var(--color-muted); font-size: 1.125rem; }
+.wave-intro .intro p { margin: 0; }
+.listen-on { margin-block-start: 1.5rem; }
+.listen-on ul { gap: 0.75rem 2rem; }
+.listen-on a { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; color: var(--color-text); font-weight: 500; text-decoration: none; }
+.listen-on a:hover { color: var(--color-link); }
+.listen-icon { flex: none; inline-size: 1.375rem; block-size: 1.375rem; color: var(--color-accent); }
+
+/* Page titles, as Wave sets its tag pages, and the small labels over
+   the lists, as it sets "Hosted by". */
+main > h1 { margin-block: clamp(1.5rem, 4vw, 3.5rem) 1rem; font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); line-height: 1.2; }
+main > h1 + .intro { max-inline-size: 45rem; margin-block: 0 3rem; color: var(--color-muted); }
+.wave-label, .related > h2, .topics > h2 { margin-block: 0 1.5rem; color: var(--color-text); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.home-section > h2 { margin-block: 0 1.5rem; font-size: 1.75rem; }
+.wave-lead, .episodes, .home-section { margin-block: 0 clamp(3rem, 7vw, 5rem); }
+
+/* The date line over a title: small capitals in grey, the topic in the
+   link colour. */
+.wave-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.625rem; margin: 0 0 0.375rem; color: var(--color-muted); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
+.wave-meta a { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-link); text-decoration: none; }
+.wave-meta a:hover { text-decoration: underline; }
+
+/* The player card: on the front page the newest episode, and on a post
+   its header. Square artwork at the start, a hairline round the card,
+   soft corners. The artwork hides on a phone, as in Wave. */
+.wave-player, .wave-card { display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; background: var(--color-background); border: var(--hairline); border-radius: var(--radius); }
+.wave-player > .image, .wave-card > .image { display: none; align-self: start; aspect-ratio: 1; margin: 0; }
+.wave-player > .image img, .wave-card > .image img { inline-size: 100%; block-size: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 0; }
+.wave-player-body, .wave-card-body { min-inline-size: 0; padding: 1.25rem 1.5rem; }
+.wave-player-body h3 { margin-block: 0 1rem; font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); line-height: 1.3; }
+.wave-player-body h3 a { color: var(--color-text); text-decoration: none; }
+.wave-player-body h3 a:hover { color: var(--color-link); }
+@media (min-width: 48rem) {
+  .wave-pictured { grid-template-columns: 10rem minmax(0, 1fr); }
+  .wave-pictured > .image { display: block; }
+}
+
+/* A sound player, on the front page and in a post: Wave's slim player,
+   a hairline box with the title over the controls in the accent. */
+.wave-player .audio, .post-body .audio { margin: 0; }
+.wave-player .audio figcaption { display: none; }
+.post-body .audio { margin-block: 0 2rem; padding: 1.25rem 1.5rem; background: var(--color-surface); border-radius: var(--radius); }
+.post-body .audio figcaption { margin-block-end: 0.75rem; color: var(--color-text); font-family: var(--font-heading); font-size: 1.125rem; font-weight: 600; line-height: 1.3; }
+:is(.wave-player, .post-body) audio { display: block; inline-size: 100%; accent-color: var(--color-accent); }
+.wave-player .embed-audio, .post-body .embed-audio { margin-block: 0 1.25rem; }
+
+/* Every list of episodes: a row with square artwork of 12.5rem, the date
+   over the title, then a short summary, and 4rem between rows. A round
+   play mark in the accent sits on the artwork; without artwork, a grey
+   square holds the place. The whole row opens the episode. */
+.cards-row { grid-template-columns: minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); }
+.cards-row .card { position: relative; display: grid; grid-template-columns: 5rem minmax(0, 1fr); align-content: start; gap: 0 1.25rem; padding: 0; background: none; border: 0; }
+.cards-row .card > :not(.image) { grid-column: 2; }
+.cards-row .card .image { position: relative; grid-row: 1 / span 6; margin: 0; overflow: hidden; border-radius: var(--radius); }
+.cards-row .card .image img { inline-size: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 0; }
+.cards-row .card:not(:has(.image))::before { content: ""; grid-row: 1 / span 6; aspect-ratio: 1; background: var(--color-surface); border-radius: var(--radius); }
+.cards-row .card .image::before, .cards-row .card:not(:has(.image))::after { content: ""; position: absolute; inline-size: var(--play); block-size: var(--play); background: var(--color-accent); border-radius: 50%; }
+.cards-row .card .image::before { inset: 0; margin: auto; }
+.cards-row .card:not(:has(.image))::after { inset-block-start: calc(var(--spot) - var(--play) / 2); inset-inline-start: calc(var(--spot) - var(--play) / 2); }
+.cards-row .card .image::after { content: ""; position: absolute; inset-block: 0; inset-inline: calc(var(--play) * 0.1) 0; inline-size: calc(var(--play) * 0.3); block-size: calc(var(--play) * 0.36); margin: auto; background: var(--color-background); clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.cards-row .card :is(h2, h3, h4) { margin-block: 0 0.5rem; font-size: clamp(1.0625rem, 0.8rem + 1.2vw, 1.75rem); line-height: 1.25; text-wrap: wrap; }
+.cards-row .card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.cards-row .card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
+.cards-row .card :is(h2, h3, h4) a:hover { color: var(--color-link); }
+.cards-row .card :is(h2, h3, h4) + p:has(> time) { order: -1; }
+.cards-row .card-meta, .cards-row .card :is(h2, h3, h4) + p:has(> time) { margin: 0 0 0.375rem; color: var(--color-muted); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
+.cards-row .card-author { display: none; }
+.cards-row .card-meta > a { position: relative; z-index: 1; color: var(--color-link); font-size: inherit; text-transform: uppercase; }
+.cards-row .card > p:last-child { display: none; margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1rem; line-height: 1.6; }
+@media (max-width: 47.99rem) {
+  .cards-row { --play: 2.125rem; }
+  .cards-row .card:not(:has(.image))::after { content: none; }
+}
+@media (min-width: 48rem) {
+  .cards-row .card { grid-template-columns: 12.5rem minmax(0, 1fr); gap: 0 2rem; }
+  .cards-row .card > p:last-child { display: block; }
+}
+
+/* Other card shapes a site may choose keep the soft corners. */
+.cards:not(.cards-row, .cards-ranked, .cards-compact) .card .image img { border-radius: var(--radius); }
+.cards:not(.cards-row) .card :is(h2, h3, h4) { line-height: 1.25; }
+
+/* Numbered pages under a list. */
+.pagination { margin-block-start: 3rem; }
+.pagination a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.pagination a:hover { color: var(--color-link); }
+.page-numbers a { justify-content: center; min-inline-size: 44px; border-radius: 999px; }
+.page-numbers a[aria-current] { color: var(--color-background); background: var(--color-text); }
+.view-all a { font-weight: 600; }
+
+/* The newsletter and the call to action: a soft grey panel, as Wave sets
+   its author boxes. */
+.newsletter-slot, .cta-band { margin-block: var(--space-section); padding: clamp(1.75rem, 4vw, 2.5rem); background: var(--color-surface); border: 0; border-radius: var(--radius); }
+.newsletter-slot h2 { margin-block: 0 0.5rem; font-size: clamp(1.375rem, 1.1rem + 1vw, 1.75rem); }
+.newsletter-slot > p { color: var(--color-muted); }
+.newsletter-slot .subscribe input { background: var(--color-background); border: var(--hairline); }
+.newsletter-slot .subscribe button, .cta-band .button { border-radius: 999px; }
+
+/* A post: the player card as its header, then the notes in grey under
+   dark headings. */
+.post-header { margin-block: clamp(1.5rem, 4vw, 3rem) 2.5rem; }
+.post-header h1 { margin-block: 0 0.75rem; font-size: clamp(1.75rem, 1.4rem + 1vw, 2.125rem); line-height: 1.2; }
+.post-header .dek { margin-block-end: 1rem; color: var(--color-muted); font-size: 1.125rem; }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.25rem; font-size: 0.9375rem; }
+.post-meta > :is(address, .reviewed-by) { flex-basis: 100%; }
+.post-meta > p { margin: 0; }
+.post-date { color: var(--color-muted); }
+.post-meta a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta a:hover { color: var(--color-link); }
+.post-body { color: var(--color-muted); }
+.post-body :is(h2, h3, h4, strong) { color: var(--color-text); }
+.post-body blockquote { border-inline-start: 3px solid var(--color-accent); color: var(--color-text); }
+.post-footer { margin-block-start: 2.5rem; }
+.tags a { border-radius: 999px; }
+.share a { border-radius: 999px; }
+.author-box { background: var(--color-surface); border: 0; border-radius: var(--radius); }
+.toc-inline, .toc-box { border: var(--hairline); border-radius: var(--radius); }
+
+/* An author's page. */
+.author-header h1 { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); line-height: 1.2; }
+.author-photo img { aspect-ratio: 1; object-fit: cover; border-radius: 50%; }
+
+/* The footer: centred, quiet, as Wave's. */
+.site-footer { justify-items: center; padding-block: 3rem 3.5rem; border-block-start: 0; color: var(--color-muted); text-align: center; }
+.site-footer nav ul { justify-content: center; }
+.site-footer a { color: var(--color-muted); text-decoration: none; }
+.site-footer a:hover { color: var(--color-text); }
