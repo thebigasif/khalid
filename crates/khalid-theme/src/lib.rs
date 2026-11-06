@@ -39,6 +39,7 @@ mod resync;
 mod site_theme;
 pub mod slot;
 mod solo;
+mod source;
 mod split;
 mod token_name;
 mod token_values;

@@ -1,0 +1,111 @@
+{#- Based on Ghost's Source theme, MIT licence, see LICENSE-ghost.txt.
+    Source's front page. The first page opens with the header the
+    header_style option picks: landing (the title, the intro and the
+    sign-up form, centred; the description stands in for a
+    missing intro), search (the same with a search field),
+    highlight (the newest post large, three beside it, then a column of
+    the editor's picks or of the next six), magazine (the newest post
+    large between two columns of three, then a row of the editor's picks)
+    or off. Highlight and magazine then show the sign-up form as a grey
+    band. Under it, every post the header did not show, under "Latest
+    posts", as a list or a grid (the cards option), with the blog's own
+    column beside it when about_sidebar is on. Later pages show the list
+    only. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, card_meta, pages -%}
+{% from "image.html" import picture -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% set later = page.pagination and page.pagination.current > 1 -%}
+{% set posts = page.posts -%}
+{% set style = "off" if later or not posts else template.options.header_style -%}
+{% set signup = site.subscribe and template.options.newsletter in ["home", "both"] -%}
+{% set shown = 7 if style == "magazine" else (4 if style == "highlight" else 0) -%}
+{% set seen = posts[:shown] | map(attribute="href") | list -%}
+{% set picks = (page.picks | rejectattr("href", "in", seen) | list)[:template.options.picks] -%}
+{% set side = picks if picks else posts[4:10] -%}
+{% set top = shown + (side | length if style == "highlight" and not picks else 0) -%}
+{% set feed = posts[top:] -%}
+{% set first = posts[0] if posts else none -%}
+{% set lead %}{% if first and shown %}<div class="sc-lead">
+<article class="sc-lead-card">
+{% if first.image %}{{ picture(first.image) }}
+{% endif %}{% if first.category %}<p class="sc-topic"><a href="{{ first.category.href }}">{{ first.category.name }}</a></p>
+{% endif %}<h2><a href="{{ first.href }}">{{ first.title }}</a></h2>
+<p class="sc-excerpt">{{ first.excerpt }}</p>
+{% if "rich_cards" in site.features %}{{ card_meta(first) }}
+{% else %}<p class="card-meta"><time datetime="{{ first.date }}">{{ first.date | date }}</time></p>
+{% endif %}</article>
+</div>
+{% endif %}{% endset -%}
+{% if style in ["landing", "search"] %}<header class="sc-hero">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% elif meta.description %}<p class="intro">{{ meta.description }}</p>
+{% endif %}{% if style == "search" and site.search %}<form class="search sc-find" role="search" action="{{ site.search }}" method="get">
+<label class="visually-hidden" for="hero-search">{{ t.search_label }}</label>
+<input id="hero-search" type="search" name="q" placeholder="{{ t.search_label }}">
+<button type="submit">{{ t.search_button }}</button>
+</form>
+{% elif signup %}{{ newsletter_form(site.subscribe, t, "hero") }}
+{% endif %}</header>
+{% else %}<h1 class="visually-hidden">{{ page.title }}</h1>
+{% endif %}{% if style == "highlight" %}<section class="sc-top sc-highlight" aria-label="{{ t.latest }}">
+{{ lead }}{% if posts[1:4] %}<div class="sc-middle">
+{{ cards(posts[1:4], 2, "image") }}
+</div>
+{% endif %}{% if picks %}<div class="sc-side">
+<h2 class="sc-label">{{ t.featured }}</h2>
+{{ cards(picks, 3, "row") }}
+</div>
+{% elif side %}<div class="sc-side">
+{{ cards(side, 2, "row") }}
+</div>
+{% endif %}</section>
+{% elif style == "magazine" %}<section class="sc-top sc-magazine" aria-label="{{ t.latest }}">
+{{ lead }}{% if posts[1:4] %}<div class="sc-start">
+{{ cards(posts[1:4], 2, "image") }}
+</div>
+{% endif %}{% if posts[4:7] %}<div class="sc-end">
+{{ cards(posts[4:7], 2, "image") }}
+</div>
+{% endif %}</section>
+{% if picks %}<section class="sc-picks" aria-labelledby="picks-title">
+<h2 id="picks-title" class="sc-label">{{ t.featured }}</h2>
+{{ cards(picks[:4], 3, "row") }}
+</section>
+{% endif %}{% endif %}{% if signup and style in ["highlight", "magazine"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+<h2 class="sc-label">{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif feed or later %}{% if template.options.about_sidebar %}<div class="sc-feed sc-with-about">{% else %}<div class="sc-feed">{% endif %}
+<section class="sc-posts" aria-labelledby="latest-title">
+<h2 id="latest-title" class="sc-label">{{ t.latest }}</h2>
+{{ cards(feed, 3) }}
+{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% if template.options.about_sidebar %}<aside class="sc-about" aria-labelledby="about-title">
+<h2 id="about-title">{{ site.name }}</h2>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if template.cta %}<p><a class="button" href="{{ template.cta.href }}">{{ template.cta.label }}</a></p>
+{% endif %}</aside>
+{% endif %}</div>
+{% elif page.pagination %}{{ pages(page.pagination) }}
+{% elif not posts %}<p>{{ t.no_posts }}</p>
+{% endif %}{{ home_sections(page, template.options, t) }}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
+<h2 class="sc-label">{{ t.topics }}</h2>
+{% for group in page.topics %}{% if group.name %}<h3>{{ group.name }}</h3>
+{% endif %}<ul class="tags">
+{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}</ul>
+{% endfor %}</nav>
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}

@@ -245,6 +245,7 @@ static PACKS: &[&Pack] = &[
     &crate::ledger::LEDGER,
     &crate::meridian::MERIDIAN,
     &crate::solo::SOLO,
+    &crate::source::SOURCE,
     &crate::wire::WIRE,
     &crate::workbench::WORKBENCH,
     #[cfg(feature = "test-util")]
