@@ -9,6 +9,12 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 /// The longest tagline, about two lines under the name on a phone.
 const TAGLINE_CHARACTERS: usize = 140;
 
+/// The template files the atlas pack replaces.
+static ATLAS_TEMPLATES: [PackTemplate; 1] = [PackTemplate::compressed(
+    "home.html",
+    include_bytes!(concat!(env!("OUT_DIR"), "/packs/atlas/home.html.br")),
+)];
+
 /// The Atlas pack.
 pub(crate) static ATLAS: Pack = Pack {
     name: "atlas",
@@ -17,10 +23,7 @@ pub(crate) static ATLAS: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/atlas/atlas.css.br"
     ))),
-    templates: &[PackTemplate::compressed(
-        "home.html",
-        include_bytes!(concat!(env!("OUT_DIR"), "/packs/atlas/home.html.br")),
-    )],
+    templates: &ATLAS_TEMPLATES,
     tokens: include_str!("../packs/atlas/tokens.toml"),
     reader: &[],
     options: &[

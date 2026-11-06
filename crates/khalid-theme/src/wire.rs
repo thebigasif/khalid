@@ -6,6 +6,18 @@
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 
+/// The template files the wire pack replaces.
+static WIRE_TEMPLATES: [PackTemplate; 2] = [
+    PackTemplate::compressed(
+        "home.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/wire/home.html.br")),
+    ),
+    PackTemplate::compressed(
+        "post.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/wire/post.html.br")),
+    ),
+];
+
 /// The Wire pack.
 pub(crate) static WIRE: Pack = Pack {
     name: "wire",
@@ -14,16 +26,7 @@ pub(crate) static WIRE: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/wire/wire.css.br"
     ))),
-    templates: &[
-        PackTemplate::compressed(
-            "home.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/wire/home.html.br")),
-        ),
-        PackTemplate::compressed(
-            "post.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/wire/post.html.br")),
-        ),
-    ],
+    templates: &WIRE_TEMPLATES,
     tokens: include_str!("../packs/wire/tokens.toml"),
     reader: &[],
     options: &[

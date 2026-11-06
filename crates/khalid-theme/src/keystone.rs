@@ -8,6 +8,18 @@
 use crate::parts::{self, CardShape, ContentsPlacement, PageLinks};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 
+/// The template files the keystone pack replaces.
+static KEYSTONE_TEMPLATES: [PackTemplate; 2] = [
+    PackTemplate::compressed(
+        "home.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/keystone/home.html.br")),
+    ),
+    PackTemplate::compressed(
+        "post.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/keystone/post.html.br")),
+    ),
+];
+
 /// The Keystone pack.
 pub(crate) static KEYSTONE: Pack = Pack {
     name: "keystone",
@@ -16,16 +28,7 @@ pub(crate) static KEYSTONE: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/keystone/keystone.css.br"
     ))),
-    templates: &[
-        PackTemplate::compressed(
-            "home.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/keystone/home.html.br")),
-        ),
-        PackTemplate::compressed(
-            "post.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/keystone/post.html.br")),
-        ),
-    ],
+    templates: &KEYSTONE_TEMPLATES,
     tokens: include_str!("../packs/keystone/tokens.toml"),
     reader: &[],
     options: &[

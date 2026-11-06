@@ -4,6 +4,18 @@
 use crate::parts::{self, CardShape, ContentsPlacement, PageLinks, RelatedLayout};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 
+/// The template files the folio pack replaces.
+static FOLIO_TEMPLATES: [PackTemplate; 2] = [
+    PackTemplate::compressed(
+        "home.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/folio/home.html.br")),
+    ),
+    PackTemplate::compressed(
+        "post.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/folio/post.html.br")),
+    ),
+];
+
 /// The Folio pack.
 pub(crate) static FOLIO: Pack = Pack {
     name: "folio",
@@ -12,16 +24,7 @@ pub(crate) static FOLIO: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/folio/folio.css.br"
     ))),
-    templates: &[
-        PackTemplate::compressed(
-            "home.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/folio/home.html.br")),
-        ),
-        PackTemplate::compressed(
-            "post.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/folio/post.html.br")),
-        ),
-    ],
+    templates: &FOLIO_TEMPLATES,
     tokens: include_str!("../packs/folio/tokens.toml"),
     reader: &[],
     options: &[

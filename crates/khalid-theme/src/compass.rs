@@ -11,6 +11,12 @@ use khalid_core::ReaderSwitch;
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks};
 use crate::{Pack, PackTemplate, PackText, slot};
 
+/// The template files the compass pack replaces.
+static COMPASS_TEMPLATES: [PackTemplate; 1] = [PackTemplate::compressed(
+    "home.html",
+    include_bytes!(concat!(env!("OUT_DIR"), "/packs/compass/home.html.br")),
+)];
+
 /// The Compass pack.
 pub(crate) static COMPASS: Pack = Pack {
     name: "compass",
@@ -19,10 +25,7 @@ pub(crate) static COMPASS: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/compass/compass.css.br"
     ))),
-    templates: &[PackTemplate::compressed(
-        "home.html",
-        include_bytes!(concat!(env!("OUT_DIR"), "/packs/compass/home.html.br")),
-    )],
+    templates: &COMPASS_TEMPLATES,
     tokens: include_str!("../packs/compass/tokens.toml"),
     reader: &[
         (ReaderSwitch::Byline, false),

@@ -8,6 +8,18 @@ use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 /// The longest tagline, about one line on a phone.
 const TAGLINE_CHARACTERS: usize = 140;
 
+/// The template files the ledger pack replaces.
+static LEDGER_TEMPLATES: [PackTemplate; 2] = [
+    PackTemplate::compressed(
+        "home.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/ledger/home.html.br")),
+    ),
+    PackTemplate::compressed(
+        "post.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/ledger/post.html.br")),
+    ),
+];
+
 /// The Ledger pack.
 pub(crate) static LEDGER: Pack = Pack {
     name: "ledger",
@@ -16,16 +28,7 @@ pub(crate) static LEDGER: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/ledger/ledger.css.br"
     ))),
-    templates: &[
-        PackTemplate::compressed(
-            "home.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/ledger/home.html.br")),
-        ),
-        PackTemplate::compressed(
-            "post.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/ledger/post.html.br")),
-        ),
-    ],
+    templates: &LEDGER_TEMPLATES,
     tokens: include_str!("../packs/ledger/tokens.toml"),
     reader: &[],
     options: &[

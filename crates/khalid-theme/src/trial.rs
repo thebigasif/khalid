@@ -35,6 +35,12 @@ pub(crate) static SAMPLER: Pack = Pack {
     ],
 };
 
+/// The template files the trial pack replaces.
+static TRIAL_TEMPLATES: [PackTemplate; 1] = [PackTemplate::compressed(
+    "not_found.html",
+    include_bytes!(concat!(env!("OUT_DIR"), "/packs/trial/not_found.html.br")),
+)];
+
 /// The trial pack.
 pub(crate) static TRIAL: Pack = Pack {
     name: "trial",
@@ -43,10 +49,7 @@ pub(crate) static TRIAL: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/trial/trial.css.br"
     ))),
-    templates: &[PackTemplate::compressed(
-        "not_found.html",
-        include_bytes!(concat!(env!("OUT_DIR"), "/packs/trial/not_found.html.br")),
-    )],
+    templates: &TRIAL_TEMPLATES,
     tokens: "[type]\nh1 = \"3rem 4rem\"\n",
     reader: &[(ReaderSwitch::ReadingTime, false)],
     options: &[

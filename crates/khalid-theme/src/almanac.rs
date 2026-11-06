@@ -7,6 +7,18 @@
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 
+/// The template files the almanac pack replaces.
+static ALMANAC_TEMPLATES: [PackTemplate; 2] = [
+    PackTemplate::compressed(
+        "home.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/almanac/home.html.br")),
+    ),
+    PackTemplate::compressed(
+        "post.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/almanac/post.html.br")),
+    ),
+];
+
 /// The Almanac pack.
 pub(crate) static ALMANAC: Pack = Pack {
     name: "almanac",
@@ -15,16 +27,7 @@ pub(crate) static ALMANAC: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/almanac/almanac.css.br"
     ))),
-    templates: &[
-        PackTemplate::compressed(
-            "home.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/almanac/home.html.br")),
-        ),
-        PackTemplate::compressed(
-            "post.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/almanac/post.html.br")),
-        ),
-    ],
+    templates: &ALMANAC_TEMPLATES,
     tokens: include_str!("../packs/almanac/tokens.toml"),
     reader: &[],
     options: &[

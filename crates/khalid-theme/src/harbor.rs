@@ -7,6 +7,18 @@ use khalid_core::ReaderSwitch;
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
 use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 
+/// The template files the harbor pack replaces.
+static HARBOR_TEMPLATES: [PackTemplate; 2] = [
+    PackTemplate::compressed(
+        "home.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/harbor/home.html.br")),
+    ),
+    PackTemplate::compressed(
+        "post.html",
+        include_bytes!(concat!(env!("OUT_DIR"), "/packs/harbor/post.html.br")),
+    ),
+];
+
 /// The Harbor pack.
 pub(crate) static HARBOR: Pack = Pack {
     name: "harbor",
@@ -15,16 +27,7 @@ pub(crate) static HARBOR: Pack = Pack {
         env!("OUT_DIR"),
         "/packs/harbor/harbor.css.br"
     ))),
-    templates: &[
-        PackTemplate::compressed(
-            "home.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/harbor/home.html.br")),
-        ),
-        PackTemplate::compressed(
-            "post.html",
-            include_bytes!(concat!(env!("OUT_DIR"), "/packs/harbor/post.html.br")),
-        ),
-    ],
+    templates: &HARBOR_TEMPLATES,
     tokens: include_str!("../packs/harbor/tokens.toml"),
     reader: &[
         (ReaderSwitch::ReadingTime, true),
