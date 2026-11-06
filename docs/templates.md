@@ -33,6 +33,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `digest`: a compact newsletter blog that leads with the latest issue, then a subscribe box, featured issues in soft grey panels and a ruled list of past issues. Based on Ghost's Digest theme (MIT). See [Digest](templates/digest.md).
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
 - `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
+- `headline`: a local news site with the logo over the menu, the latest stories, a section for each topic with a lead story and small rows, short lists of headlines for more topics, and a dark footer. Based on Ghost's Headline theme (MIT). See [Headline](templates/headline.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).

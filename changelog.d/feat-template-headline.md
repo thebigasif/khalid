@@ -1,0 +1,2 @@
+Added
+- A new template, Headline, based on Ghost's Headline theme (MIT), for local news and other sites with many topics. The logo sits over the menu, the front page shows the latest posts and then a section for each category with a lead story and small rows, then short lists of headlines for more categories, and the footer is a dark band. Posts read in one column with the byline in the margin. Pick it with `[template] name = "headline"`; see docs/templates/headline.md.
