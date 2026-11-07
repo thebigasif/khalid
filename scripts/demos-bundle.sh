@@ -29,12 +29,27 @@
 # the templates folder of the GitHub Pages build. Without it they are drawn
 # here, as plain cards where no Chromium runs.
 #
+# Before it packs, the build leaves out every picture no page shows: the
+# originals each post's folder holds, which pages name only in their
+# structured data, never in a picture. A page loads the sized copies in
+# media/ instead. The structured data then names only the pictures that
+# stay. Only raster pictures are left out; SVG files, such as the
+# gallery's previews, all stay.
+#
 # --check reads a built bundle and stops unless templates.json lists every
 # template the bundle has, each with its demo and with picture files that
-# are there. A build runs the same check before it packs.
+# are there, and unless every picture, video and sound a page, stylesheet,
+# feed or templates.json names is in the bundle. Given the archive, it also
+# stops when the archive is over its size budget. A build runs the same
+# checks before and after it packs.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# The most khalid-demos.tar.gz may weigh, in megabytes of 1,000,000 bytes
+# (docs/standards/performance.md, "Demo bundle"). Never raise it to make a
+# build pass; find what grew instead.
+budget_mb=1055
 
 # The kind of blog each template suits, as the gallery groups them, and the
 # heading it shows over each group, from the template's own pack.toml.
@@ -98,11 +113,187 @@ if faults:
     sys.exit(1)
 print(f"templates.json lists all {len(names)} templates, and every demo and picture it names is in the bundle.")
 EOF
+  media check "$1"
+}
+
+# media prune|check <folder>: reads every page, stylesheet, feed and
+# templates.json the built bundle <folder> packs, and every address of a
+# file in the bundle they name: in src, srcset, href, poster, url(), meta
+# tags, feeds and structured data. "prune" removes each raster picture
+# nothing but structured data names, and takes it out of that structured
+# data. "check" stops when a picture, video or sound something names is
+# not in the bundle.
+media() {
+  python3 -I - "$1" "$2" <<'EOF'
+import html
+import json
+import os
+import pathlib
+import re
+import sys
+import urllib.parse
+
+mode, bundle = sys.argv[1], pathlib.Path(sys.argv[2]).resolve()
+ADDRESS, MOUNT = "https://serpdad.com", "/khalid/"
+PICTURES = {".avif", ".webp", ".jpg", ".jpeg", ".png", ".gif"}
+MEDIA = PICTURES | {".svg", ".mp4", ".webm", ".mp3", ".ogg", ".wav"}
+TEXT = {".html", ".css", ".xml", ".json", ".js", ".svg", ".webmanifest", ".txt"}
+ABSOLUTE = re.compile(r"""(?:https?://serpdad\.com)?(/khalid/[^"'\s,()<>&\\]*)""")
+ATTRIBUTE = re.compile(r"""\b(src|srcset|href|poster|data-[a-z-]+)\s*=\s*"([^"]*)\"""")
+CSS_URL = re.compile(r"""url\(\s*['"]?([^'")]+)['"]?\s*\)""")
+STRUCTURED = re.compile(r'(<script type="application/ld\+json">)(.*?)(</script>)', re.S)
+
+
+def packed(path):
+    """Whether the archive holds the file at path, as the build packs it."""
+    parts = path.relative_to(bundle).parts
+    if parts[0] in ("demo", "demos", "examples"):
+        return True
+    if parts == ("templates.json",):
+        return True
+    return parts[0] == "templates" and (len(parts) == 2 or parts[1] == "assets")
+
+
+def ours(path):
+    """Whether a file named belongs in the bundle's folders. Other files
+    under /khalid/, such as the product page's, are serpdad.com's own."""
+    parts = path.relative_to(bundle).parts
+    return parts[0] in ("demo", "demos", "examples", "templates", "templates.json")
+
+
+def files():
+    for path in sorted(bundle.rglob("*")):
+        if path.is_file() and packed(path):
+            yield path
+
+
+def resolve(folder, address):
+    """The file in the bundle an address names, or None for one outside it."""
+    address = urllib.parse.unquote(address.split("#")[0].split("?")[0].strip())
+    if address.startswith(ADDRESS):
+        address = address[len(ADDRESS):]
+    if address.startswith(MOUNT):
+        path = bundle / address[len(MOUNT):]
+    elif not address or address.startswith(("/", "data:")) or ":" in address:
+        return None
+    else:
+        path = folder / address
+    path = pathlib.Path(os.path.normpath(path))
+    return path if path.is_relative_to(bundle) and path != bundle else None
+
+
+def addresses(text, folder, relative):
+    """Every file in the bundle a text names. Addresses relative to the
+    file's folder count only where relative is true: in a page, a
+    stylesheet or an SVG, but not in a feed, whose posts are relative to
+    their own pages."""
+    text = text.replace("\\/", "/")
+    found = {resolve(folder, match.group(1)) for match in ABSOLUTE.finditer(text)}
+    if relative:
+        for match in ATTRIBUTE.finditer(text):
+            name, value = match.group(1), html.unescape(match.group(2))
+            candidates = value.split(",") if name.endswith("srcset") else [value]
+            for candidate in candidates:
+                words = candidate.split() if name.endswith("srcset") else [candidate]
+                if words:
+                    found.add(resolve(folder, words[0]))
+        for match in CSS_URL.finditer(text):
+            found.add(resolve(folder, match.group(1)))
+    found.discard(None)
+    return found
+
+
+named, structured = set(), {}
+for path in files():
+    if path.suffix not in TEXT:
+        continue
+    text = path.read_text(encoding="utf-8", errors="replace")
+    if path.name == "templates.json":
+        for entry in json.loads(text)["templates"]:
+            for value in [entry.get("demo") or ""] + list((entry.get("pictures") or {}).values()):
+                found = resolve(bundle, value)
+                if found:
+                    named.add(found)
+        continue
+    if path.suffix == ".html":
+        for block in STRUCTURED.finditer(text):
+            structured[path] = structured.get(path, set()) | addresses(block.group(2), path.parent, False)
+        text = STRUCTURED.sub("", text)
+    named |= addresses(text, path.parent, path.suffix in (".html", ".css", ".svg"))
+
+
+def escaped(data):
+    """JSON for a script tag: no tag can end inside it."""
+    text = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+    return text.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+
+
+GONE = object()
+
+
+def without(data, gone, folder):
+    """The structured data without the addresses of the files in gone. A
+    list or key left empty by that goes too; nothing else changes."""
+    if isinstance(data, list):
+        kept = [item for item in (without(item, gone, folder) for item in data) if item is not GONE]
+        return GONE if data and not kept else kept
+    if isinstance(data, dict):
+        kept = {key: without(value, gone, folder) for key, value in data.items()}
+        return {key: value for key, value in kept.items() if value is not GONE}
+    if isinstance(data, str) and resolve(folder, data) in gone:
+        return GONE
+    return data
+
+
+if mode == "prune":
+    gone, weight = set(), 0
+    for path in files():
+        if path.suffix.lower() in PICTURES and path not in named:
+            weight += path.stat().st_size
+            gone.add(path)
+            path.unlink()
+    for page, found in structured.items():
+        if not found & gone:
+            continue
+        text = page.read_text(encoding="utf-8")
+        page.write_text(
+            STRUCTURED.sub(
+                lambda block: block.group(1) + escaped(without(json.loads(block.group(2)), gone, page.parent)) + block.group(3),
+                text,
+            ),
+            encoding="utf-8",
+        )
+    print(f"Left out {len(gone)} pictures no page shows, {weight / 1e6:.1f} MB.")
+    sys.exit(0)
+
+missing = {
+    path
+    for path in named.union(*structured.values())
+    if path.suffix.lower() in MEDIA and ours(path) and not (path.is_file() and packed(path))
+}
+if missing:
+    shown = sorted(str(path.relative_to(bundle)) for path in missing)
+    print(f"Pages name {len(shown)} pictures, videos or sounds the bundle does not hold:", *shown[:20], sep="\n  ", file=sys.stderr)
+    sys.exit(1)
+print("Every picture, video and sound the pages name is in the bundle.")
+EOF
+}
+
+# budget <archive>: stops when the archive weighs more than budget_mb.
+budget() {
+  local bytes
+  bytes="$(stat -c %s "$1" 2>/dev/null || stat -f %z "$1")"
+  if [ "$bytes" -gt $((budget_mb * 1000000)) ]; then
+    echo "$1 weighs $((bytes / 1000000)) MB, over its budget of $budget_mb MB (docs/standards/performance.md, \"Demo bundle\"). Find what grew, such as a new picture width or format, and leave out what no page shows. Never raise the budget to make the build pass." >&2
+    exit 1
+  fi
+  echo "$1 weighs $((bytes / 1000000)) MB, inside its budget of $budget_mb MB."
 }
 
 if [ "${1:-}" = "--check" ]; then
   given="${2:?Name a built bundle folder or khalid-demos.tar.gz to check.}"
   if [ -f "$given" ]; then
+    budget "$given"
     unpacked="$(mktemp -d)"
     trap 'rm -rf "$unpacked"' EXIT
     tar -xzf "$given" -C "$unpacked"
@@ -155,6 +346,8 @@ done
   printf '\n  ]\n}\n'
 } >"$out/templates.json"
 check "$out"
+media prune "$out"
+media check "$out"
 
 tarball="$(cd "$(dirname "$out")" && pwd)/khalid-demos.tar.gz"
 # The gallery's own files, without the build's templates/<name>/ copies.
@@ -162,3 +355,4 @@ mapfile -t gallery < <(cd "$out" && find templates -maxdepth 1 -type f | LC_ALL=
 tar --sort=name --owner=0 --group=0 --numeric-owner -czf "$tarball" -C "$out" \
   demo demos "${gallery[@]}" templates/assets examples templates.json
 echo "The demos for https://serpdad.com/khalid/ are packed in $tarball."
+budget "$tarball"
