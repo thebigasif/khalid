@@ -41,7 +41,7 @@
 {% elif episodes %}{% set lead = episodes[0] %}{% set facts = lead.facts %}<section class="latest-guest" aria-labelledby="latest-guest-title">
 <h2 id="latest-guest-title" class="section-label">{{ t.latest_guest }}</h2>
 <div class="latest-guest-body">
-{% if lead.image %}<div class="latest-guest-picture">{{ picture(lead.image) }}</div>
+{% if lead.image %}<div class="latest-guest-picture">{{ picture(lead.image, sizes="(min-width: 76rem) 33rem, (min-width: 56rem) 42vw, calc(100vw - 2rem)") }}</div>
 {% endif %}<div class="latest-guest-text">
 <p class="latest-guest-kicker">{{ t.in_conversation_with }}</p>
 <p class="latest-guest-name">{{ facts[0].value }}</p>
