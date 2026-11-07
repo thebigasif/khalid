@@ -1,3 +1,0 @@
-Added
-- A new template, Casper, based on Ghost's Casper theme (MIT). The front page opens with a cover band, the blog's name on the accent colour with the newest featured post's picture under it, then a feed with one large card, two half cards and then three across. Each post reads in one serif column, with the sign-up box and three more posts under it. The header puts the logo at the start, in the middle or stacked, picked with `navigation`. Pick it with `[template] name = "casper"`; see docs/templates/casper.md.
-- A template pack can add attributes to every page's `<body>` through a new shared template, `body_attrs.html`, which is empty by default, so other templates are unchanged.

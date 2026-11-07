@@ -20,7 +20,7 @@ The name has nothing to do with the channels in `routes.toml`, the filtered list
 - A small team that teaches a craft or a skill in videos, often in series.
 - A creator who mixes videos with the odd written post, such as gear notes or a studio update.
 
-It suits a podcast less well; Episode leads with a sound player. For a writer with no videos, Solo reads better.
+It suits a podcast or a writer with no videos less well.
 
 ## Videos are posts with a video in them
 

@@ -1,2 +1,0 @@
-Added
-- A new template, Source, based on Ghost's Source theme (MIT). The logo sits in the middle of the header, and the front page opens with a landing, highlight, magazine or search header, or none, picked with `header_style`. Posts show as a list or a grid with thin lines between them, and each post reads in one calm column under a wide picture. Pick it with `[template] name = "source"`; see docs/templates/source.md.

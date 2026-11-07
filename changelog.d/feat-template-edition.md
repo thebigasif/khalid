@@ -1,2 +1,0 @@
-Added
-- A new template, `edition`, for a blog that is also a newsletter, based on Ghost's Edition theme (MIT). Its front page opens with a cover across the whole screen: one large line and the sign-up form on a dark band, over the picture of the newest featured post. A row of featured posts and a quiet list of the latest posts follow. Set the line with `cover_text`, the cover's height with `cover` and the list's layout with `feed_layout`. See docs/templates/edition.md.

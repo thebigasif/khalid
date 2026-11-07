@@ -71,8 +71,6 @@ The demo's sample brand is a pine green (`#2d5a4b`) on a pale paper (`#f9f6ef`),
 ## How it differs from the existing templates
 
 - **Ledger** has a dotted leader in its contents list, but it is a text-led knowledge blog with no pictures. Chapter leads with book covers and sets excerpts as book pages.
-- **Solo** is one writer's personal blog with a sign-up headline and a feed. Chapter has no feed: it splits books, writing and events into their own forms.
 - **Research** lists papers as a numbered reference register with citations. Chapter's books are covers on a shelf, and its facts are for buying a book or going to an event.
-- **Casper** is a picture-led blog with a card grid. Chapter's pictures are portrait book covers, and its writing has no cards at all.
 
 No other template has a cover shelf, event rows or a chapter opener. The cover shelf is a new shared section part (`sections/cover_shelf.html`), since a musician's releases, film reviews and games can use it too. The contents page and the event list are new shared parts too: a course, a podcast or a newsletter can list its lessons, episodes or issues as a contents page, and a musician or a charity can list dates as an event list.

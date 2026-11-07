@@ -73,7 +73,6 @@ The demo's sample brand, Tallyline, uses a petrol blue accent (`#0f5b6e`) on the
 
 - **Workbench** shows a score panel and comparison tables for products. Ticker's figures are signed moves, charted from a centre line, and its lists are tables of figures across issues.
 - **Keystone** lists posts with facts as a project index, one column per fact. Ticker shades each figure cell by how far it moved and leads with a chart of the newest issue.
-- **Bulletin** and **Edition** are newsletters led by a sign-up panel or a cover picture. Ticker leads with the tape and the latest issue's chart, and keeps pictures to the post page.
 - **Research** lists papers as a reference register. Ticker shares its hero and people grid, but not its look.
 
 Two new shared section parts come from Ticker: a bar chart and a fact table (see `crates/khalid-render/templates/sections/README.md`). A sports club's season record, a charity's impact figures and a science explainer's results can use them too.

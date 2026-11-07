@@ -18,7 +18,7 @@ name = "aperture"
 - A photo journal or a walking blog where every post leads with a single strong picture.
 - A camera club or a teacher who wants each picture to show its settings, so readers can learn from them.
 
-It is not a portfolio grid. To show many pictures at once as a wall or as tiles, Edge or London suits better. For a blog where the words come first, Ledger does.
+It is not a portfolio grid. For a blog where the words come first, Ledger does.
 
 ## Camera details are facts
 

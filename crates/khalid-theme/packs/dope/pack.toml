@@ -1,5 +1,0 @@
-# What the scripts know about this template; the binary does not read it.
-# See scripts/template-packs.sh.
-kind = "magazine"
-kind_label = "Magazine"
-frame = 1190

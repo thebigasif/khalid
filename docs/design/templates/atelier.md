@@ -73,6 +73,5 @@ The demo's sample brand, Studio Ilvane, is ecru (`#f7f4ee`) with a terracotta ac
 - **Atlas** and **Keystone** are magazines with landscape cards and many sections. Atelier has one subject per post, tall pictures and a numbered lookbook grid.
 - **Harbor** lists facts as a recipe card on food posts. Atelier's facts are the pieces of an outfit, set as a ledger with dotted leaders beside the picture.
 - **Research** numbers papers in a text register. Atelier numbers looks in a picture grid, and its post opens as a two-page spread.
-- **Solo** and **Folio** are text-led personal sites. Atelier leads with pictures.
 
 Atelier adds two shared section parts that other picture-led templates on the list can use: a **spread** (a picture beside a text column with a facts ledger, for architecture project spreads and single-image photo stories) and a **picture grid** (numbered tall pictures with the caption under each, for project and story grids). See `crates/khalid-render/templates/sections/README.md`.
