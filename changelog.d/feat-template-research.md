@@ -1,3 +1,0 @@
-Added
-- The Research template, for a research lab or academic group. A post with facts is a paper: the front page lists papers as a numbered reference list with venue, year, DOI and citations beside a news feed and an index of research areas, and each paper ends with a Cite this box and a BibTeX entry built from its own data. Lists group papers by year, and the people page shows the group in a grid.
-- Shared section parts for templates in `crates/khalid-render/templates/sections/`: a hero, a figure strip, a feed list, a people grid, a publication list and a cite box. A template ships a part's styles only when it uses the part.

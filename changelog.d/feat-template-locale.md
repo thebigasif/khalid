@@ -1,2 +1,0 @@
-Added
-- The Locale template, for a city guide. A post with facts is a place: its kind, price level, opening hours and address. The front page lists every area's places as guidebook rows, each with its name, a dotted leader and a price meter, then its kind and hours, with a chip per area to jump to it. Each place opens with its picture beside an At a glance card, and notes from the city show as picture cards.
