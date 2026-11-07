@@ -30,6 +30,7 @@ mod fixture;
 mod folio;
 mod font_files;
 mod fonts;
+mod frequency;
 mod harbor;
 mod hearth;
 mod hub;

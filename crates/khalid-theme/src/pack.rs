@@ -245,6 +245,7 @@ static PACKS: &[&Pack] = &[
     &crate::encore::ENCORE,
     &crate::fixture::FIXTURE,
     &crate::folio::FOLIO,
+    &crate::frequency::FREQUENCY,
     &crate::harbor::HARBOR,
     &crate::hearth::HEARTH,
     &crate::hub::HUB,

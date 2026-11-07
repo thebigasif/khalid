@@ -443,3 +443,8 @@ notebook_more = "More notes"
 in_this_issue = "In this issue"
 issue_end = "End of the issue"
 more_issues = "More issues"
+# The frequency template's front page, episode plate and related episodes.
+frequency_episodes = "Episodes"
+frequency_show_notes = "Show notes"
+frequency_episode_facts = "About this episode"
+frequency_more_episodes = "More episodes"
