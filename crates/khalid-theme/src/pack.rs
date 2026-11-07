@@ -260,6 +260,7 @@ static PACKS: &[&Pack] = &[
     &crate::locale::LOCALE,
     &crate::masthead::MASTHEAD,
     &crate::margin::MARGIN,
+    &crate::manual::MANUAL,
     &crate::meridian::MERIDIAN,
     &crate::notebook::NOTEBOOK,
     &crate::mosaic::MOSAIC,

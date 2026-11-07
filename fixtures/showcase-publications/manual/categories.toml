@@ -1,0 +1,52 @@
+# The Brindle Help Centre's topics, in the order the Manual template
+# numbers them on the front page: 01 Getting started to 06 Warranty
+# and returns. Each category page is that topic's list of articles,
+# with its intro at the top.
+
+[[categories]]
+slug = "getting-started"
+en = "Getting started"
+
+[categories.seo.en]
+description = "Unbox your bike, fit it to you and take your first ride."
+intro = "Your Brindle arrives almost built. These articles take you from the box to your first ride, in order, in about an hour."
+
+[[categories]]
+slug = "battery-and-charging"
+en = "Battery and charging"
+
+[categories.seo.en]
+description = "How to charge the battery, how far it takes you and how to store it."
+intro = "How to charge the battery, how far one charge takes you, and how to keep the battery healthy for years."
+
+[[categories]]
+slug = "riding"
+en = "Riding and gears"
+
+[categories.seo.en]
+description = "The assist levels, the gears and the lights."
+intro = "Get the most from the motor and the gears, and ride safely day and night."
+
+[[categories]]
+slug = "care-and-repairs"
+en = "Care and repairs"
+
+[categories.seo.en]
+description = "The monthly checks: tyres, chain and brakes."
+intro = "Ten minutes a month keeps your bike safe and quiet. Start with the tyres, then the chain, then the brakes."
+
+[[categories]]
+slug = "orders-and-delivery"
+en = "Orders and delivery"
+
+[categories.seo.en]
+description = "Track your bike and change where it goes."
+intro = "From the day you order to the day your bike arrives: tracking, delivery days and changing the address."
+
+[[categories]]
+slug = "warranty-and-returns"
+en = "Warranty and returns"
+
+[categories.seo.en]
+description = "What the warranty covers and how to return a bike."
+intro = "What the warranty covers, how to make a claim, and how to return or swap a bike within 30 days."

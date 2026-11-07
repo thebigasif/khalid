@@ -47,6 +47,7 @@ mod locale;
 mod look;
 mod masthead;
 mod margin;
+mod manual;
 mod meridian;
 mod notebook;
 mod mosaic;
