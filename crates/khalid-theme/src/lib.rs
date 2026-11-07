@@ -39,6 +39,7 @@ mod gallery;
 mod harbor;
 mod hearth;
 mod hub;
+mod inkwell;
 mod itinerary;
 mod keystone;
 mod lattice;
