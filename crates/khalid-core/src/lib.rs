@@ -65,7 +65,7 @@ pub use locale::{Locale, ParseLocaleError};
 pub use mail_settings::{
     MailSettings, MailTransport, PostmarkSettings, SmtpSecurity, SmtpSettings,
 };
-pub use media_settings::{MediaSettings, S3Keys, S3Settings};
+pub use media_settings::{AvifSetting, MediaSettings, S3Keys, S3Settings};
 pub use post_access::{
     ParsePasswordHashError, ParseTemplateNameError, PasswordHash, PostAccess, TemplateName,
 };

@@ -114,6 +114,20 @@ fn an_image_with_only_its_original_format_still_reserves_its_space() {
     assert!(page.contains(r#"width="1600" height="900""#));
 }
 
+#[test]
+fn an_image_in_avif_alone_has_no_webp_source_and_keeps_its_fallback() {
+    let mut image = sitemap_image(Loading::Lazy);
+    image.webp = None;
+    image.fallback = ImageSet::new(candidate("/blog/media/3f2a9c1e-1024.jpg", 1024), vec![]);
+    let page = render_post_with(image);
+    assert_valid_page(&page);
+    assert!(page.contains(r#"<source type="image/avif""#));
+    assert!(!page.contains("image/webp"));
+    assert!(page.contains(
+        r#"<img src="/blog/media/3f2a9c1e-1024.jpg" srcset="/blog/media/3f2a9c1e-1024.jpg 1024w""#
+    ));
+}
+
 /// The post page of a pack whose `post.html` is `template`, with the
 /// sitemap post's lead image.
 fn render_post_in_pack(template: &'static str) -> String {
