@@ -121,3 +121,5 @@ main > .nb-note.post-with-toc ~ * { margin-inline-start: max(calc(var(--nb-rail)
 .related { margin-block-start: var(--space-section); }
 .related .feed-item time { font-family: var(--font-mono); font-size: 0.8125rem; }
 .related .feed-item { border-block-end-style: dashed; }
+/* A long note title breaks inside a long word or address. */
+.nb-title { overflow-wrap: anywhere; }
