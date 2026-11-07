@@ -258,7 +258,7 @@ Per template numbers are in the pull request that added the check (perf/picture-
 Most phones draw three device pixels per CSS pixel, so a card 326 px wide needs a file 978 px wide to look sharp, nine times the pixels of the 1x phone the budget first measured. Measured in Chromium at 390 px and 3x, the 31 demo home pages downloaded 16,258 KB of pictures, Aperture alone 1,507 KB. Three changes (perf/phone-pictures):
 
 - **A width for 3x phone cards.** With `sizes` from perf/picture-sizes, Chromium already fetched a file close to slot width times 3: at most 1.31 times what it drew, and that only where a slot's `sizes` rounds up. But a card 344 to 384 px wide needs 1,032 to 1,152 pixels, just over the 1,024 px file, so it fetched the 1,280 px one. `khalid-media` now also makes 1,152 px. The widths are 320, 480, 640, 800, 1,024, 1,152, 1,280, 1,600 and 2,048; for every slot from 320 to 420 px at 3x the file fetched is at most an eighth wider than needed (the `plan` test checks it). 960 was not added: between 800 and 1,024 it would save at most 6% of a file.
-- **AVIF for the demos.** Every template demo, as published and as the checks build it, sets `avif = true` (`scripts/demo-media.sh`). Each picture is offered in AVIF, then WebP, then the original's format. AVIF stays off for other sites, because of its cost (below).
+- **AVIF for the demos.** Every template demo, as published and as the checks build it, sets `avif = true` (`scripts/demo-media.sh`). Each picture is offered in AVIF, then WebP, then the original's format. AVIF stays off for other sites, because of its cost (below). Since perf/demos-avif-only the demos set `avif = "only"` instead ("Demo bundle").
 - **AVIF quality 55 instead of 60.** WebP stays at 78.
 
 How the quality was chosen. Six demo photos (city streets, a harbour cliff, a gallery stair, a film still, seed potatoes) were encoded at 1,024 and 1,152 px and compared with the resized original, by SSIM on lightness in Chromium's own decoder and side by side at full size and at 2x zoom:
@@ -342,7 +342,7 @@ How `scripts/perf.sh` takes the four measures added for brief G9, all through `k
 
 ## Demo bundle
 
-`khalid-demos.tar.gz`, which serpdad.com/khalid/ is built from, has a budget of **1,055 MB** (MB of 1,000,000 bytes). `scripts/demos-bundle.sh` fails the Pages build when the archive is over it, and `scripts/demos-bundle.sh --check khalid-demos.tar.gz` checks a downloaded one. A budget is never raised to make the build pass.
+`khalid-demos.tar.gz`, which serpdad.com/khalid/ is built from, has a budget of **464 MB** (MB of 1,000,000 bytes). `scripts/demos-bundle.sh` fails the Pages build when the archive is over it, and `scripts/demos-bundle.sh --check khalid-demos.tar.gz` checks a downloaded one. A budget is never raised to make the build pass.
 
 Before it packs, the bundle step leaves out every raster picture that only structured data names, such as the original photo in each post's folder, and takes it out of that structured data. Pages load the sized copies in `media/` instead. It then fails if a page, stylesheet, feed or `templates.json` names a picture, video or sound the bundle does not hold.
 
@@ -355,7 +355,24 @@ Measured on 2026-11-07 (perf/demo-bundle):
 | Main with pruning (498 originals, 141.1 MB, left out) | 704.9 MB |
 | Main with pruning and the 18 templates of batch 5 (49 demos; 696 originals, 205.6 MB, left out) | 1,024.4 MB |
 
-The budget is the last result, what Pages publishes once batch 5 lands, with about 3% headroom. What stays is nearly all pictures pages load: with batch 5, WebP 514 MB, AVIF 271 MB, the 1,280 px JPEG fallback 185 MB and the share cards 83 MB, unpacked. A browser picks almost every width: across viewports 320 to 2,560 px at 1x to 3x, only 4 MB of files are never a browser's choice. A smaller bundle needs fewer formats, not fewer widths.
+What stays is nearly all pictures pages load: with batch 5, WebP 514 MB, AVIF 271 MB, the 1,280 px JPEG fallback 185 MB and the share cards 83 MB, unpacked. A browser picks almost every width: across viewports 320 to 2,560 px at 1x to 3x, only 4 MB of files are never a browser's choice. A smaller bundle needs fewer formats, not fewer widths.
+
+### AVIF in place of WebP (2026-11-07)
+
+Every browser that reads WebP today also reads AVIF, so in the demos WebP only added files. The demos now set `avif = "only"` under `[media]` (`scripts/demo-media.sh`): each picture comes in AVIF at every width and in one JPEG or PNG, at most 1,024 px wide, the width `khalid-media` makes closest to 960. A browser without AVIF, such as Safari before 16 or an old in-app browser, skips the AVIF source and loads that file from the `<img>`. Other sites keep WebP unless they ask (docs/deploy.md, "Smaller pictures with AVIF").
+
+Measured on the build server (perf/demos-avif-only):
+
+| Bundle | Before | After |
+|---|---|---|
+| Main, 31 demos | 702 MB | 310.1 MB |
+| Main with batch 5, 49 demos | 1,024.4 MB | 450.5 MB |
+
+Unpacked, the 49 demos now hold AVIF 271 MB, the 1,024 px JPEG fallback 123 MB (185 MB at 1,280 px) and the share cards 83 MB, and no WebP. The budget is the 49-demo result with about 3% headroom.
+
+A second JPEG width is not worth it. A 640 px JPEG beside the 1,024 px one would add about 43% of the fallback's bytes, 36 MB unpacked for the 31 demos and 53 MB for 49 (each 1,024 px JPEG resized to 640 and 1,024 px and encoded at the same quality in Chromium, 495 photos). It would serve only browsers without AVIF, on narrow screens, which already get a sharp picture.
+
+The page-weight check still passes on the packs measured (Almanac, Aperture, Atlas, Classic, Harbor, Keystone, Meridian, Wire, and from batch 5 Dispatch, Gazette, Glossy, Mosaic, Pantry, Quill), with the same numbers: Chromium took AVIF before and still does. `scripts/demo-check/fallback.mjs` opens each demo as a browser without AVIF sees it, every `<source type="image/avif">` taken out, and fails when a picture shows nothing; CI runs it in each Chromium layout job. On those 14 packs all 868 pictures on 82 pages showed their JPEG or PNG.
 
 ## CSS weight
 

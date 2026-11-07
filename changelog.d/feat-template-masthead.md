@@ -1,2 +1,0 @@
-Added
-- The Masthead template, for a general publication such as a magazine, a review or a small paper. The site's name sits centred over a heavy and a thin rule with the menu between them, and the same pair of rules heads every section. The front page shows a lead story, the latest posts as picture cards in a grid or as one story a row, as the new `front` option sets, then the rest as headlines by section. Posts keep to a calm reading column of about 66 characters a line.

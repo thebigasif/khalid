@@ -90,10 +90,31 @@ const FALLBACK_MAX: u32 = 1280;
 /// pixels wide: one, the widest of [`widths`] at 1280 px or below, or the
 /// narrowest when every width is wider.
 pub fn fallback_widths(width: u32) -> Vec<u32> {
+    one_width_up_to(width, FALLBACK_MAX)
+}
+
+/// The widest fallback file when a site offers AVIF in place of
+/// WebP (`avif = "only"`).
+/// Every current browser then takes AVIF, so the fallback serves only the
+/// few that read neither format. One middle width keeps the picture sharp
+/// enough on their screens at a third of the bytes of the 1280 px file
+/// times two formats.
+const FALLBACK_BESIDE_AVIF_MAX: u32 = 1024;
+
+/// The widths to make in the fallback format beside AVIF alone, without
+/// WebP, for an original `width` pixels wide: one, the widest of [`widths`]
+/// at 1024 px or below, or the narrowest when every width is wider.
+pub fn fallback_widths_beside_avif(width: u32) -> Vec<u32> {
+    one_width_up_to(width, FALLBACK_BESIDE_AVIF_MAX)
+}
+
+/// The widest of [`widths`] for `width` that is `max` or narrower, or the
+/// narrowest when every width is wider, as a list of one or none.
+fn one_width_up_to(width: u32, max: u32) -> Vec<u32> {
     let all = widths(width);
     all.iter()
         .rev()
-        .find(|&&candidate| candidate <= FALLBACK_MAX)
+        .find(|&&candidate| candidate <= max)
         .or_else(|| all.first())
         .copied()
         .into_iter()

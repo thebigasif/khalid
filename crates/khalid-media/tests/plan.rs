@@ -2,7 +2,9 @@
 
 use std::fs;
 
-use khalid_media::{ContentKey, Format, MediaCache, Variant, fallback_widths, widths};
+use khalid_media::{
+    ContentKey, Format, MediaCache, Variant, fallback_widths, fallback_widths_beside_avif, widths,
+};
 
 #[test]
 fn the_same_bytes_get_the_same_key_and_any_change_a_new_one() {
@@ -65,6 +67,16 @@ fn the_fallback_format_gets_one_width_of_1280_or_less() {
     assert_eq!(fallback_widths(1000), [1000]);
     assert_eq!(fallback_widths(300), [300]);
     assert_eq!(fallback_widths(0), [0_u32; 0]);
+}
+
+#[test]
+fn beside_avif_alone_the_fallback_gets_one_width_of_1024_or_less() {
+    assert_eq!(fallback_widths_beside_avif(4000), [1024]);
+    assert_eq!(fallback_widths_beside_avif(1100), [1024]);
+    assert_eq!(fallback_widths_beside_avif(1024), [1024]);
+    assert_eq!(fallback_widths_beside_avif(1000), [1000]);
+    assert_eq!(fallback_widths_beside_avif(300), [300]);
+    assert_eq!(fallback_widths_beside_avif(0), [0_u32; 0]);
 }
 
 #[test]

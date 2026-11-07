@@ -1,2 +1,0 @@
-Added
-- The Frequency template, for a podcast's own site. The front page plays the newest episode in a dark console beside the show's name, its listen links and figures, then lists every other episode as a numbered row with a running-time dial, drawn from the episode's second fact. An episode opens with a dark plate of its facts that joins the player at the top of the show notes, and ends with the listen links. A demo publication, Dark Sky Hours, shows it with public domain photographs.

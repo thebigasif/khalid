@@ -1,2 +1,0 @@
-Added
-- The Hearth template, a warm, classic blog for a small team or a family business. The front page welcomes readers with the blog's name and tagline, leads with one story on a warm panel, its picture in a tall arch beside the title and the author's face, then shows the other posts as a grid of picture cards and every topic as a link. Posts read in a friendly column under a centred head. Every picture sits in an arch.
