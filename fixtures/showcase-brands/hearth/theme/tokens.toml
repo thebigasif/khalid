@@ -1,0 +1,58 @@
+# The sample brand for the Hearth demo: a family plant nursery. Deep green
+# ink on warm white with a pale sage surface and a moss accent, Brygada
+# 1918 for titles and Mulish for the text. Only the brand lives here: the
+# template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#fbf9f4"
+surface = "#eef0e3"
+text = "#1e2a1f"
+muted = "#546052"
+link = "#3d6b35"
+accent = "#3d6b35"
+border = "#dde2cf"
+
+[fonts]
+heading = "\"Brygada 1918\", Constantia, Georgia, serif"
+body = "Mulish, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Brygada 1918"
+style = "normal"
+weight = "600"
+path = "brygada-1918-latin-600.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "101.63%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "61.00%"
+
+[[fonts.files]]
+family = "Mulish"
+style = "normal"
+weight = "400"
+path = "mulish-latin-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "111.02%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "63.01%"
+
+[[fonts.files]]
+family = "Mulish"
+style = "normal"
+weight = "700"
+path = "mulish-latin-700.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "111.02%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "64.60%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

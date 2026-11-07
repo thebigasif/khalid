@@ -1,0 +1,71 @@
+# The sample brand for the Notebook demo: Maren Holt's garden notebook.
+# Green-black ink and a deep leaf green on a pale sage page, Alegreya
+# for the words and Courier Prime for the dates in the margin. Only the
+# brand lives here: the template keeps its own shape, type sizes and
+# spacing.
+[colors]
+background = "#f8f8f3"
+surface = "#edefe4"
+text = "#1d2320"
+muted = "#515a54"
+link = "#2b6a3e"
+accent = "#2b6a3e"
+border = "#d8dccd"
+
+[fonts]
+heading = "Alegreya, Palatino, \"Palatino Linotype\", Georgia, serif"
+body = "Alegreya, Palatino, \"Palatino Linotype\", Georgia, serif"
+mono = "\"Courier Prime\", \"Courier New\", ui-monospace, monospace"
+
+[[fonts.files]]
+family = "Alegreya"
+style = "normal"
+weight = "400"
+path = "alegreya-latin-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "112.23%"
+descent = "162.80%"
+line_gap = "0.00%"
+size_adjust = "58.14%"
+
+[[fonts.files]]
+family = "Alegreya"
+style = "italic"
+weight = "400"
+path = "alegreya-latin-400-italic.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "112.23%"
+descent = "162.80%"
+line_gap = "0.00%"
+size_adjust = "55.81%"
+
+[[fonts.files]]
+family = "Alegreya"
+style = "normal"
+weight = "700"
+path = "alegreya-latin-700.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "112.23%"
+descent = "162.80%"
+line_gap = "0.00%"
+size_adjust = "59.51%"
+
+[[fonts.files]]
+family = "Courier Prime"
+style = "normal"
+weight = "400"
+path = "courier-prime-latin-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "86.30%"
+descent = "161.29%"
+line_gap = "0.00%"
+size_adjust = "63.50%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

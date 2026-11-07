@@ -1,0 +1,61 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-01-11-handwritten-drafts/lead.jpg"
+sha256 = "72439835810e3d0df986c0f7a463c2825a9057dce7968663ff201d42214e7984"
+source = "https://commons.wikimedia.org/wiki/File:Writing_with_a_fountain_pen_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Writing with a fountain pen (Unsplash) by Aaron Burden aaronburden, via Wikimedia Commons"
+title = "Writing with a fountain pen (Unsplash)"
+creator = "Aaron Burden aaronburden"
+openverse = "commons:File:Writing with a fountain pen (Unsplash).jpg"
+needs_credit = false
+size = "1600x1201"
+
+
+
+[[photos]]
+file = "en/posts/2026-02-08-winter-estuary-walk/lead.jpg"
+sha256 = "dcf612c3e2176dc7b4aa370224056eaf2abbfbf2a0b123a97336b8c253199cb5"
+source = "https://commons.wikimedia.org/wiki/File:MistyLowTide(byRobinBenad).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "MistyLowTide(byRobinBenad) by Robin Benad, via Wikimedia Commons"
+title = "MistyLowTide(byRobinBenad)"
+creator = "Robin Benad"
+openverse = "commons:File:MistyLowTide(byRobinBenad).jpg"
+needs_credit = false
+size = "1600x1071"
+
+
+
+[[photos]]
+file = "en/posts/2026-06-14-wet-june-notes/lead.jpg"
+sha256 = "064c146cf29334f85056d5a73e1b574b48711be39422d6bb87c353c1f1c8c0bb"
+source = "https://commons.wikimedia.org/wiki/File:Rainy_window_and_table_book_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Rainy window and table book (Unsplash) by Rosalind Chang rosalindjchang, via Wikimedia Commons"
+title = "Rainy window and table book (Unsplash)"
+creator = "Rosalind Chang rosalindjchang"
+openverse = "commons:File:Rainy window and table book (Unsplash).jpg"
+needs_credit = false
+size = "1600x1062"
+
+
+
+[[photos]]
+file = "en/posts/2026-07-26-town-library-mill-street/lead.jpg"
+sha256 = "1228448b925fd632dc9a24ff6580dcbb6061a46ca6d7329956473a8e78aac3ce"
+source = "https://commons.wikimedia.org/wiki/File:Library_Books_Bookshelves_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Library Books Bookshelves (Unsplash) by Davide Cantelli cant89, via Wikimedia Commons"
+title = "Library Books Bookshelves (Unsplash)"
+creator = "Davide Cantelli cant89"
+openverse = "commons:File:Library Books Bookshelves (Unsplash).jpg"
+needs_credit = false
+size = "1600x1068"
+
+

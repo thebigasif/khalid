@@ -1,0 +1,18 @@
+# The Proof Sheet's categories. Letterpress treats every post as an
+# issue, so the categories only sort the weekly issues from the specials.
+
+[[categories]]
+slug = "weekly"
+en = "Weekly issues"
+
+[categories.seo.en]
+description = "Every weekly issue of The Proof Sheet: one workshop visit, one tool and the letters from readers."
+intro = "One issue every Thursday. Each one visits a workshop, looks at a tool and answers a few letters."
+
+[[categories]]
+slug = "special"
+en = "Special issues"
+
+[categories.seo.en]
+description = "Special issues of The Proof Sheet: workshop lists, guides and the odd longer letter between the weekly ones."
+intro = "Longer issues that go out between the weekly ones, such as the season's list of workshops you can join."

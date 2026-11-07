@@ -1,0 +1,96 @@
+# Dark Sky Hours, a made-up podcast about stargazing and space, written
+# for the Frequency template's demo. Each key and table here replaces the
+# showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Dark Sky Hours"
+languages = ["en"]
+
+# The show's own ask. It links to the about page, which says how to follow.
+[template.cta]
+label = "Follow the show"
+href = "/blog/about/"
+note = "A new episode every Thursday: one question about the night sky, answered in under an hour."
+
+# The Frequency template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here. The listen links
+# use reserved example addresses, since the show is made up.
+[template.options]
+tagline = ["A weekly show about the night sky for people who look up. Two hosts, one question, and what you can see tonight from your own back garden."]
+listen_on = ["Apple Podcasts | https://www.example.com/listen/apple-podcasts/", "Spotify | https://www.example.com/listen/spotify/", "Pocket Casts | https://www.example.com/listen/pocket-casts/", "RSS feed | /blog/feed.xml"]
+hero_stats = ["48 | episodes", "4 | seasons", "2022 | on air since"]
+
+[announcement]
+text = "Live show: record an episode with us at the Fellbrook star party on 21 November."
+href = "/blog/star-party-live-show/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A weekly podcast about the night sky"
+
+[seo.ai_page]
+covers = "Dark Sky Hours is a weekly podcast about stargazing and space for beginners. Each post is one episode with its show notes: telescopes, dark skies, meteor showers, the planets, the space station and auroras, plus the odd note about live shows."
+cite = "Link the episode you quote, and name the host or guest who said it."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Dark Sky Hours"
+email = "hello@example.com"
+founded = "2022-03-03"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Dark Sky Hours logo"
+width = 320
+height = 80
+
+# Sign-ups for the show's newsletter, under its own name. The mail server
+# is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Dark Sky Hours"
+postal_address = "Dark Sky Hours, 12 Observatory Lane, Fellbrook FB2 7QS"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Episodes"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "Stargazing"
+href = "/blog/category/stargazing/"
+language = "en"
+
+[[nav.primary]]
+label = "Spaceflight"
+href = "/blog/category/spaceflight/"
+language = "en"
+
+[[nav.primary]]
+label = "Hosts"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the show"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Hosts"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

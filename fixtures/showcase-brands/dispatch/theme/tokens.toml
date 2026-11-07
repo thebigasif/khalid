@@ -1,0 +1,59 @@
+# The sample brand for the Dispatch demo: The Saturday Gardener, a weekly
+# letter about growing food and flowers in small spaces. Leaf green and
+# ink on oatmeal, Gloock for titles like a printed masthead, Schibsted
+# Grotesk for the text and the form. Only the brand lives here: the
+# template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#f6f4ec"
+surface = "#e9e5d6"
+text = "#1f2a1f"
+muted = "#4f5a4c"
+link = "#35612a"
+accent = "#3d6b2f"
+border = "#d4d0c0"
+
+[fonts]
+heading = "Gloock, \"Iowan Old Style\", Georgia, serif"
+body = "\"Schibsted Grotesk\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Gloock"
+style = "normal"
+weight = "400"
+path = "gloock-latin-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "107.70%"
+descent = "106.18%"
+line_gap = "0.00%"
+size_adjust = "59.62%"
+
+[[fonts.files]]
+family = "Schibsted Grotesk"
+style = "normal"
+weight = "400"
+path = "schibsted-grotesk-latin-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "107.87%"
+descent = "121.66%"
+line_gap = "0.00%"
+size_adjust = "61.63%"
+
+[[fonts.files]]
+family = "Schibsted Grotesk"
+style = "normal"
+weight = "700"
+path = "schibsted-grotesk-latin-700.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "107.87%"
+descent = "121.66%"
+line_gap = "0.00%"
+size_adjust = "64.94%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

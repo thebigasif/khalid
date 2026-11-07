@@ -1,0 +1,43 @@
+{#- Margin's author page: the writer's name, role and bio in the text
+    column, with their photo or mark, their post count and profiles in the
+    margin, then their essays as the same rows the front page shows. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture, avatar %}
+{% from "icons.html" import profiles %}
+{% from "card.html" import pages -%}
+{% from "parts-margin.html" import essay_rows -%}
+<article class="mg-band author">
+<div class="mg-text">
+<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}<div class="author-bio">
+{{ page.bio }}
+</div>
+{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}</div>
+<div class="mg-side">
+{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% endif %}<p class="author-count">{% if page.post_count == 1 %}{{ t.post_count_one }}{% else %}{{ t.post_count | replace("{count}", page.post_count | string) }}{% endif %}</p>
+{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</div>
+</article>
+<section class="mg-section" aria-labelledby="author-posts">
+<h2 id="author-posts">{{ t.posts_by | replace("{name}", page.name) }}</h2>
+{% if page.posts %}{{ essay_rows(page.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% if page.others and "authors_page" in site.features %}<section class="mg-section mg-others" aria-labelledby="other-authors">
+<h2 id="other-authors">{{ t.other_authors }}</h2>
+<ul class="people-list" role="list">
+{% for person in page.others %}<li class="person-card">
+{% if person.image %}{{ avatar(person.image) }}
+{% endif %}<div>
+<p class="person-name"><a href="{{ person.href }}">{{ person.name }}</a></p>
+{% if person.role %}<p class="person-role">{{ person.role }}</p>
+{% endif %}</div>
+</li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% endblock %}

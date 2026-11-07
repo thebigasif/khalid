@@ -1,0 +1,115 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo here
+# is public domain or CC0.
+
+[[photos]]
+file = "en/posts/2026-08-27-first-telescope/lead.jpg"
+sha256 = "967c53a6862bdffd99c1ff7c138359a0dc80cacf28bfdbde1e7dd7fc5c2e2a8b"
+source = "https://commons.wikimedia.org/wiki/File:Grand_Canyon_Star_Party_-_Telescope_Lot_1611_(52962138746).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Grand Canyon Star Party - Telescope Lot 1611 (52962138746) by Grand Canyon NPS, via Wikimedia Commons"
+title = "Grand Canyon Star Party - Telescope Lot 1611 (52962138746)"
+creator = "Grand Canyon NPS"
+openverse = "commons:File:Grand Canyon Star Party - Telescope Lot 1611 (52962138746).jpg"
+needs_credit = false
+size = "1600x1158"
+
+[[photos]]
+file = "en/posts/2026-09-03-find-dark-sky/lead.jpg"
+sha256 = "896988953e54928a6db9cb82413da5be37babeb3a87c9273f7ea8bf76fbd6e8b"
+source = "https://commons.wikimedia.org/wiki/File:Milky_Way_and_starry_night_sky_(26972689115).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Milky Way and starry night sky (26972689115) by NPS/Jacob W. Frank, via Wikimedia Commons"
+title = "Milky Way and starry night sky (26972689115)"
+creator = "NPS/Jacob W. Frank"
+openverse = "commons:File:Milky Way and starry night sky (26972689115).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-10-moon-illusion/lead.jpg"
+sha256 = "76779066bf5dd6490fc3916c0891274d7eefd931c251640e26e00b07307eaae5"
+source = "https://commons.wikimedia.org/wiki/File:Full_moon_partially_obscured_by_atmosphere.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Full moon partially obscured by atmosphere by NASA, via Wikimedia Commons"
+title = "Full moon partially obscured by atmosphere"
+creator = "NASA"
+openverse = "commons:File:Full moon partially obscured by atmosphere.jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-24-meteor-showers/lead.jpg"
+sha256 = "404fc8803b3ec0cfe71312bcc67492d10a1530a7ceba28065d0ab27dee280940"
+source = "https://commons.wikimedia.org/wiki/File:Night_sky_near_Flagstaff_with_meteor.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Night sky near Flagstaff with meteor by Coconino National Forest, via Wikimedia Commons"
+title = "Night sky near Flagstaff with meteor"
+creator = "Coconino National Forest"
+openverse = "commons:File:Night sky near Flagstaff with meteor.jpg"
+needs_credit = false
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2026-10-01-space-station-orbit/lead.jpg"
+sha256 = "f7ee822f0209d21def03b7410635b400938a8e415d9ca5a62f153a1c6773762f"
+source = "https://commons.wikimedia.org/wiki/File:STS-135_final_flyaround_of_ISS_1.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "STS-135 final flyaround of ISS 1 by NASA, via Wikimedia Commons"
+title = "STS-135 final flyaround of ISS 1"
+creator = "NASA"
+openverse = "commons:File:STS-135 final flyaround of ISS 1.jpg"
+needs_credit = false
+size = "1600x1065"
+
+[[photos]]
+file = "en/posts/2026-10-08-saturns-rings/lead.jpg"
+sha256 = "12eb49f015baa0ea6885e056608c9a926e24cb6e7e112d751bfcf017cdebfed2"
+source = "https://commons.wikimedia.org/wiki/File:Saturn_during_Equinox.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Saturn during Equinox by NASA / JPL / Space Science Institute, via Wikimedia Commons"
+title = "Saturn during Equinox"
+creator = "NASA / JPL / Space Science Institute"
+openverse = "commons:File:Saturn during Equinox.jpg"
+needs_credit = false
+size = "1600x775"
+
+[[photos]]
+file = "en/posts/2026-10-15-phone-night-photography/lead.jpg"
+sha256 = "7ac9531a81bf0e1c3d09561a98404b781ca12fec919c02687568de906819ee12"
+source = "https://commons.wikimedia.org/wiki/File:Milky_Way,_Jupiter,_and_night_sky_over_Queen_Valley_(50836084491).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Milky Way, Jupiter, and night sky over Queen Valley (50836084491) by Joshua Tree National Park, via Wikimedia Commons"
+title = "Milky Way, Jupiter, and night sky over Queen Valley (50836084491)"
+creator = "Joshua Tree National Park"
+openverse = "commons:File:Milky Way, Jupiter, and night sky over Queen Valley (50836084491).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-22-aurora-glow/lead.jpg"
+sha256 = "95d51621eb99ee01689b1a27a3ef210d8936927e0b5491cb66ae896de4cf4791"
+source = "https://commons.wikimedia.org/wiki/File:Lofoten,_Norway_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Lofoten, Norway (Unsplash) by Johannes Groll followhansi, via Wikimedia Commons"
+title = "Lofoten, Norway (Unsplash)"
+creator = "Johannes Groll followhansi"
+openverse = "commons:File:Lofoten, Norway (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-29-star-party-live-show/lead.jpg"
+sha256 = "b21e7ee989a43a477fab22516d229281d45d8fd10c284be7098fb9bd073d6d64"
+source = "https://commons.wikimedia.org/wiki/File:Rangers_set_up_telescopes_for_a_star_party_celebrating_the_park%27s_certification_as_an_international_dark_sky_park._(d647a6e5-eb58-4b70-ad74-867db98c4ebc).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Setting up Telescopes by Chris Wonderly, via Wikimedia Commons"
+title = "Setting up Telescopes"
+creator = "Chris Wonderly"
+openverse = "commons:File:Rangers set up telescopes for a star party celebrating the park's certification as an international dark sky park. (d647a6e5-eb58-4b70-ad74-867db98c4ebc).jpg"
+needs_credit = false
+size = "1600x1068"
+

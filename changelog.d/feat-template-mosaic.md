@@ -1,0 +1,2 @@
+Added
+- The Mosaic template, for a photo blog. The front page, every list and the foot of each post show the posts as tiles in a rhythm of sizes: a large tile beside a tall one, a row of three, two halves, then the reverse. Each picture is cut to its tile, with a small accent square, the place, the date and the title under it, never on it. A post opens with its picture whole, then the title row with the post's facts as short notes beside it, and the story in one column.

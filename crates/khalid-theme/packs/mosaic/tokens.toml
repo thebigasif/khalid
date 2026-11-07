@@ -1,0 +1,34 @@
+# Mosaic: a photo blog laid out in tiles. A pale stone ground like the
+# grout between tiles, near-black ink and one deep teal accent for the
+# small square that marks every caption. A plain grotesque for titles
+# and words, so the pictures carry the colour.
+[colors]
+background = "#f6f4ef"
+surface = "#e9e6dd"
+text = "#1b1a17"
+muted = "#5a574f"
+link = "#0b5d61"
+accent = "#0b5d61"
+border = "#d8d4c9"
+
+[fonts]
+heading = "\"Helvetica Neue\", Helvetica, Arial, \"Liberation Sans\", system-ui, sans-serif"
+body = "\"Helvetica Neue\", Helvetica, Arial, \"Liberation Sans\", system-ui, sans-serif"
+
+[shape]
+radius = "3px"
+measure = "36rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.125rem 3.5rem"
+h2 = "1.5rem 2rem"
+h3 = "1.1875rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

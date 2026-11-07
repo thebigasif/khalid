@@ -1,0 +1,35 @@
+# The Saturday Gardener's topics. The Dispatch template lists each one on
+# the front page, and each topic's page shows its issues with its intro on
+# top.
+
+[[categories]]
+slug = "growing-food"
+en = "Growing food"
+
+[categories.seo.en]
+description = "Issues of The Saturday Gardener on growing food in pots and boxes: tomatoes, garlic, peppers and saving seed."
+intro = "Tomatoes, garlic, peppers, salad and beans, grown in pots and boxes, with the steps and the honest results."
+
+[[categories]]
+slug = "small-spaces"
+en = "Small spaces"
+
+[categories.seo.en]
+description = "Issues of The Saturday Gardener on growing on a balcony, a windowsill or a small yard."
+intro = "How to get the most from a balcony, a windowsill or a yard the size of a table."
+
+[[categories]]
+slug = "seasonal-jobs"
+en = "Seasonal jobs"
+
+[categories.seo.en]
+description = "The jobs of each season in a small garden, from planting bulbs to making leaf mould, one weekend at a time."
+intro = "One job for the weekend, at the right time of year, with the reasons behind it."
+
+[[categories]]
+slug = "reader-questions"
+en = "Reader questions"
+
+[categories.seo.en]
+description = "Tobias Okafor answers readers' questions about growing in small spaces, three letters each month."
+intro = "Once a month Tobias answers three of your letters. Reply to any issue to send yours."

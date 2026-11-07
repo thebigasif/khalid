@@ -1,0 +1,18 @@
+{#- How wide Hearth draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Its own places: "lead_story", the lead story's tall arch on the
+    front page, and "card", a card's arch: in the grid, or small beside
+    its text on a phone.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "lead_story": "(min-width: 79rem) 27.25rem, (min-width: 48rem) calc(38vw - 2.5rem), calc(95vw - 2.75rem)",
+  "card": "(min-width: 79rem) 24rem, (min-width: 64rem) calc(34vw - 2.25rem), (min-width: 40rem) calc(50vw - 2rem), 6.5rem"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

@@ -1,0 +1,51 @@
+# The Marlbeck Courier's six sections. Gazette shows a block for each on
+# the front page, in the order of its newest story, lists each one's
+# stories on its page and sets its name as the flag above each story.
+
+[[categories]]
+slug = "council"
+en = "Council"
+
+[categories.seo.en]
+description = "Marlbeck Town Council and district council news: decisions, budgets, planning, roads and flood defences."
+intro = "What the town and district councils decide, what it costs and what it changes on your street."
+
+[[categories]]
+slug = "schools"
+en = "Schools"
+
+[categories.seo.en]
+description = "News from Marlbeck's schools and sixth form: buildings, buses, open evenings and results."
+intro = "Marlbeck High, the sixth form and the primary schools in town and in the villages."
+
+[[categories]]
+slug = "business"
+en = "Business"
+
+[categories.seo.en]
+description = "Marlbeck business news: new shops, the market, jobs and the firms that make the town work."
+intro = "Shops opening and closing, the Saturday market and the firms that employ the town."
+
+[[categories]]
+slug = "sport"
+en = "Sport"
+
+[categories.seo.en]
+description = "Marlbeck sport: Marlbeck Town football, cricket, running and the clubs in the villages."
+intro = "Results, reports and club news, from Hollins Road to the village cricket grounds."
+
+[[categories]]
+slug = "whats-on"
+en = "What's on"
+
+[categories.seo.en]
+description = "What's on in Marlbeck: events, the Corn Exchange, the market square and dates for the diary."
+intro = "Events, shows and dates for the diary in Marlbeck and the villages."
+
+[[categories]]
+slug = "community"
+en = "Community"
+
+[categories.seo.en]
+description = "Marlbeck community news: volunteers, the library, clubs, charities and the people who keep the town going."
+intro = "Volunteers, the library, clubs and charities, and the people behind them."

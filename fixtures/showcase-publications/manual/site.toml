@@ -1,0 +1,105 @@
+# Brindle Help Centre, the help centre of Brindle, a made-up maker of
+# electric bikes, written for the Manual template's demo. Each key and
+# table here replaces the showcase's own when scripts/demo-publication.sh
+# applies it.
+
+name = "Brindle Help Centre"
+languages = ["en"]
+
+[template.cta]
+label = "Contact support"
+href = "/blog/about/"
+note = "Still stuck? The support team replies within one working day."
+
+# The Manual template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Answers for Brindle owners, from the people who build and fix the bikes. Search for your question, or pick a topic below."]
+popular_count = 6
+updates_count = 6
+
+[announcement]
+text = "New: the monthly checks guide. Ten minutes a month keeps your bike safe."
+href = "/blog/series/monthly-checks/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Help for Brindle electric bike owners"
+
+[seo.ai_page]
+covers = "The Brindle Help Centre answers questions from owners of Brindle electric bikes: setting up a new bike, charging and storing the battery, the assist levels, gears and lights, the monthly checks, orders and delivery, the warranty and returns."
+cite = "Link the article you quote. Each article says when it was last updated."
+contact = "help@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Brindle"
+email = "help@example.com"
+founded = "2021-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Brindle Help logo"
+width = 280
+height = 80
+
+# Sign-ups for service reminders, under Brindle's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "help@example.com"
+name = "Brindle"
+postal_address = "Brindle Bikes, 3 Canal Yard, Leeds LS11 5QR"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Getting started"
+href = "/blog/category/getting-started/"
+language = "en"
+
+[[nav.primary]]
+label = "Battery"
+href = "/blog/category/battery-and-charging/"
+language = "en"
+
+[[nav.primary]]
+label = "Care and repairs"
+href = "/blog/category/care-and-repairs/"
+language = "en"
+
+[[nav.primary]]
+label = "Orders"
+href = "/blog/category/orders-and-delivery/"
+language = "en"
+
+[[nav.primary]]
+label = "Contact"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the help centre"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Set up your new bike"
+href = "/blog/series/set-up-your-new-bike/"
+language = "en"
+
+[[nav.footer]]
+label = "Monthly checks"
+href = "/blog/series/monthly-checks/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

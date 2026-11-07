@@ -1,0 +1,35 @@
+# Manual: a help centre. White page, deep ink, one calm cobalt for links
+# and the numbers, and a pale blue surface for the search hero and the
+# "Before you start" box. A clear sans for titles and text, and the
+# monospace for section numbers, so the numbers line up.
+[colors]
+background = "#ffffff"
+surface = "#eef3f8"
+text = "#15202e"
+muted = "#4b5768"
+link = "#1a56b8"
+accent = "#1a56b8"
+border = "#d5dde7"
+
+[fonts]
+heading = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[shape]
+radius = "0.375rem"
+measure = "38rem"
+
+[type]
+body = "1.0625rem 1.125rem"
+h1 = "2rem 2.75rem"
+h2 = "1.375rem 1.625rem"
+h3 = "1.1875rem 1.3125rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 700
+
+[space]
+unit = "0.5rem"
+section = "4rem"

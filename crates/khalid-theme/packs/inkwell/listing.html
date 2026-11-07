@@ -1,0 +1,20 @@
+{#- Inkwell's lists (category, tag, archive, date and collection pages):
+    the list's name and intro, then its issues grouped by year as bound
+    volumes, each issue a row with its number and its parts at a glance. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "parts-inkwell.html" import volumes -%}
+<header class="list-header">
+{% block kind %}{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}<div class="iw-archive">
+{{ volumes(page.posts, 2) }}
+</div>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

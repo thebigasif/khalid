@@ -1,0 +1,115 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is
+# CC0, so none needs a visible credit.
+
+[[photos]]
+file = "en/posts/2026-10-27-tulip-pots/lead.jpg"
+sha256 = "e7667f864aeb2582e92feb54a6d7afbe7c271a0c9fd3ae01db0fcba6ddfe7a98"
+source = "https://wordpress.org/photos/photo/2516278971/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A vibrant garden filled with red tulips in full bloom, with a few pink flowers and green leaves in the background, under bright sunlight. by Benjamin Lu, via wordpress"
+title = "A vibrant garden filled with red tulips in full bloom, with a few pink flowers and green leaves in the background, under bright sunlight."
+creator = "Benjamin Lu"
+openverse = "26de01f0-3af6-4013-876d-c15f10ed8a98"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-13-apple-day/lead.jpg"
+sha256 = "ada5523d6b31357b7d3a272c936abad38a01fd032c514f70edc44afc4e3cbdda"
+source = "https://wordpress.org/photos/photo/27561c160b/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Holding an apple in an apple orchard by Vlad, via wordpress"
+title = "Holding an apple in an apple orchard"
+creator = "Vlad"
+openverse = "6b894d4f-ed25-467b-829a-3b3561d61701"
+needs_credit = false
+size = "1600x966"
+
+[[photos]]
+file = "en/posts/2026-09-29-saving-tomato-seed/lead.jpg"
+sha256 = "7db13f14635cd25344ddc0870697bd47a1febffec6a60c50f0a9994e2500d469"
+source = "https://wordpress.org/photos/photo/1406206853/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Red Ripe Tomatoes Growing In A Home Garden by Jennifer Bourn, via wordpress"
+title = "Red Ripe Tomatoes Growing In A Home Garden"
+creator = "Jennifer Bourn"
+openverse = "044ced7a-9fc3-471c-86b6-e469439e0fbb"
+needs_credit = false
+size = "1533x2048"
+
+[[photos]]
+file = "en/posts/2026-09-15-family-nursery/lead.jpg"
+sha256 = "c1adc255b924c548b09d8a7e8130ba780dff0d2b051bb9b4b1bbb5ecfab57d32"
+source = "https://wordpress.org/photos/photo/2126245946/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "I really dunno the name of the flower. I visited nursery to bring some plants and here is what caught my attention. I call its a Mysterious flower because of it’s unique beautiful colour. by Amit Patel, via wordpress"
+title = "I really dunno the name of the flower. I visited nursery to bring some plants and here is what caught my attention. I call its a Mysterious flower because of it’s unique beautiful colour."
+creator = "Amit Patel"
+openverse = "46945c7a-e1dd-451b-b90e-a1626fd20a46"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-01-late-flowers-bees/lead.jpg"
+sha256 = "a21970d58a7e44ca6b19360763efbeb9dfe718b7e7ecde422658ee0a9241835b"
+source = "https://wordpress.org/photos/photo/21061fd7b9/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Bumblebees on a flower by Topher, via wordpress"
+title = "Bumblebees on a flower"
+creator = "Topher"
+openverse = "907a7b8f-b69c-4431-ad19-4758a388a9c4"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-08-18-greenhouse-watering/lead.jpg"
+sha256 = "ba88504bd5f69b4ea166d0477dd8e6b2ee12aaa11fabd2b735a3706089f431bb"
+source = "https://wordpress.org/photos/photo/50462d2efa/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Water can hanging from a tree next to a historic Florida home by ChrisEdwardsCE, via wordpress"
+title = "Water can hanging from a tree next to a historic Florida home"
+creator = "ChrisEdwardsCE"
+openverse = "0bbd7024-f39c-468f-af0b-b61a072a7c29"
+needs_credit = false
+size = "1600x1202"
+
+[[photos]]
+file = "en/posts/2026-08-04-lavender-pruning/lead.jpg"
+sha256 = "ef5edcb994608696bf3aaf169d638d359bc15e97345bf72cc41492b16775d406"
+source = "https://wordpress.org/photos/photo/61864078a9/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "lavender field, lavender, olfactory farms, red creek, New York, USA by Michelle Frechette, via wordpress"
+title = "lavender field, lavender, olfactory farms, red creek, New York, USA"
+creator = "Michelle Frechette"
+openverse = "870ce31e-0653-4bb0-8a2e-a4bb82ccfe5b"
+needs_credit = false
+size = "1600x1066"
+
+[[photos]]
+file = "en/posts/2026-07-21-salad-bed/lead.jpg"
+sha256 = "e07aa3bb80c341704748980ae55d7ec84adb9d30493fde0bac323bcd7dc649c5"
+source = "https://wordpress.org/photos/photo/934628a81c/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Lettuce from the garden by Luis Méndez Alejo, via wordpress"
+title = "Lettuce from the garden"
+creator = "Luis Méndez Alejo"
+openverse = "7c6c39d4-c29f-401d-a3fc-c5cfea5ebaa3"
+needs_credit = false
+size = "1600x1327"
+
+[[photos]]
+file = "en/posts/2026-07-07-plug-plants/lead.jpg"
+sha256 = "b533b5ede8bfff3d0c08e32540d217895b3f0dd556e2d878297bc59d4a9adbb3"
+source = "https://wordpress.org/photos/photo/9161f05711/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Greenhouse flower beds by Topher, via wordpress"
+title = "Greenhouse flower beds"
+creator = "Topher"
+openverse = "ea07b600-0f42-4847-bbea-9b00644e39b0"
+needs_credit = false
+size = "1600x1200"
+
