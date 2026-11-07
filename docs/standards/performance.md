@@ -312,7 +312,7 @@ How `scripts/perf.sh` takes the four measures added for brief G9, all through `k
 
 ## Demo bundle
 
-`khalid-demos.tar.gz`, which serpdad.com/khalid/ is built from, has a budget of **725 MB** (MB of 1,000,000 bytes). `scripts/demos-bundle.sh` fails the Pages build when the archive is over it, and `scripts/demos-bundle.sh --check khalid-demos.tar.gz` checks a downloaded one. A budget is never raised to make the build pass.
+`khalid-demos.tar.gz`, which serpdad.com/khalid/ is built from, has a budget of **1,055 MB** (MB of 1,000,000 bytes). `scripts/demos-bundle.sh` fails the Pages build when the archive is over it, and `scripts/demos-bundle.sh --check khalid-demos.tar.gz` checks a downloaded one. A budget is never raised to make the build pass.
 
 Before it packs, the bundle step leaves out every raster picture that only structured data names, such as the original photo in each post's folder, and takes it out of that structured data. Pages load the sized copies in `media/` instead. It then fails if a page, stylesheet, feed or `templates.json` names a picture, video or sound the bundle does not hold.
 
@@ -323,5 +323,6 @@ Measured on 2026-11-07 (perf/demo-bundle):
 | Published, before AVIF reached the demos | 600.5 MB |
 | Main with AVIF and 1,152 px, no pruning | 835.7 MB |
 | Main with pruning (498 originals, 141.1 MB, left out) | 704.9 MB |
+| Main with pruning and the 18 templates of batch 5 (49 demos; 696 originals, 205.6 MB, left out) | 1,024.4 MB |
 
-The budget is that result with about 3% headroom. What stays is nearly all pictures pages load: WebP 354 MB, AVIF 187 MB, the 1,280 px JPEG fallback 127 MB and the share cards 59 MB, unpacked. A browser picks almost every width: across viewports 320 to 2,560 px at 1x to 3x, only 4 MB of files are never a browser's choice. A smaller bundle needs fewer formats, not fewer widths.
+The budget is the last result, what Pages publishes once batch 5 lands, with about 3% headroom. What stays is nearly all pictures pages load: with batch 5, WebP 514 MB, AVIF 271 MB, the 1,280 px JPEG fallback 185 MB and the share cards 83 MB, unpacked. A browser picks almost every width: across viewports 320 to 2,560 px at 1x to 3x, only 4 MB of files are never a browser's choice. A smaller bundle needs fewer formats, not fewer widths.
