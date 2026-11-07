@@ -106,12 +106,24 @@ jobs:
           cp target/release/khalid target/handover/khalid
           cargo build --release -p khalid-perf
           cp target/release/khalid-perf target/handover/khalid-perf
-      - uses: actions/upload-artifact@v7
+      # The upload from the self-hosted runner to GitHub's storage sometimes
+      # stalls part way. It is tried once more before the job fails.
+      - id: handover
+        uses: actions/upload-artifact@v7
+        continue-on-error: true
         with:
           name: release-binaries
           path: target/handover/
           retention-days: 1
           if-no-files-found: error
+      - if: steps.handover.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-binaries
+          path: target/handover/
+          retention-days: 1
+          if-no-files-found: error
+          overwrite: true
 
   # The Rust checks run as parallel jobs: the lints, the tests with the
   # coverage floor, and the release build with its size budget. The job
