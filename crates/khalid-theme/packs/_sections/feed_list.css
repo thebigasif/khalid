@@ -1,0 +1,10 @@
+/* Section part: feed list (templates/sections/feed_list.html). A dated
+   feed: each row its date, title and category, split by hairlines. */
+.feed-list { margin: 0; padding: 0; list-style: none; }
+.feed-item { padding-block: 0.875rem; border-block-end: 1px solid var(--color-border); }
+.feed-item:first-child { padding-block-start: 0; }
+.feed-item time { display: block; color: var(--color-muted); font-size: var(--text-small); font-variant-numeric: tabular-nums; }
+.feed-item :is(h2, h3, h4) { margin-block: 0.25rem 0; font-size: 1.0625rem; line-height: 1.35; }
+.feed-item :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.feed-item :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.feed-category { margin: 0.25rem 0 0; font-size: var(--text-small); }

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="16" width="48" height="48" fill="#16131f"/>
+  <path d="M27 28 V52 L46 40 Z" fill="#5a27d0"/>
+  <text textLength="236" lengthAdjust="spacingAndGlyphs" x="70" y="51" font-family="'Libre Franklin', 'Franklin Gothic Medium', Arial, sans-serif" font-size="26" font-weight="800" letter-spacing="-0.5" fill="#16131f">Larkspur Ledger</text>
+</svg>

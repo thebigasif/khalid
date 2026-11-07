@@ -1,0 +1,27 @@
+{#- Atelier's lists (collection, tag, archive, date and collection pages):
+    the list's kind, its name and intro, such as a collection's note, then
+    its looks (posts with facts) as a numbered grid of tall pictures, each
+    with its caption under it, and its other posts as a dated feed. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "sections/picture_grid.html" import picture_grid -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% set looks = page.posts | selectattr("facts") | list -%}
+{% set notes = page.posts | rejectattr("facts") | list -%}
+<header class="list-header">
+<p class="list-kind">{{ t.lookbook }}</p>
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if looks %}{{ picture_grid(looks, 2, 1, t.look_number) }}
+{% endif %}{% if notes %}<section class="at-journal" aria-labelledby="at-journal-title">
+<h2 id="at-journal-title">{{ t.journal }}</h2>
+{{ feed_list(notes) }}
+</section>
+{% endif %}{% if not page.posts %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

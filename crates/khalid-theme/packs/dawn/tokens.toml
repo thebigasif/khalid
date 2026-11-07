@@ -1,0 +1,36 @@
+# Based on Ghost's Dawn theme, MIT licence, see LICENSE-ghost.txt.
+# Dawn's own look, for a blog that has not run theme sync: a white page,
+# near-black ink, light grey hairlines and one warm orange for the date
+# blocks, the buttons and the accent rules. Small square corners. The
+# system sans for headings and text, headings in a heavy weight. A value
+# in the site's own theme/tokens.toml wins over each of these.
+[colors]
+background = "#ffffff"
+surface = "#f6f6f6"
+text = "#1a1a1a"
+muted = "#6b6b6b"
+link = "#c2370f"
+accent = "#e8491f"
+border = "#e6e6e6"
+
+[fonts]
+heading = "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+body = "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+
+[shape]
+radius = "0.1875rem"
+measure = "45rem"
+
+[type]
+body = "1rem 1.0625rem"
+h1 = "2.125rem 2.5rem"
+h2 = "1.5rem 1.75rem"
+h3 = "1.125rem 1.25rem"
+h4 = "1rem 1.0625rem"
+small = "0.8125rem"
+line_height = 1.6
+heading_weight = 800
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

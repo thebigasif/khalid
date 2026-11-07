@@ -1,0 +1,118 @@
+---
+source: crates/khalid/tests/template_channel.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+Short videos on writing for search.
+</div>
+<dl class="figure-strip">
+<div class="figure">
+<dt>videos</dt>
+<dd>9</dd>
+</div>
+<div class="figure">
+<dt>playlists</dt>
+<dd>4</dd>
+</div>
+</dl>
+</header>
+<section class="now-showing" aria-labelledby="now-showing-title">
+<h2 id="now-showing-title" class="channel-label">Now showing</h2>
+<article class="lead-video">
+<div class="lead-screen">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar lead-bar"><span class="play-mark" aria-hidden="true"></span><span class="play-track" aria-hidden="true"></span><span class="play-time"><span class="play-label">Length</span> 4:05</span></p>
+</div>
+<div class="lead-text">
+<p class="lead-playlist"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="lead-excerpt">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+<p class="video-meta"><time datetime="2026-09-21">21 September 2026</time> <span>Asif</span></p>
+<p class="lead-watch"><a class="button" href="/blog/how-to-write-a-title-tag/">Watch now</a></p>
+</div>
+</article>
+</section>
+<section class="latest-videos" aria-labelledby="latest-title">
+<h2 id="latest-title" class="channel-label">Latest videos</h2>
+<ul class="video-grid" role="list">
+<li class="video-card">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="video-meta"><time datetime="2026-10-12">12 October 2026</time> <a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+<li class="video-card">
+<figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="video-meta"><time datetime="2026-10-05">5 October 2026</time> <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="video-card">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="video-meta"><time datetime="2026-09-28">28 September 2026</time> <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="video-card">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="video-meta"><time datetime="2026-09-14">14 September 2026</time> <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+</ul>
+</section>
+<section class="playlists" aria-labelledby="playlists-title">
+<h2 id="playlists-title" class="channel-label">Playlists</h2>
+<section class="shelf" aria-labelledby="shelf-1">
+<div class="shelf-head">
+<h3 id="shelf-1"><a href="/blog/category/content-strategy/">Content strategy</a></h3>
+<p class="view-all"><a href="/blog/category/content-strategy/">View all posts in Content strategy</a></p>
+</div>
+<ul class="video-grid video-shelf" role="list">
+<li class="video-card">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h4><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h4>
+<p class="video-meta"><time datetime="2026-10-12">12 October 2026</time> <a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+</ul>
+</section>
+<section class="shelf" aria-labelledby="shelf-2">
+<div class="shelf-head">
+<h3 id="shelf-2"><a href="/blog/category/technical-seo/">Technical SEO</a></h3>
+<p class="view-all"><a href="/blog/category/technical-seo/">View all posts in Technical SEO</a></p>
+</div>
+<ul class="video-grid video-shelf" role="list">
+<li class="video-card">
+<figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
+</picture>
+</figure>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h4><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h4>
+<p class="video-meta"><time datetime="2026-10-05">5 October 2026</time> <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="video-card">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h4><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h4>
+<p class="video-meta"><time datetime="2026-09-28">28 September 2026</time> <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+</ul>
+</section>
+</section>

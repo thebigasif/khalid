@@ -1,0 +1,106 @@
+---
+source: crates/khalid/tests/template_versions.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<p class="hero-kicker">Changelog</p>
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+Every change to the demo.
+</div>
+</header>
+<div class="changelog">
+<div class="changelog-main">
+<nav class="filter-row" aria-label="Show changes">
+<ul role="list">
+<li><a href="/blog/" aria-current="page">All changes</a></li>
+<li><a href="/blog/category/on-page-seo/" data-mark="2">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/" data-mark="1">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/" data-mark="">Content strategy</a></li>
+</ul>
+</nav>
+<div class="release-log">
+<section class="release" id="d2026-10-12" aria-labelledby="d2026-10-12-name">
+<header class="release-head">
+<h2 class="release-name" id="d2026-10-12-name"><time datetime="2026-10-12">12 October 2026</time></h2>
+</header>
+<ol class="change-list" role="list">
+<li class="change">
+<a class="change-type" href="/blog/category/content-strategy/" data-mark="">Content strategy</a>
+<h3 class="change-title"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="change-summary">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</li>
+</ol>
+</section>
+<section class="release" id="v2-1-0" aria-labelledby="v2-1-0-name">
+<header class="release-head">
+<h2 class="release-name" id="v2-1-0-name"><span class="release-label">Version</span> <span class="release-version">2.1.0</span></h2>
+<p class="release-date"><time datetime="2026-10-05">5 October 2026</time></p>
+</header>
+<ol class="change-list" role="list">
+<li class="change">
+<a class="change-type" href="/blog/category/technical-seo/" data-mark="1">Technical SEO</a>
+<h3 class="change-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="change-summary">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</li>
+<li class="change">
+<a class="change-type" href="/blog/category/technical-seo/" data-mark="1">Technical SEO</a>
+<h3 class="change-title"><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="change-summary">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</li>
+</ol>
+</section>
+<section class="release" id="v2-0-0" aria-labelledby="v2-0-0-name">
+<header class="release-head">
+<h2 class="release-name" id="v2-0-0-name"><span class="release-label">Version</span> <span class="release-version">2.0.0</span></h2>
+<p class="release-date"><time datetime="2026-09-21">21 September 2026</time></p>
+</header>
+<ol class="change-list" role="list">
+<li class="change">
+<a class="change-type" href="/blog/category/on-page-seo/" data-mark="2">On-page SEO</a>
+<h3 class="change-title"><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="change-summary">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</li>
+</ol>
+</section>
+<section class="release" id="d2026-09-14" aria-labelledby="d2026-09-14-name">
+<header class="release-head">
+<h2 class="release-name" id="d2026-09-14-name"><time datetime="2026-09-14">14 September 2026</time></h2>
+</header>
+<ol class="change-list" role="list">
+<li class="change">
+<a class="change-type" href="/blog/category/on-page-seo/" data-mark="2">On-page SEO</a>
+<h3 class="change-title"><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="change-summary">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</li>
+</ol>
+</section>
+</div>
+</div>
+<aside class="changelog-side" aria-label="Get updates">
+<section class="updates" aria-labelledby="updates-title">
+<h2 id="updates-title">Get updates</h2>
+<p>Hear about each new version by email or in your feed reader.</p>
+<ul class="feed-links" role="list">
+<li><a href="/blog/feed.xml" type="application/rss+xml">Feed of every change</a></li>
+<li><a href="/blog/category/on-page-seo/feed.xml" type="application/rss+xml">Feed of On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/feed.xml" type="application/rss+xml">Feed of Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/feed.xml" type="application/rss+xml">Feed of Content strategy</a></li>
+</ul>
+</section>
+<nav class="release-index" aria-labelledby="release-index-title">
+<h2 id="release-index-title">Versions on this page</h2>
+<ol role="list">
+<li><a href="#v2-1-0"><span class="release-version">2.1.0</span> <time datetime="2026-10-05">5 October 2026</time></a></li>
+<li><a href="#v2-0-0"><span class="release-version">2.0.0</span> <time datetime="2026-09-21">21 September 2026</time></a></li>
+</ol>
+</nav>
+
+</aside>
+</div>

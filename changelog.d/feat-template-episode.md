@@ -1,0 +1,2 @@
+Added
+- A new template, `episode`, for a podcast's blog, based on Ghost's Episode theme (MIT). Its front page leads with a dark band with the show's name and the places to listen, then the newest post with a sound player, which plays from the front page, then every episode in a box with a thick edge and a square picture. Set the places to listen with `listen_on` and the line under the name with `tagline`. See docs/templates/episode.md.

@@ -1,0 +1,2 @@
+Added
+- The Lattice template, for a science explainer site. Every picture is a numbered figure plate on a fine grid, a post's facts show as its key numbers, footnotes become small numbered tabs over a ruled notes panel, and links to glossary terms are marked. The front page leads with one explainer and its key numbers, then the topics and the latest explainers as plates. The glossary page gets the same look.

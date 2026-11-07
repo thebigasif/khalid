@@ -1,0 +1,25 @@
+{#- session_cards(posts, level=3): a grid of picture cards for things a
+    reader does, such as a routine, a lesson or a workshop. Each card shows
+    its picture, its category and its title. A post with facts shows its
+    first fact, such as how long it takes, in a ring, and its second and
+    third facts, such as the level and how often, beside it. A post
+    without facts shows its date there. Titles use a heading of `level`. -#}
+{% from "image.html" import picture -%}
+{% macro session_cards(posts, level=3) -%}
+<ul class="session-cards" role="list">
+{% for post in posts %}<li class="session-card">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}<div class="session-card-text">
+{% if post.category %}<p class="session-card-kind"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.facts %}<div class="session-card-facts">
+<p class="session-ring"><span class="visually-hidden">{{ post.facts[0].label }}:</span> {{ post.facts[0].value }}</p>
+{% if post.facts | length > 1 %}<ul class="session-card-more" role="list">
+{% for fact in post.facts[1:3] %}<li><span class="visually-hidden">{{ fact.label }}:</span> {{ fact.value }}</li>
+{% endfor %}</ul>
+{% endif %}</div>
+{% else %}<p class="session-card-date"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+{% endif %}</div>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}

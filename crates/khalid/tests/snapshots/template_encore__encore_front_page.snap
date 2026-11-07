@@ -1,0 +1,108 @@
+---
+source: crates/khalid/tests/template_encore.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+
+
+
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+A band from Glasgow.
+</div>
+<ul class="listen-on" role="list" aria-label="Listen on">
+<li><a href="https://www.example.com/bandcamp/" rel="noopener">Bandcamp</a></li>
+</ul>
+</header>
+<section class="out-now" aria-labelledby="out-now-title">
+<h2 id="out-now-title" class="label">Out now</h2>
+<div class="out-now-body">
+<div class="sleeve-art"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></div>
+<div class="out-now-text">
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="out-now-excerpt">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<dl class="liner">
+<div>
+<dt>Format</dt>
+<dd>Album</dd>
+</div>
+<div>
+<dt>Released</dt>
+<dd>5 October 2026</dd>
+</div>
+<div>
+<dt>Label</dt>
+<dd>Fieldnote Records</dd>
+</div>
+</dl>
+<p class="out-now-links"><a class="button" href="https://www.example.com/listen/" rel="noopener">Listen on Bandcamp</a>
+</p>
+</div>
+</div>
+</section>
+<section class="tour" id="tour" aria-labelledby="tour-title">
+<h2 id="tour-title" class="label">On tour</h2>
+<ol class="tour-list" role="list">
+<li class="tour-show">
+<time class="tour-when" datetime="2026-11-14"><span class="tour-day">14</span> <span class="tour-month">Nov</span> <span class="tour-year">2026</span></time>
+<div class="tour-place">
+<h3 class="tour-city">Glasgow</h3>
+<p class="tour-venue">The Old Granary</p>
+</div>
+<a class="tour-tickets" href="https://www.example.com/tickets/" rel="noopener">Tickets<span class="visually-hidden">: Glasgow</span></a>
+</li>
+<li class="tour-show">
+<time class="tour-when" datetime="2026-11-18"><span class="tour-day">18</span> <span class="tour-month">Nov</span> <span class="tour-year">2026</span></time>
+<div class="tour-place">
+<h3 class="tour-city">Inverness</h3>
+<p class="tour-venue">Riverside Hall</p>
+</div>
+<p class="tour-note">Sold out</p>
+</li>
+<li class="tour-show">
+<p class="tour-when"><span class="tour-day">Spring 2027</span></p>
+<div class="tour-place">
+<h3 class="tour-city">Belfast</h3>
+<p class="tour-venue">To be announced</p>
+</div>
+</li>
+</ol>
+</section>
+<section class="home-shelf" aria-labelledby="releases-title">
+<h2 id="releases-title" class="label">Releases</h2>
+<ul class="shelf" role="list">
+<li class="sleeve">
+<div class="sleeve-art"><span class="sleeve-blank"></span></div>
+<h3 class="sleeve-title"><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="sleeve-meta">Single <time datetime="2026-09-21">2026</time></p>
+</li>
+</ul>
+</section>
+<section class="home-notes" aria-labelledby="notes-title">
+<h2 id="notes-title" class="label">Notes</h2>
+<ul class="notes" role="list">
+<li class="note">
+<p class="note-meta"><time datetime="2026-10-12">12 October 2026</time> <span class="note-category">Content strategy</span></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+</li>
+<li class="note">
+<p class="note-meta"><time datetime="2026-09-28">28 September 2026</time> <span class="note-category">Technical SEO</span></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+</li>
+<li class="note">
+<p class="note-meta"><time datetime="2026-09-14">14 September 2026</time> <span class="note-category">On-page SEO</span></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+</li>
+</ul>
+</section>

@@ -1,0 +1,3 @@
+# Tenth Row keeps every post at /blog/<slug>/, with no collections of its
+# own: readers find a review by its kind, through the categories, and an
+# actor's reviews through the cast tags.

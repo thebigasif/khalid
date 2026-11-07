@@ -1,0 +1,289 @@
+/* Based on Ghost's Source theme, MIT licence, see LICENSE-ghost.txt.
+   Source: a general publication. A wide frame of 1320 px with the logo in
+   the middle of the header, small capital labels over a hairline above
+   each list, cards with no box around them and hairlines between them,
+   pill buttons and pill forms on a grey field, and a post in one calm
+   column of 600 px under a picture 1120 px wide. Every colour is a token
+   or a mix of tokens. */
+:root {
+  --sc-wide: 82.5rem;
+  --sc-list: 61.5rem;
+  --sc-post: 70rem;
+  --sc-gap: 2.625rem;
+  --sc-line: color-mix(in oklab, var(--color-text) 10%, var(--color-background));
+  --sc-big: clamp(1.75rem, 1.36vw + 1.4rem, 2.5rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--sc-wide); }
+main { padding-block: 0 var(--space-section); }
+main > * { max-inline-size: var(--sc-list); margin-inline: auto; }
+main > :is(.sc-top, .sc-picks, .sc-with-about, .post, .newsletter-slot, .cta-band, .related, .reading-progress) { max-inline-size: none; }
+main > :is(.page, .mentions, .comments) { max-inline-size: var(--measure); }
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
+.announcement { margin: 0; padding-block: 0.625rem; color: var(--color-text); background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); font-weight: 500; }
+.announcement a { color: inherit; text-decoration: none; }
+a:hover { opacity: 0.8; }
+
+/* The header: menu links at the start, the name or logo in the middle,
+   the search link and the call-to-action pill at the end. */
+.site-header { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 0.5rem 1.5rem; min-block-size: 6.25rem; padding-block: 0.75rem; border: 0; font-size: 0.9375rem; font-weight: 550; }
+.site-header > .site-name { grid-column: 2; grid-row: 1; justify-content: center; font-size: 1.5rem; font-weight: 725; letter-spacing: -0.015em; line-height: 1; text-align: center; }
+.site-header > .site-logo img { object-position: 50% 50%; }
+.site-header > .nav-bar { grid-column: 1; grid-row: 1; }
+.site-header nav ul { gap: 0 1.75rem; }
+.site-header nav a { color: var(--color-text); text-decoration: none; }
+.site-header > :is(.search-link, .header-button) { grid-column: 3; grid-row: 1; justify-self: end; }
+.site-header:has(> .header-button) > .search-link { justify-self: start; }
+/* Six menu links or more do not fit beside a centred name, so the header
+   stacks as Source's stacked layout does: the name on top, the links
+   centred under it between two hairlines. */
+@media (min-width: 40.0625rem) {
+  .site-header:has(> .nav-bar li:nth-child(6)) { padding-block: 0; row-gap: 0; }
+  .site-header:has(> .nav-bar li:nth-child(6)) > .site-name { min-block-size: 5rem; }
+  .site-header:has(> .nav-bar li:nth-child(6)) > .nav-bar { display: flex; grid-column: 1 / -1; grid-row: 2; justify-content: center; min-block-size: 3.75rem; border-block: 1px solid var(--sc-line); }
+  .site-header:has(> .nav-bar li:nth-child(6)) > .search-link { grid-column: 1; justify-self: start; }
+  .site-header:has(> .nav-bar li:nth-child(6)) nav ul { justify-content: center; }
+}
+.search-link { color: var(--color-text); text-decoration: none; }
+.button, .subscribe button, .comment-form button, .form button { justify-content: center; padding: 0.8em 1.4em; font-size: 0.9375rem; font-weight: 600; line-height: 1.1; border-radius: 6.25rem; }
+.button:hover, .subscribe button:hover { opacity: 0.95; }
+@media (max-width: 40rem) {
+  .site-header { grid-template-columns: minmax(0, 1fr) auto auto; min-block-size: 4rem; padding-block: 0.5rem; }
+  .site-header > .site-name { grid-column: 1; justify-content: flex-start; font-size: 1.375rem; text-align: start; }
+  .site-header > .site-logo img { object-position: 0 50%; }
+  .site-header > .search-link { grid-column: 2; justify-self: end; }
+  .site-header > .nav-menu { grid-column: 3; grid-row: 1; }
+  .nav-menu summary { border: 0; padding-inline: 0.5rem; }
+}
+
+/* Small capital labels on a hairline over each list. */
+.sc-label, main > .author ~ section > h2, .related > h2, .topics > h2 { margin: 0 0 calc(var(--sc-gap) / 2); padding-block-end: 0.75rem; font-family: var(--font-body); font-size: 0.75rem; font-weight: 550; letter-spacing: 0.025em; line-height: 1.2; text-transform: uppercase; border-block-end: 1px solid var(--sc-line); }
+
+/* Cards: no box, a picture on top, the title, two lines of summary and
+   a small meta line. The title's link covers the whole card. */
+.card, .card:has(.image) { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 0; }
+.card > .image { grid-row: 1; margin: 0 0 1.25rem; }
+.card > .image img { aspect-ratio: 16 / 9; block-size: auto; object-fit: cover; }
+.card > :is(h2, h3, h4) { grid-row: 2; margin: 0; font-size: 1.1875rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.014em; }
+.card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
+.card :is(h2, h3, h4) a:hover { text-decoration: none; }
+.card:hover :is(h2, h3, h4) { opacity: 0.8; }
+.card > p:last-child { grid-row: 3; display: -webkit-box; overflow: hidden; margin: 0.5rem 0 0; color: var(--color-text); font-size: 0.90625rem; line-height: 1.4; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.card > p:not(:last-child) { grid-row: 4; margin: 0.75rem 0 0; }
+.card-meta, .card > p > time { color: var(--color-muted); font-size: 0.78125rem; font-weight: 500; line-height: 1.4; }
+.card-meta { display: block; }
+.card-meta > * { display: inline; }
+.card-meta :is(picture, .avatar), .card-meta > a { display: none; }
+.card-author { color: inherit; }
+.card-author + time::before, .card-meta .card-reading-time::before { content: "·" / ""; margin-inline: 0 0.375rem; }
+.card-meta time { white-space: nowrap; }
+.card-meta a { position: relative; z-index: 1; min-block-size: 0; }
+
+/* The list: a picture 220 px wide beside the words, a hairline between
+   posts. On a phone the picture goes on top. */
+:is(.cards-row, .cards-text) { gap: 0; }
+:is(.cards-row, .cards-text) > li { padding-block: calc(var(--sc-gap) / 2); }
+:is(.cards-row, .cards-text) > li + li { border-block-start: 1px solid var(--sc-line); }
+.cards-row .card:has(.image) { grid-template-columns: 13.75rem minmax(0, 37.5rem); grid-template-rows: 1fr auto auto auto 1fr; column-gap: 1.5rem; }
+.cards-row .card > .image { grid-row: 1 / -1; margin: 0; align-self: center; }
+.cards-row .card > .image img { aspect-ratio: 1.618; }
+.cards-row .card:has(.image) > :not(.image) { grid-column: 2; }
+.cards-row .card > :is(h2, h3, h4) { font-size: 1.25rem; }
+.cards-text .card > :is(h2, h3, h4) { font-size: 1.4375rem; }
+@media (max-width: 47.9375rem) {
+  .cards-row .card:has(.image) { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .cards-row .card > .image { grid-row: 1; margin-block-end: 1.25rem; }
+  .cards-row .card:has(.image) > :not(.image) { grid-column: 1; }
+}
+
+/* The grid: cards in columns at least 248 px wide, hairlines between them
+   both ways; the box clips the outer ones. */
+.cards:not([class*="cards-"]) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr)); gap: calc(var(--sc-gap) * 1.5) var(--sc-gap); overflow: clip; overflow-clip-margin: 0.375rem; }
+.cards:not([class*="cards-"]) > li { position: relative; }
+.cards:not([class*="cards-"]) > li::before { content: ""; position: absolute; inset-block-start: calc(var(--sc-gap) * -0.75); inset-inline: calc(var(--sc-gap) / -2); block-size: 1px; background: var(--sc-line); }
+.cards:not([class*="cards-"]) > li::after { content: ""; position: absolute; inset-block: 0; inset-inline-start: calc(var(--sc-gap) / -2); inline-size: 1px; background: var(--sc-line); }
+
+/* The front page's landing header: the title, the intro and the sign-up
+   pill, centred, with room above and below. */
+.sc-hero { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; max-inline-size: 63.75rem; padding-block: clamp(4rem, 3rem + 7vw, 10rem); text-align: center; }
+.sc-hero h1 { margin: 0; font-size: clamp(1.875rem, 1.82vw + 1.42rem, 2.875rem); line-height: 1.1; letter-spacing: -0.028em; }
+.sc-hero .intro { max-inline-size: 40rem; color: var(--color-muted); font-size: 1.125rem; line-height: 1.45; }
+.sc-hero .intro > :last-child { margin-block-end: 0; }
+.sc-hero > :is(.newsletter-slot, .sc-find) { inline-size: 100%; max-inline-size: 35rem; margin: 1.75rem 0 0; padding: 0; background: none; }
+.sc-hero .newsletter-slot > :is(h2, p) { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.sc-hero + .sc-feed { margin-block-start: 0; }
+
+/* The pill form: a field on a grey pill with the button inside its end.
+   The label stays above it, small. */
+.newsletter-slot .subscribe, .sc-find { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; inline-size: 100%; max-inline-size: 35rem; margin: 0 auto; padding: 0; background: none; text-align: start; }
+.newsletter-slot .subscribe > p { margin: 0; }
+.newsletter-slot .subscribe > p:first-child { display: contents; }
+.newsletter-slot .subscribe label { grid-column: 1 / -1; margin-block-end: 0.5rem; color: var(--color-muted); font-size: var(--text-small); font-weight: 500; }
+.newsletter-slot .subscribe input, .sc-find input { grid-column: 1 / -1; grid-row: 2; min-block-size: 3.5rem; padding-block: 0; padding-inline: 1.625rem 9.5rem; font-size: 1.0625rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 2.5rem; }
+.newsletter-slot .subscribe > p:last-child, .sc-find button { grid-column: 2; grid-row: 2; margin-inline-end: 0.375rem; }
+.newsletter-slot .subscribe button, .sc-find button { min-inline-size: 8.25rem; min-block-size: 2.75rem; font-size: 1.0625rem; }
+.sc-find button { border-radius: 6.25rem; }
+@media (max-width: 36rem) {
+  .newsletter-slot .subscribe input, .sc-find input { padding-inline: 1.25rem 7.5rem; font-size: 1rem; }
+  .newsletter-slot .subscribe button, .sc-find button { min-inline-size: 6.5rem; padding-inline: 0.75rem; font-size: 1rem; }
+}
+
+/* The sign-up band: a grey field, the title large and centred. */
+.newsletter-slot { display: grid; justify-items: center; gap: 0.75rem; margin-block: max(4vw, 2.5rem) 0; padding: clamp(3rem, 3.64vw + 2.1rem, 5rem) clamp(1.25rem, 2.73vw + 1.8rem, 4rem); text-align: center; background: var(--color-surface); border-radius: var(--radius); }
+.newsletter-slot h2 { margin: 0; font-size: var(--sc-big); line-height: 1.1; letter-spacing: -0.021em; }
+.newsletter-slot > p { max-inline-size: 40rem; margin: 0; font-size: 1.125rem; line-height: 1.4; letter-spacing: -0.015em; }
+.newsletter-slot .subscribe { margin-block-start: 1.5rem; }
+
+/* Highlight and magazine: a 16 column grid with hairlines between its
+   columns and between the posts in each. */
+.sc-top { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: var(--sc-gap); margin-block-start: 2.5rem; }
+.sc-top > div { position: relative; grid-row: 1; }
+.sc-top .cards { gap: 0; }
+.sc-top .cards > li + li { margin-block-start: calc(var(--sc-gap) / 2); padding-block-start: calc(var(--sc-gap) / 2); border-block-start: 1px solid var(--sc-line); }
+.sc-top .cards > li::before, .sc-top .cards > li::after { content: none; }
+.sc-top :is(.sc-start, .sc-end, .sc-middle) .card > p:last-child { display: none; }
+.sc-top :is(.sc-start, .sc-end, .sc-middle) li:last-child .image { display: none; }
+.sc-top .cards { grid-template-columns: minmax(0, 1fr); }
+/* The lead post: its topic over a large title, a longer summary. */
+.sc-lead-card { position: relative; display: flex; flex-direction: column; }
+.sc-lead-card > .image { margin: 0 0 1.75rem; }
+.sc-lead-card > .image img { aspect-ratio: 1.618; object-fit: cover; }
+.sc-highlight .sc-lead-card > .image img { aspect-ratio: 3 / 2; }
+.sc-lead-card .sc-topic { position: relative; z-index: 1; margin: 0 0 0.75rem; }
+.sc-lead-card h2 { margin: 0; font-size: var(--sc-big); line-height: 1.1; letter-spacing: -0.022em; }
+.sc-lead-card h2 a { color: var(--color-text); text-decoration: none; }
+.sc-lead-card h2 a::after { content: ""; position: absolute; inset: 0; }
+.sc-lead-card:hover h2 { opacity: 0.8; }
+.sc-excerpt { max-inline-size: 90%; margin: clamp(0.75rem, 0.45vw + 0.65rem, 1rem) 0 0; font-size: 1.125rem; line-height: 1.4; letter-spacing: -0.02em; }
+.sc-lead-card .card-meta { margin: 0.875rem 0 0; }
+.sc-magazine .sc-lead { grid-column: 5 / span 8; }
+.sc-magazine .sc-start { grid-column: 1 / span 4; }
+.sc-magazine .sc-end { grid-column: 13 / -1; }
+.sc-magazine .sc-lead::before, .sc-magazine .sc-lead::after, .sc-highlight :is(.sc-lead, .sc-middle)::after { content: ""; position: absolute; inset-block: 0; inset-inline-start: calc(var(--sc-gap) / -2); inline-size: 1px; background: var(--sc-line); }
+.sc-magazine .sc-lead::after, .sc-highlight :is(.sc-lead, .sc-middle)::after { inset-inline: auto calc(var(--sc-gap) / -2); }
+.sc-highlight .sc-lead { grid-column: 1 / span 8; }
+.sc-highlight .sc-middle { grid-column: 9 / span 4; }
+.sc-highlight .sc-side { grid-column: 13 / -1; }
+
+/* The small rows: the editor's picks and the highlight's last column. A
+   square picture at the end, the title and the meta line. */
+:is(.sc-side, .sc-picks) .cards-row > li { padding-block: 0; }
+:is(.sc-side, .sc-picks) .cards-row .card:has(.image) { grid-template-columns: minmax(0, 1fr) 4.5rem; grid-template-rows: auto auto auto auto 1fr; column-gap: 1.25rem; }
+:is(.sc-side, .sc-picks) .card > .image { grid-column: 2; grid-row: 1 / -1; align-self: start; }
+:is(.sc-side, .sc-picks) .card > .image img { aspect-ratio: 1; }
+:is(.sc-side, .sc-picks) .card:has(.image) > :not(.image) { grid-column: 1; }
+:is(.sc-side, .sc-picks) .card > :is(h2, h3, h4) { font-size: 1rem; font-weight: 650; letter-spacing: -0.011em; }
+:is(.sc-side, .sc-picks) .card > p:last-child { display: none; }
+:is(.sc-side, .sc-picks) .card > p:not(:last-child) { margin-block-start: 0.5rem; }
+.sc-picks { margin-block-start: clamp(3rem, 6vw, 6.25rem); }
+.sc-picks .cards-row { grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--sc-gap); overflow: clip; }
+.sc-picks .cards-row > li { position: relative; }
+.sc-picks .cards-row > li + li { border: 0; }
+.sc-picks .cards-row > li::before { content: ""; position: absolute; inset-block: 0; inset-inline-start: calc(var(--sc-gap) / -2); inline-size: 1px; background: var(--sc-line); }
+@media (max-width: 74.9375rem) {
+  .sc-magazine { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .sc-magazine .sc-lead { grid-column: 1 / span 8; }
+  .sc-magazine .sc-lead::before { content: none; }
+  .sc-magazine .sc-start { grid-column: 9 / -1; }
+  .sc-magazine .sc-end { grid-column: 1 / -1; grid-row: 2; }
+  .sc-magazine .sc-end .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--sc-gap); }
+  .sc-magazine .sc-end .cards > li + li { margin: 0; padding: 0; border: 0; }
+  .sc-magazine .sc-end li:last-child .image { display: block; }
+  .sc-highlight { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+  .sc-highlight .sc-lead { grid-column: 1 / span 6; }
+  .sc-highlight .sc-middle { grid-column: 7 / -1; }
+  .sc-highlight .sc-middle::after { content: none; }
+  .sc-highlight .sc-side { grid-column: 1 / -1; grid-row: 2; }
+  .sc-highlight .sc-side .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sc-gap); }
+  .sc-highlight .sc-side .cards > li + li { margin: 0; padding: 0; border: 0; }
+}
+@media (max-width: 47.9375rem) {
+  .sc-top { display: flex; flex-direction: column; }
+  .sc-top > :is(.sc-lead, .sc-middle, .sc-start, .sc-end)::before, .sc-top > :is(.sc-lead, .sc-middle, .sc-start, .sc-end)::after { content: none; }
+  .sc-top > div + div { padding-block-start: calc(var(--sc-gap) / 2); border-block-start: 1px solid var(--sc-line); }
+  .sc-top .sc-side .cards, .sc-magazine .sc-end .cards { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  .sc-top li:last-child .image { display: block; }
+  .sc-magazine .sc-end .cards > li + li, .sc-highlight .sc-side .cards > li + li { margin-block-start: calc(var(--sc-gap) / 2); padding-block-start: calc(var(--sc-gap) / 2); border-block-start: 1px solid var(--sc-line); }
+}
+
+/* The list of posts under the header, with the blog's own column beside
+   it when asked for. */
+.sc-feed { margin-block-start: 4rem; }
+.sc-top ~ .sc-feed:has(.cards:not([class*="cards-"])) { max-inline-size: none; }
+.sc-with-about { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: var(--sc-gap); }
+.sc-with-about > .sc-posts { position: relative; }
+.sc-with-about > .sc-posts::after { content: ""; position: absolute; inset-block: 0; inset-inline-end: calc(var(--sc-gap) / -2); inline-size: 1px; background: var(--sc-line); }
+.sc-about { position: sticky; inset-block-start: calc(var(--sc-gap) / 2); display: flex; flex-direction: column; align-items: center; justify-content: center; align-self: start; min-block-size: 23.75rem; padding: 3rem 1.5rem; text-align: center; background: var(--color-surface); }
+.sc-about h2 { margin: 0; font-size: 1.5rem; letter-spacing: -0.019em; }
+.sc-about .intro { margin-block-start: 0.75rem; font-size: 0.90625rem; line-height: 1.4; }
+.sc-about .button { margin-block-start: 1.25rem; }
+@media (max-width: 74.9375rem) {
+  .sc-with-about { display: block; max-inline-size: var(--sc-list); }
+  .sc-with-about > .sc-posts::after, .sc-about { display: none; }
+}
+.pagination { margin-block-start: 3rem; font-weight: 600; }
+.home-section, .topics { margin-block-start: 4rem; }
+
+/* A list page and an author: a large title over a hairline, then the
+   list. */
+main > h1, .author-intro h1 { margin-block: 5rem 0; font-size: clamp(2.125rem, 1.36vw + 1.78rem, 2.875rem); line-height: 1.1; letter-spacing: -0.022em; }
+main > h1 + .intro { margin-block-start: clamp(0.75rem, 0.45vw + 0.65rem, 1rem); color: var(--color-text); font-size: clamp(1.0625rem, 0.23vw + 1rem, 1.1875rem); line-height: 1.45; }
+main > :is(.cards, .featured) { margin: clamp(2.5rem, 2.73vw + 1.8rem, 4rem) auto 0; border-block-start: 1px solid var(--sc-line); }
+main > .author { margin-block: 5rem clamp(2.5rem, 2.73vw + 1.8rem, 4rem); }
+.author-header { margin-block-end: 1.5rem; }
+.author-photo { inline-size: 7.5rem; }
+.author-intro h1 { margin: 0 0 0.25rem; font-size: 2.25rem; }
+.author-bio { font-size: 1.0625rem; }
+
+/* The post: the topic, the title and the byline row in the text column,
+   the lead picture wider, then the text. */
+main > .post { max-inline-size: var(--sc-post); }
+.post > :not(.post-header, .toc-side), .post-header > :not(.image) { max-inline-size: var(--measure); margin-inline: auto; }
+.post-header { margin-block: clamp(2.5rem, 3.64vw + 1.6rem, 4.5rem) 2.5rem; }
+.post-header h1 { margin: 0; font-size: clamp(2.125rem, 1.36vw + 1.78rem, 2.875rem); line-height: 1.1; letter-spacing: -0.022em; }
+.post-header > .image { max-inline-size: var(--sc-post); margin: 2.5rem auto 0; }
+.sc-topic { margin-block-end: 0.75rem; font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.01em; text-transform: uppercase; }
+.sc-topic a { color: var(--color-link); text-decoration: none; }
+.post-header .dek { margin-block: clamp(0.75rem, 0.45vw + 0.65rem, 1rem) 0; color: var(--color-text); font-size: clamp(1.0625rem, 0.23vw + 1rem, 1.1875rem); line-height: 1.45; letter-spacing: -0.018em; }
+.sc-byline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-block-start: 1.25rem; }
+.sc-byline .post-meta { display: flex; align-items: center; gap: 0.5rem; margin-inline-start: 0.375rem; color: var(--color-muted); }
+.sc-faces { display: flex; flex: none; margin: 0 0.5rem 0 0; }
+.sc-faces > :is(picture, .sc-face) { position: relative; margin-inline: -0.5rem; }
+.sc-faces .avatar, .sc-face { inline-size: 3.5rem; block-size: 3.5rem; border: 3px solid var(--color-background); border-radius: 50%; background: var(--color-surface); }
+.sc-face { display: inline-flex; align-items: center; justify-content: center; color: var(--color-text); font-size: 1.25rem; font-weight: 650; }
+.sc-who { display: flex; flex-direction: column; gap: 0.25rem; }
+.sc-who > * { margin: 0; }
+.sc-who address { font-style: normal; color: var(--color-text); font-size: 1rem; font-weight: 650; letter-spacing: -0.013em; }
+.sc-who address a { min-block-size: 0; color: inherit; text-decoration: none; }
+.sc-when, .sc-first { font-size: 0.84375rem; font-weight: 500; line-height: 1.2; }
+.sc-when .reading-time::before { content: "·" / ""; margin-inline-end: 0.375rem; }
+.sc-share { position: relative; flex: none; }
+.sc-share summary { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding-inline: 1.125rem; color: var(--color-text); font-size: 0.9375rem; font-weight: 550; list-style: none; border: 1px solid color-mix(in oklab, var(--color-text) 20%, var(--color-background)); border-radius: 999px; cursor: pointer; }
+.sc-share summary::-webkit-details-marker { display: none; }
+.sc-share summary:hover { border-color: var(--color-muted); }
+.sc-share ul { position: absolute; inset-block-start: calc(100% + 0.5rem); inset-inline-end: 0; z-index: 30; display: grid; min-inline-size: 12rem; margin: 0; padding: 0.5rem; list-style: none; background: var(--color-background); border: 1px solid var(--color-border); box-shadow: 0 0.5rem 1.5rem color-mix(in oklab, var(--color-text) 14%, transparent); }
+.sc-share a { display: flex; align-items: center; min-block-size: 44px; padding-inline: 0.75rem; color: var(--color-text); text-decoration: none; }
+
+/* The text: 18 px with room between parts and more before each heading.
+   Source sets 17 px in 720 px; Khalid's reading check asks for 18 px and
+   at most 75 characters a line, so the column is 600 px. */
+.post-body { font-size: 1.125rem; letter-spacing: -0.01em; }
+.post-body > p { margin-block-end: 1.75rem; }
+.post-body > :is(h2, h3) { margin-block: 3.5rem 0.75rem; }
+.post-body a { color: var(--color-link); text-decoration: underline; }
+.post-body > blockquote:not([class]) { padding-inline-start: 2rem; color: inherit; border-inline-start: 4px solid var(--color-accent); }
+.post-body hr { margin-block: 3rem; border-color: var(--sc-line); }
+.post-body pre { border-radius: 0.375rem; }
+.sc-drop > p:first-of-type::first-letter { float: inline-start; margin-inline: -1px 0.2em; font-size: 3.1em; font-weight: 700; line-height: 1; }
+.post-footer { margin-block-start: 3rem; }
+.tags a { color: var(--color-text); font-size: var(--text-small); border-radius: 999px; }
+.related { margin-block-start: 7.5rem; }
+@media (min-width: 62rem) {
+  .related .cards:not([class*="cards-"]) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* The footer: one bar between two hairlines, everything centred. */
+.site-footer { justify-items: center; margin-block: 7.5rem clamp(3rem, 8vw, 7.5rem); padding-block: 1.75rem; color: var(--color-text); text-align: center; border-block: 1px solid var(--sc-line); }
+.site-footer > * { font-size: 0.9375rem; font-weight: 550; }
+.site-footer nav ul { justify-content: center; gap: 0.25rem 1.75rem; }
+.site-footer a { color: inherit; text-decoration: none; }
+.footer-groups { justify-items: center; inline-size: 100%; }

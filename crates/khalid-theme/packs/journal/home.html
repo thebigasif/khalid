@@ -1,0 +1,73 @@
+{#- Based on Ghost's Journal theme, MIT licence, see LICENSE-ghost.txt.
+    Journal's front page (docs/templates/journal.md): no pictures, only
+    type. The latest issue opens it: a small line with "Latest posts" and
+    the date in the link colour, the title very large, the summary large,
+    then the writer and the reading time in small capitals. Under it, two
+    columns: every other issue as text (title, summary, date) under a
+    "Past issues" label with a hairline, and a side column with the
+    blog's name and intro, the newsletter form, featured posts and the
+    topics. A band in the accent colour asks for the email last. A later
+    page shows the list alone, under the blog's name. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
+{% set later = page.pagination and page.pagination.current > 1 -%}
+{% set archive = site.home ~ "archive/" if "archive" in site.features else none -%}
+{% set signup = site.subscribe and template.options.newsletter in ["home", "both"] -%}
+{% if later %}<h1>{{ page.title }}</h1>
+{% if page.posts %}{{ cards(page.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% else %}{% set latest = page.posts[0] if page.posts else none -%}
+{% set rest = page.posts[1:] -%}
+<h1 class="visually-hidden">{{ page.title }}</h1>
+{% if latest %}<article class="journal-latest">
+<p class="journal-kicker">{{ t.latest }} <span aria-hidden="true">&middot;</span> <time datetime="{{ latest.date }}">{{ latest.date | date }}</time></p>
+<h2><a href="{{ latest.href }}">{{ latest.title }}</a></h2>
+<p class="journal-excerpt">{{ latest.excerpt }}</p>
+<p class="journal-facts">{% if latest.author %}<span>{{ t.by }} {{ latest.author.name }}</span>{% endif %}{% if latest.reading_time %}<span>{{ t.reading_time | replace("{minutes}", latest.reading_time.minutes | string) }}</span>{% endif %}</p>
+</article>
+{% endif %}{% if template.options.sidebar %}<div class="journal-columns">{% else %}<div class="journal-columns journal-single">{% endif %}
+<section class="journal-issues" aria-labelledby="journal-issues-title">
+<h2 id="journal-issues-title" class="journal-label">{{ t.newsletter_issues }}</h2>
+{% if rest %}{{ cards(rest, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% if template.options.sidebar %}<aside class="journal-side" aria-label="{{ site.name }}">
+<section class="journal-about">
+{% if brand.icon %}<img class="journal-icon" src="{{ brand.icon }}" alt="" width="64" height="64" decoding="async">
+{% endif %}<div>
+<h2>{{ site.name }}</h2>{{ hero_stats(template.options) }}
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}</div>
+</section>
+{% if signup %}{{ newsletter_form(site.subscribe, t, "journal-signup") }}
+{% elif archive %}<p class="journal-archive"><a href="{{ archive }}">{{ t.newsletter_all }}</a></p>
+{% endif %}{% if page.picks %}<section class="journal-featured" aria-labelledby="journal-featured-title">
+<h2 id="journal-featured-title" class="journal-label">{{ t.featured }}</h2>
+{{ cards(page.picks[:5], 3, "text") }}
+</section>
+{% endif %}{% if page.topics and "topic_links" in site.features %}<nav class="journal-topics" aria-label="{{ t.topics }}">
+<h2 id="journal-topics-title" class="journal-label">{{ t.topics }}</h2>
+<ul>
+{% for group in page.topics %}{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}{% endfor %}</ul>
+</nav>
+{% endif %}</aside>
+{% endif %}</div>
+{% for section in page.sections %}<section class="home-section">
+<h2 class="journal-label">{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{{ home_sections(page, template.options, t) }}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if signup %}<div class="journal-band">
+{{ newsletter_form(site.subscribe, t, "journal-band") }}
+</div>
+{% endif %}{% endif %}{% if later and page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

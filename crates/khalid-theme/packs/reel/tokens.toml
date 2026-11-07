@@ -1,0 +1,34 @@
+# Reel: a printed cinema programme. Warm paper, near-black ink, one cinema
+# red for the stars, the ticket's edge and the links, and a deeper paper
+# surface for the ticket. Condensed sans titles like a poster, a serif for
+# the reviews.
+[colors]
+background = "#fbf8f3"
+surface = "#f2ebe0"
+text = "#1c1715"
+muted = "#5c524b"
+link = "#9b1c2e"
+accent = "#9b1c2e"
+border = "#e0d5c5"
+
+[fonts]
+heading = "\"Avenir Next Condensed\", \"Roboto Condensed\", \"Arial Narrow\", \"Helvetica Neue\", Arial, sans-serif"
+body = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
+
+[shape]
+radius = "0.25rem"
+measure = "40rem"
+
+[type]
+body = "1.0625rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.1875rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.65
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "4rem"

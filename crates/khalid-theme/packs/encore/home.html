@@ -1,0 +1,99 @@
+{#- Encore's front page (docs/templates/encore.md): the band's name large,
+    its tagline and the places to listen; the newest release (the newest
+    post with facts) on its sleeve beside its facts; the tour dates from
+    the tour_dates option, one show a line, `date | city | venue | tickets`;
+    every other release as a shelf of sleeves; then the newest notes (posts
+    without facts) as picture cards. The newest release and the tour list
+    show on the first page only. With home sections in
+    site.toml, each section is a shelf of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% macro sleeve(post, level) -%}
+<li class="sleeve">
+<div class="sleeve-art">{% if post.image %}{{ picture(post.image) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
+<h{{ level }} class="sleeve-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="sleeve-meta">{% if post.facts %}{{ post.facts[0].value }}{% endif %} <time datetime="{{ post.date }}">{{ (post.date | string)[:4] }}</time></p>
+</li>
+{%- endmacro %}
+{% macro shelf(posts, level=3) -%}
+<ul class="shelf" role="list">
+{% for post in posts %}{{ sleeve(post, level) }}
+{% endfor %}</ul>
+{%- endmacro %}
+{% macro note_cards(posts, level=3) -%}
+<ul class="notes" role="list">
+{% for post in posts %}<li class="note">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}<p class="note-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %} <span class="note-category">{{ post.category.name }}</span>{% endif %}</p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}
+{% set options = template.options -%}
+{% set months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"] -%}
+{% set first = not page.pagination or page.pagination.current == 1 -%}
+{% set releases = page.posts | selectattr("facts") | list -%}
+{% set notes = page.posts | rejectattr("facts") | list -%}
+{% set latest = releases[0] if releases and first and not page.sections else none -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{% if options.listen_on %}<ul class="listen-on" role="list" aria-label="{{ t.home_listen_on }}">
+{% for line in options.listen_on %}{% set parts = line | split("|") | list %}{% set address = parts[1:] | join("|") | trim %}{% if address[:8] == "https://" or address[:7] == "http://" %}<li><a href="{{ address }}" rel="noopener">{{ parts[0] | trim }}</a></li>
+{% endif %}{% endfor %}</ul>
+{% endif %}{% endcall %}
+{% if latest %}<section class="out-now" aria-labelledby="out-now-title">
+<h2 id="out-now-title" class="label">{{ t.music_out_now }}</h2>
+<div class="out-now-body">
+<div class="sleeve-art">{% if latest.image %}{{ picture(latest.image) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
+<div class="out-now-text">
+<h3><a href="{{ latest.href }}">{{ latest.title }}</a></h3>
+{% if latest.excerpt %}<p class="out-now-excerpt">{{ latest.excerpt }}</p>
+{% endif %}<dl class="liner">
+{% for fact in latest.facts %}{% if not (fact.value is startingwith("https://")) %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endif %}{% endfor %}</dl>
+{% set links = latest.facts | selectattr("value", "startingwith", "https://") | list %}{% if links %}<p class="out-now-links">{% for fact in links %}<a class="button" href="{{ fact.value }}" rel="noopener">{{ fact.label or t.music_listen }}</a>
+{% endfor %}</p>
+{% endif %}</div>
+</div>
+</section>
+{% endif %}{% if first and options.tour_dates %}<section class="tour" id="tour" aria-labelledby="tour-title">
+<h2 id="tour-title" class="label">{{ t.music_on_tour }}</h2>
+<ol class="tour-list" role="list">
+{% for line in options.tour_dates %}{% set parts = line | split("|") | list %}{% set day = parts[0] | trim %}{% set city = parts[1] | trim if parts | length > 1 else "" %}{% set ticket = parts[3] | trim if parts | length > 3 else "" %}<li class="tour-show">
+{% if day | length == 10 and day[4:5] == "-" and day[7:8] == "-" and day[5:7] in months %}<time class="tour-when" datetime="{{ day }}"><span class="tour-day">{{ day[8:10] }}</span> <span class="tour-month">{{ t["month_" ~ (day[5:7] | int)][:3] }}</span> <span class="tour-year">{{ day[:4] }}</span></time>
+{% else %}<p class="tour-when"><span class="tour-day">{{ day }}</span></p>
+{% endif %}<div class="tour-place">
+<h3 class="tour-city">{{ city }}</h3>
+{% if parts | length > 2 %}<p class="tour-venue">{{ parts[2] | trim }}</p>
+{% endif %}</div>
+{% if ticket[:8] == "https://" or ticket[:7] == "http://" %}<a class="tour-tickets" href="{{ ticket }}" rel="noopener">{{ t.music_tickets }}<span class="visually-hidden">: {{ city }}</span></a>
+{% elif ticket %}<p class="tour-note">{{ ticket }}</p>
+{% endif %}</li>
+{% endfor %}</ol>
+</section>
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-shelf" aria-labelledby="home-section-{{ loop.index }}">
+<h2 id="home-section-{{ loop.index }}" class="label">{{ section.title }}</h2>
+{% set shown = section.posts | selectattr("facts") | list %}{% set written = section.posts | rejectattr("facts") | list %}{% if shown %}{{ shelf(shown) }}
+{% endif %}{% if written %}{{ note_cards(written) }}
+{% endif %}{% if not section.posts %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% else %}{% set others = releases[1:] if latest else releases %}{% if others %}<section class="home-shelf" aria-labelledby="releases-title">
+<h2 id="releases-title" class="label">{{ t.music_releases }}</h2>
+{{ shelf(others) }}
+</section>
+{% endif %}{% set written = notes[:options.notes_count] if first else notes %}{% if written %}<section class="home-notes" aria-labelledby="notes-title">
+<h2 id="notes-title" class="label">{{ t.music_notes }}</h2>
+{{ note_cards(written) }}
+</section>
+{% endif %}{% if not page.posts %}<p>{{ t.no_posts }}</p>
+{% endif %}{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

@@ -22,13 +22,51 @@ These templates are built in. Every template but classic has its own page, linke
 
 - `classic`: a wide frame with a large lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
+- `alto`: a clean, minimal blog with a sideways strip of featured posts, then one post under another with a wide picture, and a calm column for each post. Based on Ghost's Alto theme (MIT). See [Alto](templates/alto.md).
+- `aperture`: one photographer's site, with each post one picture the full width of the page, its story and a plate of its camera, lens and exposure, and older pictures in a light contact sheet. See [Aperture](templates/aperture.md).
+- `atelier`: a fashion label, stylist or fashion writer, with a lookbook of numbered looks, each a tall picture with the pieces worn beside or under it, collections, a journal of notes and posts that open as a two-page spread. See [Atelier](templates/atelier.md).
 - `atlas`: a publication for a blog with many topics, with a map-sheet masthead that indexes every topic, featured stories and picture cards. See [Atlas](templates/atlas.md).
+- `beacon`: a charity or a cause, with campaigns that each carry a goal meter, impact figures, a news feed and a donate call in the header, the hero and a band on every page. See [Beacon](templates/beacon.md).
+- `bulletin`: a newsletter-first blog with a sign-up panel in your accent colour beside the latest issue, a ruled list of every other issue and a centred reading column. Based on Ghost's Bulletin theme (MIT). See [Bulletin](templates/bulletin.md).
+- `casper`: a classic blog with a coloured cover band and a picture under it, one large card, two half cards and then a grid, and a calm serif column for each post. Based on Ghost's Casper theme (MIT). See [Casper](templates/casper.md).
+- `channel`: a video creator's home, with the newest video large as Now showing, thumbnail cards with a play bar and running time, a shelf for each playlist, and posts that open on a wide video with Up next under them. See [Channel](templates/channel.md).
+- `chapter`: an author's site, with the newest book beside its cover, the books as a shelf of covers, excerpts and essays as a book's contents page, events as dated rows and excerpts set as a page of the book. See [Chapter](templates/chapter.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
+- `dawn`: a calm, text-led blog and newsletter with a small centred cover and sign-up, a row of featured posts, then every post as one line with a day and month block. Based on Ghost's Dawn theme (MIT). See [Dawn](templates/dawn.md).
+- `digest`: a compact newsletter blog that leads with the latest issue, then a subscribe box, featured issues in soft grey panels and a ruled list of past issues. Based on Ghost's Digest theme (MIT). See [Digest](templates/digest.md).
+- `dope`: a blog arranged by topic, with a sideways shelf of tall topic tiles on the front page, wide rows with a large picture beside each summary, and posts that open on their picture from edge to edge. Based on Ghost's Dope theme (MIT). See [Dope](templates/dope.md).
+- `ease`: a help centre or documentation site, with a large search box on a band in your accent colour, a strip of featured articles, then each category as a list of links, two across. Based on Ghost's Ease theme (MIT). See [Ease](templates/ease.md).
+- `edge`: a picture-led site for creative work, with a wall of lead pictures packed like masonry on the front page and posts that open with a wide picture over one calm column. Based on Ghost's Edge theme (MIT). See [Edge](templates/edge.md).
+- `edition`: a newsletter with a big cover, a picture from edge to edge with your pitch and the sign-up form, then a row of featured posts and a quiet list of the latest. Based on Ghost's Edition theme (MIT). See [Edition](templates/edition.md).
+- `encore`: a musician's or a band's site, with the newest release on its sleeve, tour dates with ticket links, a shelf of every record and the band's notes from the studio and the road. See [Encore](templates/encore.md).
+- `episode`: a podcast's blog that leads with the newest episode and its player, under a dark band with the show's name and where to listen, then every episode as a boxed row with a square picture. Based on Ghost's Episode theme (MIT). See [Episode](templates/episode.md).
+- `fixture`: a sports club, with the next match and the club's form on the front page, results as scoreboard rows with the score in large figures, upcoming fixtures, club news, a squad page and a scoreboard on every match report. See [Fixture](templates/fixture.md).
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
 - `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
+- `headline`: a local news site with the logo over the menu, the latest stories, a section for each topic with a lead story and small rows, short lists of headlines for more topics, and a dark footer. Based on Ghost's Headline theme (MIT). See [Headline](templates/headline.md).
+- `hub`: a creator's link-in-bio home in one narrow column, with the creator's photo and name, a stack of large link buttons led by the call to action, and the latest posts as rows with a square picture. See [Hub](templates/hub.md).
+- `itinerary`: a travel diary with trips filed by country as passport stamps, each trip a ticket with its days, route, season and cost, a day-by-day route on every trip and checklists for packing. See [Itinerary](templates/itinerary.md).
+- `journal`: one writer's newsletter, with the latest issue in large type, every other issue as text beside a side column about the writer, and a sign-up band in your accent colour. Based on Ghost's Journal theme (MIT). See [Journal](templates/journal.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
+- `lattice`: a science explainer site, with every picture a numbered figure, key numbers from each post's facts, footnotes as numbered tabs and marked glossary terms. See [Lattice](templates/lattice.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
+- `locale`: a city guide with places listed by area, each as a guidebook row with its kind, opening hours and a price meter, an At a glance card on every place, and notes from the city. See [Locale](templates/locale.md).
+- `london`: a picture-led blog or portfolio with the blog's description set large in the middle, tall picture tiles from edge to edge, two side by side and every third across the whole width, and a centred reading column. Based on Ghost's London theme (MIT). See [London](templates/london.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
+- `plinth`: an architecture or interiors practice, with each project as a spread of its photograph beside a title block of its facts, plans framed as numbered drawing sheets, studio notes and types of work. See [Plinth](templates/plinth.md).
+- `reel`: film and TV reviews, with a star rating on a ticket, the cast and where to watch on every review, poster cards and a score sheet ranked by rating. See [Reel](templates/reel.md).
+- `research`: a research lab or academic group, with papers as a numbered reference list with venue, DOI and citations, a news feed, research areas, a people page and a cite box on every paper. See [Research](templates/research.md).
+- `respawn`: a games site with news, reviews and a release calendar, where every review shows its score as a dark square and a health bar of ten cells, on cards, lists and the review itself. See [Respawn](templates/respawn.md).
+- `ruby`: a magazine of picture cards, four white cards across on a page that fades to light grey, and a calm column for each post with more cards after it. Based on Ghost's Ruby theme (MIT). See [Ruby](templates/ruby.md).
+- `solo`: a personal site for one writer or creator, with a large headline and a sign-up field over a feed of posts with large titles. Based on Ghost's Solo theme (MIT). See [Solo](templates/solo.md).
+- `source`: a general publication with the logo in the middle of the header, a front page that opens with a landing, highlight or magazine header, a list or a grid of posts with hairlines between them, and a calm column for each post. Based on Ghost's Source theme (MIT). See [Source](templates/source.md).
+- `summit`: a conference, festival or event, with the programme as a timetable by day and time, speakers, venues with their sessions and a ticket stub on every session. See [Summit](templates/summit.md).
+- `syllabus`: an online course, with a course map of one square per lesson, an outline of modules and lessons, course news, and on every lesson a progress ruler that shows how far through the course it is. See [Syllabus](templates/syllabus.md).
+- `taste`: a baking blog with a centred header and sign-up field, a magazine block of five posts and a picture grid for each main topic. Based on Ghost's Taste theme (MIT). See [Taste](templates/taste.md).
+- `ticker`: a markets newsletter, with a dark tape of figures, each issue's moves as a bar chart drawn without script, and every list as a data table shaded by how far each figure moved. See [Ticker](templates/ticker.md).
+- `versions`: a software product's changelog, with every change on a version rail, a filter row for each type of change (new, improved, fixed) that works without a script, the versions as anchor links and a box to get updates by email or feed. See [Versions](templates/versions.md).
+- `vital`: a health and wellness site of programmes and routines, with each routine's time in a ring on its picture card, a session panel and a care note on every routine, its steps drawn as a track, and a notes feed. See [Vital](templates/vital.md).
+- `wave`: an interview show's blog on a quiet white page, with the newest episode in a slim player card, then every episode as a row with square artwork and a round play mark. Based on Ghost's Wave theme (MIT). See [Wave](templates/wave.md).
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
 
@@ -128,12 +166,21 @@ facts:
 
 `khalid build` stops and names the line when a fact breaks one of these rules.
 
-Four templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+These templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+Several templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+Five templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
 
+- [Fixture](templates/fixture.md#matches-are-posts-with-facts) treats posts with facts as matches: the opponent, the result or kick-off, the ground and the competition. Results show as scoreboard rows with a W, D or L chip, the front page shows the next match and the club's form, and a match report opens with a scoreboard.
+- [Aperture](templates/aperture.md#camera-details-are-facts) shows the facts as a plate of camera details under each picture: the camera, the lens, the exposure and the date it was taken.
 - [Folio](templates/folio.md#release-notes) treats posts with facts as releases. The front page lists them in a dated release log beside the essays, tagged with the first fact, such as the version. A release's page shows its facts above the title.
 - [Workbench](templates/workbench.md#score-panels) shows a score panel on review cards and at the top of a review: the first fact large, with a meter when it is a score out of ten, then up to three figures.
 - [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.
+- [Ticker](templates/ticker.md#issues-are-posts-with-facts) treats posts with facts as issues, each fact a market and its move. It draws a post's facts as a bar chart and lists posts in a table with one column per fact, each figure cell shaded by how far it moved.
+- [Lattice](templates/lattice.md#what-you-write) shows a post's facts as a row of key numbers under its lead picture, the value large and the label under it, and does the same for the lead explainer on the front page.
+- [Versions](templates/versions.md#changes-are-posts) reads the first fact as the version a change shipped in, and groups the changes of each version on its version rail. A change's page shows every fact in a ruled row.
 - [Harbor](templates/harbor.md#recipe-facts) shows up to four posts with facts in a recipe card strip on the front page, with the first two facts as tags, and all the facts as tags under a post's title.
+- [Respawn](templates/respawn.md#reviews-are-posts-with-facts) treats posts with facts as reviews. The first fact is the score out of 10, shown as a dark square and a health bar on cards, lists and the review, and the second, the platforms, shows under it.
+- [Locale](templates/locale.md#places-are-posts-with-facts) treats posts with facts as places: 1 the kind of place, 2 the price level, drawn as a price meter of four marks, 3 the opening hours and 4 the address. They show on listing rows and in an At a glance card on each place.
 
 The other templates do not show facts. A custom template that wants them reads `post.facts` on a card and `page.facts` on a post page. Each fact has a `label` and a `value`:
 

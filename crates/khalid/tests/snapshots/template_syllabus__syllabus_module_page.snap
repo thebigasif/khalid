@@ -1,0 +1,33 @@
+---
+source: crates/khalid/tests/template_syllabus.rs
+expression: "shown(&out, \"category/on-page-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/on-page-seo/" aria-current="page">On-page SEO</a></li>
+</ol>
+</nav>
+
+<header class="list-header">
+<p class="list-kind">Module</p>
+<h1>On-page SEO</h1>
+<p class="list-count">2 lessons</p>
+</header>
+<ol class="lesson-rows" role="list">
+<li class="lesson-row">
+<span class="lesson-mark" aria-hidden="true"></span>
+<h2><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h2>
+<span class="lesson-length">12 min</span>
+</li>
+<li class="lesson-row">
+<span class="lesson-mark" aria-hidden="true"></span>
+<h2><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h2>
+<span class="lesson-length">9 min</span>
+</li>
+</ol>

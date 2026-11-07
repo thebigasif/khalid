@@ -1,0 +1,71 @@
+# The sample brand for the Dope demo: a studio that sorts its writing into
+# a few strong topics. A deep plum accent on white with a faint plum
+# surface, a heavy geometric sans for headings and a warm text serif for
+# the words. Only the brand lives here: the template keeps its own shape,
+# type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#f7f2f5"
+text = "#1d1620"
+muted = "#655b63"
+link = "#8a2f6b"
+accent = "#9c3a7b"
+border = "#eadfe6"
+
+[fonts]
+heading = "Raleway, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+body = "\"PT Serif\", \"Iowan Old Style\", Charter, Georgia, serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Raleway"
+style = "normal"
+weight = "400 800"
+path = "raleway-latin-400-800.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "103.84%"
+descent = "110.42%"
+line_gap = "0.00%"
+size_adjust = "59.94%"
+
+[[fonts.files]]
+family = "PT Serif"
+style = "normal"
+weight = "400"
+path = "pt-serif-latin-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "114.77%"
+descent = "134.96%"
+line_gap = "0.00%"
+size_adjust = "59.72%"
+
+[[fonts.files]]
+family = "PT Serif"
+style = "normal"
+weight = "700"
+path = "pt-serif-latin-700.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "114.77%"
+descent = "134.96%"
+line_gap = "0.00%"
+size_adjust = "63.64%"
+
+[[fonts.files]]
+family = "PT Serif"
+style = "italic"
+weight = "400"
+path = "pt-serif-latin-italic-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "114.77%"
+descent = "134.96%"
+line_gap = "0.00%"
+size_adjust = "58.56%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

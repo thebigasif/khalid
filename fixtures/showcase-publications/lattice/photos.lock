@@ -1,0 +1,209 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-03-03-blue-sky/lead.jpg"
+sha256 = "9e4eddc1f9d6a52e28c72cf710da8ef1dabea65bcb0b161effbded63e3c779f9"
+source = "https://commons.wikimedia.org/wiki/File:Dusk_Sunset_Sky.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Dusk Sunset Sky by Unknown author, via Wikimedia Commons"
+title = "Dusk Sunset Sky"
+creator = "Unknown author"
+openverse = "commons:File:Dusk Sunset Sky.jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-03-03-blue-sky/midday.jpg"
+sha256 = "0850dcb7638d0c211c586bbdf99785d2018d4ed47cdce5a91025310b5a90d220"
+source = "https://commons.wikimedia.org/wiki/File:Clear_sky_over_Riga,_2008.jpg"
+licence = "CC BY 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/3.0"
+credit = "Clear sky over Riga, 2008 by Mee2ch, via Wikimedia Commons"
+title = "Clear sky over Riga, 2008"
+creator = "Mee2ch"
+openverse = "commons:File:Clear sky over Riga, 2008.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-03-24-how-tides-work/lead.jpg"
+sha256 = "ee759ff07abcbe908e99652ab1ea42b834ace83118377e1e9bd3313fc4920e72"
+source = "https://commons.wikimedia.org/wiki/File:Langstone_Harbour_at_Southsea_during_low_tide.JPG"
+licence = "CC BY 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/3.0"
+credit = "Langstone Harbour at Southsea during low tide by Editor5807, via Wikimedia Commons"
+title = "Langstone Harbour at Southsea during low tide"
+creator = "Editor5807"
+openverse = "commons:File:Langstone Harbour at Southsea during low tide.JPG"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-03-24-how-tides-work/moon.jpg"
+sha256 = "76779066bf5dd6490fc3916c0891274d7eefd931c251640e26e00b07307eaae5"
+source = "https://commons.wikimedia.org/wiki/File:Full_moon_partially_obscured_by_atmosphere.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Full moon partially obscured by atmosphere by NASA, via Wikimedia Commons"
+title = "Full moon partially obscured by atmosphere"
+creator = "NASA"
+openverse = "commons:File:Full moon partially obscured by atmosphere.jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-04-14-black-holes/growth.jpg"
+sha256 = "c839b006753e1bb92c36bc6b2e9c9a4f1fc1552e2bb9d4338c087355f0a46a72"
+source = "https://commons.wikimedia.org/wiki/File:NASA%E2%80%99s_Chandra_Finds_Black_Hole_With_Tremendous_Growth_(supermassive-black-hole-2).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "NASA’s Chandra Finds Black Hole With Tremendous Growth (supermassive-black-hole-2) by X-ray: NASA/CXC/INAF-Brera/L. Ighina et al.; Illustration: NASA/CXC/SAO/M. Weiss; Image Processing: NASA/CXC/SAO/N. Wolk, via Wikimedia Commons"
+title = "NASA’s Chandra Finds Black Hole With Tremendous Growth (supermassive-black-hole-2)"
+creator = "X-ray: NASA/CXC/INAF-Brera/L. Ighina et al.; Illustration: NASA/CXC/SAO/M. Weiss; Image Processing: NASA/CXC/SAO/N. Wolk"
+openverse = "commons:File:NASA’s Chandra Finds Black Hole With Tremendous Growth (supermassive-black-hole-2).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-04-14-black-holes/lead.jpg"
+sha256 = "60da2eeb4d24abfb8e94a57adb3bebc24c5dd4dbc0f571e6a0313256fa4ea8bc"
+source = "https://commons.wikimedia.org/wiki/File:Black_hole_(NASA).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Black hole (NASA) by NASA/D. Berry, via Wikimedia Commons"
+title = "Black hole (NASA)"
+creator = "NASA/D. Berry"
+openverse = "commons:File:Black hole (NASA).jpg"
+needs_credit = false
+size = "1600x1280"
+
+[[photos]]
+file = "en/posts/2026-05-05-how-vaccines-work/b-cell.jpg"
+sha256 = "65503795fd662ecd9ab906dc92d68bffd258b842e94529491187f9bdd84317b0"
+source = "https://commons.wikimedia.org/wiki/File:Human_B_Lymphocyte_-_NIAID.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Human B Lymphocyte - NIAID by NIAID, via Wikimedia Commons"
+title = "Human B Lymphocyte - NIAID"
+creator = "NIAID"
+openverse = "commons:File:Human B Lymphocyte - NIAID.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-05-05-how-vaccines-work/lead.jpg"
+sha256 = "80f64193fedb918e4e4d3be4a10bf8fc18bde4c1e079c7116785708f7f423314"
+source = "https://commons.wikimedia.org/wiki/File:Healthy_Human_T_Cell.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Healthy Human T Cell by NIAID/NIH, via Wikimedia Commons"
+title = "Healthy Human T Cell"
+creator = "NIAID/NIH"
+openverse = "commons:File:Healthy Human T Cell.jpg"
+needs_credit = false
+size = "1600x1600"
+
+[[photos]]
+file = "en/posts/2026-05-26-why-ice-floats/icebergs.jpg"
+sha256 = "2901db13d99f3b362f594f09af87adb5435c8a7cc0ae7645fd23dad9843fe9a8"
+source = "https://commons.wikimedia.org/wiki/File:Icebergs._Southern_Ocean_-_Flickr_-_NOAA_Photo_Library.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Icebergs. Southern Ocean - Flickr - NOAA Photo Library by Lieutenant Elizabeth Crapo, NOAA Corps., via Wikimedia Commons"
+title = "Icebergs. Southern Ocean - Flickr - NOAA Photo Library"
+creator = "Lieutenant Elizabeth Crapo, NOAA Corps."
+openverse = "commons:File:Icebergs. Southern Ocean - Flickr - NOAA Photo Library.jpg"
+needs_credit = false
+size = "1600x1064"
+
+[[photos]]
+file = "en/posts/2026-05-26-why-ice-floats/lead.jpg"
+sha256 = "178e618548b30d5794e4a0b2914efff69652d251fa2c80cd8aaba46887df9219"
+source = "https://commons.wikimedia.org/wiki/File:Iceberg._Southern_Ocean_-_Flickr_-_NOAA_Photo_Library.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Iceberg. Southern Ocean - Flickr - NOAA Photo Library by Lieutenant Elizabeth Crapo, NOAA Corps., via Wikimedia Commons"
+title = "Iceberg. Southern Ocean - Flickr - NOAA Photo Library"
+creator = "Lieutenant Elizabeth Crapo, NOAA Corps."
+openverse = "commons:File:Iceberg. Southern Ocean - Flickr - NOAA Photo Library.jpg"
+needs_credit = false
+size = "1600x1064"
+
+[[photos]]
+file = "en/posts/2026-06-16-how-mountains-grow/from-the-air.jpg"
+sha256 = "db3cedfc087b5f6ec8e8c9f3cdb619c551a01a699553559f4193cae87953c47e"
+source = "https://commons.wikimedia.org/wiki/File:Himalaya_sud_avion.JPG"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Himalaya sud avion by Royonx, via Wikimedia Commons"
+title = "Himalaya sud avion"
+creator = "Royonx"
+openverse = "commons:File:Himalaya sud avion.JPG"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-06-16-how-mountains-grow/lead.jpg"
+sha256 = "0362447faa9442132d98aabf94f619f2490599e07a10ac5a4fa35463800c5436"
+source = "https://commons.wikimedia.org/wiki/File:Himalayas.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Himalayas by NASA, via Wikimedia Commons"
+title = "Himalayas"
+creator = "NASA"
+openverse = "commons:File:Himalayas.jpg"
+needs_credit = false
+size = "1600x1054"
+
+[[photos]]
+file = "en/posts/2026-07-07-how-photosynthesis-works/chloroplasts.jpg"
+sha256 = "095579852af0c137e8a63358b73002ce9715e49fae5d8389f83ee60be53ef99c"
+source = "https://commons.wikimedia.org/wiki/File:Moss_chloroplasts_100%C3%97_objective.jpg"
+licence = "CC BY 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/3.0"
+credit = "Moss chloroplasts 100× objective by Kelvinsong, via Wikimedia Commons"
+title = "Moss chloroplasts 100× objective"
+creator = "Kelvinsong"
+openverse = "commons:File:Moss chloroplasts 100× objective.jpg"
+needs_credit = true
+size = "1600x833"
+
+[[photos]]
+file = "en/posts/2026-07-07-how-photosynthesis-works/lead.jpg"
+sha256 = "63c86792fecabe35ed1d355fa2b92649bcf59c78982ddb546bb0f2536458097e"
+source = "https://commons.wikimedia.org/wiki/File:Green_leaf_with_sunlight.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Green leaf with sunlight by Joselodos, via Wikimedia Commons"
+title = "Green leaf with sunlight"
+creator = "Joselodos"
+openverse = "commons:File:Green leaf with sunlight.jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-08-18-seasons-axial-tilt/lead.jpg"
+sha256 = "ec1d6960be91fec7a90bdba5b25a680852a682b0fa622d4787810f654d24a1df"
+source = "https://commons.wikimedia.org/wiki/File:The_Blue_Marble_(remastered).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "The Blue Marble by NASA/Apollo 17 crew; taken by either Harrison Schmitt or Ron Evans, via Wikimedia Commons"
+title = "The Blue Marble"
+creator = "NASA/Apollo 17 crew; taken by either Harrison Schmitt or Ron Evans"
+openverse = "commons:File:The Blue Marble (remastered).jpg"
+needs_credit = false
+size = "1600x1600"
+
+[[photos]]
+file = "en/posts/2026-09-29-how-lightning-forms/lead.jpg"
+sha256 = "3e2ea578ce60346f385bdf13355badba24ca0209778ac79fd4a8c0068f5179af"
+source = "https://commons.wikimedia.org/wiki/File:Lightning_NOAA.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Lightning NOAA by C. Clark, via Wikimedia Commons"
+title = "Lightning NOAA"
+creator = "C. Clark"
+openverse = "commons:File:Lightning NOAA.jpg"
+needs_credit = false
+size = "1600x1076"
+
+[[photos]]
+file = "en/posts/2026-09-29-how-lightning-forms/thunderheads.jpg"
+sha256 = "b5544867210ad6c2afeb0c7d0531ef281c26717b956393ed64da07d89e96f990"
+source = "https://commons.wikimedia.org/wiki/File:ISS-40_Thunderheads_near_Borneo.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "ISS-40 Thunderheads near Borneo by NASA/Expedition 40 crew member, via Wikimedia Commons"
+title = "ISS-40 Thunderheads near Borneo"
+creator = "NASA/Expedition 40 crew member"
+openverse = "commons:File:ISS-40 Thunderheads near Borneo.jpg"
+needs_credit = false
+size = "1600x1065"

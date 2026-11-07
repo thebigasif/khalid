@@ -1,0 +1,114 @@
+{#- Encore's post (docs/templates/encore.md). A release is a post with
+    facts: its category above the title, the dek, the author with their
+    role and the date, then the cover on its sleeve with the record half
+    out beside the liner panel, the facts read by position (1 the format,
+    2 the release date, 3 the label), and a Listen button for each fact
+    whose value is an address, labelled with the fact's own label. The
+    text follows, such as the track list and the story of the record. A
+    note, a post without facts, shows its lead picture at the text width.
+    Related posts close the page: releases as sleeves, notes as cards. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture, avatar -%}
+{% from "contents.html" import contents_list -%}
+{% from "author_box.html" import author_box, reviewed_line -%}
+{% from "comments.html" import comments_section -%}
+{% from "series.html" import series_box, series_steps -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
+{% macro sleeve_art(image) -%}
+<div class="sleeve-art">{% if image %}{{ picture(image) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
+{%- endmacro %}
+{% set placement = template.options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% set share = template.options.share -%}
+{% if share != "none" %}{% set share_row %}<div class="share">
+<p class="share-title">{{ t.share }}</p>
+<ul>
+{% for link in share_links(meta.canonical, page.title, template.options.share_networks) %}<li><a href="{{ link.href }}" rel="nofollow noreferrer">{{ t.share_email if link.key == "email" else link.name }}</a></li>
+{% endfor %}</ul>
+</div>
+{% endset %}{% endif -%}
+{% if side and placement == "side-start" %}<article class="post post-with-toc post-toc-start">{% elif side %}<article class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post post-toc-folded">{% else %}<article class="post">{% endif %}
+<header class="post-header">
+{% if page.category %}<p class="post-kicker"><a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
+{% endif %}<h1>{{ page.title }}</h1>
+{% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}<div class="post-meta">
+{% if "byline" in site.features %}<address>
+<ul class="people" role="list" aria-label="{{ t.written_by }}">
+{% for author in page.authors %}<li class="person">{% if author.image %}{{ avatar(author.image) }}{% endif %}<span><a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if author.role %}<span class="person-role">{{ author.role }}</span>{% endif %}</span></li>
+{% endfor %}</ul>
+</address>
+{% else %}<address>{{ t.by }} {% for author in page.authors %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</address>
+{% endif %}{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
+{% endif %}<p class="post-date">{{ t.published }} <time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}</p>
+{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}</div>
+{% if page.facts %}{% set links = page.facts | selectattr("value", "startingwith", "https://") | list %}<div class="release-head">
+{{ sleeve_art(page.image) }}
+<div class="release-liner">
+<dl class="liner">
+{% for fact in page.facts %}{% if not (fact.value is startingwith("https://")) %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endif %}{% endfor %}</dl>
+{% if links %}<p class="release-links">{% for fact in links %}<a class="button" href="{{ fact.value }}" rel="noopener">{{ fact.label or t.music_listen }}</a>
+{% endfor %}</p>
+{% endif %}</div>
+</div>
+{% elif page.image %}{{ picture(page.image) }}
+{% endif %}</header>
+{% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.contents }}</summary>
+<nav aria-label="{{ t.contents }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}<div class="post-body">
+{{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
+</div>
+{% if page.tags or share in ["end", "both"] %}<footer class="post-footer">
+{% if page.tags %}<h2 class="label">{{ t.tags }}</h2>
+<ul class="tags">
+{% for tag in page.tags %}<li><a href="{{ tag.href }}" rel="tag">{{ tag.name }}</a></li>
+{% endfor %}</ul>
+{% endif %}{% if share in ["end", "both"] %}{{ share_row }}{% endif %}</footer>
+{% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
+{% endif %}{{ preferred_source(template.options, t, "post") }}</article>
+{% if site.subscribe and template.options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
+<h2>{{ t.mentions }}</h2>
+<ul>
+{% for link in page.mentions %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
+{% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
+<h2 id="related-title" class="label">{{ t.related_posts }}</h2>
+{% set shown = page.related[:template.options.related_count] %}{% set records = shown | selectattr("facts") | list %}{% set written = shown | rejectattr("facts") | list %}{% if records %}<ul class="shelf" role="list">
+{% for post in records %}<li class="sleeve">
+{{ sleeve_art(post.image) }}
+<h3 class="sleeve-title"><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p class="sleeve-meta">{{ post.facts[0].value }} <time datetime="{{ post.date }}">{{ (post.date | string)[:4] }}</time></p>
+</li>
+{% endfor %}</ul>
+{% endif %}{% if written %}<ul class="notes" role="list">
+{% for post in written %}<li class="note">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}<p class="note-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %} <span class="note-category">{{ post.category.name }}</span>{% endif %}</p>
+<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+</li>
+{% endfor %}</ul>
+{% endif %}</section>
+{% endif %}{% endblock %}

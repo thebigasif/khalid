@@ -1,0 +1,42 @@
+---
+source: crates/khalid/tests/template_respawn.rs
+expression: "shown(&out, \"category/technical-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="list-header">
+<h1>Technical SEO</h1>
+</header>
+<ol class="rs-rows" role="list">
+<li>
+<article class="rs-row">
+<a class="rs-row-picture" href="/blog/fixing-slow-pages/" tabindex="-1" aria-hidden="true"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></a>
+<div class="rs-row-text">
+<p class="rs-meta"><a class="rs-label" href="/blog/category/technical-seo/">Technical SEO</a> <time datetime="2026-10-05">5 October 2026</time></p>
+<h2><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<div class="rs-row-score"><div class="score-meter">
+<p class="score-tile"><span class="visually-hidden">Score </span>8.5<span class="visually-hidden"> out of 10</span></p>
+<p class="score-bar" aria-hidden="true"><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-full"></span><span class="score-cell score-half"></span><span class="score-cell"></span></p>
+</div><p class="rs-platforms">PC, consoles</p></div>
+</div>
+</article>
+</li>
+<li>
+<article class="rs-row">
+<div class="rs-row-text">
+<p class="rs-meta"><a class="rs-label" href="/blog/category/technical-seo/">Technical SEO</a> <time datetime="2026-09-28">28 September 2026</time></p>
+<h2><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h2>
+<p class="rs-excerpt">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</div>
+</article>
+</li>
+</ol>

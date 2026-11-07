@@ -1,0 +1,20 @@
+{#- picture_grid(posts, level=3, start=1, number_label=none): a grid of
+    tall pictures, each with its caption under it, never on it: a number
+    when `number_label` is given (a text with `{number}` in it, such as
+    "Look {number}", counted from `start` and written with two digits),
+    the title (a heading of `level`) and the post's facts as one line,
+    or its excerpt when it has none. The title's link covers the whole
+    item, so the picture opens the post too. -#}
+{% from "image.html" import picture -%}
+{% macro picture_grid(posts, level=3, start=1, number_label=none) -%}
+<ol class="picture-grid" role="list">
+{% for post in posts %}{% set number = loop.index + start - 1 -%}
+<li class="picture-grid-item">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}{% if number_label %}<p class="picture-grid-number">{{ number_label | replace("{number}", ("0" if number < 10 else "") ~ number) }}</p>
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.facts %}<p class="picture-grid-facts">{% for fact in post.facts %}<span>{{ fact.value }}</span>{% endfor %}</p>
+{% else %}<p class="picture-grid-facts">{{ post.excerpt }}</p>
+{% endif %}</li>
+{% endfor %}</ol>
+{%- endmacro %}

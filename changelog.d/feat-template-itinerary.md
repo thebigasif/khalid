@@ -1,0 +1,2 @@
+Added
+- The Itinerary template, for a travel diary. A post with facts is a trip (days, route, when and cost): the front page shows the newest trip as a wide ticket, each country as a passport stamp, the other trips as tickets and the notes as a dated list. A trip shows its facts as a boarding pass, lists its days under Day by day, and marks each main heading as a stop on a dashed route. Task lists, such as a packing list, show as checklists.

@@ -1,0 +1,76 @@
+---
+source: crates/khalid/tests/template_digest.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name site-logo" href="/blog/"><img src="https://www.example.com/logo.svg" alt="Field Notes on SEO" decoding="async"></a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<h1 class="visually-hidden">Field Notes on SEO</h1>
+<article class="issue">
+<header class="issue-header">
+<p class="issue-meta"><span class="issue-label">Sent on</span> <time datetime="2026-10-12">12 October 2026</time></p>
+<h2 class="issue-title"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
+<p class="issue-excerpt">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</header>
+<nav class="issue-nav" aria-label="Pages">
+<ul>
+<li><a href="/blog/planning-a-topic-cluster/">Read the whole issue</a></li>
+<li><a href="/blog/archive/">Every issue of the newsletter</a></li>
+</ul>
+</nav>
+</article>
+<section class="newsletter-slot" aria-labelledby="digest-signup-title">
+<h2 id="digest-signup-title">Get new posts by email</h2>
+<p>New posts in your inbox. Every email has a link to leave.</p>
+<form class="subscribe" method="post" action="/blog/subscribe">
+<p><label for="digest-signup-email">Your email address</label>
+<input id="digest-signup-email" name="email" type="email" autocomplete="email" required></p>
+<p class="form-trap" aria-hidden="true"><label for="digest-signup-homepage">Leave this empty</label>
+<input id="digest-signup-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+<p><button type="submit">Subscribe</button></p>
+</form>
+</section>
+<section class="issues" aria-labelledby="issues-title">
+<h2 id="issues-title" class="section-title"><span>Past issues</span></h2>
+<ul class="cards cards-text" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-10-05">5 October 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Lena Vogt</span>
+<time datetime="2026-09-28">28 September 2026</time>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-21">21 September 2026</time>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</article>
+</li>
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif</span>
+<time datetime="2026-09-14">14 September 2026</time>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</article>
+</li>
+</ul>
+</section>

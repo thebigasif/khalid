@@ -1,17 +1,26 @@
 //! Writes every template's stylesheet, without its comments, indentation
-//! and blank lines, and every template file into one text, compressed with
-//! Brotli, in cargo's output folder, with an index of where each file
-//! starts and ends. The binary embeds both (`PackText`). One archive is
-//! about 40% smaller than one per file, because the templates share many
-//! patterns. The renderer strips the same things when it
-//! builds a site's stylesheet, and stripping twice gives what stripping
-//! once gives, so every site's stylesheet is unchanged; the binary just
-//! stops carrying the comments, and carries the rest compressed.
+//! and blank lines, and every template file, with its comments emptied,
+//! into one text compressed with Brotli in cargo's output folder, with an
+//! index of where each file starts and ends. The binary embeds both
+//! (`PackText`). One archive is about 40% smaller than one per file,
+//! because the templates share many patterns. The renderer strips the same
+//! things when it builds a site's stylesheet, and stripping twice gives
+//! what stripping once gives, so every site's stylesheet is unchanged. An
+//! emptied comment renders nothing, as before, so every page is unchanged
+//! too; the binary just stops carrying the comments' words.
+//!
+//! The shared section parts (`khalid-render/templates/sections/`) keep
+//! their rules in `packs/_sections/<part>.css`. A pack ships a part's
+//! rules only when one of its template files imports the part, such as
+//! `{% from "sections/hero.html" import hero %}`: the script puts the
+//! part's rules before the pack's own, so the pack can still change them.
+//! A folder whose name starts with `_` is not a pack.
 
+use std::collections::BTreeSet;
 use std::ffi::OsString;
 use std::fmt::Write as _;
 use std::io::Write as _;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::{fs, io};
 
 fn main() -> io::Result<()> {
@@ -21,15 +30,17 @@ fn main() -> io::Result<()> {
     let mut files = Vec::new();
     for pack in fs::read_dir(&packs)? {
         let pack = pack?;
-        if !pack.file_type()?.is_dir() {
+        let shared = pack.file_name().to_string_lossy().starts_with('_');
+        if !pack.file_type()?.is_dir() || shared {
             continue;
         }
+        let parts = section_rules(&packs, &pack.path())?;
         for file in fs::read_dir(pack.path())? {
             let path = file?.path();
             let kind = path.extension().and_then(|extension| extension.to_str());
             let text = match kind {
-                Some("css") => minify(&fs::read_to_string(&path)?),
-                Some("html") => fs::read_to_string(&path)?,
+                Some("css") => minify(&format!("{parts}{}", fs::read_to_string(&path)?)),
+                Some("html") => strip_comments(&fs::read_to_string(&path)?),
                 _ => continue,
             };
             let name = format!(
@@ -54,6 +65,67 @@ fn main() -> io::Result<()> {
     out.set_file_name("packs.index");
     fs::write(&out, index)?;
     Ok(())
+}
+
+/// The rules of every section part the pack's template files import, in
+/// name order, read from `packs/_sections/<part>.css`. A part with no
+/// rules file stops the build, so no pack ships a part unstyled.
+fn section_rules(packs: &Path, pack: &Path) -> io::Result<String> {
+    let mut parts = BTreeSet::new();
+    for file in fs::read_dir(pack)? {
+        let path = file?.path();
+        if path.extension().and_then(|extension| extension.to_str()) != Some("html") {
+            continue;
+        }
+        let text = fs::read_to_string(&path)?;
+        for (at, _) in text.match_indices("\"sections/") {
+            let rest = text.get(at.saturating_add(10)..).unwrap_or_default();
+            if let Some((name, _)) = rest.split_once(".html\"") {
+                parts.insert(name.to_owned());
+            }
+        }
+    }
+    let mut rules = String::new();
+    for name in parts {
+        let mut path = packs.to_path_buf();
+        path.push("_sections");
+        path.push(format!("{name}.css"));
+        let text = fs::read_to_string(&path)
+            .map_err(|error| io::Error::other(format!("{}: {error}", path.display())))?;
+        rules.push_str(&text);
+        rules.push('\n');
+    }
+    Ok(rules)
+}
+
+/// Empties every `{# … #}` comment of a template and keeps its `-` marks,
+/// which trim the space around it. A comment renders nothing either way, so
+/// every page is the same; the binary just stops carrying the comments'
+/// words.
+fn strip_comments(template: &str) -> String {
+    let mut out = String::with_capacity(template.len());
+    let mut rest = template;
+    while let Some(start) = rest.find("{#") {
+        out.push_str(rest.get(..start).unwrap_or_default());
+        let comment = rest.get(start..).unwrap_or_default();
+        let Some(end) = comment.find("#}") else {
+            out.push_str(comment);
+            return out;
+        };
+        let inner = comment.get(2..end).unwrap_or_default();
+        out.push_str("{#");
+        if inner.starts_with('-') {
+            out.push('-');
+        }
+        out.push(' ');
+        if inner.len() > 1 && inner.ends_with('-') {
+            out.push('-');
+        }
+        out.push_str("#}");
+        rest = comment.get(end.saturating_add(2)..).unwrap_or_default();
+    }
+    out.push_str(rest);
+    out
 }
 
 /// Where cargo wants this script's output. Cargo hands it over only as an

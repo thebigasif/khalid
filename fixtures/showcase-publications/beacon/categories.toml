@@ -1,0 +1,43 @@
+# Alderbrook Rivers Trust's areas of work. The Beacon template lists each
+# one on the front page, and each category page shows its campaigns and
+# news as cards, with its intro on top.
+
+[[categories]]
+slug = "free-flowing-rivers"
+en = "Free-flowing rivers"
+
+[categories.seo.en]
+description = "Alderbrook Rivers Trust's work to take out old weirs and culverts, so salmon, trout and eels can swim up the Alder again."
+intro = "Old weirs and culverts block fish from the best parts of the Alder. We take them out where we can, and build fish passes where we cannot."
+
+[[categories]]
+slug = "clean-water"
+en = "Clean water"
+
+[categories.seo.en]
+description = "Alderbrook Rivers Trust's water testing, clean-up days and work to stop pollution reaching the Alder."
+intro = "Testing the water, finding pollution early and taking rubbish out of the river, with volunteers in every village."
+
+[[categories]]
+slug = "wildlife"
+en = "Wildlife"
+
+[categories.seo.en]
+description = "Otters, kingfishers, salmon and the other wildlife of the Alder, and what Alderbrook Rivers Trust does to help them."
+intro = "Surveys of the river's wildlife, and the work that helps otters, kingfishers, salmon and trout come back."
+
+[[categories]]
+slug = "trees-and-wetlands"
+en = "Trees and wetlands"
+
+[categories.seo.en]
+description = "Alderbrook Rivers Trust's tree planting on riverbanks and new wetlands that hold back floods."
+intro = "Trees that shade and hold the banks, and wetlands that store flood water and give room to birds and plants."
+
+[[categories]]
+slug = "trust-news"
+en = "Trust news"
+
+[categories.seo.en]
+description = "News from Alderbrook Rivers Trust: reports, volunteering, training and events."
+intro = "Our yearly report, volunteering and training, and what is coming up."

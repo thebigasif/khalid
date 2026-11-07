@@ -1,0 +1,3 @@
+Added
+- The Summit template, for a conference, festival or event. A post with facts is a session (day, time, room and format): the front page shows the programme as a timetable by day and time, the speakers, the venues with how many sessions each holds and the latest updates, and each session shows its facts on a ticket stub. Venue, track and speaker pages show their sessions on the same timetable.
+- A shared `schedule` section part in `crates/khalid-render/templates/sections/`: a timetable grouped by day and sorted by time, with links to each day, for conferences, fixtures, tour dates and course weeks.

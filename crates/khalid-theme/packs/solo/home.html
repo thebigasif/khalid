@@ -1,0 +1,63 @@
+{#- Based on Ghost's Solo theme, MIT licence, see LICENSE-ghost.txt.
+    Solo's front page: the about block first, a round photo of the newest
+    post's author when there is one, the headline set very large, the
+    blog's intro under it and a sign-up field shaped like a pill. Then the
+    feed: every post with a large title, in the layout the feed option
+    names. Classic sets the title beside its picture, typographic shows
+    large titles and summaries with no pictures, and parallax lets each
+    picture fill its card under the title. Nothing on the page moves or
+    needs a script. Sections set in site.toml take the feed's place, as on
+    every front page. Then the numbered pages, the topics and the call to
+    action. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+{% from "image.html" import picture, avatar -%}
+{% from "slots.html" import cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
+{% set feed = template.options.feed -%}
+{% set newest = page.posts[0] if page.posts else none -%}
+{% set photo = newest.author.image if template.options.profile_photo and newest and newest.author else none -%}
+<div class="about">
+{% if photo %}<div class="about-photo">{{ avatar(photo) }}</div>
+{% endif %}<h1 class="about-primary">{{ template.options.headline or page.title }}</h1>{{ hero_stats(template.options) }}
+{% if page.intro %}<div class="intro about-secondary">
+{{ page.intro }}
+</div>
+{% endif %}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}<form class="subscribe about-subscribe" method="post" action="{{ site.subscribe }}">
+<label class="visually-hidden" for="about-email">{{ t.newsletter_label }}</label>
+<input id="about-email" name="email" type="email" autocomplete="email" placeholder="{{ t.newsletter_label }}" required>
+<p class="form-trap" aria-hidden="true"><label for="about-homepage">{{ t.form_trap }}</label>
+<input id="about-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+<button type="submit">{{ t.newsletter_button }}</button>
+</form>
+{% endif %}</div>
+{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+<h2>{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}{% if feed == "typographic" %}<div class="feed feed-typographic">{% elif feed == "parallax" %}<div class="feed feed-parallax">{% else %}<div class="feed feed-classic">{% endif %}
+{% for post in page.posts %}{% set pictured = post.image and feed != "typographic" %}{% if pictured %}<article class="feed-item feed-with-image">{% else %}<article class="feed-item">{% endif %}
+{% if pictured %}{{ picture(post.image) }}
+{% endif %}<div class="feed-text">
+<h2><a href="{{ post.href }}">{{ post.title }}</a></h2>
+{% if feed == "typographic" %}<p class="feed-excerpt">{{ post.excerpt }}</p>
+{% endif %}<p class="feed-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if template.options.card_reading_time and post.reading_time %}
+<span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}{% if post.category %}
+<a href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}</p>
+</div>
+</article>
+{% endfor %}</div>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, template.options, t) }}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">
+<h2>{{ t.topics }}</h2>
+{% for group in page.topics %}{% if group.name %}<h3>{{ group.name }}</h3>
+{% endif %}<ul class="tags">
+{% for topic in group.links %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}</ul>
+{% endfor %}</nav>
+{% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}

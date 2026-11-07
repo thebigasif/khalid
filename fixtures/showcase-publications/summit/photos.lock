@@ -1,0 +1,174 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-09-08-the-programme-is-out/lead.jpg"
+sha256 = "6ccf247ed36b779f20c97525f4953b0cb5cf255d95320f7523eed32e589e07f0"
+source = "https://commons.wikimedia.org/wiki/File:Barbican_Centre_-_Main_Hall_from_floor_level_(stage_right)_01.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Barbican Centre - Main Hall from floor level (stage right) 01 by Chris McKenna, via Wikimedia Commons"
+title = "Barbican Centre - Main Hall from floor level (stage right) 01"
+creator = "Chris McKenna"
+openverse = "commons:File:Barbican Centre - Main Hall from floor level (stage right) 01.jpg"
+needs_credit = true
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-09-15-streets-are-for-staying/lead.jpg"
+sha256 = "c939bdb5067e06b64dc66ecda1ed5920bc12f306a9e0b536df3c6ef4e254a639"
+source = "https://commons.wikimedia.org/wiki/File:Amsterdam_2023_-_a_view_through_the_city_street_Albert_Cuypstraat_in_De_Pijp_district_with_sunlight_and_shadows_and_a_lot_of_parked_bicycles_-_free_download_photo_in_Dutch_street_photography_by_Fons_Heijnsbroek,_Netherlands.tif"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Amsterdam 2023 - a view through the city street Albert Cuypstraat in De Pijp district with sunlight and shadows and a lot of parked bicycles - free download photo in Dutch street photography by Fons Heijnsbroek, Netherlands by Fons Heijnsbroek, via Wikimedia Commons"
+title = "Amsterdam 2023 - a view through the city street Albert Cuypstraat in De Pijp district with sunlight and shadows and a lot of parked bicycles - free download photo in Dutch street photography by Fons Heijnsbroek, Netherlands"
+creator = "Fons Heijnsbroek"
+openverse = "commons:File:Amsterdam 2023 - a view through the city street Albert Cuypstraat in De Pijp district with sunlight and shadows and a lot of parked bicycles - free download photo in Dutch street photography by Fons Heijnsbroek, Netherlands.tif"
+needs_credit = false
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-09-22-ten-thousand-street-trees/lead.jpg"
+sha256 = "dc12eb3ab56fe35862f2e303dd78382b9c7cae0f41290db5a117d1a8c48d77df"
+source = "https://commons.wikimedia.org/wiki/File:2025_-_free_download_photo_of_a_street_tree_with_visible_roots_in_the_sidewalk_in_Amsterdam_city_-_street_nature_photography_in_free_image,_high_resolutions_by_Fons_Heijnsbroek,_The_Netherlands.tif"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "2025 - free download photo of a street tree with visible roots in the sidewalk in Amsterdam city - street nature photography in free image, high resolutions by Fons Heijnsbroek, The Netherlands by Fons Heijnsbroek, via Wikimedia Commons"
+title = "2025 - free download photo of a street tree with visible roots in the sidewalk in Amsterdam city - street nature photography in free image, high resolutions by Fons Heijnsbroek, The Netherlands"
+creator = "Fons Heijnsbroek"
+openverse = "commons:File:2025 - free download photo of a street tree with visible roots in the sidewalk in Amsterdam city - street nature photography in free image, high resolutions by Fons Heijnsbroek, The Netherlands.tif"
+needs_credit = false
+size = "1600x1202"
+
+
+[[photos]]
+file = "en/posts/2026-09-29-a-bus-map-anyone-can-read/lead.jpg"
+sha256 = "865fccd192d8822d09c24125cece1e30b0f01f5c8d1263d5825d6adf94ebdeed"
+source = "https://commons.wikimedia.org/wiki/File:Bus_stop_and_shelter_on_Cheetham_Hill_Road_(geograph_5903354).jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Bus stop and shelter on Cheetham Hill Road (geograph 5903354) by JThomas, via Wikimedia Commons"
+title = "Bus stop and shelter on Cheetham Hill Road (geograph 5903354)"
+creator = "JThomas"
+openverse = "commons:File:Bus stop and shelter on Cheetham Hill Road (geograph 5903354).jpg"
+needs_credit = true
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-10-01-tickets-and-free-student-places/lead.jpg"
+sha256 = "8bc4fd12b0f87747af4f5fa8acc10a5693d056d35ef0c4254af6c79868a0241e"
+source = "https://commons.wikimedia.org/wiki/File:Open_Seating_(16614957680).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Open Seating (16614957680) by Phil Roeder from Des Moines, IA, USA, via Wikimedia Commons"
+title = "Open Seating (16614957680)"
+creator = "Phil Roeder from Des Moines, IA, USA"
+openverse = "commons:File:Open Seating (16614957680).jpg"
+needs_credit = true
+size = "1600x1060"
+
+
+[[photos]]
+file = "en/posts/2026-10-06-who-pays-for-public-space/lead.jpg"
+sha256 = "8dbcd28f97e77da2944ac4b4ba0c586025b9422304f501ed0a5a650bd01e418d"
+source = "https://commons.wikimedia.org/wiki/File:Poschiavo_,_Piazza_Comunale_towards_San_Vittore_Mauro.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Poschiavo , Piazza Comunale towards San Vittore Mauro by Cayambe, via Wikimedia Commons"
+title = "Poschiavo , Piazza Comunale towards San Vittore Mauro"
+creator = "Cayambe"
+openverse = "commons:File:Poschiavo , Piazza Comunale towards San Vittore Mauro.jpg"
+needs_credit = true
+size = "1600x1100"
+
+
+[[photos]]
+file = "en/posts/2026-10-13-walking-the-old-harbour-edge/lead.jpg"
+sha256 = "ca8620d57dafcdb987ad4d7fdf09069ad30c915bc1bc3c36b3640a12992d967c"
+source = "https://commons.wikimedia.org/wiki/File:Portsmouth_Harbour_-_Town_Quay_-_geograph.org.uk_-_5256195.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Portsmouth Harbour - Town Quay - geograph.org.uk - 5256195 by Colin Smith, via Wikimedia Commons"
+title = "Portsmouth Harbour - Town Quay - geograph.org.uk - 5256195"
+creator = "Colin Smith"
+openverse = "commons:File:Portsmouth Harbour - Town Quay - geograph.org.uk - 5256195.jpg"
+needs_credit = true
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-10-20-housing-above-the-shops/lead.jpg"
+sha256 = "ef9a60d4db122e8bb99affeda19f74b1ed5298a43cb6f8cbbfcbe7b293095240"
+source = "https://commons.wikimedia.org/wiki/File:Flats_above_shops,_High_Street,_Bognor_Regis_-_geograph.org.uk_-_6543480.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Flats above shops, High Street, Bognor Regis - geograph.org.uk - 6543480 by Jeff Gogarty, via Wikimedia Commons"
+title = "Flats above shops, High Street, Bognor Regis - geograph.org.uk - 6543480"
+creator = "Jeff Gogarty"
+openverse = "commons:File:Flats above shops, High Street, Bognor Regis - geograph.org.uk - 6543480.jpg"
+needs_credit = true
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-10-23-getting-to-the-four-venues/lead.jpg"
+sha256 = "4179cbfc360f42ad49e40c85d1464f74e2138433b4db7d6ad82aae41d83b335c"
+source = "https://commons.wikimedia.org/wiki/File:Metrorower_-_stacja_w_Dolinie_Trzech_Staw%C3%B3w,_Katowicki_Park_Le%C5%9Bny,_stacja_27717,_25_kwietnia_2024,_KP.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Metrorower - stacja w Dolinie Trzech Stawów, Katowicki Park Leśny, stacja 27717, 25 kwietnia 2024, KP by Krzysztof Popławski, via Wikimedia Commons"
+title = "Metrorower - stacja w Dolinie Trzech Stawów, Katowicki Park Leśny, stacja 27717, 25 kwietnia 2024, KP"
+creator = "Krzysztof Popławski"
+openverse = "commons:File:Metrorower - stacja w Dolinie Trzech Stawów, Katowicki Park Leśny, stacja 27717, 25 kwietnia 2024, KP.jpg"
+needs_credit = true
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-10-27-open-data-for-street-repairs/lead.jpg"
+sha256 = "16d1521aa8ec06dfb62821d86643077aa2d12d5e6cfaf06aa2c3a63dc0f10aee"
+source = "https://commons.wikimedia.org/wiki/File:Pothole_patching.jpg"
+licence = "CC BY 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/3.0"
+credit = "Pothole patching by Michal Maňas, via Wikimedia Commons"
+title = "Pothole patching"
+creator = "Michal Maňas"
+openverse = "commons:File:Pothole patching.jpg"
+needs_credit = true
+size = "1600x900"
+
+
+[[photos]]
+file = "en/posts/2026-10-30-sketch-your-own-street/lead.jpg"
+sha256 = "aebb75543d8f33b12c0546ae641465d0a3ad8bdc63dfc6ba46f76886f287649d"
+source = "https://commons.wikimedia.org/wiki/File:Bench_around_oak_tree,_Hofmoklgasse,_Vienna.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Bench around oak tree, Hofmoklgasse, Vienna by Herzi Pinki, via Wikimedia Commons"
+title = "Bench around oak tree, Hofmoklgasse, Vienna"
+creator = "Herzi Pinki"
+openverse = "commons:File:Bench around oak tree, Hofmoklgasse, Vienna.jpg"
+needs_credit = true
+size = "1600x1128"
+
+
+[[photos]]
+file = "en/posts/2026-11-03-cool-streets-in-hot-summers/lead.jpg"
+sha256 = "4052bf5195194e4c8c3b192762c9ad392829802e24c03e440dad021d22eb77de"
+source = "https://commons.wikimedia.org/wiki/File:Urban_nature_at_Bellamyplein,_Amsterdam-W.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Urban nature at Bellamyplein, Amsterdam-W by Fons Heijnsbroek, via Wikimedia Commons"
+title = "Urban nature at Bellamyplein, Amsterdam-W"
+creator = "Fons Heijnsbroek"
+openverse = "commons:File:Urban nature at Bellamyplein, Amsterdam-W.jpg"
+needs_credit = false
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-11-04-the-fifteen-minute-question/lead.jpg"
+sha256 = "8ab510130d1742d6aa8724ca68ec8cf7e4b285410eb4fed9a455412c38482d05"
+source = "https://commons.wikimedia.org/wiki/File:2024_-_free_download_photo_of_local_people,_walking_and_talking_together_at_crossing_of_shopping_street_Kinkerstraat_and_market_Ten_Kate_Markt;_street_photography_in_high_resolution_by_Fons_Heijnsbroek,_cities_of_The_Netherlands.tif"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "2024 - free download photo of local people, walking and talking together at crossing of shopping street Kinkerstraat and market Ten Kate Markt; street photography in high resolution by Fons Heijnsbroek, cities of The Netherlands by Fons Heijnsbroek, via Wikimedia Commons"
+title = "2024 - free download photo of local people, walking and talking together at crossing of shopping street Kinkerstraat and market Ten Kate Markt; street photography in high resolution by Fons Heijnsbroek, cities of The Netherlands"
+creator = "Fons Heijnsbroek"
+openverse = "commons:File:2024 - free download photo of local people, walking and talking together at crossing of shopping street Kinkerstraat and market Ten Kate Markt; street photography in high resolution by Fons Heijnsbroek, cities of The Netherlands.tif"
+needs_credit = false
+size = "1600x1203"
+

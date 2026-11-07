@@ -360,6 +360,7 @@ impl Demo {
             tabs: Vec::new(),
             videos: Vec::new(),
             podcasts: Vec::new(),
+            podcast_player: None,
         });
         self.page(lang, (lang.prefix, None), "Field Notes on SEO", &home)?;
         self.author_pages(lang, &authors, &cards)?;

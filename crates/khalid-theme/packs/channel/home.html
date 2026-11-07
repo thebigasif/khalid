@@ -1,0 +1,63 @@
+{#- Channel's front page (docs/templates/channel.md): the channel's name,
+    tagline and figure strip; then, on the first page, the newest post
+    with a video, large, as Now showing, found the way the video_section
+    row finds it; then every other post as thumbnail cards with the play
+    bar; then one shelf per playlist (category) with its newest videos.
+    With home sections in site.toml, each section is a shelf of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/figure_strip.html" import figure_strip -%}
+{% from "sections/video_grid.html" import video_grid -%}
+{% set options = template.options -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{{ figure_strip(options.hero_stats) }}{% endcall %}
+{% set first_page = not page.pagination or page.pagination.current == 1 -%}
+{% set lead = (page.videos[0] if page.videos else (page.posts[0] if page.posts else none)) if first_page and not page.sections else none -%}
+{% set posts = page.posts | rejectattr("href", "eq", lead.href) | list if lead else page.posts -%}
+{% if lead %}<section class="now-showing" aria-labelledby="now-showing-title">
+<h2 id="now-showing-title" class="channel-label">{{ t.channel_now_showing }}</h2>
+<article class="lead-video">
+<div class="lead-screen">
+{% if lead.image %}{{ picture(lead.image) }}
+{% else %}<div class="video-blank" aria-hidden="true"></div>
+{% endif %}{% if lead.facts %}<p class="play-bar lead-bar"><span class="play-mark" aria-hidden="true"></span><span class="play-track" aria-hidden="true"></span><span class="play-time"><span class="play-label">{{ lead.facts[0].label }}</span> {{ lead.facts[0].value }}</span></p>
+{% endif %}</div>
+<div class="lead-text">
+{% if lead.category %}<p class="lead-playlist"><a href="{{ lead.category.href }}">{{ lead.category.name }}</a></p>
+{% endif %}<h3><a href="{{ lead.href }}">{{ lead.title }}</a></h3>
+<p class="lead-excerpt">{{ lead.excerpt }}</p>
+<p class="video-meta"><time datetime="{{ lead.date }}">{{ lead.date | date }}</time>{% if lead.author %} <span>{{ lead.author.name }}</span>{% endif %}</p>
+<p class="lead-watch"><a class="button" href="{{ lead.href }}">{{ t.channel_watch }}</a></p>
+</div>
+</article>
+</section>
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="shelf" aria-labelledby="shelf-section-{{ loop.index }}">
+<div class="shelf-head">
+<h2 id="shelf-section-{{ loop.index }}">{{ section.title }}</h2>
+<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</div>
+{% if section.posts %}{{ video_grid(section.posts, 3, false, true) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% endfor %}{% elif posts %}<section class="latest-videos" aria-labelledby="latest-title">
+<h2 id="latest-title" class="channel-label">{{ t.channel_latest }}</h2>
+{{ video_grid(posts) }}
+</section>
+{% elif not lead %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}{% if first_page and page.tabs and options.shelves %}<section class="playlists" aria-labelledby="playlists-title">
+<h2 id="playlists-title" class="channel-label">{{ t.channel_playlists }}</h2>
+{% for tab in page.tabs[:options.shelves] %}<section class="shelf" aria-labelledby="shelf-{{ loop.index }}">
+<div class="shelf-head">
+<h3 id="shelf-{{ loop.index }}"><a href="{{ tab.href }}">{{ tab.title }}</a></h3>
+<p class="view-all"><a href="{{ tab.href }}">{{ t.view_all | replace("{name}", tab.title) }}</a></p>
+</div>
+{{ video_grid(tab.posts, 4, false, true) }}
+</section>
+{% endfor %}</section>
+{% endif %}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

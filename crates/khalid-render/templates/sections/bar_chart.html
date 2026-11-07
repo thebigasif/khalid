@@ -1,0 +1,31 @@
+{#- bar_chart(rows, label=none, note=none): a bar chart in HTML and CSS,
+    one row per pair of `rows`, such as a post's facts: the label, a bar
+    and the value as written. A value that is a plain number, with an
+    optional sign, `%`, `bp`, `pts`, currency sign or thousands commas,
+    draws a bar scaled to the largest value; any other value shows as
+    text. When one value is below zero, the bars grow both ways from a
+    centre line. Each row says `data-move` up, down or flat. `label`
+    names the chart for screen readers; `note` goes under it. -#}
+{% macro bar_number(value) -%}
+{% set clean = value | replace("−", "-") | replace("+", "") | replace("%", "") | replace(",", "") | replace("bp", "") | replace("pts", "") | replace("$", "") | replace("£", "") | replace("€", "") | replace(" ", "") -%}
+{% set digits = clean | replace("-", "") | replace(".", "") -%}
+{% set rest = digits | replace("0", "") | replace("1", "") | replace("2", "") | replace("3", "") | replace("4", "") | replace("5", "") | replace("6", "") | replace("7", "") | replace("8", "") | replace("9", "") -%}
+{% if digits and not rest and "-" not in clean[1:] and (clean | split(".") | list | length) < 3 %}{{ clean }}{% endif %}
+{%- endmacro %}
+{% macro bar_chart(rows, label=none, note=none) -%}
+{% set scale = namespace(top=0.0, both=false) -%}
+{% for row in rows %}{% set number = bar_number(row.value) | string -%}
+{% if number %}{% set n = number | float %}{% if n | abs > scale.top %}{% set scale.top = n | abs %}{% endif %}{% if n < 0 %}{% set scale.both = true %}{% endif %}{% endif %}{% endfor -%}
+<figure class="bar-chart"{% if scale.both %} data-both-ways{% endif %}{% if label %} aria-label="{{ label }}"{% endif %}>
+<dl class="bar-rows">
+{% for row in rows %}{% set number = bar_number(row.value) | string -%}
+{% set n = number | float if number else 0.0 -%}
+{% set width = ((n | abs) / scale.top * 20) | round | int if scale.top > 0 else 0 -%}
+<div class="bar-row" data-move="{% if n > 0 %}up{% elif n < 0 %}down{% else %}flat{% endif %}">
+<dt>{{ row.label }}</dt>
+<dd><span class="bar-value">{{ row.value }}</span>{% if number %}<span class="bar-track" aria-hidden="true"><span class="bar" data-w="{{ [width, 1] | max if n != 0 else 0 }}"></span></span>{% endif %}</dd>
+</div>
+{% endfor %}</dl>
+{% if note %}<figcaption class="bar-note">{{ note }}</figcaption>
+{% endif %}</figure>
+{%- endmacro %}

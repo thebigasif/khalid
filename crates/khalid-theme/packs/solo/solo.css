@@ -1,0 +1,225 @@
+/* Based on Ghost's Solo theme, MIT licence, see LICENSE-ghost.txt.
+   Solo: a personal site for one writer or creator. The idea is one voice
+   at full volume: a headline set as large as the screen allows, then a
+   feed where every post title is set nearly as large, on a calm, plain
+   page with no boxes and no rules. Ink for text, links and buttons; the
+   only shapes are square pictures and pill-shaped buttons, fields and
+   labels. Ghost's parallax feed is a still layout here: the picture fills
+   the card under the title, and nothing moves. Every colour is a token or
+   a mix of tokens. */
+:root {
+  --sl-gap: clamp(1.5rem, 1.06rem + 1.94vw, 3rem);
+  --sl-wide: 84rem;
+  --sl-soft: color-mix(in oklab, var(--color-text) 7%, var(--color-background));
+  --sl-hover: color-mix(in oklab, var(--color-text) 72%, var(--color-background));
+  --sl-display: clamp(2.5rem, 1.64rem + 2.86vw, 4.5rem);
+  --sl-feed: clamp(2rem, 1.69rem + 1.5625vw, 3.25rem);
+  --sl-big: clamp(2rem, 1.5rem + 2.5vw, 4rem);
+  --sl-lead: clamp(1.125rem, 0.96rem + 0.54vw, 1.5rem);
+  --sl-space: clamp(3rem, 2.5rem + 2.5vw, 5rem);
+}
+body { padding-inline: var(--sl-gap); }
+.site-header, main, .site-footer { max-inline-size: var(--sl-wide); }
+main { padding-block: 0 var(--space-section); }
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
+h1 { font-size: var(--sl-display); font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
+
+/* Buttons, fields and labels are pills in the ink colour. */
+.button, .subscribe button, .comment-form button, .search button, .consent button { border-radius: 999px; padding-inline: 1.5rem; font-weight: 700; letter-spacing: -0.005em; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .search button:hover { background: var(--sl-hover); }
+.subscribe input, .search input { border-radius: 999px; padding-inline: 1.25rem; }
+
+/* The announcement: one line in the page colour on an ink band that runs
+   to both edges of the window. The shadow draws the band; it never widens
+   the page. */
+.announcement { margin: 0; padding-block: 0.625rem; color: var(--color-background); background: var(--color-text); border: 0; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); font-size: var(--text-small); font-weight: 600; }
+.announcement p { max-inline-size: none; }
+.announcement a { color: inherit; }
+.announcement :focus-visible { outline-color: var(--color-background); }
+
+/* The header spans Solo's whole container, as Ghost's does: the name or
+   logo, the menu beside it, and search or the call to action at the end.
+   A header with nothing for the end sets the menu there instead, so the
+   row still reaches both edges. No rule under it; the page is one sheet. */
+.site-header { justify-content: flex-start; gap: 0.5rem 2rem; padding-block: 1.75rem; border: 0; }
+.site-name { font-size: 1.625rem; font-weight: 800; letter-spacing: -0.03em; }
+.site-logo img { max-block-size: 3rem; inline-size: auto; }
+.site-header > .nav-bar { margin-inline-end: auto; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 1rem; font-weight: 700; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--sl-hover); }
+.site-header nav a[aria-current] { text-decoration: underline; text-decoration-thickness: 2px; }
+.search-link { margin-inline-start: auto; }
+.nav-menu summary { border-radius: 999px; }
+.nav-bar ~ .search-link { margin-inline-start: 0; }
+.site-header:not(:has(> .search-link, > .header-button)) > .nav-bar { margin-inline: auto 0; }
+
+/* The about block: the headline, the intro and the sign-up pill. */
+.about { padding-block: clamp(2.5rem, 1.5rem + 4.4vw, 5rem) clamp(3rem, 2.5rem + 2.5vw, 5rem); }
+.about-photo { margin-block-end: clamp(2rem, 1.5rem + 2vw, 3rem); }
+.about-photo .avatar { inline-size: 8rem; block-size: 8rem; }
+.about-primary { max-inline-size: 75rem; margin: 0; font-size: clamp(2rem, 1.53rem + 2.1vw, 3.625rem); line-height: 1.2; letter-spacing: -0.02em; text-wrap: pretty; }
+.about-secondary { max-inline-size: 40rem; margin-block-start: 1.25rem; color: var(--color-text); font-size: clamp(1.25rem, 1.14rem + 0.36vw, 1.5rem); font-weight: 500; line-height: 1.45; letter-spacing: -0.008em; }
+.about-secondary > :last-child { margin-block-end: 0; }
+.about-secondary a { color: inherit; }
+.about .hero-stats { margin-block-start: 1.5rem; }
+.about-subscribe { display: flex; align-items: center; gap: 0.5rem; max-inline-size: 30rem; min-block-size: 3.25rem; margin: 2.5rem 0 0; padding-block: 0.375rem; padding-inline: 1.5rem 0.375rem; background: var(--sl-soft); border-radius: 999px; }
+.about-subscribe input { flex: 1 1 auto; inline-size: auto; min-inline-size: 0; padding: 0; color: var(--color-text); background: none; border: 0; font-size: 1.0625rem; }
+.about-subscribe input::placeholder { color: var(--color-muted); opacity: 1; }
+.about-subscribe input:focus-visible { outline: none; }
+.about-subscribe:focus-within { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+.about-subscribe button { flex: none; min-block-size: 2.5rem; padding-inline: 1.25rem; }
+
+/* The feed. The title is the link and its box covers the whole post. */
+.feed { display: grid; }
+.feed-item { position: relative; }
+.feed-item .image { margin: 0; }
+.feed-text h2 { margin: 0; font-size: var(--sl-feed); font-weight: 800; line-height: 1.1; overflow-wrap: anywhere; }
+.feed-text h2 a { color: var(--color-text); text-decoration: none; }
+.feed-text h2 a::after { content: ""; position: absolute; inset: 0; }
+.feed-item:hover h2 a { color: var(--sl-hover); }
+.feed-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 1rem 0 0; color: var(--color-muted); font-size: 0.875rem; font-weight: 500; line-height: 1.4; }
+.feed-meta > * { display: inline-flex; align-items: center; gap: 0.5rem; }
+.feed-meta > * + *::before { content: ""; inline-size: 2px; block-size: 2px; background: currentColor; border-radius: 50%; }
+.feed-meta a { position: relative; z-index: 1; min-block-size: 1.5rem; color: inherit; text-decoration: none; }
+.feed-meta a:hover { color: var(--color-text); text-decoration: underline; }
+
+/* Classic: the title beside a 16:9 picture on the end side. */
+.feed-classic { gap: var(--sl-space); }
+.feed-classic .feed-item:not(.feed-with-image) { max-inline-size: 75rem; padding-block: var(--sl-space); }
+.feed-classic .feed-item:not(.feed-with-image):first-child { padding-block-start: 0; }
+.feed-classic .feed-with-image { display: flex; flex-direction: column; gap: 2rem; }
+.feed-classic .image img { aspect-ratio: 16 / 9; object-fit: cover; }
+@media (min-width: 62rem) {
+  .feed-classic .feed-with-image { flex-direction: row-reverse; align-items: center; gap: clamp(2.5rem, 1.875rem + 3.125vw, 5rem); }
+  .feed-classic .feed-with-image > * { flex: 1 1 0; min-inline-size: 0; }
+}
+
+/* Typographic: very large titles and their summaries, far apart. */
+.feed-typographic { gap: clamp(5rem, 3.75rem + 6.25vw, 10rem); padding-block-start: clamp(1rem, 0.5rem + 2.5vw, 3rem); }
+.feed-typographic h2 { max-inline-size: 75rem; font-size: var(--sl-big); }
+.feed-typographic .feed-excerpt { max-inline-size: 57.5rem; margin: 1rem 0 0; font-size: clamp(1.125rem, 1.04rem + 0.27vw, 1.3125rem); font-weight: 450; line-height: 1.5; letter-spacing: -0.005em; }
+
+/* Parallax: each post is a tall card; its picture fills it under a
+   shade, the title sits at the bottom in the page colour. */
+.feed-parallax { gap: var(--sl-space); }
+.feed-parallax .feed-item { display: flex; align-items: flex-end; min-block-size: clamp(26rem, 18rem + 25vw, 40rem); overflow: hidden; isolation: isolate; background: var(--color-text); }
+.feed-parallax .image { position: absolute; inset: 0; z-index: -2; }
+.feed-parallax .image picture { display: block; block-size: 100%; }
+.feed-parallax .image img { block-size: 100%; object-fit: cover; }
+.feed-parallax .image figcaption { display: none; }
+.feed-parallax .feed-with-image::before { content: ""; position: absolute; inset: 0; z-index: -1; background: color-mix(in oklab, var(--color-text) 62%, transparent); transition: opacity 0.4s; }
+.feed-parallax .feed-with-image:hover::before { opacity: 0.7; }
+.feed-parallax .feed-text { padding-block: clamp(2rem, 1.5rem + 2.5vw, 4rem); padding-inline: clamp(1.5rem, 1.1rem + 2vw, 3rem); }
+.feed-parallax h2 { font-size: var(--sl-big); }
+.feed-parallax h2 a, .feed-parallax .feed-item:hover h2 a, .feed-parallax .feed-meta, .feed-parallax .feed-meta a:hover { color: var(--color-background); }
+.feed-parallax a:focus-visible { outline-color: var(--color-background); }
+
+/* Every other list: the same large titles, the picture on the end side
+   on a wide screen. */
+.cards { gap: var(--sl-space); }
+.card { display: flex; flex-direction: column; gap: 0.75rem; }
+.card :is(h2, h3, h4) { margin: 0; font-size: var(--sl-feed); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.card :is(h2, h3, h4) a:hover { color: var(--sl-hover); text-decoration: none; }
+.card p { margin: 0; }
+.card .image { order: -1; margin: 0 0 1.25rem; }
+.card .image img { aspect-ratio: 16 / 9; object-fit: cover; }
+.card-meta { order: 1; gap: 0 0.5rem; font-weight: 500; }
+.card-meta .card-author { display: none; }
+.card-meta time ~ *::before { content: ""; display: inline-block; inline-size: 2px; block-size: 2px; margin-inline-end: 0.5rem; vertical-align: middle; background: currentColor; border-radius: 50%; }
+.card-meta a { color: inherit; text-decoration: none; }
+.card > p:last-child:not(.card-meta) { order: 2; max-inline-size: 45rem; color: var(--color-muted); }
+@media (min-width: 62rem) {
+  :not(.related-scroll) > .cards .card:has(.image) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 1fr auto auto auto 1fr; gap: 0.75rem clamp(2.5rem, 1.875rem + 3.125vw, 5rem); }
+  :not(.related-scroll) > .cards .card:has(.image)::before { content: ""; grid-column: 1; grid-row: 1; }
+  :not(.related-scroll) > .cards .card:has(.image) > * { grid-column: 1; }
+  :not(.related-scroll) > .cards .card:has(.image) .image { grid-column: 2; grid-row: 1 / -1; margin: 0; }
+}
+
+/* Small headings over a list: home sections, topics, related posts. */
+:is(.home-section, .topics, .related, .media-row, .topic-tabs) > h2, .author + section > h2 { margin-block: 0 2.5rem; color: var(--color-muted); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.home-section, .topics, .media-row, .topic-tabs { margin-block-start: var(--space-section); }
+.view-all a { color: var(--color-text); font-weight: 700; }
+.tags a { padding-inline: 1rem; color: var(--color-text); background: none; border: 1px solid var(--color-border); border-radius: 999px; font-size: 0.9375rem; font-weight: 700; }
+.tags a:hover { border-color: var(--color-text); }
+
+/* A list page's heading: the name set like a post title. */
+main > h1 { max-inline-size: 63rem; margin-block: clamp(2.5rem, 1.5rem + 4.4vw, 5rem) 0; }
+main > .intro, main > .hub-link { max-inline-size: 52.5rem; margin-block-start: 1.5rem; color: var(--color-text); font-size: var(--sl-lead); font-weight: 500; line-height: 1.45; }
+main > :is(h1, .intro, .hub-link):has(+ :is(.cards, .featured)), main > .intro + .cards { margin-block-end: var(--sl-space); }
+main > .cards { margin-block-start: var(--sl-space); }
+.pagination { margin-block-start: var(--sl-space); font-weight: 700; }
+.pagination a { color: var(--color-text); }
+
+/* An author's page: a round photo over the name, then the bio large. */
+.author { margin-block: clamp(2.5rem, 1.5rem + 4.4vw, 5rem) var(--space-section); }
+.author-header, .author-header:has(.author-photo) { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+.author-photo { inline-size: 6rem; }
+.author-intro h1 { margin-block-end: 0.75rem; }
+.author-role { color: var(--color-text); font-weight: 600; }
+.author-bio { max-inline-size: 52.5rem; font-size: var(--sl-lead); font-weight: 500; line-height: 1.45; }
+@media (min-width: 40rem) {
+  .author-header:has(.author-photo) { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+}
+
+/* A post: the title across three quarters of the page, the summary, the
+   lead picture at full width, then the byline column beside the text. */
+.post-solo { margin-block-end: var(--space-section); }
+.post-solo .post-header { margin-block: clamp(2.5rem, 1.5rem + 4.4vw, 5rem) clamp(2.5rem, 1.875rem + 3.125vw, 5rem); }
+.post-header h1 { max-inline-size: 63rem; margin: 0; }
+.post-header .dek { max-inline-size: 52.5rem; margin-block: 1.5rem 0; color: var(--color-text); font-size: var(--sl-lead); font-weight: 500; line-height: 1.45; }
+.post-solo .post-header .image { margin-block: clamp(2.5rem, 1.875rem + 3.125vw, 5rem) 0; }
+.post-columns { display: grid; gap: 2rem; }
+.post-aside { color: var(--color-muted); font-size: var(--text-small); }
+.post-aside address { margin-block-end: 0.5rem; }
+.post-aside .people { flex-direction: column; gap: 0.75rem; margin: 0; }
+.post-aside .people .avatar { inline-size: 4rem; block-size: 4rem; }
+.post-aside .person a { min-block-size: 0; color: var(--color-text); font-size: 1.1875rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.35; text-decoration: none; }
+.post-aside .person a:hover { text-decoration: underline; }
+.post-aside .person-role { margin: 0; }
+.post-aside p { margin-block: 0 0.125rem; }
+.post-aside .reviewed-by a { color: var(--color-text); }
+.post-date { margin-block-start: 0.25rem; }
+.post-pill { padding-block-start: 1rem; }
+.post-pill a { display: inline-flex; align-items: center; min-block-size: 2.25rem; padding-inline: 0.875rem; color: var(--color-text); border: 1px solid var(--color-border); border-radius: 999px; font-size: 0.9375rem; font-weight: 700; letter-spacing: -0.01em; text-decoration: none; }
+.post-pill a:hover { border-color: var(--color-text); }
+.post-aside .toc-side { margin-block-start: 2rem; }
+.post-text { min-inline-size: 0; }
+@media (min-width: 62rem) {
+  .post-columns { grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr); column-gap: var(--sl-gap); }
+  .post-aside { grid-column: 1; align-self: start; position: sticky; inset-block-start: 3rem; }
+  .post-aside .person { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .post-aside .people .avatar { inline-size: 4.5rem; block-size: 4.5rem; }
+  .post-aside .toc-side { display: block; }
+  .post-text { grid-column: 2; }
+}
+
+/* The text: Solo's large, heavy headings in a calm column. */
+.post-body h2 { font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; }
+.post-body h3 { font-size: clamp(1.375rem, 1.2rem + 0.75vw, 1.875rem); font-weight: 800; line-height: 1.2; }
+.post-body h4 { font-weight: 800; }
+.post-body a { color: var(--color-text); }
+.post-body figcaption, .post-header figcaption { text-align: end; }
+.post-body blockquote { padding-inline-start: 1.25rem; color: var(--color-text); border-inline-start-color: var(--color-text); font-size: 1.125em; font-style: italic; }
+.toc-inline, .toc-box { background: var(--sl-soft); }
+.share a { border-radius: 999px; color: var(--color-text); font-weight: 600; }
+.post-footer { margin-block-start: 3rem; }
+.post-footer h2 { font-size: var(--text-small); color: var(--color-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.author-box { background: var(--sl-soft); }
+
+/* After a post: related posts as a short list of large titles. */
+.related { margin-block-start: var(--space-section); padding-block-start: var(--sl-space); border-block-start: 1px solid var(--color-border); }
+.related .card :is(h2, h3, h4) { font-size: clamp(1.5rem, 1.3rem + 1vw, 2.25rem); }
+.related-links a { color: var(--color-text); font-weight: 700; }
+
+/* The call to action and the newsletter: a wide pale panel with a large
+   line, like Solo's members panel. */
+.cta-band, .newsletter-slot { padding: clamp(2.5rem, 1.5rem + 5vw, 6rem) clamp(1.5rem, 0.5rem + 5vw, 6rem); background: var(--sl-soft); }
+.cta-note, .newsletter-slot h2 { max-inline-size: 40rem; font-family: var(--font-heading); font-size: clamp(1.75rem, 1.6rem + 0.71vw, 2.375rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.03em; }
+.newsletter-slot .subscribe { max-inline-size: 30rem; }
+
+/* The footer: everything centred under a wide space. */
+.site-footer { justify-items: center; gap: 1.5rem; padding-block: clamp(5rem, 4rem + 4.55vw, 7.5rem); border: 0; text-align: center; }
+.site-footer nav ul { justify-content: center; gap: 0.25rem 1.5rem; }
+.site-footer nav a { color: var(--color-text); font-size: 1rem; font-weight: 700; text-decoration: none; }
+.site-footer nav a:hover { text-decoration: underline; }
+.footer-groups { justify-items: center; }

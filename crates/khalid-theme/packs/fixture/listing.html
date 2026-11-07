@@ -1,0 +1,20 @@
+{#- Fixture's lists (category, tag, archive, date and collection pages):
+    the list's name and intro, such as a team's description, then its
+    matches and news as scoreboard rows under a heading for each month,
+    like a fixture list. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "sections/results_list.html" import results_list -%}
+<header class="list-header">
+{% block kind %}<p class="list-kind">{{ t.matches }}</p>
+{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{{ results_list(page.posts, 3, true) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

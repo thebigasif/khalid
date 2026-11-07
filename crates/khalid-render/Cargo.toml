@@ -21,6 +21,9 @@ serde.workspace = true
 thiserror.workspace = true
 toml = "1.1"
 
+[build-dependencies]
+brotli = "9"
+
 [dev-dependencies]
 insta = "1"
 khalid-content = { path = "../khalid-content", version = "1.3.2" }

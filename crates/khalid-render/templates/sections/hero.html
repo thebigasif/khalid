@@ -1,0 +1,13 @@
+{#- hero(title, intro=none, kicker=none): the top of a front page. A small
+    label, the site's name large and its intro. Called with
+    `{% call hero(...) %}...{% endcall %}`, it shows what the call holds
+    under the intro, such as a figure strip. -#}
+{% macro hero(title, intro=none, kicker=none) -%}
+<header class="hero">
+{% if kicker %}<p class="hero-kicker">{{ kicker }}</p>
+{% endif %}<h1 class="hero-title">{{ title }}</h1>
+{% if intro %}<div class="hero-intro">
+{{ intro }}
+</div>
+{% endif %}{% if caller is defined %}{{ caller() }}{% endif %}</header>
+{%- endmacro %}

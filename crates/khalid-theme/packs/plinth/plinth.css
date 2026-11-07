@@ -1,0 +1,155 @@
+/* Plinth (docs/templates/plinth.md): an architecture practice's site, set
+   like its printed monograph. A wide frame on drawing paper, ink rules,
+   titles in a geometric sans, projects as spreads with each photograph on
+   a heavy ink bar (the plinth) beside a ruled title block, and figures in
+   a project framed as numbered drawing sheets. The section parts' own
+   rules come first (the build adds the parts this pack's templates
+   import); these set the practice's look over them. Every colour is a
+   token or a mix of tokens. */
+:root {
+  --pl-frame: 76rem;
+  --pl-bar: 0.625rem;
+  --pl-ink: var(--color-text);
+  --hero-title: clamp(2.5rem, 1.4rem + 4.4vw, 5.25rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--pl-frame); }
+main { padding-block: 0 var(--space-section); }
+h1 { letter-spacing: -0.01em; }
+
+/* The header: the name in spaced capitals, quiet menu links, a heavy rule
+   under it all. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.25rem; border-block-end: 2px solid var(--pl-ink); }
+.site-name { font-family: var(--font-heading); font-size: 1.1875rem; font-weight: var(--heading-weight); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.75rem; }
+.site-header { inline-size: 100%; }
+.site-header nav a { justify-content: flex-end; color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { box-shadow: inset 0 -2px var(--color-accent); }
+.search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.search-link:hover { color: var(--color-link); text-decoration: underline; }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: square, filled with the accent. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 0; font: 600 0.9375rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* Section labels: monospace capitals over an ink rule, as on a drawing. */
+:is(.studio-section, .projects, .notes, .kinds, .related, .mentions, .author-projects, .author-others, .topic-tabs, .media-row) > h2, .post-footer > h2 { margin-block: 0 1.75rem; padding-block-start: 0.625rem; border-block-start: 2px solid var(--pl-ink); font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 400; letter-spacing: 0.1em; line-height: 1.3; text-transform: uppercase; }
+
+/* The front page. */
+.hero { padding-block-end: 0; }
+.hero-title { max-inline-size: 16ch; font-weight: var(--heading-weight); letter-spacing: -0.02em; }
+.hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem); line-height: 1.5; }
+.hero > .figure-strip { border-block-color: var(--pl-ink); }
+.projects, .notes, .kinds, .studio-section { margin-block-end: var(--space-section); }
+.studio-section .view-all { margin-block: 1rem 0; }
+
+/* A spread: the photograph on its plinth on one page, the text and the
+   title block on the facing page, behind a hairline gutter. The sides
+   swap from one spread to the next. */
+.spreads { display: grid; gap: clamp(3rem, 2rem + 4vw, 6rem); margin: 0; padding: 0; list-style: none; }
+.spread { display: grid; gap: 1.5rem; }
+.spread-plate { min-inline-size: 0; border-block-end: var(--pl-bar) solid var(--pl-ink); }
+.spread-plate .image { margin: 0; }
+.spread-plate img { display: block; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0; }
+.spread-text { display: flex; flex-direction: column; align-self: end; min-inline-size: 0; }
+.spread-kind, .project-kind { margin-block: 0 0.75rem; font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.spread-kind a, .project-kind a { text-decoration: none; }
+.spread-kind a:hover, .project-kind a:hover { text-decoration: underline; }
+.spread :is(h2, h3, h4) { margin: 0; font-size: clamp(1.5rem, 1.2rem + 1vw, 2.25rem); line-height: 1.15; letter-spacing: -0.01em; }
+.spread :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.spread :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.spread-excerpt { margin-block: 1rem 1.75rem; font-size: 1.0625rem; line-height: 1.55; }
+@media (min-width: 56rem) {
+  .spread { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 0; }
+  .spread-text { padding-inline-start: clamp(2rem, 1rem + 2vw, 3.5rem); }
+  .spread:nth-child(even) { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .spread:nth-child(even) .spread-plate { order: 2; }
+  .spread:nth-child(even) .spread-text { padding-inline: 0 clamp(2rem, 1rem + 2vw, 3.5rem); }
+}
+
+/* Types of work: a ruled index, three across on a wide screen. */
+.kind-index { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: 0 2rem; margin: 0; padding: 0; list-style: none; }
+.kind-index a { display: flex; align-items: center; min-block-size: 3.5rem; padding-block: 0.75rem; border-block-end: 1px solid var(--pl-ink); color: var(--color-text); font-family: var(--font-heading); font-size: 1.3125rem; text-decoration: none; }
+.kind-index a:hover { color: var(--color-link); }
+
+/* Sheets: lists, related projects and a person's work. Each sheet is the
+   photograph on a thinner bar, a number, the title and two facts. */
+.sheets { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); gap: 3rem 2rem; margin: 0; padding: 0; list-style: none; }
+.sheet { min-inline-size: 0; }
+.sheet .image { margin: 0 0 1rem; border-block-end: 0.375rem solid var(--pl-ink); }
+.sheet img { display: block; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0; }
+.sheet :is(h2, h3, h4) { display: flex; align-items: baseline; gap: 0.75rem; margin: 0; font-size: 1.3125rem; line-height: 1.25; }
+.sheet :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.sheet :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.sheet-number { flex: none; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 400; }
+.sheet-facts { margin: 0.5rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.sheet-facts span + span::before { content: "/"; padding-inline: 0.5rem; }
+
+/* Lists and the people page: the kind, the name, the intro, a rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; padding-block-end: 1.5rem; border-block-end: 2px solid var(--pl-ink); }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 1rem; color: var(--color-text); font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-accent); font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* A project: the head over the text column, the spread across the frame,
+   then the text, its figures framed as numbered drawing sheets. */
+main > .post ~ :is(.mentions, .comments, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
+main > .post > :is(.post-body, .post-footer, .author-box, .share, .toc-box, .toc-inline, .series-box, .preferred-source) { max-inline-size: var(--measure); margin-inline: auto; }
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; }
+.post-header > :not(.project-spread, .spread-plate) { max-inline-size: 54rem; margin-inline-start: max(0px, calc((100% - var(--measure)) / 2)); }
+.post-header h1 { margin-block: 0 1rem; line-height: 1.08; }
+.post-header .dek { margin-block: 0; color: var(--color-muted); font-size: clamp(1.1875rem, 1rem + 0.5vw, 1.4375rem); line-height: 1.45; }
+.post-header > .spread-plate, .project-spread { margin-block-start: 2.5rem; }
+.project-spread { display: grid; gap: 1.5rem; }
+@media (min-width: 60rem) { .project-spread { grid-template-columns: minmax(0, 2fr) minmax(17rem, 1fr); gap: 2.5rem; align-items: end; } }
+.post-with-toc .project-spread { grid-template-columns: minmax(0, 1fr); }
+.project-data { min-inline-size: 0; }
+.project-data address { font-style: normal; }
+.project-data address a { color: var(--color-text); }
+.title-block-wide { grid-column: 1 / -1; }
+.post-meta { margin-block-start: 1.25rem; color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta address a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta address a:hover { color: var(--color-link); text-decoration: underline; }
+.post-date { margin-block: 0.25rem 0; }
+.project-data .reviewed-by { margin-block: 0.75rem 0; color: var(--color-muted); font-size: var(--text-small); }
+.updated-note { margin-block: 0.75rem 0; color: var(--color-muted); font-size: var(--text-small); }
+.post-body { counter-reset: plinth-sheet; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body > figure:not([class]) { position: relative; margin-block: 2.5rem; margin-inline: 0; padding: 2.5rem clamp(0.75rem, 0.5rem + 1vw, 1.5rem) 1rem; background: var(--color-surface); border: 1px solid var(--pl-ink); counter-increment: plinth-sheet; }
+.post-body > figure:not([class])::before { content: counter(plinth-sheet, decimal-leading-zero); position: absolute; inset-block-start: 0; inset-inline-start: 0; padding: 0.25rem 0.75rem; border-block-end: 1px solid var(--pl-ink); border-inline-end: 1px solid var(--pl-ink); font-family: var(--font-mono); font-size: 0.8125rem; }
+.post-body > figure:not([class]) img { display: block; inline-size: 100%; block-size: auto; border-radius: 0; }
+.post-body > figure:not([class]) figcaption { margin-block-start: 1rem; padding-block-start: 0.75rem; border-block-start: 1px solid var(--color-border); color: var(--color-muted); font-size: var(--text-small); }
+@media (min-width: 64rem) { .post:not(.post-with-toc) .post-body > figure:not([class]) { margin-inline: -7rem; } }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { border: 1px solid var(--pl-ink); background: transparent; color: var(--color-text); font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.post-footer .tags a:hover { background: var(--color-surface); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+
+/* A person: the mark beside the name, then the work as sheets. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-photo img { border-radius: 0; }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.125rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-projects, .author-others { margin-block-start: var(--space-section); }
+.people-grid-person .avatar { border-radius: 0; }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.card .image img { border-block-end: 0.375rem solid var(--pl-ink); border-radius: 0; }
+
+/* The call to action: a band on the drawing paper, under an ink bar. */
+.cta-band { background: var(--color-surface); border: 0; border-block-start: var(--pl-bar) solid var(--pl-ink); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--pl-ink); border-radius: 0; }
+
+/* The footer: one ink rule, quiet links. */
+.site-footer { border-block-start: 2px solid var(--pl-ink); }

@@ -1,0 +1,115 @@
+---
+source: crates/khalid/tests/template_beacon.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+<a class="button header-button" href="https://www.example.com/donate/">Donate</a>
+</header>
+<main id="main" tabindex="-1">
+
+
+<div class="bc-top">
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+We bring the river back to life.
+</div>
+<p class="bc-give"><a class="button" href="https://www.example.com/donate/">Donate</a></p>
+</header>
+<section class="bc-appeal" aria-labelledby="bc-appeal-title">
+<h2 id="bc-appeal-title" class="bc-label">Appeal now</h2>
+<article class="bc-card">
+<figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure>
+<div class="bc-card-text">
+<p class="bc-area"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<div class="goal-meter">
+<dl class="goal-figures">
+<div class="goal-done"><dt>Raised</dt><dd>£6,150</dd></div>
+<div class="goal-target"><dt>Goal</dt><dd>£10,000</dd></div>
+</dl>
+<meter class="goal-bar" min="0" max="10000" value="6150" aria-hidden="true"></meter>
+<p class="goal-share">61% of the goal</p>
+</div>
+
+</div>
+</article>
+</section>
+</div>
+<section class="bc-impact" aria-labelledby="bc-impact-title">
+<h2 id="bc-impact-title" class="bc-label">Our impact</h2>
+<dl class="figure-strip">
+<div class="figure">
+<dt>of river reopened</dt>
+<dd>42 km</dd>
+</div>
+<div class="figure">
+<dt>volunteers</dt>
+<dd>1,240</dd>
+</div>
+</dl>
+
+</section>
+<section class="bc-section" aria-labelledby="bc-campaigns-title">
+<h2 id="bc-campaigns-title">Campaigns</h2>
+<ul class="bc-cards" role="list">
+<li><article class="bc-card">
+<div class="bc-card-text">
+<p class="bc-area"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<div class="goal-meter">
+<dl class="goal-figures">
+<div class="goal-done"><dt>Given</dt><dd>750</dd></div>
+<div class="goal-target"><dt>Needed</dt><dd>3,000</dd></div>
+</dl>
+<meter class="goal-bar" min="0" max="3000" value="750" aria-hidden="true"></meter>
+<p class="goal-share">25% of the goal</p>
+</div>
+
+</div>
+</article></li>
+<li><article class="bc-card">
+<div class="bc-card-text">
+<p class="bc-area"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+
+</div>
+</article></li>
+</ul>
+</section>
+<div class="bc-front">
+<section class="bc-news" aria-labelledby="bc-news-title">
+<h2 id="bc-news-title">News</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-10-12">12 October 2026</time>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="feed-category"><a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+</ol>
+</section>
+<section class="bc-work" aria-labelledby="bc-work-title">
+<h2 id="bc-work-title">Our work</h2>
+<ul class="bc-work-list" role="list">
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</section>
+</div>
+<div class="cta-band">
+<p class="cta-note">Every gift goes to the river.</p>
+<p><a class="button" href="https://www.example.com/donate/">Donate</a></p>
+</div>

@@ -1,0 +1,100 @@
+# Tessel Rowe Architects, a made-up architecture and interiors practice in
+# a made-up town, written for the Plinth template's demo. Each key and
+# table here replaces the showcase's own when scripts/demo-publication.sh
+# applies it.
+
+name = "Tessel Rowe Architects"
+languages = ["en"]
+
+[template.cta]
+label = "Start a project"
+href = "/blog/about/"
+note = "We take on four or five new projects a year. Tell us about your building and we will visit within two weeks."
+
+# The Plinth template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Architecture and interiors for homes, workplaces and public buildings, most of them old buildings given a second life."]
+hero_stats = ["38 | buildings completed", "21 | years in practice", "6 | people in the studio"]
+notes_count = 4
+
+[announcement]
+text = "Brook Row, our six homes for older people, is now on site."
+href = "/blog/brook-row-almshouses/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Architecture and interiors in Harrowfield"
+
+[seo.ai_page]
+covers = "Tessel Rowe Architects is an architecture and interiors practice. Each project post describes one building the practice designed, with its photograph, plan, place, year, floor area and stage. Studio notes cover materials, methods and news."
+cite = "Name the project and the practice, and link the project's post."
+contact = "studio@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Tessel Rowe Architects"
+email = "studio@example.com"
+founded = "2005-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Tessel Rowe Architects logo"
+width = 320
+height = 80
+
+# Sign-ups for the practice's letter, under its own name. The mail server
+# is a reserved example name, so nothing is ever sent.
+[mail]
+from = "studio@example.com"
+name = "Tessel Rowe Architects"
+postal_address = "Tessel Rowe Architects, The Old Sail Loft, 4 Quay Street, Harrowfield HF2 3QS"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Projects"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "Houses"
+href = "/blog/category/houses/"
+language = "en"
+
+[[nav.primary]]
+label = "Interiors"
+href = "/blog/category/interiors/"
+language = "en"
+
+[[nav.primary]]
+label = "Studio"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the practice"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Studio notes"
+href = "/blog/category/studio-notes/"
+language = "en"
+
+[[nav.footer]]
+label = "People"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

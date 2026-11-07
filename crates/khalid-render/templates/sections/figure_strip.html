@@ -1,0 +1,14 @@
+{#- figure_strip(lines, label=none): a row of large numbers, each with what
+    it counts under it, such as papers, members or money raised. Each line
+    is written `number | what it counts`, the shape of the `hero_stats`
+    option. Nothing shows without lines. `label` names the strip for
+    screen readers. -#}
+{% macro figure_strip(lines, label=none) -%}
+{% if lines %}<dl class="figure-strip"{% if label %} aria-label="{{ label }}"{% endif %}>
+{% for line in lines %}{% set parts = line | split("|") | list %}<div class="figure">
+<dt>{{ parts[1:] | join("|") | trim }}</dt>
+<dd>{{ parts[0] | trim }}</dd>
+</div>
+{% endfor %}</dl>
+{% endif %}
+{%- endmacro %}

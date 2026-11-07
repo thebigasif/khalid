@@ -1,0 +1,137 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2024-09-20-northlight-parade/lead.jpg"
+sha256 = "50eaedd1cf099a0aad1296eb9c73f7795caf32eb59741b89ad6ac88e8923f115"
+source = "https://commons.wikimedia.org/wiki/File:Aurora_borealis_over_Haroldswick_-_geograph.org.uk_-_8211486.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Aurora borealis over Haroldswick - geograph.org.uk - 8211486 by Mike Pennington, via Wikimedia Commons"
+title = "Aurora borealis over Haroldswick - geograph.org.uk - 8211486"
+creator = "Mike Pennington"
+openverse = "commons:File:Aurora borealis over Haroldswick - geograph.org.uk - 8211486.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2025-04-25-drill-hall-live-album/lead.jpg"
+sha256 = "98bc7512776db8d0554abc2afcdc6670a9e7b14627483fabe7de630db15879fb"
+source = "https://commons.wikimedia.org/wiki/File:Silhouettes_against_pale_stage_smoke_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Silhouettes against pale stage smoke (Unsplash) by Daniel Ebersole danielebersole, via Wikimedia Commons"
+title = "Silhouettes against pale stage smoke (Unsplash)"
+creator = "Daniel Ebersole danielebersole"
+openverse = "commons:File:Silhouettes against pale stage smoke (Unsplash).jpg"
+needs_credit = false
+size = "1544x1024"
+
+[[photos]]
+file = "en/posts/2025-11-07-harbour-lights/lead.jpg"
+sha256 = "2bc327d5f08c0ea608ccf50587ab3685e50875f9ccef12cb1c704d06fcc2eca2"
+source = "https://commons.wikimedia.org/wiki/File:Harbour_lights_at_Lilyfield_NSW.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Harbour lights at Lilyfield NSW by Returned dude12345, via Wikimedia Commons"
+title = "Harbour lights at Lilyfield NSW"
+creator = "Returned dude12345"
+openverse = "commons:File:Harbour lights at Lilyfield NSW.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-02-11-small-vinyl-runs/lead.jpg"
+sha256 = "d6aa4b40ccdb284238706063a8283fdedb6d23cd987003a1df8cdb6608e850f8"
+source = "https://commons.wikimedia.org/wiki/File:Marantz_turntable,_closeup_on_headshell.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Marantz turntable, closeup on headshell by Paul Joseph, via Wikimedia Commons"
+title = "Marantz turntable, closeup on headshell"
+creator = "Paul Joseph"
+openverse = "commons:File:Marantz turntable, closeup on headshell.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-04-15-rehearsal-room/lead.jpg"
+sha256 = "5d4c13bb50e446c947f55d3994680671bb6e071c88649bfcd6177d268addd805"
+source = "https://commons.wikimedia.org/wiki/File:Music_practice_room_1,_Air_raid_shelter,_Stuttgart,_2013_(photo_by_Gerold_Schneider).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Music practice room 1, Air raid shelter, Stuttgart, 2013 (photo by Gerold Schneider) by Gerold Schneider, via Wikimedia Commons"
+title = "Music practice room 1, Air raid shelter, Stuttgart, 2013 (photo by Gerold Schneider)"
+creator = "Gerold Schneider"
+openverse = "commons:File:Music practice room 1, Air raid shelter, Stuttgart, 2013 (photo by Gerold Schneider).jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-06-12-island-tour-diary/lead.jpg"
+sha256 = "c07ac5c59acd165bf1aa58e47010c384569b98e9a05779551074bc93971d216e"
+source = "https://commons.wikimedia.org/wiki/File:Put_your_hands_in_the_air_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Put your hands in the air (Unsplash) by Arkady Lifshits overdriv3, via Wikimedia Commons"
+title = "Put your hands in the air (Unsplash)"
+creator = "Arkady Lifshits overdriv3"
+openverse = "commons:File:Put your hands in the air (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-08-14-night-ferry/lead.jpg"
+sha256 = "38d997bc761dd9941aa6da5affbaf24cc1d6e13c9f4fa782ed078c9804afdd43"
+source = "https://commons.wikimedia.org/wiki/File:Wake_behind_a_ferry.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Wake behind a ferry by メルビル, via Wikimedia Commons"
+title = "Wake behind a ferry"
+creator = "メルビル"
+openverse = "commons:File:Wake behind a ferry.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-08-28-night-ferry-film/lead.jpg"
+sha256 = "b47f654b83a0d334998693b9fe100481a8c109d4366bc86c4dbcc19825ddfc54"
+source = "https://commons.wikimedia.org/wiki/File:Caledonian_MacBrayne_Ferry_nearing_Oban_early_evening_-_geograph.org.uk_-_4288307.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Caledonian MacBrayne Ferry nearing Oban early evening - geograph.org.uk - 4288307 by Colin Grice, via Wikimedia Commons"
+title = "Caledonian MacBrayne Ferry nearing Oban early evening - geograph.org.uk - 4288307"
+creator = "Colin Grice"
+openverse = "commons:File:Caledonian MacBrayne Ferry nearing Oban early evening - geograph.org.uk - 4288307.jpg"
+needs_credit = true
+size = "1500x1125"
+
+[[photos]]
+file = "en/posts/2026-09-08-autumn-tour/lead.jpg"
+sha256 = "ae6439b9e290b08204cd99727fc47b42ecbac67fa1034f4b505fd23b820ac39e"
+source = "https://commons.wikimedia.org/wiki/File:The_Pass_of_the_Cattle_(39472220690).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "The Pass of the Cattle (39472220690) by Mike McBey, via Wikimedia Commons"
+title = "The Pass of the Cattle (39472220690)"
+creator = "Mike McBey"
+openverse = "commons:File:The Pass of the Cattle (39472220690).jpg"
+needs_credit = true
+size = "1600x952"
+
+[[photos]]
+file = "en/posts/2026-10-02-glass-weather/lead.jpg"
+sha256 = "60e5acc2721332c6a3bdc1adb5ce448b55ddaec4d7239da4d936ffe5db2fe603"
+source = "https://commons.wikimedia.org/wiki/File:Raindrops_on_the_glass.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Raindrops on the glass by BogTar201213, via Wikimedia Commons"
+title = "Raindrops on the glass"
+creator = "BogTar201213"
+openverse = "commons:File:Raindrops on the glass.jpg"
+needs_credit = true
+size = "1600x1071"
+
+[[photos]]
+file = "en/posts/2026-10-20-church-hall-recording/lead.jpg"
+sha256 = "c2b26bc6f47525ed6a1405b26903836d401abbdba06bda5c3919a61d66dbccaf"
+source = "https://commons.wikimedia.org/wiki/File:TL_Audio_VTC_mixing_desk,_Metway_Studios.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "TL Audio VTC mixing desk, Metway Studios by Jeremy Keith, via Wikimedia Commons"
+title = "TL Audio VTC mixing desk, Metway Studios"
+creator = "Jeremy Keith"
+openverse = "commons:File:TL Audio VTC mixing desk, Metway Studios.jpg"
+needs_credit = true
+size = "1600x1200"
