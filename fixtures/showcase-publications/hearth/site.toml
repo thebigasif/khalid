@@ -1,0 +1,98 @@
+# Larkfield Nursery, a made-up family plant nursery, written for the
+# Hearth template's demo. Each key and table here replaces the showcase's
+# own when scripts/demo-publication.sh applies it.
+
+name = "Larkfield Nursery"
+languages = ["en"]
+
+# The call to action: a visit. It only links to the about page.
+[template.cta]
+label = "Plan a visit"
+href = "/blog/about/"
+note = "Open every day but Monday, nine till five. Come and walk round the greenhouses, and bring your questions."
+
+# The Hearth template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Notes from a family plant nursery: what we grow, what to do in the garden this month, and the people behind the benches."]
+
+[announcement]
+text = "Apple day is on Saturday 18 October: tastings, pressing and grafting talks. Everyone welcome."
+href = "/blog/apple-day/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Notes from a family plant nursery"
+
+[seo.ai_page]
+covers = "Larkfield Nursery is a family-run plant nursery. Its blog shares seasonal garden jobs, plant care, growing food at home and news from the nursery and the family who run it."
+cite = "Link the post you quote and name the writer it shows."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Larkfield Nursery"
+email = "hello@example.com"
+founded = "1968-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Larkfield Nursery logo"
+width = 320
+height = 80
+
+# Sign-ups for the nursery's letter, under its own name. The mail server
+# is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Larkfield Nursery"
+postal_address = "Larkfield Nursery, Mill Lane, Larkfield LK4 2PN"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "In the garden"
+href = "/blog/category/in-the-garden/"
+language = "en"
+
+[[nav.primary]]
+label = "Growing food"
+href = "/blog/category/growing-food/"
+language = "en"
+
+[[nav.primary]]
+label = "From the nursery"
+href = "/blog/category/from-the-nursery/"
+language = "en"
+
+[[nav.primary]]
+label = "Our family"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "Visit us"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the nursery"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Our family"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Every post"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

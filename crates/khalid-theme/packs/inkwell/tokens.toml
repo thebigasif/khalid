@@ -1,0 +1,34 @@
+# Inkwell: a newsletter's archive of numbered issues, set like a shelf of
+# bound volumes. A blue-black ink on a pale paper, one ink-blue accent. A
+# book face for headings and the large issue numbers, a plain sans for
+# the text and the small capitals labels.
+[colors]
+background = "#faf9f6"
+surface = "#efede6"
+text = "#181c27"
+muted = "#4c5263"
+link = "#1d4c9c"
+accent = "#1d4c9c"
+border = "#d9d5cb"
+
+[fonts]
+heading = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, \"Book Antiqua\", Georgia, serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0px"
+measure = "36rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.25rem 3.25rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.65
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

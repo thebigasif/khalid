@@ -99,7 +99,7 @@ mod tests {
 
     #[test]
     fn an_unknown_name_lists_every_template() {
-        let message = find("glossy").unwrap_err().to_string();
+        let message = find("velvet").unwrap_err().to_string();
         for pack in packs() {
             assert!(message.contains(pack.name), "{message}");
         }

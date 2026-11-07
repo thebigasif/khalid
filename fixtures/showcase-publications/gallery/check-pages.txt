@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /jellyfish-plates/
+post /red-fuji/
+category /category/woodblock/
+tag /tag/prints/
+author /authors/maren-holt/

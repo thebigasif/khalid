@@ -1,0 +1,15 @@
+/* Section part: headline list (templates/sections/headline_list.html).
+   Dense headline rows split by hairlines: a small place label, the
+   title, an optional summary and the date, or rows under day headings. */
+.headline-list { margin: 0; padding: 0; list-style: none; }
+.headline-row { padding-block: 0.75rem; border-block-end: 1px solid var(--color-border); }
+.headline-row:last-child { border-block-end: 0; }
+.headline-place { margin: 0 0 0.125rem; color: var(--color-link); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; }
+.headline-row :is(h2, h3, h4, h5) { margin: 0; font-size: 1.0625rem; line-height: 1.3; }
+.headline-row :is(h2, h3, h4, h5) a { color: var(--color-text); text-decoration: none; }
+.headline-row :is(h2, h3, h4, h5) a:hover { color: var(--color-link); text-decoration: underline; }
+.headline-summary { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 0.9375rem; line-height: 1.45; }
+.headline-date { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); font-variant-numeric: tabular-nums; }
+.headline-days { display: flex; flex-direction: column; }
+.headline-day { margin: 1rem 0 0; padding-block: 0.25rem; border-block-end: 2px solid var(--color-text); font-family: var(--font-body); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.headline-day:first-child { margin-block-start: 0; }

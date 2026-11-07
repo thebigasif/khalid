@@ -1,0 +1,125 @@
+/* Notebook (docs/templates/notebook.md): one person's public notebook.
+   A stream of dated notes on a paper page, with a double margin rule in
+   the accent colour down the stream and down every note, like an
+   exercise book. Each date sits in the margin in a typewriter face, the
+   day large and the month small; month headings cross the rule. Every
+   colour is a token or a mix of tokens. */
+:root {
+  --nb-frame: 72rem;
+  --nb-rail: 3rem;
+  --nb-gap: 1.25rem;
+  --nb-rule: 3px double var(--color-accent);
+  --nb-hair: color-mix(in oklab, var(--color-text) 16%, var(--color-background));
+}
+@media (min-width: 48rem) { :root { --nb-rail: 5rem; --nb-gap: 2rem; } }
+.site-header, main, .site-footer, main:has(.post-with-toc), :where(body:has(.post-with-toc)) :is(.site-header, .site-footer) { max-inline-size: var(--nb-frame); }
+main { padding-block: 0 var(--space-section); }
+
+/* The header: the name at the start and the menu in the typewriter face
+   at the end, across the whole frame over a hairline. */
+.site-header { inline-size: 100%; padding-block: 1.25rem 1rem; border-block-end: 1px solid var(--nb-hair); }
+.site-header > .nav-bar { flex: 1 1 auto; }
+.site-header > .nav-bar ul { justify-content: flex-end; gap: 0 1.5rem; }
+.site-header > .nav-menu { margin-inline-start: auto; }
+/* The last link's words end at the frame's edge, not inside its touch target. */
+.site-header > .nav-bar li:last-child a { justify-content: flex-end; }
+.site-name { font-size: 1.375rem; letter-spacing: -0.01em; }
+.site-logo img { block-size: 2.25rem; inline-size: auto; }
+.site-header nav a, .search-link { color: var(--color-text); font-family: var(--font-mono); font-size: 0.875rem; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { font-weight: 400; box-shadow: inset 0 -2px var(--color-accent); }
+
+/* Labels: small spaced capitals in the typewriter face. */
+.nb-label, .related > h2, .post-footer > h2, .mentions > h2, .list-kind { margin-block: 0 0.75rem; color: var(--color-muted); font: 400 0.8125rem/1.4 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.button, .subscribe button, .comment-form button, .header-button { font-family: var(--font-mono); font-weight: 400; color: var(--color-on-accent); }
+.button:hover, .subscribe button:hover, .comment-form button:hover { background: color-mix(in oklab, var(--color-accent) 85%, var(--color-text)); }
+
+/* The masthead: the name and the tagline on one ruled line. */
+.nb-masthead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 0.5rem; }
+.nb-name { margin: 0; font-size: clamp(2rem, 1.6rem + 1.6vw, 3rem); line-height: 1.05; letter-spacing: -0.01em; }
+.nb-tagline { flex: 1 1 20rem; margin: 0; color: var(--color-muted); font-size: 1.125rem; font-style: italic; line-height: 1.45; }
+.nb-masthead > .hero-stats { flex-basis: 100%; }
+
+/* The front page: the stream, and a side column on a wide screen. */
+.nb-layout { display: grid; gap: var(--space-section) 4rem; }
+.nb-main { min-inline-size: 0; }
+@media (min-width: 64rem) { .nb-layout { grid-template-columns: minmax(0, 1fr) 17rem; align-items: start; } }
+.nb-aside { display: grid; gap: 1.5rem; align-content: start; padding-block-start: 1.5rem; }
+.nb-card, .nb-aside .newsletter-slot { margin: 0; padding: 1.25rem; background: var(--color-surface); border-block-start: 3px solid var(--color-accent); border-radius: var(--radius); }
+.nb-aside .newsletter-slot h2 { margin-block-end: 0.5rem; font-size: var(--text-h4); }
+.nb-aside .newsletter-slot p { font-size: 1rem; }
+.nb-card-text { font-size: 1rem; line-height: 1.55; }
+.nb-card-text > * { margin-block: 0 0.5rem; }
+.nb-card-text > :last-child { margin: 0; }
+.nb-sections { display: grid; }
+.nb-sections a { display: flex; align-items: center; min-block-size: 44px; color: var(--color-text); border-block-end: 1px dashed var(--nb-hair); text-decoration: none; }
+.nb-sections li:last-child a { border: 0; }
+.nb-sections a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The stream: the margin rule runs its whole length. */
+.nb-stream { position: relative; }
+.nb-stream::before, .nb-note::before { content: ""; position: absolute; inset-block: 0; inset-inline-start: calc(var(--nb-rail) + var(--nb-gap) / 2 - 1.5px); border-inline-start: var(--nb-rule); }
+.nb-month { position: relative; }
+.nb-month-title { position: relative; z-index: 1; margin: 1.5rem 0 0; padding: 0.375rem 0.75rem; background: var(--color-surface); color: var(--color-muted); font: 400 0.8125rem/1.4 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.nb-entries { margin: 0; padding: 0; list-style: none; }
+.nb-entry { display: grid; grid-template-columns: var(--nb-rail) minmax(0, 1fr); column-gap: var(--nb-gap); }
+.nb-entry + .nb-entry > .nb-body { border-block-start: 1px dashed var(--nb-hair); }
+
+/* The date stamp in the margin: the day large over the month. */
+.nb-stamp { margin: 0; color: var(--color-muted); font-family: var(--font-mono); line-height: 1; text-align: end; }
+.nb-stamp time { display: grid; justify-items: end; gap: 0.3rem; }
+.nb-day { color: var(--color-text); font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem); }
+.nb-mon, .nb-year { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.nb-entry > .nb-stamp { padding-block-start: 1.6rem; }
+
+/* An entry: its section, title, first lines, source and picture. */
+.nb-body { min-inline-size: 0; padding-block: 1.25rem 1.5rem; }
+.nb-section { margin: 0 0 0.25rem; font: 400 0.8125rem/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.nb-section a { text-decoration: none; }
+.nb-section a:hover { text-decoration: underline; }
+.nb-body :is(h2, h3, h4) { margin: 0 0 0.375rem; font-size: var(--text-h3); line-height: 1.25; }
+.nb-body :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.nb-body :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.nb-text { max-inline-size: 40rem; margin: 0; }
+.nb-source { margin: 0.5rem 0 0; font-family: var(--font-mono); font-size: 0.875rem; }
+.nb-source a { display: inline-flex; align-items: center; min-block-size: 44px; }
+.nb-picture { display: block; max-inline-size: 22rem; margin-block-start: 0.75rem; }
+@media (min-width: 48rem) {
+  .nb-body:has(> .nb-picture) { display: grid; grid-template-columns: minmax(0, 1fr) 11rem; column-gap: 1.75rem; align-content: start; }
+  .nb-body > :not(.nb-picture) { grid-column: 1; }
+  .nb-body > .nb-picture { grid-column: 2; grid-row: 1 / span 4; margin: 0.25rem 0 0; }
+}
+.nb-picture .image { margin: 0; }
+.nb-picture img { aspect-ratio: 3 / 2; object-fit: cover; }
+.nb-picture figcaption { display: none; }
+
+/* Lists: the name and intro over a hairline, then the stream. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 0.5rem; padding-block-end: 1rem; border-block-end: 1px solid var(--nb-hair); }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: 40rem; margin-block-start: 0.5rem; }
+.list-header .intro > :last-child { margin-block-end: 0; }
+
+/* A note: the stamp with its year in the margin beside the rule, the
+   words in one readable column on the other side. */
+main > .nb-note { position: relative; max-inline-size: calc(var(--nb-rail) + var(--nb-gap) + var(--measure)); margin-inline: auto; padding-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); padding-inline-start: calc(var(--nb-rail) + var(--nb-gap)); }
+main > .nb-note.post-with-toc { max-inline-size: calc(var(--nb-rail) + var(--nb-gap) + var(--measure) + 18rem); }
+/* What follows a note keeps to the note's column, past the margin. */
+main > .nb-note ~ * { max-inline-size: var(--measure); margin-inline: max(calc(var(--nb-rail) + var(--nb-gap)), calc((100% - var(--measure) + var(--nb-rail) + var(--nb-gap)) / 2)) auto; }
+main > .nb-note.post-with-toc ~ * { margin-inline-start: max(calc(var(--nb-rail) + var(--nb-gap)), calc((100% - var(--measure) - 18rem + var(--nb-rail) + var(--nb-gap)) / 2)); }
+.nb-note .post-header { position: relative; }
+.nb-note .post-header > .nb-stamp { position: absolute; inset-block-start: 0.2rem; inset-inline-start: calc(-1 * (var(--nb-rail) + var(--nb-gap))); inline-size: var(--nb-rail); }
+.nb-note .post-header h1 { margin-block: 0 0.5rem; line-height: 1.12; }
+.post-byline { margin: 0; }
+.post-byline a { color: var(--color-text); }
+.nb-facts { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; margin: 0.75rem 0 0; font-family: var(--font-mono); font-size: var(--text-small); }
+.nb-fact { display: flex; gap: 0.5rem; }
+.nb-fact dt { color: var(--color-muted); }
+.nb-fact dd { margin: 0; }
+.nb-link-out { margin-block: 2rem 0; }
+.post-footer .tags a { padding-inline: 0.25rem; background: none; font-family: var(--font-mono); font-size: 0.9375rem; }
+.post-footer .tags a::before { content: "\0023" / ""; color: var(--color-muted); }
+.related { margin-block-start: var(--space-section); }
+.related .feed-item time { font-family: var(--font-mono); font-size: 0.8125rem; }
+.related .feed-item { border-block-end-style: dashed; }
+/* A long note title breaks inside a long word or address. */
+.nb-title { overflow-wrap: anywhere; }

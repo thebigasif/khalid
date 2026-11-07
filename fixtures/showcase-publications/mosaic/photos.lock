@@ -1,0 +1,187 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is in
+# the public domain (work of the US National Park Service) or under CC0.
+
+[[photos]]
+file = "en/posts/2026-10-30-first-light-dunes/lead.jpg"
+sha256 = "fb2974b21103dd45d2294228acacf0ff0aafc9c474f6563cb2b9d2f87f09dc89"
+source = "https://commons.wikimedia.org/wiki/File:Sunrise_Light_on_a_Dune_(52666365970).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Sunrise Light on a Dune (52666365970) by Great Sand Dunes National Park and Preserve, via Wikimedia Commons"
+title = "Sunrise Light on a Dune (52666365970)"
+creator = "Great Sand Dunes National Park and Preserve"
+openverse = "commons:File:Sunrise Light on a Dune (52666365970).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-23-cholla-milky-way/lead.jpg"
+sha256 = "dd47adeed0f1bf00f5e900c0cd04b76617f415c6ea873874c51991d756cfe0c4"
+source = "https://commons.wikimedia.org/wiki/File:Teddy_Bear_Cholla_and_the_Milky_Way_(53433933301).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Teddy Bear Cholla and the Milky Way (53433933301) by Joshua Tree National Park, via Wikimedia Commons"
+title = "Teddy Bear Cholla and the Milky Way (53433933301)"
+creator = "Joshua Tree National Park"
+openverse = "commons:File:Teddy Bear Cholla and the Milky Way (53433933301).jpg"
+needs_credit = false
+size = "1600x2400"
+
+[[photos]]
+file = "en/posts/2026-10-16-bighorn-ridge/lead.jpg"
+sha256 = "dffac740be93b0bde02ecda0c227979412606ba6db9afb6e00999ab8ab0629da"
+source = "https://commons.wikimedia.org/wiki/File:Bighorn_Sheep_(38472712526).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Bighorn Sheep (38472712526) by Joshua Tree National Park, via Wikimedia Commons"
+title = "Bighorn Sheep (38472712526)"
+creator = "Joshua Tree National Park"
+openverse = "commons:File:Bighorn Sheep (38472712526).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-09-first-snow-rim/lead.jpg"
+sha256 = "b755f73e880734f6429d42469276d99229eb28574025aff7215aa56c0bc500d2"
+source = "https://commons.wikimedia.org/wiki/File:Grand_Canyon,_First_December_Snow_2012,_%22Battleship_Revealed%22_4668_-_Flickr_-_Grand_Canyon_NPS.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Grand Canyon, First December Snow 2012, \"Battleship Revealed\" 4668 - Flickr - Grand Canyon NPS by Grand Canyon National Park, via Wikimedia Commons"
+title = "Grand Canyon, First December Snow 2012, \"Battleship Revealed\" 4668 - Flickr - Grand Canyon NPS"
+creator = "Grand Canyon National Park"
+openverse = "commons:File:Grand Canyon, First December Snow 2012, \"Battleship Revealed\" 4668 - Flickr - Grand Canyon NPS.jpg"
+needs_credit = false
+size = "1600x1062"
+
+[[photos]]
+file = "en/posts/2026-10-09-first-snow-rim/mather-point.jpg"
+sha256 = "fb8f74f413f030b186af9192bb9f999f12d2ed5384113941a776819a7d3918ac"
+source = "https://commons.wikimedia.org/wiki/File:Grand_Canyon,_First_December_Snow_Storm_2012,_Mather_Point_-_Flickr_-_Grand_Canyon_NPS.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Grand Canyon, First December Snow Storm 2012, Mather Point - Flickr - Grand Canyon NPS by Grand Canyon National Park, via Wikimedia Commons"
+title = "Grand Canyon, First December Snow Storm 2012, Mather Point - Flickr - Grand Canyon NPS"
+creator = "Grand Canyon National Park"
+openverse = "commons:File:Grand Canyon, First December Snow Storm 2012, Mather Point - Flickr - Grand Canyon NPS.jpg"
+needs_credit = false
+size = "1328x2000"
+
+[[photos]]
+file = "en/posts/2026-10-02-joshua-tree-bloom/lead.jpg"
+sha256 = "53ad75ae15d1e2f5ef19db64d1ec4c1e98e88f29e00831d818c01bb5702c958c"
+source = "https://commons.wikimedia.org/wiki/File:Joshua_tree_bloom_and_moth_(52013988711).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Joshua tree bloom and moth (52013988711) by Joshua Tree National Park, via Wikimedia Commons"
+title = "Joshua tree bloom and moth (52013988711)"
+creator = "Joshua Tree National Park"
+openverse = "commons:File:Joshua tree bloom and moth (52013988711).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-25-dune-ridgelines-morning/lead.jpg"
+sha256 = "ffbd765c7848dfc03960182ced2ad82eb662e5f3ab1d7a3708ef69bd24946bc9"
+source = "https://commons.wikimedia.org/wiki/File:Morning_Light_on_Dunes_(50365974052).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Morning Light on Dunes (50365974052) by Great Sand Dunes National Park and Preserve, via Wikimedia Commons"
+title = "Morning Light on Dunes (50365974052)"
+creator = "Great Sand Dunes National Park and Preserve"
+openverse = "commons:File:Morning Light on Dunes (50365974052).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-18-jupiter-queen-valley/lead.jpg"
+sha256 = "7ac9531a81bf0e1c3d09561a98404b781ca12fec919c02687568de906819ee12"
+source = "https://commons.wikimedia.org/wiki/File:Milky_Way,_Jupiter,_and_night_sky_over_Queen_Valley_(50836084491).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Milky Way, Jupiter, and night sky over Queen Valley (50836084491) by Joshua Tree National Park, via Wikimedia Commons"
+title = "Milky Way, Jupiter, and night sky over Queen Valley (50836084491)"
+creator = "Joshua Tree National Park"
+openverse = "commons:File:Milky Way, Jupiter, and night sky over Queen Valley (50836084491).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-18-jupiter-queen-valley/dune-trail.jpg"
+sha256 = "b4108caca6d776f93f7828cba5ceed092e3b3a71bed1b495a599402acbbc9102"
+source = "https://commons.wikimedia.org/wiki/File:Dune_Trail_Milky_Way_(3a4230b9-49da-4e5d-a79d-f2a35e0bb5f0).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Dune Trail Milky Way by NPS Photo, via Wikimedia Commons"
+title = "Dune Trail Milky Way"
+creator = "NPS Photo"
+openverse = "commons:File:Dune Trail Milky Way (3a4230b9-49da-4e5d-a79d-f2a35e0bb5f0).jpg"
+needs_credit = false
+size = "1600x2182"
+
+[[photos]]
+file = "en/posts/2026-09-11-desert-wash-bloom/lead.jpg"
+sha256 = "b710bf3c53957b744f5ffe378abed720df18eda2877ffe08be6b3cd22c6be1ee"
+source = "https://commons.wikimedia.org/wiki/File:Wildflowers_in_a_desert_wash_(52830431529).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Wildflowers in a desert wash (52830431529) by Joshua Tree National Park, via Wikimedia Commons"
+title = "Wildflowers in a desert wash (52830431529)"
+creator = "Joshua Tree National Park"
+openverse = "commons:File:Wildflowers in a desert wash (52830431529).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-04-blue-mesa-stripes/lead.jpg"
+sha256 = "7d54e7b0e1d6a9e7890275df21ce91eb3009604739d6a421318bdff50d45a129"
+source = "https://commons.wikimedia.org/wiki/File:Blue_Mesa,_Painted_Desert,_Petrified_Forest_National_Park,_Arizona.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Blue Mesa, Painted Desert, Petrified Forest National Park, Arizona by VALOHAZ, via Wikimedia Commons"
+title = "Blue Mesa, Painted Desert, Petrified Forest National Park, Arizona"
+creator = "VALOHAZ"
+openverse = "commons:File:Blue Mesa, Painted Desert, Petrified Forest National Park, Arizona.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-08-28-snow-joshua-trees/lead.jpg"
+sha256 = "f1b843b69fea3ebb29324993934432c6a720842bb9a05861e95dc2c542138af9"
+source = "https://commons.wikimedia.org/wiki/File:Joshua_trees_in_snow_near_Keys_View_(51052520733).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Joshua trees in snow near Keys View (51052520733) by Joshua Tree National Park, via Wikimedia Commons"
+title = "Joshua trees in snow near Keys View (51052520733)"
+creator = "Joshua Tree National Park"
+openverse = "commons:File:Joshua trees in snow near Keys View (51052520733).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-08-21-canyon-sunrise-times/lead.jpg"
+sha256 = "18a677883977eae9c925fa56e0a0ae33e076f080317a76cf3b9b55b664e5f5ea"
+source = "https://commons.wikimedia.org/wiki/File:Grand_Canyon_National_Park,_Sunrise_February_10,_2013_1389_-_Flickr_-_Grand_Canyon_NPS.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Grand Canyon National Park, Sunrise February 10, 2013 1389 - Flickr - Grand Canyon NPS by Grand Canyon National Park, via Wikimedia Commons"
+title = "Grand Canyon National Park, Sunrise February 10, 2013 1389 - Flickr - Grand Canyon NPS"
+creator = "Grand Canyon National Park"
+openverse = "commons:File:Grand Canyon National Park, Sunrise February 10, 2013 1389 - Flickr - Grand Canyon NPS.jpg"
+needs_credit = false
+size = "1600x1016"
+
+[[photos]]
+file = "en/posts/2026-08-14-climber-granite-wall/lead.jpg"
+sha256 = "ba5039bd771e6d7a38def57283858f86cbb0f2e9ed41f9805b9dc967f79e194c"
+source = "https://commons.wikimedia.org/wiki/File:Rock_Climber_at_Joshua_Tree_National_Park_-_2.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Rock Climber at Joshua Tree National Park - 2 by Joshua Tree National Park, via Wikimedia Commons"
+title = "Rock Climber at Joshua Tree National Park - 2"
+creator = "Joshua Tree National Park"
+openverse = "commons:File:Rock Climber at Joshua Tree National Park - 2.jpg"
+needs_credit = false
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2026-08-07-saguaro-sundown/lead.jpg"
+sha256 = "b10bfe32bf0f8ce72c634ce9ad5561a44eccd72dbe82486b8ebb7238314c8793"
+source = "https://commons.wikimedia.org/wiki/File:Saguaro_National_Park_Saguaro_Sunset_9924.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Saguaro National Park Saguaro Sunset 9924 by National Park Service Digital Image Archives, via Wikimedia Commons"
+title = "Saguaro National Park Saguaro Sunset 9924"
+creator = "National Park Service Digital Image Archives"
+openverse = "commons:File:Saguaro National Park Saguaro Sunset 9924.jpg"
+needs_credit = false
+size = "1600x1200"
+

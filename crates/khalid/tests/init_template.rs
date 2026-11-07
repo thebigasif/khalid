@@ -84,12 +84,12 @@ fn a_site_made_with_a_template_names_it_and_builds_in_it() {
 fn an_unknown_template_stops_with_the_names_and_makes_no_folder() {
     let temp = tempfile::tempdir().unwrap();
     let site = at(temp.path(), "blog");
-    let output = init(&site, &["--template", "glossy"]);
+    let output = init(&site, &["--template", "velvet"]);
     assert_eq!(output.status.code(), Some(2));
     let stderr = text(&output.stderr);
     let lines: Vec<&str> = stderr.lines().collect();
     assert_eq!(lines.len(), 3, "want what, why, fix:\n{stderr}");
-    assert!(stderr.contains("glossy"), "{stderr}");
+    assert!(stderr.contains("velvet"), "{stderr}");
     for name in ["classic", "atlas", "workbench"] {
         assert!(stderr.contains(name), "{name} is listed:\n{stderr}");
     }

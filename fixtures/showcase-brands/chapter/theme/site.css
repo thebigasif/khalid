@@ -1,0 +1,8 @@
+/* The Chapter demo serves Alegreya Sans in one weight, 400, so every page
+   stays under the 60 KB font budget (docs/standards/performance.md,
+   "Fonts"). Text the template sets bold is drawn in that weight, never in
+   a bold the browser fakes, and the small capital labels gain a little
+   spacing to keep their presence. */
+body { font-synthesis-weight: none; }
+:is(.ch-new-label, .post-kind, .ch-part-title, .ch-facts dt, .list-header .list-kind, .post-footer > h2, .related > h2, .mentions > h2) { letter-spacing: 0.14em; }
+:is(.button, .subscribe button, .comment-form button, .header-button) { letter-spacing: 0.03em; }

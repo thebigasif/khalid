@@ -34,6 +34,13 @@ earlies = "earlies"
 ein = "ein"
 nd = "nd"
 vistor = "vistor"
+# Craft and place words the batch 5 demos use: wood that is planed, a
+# wheelwright's tyring day, the LK4 2PN postcode in Hearth and the Mabe
+# Pepper chilli, named after the Cornish village of Mabe, in Inkwell.
+planed = "planed"
+tyring = "tyring"
+pn = "pn"
+mabe = "mabe"
 
 [files]
 # typos knows English only. German and Spanish content is checked by its

@@ -1,0 +1,67 @@
+{#- Inkwell's own parts (docs/templates/inkwell.md), shared by its pages.
+    An issue is a post whose facts are read by position: 1 its number,
+    such as 91; 2 to 4 its parts, each with the section as the label and
+    the item as the value. A post without facts, or whose first fact is
+    longer than eight characters and so is no number, is an extra, shown
+    without a number, its category over its title and its description
+    under it.
+    glance(facts): an issue's parts, the section in small capitals
+    over the item, from its second fact on.
+    issue_rows(posts, level): each issue as a row: its number in a column
+    of its own, the title and date, and its parts at a glance.
+    issue_years(posts): the years of `posts`, newest first, as they come.
+    year_links(years): links to each year's volume on this page.
+    volumes(posts, level): the posts grouped by year, each year opened
+    like the spine of a bound volume: the year large over a heavy rule,
+    with how many numbered issues it holds, then its issue rows. -#}
+{% macro glance(facts) -%}
+{% if facts | length > 1 %}<ul class="iw-glance" role="list">
+{% for fact in facts[1:4] %}<li><span class="iw-part">{{ fact.label }}</span> <span class="iw-item">{{ fact.value }}</span></li>
+{% endfor %}</ul>
+{% endif %}
+{%- endmacro %}
+{% macro issue_rows(posts, level=3) -%}
+<ol class="iw-issues" role="list">
+{% for post in posts %}{% set numbered = post.facts and (post.facts[0].value | length) <= 8 -%}
+<li class="iw-issue">
+{% if numbered %}<p class="iw-no"><span class="visually-hidden">{{ t.issue_heading | replace("{number}", post.facts[0].value) }}</span><span aria-hidden="true"><span class="iw-no-label">{{ t.issue_no }}</span> <span class="iw-no-figure">{{ post.facts[0].value }}</span></span></p>
+{% endif %}<div class="iw-what">
+{% if not numbered and post.category %}<p class="iw-extra">{{ post.category.name }}</p>
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="iw-date"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+</div>
+{% if numbered and post.facts | length > 1 %}{{ glance(post.facts) }}
+{% else %}<p class="iw-note">{{ post.excerpt }}</p>
+{% endif %}</li>
+{% endfor %}</ol>
+{%- endmacro %}
+{% macro issue_years(posts) -%}
+{% set found = namespace(years=[]) -%}
+{% for post in posts %}{% set year = (post.date | string)[:4] %}{% if year not in found.years %}{% set found.years = found.years + [year] %}{% endif %}{% endfor -%}
+{{ found.years | join(" ") }}
+{%- endmacro %}
+{% macro year_links(years) -%}
+{% if years | length > 1 %}<nav class="iw-years" aria-label="{{ t.issue_years_jump }}">
+<ul>
+{% for year in years %}<li><a href="#iw-year-{{ year }}">{{ year }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}
+{%- endmacro %}
+{% macro volumes(posts, level=2) -%}
+{% set years = issue_years(posts) | split(" ") | list -%}
+{{ year_links(years) }}
+{% for year in years %}{% set shown = posts | selectattr("date", "startingwith", year) | list -%}
+<section class="iw-volume" id="iw-year-{{ year }}" aria-labelledby="iw-year-{{ year }}-title">
+<header class="iw-spine">
+<h{{ level }} id="iw-year-{{ year }}-title">{{ year }}</h{{ level }}>
+{% set tally = namespace(count=0) -%}
+{% for post in shown %}{% if post.facts and (post.facts[0].value | length) <= 8 %}{% set tally.count = tally.count + 1 %}{% endif %}{% endfor -%}
+{% set count = tally.count -%}
+{% if count %}<p class="iw-tally">{{ t.issue_tally_one if count == 1 else t.issue_tally | replace("{count}", count | string) }}</p>
+{% endif %}
+</header>
+{{ issue_rows(shown, level + 1) }}
+</section>
+{% endfor %}
+{%- endmacro %}

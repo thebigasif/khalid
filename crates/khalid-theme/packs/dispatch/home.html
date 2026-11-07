@@ -1,0 +1,62 @@
+{#- Dispatch's front page (docs/templates/dispatch.md): the sign-up first.
+    On the left, when the letter goes out, the newsletter's name, its
+    promise, what each issue holds, the reply slip and the proof numbers;
+    beside it on the first page, the latest issue with its picture and
+    stamp. Then the recent issues as ruled rows, the page links, the
+    topics, and a second reply slip at the end. On a phone it all stacks
+    in that order, so the sign-up is on the first screen. With home
+    sections in site.toml, each section is a list of issues of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "slots.html" import cta_band -%}
+{% from "parts-dispatch.html" import stamp, issue_rows, reply_slip -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/figure_strip.html" import figure_strip -%}
+{% set options = template.options -%}
+{% set first = not page.pagination or page.pagination.current == 1 -%}
+{% set latest = page.posts[0] if first and page.posts and not page.sections else none -%}
+{% set rows = page.posts[1:] if latest else page.posts -%}
+<div class="dp-top">
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none), options.cadence[0] if options.cadence else none) %}{% if options.promises %}<ul class="dp-promises" aria-label="{{ t.issue_promises }}">
+{% for line in options.promises %}<li>{{ line }}</li>
+{% endfor %}</ul>
+{% endif %}{{ reply_slip("join") }}
+{{ figure_strip(options.hero_stats) }}{% endcall %}
+{% if latest %}<article class="dp-latest" aria-labelledby="latest-title">
+<p class="dp-latest-kind">{{ t.latest_issue }}</p>
+{% if latest.image %}<a class="dp-latest-picture" href="{{ latest.href }}" tabindex="-1" aria-hidden="true">{{ picture(latest.image, slot_sizes("latest")) }}</a>
+{% endif %}<div class="dp-latest-body">
+{{ stamp(latest) }}
+<div class="dp-latest-text">
+<p class="dp-issue-meta"><time datetime="{{ latest.date }}">{{ latest.date | date }}</time>{% if latest.category %} <a href="{{ latest.category.href }}">{{ latest.category.name }}</a>{% endif %}</p>
+<h2 id="latest-title"><a href="{{ latest.href }}">{{ latest.title }}</a></h2>
+<p class="dp-issue-excerpt">{{ latest.excerpt }}</p>
+<p class="dp-latest-read"><a href="{{ latest.href }}">{{ t.read_issue }}</a></p>
+</div>
+</div>
+</article>
+{% endif %}</div>
+{% if page.sections %}{% for section in page.sections %}<section class="dp-recent" aria-labelledby="dp-section-{{ loop.index }}">
+<h2 id="dp-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ issue_rows(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif rows %}<section class="dp-recent" aria-labelledby="recent-title">
+<h2 id="recent-title">{{ t.recent_issues }}</h2>
+{{ issue_rows(rows) }}
+</section>
+{% elif not latest %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if page.categories %}<section class="dp-topics" aria-labelledby="topics-title">
+<h2 id="topics-title">{{ t.topics }}</h2>
+<ul class="dp-topic-list" role="list">
+{% for category in page.categories %}<li><a href="{{ category.href }}">{{ category.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if options.newsletter in ["home", "both"] %}{{ reply_slip("join-end", t.newsletter_join, t.newsletter_text) }}
+{% endif %}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}

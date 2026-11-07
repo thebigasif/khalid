@@ -1,0 +1,48 @@
+{#- Glossy's own parts (docs/templates/glossy.md), shared by its pages.
+    card_meta(post): a card's date and, with card_reading_time on, its
+    reading time.
+    cover(post, lines=[]): the front page's cover. The cover story's
+    picture large, and beside it on a soft panel the Cover story label,
+    its section, the title, the excerpt and the byline, then the cover
+    lines: the next stories as a short numbered list. Nothing is written
+    on the picture.
+    story_grid(posts, level=3, even=false): stories as picture cards in a
+    repeating rhythm of six, set by the stylesheet: wide, tall, three
+    squares, then a band with its picture beside its text. With `even`,
+    every card is the same square card. Each card holds its picture,
+    then its section, title, excerpt and date, never on the picture. The
+    title's link covers the whole card. -#}
+{% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% macro card_meta(post) -%}
+<p class="gl-card-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if template.options.card_reading_time and post.reading_time %}<span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}</p>
+{%- endmacro %}
+{% macro cover(post, lines=[]) -%}
+<section class="gl-cover" aria-labelledby="gl-cover-title">
+{% if post.image %}<div class="gl-cover-picture">{{ picture(post.image, slot_sizes("cover")) }}</div>
+{% endif %}<div class="gl-cover-panel">
+<p class="gl-cover-label"><span class="gl-pill">{{ t.cover_story }}</span>{% if post.category %}<a class="gl-section" href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}</p>
+<h2 id="gl-cover-title" class="gl-cover-title"><a href="{{ post.href }}">{{ post.title }}</a></h2>
+<p class="gl-cover-excerpt">{{ post.excerpt }}</p>
+<p class="gl-card-meta">{% if post.author %}<span>{{ t.by }} {{ post.author.name }}</span>{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if template.options.card_reading_time and post.reading_time %}<span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}</p>
+{% if lines %}<h3 class="gl-cover-lines-title">{{ t.cover_lines }}</h3>
+<ol class="gl-cover-lines" role="list">
+{% for line in lines %}<li><a href="{{ line.href }}">{% if line.category %}<span class="gl-section">{{ line.category.name }}</span>{% endif %}<span class="gl-cover-line">{{ line.title }}</span></a></li>
+{% endfor %}</ol>
+{% endif %}</div>
+</section>
+{%- endmacro %}
+{% macro story_grid(posts, level=3, even=false) -%}
+{% set rhythm = ["wide", "tall", "square", "square", "square", "band"] -%}
+{% if even %}<ul class="gl-grid gl-grid-even" role="list">{% else %}<ul class="gl-grid" role="list">{% endif %}
+{% for post in posts %}{% if post.image %}<li class="gl-card">{% else %}<li class="gl-card gl-card-plain">{% endif %}
+{% if post.image %}{{ picture(post.image, none if even else slot_sizes("card", rhythm[loop.index0 % 6])) }}
+{% endif %}<div class="gl-card-text">
+{% if post.category %}<p class="gl-section">{{ post.category.name }}</p>
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="gl-card-excerpt">{{ post.excerpt }}</p>
+{{ card_meta(post) }}
+</div>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}

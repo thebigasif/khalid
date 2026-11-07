@@ -1,0 +1,34 @@
+# Hearth: a warm, classic blog for a small team or a family business.
+# Cream paper, dark brown ink and one terracotta accent like brick round
+# a fire, with an oat surface for the lead story and the notes. A warm
+# old-style serif for titles and a plain sans for the text.
+[colors]
+background = "#fdf8f1"
+surface = "#f6ecdf"
+text = "#2a201a"
+muted = "#6a5848"
+link = "#a3412a"
+accent = "#a3412a"
+border = "#eadccb"
+
+[fonts]
+heading = "Constantia, \"Lucida Bright\", Lucidabright, \"DejaVu Serif\", Georgia, serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0.5rem"
+measure = "42rem"
+
+[type]
+body = "1.0625rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
+h2 = "1.5rem 2.125rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.7
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

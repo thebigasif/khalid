@@ -1,0 +1,2 @@
+Added
+- The Inkwell template, for the archive of a long-running newsletter. The front page puts the sign-up form beside the newsletter's name, shows the latest issue with its number set large and its parts, then lists every issue grouped by year like bound volumes, each row with the issue's number and its parts at a glance. An issue opens with a stamp of its number and an "In this issue" box. The demo is The Seed Tin, the quarterly letter of a made-up seed library.

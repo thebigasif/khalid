@@ -1,0 +1,47 @@
+---
+source: crates/khalid/tests/template_inkwell.rs
+expression: "shown(&out, \"category/technical-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="list-header">
+<h1>Technical SEO</h1>
+</header>
+<div class="iw-archive">
+
+<section class="iw-volume" id="iw-year-2026" aria-labelledby="iw-year-2026-title">
+<header class="iw-spine">
+<h2 id="iw-year-2026-title">2026</h2>
+<p class="iw-tally">1 issue</p>
+
+</header>
+<ol class="iw-issues" role="list">
+<li class="iw-issue">
+<p class="iw-no"><span class="visually-hidden">Issue 12</span><span aria-hidden="true"><span class="iw-no-label">No.</span> <span class="iw-no-figure">12</span></span></p>
+<div class="iw-what">
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="iw-date"><time datetime="2026-10-05">5 October 2026</time></p>
+</div>
+<ul class="iw-glance" role="list">
+<li><span class="iw-part">Lead</span> <span class="iw-item">The biggest win first</span></li>
+<li><span class="iw-part">Reading</span> <span class="iw-item">Three posts on page speed</span></li>
+<li><span class="iw-part">Letters</span> <span class="iw-item">Your slowest pages</span></li>
+</ul>
+
+</li>
+<li class="iw-issue">
+<div class="iw-what">
+<p class="iw-extra">Technical SEO</p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="iw-date"><time datetime="2026-09-28">28 September 2026</time></p>
+</div>
+<p class="iw-note">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</li>
+</ol>
+</section>
+
+</div>

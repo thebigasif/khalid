@@ -1,0 +1,33 @@
+# Quill: a minimal text blog. Blue-black ink on paper white, one book
+# serif from the system for every word, so the pack loads no font, and
+# generous type in one column of about 66 characters. Square corners.
+[colors]
+background = "#fcfbf7"
+surface = "#f3f0e8"
+text = "#1d1c1a"
+muted = "#5d5a54"
+link = "#234a85"
+accent = "#234a85"
+border = "#e2ddd2"
+
+[fonts]
+heading = "Charter, \"Bitstream Charter\", \"Iowan Old Style\", \"Sitka Text\", Cambria, Georgia, serif"
+body = "Charter, \"Bitstream Charter\", \"Iowan Old Style\", \"Sitka Text\", Cambria, Georgia, serif"
+
+[shape]
+radius = "0px"
+measure = "40rem"
+
+[type]
+body = "1.125rem 1.3125rem"
+h1 = "2.125rem 3.25rem"
+h2 = "1.375rem 1.75rem"
+h3 = "1.1875rem 1.4375rem"
+h4 = "1.125rem 1.3125rem"
+small = "0.9375rem"
+line_height = 1.7
+heading_weight = 500
+
+[space]
+unit = "0.5rem"
+section = "4rem"

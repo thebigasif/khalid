@@ -55,6 +55,7 @@ fn the_site_hides_its_locale_from_templates() {
         locale: Locale::try_new("en").unwrap(),
         home: "/blog/".to_owned(),
         stylesheet: "/blog/assets/site.0123abcd.css".to_owned(),
+        body_font: None,
         nav: Nav {
             primary: vec![NavLink {
                 label: "Glossary".to_owned(),

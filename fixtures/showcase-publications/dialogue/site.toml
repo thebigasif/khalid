@@ -1,0 +1,99 @@
+# Open Studio, a made-up interview show with people who make things by
+# hand, written for the Dialogue template's demo. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Open Studio"
+languages = ["en"]
+
+[template.cta]
+label = "Suggest a guest"
+href = "/blog/about/"
+note = "Know a maker we should talk to? Tell us who they are and what they make."
+
+# The Dialogue template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Long conversations with people who make things by hand: potters, weavers, boat builders and beekeepers."]
+listen_links = ["Podcast feed | https://www.example.com/blog/feed.xml", "Your podcast app | https://www.example.com/listen/"]
+notes_count = 3
+
+[announcement]
+text = "Season two has started: a new conversation every two weeks."
+href = "/blog/season-two/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Conversations with people who make things by hand"
+
+[seo.ai_page]
+covers = "Open Studio is an interview show. Each episode is one conversation with one maker, such as a potter, a weaver, a beekeeper or a boat builder, with show notes, chapters and a full transcript."
+cite = "Name the guest and the episode, and link the episode page you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Open Studio"
+email = "hello@example.com"
+founded = "2024-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Open Studio logo"
+width = 280
+height = 80
+
+# Sign-ups for the show's newsletter, under its own name. The mail server
+# is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Open Studio"
+postal_address = "Open Studio, 8 Quay Street, Bristol BS1 4AA"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "In the studio"
+href = "/blog/category/in-the-studio/"
+language = "en"
+
+[[nav.primary]]
+label = "In the yard"
+href = "/blog/category/in-the-yard/"
+language = "en"
+
+[[nav.primary]]
+label = "Out and about"
+href = "/blog/category/out-and-about/"
+language = "en"
+
+[[nav.primary]]
+label = "Hosts"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the show"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Season two"
+href = "/blog/season-two/"
+language = "en"
+
+[[nav.footer]]
+label = "Hosts"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

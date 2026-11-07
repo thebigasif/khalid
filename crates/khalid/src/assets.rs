@@ -2,7 +2,7 @@
 //! and the reader script from the bytes in the binary. `khalid build`
 //! writes them and `khalid serve` answers them.
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::LazyLock;
 use std::{fs, io};
 
@@ -14,6 +14,7 @@ use khalid_render::{
 use khalid_server::{MediaType, Page, PagePath};
 use khalid_theme::Look;
 
+use crate::build_pages::LanguagePages;
 use crate::{build_message, look};
 
 /// The folder, under the mount and in the output folder, that holds them.
@@ -86,17 +87,10 @@ pub(crate) fn fonts(site: &Path, tokens: &Tokens) -> Vec<FontFile> {
     let mut found: Vec<FontFile> = Vec::new();
     for listed in &tokens.fonts.files {
         let name = listed.path.as_str();
-        let plain = !name.contains(['/', '\\']) && !name.starts_with('.');
-        let woff2 = Path::new(name)
-            .extension()
-            .is_some_and(|extension| extension.eq_ignore_ascii_case("woff2"));
-        if !plain || !woff2 || found.iter().any(|font| font.name == name) {
+        if !is_plain_woff2(name) || found.iter().any(|font| font.name == name) {
             continue;
         }
-        let read = SitePath::within(site, &format!("{FONTS}{name}"))
-            .ok()
-            .and_then(|path| path.resolve().ok())
-            .and_then(|path| fs::read(path).ok());
+        let read = font_path(site, name).and_then(|path| fs::read(path).ok());
         let Some(bytes) = read else {
             tracing::warn!(file = name, "a listed font file could not be read");
             continue;
@@ -107,6 +101,47 @@ pub(crate) fn fonts(site: &Path, tokens: &Tokens) -> Vec<FontFile> {
         });
     }
     found
+}
+
+/// Whether `name` is a plain `*.woff2` file name, with no folder in it,
+/// the only kind of font file the site serves.
+fn is_plain_woff2(name: &str) -> bool {
+    let plain = !name.contains(['/', '\\']) && !name.starts_with('.');
+    plain
+        && Path::new(name)
+            .extension()
+            .is_some_and(|extension| extension.eq_ignore_ascii_case("woff2"))
+}
+
+/// Where the font file `name` is on disk, inside `site`'s `theme/fonts/`.
+fn font_path(site: &Path, name: &str) -> Option<PathBuf> {
+    SitePath::within(site, &format!("{FONTS}{name}"))
+        .ok()
+        .and_then(|path| path.resolve().ok())
+}
+
+/// Names the font file that draws body text in every language's pages,
+/// which preload it, when the site's `tokens` list one it serves (G20). A
+/// file that is not there is not named, so no page asks for it for
+/// nothing. A headless site has no tokens and no pages to name it in.
+pub(crate) fn preload_body_font(
+    site: &Path,
+    config: &Config,
+    tokens: Option<&Tokens>,
+    languages: &mut [LanguagePages],
+) {
+    let Some(file) = tokens.and_then(|tokens| tokens.fonts.body_file()) else {
+        return;
+    };
+    let name = file.path.as_str();
+    let served = is_plain_woff2(name) && font_path(site, name).is_some_and(|path| path.is_file());
+    if !served {
+        return;
+    }
+    let href = format!("{}{FOLDER}fonts/{name}", config.mount());
+    for language in languages {
+        language.site.body_font = Some(href.clone());
+    }
 }
 
 /// The fonts as `khalid serve` holds them, at `<mount>assets/fonts/<file>`,

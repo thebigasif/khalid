@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /glassblowing/
+table /season-two/
+category /category/in-the-studio/
+tag /tag/apprenticeship/
+author /authors/nadia-osei/

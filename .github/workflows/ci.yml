@@ -113,9 +113,13 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-  # The Rust checks run as parallel jobs: the lints, the tests in two
-  # partitions, and the release build with its size budget. The job named
-  # Rust, which branch protection requires, sums them up.
+  # The Rust checks run as parallel jobs: the lints, the tests with the
+  # coverage floor, and the release build with its size budget. The job
+  # named Rust, which branch protection requires, sums them up.
+  #
+  # The tests stay one job. Split into partitions, each runner built every
+  # test binary again on the same busy machine, and the partitions' coverage
+  # could not be joined exactly, since each runner's paths differ.
   rust-lints:
     name: Rust lints, docs and dependencies
     runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
@@ -176,15 +180,10 @@ jobs:
       - name: Lint table proven to fire (BL-LNT-3)
         run: ./scripts/check-lints.sh
 
-  # The job id stays rust, the id of the single job these replaced, so the
-  # test build keeps finding the warm cache that job saved.
+  # The job id stays rust, so the test build keeps its warm cache.
   rust:
-    name: Rust tests ${{ matrix.partition }} of 2
+    name: Rust tests
     runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        partition: [1, 2]
     steps:
       - uses: actions/checkout@v7
       - name: Disk space for the build
@@ -225,9 +224,7 @@ jobs:
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-nextest,cargo-llvm-cov
-      - name: Tests, network disabled, with coverage (BL-TST-3, BL-TST-6)
-        env:
-          PARTITION: ${{ matrix.partition }}
+      - name: Tests, network disabled, with the coverage floor (BL-TST-3, BL-TST-6)
         run: |
           # Tests run in a network namespace where only loopback is up, so a
           # local stand-in server works and the internet does not. Ubuntu
@@ -241,39 +238,28 @@ jobs:
             || sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 \
             || fail "the AppArmor user-namespace restriction could not be lifted"
           unshare -rn true || fail "unshare could not create a network namespace"
-          # Every partition builds every test binary for coverage and runs
-          # its share of the tests. show-env sets the flags cargo llvm-cov
-          # would, so the build can happen first, with the network, and the
-          # run inside the namespace, with nothing that needs it. The job
-          # named Rust joins the partitions' reports and holds them to the
-          # coverage floor (scripts/ci/coverage-floor.py).
-          mkdir -p target/coverage
+          # The suite runs once, built for coverage, and the coverage floor
+          # reads that same run. show-env sets the flags cargo llvm-cov would,
+          # so the build can happen first, with the network, and the run
+          # inside the namespace, with nothing that needs it. The slowest
+          # tests start first (scripts/ci/nextest.toml).
+          floor=$(sed -n 's/^lines *= *\([0-9.]*\).*/\1/p' coverage.toml 2>/dev/null || echo 0)
           (
             eval "$(cargo llvm-cov show-env --sh)"
             cargo llvm-cov clean --workspace
             cargo nextest run --workspace --all-features --no-run
-            # shellcheck disable=SC2016 # the inner shell expands PARTITION
             unshare -rn sh -c '
               ip link set lo up || { echo "BL-TST-3 could not be enforced: loopback did not come up. Tests did not run."; exit 1; }
               if curl -sS --max-time 5 -o /dev/null https://github.com 2>/dev/null; then
                 echo "BL-TST-3 could not be enforced: the internet is reachable inside the namespace. Tests did not run."; exit 1
               fi
-              exec cargo nextest run --workspace --all-features \
-                --config-file scripts/ci/nextest.toml --partition "count:$PARTITION/2"
+              exec cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml
             '
-            cargo llvm-cov report --summary-only
-            cargo llvm-cov report --lcov --output-path "target/coverage/partition-$PARTITION.lcov"
+            cargo llvm-cov report --summary-only --fail-under-lines "$floor"
           )
-      - uses: actions/upload-artifact@v7
-        with:
-          name: coverage-${{ matrix.partition }}
-          path: target/coverage/
-          retention-days: 1
-          if-no-files-found: error
 
   # Branch protection requires a check named Rust. It passes only when the
-  # lints, both test partitions and the size budget pass, and when the
-  # partitions together reach the line coverage floor in coverage.toml.
+  # lints, the tests with their coverage floor and the size budget pass.
   rust-gate:
     name: Rust
     needs: [rust-lints, rust, binary-size]
@@ -285,23 +271,14 @@ jobs:
           test "${{ needs.rust-lints.result }}" = success
           test "${{ needs.rust.result }}" = success
           test "${{ needs.binary-size.result }}" = success
-      - uses: actions/checkout@v7
-      - uses: actions/download-artifact@v7
-        with:
-          pattern: coverage-*
-          path: target/coverage
-          merge-multiple: true
-      - name: Line coverage floor over both partitions (BL-TST-6)
-        run: python3 scripts/ci/coverage-floor.py coverage.toml target/coverage/partition-*.lcov
 
+  # npm only, so it runs on GitHub's runners and leaves the maintainer
+  # runners to the Rust builds.
   admin:
     name: Admin
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Disk space for the build
-        if: runner.environment == 'self-hosted'
-        run: ./scripts/ci/disk-guard.sh
       - name: Any admin yet?
         id: admin
         run: |
