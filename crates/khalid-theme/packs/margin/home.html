@@ -1,0 +1,60 @@
+{#- Margin's front page (docs/templates/margin.md): one writer's site in
+    a text column with a ruled margin beside it. First the introduction:
+    the site's name and the front page's intro or the `tagline`, with the
+    writer in the margin (the author the `writer` option names, or else
+    the newest essay's author). Then the sign-up band: the newsletter form
+    when the site takes sign-ups, or else the call to action as a link,
+    with the `letter_notes` in the margin. Then the essays as rows, the
+    newest leading with its picture, each with its date, reading time and
+    topic in the margin. Sections set in site.toml take the essays' place,
+    as on every front page. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "image.html" import avatar -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "parts-margin.html" import essay_rows -%}
+{% set options = template.options -%}
+{% set authors = page.posts | selectattr("author") | map(attribute="author") | list -%}
+{% set named = authors | selectattr("href", "endingwith", "/" ~ options.writer ~ "/") | list if options.writer else [] -%}
+{% set writer = named[0] if named else (authors[0] if authors else none) -%}
+<header class="mg-band mg-intro">
+<div class="mg-text">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="mg-intro-text">
+{{ page.intro }}
+</div>
+{% elif options.tagline %}<p class="mg-intro-text">{{ options.tagline[0] }}</p>
+{% endif %}</div>
+{% if writer %}<div class="mg-side mg-writer">
+{% if writer.image %}{{ avatar(writer.image) }}
+{% endif %}<p class="mg-writer-name"><a href="{{ writer.href }}">{{ writer.name }}</a>{% if writer.role %}<span>{{ writer.role }}</span>{% endif %}</p>
+</div>
+{% endif %}</header>
+{% set signup = site.subscribe and options.newsletter in ["home", "both"] -%}
+{% if signup or template.cta %}<section class="mg-band mg-letter" aria-labelledby="mg-letter-title">
+<div class="mg-text">
+{% if signup %}{{ newsletter_form(site.subscribe, t, "mg-letter") }}
+{% else %}<h2 id="mg-letter-title">{{ t.margin_letter }}</h2>
+{% if template.cta.note %}<p>{{ template.cta.note }}</p>
+{% endif %}<p><a class="button" href="{{ template.cta.href }}">{{ template.cta.label }}</a></p>
+{% endif %}</div>
+{% if options.letter_notes %}<ul class="mg-side mg-notes" role="list">
+{% for note in options.letter_notes %}<li>{{ note }}</li>
+{% endfor %}</ul>
+{% endif %}</section>
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="mg-section" aria-labelledby="section-{{ loop.index }}">
+<h2 id="section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ essay_rows(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}<section class="mg-section" aria-labelledby="mg-essays">
+<h2 id="mg-essays">{{ t.margin_essays }}</h2>
+{{ essay_rows(page.posts, 3, not page.pagination or page.pagination.current == 1) }}
+</section>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}

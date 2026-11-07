@@ -310,6 +310,9 @@ routine_notes = "Notizen"
 # The lattice template's key numbers and its front page.
 key_numbers = "Zahlen im Überblick"
 latest_explainers = "Neueste Erklärungen"
+# The margin template's front page: its essays and its sign-up band.
+margin_essays = "Essays"
+margin_letter = "Neue Essays per E-Mail"
 projects = "Projekte"
 studio_notes = "Notizen aus dem Büro"
 types_of_work = "Arbeitsbereiche"

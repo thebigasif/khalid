@@ -1,0 +1,23 @@
+{#- Margin's lists (category, tag, archive, date and collection pages):
+    the list's name and intro in the text column, then its essays as the
+    same rows the front page shows, each with its margin note. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "parts-margin.html" import essay_rows -%}
+<header class="mg-band mg-list-header">
+<div class="mg-text">
+{% block kind %}{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</div>
+</header>
+{% if page.posts %}<section class="mg-section" aria-labelledby="mg-essays">
+<h2 id="mg-essays" class="visually-hidden">{{ t.margin_essays }}</h2>
+{{ essay_rows(page.posts, 3) }}
+</section>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}
