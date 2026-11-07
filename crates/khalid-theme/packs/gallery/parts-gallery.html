@@ -1,0 +1,46 @@
+{#- Gallery's own parts (docs/templates/gallery.md), shared by its pages.
+    A work is a post with a lead picture; its facts are read by position:
+    1 the client or publisher, 2 the year, 3 the medium, 4 the size or
+    edition.
+    wall(posts, level=2): the picture wall. Each work hangs on a mat at
+    its own shape, never cropped, with its wall label under it: the
+    number, written with two digits, the title (a heading of `level`,
+    whose link covers the whole work) and one line of the medium and the
+    year, or the discipline and the year when the post has no facts.
+    checklist(posts): the list of works under the same numbers, each with
+    its title, its client or discipline and its year, like the sheet a
+    gallery hands out at the door. -#}
+{% from "image.html" import picture -%}
+{% macro number(at) -%}
+{{ t.gallery_number | replace("{number}", ("0" if at < 10 else "") ~ at) }}
+{%- endmacro %}
+{% macro year(post) -%}
+{{ post.facts[1].value if post.facts[1] is defined else (post.date | string)[:4] }}
+{%- endmacro %}
+{% macro wall(posts, level=2) -%}
+<ol class="wall" role="list">
+{% for post in posts %}<li class="wall-work">
+<article>
+{% if post.image %}<div class="wall-mat">{{ picture(post.image) }}</div>
+{% else %}<div class="wall-mat wall-blank" aria-hidden="true"></div>
+{% endif %}<div class="wall-label">
+<p class="wall-number">{{ number(loop.index) }}</p>
+<h{{ level }} class="wall-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="wall-meta">{% if post.facts[2] is defined %}<span>{{ post.facts[2].value }}</span>{% elif post.category %}<span>{{ post.category.name }}</span>{% endif %}<span>{{ year(post) }}</span></p>
+</div>
+</article>
+</li>
+{% endfor %}</ol>
+{%- endmacro %}
+{% macro checklist(posts) -%}
+<section class="checklist" aria-labelledby="checklist-title">
+<h2 id="checklist-title">{{ t.gallery_checklist }}</h2>
+<ol class="checklist-rows" role="list">
+{% for post in posts %}<li>
+<span class="checklist-number">{{ number(loop.index) }}</span>
+<a href="{{ post.href }}">{{ post.title }}</a>
+<span class="checklist-meta">{% if post.facts[0] is defined %}<span>{{ post.facts[0].value }}</span>{% elif post.category %}<span>{{ post.category.name }}</span>{% endif %}<span>{{ year(post) }}</span></span>
+</li>
+{% endfor %}</ol>
+</section>
+{%- endmacro %}
