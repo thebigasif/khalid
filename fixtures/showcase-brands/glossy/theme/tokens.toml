@@ -1,0 +1,59 @@
+# The sample brand for the Glossy demo: The Weekend Edit, a small made-up
+# lifestyle magazine. Cream paper, a peach surface for the cover panel and
+# the band cards, and a deep teal accent. Playfair Display for the name
+# and the titles, Plus Jakarta Sans for the text. Only the brand lives
+# here: the template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#fbf8f3"
+surface = "#f3e6dc"
+text = "#1e1b19"
+muted = "#5d554f"
+link = "#1d5e5a"
+accent = "#1d5e5a"
+border = "#e8dccf"
+
+[fonts]
+heading = "\"Playfair Display\", Georgia, \"Times New Roman\", serif"
+body = "\"Plus Jakarta Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Playfair Display"
+style = "normal"
+weight = "600"
+path = "playfair-display-latin-600.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "119.52%"
+descent = "118.44%"
+line_gap = "0.00%"
+size_adjust = "63.22%"
+
+[[fonts.files]]
+family = "Plus Jakarta Sans"
+style = "normal"
+weight = "400"
+path = "plus-jakarta-sans-latin-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "114.66%"
+descent = "104.76%"
+line_gap = "0.00%"
+size_adjust = "61.95%"
+
+[[fonts.files]]
+family = "Plus Jakarta Sans"
+style = "normal"
+weight = "600"
+path = "plus-jakarta-sans-latin-600.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "114.66%"
+descent = "104.76%"
+line_gap = "0.00%"
+size_adjust = "63.75%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

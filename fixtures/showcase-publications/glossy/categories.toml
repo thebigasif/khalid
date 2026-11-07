@@ -1,0 +1,43 @@
+# The Weekend Edit's sections. The Glossy template shows each one under
+# Browse the sections on the front page, and each category page is that
+# section's stories in the card rhythm, with its intro under the name.
+
+[[categories]]
+slug = "home"
+en = "Home"
+
+[categories.seo.en]
+description = "Ideas for small homes: warm colours, easy plants and rooms that feel calm."
+intro = "Colour, plants and small changes that make a home feel lit and calm."
+
+[[categories]]
+slug = "food"
+en = "Food"
+
+[categories.seo.en]
+description = "Slow breakfasts, first loaves and seasonal fruit, with simple recipes for the weekend."
+intro = "Breakfasts worth getting up for, bread without the fuss and the fruit of the season."
+
+[[categories]]
+slug = "travel"
+en = "Travel"
+
+[categories.seo.en]
+description = "Short trips by train, packing light and cold swims, for weekends away."
+intro = "Short trips, one bag and a swim wherever there is water."
+
+[[categories]]
+slug = "style"
+en = "Style"
+
+[categories.seo.en]
+description = "Things to make, wear and keep for years, with care notes that make them last."
+intro = "Things to make and wear, and how to keep them for many seasons."
+
+[[categories]]
+slug = "wellbeing"
+en = "Wellbeing"
+
+[categories.seo.en]
+description = "Small habits for calmer days: walks, bikes and evenings without screens."
+intro = "Walks, bikes and quiet evenings: small habits for calmer weeks."

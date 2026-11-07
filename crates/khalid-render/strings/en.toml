@@ -425,3 +425,8 @@ price_level = "Price level {level} of 4"
 at_a_glance = "At a glance"
 city_notes = "Notes from the city"
 more_places = "More places"
+# The glossy template's cover, its card grid and its sections.
+cover_story = "Cover story"
+cover_lines = "Also in this issue"
+latest_stories = "Latest stories"
+browse_sections = "Browse the sections"

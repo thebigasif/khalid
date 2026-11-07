@@ -1,0 +1,46 @@
+{#- Glossy's front page (docs/templates/glossy.md): the masthead line
+    (the name as the page's heading and the tagline); the cover, where
+    the featured story with a picture, or else the newest one, sits large
+    beside its title and the cover lines; then every other story in the
+    card rhythm (wide, tall, three squares, band) and the sections as
+    rounded links. Text sits beside or under pictures, never on them.
+    With home sections in site.toml, each section is a grid of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "parts-glossy.html" import cover, story_grid -%}
+{% set options = template.options -%}
+{% set tagline = page.intro or (options.tagline[0] if options.tagline else none) -%}
+<header class="gl-masthead">
+<h1>{{ page.title }}</h1>
+{% if tagline %}<div class="gl-tagline">
+{{ tagline }}
+</div>
+{% endif %}</header>
+{% set pictured = page.posts | selectattr("image") | list -%}
+{% set lead = page.featured if page.featured and page.featured.image else (pictured[0] if pictured else none) -%}
+{% set rest = page.posts | rejectattr("href", "eq", lead.href) | list if lead else page.posts -%}
+{% if page.sections %}{% for section in page.sections %}<section class="gl-stories" aria-labelledby="gl-section-{{ loop.index }}">
+<h2 id="gl-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ story_grid(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% else %}{% if lead %}{{ cover(lead, rest[:options.cover_lines]) }}
+{% endif %}{% if rest %}<section class="gl-stories" aria-labelledby="gl-latest-title">
+<h2 id="gl-latest-title">{{ t.latest_stories }}</h2>
+{{ story_grid(rest) }}
+</section>
+{% elif not lead %}<p>{{ t.no_posts }}</p>
+{% endif %}{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if page.categories and not page.sections %}<section class="gl-browse" aria-labelledby="gl-browse-title">
+<h2 id="gl-browse-title">{{ t.browse_sections }}</h2>
+<ul class="gl-browse-list" role="list">
+{% for category in page.categories %}<li><a href="{{ category.href }}">{{ category.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}
