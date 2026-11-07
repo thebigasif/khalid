@@ -432,6 +432,8 @@ issue_feed = "Oder im Feedreader folgen"
 sections_jump = "Zu einem Ressort springen"
 section_all = "Alle Meldungen aus {name}"
 more_news = "Weitere Meldungen"
+# The notebook template's side column, link notes and related notes.
+# {site} is the name of the place a link note points to.
 notebook_about = "Über dieses Notizbuch"
 notebook_sections = "Rubriken"
 notebook_read_at = "Weiterlesen bei {site}"
