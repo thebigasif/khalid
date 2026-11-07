@@ -119,7 +119,7 @@ jobs:
           name: demos-release
           path: ${{ runner.temp }}/release/*.tar.gz
           if-no-files-found: error
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: ${{ runner.temp }}/forward
   deploy:
