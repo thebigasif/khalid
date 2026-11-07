@@ -3,22 +3,17 @@
     stamp(date, year): the date as the margin shows it, the day large and
     the month short under it, and with year set the year too. Screen
     readers hear the whole date once.
-    source(facts): a link note's first fact, a web address, as one item
-    with the fact's label as the place's name; none for any other note.
     stream(posts, level, key): the notes newest first, a month heading
     (one level above `level`, its id starting with `key`) at each new
-    month, each note with its stamp in
-    the margin, its section, title, first lines, the "Read it at" link of
-    a link note and a small picture when it has one. -#}
+    month, each note with its stamp in the margin, its section, title,
+    first lines, the "Read it at" link of a link note (a note whose first
+    fact is a web address or a path on the site, the fact's label naming
+    the place) and a small picture when it has one. -#}
 {% from "image.html" import picture -%}
 {% macro stamp(date, year=false) -%}
 {% set day = (date | string)[8:10] -%}
 {% set month = t["month_" ~ ((date | string)[5:7] | int)] -%}
 <p class="nb-stamp"><time datetime="{{ date }}"><span class="visually-hidden">{{ date | date }}</span><span class="nb-day" aria-hidden="true">{{ day }}</span><span class="nb-mon" aria-hidden="true">{{ month[:3] }}</span>{% if year %}<span class="nb-year" aria-hidden="true">{{ (date | string)[:4] }}</span>{% endif %}</time></p>
-{%- endmacro %}
-{% macro source(facts) -%}
-{% set first = facts[0] if facts else none -%}
-{% if first and (first.value[:7] == "http://" or first.value[:8] == "https://" or first.value[:1] == "/") %}{{ caller(first) }}{% endif %}
 {%- endmacro %}
 {% macro stream(posts, level=3, key="month") -%}
 <div class="nb-stream">
@@ -34,8 +29,10 @@
 {% if post.category %}<p class="nb-section"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
 {% endif %}<h{{ level }} class="nb-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 <p class="nb-text">{{ post.excerpt }}</p>
-{% call(link) source(post.facts) %}<p class="nb-source"><a href="{{ link.value }}">{{ t.notebook_read_at | replace("{site}", link.label) }}</a></p>
-{% endcall %}{% if post.image %}<a class="nb-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% set first = post.facts[0] if post.facts else none -%}
+{% set link = first if first and (first.value[:7] == "http://" or first.value[:8] == "https://" or first.value[:1] == "/") else none -%}
+{% if link %}<p class="nb-source"><a href="{{ link.value }}">{{ t.notebook_read_at | replace("{site}", link.label) }}</a></p>
+{% endif %}{% if post.image %}<a class="nb-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
 {% endif %}</article>
 </li>
 {% if loop.last %}</ol>

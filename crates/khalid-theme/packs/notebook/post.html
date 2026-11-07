@@ -14,13 +14,14 @@
 {% from "series.html" import series_box, series_steps -%}
 {% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
 {% from "sections/feed_list.html" import feed_list -%}
-{% from "parts-notebook.html" import stamp, source -%}
+{% from "parts-notebook.html" import stamp -%}
 {% set placement = template.options.contents -%}
 {% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
 {% set side = toc and placement in ["side-start", "side-end"] -%}
 {% set share = template.options.share -%}
-{% set link = namespace(fact=none) -%}
-{% call(fact) source(page.facts) %}{% set link.fact = fact %}{% endcall -%}
+{#- A link note's first fact is a web address or a path on the site. -#}
+{% set first = page.facts[0] if page.facts else none -%}
+{% set link_fact = first if first and (first.value[:7] == "http://" or first.value[:8] == "https://" or first.value[:1] == "/") else none -%}
 {% if share != "none" %}{% set share_row %}<div class="share">
 <p class="share-title">{{ t.share }}</p>
 <ul>
@@ -39,7 +40,7 @@
 {% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
 {% endif %}{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
 {% endif %}</div>
-{% set others = page.facts[1:] if link.fact else page.facts -%}
+{% set others = page.facts[1:] if link_fact else page.facts -%}
 {% if others %}<dl class="nb-facts">
 {% for fact in others %}<div class="nb-fact">
 <dt>{{ fact.label }}</dt>
@@ -65,7 +66,7 @@
 {% endif %}{% endif %}<div class="post-body">
 {{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
 </div>
-{% if link.fact %}<p class="nb-link-out"><a class="button" href="{{ link.fact.value }}">{{ t.notebook_read_at | replace("{site}", link.fact.label) }}</a></p>
+{% if link_fact %}<p class="nb-link-out"><a class="button" href="{{ link_fact.value }}">{{ t.notebook_read_at | replace("{site}", link_fact.label) }}</a></p>
 {% endif %}{% if page.tags or share in ["end", "both"] %}<footer class="post-footer">
 {% if page.tags %}<h2>{{ t.tags }}</h2>
 <ul class="tags">

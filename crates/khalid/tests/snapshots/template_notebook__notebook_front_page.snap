@@ -1,0 +1,91 @@
+---
+source: crates/khalid/tests/template_notebook.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="nb-masthead">
+<h1 class="nb-name">Field Notes on SEO</h1>
+<p class="nb-tagline">Short notes on search, kept as I go.</p>
+</header>
+<div class="nb-layout">
+<div class="nb-main">
+<div class="nb-stream">
+<section class="nb-month" aria-labelledby="month-2026-10">
+<h2 class="nb-month-title" id="month-2026-10">October 2026</h2>
+<ol class="nb-entries" role="list">
+<li class="nb-entry">
+<p class="nb-stamp"><time datetime="2026-10-12"><span class="visually-hidden">12 October 2026</span><span class="nb-day" aria-hidden="true">12</span><span class="nb-mon" aria-hidden="true">Oct</span></time></p>
+<article class="nb-body">
+<p class="nb-section"><a href="/blog/category/content-strategy/">Content strategy</a></p>
+<h3 class="nb-title"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="nb-text">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</article>
+</li>
+<li class="nb-entry">
+<p class="nb-stamp"><time datetime="2026-10-05"><span class="visually-hidden">5 October 2026</span><span class="nb-day" aria-hidden="true">05</span><span class="nb-mon" aria-hidden="true">Oct</span></time></p>
+<article class="nb-body">
+<p class="nb-section"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3 class="nb-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="nb-text">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<a class="nb-picture" href="/blog/fixing-slow-pages/" tabindex="-1" aria-hidden="true"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></a>
+</article>
+</li>
+</ol>
+</section>
+<section class="nb-month" aria-labelledby="month-2026-09">
+<h2 class="nb-month-title" id="month-2026-09">September 2026</h2>
+<ol class="nb-entries" role="list">
+<li class="nb-entry">
+<p class="nb-stamp"><time datetime="2026-09-28"><span class="visually-hidden">28 September 2026</span><span class="nb-day" aria-hidden="true">28</span><span class="nb-mon" aria-hidden="true">Sep</span></time></p>
+<article class="nb-body">
+<p class="nb-section"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3 class="nb-title"><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="nb-text">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</article>
+</li>
+<li class="nb-entry">
+<p class="nb-stamp"><time datetime="2026-09-21"><span class="visually-hidden">21 September 2026</span><span class="nb-day" aria-hidden="true">21</span><span class="nb-mon" aria-hidden="true">Sep</span></time></p>
+<article class="nb-body">
+<p class="nb-section"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3 class="nb-title"><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="nb-text">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+<p class="nb-source"><a href="https://www.example.com/sn/titles">Read it at Search Notes</a></p>
+</article>
+</li>
+<li class="nb-entry">
+<p class="nb-stamp"><time datetime="2026-09-14"><span class="visually-hidden">14 September 2026</span><span class="nb-day" aria-hidden="true">14</span><span class="nb-mon" aria-hidden="true">Sep</span></time></p>
+<article class="nb-body">
+<p class="nb-section"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3 class="nb-title"><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="nb-text">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</article>
+</li>
+</ol>
+</section>
+</div>
+</div>
+<aside class="nb-aside" aria-label="About this notebook">
+<section class="nb-card" aria-labelledby="aside-about">
+<h2 id="aside-about" class="nb-label">About this notebook</h2>
+<p class="nb-card-text">Short notes on search, kept as I go.</p>
+</section>
+<nav class="nb-card" aria-label="Sections">
+<h2 class="nb-label">Sections</h2>
+<ul class="nb-sections">
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>
+</aside>
+</div>
