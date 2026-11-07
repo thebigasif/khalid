@@ -31,6 +31,7 @@ mod folio;
 mod font_files;
 mod fonts;
 mod harbor;
+mod hearth;
 mod hub;
 mod itinerary;
 mod keystone;
