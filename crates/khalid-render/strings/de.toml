@@ -347,3 +347,9 @@ price_level = "Preisstufe {level} von 4"
 at_a_glance = "Auf einen Blick"
 city_notes = "Notizen aus der Stadt"
 more_places = "Weitere Orte"
+# The notebook template's side column, link notes and related notes.
+# {site} is the name of the place a link note points to.
+notebook_about = "Über dieses Notizbuch"
+notebook_sections = "Rubriken"
+notebook_read_at = "Weiterlesen bei {site}"
+notebook_more = "Weitere Notizen"

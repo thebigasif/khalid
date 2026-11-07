@@ -117,7 +117,7 @@ main > .nb-note.post-with-toc ~ * { margin-inline-start: max(calc(var(--nb-rail)
 .nb-fact dd { margin: 0; }
 .nb-link-out { margin-block: 2rem 0; }
 .post-footer .tags a { padding-inline: 0.25rem; background: none; font-family: var(--font-mono); font-size: 0.9375rem; }
-.post-footer .tags a::before { content: "#" / ""; color: var(--color-muted); }
+.post-footer .tags a::before { content: "\0023" / ""; color: var(--color-muted); }
 .related { margin-block-start: var(--space-section); }
 .related .feed-item time { font-family: var(--font-mono); font-size: 0.8125rem; }
 .related .feed-item { border-block-end-style: dashed; }
