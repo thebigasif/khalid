@@ -1,0 +1,43 @@
+# The Common Room's sections. The Masthead template shows each in the
+# menu, groups the front page's headlines under them, and lists each
+# section's stories on its page, with its intro on top.
+
+[[categories]]
+slug = "culture"
+en = "Culture"
+
+[categories.seo.en]
+description = "The Common Room on culture: small cinemas, local stages, books and the places where people still gather to watch and listen."
+intro = "Films, books and the small places that keep them going."
+
+[[categories]]
+slug = "cities"
+en = "Cities"
+
+[categories.seo.en]
+description = "The Common Room on cities: streets, benches, bicycles and trains, and what makes a town good to live in."
+intro = "Streets, benches, bicycles and trains: how a town works for the people in it."
+
+[[categories]]
+slug = "nature"
+en = "Nature"
+
+[categories.seo.en]
+description = "The Common Room on nature: the coast, the countryside and what you notice when you walk the same way for a long time."
+intro = "The coast, the countryside and the patience it takes to notice either."
+
+[[categories]]
+slug = "food"
+en = "Food"
+
+[categories.seo.en]
+description = "The Common Room on food: bakeries, markets and allotments, and the people who grow, bake and sell what we eat."
+intro = "Bakeries, markets and allotments, and the people behind them."
+
+[[categories]]
+slug = "ideas"
+en = "Ideas"
+
+[categories.seo.en]
+description = "The Common Room on ideas: essays on libraries, newspapers and the public places that hold a town together."
+intro = "Essays on the public places and habits that hold a town together."

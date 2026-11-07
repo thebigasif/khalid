@@ -252,6 +252,7 @@ static PACKS: &[&Pack] = &[
     &crate::lattice::LATTICE,
     &crate::ledger::LEDGER,
     &crate::locale::LOCALE,
+    &crate::masthead::MASTHEAD,
     &crate::meridian::MERIDIAN,
     &crate::plinth::PLINTH,
     &crate::quill::QUILL,

@@ -39,6 +39,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `lattice`: a science explainer site, with every picture a numbered figure, key numbers from each post's facts, footnotes as numbered tabs and marked glossary terms. See [Lattice](templates/lattice.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `locale`: a city guide with places listed by area, each as a guidebook row with its kind, opening hours and a price meter, an At a glance card on every place, and notes from the city. See [Locale](templates/locale.md).
+- `masthead`: a general publication, the safe all-rounder, with the site's name centred over a heavy and a thin rule, a lead story, the latest posts as a grid or a list, headlines by section and a calm reading column. See [Masthead](templates/masthead.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
 - `plinth`: an architecture or interiors practice, with each project as a spread of its photograph beside a title block of its facts, plans framed as numbered drawing sheets, studio notes and types of work. See [Plinth](templates/plinth.md).
 - `quill`: a minimal text blog in one column of generous type, with every list one line a post with its date, no pictures on lists and a small nib mark that ends every post. It has the smallest stylesheet of any template, so its pages load fastest. See [Quill](templates/quill.md).
