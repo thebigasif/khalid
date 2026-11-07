@@ -36,6 +36,7 @@ on:
       - "fixtures/showcase-brands/**"
       - "fixtures/showcase-publications/**"
       - "scripts/pages.sh"
+      - "scripts/demo-media.sh"
       - "scripts/demo-brand.sh"
       - "scripts/template-previews.sh"
       - "scripts/template-packs.sh"
@@ -79,6 +80,16 @@ jobs:
         run: |
           cargo build --release -p khalid
           ./target/release/khalid --version
+      # The demos' pictures in AVIF, made once (scripts/demo-media.sh). An
+      # empty cache costs about 35 minutes of encoding. The cache kept here
+      # on main is the one pull requests' demo checks read. The key changes
+      # with the encoder, so a file found is the one this build would make.
+      - name: The demos' pictures, kept between runs
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/khalid/demo-media
+          key: demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-${{ hashFiles('fixtures/showcase-publications/*/photos.lock') }}
+          restore-keys: demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-
       - name: Build the old Pages copy, whose pages are the old addresses
         run: bash scripts/pages.sh --canonical https://serpdad.com ./target/release/khalid "$RUNNER_TEMP/pages" https://thebigasif.github.io /khalid/
       - name: Template previews

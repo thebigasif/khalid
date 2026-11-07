@@ -13,6 +13,7 @@ pub(crate) static LATTICE: Pack = Pack {
     summary: "For a science explainer site: every picture a numbered figure plate, key numbers from each post's facts, footnotes as numbered tabs over a notes panel, marked glossary terms and a picture-led front page.",
     css: PackText::file("lattice/lattice.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "lattice/picture_sizes.html"),
         PackTemplate::file("home.html", "lattice/home.html"),
         PackTemplate::file("post.html", "lattice/post.html"),
         PackTemplate::file("listing.html", "lattice/listing.html"),

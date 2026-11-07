@@ -17,6 +17,7 @@ pub(crate) static RESPAWN: Pack = Pack {
     summary: "For a games site: news, reviews with a score and a health bar on every card, and a release calendar on the front page.",
     css: PackText::file("respawn/respawn.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "respawn/picture_sizes.html"),
         PackTemplate::file("home.html", "respawn/home.html"),
         PackTemplate::file("post.html", "respawn/post.html"),
         PackTemplate::file("listing.html", "respawn/listing.html"),

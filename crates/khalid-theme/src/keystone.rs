@@ -14,6 +14,7 @@ pub(crate) static KEYSTONE: Pack = Pack {
     summary: "A product or company blog: a lead story, a grid of framed pictures, a calm reading column with share links beside it, the author and related posts after it.",
     css: PackText::file("keystone/keystone.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "keystone/picture_sizes.html"),
         PackTemplate::file("home.html", "keystone/home.html"),
         PackTemplate::file("post.html", "keystone/post.html"),
     ],

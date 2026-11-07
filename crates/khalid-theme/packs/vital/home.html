@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
 {% from "sections/hero.html" import hero -%}
@@ -31,13 +32,13 @@
 </nav>
 {% endif %}{% if page.sections %}{% for section in page.sections %}<section class="vital-section" aria-labelledby="vital-section-{{ loop.index }}">
 <h2 id="vital-section-{{ loop.index }}">{{ section.title }}</h2>
-{% if section.posts %}{{ session_cards(section.posts) }}
+{% if section.posts %}{{ session_cards(section.posts, sizes=slot_sizes("session")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
 {% endfor %}{% elif routines or notes %}{% if routines %}<section class="routines" aria-labelledby="routines-title">
 <h2 id="routines-title">{{ t.routines }}</h2>
-{{ session_cards(routines) }}
+{{ session_cards(routines, sizes=slot_sizes("session")) }}
 </section>
 {% endif %}{% if notes or options.care_note %}<div class="vital-aside">
 {% if notes %}<section class="notes" aria-labelledby="notes-title">

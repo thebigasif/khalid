@@ -14,6 +14,7 @@ pub(crate) static LEDGER: Pack = Pack {
     summary: "A calm, text-led blog with no pictures in its lists, for studies and long how-tos.",
     css: PackText::file("ledger/ledger.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "ledger/picture_sizes.html"),
         PackTemplate::file("home.html", "ledger/home.html"),
         PackTemplate::file("post.html", "ledger/post.html"),
     ],

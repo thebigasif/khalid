@@ -7,12 +7,13 @@
     date written YYYY-MM-DD shows its month and day large; any other date,
     such as "Spring 2027", shows as written. -#}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "sections/score_meter.html" import score_meter -%}
 {% macro post_rows(posts, level=3) -%}
 <ol class="rs-rows" role="list">
 {% for post in posts %}<li>
 <article class="rs-row">
-{% if post.image %}<a class="rs-row-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% if post.image %}<a class="rs-row-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image, slot_sizes("row")) }}</a>
 {% endif %}<div class="rs-row-text">
 <p class="rs-meta">{% if post.category %}<a class="rs-label" href="{{ post.category.href }}">{{ post.category.name }}</a> {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
 <h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>

@@ -10,6 +10,7 @@ pub(crate) static FOLIO: Pack = Pack {
     summary: "A product team's notebook under a large masthead on ruled paper: a featured story, picture cards, and notes with a contents rail, framed code and an author box.",
     css: PackText::file("folio/folio.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "folio/picture_sizes.html"),
         PackTemplate::file("home.html", "folio/home.html"),
         PackTemplate::file("post.html", "folio/post.html"),
     ],

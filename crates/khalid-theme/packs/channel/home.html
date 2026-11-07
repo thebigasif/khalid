@@ -7,6 +7,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "sections/hero.html" import hero -%}
@@ -21,7 +22,7 @@
 <h2 id="now-showing-title" class="channel-label">{{ t.channel_now_showing }}</h2>
 <article class="lead-video">
 <div class="lead-screen">
-{% if lead.image %}{{ picture(lead.image) }}
+{% if lead.image %}{{ picture(lead.image, slot_sizes("lead_story")) }}
 {% else %}<div class="video-blank" aria-hidden="true"></div>
 {% endif %}{% if lead.facts %}<p class="play-bar lead-bar"><span class="play-mark" aria-hidden="true"></span><span class="play-track" aria-hidden="true"></span><span class="play-time"><span class="play-label">{{ lead.facts[0].label }}</span> {{ lead.facts[0].value }}</span></p>
 {% endif %}</div>
@@ -39,12 +40,12 @@
 <h2 id="shelf-section-{{ loop.index }}">{{ section.title }}</h2>
 <p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </div>
-{% if section.posts %}{{ video_grid(section.posts, 3, false, true) }}
+{% if section.posts %}{{ video_grid(section.posts, 3, false, true, slot_sizes("shelf")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}</section>
 {% endfor %}{% elif posts %}<section class="latest-videos" aria-labelledby="latest-title">
 <h2 id="latest-title" class="channel-label">{{ t.channel_latest }}</h2>
-{{ video_grid(posts) }}
+{{ video_grid(posts, sizes=slot_sizes("grid")) }}
 </section>
 {% elif not lead %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
@@ -55,7 +56,7 @@
 <h3 id="shelf-{{ loop.index }}"><a href="{{ tab.href }}">{{ tab.title }}</a></h3>
 <p class="view-all"><a href="{{ tab.href }}">{{ t.view_all | replace("{name}", tab.title) }}</a></p>
 </div>
-{{ video_grid(tab.posts, 4, false, true) }}
+{{ video_grid(tab.posts, 4, false, true, slot_sizes("shelf")) }}
 </section>
 {% endfor %}</section>
 {% endif %}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}

@@ -9,13 +9,14 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
 {% from "sections/hero.html" import hero -%}
 {% macro sleeve(post, level) -%}
 <li class="sleeve">
-<div class="sleeve-art">{% if post.image %}{{ picture(post.image) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
+<div class="sleeve-art">{% if post.image %}{{ picture(post.image, slot_sizes("sleeve")) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
 <h{{ level }} class="sleeve-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 <p class="sleeve-meta">{% if post.facts %}{{ post.facts[0].value }}{% endif %} <time datetime="{{ post.date }}">{{ (post.date | string)[:4] }}</time></p>
 </li>
@@ -28,7 +29,7 @@
 {% macro note_cards(posts, level=3) -%}
 <ul class="notes" role="list">
 {% for post in posts %}<li class="note">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("note")) }}
 {% endif %}<p class="note-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %} <span class="note-category">{{ post.category.name }}</span>{% endif %}</p>
 <h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 </li>
@@ -47,7 +48,7 @@
 {% if latest %}<section class="out-now" aria-labelledby="out-now-title">
 <h2 id="out-now-title" class="label">{{ t.music_out_now }}</h2>
 <div class="out-now-body">
-<div class="sleeve-art">{% if latest.image %}{{ picture(latest.image) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
+<div class="sleeve-art">{% if latest.image %}{{ picture(latest.image, slot_sizes("latest")) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
 <div class="out-now-text">
 <h3><a href="{{ latest.href }}">{{ latest.title }}</a></h3>
 {% if latest.excerpt %}<p class="out-now-excerpt">{{ latest.excerpt }}</p>

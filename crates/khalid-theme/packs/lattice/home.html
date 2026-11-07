@@ -7,6 +7,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, card_meta, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -20,7 +21,7 @@
 {% if lead %}<section class="lt-lead" aria-labelledby="lt-lead-title">
 <h2 id="lt-lead-title" class="lt-label">{{ t.featured }}</h2>
 <article class="lt-lead-plate">
-{% if lead.image %}<div class="lt-lead-picture">{{ picture(lead.image) }}</div>
+{% if lead.image %}<div class="lt-lead-picture">{{ picture(lead.image, slot_sizes("lead_story")) }}</div>
 {% endif %}<div class="lt-lead-text">
 {{ card_meta(lead) }}
 <h3><a href="{{ lead.href }}">{{ lead.title }}</a></h3>
@@ -42,13 +43,13 @@
 </nav>
 {% endif %}{% if page.sections %}{% for section in page.sections %}<section class="lt-section" aria-labelledby="lt-section-{{ loop.index }}">
 <h2 id="lt-section-{{ loop.index }}" class="lt-label">{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts, 3, "image") }}
+{% if section.posts %}{{ cards(section.posts, 3, "image", sizes=slot_sizes("card")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
 {% endfor %}{% elif rest %}<section class="lt-section" aria-labelledby="lt-latest-title">
 <h2 id="lt-latest-title" class="lt-label">{{ t.latest_explainers }}</h2>
-{{ cards(rest, 3, "image") }}
+{{ cards(rest, 3, "image", sizes=slot_sizes("card")) }}
 </section>
 {% elif not lead %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}

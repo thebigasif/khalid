@@ -14,6 +14,7 @@ pub(crate) static VERSIONS: Pack = Pack {
     summary: "For a software product's changelog: every change on a version rail, a filter row by type of change (new, improved, fixed) that works without a script, the versions as anchor links and a box to get updates by email or feed.",
     css: PackText::file("versions/versions.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "versions/picture_sizes.html"),
         PackTemplate::file("home.html", "versions/home.html"),
         PackTemplate::file("post.html", "versions/post.html"),
         PackTemplate::file("listing.html", "versions/listing.html"),

@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
@@ -50,7 +51,7 @@
 </div>
 {% endfor %}</dl>
 {% endif %}</div>
-{% if page.image and not has_video %}{{ picture(page.image) }}
+{% if page.image and not has_video %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>
@@ -79,7 +80,7 @@
 {% endif %}{{ preferred_source(template.options, t, "post") }}</article>
 {% if "related_posts" in site.features and page.related %}<section class="up-next" aria-labelledby="up-next-title">
 <h2 id="up-next-title" class="channel-label">{{ t.channel_up_next }}</h2>
-{{ video_grid(page.related[:template.options.related_count]) }}
+{{ video_grid(page.related[:template.options.related_count], sizes=slot_sizes("grid")) }}
 </section>
 {% endif %}{% if site.subscribe and template.options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
 {% endif %}{% if template.cta and template.options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}

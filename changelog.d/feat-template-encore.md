@@ -1,2 +1,0 @@
-Added
-- The Encore template, for a musician or a band. A post with facts is a release: its cover sits on a sleeve with the record half out, and its format, release date, label and a Listen button sit beside it. The front page shows the newest release, the tour dates from the `tour_dates` option with ticket links, a shelf of every other record and the band's newest notes. Lists show releases as sleeves and notes as picture cards, and the band page shows every member.

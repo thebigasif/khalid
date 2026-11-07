@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "card.html" import cards -%}
@@ -44,7 +45,7 @@
 {% endif %}<p class="post-date"><time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}{% if "reading_time" in site.features %} <span class="reading-time"><time datetime="PT{{ page.reading_time.minutes }}M">{{ t.reading_time | replace("{minutes}", page.reading_time.minutes | string) }}</time></span>{% endif %}</p>
 {% if options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
 {% endif %}</div>
-{% if page.image %}{{ picture(page.image) }}
+{% if page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>
@@ -86,6 +87,6 @@
 {% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
 {% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
 <h2 id="related-title">{{ t.related_posts }}</h2>
-{{ cards(page.related[:options.related_count], 3, "row") }}
+{{ cards(page.related[:options.related_count], 3, "row", sizes=slot_sizes("related", "row")) }}
 </section>
 {% endif %}{% endblock %}

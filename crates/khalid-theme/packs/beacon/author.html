@@ -4,13 +4,14 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture %}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "icons.html" import profiles %}
 {% from "card.html" import pages -%}
 {% from "sections/goal_meter.html" import goal_meter -%}
 {% from "sections/people_grid.html" import people_grid -%}
 <article class="author">
 <header class="author-header">
-{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
 {% endif %}<div class="author-intro">
 <h1>{{ page.name }}</h1>
 {% if page.role %}<p class="author-role">{{ page.role }}</p>
@@ -27,7 +28,7 @@
 <h2 id="author-posts">{{ t.posts_by | replace("{name}", page.name) }}</h2>
 {% if page.posts %}<ul class="bc-cards" role="list">
 {% for post in page.posts %}<li><article class="bc-card">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("card")) }}
 {% endif %}<div class="bc-card-text">
 {% if post.category %}<p class="bc-area"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
 {% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>

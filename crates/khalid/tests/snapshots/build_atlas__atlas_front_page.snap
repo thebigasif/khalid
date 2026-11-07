@@ -64,8 +64,8 @@ expression: home
 <li><article class="story">
 <figure class="image">
 <picture>
-<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
-<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 72rem) calc(12vw + 32.25rem), (min-width: 58rem) 21.25rem, (min-width: 39.5rem) calc(50vw - 2.5rem), calc(100vw - 4rem)">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 72rem) calc(12vw + 32.25rem), (min-width: 58rem) 21.25rem, (min-width: 39.5rem) calc(50vw - 2.5rem), calc(100vw - 4rem)" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
 </picture>
 </figure>
 <p class="story-label">Technical SEO</p>
@@ -122,8 +122,8 @@ expression: home
 <article class="card">
 <figure class="image">
 <picture>
-<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
-<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 78rem) 20.75rem, (min-width: 58rem) calc(33vw - 2rem), (min-width: 37rem) calc(40vw + 3.25rem), (min-width: 20.5rem) calc(31vw + 10rem), 13rem">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 78rem) 20.75rem, (min-width: 58rem) calc(33vw - 2rem), (min-width: 37rem) calc(40vw + 3.25rem), (min-width: 20.5rem) calc(31vw + 10rem), 13rem" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
 </picture>
 </figure>
 <p class="card-meta"><span class="card-author">Lena Vogt</span>

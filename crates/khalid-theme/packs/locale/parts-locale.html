@@ -13,6 +13,7 @@
     note_cards(posts, level): notes, posts without facts, as picture
     cards with their area and date. -#}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% macro price_meter(fact) -%}
 {% set value = fact.value | trim -%}
 {% set first = value[:1] -%}
@@ -30,7 +31,7 @@
 <ol class="lc-places" role="list">
 {% for post in posts if post.facts %}<li>
 <article class="lc-place">
-{% if post.image %}<a class="lc-thumb" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% if post.image %}<a class="lc-thumb" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image, slot_sizes("thumb")) }}</a>
 {% endif %}<div class="lc-place-text">
 <div class="lc-line">
 <h{{ level }}><a href="{{ post.href }}">{{ post.title | split(":") | list | first }}</a></h{{ level }}>
@@ -46,7 +47,7 @@
 <ul class="lc-notes" role="list">
 {% for post in posts %}<li>
 <article class="lc-note">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("note")) }}
 {% endif %}<p class="lc-meta">{% if post.category %}<a href="{{ post.category.href }}">{{ post.category.name }}</a> {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
 <h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 <p class="lc-excerpt">{{ post.excerpt }}</p>

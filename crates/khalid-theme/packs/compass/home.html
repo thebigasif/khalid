@@ -6,6 +6,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
 <div class="masthead">
@@ -28,13 +29,13 @@
 {% endif %}{% set posts = page.posts -%}
 {% if page.sections %}{% for section in page.sections %}<section class="home-section" id="section-{{ loop.index }}">
 <h2>{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts[:3], 3) }}
+{% if section.posts %}{{ cards(section.posts[:3], 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
 {% endfor %}{% elif posts %}<section class="home-section" id="latest" aria-labelledby="latest-title">
 <h2 id="latest-title">{{ t.recent_posts }}</h2>
-{{ cards(posts, 3) }}
+{{ cards(posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</section>
 {% else %}<p>{{ t.no_posts }}</p>

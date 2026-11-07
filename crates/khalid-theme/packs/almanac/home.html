@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
 {% set groups = page.topics if "topic_links" in site.features else [] -%}
@@ -31,7 +32,7 @@
 </div>
 {% endif %}{% set slot = page.featured if template.options.featured else none -%}
 {% set band = template.cta and template.options.cta_band in ["home", "both"] -%}
-{% if slot %}{{ featured_slot(slot) }}
+{% if slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
 {% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% set anchor = slot or (page.posts[0] if page.posts else none) -%}
 {% set ns = namespace(jobs=0, months="") -%}
@@ -71,7 +72,7 @@
 {% if rest or picks %}<div class="al-library">
 {% if rest %}<section class="al-grid" aria-labelledby="al-more-title">
 <h2 id="al-more-title">{{ t.more_posts }}</h2>
-{{ cards(rest, 3) }}
+{{ cards(rest, 3, sizes=slot_sizes("home", template.options.cards)) }}
 </section>
 {% endif %}{% if picks %}<section class="al-picks" aria-labelledby="al-picks-title">
 <h2 id="al-picks-title">{{ t.editors_picks }}</h2>
@@ -86,7 +87,7 @@
 <h2>{{ section.title }}</h2>
 <p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </div>
-{% if section.posts %}{{ cards(section.posts[:4], 3) }}
+{% if section.posts %}{{ cards(section.posts[:4], 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}</section>
 {% endfor %}{% if page.pagination %}{{ pages(page.pagination) }}

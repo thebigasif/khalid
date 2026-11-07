@@ -33,10 +33,13 @@ impl Quality {
     }
 
     /// AVIF quality from 1 to 100. AVIF holds detail at lower numbers than
-    /// WebP, so 60 looks like WebP's 78.
+    /// WebP. 55 was compared with 60 on six demo photos at 1024 and 1152 px,
+    /// side by side at full size: no visible difference, files 10 to 14%
+    /// smaller, and about 30% faster to make (docs/standards/performance.md,
+    /// "Pictures on high-density phones").
     fn avif(self) -> f32 {
         match self {
-            Self::Derived => 60.0,
+            Self::Derived => 55.0,
             Self::Kept => 80.0,
         }
     }

@@ -1,0 +1,18 @@
+{#- How wide Itinerary draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "lead_story": "(min-width: 63.5rem) calc(9vw + 31rem), (min-width: 56rem) 29.25rem, calc(100vw - 2rem)",
+  "ticket": "(min-width: 68.5rem) 24.25rem, (min-width: 46rem) calc(50vw - 2rem), calc(100vw - 2rem)",
+  "related": "(min-width: 70rem) 28rem, (min-width: 68.5rem) 21.25rem, (min-width: 46rem) calc(50vw - 2rem), calc(100vw - 2rem)",
+  "lead": "(min-width: 70rem) 40rem, (min-width: 22rem) calc(89vw + 5.25rem), 19.5rem",
+  "photo": "calc(3vw + 5rem)"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

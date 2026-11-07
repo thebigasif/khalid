@@ -4,12 +4,13 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture %}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "icons.html" import profiles %}
 {% from "card.html" import pages -%}
 {% from "sections/people_grid.html" import people_grid -%}
 <article class="author">
 <header class="author-header">
-{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
 {% endif %}<div class="author-intro">
 <h1>{{ page.name }}</h1>
 {% if page.role %}<p class="author-role">{{ page.role }}</p>
@@ -26,7 +27,7 @@
 <h2 id="author-posts">{{ t.projects }}</h2>
 {% if page.posts %}<ul class="sheets" role="list">
 {% for post in page.posts %}<li class="sheet">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("sheet")) }}
 {% endif %}<h3><span class="sheet-number">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span> <a href="{{ post.href }}">{{ post.title }}</a></h3>
 {% if post.facts %}<p class="sheet-facts">{% for fact in post.facts[:2] %}<span>{{ fact.value }}</span>{% endfor %}</p>
 {% else %}<p class="sheet-facts"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>

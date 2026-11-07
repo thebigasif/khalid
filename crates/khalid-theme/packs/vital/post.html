@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
@@ -52,7 +53,7 @@
 {% endfor %}</dl>
 {% endif %}</div>
 {% if template.options.care_note %}<p class="care-note">{{ template.options.care_note[0] }}</p>
-{% endif %}{% endif %}{% if page.image %}{{ picture(page.image) }}
+{% endif %}{% endif %}{% if page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>
@@ -90,6 +91,6 @@
 {% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
 {% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
 <h2 id="related-title">{{ t.related_posts }}</h2>
-{{ session_cards(page.related[:template.options.related_count]) }}
+{{ session_cards(page.related[:template.options.related_count], sizes=slot_sizes("session")) }}
 </section>
 {% endif %}{% endblock %}

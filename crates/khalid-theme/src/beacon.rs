@@ -14,6 +14,7 @@ pub(crate) static BEACON: Pack = Pack {
     summary: "For a charity or a cause: campaigns with a goal meter that fills as money comes in, impact figures, a news feed and a donate call in the header, the hero and a band on every page.",
     css: PackText::file("beacon/beacon.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "beacon/picture_sizes.html"),
         PackTemplate::file("home.html", "beacon/home.html"),
         PackTemplate::file("post.html", "beacon/post.html"),
         PackTemplate::file("listing.html", "beacon/listing.html"),

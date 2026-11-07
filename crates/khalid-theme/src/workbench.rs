@@ -13,6 +13,7 @@ pub(crate) static WORKBENCH: Pack = Pack {
     summary: "For reviews and comparisons of tools: a featured post, the newest posts, wide comparison tables, pros and cons, and the newsletter twice on the front page.",
     css: PackText::file("workbench/workbench.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "workbench/picture_sizes.html"),
         PackTemplate::file("home.html", "workbench/home.html"),
         PackTemplate::file("post.html", "workbench/post.html"),
     ],

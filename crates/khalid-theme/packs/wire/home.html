@@ -6,6 +6,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
@@ -37,7 +38,7 @@
 {% set posts = posts[4:] if slot else posts -%}
 {% if slot %}<div class="front">
 <article class="front-lead">
-{% if slot.image %}{{ picture(slot.image) }}
+{% if slot.image %}{{ picture(slot.image, slot_sizes("lead_story")) }}
 {% endif %}<div class="front-text">
 {% if slot.category %}<p class="kicker"><a href="{{ slot.category.href }}">{{ slot.category.name }}</a></p>
 {% endif %}<h2><a href="{{ slot.href }}">{{ slot.title }}</a></h2>
@@ -59,15 +60,15 @@
 {% set rest = posts[4:] -%}
 {% if posts %}<section class="latest" aria-labelledby="latest-title">
 <h2 id="latest-title" class="band-title">{% if first %}{{ t.more_posts }}{% else %}{{ t.latest }}{% endif %}</h2>
-{{ cards(posts[:4], 3, "image") }}
+{{ cards(posts[:4], 3, "image", sizes=slot_sizes("home", "image")) }}
 </section>
 {% elif not slot %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if rest or topics or picks or signup %}<div class="latest-more">
 {% if rest or signup %}<div class="river">
-{% if rest and signup and rest | length > cut %}{% if cut %}{{ cards(rest[:cut], 3, "row") }}
+{% if rest and signup and rest | length > cut %}{% if cut %}{{ cards(rest[:cut], 3, "row", sizes=slot_sizes("home", "row")) }}
 {% endif %}{{ newsletter_form(site.subscribe, t) }}
-{{ cards(rest[cut:], 3, "row") }}
-{% else %}{% if rest %}{{ cards(rest, 3, "row") }}
+{{ cards(rest[cut:], 3, "row", sizes=slot_sizes("home", "row")) }}
+{% else %}{% if rest %}{{ cards(rest, 3, "row", sizes=slot_sizes("home", "row")) }}
 {% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t) }}
 {% endif %}{% endif %}</div>
 {% endif %}{% if topics or picks %}<aside class="rail">
@@ -86,7 +87,7 @@
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}{% for section in page.sections %}<section class="home-section">
 <h2 class="band-title">{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts[:4], 3, "image") }}
+{% if section.posts %}{{ cards(section.posts[:4], 3, "image", sizes=slot_sizes("home", "image")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>

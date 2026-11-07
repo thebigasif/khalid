@@ -12,6 +12,7 @@ pub(crate) static MERIDIAN: Pack = Pack {
     summary: "A calm company journal: serif titles, a lead story, category tabs, wide rows with a picture, several authors with their roles, and a reference layout for long guides.",
     css: PackText::file("meridian/meridian.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "meridian/picture_sizes.html"),
         PackTemplate::file("home.html", "meridian/home.html"),
         PackTemplate::file("post-reference.html", "meridian/post-reference.html"),
     ],

@@ -4,6 +4,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "sections/poster_grid.html" import poster_grid -%}
 {% from "sections/rating.html" import rating -%}
 <header class="list-header">
@@ -14,7 +15,7 @@
 </div>
 {% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
 {% endif %}</header>
-{% if page.posts %}{% call(post) poster_grid(page.posts, 2) %}{% if post.facts %}<div class="stub">
+{% if page.posts %}{% call(post) poster_grid(page.posts, 2, slot_sizes("poster")) %}{% if post.facts %}<div class="stub">
 {{ rating(post.facts[0].value) }}
 {% if post.facts | length > 1 %}<p class="stub-release">{{ post.facts[1].value }}</p>
 {% endif %}</div>

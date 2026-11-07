@@ -1,3 +1,0 @@
-Added
-- The Versions template, for a software product's changelog. Each change is a post: its category is its type, such as New, Improved or Fixed, and its first fact is its version. Every list shows the changes on a version rail, grouped by version with the date, under a filter row of plain links to each type. The front page adds a box to get updates by email or feed, with a feed for each type, and the versions on the page as anchor links.
-- Two shared section parts: a release log (a version timeline grouped by a post's first fact) and a filter row (chips that each open a list, with this page marked).

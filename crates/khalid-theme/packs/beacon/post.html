@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
@@ -38,7 +39,7 @@
 {% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
 {% endif %}</div>
 {% if page.facts %}<div class="bc-lead">
-{% if page.image %}{{ picture(page.image) }}
+{% if page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}<aside class="bc-panel" aria-label="{{ t.campaign_progress }}">
 {{ goal_meter(page.facts) }}
 {% if page.facts | length > 2 %}<dl class="bc-facts">
@@ -50,7 +51,7 @@
 {% endif %}{% if template.cta %}<p class="bc-give"><a class="button" href="{{ template.cta.href }}">{{ template.cta.label }}</a></p>
 {% endif %}</aside>
 </div>
-{% elif page.image %}{{ picture(page.image) }}
+{% elif page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>
@@ -90,7 +91,7 @@
 <h2 id="related-title">{{ t.related_posts }}</h2>
 <ul class="bc-cards" role="list">
 {% for post in page.related[:template.options.related_count] %}<li><article class="bc-card">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("card")) }}
 {% endif %}<div class="bc-card-text">
 {% if post.category %}<p class="bc-area"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
 {% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>

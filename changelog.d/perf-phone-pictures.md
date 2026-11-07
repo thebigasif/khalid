@@ -1,0 +1,2 @@
+Changed
+- Pictures are lighter on phones with sharp screens. Pictures now also come in a 1,152 px size, so a phone card no longer downloads the 1,280 px file, and AVIF pictures (`avif = true` under `[media]`) are about 12% smaller with no visible difference. Every template demo now offers its pictures in AVIF. On a 390 px phone at three device pixels per CSS pixel, the 31 demo home pages download 52% less picture data (15.9 MB down to 7.6 MB), and the page-weight check now measures that phone too.

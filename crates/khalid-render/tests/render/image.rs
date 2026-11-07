@@ -1,7 +1,11 @@
 //! Responsive images: AVIF and WebP sources, and a fallback `img` that always
 //! has `srcset`, `sizes`, `width`, `height` and `alt` (BL-WEB-5).
 
-use khalid_render::{ImageCandidate, ImageSet, Loading, PageBody, PageKind, RenderImage, Renderer};
+use std::collections::BTreeMap;
+
+use khalid_render::{
+    ImageCandidate, ImageSet, Loading, PageBody, PageKind, RenderImage, RenderPack, Renderer,
+};
 
 use crate::common::{demo_site, meta};
 use crate::html_check::assert_valid_page;
@@ -108,4 +112,54 @@ fn an_image_with_only_its_original_format_still_reserves_its_space() {
     assert!(!page.contains("<source"));
     assert!(!page.contains("<figcaption"));
     assert!(page.contains(r#"width="1600" height="900""#));
+}
+
+/// The post page of a pack whose `post.html` is `template`, with the
+/// sitemap post's lead image.
+fn render_post_in_pack(template: &'static str) -> String {
+    let site = tempfile::tempdir().unwrap();
+    let pack = RenderPack {
+        name: "trial",
+        templates: vec![("post.html", template)],
+        options: BTreeMap::new(),
+        cta: None,
+    };
+    let renderer = Renderer::with_pack(site.path(), &pack).unwrap();
+    let mut post = sitemap_post();
+    post.image = Some(sitemap_image(Loading::Eager));
+    let meta = meta(&post.title, "/blog/what-a-sitemap-does/", PageKind::Article);
+    renderer
+        .render(&demo_site("en"), &meta, &PageBody::Post(Box::new(post)))
+        .unwrap()
+}
+
+#[test]
+fn a_template_says_how_wide_its_slot_draws_a_picture() {
+    let page = render_post_in_pack(
+        "{% extends \"base.html\" %}{% block main %}{% from \"image.html\" import picture %}\
+         <h1>{{ page.title }}</h1>{{ picture(page.image, sizes=\"(min-width: 64rem) 22rem, 90vw\") }}{% endblock %}",
+    );
+    assert_valid_page(&page);
+    assert_eq!(
+        page.matches(r#"sizes="(min-width: 64rem) 22rem, 90vw""#)
+            .count(),
+        3,
+        "both sources and the img say the slot's width: {page}"
+    );
+    assert!(!page.contains("48rem"), "{page}");
+    assert!(page.contains(r#"fetchpriority="high""#), "{page}");
+}
+
+#[test]
+fn a_picture_called_without_sizes_keeps_the_images_own() {
+    let page = render_post_in_pack(
+        "{% extends \"base.html\" %}{% block main %}{% from \"image.html\" import picture %}\
+         {{ picture(page.image) }}{% endblock %}",
+    );
+    assert_eq!(
+        page.matches(r#"sizes="(min-width: 48rem) 48rem, 100vw""#)
+            .count(),
+        3,
+        "{page}"
+    );
 }

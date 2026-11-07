@@ -4,13 +4,14 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture %}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "icons.html" import profiles %}
 {% from "card.html" import pages -%}
 {% from "sections/results_list.html" import results_list -%}
 {% from "sections/people_grid.html" import people_grid -%}
 <article class="author">
 <header class="author-header">
-{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
 {% endif %}<div class="author-intro">
 <p class="list-kind">{{ t.squad }}</p>
 <h1>{{ page.name }}</h1>

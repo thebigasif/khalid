@@ -6,6 +6,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "card.html" import cards -%}
@@ -36,7 +37,7 @@
 <p><time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if "reading_time" in site.features %}<span class="reading-time"><time datetime="PT{{ page.reading_time.minutes }}M">{{ t.reading_time | replace("{minutes}", page.reading_time.minutes | string) }}</time></span>{% endif %}</p>
 {% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
 {% endif %}</div>
-{% if page.image and template.options.lead_image %}<div class="al-lead">{{ picture(page.image) }}</div>
+{% if page.image and template.options.lead_image %}<div class="al-lead">{{ picture(page.image, slot_sizes("lead")) }}</div>
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.on_this_page }}">
 <p class="toc-title">{{ t.on_this_page }}</p>
@@ -86,7 +87,7 @@
 </section>
 {% if shown[4:] %}<section class="related al-related">
 <h2>{{ t.related_posts }}</h2>
-{{ cards(shown[4:], 3, "image") }}
+{{ cards(shown[4:], 3, "image", sizes=slot_sizes("related", "grid")) }}
 </section>
 {% endif %}{% else %}{% if layout == "scroll" %}<section class="related related-scroll">{% else %}<section class="related">{% endif %}
 <h2>{{ t.related_posts }}</h2>
@@ -94,7 +95,7 @@
 {% for post in shown %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
 {% endfor %}</ul>
 {% elif layout == "list" %}{{ cards(shown, 3, "text") }}
-{% elif layout == "row" %}{{ cards(shown, 3, "row") }}
-{% else %}{{ cards(shown, 3, "image") }}
+{% elif layout == "row" %}{{ cards(shown, 3, "row", sizes=slot_sizes("related", "row")) }}
+{% else %}{{ cards(shown, 3, "image", sizes=slot_sizes("related", "grid")) }}
 {% endif %}</section>
 {% endif %}{% endif %}{% endblock %}

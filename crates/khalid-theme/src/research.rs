@@ -14,6 +14,7 @@ pub(crate) static RESEARCH: Pack = Pack {
     summary: "For a research lab or academic group: papers as a numbered reference list with venue, year, DOI and citations, a news feed, research areas, a people page and a cite box on every paper.",
     css: PackText::file("research/research.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "research/picture_sizes.html"),
         PackTemplate::file("home.html", "research/home.html"),
         PackTemplate::file("post.html", "research/post.html"),
         PackTemplate::file("listing.html", "research/listing.html"),

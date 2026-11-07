@@ -15,6 +15,7 @@ pub(crate) static TICKER: Pack = Pack {
     summary: "For a markets newsletter: a tape of figures across the front page, each issue's moves as a bar chart, and every list as a data table shaded by how far each figure moved. Charts need no script.",
     css: PackText::file("ticker/ticker.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "ticker/picture_sizes.html"),
         PackTemplate::file("home.html", "ticker/home.html"),
         PackTemplate::file("post.html", "ticker/post.html"),
         PackTemplate::file("listing.html", "ticker/listing.html"),

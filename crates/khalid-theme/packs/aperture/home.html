@@ -38,7 +38,7 @@
 {% for post in posts %}<li class="sheet-frame">
 <article>
 <a class="sheet-link" href="{{ post.href }}">
-{% if post.image %}{{ frame(post.image, "(min-width: 48rem) 18rem, 70vw") }}
+{% if post.image %}{{ frame(post.image, "12rem") }}
 {% else %}<span class="sheet-blank" aria-hidden="true"></span>
 {% endif %}<h{{ level }} class="sheet-title">{{ post.title }}</h{{ level }}>
 </a>

@@ -15,6 +15,7 @@ pub(crate) static ITINERARY: Pack = Pack {
     summary: "For a travel diary: trips filed by country as passport stamps, each trip a ticket with its days, route, season and cost, a day-by-day route on every trip and checklists for packing.",
     css: PackText::file("itinerary/itinerary.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "itinerary/picture_sizes.html"),
         PackTemplate::file("home.html", "itinerary/home.html"),
         PackTemplate::file("post.html", "itinerary/post.html"),
         PackTemplate::file("listing.html", "itinerary/listing.html"),
