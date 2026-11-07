@@ -111,6 +111,7 @@ mod outbound;
 mod own_descriptions;
 mod page_code;
 mod page_counts;
+mod page_styles;
 mod plan;
 mod plan_message;
 mod post_categories;

@@ -16,10 +16,10 @@
 //! every page whole, since a script of the site's may add their classes.
 
 use std::collections::BTreeMap;
+use std::fmt;
 use std::sync::{Arc, Mutex, PoisonError};
 
-use crate::Asset;
-use crate::script::READER_JS;
+use khalid_render::Asset;
 
 /// The at-rules whose rules are filtered one by one. Any other at-rule is
 /// kept whole.
@@ -28,21 +28,20 @@ const GROUPS: [&str; 4] = ["media", "supports", "container", "layer"];
 /// A site's stylesheet read into rules, ready to give each page the rules
 /// its HTML can use. Pages that use the same classes share one sheet, made
 /// once.
-#[derive(Debug)]
-pub struct PageStyles {
+pub(crate) struct PageStyles {
     items: Vec<Item>,
     /// Every class a selector needs, with its place in a [`Classes`] set.
     classes: BTreeMap<String, usize>,
     /// The classes every page counts as having: the reader script's.
     always: Classes,
-    /// The sheets made so far, by the classes they were made for.
-    made: Mutex<BTreeMap<Classes, Arc<PageSheet>>>,
+    /// The sheets made so far, with the classes they were made for. A
+    /// site has a few, so a list is enough.
+    made: Mutex<Vec<(Classes, Arc<PageSheet>)>>,
 }
 
 /// One page's stylesheet: its text and the hashed name it is served at,
 /// such as `site.3f2a9c1e.css`.
-#[derive(Debug, PartialEq, Eq)]
-pub struct PageSheet {
+pub(crate) struct PageSheet {
     name: String,
     text: String,
 }
@@ -50,18 +49,17 @@ pub struct PageSheet {
 impl PageSheet {
     /// The hashed file name, such as `site.3f2a9c1e.css`. The same text
     /// always gets the same name.
-    pub fn name(&self) -> &str {
+    pub(crate) fn name(&self) -> &str {
         &self.name
     }
 
     /// The stylesheet's text.
-    pub fn text(&self) -> &str {
+    pub(crate) fn text(&self) -> &str {
         &self.text
     }
 }
 
 /// One piece of a stylesheet.
-#[derive(Debug)]
 enum Item {
     /// Text kept as it is written: an at-rule other than a group, or a
     /// rule this reader does not take apart.
@@ -79,14 +77,13 @@ enum Item {
 
 /// One selector of a rule and the classes an element must have for it to
 /// match.
-#[derive(Debug)]
 struct Selector {
     text: String,
     needs: Vec<usize>,
 }
 
 /// A set of classes, one bit each, in the order of [`PageStyles::classes`].
-#[derive(Debug, Clone, Default, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, PartialEq, Eq)]
 struct Classes(Vec<u64>);
 
 impl Classes {
@@ -108,11 +105,20 @@ impl Classes {
     }
 }
 
+impl fmt::Debug for PageStyles {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("PageStyles")
+            .field("classes", &self.classes.len())
+            .finish_non_exhaustive()
+    }
+}
+
 impl PageStyles {
     /// Reads `css`, a stylesheet as `stylesheet_text_with` builds it, whose
     /// rules each page gets only when it can use them, followed by `kept`,
-    /// rules every page gets whole, such as a site's own.
-    pub fn new(css: &str, kept: &str) -> Self {
+    /// rules every page gets whole, such as a site's own. The classes named
+    /// in the strings of `script`, the reader script, count as on every page.
+    pub(crate) fn new(css: &str, kept: &str, script: &str) -> Self {
         let mut classes = BTreeMap::new();
         let mut items = read(css, &mut classes);
         let kept = kept.trim();
@@ -120,7 +126,7 @@ impl PageStyles {
             items.push(Item::Kept(kept.to_owned()));
         }
         let mut always = Classes::with_room(classes.len());
-        for word in script_words(READER_JS) {
+        for word in script_words(script) {
             if let Some(&bit) = classes.get(word) {
                 always.insert(bit);
             }
@@ -135,21 +141,23 @@ impl PageStyles {
 
     /// The stylesheet for the page `html`: every rule that can match one of
     /// its elements, and no other.
-    pub fn for_page(&self, html: &str) -> Arc<PageSheet> {
+    pub(crate) fn for_page(&self, html: &str) -> Arc<PageSheet> {
         let mut used = self.always.clone();
-        for class in class_names(html) {
+        each_class(html, |class| {
             if let Some(&bit) = self.classes.get(class) {
                 used.insert(bit);
             }
-        }
-        let mut made = self.made.lock().unwrap_or_else(PoisonError::into_inner);
-        let sheet = made.entry(used).or_insert_with_key(|used| {
-            let mut text = String::new();
-            write_items(&self.items, used, &mut text);
-            let name = Asset::hashed_name("site", "css", text.as_bytes());
-            Arc::new(PageSheet { name, text })
         });
-        Arc::clone(sheet)
+        let mut made = self.made.lock().unwrap_or_else(PoisonError::into_inner);
+        if let Some((_, sheet)) = made.iter().find(|(classes, _)| *classes == used) {
+            return Arc::clone(sheet);
+        }
+        let mut text = String::new();
+        write_items(&self.items, &used, &mut text);
+        let name = Asset::hashed_name("site", "css", text.as_bytes());
+        let sheet = Arc::new(PageSheet { name, text });
+        made.push((used, Arc::clone(&sheet)));
+        sheet
     }
 }
 
@@ -158,7 +166,7 @@ fn read(css: &str, classes: &mut BTreeMap<String, usize>) -> Vec<Item> {
     let mut items = Vec::new();
     let mut rest = css.trim_start();
     while !rest.is_empty() {
-        let Some((at, stop)) = find_top(rest, |c| c == '{' || c == ';') else {
+        let Some((at, stop)) = find_top(rest, &['{', ';']) else {
             items.push(Item::Kept(rest.to_owned()));
             break;
         };
@@ -185,12 +193,11 @@ fn read(css: &str, classes: &mut BTreeMap<String, usize>) -> Vec<Item> {
 /// braces.
 fn item(prelude: &str, body: &str, whole: &str, classes: &mut BTreeMap<String, usize>) -> Item {
     if let Some(name) = prelude.strip_prefix('@') {
-        let name: String = name
-            .chars()
-            .take_while(|&c| is_name_char(c))
-            .collect::<String>()
-            .to_ascii_lowercase();
-        return if GROUPS.contains(&name.as_str()) {
+        let name = name
+            .split(|c: char| !is_name_char(c))
+            .next()
+            .unwrap_or_default();
+        return if GROUPS.iter().any(|group| group.eq_ignore_ascii_case(name)) {
             Item::Group {
                 prelude: prelude.to_owned(),
                 items: read(body, classes),
@@ -200,7 +207,7 @@ fn item(prelude: &str, body: &str, whole: &str, classes: &mut BTreeMap<String, u
         };
     }
     // A rule with rules nested inside is kept whole.
-    if find_top(body, |c| c == '{').is_some() {
+    if find_top(body, &['{']).is_some() {
         return Item::Kept(whole.to_owned());
     }
     let selectors = split_selectors(prelude)
@@ -314,52 +321,41 @@ fn needed_classes(selector: &str) -> Vec<&str> {
     needs
 }
 
-/// Every class named in a `class` attribute of `html`, and some words that
-/// are not, such as those of a `data-class` attribute. A word too many
-/// only keeps a rule that matches nothing; a class missed would drop a rule
-/// the page needs, so the search is wide.
-fn class_names(html: &str) -> impl Iterator<Item = &str> {
-    let bytes = html.as_bytes();
-    let mut values = Vec::new();
-    let mut at = 0;
-    while let Some(found) = find_word(bytes, at) {
-        at = found.saturating_add(5);
-        if let Some(value) = attribute_value(html, at) {
-            values.push(value);
-        }
+/// Calls `take` with every class named in a `class` attribute of `html`,
+/// and some words that are not, such as those of a `data-class`
+/// attribute. A word too many only keeps a rule that matches nothing; a
+/// class missed would drop a rule the page needs, so the search is wide.
+fn each_class(html: &str, mut take: impl FnMut(&str)) {
+    let mut rest = html;
+    while let Some(at) = find_class(rest) {
+        rest = rest.get(at.saturating_add(5)..).unwrap_or_default();
+        let Some(value) = rest.trim_start().strip_prefix('=') else {
+            continue;
+        };
+        let value = value.trim_start();
+        let quote = value.chars().next().filter(|&c| c == '"' || c == '\'');
+        let value = value
+            .get(quote.map_or(0, char::len_utf8)..)
+            .unwrap_or_default();
+        let end = value
+            .find(|c: char| match quote {
+                Some(quote) => c == quote,
+                None => c.is_ascii_whitespace() || c == '>',
+            })
+            .unwrap_or(value.len());
+        value
+            .get(..end)
+            .unwrap_or_default()
+            .split_ascii_whitespace()
+            .for_each(&mut take);
     }
-    values
-        .into_iter()
-        .flat_map(|value| value.split(|c: char| c.is_ascii_whitespace()))
-        .filter(|class| !class.is_empty())
 }
 
-/// Where `class`, in any case, next starts in `bytes` at or after `from`.
-fn find_word(bytes: &[u8], from: usize) -> Option<usize> {
-    let tail = bytes.get(from..)?;
-    tail.windows(5)
+/// Where `class`, in any case, first starts in `text`.
+fn find_class(text: &str) -> Option<usize> {
+    text.as_bytes()
+        .windows(5)
         .position(|window| window.eq_ignore_ascii_case(b"class"))
-        .map(|at| at.saturating_add(from))
-}
-
-/// The value of an attribute whose name ends at `at` in `html`, such as
-/// `card featured` in `class="card featured"`, or `None` when no `=`
-/// follows the name.
-fn attribute_value(html: &str, at: usize) -> Option<&str> {
-    let rest = html
-        .get(at..)?
-        .trim_start_matches(|c: char| c.is_ascii_whitespace());
-    let rest = rest
-        .strip_prefix('=')?
-        .trim_start_matches(|c: char| c.is_ascii_whitespace());
-    if let Some(quoted) = rest.strip_prefix('"') {
-        return quoted.split('"').next();
-    }
-    if let Some(quoted) = rest.strip_prefix('\'') {
-        return quoted.split('\'').next();
-    }
-    rest.split(|c: char| c.is_ascii_whitespace() || c == '>')
-        .next()
 }
 
 /// Every word inside a string of the script `js`, such as `lightbox` in
@@ -406,12 +402,12 @@ fn is_name_char(c: char) -> bool {
     c.is_ascii_alphanumeric() || c == '-' || c == '_' || !c.is_ascii()
 }
 
-/// Where the first character `stop` accepts sits in `text` outside
+/// Where the first of the characters `stops` sits in `text` outside
 /// brackets and strings, and which character it is.
-fn find_top(text: &str, stop: impl Fn(char) -> bool) -> Option<(usize, char)> {
+fn find_top(text: &str, stops: &[char]) -> Option<(usize, char)> {
     let mut scan = Scan::default();
     text.char_indices()
-        .find(|&(_, c)| scan.step(c) == Step::Top && stop(c))
+        .find(|&(_, c)| scan.step(c) == Step::Top && stops.contains(&c))
 }
 
 /// Where the brace that closes the one at `open` sits in `text`, skipping
@@ -438,7 +434,7 @@ fn closing_brace(text: &str, open: usize) -> Option<usize> {
 }
 
 /// Where a character sits: in a string, inside brackets, or at the top.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 enum Step {
     InString,
     Nested,
@@ -446,7 +442,7 @@ enum Step {
 }
 
 /// Tracks strings, escapes and bracket depth one character at a time.
-#[derive(Debug, Default)]
+#[derive(Default)]
 struct Scan {
     quote: Option<char>,
     escaped: bool,
@@ -498,6 +494,9 @@ impl Scan {
 mod tests {
     use super::*;
 
+    /// A reader script that adds the class `lightbox`.
+    const SCRIPT: &str = "dialog.className = \"lightbox\";\n";
+
     const CSS: &str = ":root {\n--a: 1;\n}\n\
         @font-face {\nfont-family: X;\nsrc: url(\"x.woff2\");\n}\n\
         .card, .post h2 {\ncolor: red;\n}\n\
@@ -509,7 +508,7 @@ mod tests {
 
     #[test]
     fn a_page_keeps_only_the_rules_its_classes_can_match() {
-        let styles = PageStyles::new(CSS, "");
+        let styles = PageStyles::new(CSS, "", SCRIPT);
         let post = styles.for_page("<main><article class=\"post\"><h2>A</h2></article></main>");
         let text = post.text();
         assert!(text.contains(":root {\n--a: 1;\n}"), "{text}");
@@ -527,13 +526,13 @@ mod tests {
 
     #[test]
     fn the_reader_scripts_classes_are_on_every_page() {
-        let styles = PageStyles::new(CSS, "");
+        let styles = PageStyles::new(CSS, "", SCRIPT);
         assert!(styles.for_page("<p>x</p>").text().contains(".lightbox"));
     }
 
     #[test]
     fn a_page_with_every_class_gets_the_whole_stylesheet() {
-        let styles = PageStyles::new(CSS, "");
+        let styles = PageStyles::new(CSS, "", SCRIPT);
         let html = "<div class=\"home\"><p class='card'></p><b CLASS = post></b></div>";
         let mut whole = String::new();
         for line in CSS.lines() {
@@ -545,7 +544,7 @@ mod tests {
 
     #[test]
     fn pages_with_the_same_classes_share_one_sheet() {
-        let styles = PageStyles::new(CSS, "");
+        let styles = PageStyles::new(CSS, "", SCRIPT);
         let one = styles.for_page("<a class=\"post\">1</a>");
         let two = styles.for_page("<p class=\"post\">2</p><p class=\"unstyled\"></p>");
         assert!(Arc::ptr_eq(&one, &two));
@@ -569,14 +568,18 @@ mod tests {
             split_selectors(".a, :is(.b, .c) , .d"),
             [".a", ":is(.b, .c)", ".d"]
         );
-        let styles = PageStyles::new(".q::before {\ncontent: \"}\";\n}\n.r {\nx: y;\n}\n", "");
+        let styles = PageStyles::new(
+            ".q::before {\ncontent: \"}\";\n}\n.r {\nx: y;\n}\n",
+            "",
+            SCRIPT,
+        );
         let text = styles.for_page("<i class=\"q\"></i>").text().to_owned();
         assert_eq!(text, ".q::before {\ncontent: \"}\";\n}\n");
     }
 
     #[test]
     fn a_broken_stylesheet_is_kept_from_where_it_breaks() {
-        let styles = PageStyles::new(".alpha {\nx: y;\n}\n.beta {\nnever: closed;\n", "");
+        let styles = PageStyles::new(".alpha {\nx: y;\n}\n.beta {\nnever: closed;\n", "", SCRIPT);
         assert_eq!(
             styles.for_page("<p></p>").text(),
             ".beta {\nnever: closed;\n\n"
@@ -585,7 +588,7 @@ mod tests {
 
     #[test]
     fn the_rules_kept_whole_stay_on_every_page() {
-        let styles = PageStyles::new(".post {\nx: y;\n}\n", ".mine {\nx: z;\n}\n");
+        let styles = PageStyles::new(".post {\nx: y;\n}\n", ".mine {\nx: z;\n}\n", SCRIPT);
         assert_eq!(styles.for_page("<p></p>").text(), ".mine {\nx: z;\n}\n");
     }
 

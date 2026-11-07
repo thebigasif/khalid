@@ -12,7 +12,7 @@ Rules were measured three ways on the 31 template demos. Leaving out the rules a
 
 Each page links one stylesheet of its own: the site's stylesheet without the selectors that name, outside any brackets, a class no element of the page has.
 
-- The renderer reads the whole stylesheet into rules once per theme (`khalid_render::PageStyles`). After a page is rendered, its `class` attributes pick the rules; the page's `<link>` then names that sheet, `site.<hash>.css`. Pages with the same classes share one sheet, made once.
+- The renderer reads the whole stylesheet into rules once per theme (`PageStyles` in the `khalid` crate). After a page is rendered, its `class` attributes pick the rules; the page's `<link>` then names that sheet, `site.<hash>.css`. Pages with the same classes share one sheet, made once.
 - A selector with no class, or one that names a class only inside `:is()`, `:not()` or `:has()`, or one with an escaped character, stays on every page. So do `@font-face`, `@keyframes` and every at-rule other than `@media`, `@supports`, `@container` and `@layer`.
 - The classes the reader script adds count as on every page. So do all of the site's own rules from `theme/site.css`, since a script of the site's may add the classes they name.
 - The whole stylesheet is still built and served. Pages made outside the site's render, such as a comment's refusal page or a live search's results, link it as before.

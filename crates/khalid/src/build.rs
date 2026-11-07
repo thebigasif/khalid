@@ -5,9 +5,9 @@
 //! files in its page's folder. A headless site gets those files and no
 //! HTML.
 
-use std::collections::BTreeMap;
 use std::fs;
 use std::path::{self, Path, PathBuf};
+use std::sync::Arc;
 
 use chrono::NaiveDate;
 use khalid_content::{ContentTree, SiteContent};
@@ -23,6 +23,7 @@ use crate::cli::Output;
 use crate::exit::Exit;
 use crate::newsletter_files::archive_pages;
 use crate::page_code::PageCode;
+use crate::page_styles::PageSheet;
 use crate::post_files::{Assets, charts, library_photo};
 use crate::post_photos::Shown;
 use crate::seo_extras::{self, archives_off, term_seo};
@@ -290,20 +291,22 @@ fn write_html(
     (locks, code): (Option<&khalid_static::Locks>, &PageCode),
 ) -> Result<usize, UserMessage> {
     let mut written = 0;
-    let mut linked = BTreeMap::new();
+    let mut linked: Vec<Arc<PageSheet>> = Vec::new();
     for language in languages {
         for page in &language.pages {
             let html = page.rendered(renderer, &language.site, code)?;
             let html = static_mode::lock(locks, html, &language.site.locale, &page.file)?;
             let (html, sheet) = sheets.fit(html);
-            if let Some(sheet) = sheet {
-                linked.entry(sheet.name().to_owned()).or_insert(sheet);
+            if let Some(sheet) =
+                sheet.filter(|new| linked.iter().all(|old| old.name() != new.name()))
+            {
+                linked.push(sheet);
             }
             write(out, &page.file, &html)?;
             written += 1;
         }
     }
-    for sheet in linked.values() {
+    for sheet in &linked {
         let body = sheet.text().as_bytes().to_vec();
         let built = Asset::build("site", "css", "text/css; charset=utf-8", body)
             .map_err(|error| build_message::render(&error))?;

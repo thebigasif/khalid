@@ -1,7 +1,6 @@
 //! The HTML of the pages `khalid serve` renders into memory, the search
 //! page each language keeps without results, and why a render failed.
 
-use std::collections::BTreeSet;
 use std::error::Error;
 use std::fmt;
 
@@ -111,14 +110,14 @@ fn with_preload(page: Page, href: Option<String>) -> Page {
 /// The pages' own stylesheets one render has added so far, each once.
 struct Linked<'s> {
     sheets: &'s PageStylesheets,
-    added: BTreeSet<String>,
+    added: Vec<String>,
 }
 
 impl<'s> Linked<'s> {
     fn new(sheets: &'s PageStylesheets) -> Self {
         Self {
             sheets,
-            added: BTreeSet::new(),
+            added: Vec::new(),
         }
     }
 
@@ -133,7 +132,8 @@ impl<'s> Linked<'s> {
         let Some(sheet) = sheet else {
             return Ok((html, None));
         };
-        if self.added.insert(sheet.name().to_owned()) {
+        if !self.added.iter().any(|name| name == sheet.name()) {
+            self.added.push(sheet.name().to_owned());
             pages.push(self.sheets.page(&sheet)?);
         }
         Ok((html, Some(self.sheets.href(&sheet))))

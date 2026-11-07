@@ -8,13 +8,14 @@ use std::{fs, io};
 
 use khalid_core::{Config, SitePath, UserMessage};
 use khalid_render::{
-    Asset, Feature, Features, PageSheet, PageStyles, ScriptFile, ScriptTag, Tokens, reader_script,
-    reader_script_file, stylesheet_text_with, stylesheet_with,
+    Asset, Feature, Features, ScriptFile, ScriptTag, Tokens, reader_script, reader_script_file,
+    stylesheet_text_with, stylesheet_with,
 };
 use khalid_server::{MediaType, Page, PagePath};
 use khalid_theme::Look;
 
 use crate::build_pages::LanguagePages;
+use crate::page_styles::{PageSheet, PageStyles};
 use crate::{build_message, look};
 
 /// The folder, under the mount and in the output folder, that holds them.
@@ -238,9 +239,10 @@ impl PageStylesheets {
         whole: &str,
     ) -> Self {
         let ours = stylesheet_text_with(tokens, look_rules);
+        let script = String::from_utf8_lossy(reader().body);
         let styles = match whole.strip_prefix(ours.as_str()) {
-            Some(own) => PageStyles::new(&ours, own),
-            None => PageStyles::new("", whole),
+            Some(own) => PageStyles::new(&ours, own, &script),
+            None => PageStyles::new("", whole, &script),
         };
         Self {
             styles,
