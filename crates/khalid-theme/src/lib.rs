@@ -36,6 +36,7 @@ mod fonts;
 mod frequency;
 mod glossy;
 mod gallery;
+mod gazette;
 mod harbor;
 mod hearth;
 mod hub;

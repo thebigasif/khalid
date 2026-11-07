@@ -530,3 +530,8 @@ issue_tally = "{count} issues"
 issue_tally_one = "1 issue"
 issue_more = "More issues"
 issue_feed = "Or follow it in a feed reader"
+# The gazette template: a local paper's section index, section flags and
+# the news under a story. {name} is a section's name.
+sections_jump = "Jump to a section"
+section_all = "All {name} stories"
+more_news = "More news"

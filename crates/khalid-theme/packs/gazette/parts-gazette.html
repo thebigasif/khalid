@@ -1,0 +1,40 @@
+{#- Gazette's own parts (docs/templates/gazette.md), shared by its pages.
+    A story's place is its first fact, such as "Where: Mill Lane".
+    flag(name, href, id, more): the section flag, the section's name in
+    reverse on a heavy rule, as an h2 with `id`, linked to `href` when
+    there is one, and the `more` link at the rule's end.
+    place(post): the place label, or nothing when the story has no facts.
+    story(post, level): a section's newest story: its picture, place,
+    title and summary.
+    top_story(post): the front page's top story: its picture beside the
+    place or section, the title large, the summary and the byline. -#}
+{% from "image.html" import picture -%}
+{% macro flag(name, href=none, id=none, more=none) -%}
+<header class="gz-flag">
+<h2{% if id %} id="{{ id }}"{% endif %} class="gz-flag-name">{% if href %}<a href="{{ href }}">{{ name }}</a>{% else %}{{ name }}{% endif %}</h2>
+{% if more and href %}<p class="gz-flag-more"><a href="{{ href }}">{{ more }}</a></p>
+{% endif %}</header>
+{%- endmacro %}
+{% macro place(post) -%}
+{% if post.facts[0] is defined %}<p class="gz-place"><span class="visually-hidden">{{ post.facts[0].label }}: </span>{{ post.facts[0].value }}</p>
+{% endif %}
+{%- endmacro %}
+{% macro story(post, level=3) -%}
+<article class="gz-story">
+{% if post.image %}<a class="gz-story-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}{{ place(post) }}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="gz-summary">{{ post.excerpt }}</p>
+<p class="gz-byline">{% if post.author %}<span>{{ post.author.name }}</span> {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+</article>
+{%- endmacro %}
+{% macro top_story(post) -%}
+<article class="gz-top">
+{% if post.image %}<a class="gz-top-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}<div class="gz-top-text">
+{% if post.facts[0] is defined %}{{ place(post) }}{% elif post.category %}<p class="gz-place"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h2><a href="{{ post.href }}">{{ post.title }}</a></h2>
+<p class="gz-top-summary">{{ post.excerpt }}</p>
+<p class="gz-byline">{% if post.author %}<span>{{ t.by }} {{ post.author.name }}</span> {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.reading_time %} <span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}</p>
+</div>
+</article>
+{%- endmacro %}

@@ -1,0 +1,99 @@
+# The Marlbeck Courier, the made-up local paper of Marlbeck, a made-up
+# market town on a river, written for the Gazette template's demo. The
+# town, its council, schools, clubs, businesses and people are all made
+# up. Each key and table here replaces the showcase's own when
+# scripts/demo-publication.sh applies it.
+
+name = "The Marlbeck Courier"
+languages = ["en"]
+
+[template.cta]
+label = "Send us a story"
+href = "/blog/about/"
+note = "Seen something at the town hall, the school gate or the touchline? Tell the newsroom. A reporter reads every message."
+
+# The Gazette template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["News for Marlbeck, Fellgate and Ashby Cross"]
+
+[announcement]
+text = "Mill Lane bridge closes from Monday 16 November for six weeks. Diversions and bus changes inside."
+href = "/blog/mill-lane-bridge-closure/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Local news for Marlbeck"
+
+[seo.ai_page]
+covers = "The Marlbeck Courier is the local news site for Marlbeck, a market town on a river, and its villages: council decisions, schools, business, sport, what's on and community news. Marlbeck and everyone named on this site are made up for a template demo."
+cite = "Name The Marlbeck Courier and the reporter, give the date of the story and link the story."
+contact = "newsdesk@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "The Marlbeck Courier"
+email = "newsdesk@example.com"
+founded = "2019-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Marlbeck Courier logo"
+width = 360
+height = 80
+
+# Sign-ups for the morning email, under the site's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "newsdesk@example.com"
+name = "The Marlbeck Courier"
+postal_address = "The Marlbeck Courier, 12 Corn Street, Marlbeck MB4 2LT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Council"
+href = "/blog/category/council/"
+language = "en"
+
+[[nav.primary]]
+label = "Schools"
+href = "/blog/category/schools/"
+language = "en"
+
+[[nav.primary]]
+label = "Business"
+href = "/blog/category/business/"
+language = "en"
+
+[[nav.primary]]
+label = "Sport"
+href = "/blog/category/sport/"
+language = "en"
+
+[[nav.primary]]
+label = "What's on"
+href = "/blog/category/whats-on/"
+language = "en"
+
+[[nav.primary]]
+label = "Community"
+href = "/blog/category/community/"
+language = "en"
+
+[[nav.footer]]
+label = "About the Courier"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Reporters"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"
