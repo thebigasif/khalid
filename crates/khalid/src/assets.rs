@@ -252,15 +252,20 @@ impl PageStylesheets {
     }
 
     /// `html` with its own stylesheet linked in place of the whole one, and
-    /// that stylesheet. A page that does not link the whole stylesheet is
-    /// left as it is, with no sheet.
-    pub(crate) fn fit(&self, html: String) -> (String, Option<Arc<PageSheet>>) {
+    /// that stylesheet's address. A page that does not link the whole
+    /// stylesheet is left as it is, with no address.
+    pub(crate) fn fit(&self, html: String) -> (String, Option<String>) {
         if !html.contains(&self.whole) {
             return (html, None);
         }
-        let sheet = self.styles.for_page(&html);
-        let html = html.replace(&self.whole, &link(&self.href(&sheet)));
-        (html, Some(sheet))
+        let href = self.href(&self.styles.for_page(&html));
+        let html = html.replace(&self.whole, &link(&href));
+        (html, Some(href))
+    }
+
+    /// Every page's own stylesheet made so far, each once.
+    pub(crate) fn made(&self) -> Vec<Arc<PageSheet>> {
+        self.styles.made()
     }
 
     /// The address a page links `sheet` at, such as

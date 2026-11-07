@@ -1,7 +1,5 @@
 //! One rendered file the server answers with.
 
-use std::sync::Arc;
-
 use axum::http::HeaderValue;
 use bytes::Bytes;
 
@@ -51,7 +49,7 @@ pub struct Page {
     caching: Caching,
     /// The stylesheet an HTML page links, which its answer says to
     /// preload, when the page names one of its own.
-    preload: Option<Arc<str>>,
+    preload: Option<String>,
 }
 
 /// How a page's bytes are held: one copy, never two.
@@ -111,7 +109,7 @@ impl Page {
     #[must_use]
     pub fn with_preload(self, href: &str) -> Self {
         Self {
-            preload: Some(Arc::from(href)),
+            preload: Some(href.to_owned()),
             ..self
         }
     }

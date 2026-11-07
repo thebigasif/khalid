@@ -64,10 +64,9 @@ enum Item {
     /// Text kept as it is written: an at-rule other than a group, or a
     /// rule this reader does not take apart.
     Kept(String),
-    /// A style rule: its selector list as written, each selector with the
-    /// classes it needs, and its declarations.
+    /// A style rule: each selector with the classes it needs, and its
+    /// declarations.
     Rule {
-        prelude: String,
         selectors: Vec<Selector>,
         body: String,
     },
@@ -161,6 +160,14 @@ impl PageStyles {
     }
 }
 
+impl PageStyles {
+    /// Every sheet made so far, in the order they were made.
+    pub(crate) fn made(&self) -> Vec<Arc<PageSheet>> {
+        let made = self.made.lock().unwrap_or_else(PoisonError::into_inner);
+        made.iter().map(|(_, sheet)| Arc::clone(sheet)).collect()
+    }
+}
+
 /// Reads `css` into items, noting each class a selector needs in `classes`.
 fn read(css: &str, classes: &mut BTreeMap<String, usize>) -> Vec<Item> {
     let mut items = Vec::new();
@@ -210,21 +217,8 @@ fn item(prelude: &str, body: &str, whole: &str, classes: &mut BTreeMap<String, u
     if find_top(body, &['{']).is_some() {
         return Item::Kept(whole.to_owned());
     }
-    let selectors = split_selectors(prelude)
-        .into_iter()
-        .map(|text| Selector {
-            needs: needed_classes(text)
-                .into_iter()
-                .map(|class| {
-                    let next = classes.len();
-                    *classes.entry(class.to_owned()).or_insert(next)
-                })
-                .collect(),
-            text: text.to_owned(),
-        })
-        .collect();
+    let selectors = selectors(prelude, classes);
     Item::Rule {
-        prelude: prelude.to_owned(),
         selectors,
         body: body.to_owned(),
     }
@@ -238,35 +232,32 @@ fn write_items(items: &[Item], used: &Classes, out: &mut String) {
                 out.push_str(text);
                 out.push('\n');
             }
-            Item::Rule {
-                prelude,
-                selectors,
-                body,
-            } => {
-                let kept: Vec<&str> = selectors
+            Item::Rule { selectors, body } => {
+                let start = out.len();
+                let kept = selectors
                     .iter()
-                    .filter(|selector| selector.needs.iter().all(|&bit| used.contains(bit)))
-                    .map(|selector| selector.text.as_str())
-                    .collect();
-                if kept.is_empty() {
-                    continue;
+                    .filter(|selector| selector.needs.iter().all(|&bit| used.contains(bit)));
+                for selector in kept {
+                    if out.len() > start {
+                        out.push_str(", ");
+                    }
+                    out.push_str(&selector.text);
                 }
-                if kept.len() == selectors.len() {
-                    out.push_str(prelude);
-                } else {
-                    out.push_str(&kept.join(", "));
+                if out.len() > start {
+                    out.push_str(" {");
+                    out.push_str(body);
+                    out.push_str("}\n");
                 }
-                out.push_str(" {");
-                out.push_str(body);
-                out.push_str("}\n");
             }
             Item::Group { prelude, items } => {
-                let mut inner = String::new();
-                write_items(items, used, &mut inner);
-                if !inner.is_empty() {
-                    out.push_str(prelude);
-                    out.push_str(" {\n");
-                    out.push_str(&inner);
+                let start = out.len();
+                out.push_str(prelude);
+                out.push_str(" {\n");
+                let inside = out.len();
+                write_items(items, used, out);
+                if out.len() == inside {
+                    out.truncate(start);
+                } else {
                     out.push_str("}\n");
                 }
             }
@@ -274,51 +265,45 @@ fn write_items(items: &[Item], used: &Classes, out: &mut String) {
     }
 }
 
-/// The selectors of a selector list, split at the commas outside brackets
-/// and strings.
-fn split_selectors(prelude: &str) -> Vec<&str> {
-    let mut pieces = Vec::new();
-    let mut scan = Scan::default();
-    let mut start = 0;
-    for (at, c) in prelude.char_indices() {
-        if scan.step(c) == Step::Top && c == ',' {
-            pieces.extend(prelude.get(start..at));
-            start = at.saturating_add(1);
-        }
-    }
-    pieces.extend(prelude.get(start..));
-    pieces
-        .into_iter()
-        .map(str::trim)
-        .filter(|piece| !piece.is_empty())
-        .collect()
-}
-
-/// The classes `selector` names outside any brackets, each of which an
-/// element must have for it to match. A selector with an escaped
-/// character needs none, so it is always kept.
-fn needed_classes(selector: &str) -> Vec<&str> {
-    if selector.contains('\\') {
-        return Vec::new();
-    }
+/// The selectors of `prelude`, split at the commas outside brackets and
+/// strings, each with the classes it names outside any brackets, noted in
+/// `classes`. An element must have each of them for the selector to match.
+/// A selector with an escaped character needs none, so it is always kept.
+fn selectors(prelude: &str, classes: &mut BTreeMap<String, usize>) -> Vec<Selector> {
+    let mut found = Vec::new();
     let mut needs = Vec::new();
     let mut scan = Scan::default();
-    for (at, c) in selector.char_indices() {
-        if scan.step(c) != Step::Top || c != '.' {
-            continue;
-        }
-        let name = selector.get(at.saturating_add(1)..).unwrap_or_default();
-        let len: usize = name
-            .chars()
-            .take_while(|&c| is_name_char(c))
-            .map(char::len_utf8)
-            .sum();
-        let name = name.get(..len).unwrap_or_default();
-        if name.starts_with(|c: char| !c.is_ascii_digit()) {
-            needs.push(name);
+    let mut start = 0;
+    let end = (prelude.len(), ',');
+    for (at, c) in prelude.char_indices().chain(std::iter::once(end)) {
+        let top = at == prelude.len() || scan.step(c) == Step::Top;
+        if top && c == ',' {
+            let text = prelude.get(start..at).unwrap_or_default().trim();
+            if text.contains('\\') {
+                needs.clear();
+            }
+            if !text.is_empty() {
+                let needs = std::mem::take(&mut needs);
+                found.push(Selector {
+                    text: text.to_owned(),
+                    needs,
+                });
+            }
+            needs.clear();
+            start = at.saturating_add(1);
+        } else if top && c == '.' {
+            let name = prelude.get(at.saturating_add(1)..).unwrap_or_default();
+            let name = name
+                .split(|c: char| !is_name_char(c))
+                .next()
+                .unwrap_or_default();
+            if name.starts_with(|c: char| !c.is_ascii_digit()) {
+                let next = classes.len();
+                needs.push(*classes.entry(name.to_owned()).or_insert(next));
+            }
         }
     }
-    needs
+    found
 }
 
 /// Calls `take` with every class named in a `class` attribute of `html`,
@@ -452,6 +437,9 @@ struct Scan {
 impl Scan {
     /// Takes `c` and says where it sits. An opening bracket sits outside
     /// itself and a closing one inside, so both count as nested.
+    // Kept out of line: four readers call it, and a copy in each costs the
+    // binary budget.
+    #[inline(never)]
     fn step(&mut self, c: char) -> Step {
         if self.escaped {
             self.escaped = false;
@@ -558,16 +546,41 @@ mod tests {
 
     #[test]
     fn strings_escapes_and_brackets_are_read_as_written() {
+        let read = |prelude: &str| {
+            let mut classes = BTreeMap::new();
+            let found = selectors(prelude, &mut classes);
+            let mut names: Vec<(usize, String)> =
+                classes.into_iter().map(|(k, v)| (v, k)).collect();
+            names.sort();
+            let name = |bit: usize| names[bit].1.clone();
+            found
+                .into_iter()
+                .map(|selector| {
+                    (
+                        selector.text,
+                        selector.needs.into_iter().map(name).collect::<Vec<_>>(),
+                    )
+                })
+                .collect::<Vec<_>>()
+        };
+        let none: Vec<String> = Vec::new();
         assert_eq!(
-            needed_classes(".a > .b:is(.c, .d) [data-x=\".e\"]"),
-            ["a", "b"]
+            read(".a > .b:is(.c, .d) [data-x=\".e\"]"),
+            [(
+                ".a > .b:is(.c, .d) [data-x=\".e\"]".to_owned(),
+                vec!["a".to_owned(), "b".to_owned()]
+            )]
         );
-        assert_eq!(needed_classes(".sm\\:wide"), Vec::<&str>::new());
-        assert_eq!(needed_classes("p.4"), Vec::<&str>::new());
         assert_eq!(
-            split_selectors(".a, :is(.b, .c) , .d"),
-            [".a", ":is(.b, .c)", ".d"]
+            read(".sm\\:wide"),
+            [(".sm\\:wide".to_owned(), none.clone())]
         );
+        assert_eq!(read("p.4"), [("p.4".to_owned(), none)]);
+        let texts: Vec<String> = read(".a, :is(.b, .c) , .d")
+            .into_iter()
+            .map(|(text, _)| text)
+            .collect();
+        assert_eq!(texts, [".a", ":is(.b, .c)", ".d"]);
         let styles = PageStyles::new(
             ".q::before {\ncontent: \"}\";\n}\n.r {\nx: y;\n}\n",
             "",

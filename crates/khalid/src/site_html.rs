@@ -61,7 +61,7 @@ pub(crate) fn search_shells(languages: &[LanguagePages]) -> Vec<SearchShell> {
 
 /// Renders the `which` pages of `languages` with the theme's `renderer`
 /// into `pages`, each linking its own stylesheet from `sheets`, which go
-/// into `pages` too, and returns the not-found page of the default
+/// into `pages` too with every other one made so far, and returns the not-found page of the default
 /// language, empty unless `which` is [`Which::All`].
 pub(crate) fn html_pages(
     (renderer, sheets): (&Renderer, &PageStylesheets),
@@ -71,7 +71,6 @@ pub(crate) fn html_pages(
     pages: &mut Vec<Page>,
 ) -> Result<String, UserMessage> {
     let mut not_found = String::new();
-    let mut linked = Linked::new(sheets);
     let code = PageCode::new(config, HeadNonce::PerRequest);
     for language in languages {
         for page in &language.pages {
@@ -81,20 +80,23 @@ pub(crate) fn html_pages(
             let html = page.rendered(renderer, &language.site, &code)?;
             if matches!(page.body, PageBody::NotFound) {
                 if &language.site.locale == config.default_language() {
-                    not_found = linked.fit(html, pages)?.0;
+                    not_found = sheets.fit(html).0;
                 }
                 continue;
             }
-            let (html, preload) = linked.fit(html, pages)?;
+            let (html, preload) = sheets.fit(html);
             pages.push(with_preload(served_at(&page.meta.path, html)?, preload));
         }
         for unlocked in &language.unlocked {
             let page = &unlocked.page;
             let html = page.rendered(renderer, &language.site, &code)?;
-            let (html, preload) = linked.fit(html, pages)?;
+            let (html, preload) = sheets.fit(html);
             let path = post_lock::hidden(&page.meta.path);
             pages.push(with_preload(served_at(&path, html)?, preload));
         }
+    }
+    for sheet in sheets.made() {
+        pages.push(sheets.page(&sheet)?);
     }
     Ok(not_found)
 }
@@ -104,38 +106,5 @@ fn with_preload(page: Page, href: Option<String>) -> Page {
     match href {
         Some(href) => page.with_preload(&href),
         None => page,
-    }
-}
-
-/// The pages' own stylesheets one render has added so far, each once.
-struct Linked<'s> {
-    sheets: &'s PageStylesheets,
-    added: Vec<String>,
-}
-
-impl<'s> Linked<'s> {
-    fn new(sheets: &'s PageStylesheets) -> Self {
-        Self {
-            sheets,
-            added: Vec::new(),
-        }
-    }
-
-    /// `html` linking its own stylesheet, and that stylesheet's address.
-    /// The stylesheet goes into `pages` the first time a page links it.
-    fn fit(
-        &mut self,
-        html: String,
-        pages: &mut Vec<Page>,
-    ) -> Result<(String, Option<String>), UserMessage> {
-        let (html, sheet) = self.sheets.fit(html);
-        let Some(sheet) = sheet else {
-            return Ok((html, None));
-        };
-        if !self.added.iter().any(|name| name == sheet.name()) {
-            self.added.push(sheet.name().to_owned());
-            pages.push(self.sheets.page(&sheet)?);
-        }
-        Ok((html, Some(self.sheets.href(&sheet))))
     }
 }
