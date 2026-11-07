@@ -147,7 +147,17 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           key: lints
+      # A maintainer runner keeps its tools in its own Rust home, so they are
+      # downloaded only when missing. That download failed now and then.
+      - name: Tools already installed?
+        id: tools
+        run: |
+          for tool in cargo-deny cargo-machete; do
+            command -v "$tool" >/dev/null || { echo "present=false" >> "$GITHUB_OUTPUT"; exit 0; }
+          done
+          echo "present=true" >> "$GITHUB_OUTPUT"
       - name: Tools
+        if: steps.tools.outputs.present != 'true'
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-deny,cargo-machete
@@ -201,7 +211,17 @@ jobs:
           components: llvm-tools-preview
       - name: Cache
         uses: Swatinem/rust-cache@v2
+      # A maintainer runner keeps its tools in its own Rust home, so they are
+      # downloaded only when missing. That download failed now and then.
+      - name: Tools already installed?
+        id: tools
+        run: |
+          for tool in cargo-nextest cargo-llvm-cov; do
+            command -v "$tool" >/dev/null || { echo "present=false" >> "$GITHUB_OUTPUT"; exit 0; }
+          done
+          echo "present=true" >> "$GITHUB_OUTPUT"
       - name: Tools
+        if: steps.tools.outputs.present != 'true'
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-nextest,cargo-llvm-cov
