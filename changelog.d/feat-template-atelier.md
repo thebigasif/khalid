@@ -1,3 +1,0 @@
-Added
-- The Atelier template, for a fashion label, stylist or fashion writer. A post with facts and a picture is a look, and its facts are the pieces worn. The front page is a lookbook: the featured look as a two-page spread with its pieces as a ledger beside the picture, the other looks as a numbered grid of tall pictures, the collections and a journal of notes. Each post opens as the same spread. Captions sit beside or under pictures, never on them.
-- Two shared section parts for picture-led templates: a spread (a picture beside a text column with a ledger of facts) and a picture grid (numbered tall pictures with the caption under each).
