@@ -91,6 +91,7 @@ CSS_FEATURES = {
 UNHINTED = {
     "PT Serif",  # Ledger: four faces on its home page, 82 KB hinted
     "Alegreya Sans",  # Chapter: three faces on a post, near the budget hinted
+    "Petrona",  # Dialogue: three faces on every page, 67 KB hinted
 }
 
 # Features a brand's files leave out although its pack asks for them, so
@@ -105,6 +106,8 @@ DROPPED_FEATURES = {
 RENAMED = {
     "PT Serif": "Ledger Serif",
     "IBM Plex Sans": "Workbench Sans",
+    "Lora": "Showcase Serif",  # Masthead, Quill
+    "Playfair Display": "Showcase Display",  # Glossy, Masthead
 }
 
 
@@ -200,6 +203,15 @@ def cut(path: Path, letters: set[int], features: list[str], new_name: str | None
     return len(buffer.getvalue()), to_ranges(kept)
 
 
+def renamed_stack(stack: str, family: str, new_family: str) -> str:
+    """A tokens.toml font stack, the text between its quotes, with `family`
+    named as `new_family`, quoted or not, such as `Lora, Georgia`."""
+    names = [name.strip() for name in stack.split(",")]
+    plain = lambda name: name.replace('\\"', "").strip("'")
+    names = [f'\\"{new_family}\\"' if plain(name) == family else name for name in names]
+    return '"' + ", ".join(names) + '"'
+
+
 def set_toml(tokens: str, file_name: str, range_text: str, family: str | None, new_family: str | None) -> str:
     """tokens.toml with the [[fonts.files]] entry for `file_name` given its
     new range, and every mention of a renamed family changed."""
@@ -210,6 +222,7 @@ def set_toml(tokens: str, file_name: str, range_text: str, family: str | None, n
     tokens = "".join(blocks)
     if family and new_family:
         tokens = tokens.replace(f'"{family}"', f'"{new_family}"').replace(f'\\"{family}\\"', f'\\"{new_family}\\"')
+        tokens = re.sub(r'^((?:heading|body|mono) = )"(.*)"$', lambda m: m[1] + renamed_stack(m[2], family, new_family), tokens, flags=re.M)
     return tokens
 
 
