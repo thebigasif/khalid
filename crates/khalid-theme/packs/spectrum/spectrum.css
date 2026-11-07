@@ -1,11 +1,13 @@
 /* Spectrum (docs/templates/spectrum.md): a magazine arranged by topic.
    Each topic keeps one colour on every page: its segment in the spectrum
    bar, the band of its row, the square before its label and the band over
-   its posts. A page writes the topic's place as data-hue, 1 to 6; the
-   colour is the accent turned round the wheel by 60 degrees a place, a
-   light tint behind text and a strong shade for rules only. Without
-   relative colours every topic shows the surface. Colours are tokens or
-   made from tokens. */
+   its posts. A page writes the topic's place as data-hue, 1 to 6. The
+   colour is the accent mixed with itself the long way round the hue
+   circle, which turns its hue by 60 degrees a place and keeps its
+   lightness: that shade draws rules and squares only, and a 14 percent
+   mix of it into the background is the tint behind text. Browsers that
+   cannot mix hues this way show the surface for every topic. Colours are
+   tokens or made from tokens. */
 :root {
   --sp-frame: 80rem;
   --sp-col: 37rem;
@@ -14,16 +16,16 @@
   --sp-line: color-mix(in oklab, var(--color-text) 14%, var(--sp-tint));
   --hero-title: clamp(3rem, 1.6rem + 5vw, 6rem);
 }
-[data-hue="1"] { --sp-turn: 0; }
-[data-hue="2"] { --sp-turn: 60; }
-[data-hue="3"] { --sp-turn: 120; }
-[data-hue="4"] { --sp-turn: 180; }
-[data-hue="5"] { --sp-turn: 240; }
-[data-hue="6"] { --sp-turn: 300; }
-@supports (color: oklch(from currentColor l c h)) {
+@supports (color: color-mix(in oklch longer hue, currentColor 50%, currentColor)) {
+  [data-hue="1"] { --sp-hue: var(--color-accent); }
+  [data-hue="2"] { --sp-hue: color-mix(in oklch longer hue, var(--color-accent) 83.333%, var(--color-accent)); }
+  [data-hue="3"] { --sp-hue: color-mix(in oklch longer hue, var(--color-accent) 66.667%, var(--color-accent)); }
+  [data-hue="4"] { --sp-hue: color-mix(in oklch longer hue, var(--color-accent) 50%, var(--color-accent)); }
+  [data-hue="5"] { --sp-hue: color-mix(in oklch longer hue, var(--color-accent) 33.333%, var(--color-accent)); }
+  [data-hue="6"] { --sp-hue: color-mix(in oklch longer hue, var(--color-accent) 16.667%, var(--color-accent)); }
   [data-hue] {
-    --sp-tint: oklch(from var(--color-accent) 0.95 0.035 calc(h + var(--sp-turn)));
-    --sp-strong: oklch(from var(--color-accent) 0.56 0.14 calc(h + var(--sp-turn)));
+    --sp-tint: color-mix(in oklab, var(--sp-hue) 14%, var(--color-background));
+    --sp-strong: var(--sp-hue);
     --sp-line: color-mix(in oklab, var(--color-text) 14%, var(--sp-tint));
   }
 }

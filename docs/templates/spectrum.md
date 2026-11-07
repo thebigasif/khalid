@@ -36,7 +36,7 @@ href = "/blog/category/food/"
 
 A topic that is not in the menu still gets a colour, chosen from its name, but two such topics may share one.
 
-The colours are made from your accent colour, `accent` in `theme/tokens.toml`, turned round the colour wheel. So a red accent gives a spectrum that starts in red, and a blue accent one that starts in blue. Each colour has a light tint for the bands, with your own text colour on it, and a strong shade for rules and small squares only, never for text. Older browsers that cannot mix colours this way show your surface colour for every topic.
+The colours are made from your accent colour, `accent` in `theme/tokens.toml`, turned round the colour wheel by mixing it with itself. So a red accent gives a spectrum that starts in red, and a blue accent one that starts in blue. Each colour has a light tint for the bands, with your own text colour on it, and a strong shade for rules and small squares only, never for text. Older browsers that cannot mix colours this way show your surface colour for every topic.
 
 ## What the front page shows
 

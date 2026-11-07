@@ -63,7 +63,14 @@ The pack's own colours are ink on white with an ink blue accent:
 | accent | `#1f4fbf` | white on it 7.2:1 |
 | border | `#dedad2` | |
 
-**The topic colours** are made from the accent, so a site's own accent sets the whole spectrum. Each topic turns the accent's hue by 60 degrees more than the last, in OKLCH. The tint keeps a lightness of 0.95 and a low chroma, so text on it is the site's own text colour and passes AA with room to spare (over 15:1 for the default text). The strong colour, at lightness 0.55, is used only for rules and small squares, never for text. Browsers without relative colours show the surface colour for every topic, so nothing breaks.
+**The topic colours** are made from the accent with `color-mix()`, so a site's own accent sets the whole spectrum. Each topic mixes the accent with itself the long way round the OKLCH hue circle, which turns its hue by 60 degrees more than the last and keeps its lightness and chroma. That strong shade is used only for rules and small squares, never for text. The band's tint is 14 percent of it mixed into the background, so text on it is the site's own text colour.
+
+| Colours | Text on the tints | Muted text | Links | Rules on the tints |
+|---|---|---|---|---|
+| Pack defaults (the showcase) | 14.2:1 or more | 5.9:1 or more | 5.7:1 or more | 5.2:1 or more |
+| Kite, the demo brand | 14.4:1 or more | 6.0:1 or more | 5.4:1 or more | 4.8:1 or more |
+
+Browsers that cannot mix hues this way show the surface colour for every topic, so nothing breaks.
 
 The demo's sample brand is Kite, a made-up magazine, with a brick red accent (`#a8321c`, 6.7:1 on white) on white and a warm paper surface.
 
