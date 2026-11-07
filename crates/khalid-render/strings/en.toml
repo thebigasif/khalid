@@ -425,3 +425,11 @@ price_level = "Price level {level} of 4"
 at_a_glance = "At a glance"
 city_notes = "Notes from the city"
 more_places = "More places"
+# The brief template: a digest's issue number, its item count, the
+# editions on the front page and the line that ends an issue. {number}
+# and {count} are filled in.
+brief_issue = "No. {number}"
+brief_items = "{count} items"
+brief_items_one = "1 item"
+brief_editions = "Editions"
+brief_end = "That's the brief. See you next issue."

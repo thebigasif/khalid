@@ -17,6 +17,7 @@ mod atelier;
 mod atlas;
 mod beacon;
 mod brand;
+mod brief;
 mod channel;
 mod chapter;
 mod color;
