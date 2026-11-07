@@ -1,0 +1,39 @@
+---
+source: crates/khalid/tests/template_gazette.rs
+expression: "shown(&out, \"category/technical-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="list-header">
+<h1>Technical SEO</h1>
+</header>
+<article class="gz-top">
+<a class="gz-top-picture" href="/blog/fixing-slow-pages/" tabindex="-1" aria-hidden="true"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></a>
+<div class="gz-top-text">
+<p class="gz-place"><span class="visually-hidden">Where: </span>Mill Lane</p>
+<h2><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p class="gz-top-summary">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="gz-byline"><span>By Lena Vogt</span> <time datetime="2026-10-05">5 October 2026</time> <span>2 min read</span></p>
+</div>
+</article>
+<section class="gz-list" aria-labelledby="gz-list-title">
+<h2 id="gz-list-title" class="gz-band-title">More news</h2>
+<div class="headline-days">
+<h3 class="headline-day"><time datetime="2026-09-28">28 September 2026</time></h3>
+<ol class="headline-list" role="list">
+<li class="headline-row">
+<h4><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h4>
+<p class="headline-summary">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</li>
+</ol>
+</div>
+</section>

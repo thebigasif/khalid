@@ -1,0 +1,25 @@
+---
+source: crates/khalid/tests/template_mosaic.rs
+expression: "shown(&out, \"authors/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="list-header">
+<h1>Authors</h1>
+</header>
+<ul class="people-grid" role="list">
+<li class="people-grid-person">
+<h2><a href="/blog/authors/asif/">Asif</a></h2>
+<p class="people-grid-role">Founder of SerpDad</p>
+<p class="people-grid-count">3 posts</p>
+</li>
+<li class="people-grid-person">
+<h2><a href="/blog/authors/lena-vogt/">Lena Vogt</a></h2>
+<p class="people-grid-role">Technical SEO editor</p>
+<p class="people-grid-count">2 posts</p>
+</li>
+</ul>

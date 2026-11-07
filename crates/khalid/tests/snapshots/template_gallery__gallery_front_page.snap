@@ -1,0 +1,115 @@
+---
+source: crates/khalid/tests/template_gallery.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="studio">
+<h1 class="studio-name">Field Notes on SEO</h1>
+<div class="studio-statement">
+<p>Prints and posters for small museums.</p>
+</div>
+</header>
+<nav class="filter-row" aria-label="Types of work">
+<ul role="list">
+<li><a href="/blog/" aria-current="page">All work</a></li>
+<li><a href="/blog/category/on-page-seo/" data-mark="">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/" data-mark="">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/" data-mark="">Content strategy</a></li>
+</ul>
+</nav>
+<h2 class="visually-hidden">Projects</h2>
+<ol class="wall" role="list">
+<li class="wall-work">
+<article>
+<div class="wall-mat wall-blank" aria-hidden="true"></div>
+<div class="wall-label">
+<p class="wall-number">No. 01</p>
+<h3 class="wall-title"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="wall-meta"><span>Content strategy</span><span>2026</span></p>
+</div>
+</article>
+</li>
+<li class="wall-work">
+<article>
+<div class="wall-mat"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></div>
+<div class="wall-label">
+<p class="wall-number">No. 02</p>
+<h3 class="wall-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="wall-meta"><span>Giclée on cotton rag</span><span>2025</span></p>
+</div>
+</article>
+</li>
+<li class="wall-work">
+<article>
+<div class="wall-mat wall-blank" aria-hidden="true"></div>
+<div class="wall-label">
+<p class="wall-number">No. 03</p>
+<h3 class="wall-title"><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="wall-meta"><span>Technical SEO</span><span>2026</span></p>
+</div>
+</article>
+</li>
+<li class="wall-work">
+<article>
+<div class="wall-mat wall-blank" aria-hidden="true"></div>
+<div class="wall-label">
+<p class="wall-number">No. 04</p>
+<h3 class="wall-title"><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="wall-meta"><span>On-page SEO</span><span>2024</span></p>
+</div>
+</article>
+</li>
+<li class="wall-work">
+<article>
+<div class="wall-mat wall-blank" aria-hidden="true"></div>
+<div class="wall-label">
+<p class="wall-number">No. 05</p>
+<h3 class="wall-title"><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="wall-meta"><span>On-page SEO</span><span>2026</span></p>
+</div>
+</article>
+</li>
+</ol>
+<section class="checklist" aria-labelledby="checklist-title">
+<h2 id="checklist-title">List of works</h2>
+<ol class="checklist-rows" role="list">
+<li>
+<span class="checklist-number">No. 01</span>
+<a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a>
+<span class="checklist-meta"><span>Content strategy</span><span>2026</span></span>
+</li>
+<li>
+<span class="checklist-number">No. 02</span>
+<a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a>
+<span class="checklist-meta"><span>Harbour Science Museum</span><span>2025</span></span>
+</li>
+<li>
+<span class="checklist-number">No. 03</span>
+<a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a>
+<span class="checklist-meta"><span>Technical SEO</span><span>2026</span></span>
+</li>
+<li>
+<span class="checklist-number">No. 04</span>
+<a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a>
+<span class="checklist-meta"><span>Tidewater Books</span><span>2024</span></span>
+</li>
+<li>
+<span class="checklist-number">No. 05</span>
+<a href="/blog/why-internal-links-matter/">Why internal links matter</a>
+<span class="checklist-meta"><span>On-page SEO</span><span>2026</span></span>
+</li>
+</ol>
+</section>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/studio/">Ask about a commission</a></p>
+</div>

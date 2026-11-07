@@ -1,0 +1,111 @@
+---
+source: crates/khalid/tests/template_gazette.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<p class="gz-edition"><time datetime="2026-10-12">12 October 2026</time><span>News for the whole valley</span></p>
+</header>
+<nav class="gz-index" aria-label="Jump to a section">
+<ul role="list">
+<li><a href="#section-2">Technical SEO</a></li>
+<li><a href="#section-3">On-page SEO</a></li>
+</ul>
+</nav>
+<div class="gz-front">
+<article class="gz-top">
+<div class="gz-top-text">
+<p class="gz-place"><a href="/blog/category/content-strategy/">Content strategy</a></p>
+<h2><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
+<p class="gz-top-summary">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+<p class="gz-byline"><span>By Asif</span> <time datetime="2026-10-12">12 October 2026</time> <span>1 min read</span></p>
+</div>
+</article>
+<aside class="gz-rail" aria-labelledby="gz-rail-title">
+<h2 id="gz-rail-title" class="gz-rail-title">Latest news</h2>
+<div class="headline-days">
+<h3 class="headline-day"><time datetime="2026-10-12">12 October 2026</time></h3>
+<ol class="headline-list" role="list">
+<li class="headline-row">
+<h4><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h4>
+</li>
+</ol>
+<h3 class="headline-day"><time datetime="2026-10-05">5 October 2026</time></h3>
+<ol class="headline-list" role="list">
+<li class="headline-row">
+<p class="headline-place"><span class="visually-hidden">Where: </span>Mill Lane</p>
+<h4><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h4>
+</li>
+</ol>
+<h3 class="headline-day"><time datetime="2026-09-28">28 September 2026</time></h3>
+<ol class="headline-list" role="list">
+<li class="headline-row">
+<h4><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h4>
+</li>
+</ol>
+<h3 class="headline-day"><time datetime="2026-09-21">21 September 2026</time></h3>
+<ol class="headline-list" role="list">
+<li class="headline-row">
+<p class="headline-place"><span class="visually-hidden">Where: </span>Market Square</p>
+<h4><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h4>
+</li>
+</ol>
+<h3 class="headline-day"><time datetime="2026-09-14">14 September 2026</time></h3>
+<ol class="headline-list" role="list">
+<li class="headline-row">
+<h4><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h4>
+</li>
+</ol>
+</div>
+</aside>
+<div class="gz-sections">
+<section class="gz-section" id="section-2" aria-labelledby="section-title-2">
+<header class="gz-flag">
+<h2 id="section-title-2" class="gz-flag-name"><a href="/blog/category/technical-seo/">Technical SEO</a></h2>
+<p class="gz-flag-more"><a href="/blog/category/technical-seo/">All Technical SEO stories</a></p>
+</header>
+<article class="gz-story">
+<a class="gz-story-picture" href="/blog/fixing-slow-pages/" tabindex="-1" aria-hidden="true"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></a>
+<p class="gz-place"><span class="visually-hidden">Where: </span>Mill Lane</p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="gz-summary">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="gz-byline"><span>Lena Vogt</span> <time datetime="2026-10-05">5 October 2026</time></p>
+</article>
+<ol class="headline-list" role="list">
+<li class="headline-row">
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="headline-date"><time datetime="2026-09-28">28 September 2026</time></p>
+</li>
+</ol>
+</section>
+<section class="gz-section" id="section-3" aria-labelledby="section-title-3">
+<header class="gz-flag">
+<h2 id="section-title-3" class="gz-flag-name"><a href="/blog/category/on-page-seo/">On-page SEO</a></h2>
+<p class="gz-flag-more"><a href="/blog/category/on-page-seo/">All On-page SEO stories</a></p>
+</header>
+<article class="gz-story">
+<p class="gz-place"><span class="visually-hidden">Where: </span>Market Square</p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="gz-summary">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+<p class="gz-byline"><span>Asif</span> <time datetime="2026-09-21">21 September 2026</time></p>
+</article>
+<ol class="headline-list" role="list">
+<li class="headline-row">
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="headline-date"><time datetime="2026-09-14">14 September 2026</time></p>
+</li>
+</ol>
+</section>
+</div>
+</div>

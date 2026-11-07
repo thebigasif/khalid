@@ -168,3 +168,5 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
 .cta-note { max-inline-size: 32ch; font-family: var(--font-heading); font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem); font-weight: 700; line-height: 1.25; }
 .newsletter-slot { margin-block-start: var(--space-section); padding: 1.5rem; background: var(--color-surface); }
 .site-footer { border-block-start: 2px solid var(--color-text); }
+/* A post's date never breaks across two lines. */
+.post-date { white-space: nowrap; }

@@ -1,0 +1,105 @@
+---
+source: crates/khalid/tests/template_inkwell.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<div class="iw-masthead">
+<header class="hero">
+<p class="hero-kicker">A monthly letter since 2019</p>
+<h1 class="hero-title">Field Notes on SEO</h1>
+</header>
+<section class="iw-join" aria-labelledby="iw-join-title">
+<h2 id="iw-join-title">Get the next issue by email</h2>
+<p class="newsletter-note">One letter a month.</p>
+<p class="iw-join-links"><a class="iw-feed" href="/blog/feed.xml" type="application/rss+xml">Or follow it in a feed reader</a></p>
+</section>
+</div>
+<section class="iw-latest" aria-labelledby="iw-latest-title">
+<p class="iw-stamp" aria-hidden="true"><span class="iw-no-label">No.</span> <span class="iw-stamp-figure">12</span></p>
+<div class="iw-latest-text">
+<p class="iw-label">Latest issue<span class="visually-hidden">, Issue 12</span>, <time datetime="2026-10-05">5 October 2026</time></p>
+<h2 id="iw-latest-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p class="iw-latest-excerpt">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="iw-glance-title">In this issue</p>
+<ul class="iw-glance" role="list">
+<li><span class="iw-part">Lead</span> <span class="iw-item">The biggest win first</span></li>
+<li><span class="iw-part">Reading</span> <span class="iw-item">Three posts on page speed</span></li>
+<li><span class="iw-part">Letters</span> <span class="iw-item">Your slowest pages</span></li>
+</ul>
+
+<p class="iw-read"><a class="button" href="/blog/fixing-slow-pages/">Read this issue</a></p>
+</div>
+<div class="iw-latest-art"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></div>
+</section>
+<section class="iw-archive" aria-labelledby="iw-archive-title">
+<h2 id="iw-archive-title" class="iw-archive-title">Every issue</h2>
+
+<section class="iw-volume" id="iw-year-2026" aria-labelledby="iw-year-2026-title">
+<header class="iw-spine">
+<h3 id="iw-year-2026-title">2026</h3>
+<p class="iw-tally">2 issues</p>
+
+</header>
+<ol class="iw-issues" role="list">
+<li class="iw-issue">
+<div class="iw-what">
+<p class="iw-extra">Content strategy</p>
+<h4><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h4>
+<p class="iw-date"><time datetime="2026-10-12">12 October 2026</time></p>
+</div>
+<p class="iw-note">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</li>
+<li class="iw-issue">
+<p class="iw-no"><span class="visually-hidden">Issue 12</span><span aria-hidden="true"><span class="iw-no-label">No.</span> <span class="iw-no-figure">12</span></span></p>
+<div class="iw-what">
+<h4><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h4>
+<p class="iw-date"><time datetime="2026-10-05">5 October 2026</time></p>
+</div>
+<ul class="iw-glance" role="list">
+<li><span class="iw-part">Lead</span> <span class="iw-item">The biggest win first</span></li>
+<li><span class="iw-part">Reading</span> <span class="iw-item">Three posts on page speed</span></li>
+<li><span class="iw-part">Letters</span> <span class="iw-item">Your slowest pages</span></li>
+</ul>
+
+</li>
+<li class="iw-issue">
+<div class="iw-what">
+<p class="iw-extra">Technical SEO</p>
+<h4><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h4>
+<p class="iw-date"><time datetime="2026-09-28">28 September 2026</time></p>
+</div>
+<p class="iw-note">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</li>
+<li class="iw-issue">
+<p class="iw-no"><span class="visually-hidden">Issue 11</span><span aria-hidden="true"><span class="iw-no-label">No.</span> <span class="iw-no-figure">11</span></span></p>
+<div class="iw-what">
+<h4><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h4>
+<p class="iw-date"><time datetime="2026-09-21">21 September 2026</time></p>
+</div>
+<ul class="iw-glance" role="list">
+<li><span class="iw-part">Lead</span> <span class="iw-item">Writing a title tag</span></li>
+</ul>
+
+</li>
+<li class="iw-issue">
+<div class="iw-what">
+<p class="iw-extra">On-page SEO</p>
+<h4><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h4>
+<p class="iw-date"><time datetime="2026-09-14">14 September 2026</time></p>
+</div>
+<p class="iw-note">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</li>
+</ol>
+</section>
+
+</section>

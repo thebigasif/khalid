@@ -1,0 +1,32 @@
+---
+source: crates/khalid/tests/template_brief.rs
+expression: "shown(&out, \"category/technical-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="list-header">
+<p class="list-kind">Past issues</p>
+<h1>Technical SEO</h1>
+</header>
+<ol class="brief-issues" role="list">
+<li class="brief-issue">
+<time class="brief-day" datetime="2026-10-05"><span class="brief-weekday">Mon</span> <span class="brief-date">5</span> <span class="brief-month">Oct</span></time>
+<div class="brief-issue-text">
+<h2><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p class="brief-summary">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="brief-meta"><span>Technical SEO</span><span>2 min read</span></p>
+</div>
+</li>
+<li class="brief-issue">
+<time class="brief-day" datetime="2026-09-28"><span class="brief-weekday">Mon</span> <span class="brief-date">28</span> <span class="brief-month">Sep</span></time>
+<div class="brief-issue-text">
+<h2><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h2>
+<p class="brief-summary">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+<p class="brief-meta"><span>Technical SEO</span><span>1 min read</span></p>
+</div>
+</li>
+</ol>
