@@ -33,7 +33,7 @@
 {%- endmacro %}
 {% macro story_grid(posts, level=3, even=false) -%}
 {% if even %}<ul class="gl-grid gl-grid-even" role="list">{% else %}<ul class="gl-grid" role="list">{% endif %}
-{% for post in posts %}<li class="gl-card{% if not post.image %} gl-card-plain{% endif %}">
+{% for post in posts %}{% if post.image %}<li class="gl-card">{% else %}<li class="gl-card gl-card-plain">{% endif %}
 {% if post.image %}{{ picture(post.image) }}
 {% endif %}<div class="gl-card-text">
 {% if post.category %}<p class="gl-section">{{ post.category.name }}</p>
