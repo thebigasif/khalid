@@ -380,6 +380,9 @@ routine_notes = "Notes"
 # The lattice template's key numbers and its front page.
 key_numbers = "Key numbers"
 latest_explainers = "Latest explainers"
+# The margin template's front page: its essays and its sign-up band.
+margin_essays = "Essays"
+margin_letter = "New essays by email"
 # The plinth template's front page, and the title block part.
 projects = "Projects"
 studio_notes = "Studio notes"
