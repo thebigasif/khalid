@@ -31,6 +31,7 @@ mod folio;
 mod font_files;
 mod fonts;
 mod frequency;
+mod glossy;
 mod harbor;
 mod hearth;
 mod hub;

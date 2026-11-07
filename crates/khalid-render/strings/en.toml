@@ -448,3 +448,8 @@ frequency_episodes = "Episodes"
 frequency_show_notes = "Show notes"
 frequency_episode_facts = "About this episode"
 frequency_more_episodes = "More episodes"
+# The glossy template's cover, its card grid and its sections.
+cover_story = "Cover story"
+cover_lines = "Also in this issue"
+latest_stories = "Latest stories"
+browse_sections = "Browse the sections"

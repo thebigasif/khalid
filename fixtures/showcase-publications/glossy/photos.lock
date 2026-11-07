@@ -1,0 +1,161 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-08-08-warm-paint-colours/lead.jpg"
+sha256 = "5d2aa9c1d96c875a689be88fc8e97ea5a50c57145ac99bac86c6e23b0d323db7"
+source = "https://wordpress.org/photos/photo/95863a346f/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Afternoon sun by Topher, via wordpress"
+title = "Afternoon sun"
+creator = "Topher"
+openverse = "62fa4132-bc5e-4d3b-ad4b-f2e5bf33bdc0"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-08-15-easy-houseplants/lead.jpg"
+sha256 = "091fec9631da402d66247c4fd4dfc651237e9468168980d988302b1b61741646"
+source = "https://wordpress.org/photos/photo/66769a98b0/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A lush Spider Plant with long, arching green leaves featuring white stripes, housed in a decorative dark teal ceramic pot with a geometric textured pattern. The pot sits on a terracotta saucer on a green shelf, with a warm restaurant dining area visible in the soft-focus background. by Alina Kakshapati, via wordpress"
+title = "A lush Spider Plant with long, arching green leaves featuring white stripes, housed in a decorative dark teal ceramic pot with a geometric textured pattern. The pot sits on a terracotta saucer on a green shelf, with a warm restaurant dining area visible in the soft-focus background."
+creator = "Alina Kakshapati"
+openverse = "cb8675d9-32df-4f69-b3c9-a6afb85efa7f"
+needs_credit = false
+size = "1536x2048"
+
+[[photos]]
+file = "en/posts/2026-08-22-fluffy-pancakes/lead.jpg"
+sha256 = "b1fb90879fa41642ae5c465250ba3830e5c9c0074d612852b928f4682ff2eca6"
+source = "https://wordpress.org/photos/photo/169698dff2/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A stack of pancakes on a blue plate is topped with chopped fresh fruit and drizzled with syrup. by Alina Kakshapati, via wordpress"
+title = "A stack of pancakes on a blue plate is topped with chopped fresh fruit and drizzled with syrup."
+creator = "Alina Kakshapati"
+openverse = "a90584d3-0c14-4cd0-83fe-cdb945268bcb"
+needs_credit = false
+size = "1536x2048"
+
+[[photos]]
+file = "en/posts/2026-08-29-harbour-town-weekend/lead.jpg"
+sha256 = "c697ac7c3c73f7379e6891a8b9e53f1424bbb1724ac3e47de0074f12f6b6e547"
+source = "https://wordpress.org/photos/photo/852685d283/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A row of elegant sailboats gently rests in the marina under a clear blue sky, with the charming coastal town of Lisbon forming a colourful backdrop to this peaceful waterfront scene. by KafleG, via wordpress"
+title = "A row of elegant sailboats gently rests in the marina under a clear blue sky, with the charming coastal town of Lisbon forming a colourful backdrop to this peaceful waterfront scene."
+creator = "KafleG"
+openverse = "53867217-b51c-4765-ab27-18856c51204a"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-05-straw-hat-care/lead.jpg"
+sha256 = "75bd4279060f74e954d8afc2d857566e4ffc3e9bb8c08ab615e366ffced9ad41"
+source = "https://wordpress.org/photos/photo/63069be9cb/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A straw hat with a wide brim, decorated with small white shells, placed on a wooden table. by Mutebi Ivan Junior, via wordpress"
+title = "A straw hat with a wide brim, decorated with small white shells, placed on a wooden table."
+creator = "Mutebi Ivan Junior"
+openverse = "b8f84fa0-ba65-4abe-861a-3d12bd0063cf"
+needs_credit = false
+size = "1600x899"
+
+[[photos]]
+file = "en/posts/2026-09-12-mindful-walking/lead.jpg"
+sha256 = "b3001828a1eb54f21c320692d8e0a168633e1da8b14d92142f7899d7ffbd4c66"
+source = "https://wordpress.org/photos/photo/98468ae3ec/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Person walking alone on a leaf-covered forest path, surrounded by tall dark trees in an autumn setting. by Guste Cibulskyte, via wordpress"
+title = "Person walking alone on a leaf-covered forest path, surrounded by tall dark trees in an autumn setting."
+creator = "Guste Cibulskyte"
+openverse = "439a115e-defb-479e-9e21-fce37eda001e"
+needs_credit = false
+size = "1365x2048"
+
+[[photos]]
+file = "en/posts/2026-09-19-first-sourdough-loaf/lead.jpg"
+sha256 = "992303046c4dbd2c27d69d67bea0626c35df81a1911e28486a5426c1db30afdd"
+source = "https://wordpress.org/photos/photo/576654da75/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "sourdough loaf of bread by Mary Jane Duford, via wordpress"
+title = "sourdough loaf of bread"
+creator = "Mary Jane Duford"
+openverse = "e1a5c186-f872-4598-8e78-f0ef5e7e9ec3"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-26-packing-light/lead.jpg"
+sha256 = "c9b674552352298cf4f3cfbde3f6f35acd06b831a74ce30a6ed64cefe86c8258"
+source = "https://wordpress.org/photos/photo/513678cf6f/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A person walking on a tree-lined paved pathway, pulling a bright yellow suitcase. by Nilo Velez, via wordpress"
+title = "A person walking on a tree-lined paved pathway, pulling a bright yellow suitcase."
+creator = "Nilo Velez"
+openverse = "36e6f5d2-435a-468e-a165-6820c9aef61a"
+needs_credit = false
+size = "1600x1066"
+
+[[photos]]
+file = "en/posts/2026-10-03-town-cycling/lead.jpg"
+sha256 = "65ef1442e4bdd082c97c13e3884949346ff36150b881b162ae97302e65ec790b"
+source = "https://wordpress.org/photos/photo/92165f572e/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A red vintage bicycle with a basket parked against a modern geometric patterned fence on a stone-paved ground. by Nilo Velez, via wordpress"
+title = "A red vintage bicycle with a basket parked against a modern geometric patterned fence on a stone-paved ground."
+creator = "Nilo Velez"
+openverse = "f19be928-3032-4858-b800-37e7e571a0a7"
+needs_credit = false
+size = "1600x1066"
+
+[[photos]]
+file = "en/posts/2026-10-10-persimmon-recipes/lead.jpg"
+sha256 = "d6f77f6e1db1d31199a1c7c8b7dad37bfead0e8879405c4a71aa4d2df8806eb0"
+source = "https://wordpress.org/photos/photo/9856901e36/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A fresh pile of orange persimmons is stacked in a market fruit display. Red and green apples in the background. Captured at a vegetable shop in Palazhi, Kozhikode. by Bigul Malayi, via wordpress"
+title = "A fresh pile of orange persimmons is stacked in a market fruit display. Red and green apples in the background. Captured at a vegetable shop in Palazhi, Kozhikode."
+creator = "Bigul Malayi"
+openverse = "40a9c034-9240-46ce-bbd2-b473b293802b"
+needs_credit = false
+size = "1536x2048"
+
+[[photos]]
+file = "en/posts/2026-10-17-screen-free-evening/lead.jpg"
+sha256 = "d42580366b2652a7bd16668c280e8a0fa772222d6c42a2f21efc1f9aa3cd500f"
+source = "https://wordpress.org/photos/photo/795630a9da/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Te light and holder by Paal Joachim Romdahl, via wordpress"
+title = "Te light and holder"
+creator = "Paal Joachim Romdahl"
+openverse = "be9bb2ce-6088-4830-8900-b53acc821114"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-24-knit-first-scarf/lead.jpg"
+sha256 = "8ea013db7d3eb367d3309ef16dc21772ddd0b23ed06854a7b8a180f57f01fa2b"
+source = "https://wordpress.org/photos/photo/9226466641/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Wool knitting in progress to make a sweater. My mom does this so well! by Davinder Singh Kainth, via wordpress"
+title = "Wool knitting in progress to make a sweater. My mom does this so well!"
+creator = "Davinder Singh Kainth"
+openverse = "e068f7cf-7a11-43ef-8ecb-10574b01013b"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-31-cold-lake-swims/lead.jpg"
+sha256 = "0aa928ffdd9f86576aa6007eddea77e08bdd5ca621631966e94592ccb893d6e6"
+source = "https://wordpress.org/photos/photo/12261b91fb/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Mountain lake view between trees by annezazu, via wordpress"
+title = "Mountain lake view between trees"
+creator = "annezazu"
+openverse = "3350d30a-55a6-4912-a61f-44de222c294a"
+needs_credit = false
+size = "1600x1067"
