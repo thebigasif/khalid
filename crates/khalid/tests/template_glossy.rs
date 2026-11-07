@@ -97,9 +97,9 @@ fn glossy_front_page() {
 }
 
 /// The only post with a picture is the cover story. The next stories, as
-/// many as `cover_lines` asks for, are its cover lines, and every story
-/// but the cover is a card in the grid; one without a picture is a plain
-/// card.
+/// many as `cover_lines` asks for, are its cover lines, and the grid starts
+/// after them, so no story shows twice; a story without a picture is a
+/// plain card.
 #[test]
 fn the_cover_leads_with_its_cover_lines_and_the_cards_follow() {
     let (_temp, out) = built();
@@ -115,8 +115,11 @@ fn the_cover_leads_with_its_cover_lines_and_the_cards_follow() {
             "What a sitemap does, and what it does not",
         ]
     );
-    assert_eq!(texts(&page, ".gl-grid > .gl-card").len(), 4);
-    assert_eq!(texts(&page, ".gl-grid > .gl-card-plain").len(), 4);
+    assert_eq!(
+        texts(&page, ".gl-grid > .gl-card h3"),
+        ["How to write a title tag", "Why internal links matter"]
+    );
+    assert_eq!(texts(&page, ".gl-grid > .gl-card-plain").len(), 2);
     assert!(texts(&page, ".gl-browse-list a").contains(&"Technical SEO".to_owned()));
     assert!(page.contains("Home, food and travel for slow weekends."));
 }

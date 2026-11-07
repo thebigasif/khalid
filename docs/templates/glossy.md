@@ -46,9 +46,11 @@ The cards crop each picture from the middle to their own shape: wide, tall or sq
 1. **The masthead line.** Your magazine's name large at the start and the `tagline` at the end, over a hairline.
 2. **The cover.** The featured story with a picture, or else the newest one: its picture large on the start side, and beside it on a soft panel a Cover story label, its section, the title, the description and the byline.
 3. **Cover lines.** Under the cover story, the next stories as a short numbered list, as on a printed cover. `cover_lines` sets how many.
-4. **Latest stories.** Every other story in a grid of cards with a repeating rhythm of six: one wide card, one tall card, three square cards, then a band card with its picture beside its text across the page. On a phone the three square cards become rows with a small square picture.
+4. **Latest stories.** The stories after the cover lines in a grid of cards with a repeating rhythm of six: one wide card, one tall card, three square cards, then a band card with its picture beside its text across the page. On a phone the three square cards become rows with a small square picture.
 5. **Browse the sections:** every section as a large rounded link.
 6. Numbered page links, the call to action band and the newsletter form.
+
+Each story shows once: the grid starts after the cover story and the stories in its cover lines. With `cover_lines = 0`, the grid starts with the story after the cover.
 
 Text is never written on a picture. It always sits beside it or under it.
 
@@ -97,7 +99,7 @@ Set any of these under `[template.options]`. An option you leave out takes the d
 | Option | Default | What it changes |
 |---|---|---|
 | `tagline` | none | One line beside the magazine's name on the front page. |
-| `cover_lines` | `3` | How many of the next stories the cover lists, from `0` to `4`. |
+| `cover_lines` | `3` | How many of the next stories the cover lists, from `0` to `4`. The card grid starts after them. |
 | `logo` | `true` | The header shows your logo from `[brand] logo` in place of the site's name. |
 | `breadcrumbs` | `true` | Each page shows the trail of links from the home page to it. |
 | `dek` | `true` | A post shows its description under its title. |

@@ -20,8 +20,8 @@ Glossy adds no front matter. It reads what Khalid already has:
 ## The front page
 
 1. **The masthead line.** The magazine's name as the page's heading at the start, its tagline at the end, over one hairline.
-2. **The cover.** The cover story's picture large on the start side. On the end side, on a soft panel: a "Cover story" label and the section, the title large in the display serif, the excerpt and the byline. Under them, **cover lines**: the next stories in the issue as a short numbered list, as on a printed cover. Nothing is written on the picture.
-3. **Latest stories.** Every other story in a grid of cards with a repeating rhythm of six: one wide card, one tall card, three square cards, then one band card that lays its picture beside its text across the whole frame. Each card has its picture first, then the section, the title, the excerpt on the larger cards, and the date with the reading time.
+2. **The cover.** The cover story's picture large on the start side. On the end side, on a soft panel: a "Cover story" label and the section, the title large in the display serif, the excerpt and the byline. Under them, **cover lines**: the next stories in the issue as a short numbered list, as on a printed cover. Each story shows once on the page. Nothing is written on the picture.
+3. **Latest stories.** The stories after the cover lines, so no story shows twice near the top, in a grid of cards with a repeating rhythm of six: one wide card, one tall card, three square cards, then one band card that lays its picture beside its text across the whole frame. Each card has its picture first, then the section, the title, the excerpt on the larger cards, and the date with the reading time.
 4. **Browse the sections.** Every section as a large rounded link.
 5. The page links, the call to action band and the newsletter.
 

@@ -1,8 +1,8 @@
 {#- Glossy's front page (docs/templates/glossy.md): the masthead line
     (the name as the page's heading and the tagline); the cover, where
     the featured story with a picture, or else the newest one, sits large
-    beside its title and the cover lines; then every other story in the
-    card rhythm (wide, tall, three squares, band) and the sections as
+    beside its title and the cover lines; then the stories after those in
+    the card rhythm, so no story shows twice (wide, tall, three squares, band) and the sections as
     rounded links. Text sits beside or under pictures, never on them.
     With home sections in site.toml, each section is a grid of its own. -#}
 {% extends "base.html" %}
@@ -22,16 +22,18 @@
 {% set pictured = page.posts | selectattr("image") | list -%}
 {% set lead = page.featured if page.featured and page.featured.image else (pictured[0] if pictured else none) -%}
 {% set rest = page.posts | rejectattr("href", "eq", lead.href) | list if lead else page.posts -%}
+{% set lines = rest[:options.cover_lines] if lead else [] -%}
+{% set cards = rest[lines | length:] -%}
 {% if page.sections %}{% for section in page.sections %}<section class="gl-stories" aria-labelledby="gl-section-{{ loop.index }}">
 <h2 id="gl-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ story_grid(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% else %}{% if lead %}{{ cover(lead, rest[:options.cover_lines]) }}
-{% endif %}{% if rest %}<section class="gl-stories" aria-labelledby="gl-latest-title">
+{% endfor %}{% else %}{% if lead %}{{ cover(lead, lines) }}
+{% endif %}{% if cards %}<section class="gl-stories" aria-labelledby="gl-latest-title">
 <h2 id="gl-latest-title">{{ t.latest_stories }}</h2>
-{{ story_grid(rest) }}
+{{ story_grid(cards) }}
 </section>
 {% elif not lead %}<p>{{ t.no_posts }}</p>
 {% endif %}{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
