@@ -45,6 +45,7 @@ mod palette;
 pub mod parts;
 mod plinth;
 mod properties;
+mod quill;
 mod reel;
 mod research;
 mod respawn;
