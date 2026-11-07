@@ -2,8 +2,10 @@
 // reader downloads on each template's demo home page, held to a budget
 // (docs/standards/performance.md, "Page weight").
 //
-// Each home page is opened in Chromium at a 390 px phone and a 1440 px
-// desktop window, both at one device pixel per CSS pixel, and scrolled to
+// Each home page is opened in Chromium three times: at a 390 px phone with
+// three device pixels per CSS pixel, as most phones sold now have, at the
+// same phone with one, and at a 1440 px desktop window with one. Each time
+// it is scrolled to
 // the bottom a window at a time, so every lazy picture loads, as it would
 // for a reader who reads to the end. Every picture the page fetches
 // counts: <img>, <picture> sources, CSS backgrounds and icons. Fonts,
@@ -11,12 +13,15 @@
 //
 // The first picture, the one the page fetches at once with high priority
 // (fetchpriority="high"), is the hero. It is drawn as wide as the page and
-// its size is a design choice, so the phone budget leaves it out. The
+// its size is a design choice, so the phone budgets leave it out. The
 // desktop budget counts it.
 //
 // The budgets are the most any template may download, not a target:
 //
-//   - at 390 px, every picture but the hero together under PHONE_BUDGET;
+//   - at 390 px and 3x, every picture but the hero together under
+//     PHONE_3X_BUDGET, or the template's own line in PHONE_3X_OWN;
+//   - at 390 px and 1x, every picture but the hero together under
+//     PHONE_BUDGET;
 //   - at 1440 px, every picture together under DESKTOP_BUDGET, or the
 //     template's own line in DESKTOP_OWN, which only a template whose
 //     design is large photographs has, with the reason beside it.
@@ -37,19 +42,27 @@ import { createRequire } from "node:module";
 import { answerFrom, builtSites } from "./site-files.mjs";
 
 const KB = 1024;
-// The budgets, in bytes. Set on 2026-11-07 from the measurements in the
-// pull request that added this check (perf/picture-sizes), with about 10
-// to 15% headroom over the heaviest template: Aperture at 237 KB on a
-// phone, and Atlas at 1,136 KB on a desktop, fourteen photographs of which
-// the two lead stories are drawn 808 px wide.
-const PHONE_BUDGET = 270 * KB;
+// The budgets, in bytes. The desktop budget was set on 2026-11-07 from the
+// measurements in the pull request that added this check
+// (perf/picture-sizes), with about 10% headroom over Atlas at 1,136 KB,
+// fourteen photographs of which the two lead stories are drawn 808 px
+// wide. The phone budgets were set the same day once the demos offered
+// AVIF (perf/phone-pictures), with about 10% headroom: at 3x over
+// Itinerary at 561 KB, at 1x over Aperture and Atlas at 125 KB. The 1x
+// budget was 270 KB before.
+const PHONE_3X_BUDGET = 620 * KB;
+const PHONE_BUDGET = 140 * KB;
 const DESKTOP_BUDGET = 1250 * KB;
-// Templates whose design is large photographs, with their own desktop
-// budget. Aperture shows five stories, each one photograph across its
-// 1,296 px frame, measured at 1,875 KB.
+// Templates whose design is large photographs, with their own budget.
+// Aperture shows five stories, each one photograph across its 1,296 px
+// frame, measured at 1,875 KB on a desktop and 734 KB on a phone at 3x.
 const DESKTOP_OWN = { aperture: 2100 * KB };
-const PHONE = 390;
-const DESKTOP = 1440;
+const PHONE_3X_OWN = { aperture: 810 * KB };
+// What is measured: a width in CSS px and the device pixels per CSS pixel.
+// A phone at 3x draws a 326 px card with 978 pixels.
+const PHONE = { width: 390, scale: 3 };
+const PHONE_1X = { width: 390, scale: 1 };
+const DESKTOP = { width: 1440, scale: 1 };
 const PUBLICATION = "-publication";
 const LEFT_OUT = ["-side-contents", "-plain"];
 
@@ -92,10 +105,10 @@ const readToTheEnd = async (tab) => {
   await tab.waitForLoadState("networkidle");
 };
 
-// Every picture the home page of `site` downloads at `width`, as
+// Every picture the home page of `site` downloads in `view`, as
 // { url, bytes, hero }, largest first.
-const measure = async (browser, site, width) => {
-  const context = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+const measure = async (browser, site, view) => {
+  const context = await browser.newContext({ viewport: { width: view.width, height: 900 }, deviceScaleFactor: view.scale });
   await context.route("**/*", answerFrom([site]));
   const tab = await context.newPage();
   const pictures = new Map();
@@ -123,30 +136,38 @@ const playwright = createRequire(import.meta.url)("playwright");
 const browser = await playwright.chromium.launch();
 const rows = [];
 const failures = [];
+// One line of the report: the bytes of `pictures`, with and without the hero.
+const weigh = (pictures) => {
+  const total = sum(pictures);
+  const hero = sum(pictures.filter((p) => p.hero));
+  return { total, hero, rest: total - hero, pictures: pictures.length };
+};
+const heaviest = (pictures) =>
+  pictures
+    .filter((p) => !p.hero)
+    .slice(0, 3)
+    .map((p) => `${short(p.url)} ${kb(p.bytes)}`)
+    .join(", ");
+const named = (view) => (view === DESKTOP ? `${view.width} px` : `${view.width} px and ${view.scale}x`);
 for (const site of sites) {
   const phone = await measure(browser, site, PHONE);
+  const phone1x = await measure(browser, site, PHONE_1X);
   const desktop = await measure(browser, site, DESKTOP);
-  const row = {
-    pack: site.pack,
-    site: site.name,
-    phone: { total: sum(phone), hero: sum(phone.filter((p) => p.hero)), pictures: phone.length },
-    desktop: { total: sum(desktop), hero: sum(desktop.filter((p) => p.hero)), pictures: desktop.length },
-  };
-  row.phone.rest = row.phone.total - row.phone.hero;
+  const row = { pack: site.pack, site: site.name, phone: weigh(phone), phone1x: weigh(phone1x), desktop: weigh(desktop) };
   rows.push(row);
-  console.log(`${site.pack.padEnd(12)} 390 px: ${kb(row.phone.rest).padStart(7)} without the hero (${kb(row.phone.total)} with it, ${row.phone.pictures} pictures)   1440 px: ${kb(row.desktop.total).padStart(7)} (${row.desktop.pictures} pictures)`);
-  const heaviest = (pictures) =>
-    pictures
-      .filter((p) => !p.hero)
-      .slice(0, 3)
-      .map((p) => `${short(p.url)} ${kb(p.bytes)}`)
-      .join(", ");
-  if (row.phone.rest > PHONE_BUDGET) {
-    failures.push(`${site.pack}: at ${PHONE} px its home page downloads ${kb(row.phone.rest)} of pictures besides the hero, over the ${kb(PHONE_BUDGET)} budget. The heaviest: ${heaviest(phone)}.`);
-  }
-  const desktopBudget = DESKTOP_OWN[site.pack] ?? DESKTOP_BUDGET;
-  if (row.desktop.total > desktopBudget) {
-    failures.push(`${site.pack}: at ${DESKTOP} px its home page downloads ${kb(row.desktop.total)} of pictures, over the ${kb(desktopBudget)} budget. The heaviest: ${heaviest(desktop)}.`);
+  console.log(
+    `${site.pack.padEnd(12)} 390 px 3x: ${kb(row.phone.rest).padStart(7)} without the hero (${kb(row.phone.total)} with it, ${row.phone.pictures} pictures)` +
+      `   1x: ${kb(row.phone1x.rest).padStart(7)} (${kb(row.phone1x.total)})   1440 px: ${kb(row.desktop.total).padStart(7)} (${row.desktop.pictures} pictures)`,
+  );
+  const checks = [
+    [PHONE, phone, row.phone.rest, PHONE_3X_OWN[site.pack] ?? PHONE_3X_BUDGET, " besides the hero"],
+    [PHONE_1X, phone1x, row.phone1x.rest, PHONE_BUDGET, " besides the hero"],
+    [DESKTOP, desktop, row.desktop.total, DESKTOP_OWN[site.pack] ?? DESKTOP_BUDGET, ""],
+  ];
+  for (const [view, pictures, bytes, budget, besides] of checks) {
+    if (bytes > budget) {
+      failures.push(`${site.pack}: at ${named(view)} its home page downloads ${kb(bytes)} of pictures${besides}, over the ${kb(budget)} budget. The heaviest: ${heaviest(pictures)}.`);
+    }
   }
 }
 await browser.close();
@@ -165,4 +186,7 @@ if (failures.length > 0) {
   );
   process.exit(1);
 }
-console.log(`\nEvery home page is inside the page-weight budgets: under ${kb(PHONE_BUDGET)} at ${PHONE} px without the hero, and under ${kb(DESKTOP_BUDGET)} at ${DESKTOP} px (Aperture ${kb(DESKTOP_OWN.aperture)}).`);
+console.log(
+  `\nEvery home page is inside the page-weight budgets without the hero: under ${kb(PHONE_3X_BUDGET)} at ${named(PHONE)} (Aperture ${kb(PHONE_3X_OWN.aperture)})` +
+    ` and under ${kb(PHONE_BUDGET)} at ${named(PHONE_1X)}; and with it under ${kb(DESKTOP_BUDGET)} at ${named(DESKTOP)} (Aperture ${kb(DESKTOP_OWN.aperture)}).`,
+);

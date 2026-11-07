@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 # The page-weight check: the bytes of pictures each template's demo home
-# page downloads, at 390 and 1440 px in Chromium, held to the budgets in
+# page downloads, at 390 px with 3 and with 1 device pixel per CSS pixel
+# and at 1440 px with 1, in Chromium, held to the budgets in
 # docs/standards/performance.md ("Page weight"). scripts/demo-check/weight.mjs
 # does the measuring and says what each budget means.
 #
 # Each pack is built as its demo is published: its ready demo publication
-# where it has one, in its sample brand, as a static site.
+# where it has one, in its sample brand, as a static site, with its
+# pictures in AVIF too (scripts/demo-media.sh). With an empty picture cache
+# the first build makes every AVIF file, which takes a few minutes.
 #
 # Needs Node 22 or later and the pinned tools, with Chromium:
 #   npm install --prefix scripts/demo-check

@@ -38,6 +38,8 @@ while [ $# -gt 0 ]; do
 done
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=demo-media.sh
+source "$root/scripts/demo-media.sh"
 khalid="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
 out="$2"
 address="${3:-https://thebigasif.github.io}"
@@ -165,8 +167,11 @@ build() {
   fi
   if [ "$into" != "." ]; then
     noindex "$site/site.toml"
+    # The demos offer their pictures in AVIF too, made once for them all.
+    demo_media_in "$site"
   fi
   "$khalid" --site "$site" build
+  demo_media_out "$site"
   # Project pages cannot serve files at the host root.
   rm -rf "$site/public/_root"
   if [ -n "$canonical" ]; then
