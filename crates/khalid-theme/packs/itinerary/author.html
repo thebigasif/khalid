@@ -4,12 +4,13 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture %}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "icons.html" import profiles %}
 {% from "card.html" import pages -%}
 {% from "sections/people_grid.html" import people_grid -%}
 <article class="author">
 <header class="author-header">
-{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
 {% endif %}<div class="author-intro">
 <h1>{{ page.name }}</h1>
 {% if page.role %}<p class="author-role">{{ page.role }}</p>
@@ -26,7 +27,7 @@
 <h2 id="author-posts">{{ t.trip_diaries }}</h2>
 {% if page.posts %}<ul class="tickets" role="list">
 {% for post in page.posts %}<li><article class="ticket">
-{% if post.image %}<div class="ticket-photo">{{ picture(post.image) }}</div>
+{% if post.image %}<div class="ticket-photo">{{ picture(post.image, slot_sizes("ticket")) }}</div>
 {% endif %}<div class="ticket-main">
 {% if post.category %}<p class="ticket-country">{{ post.category.name }}</p>
 {% endif %}<h3 class="ticket-title"><a href="{{ post.href }}">{{ post.title }}</a></h3>

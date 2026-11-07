@@ -19,6 +19,7 @@ pub(crate) static CHAPTER: Pack = Pack {
     summary: "For an author: the newest book beside its cover, the books as a shelf of covers, excerpts and essays as a book's contents page, and events as dated rows. Excerpts are set as a page of the book.",
     css: PackText::file("chapter/chapter.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "chapter/picture_sizes.html"),
         PackTemplate::file("home.html", "chapter/home.html"),
         PackTemplate::file("post.html", "chapter/post.html"),
         PackTemplate::file("listing.html", "chapter/listing.html"),

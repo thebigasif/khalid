@@ -1,5 +1,5 @@
-{#- video_grid(posts, level=3, numbered=false, shelf=false): posts as
-    thumbnail cards, each with its picture, the play bar under it, its
+{#- video_grid(posts, level=3, numbered=false, shelf=false, sizes=none):
+    posts as thumbnail cards, each with its picture, the play bar under it, its
     title, date and category. The play bar is a track with a play mark at
     its start and the post's first fact, its running time, at its end,
     under the picture, never on it. A post without facts, such as a
@@ -7,13 +7,14 @@
     without a picture has a plain frame of the same shape. With numbered
     set, each title first says its place, "Part 1" and on, as on a series
     page. With shelf set, the cards sit in one row that scrolls sideways.
-    Titles use a heading of `level`. -#}
+    Titles use a heading of `level`.
+    `sizes` is how wide the pack draws each picture (README.md). -#}
 {% from "image.html" import picture -%}
-{% macro video_grid(posts, level=3, numbered=false, shelf=false) -%}
+{% macro video_grid(posts, level=3, numbered=false, shelf=false, sizes=none) -%}
 {% if shelf %}<ul class="video-grid video-shelf" role="list">
 {% else %}<ul class="video-grid" role="list">
 {% endif %}{% for post in posts %}<li class="video-card">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, sizes) }}
 {% else %}<div class="video-blank" aria-hidden="true"></div>
 {% endif %}{% if post.facts %}<p class="play-bar"><span class="play-mark" aria-hidden="true"></span><span class="play-track" aria-hidden="true"></span><span class="play-time"><span class="play-label">{{ post.facts[0].label }}</span> {{ post.facts[0].value }}</span></p>
 {% else %}<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>

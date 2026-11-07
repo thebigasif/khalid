@@ -102,7 +102,7 @@
 {% for post in page.related[:template.options.related_count] %}<li class="sheet-frame">
 <article>
 <a class="sheet-link" href="{{ post.href }}">
-{% if post.image %}{{ frame(post.image, "(min-width: 48rem) 18rem, 70vw", false) }}
+{% if post.image %}{{ frame(post.image, "12rem", false) }}
 {% else %}<span class="sheet-blank" aria-hidden="true"></span>
 {% endif %}<h3 class="sheet-title">{{ post.title }}</h3>
 </a>

@@ -15,6 +15,7 @@ pub(crate) static ATELIER: Pack = Pack {
     summary: "For a fashion label, stylist or fashion writer: a lookbook of numbered looks, each a tall picture with the pieces worn beside or under it, collections, a journal of notes and posts that open as a two-page spread.",
     css: PackText::file("atelier/atelier.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "atelier/picture_sizes.html"),
         PackTemplate::file("home.html", "atelier/home.html"),
         PackTemplate::file("post.html", "atelier/post.html"),
         PackTemplate::file("listing.html", "atelier/listing.html"),

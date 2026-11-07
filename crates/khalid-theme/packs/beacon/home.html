@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -16,9 +17,9 @@
 {% from "sections/figure_strip.html" import figure_strip -%}
 {% from "sections/feed_list.html" import feed_list -%}
 {% from "sections/goal_meter.html" import goal_meter -%}
-{% macro campaign_card(post, level=3) -%}
+{% macro campaign_card(post, level=3, sizes=none) -%}
 <article class="bc-card">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, sizes or slot_sizes("card")) }}
 {% endif %}<div class="bc-card-text">
 {% if post.category %}<p class="bc-area"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
 {% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
@@ -39,7 +40,7 @@
 {% endif %}{% endcall %}
 {% if lead %}<section class="bc-appeal" aria-labelledby="bc-appeal-title">
 <h2 id="bc-appeal-title" class="bc-label">{{ t.appeal_now }}</h2>
-{{ campaign_card(lead) }}
+{{ campaign_card(lead, sizes=slot_sizes("appeal")) }}
 </section>
 {% endif %}</div>
 {% if options.hero_stats %}<section class="bc-impact" aria-labelledby="bc-impact-title">

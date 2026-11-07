@@ -281,8 +281,9 @@ jobs:
   # floor, and axe and the layout checks at six widths, with scripts on and
   # then off. A page that breaks with scripts off fails here. Then the
   # layout check: the showcase in every template pack in Chromium, Firefox
-  # and WebKit at 390, 768 and 1440 px. Slow, so on pull requests only, and
-  # not a required check.
+  # and WebKit at 390, 768 and 1440 px. Then the page-weight budgets on
+  # each template's demo home page. Slow, so on pull requests only, and not
+  # a required check.
   demo:
     name: Demo check
     runs-on: ubuntu-latest
@@ -331,6 +332,18 @@ jobs:
       - name: Layout check
         if: success() || failure()
         run: ./scripts/layout-check.sh
+      # The pictures each template's demo home page downloads, at 390 and
+      # 1440 px, against the page-weight budgets in
+      # docs/standards/performance.md. It measures the sites the layout
+      # check built, or builds them when that check stopped before it did.
+      - name: Page weight
+        if: success() || failure()
+        run: |
+          if [ -d target/layout-check/sites ]; then
+            ./scripts/page-weight.sh --sites target/layout-check/sites
+          else
+            ./scripts/page-weight.sh
+          fi
       - name: Keep the reports
         if: failure()
         uses: actions/upload-artifact@v7
@@ -341,6 +354,7 @@ jobs:
             target/demo-check/serve.log
             target/layout-check/report.json
             target/layout-check/shots
+            target/page-weight/report.json
           if-no-files-found: ignore
 
   # The Astro and Next.js starter kits (U14, R12), built against the

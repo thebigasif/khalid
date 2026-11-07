@@ -21,6 +21,7 @@ pub(crate) static HUB: Pack = Pack {
     summary: "A creator's link-in-bio home: the creator's photo and name, a stack of large link buttons, then the latest posts, all in one narrow column.",
     css: PackText::file("hub/hub.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "hub/picture_sizes.html"),
         PackTemplate::file("home.html", "hub/home.html"),
         PackTemplate::file("post.html", "hub/post.html"),
     ],

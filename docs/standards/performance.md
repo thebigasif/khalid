@@ -19,6 +19,8 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 | Largest Contentful Paint, demo site on a 5 dollar VPS class runner | under 1 s | none | Lighthouse CI |
 | Cumulative Layout Shift | 0 | none | Lighthouse CI |
 | Public CSS, compressed | under 20 KB | 5% | size of the built stylesheet |
+| Pictures on a template's demo home page, 390 px, without the hero | under 270 KB | none | `scripts/page-weight.sh`, see "Page weight" |
+| Pictures on a template's demo home page, 1440 px | under 1,250 KB (Aperture 2,100 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
 | JavaScript required to read a post | 0 bytes | none | scripts-off test |
 | Admin initial JavaScript, compressed | under 350 KB | 5% | Vite build report |
 | Test suite, CI | under 4 min | none | job time |
@@ -209,6 +211,42 @@ On 2026-11-02 integration branch 30 merged with main built 31,525,496 bytes on t
 | Plus `khalid-seo` and the share image stack (`khalid-share-image`, `rustybuzz`, `tiny-skia`, `ttf-parser`) at `"z"`, linter at 3 (kept) | 31,032,440 | 200,832 more |
 
 All kept: 31,032,440 bytes, 493,056 less than before. The linter stays at 3: at `"s"` lint one post took 14.89 and 14.77 ms against 8.87 and 9.01 ms at 3, back to back. With every kept change `scripts/perf.sh` measured idle memory 49.39 MB, lint one post 9.04 ms, a full 10,000-post rebuild 14.84 s and the first byte 64.36 ms, every budget held.
+
+## Page weight
+
+Pictures are most of what a reader downloads. Every picture is offered in several widths (`srcset`), and its `sizes` tells the browser how wide the page draws it, so the browser fetches the smallest file that fills the slot. A `sizes` wider than the slot fetches a bigger file than it draws. One narrower makes the picture blurry.
+
+### How a template says its widths
+
+- The `picture` macro takes `sizes` as an optional second argument: `picture(post.image, "(min-width: 64rem) 22rem, 90vw")`. Called with the image alone, as before, the image keeps its own `sizes`: the text column for a post's lead image (`(min-width: 48rem) 48rem, 100vw`), and on a card a small card width, `(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw` (`CARD` in `crates/khalid/src/post_photos.rs`). A slot drawn wider than a card, such as a lead story across the page, must pass its width.
+- `cards`, `featured_slot` and the section parts that draw pictures (`picture_grid`, `poster_grid`, `cover_shelf`, `session_cards`, `spread`, `video_grid`) take `sizes=none` last and hand it on.
+- Each pack keeps its widths in one file, `crates/khalid-theme/packs/<pack>/picture_sizes.html`, as the macro `slot_sizes(place, shape)`. The shared templates ask it for their places (`lead`, `related`, `featured`, `home`, `panel`, `list`, `author`, `photo`, listed in `crates/khalid-render/templates/picture_sizes.html`), and the pack's own templates add their own places, such as `lead_story` or `shelf`. The shared default holds Classic's widths.
+- The widths were measured, not guessed: each pack's demo was opened in Chromium at every width from 320 to 2560 px (8 px apart up to 1120 px, then 16 px), the drawn width of every picture recorded, and each slot given the smallest `sizes` that is never narrower than what is drawn and at most a quarter wider. Measure again the same way when a stylesheet moves a picture.
+- When the same post shows in two slots of one page, such as Channel's playlist shelves and its latest videos, the smaller slot says the larger one's width, so the browser fetches each picture once and not twice at two widths.
+
+### The budget
+
+`scripts/page-weight.sh` (with `scripts/demo-check/weight.mjs`) builds each template's demo as it is published, its ready demo publication in its sample brand, and opens the home page in Chromium at 390 px and at 1440 px, one device pixel per CSS pixel. It scrolls to the bottom so every lazy picture loads, and adds up the bytes of every picture the page downloads. CI runs it in the demo job after the layout check, on the sites the layout check built.
+
+| Measure | Budget |
+|---|---|
+| 390 px, every picture but the hero (the first picture, fetched with high priority) | under 270 KB |
+| 1440 px, every picture | under 1,250 KB |
+| 1440 px, Aperture, whose design is five photographs across a 1,296 px frame | under 2,100 KB |
+
+The budgets were set on 2026-11-07 with about 10 to 15% headroom over the heaviest template after the change below: Aperture at 237 KB on a phone, and Atlas at 1,136 KB on a desktop. A template over a budget almost always tells the browser a slot is wider than it is. The failure names the heaviest pictures and what to fix. A budget is never raised to make the check pass; a new budget is a deliberate change in its own pull request with the reason.
+
+### Measured on 2026-11-07
+
+The 31 template demos together, before and after each slot said its own width, in KB of pictures:
+
+| Width | Before | After |
+|---|---|---|
+| 390 px, all pictures | 4,317 | 3,685 |
+| 390 px, without the hero | 3,698 | 3,096 |
+| 1440 px, all pictures | 13,136 | 7,901 |
+
+Per template numbers are in the pull request that added the check (perf/picture-sizes). Keystone's desktop page grew from 558 to 601 KB and Atlas's from 1,106 to 1,136 KB, because their lead stories are drawn wider than the old 48rem said and were blurry; they now fetch a file as wide as they are drawn.
 
 ## Fast to build
 

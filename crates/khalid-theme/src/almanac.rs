@@ -13,6 +13,7 @@ pub(crate) static ALMANAC: Pack = Pack {
     summary: "For a library of long guides: category links, a featured guide, a grid of guides beside the editor's picks, and posts with an \"On this page\" box and two sets of further reading.",
     css: PackText::file("almanac/almanac.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "almanac/picture_sizes.html"),
         PackTemplate::file("home.html", "almanac/home.html"),
         PackTemplate::file("post.html", "almanac/post.html"),
     ],

@@ -4,6 +4,7 @@
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "card.html" import cards -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "comments.html" import comments_section -%}
 {% from "series.html" import series_box, series_steps -%}
 {% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
@@ -36,7 +37,7 @@
 {% endif %}{% if "reading_time" in site.features %}<p class="reading-time"><time datetime="PT{{ page.reading_time.minutes }}M">{{ t.reading_time | replace("{minutes}", page.reading_time.minutes | string) }}</time></p>
 {% endif %}{% if page.category %}<p>{{ t.in_category }} <a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
 {% endif %}</div>
-{% if page.image %}{{ picture(page.image) }}
+{% if page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>
@@ -79,8 +80,8 @@
 {% for post in shown %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
 {% endfor %}</ul>
 {% elif layout == "list" %}{{ cards(shown, 3, "text") }}
-{% elif layout == "row" %}{{ cards(shown, 3, "row") }}
-{% elif layout == "scroll" %}{{ cards(shown, 3, "image") }}
-{% else %}{{ cards(shown, 3) }}
+{% elif layout == "row" %}{{ cards(shown, 3, "row", sizes=slot_sizes("related", "row")) }}
+{% elif layout == "scroll" %}{{ cards(shown, 3, "image", sizes=slot_sizes("related", "scroll")) }}
+{% else %}{{ cards(shown, 3, sizes=slot_sizes("related", "grid")) }}
 {% endif %}</section>
 {% endif %}{% endblock %}

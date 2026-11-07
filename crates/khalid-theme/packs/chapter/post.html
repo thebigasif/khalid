@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
@@ -34,7 +35,7 @@
 {% endset %}{% endif -%}
 {% if side and placement == "side-start" %}<article data-kind="{{ kind }}" class="post post-with-toc post-toc-start">{% elif side %}<article data-kind="{{ kind }}" class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article data-kind="{{ kind }}" class="post post-toc-folded">{% else %}<article data-kind="{{ kind }}" class="post">{% endif %}
 {% if is_book and page.image %}<header class="post-header book-header">
-<div class="book-cover">{{ picture(page.image) }}</div>
+<div class="book-cover">{{ picture(page.image, slot_sizes("book")) }}</div>
 <div class="book-about">{% else %}<header class="post-header">
 {% endif %}{% if page.category %}<p class="post-kind"><a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
 {% endif %}<h1>{{ page.title }}</h1>
@@ -54,7 +55,7 @@
 {% if order %}<p class="ch-actions"><a class="button" href="{{ last.value }}">{{ last.label }}</a></p>
 {% endif %}{% endif %}{% if is_excerpt %}<p class="ch-ornament" aria-hidden="true">&#8258;</p>
 {% endif %}{% if is_book and page.image %}</div>
-{% elif page.image %}{{ picture(page.image) }}
+{% elif page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>

@@ -10,6 +10,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
@@ -50,7 +51,7 @@
 <dd>{% if loop.index == 3 and fact.value is startingwith("10.") %}<a href="https://doi.org/{{ fact.value }}">{{ fact.value }}</a>{% elif loop.index == 3 and fact.value is startingwith("https://") %}<a href="{{ fact.value }}">{{ fact.value | replace("https://", "") }}</a>{% else %}{{ fact.value }}{% endif %}</dd>
 </div>
 {% endfor %}</dl>
-{% endif %}{% if page.image %}{{ picture(page.image) }}
+{% endif %}{% if page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>

@@ -14,7 +14,10 @@ pub(crate) static ATLAS: Pack = Pack {
     name: "atlas",
     summary: "A publication for a blog with many topics: a masthead, featured stories, picture cards and a topic index.",
     css: PackText::file("atlas/atlas.css"),
-    templates: &[PackTemplate::file("home.html", "atlas/home.html")],
+    templates: &[
+        PackTemplate::file("picture_sizes.html", "atlas/picture_sizes.html"),
+        PackTemplate::file("home.html", "atlas/home.html"),
+    ],
     tokens: include_str!("../packs/atlas/tokens.toml"),
     reader: &[],
     options: &[

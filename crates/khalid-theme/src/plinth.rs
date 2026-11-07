@@ -14,6 +14,7 @@ pub(crate) static PLINTH: Pack = Pack {
     summary: "For an architecture or interiors practice: projects as spreads with a photograph and a title block of their facts, plans framed as numbered drawing sheets, studio notes, types of work and a people page.",
     css: PackText::file("plinth/plinth.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "plinth/picture_sizes.html"),
         PackTemplate::file("home.html", "plinth/home.html"),
         PackTemplate::file("post.html", "plinth/post.html"),
         PackTemplate::file("listing.html", "plinth/listing.html"),

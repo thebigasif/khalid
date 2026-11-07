@@ -11,6 +11,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
@@ -48,7 +49,7 @@
 {% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
 {% endif %}</div>
 {% if facts %}<div class="lc-glance-row">
-{% if page.image %}{{ picture(page.image) }}
+{% if page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}<section class="lc-glance" aria-labelledby="lc-glance-title">
 <h2 id="lc-glance-title">{{ t.at_a_glance }}</h2>
 {% if facts[1] is defined %}<p class="lc-glance-price">{{ price_meter(facts[1]) }}</p>
@@ -60,7 +61,7 @@
 {% endif %}{% endfor %}</dl>
 </section>
 </div>
-{% elif page.image %}{{ picture(page.image) }}
+{% elif page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>

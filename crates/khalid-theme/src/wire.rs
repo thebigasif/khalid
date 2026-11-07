@@ -12,6 +12,7 @@ pub(crate) static WIRE: Pack = Pack {
     summary: "A news and columns site: a lead story beside the latest headlines, a dated feed with the editor's picks in a rail, and posts that open with a subtitle and the writer's card.",
     css: PackText::file("wire/wire.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "wire/picture_sizes.html"),
         PackTemplate::file("home.html", "wire/home.html"),
         PackTemplate::file("post.html", "wire/post.html"),
     ],
