@@ -309,3 +309,19 @@ How `scripts/perf.sh` takes the four measures added for brief G9, all through `k
 - **Cached post page**: one post page of the 1,000-post site, asked for once so it is cached, then over 50 keep-alive connections for 30 seconds, `oha`'s defaults, with the client on the same machine (`khalid-perf requests`).
 - **Public CSS, compressed**: the Brotli copy of each stylesheet the built home page links, from the 10,000-post build (`khalid-perf sizes`).
 - **Admin initial JavaScript, compressed**: each script `admin/dist/index.html` loads at once (`<script src>` and `modulepreload`), gzipped at level 9 as `admin/scripts/size-budget.mjs` counts. `perf.sh` does not run npm, so it is measured only when `admin/dist` holds a build; otherwise the gate lists it as not measured.
+
+## Demo bundle
+
+`khalid-demos.tar.gz`, which serpdad.com/khalid/ is built from, has a budget of **725 MB** (MB of 1,000,000 bytes). `scripts/demos-bundle.sh` fails the Pages build when the archive is over it, and `scripts/demos-bundle.sh --check khalid-demos.tar.gz` checks a downloaded one. A budget is never raised to make the build pass.
+
+Before it packs, the bundle step leaves out every raster picture that only structured data names, such as the original photo in each post's folder, and takes it out of that structured data. Pages load the sized copies in `media/` instead. It then fails if a page, stylesheet, feed or `templates.json` names a picture, video or sound the bundle does not hold.
+
+Measured on 2026-11-07 (perf/demo-bundle):
+
+| Bundle | Archive |
+|---|---|
+| Published, before AVIF reached the demos | 600.5 MB |
+| Main with AVIF and 1,152 px, no pruning | 835.7 MB |
+| Main with pruning (498 originals, 141.1 MB, left out) | 704.9 MB |
+
+The budget is that result with about 3% headroom. What stays is nearly all pictures pages load: WebP 354 MB, AVIF 187 MB, the 1,280 px JPEG fallback 127 MB and the share cards 59 MB, unpacked. A browser picks almost every width: across viewports 320 to 2,560 px at 1x to 3x, only 4 MB of files are never a browser's choice. A smaller bundle needs fewer formats, not fewer widths.
