@@ -51,7 +51,12 @@ mkdir -p "$work"
 "$perf" fixture 10000 "$work/site-10k"
 "$perf" render "$work/site-1k" "$work/render.json"
 "$perf" lint "$work/site-1k" "$work/lint.json"
-"$perf" serve "$bin" 1000 "$work/site-1k" "$work/serve-1k.json"
+# PERF_SERVE_RUNS measures the 1,000-post server that many times (default
+# 1), and each of its measures is the median of the runs. CI on main and
+# nightly uses 5, so one slow cold start on a shared runner does not fail.
+for run in $(seq "${PERF_SERVE_RUNS:-1}"); do
+  "$perf" serve "$bin" 1000 "$work/site-1k" "$work/serve-1k-$run.json"
+done
 "$perf" serve "$bin" 10000 "$work/site-10k" "$work/serve-10k.json"
 "$perf" requests "$bin" 1000 "$work/site-1k" "$work/requests.json"
 
@@ -100,6 +105,8 @@ def read(name):
 
 
 render = read("render.json")
+serve_runs = [read(name) for name in sorted(os.listdir(work)) if name.startswith("serve-1k-")]
+serve = {name: statistics.median(run[name] for run in serve_runs) for name in serve_runs[0]}
 measures = {
     "binary_size_bytes": os.path.getsize(binary),
     "cold_start_help_ms": round(statistics.median(help_runs), 2),
@@ -109,7 +116,7 @@ measures = {
     **read("lint.json"),
     **read("requests.json"),
     **read("sizes.json"),
-    **read("serve-1k.json"),
+    **serve,
 }
 # The 10,000-post site's server measures, reported beside the gate.
 observed = {f"{name}_10k": value for name, value in read("serve-10k.json").items()}

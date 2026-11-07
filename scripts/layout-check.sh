@@ -57,6 +57,17 @@ mkdir -p "$work/sites"
 
 packs="$(showcase_packs "$bin" "$work")"
 [ -n "$packs" ] || stop "This Khalid did not list its templates, so there is nothing to check. Check that $bin runs."
+# With --packs, only those packs are built, as only they are checked.
+only=""
+previous=""
+for argument in "$@"; do
+  [ "$previous" = "--packs" ] && only="$argument"
+  previous="$argument"
+done
+if [ -n "$only" ]; then
+  packs="$(for pack in $packs; do [[ ",$only," == *",$pack,"* ]] && echo "$pack"; done || true)"
+  [ -n "$packs" ] || stop "None of the packs named in --packs ($only) is a template this Khalid has. Name packs it lists."
+fi
 
 for pack in $packs; do showcase_start "$bin" "$work" "$pack" "$pack" brand; done
 showcase_finish
