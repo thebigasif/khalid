@@ -1,0 +1,2 @@
+Added
+- The Brief template, for a short daily or weekly digest newsletter. Every page is one narrow sheet on a tinted desk. The front page leads with the latest issue and a tick for each of its items, then lists earlier issues as dated rows. Inside an issue, each item's number hangs in the margin and the link that ends each item carries an arrow. A post's first fact is its issue number and its second the number of items.

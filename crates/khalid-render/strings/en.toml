@@ -470,3 +470,11 @@ gallery_number = "No. {number}"
 gallery_checklist = "List of works"
 gallery_project = "About the project"
 gallery_more = "More work"
+# The brief template: a digest's issue number, its item count, the
+# editions on the front page and the line that ends an issue. {number}
+# and {count} are filled in.
+brief_issue = "No. {number}"
+brief_items = "{count} items"
+brief_items_one = "1 item"
+brief_editions = "Editions"
+brief_end = "That's the brief. See you next issue."
