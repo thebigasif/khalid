@@ -56,14 +56,16 @@ fn build(site: &Path) -> (Output, PathBuf) {
     (output, out)
 }
 
-/// The text of the one stylesheet the build wrote.
+/// The text of the whole stylesheet the build wrote, which holds every
+/// page's own.
 #[cfg(test)]
 fn stylesheet(out: &Path) -> String {
     let assets = at(out, "assets");
     let css = fs::read_dir(&assets)
         .unwrap()
         .map(|entry| entry.unwrap().path())
-        .find(|path| path.extension().is_some_and(|ext| ext == "css"))
+        .filter(|path| path.extension().is_some_and(|ext| ext == "css"))
+        .max_by_key(|path| fs::metadata(path).unwrap().len())
         .unwrap();
     fs::read_to_string(css).unwrap()
 }

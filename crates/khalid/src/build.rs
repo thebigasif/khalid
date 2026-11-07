@@ -5,6 +5,7 @@
 //! files in its page's folder. A headless site gets those files and no
 //! HTML.
 
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::{self, Path, PathBuf};
 
@@ -16,6 +17,7 @@ use khalid_render::{Asset, Renderer, Tokens};
 use khalid_routes::Routes;
 use serde::Serialize;
 
+use crate::assets::PageStylesheets;
 use crate::build_pages::LanguagePages;
 use crate::cli::Output;
 use crate::exit::Exit;
@@ -98,10 +100,11 @@ pub(crate) fn into_folder(
     Ok(Built { pages, left_out })
 }
 
-/// The renderer and stylesheet of the look `config` chose, and the tokens
-/// the share images take, for a site with pages. A headless site gets no
-/// renderer and the default tokens, and its theme is never read.
-fn theme(site: &Path, config: &Config) -> Result<(Option<(Renderer, Asset)>, Tokens), UserMessage> {
+/// The renderer and stylesheet of the look `config` chose, with each
+/// page's own stylesheet made from it, and the tokens the share images
+/// take, for a site with pages. A headless site gets no renderer and the
+/// default tokens, and its theme is never read.
+fn theme(site: &Path, config: &Config) -> Result<(Option<Theme>, Tokens), UserMessage> {
     if !config.mode().has_pages() {
         return Ok((None, Tokens::default()));
     }
@@ -111,7 +114,10 @@ fn theme(site: &Path, config: &Config) -> Result<(Option<(Renderer, Asset)>, Tok
         .map_err(|error| build_message::render(&error))?
         .with_brand(&tokens.brand);
     let css = assets::site_stylesheet(site, &look)?;
-    Ok((Some((renderer, css)), tokens))
+    let whole = String::from_utf8_lossy(css.body());
+    let look_rules = (&tokens, look.pack().stylesheet());
+    let sheets = PageStylesheets::new(config, &assets::href(config, &css), look_rules, &whole);
+    Ok((Some((renderer, css, sheets)), tokens))
 }
 
 /// The pages of every language. With a theme, they link its stylesheet
@@ -133,6 +139,9 @@ fn language_pages(
     Ok(languages)
 }
 
+/// The renderer, the whole stylesheet and each page's own stylesheet.
+type Theme = (Renderer, Asset, PageStylesheets);
+
 /// Renders every page into `out`, then writes the stylesheet they link and
 /// the site's files beside them, and says how many pages were written. A
 /// headless site gets the files only, and its theme is never read (ADR
@@ -148,13 +157,13 @@ fn build(
     let content = &*charts::read(site, content);
     let (theme, tokens) = theme(site, config)?;
     let today = clock.now().date_naive();
-    let styled = theme.as_ref().map(|(_, css)| (css, &tokens));
+    let styled = theme.as_ref().map(|(_, css, _)| (css, &tokens));
     let mut languages = language_pages(site, (config, routes), content, styled, today)?;
-    let renderer = theme.as_ref().map(|(renderer, _)| renderer);
+    let renderer = theme.as_ref().map(|(renderer, ..)| renderer);
     static_mode::comments(config, &mut languages);
     post_lock::lock(config, content, renderer, &mut languages);
     let categories = categories::of(site)?;
-    if let Some((renderer, _)) = &theme {
+    if let Some((renderer, ..)) = &theme {
         search_page::add(config, renderer, &mut languages)?;
         archive_pages::add(site, config, (renderer, today), &mut languages)?;
         let sources = (content, categories.as_slice());
@@ -193,19 +202,11 @@ fn build(
     let mut written = 0;
     let locks = static_mode::locks(config.mode())?;
     let code = PageCode::new(config, HeadNonce::Static);
-    if let Some((renderer, css)) = &theme {
+    if let Some((renderer, css, sheets)) = &theme {
         write_asset(out, css)?;
         write_asset(out, &assets::reader_with_copies()?)?;
         write_fonts(site, &tokens, out)?;
-        for language in &languages {
-            for page in &language.pages {
-                let html = page.rendered(renderer, &language.site, &code)?;
-                let html =
-                    static_mode::lock(locks.as_ref(), html, &language.site.locale, &page.file)?;
-                write(out, &page.file, &html)?;
-                written += 1;
-            }
-        }
+        written = write_html(out, (renderer, sheets), &languages, (locks.as_ref(), &code))?;
     }
     let redirects = build_redirects::file(site, config, routes, content)?;
     let redirects = archives_off::with_redirects(redirects, &gone);
@@ -277,6 +278,38 @@ fn write_asset(out: &Path, asset: &Asset) -> Result<(), UserMessage> {
         fs::write(&file, bytes).map_err(|error| build_message::write(&file, &error))?;
     }
     Ok(())
+}
+
+/// Writes each page of `languages` into `out`, linking its own stylesheet
+/// from `sheets`, then the stylesheets the pages link, and says how many
+/// pages were written.
+fn write_html(
+    out: &Path,
+    (renderer, sheets): (&Renderer, &PageStylesheets),
+    languages: &[LanguagePages],
+    (locks, code): (Option<&khalid_static::Locks>, &PageCode),
+) -> Result<usize, UserMessage> {
+    let mut written = 0;
+    let mut linked = BTreeMap::new();
+    for language in languages {
+        for page in &language.pages {
+            let html = page.rendered(renderer, &language.site, code)?;
+            let html = static_mode::lock(locks, html, &language.site.locale, &page.file)?;
+            let (html, sheet) = sheets.fit(html);
+            if let Some(sheet) = sheet {
+                linked.entry(sheet.name().to_owned()).or_insert(sheet);
+            }
+            write(out, &page.file, &html)?;
+            written += 1;
+        }
+    }
+    for sheet in linked.values() {
+        let body = sheet.text().as_bytes().to_vec();
+        let built = Asset::build("site", "css", "text/css; charset=utf-8", body)
+            .map_err(|error| build_message::render(&error))?;
+        write_asset(out, &built)?;
+    }
+    Ok(written)
 }
 
 /// `relative` inside `folder`. Every `relative` here is a fixed name, or a

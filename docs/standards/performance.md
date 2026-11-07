@@ -356,3 +356,24 @@ Measured on 2026-11-07 (perf/demo-bundle):
 | Main with pruning and the 18 templates of batch 5 (49 demos; 696 originals, 205.6 MB, left out) | 1,024.4 MB |
 
 The budget is the last result, what Pages publishes once batch 5 lands, with about 3% headroom. What stays is nearly all pictures pages load: with batch 5, WebP 514 MB, AVIF 271 MB, the 1,280 px JPEG fallback 185 MB and the share cards 83 MB, unpacked. A browser picks almost every width: across viewports 320 to 2,560 px at 1x to 3x, only 4 MB of files are never a browser's choice. A smaller bundle needs fewer formats, not fewer widths.
+
+## CSS weight
+
+Budget: each page downloads at most 10 KB of CSS, all the stylesheets it links together, compressed with Brotli at its best quality as Khalid serves them. It holds for the home page, a post, a category page and an author page of every template.
+
+How it is held:
+
+- **Each page links the rules it uses** (ADR "each page links the rules it uses"). After a page is rendered, the rules whose selectors name a class none of its elements has are left out of its stylesheet. Pages with the same classes share one sheet. The site's own rules in `theme/site.css` and the classes the reader script adds stay on every page.
+- **`crates/khalid/tests/css_weight.rs`** builds the showcase site in every template, in its sample brand, and fails when one of the four pages links more than 10 KB. It runs with the other tests, with no browser.
+- **The layout check** (`scripts/layout-check.sh`) holds every page it opens on every template demo, demo publications included, to the same 10 KB.
+
+Measured on 2026-11-07 on the 31 template demos as `scripts/layout-check.sh` builds them, 124 pages (home, post, category and author of each):
+
+| Measure | Before | After |
+|---|---|---|
+| Brotli, worst page | 14,342 bytes (Compass, home) | 8,919 bytes (Keystone, post) |
+| Brotli, average page | 11,395 bytes | 5,886 bytes |
+| Pages over 10 KB with Brotli | 112 of 124 | 0 of 124 |
+| Gzip, average page | 13,274 bytes | 6,725 bytes |
+
+On every page the layout check opens in all 87 demo builds, no selector that can match an element of the page is left out of its stylesheet, and the computed style of every element, and of its `::before`, `::after` and `::marker`, at 390 and 1440 px in Chromium, was the same before and after (1,732 page views; a view that differed on a first read because a picture loaded late was read again). A full build of the generated 10,000-post site took the same time before and after (about 24 to 26 s on the shared build server) and wrote 8 stylesheets. A page that moves to another kind of page downloads that page's sheet once; before, one cached sheet served both. The budget is never raised to make a check pass.

@@ -1,6 +1,7 @@
 //! The HTML of the pages `khalid serve` renders into memory, the search
 //! page each language keeps without results, and why a render failed.
 
+use std::collections::BTreeSet;
 use std::error::Error;
 use std::fmt;
 
@@ -8,6 +9,7 @@ use khalid_core::{Config, UserMessage};
 use khalid_render::{PageBody, PageMeta, RenderSite, Renderer};
 use khalid_server::Page;
 
+use crate::assets::PageStylesheets;
 use crate::build_pages::LanguagePages;
 use crate::page_code::PageCode;
 use crate::post_lock;
@@ -59,16 +61,18 @@ pub(crate) fn search_shells(languages: &[LanguagePages]) -> Vec<SearchShell> {
 }
 
 /// Renders the `which` pages of `languages` with the theme's `renderer`
-/// into `pages`, and returns the not-found page of the default language,
-/// empty unless `which` is [`Which::All`].
+/// into `pages`, each linking its own stylesheet from `sheets`, which go
+/// into `pages` too, and returns the not-found page of the default
+/// language, empty unless `which` is [`Which::All`].
 pub(crate) fn html_pages(
-    renderer: &Renderer,
+    (renderer, sheets): (&Renderer, &PageStylesheets),
     config: &Config,
     languages: &[LanguagePages],
     which: Which,
     pages: &mut Vec<Page>,
 ) -> Result<String, UserMessage> {
     let mut not_found = String::new();
+    let mut linked = Linked::new(sheets);
     let code = PageCode::new(config, HeadNonce::PerRequest);
     for language in languages {
         for page in &language.pages {
@@ -78,17 +82,60 @@ pub(crate) fn html_pages(
             let html = page.rendered(renderer, &language.site, &code)?;
             if matches!(page.body, PageBody::NotFound) {
                 if &language.site.locale == config.default_language() {
-                    not_found = html;
+                    not_found = linked.fit(html, pages)?.0;
                 }
                 continue;
             }
-            pages.push(served_at(&page.meta.path, html)?);
+            let (html, preload) = linked.fit(html, pages)?;
+            pages.push(with_preload(served_at(&page.meta.path, html)?, preload));
         }
         for unlocked in &language.unlocked {
             let page = &unlocked.page;
             let html = page.rendered(renderer, &language.site, &code)?;
-            pages.push(served_at(&post_lock::hidden(&page.meta.path), html)?);
+            let (html, preload) = linked.fit(html, pages)?;
+            let path = post_lock::hidden(&page.meta.path);
+            pages.push(with_preload(served_at(&path, html)?, preload));
         }
     }
     Ok(not_found)
+}
+
+/// `page`, whose answers say to preload its own stylesheet at `href`.
+fn with_preload(page: Page, href: Option<String>) -> Page {
+    match href {
+        Some(href) => page.with_preload(&href),
+        None => page,
+    }
+}
+
+/// The pages' own stylesheets one render has added so far, each once.
+struct Linked<'s> {
+    sheets: &'s PageStylesheets,
+    added: BTreeSet<String>,
+}
+
+impl<'s> Linked<'s> {
+    fn new(sheets: &'s PageStylesheets) -> Self {
+        Self {
+            sheets,
+            added: BTreeSet::new(),
+        }
+    }
+
+    /// `html` linking its own stylesheet, and that stylesheet's address.
+    /// The stylesheet goes into `pages` the first time a page links it.
+    fn fit(
+        &mut self,
+        html: String,
+        pages: &mut Vec<Page>,
+    ) -> Result<(String, Option<String>), UserMessage> {
+        let (html, sheet) = self.sheets.fit(html);
+        let Some(sheet) = sheet else {
+            return Ok((html, None));
+        };
+        if self.added.insert(sheet.name().to_owned()) {
+            pages.push(self.sheets.page(&sheet)?);
+        }
+        Ok((html, Some(self.sheets.href(&sheet))))
+    }
 }

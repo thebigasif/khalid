@@ -128,9 +128,17 @@ fn answer(
 ) -> Response<Body> {
     let mut response = respond(pages, request, consent);
     let html = response.headers().get(header::CONTENT_TYPE).is_none() || is_html(&response);
-    if html && !pages.preloads().is_empty() {
-        let link = pages
-            .preloads()
+    let uri = request.uri();
+    let own = match resolve(pages, uri.path(), uri.query()) {
+        Resolved::Page(page) => page.preload(),
+        _ => None,
+    };
+    let preloads: Vec<&str> = match own {
+        Some(href) => vec![href],
+        None => pages.preloads().iter().map(String::as_str).collect(),
+    };
+    if html && !preloads.is_empty() {
+        let link = preloads
             .iter()
             .map(|href| format!("<{href}>; rel=preload; as=style"))
             .collect::<Vec<_>>()

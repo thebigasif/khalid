@@ -11,7 +11,7 @@ use crate::{Asset, RenderError};
 /// What the script does, in plain JavaScript with no dependencies: copy a
 /// heading's address, open an enlarged image in a dialog, open search with
 /// `/` or Ctrl+K, and mark the section being read.
-const READER_JS: &str = include_str!("../assets/reader.js");
+pub(crate) const READER_JS: &str = include_str!("../assets/reader.js");
 
 /// The script as served: [`READER_JS`] without its comment lines, which
 /// explain the code to the people who change it but not to browsers. Every
