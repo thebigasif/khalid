@@ -505,3 +505,6 @@ help_home = "Every topic in the help centre"
 # reply slip's feed link and the issues after an issue.
 issue_promises = "In every issue"
 follow_feed = "Or follow the feed"
+# The spectrum template's front page: the label over the lead story and
+# the link under each topic's row, where {name} is the topic.
+all_in = "All in {name}"

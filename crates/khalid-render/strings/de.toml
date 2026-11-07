@@ -409,3 +409,4 @@ help_home = "Alle Themen im Hilfe-Center"
 # Startseite, der Feed-Link im Anmeldeabschnitt und weitere Ausgaben.
 issue_promises = "In jeder Ausgabe"
 follow_feed = "Oder den Feed abonnieren"
+all_in = "Alles in {name}"

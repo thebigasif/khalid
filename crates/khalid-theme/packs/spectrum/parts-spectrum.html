@@ -1,0 +1,37 @@
+{#- Spectrum's own parts (docs/templates/spectrum.md), shared by its pages.
+    hue(href, name, menu): a topic's colour, 1 to 6, from the place of its
+    link in the main menu, so the owner orders the colours by ordering the
+    menu. A topic not in the menu takes one from the length of its name.
+    The pages write it as data-hue, which the stylesheet reads.
+    topic(category, menu): the topic label, a square of its colour before
+    its name. story(post, menu, level, with_topic, with_excerpt): a post
+    as a card: its picture, its topic, the title, the description when
+    asked, and its date and author. cards(posts, menu, level): posts as a
+    grid of cards. -#}
+{% from "image.html" import picture -%}
+{% macro hue(href, name, menu) -%}
+{%- set found = namespace(at=0) -%}
+{%- for link in menu -%}{%- if found.at == 0 and link.href == href -%}{%- set found.at = loop.index -%}{%- endif -%}{%- endfor -%}
+{%- if found.at == 0 -%}{%- set found.at = name | length -%}{%- endif -%}
+{{ (found.at - 1) % 6 + 1 }}
+{%- endmacro %}
+{% macro topic(category, menu) -%}
+<p class="sp-topic" data-hue="{{ hue(category.href, category.name, menu) }}"><a href="{{ category.href }}">{{ category.name }}</a></p>
+{%- endmacro %}
+{% macro story(post, menu, level=3, with_topic=true, with_excerpt=false) -%}
+{% if post.category %}<article class="sp-story" data-hue="{{ hue(post.category.href, post.category.name, menu) }}">
+{% else %}<article class="sp-story">
+{% endif %}{% if post.image %}<a class="sp-story-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}<div class="sp-story-text">
+{% if with_topic and post.category %}{{ topic(post.category, menu) }}
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if with_excerpt %}<p class="sp-excerpt">{{ post.excerpt }}</p>
+{% endif %}<p class="sp-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.author %} <span class="sp-by">{{ t.by }} {{ post.author.name }}</span>{% endif %}</p>
+</div>
+</article>
+{%- endmacro %}
+{% macro cards(posts, menu, level=3) -%}
+<ul class="sp-cards" role="list">
+{% for post in posts %}<li>{{ story(post, menu, level, true, true) }}</li>
+{% endfor %}</ul>
+{%- endmacro %}

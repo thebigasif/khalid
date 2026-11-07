@@ -271,6 +271,7 @@ static PACKS: &[&Pack] = &[
     &crate::reel::REEL,
     &crate::research::RESEARCH,
     &crate::respawn::RESPAWN,
+    &crate::spectrum::SPECTRUM,
     &crate::summit::SUMMIT,
     &crate::syllabus::SYLLABUS,
     &crate::ticker::TICKER,

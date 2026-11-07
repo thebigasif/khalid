@@ -1,0 +1,23 @@
+{#- Spectrum's lists (category, tag, archive, date and collection pages).
+    A topic's page opens on a band in the topic's colour, like its posts,
+    with its name and intro; other lists have a plain header. Then the
+    posts as cards, each in its own topic colour. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "parts-spectrum.html" import hue, cards -%}
+{% set menu = site.nav.primary -%}
+{% set first = page.posts[0] if page.posts else none -%}
+{% set subject = first.category if first and first.category and first.category.name == page.title else none -%}
+{% if subject %}<header class="list-header sp-band" data-hue="{{ hue(subject.href, subject.name, menu) }}">
+{% else %}<header class="list-header">
+{% endif %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{{ cards(page.posts, menu, 2) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}
