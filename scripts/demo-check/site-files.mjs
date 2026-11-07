@@ -41,7 +41,9 @@ export function checkPages(site) {
 
 // A Playwright route handler that answers a request for one of `sites`'
 // own files from its folder. A request to any other address is refused.
-export function answerFrom(sites) {
+// `page`, when given, changes the text of each HTML page before the
+// browser reads it.
+export function answerFrom(sites, { page } = {}) {
   const byOrigin = new Map(sites.map((site) => [site.origin, site]));
   return async (route) => {
     const url = new URL(route.request().url());
@@ -51,6 +53,8 @@ export function answerFrom(sites) {
     let file = path.startsWith(site.mount) ? join(site.files, path.slice(site.mount.length)) : "";
     if (file && existsSync(file) && statSync(file).isDirectory()) file = join(file, "index.html");
     if (!file || !existsSync(file)) return route.fulfill({ status: 404, contentType: TYPES[".html"], body: "Not found" });
-    return route.fulfill({ status: 200, contentType: TYPES[extname(file)] ?? "application/octet-stream", body: readFileSync(file) });
+    const type = TYPES[extname(file)] ?? "application/octet-stream";
+    const body = page && extname(file) === ".html" ? page(readFileSync(file, "utf8")) : readFileSync(file);
+    return route.fulfill({ status: 200, contentType: type, body });
   };
 }

@@ -445,6 +445,15 @@ avif = true
 
 The next build makes each picture's AVIF sizes once and keeps them in `data/media/`, so later builds only make them for new or changed pictures. Pages then offer AVIF first, WebP second and the original last, and each browser takes the first it can read.
 
+You can also offer AVIF in place of WebP, which nearly halves the space pictures take on disk and in a backup:
+
+```toml
+[media]
+avif = "only"
+```
+
+Pages then offer AVIF first and the original last. Every current browser reads AVIF. The few that do not, such as Safari before version 16, get one JPEG or PNG at most 1024 px wide. That file is also the picture a post shares on social networks, which show it well but suggest 1200 px.
+
 ## Photo and GIF search in the editor
 
 Writers can find a free photo on Unsplash or a GIF on GIPHY from the editor's block menu. Both are off until you turn them on in `site.toml`:

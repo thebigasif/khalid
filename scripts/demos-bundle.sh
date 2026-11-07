@@ -49,7 +49,7 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # The most khalid-demos.tar.gz may weigh, in megabytes of 1,000,000 bytes
 # (docs/standards/performance.md, "Demo bundle"). Never raise it to make a
 # build pass; find what grew instead.
-budget_mb=1055
+budget_mb=464
 
 # The kind of blog each template suits, as the gallery groups them, and the
 # heading it shows over each group, from the template's own pack.toml.

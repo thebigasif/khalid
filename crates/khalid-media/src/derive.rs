@@ -5,7 +5,8 @@ use std::path::PathBuf;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 
 use crate::{
-    ContentKey, Format, MediaCache, MediaError, Original, Variant, fallback_widths, widths,
+    ContentKey, Format, MediaCache, MediaError, Original, Variant, fallback_widths,
+    fallback_widths_beside_avif, widths,
 };
 
 /// Everything made from one original: its key, its size and its files.
@@ -17,8 +18,8 @@ pub struct DerivedImage {
     pub width: u32,
     /// The original's height in pixels.
     pub height: u32,
-    /// Every file, AVIF first when asked for, then WebP, each from narrowest
-    /// to widest, then the one fallback file.
+    /// Every file, AVIF first when asked for, then WebP unless left out,
+    /// each from narrowest to widest, then the one fallback file.
     pub files: Vec<DerivedFile>,
     /// How many files this call encoded. Zero when the cache had them all.
     pub encoded: usize,
@@ -56,10 +57,15 @@ pub enum Avif {
     Skip,
     /// AVIF first, then WebP and the original's format.
     Make,
+    /// AVIF and the original's format, without WebP. Every current browser
+    /// reads AVIF, so WebP would only add files; the few that read neither
+    /// get one file in the original's format, 1024 px wide or less.
+    Only,
 }
 
 /// Makes every variant of `original` as [`derive`](fn@derive) does, with the
-/// AVIF files first when `avif` asks for them.
+/// AVIF files first when `avif` asks for them, and no WebP files when it
+/// asks for AVIF alone.
 ///
 /// # Errors
 ///
@@ -71,14 +77,24 @@ pub fn derive_with(
 ) -> Result<DerivedImage, MediaError> {
     let key = ContentKey::of(original);
     let image = Original::decode(original)?;
-    let avif = (avif == Avif::Make).then_some(Format::Avif);
+    let formats: &[Format] = match avif {
+        Avif::Skip => &[Format::Webp],
+        Avif::Make => &[Format::Avif, Format::Webp],
+        Avif::Only => &[Format::Avif],
+    };
     let fallback = image.fallback();
-    let variants: Vec<Variant> = avif
-        .into_iter()
-        .chain([Format::Webp, fallback])
+    let fallback_sizes = if avif == Avif::Only {
+        fallback_widths_beside_avif
+    } else {
+        fallback_widths
+    };
+    let variants: Vec<Variant> = formats
+        .iter()
+        .copied()
+        .chain([fallback])
         .flat_map(|format| {
             let sizes = if format == fallback {
-                fallback_widths(image.width())
+                fallback_sizes(image.width())
             } else {
                 widths(image.width())
             };

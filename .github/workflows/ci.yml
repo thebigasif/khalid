@@ -550,6 +550,16 @@ jobs:
           else
             ./scripts/page-weight.sh --packs "$PACKS"
           fi
+      # The demos as a browser without AVIF sees them: every picture must
+      # still show its JPEG or PNG (scripts/demo-check/fallback.mjs).
+      - name: Pictures without AVIF
+        if: matrix.browser == 'chromium' && (success() || failure())
+        env:
+          PACKS: ${{ matrix.packs }}
+        run: |
+          sites=target/layout-check/sites
+          [ -d "$sites" ] || sites=target/page-weight/sites
+          node scripts/demo-check/fallback.mjs --sites "$sites" --packs "$PACKS"
       # A run that checks every pack while the cache is not whole hands its
       # new pictures to the job below, which keeps them all in one cache.
       - name: The pictures this run made

@@ -7,7 +7,10 @@
 # AVIF is about half the size of WebP, so a phone at 3x downloads half the
 # bytes, but it takes about 1.5 s of one core to make a 1,152 px file
 # (docs/standards/performance.md, "Pictures on high-density phones"). A
-# site turns it on with `avif = true` under [media]; every demo does. The
+# site turns it on with `avif = true` under [media]. Every demo sets
+# `avif = "only"`, AVIF in place of WebP, so the demos make no WebP files
+# and the one fallback JPEG or PNG is 1,024 px wide or less
+# (docs/standards/performance.md, "Demo bundle"). The
 # files each build makes are linked into one cache shared by every build,
 # and the next build links them back in, so each photo is made once for
 # all the demos and all the runs. Each file is named by a hash of its
@@ -20,15 +23,16 @@
 
 demo_media_cache="${DEMO_MEDIA_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/khalid/demo-media}"
 
-# demo_media_in <site>: turns AVIF on in the site's site.toml and links
-# every file the cache holds into the site's data/media/.
+# demo_media_in <site>: turns AVIF on in place of WebP in the site's
+# site.toml and links every file the cache holds into the site's
+# data/media/.
 demo_media_in() {
   local settings="$1/site.toml"
   if ! grep -q '^avif *=' "$settings"; then
     if grep -qx '\[media\]' "$settings"; then
-      sed -i '/^\[media\]$/a avif = true' "$settings"
+      sed -i '/^\[media\]$/a avif = "only"' "$settings"
     else
-      printf '\n[media]\navif = true\n' >>"$settings"
+      printf '\n[media]\navif = "only"\n' >>"$settings"
     fi
   fi
   mkdir -p "$demo_media_cache" "$1/data/media"
