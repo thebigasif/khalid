@@ -3,7 +3,7 @@
 
 use std::path::Path;
 
-use khalid_core::{Config, Environment};
+use khalid_core::{AvifSetting, Config, Environment};
 
 const SITE: &str = r#"name = "Field Notes on SEO"
 address = "https://www.example.com"
@@ -116,13 +116,27 @@ fn photo_and_gif_search_are_off_until_turned_on() {
 #[test]
 fn avif_is_off_until_a_site_asks_for_it() {
     let config = load(SITE, &Environment::empty()).unwrap();
-    assert!(!config.media().avif);
-    let on = load(
-        &format!("{SITE}\n[media]\navif = true\n"),
+    assert_eq!(config.media().avif, AvifSetting::Off);
+    let setting = |value: &str| {
+        load(
+            &format!("{SITE}\n[media]\navif = {value}\n"),
+            &Environment::empty(),
+        )
+        .map(|config| config.media().avif)
+    };
+    assert_eq!(setting("false"), Ok(AvifSetting::Off));
+    assert_eq!(setting("true"), Ok(AvifSetting::BesideWebp));
+    assert_eq!(setting("\"only\""), Ok(AvifSetting::Only));
+}
+
+#[test]
+fn refuses_any_other_avif_word() {
+    let message = load(
+        &format!("{SITE}\n[media]\navif = \"always\"\n"),
         &Environment::empty(),
     )
-    .unwrap();
-    assert!(on.media().avif);
+    .unwrap_err();
+    assert!(message.contains("true, false or \"only\""), "{message}");
 }
 
 #[test]

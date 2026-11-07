@@ -10,7 +10,7 @@ use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
 use khalid_content::LeadImage;
-use khalid_core::{AbsoluteUrl, Config, UserMessage};
+use khalid_core::{AbsoluteUrl, AvifSetting, Config, UserMessage};
 use khalid_media::{Avif, DerivedImage, Format, MediaCache, MediaError, derive_with};
 use khalid_render::{ImageCandidate, ImageSet, Loading, PageBody, RenderImage};
 use khalid_seo::ShareImage;
@@ -47,14 +47,24 @@ pub(crate) struct MediaFile {
 /// Every size an image is offered in, as a page draws it.
 #[derive(Debug)]
 pub(crate) struct Picture {
-    /// The AVIF sizes, when the site makes them (`avif = true` in `[media]`).
+    /// The AVIF sizes, when the site makes them (`avif = true` or
+    /// `avif = "only"` in `[media]`).
     avif: Option<ImageSet>,
     /// The WebP sizes. `None` for an SVG, which is its own one size and
-    /// which no network takes as a share image.
+    /// which no network takes as a share image, and when the site offers
+    /// AVIF in its place (`avif = "only"`).
     webp: Option<ImageSet>,
     fallback: ImageSet,
     width: u32,
     height: u32,
+}
+
+impl Picture {
+    /// Whether the picture comes in sizes, in AVIF or WebP. An SVG is its
+    /// own one size.
+    fn is_sized(&self) -> bool {
+        self.avif.is_some() || self.webp.is_some()
+    }
 }
 
 /// Makes the sizes of each image among `files` that the `site` folder's
@@ -80,7 +90,7 @@ pub(crate) fn attach(
             continue;
         };
         // Body images are drawn in sizes; an SVG in a body stays as it is.
-        let kept = if picture.webp.is_some() {
+        let kept = if picture.is_sized() {
             &mut pictures
         } else {
             &mut vectors
@@ -130,7 +140,7 @@ fn lead(
         _ => return None,
     }
     // No network draws an SVG, so the page keeps its generated share card.
-    if picture.webp.is_none() {
+    if !picture.is_sized() {
         return Some(drawn);
     }
     let origin = config.address().as_str().trim_end_matches('/');
@@ -189,10 +199,10 @@ pub(crate) fn picture_of(
         MediaType::Jpeg | MediaType::Png | MediaType::Webp => {
             let bytes = post_files::read(site, file)?;
             let cache = MediaCache::new(site);
-            let avif = if config.media().avif {
-                Avif::Make
-            } else {
-                Avif::Skip
+            let avif = match config.media().avif {
+                AvifSetting::Only => Avif::Only,
+                AvifSetting::BesideWebp => Avif::Make,
+                _ => Avif::Skip,
             };
             let image =
                 derive_with(&bytes, &cache, avif).map_err(|error| unmade(&file.source, &error))?;
@@ -222,8 +232,8 @@ pub(crate) fn picture_of(
     }
 }
 
-/// The picture `image` makes, and its files. `None` without the WebP and
-/// fallback files `derive` always makes.
+/// The picture `image` makes, and its files. `None` without the fallback
+/// file and the AVIF or WebP files `derive` always makes.
 fn picture(config: &Config, image: &DerivedImage) -> Option<(Picture, Vec<MediaFile>)> {
     let mut avif = Vec::new();
     let mut webp = Vec::new();
@@ -253,12 +263,12 @@ fn picture(config: &Config, image: &DerivedImage) -> Option<(Picture, Vec<MediaF
     };
     let picture = Picture {
         avif: set(avif),
-        webp: Some(set(webp)?),
+        webp: set(webp),
         fallback: set(fallback)?,
         width: image.width,
         height: image.height,
     };
-    Some((picture, made))
+    picture.is_sized().then_some((picture, made))
 }
 
 /// `html` with each image whose address is a key of `pictures` drawn as
@@ -288,8 +298,8 @@ fn drawn(html: &str, pictures: &BTreeMap<String, Picture>) -> String {
 /// For each picture drawn in `html` that is wider than the text column and
 /// not inside a link, the address its image shows, as `html` writes it,
 /// and the address of its widest size, which click to enlarge links to.
-/// The widest size is a WebP: the fallback format is made in one width of
-/// at most 1280 px only.
+/// The widest size is a WebP, or an AVIF when the site makes no WebP: the
+/// fallback format is made in one width of at most 1280 px only.
 fn originals(html: &str, pictures: &BTreeMap<String, Picture>) -> BTreeMap<String, String> {
     let wide = pictures.values().filter(|picture| picture.width > COLUMN);
     let widest = wide.filter_map(|picture| {
@@ -297,6 +307,7 @@ fn originals(html: &str, pictures: &BTreeMap<String, Picture>) -> BTreeMap<Strin
         let largest = picture
             .webp
             .as_ref()
+            .or(picture.avif.as_ref())
             .and_then(ImageSet::widest)
             .unwrap_or(shown);
         Some((attribute(&shown.url), largest.url.clone()))
@@ -419,6 +430,27 @@ mod tests {
         let webp = html.find("<source type=\"image/webp\"");
         let img = html.find("<img src=\"/blog/media/3f2a/800.png\"");
         assert!(avif < webp && webp < img && avif.is_some(), "{html}");
+    }
+
+    #[test]
+    fn a_site_that_makes_avif_alone_draws_no_webp_source() {
+        let mut pictures = pictures("/blog/");
+        for picture in pictures.values_mut() {
+            picture.avif = Some(set("/blog/", "avif"));
+            picture.webp = None;
+        }
+        let html = drawn(&format!("<img src=\"{CHART}\" alt=\"\" />"), &pictures);
+        assert!(!html.contains("image/webp"), "{html}");
+        let avif = html.find("<source type=\"image/avif\"");
+        let img = html.find("<img src=\"/blog/media/3f2a/800.png\"");
+        assert!(avif.is_some() && avif < img, "{html}");
+        assert_eq!(
+            originals(&html, &pictures),
+            BTreeMap::from([(
+                "/blog/media/3f2a/800.png".to_owned(),
+                "/blog/media/3f2a/800.avif".to_owned()
+            )])
+        );
     }
 
     #[test]

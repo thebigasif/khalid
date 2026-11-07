@@ -8,7 +8,13 @@ use khalid_media::{Avif, Format, MediaCache, derive, derive_in_background, deriv
 /// A 900 by 600 JPEG photo stand-in, made in the test.
 #[cfg(test)]
 fn photo(shade: u8) -> Vec<u8> {
-    let image = RgbImage::from_fn(900, 600, |x, y| {
+    photo_sized(900, 600, shade)
+}
+
+/// A JPEG photo stand-in `width` by `height` pixels, made in the test.
+#[cfg(test)]
+fn photo_sized(width: u32, height: u32, shade: u8) -> Vec<u8> {
+    let image = RgbImage::from_fn(width, height, |x, y| {
         Rgb([
             u8::try_from(x % 256).unwrap(),
             u8::try_from(y % 256).unwrap(),
@@ -81,6 +87,34 @@ fn a_site_that_asks_for_avif_gets_every_width_in_avif_first() {
     let again = derive_with(&photo(90), &cache, Avif::Make).unwrap();
     assert_eq!(again.encoded, 0, "every file came from the cache");
     assert_eq!(Format::Avif.media_type(), "image/avif");
+}
+
+#[test]
+fn a_site_that_asks_for_avif_alone_gets_no_webp_and_one_middle_fallback() {
+    let site = tempfile::tempdir().unwrap();
+    let cache = MediaCache::new(site.path());
+    let derived = derive_with(&photo_sized(1100, 700, 90), &cache, Avif::Only).unwrap();
+    let made: Vec<(Format, u32)> = derived
+        .files
+        .iter()
+        .map(|file| (file.variant.format, file.variant.width))
+        .collect();
+    assert_eq!(
+        made,
+        [
+            (Format::Avif, 320),
+            (Format::Avif, 480),
+            (Format::Avif, 640),
+            (Format::Avif, 800),
+            (Format::Avif, 1024),
+            (Format::Avif, 1100),
+            (Format::Jpeg, 1024),
+        ]
+    );
+    assert_eq!(derived.encoded, 7);
+    let jpeg = derived.files.last().unwrap();
+    let decoded = image::load_from_memory(&std::fs::read(&jpeg.path).unwrap()).unwrap();
+    assert_eq!((decoded.width(), decoded.height()), (1024, 652));
 }
 
 #[test]

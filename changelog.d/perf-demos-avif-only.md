@@ -1,0 +1,2 @@
+Added
+- Pictures can come in AVIF in place of WebP: set `avif = "only"` under `[media]` in `site.toml`. Pages then offer AVIF first and one JPEG or PNG, at most 1,024 px wide, for the few browsers that cannot read AVIF. This nearly halves the space pictures take on disk. It is off by default; `avif = true` still offers AVIF beside WebP. The template demos now use it, which shrinks the demos download from 702 MB to 310 MB.
