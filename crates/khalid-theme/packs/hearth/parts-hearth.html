@@ -1,0 +1,24 @@
+{#- Hearth's own parts (docs/templates/hearth.md), shared by its pages.
+    byline(person, date): the author's face and name, then the date, on
+    one line.
+    hearth_cards(posts, level): posts as cards in a grid. Each card has
+    its picture in a low arch, then its category, title, summary and
+    byline. Text never sits on the picture. -#}
+{% from "image.html" import picture, avatar -%}
+{% macro byline(person, date) -%}
+<p class="hh-byline">{% if person %}{% if person.image %}{{ avatar(person.image) }}{% endif %}<span class="hh-byline-name">{{ person.name }}</span>
+{% endif %}<time datetime="{{ date }}">{{ date | date }}</time></p>
+{%- endmacro %}
+{% macro hearth_cards(posts, level=3) -%}
+<ul class="hh-cards" role="list">
+{% for post in posts %}<li>
+<article class="hh-card">
+{% if post.image %}<a class="hh-arch" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}{% if post.category %}<p class="hh-kicker"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="hh-excerpt">{{ post.excerpt }}</p>
+{{ byline(post.author, post.date) }}
+</article>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}
