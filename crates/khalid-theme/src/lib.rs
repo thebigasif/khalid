@@ -50,6 +50,7 @@ mod notebook;
 mod mosaic;
 mod pack;
 mod palette;
+mod pantry;
 pub mod parts;
 mod plinth;
 mod properties;

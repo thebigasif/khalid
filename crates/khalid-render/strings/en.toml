@@ -381,6 +381,12 @@ channel_hosts = "Hosts"
 programmes = "Programmes"
 routines = "Routines"
 routine_notes = "Notes"
+# The pantry template's front page: the recipe box tabs, the newest
+# recipe, the recipe cards and the baking notes.
+recipe_box = "The recipe box"
+fresh_from_the_oven = "Fresh from the oven"
+recipes = "Recipes"
+baking_notes = "Baking notes"
 # The lattice template's key numbers and its front page.
 key_numbers = "Key numbers"
 latest_explainers = "Latest explainers"

@@ -1,0 +1,31 @@
+{#- ticket_cards(posts, level=3, count=2): index cards for things a reader
+    makes or books, such as a recipe, a class or a trip. Each card shows
+    its picture, its category and its title, then a tear-off ticket: a
+    dashed perforation and its first `count` facts in ruled cells, each a
+    small label over its value. A post without facts shows its date there.
+    Titles use a heading of `level`. fact_ticket(facts, label=none,
+    count=4) draws the same ticket on its own, such as at the top of a
+    post; `label` names it for screen readers. -#}
+{% from "image.html" import picture -%}
+{% macro fact_ticket(facts, label=none, count=4) -%}
+{% if facts %}<dl class="ticket"{% if label %} aria-label="{{ label }}"{% endif %}>
+{% for fact in facts[:count] %}<div class="ticket-cell">
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endfor %}</dl>
+{% endif %}
+{%- endmacro %}
+{% macro ticket_cards(posts, level=3, count=2) -%}
+<ul class="ticket-cards" role="list">
+{% for post in posts %}<li class="ticket-card">
+{% if post.image %}{{ picture(post.image) }}
+{% endif %}<div class="ticket-card-text">
+{% if post.category %}<p class="ticket-card-kind"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+</div>
+{% if post.facts %}{{ fact_ticket(post.facts, none, count) }}
+{% else %}<p class="ticket-card-date"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+{% endif %}</li>
+{% endfor %}</ul>
+{%- endmacro %}
