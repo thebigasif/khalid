@@ -131,7 +131,7 @@ fn letterpress_front_page_shows_the_cover_and_past_issues() {
         ["Feature", "The tool", "Letters"]
     );
     let past = texts(&page, ".lp-sheet h3");
-    assert!(!past.is_empty());
+    assert!(!past.is_empty(), "expected something here");
     assert!(!past.contains(&cover.to_owned()), "{past:?}");
     assert!(
         past.contains(&"Fixing slow pages, starting with the biggest win".to_owned()),
@@ -165,8 +165,14 @@ fn an_issue_opens_with_its_number_and_closes_with_an_end_mark() {
     );
     assert_eq!(texts(&issue, ".lp-end-number"), ["No. 12"]);
     let plain = shown(&out, "what-a-sitemap-does/index.html");
-    assert!(texts(&plain, ".lp-folio-number").is_empty());
-    assert!(texts(&plain, ".lp-inside").is_empty());
+    assert!(
+        texts(&plain, ".lp-folio-number").is_empty(),
+        "expected nothing here"
+    );
+    assert!(
+        texts(&plain, ".lp-inside").is_empty(),
+        "expected nothing here"
+    );
     assert_eq!(texts(&plain, ".lp-end").len(), 1);
 }
 

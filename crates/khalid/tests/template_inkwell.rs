@@ -166,8 +166,14 @@ fn an_issue_shows_its_stamp_and_parts_and_an_extra_does_not() {
         ]
     );
     let extra = shown(&out, "what-a-sitemap-does/index.html");
-    assert!(texts(&extra, ".iw-stamp-small").is_empty());
-    assert!(texts(&extra, ".iw-contents").is_empty());
+    assert!(
+        texts(&extra, ".iw-stamp-small").is_empty(),
+        "expected nothing here"
+    );
+    assert!(
+        texts(&extra, ".iw-contents").is_empty(),
+        "expected nothing here"
+    );
 }
 
 #[test]

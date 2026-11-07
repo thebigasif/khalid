@@ -139,7 +139,10 @@ fn dialogue_front_page_leads_with_the_latest_guest() {
         texts(&page, ".conversations .guest-row-name"),
         ["Guest: Tomasz Wren"]
     );
-    assert!(texts(&page, ".conversations .quote-line").is_empty());
+    assert!(
+        texts(&page, ".conversations .quote-line").is_empty(),
+        "expected nothing here"
+    );
     assert_eq!(texts(&page, ".conversations .guest-row-summary").len(), 1);
     let notes = texts(&page, ".show-notes .feed-item h3");
     assert!(!notes.is_empty(), "expected some notes");

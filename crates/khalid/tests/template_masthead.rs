@@ -163,11 +163,17 @@ fn the_list_front_puts_one_story_a_row_everywhere() {
     let (_temp, out) = built("front = \"list\"\n", &[]);
     let page = shown(&out, "index.html");
     assert_eq!(texts(&page, ".front-list .cards-row .card h3").len(), 3);
-    assert!(texts(&page, ".front-grid").is_empty());
+    assert!(
+        texts(&page, ".front-grid").is_empty(),
+        "expected nothing here"
+    );
     let list = shown(&out, "category/technical-seo/index.html");
     assert_eq!(texts(&list, ".front-list .cards-row .card h2").len(), 2);
     let post = shown(&out, "fixing-slow-pages/index.html");
-    assert!(!texts(&post, ".related .cards-row").is_empty());
+    assert!(
+        !texts(&post, ".related .cards-row").is_empty(),
+        "expected something here"
+    );
 }
 
 #[test]
