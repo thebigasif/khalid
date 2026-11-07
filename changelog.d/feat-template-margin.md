@@ -1,0 +1,2 @@
+Added
+- The Margin template, for one writer's personal site of essays. Every page is a text column with a ruled margin beside it on a wide screen. The front page has a short introduction with the writer in the margin, a sign-up band and the essays as rows with their date, reading time and topic in the margin. On an essay the byline and the essay's own footnotes sit in the margin and stay beside the text as it scrolls.

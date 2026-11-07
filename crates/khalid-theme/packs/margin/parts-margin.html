@@ -1,0 +1,26 @@
+{#- Margin's own parts (docs/templates/margin.md), shared by its pages.
+    margin_note(post): what the margin says about an essay: its date, its
+    reading time and its topic, one under another on a wide screen and on
+    one line on a phone.
+    essay_rows(posts, level, lead): the essays as rows between hairlines,
+    each with its title and summary in the text column and its margin
+    note beside them. With `lead`, the first essay leads with its picture
+    across both columns. -#}
+{% from "image.html" import picture -%}
+{% macro margin_note(post) -%}
+<p class="mg-note"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.reading_time %}
+<span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}{% if post.category %}
+<a href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}</p>
+{%- endmacro %}
+{% macro essay_rows(posts, level=3, lead=false) -%}
+<ul class="mg-rows" role="list">
+{% for post in posts %}{% set leads = lead and loop.first and post.image %}{% if leads %}<li class="mg-band mg-row-lead">{% else %}<li class="mg-band">{% endif %}
+{% if leads %}{{ picture(post.image) }}
+{% endif %}<div class="mg-text">
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p>{{ post.excerpt }}</p>
+</div>
+<div class="mg-side">{{ margin_note(post) }}</div>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}

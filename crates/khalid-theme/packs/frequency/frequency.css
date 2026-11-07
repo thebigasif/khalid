@@ -1,0 +1,187 @@
+/* Frequency (docs/templates/frequency.md): a podcast's site. Warm paper,
+   ink for the On air console and the episode plate, mono figures for
+   numbers and running times, and the running-time dial on every episode.
+   The section parts' own rules come first (the build adds the parts this
+   pack's templates import); these set the show's look over them. Every
+   colour is a token or a mix of tokens. */
+:root {
+  --fq-frame: 76rem;
+  --fq-text: 36rem;
+  --fq-quiet: color-mix(in oklab, var(--color-background) 72%, var(--color-text));
+  --fq-tick: color-mix(in oklab, var(--color-muted) 70%, var(--color-background));
+  --hero-title: clamp(2.75rem, 1.7rem + 3.6vw, 5rem);
+}
+.site-header, main, main:has(.post-with-toc), .site-footer { max-inline-size: var(--fq-frame); }
+main { padding-block: 0 var(--space-section); }
+main > .post { max-inline-size: 64rem; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--fq-text) + 18rem); }
+main > .page, .post > :not(.post-header, .toc-side), main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot) { max-inline-size: var(--fq-text); margin-inline: auto; }
+.post-with-toc > :not(.toc-side), .post-with-toc .post-header > * { margin-inline: 0; }
+h1, h2, h3, h4 { letter-spacing: -0.015em; }
+
+/* The header: the name, plain menu links, the show's button, over an
+   ink rule. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.125rem; border-block-end: 2px solid var(--color-text); }
+.site-name { color: var(--color-text); font-family: var(--font-heading); font-size: 1.375rem; font-weight: var(--heading-weight); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header > .nav-bar { margin-inline-start: auto; }
+@media (max-width: 64rem) { .site-header > .nav-bar { order: 3; flex-basis: 100%; margin-inline-start: 0; } .site-header > .header-button { margin-inline-start: auto; } }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+.search-link { color: var(--color-text); text-decoration: none; }
+.search-link:hover { color: var(--color-link); text-decoration: underline; }
+main > :first-child { margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-text); border: 0; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); color: var(--color-background); }
+.announcement p { max-inline-size: var(--fq-frame); }
+.announcement a { color: inherit; }
+
+/* Buttons: rounded pills on the accent. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 999px; font: 600 1rem/1.2 var(--font-body); text-decoration: none; cursor: pointer; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* Labels and section titles. */
+.fq-label, .fq-fact-label, .fq-kicker, .fq-meta { font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.fq-label { margin: 0; color: var(--fq-quiet); }
+:is(.fq-section, .fq-topics, .related, .mentions, .author-posts, .author-others, .topic-tabs, .media-row, .fq-listen) > h2 { margin-block: 0 1.25rem; font-size: var(--text-h2); line-height: 1.15; }
+
+/* The front page: the show beside the On air console. */
+.fq-top { display: grid; gap: 2.5rem 4rem; align-items: start; margin-block-end: var(--space-section); }
+@media (min-width: 60rem) { .fq-top { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: center; } }
+.fq-top .hero { margin: 0; padding: 0; }
+.hero-title { max-inline-size: 12ch; font-weight: var(--heading-weight); letter-spacing: -0.03em; }
+.hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.5; }
+.hero .link-stack { margin-block-start: 2rem; }
+.hero .link-stack ul { grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr)); gap: 0.625rem; }
+.link-tile { min-block-size: 3rem; padding: 0.5rem 1rem; border-width: 1.5px; border-radius: 999px; }
+.link-label { font-size: 1rem; }
+.hero > .figure-strip { margin-block-start: 2.25rem; border-block-color: var(--color-text); }
+.figure dd { font-family: var(--font-mono); font-weight: 500; letter-spacing: -0.02em; }
+
+/* The On air console and the episode plate: ink, reversed. */
+.fq-air, .fq-plate { display: grid; gap: 0.75rem; padding: clamp(1.25rem, 1rem + 1vw, 1.75rem); color: var(--color-background); background: var(--color-text); border-radius: var(--radius); }
+.fq-air .image { margin: 0 0 0.5rem; }
+.fq-air .image img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: calc(var(--radius) / 2); }
+.fq-air-number { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; margin: 0; color: var(--fq-quiet); font-family: var(--font-mono); font-size: 0.9375rem; }
+.fq-air-number .fq-figure { color: var(--color-background); font-size: 1.75rem; line-height: 1; }
+.fq-air-number time { margin-inline-start: auto; }
+.fq-air :is(h2, h3, h4):not(.fq-label) { margin: 0; font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem); line-height: 1.2; }
+.fq-air :is(h2, h3, h4) a, .fq-notes-link a { color: var(--color-background); }
+.fq-air :is(h2, h3, h4) a { text-decoration: none; }
+.fq-air :is(h2, h3, h4) a:hover { text-decoration: underline; }
+.fq-air .fq-excerpt { color: var(--fq-quiet); }
+.fq-player .audio, .fq-player .embed { margin: 0.25rem 0 0; }
+.fq-player figcaption { display: none; }
+.fq-notes-link { margin: 0; font-weight: 600; }
+:is(.fq-air, .fq-plate) .fq-scale { color: var(--fq-quiet); }
+:is(.fq-air, .fq-plate) :is(.fq-length, .fq-fact-label) { color: var(--fq-quiet); }
+:is(.fq-air, .fq-plate) .fq-dial { --fq-signal: color-mix(in oklab, var(--color-accent) 45%, var(--color-background)); max-inline-size: none; }
+.fq-plate .fq-length { display: none; }
+
+/* The running-time dial: a tick every five minutes on a 90-minute scale,
+   a taller one every quarter hour, and the accent run out to the length,
+   ending in a needle. */
+.fq-dial { --fq-signal: var(--color-accent); display: grid; gap: 0.375rem; max-inline-size: 24rem; }
+.fq-scale { display: block; position: relative; block-size: 0.875rem; color: var(--fq-tick); background: repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px calc(100% / 18)) bottom / 100% 0.375rem no-repeat, repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px calc(100% / 6)) bottom / 100% 100% no-repeat; border-inline-end: 1px solid currentColor; }
+.fq-needle { appearance: none; position: absolute; inset: 0; display: block; inline-size: 100%; block-size: 100%; background: none; border: 0; }
+.fq-needle::-webkit-meter-inner-element { display: block; block-size: 100%; }
+.fq-needle::-webkit-meter-bar { block-size: 100%; background: none; border: 0; }
+.fq-needle::-webkit-meter-optimum-value { block-size: 100%; background: linear-gradient(to left, var(--fq-signal) 0 3px, transparent 3px), linear-gradient(to top, var(--fq-signal) 0 3px, transparent 3px); }
+.fq-needle::-moz-meter-bar { background: linear-gradient(to left, var(--fq-signal) 0 3px, transparent 3px), linear-gradient(to top, var(--fq-signal) 0 3px, transparent 3px); }
+.fq-length { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin: 0; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.9375rem; }
+.fq-fact-label { margin-inline-end: 0.25rem; color: var(--color-muted); }
+.fq-guest { min-inline-size: 0; overflow-wrap: anywhere; }
+
+/* Episode rows: the number large, the text, the square picture. */
+.fq-rows { margin: 0; padding: 0; list-style: none; border-block-start: 2px solid var(--color-text); }
+.fq-row { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); gap: 0.75rem 1rem; padding-block: 1.5rem; border-block-end: 1px solid var(--color-border); }
+@media (min-width: 40rem) { .fq-row { grid-template-columns: 6rem minmax(0, 1fr) 9.5rem; gap: 1rem 2rem; } }
+.fq-number { display: flex; flex-direction: column; margin: 0; font-family: var(--font-mono); }
+.fq-figure { color: var(--color-text); font-size: clamp(2rem, 1.6rem + 1.2vw, 2.75rem); font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -0.04em; }
+.fq-row-text { display: grid; gap: 0.5rem; align-content: start; min-inline-size: 0; }
+.fq-row-text > * { margin: 0; }
+.fq-row :is(h2, h3, h4) { font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem); line-height: 1.2; }
+.fq-row :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.fq-row :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.fq-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; color: var(--color-muted); }
+.fq-meta a { color: var(--color-link); text-decoration: none; }
+.fq-meta a:hover { text-decoration: underline; }
+.fq-excerpt { margin: 0; color: var(--color-muted); font-size: 1rem; line-height: 1.5; }
+.fq-row .fq-dial { margin-block-start: 0.25rem; }
+.fq-art { display: none; }
+@media (min-width: 40rem) { .fq-art { display: block; } }
+.fq-art .image { margin: 0; }
+.fq-art .image img { aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); }
+
+/* Topics as chips, then the band and the newsletter. */
+.fq-section, .fq-topics { margin-block-end: var(--space-section); }
+.fq-section .view-all { margin-block: 1.25rem 0; }
+.fq-chips { display: flex; flex-wrap: wrap; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.fq-chips a { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding-inline: 1.125rem; color: var(--color-text); border: 1.5px solid var(--color-text); border-radius: 999px; font-weight: 600; text-decoration: none; }
+.fq-chips a:hover { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
+.cta-band { margin-block: var(--space-section) 0; padding: clamp(1.5rem, 1rem + 2vw, 2.75rem); color: var(--color-background); background: var(--color-text); }
+.cta-band .button { color: var(--color-text); background: var(--color-background); }
+.cta-band .button:hover { color: var(--color-text); background: var(--color-surface); }
+.cta-note { max-inline-size: 34ch; font-family: var(--font-heading); font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem); font-weight: var(--heading-weight); line-height: 1.25; }
+.newsletter-slot { margin-block-start: var(--space-section); }
+
+/* Lists and the hosts page: the name, the intro. */
+.list-header { margin-block: 0 2rem; }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 0.75rem; font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+
+/* An episode: the label, the title and meta beside the square picture,
+   then the plate, which the player opening the show notes joins. */
+.post-header { margin-block: 0 2rem; }
+.fq-head { display: grid; gap: 1.5rem 3rem; }
+@media (min-width: 56rem) { .fq-head { grid-template-columns: minmax(0, 1fr) 17rem; align-items: end; } }
+.fq-head-text { min-inline-size: 0; }
+.fq-head .image { margin: 0; }
+.fq-head .image img { aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); }
+@media (max-width: 55.99rem) { .fq-head .image img { aspect-ratio: 16 / 9; } }
+.post-with-toc .fq-head { grid-template-columns: minmax(0, 1fr); }
+.post-with-toc .fq-head .image img { aspect-ratio: 16 / 9; }
+.fq-kicker { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; color: var(--color-muted); }
+.fq-kicker-number { color: var(--color-text); }
+.fq-kicker a { text-decoration: none; }
+.fq-kicker a:hover { text-decoration: underline; }
+.post-header h1 { margin-block: 0.75rem; line-height: 1.08; }
+.post-header .dek { color: var(--color-text); font-size: 1.25rem; line-height: 1.45; }
+.post-meta { font-size: 0.9375rem; }
+.post-meta a { color: var(--color-text); font-weight: 600; }
+.post-date { margin-block: 0.25rem 0; }
+.post-meta .person-role { display: inline; margin: 0; color: var(--color-muted); }
+.fq-plate { margin-block: 0 2rem; }
+.fq-plate-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 6.5rem), 1fr)); gap: 0.75rem 1.5rem; margin: 0; }
+.fq-plate-facts dt { color: var(--fq-quiet); font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.fq-plate-facts dd { margin: 0.125rem 0 0; font-weight: 600; }
+.fq-plate:has(+ .post-body > :is(.audio, .embed-audio):first-child) { margin-block-end: 0; padding-block-end: 1rem; border-end-start-radius: 0; border-end-end-radius: 0; }
+.fq-plate + .post-body > :is(.audio, .embed-audio):first-child { margin-block: 0 2rem; padding: 0 clamp(1.25rem, 1rem + 1vw, 1.75rem) clamp(1.25rem, 1rem + 1vw, 1.75rem); color: var(--color-background); background: var(--color-text); border-end-start-radius: var(--radius); border-end-end-radius: var(--radius); }
+.fq-plate + .post-body > .audio:first-child figcaption { color: var(--color-background); }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.fq-listen { margin-block-start: 3rem; }
+.fq-listen .link-stack ul { grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr)); gap: 0.625rem; }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer > h2 { margin-block: 0 0.75rem; font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.post-footer .tags a { border: 1.5px solid var(--color-border); border-radius: 999px; background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related, .mentions { margin-block-start: var(--space-section); }
+main > .related { max-inline-size: 64rem; margin-inline: auto; }
+
+/* A host: the mark beside the name, their episodes as rows. */
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.125rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-family: var(--font-mono); font-size: var(--text-small); }
+.author-posts, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The footer: one ink rule, quiet links. */
+.site-footer { border-block-start: 2px solid var(--color-text); }

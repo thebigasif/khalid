@@ -1,0 +1,2 @@
+Added
+- The Spectrum template, for a magazine arranged by topic. Each topic takes its own colour from its place in the main menu, made from the site's accent: a segment of the spectrum bar under the masthead, a row of the topic's newest posts on a band of that colour on the front page, the square before its label on every card, and the band at the top of its posts and its topic page. The front page leads with one story beside the latest posts.

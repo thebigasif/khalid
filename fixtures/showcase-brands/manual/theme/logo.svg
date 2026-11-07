@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" width="280" height="80">
+  <circle cx="24" cy="48" r="12" fill="none" stroke="#1b1f1c" stroke-width="4"/>
+  <circle cx="56" cy="48" r="12" fill="none" stroke="#1b1f1c" stroke-width="4"/>
+  <path d="M24 48 L36 30 L50 30 L56 48 M36 30 L44 48" fill="none" stroke="#0e6458" stroke-width="4" stroke-linejoin="round"/>
+  <rect x="47" y="20" width="10" height="5" fill="#c4501a"/>
+  <text textLength="180" lengthAdjust="spacingAndGlyphs" x="82" y="52" font-family="Schibsted Grotesk, Arial, sans-serif" font-size="26" font-weight="700" fill="#1b1f1c">Brindle Help</text>
+</svg>

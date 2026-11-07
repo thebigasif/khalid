@@ -1,0 +1,82 @@
+---
+source: crates/khalid/tests/template_brief.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<div class="masthead">
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+Five things, every morning.
+</div>
+</header>
+</div>
+<section class="lead-issue" aria-labelledby="lead-label">
+<h2 class="lead-label" id="lead-label">Latest issue</h2>
+<p class="brief-stamp"><a class="brief-edition" href="/blog/category/content-strategy/">Content strategy</a><span class="brief-number">No. 12</span><time datetime="2026-10-12">12 October 2026</time></p>
+<h3 class="lead-title"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="lead-summary">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+<div class="brief-ticks">
+<div class="progress-strip">
+<p class="progress-words"><span class="progress-label">5 items</span> <span class="progress-note">1 min read</span></p>
+<ol class="progress-steps" aria-hidden="true">
+<li class="progress-step"></li>
+<li class="progress-step"></li>
+<li class="progress-step"></li>
+<li class="progress-step"></li>
+<li class="progress-step"></li>
+</ol>
+</div>
+</div>
+<p class="lead-read"><a class="button" href="/blog/planning-a-topic-cluster/">Read this issue</a></p>
+</section>
+<section class="issues" aria-labelledby="issues-title">
+<h2 id="issues-title">Past issues</h2>
+<ol class="brief-issues" role="list">
+<li class="brief-issue">
+<time class="brief-day" datetime="2026-10-05"><span class="brief-weekday">Mon</span> <span class="brief-date">5</span> <span class="brief-month">Oct</span></time>
+<div class="brief-issue-text">
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="brief-summary">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="brief-meta"><span>Technical SEO</span><span>2 min read</span></p>
+</div>
+</li>
+<li class="brief-issue">
+<time class="brief-day" datetime="2026-09-28"><span class="brief-weekday">Mon</span> <span class="brief-date">28</span> <span class="brief-month">Sep</span></time>
+<div class="brief-issue-text">
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="brief-summary">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+<p class="brief-meta"><span>Technical SEO</span><span>1 min read</span></p>
+</div>
+</li>
+<li class="brief-issue">
+<time class="brief-day" datetime="2026-09-21"><span class="brief-weekday">Mon</span> <span class="brief-date">21</span> <span class="brief-month">Sep</span></time>
+<div class="brief-issue-text">
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="brief-summary">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+<p class="brief-meta"><span>On-page SEO</span><span>No. 11</span><span>1 min read</span></p>
+</div>
+</li>
+<li class="brief-issue">
+<time class="brief-day" datetime="2026-09-14"><span class="brief-weekday">Mon</span> <span class="brief-date">14</span> <span class="brief-month">Sep</span></time>
+<div class="brief-issue-text">
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="brief-summary">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+<p class="brief-meta"><span>On-page SEO</span><span>1 min read</span></p>
+</div>
+</li>
+</ol>
+</section>
+<nav class="editions" aria-label="Editions">
+<h2>Editions</h2>
+<ul role="list">
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>

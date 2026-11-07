@@ -1,0 +1,163 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo here
+# is CC0 or public domain.
+
+[[photos]]
+file = "en/posts/2026-10-24-cricket-nets-grant/lead.jpg"
+sha256 = "0bf7851bd507dad49fa8fc9dc781fa85d42b3af8c9b7becd65180cc1ef40a1d6"
+source = "https://wordpress.org/photos/photo/73569d3f38/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A wide-angle view of a professional outdoor cricket turf under stadium floodlights at dusk, featuring a green artificial grass surface, a red pitch, yellow wickets, and tall safety netting with urban buildings in the background. by Hiral Solanki, via wordpress"
+title = "A wide-angle view of a professional outdoor cricket turf under stadium floodlights at dusk, featuring a green artificial grass surface, a red pitch, yellow wickets, and tall safety netting with urban buildings in the background."
+creator = "Hiral Solanki"
+openverse = "9604eb61-2bf9-4941-b7f7-ee58726c7502"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-11-06-christmas-lights/lead.jpg"
+sha256 = "1ca0f5726a8251bf50bacaf1318261a141286beb2640d67502534e302f4ab92c"
+source = "https://wordpress.org/photos/photo/886620041e/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Quiet town at night by mdburnette, via wordpress"
+title = "Quiet town at night"
+creator = "mdburnette"
+openverse = "f4e52c23-969f-4591-b73c-8fca7be67358"
+needs_credit = false
+size = "1600x1066"
+
+[[photos]]
+file = "en/posts/2026-11-05-flood-wall-approved/lead.jpg"
+sha256 = "bac657955023f6aaa407576c0c5d4da22b8b7ef65d118e7e229ceca93ef685c9"
+source = "https://commons.wikimedia.org/w/index.php?curid=143019732"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Flooded street in New Brunswick (32695342327) by New Brunswick / Nouveau-Brunswick, via wikimedia"
+title = "Flooded street in New Brunswick (32695342327)"
+creator = "New Brunswick / Nouveau-Brunswick"
+openverse = "1e704aa2-7a5f-4df6-8037-92d5b32dfa23"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-11-06-mill-lane-bridge-closure/lead.jpg"
+sha256 = "0cb64865d76350b5be8e4ea9132ad735fb3f936669fdf3e87522401d90e09e8d"
+source = "https://commons.wikimedia.org/w/index.php?curid=89626474"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Pont Llwyngwril by Peter Glyn, via wikimedia"
+title = "Pont Llwyngwril"
+creator = "Peter Glyn"
+openverse = "b655f705-f3a0-4808-9318-2b129f8db8fb"
+needs_credit = false
+size = "1600x900"
+
+[[photos]]
+file = "en/posts/2026-10-29-council-tax-bands/lead.jpg"
+sha256 = "e88ab902632bfc060638ee5e5798b71f4fd1f4af33870bfd3f0ede762a04ab67"
+source = "https://commons.wikimedia.org/w/index.php?curid=15906111"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Town Hall Weymouth by Marcbela (Marc N. Belanger), via wikimedia"
+title = "Town Hall Weymouth"
+creator = "Marcbela (Marc N. Belanger)"
+openverse = "8345f018-11f1-43ca-bd5e-375b911b0810"
+needs_credit = false
+size = "1600x1167"
+
+[[photos]]
+file = "en/posts/2026-11-04-fellgate-school-library/lead.jpg"
+sha256 = "62121b58bda41e1b18bcd34cac2c874af06134483bb898fada78240fbf2f7233"
+source = "https://commons.wikimedia.org/w/index.php?curid=108350651"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Schoolers Inside Samakkhi Witthayakhom School Library by Tree Lightbulb, via wikimedia"
+title = "Schoolers Inside Samakkhi Witthayakhom School Library"
+creator = "Tree Lightbulb"
+openverse = "95cc0372-73b8-425f-9e08-78cc93d147a5"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-11-05-cobb-street-bookshop/lead.jpg"
+sha256 = "6dc811e4f23eab90af04699eb5131663bcacecc61a7028f360383fdbb4e6c075"
+source = "https://commons.wikimedia.org/w/index.php?curid=155920620"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Nirbachito Bookshop, Rajshahi 07 by Kryesmin, via wikimedia"
+title = "Nirbachito Bookshop, Rajshahi 07"
+creator = "Kryesmin"
+openverse = "bbadc45b-7276-4b32-a525-3657c731675f"
+needs_credit = false
+size = "1600x2133"
+
+[[photos]]
+file = "en/posts/2026-10-30-saturday-market-stalls/lead.jpg"
+sha256 = "30e78b854ff326384e57c05b6fa20a473897fed02d8e9fea2056a3e7ed7843fb"
+source = "https://commons.wikimedia.org/w/index.php?curid=71360318"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Greengrocer At A Street Market In France Dordogne by Joenomias Menno De Jong, via wikimedia"
+title = "Greengrocer At A Street Market In France Dordogne"
+creator = "Joenomias Menno De Jong"
+openverse = "91bc6ac6-f710-46ce-a000-6c3cefbc9289"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-11-02-town-cup-quarter-final/lead.jpg"
+sha256 = "2ae835b9c325d743379b14948629b2a815d9ae668fbae821dda068aa9e64345e"
+source = "https://commons.wikimedia.org/w/index.php?curid=176245484"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Coin tossing before before a football match by Samson Ssemakadde, via wikimedia"
+title = "Coin tossing before before a football match"
+creator = "Samson Ssemakadde"
+openverse = "490b4a73-ab2e-41b9-a257-af37f381b233"
+needs_credit = false
+size = "1600x1060"
+
+[[photos]]
+file = "en/posts/2026-10-31-parkrun-300th/lead.jpg"
+sha256 = "3ce5cc206cdc54e68f6a51649d5341e50510e29bde5703ec663c1ac4f29f9122"
+source = "https://commons.wikimedia.org/w/index.php?curid=147605091"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Down at the Park. (18412703721) by Bernard Spragg. NZ from Christchurch, New Zealand, via wikimedia"
+title = "Down at the Park. (18412703721)"
+creator = "Bernard Spragg. NZ from Christchurch, New Zealand"
+openverse = "15583087-772a-4ea1-a30e-bc672ffcaa6f"
+needs_credit = false
+size = "1600x1175"
+
+[[photos]]
+file = "en/posts/2026-11-03-bonfire-night-guide/lead.jpg"
+sha256 = "8657999f731417aded52b0c9c5d92fc20eca4a8d5a5423a28aa7578b6acd1156"
+source = "https://commons.wikimedia.org/w/index.php?curid=169823929"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Fireworks on the closing night of BCF 2025 by Aidil Harris, via wikimedia"
+title = "Fireworks on the closing night of BCF 2025"
+creator = "Aidil Harris"
+openverse = "8209eaf2-b8ba-4418-a1b5-ea8e220c63dc"
+needs_credit = false
+size = "1440x1080"
+
+[[photos]]
+file = "en/posts/2026-11-04-northfield-tree-planting/lead.jpg"
+sha256 = "02c5d930d0e69e85d5e7c151f0048b12ca919103cf210a2d4b1583cda546036c"
+source = "https://wordpress.org/photos/photo/330662bfa7/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Young plants with green and brown-tinted leaves in front of a tree trunk, surrounded by grass-like ground cover. by creativemz, via wordpress"
+title = "Young plants with green and brown-tinted leaves in front of a tree trunk, surrounded by grass-like ground cover."
+creator = "creativemz"
+openverse = "806a2b25-82a1-47f4-a944-d2fc0419252e"
+needs_credit = false
+size = "1600x1066"
+
+[[photos]]
+file = "en/posts/2026-11-01-library-saturday-hours/lead.jpg"
+sha256 = "ff0a195d80b8ca9f4fd9b88dbc79973170873c377732b9c5fe3960a46d3447cd"
+source = "https://commons.wikimedia.org/w/index.php?curid=26671377"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Ladysmith Carnegie Library by Jeff the quiet, via wikimedia"
+title = "Ladysmith Carnegie Library"
+creator = "Jeff the quiet"
+openverse = "22dfa90e-b673-4156-959a-3bf416643640"
+needs_credit = false
+size = "1600x1200"
+

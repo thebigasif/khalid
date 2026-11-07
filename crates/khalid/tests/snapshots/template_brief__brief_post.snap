@@ -1,0 +1,103 @@
+---
+source: crates/khalid/tests/template_brief.rs
+expression: "shown(&out, \"planning-a-topic-cluster/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<article class="post">
+<header class="post-header">
+<p class="brief-stamp"><a class="brief-edition" href="/blog/category/content-strategy/">Content strategy</a><span class="brief-number">No. 12</span><time datetime="2026-10-12">12 October 2026</time></p>
+<h1>Planning a topic cluster in an afternoon</h1>
+<p class="dek">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+<div class="post-meta">
+<address>
+<ul class="people" role="list" aria-label="Written by">
+<li class="person"><span><a rel="author" href="/blog/authors/asif/">Asif</a><span class="person-role">Founder of SerpDad</span></span></li>
+</ul>
+</address>
+</div>
+<div class="brief-ticks">
+<div class="progress-strip">
+<p class="progress-words"><span class="progress-label">5 items</span> <span class="progress-note">1 min read</span></p>
+<ol class="progress-steps" aria-hidden="true">
+<li class="progress-step"></li>
+<li class="progress-step"></li>
+<li class="progress-step"></li>
+<li class="progress-step"></li>
+<li class="progress-step"></li>
+</ol>
+</div>
+</div>
+</header>
+<div class="post-body">
+<p>A topic cluster is a group of posts on one subject: one main post that covers the whole subject, and several shorter posts that each answer one question in depth. They all link to each other. Together they show search engines that your site knows the subject, which is what <a href="/blog/glossary/topical-authority/">Topical authority</a> means.</p>
+<h2 id="plan-it-on-one-page">Plan it on one page <a class="heading-link" href="#plan-it-on-one-page" aria-label="Link to this section">#</a></h2>
+<ol>
+<li><strong>Pick the subject your customers ask about most.</strong> For a bakery that sells online, that might be &quot;sourdough at home&quot;.</li>
+<li><strong>Write the main question at the top:</strong> &quot;How do I bake sourdough at home?&quot; That becomes the main post.</li>
+<li><strong>List the smaller questions underneath:</strong> how to feed a starter, why the dough is sticky, which flour to buy. Each becomes a short post.</li>
+<li><strong>Draw the links.</strong> Every short post links to the main post, and the main post links to every short post.</li>
+</ol>
+<h2 id="write-in-the-right-order">Write in the right order <a class="heading-link" href="#write-in-the-right-order" aria-label="Link to this section">#</a></h2>
+<p>Write the short posts first. They are quicker, and they teach you what the main post needs to say. Then write the main post and add the links. <a href="/blog/why-internal-links-matter/">Why internal links matter</a> has the rules for the anchor text.</p>
+
+</div>
+<p class="brief-end">That&#39;s the brief. See you next issue.</p>
+<footer class="post-footer">
+<div class="share">
+<p class="share-title">Share this post</p>
+<ul>
+<li><a href="mailto:?subject=Planning%20a%20topic%20cluster%20in%20an%20afternoon&amp;body=https%3A%2F%2Fwww.example.com%2Fblog%2Fplanning-a-topic-cluster%2F" rel="nofollow noreferrer">Email</a></li>
+<li><a href="https://bsky.app/intent/compose?text=Planning%20a%20topic%20cluster%20in%20an%20afternoon%20https%3A%2F%2Fwww.example.com%2Fblog%2Fplanning-a-topic-cluster%2F" rel="nofollow noreferrer">Bluesky</a></li>
+<li><a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fplanning-a-topic-cluster%2F" rel="nofollow noreferrer">LinkedIn</a></li>
+</ul>
+</div>
+</footer>
+<section class="author-box">
+<h2>About the author</h2>
+<div class="person-card">
+<div class="person-about">
+<p class="person-name"><a href="/blog/authors/asif/">Asif</a></p>
+<p class="person-role">Founder of SerpDad</p>
+<p class="person-credentials"><strong>Experience</strong> Ten years running SEO for small teams</p>
+<div class="person-bio"><p>Asif writes about search from the side of the people who have to do the work: small teams with a website, a blog and not much time. He likes advice you can act on before lunch.</p></div>
+<ul class="author-profiles" role="list" aria-label="Asif elsewhere">
+<li><a href="https://serpdad.com/" data-icon="website"><svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></g></svg><span>serpdad.com</span></a></li>
+</ul>
+</div>
+</div>
+</section>
+</article>
+<section class="related" aria-labelledby="related-title">
+<h2 id="related-title">Related posts</h2>
+<ol class="brief-issues" role="list">
+<li class="brief-issue">
+<time class="brief-day" datetime="2026-09-14"><span class="brief-weekday">Mon</span> <span class="brief-date">14</span> <span class="brief-month">Sep</span></time>
+<div class="brief-issue-text">
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="brief-summary">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+<p class="brief-meta"><span>On-page SEO</span><span>1 min read</span></p>
+</div>
+</li>
+<li class="brief-issue">
+<time class="brief-day" datetime="2026-10-05"><span class="brief-weekday">Mon</span> <span class="brief-date">5</span> <span class="brief-month">Oct</span></time>
+<div class="brief-issue-text">
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="brief-summary">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="brief-meta"><span>Technical SEO</span><span>2 min read</span></p>
+</div>
+</li>
+<li class="brief-issue">
+<time class="brief-day" datetime="2026-09-28"><span class="brief-weekday">Mon</span> <span class="brief-date">28</span> <span class="brief-month">Sep</span></time>
+<div class="brief-issue-text">
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="brief-summary">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+<p class="brief-meta"><span>Technical SEO</span><span>1 min read</span></p>
+</div>
+</li>
+</ol>
+</section>

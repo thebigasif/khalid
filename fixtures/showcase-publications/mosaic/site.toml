@@ -1,0 +1,99 @@
+# Dry Light, a made-up photo blog of the desert Southwest, written for
+# the Mosaic template's demo. Its photographs are public domain works of
+# the US National Park Service, and one is under CC0 (ATTRIBUTION.md).
+# Each key and table here replaces the showcase's own when
+# scripts/demo-publication.sh applies it.
+
+name = "Dry Light"
+languages = ["en"]
+
+[template.cta]
+label = "See every picture"
+href = "/blog/archive/"
+note = "Thirteen pictures from the dunes, canyons and night skies of the Southwest, newest first."
+
+# The Mosaic template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Pictures from the dunes, canyons and night skies of the desert Southwest, with how each was made."]
+
+[announcement]
+text = "New: first light on the dunes at Great Sand Dunes."
+href = "/blog/first-light-dunes/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Pictures of the desert Southwest"
+
+[seo.ai_page]
+covers = "Dry Light shows photographs of the desert Southwest: dunes, canyons, night skies, plants and animals. Each post is one picture with its park, place, light and season, and short notes on how to make a picture like it."
+cite = "Name the post you quote and link it."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Dry Light"
+email = "hello@example.com"
+founded = "2026-08-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Dry Light logo"
+width = 320
+height = 80
+
+# Sign-ups for new pictures by email, under the blog's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Dry Light"
+postal_address = "Dry Light, 120 Copper Street, Tucson, AZ 85701, USA"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Dunes"
+href = "/blog/category/dunes/"
+language = "en"
+
+[[nav.primary]]
+label = "Night sky"
+href = "/blog/category/night-sky/"
+language = "en"
+
+[[nav.primary]]
+label = "Canyons"
+href = "/blog/category/canyons/"
+language = "en"
+
+[[nav.primary]]
+label = "Desert life"
+href = "/blog/category/desert-life/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Dry Light"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "People"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Every picture"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

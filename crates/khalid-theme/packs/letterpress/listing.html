@@ -1,0 +1,19 @@
+{#- Letterpress's lists (category, tag, archive, date and collection
+    pages): the list's name and intro over a thick and a thin rule, then
+    its issues as a pile of small printed covers. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "parts-letterpress.html" import issue_pile -%}
+<header class="list-header">
+{% block kind %}{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}<h2 class="visually-hidden">{{ t.newsletter_issues }}</h2>
+{{ issue_pile(page.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

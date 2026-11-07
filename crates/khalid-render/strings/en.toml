@@ -365,6 +365,10 @@ camera_details = "Camera details"
 contact_sheet = "Contact sheet"
 more_pictures = "More pictures"
 stories = "Stories"
+# The mosaic template's label over the tiles and its facts beside a
+# post's title, for screen readers.
+latest_pictures = "Latest pictures"
+photo_details = "About the picture"
 # The channel template's front page, lists and posts.
 channel_now_showing = "Now showing"
 channel_latest = "Latest videos"
@@ -377,9 +381,18 @@ channel_hosts = "Hosts"
 programmes = "Programmes"
 routines = "Routines"
 routine_notes = "Notes"
+# The pantry template's front page: the recipe box tabs, the newest
+# recipe, the recipe cards and the baking notes.
+recipe_box = "The recipe box"
+fresh_from_the_oven = "Fresh from the oven"
+recipes = "Recipes"
+baking_notes = "Baking notes"
 # The lattice template's key numbers and its front page.
 key_numbers = "Key numbers"
 latest_explainers = "Latest explainers"
+# The margin template's front page: its essays and its sign-up band.
+margin_essays = "Essays"
+margin_letter = "New essays by email"
 # The plinth template's front page, and the title block part.
 projects = "Projects"
 studio_notes = "Studio notes"
@@ -425,3 +438,100 @@ price_level = "Price level {level} of 4"
 at_a_glance = "At a glance"
 city_notes = "Notes from the city"
 more_places = "More places"
+# The masthead template's front page: the lead story, the latest posts and
+# the headline lists by section.
+lead_story = "Lead story"
+latest_stories = "Latest"
+in_the_sections = "In the sections"
+# The notebook template's side column, link notes and related notes.
+# {site} is the name of the place a link note points to.
+notebook_about = "About this notebook"
+notebook_sections = "Sections"
+notebook_read_at = "Read it at {site}"
+notebook_more = "More notes"
+# The letterpress template's cover, issue contents and end mark.
+in_this_issue = "In this issue"
+issue_end = "End of the issue"
+more_issues = "More issues"
+# The frequency template's front page, episode plate and related episodes.
+frequency_episodes = "Episodes"
+frequency_show_notes = "Show notes"
+frequency_episode_facts = "About this episode"
+frequency_more_episodes = "More episodes"
+# The glossy template's cover, its card grid and its sections.
+cover_story = "Cover story"
+cover_lines = "Also in this issue"
+the_latest = "Latest stories"
+browse_sections = "Browse the sections"
+# The gallery template's wall labels, list of works, project sheet and
+# discipline chips. {number} is the work's number, written with two digits.
+gallery_all = "All work"
+gallery_number = "No. {number}"
+gallery_checklist = "List of works"
+gallery_project = "About the project"
+gallery_more = "More work"
+# The brief template: a digest's issue number, its item count, the
+# editions on the front page and the line that ends an issue. {number}
+# and {count} are filled in.
+brief_issue = "No. {number}"
+brief_items = "{count} items"
+brief_items_one = "1 item"
+brief_editions = "Editions"
+brief_end = "That's the brief. See you next issue."
+# The manual template: a help centre's front page, articles and next
+# steps. {name}, {count}, {part}, {total} and {number} are filled in.
+help_centre = "Help centre"
+help_search = "Search the help centre"
+help_popular = "Popular articles"
+help_topics = "Browse by topic"
+help_updates = "Recently updated"
+help_topic = "Topic"
+help_guide = "Guide"
+help_articles = "{count} articles"
+help_articles_one = "1 article"
+help_step = "Step {part} of {total}"
+help_step_number = "Step {number}"
+help_before = "Before you start"
+help_on_page = "On this page"
+help_in_guide = "In this guide"
+help_more = "Related articles"
+help_helpful = "Did this answer your question?"
+help_yes = "Yes, it did"
+help_no = "Not quite"
+help_next_step = "Next step:"
+help_read_next = "Read next:"
+help_home = "Every topic in the help centre"
+# The dispatch template: a newsletter's promises on the front page, its
+# reply slip's feed link and the issues after an issue.
+issue_promises = "In every issue"
+follow_feed = "Or follow the feed"
+# The spectrum template's front page: the label over the lead story and
+# the link under each topic's row, where {name} is the topic.
+all_in = "All in {name}"
+# The dialogue template: an interview show's latest guest, guest rows,
+# name plate and hosts.
+latest_guest = "Latest guest"
+in_conversation_with = "In conversation with"
+conversations = "Conversations"
+from_the_show = "From the show"
+host = "Host"
+guest = "Guest"
+hosts = "Hosts"
+conversation_topics = "Topics in this conversation"
+more_conversations = "More conversations"
+# The inkwell template: a newsletter's archive of numbered issues grouped
+# by year. {number} is the issue's number and {count} how many issues.
+issue_no = "No."
+issue_heading = "Issue {number}"
+issue_glance = "In this issue"
+issue_archive = "Every issue"
+issue_years_jump = "Jump to a year"
+issue_tally = "{count} issues"
+issue_tally_one = "1 issue"
+issue_more = "More issues"
+issue_feed = "Or follow it in a feed reader"
+# The gazette template: a local paper's section index, section flags and
+# the news under a story. {name} is a section's name.
+sections_jump = "Jump to a section"
+section_all = "All {name} stories"
+more_news = "More news"

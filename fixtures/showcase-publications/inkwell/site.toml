@@ -1,0 +1,89 @@
+# The Seed Tin, the made-up quarterly letter of the Penhallow Seed
+# Library in Cornwall, written for the Inkwell template's demo. The
+# library, its growers and its seeds are invented. Each key and table
+# here replaces the showcase's own when scripts/demo-publication.sh
+# applies it.
+
+name = "The Seed Tin"
+languages = ["en"]
+
+[template.cta]
+label = "Join the library"
+href = "/blog/about/"
+note = "Membership is free. Members borrow seed each spring and get every issue of The Seed Tin by email."
+
+# The Inkwell template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["A quarterly letter since 2004"]
+signup_note = ["Four letters a year, one each season. Nothing else, ever."]
+
+[announcement]
+text = "Winter seed swap: Saturday 5 December at the old chapel, Penhallow."
+href = "/blog/winter-seed-list/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "The quarterly letter of the Penhallow Seed Library"
+
+[seo.ai_page]
+covers = "The Seed Tin is the made-up quarterly letter of the Penhallow Seed Library, a seed library in Cornwall. Each numbered issue has a lead story, growing notes, the story of one variety from the library's tin and the dates of seed swaps. The library, its people and its seeds are invented for a template demo."
+cite = "Quote the issue and link its page."
+contact = "letters@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Penhallow Seed Library"
+email = "letters@example.com"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Seed Tin"
+width = 320
+height = 80
+
+# Sign-ups for The Seed Tin. The mail server is a reserved example name,
+# so nothing is ever sent.
+[mail]
+from = "letters@example.com"
+name = "The Seed Tin"
+postal_address = "Penhallow Seed Library, The Old Chapel, Chapel Row, Penhallow TR0 0AA"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Issues"
+href = "/blog/category/issues/"
+language = "en"
+
+[[nav.primary]]
+label = "Supplements"
+href = "/blog/category/supplements/"
+language = "en"
+
+[[nav.primary]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the library"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Every issue"
+href = "/blog/category/issues/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

@@ -1,0 +1,58 @@
+# The sample brand for the Dialogue demo: Open Studio, a made-up
+# interview show with people who make things by hand. A deep teal on a
+# cool paper page with a pale green surface, Petrona for titles and the
+# guests' words, and Schibsted Grotesk for the text. Only the brand lives
+# here: the template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#f6f7f4"
+surface = "#e3ebe7"
+text = "#14201d"
+muted = "#4a5955"
+link = "#1d5c55"
+accent = "#1d5c55"
+border = "#cfdad5"
+
+[fonts]
+heading = "Petrona, Charter, Georgia, serif"
+body = "\"Schibsted Grotesk\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+
+[[fonts.files]]
+family = "Petrona"
+style = "normal"
+weight = "400 700"
+path = "petrona-latin-400-700.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "94.78%"
+descent = "127.41%"
+line_gap = "0.00%"
+size_adjust = "57.61%"
+
+[[fonts.files]]
+family = "Petrona"
+style = "italic"
+weight = "400"
+path = "petrona-latin-italic-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "94.78%"
+descent = "127.41%"
+line_gap = "0.00%"
+size_adjust = "53.69%"
+
+[[fonts.files]]
+family = "Schibsted Grotesk"
+style = "normal"
+weight = "400 700"
+path = "schibsted-grotesk-latin-400-700.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "107.87%"
+descent = "121.66%"
+line_gap = "0.00%"
+size_adjust = "61.63%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

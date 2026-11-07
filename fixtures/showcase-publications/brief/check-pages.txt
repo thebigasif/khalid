@@ -1,0 +1,8 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /kelp-returns-carrow-point/
+category /category/morning-brief/
+tag /tag/wildlife/
+author /authors/ines-calloway/

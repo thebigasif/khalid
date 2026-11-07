@@ -1,0 +1,3 @@
+Added
+- The Pantry template, for a baking and recipe blog. A post with facts is a recipe: the front page shows the sections of the recipe box (categories) as divider tabs, the newest recipe as a wide index card, the other recipes as square index cards with the time and yield on a tear-off ticket, and the newest baking notes. Each recipe opens on its ticket of four facts (time, yield, oven, level), its bullet lists before the method are drawn as an ingredients card, and its first numbered list as the method's steps.
+- A shared section part, ticket cards, for index cards whose facts sit on a tear-off ticket, with `fact_ticket` for one ticket on its own.

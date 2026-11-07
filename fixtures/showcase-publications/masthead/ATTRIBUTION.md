@@ -1,0 +1,15 @@
+# Photographs in The Common Room
+
+The Common Room is a made-up publication that shows Khalid's Masthead template. Its photographs are not part of Khalid and are not under the AGPL. Each keeps the licence its photographer gave it, listed here. The photographs are cropped and resized for the demo.
+
+- `en/posts/2026-01-14-small-cinema/lead.jpg`: "Movie theater seats (Unsplash)" by Elijah Flores baesik, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Movie_theater_seats_(Unsplash).jpg
+- `en/posts/2026-02-04-park-bench/lead.jpg`: "Empty park bench at dusk (Unsplash)" by Scott Van Daalen scottvd, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Empty_park_bench_at_dusk_(Unsplash).jpg
+- `en/posts/2026-03-11-what-a-library-is-for/lead.jpg`: "Library Books Bookshelves (Unsplash)" by Davide Cantelli cant89, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Library_Books_Bookshelves_(Unsplash).jpg
+- `en/posts/2026-04-08-corner-bakery/lead.jpg`: "Bread at a Bakery (Unsplash)" by Roman Kraft romankraft, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Bread_at_a_Bakery_(Unsplash).jpg
+- `en/posts/2026-05-06-same-road-every-day/lead.jpg`: "Country Road (Unsplash)" by Bethany Legg bkotynski, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Country_Road_(Unsplash).jpg
+- `en/posts/2026-06-10-night-trains/lead.jpg`: "Midnight train (Unsplash)" by Ioan Radu Mester radumester, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Midnight_train_(Unsplash).jpg
+- `en/posts/2026-07-08-allotment-season/lead.jpg`: "Vegetable Garden Harvest (Unsplash)" by Gemma Evans stayandroam, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Vegetable_Garden_Harvest_(Unsplash).jpg
+- `en/posts/2026-08-12-low-tide/lead.jpg`: "MistyLowTide(byRobinBenad)" by Robin Benad, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:MistyLowTide(byRobinBenad).jpg
+- `en/posts/2026-09-09-bicycle-city/lead.jpg`: "Red bicycle (Unsplash)" by Dakota Corbin thedakotacorbin, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Red_bicycle_(Unsplash).jpg
+- `en/posts/2026-10-07-saturday-market/lead.jpg`: "Fresh From the Market (Unsplash)" by Anne Preble annepreble, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Fresh_From_the_Market_(Unsplash).jpg
+- `en/posts/2026-10-21-papers-in-cafes/lead.jpg`: "Reading newspaper in a café (Unsplash)" by Rob Bye robertbye, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Reading_newspaper_in_a_caf%C3%A9_(Unsplash).jpg
