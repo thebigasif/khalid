@@ -215,6 +215,7 @@ impl Demo {
             locale: Locale::try_new(lang.tag)?,
             home: lang.prefix.to_owned(),
             stylesheet: self.stylesheet.clone(),
+            body_font: None,
             nav: Nav {
                 primary: vec![
                     link(lang.glossary, format!("{}glossary/", lang.prefix)),

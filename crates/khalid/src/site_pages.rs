@@ -455,6 +455,8 @@ impl SitePages {
         let today = self.0.clock.now().date_naive();
         let content = &*charts::read(folder, content);
         let mut languages = build_pages::pages(config, routes, (content, others), href, today)?;
+        let tokens = theme.as_ref().map(|theme| &theme.tokens);
+        assets::preload_body_font(folder, config, tokens, &mut languages);
         let renderer = theme.as_ref().map(|theme| &theme.renderer);
         post_lock::lock(config, content, renderer, &mut languages);
         let categories = categories::of(folder)?;

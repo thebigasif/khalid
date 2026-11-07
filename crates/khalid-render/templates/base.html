@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+{% if site.body_font %}<link rel="preload" href="{{ site.body_font }}" as="font" type="font/woff2" crossorigin>{{ "\n" }}{% endif -%}
 {% if meta.seo_head %}{{ meta.seo_head }}<link rel="stylesheet" href="{{ site.stylesheet }}">
 {% else %}<title>{{ meta.title }}</title>
 <meta name="description" content="{{ meta.description }}">

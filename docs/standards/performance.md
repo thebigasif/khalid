@@ -22,6 +22,7 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 | Pictures on a template's demo home page, 390 px at 3x, without the hero | under 620 KB (Aperture 810 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
 | Pictures on a template's demo home page, 390 px at 1x, without the hero | under 140 KB | none | `scripts/page-weight.sh`, see "Page weight" |
 | Pictures on a template's demo home page, 1440 px | under 1,250 KB (Aperture 2,100 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
+| Web fonts on a template's demo home page and one post, 390 and 1440 px | under 60 KB (Chapter 80 KB) | none | `scripts/page-weight.sh`, see "Fonts" |
 | JavaScript required to read a post | 0 bytes | none | scripts-off test |
 | Admin initial JavaScript, compressed | under 350 KB | 5% | Vite build report |
 | Test suite, CI | under 4 min | none | job time |
@@ -236,6 +237,8 @@ Pictures are most of what a reader downloads. Every picture is offered in severa
 | 390 px at 1x, every picture but the hero | under 140 KB |
 | 1440 px, every picture | under 1,250 KB |
 | 1440 px, Aperture, whose design is five photographs across a 1,296 px frame | under 2,100 KB |
+| Fonts, home page and one post, at 390 px and at 1440 px | under 60 KB |
+| Fonts, Chapter, whose excerpts need four faces (see "Fonts") | under 80 KB |
 
 The desktop budgets were set on 2026-11-07 with about 10% headroom over the heaviest template after the change below, Atlas at 1,136 KB. The phone budgets were set again the same day, once the demos offered AVIF (see "Pictures on high-density phones"), with about 10% headroom: at 3x over Itinerary at 561 KB and Aperture at 734 KB, and at 1x over Aperture and Atlas at 125 KB. The 1x budget was 270 KB before; the 3x measure is new. A template over a budget almost always tells the browser a slot is wider than it is. The failure names the heaviest pictures and what to fix. A budget is never raised to make the check pass; a new budget is a deliberate change in its own pull request with the reason.
 
@@ -292,6 +295,34 @@ The 31 template demo home pages, in KB of pictures, before and after (the "befor
 | 1440 px, all pictures | 7,901 | 4,364 |
 
 At 3x, 23 of the 31 home pages download under 400 KB of pictures in all, against 14 before. The eight over it are the photo-led designs: Aperture 827 KB, Itinerary 645, Atlas 561, Compass 470, Lattice 443, Plinth 413, Beacon 404 and Keystone 403. Per template numbers are in the pull request.
+
+### Fonts
+
+The same check counts every web font file the page downloads, on each demo's home page and on one post (the first post its demo publication's `check-pages.txt` names), at 390 px and at 1440 px. A browser fetches a face only when some text on the page is set in it, so a page with no italic does not pay for the italic file.
+
+Each sample brand in `fixtures/showcase-brands/` carries its fonts as WOFF2 files. Google Fonts serves a "Latin" file with about 330 characters and, for some families, hinting for old Windows screens. `scripts/font-subset.py` cuts each file to what its demo shows:
+
+- **Letters.** Basic Latin, the no-break space and a short list of punctuation are always kept. Any other letter is kept only when the brand's built demo uses it, in its pages or in its stylesheet's generated content, such as the German umlauts and ß of the German pages, or the arrows the stylesheet draws.
+- **Features.** The OpenType features a browser applies by itself to Latin text (kerning, ligatures, contextual forms, marks), and only the numeral and small-capital features the pack's stylesheet asks for with `font-variant`.
+- **Hinting kept.** Hinting fits letters to the pixel grid, and Chromium on Linux and Windows follows it when it measures text: a first cut without it moved line breaks in Compass and Lattice enough to fail the layout check. So every file keeps its hinting, except PT Serif (Ledger) and Alegreya Sans (Chapter), whose demos would be over budget with it (82 and 84 KB) and pass the layout check without it. Outlines, metrics and names stay as they were, so the page looks the same and the fallback metrics in `tokens.toml` still match (the cut leaves `hhea` and `OS/2` untouched).
+- **Ranges.** Each file's `range` in `tokens.toml`, its `unicode-range`, becomes exactly the letters it carries, so a letter it lacks is drawn by the next font in the stack. Every `@font-face` rule says `font-display: swap`.
+- **Licences.** Every font stays under the OFL, with its licence beside it, and its copyright and licence names inside it. The OFL counts a cut file as a Modified Version, which may not carry a Reserved Font Name (OFL FAQ 2.6). So PT Serif is cut as "Ledger Serif" and IBM Plex Sans as "Workbench Sans": the same design under a new name, in the file and in `tokens.toml`. Source Sans 3 (Keystone) reserves "Source" and is under the budget uncut, so it is left as Google serves it.
+- **Variable files.** Brands that use a variable file keep it. After the cut, a variable file is about as large as the two static weights it would replace: Figtree 400 to 700 as one variable file is 12.4 KB (Vital), and its 400 and 700 static files are 12.8 KB together (Syllabus). A swap would save under 4%, so the static files stay where a brand has them.
+
+Each page also preloads its body font, the one file every page uses: the upright face of the first family in the body stack, at weight 400 or in a range that holds it. The head says `<link rel="preload" as="font" type="font/woff2" crossorigin>` at the address the stylesheet fetches, so the file is fetched once and early. No other font is preloaded.
+
+Measured on 2026-11-07, in KB of fonts, over the 31 template demos, each on its home page and one post at 390 and 1440 px (124 pages):
+
+| | Before | After |
+|---|---|---|
+| Heaviest page | 186 (Chapter post) | 73 (Chapter post) |
+| Ledger home page, 390 px | 124 | 45 |
+| Average page | 59.7 | 33.9 |
+| Pages over 60 KB | 50 | 2 (Chapter posts) |
+
+Chapter has its own budget. Its excerpts set the text in EB Garamond with real small capitals and italics, beside Alegreya Sans in two weights, so a post needs four files. Even with no small capitals the four would weigh 60.0 KB, so 60 KB cannot be reached without changing the design. 80 KB is about 10% over the 73 KB it weighs.
+
+To add or change a brand's fonts: put the Latin WOFF2 files and their `OFL.txt` in `theme/fonts/`, list them in `tokens.toml`, build the demos (`scripts/page-weight.sh` leaves them in `target/page-weight/sites`), then run `scripts/font-subset.py --sites target/page-weight/sites <brand>` and the check again. Cutting a file twice changes nothing, so run it again when the demo's text gains new letters.
 
 ## Fast to build
 

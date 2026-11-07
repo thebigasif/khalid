@@ -22,6 +22,11 @@ pub struct RenderSite {
     pub home: String,
     /// The address of the hashed stylesheet, such as `/assets/site.3f2a9c1e.css`.
     pub stylesheet: String,
+    /// The address of the font file that draws body text, such as
+    /// `/blog/assets/fonts/inter-latin-400.woff2`, which every page
+    /// preloads so the text is drawn in it sooner. `None` when the body
+    /// text is in a font the site does not serve itself.
+    pub body_font: Option<String>,
     /// The menus.
     pub nav: Nav,
     /// The link back to the main website, when the blog lives beside one.

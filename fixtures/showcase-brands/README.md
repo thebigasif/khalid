@@ -5,7 +5,7 @@ Each template's demo shows the showcase site (`fixtures/showcase-site/`) under a
 Each `<template>/theme/` folder holds:
 
 - `tokens.toml`: the brand's colours, font stacks and self-hosted font files, in the shape `khalid theme sync` writes. It sets only what a brand owns. Shape, type sizes and spacing stay the template's own.
-- `fonts/`: the brand's font pair as Latin WOFF2 files, at most four, each family's `OFL.txt` licence beside them. Every file has its fallback metrics in `tokens.toml`, measured by the same code `theme sync` runs, so the page does not shift while it loads.
+- `fonts/`: the brand's font pair as Latin WOFF2 files, at most four, each family's `OFL.txt` licence beside them. Every file has its fallback metrics in `tokens.toml`, measured by the same code `theme sync` runs, so the page does not shift while it loads. Each file is cut to the letters its demo shows by `scripts/font-subset.py`, which keeps every demo page under the font budget (`docs/standards/performance.md`, "Fonts"). A font whose licence reserves its name is cut under a new one, such as PT Serif as "Ledger Serif".
 - `logo.svg`: a small mark drawn for the demo, with the showcase's name.
 
 To build a branded demo, copy over a copy of the showcase site:
