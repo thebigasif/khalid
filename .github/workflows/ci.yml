@@ -67,6 +67,9 @@ jobs:
     runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'khalid' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
+      - name: Disk space for the build
+        if: runner.environment == 'self-hosted'
+        run: ./scripts/ci/disk-guard.sh
       - name: Per-runner Rust home
         if: runner.environment == 'self-hosted'
         run: |
@@ -118,6 +121,9 @@ jobs:
     runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
+      - name: Disk space for the build
+        if: runner.environment == 'self-hosted'
+        run: ./scripts/ci/disk-guard.sh
       # The maintainer's runners share one user. Each gets its own Rust home,
       # so one job's toolchain install cannot swap cargo out under another.
       - name: Per-runner Rust home
@@ -171,6 +177,9 @@ jobs:
         partition: [1, 2]
     steps:
       - uses: actions/checkout@v7
+      - name: Disk space for the build
+        if: runner.environment == 'self-hosted'
+        run: ./scripts/ci/disk-guard.sh
       - name: Per-runner Rust home
         if: runner.environment == 'self-hosted'
         # A full path, so cargo-llvm-cov recognises the registry and leaves
@@ -270,6 +279,9 @@ jobs:
     runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
+      - name: Disk space for the build
+        if: runner.environment == 'self-hosted'
+        run: ./scripts/ci/disk-guard.sh
       - name: Any admin yet?
         id: admin
         run: |
