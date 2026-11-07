@@ -14,6 +14,7 @@ pub(crate) static FIXTURE: Pack = Pack {
     summary: "For a sports club: the next match and the club's form on the front page, results as scoreboard rows with the score in large figures, upcoming fixtures, club news, a squad page and a scoreboard on every match report.",
     css: PackText::file("fixture/fixture.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "fixture/picture_sizes.html"),
         PackTemplate::file("home.html", "fixture/home.html"),
         PackTemplate::file("post.html", "fixture/post.html"),
         PackTemplate::file("listing.html", "fixture/listing.html"),

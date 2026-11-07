@@ -1,4 +1,4 @@
-{#- spread(item, level=2, kicker=none, text=none, href=none, kicker_href=none, ledger_title=none):
+{#- spread(item, level=2, kicker=none, text=none, href=none, kicker_href=none, ledger_title=none, sizes=none):
     two facing pages, as in a printed lookbook or a project book. The
     item's picture fills one side at its own shape, with its caption
     under it, never on it. The other side holds a small label (`kicker`,
@@ -7,11 +7,12 @@
     as a ledger: each label, a dotted leader, then the value. Called with
     `{% call spread(...) %}...{% endcall %}`, it shows what the call holds
     under the ledger, such as a byline or a link. Takes a post card or a
-    post page. -#}
+    post page.
+    `sizes` is how wide the pack draws each picture (README.md). -#}
 {% from "image.html" import picture -%}
-{% macro spread(item, level=2, kicker=none, text=none, href=none, kicker_href=none, ledger_title=none) -%}
+{% macro spread(item, level=2, kicker=none, text=none, href=none, kicker_href=none, ledger_title=none, sizes=none) -%}
 {% if item.image %}<div class="spread">
-<div class="spread-picture">{{ picture(item.image) }}</div>
+<div class="spread-picture">{{ picture(item.image, sizes) }}</div>
 {% else %}<div class="spread spread-text-only">
 {% endif %}<div class="spread-text">
 {% if kicker and kicker_href %}<p class="spread-kicker"><a href="{{ kicker_href }}">{{ kicker }}</a></p>

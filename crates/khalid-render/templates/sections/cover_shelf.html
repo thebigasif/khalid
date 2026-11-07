@@ -1,15 +1,16 @@
-{#- cover_shelf(posts, level=3, fact=1): a shelf of covers in portrait,
+{#- cover_shelf(posts, level=3, fact=1, sizes=none): a shelf of covers in portrait,
     each with its title and one short fact under it, such as a book's year
     or an album's release date. The cover is the post's picture; a post
     without one shows a plain cover with its title. `fact` is the place of
     the fact to show, counted from 0; a post without it shows its date.
     For books, releases, films and games. Titles use a heading of
-    `level`. -#}
+    `level`.
+    `sizes` is how wide the pack draws each picture (README.md). -#}
 {% from "image.html" import picture -%}
-{% macro cover_shelf(posts, level=3, fact=1) -%}
+{% macro cover_shelf(posts, level=3, fact=1, sizes=none) -%}
 <ul class="cover-shelf" role="list">
 {% for post in posts %}<li class="cover-shelf-item">
-{% if post.image %}<div class="cover-shelf-cover">{{ picture(post.image) }}</div>
+{% if post.image %}<div class="cover-shelf-cover">{{ picture(post.image, sizes) }}</div>
 {% else %}<div class="cover-shelf-cover cover-shelf-plain" aria-hidden="true"><span>{{ post.title }}</span></div>
 {% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 <p class="cover-shelf-fact">{% if post.facts | length > fact %}{{ post.facts[fact].value }}{% else %}<time datetime="{{ post.date }}">{{ (post.date | string)[:4] }}</time>{% endif %}</p>

@@ -14,6 +14,7 @@ pub(crate) static SYLLABUS: Pack = Pack {
     summary: "For an online course: modules and lessons in a course outline, a course map with one square per lesson, and on every lesson a progress ruler that says how far through the course it is.",
     css: PackText::file("syllabus/syllabus.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "syllabus/picture_sizes.html"),
         PackTemplate::file("home.html", "syllabus/home.html"),
         PackTemplate::file("post.html", "syllabus/post.html"),
         PackTemplate::file("listing.html", "syllabus/listing.html"),

@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
 {% set options = template.options -%}
@@ -27,10 +28,10 @@
 {% endif %}</header>
 {% set slot = page.featured if options.featured else none -%}
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
-{% if page.sections %}{% if slot %}{{ featured_slot(slot) }}
+{% if page.sections %}{% if slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
 {% endif %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts, 3) }}
+{% if section.posts %}{{ cards(section.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
@@ -39,10 +40,10 @@
 {% set rest = (essays[4:] + releases[8:]) | sort(attribute="date", reverse=true) -%}
 <div class="lead lead-log">
 <div class="lead-essays">
-{% if slot %}{{ featured_slot(slot) }}
+{% if slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
 {% endif %}{% if essays %}<section class="lead-grid" aria-labelledby="lead-grid-title">
 <h2 id="lead-grid-title">{{ t.more_posts if slot else t.latest }}</h2>
-{{ cards(essays[:4], 3) }}
+{{ cards(essays[:4], 3, sizes=slot_sizes("home", template.options.cards)) }}
 </section>
 {% endif %}</div>
 {% set log = releases[0].category -%}
@@ -63,7 +64,7 @@
 {{ cards(rest, 3, "compact") }}
 </section>
 {% endif %}{% elif slot and posts %}<div class="lead">
-{{ featured_slot(slot) }}
+{{ featured_slot(slot, slot_sizes("featured")) }}
 <section class="lead-rail" aria-labelledby="lead-rail-title">
 <h2 id="lead-rail-title">{{ t.latest }}</h2>
 {{ cards(posts[:5], 3, "ranked") }}
@@ -71,14 +72,14 @@
 </div>
 {% if posts | length > 5 %}<section class="lead-grid" aria-labelledby="lead-grid-title">
 <h2 id="lead-grid-title">{{ t.more_posts }}</h2>
-{{ cards(posts[5:11], 3) }}
+{{ cards(posts[5:11], 3, sizes=slot_sizes("home", template.options.cards)) }}
 </section>
 {% endif %}{% if posts | length > 11 %}<section class="lead-index" aria-labelledby="lead-index-title">
 <h2 id="lead-index-title">{{ t.archive_title }}</h2>
 {{ cards(posts[11:], 3, "compact") }}
 </section>
-{% endif %}{% elif slot %}{{ featured_slot(slot) }}
-{% elif posts %}{{ cards(posts) }}
+{% endif %}{% elif slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
+{% elif posts %}{{ cards(posts, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if options.quote %}<figure class="masthead-quote">
 <blockquote>

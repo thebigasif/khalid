@@ -10,6 +10,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
@@ -34,7 +35,7 @@
 {% endif %}<h1>{{ page.title }}</h1>
 {% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
 {% endif %}{% if page.facts %}<div class="project-spread">
-{% if page.image %}<div class="spread-plate">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="spread-plate">{{ picture(page.image, slot_sizes("lead")) }}</div>
 {% endif %}<div class="project-data">
 {% call title_block(page.facts) %}<div class="title-block-wide">
 <dt>{{ t.written_by }}</dt>
@@ -54,7 +55,7 @@
 {% endif %}<p class="post-date"><time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}</p>
 {% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
 {% endif %}</div>
-{% if page.image %}<div class="spread-plate">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="spread-plate">{{ picture(page.image, slot_sizes("lead")) }}</div>
 {% endif %}{% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>
@@ -94,7 +95,7 @@
 <h2 id="related-title">{{ t.related_posts }}</h2>
 <ul class="sheets" role="list">
 {% for post in page.related[:template.options.related_count] %}<li class="sheet">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("sheet")) }}
 {% endif %}<h3><span class="sheet-number">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span> <a href="{{ post.href }}">{{ post.title }}</a></h3>
 {% if post.facts %}<p class="sheet-facts">{% for fact in post.facts[:2] %}<span>{{ fact.value }}</span>{% endfor %}</p>
 {% endif %}</li>

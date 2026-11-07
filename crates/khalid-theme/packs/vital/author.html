@@ -4,13 +4,14 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture %}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "icons.html" import profiles %}
 {% from "card.html" import pages -%}
 {% from "sections/session_cards.html" import session_cards -%}
 {% from "sections/people_grid.html" import people_grid -%}
 <article class="author">
 <header class="author-header">
-{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
 {% endif %}<div class="author-intro">
 <h1>{{ page.name }}</h1>
 {% if page.role %}<p class="author-role">{{ page.role }}</p>
@@ -25,7 +26,7 @@
 </article>
 <section class="author-routines" aria-labelledby="author-posts">
 <h2 id="author-posts">{{ t.routines }}</h2>
-{% if page.posts %}{{ session_cards(page.posts) }}
+{% if page.posts %}{{ session_cards(page.posts, sizes=slot_sizes("session")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</section>

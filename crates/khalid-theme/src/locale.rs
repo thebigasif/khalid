@@ -16,6 +16,7 @@ pub(crate) static LOCALE: Pack = Pack {
     summary: "For a city guide: places listed by area, each with its kind, opening hours and a price meter, an At a glance card on every place, and notes from the city.",
     css: PackText::file("locale/locale.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "locale/picture_sizes.html"),
         PackTemplate::file("home.html", "locale/home.html"),
         PackTemplate::file("post.html", "locale/post.html"),
         PackTemplate::file("listing.html", "locale/listing.html"),

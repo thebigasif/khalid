@@ -4,13 +4,14 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture %}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "icons.html" import profiles %}
 {% from "card.html" import pages -%}
 {% from "sections/people_grid.html" import people_grid -%}
 {% macro shelf(posts, level=2) -%}
 <ul class="shelf" role="list">
 {% for post in posts %}<li class="sleeve">
-<div class="sleeve-art">{% if post.image %}{{ picture(post.image) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
+<div class="sleeve-art">{% if post.image %}{{ picture(post.image, slot_sizes("sleeve")) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
 <h{{ level }} class="sleeve-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 <p class="sleeve-meta">{{ post.facts[0].value }} <time datetime="{{ post.date }}">{{ (post.date | string)[:4] }}</time></p>
 </li>
@@ -19,7 +20,7 @@
 {% macro note_cards(posts, level=2) -%}
 <ul class="notes" role="list">
 {% for post in posts %}<li class="note">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("note")) }}
 {% endif %}<p class="note-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %} <span class="note-category">{{ post.category.name }}</span>{% endif %}</p>
 <h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 </li>
@@ -27,7 +28,7 @@
 {%- endmacro %}
 <article class="author">
 <header class="author-header">
-{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
 {% endif %}<div class="author-intro">
 <h1>{{ page.name }}</h1>
 {% if page.role %}<p class="author-role">{{ page.role }}</p>

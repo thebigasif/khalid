@@ -11,6 +11,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import avatar -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
@@ -31,13 +32,13 @@
 {% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
 {% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts, 3) }}
+{% if section.posts %}{{ cards(section.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
 {% endfor %}{% elif page.posts %}<section class="latest" aria-labelledby="latest-title">
 <h2 id="latest-title">{{ t.latest_posts }}</h2>
-{{ cards(page.posts, 3) }}
+{{ cards(page.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 </section>
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}

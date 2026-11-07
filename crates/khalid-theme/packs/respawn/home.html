@@ -8,6 +8,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -30,7 +31,7 @@
 {% endif %}</header>
 {% if lead %}{% if feed %}<div class="rs-front rs-front-news">{% else %}<div class="rs-front">{% endif %}
 <article class="rs-lead">
-{% if lead.image %}{{ picture(lead.image) }}
+{% if lead.image %}{{ picture(lead.image, slot_sizes("lead_story")) }}
 {% endif %}<div class="rs-lead-text">
 <p class="rs-meta">{% if lead.category %}<a class="rs-label" href="{{ lead.category.href }}">{{ lead.category.name }}</a> {% endif %}<time datetime="{{ lead.date }}">{{ lead.date | date }}</time></p>
 <h2><a href="{{ lead.href }}">{{ lead.title }}</a></h2>
@@ -53,7 +54,7 @@
 <ul class="rs-grid" role="list">
 {% for post in reviews %}<li>
 <article class="rs-card">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("card")) }}
 {% endif %}{{ score_meter(post.facts[0].value, post.facts[0].label) }}
 <h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
 {% if post.facts | length > 1 %}<p class="rs-platforms">{{ post.facts[1].value }}</p>
@@ -66,7 +67,7 @@
 <ul class="rs-grid" role="list">
 {% for post in more %}<li>
 <article class="rs-card">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("card")) }}
 {% endif %}<p class="rs-meta">{% if post.category %}<a class="rs-label" href="{{ post.category.href }}">{{ post.category.name }}</a> {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
 <h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
 <p class="rs-excerpt">{{ post.excerpt }}</p>

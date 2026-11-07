@@ -6,6 +6,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
 <div class="home-head">
@@ -21,7 +22,7 @@
 </nav>
 {% endif %}</div>
 {% set slot = page.featured if template.options.featured else none -%}
-{% if slot %}{{ featured_slot(slot) }}
+{% if slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
 {% endif %}{#- The project index: each post with facts on one ruled row, its
     title, then its facts in the columns the first such post names. -#}
 {% set projects = page.posts | selectattr("facts") | list if not (page.pagination and page.pagination.previous) else [] -%}
@@ -38,7 +39,7 @@
 {% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% if posts %}<section class="home-section" aria-labelledby="recent-title">
 <h2 id="recent-title">{{ t.recent_posts }}</h2>
-{{ cards(posts, 3) }}
+{{ cards(posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</section>
 {% elif not slot %}<p>{{ t.no_posts }}</p>
@@ -48,7 +49,7 @@
 </div>
 {% endif %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts[:3], 3) }}
+{% if section.posts %}{{ cards(section.posts[:3], 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>

@@ -4,6 +4,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture %}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "icons.html" import profiles %}
 {% from "card.html" import pages -%}
 {% from "sections/cover_shelf.html" import cover_shelf -%}
@@ -20,7 +21,7 @@
 {% set titled = ((1 if books else 0) + (1 if writing else 0) + (1 if events else 0)) > 1 -%}
 <article class="author">
 <header class="author-header">
-{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
 {% endif %}<div class="author-intro">
 <h1>{{ page.name }}</h1>
 {% if page.role %}<p class="author-role">{{ page.role }}</p>
@@ -35,7 +36,7 @@
 {% if page.posts %}{% if books %}<section class="ch-part ch-books" aria-labelledby="author-books">
 {% if titled %}<h2 id="author-books" class="ch-part-title">{{ t.books }}</h2>
 {% else %}<h2 id="author-books" class="visually-hidden">{{ t.books }}</h2>
-{% endif %}{{ cover_shelf(books, 3) }}
+{% endif %}{{ cover_shelf(books, 3, sizes=slot_sizes("cover")) }}
 </section>
 {% endif %}{% if writing %}<section class="ch-part ch-writing" aria-labelledby="author-writing">
 {% if titled %}<h2 id="author-writing" class="ch-part-title">{{ t.writing }}</h2>

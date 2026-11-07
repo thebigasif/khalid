@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, card_meta, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
@@ -26,7 +27,7 @@
 {% if recipes %}<ul class="recipe-strip" role="list">
 {% for post in recipes %}<li>
 <article class="recipe">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("strip")) }}
 {% endif %}<h2><a href="{{ post.href }}">{{ post.title }}</a></h2>
 <ul class="fact-tags" role="list">
 {% for fact in post.facts[:2] %}<li>{% if loop.first %}<span class="visually-hidden">{{ fact.label }}</span> {% else %}{{ fact.label }} {% endif %}<b>{{ fact.value }}</b></li>
@@ -45,7 +46,7 @@
 {% endif %}{% if slot %}<section class="lead" aria-labelledby="lead-title">
 <h2 id="lead-title" class="lead-title">{{ t.featured }}</h2>
 {% if slot.image %}<article class="card lead-card lead-pictured">{% else %}<article class="card lead-card">{% endif %}
-{% if slot.image %}{{ picture(slot.image) }}
+{% if slot.image %}{{ picture(slot.image, slot_sizes("lead_story")) }}
 {% endif %}<div class="lead-text">
 {{ card_meta(slot) }}
 <h3><a href="{{ slot.href }}">{{ slot.title }}</a></h3>
@@ -55,19 +56,19 @@
 </section>
 {% if side %}<section class="lead-side" aria-labelledby="side-title">
 <h2 id="side-title">{{ t.editors_picks if by_picks else t.latest }}</h2>
-{{ cards(side, 3, "row") }}
+{{ cards(side, 3, "row", sizes=slot_sizes("home", "row")) }}
 </section>
 {% endif %}</div>
 {% endif %}{% if grid %}<section class="latest" aria-labelledby="latest-title">
 <h2 id="latest-title">{{ t.more_posts if side and not by_picks else t.latest }}</h2>
-{{ cards(grid, 3) }}
+{{ cards(grid, 3, sizes=slot_sizes("home", template.options.cards)) }}
 </section>
 {% elif not slot %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts[:4], 3, "image") }}
+{% if section.posts %}{{ cards(section.posts[:4], 3, "image", sizes=slot_sizes("home", "image")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>

@@ -10,13 +10,14 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
 {% from "series.html" import series_box, series_steps -%}
 {% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
-{% macro sleeve_art(image) -%}
-<div class="sleeve-art">{% if image %}{{ picture(image) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
+{% macro sleeve_art(image, sizes) -%}
+<div class="sleeve-art">{% if image %}{{ picture(image, sizes) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
 {%- endmacro %}
 {% set placement = template.options.contents -%}
 {% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
@@ -46,7 +47,7 @@
 {% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
 {% endif %}</div>
 {% if page.facts %}{% set links = page.facts | selectattr("value", "startingwith", "https://") | list %}<div class="release-head">
-{{ sleeve_art(page.image) }}
+{{ sleeve_art(page.image, slot_sizes("release")) }}
 <div class="release-liner">
 <dl class="liner">
 {% for fact in page.facts %}{% if not (fact.value is startingwith("https://")) %}<div>
@@ -58,7 +59,7 @@
 {% endfor %}</p>
 {% endif %}</div>
 </div>
-{% elif page.image %}{{ picture(page.image) }}
+{% elif page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
 <p class="toc-title">{{ t.contents }}</p>
@@ -98,14 +99,14 @@
 <h2 id="related-title" class="label">{{ t.related_posts }}</h2>
 {% set shown = page.related[:template.options.related_count] %}{% set records = shown | selectattr("facts") | list %}{% set written = shown | rejectattr("facts") | list %}{% if records %}<ul class="shelf" role="list">
 {% for post in records %}<li class="sleeve">
-{{ sleeve_art(post.image) }}
+{{ sleeve_art(post.image, slot_sizes("sleeve")) }}
 <h3 class="sleeve-title"><a href="{{ post.href }}">{{ post.title }}</a></h3>
 <p class="sleeve-meta">{{ post.facts[0].value }} <time datetime="{{ post.date }}">{{ (post.date | string)[:4] }}</time></p>
 </li>
 {% endfor %}</ul>
 {% endif %}{% if written %}<ul class="notes" role="list">
 {% for post in written %}<li class="note">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, slot_sizes("note")) }}
 {% endif %}<p class="note-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %} <span class="note-category">{{ post.category.name }}</span>{% endif %}</p>
 <h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
 </li>

@@ -14,6 +14,7 @@ pub(crate) static VITAL: Pack = Pack {
     summary: "For a health and wellness site: programmes as categories, routines as picture cards with their time in a ring, a session panel and a care note on every routine, its steps drawn as a track, and a notes feed.",
     css: PackText::file("vital/vital.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "vital/picture_sizes.html"),
         PackTemplate::file("home.html", "vital/home.html"),
         PackTemplate::file("post.html", "vital/post.html"),
         PackTemplate::file("listing.html", "vital/listing.html"),

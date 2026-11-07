@@ -5,6 +5,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "sections/cover_shelf.html" import cover_shelf -%}
 {% from "sections/contents_page.html" import contents_page -%}
 {% from "sections/event_list.html" import event_list -%}
@@ -27,7 +28,7 @@
 {% if page.posts %}{% if books %}<section class="ch-part ch-books" aria-labelledby="list-books">
 {% if titled %}<h2 id="list-books" class="ch-part-title">{{ t.books }}</h2>
 {% else %}<h2 id="list-books" class="visually-hidden">{{ t.books }}</h2>
-{% endif %}{{ cover_shelf(books, 3) }}
+{% endif %}{{ cover_shelf(books, 3, sizes=slot_sizes("cover")) }}
 </section>
 {% endif %}{% if writing %}<section class="ch-part ch-writing" aria-labelledby="list-writing">
 {% if titled %}<h2 id="list-writing" class="ch-part-title">{{ t.writing }}</h2>

@@ -13,6 +13,7 @@ pub(crate) static HARBOR: Pack = Pack {
     summary: "A food and recipe blog: a featured post with smaller posts beside it, a strip of recipe cards with time and serving tags, a grid of picture cards, an offer in each post and a sideways row of related reading.",
     css: PackText::file("harbor/harbor.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "harbor/picture_sizes.html"),
         PackTemplate::file("home.html", "harbor/home.html"),
         PackTemplate::file("post.html", "harbor/post.html"),
     ],

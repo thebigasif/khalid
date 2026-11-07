@@ -15,6 +15,7 @@ pub(crate) static CHANNEL: Pack = Pack {
     summary: "For a video creator: the newest video large as Now showing, thumbnail cards with a play bar and running time, a shelf per playlist, and posts that open on a wide video with Up next under them.",
     css: PackText::file("channel/channel.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "channel/picture_sizes.html"),
         PackTemplate::file("home.html", "channel/home.html"),
         PackTemplate::file("post.html", "channel/post.html"),
         PackTemplate::file("listing.html", "channel/listing.html"),

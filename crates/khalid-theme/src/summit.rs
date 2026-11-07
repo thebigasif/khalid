@@ -14,6 +14,7 @@ pub(crate) static SUMMIT: Pack = Pack {
     summary: "For a conference, festival or event: the programme as a timetable by day and time, speakers, venues with their sessions, updates, and a ticket stub with the day, time, room and format on every session.",
     css: PackText::file("summit/summit.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "summit/picture_sizes.html"),
         PackTemplate::file("home.html", "summit/home.html"),
         PackTemplate::file("post.html", "summit/post.html"),
         PackTemplate::file("listing.html", "summit/listing.html"),

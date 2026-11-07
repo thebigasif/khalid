@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
@@ -43,7 +44,7 @@
 {% endif %}<p class="post-date">{{ t.published }} <time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}</p>
 {% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
 {% endif %}</div>
-{% if page.image %}<div class="screen">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="screen">{{ picture(page.image, slot_sizes("lead")) }}</div>
 {% endif %}{% if page.facts %}<div class="ticket">
 <div class="ticket-stub">{{ rating(page.facts[0].value, page.facts[0].label) }}</div>
 {% if page.facts | length > 1 %}<dl class="ticket-facts">
@@ -90,7 +91,7 @@
 {% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
 {% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
 <h2 id="related-title">{{ t.more_reviews if page.facts else t.related_posts }}</h2>
-{% call(post) poster_grid(page.related[:template.options.related_count]) %}{% if post.facts %}{{ rating(post.facts[0].value) }}
+{% call(post) poster_grid(page.related[:template.options.related_count], sizes=slot_sizes("poster")) %}{% if post.facts %}{{ rating(post.facts[0].value) }}
 {% endif %}{% endcall %}
 </section>
 {% endif %}{% endblock %}

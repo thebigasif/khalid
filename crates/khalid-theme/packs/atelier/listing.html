@@ -5,6 +5,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "sections/picture_grid.html" import picture_grid -%}
 {% from "sections/feed_list.html" import feed_list -%}
 {% set looks = page.posts | selectattr("facts") | list -%}
@@ -17,7 +18,7 @@
 </div>
 {% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
 {% endif %}</header>
-{% if looks %}{{ picture_grid(looks, 2, 1, t.look_number) }}
+{% if looks %}{{ picture_grid(looks, 2, 1, t.look_number, slot_sizes("grid")) }}
 {% endif %}{% if notes %}<section class="at-journal" aria-labelledby="at-journal-title">
 <h2 id="at-journal-title">{{ t.journal }}</h2>
 {{ feed_list(notes) }}

@@ -11,6 +11,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -18,8 +19,12 @@
 {% from "sections/figure_strip.html" import figure_strip -%}
 {% from "sections/feed_list.html" import feed_list -%}
 {% macro ticket(post, level=3, wide=false) -%}
+{% set sizes = slot_sizes("lead_story") if wide else slot_sizes("ticket") -%}
+{% set sizes = slot_sizes("lead_story") if wide else slot_sizes("ticket") -%}
+{% set sizes = slot_sizes("lead_story") if wide else slot_sizes("ticket") -%}
+{% set sizes = slot_sizes("lead_story") if wide else slot_sizes("ticket") -%}
 {% if wide %}<article class="ticket ticket-wide">{% else %}<article class="ticket">{% endif %}
-{% if post.image %}<div class="ticket-photo">{{ picture(post.image) }}</div>
+{% if post.image %}<div class="ticket-photo">{{ picture(post.image, sizes) }}</div>
 {% endif %}<div class="ticket-main">
 {% if post.category %}<p class="ticket-country">{{ post.category.name }}</p>
 {% endif %}<h{{ level }} class="ticket-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>

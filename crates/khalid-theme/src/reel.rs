@@ -14,6 +14,7 @@ pub(crate) static REEL: Pack = Pack {
     summary: "For film and TV reviews: a star rating on a ticket, the cast and where to watch on every review, poster cards, a score sheet ranked by rating and a feed of features.",
     css: PackText::file("reel/reel.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "reel/picture_sizes.html"),
         PackTemplate::file("home.html", "reel/home.html"),
         PackTemplate::file("post.html", "reel/post.html"),
         PackTemplate::file("listing.html", "reel/listing.html"),

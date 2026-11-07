@@ -95,6 +95,11 @@ fn an_authors_photo_and_a_posts_lead_image_show_wherever_they_go() {
     let card = card_of(&home, "/blog/fixing-slow-pages/");
     assert!(card.contains(chart), "{card}");
     assert!(card.contains("loading=\"lazy\""), "{card}");
+    // A card says how wide the template draws it, never the post's text
+    // column, so a small card fetches a small file.
+    let column = "sizes=\"(min-width: 48rem) 48rem, 100vw\"";
+    assert!(card.contains("sizes=\""), "{card}");
+    assert!(!card.contains(column), "{card}");
 }
 
 #[test]

@@ -17,6 +17,7 @@ pub(crate) static ENCORE: Pack = Pack {
     summary: "For a musician or a band: the newest release on its sleeve, tour dates with ticket links, a shelf of every record and the band's notes from the studio and the road.",
     css: PackText::file("encore/encore.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "encore/picture_sizes.html"),
         PackTemplate::file("home.html", "encore/home.html"),
         PackTemplate::file("post.html", "encore/post.html"),
         PackTemplate::file("listing.html", "encore/listing.html"),

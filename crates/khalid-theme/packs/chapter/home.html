@@ -10,6 +10,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -42,7 +43,7 @@
 {% endif %}<p class="ch-actions"><a class="button" href="{{ new_book.href }}">{{ t.about_the_book }}</a>{% if new_book.facts | length > 3 and new_book.facts[3].value is startingwith("https://") %} <a class="button button-quiet" href="{{ new_book.facts[3].value }}">{{ new_book.facts[3].label }}</a>{% endif %}</p>
 </section>
 {% endif %}{% endcall %}
-{% if new_book and new_book.image %}<div class="ch-opening-art">{{ picture(new_book.image) }}</div>
+{% if new_book and new_book.image %}<div class="ch-opening-art">{{ picture(new_book.image, slot_sizes("opening")) }}</div>
 {% endif %}</div>
 {% if page.sections %}{% for section in page.sections %}<section class="ch-chapter" aria-labelledby="ch-section-{{ loop.index }}">
 <header class="ch-head">
@@ -58,7 +59,7 @@
 <p class="ch-numeral" aria-hidden="true">{{ numerals[0] }}</p>
 <h2 id="ch-books">{{ t.books }}</h2>
 </header>
-{{ cover_shelf(books) }}
+{{ cover_shelf(books, sizes=slot_sizes("cover")) }}
 </section>
 {% endif %}{% if writing %}<section class="ch-chapter ch-writing" aria-labelledby="ch-writing">
 <header class="ch-head">

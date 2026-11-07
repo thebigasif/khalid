@@ -11,6 +11,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "comments.html" import comments_section -%}
@@ -53,7 +54,7 @@
 {% endfor %}</dl>
 {% endif %}<p class="pass-stub"><span class="stub-number">{{ page.facts[0].value }}</span> <span class="stub-label">{{ page.facts[0].label }}</span></p>
 </div>
-{% endif %}{% if page.image %}{{ picture(page.image) }}
+{% endif %}{% if page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ toc_title }}">
 <p class="toc-title">{{ toc_title }}</p>
@@ -93,7 +94,7 @@
 <h2 id="related-title">{{ t.related_posts }}</h2>
 <ul class="tickets tickets-small" role="list">
 {% for post in page.related[:template.options.related_count] %}<li><article class="ticket">
-{% if post.image %}<div class="ticket-photo">{{ picture(post.image) }}</div>
+{% if post.image %}<div class="ticket-photo">{{ picture(post.image, slot_sizes("related")) }}</div>
 {% endif %}<div class="ticket-main">
 {% if post.category %}<p class="ticket-country">{{ post.category.name }}</p>
 {% endif %}<h3 class="ticket-title"><a href="{{ post.href }}">{{ post.title }}</a></h3>

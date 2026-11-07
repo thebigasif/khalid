@@ -12,8 +12,10 @@ use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLink
 use crate::{Pack, PackTemplate, PackText, slot};
 
 /// The template files the compass pack replaces.
-static COMPASS_TEMPLATES: [PackTemplate; 1] =
-    [PackTemplate::file("home.html", "compass/home.html")];
+static COMPASS_TEMPLATES: [PackTemplate; 2] = [
+    PackTemplate::file("picture_sizes.html", "compass/picture_sizes.html"),
+    PackTemplate::file("home.html", "compass/home.html"),
+];
 
 /// The Compass pack.
 pub(crate) static COMPASS: Pack = Pack {
