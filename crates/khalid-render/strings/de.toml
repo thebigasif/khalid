@@ -296,6 +296,8 @@ camera_details = "Kameradaten"
 contact_sheet = "Kontaktabzug"
 more_pictures = "Weitere Bilder"
 stories = "Geschichten"
+latest_pictures = "Neueste Bilder"
+photo_details = "Zum Bild"
 # The channel template's front page, lists and posts.
 channel_now_showing = "Jetzt zu sehen"
 channel_latest = "Neueste Videos"

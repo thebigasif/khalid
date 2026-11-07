@@ -1,0 +1,10 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /first-snow-rim/
+post /cholla-milky-way/
+table /canyon-sunrise-times/
+category /category/desert-life/
+tag /tag/joshua-tree/
+author /authors/rosa-quintero/

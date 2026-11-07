@@ -260,6 +260,7 @@ static PACKS: &[&Pack] = &[
     &crate::margin::MARGIN,
     &crate::meridian::MERIDIAN,
     &crate::notebook::NOTEBOOK,
+    &crate::mosaic::MOSAIC,
     &crate::plinth::PLINTH,
     &crate::quill::QUILL,
     &crate::reel::REEL,

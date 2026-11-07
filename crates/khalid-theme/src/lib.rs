@@ -47,6 +47,7 @@ mod masthead;
 mod margin;
 mod meridian;
 mod notebook;
+mod mosaic;
 mod pack;
 mod palette;
 pub mod parts;
