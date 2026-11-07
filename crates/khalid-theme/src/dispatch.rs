@@ -14,6 +14,7 @@ pub(crate) static DISPATCH: Pack = Pack {
     summary: "For a newsletter whose site wins sign-ups: the sign-up first on the front page beside the latest issue, each issue marked by its number in a postage stamp, and a reply slip to join after every issue and list.",
     css: PackText::file("dispatch/dispatch.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "dispatch/picture_sizes.html"),
         PackTemplate::file("home.html", "dispatch/home.html"),
         PackTemplate::file("post.html", "dispatch/post.html"),
         PackTemplate::file("listing.html", "dispatch/listing.html"),

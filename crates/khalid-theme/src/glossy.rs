@@ -16,6 +16,7 @@ pub(crate) static GLOSSY: Pack = Pack {
     summary: "For a lifestyle magazine told in pictures: a cover story with its cover lines, then picture cards in a rhythm of wide, tall, square and band cards, sections as rounded links and posts led by a large rounded picture.",
     css: PackText::file("glossy/glossy.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "glossy/picture_sizes.html"),
         PackTemplate::file("home.html", "glossy/home.html"),
         PackTemplate::file("post.html", "glossy/post.html"),
         PackTemplate::file("listing.html", "glossy/listing.html"),

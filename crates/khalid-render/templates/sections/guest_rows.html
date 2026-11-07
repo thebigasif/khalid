@@ -4,12 +4,13 @@
     they are, in a column of their own, 3 a short fact such as the length
     beside the date, and 4 one line the person said, as a quote. A post
     without facts shows its date where the name goes and its summary in
-    place of the quote. Titles use a heading of `level`. -#}
+    place of the quote. Titles use a heading of `level`. `sizes` says how
+    wide the pack draws the picture, as the picture macro takes it. -#}
 {% from "image.html" import picture -%}
-{% macro guest_rows(posts, level=3) -%}
+{% macro guest_rows(posts, level=3, sizes=none) -%}
 <ol class="guest-rows" role="list">
 {% for post in posts %}{% set facts = post.facts %}<li class="guest-row">
-{% if post.image %}<div class="guest-row-picture">{{ picture(post.image) }}</div>
+{% if post.image %}<div class="guest-row-picture">{{ picture(post.image, sizes) }}</div>
 {% endif %}<div class="guest-row-person">
 {% if facts %}<p class="guest-row-name"><span class="visually-hidden">{{ facts[0].label }}:</span> {{ facts[0].value }}</p>
 {% if facts | length > 1 %}<p class="guest-row-role"><span class="visually-hidden">{{ facts[1].label }}:</span> {{ facts[1].value }}</p>

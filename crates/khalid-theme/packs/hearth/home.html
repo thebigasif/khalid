@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
@@ -25,7 +26,7 @@
 {% elif options.tagline and not later %}<p class="hh-tagline">{{ options.tagline[0] }}</p>
 {% endif %}{% if not later %}{{ hero_stats(options) }}{% endif %}</header>
 {% if lead %}<article class="hh-lead">
-{% if lead.image %}<a class="hh-arch" href="{{ lead.href }}" tabindex="-1" aria-hidden="true">{{ picture(lead.image) }}</a>
+{% if lead.image %}<a class="hh-arch" href="{{ lead.href }}" tabindex="-1" aria-hidden="true">{{ picture(lead.image, slot_sizes("lead_story")) }}</a>
 {% endif %}<div class="hh-lead-text">
 {% if lead.category %}<p class="hh-kicker"><a href="{{ lead.category.href }}">{{ lead.category.name }}</a></p>
 {% endif %}<h2><a href="{{ lead.href }}">{{ lead.title }}</a></h2>

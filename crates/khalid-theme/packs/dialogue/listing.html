@@ -5,6 +5,7 @@
 {% block main %}
 {% from "card.html" import pages -%}
 {% from "sections/guest_rows.html" import guest_rows -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 <header class="list-header">
 {% block kind %}<p class="list-kind">{{ t.conversations }}</p>
 {% endblock %}<h1>{{ page.title }}</h1>
@@ -13,7 +14,7 @@
 </div>
 {% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
 {% endif %}</header>
-{% if page.posts %}{{ guest_rows(page.posts, 2) }}
+{% if page.posts %}{{ guest_rows(page.posts, 2, slot_sizes("guest_row")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}{% endblock %}

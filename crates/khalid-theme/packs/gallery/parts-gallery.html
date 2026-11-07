@@ -11,6 +11,7 @@
     its title, its client or discipline and its year, like the sheet a
     gallery hands out at the door. -#}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% macro number(at) -%}
 {{ t.gallery_number | replace("{number}", ("0" if at < 10 else "") ~ at) }}
 {%- endmacro %}
@@ -21,7 +22,7 @@
 <ol class="wall" role="list">
 {% for post in posts %}<li class="wall-work">
 <article>
-{% if post.image %}<div class="wall-mat">{{ picture(post.image) }}</div>
+{% if post.image %}<div class="wall-mat">{{ picture(post.image, slot_sizes("wall")) }}</div>
 {% else %}<div class="wall-mat wall-blank" aria-hidden="true"></div>
 {% endif %}<div class="wall-label">
 <p class="wall-number">{{ number(loop.index) }}</p>

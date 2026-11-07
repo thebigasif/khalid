@@ -10,6 +10,7 @@
 {% block main %}
 {% from "card.html" import pages -%}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import cta_band -%}
 {% from "parts-dispatch.html" import stamp, issue_rows, reply_slip -%}
 {% from "sections/hero.html" import hero -%}
@@ -26,7 +27,7 @@
 {{ figure_strip(options.hero_stats) }}{% endcall %}
 {% if latest %}<article class="dp-latest" aria-labelledby="latest-title">
 <p class="dp-latest-kind">{{ t.latest_issue }}</p>
-{% if latest.image %}<a class="dp-latest-picture" href="{{ latest.href }}" tabindex="-1" aria-hidden="true">{{ picture(latest.image) }}</a>
+{% if latest.image %}<a class="dp-latest-picture" href="{{ latest.href }}" tabindex="-1" aria-hidden="true">{{ picture(latest.image, slot_sizes("latest")) }}</a>
 {% endif %}<div class="dp-latest-body">
 {{ stamp(latest) }}
 <div class="dp-latest-text">

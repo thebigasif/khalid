@@ -13,12 +13,13 @@
     then its section, title, excerpt and date, never on the picture. The
     title's link covers the whole card. -#}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% macro card_meta(post) -%}
 <p class="gl-card-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if template.options.card_reading_time and post.reading_time %}<span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}</p>
 {%- endmacro %}
 {% macro cover(post, lines=[]) -%}
 <section class="gl-cover" aria-labelledby="gl-cover-title">
-{% if post.image %}<div class="gl-cover-picture">{{ picture(post.image) }}</div>
+{% if post.image %}<div class="gl-cover-picture">{{ picture(post.image, slot_sizes("cover")) }}</div>
 {% endif %}<div class="gl-cover-panel">
 <p class="gl-cover-label"><span class="gl-pill">{{ t.cover_story }}</span>{% if post.category %}<a class="gl-section" href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}</p>
 <h2 id="gl-cover-title" class="gl-cover-title"><a href="{{ post.href }}">{{ post.title }}</a></h2>
@@ -32,9 +33,10 @@
 </section>
 {%- endmacro %}
 {% macro story_grid(posts, level=3, even=false) -%}
+{% set rhythm = ["wide", "tall", "square", "square", "square", "band"] -%}
 {% if even %}<ul class="gl-grid gl-grid-even" role="list">{% else %}<ul class="gl-grid" role="list">{% endif %}
 {% for post in posts %}{% if post.image %}<li class="gl-card">{% else %}<li class="gl-card gl-card-plain">{% endif %}
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, none if even else slot_sizes("card", rhythm[loop.index0 % 6])) }}
 {% endif %}<div class="gl-card-text">
 {% if post.category %}<p class="gl-section">{{ post.category.name }}</p>
 {% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>

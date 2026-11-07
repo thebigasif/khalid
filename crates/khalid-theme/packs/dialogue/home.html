@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections, hero_stats -%}
@@ -30,18 +31,18 @@
 {% set topics = page.categories | selectattr("href", "in", episode_topics) | list -%}
 {% if page.sections %}{% for section in page.sections %}<section class="dialogue-section" aria-labelledby="dialogue-section-{{ loop.index }}">
 <h2 id="dialogue-section-{{ loop.index }}">{{ section.title }}</h2>
-{% if section.posts %}{{ guest_rows(section.posts) }}
+{% if section.posts %}{{ guest_rows(section.posts, sizes=slot_sizes("guest_row")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
 {% endfor %}{% elif not episodes and page.posts %}<section class="conversations" aria-labelledby="conversations-title">
 <h2 id="conversations-title" class="section-label">{{ t.latest_posts }}</h2>
-{{ guest_rows(page.posts) }}
+{{ guest_rows(page.posts, sizes=slot_sizes("guest_row")) }}
 </section>
 {% elif episodes %}{% set lead = episodes[0] %}{% set facts = lead.facts %}<section class="latest-guest" aria-labelledby="latest-guest-title">
 <h2 id="latest-guest-title" class="section-label">{{ t.latest_guest }}</h2>
 <div class="latest-guest-body">
-{% if lead.image %}<div class="latest-guest-picture">{{ picture(lead.image, sizes="(min-width: 76rem) 33rem, (min-width: 56rem) 42vw, calc(100vw - 2rem)") }}</div>
+{% if lead.image %}<div class="latest-guest-picture">{{ picture(lead.image, slot_sizes("latest_guest")) }}</div>
 {% endif %}<div class="latest-guest-text">
 <p class="latest-guest-kicker">{{ t.in_conversation_with }}</p>
 <p class="latest-guest-name">{{ facts[0].value }}</p>
@@ -54,7 +55,7 @@
 </section>
 {% if episodes | length > 1 %}<section class="conversations" aria-labelledby="conversations-title">
 <h2 id="conversations-title" class="section-label">{{ t.conversations }}</h2>
-{{ guest_rows(episodes[1:]) }}
+{{ guest_rows(episodes[1:], sizes=slot_sizes("guest_row")) }}
 </section>
 {% endif %}{% if topics or notes %}<div class="dialogue-aside">
 {% if topics %}<nav class="show-topics" aria-label="{{ t.topics }}">

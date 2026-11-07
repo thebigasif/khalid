@@ -33,7 +33,7 @@ Hearth needs nothing new in your posts. It reads what Khalid already has:
 
 1. **The welcome:** your blog's name large and centred, under a small arch, with the front page's intro or your `tagline` under it, and up to four numbers from `hero_stats` when you write them.
 2. **The lead story:** on a warm panel, its picture in a tall arch on one side, and its category, title, summary, author and date on the other. With `featured` on, the newest featured post leads; otherwise the newest post does. It shows on the first page only.
-3. **Latest posts:** the other posts on the page as cards, three across on a wide screen, two on a tablet and one on a phone. Each card has its picture in a low arch, the category, the title, the summary, and the author's face, name and date.
+3. **Latest posts:** the other posts on the page as cards, three across on a wide screen and two on a tablet. Each card has its picture in a low arch, the category, the title, the summary, and the author's face, name and date. On a phone each card is a row: its picture in a small tall arch beside the category, the title and the author, so the page stays light.
 4. **Topics:** every category as a rounded link.
 5. Numbered page links, your call to action as a band, and the newsletter form.
 

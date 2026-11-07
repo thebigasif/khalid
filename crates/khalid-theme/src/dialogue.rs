@@ -14,6 +14,7 @@ pub(crate) static DIALOGUE: Pack = Pack {
     summary: "For an interview show: each episode led by its guest, with their name, who they are and one line they said as a large quote, a name plate of host and guest on every episode, pull quotes and transcript speakers in the text, and the topics of each conversation.",
     css: PackText::file("dialogue/dialogue.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "dialogue/picture_sizes.html"),
         PackTemplate::file("home.html", "dialogue/home.html"),
         PackTemplate::file("post.html", "dialogue/post.html"),
         PackTemplate::file("listing.html", "dialogue/listing.html"),

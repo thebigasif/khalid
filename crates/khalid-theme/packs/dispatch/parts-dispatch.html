@@ -8,6 +8,7 @@
     not, then its note, or else when the letter goes out, and a link to
     the feed. -#}
 {% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% macro stamp(item) -%}
 {% if item.facts %}<p class="dp-stamp"><span class="dp-stamp-label">{{ item.facts[0].label }}</span> <span class="dp-stamp-value">{{ item.facts[0].value }}</span></p>
 {% else %}<p class="dp-stamp" aria-hidden="true"><span class="dp-stamp-label">{{ t["month_" ~ (item.date[5:7] | int)][:3] }}</span> <span class="dp-stamp-value">{{ item.date[8:10] | int }}</span></p>
@@ -22,7 +23,7 @@
 <h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 <p class="dp-issue-excerpt">{{ post.excerpt }}</p>
 </div>
-{% if post.image %}<a class="dp-issue-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% if post.image %}<a class="dp-issue-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image, slot_sizes("issue")) }}</a>
 {% endif %}</li>
 {% endfor %}</ol>
 {%- endmacro %}

@@ -16,6 +16,7 @@
 {% from "series.html" import series_box, series_steps -%}
 {% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
 {% from "sections/guest_rows.html" import guest_rows -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% set placement = template.options.contents -%}
 {% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
 {% set side = toc and placement in ["side-start", "side-end"] -%}
@@ -98,6 +99,6 @@
 {% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
 {% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
 <h2 id="related-title">{{ t.more_conversations }}</h2>
-{{ guest_rows(page.related[:template.options.related_count]) }}
+{{ guest_rows(page.related[:template.options.related_count], sizes=slot_sizes("guest_row")) }}
 </section>
 {% endif %}{% endblock %}

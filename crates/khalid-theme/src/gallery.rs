@@ -16,6 +16,7 @@ pub(crate) static GALLERY: Pack = Pack {
     summary: "For a studio or an illustrator: a wall of pictures, each on a mat at its own shape with a numbered label, a list of works under the same numbers, and project pages with a sheet of the client, year, medium and size.",
     css: PackText::file("gallery/gallery.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "gallery/picture_sizes.html"),
         PackTemplate::file("home.html", "gallery/home.html"),
         PackTemplate::file("post.html", "gallery/post.html"),
         PackTemplate::file("listing.html", "gallery/listing.html"),

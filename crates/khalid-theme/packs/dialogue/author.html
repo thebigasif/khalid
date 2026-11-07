@@ -7,6 +7,7 @@
 {% from "icons.html" import profiles %}
 {% from "card.html" import pages -%}
 {% from "sections/guest_rows.html" import guest_rows -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "sections/people_grid.html" import people_grid -%}
 <article class="author">
 <header class="author-header">
@@ -25,7 +26,7 @@
 </article>
 <section class="author-conversations" aria-labelledby="author-posts">
 <h2 id="author-posts">{{ t.conversations }}</h2>
-{% if page.posts %}{{ guest_rows(page.posts) }}
+{% if page.posts %}{{ guest_rows(page.posts, sizes=slot_sizes("guest_row")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</section>

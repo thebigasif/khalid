@@ -16,6 +16,7 @@ pub(crate) static HEARTH: Pack = Pack {
     summary: "A warm, classic blog for a small team or a family business: a welcome, a picture-led lead story, a grid of picture cards with each author's face, and a friendly reading column, every picture in an arch.",
     css: PackText::file("hearth/hearth.css"),
     templates: &[
+        PackTemplate::file("picture_sizes.html", "hearth/picture_sizes.html"),
         PackTemplate::file("home.html", "hearth/home.html"),
         PackTemplate::file("post.html", "hearth/post.html"),
         PackTemplate::file("listing.html", "hearth/listing.html"),
