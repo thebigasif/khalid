@@ -32,6 +32,7 @@ mod font_files;
 mod fonts;
 mod frequency;
 mod glossy;
+mod gallery;
 mod harbor;
 mod hearth;
 mod hub;

@@ -463,3 +463,10 @@ cover_story = "Cover story"
 cover_lines = "Also in this issue"
 latest_stories = "Latest stories"
 browse_sections = "Browse the sections"
+# The gallery template's wall labels, list of works, project sheet and
+# discipline chips. {number} is the work's number, written with two digits.
+gallery_all = "All work"
+gallery_number = "No. {number}"
+gallery_checklist = "List of works"
+gallery_project = "About the project"
+gallery_more = "More work"
