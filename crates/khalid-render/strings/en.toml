@@ -501,3 +501,7 @@ help_no = "Not quite"
 help_next_step = "Next step:"
 help_read_next = "Read next:"
 help_home = "Every topic in the help centre"
+# The dispatch template: a newsletter's promises on the front page, its
+# reply slip's feed link and the issues after an issue.
+issue_promises = "In every issue"
+follow_feed = "Or follow the feed"

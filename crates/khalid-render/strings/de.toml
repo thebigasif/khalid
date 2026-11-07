@@ -405,3 +405,7 @@ help_no = "Nicht ganz"
 help_next_step = "Nächster Schritt:"
 help_read_next = "Weiterlesen:"
 help_home = "Alle Themen im Hilfe-Center"
+# Die Vorlage dispatch: die Versprechen eines Newsletters auf der
+# Startseite, der Feed-Link im Anmeldeabschnitt und weitere Ausgaben.
+issue_promises = "In jeder Ausgabe"
+follow_feed = "Oder den Feed abonnieren"

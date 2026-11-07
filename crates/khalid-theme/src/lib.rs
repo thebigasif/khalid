@@ -24,6 +24,7 @@ mod color;
 mod compass;
 mod contrast;
 mod css;
+mod dispatch;
 mod encore;
 mod fetch;
 mod fetch_error;
