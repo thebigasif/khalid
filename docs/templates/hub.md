@@ -18,7 +18,7 @@ name = "hub"
 - A creator who sells something, such as a shop, a course or a workshop, and wants that link first.
 - A creator who also writes: notes for each video, studio news or how-to posts.
 
-It suits a magazine, a news site or a team blog less well. For one writer with long essays, Solo reads better.
+It suits a magazine, a news site or a team blog less well.
 
 ## Your links
 

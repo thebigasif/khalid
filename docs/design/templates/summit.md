@@ -73,8 +73,7 @@ The demo's sample brand is a city summit in deep street green (`#0d6b4f`) on whi
 ## How it differs from the existing templates
 
 - **Research** lists papers as a numbered reference register. Summit's lists are a timetable sorted by day and time, and its facts are a day, a time, a room and a format.
-- **Episode** leads with the newest episode and its player. Summit leads with the whole programme, grouped by day, not with the newest post.
 - **Wire** is a dated news feed. Summit's order comes from the session's own day and time, not from when the post was written.
-- **Keystone** and **Casper** are picture-led blogs. Summit shows no pictures in its lists: pictures appear only on the session page.
+- **Keystone** is a picture-led blog. Summit shows no pictures in its lists: pictures appear only on the session page.
 
 The timetable is a new shared section part, `schedule` (see `crates/khalid-render/templates/sections/README.md`), for sports fixtures, tour dates and course weeks as well.

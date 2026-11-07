@@ -73,6 +73,5 @@ The demo's sample brand, a games site called Lowpoly Post, uses a deep magenta (
 - **Workbench** reviews tools with a ruled spec panel and a thin meter. Respawn's score is a game-style health bar of ten segments in an ink tile, its front page has a release calendar, and its look is bold and squared, not exact and ruled.
 - **Wire** is a news site with a ranked list and a feed. Respawn splits reviews from news by their facts and puts the score on every review.
 - **Harbor** shows facts as tags on recipe cards. Respawn reads the first fact as a score and draws it.
-- **Episode** leads with a player. Respawn leads with a story, the news feed and the calendar.
 
 The score meter is a new shared section part, `sections/score_meter.html`, which a film or product review template can reuse. The release calendar stays in this pack.

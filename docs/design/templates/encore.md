@@ -16,7 +16,7 @@ Encore adds no front matter. It reads what Khalid already has:
 - **A note is a post without facts:** a studio diary, a tour story, news.
 - **Band members are authors.** Their role says what they play.
 - **Tour dates are a template option,** `tour_dates`, one show a line: `date | city | venue | ticket link or a word such as Sold out`. They are site settings, not posts, so a date can be added or taken out in one line.
-- **Where to listen** is the `listen_on` option, `name | address`, as in Episode.
+- **Where to listen** is the `listen_on` option, `name | address`.
 - Categories sort the posts, such as Releases, Studio and Tour diary.
 
 ## The front page
@@ -70,10 +70,9 @@ The demo's sample brand, a made-up Glasgow band called Northlight Parade, is dee
 
 ## How it differs from the existing templates
 
-- **Episode** is a podcast's feed of boxed episodes with a player. Encore has no player: it is a catalogue of records with sleeves, a tour list and a liner panel.
 - **Folio** has a dated release log for software. Encore's releases are records with covers, formats and labels.
 - **Research** lists posts with facts as a text register. Encore shows them as pictures on sleeves and adds a dated tour list from an option.
-- **Keystone** and **Casper** are picture blogs. Encore splits releases from notes and leads with music, not the newest post.
+- **Keystone** is a picture blog. Encore splits releases from notes and leads with music, not the newest post.
 
 ## Shared parts
 

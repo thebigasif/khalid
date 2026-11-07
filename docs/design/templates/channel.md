@@ -71,7 +71,4 @@ The demo's sample brand is a pottery channel: fired clay (`#9a3f1f`) on a cream 
 
 ## How it differs from the existing templates
 
-- **Episode** leads with a podcast's newest episode and its sound player in boxed rows. Channel leads with a picture, a play bar and a grid of thumbnails, and each post opens on a wide screen.
-- **Solo** is one writer's feed of large titles with no pictures in the list. Channel is picture-first.
-- **Casper** and **Keystone** are picture-led blogs with a lead story. Channel's cards carry running times, its front page has playlist shelves, and its posts end with "Up next".
 - **Hub**, the creator hub on the same list, is a link-in-bio home. Channel is a video library.

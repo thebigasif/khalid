@@ -66,8 +66,6 @@ The demo's sample brand is Northlight: a cool white (`#fbfaf8`), near-black ink 
 
 ## How it differs from the existing templates
 
-- **Edge** (a Ghost port) makes the front page a masonry wall of pictures with no words. Aperture shows one picture at a time, the full width of the frame, each with its words and plate under it.
-- **London** (a Ghost port) shows tall tiles two side by side, every third across the width. Aperture never puts two pictures side by side in its stories or lists; only the contact sheet shows small pictures, in one sideways strip.
 - **Keystone** and **Workbench** show facts as a credits line or a score panel. Aperture's facts are camera details in a film-edge plate under the picture.
 - **Atlas** and **Harbor** are picture-led magazines with cards. Aperture has no card grid at all.
 

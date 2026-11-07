@@ -18,7 +18,7 @@ name = "ticker"
 - A finance writer who explains how markets work, with tables in the posts.
 - A trade body or research desk that publishes a regular round-up of figures.
 
-It suits a blog without numbers less well. For a newsletter led by words, Bulletin or Edition read better.
+It suits a blog without numbers less well.
 
 ## Issues are posts with facts
 

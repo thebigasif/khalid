@@ -71,9 +71,6 @@ The demo's sample brand is a potter's studio: terracotta (`#9a3e1b`) on clay whi
 
 ## How it differs from the existing templates
 
-- **Solo** is one writer's site with a very large headline and a feed of large titles. Hub is a link page first: its headline is a name, its main block is the link stack, and its posts are compact rows.
-- **Episode** leads with the newest episode and its player. Hub leads with links to wherever the creator's work lives.
-- **Bulletin** and **Edition** lead with a sign-up form. Hub leads with the creator's own links, and the sign-up form is one step below.
 - Every other template has a wide frame. Hub's frame is one narrow column, about 576 px, on every page.
 
 The link stack is a new shared section part (`crates/khalid-render/templates/sections/link_stack.html`). A musician's streaming links, a podcast's "listen on" links or a course's enrol links can use it too.

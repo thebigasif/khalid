@@ -1,5 +1,0 @@
-# What the scripts know about this template; the binary does not read it.
-# See scripts/template-packs.sh.
-kind = "journal"
-kind_label = "Personal journal"
-frame = 960

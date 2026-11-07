@@ -1,2 +1,0 @@
-Added
-- A new template, `dawn`, for a calm, text-led blog that is also a newsletter, based on Ghost's Dawn theme (MIT). Its front page opens with a small centred cover: the site's icon, the intro and the sign-up form. A row of featured posts follows, then every post as one line with a day and month block, the title and the reading time. Name the featured row with `featured_title`. See docs/templates/dawn.md.

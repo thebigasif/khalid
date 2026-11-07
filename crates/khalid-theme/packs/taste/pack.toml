@@ -1,5 +1,0 @@
-# What the scripts know about this template; the binary does not read it.
-# See scripts/template-packs.sh.
-kind = "food"
-kind_label = "Food and recipes"
-frame = 1200
