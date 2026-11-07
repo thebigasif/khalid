@@ -182,6 +182,7 @@ fn sample_site(source: Source<'_>) -> RenderSite {
         locale: source.locale.clone(),
         home: PAGE.to_owned(),
         stylesheet: STYLESHEET.to_owned(),
+        body_font: None,
         nav: Nav {
             primary: vec![NavLink {
                 label: "Sample post".to_owned(),

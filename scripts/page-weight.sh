@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # The page-weight check: the bytes of pictures each template's demo home
 # page downloads, at 390 px with 3 and with 1 device pixel per CSS pixel
-# and at 1440 px with 1, in Chromium, held to the budgets in
+# and at 1440 px with 1, and of web fonts on that home page and one post,
+# in Chromium, held to the budgets in
 # docs/standards/performance.md ("Page weight"). scripts/demo-check/weight.mjs
 # does the measuring and says what each budget means.
 #
