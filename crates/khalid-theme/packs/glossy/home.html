@@ -32,7 +32,7 @@
 </section>
 {% endfor %}{% else %}{% if lead %}{{ cover(lead, lines) }}
 {% endif %}{% if cards %}<section class="gl-stories" aria-labelledby="gl-latest-title">
-<h2 id="gl-latest-title">{{ t.latest_stories }}</h2>
+<h2 id="gl-latest-title">{{ t.the_latest }}</h2>
 {{ story_grid(cards) }}
 </section>
 {% elif not lead %}<p>{{ t.no_posts }}</p>

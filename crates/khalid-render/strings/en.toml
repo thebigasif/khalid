@@ -461,7 +461,7 @@ frequency_more_episodes = "More episodes"
 # The glossy template's cover, its card grid and its sections.
 cover_story = "Cover story"
 cover_lines = "Also in this issue"
-latest_stories = "Latest stories"
+the_latest = "Latest stories"
 browse_sections = "Browse the sections"
 # The gallery template's wall labels, list of works, project sheet and
 # discipline chips. {number} is the work's number, written with two digits.
