@@ -1,0 +1,47 @@
+{#- Dispatch's own parts (docs/templates/dispatch.md), shared by its pages.
+    stamp(item): the issue's postage stamp, its first fact's label over
+    its value, such as Issue 178; without facts, the month and the day it
+    was sent. issue_rows(posts, level): each issue as a ruled row, its
+    stamp, the date and topic, the title, the summary and a small picture.
+    reply_slip(id, title, text): the sign-up box, the email field and
+    button where the site takes sign-ups, the call to action where it does
+    not, then its note, or else when the letter goes out, and a link to
+    the feed. -#}
+{% from "image.html" import picture -%}
+{% macro stamp(item) -%}
+{% if item.facts %}<p class="dp-stamp"><span class="dp-stamp-label">{{ item.facts[0].label }}</span> <span class="dp-stamp-value">{{ item.facts[0].value }}</span></p>
+{% else %}<p class="dp-stamp" aria-hidden="true"><span class="dp-stamp-label">{{ t["month_" ~ (item.date[5:7] | int)][:3] }}</span> <span class="dp-stamp-value">{{ item.date[8:10] | int }}</span></p>
+{% endif %}
+{%- endmacro %}
+{% macro issue_rows(posts, level=3) -%}
+<ol class="dp-issues" role="list">
+{% for post in posts %}<li class="dp-issue">
+{{ stamp(post) }}
+<div class="dp-issue-text">
+<p class="dp-issue-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %} <a href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}</p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="dp-issue-excerpt">{{ post.excerpt }}</p>
+</div>
+{% if post.image %}<a class="dp-issue-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}</li>
+{% endfor %}</ol>
+{%- endmacro %}
+{% macro reply_slip(id, title=none, text=none) -%}
+{% set options = template.options -%}
+{% set note = template.cta.note if template.cta and template.cta.note else (options.cadence[0] if options.cadence else none) -%}
+{% if title %}<section class="dp-slip" aria-labelledby="{{ id }}-title">
+<h2 id="{{ id }}-title">{{ title }}</h2>
+{% else %}<div class="dp-slip">
+{% endif %}{% if text %}<p class="dp-slip-text">{{ text }}</p>
+{% endif %}{% if site.subscribe %}<form class="subscribe" method="post" action="{{ site.subscribe }}">
+<p class="dp-slip-field"><label for="{{ id }}-email">{{ t.newsletter_label }}</label>
+<input id="{{ id }}-email" name="email" type="email" autocomplete="email" required></p>
+<p class="form-trap" aria-hidden="true"><label for="{{ id }}-homepage">{{ t.form_trap }}</label>
+<input id="{{ id }}-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+<p class="dp-slip-send"><button type="submit">{{ t.newsletter_button }}</button></p>
+</form>
+{% elif template.cta %}<p class="dp-slip-send"><a class="button" href="{{ template.cta.href }}">{{ template.cta.label }}</a></p>
+{% endif %}{% if note %}<p class="dp-slip-note">{{ note }}</p>
+{% endif %}{% if options.feed_link %}<p class="dp-slip-feed"><a href="{{ site.home }}feed.xml" type="application/rss+xml">{{ t.follow_feed }}</a></p>
+{% endif %}{% if title %}</section>{% else %}</div>{% endif %}
+{%- endmacro %}

@@ -425,3 +425,8 @@ price_level = "Price level {level} of 4"
 at_a_glance = "At a glance"
 city_notes = "Notes from the city"
 more_places = "More places"
+# The dispatch template: a newsletter's promises on the front page, its
+# reply slip's feed link and the issues after an issue.
+issue_promises = "In every issue"
+follow_feed = "Or follow the feed"
+more_issues = "More issues"

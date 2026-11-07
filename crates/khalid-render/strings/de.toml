@@ -347,3 +347,8 @@ price_level = "Preisstufe {level} von 4"
 at_a_glance = "Auf einen Blick"
 city_notes = "Notizen aus der Stadt"
 more_places = "Weitere Orte"
+# Die Vorlage dispatch: die Versprechen eines Newsletters auf der
+# Startseite, der Feed-Link im Anmeldeabschnitt und weitere Ausgaben.
+issue_promises = "In jeder Ausgabe"
+follow_feed = "Oder den Feed abonnieren"
+more_issues = "Weitere Ausgaben"
