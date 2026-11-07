@@ -1,0 +1,32 @@
+/* Quill (docs/templates/quill.md): a minimal text blog. The shared pages
+   in one column and one serif, with generous type, no pictures on lists
+   and the nib, a small accent square on its point, before the site's
+   name and under the end of every post. Every colour is a token. */
+
+/* The header: the nib and the name in italic, the menu quiet, no rule. */
+.site-header { padding-block: 1.5rem 0.5rem; border: 0; }
+.site-name { gap: 0.625rem; font-size: 1.125rem; font-style: italic; font-weight: 400; }
+.site-name:not(.site-logo)::before, .post-body::after { content: ""; inline-size: 0.4375rem; block-size: 0.4375rem; background: var(--color-accent); rotate: 45deg; }
+.site-header nav a, .search-link { color: var(--color-muted); font-size: var(--text-small); text-decoration: none; }
+.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-text); }
+
+/* Titles in regular weight; intros and deks in italic. */
+main > h1, .post-header h1 { font-weight: 400; letter-spacing: -0.015em; line-height: 1.15; }
+main > h1 { margin-block: clamp(1.5rem, 6vw, 4rem) 0.75rem; }
+.intro, .dek { font-style: italic; }
+
+/* Lists: one line a post over a hairline, the date at the end of it,
+   or under the title on a phone. */
+.cards-compact { gap: 0; margin-block-start: 2rem; border-block-start: 1px solid var(--color-border); }
+.cards-compact > li { border-block-end: 1px solid var(--color-border); }
+.cards-compact .card { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; column-gap: 1.5rem; padding-block: 0.75rem; }
+.cards-compact .card :is(h2, h3, h4) { flex: 1 1 20rem; font-size: var(--text-h4); font-weight: 400; line-height: 1.4; }
+.cards-compact .card p { margin: 0; white-space: nowrap; font-variant-numeric: oldstyle-nums; }
+
+/* A post: the facts on one quiet line, the nib after the last word. */
+.post-header { margin-block: clamp(1rem, 4vw, 3rem) 2.5rem; }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; column-gap: 1rem; }
+.post-body::after { display: block; margin: 3rem auto 0; }
+.post-body :is(h2, h3) { font-style: italic; }
+blockquote { border-color: var(--color-accent); font-style: italic; }
+table { font-size: var(--text-small); }
