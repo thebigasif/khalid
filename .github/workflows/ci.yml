@@ -1,18 +1,32 @@
 name: CI
 
+# CI is the one gate before a merge. Every pull request should turn on
+# auto-merge as soon as it opens, so it merges the moment the required
+# checks pass:
+#
+#   gh pr merge <number> --auto --squash
+#
+# Required on main: Text rules, Rust, Admin and Demo. Each of Rust and Demo
+# is one small job that passes only when every job it sums up passed.
 on:
   pull_request:
   # Task branches run once, through their pull request; a push run as well
   # would double every run on GitHub's 20 shared runners.
   push:
     branches: [main]
+  # The full run every night, so a slow drift shows even on a quiet day.
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# A new push to a pull request stops its older run. Runs on main are never
+# stopped half way, so each one finishes and can report a failure.
 concurrency:
-  group: ci-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event_name }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   CARGO_TERM_COLOR: always
@@ -25,9 +39,13 @@ jobs:
   # Integration branches of this repository, which land many tasks at once,
   # get a runner of their own (label khalid-priority).
   # Performance budgets stay on GitHub's runners, where their numbers were set.
+  #
+  # Each maintainer runner has its own work folder, so jobs that run at the
+  # same time never share a checkout or a target folder, and its own Rust
+  # home (below), so they never share a toolchain install either.
   text:
     name: Text rules
-    runs-on: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       - name: No em dashes (RULES.md BL-TXT-1)
@@ -37,13 +55,67 @@ jobs:
       - name: Spelling
         uses: crate-ci/typos@v1
 
-  rust:
-    name: Rust checks
-    runs-on: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+  # The Rust checks run as parallel jobs: the lints, the tests in two
+  # partitions, and the release build with its size budget. The job named
+  # Rust, which branch protection requires, sums them up.
+  rust-lints:
+    name: Rust lints, docs and dependencies
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       # The maintainer's runners share one user. Each gets its own Rust home,
       # so one job's toolchain install cannot swap cargo out under another.
+      - name: Per-runner Rust home
+        if: runner.environment == 'self-hosted'
+        run: |
+          work=$(realpath "$RUNNER_WORKSPACE/..")
+          export CARGO_HOME="$work/.cargo-home" RUSTUP_HOME="$work/.rustup-home"
+          mkdir -p "$CARGO_HOME/bin"
+          if [ ! -x "$CARGO_HOME/bin/rustup" ]; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain none
+          fi
+          echo "CARGO_HOME=$work/.cargo-home" >> "$GITHUB_ENV"
+          echo "RUSTUP_HOME=$work/.rustup-home" >> "$GITHUB_ENV"
+          echo "$work/.cargo-home/bin" >> "$GITHUB_PATH"
+      - name: Toolchain from rust-toolchain.toml
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.1
+          components: clippy, rustfmt
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: lints
+      - name: Tools
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deny,cargo-machete
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Docs
+        run: cargo doc --workspace --no-deps --all-features
+      - name: Doc tests
+        run: cargo test --workspace --doc
+      - name: Dependencies
+        run: cargo deny check
+      - name: Unused dependencies
+        run: cargo machete
+      - name: Lint table proven to fire (BL-LNT-3)
+        run: ./scripts/check-lints.sh
+
+  # The job id stays rust, the id of the single job these replaced, so the
+  # test build keeps finding the warm cache that job saved.
+  rust:
+    name: Rust tests ${{ matrix.partition }} of 2
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        partition: [1, 2]
+    steps:
+      - uses: actions/checkout@v7
       - name: Per-runner Rust home
         if: runner.environment == 'self-hosted'
         # A full path, so cargo-llvm-cov recognises the registry and leaves
@@ -58,32 +130,20 @@ jobs:
           echo "CARGO_HOME=$work/.cargo-home" >> "$GITHUB_ENV"
           echo "RUSTUP_HOME=$work/.rustup-home" >> "$GITHUB_ENV"
           echo "$work/.cargo-home/bin" >> "$GITHUB_PATH"
-      - name: Any crates yet?
-        id: crates
-        run: |
-          if ls crates/*/Cargo.toml >/dev/null 2>&1; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
       - name: Toolchain from rust-toolchain.toml
-        if: steps.crates.outputs.present == 'true'
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: 1.99.1
-          components: clippy, rustfmt, llvm-tools-preview
+          components: llvm-tools-preview
       - name: Cache
-        if: steps.crates.outputs.present == 'true'
         uses: Swatinem/rust-cache@v2
       - name: Tools
-        if: steps.crates.outputs.present == 'true'
         uses: taiki-e/install-action@v2
         with:
-          tool: cargo-nextest,cargo-deny,cargo-machete,cargo-llvm-cov
-      - name: Format
-        if: steps.crates.outputs.present == 'true'
-        run: cargo fmt --all -- --check
-      - name: Clippy
-        if: steps.crates.outputs.present == 'true'
-        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
-      - name: Tests, network disabled, with the coverage floor (BL-TST-3, BL-TST-6)
-        if: steps.crates.outputs.present == 'true'
+          tool: cargo-nextest,cargo-llvm-cov
+      - name: Tests, network disabled, with coverage (BL-TST-3, BL-TST-6)
+        env:
+          PARTITION: ${{ matrix.partition }}
         run: |
           # Tests run in a network namespace where only loopback is up, so a
           # local stand-in server works and the internet does not. Ubuntu
@@ -97,46 +157,41 @@ jobs:
             || sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 \
             || fail "the AppArmor user-namespace restriction could not be lifted"
           unshare -rn true || fail "unshare could not create a network namespace"
-          # The suite runs once, built for coverage, and the coverage floor
-          # reads that same run. show-env sets the flags cargo llvm-cov would,
-          # so the build can happen first, with the network, and the run
-          # inside the namespace, with nothing that needs it.
-          floor=$(sed -n 's/^lines *= *\([0-9.]*\).*/\1/p' coverage.toml 2>/dev/null || echo 0)
+          # Every partition builds every test binary for coverage and runs
+          # its share of the tests. show-env sets the flags cargo llvm-cov
+          # would, so the build can happen first, with the network, and the
+          # run inside the namespace, with nothing that needs it. The job
+          # named Rust joins the partitions' reports and holds them to the
+          # coverage floor (scripts/ci/coverage-floor.py).
+          mkdir -p target/coverage
           (
             eval "$(cargo llvm-cov show-env --sh)"
             cargo llvm-cov clean --workspace
             cargo nextest run --workspace --all-features --no-run
+            # shellcheck disable=SC2016 # the inner shell expands PARTITION
             unshare -rn sh -c '
               ip link set lo up || { echo "BL-TST-3 could not be enforced: loopback did not come up. Tests did not run."; exit 1; }
               if curl -sS --max-time 5 -o /dev/null https://github.com 2>/dev/null; then
                 echo "BL-TST-3 could not be enforced: the internet is reachable inside the namespace. Tests did not run."; exit 1
               fi
-              exec cargo nextest run --workspace --all-features
+              exec cargo nextest run --workspace --all-features \
+                --config-file scripts/ci/nextest.toml --partition "count:$PARTITION/2"
             '
-            cargo llvm-cov report --summary-only --fail-under-lines "$floor"
+            cargo llvm-cov report --summary-only
+            cargo llvm-cov report --lcov --output-path "target/coverage/partition-$PARTITION.lcov"
           )
-          cargo test --workspace --doc
-      - name: Docs
-        if: steps.crates.outputs.present == 'true'
-        run: cargo doc --workspace --no-deps --all-features
-      - name: Dependencies
-        if: steps.crates.outputs.present == 'true'
-        run: cargo deny check
-      - name: Unused dependencies
-        if: steps.crates.outputs.present == 'true'
-        run: cargo machete
-      - name: Lint table proven to fire (BL-LNT-3)
-        if: steps.crates.outputs.present == 'true'
-        run: ./scripts/check-lints.sh
-      - name: No crates yet
-        if: steps.crates.outputs.present == 'false'
-        run: echo "Rust checks start with the first crate (Phase 0)."
+      - uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.partition }}
+          path: target/coverage/
+          retention-days: 1
+          if-no-files-found: error
 
   # The release build takes minutes on its own, so it runs beside the tests,
   # on any maintainer runner: the one priority runner is busy with them.
   binary-size:
     name: Binary size, budget under 30 MB
-    runs-on: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && 'khalid' || 'ubuntu-latest' }}
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'khalid' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       - name: Per-runner Rust home
@@ -151,22 +206,15 @@ jobs:
           echo "CARGO_HOME=$work/.cargo-home" >> "$GITHUB_ENV"
           echo "RUSTUP_HOME=$work/.rustup-home" >> "$GITHUB_ENV"
           echo "$work/.cargo-home/bin" >> "$GITHUB_PATH"
-      - name: Any crates yet?
-        id: crates
-        run: |
-          if ls crates/*/Cargo.toml >/dev/null 2>&1; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
       - name: Toolchain from rust-toolchain.toml
-        if: steps.crates.outputs.present == 'true'
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: 1.99.1
       - name: Cache
-        if: steps.crates.outputs.present == 'true'
         uses: Swatinem/rust-cache@v2
         with:
           key: release
       - name: Binary size, budget under 30 MB
-        if: steps.crates.outputs.present == 'true'
         run: |
           cargo build --release -p khalid
           size=$(stat -c %s target/release/khalid)
@@ -177,39 +225,44 @@ jobs:
       # khalid-perf is built after the size is read, one at a time as
       # scripts/perf.sh builds them, so it cannot change the measured binary.
       - name: Release binaries for the demo check and the budgets
-        if: steps.crates.outputs.present == 'true' && github.event_name == 'pull_request'
         run: |
           mkdir -p target/handover
           cp target/release/khalid target/handover/khalid
           cargo build --release -p khalid-perf
           cp target/release/khalid-perf target/handover/khalid-perf
       - uses: actions/upload-artifact@v7
-        if: steps.crates.outputs.present == 'true' && github.event_name == 'pull_request'
         with:
           name: release-binaries
           path: target/handover/
           retention-days: 1
           if-no-files-found: error
-      - name: No crates yet
-        if: steps.crates.outputs.present == 'false'
-        run: echo "The size budget starts with the first crate (Phase 0)."
 
   # Branch protection requires a check named Rust. It passes only when the
-  # Rust checks and the size budget both pass, so neither is optional.
+  # lints, both test partitions and the size budget pass, and when the
+  # partitions together reach the line coverage floor in coverage.toml.
   rust-gate:
     name: Rust
-    needs: [rust, binary-size]
+    needs: [rust-lints, rust, binary-size]
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - name: Rust checks and binary size passed
+      - name: Rust lints, tests and binary size passed
         run: |
+          test "${{ needs.rust-lints.result }}" = success
           test "${{ needs.rust.result }}" = success
           test "${{ needs.binary-size.result }}" = success
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: coverage-*
+          path: target/coverage
+          merge-multiple: true
+      - name: Line coverage floor over both partitions (BL-TST-6)
+        run: python3 scripts/ci/coverage-floor.py coverage.toml target/coverage/partition-*.lcov
 
   admin:
     name: Admin
-    runs-on: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       - name: Any admin yet?
@@ -276,25 +329,72 @@ jobs:
         if: steps.inputs.outputs.build == 'true'
         run: docker run --rm khalid:check --version
 
-  # The demo, end to end (task 1.22, gap audit 2 G8, GEO P2): every page of
-  # the demo site through the W3C validator, Lighthouse with 100 as the
-  # floor, and axe and the layout checks at six widths, with scripts on and
-  # then off. A page that breaks with scripts off fails here. Then the
-  # layout check: the showcase in every template pack in Chromium, Firefox
-  # and WebKit at 390, 768 and 1440 px. Then the page-weight budgets on
-  # each template's demo home page. Slow, so on pull requests only, and not
-  # a required check.
-  demo:
-    name: Demo check
+
+  # The demo, end to end (task 1.22, gap audit 2 G8, GEO P2), as parallel
+  # jobs on GitHub's runners, each using the release binary the size budget
+  # built:
+  #
+  #   Demo site check   every page of the demo site through the W3C
+  #                     validator, Lighthouse with 100 as the floor, and axe
+  #                     and the layout checks at six widths, with scripts on
+  #                     and then off. A page that breaks with scripts off
+  #                     fails here.
+  #   Demo layout       the showcase in each template pack in Chromium,
+  #                     Firefox and WebKit at 390, 768, 1440 and 2000 px,
+  #                     one job per group of packs and browser. The
+  #                     Chromium jobs also hold each pack's demo home page
+  #                     to the page-weight budgets.
+  #
+  # Pushes to main, the nightly run and runs by hand check every pack. A
+  # pull request checks the packs it touches, or every pack when it changes
+  # anything they share (scripts/ci/demo-packs.sh). The job named Demo sums
+  # them up for branch protection.
+  demo-plan:
+    name: Demo plan
     runs-on: ubuntu-latest
-    # The layout check covers 49 templates in three browsers, about 45
-    # minutes in all. A run whose cache of the demos' AVIF pictures is
-    # empty makes them first, about 35 minutes more on this runner
-    # (docs/standards/performance.md, "Pictures on high-density phones");
-    # a hung run still stops at 120.
-    timeout-minutes: 120
-    if: github.event_name == 'pull_request'
-    # Uses the release binary the size budget built on a maintainer runner.
+    needs: binary-size
+    outputs:
+      packs: ${{ steps.plan.outputs.packs }}
+      count: ${{ steps.plan.outputs.count }}
+      all: ${{ steps.plan.outputs.all }}
+      matrix: ${{ steps.plan.outputs.matrix }}
+      media-key: ${{ steps.media.outputs.key }}
+      media-prefix: ${{ steps.media.outputs.prefix }}
+      media-found: ${{ steps.lookup.outputs.cache-hit }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v7
+        with:
+          name: release-binaries
+          path: target/handover
+      - name: Which packs this run checks
+        id: plan
+        run: |
+          chmod +x target/handover/khalid
+          ./scripts/ci/demo-packs.sh target/handover/khalid
+      # The demos' pictures in AVIF (scripts/demo-media.sh), the same cache
+      # the Pages workflow keeps. The key changes with the encoder, so a
+      # file found is the one this build would make.
+      - name: The pictures' cache key
+        id: media
+        run: |
+          prefix="demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-"
+          echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
+          echo "key=$prefix${{ hashFiles('fixtures/showcase-publications/*/photos.lock') }}" >> "$GITHUB_OUTPUT"
+      - name: Is that cache whole already?
+        id: lookup
+        uses: actions/cache/restore@v5
+        with:
+          path: ~/.cache/khalid/demo-media
+          key: ${{ steps.media.outputs.key }}
+          lookup-only: true
+
+  demo-site:
+    name: Demo site check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: binary-size
     steps:
       - uses: actions/checkout@v7
@@ -315,61 +415,185 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      # The browser install sometimes stalls on a download and used to eat
-      # the job's whole 30 minutes. Each try gets 6 minutes; a stalled try
-      # is stopped and run once more. A normal install takes about 2.
+      # The browser install sometimes stalls on a download. Each try gets 6
+      # minutes; a stalled try is stopped and run once more. A normal
+      # install takes about 1.
       - name: Tools, at the versions scripts/demo-check/package.json pins
         timeout-minutes: 14
         run: |
           npm install --prefix scripts/demo-check --no-audit --no-fund
           for try in 1 2; do
-            if timeout 360 npx --prefix scripts/demo-check playwright install --with-deps chromium firefox webkit; then
+            if timeout 360 npx --prefix scripts/demo-check playwright install --with-deps chromium; then
               exit 0
             fi
             echo "The browser install stalled or failed (try $try of 2)."
           done
           exit 1
-      # The demos' pictures in AVIF, made once (scripts/demo-media.sh). An
-      # empty cache costs about 35 minutes of encoding. The Pages workflow
-      # keeps the cache on main, where pull requests can read it. The key
-      # changes with the encoder, so a file found is the one this build
-      # would make.
-      - name: The demos' pictures, kept between runs
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/khalid/demo-media
-          key: demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-${{ hashFiles('fixtures/showcase-publications/*/photos.lock') }}
-          restore-keys: demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-
+      # Lighthouse runs that fail to start a page (NO_NAVSTART) are tried
+      # once more inside the script; a low score is never retried.
       - name: Demo check
         run: ./scripts/demo-check.sh
-      # Runs even when the demo check failed, so one run lists both.
-      - name: Layout check
-        if: success() || failure()
-        run: ./scripts/layout-check.sh
-      # The pictures each template's demo home page downloads, at 390 and
-      # 1440 px, against the page-weight budgets in
-      # docs/standards/performance.md. It measures the sites the layout
-      # check built, or builds them when that check stopped before it did.
-      - name: Page weight
-        if: success() || failure()
-        run: |
-          if [ -d target/layout-check/sites ]; then
-            ./scripts/page-weight.sh --sites target/layout-check/sites
-          else
-            ./scripts/page-weight.sh
-          fi
       - name: Keep the reports
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: demo-check
+          name: demo-site-check
           path: |
             target/demo-check/lighthouse
             target/demo-check/serve.log
+          if-no-files-found: ignore
+
+  demo-layout:
+    name: Demo layout ${{ matrix.chunk }} of ${{ matrix.of }}, ${{ matrix.browser }}
+    runs-on: ubuntu-latest
+    # About 10 minutes with the pictures' cache. A run whose cache misses
+    # makes its packs' AVIF pictures first, which takes longer; a hung run
+    # still stops here.
+    timeout-minutes: 75
+    needs: [binary-size, demo-plan]
+    if: needs.demo-plan.outputs.count != '0'
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.demo-plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v7
+        with:
+          name: release-binaries
+          path: target/handover
+      - name: The handed-over binary
+        run: |
+          chmod +x target/handover/khalid
+          target/handover/khalid --version
+          echo "KHALID_BIN=$PWD/target/handover/khalid" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Tools, at the versions scripts/demo-check/package.json pins
+        timeout-minutes: 14
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: |
+          npm install --prefix scripts/demo-check --no-audit --no-fund
+          for try in 1 2; do
+            if timeout 360 npx --prefix scripts/demo-check playwright install --with-deps "$BROWSER"; then
+              exit 0
+            fi
+            echo "The browser install stalled or failed (try $try of 2)."
+          done
+          exit 1
+      - name: The demos' pictures, kept between runs
+        uses: actions/cache/restore@v5
+        with:
+          path: ~/.cache/khalid/demo-media
+          key: ${{ needs.demo-plan.outputs.media-key }}
+          restore-keys: ${{ needs.demo-plan.outputs.media-prefix }}
+      - name: The pictures already made
+        run: |
+          mkdir -p ~/.cache/khalid/demo-media target/media
+          (cd ~/.cache/khalid/demo-media && find . -type f | sort) > target/media/before.txt
+          echo "$(wc -l < target/media/before.txt) pictures came from the cache."
+      - name: Layout check
+        env:
+          BROWSER: ${{ matrix.browser }}
+          PACKS: ${{ matrix.packs }}
+        run: ./scripts/layout-check.sh --browsers "$BROWSER" --packs "$PACKS"
+      # The pictures each template's demo home page downloads, at 390 and
+      # 1440 px, against the page-weight budgets in
+      # docs/standards/performance.md. It measures the sites the layout
+      # check built, or builds them when that check stopped before it did.
+      # It runs in Chromium, so once per group of packs.
+      - name: Page weight
+        if: matrix.browser == 'chromium' && (success() || failure())
+        env:
+          PACKS: ${{ matrix.packs }}
+        run: |
+          if [ -d target/layout-check/sites ]; then
+            ./scripts/page-weight.sh --sites target/layout-check/sites --packs "$PACKS"
+          else
+            ./scripts/page-weight.sh --packs "$PACKS"
+          fi
+      # A run that checks every pack while the cache is not whole hands its
+      # new pictures to the job below, which keeps them all in one cache.
+      - name: The pictures this run made
+        if: matrix.browser == 'chromium' && needs.demo-plan.outputs.all == 'true' && needs.demo-plan.outputs.media-found != 'true' && (success() || failure())
+        run: |
+          (cd ~/.cache/khalid/demo-media && find . -type f | sort) > target/media/after.txt
+          comm -13 target/media/before.txt target/media/after.txt > target/media/new.txt
+          echo "$(wc -l < target/media/new.txt) pictures were made in this run."
+          mkdir -p target/media/new
+          (cd ~/.cache/khalid/demo-media && xargs -r -a "$GITHUB_WORKSPACE/target/media/new.txt" cp --parents -t "$GITHUB_WORKSPACE/target/media/new")
+      - uses: actions/upload-artifact@v7
+        if: matrix.browser == 'chromium' && needs.demo-plan.outputs.all == 'true' && needs.demo-plan.outputs.media-found != 'true' && (success() || failure())
+        with:
+          name: demo-media-new-${{ matrix.chunk }}
+          path: target/media/new/
+          retention-days: 1
+          if-no-files-found: ignore
+      - name: Keep the reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: demo-layout-${{ matrix.chunk }}-${{ matrix.browser }}
+          path: |
             target/layout-check/report.json
             target/layout-check/shots
             target/page-weight/report.json
           if-no-files-found: ignore
+
+  # Keeps every picture the layout jobs made in the one shared cache, so the
+  # next run finds them. It runs only on runs that check every pack, so the
+  # cache it keeps is whole. On main, every branch can read it.
+  demo-media:
+    name: Demo pictures kept
+    runs-on: ubuntu-latest
+    needs: [demo-plan, demo-layout]
+    if: always() && needs.demo-plan.outputs.all == 'true' && needs.demo-plan.outputs.media-found != 'true' && needs.demo-layout.result != 'skipped'
+    steps:
+      - uses: actions/cache/restore@v5
+        with:
+          path: ~/.cache/khalid/demo-media
+          key: ${{ needs.demo-plan.outputs.media-key }}
+          restore-keys: ${{ needs.demo-plan.outputs.media-prefix }}
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: demo-media-new-*
+          path: ${{ runner.temp }}/media-new
+          merge-multiple: true
+      - name: Every picture in one folder
+        run: |
+          mkdir -p ~/.cache/khalid/demo-media "$RUNNER_TEMP/media-new"
+          cp -a --update=none "$RUNNER_TEMP/media-new/." ~/.cache/khalid/demo-media/
+          echo "The cache holds $(find ~/.cache/khalid/demo-media -type f | wc -l) pictures."
+      # The Pages workflow may have kept the same key first; then this one
+      # is not needed and saving it only warns.
+      - uses: actions/cache/save@v5
+        continue-on-error: true
+        with:
+          path: ~/.cache/khalid/demo-media
+          key: ${{ needs.demo-plan.outputs.media-key }}
+
+  # Branch protection requires a check named Demo. It passes only when the
+  # demo site check passed and every layout job passed, or when the plan
+  # found no pack to check.
+  demo:
+    name: Demo
+    needs: [demo-plan, demo-site, demo-layout]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Demo site check and every layout job passed
+        run: |
+          test "${{ needs.demo-plan.result }}" = success
+          test "${{ needs.demo-site.result }}" = success
+          layout="${{ needs.demo-layout.result }}"
+          if [ "${{ needs.demo-plan.outputs.count }}" = 0 ]; then
+            test "$layout" = skipped
+            echo "No template pack needed a layout check in this change."
+          else
+            test "$layout" = success
+            echo "Layout checked in Chromium, Firefox and WebKit: ${{ needs.demo-plan.outputs.packs }}"
+          fi
 
   # The Astro and Next.js starter kits (U14, R12), built against the
   # showcase site served in headless mode, as their READMEs say. Each kit's
@@ -537,10 +761,10 @@ jobs:
         if: failure()
         run: cat target/pebble/pebble.log target/pebble/challtestsrv.log || true
 
+
   perf:
     name: Performance budgets
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     # The binaries come from the size budget's build; they are measured
     # here, on GitHub's runner, as before.
     needs: binary-size
@@ -556,12 +780,43 @@ jobs:
           echo "KHALID_BIN=$PWD/target/handover/khalid" >> "$GITHUB_ENV"
           echo "KHALID_PERF_BIN=$PWD/target/handover/khalid-perf" >> "$GITHUB_ENV"
       # The cold start to the first byte swings on a shared runner (63 to
-      # 117 ms on unchanged code). When it is the only measure that fails,
-      # the whole run is measured once more; the budget itself never moves.
+      # 117 ms on unchanged code). On main and nightly it is gated as the
+      # median of 5 runs. On a pull request it is measured and reported,
+      # and every other budget is gated as always. No budget ever moves.
       - name: Budgets (docs/standards/performance.md)
+        env:
+          PERF_SERVE_RUNS: ${{ github.event_name == 'pull_request' && '1' || '5' }}
         run: |
           if ./scripts/perf.sh | tee target/perf-run.log; then exit 0; fi
+          if [ "$GITHUB_EVENT_NAME" != pull_request ]; then exit 1; fi
           failed=$(awk '$NF == "FAIL" { print $1 }' target/perf-run.log | sort -u)
           if [ "$failed" != "cold_start_first_byte_ms" ]; then exit 1; fi
-          echo "Only the cold start failed, so the budgets are measured once more."
-          ./scripts/perf.sh
+          echo "Only the cold start to the first byte failed. Main and the nightly run gate it as the median of 5 runs." | tee -a "$GITHUB_STEP_SUMMARY"
+
+  # A run on main or the nightly run that fails opens an issue, or adds to
+  # the one already open, so nobody has to watch the runs.
+  report-failure:
+    name: Report a failed main run
+    needs: [text, rust-gate, admin, demo, perf]
+    if: always() && github.event_name != 'pull_request' && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Open or update the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          EVENT: ${{ github.event_name }}
+          RESULTS: "Text rules: ${{ needs.text.result }}, Rust: ${{ needs.rust-gate.result }}, Admin: ${{ needs.admin.result }}, Demo: ${{ needs.demo.result }}, Performance budgets: ${{ needs.perf.result }}"
+        run: |
+          title="CI on main is failing"
+          body=$(printf 'The %s run of CI on %s failed.\n\n%s\n\nRun: %s\n' "$EVENT" "${GITHUB_SHA:0:12}" "$RESULTS" "$RUN_URL")
+          number=$(gh issue list --state open --search "in:title \"$title\"" --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -n 1)
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body"
+          fi
