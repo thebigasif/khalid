@@ -253,6 +253,7 @@ static PACKS: &[&Pack] = &[
     &crate::ledger::LEDGER,
     &crate::locale::LOCALE,
     &crate::meridian::MERIDIAN,
+    &crate::pantry::PANTRY,
     &crate::plinth::PLINTH,
     &crate::reel::REEL,
     &crate::research::RESEARCH,
