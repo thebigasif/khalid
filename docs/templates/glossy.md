@@ -73,7 +73,7 @@ Text is never written on a picture. It always sits beside it or under it.
 
 Glossy brings its own colours: ink on a warm cream page, a blush surface and a raspberry colour for links and buttons. Pictures, panels and labels have soft round corners. A high-contrast serif for headings suits it best, such as Playfair Display, with a friendly sans for the text. Your colours, fonts and logo in `theme/tokens.toml` replace Glossy's.
 
-The demo's sample brand, The Weekend Edit, is a made-up magazine: cream paper, a peach surface, a deep teal accent, Playfair Display for titles and Plus Jakarta Sans for the text.
+The demo's sample brand, The Weekend Edit, is a made-up magazine: cream paper, a peach surface, a deep teal accent, Playfair Display for titles (cut to the demo's letters and served as "Showcase Display", as its licence asks of a cut copy; see "Fonts" in `docs/standards/performance.md`) and Plus Jakarta Sans for the text.
 
 Glossy's own defaults, which any value in your `theme/tokens.toml` replaces:
 
