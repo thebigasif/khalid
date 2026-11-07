@@ -425,3 +425,8 @@ price_level = "Price level {level} of 4"
 at_a_glance = "At a glance"
 city_notes = "Notes from the city"
 more_places = "More places"
+# The gazette template: a local paper's section index, section flags and
+# the news under a story. {name} is a section's name.
+sections_jump = "Jump to a section"
+section_all = "All {name} stories"
+more_news = "More news"

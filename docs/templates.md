@@ -32,6 +32,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `encore`: a musician's or a band's site, with the newest release on its sleeve, tour dates with ticket links, a shelf of every record and the band's notes from the studio and the road. See [Encore](templates/encore.md).
 - `fixture`: a sports club, with the next match and the club's form on the front page, results as scoreboard rows with the score in large figures, upcoming fixtures, club news, a squad page and a scoreboard on every match report. See [Fixture](templates/fixture.md).
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
+- `gazette`: a local news site with many sections, with a block per section under a bold section flag, a rail of the latest news grouped by day, dense headlines that each carry their place, and a dateline on every story. See [Gazette](templates/gazette.md).
 - `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
 - `hub`: a creator's link-in-bio home in one narrow column, with the creator's photo and name, a stack of large link buttons led by the call to action, and the latest posts as rows with a square picture. See [Hub](templates/hub.md).
 - `itinerary`: a travel diary with trips filed by country as passport stamps, each trip a ticket with its days, route, season and cost, a day-by-day route on every trip and checklists for packing. See [Itinerary](templates/itinerary.md).
@@ -163,6 +164,7 @@ Five templates show facts. Each reads them by their place in the list, not by th
 - [Harbor](templates/harbor.md#recipe-facts) shows up to four posts with facts in a recipe card strip on the front page, with the first two facts as tags, and all the facts as tags under a post's title.
 - [Respawn](templates/respawn.md#reviews-are-posts-with-facts) treats posts with facts as reviews. The first fact is the score out of 10, shown as a dark square and a health bar on cards, lists and the review, and the second, the platforms, shows under it.
 - [Locale](templates/locale.md#places-are-posts-with-facts) treats posts with facts as places: 1 the kind of place, 2 the price level, drawn as a price meter of four marks, 3 the opening hours and 4 the address. They show on listing rows and in an At a glance card on each place.
+- [Gazette](templates/gazette.md#sections-and-places) reads the first fact as the place a story happened, such as a street or village. It shows as a small label before the headline in every list and as the dateline that opens the story.
 
 The other templates do not show facts. A custom template that wants them reads `post.facts` on a card and `page.facts` on a post page. Each fact has a `label` and a `value`:
 

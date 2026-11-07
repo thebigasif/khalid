@@ -1,0 +1,29 @@
+{#- headline_list(posts, level=3, by_day=false, place_fact=0, summary=false):
+    dense headline rows, newest first. Each row has a small place label
+    from the fact at `place_fact`, counted from 0 (none for no label),
+    the title, the summary when `summary` is on, and the date. With
+    `by_day`, the rows sit under a heading for each day, at `level`, and
+    their titles one level lower, with no date of their own. For news
+    rails, digests and any list where many headlines must fit.
+    headline_row(post, level, place_fact, summary, dated): one row. -#}
+{% macro headline_row(post, level, place_fact, summary, dated) -%}
+<li class="headline-row">
+{% if place_fact is not none and post.facts[place_fact] is defined %}<p class="headline-place"><span class="visually-hidden">{{ post.facts[place_fact].label }}: </span>{{ post.facts[place_fact].value }}</p>
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if summary and post.excerpt %}<p class="headline-summary">{{ post.excerpt }}</p>
+{% endif %}{% if dated %}<p class="headline-date"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+{% endif %}</li>
+{%- endmacro %}
+{% macro headline_list(posts, level=3, by_day=false, place_fact=0, summary=false) -%}
+{% if by_day %}<div class="headline-days">
+{% for post in posts %}{% if loop.changed(post.date) %}{% if not loop.first %}</ol>
+{% endif %}<h{{ level }} class="headline-day"><time datetime="{{ post.date }}">{{ post.date | date }}</time></h{{ level }}>
+<ol class="headline-list" role="list">
+{% endif %}{{ headline_row(post, level + 1, place_fact, summary, false) }}
+{% if loop.last %}</ol>
+{% endif %}{% endfor %}</div>
+{%- else %}<ol class="headline-list" role="list">
+{% for post in posts %}{{ headline_row(post, level, place_fact, summary, true) }}
+{% endfor %}</ol>
+{%- endif %}
+{%- endmacro %}

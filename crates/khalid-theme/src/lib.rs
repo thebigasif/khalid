@@ -30,6 +30,7 @@ mod fixture;
 mod folio;
 mod font_files;
 mod fonts;
+mod gazette;
 mod harbor;
 mod hub;
 mod itinerary;
