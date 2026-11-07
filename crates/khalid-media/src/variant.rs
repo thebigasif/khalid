@@ -2,8 +2,10 @@
 
 /// The widths a responsive image is offered in, in pixels. They cover a
 /// 320 px phone at 1x up to a wide screen at 2x without large gaps, so the
-/// browser never fetches much more than it draws.
-const BREAKPOINTS: [u32; 8] = [320, 480, 640, 800, 1024, 1280, 1600, 2048];
+/// browser never fetches much more than it draws. 1152 is for phones at
+/// three device pixels per CSS pixel: a card 344 to 384 px wide needs 1032
+/// to 1152 pixels, and without it the browser fetched the 1280 px file.
+const BREAKPOINTS: [u32; 9] = [320, 480, 640, 800, 1024, 1152, 1280, 1600, 2048];
 
 /// A file format the site serves images in.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

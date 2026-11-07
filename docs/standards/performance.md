@@ -19,7 +19,8 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 | Largest Contentful Paint, demo site on a 5 dollar VPS class runner | under 1 s | none | Lighthouse CI |
 | Cumulative Layout Shift | 0 | none | Lighthouse CI |
 | Public CSS, compressed | under 20 KB | 5% | size of the built stylesheet |
-| Pictures on a template's demo home page, 390 px, without the hero | under 270 KB | none | `scripts/page-weight.sh`, see "Page weight" |
+| Pictures on a template's demo home page, 390 px at 3x, without the hero | under 620 KB (Aperture 810 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
+| Pictures on a template's demo home page, 390 px at 1x, without the hero | under 140 KB | none | `scripts/page-weight.sh`, see "Page weight" |
 | Pictures on a template's demo home page, 1440 px | under 1,250 KB (Aperture 2,100 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
 | JavaScript required to read a post | 0 bytes | none | scripts-off test |
 | Admin initial JavaScript, compressed | under 350 KB | 5% | Vite build report |
@@ -226,15 +227,17 @@ Pictures are most of what a reader downloads. Every picture is offered in severa
 
 ### The budget
 
-`scripts/page-weight.sh` (with `scripts/demo-check/weight.mjs`) builds each template's demo as it is published, its ready demo publication in its sample brand, and opens the home page in Chromium at 390 px and at 1440 px, one device pixel per CSS pixel. It scrolls to the bottom so every lazy picture loads, and adds up the bytes of every picture the page downloads. CI runs it in the demo job after the layout check, on the sites the layout check built.
+`scripts/page-weight.sh` (with `scripts/demo-check/weight.mjs`) builds each template's demo as it is published, its ready demo publication in its sample brand with its pictures in AVIF too, and opens the home page in Chromium three times: at 390 px with three device pixels per CSS pixel, as most phones sold now have, at 390 px with one, and at 1440 px with one. It scrolls to the bottom so every lazy picture loads, and adds up the bytes of every picture the page downloads. CI runs it in the demo job after the layout check, on the sites the layout check built.
 
 | Measure | Budget |
 |---|---|
-| 390 px, every picture but the hero (the first picture, fetched with high priority) | under 270 KB |
+| 390 px at 3x, every picture but the hero (the first picture, fetched with high priority) | under 620 KB |
+| 390 px at 3x, Aperture | under 810 KB |
+| 390 px at 1x, every picture but the hero | under 140 KB |
 | 1440 px, every picture | under 1,250 KB |
 | 1440 px, Aperture, whose design is five photographs across a 1,296 px frame | under 2,100 KB |
 
-The budgets were set on 2026-11-07 with about 10 to 15% headroom over the heaviest template after the change below: Aperture at 237 KB on a phone, and Atlas at 1,136 KB on a desktop. A template over a budget almost always tells the browser a slot is wider than it is. The failure names the heaviest pictures and what to fix. A budget is never raised to make the check pass; a new budget is a deliberate change in its own pull request with the reason.
+The desktop budgets were set on 2026-11-07 with about 10% headroom over the heaviest template after the change below, Atlas at 1,136 KB. The phone budgets were set again the same day, once the demos offered AVIF (see "Pictures on high-density phones"), with about 10% headroom: at 3x over Itinerary at 561 KB and Aperture at 734 KB, and at 1x over Aperture and Atlas at 125 KB. The 1x budget was 270 KB before; the 3x measure is new. A template over a budget almost always tells the browser a slot is wider than it is. The failure names the heaviest pictures and what to fix. A budget is never raised to make the check pass; a new budget is a deliberate change in its own pull request with the reason.
 
 ### Measured on 2026-11-07
 
@@ -247,6 +250,48 @@ The 31 template demos together, before and after each slot said its own width, i
 | 1440 px, all pictures | 13,136 | 7,901 |
 
 Per template numbers are in the pull request that added the check (perf/picture-sizes). Keystone's desktop page grew from 558 to 601 KB and Atlas's from 1,106 to 1,136 KB, because their lead stories are drawn wider than the old 48rem said and were blurry; they now fetch a file as wide as they are drawn.
+
+### Pictures on high-density phones (2026-11-07)
+
+Most phones draw three device pixels per CSS pixel, so a card 326 px wide needs a file 978 px wide to look sharp, nine times the pixels of the 1x phone the budget first measured. Measured in Chromium at 390 px and 3x, the 31 demo home pages downloaded 16,258 KB of pictures, Aperture alone 1,507 KB. Three changes (perf/phone-pictures):
+
+- **A width for 3x phone cards.** With `sizes` from perf/picture-sizes, Chromium already fetched a file close to slot width times 3: at most 1.31 times what it drew, and that only where a slot's `sizes` rounds up. But a card 344 to 384 px wide needs 1,032 to 1,152 pixels, just over the 1,024 px file, so it fetched the 1,280 px one. `khalid-media` now also makes 1,152 px. The widths are 320, 480, 640, 800, 1,024, 1,152, 1,280, 1,600 and 2,048; for every slot from 320 to 420 px at 3x the file fetched is at most an eighth wider than needed (the `plan` test checks it). 960 was not added: between 800 and 1,024 it would save at most 6% of a file.
+- **AVIF for the demos.** Every template demo, as published and as the checks build it, sets `avif = true` (`scripts/demo-media.sh`). Each picture is offered in AVIF, then WebP, then the original's format. AVIF stays off for other sites, because of its cost (below).
+- **AVIF quality 55 instead of 60.** WebP stays at 78.
+
+How the quality was chosen. Six demo photos (city streets, a harbour cliff, a gallery stair, a film still, seed potatoes) were encoded at 1,024 and 1,152 px and compared with the resized original, by SSIM on lightness in Chromium's own decoder and side by side at full size and at 2x zoom:
+
+| Encoding, 1,152 px, six photos | Bytes | SSIM, lowest to highest | Encode, one core |
+|---|---|---|---|
+| WebP 78 (unchanged) | 535,540 | 0.941 to 0.974 | 0.05 to 0.08 s |
+| AVIF 60, speed 8 (before) | 285,065 | 0.878 to 0.959 | 1.75 to 2.60 s |
+| AVIF 55, speed 8 (now) | 251,790 | 0.862 to 0.956 | 1.08 to 1.71 s |
+| AVIF 55, speed 9 | 268,895 | 0.861 to 0.953 | 0.54 to 0.83 s |
+| AVIF 50, speed 8, at 1,024 px | | 0.848 to 0.956 | |
+
+AVIF scores lower on SSIM than WebP at the same look, because it smooths fine grain instead of blocking it. At full size AVIF 55 and 60 could not be told apart; at 50 grass and the skin of the potatoes lost texture, so 50 was not taken. At 3x a phone shows each file pixel a third as wide, which hides the difference further. Speed 9 halves the time but makes files 5 to 8% larger at the same quality.
+
+What the encoding costs. The Atlas demo has 33 photos, most 1,600 px wide. `khalid build` from an empty cache, on the build server (16 cores, shared, load 20 to 40):
+
+| Atlas demo build | Wall | CPU, all cores |
+|---|---|---|
+| WebP only | 6 to 14 s | 16 to 25 s |
+| With AVIF 60, eight widths (before) | 60 to 113 s | 665 s |
+| With AVIF 55, nine widths (now) | 63 to 139 s | 574 to 578 s |
+
+About 17 s of one core per photo. A site with 300 photos on a two-core server would wait about 45 minutes on its first build, so AVIF is not switched on for every site. Each file is named by a hash of its photo and kept, so later builds read it from the cache. For the demos, `scripts/demo-media.sh` links each build's files into one cache shared by all demo builds, `~/.cache/khalid/demo-media`, and CI keeps it between runs (key: the encoder's source and the demos' `photos.lock` files). Building every template demo from an empty cache cost 8,298 s of CPU (815 s wall on the build server); on a four-core CI runner that is about 35 minutes, paid when a photo or the encoder changes. The demo job's time limit was raised from 75 to 120 minutes for such a run. One encoder thread per file (`with_num_threads(Some(1))`) was measured and left out: 23% less CPU, but twice the wall time on 16 cores.
+
+The 31 template demo home pages, in KB of pictures, before and after (the "before" is perf/picture-sizes):
+
+| Measure | Before | After |
+|---|---|---|
+| 390 px at 3x, all pictures | 16,258 | 7,766 |
+| 390 px at 3x, without the hero | 13,415 | 6,422 |
+| 390 px at 1x, all pictures | 3,685 | 2,027 |
+| 390 px at 1x, without the hero | 3,096 | 1,709 |
+| 1440 px, all pictures | 7,901 | 4,364 |
+
+At 3x, 23 of the 31 home pages download under 400 KB of pictures in all, against 14 before. The eight over it are the photo-led designs: Aperture 827 KB, Itinerary 645, Atlas 561, Compass 470, Lattice 443, Plinth 413, Beacon 404 and Keystone 403. Per template numbers are in the pull request.
 
 ## Fast to build
 
