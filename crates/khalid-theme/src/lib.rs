@@ -51,6 +51,7 @@ mod respawn;
 mod resync;
 mod site_theme;
 pub mod slot;
+mod spectrum;
 mod split;
 mod summit;
 mod syllabus;

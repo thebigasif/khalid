@@ -1,0 +1,50 @@
+# Kite's six topics. The Spectrum template gives each one the colour of
+# its place in the main menu, so their order in site.toml sets the colours.
+
+[[categories]]
+slug = "culture"
+en = "Culture"
+
+[categories.seo.en]
+description = "Kite's culture pieces: records, libraries, music and how we spend our time."
+intro = "Pieces about the things we do together: the records we play, the libraries we use and the places where people meet."
+
+[[categories]]
+slug = "food"
+en = "Food"
+
+[categories.seo.en]
+description = "Kite's food pieces: baking, seasonal cooking and where food comes from."
+intro = "Bread, fruit and seasonal cooking, with recipes that work in an ordinary kitchen."
+
+[[categories]]
+slug = "nature"
+en = "Nature"
+
+[categories.seo.en]
+description = "Kite's nature pieces: weather, trees, plants and the living world outside the door."
+intro = "The weather, the trees and the living world outside the door, and how to read them."
+
+[[categories]]
+slug = "science"
+en = "Science"
+
+[categories.seo.en]
+description = "Kite's science pieces: how things work, from the salt in the sea to the flight of a bee."
+intro = "How things work, explained from the ground up, with no maths you cannot do in your head."
+
+[[categories]]
+slug = "travel"
+en = "Travel"
+
+[categories.seo.en]
+description = "Kite's travel pieces: slow journeys by train and on foot, and what to see on the way."
+intro = "Slow journeys by train and on foot, with practical notes for anyone who wants to follow."
+
+[[categories]]
+slug = "design"
+en = "Design"
+
+[categories.seo.en]
+description = "Kite's design pieces: objects made well, and the people who make them."
+intro = "Chairs, bowls and everyday objects made to last, and the makers behind them."

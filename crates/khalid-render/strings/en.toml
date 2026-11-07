@@ -425,3 +425,7 @@ price_level = "Price level {level} of 4"
 at_a_glance = "At a glance"
 city_notes = "Notes from the city"
 more_places = "More places"
+# The spectrum template's front page: the label over the lead story and
+# the link under each topic's row, where {name} is the topic.
+lead_story = "Lead story"
+all_in = "All in {name}"
