@@ -1,0 +1,115 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is
+# CC0, so none needs a visible credit; each is still listed.
+
+[[photos]]
+file = "en/posts/2026-11-05-fifty-issues-set-by-hand/lead.jpg"
+sha256 = "6fb75acdbcfd325072e7d75598685b53f46d2e6edde43d50c16e8992b37ca75e"
+source = "https://commons.wikimedia.org/wiki/File:Weldon_Spring_letterpress_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Weldon Spring letterpress (Unsplash) by Rodney Truitt Jr rodneytruittjr, via Wikimedia Commons"
+title = "Weldon Spring letterpress (Unsplash)"
+creator = "Rodney Truitt Jr rodneytruittjr"
+openverse = "commons:File:Weldon Spring letterpress (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-29-glass-heat-and-breath/lead.jpg"
+sha256 = "c53ca9a971eba13ebe58c1c8730fd5c07442220c4b6ce7b5fb02f3383db0f54a"
+source = "https://commons.wikimedia.org/wiki/File:Vidriero_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Vidriero (Unsplash) by Quino Al quinoal, via Wikimedia Commons"
+title = "Vidriero (Unsplash)"
+creator = "Quino Al quinoal"
+openverse = "commons:File:Vidriero (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-22-paper-one-sheet-at-a-time/lead.jpg"
+sha256 = "c0ca7c267d6e55e97d949dbfa5b3fc11d59bb5045ef89a0eff2f255e489e2847"
+source = "https://commons.wikimedia.org/wiki/File:Handmade_Paper_Manufacturer.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Handmade Paper Manufacturer by Lucaswhitehad, via Wikimedia Commons"
+title = "Handmade Paper Manufacturer"
+creator = "Lucaswhitehad"
+openverse = "commons:File:Handmade Paper Manufacturer.jpg"
+needs_credit = false
+size = "1600x691"
+
+[[photos]]
+file = "en/posts/2026-10-15-carving-by-lamplight/lead.jpg"
+sha256 = "6189fd8602a7e652c9b4d44adf2a2dd1d6ec405e05cbc6cc81ac0431b6a45ae4"
+source = "https://commons.wikimedia.org/wiki/File:Carver_at_work_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Carver at work (Unsplash) by Angelina Litvin linalitvina, via Wikimedia Commons"
+title = "Carver at work (Unsplash)"
+creator = "Angelina Litvin linalitvina"
+openverse = "commons:File:Carver at work (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-08-winter-workshop-list/lead.jpg"
+sha256 = "a9493ef99ec7b82738b47c0bbf6b1b0ddbe71e2c2a4177e063a0bcda54ac741d"
+source = "https://commons.wikimedia.org/wiki/File:Market_yarn_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Market yarn (Unsplash) by julian mora julivajuli, via Wikimedia Commons"
+title = "Market yarn (Unsplash)"
+creator = "julian mora julivajuli"
+openverse = "commons:File:Market yarn (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-01-visible-mending/lead.jpg"
+sha256 = "e5ba16f95a5d85bf99a9d42cb22ae318959ccf9d0cc5b5b258ecd78145061827"
+source = "https://commons.wikimedia.org/wiki/File:Vintage_sewing_box_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Vintage sewing box (Unsplash) by Annie Spratt anniespratt, via Wikimedia Commons"
+title = "Vintage sewing box (Unsplash)"
+creator = "Annie Spratt anniespratt"
+openverse = "commons:File:Vintage sewing box (Unsplash).jpg"
+needs_credit = false
+size = "1600x1134"
+
+[[photos]]
+file = "en/posts/2026-09-24-a-year-at-the-wheel/lead.jpg"
+sha256 = "3a726d04bd195ae7b9d7925b4aa26429a0bbcfe5c0fe947e6c0284625ec2ab00"
+source = "https://commons.wikimedia.org/wiki/File:Making_pottery_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Making pottery (Unsplash) by Jared Sluyter jaredsluyter, via Wikimedia Commons"
+title = "Making pottery (Unsplash)"
+creator = "Jared Sluyter jaredsluyter"
+openverse = "commons:File:Making pottery (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-17-bookbinders-shelf/lead.jpg"
+sha256 = "7a1fdaddc6b62883afa44bc8f58d38ac62a156bd5a223c9b98c7618cca42c491"
+source = "https://commons.wikimedia.org/wiki/File:Leather_bound_books_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Leather bound books (Unsplash) by Chris Lawton chrislawton, via Wikimedia Commons"
+title = "Leather bound books (Unsplash)"
+creator = "Chris Lawton chrislawton"
+openverse = "commons:File:Leather bound books (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-10-wheelwrights-barn/lead.jpg"
+sha256 = "d63f0c255d52507de60a4955aed77ce4d9290cda234f0c7ff66ea46a4cdd2fc2"
+source = "https://commons.wikimedia.org/wiki/File:Carpenter_and_wheelwright_from_Borre_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Carpenter and wheelwright from Borre (Unsplash) by manu schwendener manuschwendener, via Wikimedia Commons"
+title = "Carpenter and wheelwright from Borre (Unsplash)"
+creator = "manu schwendener manuschwendener"
+openverse = "commons:File:Carpenter and wheelwright from Borre (Unsplash).jpg"
+needs_credit = false
+size = "1600x1190"
+

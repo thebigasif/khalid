@@ -347,3 +347,7 @@ price_level = "Preisstufe {level} von 4"
 at_a_glance = "Auf einen Blick"
 city_notes = "Notizen aus der Stadt"
 more_places = "Weitere Orte"
+# The letterpress template's cover, issue contents and end mark.
+in_this_issue = "In dieser Ausgabe"
+issue_end = "Ende der Ausgabe"
+more_issues = "Weitere Ausgaben"
