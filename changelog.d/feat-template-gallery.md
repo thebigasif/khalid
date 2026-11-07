@@ -1,2 +1,0 @@
-Added
-- The Gallery template, for a studio or an illustrator. The front page is a wall of pictures with no script: every work hangs on a pale mat at its own shape, never cropped, with a numbered label under it giving its title, medium and year, and a list of works under the same numbers follows. Discipline chips lead to each category. A project page opens with its title beside a sheet of the client, year, medium and edition, read from the post's facts, then the work on its mat and one reading column with the project's other pictures.

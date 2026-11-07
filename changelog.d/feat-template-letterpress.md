@@ -1,2 +1,0 @@
-Added
-- The Letterpress template, for a newsletter that treats each issue as a printed edition. The front page opens with the newsletter's name as a nameplate over a folio line, then the newest issue as a cover with its picture in a plate and its contents with dotted leaders, then every other issue as a pile of small printed covers. Each issue opens with its number, date and reading time between a thick and a thin rule, sets its text with a drop cap and closes with an end mark.
