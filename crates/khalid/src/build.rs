@@ -8,6 +8,7 @@
 use std::fs;
 use std::path::{self, Path, PathBuf};
 
+use chrono::NaiveDate;
 use khalid_content::{ContentTree, SiteContent};
 use khalid_core::{Clock, Config, UserMessage};
 use khalid_lint::Report;
@@ -15,6 +16,7 @@ use khalid_render::{Asset, Renderer, Tokens};
 use khalid_routes::Routes;
 use serde::Serialize;
 
+use crate::build_pages::LanguagePages;
 use crate::cli::Output;
 use crate::exit::Exit;
 use crate::newsletter_files::archive_pages;
@@ -112,6 +114,25 @@ fn theme(site: &Path, config: &Config) -> Result<(Option<(Renderer, Asset)>, Tok
     Ok((Some((renderer, css)), tokens))
 }
 
+/// The pages of every language. With a theme, they link its stylesheet
+/// `css` and preload the body font its `tokens` name; a headless site has
+/// neither.
+fn language_pages(
+    site: &Path,
+    (config, routes): (&Config, &Routes),
+    content: &SiteContent,
+    theme: Option<(&Asset, &Tokens)>,
+    today: NaiveDate,
+) -> Result<Vec<LanguagePages>, UserMessage> {
+    let href = theme
+        .map(|(css, _)| assets::href(config, css))
+        .unwrap_or_default();
+    let mut languages = build_pages::pages(config, routes, (content, &[]), &href, today)?;
+    let tokens = theme.map(|(_, tokens)| tokens);
+    assets::preload_body_font(site, config, tokens, &mut languages);
+    Ok(languages)
+}
+
 /// Renders every page into `out`, then writes the stylesheet they link and
 /// the site's files beside them, and says how many pages were written. A
 /// headless site gets the files only, and its theme is never read (ADR
@@ -126,12 +147,9 @@ fn build(
 ) -> Result<usize, UserMessage> {
     let content = &*charts::read(site, content);
     let (theme, tokens) = theme(site, config)?;
-    let href = theme
-        .as_ref()
-        .map(|(_, css)| assets::href(config, css))
-        .unwrap_or_default();
     let today = clock.now().date_naive();
-    let mut languages = build_pages::pages(config, routes, (content, &[]), &href, today)?;
+    let styled = theme.as_ref().map(|(_, css)| (css, &tokens));
+    let mut languages = language_pages(site, (config, routes), content, styled, today)?;
     let renderer = theme.as_ref().map(|(renderer, _)| renderer);
     static_mode::comments(config, &mut languages);
     post_lock::lock(config, content, renderer, &mut languages);

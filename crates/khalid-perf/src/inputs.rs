@@ -55,6 +55,7 @@ impl Prepared {
             locale: config.default_language().clone(),
             home: config.mount().to_owned(),
             stylesheet: format!("{}assets/site.css", config.mount()),
+            body_font: None,
             nav: Nav::default(),
             announcement: None,
             main_site: None,
