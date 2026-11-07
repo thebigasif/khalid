@@ -425,3 +425,9 @@ price_level = "Price level {level} of 4"
 at_a_glance = "At a glance"
 city_notes = "Notes from the city"
 more_places = "More places"
+# The notebook template's side column, link notes and related notes.
+# {site} is the name of the place a link note points to.
+notebook_about = "About this notebook"
+notebook_sections = "Sections"
+notebook_read_at = "Read it at {site}"
+notebook_more = "More notes"
