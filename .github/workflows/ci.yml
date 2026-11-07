@@ -60,8 +60,8 @@ jobs:
 
   # The release build takes minutes on its own, so it runs beside the tests,
   # on any maintainer runner: the one priority runner is busy with them. It
-  # comes first in this file, so it gets the first free runner: the demo
-  # jobs and the budgets wait for its binaries.
+  # only measures the size budget; the demo jobs get their binaries from
+  # handover-build below.
   binary-size:
     name: Binary size, budget under 30 MB
     runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'khalid' || 'ubuntu-latest' }}
@@ -96,12 +96,28 @@ jobs:
           size=$(stat -c %s target/release/khalid)
           echo "binary: $size bytes" | tee -a "$GITHUB_STEP_SUMMARY"
           test "$size" -lt 31457280
-      # The demo check and the budgets reuse these binaries instead of each
-      # building them again on a shared runner, which took ten minutes each.
-      # khalid-perf is built after the size is read, one at a time as
-      # scripts/perf.sh builds them, so it cannot change the measured binary.
-      - name: Release binaries for the demo check and the budgets
+
+  # The demo check, the starters and the budgets need release binaries.
+  # They are built here, on GitHub's runners, and handed over as an
+  # artifact. Uploading them from the self-hosted box stalled at the end
+  # of every upload on 8 November 2026, so the binary never leaves the box;
+  # the box job above only measures the size budget.
+  handover-build:
+    name: Release binaries for the demo check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Toolchain from rust-toolchain.toml
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.1
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: handover
+      - name: Release binaries
         run: |
+          cargo build --release -p khalid
           mkdir -p target/handover
           cp target/release/khalid target/handover/khalid
           cargo build --release -p khalid-perf
@@ -366,7 +382,7 @@ jobs:
   demo-plan:
     name: Demo plan
     runs-on: ubuntu-latest
-    needs: binary-size
+    needs: handover-build
     outputs:
       packs: ${{ steps.plan.outputs.packs }}
       count: ${{ steps.plan.outputs.count }}
@@ -409,7 +425,7 @@ jobs:
     name: Demo site check
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: binary-size
+    needs: handover-build
     steps:
       - uses: actions/checkout@v7
       - uses: actions/download-artifact@v7
@@ -464,7 +480,7 @@ jobs:
     # makes its packs' AVIF pictures first, which takes longer; a hung run
     # still stops here.
     timeout-minutes: 75
-    needs: [binary-size, demo-plan]
+    needs: [handover-build, demo-plan]
     if: needs.demo-plan.outputs.count != '0'
     strategy:
       fail-fast: false
@@ -631,7 +647,7 @@ jobs:
     timeout-minutes: 20
     if: github.event_name == 'pull_request'
     # Uses the release binary the size budget built on a maintainer runner.
-    needs: binary-size
+    needs: handover-build
     steps:
       - uses: actions/checkout@v7
         with:
@@ -689,7 +705,7 @@ jobs:
     timeout-minutes: 15
     if: github.event_name == 'pull_request'
     # Uses the release binary the size budget built on a maintainer runner.
-    needs: binary-size
+    needs: handover-build
     steps:
       - uses: actions/checkout@v7
         with:
@@ -791,7 +807,7 @@ jobs:
     runs-on: ubuntu-latest
     # The binaries come from the size budget's build; they are measured
     # here, on GitHub's runner, as before.
-    needs: binary-size
+    needs: handover-build
     steps:
       - uses: actions/checkout@v7
       - uses: actions/download-artifact@v7
