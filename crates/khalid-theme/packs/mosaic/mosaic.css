@@ -1,0 +1,157 @@
+/* Mosaic (docs/templates/mosaic.md): a photo blog laid out in tiles. A
+   wide frame, a plain grotesque, and the posts as tiles in a rhythm of
+   sizes, each picture cut to its tile with its words under it, never on
+   it. The small accent square, the tessera, marks every caption and
+   label. Every colour is a token or a mix of tokens. */
+:root {
+  --mo-frame: 84rem;
+  --mo-gap: 0.75rem;
+  --mo-tall: clamp(19rem, 10rem + 22vw, 34rem);
+  --mo-tessera: 0.5rem;
+}
+.site-header, main, main:has(.post-with-toc), .site-footer { max-inline-size: var(--mo-frame); }
+.site-header, main, .site-footer { padding-inline: clamp(1rem, 0.5rem + 2vw, 1.5rem); }
+main { padding-block: 0 var(--space-section); }
+main > .page { max-inline-size: var(--measure); margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: -0.015em; }
+
+/* The header: the name with its mark of four tiles at the start, the
+   menu at the end, over one hairline. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.25rem; }
+.site-name { display: inline-flex; align-items: center; gap: 0.625rem; color: var(--color-text); font-family: var(--font-heading); font-size: 1.375rem; font-weight: var(--heading-weight); letter-spacing: -0.02em; text-decoration: none; }
+.site-name:not(.site-logo)::before { content: ""; inline-size: 1.125rem; block-size: 1.125rem; background: conic-gradient(var(--color-accent) 0 25%, var(--color-text) 0 50%, var(--color-accent) 0 75%, var(--color-muted) 0); border-radius: var(--radius); }
+.site-logo img { block-size: 2.5rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { box-shadow: inset 0 -2px var(--color-accent); }
+
+/* Buttons: ink, a small radius. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: var(--radius); font: 600 0.9375rem/1.2 var(--font-body); text-decoration: none; cursor: pointer; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { color: var(--color-accent); background: var(--color-background); }
+
+/* Labels: the tessera, then the words in small capitals. */
+.mosaic-label, .post-footer > h2, .mentions > h2, .post-place { display: flex; align-items: center; gap: 0.5rem; margin-block: 0 1.25rem; color: var(--color-text); font-family: var(--font-body); font-size: var(--text-small); font-weight: 600; letter-spacing: 0.1em; line-height: 1.3; text-transform: uppercase; }
+:is(.mosaic-label, .post-footer > h2, .mentions > h2, .post-place)::before, .tile-meta::before { content: ""; flex: none; inline-size: var(--mo-tessera); block-size: var(--mo-tessera); background: var(--color-accent); }
+.post-place a { color: inherit; text-decoration: none; }
+.post-place a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The front page: the name and the tagline on one line. */
+.masthead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) clamp(2rem, 1rem + 3vw, 3.5rem); }
+.masthead-name { margin: 0; font-size: var(--text-h1); line-height: 1.05; }
+.masthead-line { max-inline-size: 40rem; margin: 0; color: var(--color-muted); font-size: 1.125rem; line-height: 1.5; }
+.masthead-line > :last-child { margin-block-end: 0; }
+.masthead > .hero-stats { flex-basis: 100%; margin-block: 1rem 0; }
+.mosaic-section { margin-block-end: var(--space-section); }
+.mosaic-section .view-all { margin-block: 1rem 0; }
+
+/* The mosaic. On a phone, a full tile then two halves; from 40rem, a
+   full tile, two halves and three thirds; from 64rem, the rhythm of
+   nine on twelve columns. Each picture is cut to its tile's shape. */
+.mosaic { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem var(--mo-gap); margin: 0; padding: 0; list-style: none; }
+.tile { --tile-ratio: 4 / 5; min-inline-size: 0; }
+.tile-card { position: relative; display: flex; flex-direction: column; block-size: 100%; }
+.tile .image { margin: 0 0 0.75rem; overflow: hidden; border-radius: var(--radius); }
+.tile .image img, .tile-blank { display: block; inline-size: 100%; block-size: auto; aspect-ratio: var(--tile-ratio); object-fit: cover; border-radius: 0; transition: scale 0.4s ease; }
+.tile .image figcaption { display: none; }
+.tile-blank { margin-block-end: 0.75rem; background: linear-gradient(135deg, var(--color-surface) 50%, var(--color-border) 50%); border-radius: var(--radius); }
+.tile-card:hover img { scale: 1.03; }
+.tile-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.375rem; margin: 0 0 0.25rem; color: var(--color-muted); font-size: var(--text-small); line-height: 1.4; }
+.tile-meta::before { margin-inline-end: 0.125rem; }
+.tile-card :is(h2, h3, h4) { margin: 0; font-size: 1.0625rem; line-height: 1.25; }
+.tile-title { overflow-wrap: break-word; }
+.tile-card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.tile-card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
+.tile-card:hover :is(h2, h3, h4) a, .tile-card :is(h2, h3, h4) a:focus-visible { color: var(--color-link); text-decoration: underline; }
+.tile-summary { display: none; max-inline-size: 36rem; margin: 0.375rem 0 0; color: var(--color-muted); font-size: 1rem; line-height: 1.5; }
+.tile:nth-child(3n+1), .tile:last-child:nth-child(3n+2) { grid-column: 1 / -1; --tile-ratio: 3 / 2; }
+.tile:nth-child(3n+1) .tile-summary { display: block; }
+.tile:nth-child(3n+1) :is(h2, h3, h4) { font-size: 1.375rem; }
+@media (min-width: 40rem) and (max-width: 63.99rem) {
+  .mosaic { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .tile, .tile:nth-child(3n+1), .tile:last-child:nth-child(3n+2) { grid-column: span 2; --tile-ratio: 1; }
+  .tile:nth-child(6n+1), .tile:last-child:nth-child(6n+2), .tile:last-child:nth-child(6n+4) { grid-column: 1 / -1; --tile-ratio: 2 / 1; }
+  .tile:is(:nth-child(6n+2), :nth-child(6n+3)) { grid-column: span 3; --tile-ratio: 4 / 3; }
+  .tile:nth-child(3n+1):not(:nth-child(6n+1)) .tile-summary { display: none; }
+  .tile:nth-child(3n+1):not(:nth-child(6n+1)) :is(h2, h3, h4) { font-size: 1.0625rem; }
+  .tile:nth-child(6n+1) .tile-summary { display: block; }
+  .tile:nth-child(6n+1) :is(h2, h3, h4) { font-size: 1.5rem; }
+  .tile:nth-child(6n+4):nth-last-child(2), .tile:nth-child(6n+4):nth-last-child(2) + .tile { grid-column: span 3; --tile-ratio: 4 / 3; }
+}
+@media (min-width: 64rem) {
+  .mosaic { grid-template-columns: repeat(12, minmax(0, 1fr)); row-gap: 2.5rem; }
+  .tile, .tile:nth-child(3n+1), .tile:last-child:nth-child(3n+2) { grid-column: span 4; --tile-ratio: 4 / 3; }
+  .tile:nth-child(3n+1) .tile-summary { display: none; }
+  .tile:nth-child(3n+1) :is(h2, h3, h4) { font-size: 1.0625rem; }
+  .tile:is(:nth-child(9n+1), :nth-child(9n)) { grid-column: span 8; }
+  .tile:is(:nth-child(9n+6), :nth-child(9n+7)) { grid-column: span 6; --tile-ratio: 3 / 2; }
+  .tile:is(:nth-child(9n+1), :nth-child(9n+2), :nth-child(9n+8), :nth-child(9n)) .image img { aspect-ratio: auto; block-size: var(--mo-tall); }
+  .tile:is(:nth-child(9n+1), :nth-child(9n), :nth-child(9n+6), :nth-child(9n+7)) .tile-summary { display: block; }
+  .tile:is(:nth-child(9n+1), :nth-child(9n)) :is(h2, h3, h4) { font-size: 1.625rem; }
+  .tile:is(:nth-child(9n+6), :nth-child(9n+7)) :is(h2, h3, h4) { font-size: 1.375rem; }
+  .tile:last-child:is(:nth-child(9n+1), :nth-child(9n+3), :nth-child(9n+6), :nth-child(9n+8)) { grid-column: 1 / -1; --tile-ratio: 21 / 8; }
+  .tile:last-child:is(:nth-child(9n+1), :nth-child(9n+8)) .image img { aspect-ratio: var(--tile-ratio); block-size: auto; }
+  .tile:nth-child(9n+3):nth-last-child(2), .tile:nth-child(9n+3):nth-last-child(2) + .tile { grid-column: span 6; --tile-ratio: 3 / 2; }
+}
+
+/* Lists: the name and the place's note over a hairline. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; padding-block-end: 1.5rem; border-block-end: 1px solid var(--color-border); }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 0.75rem; color: var(--color-muted); }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+
+/* A post: the picture whole, then the title row under it, then one
+   column of text. */
+.post-picture { margin-block: clamp(1rem, 0.5rem + 1.5vw, 2rem) 0; }
+.post-picture .image { margin: 0; }
+.post-picture img { inline-size: 100%; block-size: auto; max-block-size: 88vh; object-fit: contain; }
+.post-picture figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-size: var(--text-small); text-align: end; }
+.post-header { display: grid; gap: 1.5rem 3rem; margin-block: 2rem 2.5rem; padding-block-end: 2rem; border-block-end: 1px solid var(--color-border); }
+@media (min-width: 56rem) { .post-header { grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr); align-items: start; } }
+.post-heading h1 { margin: 0; line-height: 1.08; }
+.post-heading .dek { margin-block: 0.75rem 0; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta > p { margin-block: 0 0.25rem; }
+.post-byline a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-byline a:hover { color: var(--color-link); text-decoration: underline; }
+.post-date { margin: 0; }
+.photo-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mo-gap); margin: 1rem 0 0; }
+.photo-fact { padding: 0.5rem 0.75rem; background: var(--color-surface); border-radius: var(--radius); }
+.photo-fact dt { color: var(--color-muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.photo-fact dd { margin: 0; color: var(--color-text); font-size: 0.9375rem; line-height: 1.35; overflow-wrap: anywhere; }
+.post > :not(.post-header, .toc-side), main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
+.post-with-toc > .post-header { max-inline-size: none; }
+@media (min-width: 70rem) {
+  .post-with-toc { grid-template-columns: minmax(0, 1fr) 15rem; }
+  .post-with-toc > .post-header { grid-column: 1 / -1; }
+  .post-with-toc > .toc-side { grid-row: 2 / span 9; }
+}
+.toc-title { font-size: var(--text-small); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer .tags a { color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { color: var(--color-link); }
+.share ul { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.share-title { margin-block: 1.5rem 0.25rem; color: var(--color-muted); font-size: var(--text-small); }
+.related-tiles { margin-block: var(--space-section) 0; padding-block-start: 2rem; border-block-start: 1px solid var(--color-border); }
+
+/* A person: the mark beside the name, then their tiles. */
+.author { max-inline-size: 52rem; }
+.author-header { margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 3vw, 7rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-tiles, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter on the surface; the footer
+   over one hairline. */
+.cta-band { background: var(--color-surface); border: 0; border-radius: var(--radius); }
+.newsletter-slot { padding: 2rem; background: var(--color-surface); border: 0; border-radius: var(--radius); }
+.site-footer { border-block-start: 1px solid var(--color-border); }
+@media (prefers-reduced-motion: reduce) { .tile .image img { transition: none; } }

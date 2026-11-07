@@ -40,6 +40,7 @@ mod links;
 mod locale;
 mod look;
 mod meridian;
+mod mosaic;
 mod pack;
 mod palette;
 pub mod parts;

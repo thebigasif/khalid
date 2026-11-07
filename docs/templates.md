@@ -40,6 +40,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `locale`: a city guide with places listed by area, each as a guidebook row with its kind, opening hours and a price meter, an At a glance card on every place, and notes from the city. See [Locale](templates/locale.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
+- `mosaic`: a photo blog laid out in tiles, with the posts in a rhythm of large, tall, small and half pictures, each cut to its tile with the place, date and title under it, never on it, and posts that open with the picture whole and the facts beside the title. See [Mosaic](templates/mosaic.md).
 - `plinth`: an architecture or interiors practice, with each project as a spread of its photograph beside a title block of its facts, plans framed as numbered drawing sheets, studio notes and types of work. See [Plinth](templates/plinth.md).
 - `reel`: film and TV reviews, with a star rating on a ticket, the cast and where to watch on every review, poster cards and a score sheet ranked by rating. See [Reel](templates/reel.md).
 - `research`: a research lab or academic group, with papers as a numbered reference list with venue, DOI and citations, a news feed, research areas, a people page and a cite box on every paper. See [Research](templates/research.md).
@@ -154,6 +155,7 @@ Five templates show facts. Each reads them by their place in the list, not by th
 
 - [Fixture](templates/fixture.md#matches-are-posts-with-facts) treats posts with facts as matches: the opponent, the result or kick-off, the ground and the competition. Results show as scoreboard rows with a W, D or L chip, the front page shows the next match and the club's form, and a match report opens with a scoreboard.
 - [Aperture](templates/aperture.md#camera-details-are-facts) shows the facts as a plate of camera details under each picture: the camera, the lens, the exposure and the date it was taken.
+- [Mosaic](templates/mosaic.md#notes-are-facts) shows a post's facts as small label and value cells beside its title, such as the park, the place, the light and the season. It does not read them by position, so any short notes work.
 - [Folio](templates/folio.md#release-notes) treats posts with facts as releases. The front page lists them in a dated release log beside the essays, tagged with the first fact, such as the version. A release's page shows its facts above the title.
 - [Workbench](templates/workbench.md#score-panels) shows a score panel on review cards and at the top of a review: the first fact large, with a meter when it is a score out of ten, then up to three figures.
 - [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.
