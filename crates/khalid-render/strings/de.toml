@@ -350,3 +350,7 @@ more_places = "Weitere Orte"
 lead_story = "Titelgeschichte"
 latest_stories = "Neu"
 in_the_sections = "Aus den Ressorts"
+# The letterpress template's cover, issue contents and end mark.
+in_this_issue = "In dieser Ausgabe"
+issue_end = "Ende der Ausgabe"
+more_issues = "Weitere Ausgaben"

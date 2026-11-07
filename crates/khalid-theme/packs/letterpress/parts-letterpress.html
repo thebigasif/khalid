@@ -1,0 +1,36 @@
+{#- Letterpress's own parts (docs/templates/letterpress.md), shared by its
+    pages. Every post is an issue. Its facts are read by position: 1 the
+    issue number as it should show, such as "No. 50"; 2 to 4 the parts in
+    this issue, each a part's name (the label) and its headline (the
+    value).
+    folio_line(post, minutes=none): the issue number, the date and the
+    reading time in small capitals between a thick and a thin rule, as
+    on the top of a printed page.
+    issue_contents(post, level=2, id="lp-inside"): "In this issue", the
+    second to fourth facts as a contents list with dotted leaders.
+    Nothing when the post has fewer than two facts.
+    issue_pile(posts, level=3): issues as small printed covers, each with
+    its number and date over a double rule, its title, its description
+    and its category, with a second sheet behind it. -#}
+{% macro folio_line(post, minutes=none) -%}
+<p class="lp-folio">{% if post.facts %}<span class="lp-folio-number">{{ post.facts[0].value }}</span>{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if minutes %}<span>{{ t.reading_time | replace("{minutes}", minutes | string) }}</span>{% endif %}</p>
+{%- endmacro %}
+{% macro issue_contents(post, level=2, id="lp-inside") -%}
+{% if post.facts | length > 1 %}<section class="lp-inside" aria-labelledby="{{ id }}">
+<h{{ level }} id="{{ id }}">{{ t.in_this_issue }}</h{{ level }}>
+<ol class="lp-inside-list" role="list">
+{% for fact in post.facts[1:] %}<li><span class="lp-inside-part">{{ fact.label }}</span><span class="lp-leader" aria-hidden="true"></span><span class="lp-inside-title">{{ fact.value }}</span></li>
+{% endfor %}</ol>
+</section>
+{% endif %}
+{%- endmacro %}
+{% macro issue_pile(posts, level=3) -%}
+<ul class="lp-pile" role="list">
+{% for post in posts %}<li class="lp-sheet">
+<p class="lp-sheet-folio">{% if post.facts %}<span class="lp-sheet-number">{{ post.facts[0].value }}</span>{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="lp-sheet-text">{{ post.excerpt }}</p>
+{% if post.category %}<p class="lp-sheet-kind"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}</li>
+{% endfor %}</ul>
+{%- endmacro %}

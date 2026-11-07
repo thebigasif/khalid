@@ -36,6 +36,7 @@ mod itinerary;
 mod keystone;
 mod lattice;
 mod ledger;
+mod letterpress;
 mod links;
 mod locale;
 mod look;

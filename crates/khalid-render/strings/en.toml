@@ -436,3 +436,7 @@ notebook_about = "About this notebook"
 notebook_sections = "Sections"
 notebook_read_at = "Read it at {site}"
 notebook_more = "More notes"
+# The letterpress template's cover, issue contents and end mark.
+in_this_issue = "In this issue"
+issue_end = "End of the issue"
+more_issues = "More issues"
