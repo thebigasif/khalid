@@ -1,0 +1,62 @@
+{#- Frequency's front page (docs/templates/frequency.md): the show's name,
+    tagline, listen links and figures beside the On air console, which
+    holds the newest episode with a player: its picture, number, dial,
+    title, summary, the player itself and a link to the show notes. Then
+    every other episode as a numbered row, the topics as chips, the call
+    to action band and the newsletter. Without an episode with a player,
+    the newest post leads the console with no player. On page 2 and on,
+    only the rows show. With home sections in site.toml, each section is
+    a list of rows of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/figure_strip.html" import figure_strip -%}
+{% from "sections/link_stack.html" import link_stack -%}
+{% from "parts-frequency.html" import dial, episode_rows -%}
+{% set options = template.options -%}
+{% set later = page.pagination and page.pagination.current > 1 -%}
+{% set lead = none if later else (page.podcasts[0] if page.podcasts else (page.posts[0] if page.posts else none)) -%}
+{% set rows = page.posts | rejectattr("href", "eq", lead.href) | list if lead else page.posts -%}
+{% if later %}<header class="list-header">
+<h1>{{ page.title }}</h1>
+</header>
+{% else %}<div class="fq-top">
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{{ link_stack(options.listen_on, label=t.home_listen_on) }}{{ figure_strip(options.hero_stats) }}{% endcall %}
+{% if lead %}<section class="fq-air" aria-labelledby="fq-air-title">
+<h2 id="fq-air-title" class="fq-label">{{ t.home_latest_episode }}</h2>
+{% if lead.image %}{{ picture(lead.image) }}
+{% endif %}<p class="fq-air-number">{% if lead.facts %}<span class="fq-fact-label">{{ lead.facts[0].label }}</span> <span class="fq-figure">{{ lead.facts[0].value }}</span>{% endif %}<time datetime="{{ lead.date }}">{{ lead.date | date }}</time></p>
+<h3><a href="{{ lead.href }}">{{ lead.title }}</a></h3>
+<p class="fq-excerpt">{{ lead.excerpt }}</p>
+{{ dial(lead.facts) }}
+{% if page.podcasts and page.podcast_player %}<div class="fq-player">
+{{ page.podcast_player }}
+</div>
+{% endif %}<p class="fq-notes-link"><a href="{{ lead.href }}">{{ t.frequency_show_notes }}</a></p>
+</section>
+{% endif %}</div>
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="fq-section" aria-labelledby="fq-section-{{ loop.index }}">
+<h2 id="fq-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ episode_rows(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif rows %}<section class="fq-section" aria-labelledby="fq-episodes-title">
+<h2 id="fq-episodes-title">{{ t.frequency_episodes }}</h2>
+{{ episode_rows(rows) }}
+</section>
+{% elif not lead %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if page.categories and not later %}<section class="fq-topics" aria-labelledby="fq-topics-title">
+<h2 id="fq-topics-title">{{ t.topics }}</h2>
+<ul class="fq-chips" role="list">
+{% for topic in page.categories %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

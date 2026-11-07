@@ -1,0 +1,51 @@
+# Dark Sky Hours' topics. The Frequency template shows each one as a chip
+# on the front page, and each topic page lists its episodes as rows, with
+# its intro on top.
+
+[[categories]]
+slug = "stargazing"
+en = "Stargazing"
+
+[categories.seo.en]
+description = "Dark Sky Hours episodes about stargazing: finding a dark sky, first telescopes and what to look for with your own eyes."
+intro = "Getting started under the stars: where to go, what to bring and what you can see without spending a penny."
+
+[[categories]]
+slug = "sky-events"
+en = "Sky events"
+
+[categories.seo.en]
+description = "Dark Sky Hours episodes about meteor showers, auroras and other sky events, and when to look for them."
+intro = "Meteor showers, auroras and the nights worth staying up for, with dates and tips for seeing them."
+
+[[categories]]
+slug = "planets-and-moon"
+en = "Planets and the Moon"
+
+[categories.seo.en]
+description = "Dark Sky Hours episodes about the Moon and the planets: what they are, and how to see them from home."
+intro = "Our nearest neighbours in the sky, from the Moon's tricks to Saturn's rings."
+
+[[categories]]
+slug = "spaceflight"
+en = "Spaceflight"
+
+[categories.seo.en]
+description = "Dark Sky Hours episodes about spaceflight: the space station, how orbits work and how to spot spacecraft from the ground."
+intro = "The machines we send up, and how to see them pass overhead."
+
+[[categories]]
+slug = "astrophotography"
+en = "Astrophotography"
+
+[categories.seo.en]
+description = "Dark Sky Hours episodes about photographing the night sky, from a phone on a tripod to the Milky Way."
+intro = "Taking pictures of the night sky with the camera you already have."
+
+[[categories]]
+slug = "show-news"
+en = "Show news"
+
+[categories.seo.en]
+description = "News from Dark Sky Hours: live shows, new seasons and breaks."
+intro = "Live shows, new seasons and what is coming up on the show."

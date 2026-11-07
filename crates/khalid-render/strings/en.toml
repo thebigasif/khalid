@@ -425,3 +425,8 @@ price_level = "Price level {level} of 4"
 at_a_glance = "At a glance"
 city_notes = "Notes from the city"
 more_places = "More places"
+# The frequency template's front page, episode plate and related episodes.
+frequency_episodes = "Episodes"
+frequency_show_notes = "Show notes"
+frequency_episode_facts = "About this episode"
+frequency_more_episodes = "More episodes"
