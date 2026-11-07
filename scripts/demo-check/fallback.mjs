@@ -11,8 +11,8 @@
 // happens, such as from a stylesheet, fails the check too.
 //
 // Each site is opened at a 390 px phone, scrolled to the bottom a window
-// at a time so every lazy picture loads. A picture fails when it did not
-// load, loaded nothing (no width), or is an AVIF file.
+// at a time, with every lazy picture asked for at once. A picture fails
+// when it did not load, loaded nothing (no width), or is an AVIF file.
 //
 // Usage: node fallback.mjs --sites <folder> [--packs keystone,wire]
 // Each folder in --sites holds a site.toml and the site built into public/.
@@ -46,9 +46,12 @@ if (sites.length === 0) {
   process.exit(2);
 }
 
-// Scrolls down the page a window at a time, so lazy pictures load, then
-// waits for every picture to finish, for at most 5 seconds.
+// Asks for every lazy picture at once, since one beside the window, such
+// as in a row that scrolls sideways, may never come near it, then scrolls
+// down the page a window at a time and waits for every picture to finish,
+// for at most 5 seconds.
 const walkDown = async () => {
+  for (const img of document.images) img.loading = "eager";
   const step = Math.floor(window.innerHeight * 0.8);
   for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
     window.scrollTo(0, y);
