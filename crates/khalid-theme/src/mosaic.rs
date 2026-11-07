@@ -20,6 +20,7 @@ pub(crate) static MOSAIC: Pack = Pack {
         PackTemplate::file("listing.html", "mosaic/listing.html"),
         PackTemplate::file("authors.html", "mosaic/authors.html"),
         PackTemplate::file("author.html", "mosaic/author.html"),
+        PackTemplate::file("parts-mosaic.html", "mosaic/parts-mosaic.html"),
     ],
     tokens: include_str!("../packs/mosaic/tokens.toml"),
     reader: &[],

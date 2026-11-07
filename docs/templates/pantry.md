@@ -64,7 +64,7 @@ Categories are the sections of your recipe box, such as Bread, Cakes and Biscuit
 2. Up to four large numbers from `hero_stats`, such as how many recipes you have. Nothing shows until you write them.
 3. **The recipe box:** each category that holds recipes as a divider tab along a cherry line. A category whose posts on the page are all baking notes is left out.
 4. **Fresh from the oven:** your newest recipe as one wide index card: its picture beside its section, title, summary and its full ticket of four facts. It shows on the first page only.
-5. **Recipes:** your other recipes as square index cards. Each shows its picture, its section, its title and its ticket with the time and what it makes.
+5. **Recipes:** your other recipes as square index cards. Each shows its picture, its section, its title and its ticket with the time and what it makes. On a phone each card is a row: a small square picture beside the section and title, with the ticket under them.
 6. **Baking notes:** the newest posts without facts as a dated list. `notes_count` sets how many.
 7. Numbered page links, your call to action as a band, and the newsletter form.
 

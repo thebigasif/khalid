@@ -43,7 +43,7 @@ The colours are made from your accent colour, `accent` in `theme/tokens.toml`, t
 1. Your magazine's name large, the `tagline` under it, and the **spectrum bar**: one coloured block per topic, each with its name, linking to that topic's row lower down.
 2. **Lead story:** your newest post marked `featured: true`, or your newest post, with a large picture, its topic, the title, its description and the writer.
 3. **Latest posts** beside it on wide screens: the newest other posts with their dates. `latest_count` sets how many.
-4. **One row per topic**, up to six, each on a band of the topic's tint with a strong rule on top. The topic's newest post shows large with its description, and up to three more as rows with a small square picture. Each row ends with an "All in" link to the topic's page. The lead story is not repeated in its row, unless it is the topic's only post.
+4. **One row per topic**, up to six, each on a band of the topic's tint with a strong rule on top. The topic's newest post shows large with its description, and up to three more as rows with a small square picture. On a phone those rows are words only, so a phone loads one picture per topic. Each row ends with an "All in" link to the topic's page. The lead story is not repeated in its row, unless it is the topic's only post.
 5. The newsletter form and your call to action, when you set them.
 
 With `[[reader.home_sections]]` in `site.toml`, those sections become the rows, in your order. Later pages of the front page show the posts as cards.

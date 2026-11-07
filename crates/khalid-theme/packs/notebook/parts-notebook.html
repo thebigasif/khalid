@@ -8,8 +8,19 @@
     month, each note with its stamp in the margin, its section, title,
     first lines, the "Read it at" link of a link note (a note whose first
     fact is a web address or a path on the site, the fact's label naming
-    the place) and a small picture when it has one. -#}
+    the place) and a small picture when it has one.
+    note_sizes(image): how wide a note's picture is drawn, as the `sizes`
+    the picture macro takes: on a phone the note's column, 100vw - 6.25rem,
+    up to 22rem; from 48rem 11rem beside the text. The picture is cut to
+    3:2, so a wider picture is drawn wider by the ratio of the two shapes.
+    Read from the stylesheet at every width from 320 to 2560 px; measure
+    again when it moves the picture (docs/standards/performance.md, "Page
+    weight"). -#}
 {% from "image.html" import picture -%}
+{% macro note_sizes(image) -%}
+{%- set factor = [1, image.width / image.height / 1.5] | max -%}
+(min-width: 48rem) {{ (factor * 11) | round(2) }}rem, (min-width: 28.25rem) {{ (factor * 22) | round(2) }}rem, calc({{ (factor * 100) | round(2) }}vw - {{ (factor * 6.25) | round(2) }}rem)
+{%- endmacro %}
 {% macro stamp(date, year=false) -%}
 {% set day = (date | string)[8:10] -%}
 {% set month = t["month_" ~ ((date | string)[5:7] | int)] -%}
@@ -32,7 +43,7 @@
 {% set first = post.facts[0] if post.facts else none -%}
 {% set link = first if first and (first.value[:7] == "http://" or first.value[:8] == "https://" or first.value[:1] == "/") else none -%}
 {% if link %}<p class="nb-source"><a href="{{ link.value }}">{{ t.notebook_read_at | replace("{site}", link.label) }}</a></p>
-{% endif %}{% if post.image %}<a class="nb-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}{% if post.image %}<a class="nb-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image, note_sizes(post.image)) }}</a>
 {% endif %}</article>
 </li>
 {% if loop.last %}</ol>

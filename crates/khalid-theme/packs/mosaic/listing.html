@@ -5,11 +5,12 @@
 {% block main %}
 {% from "image.html" import picture -%}
 {% from "card.html" import pages -%}
+{% from "parts-mosaic.html" import tile_sizes -%}
 {% macro tiles(posts, level) -%}
 <ol class="mosaic" role="list">
 {% for post in posts %}<li class="tile">
 <article class="tile-card">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, tile_sizes(post.image, loop.index, loop.length)) }}
 {% else %}<span class="tile-blank" aria-hidden="true"></span>
 {% endif %}<p class="tile-meta">{% if post.category %}{{ post.category.name }} <span aria-hidden="true">/</span> {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
 <h{{ level }} class="tile-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>

@@ -62,6 +62,15 @@ h1, h2, h3 { letter-spacing: -0.005em; }
 .ticket-card { border-block-start: 4px solid var(--color-accent); }
 .ticket-card :is(h2, h3, h4) { font-size: 1.4375rem; }
 .ticket { background: var(--color-surface); }
+/* On a phone the front page's recipes are rows: a small square picture
+   beside the section and title, the ticket across the card under them. */
+@media (max-width: 39.99rem) {
+  .recipes .ticket-cards { row-gap: 1.25rem; }
+  .recipes .ticket-card:has(> .image) { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); }
+  .recipes .ticket-card > .image img { aspect-ratio: 1; }
+  .recipes .ticket-card-text { padding: 0.75rem 1rem; }
+  .recipes .ticket-card > :is(.ticket, .ticket-card-date) { grid-column: 1 / -1; }
+}
 .notes .feed-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 0 2rem; }
 .notes .feed-item:first-child { padding-block-start: 0.875rem; }
 .notes .feed-item :is(h2, h3, h4) { font-size: 1.25rem; }

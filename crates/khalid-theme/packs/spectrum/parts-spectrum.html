@@ -4,10 +4,23 @@
     menu. A topic not in the menu takes one from the length of its name.
     The pages write it as data-hue, which the stylesheet reads.
     topic(category, menu): the topic label, a square of its colour before
-    its name. story(post, menu, level, with_topic, with_excerpt): a post
-    as a card: its picture, its topic, the title, the description when
-    asked, and its date and author. cards(posts, menu, level): posts as a
-    grid of cards. -#}
+    its name. story(post, menu, level, with_topic, with_excerpt, sizes): a
+    post as a card: its picture, drawn `sizes` wide when given, its topic,
+    the title, the description when asked, and its date and author.
+    cards(posts, menu, level): posts as a grid of cards.
+    row_sizes(image, first): how wide the picture of a front page row's
+    story is drawn, as the `sizes` the picture macro takes. The first
+    story is as wide as the frame, 100vw - 2rem, on a phone, in 3:2; from
+    56rem it takes 7 of 12 parts of the frame less a 3rem gap, in 16:9,
+    and the frame stops at 80rem. The others are 6.5rem squares, shown
+    from 56rem only. A picture wider than its shape is drawn wider by the
+    ratio of the two shapes. Read from the stylesheet at every width from
+    320 to 2560 px; measure again when it moves a picture
+    (docs/standards/performance.md, "Page weight").
+    lead_sizes(image): the same for the lead story's picture, in 4:3: the
+    frame on a phone, 3 of 5 parts of it less a 2rem gap from 48rem, and
+    from 64rem 3 of 5 parts of the 5 of 7 parts the lead takes beside the
+    latest posts. -#}
 {% from "image.html" import picture -%}
 {% macro hue(href, name, menu) -%}
 {%- set found = namespace(at=0) -%}
@@ -18,10 +31,24 @@
 {% macro topic(category, menu) -%}
 <p class="sp-topic" data-hue="{{ hue(category.href, category.name, menu) }}"><a href="{{ category.href }}">{{ category.name }}</a></p>
 {%- endmacro %}
-{% macro story(post, menu, level=3, with_topic=true, with_excerpt=false) -%}
+{% macro row_sizes(image, first) -%}
+{%- set shape = image.width / image.height -%}
+{%- if first -%}
+{%- set phone = [1, shape / 1.5] | max -%}
+{%- set wide = [1, shape / 1.78] | max -%}
+(min-width: 82rem) {{ (wide * 44.92) | round(2) }}rem, (min-width: 56rem) calc({{ (wide * 58.34) | round(2) }}vw - {{ (wide * 2.91) | round(2) }}rem), calc({{ (phone * 100) | round(2) }}vw - {{ (phone * 2) | round(2) }}rem)
+{%- else -%}
+{{ (([1, shape] | max) * 6.5) | round(2) }}rem
+{%- endif -%}
+{%- endmacro %}
+{% macro lead_sizes(image) -%}
+{%- set factor = [1, image.width / image.height * 0.75] | max -%}
+(min-width: 82rem) {{ (factor * 31.81) | round(2) }}rem, (min-width: 64rem) calc({{ (factor * 42.86) | round(2) }}vw - {{ (factor * 3.34) | round(2) }}rem), (min-width: 48rem) calc({{ (factor * 60) | round(2) }}vw - {{ (factor * 2.4) | round(2) }}rem), calc({{ (factor * 100) | round(2) }}vw - {{ (factor * 2) | round(2) }}rem)
+{%- endmacro %}
+{% macro story(post, menu, level=3, with_topic=true, with_excerpt=false, sizes=none) -%}
 {% if post.category %}<article class="sp-story" data-hue="{{ hue(post.category.href, post.category.name, menu) }}">
 {% else %}<article class="sp-story">
-{% endif %}{% if post.image %}<a class="sp-story-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}{% if post.image %}<a class="sp-story-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image, sizes) }}</a>
 {% endif %}<div class="sp-story-text">
 {% if with_topic and post.category %}{{ topic(post.category, menu) }}
 {% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>

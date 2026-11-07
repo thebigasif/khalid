@@ -102,6 +102,12 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
 .sp-row-posts > li:nth-child(2) .sp-story { padding-block-start: 0; border: 0; }
 @media (max-width: 56rem) { .sp-row-posts > li:nth-child(2) .sp-story { padding-block-start: 1.25rem; border-block-start: 1px solid var(--sp-line); } }
 .sp-row-posts > li + li .image img { aspect-ratio: 1; }
+/* On a phone a row's smaller stories are words only, so a phone fetches
+   one picture per topic. */
+@media (max-width: 55.99rem) {
+  .sp-row-posts > li + li .sp-story { grid-template-columns: minmax(0, 1fr); }
+  .sp-row-posts > li + li .sp-story-picture { display: none; }
+}
 .sp-row-posts > li + li .sp-story :is(h2, h3, h4) { font-size: 1.1875rem; }
 .sp-row-posts > li + li .sp-excerpt { font-size: 1rem; }
 .sp-row-posts > :first-child .sp-story :is(h2, h3, h4) { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: 1.15; }

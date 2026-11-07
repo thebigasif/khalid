@@ -22,7 +22,7 @@ Spectrum adds no front matter. It reads what Khalid already has:
 
 1. **Masthead:** the magazine's name large, its tagline, and the **spectrum bar** under it: one coloured segment per topic, each with its name, linking to that topic's row lower down the page.
 2. **Lead story:** a large picture beside the topic label, the title, the description and the byline.
-3. **Topic rows:** one per topic, each on a full-width band in the topic's light tint, with a thick rule in the topic's strong colour on top. The row's head holds the topic name and an "All in" link. Its first post is a large card with a picture and description; the others are smaller cards with a picture, title and date. A post shown as the lead story is not repeated in its row, unless it is the topic's only post.
+3. **Topic rows:** one per topic, each on a full-width band in the topic's light tint, with a thick rule in the topic's strong colour on top. The row's head holds the topic name and an "All in" link. Its first post is a large card with a picture and description; the others are smaller cards with a picture, title and date, and on a phone a title and date only, to keep the page light. A post shown as the lead story is not repeated in its row, unless it is the topic's only post.
 4. The newsletter form and the call to action band.
 
 Later pages of the front page list the posts as cards, each with its topic label and colour.

@@ -45,11 +45,11 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
 .mosaic-section { margin-block-end: var(--space-section); }
 .mosaic-section .view-all { margin-block: 1rem 0; }
 
-/* The mosaic. On a phone, a full tile then two halves; from 40rem, a
-   full tile, two halves and three thirds; from 64rem, the rhythm of
+/* The mosaic. On a phone, a full tile then two square halves; from
+   40rem, a full tile, two halves and three thirds; from 64rem, the rhythm of
    nine on twelve columns. Each picture is cut to its tile's shape. */
 .mosaic { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem var(--mo-gap); margin: 0; padding: 0; list-style: none; }
-.tile { --tile-ratio: 4 / 5; min-inline-size: 0; }
+.tile { --tile-ratio: 1; min-inline-size: 0; }
 .tile-card { position: relative; display: flex; flex-direction: column; block-size: 100%; }
 .tile .image { margin: 0 0 0.75rem; overflow: hidden; border-radius: var(--radius); }
 .tile .image img, .tile-blank { display: block; inline-size: 100%; block-size: auto; aspect-ratio: var(--tile-ratio); object-fit: cover; border-radius: 0; transition: scale 0.4s ease; }

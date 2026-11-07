@@ -2,10 +2,10 @@
     the spectrum bar, one coloured segment per topic linking to its row;
     the lead story beside the latest posts; then one row per topic on a
     band of the topic's colour, its newest post large and the others
-    small. The rows are the sections set in site.toml, or else the topic
-    groups Khalid makes from the posts. The lead story is the newest
-    featured post, or the newest post, and is not repeated in its row
-    unless it is the row's only post.
+    small, in words only on a phone. The rows are the sections set in
+    site.toml, or else the topic groups Khalid makes from the posts. The
+    lead story is the newest featured post, or the newest post, and is
+    not repeated in its row unless it is the row's only post.
     Later pages list the posts as cards. -#}
 {% extends "base.html" %}
 {% block main %}
@@ -15,7 +15,7 @@
 {% from "home_parts.html" import home_sections -%}
 {% from "sections/hero.html" import hero -%}
 {% from "sections/feed_list.html" import feed_list -%}
-{% from "parts-spectrum.html" import hue, topic, story, cards -%}
+{% from "parts-spectrum.html" import hue, topic, story, cards, row_sizes, lead_sizes -%}
 {% set options = template.options -%}
 {% set menu = site.nav.primary -%}
 {% set first_page = not page.pagination or page.pagination.current == 1 -%}
@@ -33,7 +33,7 @@
 <h2 id="sp-lead-title" class="sp-label">{{ t.lead_story }}</h2>
 {% if lead.category %}<article class="sp-lead-story" data-hue="{{ hue(lead.category.href, lead.category.name, menu) }}">
 {% else %}<article class="sp-lead-story">
-{% endif %}{% if lead.image %}{{ picture(lead.image) }}
+{% endif %}{% if lead.image %}{{ picture(lead.image, lead_sizes(lead.image)) }}
 {% endif %}<div class="sp-lead-text">
 {% if lead.category %}{{ topic(lead.category, menu) }}
 {% endif %}<h3><a href="{{ lead.href }}">{{ lead.title }}</a></h3>
@@ -55,7 +55,7 @@
 <p class="sp-all"><a href="{{ row.href }}">{{ t.all_in | replace("{name}", row.title) }}</a></p>
 </div>
 {% if posts %}<ul class="sp-row-posts" role="list">
-{% for post in posts %}<li>{{ story(post, menu, 3, false, true) }}</li>
+{% for post in posts %}<li>{{ story(post, menu, 3, false, true, row_sizes(post.image, loop.first) if post.image else none) }}</li>
 {% endfor %}</ul>
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}</section>
