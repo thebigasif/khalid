@@ -32,6 +32,7 @@ mod font_files;
 mod fonts;
 mod harbor;
 mod hub;
+mod inkwell;
 mod itinerary;
 mod keystone;
 mod lattice;

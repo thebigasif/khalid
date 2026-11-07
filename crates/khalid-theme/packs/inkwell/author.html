@@ -1,0 +1,28 @@
+{#- Inkwell's person page: their photo or mark, name, role, experience
+    and profiles, their bio, then the issues they wrote grouped by year. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture %}
+{% from "icons.html" import profiles %}
+{% from "card.html" import pages -%}
+{% from "parts-inkwell.html" import volumes -%}
+<article class="author">
+<header class="author-header">
+{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% endif %}<div class="author-intro">
+<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</div>
+</header>
+<div class="author-bio">
+{{ page.bio }}
+</div>
+</article>
+{% if page.posts %}<div class="iw-archive">
+{{ volumes(page.posts, 2) }}
+</div>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}
