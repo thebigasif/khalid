@@ -41,6 +41,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `locale`: a city guide with places listed by area, each as a guidebook row with its kind, opening hours and a price meter, an At a glance card on every place, and notes from the city. See [Locale](templates/locale.md).
 - `masthead`: a general publication, the safe all-rounder, with the site's name centred over a heavy and a thin rule, a lead story, the latest posts as a grid or a list, headlines by section and a calm reading column. See [Masthead](templates/masthead.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
+- `notebook`: one person's public notebook of short notes and links, in a dated stream newest first under month headings, each date in the margin beside a double margin rule, with link notes that point to what they share. See [Notebook](templates/notebook.md).
 - `plinth`: an architecture or interiors practice, with each project as a spread of its photograph beside a title block of its facts, plans framed as numbered drawing sheets, studio notes and types of work. See [Plinth](templates/plinth.md).
 - `quill`: a minimal text blog in one column of generous type, with every list one line a post with its date, no pictures on lists and a small nib mark that ends every post. It has the smallest stylesheet of any template, so its pages load fastest. See [Quill](templates/quill.md).
 - `reel`: film and TV reviews, with a star rating on a ticket, the cast and where to watch on every review, poster cards and a score sheet ranked by rating. See [Reel](templates/reel.md).
@@ -164,6 +165,7 @@ Five templates show facts. Each reads them by their place in the list, not by th
 - [Versions](templates/versions.md#changes-are-posts) reads the first fact as the version a change shipped in, and groups the changes of each version on its version rail. A change's page shows every fact in a ruled row.
 - [Harbor](templates/harbor.md#recipe-facts) shows up to four posts with facts in a recipe card strip on the front page, with the first two facts as tags, and all the facts as tags under a post's title.
 - [Respawn](templates/respawn.md#reviews-are-posts-with-facts) treats posts with facts as reviews. The first fact is the score out of 10, shown as a dark square and a health bar on cards, lists and the review, and the second, the platforms, shows under it.
+- [Notebook](templates/notebook.md#link-notes) reads a first fact that is a web address as a link note: the label names the place and the stream and the post link to it with "Read it at". Other facts show as a small list under a note's title.
 - [Locale](templates/locale.md#places-are-posts-with-facts) treats posts with facts as places: 1 the kind of place, 2 the price level, drawn as a price meter of four marks, 3 the opening hours and 4 the address. They show on listing rows and in an At a glance card on each place.
 
 The other templates do not show facts. A custom template that wants them reads `post.facts` on a card and `page.facts` on a post page. Each fact has a `label` and a `value`:

@@ -430,3 +430,9 @@ more_places = "More places"
 lead_story = "Lead story"
 latest_stories = "Latest"
 in_the_sections = "In the sections"
+# The notebook template's side column, link notes and related notes.
+# {site} is the name of the place a link note points to.
+notebook_about = "About this notebook"
+notebook_sections = "Sections"
+notebook_read_at = "Read it at {site}"
+notebook_more = "More notes"
