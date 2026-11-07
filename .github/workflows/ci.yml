@@ -37,15 +37,18 @@ jobs:
   # The project's own branches run on the maintainer's runners (label khalid);
   # pull requests from forks stay on GitHub's runners and need approval first.
   # Integration branches of this repository, which land many tasks at once,
+  # batches of templates (batch/*) and release branches (chore/release-*)
   # get a runner of their own (label khalid-priority).
   # Performance budgets stay on GitHub's runners, where their numbers were set.
   #
   # Each maintainer runner has its own work folder, so jobs that run at the
   # same time never share a checkout or a target folder, and its own Rust
   # home (below), so they never share a toolchain install either.
+  # Ten seconds of work, so it runs on GitHub's runners and never waits
+  # for a maintainer runner.
   text:
     name: Text rules
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - name: No em dashes (RULES.md BL-TXT-1)
@@ -55,12 +58,64 @@ jobs:
       - name: Spelling
         uses: crate-ci/typos@v1
 
+  # The release build takes minutes on its own, so it runs beside the tests,
+  # on any maintainer runner: the one priority runner is busy with them. It
+  # comes first in this file, so it gets the first free runner: the demo
+  # jobs and the budgets wait for its binaries.
+  binary-size:
+    name: Binary size, budget under 30 MB
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'khalid' || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Per-runner Rust home
+        if: runner.environment == 'self-hosted'
+        run: |
+          work=$(realpath "$RUNNER_WORKSPACE/..")
+          export CARGO_HOME="$work/.cargo-home" RUSTUP_HOME="$work/.rustup-home"
+          mkdir -p "$CARGO_HOME/bin"
+          if [ ! -x "$CARGO_HOME/bin/rustup" ]; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain none
+          fi
+          echo "CARGO_HOME=$work/.cargo-home" >> "$GITHUB_ENV"
+          echo "RUSTUP_HOME=$work/.rustup-home" >> "$GITHUB_ENV"
+          echo "$work/.cargo-home/bin" >> "$GITHUB_PATH"
+      - name: Toolchain from rust-toolchain.toml
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.1
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: release
+      - name: Binary size, budget under 30 MB
+        run: |
+          cargo build --release -p khalid
+          size=$(stat -c %s target/release/khalid)
+          echo "binary: $size bytes" | tee -a "$GITHUB_STEP_SUMMARY"
+          test "$size" -lt 31457280
+      # The demo check and the budgets reuse these binaries instead of each
+      # building them again on a shared runner, which took ten minutes each.
+      # khalid-perf is built after the size is read, one at a time as
+      # scripts/perf.sh builds them, so it cannot change the measured binary.
+      - name: Release binaries for the demo check and the budgets
+        run: |
+          mkdir -p target/handover
+          cp target/release/khalid target/handover/khalid
+          cargo build --release -p khalid-perf
+          cp target/release/khalid-perf target/handover/khalid-perf
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-binaries
+          path: target/handover/
+          retention-days: 1
+          if-no-files-found: error
+
   # The Rust checks run as parallel jobs: the lints, the tests in two
   # partitions, and the release build with its size budget. The job named
   # Rust, which branch protection requires, sums them up.
   rust-lints:
     name: Rust lints, docs and dependencies
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       # The maintainer's runners share one user. Each gets its own Rust home,
@@ -109,7 +164,7 @@ jobs:
   # test build keeps finding the warm cache that job saved.
   rust:
     name: Rust tests ${{ matrix.partition }} of 2
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
@@ -187,56 +242,6 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-  # The release build takes minutes on its own, so it runs beside the tests,
-  # on any maintainer runner: the one priority runner is busy with them.
-  binary-size:
-    name: Binary size, budget under 30 MB
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'khalid' || 'ubuntu-latest' }}
-    steps:
-      - uses: actions/checkout@v7
-      - name: Per-runner Rust home
-        if: runner.environment == 'self-hosted'
-        run: |
-          work=$(realpath "$RUNNER_WORKSPACE/..")
-          export CARGO_HOME="$work/.cargo-home" RUSTUP_HOME="$work/.rustup-home"
-          mkdir -p "$CARGO_HOME/bin"
-          if [ ! -x "$CARGO_HOME/bin/rustup" ]; then
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain none
-          fi
-          echo "CARGO_HOME=$work/.cargo-home" >> "$GITHUB_ENV"
-          echo "RUSTUP_HOME=$work/.rustup-home" >> "$GITHUB_ENV"
-          echo "$work/.cargo-home/bin" >> "$GITHUB_PATH"
-      - name: Toolchain from rust-toolchain.toml
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: 1.99.1
-      - name: Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          key: release
-      - name: Binary size, budget under 30 MB
-        run: |
-          cargo build --release -p khalid
-          size=$(stat -c %s target/release/khalid)
-          echo "binary: $size bytes" | tee -a "$GITHUB_STEP_SUMMARY"
-          test "$size" -lt 31457280
-      # The demo check and the budgets reuse these binaries instead of each
-      # building them again on a shared runner, which took ten minutes each.
-      # khalid-perf is built after the size is read, one at a time as
-      # scripts/perf.sh builds them, so it cannot change the measured binary.
-      - name: Release binaries for the demo check and the budgets
-        run: |
-          mkdir -p target/handover
-          cp target/release/khalid target/handover/khalid
-          cargo build --release -p khalid-perf
-          cp target/release/khalid-perf target/handover/khalid-perf
-      - uses: actions/upload-artifact@v7
-        with:
-          name: release-binaries
-          path: target/handover/
-          retention-days: 1
-          if-no-files-found: error
-
   # Branch protection requires a check named Rust. It passes only when the
   # lints, both test partitions and the size budget pass, and when the
   # partitions together reach the line coverage floor in coverage.toml.
@@ -262,7 +267,7 @@ jobs:
 
   admin:
     name: Admin
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (startsWith(github.head_ref, 'task/p1-integration-') && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       - name: Any admin yet?
@@ -382,7 +387,7 @@ jobs:
         run: |
           prefix="demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-"
           echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
-          echo "key=$prefix${{ hashFiles('fixtures/showcase-publications/*/photos.lock') }}" >> "$GITHUB_OUTPUT"
+          echo "key=${prefix}${{ hashFiles('fixtures/showcase-publications/*/photos.lock') }}" >> "$GITHUB_OUTPUT"
       - name: Is that cache whole already?
         id: lookup
         uses: actions/cache/restore@v5
