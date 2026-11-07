@@ -35,7 +35,7 @@
 //     design is large photographs has, with the reason beside it.
 //
 //   - on every measured page and width, every font file together under
-//     FONT_BUDGET, or the template's own line in FONT_OWN.
+//     FONT_BUDGET. No template has a line of its own.
 //
 // A template over a picture budget almost always draws a picture smaller
 // than the `sizes` its slot tells the browser, so the browser picks a file
@@ -71,12 +71,6 @@ const DESKTOP_BUDGET = 1250 * KB;
 // (scripts/font-subset.py). Before, the heaviest page was a Chapter post at
 // 186 KB, and Ledger's home page took 124 KB.
 const FONT_BUDGET = 60 * KB;
-// Templates whose design needs more faces than fit, with their own font
-// budget. A Chapter excerpt sets its body in a book face with real small
-// capitals and italics, beside a sans in two weights: four files, measured
-// at 73 KB after the cut. Without its small capitals the four would still
-// weigh 60.0 KB.
-const FONT_OWN = { chapter: 80 * KB };
 // Templates whose design is large photographs, with their own budget.
 // Aperture shows five stories, each one photograph across its 1,296 px
 // frame, measured at 1,875 KB on a desktop and 734 KB on a phone at 3x.
@@ -222,11 +216,10 @@ for (const site of sites) {
       `   1x: ${kb(row.phone1x.rest).padStart(7)} (${kb(row.phone1x.total)})   1440 px: ${kb(row.desktop.total).padStart(7)} (${row.desktop.pictures} pictures)` +
       `   fonts: ${fontLine}`,
   );
-  const fontBudget = FONT_OWN[site.pack] ?? FONT_BUDGET;
   for (const [page, view, files] of fontPages) {
     const bytes = sum(files);
-    if (bytes > fontBudget) {
-      failures.push(`${site.pack}: at ${view.width} px its ${page} downloads ${kb(bytes)} of fonts, over the ${kb(fontBudget)} budget. The files: ${heaviestFonts(files)}.`);
+    if (bytes > FONT_BUDGET) {
+      failures.push(`${site.pack}: at ${view.width} px its ${page} downloads ${kb(bytes)} of fonts, over the ${kb(FONT_BUDGET)} budget. The files: ${heaviestFonts(files)}.`);
     }
   }
   const checks = [
@@ -261,5 +254,5 @@ if (failures.length > 0) {
 console.log(
   `\nEvery home page is inside the page-weight budgets without the hero: under ${kb(PHONE_3X_BUDGET)} at ${named(PHONE)} (Aperture ${kb(PHONE_3X_OWN.aperture)})` +
     ` and under ${kb(PHONE_BUDGET)} at ${named(PHONE_1X)}; and with it under ${kb(DESKTOP_BUDGET)} at ${named(DESKTOP)} (Aperture ${kb(DESKTOP_OWN.aperture)}).` +
-    ` Every home page and post is under ${kb(FONT_BUDGET)} of fonts (Chapter ${kb(FONT_OWN.chapter)}) at ${PHONE.width} and ${DESKTOP.width} px.`,
+    ` Every home page and post is under ${kb(FONT_BUDGET)} of fonts at ${PHONE.width} and ${DESKTOP.width} px.`,
 );

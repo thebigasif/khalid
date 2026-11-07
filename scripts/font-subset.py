@@ -86,11 +86,18 @@ CSS_FEATURES = {
 }
 
 # Families cut without their hinting, by the name their licence gives
-# them, because their demo is over the font budget with it. The layout
-# check passes for both demos without it.
+# them, to keep their demo under the font budget. The layout check passes
+# for both demos without it.
 UNHINTED = {
     "PT Serif",  # Ledger: four faces on its home page, 82 KB hinted
-    "Alegreya Sans",  # Chapter: its excerpts need four faces, 84 KB hinted
+    "Alegreya Sans",  # Chapter: three faces on a post, near the budget hinted
+}
+
+# Features a brand's files leave out although its pack asks for them, so
+# the brand's pages stay under the font budget. The browser then draws the
+# effect itself, such as small capitals scaled from capitals.
+DROPPED_FEATURES = {
+    "chapter": {"smcp"},  # EB Garamond's small capitals: 6 KB in each face
 }
 
 # Fonts whose licence reserves their name, cut under a new family name
@@ -220,7 +227,7 @@ def main() -> int:
             print(f"{brand}: no built demo in {site}. Build the demos first with scripts/page-weight.sh.")
             return 1
         letters = TYPOGRAPHY | page_letters(site)
-        features = css_features(site)
+        features = [tag for tag in css_features(site) if tag not in DROPPED_FEATURES.get(brand, set())]
         folder = BRANDS / brand / "theme"
         tokens_path = folder / "tokens.toml"
         tokens = tokens_path.read_text(encoding="utf-8")
