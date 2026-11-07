@@ -1,0 +1,19 @@
+{#- Dialogue's lists (a topic, a tag, the archive, date and collection
+    pages): the list's name and intro, such as what a topic covers, then
+    its posts as guest rows, each episode led by its guest. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "sections/guest_rows.html" import guest_rows -%}
+<header class="list-header">
+{% block kind %}<p class="list-kind">{{ t.conversations }}</p>
+{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{{ guest_rows(page.posts, 2) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

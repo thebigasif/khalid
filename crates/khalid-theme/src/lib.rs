@@ -23,6 +23,7 @@ mod color;
 mod compass;
 mod contrast;
 mod css;
+mod dialogue;
 mod encore;
 mod fetch;
 mod fetch_error;

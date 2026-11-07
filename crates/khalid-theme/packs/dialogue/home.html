@@ -1,0 +1,75 @@
+{#- Dialogue's front page (docs/templates/dialogue.md): the show's name,
+    its tagline and its listen links; the newest episode (a post with
+    facts) as the latest guest, large, with the guest's name, who they
+    are and their line; the other episodes as guest rows; the topics (the
+    categories that hold episodes); then the newest notes (posts without
+    facts) as a dated feed. A site with no episodes on this page shows
+    every post as a guest row. With home sections in site.toml, each
+    section is a list of guest rows of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections, hero_stats -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/guest_rows.html" import guest_rows -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% set options = template.options -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{{ hero_stats(options) }}{% if options.listen_links %}<div class="listen">
+<p class="listen-title">{{ t.home_listen_on }}</p>
+<ul class="listen-links" role="list">
+{% for line in options.listen_links %}{% set parts = line | split("|") | list %}{% if parts | length > 1 %}<li><a href="{{ parts[1] | trim }}">{{ parts[0] | trim }}</a></li>
+{% endif %}{% endfor %}</ul>
+</div>
+{% endif %}{% endcall %}
+{% set episodes = page.posts | selectattr("facts") | list -%}
+{% set all_notes = page.posts | rejectattr("facts") | list -%}
+{% set notes = all_notes[:options.notes_count] -%}
+{% set episode_topics = episodes | selectattr("category") | map(attribute="category.href") | list -%}
+{% set topics = page.categories | selectattr("href", "in", episode_topics) | list -%}
+{% if page.sections %}{% for section in page.sections %}<section class="dialogue-section" aria-labelledby="dialogue-section-{{ loop.index }}">
+<h2 id="dialogue-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ guest_rows(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif not episodes and page.posts %}<section class="conversations" aria-labelledby="conversations-title">
+<h2 id="conversations-title" class="section-label">{{ t.latest_posts }}</h2>
+{{ guest_rows(page.posts) }}
+</section>
+{% elif episodes %}{% set lead = episodes[0] %}{% set facts = lead.facts %}<section class="latest-guest" aria-labelledby="latest-guest-title">
+<h2 id="latest-guest-title" class="section-label">{{ t.latest_guest }}</h2>
+<div class="latest-guest-body">
+{% if lead.image %}<div class="latest-guest-picture">{{ picture(lead.image) }}</div>
+{% endif %}<div class="latest-guest-text">
+<p class="latest-guest-kicker">{{ t.in_conversation_with }}</p>
+<p class="latest-guest-name">{{ facts[0].value }}</p>
+{% if facts | length > 1 %}<p class="latest-guest-role">{{ facts[1].value }}</p>
+{% endif %}{% if facts | length > 3 %}<blockquote class="quote-line quote-line-large"><p>{{ facts[3].value }}</p></blockquote>
+{% endif %}<h3><a href="{{ lead.href }}">{{ lead.title }}</a></h3>
+<p class="guest-row-meta"><time datetime="{{ lead.date }}">{{ lead.date | date }}</time>{% if facts | length > 2 %}<span><span class="visually-hidden">{{ facts[2].label }}:</span> {{ facts[2].value }}</span>{% endif %}{% if lead.category %}<a href="{{ lead.category.href }}">{{ lead.category.name }}</a>{% endif %}</p>
+</div>
+</div>
+</section>
+{% if episodes | length > 1 %}<section class="conversations" aria-labelledby="conversations-title">
+<h2 id="conversations-title" class="section-label">{{ t.conversations }}</h2>
+{{ guest_rows(episodes[1:]) }}
+</section>
+{% endif %}{% if topics or notes %}<div class="dialogue-aside">
+{% if topics %}<nav class="show-topics" aria-label="{{ t.topics }}">
+<h2 class="section-label">{{ t.topics }}</h2>
+<ul class="topic-links" role="list">
+{% for topic in topics %}<li><a href="{{ topic.href }}">{{ topic.name }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}{% if notes %}<section class="show-notes" aria-labelledby="show-notes-title">
+<h2 id="show-notes-title" class="section-label">{{ t.from_the_show }}</h2>
+{{ feed_list(notes) }}
+</section>
+{% endif %}</div>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

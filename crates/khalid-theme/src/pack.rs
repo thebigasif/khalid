@@ -242,6 +242,7 @@ static PACKS: &[&Pack] = &[
     &crate::channel::CHANNEL,
     &crate::chapter::CHAPTER,
     &crate::compass::COMPASS,
+    &crate::dialogue::DIALOGUE,
     &crate::encore::ENCORE,
     &crate::fixture::FIXTURE,
     &crate::folio::FOLIO,
