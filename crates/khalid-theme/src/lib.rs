@@ -39,6 +39,7 @@ mod ledger;
 mod links;
 mod locale;
 mod look;
+mod manual;
 mod meridian;
 mod pack;
 mod palette;

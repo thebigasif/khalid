@@ -39,6 +39,7 @@ These templates are built in. Every template but classic has its own page, linke
 - `lattice`: a science explainer site, with every picture a numbered figure, key numbers from each post's facts, footnotes as numbered tabs and marked glossary terms. See [Lattice](templates/lattice.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
 - `locale`: a city guide with places listed by area, each as a guidebook row with its kind, opening hours and a price meter, an At a glance card on every place, and notes from the city. See [Locale](templates/locale.md).
+- `manual`: a help centre or product documentation, with a search field first, numbered topic tiles, articles in three columns (the guide's steps, the text with numbered sections, and the contents) and a next steps panel that asks whether the article helped. See [Manual](templates/manual.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
 - `plinth`: an architecture or interiors practice, with each project as a spread of its photograph beside a title block of its facts, plans framed as numbered drawing sheets, studio notes and types of work. See [Plinth](templates/plinth.md).
 - `reel`: film and TV reviews, with a star rating on a ticket, the cast and where to watch on every review, poster cards and a score sheet ranked by rating. See [Reel](templates/reel.md).
