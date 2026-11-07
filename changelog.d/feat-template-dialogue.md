@@ -1,0 +1,3 @@
+Added
+- The Dialogue template, for an interview show where every episode is a conversation with one guest. A post with facts is an episode: the front page leads with the latest guest, large, with their name, who they are and one line they said as a large quote, then the other episodes as guest rows, the topics and the newest notes. Each episode opens with a name plate of host and guest and the guest's line, sets blockquotes as pull quotes and marks the speakers of a transcript in a toggle.
+- A shared section part, guest rows, for conversations led by a person: a small picture, the person's name and role in a column of their own, then the title, one line they said and the date.

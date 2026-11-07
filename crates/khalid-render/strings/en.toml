@@ -508,3 +508,14 @@ follow_feed = "Or follow the feed"
 # The spectrum template's front page: the label over the lead story and
 # the link under each topic's row, where {name} is the topic.
 all_in = "All in {name}"
+# The dialogue template: an interview show's latest guest, guest rows,
+# name plate and hosts.
+latest_guest = "Latest guest"
+in_conversation_with = "In conversation with"
+conversations = "Conversations"
+from_the_show = "From the show"
+host = "Host"
+guest = "Guest"
+hosts = "Hosts"
+conversation_topics = "Topics in this conversation"
+more_conversations = "More conversations"
