@@ -179,7 +179,8 @@ fn dialogue_post() {
 
 /// An episode opens with the name plate, host beside guest, then the
 /// length beside the date and the guest's line as the quote line. A note
-/// has neither, and shows its author in its meta line.
+/// has neither in its own article, and shows its author in its meta line;
+/// its related posts may still show an episode's line in a guest row.
 #[test]
 fn an_episode_opens_with_its_name_plate() {
     let (_temp, out) = built();
@@ -194,11 +195,11 @@ fn an_episode_opens_with_its_name_plate() {
     );
     let note = shown(&out, "what-a-sitemap-does/index.html");
     assert!(
-        texts(&note, ".name-plate").is_empty(),
+        texts(&note, "article.post .name-plate").is_empty(),
         "a note has no plate"
     );
     assert!(
-        texts(&note, ".quote-line").is_empty(),
+        texts(&note, "article.post .quote-line").is_empty(),
         "a note has no quote"
     );
     assert_eq!(texts(&note, ".post-meta address").len(), 1);
