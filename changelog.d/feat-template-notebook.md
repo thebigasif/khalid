@@ -1,2 +1,0 @@
-Added
-- The Notebook template, for one person's public notebook of short notes and links. Every page is a dated stream, newest first under month headings, with each date in the margin beside a double margin rule like an exercise book. A post whose first fact is a web address is a link note, with a "Read it at" link to what it shares. The front page has a side column with what the notebook is, its sections and the newsletter form.
