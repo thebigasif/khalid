@@ -272,7 +272,10 @@ jobs:
           # so the build can happen first, with the network, and the run
           # inside the namespace, with nothing that needs it. The slowest
           # tests start first (scripts/ci/nextest.toml).
-          # A pull request's part runs a quarter of the tests, plain.
+          # A pull request's part runs a quarter of the tests, plain. The one
+          # test that builds every template's demo takes over half an hour
+          # and held one part back; the demo layout jobs build those demos on
+          # every pull request, and main still runs that test.
           if [ "$PART" != 0 ]; then
             cargo nextest run --workspace --all-features --no-run
             exec unshare -rn sh -c '
@@ -280,7 +283,7 @@ jobs:
               if curl -sS --max-time 5 -o /dev/null https://github.com 2>/dev/null; then
                 echo "BL-TST-3 could not be enforced: the internet is reachable inside the namespace. Tests did not run."; exit 1
               fi
-              exec cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml --partition "hash:$PART/4"
+              exec cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml --partition "hash:$PART/4" -E "not test(every_template_demo_shows_the_showcase_call_to_action)"
             '
           fi
           floor=$(sed -n 's/^lines *= *\([0-9.]*\).*/\1/p' coverage.toml 2>/dev/null || echo 0)
