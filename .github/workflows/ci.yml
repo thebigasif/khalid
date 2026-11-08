@@ -135,9 +135,10 @@ jobs:
   # coverage floor, and the release build with its size budget. The job
   # named Rust, which branch protection requires, sums them up.
   #
-  # The tests stay one job. Split into partitions, each runner built every
-  # test binary again on the same busy machine, and the partitions' coverage
-  # could not be joined exactly, since each runner's paths differ.
+  # On the maintainer's busy machine, partitions each rebuilt every test
+  # binary and their coverage could not be joined. On GitHub's runners a
+  # pull request now runs four partitions without coverage, and main keeps
+  # the one coverage run (see the rust job).
   rust-lints:
     name: Rust lints, docs and dependencies
     runs-on: ubuntu-latest
@@ -199,9 +200,17 @@ jobs:
         run: ./scripts/check-lints.sh
 
   # The job id stays rust, so the test build keeps its warm cache.
+  # A pull request runs the suite in four parts at once, without coverage
+  # instrumentation (part 1 to 4). Main, the nightly run and manual runs
+  # keep one full run with the coverage floor (part 0), so the floor is
+  # still enforced on every commit that lands.
   rust:
-    name: Rust tests
+    name: Rust tests${{ matrix.part != 0 && format(' {0} of 4', matrix.part) || '' }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        part: ${{ fromJSON(github.event_name == 'pull_request' && '[1, 2, 3, 4]' || '[0]') }}
     steps:
       - uses: actions/checkout@v7
       - name: Disk space for the build
@@ -243,6 +252,8 @@ jobs:
         with:
           tool: cargo-nextest,cargo-llvm-cov
       - name: Tests, network disabled, with the coverage floor (BL-TST-3, BL-TST-6)
+        env:
+          PART: ${{ matrix.part }}
         run: |
           # Tests run in a network namespace where only loopback is up, so a
           # local stand-in server works and the internet does not. Ubuntu
@@ -261,6 +272,17 @@ jobs:
           # so the build can happen first, with the network, and the run
           # inside the namespace, with nothing that needs it. The slowest
           # tests start first (scripts/ci/nextest.toml).
+          # A pull request's part runs a quarter of the tests, plain.
+          if [ "$PART" != 0 ]; then
+            cargo nextest run --workspace --all-features --no-run
+            exec unshare -rn sh -c '
+              ip link set lo up || { echo "BL-TST-3 could not be enforced: loopback did not come up. Tests did not run."; exit 1; }
+              if curl -sS --max-time 5 -o /dev/null https://github.com 2>/dev/null; then
+                echo "BL-TST-3 could not be enforced: the internet is reachable inside the namespace. Tests did not run."; exit 1
+              fi
+              exec cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml --partition "hash:$PART/4"
+            '
+          fi
           floor=$(sed -n 's/^lines *= *\([0-9.]*\).*/\1/p' coverage.toml 2>/dev/null || echo 0)
           (
             eval "$(cargo llvm-cov show-env --sh)"
