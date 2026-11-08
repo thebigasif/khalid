@@ -8,6 +8,9 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   base: "./",
   plugins: [react(), tailwindcss()],
+  // Tiptap's Link finds addresses with linkifyjs, 11 KB compressed with
+  // every domain ending; src/editor/linkify.ts does it in a few lines.
+  resolve: { alias: { linkifyjs: "/src/editor/linkify.ts" } },
   test: {
     environment: "jsdom",
     setupFiles: ["./test/setup.ts"],
