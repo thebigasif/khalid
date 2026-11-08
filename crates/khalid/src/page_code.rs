@@ -1,20 +1,16 @@
 //! The site's own code from `[code]`, a post's head code and the consent
 //! banner, as each page of one render carries them (G45, KH-SEO-12, ADR
-//! "consent is a form and a cookie", privacy plan U6).
+//! "consent has categories").
 
-use std::collections::BTreeMap;
-
-use khalid_core::{Config, HeadCode, Locale, PrivacyText};
+use khalid_core::{BodyCode, CodeCategory, Config, HeadCode, Locale};
 use khalid_render::Renderer;
 use khalid_server::{
     ASK_END, ASK_START, CHOSEN_END, CHOSEN_START, HELD_END, HELD_START, NONCE_SLOT, SITE_BODY_SLOT,
     SITE_HEAD_SLOT,
 };
 
-use crate::build_pages;
 use crate::post_lock::escaped;
 use crate::site_page::HeadNonce;
-use crate::static_mode::consent::{self as static_consent, MARKETING};
 
 /// The folder under the mount the consent form posts to. Slugs have no
 /// `_`, so no post can take this address.
@@ -26,30 +22,23 @@ pub(crate) struct PageCode {
     place: Place,
     /// Where the consent form posts, such as `/blog/_consent/`.
     action: String,
-    /// The site's head and body code as each page carries it, open or, on
-    /// a static host, held as plain text.
-    site: (String, String),
-    /// On a static host, the tag that loads the consent script, set by
-    /// [`PageCode::with_consent_script`]. Empty until then.
-    script: String,
-    /// The choices page of each language, such as `/blog/de/privacy-choices/`.
-    choices: Vec<(Locale, String)>,
-    /// The owner's banner words per language, from `[privacy]`.
-    own: BTreeMap<Locale, PrivacyText>,
+    /// The head and body code every page carries: code that tracks no one,
+    /// or all of it when an outside consent tool asks instead of Khalid.
+    open: (String, String),
 }
 
-/// Where the code goes.
+/// Where the code that waits for consent goes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Place {
-    /// Into every page, with the nonce slot or, on a static host, without.
+    /// Nowhere, since none waits: every page carries the open code, with
+    /// the nonce slot or, on a static host, without.
     Open(HeadNonce),
-    /// Into the marked places of every page, which the server fills only
-    /// for a reader who agreed, with the banner before the body ends.
+    /// Into the marked places of every page, which the server fills for a
+    /// reader who allowed its category, with the banner before the body
+    /// ends.
     Held,
-    /// Into every page of a static site as plain text, which the consent
-    /// script runs only for a reader who agreed, with the banner hidden
-    /// until the script shows it.
-    Waiting,
+    /// Nowhere: the code waits for consent, which a static host cannot ask.
+    Left,
 }
 
 impl PageCode {
@@ -57,106 +46,65 @@ impl PageCode {
     /// its nonce as `nonce` says.
     pub(crate) fn new(config: &Config, nonce: HeadNonce) -> Self {
         let code = config.code();
+        let outside_tool = config.privacy().external_tool.is_some();
         let place = match nonce {
-            _ if !code.waits_for_consent() => Place::Open(nonce),
+            _ if outside_tool || !code.waits_for_consent() => Place::Open(nonce),
             HeadNonce::PerRequest => Place::Held,
-            // A certified tool the owner runs asks instead (KTD15).
-            HeadNonce::Static if config.privacy().external_tool.is_some() => Place::Open(nonce),
-            HeadNonce::Static => Place::Waiting,
+            HeadNonce::Static => Place::Left,
         };
-        let written = |html: Vec<String>| html.join("\n");
-        let site = match place {
-            Place::Open(HeadNonce::PerRequest) => (
-                written(code.heads().map(|head| head.to_html(NONCE_SLOT)).collect()),
-                written(code.bodies().map(|body| body.to_html(NONCE_SLOT)).collect()),
-            ),
-            Place::Open(HeadNonce::Static) => (
-                written(code.heads().map(ToString::to_string).collect()),
-                written(code.bodies().map(ToString::to_string).collect()),
-            ),
-            Place::Waiting => static_consent::held(code),
-            Place::Held => (String::new(), String::new()),
+        let open = code
+            .entries
+            .iter()
+            .filter(|entry| outside_tool || entry.category == CodeCategory::NoTracking);
+        let head = |head: &HeadCode| match nonce {
+            HeadNonce::PerRequest => head.to_html(NONCE_SLOT),
+            HeadNonce::Static => head.to_string(),
         };
-        let choices = (config.languages().iter())
-            .map(|locale| {
-                let path = build_pages::path_of(config, locale, static_consent::CHOICES);
-                (locale.clone(), path)
-            })
-            .collect();
+        let body = |body: &BodyCode| match nonce {
+            HeadNonce::PerRequest => body.to_html(NONCE_SLOT),
+            HeadNonce::Static => body.to_string(),
+        };
+        let heads = open.clone().filter_map(|entry| entry.head.as_ref());
+        let bodies = open.filter_map(|entry| entry.body.as_ref());
         Self {
             place,
             action: format!("{}{CONSENT_FOLDER}/", config.mount()),
-            site,
-            script: String::new(),
-            choices,
-            own: config.privacy().text.clone(),
-        }
-    }
-
-    /// The code with `tag`, which loads the consent script, at the end of
-    /// each static page that needs it.
-    pub(crate) fn with_consent_script(self, tag: String) -> Self {
-        Self {
-            script: tag,
-            ..self
+            open: (joined(heads.map(head)), joined(bodies.map(body))),
         }
     }
 
     /// What goes after a page's SEO head: the post's own head `code`, when
-    /// it has some, then the site's head code or its slot. Empty when
-    /// neither is there.
+    /// it has some, then the site's open head code and the slot of the code
+    /// that waits. Empty when none is there.
     pub(crate) fn head(&self, code: Option<&HeadCode>) -> String {
         let post = code.map_or_else(String::new, |code| match self.place {
             Place::Open(HeadNonce::PerRequest) => code.to_html(NONCE_SLOT),
             Place::Open(HeadNonce::Static) => code.to_string(),
             Place::Held => format!("{HELD_START}{}{HELD_END}", code.to_html(NONCE_SLOT)),
-            Place::Waiting => code.to_held_html(MARKETING),
+            Place::Left => String::new(),
         });
-        let site = match self.place {
-            Place::Held => SITE_HEAD_SLOT,
-            Place::Open(_) | Place::Waiting => &self.site.0,
+        let slot = if self.place == Place::Held {
+            SITE_HEAD_SLOT
+        } else {
+            ""
         };
-        [post.as_str(), site]
-            .into_iter()
-            .filter(|part| !part.is_empty())
-            .collect::<Vec<_>>()
-            .join("\n")
+        joined([post, self.open.0.clone(), slot.to_owned()].into_iter())
     }
 
-    /// `html`, a page drawn at `path` in `locale`, with the site's body
-    /// code, or its slot and the banner, before its body ends. A static
-    /// page that asks for consent, shows an embed or is the choices page
-    /// loads the consent script last.
+    /// `html`, a page drawn at `path` in `locale`, with the site's open
+    /// body code, then the slot of the code that waits and the banner,
+    /// before its body ends.
     pub(crate) fn with_body_end(
         &self,
         html: String,
         (renderer, locale): (&Renderer, &Locale),
         path: &str,
     ) -> String {
-        let mut end = match self.place {
+        let banner = match self.place {
             Place::Held => self.banner(renderer, locale, path),
-            Place::Open(_) => self.site.1.clone(),
-            Place::Waiting => {
-                let choices = (self.choices.iter())
-                    .find(|(language, _)| language == locale)
-                    .map_or("", |(_, path)| path.as_str());
-                let banner =
-                    static_consent::banner((renderer, locale), self.own.get(locale), choices);
-                [self.site.1.as_str(), &banner]
-                    .into_iter()
-                    .filter(|part| !part.is_empty())
-                    .collect::<Vec<_>>()
-                    .join("\n")
-            }
+            Place::Open(_) | Place::Left => String::new(),
         };
-        if !self.script.is_empty()
-            && (static_consent::needs_script(&end) || static_consent::needs_script(&html))
-        {
-            if !end.is_empty() {
-                end.push('\n');
-            }
-            end.push_str(&self.script);
-        }
+        let end = joined([self.open.1.clone(), banner].into_iter());
         match html.rfind("</body>") {
             Some(at) if !end.is_empty() => {
                 let (before, after) = html.split_at(at);
@@ -167,15 +115,17 @@ impl PageCode {
     }
 
     /// The body code's slot, the banner and, hidden until a reader has
-    /// chosen, the smaller form to change the choice.
+    /// chosen, the smaller form to change the choice. Allow accepts every
+    /// category and Do not allow rejects them all, until the banner of
+    /// privacy plan U4 names them.
     fn banner(&self, renderer: &Renderer, locale: &Locale, path: &str) -> String {
         let words = |key: &str| escaped(renderer.text(locale, key).unwrap_or_default());
         let form = |class: &str, note: &str| {
             format!(
                 "<aside class=\"{class}\" aria-label=\"{label}\"><form method=\"post\" action=\"{action}\">\
                  <p>{note}</p><input type=\"hidden\" name=\"back\" value=\"{back}\">\
-                 <button type=\"submit\" name=\"choice\" value=\"yes\">{allow}</button>\
-                 <button type=\"submit\" name=\"choice\" value=\"no\">{refuse}</button></form></aside>",
+                 <button type=\"submit\" name=\"choice\" value=\"accept-all\">{allow}</button>\
+                 <button type=\"submit\" name=\"choice\" value=\"reject-all\">{refuse}</button></form></aside>",
                 label = words("consent_label"),
                 action = escaped(&self.action),
                 back = escaped(path),
@@ -189,6 +139,14 @@ impl PageCode {
             form("consent consent-chosen", &words("consent_change")),
         )
     }
+}
+
+/// The parts that are not empty, one per line.
+fn joined(parts: impl Iterator<Item = String>) -> String {
+    parts
+        .filter(|part| !part.is_empty())
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 #[cfg(test)]
@@ -211,6 +169,10 @@ mod tests {
     const CODE: &str = "[code]\nhead = \"<script src='https://tags.example.com/t.js'></script>\"\nbody = \"<script>chat()</script>\"\n";
 
     const NOT_NEEDED: &str = "consent = \"not-needed\"\n";
+
+    /// One piece that tracks no one and one that waits for Analytics.
+    const MIXED: &str = "[[code]]\nhead = \"<script>count()</script>\"\ncategory = \"no-tracking\"\n\
+                         [[code]]\nbody = \"<script>stats()</script>\"\ncategory = \"analytics\"\n";
 
     const PAGE: &str = "<html><head></head><body><p>Text.</p></body></html>";
 
@@ -251,8 +213,8 @@ mod tests {
             "<form method=\"post\" action=\"/blog/_consent/\">",
             "name=\"back\" value=\"/blog/a-post/\"",
             "It runs only if you allow it.",
-            "value=\"yes\">Allow</button>",
-            "value=\"no\">Do not allow</button>",
+            "value=\"accept-all\">Allow</button>",
+            "value=\"reject-all\">Do not allow</button>",
         ] {
             assert!(ask.contains(part), "{part} in {ask}");
         }
@@ -280,43 +242,32 @@ mod tests {
     }
 
     #[test]
-    fn a_build_holds_code_that_waits_as_plain_text() {
-        let code = PageCode::new(&config(CODE), HeadNonce::Static);
-        assert_eq!(
-            code.head(Some(&post_code())),
-            "<script type=\"text/plain\" data-khalid-consent=\"marketing\">post()</script>\n\
-             <script type=\"text/plain\" data-khalid-consent=\"marketing\" src=\"https://tags.example.com/t.js\"></script>"
-        );
-        let html = ending(&code, "de");
-        let held = "<p>Text.</p><script type=\"text/plain\" data-khalid-consent=\"marketing\">chat()</script>\n<section class=\"consent\"";
-        assert!(html.contains(held), "{html}");
+    fn code_that_tracks_no_one_runs_beside_the_slot_of_code_that_waits() {
+        let code = PageCode::new(&config(MIXED), HeadNonce::PerRequest);
+        let count = format!("<script nonce=\"{NONCE_SLOT}\">count()</script>");
+        assert_eq!(code.head(None), format!("{count}\n{SITE_HEAD_SLOT}"));
+        let html = ending(&code, "en");
         assert!(
-            html.contains("<a href=\"/blog/de/privacy-choices/\">Auswählen</a>"),
-            "{html}"
-        );
-        assert!(!html.contains("<script src"), "{html}");
-        let loaded = code.with_consent_script("<script src=\"/c.js\" defer></script>".to_owned());
-        let html = ending(&loaded, "en");
-        assert!(
-            html.ends_with("<script src=\"/c.js\" defer></script>\n</body></html>"),
+            html.contains(ASK_START) && !html.contains("stats()"),
             "{html}"
         );
     }
 
     #[test]
-    fn a_build_without_code_loads_the_script_only_where_a_page_needs_it() {
-        let tag = "<script src=\"/c.js\" defer></script>";
-        let code =
-            PageCode::new(&config(""), HeadNonce::Static).with_consent_script(tag.to_owned());
+    fn an_outside_consent_tool_gets_every_piece_unheld_and_no_banner() {
+        let settings = config(&format!("{CODE}[privacy]\nexternal_tool = \"Cookiebot\"\n"));
+        let code = PageCode::new(&settings, HeadNonce::PerRequest);
+        let post = format!("<script nonce=\"{NONCE_SLOT}\">post()</script>");
+        assert!(code.head(Some(&post_code())).starts_with(&post));
+        let html = ending(&code, "en");
+        assert!(html.contains("chat()"), "{html}");
+        assert!(!html.contains(ASK_START) && !html.contains(SITE_BODY_SLOT));
+    }
+
+    #[test]
+    fn a_build_leaves_out_code_that_waits() {
+        let code = PageCode::new(&config(CODE), HeadNonce::Static);
+        assert_eq!(code.head(Some(&post_code())), "");
         assert_eq!(ending(&code, "en"), PAGE);
-        let renderer = Renderer::new().unwrap();
-        let locale: Locale = "en".parse().unwrap();
-        let embed =
-            "<html><body><figure class=\"embed embed-wide\"></figure></body></html>".to_owned();
-        let html = code.with_body_end(embed, (&renderer, &locale), "/blog/a-post/");
-        assert!(
-            html.ends_with(&format!("</figure>{tag}\n</body></html>")),
-            "{html}"
-        );
     }
 }
