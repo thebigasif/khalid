@@ -228,6 +228,26 @@ Main built 31,432,184 bytes on this server, 25,096 under the budget, and the con
 
 The measured runs built 90,240 bytes less. The final commit, after a clippy fix to how a template name's extension is checked, builds 31,342,264 bytes: 89,920 less than before and 115,016 under the budget. The two slow first bytes came while the server's load was 13 to 14; lint one post, which does not use `khalid-render`, took 12.12 and 13.39 ms in those runs against 9.48 to 9.88 ms in the others. Back to back, the first byte and idle memory did not get worse.
 
+### Privacy integration (U3, U6, U8, U9, U11, 2026-11-08)
+
+Main built 31,424,504 bytes on this server, and the five remaining privacy units on top of it built 31,535,352: 110,848 more, 78,072 over the budget, and about 25 KB more again in CI. The growth is ordinary code spread thinly: the consent proof routes in `khalid-api` (23 KB), the privacy page and the consent flow in `khalid` (22 KB), the privacy facts through `minijinja` (7 KB), the cookie and GPC handling in `khalid-server` (5 KB). Each step below is `cargo build --release -p khalid` on this server:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before (main with the five units) | 31,535,352 | |
+| `toml`, `toml_edit`, `toml_parser`, `toml_datetime` and `clap` at `"z"` | 31,618,616 | none, 83,264 more |
+| The share image font kept with Brotli instead of gzip, `khalid-theme` and `khalid-mount` at `"z"` (kept) | 31,492,344 | 43,008 |
+| Plus `khalid-media` at `"z"` | 33,069,176 | none, the image resizer it instantiates grew 1.5 MB |
+| Plus the lint catalogue packed with Brotli by a build script and `clap` at `"z"` | 31,475,704 | 16,640 more, of which the catalogue about 25 KB and `clap` about 8 KB worse |
+| The catalogue packed, `granit-parser` at `"s"` instead of 3 | 31,491,704 | the YAML reader at `"s"` was about 24 KB worse |
+| The catalogue packed (kept), every pack's `tokens.toml` in the packs' Brotli archive (kept) | 31,458,232 | 34,112 |
+| Plus `regex-syntax`, `html5ever` and `markup5ever` at `"z"` (kept) | 31,441,720 | 16,512 more |
+| Plus the agents' guide, the starter posts and the staff toolbar's styles packed with Brotli, `scraper`, `selectors`, `cssparser`, `serde_cbor_2` and `math-core` at `"z"` (kept) | 31,420,216 | 21,504 more |
+
+All kept: 31,420,216 bytes, 115,136 less than before, 4,288 less than main and 37,064 under the budget. Every packed text comes out byte for byte as its file says: each crate's tests compare them.
+
+None of the crates moved to `"z"` runs on a reader's request. Regular expressions are compiled once; the HTML parser reads a card's HTML once per post at build, a main site for theme sync or a page for the audit; the selectors only the last two; CBOR is read at a passkey sign-in; maths is drawn once per post at build; the packs are read at start. The text that is now packed is read once and kept. `scripts/perf.sh` was not run for this change on this server, which was shared with six other builds; CI's performance budgets job measures it.
+
 ## Page weight
 
 Pictures are most of what a reader downloads. Every picture is offered in several widths (`srcset`), and its `sizes` tells the browser how wide the page draws it, so the browser fetches the smallest file that fills the slot. A `sizes` wider than the slot fetches a bigger file than it draws. One narrower makes the picture blurry.

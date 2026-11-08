@@ -21,7 +21,7 @@ pub(crate) static RESEARCH: Pack = Pack {
         PackTemplate::file("authors.html", "research/authors.html"),
         PackTemplate::file("author.html", "research/author.html"),
     ],
-    tokens: include_str!("../packs/research/tokens.toml"),
+    tokens: PackText::file("research/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

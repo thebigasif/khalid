@@ -24,7 +24,7 @@ pub(crate) static GLOSSY: Pack = Pack {
         PackTemplate::file("author.html", "glossy/author.html"),
         PackTemplate::file("parts-glossy.html", "glossy/parts-glossy.html"),
     ],
-    tokens: include_str!("../packs/glossy/tokens.toml"),
+    tokens: PackText::file("glossy/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

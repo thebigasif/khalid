@@ -22,7 +22,7 @@ fn classic_is_the_default_look_and_only_restyles() {
         "classic sets its own frame"
     );
     assert!(pack.templates.is_empty(), "classic replaces no template");
-    assert!(pack.tokens.is_empty(), "classic keeps today's sizes");
+    assert!(pack.tokens().is_empty(), "classic keeps today's sizes");
     assert!(pack.reader.is_empty(), "classic keeps today's switches");
     assert!(pack.options.is_empty());
 }
@@ -33,8 +33,25 @@ fn the_trial_pack_changes_a_template_a_rule_a_size_and_a_switch() {
     assert!(trial.stylesheet().contains(".trial-greeting"));
     let names: Vec<&str> = trial.templates.iter().map(|file| file.name).collect();
     assert_eq!(names, ["not_found.html"]);
-    assert!(trial.tokens.contains("[type]"));
+    assert!(trial.tokens().contains("[type]"));
     assert!(trial.reader.contains(&(ReaderSwitch::ReadingTime, false)));
+}
+
+/// Each pack's token defaults sit in the packs' Brotli archive and come
+/// out byte for byte as its `tokens.toml` says.
+#[test]
+fn every_pack_s_tokens_read_as_its_file_says() {
+    let mut checked = 0;
+    for pack in packs() {
+        let mut file = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        file.push(format!("packs/{}/tokens.toml", pack.name));
+        let Ok(text) = fs::read_to_string(&file) else {
+            continue;
+        };
+        assert_eq!(pack.tokens(), text, "{}", pack.name);
+        checked += 1;
+    }
+    assert!(checked >= 40, "{checked}");
 }
 
 #[test]

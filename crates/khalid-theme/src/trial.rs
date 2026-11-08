@@ -13,7 +13,7 @@ pub(crate) static SAMPLER: Pack = Pack {
     summary: "A throwaway look for tests of the parts.",
     css: PackText::empty(),
     templates: &[],
-    tokens: "",
+    tokens: PackText::empty(),
     reader: &[],
     options: &[
         parts::LOGO,
@@ -45,7 +45,7 @@ pub(crate) static TRIAL: Pack = Pack {
     summary: "A throwaway look for tests.",
     css: PackText::file("trial/trial.css"),
     templates: &TRIAL_TEMPLATES,
-    tokens: "[type]\nh1 = \"3rem 4rem\"\n",
+    tokens: PackText::inline("[type]\nh1 = \"3rem 4rem\"\n"),
     reader: &[(ReaderSwitch::ReadingTime, false)],
     options: &[
         OptionSpec {

@@ -24,7 +24,7 @@ pub(crate) static ENCORE: Pack = Pack {
         PackTemplate::file("authors.html", "encore/authors.html"),
         PackTemplate::file("author.html", "encore/author.html"),
     ],
-    tokens: include_str!("../packs/encore/tokens.toml"),
+    tokens: PackText::file("encore/tokens.toml"),
     reader: &[],
     options: &[
         OptionSpec {

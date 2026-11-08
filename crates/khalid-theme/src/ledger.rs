@@ -18,7 +18,7 @@ pub(crate) static LEDGER: Pack = Pack {
         PackTemplate::file("home.html", "ledger/home.html"),
         PackTemplate::file("post.html", "ledger/post.html"),
     ],
-    tokens: include_str!("../packs/ledger/tokens.toml"),
+    tokens: PackText::file("ledger/tokens.toml"),
     reader: &[],
     options: &[
         OptionSpec {

@@ -20,7 +20,7 @@ pub(crate) static MANUAL: Pack = Pack {
         PackTemplate::file("post.html", "manual/post.html"),
         PackTemplate::file("listing.html", "manual/listing.html"),
     ],
-    tokens: include_str!("../packs/manual/tokens.toml"),
+    tokens: PackText::file("manual/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

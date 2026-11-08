@@ -20,7 +20,7 @@ pub(crate) static APERTURE: Pack = Pack {
         PackTemplate::file("authors.html", "aperture/authors.html"),
         PackTemplate::file("author.html", "aperture/author.html"),
     ],
-    tokens: include_str!("../packs/aperture/tokens.toml"),
+    tokens: PackText::file("aperture/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

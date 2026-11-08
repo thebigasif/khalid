@@ -6,6 +6,9 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, LazyLock};
 use std::{fs, io};
 
+#[path = "texts.rs"]
+pub(crate) mod texts;
+
 use khalid_core::{Config, SitePath, UserMessage};
 use khalid_render::{
     Asset, Feature, Features, ScriptFile, ScriptTag, Tokens, reader_script, reader_script_file,

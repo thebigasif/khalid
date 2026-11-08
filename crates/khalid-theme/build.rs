@@ -1,6 +1,6 @@
 //! Writes every template's stylesheet, without its comments, indentation
-//! and blank lines, and every template file, with its comments emptied,
-//! into one text compressed with Brotli in cargo's output folder, with an
+//! and blank lines, every template file, with its comments emptied, and
+//! every pack's `tokens.toml` as written, into one text compressed with Brotli in cargo's output folder, with an
 //! index of where each file starts and ends. The binary embeds both
 //! (`PackText`). One archive is about 40% smaller than one per file,
 //! because the templates share many patterns. The renderer strips the same
@@ -41,6 +41,8 @@ fn main() -> io::Result<()> {
             let text = match kind {
                 Some("css") => minify(&format!("{parts}{}", fs::read_to_string(&path)?)),
                 Some("html") => strip_comments(&fs::read_to_string(&path)?),
+                // The pack's token defaults, byte for byte.
+                Some("toml") => fs::read_to_string(&path)?,
                 _ => continue,
             };
             let name = format!(

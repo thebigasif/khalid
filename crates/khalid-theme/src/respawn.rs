@@ -25,7 +25,7 @@ pub(crate) static RESPAWN: Pack = Pack {
         PackTemplate::file("author.html", "respawn/author.html"),
         PackTemplate::file("parts-respawn.html", "respawn/parts-respawn.html"),
     ],
-    tokens: include_str!("../packs/respawn/tokens.toml"),
+    tokens: PackText::file("respawn/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

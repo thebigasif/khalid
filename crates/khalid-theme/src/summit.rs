@@ -21,7 +21,7 @@ pub(crate) static SUMMIT: Pack = Pack {
         PackTemplate::file("authors.html", "summit/authors.html"),
         PackTemplate::file("author.html", "summit/author.html"),
     ],
-    tokens: include_str!("../packs/summit/tokens.toml"),
+    tokens: PackText::file("summit/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

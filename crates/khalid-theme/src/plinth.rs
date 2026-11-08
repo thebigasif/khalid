@@ -21,7 +21,7 @@ pub(crate) static PLINTH: Pack = Pack {
         PackTemplate::file("authors.html", "plinth/authors.html"),
         PackTemplate::file("author.html", "plinth/author.html"),
     ],
-    tokens: include_str!("../packs/plinth/tokens.toml"),
+    tokens: PackText::file("plinth/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

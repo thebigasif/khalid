@@ -22,7 +22,7 @@ pub(crate) static SPECTRUM: Pack = Pack {
         PackTemplate::file("author.html", "spectrum/author.html"),
         PackTemplate::file("parts-spectrum.html", "spectrum/parts-spectrum.html"),
     ],
-    tokens: include_str!("../packs/spectrum/tokens.toml"),
+    tokens: PackText::file("spectrum/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

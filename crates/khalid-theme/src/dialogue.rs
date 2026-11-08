@@ -21,7 +21,7 @@ pub(crate) static DIALOGUE: Pack = Pack {
         PackTemplate::file("authors.html", "dialogue/authors.html"),
         PackTemplate::file("author.html", "dialogue/author.html"),
     ],
-    tokens: include_str!("../packs/dialogue/tokens.toml"),
+    tokens: PackText::file("dialogue/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

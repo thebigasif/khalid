@@ -24,7 +24,7 @@ pub(crate) static HEARTH: Pack = Pack {
         PackTemplate::file("author.html", "hearth/author.html"),
         PackTemplate::file("parts-hearth.html", "hearth/parts-hearth.html"),
     ],
-    tokens: include_str!("../packs/hearth/tokens.toml"),
+    tokens: PackText::file("hearth/tokens.toml"),
     reader: &[
         (ReaderSwitch::ReadingTime, true),
         (ReaderSwitch::AuthorBox, true),

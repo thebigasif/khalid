@@ -23,7 +23,7 @@ pub(crate) static COMPASS: Pack = Pack {
     summary: "A teaching blog: breadcrumbs, the contents and key points before each guide, share links, the author and the newsletter after it.",
     css: PackText::file("compass/compass.css"),
     templates: &COMPASS_TEMPLATES,
-    tokens: include_str!("../packs/compass/tokens.toml"),
+    tokens: PackText::file("compass/tokens.toml"),
     reader: &[
         (ReaderSwitch::Byline, false),
         (ReaderSwitch::ReadingTime, false),

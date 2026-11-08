@@ -25,7 +25,7 @@ pub(crate) static HUB: Pack = Pack {
         PackTemplate::file("home.html", "hub/home.html"),
         PackTemplate::file("post.html", "hub/post.html"),
     ],
-    tokens: include_str!("../packs/hub/tokens.toml"),
+    tokens: PackText::file("hub/tokens.toml"),
     reader: &[],
     options: &[
         OptionSpec {

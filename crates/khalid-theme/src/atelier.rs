@@ -22,7 +22,7 @@ pub(crate) static ATELIER: Pack = Pack {
         PackTemplate::file("authors.html", "atelier/authors.html"),
         PackTemplate::file("author.html", "atelier/author.html"),
     ],
-    tokens: include_str!("../packs/atelier/tokens.toml"),
+    tokens: PackText::file("atelier/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

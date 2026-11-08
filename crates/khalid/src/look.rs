@@ -88,7 +88,7 @@ fn preferred_source(config: &Config) -> Vec<(String, TemplateOption)> {
 ///
 /// The message for a mistake in `theme/tokens.toml`.
 pub(crate) fn tokens(site: &Path, look: &Look) -> Result<Tokens, UserMessage> {
-    Tokens::load_over(site, look.pack().tokens).map_err(|error| build_message::tokens(&error))
+    Tokens::load_over(site, look.pack().tokens()).map_err(|error| build_message::tokens(&error))
 }
 
 /// Every built-in template as the Admin API lists it, read from the
@@ -177,7 +177,7 @@ mod tests {
     fn every_pack_loads_compiles_and_ships_under_the_css_budget() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
             let css = stylesheet_with(&tokens, pack.stylesheet()).unwrap();
             let bytes = css.brotli().len();
             assert!(bytes < BUDGET_BYTES, "{}: {bytes} bytes", pack.name);
@@ -211,7 +211,7 @@ mod tests {
     fn every_packs_header_button_wraps_within_the_header() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
             let css = stylesheet_text_with(&tokens, pack.stylesheet());
             let rules = rules_naming(&css, ".header-button");
             let capped = rules
@@ -240,7 +240,7 @@ mod tests {
     fn every_pack_keeps_block_lists_forms_tables_and_roles_readable() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
             let css = stylesheet_text_with(&tokens, pack.stylesheet());
             let name = pack.name;
             let marks = rules_naming(&css, ".proscons :is(.pros, .cons) li");
@@ -303,7 +303,7 @@ mod tests {
         let site = tempfile::tempdir().unwrap();
         let guard = ".post-with-toc :is(.post-header .image, .post-body > table)";
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
             let css = stylesheet_text_with(&tokens, pack.stylesheet());
             let rule = rules_naming(&css, guard);
             assert!(
@@ -331,7 +331,7 @@ mod tests {
     fn every_pack_keeps_author_photos_square() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
             let css = stylesheet_text_with(&tokens, pack.stylesheet());
             let held = rules_naming(&css, "picture:has(> .avatar)");
             assert!(
@@ -392,7 +392,7 @@ mod tests {
     fn every_pack_palette_reads_at_wcag_aa() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
             let failures = tokens.contrast_failures();
             assert!(failures.is_empty(), "{}: {failures:?}", pack.name);
             let colors = &tokens.colors;
@@ -414,7 +414,7 @@ mod tests {
     fn every_class_a_pack_template_uses_has_a_rule() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
             let css = stylesheet_with(&tokens, pack.stylesheet()).unwrap();
             let css = String::from_utf8(css.body().to_vec()).unwrap();
             for file in pack.templates {

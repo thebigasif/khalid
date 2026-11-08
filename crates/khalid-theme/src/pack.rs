@@ -30,8 +30,9 @@ pub struct Pack {
     /// Any other file comes from the shared set.
     pub templates: &'static [PackTemplate],
     /// The pack's defaults as the text of a `theme/tokens.toml`, such as
-    /// its type scale. A value in the site's own file wins.
-    pub tokens: &'static str,
+    /// its type scale. A value in the site's own file wins. Read them with
+    /// [`Pack::tokens`].
+    pub(crate) tokens: PackText,
     /// The reader switches the pack turns on or off. A key the site writes
     /// in `[reader]` wins.
     pub reader: &'static [(ReaderSwitch, bool)],
@@ -43,6 +44,12 @@ impl Pack {
     /// The pack's own CSS rules, as the build script minified them.
     pub fn stylesheet(&self) -> &'static str {
         self.css.text()
+    }
+
+    /// The pack's token defaults, as the text of a `theme/tokens.toml`.
+    /// Empty for a pack with none.
+    pub fn tokens(&self) -> &'static str {
+        self.tokens.text()
     }
 }
 
@@ -108,16 +115,19 @@ fn archive() -> &'static Archive {
 
 /// A pack's stylesheet or template file, by its place in the archive.
 #[derive(Debug)]
-pub(crate) struct PackText {
+pub(crate) enum PackText {
     /// The file, as `<pack>/<file>`, such as `harbor/harbor.css`. Empty
     /// for a pack with no rules of its own.
-    file: &'static str,
+    File(&'static str),
+    /// Text written in the code, for the test build's throwaway packs.
+    #[cfg(feature = "test-util")]
+    Inline(&'static str),
 }
 
 impl PackText {
     /// The file `file`, as `<pack>/<file>` under `packs/`.
     pub(crate) const fn file(file: &'static str) -> Self {
-        Self { file }
+        Self::File(file)
     }
 
     /// A stylesheet with no rules, for the test build's sampler pack.
@@ -126,9 +136,20 @@ impl PackText {
         Self::file("")
     }
 
-    /// The text: a stylesheet minified, a template file as written.
+    /// `text` as it is, for the test build's throwaway packs.
+    #[cfg(feature = "test-util")]
+    pub(crate) const fn inline(text: &'static str) -> Self {
+        Self::Inline(text)
+    }
+
+    /// The text: a stylesheet minified, a template or tokens file as
+    /// written.
     fn text(&self) -> &'static str {
-        archive().file(self.file)
+        match self {
+            Self::File(file) => archive().file(file),
+            #[cfg(feature = "test-util")]
+            Self::Inline(text) => text,
+        }
     }
 }
 
@@ -224,7 +245,7 @@ static CLASSIC: Pack = Pack {
     summary: "The default look: a lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts.",
     css: PackText::file("classic/classic.css"),
     templates: &[],
-    tokens: "",
+    tokens: PackText::file(""),
     reader: &[],
     options: &[],
 };

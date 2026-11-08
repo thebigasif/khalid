@@ -16,7 +16,7 @@ pub(crate) static MERIDIAN: Pack = Pack {
         PackTemplate::file("home.html", "meridian/home.html"),
         PackTemplate::file("post-reference.html", "meridian/post-reference.html"),
     ],
-    tokens: include_str!("../packs/meridian/tokens.toml"),
+    tokens: PackText::file("meridian/tokens.toml"),
     reader: &[(ReaderSwitch::ReadingTime, false)],
     options: &[
         parts::on(parts::LOGO),

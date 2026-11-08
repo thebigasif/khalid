@@ -22,7 +22,7 @@ pub(crate) static CHANNEL: Pack = Pack {
         PackTemplate::file("authors.html", "channel/authors.html"),
         PackTemplate::file("author.html", "channel/author.html"),
     ],
-    tokens: include_str!("../packs/channel/tokens.toml"),
+    tokens: PackText::file("channel/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

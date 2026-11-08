@@ -24,7 +24,7 @@ pub(crate) static INKWELL: Pack = Pack {
         PackTemplate::file("author.html", "inkwell/author.html"),
         PackTemplate::file("parts-inkwell.html", "inkwell/parts-inkwell.html"),
     ],
-    tokens: include_str!("../packs/inkwell/tokens.toml"),
+    tokens: PackText::file("inkwell/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

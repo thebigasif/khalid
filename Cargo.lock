@@ -2671,6 +2671,7 @@ version = "1.6.2"
 dependencies = [
  "atom_syndication",
  "axum",
+ "brotli",
  "chrono",
  "clap",
  "comrak",
@@ -2995,6 +2996,7 @@ dependencies = [
 name = "khalid-lint"
 version = "0.2.0"
 dependencies = [
+ "brotli",
  "chrono",
  "khalid-core",
  "rust-stemmers",
@@ -3236,7 +3238,7 @@ dependencies = [
 name = "khalid-share-image"
 version = "1.6.2"
 dependencies = [
- "flate2",
+ "brotli",
  "insta",
  "khalid-core",
  "rustybuzz",

@@ -22,7 +22,7 @@ pub(crate) static VERSIONS: Pack = Pack {
         PackTemplate::file("authors.html", "versions/authors.html"),
         PackTemplate::file("author.html", "versions/author.html"),
     ],
-    tokens: include_str!("../packs/versions/tokens.toml"),
+    tokens: PackText::file("versions/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

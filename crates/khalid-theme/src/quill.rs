@@ -14,7 +14,7 @@ pub(crate) static QUILL: Pack = Pack {
     summary: "A minimal text blog: one column of generous type, every list one line a post with its date, and no pictures on lists, so its pages load fastest.",
     css: PackText::file("quill/quill.css"),
     templates: &[],
-    tokens: include_str!("../packs/quill/tokens.toml"),
+    tokens: PackText::file("quill/tokens.toml"),
     reader: &[],
     options: &[
         parts::LOGO,

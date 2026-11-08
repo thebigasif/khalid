@@ -24,7 +24,7 @@ pub(crate) static GALLERY: Pack = Pack {
         PackTemplate::file("author.html", "gallery/author.html"),
         PackTemplate::file("parts-gallery.html", "gallery/parts-gallery.html"),
     ],
-    tokens: include_str!("../packs/gallery/tokens.toml"),
+    tokens: PackText::file("gallery/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

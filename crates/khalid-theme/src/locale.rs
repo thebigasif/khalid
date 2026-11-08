@@ -24,7 +24,7 @@ pub(crate) static LOCALE: Pack = Pack {
         PackTemplate::file("author.html", "locale/author.html"),
         PackTemplate::file("parts-locale.html", "locale/parts-locale.html"),
     ],
-    tokens: include_str!("../packs/locale/tokens.toml"),
+    tokens: PackText::file("locale/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),
