@@ -178,34 +178,39 @@ fn the_choices_page_saves_with_scripts_off_and_the_next_page_says_so() {
     let site = site_with(CODE);
     let server = serve(site.path());
     let back = "back=%2Fblog%2Fprivacy-choices%2F";
+    // The site's code is Marketing: it runs only when that bit is set
+    // (privacy plan KTD3: 1 Preferences, 2 Analytics, 4 Marketing).
     let answers = [
-        (format!("choice=save&analytics=on&{back}"), "no"),
+        (format!("choice=save&analytics=on&{back}"), "2", false),
         (
             format!("choice=save&preferences=on&analytics=on&marketing=on&{back}"),
-            "yes",
+            "7",
+            true,
         ),
-        (format!("choice=accept-all&{back}"), "yes"),
-        (format!("choice=reject-all&{back}"), "no"),
+        (format!("choice=accept-all&{back}"), "15", true),
+        (format!("choice=reject-all&{back}"), "0", false),
     ];
-    for (form, kept) in answers {
+    for (form, bits, runs) in answers {
         let answer = send(&server, ("POST", "/blog/_consent/"), &[], &form);
         assert_eq!(answer.status, 303, "{form}");
-        assert_eq!(answer.header("location"), "/blog/privacy-choices/");
-        let cookie = answer.header("set-cookie");
-        assert!(
-            cookie.starts_with(&format!("khalid-consent={kept};")),
-            "{form}: {cookie}"
+        assert_eq!(
+            answer.header("location"),
+            "/blog/privacy-choices/?consent=saved"
         );
+        let cookie = answer.header("set-cookie");
+        let kept = cookie.split(';').next().unwrap();
+        let value = kept.strip_prefix("khalid-consent=2.").unwrap();
+        assert_eq!(value.split('.').nth(1), Some(bits), "{form}: {cookie}");
         let next = get(
             &server,
             "/blog/privacy-choices/",
-            &[&format!("Cookie: khalid-consent={kept}")],
+            &[&format!("Cookie: {kept}")],
         );
         assert!(
             next.body.contains("Your privacy choices are saved."),
             "{form}"
         );
         assert!(!next.body.contains("<!--khalid-chosen-->"), "{form}");
-        assert_eq!(next.body.contains("chat()"), kept == "yes", "{form}");
+        assert_eq!(next.body.contains("chat()"), runs, "{form}");
     }
 }
