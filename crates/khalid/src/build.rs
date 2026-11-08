@@ -50,6 +50,10 @@ struct BuildBody {
     /// The posts the publish gate kept out, each with every finding.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     left_out: Vec<Report>,
+    /// Things worth a look that are not problems, such as a privacy page
+    /// with no contact details.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    warnings: Vec<UserMessage>,
 }
 
 /// What one build wrote: how many pages, and the report of each post the
@@ -350,11 +354,14 @@ fn success(output: Output, out: &Path, built: Built, config: &Config) -> Exit {
             "{said}Search engines read robots.txt only at {host}/robots.txt, outside the blog's folder, so its copy is in {root}. Copy the files in that folder to the root of the main site.\n"
         );
     }
-    if mode.has_pages()
-        && let Some(warning) = privacy_page::missing_contact(config)
-    {
+    let warnings: Vec<UserMessage> = (mode.has_pages())
+        .then(|| privacy_page::missing_contact(config))
+        .flatten()
+        .into_iter()
+        .collect();
+    for warning in &warnings {
         let (what, why, fix) = (warning.what(), warning.why(), warning.fix());
-        report::notice(&format!("Worth a look: {what}\n  {why}\n  {fix}"));
+        said = format!("{said}Worth a look: {what}\n  {why}\n  {fix}\n");
     }
     match output {
         Output::Human => report::text(&said, Exit::Success),
@@ -365,6 +372,7 @@ fn success(output: Output, out: &Path, built: Built, config: &Config) -> Exit {
                 root,
                 off,
                 left_out,
+                warnings,
             },
             Exit::Success,
         ),
