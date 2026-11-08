@@ -414,8 +414,7 @@ fn theme(folder: &Path, config: &Config, command: &ThemeCommand, cli: &Cli) -> E
     }
 }
 
-/// Runs the commands that decide who may reach the site: `keys` and
-/// `staff`.
+/// Runs the commands that decide who may reach the site: `keys`, `staff`.
 fn access(folder: &Path, config: &Config, command: &Command, output: Output) -> Exit {
     match command {
         Command::Keys { command } => keys::run(folder, command, output),
