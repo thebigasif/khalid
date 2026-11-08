@@ -2667,7 +2667,7 @@ dependencies = [
 
 [[package]]
 name = "khalid"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "atom_syndication",
  "axum",
@@ -2734,7 +2734,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-admin"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "http-body-util",
@@ -2744,7 +2744,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-alerts"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "khalid-alerts",
@@ -2756,7 +2756,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-analytics"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "serde",
@@ -2767,7 +2767,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-api"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "ammonia",
  "argon2 0.6.0",
@@ -2803,7 +2803,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-audit"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "http",
@@ -2822,7 +2822,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-auth"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "argon2 0.6.0",
  "axum",
@@ -2848,7 +2848,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-comments"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "chrono",
@@ -2871,7 +2871,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-content"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "ammonia",
  "chrono",
@@ -2906,7 +2906,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-db"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "futures-util",
@@ -2930,7 +2930,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-forms"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "chrono",
@@ -2944,7 +2944,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-https"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "base64 0.22.1",
@@ -2972,7 +2972,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-import"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "ammonia",
  "chrono",
@@ -3008,7 +3008,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-mail"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "khalid-core",
  "khalid-mail",
@@ -3025,7 +3025,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-mcp"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "chrono",
@@ -3042,7 +3042,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-media"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "divan",
@@ -3068,7 +3068,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-mount"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "khalid-core",
  "thiserror 2.0.21",
@@ -3076,7 +3076,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-newsletter"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "chrono",
@@ -3098,7 +3098,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-outbound"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "http",
  "khalid-core",
@@ -3112,7 +3112,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-perf"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "divan",
@@ -3127,7 +3127,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-render"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "base64 0.22.1",
  "brotli",
@@ -3148,7 +3148,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-routes"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "khalid-core",
@@ -3160,7 +3160,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-sdk"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "serde_json",
  "thiserror 2.0.21",
@@ -3168,7 +3168,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-search"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "khalid-core",
  "rust-stemmers",
@@ -3176,7 +3176,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-search-console"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "khalid-core",
@@ -3190,7 +3190,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-seo"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "atom_syndication",
  "chrono",
@@ -3210,7 +3210,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-server"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "brotli",
@@ -3236,7 +3236,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-share-image"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "brotli",
  "insta",
@@ -3251,7 +3251,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-static"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "khalid-core",
  "serde",
@@ -3261,7 +3261,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-theme"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "brotli",
  "http",
@@ -3282,7 +3282,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-webhooks"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "hmac",
@@ -3420,7 +3420,7 @@ checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
 
 [[package]]
 name = "lint-check"
-version = "1.6.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "reqwest",

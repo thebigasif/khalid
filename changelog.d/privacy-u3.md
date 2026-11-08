@@ -1,2 +1,0 @@
-Changed
-- Consent is now asked per category. A reader can accept all, reject all, or turn Preferences, Analytics, Marketing and External media on one by one, and each piece of the site's code runs only for a reader who allowed its category. A browser that sends Global Privacy Control keeps Marketing off, the site answers `/.well-known/gpc.json`, and a reader asked under the old banner is asked once more, except one who said no, whose no stands.
