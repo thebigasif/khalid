@@ -13,6 +13,7 @@ mod content_error;
 mod content_hash;
 mod directive;
 mod embed;
+mod external_media;
 mod form;
 mod front_matter;
 mod layout;
@@ -37,6 +38,10 @@ pub use chart::{
 pub use content_error::ContentError;
 pub use content_hash::ContentHash;
 pub use embed::{EMBED_PROVIDERS, EmbedProvider};
+pub use external_media::{
+    MEDIA_CARD_END, MEDIA_CARD_START, MEDIA_END, MEDIA_FORM, MEDIA_START, external_media_as_links,
+    release_external_media,
+};
 pub use form::{FieldKind, FormField};
 pub use layout::{Column, ProsConsBlock};
 pub use post::{

@@ -1,9 +1,10 @@
 //! The HTML of the media blocks: video, audio, file download, gallery and
 //! embed.
 
-use khalid_core::AbsoluteUrl;
+use khalid_core::{AbsoluteUrl, Locale};
 
 use super::{Image, Link, Renderer, attribute};
+use crate::external_media::{MEDIA_CARD_END, MEDIA_CARD_START, MEDIA_END, MEDIA_FORM, MEDIA_START};
 use crate::{GalleryImage, StructuredBlock, VideoBlock, embed};
 
 /// The height of an allowed site's frame when its embed does not say, in
@@ -131,18 +132,79 @@ impl Renderer<'_> {
         } else {
             ("wide", "315")
         };
+        let words = CardWords::of(&self.ids.locale);
+        let name = provider.name();
         self.push(&[
             "<figure class=\"embed embed-",
             shape,
-            "\">\n<iframe src=\"",
+            "\">\n",
+            MEDIA_CARD_START,
+            "<div class=\"embed-card\">\n<p>",
+            words.note[0],
+            name,
+            words.note[1],
+            name,
+            words.note[2],
+            "</p>\n<div class=\"embed-card-actions\"><a class=\"embed-load\" href=\"",
+            &attribute(src.as_str()),
+            "\">",
+            words.load,
+            "</a>\n",
+            MEDIA_FORM,
+            "<button type=\"submit\" name=\"choice\" value=\"allow-external-media\">",
+            words.always,
+            "</button></form></div>\n</div>",
+            MEDIA_CARD_END,
+            "\n",
+            MEDIA_START,
+            "<iframe src=\"",
             &attribute(&player),
             "\" title=\"",
             &attribute(title),
             "\" width=\"560\" height=\"",
             height,
-            "\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-popups\" allow=\"encrypted-media; fullscreen; picture-in-picture\"></iframe>\n<figcaption>",
+            "\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-popups\" allow=\"encrypted-media; fullscreen; picture-in-picture\"></iframe>",
+            MEDIA_END,
+            "\n<figcaption>",
             &link,
             "</figcaption>\n</figure>\n",
         ]);
+    }
+}
+
+/// The words on an embed's card, in German for a German post and in
+/// English for every other.
+struct CardWords {
+    /// What loading shares, around the provider's name twice.
+    note: [&'static str; 3],
+    /// The link that loads this one player.
+    load: &'static str,
+    /// The button that allows External media for the whole site.
+    always: &'static str,
+}
+
+impl CardWords {
+    fn of(locale: &Locale) -> Self {
+        if locale.language() == "de" {
+            Self {
+                note: [
+                    "Dieser Player kommt von ",
+                    ". Beim Laden erhält ",
+                    " Daten über Sie, etwa Ihre IP-Adresse.",
+                ],
+                load: "Medien laden",
+                always: "Externe Medien immer laden",
+            }
+        } else {
+            Self {
+                note: [
+                    "This player comes from ",
+                    ". Loading it shares data about you, such as your IP address, with ",
+                    ".",
+                ],
+                load: "Load media",
+                always: "Always load external media",
+            }
+        }
     }
 }

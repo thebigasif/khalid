@@ -4,7 +4,7 @@
 // with / or Ctrl+K, show results while typing a search, mark the section
 // being read in the contents, open the contents as a sheet on a phone,
 // preview a linked post, and say whether a location is open now and which
-// is nearest.
+// is nearest, and load an embed's player when the reader asks.
 // The words it shows come from the script tag's data attributes.
 (() => {
   "use strict";
@@ -418,4 +418,18 @@
       );
     });
   }
+
+  // An embed's card loads its player only when the reader asks for it.
+  // The player waits in a template, so nothing reaches the provider
+  // before then; without this script the card's link opens the provider.
+  document.addEventListener("click", (event) => {
+    const card = event.target.closest(".embed-load")?.closest(".embed-card");
+    const held = card?.parentElement.querySelector("template");
+    if (!held) return;
+    event.preventDefault();
+    const player = held.content.firstElementChild;
+    card.replaceWith(held.content);
+    held.remove();
+    player?.focus();
+  });
 })();
