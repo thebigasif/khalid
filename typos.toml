@@ -20,6 +20,9 @@ minijinja = "minijinja"
 ue = "ue"
 # "Search" in German, a menu label in the demo example.
 suche = "suche"
+# German words on an embed's card (khalid-content, privacy plan U5).
+sie = "sie"
+adresse = "adresse"
 # German and Spanish words in the multilingual example's settings and its
 # English post on false friends.
 methoden = "methoden"
