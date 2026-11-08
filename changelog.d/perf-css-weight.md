@@ -1,2 +1,0 @@
-Changed
-- Each page now downloads only the CSS it uses. A post no longer carries the rules of the home page, and the home page no longer carries the rules of every block a post may hold. Across the 31 template demos, a home page, post, category or author page downloads at most 10 KB of CSS once compressed, where before most pages downloaded 10 to 14 KB. Pages look exactly as before, and your own rules in `theme/site.css` still reach every page. A check now keeps every template under this budget.
