@@ -49,15 +49,15 @@ impl PageCode {
             HeadNonce::PerRequest => Place::Held,
             HeadNonce::Static => Place::Left,
         };
-        let written = |html: Option<String>| html.unwrap_or_default();
+        let written = |html: Vec<String>| html.join("\n");
         let site = match place {
             Place::Open(HeadNonce::PerRequest) => (
-                written(code.head.as_ref().map(|head| head.to_html(NONCE_SLOT))),
-                written(code.body.as_ref().map(|body| body.to_html(NONCE_SLOT))),
+                written(code.heads().map(|head| head.to_html(NONCE_SLOT)).collect()),
+                written(code.bodies().map(|body| body.to_html(NONCE_SLOT)).collect()),
             ),
             Place::Open(HeadNonce::Static) => (
-                written(code.head.as_ref().map(ToString::to_string)),
-                written(code.body.as_ref().map(ToString::to_string)),
+                written(code.heads().map(ToString::to_string).collect()),
+                written(code.bodies().map(ToString::to_string).collect()),
             ),
             Place::Held | Place::Left => (String::new(), String::new()),
         };
