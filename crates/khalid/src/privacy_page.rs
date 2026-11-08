@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 
 use chrono::NaiveDate;
 use khalid_content::{EMBED_PROVIDERS, EmbedProvider, PRIVACY_FACTS_MARK, SiteContent};
-use khalid_core::{Config, Locale, Mode, UserMessage};
+use khalid_core::{CodeCategory, Config, GpcMode, Locale, Mode, UserMessage};
 use khalid_render::{
     BodyHtml, Collected, CookiePurpose, GpcAnswer, Lasts, PageBody, PageKind, PrivacyCategory,
     PrivacyContact, PrivacyCookie, PrivacyFacts, PrivacyVendor, RenderPrivacy, Renderer,
@@ -27,9 +27,6 @@ const REST: &str = "privacy/";
 /// The file in `data/` that keeps the day the facts last changed and their
 /// hash, as `2026-11-08 <hash>`.
 const KEPT: &str = "privacy-facts";
-
-/// How many months a reader's choice lasts until `[privacy]` sets it.
-const CONSENT_MONTHS: u8 = 6;
 
 /// How many days the subscriber cookie lasts, as `khalid-newsletter` sets.
 const READER_DAYS: u16 = 180;
@@ -143,10 +140,11 @@ pub(crate) fn facts(config: &Config, content: &SiteContent) -> PrivacyFacts {
             || bodies().any(|body| body.contains("::newsletter") || body.contains("::gated")));
     let forms = server && bodies().any(|body| body.contains(":::form"));
     let passwords = server && (content.posts.iter()).any(|post| post.front.password_hash.is_some());
+    let privacy = config.privacy();
     let mut cookies = vec![PrivacyCookie {
         name: khalid_server::CONSENT_COOKIE.to_owned(),
         purpose: CookiePurpose::Consent,
-        lasts: Lasts::Months(CONSENT_MONTHS),
+        lasts: Lasts::Months(privacy.lifetime_months),
     }];
     if newsletter {
         cookies.push(PrivacyCookie {
@@ -162,16 +160,20 @@ pub(crate) fn facts(config: &Config, content: &SiteContent) -> PrivacyFacts {
             lasts: Lasts::Days(UNLOCK_DAYS),
         });
     }
-    let code = config.code();
-    let vendors = if code.waits_for_consent() {
-        vec![PrivacyVendor {
-            name: None,
-            category: PrivacyCategory::Marketing,
-            policy: None,
-        }]
-    } else {
-        Vec::new()
-    };
+    let entries = config
+        .code()
+        .entries
+        .iter()
+        .filter(|entry| !entry.is_empty());
+    let (quiet, waiting): (Vec<_>, Vec<_>) =
+        entries.partition(|entry| entry.category == CodeCategory::NoTracking);
+    let vendors = (waiting.into_iter())
+        .map(|entry| PrivacyVendor {
+            name: entry.vendor.clone(),
+            category: category(entry.category),
+            policy: entry.policy.as_ref().map(ToString::to_string),
+        })
+        .collect();
     let visitor_log = config.visitor_log();
     let collects = [
         (server, Collected::Comments),
@@ -186,20 +188,47 @@ pub(crate) fn facts(config: &Config, content: &SiteContent) -> PrivacyFacts {
             .collect(),
         cookies,
         vendors,
-        quiet: Vec::new(),
+        quiet: quiet
+            .iter()
+            .filter_map(|entry| entry.vendor.clone())
+            .collect(),
         embeds: embedded(bodies()),
         visitor_log_days: (server && visitor_log.on).then_some(visitor_log.keep_days),
-        consent_months: CONSENT_MONTHS,
-        gpc: GpcAnswer::Marketing,
-        external_tool: None,
+        consent_months: privacy.lifetime_months,
+        gpc: match privacy.gpc {
+            GpcMode::RejectAll => GpcAnswer::RejectAll,
+            _ => GpcAnswer::Marketing,
+        },
+        external_tool: privacy.external_tool.clone(),
         changed: String::new(),
     }
 }
 
-/// Who readers write to about their data, from `[privacy]`. `None` until
-/// the owner fills it in.
-fn contact(_config: &Config) -> Option<PrivacyContact> {
-    None
+/// The page's name for the consent category code of `category` waits for.
+/// Code with no category counts as Marketing (privacy plan KTD2).
+fn category(category: CodeCategory) -> PrivacyCategory {
+    match category {
+        CodeCategory::Preferences => PrivacyCategory::Preferences,
+        CodeCategory::Analytics => PrivacyCategory::Analytics,
+        _ => PrivacyCategory::Marketing,
+    }
+}
+
+/// Who readers write to about their data, from `[privacy.contact]`. `None`
+/// until the owner gives an email or a postal address, a way to reach them.
+fn contact(config: &Config) -> Option<PrivacyContact> {
+    let given = &config.privacy().contact;
+    if given.email.is_none() && given.address.is_none() {
+        return None;
+    }
+    Some(PrivacyContact {
+        name: given
+            .name
+            .clone()
+            .unwrap_or_else(|| config.name().to_owned()),
+        email: given.email.clone(),
+        address: given.address.clone(),
+    })
 }
 
 /// What `khalid doctor` and `khalid build` tell the owner when the privacy

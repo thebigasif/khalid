@@ -172,6 +172,49 @@ fn adding_a_marketing_vendor_lists_it_and_moves_the_last_changed_day() {
     assert!(!page.contains("2026-01-05"), "{page}");
 }
 
+/// Tagged code, a script that tracks no one, and the owner's settings.
+const TAGGED: &str = r#"
+[[code]]
+head = "<script src='https://stats.example.net/a.js'></script>"
+category = "analytics"
+vendor = "Example Stats"
+policy = "https://stats.example.net/privacy"
+
+[[code]]
+head = "<script src='/counter.js'></script>"
+category = "no-tracking"
+vendor = "Own counter"
+
+[privacy]
+lifetime_months = 12
+gpc = "reject-all"
+external_tool = "Cookiebot"
+
+[privacy.contact]
+name = "Ada Owner"
+email = "privacy@example.com"
+"#;
+
+#[test]
+fn the_page_names_each_vendor_quiet_script_and_setting() {
+    let site = site(&format!("{SERVER_SITE}{TAGGED}"), "");
+    let said = build(&site);
+    assert!(!said.contains("no contact details"), "{said}");
+    let page = main_of(&site, "privacy/index.html");
+    for want in [
+        r#"<a href="https://stats.example.net/privacy" rel="nofollow">Example Stats</a></td><td>Analytics</td>"#,
+        "track no one, so they run for everyone: Own counter.",
+        "with Cookiebot, a certified consent tool",
+        "<td>12 months</td>",
+        "everything optional stays off",
+        "Ada Owner",
+        r#"<a href="mailto:privacy@example.com">privacy@example.com</a>"#,
+    ] {
+        assert!(page.contains(want), "{want}\n{page}");
+    }
+    assert!(!page.contains("Own counter</td>"), "{page}");
+}
+
 #[test]
 fn an_owner_page_replaces_the_generated_one_and_places_the_facts() {
     let site = site(STATIC_SITE, "");
