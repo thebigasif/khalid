@@ -173,6 +173,15 @@ fn a_static_post_with_an_embed_loads_the_script_and_shows_no_banner() {
         "{html}"
     );
     assert!(!html.contains("data-khalid-banner"), "{html}");
+    // A static build locks every form, so the card's "Always load" is a
+    // plain button the consent script answers, not a form (U5 with U6).
+    assert!(
+        html.contains(
+            "<div class=\"embed-allow\"><button type=\"button\" value=\"allow-external-media\">"
+        ),
+        "{html}"
+    );
+    assert!(!html.contains("This form cannot be sent"), "{html}");
     let home = page(&out, "index.html");
     assert!(!home.contains("consent."), "{home}");
 }

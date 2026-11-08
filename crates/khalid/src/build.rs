@@ -29,9 +29,9 @@ use crate::site_page::HeadNonce;
 use crate::static_mode::consent::{self as static_consent, Asking};
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
-    build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_categories,
-    post_files, post_images, post_lock, privacy_page, report, search_page, search_static,
-    share_images, static_mode, trails,
+    build_seo, build_sitemap, categories, content_message, form_pages, look, own_descriptions,
+    post_categories, post_files, post_images, post_lock, privacy_page, report, search_page,
+    search_static, share_images, static_mode, trails,
 };
 
 /// The output folder inside a site when `--out` is not given.
@@ -165,6 +165,7 @@ fn build(
     let mut languages = language_pages(site, (config, routes), content, styled, today)?;
     let renderer = theme.as_ref().map(|(renderer, ..)| renderer);
     static_mode::comments(config, &mut languages);
+    form_pages::media_under(config, &mut languages);
     post_lock::lock(config, content, renderer, &mut languages);
     let categories = categories::of(site)?;
     let asking = Asking::of(config, &languages);
