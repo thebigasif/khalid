@@ -25,6 +25,7 @@ export const privacyWords = {
     scripts: "Scripts",
     text: "Text",
     contact: "Contact",
+    proof: "Proof",
   },
   settings: {
     lede: "How long a reader's choice lasts, what a browser's privacy signal does, and whether another tool asks instead of Khalid.",
@@ -103,5 +104,28 @@ export const privacyWords = {
     emailHint: "Readers write here to see or delete their data.",
     address: "Postal address",
     addressHint: "Where letters about readers' data can be sent.",
+  },
+  proof: {
+    lede: "What readers were shown and what they chose, to show a regulator. Khalid keeps daily totals only, with no address and no reader ID.",
+    loading: "Reading the consent proof",
+    counts: "Readers' choices",
+    countsLede:
+      "Each number is how many answers allowed that category. The rest refused it. Necessary is always on.",
+    week: "Week",
+    weekOf: (day: string) => `Week of ${day}`,
+    answers: "Answers",
+    total: "Total",
+    none: "No choices recorded yet",
+    noneWhy: "Totals appear here once readers answer the banner.",
+    download: "Download as CSV",
+    history: "What readers were shown",
+    historyLede:
+      "A new version starts when the banner text, the categories, the vendors or the lifetime change.",
+    version: "Version",
+    from: "First shown",
+    until: "Last shown",
+    shown: "What it showed",
+    show: "Show",
+    noHistory: "No reader has seen the banner yet.",
   },
 };

@@ -1,7 +1,7 @@
 // A blog for the Privacy screen's tests: the demo's settings with one
 // untagged script and no [privacy] table, as a fresh site has.
 import type { SiteChange, SiteSettings } from "../src/api/site";
-import { adminBlog } from "./blog";
+import { type Answers, adminBlog } from "./blog";
 import { json } from "./render";
 
 /** The demo site's settings, as the settings API sends them. */
@@ -20,11 +20,12 @@ export const PRIVACY_DEMO: SiteSettings = {
   restart_needed: false,
 };
 
-/** A blog with `site`'s settings that records each change, then needs a restart. */
-export function privacyBlog(site: SiteSettings = PRIVACY_DEMO): SiteChange[] {
+/** A blog with `site`'s settings that records each change, then needs a restart; `more` answers the rest. */
+export function privacyBlog(site: SiteSettings = PRIVACY_DEMO, more: Answers = {}): SiteChange[] {
   const changes: SiteChange[] = [];
   let now = site;
   adminBlog({
+    ...more,
     "GET /settings/": () => json(200, { settings: now }),
     "PUT /settings/": async (request) => {
       const body: { settings: SiteChange } = await request.json();

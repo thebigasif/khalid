@@ -6,6 +6,7 @@ import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { Contact } from "../privacy/Contact";
 import { Options } from "../privacy/Options";
+import { Proof } from "../privacy/Proof";
 import { Scripts } from "../privacy/Scripts";
 import { Text } from "../privacy/Text";
 import { same } from "../seo/parts";
@@ -28,6 +29,7 @@ const SECTIONS: { tab: Tab; show: (props: PrivacyProps) => ReactNode }[] = [
   { tab: "scripts", show: (props) => <Scripts {...props} /> },
   { tab: "text", show: (props) => <Text {...props} /> },
   { tab: "contact", show: (props) => <Contact {...props} /> },
+  { tab: "proof", show: (props) => <Proof {...props} /> },
 ];
 
 /** Only what `change` changes on `site`, or `null` when it changes nothing. */
