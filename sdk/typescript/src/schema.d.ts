@@ -363,14 +363,20 @@ export type AdminSchemaTemplate = {
 export type AdminSettings = {
   /** The address of the main site, such as `https://www.example.com`. */
   address: string;
+  /** The site's own code from `[code]`, one object per entry as written: `head`, `body`, the `category` it waits for (`preferences`, `analytics`, `marketing` or `no-tracking`), the `vendor` and its `policy` link. An entry with no `category` counts as Marketing. The old single `[code]` table reads as one entry. */
+  code: (Record<string, unknown>)[];
   /** The language a reader gets first, such as `en`. */
   default_language: string;
   /** Every language the site is written in. */
   languages: string[];
+  /** How the site reaches readers: `server`, `static` or `headless`. It is read here and changed only in `site.toml`. */
+  mode: string;
   /** The path the blog lives under, such as `/blog/`. */
   mount: string;
   /** The site's name. */
   name: string;
+  /** The `[privacy]` table as `site.toml` writes it, one key per part such as `lifetime_months`, `gpc`, `counts`, `external_tool`, `text` or `contact`. A setting left out keeps its default. */
+  privacy: Record<string, unknown>;
   /** Whether `site.toml` says something the running server does not use yet, so a restart is needed to apply it. */
   restart_needed: boolean;
   /** The `[seo]` table as `site.toml` writes it, one key per part such as `titles` or `crawlers`. A setting left out of the file is left out here too and keeps its default; `docs/seo-settings.md` lists every part and its defaults. */
@@ -1765,6 +1771,8 @@ export type Settings = {
 export type SettingsChange = {
   /** A new address of the main site. */
   address?: string | null;
+  /** Every entry of `[code]`, in place of the old ones, written as a `[[code]]` list. An empty list removes `[code]`. */
+  code?: (Record<string, unknown>)[] | null;
   /** A new default language, which `languages` must include. */
   default_language?: string | null;
   /** A new list of languages. */
@@ -1773,6 +1781,8 @@ export type SettingsChange = {
   mount?: string | null;
   /** A new name. */
   name?: string | null;
+  /** New parts of the `[privacy]` table, each replacing the part of that name whole, such as `{"lifetime_months": 12}`. `null` removes a part, so it goes back to its default. Parts left out stay as they are. */
+  privacy?: Record<string, unknown> | null;
   /** New parts of the `[seo]` table, each replacing the part of that name whole, such as `{"titles": {"separator": "·"}}`. `null` removes a part, so its settings go back to their defaults. Parts left out stay as they are. */
   seo?: Record<string, unknown> | null;
   template?: TemplateSetting | null;
