@@ -199,21 +199,6 @@ fn layout_mistake(file: &SiteFile) -> Option<(&'static str, &'static str)> {
     None
 }
 
-/// The refusal of `[code]` that waits for consent on a static site, at the
-/// consent line when it is written, else at the table's own line.
-fn static_consent(path: &Path, text: &str) -> ConfigError {
-    let table = text
-        .lines()
-        .position(|line| line.trim_start().starts_with("[code]"))
-        .map_or(1, |index| index.saturating_add(1));
-    ConfigError::Field {
-        path: path.to_path_buf(),
-        line: line_of_key_in(text, "[code", "consent").max(table),
-        field: "consent".to_owned(),
-        problem: "a static host cannot keep a reader's choice, so code that waits for consent would never run; set consent = \"not-needed\" in [code], or mode = \"server\"".to_owned(),
-    }
-}
-
 /// The refusal of `key` in `table`, at its line of `text`.
 fn in_table(path: &Path, text: &str, table: &str, key: &str, problem: &str) -> ConfigError {
     ConfigError::Field {
@@ -225,8 +210,8 @@ fn in_table(path: &Path, text: &str, table: &str, key: &str, problem: &str) -> C
 }
 
 /// The first mistake in the tables whose checks span the file: `[alerts]`
-/// against how the site sends `mail`, and `[visitor_log]` and `[code]`
-/// against the mode.
+/// against how the site sends `mail`, and `[visitor_log]` against the
+/// mode.
 fn tables_mistake(
     file: &SiteFile,
     mail: Option<&MailSettings>,
@@ -241,9 +226,6 @@ fn tables_mistake(
     }
     if let Some((key, problem)) = file.ai.mistake() {
         return Err(in_table(path, text, "[ai", key, problem));
-    }
-    if file.mode == Mode::Static && file.code.waits_for_consent() {
-        return Err(static_consent(path, text));
     }
     Ok(())
 }

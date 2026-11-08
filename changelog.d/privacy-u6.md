@@ -1,0 +1,2 @@
+Added
+- A static site can now ask readers for consent. `khalid build` holds the site's own code until a reader agrees, through a script under 2 KB that shows Accept all, Reject all and Choose, honours Global Privacy Control and loads only where a page asks something. With scripts off, nothing optional runs. The build also writes a choices page in each language and `.well-known/gpc.json`. Static sites with code that waits for consent no longer fail to start.

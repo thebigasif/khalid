@@ -44,6 +44,12 @@ impl BodyCode {
     pub fn to_html(&self, nonce: &str) -> String {
         self.0.to_html(nonce)
     }
+
+    /// The body code as a static page holds it until a reader agrees to
+    /// `category`, as [`HeadCode::to_held_html`] writes it.
+    pub fn to_held_html(&self, category: &str) -> String {
+        self.0.to_held_html(category)
+    }
 }
 
 impl fmt::Display for BodyCode {

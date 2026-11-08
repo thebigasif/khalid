@@ -361,7 +361,9 @@ For code that sets no cookie and tracks no one, add `consent = "not-needed"` to 
 
 Each script gets the page's nonce, a random value the browser checks against the page's security policy, so the code is allowed to run and nothing else is. A script may load other scripts and send data to any `https` address, as analytics tools do.
 
-A static site cannot keep a reader's choice, so Khalid refuses to start in `mode = "static"` with code that waits for consent. Set `consent = "not-needed"` or switch to `mode = "server"`. Site verification tags belong in `[seo]`, which never waits.
+A static site asks with a small script instead, because a static host cannot read a cookie. `khalid build` writes code that waits as plain text, which no browser runs. The script shows a banner with Accept all, Reject all and Choose, keeps the reader's answer in a cookie for 180 days, and runs the code only for a reader who agreed. A browser that sends Global Privacy Control, a setting that asks sites not to sell or share data, keeps marketing code off unless the reader turns it on at `privacy-choices/`. With scripts off, the banner never shows and the code never runs. The script is under 2 KB and loads only on pages that ask something: a site with code that waits, and posts with an embed. Site verification tags belong in `[seo]`, which never waits.
+
+`khalid build` also writes `.well-known/gpc.json`, which tells browsers the site honours Global Privacy Control. For a blog in a folder it is in `_root/`, with the other files for the root of the host.
 
 ## A copy search engines should skip
 

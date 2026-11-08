@@ -79,7 +79,7 @@ pub use reading_time::ReadingTime;
 pub use related::{MOST_RELATED, PostTopics, related, related_up_to};
 pub use render_error::RenderError;
 pub use renderer::Renderer;
-pub use script::{ScriptFile, ScriptTag, reader_script, reader_script_file};
+pub use script::{ScriptFile, ScriptTag, consent_script, reader_script, reader_script_file};
 pub use series::RenderSeries;
 pub use share::SHARE_NETWORKS;
 pub use site::{AnnouncementBar, BreadcrumbStyle, Nav, NavGroup, NavLink, RenderSite};

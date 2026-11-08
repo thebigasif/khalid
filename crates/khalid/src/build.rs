@@ -26,6 +26,7 @@ use crate::post_files::{Assets, charts, library_photo};
 use crate::post_photos::Shown;
 use crate::seo_extras::{self, archives_off, term_seo};
 use crate::site_page::HeadNonce;
+use crate::static_mode::consent::{self as static_consent, Asking};
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
     build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_categories,
@@ -162,7 +163,9 @@ fn build(
     static_mode::comments(config, &mut languages);
     post_lock::lock(config, content, renderer, &mut languages);
     let categories = categories::of(site)?;
+    let asking = Asking::of(config, &languages);
     if let Some((renderer, ..)) = &theme {
+        static_consent::add_choices(config, renderer, &mut languages, asking)?;
         search_page::add(config, renderer, &mut languages)?;
         archive_pages::add(site, config, (renderer, today), &mut languages)?;
         let sources = (content, categories.as_slice());
@@ -200,10 +203,14 @@ fn build(
     build_sitemap::fill(config, &seo_site, &seo_pages, &mut languages)?;
     let mut written = 0;
     let locks = static_mode::locks(config.mode())?;
-    let code = PageCode::new(config, HeadNonce::Static);
+    let mut code = PageCode::new(config, HeadNonce::Static);
     if let Some((renderer, css, sheets)) = &theme {
         write_asset(out, css)?;
         write_asset(out, &assets::reader_with_copies()?)?;
+        if let Some((script, tag)) = static_consent::script(config, asking)? {
+            code = code.with_consent_script(tag);
+            write_asset(out, &script)?;
+        }
         write_fonts(site, &tokens, out)?;
         written = write_html(out, (renderer, sheets), &languages, (locks.as_ref(), &code))?;
     }
@@ -223,6 +230,11 @@ fn build(
         let relative = format!("{}/{}", build_files::ROOT_FOLDER, file.file);
         write(out, &relative, &file.text)?;
     }
+    write(
+        out,
+        &static_consent::gpc_file(config),
+        static_consent::GPC_JSON,
+    )?;
     Ok(written)
 }
 
