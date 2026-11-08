@@ -1,23 +1,27 @@
 //! The public site's one stylesheet, built from the theme's tokens.
 
+use crate::archive;
 use crate::{Asset, RenderError, Tokens};
 
-/// The rules every site shares. They read the tokens through CSS variables.
-const SITE_CSS: &str = include_str!("../assets/site.css");
-
-/// The styles of the body blocks, shared by every template.
-const BLOCKS_CSS: &str = include_str!("../assets/blocks.css");
-
-/// The styles of the parts a template switches on, such as the logo.
-const PARTS_CSS: &str = include_str!("../assets/parts.css");
-
-/// The styles of the reading aids every template shares: the progress
-/// bar, the contents sheet, the copy link button and the search dialog.
-const READING_CSS: &str = include_str!("../assets/reading.css");
-
-/// The styles of the pages that help readers find their way, such as the
-/// glossary.
-const DISCOVERY_CSS: &str = include_str!("../assets/discovery.css");
+/// The shared stylesheets in the built-in archive, in the order the public
+/// stylesheet joins them:
+/// - `site.css`: the rules every site shares. They read the tokens through
+///   CSS variables.
+/// - `blocks.css`: the styles of the body blocks, shared by every template.
+/// - `parts.css`: the styles of the parts a template switches on, such as
+///   the logo.
+/// - `reading.css`: the styles of the reading aids every template shares:
+///   the progress bar, the contents sheet, the copy link button and the
+///   search dialog.
+/// - `discovery.css`: the styles of the pages that help readers find their
+///   way, such as the glossary.
+const SHARED_CSS: [&str; 5] = [
+    "assets/site.css",
+    "assets/blocks.css",
+    "assets/parts.css",
+    "assets/reading.css",
+    "assets/discovery.css",
+];
 
 /// Builds the one public stylesheet (RULES.md BL-WEB-7): the tokens as
 /// CSS variables, then the shared page and block rules with comments and indentation
@@ -53,11 +57,9 @@ pub fn stylesheet_text(tokens: &Tokens) -> String {
 /// The text of the stylesheet [`stylesheet_with`] builds.
 pub fn stylesheet_text_with(tokens: &Tokens, pack_css: &str) -> String {
     let mut css = tokens.to_css();
-    css.push_str(&minify(SITE_CSS));
-    css.push_str(&minify(BLOCKS_CSS));
-    css.push_str(&minify(PARTS_CSS));
-    css.push_str(&minify(READING_CSS));
-    css.push_str(&minify(DISCOVERY_CSS));
+    for name in SHARED_CSS {
+        css.push_str(&minify(archive::text(name)));
+    }
     css.push_str(&minify(pack_css));
     css
 }

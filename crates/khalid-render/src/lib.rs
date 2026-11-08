@@ -10,6 +10,7 @@
 //! code turns content into these records; the server decides when to render
 //! and caches the result.
 
+mod archive;
 mod asset;
 mod author;
 mod comments;
