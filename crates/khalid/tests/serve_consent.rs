@@ -1,8 +1,10 @@
-//! `khalid serve` with the site's own code in `[code]` (G45, KH-SEO-12):
-//! the banner is a plain form that works with scripts off, the reader's
-//! choice comes back as a cookie that no other site can set, the code runs
-//! only for a reader who pressed Allow, under the nonce of the page's
-//! policy, and every page type keeps its policy whatever the reader chose.
+//! `khalid serve` with the site's own code in `[code]` (G45, KH-SEO-12,
+//! privacy plan U3): the banner is a plain form that works with scripts
+//! off, the reader's categories come back as a cookie that no other site
+//! can set, each piece of code runs only for a reader who allowed its
+//! category, under the nonce of the page's policy, Global Privacy Control
+//! keeps Marketing off, and every page type keeps its policy whatever the
+//! reader chose.
 
 use std::fs;
 use std::io::{BufRead, BufReader, Read, Write};
@@ -152,6 +154,27 @@ fn get(server: &Server, path: &str, headers: &[&str]) -> Answer {
     send(server, ("GET", path), headers, "")
 }
 
+/// Code in two categories: Analytics, and Marketing.
+const TWO_KINDS: &str = r#"
+[[code]]
+body = "<script>stats()</script>"
+category = "analytics"
+
+[[code]]
+body = "<script>ads()</script>"
+category = "marketing"
+"#;
+
+/// The consent cookie the server sets for `form`, posted with `headers`,
+/// as `khalid-consent=<value>`.
+#[cfg(test)]
+fn chosen(server: &Server, form: &str, headers: &[&str]) -> String {
+    let answer = send(server, ("POST", "/blog/_consent/"), headers, form);
+    assert_eq!(answer.status, 303, "{form}");
+    let cookie = answer.header("set-cookie");
+    cookie.split_once(';').unwrap().0.to_owned()
+}
+
 #[test]
 fn the_banner_posts_with_scripts_off_and_the_choice_comes_back_as_a_cookie() {
     let site = site_with(CODE);
@@ -163,15 +186,18 @@ fn the_banner_posts_with_scripts_off_and_the_choice_comes_back_as_a_cookie() {
     assert!(first.body.contains("action=\"/blog/_consent/\""));
     assert!(!first.body.contains("googletagmanager") && !first.body.contains("chat()"));
 
-    for choice in ["yes", "no"] {
+    for (choice, bits) in [("accept-all", 15), ("reject-all", 0)] {
         let form = format!("choice={choice}&back=%2Fblog%2Fwhat-a-sitemap-does%2F");
         let answer = send(&server, ("POST", "/blog/_consent/"), &[], &form);
         assert_eq!(answer.status, 303);
-        assert_eq!(answer.header("location"), post);
-        let cookie = format!(
-            "khalid-consent={choice}; path=/blog/; max-age=15552000; samesite=lax; httponly; secure"
-        );
-        assert_eq!(answer.header("set-cookie"), cookie);
+        assert_eq!(answer.header("location"), format!("{post}?consent=saved"));
+        let cookie = answer.header("set-cookie");
+        let value = cookie.strip_prefix("khalid-consent=2.").unwrap();
+        let (rev, rest) = value.split_once('.').unwrap();
+        assert_eq!(rev.len(), 8, "{cookie}");
+        assert!(rest.starts_with(&format!("{bits}.")), "{cookie}");
+        let kept = "; path=/blog/; max-age=15552000; samesite=lax; httponly; secure";
+        assert!(cookie.ends_with(&format!(".0{kept}")), "{cookie}");
         assert_eq!(answer.header("cache-control"), "no-store");
         assert!(answer.head.contains("content-security-policy: "));
     }
@@ -181,7 +207,7 @@ fn the_banner_posts_with_scripts_off_and_the_choice_comes_back_as_a_cookie() {
 fn no_other_site_can_choose_for_a_reader_or_send_them_away() {
     let site = site_with(CODE);
     let server = start(site.path());
-    let form = "choice=yes&back=%2Fblog%2F";
+    let form = "choice=accept-all&back=%2Fblog%2F";
     let elsewhere = send(
         &server,
         ("POST", "/blog/_consent/"),
@@ -190,10 +216,20 @@ fn no_other_site_can_choose_for_a_reader_or_send_them_away() {
     );
     assert_eq!(elsewhere.status, 403);
     assert!(!elsewhere.head.contains("set-cookie"));
-    let away = "choice=no&back=https%3A%2F%2Fevil.example%2F";
+    let away = "choice=reject-all&back=https%3A%2F%2Fevil.example%2F";
     let answer = send(&server, ("POST", "/blog/_consent/"), &[], away);
     assert_eq!(answer.status, 303);
-    assert_eq!(answer.header("location"), "/blog/");
+    assert_eq!(answer.header("location"), "/blog/?consent=saved");
+    let long = format!("choice=save&back=%2Fblog%2F&x={}", "a".repeat(2048));
+    let answer = send(&server, ("POST", "/blog/_consent/"), &[], &long);
+    assert_eq!(answer.status, 413);
+    let unknown = send(
+        &server,
+        ("POST", "/blog/_consent/"),
+        &[],
+        "choice=maybe&back=%2F",
+    );
+    assert_eq!(unknown.status, 400);
 }
 
 /// Every page type, with the status it answers.
@@ -209,14 +245,18 @@ const PAGES: [(&str, u16); 8] = [
 ];
 
 #[test]
-fn every_page_type_runs_the_code_after_allow_under_its_policy_s_nonce() {
+fn every_page_type_runs_the_code_after_accept_all_under_its_policy_s_nonce() {
     let site = site_with(CODE);
     let server = start(site.path());
     let unasked = get(&server, "/blog/what-a-sitemap-does/", &[]);
     let policy = unasked.header("content-security-policy");
     assert!(policy.contains("connect-src 'self';"), "{policy}");
+    let cookie = format!(
+        "Cookie: {}",
+        chosen(&server, "choice=accept-all&back=%2Fblog%2F", &[])
+    );
     for (path, status) in PAGES {
-        let answer = get(&server, path, &["Cookie: khalid-consent=yes"]);
+        let answer = get(&server, path, &[&cookie]);
         assert_eq!(answer.status, status, "{path}");
         let nonce = answer.nonce().to_owned();
         assert_eq!(nonce.len(), 32, "{path}: a fresh nonce");
@@ -244,6 +284,100 @@ fn every_page_type_runs_the_code_after_allow_under_its_policy_s_nonce() {
     );
     assert!(!declined.body.contains("googletagmanager"));
     assert!(!declined.body.contains(ASK) && declined.body.contains(CHANGE));
+    for stale in ["yes", "2.00000000.15.20400.0"] {
+        let again = get(
+            &server,
+            "/blog/what-a-sitemap-does/",
+            &[&format!("Cookie: khalid-consent={stale}")],
+        );
+        assert!(again.body.contains(ASK), "{stale} asks again");
+        assert!(!again.body.contains("googletagmanager"), "{stale}");
+        assert!(!again.header("etag").is_empty(), "{stale}: the kept page");
+    }
+}
+
+#[test]
+fn gpc_gets_a_kept_page_and_keeps_marketing_off_after_accept_all() {
+    let site = site_with(TWO_KINDS);
+    let server = start(site.path());
+    let post = "/blog/what-a-sitemap-does/";
+    let plain = get(&server, post, &[]);
+    assert_eq!(plain.header("vary"), "accept-encoding, cookie, sec-gpc");
+    let gpc = get(&server, post, &["Sec-GPC: 1"]);
+    assert_eq!(gpc.status, 200);
+    assert!(gpc.body.contains(ASK) && !gpc.body.contains("()"));
+    assert!(!gpc.header("etag").is_empty(), "the kept GPC page");
+    assert_eq!(gpc.header("cache-control"), "no-cache");
+    // The banner's note that the signal was honoured shows only under GPC.
+    let note = "<p class=\"consent-gpc\">";
+    assert!(gpc.body.contains(note) && !gpc.body.contains("<!--khalid-gpc-->"));
+    let hidden = format!("<!--khalid-gpc--><template>{note}");
+    assert!(plain.body.contains(&hidden), "{}", plain.body);
+    let bot = "User-Agent: Mozilla/5.0 (compatible; Googlebot/2.1)";
+    let crawled = get(&server, post, &[bot]);
+    assert_eq!(crawled.body, plain.body);
+    assert_eq!(crawled.header("etag"), plain.header("etag"));
+
+    let form = "choice=accept-all&back=%2Fblog%2F";
+    let cookie = chosen(&server, form, &["Sec-GPC: 1"]);
+    assert!(cookie.contains(".11."), "every bit but Marketing: {cookie}");
+    let page = get(&server, post, &[&format!("Cookie: {cookie}"), "Sec-GPC: 1"]);
+    assert!(page.body.contains("stats()") && !page.body.contains("ads()"));
+    let form = "choice=save&marketing=on&back=%2Fblog%2F";
+    let cookie = chosen(&server, form, &["Sec-GPC: 1"]);
+    assert!(cookie.contains(".4.") && cookie.ends_with(".1"), "{cookie}");
+    let page = get(&server, post, &[&format!("Cookie: {cookie}"), "Sec-GPC: 1"]);
+    assert!(page.body.contains("ads()") && !page.body.contains("stats()"));
+
+    let honoured = get(&server, "/.well-known/gpc.json", &[]);
+    assert_eq!(honoured.status, 200);
+    assert_eq!(honoured.header("content-type"), "application/json");
+    assert_eq!(honoured.body, "{\"gpc\": true}\n");
+}
+
+#[test]
+fn allowing_external_media_from_a_card_keeps_the_banner() {
+    let site = site_with(TWO_KINDS);
+    let server = start(site.path());
+    let form = "choice=allow-external-media&back=%2Fblog%2F";
+    let cookie = chosen(&server, form, &[]);
+    assert!(cookie.contains(".8.") && cookie.ends_with(".2"), "{cookie}");
+    let page = get(&server, "/blog/", &[&format!("Cookie: {cookie}")]);
+    assert!(page.body.contains(ASK) && !page.body.contains("()"));
+    assert_eq!(page.header("cache-control"), "private, no-store");
+}
+
+#[test]
+fn the_search_page_carries_the_banner_and_follows_the_choice() {
+    let site = site_with(CODE);
+    let server = start(site.path());
+    let search = "/blog/search/?q=sitemap";
+    // The index fills in the background after start, for up to a minute
+    // on a busy machine.
+    let mut unasked = get(&server, search, &[]);
+    for _ in 0..600 {
+        if unasked.status == 200 {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(100));
+        unasked = get(&server, search, &[]);
+    }
+    assert_eq!(unasked.status, 200, "{}", unasked.body);
+    assert!(
+        unasked.body.contains("<!--khalid-ask-->"),
+        "{}",
+        unasked.body
+    );
+    assert!(!unasked.body.contains("googletagmanager"));
+    let cookie = chosen(&server, "choice=accept-all&back=%2Fblog%2F", &[]);
+    let answer = get(&server, search, &[&format!("Cookie: {cookie}")]);
+    let nonce = answer.nonce().to_owned();
+    assert!(
+        answer
+            .body
+            .contains(&format!("<script nonce=\"{nonce}\">chat()</script>"))
+    );
+    assert!(!answer.body.contains("<!--khalid-ask-->"));
 }
 
 #[test]
@@ -257,4 +391,16 @@ fn code_that_needs_no_consent_runs_on_every_page_with_no_banner() {
         assert!(answer.body.contains(&script), "{path}: {}", answer.body);
         assert!(!answer.body.contains(ASK), "{path}");
     }
+}
+
+#[test]
+fn an_outside_consent_tool_gets_the_code_unheld_and_no_banner() {
+    let tool = "[privacy]\nexternal_tool = \"Cookiebot\"\n";
+    let site = site_with(&format!("{CODE}{tool}"));
+    let server = start(site.path());
+    let answer = get(&server, "/blog/what-a-sitemap-does/", &[]);
+    let nonce = answer.nonce();
+    let script = format!("<script nonce=\"{nonce}\">chat()</script>");
+    assert!(answer.body.contains(&script), "{}", answer.body);
+    assert!(!answer.body.contains(ASK));
 }

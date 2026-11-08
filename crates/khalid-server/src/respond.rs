@@ -11,7 +11,8 @@ use tower::service_fn;
 
 use crate::clean_url::{Resolved, resolve};
 use crate::compress::{self, Compressed};
-use crate::consent::{self, Choice, HeldCode};
+use crate::consent::{self, ConsentSite, SAVED_QUERY, SavedNotice};
+use crate::consent_cookie::Reader;
 use crate::page::NONCE_SLOT;
 use crate::range;
 use crate::security::fresh_nonce;
@@ -23,13 +24,14 @@ const ALLOW: HeaderValue = HeaderValue::from_static("GET, HEAD");
 /// Tells caches that a page's bytes depend on `Accept-Encoding`.
 const ENCODING_VARIES: HeaderValue = HeaderValue::from_static("accept-encoding");
 
-/// Tells caches that a page's bytes depend on `Accept-Encoding` and on the
-/// reader's consent cookie.
-const ENCODING_AND_COOKIE_VARY: HeaderValue = HeaderValue::from_static("accept-encoding, cookie");
+/// Tells caches that a page's bytes depend on `Accept-Encoding`, on the
+/// reader's consent cookie and on their browser's GPC signal.
+const ENCODING_COOKIE_AND_GPC_VARY: HeaderValue =
+    HeaderValue::from_static("accept-encoding, cookie, sec-gpc");
 
 /// Tells caches that a page made for one reader's choice depends on their
-/// cookie.
-const COOKIE_VARIES: HeaderValue = HeaderValue::from_static("cookie");
+/// cookie and their GPC signal.
+const COOKIE_AND_GPC_VARY: HeaderValue = HeaderValue::from_static("cookie, sec-gpc");
 
 /// A page made for one reader's choice, kept by no cache at all.
 const PRIVATE: HeaderValue = HeaderValue::from_static("private, no-store");
@@ -68,45 +70,96 @@ pub fn router(pages: impl Into<LivePages>, security: SecurityHeaders) -> Router 
     answering(pages.into(), security, None)
 }
 
-/// The [`router`] for a site whose own code waits for each reader's
-/// consent: `held` goes into the HTML pages of a reader whose
-/// [`CONSENT_COOKIE`](crate::CONSENT_COOKIE) says yes.
+/// The [`router`] for a site that asks readers for consent: each HTML page
+/// is filled for the reader its [`CONSENT_COOKIE`](crate::CONSENT_COOKIE)
+/// and GPC signal show, with `site`'s held code for the categories they
+/// allowed.
 ///
 /// A reader who has not answered gets each page as it was rendered, with
-/// its tag and its Brotli copy, and no held code. A reader who answered
-/// gets HTML pages made for them alone: without the banner, with the form
-/// to change their choice, kept by no cache, and, when they said yes,
-/// with the code and a policy carrying its nonce.
+/// its tag and its Brotli copy, and no held code; with GPC on, they get the
+/// page's GPC copy, which has its own tag and Brotli copy. A reader who
+/// answered gets HTML pages made for them alone, kept by no cache, as
+/// [`filled`](crate::filled) makes them, with a policy carrying the nonce
+/// of any code released to them.
 pub fn router_with_consent(
     pages: impl Into<LivePages>,
     security: SecurityHeaders,
-    held: HeldCode,
+    site: ConsentSite,
 ) -> Router {
-    answering(pages.into(), security, Some(held))
+    answering(pages.into(), security, Some(site))
 }
 
-/// The router of `live`, with `held` when the site asks for consent.
-fn answering(live: LivePages, security: SecurityHeaders, held: Option<HeldCode>) -> Router {
-    let site = Arc::new((live, security, held));
+/// The router of `live`, with `consent` when the site asks for it.
+fn answering(live: LivePages, security: SecurityHeaders, consent: Option<ConsentSite>) -> Router {
+    let site = Arc::new((live, security, consent));
     Router::new().fallback_service(service_fn(move |request: Request<Body>| {
         let site = Arc::clone(&site);
         async move {
-            let (live, security, held) = &*site;
+            let (live, security, consent) = &*site;
             let mut pages = live.current();
             if waits(&pages, &request) {
                 let uri = request.uri().clone();
                 pages = live.once(|pages| !lacks(pages, &uri)).await;
             }
-            let consent = held
-                .as_ref()
-                .map(|held| (Choice::of(request.headers()), held));
-            Ok::<_, Infallible>(answer(&pages, security, &request, consent))
+            let asked = consent.as_ref().map(|site| Asked::of(&request, site));
+            Ok::<_, Infallible>(answer(&pages, security, &request, asked))
         }
     }))
 }
 
-/// A reader's choice and the code it lets in, on a site that asks.
-type Consent<'held> = Option<(Choice, &'held HeldCode)>;
+/// A reader on a site that asks for consent: who they are, the site, and
+/// whether they just saved their choices.
+#[derive(Debug, Clone, Copy)]
+struct Asked<'site> {
+    reader: Reader,
+    site: &'site ConsentSite,
+    saved: SavedNotice,
+}
+
+impl<'site> Asked<'site> {
+    /// The reader `request` shows on `site`.
+    fn of(request: &Request<Body>, site: &'site ConsentSite) -> Self {
+        Self::from_parts(request.headers(), request.uri().query(), site)
+    }
+
+    /// The reader a request's `headers` and `query` show on `site`.
+    fn from_parts(headers: &HeaderMap, query: Option<&str>, site: &'site ConsentSite) -> Self {
+        let query = query.unwrap_or_default();
+        Self {
+            reader: Reader::of(headers, site.rev()),
+            site,
+            saved: if query.split('&').any(|pair| pair == SAVED_QUERY) {
+                SavedNotice::Shown
+            } else {
+                SavedNotice::Hidden
+            },
+        }
+    }
+}
+
+/// `html`, an HTML page drawn for one request outside the router, such as
+/// a page of search results, answered as the router answers a page for a
+/// reader who answered: filled for the reader the request's `headers` and
+/// `query` show on `site`, its nonce slot filled, kept by no cache, with
+/// `security` carrying the nonce.
+pub fn drawn_for(
+    (headers, query): (&HeaderMap, Option<&str>),
+    html: String,
+    site: &ConsentSite,
+    security: &SecurityHeaders,
+) -> Response<Body> {
+    let asked = Asked::from_parts(headers, query, site);
+    let page = (MediaType::Html, &Bytes::from(html));
+    let mut response = personal(StatusCode::OK, page, SendBody::Yes, Some(asked));
+    match response.extensions_mut().remove::<FilledNonce>() {
+        Some(FilledNonce(nonce)) => security.apply_with_head_code(response.headers_mut(), &nonce),
+        None => security.apply(response.headers_mut()),
+    }
+    response
+}
+
+/// The reader on a site that asks, or `None` on a site that does not.
+type Consent<'site> = Option<Asked<'site>>;
 
 /// Whether `request` asks a set of first pages for an address it lacks.
 fn waits(pages: &Pages, request: &Request<Body>) -> bool {
@@ -181,7 +234,7 @@ fn personal(
 ) -> Response<Body> {
     let text = String::from_utf8_lossy(plain);
     let text = match consent {
-        Some((choice, held)) => consent::chosen(&text, choice, held),
+        Some(asked) => consent::filled(&text, &asked.reader, asked.site, asked.saved),
         None => text.into_owned(),
     };
     let nonce = fresh_nonce().filter(|_| text.contains(NONCE_SLOT));
@@ -190,7 +243,7 @@ fn personal(
     if consent.is_some() {
         let headers = response.headers_mut();
         headers.insert(header::CACHE_CONTROL, PRIVATE);
-        headers.insert(header::VARY, COOKIE_VARIES);
+        headers.insert(header::VARY, COOKIE_AND_GPC_VARY);
     }
     if let Some(nonce) = nonce {
         response.extensions_mut().insert(FilledNonce(nonce));
@@ -239,12 +292,16 @@ fn respond(pages: &Pages, request: &Request<Body>, consent: Consent<'_>) -> Resp
                 .insert(header::CACHE_CONTROL, NO_ICON_FOR_A_DAY);
             response
         }
-        Resolved::NotFound if answered(consent) || holds_slot(pages.not_found()) => personal(
-            StatusCode::NOT_FOUND,
-            (MediaType::Html, pages.not_found()),
-            send_body,
-            consent,
-        ),
+        Resolved::NotFound
+            if answered(consent) || gpc(consent) || holds_slot(pages.not_found()) =>
+        {
+            personal(
+                StatusCode::NOT_FOUND,
+                (MediaType::Html, pages.not_found()),
+                send_body,
+                consent,
+            )
+        }
         Resolved::NotFound => file(
             StatusCode::NOT_FOUND,
             MediaType::Html,
@@ -271,11 +328,17 @@ fn holds_slot(page: &Bytes) -> bool {
 /// Whether the reader has answered the banner of a site that asks, so its
 /// HTML pages are made for them alone.
 fn answered(consent: Consent<'_>) -> bool {
-    consent.is_some_and(|(choice, _)| choice != Choice::Unasked)
+    consent.is_some_and(|asked| asked.reader.answered())
+}
+
+/// Whether the reader's browser sends GPC on a site that asks.
+fn gpc(consent: Consent<'_>) -> bool {
+    consent.is_some_and(|asked| asked.reader.gpc())
 }
 
 /// The page, compressed when the browser takes Brotli, or 304 when the
-/// reader's copy, plain or compressed, is current.
+/// reader's copy, plain or compressed, is current. A reader with GPC who
+/// has not answered gets the page's GPC copy, when it has one.
 fn page_response(
     page: &Page,
     request: &HeaderMap,
@@ -286,6 +349,7 @@ fn page_response(
     if page.fills_nonce() || (html && answered(consent)) {
         return per_request(page, send, consent);
     }
+    let page = page.under_gpc().filter(|_| gpc(consent)).unwrap_or(page);
     let brotli = page.brotli().filter(|_| compress::accepts_brotli(request));
     let tag = match brotli {
         Some(copy) => copy.etag(),
@@ -317,7 +381,7 @@ fn page_response(
     let headers = response.headers_mut();
     headers.insert(header::CACHE_CONTROL, page.cache_control());
     let vary = if html && consent.is_some() {
-        ENCODING_AND_COOKIE_VARY
+        ENCODING_COOKIE_AND_GPC_VARY
     } else {
         ENCODING_VARIES
     };

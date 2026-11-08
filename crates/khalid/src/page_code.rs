@@ -1,8 +1,8 @@
 //! The site's own code from `[code]`, a post's head code and the consent
 //! banner, as each page of one render carries them (G45, KH-SEO-12, ADR
-//! "consent is a form and a cookie").
+//! "consent has categories").
 
-use khalid_core::{Config, HeadCode, Locale, UserMessage};
+use khalid_core::{BodyCode, CodeCategory, Config, HeadCode, Locale, UserMessage};
 use khalid_render::{ConsentBanner, ConsentPart, Renderer};
 use khalid_server::{
     ASK_END, ASK_START, CHOSEN_END, CHOSEN_START, HELD_END, HELD_START, NONCE_SLOT, SITE_BODY_SLOT,
@@ -31,18 +31,20 @@ pub(crate) struct PageCode {
     mount: String,
     /// The site's first language, whose pages have no language folder.
     default: Locale,
-    /// The site's head and body code as each page carries it, when it does
-    /// not wait for consent.
-    site: (String, String),
+    /// The head and body code every page carries: code that tracks no one,
+    /// or all of it when an outside consent tool asks instead of Khalid.
+    open: (String, String),
 }
 
-/// Where the code goes.
+/// Where the code that waits for consent goes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Place {
-    /// Into every page, with the nonce slot or, on a static host, without.
+    /// Nowhere, since none waits: every page carries the open code, with
+    /// the nonce slot or, on a static host, without.
     Open(HeadNonce),
-    /// Into the marked places of every page, which the server fills only
-    /// for a reader who agreed, with the banner before the body ends.
+    /// Into the marked places of every page, which the server fills for a
+    /// reader who allowed its category, with the banner after the skip
+    /// link.
     Held,
     /// Nowhere: the code waits for consent, which a static host cannot ask.
     Left,
@@ -53,35 +55,38 @@ impl PageCode {
     /// its nonce as `nonce` says.
     pub(crate) fn new(config: &Config, nonce: HeadNonce) -> Self {
         let code = config.code();
+        let outside_tool = config.privacy().external_tool.is_some();
         let place = match nonce {
-            _ if !code.waits_for_consent() => Place::Open(nonce),
+            _ if outside_tool || !code.waits_for_consent() => Place::Open(nonce),
             HeadNonce::PerRequest => Place::Held,
             HeadNonce::Static => Place::Left,
         };
-        let written = |html: Vec<String>| html.join("\n");
-        let site = match place {
-            Place::Open(HeadNonce::PerRequest) => (
-                written(code.heads().map(|head| head.to_html(NONCE_SLOT)).collect()),
-                written(code.bodies().map(|body| body.to_html(NONCE_SLOT)).collect()),
-            ),
-            Place::Open(HeadNonce::Static) => (
-                written(code.heads().map(ToString::to_string).collect()),
-                written(code.bodies().map(ToString::to_string).collect()),
-            ),
-            Place::Held | Place::Left => (String::new(), String::new()),
+        let open = code
+            .entries
+            .iter()
+            .filter(|entry| outside_tool || entry.category == CodeCategory::NoTracking);
+        let head = |head: &HeadCode| match nonce {
+            HeadNonce::PerRequest => head.to_html(NONCE_SLOT),
+            HeadNonce::Static => head.to_string(),
         };
+        let body = |body: &BodyCode| match nonce {
+            HeadNonce::PerRequest => body.to_html(NONCE_SLOT),
+            HeadNonce::Static => body.to_string(),
+        };
+        let heads = open.clone().filter_map(|entry| entry.head.as_ref());
+        let bodies = open.filter_map(|entry| entry.body.as_ref());
         Self {
             place,
             action: format!("{}{CONSENT_FOLDER}/", config.mount()),
             mount: config.mount().to_owned(),
             default: config.default_language().clone(),
-            site,
+            open: (joined(heads.map(head)), joined(bodies.map(body))),
         }
     }
 
     /// What goes after a page's SEO head: the post's own head `code`, when
-    /// it has some, then the site's head code or its slot. Empty when
-    /// neither is there.
+    /// it has some, then the site's open head code and the slot of the code
+    /// that waits. Empty when none is there.
     pub(crate) fn head(&self, code: Option<&HeadCode>) -> String {
         let post = code.map_or_else(String::new, |code| match self.place {
             Place::Open(HeadNonce::PerRequest) => code.to_html(NONCE_SLOT),
@@ -89,20 +94,18 @@ impl PageCode {
             Place::Held => format!("{HELD_START}{}{HELD_END}", code.to_html(NONCE_SLOT)),
             Place::Left => String::new(),
         });
-        let site = match self.place {
-            Place::Held => SITE_HEAD_SLOT,
-            Place::Open(_) | Place::Left => &self.site.0,
+        let slot = if self.place == Place::Held {
+            SITE_HEAD_SLOT
+        } else {
+            ""
         };
-        [post.as_str(), site]
-            .into_iter()
-            .filter(|part| !part.is_empty())
-            .collect::<Vec<_>>()
-            .join("\n")
+        joined([post, self.open.0.clone(), slot.to_owned()].into_iter())
     }
 
     /// `html`, a page drawn at `path` in `locale`, with the banner right
-    /// after its skip link when the site's code waits, and the site's body
-    /// code, or its slot, before its body ends.
+    /// after its skip link when code waits for consent, and the site's open
+    /// body code, then the slot of the code that waits, before its body
+    /// ends.
     ///
     /// # Errors
     ///
@@ -113,14 +116,14 @@ impl PageCode {
         (renderer, locale): (&Renderer, &Locale),
         path: &str,
     ) -> Result<String, UserMessage> {
-        let (html, end) = match self.place {
+        let (html, slot) = match self.place {
             Place::Held => (
                 self.with_banner(html, renderer, locale, path)?,
                 SITE_BODY_SLOT,
             ),
-            Place::Open(_) => (html, self.site.1.as_str()),
-            Place::Left => (html, ""),
+            Place::Open(_) | Place::Left => (html, ""),
         };
+        let end = joined([self.open.1.clone(), slot.to_owned()].into_iter());
         Ok(match html.rfind("</body>") {
             Some(at) if !end.is_empty() => {
                 let (before, after) = html.split_at(at);
@@ -178,6 +181,14 @@ impl PageCode {
     }
 }
 
+/// The parts that are not empty, one per line.
+fn joined(parts: impl Iterator<Item = String>) -> String {
+    parts
+        .filter(|part| !part.is_empty())
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
 #[cfg(test)]
 mod tests {
     use std::path::Path;
@@ -198,6 +209,10 @@ mod tests {
     const CODE: &str = "[code]\nhead = \"<script src='https://tags.example.com/t.js'></script>\"\nbody = \"<script>chat()</script>\"\n";
 
     const NOT_NEEDED: &str = "consent = \"not-needed\"\n";
+
+    /// One piece that tracks no one and one that waits for Analytics.
+    const MIXED: &str = "[[code]]\nhead = \"<script>count()</script>\"\ncategory = \"no-tracking\"\n\
+                         [[code]]\nbody = \"<script>stats()</script>\"\ncategory = \"analytics\"\n";
 
     const PAGE: &str = "<html><head></head><body><p>Text.</p></body></html>";
 
@@ -298,6 +313,29 @@ mod tests {
             built.head(Some(&post_code())),
             "<script>post()</script>\n<script src=\"https://tags.example.com/t.js\"></script>"
         );
+    }
+
+    #[test]
+    fn code_that_tracks_no_one_runs_beside_the_slot_of_code_that_waits() {
+        let code = PageCode::new(&config(MIXED), HeadNonce::PerRequest);
+        let count = format!("<script nonce=\"{NONCE_SLOT}\">count()</script>");
+        assert_eq!(code.head(None), format!("{count}\n{SITE_HEAD_SLOT}"));
+        let html = ending(&code, "en");
+        assert!(
+            html.contains(ASK_START) && !html.contains("stats()"),
+            "{html}"
+        );
+    }
+
+    #[test]
+    fn an_outside_consent_tool_gets_every_piece_unheld_and_no_banner() {
+        let settings = config(&format!("{CODE}[privacy]\nexternal_tool = \"Cookiebot\"\n"));
+        let code = PageCode::new(&settings, HeadNonce::PerRequest);
+        let post = format!("<script nonce=\"{NONCE_SLOT}\">post()</script>");
+        assert!(code.head(Some(&post_code())).starts_with(&post));
+        let html = ending(&code, "en");
+        assert!(html.contains("chat()"), "{html}");
+        assert!(!html.contains(ASK_START) && !html.contains(SITE_BODY_SLOT));
     }
 
     #[test]
