@@ -4,6 +4,7 @@
 //! `privacy` replaces it, and shows the same facts where it writes
 //! `::privacy-facts`. The owner's words are never read as a template.
 
+use std::fmt::Write as _;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -11,8 +12,8 @@ use chrono::NaiveDate;
 use khalid_content::{EMBED_PROVIDERS, EmbedProvider, PRIVACY_FACTS_MARK, SiteContent};
 use khalid_core::{Config, Locale, Mode, UserMessage};
 use khalid_render::{
-    BodyHtml, CookiePurpose, Lasts, PageBody, PageKind, PrivacyCategory, PrivacyContact,
-    PrivacyCookie, PrivacyFacts, PrivacyVendor, RenderPrivacy, Renderer,
+    BodyHtml, Collected, CookiePurpose, GpcAnswer, Lasts, PageBody, PageKind, PrivacyCategory,
+    PrivacyContact, PrivacyCookie, PrivacyFacts, PrivacyVendor, RenderPrivacy, Renderer,
 };
 use khalid_seo::PageKind as SeoKind;
 use sha2::{Digest, Sha256};
@@ -172,20 +173,24 @@ pub(crate) fn facts(config: &Config, content: &SiteContent) -> PrivacyFacts {
         Vec::new()
     };
     let visitor_log = config.visitor_log();
+    let collects = [
+        (server, Collected::Comments),
+        (newsletter, Collected::Newsletter),
+        (forms, Collected::Forms),
+    ];
     PrivacyFacts {
         site: config.name().to_owned(),
         contact: contact(config),
-        server,
+        collects: (collects.into_iter())
+            .filter_map(|(on, collected)| on.then_some(collected))
+            .collect(),
         cookies,
         vendors,
         quiet: Vec::new(),
         embeds: embedded(bodies()),
-        comments: server,
-        newsletter,
-        forms,
         visitor_log_days: (server && visitor_log.on).then_some(visitor_log.keep_days),
         consent_months: CONSENT_MONTHS,
-        gpc_rejects_all: false,
+        gpc: GpcAnswer::Marketing,
         external_tool: None,
         changed: String::new(),
     }
@@ -274,12 +279,11 @@ fn changed_on(site: &Path, facts: &PrivacyFacts, today: NaiveDate) -> String {
 fn hash(facts: &PrivacyFacts) -> String {
     let said = serde_json::to_vec(facts).unwrap_or_default();
     let digest = Sha256::digest(&said);
-    digest
-        .get(..8)
-        .unwrap_or_default()
-        .iter()
-        .map(|byte| format!("{byte:02x}"))
-        .collect()
+    let mut hex = String::new();
+    for byte in digest.get(..8).unwrap_or_default() {
+        let _ = write!(hex, "{byte:02x}");
+    }
+    hex
 }
 
 /// `data/privacy-facts` in the `site` folder.
@@ -313,7 +317,10 @@ mod tests {
     fn only_the_players_a_body_embeds_are_named() {
         let body = "Watch.\n\n::embed{src=\"https://www.youtube.com/watch?v=a\" title=\"A\"}\n";
         assert_eq!(embedded([body].into_iter()), ["YouTube"]);
-        assert!(embedded(["See vimeo.com/1 for more."].into_iter()).is_empty());
+        assert_eq!(
+            embedded(["See vimeo.com/1 for more."].into_iter()),
+            Vec::<String>::new()
+        );
     }
 
     #[test]
@@ -328,7 +335,7 @@ mod tests {
             changed_on(site.path(), &facts, day("2026-11-08")),
             "2026-11-01"
         );
-        facts.forms = true;
+        facts.collects.push(Collected::Forms);
         assert_eq!(
             changed_on(site.path(), &facts, day("2026-11-09")),
             "2026-11-09"

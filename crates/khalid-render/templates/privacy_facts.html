@@ -25,9 +25,9 @@
 <p>{{ t.privacy_collect_summary }}</p>
 <ul>
 <li>{{ t.privacy_reading }}{% if facts.visitor_log_days %} {{ t.privacy_visitor_log | replace("{days}", facts.visitor_log_days | string) }}{% endif %}</li>
-{% if facts.comments %}<li id="privacy-comments">{{ t.privacy_comments }}</li>
-{% endif %}{% if facts.newsletter %}<li id="privacy-newsletter">{{ t.privacy_newsletter }}</li>
-{% endif %}{% if facts.forms %}<li id="privacy-forms">{{ t.privacy_forms }}</li>
+{% if "comments" in facts.collects %}<li>{{ t.privacy_comments }}</li>
+{% endif %}{% if "newsletter" in facts.collects %}<li>{{ t.privacy_newsletter }}</li>
+{% endif %}{% if "forms" in facts.collects %}<li>{{ t.privacy_forms }}</li>
 {% endif %}</ul>
 <p>{{ t.privacy_basis }}</p>
 </section>
@@ -63,9 +63,9 @@
 <h2 id="privacy-keep">{{ t.privacy_keep }}</h2>
 <p>{{ t.privacy_keep_summary }}</p>
 <ul>
-{% if facts.comments %}<li>{{ t.privacy_keep_comments }}</li>
-{% endif %}{% if facts.newsletter %}<li>{{ t.privacy_keep_newsletter }}</li>
-{% endif %}{% if facts.forms %}<li>{{ t.privacy_keep_forms }}</li>
+{% if "comments" in facts.collects %}<li>{{ t.privacy_keep_comments }}</li>
+{% endif %}{% if "newsletter" in facts.collects %}<li>{{ t.privacy_keep_newsletter }}</li>
+{% endif %}{% if "forms" in facts.collects %}<li>{{ t.privacy_keep_forms }}</li>
 {% endif %}<li>{{ t.privacy_keep_choice | replace("{months}", facts.consent_months | string) }}</li>
 </ul>
 </section>
@@ -77,7 +77,7 @@
 </section>
 <section aria-labelledby="privacy-signals">
 <h2 id="privacy-signals">{{ t.privacy_signals }}</h2>
-<p>{% if facts.gpc_rejects_all %}{{ t.privacy_gpc_all }}{% else %}{{ t.privacy_gpc_marketing }}{% endif %}</p>
+<p>{% if facts.gpc == "reject-all" %}{{ t.privacy_gpc_all }}{% else %}{{ t.privacy_gpc_marketing }}{% endif %}</p>
 <p>{{ t.privacy_dnt }}</p>
 </section>
 <section aria-labelledby="privacy-complain">

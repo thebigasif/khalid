@@ -22,9 +22,9 @@ pub struct PrivacyFacts {
     /// Who readers write to about their data. `None` until the owner
     /// fills it in; the page then points to the site itself.
     pub contact: Option<PrivacyContact>,
-    /// Whether Khalid serves the site, so forms, comments and the
-    /// newsletter can work. A static site has none of them.
-    pub server: bool,
+    /// What readers may send the site, in the order the page lists them.
+    /// A static site takes none.
+    pub collects: Vec<Collected>,
     /// The cookies the site may set, Necessary ones first.
     pub cookies: Vec<PrivacyCookie>,
     /// The companies whose code runs once a reader agrees, by category.
@@ -34,23 +34,41 @@ pub struct PrivacyFacts {
     pub quiet: Vec<String>,
     /// The players an embed may load once a reader allows external media.
     pub embeds: Vec<String>,
-    /// Whether readers may comment.
-    pub comments: bool,
-    /// Whether readers may subscribe to the newsletter.
-    pub newsletter: bool,
-    /// Whether the site has a form readers can send.
-    pub forms: bool,
     /// How many days the visitor log keeps a visit, when it is on.
     pub visitor_log_days: Option<u8>,
     /// How many months a reader's choice lasts before they are asked again.
     pub consent_months: u8,
-    /// Whether a Global Privacy Control signal refuses everything optional,
-    /// not only Marketing.
-    pub gpc_rejects_all: bool,
+    /// What a Global Privacy Control signal turns off.
+    pub gpc: GpcAnswer,
     /// The certified consent tool the owner uses instead of Khalid's.
     pub external_tool: Option<String>,
     /// The day the facts last changed, as `2026-11-08`.
     pub changed: String,
+}
+
+/// Something readers may send the site, which it then keeps.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+#[non_exhaustive]
+pub enum Collected {
+    /// Comments on posts.
+    Comments,
+    /// Newsletter subscriptions.
+    Newsletter,
+    /// Answers to a form block.
+    Forms,
+}
+
+/// What a Global Privacy Control signal turns off.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize)]
+#[serde(rename_all = "kebab-case")]
+#[non_exhaustive]
+pub enum GpcAnswer {
+    /// Marketing, the sale and sharing the signal is about.
+    #[default]
+    Marketing,
+    /// Every optional category.
+    RejectAll,
 }
 
 /// Who readers write to about their data.
