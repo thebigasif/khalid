@@ -48,12 +48,9 @@ fn held(config: &Config) -> Option<HeldCode> {
     if !code.waits_for_consent() {
         return None;
     }
-    let head = code.head.as_ref().map(|head| head.to_html(NONCE_SLOT));
-    let body = code.body.as_ref().map(|body| body.to_html(NONCE_SLOT));
-    Some(HeldCode::new(
-        head.unwrap_or_default(),
-        body.unwrap_or_default(),
-    ))
+    let head: Vec<String> = code.heads().map(|head| head.to_html(NONCE_SLOT)).collect();
+    let body: Vec<String> = code.bodies().map(|body| body.to_html(NONCE_SLOT)).collect();
+    Some(HeldCode::new(head.join("\n"), body.join("\n")))
 }
 
 /// The route the consent form posts to, `<mount>_consent/`.
