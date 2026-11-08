@@ -353,6 +353,22 @@ mod tests {
         assert!(answer_for(&form("maybe", &[]), reader(None), Categories::NONE, 9).is_none());
     }
 
+    /// `khalid-server` has no `khalid-content` dependency, so it keeps its
+    /// own copy of the embed marks; both must stay the same.
+    #[test]
+    fn the_server_releases_the_marks_an_embed_is_written_with() {
+        assert_eq!(khalid_server::MEDIA_START, khalid_content::MEDIA_START);
+        assert_eq!(khalid_server::MEDIA_END, khalid_content::MEDIA_END);
+        assert_eq!(
+            khalid_server::MEDIA_CARD_START,
+            khalid_content::MEDIA_CARD_START
+        );
+        assert_eq!(
+            khalid_server::MEDIA_CARD_END,
+            khalid_content::MEDIA_CARD_END
+        );
+    }
+
     #[test]
     fn the_reader_goes_back_to_a_page_of_the_blog_and_is_told_it_saved() {
         assert_eq!(

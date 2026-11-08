@@ -9,7 +9,7 @@ use khalid_server::{
 
 const REV: &str = "1a2b3c4d";
 
-const PAGE: &str = "<head><!--khalid-held--><script nonce=\"s\">post()</script><!--/khalid-held--><!--khalid-site-head--></head><body><!--khalid-saved--><template><p role=\"status\">Saved.</p></template><!--/khalid-saved--><p>Text.</p><!--khalid-external-media--><template><iframe src=\"https://www.youtube-nocookie.com/embed/x\"></iframe></template><!--/khalid-external-media--><!--khalid-site-body--><!--khalid-ask--><aside>Allow?<!--khalid-no-gpc--><label>Marketing</label><!--/khalid-no-gpc--><!--khalid-gpc--><template><p>GPC honoured.</p></template><!--/khalid-gpc--></aside><!--/khalid-ask--><!--khalid-chosen--><template><aside>Change</aside></template><!--/khalid-chosen--></body>";
+const PAGE: &str = "<head><!--khalid-held--><script nonce=\"s\">post()</script><!--/khalid-held--><!--khalid-site-head--></head><body><!--khalid-saved--><template><p role=\"status\">Saved.</p></template><!--/khalid-saved--><p>Text.</p><!--khalid-media-card--><div class=\"embed-card\">Card</div><!--/khalid-media-card--><!--khalid-media--><template><iframe src=\"https://www.youtube-nocookie.com/embed/x\"></iframe></template><!--/khalid-media--><!--khalid-site-body--><!--khalid-ask--><aside>Allow?<!--khalid-no-gpc--><label>Marketing</label><!--/khalid-no-gpc--><!--khalid-gpc--><template><p>GPC honoured.</p></template><!--/khalid-gpc--></aside><!--/khalid-ask--><!--khalid-chosen--><template><aside>Change</aside></template><!--/khalid-chosen--></body>";
 
 #[cfg(test)]
 fn site() -> ConsentSite {
@@ -149,7 +149,7 @@ fn a_reader_who_chose_analytics_gets_only_analytics_code() {
     let html = filled(PAGE, &reader(Some(&cookie)), &site(), SavedNotice::Shown);
     assert_eq!(
         html,
-        "<head><script>stats()</script></head><body><p role=\"status\">Saved.</p><p>Text.</p><!--khalid-external-media--><template><iframe src=\"https://www.youtube-nocookie.com/embed/x\"></iframe></template><!--/khalid-external-media--><aside>Change</aside></body>"
+        "<head><script>stats()</script></head><body><p role=\"status\">Saved.</p><p>Text.</p><!--khalid-media-card--><div class=\"embed-card\">Card</div><!--/khalid-media-card--><!--khalid-media--><template><iframe src=\"https://www.youtube-nocookie.com/embed/x\"></iframe></template><!--/khalid-media--><aside>Change</aside></body>"
     );
 }
 
@@ -173,6 +173,10 @@ fn allowing_external_media_from_a_card_loads_players_and_keeps_the_banner() {
     let cookie = format!("khalid-consent={}", media.value(REV));
     let html = filled(PAGE, &reader(Some(&cookie)), &site(), SavedNotice::Hidden);
     assert!(html.contains("<p>Text.</p><iframe"), "{html}");
+    assert!(
+        !html.contains("embed-card"),
+        "the card goes with its player: {html}"
+    );
     assert!(html.contains("<!--khalid-ask--><aside>Allow?"), "{html}");
     assert!(!html.contains("()"), "{html}");
 }
@@ -199,7 +203,7 @@ fn held_code_never_closed_is_cut_to_the_end() {
     );
     assert_eq!(html, "<p>a</p>");
     let html = filled(
-        "<p>a</p><!--khalid-external-media--><template><iframe>",
+        "<p>a</p><!--khalid-media-card--><div class=\"embed-card\">Card</div><!--/khalid-media-card--><!--khalid-media--><template><iframe>",
         &reader(Some("khalid-consent=2.1a2b3c4d.8.1.0")),
         &site(),
         SavedNotice::Hidden,

@@ -166,11 +166,22 @@ fn the_banner_follows_the_skip_link_before_the_rest_of_the_page() {
     let header = page.find("<header class=\"site-header\"").unwrap();
     assert!(skip < banner && banner < header, "{page}");
     assert!(page.contains("value=\"accept-all\">Accept all</button>"));
+    // Both the banner and the choices page link the privacy page (U9).
+    let privacy = "<a href=\"/blog/privacy/\">Read the privacy page.</a>";
+    let banner = page.split_once("<section class=\"consent\"").unwrap().1;
+    assert!(banner.contains(privacy), "{page}");
     let choices = get(&server, "/blog/privacy-choices/", &[]).body;
     assert!(
         !choices.contains("<section class=\"consent\""),
         "one question per screen"
     );
+    assert!(choices.contains(privacy), "{choices}");
+    let german = get(&server, "/blog/de/privacy-choices/", &[]).body;
+    assert!(
+        german.contains("<a href=\"/blog/de/privacy/\">"),
+        "{german}"
+    );
+    assert_eq!(get(&server, "/blog/privacy/", &[]).status, 200);
 }
 
 #[test]

@@ -84,18 +84,20 @@ mod tests {
 
     use super::*;
 
-    /// Every file under `folder` of this crate, as the archive names it.
+    /// Every file under `folder` of this crate and its folders, as the
+    /// archive names it.
     fn files_in(folder: &str) -> Vec<(String, String)> {
         let path = format!("{}/{folder}", env!("CARGO_MANIFEST_DIR"));
-        let mut files: Vec<(String, String)> = fs::read_dir(&path)
-            .unwrap()
-            .map(|entry| {
-                let entry = entry.unwrap();
-                let name = entry.file_name().to_string_lossy().into_owned();
-                let text = fs::read_to_string(entry.path()).unwrap();
-                (format!("{folder}/{name}"), text)
-            })
-            .collect();
+        let mut files = Vec::new();
+        for entry in fs::read_dir(&path).unwrap() {
+            let entry = entry.unwrap();
+            let name = format!("{folder}/{}", entry.file_name().to_string_lossy());
+            if entry.file_type().unwrap().is_dir() {
+                files.extend(files_in(&name));
+            } else {
+                files.push((name, fs::read_to_string(entry.path()).unwrap()));
+            }
+        }
         files.sort();
         files
     }

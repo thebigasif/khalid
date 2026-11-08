@@ -43,8 +43,9 @@ mod watch_events;
 pub use background::Background;
 pub use consent::{
     ASK_END, ASK_START, CHOSEN_END, CHOSEN_START, ConsentSite, GPC_END, GPC_START, HELD_END,
-    HELD_START, HeldCode, MEDIA_END, MEDIA_START, NO_GPC_END, NO_GPC_START, SAVED_END, SAVED_QUERY,
-    SAVED_START, SITE_BODY_SLOT, SITE_HEAD_SLOT, SavedNotice, filled, under_gpc,
+    HELD_START, HeldCode, MEDIA_CARD_END, MEDIA_CARD_START, MEDIA_END, MEDIA_START, NO_GPC_END,
+    NO_GPC_START, SAVED_END, SAVED_QUERY, SAVED_START, SITE_BODY_SLOT, SITE_HEAD_SLOT, SavedNotice,
+    filled, under_gpc,
 };
 pub use consent_cookie::{Answer, CONSENT_COOKIE, Categories, GPC_HEADER, Reader};
 pub use live_pages::{LivePages, Replacements};

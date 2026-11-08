@@ -70,6 +70,7 @@
       if (allows(answer, held.dataset.khalidConsent)) held.replaceWith(held.content);
     }
     if (allows(answer, "external-media")) {
+      for (const card of $(".embed .embed-card")) card.remove();
       for (const player of $(".embed template")) player.replaceWith(player.content);
     }
   };

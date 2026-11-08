@@ -336,14 +336,33 @@ fn gpc_gets_a_kept_page_and_keeps_marketing_off_after_accept_all() {
 }
 
 #[test]
-fn allowing_external_media_from_a_card_keeps_the_banner() {
+fn allowing_external_media_from_a_card_loads_the_player_and_keeps_the_banner() {
     let site = site_with(TWO_KINDS);
+    let mut post = site.path().to_path_buf();
+    post.push("content/en/posts/2026-09-28-what-a-sitemap-does.md");
+    let text = fs::read_to_string(&post).unwrap();
+    let embed = "::embed{src=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" title=\"A talk\"}";
+    fs::write(&post, format!("{text}\n{embed}\n")).unwrap();
     let server = start(site.path());
+    let path = "/blog/what-a-sitemap-does/";
+    let unasked = get(&server, path, &[]);
+    assert!(unasked.body.contains("embed-card"), "{}", unasked.body);
+    assert!(
+        unasked.body.contains("<template><iframe"),
+        "{}",
+        unasked.body
+    );
     let form = "choice=allow-external-media&back=%2Fblog%2F";
     let cookie = chosen(&server, form, &[]);
     assert!(cookie.contains(".8.") && cookie.ends_with(".2"), "{cookie}");
-    let page = get(&server, "/blog/", &[&format!("Cookie: {cookie}")]);
+    let page = get(&server, path, &[&format!("Cookie: {cookie}")]);
     assert!(page.body.contains(ASK) && !page.body.contains("()"));
+    assert!(!page.body.contains("embed-card"), "{}", page.body);
+    assert!(!page.body.contains("<template><iframe"), "{}", page.body);
+    assert!(
+        page.body
+            .contains("<iframe src=\"https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ")
+    );
     assert_eq!(page.header("cache-control"), "private, no-store");
 }
 

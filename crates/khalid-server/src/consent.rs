@@ -55,12 +55,19 @@ pub const SITE_HEAD_SLOT: &str = "<!--khalid-site-head-->";
 pub const SITE_BODY_SLOT: &str = "<!--khalid-site-body-->";
 
 /// Where another site's player starts, inside a `template` no browser
-/// shows. For a reader who allowed External media the two marks go and
-/// the player loads.
-pub const MEDIA_START: &str = "<!--khalid-external-media--><template>";
+/// shows, as `khalid-content` writes an embed (privacy plan U5). For a
+/// reader who allowed External media the two marks go and the player loads.
+pub const MEDIA_START: &str = "<!--khalid-media--><template>";
 
 /// Where another site's player ends.
-pub const MEDIA_END: &str = "</template><!--/khalid-external-media-->";
+pub const MEDIA_END: &str = "</template><!--/khalid-media-->";
+
+/// Where the card that asks before a player loads starts. It goes, marks
+/// and all, for a reader who allowed External media.
+pub const MEDIA_CARD_START: &str = "<!--khalid-media-card-->";
+
+/// Where the card that asks before a player loads ends.
+pub const MEDIA_CARD_END: &str = "<!--/khalid-media-card-->";
 
 /// Where a part only a reader without GPC sees starts, such as the
 /// banner's Marketing row.
@@ -191,7 +198,11 @@ pub fn filled(html: &str, reader: &Reader, site: &ConsentSite, saved: SavedNotic
         html = cut(&html, HELD_START, HELD_END);
     }
     if released.contains(Categories::EXTERNAL_MEDIA) {
-        html = unwrapped(&html, MEDIA_START, MEDIA_END);
+        html = unwrapped(
+            &cut(&html, MEDIA_CARD_START, MEDIA_CARD_END),
+            MEDIA_START,
+            MEDIA_END,
+        );
     }
     let Some(answer) = reader.answer() else {
         return html;
