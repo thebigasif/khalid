@@ -165,7 +165,6 @@ fn build(
     let categories = categories::of(site)?;
     let asking = Asking::of(config, &languages);
     if let Some((renderer, ..)) = &theme {
-        static_consent::add_choices(config, renderer, &mut languages, asking)?;
         search_page::add(config, renderer, &mut languages)?;
         archive_pages::add(site, config, (renderer, today), &mut languages)?;
         let sources = (content, categories.as_slice());
@@ -230,11 +229,8 @@ fn build(
         let relative = format!("{}/{}", build_files::ROOT_FOLDER, file.file);
         write(out, &relative, &file.text)?;
     }
-    write(
-        out,
-        &static_consent::gpc_file(config),
-        static_consent::GPC_JSON,
-    )?;
+    let (gpc, honoured) = static_consent::gpc_file(config);
+    write(out, &gpc, honoured)?;
     Ok(written)
 }
 

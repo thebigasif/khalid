@@ -24,6 +24,8 @@ mod comments;
 #[cfg(test)]
 mod common;
 #[cfg(test)]
+mod consent;
+#[cfg(test)]
 mod contents;
 #[cfg(test)]
 mod contents_parts;

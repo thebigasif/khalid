@@ -326,41 +326,48 @@ mark { color: inherit; background: var(--color-surface); font-weight: 700; }
 /* Print: the words and where the links go, nothing else. */
 @media print {
   body { font-size: 11pt; padding: 0; color: #000; background: #fff; }
-  .skip-link, .announcement, .site-header nav, .nav-menu, .site-footer nav, .pagination, .search { display: none; }
+  .skip-link, .announcement, .consent, .consent-saved, .site-header nav, .nav-menu, .site-footer nav, .pagination, .search { display: none; }
   .post-body a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; }
   pre, blockquote, figure, table { break-inside: avoid; }
   h2, h3 { break-after: avoid; }
 }
 
-/* The consent banner: a plain form that works with scripts off (G45). */
-.consent {
-  position: sticky;
-  inset-block-end: 0;
+/* The consent banner and the privacy choices page: plain forms that work
+   with scripts off (privacy plan U4). The banner sits in the flow after the
+   skip link, so it takes its own room and covers nothing. Accept all and
+   Reject all share one look. The band's colour and its bottom line are
+   painted to both edges of the window, past the page's side padding,
+   without making the page wider. */
+.consent, .consent-saved {
   padding: 1rem;
-  background: var(--color-surface);
-  border-block-start: 1px solid var(--color-border);
+  border-image: linear-gradient(to top, var(--color-border) 1px, var(--color-surface) 1px) fill 0 / 0 / 0 100vw;
 }
-.consent form { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-inline-size: var(--measure); margin-inline: auto; }
-.consent p { flex-basis: 100%; margin: 0; }
-.consent button {
+.consent > * { max-inline-size: var(--measure); margin-inline: auto; }
+.consent h2 { margin-block: 0 0.25rem; font-size: var(--text-h4); }
+.consent p { margin-block: 0 0.75rem; }
+.consent form, .consent .consent-answers { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+/* A static site's script shows its banner after the page has drawn, so it ends the body and stays in view at the window's foot: nothing above it moves. */
+.consent[data-khalid-banner] { position: sticky; inset-block-end: 0; }
+.consent-button, .consent-choose {
+  display: inline-flex;
+  align-items: center;
   min-block-size: 44px;
   padding: 0.5rem 1.25rem;
   font: inherit;
-  color: var(--color-text);
-  background: var(--color-background);
-  border: 1px solid var(--color-muted);
+  border: 1px solid var(--color-accent);
   border-radius: var(--radius);
-  cursor: pointer;
 }
-.consent button[value="yes"] { color: var(--color-background); background: var(--color-accent); border-color: var(--color-accent); }
-.consent-chosen { position: static; font-size: 0.875rem; }
-/* The banner a static site's consent script shows, lined up with the page, its two answers alike. */
-.consent[data-khalid-banner] > * { max-inline-size: var(--measure); margin-inline: auto; }
-.consent[data-khalid-banner] h2 { margin-block: 0 0.5rem; font-size: 1.125rem; }
-.consent .consent-answers { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-block-start: 0.75rem; }
-.choices input { inline-size: 1.25rem; block-size: 1.25rem; vertical-align: -0.2em; accent-color: var(--color-accent); }
-.choices button { min-block-size: 44px; padding: 0.5rem 1.25rem; font: inherit; color: var(--color-background); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: var(--radius); cursor: pointer; }
-.consent-answers a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: 0.5rem; }
+.consent-button { color: var(--color-background); background: var(--color-accent); cursor: pointer; }
+.consent-choose { color: var(--color-text); border-color: var(--color-muted); }
+.consent-gpc { font-weight: 600; }
+.consent-saved { margin: 0; padding-block: 0.5rem; font-size: 0.875rem; text-align: center; }
+.privacy-choices { max-inline-size: var(--measure); }
+.privacy-choices fieldset { min-inline-size: 0; margin: 0 0 1rem; padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.privacy-choices legend { padding-inline: 0.25rem; font-weight: 600; }
+.privacy-choices p { margin-block: 0 0.5rem; }
+.privacy-choices .consent-always { font-weight: 600; }
+.privacy-choices label { display: inline-flex; gap: 0.5rem; align-items: center; min-block-size: 44px; cursor: pointer; }
+.privacy-choices input { inline-size: 1.25rem; block-size: 1.25rem; accent-color: var(--color-accent); }
 
 /* The slots a template switches on around its pages. Share links are plain links in a row. */
 .share { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space); margin-block: calc(var(--space) * 3); }

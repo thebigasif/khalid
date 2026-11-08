@@ -185,21 +185,25 @@ fn the_choices_page_says_nothing_optional_loads_without_scripts() {
         html.contains("<meta name=\"robots\" content=\"noindex"),
         "{html}"
     );
-    let note = html.split("data-khalid-noscript>").nth(1).unwrap();
+    let note = html.split("<noscript><p>").nth(1).unwrap();
     assert!(
-        note.starts_with("With scripts off, nothing optional loads on this blog"),
+        note.starts_with("Your browser runs no scripts, so this blog loads nothing optional."),
         "{note}"
     );
     let form = html.split("data-khalid-choices").nth(1).unwrap();
     assert!(form.starts_with(" hidden>"), "{form}");
+    assert!(!html.contains("<form"), "the build locks forms: {html}");
     for part in [
-        "name=\"necessary\" checked disabled",
-        "name=\"marketing\">",
-        "name=\"external-media\">",
-        "value=\"save\">Save my choices</button>",
+        "name=\"marketing\" value=\"on\">",
+        "name=\"external-media\" value=\"on\">",
+        "type=\"button\" name=\"choice\" value=\"save\">Save my choices</button>",
     ] {
         assert!(form.contains(part), "{part} in {form}");
     }
+    assert!(
+        html.contains("<script src=\"/blog/assets/consent."),
+        "{html}"
+    );
     let german = page(&out, "de/privacy-choices/index.html");
     assert!(
         german.contains("Meine Auswahl speichern</button>"),
@@ -229,10 +233,17 @@ fn each_entry_waits_for_its_own_category_and_no_tracking_code_runs() {
     );
     assert!(html.contains("<script>quiet()</script>"), "{html}");
     assert!(html.contains(" data-khalid-days=\"90\""), "{html}");
-    let choices = page(&out, "privacy-choices/index.html");
-    assert!(choices.contains("name=\"analytics\">"), "{choices}");
-    assert!(choices.contains("From Example Stats."), "{choices}");
-    assert!(!choices.contains("name=\"marketing\""), "{choices}");
+}
+
+#[test]
+fn a_static_site_that_asks_nothing_says_so_on_its_choices_page() {
+    let (_temp, out) = build("", "");
+    let html = page(&out, "privacy-choices/index.html");
+    assert!(html.contains("so there is nothing to choose."), "{html}");
+    assert!(
+        !html.contains("<fieldset>") && !html.contains("consent."),
+        "{html}"
+    );
 }
 
 #[test]
@@ -253,9 +264,4 @@ fn the_build_says_global_privacy_control_is_honoured() {
     let file = page(&out, "_root/.well-known/gpc.json");
     let json: serde_json::Value = serde_json::from_str(&file).unwrap();
     assert_eq!(json["gpc"], true, "{file}");
-    assert_eq!(
-        json["lastUpdate"].as_str().map(str::len),
-        Some(10),
-        "{file}"
-    );
 }

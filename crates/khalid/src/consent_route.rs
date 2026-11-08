@@ -34,7 +34,7 @@ const DAY: u32 = 24 * 60 * 60;
 const GPC_JSON: &str = "/.well-known/gpc.json";
 
 /// The answer at [`GPC_JSON`]: this site honours the signal.
-const GPC_HONOURED: &str = "{\"gpc\": true}\n";
+pub(crate) const GPC_HONOURED: &str = "{\"gpc\": true}\n";
 
 /// What the form route needs: where the blog lives, whether the cookie is
 /// sent over HTTPS only, how long a choice lasts, the site's consent, and

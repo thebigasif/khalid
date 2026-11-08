@@ -86,6 +86,20 @@
     for (const element of $(selector)) element.hidden = !show;
   };
 
+  // Puts each inert template for which `wanted` holds in its place.
+  const unwrap = (wanted) => {
+    for (const template of $("template")) if (wanted(template)) template.replaceWith(template.content);
+  };
+
+  // The line that says a choice was saved: a template on most pages, and
+  // a status line the choices page fills in once the reader saves.
+  const saved = (answer, pressed) => {
+    if (!answer || answer.flags & MEDIA_ONLY) return;
+    unwrap((template) => "khalidSaved" in template.dataset);
+    if (!pressed) return;
+    for (const status of $("p[data-khalid-saved]")) status.textContent = status.dataset.khalidSaved;
+  };
+
   // What each button of the banner, the choices page and an embed card
   // saves.
   const answers = {
@@ -111,16 +125,18 @@
     event.preventDefault();
     const answer = write(...answers[button.value](read()));
     shown("[data-khalid-banner]", answer && answer.flags & MEDIA_ONLY);
-    for (const status of $("[data-khalid-saved]")) status.textContent = status.dataset.khalidSaved;
+    saved(answer, true);
   });
 
   const answer = read();
   release(answer);
+  saved(answer, false);
   // The choices page asks everything itself, so it never shows the banner.
   const choosing = $("[data-khalid-choices]").length > 0;
   shown("[data-khalid-banner]", !choosing && (!answer || answer.flags & MEDIA_ONLY));
-  shown("[data-khalid-gpc]", gpc);
-  shown("[data-khalid-noscript]", false);
+  // The note that the signal is honoured waits in a template, as the
+  // server keeps it.
+  if (gpc) unwrap((template) => template.content.querySelector(".consent-gpc"));
   shown("[data-khalid-choices]", true);
   for (const name of NAMES) {
     for (const box of $(`[data-khalid-choices] [name="${name}"]`)) box.checked = allows(answer, name);

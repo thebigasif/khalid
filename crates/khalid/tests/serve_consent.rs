@@ -25,10 +25,10 @@ body = "<script>chat()</script>"
 "#;
 
 /// What only the banner says.
-const ASK: &str = "It runs only if you allow it.";
+const ASK: &str = "Nothing runs unless you agree.";
 
-/// What only the form to change a choice says.
-const CHANGE: &str = "You can change your choice";
+/// What only the line after a choice says.
+const CHANGE: &str = "Your privacy choices are saved.";
 
 /// A running `khalid serve`, stopped when dropped.
 struct Server {
@@ -273,7 +273,7 @@ fn every_page_type_runs_the_code_after_accept_all_under_its_policy_s_nonce() {
         // the page's own language.
         assert!(!body.contains("<!--khalid-ask-->"), "{path}");
         assert!(!body.contains("<!--khalid-chosen-->"), "{path}");
-        assert!(body.contains("class=\"consent consent-chosen\""), "{path}");
+        assert!(body.contains("class=\"consent-saved\""), "{path}");
         let caching = answer.header("cache-control");
         assert_eq!(caching, "private, no-store", "{path}");
     }

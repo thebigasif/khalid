@@ -160,13 +160,7 @@ fn read(out: &Path, rel: &str) -> String {
 
 /// Built pages serve does not answer yet. Serve has one not-found page, the
 /// default language's, so a missing German address gets the English one.
-/// The choices pages are a static build's own until the server's choices
-/// route lands (privacy plan U4), which removes them from this list.
-const NOT_SERVED_AS_BUILT: [&str; 3] = [
-    "de/404.html",
-    "privacy-choices/index.html",
-    "de/privacy-choices/index.html",
-];
+const NOT_SERVED_AS_BUILT: [&str; 1] = ["de/404.html"];
 
 #[test]
 fn serve_answers_every_built_page_with_the_head_build_wrote() {

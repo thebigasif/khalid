@@ -12,7 +12,7 @@ use crate::heading_links;
 use crate::pack::{PackContext, RenderPack};
 use crate::strings::Strings;
 use crate::templates::{self, Source};
-use crate::{Brand, PageBody, PageMeta, RenderError, RenderSite};
+use crate::{Brand, ConsentBanner, ConsentPart, PageBody, PageMeta, RenderError, RenderSite};
 use crate::{cta, enlarge, escape, image, share};
 
 /// How many steps one page may take before rendering stops. The default
@@ -213,6 +213,33 @@ impl Renderer {
             lists_posts => body.lists_posts(),
             template => Serde(&self.pack),
             brand => Serde(&self.brand),
+        };
+        template
+            .render(context)
+            .map_err(|error| RenderError::render(name, error))
+    }
+
+    /// The `part` of the consent banner in `locale`, from `consent.html`,
+    /// for the page splice to put right after the skip link.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`RenderError::Render`] when the template fails, for example
+    /// a theme's `consent.html` that names a value the banner does not have.
+    pub fn consent(
+        &self,
+        locale: &Locale,
+        banner: &ConsentBanner,
+        part: ConsentPart,
+    ) -> Result<String, RenderError> {
+        let name = "consent.html";
+        let template = (self.env)
+            .get_template(name)
+            .map_err(|error| RenderError::render(name, error))?;
+        let context = context! {
+            t => Serde(self.strings.for_locale(locale)),
+            banner => Serde(banner),
+            part => Serde(part),
         };
         template
             .render(context)

@@ -55,9 +55,9 @@ impl SitePages {
             // attribute quoted and keeps only head elements.
             meta.seo_head = Some(HeadHtml::from_trusted(format!("{seo}\n{head}")));
         }
-        let html = theme.renderer.render(&site, &meta, &body);
+        let html = (theme.renderer.render(&site, &meta, &body))
+            .map_err(|error| build_message::render(&error))?;
         let page = (&theme.renderer, &site.locale);
-        html.map(|html| Some(code.with_body_end(html, page, &meta.path)))
-            .map_err(|error| build_message::render(&error))
+        code.with_body_end(html, page, &meta.path).map(Some)
     }
 }

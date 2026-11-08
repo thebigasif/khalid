@@ -94,7 +94,7 @@ impl Page {
             self.drawn(renderer, site, &meta)?
         };
         let page = (renderer, &site.locale);
-        Ok(code.with_body_end(html, page, &self.meta.path))
+        code.with_body_end(html, page, &self.meta.path)
     }
 
     /// The page as HTML with the head `meta`.
