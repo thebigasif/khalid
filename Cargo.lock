@@ -2826,7 +2826,7 @@ version = "1.7.0"
 dependencies = [
  "argon2 0.6.0",
  "axum",
- "base64 0.22.1",
+ "base64 0.23.1",
  "chrono",
  "getrandom 0.4.3",
  "khalid-api",
@@ -2947,7 +2947,7 @@ name = "khalid-https"
 version = "1.7.0"
 dependencies = [
  "axum",
- "base64 0.22.1",
+ "base64 0.23.1",
  "bytes",
  "chrono",
  "http",
@@ -3129,7 +3129,7 @@ dependencies = [
 name = "khalid-render"
 version = "1.7.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "brotli",
  "chrono",
  "flate2",
