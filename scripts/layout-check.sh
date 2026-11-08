@@ -95,5 +95,16 @@ failed=0
 node "$tools/layout.mjs" --sites "$work/sites" --shots "$work/shots" "$@" || failed=1
 # The network capture: with no consent given, scripts on and off, no page
 # may ask another address for anything (scripts/demo-check/network.mjs).
-node "$tools/network.mjs" --sites "$work/sites" "$@" || failed=1
+# It runs in Chromium, so only a run that has Chromium does it: CI gives
+# each browser its own job, and only the Chromium job installs Chromium.
+case " $* " in
+  *" --browsers "*chromium* | *--browsers=*chromium*) capture=1 ;;
+  *--browsers*) capture=0 ;;
+  *) capture=1 ;;
+esac
+if [ "$capture" = 1 ]; then
+  node "$tools/network.mjs" --sites "$work/sites" "$@" || failed=1
+else
+  echo "The network capture runs in the Chromium job, so this run leaves it out."
+fi
 exit "$failed"
