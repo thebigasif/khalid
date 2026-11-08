@@ -1,0 +1,2 @@
+Added
+- `site.toml` can list the site's own code as `[[code]]` entries, each tagged `preferences`, `analytics`, `marketing` or `no-tracking`, with a vendor name and policy link, and a new `[privacy]` table sets how long a reader's choice lasts, how Global Privacy Control is read, whether choices are counted, an outside consent tool, banner text and the owner's contact details. Old `[code]` tables keep working.

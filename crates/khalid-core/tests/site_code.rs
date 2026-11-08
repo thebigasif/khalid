@@ -1,9 +1,12 @@
-//! `[code]` in `site.toml`: the site's own head and body code, and whether
-//! it waits for a reader's consent.
+//! `[code]` in `site.toml`: the site's own head and body code, each entry
+//! tagged with the consent category it waits for (privacy plan U2, KTD2,
+//! KTD12). The old single table still reads.
 
 use std::path::Path;
 
-use khalid_core::{BodyCode, BodyCodeError, Config, Consent, Environment, HeadCodeError};
+use khalid_core::{
+    AbsoluteUrl, BodyCode, BodyCodeError, CodeCategory, Config, Environment, HeadCodeError,
+};
 
 const SITE: &str = r#"name = "Field Notes on SEO"
 address = "https://www.example.com"
@@ -30,7 +33,7 @@ fn a_site_without_the_table_has_no_code() {
     let config = load(SITE).unwrap();
     let code = config.code();
     assert!(code.is_empty());
-    assert_eq!(code.consent, Consent::Ask);
+    assert_eq!(code.entries, []);
     assert!(!code.waits_for_consent());
 }
 
@@ -39,14 +42,18 @@ fn reads_head_and_body_code_that_waits_for_consent_by_default() {
     let config = load(&format!("{SITE}{CODE}")).unwrap();
     let code = config.code();
     assert!(!code.is_empty());
-    assert_eq!(code.consent, Consent::Ask);
     assert!(code.waits_for_consent());
-    let head = code.head.as_ref().unwrap();
+    let [entry] = code.entries.as_slice() else {
+        panic!("one entry, not {:?}", code.entries);
+    };
+    assert_eq!(entry.category, CodeCategory::Marketing);
+    assert_eq!(entry.vendor, None);
+    let head = entry.head.as_ref().unwrap();
     assert_eq!(
         head.to_html("n"),
         "<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-1\" nonce=\"n\"></script>\n<script nonce=\"n\">gtag('config', 'G-1');</script>"
     );
-    let body = code.body.as_ref().unwrap();
+    let body = entry.body.as_ref().unwrap();
     assert_eq!(
         body.to_html("n"),
         "<script src=\"https://chat.example.com/widget.js\" defer nonce=\"n\"></script>"
@@ -57,7 +64,11 @@ fn reads_head_and_body_code_that_waits_for_consent_by_default() {
 fn code_may_run_without_asking() {
     let text = format!("{SITE}{CODE}consent = \"not-needed\"\n");
     let config = load(&text).unwrap();
-    assert_eq!(config.code().consent, Consent::NotNeeded);
+    let [entry] = config.code().entries.as_slice() else {
+        panic!("one entry");
+    };
+    assert_eq!(entry.category, CodeCategory::NoTracking);
+    assert!(entry.head.is_some() && entry.body.is_some());
     assert!(!config.code().waits_for_consent());
 }
 
@@ -108,11 +119,95 @@ fn a_static_site_cannot_ask_for_consent() {
         "{error}"
     );
     let text = format!("{text}consent = \"not-needed\"\n");
-    assert_eq!(load(&text).unwrap().code().consent, Consent::NotNeeded);
+    assert!(!load(&text).unwrap().code().waits_for_consent());
 }
 
 #[test]
 fn refuses_an_unknown_consent() {
     let error = load(&format!("{SITE}[code]\nconsent = \"maybe\"\n")).unwrap_err();
     assert!(error.contains("field \"consent\""), "{error}");
+}
+
+const ENTRIES: &str = r#"
+[[code]]
+head = "<script src='https://stats.example.net/a.js'></script>"
+category = "analytics"
+vendor = "Example Stats"
+policy = "https://stats.example.net/privacy"
+
+[[code]]
+body = "<script src='https://ads.example.org/t.js'></script>"
+
+[[code]]
+head = "<script src='/counter.js'></script>"
+category = "no-tracking"
+vendor = "Own counter"
+"#;
+
+const QUIET: &str = r#"
+[[code]]
+head = "<script src='/counter.js'></script>"
+category = "no-tracking"
+"#;
+
+#[test]
+fn reads_a_list_of_tagged_entries_and_an_untagged_one_is_marketing() {
+    let config = load(&format!("{SITE}{ENTRIES}")).unwrap();
+    let code = config.code();
+    let categories: Vec<CodeCategory> = code.entries.iter().map(|e| e.category).collect();
+    assert_eq!(
+        categories,
+        [
+            CodeCategory::Analytics,
+            CodeCategory::Marketing,
+            CodeCategory::NoTracking
+        ]
+    );
+    let first = code.entries.first().unwrap();
+    assert_eq!(first.vendor.as_deref(), Some("Example Stats"));
+    assert_eq!(
+        first.policy.as_ref().map(AbsoluteUrl::as_str),
+        Some("https://stats.example.net/privacy")
+    );
+    assert!(code.waits_for_consent());
+    assert_eq!(code.heads().count(), 2);
+    assert_eq!(code.bodies().count(), 1);
+}
+
+#[test]
+fn only_no_tracking_code_asks_nothing() {
+    let config = load(&format!("{SITE}{QUIET}")).unwrap();
+    assert!(!config.code().is_empty());
+    assert!(!config.code().waits_for_consent());
+    let static_site = load(&format!("mode = \"static\"\n{SITE}{QUIET}")).unwrap();
+    assert_eq!(static_site.code().heads().count(), 1);
+}
+
+#[test]
+fn refuses_necessary_naming_the_allowed_categories() {
+    let text = QUIET.replace("no-tracking", "necessary");
+    let error = load(&format!("{SITE}{text}")).unwrap_err();
+    assert!(
+        error.contains("field \"category\"")
+            && error.contains("preferences, analytics, marketing or no-tracking"),
+        "{error}"
+    );
+}
+
+#[test]
+fn refuses_consent_inside_a_list_entry() {
+    let text = QUIET.replace("category = \"no-tracking\"", "consent = \"ask\"");
+    let error = load(&format!("{SITE}{text}")).unwrap_err();
+    assert!(error.contains("consent"), "{error}");
+}
+
+#[test]
+fn a_static_site_cannot_hold_listed_code_either() {
+    let text = format!("mode = \"static\"\n{SITE}{ENTRIES}");
+    let error = load(&text).unwrap_err();
+    assert!(
+        error.contains("line 9, field \"category\"")
+            && error.contains("category = \"no-tracking\""),
+        "{error}"
+    );
 }
