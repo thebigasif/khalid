@@ -19,6 +19,8 @@ The first consent banner was one yes or no for all of the site's code, and showe
 - **Every site uses the consent router,** not only one whose code waits: embed cards and the choices page can give any reader an answer.
 - **An outside certified tool** (`[privacy] external_tool`) writes every piece of code unheld and shows no banner; the router still fills players for External media.
 - **Search results** are drawn with the same code, slots and banner, and filled per reader through `khalid_server::drawn_for`.
+- **A page on a domain the owner allows waits too** (privacy U10). `[media] embed_domains` lets a post frame a page from another site, such as a map or a calculator. That page is another site like a video player, so it gets the same card, held frame and marks, named by its host. Its frame keeps its own height and its forms.
+- **Proven in a browser, not only in tests** (privacy U10). The layout check opens every template's demo with no consent, scripts on and off, and fails on any request to another address (`scripts/demo-check/network.mjs`, proved by `just network-selftest`). The served demo check does the same on every page it opens. The showcase site carries a tagged script, so every template is checked with the banner showing.
 - **The server crate stays free of `khalid-core`.** It has its own `Categories` bit set; the `khalid` crate maps U2's `ConsentCategory` onto it, and an unknown category maps to Marketing, the strictest.
 
 ## Hooks for the units that follow

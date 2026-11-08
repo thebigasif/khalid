@@ -14,7 +14,7 @@ const MOST_DAYS: u8 = 14;
 /// Whether the visitor log is on and how long it keeps each visit. It is
 /// off unless the table switches it on, because it holds personal data
 /// the site owner should have checked with a lawyer first
-/// (`docs/privacy/visitor-log.md`):
+/// (`docs/design/visitor-log.md`):
 ///
 /// ```toml
 /// [visitor_log]

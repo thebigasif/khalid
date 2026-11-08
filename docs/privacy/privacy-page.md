@@ -1,6 +1,6 @@
 # The privacy page
 
-Every Khalid site has a privacy page at `<mount>privacy/`, in each of its languages. Khalid writes it from the site's settings and the features it has on, so it is right from the first day and changes when they do. It is a starting point, not legal advice.
+Every Khalid site has a privacy page at `<mount>privacy/`, in each of its languages. Khalid writes it from the site's settings and the features it has on, so it is right from the first day and changes when they do. It is a starting point, not legal advice. How Khalid asks readers for consent is in [cookie consent](consent.md).
 
 ## What it says
 
