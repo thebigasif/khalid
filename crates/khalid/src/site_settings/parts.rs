@@ -1,8 +1,9 @@
-//! The `[seo]` table of `site.toml` for the Admin API's settings: read as
-//! JSON, and changed one part at a time in place, so every other table and
-//! comment in the file stays as written. `SiteSettings` checks the whole
-//! file as `khalid serve` does at start before anything is saved, so a part
-//! with an unknown key or a wrong value is refused there.
+//! Tables of parts in `site.toml`, such as `[seo]` and `[privacy]`, for
+//! the Admin API's settings: read as JSON, and changed one part at a time
+//! in place, so every other table and comment in the file stays as
+//! written. `SiteSettings` checks the whole file as `khalid serve` does at
+//! start before anything is saved, so a part with an unknown key or a
+//! wrong value is refused there.
 
 use std::collections::BTreeMap;
 
@@ -11,47 +12,45 @@ use khalid_api::settings_store::SettingsError;
 use serde_json::{Map, Value};
 use toml_edit::{DocumentMut, Item, Table};
 
-/// The table every part sits in.
-const SEO: &str = "seo";
-
-/// The `[seo]` table in `text`, as JSON, without defaults filled in. Empty
+/// The table `name` in `text`, as JSON, without defaults filled in. Empty
 /// when the file has none.
 ///
 /// # Errors
 ///
 /// Returns [`EntryStoreError`] when `text` is not TOML.
-pub(crate) fn seo_table(text: &str) -> Result<Map<String, Value>, EntryStoreError> {
+pub(crate) fn table(text: &str, name: &str) -> Result<Map<String, Value>, EntryStoreError> {
     let file: toml::Table = text.parse().map_err(EntryStoreError::new)?;
-    let Some(seo) = file.get(SEO) else {
+    let Some(table) = file.get(name) else {
         return Ok(Map::new());
     };
-    match serde_json::to_value(seo).map_err(EntryStoreError::new)? {
+    match serde_json::to_value(table).map_err(EntryStoreError::new)? {
         Value::Object(parts) => Ok(parts),
         _ => Ok(Map::new()),
     }
 }
 
-/// Puts each part of `parts` into the `[seo]` table of `document` in place
+/// Puts each part of `parts` into the table `name` of `document` in place
 /// of the part of that name, and removes each part sent as `None`.
 ///
 /// # Errors
 ///
 /// Returns [`SettingsError::Refused`] naming the part when it cannot be
 /// written as TOML, such as a list holding `null`.
-pub(crate) fn set_seo(
+pub(crate) fn set_parts(
     document: &mut DocumentMut,
+    name: &str,
     parts: BTreeMap<String, Option<Value>>,
 ) -> Result<(), SettingsError> {
-    let seo = document.entry(SEO).or_insert_with(|| {
+    let whole = document.entry(name).or_insert_with(|| {
         let mut table = Table::new();
         table.set_implicit(true);
         Item::Table(table)
     });
-    if !seo.is_table_like() {
-        *seo = Item::Table(Table::new());
+    if !whole.is_table_like() {
+        *whole = Item::Table(Table::new());
     }
     for (part, sent) in parts {
-        let Some(table) = seo.as_table_like_mut() else {
+        let Some(table) = whole.as_table_like_mut() else {
             break;
         };
         match sent {
@@ -59,7 +58,7 @@ pub(crate) fn set_seo(
                 table.remove(&part);
             }
             Some(value) => {
-                let mut item = item(&part, value)?;
+                let mut item = item(&format!("{name}.{part}"), &part, value)?;
                 // A part sent again keeps the comment above its old header.
                 let old = table.get(&part).and_then(Item::as_table);
                 if let (Some(old), Item::Table(new)) = (old, &mut item) {
@@ -72,19 +71,20 @@ pub(crate) fn set_seo(
     Ok(())
 }
 
-/// `value` as the TOML item of part `part`.
-fn item(part: &str, value: Value) -> Result<Item, SettingsError> {
+/// `value` as the TOML item at `key`, refused as `field` when TOML cannot
+/// hold it.
+pub(crate) fn item(field: &str, key: &str, value: Value) -> Result<Item, SettingsError> {
     let refuse = |problem: String| SettingsError::Refused {
-        field: format!("{SEO}.{part}"),
+        field: field.to_owned(),
         problem,
     };
     let value = toml::Value::try_from(without_nulls(value)).map_err(|e| refuse(e.to_string()))?;
     let mut wrapper = toml::Table::new();
-    wrapper.insert(part.to_owned(), value);
+    wrapper.insert(key.to_owned(), value);
     let text = toml::to_string(&wrapper).map_err(|e| refuse(e.to_string()))?;
     let mut parsed: DocumentMut = text.parse().map_err(|e| refuse(format!("{e}")))?;
     let mut item = parsed
-        .remove(part)
+        .remove(key)
         .ok_or_else(|| refuse("it holds nothing".to_owned()))?;
     unplace(&mut item);
     // The first header of the parsed text had nothing above it; in the
@@ -150,12 +150,12 @@ mod tests {
         let mut document: DocumentMut = before.parse().unwrap();
         let sent = json!({"titles": {"separator": "·", "post": {"title": "{title} {sep} {site}"}},
             "feeds": null});
-        set_seo(&mut document, parts(sent)).unwrap();
+        set_parts(&mut document, "seo", parts(sent)).unwrap();
         let after = "# The site.\nname = \"Blog\"\n\n[seo.titles]\nseparator = \"·\"\n\n\
                      [seo.titles.post]\ntitle = \"{title} {sep} {site}\"\n\n\
                      [nav]\nmain = []\n";
         assert_eq!(document.to_string(), after);
-        let read = seo_table(&document.to_string()).unwrap();
+        let read = table(&document.to_string(), "seo").unwrap();
         assert_eq!(read["titles"]["post"]["title"], "{title} {sep} {site}");
         assert!(!read.contains_key("feeds"), "{read:?}");
     }
@@ -166,7 +166,7 @@ mod tests {
         let sent = json!({"publisher": {"type": "person", "name": null},
             "locations": [{"name": "Shop", "street": "1 Road", "locality": "Leeds",
                 "postal_code": "LS1", "country": "GB"}]});
-        set_seo(&mut document, parts(sent)).unwrap();
+        set_parts(&mut document, "seo", parts(sent)).unwrap();
         let text = document.to_string();
         assert!(
             text.contains("[seo.publisher]\ntype = \"person\"\n"),
@@ -179,7 +179,11 @@ mod tests {
     #[test]
     fn a_list_holding_null_is_refused_naming_its_part() {
         let mut document = DocumentMut::new();
-        let refused = set_seo(&mut document, parts(json!({"crawlers": {"block": [null]}})));
+        let refused = set_parts(
+            &mut document,
+            "seo",
+            parts(json!({"crawlers": {"block": [null]}})),
+        );
         assert!(
             matches!(&refused, Err(SettingsError::Refused { field, .. }) if field == "seo.crawlers"),
             "{refused:?}"

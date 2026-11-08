@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./tokens.css";
 @import "./seo.css";
+@import "./privacy.css";
 
 /* The shared pieces of every admin screen, written one rule per line as
    the approved mockups write them. */

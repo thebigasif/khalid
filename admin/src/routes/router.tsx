@@ -31,6 +31,7 @@ import { MediaDetails } from "./MediaDetails";
 import { NewPost } from "./NewPost";
 import { Passkeys } from "./Passkeys";
 import { Posts } from "./Posts";
+import { Privacy } from "./Privacy";
 import { Redirects } from "./Redirects";
 import { SchemaTemplates } from "./SchemaTemplates";
 import { SearchConsole } from "./SearchConsole";
@@ -205,6 +206,13 @@ const site = createRoute({ getParentRoute: () => signedIn, path: "/settings", co
 // Every [seo] setting of site.toml, saved through the same settings API.
 const seo = createRoute({ getParentRoute: () => signedIn, path: "/seo", component: SeoSettings });
 
+// The [privacy] table and the categories of [code], saved through the same settings API.
+const privacy = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/privacy",
+  component: Privacy,
+});
+
 // Many posts' SEO titles, descriptions and focus keywords in one table.
 const bulkSeo = createRoute({
   getParentRoute: () => signedIn,
@@ -255,6 +263,7 @@ const routeTree = root.addChildren([
     look,
     site,
     seo,
+    privacy,
     bulkSeo,
     workouts,
     account,
