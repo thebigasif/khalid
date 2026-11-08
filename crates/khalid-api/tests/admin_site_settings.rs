@@ -58,11 +58,14 @@ fn demo() -> Router {
         mount: "/blog/".to_owned(),
         default_language: "en".to_owned(),
         languages: vec!["en".to_owned(), "de".to_owned()],
+        mode: "server".to_owned(),
         template: TemplateSetting {
             name: "classic".to_owned(),
             options: BTreeMap::new(),
         },
         seo: serde_json::Map::new(),
+        privacy: serde_json::Map::new(),
+        code: Vec::new(),
         updated_at: Utc.with_ymd_and_hms(2026, 10, 20, 9, 0, 0).unwrap(),
         restart_needed: false,
     };

@@ -22,11 +22,14 @@ fn demo() -> MemorySettings {
         mount: "/blog/".to_owned(),
         default_language: "en".to_owned(),
         languages: vec!["en".to_owned(), "de".to_owned()],
+        mode: "server".to_owned(),
         template: TemplateSetting {
             name: "classic".to_owned(),
             options: BTreeMap::new(),
         },
         seo: serde_json::Map::new(),
+        privacy: serde_json::Map::new(),
+        code: Vec::new(),
         updated_at: at(20),
         restart_needed: false,
     };
@@ -46,7 +49,8 @@ async fn the_settings_are_sent_in_api_shape() {
         json!({
             "name": "Field Notes on SEO", "address": "https://www.example.com",
             "mount": "/blog/", "default_language": "en", "languages": ["en", "de"],
-            "template": {"name": "classic", "options": {}}, "seo": {},
+            "mode": "server", "template": {"name": "classic", "options": {}}, "seo": {},
+            "privacy": {}, "code": [],
             "updated_at": "2026-10-20T09:00:00Z", "restart_needed": false,
         })
     );
