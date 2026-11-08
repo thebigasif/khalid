@@ -111,15 +111,30 @@ fn body_code_holds_scripts_only() {
 }
 
 #[test]
-fn a_static_site_cannot_ask_for_consent() {
+fn a_static_site_asks_for_consent_with_its_script() {
     let text = format!("{SITE}mode = \"static\"\n{CODE}");
-    let error = load(&text).unwrap_err();
-    assert!(
-        error.contains("field \"consent\"") && error.contains("consent = \"not-needed\""),
-        "{error}"
-    );
+    assert!(load(&text).unwrap().code().waits_for_consent());
     let text = format!("{text}consent = \"not-needed\"\n");
     assert!(!load(&text).unwrap().code().waits_for_consent());
+}
+
+#[test]
+fn held_code_is_plain_text_and_inert_templates_until_a_reader_agrees() {
+    let head = khalid_core::HeadCode::try_new(
+        "<script type=\"module\" src=\"/m.js\"></script><style>p{}</style><meta name=\"x\" content=\"y\">",
+    )
+    .unwrap();
+    let expected = [
+        "<script type=\"text/plain\" data-khalid-consent=\"analytics\" data-type=\"module\" src=\"/m.js\"></script>",
+        "<template data-khalid-consent=\"analytics\"><style>p{}</style></template>",
+        "<template data-khalid-consent=\"analytics\"><meta name=\"x\" content=\"y\"></template>",
+    ];
+    assert_eq!(head.to_held_html("analytics"), expected.join("\n"));
+    let body = BodyCode::try_new("<script>chat()</script>").unwrap();
+    assert_eq!(
+        body.to_held_html("marketing"),
+        "<script type=\"text/plain\" data-khalid-consent=\"marketing\">chat()</script>"
+    );
 }
 
 #[test]
@@ -202,12 +217,7 @@ fn refuses_consent_inside_a_list_entry() {
 }
 
 #[test]
-fn a_static_site_cannot_hold_listed_code_either() {
+fn a_static_site_holds_listed_code_too() {
     let text = format!("mode = \"static\"\n{SITE}{ENTRIES}");
-    let error = load(&text).unwrap_err();
-    assert!(
-        error.contains("line 9, field \"category\"")
-            && error.contains("category = \"no-tracking\""),
-        "{error}"
-    );
+    assert!(load(&text).unwrap().code().waits_for_consent());
 }

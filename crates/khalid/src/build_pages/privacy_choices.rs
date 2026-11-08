@@ -5,13 +5,17 @@
 
 use khalid_content::{EMBED_PROVIDERS, EmbedProvider};
 use khalid_core::{Config, Locale, Mode, UserMessage};
-use khalid_render::{ConsentRow, PageBody, PageKind, RenderPrivacyChoices, Renderer};
+use khalid_render::{
+    ConsentKeeper, ConsentRow, PageBody, PageKind, RenderPrivacyChoices, Renderer,
+};
 use khalid_seo::PageKind as SeoKind;
 
 use crate::build_lists::{self, text};
 use crate::build_pages::{self, LanguagePages, Page};
 use crate::build_seo;
 use crate::page_code::CONSENT_FOLDER;
+use crate::privacy_page;
+use crate::static_mode::consent::Asking;
 
 /// The end of the page's address, after the mount and the language.
 pub(crate) const REST: &str = "privacy-choices/";
@@ -39,6 +43,13 @@ pub(crate) fn add(
     renderer: &Renderer,
     languages: &mut [LanguagePages],
 ) -> Result<(), UserMessage> {
+    // A static site asks only with its consent script, and only when its
+    // code waits or a post shows an embed (privacy plan U6).
+    let keeper = match config.mode() {
+        Mode::Server => ConsentKeeper::Server,
+        _ if Asking::of(config, languages) == Asking::Nothing => ConsentKeeper::Nobody,
+        _ => ConsentKeeper::Script,
+    };
     for language in languages.iter_mut() {
         let locale = language.site.locale.clone();
         let title = text(renderer, &locale, "privacy_choices_title")?;
@@ -55,9 +66,8 @@ pub(crate) fn add(
         let body = PageBody::PrivacyChoices(RenderPrivacyChoices {
             title,
             action: format!("{}{CONSENT_FOLDER}/", config.mount()),
-            // The privacy page comes with privacy plan U9.
-            privacy: None,
-            live: config.mode() == Mode::Server,
+            privacy: Some(build_pages::path_of(config, &locale, privacy_page::REST)),
+            keeper,
             categories: rows(renderer, &locale)?,
         });
         language.pages.push(Page {

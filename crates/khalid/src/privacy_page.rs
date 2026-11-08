@@ -22,7 +22,7 @@ use crate::build_pages::{self, LanguagePages, Page};
 use crate::{build_lists, build_message, build_seo};
 
 /// The end of the page's address, after the mount and the language.
-const REST: &str = "privacy/";
+pub(crate) const REST: &str = "privacy/";
 
 /// The file in `data/` that keeps the day the facts last changed and their
 /// hash, as `2026-11-08 <hash>`.

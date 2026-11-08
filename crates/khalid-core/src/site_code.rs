@@ -46,6 +46,12 @@ impl BodyCode {
     pub fn to_html(&self, nonce: &str) -> String {
         self.0.to_html(nonce)
     }
+
+    /// The body code as a static page holds it until a reader agrees to
+    /// `category`, as [`HeadCode::to_held_html`] writes it.
+    pub fn to_held_html(&self, category: &str) -> String {
+        self.0.to_held_html(category)
+    }
 }
 
 impl fmt::Display for BodyCode {
@@ -223,8 +229,6 @@ struct OneTable {
 pub struct SiteCode {
     /// Every entry, in the order written.
     pub entries: Vec<CodeEntry>,
-    /// Whether `site.toml` wrote the old single table.
-    one_table: bool,
 }
 
 impl SiteCode {
@@ -252,22 +256,6 @@ impl SiteCode {
         let bodies = self.entries.iter().filter_map(|entry| entry.body.as_ref());
         bodies.filter(|body| !body.is_empty())
     }
-
-    /// The key and fix for code that waits for consent on a static site,
-    /// in the words of the form `site.toml` used.
-    pub(crate) fn static_mistake(&self) -> (&'static str, &'static str) {
-        if self.one_table {
-            (
-                "consent",
-                "a static host cannot keep a reader's choice, so code that waits for consent would never run; set consent = \"not-needed\" in [code], or mode = \"server\"",
-            )
-        } else {
-            (
-                "category",
-                "a static host cannot keep a reader's choice, so code that waits for consent would never run; set category = \"no-tracking\" on code that tracks no one, or mode = \"server\"",
-            )
-        }
-    }
 }
 
 impl<'de> Deserialize<'de> for SiteCode {
@@ -288,10 +276,7 @@ impl<'de> Visitor<'de> for CodeVisitor {
 
     fn visit_seq<A: SeqAccess<'de>>(self, seq: A) -> Result<SiteCode, A::Error> {
         let entries = Vec::deserialize(SeqAccessDeserializer::new(seq))?;
-        Ok(SiteCode {
-            entries,
-            one_table: false,
-        })
+        Ok(SiteCode { entries })
     }
 
     fn visit_map<A: MapAccess<'de>>(self, map: A) -> Result<SiteCode, A::Error> {
@@ -312,9 +297,6 @@ impl<'de> Visitor<'de> for CodeVisitor {
         } else {
             vec![entry]
         };
-        Ok(SiteCode {
-            entries,
-            one_table: true,
-        })
+        Ok(SiteCode { entries })
     }
 }
