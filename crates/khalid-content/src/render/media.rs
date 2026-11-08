@@ -11,6 +11,13 @@ use crate::{GalleryImage, StructuredBlock, VideoBlock, embed};
 /// pixels: room for a calculator or a chart with its controls.
 const DEFAULT_HEIGHT: u16 = 480;
 
+/// What a provider's player may do: play, go full screen, open links.
+const PLAYER_RULES: &str = "sandbox=\"allow-scripts allow-same-origin allow-popups\" allow=\"encrypted-media; fullscreen; picture-in-picture\"";
+
+/// What a page on an allowed domain may do: a calculator or a map needs
+/// its forms too.
+const SITE_RULES: &str = "sandbox=\"allow-scripts allow-same-origin allow-forms allow-popups\"";
+
 impl Renderer<'_> {
     /// Writes a video with controls that loads nothing until played, its
     /// file's link for browsers that cannot play it, and its caption.
@@ -91,8 +98,9 @@ impl Renderer<'_> {
     }
 
     /// Writes an embed: an allowed provider's player, or a page on a domain
-    /// the site allows, in a lazy, sandboxed frame of fixed size with the
-    /// page's link under it, or the link alone.
+    /// the site allows, as a card that holds its lazy, sandboxed frame of
+    /// fixed size until the reader allows it, with the page's link under
+    /// it, or the link alone.
     pub(super) fn embed(&mut self, src: &AbsoluteUrl, title: &str, height: Option<u16>) {
         self.link_out(src, title);
         let link = [
@@ -103,37 +111,18 @@ impl Renderer<'_> {
             "</a>",
         ]
         .concat();
-        let Some((provider, player)) = embed::player(src) else {
-            if src.as_str().starts_with("https://")
-                && self
-                    .frames
-                    .iter()
-                    .any(|domain| domain.as_str() == src.host())
-            {
-                let height = height.unwrap_or(DEFAULT_HEIGHT).to_string();
-                self.push(&[
-                    "<figure class=\"embed embed-site\">\n<iframe src=\"",
-                    &attribute(src.as_str()),
-                    "\" title=\"",
-                    &attribute(title),
-                    "\" width=\"560\" height=\"",
-                    &height,
-                    "\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-forms allow-popups\"></iframe>\n<figcaption>",
-                    &link,
-                    "</figcaption>\n</figure>\n",
-                ]);
-            } else {
-                self.push(&["<p class=\"bookmark\">", &link, "</p>\n"]);
-            }
+        let Some(Frame {
+            name,
+            shape,
+            height,
+            player,
+            rules,
+        }) = self.frame(src, height)
+        else {
+            self.push(&["<p class=\"bookmark\">", &link, "</p>\n"]);
             return;
         };
-        let (shape, height) = if provider.is_audio() {
-            ("audio", "152")
-        } else {
-            ("wide", "315")
-        };
         let words = CardWords::of(&self.ids.locale);
-        let name = provider.name();
         self.push(&[
             "<figure class=\"embed embed-",
             shape,
@@ -162,14 +151,58 @@ impl Renderer<'_> {
             "\" title=\"",
             &attribute(title),
             "\" width=\"560\" height=\"",
-            height,
-            "\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-popups\" allow=\"encrypted-media; fullscreen; picture-in-picture\"></iframe>",
+            &height,
+            "\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" ",
+            rules,
+            "></iframe>",
             MEDIA_END,
             "\n<figcaption>",
             &link,
             "</figcaption>\n</figure>\n",
         ]);
     }
+
+    /// The frame an embed of `src` loads, or `None` when it is only a
+    /// link. A page on a domain the site allows is another site too, so
+    /// it waits behind the same card as a provider's player (R1).
+    fn frame<'a>(&self, src: &'a AbsoluteUrl, height: Option<u16>) -> Option<Frame<'a>> {
+        if let Some((provider, player)) = embed::player(src) {
+            let (shape, height) = if provider.is_audio() {
+                ("audio", "152")
+            } else {
+                ("wide", "315")
+            };
+            return Some(Frame {
+                name: provider.name(),
+                shape,
+                height: height.to_owned(),
+                player,
+                rules: PLAYER_RULES,
+            });
+        }
+        let allowed = (self.frames.iter()).any(|domain| domain.as_str() == src.host());
+        (src.as_str().starts_with("https://") && allowed).then(|| Frame {
+            name: src.host(),
+            shape: "site",
+            height: height.unwrap_or(DEFAULT_HEIGHT).to_string(),
+            player: src.as_str().to_owned(),
+            rules: SITE_RULES,
+        })
+    }
+}
+
+/// What an embed's card names and the frame it holds.
+struct Frame<'a> {
+    /// Who runs it: the provider, or the allowed domain.
+    name: &'a str,
+    /// The figure's shape class: `wide`, `audio` or `site`.
+    shape: &'static str,
+    /// The frame's height in pixels.
+    height: String,
+    /// The address the frame loads.
+    player: String,
+    /// The frame's `sandbox` and `allow` attributes.
+    rules: &'static str,
 }
 
 /// The words on an embed's card, in German for a German post and in
@@ -188,7 +221,7 @@ impl CardWords {
         if locale.language() == "de" {
             Self {
                 note: [
-                    "Dieser Player kommt von ",
+                    "Dies kommt von ",
                     ". Beim Laden erhält ",
                     " Daten über Sie, etwa Ihre IP-Adresse.",
                 ],
@@ -198,7 +231,7 @@ impl CardWords {
         } else {
             Self {
                 note: [
-                    "This player comes from ",
+                    "This comes from ",
                     ". Loading it shares data about you, such as your IP address, with ",
                     ".",
                 ],
