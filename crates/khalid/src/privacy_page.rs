@@ -257,26 +257,26 @@ fn embedded<'a>(bodies: impl Iterator<Item = &'a str>) -> Vec<String> {
         .collect();
     EMBED_PROVIDERS
         .into_iter()
-        .filter_map(known)
-        .filter(|(_, hosts)| {
+        .filter(|provider| {
+            let hosts = hosts(*provider);
             media
                 .iter()
                 .any(|line| hosts.iter().any(|h| line.contains(h)))
         })
-        .map(|(name, _)| name.to_owned())
+        .map(|provider| provider.name().to_owned())
         .collect()
 }
 
-/// The name a reader knows `provider` by, and the hosts its links use.
-fn known(provider: EmbedProvider) -> Option<(&'static str, &'static [&'static str])> {
+/// The hosts the links of `provider` use, as an embed's `src` names them.
+fn hosts(provider: EmbedProvider) -> &'static [&'static str] {
     match provider {
-        EmbedProvider::YouTube => Some(("YouTube", &["youtube.com/", "youtu.be/"])),
-        EmbedProvider::Vimeo => Some(("Vimeo", &["vimeo.com/"])),
-        EmbedProvider::Spotify => Some(("Spotify", &["spotify.com/"])),
-        EmbedProvider::SoundCloud => Some(("SoundCloud", &["soundcloud.com/"])),
-        EmbedProvider::CodePen => Some(("CodePen", &["codepen.io/"])),
-        EmbedProvider::Loom => Some(("Loom", &["loom.com/"])),
-        _ => None,
+        EmbedProvider::YouTube => &["youtube.com/", "youtu.be/"],
+        EmbedProvider::Vimeo => &["vimeo.com/"],
+        EmbedProvider::Spotify => &["spotify.com/"],
+        EmbedProvider::SoundCloud => &["soundcloud.com/"],
+        EmbedProvider::CodePen => &["codepen.io/"],
+        EmbedProvider::Loom => &["loom.com/"],
+        _ => &[],
     }
 }
 
