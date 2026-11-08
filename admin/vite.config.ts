@@ -22,6 +22,9 @@ export default defineConfig({
       // rest of the library (src/editor/sameState.ts says why). A path that
       // starts with / starts at this folder.
       { find: /^fast-equals$/, replacement: "/src/editor/sameState.ts" },
+      // Tiptap's Link finds addresses with linkifyjs, 11 KB compressed with
+      // every domain ending; src/editor/linkify.ts does it in a few lines.
+      { find: /^linkifyjs$/, replacement: "/src/editor/linkify.ts" },
     ],
   },
   test: {

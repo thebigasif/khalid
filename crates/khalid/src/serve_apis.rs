@@ -22,7 +22,8 @@ use khalid_api::session_check::SessionCheck;
 use khalid_auth::SiteDirectory;
 use khalid_core::{Config, SystemClock};
 use khalid_db::{
-    AnalyticsTable, AuditTable, Database, KeyTable, SerpdadTable, SiteId, WebhookTable,
+    AnalyticsTable, AuditTable, ConsentProofTable, Database, KeyTable, SerpdadTable, SiteId,
+    WebhookTable,
 };
 use khalid_newsletter::Mailer;
 
@@ -102,7 +103,8 @@ pub(crate) fn api_router(
         analytics: AnalyticsDesk::new(
             Arc::new(AnalyticsTable::new(database.clone(), id)),
             Arc::new(SystemClock),
-        ),
+        )
+        .with_consent(Arc::new(ConsentProofTable::new(database.clone(), id))),
         draft_comments: Some(draft_comment_mail::desk((database, id, config), mailer)),
         follow_ups: Arc::new(follow_ups),
         serpdad: Some(Arc::new(SerpdadTable::new(

@@ -3,6 +3,8 @@
 //! `consent_counts`. No address or reader identifier is stored.
 
 use chrono::{Months, NaiveDate};
+use khalid_analytics::{AnalyticsError, BoxFuture};
+use khalid_api::consent_proof::{ConsentProof, DayChoices, ShownVersion};
 use khalid_core::{ConsentCategory, SettingsVersion};
 use sqlx::sqlite::SqliteRow;
 use sqlx::{Row, Sqlite, Transaction};
@@ -257,6 +259,39 @@ impl ConsentProofTable {
         .await?;
         Ok(id)
     }
+}
+
+/// What the Admin API's proof routes read (privacy U11, R18).
+impl ConsentProof for ConsentProofTable {
+    fn versions(&self) -> BoxFuture<'_, Result<Vec<ShownVersion>, AnalyticsError>> {
+        Box::pin(async move {
+            let versions = self.versions().await.map_err(failed)?;
+            let shown = versions.iter().map(|row| {
+                ShownVersion::new(&row.version, &row.shown, row.first_day, row.last_day)
+            });
+            Ok(shown.collect())
+        })
+    }
+
+    fn counts(
+        &self,
+        first: NaiveDate,
+        last: NaiveDate,
+    ) -> BoxFuture<'_, Result<Vec<DayChoices>, AnalyticsError>> {
+        Box::pin(async move {
+            let counts = self.counts(first, last).await.map_err(failed)?;
+            let days = counts.iter().map(|row| {
+                DayChoices::new(row.day, &row.version, row.choices, |category| {
+                    row.allowed(category)
+                })
+            });
+            Ok(days.collect())
+        })
+    }
+}
+
+fn failed(error: DbError) -> AnalyticsError {
+    AnalyticsError::Storage(Box::new(error))
 }
 
 /// One stored version, read back.
