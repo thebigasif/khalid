@@ -67,8 +67,7 @@ fn strings_escapes_and_brackets_are_read_as_written() {
     let read = |prelude: &str| {
         let mut classes = BTreeMap::new();
         let found = selectors(prelude, &mut classes);
-        let mut names: Vec<(usize, String)> =
-            classes.into_iter().map(|(k, v)| (v, k)).collect();
+        let mut names: Vec<(usize, String)> = classes.into_iter().map(|(k, v)| (v, k)).collect();
         names.sort();
         let name = |bit: usize| names[bit].1.clone();
         found
