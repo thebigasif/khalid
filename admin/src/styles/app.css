@@ -3,6 +3,11 @@
 @import "./seo.css";
 @import "./privacy.css";
 
+/* Tailwind reads every word in src/ as a possible class, so plain words in
+   comments, types and copy such as "filter" or "transition" built rules no
+   element uses. None of these is ever a class name here. */
+@source not inline("container static contents inline table hidden grow transform lowercase italic blur filter transition");
+
 /* The shared pieces of every admin screen, written one rule per line as
    the approved mockups write them. */
 @layer base {
