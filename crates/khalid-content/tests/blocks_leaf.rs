@@ -1,7 +1,9 @@
 //! Toggle, table of contents and button blocks, and the one-line leaf form
 //! `::name{...}` for blocks with no body (task 1.7, KH-CON-5).
 
-use khalid_content::{BlockKind, CTA_MARK, parse_blocks, print_blocks, render};
+use khalid_content::{
+    BlockKind, CTA_MARK, PRIVACY_FACTS_MARK, parse_blocks, print_blocks, render,
+};
 use khalid_core::{Locale, SlugMode};
 
 #[cfg(test)]
@@ -50,6 +52,24 @@ fn a_call_to_action_round_trips_and_leaves_its_place_for_the_page() {
     assert_eq!(
         error("::cta{label=\"Go\"}\n"),
         "line 1: a cta does not take label; it takes nothing"
+    );
+}
+
+#[test]
+fn privacy_facts_round_trip_and_leave_their_place_for_the_page() {
+    round_trip("::privacy-facts\n", &BlockKind::PrivacyFacts);
+    let body = html("We keep little.\n\n::privacy-facts\n\nAsk us anything.\n");
+    assert_eq!(
+        body,
+        format!("<p>We keep little.</p>\n{PRIVACY_FACTS_MARK}<p>Ask us anything.</p>\n")
+    );
+    assert_eq!(
+        error("::privacy-facts{lang=\"de\"}\n"),
+        "line 1: a privacy-facts does not take lang; it takes nothing"
+    );
+    assert_eq!(
+        error(":::privacy-facts\n:::\n"),
+        "line 1: privacy-facts has no body; write it on one line as ::privacy-facts"
     );
 }
 
