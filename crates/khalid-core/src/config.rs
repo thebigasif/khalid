@@ -12,7 +12,7 @@ use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
     AbsoluteUrl, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment, Locale,
-    MailSettings, MediaSettings, NavSettings, ParseUrlError, Reader, ReaderSwitch,
+    MailSettings, MediaSettings, NavSettings, ParseUrlError, PrivacySettings, Reader, ReaderSwitch,
     SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
 };
 
@@ -41,6 +41,7 @@ pub struct Config {
     mail: Option<MailSettings>,
     alerts: AlertSettings,
     code: SiteCode,
+    privacy: PrivacySettings,
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
     preview_link_lifetime: Duration,
@@ -114,6 +115,8 @@ struct SiteFile {
     alerts: AlertSettings,
     #[serde(default)]
     code: SiteCode,
+    #[serde(default)]
+    privacy: PrivacySettings,
     search_console: Option<SearchConsoleTable>,
     #[serde(default)]
     visitor_log: VisitorLogSettings,
@@ -199,18 +202,21 @@ fn layout_mistake(file: &SiteFile) -> Option<(&'static str, &'static str)> {
     None
 }
 
-/// The refusal of `[code]` that waits for consent on a static site, at the
-/// consent line when it is written, else at the table's own line.
-fn static_consent(path: &Path, text: &str) -> ConfigError {
+/// The refusal of `code` that waits for consent on a static site, at the
+/// line of its key when it is written, else at the table's own line.
+fn static_consent(path: &Path, text: &str, code: &SiteCode) -> ConfigError {
+    let opens = |line: &str| line.starts_with("[code]") || line.starts_with("[[code]]");
     let table = text
         .lines()
-        .position(|line| line.trim_start().starts_with("[code]"))
+        .position(|line| opens(line.trim_start()))
         .map_or(1, |index| index.saturating_add(1));
+    let (key, problem) = code.static_mistake();
+    let start = if key == "consent" { "[code" } else { "[[code" };
     ConfigError::Field {
         path: path.to_path_buf(),
-        line: line_of_key_in(text, "[code", "consent").max(table),
-        field: "consent".to_owned(),
-        problem: "a static host cannot keep a reader's choice, so code that waits for consent would never run; set consent = \"not-needed\" in [code], or mode = \"server\"".to_owned(),
+        line: line_of_key_in(text, start, key).max(table),
+        field: key.to_owned(),
+        problem: problem.to_owned(),
     }
 }
 
@@ -242,8 +248,11 @@ fn tables_mistake(
     if let Some((key, problem)) = file.ai.mistake() {
         return Err(in_table(path, text, "[ai", key, problem));
     }
+    if let Some((key, problem)) = file.privacy.mistake(file.mode) {
+        return Err(in_table(path, text, "[privacy", key, problem));
+    }
     if file.mode == Mode::Static && file.code.waits_for_consent() {
-        return Err(static_consent(path, text));
+        return Err(static_consent(path, text, &file.code));
     }
     Ok(())
 }
@@ -337,6 +346,7 @@ impl Config {
             mail,
             alerts: file.alerts,
             code: file.code,
+            privacy: file.privacy,
             search_console,
             visitor_log: file.visitor_log,
             preview_link_lifetime,
@@ -354,6 +364,11 @@ impl Config {
     /// site has none.
     pub fn code(&self) -> &SiteCode {
         &self.code
+    }
+
+    /// How readers are asked for consent, from `[privacy]`.
+    pub fn privacy(&self) -> &PrivacySettings {
+        &self.privacy
     }
 
     /// How the site sends email, from `[mail]`, or `None` when it sends

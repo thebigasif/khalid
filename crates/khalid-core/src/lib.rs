@@ -7,7 +7,9 @@
 //! outputs share, the [`IndexNowKey`] that settings and the SEO pings
 //! share, and a post's [`PostAccess`], [`TemplateName`], [`PasswordHash`]
 //! and checked [`HeadCode`], which front matter, the Admin API and the
-//! server share, and the site's own [`SiteCode`] with its [`Consent`]. It must not know about HTTP or SQL. It depends on no other Khalid crate, and its only
+//! server share, the site's own [`SiteCode`], each entry tagged with a
+//! [`CodeCategory`], and the [`PrivacySettings`] that decide how readers
+//! are asked. It must not know about HTTP or SQL. It depends on no other Khalid crate, and its only
 //! I/O is reading the system clock and resolving a [`SitePath`] on disk.
 
 mod absolute_url;
@@ -26,6 +28,7 @@ mod locale;
 mod mail_settings;
 mod media_settings;
 mod post_access;
+mod privacy_settings;
 mod reader;
 mod robots;
 mod schema_types;
@@ -69,6 +72,10 @@ pub use media_settings::{AvifSetting, MediaSettings, S3Keys, S3Settings};
 pub use post_access::{
     ParsePasswordHashError, ParseTemplateNameError, PasswordHash, PostAccess, TemplateName,
 };
+pub use privacy_settings::{
+    ConsentCategory, ConsentRev, GpcMode, PrivacyContact, PrivacySettings, PrivacyText,
+    SettingsVersion,
+};
 pub use reader::{HomeSection, Reader, ReaderSwitch};
 pub use robots::{
     Following, ImagePreview, Indexing, ParseRobotsError, PreviewLimit, Restriction,
@@ -88,7 +95,7 @@ pub use seo_publisher_settings::{
 };
 pub use seo_search_settings::SearchFilterSettings;
 pub use seo_settings::{ArchiveIndex, ArchiveSetting, IndexNowSettings, SeoSettings};
-pub use site_code::{BodyCode, BodyCodeError, Consent, SiteCode};
+pub use site_code::{BodyCode, BodyCodeError, CodeCategory, CodeEntry, Consent, SiteCode};
 pub use site_nav::{
     Announcement, FooterGroup, MenuLink, NavSettings, OneLine, SiteHref, SiteNavError,
 };
