@@ -3,17 +3,16 @@
 use std::collections::BTreeMap;
 
 use khalid_core::Locale;
-use rust_embed::RustEmbed;
 
 use crate::RenderError;
+use crate::archive;
 
 /// The language whose strings fill in for a language with no file.
 const FALLBACK_LANGUAGE: &str = "en";
 
-/// The strings files, built into the binary.
-#[derive(RustEmbed)]
-#[folder = "strings/"]
-struct Files;
+/// Where the strings files sit in the built-in archive, such as
+/// `strings/en.toml`.
+const FOLDER: &str = "strings/";
 
 /// The built-in strings of `locale`'s language, as templates read them under
 /// `t`, or the English ones when the language has no file, for words
@@ -37,15 +36,18 @@ impl Strings {
     /// Reads every built-in strings file.
     pub(crate) fn load() -> Result<Self, RenderError> {
         let mut tables = BTreeMap::new();
-        for file in Files::iter() {
-            let Some(language) = file.strip_suffix(".toml") else {
+        let files = archive::built_in();
+        for name in files.names() {
+            let Some(language) = name
+                .strip_prefix(FOLDER)
+                .and_then(|file| file.strip_suffix(".toml"))
+            else {
                 continue;
             };
-            let Some(content) = Files::get(&file) else {
+            let Some(text) = files.get(name) else {
                 continue;
             };
-            let text = String::from_utf8_lossy(&content.data);
-            let table = toml::from_str(&text).map_err(|source| RenderError::Strings {
+            let table = toml::from_str(text).map_err(|source| RenderError::Strings {
                 language: language.to_owned(),
                 source,
             })?;
@@ -82,6 +84,19 @@ mod tests {
             let keys: Vec<&String> = strings.tables[language].keys().collect();
             assert_eq!(keys, english, "strings/{language}.toml");
         }
+    }
+
+    #[test]
+    fn every_key_reads_as_its_file_says() {
+        let strings = Strings::load().unwrap();
+        for (language, file) in [
+            ("en", include_str!("../strings/en.toml")),
+            ("de", include_str!("../strings/de.toml")),
+        ] {
+            let want: BTreeMap<String, String> = toml::from_str(file).unwrap();
+            assert_eq!(strings.tables[language], want, "strings/{language}.toml");
+        }
+        assert_eq!(strings.languages().collect::<Vec<_>>(), ["de", "en"]);
     }
 
     #[test]

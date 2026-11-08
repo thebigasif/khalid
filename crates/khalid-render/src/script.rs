@@ -5,23 +5,26 @@ use std::sync::LazyLock;
 
 use serde::Serialize;
 
+use crate::archive;
 use crate::asset::{hashed_name, integrity_of};
 use crate::{Asset, RenderError};
 
 /// What the script does, in plain JavaScript with no dependencies: copy a
 /// heading's address, open an enlarged image in a dialog, open search with
-/// `/` or Ctrl+K, and mark the section being read.
-const READER_JS: &str = include_str!("../assets/reader.js");
+/// `/` or Ctrl+K, and mark the section being read. Its name in the
+/// built-in archive.
+const READER_JS: &str = "assets/reader.js";
 
 /// The script as served: [`READER_JS`] without its comment lines, which
 /// explain the code to the people who change it but not to browsers. Every
 /// comment in the file is a whole line, so no code is touched.
-static SERVED_JS: LazyLock<String> = LazyLock::new(|| served(READER_JS));
+static SERVED_JS: LazyLock<String> = LazyLock::new(|| served(archive::text(READER_JS)));
 
 /// The consent script of a static site (privacy plan U6): it runs the
 /// owner code and shows the players a reader allowed, and the banner until
-/// they answer. Only a static site with owner code or embeds loads it.
-const CONSENT_JS: &str = include_str!("../assets/consent.js");
+/// they answer. Only a static site with owner code or embeds loads it. Its
+/// name in the built-in archive.
+const CONSENT_JS: &str = "assets/consent.js";
 
 /// `script` without its comment lines. Every comment in Khalid's scripts
 /// is a whole line, so no code is touched.
@@ -48,7 +51,7 @@ pub fn consent_script() -> Result<Asset, RenderError> {
         "consent",
         EXTENSION,
         "text/javascript; charset=utf-8",
-        served(CONSENT_JS).into_bytes(),
+        served(archive::text(CONSENT_JS)).into_bytes(),
     )
 }
 
