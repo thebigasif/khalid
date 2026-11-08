@@ -4,6 +4,18 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.6.1
+
+Lighter pages: each page downloads only the CSS it uses, at most 10 KB, and pictures can come in AVIF in place of WebP. What changed, in plain words: `docs/releases/1.6.1.md`.
+
+### Added
+
+- Pictures can come in AVIF in place of WebP: set `avif = "only"` under `[media]` in `site.toml`. Pages then offer AVIF first and one JPEG or PNG, at most 1,024 px wide, for the few browsers that cannot read AVIF. This nearly halves the space pictures take on disk. It is off by default; `avif = true` still offers AVIF beside WebP. The template demos now use it, which shrinks the demos download from 702 MB to 310 MB.
+
+### Changed
+
+- Each page now downloads only the CSS it uses. A post no longer carries the rules of the home page, and the home page no longer carries the rules of every block a post may hold. Across the template demos, a home page, post, category or author page downloads at most 10 KB of CSS once compressed, where before most pages downloaded 10 to 14 KB. Pages look exactly as before, and your own rules in `theme/site.css` still reach every page. A check now keeps every template under this budget.
+
 ## 1.6.0
 
 Eighteen new templates of Khalid's own design, 49 in all, with lighter pictures on every template and a smaller page on phones. What changed, in plain words: `docs/releases/1.6.0.md`.
