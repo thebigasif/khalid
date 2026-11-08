@@ -73,11 +73,37 @@ pub(crate) fn router(config: &Config, security: SecurityHeaders) -> Router {
         .with_state(answering)
 }
 
-/// The consent form as a browser sends it.
+/// The consent form as a browser sends it: the banner's Accept all or
+/// Reject all, or the choices page's Save with a field for each category
+/// the reader switched on.
 #[derive(Debug, Deserialize)]
 struct ConsentForm {
     choice: String,
     back: String,
+    preferences: Option<String>,
+    analytics: Option<String>,
+    marketing: Option<String>,
+}
+
+impl ConsentForm {
+    /// The cookie's `yes` or `no` for what the reader chose. The site's
+    /// code is one group until the cookie holds categories, so Save is a
+    /// yes only when every category that code may belong to is on.
+    fn answer(&self) -> Option<&'static str> {
+        match self.choice.as_str() {
+            "yes" | "accept-all" => Some("yes"),
+            "no" | "reject-all" => Some("no"),
+            "save" => {
+                let on = [&self.preferences, &self.analytics, &self.marketing];
+                Some(if on.iter().all(|field| field.is_some()) {
+                    "yes"
+                } else {
+                    "no"
+                })
+            }
+            _ => None,
+        }
+    }
 }
 
 /// Keeps the choice in a cookie and sends the reader back. A form posted
@@ -103,7 +129,7 @@ async fn receive(State(answering): State<Answering>, request: Request) -> Respon
     if let Ok(location) = HeaderValue::try_from(back) {
         headers.insert(header::LOCATION, location);
     }
-    if let Some(cookie) = cookie(&answering, &form.choice) {
+    if let Some(cookie) = form.answer().and_then(|value| cookie(&answering, value)) {
         headers.insert(header::SET_COOKIE, cookie);
     }
     headers.insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
@@ -121,13 +147,8 @@ fn back_to<'a>(mount: &'a str, back: &'a str) -> &'a str {
     if safe { back } else { mount }
 }
 
-/// The cookie that keeps `choice`, or `None` for a choice the form never
-/// sends.
-fn cookie(answering: &Answering, choice: &str) -> Option<HeaderValue> {
-    let value = match choice {
-        "yes" | "no" => choice,
-        _ => return None,
-    };
+/// The cookie that keeps `value`, `yes` or `no`.
+fn cookie(answering: &Answering, value: &str) -> Option<HeaderValue> {
     let secure = if answering.secure { "; Secure" } else { "" };
     let cookie = format!(
         "{CONSENT_COOKIE}={value}; Path={}; Max-Age={KEPT_FOR}; SameSite=Lax; HttpOnly{secure}",

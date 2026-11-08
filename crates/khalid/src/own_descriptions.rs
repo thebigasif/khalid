@@ -61,6 +61,7 @@ fn key(page: &Page) -> Option<&'static str> {
         PageBody::Author(_) => Some("author_description"),
         PageBody::Glossary(_) => Some("glossary_description"),
         PageBody::Search(_) => Some("search_description"),
+        PageBody::PrivacyChoices(_) => Some("privacy_choices_description"),
         // A glossary term's own definition describes it (`definition_text`),
         // and a sentence about the site would land in its schema as one.
         _ => None,

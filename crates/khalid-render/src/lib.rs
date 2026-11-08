@@ -13,6 +13,7 @@
 mod asset;
 mod author;
 mod comments;
+mod consent;
 mod contents;
 mod cta;
 mod dates;
@@ -56,6 +57,9 @@ mod type_scale;
 pub use asset::Asset;
 pub use author::{AuthorEntry, RenderAuthor, RenderAuthors, RenderPage};
 pub use comments::{CommentWriter, RenderComment, RenderComments, RenderThread};
+pub use consent::{
+    ConsentBanner, ConsentPart, ConsentRow, GPC_END, GPC_START, RenderPrivacyChoices,
+};
 pub use contents::{Contents, ContentsHeading, HeadingLevel};
 pub use entries::{EntryCard, EntryGroup, EntryKind, RenderEntries, RenderEntry};
 pub use features::{Feature, Features};

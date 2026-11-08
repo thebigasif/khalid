@@ -1,0 +1,24 @@
+{#- The privacy choices page (privacy plan U4, R2, R6): one fieldset per
+    category with what it covers and who it shares data with, a native
+    checkbox as each switch, every optional switch off until the reader
+    turns it on, and Necessary shown as always on. -#}
+{% extends "base.html" %}
+{% block main %}
+<h1>{{ page.title }}</h1>
+<div class="privacy-choices">
+<p>{{ t.privacy_choices_intro }}{% if page.privacy %} <a href="{{ page.privacy }}">{{ t.consent_privacy_link }}</a>{% endif %}</p>
+<!--khalid-gpc--><template><p class="consent-gpc">{{ t.consent_gpc }}</p></template><!--/khalid-gpc-->
+{% if not page.live %}<noscript><p>{{ t.privacy_choices_static }}</p></noscript>
+{% endif %}<form method="post" action="{{ page.action }}">
+<input type="hidden" name="back" value="{{ meta.path }}">
+{% for row in page.categories %}<fieldset>
+<legend>{{ row.name }}</legend>
+<p>{{ row.note }}</p>
+{% if row.vendors %}<p>{{ t.privacy_choices_vendors }} {{ row.vendors | join(", ") }}</p>
+{% endif %}{% if row.optional %}<label><input type="checkbox" name="{{ row.key }}" value="on"> {{ t.privacy_choices_allow }}</label>
+{% else %}<p class="consent-always">{{ t.privacy_choices_always }}</p>
+{% endif %}</fieldset>
+{% endfor %}<button class="consent-button" type="submit" name="choice" value="save">{{ t.privacy_choices_save }}</button>
+</form>
+</div>
+{% endblock %}

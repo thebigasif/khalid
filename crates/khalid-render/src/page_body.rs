@@ -5,7 +5,7 @@ use minijinja::value::Serde;
 
 use crate::{
     RenderAuthor, RenderAuthors, RenderEntries, RenderEntry, RenderGlossary, RenderHome, RenderHub,
-    RenderListing, RenderPage, RenderPost, RenderSearch, RenderSitemap,
+    RenderListing, RenderPage, RenderPost, RenderPrivacyChoices, RenderSearch, RenderSitemap,
 };
 
 /// The main content of one page. The variant picks the template.
@@ -40,6 +40,8 @@ pub enum PageBody {
     Glossary(RenderGlossary),
     /// The search form and its results.
     Search(RenderSearch),
+    /// The reader's privacy choices, one switch per category.
+    PrivacyChoices(RenderPrivacyChoices),
     /// The list of case studies or of the changelog.
     Entries(RenderEntries),
     /// One case study or changelog entry.
@@ -68,6 +70,7 @@ impl PageBody {
             Self::Authors(_) => "authors.html",
             Self::Glossary(_) => "glossary.html",
             Self::Search(_) => "search.html",
+            Self::PrivacyChoices(_) => "privacy-choices.html",
             Self::Entries(_) => "entries.html",
             Self::Entry(_) => "entry.html",
             Self::Hub(_) => "hub.html",
@@ -128,6 +131,7 @@ impl PageBody {
             Self::Authors(authors) => Value::from(Serde(authors)),
             Self::Glossary(glossary) => Value::from(Serde(glossary)),
             Self::Search(search) => Value::from(Serde(search)),
+            Self::PrivacyChoices(choices) => Value::from(Serde(choices)),
             Self::Entries(entries) => Value::from(Serde(entries)),
             Self::Entry(entry) => Value::from(Serde(entry)),
             Self::Hub(hub) => Value::from(Serde(hub)),

@@ -5,6 +5,7 @@ mod entries;
 mod glossary;
 mod home_rows;
 mod hubs;
+pub(crate) mod privacy_choices;
 pub(crate) mod series;
 
 use std::cmp::Reverse;
