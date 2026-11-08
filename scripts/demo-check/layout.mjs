@@ -20,8 +20,9 @@
 //   - contents-twice, contents-hidden: a post shows more than one list of
 //     its contents at once, such as the template's own and the ::toc a
 //     writer placed, or hides every one it has;
-//   - stylesheet-size: a stylesheet the home page links is 20 KB or more
-//     with Brotli, checked once per pack.
+//   - stylesheet-size: the stylesheets a checked page links weigh more
+//     than 10 KB together with Brotli (docs/standards/performance.md,
+//     "CSS weight"), checked once per page.
 //
 // The page is scrolled down a window at a time first, so lazy pictures
 // load. At each stop the parts that move with the window, fixed like the
@@ -82,7 +83,7 @@ const STEP_LIMIT = 90_000;
 // hold a post's reading text to (FRONTEND.md, R4 of the design plan).
 const WIDE = 1440;
 const READING = { size: 18, fewest: 60, most: 75 };
-const CSS_BUDGET = 20 * 1024;
+const CSS_BUDGET = 10 * 1024;
 
 const options = {};
 for (let i = 2; i < process.argv.length; i += 1) {
@@ -160,22 +161,28 @@ const wideChecks = async (tab, site, what) => {
   return problems;
 };
 
-// Each stylesheet a pack's home page links, compressed with Brotli at its
-// best quality, as Khalid serves it, against the 20 KB budget.
+// The stylesheets each checked page of a pack links, each compressed with
+// Brotli at its best quality, as Khalid serves it, together against the
+// 10 KB budget.
 const stylesheetChecks = (site) => {
-  const home = readFileSync(join(site.files, "index.html"), "utf8");
   const found = [];
-  for (const [, href] of home.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)) {
-    const path = new URL(href, `${site.origin}${site.mount}`).pathname;
-    const file = join(site.files, decodeURIComponent(path.slice(site.mount.length)));
-    if (!path.startsWith(site.mount) || !existsSync(file)) {
-      found.push({ check: "stylesheet-size", a: href, b: "", detail: "the home page links it, and the build has no such file" });
-      continue;
+  for (const [what, path] of site.pages) {
+    const page = join(site.files, path, path.endsWith(".html") ? "" : "index.html");
+    if (!existsSync(page)) continue;
+    const html = readFileSync(page, "utf8");
+    let size = 0;
+    for (const [, href] of html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)) {
+      const at = new URL(href, `${site.origin}${site.mount}`).pathname;
+      const file = join(site.files, decodeURIComponent(at.slice(site.mount.length)));
+      if (!at.startsWith(site.mount) || !existsSync(file)) {
+        found.push({ page: what, check: "stylesheet-size", a: href, b: "", detail: "the page links it, and the build has no such file" });
+        continue;
+      }
+      size += brotliCompressSync(readFileSync(file), { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } }).length;
     }
-    const size = brotliCompressSync(readFileSync(file), { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } }).length;
-    if (size >= CSS_BUDGET) found.push({ check: "stylesheet-size", a: href, b: "", detail: `${(size / 1024).toFixed(1)} KB with Brotli, and a stylesheet must stay under 20 KB` });
+    if (size > CSS_BUDGET) found.push({ page: what, check: "stylesheet-size", a: path || "/", b: "", detail: `its stylesheets weigh ${(size / 1024).toFixed(1)} KB with Brotli, and a page may download at most 10 KB of CSS` });
   }
-  return found.map((p) => ({ pack: site.name, page: "home", browser: "", width: 0, ...p }));
+  return found.map((p) => ({ pack: site.name, browser: "", width: 0, ...p }));
 };
 
 // `work` finished, or a failure naming `what` once STEP_LIMIT has passed.

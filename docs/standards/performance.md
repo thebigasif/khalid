@@ -373,3 +373,24 @@ Unpacked, the 49 demos now hold AVIF 271 MB, the 1,024 px JPEG fallback 123 MB (
 A second JPEG width is not worth it. A 640 px JPEG beside the 1,024 px one would add about 43% of the fallback's bytes, 36 MB unpacked for the 31 demos and 53 MB for 49 (each 1,024 px JPEG resized to 640 and 1,024 px and encoded at the same quality in Chromium, 495 photos). It would serve only browsers without AVIF, on narrow screens, which already get a sharp picture.
 
 The page-weight check still passes on the packs measured (Almanac, Aperture, Atlas, Classic, Harbor, Keystone, Meridian, Wire, and from batch 5 Dispatch, Gazette, Glossy, Mosaic, Pantry, Quill), with the same numbers: Chromium took AVIF before and still does. `scripts/demo-check/fallback.mjs` opens each demo as a browser without AVIF sees it, every `<source type="image/avif">` taken out, and fails when a picture shows nothing; CI runs it in each Chromium layout job. On those 14 packs all 868 pictures on 82 pages showed their JPEG or PNG.
+
+## CSS weight
+
+Budget: each page downloads at most 10 KB of CSS, all the stylesheets it links together, compressed with Brotli at its best quality as Khalid serves them. It holds for the home page, a post, a category page and an author page of every template.
+
+How it is held:
+
+- **Each page links the rules it uses** (ADR "each page links the rules it uses"). After a page is rendered, the rules whose selectors name a class none of its elements has are left out of its stylesheet. Pages with the same classes share one sheet. The site's own rules in `theme/site.css` and the classes the reader script adds stay on every page.
+- **`crates/khalid/tests/css_weight.rs`** builds the showcase site in every template, in its sample brand, and fails when one of the four pages links more than 10 KB. It runs with the other tests, with no browser.
+- **The layout check** (`scripts/layout-check.sh`) holds every page it opens on every template demo, demo publications included, to the same 10 KB.
+
+Measured on 2026-11-07 on the 31 template demos as `scripts/layout-check.sh` builds them, 124 pages (home, post, category and author of each):
+
+| Measure | Before | After |
+|---|---|---|
+| Brotli, worst page | 14,342 bytes (Compass, home) | 8,919 bytes (Keystone, post) |
+| Brotli, average page | 11,395 bytes | 5,886 bytes |
+| Pages over 10 KB with Brotli | 112 of 124 | 0 of 124 |
+| Gzip, average page | 13,274 bytes | 6,725 bytes |
+
+On every page the layout check opens in all 87 demo builds, no selector that can match an element of the page is left out of its stylesheet, and the computed style of every element, and of its `::before`, `::after` and `::marker`, at 390 and 1440 px in Chromium, was the same before and after (1,732 page views; a view that differed on a first read because a picture loaded late was read again). A full build of the generated 10,000-post site took the same time before and after (about 24 to 26 s on the shared build server) and wrote 8 stylesheets. A page that moves to another kind of page downloads that page's sheet once; before, one cached sheet served both. The budget is never raised to make a check pass.

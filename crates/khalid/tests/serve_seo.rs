@@ -105,10 +105,19 @@ fn get(server: &Server, path: &str) -> (u16, String) {
 
 /// The `<head>` of an HTML page.
 #[cfg(test)]
-fn head(page: &str) -> &str {
+fn head(page: &str) -> String {
     let start = page.find("<head>").unwrap();
     let end = page.find("</head>").unwrap();
-    page.get(start..end).unwrap()
+    let head = page.get(start..end).unwrap();
+    // Each page links the rules its HTML can use, and a page built as a
+    // static file holds other forms than the one served, so the name of
+    // its stylesheet may differ.
+    let link = "<link rel=\"stylesheet\" href=\"";
+    let Some((before, rest)) = head.split_once(link) else {
+        return head.to_owned();
+    };
+    let (_, after) = rest.split_once('"').unwrap();
+    format!("{before}{link}{after}")
 }
 
 /// Every HTML page `khalid build` wrote, as the folder-relative path of

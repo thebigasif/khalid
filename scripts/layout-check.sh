@@ -5,7 +5,8 @@
 # text, a page that scrolls sideways, a table column narrower than its
 # longest word, a picture that did not load, a frame narrower than the
 # template's brief on a wide screen, post text too small or lines too short
-# or long on a wide screen, and a stylesheet of 20 KB or more with Brotli.
+# or long on a wide screen, and a page whose stylesheets weigh more than
+# 10 KB together with Brotli.
 # scripts/demo-check/layout.mjs does the checking and says what each check
 # means, and each pack's pack.toml in crates/khalid-theme/packs/ holds its
 # minimum frame.

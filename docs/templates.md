@@ -291,7 +291,7 @@ Two sizes grow with the screen: the first on a phone 320 pixels wide, the second
 
 ## Your own CSS rules
 
-A file named `theme/site.css` adds your own rules to the blog's one stylesheet, after the template's rules, so yours win. Use it for a few touches the tokens cannot make, such as a home page of your own in `theme/templates/home.html`.
+A file named `theme/site.css` adds your own rules to the blog's stylesheet, after the template's rules, so yours win. Use it for a few touches the tokens cannot make, such as a home page of your own in `theme/templates/home.html`.
 
 ```css
 .hero { padding-block: 4rem; background: var(--color-surface); }
@@ -299,7 +299,8 @@ A file named `theme/site.css` adds your own rules to the blog's one stylesheet, 
 
 - Read the tokens as CSS variables, such as `var(--color-accent)` and `var(--space)`, so `khalid theme sync` still sets your colours and fonts.
 - Comments and blank lines are removed when the site is built.
-- The whole stylesheet must stay small: Khalid's own pages keep it under 20 KB once compressed.
+- Each page links a stylesheet of its own, with only the template's rules its HTML can use. Your own rules stay on every page, even ones for a class only your own script adds.
+- Keep them few: each page downloads them all, and each of Khalid's demo pages downloads at most 10 KB of CSS once compressed.
 - The file must sit inside the site folder. A link to a file elsewhere stops the build with a message.
 
 ## Checking every screen size
@@ -327,7 +328,7 @@ Add `--templates harbor` to check one template, and `--widths 390,2560@2` to pic
 - a person's photo is not drawn square, to within 1 pixel, so its circle turns into an oval;
 - at 1440 pixels and wider, the site header, or the main part of the home page or a category or tag page, is narrower than the template's minimum frame, the width its design brief sets, kept as `frame` in `crates/khalid-theme/packs/<name>/pack.toml`;
 - at 1440 pixels and wider, a post's body text is smaller than 18 pixels, or a full line of it holds fewer than 60 or more than 75 characters;
-- a stylesheet the home page links is 20 KB or more once compressed with Brotli.
+- the stylesheets a page links weigh more than 10 KB together once compressed with Brotli.
 
 Parts that stay on screen as you scroll, such as the floating contents button and the side contents column, are checked against what passes under them. Each failure names the template, the page, the browser, the width, the two elements and where on the page they meet. The Demo check runs it in CI. To run it yourself, install the tools and the browsers once:
 

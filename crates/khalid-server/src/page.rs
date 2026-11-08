@@ -47,6 +47,9 @@ pub struct Page {
     /// The tag of the plain bytes.
     etag: Option<HeaderValue>,
     caching: Caching,
+    /// The stylesheet an HTML page links, which its answer says to
+    /// preload, when the page names one of its own.
+    preload: Option<String>,
 }
 
 /// How a page's bytes are held: one copy, never two.
@@ -72,6 +75,7 @@ impl Page {
             media_type,
             stored: Stored::Plain(body),
             caching: Caching::Revalidate,
+            preload: None,
         }
     }
 
@@ -96,6 +100,24 @@ impl Page {
             etag: None,
             ..Self::new(path, media_type, body)
         }
+    }
+
+    /// The page, whose answers say to preload the stylesheet at `href`,
+    /// such as `/blog/assets/site.3f2a9c1e.css`, in place of the one
+    /// [`Pages::with_preloads`](crate::Pages::with_preloads) names for
+    /// every page. A page that links a stylesheet of its own names it here.
+    #[must_use]
+    pub fn with_preload(self, href: &str) -> Self {
+        Self {
+            preload: Some(href.to_owned()),
+            ..self
+        }
+    }
+
+    /// The stylesheet this page's answers say to preload, when it names
+    /// one of its own.
+    pub fn preload(&self) -> Option<&str> {
+        self.preload.as_deref()
     }
 
     /// Whether each answer must fill the page's [`NONCE_SLOT`].
@@ -210,6 +232,15 @@ mod tests {
         );
         assert_eq!(page.len(), text.len());
         assert_eq!(page.body().unwrap(), text.as_bytes());
+    }
+
+    #[test]
+    fn a_page_keeps_its_own_preload_when_compressed() {
+        let text = "<p>A sitemap lists the pages you want found.</p>\n".repeat(40);
+        assert_eq!(post(&text).preload(), None);
+        let page = post(&text).with_preload("/blog/assets/site.0123abcd.css");
+        let page = page.compressed_like(None);
+        assert_eq!(page.preload(), Some("/blog/assets/site.0123abcd.css"));
     }
 
     #[test]

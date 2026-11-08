@@ -2,8 +2,8 @@
 // small sites it writes itself, in Chromium. The site "good" meets every
 // check. The site "bad" breaks each check once: its home page draws a
 // frame of 800 px where its brief asks for 1100, its post's text is 17 px,
-// its folded-table post holds 85 characters a line, and its stylesheet is
-// over 20 KB with Brotli, and a table column breaks a word onto a
+// its folded-table post holds 85 characters a line, its home page's
+// stylesheets are over 10 KB together with Brotli, and a table column breaks a word onto a
 // second line, where "good" has the same word just fitting its column.
 // Both list their posts as narrow cards in small
 // text, which the reading check leaves alone. The text is monospaced, so
@@ -23,7 +23,7 @@ const LISTS = ["", "category/seo-writing/", "tag/ai-search/", "authors/maren-oka
 
 const words = "frame column reader measure layout template brief steady wide narrow line text".split(" ");
 const prose = (n) => Array.from({ length: n }, (_, i) => words[(i * 7) % words.length]).join(" ");
-// Text Brotli cannot shrink, so the stylesheet stays over 20 KB.
+// Text Brotli cannot shrink, so a stylesheet of it stays over 10 KB.
 const noise = (n) => {
   let seed = 7;
   return Array.from({ length: n }, () => {
@@ -39,8 +39,8 @@ const CSS = `*{box-sizing:border-box}body{margin:0;font:16px/1.5 monospace}
 .small p{font-size:17px}.long p{max-width:85ch}
 .fit td{width:12ch;padding:0;overflow-wrap:normal}.crush td{width:6ch;padding:0;overflow-wrap:anywhere}`;
 
-const page = (body, mainClass) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Fixture</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body>
+const page = (body, mainClass, heavy) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Fixture</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css">${heavy ? '<link rel="stylesheet" href="/heavy.css">' : ""}</head><body>
 <header class="site-header"><a href="/">Fixture blog</a><nav><a href="/search/">Search</a></nav></header>
 <main id="main"${mainClass ? ` class="${mainClass}"` : ""}>${body}</main></body></html>`;
 const cards = `<h1>Posts</h1><div class="cards">${Array.from({ length: 8 }, (_, i) => `<article class="card"><h2>Post ${i + 1}</h2><p>${prose(20)}</p></article>`).join("")}</div>`;
@@ -54,8 +54,9 @@ const site = (name, faults) => {
   const files = join(folder, "public");
   for (const path of [...LISTS, ...POSTS]) mkdirSync(join(files, path), { recursive: true });
   writeFileSync(join(folder, "site.toml"), `address = "http://${name}.localhost"\nmount = "/"\n`);
-  writeFileSync(join(files, "style.css"), faults ? `${CSS}\n/* ${noise(30000)} */\n` : CSS);
-  for (const path of LISTS) writeFileSync(join(files, path, "index.html"), page(cards, faults && path === "" ? "narrow" : ""));
+  writeFileSync(join(files, "style.css"), CSS);
+  if (faults) writeFileSync(join(files, "heavy.css"), `/* ${noise(30000)} */\n`);
+  for (const path of LISTS) writeFileSync(join(files, path, "index.html"), page(cards, faults && path === "" ? "narrow" : "", faults && path === ""));
   writeFileSync(join(files, POSTS[0], "index.html"), page(post(faults ? "small" : "")));
   writeFileSync(join(files, POSTS[1], "index.html"), page(post(faults ? "long" : "", faults ? "crush" : "fit")));
 };

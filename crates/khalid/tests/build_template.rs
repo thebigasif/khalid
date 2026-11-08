@@ -79,13 +79,15 @@ fn page(out: &Path, rel: &str) -> String {
     fs::read_to_string(at(out, rel)).unwrap_or_else(|error| panic!("{rel}: {error}"))
 }
 
-/// The text of the one stylesheet in `out/assets/`.
+/// The text of the whole stylesheet in `out/assets/`.
 #[cfg(test)]
 fn stylesheet(out: &Path) -> String {
     let assets = fs::read_dir(at(out, "assets")).unwrap();
+    // The whole stylesheet, which holds every page's own.
     let css = assets
         .map(|entry| entry.unwrap().path())
-        .find(|path| path.extension().is_some_and(|ext| ext == "css"))
+        .filter(|path| path.extension().is_some_and(|ext| ext == "css"))
+        .max_by_key(|path| fs::metadata(path).unwrap().len())
         .unwrap();
     fs::read_to_string(css).unwrap()
 }
