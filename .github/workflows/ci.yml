@@ -34,11 +34,10 @@ env:
   RUSTDOCFLAGS: -D warnings
 
 jobs:
-  # The project's own branches run on the maintainer's runners (label khalid);
-  # pull requests from forks stay on GitHub's runners and need approval first.
-  # Integration branches of this repository, which land many tasks at once,
-  # batches of templates (batch/*) and release branches (chore/release-*)
-  # get a runner of their own (label khalid-priority).
+  # Every job runs on GitHub's runners. The maintainer's runners shared one
+  # machine with the builders, where the Rust tests took 52 to 84 minutes;
+  # on GitHub's runners they run in parallel and leave that machine to the
+  # builders (2026-11-08).
   # Performance budgets stay on GitHub's runners, where their numbers were set.
   #
   # Each maintainer runner has its own work folder, so jobs that run at the
@@ -64,7 +63,7 @@ jobs:
   # handover-build below.
   binary-size:
     name: Binary size, budget under 30 MB
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'khalid' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - name: Disk space for the build
@@ -138,7 +137,7 @@ jobs:
   # could not be joined exactly, since each runner's paths differ.
   rust-lints:
     name: Rust lints, docs and dependencies
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - name: Disk space for the build
@@ -199,7 +198,7 @@ jobs:
   # The job id stays rust, so the test build keeps its warm cache.
   rust:
     name: Rust tests
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && ((startsWith(github.head_ref, 'task/p1-integration-') || startsWith(github.head_ref, 'batch/') || startsWith(github.head_ref, 'chore/release-')) && 'khalid-priority' || 'khalid') || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - name: Disk space for the build
