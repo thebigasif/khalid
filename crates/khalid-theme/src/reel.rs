@@ -21,7 +21,7 @@ pub(crate) static REEL: Pack = Pack {
         PackTemplate::file("authors.html", "reel/authors.html"),
         PackTemplate::file("author.html", "reel/author.html"),
     ],
-    tokens: include_str!("../packs/reel/tokens.toml"),
+    tokens: PackText::file("reel/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

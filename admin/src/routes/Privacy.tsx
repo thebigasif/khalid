@@ -2,6 +2,7 @@ import type { SiteChange, SiteSettings } from "../api/site";
 import { type PartProps, type Section, SettingsTabs } from "../components/SettingsTabs";
 import { Contact } from "../privacy/Contact";
 import { Options } from "../privacy/Options";
+import { Proof } from "../privacy/Proof";
 import { Scripts } from "../privacy/Scripts";
 import { Text } from "../privacy/Text";
 import { same } from "../seo/parts";
@@ -19,6 +20,7 @@ const SECTIONS: Section<keyof typeof privacyWords.tabs, PrivacyChange>[] = [
   { tab: "scripts", show: (props) => <Scripts {...props} /> },
   { tab: "text", show: (props) => <Text {...props} /> },
   { tab: "contact", show: (props) => <Contact {...props} /> },
+  { tab: "proof", show: (props) => <Proof {...props} /> },
 ];
 
 /** Only what `change` changes on `site`, or `null` when it changes nothing. */

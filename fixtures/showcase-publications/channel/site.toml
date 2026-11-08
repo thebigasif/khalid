@@ -22,6 +22,27 @@ text = "New video: pulling handles for mugs that feel right."
 href = "/blog/pulling-handles-mugs/"
 language = "en"
 
+# The channel's own code, one entry per consent category it waits for.
+# Each is a stand-in that only marks the page and sends nothing. The
+# videos are embeds, which wait behind their own cards.
+[[code]]
+body = "<script>document.documentElement.dataset.visit = 'counted';</script>"
+category = "analytics"
+vendor = "Slow Clay"
+
+# Sets no cookie and tracks no one, so it runs for every reader and the
+# privacy page names it.
+[[code]]
+body = "<script>document.documentElement.dataset.kiln = 'lit';</script>"
+category = "no-tracking"
+vendor = "Slow Clay"
+
+# Who readers write to about their data, for the privacy page.
+[privacy.contact]
+name = "Slow Clay"
+email = "studio@example.com"
+address = "Slow Clay, Unit 4, Mill Yard, Easthope EH2 9LB"
+
 [seo.titles]
 separator = "·"
 tagline = "Pottery videos from a small studio"

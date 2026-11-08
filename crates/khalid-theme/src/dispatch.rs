@@ -22,7 +22,7 @@ pub(crate) static DISPATCH: Pack = Pack {
         PackTemplate::file("author.html", "dispatch/author.html"),
         PackTemplate::file("parts-dispatch.html", "dispatch/parts-dispatch.html"),
     ],
-    tokens: include_str!("../packs/dispatch/tokens.toml"),
+    tokens: PackText::file("dispatch/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

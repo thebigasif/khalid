@@ -13,8 +13,8 @@ use crate::cli::{Cli, Network, Output};
 use crate::doctor_check::{Check, Finding, Outcome, Status};
 use crate::exit::Exit;
 use crate::{
-    doctor_address, doctor_files, doctor_folder, doctor_pictures, doctor_robots, report,
-    static_mode,
+    doctor_address, doctor_files, doctor_folder, doctor_pictures, doctor_robots, privacy_page,
+    report, static_mode,
 };
 
 /// The JSON shape of a doctor run.
@@ -31,6 +31,10 @@ struct DoctorBody<'a> {
     /// The features a static site has off, each with what, why and fix.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     off: Vec<static_mode::Off>,
+    /// Things worth a look that are not problems, each with what, why and
+    /// fix, such as a privacy page with no contact details.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    warnings: Vec<UserMessage>,
 }
 
 /// The JSON shape of one check. `summary` is there when it passed or was
@@ -77,6 +81,11 @@ pub(crate) fn run(site: &Path, network: Network, cli: &Cli) -> Exit {
         .as_ref()
         .map(|config| static_mode::off(config.mode()))
         .unwrap_or_default();
+    let warnings: Vec<UserMessage> = config
+        .as_ref()
+        .and_then(privacy_page::missing_contact)
+        .into_iter()
+        .collect();
     let problems = findings
         .iter()
         .filter(|finding| finding.status() == Status::Problem)
@@ -94,17 +103,26 @@ pub(crate) fn run(site: &Path, network: Network, cli: &Cli) -> Exit {
                 problems,
                 checks: findings.iter().map(CheckBody::from).collect(),
                 off,
+                warnings,
             },
             exit,
         ),
-        Output::Human => report::text(&human(site, &findings, &off, problems), exit),
+        Output::Human => {
+            let said = human(site, &findings, (&off, &warnings), problems);
+            report::text(&said, exit)
+        }
     }
 }
 
 /// The report for a person: a line per check, each problem as what, why and
-/// fix below its check, the features that are `off`, and a last line that
-/// says what to do next.
-fn human(site: &Path, findings: &[Finding], off: &[static_mode::Off], problems: usize) -> String {
+/// fix below its check, the features that are `off`, the `warnings`, and a
+/// last line that says what to do next.
+fn human(
+    site: &Path,
+    findings: &[Finding],
+    (off, warnings): (&[static_mode::Off], &[UserMessage]),
+    problems: usize,
+) -> String {
     let mut said = format!("Checked the site in {}.\n", site.display());
     for finding in findings {
         let title = finding.check.title();
@@ -121,6 +139,15 @@ fn human(site: &Path, findings: &[Finding], off: &[static_mode::Off], problems: 
         };
     }
     said.push_str(&static_mode::human(off));
+    for warning in warnings {
+        let _ = writeln!(
+            said,
+            "Worth a look: {}\n  {}\n  {}",
+            warning.what(),
+            warning.why(),
+            warning.fix()
+        );
+    }
     let _ = match problems {
         0 => writeln!(said, "No problems found."),
         1 => writeln!(

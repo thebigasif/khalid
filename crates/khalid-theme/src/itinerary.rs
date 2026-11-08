@@ -22,7 +22,7 @@ pub(crate) static ITINERARY: Pack = Pack {
         PackTemplate::file("authors.html", "itinerary/authors.html"),
         PackTemplate::file("author.html", "itinerary/author.html"),
     ],
-    tokens: include_str!("../packs/itinerary/tokens.toml"),
+    tokens: PackText::file("itinerary/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

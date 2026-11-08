@@ -27,7 +27,7 @@ pub(crate) static FREQUENCY: Pack = Pack {
         PackTemplate::file("author.html", "frequency/author.html"),
         PackTemplate::file("parts-frequency.html", "frequency/parts-frequency.html"),
     ],
-    tokens: include_str!("../packs/frequency/tokens.toml"),
+    tokens: PackText::file("frequency/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

@@ -18,7 +18,7 @@ pub(crate) static KEYSTONE: Pack = Pack {
         PackTemplate::file("home.html", "keystone/home.html"),
         PackTemplate::file("post.html", "keystone/post.html"),
     ],
-    tokens: include_str!("../packs/keystone/tokens.toml"),
+    tokens: PackText::file("keystone/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

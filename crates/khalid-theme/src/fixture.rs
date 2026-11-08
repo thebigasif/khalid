@@ -21,7 +21,7 @@ pub(crate) static FIXTURE: Pack = Pack {
         PackTemplate::file("authors.html", "fixture/authors.html"),
         PackTemplate::file("author.html", "fixture/author.html"),
     ],
-    tokens: include_str!("../packs/fixture/tokens.toml"),
+    tokens: PackText::file("fixture/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

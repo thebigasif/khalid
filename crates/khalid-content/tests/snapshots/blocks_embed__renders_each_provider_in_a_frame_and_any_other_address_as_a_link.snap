@@ -4,7 +4,7 @@ expression: "html(\"\\\n::embed{src=\\\"https://www.youtube.com/watch?v=dQw4w9Wg
 ---
 <figure class="embed embed-wide">
 <!--khalid-media-card--><div class="embed-card">
-<p>This player comes from YouTube. Loading it shares data about you, such as your IP address, with YouTube.</p>
+<p>This comes from YouTube. Loading it shares data about you, such as your IP address, with YouTube.</p>
 <div class="embed-card-actions"><a class="embed-load" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Load media</a>
 <form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
 </div><!--/khalid-media-card-->
@@ -13,7 +13,7 @@ expression: "html(\"\\\n::embed{src=\\\"https://www.youtube.com/watch?v=dQw4w9Wg
 </figure>
 <figure class="embed embed-wide">
 <!--khalid-media-card--><div class="embed-card">
-<p>This player comes from YouTube. Loading it shares data about you, such as your IP address, with YouTube.</p>
+<p>This comes from YouTube. Loading it shares data about you, such as your IP address, with YouTube.</p>
 <div class="embed-card-actions"><a class="embed-load" href="https://youtu.be/dQw4w9WgXcQ">Load media</a>
 <form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
 </div><!--/khalid-media-card-->
@@ -22,7 +22,7 @@ expression: "html(\"\\\n::embed{src=\\\"https://www.youtube.com/watch?v=dQw4w9Wg
 </figure>
 <figure class="embed embed-wide">
 <!--khalid-media-card--><div class="embed-card">
-<p>This player comes from Vimeo. Loading it shares data about you, such as your IP address, with Vimeo.</p>
+<p>This comes from Vimeo. Loading it shares data about you, such as your IP address, with Vimeo.</p>
 <div class="embed-card-actions"><a class="embed-load" href="https://vimeo.com/76979871">Load media</a>
 <form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
 </div><!--/khalid-media-card-->
@@ -31,7 +31,7 @@ expression: "html(\"\\\n::embed{src=\\\"https://www.youtube.com/watch?v=dQw4w9Wg
 </figure>
 <figure class="embed embed-audio">
 <!--khalid-media-card--><div class="embed-card">
-<p>This player comes from Spotify. Loading it shares data about you, such as your IP address, with Spotify.</p>
+<p>This comes from Spotify. Loading it shares data about you, such as your IP address, with Spotify.</p>
 <div class="embed-card-actions"><a class="embed-load" href="https://open.spotify.com/episode/4rOoJ6Egrf8K2IrywzwOMk">Load media</a>
 <form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
 </div><!--/khalid-media-card-->
@@ -40,7 +40,7 @@ expression: "html(\"\\\n::embed{src=\\\"https://www.youtube.com/watch?v=dQw4w9Wg
 </figure>
 <figure class="embed embed-audio">
 <!--khalid-media-card--><div class="embed-card">
-<p>This player comes from SoundCloud. Loading it shares data about you, such as your IP address, with SoundCloud.</p>
+<p>This comes from SoundCloud. Loading it shares data about you, such as your IP address, with SoundCloud.</p>
 <div class="embed-card-actions"><a class="embed-load" href="https://soundcloud.com/forss/flickermood">Load media</a>
 <form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
 </div><!--/khalid-media-card-->
@@ -49,7 +49,7 @@ expression: "html(\"\\\n::embed{src=\\\"https://www.youtube.com/watch?v=dQw4w9Wg
 </figure>
 <figure class="embed embed-wide">
 <!--khalid-media-card--><div class="embed-card">
-<p>This player comes from CodePen. Loading it shares data about you, such as your IP address, with CodePen.</p>
+<p>This comes from CodePen. Loading it shares data about you, such as your IP address, with CodePen.</p>
 <div class="embed-card-actions"><a class="embed-load" href="https://codepen.io/chriscoyier/pen/gfdDu">Load media</a>
 <form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
 </div><!--/khalid-media-card-->
@@ -58,7 +58,7 @@ expression: "html(\"\\\n::embed{src=\\\"https://www.youtube.com/watch?v=dQw4w9Wg
 </figure>
 <figure class="embed embed-wide">
 <!--khalid-media-card--><div class="embed-card">
-<p>This player comes from Loom. Loading it shares data about you, such as your IP address, with Loom.</p>
+<p>This comes from Loom. Loading it shares data about you, such as your IP address, with Loom.</p>
 <div class="embed-card-actions"><a class="embed-load" href="https://www.loom.com/share/0281766fa2d04bb788eaf19e65135184">Load media</a>
 <form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
 </div><!--/khalid-media-card-->

@@ -175,7 +175,7 @@ fn when_no_shade_can_pass_it_gets_the_closest_and_says_what_to_change() {
 #[cfg(test)]
 fn pack_tokens(pack: &khalid_theme::Pack) -> ThemeTokens {
     let mut tokens = ThemeTokens::default();
-    let table: toml::Table = toml::from_str(pack.tokens).unwrap();
+    let table: toml::Table = toml::from_str(pack.tokens()).unwrap();
     let Some(colors) = table.get("colors").and_then(toml::Value::as_table) else {
         return tokens;
     };

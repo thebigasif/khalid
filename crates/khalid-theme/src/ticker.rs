@@ -22,7 +22,7 @@ pub(crate) static TICKER: Pack = Pack {
         PackTemplate::file("authors.html", "ticker/authors.html"),
         PackTemplate::file("author.html", "ticker/author.html"),
     ],
-    tokens: include_str!("../packs/ticker/tokens.toml"),
+    tokens: PackText::file("ticker/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

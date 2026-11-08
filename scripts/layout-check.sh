@@ -21,6 +21,10 @@
 # pack, as <pack>-publication, on the pages its check-pages.txt names. The
 # showcase pass above stays the floor every pack is held to.
 #
+# Last, scripts/demo-check/network.mjs opens each site's pages in Chromium
+# with no consent given, scripts on and then off, and fails on any request
+# to an address other than the site's own (privacy plan R1).
+#
 # Needs Node 22 or later and the pinned tools, with the browsers:
 #   npm install --prefix scripts/demo-check
 #   npx --prefix scripts/demo-check playwright install --with-deps chromium firefox webkit
@@ -87,4 +91,20 @@ for pack in $publications; do showcase_start "$bin" "$work" "$pack-publication" 
 showcase_finish
 echo "Built the showcase with $(echo "$packs" | wc -w) packs and $(echo "$publications" | wc -w) demo publications in $((SECONDS - since)) seconds."
 
-node "$tools/layout.mjs" --sites "$work/sites" --shots "$work/shots" "$@"
+failed=0
+node "$tools/layout.mjs" --sites "$work/sites" --shots "$work/shots" "$@" || failed=1
+# The network capture: with no consent given, scripts on and off, no page
+# may ask another address for anything (scripts/demo-check/network.mjs).
+# It runs in Chromium, so only a run that has Chromium does it: CI gives
+# each browser its own job, and only the Chromium job installs Chromium.
+case " $* " in
+  *" --browsers "*chromium* | *--browsers=*chromium*) capture=1 ;;
+  *--browsers*) capture=0 ;;
+  *) capture=1 ;;
+esac
+if [ "$capture" = 1 ]; then
+  node "$tools/network.mjs" --sites "$work/sites" "$@" || failed=1
+else
+  echo "The network capture runs in the Chromium job, so this run leaves it out."
+fi
+exit "$failed"

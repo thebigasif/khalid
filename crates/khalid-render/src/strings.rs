@@ -11,7 +11,9 @@ use crate::archive;
 const FALLBACK_LANGUAGE: &str = "en";
 
 /// Where the strings files sit in the built-in archive, such as
-/// `strings/en.toml`.
+/// `strings/en.toml`. A language's words for one part of the site may sit
+/// in their own folder, such as `strings/privacy/en.toml`, so no file grows
+/// too long; they join the language's table.
 const FOLDER: &str = "strings/";
 
 /// The built-in strings of `locale`'s language, as templates read them under
@@ -33,25 +35,28 @@ pub(crate) struct Strings {
 }
 
 impl Strings {
-    /// Reads every built-in strings file.
+    /// Reads every built-in strings file, joining each part file into its
+    /// language's table.
     pub(crate) fn load() -> Result<Self, RenderError> {
-        let mut tables = BTreeMap::new();
+        let mut tables: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
         let files = archive::built_in();
         for name in files.names() {
             let Some(language) = name
                 .strip_prefix(FOLDER)
                 .and_then(|file| file.strip_suffix(".toml"))
+                .map(|file| file.rsplit('/').next().unwrap_or(file))
             else {
                 continue;
             };
             let Some(text) = files.get(name) else {
                 continue;
             };
-            let table = toml::from_str(text).map_err(|source| RenderError::Strings {
-                language: language.to_owned(),
-                source,
-            })?;
-            tables.insert(language.to_owned(), table);
+            let table: BTreeMap<String, String> =
+                toml::from_str(text).map_err(|source| RenderError::Strings {
+                    language: language.to_owned(),
+                    source,
+                })?;
+            tables.entry(language.to_owned()).or_default().extend(table);
         }
         Ok(Self { tables })
     }
@@ -87,16 +92,33 @@ mod tests {
     }
 
     #[test]
-    fn every_key_reads_as_its_file_says() {
+    fn every_key_reads_as_its_files_say() {
         let strings = Strings::load().unwrap();
-        for (language, file) in [
-            ("en", include_str!("../strings/en.toml")),
-            ("de", include_str!("../strings/de.toml")),
+        for (language, files) in [
+            (
+                "en",
+                [
+                    include_str!("../strings/en.toml"),
+                    include_str!("../strings/privacy/en.toml"),
+                ],
+            ),
+            ("de", [include_str!("../strings/de.toml"), ""]),
         ] {
-            let want: BTreeMap<String, String> = toml::from_str(file).unwrap();
+            let mut want = BTreeMap::new();
+            for file in files {
+                let part: BTreeMap<String, String> = toml::from_str(file).unwrap();
+                want.extend(part);
+            }
             assert_eq!(strings.tables[language], want, "strings/{language}.toml");
         }
         assert_eq!(strings.languages().collect::<Vec<_>>(), ["de", "en"]);
+    }
+
+    #[test]
+    fn a_part_file_fills_in_its_language() {
+        let strings = Strings::load().unwrap();
+        assert_eq!(strings.tables["en"]["privacy_title"], "Privacy");
+        assert_eq!(strings.tables["de"]["privacy_title"], "Datenschutz");
     }
 
     #[test]

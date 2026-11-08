@@ -18,7 +18,7 @@ pub(crate) static PANTRY: Pack = Pack {
         PackTemplate::file("post.html", "pantry/post.html"),
         PackTemplate::file("listing.html", "pantry/listing.html"),
     ],
-    tokens: include_str!("../packs/pantry/tokens.toml"),
+    tokens: PackText::file("pantry/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

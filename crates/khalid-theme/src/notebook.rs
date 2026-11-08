@@ -21,7 +21,7 @@ pub(crate) static NOTEBOOK: Pack = Pack {
         PackTemplate::file("listing.html", "notebook/listing.html"),
         PackTemplate::file("parts-notebook.html", "notebook/parts-notebook.html"),
     ],
-    tokens: include_str!("../packs/notebook/tokens.toml"),
+    tokens: PackText::file("notebook/tokens.toml"),
     reader: &[],
     options: &[
         OptionSpec {

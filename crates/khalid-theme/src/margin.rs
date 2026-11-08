@@ -29,7 +29,7 @@ pub(crate) static MARGIN: Pack = Pack {
         PackTemplate::file("author.html", "margin/author.html"),
         PackTemplate::file("parts-margin.html", "margin/parts-margin.html"),
     ],
-    tokens: include_str!("../packs/margin/tokens.toml"),
+    tokens: PackText::file("margin/tokens.toml"),
     reader: &[],
     options: &[
         OptionSpec {

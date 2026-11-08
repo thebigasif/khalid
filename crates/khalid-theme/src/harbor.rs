@@ -17,7 +17,7 @@ pub(crate) static HARBOR: Pack = Pack {
         PackTemplate::file("home.html", "harbor/home.html"),
         PackTemplate::file("post.html", "harbor/post.html"),
     ],
-    tokens: include_str!("../packs/harbor/tokens.toml"),
+    tokens: PackText::file("harbor/tokens.toml"),
     reader: &[
         (ReaderSwitch::ReadingTime, true),
         (ReaderSwitch::AuthorBox, true),

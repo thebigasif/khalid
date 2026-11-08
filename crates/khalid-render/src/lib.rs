@@ -38,6 +38,7 @@ mod page_meta;
 mod parts;
 mod person;
 mod post;
+mod privacy;
 mod reading_time;
 mod related;
 mod render_error;
@@ -59,7 +60,7 @@ pub use asset::Asset;
 pub use author::{AuthorEntry, RenderAuthor, RenderAuthors, RenderPage};
 pub use comments::{CommentWriter, RenderComment, RenderComments, RenderThread};
 pub use consent::{
-    ConsentBanner, ConsentPart, ConsentRow, GPC_END, GPC_START, RenderPrivacyChoices,
+    ConsentBanner, ConsentKeeper, ConsentPart, ConsentRow, GPC_END, GPC_START, RenderPrivacyChoices,
 };
 pub use contents::{Contents, ContentsHeading, HeadingLevel};
 pub use entries::{EntryCard, EntryGroup, EntryKind, RenderEntries, RenderEntry};
@@ -80,11 +81,15 @@ pub use page_meta::{Alternate, HeadHtml, PageKind, PageMeta, Robots, ShareImage}
 pub use parts::part_keys;
 pub use person::{Person, Profile, ProfileIcon};
 pub use post::{BodyHtml, Link, RenderPost};
+pub use privacy::{
+    Collected, CookiePurpose, GpcAnswer, Lasts, PrivacyCategory, PrivacyContact, PrivacyCookie,
+    PrivacyFacts, PrivacyVendor, RenderPrivacy,
+};
 pub use reading_time::ReadingTime;
 pub use related::{MOST_RELATED, PostTopics, related, related_up_to};
 pub use render_error::RenderError;
 pub use renderer::Renderer;
-pub use script::{ScriptFile, ScriptTag, reader_script, reader_script_file};
+pub use script::{ScriptFile, ScriptTag, consent_script, reader_script, reader_script_file};
 pub use series::RenderSeries;
 pub use share::SHARE_NETWORKS;
 pub use site::{AnnouncementBar, BreadcrumbStyle, Nav, NavGroup, NavLink, RenderSite};

@@ -18,7 +18,7 @@ pub(crate) static ATLAS: Pack = Pack {
         PackTemplate::file("picture_sizes.html", "atlas/picture_sizes.html"),
         PackTemplate::file("home.html", "atlas/home.html"),
     ],
-    tokens: include_str!("../packs/atlas/tokens.toml"),
+    tokens: PackText::file("atlas/tokens.toml"),
     reader: &[],
     options: &[
         OptionSpec {

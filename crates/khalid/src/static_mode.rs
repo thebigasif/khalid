@@ -13,6 +13,9 @@ use serde::Serialize;
 
 use crate::build_pages::LanguagePages;
 
+#[path = "static_consent.rs"]
+pub(crate) mod consent;
+
 /// The fix for most locks: the one change that brings every feature back.
 const SWITCH: &str =
     "To turn this feature on, set mode = \"server\" in site.toml and run `khalid serve`.";

@@ -8,8 +8,8 @@ use std::sync::{Arc, PoisonError, RwLock};
 use axum::Router;
 use axum::response::Response;
 use khalid_comments::RateLimits;
-use khalid_content::MEDIA_FORM;
-use khalid_core::{Config, SystemClock};
+use khalid_content::{MEDIA_CARD_END, MEDIA_FORM};
+use khalid_core::{Config, Mode, SystemClock};
 use khalid_db::{Database, FormTable, SiteId};
 use khalid_forms::{FormDelivery, FormId, FormRoute, SiteForms, form_router};
 use khalid_render::{BodyHtml, PageBody};
@@ -24,6 +24,16 @@ const BLOCK_FORM: &str = "<form class=\"form\" method=\"post\" action=\"/forms/"
 
 /// The same opening without the address, which the mount path goes after.
 const BEFORE_ACTION: &str = "<form class=\"form\" method=\"post\" action=\"";
+
+/// The button of an embed card's form, after [`MEDIA_FORM`]
+/// (`khalid-content`).
+const MEDIA_BUTTON: &str =
+    "<button type=\"submit\" name=\"choice\" value=\"allow-external-media\">";
+
+/// The same button on a static page: no form to lock, and the consent
+/// script answers its value.
+const STATIC_MEDIA_BUTTON: &str =
+    "<div class=\"embed-allow\"><button type=\"button\" value=\"allow-external-media\">";
 
 /// How the `::newsletter` block opens its form (`khalid-content`).
 const SUBSCRIBE_FORM: &str = "<form class=\"subscribe\" method=\"post\" action=\"/subscribe\">";
@@ -100,8 +110,11 @@ fn subscribe_under(config: &Config, languages: &mut [LanguagePages]) {
 
 /// Points each embed card's "Always load external media" form in
 /// `languages` at `<mount>_consent/`, coming back to the card's own page.
-fn media_under(config: &Config, languages: &mut [LanguagePages]) {
+/// A static build locks every form, so there the form becomes a plain
+/// button the consent script answers (privacy plan U5 and U6).
+pub(crate) fn media_under(config: &Config, languages: &mut [LanguagePages]) {
     let mount = config.mount();
+    let static_end = format!("</button></form></div>\n</div>{MEDIA_CARD_END}");
     for page in languages
         .iter_mut()
         .flat_map(|language| &mut language.pages)
@@ -111,10 +124,20 @@ fn media_under(config: &Config, languages: &mut [LanguagePages]) {
             PageBody::Page(shown) => &mut shown.body,
             _ => continue,
         };
-        if body.as_str().contains(MEDIA_FORM) {
-            let form = media_form(mount, &page.meta.path);
-            *body = BodyHtml::from_sanitised(body.as_str().replace(MEDIA_FORM, &form));
+        if !body.as_str().contains(MEDIA_FORM) {
+            continue;
         }
+        let html = if config.mode() == Mode::Static {
+            let open = format!("{MEDIA_FORM}{MEDIA_BUTTON}");
+            let end = format!("</button></div></div>\n</div>{MEDIA_CARD_END}");
+            (body.as_str())
+                .replace(&open, STATIC_MEDIA_BUTTON)
+                .replace(&static_end, &end)
+        } else {
+            let form = media_form(mount, &page.meta.path);
+            body.as_str().replace(MEDIA_FORM, &form)
+        };
+        *body = BodyHtml::from_sanitised(html);
     }
 }
 

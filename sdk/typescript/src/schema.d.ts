@@ -135,6 +135,62 @@ export type AdminComments = {
   comments: AdminComment[];
 };
 
+/** How readers answered the consent banner. No address or reader identifier is kept: only these daily totals. */
+export type AdminConsentCounts = {
+  /** How many days were counted. */
+  days: number;
+  /** The first day counted, in UTC. */
+  first: string;
+  /** The last day counted: today, in UTC. */
+  last: string;
+  /** The answers per day and version, first day first. A day with no answers is left out. */
+  per_day: AdminConsentDay[];
+  /** Every answer in the period. */
+  totals: AdminConsentTally;
+};
+
+/** The answers on one day under one version. */
+export type AdminConsentDay = {
+  /** The answers. */
+  counts: AdminConsentTally;
+  /** The day, in UTC. */
+  day: string;
+  /** The version readers were shown. */
+  version: string;
+};
+
+/** How many answers there were, and how many allowed each optional category. Necessary is always on, so it has no count. */
+export type AdminConsentTally = {
+  /** Answers that allowed Analytics. */
+  analytics: number;
+  /** Every answer: Accept all, Reject all and each saved choice. */
+  choices: number;
+  /** Answers that allowed External media. */
+  external_media: number;
+  /** Answers that allowed Marketing. */
+  marketing: number;
+  /** Answers that allowed Preferences. */
+  preferences: number;
+};
+
+/** One version of what readers were shown. */
+export type AdminConsentVersion = {
+  /** The first day a reader was shown it, in UTC. */
+  first_day: string;
+  /** The last day a reader was shown it so far, in UTC. */
+  last_day: string;
+  /** What readers were shown: the banner and category text in each language, the categories, the vendors and the lifetime. */
+  shown: Record<string, unknown>;
+  /** The settings version, a hash of everything shown. */
+  version: string;
+};
+
+/** Every version of what readers were shown. */
+export type AdminConsentVersions = {
+  /** The versions, oldest first. */
+  versions: AdminConsentVersion[];
+};
+
 /** The views on one day. */
 export type AdminDayViews = {
   /** The day, in UTC. */
@@ -2401,6 +2457,30 @@ export interface Operations {
       body: CommentReplies;
     };
     output: AdminComments;
+  };
+  /** Counts the readers' answers to the consent banner in the last `days` days, per day and version, with how many allowed each optional category. Needs `settings:write`. */
+  consent_counts: {
+    input: {
+      query?: {
+        /** From 1 to 366; 28 when left out. */
+        days?: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminConsentCounts;
+  };
+  /** Lists every version of the banner and category text, categories, vendors and lifetime readers were shown, with the days each was in force. Needs `settings:write`. */
+  consent_versions: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminConsentVersions;
   };
   /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
   list_keys: {

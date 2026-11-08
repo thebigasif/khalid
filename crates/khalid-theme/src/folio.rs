@@ -14,7 +14,7 @@ pub(crate) static FOLIO: Pack = Pack {
         PackTemplate::file("home.html", "folio/home.html"),
         PackTemplate::file("post.html", "folio/post.html"),
     ],
-    tokens: include_str!("../packs/folio/tokens.toml"),
+    tokens: PackText::file("folio/tokens.toml"),
     reader: &[],
     options: &[
         OptionSpec {

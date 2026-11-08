@@ -17,7 +17,7 @@ pub(crate) static WORKBENCH: Pack = Pack {
         PackTemplate::file("home.html", "workbench/home.html"),
         PackTemplate::file("post.html", "workbench/post.html"),
     ],
-    tokens: include_str!("../packs/workbench/tokens.toml"),
+    tokens: PackText::file("workbench/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

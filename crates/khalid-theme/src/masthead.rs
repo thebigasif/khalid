@@ -20,7 +20,7 @@ pub(crate) static MASTHEAD: Pack = Pack {
         PackTemplate::file("authors.html", "masthead/authors.html"),
         PackTemplate::file("author.html", "masthead/author.html"),
     ],
-    tokens: include_str!("../packs/masthead/tokens.toml"),
+    tokens: PackText::file("masthead/tokens.toml"),
     reader: &[],
     options: &[
         OptionSpec {

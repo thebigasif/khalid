@@ -23,7 +23,7 @@ pub(crate) static GAZETTE: Pack = Pack {
         PackTemplate::file("author.html", "gazette/author.html"),
         PackTemplate::file("parts-gazette.html", "gazette/parts-gazette.html"),
     ],
-    tokens: include_str!("../packs/gazette/tokens.toml"),
+    tokens: PackText::file("gazette/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

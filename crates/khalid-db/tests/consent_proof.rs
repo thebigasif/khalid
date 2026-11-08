@@ -5,6 +5,7 @@
 use std::path::{Path, PathBuf};
 
 use chrono::NaiveDate;
+use khalid_api::consent_proof::ConsentProof;
 use khalid_core::{ConsentCategory, PrivacySettings, SettingsVersion, SiteCode, Slug};
 use khalid_db::{ConsentChoice, ConsentProofTable, Database};
 
@@ -252,4 +253,32 @@ async fn no_proof_table_has_an_address_or_identifier_column() {
         );
     }
     assert_eq!(columns.len(), 14);
+}
+
+#[tokio::test]
+async fn the_admin_api_reads_the_same_proof() {
+    let dir = tempfile::tempdir().unwrap();
+    let (_db, proof) = table(&file(&dir), "main").await;
+    let media = ConsentChoice::allowing([ConsentCategory::ExternalMedia]);
+    proof
+        .record(first(), SHOWN, day(11, 8), media)
+        .await
+        .unwrap();
+    proof
+        .record(first(), SHOWN, day(11, 8), ConsentChoice::NONE)
+        .await
+        .unwrap();
+    let read: &dyn ConsentProof = &proof;
+    let counts = read.counts(day(11, 1), day(11, 8)).await.unwrap();
+    assert_eq!(counts.len(), 1);
+    assert_eq!((counts[0].day, counts[0].choices), (day(11, 8), 2));
+    assert_eq!(counts[0].version, first().to_string());
+    assert_eq!(counts[0].allowed(ConsentCategory::ExternalMedia), 1);
+    assert_eq!(counts[0].allowed(ConsentCategory::Marketing), 0);
+    let versions = read.versions().await.unwrap();
+    assert_eq!(versions.len(), 1);
+    assert_eq!(
+        (versions[0].first_day, versions[0].shown.as_str()),
+        (day(11, 8), SHOWN)
+    );
 }

@@ -16,7 +16,7 @@ pub(crate) static WIRE: Pack = Pack {
         PackTemplate::file("home.html", "wire/home.html"),
         PackTemplate::file("post.html", "wire/post.html"),
     ],
-    tokens: include_str!("../packs/wire/tokens.toml"),
+    tokens: PackText::file("wire/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

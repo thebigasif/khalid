@@ -18,7 +18,7 @@ pub(crate) static LATTICE: Pack = Pack {
         PackTemplate::file("post.html", "lattice/post.html"),
         PackTemplate::file("listing.html", "lattice/listing.html"),
     ],
-    tokens: include_str!("../packs/lattice/tokens.toml"),
+    tokens: PackText::file("lattice/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

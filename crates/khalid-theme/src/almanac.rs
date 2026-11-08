@@ -17,7 +17,7 @@ pub(crate) static ALMANAC: Pack = Pack {
         PackTemplate::file("home.html", "almanac/home.html"),
         PackTemplate::file("post.html", "almanac/post.html"),
     ],
-    tokens: include_str!("../packs/almanac/tokens.toml"),
+    tokens: PackText::file("almanac/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

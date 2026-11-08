@@ -175,12 +175,24 @@ fn an_embed_round_trips_with_its_height_and_refuses_a_wrong_one() {
     }
 }
 
+/// R1: a page on a domain the owner allows is another site too, so it
+/// waits behind a card, as a provider's player does.
 #[test]
-fn a_page_on_an_allowed_domain_shows_in_a_lazy_sandboxed_frame_of_its_height() {
+fn a_page_on_an_allowed_domain_waits_behind_a_card_in_a_lazy_sandboxed_frame_of_its_height() {
     let html = framed(CALCULATOR, &["tools.example.com"]);
-    assert_eq!(
-        html,
-        "<figure class=\"embed embed-site\">\n<iframe src=\"https://tools.example.com/roi?plan=pro\" title=\"Content ROI calculator\" width=\"560\" height=\"560\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-forms allow-popups\"></iframe>\n<figcaption><a href=\"https://tools.example.com/roi?plan=pro\">Content ROI calculator</a></figcaption>\n</figure>\n"
+    let frame = "<!--khalid-media--><template><iframe src=\"https://tools.example.com/roi?plan=pro\" title=\"Content ROI calculator\" width=\"560\" height=\"560\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"allow-scripts allow-same-origin allow-forms allow-popups\"></iframe></template><!--/khalid-media-->\n<figcaption><a href=\"https://tools.example.com/roi?plan=pro\">Content ROI calculator</a></figcaption>\n</figure>\n";
+    assert!(html.starts_with("<figure class=\"embed embed-site\">\n<!--khalid-media-card--><div class=\"embed-card\">\n<p>This comes from tools.example.com."), "{html}");
+    assert!(html.ends_with(frame), "{html}");
+    let card = shown(&html);
+    assert!(!card.contains("<iframe"), "{card}");
+    assert!(
+        card.contains("href=\"https://tools.example.com/roi?plan=pro\">Load media</a>"),
+        "{card}"
+    );
+    let released = release_external_media(&html);
+    assert!(
+        shown(&released).contains("<iframe src=\"https://tools.example.com/"),
+        "{released}"
     );
     let no_height = framed(
         "::embed{src=\"https://tools.example.com/a\" title=\"A tool\"}\n",

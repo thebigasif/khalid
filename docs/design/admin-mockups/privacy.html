@@ -52,6 +52,9 @@ form{max-width:40rem}
 .script pre{margin:0 0 .75rem;background:var(--surface);border-radius:.25rem;padding:.5rem .7rem;overflow-x:auto;font-size:.875rem}
 .tag{display:inline-block;font-size:.875rem;font-weight:600;padding:.1rem .5rem;border-radius:1rem;background:var(--warn-bg);color:var(--warn)}
 .empty{border:1px dashed var(--field);border-radius:var(--radius);padding:1.25rem;max-width:40rem}
+.counts{border-collapse:collapse;width:100%;margin:0 0 1rem}
+.counts th,.counts td{text-align:left;padding:.6rem .75rem;border-bottom:1px solid var(--border)}
+.counts thead th{font-size:.875rem;color:var(--muted);font-weight:600}
 </style>
 </head>
 <body>
@@ -79,6 +82,7 @@ form{max-width:40rem}
     <a href="#scripts">Scripts</a>
     <a href="#text">Text</a>
     <a href="#contact">Contact</a>
+    <a href="#proof">Proof</a>
   </nav>
   <p class="careful">Some saved settings wait for a restart. Until Khalid restarts, the blog keeps the ones it started with.</p>
 
@@ -148,7 +152,35 @@ form{max-width:40rem}
     </form>
   </section>
 
-  <p class="note">Mockup for the founder's review, built without waiting for a yes. Nothing on this page saves. The admin shows one part at a time; here all four sit on one page so you can see them together. <a href="index.html">All mockups</a></p>
+  <section class="panel" id="proof" aria-labelledby="h-proof">
+    <h2 id="h-proof">Proof</h2>
+    <p>What readers were shown and what they chose, to show a regulator. Khalid keeps daily totals only, with no address and no reader ID.</p>
+    <h3 id="h-counts">Readers' choices</h3>
+    <p class="muted">Each number is how many answers allowed that category. The rest refused it. Necessary is always on.</p>
+    <div class="row"><div class="field"><label for="days">Days to count</label><select id="days"><option>The last 7 days</option><option selected>The last 28 days</option><option>The last 90 days</option></select></div><button class="btn primary" type="button">Show these days</button></div>
+    <table class="counts" aria-labelledby="h-counts">
+      <thead><tr><th scope="col">Week</th><th scope="col">Answers</th><th scope="col">Preferences</th><th scope="col">Analytics</th><th scope="col">Marketing</th><th scope="col">External media</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Week of 26 October 2026</th><td>156</td><td>36</td><td>91</td><td>24</td><td>50</td></tr>
+        <tr><th scope="row">Week of 2 November 2026</th><td>174</td><td>41</td><td>101</td><td>26</td><td>56</td></tr>
+      </tbody>
+      <tfoot><tr><th scope="row">Total</th><td>330</td><td>77</td><td>192</td><td>50</td><td>106</td></tr></tfoot>
+    </table>
+    <p><button class="btn" type="button">Download as CSV</button></p>
+    <h3>When no reader has answered, or the blog is plain files</h3>
+    <div class="empty"><p><b>No choices recorded yet</b></p><p class="muted">Totals appear here once readers answer the banner. A blog built as plain files never sees readers' choices and says so here.</p></div>
+    <h3 id="h-history">What readers were shown</h3>
+    <p class="muted">A new version starts when the banner text, the categories, the vendors or the lifetime change.</p>
+    <table class="counts" aria-labelledby="h-history">
+      <thead><tr><th scope="col">Version</th><th scope="col">First shown</th><th scope="col">Last shown</th><th scope="col">What it showed</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><code>3f9a0c1e7b2d4a65</code></th><td>14 September 2026</td><td>27 October 2026</td><td>Show</td></tr>
+        <tr><th scope="row"><code>b81e44d0a9c3f217</code></th><td>28 October 2026</td><td>8 November 2026</td><td>Show</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p class="note">Mockup for the founder's review, built without waiting for a yes. Nothing on this page saves. The admin shows one part at a time; here all five sit on one page so you can see them together. <a href="index.html">All mockups</a></p>
 </main>
 </div>
 </body>

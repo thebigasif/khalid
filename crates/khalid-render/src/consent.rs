@@ -27,6 +27,28 @@ pub struct ConsentBanner {
     /// The privacy page in the page's language, such as `/blog/privacy/`,
     /// once the site has one: until then nothing links it.
     pub privacy: Option<String>,
+    /// Who keeps the answer: the server, through a form, or a static
+    /// site's consent script, through plain buttons in a banner hidden
+    /// until the script shows it.
+    pub keeper: ConsentKeeper,
+}
+
+/// Who keeps a reader's consent, which picks how the banner and the
+/// choices page ask (privacy plan KTD1, KTD7).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "lowercase")]
+#[non_exhaustive]
+pub enum ConsentKeeper {
+    /// A running server, which reads the plain forms, so they work with
+    /// scripts off.
+    Server,
+    /// The consent script of a static site, which answers plain buttons.
+    /// A static build locks every form, and with scripts off nothing
+    /// optional loads, so there is nothing to ask.
+    Script,
+    /// Nobody: a static site with no code that waits and no embed asks
+    /// nothing, so its choices page says so.
+    Nobody,
 }
 
 /// Which part of the banner to draw.
@@ -50,9 +72,9 @@ pub struct RenderPrivacyChoices {
     pub action: String,
     /// The privacy page in the page's language, once the site has one.
     pub privacy: Option<String>,
-    /// Whether a running server keeps the choice. A static host keeps it
-    /// only with scripts on, so its page says so to a reader without them.
-    pub live: bool,
+    /// Who keeps the choice. A static host keeps it only with scripts on,
+    /// so its page says so to a reader without them.
+    pub keeper: ConsentKeeper,
     /// One row per category, in the order the page shows them.
     pub categories: Vec<ConsentRow>,
 }

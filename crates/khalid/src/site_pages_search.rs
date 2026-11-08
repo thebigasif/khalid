@@ -4,11 +4,13 @@
 use std::sync::PoisonError;
 
 use khalid_core::UserMessage;
-use khalid_render::{PageBody, RenderSearch, SearchMode, SearchResult};
+use khalid_render::{HeadHtml, PageBody, RenderSearch, SearchMode, SearchResult};
 
 use super::SitePages;
 use crate::build_message;
+use crate::page_code::PageCode;
 use crate::site_html::SearchShell;
+use crate::site_page::HeadNonce;
 
 impl SitePages {
     /// The page of a search for `query` that found `results`, rendered into
@@ -42,8 +44,22 @@ impl SitePages {
             query,
             results,
         });
-        let html = theme.renderer.render(&site, &meta, &body);
-        html.map(Some)
-            .map_err(|error| build_message::render(&error))
+        // The site's code and the banner, as every page carries them, so
+        // the search route fills them for the reader as the router does.
+        let code = PageCode::new(&settings.config, HeadNonce::PerRequest);
+        let head = code.head(None);
+        let mut meta = meta;
+        if !head.is_empty() {
+            let seo = meta.seo_head.as_ref().map_or("", HeadHtml::as_str);
+            // Code from `[code]` was checked by HeadCode, which writes every
+            // attribute quoted and keeps only head elements.
+            meta.seo_head = Some(HeadHtml::from_trusted(format!("{seo}\n{head}")));
+        }
+        let html = theme
+            .renderer
+            .render(&site, &meta, &body)
+            .map_err(|error| build_message::render(&error))?;
+        let page = (&theme.renderer, &site.locale);
+        code.with_body_end(html, page, &meta.path).map(Some)
     }
 }

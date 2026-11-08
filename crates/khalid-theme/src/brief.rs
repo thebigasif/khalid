@@ -22,7 +22,7 @@ pub(crate) static BRIEF: Pack = Pack {
         PackTemplate::file("author.html", "brief/author.html"),
         PackTemplate::file("parts-brief.html", "brief/parts-brief.html"),
     ],
-    tokens: include_str!("../packs/brief/tokens.toml"),
+    tokens: PackText::file("brief/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

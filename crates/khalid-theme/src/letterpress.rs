@@ -26,7 +26,7 @@ pub(crate) static LETTERPRESS: Pack = Pack {
             "letterpress/parts-letterpress.html",
         ),
     ],
-    tokens: include_str!("../packs/letterpress/tokens.toml"),
+    tokens: PackText::file("letterpress/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

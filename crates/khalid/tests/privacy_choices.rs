@@ -166,11 +166,22 @@ fn the_banner_follows_the_skip_link_before_the_rest_of_the_page() {
     let header = page.find("<header class=\"site-header\"").unwrap();
     assert!(skip < banner && banner < header, "{page}");
     assert!(page.contains("value=\"accept-all\">Accept all</button>"));
+    // Both the banner and the choices page link the privacy page (U9).
+    let privacy = "<a href=\"/blog/privacy/\">Read the privacy page.</a>";
+    let banner = page.split_once("<section class=\"consent\"").unwrap().1;
+    assert!(banner.contains(privacy), "{page}");
     let choices = get(&server, "/blog/privacy-choices/", &[]).body;
     assert!(
         !choices.contains("<section class=\"consent\""),
         "one question per screen"
     );
+    assert!(choices.contains(privacy), "{choices}");
+    let german = get(&server, "/blog/de/privacy-choices/", &[]).body;
+    assert!(
+        german.contains("<a href=\"/blog/de/privacy/\">"),
+        "{german}"
+    );
+    assert_eq!(get(&server, "/blog/privacy/", &[]).status, 200);
 }
 
 #[test]
@@ -178,34 +189,34 @@ fn the_choices_page_saves_with_scripts_off_and_the_next_page_says_so() {
     let site = site_with(CODE);
     let server = serve(site.path());
     let back = "back=%2Fblog%2Fprivacy-choices%2F";
+    // The site's `[code]` counts as Marketing, so it runs only when that
+    // switch is on.
     let answers = [
-        (format!("choice=save&analytics=on&{back}"), "no"),
+        (format!("choice=save&analytics=on&{back}"), 2),
         (
             format!("choice=save&preferences=on&analytics=on&marketing=on&{back}"),
-            "yes",
+            7,
         ),
-        (format!("choice=accept-all&{back}"), "yes"),
-        (format!("choice=reject-all&{back}"), "no"),
+        (format!("choice=accept-all&{back}"), 15),
+        (format!("choice=reject-all&{back}"), 0),
     ];
-    for (form, kept) in answers {
+    for (form, bits) in answers {
         let answer = send(&server, ("POST", "/blog/_consent/"), &[], &form);
         assert_eq!(answer.status, 303, "{form}");
-        assert_eq!(answer.header("location"), "/blog/privacy-choices/");
+        let saved = "/blog/privacy-choices/?consent=saved";
+        assert_eq!(answer.header("location"), saved);
         let cookie = answer.header("set-cookie");
-        assert!(
-            cookie.starts_with(&format!("khalid-consent={kept};")),
-            "{form}: {cookie}"
-        );
-        let next = get(
-            &server,
-            "/blog/privacy-choices/",
-            &[&format!("Cookie: khalid-consent={kept}")],
-        );
+        let kept = cookie.split_once(';').unwrap().0;
+        let value = kept.strip_prefix("khalid-consent=2.").unwrap();
+        let (_, rest) = value.split_once('.').unwrap();
+        assert!(rest.starts_with(&format!("{bits}.")), "{form}: {cookie}");
+        let next = get(&server, saved, &[&format!("Cookie: {kept}")]);
         assert!(
             next.body.contains("Your privacy choices are saved."),
             "{form}"
         );
         assert!(!next.body.contains("<!--khalid-chosen-->"), "{form}");
-        assert_eq!(next.body.contains("chat()"), kept == "yes", "{form}");
+        let marketing = bits & 4 != 0;
+        assert_eq!(next.body.contains("chat()"), marketing, "{form}");
     }
 }

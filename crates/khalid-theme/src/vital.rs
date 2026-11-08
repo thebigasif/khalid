@@ -21,7 +21,7 @@ pub(crate) static VITAL: Pack = Pack {
         PackTemplate::file("authors.html", "vital/authors.html"),
         PackTemplate::file("author.html", "vital/author.html"),
     ],
-    tokens: include_str!("../packs/vital/tokens.toml"),
+    tokens: PackText::file("vital/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

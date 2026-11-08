@@ -21,7 +21,7 @@ pub(crate) static BEACON: Pack = Pack {
         PackTemplate::file("authors.html", "beacon/authors.html"),
         PackTemplate::file("author.html", "beacon/author.html"),
     ],
-    tokens: include_str!("../packs/beacon/tokens.toml"),
+    tokens: PackText::file("beacon/tokens.toml"),
     reader: &[],
     options: &[
         parts::on(parts::LOGO),

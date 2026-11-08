@@ -2,7 +2,7 @@
 //! (privacy plan U4, R2, R6, R7, R8, R9).
 
 use khalid_render::{
-    ConsentBanner, ConsentPart, ConsentRow, GPC_END, GPC_START, PageBody, PageKind,
+    ConsentBanner, ConsentKeeper, ConsentPart, ConsentRow, GPC_END, GPC_START, PageBody, PageKind,
     RenderPrivacyChoices, Renderer,
 };
 
@@ -18,6 +18,7 @@ fn banner(tag: &str, part: ConsentPart) -> String {
         back: format!("{prefix}what-a-sitemap-does/"),
         choices: format!("{prefix}privacy-choices/"),
         privacy: Some(format!("{prefix}privacy/")),
+        keeper: ConsentKeeper::Server,
     };
     Renderer::new()
         .unwrap()
@@ -55,7 +56,7 @@ fn live_page() -> RenderPrivacyChoices {
         title: "Your privacy choices".to_owned(),
         action: "/blog/_consent/".to_owned(),
         privacy: Some("/blog/privacy/".to_owned()),
-        live: true,
+        keeper: ConsentKeeper::Server,
         categories: rows(),
     }
 }
@@ -171,13 +172,61 @@ fn a_static_choices_page_says_what_happens_with_scripts_off() {
     let page = drawn(
         "en",
         RenderPrivacyChoices {
-            live: false,
+            keeper: ConsentKeeper::Script,
             ..live_page()
         },
     );
     assert_valid_page(&page);
     assert!(page.contains("<noscript>"), "{page}");
     assert!(!choices("en").contains("<noscript>"));
+    // A static build locks every form, so the consent script answers
+    // plain buttons, shown only once it runs (privacy plan U6).
+    assert!(!page.contains("<form"), "{page}");
+    assert!(page.contains("<div data-khalid-choices hidden>"), "{page}");
+    assert!(page.contains("type=\"button\" name=\"choice\" value=\"save\""));
+    assert_eq!(page.matches("type=\"checkbox\"").count(), 4);
+}
+
+#[test]
+fn a_static_site_that_asks_nothing_says_there_is_nothing_to_choose() {
+    let page = drawn(
+        "en",
+        RenderPrivacyChoices {
+            keeper: ConsentKeeper::Nobody,
+            ..live_page()
+        },
+    );
+    assert_valid_page(&page);
+    assert!(page.contains("so there is nothing to choose."), "{page}");
+    assert!(
+        !page.contains("<fieldset>") && !page.contains("<form"),
+        "{page}"
+    );
+}
+
+#[test]
+fn a_static_banner_is_plain_buttons_hidden_until_the_script_shows_them() {
+    let prefix = "/blog/";
+    let scripted = ConsentBanner {
+        action: "/blog/_consent/".to_owned(),
+        back: format!("{prefix}what-a-sitemap-does/"),
+        choices: format!("{prefix}privacy-choices/"),
+        privacy: None,
+        keeper: ConsentKeeper::Script,
+    };
+    let html = Renderer::new()
+        .unwrap()
+        .consent(&locale("en"), &scripted, ConsentPart::Ask)
+        .unwrap();
+    assert!(html.contains("data-khalid-banner hidden>"), "{html}");
+    assert!(
+        !html.contains("<form") && !html.contains("name=\"back\""),
+        "{html}"
+    );
+    let server = banner("en", ConsentPart::Ask);
+    let button = |html: &str| html.matches("class=\"consent-button\"").count();
+    assert_eq!(button(&html), button(&server));
+    assert!(html.contains("type=\"button\" name=\"choice\" value=\"reject-all\""));
 }
 
 #[test]
