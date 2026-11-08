@@ -1,0 +1,19 @@
+{#- The consent banner (privacy plan U4, KTD10): a plain form that works
+    with scripts off, placed in the flow right after the skip link, so it
+    never covers the page. Accept all and Reject all share one class and
+    one look; Choose is a link to the choices page. The note on Global
+    Privacy Control stays in an inert template until the server shows it.
+    A reader who answered sees the one saved line instead. -#}
+{% if part == "ask" %}<section class="consent" aria-labelledby="consent-title">
+<h2 id="consent-title">{{ t.consent_title }}</h2>
+<p>{{ t.consent_note }}{% if banner.privacy %} <a href="{{ banner.privacy }}">{{ t.consent_privacy_link }}</a>{% endif %}</p>
+<!--khalid-gpc--><template><p class="consent-gpc">{{ t.consent_gpc }}</p></template><!--/khalid-gpc-->
+<form method="post" action="{{ banner.action }}">
+<input type="hidden" name="back" value="{{ banner.back }}">
+<button class="consent-button" type="submit" name="choice" value="accept-all">{{ t.consent_accept_all }}</button>
+<button class="consent-button" type="submit" name="choice" value="reject-all">{{ t.consent_reject_all }}</button>
+<a class="consent-choose" href="{{ banner.choices }}">{{ t.consent_choose }}</a>
+</form>
+</section>
+{%- else %}<p class="consent-saved" role="status">{{ t.consent_saved }} <a href="{{ banner.choices }}">{{ t.consent_change }}</a></p>
+{%- endif %}
