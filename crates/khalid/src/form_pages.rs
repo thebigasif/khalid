@@ -8,6 +8,7 @@ use std::sync::{Arc, PoisonError, RwLock};
 use axum::Router;
 use axum::response::Response;
 use khalid_comments::RateLimits;
+use khalid_content::MEDIA_FORM;
 use khalid_core::{Config, SystemClock};
 use khalid_db::{Database, FormTable, SiteId};
 use khalid_forms::{FormDelivery, FormId, FormRoute, SiteForms, form_router};
@@ -15,6 +16,7 @@ use khalid_render::{BodyHtml, PageBody};
 use khalid_server::SecurityHeaders;
 
 use crate::build_pages::LanguagePages;
+use crate::page_code::CONSENT_FOLDER;
 use crate::site_pages::SitePages;
 
 /// How the form block opens a form, up to its id (`khalid-content`).
@@ -65,10 +67,17 @@ pub(crate) fn fill(config: &Config, forms: Option<&LiveForms>, languages: &mut [
     }
 }
 
+/// Points the forms of `languages` that post to a built-in route under the
+/// blog's mount: the sign-up form and each embed card's form.
+pub(crate) fn under_mount(config: &Config, languages: &mut [LanguagePages]) {
+    subscribe_under(config, languages);
+    media_under(config, languages);
+}
+
 /// Points each `::newsletter` block in `languages` at `<mount>subscribe`,
 /// the sign-up route under the blog's mount, where the proxy in front
 /// passes it on. A blog at `/` is left as it is.
-pub(crate) fn subscribe_under(config: &Config, languages: &mut [LanguagePages]) {
+fn subscribe_under(config: &Config, languages: &mut [LanguagePages]) {
     let mount = config.mount();
     if mount == "/" {
         return;
@@ -87,6 +96,40 @@ pub(crate) fn subscribe_under(config: &Config, languages: &mut [LanguagePages]) 
             *body = BodyHtml::from_sanitised(body.as_str().replace(SUBSCRIBE_FORM, &mounted));
         }
     }
+}
+
+/// Points each embed card's "Always load external media" form in
+/// `languages` at `<mount>_consent/`, coming back to the card's own page.
+fn media_under(config: &Config, languages: &mut [LanguagePages]) {
+    let mount = config.mount();
+    for page in languages
+        .iter_mut()
+        .flat_map(|language| &mut language.pages)
+    {
+        let body = match &mut page.body {
+            PageBody::Post(post) => &mut post.body,
+            PageBody::Page(shown) => &mut shown.body,
+            _ => continue,
+        };
+        if body.as_str().contains(MEDIA_FORM) {
+            let form = media_form(mount, &page.meta.path);
+            *body = BodyHtml::from_sanitised(body.as_str().replace(MEDIA_FORM, &form));
+        }
+    }
+}
+
+/// The opening of an embed card's form on the page at `path`, posting
+/// under `mount`. A path that could break out of the attribute comes back
+/// to the blog's home instead.
+fn media_form(mount: &str, path: &str) -> String {
+    let back = if path.contains(['"', '<', '>', '&']) {
+        mount
+    } else {
+        path
+    };
+    format!(
+        "<form class=\"embed-allow\" method=\"post\" action=\"{mount}{CONSENT_FOLDER}/\"><input type=\"hidden\" name=\"back\" value=\"{back}\">"
+    )
 }
 
 /// `html` with each form block posting under `mount`, and the forms'
@@ -159,5 +202,17 @@ mod tests {
         assert_eq!(mounted("<p>No form</p>", "/blog/"), None);
         let (root, _) = mounted(html, "/").unwrap();
         assert_eq!(root, html);
+    }
+
+    #[test]
+    fn an_embed_card_posts_under_the_mount_and_comes_back_to_its_page() {
+        let form = media_form("/blog/", "/blog/tour/");
+        assert!(form.contains("action=\"/blog/_consent/\""), "{form}");
+        assert!(
+            form.contains("name=\"back\" value=\"/blog/tour/\""),
+            "{form}"
+        );
+        let odd = media_form("/blog/", "/blog/\"x/");
+        assert!(odd.contains("name=\"back\" value=\"/blog/\""), "{odd}");
     }
 }

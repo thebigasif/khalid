@@ -15,7 +15,8 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_content::{
-    AuthorFront, Document, Gated, PostFront, Rendered, SiteContent, Wikilinks, render_framed,
+    AuthorFront, Document, Gated, PostFront, Rendered, SiteContent, Wikilinks,
+    external_media_as_links, render_framed,
 };
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
 use khalid_render::{
@@ -353,7 +354,7 @@ fn post_page(
     let description = front.description.clone().unwrap_or_default();
     let mut seo = build_seo::post(locale, (&rest, &title), front, date)?;
     seo.collection = Some(doc.collection.clone());
-    seo.content_html = build_seo::full_addresses(config, &rendered.html);
+    seo.content_html = build_seo::full_addresses(config, &external_media_as_links(&rendered.html));
     let (reviewers, profiles) = build_reader::reviewers(front, people, config)?;
     seo.reviewers = profiles;
     let html = BodyHtml::from_sanitised(rendered.html);

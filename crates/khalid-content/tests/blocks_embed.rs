@@ -1,8 +1,9 @@
 //! Embed blocks and the provider allowlist (task 1.7, KH-CON-5).
 
 use khalid_content::{
-    BlockKind, EMBED_PROVIDERS, EmbedProvider, Gated, Wikilinks, parse_blocks, print_blocks,
-    render, render_framed,
+    BlockKind, EMBED_PROVIDERS, EmbedProvider, Gated, StructuredBlock, Wikilinks,
+    external_media_as_links, parse_blocks, print_blocks, release_external_media, render,
+    render_framed,
 };
 use khalid_core::{AbsoluteUrl, DomainName, Locale, SlugMode};
 
@@ -202,4 +203,104 @@ fn a_page_on_any_other_domain_or_over_http_stays_a_link() {
         framed(http, &["tools.example.com"]).starts_with(link),
         "http"
     );
+}
+
+const YOUTUBE: &str =
+    "::embed{src=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" title=\"How search works\"}\n";
+
+const PLAYER: &str = "<iframe src=\"https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ\"";
+
+/// `html` without each inert `template`, the part no browser shows or loads.
+#[cfg(test)]
+fn shown(html: &str) -> String {
+    let mut kept = String::new();
+    let mut rest = html;
+    while let Some((before, after)) = rest.split_once("<template>") {
+        kept.push_str(before);
+        rest = after
+            .split_once("</template>")
+            .map_or("", |(_, after)| after);
+    }
+    kept.push_str(rest);
+    kept
+}
+
+/// AE1: a new reader's page loads nothing from the provider. The player
+/// waits in an inert template, and the card names the provider and says
+/// what loading it shares.
+#[test]
+fn a_provider_embed_is_a_card_with_its_player_held_in_a_template() {
+    let page = html(YOUTUBE);
+    assert!(page.contains(PLAYER), "{page}");
+    let shown = shown(&page);
+    assert!(!shown.contains("<iframe"), "{shown}");
+    assert!(shown.contains("YouTube"), "{shown}");
+    assert!(shown.contains("IP address"), "{shown}");
+    let load = "href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">Load media</a>";
+    assert!(shown.contains(load), "{shown}");
+    let always = "value=\"allow-external-media\">Always load external media</button>";
+    assert!(shown.contains(always), "{shown}");
+}
+
+#[test]
+fn a_reader_who_allowed_external_media_gets_the_player_and_no_card() {
+    let released = release_external_media(&html(YOUTUBE));
+    assert!(shown(&released).contains(PLAYER), "{released}");
+    assert!(!released.contains("<template>"), "{released}");
+    assert!(!released.contains("Load media"), "{released}");
+    assert!(!released.contains("khalid-media"), "{released}");
+}
+
+#[test]
+fn a_page_with_no_embed_is_released_unchanged() {
+    let page = html("Plain words.\n");
+    assert_eq!(release_external_media(&page), page);
+}
+
+/// R13: feeds carry the embed's title and link, never a frame or a button.
+#[test]
+fn a_feed_copy_has_the_title_and_link_and_no_player() {
+    let feed = external_media_as_links(&html(YOUTUBE));
+    let link = "<a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">How search works</a>";
+    assert!(feed.contains(link), "{feed}");
+    for part in ["iframe", "template", "button", "form", "Load media"] {
+        assert!(!feed.contains(part), "{part} in {feed}");
+    }
+}
+
+#[test]
+fn an_audio_embed_card_says_load_media_not_video() {
+    let page = html(
+        "::embed{src=\"https://open.spotify.com/episode/4rOoJ6Egrf8K2IrywzwOMk\" title=\"An SEO podcast\"}\n",
+    );
+    let shown = shown(&page);
+    assert!(shown.contains(">Load media</a>"), "{shown}");
+    assert!(shown.contains("Spotify"), "{shown}");
+    assert!(!shown.to_lowercase().contains("video"), "{shown}");
+}
+
+#[test]
+fn a_german_post_gets_a_german_card() {
+    let de = Locale::try_new("de").unwrap();
+    let page = render(YOUTUBE, &de, SlugMode::Ascii).unwrap().html;
+    assert!(page.contains(">Medien laden</a>"), "{page}");
+    assert!(
+        page.contains(">Externe Medien immer laden</button>"),
+        "{page}"
+    );
+}
+
+/// `VideoObject` and the video sitemap read a post's structured blocks,
+/// which an embed's card leaves as they were.
+#[test]
+fn an_embed_card_leaves_the_video_facts_as_they_were() {
+    let en = Locale::try_new("en").unwrap();
+    let video = "::video{src=\"/media/tour.mp4\" title=\"A tour\" poster=\"/media/tour.jpg\" duration=\"2:05\"}\n";
+    let alone = render(video, &en, SlugMode::Ascii).unwrap();
+    let both = render(&format!("{video}\n{YOUTUBE}"), &en, SlugMode::Ascii).unwrap();
+    assert_eq!(both.structured, alone.structured);
+    assert!(matches!(
+        alone.structured.as_slice(),
+        [StructuredBlock::Video(_)]
+    ));
 }
