@@ -4,9 +4,9 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
-## 1.6.1
+## 1.6.2
 
-Lighter pages: each page downloads only the CSS it uses, at most 10 KB, and pictures can come in AVIF in place of WebP. What changed, in plain words: `docs/releases/1.6.1.md`.
+Lighter pages: each page downloads only the CSS it uses, at most 10 KB, and pictures can come in AVIF in place of WebP. What changed, in plain words: `docs/releases/1.6.2.md`.
 
 ### Added
 

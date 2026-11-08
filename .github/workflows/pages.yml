@@ -91,6 +91,8 @@ jobs:
           key: demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-${{ hashFiles('fixtures/showcase-publications/*/photos.lock') }}
           restore-keys: demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-
       - name: Build the old Pages copy, whose pages are the old addresses
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: bash scripts/pages.sh --canonical https://serpdad.com ./target/release/khalid "$RUNNER_TEMP/pages" https://thebigasif.github.io /khalid/
       - name: Template previews
         # cwebp keeps each full-size preview to a hundred or two kilobytes.
