@@ -104,18 +104,21 @@ echo "Lighthouse:"
 CHROME_PATH="$(cd "$tools" && node -p 'require("playwright").chromium.executablePath()')"
 export CHROME_PATH
 # Lighthouse runs inside `while read` loops, so it reads nothing from them.
-# Chrome now and then misses the start of a page load (NO_NAVSTART), so a
-# page Lighthouse could not check gets one more try. A low score is kept
-# as it is: scores.mjs fails on it.
+# Chrome now and then misses the start of a page load (NO_NAVSTART), on a
+# busy runner more than once in a row, so a page Lighthouse could not check
+# gets up to three more tries, a few seconds apart. A low score is kept as
+# it is: scores.mjs fails on it.
 lighthouse() {
   local report="$work/lighthouse/$2.json" attempt
-  for attempt in 1 2; do
+  for attempt in 1 2 3 4; do
     if "$tools/node_modules/.bin/lighthouse" "$1" --quiet --output=json \
       --output-path="$report" --chrome-flags="--headless=new --no-sandbox" < /dev/null \
       && node -e 'process.exit(require(process.argv[1]).runtimeError ? 1 : 0)' "$report" < /dev/null; then
       return
     fi
-    [ "$attempt" = 1 ] && echo "Lighthouse could not check $1, so it tries once more."
+    [ "$attempt" = 4 ] && break
+    echo "Lighthouse could not check $1 (try $attempt of 4), so it tries again."
+    sleep $((attempt * 3))
   done
   failed=1
 }
