@@ -214,6 +214,20 @@ On 2026-11-02 integration branch 30 merged with main built 31,525,496 bytes on t
 
 All kept: 31,032,440 bytes, 493,056 less than before. The linter stays at 3: at `"s"` lint one post took 14.89 and 14.77 ms against 8.87 and 9.01 ms at 3, back to back. With every kept change `scripts/perf.sh` measured idle memory 49.39 MB, lint one post 9.04 ms, a full 10,000-post rebuild 14.84 s and the first byte 64.36 ms, every budget held.
 
+### Room for cookie consent (privacy U1, 2026-11-08)
+
+Main built 31,432,184 bytes on this server, 25,096 under the budget, and the consent work adds code. `khalid-render` carried the five shared stylesheets, `reader.js` and the two strings files uncompressed (117 KB of text), beside a Brotli archive that held only the default templates. They now sit in that archive too, read out once on first use like the templates, and `rust-embed` is gone from the crate. The stylesheets, the script and the strings are byte for byte what they were: the crate's tests compare each against its file.
+
+| Run, `scripts/perf.sh` | Binary | First byte | Idle memory |
+|---|---|---|---|
+| Before, first run | 31,432,184 | 77.63 ms | 54.45 MB |
+| After, first run | 31,341,944 | 87.22 ms | 53.61 MB |
+| After, second run | 31,341,944 | 97.39 ms | 54.64 MB |
+| Before, back to back with the next row | 31,432,184 | 74.09 ms | 54.02 MB |
+| After, back to back with the row above | 31,341,944 | 62.77 ms | 52.00 MB |
+
+The measured runs built 90,240 bytes less. The final commit, after a clippy fix to how a template name's extension is checked, builds 31,342,264 bytes: 89,920 less than before and 115,016 under the budget. The two slow first bytes came while the server's load was 13 to 14; lint one post, which does not use `khalid-render`, took 12.12 and 13.39 ms in those runs against 9.48 to 9.88 ms in the others. Back to back, the first byte and idle memory did not get worse.
+
 ## Page weight
 
 Pictures are most of what a reader downloads. Every picture is offered in several widths (`srcset`), and its `sizes` tells the browser how wide the page draws it, so the browser fetches the smallest file that fills the slot. A `sizes` wider than the slot fetches a bigger file than it draws. One narrower makes the picture blurry.
