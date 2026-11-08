@@ -130,8 +130,9 @@ impl PageCode {
 
     /// `html`, a page drawn at `path` in `locale`, with the site's open
     /// body code and then the code that waits, or its slot, before its body
-    /// ends. The server's banner follows the skip link; a static page's
-    /// banner and the consent script, when the page needs it, end the body.
+    /// ends. The banner follows the skip link; on a static page the consent
+    /// script follows the banner, or ends the body on a page with no banner
+    /// that needs it.
     ///
     /// # Errors
     ///
@@ -148,14 +149,21 @@ impl PageCode {
                 joined([self.open.1.clone(), SITE_BODY_SLOT.to_owned()].into_iter()),
             ),
             Place::Open(_) => (html, self.open.1.clone()),
+            // The banner follows the skip link, as the server's does, with
+            // the consent script right after it, which shows it before the
+            // rest of the page is drawn, so it never moves the page (KTD10).
             Place::Waiting => {
                 let banner = self.static_banner(renderer, locale, path)?;
-                let parts = [self.open.1.clone(), self.held.1.clone(), banner];
-                (html, joined(parts.into_iter()))
+                let ask = joined([banner, self.script.clone()].into_iter());
+                let parts = [self.open.1.clone(), self.held.1.clone()];
+                (
+                    after_skip_link(html, &format!("\n{ask}")),
+                    joined(parts.into_iter()),
+                )
             }
         };
-        let needs_script =
-            static_consent::needs_script(&end) || static_consent::needs_script(&html);
+        let needs_script = !matches!(self.place, Place::Waiting)
+            && (static_consent::needs_script(&end) || static_consent::needs_script(&html));
         let script = if needs_script {
             self.script.clone()
         } else {
@@ -209,18 +217,7 @@ impl PageCode {
             format!("{ASK_START}{ask}{ASK_END}\n")
         };
         let parts = format!("\n{ask}{CHOSEN_START}{saved}{CHOSEN_END}");
-        let after_skip = html.find(SKIP_LINK).and_then(|at| {
-            let end = html.get(at..)?.find("</a>")?;
-            at.checked_add(end)?.checked_add("</a>".len())
-        });
-        let at = after_skip.or_else(|| html.rfind("</body>"));
-        Ok(match at {
-            Some(at) => {
-                let (before, after) = html.split_at(at);
-                format!("{before}{parts}{after}")
-            }
-            None => html,
-        })
+        Ok(after_skip_link(html, &parts))
     }
 
     /// A static page's banner, hidden until the consent script shows it,
@@ -244,6 +241,22 @@ impl PageCode {
             return Ok(saved);
         }
         Ok(format!("{}\n{saved}", part(ConsentPart::Ask)?))
+    }
+}
+
+/// `html` with `parts` after its skip link, or before its body ends in a
+/// theme with no skip link.
+fn after_skip_link(html: String, parts: &str) -> String {
+    let after_skip = html.find(SKIP_LINK).and_then(|at| {
+        let end = html.get(at..)?.find("</a>")?;
+        at.checked_add(end)?.checked_add("</a>".len())
+    });
+    match after_skip.or_else(|| html.rfind("</body>")) {
+        Some(at) => {
+            let (before, after) = html.split_at(at);
+            format!("{before}{parts}{after}")
+        }
+        None => html,
     }
 }
 

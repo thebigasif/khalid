@@ -113,7 +113,7 @@ pub(crate) fn script(
         _ => "marketing",
     };
     let tag = format!(
-        "<script src=\"{src}\" integrity=\"{integrity}\" data-khalid-rev=\"{rev}\" data-khalid-days=\"{days}\" data-khalid-gpc=\"{gpc}\" data-khalid-path=\"{path}\" defer></script>",
+        "<script src=\"{src}\" integrity=\"{integrity}\" data-khalid-rev=\"{rev}\" data-khalid-days=\"{days}\" data-khalid-gpc=\"{gpc}\" data-khalid-path=\"{path}\"></script>",
         src = escaped(&assets::href(config, &script)),
         integrity = script.integrity(),
         rev = consent_route::rev(config),

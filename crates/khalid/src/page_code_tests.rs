@@ -164,10 +164,12 @@ fn a_build_holds_code_that_waits_as_plain_text_under_its_category() {
 }
 
 #[test]
-fn a_static_banner_is_hidden_buttons_at_the_end_of_the_body() {
+fn a_static_banner_is_hidden_buttons_after_the_skip_link_with_the_script_after_it() {
     let code = PageCode::new(&config(CODE), HeadNonce::Static);
     let html = drawn(&code, SKIPPED, ("de", "/blog/de/a-post/"));
-    assert!(html.contains("Skip</a>\n<header>"), "{html}");
+    let skip = html.find("Skip</a>").unwrap();
+    let ask = html.find("<section class=\"consent\"").unwrap();
+    assert!(skip < ask && ask < html.find("<header>").unwrap(), "{html}");
     let (_, banner) = html.split_once("data-khalid-banner").unwrap();
     assert!(banner.starts_with(" hidden>"), "{banner}");
     assert!(!html.contains("<form"), "{html}");
@@ -182,12 +184,13 @@ fn a_static_banner_is_hidden_buttons_at_the_end_of_the_body() {
         !html.contains(ASK_START) && !html.contains("<script src"),
         "{html}"
     );
-    let loaded = code.with_consent_script("<script src=\"/c.js\" defer></script>".to_owned());
+    let loaded = code.with_consent_script("<script src=\"/c.js\"></script>".to_owned());
     let html = drawn(&loaded, SKIPPED, ("en", "/blog/a-post/"));
     assert!(
-        html.ends_with("<script src=\"/c.js\" defer></script>\n</body></html>"),
+        html.contains("</template>\n<script src=\"/c.js\"></script>\n<header>"),
         "{html}"
     );
+    assert_eq!(html.matches("/c.js").count(), 1, "{html}");
     let choices = drawn(&loaded, SKIPPED, ("en", "/blog/privacy-choices/"));
     assert!(!choices.contains("data-khalid-banner"), "{choices}");
 }

@@ -129,17 +129,24 @@
     saved(answer, true);
   });
 
-  const answer = read();
-  release(answer);
-  saved(answer, false);
-  // The choices page asks everything itself, so it never shows the banner.
-  const choosing = $("[data-khalid-choices]").length > 0;
-  shown("[data-khalid-banner]", !choosing && (!answer || answer.flags & MEDIA_ONLY));
   // The note that the signal is honoured waits in a template, as the
   // server keeps it.
-  if (gpc) unwrap((template) => template.content.querySelector(".consent-gpc"));
-  shown("[data-khalid-choices]", true);
-  for (const name of NAMES) {
-    for (const box of $(`[data-khalid-choices] [name="${name}"]`)) box.checked = allows(answer, name);
-  }
+  const honoured = () => gpc && unwrap((template) => template.content.querySelector(".consent-gpc"));
+  const answer = read();
+  // This script follows the banner and runs before the rest of the page
+  // is read, so the banner shows before anything below it is drawn and
+  // never moves the page (KTD10). The choices page has no banner.
+  shown("[data-khalid-banner]", !answer || answer.flags & MEDIA_ONLY);
+  honoured();
+  const rest = () => {
+    release(answer);
+    saved(answer, false);
+    honoured();
+    shown("[data-khalid-choices]", true);
+    for (const name of NAMES) {
+      for (const box of $(`[data-khalid-choices] [name="${name}"]`)) box.checked = allows(answer, name);
+    }
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", rest);
+  else rest();
 })();

@@ -137,7 +137,17 @@ fn a_static_build_holds_code_that_waits_as_plain_text() {
         "{html}"
     );
     assert!(tag.contains(" data-khalid-days=\"180\""), "{tag}");
-    assert!(tag.contains(" data-khalid-path=\"/blog/\" defer"), "{tag}");
+    // The script runs as soon as it is read, right after the banner, so
+    // the banner shows before the page below it is drawn (KTD10).
+    assert!(
+        tag.contains(" data-khalid-path=\"/blog/\"></script>"),
+        "{tag}"
+    );
+    let skip = html.find("class=\"skip-link\"").unwrap();
+    let banner = html.find("data-khalid-banner").unwrap();
+    let script = html.find("<script src=\"/blog/assets/consent.").unwrap();
+    let main = html.find("<main").unwrap();
+    assert!(skip < banner && banner < script && script < main, "{html}");
 }
 
 #[test]

@@ -346,8 +346,6 @@ mark { color: inherit; background: var(--color-surface); font-weight: 700; }
 .consent h2 { margin-block: 0 0.25rem; font-size: var(--text-h4); }
 .consent p { margin-block: 0 0.75rem; }
 .consent form, .consent .consent-answers { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-/* A static site's script shows its banner after the page has drawn, so it ends the body and stays in view at the window's foot: nothing above it moves. */
-.consent[data-khalid-banner] { position: sticky; inset-block-end: 0; }
 .consent-button, .consent-choose {
   display: inline-flex;
   align-items: center;
