@@ -12,7 +12,7 @@ use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
     AbsoluteUrl, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment, Locale,
-    MailSettings, MediaSettings, NavSettings, ParseUrlError, Reader, ReaderSwitch,
+    MailSettings, MediaSettings, NavSettings, ParseUrlError, PrivacySettings, Reader, ReaderSwitch,
     SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
 };
 
@@ -41,6 +41,7 @@ pub struct Config {
     mail: Option<MailSettings>,
     alerts: AlertSettings,
     code: SiteCode,
+    privacy: PrivacySettings,
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
     preview_link_lifetime: Duration,
@@ -114,6 +115,8 @@ struct SiteFile {
     alerts: AlertSettings,
     #[serde(default)]
     code: SiteCode,
+    #[serde(default)]
+    privacy: PrivacySettings,
     search_console: Option<SearchConsoleTable>,
     #[serde(default)]
     visitor_log: VisitorLogSettings,
@@ -210,8 +213,8 @@ fn in_table(path: &Path, text: &str, table: &str, key: &str, problem: &str) -> C
 }
 
 /// The first mistake in the tables whose checks span the file: `[alerts]`
-/// against how the site sends `mail`, and `[visitor_log]` against the
-/// mode.
+/// against how the site sends `mail`, and `[visitor_log]` and `[privacy]`
+/// against the mode.
 fn tables_mistake(
     file: &SiteFile,
     mail: Option<&MailSettings>,
@@ -226,6 +229,9 @@ fn tables_mistake(
     }
     if let Some((key, problem)) = file.ai.mistake() {
         return Err(in_table(path, text, "[ai", key, problem));
+    }
+    if let Some((key, problem)) = file.privacy.mistake(file.mode) {
+        return Err(in_table(path, text, "[privacy", key, problem));
     }
     Ok(())
 }
@@ -319,6 +325,7 @@ impl Config {
             mail,
             alerts: file.alerts,
             code: file.code,
+            privacy: file.privacy,
             search_console,
             visitor_log: file.visitor_log,
             preview_link_lifetime,
@@ -336,6 +343,11 @@ impl Config {
     /// site has none.
     pub fn code(&self) -> &SiteCode {
         &self.code
+    }
+
+    /// How readers are asked for consent, from `[privacy]`.
+    pub fn privacy(&self) -> &PrivacySettings {
+        &self.privacy
     }
 
     /// How the site sends email, from `[mail]`, or `None` when it sends

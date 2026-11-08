@@ -2,7 +2,9 @@
 //! banner, as each page of one render carries them (G45, KH-SEO-12, ADR
 //! "consent is a form and a cookie", privacy plan U6).
 
-use khalid_core::{Config, HeadCode, Locale};
+use std::collections::BTreeMap;
+
+use khalid_core::{Config, HeadCode, Locale, PrivacyText};
 use khalid_render::Renderer;
 use khalid_server::{
     ASK_END, ASK_START, CHOSEN_END, CHOSEN_START, HELD_END, HELD_START, NONCE_SLOT, SITE_BODY_SLOT,
@@ -32,6 +34,8 @@ pub(crate) struct PageCode {
     script: String,
     /// The choices page of each language, such as `/blog/de/privacy-choices/`.
     choices: Vec<(Locale, String)>,
+    /// The owner's banner words per language, from `[privacy]`.
+    own: BTreeMap<Locale, PrivacyText>,
 }
 
 /// Where the code goes.
@@ -56,22 +60,21 @@ impl PageCode {
         let place = match nonce {
             _ if !code.waits_for_consent() => Place::Open(nonce),
             HeadNonce::PerRequest => Place::Held,
+            // A certified tool the owner runs asks instead (KTD15).
+            HeadNonce::Static if config.privacy().external_tool.is_some() => Place::Open(nonce),
             HeadNonce::Static => Place::Waiting,
         };
-        let written = |html: Option<String>| html.unwrap_or_default();
+        let written = |html: Vec<String>| html.join("\n");
         let site = match place {
             Place::Open(HeadNonce::PerRequest) => (
-                written(code.head.as_ref().map(|head| head.to_html(NONCE_SLOT))),
-                written(code.body.as_ref().map(|body| body.to_html(NONCE_SLOT))),
+                written(code.heads().map(|head| head.to_html(NONCE_SLOT)).collect()),
+                written(code.bodies().map(|body| body.to_html(NONCE_SLOT)).collect()),
             ),
             Place::Open(HeadNonce::Static) => (
-                written(code.head.as_ref().map(ToString::to_string)),
-                written(code.body.as_ref().map(ToString::to_string)),
+                written(code.heads().map(ToString::to_string).collect()),
+                written(code.bodies().map(ToString::to_string).collect()),
             ),
-            Place::Waiting => (
-                written(code.head.as_ref().map(|head| head.to_held_html(MARKETING))),
-                written(code.body.as_ref().map(|body| body.to_held_html(MARKETING))),
-            ),
+            Place::Waiting => static_consent::held(code),
             Place::Held => (String::new(), String::new()),
         };
         let choices = (config.languages().iter())
@@ -86,6 +89,7 @@ impl PageCode {
             site,
             script: String::new(),
             choices,
+            own: config.privacy().text.clone(),
         }
     }
 
@@ -136,7 +140,8 @@ impl PageCode {
                 let choices = (self.choices.iter())
                     .find(|(language, _)| language == locale)
                     .map_or("", |(_, path)| path.as_str());
-                let banner = static_consent::banner(renderer, locale, choices);
+                let banner =
+                    static_consent::banner((renderer, locale), self.own.get(locale), choices);
                 [self.site.1.as_str(), &banner]
                     .into_iter()
                     .filter(|part| !part.is_empty())

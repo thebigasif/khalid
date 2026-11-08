@@ -24,6 +24,9 @@
   const days = Number(set.khalidDays) || 180;
   const today = Math.floor(Date.now() / 864e5);
   const gpc = navigator.globalPrivacyControl === true;
+  // What the signal turns off: Marketing, or every optional category when
+  // the owner reads it as Reject all.
+  const locked = set.khalidGpc === "reject-all" ? 15 : MARKETING;
   const bit = (name) => 1 << NAMES.indexOf(name);
   const $ = (selector) => document.querySelectorAll(selector);
 
@@ -46,7 +49,7 @@
   const allows = (answer, name) => {
     const wanted = bit(name);
     if (!answer || !(answer.bits & wanted)) return false;
-    return !(wanted === MARKETING && gpc && !(answer.flags & OVERRIDE));
+    return !(wanted & locked && gpc && !(answer.flags & OVERRIDE));
   };
 
   // Runs the held code and shows the players `answer` allows. A new script
@@ -86,7 +89,7 @@
   // What each button of the banner, the choices page and an embed card
   // saves.
   const answers = {
-    "accept-all": () => [gpc ? 15 & ~MARKETING : 15, 0],
+    "accept-all": () => [gpc ? 15 & ~locked : 15, 0],
     "reject-all": () => [0, 0],
     "allow-external-media": (answer) =>
       answer ? [answer.bits | MEDIA, answer.flags] : [MEDIA, MEDIA_ONLY],
@@ -95,7 +98,7 @@
       for (const box of $("[data-khalid-choices] input:checked")) {
         if (NAMES.includes(box.name)) bits |= bit(box.name);
       }
-      return [bits, gpc && bits & MARKETING ? OVERRIDE : 0];
+      return [bits, gpc && bits & locked ? OVERRIDE : 0];
     },
   };
 

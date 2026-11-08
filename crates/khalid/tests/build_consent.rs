@@ -215,6 +215,38 @@ fn the_choices_page_says_nothing_optional_loads_without_scripts() {
     }
 }
 
+/// Two entries of `[[code]]`: analytics from a named vendor, and a script
+/// that tracks no one.
+const ENTRIES: &str = "[[code]]\nhead = \"<script src='https://stats.example.net/a.js'></script>\"\ncategory = \"analytics\"\nvendor = \"Example Stats\"\n\n[[code]]\nbody = \"<script>quiet()</script>\"\ncategory = \"no-tracking\"\n";
+
+#[test]
+fn each_entry_waits_for_its_own_category_and_no_tracking_code_runs() {
+    let (_temp, out) = build(&format!("[privacy]\nlifetime_months = 3\n\n{ENTRIES}"), "");
+    let html = page(&out, "what-a-sitemap-does/index.html");
+    assert!(
+        html.contains("<script type=\"text/plain\" data-khalid-consent=\"analytics\" src=\"https://stats.example.net/a.js\"></script>"),
+        "{html}"
+    );
+    assert!(html.contains("<script>quiet()</script>"), "{html}");
+    assert!(html.contains(" data-khalid-days=\"90\""), "{html}");
+    let choices = page(&out, "privacy-choices/index.html");
+    assert!(choices.contains("name=\"analytics\">"), "{choices}");
+    assert!(choices.contains("From Example Stats."), "{choices}");
+    assert!(!choices.contains("name=\"marketing\""), "{choices}");
+}
+
+#[test]
+fn an_outside_consent_tool_gets_the_code_unheld_and_no_banner() {
+    let (_temp, out) = build(
+        &format!("[privacy]\nexternal_tool = \"Cookiebot\"\n\n{CODE}"),
+        "",
+    );
+    let html = page(&out, "what-a-sitemap-does/index.html");
+    assert!(html.contains("<script>chat()</script>"), "{html}");
+    assert!(!html.contains("data-khalid-banner"), "{html}");
+    assert!(!html.contains("consent."), "{html}");
+}
+
 #[test]
 fn the_build_says_global_privacy_control_is_honoured() {
     let (_temp, out) = build("", "");

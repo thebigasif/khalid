@@ -4,15 +4,15 @@
 //! honoured. With scripts off, the banner stays hidden and nothing
 //! optional ever loads.
 
-use std::fmt::Write as _;
-
 use khalid_content::EMBED_PROVIDERS;
-use khalid_core::{Config, Locale, RobotsDirectives, UserMessage};
+use khalid_core::{
+    CodeCategory, Config, ConsentCategory, GpcMode, Locale, PrivacyText, RobotsDirectives,
+    SiteCode, UserMessage,
+};
 use khalid_render::{
     Asset, BodyHtml, PageBody, PageKind, RenderPage, Renderer, Robots, consent_script,
 };
 use khalid_seo::{PageKind as SeoKind, SitemapListing};
-use sha2::{Digest, Sha256};
 
 use crate::build_pages::{self, LanguagePages, Page};
 use crate::post_lock::escaped;
@@ -21,13 +21,13 @@ use crate::{assets, build_files, build_message, build_seo, serve_message};
 /// The end of the choices page's address, after the mount and the language.
 pub(crate) const CHOICES: &str = "privacy-choices/";
 
-/// The category the site's own code waits for until U2 tags each entry:
-/// untagged owner code counts as Marketing (KTD2).
+/// The category a post's own head code waits for: Marketing, as owner code
+/// with no category does (KTD2).
 pub(crate) const MARKETING: &str = "marketing";
 
-/// How long a choice lasts, in days, until `[privacy]` sets it (U2): six
-/// months, as the server's cookie has always lasted.
-const DAYS: u16 = 180;
+/// Days in a month of the consent lifetime: six months are 180 days, as
+/// the server's cookie has always lasted.
+const DAYS_A_MONTH: u16 = 30;
 
 /// The file that tells browsers the site honours Global Privacy Control,
 /// at the root of the host.
@@ -43,6 +43,33 @@ const EMBED: &str = "<figure class=\"embed";
 /// The marks the consent script looks for in a page: the banner, an embed
 /// and the choices form. A page with none of them does not load it.
 const NEEDS_SCRIPT: [&str; 3] = ["data-khalid-banner", EMBED, "data-khalid-choices"];
+
+/// The site's head and body code as a static page carries it: each entry
+/// held as plain text under its category, and code that tracks no one
+/// open (R24).
+pub(crate) fn held(code: &SiteCode) -> (String, String) {
+    let mut head = Vec::new();
+    let mut body = Vec::new();
+    for entry in &code.entries {
+        let category = entry.category;
+        let open = category == CodeCategory::NoTracking;
+        if let Some(code) = entry.head.as_ref().filter(|code| !code.is_empty()) {
+            head.push(if open {
+                code.to_string()
+            } else {
+                code.to_held_html(category.key())
+            });
+        }
+        if let Some(code) = entry.body.as_ref().filter(|code| !code.is_empty()) {
+            body.push(if open {
+                code.to_string()
+            } else {
+                code.to_held_html(category.key())
+            });
+        }
+    }
+    (head.join("\n"), body.join("\n"))
+}
 
 /// Whether the page `html` needs the consent script.
 pub(crate) fn needs_script(html: &str) -> bool {
@@ -75,7 +102,8 @@ impl Asking {
                 PageBody::Page(page) => embeds(&page.body),
                 _ => false,
             });
-        if config.code().waits_for_consent() {
+        let tool = config.privacy().external_tool.is_some();
+        if config.code().waits_for_consent() && !tool {
             Self::Code
         } else if shows_embed {
             Self::Media
@@ -100,10 +128,12 @@ pub(crate) fn script(
     }
     let script = consent_script().map_err(|error| build_message::render(&error))?;
     let tag = format!(
-        "<script src=\"{src}\" integrity=\"{integrity}\" data-khalid-rev=\"{rev}\" data-khalid-days=\"{DAYS}\" data-khalid-path=\"{path}\" defer></script>",
+        "<script src=\"{src}\" integrity=\"{integrity}\" data-khalid-rev=\"{rev}\" data-khalid-days=\"{days}\" data-khalid-gpc=\"{gpc}\" data-khalid-path=\"{path}\" defer></script>",
         src = escaped(&assets::href(config, &script)),
         integrity = script.integrity(),
-        rev = rev(asking),
+        rev = rev(config),
+        days = u16::from(config.privacy().lifetime_months).saturating_mul(DAYS_A_MONTH),
+        gpc = gpc_mode(config),
         path = escaped(config.mount()),
     );
     Ok(Some((script, tag)))
@@ -120,40 +150,47 @@ pub(crate) fn gpc_file(config: &Config) -> String {
     }
 }
 
-/// A short hash of what a reader agrees to: the categories with code, the
-/// players External media may load and the lifetime. A change asks every
-/// reader again (KTD3). U2 moves it into `[privacy]`.
-fn rev(asking: Asking) -> String {
-    let mut shown = format!("days={DAYS};");
-    if asking == Asking::Code {
-        shown.push_str(MARKETING);
-        shown.push(';');
+/// The short hash a reader's cookie carries (KTD3), from `[privacy]`, the
+/// site's code and every provider an embed may show. A provider's name is
+/// how `khalid-content` writes the variant, such as `YouTube`.
+fn rev(config: &Config) -> String {
+    let names: Vec<String> = (EMBED_PROVIDERS.iter())
+        .map(|provider| format!("{provider:?}"))
+        .collect();
+    let embeds: Vec<&str> = names.iter().map(String::as_str).collect();
+    config.privacy().rev(config.code(), &embeds).to_string()
+}
+
+/// What Global Privacy Control turns off, as the consent script reads it.
+fn gpc_mode(config: &Config) -> &'static str {
+    match config.privacy().gpc {
+        GpcMode::RejectAll => "reject-all",
+        _ => "marketing",
     }
-    for provider in EMBED_PROVIDERS {
-        shown.push_str(provider.frame_origin());
-        shown.push(';');
-    }
-    Sha256::digest(shown.as_bytes()).iter().take(4).fold(
-        String::with_capacity(8),
-        |mut hex, byte| {
-            let _ = write!(hex, "{byte:02x}");
-            hex
-        },
-    )
 }
 
 /// The banner in `locale`, hidden until the consent script shows it, with
-/// the status line that says a choice was saved.
-pub(crate) fn banner(renderer: &Renderer, locale: &Locale, choices: &str) -> String {
+/// the status line that says a choice was saved. The owner's `own` words
+/// for the language, from `[privacy]`, replace the built-in heading and
+/// sentence.
+pub(crate) fn banner(
+    (renderer, locale): (&Renderer, &Locale),
+    own: Option<&PrivacyText>,
+    choices: &str,
+) -> String {
     let words = |key: &str| escaped(renderer.text(locale, key).unwrap_or_default());
+    let owned = |pick: fn(&PrivacyText) -> Option<&String>, key: &str| {
+        own.and_then(pick)
+            .map_or_else(|| words(key), |text| escaped(text))
+    };
     format!(
         "<section class=\"consent\" aria-labelledby=\"khalid-consent-title\" data-khalid-banner hidden>\
          <h2 id=\"khalid-consent-title\">{title}</h2><p>{note}</p><p data-khalid-gpc hidden>{gpc}</p>\
          <p class=\"consent-answers\"><button type=\"button\" value=\"accept-all\">{accept}</button>\
          <button type=\"button\" value=\"reject-all\">{reject}</button>\
          <a href=\"{choices}\">{choose}</a></p></section>\n<p role=\"status\" data-khalid-saved=\"{saved}\"></p>",
-        title = words("static_consent_title"),
-        note = words("static_consent_note"),
+        title = owned(|text| text.title.as_ref(), "static_consent_title"),
+        note = owned(|text| text.banner.as_ref(), "static_consent_note"),
         gpc = words("static_consent_gpc"),
         accept = words("static_consent_accept"),
         reject = words("static_consent_reject"),
@@ -165,25 +202,47 @@ pub(crate) fn banner(renderer: &Renderer, locale: &Locale, choices: &str) -> Str
 
 /// The choices page's body in `locale`. A site that asks nothing says so.
 /// Any other has a note for readers with scripts off and the form the
-/// consent script shows, with a Marketing row when the site's own code
-/// waits.
-fn choices_body(renderer: &Renderer, locale: &Locale, asking: Asking) -> String {
+/// consent script shows: Necessary, each category the site's own code
+/// waits for with its vendors, and External media.
+fn choices_body(
+    renderer: &Renderer,
+    locale: &Locale,
+    (config, asking): (&Config, Asking),
+) -> String {
     let words = |key: &str| escaped(renderer.text(locale, key).unwrap_or_default());
     if asking == Asking::Nothing {
         return format!("<p>{}</p>\n", words("static_choices_none"));
     }
-    let row = |name: &str, key: &str, state: &str| {
+    let own = config.privacy().text.get(locale);
+    let row = |category: ConsentCategory, state: &str| {
+        let key = category.key().replace('-', "_");
+        let mut note = (own.and_then(|text| own_note(text, category))).map_or_else(
+            || words(&format!("static_choices_{key}_note")),
+            |text| escaped(text),
+        );
+        let vendors = vendors(config.code(), category);
+        if !vendors.is_empty() {
+            let from = renderer
+                .text(locale, "static_choices_vendors")
+                .unwrap_or_default();
+            note = format!("{note} {}", escaped(&from.replace("{vendors}", &vendors)));
+        }
         format!(
             "<p><label><input type=\"checkbox\" name=\"{name}\"{state}> <strong>{label}</strong></label><br>{note}</p>\n",
+            name = category.key(),
             label = words(&format!("static_choices_{key}")),
-            note = words(&format!("static_choices_{key}_note")),
         )
     };
-    let mut rows = row("necessary", "necessary", " checked disabled");
-    if asking == Asking::Code {
-        rows.push_str(&row(MARKETING, "marketing", ""));
+    let mut rows = row(ConsentCategory::Necessary, " checked disabled");
+    for category in ConsentCategory::ALL {
+        let held = (config.code().entries.iter())
+            .any(|entry| entry.category.consent() == category && !entry.is_empty());
+        let shown = category == ConsentCategory::ExternalMedia
+            || (asking == Asking::Code && category.is_optional() && held);
+        if shown {
+            rows.push_str(&row(category, ""));
+        }
     }
-    rows.push_str(&row("external-media", "media", ""));
     format!(
         "<p>{intro}</p>\n<p data-khalid-noscript>{noscript}</p>\n<p data-khalid-gpc hidden>{gpc}</p>\n\
          <div class=\"choices\" data-khalid-choices hidden>\n{rows}\
@@ -195,6 +254,30 @@ fn choices_body(renderer: &Renderer, locale: &Locale, asking: Asking) -> String 
         save = words("static_choices_save"),
         saved = words("static_consent_saved"),
     )
+}
+
+/// The owner's own words for `category` in `text`, when they wrote some.
+fn own_note(text: &PrivacyText, category: ConsentCategory) -> Option<&String> {
+    match category {
+        ConsentCategory::Preferences => text.preferences.as_ref(),
+        ConsentCategory::Analytics => text.analytics.as_ref(),
+        ConsentCategory::Marketing => text.marketing.as_ref(),
+        ConsentCategory::ExternalMedia => text.external_media.as_ref(),
+        _ => None,
+    }
+}
+
+/// The vendors of the code waiting for `category`, such as `Example
+/// Stats, Example Ads`, each named once, in the order written.
+fn vendors(code: &SiteCode, category: ConsentCategory) -> String {
+    let mut names: Vec<&str> = Vec::new();
+    let of_category = (code.entries.iter()).filter(|entry| entry.category.consent() == category);
+    for name in of_category.filter_map(|entry| entry.vendor.as_deref()) {
+        if !names.contains(&name) {
+            names.push(name);
+        }
+    }
+    names.join(", ")
 }
 
 /// Adds the choices page to each of `languages`, kept out of search
@@ -228,7 +311,7 @@ pub(crate) fn add_choices(
         let mut seo = build_seo::page(SeoKind::Page, &locale, CHOICES, &title)?;
         seo.robots = "noindex".parse::<RobotsDirectives>().ok();
         seo.sitemap = SitemapListing::Excluded;
-        let body = BodyHtml::from_sanitised(choices_body(renderer, &locale, asking));
+        let body = BodyHtml::from_sanitised(choices_body(renderer, &locale, (config, asking)));
         language.pages.push(Page {
             file: format!(
                 "{}{CHOICES}index.html",

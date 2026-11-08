@@ -359,9 +359,41 @@ By default this code waits for each reader's consent, which means their yes. Eve
 
 For code that sets no cookie and tracks no one, add `consent = "not-needed"` to `[code]`. The code then runs for every reader and no note is shown.
 
+You can also write the code as a list, one `[[code]]` entry per tool, each tagged with the kind of consent it needs: `preferences`, `analytics`, `marketing` or `no-tracking`. An entry with no `category` counts as `marketing`. `vendor` names who runs the tool and `policy` links to their privacy policy:
+
+```toml
+[[code]]
+head = "<script async src='https://stats.example.net/a.js'></script>"
+category = "analytics"
+vendor = "Example Stats"
+policy = "https://stats.example.net/privacy"
+```
+
+The old single `[code]` table still works: `consent = "ask"` reads as one `marketing` entry and `consent = "not-needed"` as one `no-tracking` entry. For now, when any entry waits for consent, all of the site's code waits together; the banner with a switch per kind of consent comes in a later release.
+
+The `[privacy]` table sets how consent is asked. Every key may be left out:
+
+```toml
+[privacy]
+lifetime_months = 6      # how long a reader's choice lasts, 1 to 13 months
+gpc = "marketing"        # what Global Privacy Control turns off: "marketing" or "reject-all"
+counts = true            # count choices per day, server mode only
+external_tool = "Cookiebot"  # only if you run a certified consent tool instead
+
+[privacy.text.en]
+banner = "May we count visits?"   # your own words for the banner
+
+[privacy.contact]
+name = "Example Ltd"
+email = "privacy@example.com"
+address = "1 Main Street, Springfield"
+```
+
+Global Privacy Control is a signal some browsers send to say the reader does not want to be tracked or sold.
+
 Each script gets the page's nonce, a random value the browser checks against the page's security policy, so the code is allowed to run and nothing else is. A script may load other scripts and send data to any `https` address, as analytics tools do.
 
-A static site asks with a small script instead, because a static host cannot read a cookie. `khalid build` writes code that waits as plain text, which no browser runs. The script shows a banner with Accept all, Reject all and Choose, keeps the reader's answer in a cookie for 180 days, and runs the code only for a reader who agreed. A browser that sends Global Privacy Control, a setting that asks sites not to sell or share data, keeps marketing code off unless the reader turns it on at `privacy-choices/`. With scripts off, the banner never shows and the code never runs. The script is under 2 KB and loads only on pages that ask something: a site with code that waits, and posts with an embed. Site verification tags belong in `[seo]`, which never waits.
+A static site asks with a small script instead, because a static host cannot read a cookie. `khalid build` writes code that waits as plain text, which no browser runs. The script shows a banner with Accept all, Reject all and Choose, keeps the reader's answer in a cookie for as long as `[privacy]` says, and runs each entry only for a reader who agreed to its category. A browser that sends Global Privacy Control, a setting that asks sites not to sell or share data, keeps marketing code off unless the reader turns it on at `privacy-choices/`. Code with `category = "no-tracking"` runs for every reader, and with `external_tool` set the code runs unheld for that tool to manage. With scripts off, the banner never shows and the code never runs. The script is under 2 KB and loads only on pages that ask something: a site with code that waits, and posts with an embed. Site verification tags belong in `[seo]`, which never waits.
 
 `khalid build` also writes `.well-known/gpc.json`, which tells browsers the site honours Global Privacy Control. For a blog in a folder it is in `_root/`, with the other files for the root of the host.
 
