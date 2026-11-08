@@ -18,6 +18,7 @@ const PATHS = {
   key: "M8 21a5 5 0 1 1 3.5-8.5L20 4M16 8l3 3M13.5 10.5l2 2",
   bolt: "M13 2 4 14h7l-1 8 9-12h-7z",
   shield: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z",
+  lock: "M6 11h12v10H6zM8 11V8a4 4 0 0 1 8 0v3",
   list: "M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01",
   trash: "M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3",
   account:

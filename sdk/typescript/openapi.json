@@ -12049,8 +12049,11 @@
           "mount",
           "default_language",
           "languages",
+          "mode",
           "template",
           "seo",
+          "privacy",
+          "code",
           "updated_at",
           "restart_needed"
         ],
@@ -12058,6 +12061,13 @@
           "address": {
             "type": "string",
             "description": "The address of the main site, such as `https://www.example.com`."
+          },
+          "code": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "The site's own code from `[code]`, one object per entry as written:\n`head`, `body`, the `category` it waits for (`preferences`,\n`analytics`, `marketing` or `no-tracking`), the `vendor` and its\n`policy` link. An entry with no `category` counts as Marketing. The\nold single `[code]` table reads as one entry."
           },
           "default_language": {
             "type": "string",
@@ -12070,6 +12080,10 @@
             },
             "description": "Every language the site is written in."
           },
+          "mode": {
+            "type": "string",
+            "description": "How the site reaches readers: `server`, `static` or `headless`.\nIt is read here and changed only in `site.toml`."
+          },
           "mount": {
             "type": "string",
             "description": "The path the blog lives under, such as `/blog/`."
@@ -12077,6 +12091,10 @@
           "name": {
             "type": "string",
             "description": "The site's name."
+          },
+          "privacy": {
+            "type": "object",
+            "description": "The `[privacy]` table as `site.toml` writes it, one key per part\nsuch as `lifetime_months`, `gpc`, `counts`, `external_tool`, `text`\nor `contact`. A setting left out keeps its default."
           },
           "restart_needed": {
             "type": "boolean",
@@ -16336,6 +16354,16 @@
             ],
             "description": "A new address of the main site."
           },
+          "code": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object"
+            },
+            "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`."
+          },
           "default_language": {
             "type": [
               "string",
@@ -16366,6 +16394,13 @@
               "null"
             ],
             "description": "A new name."
+          },
+          "privacy": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "New parts of the `[privacy]` table, each replacing the part of that\nname whole, such as `{\"lifetime_months\": 12}`. `null` removes a\npart, so it goes back to its default. Parts left out stay as they\nare."
           },
           "seo": {
             "type": [
