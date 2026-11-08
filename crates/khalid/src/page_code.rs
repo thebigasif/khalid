@@ -2,15 +2,20 @@
 //! banner, as each page of one render carries them (G45, KH-SEO-12, ADR
 //! "consent has categories").
 
-use khalid_core::{BodyCode, CodeCategory, Config, HeadCode, Locale};
-use khalid_render::Renderer;
+use khalid_core::{BodyCode, CodeCategory, Config, HeadCode, Locale, UserMessage};
+use khalid_render::{ConsentBanner, ConsentPart, Renderer};
 use khalid_server::{
     ASK_END, ASK_START, CHOSEN_END, CHOSEN_START, HELD_END, HELD_START, NONCE_SLOT, SITE_BODY_SLOT,
     SITE_HEAD_SLOT,
 };
 
-use crate::post_lock::escaped;
+use crate::build_message;
+use crate::build_pages::privacy_choices::REST as CHOICES;
 use crate::site_page::HeadNonce;
+
+/// Where the banner goes: right after the skip link, so it is the first
+/// thing after it in the tab order and takes its own room in the flow.
+const SKIP_LINK: &str = "<a class=\"skip-link\"";
 
 /// The folder under the mount the consent form posts to. Slugs have no
 /// `_`, so no post can take this address.
@@ -22,6 +27,10 @@ pub(crate) struct PageCode {
     place: Place,
     /// Where the consent form posts, such as `/blog/_consent/`.
     action: String,
+    /// Where the blog lives, such as `/blog/`.
+    mount: String,
+    /// The site's first language, whose pages have no language folder.
+    default: Locale,
     /// The head and body code every page carries: code that tracks no one,
     /// or all of it when an outside consent tool asks instead of Khalid.
     open: (String, String),
@@ -34,8 +43,8 @@ enum Place {
     /// the nonce slot or, on a static host, without.
     Open(HeadNonce),
     /// Into the marked places of every page, which the server fills for a
-    /// reader who allowed its category, with the banner before the body
-    /// ends.
+    /// reader who allowed its category, with the banner after the skip
+    /// link.
     Held,
     /// Nowhere: the code waits for consent, which a static host cannot ask.
     Left,
@@ -69,6 +78,8 @@ impl PageCode {
         Self {
             place,
             action: format!("{}{CONSENT_FOLDER}/", config.mount()),
+            mount: config.mount().to_owned(),
+            default: config.default_language().clone(),
             open: (joined(heads.map(head)), joined(bodies.map(body))),
         }
     }
@@ -91,53 +102,82 @@ impl PageCode {
         joined([post, self.open.0.clone(), slot.to_owned()].into_iter())
     }
 
-    /// `html`, a page drawn at `path` in `locale`, with the site's open
-    /// body code, then the slot of the code that waits and the banner,
-    /// before its body ends.
+    /// `html`, a page drawn at `path` in `locale`, with the banner right
+    /// after its skip link when code waits for consent, and the site's open
+    /// body code, then the slot of the code that waits, before its body
+    /// ends.
+    ///
+    /// # Errors
+    ///
+    /// Returns what, why and fix when the theme's `consent.html` fails.
     pub(crate) fn with_body_end(
         &self,
         html: String,
         (renderer, locale): (&Renderer, &Locale),
         path: &str,
-    ) -> String {
-        let banner = match self.place {
-            Place::Held => self.banner(renderer, locale, path),
-            Place::Open(_) | Place::Left => String::new(),
+    ) -> Result<String, UserMessage> {
+        let (html, slot) = match self.place {
+            Place::Held => (
+                self.with_banner(html, renderer, locale, path)?,
+                SITE_BODY_SLOT,
+            ),
+            Place::Open(_) | Place::Left => (html, ""),
         };
-        let end = joined([self.open.1.clone(), banner].into_iter());
-        match html.rfind("</body>") {
+        let end = joined([self.open.1.clone(), slot.to_owned()].into_iter());
+        Ok(match html.rfind("</body>") {
             Some(at) if !end.is_empty() => {
                 let (before, after) = html.split_at(at);
                 format!("{before}{end}\n{after}")
             }
             _ => html,
-        }
+        })
     }
 
-    /// The body code's slot, the banner and, hidden until a reader has
-    /// chosen, the smaller form to change the choice. Allow accepts every
-    /// category and Do not allow rejects them all, until the banner of
-    /// privacy plan U4 names them.
-    fn banner(&self, renderer: &Renderer, locale: &Locale, path: &str) -> String {
-        let words = |key: &str| escaped(renderer.text(locale, key).unwrap_or_default());
-        let form = |class: &str, note: &str| {
-            format!(
-                "<aside class=\"{class}\" aria-label=\"{label}\"><form method=\"post\" action=\"{action}\">\
-                 <p>{note}</p><input type=\"hidden\" name=\"back\" value=\"{back}\">\
-                 <button type=\"submit\" name=\"choice\" value=\"accept-all\">{allow}</button>\
-                 <button type=\"submit\" name=\"choice\" value=\"reject-all\">{refuse}</button></form></aside>",
-                label = words("consent_label"),
-                action = escaped(&self.action),
-                back = escaped(path),
-                allow = words("consent_allow"),
-                refuse = words("consent_refuse"),
-            )
+    /// `html` with the banner after its skip link and, hidden until a
+    /// reader has chosen, the one line that says the choice was saved. The
+    /// choices page asks on its own, so it carries only the line. A theme
+    /// with no skip link gets both before its body ends.
+    fn with_banner(
+        &self,
+        html: String,
+        renderer: &Renderer,
+        locale: &Locale,
+        path: &str,
+    ) -> Result<String, UserMessage> {
+        let home = if locale == &self.default {
+            self.mount.clone()
+        } else {
+            format!("{}{}/", self.mount, locale.as_str().to_ascii_lowercase())
         };
-        format!(
-            "{SITE_BODY_SLOT}\n{ASK_START}{}{ASK_END}\n{CHOSEN_START}{}{CHOSEN_END}",
-            form("consent", &words("consent_note")),
-            form("consent consent-chosen", &words("consent_change")),
-        )
+        let banner = ConsentBanner {
+            action: self.action.clone(),
+            back: path.to_owned(),
+            choices: format!("{home}{CHOICES}"),
+            // The privacy page comes with privacy plan U9; until then
+            // nothing links an address that answers 404.
+            privacy: None,
+        };
+        let part = |part| renderer.consent(locale, &banner, part);
+        let saved = part(ConsentPart::Saved).map_err(|error| build_message::render(&error))?;
+        let ask = if path == banner.choices {
+            String::new()
+        } else {
+            let ask = part(ConsentPart::Ask).map_err(|error| build_message::render(&error))?;
+            format!("{ASK_START}{ask}{ASK_END}\n")
+        };
+        let parts = format!("\n{ask}{CHOSEN_START}{saved}{CHOSEN_END}");
+        let after_skip = html.find(SKIP_LINK).and_then(|at| {
+            let end = html.get(at..)?.find("</a>")?;
+            at.checked_add(end)?.checked_add("</a>".len())
+        });
+        let at = after_skip.or_else(|| html.rfind("</body>"));
+        Ok(match at {
+            Some(at) => {
+                let (before, after) = html.split_at(at);
+                format!("{before}{parts}{after}")
+            }
+            None => html,
+        })
     }
 }
 
@@ -180,10 +220,18 @@ mod tests {
         HeadCode::try_new("<script>post()</script>").unwrap()
     }
 
-    fn ending(code: &PageCode, locale: &str) -> String {
+    /// A page with a skip link, as `base.html` draws one.
+    const SKIPPED: &str = "<html><head></head><body>\n<a class=\"skip-link\" href=\"#main\">Skip</a>\n<header></header><main id=\"main\"><p>Text.</p></main></body></html>";
+
+    fn drawn(code: &PageCode, page: &str, (locale, path): (&str, &str)) -> String {
         let renderer = Renderer::new().unwrap();
         let locale: Locale = locale.parse().unwrap();
-        code.with_body_end(PAGE.to_owned(), (&renderer, &locale), "/blog/a-post/")
+        code.with_body_end(page.to_owned(), (&renderer, &locale), path)
+            .unwrap()
+    }
+
+    fn ending(code: &PageCode, locale: &str) -> String {
+        drawn(code, PAGE, (locale, "/blog/a-post/"))
     }
 
     #[test]
@@ -196,31 +244,57 @@ mod tests {
     }
 
     #[test]
-    fn code_that_waits_is_marked_and_the_banner_ends_the_body() {
+    fn code_that_waits_is_marked_and_the_banner_follows_the_skip_link() {
         let code = PageCode::new(&config(CODE), HeadNonce::PerRequest);
         let post = format!("<script nonce=\"{NONCE_SLOT}\">post()</script>");
         assert_eq!(
             code.head(Some(&post_code())),
             format!("{HELD_START}{post}{HELD_END}\n{SITE_HEAD_SLOT}")
         );
-        let html = ending(&code, "en");
+        let html = drawn(&code, SKIPPED, ("en", "/blog/a-post/"));
         assert!(!html.contains("chat()"), "{html}");
-        let (body, end) = html.split_once(SITE_BODY_SLOT).unwrap();
-        assert!(body.ends_with("<p>Text.</p>"), "{html}");
-        assert!(end.ends_with("</body></html>"), "{html}");
-        let (ask, chosen) = end.split_once(ASK_END).unwrap();
+        let (top, rest) = html.split_once(ASK_START).unwrap();
+        assert!(top.ends_with("Skip</a>\n"), "{html}");
+        let (ask, rest) = rest.split_once(ASK_END).unwrap();
         for part in [
             "<form method=\"post\" action=\"/blog/_consent/\">",
             "name=\"back\" value=\"/blog/a-post/\"",
-            "It runs only if you allow it.",
-            "value=\"accept-all\">Allow</button>",
-            "value=\"reject-all\">Do not allow</button>",
+            "value=\"accept-all\">Accept all</button>",
+            "value=\"reject-all\">Reject all</button>",
+            "href=\"/blog/privacy-choices/\">Choose</a>",
         ] {
             assert!(ask.contains(part), "{part} in {ask}");
         }
+        let (chosen, rest) = rest.split_once(CHOSEN_END).unwrap();
         assert!(chosen.contains(CHOSEN_START), "{chosen}");
-        assert!(chosen.contains("You can change your choice"), "{chosen}");
-        assert!(ending(&code, "de").contains("Erlauben</button>"));
+        assert!(
+            chosen.contains("Your privacy choices are saved."),
+            "{chosen}"
+        );
+        assert!(
+            rest.starts_with("\n<header>"),
+            "the page comes after: {rest}"
+        );
+        assert!(rest.ends_with(&format!("{SITE_BODY_SLOT}\n</body></html>")));
+        let german = drawn(&code, SKIPPED, ("de", "/blog/de/a-post/"));
+        assert!(german.contains("href=\"/blog/de/privacy-choices/\">Auswählen</a>"));
+    }
+
+    #[test]
+    fn the_choices_page_carries_the_saved_line_but_no_question() {
+        let code = PageCode::new(&config(CODE), HeadNonce::PerRequest);
+        let html = drawn(&code, SKIPPED, ("en", "/blog/privacy-choices/"));
+        assert!(!html.contains(ASK_START), "{html}");
+        assert!(html.contains(CHOSEN_START), "{html}");
+    }
+
+    #[test]
+    fn a_theme_without_a_skip_link_gets_the_banner_before_the_body_ends() {
+        let code = PageCode::new(&config(CODE), HeadNonce::PerRequest);
+        let html = ending(&code, "en");
+        let (body, end) = html.split_once(ASK_START).unwrap();
+        assert!(body.ends_with("<p>Text.</p>\n"), "{html}");
+        assert!(end.ends_with(&format!("{SITE_BODY_SLOT}\n</body></html>")));
     }
 
     #[test]

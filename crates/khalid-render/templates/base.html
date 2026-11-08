@@ -79,6 +79,7 @@
 <ul>
 {% for link in site.nav.footer %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>
 {% endfor %}{% set sitemap = site.home ~ "sitemap/" %}<li><a href="{{ sitemap }}"{% if sitemap == meta.path %} aria-current="page"{% endif %}>{{ t.sitemap_title }}</a></li>
+{% set choices = site.home ~ "privacy-choices/" %}<li><a href="{{ choices }}"{% if choices == meta.path %} aria-current="page"{% endif %}>{{ t.privacy_choices_title }}</a></li>
 </ul>
 </nav>
 {% from "slots.html" import preferred_source %}{{ preferred_source(template.options, t, "footer") }}{% if site.main_site %}<p><a href="{{ site.main_site.href }}">{{ site.main_site.label }}</a></p>

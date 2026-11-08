@@ -1,0 +1,2 @@
+Added
+- Every page of every template now links "Your privacy choices" from its footer. The new choices page lists five categories (Necessary, Preferences, Analytics, Marketing, External media) with every optional switch off, and saves with scripts off on a running server. The consent banner now offers Accept all and Reject all with the same weight, plus Choose, and sits right after the skip link so it never covers the page.
