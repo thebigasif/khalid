@@ -29,8 +29,8 @@ use crate::site_page::HeadNonce;
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
     build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_categories,
-    post_files, post_images, post_lock, report, search_page, search_static, share_images,
-    static_mode, trails,
+    post_files, post_images, post_lock, privacy_page, report, search_page, search_static,
+    share_images, static_mode, trails,
 };
 
 /// The output folder inside a site when `--out` is not given.
@@ -50,6 +50,10 @@ struct BuildBody {
     /// The posts the publish gate kept out, each with every finding.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     left_out: Vec<Report>,
+    /// Things worth a look that are not problems, such as a privacy page
+    /// with no contact details.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    warnings: Vec<UserMessage>,
 }
 
 /// What one build wrote: how many pages, and the report of each post the
@@ -167,7 +171,8 @@ fn build(
         archive_pages::add(site, config, (renderer, today), &mut languages)?;
         let sources = (content, categories.as_slice());
         build_lists::add((config, routes), renderer, sources, &mut languages)?;
-        build_pages::discovery_pages((config, routes), renderer, content, &mut languages)?;
+        let found = (renderer, site, today);
+        build_pages::discovery_pages((config, routes), found, content, &mut languages)?;
         build_sitemap::add(config, renderer, &mut languages)?;
         own_descriptions::fill(config, renderer, &mut languages)?;
     }
@@ -349,6 +354,15 @@ fn success(output: Output, out: &Path, built: Built, config: &Config) -> Exit {
             "{said}Search engines read robots.txt only at {host}/robots.txt, outside the blog's folder, so its copy is in {root}. Copy the files in that folder to the root of the main site.\n"
         );
     }
+    let warnings: Vec<UserMessage> = (mode.has_pages())
+        .then(|| privacy_page::missing_contact(config))
+        .flatten()
+        .into_iter()
+        .collect();
+    for warning in &warnings {
+        let (what, why, fix) = (warning.what(), warning.why(), warning.fix());
+        said = format!("{said}Worth a look: {what}\n  {why}\n  {fix}\n");
+    }
     match output {
         Output::Human => report::text(&said, Exit::Success),
         Output::Json => report::json(
@@ -358,6 +372,7 @@ fn success(output: Output, out: &Path, built: Built, config: &Config) -> Exit {
                 root,
                 off,
                 left_out,
+                warnings,
             },
             Exit::Success,
         ),

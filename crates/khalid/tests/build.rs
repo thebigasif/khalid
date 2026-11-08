@@ -407,9 +407,9 @@ fn init_then_new_then_build_writes_the_post_to_public() {
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stdout));
     let json: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(json["out"], path(&public));
-    // The post, home, search, 404, archive, authors, sitemap, AI info and
-    // privacy choices pages.
-    assert_eq!(json["pages"], 9);
+    // The post, home, search, 404, archive, authors, sitemap, privacy, AI
+    // info and privacy choices pages.
+    assert_eq!(json["pages"], 10);
     let post = page(&public, "why-links-matter/index.html");
     assert!(post.contains("Why links matter</h1>"), "{post}");
 }
