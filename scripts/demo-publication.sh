@@ -95,6 +95,18 @@ unchecked() {
   done <<<"$lock"
 }
 
+# A GitHub release file fetched through the API instead of its public
+# address, which GitHub sometimes answers with 504 for every release file.
+# Needs `gh` and a token in GH_TOKEN, as CI has; elsewhere it does nothing.
+from_api() {
+  local out="$1"
+  [[ "$url" =~ ^https://github\.com/([^/]+/[^/]+)/releases/download/([^/]+)/([^/]+)$ ]] || return 1
+  [ -n "${GH_TOKEN:-}" ] && command -v gh >/dev/null || return 1
+  echo "The public address failed; fetching ${BASH_REMATCH[3]} through the GitHub API"
+  gh release download "${BASH_REMATCH[2]}" --repo "${BASH_REMATCH[1]}" \
+    --pattern "${BASH_REMATCH[3]}" --output "$out" --clobber
+}
+
 # Fetches demo-photos.tar.gz and unpacks each publication's folder of it
 # into the cache, in place of the old one.
 fetch() {
@@ -105,6 +117,7 @@ fetch() {
     https://* | http://*)
       echo "Fetching the demo photos from $url"
       curl -fsSL --retry 2 --connect-timeout 20 --max-time 600 --max-filesize 1073741824 -o "$archive" "$url" ||
+        from_api "$archive" ||
         stop "The demo photos could not be fetched from $url, so the $template demo has no photos. Check the address and the connection, or set DEMO_PHOTOS_URL to a copy of demo-photos.tar.gz, then run this again."
       ;;
     *)
