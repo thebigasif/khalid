@@ -1,2 +1,0 @@
-Added
-- A Privacy screen in the admin: how long a reader's consent choice lasts, what a browser's Global Privacy Control signal turns off, whether choices are counted, a certified consent tool used instead of Khalid, a category for each of your own scripts, your own banner words per language, and who runs the site. The settings API, and so the SDK, CLI and MCP tools, read and change the same `[privacy]` table and `[[code]]` list.

@@ -1,2 +1,0 @@
-Added
-- Every site has a privacy page at `privacy/`, written from its settings: who runs it, what it collects and why, its cookies, other companies, how long data is kept, readers' rights, Global Privacy Control and when the page last changed. An owner page with the slug `privacy` replaces it, and `::privacy-facts` places the generated facts inside it. `khalid doctor` and `khalid build` remind the owner when the page has no contact details.

@@ -4,6 +4,28 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.7.0
+
+Built-in privacy and cookie consent: nothing optional loads before a reader agrees, every site gets a privacy page, and the admin keeps proof of what readers chose. What changed, in plain words: `docs/releases/1.7.0.md`.
+
+### Added
+
+- `site.toml` can list the site's own code as `[[code]]` entries, each tagged `preferences`, `analytics`, `marketing` or `no-tracking`, with a vendor name and policy link. Code with no category counts as Marketing. A new `[privacy]` table sets how long a reader's choice lasts, how Global Privacy Control is read, whether choices are counted, an outside consent tool, banner text and the owner's contact details. Old `[code]` tables keep working.
+- Every page of every template now links "Your privacy choices" from its footer. The choices page lists five categories (Necessary, Preferences, Analytics, Marketing, External media) with every optional switch off, and saves with scripts off on a running server. The consent banner offers Accept all and Reject all with the same weight, plus Choose, and sits right after the skip link so it never covers the page. It links the privacy page in the reader's language.
+- A static site can now ask readers for consent. `khalid build` holds the site's own code until a reader agrees, through a script under 2 KB that shows the same banner at the top of the page, honours Global Privacy Control and loads only where a page asks something. With scripts off, nothing optional runs. The build also writes a choices page in each language and `.well-known/gpc.json`. Static sites with code that waits for consent no longer fail to start.
+- Every site has a privacy page at `privacy/`, written from its settings: who runs it, what it collects and why, its cookies, other companies, how long data is kept, readers' rights, Global Privacy Control and when the page last changed. An owner page with the slug `privacy` replaces it, and `::privacy-facts` places the generated facts inside it. `khalid doctor` and `khalid build` remind the owner when the page has no contact details. Its list of sections and its two tables each have their own name for screen readers.
+- A Privacy screen in the admin: how long a reader's consent choice lasts, what a browser's Global Privacy Control signal turns off, whether choices are counted, a certified consent tool used instead of Khalid, a category for each of your own scripts, your own banner words per language, and who runs the site. The settings API, and so the SDK, CLI and MCP tools, read and change the same `[privacy]` table and `[[code]]` list.
+- Proof of consent. The database keeps every version of the banner and its categories that readers were shown, with the days it was in force, and daily counts of what readers chose. It stores no address and nothing that names a reader, and drops counts after 25 months. A Proof tab on the admin's Privacy screen shows the totals a week to a row, every banner version with its dates, and a CSV download. The Admin API serves the same proof at `/api/admin/v1/consent/counts/` and `/api/admin/v1/consent/versions/`.
+- An owner guide to cookie consent, `docs/privacy/consent.md`: what Khalid does with no setup, the five categories, how to tag your own scripts, every privacy setting, proof of consent, static sites and outside consent tools.
+- Every template's demo now shows the consent banner, and the layout check fails when any demo page loads anything from another site before a reader agrees, with scripts on or off. The served demo check does the same.
+
+### Changed
+
+- Consent is now asked per category. A reader can accept all, reject all, or turn Preferences, Analytics, Marketing and External media on one by one, and each piece of the site's code runs only for a reader who allowed its category. A browser that sends Global Privacy Control keeps Marketing off, and the site answers `/.well-known/gpc.json`. A reader asked under the old banner is asked once more, except one who said no, whose no stands.
+- Video and audio embeds from YouTube, Vimeo, Spotify, SoundCloud, CodePen and Loom, and pages framed from a domain allowed under `[media] embed_domains`, such as a map, now show a card that names the provider and loads nothing from it until the reader presses "Load media" or allows external media. Feeds and newsletter emails carry the embed's title and link instead of the player.
+- The admin's editor still turns a typed or pasted address into a link when it starts with `http://`, `https://` or `www.`, or is an email address. A bare domain such as `example.com` now stays text. This keeps the admin inside its size budget.
+- The `khalid` program is about 90 KB smaller. The shared stylesheets, the reader script and the words pages show now sit compressed inside it, beside the default templates, so cookie consent fits within the size limit. Every page, stylesheet and script stays exactly the same.
+
 ## 1.6.2
 
 Lighter pages: each page downloads only the CSS it uses, at most 10 KB, and pictures can come in AVIF in place of WebP. What changed, in plain words: `docs/releases/1.6.2.md`.
