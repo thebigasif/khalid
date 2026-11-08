@@ -1,9 +1,7 @@
 //! Toggle, table of contents and button blocks, and the one-line leaf form
 //! `::name{...}` for blocks with no body (task 1.7, KH-CON-5).
 
-use khalid_content::{
-    BlockKind, CTA_MARK, PRIVACY_FACTS_MARK, parse_blocks, print_blocks, render,
-};
+use khalid_content::{BlockKind, CTA_MARK, PRIVACY_FACTS_MARK, parse_blocks, print_blocks, render};
 use khalid_core::{Locale, SlugMode};
 
 #[cfg(test)]

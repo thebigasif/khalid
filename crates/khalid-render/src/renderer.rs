@@ -12,7 +12,7 @@ use crate::heading_links;
 use crate::pack::{PackContext, RenderPack};
 use crate::strings::Strings;
 use crate::templates::{self, Source};
-use crate::{Brand, PageBody, PageMeta, RenderError, RenderSite};
+use crate::{Brand, PageBody, PageMeta, PrivacyFacts, RenderError, RenderSite};
 use crate::{cta, enlarge, escape, image, share};
 
 /// How many steps one page may take before rendering stops. The default
@@ -213,6 +213,33 @@ impl Renderer {
             lists_posts => body.lists_posts(),
             template => Serde(&self.pack),
             brand => Serde(&self.brand),
+        };
+        template
+            .render(context)
+            .map_err(|error| RenderError::render(name, error))
+    }
+
+    /// The privacy facts as `privacy_facts.html` draws them in `locale`, for
+    /// an owner's own privacy page to show where it writes
+    /// `::privacy-facts`. The owner's words are never read as a template.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`RenderError::Render`] when the template fails.
+    pub fn privacy_facts(
+        &self,
+        locale: &Locale,
+        facts: &PrivacyFacts,
+    ) -> Result<String, RenderError> {
+        let name = "privacy_facts.html";
+        let template = self
+            .env
+            .get_template(name)
+            .map_err(|error| RenderError::render(name, error))?;
+        let context = context! {
+            t => Serde(self.strings.for_locale(locale)),
+            lang => locale.as_str(),
+            facts => Serde(facts),
         };
         template
             .render(context)

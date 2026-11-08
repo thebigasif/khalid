@@ -1,9 +1,8 @@
 //! The `khalid` command.
 //!
-//! This crate owns the edge: it parses the command line, runs a command, and
-//! turns every outcome into an exit code and a message a person or an agent can
-//! read. It must not know business rules. Those live in the library crates,
-//! which this binary calls the same way the API does.
+//! This crate owns the edge: it parses the command line, runs a command, and turns every outcome
+//! into an exit code and a message a person or an agent can read. It must not know business
+//! rules. Those live in the library crates, which this binary calls the same way the API does.
 
 mod account_author;
 mod admin_blog;
@@ -123,6 +122,7 @@ mod post_lock;
 mod post_photos;
 mod post_text;
 mod preview;
+mod privacy_page;
 mod publish;
 mod pull;
 mod pull_message;

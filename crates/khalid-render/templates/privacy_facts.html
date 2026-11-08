@@ -1,0 +1,91 @@
+{#- The privacy facts: what the site collects, why, for how long and who
+    else sees it, from the site's settings. The generated privacy page and an
+    owner's own page with `::privacy-facts` both draw them. -#}
+<div class="privacy-facts">
+<nav class="toc" aria-label="{{ t.privacy_contents }}">
+<ol>
+<li><a href="#privacy-who">{{ t.privacy_who }}</a></li>
+<li><a href="#privacy-collect">{{ t.privacy_collect }}</a></li>
+<li><a href="#privacy-cookies">{{ t.privacy_cookies }}</a></li>
+<li><a href="#privacy-others">{{ t.privacy_others }}</a></li>
+<li><a href="#privacy-keep">{{ t.privacy_keep }}</a></li>
+<li><a href="#privacy-rights">{{ t.privacy_rights }}</a></li>
+<li><a href="#privacy-signals">{{ t.privacy_signals }}</a></li>
+<li><a href="#privacy-complain">{{ t.privacy_complain }}</a></li>
+<li><a href="#privacy-changes">{{ t.privacy_changes }}</a></li>
+</ol>
+</nav>
+<section aria-labelledby="privacy-who">
+<h2 id="privacy-who">{{ t.privacy_who }}</h2>
+<p>{{ t.privacy_who_summary | replace("{site}", facts.site) }}</p>
+{% if facts.contact %}<address>{{ facts.contact.name }}{% if facts.contact.address %}<br>{{ facts.contact.address }}{% endif %}{% if facts.contact.email %}<br><a href="mailto:{{ facts.contact.email }}">{{ facts.contact.email }}</a>{% endif %}</address>
+{% endif %}</section>
+<section aria-labelledby="privacy-collect">
+<h2 id="privacy-collect">{{ t.privacy_collect }}</h2>
+<p>{{ t.privacy_collect_summary }}</p>
+<ul>
+<li>{{ t.privacy_reading }}{% if facts.visitor_log_days %} {{ t.privacy_visitor_log | replace("{days}", facts.visitor_log_days | string) }}{% endif %}</li>
+{% if facts.comments %}<li id="privacy-comments">{{ t.privacy_comments }}</li>
+{% endif %}{% if facts.newsletter %}<li id="privacy-newsletter">{{ t.privacy_newsletter }}</li>
+{% endif %}{% if facts.forms %}<li id="privacy-forms">{{ t.privacy_forms }}</li>
+{% endif %}</ul>
+<p>{{ t.privacy_basis }}</p>
+</section>
+<section aria-labelledby="privacy-cookies">
+<h2 id="privacy-cookies">{{ t.privacy_cookies }}</h2>
+<p>{{ t.privacy_cookies_summary }}</p>
+<div class="table-fold" role="region" aria-labelledby="privacy-cookies" tabindex="0">
+<table>
+<thead><tr><th scope="col">{{ t.privacy_cookie_name }}</th><th scope="col">{{ t.privacy_cookie_why }}</th><th scope="col">{{ t.privacy_cookie_days }}</th></tr></thead>
+<tbody>
+{% for cookie in facts.cookies %}<tr><td><code>{{ cookie.name }}</code></td><td>{% if cookie.purpose == "consent" %}{{ t.privacy_cookie_consent }}{% elif cookie.purpose == "reader" %}{{ t.privacy_cookie_reader }}{% else %}{{ t.privacy_cookie_unlock }}{% endif %}</td><td>{% if cookie.lasts.unit == "months" %}{{ t.privacy_months | replace("{months}", cookie.lasts.count | string) }}{% else %}{{ t.privacy_days | replace("{days}", cookie.lasts.count | string) }}{% endif %}</td></tr>
+{% endfor %}</tbody>
+</table>
+</div>
+<p>{{ t.privacy_consent_months | replace("{months}", facts.consent_months | string) }}</p>
+</section>
+<section aria-labelledby="privacy-others">
+<h2 id="privacy-others">{{ t.privacy_others }}</h2>
+<p>{% if facts.vendors or facts.embeds %}{{ t.privacy_others_summary }}{% else %}{{ t.privacy_others_none }}{% endif %}</p>
+{% if facts.vendors %}<div class="table-fold" role="region" aria-labelledby="privacy-others" tabindex="0">
+<table>
+<thead><tr><th scope="col">{{ t.privacy_vendor_name }}</th><th scope="col">{{ t.privacy_vendor_category }}</th></tr></thead>
+<tbody>
+{% for vendor in facts.vendors %}<tr><td>{% if vendor.policy %}<a href="{{ vendor.policy }}" rel="nofollow">{{ vendor.name or t.privacy_vendor_unnamed }}</a>{% else %}{{ vendor.name or t.privacy_vendor_unnamed }}{% endif %}</td><td>{% if vendor.category == "preferences" %}{{ t.privacy_preferences }}{% elif vendor.category == "analytics" %}{{ t.privacy_analytics }}{% else %}{{ t.privacy_marketing }}{% endif %}</td></tr>
+{% endfor %}</tbody>
+</table>
+</div>
+{% endif %}{% if facts.embeds %}<p>{{ t.privacy_embeds | replace("{players}", facts.embeds | join(", ")) }}</p>
+{% endif %}{% if facts.quiet %}<p>{{ t.privacy_quiet | replace("{scripts}", facts.quiet | join(", ")) }}</p>
+{% endif %}{% if facts.external_tool %}<p>{{ t.privacy_external_tool | replace("{tool}", facts.external_tool) }}</p>
+{% endif %}</section>
+<section aria-labelledby="privacy-keep">
+<h2 id="privacy-keep">{{ t.privacy_keep }}</h2>
+<p>{{ t.privacy_keep_summary }}</p>
+<ul>
+{% if facts.comments %}<li>{{ t.privacy_keep_comments }}</li>
+{% endif %}{% if facts.newsletter %}<li>{{ t.privacy_keep_newsletter }}</li>
+{% endif %}{% if facts.forms %}<li>{{ t.privacy_keep_forms }}</li>
+{% endif %}<li>{{ t.privacy_keep_choice | replace("{months}", facts.consent_months | string) }}</li>
+</ul>
+</section>
+<section aria-labelledby="privacy-rights">
+<h2 id="privacy-rights">{{ t.privacy_rights }}</h2>
+<p>{{ t.privacy_rights_summary }}</p>
+<p>{{ t.privacy_rights_how }}{% if facts.contact and facts.contact.email %} <a href="mailto:{{ facts.contact.email }}">{{ facts.contact.email }}</a>{% endif %}</p>
+<p>{{ t.privacy_withdraw }}</p>
+</section>
+<section aria-labelledby="privacy-signals">
+<h2 id="privacy-signals">{{ t.privacy_signals }}</h2>
+<p>{% if facts.gpc_rejects_all %}{{ t.privacy_gpc_all }}{% else %}{{ t.privacy_gpc_marketing }}{% endif %}</p>
+<p>{{ t.privacy_dnt }}</p>
+</section>
+<section aria-labelledby="privacy-complain">
+<h2 id="privacy-complain">{{ t.privacy_complain }}</h2>
+<p>{{ t.privacy_complain_summary }}</p>
+</section>
+<section aria-labelledby="privacy-changes">
+<h2 id="privacy-changes">{{ t.privacy_changes }}</h2>
+<p>{{ t.privacy_changed }} <time datetime="{{ facts.changed }}">{{ facts.changed | date }}</time></p>
+</section>
+</div>

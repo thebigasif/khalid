@@ -474,8 +474,8 @@ impl SitePages {
             if which == Which::All {
                 let sources = (content, categories.as_slice());
                 build_lists::add((config, routes), &theme.renderer, sources, &mut languages)?;
-                let renderer = &theme.renderer;
-                build_pages::discovery_pages((config, routes), renderer, content, &mut languages)?;
+                let found = (&theme.renderer, folder.as_path(), today);
+                build_pages::discovery_pages((config, routes), found, content, &mut languages)?;
                 build_sitemap::add(config, &theme.renderer, &mut languages)?;
             }
             own_descriptions::fill(config, &theme.renderer, &mut languages)?;

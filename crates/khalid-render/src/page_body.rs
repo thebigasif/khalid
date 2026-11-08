@@ -5,7 +5,7 @@ use minijinja::value::Serde;
 
 use crate::{
     RenderAuthor, RenderAuthors, RenderEntries, RenderEntry, RenderGlossary, RenderHome, RenderHub,
-    RenderListing, RenderPage, RenderPost, RenderSearch, RenderSitemap,
+    RenderListing, RenderPage, RenderPost, RenderPrivacy, RenderSearch, RenderSitemap,
 };
 
 /// The main content of one page. The variant picks the template.
@@ -28,6 +28,8 @@ pub enum PageBody {
     Date(RenderListing),
     /// The HTML sitemap: every listed page of one language.
     Sitemap(RenderSitemap),
+    /// The privacy page, written from the site's settings.
+    Privacy(Box<RenderPrivacy>),
     /// One post.
     Post(Box<RenderPost>),
     /// A page that is not a post, such as About.
@@ -62,6 +64,7 @@ impl PageBody {
             Self::Channel(_) => "channel.html",
             Self::Date(_) => "date.html",
             Self::Sitemap(_) => "sitemap.html",
+            Self::Privacy(_) => "privacy.html",
             Self::Post(_) => "post.html",
             Self::Page(_) => "page.html",
             Self::Author(_) => "author.html",
@@ -122,6 +125,7 @@ impl PageBody {
             | Self::Channel(listing)
             | Self::Date(listing) => Value::from(Serde(listing)),
             Self::Sitemap(sitemap) => Value::from(Serde(sitemap)),
+            Self::Privacy(privacy) => Value::from(Serde(privacy)),
             Self::Post(post) => Value::from(Serde(post)),
             Self::Page(page) => Value::from(Serde(page)),
             Self::Author(author) => Value::from(Serde(author)),
