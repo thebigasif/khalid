@@ -68,9 +68,7 @@ pub use alert_table::AlertTable;
 pub use analytics_table::AnalyticsTable;
 pub use audit_table::AuditTable;
 pub use comment_table::CommentTable;
-pub use consent_proof_table::{
-    ConsentCategory, ConsentChoice, ConsentCounts, ConsentProofTable, ConsentVersion,
-};
+pub use consent_proof_table::{ConsentChoice, ConsentCounts, ConsentProofTable, ConsentVersion};
 pub use content_index::{ContentIndex, IndexedAuthor, IndexedPost, IndexedTerm};
 pub use database::Database;
 pub use db_error::DbError;

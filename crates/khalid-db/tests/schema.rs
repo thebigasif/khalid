@@ -186,7 +186,7 @@ async fn visitor_rows_that_make_no_sense_are_refused() {
          VALUES (1, 'contact', 'not json', 'received', '2026-10-26T09:00:00Z')",
         // A consent version that ended before it began.
         "INSERT INTO consent_versions (site_id, version, shown, first_day, last_day) \
-         VALUES (1, 'a1b2c3', '{}', '2026-10-27', '2026-10-26')",
+         VALUES (1, '00a1b2c3d4e5f607', '{}', '2026-10-27', '2026-10-26')",
     ];
     for sql in refused {
         let result = sqlx::query(sql).execute(&mut connection).await;

@@ -5,8 +5,25 @@
 use std::path::{Path, PathBuf};
 
 use chrono::NaiveDate;
-use khalid_core::Slug;
-use khalid_db::{ConsentCategory, ConsentChoice, ConsentProofTable, Database};
+use khalid_core::{ConsentCategory, PrivacySettings, SettingsVersion, SiteCode, Slug};
+use khalid_db::{ConsentChoice, ConsentProofTable, Database};
+
+/// The version of the default settings with `built_in` as the release's
+/// own banner words.
+#[cfg(test)]
+fn version(built_in: &str) -> SettingsVersion {
+    PrivacySettings::default().version(&SiteCode::default(), &["youtube"], built_in)
+}
+
+#[cfg(test)]
+fn first() -> SettingsVersion {
+    version("We ask before anything tracks you.")
+}
+
+#[cfg(test)]
+fn reworded() -> SettingsVersion {
+    version("Nothing tracks you until you agree.")
+}
 
 #[cfg(test)]
 fn day(month: u32, date: u32) -> NaiveDate {
@@ -40,15 +57,15 @@ async fn a_choice_adds_one_to_the_right_counters_for_its_version() {
     let analytics = ConsentChoice::allowing([ConsentCategory::Analytics]);
     let everything = ConsentChoice::allowing(ConsentCategory::ALL);
     proof
-        .record("a1b2c3", SHOWN, day(11, 8), analytics)
+        .record(first(), SHOWN, day(11, 8), analytics)
         .await
         .unwrap();
     proof
-        .record("a1b2c3", SHOWN, day(11, 8), everything)
+        .record(first(), SHOWN, day(11, 8), everything)
         .await
         .unwrap();
     proof
-        .record("a1b2c3", SHOWN, day(11, 8), ConsentChoice::NONE)
+        .record(first(), SHOWN, day(11, 8), ConsentChoice::NONE)
         .await
         .unwrap();
     db.close().await;
@@ -57,8 +74,12 @@ async fn a_choice_adds_one_to_the_right_counters_for_its_version() {
     let counts = proof.counts(day(11, 1), day(11, 30)).await.unwrap();
     assert_eq!(counts.len(), 1);
     let count = &counts[0];
-    assert_eq!((count.day, count.version.as_str()), (day(11, 8), "a1b2c3"));
+    assert_eq!(
+        (count.day, &count.version),
+        (day(11, 8), &first().to_string())
+    );
     assert_eq!(count.choices, 3);
+    assert_eq!(count.allowed(ConsentCategory::Necessary), 3);
     assert_eq!(count.allowed(ConsentCategory::Preferences), 1);
     assert_eq!(count.allowed(ConsentCategory::Analytics), 2);
     assert_eq!(count.allowed(ConsentCategory::Marketing), 1);
@@ -71,28 +92,28 @@ async fn each_day_and_each_version_count_apart() {
     let (_db, proof) = table(&file(&dir), "main").await;
     let media = ConsentChoice::allowing([ConsentCategory::ExternalMedia]);
     proof
-        .record("a1b2c3", SHOWN, day(11, 8), media)
+        .record(first(), SHOWN, day(11, 8), media)
         .await
         .unwrap();
     proof
-        .record("a1b2c3", SHOWN, day(11, 9), media)
+        .record(first(), SHOWN, day(11, 9), media)
         .await
         .unwrap();
     proof
-        .record("d4e5f6", REWORDED, day(11, 9), media)
+        .record(reworded(), REWORDED, day(11, 9), media)
         .await
         .unwrap();
     let counts = proof.counts(day(11, 1), day(11, 30)).await.unwrap();
-    let seen: Vec<(NaiveDate, &str, u64)> = counts
+    let seen: Vec<(NaiveDate, String, u64)> = counts
         .iter()
-        .map(|count| (count.day, count.version.as_str(), count.choices))
+        .map(|count| (count.day, count.version.clone(), count.choices))
         .collect();
     assert_eq!(
         seen,
         [
-            (day(11, 8), "a1b2c3", 1),
-            (day(11, 9), "a1b2c3", 1),
-            (day(11, 9), "d4e5f6", 1),
+            (day(11, 8), first().to_string(), 1),
+            (day(11, 9), first().to_string(), 1),
+            (day(11, 9), reworded().to_string(), 1),
         ]
     );
     let only_ninth = proof.counts(day(11, 9), day(11, 9)).await.unwrap();
@@ -103,22 +124,25 @@ async fn each_day_and_each_version_count_apart() {
 async fn the_same_settings_keep_one_version_and_a_wording_change_adds_one() {
     let dir = tempfile::tempdir().unwrap();
     let (_db, proof) = table(&file(&dir), "main").await;
-    proof.shown("a1b2c3", SHOWN, day(11, 8)).await.unwrap();
+    proof.shown(first(), SHOWN, day(11, 8)).await.unwrap();
     proof
-        .record("a1b2c3", SHOWN, day(11, 10), ConsentChoice::NONE)
+        .record(first(), SHOWN, day(11, 10), ConsentChoice::NONE)
         .await
         .unwrap();
-    proof.shown("a1b2c3", SHOWN, day(11, 12)).await.unwrap();
+    proof.shown(first(), SHOWN, day(11, 12)).await.unwrap();
     // A late write for an earlier day does not move the days back.
-    proof.shown("a1b2c3", SHOWN, day(11, 9)).await.unwrap();
-    proof.shown("d4e5f6", REWORDED, day(11, 13)).await.unwrap();
+    proof.shown(first(), SHOWN, day(11, 9)).await.unwrap();
+    proof
+        .shown(reworded(), REWORDED, day(11, 13))
+        .await
+        .unwrap();
 
     let versions = proof.versions().await.unwrap();
-    let seen: Vec<(&str, &str, NaiveDate, NaiveDate)> = versions
+    let seen: Vec<(String, &str, NaiveDate, NaiveDate)> = versions
         .iter()
         .map(|kept| {
             (
-                kept.version.as_str(),
+                kept.version.clone(),
                 kept.shown.as_str(),
                 kept.first_day,
                 kept.last_day,
@@ -128,8 +152,8 @@ async fn the_same_settings_keep_one_version_and_a_wording_change_adds_one() {
     assert_eq!(
         seen,
         [
-            ("a1b2c3", SHOWN, day(11, 8), day(11, 12)),
-            ("d4e5f6", REWORDED, day(11, 13), day(11, 13)),
+            (first().to_string(), SHOWN, day(11, 8), day(11, 12)),
+            (reworded().to_string(), REWORDED, day(11, 13), day(11, 13)),
         ]
     );
 }
@@ -142,12 +166,12 @@ async fn counts_older_than_25_months_are_pruned() {
     let kept = NaiveDate::from_ymd_opt(2024, 10, 8).unwrap();
     for at in [old, kept] {
         proof
-            .record("a1b2c3", SHOWN, at, ConsentChoice::NONE)
+            .record(first(), SHOWN, at, ConsentChoice::NONE)
             .await
             .unwrap();
     }
     proof
-        .record("a1b2c3", SHOWN, day(11, 8), ConsentChoice::NONE)
+        .record(first(), SHOWN, day(11, 8), ConsentChoice::NONE)
         .await
         .unwrap();
 
@@ -165,14 +189,14 @@ async fn each_site_sees_only_its_own_proof() {
     let dir = tempfile::tempdir().unwrap();
     let (_db, main) = table(&file(&dir), "main").await;
     let (_db, other) = table(&file(&dir), "other").await;
-    main.record("a1b2c3", SHOWN, day(11, 8), ConsentChoice::NONE)
+    main.record(first(), SHOWN, day(11, 8), ConsentChoice::NONE)
         .await
         .unwrap();
     assert_eq!(other.versions().await.unwrap().len(), 0);
     let none = other.counts(day(11, 1), day(11, 30)).await.unwrap();
     assert_eq!(none.len(), 0);
     other
-        .record("a1b2c3", SHOWN, day(11, 8), ConsentChoice::NONE)
+        .record(first(), SHOWN, day(11, 8), ConsentChoice::NONE)
         .await
         .unwrap();
     let counts = main.counts(day(11, 1), day(11, 30)).await.unwrap();
@@ -183,7 +207,7 @@ async fn each_site_sees_only_its_own_proof() {
 async fn settings_that_are_not_json_are_refused() {
     let dir = tempfile::tempdir().unwrap();
     let (_db, proof) = table(&file(&dir), "main").await;
-    let refused = proof.shown("a1b2c3", "not json", day(11, 8)).await;
+    let refused = proof.shown(first(), "not json", day(11, 8)).await;
     assert!(refused.is_err());
     assert_eq!(proof.versions().await.unwrap().len(), 0);
 }

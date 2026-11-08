@@ -124,7 +124,7 @@ INSERT INTO serpdad_links (site_id, key_id, connected_at) VALUES
 INSERT INTO serpdad_drafts (site_id, post_id, title, blocks, warnings, received_at) VALUES
     (1, 'en.old-post', 'Old post', 0, 2, '2026-10-26T09:00:00Z'), (2, 'en.old-post', 'Old post', NULL, NULL, '2026-10-26T09:00:00Z');
 INSERT INTO consent_versions (id, site_id, version, shown, first_day, last_day) VALUES
-    (1, 1, 'a1b2c3', '{"lifetime_months":6}', '2026-10-26', '2026-10-27'),
-    (2, 2, 'a1b2c3', '{"lifetime_months":6}', '2026-10-26', '2026-10-26');
+    (1, 1, '00a1b2c3d4e5f607', '{"lifetime_months":6}', '2026-10-26', '2026-10-27'),
+    (2, 2, '00a1b2c3d4e5f607', '{"lifetime_months":6}', '2026-10-26', '2026-10-26');
 INSERT INTO consent_counts (site_id, day, version_id, choices, preferences, analytics, marketing, external_media) VALUES
     (1, '2026-10-26', 1, 3, 1, 2, 0, 1), (2, '2026-10-26', 2, 1, 0, 0, 0, 0);

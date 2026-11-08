@@ -8,7 +8,7 @@
 CREATE TABLE consent_versions (
     id INTEGER PRIMARY KEY,
     site_id INTEGER NOT NULL REFERENCES sites (id) ON DELETE CASCADE,
-    version TEXT NOT NULL CHECK (length(version) BETWEEN 1 AND 64),
+    version TEXT NOT NULL CHECK (length(version) = 16),
     shown TEXT NOT NULL CHECK (json_valid(shown)),
     first_day TEXT NOT NULL CHECK (date(first_day) = first_day),
     last_day TEXT NOT NULL CHECK (date(last_day) = last_day AND last_day >= first_day),

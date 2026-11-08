@@ -3,6 +3,7 @@
 //! `consent_counts`. No address or reader identifier is stored.
 
 use chrono::{Months, NaiveDate};
+use khalid_core::{ConsentCategory, SettingsVersion};
 use sqlx::sqlite::SqliteRow;
 use sqlx::{Row, Sqlite, Transaction};
 
@@ -21,41 +22,26 @@ const LAST_DAY: NaiveDate = match NaiveDate::from_ymd_opt(9999, 12, 31) {
     None => NaiveDate::MAX,
 };
 
-/// An optional consent category, one counter each. Necessary is always on,
-/// so it has no counter.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[non_exhaustive]
-pub enum ConsentCategory {
-    /// Remembers the reader's settings, such as a language.
-    Preferences,
-    /// Measures how the site is used.
-    Analytics,
-    /// Ads and tracking across sites.
-    Marketing,
-    /// Players and other content loaded from another site.
-    ExternalMedia,
+/// The categories with a counter, in the order of their columns. Necessary
+/// is always on, so it has none.
+const COUNTED: [ConsentCategory; 4] = [
+    ConsentCategory::Preferences,
+    ConsentCategory::Analytics,
+    ConsentCategory::Marketing,
+    ConsentCategory::ExternalMedia,
+];
+
+/// The place of `category`'s counter in [`COUNTED`], if it has one.
+fn slot(category: ConsentCategory) -> Option<usize> {
+    COUNTED.iter().position(|counted| *counted == category)
 }
 
-impl ConsentCategory {
-    /// Every optional category, in the order the banner lists them.
-    pub const ALL: [Self; 4] = [
-        Self::Preferences,
-        Self::Analytics,
-        Self::Marketing,
-        Self::ExternalMedia,
-    ];
-
-    fn bit(self) -> u8 {
-        match self {
-            Self::Preferences => 1,
-            Self::Analytics => 2,
-            Self::Marketing => 4,
-            Self::ExternalMedia => 8,
-        }
-    }
+/// The bit of `category` in a [`ConsentChoice`]; 0 for Necessary.
+fn bit(category: ConsentCategory) -> u8 {
+    slot(category).map_or(0, |slot| 1 << slot)
 }
 
-/// The categories one reader allowed in one answer.
+/// The optional categories one reader allowed in one answer.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct ConsentChoice {
     bits: u8,
@@ -65,17 +51,18 @@ impl ConsentChoice {
     /// An answer that allowed nothing, such as Reject all.
     pub const NONE: Self = Self { bits: 0 };
 
-    /// An answer that allowed `categories` and nothing else.
+    /// An answer that allowed `categories` and nothing else. Necessary is
+    /// always on, so naming it changes nothing.
     pub fn allowing(categories: impl IntoIterator<Item = ConsentCategory>) -> Self {
         let bits = categories
             .into_iter()
-            .fold(0, |bits, category| bits | category.bit());
+            .fold(0, |bits, category| bits | bit(category));
         Self { bits }
     }
 
-    /// Whether this answer allowed `category`.
+    /// Whether this answer allowed the optional `category`.
     pub fn allows(self, category: ConsentCategory) -> bool {
-        self.bits & category.bit() != 0
+        self.bits & bit(category) != 0
     }
 
     /// 1 when this answer allowed `category`, else 0: what it adds to the
@@ -89,7 +76,7 @@ impl ConsentChoice {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct ConsentVersion {
-    /// The hash of everything shown that names this version.
+    /// The [`SettingsVersion`] that names it, as sixteen hex digits.
     pub version: String,
     /// The shown text and settings, as JSON.
     pub shown: String,
@@ -114,12 +101,11 @@ pub struct ConsentCounts {
 
 impl ConsentCounts {
     /// How many of the answers allowed `category`; the rest refused it.
+    /// Necessary is always on, so for it this is every answer.
     pub fn allowed(&self, category: ConsentCategory) -> u64 {
-        ConsentCategory::ALL
-            .iter()
-            .zip(self.allowed)
-            .find_map(|(each, count)| (*each == category).then_some(count))
-            .unwrap_or(0)
+        slot(category)
+            .and_then(|slot| self.allowed.get(slot).copied())
+            .unwrap_or(self.choices)
     }
 }
 
@@ -143,7 +129,12 @@ impl ConsentProofTable {
     /// # Errors
     ///
     /// [`DbError::Query`] when the write fails or `shown` is not JSON.
-    pub async fn shown(&self, version: &str, shown: &str, day: NaiveDate) -> Result<(), DbError> {
+    pub async fn shown(
+        &self,
+        version: SettingsVersion,
+        shown: &str,
+        day: NaiveDate,
+    ) -> Result<(), DbError> {
         let mut tx = self.db.writer.begin().await?;
         self.keep_version(&mut tx, version, shown, day).await?;
         tx.commit().await?;
@@ -160,7 +151,7 @@ impl ConsentProofTable {
     /// [`DbError::Query`] when the write fails or `shown` is not JSON.
     pub async fn record(
         &self,
-        version: &str,
+        version: SettingsVersion,
         shown: &str,
         day: NaiveDate,
         choice: ConsentChoice,
@@ -246,7 +237,7 @@ impl ConsentProofTable {
     async fn keep_version(
         &self,
         tx: &mut Transaction<'_, Sqlite>,
-        version: &str,
+        version: SettingsVersion,
         shown: &str,
         day: NaiveDate,
     ) -> Result<i64, DbError> {
@@ -259,7 +250,7 @@ impl ConsentProofTable {
              RETURNING id",
         )
         .bind(self.site.as_row())
-        .bind(version)
+        .bind(version.to_string())
         .bind(shown)
         .bind(day_text(day))
         .fetch_one(&mut **tx)
