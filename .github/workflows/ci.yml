@@ -32,6 +32,9 @@ env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -D warnings
   RUSTDOCFLAGS: -D warnings
+  # Read-only token: lets scripts/demo-publication.sh fetch release files
+  # through the API when their public address answers 504.
+  GH_TOKEN: ${{ github.token }}
 
 jobs:
   # Every job runs on GitHub's runners. The maintainer's runners shared one
