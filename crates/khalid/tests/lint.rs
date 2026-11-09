@@ -9,6 +9,8 @@ use serde_json::Value;
 
 #[path = "lint/fix.rs"]
 mod fix;
+#[path = "lint/translation.rs"]
+mod translation;
 
 /// A post that passes every block: title, date, author and an internal link.
 const GOOD: &str = "---
@@ -375,76 +377,6 @@ fn lint_toml_turns_a_block_into_a_warning() {
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stdout));
 }
 
-/// A post with no `slug:`, so its address comes from a title full of
-/// filler words and a year.
-const WORDY: &str = "---
-title: Start a blog in 2026
-date: 2026-09-14
-author: asif
----
-
-Read [why links matter](/blog/why-internal-links-matter/) first.
-";
-
-#[test]
-fn lint_fix_cleans_the_address_and_keeps_the_old_one_working() {
-    let site = site(&[("start-a-blog-in-2026.md", WORDY)]);
-    let output = khalid(site.path(), &["lint", "--fix", "--json"]);
-    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stdout));
-    let file = within(site.path(), "content/en/posts/start-a-blog-in-2026.md");
-    let cleaned = WORDY.replace(
-        "author: asif\n",
-        "author: asif\nslug: start-blog\naliases:\n  - /blog/start-a-blog-in-2026/\n",
-    );
-    assert_eq!(fs::read_to_string(file).unwrap(), cleaned);
-    let json: Value = serde_json::from_str(&text(&output.stdout)).unwrap();
-    let rules: Vec<&Value> = json["fixed"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .map(|f| &f["rule"])
-        .collect();
-    assert_eq!(rules, ["slug-stopwords", "slug-date"], "{json}");
-    let findings = json["findings"].as_array().unwrap();
-    assert!(findings.iter().all(|f| f["slug"] == "start-blog"), "{json}");
-}
-
-#[test]
-fn lint_fix_adds_to_aliases_and_replaces_the_slug_as_written() {
-    let post = WORDY.replace(
-        "author: asif\n",
-        "author: asif\nslug: the-guide-2026\naliases:\n- /blog/old-guide/\n",
-    );
-    let site = site(&[("guide.md", &post)]);
-    let output = khalid(site.path(), &["lint", "--fix"]);
-    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
-    let file = within(site.path(), "content/en/posts/guide.md");
-    let cleaned = WORDY.replace(
-        "author: asif\n",
-        "author: asif\nslug: guide\naliases:\n- /blog/the-guide-2026/\n- /blog/old-guide/\n",
-    );
-    assert_eq!(fs::read_to_string(file).unwrap(), cleaned);
-    let said = text(&output.stdout);
-    assert!(
-        said.contains("/blog/the-guide-2026/ now redirects"),
-        "{said}"
-    );
-}
-
-#[test]
-fn lint_fix_leaves_an_address_another_post_already_has() {
-    let taken = WORDY.replace("Start a blog in 2026", "Start blog");
-    let site = site(&[
-        ("start-a-blog-in-2026.md", WORDY),
-        ("start-blog.md", &taken),
-    ]);
-    let output = khalid(site.path(), &["lint", "--fix", "--json"]);
-    let json: Value = serde_json::from_str(&text(&output.stdout)).unwrap();
-    assert_eq!(json["fixed"], Value::Array(Vec::new()), "{json}");
-    let file = within(site.path(), "content/en/posts/start-a-blog-in-2026.md");
-    assert_eq!(fs::read_to_string(file).unwrap(), WORDY);
-}
-
 #[test]
 fn lint_needs_a_site_folder() {
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
@@ -453,73 +385,4 @@ fn lint_needs_a_site_folder() {
         .unwrap();
     assert_eq!(output.status.code(), Some(2));
     assert!(text(&output.stderr).contains("needs a site folder"));
-}
-
-/// The demo site declares English and German. This English post names its
-/// translation key and has no German version yet.
-const TRANSLATED: &str = "---
-title: Why internal links matter
-date: 2026-09-14
-author: asif
-description: Internal links help readers and search engines find the rest of your site.
-translation: internal-links
----
-
-An internal link points to [how to pick link text](/blog/choosing-link-text/).
-";
-
-#[test]
-fn lint_warns_about_a_post_with_no_version_in_a_language_the_site_has() {
-    let site = site(&[("2026-09-14-why-internal-links-matter.md", TRANSLATED)]);
-    let output = khalid(site.path(), &["lint", "--json"]);
-    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
-    let json: Value = serde_json::from_str(&text(&output.stdout)).unwrap();
-    let findings = json["findings"].as_array().unwrap();
-    let missing: Vec<&Value> = findings
-        .iter()
-        .filter(|f| f["rule"] == "missing-translation")
-        .collect();
-    assert_eq!(missing.len(), 1, "{json:#}");
-    assert_eq!(missing[0]["severity"], "warn");
-    assert_eq!(missing[0]["slug"], "why-internal-links-matter");
-    assert_eq!(missing[0]["subject"], "de");
-    let said = text(&khalid(site.path(), &["lint"]).stdout);
-    assert!(
-        said.contains("This post has no version in one of your site's languages."),
-        "{said}"
-    );
-    assert!(said.contains("  About: de\n"), "{said}");
-}
-
-/// The German version of [`TRANSLATED`], sharing its translation key.
-const TRANSLATED_DE: &str = "---
-title: Interne Links
-slug: interne-links
-date: 2026-09-14
-author: asif
-description: Internal links help readers and search engines find the rest of your site.
-translation: internal-links
----
-
-An internal link points to [the English version](/blog/why-internal-links-matter/).
-";
-
-#[test]
-fn lint_is_quiet_about_translation_once_each_language_has_a_version() {
-    let site = site(&[("2026-09-14-why-internal-links-matter.md", TRANSLATED)]);
-    let german = within(site.path(), "content/de/posts");
-    fs::create_dir_all(&german).unwrap();
-    fs::write(
-        within(&german, "2026-09-14-interne-links.md"),
-        TRANSLATED_DE,
-    )
-    .unwrap();
-    let output = khalid(site.path(), &["lint", "--json"]);
-    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
-    let json: Value = serde_json::from_str(&text(&output.stdout)).unwrap();
-    let findings = json["findings"].as_array().unwrap();
-    assert!(
-        findings.iter().all(|f| f["rule"] != "missing-translation"),
-        "{json:#}"
-    );
 }
