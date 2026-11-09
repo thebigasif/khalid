@@ -195,16 +195,34 @@ impl ReaderSwitch {
     }
 }
 
-/// One section of the home page: the newest posts of a category, a
-/// collection or a channel, with a "View all" link to its own page.
+/// One section of the home page: the newest posts, the featured posts, the
+/// newsletter sign-up, or the posts of a category, a collection, a channel
+/// or a series with a "View all" link to its own page. A list in
+/// `site.toml` writes a section with no name as a word and the others as a
+/// table, in the order the home page shows them:
+///
+/// ```toml
+/// [reader]
+/// home_sections = ["featured", { category = "technical-seo" }, "newsletter", "latest"]
+/// ```
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "lowercase")]
 #[non_exhaustive]
 pub enum HomeSection {
+    /// The newest posts, linked to the archive.
+    Latest,
+    /// The posts marked `featured`, newest first.
+    Featured,
+    /// The newsletter sign-up form, in place of where the template puts it
+    /// on the home page.
+    Newsletter,
     /// A category from `categories.toml`, by slug.
     Category(Slug),
     /// A collection from `routes.toml`, such as `guides`.
     Collection(Slug),
     /// A channel from `routes.toml`, such as `featured`.
     Channel(Slug),
+    /// A series, by the slug its page has, such as `link-building-101` for
+    /// `/series/link-building-101/`. Its parts show in reading order.
+    Series(Slug),
 }
