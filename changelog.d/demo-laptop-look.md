@@ -1,0 +1,2 @@
+Fixed
+- The classic template reads better on laptop screens. Post titles are a size smaller and a step lighter, with more room between letters, so they no longer crowd on a Mac. From 1024 px wide, a post with its contents beside it lines up with the site header: the words start under the site's name and the contents end at the header's right edge. Gaps between menu links are even. The announcement above the header is a light tint with dark words in the classic, Atlas, Encore, Frequency, Gallery, Brief and Respawn templates, so no template shows a dark band.

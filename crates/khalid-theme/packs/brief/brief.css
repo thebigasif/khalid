@@ -43,8 +43,8 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 .site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
 .site-header nav a[aria-current] { box-shadow: inset 0 -3px var(--color-accent); }
 .site-header nav li:last-child a { justify-content: flex-end; }
-.announcement { margin: 0; padding-block: 0.5rem; background: var(--br-ink); border: 0; box-shadow: 0 0 0 100vmax var(--br-ink); clip-path: inset(0 -100vmax); color: var(--br-paper); font-family: var(--font-heading); font-size: var(--text-small); }
-.announcement a { color: var(--br-paper); }
+.announcement { --br-band: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); margin: 0; padding-block: 0.5rem; background: var(--br-band); border: 0; box-shadow: 0 0 0 100vmax var(--br-band); clip-path: inset(0 -100vmax); color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-small); }
+.announcement a { color: var(--color-text); }
 
 /* Buttons: square and inked; the accent on hover. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--br-paper); background: var(--br-ink); border: 0; border-radius: var(--radius); font: 600 0.9375rem/1.2 var(--font-heading); text-align: center; text-decoration: none; cursor: pointer; }

@@ -33,7 +33,7 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
 .search-link { color: var(--color-text); text-decoration: none; }
 .search-link:hover { color: var(--color-link); text-decoration: underline; }
 main > :first-child { margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
-.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-text); border: 0; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); color: var(--color-background); }
+.announcement { --fq-band: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); margin: 0; padding-block: 0.5rem; background: var(--fq-band); border: 0; box-shadow: 0 0 0 100vmax var(--fq-band); clip-path: inset(0 -100vmax); color: var(--color-text); }
 .announcement p { max-inline-size: var(--fq-frame); }
 .announcement a { color: inherit; }
 
