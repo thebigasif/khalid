@@ -27,6 +27,11 @@
 #                          scripts/demos-bundle.sh packs for serpdad.com
 set -euo pipefail
 
+# The value of a top-level key of a site.toml, before its first [table].
+top_level_key() {
+  awk -v key="$1" '/^\[/ { exit } $0 ~ "^" key " = \"" { sub("^" key " = \"", ""); sub("\"[[:space:]]*$", ""); print; exit }' "$2"
+}
+
 canonical=""
 demos_only=""
 while [ $# -gt 0 ]; do
@@ -120,13 +125,22 @@ build() {
   fi
   # Pages serves files only, so every copy is a static site: forms show a
   # note and the build lists the features that need a server.
-  sed -i "s#^address = .*#address = \"$address\"#; s#^mount = .*#mount = \"$at\"#; s#^mode = .*#mode = \"static\"#" "$site/site.toml"
+  # Only the top-level keys, before the first [table]: a [privacy] or
+  # [[locations]] table can hold its own postal "address".
+  awk -v address="$address" -v at="$at" '
+    /^\[/ { top = 0 }
+    NR == 1 { top = 1 }
+    top && /^address = / { print "address = \"" address "\""; next }
+    top && /^mount = / { print "mount = \"" at "\""; next }
+    top && /^mode = / { print "mode = \"static\""; next }
+    { print }
+  ' "$site/site.toml" > "$site/site.toml.new" && mv "$site/site.toml.new" "$site/site.toml"
   # Menus and posts link to the site's own pages by path, such as
   # "/blog/about/", so each path follows the site to its new mount. A path
   # inside a full address, such as https://example.com/blog/, stays.
   local was origin
-  was="$(sed -n 's#^mount = "\(.*\)"#\1#p' "$from/site.toml")"
-  origin="$(sed -n 's#^address = "\(.*\)"#\1#p' "$from/site.toml")"
+  was="$(top_level_key mount "$from/site.toml")"
+  origin="$(top_level_key address "$from/site.toml")"
   origin="${origin%/}"
   if [ -n "$was" ] && [ "$was" != "$at" ]; then
     find "$site" -type f \( -name '*.md' -o -name '*.toml' \) -exec \
