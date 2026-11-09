@@ -12344,6 +12344,7 @@
           "seo",
           "privacy",
           "code",
+          "home_sections",
           "updated_at",
           "restart_needed"
         ],
@@ -12362,6 +12363,13 @@
           "default_language": {
             "type": "string",
             "description": "The language a reader gets first, such as `en`."
+          },
+          "home_sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HomeSectionSetting"
+            },
+            "description": "The home page's sections from `[reader] home_sections`, top first.\nEmpty means one list of the newest posts."
           },
           "languages": {
             "type": "array",
@@ -14058,6 +14066,136 @@
             "description": "The title, meta and link tags, in order."
           }
         }
+      },
+      "HomeSectionSetting": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "The newest posts.",
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "latest"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "The posts marked `featured`.",
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "featured"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "The newsletter sign-up form.",
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "newsletter"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "A category from `categories.toml`.",
+            "required": [
+              "slug",
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "category"
+                ]
+              },
+              "slug": {
+                "type": "string",
+                "description": "Its slug, such as `technical-seo`."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "A collection, such as `guides`.",
+            "required": [
+              "slug",
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "collection"
+                ]
+              },
+              "slug": {
+                "type": "string",
+                "description": "Its name, such as `guides`."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "A channel from `routes.toml`.",
+            "required": [
+              "slug",
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "channel"
+                ]
+              },
+              "slug": {
+                "type": "string",
+                "description": "Its name, such as `featured`."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "A series, in reading order.",
+            "required": [
+              "slug",
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "series"
+                ]
+              },
+              "slug": {
+                "type": "string",
+                "description": "The slug of its page, such as `link-building-101`."
+              }
+            }
+          }
+        ],
+        "description": "One section of the home page: `{\"kind\": \"latest\"}`, or a list named\nby its slug, such as `{\"kind\": \"category\", \"slug\": \"technical-seo\"}`."
       },
       "IndexStatus": {
         "type": "string",
@@ -16660,6 +16798,16 @@
               "null"
             ],
             "description": "A new default language, which `languages` must include."
+          },
+          "home_sections": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/HomeSectionSetting"
+            },
+            "description": "Every home section, top first, in place of the old ones. An empty\nlist goes back to one list of the newest posts."
           },
           "languages": {
             "type": [

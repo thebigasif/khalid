@@ -30,6 +30,7 @@ fn demo() -> MemorySettings {
         seo: serde_json::Map::new(),
         privacy: serde_json::Map::new(),
         code: Vec::new(),
+        home_sections: Vec::new(),
         updated_at: at(20),
         restart_needed: false,
     };

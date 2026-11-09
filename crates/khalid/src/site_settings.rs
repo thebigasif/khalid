@@ -22,6 +22,7 @@ use toml_edit::{Array, DocumentMut, Item, Table, Value};
 use crate::atomic;
 use crate::site_config;
 
+mod home;
 mod parts;
 mod privacy;
 
@@ -129,6 +130,7 @@ impl SiteSettings {
             seo: parts::table(text, "seo")?,
             privacy: privacy::privacy_table(text)?,
             code: privacy::code_entries(text)?,
+            home_sections: home::sections(&config),
             updated_at: changed,
             restart_needed,
         })
@@ -186,6 +188,9 @@ impl SiteSettings {
         }
         if let Some(parts) = change.privacy {
             privacy::set_privacy(&mut document, parts)?;
+        }
+        if let Some(sections) = change.home_sections {
+            home::set_sections(&mut document, sections);
         }
         if let Some(entries) = change.code {
             privacy::set_code(&mut document, entries)?;

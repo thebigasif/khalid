@@ -54,6 +54,7 @@ fn demo() -> Router {
         seo: serde_json::Map::new(),
         privacy: serde_json::Map::new(),
         code: vec![serde_json::from_value(script).unwrap()],
+        home_sections: Vec::new(),
         updated_at: Utc.with_ymd_and_hms(2026, 11, 2, 9, 0, 0).unwrap(),
         restart_needed: false,
     };

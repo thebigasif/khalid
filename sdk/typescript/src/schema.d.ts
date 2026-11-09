@@ -423,6 +423,8 @@ export type AdminSettings = {
   code: (Record<string, unknown>)[];
   /** The language a reader gets first, such as `en`. */
   default_language: string;
+  /** The home page's sections from `[reader] home_sections`, top first. Empty means one list of the newest posts. */
+  home_sections: HomeSectionSetting[];
   /** Every language the site is written in. */
   languages: string[];
   /** How the site reaches readers: `server`, `static` or `headless`. It is read here and changed only in `site.toml`. */
@@ -989,6 +991,31 @@ export type HeadParts = {
   json_ld: string;
   /** The title, meta and link tags, in order. */
   tags: HeadElement[];
+};
+
+/** One section of the home page: `{"kind": "latest"}`, or a list named by its slug, such as `{"kind": "category", "slug": "technical-seo"}`. */
+export type HomeSectionSetting = {
+  kind: "latest";
+} | {
+  kind: "featured";
+} | {
+  kind: "newsletter";
+} | {
+  kind: "category";
+  /** Its slug, such as `technical-seo`. */
+  slug: string;
+} | {
+  kind: "collection";
+  /** Its name, such as `guides`. */
+  slug: string;
+} | {
+  kind: "channel";
+  /** Its name, such as `featured`. */
+  slug: string;
+} | {
+  kind: "series";
+  /** The slug of its page, such as `link-building-101`. */
+  slug: string;
 };
 
 /** Whether search engines may list a post, as far as the site itself says. Google's own answer comes with the Search Console connection (plan section 5.11). */
@@ -1831,6 +1858,8 @@ export type SettingsChange = {
   code?: (Record<string, unknown>)[] | null;
   /** A new default language, which `languages` must include. */
   default_language?: string | null;
+  /** Every home section, top first, in place of the old ones. An empty list goes back to one list of the newest posts. */
+  home_sections?: HomeSectionSetting[] | null;
   /** A new list of languages. */
   languages?: string[] | null;
   /** A new path for the blog, such as `/blog/`. */
