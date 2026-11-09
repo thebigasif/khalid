@@ -76,7 +76,7 @@ pub(crate) fn directive(
         "review" => review(&attributes, body),
         "product" => product(&attributes, body),
         "business" => cards::business(&attributes),
-        "event" | "course" => schema_cards::card(name, &attributes, body),
+        "event" | "course" | "book" | "dataset" => schema_cards::card(name, &attributes, body),
         "snippet" => cards::snippet(&attributes),
         "location" => cards::location(&attributes),
         "header" => cards::header(&attributes),
