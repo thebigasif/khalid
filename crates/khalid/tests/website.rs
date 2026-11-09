@@ -338,6 +338,37 @@ fn the_gallery_cards_are_the_preview_scripts_plain_cards() {
     assert_eq!(beside, looks.len() * 2 + 1, "the cards and index.md");
 }
 
+/// The preview pictures show each template as a reader who answered the
+/// banner sees it, so the preview server hands the browser a stored
+/// Reject all. That answer must be the cookie the consent script reads: a
+/// new cookie version would bring the banner back into every picture.
+#[test]
+fn the_previews_answer_the_banner_the_way_the_consent_script_reads_it() {
+    let script = fs::read_to_string(repo_file("scripts/template-previews.sh")).unwrap();
+    let consent = fs::read_to_string(repo_file("crates/khalid-render/assets/consent.js")).unwrap();
+    assert!(
+        script.contains("khalid-consent=2.{rev}.0.{day}.0"),
+        "the stored answer"
+    );
+    assert!(
+        script.contains("data-khalid-rev"),
+        "the page's own consent version"
+    );
+    assert!(consent.contains("khalid-consent="), "the cookie's name");
+    assert!(
+        consent.contains("parts[0] !== \"2\""),
+        "the cookie's version"
+    );
+    assert!(
+        consent.contains("parts[1] !== set.khalidRev"),
+        "the page's version"
+    );
+    assert!(
+        consent.contains("Math.floor(Date.now() / 864e5)"),
+        "the day count"
+    );
+}
+
 /// The class names a stylesheet gives rules to, such as `gallery` for
 /// `.gallery img { ... }`.
 #[cfg(test)]

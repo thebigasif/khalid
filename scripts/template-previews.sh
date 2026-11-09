@@ -29,6 +29,14 @@
 # picture shows the files of this build. It stops with the list of files
 # it could not find, so no picture ships with a broken image.
 #
+# Each picture shows the template as a reader sees it once they have
+# answered the consent banner, which a headless screenshot cannot click.
+# The local server hands the browser a stored Reject all with every page,
+# the cookie the consent script reads, so no banner covers the page and
+# nothing optional loads. The line that says a choice was saved is left
+# out too. Only this server does this: the built pages, and every real
+# site, still ask each reader.
+#
 # The second form writes only the plain cards into <folder>. The copies in
 # site/content/en/pages/templates/ are made this way, so the website shows
 # a card for each template before the screenshots replace them on Pages.
@@ -140,17 +148,33 @@ else
 fi
 port="$(python3 -c 'import socket; s = socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')"
 # Python's file server, which turns the site's own full addresses under the
-# mount in pages and stylesheets into paths, and writes each path it could
-# not find to missing.txt.
+# mount in pages and stylesheets into paths, answers each page's consent
+# banner with Reject all, and writes each path it could not find to
+# missing.txt.
 cat >"$work/serve.py" <<'PY'
 import functools
 import http.server
 import pathlib
 import re
 import sys
+import time
 
 port, root, mount, missing = int(sys.argv[1]), sys.argv[2], sys.argv[3], sys.argv[4]
 own = re.compile(rb"https?://[^/\s\"'<>()]+(?=" + re.escape(mount.encode()) + rb")")
+# The consent script names the version of the site's choices; an answer
+# for another version asks again.
+rev = re.compile(rb'data-khalid-rev="([^"]*)"')
+saved = re.compile(rb"<template data-khalid-saved>.*?</template>", re.S)
+
+
+def answered(body):
+    """The cookie of a reader who chose Reject all today, as the consent
+    script writes it, or None for a page that asks nothing."""
+    found = rev.search(body)
+    if not found:
+        return None
+    day = int(time.time() // 86400)
+    return "khalid-consent=2.{rev}.0.{day}.0; Path=/".format(rev=found.group(1).decode(), day=day)
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -161,7 +185,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if path.suffix not in (".html", ".css") or not path.is_file():
             return super().send_head()
         body = own.sub(b"", path.read_bytes())
+        cookie = answered(body) if path.suffix == ".html" else None
+        if cookie:
+            body = saved.sub(b"", body)
         self.send_response(200)
+        if cookie:
+            self.send_header("Set-Cookie", cookie)
         self.send_header("Content-Type", "text/css" if path.suffix == ".css" else "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
