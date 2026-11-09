@@ -26,7 +26,10 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 .site-header nav li:last-child a { margin-inline-end: -1rem; }
 .search-link { display: inline-flex; align-items: center; min-block-size: 2.5rem; padding-inline: 1.125rem; border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
 .search-link:hover { border-color: var(--color-text); }
-.announcement { margin: 0; padding-block: 0.5rem; background: var(--gl-blush); border: 0; box-shadow: 0 0 0 100vmax var(--gl-blush); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--gl-blush); border: 0; box-shadow: 0 0 0 100vmax var(--gl-blush); clip-path: inset(0 -100vmax); font-size: var(--text-small); text-align: start; }
+/* The announcement and the consent banner start where the header starts. */
+.announcement, .consent { padding-inline: 0; }
+.announcement p, .consent > * { margin-inline: max(0px, (100% - var(--gl-frame)) / 2) auto; }
 
 /* Buttons and labels: rounded pills. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.5rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: 999px; font: 600 0.9375rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }

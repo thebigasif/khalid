@@ -30,16 +30,15 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .button, .subscribe button, .comment-form button, .search button { color: var(--color-background); background: var(--color-text); border-color: var(--color-text); border-radius: var(--atlas-chip); }
 .button:hover, .subscribe button:hover { box-shadow: inset 0 -0.25rem var(--color-accent); }
 
-/* The announcement: one line on ink across the window. */
-.announcement { margin: 0; padding-block: 0.5rem; color: var(--color-background); background: var(--color-text); border: 0; font-size: 0.8125rem; font-weight: 600; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); }
+/* The announcement: one line in ink on a light tint across the window. */
+.announcement { --atlas-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); margin: 0; padding-block: 0.5rem; color: var(--color-text); background: var(--atlas-tint); border: 0; font-size: 0.8125rem; font-weight: 600; box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
 .announcement a { color: inherit; text-decoration: none; }
 .announcement a:hover { text-decoration: underline; }
-.announcement :focus-visible { outline-color: var(--color-background); }
 
 /* The header: the name or logo, the menu, then the call to action, over a
    hairline that runs across the window. */
 .site-header { gap: 0.5rem 2rem; padding-block: 0.75rem; border: 0; border-block-end: 1px solid var(--color-border); border-image: linear-gradient(var(--color-border), var(--color-border)) 0 0 1 / 0 0 1px / 0 100vmax; }
-.site-name { font-size: 1.375rem; font-weight: 800; letter-spacing: -0.03em; }
+.site-name { font-size: 1.375rem; font-weight: 800; letter-spacing: -0.02em; }
 .site-logo img { block-size: 2.25rem; inline-size: auto; }
 .site-header nav { margin-inline-end: auto; }
 .site-header nav ul { gap: 0 0.25rem; }
@@ -65,14 +64,14 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
    accent rule across the window closes the sheet. */
 .masthead { position: relative; isolation: isolate; margin-block-end: var(--atlas-section); padding-block: clamp(2.5rem, 1.25rem + 4.5vw, 6rem) clamp(2rem, 1.5rem + 2vw, 3.5rem); background: var(--atlas-tint); box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); border-block-end: 0.375rem solid var(--color-accent); border-image: linear-gradient(var(--color-accent), var(--color-accent)) 0 0 1 / 0 0 0.375rem / 0 100vmax; }
 .masthead::before { content: ""; position: absolute; z-index: -1; inset: 0; background: var(--atlas-map); background-size: 6rem 6rem, 6rem 6rem, 1.5rem 1.5rem, 1.5rem 1.5rem; mask-image: linear-gradient(var(--color-text) 35%, transparent 80%); }
-.front-title { max-inline-size: 15ch; margin: 0; font-size: var(--atlas-display); font-weight: 800; line-height: 0.92; letter-spacing: -0.055em; }
+.front-title { max-inline-size: 15ch; margin: 0; font-size: var(--atlas-display); font-weight: 800; line-height: 0.92; letter-spacing: -0.02em; }
 .masthead :is(.tagline, .intro) { max-inline-size: 36rem; margin-block: 1.5rem 0; color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.45; }
 .masthead .intro > :last-child { margin-block-end: 0; }
 .masthead .hero-stats { max-inline-size: 48rem; margin-block: 2rem 0; }
 .atlas-index { margin-block-start: clamp(2.5rem, 1.5rem + 3vw, 4.5rem); }
 .regions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 2rem var(--atlas-gap); margin: 0; padding: 0; list-style: none; counter-reset: atlas-region; }
 .regions > li { counter-increment: atlas-region; border-block-start: 2px solid var(--color-text); }
-.regions h2 { margin: 0; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; }
+.regions h2 { margin: 0; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
 .regions a { display: flex; align-items: center; gap: 0.625rem; min-block-size: 2.75rem; color: var(--color-text); text-decoration: none; }
 .regions a:hover { text-decoration: underline; text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
 .regions h2 a::before { content: counter(atlas-region, upper-alpha) / ""; display: grid; place-items: center; flex: none; inline-size: 1.75rem; block-size: 1.75rem; color: var(--color-background); background: var(--color-text); font-size: 0.875rem; letter-spacing: 0; }
@@ -89,7 +88,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 /* Section titles: large and tight under a heavy rule in the text colour.
    The featured posts open under a chip instead. */
 .front > section { margin-block: 0 var(--atlas-section); }
-.front section > h2, :is(.mentions, .related, .comments, .featured) > h2 { margin-block: 0 clamp(1.5rem, 1rem + 1vw, 2.25rem); padding-block-start: 1rem; border-block-start: 0.25rem solid var(--color-text); font-size: clamp(1.75rem, 1.2rem + 1.8vw, 3rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
+.front section > h2, :is(.mentions, .related, .comments, .featured) > h2 { margin-block: 0 clamp(1.5rem, 1rem + 1vw, 2.25rem); padding-block-start: 1rem; border-block-start: 0.25rem solid var(--color-text); font-size: clamp(1.75rem, 1.2rem + 1.8vw, 3rem); font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
 .front .leads > h2, .featured > h2 { justify-self: start; margin-block-end: 0; padding: 0; color: var(--color-text); background: none; border: 0; font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 0.1em; line-height: 1.2; text-transform: uppercase; }
 /* The key square: the accent's one mark below the masthead, before a
    topic or a section's label, like the key of a map. */
@@ -104,7 +103,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 :is(.story, .card) .image img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0; transition: filter 0.2s ease; }
 :is(.story, .card):hover .image img { filter: brightness(0.9); }
 .story-label { align-self: flex-start; margin: 0 0 0.5rem; padding: 0; color: var(--color-text); background: none; font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.08em; line-height: 1.2; text-transform: uppercase; }
-:is(.story, .card) :is(h2, h3, h4) { margin: 0; font-size: clamp(1.1875rem, 1.1rem + 0.25vw, 1.375rem); font-weight: 800; line-height: 1.18; letter-spacing: -0.025em; }
+:is(.story, .card) :is(h2, h3, h4) { margin: 0; font-size: clamp(1.1875rem, 1.1rem + 0.25vw, 1.375rem); font-weight: 800; line-height: 1.18; letter-spacing: -0.02em; }
 :is(.story, .card) :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
 :is(.story, .card) :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
 :is(.story, .card):hover :is(h2, h3, h4) a { color: var(--color-link); text-decoration: none; }
@@ -119,12 +118,12 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
    the second beside it on a tinted panel. */
 .leads { display: grid; gap: 1.25rem var(--atlas-gap); align-items: stretch; }
 .leads > h2 { grid-column: 1 / -1; }
-.story-lead :is(h2, h3) { font-size: clamp(1.875rem, 1rem + 2.6vw, 3.5rem); line-height: 1.02; letter-spacing: -0.045em; }
+.story-lead :is(h2, h3) { font-size: clamp(1.875rem, 1rem + 2.6vw, 3.5rem); line-height: 1.02; letter-spacing: -0.02em; }
 .story-lead .story-label { margin-block-end: 0.875rem; }
 .story-lead .story-excerpt { max-inline-size: 40rem; margin-block-start: 0.875rem; font-size: clamp(1rem, 0.9rem + 0.3vw, 1.1875rem); -webkit-line-clamp: 4; }
 .story-lead .image { margin-block-end: 1.25rem; }
 .story-lead + .story-lead { padding: 1.5rem 0 0; background: none; border-block-start: 1px solid var(--color-border); }
-.story-lead + .story-lead :is(h2, h3) { font-size: clamp(1.5rem, 1.1rem + 1vw, 2.125rem); line-height: 1.08; letter-spacing: -0.035em; }
+.story-lead + .story-lead :is(h2, h3) { font-size: clamp(1.5rem, 1.1rem + 1vw, 2.125rem); line-height: 1.08; letter-spacing: -0.02em; }
 .story-lead + .story-lead .story-excerpt { font-size: 1rem; }
 @media (min-width: 56rem) {
   .leads:has(> .story-lead + .story-lead) { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
@@ -140,11 +139,11 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .story-grid > li { display: flex; }
 .story-grid .story { flex: 1; }
 .picks .story-grid > li { counter-increment: atlas-pick; padding-block-start: 0.75rem; border-block-start: 1px solid var(--color-text); }
-.picks .story::before { content: counter(atlas-pick, decimal-leading-zero) / ""; margin-block-end: 0.5rem; color: var(--color-text); font-family: var(--font-heading); font-size: 2rem; font-weight: 800; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.picks .story::before { content: counter(atlas-pick, decimal-leading-zero) / ""; margin-block-end: 0.5rem; color: var(--color-text); font-family: var(--font-heading); font-size: 2rem; font-weight: 800; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 @media (min-width: 72rem) {
   .feed .story-grid, .home-section .story-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .feed .story-grid > li:first-child, .home-section .story-grid > li:first-child { grid-column: span 2; grid-row: span 2; }
-  :is(.feed, .home-section) li:first-child .story :is(h2, h3) { font-size: clamp(1.75rem, 1rem + 1.5vw, 2.5rem); line-height: 1.05; letter-spacing: -0.04em; }
+  :is(.feed, .home-section) li:first-child .story :is(h2, h3) { font-size: clamp(1.75rem, 1rem + 1.5vw, 2.5rem); line-height: 1.05; letter-spacing: -0.02em; }
   :is(.feed, .home-section) li:first-child .story-excerpt { font-size: 1.0625rem; }
   :is(.feed, .home-section) li:nth-child(n + 2):nth-child(-n + 5) .story-excerpt { display: none; }
   :is(.feed, .home-section) li:first-child .story-meta { margin-block-start: 0; padding-block-start: 1.25rem; }
@@ -161,25 +160,23 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .topic-tab-list a { padding-inline: 1rem; color: var(--color-text); font-size: 0.8125rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; border: 2px solid var(--color-text); border-radius: var(--atlas-chip); }
 .topic-tab-list a:hover { box-shadow: inset 0 -0.25rem var(--color-accent); }
 .topic-tabs:not(:has(.topic-panel:target)) .topic-tab-list li:first-child a, .topic-tabs:has([id="topic-1"]:target) .topic-tab-list [href$="-1"], .topic-tabs:has([id="topic-2"]:target) .topic-tab-list [href$="-2"], .topic-tabs:has([id="topic-3"]:target) .topic-tab-list [href$="-3"], .topic-tabs:has([id="topic-4"]:target) .topic-tab-list [href$="-4"], .topic-tabs:has([id="topic-5"]:target) .topic-tab-list [href$="-5"], .topic-tabs:has([id="topic-6"]:target) .topic-tab-list [href$="-6"] { color: var(--color-background); background: var(--color-text); border-color: var(--color-text); }
-.topic-panel h3 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; }
+.topic-panel h3 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
 
-/* The call to action: a band in ink with the map grid drawn faintly on
-   it and an accent rule on top, the note large over a white button. */
-.cta-band { position: relative; isolation: isolate; overflow: hidden; flex-direction: column; align-items: flex-start; gap: 1.75rem; margin-block: var(--atlas-section); padding: clamp(2.5rem, 1.5rem + 4vw, 5rem) clamp(1.5rem, 1rem + 3vw, 4rem); color: var(--color-background); background: var(--color-text); border: 0; border-block-start: 0.375rem solid var(--color-accent); border-radius: 0; }
-.cta-band::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(color-mix(in oklab, var(--color-background) 12%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--color-background) 12%, transparent) 1px, transparent 1px); background-size: 3rem 3rem; mask-image: linear-gradient(90deg, transparent 30%, var(--color-text)); }
-.cta-note { max-inline-size: 22ch; font-family: var(--font-heading); font-size: clamp(1.875rem, 1.1rem + 2.4vw, 3.5rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.045em; text-wrap: balance; }
-.cta-band .button { min-block-size: 3rem; padding-inline: 1.5rem; color: var(--color-text); background: var(--color-background); }
-.cta-band :focus-visible { outline-color: var(--color-background); }
+/* The call to action: a sheet of the masthead's tint with the map grid
+   drawn faintly on it and an accent rule on top, the note large in ink
+   over an ink button. The page stays light. */
+.cta-band { position: relative; isolation: isolate; overflow: hidden; flex-direction: column; align-items: flex-start; gap: 1.75rem; margin-block: var(--atlas-section); padding: clamp(2.5rem, 1.5rem + 4vw, 5rem) clamp(1.5rem, 1rem + 3vw, 4rem); color: var(--color-text); background: var(--atlas-tint); border: 0; border-block-start: 0.375rem solid var(--color-accent); border-radius: 0; }
+.cta-band::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(var(--atlas-major) 1px, transparent 1px), linear-gradient(90deg, var(--atlas-major) 1px, transparent 1px); background-size: 3rem 3rem; mask-image: linear-gradient(90deg, transparent 30%, var(--color-text)); }
+.cta-note { max-inline-size: 22ch; font-family: var(--font-heading); font-size: clamp(1.875rem, 1.1rem + 2.4vw, 3.5rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.02em; text-wrap: balance; }
+.cta-band .button { min-block-size: 3rem; padding-inline: 1.5rem; color: var(--color-background); background: var(--color-text); }
 
-/* The footer: on ink across the window, links in a soft tint of the
-   background. */
-.site-footer { margin-block-start: 3rem; padding-block: 3rem 3.5rem; gap: 1.25rem; color: color-mix(in oklab, var(--color-background) 78%, var(--color-text)); background: var(--color-text); border: 0; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); }
+/* The footer: a light tint across the window under a heavy ink rule, the
+   words in the muted ink and the links in ink. */
+.site-footer { margin-block-start: 3rem; padding-block: 3rem 3.5rem; gap: 1.25rem; color: var(--color-muted); background: none; border: 0; border-image: linear-gradient(var(--color-text) 0.25rem, var(--atlas-tint) 0) fill 0 // 0 100vmax; }
 .site-footer nav ul { gap: 0 1.5rem; }
 @media (min-width: 48rem) { .site-footer > nav:last-of-type li:last-child { margin-inline-start: auto; } }
-.site-footer a { color: inherit; font-weight: 600; text-decoration: none; }
-.site-footer a:hover, .site-footer a[aria-current] { color: var(--color-background); text-decoration: underline; }
-.site-footer :focus-visible { outline-color: var(--color-background); }
-.site-footer .preferred-source a { color: var(--color-text); }
+.site-footer a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.site-footer a:hover, .site-footer a[aria-current] { color: var(--color-link); text-decoration: underline; }
 .front > :last-child { margin-block-end: 0; }
 
 /* Lists, topic and author pages: the trail and the title on the map
@@ -188,7 +185,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 main:has(> .cards, > .featured) > :is(.breadcrumbs, h1, .intro, .hub-link) { position: relative; margin: 0; background: var(--atlas-tint); box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
 main:has(> .cards, > .featured) > .breadcrumbs { padding-block: 1.25rem 0; }
 main:has(> .cards, > .featured) > h1::before { content: ""; position: absolute; z-index: -1; inset: 0; background: var(--atlas-map); background-size: 6rem 6rem, 6rem 6rem, 1.5rem 1.5rem, 1.5rem 1.5rem; mask-image: radial-gradient(ellipse 40% 90% at 78% 50%, var(--color-text), transparent); }
-main:has(> .cards, > .featured) > h1 { isolation: isolate; padding-block: 1rem 2.75rem; font-size: var(--atlas-title); font-weight: 800; line-height: 0.95; letter-spacing: -0.05em; }
+main:has(> .cards, > .featured) > h1 { isolation: isolate; padding-block: 1rem 2.75rem; font-size: var(--atlas-title); font-weight: 800; line-height: 0.95; letter-spacing: -0.02em; }
 main:has(> .cards, > .featured) > :is(h1:has(+ :is(.intro, .hub-link)), .intro:has(+ .hub-link)) { padding-block-end: 1.5rem; }
 main:has(> .cards, > .featured) > :is(.intro, .hub-link):last-of-type, main:has(> .cards, > .featured) > .hub-link { padding-block-end: 2.75rem; }
 main:has(> .cards, > .featured) > :is(.intro, .hub-link) + :is(.cards, .featured), main:has(> .cards, > .featured) > h1 + :is(.cards, .featured) { border-block-start: 0.375rem solid var(--color-accent); border-image: linear-gradient(var(--color-accent), var(--color-accent)) 1 0 0 / 0.375rem 0 0 / 0 100vmax; }
@@ -216,7 +213,7 @@ main > .cards, .featured { margin-block-start: 0; padding-block-start: var(--atl
 .cards .card-meta > a { position: absolute; inset-block-start: 0; inset-inline-start: 0; min-block-size: 0; padding: 0; color: var(--color-text); background: none; font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.08em; line-height: 1.2; text-transform: uppercase; }
 .cards .card:has(.image) .card-meta > a { inset-block-start: calc(56.25cqi + 1rem); }
 .card-featured { padding: 0; background: none; }
-.card-featured h3 { font-size: clamp(1.875rem, 1rem + 2.6vw, 3.5rem); line-height: 1.02; letter-spacing: -0.045em; }
+.card-featured h3 { font-size: clamp(1.875rem, 1rem + 2.6vw, 3.5rem); line-height: 1.02; letter-spacing: -0.02em; }
 .card-featured > p:not(.card-meta) { font-size: 1.125rem; -webkit-line-clamp: 4; }
 .card-featured .card-meta > a::before { content: "\00b7" / ""; position: absolute; inset-inline-start: -0.75rem; }
 @media (min-width: 56rem) {
@@ -247,7 +244,7 @@ main:has(> .post) { max-inline-size: calc(var(--measure) + 17rem); }
 main:has(> .post) > .breadcrumbs { margin: 0; padding-block: 1.25rem 0; background: var(--atlas-tint); box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
 .post > .post-header { display: flow-root; margin-block-end: 3rem; padding-block-end: 2.5rem; border-image: linear-gradient(var(--atlas-tint), var(--atlas-tint)) fill 0 // 0 100vmax; }
 .post > .post-header:has(> .image) { padding-block-end: 0; border-image: linear-gradient(var(--atlas-tint) calc(100% - 22cqi), transparent 0) fill 0 // 0 100vmax; }
-.post-header h1 { max-inline-size: 18ch; margin-block: 1rem 1.75rem; font-size: clamp(2.25rem, 1.1rem + 3.4vw, 4.5rem); font-weight: 800; line-height: 1; letter-spacing: -0.05em; }
+.post-header h1 { max-inline-size: 18ch; margin-block: 1rem 1.75rem; font-size: clamp(2.25rem, 1.1rem + 3.4vw, 4.5rem); font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
 .post-meta { display: flex; flex-flow: column; gap: 0.25rem; color: var(--color-muted); font-size: 0.9375rem; }
 .post-meta address { margin-block-end: 0.5rem; }
 .post-meta > p { margin: 0; }
@@ -286,7 +283,7 @@ main:has(> .post) > .breadcrumbs { margin: 0; padding-block: 1.25rem 0; backgrou
 
 /* The body: strong headings, tinted panels in place of boxes, tables on
    hairlines and a quote set large under an accent mark. */
-.post-body > h2 { margin-block: 2.5em 0.6em; font-weight: 800; line-height: 1.1; letter-spacing: -0.035em; }
+.post-body > h2 { margin-block: 2.5em 0.6em; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
 .post-body > h3 { margin-block: 2em 0.5em; font-weight: 800; letter-spacing: -0.02em; }
 .post-body a { text-decoration-color: var(--color-accent); text-underline-offset: 0.18em; }
 .heading-link { font-size: 0.75em; opacity: 0.6; }
@@ -300,9 +297,9 @@ main:has(> .post) > .breadcrumbs { margin: 0; padding-block: 1.25rem 0; backgrou
 .toc a:hover { color: var(--color-link); text-decoration: underline; }
 .callout { margin-block: 2rem; padding: 1.25rem 1.5rem; background: var(--atlas-panel); border: 0; border-inline-start: 0.25rem solid var(--color-accent); border-radius: 0; }
 .callout-read { padding-inline: 0; background: none; border-inline-start: 0; font-style: italic; }
-.callout-stat strong:first-child { color: var(--color-link); font-weight: 800; letter-spacing: -0.04em; }
+.callout-stat strong:first-child { color: var(--color-link); font-weight: 800; letter-spacing: -0.02em; }
 .pullquote { margin-block: 2.5rem; padding: 0; border: 0; }
-.pullquote blockquote { padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; }
+.pullquote blockquote { padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
 .pullquote blockquote::before { content: "\201C" / ""; display: block; block-size: 0.6em; color: var(--color-accent); font-size: 2.5em; line-height: 1; }
 .post-body table { inline-size: 100%; font-size: 0.9375rem; }
 .post-body th { border-block-end: 0.1875rem solid var(--color-text); text-align: start; }
@@ -409,3 +406,21 @@ main:has(> .post) .cta-band { margin-block: 3rem; }
    page's masthead and the list pages. */
 main:has(> .post) > .breadcrumbs { background: none; box-shadow: none; }
 .post > .post-header, .post > .post-header:has(> .image) { border-image: none; }
+
+/* From 1120 px a post with its contents beside it spans the header's
+   frame: the title and the contents start under the site's name, and the
+   words sit close beside the contents. What follows keeps that width. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--atlas-wide); }
+  main > .post-with-toc { grid-template-columns: minmax(0, var(--measure)) 16rem; justify-content: start; }
+  main > .post-with-toc.post-toc-start { grid-template-columns: 16rem minmax(0, var(--measure)); }
+  main > .post-with-toc ~ * { max-inline-size: calc(var(--measure) + 20rem); }
+}
+
+/* The announcement and the consent banner start where the header does. */
+.announcement, .consent { padding-inline: 0; text-align: start; }
+.announcement p { max-inline-size: var(--atlas-wide); margin-inline: auto; }
+.consent > * { margin-inline: max(0px, (100% - var(--atlas-wide)) / 2) auto; }
+/* On a phone the frame keeps the page's own gutter, so the header, the
+   front page and a post share one edge. */
+@media (max-width: 47.99rem) { :root { --atlas-wide: 100%; } }
