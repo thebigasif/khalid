@@ -1,0 +1,2 @@
+# Bench Test keeps every post at /blog/<slug>/, with no collections of its
+# own: readers find a review by the kind of gear, through the categories.

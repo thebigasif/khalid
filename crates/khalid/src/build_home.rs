@@ -96,5 +96,6 @@ pub(crate) fn card(
             .map(|slug| post_categories::link(config, routes, locale, slug)),
         featured: front.featured,
         reading_time: None,
+        facts: build_reader::facts(front),
     }
 }

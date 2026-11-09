@@ -1,0 +1,104 @@
+---
+source: crates/khalid/tests/template_syllabus.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+A short course on search basics.
+</div>
+<p class="course-start"><a class="button" href="/blog/why-internal-links-matter/">Start with lesson 1</a></p>
+<dl class="figure-strip">
+<div class="figure">
+<dt>modules</dt>
+<dd>2</dd>
+</div>
+<div class="figure">
+<dt>lessons</dt>
+<dd>3</dd>
+</div>
+</dl>
+</header>
+<section class="course-map" aria-labelledby="course-map-title">
+<h2 id="course-map-title">Course map</h2>
+<ol class="map-modules" role="list">
+<li class="map-module">
+<p class="map-name"><span class="map-number">Module 1</span> <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<div class="progress-strip">
+<ol class="progress-steps" aria-hidden="true">
+<li class="progress-step"></li>
+<li class="progress-step"></li>
+</ol>
+</div>
+</li>
+<li class="map-module">
+<p class="map-name"><span class="map-number">Module 2</span> <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<div class="progress-strip">
+<ol class="progress-steps" aria-hidden="true">
+<li class="progress-step"></li>
+</ol>
+</div>
+</li>
+</ol>
+</section>
+<div class="course-front course-front-news">
+<section class="course-outline" aria-labelledby="course-outline-title">
+<h2 id="course-outline-title">Course outline</h2>
+<section class="module" aria-labelledby="module-1">
+<p class="module-number">Module 1</p>
+<h3 id="module-1"><a href="/blog/category/on-page-seo/">On-page SEO</a></h3>
+<p class="module-range">Lessons 1 to 2</p>
+<ol class="lesson-rows" role="list">
+<li class="lesson-row">
+<span class="lesson-mark" aria-hidden="true"></span>
+<span class="lesson-number">Lesson 1</span>
+<h4><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h4>
+<span class="lesson-length">12 min</span>
+</li>
+<li class="lesson-row">
+<span class="lesson-mark" aria-hidden="true"></span>
+<span class="lesson-number">Lesson 2</span>
+<h4><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h4>
+<span class="lesson-length">9 min</span>
+</li>
+</ol>
+</section>
+<section class="module" aria-labelledby="module-2">
+<p class="module-number">Module 2</p>
+<h3 id="module-2"><a href="/blog/category/technical-seo/">Technical SEO</a></h3>
+<p class="module-range">Lesson 3</p>
+<ol class="lesson-rows" role="list">
+<li class="lesson-row">
+<span class="lesson-mark" aria-hidden="true"></span>
+<span class="lesson-number">Lesson 3</span>
+<h4><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h4>
+<span class="lesson-length">15 min</span>
+</li>
+</ol>
+</section>
+</section>
+<section class="course-news" aria-labelledby="course-news-title">
+<h2 id="course-news-title">Course news</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-10-12">12 October 2026</time>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="feed-category"><a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-10-05">5 October 2026</time>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+</ol>
+</section>
+</div>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/enrol/">Enrol</a></p>
+</div>

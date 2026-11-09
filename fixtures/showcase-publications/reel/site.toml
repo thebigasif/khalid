@@ -1,0 +1,105 @@
+# Tenth Row, a made-up site of film and TV reviews, written for the Reel
+# template's demo. Every film, series, actor, director and streaming
+# service it names is made up. Each key and table here replaces the
+# showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Tenth Row"
+languages = ["en"]
+
+[template.cta]
+label = "How we rate"
+href = "/blog/about/"
+note = "Every review ends on a rating out of five stars, from a critic who watched the whole film or season."
+
+# The Reel template's options for this demo. scripts/pages.sh keeps them
+# (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["New films and series, reviewed every week, with where to watch them."]
+score_sheet = 8
+features_count = 4
+
+[announcement]
+text = "New review: Saltglass, a quiet storm of a film, is in cinemas now."
+href = "/blog/saltglass-review/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Film and TV reviews, with where to watch"
+
+[seo.ai_page]
+covers = "Tenth Row reviews new films, TV series and documentaries, each with a rating out of five stars, the cast, who made it and where to watch it, and publishes watch lists and features about film."
+cite = "Name Tenth Row and the critic, quote the rating out of five, and link the review."
+contact = "desk@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Tenth Row"
+email = "desk@example.com"
+founded = "2019-09-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Tenth Row logo"
+width = 320
+height = 80
+
+# Sign-ups for the weekly newsletter, under the site's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "desk@example.com"
+name = "Tenth Row"
+postal_address = "Tenth Row, 14 Projection Lane, Eastbridge EB2 9RW"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Films"
+href = "/blog/category/films/"
+language = "en"
+
+[[nav.primary]]
+label = "Series"
+href = "/blog/category/series/"
+language = "en"
+
+[[nav.primary]]
+label = "Documentaries"
+href = "/blog/category/documentaries/"
+language = "en"
+
+[[nav.primary]]
+label = "Features"
+href = "/blog/category/features/"
+language = "en"
+
+[[nav.primary]]
+label = "Critics"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Tenth Row"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Critics"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "All reviews"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

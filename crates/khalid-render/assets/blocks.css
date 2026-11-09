@@ -19,13 +19,21 @@
 .pullquote blockquote > :last-child { margin-block-end: 0; }
 .pullquote figcaption { margin-block-start: 0.75rem; }
 
+/* Key takeaways: the post's points in a tinted box, titled in the heading font. */
+.takeaways { margin-block: 1.5rem; padding: 1rem 1.25rem; background: color-mix(in oklab, var(--color-accent) 6%, var(--color-background)); border: 1px solid var(--color-border); border-inline-start: 4px solid var(--color-accent); border-radius: var(--radius); }
+.takeaways-title { margin-block-end: 0.5rem; font-family: var(--font-heading); font-size: 1.125rem; font-weight: 700; }
+.takeaways ul, .takeaways ol { margin: 0; padding-inline-start: 1.25rem; }
+.takeaways li { margin-block-end: 0.25rem; }
+
 /* Pros and cons: two titled lists, side by side when there is room. A drawn
-   check or cross in the text colour marks each line; the titles carry the meaning. */
+   check or cross in the text colour marks each line; the titles carry the meaning.
+   The line rule names two classes, so a template's rule for every list in a
+   post (`.post-body li`) cannot take the room the mark needs. */
 .proscons { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin-block: 0 1.5rem; }
 .pros, .cons { padding: 1rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
 .proscons-title { margin-block-end: 0.5rem; font-weight: 700; }
 .proscons ul { margin: 0; padding: 0; list-style: none; }
-.proscons li { position: relative; margin-block-end: 0.25rem; padding-inline-start: 1.5rem; }
+.proscons :is(.pros, .cons) li { position: relative; margin-block-end: 0.25rem; padding-inline-start: 1.5rem; }
 .proscons li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.3em; inline-size: 1em; block-size: 1em; background: currentColor; mask: var(--mark) no-repeat center / contain; }
 .pros { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 8.5l4 4 8-9' fill='none' stroke='black' stroke-width='2.2'/%3E%3C/svg%3E"); }
 .cons { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 3l10 10M13 3L3 13' fill='none' stroke='black' stroke-width='2.2'/%3E%3C/svg%3E"); }
@@ -36,12 +44,19 @@
 .column > :last-child { margin-block-end: 0; }
 .column-title { margin-block-end: 0.5rem; font-family: var(--font-heading); font-size: 1.125rem; font-weight: 700; }
 
-/* A long table: the first rows show and the rest open below. Both halves use
-   fixed column widths so their columns line up; the box scrolls if too wide. */
+/* A long table: the first rows show and the rest open below. Each half sizes
+   its columns to its words, so no word breaks in the middle; a table wider
+   than the column scrolls sideways inside its box, never the page. The
+   summary is a button-like control that stays at the box's start edge. */
 .table-fold { overflow-x: auto; margin-block: 0 1.1em; }
-.table-fold table { display: table; inline-size: 100%; table-layout: fixed; margin: 0; }
+.table-fold table { display: table; inline-size: 100%; margin: 0; }
+.table-fold :is(th, td) { overflow-wrap: normal; }
 .table-fold details { margin: 0; }
-.table-fold-more { color: var(--color-link); }
+.table-fold .table-fold-more { position: sticky; inset-inline-start: 0; display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; margin-block-start: 0.75rem; padding: 0.5rem 1rem; color: var(--color-link); border: 1px solid var(--color-border); border-radius: var(--radius); list-style: none; cursor: pointer; }
+.table-fold-more::-webkit-details-marker { display: none; }
+.table-fold-more::before { content: "+" / ""; font-weight: 700; }
+.table-fold details[open] > .table-fold-more::before { content: "\2212" / ""; }
+.table-fold .table-fold-more:hover { border-color: var(--color-accent); background: var(--color-surface); }
 
 /* Figures, galleries and players fill the column and keep their space. */
 figure { margin-inline: 0; }
@@ -53,6 +68,13 @@ figure > img { inline-size: 100%; border-radius: var(--radius); }
 .embed-wide iframe, .video video { block-size: auto; aspect-ratio: 16 / 9; background: var(--color-surface); }
 .embed-audio iframe { block-size: 152px; }
 .embed-site iframe { border: 1px solid var(--color-border); background: var(--color-background); }
+/* An embed's card holds the player's place, so loading it moves nothing. */
+.embed-card { display: grid; place-content: center; gap: 1rem; padding: 1.25rem; aspect-ratio: 16 / 9; text-align: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); }
+.embed-audio .embed-card { aspect-ratio: auto; min-block-size: 152px; }
+.embed-card p { max-inline-size: var(--measure); margin: 0; }
+.embed-card-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+.embed-allow { margin: 0; }
+.embed-allow button { min-block-size: 44px; padding: 0.5rem 1.25rem; font: inherit; color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-muted); border-radius: var(--radius); cursor: pointer; }
 .audio figcaption { margin-block: 0 0.5rem; color: var(--color-text); font-weight: 700; }
 .maths { overflow-x: auto; text-align: center; }
 
@@ -99,7 +121,7 @@ figure > img { inline-size: 100%; border-radius: var(--radius); }
 .toc-h4, .toc-h5, .toc-h6 { margin-inline-start: 2rem; font-weight: 400; }
 
 /* Buttons: one look for the button block and every form's button. */
-.button, .form button, .subscribe button { display: inline-flex; align-items: center; min-block-size: 44px; padding: 0.5rem 1.25rem; font: inherit; font-weight: 700; color: var(--color-background); background: var(--color-accent); border: 0; border-radius: var(--radius); text-decoration: none; cursor: pointer; }
+.button, .form button, .subscribe button, .comment-form button, .embed-load { display: inline-flex; align-items: center; min-block-size: 44px; padding: 0.5rem 1.25rem; font: inherit; font-weight: 700; color: var(--color-background); background: var(--color-accent); border: 0; border-radius: var(--radius); text-decoration: none; cursor: pointer; }
 .file a { display: inline-flex; align-items: center; min-block-size: 44px; font-weight: 700; }
 
 /* A bookmark with a title is a card; without one it stays a plain link. */
@@ -122,12 +144,24 @@ figure > img { inline-size: 100%; border-radius: var(--radius); }
 .recipe-description { color: var(--color-muted); }
 .recipe-facts { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; color: var(--color-muted); font-size: 0.9375rem; }
 .recipe-servings, .recipe-prep, .recipe-cook { white-space: nowrap; }
+/* A location card: address, open now, hours, map link. */
+.location { margin-block: 0 1.5rem; padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.location address { font-style: normal; }
+.location-now { margin-block: 0.75rem 0; font-weight: 700; }
+.location-now[data-state="closed"] { color: var(--color-muted); }
+.location-hours { margin-block: 0.75rem; border-collapse: collapse; }
+.location-hours caption { text-align: start; font-weight: 700; }
+.locations { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.locations .location { margin: 0; }
+.locations-nearest { min-block-size: 2.75rem; padding: 0.5rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); color: inherit; font: inherit; cursor: pointer; }
+.location-hours th, .location-hours td { padding: 0.125rem 1rem 0.125rem 0; border: 0; text-align: start; font-weight: 400; }
 .recipe-ingredients, .recipe-method { padding-inline-start: 1.25rem; }
 
-/* Forms in the body. The spam trap never shows to people. */
+/* Forms in the body and the comment form. Safari draws a field with no
+   border unless its own look is turned off. The spam trap never shows to people. */
 .form label, .subscribe label { display: block; margin-block-end: 0.25rem; font-weight: 600; }
-.form input, .form textarea, .subscribe input { inline-size: 100%; min-block-size: 44px; padding: 0.5rem 0.75rem; font: inherit; color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-muted); border-radius: var(--radius); }
-.form textarea { min-block-size: 8rem; }
+.form input, .form textarea, .subscribe input, .comment-form input, .comment-form textarea { inline-size: 100%; min-block-size: 44px; padding: 0.5rem 0.75rem; font: inherit; color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-muted); border-radius: var(--radius); appearance: none; }
+.form textarea, .comment-form textarea { min-block-size: 8rem; }
 .form-trap { display: none; }
 .subscribe { margin-block: 0 1.5rem; padding: 1.25rem; background: var(--color-surface); border-radius: var(--radius); }
 .subscribe p:last-child { margin-block-end: 0; }
@@ -147,3 +181,15 @@ figure > img { inline-size: 100%; border-radius: var(--radius); }
   .form, .subscribe { display: none; }
   .callout, .review, .product, .recipe, .banner { break-inside: avoid; }
 }
+
+/* What a list or a term page is: the word above a tag's name, each
+   series card's part, and a glossary term's way back and its neighbours. */
+.card-part { display: block; }
+.list-kind, .card-part { margin-block: 0 0.25rem; line-height: 1.4; color: var(--color-muted); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.term-back { margin-block: 0 0.5rem; }
+.term-back a { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-muted); }
+.term-back a::before { content: "← " / ""; white-space: pre; }
+[dir="rtl"] .term-back a::before { content: "→ " / ""; }
+.term-related, .term-posts { margin-block-start: 2rem; }
+.term-related ul, .term-posts ul { padding-inline-start: 1.25rem; }
+.term-related li, .term-posts li { margin-block: 0.25rem; }

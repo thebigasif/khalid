@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /streets-are-for-staying/
+table /a-bus-map-anyone-can-read/
+category /category/the-ropeworks/
+tag /tag/transport/
+author /authors/grace-mensah/

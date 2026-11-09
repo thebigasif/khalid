@@ -1,0 +1,22 @@
+{#- How wide Hub draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Some places show the same posts as a larger place on the same page,
+    so they say its width and the browser fetches each picture once.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "home/row": "5.5rem",
+  "lead": "(min-width: 30.5rem) calc(6vw + 33.75rem), calc(100vw - 2rem)",
+  "related/row": "5.5rem",
+  "list/row": "5.5rem",
+  "author/row": "5.5rem",
+  "photo": "12rem",
+  "panel/row": "5.5rem"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

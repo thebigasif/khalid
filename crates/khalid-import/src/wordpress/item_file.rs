@@ -8,12 +8,15 @@ use khalid_routes::{PostAddress, Routes};
 
 use crate::Place;
 use crate::PlannedFile;
-use crate::front_matter::FrontMatter;
+use crate::front_matter::{FrontMatter, Parts};
 use crate::markdown::body_markdown;
 use crate::redirects::path_of;
 use crate::slug::{PostSlug, post_slug};
 use crate::wordpress::names::{author_slug, category_slug, decoded};
-use crate::wordpress::{Export, Held, ImportedItem, Item, ItemError, ItemStatus, SeoMeta};
+use crate::wordpress::{
+    Export, Held, ImportedItem, Item, ItemError, ItemStatus, SeoMeta, ShareWords,
+};
+use khalid_content::MAX_SECONDARY_KEYWORDS;
 
 /// What every item's file is made for: the export and the site.
 #[derive(Debug, Clone, Copy)]
@@ -143,6 +146,7 @@ impl File<'_> {
             _ => None,
         };
         let (category, more) = categories(item, export, self.seo.primary_category, site);
+        let group = category.as_ref().unwrap_or(&self.slug).to_string();
         let description = self.description();
         self.front
             .maybe("author", author(item, export, site))
@@ -158,12 +162,48 @@ impl File<'_> {
         self.front
             .maybe("robots", self.seo.robots.as_ref())
             .maybe("canonical", self.seo.canonical.as_ref());
+        self.social(&group);
         post_held(item, export, more, &mut self.held);
         let path = match (address.is_some(), date) {
             (true, Some(date)) => format!("content/{locale}/posts/{date}-{}.md", self.slug),
             _ => format!("drafts/{locale}/{}.md", self.slug),
         };
         Ok((path, address))
+    }
+
+    /// The keywords, share cards and pillar mark the plugins kept, as post
+    /// front matter holds them. A cornerstone post becomes the main post of
+    /// the topic `group`, its category's slug or else its own. Keywords
+    /// beyond the four secondary ones a post holds stay in the report.
+    fn social(&mut self, group: &str) {
+        let mut keywords = std::mem::take(&mut self.seo.focus_keywords).into_iter();
+        let focus = keywords.next();
+        let mut secondary: Vec<String> = Vec::new();
+        for word in keywords.chain(self.seo.related_keywords.iter().cloned()) {
+            if Some(&word) != focus.as_ref() && !secondary.contains(&word) {
+                secondary.push(word);
+            }
+        }
+        let beyond = secondary.split_off(secondary.len().min(MAX_SECONDARY_KEYWORDS));
+        if !beyond.is_empty() {
+            self.held.push(Held::FocusKeywords(beyond));
+        }
+        self.front
+            .maybe("focus_keyword", focus)
+            .list("secondary_keywords", &secondary);
+        let card = |card: &ShareWords| -> Parts {
+            [
+                ("title", card.title.as_deref().map(decoded)),
+                ("description", card.description.as_deref().map(decoded)),
+                ("image", card.image.clone()),
+            ]
+        };
+        let (x, facebook) = (card(&self.seo.x), card(&self.seo.facebook));
+        self.front
+            .groups("share_cards", &[("x", x), ("facebook", facebook)]);
+        if self.seo.pillar {
+            self.front.text("topic_group", group).yes("main_post");
+        }
     }
 
     /// The post's old path as an alias, when the old site and the blog share

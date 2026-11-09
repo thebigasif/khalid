@@ -1,0 +1,126 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-10-30-factory-orders-lift-shares/lead.jpg"
+sha256 = "daa2ed509ad58b6e82d925a99e4a2330d45487aed9c7445845c2ab622726bff9"
+source = "https://commons.wikimedia.org/wiki/File:001_Car_factory_assembly_line_-_Opel_factory_in_Gliwice,_Poland.jpg"
+licence = "CC BY 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/3.0"
+credit = "001 Car factory assembly line - Opel factory in Gliwice, Poland by Marek Ślusarczyk (Tupungato) Photo portfolio, via Wikimedia Commons"
+title = "001 Car factory assembly line - Opel factory in Gliwice, Poland"
+creator = "Marek Ślusarczyk (Tupungato) Photo portfolio"
+openverse = "commons:File:001 Car factory assembly line - Opel factory in Gliwice, Poland.jpg"
+needs_credit = true
+size = "1600x1066"
+
+[[photos]]
+file = "en/posts/2026-10-23-copper-slide-quiet-week/lead.jpg"
+sha256 = "278fae89bcd45ae11306468d062d59a16b3e3122c161ff09311d1151725cd78d"
+source = "https://commons.wikimedia.org/wiki/File:Orphan_Girl_Mine_headframe_(Butte,_Montana,_USA)_6.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Orphan Girl Mine headframe (Butte, Montana, USA) 6 by James St. John, via Wikimedia Commons"
+title = "Orphan Girl Mine headframe (Butte, Montana, USA) 6"
+creator = "James St. John"
+openverse = "commons:File:Orphan Girl Mine headframe (Butte, Montana, USA) 6.jpg"
+needs_credit = true
+size = "1600x1243"
+
+[[photos]]
+file = "en/posts/2026-10-16-varn-slips-after-rate-pause/lead.jpg"
+sha256 = "951497032466d2c022114fb9a99b9827abe1d3659d75026e9f280477b1bc529d"
+source = "https://commons.wikimedia.org/wiki/File:Stack_Mould_for_Copper_Coins_01.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Stack Mould for Copper Coins 01 by Gary Lee Todd, Ph.D., via Wikimedia Commons"
+title = "Stack Mould for Copper Coins 01"
+creator = "Gary Lee Todd, Ph.D."
+openverse = "commons:File:Stack Mould for Copper Coins 01.jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-09-harvest-lifts-small-firms/lead.jpg"
+sha256 = "4a21ef777343fc2d278c27822a9be86624af172b65fa6398b012855f24ecae5f"
+source = "https://commons.wikimedia.org/wiki/File:Wheat_harvest_on_the_Palouse.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Wheat harvest on the Palouse by an unknown author, via Wikimedia Commons"
+title = "Wheat harvest on the Palouse"
+creator = "an unknown author"
+openverse = "commons:File:Wheat harvest on the Palouse.jpg"
+needs_credit = false
+size = "1600x1087"
+
+[[photos]]
+file = "en/posts/2026-10-02-shipping-costs-ease/lead.jpg"
+sha256 = "fb51773bdca0dfbd87ba8f64354cf8348ed4f6183e1be56bf29e9a11f30cf37e"
+source = "https://commons.wikimedia.org/wiki/File:Aerial_photograph_of_a_cargo_ship.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Aerial photograph of a cargo ship by Wilfredor, via Wikimedia Commons"
+title = "Aerial photograph of a cargo ship"
+creator = "Wilfredor"
+openverse = "commons:File:Aerial photograph of a cargo ship.jpg"
+needs_credit = true
+size = "1600x1115"
+
+[[photos]]
+file = "en/posts/2026-10-27-earnings-season-sectors/lead.jpg"
+sha256 = "bc8907703d5577f0ffe168aabb1ba4ce828d26ef09de308f02d70b205978cc7e"
+source = "https://commons.wikimedia.org/wiki/File:Modern_warehouse_with_pallet_rack_storage_system.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Modern warehouse with pallet rack storage system by Axisadman, via Wikimedia Commons"
+title = "Modern warehouse with pallet rack storage system"
+creator = "Axisadman"
+openverse = "commons:File:Modern warehouse with pallet rack storage system.jpg"
+needs_credit = true
+size = "1600x1247"
+
+[[photos]]
+file = "en/posts/2026-10-20-yield-curve-explained/lead.jpg"
+sha256 = "336a3795b8a040e8f5d43e3c8a24e17cdf54cde60618a57c858a31337925d4fc"
+source = "https://commons.wikimedia.org/wiki/File:M%C3%BCnster,_LVM_--_2017_--_6351-7.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Münster, LVM -- 2017 -- 6351-7 by Dietmar Rabich, via Wikimedia Commons"
+title = "Münster, LVM -- 2017 -- 6351-7"
+creator = "Dietmar Rabich"
+openverse = "commons:File:Münster, LVM -- 2017 -- 6351-7.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-13-varnholm-50-ten-years/lead.jpg"
+sha256 = "098623f018b9f5cef65a9de9a4c25de82e03c931fadbf02ae5be1620a76f9774"
+source = "https://commons.wikimedia.org/wiki/File:SBB_Re_4-4_II_and_Re_6-6_above_Erstfeld.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "SBB Re 4-4 II and Re 6-6 above Erstfeld by Kabelleger / David Gubler, via Wikimedia Commons"
+title = "SBB Re 4-4 II and Re 6-6 above Erstfeld"
+creator = "Kabelleger / David Gubler"
+openverse = "commons:File:SBB Re 4-4 II and Re 6-6 above Erstfeld.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-06-copper-price-factory-orders/lead.jpg"
+sha256 = "ee495ee22acd5830aaf3968c15ce92ef904d10cab87613760dda40678c12160f"
+source = "https://commons.wikimedia.org/wiki/File:Electricity_Pylons_-_geograph.org.uk_-_2257497.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Electricity Pylons - geograph.org.uk - 2257497 by Geographer, via Wikimedia Commons"
+title = "Electricity Pylons - geograph.org.uk - 2257497"
+creator = "Geographer"
+openverse = "commons:File:Electricity Pylons - geograph.org.uk - 2257497.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-29-share-index-weights/lead.jpg"
+sha256 = "a3b376aded59c1862219a7a4aa4e837b890bd5149353c71b945d864c292a0a9a"
+source = "https://commons.wikimedia.org/wiki/File:Container_Port_Cranes,_Southampton_Docks_-_2_-_geograph.org.uk_-_3831282.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Container Port Cranes, Southampton Docks - 2 - geograph.org.uk - 3831282 by Terry Robinson, via Wikimedia Commons"
+title = "Container Port Cranes, Southampton Docks - 2 - geograph.org.uk - 3831282"
+creator = "Terry Robinson"
+openverse = "commons:File:Container Port Cranes, Southampton Docks - 2 - geograph.org.uk - 3831282.jpg"
+needs_credit = true
+size = "1600x1067"
+

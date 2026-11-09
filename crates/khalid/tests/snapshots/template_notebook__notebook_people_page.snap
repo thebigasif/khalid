@@ -1,0 +1,27 @@
+---
+source: crates/khalid/tests/template_notebook.rs
+expression: "shown(&out, \"authors/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<h1>Authors</h1>
+<ul class="people-list authors-list" role="list">
+<li class="person-card">
+<div>
+<p class="person-name"><a href="/blog/authors/asif/">Asif</a></p>
+<p class="person-role">Founder of SerpDad</p>
+<p class="person-count">3 posts</p>
+</div>
+</li>
+<li class="person-card">
+<div>
+<p class="person-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a></p>
+<p class="person-role">Technical SEO editor</p>
+<p class="person-count">2 posts</p>
+</div>
+</li>
+</ul>

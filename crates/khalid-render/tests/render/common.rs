@@ -28,6 +28,7 @@ pub(crate) fn demo_site(tag: &str) -> RenderSite {
         locale: locale(tag),
         home: prefix.to_owned(),
         stylesheet: "/blog/assets/site.0123abcd.css".to_owned(),
+        body_font: None,
         nav: Nav {
             primary: vec![
                 link("Posts", prefix),
@@ -42,6 +43,7 @@ pub(crate) fn demo_site(tag: &str) -> RenderSite {
         search: Some(format!("{prefix}search/")),
         script: None,
         subscribe: None,
+        breadcrumbs: khalid_render::BreadcrumbStyle::default(),
         share_image: Some(ShareImage {
             url: url("https://www.example.com/blog/assets/share.png"),
             alt: "Field Notes on SEO, a blog about search".to_owned(),

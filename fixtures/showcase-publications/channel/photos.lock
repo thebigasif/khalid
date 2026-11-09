@@ -1,0 +1,135 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-07-08-first-bowl-centring-clay/lead.jpg"
+sha256 = "4c55b64d0470a3fc455281c68e21dc914c1925ef61603511c87c33843c2eadcc"
+source = "https://commons.wikimedia.org/wiki/File:The_Wheel_(135616779).jpeg"
+licence = "CC BY 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/3.0"
+credit = "The Wheel by Stephanie Pakrul, via Wikimedia Commons"
+title = "The Wheel"
+creator = "Stephanie Pakrul"
+openverse = "commons:File:The Wheel (135616779).jpeg"
+needs_credit = true
+size = "1600x1280"
+
+
+[[photos]]
+file = "en/posts/2026-07-22-first-bowl-pulling-walls/lead.jpg"
+sha256 = "94f48bc0cd4cf5988bc4d443eeddb579322b651e75102a704ddd63f71af579bf"
+source = "https://commons.wikimedia.org/wiki/File:Pottery_at_the_Chokhi_Dhani_Resort_Panchkula_31.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Pottery at the Chokhi Dhani Resort Panchkula 31 by Kritzolina, via Wikimedia Commons"
+title = "Pottery at the Chokhi Dhani Resort Panchkula 31"
+creator = "Kritzolina"
+openverse = "commons:File:Pottery at the Chokhi Dhani Resort Panchkula 31.jpg"
+needs_credit = true
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-08-05-first-bowl-trimming-foot-ring/lead.jpg"
+sha256 = "56b8ca9c0ddbcad30114bef1c9c7c83b6771898414cefeca838d080ff55ccdbf"
+source = "https://commons.wikimedia.org/wiki/File:A_potter_making_pots_on_the_potters_wheel.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "A potter making pots on the potters wheel by VKeem, via Wikimedia Commons"
+title = "A potter making pots on the potters wheel"
+creator = "VKeem"
+openverse = "commons:File:A potter making pots on the potters wheel.jpg"
+needs_credit = true
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-08-19-celadon-glaze-recipe/lead.jpg"
+sha256 = "0896f6e6de106f13c91ed0fe2b580791ad7a3ac4d658bda1788963a91b4c1977"
+source = "https://commons.wikimedia.org/wiki/File:Light_green_ceramic_bowl_1.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Light green ceramic bowl 1 by W.carter, via Wikimedia Commons"
+title = "Light green ceramic bowl 1"
+creator = "W.carter"
+openverse = "commons:File:Light green ceramic bowl 1.jpg"
+needs_credit = true
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-09-02-dip-glaze-three-ways/lead.jpg"
+sha256 = "667f71e9e053493819f026292107b6bbdb273b502948a5c2910c079842d7bac8"
+source = "https://commons.wikimedia.org/wiki/File:Glazing_with_mineral-based,_hand-mixed_glazes_Taiz%C3%A9_pottery_workshop.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Glazing with mineral-based, hand-mixed glazes Taizé pottery workshop by Chriewue, via Wikimedia Commons"
+title = "Glazing with mineral-based, hand-mixed glazes Taizé pottery workshop"
+creator = "Chriewue"
+openverse = "commons:File:Glazing with mineral-based, hand-mixed glazes Taizé pottery workshop.jpg"
+needs_credit = true
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-09-16-loading-gas-kiln/lead.jpg"
+sha256 = "7b101d4c9afd032f69653bc5e93d03ddf8a274417b71072e5563d88456570dec"
+source = "https://commons.wikimedia.org/wiki/File:Kiln_Furniture_Before_Glost_FIring.png"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Kiln Furniture Before Glost FIring by Encik Tekateki, via Wikimedia Commons"
+title = "Kiln Furniture Before Glost FIring"
+creator = "Encik Tekateki"
+openverse = "commons:File:Kiln Furniture Before Glost FIring.png"
+needs_credit = true
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-09-30-pots-crack-kiln/lead.jpg"
+sha256 = "9f4b31886ca8d96c983d30ca5beda62fa8be9dac859461ba9c50236a2692af42"
+source = "https://commons.wikimedia.org/wiki/File:Pots_assembled_for_firing_in_a_kiln.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Pots assembled for firing in a kiln by VKeem, via Wikimedia Commons"
+title = "Pots assembled for firing in a kiln"
+creator = "VKeem"
+openverse = "commons:File:Pots assembled for firing in a kiln.jpg"
+needs_credit = true
+size = "1600x1066"
+
+
+[[photos]]
+file = "en/posts/2026-10-14-handmade-mugs-week/lead.jpg"
+sha256 = "5dd1c3a0165ce1fae58b1524b3ddb3a599235eced1171fd36c0c89a82d696645"
+source = "https://wordpress.org/photos/photo/6006a36cab/"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A row of handcrafted ceramic cups showcases the beauty of traditional pottery. Their warm, earthy tones and simple design reflect everyday craftsmanship and cultural heritage. Captured at Palazhi, Kozhikode. by Bigul Malayi, via wordpress"
+title = "A row of handcrafted ceramic cups showcases the beauty of traditional pottery. Their warm, earthy tones and simple design reflect everyday craftsmanship and cultural heritage. Captured at Palazhi, Kozhikode."
+creator = "Bigul Malayi"
+openverse = "ece6c6bd-6ce7-4afd-98e8-d8bc4405cc29"
+needs_credit = false
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-10-28-filming-pottery-setup/lead.jpg"
+sha256 = "ab529cb99129898a1ab1a26f6635f132956e046eb3372a45360ac18b72edfe4d"
+source = "https://commons.wikimedia.org/wiki/File:Nikon_camera_on_a_table_beside_a_tripod.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Nikon camera on a table beside a tripod by Lilly Rum rumandraisin, via Wikimedia Commons"
+title = "Nikon camera on a table beside a tripod"
+creator = "Lilly Rum rumandraisin"
+openverse = "commons:File:Nikon camera on a table beside a tripod.jpg"
+needs_credit = false
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-11-04-pulling-handles-mugs/lead.jpg"
+sha256 = "0750df1f72eddff9c3423abfe88216f89b8f7c215e024ad1c0dc8ab5a67176df"
+source = "https://wordpress.org/photos/photo/5836a0b368/"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A light blue ceramic mug with a webbed, crackled pattern sitting on a matching, wavy-edged saucer. by Alina Kakshapati, via wordpress"
+title = "A light blue ceramic mug with a webbed, crackled pattern sitting on a matching, wavy-edged saucer."
+creator = "Alina Kakshapati"
+openverse = "3e88ed44-04cd-4f3e-9b0b-bd0a530e073b"
+needs_credit = false
+size = "1600x1200"
+

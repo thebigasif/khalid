@@ -1,0 +1,22 @@
+{#- How wide Workbench draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Some places show the same posts as a larger place on the same page,
+    so they say its width and the browser fetches each picture once.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "featured": "(min-width: 66.5rem) calc(12vw + 41rem), (min-width: 40rem) calc(67vw - 5rem), 100vw",
+  "home/image": "(min-width: 71rem) calc(5vw + 14.25rem), (min-width: 53.5rem) calc(34vw - 3.5rem), calc(47vw - 1rem)",
+  "lead": "(min-width: 80rem) 61rem, (min-width: 31.5rem) calc(18vw + 31rem), calc(100vw - 2rem)",
+  "list/image": "(min-width: 71rem) calc(5vw + 14.25rem), (min-width: 53.5rem) calc(34vw - 3.5rem), calc(47vw - 1rem)",
+  "author/image": "(min-width: 71rem) calc(5vw + 14.25rem), (min-width: 53.5rem) calc(34vw - 3.5rem), calc(47vw - 1rem)",
+  "photo": "12rem",
+  "panel/image": "(min-width: 71rem) calc(5vw + 14.25rem), (min-width: 53.5rem) calc(34vw - 3.5rem), calc(47vw - 1rem)"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

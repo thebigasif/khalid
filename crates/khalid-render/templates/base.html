@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+{% if site.body_font %}<link rel="preload" href="{{ site.body_font }}" as="font" type="font/woff2" crossorigin>{{ "\n" }}{% endif -%}
 {% if meta.seo_head %}{{ meta.seo_head }}<link rel="stylesheet" href="{{ site.stylesheet }}">
 {% else %}<title>{{ meta.title }}</title>
 <meta name="description" content="{{ meta.description }}">
@@ -28,25 +29,34 @@
 {% endif %}{% endif %}{% if brand.icon %}<link rel="icon" href="{{ brand.icon }}">
 {% endif %}{% if site.script %}<script src="{{ site.script.src }}" integrity="{{ site.script.integrity }}" defer data-copy="{{ t.copy_link }}" data-copied="{{ t.link_copied }}" data-close="{{ t.close }}" data-contents="{{ t.contents }}" data-search="{{ t.search_label }}" data-find="{{ t.search_button }}"{% if "link_previews" in site.features %} data-previews{% endif %}></script>
 {% endif %}</head>
-<body>
+<body{% include "body_attrs.html" %}>
 <a class="skip-link" href="#main">{{ t.skip_link }}</a>
 {% if site.announcement %}<aside class="announcement" aria-label="{{ t.announcement }}"><p>{% if site.announcement.href %}<a href="{{ site.announcement.href }}">{{ site.announcement.text }}</a>{% else %}{{ site.announcement.text }}{% endif %}</p></aside>
 {% endif %}<header class="site-header">
 {% if template.options.logo and brand.logo %}<a class="site-name site-logo" href="{{ site.home }}"><img src="{{ brand.logo }}" alt="{{ site.name }}" decoding="async"></a>
 {% else %}<a class="site-name" href="{{ site.home }}">{{ site.name }}</a>
-{% endif %}{% if site.nav.primary %}<nav aria-label="{{ t.nav_primary }}">
+{% endif %}{% if site.nav.primary %}<nav class="nav-bar" aria-label="{{ t.nav_primary }}">
 <ul>
 {% for link in site.nav.primary %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>
 {% endfor %}</ul>
 </nav>
 {% endif %}{% set finder = template.options.header_search %}{% if site.search and "search_shortcut" in site.features and finder != "none" %}<a class="search-link" href="{{ site.search }}"{% if finder == "button" %} data-dialog{% endif %}>{{ t.search_link }}</a>
 {% endif %}{% if template.cta and template.options.cta_button %}<a class="button header-button" href="{{ template.cta.href }}">{{ template.cta.label }}</a>
+{% endif %}{% if site.nav.primary %}<details class="nav-menu">
+<summary>{{ t.menu }}</summary>
+<nav aria-label="{{ t.nav_primary }}">
+<ul>
+{% for link in site.nav.primary %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>
+{% endfor %}</ul>
+{% if template.cta and template.options.cta_button %}<a class="button menu-button" href="{{ template.cta.href }}">{{ template.cta.label }}</a>
+{% endif %}</nav>
+</details>
 {% endif %}</header>
 <main id="main" tabindex="-1">
 {% if template.options.back_link and meta.kind == "article" %}<p class="back-link"><a href="{{ site.home }}">{{ t.back_to_posts }}</a></p>
-{% endif %}{% if template.options.breadcrumbs and meta.breadcrumbs %}<nav class="breadcrumbs" aria-label="{{ t.breadcrumbs }}">
+{% endif %}{% if template.options.breadcrumbs and meta.breadcrumbs %}<nav class="breadcrumbs"{% if site.breadcrumbs.bold_last %} data-bold-last{% endif %} aria-label="{{ t.breadcrumbs }}">
 <ol>
-{% for crumb in meta.breadcrumbs %}<li><a href="{{ crumb.href }}"{% if loop.last %} aria-current="page"{% endif %}>{{ crumb.name }}</a></li>
+{% for crumb in meta.breadcrumbs %}<li>{% if not loop.first %}<span class="crumb-sep" aria-hidden="true">{{ site.breadcrumbs.separator }}</span>{% endif %}<a href="{{ crumb.href }}"{% if loop.last %} aria-current="page"{% endif %}>{{ crumb.name }}</a></li>
 {% endfor %}</ol>
 </nav>
 {% endif %}{% block main %}{% endblock %}
@@ -69,6 +79,7 @@
 <ul>
 {% for link in site.nav.footer %}<li><a href="{{ link.href }}"{% if link.href == meta.path %} aria-current="page"{% endif %}>{{ link.label }}</a></li>
 {% endfor %}{% set sitemap = site.home ~ "sitemap/" %}<li><a href="{{ sitemap }}"{% if sitemap == meta.path %} aria-current="page"{% endif %}>{{ t.sitemap_title }}</a></li>
+{% set choices = site.home ~ "privacy-choices/" %}<li><a href="{{ choices }}"{% if choices == meta.path %} aria-current="page"{% endif %}>{{ t.privacy_choices_title }}</a></li>
 </ul>
 </nav>
 {% from "slots.html" import preferred_source %}{{ preferred_source(template.options, t, "footer") }}{% if site.main_site %}<p><a href="{{ site.main_site.href }}">{{ site.main_site.label }}</a></p>

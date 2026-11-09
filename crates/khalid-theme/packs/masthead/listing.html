@@ -1,0 +1,20 @@
+{#- Masthead's lists (a section, a tag, the archive, date and collection
+    pages): the list's name centred under the nameplate rule, its intro,
+    then its posts in the shape the front option sets, picture cards in a
+    grid or one story a row. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+<header class="list-header">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{% if template.options.front == "list" %}<div class="front front-list">{% else %}<div class="front front-grid">{% endif %}
+{{ cards(page.posts, 2, "row" if template.options.front == "list" else "image") }}
+</div>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

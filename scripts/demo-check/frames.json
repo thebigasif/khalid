@@ -1,0 +1,4 @@
+{
+  "about": "Each template's minimum frame, in px at 1440 px and wider, is the frame in its crates/khalid-theme/packs/<name>/pack.toml: the narrowest the site header, and the main part of the home, category and tag pages, may draw. layout.mjs fails a page below it. \"reading_pending\" lists the templates whose post reading check is not enforced yet, because their redesign has not landed; each redesign removes its own name. Until then a template reads in system fonts, whose widths differ from machine to machine, so its line length is not stable enough to check.",
+  "reading_pending": []
+}

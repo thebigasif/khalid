@@ -1,0 +1,1 @@
+warn focus-subheading-share: internal links: in 3 of 3 subheadings

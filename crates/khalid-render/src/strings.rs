@@ -3,17 +3,30 @@
 use std::collections::BTreeMap;
 
 use khalid_core::Locale;
-use rust_embed::RustEmbed;
 
 use crate::RenderError;
+use crate::archive;
 
 /// The language whose strings fill in for a language with no file.
 const FALLBACK_LANGUAGE: &str = "en";
 
-/// The strings files, built into the binary.
-#[derive(RustEmbed)]
-#[folder = "strings/"]
-struct Files;
+/// Where the strings files sit in the built-in archive, such as
+/// `strings/en.toml`. A language's words for one part of the site may sit
+/// in their own folder, such as `strings/privacy/en.toml`, so no file grows
+/// too long; they join the language's table.
+const FOLDER: &str = "strings/";
+
+/// The built-in strings of `locale`'s language, as templates read them under
+/// `t`, or the English ones when the language has no file, for words
+/// written outside a template, such as the month names in a title.
+///
+/// # Errors
+///
+/// [`RenderError::Strings`] when a built-in strings file cannot be read.
+pub fn builtin_strings(locale: &Locale) -> Result<BTreeMap<String, String>, RenderError> {
+    let strings = Strings::load()?;
+    Ok(strings.for_locale(locale).cloned().unwrap_or_default())
+}
 
 /// Every built-in strings table, by language.
 #[derive(Debug, Clone)]
@@ -22,22 +35,28 @@ pub(crate) struct Strings {
 }
 
 impl Strings {
-    /// Reads every built-in strings file.
+    /// Reads every built-in strings file, joining each part file into its
+    /// language's table.
     pub(crate) fn load() -> Result<Self, RenderError> {
-        let mut tables = BTreeMap::new();
-        for file in Files::iter() {
-            let Some(language) = file.strip_suffix(".toml") else {
+        let mut tables: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
+        let files = archive::built_in();
+        for name in files.names() {
+            let Some(language) = name
+                .strip_prefix(FOLDER)
+                .and_then(|file| file.strip_suffix(".toml"))
+                .map(|file| file.rsplit('/').next().unwrap_or(file))
+            else {
                 continue;
             };
-            let Some(content) = Files::get(&file) else {
+            let Some(text) = files.get(name) else {
                 continue;
             };
-            let text = String::from_utf8_lossy(&content.data);
-            let table = toml::from_str(&text).map_err(|source| RenderError::Strings {
-                language: language.to_owned(),
-                source,
-            })?;
-            tables.insert(language.to_owned(), table);
+            let table: BTreeMap<String, String> =
+                toml::from_str(text).map_err(|source| RenderError::Strings {
+                    language: language.to_owned(),
+                    source,
+                })?;
+            tables.entry(language.to_owned()).or_default().extend(table);
         }
         Ok(Self { tables })
     }
@@ -70,6 +89,36 @@ mod tests {
             let keys: Vec<&String> = strings.tables[language].keys().collect();
             assert_eq!(keys, english, "strings/{language}.toml");
         }
+    }
+
+    #[test]
+    fn every_key_reads_as_its_files_say() {
+        let strings = Strings::load().unwrap();
+        for (language, files) in [
+            (
+                "en",
+                [
+                    include_str!("../strings/en.toml"),
+                    include_str!("../strings/privacy/en.toml"),
+                ],
+            ),
+            ("de", [include_str!("../strings/de.toml"), ""]),
+        ] {
+            let mut want = BTreeMap::new();
+            for file in files {
+                let part: BTreeMap<String, String> = toml::from_str(file).unwrap();
+                want.extend(part);
+            }
+            assert_eq!(strings.tables[language], want, "strings/{language}.toml");
+        }
+        assert_eq!(strings.languages().collect::<Vec<_>>(), ["de", "en"]);
+    }
+
+    #[test]
+    fn a_part_file_fills_in_its_language() {
+        let strings = Strings::load().unwrap();
+        assert_eq!(strings.tables["en"]["privacy_title"], "Privacy");
+        assert_eq!(strings.tables["de"]["privacy_title"], "Datenschutz");
     }
 
     #[test]

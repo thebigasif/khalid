@@ -1,0 +1,99 @@
+# Northlight, a made-up photo journal written for the Aperture template's
+# demo. Every photograph is by one photographer, Simo Räsänen, under CC
+# BY-SA 4.0 (ATTRIBUTION.md). Each key and table here replaces the
+# showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Northlight"
+languages = ["en"]
+
+[template.cta]
+label = "See every picture"
+href = "/blog/archive/"
+note = "Thirteen pictures so far, newest first, each with its camera details."
+
+# The Aperture template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["One photograph at a time from the fells, fjords and forests of the north, with how each was made."]
+stories = 5
+
+[announcement]
+text = "New: a hanging bridge in Spansdalen, after ten at night."
+href = "/blog/hanging-bridge-night/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Photographs of the north and how each was made"
+
+[seo.ai_page]
+covers = "Northlight shows one photograph at a time from Lapland, Norway, the Dolomites and southern Finland. Each post is one picture with its place, the light, and its camera, lens and exposure, read from the photograph's own data."
+cite = "Credit the photographer, Simo Räsänen (Ximonic), under CC BY-SA 4.0, and link the post you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Northlight"
+email = "hello@example.com"
+founded = "2025-06-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Northlight logo"
+width = 320
+height = 80
+
+# Sign-ups for the new picture by email, under the journal's own name.
+# The mail server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Northlight"
+postal_address = "Northlight, Kalevankatu 1, 00100 Helsinki, Finland"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Lapland"
+href = "/blog/category/lapland/"
+language = "en"
+
+[[nav.primary]]
+label = "Norway"
+href = "/blog/category/norway/"
+language = "en"
+
+[[nav.primary]]
+label = "Dolomites"
+href = "/blog/category/dolomites/"
+language = "en"
+
+[[nav.primary]]
+label = "Archive"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Northlight"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Southern Finland"
+href = "/blog/category/southern-finland/"
+language = "en"
+
+[[nav.footer]]
+label = "People"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

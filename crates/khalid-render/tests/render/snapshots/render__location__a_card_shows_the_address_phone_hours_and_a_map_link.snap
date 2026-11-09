@@ -1,0 +1,24 @@
+---
+source: crates/khalid-render/tests/render/location.rs
+expression: card
+---
+<div class="location" data-hours="mon 09:00 12:30,tue 09:00 12:30,mon 14:00 17:30" data-geo="53.7997,-1.5492">
+<address>
+<strong>Joe's &amp; Sons</strong><br />
+12 Mill Lane<br />
+Leeds LS1 4AB<br />
+<a href="tel:+441134960000">+44 113 496 0000</a>
+</address>
+<p class="location-now" data-open="Open now" data-closed="Closed now" hidden></p>
+<table class="location-hours">
+<caption>Opening hours</caption>
+<tr><th scope="row">Monday</th><td>09:00 to 12:30, 14:00 to 17:30</td></tr>
+<tr><th scope="row">Tuesday</th><td>09:00 to 12:30</td></tr>
+<tr><th scope="row">Wednesday</th><td>Closed</td></tr>
+<tr><th scope="row">Thursday</th><td>Closed</td></tr>
+<tr><th scope="row">Friday</th><td>Closed</td></tr>
+<tr><th scope="row">Saturday</th><td>Closed</td></tr>
+<tr><th scope="row">Sunday</th><td>Closed</td></tr>
+</table>
+<p><a href="https://www.openstreetmap.org/?mlat=53.7997&amp;mlon=-1.5492#map=17/53.7997/-1.5492">Map and directions</a></p>
+</div>

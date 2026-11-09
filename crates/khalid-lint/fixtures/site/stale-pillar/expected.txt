@@ -1,0 +1,1 @@
+en/internal-links: warn stale-pillar

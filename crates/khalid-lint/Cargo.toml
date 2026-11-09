@@ -16,11 +16,16 @@ repository.workspace = true
 publish = true
 
 [dependencies]
+brotli = "9"
 chrono = { version = "0.4", default-features = false, features = ["serde"] }
 khalid-core.workspace = true
+rust-stemmers = "1.2"
 serde.workspace = true
 thiserror.workspace = true
 toml = "1.1"
+
+[build-dependencies]
+brotli = "9"
 
 [dev-dependencies]
 khalid-core = { workspace = true, features = ["test-util"] }

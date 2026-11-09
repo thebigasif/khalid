@@ -1,12 +1,14 @@
 //! The numbers behind the rules that measure, set in `lint.toml`.
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// The limits a site can tune in the `[thresholds]` table of `lint.toml`.
 ///
 /// Each key is written in kebab-case, such as `thin-post-words = 500`. A key
-/// the file leaves out keeps the default documented on its field.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+/// the file leaves out keeps the default documented on its field. It
+/// serialises with the same keys, so a settings screen can show and write
+/// every limit with its current value.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields, rename_all = "kebab-case")]
 #[non_exhaustive]
 pub struct Thresholds {
@@ -69,7 +71,8 @@ pub struct Thresholds {
     /// words with small grammar differences, not merely a topic.
     pub heading_duplicate_percent: usize,
     /// The most words one paragraph may hold before it buries its ideas.
-    /// Default 225, about the top of the 75 to 225 word target.
+    /// Default 150, as in Yoast. Sites that set `paragraph-max-words` keep
+    /// their own limit; before 1.3 the default was 225.
     pub paragraph_max_words: usize,
     /// The fewest times per thousand words the focus keyword should appear
     /// in a post of 100 words or more. Default 5, Rank Math's floor of half
@@ -79,6 +82,54 @@ pub struct Thresholds {
     /// before it reads as stuffing. Default 25, Rank Math's ceiling of two
     /// and a half percent.
     pub focus_max_per_thousand_words: usize,
+    /// The most words that carry meaning a focus keyword may hold before
+    /// few people search for exactly that phrase. Default 4, as in Yoast;
+    /// filler words such as "to" or "the" do not count.
+    pub focus_max_words: usize,
+    /// The smallest share in percent of the second and third level
+    /// subheadings that should hold the focus keyword, once a post has
+    /// three or more. Default 30, as in Yoast.
+    pub focus_subheading_min_percent: usize,
+    /// The largest share in percent of the second and third level
+    /// subheadings that may hold the focus keyword before they read as
+    /// repetitive. Default 75, as in Yoast.
+    pub focus_subheading_max_percent: usize,
+    /// The fewest words a pillar post, the main post of a topic group,
+    /// should hold. Default 900, Yoast's floor for cornerstone content.
+    pub pillar_min_words: usize,
+    /// The widest title search results show, in pixels of Arial at 20
+    /// pixels. Default 600, where Google cuts a desktop result's title.
+    /// `title-max-chars` still judges a title with characters the width
+    /// table lacks.
+    pub title_max_pixels: usize,
+    /// How many months a pillar post may go without an update before it
+    /// is stale. Default 6, as Yoast flags stale cornerstone content:
+    /// the main post of a topic should stay current.
+    pub pillar_stale_months: u32,
+    /// A sentence with more words than this is long. Default 20, as in
+    /// Yoast for English and German.
+    pub sentence_max_words: usize,
+    /// The largest share in percent of sentences that may be long, in a
+    /// text of 200 words or more. Default 25, as in Yoast.
+    pub long_sentences_max_percent: usize,
+    /// The most words of prose between two second or third level
+    /// subheadings. Default 300, as in Yoast.
+    pub section_max_words: usize,
+    /// How many sentences in a row in one paragraph may start with the
+    /// same word before it reads as monotonous. Default 3, as in Yoast:
+    /// three in a row are flagged.
+    pub repeated_openers: usize,
+    /// The smallest share in percent of sentences that should hold a
+    /// linking word, such as "because" or "zum Beispiel", in a text of 200
+    /// words or more. Default 30, as in Yoast.
+    pub transition_min_percent: usize,
+    /// The largest share in percent of sentences that may be in the
+    /// passive voice, in a text of 200 words or more. Default 10, as in
+    /// Yoast.
+    pub passive_max_percent: usize,
+    /// The largest share in percent of words that may be long and rare,
+    /// in a text of 200 words or more. Default 10, as in Yoast.
+    pub complex_words_max_percent: usize,
 }
 
 impl Default for Thresholds {
@@ -87,7 +138,7 @@ impl Default for Thresholds {
             answer_min_words: 40,
             answer_max_words: 60,
             heading_duplicate_percent: 70,
-            paragraph_max_words: 225,
+            paragraph_max_words: 150,
             thin_post_words: 300,
             same_link_text_max: 3,
             title_max_chars: 60,
@@ -105,6 +156,19 @@ impl Default for Thresholds {
             hard_reading_index: 60,
             focus_min_per_thousand_words: 5,
             focus_max_per_thousand_words: 25,
+            focus_max_words: 4,
+            focus_subheading_min_percent: 30,
+            focus_subheading_max_percent: 75,
+            pillar_min_words: 900,
+            title_max_pixels: 600,
+            pillar_stale_months: 6,
+            sentence_max_words: 20,
+            long_sentences_max_percent: 25,
+            section_max_words: 300,
+            repeated_openers: 3,
+            transition_min_percent: 30,
+            passive_max_percent: 10,
+            complex_words_max_percent: 10,
         }
     }
 }

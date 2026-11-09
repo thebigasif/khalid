@@ -1,0 +1,140 @@
+/* Dialogue (docs/templates/dialogue.md): an interview show. A wide frame
+   on warm paper, square shapes and hairlines, an ink rule under the
+   header, and the quote line: the guest's own words in large italic
+   behind a big opening mark in the accent, on the front page, in every
+   guest row, at the top of each episode and on each pull quote. The
+   section parts' own rules come first (the build adds the parts this
+   pack's templates import); these set Dialogue's look over them. Every
+   colour is a token or a mix of tokens. */
+:root {
+  --dl-frame: 76rem;
+  --dl-column: 37rem;
+  --dl-tint: color-mix(in oklab, var(--color-accent) 7%, var(--color-background));
+  --hero-title: clamp(2.5rem, 1.5rem + 3.5vw, 4.5rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--dl-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: var(--dl-column); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--dl-column) + 18rem); }
+main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--dl-column); margin-inline: auto; }
+h1, h2, h3 { letter-spacing: -0.01em; }
+
+/* The header: the name in the serif over an ink rule, plain menu links
+   underlined in the accent when current. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.125rem; border-block-end: 2px solid var(--color-text); }
+.site-name { font-family: var(--font-heading); font-size: 1.625rem; font-weight: var(--heading-weight); color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0.25rem 1.25rem; }
+.site-header nav a { color: var(--color-text); font-size: 1rem; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { text-decoration: underline 3px var(--color-accent); text-underline-offset: 0.4em; }
+.search-link { color: var(--color-text); font-size: 1rem; }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: square, filled with the accent. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 0; font: 600 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* Section labels: small capitals after a round "on air" light. */
+.section-label, :is(.dialogue-section, .related, .mentions, .author-conversations, .author-others, .topic-tabs, .media-row) > h2, .post-footer > h2 { display: flex; align-items: center; gap: 0.625rem; margin-block: 0 1.25rem; color: var(--color-text); font-family: var(--font-body); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.1em; line-height: 1.3; text-transform: uppercase; }
+.section-label::before, :is(.dialogue-section, .related, .author-conversations) > h2::before { content: ""; flex: none; inline-size: 0.625rem; block-size: 0.625rem; background: var(--color-accent); border-radius: 50%; }
+
+/* The front page: the hero with its listen links, the latest guest, the
+   conversations, then the topics beside the notes. */
+.hero { padding-block-start: clamp(2rem, 1rem + 3vw, 4rem); }
+.hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; }
+.listen { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-block-start: 1.75rem; }
+.listen-title { margin: 0; color: var(--color-muted); font-size: var(--text-small); font-weight: 600; }
+.listen-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.listen-links a { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding-inline: 1rem; border: 1px solid var(--color-text); color: var(--color-text); font-size: 1rem; font-weight: 600; text-decoration: none; }
+.listen-links a:hover { background: var(--color-text); color: var(--color-background); }
+.latest-guest, .conversations, .dialogue-section, .dialogue-aside { margin-block-end: var(--space-section); }
+.latest-guest { padding-block-start: 1.25rem; border-block-start: 2px solid var(--color-text); }
+.latest-guest-body { display: grid; gap: 1.5rem 3rem; align-items: center; }
+@media (min-width: 56rem) { .latest-guest-body { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); } }
+.latest-guest-picture .image { margin: 0; }
+.latest-guest-picture img { inline-size: 100%; block-size: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.latest-guest-text { display: flex; flex-direction: column; gap: 0.75rem; min-inline-size: 0; }
+.latest-guest-kicker { margin: 0; color: var(--color-muted); font-size: var(--text-small); font-weight: 600; }
+.latest-guest-name { margin: 0; font-family: var(--font-heading); font-size: clamp(2.25rem, 1.5rem + 3vw, 4rem); font-weight: var(--heading-weight); line-height: 1; letter-spacing: -0.02em; }
+.latest-guest-role { margin: 0; color: var(--color-muted); font-size: 1.125rem; }
+.latest-guest-text .quote-line { margin-block: 0.75rem; }
+.latest-guest-text :is(h2, h3, h4) { margin: 0; font-size: 1.375rem; line-height: 1.3; }
+.latest-guest-text :is(h2, h3, h4) a { color: var(--color-text); }
+.latest-guest-text :is(h2, h3, h4) a:hover { color: var(--color-link); }
+.quote-line-large { font-size: clamp(1.5rem, 1.25rem + 1vw, 2.125rem); line-height: 1.25; padding-inline-start: 2.75rem; }
+.quote-line-large::before { font-size: 2.25em; }
+.guest-row-name { font-weight: var(--heading-weight); }
+.guest-row-meta a { color: var(--color-link); }
+.dialogue-aside { display: grid; gap: 2.5rem 4rem; align-items: start; }
+@media (min-width: 60rem) { .dialogue-aside:has(> .show-topics + .show-notes) { grid-template-columns: minmax(14rem, 1fr) minmax(0, 2fr); } }
+.topic-links { display: block; margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--color-border); }
+.topic-links a { display: flex; align-items: center; min-block-size: 3rem; border-block-end: 1px solid var(--color-border); color: var(--color-text); font-family: var(--font-heading); font-size: 1.25rem; text-decoration: none; }
+.topic-links a:hover { color: var(--color-link); text-decoration: underline; }
+.show-topics, .show-notes { min-inline-size: 0; }
+.dialogue-section .view-all { margin-block: 1rem 0; }
+
+/* Lists and the hosts page: the kind, the name, the intro over a rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 1rem; color: var(--color-text); }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-link); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* An episode: the topic, the title, the name plate, the quote line. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.1; }
+.topic-label { margin-block: 0 0.75rem; font-size: var(--text-small); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.topic-label a { text-decoration: none; }
+.topic-label a:hover { text-decoration: underline; }
+.post-header .dek { font-size: 1.25rem; line-height: 1.5; }
+.name-plate { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-block: 1.5rem 0; border-block: 1px solid var(--color-text); }
+.name-plate-cell { min-inline-size: 0; padding-block: 1rem; padding-inline-end: clamp(0.75rem, 2vw, 1.25rem); }
+.name-plate-cell + .name-plate-cell { padding-inline: clamp(0.75rem, 2vw, 1.25rem) 0; border-inline-start: 1px solid var(--color-border); }
+.name-plate-label { margin: 0 0 0.5rem; color: var(--color-muted); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.name-plate address { font-style: normal; }
+.name-plate .people { margin: 0; }
+.name-plate-name { margin: 0; overflow-wrap: anywhere; font-family: var(--font-heading); font-size: 1.375rem; font-weight: var(--heading-weight); line-height: 1.2; }
+.name-plate-name + .person-role { margin-block-start: 0.25rem; }
+.post-meta { margin-block-start: 1rem; font-size: 1rem; }
+.post-meta .person a, .name-plate .person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover, .name-plate .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .name-plate .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; color: var(--color-muted); }
+.post-length::before { content: "·"; margin-inline: 0.5rem; }
+.post-header > .quote-line { margin-block: 2rem; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+
+/* Pull quotes in the text look like the quote line; a transcript's bold
+   speaker names, in a toggle, are small labels in the accent. */
+.post-body > blockquote { position: relative; margin-block: 2rem; padding: 0; padding-inline-start: 2.75rem; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: 1.5rem; font-style: italic; line-height: 1.3; }
+.post-body > blockquote::before { content: "\201C"; position: absolute; inset-inline-start: 0; inset-block-start: -0.125em; color: var(--color-accent); font-size: 2.5em; font-style: normal; line-height: 1; }
+.post-body > blockquote p { margin-block: 0 0.5rem; }
+.post-body details p > strong:first-child { color: var(--color-link); font-size: 0.8125em; letter-spacing: 0.08em; text-transform: uppercase; }
+
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { border: 1px solid var(--color-border); border-radius: 0; background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-text); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+
+/* A host: the mark beside the name, their conversations below. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.125rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-conversations, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter: tinted, square panels. */
+.cta-band { background: var(--dl-tint); border: 0; border-block-start: 2px solid var(--color-text); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 0; border-radius: 0; }
+
+.site-footer { border-block-start: 2px solid var(--color-text); }

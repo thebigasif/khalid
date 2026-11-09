@@ -125,9 +125,16 @@ fn page(folder: &Path, config: &Config, row: &IndexedPost) -> Result<SearchPage,
     ))
 }
 
+/// Marks where one block of a body ends, until [`joined`] reads it.
+const BREAK: &str = " \u{1} ";
+
+/// What stands between two blocks whose first does not end a sentence, so
+/// a bookmark's title and its description never read as one sentence.
+const SEPARATOR: &str = " · ";
+
 /// The text of a body's `html` without its tags or its headings, which
-/// search counts on their own, with the common entities read back and runs
-/// of white space made one space.
+/// search counts on their own, with the common entities read back, runs
+/// of white space made one space and a [`SEPARATOR`] between blocks.
 fn text_without_headings(html: &str) -> String {
     let mut text = String::with_capacity(html.len());
     let mut rest = html;
@@ -142,10 +149,15 @@ fn text_without_headings(html: &str) -> String {
             break;
         };
         let tag = after.get(1..close).unwrap_or_default();
-        if is_heading(tag.trim_start_matches('/')) {
+        let heading = is_heading(tag.trim_start_matches('/'));
+        if heading {
             in_heading = !tag.starts_with('/');
         }
-        text.push(' ');
+        text.push_str(if heading || ends_block(tag) {
+            BREAK
+        } else {
+            " "
+        });
         rest = after.get(close + 1..).unwrap_or_default();
     }
     if !in_heading {
@@ -157,7 +169,50 @@ fn text_without_headings(html: &str) -> String {
         .replace("&quot;", "\"")
         .replace("&#39;", "'")
         .replace("&amp;", "&");
-    text.split_whitespace().collect::<Vec<_>>().join(" ")
+    joined(&text)
+}
+
+/// The words of `text` with one space between them, and a [`SEPARATOR`]
+/// where a [`BREAK`] follows a word that ends no sentence.
+fn joined(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut broken = false;
+    for word in text.split_whitespace() {
+        if word == BREAK.trim() {
+            broken = true;
+            continue;
+        }
+        if !out.is_empty() {
+            let ended = out.ends_with(['.', '!', '?', ':', ';', '\u{2026}']);
+            out.push_str(if broken && !ended { SEPARATOR } else { " " });
+        }
+        out.push_str(word);
+        broken = false;
+    }
+    out
+}
+
+/// Whether the tag `tag`, its name and attributes, ends a block of text:
+/// a paragraph, list item, cell, caption, quote or line break, or starts
+/// the next line of a bookmark card.
+fn ends_block(tag: &str) -> bool {
+    const CLOSING: [&str; 10] = [
+        "/p",
+        "/li",
+        "/dt",
+        "/dd",
+        "/td",
+        "/th",
+        "/figcaption",
+        "/blockquote",
+        "/pre",
+        "/div",
+    ];
+    let name = tag.split([' ', '/']).find(|part| !part.is_empty());
+    CLOSING.iter().any(|closing| tag.trim_end() == *closing)
+        || name == Some("br")
+        || tag.starts_with("span class=\"bookmark-description\"")
+        || tag.starts_with("span class=\"bookmark-host\"")
 }
 
 /// Whether the tag `tag`, its name and attributes, opens a heading.
@@ -174,7 +229,7 @@ mod tests {
     use std::path::PathBuf;
 
     use khalid_content::{ContentTree, read_content};
-    use khalid_core::{Environment, Locale, Slug};
+    use khalid_core::{Environment, Locale, Slug, SlugMode};
     use khalid_search::{Completion, Query};
 
     use super::*;
@@ -183,7 +238,22 @@ mod tests {
     fn a_body_keeps_its_text_and_leaves_its_headings_out() {
         let html = "<h2 id=\"why\">Why links</h2>\n<p>Links &amp; <a href=\"/x/\">anchors</a></p>\
                     <h3>More</h3><p>&lt;3</p>";
-        assert_eq!(text_without_headings(html), "Links & anchors <3");
+        assert_eq!(text_without_headings(html), "Links & anchors · <3");
+    }
+
+    #[test]
+    fn a_bookmark_card_and_the_blocks_around_it_never_run_together() {
+        let markdown = "Read this first.\n\n\
+                        ::bookmark{href=\"https://developers.google.com/search/docs\" \
+                        title=\"SEO Starter Guide\" description=\"Google's own introduction\"}\n\n\
+                        ## Questions\n\n- One\n- Two\n";
+        let english = Locale::try_new("en").unwrap();
+        let html = render(markdown, &english, SlugMode::Ascii).unwrap().html;
+        assert_eq!(
+            text_without_headings(&html),
+            "Read this first. SEO Starter Guide · Google's own introduction · \
+             developers.google.com · One · Two"
+        );
     }
 
     #[tokio::test]

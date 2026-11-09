@@ -1,7 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import type { PostRow } from "../api/rows";
+import { lightOf } from "../editor/LintPanel";
 import { day } from "../strings/dates";
 import { en } from "../strings/en";
+import { seoEditorWords } from "../strings/seoEditorWords";
 import { CheckPills } from "./CheckPills";
 import { stageOf } from "./stages";
 
@@ -12,7 +14,21 @@ type Props = {
   onTick: (id: string, on: boolean) => void;
 };
 
-/** One page of posts: a tick box, title, author, checks, stage, index status, last change. */
+/** A score as its light, its number, and what the light means in words. */
+function ScoreCell({ value }: { value: number | undefined }) {
+  if (value === undefined) {
+    return <span className="muted">{seoEditorWords.notCounted}</span>;
+  }
+  const light = lightOf(value);
+  return (
+    <span className="score-cell">
+      <span className={`light ${light}`} aria-hidden="true" />
+      {value} <span className="muted">{seoEditorWords.state[light]}</span>
+    </span>
+  );
+}
+
+/** One page of posts: tick box, title, author, checks, stage, index, scores, links, change. */
 export function PostTable({ rows, ticked, onTick }: Props) {
   return (
     <div className="scroll">
@@ -27,6 +43,9 @@ export function PostTable({ rows, ticked, onTick }: Props) {
             <th scope="col">{en.posts.checks}</th>
             <th scope="col">{en.posts.review}</th>
             <th scope="col">{en.posts.index}</th>
+            <th scope="col">{seoEditorWords.seo}</th>
+            <th scope="col">{seoEditorWords.readability}</th>
+            <th scope="col">{seoEditorWords.linksColumn}</th>
             <th scope="col">{en.posts.changed}</th>
           </tr>
         </thead>
@@ -63,6 +82,15 @@ export function PostTable({ rows, ticked, onTick }: Props) {
                   <span className={row.index_status === "indexable" ? "pill ok" : "pill quiet"}>
                     {en.index[row.index_status]}
                   </span>
+                </td>
+                <td data-label={seoEditorWords.seo}>
+                  <ScoreCell value={row.scores?.seo} />
+                </td>
+                <td data-label={seoEditorWords.readability}>
+                  <ScoreCell value={row.scores?.readability} />
+                </td>
+                <td className="link-count" data-label={seoEditorWords.linksColumn}>
+                  {seoEditorWords.linksInOut(row.links.inbound, row.links.outbound)}
                 </td>
                 <td data-label={en.posts.changed}>
                   <time dateTime={row.updated_at}>{day(row.updated_at)}</time>

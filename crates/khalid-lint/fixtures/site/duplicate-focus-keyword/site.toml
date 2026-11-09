@@ -1,0 +1,23 @@
+[[posts]]
+locale = "en"
+slug = "internal-linking-guide"
+path = "/blog/internal-linking-guide/"
+date = "2026-10-20"
+focus_keyword = "internal link"
+
+[[posts]]
+locale = "en"
+slug = "why-internal-links-matter"
+path = "/blog/why-internal-links-matter/"
+date = "2026-03-01"
+focus_keyword = "internal links"
+
+[[posts]]
+locale = "de"
+slug = "interne-links"
+date = "2026-10-21"
+focus_keyword = "internal links"
+
+[[pages]]
+locale = "en"
+slug = "about"

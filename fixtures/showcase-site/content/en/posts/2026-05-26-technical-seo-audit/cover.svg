@@ -1,35 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
-  <rect width="1200" height="675" fill="#eafaf3"/>
-  <circle cx="170" cy="150" r="95" fill="#8fa2ff" opacity="0.3"/>
-  <circle cx="1060" cy="540" r="100" fill="#ffb38a" opacity="0.3"/>
-  <circle cx="1070" cy="130" r="7" fill="#5b45d6"/>
-  <circle cx="150" cy="545" r="6" fill="#5b45d6" opacity="0.5"/>
-  <ellipse cx="600" cy="595" rx="390" ry="20" fill="#1f1b3a" opacity="0.08"/>
-  <rect x="230" y="110" width="330" height="460" rx="24" fill="#ffffff"/>
-  <rect x="330" y="92" width="130" height="36" rx="12" fill="#5b45d6"/>
-  <rect x="270" y="170" width="34" height="34" rx="8" fill="#8fd9bd"/>
-  <path d="M278 187 L286 196 L298 178" fill="none" stroke="#1f1b3a" stroke-width="5" stroke-linecap="round"/>
-  <rect x="325" y="180" width="190" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
-  <rect x="270" y="240" width="34" height="34" rx="8" fill="#8fd9bd"/>
-  <path d="M278 257 L286 266 L298 248" fill="none" stroke="#1f1b3a" stroke-width="5" stroke-linecap="round"/>
-  <rect x="325" y="250" width="160" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
-  <rect x="270" y="310" width="34" height="34" rx="8" fill="#ffb38a"/>
-  <rect x="325" y="320" width="200" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
-  <rect x="270" y="380" width="34" height="34" rx="8" fill="#8fd9bd"/>
-  <path d="M278 397 L286 406 L298 388" fill="none" stroke="#1f1b3a" stroke-width="5" stroke-linecap="round"/>
-  <rect x="325" y="390" width="150" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
-  <rect x="270" y="450" width="34" height="34" rx="8" fill="#ffffff" stroke="#8fa2ff" stroke-width="4"/>
-  <rect x="325" y="460" width="180" height="14" rx="7" fill="#1f1b3a" opacity="0.15"/>
-  <circle cx="790" cy="320" r="150" fill="#ffffff" stroke="#5b45d6" stroke-width="22"/>
-  <rect x="890" y="430" width="44" height="170" rx="20" fill="#5b45d6" transform="rotate(-45 912 515)"/>
-  <circle cx="790" cy="230" r="20" fill="#5b45d6"/>
-  <circle cx="720" cy="320" r="16" fill="#8fa2ff"/>
-  <circle cx="860" cy="320" r="16" fill="#8fa2ff"/>
-  <circle cx="690" cy="400" r="12" fill="#8fd9bd"/>
-  <circle cx="750" cy="400" r="12" fill="#8fd9bd"/>
-  <circle cx="830" cy="400" r="12" fill="#8fd9bd"/>
-  <circle cx="890" cy="400" r="12" fill="#ffb38a"/>
-  <path d="M790 230 L720 320 M790 230 L860 320 M720 320 L690 400 M720 320 L750 400 M860 320 L830 400" stroke="#1f1b3a" stroke-opacity="0.3" stroke-width="4"/>
-  <path d="M860 320 L890 400" stroke="#ffb38a" stroke-width="4" stroke-dasharray="8 8"/>
-  <path d="M1000 250 L1008 272 L1030 280 L1008 288 L1000 310 L992 288 L970 280 L992 272 Z" fill="#5b45d6"/>
+  <rect width="1200" height="675" fill="#f4f1ea"/>
+  <g fill="none" stroke="#1f2428" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 22)">
+    <path d="M600 160v45M300 250v-45h600v45M300 320v60M600 320v60M900 320v60M230 440v-60h140v60M530 440v-60h70M830 440v-60h140v60"/>
+    <path stroke-dasharray="14 16" d="M600 380h70v60"/>
+    <path stroke-width="10" d="M622 392l36 36M658 392l-36 36"/>
+    <g fill="#fffdf8">
+      <rect x="510" y="80" width="180" height="80" rx="10"/>
+      <rect x="225" y="250" width="150" height="70" rx="10"/>
+      <rect x="525" y="250" width="150" height="70" rx="10"/>
+      <rect x="825" y="250" width="150" height="70" rx="10"/>
+      <rect x="175" y="440" width="110" height="70" rx="10"/>
+      <rect x="315" y="440" width="110" height="70" rx="10"/>
+      <rect x="475" y="440" width="110" height="70" rx="10"/>
+      <rect x="775" y="440" width="110" height="70" rx="10"/>
+      <rect x="915" y="440" width="110" height="70" rx="10"/>
+    </g>
+    <rect x="599" y="456" width="110" height="70" rx="10" fill="#eba63f" stroke="none"/>
+    <rect x="615" y="440" width="110" height="70" rx="10" stroke-dasharray="14 16"/>
+    <path stroke-width="6" d="M545 110h110M545 132h70M255 285h90M555 285h90M855 285h90M200 475h60M340 475h60M500 475h60M800 475h60M940 475h60"/>
+  </g>
 </svg>

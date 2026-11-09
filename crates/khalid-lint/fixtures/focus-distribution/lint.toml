@@ -1,0 +1,4 @@
+# The readability rules have their own fixtures.
+[rules]
+long-sentences = "off"
+long-section = "off"

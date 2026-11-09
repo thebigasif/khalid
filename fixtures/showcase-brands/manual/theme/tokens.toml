@@ -1,0 +1,72 @@
+# The sample brand for the Manual demo: Brindle, a made-up maker of
+# electric bikes, and its help centre. A deep teal for links on a warm
+# white with a pale stone surface, a burnt orange accent for the section
+# numbers, Schibsted Grotesk for titles, Albert Sans for the text and
+# Spline Sans Mono for the numbers. Only the brand lives here: the
+# template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#fdfcf9"
+surface = "#f0f0e8"
+text = "#1b1f1c"
+muted = "#525a54"
+link = "#0e6458"
+accent = "#c4501a"
+border = "#dcdcd0"
+
+[fonts]
+heading = "\"Schibsted Grotesk\", \"Helvetica Neue\", Arial, sans-serif"
+body = "\"Albert Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "\"Spline Sans Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Schibsted Grotesk"
+style = "normal"
+weight = "700"
+path = "schibsted-grotesk-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E0, U+00E8-00E9, U+00EE, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "107.87%"
+descent = "121.66%"
+line_gap = "0.00%"
+size_adjust = "64.94%"
+
+[[fonts.files]]
+family = "Albert Sans"
+style = "normal"
+weight = "400"
+path = "albert-sans-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E0, U+00E8-00E9, U+00EE, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "104.94%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "58.88%"
+
+[[fonts.files]]
+family = "Albert Sans"
+style = "normal"
+weight = "600"
+path = "albert-sans-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E0, U+00E8-00E9, U+00EE, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "104.94%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "60.25%"
+
+[[fonts.files]]
+family = "Spline Sans Mono"
+style = "normal"
+weight = "500"
+path = "spline-sans-mono-latin-500.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E0, U+00E8-00E9, U+00EE, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "106.43%"
+descent = "111.60%"
+line_gap = "0.00%"
+size_adjust = "64.38%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

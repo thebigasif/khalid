@@ -32,3 +32,28 @@ pub struct AiPageSettings {
     /// the post you quote.`
     pub cite: Option<String>,
 }
+
+/// What `llms.txt`, the guide to the site for language models, holds, from
+/// `[seo.llms_txt]`. The file is written by default and lists every page
+/// search engines may list:
+///
+/// ```toml
+/// [seo.llms_txt]
+/// intro = "Field Notes is written by two SEO consultants in Leeds."
+/// pages = ["/about/", "/editorial-policy/"]
+/// exclude = ["/tag/"]
+/// ```
+#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+#[non_exhaustive]
+pub struct LlmsTxtSettings {
+    /// Switch the file off. `false`, the default, writes it.
+    pub off: bool,
+    /// Text after the tagline, such as who writes the site.
+    pub intro: Option<String>,
+    /// Paths inside the mount folder listed first, under "Key pages".
+    pub pages: Vec<String>,
+    /// Paths inside the mount folder whose pages, and the pages below
+    /// them, are left out.
+    pub exclude: Vec<String>,
+}

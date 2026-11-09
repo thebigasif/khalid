@@ -1,0 +1,3 @@
+This sample publication applies without DEMO_PUBLICATION_ALL=1, as a
+real one does once its template's sheets are approved. It is for the tests
+only and never lives in fixtures/showcase-publications/.

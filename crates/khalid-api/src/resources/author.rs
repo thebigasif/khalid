@@ -72,6 +72,26 @@ impl Author {
         Self { url, ..self }
     }
 
+    /// The name readers see.
+    pub(crate) fn name(&self) -> &str {
+        &self.name
+    }
+
+    /// The introduction, in markdown.
+    pub(crate) fn bio(&self) -> Option<&str> {
+        self.bio.as_deref()
+    }
+
+    /// The author's page on the blog, when it has one.
+    pub(crate) fn url(&self) -> Option<&AbsoluteUrl> {
+        self.url.as_ref()
+    }
+
+    /// The language.
+    pub(crate) fn language(&self) -> &Locale {
+        &self.language
+    }
+
     /// The same author with these profiles elsewhere.
     #[must_use]
     pub fn with_same_as(self, same_as: Vec<AbsoluteUrl>) -> Self {

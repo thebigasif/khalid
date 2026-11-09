@@ -1,0 +1,21 @@
+{#- goal_meter(facts, done=0, goal=1): how far a number has come towards a
+    target, such as the money a campaign has raised towards its goal, the
+    lessons done of a course or the weeks done of a programme. Reads the
+    facts at the places `done` and `goal`, counted from 0, and takes the
+    digits of each value, so "£61,850" counts as 61850. Shows both facts
+    with their own labels, a meter and the share reached in per cent.
+    Nothing shows unless both hold a number and the target is above 0, so
+    write whole amounts, not "£1.2m". -#}
+{% macro goal_meter(facts, done=0, goal=1) -%}
+{% if facts and facts | length > [done, goal] | max %}{% set have = facts[done].value | string | list | select("in", "0123456789") | join -%}
+{% set want = facts[goal].value | string | list | select("in", "0123456789") | join -%}
+{% if have and want and want | int > 0 %}<div class="goal-meter">
+<dl class="goal-figures">
+<div class="goal-done"><dt>{{ facts[done].label }}</dt><dd>{{ facts[done].value }}</dd></div>
+<div class="goal-target"><dt>{{ facts[goal].label }}</dt><dd>{{ facts[goal].value }}</dd></div>
+</dl>
+<meter class="goal-bar" min="0" max="{{ want | int }}" value="{{ have | int }}" aria-hidden="true"></meter>
+<p class="goal-share">{{ t.goal_share | replace("{percent}", ((have | int) * 100 // (want | int)) | string) }}</p>
+</div>
+{% endif %}{% endif %}
+{%- endmacro %}

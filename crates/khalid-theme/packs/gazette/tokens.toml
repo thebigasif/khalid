@@ -1,0 +1,34 @@
+# Gazette: a local news site with many sections. Newsprint paper, near
+# black ink for the section flags and one civic blue for links and the
+# place labels. A sturdy serif for headlines, so dense lists stay dark
+# and tight, and a plain sans for the text, labels and flags.
+[colors]
+background = "#f8f6f1"
+surface = "#ece7dc"
+text = "#16181c"
+muted = "#55534d"
+link = "#1c4f86"
+accent = "#1c4f86"
+border = "#d9d2c3"
+
+[fonts]
+heading = "Georgia, \"Times New Roman\", \"DejaVu Serif\", serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0px"
+measure = "38rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2rem 3rem"
+h2 = "1.375rem 1.75rem"
+h3 = "1.125rem 1.25rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 700
+
+[space]
+unit = "0.5rem"
+section = "3rem"

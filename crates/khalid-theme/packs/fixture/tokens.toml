@@ -1,0 +1,34 @@
+# Fixture: a sports club's match-day site. White page, near-black ink,
+# pitch green for wins, links and buttons, and a pale chalk surface for
+# the scoreboard and the draw chips. A condensed sans for titles and
+# scores, like a scoreboard, and the system sans for the text.
+[colors]
+background = "#ffffff"
+surface = "#f1f4ef"
+text = "#111a14"
+muted = "#4b574e"
+link = "#11603a"
+accent = "#11603a"
+border = "#d5ddd3"
+
+[fonts]
+heading = "\"Arial Narrow\", \"Roboto Condensed\", \"Helvetica Neue\", Arial, sans-serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0.25rem"
+measure = "42rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.125rem 3.25rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.1875rem 1.3125rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "3.5rem"

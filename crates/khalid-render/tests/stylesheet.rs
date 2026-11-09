@@ -71,6 +71,12 @@ fn every_class_a_default_template_uses_is_styled() {
     folder.push("templates");
     for entry in fs::read_dir(&folder).unwrap() {
         let path = entry.unwrap().path();
+        // The section parts in `sections/` are styled by the packs that
+        // import them, not by the shared stylesheet (khalid-theme's
+        // build script and look.rs check those).
+        if path.is_dir() {
+            continue;
+        }
         let template = fs::read_to_string(&path).unwrap();
         for attribute in template.split("class=\"").skip(1) {
             let classes = attribute.split('"').next().unwrap();
@@ -107,7 +113,7 @@ fn self_hosted_fonts_come_with_swap_and_their_subsets() {
     let css = stylesheet(&tokens).unwrap();
     let text = std::str::from_utf8(css.body()).unwrap();
     assert!(
-        text.contains(r#"@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-display: swap;"#),
+        text.contains(r#"@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; src: url("fonts/inter-latin.woff2") format("woff2"); font-display: swap;"#),
         "the face is served from the site, shown with a swap:\n{text}"
     );
     assert!(

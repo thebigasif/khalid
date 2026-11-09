@@ -1,0 +1,34 @@
+# Summit: a printed event programme. White paper, near-black ink, one
+# signal orange accent and a warm paper surface for the ticket stub and
+# the call to action. A heavy sans for titles like a poster, a plain sans
+# for the text, and tabular figures for the times.
+[colors]
+background = "#ffffff"
+surface = "#f5f1ea"
+text = "#16181d"
+muted = "#575c66"
+link = "#b23a0a"
+accent = "#c2410c"
+border = "#ded7cc"
+
+[fonts]
+heading = "\"Avenir Next\", \"Segoe UI\", system-ui, -apple-system, Roboto, \"Helvetica Neue\", Arial, sans-serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0.25rem"
+measure = "42rem"
+
+[type]
+body = "1.0625rem 1.125rem"
+h1 = "2.125rem 3.25rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.1875rem 1.3125rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 800
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

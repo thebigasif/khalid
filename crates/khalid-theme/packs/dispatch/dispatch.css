@@ -1,0 +1,152 @@
+/* Dispatch (docs/templates/dispatch.md): a newsletter whose site's first
+   job is to win sign-ups. A wide frame on letter paper; on the front page
+   the sign-up first, in a reply slip with a dashed cut line, beside the
+   latest issue; every issue marked by its number in a postage stamp; and
+   the reply slip again after every issue and every list. The shared
+   parts' rules come first (the build adds the parts the templates
+   import); these set the look over them. Every colour is a token or a
+   mix of tokens. */
+:root {
+  --dp-frame: 72rem;
+  --dp-tint: color-mix(in oklab, var(--color-accent) 9%, var(--color-background));
+  --dp-line: color-mix(in oklab, var(--color-text) 22%, var(--color-background));
+  --hero-title: clamp(2.75rem, 1.6rem + 4.2vw, 5rem);
+}
+.site-header, main, .site-footer { box-sizing: border-box; inline-size: 100%; max-inline-size: var(--dp-frame); margin-inline: auto; }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page, .author) { max-inline-size: 52ch; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(52ch + 18rem); }
+main > .post ~ :is(.mentions, .comments, .related, .cta-band, .lock) { max-inline-size: 52ch; margin-inline: auto; }
+
+/* The header: the name or logo, quiet menu links, the call to action as
+   the one filled button, over a double rule as wide as the frame. */
+.site-header { gap: 0.5rem 1.75rem; padding-block: 1rem; border-block-end: 4px double var(--color-text); }
+.site-name { color: var(--color-text); font-family: var(--font-heading); font-size: 1.375rem; font-weight: var(--heading-weight); text-decoration: none; }
+.site-logo img { block-size: 2.5rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { box-shadow: inset 0 -2px var(--color-accent); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--dp-tint); border: 0; box-shadow: 0 0 0 100vmax var(--dp-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: filled with the accent, in the text face. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; max-inline-size: 100%; min-block-size: 2.875rem; padding: 0.5rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 700 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 78%, var(--color-text)); text-decoration: none; }
+
+/* Section labels: small capitals over a hairline. */
+:is(.dp-recent, .dp-topics, .related, .mentions, .author-others) > h2, .post-footer > h2 { margin-block: 0 1.25rem; padding-block-start: 0.625rem; border-block-start: 1px solid var(--color-text); color: var(--color-text); font-family: var(--font-body); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em; line-height: 1.3; text-transform: uppercase; }
+:is(.dp-recent, .dp-topics) { margin-block-start: var(--space-section); }
+
+/* The front page: the sign-up beside the latest issue. */
+.dp-top { display: grid; gap: 2.5rem 4rem; padding-block: clamp(1.5rem, 1rem + 2vw, 3.5rem) 0; }
+@media (min-width: 60rem) { .dp-top { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; } }
+.dp-top > .hero { margin: 0; padding: 0; }
+.hero-kicker { color: var(--color-accent); letter-spacing: 0.12em; }
+.hero-title { max-inline-size: 14ch; letter-spacing: -0.015em; }
+.hero-intro { font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem); line-height: 1.45; color: var(--color-text); }
+.dp-promises { display: grid; gap: 0.5rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
+.dp-promises li { position: relative; padding-inline-start: 1.75rem; line-height: 1.45; }
+.dp-promises li::before { content: ""; position: absolute; inset-inline-start: 0.125rem; inset-block-start: 0.3em; inline-size: 0.5rem; block-size: 0.875rem; border: solid var(--color-accent); border-width: 0 3px 3px 0; rotate: 45deg; }
+.hero > .figure-strip { margin-block: 2.25rem 0; border-color: var(--dp-line); }
+
+/* The reply slip: a ruled card on the surface with a dashed cut line
+   around it, the field and the button side by side on a wide screen. */
+.dp-slip { display: grid; gap: 0.75rem 2rem; margin-block: 2rem 0; padding: clamp(1.25rem, 1rem + 1vw, 1.75rem); background: var(--color-surface); border: 1px solid var(--color-text); border-radius: var(--radius); outline: 1px dashed var(--color-muted); outline-offset: 0.4375rem; }
+section.dp-slip { margin-block: var(--space-section); }
+.dp-slip h2 { margin: 0; font-size: var(--text-h3); }
+.dp-slip-text { margin: 0; color: var(--color-muted); }
+@media (min-width: 36rem) { div.dp-slip:has(> .dp-slip-send) { grid-template-columns: auto minmax(0, 1fr); align-items: center; } div.dp-slip > .dp-slip-send { grid-row: span 2; } }
+@media (min-width: 52rem) { section.dp-slip { grid-template-columns: minmax(0, 1fr) minmax(15rem, 24rem); grid-auto-flow: row dense; align-items: center; } section.dp-slip > :is(h2, .dp-slip-text) { grid-column: 1; } section.dp-slip > :not(h2, .dp-slip-text) { grid-column: 2; } }
+.dp-slip .subscribe { display: grid; gap: 0.75rem; align-items: end; margin: 0; padding: 0; background: none; }
+@media (min-width: 36rem) { .dp-slip .subscribe { grid-template-columns: minmax(0, 1fr) auto; } }
+.dp-slip .subscribe p { margin: 0; }
+.dp-slip-field label { font-size: var(--text-small); }
+.dp-slip-field input { border-color: var(--color-text); }
+.dp-slip-send { margin: 0; }
+.dp-slip-send .button { inline-size: 100%; min-inline-size: 13rem; min-block-size: 3.25rem; font-size: 1.0625rem; }
+.dp-slip-note { margin: 0; font-size: var(--text-small); font-weight: 700; line-height: 1.4; }
+.dp-slip-feed { margin: -0.5rem 0 0; font-size: var(--text-small); }
+.dp-slip-feed a { display: inline-flex; align-items: center; min-block-size: 2.75rem; color: var(--color-link); }
+@media (max-width: 36rem) { .dp-slip-send .button { min-inline-size: 0; } }
+
+/* The postage stamp: the label in small capitals over the number, on a
+   tint with a dashed inner edge. */
+.dp-stamp { display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; inline-size: 4.5rem; aspect-ratio: 1; margin: 0; padding: 0.375rem; background: var(--dp-tint); border: 2px solid var(--color-accent); border-radius: 2px; outline: 1px dashed var(--color-accent); outline-offset: -6px; color: var(--color-text); text-align: center; line-height: 1; }
+.dp-stamp-label { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-muted); }
+.dp-stamp-value { margin-block-start: 0.25rem; font-family: var(--font-heading); font-size: 1.625rem; font-variant-numeric: lining-nums; overflow-wrap: anywhere; }
+
+/* The latest issue: its picture, then the stamp beside the text. */
+.dp-latest { display: grid; gap: 1rem; }
+@media (min-width: 40rem) and (max-width: 59.99rem) { .dp-latest { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2rem; } .dp-latest-kind { grid-column: 1 / -1; } }
+.dp-latest-kind { margin: 0; color: var(--color-accent); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.dp-latest-picture { display: block; }
+.dp-latest-picture .image { margin: 0; }
+.dp-latest-picture img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
+.dp-latest-body { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+.dp-latest-text h2 { margin: 0.25rem 0 0.5rem; font-size: var(--text-h2); line-height: 1.15; }
+.dp-latest-text h2 a, .dp-issue :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.dp-latest-text h2 a:hover, .dp-issue :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.dp-latest-read { margin: 0.5rem 0 0; font-weight: 700; }
+.dp-latest-read a { display: inline-flex; align-items: center; min-block-size: 2.75rem; color: var(--color-link); }
+
+/* Issue rows: the stamp, the text, a small picture, ruled apart. On a
+   phone the picture sits under the text, as small as on a desktop. */
+.dp-issues { margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--dp-line); }
+.dp-issue { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 1rem; padding-block: 1.5rem; border-block-end: 1px solid var(--dp-line); }
+.dp-issue-text { min-inline-size: 0; }
+.dp-issue-picture { grid-column: 2; display: block; inline-size: min(100%, 10rem); margin-block-start: 1rem; }
+@media (min-width: 48rem) { .dp-issue { grid-template-columns: auto minmax(0, 1fr) 13rem; gap: 0 2rem; } .dp-issue-picture { grid-column: 3; inline-size: auto; margin: 0; } }
+.dp-issue-picture .image { margin: 0; }
+.dp-issue-picture img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radius); }
+.dp-issue-meta { display: flex; flex-wrap: wrap; gap: 0 1rem; margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.dp-issue-meta a { color: var(--color-muted); }
+.dp-issue :is(h2, h3, h4) { margin: 0.25rem 0 0.375rem; font-size: var(--text-h3); line-height: 1.2; }
+.dp-issue-excerpt { margin: 0; color: var(--color-muted); font-size: 1rem; line-height: 1.5; }
+
+/* Topics: plain links in a row. */
+.dp-topic-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.dp-topic-list a { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding-inline: 1rem; border: 1px solid var(--dp-line); border-radius: 999px; color: var(--color-text); text-decoration: none; }
+.dp-topic-list a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.view-all { margin-block: 1rem 0; }
+
+/* An issue: the stamp and the day it was sent, the title, the text. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.dp-issue-head { display: flex; align-items: center; gap: 1rem; margin-block-end: 1.25rem; }
+.dp-sent { display: flex; flex-wrap: wrap; gap: 0 1rem; margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.1; }
+.post-header .dek { font-size: 1.25rem; line-height: 1.45; }
+.post-meta address { font-style: normal; }
+.post-meta address a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-meta address a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta address .person-role { display: inline; }
+.post-date { margin-block: 0.25rem; }
+.post-header .image img { border-radius: var(--radius); }
+.post-body :is(h2, h3) { margin-block-start: 1.75em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { border: 1px solid var(--dp-line); border-radius: 999px; background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.related { margin-block-start: var(--space-section); }
+
+/* Lists: the kind, the name and the intro over a rule as wide as the
+   frame. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 0; padding-block-end: 1.5rem; border-block-end: 1px solid var(--color-text); }
+.list-header h1 { margin: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-accent); letter-spacing: 0.12em; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 0.75rem; font-size: 1.0625rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-header + .dp-issues { border-block-start: 0; }
+
+/* A writer: the mark beside the name, then their issues. */
+.author-header { margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 7rem); }
+main > .author ~ .dp-recent, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action band and the footer. */
+.cta-band { background: var(--color-surface); border: 1px solid var(--color-text); }
+.site-footer { border-block-start: 1px solid var(--color-text); }
+@media (max-width: 30rem) { .dp-issue .dp-stamp { inline-size: 3.75rem; } .dp-issue .dp-stamp-value { font-size: 1.375rem; } }

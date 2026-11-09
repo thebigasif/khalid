@@ -11,9 +11,9 @@ use crate::mail_settings::MailTable;
 use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
-    AbsoluteUrl, AiPageSettings, AlertSettings, Announcement, Environment, Locale, MailSettings,
-    MediaSettings, NavSettings, ParseUrlError, Reader, ReaderSwitch, SearchConsoleSettings,
-    SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
+    AbsoluteUrl, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment, Locale,
+    MailSettings, MediaSettings, NavSettings, ParseUrlError, PrivacySettings, Reader, ReaderSwitch,
+    SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
 };
 
 /// Every setting Khalid reads, checked once at start and then passed by
@@ -41,9 +41,12 @@ pub struct Config {
     mail: Option<MailSettings>,
     alerts: AlertSettings,
     code: SiteCode,
+    privacy: PrivacySettings,
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
     preview_link_lifetime: Duration,
+    ai: AiSettings,
+    ghost_content_api: bool,
 }
 
 /// Whether Khalid runs a server, writes plain HTML, or leaves the pages to
@@ -112,9 +115,15 @@ struct SiteFile {
     alerts: AlertSettings,
     #[serde(default)]
     code: SiteCode,
+    #[serde(default)]
+    privacy: PrivacySettings,
     search_console: Option<SearchConsoleTable>,
     #[serde(default)]
     visitor_log: VisitorLogSettings,
+    #[serde(default)]
+    ai: AiSettings,
+    #[serde(default)]
+    ghost_content_api: bool,
     preview_link_days: Option<u64>,
     preview_link_hours: Option<u64>,
 }
@@ -193,21 +202,6 @@ fn layout_mistake(file: &SiteFile) -> Option<(&'static str, &'static str)> {
     None
 }
 
-/// The refusal of `[code]` that waits for consent on a static site, at the
-/// consent line when it is written, else at the table's own line.
-fn static_consent(path: &Path, text: &str) -> ConfigError {
-    let table = text
-        .lines()
-        .position(|line| line.trim_start().starts_with("[code]"))
-        .map_or(1, |index| index.saturating_add(1));
-    ConfigError::Field {
-        path: path.to_path_buf(),
-        line: line_of_key_in(text, "[code", "consent").max(table),
-        field: "consent".to_owned(),
-        problem: "a static host cannot keep a reader's choice, so code that waits for consent would never run; set consent = \"not-needed\" in [code], or mode = \"server\"".to_owned(),
-    }
-}
-
 /// The refusal of `key` in `table`, at its line of `text`.
 fn in_table(path: &Path, text: &str, table: &str, key: &str, problem: &str) -> ConfigError {
     ConfigError::Field {
@@ -219,7 +213,7 @@ fn in_table(path: &Path, text: &str, table: &str, key: &str, problem: &str) -> C
 }
 
 /// The first mistake in the tables whose checks span the file: `[alerts]`
-/// against how the site sends `mail`, and `[visitor_log]` and `[code]`
+/// against how the site sends `mail`, and `[visitor_log]` and `[privacy]`
 /// against the mode.
 fn tables_mistake(
     file: &SiteFile,
@@ -233,8 +227,11 @@ fn tables_mistake(
     if let Some((key, problem)) = file.visitor_log.mistake(file.mode) {
         return Err(in_table(path, text, "[visitor_log", key, problem));
     }
-    if file.mode == Mode::Static && file.code.waits_for_consent() {
-        return Err(static_consent(path, text));
+    if let Some((key, problem)) = file.ai.mistake() {
+        return Err(in_table(path, text, "[ai", key, problem));
+    }
+    if let Some((key, problem)) = file.privacy.mistake(file.mode) {
+        return Err(in_table(path, text, "[privacy", key, problem));
     }
     Ok(())
 }
@@ -328,9 +325,12 @@ impl Config {
             mail,
             alerts: file.alerts,
             code: file.code,
+            privacy: file.privacy,
             search_console,
             visitor_log: file.visitor_log,
             preview_link_lifetime,
+            ai: file.ai,
+            ghost_content_api: file.ghost_content_api,
         })
     }
 
@@ -345,6 +345,11 @@ impl Config {
         &self.code
     }
 
+    /// How readers are asked for consent, from `[privacy]`.
+    pub fn privacy(&self) -> &PrivacySettings {
+        &self.privacy
+    }
+
     /// How the site sends email, from `[mail]`, or `None` when it sends
     /// none.
     pub fn mail(&self) -> Option<&MailSettings> {
@@ -355,6 +360,12 @@ impl Config {
     /// when the owner has not opted in.
     pub fn search_console(&self) -> Option<&SearchConsoleSettings> {
         self.search_console.as_ref()
+    }
+
+    /// Who writes the editor's suggestions, from `[ai]`; off unless the
+    /// owner names a provider.
+    pub fn ai(&self) -> &AiSettings {
+        &self.ai
     }
 
     /// Where the media library keeps its files, from `[media]`.
@@ -372,6 +383,14 @@ impl Config {
     /// off unless the site switches it on.
     pub fn visitor_log(&self) -> &VisitorLogSettings {
         &self.visitor_log
+    }
+
+    /// Whether a copy of Ghost's Content API answers under
+    /// `/ghost/api/content/`, from `ghost_content_api`; off unless the site
+    /// switches it on, so front ends built for Ghost move by changing only
+    /// their address and key (`docs/ghost-api.md`).
+    pub fn ghost_content_api(&self) -> bool {
+        self.ghost_content_api
     }
 
     /// The site's name, shown in titles and feeds.

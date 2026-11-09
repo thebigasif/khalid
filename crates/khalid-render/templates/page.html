@@ -2,10 +2,23 @@
 {% block main %}
 {% from "slots.html" import cta_band -%}
 <article class="page">
-<h1>{{ page.title }}</h1>
+{% if page.term %}<p class="term-back"><a href="{{ page.term.glossary }}">{{ t.glossary_back }}</a></p>
+{% endif %}<h1>{{ page.title }}</h1>
 <div class="page-body">
 {{ page.body | place_cta(cta_band(template.cta) if template.cta else "") }}
 </div>
 {% if page.updated %}<p class="page-updated">{{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time></p>
+{% endif %}{% if page.term and page.term.related %}<section class="term-related" aria-labelledby="term-related">
+<h2 id="term-related">{{ t.glossary_related }}</h2>
+<ul>
+{% for link in page.term.related %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.term and page.term.posts %}<section class="term-posts" aria-labelledby="term-posts">
+<h2 id="term-posts">{{ t.glossary_posts }}</h2>
+<ul>
+{% for link in page.term.posts %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
 {% endif %}</article>
 {% endblock %}

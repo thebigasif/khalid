@@ -26,7 +26,7 @@ use khalid_routes::{PostAddress, Routes};
 use khalid_seo::{LinkPolicy, SeoPage, SeoSite};
 
 use crate::build_pages::{path_of, routed};
-use crate::lint_text::{plain_text, section_shapes, wikilinks};
+use crate::lint_text::{plain_text, prose_text, section_shapes, wikilinks};
 use crate::site_briefs::Briefs;
 use crate::{build_schema, build_seo};
 
@@ -217,6 +217,7 @@ pub(crate) fn lint_parts(
     post.focus_keyword.clone_from(&front.focus_keyword);
     post.secondary_keywords
         .clone_from(&front.secondary_keywords);
+    post.keyword_synonyms.clone_from(&front.keyword_synonyms);
     post.cluster = front
         .cluster
         .as_ref()
@@ -244,6 +245,7 @@ pub(crate) fn lint_parts(
         .iter()
         .map(|image| Image::new(image.src.clone(), image.alt.clone()))
         .collect();
+    post.lead_image = front.image.is_some();
     post.tables = rendered.html.matches("<table").count();
     post.reviews = rendered
         .structured
@@ -252,6 +254,7 @@ pub(crate) fn lint_parts(
         .count();
     post.word_count = rendered.words;
     post.body_text = plain_text(&rendered.html);
+    post.prose_text = Some(prose_text(&rendered.html));
     Some(post)
 }
 

@@ -1,0 +1,179 @@
+/* Manual (docs/templates/manual.md): a help centre. A white frame, a
+   search-first hero on the surface, numbered topic tiles, and articles
+   in three columns: the guide's steps, the text with its sections
+   numbered in the margin like a printed manual, and "On this page". The
+   numbers are set in the monospace and the accent. The shared parts'
+   rules come first; these set the look over them. Every colour is a
+   token or a mix of tokens. */
+:root {
+  --mn-frame: 76rem;
+  --mn-text: 36rem;
+  --mn-line: color-mix(in oklab, var(--color-text) 16%, var(--color-background));
+  --mn-tint: color-mix(in oklab, var(--color-link) 8%, var(--color-background));
+  --hero-title: clamp(2.125rem, 1.5rem + 2.4vw, 3.25rem);
+}
+.site-header, main, .site-footer { box-sizing: border-box; inline-size: 100%; max-inline-size: var(--mn-frame); margin-inline: auto; }
+main { padding-block: 0 var(--space-section); }
+main > .page, main > .post:not(.help-article), main > .author, main > .search, main > .search ~ section { max-inline-size: var(--mn-text); }
+.help-article, .help-article ~ * { max-inline-size: var(--mn-text); margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: -0.015em; }
+
+/* The header: the name, the menu, the search link as a quiet box. */
+.site-header > .site-name { margin-inline-end: auto; font-size: 1.25rem; letter-spacing: -0.02em; }
+.site-header > .site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav a { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+.site-header > .search-link { padding-inline: 0.875rem; color: var(--color-muted); border: 1px solid var(--color-border); border-radius: var(--radius); font-size: 0.9375rem; text-decoration: none; }
+.site-header > .search-link:hover { color: var(--color-text); border-color: var(--color-text); }
+.breadcrumbs { font-size: var(--text-small); }
+.breadcrumbs a { color: var(--color-muted); }
+
+/* Buttons: square-cornered, filled with the link colour. */
+.button, .help-search button, .search button, .subscribe button, .comment-form button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-background); background: var(--color-link); border: 0; border-radius: var(--radius); font: 600 1rem/1.2 var(--font-body); text-decoration: none; cursor: pointer; }
+.button:hover, .help-search button:hover, .search button:hover { background: var(--color-text); }
+
+/* Small labels: the monospace over the accent's square. */
+:is(.hero-kicker, .help-kicker, .list-kind, .help-before-title, .help-guide-title, .help-quick-title, .article-step, .toc-title) { font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* The front page: the search hero on the surface. */
+.hero { margin-block: 1.5rem var(--space-section); padding: clamp(1.75rem, 1rem + 3vw, 3.5rem) clamp(1.25rem, 0.5rem + 3vw, 3.5rem); background: var(--color-surface); border-radius: var(--radius); }
+.hero-kicker { color: var(--color-text); }
+.hero-kicker::before, .help-kicker::before { content: ""; display: inline-block; inline-size: 0.5rem; block-size: 0.5rem; margin-inline-end: 0.5rem; background: var(--color-accent); vertical-align: 0.1em; }
+.hero-intro { max-inline-size: 60ch; color: var(--color-muted); }
+.help-search { max-inline-size: 44rem; margin-block-start: 2rem; }
+.help-search label { display: block; margin-block-end: 0.5rem; font-weight: 600; }
+.help-search-row { display: flex; gap: 0.5rem; }
+.help-search input { flex: 1 1 auto; min-inline-size: 0; min-block-size: 3.25rem; padding: 0.5rem 1rem; color: var(--color-text); background: var(--color-background); border: 2px solid var(--color-text); border-radius: var(--radius); font: inherit; font-size: 1.125rem; }
+.help-search button { min-block-size: 3.25rem; }
+.help-quick { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 1rem; margin-block-start: 1.5rem; }
+.help-quick-title { margin: 0; color: var(--color-muted); }
+.help-quick ul { gap: 0 1.25rem; }
+.help-quick a { min-block-size: 2.75rem; font-weight: 600; }
+
+/* Section titles: the heading over a ruled line. */
+:is(.help-topics, .help-popular, .help-updates, .related, .mentions) > h2 { margin-block: 0 1.25rem; padding-block-end: 0.75rem; border-block-end: 2px solid var(--color-text); font-size: 1.375rem; }
+
+/* Topic tiles, numbered 01, 02 like a manual's chapters. */
+.help-topics { margin-block-end: var(--space-section); }
+.topic-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); gap: 1.25rem; margin: 0; padding: 0; list-style: none; }
+.topic-tile { display: flex; flex-direction: column; padding: 1.25rem 1.5rem 1rem; border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-text); border-radius: var(--radius); }
+.topic-number { margin: 0; color: var(--color-accent); font-family: var(--font-mono); font-size: 1.75rem; font-weight: 500; line-height: 1.1; }
+.topic-tile :is(h2, h3, h4) { margin-block: 0.5rem 0.75rem; font-size: 1.3125rem; }
+.topic-tile :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.topic-tile :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.topic-links { flex: 1 0 auto; margin: 0 0 0.75rem; padding: 0; list-style: none; }
+.topic-links li + li { border-block-start: 1px solid var(--color-border); }
+.topic-links a { display: flex; align-items: center; min-block-size: 2.75rem; padding-block: 0.25rem; line-height: 1.35; }
+.topic-all { margin: 0; font-size: var(--text-small); }
+.topic-all a { display: inline-flex; align-items: center; min-block-size: 2.75rem; color: var(--color-text); font-weight: 600; }
+
+/* Popular articles beside the recently updated feed. */
+.help-front { display: grid; gap: var(--space-section) 4rem; }
+@media (min-width: 64rem) { .help-front { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+.help-front > * { min-inline-size: 0; }
+.article-rows { display: grid; gap: 0 2.5rem; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 48rem) { .help-popular .article-rows { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.article-row { padding-block: 1rem; border-block-end: 1px solid var(--color-border); }
+.article-topic, .article-step { margin: 0 0 0.25rem; font-size: var(--text-small); }
+.article-topic a { color: var(--color-muted); }
+.article-step { color: var(--color-accent); }
+.article-row :is(h2, h3, h4) { margin: 0; font-size: 1.1875rem; line-height: 1.3; }
+.article-row :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.article-row :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.article-summary { margin: 0.375rem 0 0; color: var(--color-muted); line-height: 1.5; }
+.help-updates .feed-item time { font-family: var(--font-mono); }
+
+/* Lists: the kind, the name, the intro, the count, then the rows. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 1.5rem; padding-block-end: 1.5rem; border-block-end: 2px solid var(--color-text); }
+.list-header h1 { margin: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-accent); }
+.list-header .intro { max-inline-size: 60ch; margin-block-start: 0.75rem; font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header > :last-child { margin-block-end: 0; }
+.list-count { margin-block: 0.75rem 0; color: var(--color-muted); font-family: var(--font-mono); font-size: var(--text-small); }
+.article-list { max-inline-size: 48rem; }
+.article-list .article-row { padding-block: 1.25rem; }
+.article-list .article-row :is(h2, h3, h4) { font-size: 1.3125rem; }
+
+/* The article: the topic and step, the title, the facts box. */
+.help-article { margin-block-start: clamp(1rem, 0.5rem + 1.5vw, 2rem); }
+.help-kicker { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1rem; margin-block: 0 0.75rem; }
+.help-kicker a { min-block-size: 2.75rem; display: inline-flex; align-items: center; color: var(--color-text); }
+.help-step { color: var(--color-accent); }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.12; }
+.post-header .dek { margin-block-end: 1rem; color: var(--color-muted); font-size: 1.25rem; line-height: 1.45; }
+.post-meta { display: flex; flex-wrap: wrap; gap: 0 1.25rem; font-size: 0.9375rem; }
+.post-meta address a { color: var(--color-text); font-weight: 600; }
+.post-meta .post-date { margin-block-end: 0.25rem; }
+.updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.help-before { margin-block: 1.5rem 0; padding: 1rem 1.25rem; background: var(--color-surface); border-inline-start: 4px solid var(--color-accent); border-radius: var(--radius); }
+.help-before-title { margin: 0 0 0.5rem; }
+.help-before dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr)); gap: 0.75rem 1rem; margin: 0; }
+.help-before dt { margin: 0; color: var(--color-muted); font-size: var(--text-small); font-weight: 400; }
+.help-before dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+
+/* The text: 18px at a reading measure, its sections numbered. */
+.post-body { font-size: 1.125rem; line-height: 1.65; }
+.post-body :is(h2, h3) { margin-block-start: 1.75em; }
+.post-body li + li { margin-block-start: 0.375rem; }
+.post-body > ol > li::marker { color: var(--color-accent); font-family: var(--font-mono); font-weight: 500; }
+.post-body blockquote { padding: 0.75rem 1rem; color: var(--color-text); background: var(--mn-tint); border-inline-start-color: var(--color-link); }
+.help-numbered { counter-reset: mn-section; }
+.help-numbered > h2 { counter-increment: mn-section; counter-reset: mn-part; }
+.help-nested > h3 { counter-increment: mn-part; }
+.help-numbered > h2::before, .help-nested > h3::before { display: inline-block; min-inline-size: 2.5rem; color: var(--color-accent); font-family: var(--font-mono); font-size: 0.75em; font-weight: 500; letter-spacing: 0; }
+.help-numbered > h2::before { content: counter(mn-section); }
+.help-nested > h3::before { content: counter(mn-section) "." counter(mn-part); }
+
+/* The next steps panel: two halves, links only. */
+.next-steps { margin-block: var(--space-section) 0; padding: 1.5rem; border: 2px solid var(--color-text); border-radius: var(--radius); }
+.next-steps > :is(h2, h3, h4) { margin: 0 0 1rem; font-size: 1.375rem; }
+.next-choices { display: grid; gap: 1.25rem 2rem; }
+@media (min-width: 40rem) { .next-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.next-choices > div { min-inline-size: 0; }
+.next-choices :is(h2, h3, h4) { display: flex; align-items: center; gap: 0.625rem; margin: 0 0 0.5rem; font-size: 1.0625rem; }
+.next-choices :is(h2, h3, h4)::before { content: ""; flex: none; inline-size: 1.25rem; block-size: 1.25rem; border: 2px solid var(--color-link); border-radius: 50%; }
+.next-yes :is(h2, h3, h4)::before { background: radial-gradient(circle, var(--color-link) 0 40%, transparent 45%); }
+.next-no :is(h2, h3, h4)::before { border-style: dashed; }
+.next-choices p, .next-choices ul { margin: 0; padding: 0; list-style: none; }
+.next-choices a { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; min-block-size: 2.75rem; font-weight: 600; }
+.next-yes a span { color: var(--color-muted); font-weight: 400; }
+
+/* The guide's steps or more articles: the start column. */
+.help-guide { margin-block-start: 2.5rem; padding-block-start: 1rem; border-block-start: 2px solid var(--color-text); font-size: 0.9375rem; }
+.help-guide-title { margin: 0; color: var(--color-muted); }
+.help-guide-name { margin: 0.25rem 0 0.5rem; font-family: var(--font-heading); font-weight: 700; }
+.help-guide-name a { display: inline-flex; align-items: center; min-block-size: 2.75rem; color: var(--color-text); }
+.help-guide :is(ol, ul) { margin: 0; padding: 0; list-style: none; counter-reset: mn-step; }
+.help-guide li { border-block-start: 1px solid var(--color-border); }
+.help-guide ol > li { counter-increment: mn-step; }
+.help-guide :is(a, span) { display: flex; gap: 0.625rem; align-items: center; min-block-size: 2.75rem; padding-block: 0.25rem; line-height: 1.35; }
+.help-guide ol :is(a, span)::before { content: counter(mn-step); flex: none; color: var(--color-accent); font-family: var(--font-mono); font-size: var(--text-small); font-weight: 500; }
+.help-guide [aria-current] { color: var(--color-text); }
+
+/* On this page: the contents, sticky in the end column. */
+.toc-side .toc-title { color: var(--color-muted); }
+.toc-side a, .toc-inline a, .toc-box a { color: var(--color-text); text-decoration: none; }
+.toc-side a:hover, .toc-inline a:hover, .toc-box a:hover { color: var(--color-link); text-decoration: underline; }
+.toc-nested a::before { color: var(--color-accent); font-family: var(--font-mono); font-size: 0.8125rem; }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer > h2 { margin-block: 0 0.75rem; font-size: var(--text-small); }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.share-title { margin-block-end: 0.25rem; font-weight: 600; }
+.related, .mentions { margin-block-start: var(--space-section); }
+
+/* Wide screens: three columns. The guide at the start, the text in the
+   middle at its measure, the contents at the end; the numbers hang in
+   the gap before each heading. */
+@media (min-width: 72rem) {
+  main:has(.help-article), :where(body:has(.help-article)) :is(.site-header, .site-footer) { max-inline-size: var(--mn-frame); }
+  .help-article { display: grid; grid-template-columns: 14rem minmax(0, var(--mn-text)) 14rem; justify-content: space-between; column-gap: 3rem; max-inline-size: none; }
+  .help-article > * { grid-column: 2; min-inline-size: 0; }
+  .help-article > .help-guide { grid-column: 1; grid-row: 1 / span 12; align-self: start; margin-block-start: 0; }
+  .help-article > .toc-side { display: block; grid-column: 3; grid-row: 1 / span 12; align-self: start; position: sticky; inset-block-start: 1rem; max-block-size: calc(100vh - 2rem); overflow-y: auto; font-size: var(--text-small); }
+  .help-article.post-toc-start > .toc-side { grid-column: 1; }
+  .help-article.post-toc-start > .help-guide { grid-column: 3; }
+  .help-article .toc-inline { display: none; }
+  .help-numbered > h2, .help-nested > h3 { position: relative; }
+  .help-numbered > h2::before, .help-nested > h3::before { position: absolute; inset-inline-end: 100%; inset-block-start: 0.35em; min-inline-size: 0; margin-inline-end: 0.75rem; }
+}

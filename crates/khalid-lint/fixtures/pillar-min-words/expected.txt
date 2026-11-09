@@ -1,0 +1,1 @@
+warn pillar-min-words: 640 of 900 words

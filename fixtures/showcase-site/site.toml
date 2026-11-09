@@ -31,6 +31,20 @@ embed_domains = ["www.openstreetmap.org"]
 [seo.links.tracking]
 domains = ["planner.example.com"]
 
+# A stand-in for an analytics tag, so every template's demo shows the
+# consent banner. It runs only for a reader who allows Analytics, and then
+# only marks the page: it sends nothing anywhere.
+[[code]]
+body = "<script>document.documentElement.dataset.visit = 'counted';</script>"
+category = "analytics"
+vendor = "Larkspur Studio"
+
+# Who readers write to about their data, for the privacy page.
+[privacy.contact]
+name = "Larkspur Studio"
+email = "privacy@example.com"
+address = "Larkspur Studio, 21 Orchard Row, Bristol BS1 4QD, UK"
+
 [seo.titles]
 separator = "·"
 tagline = "SEO and content writing notes from Larkspur Studio"

@@ -8,7 +8,10 @@ use serde_json::Value;
 use utoipa::ToSchema;
 
 use crate::content_store::BoxFuture;
+use crate::link_suggestions::LinkSuggestion;
 use crate::post_store::PostStoreError;
+use crate::resources::SeoScores;
+use crate::site_issues::SiteIssue;
 
 /// Checks posts as they would go live now, writing nothing. `khalid serve`
 /// implements it with the publish gate's linter and the build's head and
@@ -23,6 +26,27 @@ pub trait PostChecks: Send + Sync {
     /// cannot be read.
     fn check<'a>(&'a self, id: &'a str)
     -> BoxFuture<'a, Result<Option<PostCheck>, PostStoreError>>;
+
+    /// Up to ten posts that post `id` should link to and does not yet,
+    /// best first, or `None` when no post has that identity.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`PostStoreError`] when the posts or the site's settings
+    /// cannot be read.
+    fn link_suggestions<'a>(
+        &'a self,
+        id: &'a str,
+    ) -> BoxFuture<'a, Result<Option<Vec<LinkSuggestion>>, PostStoreError>>;
+
+    /// The live site's most common lint problems, as
+    /// [`top_issues`](crate::site_issues::top_issues) ranks them.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`PostStoreError`] when the posts or the site's settings
+    /// cannot be read.
+    fn site_issues(&self) -> BoxFuture<'_, Result<Vec<SiteIssue>, PostStoreError>>;
 }
 
 /// The lines of a search result: the title, the address and the
@@ -50,6 +74,11 @@ pub struct PostCheck {
     /// cost it points.
     #[schema(value_type = Object)]
     lint: Report,
+    /// The SEO and readability scores, from the same findings.
+    scores: SeoScores,
+    /// How many words the post's text holds.
+    #[schema(example = 1240)]
+    words: u32,
     /// The search result the page would make.
     snippet: Snippet,
     /// The JSON-LD the page would carry: `@context` and `@graph`.
@@ -62,10 +91,24 @@ impl PostCheck {
     pub fn new(id: &str, lint: Report, snippet: Snippet, schema: Value) -> Self {
         Self {
             id: id.to_owned(),
+            scores: SeoScores::of(&lint),
             lint,
+            words: 0,
             snippet,
             schema,
         }
+    }
+
+    /// The same check, counting `words` in the post's text.
+    #[must_use]
+    pub fn with_words(self, words: usize) -> Self {
+        let words = u32::try_from(words).unwrap_or(u32::MAX);
+        Self { words, ..self }
+    }
+
+    /// The SEO and readability scores.
+    pub fn scores(&self) -> SeoScores {
+        self.scores
     }
 
     /// The post's identity.
@@ -94,7 +137,7 @@ pub use memory::MemoryPostChecks;
 
 #[cfg(any(test, feature = "test-util"))]
 mod memory {
-    use super::{BoxFuture, PostCheck, PostChecks, PostStoreError};
+    use super::{BoxFuture, LinkSuggestion, PostCheck, PostChecks, PostStoreError, SiteIssue};
 
     /// Checks made up front, for tests.
     #[derive(Debug, Default)]
@@ -116,6 +159,20 @@ mod memory {
         ) -> BoxFuture<'a, Result<Option<PostCheck>, PostStoreError>> {
             let found = self.checks.iter().find(|check| check.id == id).cloned();
             Box::pin(async move { Ok(found) })
+        }
+
+        /// A checked post has no suggestions here; ranking is tested on its own.
+        fn link_suggestions<'a>(
+            &'a self,
+            id: &'a str,
+        ) -> BoxFuture<'a, Result<Option<Vec<LinkSuggestion>>, PostStoreError>> {
+            let known = self.checks.iter().any(|check| check.id == id);
+            Box::pin(async move { Ok(known.then(Vec::new)) })
+        }
+
+        /// No issues here; ranking is tested on its own.
+        fn site_issues(&self) -> BoxFuture<'_, Result<Vec<SiteIssue>, PostStoreError>> {
+            Box::pin(std::future::ready(Ok(Vec::new())))
         }
     }
 }

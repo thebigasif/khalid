@@ -36,8 +36,15 @@ command -v java >/dev/null || stop "Java is missing. The W3C HTML validator runs
 [ -d "$tools/node_modules" ] || stop "The check tools are not installed. Lighthouse, axe and the validator come from them. Run: npm install --prefix scripts/demo-check"
 [ -f "$site/site.toml" ] || stop "$site has no site.toml. The check needs a site folder. Pass one, or run this from the repository with the demo site in it."
 
-cargo build --release -p khalid
-bin="${CARGO_TARGET_DIR:-$root/target}/release/khalid"
+# CI hands over the release binary it already built as KHALID_BIN, so this
+# check does not build it again. Without it, the binary is built here.
+if [ -n "${KHALID_BIN:-}" ]; then
+  [ -x "$KHALID_BIN" ] || stop "KHALID_BIN is $KHALID_BIN, which is not a program this check can run. Point it at a built khalid, or unset it to build one."
+  bin="$KHALID_BIN"
+else
+  cargo build --release -p khalid
+  bin="${CARGO_TARGET_DIR:-$root/target}/release/khalid"
+fi
 
 # The site answers at its own address, so canonical links stay on the
 # domain Lighthouse checks, and localhost counts as secure without HTTPS.
@@ -97,18 +104,21 @@ echo "Lighthouse:"
 CHROME_PATH="$(cd "$tools" && node -p 'require("playwright").chromium.executablePath()')"
 export CHROME_PATH
 # Lighthouse runs inside `while read` loops, so it reads nothing from them.
-# Chrome now and then misses the start of a page load (NO_NAVSTART), so a
-# page Lighthouse could not check gets one more try. A low score is kept
-# as it is: scores.mjs fails on it.
+# Chrome now and then misses the start of a page load (NO_NAVSTART), on a
+# busy runner more than once in a row, so a page Lighthouse could not check
+# gets up to three more tries, a few seconds apart. A low score is kept as
+# it is: scores.mjs fails on it.
 lighthouse() {
   local report="$work/lighthouse/$2.json" attempt
-  for attempt in 1 2; do
+  for attempt in 1 2 3 4; do
     if "$tools/node_modules/.bin/lighthouse" "$1" --quiet --output=json \
       --output-path="$report" --chrome-flags="--headless=new --no-sandbox" < /dev/null \
       && node -e 'process.exit(require(process.argv[1]).runtimeError ? 1 : 0)' "$report" < /dev/null; then
       return
     fi
-    [ "$attempt" = 1 ] && echo "Lighthouse could not check $1, so it tries once more."
+    [ "$attempt" = 4 ] && break
+    echo "Lighthouse could not check $1 (try $attempt of 4), so it tries again."
+    sleep $((attempt * 3))
   done
   failed=1
 }

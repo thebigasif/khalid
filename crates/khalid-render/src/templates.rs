@@ -5,18 +5,26 @@ use std::io;
 use std::path::Path;
 
 use khalid_core::{SitePath, TemplateName};
-use rust_embed::RustEmbed;
 
 use crate::RenderError;
+use crate::archive;
 
 /// Where a site keeps the templates that replace the defaults.
 const THEME_TEMPLATES: &str = "theme/templates";
 
-/// The default templates. `debug-embed` builds them in for debug builds too,
-/// so development renders exactly what production renders.
-#[derive(RustEmbed)]
-#[folder = "templates/"]
-struct Defaults;
+/// The default template `name`, such as `post.html`, from the built-in
+/// archive. Only `.html` files there are templates; the stylesheets and
+/// strings files beside them are not.
+fn built_in(name: &str) -> Option<&'static str> {
+    let html = Path::new(name)
+        .extension()
+        .is_some_and(|extension| extension.eq_ignore_ascii_case("html"));
+    if html {
+        archive::built_in().get(name)
+    } else {
+        None
+    }
+}
 
 /// One template: its name and its source.
 pub(crate) struct Source {
@@ -24,14 +32,16 @@ pub(crate) struct Source {
     pub(crate) text: String,
 }
 
-/// Every default template, in name order.
+/// Every default template, in name order: the page templates, and the
+/// shared section parts under `sections/`, such as `sections/hero.html`,
+/// which pack templates import. Only `.html` files are templates, so the
+/// parts' README stays out.
 pub(crate) fn defaults() -> Vec<Source> {
-    let mut sources: Vec<Source> = Defaults::iter()
+    let mut sources: Vec<Source> = (archive::built_in().names())
         .filter_map(|name| {
-            let file = Defaults::get(&name)?;
             Some(Source {
-                text: String::from_utf8_lossy(&file.data).into_owned(),
-                name: name.into_owned(),
+                text: built_in(name)?.to_owned(),
+                name: name.to_owned(),
             })
         })
         .collect();
@@ -70,7 +80,7 @@ pub(crate) fn overrides(site_root: &Path) -> Result<Vec<Source>, RenderError> {
             source,
         })?;
         let name = entry.file_name().to_string_lossy().into_owned();
-        if Defaults::get(&name).is_none() && !is_post_template(&name) {
+        if built_in(&name).is_none() && !is_post_template(&name) {
             return Err(RenderError::UnknownTemplate { name });
         }
         let path = SitePath::within(site_root, &format!("{THEME_TEMPLATES}/{name}"))?.resolve()?;
@@ -84,7 +94,18 @@ pub(crate) fn overrides(site_root: &Path) -> Result<Vec<Source>, RenderError> {
 
 /// Whether `name` is one of the default templates, such as `post.html`.
 pub(crate) fn is_default(name: &str) -> bool {
-    Defaults::get(name).is_some()
+    built_in(name).is_some()
+}
+
+/// Whether `name` is a pack's own part, such as `parts-locale.html`: a file
+/// of macros the pack's other templates import. Only a built-in pack adds
+/// one; a site's `theme/templates/` cannot.
+pub(crate) fn is_pack_part(name: &str) -> bool {
+    name.strip_prefix("parts-")
+        .and_then(|rest| rest.strip_suffix(".html"))
+        .is_some_and(|inner| {
+            !inner.is_empty() && inner.bytes().all(|b| b.is_ascii_lowercase() || b == b'-')
+        })
 }
 
 /// Whether `name` is a post template a post may ask for, such as

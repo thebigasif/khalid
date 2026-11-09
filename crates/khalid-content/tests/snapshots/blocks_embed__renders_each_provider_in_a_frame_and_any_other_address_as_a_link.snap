@@ -3,31 +3,66 @@ source: crates/khalid-content/tests/blocks_embed.rs
 expression: "html(\"\\\n::embed{src=\\\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\\\" title=\\\"How search works\\\"}\n\n::embed{src=\\\"https://youtu.be/dQw4w9WgXcQ\\\" title=\\\"How search works\\\"}\n\n::embed{src=\\\"https://vimeo.com/76979871\\\" title=\\\"A short film\\\"}\n\n::embed{src=\\\"https://open.spotify.com/episode/4rOoJ6Egrf8K2IrywzwOMk\\\" title=\\\"An SEO podcast\\\"}\n\n::embed{src=\\\"https://soundcloud.com/forss/flickermood\\\" title=\\\"Flickermood\\\"}\n\n::embed{src=\\\"https://codepen.io/chriscoyier/pen/gfdDu\\\" title=\\\"A layout demo\\\"}\n\n::embed{src=\\\"https://www.loom.com/share/0281766fa2d04bb788eaf19e65135184\\\" title=\\\"A site tour\\\"}\n\n::embed{src=\\\"https://example.com/talk\\\" title=\\\"A talk elsewhere\\\"}\n\")"
 ---
 <figure class="embed embed-wide">
-<iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="How search works" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" allow="encrypted-media; fullscreen; picture-in-picture"></iframe>
+<!--khalid-media-card--><div class="embed-card">
+<p>This comes from YouTube. Loading it shares data about you, such as your IP address, with YouTube.</p>
+<div class="embed-card-actions"><a class="embed-load" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Load media</a>
+<form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
+</div><!--/khalid-media-card-->
+<!--khalid-media--><template><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="How search works" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups" allow="encrypted-media; fullscreen; picture-in-picture"></iframe></template><!--/khalid-media-->
 <figcaption><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">How search works</a></figcaption>
 </figure>
 <figure class="embed embed-wide">
-<iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="How search works" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" allow="encrypted-media; fullscreen; picture-in-picture"></iframe>
+<!--khalid-media-card--><div class="embed-card">
+<p>This comes from YouTube. Loading it shares data about you, such as your IP address, with YouTube.</p>
+<div class="embed-card-actions"><a class="embed-load" href="https://youtu.be/dQw4w9WgXcQ">Load media</a>
+<form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
+</div><!--/khalid-media-card-->
+<!--khalid-media--><template><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="How search works" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups" allow="encrypted-media; fullscreen; picture-in-picture"></iframe></template><!--/khalid-media-->
 <figcaption><a href="https://youtu.be/dQw4w9WgXcQ">How search works</a></figcaption>
 </figure>
 <figure class="embed embed-wide">
-<iframe src="https://player.vimeo.com/video/76979871" title="A short film" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" allow="encrypted-media; fullscreen; picture-in-picture"></iframe>
+<!--khalid-media-card--><div class="embed-card">
+<p>This comes from Vimeo. Loading it shares data about you, such as your IP address, with Vimeo.</p>
+<div class="embed-card-actions"><a class="embed-load" href="https://vimeo.com/76979871">Load media</a>
+<form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
+</div><!--/khalid-media-card-->
+<!--khalid-media--><template><iframe src="https://player.vimeo.com/video/76979871" title="A short film" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups" allow="encrypted-media; fullscreen; picture-in-picture"></iframe></template><!--/khalid-media-->
 <figcaption><a href="https://vimeo.com/76979871">A short film</a></figcaption>
 </figure>
 <figure class="embed embed-audio">
-<iframe src="https://open.spotify.com/embed/episode/4rOoJ6Egrf8K2IrywzwOMk" title="An SEO podcast" width="560" height="152" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" allow="encrypted-media; fullscreen; picture-in-picture"></iframe>
+<!--khalid-media-card--><div class="embed-card">
+<p>This comes from Spotify. Loading it shares data about you, such as your IP address, with Spotify.</p>
+<div class="embed-card-actions"><a class="embed-load" href="https://open.spotify.com/episode/4rOoJ6Egrf8K2IrywzwOMk">Load media</a>
+<form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
+</div><!--/khalid-media-card-->
+<!--khalid-media--><template><iframe src="https://open.spotify.com/embed/episode/4rOoJ6Egrf8K2IrywzwOMk" title="An SEO podcast" width="560" height="152" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups" allow="encrypted-media; fullscreen; picture-in-picture"></iframe></template><!--/khalid-media-->
 <figcaption><a href="https://open.spotify.com/episode/4rOoJ6Egrf8K2IrywzwOMk">An SEO podcast</a></figcaption>
 </figure>
 <figure class="embed embed-audio">
-<iframe src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fforss%2Fflickermood" title="Flickermood" width="560" height="152" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" allow="encrypted-media; fullscreen; picture-in-picture"></iframe>
+<!--khalid-media-card--><div class="embed-card">
+<p>This comes from SoundCloud. Loading it shares data about you, such as your IP address, with SoundCloud.</p>
+<div class="embed-card-actions"><a class="embed-load" href="https://soundcloud.com/forss/flickermood">Load media</a>
+<form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
+</div><!--/khalid-media-card-->
+<!--khalid-media--><template><iframe src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fforss%2Fflickermood" title="Flickermood" width="560" height="152" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups" allow="encrypted-media; fullscreen; picture-in-picture"></iframe></template><!--/khalid-media-->
 <figcaption><a href="https://soundcloud.com/forss/flickermood">Flickermood</a></figcaption>
 </figure>
 <figure class="embed embed-wide">
-<iframe src="https://codepen.io/chriscoyier/embed/gfdDu?default-tab=result" title="A layout demo" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" allow="encrypted-media; fullscreen; picture-in-picture"></iframe>
+<!--khalid-media-card--><div class="embed-card">
+<p>This comes from CodePen. Loading it shares data about you, such as your IP address, with CodePen.</p>
+<div class="embed-card-actions"><a class="embed-load" href="https://codepen.io/chriscoyier/pen/gfdDu">Load media</a>
+<form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
+</div><!--/khalid-media-card-->
+<!--khalid-media--><template><iframe src="https://codepen.io/chriscoyier/embed/gfdDu?default-tab=result" title="A layout demo" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups" allow="encrypted-media; fullscreen; picture-in-picture"></iframe></template><!--/khalid-media-->
 <figcaption><a href="https://codepen.io/chriscoyier/pen/gfdDu">A layout demo</a></figcaption>
 </figure>
 <figure class="embed embed-wide">
-<iframe src="https://www.loom.com/embed/0281766fa2d04bb788eaf19e65135184" title="A site tour" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" allow="encrypted-media; fullscreen; picture-in-picture"></iframe>
+<!--khalid-media-card--><div class="embed-card">
+<p>This comes from Loom. Loading it shares data about you, such as your IP address, with Loom.</p>
+<div class="embed-card-actions"><a class="embed-load" href="https://www.loom.com/share/0281766fa2d04bb788eaf19e65135184">Load media</a>
+<form class="embed-allow" method="post" action="/_consent/"><input type="hidden" name="back" value="/"><button type="submit" name="choice" value="allow-external-media">Always load external media</button></form></div>
+</div><!--/khalid-media-card-->
+<!--khalid-media--><template><iframe src="https://www.loom.com/embed/0281766fa2d04bb788eaf19e65135184" title="A site tour" width="560" height="315" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-popups" allow="encrypted-media; fullscreen; picture-in-picture"></iframe></template><!--/khalid-media-->
 <figcaption><a href="https://www.loom.com/share/0281766fa2d04bb788eaf19e65135184">A site tour</a></figcaption>
 </figure>
 <p class="bookmark"><a href="https://example.com/talk">A talk elsewhere</a></p>

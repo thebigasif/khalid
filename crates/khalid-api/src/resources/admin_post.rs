@@ -310,6 +310,16 @@ pub struct PostEdit {
 }
 
 impl PostEdit {
+    /// An edit that only changes `settings`, made on the copy last changed
+    /// at `updated_at`.
+    pub fn settings_only(settings: SettingsEdit, updated_at: DateTime<Utc>) -> Self {
+        Self {
+            settings: Some(settings),
+            status: None,
+            ..Self::status_only(PostStatus::Draft, updated_at)
+        }
+    }
+
     /// An edit that only sets `status`, made on the copy last changed at
     /// `updated_at`, as the scheduler sends.
     pub fn status_only(status: PostStatus, updated_at: DateTime<Utc>) -> Self {

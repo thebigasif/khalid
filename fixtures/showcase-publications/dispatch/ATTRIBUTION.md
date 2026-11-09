@@ -1,0 +1,14 @@
+# Photographs in The Saturday Gardener
+
+The Saturday Gardener is a made-up publication that shows Khalid's Dispatch template. Its photographs are not part of Khalid and are not under the AGPL. Each keeps the licence its photographer gave it, listed here. The photographs are cropped and resized for the demo.
+
+- `en/posts/2026-11-07-plant-garlic/lead.jpg`: "Basket full of garlic bulbs." by Topher, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/1076596f66/
+- `en/posts/2026-10-31-saving-tomato-seed/lead.jpg`: "A row of tomato plants in a greenhouse, featuring numerous green, unripe tomatoes clustered along the branches." by jasonmb012, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/34769dad33/
+- `en/posts/2026-10-24-slugs-yellow-leaves-shady-wall/lead.jpg`: "A snail slowly crawls on lush green leaves, blending with the leafy plant it sits on." by creativemz, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/50365b8b88/
+- `en/posts/2026-10-17-leaf-mould/lead.jpg`: "Autumn, dry tree leaves on the ground. Brown, yellow, red" by Pablo Moratinos, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/271621e1b5/
+- `en/posts/2026-10-10-layered-bulbs/lead.jpg`: "Tulips, looking down from above, about 10 inches away." by ewerkstatt, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/48764413a9/
+- `en/posts/2026-10-03-balcony-vegetables/lead.jpg`: "Balcony garden with vibrant pink and red flowers climbing through the metal railing. The building behind has brick walls and white lattice windows." by Nilo Velez, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/943679676c/
+- `en/posts/2026-09-26-winter-windowsill-herbs/lead.jpg`: "basil growing in smart garden" by Mary Jane Duford, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/629654da6e/
+- `en/posts/2026-09-19-watering-while-away/lead.jpg`: "A copper bonsai watering can with a long spout rests on a stone wall in a peaceful garden. Green foliage and a wooden fence complete the background. Captured at the Portland Japanese Garden, Oregon." by Bigul Malayi, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/35868c4638/
+- `en/posts/2026-09-12-ripening-peppers/lead.jpg`: "Red peppers" by Topher, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/853640646c/
+- `en/posts/2026-09-05-late-flowers/lead.jpg`: "Wheelbarrow full of flowers" by Topher, under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), from https://wordpress.org/photos/photo/67461f9886/

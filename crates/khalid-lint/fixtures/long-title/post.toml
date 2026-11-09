@@ -1,3 +1,4 @@
-# 75 characters, past the default 60.
+# 75 characters, past the default 60. The arrow is not in the pixel
+# table of title-too-wide, so the character count judges this title.
 extends = "clean"
-title = "Why internal links matter for readers, search engines and your own archive"
+title = "Why internal links matter → for readers, search engines and your archive"

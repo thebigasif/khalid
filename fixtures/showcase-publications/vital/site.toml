@@ -1,0 +1,100 @@
+# Fernhill Wellbeing, a made-up movement and wellbeing studio, written
+# for the Vital template's demo. Each key and table here replaces the
+# showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Fernhill Wellbeing"
+languages = ["en"]
+
+[template.cta]
+label = "See the autumn timetable"
+href = "/blog/autumn-timetable/"
+note = "Classes for every level, with a free Saturday walking group. Every class is open to beginners."
+
+# The Vital template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Short, gentle routines for moving, walking, breathing and resting well, from a small studio."]
+hero_stats = ["8 | routines to try", "3 | programmes", "2 to 30 | minutes a session"]
+care_note = ["General wellbeing ideas, not medical advice. Go gently, stop if anything hurts, and ask your doctor first if you have a health condition."]
+notes_count = 4
+
+[announcement]
+text = "New: early mobility classes on Tuesday and Thursday at 7.00."
+href = "/blog/autumn-timetable/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Routines and programmes for everyday wellbeing"
+
+[seo.ai_page]
+covers = "Fernhill Wellbeing shares short routines and programmes for general wellbeing: mobility, strength, balance, walking, breathing and winding down before bed. Each routine gives its time, level, how often to do it and what you need. Nothing on the site is medical advice."
+cite = "Name the routine and link the post you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Fernhill Wellbeing"
+email = "hello@example.com"
+founded = "2016-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Fernhill Wellbeing logo"
+width = 320
+height = 80
+
+# Sign-ups for the studio's newsletter, under its own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Fernhill Wellbeing"
+postal_address = "Fernhill Wellbeing, 14 Mill Lane, Fernhill FH2 3QD"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Move well"
+href = "/blog/category/move-well/"
+language = "en"
+
+[[nav.primary]]
+label = "Walk more"
+href = "/blog/category/walk-more/"
+language = "en"
+
+[[nav.primary]]
+label = "Breathe and rest"
+href = "/blog/category/breathe-rest/"
+language = "en"
+
+[[nav.primary]]
+label = "Coaches"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the studio"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Timetable"
+href = "/blog/autumn-timetable/"
+language = "en"
+
+[[nav.footer]]
+label = "Coaches"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

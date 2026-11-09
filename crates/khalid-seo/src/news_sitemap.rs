@@ -6,7 +6,7 @@ use khalid_core::{AbsoluteUrl, Locale};
 use crate::escape::escape_markup;
 use crate::sitemap::is_listed;
 use crate::social::rfc3339;
-use crate::{ArticleType, PageKind, SeoError, SeoPage, SeoSite};
+use crate::{ArticleType, PageKind, SeoError, SeoPage, SeoSite, SitemapListing};
 
 /// Google News reads articles published in the last two days.
 const NEWS_WINDOW: TimeDelta = TimeDelta::days(2);
@@ -23,6 +23,8 @@ pub struct NewsEntry {
     pub published: DateTime<Utc>,
     /// Its headline.
     pub title: String,
+    /// The stock tickers it is about, such as `NASDAQ:GOOG`.
+    pub stock_tickers: Vec<String>,
 }
 
 /// A news sitemap: a `urlset` of news articles with `news:news` details.
@@ -64,6 +66,7 @@ impl NewsSitemap {
             let fresh = since <= published && published <= now;
             if page.kind == PageKind::Post
                 && page.article_type == ArticleType::NewsArticle
+                && page.news == SitemapListing::Listed
                 && fresh
                 && is_listed(site, page)
             {
@@ -72,6 +75,7 @@ impl NewsSitemap {
                     language: page.language.clone(),
                     published,
                     title: page.title.clone(),
+                    stock_tickers: page.stock_tickers.clone(),
                 });
             }
         }
@@ -106,7 +110,13 @@ impl NewsSitemap {
             out.push_str(&rfc3339(&entry.published));
             out.push_str("</news:publication_date>\n      <news:title>");
             escape_markup(&entry.title, &mut out);
-            out.push_str("</news:title>\n    </news:news>\n  </url>\n");
+            out.push_str("</news:title>\n");
+            if !entry.stock_tickers.is_empty() {
+                out.push_str("      <news:stock_tickers>");
+                escape_markup(&entry.stock_tickers.join(", "), &mut out);
+                out.push_str("</news:stock_tickers>\n");
+            }
+            out.push_str("    </news:news>\n  </url>\n");
         }
         out.push_str("</urlset>\n");
         out

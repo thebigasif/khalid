@@ -1,0 +1,34 @@
+# Glossy: a bright lifestyle magazine. Ink on a warm cream page, a blush
+# surface for the cover panel and the band cards, one raspberry colour
+# for links and buttons. A high-contrast serif for titles, a friendly
+# sans for the text. Soft round corners on pictures, panels and labels.
+[colors]
+background = "#fffaf5"
+surface = "#fbe8df"
+text = "#221a1d"
+muted = "#5f5257"
+link = "#a3284c"
+accent = "#a3284c"
+border = "#efddd4"
+
+[fonts]
+heading = "\"Playfair Display\", Georgia, \"Times New Roman\", serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "1rem"
+measure = "36rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.25rem 3.75rem"
+h2 = "1.625rem 2.25rem"
+h3 = "1.25rem 1.5rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.7
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

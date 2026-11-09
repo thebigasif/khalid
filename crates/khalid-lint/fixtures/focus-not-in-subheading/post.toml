@@ -1,6 +1,7 @@
-# The only subheading says "internal link", one link, not the keyword.
+# The only subheading names links between posts, but not the keyword.
+# "What an internal link is" would count: another word form of it.
 extends = "focus-clean"
 
 [[headings]]
 level = "h2"
-text = "What an internal link is"
+text = "What a link between two posts is"

@@ -3,9 +3,13 @@
 //! letter with its one-sentence definition, and the `DefinedTermSet` that
 //! names each term in the page's JSON-LD.
 
+use std::collections::BTreeMap;
+
 use khalid_content::{SiteContent, Wikilinks};
 use khalid_core::{Config, Locale, Slug, SlugMode, UserMessage};
-use khalid_render::{GlossaryGroup, GlossaryTerm, PageBody, PageKind, RenderGlossary, Renderer};
+use khalid_render::{
+    GlossaryGroup, GlossaryLinks, GlossaryTerm, Link, PageBody, PageKind, RenderGlossary, Renderer,
+};
 use khalid_routes::Routes;
 use khalid_seo::{ListEntry, PageKind as SeoKind};
 
@@ -67,6 +71,7 @@ pub(crate) fn add(
             None => None,
         };
         let path = build_pages::path_of(config, &locale, REST);
+        let back = path.clone();
         let meta = build_pages::meta(
             config,
             title.clone(),
@@ -87,8 +92,132 @@ pub(crate) fn add(
         language
             .pages
             .push(build_pages::page(&locale, config, REST, meta, body, seo));
+        let origin = config.address().as_str().trim_end_matches('/');
+        neighbours(language, &back, origin);
     }
     Ok(())
+}
+
+/// How many related terms a term's page lists.
+const MOST_RELATED: usize = 5;
+
+/// How many of the posts that use a term its page lists.
+const MOST_POSTS: usize = 10;
+
+/// Gives each term page of `language` the way back to the glossary at
+/// `glossary`, its related terms and the newest posts that link to it.
+/// Links are read from the rendered bodies, by path or by `origin` and
+/// path, so a wikilink and a pasted address count the same. Each body is
+/// read once, however many terms the glossary has.
+fn neighbours(language: &mut LanguagePages, glossary: &str, origin: &str) {
+    let terms: Vec<Link> = (language.pages.iter())
+        .filter(|page| page.seo.kind == SeoKind::GlossaryTerm)
+        .map(|page| Link {
+            name: page.meta.title.clone(),
+            href: page.meta.path.clone(),
+        })
+        .collect();
+    let index: BTreeMap<String, usize> = (terms.iter().enumerate())
+        .map(|(at, term)| (term.href.clone(), at))
+        .collect();
+    let related = related(&language.pages, origin, &index);
+    let mut posts = posts(language, origin, &index);
+    for page in &mut language.pages {
+        let Some(&at) = index.get(&page.meta.path) else {
+            continue;
+        };
+        let PageBody::Page(own) = &mut page.body else {
+            continue;
+        };
+        let shown = related.get(at).map(Vec::as_slice).unwrap_or_default();
+        own.term = Some(GlossaryLinks {
+            glossary: glossary.to_owned(),
+            related: (shown.iter().take(MOST_RELATED))
+                .filter_map(|other| terms.get(*other).cloned())
+                .collect(),
+            posts: posts.get_mut(at).map(std::mem::take).unwrap_or_default(),
+        });
+    }
+}
+
+/// For each term of `index`, the other terms its definition among `pages`
+/// links to, in the order it names them, then those whose definitions
+/// link to it.
+fn related(pages: &[Page], origin: &str, index: &BTreeMap<String, usize>) -> Vec<Vec<usize>> {
+    let mut outgoing: Vec<Vec<usize>> = vec![Vec::new(); index.len()];
+    for page in pages {
+        let (PageBody::Page(own), Some(&from)) = (&page.body, index.get(&page.meta.path)) else {
+            continue;
+        };
+        if let Some(out) = outgoing.get_mut(from) {
+            for to in linked(own.body.as_str(), origin, index) {
+                if to != from && !out.contains(&to) {
+                    out.push(to);
+                }
+            }
+        }
+    }
+    let mut related = outgoing.clone();
+    for (from, out) in outgoing.iter().enumerate() {
+        for &to in out {
+            if let Some(theirs) = related.get_mut(to)
+                && !theirs.contains(&from)
+            {
+                theirs.push(from);
+            }
+        }
+    }
+    related
+}
+
+/// For each term of `index`, up to [`MOST_POSTS`] of the listed posts of
+/// `language` whose bodies link to it, newest first.
+fn posts(
+    language: &LanguagePages,
+    origin: &str,
+    index: &BTreeMap<String, usize>,
+) -> Vec<Vec<Link>> {
+    let bodies: BTreeMap<&str, &str> = (language.pages.iter())
+        .filter_map(|page| match &page.body {
+            PageBody::Post(post) => Some((page.meta.path.as_str(), post.body.as_str())),
+            _ => None,
+        })
+        .collect();
+    let mut posts: Vec<Vec<Link>> = vec![Vec::new(); index.len()];
+    for card in language.listed.iter().map(|post| &post.card) {
+        let Some(body) = bodies.get(card.href.as_str()) else {
+            continue;
+        };
+        for to in linked(body, origin, index) {
+            if let Some(theirs) = posts.get_mut(to)
+                && theirs.len() < MOST_POSTS
+                && theirs.iter().all(|post| post.href != card.href)
+            {
+                theirs.push(Link {
+                    name: card.title.clone(),
+                    href: card.href.clone(),
+                });
+            }
+        }
+    }
+    posts
+}
+
+/// The terms of `index` that `html` links to, in order, each time it does:
+/// by path, such as `/blog/glossary/canonical/`, or by `origin` and path,
+/// with any `#part` left off.
+fn linked<'a>(
+    html: &'a str,
+    origin: &'a str,
+    index: &'a BTreeMap<String, usize>,
+) -> impl Iterator<Item = usize> + 'a {
+    html.split("href=\"").skip(1).filter_map(move |rest| {
+        let href = rest.split('"').next().unwrap_or_default();
+        let path = href.strip_prefix(origin).unwrap_or(href);
+        index
+            .get(path.split('#').next().unwrap_or_default())
+            .copied()
+    })
 }
 
 /// The term pages `terms` grouped under their first letter: the digits

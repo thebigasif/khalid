@@ -19,7 +19,7 @@ related: [best-free-seo-tools, search-console-vs-bing-webmaster-tools, quillmete
 tags: [tools, reviews]
 image:
   src: cover.svg
-  alt: A shelf of SEO tools drawn as five cards, with one lifted out and marked with a violet tick, beside a small scorecard with three filled bars
+  alt: Three SEO tool cards with score bars on a shelf, the best one lifted up in orange with a tick
 ---
 
 The right SEO tools for a small team are the ones that do the jobs you actually have, faster than you could do them by hand. Most teams buy the other way round. They pick the tool with the longest feature list, use a fifth of it, and pay for the rest every month.

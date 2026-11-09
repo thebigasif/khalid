@@ -1,0 +1,87 @@
+# Keystone Studio, the made-up company blog of a small design studio,
+# written for the Keystone template's demo. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Keystone Studio"
+languages = ["en"]
+
+[template.cta]
+label = "Start a project"
+href = "/blog/about/"
+note = "We take on six projects at a time, for local clients, and answer every enquiry within two working days."
+
+[announcement]
+text = "New: what we hand over at the end of a brand project, and why it fits in one folder."
+href = "/blog/brand-guidelines-handover/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Project notes and process from a small design studio"
+
+[seo.ai_page]
+covers = "Keystone Studio writes about its own projects in brand identity, signage, wayfinding, packaging and small websites, about how a design project runs, and about the craft of print, type and colour."
+cite = "Name Keystone Studio and the author, and link the post you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Keystone Studio"
+email = "hello@example.com"
+founded = "2014-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Keystone Studio logo"
+width = 320
+height = 80
+
+# Sign-ups for the studio's newsletter, under the publication's own name.
+# The mail server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "studio@example.com"
+name = "Keystone Studio"
+postal_address = "Keystone Studio, 2 Ropewalk Yard, Eastbridge EB4 1KS"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Projects"
+href = "/blog/category/projects/"
+language = "en"
+
+[[nav.primary]]
+label = "Process"
+href = "/blog/category/process/"
+language = "en"
+
+[[nav.primary]]
+label = "Studio"
+href = "/blog/category/studio/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Keystone Studio"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "What a project costs"
+href = "/blog/what-a-project-costs/"
+language = "en"
+
+[[nav.footer]]
+label = "How a first workshop runs"
+href = "/blog/first-client-workshop/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

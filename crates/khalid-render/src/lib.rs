@@ -10,9 +10,11 @@
 //! code turns content into these records; the server decides when to render
 //! and caches the result.
 
+mod archive;
 mod asset;
 mod author;
 mod comments;
+mod consent;
 mod contents;
 mod cta;
 mod dates;
@@ -28,12 +30,15 @@ mod home;
 mod hub;
 mod image;
 mod listing;
+mod location;
+mod locations_page;
 mod pack;
 mod page_body;
 mod page_meta;
 mod parts;
 mod person;
 mod post;
+mod privacy;
 mod reading_time;
 mod related;
 mod render_error;
@@ -54,31 +59,42 @@ mod type_scale;
 pub use asset::Asset;
 pub use author::{AuthorEntry, RenderAuthor, RenderAuthors, RenderPage};
 pub use comments::{CommentWriter, RenderComment, RenderComments, RenderThread};
+pub use consent::{
+    ConsentBanner, ConsentKeeper, ConsentPart, ConsentRow, GPC_END, GPC_START, RenderPrivacyChoices,
+};
 pub use contents::{Contents, ContentsHeading, HeadingLevel};
 pub use entries::{EntryCard, EntryGroup, EntryKind, RenderEntries, RenderEntry};
 pub use features::{Feature, Features};
 pub use glossary::{
-    GlossaryGroup, GlossaryTerm, Highlight, RenderGlossary, RenderSearch, SearchMode, SearchResult,
+    GlossaryGroup, GlossaryLinks, GlossaryTerm, Highlight, RenderGlossary, RenderSearch,
+    SearchMode, SearchResult,
 };
 pub use home::{HomeSectionPosts, MOST_PICKS, RenderHome, TopicGroup};
 pub use hub::RenderHub;
 pub use image::{ImageCandidate, ImageSet, Loading, RenderImage};
-pub use listing::{Pagination, PostCard, RenderListing};
+pub use listing::{Fact, Pagination, PostCard, RenderListing};
+pub use location::{LocationWords, location_card, place_locations};
+pub use locations_page::LocationsPage;
 pub use pack::{RenderCta, RenderPack, TemplateOption};
 pub use page_body::PageBody;
 pub use page_meta::{Alternate, HeadHtml, PageKind, PageMeta, Robots, ShareImage};
 pub use parts::part_keys;
 pub use person::{Person, Profile, ProfileIcon};
 pub use post::{BodyHtml, Link, RenderPost};
+pub use privacy::{
+    Collected, CookiePurpose, GpcAnswer, Lasts, PrivacyCategory, PrivacyContact, PrivacyCookie,
+    PrivacyFacts, PrivacyVendor, RenderPrivacy,
+};
 pub use reading_time::ReadingTime;
 pub use related::{MOST_RELATED, PostTopics, related, related_up_to};
 pub use render_error::RenderError;
 pub use renderer::Renderer;
-pub use script::{ScriptFile, ScriptTag, reader_script, reader_script_file};
+pub use script::{ScriptFile, ScriptTag, consent_script, reader_script, reader_script_file};
 pub use series::RenderSeries;
 pub use share::SHARE_NETWORKS;
-pub use site::{AnnouncementBar, Nav, NavGroup, NavLink, RenderSite};
+pub use site::{AnnouncementBar, BreadcrumbStyle, Nav, NavGroup, NavLink, RenderSite};
 pub use sitemap::{RenderSitemap, SitemapGroup, SitemapSection};
+pub use strings::builtin_strings;
 pub use stylesheet::{stylesheet, stylesheet_text, stylesheet_text_with, stylesheet_with};
 pub use token_values::{Color, FontStack, Length, ParseTokenError};
 pub use tokens::{

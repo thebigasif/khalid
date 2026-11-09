@@ -1,21 +1,33 @@
-/* Folio: a product team's notebook (templates spec 3.10). Essays,
-   engineering notes and announcements under a confident masthead drawn
-   on faint ruled paper. Neutral page, hairlines instead of boxes, one
-   accent for kickers, links and the current tab, one radius for every
-   frame. Every colour, font and corner comes from the tokens; tints are
-   mixed from them. */
+/* Folio: a product team's notebook (docs/templates/folio.md, "Design").
+   A wide, precise page drawn on faint ruled paper: two hairline rails
+   frame the content on a wide screen, hairlines run where a box would be,
+   dates and labels are set small in mono capitals, and the titles are
+   large and tight. Quiet monochrome with one accent, used where a reader
+   can act. Every colour, font and corner comes from the tokens; tints
+   are mixed from them. */
 
 :root {
-  --wide: 76rem;
+  --wide: 88rem;
+  --pad: clamp(1rem, 3vw, 3rem);
   --hair: 1px solid var(--color-border);
-  --tint: color-mix(in oklab, var(--color-accent) 6%, var(--color-background));
-  --rule: color-mix(in oklab, var(--color-border) 70%, var(--color-background));
-  --paper: linear-gradient(var(--rule) 1px, transparent 1px) 0 0 / 1.5rem 1.5rem, linear-gradient(90deg, var(--rule) 1px, transparent 1px) 0 0 / 1.5rem 1.5rem;
+  --rule: color-mix(in oklab, var(--color-border) 60%, var(--color-background));
+  --tint: color-mix(in oklab, var(--color-accent) 7%, var(--color-background));
+  --paper: linear-gradient(var(--rule) 1px, transparent 1px) 0 0 / 2rem 2rem, linear-gradient(90deg, var(--rule) 1px, transparent 1px) 0 0 / 2rem 2rem;
 }
-@media (min-width: 40rem) { body { padding-inline: 2rem; } }
+body { padding-inline: var(--pad); }
+/* The rails: one hairline each side of the frame, the full height of the
+   page, a little outside the content. */
+@media (min-width: 64rem) {
+  body { --edge: calc(min(var(--wide), 100% - 2 * var(--pad)) / 2 + 1.5rem); background: linear-gradient(90deg, transparent calc(50% - var(--edge) - 1px), var(--rule) 0 calc(50% - var(--edge)), transparent 0 calc(50% + var(--edge)), var(--rule) 0 calc(50% + var(--edge) + 1px), transparent 0) var(--color-background); }
+}
 .site-header, main, .site-footer { max-inline-size: var(--wide); }
-h1, h2, h3, h4 { line-height: 1.15; letter-spacing: -0.02em; }
+h1, h2, h3, h4 { letter-spacing: -0.025em; }
 ::selection { background: color-mix(in oklab, var(--color-accent) 22%, var(--color-background)); }
+:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
+
+/* A hairline that runs out to both edges of the screen, drawn by a shadow
+   so the page never scrolls sideways. */
+.site-header::after, .masthead .category-tabs::after, .site-footer::after { content: ""; position: absolute; inset-inline: 0; block-size: 1px; background: var(--color-border); box-shadow: 0 0 0 100vmax var(--color-border); clip-path: inset(0 -100vmax); pointer-events: none; }
 
 /* The announcement: one quiet line on a band the width of the screen. */
 .announcement { margin: 0; padding-block: 0.625rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
@@ -25,107 +37,172 @@ h1, h2, h3, h4 { line-height: 1.15; letter-spacing: -0.02em; }
 [dir="rtl"] .announcement a::after { content: "  ←" / ""; }
 .announcement a:hover { text-decoration: underline; }
 
-/* The header: the name or logo, a quiet menu beside it, the button at
-   the far end. On a phone the menu takes its own line. */
-.site-header { flex-wrap: nowrap; gap: 0 2rem; padding-block: 0.75rem; border-block-end: var(--hair); }
-.site-name { font-size: 1.125rem; letter-spacing: -0.02em; }
-.site-logo img { block-size: 2.75rem; inline-size: 11rem; }
+/* The header: the name or logo, a quiet menu beside it, search and the
+   button at the far end, over a hairline that runs to the screen's edge. */
+.site-header { position: relative; flex-wrap: nowrap; gap: 0 2.5rem; padding-block: 0.875rem; border: 0; }
+.site-header::after { inset-block-end: 0; }
+.site-name { font-size: 1.25rem; font-weight: 650; letter-spacing: -0.03em; }
+.site-logo img { block-size: 2.5rem; inline-size: auto; max-inline-size: 11rem; }
 .site-header nav { flex: 1; }
-.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav ul { gap: 0 1.75rem; }
 .site-header nav a { color: var(--color-muted); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
 .site-header nav a:hover, .site-header nav [aria-current] { color: var(--color-text); }
-.search-link { padding-inline: 1rem; border: var(--hair); border-radius: 999px; color: var(--color-text); font-size: var(--text-small); text-decoration: none; }
-.header-button { min-block-size: 2.75rem; padding-inline: 1.125rem; border-radius: 999px; font-size: var(--text-small); font-weight: 600; }
+.search-link { gap: 0.5rem; padding-inline: 1rem; border: var(--hair); border-radius: 999px; color: var(--color-muted); font-size: var(--text-small); text-decoration: none; }
+.search-link:hover { color: var(--color-text); border-color: var(--color-muted); }
+.header-button { min-block-size: 2.75rem; padding-inline: 1.25rem; border-radius: 999px; font-size: var(--text-small); font-weight: 600; }
 @media (max-width: 52rem) {
-  .site-header { flex-wrap: wrap; }
+  .site-header { flex-wrap: wrap; padding-block: 0.5rem 0.25rem; }
   .site-header nav { order: 3; flex-basis: 100%; min-inline-size: 0; }
-  .site-header nav ul { flex-wrap: nowrap; gap: 0 1.25rem; overflow-x: auto; scrollbar-width: none; }
+  .site-header nav ul { flex-wrap: nowrap; gap: 0 1.25rem; overflow-x: auto; scrollbar-width: none; padding-inline-end: 2rem; mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent); }
+  [dir="rtl"] .site-header nav ul { mask-image: linear-gradient(to left, black calc(100% - 2rem), transparent); }
   .site-header nav a { white-space: nowrap; }
   .header-button { display: none; }
 }
 
-/* The masthead: the blog's name set large and tight on ruled paper that
-   fades out, a tagline, and the categories as tabs on a hairline. */
-.masthead { position: relative; padding-block: clamp(3rem, 9vw, 6.5rem) 0; margin-block-end: clamp(2.5rem, 5vw, 4rem); }
-.masthead::before { content: ""; position: absolute; inset: 0 0 3.5rem; z-index: -1; background: var(--paper); mask-image: radial-gradient(ellipse 60% 75% at 22% 55%, black 20%, transparent 80%); }
-.masthead h1 { max-inline-size: 16ch; margin: 0; font-size: clamp(2.75rem, 1.5rem + 5vw, 5.75rem); line-height: 0.98; letter-spacing: -0.045em; }
-.masthead-tagline, .masthead .intro { max-inline-size: 38rem; margin: 1.25rem 0 0; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.45; }
-.masthead .intro > :last-child { margin-block-end: 0; }
-.masthead .category-tabs { margin-block: clamp(2rem, 5vw, 3.5rem) 0; }
-.category-tabs ul { gap: 0 1.75rem; }
-.category-tabs a { margin-block-end: -1px; font-size: 0.9375rem; font-weight: 500; }
-.category-tabs a[aria-current] { font-weight: 600; }
+/* Small labels: dates, categories and section names in mono capitals. */
+.card-meta > a, .card-meta > time, .featured > h2, .lead-rail > h2, .lead-log section > h2, .home-section > h2, .related > h2, .mentions > h2, main > section:not(.newsletter-slot) > h2, .toc-title, .author-box h2, .post-footer h2, .share-title, .post-meta > p, .breadcrumbs ol { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
 
-/* Cards: no outline. A framed picture, the category and date as a
-   kicker, the title, two or three lines of excerpt, the author. The
-   card's parts sit on its own grid, so their order is the design's. */
-main .cards:not(.cards-ranked, .cards-compact) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: clamp(2.5rem, 4vw, 3.5rem) clamp(1.5rem, 2.5vw, 2.5rem); }
+/* The masthead: the blog's name large and tight on ruled paper that
+   fades out, a tagline, and the categories as a row of tabs between two
+   hairlines that run to the screen's edge. */
+.masthead { position: relative; padding-block: clamp(2.5rem, 7vw, 7rem) 0; margin-block-end: clamp(2.5rem, 5vw, 4.5rem); }
+.masthead::before { content: ""; position: absolute; inset: 0 0 4rem; z-index: -1; background: var(--paper); mask-image: radial-gradient(ellipse 75% 85% at 35% 50%, black 20%, transparent 78%); }
+.masthead h1 { max-inline-size: 14ch; margin: 0 0 0 -0.03em; font-size: clamp(2.5rem, 1.6rem + 3.6vw, 5.5rem); line-height: 0.95; letter-spacing: -0.045em; text-wrap: balance; }
+.masthead-tagline, .masthead .intro { max-inline-size: 40rem; margin: clamp(1.25rem, 2.5vw, 2rem) 0 0; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem); line-height: 1.45; letter-spacing: -0.01em; }
+.masthead .intro > :last-child { margin-block-end: 0; }
+.masthead .category-tabs { position: relative; margin-block: clamp(2.5rem, 6vw, 4.5rem) 0; border: 0; }
+.masthead .category-tabs::after { inset-block-end: 0; }
+.category-tabs ul { gap: 0 2rem; }
+.category-tabs a { margin-block-end: 0; font-size: 0.9375rem; font-weight: 500; }
+.category-tabs a[aria-current] { color: var(--color-text); font-weight: 600; }
+
+/* Cards: no outline. Each row starts on a hairline; a framed picture, the
+   category and date as a mono line, the title, up to three lines of
+   summary, the author. The card's parts sit on its own grid, so their
+   order is the design's. */
+main .cards:not(.cards-ranked, .cards-compact) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: clamp(2.5rem, 4vw, 4rem) clamp(1.5rem, 2.5vw, 2.5rem); }
 @media (min-width: 64rem) { main > .cards:not(.cards-ranked, .cards-compact), main > section > .cards:not(.cards-ranked, .cards-compact) { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.cards .card, .card.card-featured { position: relative; display: grid; grid-template-columns: auto 1fr; grid-template-areas: "image image" "kicker date" "title title" "text text" "author author"; align-content: start; column-gap: 0.75rem; block-size: 100%; }
+main .cards:not(.cards-ranked, .cards-compact) > li { padding-block-start: 1.5rem; border-block-start: var(--hair); }
+.cards .card, .card.card-featured { position: relative; display: grid; grid-template-columns: auto 1fr; grid-template-areas: "image image" "kicker date" "title title" "text text" "author author"; align-content: start; column-gap: 1rem; block-size: 100%; }
 .card .card-meta { display: contents; }
 .card .image { grid-area: image; margin: 0 0 1.25rem; }
 .card .image img { aspect-ratio: 16 / 10; object-fit: cover; background: var(--color-surface); border: var(--hair); border-radius: var(--radius); transition: border-color 0.2s; }
-.card-meta > a { grid-area: kicker; position: relative; z-index: 1; min-block-size: 0; margin-block: -0.75rem; padding-block: 0.75rem; color: var(--color-link); font-size: 0.8125rem; font-weight: 600; text-decoration: none; }
+.card-meta > a { grid-area: kicker; position: relative; z-index: 1; margin-block: -0.75rem; color: var(--color-link); text-decoration: none; }
 .card-meta > a:hover { text-decoration: underline; }
-.card-meta > time { grid-area: date; align-self: center; color: var(--color-muted); font-size: 0.8125rem; }
-.card-meta > time::before { content: "·" / ""; margin-inline-end: 0.75rem; }
+.card-meta > time { grid-area: date; align-self: center; color: var(--color-muted); }
 .card-meta:not(:has(> a)) > time { grid-area: kicker; }
-.card-meta:not(:has(> a)) > time::before { content: none; }
 .card-meta > .card-reading-time { display: none; }
-.card :is(h2, h3) { grid-area: title; margin-block: 0.5rem; font-size: 1.3125rem; line-height: 1.25; letter-spacing: -0.02em; text-wrap: pretty; }
-.card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
-.card:hover :is(h2, h3) a { text-decoration: underline; text-decoration-thickness: 0.06em; }
+.card :is(h2, h3, h4) { grid-area: title; margin-block: 0.75rem 0.625rem; font-size: clamp(1.25rem, 1.1rem + 0.4vw, 1.5rem); line-height: 1.22; letter-spacing: -0.025em; text-wrap: pretty; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; transition: color 0.15s; }
+.card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
+.card:hover :is(h2, h3, h4) a, .card :is(h2, h3, h4) a:focus-visible { color: var(--color-link); }
 .card:hover .image img, .card:focus-within .image img { border-color: var(--color-muted); }
-.card > p:not(.card-meta) { grid-area: text; display: -webkit-box; margin: 0; overflow: hidden; color: var(--color-muted); font-size: 0.9875rem; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-.card-author { grid-area: author; margin-block-start: 1.25rem; font-size: var(--text-small); font-weight: 500; }
+.card > p:not(.card-meta) { grid-area: text; display: -webkit-box; margin: 0; overflow: hidden; color: var(--color-muted); font-size: 0.96875rem; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.card-author { grid-area: author; display: flex; align-items: center; gap: 0.625rem; margin-block-start: 1.25rem; font-size: var(--text-small); font-weight: 500; }
+.card-author .person-role { color: var(--color-muted); font-weight: 400; }
 .card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; }
 
-/* Section titles: small capitals with a hairline running to the edge. */
-.featured > h2, .home-section > h2, .related > h2, .mentions > h2, main > section:not(.newsletter-slot) > h2 { display: flex; align-items: center; gap: 1rem; margin-block: 0 1.75rem; color: var(--color-text); font-size: var(--text-small); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-:is(.featured, .home-section, .related, .mentions, main > section:not(.newsletter-slot)) > h2::after { content: ""; flex: 1; border-block-start: var(--hair); }
+/* Section titles: a mono label with a hairline running to the edge. */
+.featured > h2, .lead-rail > h2, .home-section > h2, .related > h2, .mentions > h2, main > section:not(.newsletter-slot) > h2 { display: flex; align-items: center; gap: 1rem; margin-block: 0 2rem; color: var(--color-muted); }
+:is(.featured, .lead-rail, .home-section, .related, .mentions, main > section:not(.newsletter-slot)) > h2::after { content: ""; flex: 1; border-block-start: var(--hair); }
 main > section + section { margin-block-start: clamp(4rem, 8vw, 6rem); }
 
 /* The featured story: the picture large, the words beside it. */
 .featured { margin-block: 0 clamp(4rem, 8vw, 6rem); }
 .card-featured { padding: 0; background: none; border-radius: 0; }
-.card-featured h3 { font-size: clamp(1.875rem, 1.2rem + 2.2vw, 3rem); line-height: 1.06; letter-spacing: -0.035em; }
-.card-featured > p:not(.card-meta) { font-size: 1.125rem; -webkit-line-clamp: 4; }
+.card-featured h3 { font-size: clamp(2rem, 1.1rem + 2.8vw, 3.75rem); line-height: 1.02; letter-spacing: -0.038em; }
+.card-featured > p:not(.card-meta) { font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); -webkit-line-clamp: 4; }
 @media (min-width: 56rem) {
-  .card-featured:has(.image) { grid-template-columns: minmax(0, 7fr) auto minmax(0, 5fr); grid-template-areas: "image . ." "image kicker date" "image title title" "image text text" "image author author" "image . ."; grid-template-rows: 1fr repeat(4, auto) 1fr; }
-  .card-featured .image { margin-block: 0; margin-inline-end: 2.5rem; }
+  .card-featured:has(.image) { grid-template-columns: minmax(0, 8fr) auto minmax(0, 5fr); grid-template-areas: "image . ." "image kicker date" "image title title" "image text text" "image author author" "image . ."; grid-template-rows: 1fr repeat(4, auto) 1fr; }
+  .card-featured .image { margin-block: 0; margin-inline-end: clamp(2rem, 4vw, 4rem); }
   .card-featured .image img { aspect-ratio: 3 / 2; }
+}
+
+/* The lead on the front page: the featured story beside a numbered rail
+   of the newest posts, then six cards and a text-only index of the rest. */
+.lead { margin-block-end: clamp(4rem, 8vw, 7rem); }
+.lead > .featured { margin: 0; }
+.lead-essays { min-inline-size: 0; }
+.lead-rail { margin-block-start: clamp(3rem, 6vw, 4rem); }
+@media (min-width: 64rem) {
+  .lead { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); column-gap: clamp(2.5rem, 4.5vw, 5rem); }
+  .lead-rail { margin: 0; padding-inline-start: clamp(2rem, 3vw, 3rem); border-inline-start: var(--hair); }
+  .lead .card-featured:has(.image) { grid-template-columns: auto 1fr; grid-template-areas: "image image" "kicker date" "title title" "text text" "author author"; grid-template-rows: none; }
+  .lead .card-featured .image { margin: 0 0 1.75rem; }
+  .lead .card-featured .image img { aspect-ratio: 16 / 9; }
+}
+.lead .card-featured h3 { max-inline-size: 22ch; font-size: clamp(2.125rem, 0.8rem + 3.4vw, 5rem); line-height: 0.98; letter-spacing: -0.042em; }
+.lead .card-featured > p:not(.card-meta) { max-inline-size: 40rem; }
+.lead-rail > h2 { margin-block-end: 0.5rem; }
+.lead-grid > h2::after { content: none; }
+.lead-index > h2 { margin-block-end: 1rem; }
+.lead-rail .cards-ranked { gap: 0; }
+.lead-rail .cards-ranked > li { grid-template-columns: 3.5rem 1fr; padding-block: 1.25rem; border-block-end: var(--hair); }
+.lead-rail .cards-ranked > li::before { content: counter(rank, decimal-leading-zero) / ""; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.875rem; font-weight: 500; line-height: 2.1; }
+.lead-rail .card :is(h2, h3, h4) { margin-block: 0.5rem 0; font-size: clamp(1.125rem, 1rem + 0.35vw, 1.375rem); line-height: 1.25; }
+.lead-rail .card-meta > a { margin-block: -0.75rem; }
+.cards-ranked .card-author, .cards-compact .card-author { display: none; }
+
+/* The index: one ruled row a post, the date in mono beside the title. */
+main .cards-compact { gap: 0 clamp(2rem, 4vw, 4rem); border-block-start: var(--hair); }
+@media (min-width: 64rem) { main .cards-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cards-compact > li { border-block-end: var(--hair); }
+.cards-compact .card { grid-template-columns: 9.5rem minmax(0, 1fr); grid-template-areas: "date title"; align-items: baseline; padding-block: 1rem; }
+.cards-compact .card > p { grid-area: date; margin: 0; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.cards-compact .card :is(h2, h3, h4) { grid-area: title; margin: 0; font-size: 1.0625rem; font-weight: 550; line-height: 1.35; letter-spacing: -0.015em; }
+@media (max-width: 30rem) {
+  .cards-compact .card { grid-template-columns: 1fr; grid-template-areas: "title" "date"; row-gap: 0.375rem; padding-block: 0.875rem; }
+}
+
+/* On a phone every picture card is a ruled row: the title, the date
+   small under it and a small square picture at the end, so the front
+   page lists every post without turning into a long wall. */
+@media (max-width: 40rem) {
+  main .cards:not(.cards-ranked, .cards-compact) { gap: 0; border-block-end: var(--hair); }
+  main .cards:not(.cards-ranked, .cards-compact) > li { padding-block: 1rem; }
+  main .cards:not(.cards-ranked, .cards-compact) .card { grid-template-columns: minmax(0, 1fr) 5rem; grid-template-areas: "title image" "date image"; grid-template-rows: auto 1fr; column-gap: 1rem; row-gap: 0.375rem; }
+  main .cards:not(.cards-ranked, .cards-compact) .card .image { margin: 0; }
+  main .cards:not(.cards-ranked, .cards-compact) .card .image img { aspect-ratio: 1; }
+  main .cards:not(.cards-ranked, .cards-compact) .card :is(h2, h3, h4) { margin: 0; font-size: 1.0625rem; line-height: 1.3; }
+  main .cards:not(.cards-ranked, .cards-compact) .card-meta > time, main .cards:not(.cards-ranked, .cards-compact) .card > p:not(.card-meta) { grid-area: date; align-self: start; }
+  main .cards:not(.cards-ranked, .cards-compact) :is(.card-meta > a, .card-author, .card > p:not(.card-meta):last-child) { display: none; }
 }
 
 /* Home sections and the link to each whole list. */
 .home-section { margin-block-end: clamp(4rem, 8vw, 6rem); }
-.view-all { margin-block: 1.5rem 0; font-weight: 600; }
+.view-all { margin-block: 2rem 0; font-weight: 600; }
 .view-all a { text-decoration: none; }
 .view-all a::after { content: " →" / ""; }
 [dir="rtl"] .view-all a::after { content: " ←" / ""; }
 
-/* The quote from the options: large, in the heading font, with a short
-   rule in the accent above it. */
-.masthead-quote { max-inline-size: 48rem; margin: clamp(4rem, 8vw, 6rem) auto; text-align: center; }
+/* The quote from the options: large, in the heading font, a short rule
+   in the accent above it. */
+.masthead-quote { max-inline-size: 52rem; margin: clamp(4rem, 8vw, 7rem) auto; text-align: center; }
 .masthead-quote::before { content: ""; display: block; inline-size: 3rem; margin: 0 auto 2rem; border-block-start: 3px solid var(--color-accent); }
-.masthead-quote blockquote { margin: 0; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); font-weight: var(--heading-weight); line-height: 1.25; letter-spacing: -0.025em; }
+.masthead-quote blockquote { margin: 0; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.5rem, 1rem + 2vw, 2.75rem); font-weight: var(--heading-weight); line-height: 1.2; letter-spacing: -0.035em; }
 .masthead-quote blockquote > :last-child { margin: 0; }
-.masthead-quote figcaption { margin-block-start: 1.25rem; }
+.masthead-quote figcaption { margin-block-start: 1.25rem; color: var(--color-muted); }
 
 /* Page links: round numbers, arrows that point the way the page reads. */
-.pagination { margin-block-start: clamp(3rem, 6vw, 4.5rem); }
+.pagination { margin-block-start: clamp(3rem, 6vw, 5rem); padding-block-start: 1.5rem; border-block-start: var(--hair); }
 .pagination-numbered a[rel="prev"]::before { content: "← " / ""; }
 .pagination-numbered a[rel="next"]::after { content: " →" / ""; }
 [dir="rtl"] .pagination-numbered a[rel="prev"]::before { content: "→ " / ""; }
 [dir="rtl"] .pagination-numbered a[rel="next"]::after { content: " ←" / ""; }
 .pagination a { font-weight: 500; text-decoration: none; }
-.page-numbers a { border-radius: 999px; color: var(--color-text); }
+.page-numbers a { border-radius: 999px; color: var(--color-text); font-family: var(--font-mono); font-size: var(--text-small); }
 .page-numbers a:hover { background: var(--color-surface); }
 
-/* A list page: its title in the same voice as the masthead, the cards
-   under a hairline, the breadcrumbs as a quiet line above. */
-main > h1 { margin-block: clamp(1rem, 3vw, 2rem) 0.75rem; font-size: clamp(2.25rem, 1.4rem + 3.4vw, 4rem); line-height: 1; letter-spacing: -0.04em; }
-main > .intro { max-inline-size: 40rem; font-size: 1.125rem; }
-main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { margin-block-start: clamp(2rem, 4vw, 3rem); padding-block-start: clamp(2rem, 4vw, 3rem); border-block-start: var(--hair); }
+/* A list page: its title in the masthead's voice, the cards under it,
+   the breadcrumbs as a quiet mono line above. */
+main > h1 { position: relative; max-inline-size: 14ch; margin-block: clamp(2.5rem, 7vw, 7rem) 1.5rem; font-size: clamp(2.75rem, 0.75rem + 6vw, 8rem); line-height: 0.92; letter-spacing: -0.05em; }
+main > h1::before, .post-header::before { content: ""; position: absolute; inset: -4rem 0 -2rem; z-index: -1; background: var(--paper); mask-image: radial-gradient(ellipse 70% 80% at 30% 50%, black 15%, transparent 75%); pointer-events: none; }
+.hub-link { margin-block: 0 clamp(2.5rem, 5vw, 4rem); }
+.hub-link a { border-color: var(--color-border); border-radius: 999px; font-weight: 600; }
+.hub-link a:hover { border-color: var(--color-text); }
+.hub-link span { font-family: var(--font-mono); font-size: 0.75rem; }
+main > .intro { max-inline-size: 40rem; color: var(--color-muted); font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.3125rem); }
+main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { margin-block-start: clamp(2.5rem, 5vw, 4rem); }
 .breadcrumbs { margin-block: 1.5rem 0; }
 .breadcrumbs a { color: var(--color-muted); text-decoration: none; }
 .breadcrumbs a:hover { color: var(--color-text); }
@@ -133,12 +210,12 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
 
 /* An author: the portrait beside a large name, the bio under it, then
    their posts as cards across the page. */
-.author { max-inline-size: 46rem; margin-block: clamp(1rem, 3vw, 2rem) clamp(3.5rem, 7vw, 5rem); }
+.author { max-inline-size: 48rem; margin-block: clamp(2rem, 5vw, 4rem) clamp(3.5rem, 7vw, 5rem); }
 .author-header { column-gap: clamp(1.5rem, 4vw, 2.5rem); margin-block-end: 1.5rem; }
 .author-photo { inline-size: clamp(6.5rem, 16vw, 10rem); }
 .author-photo img { border: var(--hair); }
-.author-header h1 { margin: 0; font-size: clamp(2.25rem, 1.5rem + 2.8vw, 3.5rem); line-height: 1.05; letter-spacing: -0.04em; }
-.author-role { margin: 0.375rem 0 0.25rem; }
+.author-header h1 { margin: 0; font-size: clamp(2.25rem, 1.4rem + 3vw, 4rem); line-height: 1.02; letter-spacing: -0.045em; }
+.author-role { margin: 0.375rem 0 0.25rem; color: var(--color-muted); }
 .author-bio { font-size: 1.125rem; }
 .people-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1.5rem 2.5rem; }
 .people-list .person-card { align-items: center; }
@@ -147,9 +224,9 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
 /* The call to action and the newsletter: the call to action on a sheet
    of the ruled paper, the newsletter on a plain one, the words large on
    the reading side and the button or form beside them. */
-.button, .subscribe button { color: var(--color-on-accent); border-radius: 999px; font-weight: 600; }
-.cta-band, .newsletter-slot { position: relative; gap: 1.5rem 3rem; margin-block: clamp(4rem, 8vw, 6rem); padding: clamp(2rem, 5vw, 3.5rem); background: var(--paper), var(--color-surface); border: var(--hair); border-radius: calc(var(--radius) * 1.5); }
-.cta-note, .newsletter-slot h2 { max-inline-size: 28ch; margin: 0; font-family: var(--font-heading); font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem); font-weight: var(--heading-weight); line-height: 1.15; letter-spacing: -0.03em; }
+.button, .subscribe button, .comment-form button { color: var(--color-on-accent); border-radius: 999px; font-weight: 600; }
+.cta-band, .newsletter-slot { position: relative; gap: 1.5rem 3rem; margin-block: clamp(4rem, 8vw, 6rem); padding: clamp(2rem, 5vw, 4rem); background: var(--paper), var(--color-surface); border: var(--hair); border-radius: var(--radius); }
+.cta-note, .newsletter-slot h2 { max-inline-size: 26ch; margin: 0; font-family: var(--font-heading); font-size: clamp(1.5rem, 1rem + 1.8vw, 2.75rem); font-weight: var(--heading-weight); line-height: 1.1; letter-spacing: -0.04em; }
 .cta-note { flex: 1 1 18rem; }
 .cta-band > p:last-child { flex: 0 1 auto; max-inline-size: 100%; }
 .cta-band .button { min-block-size: 3rem; max-inline-size: 100%; padding-inline: 1.5rem; text-align: center; }
@@ -166,11 +243,13 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
   .newsletter-slot .subscribe { grid-column: 2; grid-row: 1 / span 3; }
 }
 
-/* The footer: the ruled paper again, fading up from the foot of the
-   page, the links in a row and the languages beside them. */
-.site-footer { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin-block-start: clamp(3rem, 6vw, 5rem); padding-block: 2.5rem 6rem; }
-.site-footer::before { content: ""; position: absolute; inset: 1px 0 0; z-index: -1; background: var(--paper); mask-image: linear-gradient(transparent, black); }
-.site-footer ul { gap: 0 1.5rem; }
+/* The footer: a hairline to the screen's edge, the ruled paper fading up
+   from the foot of the page, the links in a row and the languages
+   beside them. */
+.site-footer { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin-block-start: clamp(4rem, 8vw, 6rem); padding-block: 2.5rem 7rem; border: 0; }
+.site-footer::after { inset-block-start: 0; }
+.site-footer::before { content: ""; position: absolute; inset: 1px 0 0; z-index: -1; background: var(--paper); mask-image: linear-gradient(transparent 20%, black); }
+.site-footer ul { gap: 0 1.75rem; }
 .site-footer a { color: var(--color-muted); text-decoration: none; }
 .site-footer a:hover, .site-footer [aria-current] { color: var(--color-text); }
 .footer-groups { flex-basis: 100%; }
@@ -178,66 +257,79 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
 /* On a phone the category tabs wrap, so they become small rounded chips
    and the rows read as one set. */
 @media (max-width: 30rem) {
-  .masthead .category-tabs { border: 0; }
+  .masthead .category-tabs::after { content: none; }
   .category-tabs ul { gap: 0.5rem; }
-  .category-tabs a { margin: 0; padding-inline: 1rem; border: var(--hair); border-radius: 999px; }
-  .category-tabs a[aria-current] { border-color: var(--color-accent); box-shadow: inset 0 0 0 1px var(--color-accent); }
-  .cta-band, .newsletter-slot { border-radius: var(--radius); }
+  .category-tabs a { margin: 0; padding-inline: 1rem; border: var(--hair); border-radius: 999px; font-size: var(--text-small); }
+  .category-tabs a[aria-current] { border-color: var(--color-text); box-shadow: inset 0 0 0 1px var(--color-text); }
 }
 @media print { .masthead::before, .site-footer::before { display: none; } .cta-band, .newsletter-slot { background: none; } }
 
 /* A post: the title block across the page, the words in one column,
-   the contents in a quiet rail beside them on a wide screen. */
-.post, .page { max-inline-size: var(--measure); margin-inline: auto; }
-.breadcrumbs:has(+ :is(.post:not(.post-with-toc), .page)) { max-inline-size: var(--measure); margin-inline: auto; }
-.post:not(.post-with-toc) ~ :is(.cta-band, .newsletter-slot, .mentions, .comments, .lock) { max-inline-size: var(--measure); margin-inline: auto; }
-.page > h1 { line-height: 1.06; letter-spacing: -0.035em; }
-.post-header { margin-block: clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 3.5rem); }
-.post-header h1 { margin-block: 0 1.25rem; font-size: var(--text-h1); line-height: 1.06; letter-spacing: -0.035em; }
-.dek { margin-block: -0.25rem 1.75rem; font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.45; }
-.post-header .image { margin-block: clamp(2rem, 4vw, 3rem) 0; }
+   the contents in a quiet rail beside them on a wide screen. From 64rem
+   the words grow and the column widens a little less, so a line keeps
+   to 75 letters at most and the column fills more of a wide window. */
+:root { --col: var(--measure); }
+@media (min-width: 64rem) {
+  :root { --col: calc(var(--measure) * 1.05); }
+  .post-body, .page-body { font-size: 1.25rem; }
+}
+.post, .page { max-inline-size: var(--col); margin-inline: auto; }
+.breadcrumbs:has(+ :is(.post:not(.post-with-toc), .page)) { max-inline-size: var(--col); margin-inline: auto; }
+.post:not(.post-with-toc) ~ :is(.cta-band, .newsletter-slot, .mentions, .comments, .lock) { max-inline-size: var(--col); margin-inline: auto; }
+/* On a wide screen the lead picture leaves the column and spans most of
+   the frame, centred on it. */
+@media (min-width: 80rem) {
+  .post-header .image { margin-inline: calc(50% - min(38rem, 50vw - var(--pad) - 1rem)); }
+}
+.page > h1 { line-height: 1.02; letter-spacing: -0.045em; }
+.post-header { position: relative; margin-block: clamp(1.5rem, 5vw, 4.5rem) clamp(2.5rem, 5vw, 4rem); }
+.post-header::before { inset-block-end: auto; block-size: clamp(14rem, 30vw, 26rem); }
+.post-header h1 { max-inline-size: 22ch; margin-block: 0 1.75rem; font-size: clamp(2.375rem, 1rem + 3.4vw, 4.5rem); line-height: 0.98; letter-spacing: -0.042em; text-wrap: balance; }
+.dek { max-inline-size: 40rem; margin-block: -0.25rem 2rem; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem); line-height: 1.45; letter-spacing: -0.01em; }
+.post-header .image { margin-block: clamp(2rem, 4vw, 3.5rem) 0; }
 .post-header .image img, .post-body img { border: var(--hair); border-radius: var(--radius); }
 @media (min-width: 70rem) {
-  main:has(.post-with-toc) { max-inline-size: calc(var(--measure) + 19rem); }
-  .post-with-toc { max-inline-size: none; grid-template-columns: minmax(0, var(--measure)) 15rem; column-gap: 4rem; }
+  main:has(.post-with-toc) { max-inline-size: var(--wide); }
+  .post-with-toc { max-inline-size: calc(var(--col) + 22rem); grid-template-columns: minmax(0, var(--col)) 17rem; column-gap: 5rem; }
   .post-with-toc > .post-header { grid-column: 1 / -1; }
-  .post-with-toc > .post-header > :not(.image, h1) { max-inline-size: var(--measure); }
-  .post-with-toc > .post-header > h1 { max-inline-size: 52rem; }
+  .post-with-toc > .post-header > :not(.image, h1) { max-inline-size: var(--col); }
   .post-with-toc > .toc-side { grid-row: 2 / span 20; inset-block-start: 1.5rem; }
-  main:has(.post-with-toc) > :is(.cta-band, .newsletter-slot, .mentions, .comments) { max-inline-size: none; }
+  main:has(.post-with-toc) > .breadcrumbs { max-inline-size: calc(var(--col) + 22rem); margin-inline: auto; }
+  main:has(.post-with-toc) > :is(.cta-band, .newsletter-slot, .mentions, .comments, .related) { max-inline-size: none; }
 }
 
-/* The meta under the title: the authors, then one quiet line with the
-   reviewer, the dates and the reading time. The category is already in
-   the breadcrumbs, so it shows only when they are off. */
-.post-meta { display: flex; flex-wrap: wrap; align-items: center; row-gap: 0.25rem; padding-block-start: 1.25rem; border-block-start: var(--hair); }
-.post-meta address { flex-basis: 100%; margin-block-end: 0.5rem; }
+/* The meta under the title: the authors, then one quiet mono line with
+   the reviewer, the dates and the reading time. The category is already
+   in the breadcrumbs, so it shows only when they are off. */
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; row-gap: 0.25rem; padding-block-start: 1.25rem; border-block-start: var(--hair); color: var(--color-muted); }
+.post-meta address { flex-basis: 100%; margin-block-end: 0.75rem; font-style: normal; }
 .post-meta > p { margin: 0; }
-.post-meta > p + p::before { content: "·" / ""; margin-inline: 0.625rem; }
+.post-meta > p + p::before { content: "/" / ""; margin-inline: 0.75rem; color: var(--color-border); }
 main:has(.breadcrumbs) .post-meta > p:not(.reviewed-by):has(> a) { display: none; }
 .post-meta a { color: var(--color-text); text-decoration: none; }
 .post-meta a:hover { text-decoration: underline; }
+.post-meta .reviewed-by { text-transform: none; letter-spacing: 0; font-family: var(--font-body); font-size: var(--text-small); }
 .reviewed-by a { padding-block: 0.875rem; }
 .people { gap: 0.75rem 2rem; margin: 0; }
 .person { gap: 0.75rem; line-height: 1.3; }
-.person a { min-block-size: 0; margin-block: -0.75rem; padding-block: 0.75rem; color: var(--color-text); font-size: var(--text-body); font-weight: 600; }
-.person-role { margin: 0.125rem 0 0; font-size: var(--text-small); }
+.person a { min-block-size: 0; margin-block: -0.75rem; padding-block: 0.75rem; color: var(--color-text); font-size: 1rem; font-weight: 600; }
+.person-role { margin: 0.125rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
 .post-meta .avatar { inline-size: 2.5rem; block-size: 2.5rem; }
 @media (max-width: 40rem) {
   .post-meta { flex-direction: column; align-items: start; }
   .post-meta > p + p::before { content: none; }
 }
 
-/* The contents: a rail of quiet links with a hairline beside them, and
-   on a phone a folded box with a sign that says whether it is open. */
+/* The contents: a rail of quiet links on a hairline, and on a phone a
+   folded box with a sign that says whether it is open. */
 .toc-side { padding-block: 0.25rem; }
-.toc-side .toc-title, .toc-box .toc-title { margin-block-end: 0.75rem; color: var(--color-text); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.toc-side .toc-title, .toc-box .toc-title { margin-block-end: 0.75rem; color: var(--color-muted); }
 .toc-side ol { padding: 0; list-style: none; border-inline-start: var(--hair); }
 .toc-side a { display: flex; align-items: center; min-block-size: 2.75rem; margin-inline-start: -1px; padding-block: 0.25rem; padding-inline: 1rem 0; color: var(--color-muted); line-height: 1.4; text-decoration: none; border-inline-start: 2px solid transparent; }
 .toc-side a:hover { color: var(--color-text); }
 .toc-side a[aria-current] { color: var(--color-text); font-weight: 600; border-inline-start-color: var(--color-accent); }
-.toc-inline { padding-inline: 1.25rem; background: none; border: var(--hair); }
-.toc-inline summary { justify-content: space-between; font-size: var(--text-small); letter-spacing: 0.02em; }
+.toc-inline { padding-inline: 1.25rem; background: none; border: var(--hair); border-radius: var(--radius); }
+.toc-inline summary { justify-content: space-between; font-size: var(--text-small); }
 .toc-inline summary::after { content: "+" / ""; color: var(--color-muted); font-size: 1.25rem; font-weight: 400; }
 .toc-inline[open] summary::after { content: "−" / ""; }
 .toc-inline[open] nav { padding-block-end: 0.75rem; }
@@ -245,23 +337,36 @@ main:has(.breadcrumbs) .post-meta > p:not(.reviewed-by):has(> a) { display: none
 .toc-inline a, .toc-box a, .toc a { color: var(--color-text); text-decoration: none; }
 .toc-inline a:hover, .toc-box a:hover, .toc a:hover { text-decoration: underline; }
 
-/* The words. */
-.post-body, .page-body { font-size: 1.0625em; line-height: 1.75; }
-.post-body > h2, .page-body > h2 { margin-block: 3.5rem 1rem; font-size: var(--text-h2); line-height: 1.2; letter-spacing: -0.025em; }
-.post-body > h3, .page-body > h3 { margin-block: 2.5rem 0.75rem; font-size: var(--text-h3); line-height: 1.2; }
+/* The words: links underlined with a thin line that takes the accent on
+   hover. */
+.post-body, .page-body { line-height: 1.7; }
+.post-body > h2, .page-body > h2 { margin-block: 3.5rem 1rem; font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.035em; }
+.post-body > h3, .page-body > h3 { margin-block: 2.5rem 0.75rem; font-size: var(--text-h3); line-height: 1.25; letter-spacing: -0.025em; }
 .heading-link { color: var(--color-border); font-size: 0.8em; }
 h2:hover > .heading-link, h3:hover > .heading-link, .heading-link:focus-visible { color: var(--color-muted); }
-.post-body a, .page-body a { text-decoration-color: color-mix(in oklab, var(--color-link) 40%, transparent); text-decoration-thickness: 1px; }
-.post-body a:hover, .page-body a:hover { text-decoration-color: currentcolor; }
+.post-body a, .page-body a { text-decoration-color: color-mix(in oklab, var(--color-link) 35%, transparent); text-decoration-thickness: 1px; }
+.post-body a:hover, .page-body a:hover { text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
 .post-body li::marker { color: var(--color-muted); }
 .post-body li + li { margin-block-start: 0.375rem; }
 .post-body figure:not(.pullquote) { margin-block: 2.5rem; }
-figcaption { text-align: center; }
+figcaption { color: var(--color-muted); font-size: var(--text-small); text-align: center; }
 hr { margin-block: 3rem; }
 
-/* Code: a framed sheet, the same corner as every other frame. */
-pre { padding: 1.25rem 1.5rem; background: color-mix(in oklab, var(--color-surface) 55%, var(--color-background)); border: var(--hair); font-size: 0.875rem; line-height: 1.7; }
+/* Code: a framed sheet with a small mono label naming its language. */
+pre { position: relative; padding: 1.25rem 1.5rem; background: color-mix(in oklab, var(--color-surface) 50%, var(--color-background)); border: var(--hair); border-radius: var(--radius); font-size: 0.875rem; line-height: 1.7; }
 .post-body pre { margin-block: 2rem; }
+pre:has(> code[class*="language-"]) { padding-block-start: 2.75rem; }
+pre:has(> code[class*="language-"])::before { content: "Code"; position: absolute; inset-block-start: 0; inset-inline: 0; padding: 0.5rem 1.5rem; border-block-end: var(--hair); color: var(--color-muted); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; }
+pre:has(> .language-bash, > .language-sh, > .language-shell, > .language-console)::before { content: "Shell"; }
+pre:has(> .language-rust)::before { content: "Rust"; }
+pre:has(> .language-js, > .language-javascript)::before { content: "JavaScript"; }
+pre:has(> .language-ts, > .language-typescript)::before { content: "TypeScript"; }
+pre:has(> .language-json)::before { content: "JSON"; }
+pre:has(> .language-toml)::before { content: "TOML"; }
+pre:has(> .language-yaml, > .language-yml)::before { content: "YAML"; }
+pre:has(> .language-html)::before { content: "HTML"; }
+pre:has(> .language-css)::before { content: "CSS"; }
+pre:has(> .language-python, > .language-py)::before { content: "Python"; }
 :not(pre) > code { padding: 0.125em 0.375em; background: var(--color-surface); border: var(--hair); border-radius: 0.375rem; font-size: 0.85em; }
 
 /* Tables: hairline rows, a soft header, inside one frame. */
@@ -277,10 +382,9 @@ tr:last-child > td { border-block-end: 0; }
 .pullquote { margin-block: 3rem; padding: 0; border: 0; }
 .pullquote::before { content: ""; display: block; inline-size: 3rem; margin-block-end: 1.25rem; border-block-start: 3px solid var(--color-accent); }
 .pullquote figcaption { text-align: start; }
-.pullquote blockquote { font-size: clamp(1.375rem, 1.1rem + 1vw, 1.75rem); font-weight: var(--heading-weight); line-height: 1.3; letter-spacing: -0.02em; }
-.callout { margin-block: 2rem; padding: 1.25rem 1.5rem; background: var(--tint); border: var(--hair); border-inline-start: 3px solid var(--color-accent); font-size: 0.96em; }
+.pullquote blockquote { font-size: clamp(1.375rem, 1.1rem + 1vw, 1.875rem); font-weight: var(--heading-weight); line-height: 1.25; letter-spacing: -0.03em; }
+.callout { margin-block: 2rem; padding: 1.25rem 1.5rem; background: var(--tint); border: var(--hair); border-inline-start: 3px solid var(--color-accent); border-radius: var(--radius); font-size: 0.96em; }
 .callout-note { background: var(--color-surface); border-inline-start-color: var(--color-muted); }
-.callout-tip { border-inline-start-style: solid; border-inline-start-width: 3px; }
 .callout-warning { background: var(--color-background); border-inline-start-color: var(--color-text); font-weight: 400; }
 .callout-summary { padding: 1.5rem 1.75rem; background: var(--color-surface); border-inline-start: var(--hair); }
 .callout-summary li + li { margin-block-start: 0.5rem; }
@@ -293,28 +397,29 @@ tr:last-child > td { border-block-end: 0; }
 .toc-h2, .toc-h3 { font-weight: 500; }
 .toc a { min-block-size: 2.75rem; }
 .post-body .cta-band { margin-block: 3rem; padding: 2rem; }
-.post-body .cta-note { font-size: 1.375rem; }
+.post-body .cta-note { font-size: 1.5rem; }
 
 /* Share links: one small row at the end of the words. */
 .share { gap: 0.5rem; margin-block: 3rem 0; padding-block-start: 1.5rem; border-block-start: var(--hair); }
-.share-title { margin-inline-end: 0.5rem; color: var(--color-muted); font-size: var(--text-small); font-weight: 500; }
+.share-title { margin-inline-end: 0.5rem; color: var(--color-muted); }
 .share ul { gap: 0.5rem; }
-.share a { min-block-size: 2.75rem; padding-inline: 1rem; border-radius: 999px; color: var(--color-text); font-size: var(--text-small); font-weight: 500; }
+.share a { min-block-size: 2.75rem; padding-inline: 1rem; border: var(--hair); border-radius: 999px; color: var(--color-text); font-size: var(--text-small); font-weight: 500; text-decoration: none; }
+.share a:hover { border-color: var(--color-text); }
 
 /* Tags, the author box, the posts that link here and the notes where a
    feature needs a server, after the words. */
 .post-footer { margin-block-start: 2.5rem; }
-.post-footer h2 { margin-block: 0 0.75rem; font-size: var(--text-small); }
-.post-footer .tags a { padding-inline: 0.875rem; border-radius: 999px; color: var(--color-text); font-size: var(--text-small); }
+.post-footer h2 { margin-block: 0 0.75rem; color: var(--color-muted); }
+.post-footer .tags a { padding-inline: 0.875rem; border: var(--hair); border-radius: 999px; color: var(--color-text); font-size: var(--text-small); text-decoration: none; }
 .author-box { margin-block-start: 3rem; padding: 2rem 0 0; background: none; border-block-start: var(--hair); border-radius: 0; }
-.author-box h2 { margin-block-end: 1.25rem; color: var(--color-muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.author-box h2 { margin-block-end: 1.25rem; color: var(--color-muted); }
 .person-card { gap: 1.25rem; }
 .person-card > :first-child { flex: none; }
 .person-card .avatar { inline-size: 4rem; block-size: 4rem; }
 .person-card .person-name { font-size: 1.125rem; }
 .person-card .person-name a { min-block-size: 0; margin-block: -0.75rem; padding-block: 0.75rem; color: var(--color-text); text-decoration: none; }
 .person-card .person-role { margin-block: 0.125rem 0.5rem; color: var(--color-muted); font-size: var(--text-small); }
-.person-card p { font-size: 0.9875rem; }
+.person-card p { font-size: 1rem; }
 .author-box .reviewed-by { margin: 0.5rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
 .author-box .reviewed-by a { color: var(--color-text); text-decoration: none; }
 .related { margin-block-start: clamp(4rem, 8vw, 6rem); }
@@ -324,3 +429,37 @@ tr:last-child > td { border-block-end: 0; }
 .mentions a:hover { color: var(--color-link); }
 .lock, .locked { background: none; border-style: dashed; color: var(--color-muted); font-size: var(--text-small); }
 main > .lock, main > .locked { margin-block: 3rem 0; }
+.post:not(.post-with-toc) .post-header h1 { font-size: clamp(2.375rem, 1rem + 3vw, 4rem); }
+
+/* The release log: when posts carry facts, the essays lead and the
+   releases run beside them on one hairline, each a version tag, its date
+   and its title, the newest marked in the accent. On a phone it follows
+   the essays. */
+.lead-log section > h2 { display: flex; align-items: center; gap: 1rem; margin-block: 0 1.5rem; color: var(--color-muted); }
+.release-log > h2::after { content: ""; flex: 1; border-block-start: var(--hair); }
+.lead-log h2 a { color: inherit; text-decoration: none; }
+.lead-log h2 a:hover { color: var(--color-text); }
+.lead-log .lead-grid { margin-block-start: clamp(3rem, 6vw, 4.5rem); }
+@media (min-width: 40rem) { .lead-log .lead-grid .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.release-log { margin-block-start: clamp(3rem, 6vw, 4rem); }
+@media (min-width: 64rem) {
+  .lead-log { grid-template-columns: minmax(0, 1fr) minmax(15rem, 19rem); }
+  .release-log { position: sticky; inset-block-start: 1.5rem; align-self: start; margin: 0; }
+  .lead-log .card-featured h3 { font-size: clamp(2.5rem, 1rem + 2.6vw, 3.75rem); }
+}
+.release-log ol { margin: 0; padding: 0.25rem 0 0; list-style: none; border-inline-start: var(--hair); }
+.release-log li { position: relative; padding: 0 0 1.75rem 1.5rem; }
+.release-log li::before { content: ""; position: absolute; inset: 0.45rem auto auto -4px; inline-size: 7px; block-size: 7px; background: var(--color-background); border: 1px solid var(--color-text); }
+.release-log li:first-child::before { background: var(--color-accent); border-color: var(--color-accent); }
+.release-tag { display: inline-block; margin: 0; padding: 0.0625rem 0.5rem; border: 1px solid var(--color-text); border-radius: 2rem; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; line-height: 1.5; letter-spacing: 0.04em; text-transform: uppercase; }
+.release-log li:first-child .release-tag, .post-facts > .release-tag { background: color-mix(in oklab, var(--color-accent) 22%, var(--color-background)); border-color: var(--color-accent); }
+.release-log time { margin-inline-start: 0.75rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.release-log h3 { margin: 0.5rem 0 0; font-size: 1.0625rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.015em; }
+.release-log h3 a { color: var(--color-text); text-decoration: none; }
+.release-log h3 a:hover { text-decoration: underline; }
+.release-log .view-all { margin: 0.25rem 0 0; padding-inline-start: 1.5rem; font-size: var(--text-small); }
+.post-facts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; margin-block-end: 1.5rem; }
+.post-facts > p { margin: 0; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.post-facts b { color: var(--color-text); font-weight: 600; }
+.post-facts > .release-tag { padding: 0.25rem 0.875rem; color: var(--color-text); font-size: 0.875rem; }
+.post-facts > .release-tag span { font-weight: 400; }

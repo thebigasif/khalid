@@ -6,6 +6,10 @@
 use khalid_content::ENGINE_TEXT;
 use khalid_lint::SectionShape;
 
+mod prose;
+
+pub(crate) use prose::prose_text;
+
 /// The target of each `[[target]]` and `[[target|text]]` in `body`, as
 /// written, in order. Code, fenced or inline, holds none.
 pub(crate) fn wikilinks(body: &str) -> Vec<String> {
@@ -25,7 +29,9 @@ pub(crate) fn wikilinks(body: &str) -> Vec<String> {
                         let Some((inside, tail)) = after.split_once("]]") else {
                             break;
                         };
-                        let target = inside.split('|').next().unwrap_or_default().trim();
+                        // `[[target\|text]]` is how a table cell writes it.
+                        let target = inside.split('|').next().unwrap_or_default();
+                        let target = target.trim_end_matches('\\').trim();
                         if !target.is_empty() {
                             targets.push(target.to_owned());
                         }
@@ -299,5 +305,11 @@ mod tests {
                     Write `[[not-a-link]]` like this.\n\n```\n[[in-a-fence]]\n```\n\n\
                     ~~~\n```\n[[still-fenced]]\n~~~\n\nLast [[ seo ]] and [[]] and [[open";
         assert_eq!(wikilinks(body), ["why-links", "link-text", "seo"]);
+    }
+
+    #[test]
+    fn a_wikilink_in_a_table_cell_names_its_target() {
+        let body = "| Read | More |\n| --- | --- |\n| [[why-links|why]] | [[seo\\|search]] |\n";
+        assert_eq!(wikilinks(body), ["why-links", "seo"]);
     }
 }

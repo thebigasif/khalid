@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /graded-wash/
+table /three-colour-palette/
+category /category/washes/
+tag /tag/landscapes/
+author /authors/helen-marsh/

@@ -7,8 +7,8 @@ use serde::ser::{Serialize, SerializeStruct, Serializer};
 
 use crate::builtin;
 use crate::{
-    Catalogue, Finding, Hit, LintConfig, LintError, LintPost, Location, Message, Rule, RuleId,
-    Score, Severity, SiteRule, SiteView,
+    Analysis, Catalogue, Finding, Hit, LintConfig, LintError, LintPost, Location, Message, Rule,
+    RuleId, Score, Severity, SiteRule, SiteView,
 };
 
 /// The configured rules, each with its severity and message.
@@ -39,7 +39,12 @@ impl Linter {
     pub fn new(config: &LintConfig, clock: &dyn Clock) -> Result<Self, LintError> {
         let thresholds = config.thresholds();
         let today = clock.now().date_naive();
-        Self::with_rules(config, builtin::rules(thresholds))?
+        let catalogue = Catalogue::builtin()?;
+        let terms = catalogue
+            .get("non-inclusive-term")
+            .map(|message| message.terms().to_vec())
+            .unwrap_or_default();
+        Self::with_catalogue(catalogue, config, builtin::rules(thresholds, terms))?
             .with_site_rules(config, builtin::site_rules(thresholds, today))
     }
 
@@ -51,8 +56,18 @@ impl Linter {
     /// Returns [`LintError::MissingMessage`] for a rule the catalogue has no
     /// message for.
     pub fn with_rules(config: &LintConfig, rules: Vec<Box<dyn Rule>>) -> Result<Self, LintError> {
+        Self::with_catalogue(Catalogue::builtin()?, config, rules)
+    }
+
+    /// A linter running `rules` with the messages in `catalogue`, read
+    /// once by the caller.
+    fn with_catalogue(
+        catalogue: Catalogue,
+        config: &LintConfig,
+        rules: Vec<Box<dyn Rule>>,
+    ) -> Result<Self, LintError> {
         let mut linter = Self {
-            catalogue: Catalogue::builtin()?,
+            catalogue,
             rules: Vec::new(),
             site_rules: Vec::new(),
         };
@@ -112,15 +127,28 @@ impl Linter {
 
     /// Runs the post rules on one post: the check before it is published.
     /// The report carries the post's score, see [`Report::post_score`].
+    /// The report also carries the post's [`Analysis`], see
+    /// [`Report::analysis`].
     pub fn lint_post(&self, post: &LintPost, site: &dyn SiteView) -> Report {
+        let findings = self.post_findings(post, site);
+        let score = Some(Score::of(post, &findings));
+        let analysis = Some(Box::new(Analysis::of(post, &findings)));
+        Report {
+            findings,
+            score,
+            analysis,
+        }
+    }
+
+    /// Every post rule's findings on `post`, in rule order.
+    fn post_findings(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Finding> {
         let mut findings = Vec::new();
         for configured in &self.rules {
             for hit in configured.rule.check(post, site) {
                 findings.push(configured.finding(configured.rule.id(), post, hit));
             }
         }
-        let score = Some(Score::of(post, &findings));
-        Report { findings, score }
+        findings
     }
 
     /// Whether the publish gate would refuse `post`, the same answer as
@@ -147,6 +175,7 @@ impl Linter {
         Report {
             findings,
             score: None,
+            analysis: None,
         }
     }
 
@@ -157,12 +186,13 @@ impl Linter {
         let mut findings: Vec<Finding> = site
             .posts()
             .iter()
-            .flat_map(|post| self.lint_post(post, site).findings)
+            .flat_map(|post| self.post_findings(post, site))
             .collect();
         findings.extend(self.site_health(site).findings);
         Report {
             findings,
             score: None,
+            analysis: None,
         }
     }
 }
@@ -190,12 +220,22 @@ pub struct Report {
     findings: Vec<Finding>,
     /// The score of the one post a [`Linter::lint_post`] report is about.
     score: Option<Score>,
+    /// The readability score and numbers of the one post a
+    /// [`Linter::lint_post`] report is about.
+    analysis: Option<Box<Analysis>>,
 }
 
 impl Report {
     /// Every finding, blocks and warnings together.
     pub fn findings(&self) -> &[Finding] {
         &self.findings
+    }
+
+    /// The readability score, word count, reading index and prominent
+    /// words of the post a [`Linter::lint_post`] report is about, or
+    /// `None` for a report on a whole site.
+    pub fn analysis(&self) -> Option<&Analysis> {
+        self.analysis.as_deref()
     }
 
     /// The score out of 100 of `post`, from this report's findings about
@@ -240,15 +280,19 @@ impl Report {
 }
 
 /// Serialised as `{"blocks": true, "findings": [...]}`, with the post's
-/// `"score"` after them when the report is about one post.
+/// `"score"`, the SEO score, and `"analysis"`, the readability score and
+/// numbers, after them when the report is about one post.
 impl Serialize for Report {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        let fields = if self.score.is_some() { 3 } else { 2 };
+        let fields = 2 + usize::from(self.score.is_some()) + usize::from(self.analysis.is_some());
         let mut body = serializer.serialize_struct("Report", fields)?;
         body.serialize_field("blocks", &self.blocks())?;
         body.serialize_field("findings", &self.findings)?;
         if let Some(score) = &self.score {
             body.serialize_field("score", score)?;
+        }
+        if let Some(analysis) = &self.analysis {
+            body.serialize_field("analysis", analysis)?;
         }
         body.end()
     }

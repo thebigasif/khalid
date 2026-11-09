@@ -10,6 +10,35 @@ export function shownAddress(url: string): string {
   return [address.origin, ...folders].join(" › ");
 }
 
+/** A piece of a search result's text, where it starts, and whether Google shows it in bold. */
+export type Piece = { text: string; bold: boolean; at: number };
+
+/**
+ * `text` in pieces, with every place it holds `keyword`, in any case, in
+ * bold, as Google marks the words a reader searched for.
+ */
+export function boldParts(text: string, keyword: string): Piece[] {
+  const wanted = keyword.trim().toLowerCase();
+  const lower = text.toLowerCase();
+  // Lowercasing changed a length, so positions no longer line up.
+  if (wanted === "" || lower.length !== text.length) {
+    return [{ text, bold: false, at: 0 }];
+  }
+  const pieces: Piece[] = [];
+  let from = 0;
+  for (let at = lower.indexOf(wanted); at !== -1; at = lower.indexOf(wanted, from)) {
+    if (at > from) {
+      pieces.push({ text: text.slice(from, at), bold: false, at: from });
+    }
+    pieces.push({ text: text.slice(at, at + wanted.length), bold: true, at });
+    from = at + wanted.length;
+  }
+  if (from < text.length) {
+    pieces.push({ text: text.slice(from), bold: false, at: from });
+  }
+  return pieces;
+}
+
 /** Each kind of thing a page's JSON-LD describes, once, in the order the graph lists them. */
 export function schemaTypes(schema: Record<string, unknown>): string[] {
   const graph = schema["@graph"];

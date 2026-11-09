@@ -1,0 +1,25 @@
+{#- Gallery's lists (category, tag, archive, date and collection pages):
+    the list's name and intro, such as what a discipline covers, then the
+    discipline chips (all work, then every category the menus link, with
+    this one marked), then its posts as the same wall as the front page. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "sections/filter_row.html" import filter_row -%}
+{% from "parts-gallery.html" import wall -%}
+{% set here = page.pagination.links[0].href if page.pagination else meta.path -%}
+{% set menus = namespace(links=[], seen=" ") -%}
+{% for link in site.nav.primary + site.nav.footer %}{% if "/category/" in link.href and (" " ~ link.href ~ " ") not in menus.seen %}{% set menus.seen = menus.seen ~ link.href ~ " " %}{% set menus.links = menus.links + [link] %}{% endif %}{% endfor -%}
+{% set links = menus.links if (" " ~ here ~ " ") in menus.seen or "/category/" not in here else menus.links + [{"label": page.title, "href": here}] -%}
+<header class="list-header">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if links %}{{ filter_row(t.types_of_work, site.home, t.gallery_all, links, here) }}
+{% endif %}{% if page.posts %}{{ wall(page.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

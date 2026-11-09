@@ -27,13 +27,15 @@ use khalid_auth::{Accounts, SessionToken};
 use khalid_core::{Clock, Config, Slug, SystemClock};
 use khalid_db::{AnalyticsTable, Database, SiteId};
 
+use crate::assets::texts;
 use crate::site_content::LiveContent;
 use crate::site_posts::SitePosts;
 use crate::staff;
 
 /// The toolbar's styles. A file of its own, since the pages' policy allows
-/// only stylesheets from the site, and only staff ever load it.
-const STYLES: &str = include_str!("staff_toolbar.css");
+/// only stylesheets from the site, and only staff ever load it. The binary
+/// packs `staff_toolbar.css` with its other whole texts.
+const STYLES: &str = "src/staff_toolbar.css";
 
 /// The largest page the bar is added to.
 const PAGE_LIMIT: usize = 4 * 1024 * 1024;
@@ -71,7 +73,7 @@ async fn show(State(toolbar): State<Arc<Toolbar>>, mut request: Request, next: N
     let path = request.uri().path().to_owned();
     if path == toolbar.stylesheet() {
         let headers = [(CONTENT_TYPE, "text/css; charset=utf-8")];
-        return (headers, STYLES).into_response();
+        return (headers, texts::text(STYLES)).into_response();
     }
     let token = request
         .headers()

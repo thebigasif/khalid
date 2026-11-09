@@ -1,0 +1,182 @@
+/* Inkwell (docs/templates/inkwell.md): a newsletter's archive set like a
+   shelf of bound volumes. The masthead sits beside the sign-up form over
+   a heavy ink rule; the latest issue shows its number very large; every
+   year opens like a volume's spine, the year in old-style figures over a
+   heavy rule, and each issue keeps its number in a column of its own
+   with its parts at a glance. The section parts' own rules come first
+   (the build adds the parts this pack's templates import). Every colour
+   is a token or a mix of tokens. */
+:root {
+  --iw-frame: 72rem;
+  --iw-ink: color-mix(in oklab, var(--color-text) 88%, var(--color-background));
+  --iw-hair: color-mix(in oklab, var(--color-border) 75%, var(--color-background));
+  --hero-title: clamp(2.75rem, 1.5rem + 4.5vw, 5.25rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--iw-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: var(--measure); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
+main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
+main > .post ~ .related { max-inline-size: 60rem; margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+/* The small capitals labels: sections, dates, tallies, the kind. */
+.hero-kicker, .iw-label, .iw-glance-title, .iw-part, .iw-tally, .iw-no-label, .iw-extra, .iw-kind, .post-footer > h2, .related > h2, .mentions > h2, .list-header .list-kind { font-family: var(--font-body); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* The header: the name in the book face, quiet links, a hairline. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.125rem; border-block-end: 1px solid var(--color-border); }
+.site-name { font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a { color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+.search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.search-link:hover { color: var(--color-link); text-decoration: underline; }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: square, filled with the accent. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: var(--radius); font: 700 0.9375rem/1.2 var(--font-body); letter-spacing: 0.03em; text-align: center; text-decoration: none; cursor: pointer; }
+.button, .header-button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* The masthead: the name and intro beside the sign-up form, over a heavy
+   ink rule like the cover of a volume. */
+.iw-masthead { display: grid; gap: 2rem 4rem; align-items: center; padding-block: clamp(1.5rem, 1rem + 3vw, 4rem) 2.5rem; border-block-end: 4px solid var(--iw-ink); }
+@media (min-width: 56rem) { .iw-masthead { grid-template-columns: minmax(0, 1fr) minmax(18rem, 25rem); } }
+.iw-masthead .hero { margin: 0; padding: 0; }
+.hero-kicker { color: var(--color-link); }
+.hero-title { max-inline-size: 13ch; letter-spacing: -0.025em; line-height: 0.98; }
+.hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.5; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); border-radius: var(--radius); }
+.iw-masthead .newsletter-slot { margin: 0; }
+.newsletter-slot h2 { margin-block: 0 0.5rem; font-size: 1.375rem; }
+.newsletter-slot > p { margin-block: 0 0.75rem; font-size: 1rem; }
+.newsletter-note { color: var(--color-muted); font-size: var(--text-small); }
+.iw-join { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); }
+.iw-join h2 { margin: 0 0 0.5rem; font-size: 1.375rem; }
+.iw-join .newsletter-note { margin-block: 0 1rem; }
+.iw-join-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin: 0; }
+.iw-feed { display: inline-flex; align-items: center; min-block-size: 44px; font-size: var(--text-small); font-weight: 600; }
+.subscribe input { inline-size: 100%; min-block-size: 2.75rem; padding: 0.5rem 0.75rem; background: var(--color-background); border: 1px solid var(--color-muted); border-radius: var(--radius); font: inherit; }
+
+/* The latest issue: the number very large on the start side, the issue's
+   words, then its lead picture. */
+.iw-latest { display: grid; gap: 1.5rem 3rem; padding-block: 2.5rem 3rem; border-block-end: 1px solid var(--color-border); }
+@media (min-width: 44rem) { .iw-latest { grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr); } .iw-latest-art { grid-column: 2; } }
+@media (min-width: 68rem) { .iw-latest { grid-template-columns: minmax(10rem, 13rem) minmax(0, 1fr) minmax(18rem, 26rem); } .iw-latest-art { grid-column: 3; } }
+.iw-stamp { display: flex; flex-direction: column; margin: 0; color: var(--color-link); font-family: var(--font-heading); }
+.iw-stamp .iw-no-label { color: var(--color-muted); }
+.iw-stamp-figure { font-size: clamp(4.5rem, 2.5rem + 6vw, 8.5rem); font-weight: var(--heading-weight); font-variant-numeric: oldstyle-nums; letter-spacing: -0.03em; line-height: 0.9; }
+.iw-latest-text { min-inline-size: 0; }
+.iw-label { margin: 0 0 0.5rem; color: var(--color-muted); }
+.iw-latest h2 { margin: 0; font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem); line-height: 1.1; }
+.iw-latest h2 a { color: var(--color-text); text-decoration: none; }
+.iw-latest h2 a:hover { color: var(--color-link); text-decoration: underline; }
+.iw-latest-excerpt { max-inline-size: var(--measure); margin-block: 0.75rem 1.5rem; font-size: 1.125rem; }
+.iw-glance-title { margin: 0 0 0.75rem; color: var(--color-text); }
+.iw-read { margin-block: 1.75rem 0; }
+.iw-latest-art .image { margin: 0; }
+.iw-latest-art img { inline-size: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+
+/* An issue's parts: the section in small capitals over the item. */
+.iw-glance { margin: 0; padding: 0; list-style: none; }
+.iw-glance li { padding-block: 0.5rem; border-block-start: 1px solid var(--iw-hair); }
+.iw-glance li:first-child { padding-block-start: 0; border: 0; }
+.iw-part { display: block; color: var(--color-muted); font-size: 0.75rem; }
+.iw-item { display: block; font-size: 1rem; line-height: 1.4; }
+
+/* The archive: a heading, the year links, then a volume per year. */
+.iw-archive { margin-block-start: 3rem; }
+.iw-archive-title { margin: 0 0 1rem; font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem); }
+.iw-years { margin-block-end: 1rem; }
+.iw-years ul { gap: 0.5rem; }
+.iw-years a { padding-inline: 0.875rem; color: var(--color-text); border: 1px solid var(--color-border); font-family: var(--font-heading); font-size: 1.125rem; font-variant-numeric: oldstyle-nums; text-decoration: none; }
+.iw-years a:hover { color: var(--color-link); border-color: var(--color-accent); }
+.iw-volume { margin-block-start: 2.5rem; scroll-margin-block-start: 1rem; }
+
+/* The spine: the year in old-style figures over a heavy ink rule. */
+.iw-spine { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; padding-block-end: 0.5rem; border-block-end: 4px solid var(--iw-ink); }
+.iw-spine :is(h2, h3, h4) { margin: 0; font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem); font-variant-numeric: oldstyle-nums; letter-spacing: -0.02em; line-height: 1; }
+.iw-tally { margin: 0; color: var(--color-muted); }
+
+/* An issue row: the number in its own column, the title and date, then
+   the parts. A wide row puts the parts in a third column. */
+.iw-issues { margin: 0; padding: 0; list-style: none; container-type: inline-size; }
+.iw-issue { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 0.75rem 1.25rem; padding-block: 1.25rem; border-block-end: 1px solid var(--color-border); }
+.iw-issue > :is(.iw-glance, .iw-note) { grid-column: 2; }
+.iw-no { grid-row: span 2; margin: 0; color: var(--color-link); font-family: var(--font-heading); line-height: 1; }
+.iw-no .iw-no-label { display: block; margin-block-end: 0.25rem; color: var(--color-muted); font-size: 0.6875rem; }
+.iw-no-figure { font-size: 2.25rem; font-weight: var(--heading-weight); font-variant-numeric: oldstyle-nums; }
+.iw-extra { margin: 0 0 0.25rem; color: var(--color-link); }
+.iw-what { grid-column: 2; min-inline-size: 0; }
+.iw-what :is(h2, h3, h4) { margin: 0; font-size: 1.375rem; line-height: 1.25; }
+.iw-what :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.iw-what :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.iw-date { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.iw-note { margin: 0; color: var(--color-muted); font-size: 1rem; line-height: 1.5; }
+@container (min-width: 40rem) {
+  .iw-issue { grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.875rem 2rem; }
+  .iw-no-figure { font-size: 2.75rem; }
+  .iw-issue .iw-glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 1.5rem; }
+  .iw-issue .iw-glance li { padding: 0; padding-inline-start: 0.875rem; border: 0; border-inline-start: 1px solid var(--color-border); }
+  .iw-issue .iw-note { max-inline-size: var(--measure); }
+}
+
+/* Lists and the people page: the name and intro over a heavy rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 0; padding-block-end: 1.5rem; border-block-end: 4px solid var(--iw-ink); }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 1rem; font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-link); }
+.list-header + .iw-archive { margin-block-start: 1.5rem; }
+.list-header + .people-grid { margin-block-start: 2.5rem; }
+
+/* An issue: the stamp, the date and the kind over the title. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; }
+.iw-issue-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin: 0 0 1rem; color: var(--color-muted); font-size: var(--text-small); }
+.iw-stamp-small { padding: 0.25rem 0.625rem; color: var(--color-link); border: 2px solid var(--color-accent); font-family: var(--font-heading); font-size: 1rem; font-weight: var(--heading-weight); font-variant-numeric: oldstyle-nums; }
+.iw-kind { color: var(--color-link); text-decoration: none; }
+.iw-kind:hover { text-decoration: underline; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.1; }
+.post-header .dek { margin-block: 0 1rem; color: var(--color-muted); font-size: 1.25rem; line-height: 1.5; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-style: normal; }
+.post-meta address a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-meta address a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .avatar { inline-size: 2rem; block-size: 2rem; }
+.post-date { margin-block: 0.25rem 0; }
+.updated-note { color: var(--color-muted); font-size: var(--text-small); }
+
+/* In this issue: the parts in a box ruled down its start edge. */
+.iw-contents { margin-block: 1.75rem 0; padding: 1.125rem 1.25rem; background: var(--color-surface); border-inline-start: 4px solid var(--color-accent); }
+.iw-contents .iw-glance-title { font-size: 0.8125rem; }
+.iw-contents .iw-item { font-size: 1.0625rem; }
+.post-header .image { margin-block: 2rem 0; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer { margin-block-start: 3rem; }
+.post-footer > h2, .related > h2, .mentions > h2 { margin-block: 0 1rem; color: var(--color-text); }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); padding-block-start: 1rem; border-block-start: 4px solid var(--iw-ink); }
+
+/* A person: the mark beside the name. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.125rem; }
+.author-bio { max-inline-size: var(--measure); }
+.author + .iw-archive { margin-block-start: 0; }
+.people-grid-person :is(h2, h3, h4) { font-size: 1.375rem; }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.375rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action: a band on the surface between heavy rules. */
+.cta-band { flex-direction: column; justify-content: center; background: var(--color-surface); border: 0; border-block: 4px solid var(--iw-ink); border-radius: 0; text-align: center; }
+
+/* The footer: a heavy rule, quiet links. */
+.site-footer { border-block-start: 4px solid var(--iw-ink); }

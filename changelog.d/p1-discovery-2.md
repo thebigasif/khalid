@@ -1,2 +1,0 @@
-Added
-- **Glossary from A to Z.** Every language with a glossary term now gets a page at `/glossary/`: a row of letters to jump to, then each term under its letter as a card with its one-sentence definition. Accented letters sort with their base letter, so German `Ähnlichkeit` sits under A. The page's JSON-LD is a `DefinedTermSet` that names every term, it is in the XML and HTML sitemaps, and `content/<lang>/glossary/_index.md` may give it a title, a description and an intro (KH-CON-1, KH-CON-2, KH-SEO-3, KH-SEO-5).

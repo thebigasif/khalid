@@ -1,0 +1,1 @@
+warn few-transitions: 4 of 34 sentences use a linking word

@@ -1,0 +1,19 @@
+# About 200 words, and well over one in ten are long and rare, such as
+# "interoperability". Everyday long words such as "information" and names
+# such as "Wellington" do not count..
+extends = "clean"
+prose_text = """
+Internal links help readers find the next useful post on your site.
+Interoperability between heterogeneous publishing infrastructures necessitates meticulous consideration. Wellington readers want information, but bureaucratic terminology obfuscates straightforward explanations.
+Consequently, organisations implementing comprehensive hyperlinking methodologies frequently underestimate maintainability. Sophisticated taxonomies notwithstanding, unambiguous navigational affordances remain indispensable.
+Contemporary practitioners advocate incremental consolidation, prioritising authoritative cornerstone documentation. Nevertheless, disproportionate optimisation occasionally jeopardises comprehensibility.
+Write short words. Use plain names. Link the next post. Keep the reader moving.
+Interoperability between heterogeneous publishing infrastructures necessitates meticulous consideration. Wellington readers want information, but bureaucratic terminology obfuscates straightforward explanations.
+Consequently, organisations implementing comprehensive hyperlinking methodologies frequently underestimate maintainability. Sophisticated taxonomies notwithstanding, unambiguous navigational affordances remain indispensable.
+Contemporary practitioners advocate incremental consolidation, prioritising authoritative cornerstone documentation. Nevertheless, disproportionate optimisation occasionally jeopardises comprehensibility.
+Write short words. Use plain names. Link the next post. Keep the reader moving.
+Interoperability between heterogeneous publishing infrastructures necessitates meticulous consideration. Wellington readers want information, but bureaucratic terminology obfuscates straightforward explanations.
+Consequently, organisations implementing comprehensive hyperlinking methodologies frequently underestimate maintainability. Sophisticated taxonomies notwithstanding, unambiguous navigational affordances remain indispensable.
+Contemporary practitioners advocate incremental consolidation, prioritising authoritative cornerstone documentation. Nevertheless, disproportionate optimisation occasionally jeopardises comprehensibility.
+Write short words. Use plain names. Link the next post. Keep the reader moving.
+"""

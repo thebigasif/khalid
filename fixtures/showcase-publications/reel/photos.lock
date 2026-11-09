@@ -1,0 +1,138 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-08-14-small-hours-review/lead.jpg"
+sha256 = "aa32b1b7f32996fc464f71a77a1b6b85094eb8bc0fa62c96648cdefa568e3594"
+source = "https://commons.wikimedia.org/wiki/File:Washers_in_Sheeley%27s_Laundromat,_Walden,_NY.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Washers in Sheeley's Laundromat, Walden, NY by Daniel Case, via Wikimedia Commons"
+title = "Washers in Sheeley's Laundromat, Walden, NY"
+creator = "Daniel Case"
+openverse = "commons:File:Washers in Sheeley's Laundromat, Walden, NY.jpg"
+needs_credit = true
+size = "1600x1316"
+
+[[photos]]
+file = "en/posts/2026-08-28-night-ferry-review/lead.jpg"
+sha256 = "250eb96e30221a3dab9622062f8cbb9df46b4cff4ae643a9afdd87eb59fe94e0"
+source = "https://commons.wikimedia.org/wiki/File:02_2020_Grecia_photo_Paolo_Villa_FO199953_(traghetto_Ancona_Patrasso_-_sopraccoperta_di_notte_-_ferry_-_on_deck_in_the_night).jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "02 2020 Grecia photo Paolo Villa FO199953 (traghetto Ancona Patrasso - sopraccoperta di notte - ferry - on deck in the night) by Paolo Villa, via Wikimedia Commons"
+title = "02 2020 Grecia photo Paolo Villa FO199953 (traghetto Ancona Patrasso - sopraccoperta di notte - ferry - on deck in the night)"
+creator = "Paolo Villa"
+openverse = "commons:File:02 2020 Grecia photo Paolo Villa FO199953 (traghetto Ancona Patrasso - sopraccoperta di notte - ferry - on deck in the night).jpg"
+needs_credit = true
+size = "1600x1060"
+
+[[photos]]
+file = "en/posts/2026-09-04-glasshouse-year-review/lead.jpg"
+sha256 = "35204d6b1fd4478115a147787e2fade890316c565d93e81d728049bc44955aae"
+source = "https://commons.wikimedia.org/wiki/File:Bunkyou_Koishikawa_Botanical_Greenhouse_1.JPG"
+licence = "CC BY 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/3.0"
+credit = "Bunkyou Koishikawa Botanical Greenhouse 1 by 京浜にけ, via Wikimedia Commons"
+title = "Bunkyou Koishikawa Botanical Greenhouse 1"
+creator = "京浜にけ"
+openverse = "commons:File:Bunkyou Koishikawa Botanical Greenhouse 1.JPG"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-18-winter-ledger-review/lead.jpg"
+sha256 = "0f3af423b97f919b6c31dc935b3b6853d75d345b86a28677e62f94601ad91f7d"
+source = "https://commons.wikimedia.org/wiki/File:Fronhausen-Sichertshausen_(Germany),_first_snow_in_November_2015-11-22_(12).JPG"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Fronhausen-Sichertshausen (Germany), first snow in November 2015-11-22 (12) by LudwigSebastianMicheler, via Wikimedia Commons"
+title = "Fronhausen-Sichertshausen (Germany), first snow in November 2015-11-22 (12)"
+creator = "LudwigSebastianMicheler"
+openverse = "commons:File:Fronhausen-Sichertshausen (Germany), first snow in November 2015-11-22 (12).JPG"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-25-paper-kingdoms-review/lead.jpg"
+sha256 = "9f9ae259ba0321fd54c6b1b71dcf8ad0c986cc8afa5b58c3350a344b2dab8f8d"
+source = "https://commons.wikimedia.org/wiki/File:Pulp_mixing_vat_in_closed-down_paper_mill.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Pulp mixing vat in closed-down paper mill by ImagePerson, via Wikimedia Commons"
+title = "Pulp mixing vat in closed-down paper mill"
+creator = "ImagePerson"
+openverse = "commons:File:Pulp mixing vat in closed-down paper mill.jpg"
+needs_credit = true
+size = "1600x1029"
+
+[[photos]]
+file = "en/posts/2026-10-02-great-opening-scenes/lead.jpg"
+sha256 = "ae01755cd9aca135c0321fbfa50ee0bc5a4326b877e0d8ef78d488f728e2a66d"
+source = "https://commons.wikimedia.org/wiki/File:IMAX_15_70_mm_Film_Projector_in_Paris.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "IMAX 15 70 mm Film Projector in Paris by DiscoA340, via Wikimedia Commons"
+title = "IMAX 15 70 mm Film Projector in Paris"
+creator = "DiscoA340"
+openverse = "commons:File:IMAX 15 70 mm Film Projector in Paris.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-09-dust-lines-review/lead.jpg"
+sha256 = "f508119cc80dcdf0eef063fd9f5121b4fae58fd65408a1b010adc21c3143ecad"
+source = "https://commons.wikimedia.org/wiki/File:Desert_in_Utah,_USA.JPG"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Desert in Utah, USA by David F Kennedy, via Wikimedia Commons"
+title = "Desert in Utah, USA"
+creator = "David F Kennedy"
+openverse = "commons:File:Desert in Utah, USA.JPG"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-16-hollow-creek-season-two-review/lead.jpg"
+sha256 = "7eb43230e2dc2f841178dafae03523147b81cc692fbc2363fb4232ae4663e1e4"
+source = "https://commons.wikimedia.org/wiki/File:Foggy_Forest_(256920249).jpeg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Foggy Forest by Phos4, via Wikimedia Commons"
+title = "Foggy Forest"
+creator = "Phos4"
+openverse = "commons:File:Foggy Forest (256920249).jpeg"
+needs_credit = false
+size = "1600x1206"
+
+[[photos]]
+file = "en/posts/2026-10-23-quiet-orbit-review/lead.jpg"
+sha256 = "ddb77524813d403d26db6f06fb014eef6a531592633db501c2e7d3182e4833e2"
+source = "https://commons.wikimedia.org/wiki/File:A_New_View_of_the_Tarantula_Nebula.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "A New View of the Tarantula Nebula by NASA, via Wikimedia Commons"
+title = "A New View of the Tarantula Nebula"
+creator = "NASA"
+openverse = "commons:File:A New View of the Tarantula Nebula.jpg"
+needs_credit = false
+size = "1600x1280"
+
+[[photos]]
+file = "en/posts/2026-10-30-saltglass-review/lead.jpg"
+sha256 = "1f4149bba1bca8924cd884034a1fafe7da6a668b82aa1bcb0ae4a8a6e27db8d3"
+source = "https://commons.wikimedia.org/wiki/File:Louisbourg_Lighthouse,_waves_breaking_in_a_fall_storm_1.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Louisbourg Lighthouse, waves breaking in a fall storm 1 by Ken Heaton, via Wikimedia Commons"
+title = "Louisbourg Lighthouse, waves breaking in a fall storm 1"
+creator = "Ken Heaton"
+openverse = "commons:File:Louisbourg Lighthouse, waves breaking in a fall storm 1.jpg"
+needs_credit = true
+size = "1200x1067"
+
+[[photos]]
+file = "en/posts/2026-11-02-winter-watch-list/lead.jpg"
+sha256 = "62fe7848405ef36b0218fd569f629d57b2bd670af0d8b5d59c1abd2695c4f522"
+source = "https://commons.wikimedia.org/wiki/File:Auditorium_at_Gilda_on_an_afternoon_in_January_2025.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Auditorium at Gilda on an afternoon in January 2025 by JIP, via Wikimedia Commons"
+title = "Auditorium at Gilda on an afternoon in January 2025"
+creator = "JIP"
+openverse = "commons:File:Auditorium at Gilda on an afternoon in January 2025.jpg"
+needs_credit = true
+size = "1600x1200"
+

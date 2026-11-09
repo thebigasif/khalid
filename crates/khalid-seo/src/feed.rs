@@ -32,6 +32,8 @@ pub struct FeedOptions {
     pub source_line: Option<MetaTemplate>,
     /// How many of the newest posts a feed holds.
     pub limit: usize,
+    /// The formats not written at all. Empty by default.
+    pub off: Vec<FeedFormat>,
 }
 
 impl Default for FeedOptions {
@@ -42,6 +44,7 @@ impl Default for FeedOptions {
             after_item: String::new(),
             source_line: None,
             limit: 20,
+            off: Vec::new(),
         }
     }
 }
@@ -59,6 +62,9 @@ pub enum FeedFormat {
 }
 
 impl FeedFormat {
+    /// Every format, in the order a page links them.
+    pub const ALL: [Self; 3] = [Self::Rss, Self::Atom, Self::Json];
+
     fn file_name(self) -> &'static str {
         match self {
             Self::Rss => "feed.xml",
@@ -66,13 +72,60 @@ impl FeedFormat {
             Self::Json => "feed.json",
         }
     }
+
+    /// The media type a page's `<link rel="alternate">` names it by.
+    pub fn media_type(self) -> &'static str {
+        match self {
+            Self::Rss => "application/rss+xml",
+            Self::Atom => "application/atom+xml",
+            Self::Json => "application/feed+json",
+        }
+    }
 }
 
-/// Which posts a feed holds: one language, and one category or all.
+/// The address of the feed in `format` that belongs to the page at `page`:
+/// the file of that name in the page's folder.
+pub(crate) fn feed_url(page: &AbsoluteUrl, format: FeedFormat) -> Result<AbsoluteUrl, SeoError> {
+    let page = page.as_str();
+    let slash = if page.ends_with('/') { "" } else { "/" };
+    let joined = format!("{page}{slash}{}", format.file_name());
+    AbsoluteUrl::parse(&joined).map_err(|source| SeoError::Url {
+        path: format.file_name().to_owned(),
+        source,
+    })
+}
+
+/// Which posts a feed holds: one language, and one list of it or all.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FeedScope {
     language: Locale,
-    category: Option<(String, UrlPath)>,
+    list: Option<FeedList>,
+}
+
+/// A list page's feed: its title, its page and how its posts are found.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct FeedList {
+    title: String,
+    archive: UrlPath,
+    posts: ListPosts,
+}
+
+/// How a list's posts are found.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum ListPosts {
+    /// Each post whose category is the list's title.
+    Category,
+    /// The posts at these paths, sorted so a binary search finds each.
+    Paths(Vec<UrlPath>),
+}
+
+impl FeedList {
+    fn holds(&self, page: &SeoPage) -> bool {
+        match &self.posts {
+            ListPosts::Category => page.category.as_ref() == Some(&self.title),
+            ListPosts::Paths(paths) => paths.binary_search(&page.path).is_ok(),
+        }
+    }
 }
 
 impl FeedScope {
@@ -80,7 +133,7 @@ impl FeedScope {
     pub fn language(language: Locale) -> Self {
         Self {
             language,
-            category: None,
+            list: None,
         }
     }
 
@@ -89,7 +142,31 @@ impl FeedScope {
     pub fn category(language: Locale, name: &str, archive: UrlPath) -> Self {
         Self {
             language,
-            category: Some((name.to_owned(), archive)),
+            list: Some(FeedList {
+                title: name.to_owned(),
+                archive,
+                posts: ListPosts::Category,
+            }),
+        }
+    }
+
+    /// The posts in `language` at `posts`, as the list page at `archive`
+    /// titled `title` shows them: a channel's, or a category's.
+    pub fn channel(
+        language: Locale,
+        title: &str,
+        archive: UrlPath,
+        mut posts: Vec<UrlPath>,
+    ) -> Self {
+        posts.sort_unstable();
+        posts.dedup();
+        Self {
+            language,
+            list: Some(FeedList {
+                title: title.to_owned(),
+                archive,
+                posts: ListPosts::Paths(posts),
+            }),
         }
     }
 }
@@ -129,7 +206,8 @@ pub struct Feed {
     pub site_name: String,
     /// One line about the feed: the site's tagline.
     pub description: String,
-    /// The page the feed belongs to: the home page or the category archive.
+    /// The page the feed belongs to: the home page, or a category or
+    /// channel page.
     pub home: AbsoluteUrl,
     /// The language of every item.
     pub language: Locale,
@@ -174,13 +252,7 @@ impl Feed {
     ///
     /// [`SeoError::Url`] when the address cannot be built.
     pub fn url(&self, format: FeedFormat) -> Result<AbsoluteUrl, SeoError> {
-        let home = self.home.as_str();
-        let slash = if home.ends_with('/') { "" } else { "/" };
-        let joined = format!("{home}{slash}{}", format.file_name());
-        AbsoluteUrl::parse(&joined).map_err(|source| SeoError::Url {
-            path: format.file_name().to_owned(),
-            source,
-        })
+        feed_url(&self.home, format)
     }
 
     /// The feed of `scope` at `now`: the newest published posts in its
@@ -201,10 +273,7 @@ impl Feed {
                 page.kind == PageKind::Post
                     && page.state == PublishState::Published
                     && page.language == scope.language
-                    && scope
-                        .category
-                        .as_ref()
-                        .is_none_or(|(name, _)| page.category.as_ref() == Some(name))
+                    && scope.list.as_ref().is_none_or(|list| list.holds(page))
             })
             .filter_map(|page| page.published.map(|published| (page, published)))
             .collect();
@@ -230,10 +299,10 @@ impl Feed {
             .map(|item| item.updated.unwrap_or(item.published))
             .max()
             .unwrap_or(now);
-        let (title, home) = match &scope.category {
-            Some((name, archive)) => (
-                format!("{name} {} {}", site.separator, site.name),
-                site.url_for(&scope.language, archive)?,
+        let (title, home) = match &scope.list {
+            Some(list) => (
+                format!("{} {} {}", list.title, site.separator, site.name),
+                site.url_for(&scope.language, &list.archive)?,
             ),
             None => (
                 site.name.clone(),

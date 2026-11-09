@@ -4,6 +4,7 @@
     Each tab is an anchor link to its panel, so the tabs work with scripts
     off; the stylesheet shows one panel at a time. -#}
 {% from "card.html" import cards -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% macro hero_stats(options) %}{% if options.hero_stats %}<dl class="hero-stats">
 {% for line in options.hero_stats %}{% set parts = line | split("|") | list %}<div>
 <dt>{{ parts[1:] | join("|") | trim }}</dt>
@@ -19,17 +20,17 @@
 <div class="topic-panels">
 {% for tab in page.tabs %}<section class="topic-panel" id="topic-{{ loop.index }}" aria-labelledby="topic-{{ loop.index }}-title">
 <h3 id="topic-{{ loop.index }}-title">{{ tab.title }}</h3>
-{{ cards(tab.posts, 4) }}
+{{ cards(tab.posts, 4, sizes=slot_sizes("panel", options.cards)) }}
 <p class="view-all"><a href="{{ tab.href }}">{{ t.view_all | replace("{name}", tab.title) }}</a></p>
 </section>
 {% endfor %}</div>
 </section>
 {% endif %}{% if options.video_section and page.videos %}<section class="media-row" aria-labelledby="home-videos">
 <h2 id="home-videos">{{ t.home_videos }}</h2>
-{{ cards(page.videos, 3) }}
+{{ cards(page.videos, 3, sizes=slot_sizes("panel", options.cards)) }}
 </section>
 {% endif %}{% if options.podcast_section and page.podcasts %}<section class="media-row" aria-labelledby="home-podcasts">
 <h2 id="home-podcasts">{{ t.home_podcasts }}</h2>
-{{ cards(page.podcasts, 3) }}
+{{ cards(page.podcasts, 3, sizes=slot_sizes("panel", options.cards)) }}
 </section>
 {% endif %}{% endmacro %}

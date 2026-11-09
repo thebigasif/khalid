@@ -255,7 +255,9 @@ impl Renderer<'_> {
             BlockKind::Toggle { summary } => self.toggle(block, summary),
             BlockKind::Toc => self.html.push_str(TOC_MARK),
             BlockKind::Cta => self.html.push_str(CTA_MARK),
+            BlockKind::PrivacyFacts => self.html.push_str(PRIVACY_FACTS_MARK),
             BlockKind::Snippet { slug } => self.snippet(slug),
+            BlockKind::Location { name } => self.location(name),
             BlockKind::Button { href, label } => self.button(href, label),
             BlockKind::Bookmark {
                 href,
@@ -275,7 +277,7 @@ impl Renderer<'_> {
             BlockKind::Gallery { images } => self.gallery(images),
             BlockKind::Maths { label, formula } => self.maths(label.as_deref(), formula),
             BlockKind::Chart(chart) => self.chart(chart),
-            BlockKind::PullQuote { by } => self.pull_quote(block, by.as_deref()),
+            BlockKind::PullQuote { .. } | BlockKind::Takeaways { .. } => self.set_apart(block),
             BlockKind::ProsCons(pros_cons) => self.pros_cons(pros_cons),
             BlockKind::Columns { columns } => self.columns(columns),
             BlockKind::FoldingTable { fold, more } => {
@@ -304,17 +306,6 @@ impl Renderer<'_> {
             }
             _ => {}
         }
-    }
-
-    /// Writes a body a reader opens and closes by its summary line.
-    fn toggle(&mut self, block: &Block, summary: &str) {
-        self.push(&[
-            "<details open>\n<summary>",
-            &attribute(summary),
-            "</summary>\n",
-        ]);
-        self.markdown(&inside(&block.source));
-        self.html.push_str("</details>\n");
     }
 
     /// Writes a link styled as a button.
@@ -404,7 +395,8 @@ impl Renderer<'_> {
         }
         let options = options();
         let arena = Arena::new();
-        let root = parse_document(&arena, text, &options);
+        let text = wikilink::guard_cells(text);
+        let root = parse_document(&arena, &text, &options);
         wikilink::resolve(root, self.wikilinks);
         maths::draw(root);
         for node in root.descendants() {
@@ -448,6 +440,14 @@ const TOC_MARK: &str = "<!--khalid-toc-->\n";
 /// band from `[template.cta]`. Raw HTML in markdown is escaped, so no post
 /// can write it itself.
 pub const CTA_MARK: &str = "<!--khalid-cta-->\n";
+
+/// Where `::privacy-facts` puts the site's privacy facts. The privacy page
+/// swaps it for them; on any other page it stays an unseen comment.
+pub const PRIVACY_FACTS_MARK: &str = "<!--khalid-privacy-facts-->\n";
+
+/// How `::location` starts its mark: the location's name, escaped as an
+/// attribute, and `-->` follow. The build swaps the mark for the card.
+pub const LOCATION_MARK: &str = "<!--khalid-location:";
 
 /// The classes of the elements a block writes itself rather than the
 /// writer: the contents list, which repeats every heading, a score,

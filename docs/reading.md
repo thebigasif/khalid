@@ -1,3 +1,8 @@
+---
+title: "Reading aids"
+order: 70
+---
+
 # Reading aids
 
 Four small aids help a reader find their way through a long post. Every template has them, classic too. Each one works without scripts where it can; the reader script, a small file that loads after the page, only adds to it. Nothing here needs a setting to start.
@@ -10,7 +15,7 @@ To turn it off, set the template option `reading_progress = "none"` under `[temp
 
 ## The contents that follow you
 
-On a wide screen the contents column beside a long post stays in view as the reader scrolls, and marks the section they are reading. On a phone, or in a template that puts the contents at the top, a small "Contents" button floats in the corner. It opens the contents as a sheet from the bottom of the screen, with the section being read marked. Escape or the Close button shuts it, and focus stays inside it while it is open. Picking a section closes the sheet and goes there.
+On a wide screen the contents column beside a long post stays in view as the reader scrolls, and marks the section they are reading. On a phone, or in a template that folds the contents at the top, a "Contents" button takes the folded list's place at the start of the post. It sits in the page, so it never covers the text. It opens the contents as a sheet from the bottom of the screen, with the section being read marked. Escape or the Close button shuts it, and focus stays inside it while it is open. Picking a section closes the sheet and goes there.
 
 With scripts off, the contents box at the top of the post still lists every section.
 

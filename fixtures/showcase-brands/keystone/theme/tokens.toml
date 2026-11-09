@@ -1,0 +1,58 @@
+# The sample brand for the Keystone demo: a calm software company. A
+# quiet indigo on a cool white, a modern sans for headings and a humanist
+# sans for text. Only the brand lives here: the template keeps its own
+# shape, type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#f6f6fb"
+text = "#121a2c"
+muted = "#56607a"
+link = "#4338ca"
+accent = "#4f46e5"
+border = "#e2e2ef"
+
+[fonts]
+heading = "Manrope, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+body = "\"Source Sans 3\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Manrope"
+style = "normal"
+weight = "600 700"
+path = "manrope-latin-600-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "117.75%"
+descent = "141.57%"
+line_gap = "0.00%"
+size_adjust = "59.88%"
+
+[[fonts.files]]
+family = "Source Sans 3"
+style = "italic"
+weight = "400"
+path = "source-sans-3-latin-italic-400.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "113.11%"
+descent = "188.76%"
+line_gap = "0.00%"
+size_adjust = "47.97%"
+
+[[fonts.files]]
+family = "Source Sans 3"
+style = "normal"
+weight = "400 600"
+path = "source-sans-3-latin-400-600.woff2"
+range = "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+[fonts.files.metrics]
+ascent = "113.11%"
+descent = "188.76%"
+line_gap = "0.00%"
+size_adjust = "52.21%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

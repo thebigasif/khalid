@@ -1,0 +1,208 @@
+/* Brief (docs/templates/brief.md): a short digest newsletter. Every page
+   is one sheet of paper about 44rem wide on a tinted desk: the header,
+   the page and the footer sit on it, so the site reads like the email.
+   Issues carry a stamp line and a row of item ticks; inside an issue each
+   item's number hangs in the margin. On a phone the desk goes and the
+   sheet fills the screen. The section parts' own rules come first (the
+   build adds the parts this pack's templates import); these set Brief's
+   look over them. Every colour is a token or a mix of tokens. */
+:root {
+  --br-sheet: 44rem;
+  --br-pad: 2.5rem;
+  /* The margin the item numbers hang in. */
+  --br-gutter: 3.5rem;
+  --br-desk: var(--color-surface);
+  --br-paper: var(--color-background);
+  --br-ink: var(--color-text);
+  --hero-title: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+  --progress-step: 0.875rem;
+}
+@media (max-width: 36rem) { :root { --br-pad: 1rem; --br-gutter: 0rem; } }
+
+/* The desk and the sheet. The header, main and footer share the sheet's
+   width and its paper, with a hairline at each side. */
+body { background: var(--br-desk); padding-block-end: clamp(0rem, 3vw, 3rem); }
+.site-header, main, .site-footer { box-sizing: border-box; inline-size: min(100%, var(--br-sheet)); max-inline-size: var(--br-sheet); margin-inline: auto; padding-inline: var(--br-pad); background: var(--br-paper); border-inline: 1px solid var(--color-border); }
+main { position: relative; padding-block: 0.5rem var(--space-section); }
+@media (max-width: 48rem) {
+  body { padding-inline: 0; background: var(--br-paper); }
+  .site-header, main, .site-footer { border-inline: 0; }
+}
+h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+/* The header: the top of the sheet, under a heavy ink edge. The name at
+   the start and the menu at the end, across the whole sheet. */
+.site-header { margin-block-start: clamp(0rem, 3vw, 3rem); padding-block: 1.25rem 1rem; border-block-start: 6px solid var(--br-ink); border-block-end: 1px solid var(--br-ink); }
+@media (max-width: 48rem) { .site-header { margin-block-start: 0; } }
+.site-header > .nav-bar { flex: 1 1 auto; }
+.site-header > .nav-bar ul { justify-content: flex-end; gap: 0 1.25rem; }
+.site-header > .nav-menu { margin-inline-start: auto; }
+.site-name { font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); letter-spacing: -0.02em; color: var(--br-ink); text-decoration: none; }
+.site-logo img { block-size: 2.5rem; inline-size: auto; }
+.site-header nav a, .search-link { color: var(--br-ink); font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { box-shadow: inset 0 -3px var(--color-accent); }
+.site-header nav li:last-child a { justify-content: flex-end; }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--br-ink); border: 0; box-shadow: 0 0 0 100vmax var(--br-ink); clip-path: inset(0 -100vmax); color: var(--br-paper); font-family: var(--font-heading); font-size: var(--text-small); }
+.announcement a { color: var(--br-paper); }
+
+/* Buttons: square and inked; the accent on hover. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--br-paper); background: var(--br-ink); border: 0; border-radius: var(--radius); font: 600 0.9375rem/1.2 var(--font-heading); text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { color: var(--color-on-accent); background: var(--color-accent); text-decoration: none; }
+
+/* Section labels: small capitals in the heading font, over a hairline. */
+:is(.issues, .editions, .related, .mentions, .author-posts, .author-others, .topic-tabs, .media-row) > h2, .lead-label, .post-footer > h2 { margin-block: 0 0.75rem; padding-block-end: 0.5rem; border-block-end: 1px solid var(--color-border); color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; line-height: 1.3; text-transform: uppercase; }
+
+/* The masthead: the name and the tagline, the sign-up form under them,
+   or beside them where the sheet has room. */
+.masthead { display: grid; gap: 1.5rem 2rem; align-items: end; margin-block: 0 var(--space-section); padding-block: 1.5rem 2rem; border-block-end: 1px solid var(--br-ink); }
+@media (min-width: 46rem) { .masthead-signup { grid-template-columns: minmax(0, 1fr) minmax(0, 17rem); } }
+.hero { margin: 0; padding: 0; }
+.hero-title { font-weight: var(--heading-weight); letter-spacing: -0.03em; }
+.hero-intro { margin-block-start: 0.75rem; color: var(--br-ink); font-size: 1.125rem; line-height: 1.5; }
+.masthead .newsletter-slot { margin: 0; padding: 1.25rem; border-block-start: 4px solid var(--color-accent); }
+.masthead .newsletter-slot h2 { font-size: 1.125rem; }
+.masthead .newsletter-slot p { font-size: 1rem; }
+
+/* The stamp line over an issue: the edition, the number, the date and
+   the reading time, in small type split by thin rules. */
+.brief-stamp { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0; margin-block: 0 0.75rem; color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); font-variant-numeric: tabular-nums; line-height: 1.4; }
+.brief-stamp > * + * { margin-inline-start: 0.625rem; padding-inline-start: 0.625rem; border-inline-start: 1px solid var(--color-border); }
+.brief-edition { color: var(--br-ink); font-weight: 700; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
+.brief-edition:hover { color: var(--color-link); text-decoration: underline; }
+.brief-number { color: var(--br-ink); font-weight: 700; }
+
+/* The item ticks, Brief's signature: one short upright mark per item,
+   like the marks on a stopwatch, after "6 items" and the reading time. */
+.brief-ticks { margin-block: 1rem 0; }
+.brief-ticks .progress-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+.brief-ticks .progress-words { gap: 0 0.75rem; font-family: var(--font-heading); font-size: var(--text-small); }
+.brief-ticks .progress-steps { order: -1; gap: 0.3125rem; }
+.brief-ticks .progress-step { inline-size: 0.25rem; block-size: 1.125rem; border: 0; background: var(--color-accent); }
+
+/* The latest issue: its picture short and wide, then the stamp, title,
+   summary, ticks and the button. */
+.lead-issue { margin-block-end: var(--space-section); }
+.lead-picture { display: block; margin-block-end: 1.25rem; }
+.lead-picture .image { margin: 0; }
+.lead-picture img { aspect-ratio: 2 / 1; object-fit: cover; object-position: 50% 30%; }
+.lead-title { margin: 0; font-size: clamp(1.625rem, 1.2rem + 1.5vw, 2.25rem); line-height: 1.12; letter-spacing: -0.02em; }
+.lead-title a { color: var(--br-ink); text-decoration: none; }
+.lead-title a:hover { color: var(--color-link); text-decoration: underline; }
+.lead-summary { margin-block: 0.75rem 0; font-size: 1.125rem; line-height: 1.55; }
+.lead-read { margin-block: 1.5rem 0; }
+
+/* Issues as ruled rows: the date as a small stamp at the start, then the
+   title, the summary and the counts. */
+.issues, .editions { margin-block-end: var(--space-section); }
+.issues .view-all { margin-block: 0.75rem 0; font-family: var(--font-heading); }
+.brief-issues { margin: 0; padding: 0; list-style: none; }
+.brief-issue { display: grid; grid-template-columns: 3.75rem minmax(0, 1fr); gap: 0 1.25rem; padding-block: 1.25rem; border-block-end: 1px solid var(--color-border); }
+.brief-issue:first-child { padding-block-start: 0.5rem; }
+.brief-day { align-self: start; display: grid; justify-items: center; align-content: start; padding-block: 0.375rem 0.5rem; border: 1px solid var(--br-ink); font-family: var(--font-heading); font-variant-numeric: tabular-nums; line-height: 1.1; text-align: center; }
+.brief-weekday, .brief-month { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.brief-weekday { color: var(--color-muted); }
+.brief-date { font-size: 1.5rem; font-weight: 700; }
+.brief-issue-text :is(h2, h3, h4) { margin: 0; font-size: 1.25rem; line-height: 1.25; }
+.brief-issue-text :is(h2, h3, h4) a { color: var(--br-ink); text-decoration: none; }
+.brief-issue-text :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.brief-summary { margin-block: 0.375rem 0; font-size: 1.0625rem; line-height: 1.5; }
+.brief-meta { display: flex; flex-wrap: wrap; gap: 0 0.875rem; margin-block: 0.5rem 0; color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); font-variant-numeric: tabular-nums; }
+
+/* The editions: one row of chips. */
+.editions ul { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.editions a { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding: 0.25rem 1rem; border: 1px solid var(--br-ink); color: var(--br-ink); font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+.editions a:hover { color: var(--br-paper); background: var(--br-ink); }
+
+/* Lists and the writers page: the kind, the name, the intro, a rule. */
+.list-header { margin-block: 1.5rem 1.5rem; padding-block-end: 1.25rem; border-block-end: 1px solid var(--br-ink); }
+.list-header h1 { margin: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 0.75rem; font-size: 1.0625rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+
+/* An issue: the stamp, the title, the dek, the writer, the ticks, then a
+   short, wide picture. */
+.post-header { margin-block: 1.75rem 2rem; padding-block-end: 1.5rem; border-block-end: 1px solid var(--br-ink); }
+.post-header h1 { margin-block: 0 0.5rem; line-height: 1.1; letter-spacing: -0.025em; }
+.post-header .dek { margin-block: 0.5rem 1rem; color: var(--br-ink); font-size: 1.1875rem; line-height: 1.45; }
+.post-header .image { margin-block: 1.5rem 0; }
+.post-header .image img { aspect-ratio: 2 / 1; object-fit: cover; object-position: 50% 30%; }
+.post-meta { color: var(--color-muted); font-family: var(--font-heading); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta .people { margin: 0; }
+.post-meta .person a { color: var(--br-ink); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-meta .avatar { inline-size: 2.25rem; block-size: 2.25rem; }
+.post-date { margin-block: 0.25rem 0; }
+
+/* The items. Each heading's number hangs in the margin in large figures
+   over a hairline; the last link of an item's paragraph carries an
+   arrow, so the source is easy to spot. On a phone the number sits over
+   its heading. */
+.post-body { counter-reset: item; padding-inline-start: var(--br-gutter); }
+.post-body > h2 { position: relative; counter-increment: item; margin-block: 2.25rem 0.375rem; padding-block-start: 1rem; border-block-start: 1px solid var(--color-border); font-size: var(--text-h2); line-height: 1.25; }
+.post-body > h2::before { content: counter(item, decimal-leading-zero) / ""; position: absolute; inset-block-start: 0.875rem; inset-inline-start: calc(-1 * var(--br-gutter)); color: var(--color-link); font-family: var(--font-heading); font-size: 1.75rem; font-variant-numeric: tabular-nums; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+@media (max-width: 36rem) { .post-body > h2::before { position: static; display: block; margin-block-end: 0.375rem; font-size: 1.375rem; } }
+.post-body > h2 + p { margin-block-start: 0; }
+.post-body > h2 + p > a:last-child { font-family: var(--font-heading); font-size: 0.9375em; font-weight: 600; }
+.post-body > h2 + p > a:last-child::after { content: "\00a0\2192" / ""; }
+[dir="rtl"] .post-body > h2 + p > a:last-child::after { content: "\00a0\2190" / ""; }
+.post-body > :is(h3, h4) { margin-block-start: 1.75em; }
+.post-body figcaption { color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); }
+.post-body table { font-family: var(--font-heading); font-size: 1rem; font-variant-numeric: tabular-nums; }
+.post-body thead th { border-block-end: 2px solid var(--br-ink); vertical-align: bottom; }
+
+/* The sign-off: the issue's last line, set off by a heavy rule. */
+.brief-end { margin-block: 2.5rem 0; padding-block-start: 0.75rem; padding-inline-start: var(--br-gutter); border-block-start: 3px solid var(--br-ink); font-family: var(--font-heading); font-size: 1rem; font-weight: 700; }
+
+.post-footer { margin-block-start: 2.5rem; }
+.share { font-family: var(--font-heading); }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--br-paper); color: var(--br-ink); font-family: var(--font-heading); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+
+/* The contents: a folded box in the sheet, or, where the desk has room, a
+   column on the desk beside the sheet that stays in view. */
+.toc-inline { background: var(--br-desk); }
+@media (min-width: 70rem) {
+  main:has(.post-with-toc), :where(body:has(.post-with-toc)) :is(.site-header, .site-footer) { max-inline-size: var(--br-sheet); }
+  .post-with-toc { display: block; }
+  .post-with-toc > .toc-side { display: none; }
+  .post-with-toc .toc-inline { display: block; }
+}
+@media (min-width: 82rem) {
+  .post-with-toc { display: grid; grid-template-columns: minmax(0, 1fr) 0; column-gap: 0; }
+  .post-toc-start { grid-template-columns: 0 minmax(0, 1fr); }
+  .post-with-toc > * { grid-column: 1; }
+  .post-toc-start > * { grid-column: 2; }
+  .post-with-toc > .toc-side { display: block; grid-column: 2; grid-row: 1 / span 9; justify-self: start; inline-size: 13rem; margin-inline-start: calc(var(--br-pad) + 2rem); position: sticky; inset-block-start: 1rem; max-block-size: calc(100vh - 2rem); overflow-y: auto; font-family: var(--font-heading); font-size: var(--text-small); }
+  .post-toc-start > .toc-side { grid-column: 1; justify-self: end; margin-inline: 0 calc(var(--br-pad) + 2rem); }
+  .post-with-toc .toc-inline { display: none; }
+}
+
+/* A writer: the mark beside the name, then the issues. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: 1.75rem; }
+.author-photo { inline-size: clamp(4.5rem, 3.5rem + 4vw, 7rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-family: var(--font-heading); font-size: 1.0625rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-posts, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.1875rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--br-ink); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The sign-up form, the call to action and the author box: boxes on the
+   desk's tint, inside the sheet. */
+.newsletter-slot, .cta-band, .author-box { background: var(--br-desk); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; border-block-start: 4px solid var(--color-accent); }
+.newsletter-slot h2 { font-size: 1.25rem; }
+.cta-band { border-block-start: 4px solid var(--br-ink); }
+
+/* The footer: the bottom of the sheet, under one ink rule. */
+.site-footer { border-block-start: 1px solid var(--br-ink); font-family: var(--font-heading); }

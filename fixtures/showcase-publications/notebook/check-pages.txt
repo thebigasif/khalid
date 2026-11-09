@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /first-frost-on-the-plot/
+table /planning-next-years-beds/
+category /category/garden/
+tag /tag/reading/
+author /authors/maren-holt/

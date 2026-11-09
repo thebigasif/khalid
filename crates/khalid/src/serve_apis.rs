@@ -7,9 +7,13 @@ use std::path::Path;
 use std::sync::Arc;
 
 use axum::Router;
+use khalid_api::ai::AiDesk;
 use khalid_api::analytics_desk::AnalyticsDesk;
 use khalid_api::api::{self, AdminDesks, AuditDesk};
 use khalid_api::comment_moderation::CommentModeration;
+use khalid_api::content_store::ContentStore;
+use khalid_api::ghost::{self, GhostSite};
+use khalid_api::keys::KeyStore;
 use khalid_api::media_api::MediaLibrary;
 use khalid_api::publish_door::PublishDoor;
 use khalid_api::redirect_desk::RedirectDesk;
@@ -18,7 +22,8 @@ use khalid_api::session_check::SessionCheck;
 use khalid_auth::SiteDirectory;
 use khalid_core::{Config, SystemClock};
 use khalid_db::{
-    AnalyticsTable, AuditTable, Database, KeyTable, SerpdadTable, SiteId, WebhookTable,
+    AnalyticsTable, AuditTable, ConsentProofTable, Database, KeyTable, SerpdadTable, SiteId,
+    WebhookTable,
 };
 use khalid_newsletter::Mailer;
 
@@ -33,14 +38,17 @@ use crate::site_settings::SiteSettings;
 use crate::site_tags::SiteTags;
 use crate::{draft_comment_mail, late_api, look, mounted, staff};
 
+pub(crate) mod ai_writer;
+
 /// The desks `khalid serve` keeps in memory for the Admin API: comment
 /// moderation, the media library, stored redirects and the Search Console
-/// follow-ups.
+/// follow-ups and the writer of the editor's suggestions.
 pub(crate) type Desks = (
     Arc<dyn CommentModeration>,
     MediaLibrary,
     RedirectDesk,
     SiteFollowUps,
+    AiDesk,
 );
 
 /// What [`api_router`] is built from: its four argument groups.
@@ -60,7 +68,7 @@ pub(crate) type ApiParts<'a> = (
 /// site sends mail.
 pub(crate) fn api_router(
     (content, door, posts): (LiveContent, Arc<PublishDoor>, SitePosts),
-    (comments, media, redirects, follow_ups): Desks,
+    (comments, media, redirects, follow_ups, ai): Desks,
     (database, id, (site, config)): (&Database, SiteId, (&Path, &Config)),
     (panel, mailer): (Arc<dyn SiteDirectory>, Option<Arc<dyn Mailer>>),
 ) -> Router {
@@ -95,7 +103,8 @@ pub(crate) fn api_router(
         analytics: AnalyticsDesk::new(
             Arc::new(AnalyticsTable::new(database.clone(), id)),
             Arc::new(SystemClock),
-        ),
+        )
+        .with_consent(Arc::new(ConsentProofTable::new(database.clone(), id))),
         draft_comments: Some(draft_comment_mail::desk((database, id, config), mailer)),
         follow_ups: Arc::new(follow_ups),
         serpdad: Some(Arc::new(SerpdadTable::new(
@@ -103,10 +112,30 @@ pub(crate) fn api_router(
             id,
             SystemClock,
         ))),
+        ai,
     };
-    let keys = Arc::new(KeyTable::new(database.clone(), id, SystemClock));
-    let (api, _) = api::router_for_serve(Arc::new(content), door, keys, desks, staff);
-    api
+    let keys: Arc<dyn KeyStore> = Arc::new(KeyTable::new(database.clone(), id, SystemClock));
+    let content: Arc<dyn ContentStore> = Arc::new(content);
+    let ghost_api = config.ghost_content_api().then(|| {
+        let site = GhostSite::from_config(config);
+        ghost::router(Arc::clone(&content), Arc::clone(&keys), site)
+    });
+    let (api, _) = api::router_for_serve(content, door, keys, desks, staff);
+    match ghost_api {
+        Some(ghost_api) => api.merge(ghost_api),
+        None => api,
+    }
+}
+
+/// Where the APIs answer for the site in `config`: `/api/`, and Ghost's
+/// Content API when the site switches it on (`docs/ghost-api.md`). Off,
+/// a request there never builds the APIs and is any unknown address.
+fn api_roots(config: &Config) -> &'static [&'static str] {
+    if config.ghost_content_api() {
+        &[late_api::UNDER, late_api::GHOST]
+    } else {
+        &[late_api::UNDER]
+    }
 }
 
 /// `app` with the router of [`api_router`] and git mode's push `hook`
@@ -125,7 +154,7 @@ pub(crate) fn with_apis(
     let (database, site, config) = (database.clone(), site.to_path_buf(), config.clone());
     let rest = app.clone();
     let blog = config.clone();
-    let app = late_api::router(app, move || {
+    let app = late_api::router_under(app, api_roots(&blog), move || {
         let at = (&database, id, (site.as_path(), &config));
         api_router(apis, desks, at, helpers)
             .merge(hook)

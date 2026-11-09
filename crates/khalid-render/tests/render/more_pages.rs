@@ -73,13 +73,16 @@ fn author_page_in_german_names_the_posts_the_german_way() {
 }
 
 #[test]
-fn an_author_photo_is_lazy_and_reserves_its_space() {
+fn an_author_photo_leads_the_page_and_reserves_its_space() {
     let mut author = lena();
     author.image = Some(sitemap_image(Loading::Lazy));
     author.posts.clear();
     let page = render(&PageBody::Author(Box::new(author)), "en");
     assert_valid_page(&page);
-    assert!(page.contains(r#"loading="lazy""#));
+    // The photo is the page's first picture, so it loads at once.
+    assert!(page.contains(r#"fetchpriority="high""#));
+    assert!(!page.contains(r#"loading="lazy""#));
+    assert!(page.contains(r#"width="1600" height="900""#));
     assert!(page.contains("<p>There are no posts here yet.</p>"));
 }
 
@@ -91,6 +94,7 @@ fn plain_page_in_english() {
         body: BodyHtml::from_sanitised(
             "<p>Field Notes on SEO is written by the team at SerpDad.</p>".to_owned(),
         ),
+        term: None,
     };
     let page = render(&PageBody::Page(about), "en");
     assert_valid_page(&page);

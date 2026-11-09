@@ -1,0 +1,35 @@
+{#- Frequency's own parts (docs/templates/frequency.md), shared by its
+    pages. dial(facts): the running-time dial, a ruler of ticks with the
+    accent line run out to the episode's length, read from the digits of
+    the second fact, so "48 min" draws 48 minutes on a 90-minute scale (a
+    longer episode widens the scale), with the length beside it and the
+    guest, the third fact, after it. Nothing shows without a number.
+    episode_rows(posts, level): each post as a numbered row, the first
+    fact's value large, the topic and date, the title, the summary, the
+    dial and a square picture at the end. A post without facts is a note,
+    with no number. -#}
+{% from "image.html" import picture -%}
+{% macro dial(facts) -%}
+{% if facts and facts | length > 1 %}{% set minutes = facts[1].value | string | list | select("in", "0123456789") | join -%}
+{% if minutes and minutes | int > 0 %}<div class="fq-dial">
+<span class="fq-scale"><meter class="fq-needle" min="0" max="{{ [90, minutes | int] | max }}" value="{{ minutes | int }}" aria-hidden="true"></meter></span>
+<p class="fq-length"><span class="fq-fact-label">{{ facts[1].label }}</span> {{ facts[1].value }}{% if facts | length > 2 %}<span class="fq-guest"><span class="fq-fact-label">{{ facts[2].label }}</span> {{ facts[2].value }}</span>{% endif %}</p>
+</div>
+{% endif %}{% endif %}
+{%- endmacro %}
+{% macro episode_rows(posts, level=3) -%}
+<ol class="fq-rows" role="list">
+{% for post in posts %}<li>
+<article class="fq-row">
+<p class="fq-number">{% if post.facts %}<span class="fq-fact-label">{{ post.facts[0].label }}</span> <span class="fq-figure">{{ post.facts[0].value }}</span>{% endif %}</p>
+<div class="fq-row-text">
+<p class="fq-meta">{% if post.category %}<a href="{{ post.category.href }}">{{ post.category.name }}</a> {% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="fq-excerpt">{{ post.excerpt }}</p>
+{{ dial(post.facts) }}
+</div>
+{% if post.image %}<a class="fq-art" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ picture(post.image) }}</a>
+{% endif %}</article>
+</li>
+{% endfor %}</ol>
+{%- endmacro %}

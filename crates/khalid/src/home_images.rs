@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 
 use khalid_content::{Document, LeadImage, SiteContent};
 use khalid_core::{Config, UserMessage};
-use khalid_render::{PageBody, PostCard};
+use khalid_render::{PageBody, PostCard, RenderHome};
 use khalid_routes::Routes;
 
 use crate::build_pages::{self, LanguagePages};
@@ -78,13 +78,7 @@ fn shown_on(languages: &[LanguagePages]) -> BTreeSet<String> {
             PageBody::Home(home) => Some(home),
             _ => None,
         });
-    let mut cards: Vec<&PostCard> = Vec::new();
-    for home in homes {
-        cards.extend(&home.listing.posts);
-        cards.extend(&home.listing.featured);
-        cards.extend(&home.picks);
-        cards.extend(home.sections.iter().flat_map(|section| &section.posts));
-    }
+    let cards: Vec<&PostCard> = homes.flat_map(RenderHome::cards).collect();
     let authors = cards.iter().filter_map(|card| card.author.as_ref());
     let people = authors.map(|person| person.href.clone());
     cards

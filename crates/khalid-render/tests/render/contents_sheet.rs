@@ -1,7 +1,8 @@
 //! Smarter contents: the side column stays in view and marks the section
-//! being read, and on a narrow screen the reader script adds a floating
-//! button that opens the contents as a sheet. With scripts off the folded
-//! box above the post still lists every section.
+//! being read, and on a narrow screen the reader script turns the folded
+//! list at the start of the post into a button there that opens the
+//! contents as a sheet. With scripts off the folded box still lists every
+//! section.
 
 use khalid_render::{ScriptTag, Tokens, reader_script, stylesheet_text};
 
@@ -53,9 +54,16 @@ fn every_contents_list_marks_the_section_being_read() {
 }
 
 #[test]
-fn the_button_floats_on_narrow_screens_and_the_column_stays_in_view() {
+fn the_button_takes_the_folded_lists_place_and_the_column_stays_in_view() {
+    let js = script();
+    assert!(js.contains("folded.replaceWith(open)"), "{js}");
     let css = stylesheet_text(&Tokens::default());
-    assert!(css.contains(".toc-button { position: fixed;"), "{css}");
+    let rule = part(&css, ".toc-button {", "}");
+    assert!(rule.contains("display: flex;"), "{rule}");
+    assert!(
+        !rule.contains("position:"),
+        "a floating button covered text, tables and buttons: {rule}"
+    );
     assert!(
         css.contains(
             "@media (min-width: 70rem) { body:has(.post-with-toc) .toc-button { display: none; } }"

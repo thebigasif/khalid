@@ -32,6 +32,26 @@ pub enum MediaType {
     Svg,
     /// A PDF document.
     Pdf,
+    /// An MP4 video.
+    Mp4,
+    /// A `WebM` video.
+    Webm,
+    /// MP3 audio.
+    Mp3,
+    /// AAC audio in an MP4 container.
+    M4a,
+    /// Ogg audio.
+    Ogg,
+    /// WAV audio.
+    Wav,
+    /// FLAC audio.
+    Flac,
+    /// A table of values, such as the data a chart block draws.
+    Csv,
+    /// A ZIP archive.
+    Zip,
+    /// A WOFF2 web font, the site's own from `theme/fonts/`.
+    Woff2,
     /// Any other file, sent as bytes for the reader to save.
     Binary,
 }
@@ -53,6 +73,16 @@ impl MediaType {
             Self::Gif => "image/gif",
             Self::Svg => "image/svg+xml",
             Self::Pdf => "application/pdf",
+            Self::Mp4 => "video/mp4",
+            Self::Webm => "video/webm",
+            Self::Mp3 => "audio/mpeg",
+            Self::M4a => "audio/mp4",
+            Self::Ogg => "audio/ogg",
+            Self::Wav => "audio/wav",
+            Self::Flac => "audio/flac",
+            Self::Csv => "text/csv; charset=utf-8",
+            Self::Zip => "application/zip",
+            Self::Woff2 => "font/woff2",
             Self::Binary => "application/octet-stream",
         }
     }
@@ -77,13 +107,22 @@ impl MediaType {
             Some("gif") => Self::Gif,
             Some("svg") => Self::Svg,
             Some("pdf") => Self::Pdf,
+            Some("mp4") => Self::Mp4,
+            Some("webm") => Self::Webm,
+            Some("mp3") => Self::Mp3,
+            Some("m4a") => Self::M4a,
+            Some("ogg") => Self::Ogg,
+            Some("wav") => Self::Wav,
+            Some("flac") => Self::Flac,
+            Some("csv") => Self::Csv,
+            Some("zip") => Self::Zip,
             _ => Self::Binary,
         }
     }
 
-    /// Whether Brotli can make this kind smaller. Images, PDF documents and
-    /// unknown files are compressed already, or may be, so they are sent
-    /// as they are.
+    /// Whether Brotli can make this kind smaller. Images, sound, video,
+    /// PDF documents, archives and unknown files are compressed already,
+    /// or may be, so they are sent as they are.
     pub(crate) fn compresses(self) -> bool {
         matches!(
             self,
@@ -94,6 +133,15 @@ impl MediaType {
                 | Self::Css
                 | Self::JavaScript
                 | Self::Svg
+                | Self::Csv
         )
+    }
+
+    /// Whether a `GET` for this kind may ask for part of it with `Range`,
+    /// as a browser does to play a video or to go on with a download.
+    /// Text is never sent in part, since its answer may be compressed or
+    /// made for one reader.
+    pub(crate) fn takes_ranges(self) -> bool {
+        !self.compresses()
     }
 }

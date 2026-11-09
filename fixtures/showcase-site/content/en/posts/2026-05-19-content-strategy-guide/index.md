@@ -20,7 +20,7 @@ related: [content-calendar, content-roi, content-refresh, content-brief-template
 tags: [planning, measurement]
 image:
   src: cover.svg
-  alt: A compass beside a planning card with three coloured lines, and a dotted path leading from the compass to a small flag
+  alt: A content strategy mapped out as a dotted path from a start point past three planned post cards to an orange flag
 ---
 
 A content strategy is a short, written plan that says what your blog is for, who it serves, which topics it will cover and how you will know it worked. For a small team, it is the difference between a blog that grows each quarter and a blog that runs on whoever has a spare afternoon.

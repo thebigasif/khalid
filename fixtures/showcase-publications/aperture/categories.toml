@@ -1,0 +1,34 @@
+# Northlight's places. The Aperture template shows each place's page as
+# its pictures, one a row, with the intro as the place's description.
+
+[[categories]]
+slug = "lapland"
+en = "Lapland"
+
+[categories.seo.en]
+description = "Photographs from Finnish Lapland on Northlight: the fell of Saana, its lakes, its reindeer and its paths, each with its camera details."
+intro = "The fells around Kilpisjärvi in the far north-west of Finland, in the long light of August."
+
+[[categories]]
+slug = "norway"
+en = "Norway"
+
+[categories.seo.en]
+description = "Photographs from Norway on Northlight: fjords, waterfalls, stairs and bridges from Stryn to Lavangen, each with its camera details."
+intro = "Fjords and waterfalls in the west in June, and the valleys of Lavangen in the north in August."
+
+[[categories]]
+slug = "dolomites"
+en = "Dolomites"
+
+[categories.seo.en]
+description = "Photographs from the Dolomites on Northlight: peaks, passes and villages in autumn, each with its camera details."
+intro = "Peaks, passes and mountain villages of north-east Italy, from late September to mid October."
+
+[[categories]]
+slug = "southern-finland"
+en = "Southern Finland"
+
+[categories.seo.en]
+description = "Photographs from Helsinki and Vantaa on Northlight: winter forest, frozen rapids and a new bridge, each with its camera details."
+intro = "Helsinki and the forests and rivers at its edge, in deep winter and on a June evening."

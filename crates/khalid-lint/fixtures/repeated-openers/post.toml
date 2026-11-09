@@ -1,0 +1,12 @@
+# Three sentences in a row in one paragraph start with "links". The list
+# items below each start with "Add", but each is its own line, so they
+# do not count.
+extends = "focus-clean"
+body_text = """
+Internal links help readers find the next useful post on your site.
+Where internal links belong
+Links help readers. Links guide search engines. Links show what matters most. Use them well.
+Add one link.
+Add another link.
+Add a third link.
+"""

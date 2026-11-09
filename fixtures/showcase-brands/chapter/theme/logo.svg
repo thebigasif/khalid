@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <g fill="none" stroke="#2d5a4b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 22 H42 V62 H14 Z"/><path d="M42 22 H70 V62 H42"/><path d="M20 32 H36 M20 40 H36 M48 32 H64 M48 40 H64 M48 48 H60"/>
+  </g>
+  <text textLength="214" lengthAdjust="spacingAndGlyphs" x="86" y="52" font-family="EB Garamond, Garamond, Georgia, serif" font-size="32" font-weight="500" fill="#1f2422">Hanna Lowe</text>
+</svg>

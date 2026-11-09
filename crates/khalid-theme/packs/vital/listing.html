@@ -1,0 +1,21 @@
+{#- Vital's lists (a programme, a tag, the archive, date and collection
+    pages): the list's name and intro, such as what a programme is for,
+    then its posts as session cards, each routine with its time in a
+    ring. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "sections/session_cards.html" import session_cards -%}
+<header class="list-header">
+{% block kind %}<p class="list-kind">{{ t.routines }}</p>
+{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{{ session_cards(page.posts, 2, slot_sizes("session")) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

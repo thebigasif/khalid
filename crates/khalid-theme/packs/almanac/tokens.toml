@@ -7,6 +7,10 @@ link = "#17604a"
 accent = "#1d6b53"
 border = "#e2ddd1"
 
+[fonts]
+heading = "\"Iowan Old Style\", Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
+body = "\"Iowan Old Style\", Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
+
 [shape]
 radius = "0.5rem"
 measure = "42rem"

@@ -1,0 +1,25 @@
+# Port City Wire's six sections.
+
+[[categories]]
+slug = "news"
+en = "News"
+
+[[categories]]
+slug = "harbour"
+en = "Harbour"
+
+[[categories]]
+slug = "council"
+en = "Council"
+
+[[categories]]
+slug = "community"
+en = "Community"
+
+[[categories]]
+slug = "sport"
+en = "Sport"
+
+[[categories]]
+slug = "opinion"
+en = "Opinion"

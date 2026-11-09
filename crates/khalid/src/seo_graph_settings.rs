@@ -111,6 +111,7 @@ pub(crate) fn locations(
         business.telephone.clone_from(&location.telephone);
         business.price_range.clone_from(&location.price_range);
         business.map.clone_from(&location.map);
+        business.geo = location.geo;
         for hours in &location.hours {
             business
                 .opening_hours

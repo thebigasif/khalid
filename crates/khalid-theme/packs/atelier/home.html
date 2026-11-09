@@ -1,0 +1,58 @@
+{#- Atelier's front page (docs/templates/atelier.md): the label's name
+    and its tagline; then the lookbook, where a look is a post with facts
+    (the pieces worn) and a picture. The featured look, or else the
+    newest, opens it as a spread with its pieces beside the picture; the
+    other looks follow in a numbered grid of tall pictures. Under them,
+    the collections (categories that hold looks) beside the journal
+    (every other post as a dated feed). Captions sit beside or under the
+    pictures, never on them. With home sections in site.toml, each
+    section is a picture grid of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/spread.html" import spread -%}
+{% from "sections/picture_grid.html" import picture_grid -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% set options = template.options -%}
+{{ hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) }}
+{% set looks = page.posts | selectattr("facts") | selectattr("image") | list -%}
+{% set look_links = looks | map(attribute="href") | list -%}
+{% set notes = (page.posts | rejectattr("href", "in", look_links) | list)[:options.journal_count] -%}
+{% set featured = page.featured if page.featured and page.featured.href in look_links else none -%}
+{% set cover = featured or (looks[0] if looks else none) -%}
+{% set rest = looks | rejectattr("href", "eq", cover.href) | list if cover else [] -%}
+{% set look_areas = looks | selectattr("category") | map(attribute="category.href") | list -%}
+{% set collections = page.categories | selectattr("href", "in", look_areas) | list -%}
+{% if page.sections %}{% for section in page.sections %}<section class="at-section" aria-labelledby="at-section-{{ loop.index }}">
+<h2 id="at-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ picture_grid(section.posts, 3, 1, t.look_number, slot_sizes("grid")) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif cover %}<section class="at-lookbook" aria-labelledby="at-lookbook-title">
+<h2 id="at-lookbook-title">{{ t.lookbook }}</h2>
+{% call spread(cover, 3, t.look_number | replace("{number}", "01"), cover.excerpt, cover.href, none, t.the_pieces, slot_sizes("spread")) %}{% if cover.category %}<p class="at-cover-collection"><a href="{{ cover.category.href }}">{{ cover.category.name }}</a></p>
+{% endif %}{% endcall %}
+{% if rest %}{{ picture_grid(rest, 3, 2, t.look_number, slot_sizes("grid")) }}
+{% endif %}</section>
+{% elif not notes %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if (collections or notes) and not page.sections %}<div class="at-more">
+{% if collections %}<section class="at-collections" aria-labelledby="at-collections-title">
+<h2 id="at-collections-title">{{ t.collections }}</h2>
+<ul class="at-collection-list" role="list">
+{% for collection in collections %}<li><a href="{{ collection.href }}">{{ collection.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if notes %}<section class="at-journal" aria-labelledby="at-journal-title">
+<h2 id="at-journal-title">{{ t.journal }}</h2>
+{{ feed_list(notes) }}
+</section>
+{% endif %}</div>
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

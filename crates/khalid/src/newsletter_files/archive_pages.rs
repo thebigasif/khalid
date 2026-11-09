@@ -244,6 +244,7 @@ fn made(
         title,
         updated: None,
         body: BodyHtml::from_sanitised(body),
+        term: None,
     });
     Ok(page(locale, config, rest, meta, body, seo).made_from(source))
 }

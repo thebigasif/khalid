@@ -1,0 +1,58 @@
+---
+source: crates/khalid/tests/build_every_template.rs
+expression: pages
+---
+# index.html
+header.studio
+  h1.studio-name: Field Notes on SEO
+nav.filter-row "Types of work"
+h2.visually-hidden: Projects
+article
+  h3.wall-title: Planning a topic cluster in an afternoon
+article
+  h3.wall-title: Fixing slow pages, starting with the biggest win
+article
+  h3.wall-title: What a sitemap does, and what it does not
+article
+  h3.wall-title: How to write a title tag
+article
+  h3.wall-title: Why internal links matter
+section.checklist
+  h2: List of works
+
+# why-internal-links-matter/index.html
+header.project-head
+  h1: Why internal links matter
+article.post.post-toc-folded
+  header.post-header
+  nav "Contents"
+  div.post-body: the text
+  footer.post-footer
+  section.author-box
+    h2: About the author
+section.mentions
+  h2: Posts that link here
+section.more-work
+  h2: More work
+  article
+    h3.wall-title: How to write a title tag
+  article
+    h3.wall-title: Planning a topic cluster in an afternoon
+  article
+    h3.wall-title: What a sitemap does, and what it does not
+
+# authors/asif/index.html
+article.author
+  header.author-header
+    h1: Asif
+section.author-work
+  h2: Projects
+  article
+    h3.wall-title: Planning a topic cluster in an afternoon
+  article
+    h3.wall-title: How to write a title tag
+  article
+    h3.wall-title: Why internal links matter
+section.author-others
+  h2: Other authors
+  h3: Lena Vogt

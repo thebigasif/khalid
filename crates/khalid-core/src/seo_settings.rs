@@ -1,11 +1,14 @@
 //! The SEO settings of a site, from the `[seo]` table of `site.toml`.
 
+use std::collections::BTreeMap;
+
 use serde::Deserialize;
 
 use crate::{
-    AbsoluteUrl, AiPageSettings, CrawlerSettings, FeedSettings, IndexNowKey, Indexing,
-    LinkSettings, LocationSettings, PublisherSettings, SchemaTemplateSettings, SocialSettings,
-    TitleSettings, VerificationSettings,
+    AbsoluteUrl, AiPageSettings, BreadcrumbSettings, CrawlerSettings, FeedSettings, IndexNowKey,
+    Indexing, LinkSettings, LlmsTxtSettings, LocalSettings, LocationSettings, PublisherSettings,
+    SchemaMapSettings, SchemaTemplateSettings, SearchFilterSettings, SocialSettings, TitleSettings,
+    VerificationSettings,
 };
 
 /// The SEO settings. Every one has a default, so the table may be left out:
@@ -13,6 +16,7 @@ use crate::{
 /// ```toml
 /// [seo.index]
 /// tags = "noindex"
+/// authors = "off"
 /// thin_archives_below = 5
 ///
 /// [seo.indexnow]
@@ -50,6 +54,18 @@ pub struct SeoSettings {
     pub schema: Vec<SchemaTemplateSettings>,
     /// The AI info page, from `[seo.ai_page]` (P3). On by default.
     pub ai_page: AiPageSettings,
+    /// How the breadcrumb trail reads, from `[seo.breadcrumbs]`.
+    pub breadcrumbs: BreadcrumbSettings,
+    /// What `llms.txt` holds, from `[seo.llms_txt]`. Written by default.
+    pub llms_txt: LlmsTxtSettings,
+    /// The whole-site schema files, from `[seo.schema_map]`. On by default.
+    pub schema_map: SchemaMapSettings,
+    /// The locations page and KML file, from `[seo.local]`. On by default
+    /// for a site with locations.
+    pub local: LocalSettings,
+    /// What the site's search refuses, from `[seo.search_filter]`. Every
+    /// filter is on by default.
+    pub search_filter: SearchFilterSettings,
 }
 
 /// `IndexNow`, switched on by its table in `site.toml`.
@@ -99,10 +115,12 @@ pub struct ArchiveIndex {
     pub tags: Indexing,
     /// Category archives, such as `/category/technical-seo/`.
     pub categories: Indexing,
-    /// Author archives, such as `/authors/asif/`.
-    pub authors: Indexing,
-    /// Date archives, such as `/2026/10/`.
-    pub dates: Indexing,
+    /// Author archives, such as `/authors/asif/`. `"off"` builds none and
+    /// sends their addresses to the home page, as a one-author blog wants.
+    pub authors: ArchiveSetting,
+    /// Date archives, such as `/2026/10/`. `"off"` builds none and sends
+    /// their addresses to the home page.
+    pub dates: ArchiveSetting,
     /// Search results pages.
     pub search: Indexing,
     /// A tag or author archive listing fewer posts than this is `noindex`.
@@ -112,6 +130,14 @@ pub struct ArchiveIndex {
     /// and sitemaps, whatever the other settings and a post's own `robots`
     /// say, for a sample or staging copy. Links are still followed.
     pub site: Indexing,
+    /// Every post, Yoast's "show posts in search results". A post's own
+    /// `robots` still wins.
+    pub posts: Indexing,
+    /// Every standalone page, such as "About".
+    pub pages: Indexing,
+    /// The posts of one collection, by its name, such as `news`, over
+    /// `posts`.
+    pub collections: BTreeMap<String, Indexing>,
 }
 
 impl Default for ArchiveIndex {
@@ -119,11 +145,38 @@ impl Default for ArchiveIndex {
         Self {
             tags: Indexing::Index,
             categories: Indexing::Index,
-            authors: Indexing::Index,
-            dates: Indexing::NoIndex,
+            authors: ArchiveSetting::Index,
+            dates: ArchiveSetting::NoIndex,
             search: Indexing::NoIndex,
             thin_archives_below: 3,
             site: Indexing::Index,
+            posts: Indexing::Index,
+            pages: Indexing::Index,
+            collections: BTreeMap::new(),
+        }
+    }
+}
+
+/// Whether an archive is built, and if it is, whether search engines may
+/// list it: `"index"`, `"noindex"` or `"off"`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ArchiveSetting {
+    /// Built, and search engines may list it.
+    Index,
+    /// Built, but kept out of search results.
+    NoIndex,
+    /// Not built: each of its addresses sends readers to the home page.
+    Off,
+}
+
+impl ArchiveSetting {
+    /// Whether search engines may list the archive. One that is off has no
+    /// page to list.
+    pub fn indexing(self) -> Indexing {
+        match self {
+            Self::Index => Indexing::Index,
+            Self::NoIndex | Self::Off => Indexing::NoIndex,
         }
     }
 }

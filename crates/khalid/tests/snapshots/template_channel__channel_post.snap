@@ -1,0 +1,119 @@
+---
+source: crates/khalid/tests/template_channel.rs
+expression: "shown(&out, \"how-to-write-a-title-tag/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/how-to-write-a-title-tag/" aria-current="page">How to write a title tag</a></li>
+</ol>
+</nav>
+
+<article class="post">
+<header class="post-header">
+<p class="post-playlist"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h1>How to write a title tag</h1>
+<p class="dek">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+<div class="post-meta">
+<address>
+<ul class="people" role="list" aria-label="Written by">
+<li class="person"><span><a rel="author" href="/blog/authors/asif/">Asif</a><span class="person-role">Founder of SerpDad</span></span></li>
+</ul>
+</address>
+<p class="post-date">Published <time datetime="2026-09-21">21 September 2026</time></p>
+<dl class="video-facts">
+<div>
+<dt>Length</dt>
+<dd>4:05</dd>
+</div>
+<div>
+<dt>Level</dt>
+<dd>Beginner</dd>
+</div>
+</dl>
+</div>
+</header>
+<div class="post-body">
+<figure class="video">
+<video controls preload="none" poster="/media/title-tags.jpg" aria-label="Writing a title tag"><source src="/media/title-tags.mp4" /><a href="/media/title-tags.mp4">Writing a title tag</a></video>
+<figcaption>Writing a title tag</figcaption>
+</figure>
+<p>The title tag is the line of text a search engine shows as the clickable headline of your result. It is often the first thing a reader sees of your site, so it decides whether they visit at all.</p>
+<h2 id="five-rules">Five rules <a class="heading-link" href="#five-rules" aria-label="Link to this section">#</a></h2>
+<ol>
+<li><strong>Put the topic first.</strong> &quot;Title tags: how to write one&quot; beats &quot;A complete and friendly guide to title tags&quot;.</li>
+<li><strong>Keep it under about 60 characters,</strong> so it is not cut off on a phone.</li>
+<li><strong>Make it match the page.</strong> If the title promises a checklist, the page needs a checklist. A mismatch sends readers straight back.</li>
+<li><strong>Write one per page.</strong> Two pages with the same title compete with each other.</li>
+<li><strong>Add your brand at the end, if there is room.</strong> &quot;Title tags: how to write one | Field Notes&quot;.</li>
+</ol>
+<h2 id="title-tag-or-headline">Title tag or headline? <a class="heading-link" href="#title-tag-or-headline" aria-label="Link to this section">#</a></h2>
+<p>They can differ. The headline on the page can be longer and warmer. The title tag is for the results page, where space is short and the reader is scanning.</p>
+<p>When the title is done, check that the page is easy to reach: <a href="/blog/why-internal-links-matter/">why internal links matter</a> explains how.</p>
+
+</div>
+<footer class="post-footer">
+<div class="share">
+<p class="share-title">Share this post</p>
+<ul>
+<li><a href="https://bsky.app/intent/compose?text=How%20to%20write%20a%20title%20tag%20https%3A%2F%2Fwww.example.com%2Fblog%2Fhow-to-write-a-title-tag%2F" rel="nofollow noreferrer">Bluesky</a></li>
+<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.example.com%2Fblog%2Fhow-to-write-a-title-tag%2F" rel="nofollow noreferrer">Facebook</a></li>
+<li><a href="mailto:?subject=How%20to%20write%20a%20title%20tag&amp;body=https%3A%2F%2Fwww.example.com%2Fblog%2Fhow-to-write-a-title-tag%2F" rel="nofollow noreferrer">Email</a></li>
+</ul>
+</div>
+</footer>
+<section class="author-box">
+<h2>About the author</h2>
+<div class="person-card">
+<div class="person-about">
+<p class="person-name"><a href="/blog/authors/asif/">Asif</a></p>
+<p class="person-role">Founder of SerpDad</p>
+<p class="person-credentials"><strong>Experience</strong> Ten years running SEO for small teams</p>
+<div class="person-bio"><p>Asif writes about search from the side of the people who have to do the work: small teams with a website, a blog and not much time. He likes advice you can act on before lunch.</p></div>
+<ul class="author-profiles" role="list" aria-label="Asif elsewhere">
+<li><a href="https://serpdad.com/" data-icon="website"><svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></g></svg><span>serpdad.com</span></a></li>
+</ul>
+</div>
+</div>
+</section>
+</article>
+<section class="up-next" aria-labelledby="up-next-title">
+<h2 id="up-next-title" class="channel-label">Up next</h2>
+<ul class="video-grid" role="list">
+<li class="video-card">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="video-meta"><time datetime="2026-09-14">14 September 2026</time> <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+<li class="video-card">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="video-meta"><time datetime="2026-10-12">12 October 2026</time> <a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+<li class="video-card">
+<figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 64rem) calc(7vw + 20rem), (min-width: 56rem) 19.5rem, (min-width: 37.5rem) calc(50vw - 1.75rem), calc(100vw - 2rem)">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 64rem) calc(7vw + 20rem), (min-width: 56rem) 19.5rem, (min-width: 37.5rem) calc(50vw - 1.75rem), calc(100vw - 2rem)" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
+</picture>
+</figure>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="video-meta"><time datetime="2026-10-05">5 October 2026</time> <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+</ul>
+</section>
+<section class="mentions">
+<h2>Posts that link here</h2>
+<ul>
+<li><a href="/blog/why-internal-links-matter/">Why internal links matter</a></li>
+</ul>
+</section>

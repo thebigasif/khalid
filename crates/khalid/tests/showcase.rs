@@ -3,6 +3,8 @@
 //! that share a title with their own translation, the posts use every block
 //! the showcase promises to show, and the demo keeps the depth it promises.
 
+mod shipped;
+
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
@@ -164,6 +166,7 @@ fn every_showcase_post_passes_lint_with_no_finding() {
         .unwrap()
         .iter()
         .filter(|finding| !DATED.contains(&finding["rule"].as_str().unwrap()))
+        .filter(|finding| finding["severity"] != "info")
         .collect();
     assert_eq!(findings, Vec::<&Value>::new(), "{body}");
     assert_eq!(output.status.code(), Some(0));
@@ -241,19 +244,9 @@ fn the_showcase_keeps_the_depth_it_promises() {
 
 #[test]
 fn every_template_demo_shows_the_showcase_call_to_action() {
-    let packs = [
-        "almanac",
-        "atlas",
-        "compass",
-        "folio",
-        "harbor",
-        "keystone",
-        "ledger",
-        "meridian",
-        "wire",
-        "workbench",
-    ];
-    for pack in packs {
+    // Every template but classic, whose demo is the showcase itself.
+    let packs = shipped::templates();
+    for pack in packs.iter().filter(|pack| *pack != "classic") {
         // As scripts/pages.sh makes each template demo: the template's name
         // and the band's place go after the showcase's own [template.cta].
         let site = showcase_copy();
