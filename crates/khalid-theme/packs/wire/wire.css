@@ -43,7 +43,7 @@ body:has(main .breaking) > .announcement { display: none; }
    line you swipe. With room: the logo large in the middle, then the menu
    across the frame between a hairline and a heavy rule in the text colour. */
 .site-header { flex-wrap: nowrap; gap: 0 1rem; padding-block: 0.5rem; border-block-end: 3px solid var(--color-text); }
-.site-name { flex: none; color: var(--color-text); font-size: 1.1875rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; text-transform: uppercase; }
+.site-name { flex: none; color: var(--color-text); font-size: 1.1875rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1; text-transform: uppercase; }
 .site-logo img { block-size: 2rem; inline-size: 8rem; }
 .site-header nav { flex: 1 1 0; min-inline-size: 0; }
 .site-header nav ul { flex-wrap: nowrap; gap: 0 1.25rem; overflow-x: auto; scrollbar-width: none; padding-inline-end: 1.5rem; mask-image: linear-gradient(90deg, currentColor calc(100% - 1.5rem), transparent); }
@@ -65,11 +65,11 @@ body:has(main .breaking) > .announcement { display: none; }
 }
 
 /* Section titles: large, in the heading font, under a heavy accent rule. */
-.band-title, .topic-tabs > h2, .media-row > h2, .featured > h2, .related > h2, .mentions > h2, .comments > h2, .author > section > h2 { margin-block: 0 1.5rem; padding-block-start: 0.625rem; border-block-start: var(--rule) solid var(--color-accent); color: var(--color-text); font-family: var(--font-heading); font-size: clamp(2rem, 1.25rem + 2.4vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; text-transform: none; }
+.band-title, .topic-tabs > h2, .media-row > h2, .featured > h2, .related > h2, .mentions > h2, .comments > h2, .author > section > h2 { margin-block: 0 1.5rem; padding-block-start: 0.625rem; border-block-start: var(--rule) solid var(--color-accent); color: var(--color-text); font-family: var(--font-heading); font-size: clamp(2rem, 1.25rem + 2.4vw, 3.5rem); font-weight: 800; letter-spacing: -0.01em; line-height: 1; text-transform: none; }
 .front-latest .band-title, .rail .band-title, .featured > h2, .post ~ * > h2, .author > section > h2 { font-size: clamp(1.5rem, 1.2rem + 0.8vw, 2rem); }
 .masthead-title { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .masthead { margin-block: 2rem 2.5rem; }
-.masthead h1 { margin: 0; font-size: clamp(2.5rem, 1.5rem + 4vw, 5.5rem); font-weight: 800; letter-spacing: -0.035em; line-height: 0.95; }
+.masthead h1 { margin: 0; font-size: clamp(2.5rem, 1.5rem + 4vw, 5.5rem); font-weight: 800; letter-spacing: -0.01em; line-height: 0.95; }
 .intro { font-family: var(--font-body); font-size: 1.1875rem; }
 
 /* Pictures: square corners, one shape per list. */
@@ -101,7 +101,7 @@ body:has(main .breaking) > .announcement { display: none; }
 .kicker { margin: 0; }
 .kicker a { display: inline-flex; align-items: center; min-block-size: 44px; position: relative; z-index: 1; color: var(--color-link); text-decoration: none; }
 .front-lead .kicker a { min-block-size: 2rem; }
-.front-lead h2 { margin-block: 0.25rem 1rem; font-size: clamp(2.25rem, 1rem + 3.6vw, 4.5rem); font-weight: 800; line-height: 1; letter-spacing: -0.035em; text-wrap: balance; }
+.front-lead h2 { margin-block: 0.25rem 1rem; font-size: clamp(2.25rem, 1rem + 3.6vw, 4.5rem); font-weight: 800; line-height: 1; letter-spacing: -0.01em; text-wrap: balance; }
 .front-lead h2 a { color: var(--color-text); text-decoration: none; }
 .front-lead h2 a::after { content: ""; position: absolute; inset: 0; }
 .front-lead h2 a:hover { text-decoration: underline 0.06em var(--color-accent); text-underline-offset: 0.1em; }
@@ -167,7 +167,7 @@ body:has(main .breaking) > .announcement { display: none; }
 .cards-ranked > li { grid-template-columns: 3.25rem minmax(0, 1fr); padding-block: 1rem; border-block-end: 1px solid var(--color-border); }
 .cards-ranked > li:first-child { padding-block-start: 0.25rem; }
 .cards-ranked > li:last-child { border: 0; }
-.cards-ranked > li::before { color: var(--color-accent); font-size: 2.75rem; font-weight: 800; letter-spacing: -0.04em; line-height: 0.85; font-variant-numeric: tabular-nums; }
+.cards-ranked > li::before { color: var(--color-accent); font-size: 2.75rem; font-weight: 800; letter-spacing: -0.02em; line-height: 0.85; font-variant-numeric: tabular-nums; }
 .cards-ranked .card { display: flex; flex-direction: column; }
 .cards-ranked .card :is(h2, h3, h4) { margin: 0; font-size: 1.125rem; line-height: 1.2; }
 .cards-ranked .card-meta { order: 2; margin-block-start: 0.5rem; }
@@ -219,7 +219,7 @@ body:has(main .breaking) > .announcement { display: none; }
 
 /* A list page: its title huge under a heavy rule, the featured post as a
    lead with the picture beside it, then the feed. */
-main > h1 { margin-block: 0.5rem 1rem; font-size: clamp(2.75rem, 1.5rem + 5vw, 6.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.92; }
+main > h1 { margin-block: 0.5rem 1rem; font-size: clamp(2.75rem, 1.5rem + 5vw, 6.5rem); font-weight: 800; letter-spacing: -0.01em; line-height: 0.92; }
 main > .intro { max-inline-size: 40em; color: var(--color-muted); }
 .hub-link a { font-family: var(--font-heading); font-weight: 800; }
 .featured { margin-block: 2.5rem 0; }
@@ -227,7 +227,7 @@ main > .intro { max-inline-size: 40em; color: var(--color-muted); }
 .card-featured .image { margin-block-end: 1.25rem; }
 .card-featured .image img { aspect-ratio: 3 / 2; object-fit: cover; }
 .card-featured .card-meta { gap: 0.25rem 1rem; }
-.card-featured h3 { margin-block: 0.75rem 1rem; font-size: clamp(2rem, 1.1rem + 2.6vw, 3.75rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.035em; text-wrap: balance; }
+.card-featured h3 { margin-block: 0.75rem 1rem; font-size: clamp(2rem, 1.1rem + 2.6vw, 3.75rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.01em; text-wrap: balance; }
 .card-featured > p:last-child { font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); }
 @media (min-width: 48rem) {
   .card-featured:has(.image) { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); grid-template-rows: 1fr auto auto auto 1fr; column-gap: 2.5rem; }
@@ -256,7 +256,7 @@ main > .intro { max-inline-size: 40em; color: var(--color-muted); }
 
 /* The newsletter and the call to action: panels under a heavy rule. */
 .newsletter-slot, .cta-band { padding: clamp(1.25rem, 3vw, 2.25rem); background: var(--color-surface); border-block-start: var(--rule) solid var(--color-accent); border-radius: 0; }
-.newsletter-slot h2 { margin-block: 0 0.375rem; font-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.25rem); font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; }
+.newsletter-slot h2 { margin-block: 0 0.375rem; font-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.25rem); font-weight: 800; letter-spacing: -0.01em; line-height: 1.05; }
 @media (min-width: 48rem) {
   .newsletter-slot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 0 2.5rem; }
   .newsletter-slot > :not(form) { grid-column: 1; }
@@ -280,7 +280,7 @@ main:has(> .post) > *, main:has(> .author) > *, main:has(> .page) > * { max-inli
 .breadcrumbs a { color: var(--color-muted); text-decoration: none; }
 .breadcrumbs li:nth-last-child(2) a { color: var(--color-link); }
 .post-header { margin-block-end: 2.5rem; }
-.post-header h1 { max-inline-size: 17em; margin-block: 0.25rem 1rem; font-size: clamp(2.375rem, 1.1rem + 4.2vw, 5rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.035em; text-wrap: balance; }
+.post-header h1 { max-inline-size: 17em; margin-block: 0.25rem 1rem; font-size: clamp(2.375rem, 1.1rem + 4.2vw, 5rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.01em; text-wrap: balance; }
 .dek { max-inline-size: 34em; margin-block: 0 1.75rem; color: var(--color-muted); font-family: var(--font-body); font-size: clamp(1.1875rem, 1rem + 0.7vw, 1.5rem); line-height: 1.42; }
 .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 2rem; padding-block: 0.875rem; border-block-start: 3px solid var(--color-text); border-block-end: 1px solid var(--color-border); }
 .post-meta > * { margin: 0; }
@@ -333,7 +333,7 @@ figcaption { font-family: var(--font-heading); font-size: 0.8125rem; }
 @media (min-width: 64rem) { .post-body { font-size: 1.3125rem; } }
 .post-body a, .page-body a { color: var(--color-text); text-decoration-color: var(--color-accent); text-decoration-thickness: 0.09em; text-underline-offset: 0.15em; }
 .post-body a:hover, .page-body a:hover { color: var(--color-link); }
-.post-body :is(h2, h3, h4), .page-body :is(h2, h3, h4) { font-family: var(--font-heading); font-weight: 800; letter-spacing: -0.025em; line-height: 1.1; }
+.post-body :is(h2, h3, h4), .page-body :is(h2, h3, h4) { font-family: var(--font-heading); font-weight: 800; letter-spacing: -0.01em; line-height: 1.1; }
 .post-body h2 { margin-block: 2.25em 0.6em; font-size: clamp(1.75rem, 1.3rem + 1.2vw, 2.375rem); }
 .heading-link { font-size: 0.6em; }
 .post-body :where(ul:not([class]), ol:not([class])) { padding-inline-start: 1.25rem; }
@@ -356,9 +356,9 @@ figcaption { font-family: var(--font-heading); font-size: 0.8125rem; }
 .callout-warning { background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); border-inline-start-width: 8px; }
 .callout-read { padding-inline: 0; background: none; border: 0; border-block: 1px solid var(--color-border); font-family: var(--font-heading); font-weight: 700; }
 .callout-stat { padding-inline: 0; background: none; border: 0; border-block-start: var(--rule) solid var(--color-accent); font-family: var(--font-heading); font-weight: 700; }
-.callout-stat strong:first-child { color: var(--color-link); font-family: var(--font-heading); font-size: clamp(3rem, 2rem + 3vw, 4.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.callout-stat strong:first-child { color: var(--color-link); font-family: var(--font-heading); font-size: clamp(3rem, 2rem + 3vw, 4.5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
 .pullquote { margin-block: 2.5rem; padding: 1.5rem 0; border: 0; border-block: var(--rule) solid var(--color-text); }
-.pullquote blockquote { font-family: var(--font-heading); font-size: clamp(1.625rem, 1.1rem + 1.6vw, 2.375rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; }
+.pullquote blockquote { font-family: var(--font-heading); font-size: clamp(1.625rem, 1.1rem + 1.6vw, 2.375rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.01em; }
 .pullquote blockquote::before { content: "“" / ""; display: block; block-size: 2.25rem; color: var(--color-accent); font-size: 4.5rem; line-height: 1; }
 .pullquote figcaption { color: var(--color-muted); }
 .post-body > blockquote { color: var(--color-text); border-inline-start-color: var(--color-accent); font-style: italic; }
@@ -475,3 +475,8 @@ td:first-child { font-weight: 700; }
   .river .cards > li:nth-child(-n+3) { margin-block-end: 2rem; }
   .river .cards > li:nth-child(n+4), .river .cards > li:nth-child(n+4) .card { min-inline-size: 0; }
 }
+
+/* The consent banner keeps its band across the window, and its words
+   start where the menu's rule starts. */
+.consent { max-inline-size: var(--frame); margin-inline: auto; padding-inline: 0; }
+.consent > * { margin-inline: 0; }
