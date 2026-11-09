@@ -41,6 +41,20 @@ main > :first-child { margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 999px; font: 600 1rem/1.2 var(--font-body); text-decoration: none; cursor: pointer; }
 .button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
 
+/* The announcement and the consent banner start where the header does,
+   on a phone as well. */
+.announcement, .consent { padding-inline: 0; }
+.consent > * { margin-inline: max(0px, (100% - var(--fq-frame)) / 2) auto; }
+
+/* From 1120 px a post with its contents beside it lines up with the
+   header: the words start under the show's name, the contents sit close
+   beside them, and what follows the post keeps to the same column. */
+@media (min-width: 70rem) {
+  main > .post-with-toc { max-inline-size: none; grid-template-columns: minmax(0, var(--fq-text)) 16rem; column-gap: 4rem; }
+  main > .post-with-toc.post-toc-start { grid-template-columns: 16rem minmax(0, var(--fq-text)); }
+  main:has(> .post-with-toc) > .post ~ * { margin-inline: 0; }
+}
+
 /* Labels and section titles. */
 .fq-label, .fq-fact-label, .fq-kicker, .fq-meta { font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
 .fq-label { margin: 0; color: var(--fq-quiet); }
@@ -50,7 +64,7 @@ main > :first-child { margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
 .fq-top { display: grid; gap: 2.5rem 4rem; align-items: start; margin-block-end: var(--space-section); }
 @media (min-width: 60rem) { .fq-top { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: center; } }
 .fq-top .hero { margin: 0; padding: 0; }
-.hero-title { max-inline-size: 12ch; font-weight: var(--heading-weight); letter-spacing: -0.03em; }
+.hero-title { max-inline-size: 12ch; font-weight: var(--heading-weight); letter-spacing: -0.02em; }
 .hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.5; }
 .hero .link-stack { margin-block-start: 2rem; }
 .hero .link-stack ul { grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr)); gap: 0.625rem; }
@@ -120,9 +134,9 @@ main > :first-child { margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
 .fq-chips { display: flex; flex-wrap: wrap; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
 .fq-chips a { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding-inline: 1.125rem; color: var(--color-text); border: 1.5px solid var(--color-text); border-radius: 999px; font-weight: 600; text-decoration: none; }
 .fq-chips a:hover { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
-.cta-band { margin-block: var(--space-section) 0; padding: clamp(1.5rem, 1rem + 2vw, 2.75rem); color: var(--color-background); background: var(--color-text); }
-.cta-band .button { color: var(--color-text); background: var(--color-background); }
-.cta-band .button:hover { color: var(--color-text); background: var(--color-surface); }
+/* The call to action: a light tint of the accent under an ink rule, the
+   note in ink beside the accent button, so the page stays light. */
+.cta-band { margin-block: var(--space-section) 0; padding: clamp(1.5rem, 1rem + 2vw, 2.75rem); color: var(--color-text); background: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); border: 0; border-block-start: 2px solid var(--color-text); }
 .cta-note { max-inline-size: 34ch; font-family: var(--font-heading); font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem); font-weight: var(--heading-weight); line-height: 1.25; }
 .newsletter-slot { margin-block-start: var(--space-section); }
 
