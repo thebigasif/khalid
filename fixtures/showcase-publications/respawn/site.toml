@@ -1,0 +1,109 @@
+# Lowpoly Post, a made-up games site, written for the Respawn template's
+# demo. Every game, studio and event it covers is made up. Each key and
+# table here replaces the showcase's own when scripts/demo-publication.sh
+# applies it.
+
+name = "Lowpoly Post"
+languages = ["en"]
+
+[template.cta]
+label = "How we score games"
+href = "/blog/how-we-score-games/"
+note = "Every score is out of 10, from at least twenty hours of play, and the health bar shows it at a glance."
+
+# The Respawn template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Games news, honest reviews and what comes out next."]
+release_calendar = [
+  "2026-11-20 | Hollowmere | PC, consoles | /blog/hollowmere-release-date/",
+  "2026-11-27 | Paper Comets | PC",
+  "2026-12-04 | Tidewright | PC, consoles",
+  "2026-12-11 | Cinder Valley: Frostfall | PC, consoles | /blog/cinder-valley-winter-update/",
+  "2027-01-22 | Saltglass Saga | Consoles",
+  "2027-02-12 | Burrow and Bloom | PC, mobile",
+  "2027-03-05 | Neon Orchard | PC",
+  "Spring 2027 | Kitebound: Updraft | PC, consoles",
+]
+news_count = 4
+
+[announcement]
+text = "Hollowmere is out on 20 November. Read what we know so far."
+href = "/blog/hollowmere-release-date/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Games news, reviews and release dates"
+
+[seo.ai_page]
+covers = "Lowpoly Post covers video games: news from studios and events, reviews with a score out of 10, guides for players, and a calendar of the games coming out soon. Every game and studio on this site is made up for a template demo."
+cite = "Name Lowpoly Post and the writer, quote the score with the review it comes from, and link the post."
+contact = "desk@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Lowpoly Post"
+email = "desk@example.com"
+founded = "2022-05-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Lowpoly Post logo"
+width = 320
+height = 80
+
+# Sign-ups for the weekly newsletter, under the site's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "desk@example.com"
+name = "Lowpoly Post"
+postal_address = "Lowpoly Post, 14 Arcade Lane, Port Ellery PE2 9QX"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Reviews"
+href = "/blog/category/reviews/"
+language = "en"
+
+[[nav.primary]]
+label = "News"
+href = "/blog/category/news/"
+language = "en"
+
+[[nav.primary]]
+label = "Guides"
+href = "/blog/category/guides/"
+language = "en"
+
+[[nav.primary]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Lowpoly Post"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "How we score games"
+href = "/blog/how-we-score-games/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

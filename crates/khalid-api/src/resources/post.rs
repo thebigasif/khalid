@@ -237,6 +237,47 @@ impl Post {
     pub fn language(&self) -> &Locale {
         &self.language
     }
+
+    /// The title.
+    pub(crate) fn title(&self) -> &str {
+        &self.title
+    }
+
+    /// The writer's summary, if any.
+    pub(crate) fn excerpt(&self) -> Option<&str> {
+        self.excerpt.as_deref()
+    }
+
+    /// Whether it is marked as featured.
+    pub(crate) fn is_featured(&self) -> bool {
+        self.featured
+    }
+
+    /// Tag slugs, in the writer's order.
+    pub(crate) fn tags(&self) -> &[String] {
+        &self.tags
+    }
+
+    /// Author slugs, in the writer's order.
+    pub(crate) fn authors(&self) -> &[String] {
+        &self.authors
+    }
+
+    /// When it went live and when it last changed.
+    pub(crate) fn times(&self) -> (DateTime<Utc>, DateTime<Utc>) {
+        (self.published_at, self.updated_at)
+    }
+
+    /// The head of its page, when the pages have been made.
+    pub(crate) fn head(&self) -> Option<&PostHead> {
+        self.head.as_ref()
+    }
+
+    /// The rendered HTML and the plain text, when the store holds them.
+    pub(crate) fn html_and_text(&self) -> (Option<&str>, Option<&str>) {
+        let bodies = &self.bodies;
+        (bodies.html.as_deref(), bodies.plaintext.as_deref())
+    }
 }
 
 impl Listable for Post {
@@ -266,6 +307,12 @@ impl FieldValues for Post {
             "author" | "authors" => all(&self.authors),
             "published_at" => time(&self.published_at),
             "updated_at" => time(&self.updated_at),
+            // Ghost's names, which only its compatible API lets a filter
+            // use: every post served is published and public.
+            "primary_tag" => all(self.tags.get(..1).unwrap_or_default()),
+            "primary_author" => all(self.authors.get(..1).unwrap_or_default()),
+            "status" => text("published"),
+            "visibility" => text("public"),
             _ => Vec::new(),
         }
     }

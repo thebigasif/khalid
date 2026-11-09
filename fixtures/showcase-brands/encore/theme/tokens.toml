@@ -1,0 +1,45 @@
+# The sample brand for the Encore demo: Northlight Parade, a made-up band
+# from Glasgow. Deep violet on warm white with a pale lilac surface, Anton
+# for the poster headings and Archivo for the text. Only the brand lives
+# here: the template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#fbfaf7"
+surface = "#eeecf6"
+text = "#17152b"
+muted = "#4c4963"
+link = "#4a2bb0"
+accent = "#5532d0"
+border = "#d6d3e4"
+
+[fonts]
+heading = "Anton, Impact, \"Arial Narrow Bold\", sans-serif"
+body = "Archivo, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+
+[[fonts.files]]
+family = "Anton"
+style = "normal"
+weight = "400"
+path = "anton-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+00F2, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "129.94%"
+descent = "155.30%"
+line_gap = "0.00%"
+size_adjust = "48.50%"
+
+[[fonts.files]]
+family = "Archivo"
+style = "normal"
+weight = "400 700"
+path = "archivo-latin-400-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+00F2, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "96.99%"
+descent = "99.10%"
+line_gap = "0.00%"
+size_adjust = "60.89%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

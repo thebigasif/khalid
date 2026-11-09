@@ -1,0 +1,33 @@
+# Atelier: a printed lookbook. Ink on a warm white page, a quiet paper
+# surface, one rust colour for links. A high-contrast serif for names and
+# titles, a calm sans for the text. Square corners, as on a printed page.
+[colors]
+background = "#fcfbf9"
+surface = "#f2efea"
+text = "#191817"
+muted = "#5b5751"
+link = "#7a3324"
+accent = "#191817"
+border = "#ddd8d0"
+
+[fonts]
+heading = "Didot, \"Bodoni 72\", \"Bodoni MT\", \"Libre Bodoni\", \"Playfair Display\", Georgia, serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0px"
+measure = "36rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
+h2 = "1.5rem 2rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.7
+heading_weight = 500
+
+[space]
+unit = "0.5rem"
+section = "5rem"

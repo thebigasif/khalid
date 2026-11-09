@@ -1,0 +1,34 @@
+# Wavelength's topics. The Lattice template shows each as a numbered tile
+# on the front page, and each topic page lists its explainers as figures.
+
+[[categories]]
+slug = "earth-climate"
+en = "Earth and climate"
+
+[categories.seo.en]
+description = "Wavelength's explainers about our planet: tides, mountains, weather and lightning."
+intro = "How our planet works, from the sea to the storm clouds: tides, mountains, weather and lightning."
+
+[[categories]]
+slug = "space"
+en = "Space"
+
+[categories.seo.en]
+description = "Wavelength's explainers about space: black holes, the Moon, the Sun and the seasons."
+intro = "The sky above us and far beyond: black holes, the Moon, the Sun and why we have seasons."
+
+[[categories]]
+slug = "life-sciences"
+en = "Life sciences"
+
+[categories.seo.en]
+description = "Wavelength's explainers about living things: cells, plants and the immune system."
+intro = "How living things work, from a leaf in the sun to the cells that fight off a cold."
+
+[[categories]]
+slug = "physics-chemistry"
+en = "Physics and chemistry"
+
+[categories.seo.en]
+description = "Wavelength's explainers about physics and chemistry: light, colour, water and ice."
+intro = "The rules under everything else: light and colour, heat, water and the bonds between molecules."

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="6" y="14" width="44" height="52" fill="#fafaf8" stroke="#17181c" stroke-width="3"/>
+  <rect x="16" y="24" width="24" height="32" fill="#2b3f8f"/>
+  <text textLength="246" lengthAdjust="spacingAndGlyphs" x="64" y="52" font-family="Syne, Arial, sans-serif" font-size="30" font-weight="700" fill="#17181c">Fernbrook Press</text>
+</svg>

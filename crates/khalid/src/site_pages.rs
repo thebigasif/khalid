@@ -15,6 +15,7 @@ use khalid_render::{Renderer, Tokens};
 use khalid_routes::Routes;
 use khalid_server::{Moved, Page, Render, Rendered};
 
+use crate::assets::PageStylesheets;
 use crate::comment_pages::{self, ShownComments};
 use crate::content_feed::ContentFeed;
 use crate::form_pages::{self, LiveForms};
@@ -108,6 +109,8 @@ struct Settings {
 struct Theme {
     renderer: Renderer,
     stylesheet: Page,
+    /// Each page's own stylesheet, made from the whole one.
+    sheets: PageStylesheets,
     script: Page,
     /// The self-hosted font files the stylesheet names, read at start.
     fonts: Vec<Page>,
@@ -127,11 +130,13 @@ impl Theme {
         let renderer = Renderer::with_pack(folder, &look::render_pack(&look, config))
             .map_err(|error| build_message::render(&error))?
             .with_brand(&tokens.brand);
-        let rules = assets::rules(folder, &look)?;
-        let stylesheet = assets::stylesheet_page(config, &tokens, &rules)?;
+        let own = assets::own_rules(folder)?;
+        let rules = (look.pack().stylesheet(), own.as_str());
+        let (stylesheet, sheets) = assets::stylesheets(config, &tokens, rules)?;
         Ok(Some(Self {
             renderer,
             stylesheet,
+            sheets,
             script: assets::script_page(config)?,
             fonts: assets::font_pages(config, assets::fonts(folder, &tokens))?,
             tokens,
@@ -270,7 +275,8 @@ impl SitePages {
         build_seo::heads(&seo_site, &mut languages)?;
         let mut pages = vec![theme.stylesheet.clone(), theme.script.clone()];
         pages.extend(theme.fonts.iter().cloned());
-        html_pages(&theme.renderer, config, &languages, Which::All, &mut pages)?;
+        let theme_parts = (&theme.renderer, &theme.sheets);
+        html_pages(theme_parts, config, &languages, Which::All, &mut pages)?;
         Ok(pages)
     }
 
@@ -455,6 +461,8 @@ impl SitePages {
         let today = self.0.clock.now().date_naive();
         let content = &*charts::read(folder, content);
         let mut languages = build_pages::pages(config, routes, (content, others), href, today)?;
+        let tokens = theme.as_ref().map(|theme| &theme.tokens);
+        assets::preload_body_font(folder, config, tokens, &mut languages);
         let renderer = theme.as_ref().map(|theme| &theme.renderer);
         post_lock::lock(config, content, renderer, &mut languages);
         let categories = categories::of(folder)?;
@@ -466,8 +474,8 @@ impl SitePages {
             if which == Which::All {
                 let sources = (content, categories.as_slice());
                 build_lists::add((config, routes), &theme.renderer, sources, &mut languages)?;
-                let renderer = &theme.renderer;
-                build_pages::discovery_pages((config, routes), renderer, content, &mut languages)?;
+                let found = (&theme.renderer, folder.as_path(), today);
+                build_pages::discovery_pages((config, routes), found, content, &mut languages)?;
                 build_sitemap::add(config, &theme.renderer, &mut languages)?;
             }
             own_descriptions::fill(config, &theme.renderer, &mut languages)?;
@@ -478,7 +486,7 @@ impl SitePages {
         post_categories::fill((config, routes), &categories, &mut languages);
         comment_pages::fill(config, self.0.comments.as_ref(), &mut languages);
         form_pages::fill(config, self.0.forms.as_ref(), &mut languages);
-        form_pages::subscribe_under(config, &mut languages);
+        form_pages::under_mount(config, &mut languages);
         let beside = post_files::served(folder, config, assets, &mut languages, shown)?;
         post_gate::open(config, routes, content, &mut languages)?;
         let seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
@@ -515,8 +523,8 @@ impl SitePages {
                     .lock()
                     .unwrap_or_else(PoisonError::into_inner) = shells;
             }
-            let renderer = &theme.renderer;
-            served.not_found = html_pages(renderer, config, &languages, which, &mut served.pages)?;
+            let parts = (&theme.renderer, &theme.sheets);
+            served.not_found = html_pages(parts, config, &languages, which, &mut served.pages)?;
         }
         // The cards draw behind the answers: their addresses are already
         // baked into the heads, so the pages are complete without the

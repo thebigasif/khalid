@@ -1,9 +1,10 @@
 //! Related posts under a post: the cards chosen at build time, in a section
 //! of their own after the article.
 
-use khalid_render::{Feature, RenderPost};
+use khalid_render::{Feature, Loading, RenderPost};
 
 use crate::html_check::assert_valid_page;
+use crate::image::sitemap_image;
 use crate::listing::card;
 use crate::post::{part, render, render_on, site_without, sitemap_post};
 
@@ -52,4 +53,17 @@ fn switched_off_there_are_no_related_posts() {
     assert_valid_page(&page);
     assert!(!page.contains("class=\"related\""));
     assert!(!page.contains("robots-txt"));
+}
+
+#[test]
+fn related_card_pictures_wait_even_on_a_post_with_no_lead_image() {
+    let mut post = post_with_related();
+    post.image = None;
+    for card in &mut post.related {
+        card.image = Some(sitemap_image(Loading::Lazy));
+    }
+    let page = render("en", post);
+    assert_valid_page(&page);
+    assert_eq!(page.matches(r#"loading="lazy""#).count(), 3);
+    assert!(!page.contains("fetchpriority"));
 }

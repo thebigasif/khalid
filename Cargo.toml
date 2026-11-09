@@ -9,7 +9,7 @@ members = ["crates/*", "lints/check"]
 [workspace.package]
 # Every crate but khalid-core and khalid-lint, which keep their own published
 # version (docs/adr/0000-the-lint-crates-are-published-under-agpl.md).
-version = "1.3.2"
+version = "1.7.0"
 edition = "2024"
 rust-version = "1.99"
 license = "AGPL-3.0-only"
@@ -268,6 +268,36 @@ opt-level = "z"
 [profile.release.package.tiny-skia-path]
 opt-level = "z"
 [profile.release.package.ttf-parser]
+opt-level = "z"
+# The privacy units (U3, U6, U8, U9, U11) pushed the binary over budget
+# again. None of these runs on a reader's request: the packs are read into
+# templates once at start, the mount crate writes proxy rules for a
+# command, regular expressions are compiled once, the HTML parser reads a
+# card's HTML once per post at build, a main site for theme sync or a page
+# for the audit, the selectors only the last two, CBOR is read at a passkey
+# sign-in, and maths is drawn once per post at build.
+# `khalid-media`, `toml` and `clap` stay at "s" and the YAML reader at 3:
+# each grew the binary at a smaller level (docs/standards/performance.md,
+# "Privacy integration").
+[profile.release.package.khalid-theme]
+opt-level = "z"
+[profile.release.package.khalid-mount]
+opt-level = "z"
+[profile.release.package.regex-syntax]
+opt-level = "z"
+[profile.release.package.html5ever]
+opt-level = "z"
+[profile.release.package.markup5ever]
+opt-level = "z"
+[profile.release.package.scraper]
+opt-level = "z"
+[profile.release.package.selectors]
+opt-level = "z"
+[profile.release.package.cssparser]
+opt-level = "z"
+[profile.release.package.serde_cbor_2]
+opt-level = "z"
+[profile.release.package.math-core]
 opt-level = "z"
 
 [profile.dev]

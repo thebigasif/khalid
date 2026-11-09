@@ -1,0 +1,19 @@
+{#- title_block(facts, sheet=none): a post's facts in a ruled box, like the
+    title block in the corner of a drawing: each fact's label small over
+    its value, and with `sheet` set, a first cell that holds the sheet
+    number large. Called with `{% call title_block(...) %}...{% endcall %}`,
+    it adds the cells the call holds, each a `<div>` with a `<dt>` and a
+    `<dd>`, such as the author and the date. Nothing shows without facts. -#}
+{% macro title_block(facts, sheet=none) -%}
+{% if facts %}<dl class="title-block">
+{% if sheet %}<div class="title-block-sheet">
+<dt>{{ t.sheet }}</dt>
+<dd>{{ sheet }}</dd>
+</div>
+{% endif %}{% for fact in facts %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endfor %}{% if caller is defined %}{{ caller() }}{% endif %}</dl>
+{% endif %}
+{%- endmacro %}

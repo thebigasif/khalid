@@ -1,0 +1,148 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-01-12-morning-mobility-routine/lead.jpg"
+sha256 = "6b4597feef33ab057e038e70c7acc38daf8738c6519145b654988ccffbb1e321"
+source = "https://commons.wikimedia.org/wiki/File:Top_view_of_a_woman_stretching_on_a_yoga_mat.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Top view of a woman stretching on a yoga mat by Shixart1985, via Wikimedia Commons"
+title = "Top view of a woman stretching on a yoga mat"
+creator = "Shixart1985"
+openverse = "commons:File:Top view of a woman stretching on a yoga mat.jpg"
+needs_credit = true
+size = "1600x1068"
+
+
+[[photos]]
+file = "en/posts/2026-02-02-desk-break-stretches/lead.jpg"
+sha256 = "5647302dca8a49936ffc941335d81023c61aec3565e58d386e2b3de952795e6e"
+source = "https://commons.wikimedia.org/wiki/File:Woman_stretches_at_home_office_desk_while_working_on_laptop.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Woman stretches at home office desk while working on laptop by Shixart1985, via Wikimedia Commons"
+title = "Woman stretches at home office desk while working on laptop"
+creator = "Shixart1985"
+openverse = "commons:File:Woman stretches at home office desk while working on laptop.jpg"
+needs_credit = true
+size = "1600x1065"
+
+
+[[photos]]
+file = "en/posts/2026-03-02-four-week-walking-programme/lead.jpg"
+sha256 = "7336e45849d1c5c4cb3f2ac310afc9d8630b323bd1af5ad67a7d25f17e8902f2"
+source = "https://commons.wikimedia.org/wiki/File:Woman_walking_down_path_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Woman walking down path (Unsplash) by Biel Morro bielmb, via Wikimedia Commons"
+title = "Woman walking down path (Unsplash)"
+creator = "Biel Morro bielmb"
+openverse = "commons:File:Woman walking down path (Unsplash).jpg"
+needs_credit = false
+size = "1600x1064"
+
+
+[[photos]]
+file = "en/posts/2026-04-06-bodyweight-strength-basics/lead.jpg"
+sha256 = "cb37526ff37284e7f83ec400168dcd92f21ad93147435cd89b354196c8739edc"
+source = "https://commons.wikimedia.org/wiki/File:Girl_doing_push-ups_from_the_side.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Girl doing push-ups from the side by PTPioneer, via Wikimedia Commons"
+title = "Girl doing push-ups from the side"
+creator = "PTPioneer"
+openverse = "commons:File:Girl doing push-ups from the side.jpg"
+needs_credit = true
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-05-11-balance-practice/lead.jpg"
+sha256 = "bb0390d0898e9105f3eeb451eb5a186445d60f9c66cfd03ec59f4506f1f10aab"
+source = "https://commons.wikimedia.org/wiki/File:Free_souls.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Free souls by Ronyyz, via Wikimedia Commons"
+title = "Free souls"
+creator = "Ronyyz"
+openverse = "commons:File:Free souls.jpg"
+needs_credit = true
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-06-08-after-walk-stretches/lead.jpg"
+sha256 = "1499e49f62e7b212164da0455ca5c148147ce620386b54bde1a7f7610d41cc23"
+source = "https://commons.wikimedia.org/wiki/File:Woman_stretching_her_leg_while_exercising_in_a_park_on_a_sunny_day.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Woman stretching her leg while exercising in a park on a sunny day by Shixart1985, via Wikimedia Commons"
+title = "Woman stretching her leg while exercising in a park on a sunny day"
+creator = "Shixart1985"
+openverse = "commons:File:Woman stretching her leg while exercising in a park on a sunny day.jpg"
+needs_credit = true
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-07-13-box-breathing-reset/lead.jpg"
+sha256 = "804d4b23f6e6b2645e6a9f95bbec989791904713b1685702640f3b06db227432"
+source = "https://commons.wikimedia.org/wiki/File:A_Calm_Rainy_Morning_in_Late_Autumn_at_Browne_Lake_Provincial_Park.JPG"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "A Calm Rainy Morning in Late Autumn at Browne Lake Provincial Park by Extemporalist, via Wikimedia Commons"
+title = "A Calm Rainy Morning in Late Autumn at Browne Lake Provincial Park"
+creator = "Extemporalist"
+openverse = "commons:File:A Calm Rainy Morning in Late Autumn at Browne Lake Provincial Park.JPG"
+needs_credit = false
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-08-17-wind-down-routine/lead.jpg"
+sha256 = "76270b945a1d0d874d7c53f65bd316b77516a2d63570873e63b1d0022689af8d"
+source = "https://commons.wikimedia.org/wiki/File:Person_Holding_Mug_on_Table_(29214761648).jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Person Holding Mug on Table (29214761648) by rawpixel, via Wikimedia Commons"
+title = "Person Holding Mug on Table (29214761648)"
+creator = "rawpixel"
+openverse = "commons:File:Person Holding Mug on Table (29214761648).jpg"
+needs_credit = false
+size = "1600x1082"
+
+
+[[photos]]
+file = "en/posts/2026-09-14-autumn-timetable/lead.jpg"
+sha256 = "9241805f45ccb31deaf8c880529f58cd1778668c9ffca3448e60a53096a5cffd"
+source = "https://commons.wikimedia.org/wiki/File:Hatha_yoga_in_Japanese_@_Semperviva_(4439500017).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Hatha yoga in Japanese @ Semperviva (4439500017) by GoToVan, via Wikimedia Commons"
+title = "Hatha yoga in Japanese @ Semperviva (4439500017)"
+creator = "GoToVan"
+openverse = "commons:File:Hatha yoga in Japanese @ Semperviva (4439500017).jpg"
+needs_credit = true
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-10-05-saturday-walking-group/lead.jpg"
+sha256 = "3cb3c9a16f404445b3e48345c645cfb93e1674996b25c200998552312647af46"
+source = "https://commons.wikimedia.org/wiki/File:Wikimedia_Nigeria_Imo_State_Network_Fitness_Walk_and_Exercise_1.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Wikimedia Nigeria Imo State Network Fitness Walk and Exercise 1 by Emmanuel Obiajulu, via Wikimedia Commons"
+title = "Wikimedia Nigeria Imo State Network Fitness Walk and Exercise 1"
+creator = "Emmanuel Obiajulu"
+openverse = "commons:File:Wikimedia Nigeria Imo State Network Fitness Walk and Exercise 1.jpg"
+needs_credit = false
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-10-26-short-routines/lead.jpg"
+sha256 = "51be0e8f5f8543bbbf387f9a3dac54c33ef542e791a133f3641071385310720c"
+source = "https://commons.wikimedia.org/wiki/File:Woman_sitting_on_a_yoga_mat_and_stretching._Pink_plastic_water_bottle_next_to_her.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Woman sitting on a yoga mat and stretching. Pink plastic water bottle next to her by Shixart1985, via Wikimedia Commons"
+title = "Woman sitting on a yoga mat and stretching. Pink plastic water bottle next to her"
+creator = "Shixart1985"
+openverse = "commons:File:Woman sitting on a yoga mat and stretching. Pink plastic water bottle next to her.jpg"
+needs_credit = true
+size = "1600x1068"
+

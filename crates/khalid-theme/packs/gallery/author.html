@@ -1,0 +1,36 @@
+{#- Gallery's author page: their photo or mark, name, role, how many
+    works they posted and their profiles, their bio, then their work as
+    the same wall as the front page, and the other people of the studio. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture %}
+{% from "icons.html" import profiles %}
+{% from "card.html" import pages -%}
+{% from "sections/people_grid.html" import people_grid -%}
+{% from "parts-gallery.html" import wall -%}
+<article class="author">
+<header class="author-header">
+{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% endif %}<div class="author-intro">
+<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}<p class="author-count">{% if page.post_count == 1 %}{{ t.post_count_one }}{% else %}{{ t.post_count | replace("{count}", page.post_count | string) }}{% endif %}</p>
+{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</div>
+</header>
+<div class="author-bio">
+{{ page.bio }}
+</div>
+</article>
+<section class="author-work" aria-labelledby="author-posts">
+<h2 id="author-posts">{{ t.projects }}</h2>
+{% if page.posts %}{{ wall(page.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</section>
+{% if page.others and "authors_page" in site.features %}<section class="author-others" aria-labelledby="other-authors">
+<h2 id="other-authors">{{ t.other_authors }}</h2>
+{{ people_grid(page.others) }}
+</section>
+{% endif %}{% endblock %}

@@ -43,6 +43,12 @@ fn the_header_button_links_to_the_call_to_action() {
     let header = part(&page, "<header class=\"site-header\">", "</header>");
     let button = "<a class=\"button header-button\" href=\"https://www.example.com/signup/\">Start a free trial</a>";
     assert!(header.contains(button), "{header}");
+    // On a phone the same button sits in the menu, where it has room.
+    let menu = part(&header, "<details class=\"nav-menu\">", "</details>");
+    assert!(
+        menu.contains("<a class=\"button menu-button\" href=\"https://www.example.com/signup/\">Start a free trial</a>"),
+        "{menu}"
+    );
 }
 
 /// A post whose body places `::cta` between two paragraphs.

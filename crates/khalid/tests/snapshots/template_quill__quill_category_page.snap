@@ -1,0 +1,25 @@
+---
+source: crates/khalid/tests/template_quill.rs
+expression: "shown(&out, \"category/technical-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<h1>Technical SEO</h1>
+<ul class="cards cards-compact" role="list">
+<li>
+<article class="card">
+<h2><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p><time datetime="2026-10-05">5 October 2026</time></p>
+</article>
+</li>
+<li>
+<article class="card">
+<h2><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h2>
+<p><time datetime="2026-09-28">28 September 2026</time></p>
+</article>
+</li>
+</ul>

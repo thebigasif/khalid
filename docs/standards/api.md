@@ -8,6 +8,7 @@ The API is the only door (CLAUDE.md). This file fixes the shape so every endpoin
 |---|---|---|---|
 | Content API | `/api/content/v1/` | Content key in `Authorization: Khalid-Content <key>` or `?key=`, safe in browsers | Read public content |
 | Admin API | `/api/admin/v1/` | Integration key or staff token in `Authorization: Khalid <token>`, or the admin session cookie plus CSRF | Read and write everything |
+| Ghost's Content API | `/ghost/api/content/` | Content key in `?key=`, with `Accept-Version: v5.x` | Read public content in Ghost's shape for front ends built on Ghost's client. Off unless `site.toml` sets `ghost_content_api = true`; it keeps Ghost's contract, not this one (`docs/ghost-api.md`) |
 | oEmbed | `/api/oembed` | None | Embed cards for other sites |
 | Publish target | Part of the Admin API | Integration key with the `posts:write` scope, and `posts:publish` to publish | SerpDad and other tools stage drafts |
 

@@ -1,0 +1,18 @@
+{#- Glossy's lists (section, tag, archive and date pages): the kind of
+    list, its name and intro, then its stories in the card rhythm. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "parts-glossy.html" import story_grid -%}
+<header class="list-header">
+<p class="list-kind">{{ t.stories }}</p>
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{{ story_grid(page.posts, 2) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

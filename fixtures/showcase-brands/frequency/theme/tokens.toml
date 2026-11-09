@@ -1,0 +1,71 @@
+# The sample brand for the Frequency demo: a podcast about the night sky.
+# Deep indigo on cool white with a lavender surface, Bricolage Grotesque
+# for titles, Rethink Sans for the show notes and DM Mono for episode
+# numbers and running times. Only the brand lives here: the template keeps
+# its own shape, type sizes and spacing.
+[colors]
+background = "#fbfbfd"
+surface = "#efeff7"
+text = "#13152b"
+muted = "#4c4f66"
+link = "#3b3fae"
+accent = "#3b3fae"
+border = "#dadbe8"
+
+[fonts]
+heading = "\"Bricolage Grotesque\", \"Avenir Next\", Arial, sans-serif"
+body = "\"Rethink Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "\"DM Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Bricolage Grotesque"
+style = "normal"
+weight = "700"
+path = "bricolage-grotesque-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "102.73%"
+descent = "127.41%"
+line_gap = "0.00%"
+size_adjust = "59.20%"
+
+[[fonts.files]]
+family = "Rethink Sans"
+style = "normal"
+weight = "400"
+path = "rethink-sans-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "109.58%"
+descent = "146.29%"
+line_gap = "0.00%"
+size_adjust = "59.09%"
+
+[[fonts.files]]
+family = "Rethink Sans"
+style = "normal"
+weight = "600"
+path = "rethink-sans-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "109.58%"
+descent = "146.29%"
+line_gap = "0.00%"
+size_adjust = "58.88%"
+
+[[fonts.files]]
+family = "DM Mono"
+style = "normal"
+weight = "500"
+path = "dm-mono-latin-500.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "109.58%"
+descent = "146.29%"
+line_gap = "0.00%"
+size_adjust = "63.54%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

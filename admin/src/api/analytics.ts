@@ -46,6 +46,21 @@ export function readAiVisitors(days: Days): Promise<Reply<AiVisitors>> {
   );
 }
 
+/** How readers answered the consent banner each day of a period, with the totals. */
+export type ConsentCounts = components["schemas"]["AdminConsentCounts"];
+/** Every version of what readers were shown, with the days each was in force. */
+export type ConsentVersions = components["schemas"]["AdminConsentVersions"];
+
+/** Reads how readers answered the consent banner in the last `days` days. */
+export function readConsentCounts(days: Days): Promise<Reply<ConsentCounts>> {
+  return reply(() => api.GET("/api/admin/v1/consent/counts/", { params: { query: { days } } }));
+}
+
+/** Reads every version of what readers were shown. */
+export function readConsentVersions(): Promise<Reply<ConsentVersions>> {
+  return reply(() => api.GET("/api/admin/v1/consent/versions/"));
+}
+
 /** Reads the pages AI bots read in the last `days` days but no AI assistant cited. */
 export function readUncited(days: Days): Promise<Reply<Uncited>> {
   return reply(() => api.GET("/api/admin/v1/analytics/uncited/", { params: { query: { days } } }));

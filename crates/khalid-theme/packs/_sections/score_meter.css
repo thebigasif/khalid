@@ -1,0 +1,13 @@
+/* Section part: score meter (templates/sections/score_meter.html). The
+   score in a square ink tile, then a bar of square cells filled in the
+   accent up to the score, a half cell for a half point. A pack sets
+   --score-size for the tile and --score-cell for each cell. */
+.score-meter { display: flex; align-items: center; gap: 0.625rem; margin: 0; }
+.score-meter p { margin: 0; }
+.score-tile { display: inline-flex; align-items: center; justify-content: center; min-inline-size: var(--score-size, 2.5rem); block-size: var(--score-size, 2.5rem); padding-inline: 0.375rem; background: var(--color-text); color: var(--color-background); font-family: var(--font-heading); font-size: calc(var(--score-size, 2.5rem) * 0.42); font-variant-numeric: lining-nums tabular-nums; font-weight: var(--heading-weight); line-height: 1; }
+.score-bar { display: flex; gap: 0.1875rem; }
+.score-cell { inline-size: var(--score-cell, 0.625rem); block-size: var(--score-cell, 0.625rem); background: color-mix(in oklab, var(--color-accent) 16%, var(--color-background)); }
+.score-full { background: var(--color-accent); }
+.score-half { background: linear-gradient(to right, var(--color-accent) 50%, color-mix(in oklab, var(--color-accent) 16%, var(--color-background)) 50%); }
+.score-half:dir(rtl) { background: linear-gradient(to left, var(--color-accent) 50%, color-mix(in oklab, var(--color-accent) 16%, var(--color-background)) 50%); }
+.score-meter-text .score-tile { font-size: var(--text-small); letter-spacing: 0.04em; text-transform: uppercase; }

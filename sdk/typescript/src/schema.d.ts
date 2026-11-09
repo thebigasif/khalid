@@ -135,6 +135,62 @@ export type AdminComments = {
   comments: AdminComment[];
 };
 
+/** How readers answered the consent banner. No address or reader identifier is kept: only these daily totals. */
+export type AdminConsentCounts = {
+  /** How many days were counted. */
+  days: number;
+  /** The first day counted, in UTC. */
+  first: string;
+  /** The last day counted: today, in UTC. */
+  last: string;
+  /** The answers per day and version, first day first. A day with no answers is left out. */
+  per_day: AdminConsentDay[];
+  /** Every answer in the period. */
+  totals: AdminConsentTally;
+};
+
+/** The answers on one day under one version. */
+export type AdminConsentDay = {
+  /** The answers. */
+  counts: AdminConsentTally;
+  /** The day, in UTC. */
+  day: string;
+  /** The version readers were shown. */
+  version: string;
+};
+
+/** How many answers there were, and how many allowed each optional category. Necessary is always on, so it has no count. */
+export type AdminConsentTally = {
+  /** Answers that allowed Analytics. */
+  analytics: number;
+  /** Every answer: Accept all, Reject all and each saved choice. */
+  choices: number;
+  /** Answers that allowed External media. */
+  external_media: number;
+  /** Answers that allowed Marketing. */
+  marketing: number;
+  /** Answers that allowed Preferences. */
+  preferences: number;
+};
+
+/** One version of what readers were shown. */
+export type AdminConsentVersion = {
+  /** The first day a reader was shown it, in UTC. */
+  first_day: string;
+  /** The last day a reader was shown it so far, in UTC. */
+  last_day: string;
+  /** What readers were shown: the banner and category text in each language, the categories, the vendors and the lifetime. */
+  shown: Record<string, unknown>;
+  /** The settings version, a hash of everything shown. */
+  version: string;
+};
+
+/** Every version of what readers were shown. */
+export type AdminConsentVersions = {
+  /** The versions, oldest first. */
+  versions: AdminConsentVersion[];
+};
+
 /** The views on one day. */
 export type AdminDayViews = {
   /** The day, in UTC. */
@@ -363,14 +419,20 @@ export type AdminSchemaTemplate = {
 export type AdminSettings = {
   /** The address of the main site, such as `https://www.example.com`. */
   address: string;
+  /** The site's own code from `[code]`, one object per entry as written: `head`, `body`, the `category` it waits for (`preferences`, `analytics`, `marketing` or `no-tracking`), the `vendor` and its `policy` link. An entry with no `category` counts as Marketing. The old single `[code]` table reads as one entry. */
+  code: (Record<string, unknown>)[];
   /** The language a reader gets first, such as `en`. */
   default_language: string;
   /** Every language the site is written in. */
   languages: string[];
+  /** How the site reaches readers: `server`, `static` or `headless`. It is read here and changed only in `site.toml`. */
+  mode: string;
   /** The path the blog lives under, such as `/blog/`. */
   mount: string;
   /** The site's name. */
   name: string;
+  /** The `[privacy]` table as `site.toml` writes it, one key per part such as `lifetime_months`, `gpc`, `counts`, `external_tool`, `text` or `contact`. A setting left out keeps its default. */
+  privacy: Record<string, unknown>;
   /** Whether `site.toml` says something the running server does not use yet, so a restart is needed to apply it. */
   restart_needed: boolean;
   /** The `[seo]` table as `site.toml` writes it, one key per part such as `titles` or `crawlers`. A setting left out of the file is left out here too and keeps its default; `docs/seo-settings.md` lists every part and its defaults. */
@@ -1765,6 +1827,8 @@ export type Settings = {
 export type SettingsChange = {
   /** A new address of the main site. */
   address?: string | null;
+  /** Every entry of `[code]`, in place of the old ones, written as a `[[code]]` list. An empty list removes `[code]`. */
+  code?: (Record<string, unknown>)[] | null;
   /** A new default language, which `languages` must include. */
   default_language?: string | null;
   /** A new list of languages. */
@@ -1773,6 +1837,8 @@ export type SettingsChange = {
   mount?: string | null;
   /** A new name. */
   name?: string | null;
+  /** New parts of the `[privacy]` table, each replacing the part of that name whole, such as `{"lifetime_months": 12}`. `null` removes a part, so it goes back to its default. Parts left out stay as they are. */
+  privacy?: Record<string, unknown> | null;
   /** New parts of the `[seo]` table, each replacing the part of that name whole, such as `{"titles": {"separator": "·"}}`. `null` removes a part, so its settings go back to their defaults. Parts left out stay as they are. */
   seo?: Record<string, unknown> | null;
   template?: TemplateSetting | null;
@@ -2391,6 +2457,30 @@ export interface Operations {
       body: CommentReplies;
     };
     output: AdminComments;
+  };
+  /** Counts the readers' answers to the consent banner in the last `days` days, per day and version, with how many allowed each optional category. Needs `settings:write`. */
+  consent_counts: {
+    input: {
+      query?: {
+        /** From 1 to 366; 28 when left out. */
+        days?: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminConsentCounts;
+  };
+  /** Lists every version of the banner and category text, categories, vendors and lifetime readers were shown, with the days each was in force. Needs `settings:write`. */
+  consent_versions: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminConsentVersions;
   };
   /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
   list_keys: {

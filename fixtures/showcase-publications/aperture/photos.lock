@@ -1,0 +1,163 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is by
+# one photographer, Simo Räsänen (Ximonic), on Wikimedia Commons.
+
+[[photos]]
+file = "en/posts/2025-06-20-kleivafossen-june-melt/lead.jpg"
+sha256 = "628928f8ab4febaeadbc5d265bc9f8ffd1c5e642a2ef5dec9b1914478d7ebc9b"
+source = "https://commons.wikimedia.org/wiki/File:Kleivafossen_in_Briksdalen,_Stryn,_Vestland,_Norway,_2025_June.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Kleivafossen in Briksdalen, Stryn, Vestland, Norway, 2025 June by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Kleivafossen in Briksdalen, Stryn, Vestland, Norway, 2025 June"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Kleivafossen_in_Briksdalen,_Stryn,_Vestland,_Norway,_2025_June.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2025-07-08-geirangerfjord-from-ljoen/lead.jpg"
+sha256 = "2796f446918d4168de39a7eac761db08ba9ca1f3d73b5909daf5b7d1b5bd6b06"
+source = "https://commons.wikimedia.org/wiki/File:Sunnylvsfjorden_and_Geirangerfjorden_from_Lj%C3%B8en,_Stranda,_M%C3%B8re_og_Romsdal,_Norway,_2025_June_-_2.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Sunnylvsfjorden and Geirangerfjorden from Ljøen, Stranda, Møre og Romsdal, Norway, 2025 June - 2 by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Sunnylvsfjorden and Geirangerfjorden from Ljøen, Stranda, Møre og Romsdal, Norway, 2025 June - 2"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Sunnylvsfjorden_and_Geirangerfjorden_from_Ljøen,_Stranda,_Møre_og_Romsdal,_Norway,_2025_June_-_2.jpg"
+needs_credit = true
+size = "1600x1086"
+
+[[photos]]
+file = "en/posts/2025-10-02-villotta-morning-light/lead.jpg"
+sha256 = "dd425e2583943e0e61f3ecb3410c9f54c3a553171fa5d5d8705c41bb8f7bb6f5"
+source = "https://commons.wikimedia.org/wiki/File:Morning_in_Villotta,_Falcade,_Veneto,_Italy,_2025_September_-_3.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Morning in Villotta, Falcade, Veneto, Italy, 2025 September - 3 by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Morning in Villotta, Falcade, Veneto, Italy, 2025 September - 3"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Morning_in_Villotta,_Falcade,_Veneto,_Italy,_2025_September_-_3.jpg"
+needs_credit = true
+size = "1600x1074"
+
+[[photos]]
+file = "en/posts/2025-10-24-marmolada-passo-giau/lead.jpg"
+sha256 = "c078c69a24c8521ebe393c90fe1e0f365e2c5440f5028effb581289729550940"
+source = "https://commons.wikimedia.org/wiki/File:Marmolada_group_from_Passo_Giau,_Colle_Santa_Lucia,_Belluno,_Veneto,_Italy,_2025_October.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Marmolada group from Passo Giau, Colle Santa Lucia, Belluno, Veneto, Italy, 2025 October by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Marmolada group from Passo Giau, Colle Santa Lucia, Belluno, Veneto, Italy, 2025 October"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Marmolada_group_from_Passo_Giau,_Colle_Santa_Lucia,_Belluno,_Veneto,_Italy,_2025_October.jpg"
+needs_credit = true
+size = "1600x748"
+
+[[photos]]
+file = "en/posts/2025-11-12-sexten-dolomites-monte-elmo/lead.jpg"
+sha256 = "692139e66fb3929e8508479ab342cac68f84338a29025f192de50466f924b6c1"
+source = "https://commons.wikimedia.org/wiki/File:Fall_view_towards_the_Sexten_Dolomites_from_Monte_Elmo,_Sesto,_Val_Pusteria,_Trentino-Alto_Adige,_Italy,_2025_October.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Fall view towards the Sexten Dolomites from Monte Elmo, Sesto, Val Pusteria, Trentino-Alto Adige, Italy, 2025 October by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Fall view towards the Sexten Dolomites from Monte Elmo, Sesto, Val Pusteria, Trentino-Alto Adige, Italy, 2025 October"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Fall_view_towards_the_Sexten_Dolomites_from_Monte_Elmo,_Sesto,_Val_Pusteria,_Trentino-Alto_Adige,_Italy,_2025_October.jpg"
+needs_credit = true
+size = "1600x798"
+
+[[photos]]
+file = "en/posts/2026-02-20-frozen-rapid-vantaa/lead.jpg"
+sha256 = "c5c4159bd1ece8b77fabae24138e616f5d715ee8f74569e56aea8f8ba9539c25"
+source = "https://commons.wikimedia.org/wiki/File:Frozen_Hanab%C3%B6lenkoski_in_Havukoski,_Vantaa,_Finland,_2026_February.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Frozen Hanabölenkoski in Havukoski, Vantaa, Finland, 2026 February by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Frozen Hanabölenkoski in Havukoski, Vantaa, Finland, 2026 February"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Frozen_Hanabölenkoski_in_Havukoski,_Vantaa,_Finland,_2026_February.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-03-05-winter-light-sipoonkorpi/lead.jpg"
+sha256 = "6fda795f1af674213a4ecef46c7d82a863ea520adbbcad57db485f4aa8439b1a"
+source = "https://commons.wikimedia.org/wiki/File:Winter_in_Sipoonkorpi_near_Palokallio_and_Solbacka,_Sotunki,_Vantaa,_Finland,_2026_February_-_2.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Winter in Sipoonkorpi near Palokallio and Solbacka, Sotunki, Vantaa, Finland, 2026 February - 2 by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Winter in Sipoonkorpi near Palokallio and Solbacka, Sotunki, Vantaa, Finland, 2026 February - 2"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Winter_in_Sipoonkorpi_near_Palokallio_and_Solbacka,_Sotunki,_Vantaa,_Finland,_2026_February_-_2.jpg"
+needs_credit = true
+size = "1600x2174"
+
+[[photos]]
+file = "en/posts/2026-07-10-kruunuvuorensilta-evening-light/lead.jpg"
+sha256 = "f793ed2dcdfa9efa5ce881e4d67eeb399b4bca8044cb02d40b4cbea909ace355"
+source = "https://commons.wikimedia.org/wiki/File:Kruunuvuorensilta_in_evening_light_from_Korkeasaari,_Helsinki,_Finland,_2026_June.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Kruunuvuorensilta in evening light from Korkeasaari, Helsinki, Finland, 2026 June by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Kruunuvuorensilta in evening light from Korkeasaari, Helsinki, Finland, 2026 June"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Kruunuvuorensilta_in_evening_light_from_Korkeasaari,_Helsinki,_Finland,_2026_June.jpg"
+needs_credit = true
+size = "1600x819"
+
+[[photos]]
+file = "en/posts/2026-08-20-lakes-below-saana/lead.jpg"
+sha256 = "ee25d722179ff562042a2d0d71d9943862e1042e3359c984f2153149fe265575"
+source = "https://commons.wikimedia.org/wiki/File:Saanaj%C3%A4rvi_and_Iso-Jehkas_from_Saana,_Enonteki%C3%B6,_Lapland,_Finland,_2026_August_-_2.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Saanajärvi and Iso-Jehkas from Saana, Enontekiö, Lapland, Finland, 2026 August - 2 by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Saanajärvi and Iso-Jehkas from Saana, Enontekiö, Lapland, Finland, 2026 August - 2"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Saanajärvi_and_Iso-Jehkas_from_Saana,_Enontekiö,_Lapland,_Finland,_2026_August_-_2.jpg"
+needs_credit = true
+size = "1600x640"
+
+[[photos]]
+file = "en/posts/2026-09-03-reindeer-saana/lead.jpg"
+sha256 = "20f063a05b6a06cb1cea4b26da03c214b98356dd90eed81fa83117eebe7b6039"
+source = "https://commons.wikimedia.org/wiki/File:Reindeer_on_the_shoulder_of_Saana_in_Enonteki%C3%B6,_Lapland,_Finland,_2026_August.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Reindeer on the shoulder of Saana in Enontekiö, Lapland, Finland, 2026 August by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Reindeer on the shoulder of Saana in Enontekiö, Lapland, Finland, 2026 August"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Reindeer_on_the_shoulder_of_Saana_in_Enontekiö,_Lapland,_Finland,_2026_August.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-17-duckboards-saana/lead.jpg"
+sha256 = "15012b99507d61b25947ca6f6162d9d20e86a2da171bfbfd0be48dd9907b5466"
+source = "https://commons.wikimedia.org/wiki/File:Duckboards_on_the_foothill_of_Saana,_Enonteki%C3%B6,_Lapland,_Finland_in_2026_August.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Duckboards on the foothill of Saana, Enontekiö, Lapland, Finland in 2026 August by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Duckboards on the foothill of Saana, Enontekiö, Lapland, Finland in 2026 August"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Duckboards_on_the_foothill_of_Saana,_Enontekiö,_Lapland,_Finland_in_2026_August.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-08-midnight-sun-stairs/lead.jpg"
+sha256 = "6657aab0d181a038562c11335ba1595686bc917b2b6e06cebf35ccf4af864d2f"
+source = "https://commons.wikimedia.org/wiki/File:Midnattsoltrappa_in_Lavangen,_Troms,_Norway,_2026_August_-_2.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Midnattsoltrappa in Lavangen, Troms, Norway, 2026 August - 2 by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Midnattsoltrappa in Lavangen, Troms, Norway, 2026 August - 2"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Midnattsoltrappa_in_Lavangen,_Troms,_Norway,_2026_August_-_2.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-29-hanging-bridge-night/lead.jpg"
+sha256 = "fa29406b40d6cdb3a1af8664d586468967b49b4977a2b1b037ca51fa98930df5"
+source = "https://commons.wikimedia.org/wiki/File:Hanging_bridge_over_Spansdalselva_in_Spansdalen,_Lavangen,_Troms_og_Finnmark,_Norway,_2026_August.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Hanging bridge over Spansdalselva in Spansdalen, Lavangen, Troms og Finnmark, Norway, 2026 August by Ximonic (Simo Räsänen), via Wikimedia Commons"
+title = "Hanging bridge over Spansdalselva in Spansdalen, Lavangen, Troms og Finnmark, Norway, 2026 August"
+creator = "Ximonic (Simo Räsänen)"
+openverse = "commons:File:Hanging_bridge_over_Spansdalselva_in_Spansdalen,_Lavangen,_Troms_og_Finnmark,_Norway,_2026_August.jpg"
+needs_credit = true
+size = "1600x1067"
+

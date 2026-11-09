@@ -1,0 +1,59 @@
+# The sample brand for the Mosaic demo: Dry Light, a photo blog of the
+# desert Southwest. A sand white page, warm near-black ink and one dusk
+# indigo for the small squares that mark each caption. Familjen Grotesk
+# for titles, a grotesque with a little warmth, and Albert Sans for the
+# words. Only the brand lives here: the template keeps its own shape,
+# type sizes and spacing.
+[colors]
+background = "#fbf8f3"
+surface = "#f1eadf"
+text = "#231e19"
+muted = "#655b50"
+link = "#3c3f8c"
+accent = "#3c3f8c"
+border = "#e2d9cb"
+
+[fonts]
+heading = "\"Familjen Grotesk\", \"Helvetica Neue\", Arial, sans-serif"
+body = "\"Albert Sans\", \"Helvetica Neue\", Arial, sans-serif"
+
+[[fonts.files]]
+family = "Familjen Grotesk"
+style = "normal"
+weight = "600"
+path = "familjen-grotesk-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "113.23%"
+descent = "106.18%"
+line_gap = "0.00%"
+size_adjust = "58.51%"
+
+[[fonts.files]]
+family = "Albert Sans"
+style = "normal"
+weight = "400"
+path = "albert-sans-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "104.94%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "58.88%"
+
+[[fonts.files]]
+family = "Albert Sans"
+style = "normal"
+weight = "600"
+path = "albert-sans-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "104.94%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "60.25%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

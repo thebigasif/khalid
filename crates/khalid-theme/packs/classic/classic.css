@@ -4,12 +4,15 @@
 
 :root { --frame: 72rem; }
 
-/* The frame. Lists use all of it; words keep to the measure. */
+/* The frame. Lists use all of it; words keep to the measure. Classic reads
+   in the system's own font, whose width differs from one computer to the
+   next, so the column is also held to 51ch: about 65 characters a line
+   on Linux and 73 on a Mac. A theme's narrower measure still wins. */
 .site-header, main, .site-footer { max-inline-size: var(--frame); }
-main > * { max-inline-size: var(--measure); }
+main > * { max-inline-size: min(var(--measure), 51ch); }
 main > :is(.cards, .featured, .picks, .home-section, .topics, .cta-band, .newsletter-slot, .post-with-toc, .author-header, .pagination, .category-tabs) { max-inline-size: none; }
 main > :is(.post, .page) { margin-inline: auto; }
-main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
+main > .post-with-toc { max-inline-size: calc(min(var(--measure), 51ch) + 18rem); }
 
 /* The announcement: a dark band, so it reads in any brand's colours. */
 .announcement { margin-block-end: 0; padding-block: 0.625rem; background: var(--color-text); border: 0; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); font-size: var(--text-small); }

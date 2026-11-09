@@ -1,0 +1,71 @@
+# The sample brand for the Letterpress demo: The Proof Sheet, a weekly
+# letter about things made by hand. A letterpress red on a cream paper,
+# Old Standard TT for the nameplate, titles and issue numbers, and Libre
+# Caslon Text for the text. Only the brand lives here: the template keeps
+# its own shape, type sizes and spacing.
+[colors]
+background = "#f7f3ea"
+surface = "#eee6d6"
+text = "#1c1b19"
+muted = "#57514a"
+link = "#a2301c"
+accent = "#a2301c"
+border = "#dacfbc"
+
+[fonts]
+heading = "\"Old Standard TT\", Didot, \"Times New Roman\", serif"
+body = "\"Libre Caslon Text\", Baskerville, Georgia, serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Old Standard TT"
+style = "normal"
+weight = "700"
+path = "old-standard-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "84.17%"
+descent = "112.31%"
+line_gap = "721.39%"
+size_adjust = "65.34%"
+
+[[fonts.files]]
+family = "Libre Caslon Text"
+style = "normal"
+weight = "400"
+path = "libre-caslon-text-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "107.15%"
+descent = "122.69%"
+line_gap = "0.00%"
+size_adjust = "62.48%"
+
+[[fonts.files]]
+family = "Libre Caslon Text"
+style = "italic"
+weight = "400"
+path = "libre-caslon-text-latin-italic-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "107.15%"
+descent = "122.69%"
+line_gap = "0.00%"
+size_adjust = "62.69%"
+
+[[fonts.files]]
+family = "Libre Caslon Text"
+style = "normal"
+weight = "700"
+path = "libre-caslon-text-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "107.15%"
+descent = "122.69%"
+line_gap = "0.00%"
+size_adjust = "67.03%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /cinder-valley-review/
+table /games-for-a-rainy-weekend/
+category /category/reviews/
+tag /tag/co-op/
+author /authors/noor-haddad/

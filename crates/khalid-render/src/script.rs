@@ -5,27 +5,55 @@ use std::sync::LazyLock;
 
 use serde::Serialize;
 
+use crate::archive;
 use crate::asset::{hashed_name, integrity_of};
 use crate::{Asset, RenderError};
 
 /// What the script does, in plain JavaScript with no dependencies: copy a
 /// heading's address, open an enlarged image in a dialog, open search with
-/// `/` or Ctrl+K, and mark the section being read.
-const READER_JS: &str = include_str!("../assets/reader.js");
+/// `/` or Ctrl+K, and mark the section being read. Its name in the
+/// built-in archive.
+const READER_JS: &str = "assets/reader.js";
 
 /// The script as served: [`READER_JS`] without its comment lines, which
 /// explain the code to the people who change it but not to browsers. Every
 /// comment in the file is a whole line, so no code is touched.
-static SERVED_JS: LazyLock<String> = LazyLock::new(|| {
-    READER_JS
+static SERVED_JS: LazyLock<String> = LazyLock::new(|| served(archive::text(READER_JS)));
+
+/// The consent script of a static site (privacy plan U6): it runs the
+/// owner code and shows the players a reader allowed, and the banner until
+/// they answer. Only a static site with owner code or embeds loads it. Its
+/// name in the built-in archive.
+const CONSENT_JS: &str = "assets/consent.js";
+
+/// `script` without its comment lines. Every comment in Khalid's scripts
+/// is a whole line, so no code is touched.
+fn served(script: &str) -> String {
+    script
         .lines()
         .filter(|line| !line.trim_start().starts_with("//"))
-        .fold(String::with_capacity(READER_JS.len()), |mut out, line| {
+        .fold(String::with_capacity(script.len()), |mut out, line| {
             out.push_str(line);
             out.push('\n');
             out
         })
-});
+}
+
+/// Builds the consent script of a static site as a hashed asset with its
+/// compressed copies. Pages load it deferred, so it never holds up
+/// reading.
+///
+/// # Errors
+///
+/// Returns [`RenderError::Compress`] if a compressor fails.
+pub fn consent_script() -> Result<Asset, RenderError> {
+    Asset::build(
+        "consent",
+        EXTENSION,
+        "text/javascript; charset=utf-8",
+        served(archive::text(CONSENT_JS)).into_bytes(),
+    )
+}
 
 /// The script's name before its hash, and its extension.
 const STEM: &str = "reader";

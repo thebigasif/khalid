@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /larch-24-review/
+table /lavalier-microphones-compared/
+category /category/microphones/
+tag /tag/reviews/
+author /authors/sol-ferreira/

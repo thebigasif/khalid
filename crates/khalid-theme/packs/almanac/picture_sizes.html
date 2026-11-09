@@ -1,0 +1,23 @@
+{#- How wide Almanac draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Some places show the same posts as a larger place on the same page,
+    so they say its width and the browser fetches each picture once.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "featured": "(min-width: 63.5rem) calc(9vw + 29.75rem), (min-width: 50rem) calc(56vw - 7rem), calc(100vw - 2.75rem)",
+  "home/image": "(min-width: 68rem) calc(5vw + 19.5rem), (min-width: 60rem) 18.25rem, (min-width: 40rem) calc(47vw - 1.25rem), calc(100vw - 2.75rem)",
+  "lead": "(min-width: 70rem) 74.75rem, (min-width: 33.5rem) calc(28vw + 28.75rem), calc(100vw - 2.75rem)",
+  "related/grid": "(min-width: 40rem) calc(4vw + 19rem), calc(100vw - 2.75rem)",
+  "list/image": "(min-width: 63rem) calc(5vw + 18.75rem), (min-width: 60rem) 17.5rem, (min-width: 40rem) calc(47vw - 1.25rem), calc(100vw - 2.75rem)",
+  "author/image": "(min-width: 63rem) calc(5vw + 18.75rem), (min-width: 60rem) 17.5rem, (min-width: 40rem) calc(47vw - 1.25rem), calc(100vw - 2.75rem)",
+  "photo": "12rem",
+  "panel/image": "(min-width: 68rem) calc(5vw + 19.5rem), (min-width: 60rem) 18.25rem, (min-width: 40rem) calc(47vw - 1.25rem), calc(100vw - 2.75rem)"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

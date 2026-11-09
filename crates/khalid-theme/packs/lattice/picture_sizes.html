@@ -1,0 +1,18 @@
+{#- How wide Lattice draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "lead_story": "(min-width: 62rem) calc(10vw + 33.25rem), (min-width: 60rem) 31.5rem, calc(100vw - 3.5rem)",
+  "card": "(min-width: 63rem) calc(6vw + 17.75rem), (min-width: 42rem) calc(50vw - 3.5rem), calc(100vw - 3.5rem)",
+  "author/image": "(min-width: 63rem) calc(6vw + 17.75rem), (min-width: 42rem) calc(50vw - 3.5rem), calc(100vw - 3.5rem)",
+  "lead": "(min-width: 31rem) calc(6vw + 32.25rem), calc(100vw - 3.5rem)",
+  "photo": "12rem"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

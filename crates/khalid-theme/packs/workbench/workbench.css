@@ -1,162 +1,358 @@
-/* Workbench (templates spec 3.7): a tools-and-comparisons blog with the
-   look of a well-kept bench. Labels in the code font, crisp ruled panels,
-   a squared grid behind the front page, a hard accent shadow under the
-   featured post and the lead picture, and wide comparison tables. Every
-   colour, font and corner comes from the tokens; tints are color-mix(). */
+/* Workbench (templates spec 3.7): a tools-and-comparisons blog drawn as a
+   test lab's bench sheet. A masthead in heavy, tight type over a thick
+   rule; the pick beside a numbered rail of the newest tests; posts as
+   ruled cells of one sheet; the code font for every fact (prices,
+   ratings, dates, labels); and the comparison table as the hero of a
+   post. Every colour, font and corner comes from the tokens; tints are
+   color-mix(), so a synced theme recolours it all. */
 
-/* Lists use the full width for their grid; a post keeps its measure. */
-.site-header, .site-footer, main { max-inline-size: 76rem; }
-main:has(> .post), main:has(> .page) { max-inline-size: var(--measure); }
-.button, .subscribe button, .comment-form button { color: var(--color-on-accent); }
+:root { --frame: 84rem; --rule: 2px solid var(--color-text); --heavy: 0.375rem solid var(--color-text); --pick: 0.375rem solid var(--color-accent); }
 
-/* The header: the name in the code font after an accent square, a double
-   rule under it. */
-.site-header { padding-block: 1.125rem; border-block-end: 3px double var(--color-text); }
-.site-name { gap: 0.625rem; font-family: var(--font-mono); font-size: 1.125rem; letter-spacing: -0.02em; }
-.site-name:not(.site-logo)::before { content: ""; inline-size: 0.875rem; block-size: 0.875rem; background: var(--color-accent); border-radius: 2px; }
-.site-header nav a { color: var(--color-text); font-weight: 600; text-decoration: none; }
-.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
-.header-button { padding-inline: 1.25rem; }
-.announcement { margin: 0; background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); border-block-end: 1px solid var(--color-border); font-family: var(--font-mono); font-size: 0.875rem; }
+/* The frame: the header, the lists and the footer use all of it; a post
+   keeps its measure, and its tables may grow to 60rem. */
+.site-header, .site-footer, main { max-inline-size: var(--frame); }
+main:has(> :is(.post, .page)) { max-inline-size: var(--measure); }
+@media (min-width: 70rem) { main:has(> .post-with-toc) { max-inline-size: calc(var(--measure) + 18rem); } }
+.button, .subscribe button, .comment-form button { color: var(--color-on-accent); border-radius: var(--radius); }
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
+:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
 
-/* The small labels: the code font, spaced capitals, a square of accent. */
-.wb-label, .featured > h2, .toc-title, .share-title, .proscons-title, .related > h2, .wb-latest > h2, .wb-more > h2, .newsletter-slot h2, .author-box h2, .post-footer h2 {
+/* The header: the name after a verdict square, quiet menu links, and a
+   rule in the text colour under it all. */
+.site-header { gap: 0.25rem 1.5rem; padding-block: 0.75rem; border-block-end: var(--rule); }
+.site-name { gap: 0.625rem; font-size: 1.375rem; font-weight: 800; letter-spacing: -0.03em; }
+.site-name:not(.site-logo)::before { content: ""; flex: none; inline-size: 1rem; block-size: 1rem; background: var(--color-accent); }
+.site-logo img { block-size: 2.5rem; inline-size: auto; }
+.site-header nav { margin-inline-end: auto; }
+.site-header nav ul { gap: 0 1rem; }
+.site-header nav a { color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+.site-header nav a:hover, .site-header nav a[aria-current] { box-shadow: inset 0 -3px var(--color-accent); }
+.search-link { color: var(--color-text); font-family: var(--font-mono); font-size: 0.8125rem; text-decoration: none; }
+.header-button { padding-inline: 1.25rem; font-weight: 700; }
+.announcement { margin: 0; background: var(--color-surface); border-block-end: 1px solid var(--color-border); font-family: var(--font-mono); font-size: 0.8125rem; }
+
+/* The labels: the code font in spaced capitals. */
+.wb-label, .featured > h2, .toc-title, .share-title, .proscons-title, .related > h2, .wb-latest > h2, .wb-more > h2, .newsletter-slot h2, .author-box h2, .post-footer h2, .home-section > h2, .media-row > h2, .topic-tabs > h2, .card-meta > a, .hero-stats dt {
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.wb-label { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; color: var(--color-text); text-decoration: none; }
-.wb-label::before { content: ""; inline-size: 0.5rem; block-size: 0.5rem; background: var(--color-accent); border-radius: 1px; }
+.wb-label { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; color: var(--color-link); text-decoration: none; }
+.wb-label::before { content: ""; inline-size: 0.5rem; block-size: 0.5rem; background: var(--color-accent); }
 .wb-label:hover { text-decoration: underline; }
+/* A section's name sits on a heavy rule in the text colour. */
+.featured > h2, .wb-latest > h2, .wb-more > h2, .related > h2, .home-section > h2, .media-row > h2, .topic-tabs > h2 { margin-block: 0 1.5rem; padding-block: 0.625rem; color: var(--color-text); border-block-start: var(--heavy); }
 
-/* The front page: the title on a squared grid that fades out. */
-.wb-masthead { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem 2rem; margin-block: 0 2.5rem; padding-block: clamp(2rem, 6vw, 4rem) 1.5rem; background: linear-gradient(var(--color-background), transparent 60%), linear-gradient(90deg, var(--color-background), transparent 30%, transparent 70%, var(--color-background)), repeating-linear-gradient(var(--color-border) 0 1px, transparent 1px 1.5rem), repeating-linear-gradient(90deg, var(--color-border) 0 1px, transparent 1px 1.5rem); border-block-end: 1px solid var(--color-border); }
-.wb-masthead h1 { margin: 0; font-size: var(--text-h1); letter-spacing: -0.03em; }
-.wb-masthead .intro { flex-basis: 100%; margin: 0; max-inline-size: 40rem; font-size: var(--text-h4); }
+/* The masthead owns the top of the front page: the name in heavy, tight
+   type across the frame, over a thick rule. */
+.wb-masthead { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem 2rem; margin-block-end: clamp(2rem, 4vw, 3.5rem); padding-block: clamp(1.75rem, 5vw, 4.5rem) clamp(1rem, 2vw, 1.75rem); border-block-end: var(--heavy); position: relative; isolation: isolate; }
+/* The bench's squared paper behind the name, faded at both ends. */
+.wb-masthead::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 1.5rem 1.5rem; background-position: -1px -1px; mask-image: linear-gradient(90deg, transparent, var(--color-text) 35% 65%, transparent); }
+.wb-masthead h1 { margin: 0; font-size: clamp(2.5rem, 1.25rem + 5.6vw, 6.5rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.045em; }
+.wb-masthead .intro { flex-basis: 100%; order: 1; margin: 0; max-inline-size: 44rem; color: var(--color-muted); font-size: var(--text-h4); }
+.wb-masthead .intro > :last-child { margin-block-end: 0; }
+.hero-stats { display: flex; flex-wrap: wrap; gap: 0.5rem 2.5rem; flex-basis: 100%; order: 2; margin: 0.5rem 0 0; }
+.hero-stats div { padding-inline-start: 0.75rem; border-inline-start: var(--pick); }
+.hero-stats dd { font-family: var(--font-mono); font-size: clamp(1.5rem, 1rem + 1.5vw, 2.25rem); letter-spacing: -0.03em; color: var(--color-link); }
+.hero-stats dt { color: var(--color-muted); }
 .wb-topics { position: relative; }
-.wb-topics summary { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; padding-inline: 1rem; background: var(--color-background); border: 1px solid var(--color-text); border-radius: var(--radius); font-weight: 600; cursor: pointer; }
+.wb-topics summary { display: inline-flex; align-items: center; gap: 0.75rem; min-block-size: 44px; padding-inline: 1rem; background: var(--color-background); border: var(--rule); border-radius: var(--radius); font-weight: 700; cursor: pointer; }
 .wb-topics summary::after { content: "+" / ""; font-family: var(--font-mono); }
-.wb-topics[open] summary::after { content: "−" / ""; }
-.wb-topics ul { position: absolute; z-index: 2; inset-inline-end: 0; display: grid; gap: 0; min-inline-size: 15rem; margin-block-start: 0.5rem; padding: 0.5rem 1rem; background: var(--color-background); border: 1px solid var(--color-text); border-radius: var(--radius); box-shadow: 0.25rem 0.25rem 0 var(--color-accent); }
+.wb-topics[open] summary::after { content: "\2212" / ""; }
+.wb-topics ul { position: absolute; z-index: 2; inset-inline-end: 0; display: grid; min-inline-size: 15rem; margin-block-start: 0.5rem; padding: 0.5rem 1rem; background: var(--color-background); border: 1px solid var(--color-text); border-block-start: var(--pick); }
+.wb-topics a { color: var(--color-text); text-decoration: none; }
 
-/* The featured post: a ruled panel on a hard shadow of the accent. */
+/* The pick: its label on a verdict rule, the picture held at 16 by 9 so
+   it never fills the window, and a headline a size under the masthead. */
 .featured { margin-block: 0 var(--space-section); }
-.featured > h2 { display: inline-block; margin: 0 0 1rem; padding: 0.25rem 0.625rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: var(--radius); }
-.card-featured { container-type: inline-size; display: grid; gap: 0.5rem 2.5rem; padding: clamp(1.25rem, 3vw, 2rem); background: var(--color-background); border: 1px solid var(--color-text); border-radius: var(--radius); box-shadow: 0.5rem 0.5rem 0 var(--color-accent); }
-.card-featured .image img { aspect-ratio: 16 / 10; object-fit: cover; border: 1px solid var(--color-border); border-radius: var(--radius); }
-.card-featured h3 { margin-block: 0.25rem; font-size: var(--text-h1); line-height: 1.08; letter-spacing: -0.03em; }
-.card-featured h3 a:hover { text-decoration: underline; text-decoration-thickness: 0.06em; }
-.card-featured > p:last-child { margin: 0; font-size: 1.125rem; }
-@container (min-width: 44rem) {
-  .card-featured:has(.image) { grid-template-columns: 1.1fr 1fr; align-items: center; }
-  .card-featured .image { grid-row: span 4; }
+.featured > h2 { color: var(--color-link); border-block-start: var(--pick); }
+.card-featured { display: grid; gap: 0.25rem 2.5rem; align-content: start; padding: 0; background: none; border-radius: 0; }
+.card-featured .image { margin: 0 0 1rem; }
+.card-featured .image img { inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0; }
+.card.card-featured h3 { margin-block: 0.5rem 0.75rem; font-size: clamp(1.875rem, 1rem + 2.2vw, 3.25rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.04em; }
+.card-featured h3 a:hover { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 0.06em; }
+.card.card-featured > p:last-child { margin: 0; max-inline-size: 40rem; color: var(--color-muted); font-size: 1.125rem; }
+/* Beside its words wherever there is room, except in the front page's
+   lead column, where it sits over them. */
+@media (min-width: 40rem) {
+  .card-featured:has(.image) { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: center; }
+  .card-featured .image { grid-row: span 4; margin: 0; }
+}
+@media (min-width: 64rem) {
+  main:has(> .wb-masthead) .card-featured:has(.image) { grid-template-columns: none; }
+  main:has(> .wb-masthead) .card-featured .image { grid-row: auto; margin: 0 0 1rem; }
 }
 
-/* The newest posts: a ruled list, the category in a column of its own. */
-.wb-latest, .wb-more { margin-block: var(--space-section); }
-.wb-latest > h2, .wb-more > h2, .related > h2 { margin-block: 0 1rem; padding-block-end: 0.5rem; border-block-end: 1px solid var(--color-text); }
-.wb-latest-list { display: grid; margin: 0; padding: 0; list-style: none; counter-reset: latest; }
-.wb-latest-list > li { position: relative; display: grid; gap: 0 1.5rem; padding-block: 1rem; border-block-end: 1px solid var(--color-border); }
-.wb-latest-list h3 { margin: 0; font-size: var(--text-h3); letter-spacing: -0.01em; }
+/* The newest posts: a numbered rail of ruled rows, each number in the
+   code font and the verdict colour. */
+.wb-latest, .wb-more { margin-block: var(--space-section); container-type: inline-size; }
+.wb-latest-list { display: grid; margin: 0; padding: 0; list-style: none; counter-reset: rail; }
+.wb-latest-list > li { position: relative; display: grid; grid-template-columns: 3.25rem minmax(0, 1fr); gap: 0 1rem; padding-block: 0.875rem 1rem; border-block-end: 1px solid var(--color-border); counter-increment: rail; }
+.wb-latest-list > li:first-child { padding-block-start: 0; }
+.wb-latest-list > li::before { content: counter(rail, decimal-leading-zero) / ""; grid-row: 1 / span 3; color: var(--color-link); font-family: var(--font-mono); font-size: 1.75rem; font-weight: 700; line-height: 1; letter-spacing: -0.04em; }
+.wb-latest-list > li > * { grid-column: 2; }
+.wb-latest-list .wb-label { justify-self: start; min-block-size: 2rem; }
+.wb-latest-list .wb-label::before { display: none; }
+.wb-latest-list h3 { margin: 0; font-size: var(--text-h3); font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
 .wb-latest-list h3 a { color: var(--color-text); text-decoration: none; }
 .wb-latest-list h3 a:hover { color: var(--color-link); text-decoration: underline; }
-.wb-latest-meta { display: flex; flex-wrap: wrap; gap: 0 1rem; margin: 0.25rem 0 0; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; }
-@media (min-width: 48rem) {
-  .wb-latest-list > li { grid-template-columns: 12rem 1fr auto; align-items: baseline; }
-  .wb-latest-list > li > :not(.wb-label) { grid-column: 2; }
-  .wb-latest-list .wb-label { grid-column: 1; grid-row: 1 / span 2; }
+.wb-latest-meta { display: flex; flex-wrap: wrap; gap: 0 1rem; margin: 0.375rem 0 0; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; }
+
+/* On a wide screen the pick and the rail sit side by side, as a lab's
+   front page leads with its pick beside the latest tests. */
+@media (min-width: 64rem) {
+  main:has(> .wb-masthead) { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); column-gap: clamp(2.5rem, 4vw, 4.5rem); align-items: start; }
+  main:has(> .wb-masthead) > * { grid-column: 1 / -1; }
+  main:has(> .wb-masthead) > .featured { grid-column: 1; margin-block-end: 0; }
+  main:has(> .wb-masthead) > .featured + .wb-latest { grid-column: 2; margin-block: 0; }
 }
 
-/* Picture cards in a grid of up to three, each a ruled panel that lifts
-   onto the accent when pointed at or reached by keyboard. */
-.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.75rem; }
-.cards .card { display: flex; flex-direction: column; block-size: 100%; padding: 1.25rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); transition: border-color 0.15s, box-shadow 0.15s, translate 0.15s; }
-.cards .card:hover, .cards .card:focus-within { border-color: var(--color-text); box-shadow: 0.375rem 0.375rem 0 var(--color-accent); translate: -0.125rem -0.125rem; }
-.cards .card .image { order: -1; margin: -1.25rem -1.25rem 1rem; }
-.cards .card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface); border-block-end: 1px solid var(--color-border); border-radius: var(--radius) var(--radius) 0 0; }
-.card :is(h2, h3, h4) { margin-block: 0.5rem; font-size: var(--text-h3); line-height: 1.25; letter-spacing: -0.01em; }
-.card > p:last-child { color: var(--color-muted); }
-.card-meta { font-family: var(--font-mono); font-size: 0.8125rem; }
-.card-meta a { color: var(--color-link); }
+/* Picture cards: ruled cells of one sheet, square, the category as a
+   code-font label. A cell's top rule turns the verdict colour when
+   pointed at or reached by keyboard. */
+.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 0; border-block-start: var(--rule); border-inline-start: 1px solid var(--color-border); }
+.cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li { border-inline-end: 1px solid var(--color-border); border-block-end: 1px solid var(--color-border); }
+.cards .card { display: flex; flex-direction: column; block-size: 100%; padding: 1.25rem 1.25rem 1.5rem; background: var(--color-background); box-shadow: inset 0 0 var(--color-accent); transition: box-shadow 0.15s; }
+.cards .card:hover, .cards .card:focus-within { box-shadow: inset 0 0.25rem var(--color-accent); }
+.cards .card .image { order: -1; margin: 0 0 1rem; }
+.cards .card .image img { inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0; }
+.card :is(h2, h3, h4) { margin-block: 0.25rem 0.5rem; font-size: 1.25rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); }
+.card > p:last-child { margin-block-end: 0; color: var(--color-muted); font-size: var(--text-small); }
+.card-meta { gap: 0 0.875rem; font-family: var(--font-mono); font-size: 0.8125rem; }
+.card-meta .card-author { flex-basis: 100%; font-family: var(--font-body); font-size: var(--text-small); font-weight: 600; }
+.card-meta > a { order: -1; min-block-size: 2rem; margin-block-end: 0.25rem; color: var(--color-link); text-decoration: none; }
+/* The category as a ruled tag in the code font, alone on its line. */
+.card-meta > a, .wb-latest-list .wb-label { padding-inline: 0.375rem; box-shadow: inset 0 0 0 1px var(--color-border); }
+.card-meta:has(> a)::after { content: ""; order: -1; flex-basis: 100%; }
+.card-meta > a:hover { text-decoration: underline; }
 .card-meta .avatar { inline-size: 1.75rem; block-size: 1.75rem; }
+@media (prefers-reduced-motion: reduce) { .cards .card { transition: none; } }
 
-/* The newsletter: a tinted panel with a ruled edge. */
-.newsletter-slot { display: grid; gap: 0 2rem; padding: clamp(1.25rem, 3vw, 2rem); background: color-mix(in oklab, var(--color-accent) 7%, var(--color-background)); border: 1px solid var(--color-text); border-inline-start-width: 0.5rem; border-inline-start-color: var(--color-accent); }
-.newsletter-slot h2 { margin-block-end: 0.5rem; }
-.newsletter-slot > p:first-of-type { font-family: var(--font-heading); font-size: var(--text-h4); font-weight: 700; }
+/* Past the first twelve cells, or six on a phone, a long list goes on as
+   the sheet's ruled rows: the title, and the date small in the code font.
+   The front page still links every post, without a wall of pictures. */
+@media (min-width: 40.0625rem) {
+  .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+13) { grid-column: 1 / -1; }
+  .cards > li:nth-child(n+13) .card { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 0 1.5rem; padding-block: 0.75rem; }
+  .cards > li:nth-child(n+13) .card :is(.image, .card-author, .card-reading-time), .cards > li:nth-child(n+13) .card > p:nth-of-type(2), .cards > li:nth-child(n+13) .card-meta::after { display: none; }
+  .cards > li:nth-child(n+13) .card :is(h2, h3, h4) { grid-area: 1 / 1; margin: 0; font-size: var(--text-body); }
+  .cards > li:nth-child(n+13) .card > p:nth-of-type(1) { grid-area: 1 / 2; margin: 0; color: var(--color-muted); font-size: 0.75rem; }
+  .cards > li:nth-child(n+13) .card-meta > a { order: 1; min-block-size: 0; margin: 0 0 0 0.5rem; font-size: 0.6875rem; }
+}
+/* Two columns of rows where four cells fill a row. */
+@media (min-width: 72rem) {
+  .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+13) { grid-column: span 2; }
+}
+@media (max-width: 40rem) {
+  .cards > li:nth-child(n+7) .card { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 0 1rem; padding-block: 0.625rem; }
+  .cards > li:nth-child(n+7) .card :is(.image, .card-author, .card-reading-time), .cards > li:nth-child(n+7) .card > p:nth-of-type(2), .cards > li:nth-child(n+7) .card-meta > a, .cards > li:nth-child(n+7) .card-meta::after { display: none; }
+  .cards > li:nth-child(n+7) .card :is(h2, h3, h4) { grid-area: 1 / 1; margin: 0; font-size: 1rem; line-height: 1.3; }
+  .cards > li:nth-child(n+7) .card :is(h2, h3, h4) a { display: block; padding-block: 0.375rem; }
+  .cards > li:nth-child(n+7) .card > p:nth-of-type(1) { grid-area: 1 / 2; margin: 0; color: var(--color-muted); font-size: 0.75rem; white-space: nowrap; }
+  /* The first cells two across, as a contact sheet: the picture, the
+     title and the date. */
+  .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(2n+1):not(:nth-child(n+7)) { border-inline-end: 1px solid var(--color-border); }
+  .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+7) { grid-column: 1 / -1; }
+  .cards > li:not(:nth-child(n+7)) .card { padding: 0.75rem 0.625rem 1rem; }
+  .cards > li:not(:nth-child(n+7)) .card .image { margin-block-end: 0.5rem; }
+  .cards > li:not(:nth-child(n+7)) .card :is(h2, h3, h4) { margin-block: 0.25rem 0; font-size: 1rem; line-height: 1.3; }
+  .cards > li:not(:nth-child(n+7)) .card :is(h2, h3, h4) a { display: block; }
+  .cards > li .card > p:nth-of-type(2), .cards > li .card :is(.card-author, .card-reading-time), .cards > li .card-meta > a, .cards > li .card-meta::after { display: none; }
+  .cards > li .card-meta { font-size: 0.6875rem; color: var(--color-muted); }
+}
+
+/* A list page: its title in the masthead's type, over a thick rule. */
+main > h1 { margin-block: clamp(1.75rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2.5rem); padding-block-end: clamp(1rem, 2vw, 1.5rem); border-block-end: var(--heavy); font-size: clamp(2.5rem, 1.25rem + 4.4vw, 5rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.05em; }
+main > h1 + .intro { max-inline-size: 44rem; margin-block: calc(-1 * clamp(0.5rem, 1.5vw, 1.25rem)) 2.5rem; color: var(--color-muted); font-size: var(--text-h4); }
+
+/* The newsletter: a panel a shade darker than the bench, under a verdict
+   rule, the form beside the words where there is room. */
+.newsletter-slot { display: grid; gap: 0 2.5rem; padding: clamp(1.25rem, 3vw, 2rem); background: var(--color-surface); border: 1px solid var(--color-border); border-block-start: var(--pick); }
+.newsletter-slot h2 { margin-block: 0 0.5rem; }
+.newsletter-slot > p:first-of-type { margin-block-end: 0.75rem; font-family: var(--font-heading); font-size: var(--text-h3); font-weight: 700; line-height: 1.25; }
 .newsletter-slot .subscribe { display: flex; flex-wrap: wrap; align-items: end; gap: 0.5rem; }
 .newsletter-slot .subscribe > p:first-child { flex: 1 1 16rem; margin: 0; }
-.newsletter-note { margin-block-end: 1rem; font-family: var(--font-mono); }
-.wb-all { margin-block: 2rem; text-align: center; }
-.wb-all a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: 1.5rem; color: var(--color-text); border: 1px solid var(--color-text); border-radius: var(--radius); font-weight: 600; text-decoration: none; }
-.wb-all a:hover { box-shadow: 0.25rem 0.25rem 0 var(--color-accent); }
-.page-numbers a { border: 1px solid var(--color-border); font-family: var(--font-mono); text-decoration: none; }
+.newsletter-note { margin-block: 0.75rem 0; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; }
+.wb-all { margin-block: 2.5rem; text-align: center; }
+.wb-all a, .pagination a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: 1.5rem; color: var(--color-text); border: var(--rule); border-radius: var(--radius); font-weight: 700; text-decoration: none; }
+.wb-all a:hover, .pagination a:hover { color: var(--color-link); border-color: var(--color-accent); box-shadow: inset 0 -3px var(--color-accent); }
+.pagination p { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--color-muted); }
+.page-numbers a { padding-inline: 0.75rem; font-family: var(--font-mono); }
 
-/* A post: the label, a tight title, the facts in the code font, the lead
-   picture framed on the accent shadow, an open contents box. */
-.post-header { margin-block: 1.5rem 2.5rem; }
-.post-header .wb-label { margin-block-end: -0.5rem; }
-.post-header h1 { font-size: var(--text-h1); line-height: 1.08; letter-spacing: -0.03em; }
-.dek { font-size: var(--text-h4); }
-.post-meta { padding-block: 0.75rem; border-block: 1px solid var(--color-border); font-family: var(--font-mono); font-size: 0.8125rem; }
+/* A post: the label, a heavy tight title, the facts in the code font
+   between two rules, an open contents box on the panel colour. */
+.post-header { margin-block: clamp(1.5rem, 4vw, 3rem) 2.5rem; }
+.post-header .wb-label { margin-block-end: -0.25rem; }
+.post-header h1 { margin-block: 0.25rem 1rem; font-size: clamp(2.375rem, 1.4rem + 3.2vw, 3.75rem); font-weight: 800; line-height: 1; letter-spacing: -0.045em; }
+.dek { margin-block: 0 1.5rem; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.5; }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.5rem; padding-block: 0.75rem; border-block: var(--rule); border-block-end: 1px solid var(--color-border); font-family: var(--font-mono); font-size: 0.8125rem; }
+.post-meta > :is(address, .reviewed-by) { flex-basis: 100%; }
+.post-meta > p { margin: 0; }
+.post-meta .people { margin: 0; }
 .post-meta .person a { font-family: var(--font-body); font-size: var(--text-small); font-weight: 700; color: var(--color-text); text-decoration: none; }
-.post-header .image { margin-block-start: 2rem; }
-.post-header .image img { border: 1px solid var(--color-text); box-shadow: 0.5rem 0.5rem 0 var(--color-accent); }
-.post-header figcaption { margin-block-start: 1rem; font-family: var(--font-mono); font-size: 0.8125rem; }
-.toc-box { padding: 1rem 1.5rem; background: var(--color-background); border: 1px solid var(--color-text); border-radius: var(--radius); }
-.toc-box > ol:not([class]) { counter-reset: step; list-style: none; padding: 0; }
+.post-header .image { margin-block: 1.5rem 0; }
+.post-header .image img { inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0; box-shadow: none; }
+.post-header figcaption { font-family: var(--font-mono); font-size: 0.8125rem; }
+.toc-box { margin-block-end: 2.5rem; padding: 1rem 1.5rem 0.75rem; background: var(--color-surface); border: 0; border-block-start: var(--heavy); border-radius: 0; }
+.toc-box > ol:not([class]) { margin: 0; padding: 0; list-style: none; counter-reset: step; }
 .toc-box > ol:not([class]) > li { counter-increment: step; }
-.toc-box > ol:not([class]) > li > a::before { content: counter(step, decimal-leading-zero) / ""; min-inline-size: 2.25rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; }
+.toc-box > ol:not([class]) > li > a::before { content: counter(step, decimal-leading-zero) / ""; flex: none; min-inline-size: 2.25rem; color: var(--color-link); font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700; }
 .toc-box ol ol { padding-inline-start: 2.25rem; list-style: none; }
-.toc-box a { color: var(--color-text); text-decoration: none; }
+.toc-box a { display: flex; align-items: baseline; min-block-size: 44px; padding-block: 0.625rem; color: var(--color-text); line-height: 1.35; text-decoration: none; }
+.toc-box li + li { border-block-start: 1px solid var(--color-border); }
 .toc-box a:hover { color: var(--color-link); text-decoration: underline; }
-.post-body h2 { padding-block-start: 1.25rem; border-block-start: 1px solid var(--color-text); letter-spacing: -0.02em; }
-.post-body h3 { letter-spacing: -0.01em; }
-.post-body strong { font-weight: 700; color: var(--color-text); }
+.post-body a { text-decoration-color: var(--color-accent); text-decoration-thickness: 0.1em; text-underline-offset: 0.18em; }
+.post-body h2 { margin-block-start: 2.25em; padding-block-start: 0.875rem; border-block-start: var(--pick); font-weight: 800; letter-spacing: -0.03em; }
+.post-body h3 { letter-spacing: -0.02em; }
+.post-body strong { font-weight: 700; }
 .post-body li > strong:first-child { font-family: var(--font-heading); }
-.post-body img { border-radius: var(--radius); }
-.callout { border: 1px solid var(--color-border); border-inline-start: 0.375rem solid var(--color-accent); border-radius: var(--radius); }
+/* A paragraph that opens on a bold label reads as a spec sheet's line:
+   the label in the code font, as "Price:" or "Main limit:". */
+.post-body > p > strong:first-child { font-family: var(--font-mono); font-size: 0.8125em; letter-spacing: 0.04em; text-transform: uppercase; }
+.post-body img { border-radius: 0; }
+.callout { background: var(--color-surface); border: 0; border-inline-start: var(--pick); border-radius: 0; }
 .callout-note { border-inline-start-color: var(--color-text); }
-.pullquote blockquote { font-weight: 700; letter-spacing: -0.01em; }
-.wb-closing { margin-block: 2.5rem 0; padding-block-start: 1rem; border-block-start: 1px solid var(--color-border); color: var(--color-muted); font-style: italic; }
+.pullquote blockquote { font-weight: 800; letter-spacing: -0.025em; }
+.wb-closing { margin-block: 2.5rem 0; padding-block-start: 1rem; border-block-start: var(--rule); color: var(--color-muted); font-style: italic; }
 .share a { font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 600; }
-.share a:hover, .share a:focus-visible { box-shadow: 0.1875rem 0.1875rem 0 var(--color-accent); }
-.author-box { background: var(--color-background); border: 1px solid var(--color-text); }
+.share a:hover, .share a:focus-visible { border-color: var(--color-accent); }
+.author-box { background: var(--color-surface); border: 0; border-block-start: var(--heavy); border-radius: 0; }
+.tags a { font-family: var(--font-mono); font-size: 0.8125rem; border-radius: var(--radius); }
 
-/* "At a glance": the header row on an accent tint, the first column bold,
-   and on wide screens a table may grow past the text to 60rem. */
-.post-body th { background: color-mix(in oklab, var(--color-accent) 10%, var(--color-background)); font-family: var(--font-heading); }
-.post-body td:first-child { font-weight: 600; }
-.post-body tr:nth-child(even) td { background: var(--color-surface); }
-.post-body table { border: 1px solid var(--color-text); border-radius: var(--radius); }
+/* The comparison table, the hero of a post: ruled rows with room, the
+   header row on the panel colour, the first column held still while a
+   wide table scrolls, and a bold cell marked as the pick. On a wide
+   screen the table may grow past the text to 60rem. */
+.post-body table { border: var(--rule); border-radius: 0; font-variant-numeric: tabular-nums; }
+.post-body :is(th, td) { padding: 0.75rem 1rem; border-block-end: 1px solid var(--color-border); vertical-align: top; }
+.post-body th { background: var(--color-surface); border-block-end: var(--rule); font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.post-body :is(td, th):first-child { position: sticky; inset-inline-start: 0; z-index: 1; border-inline-end: 1px solid var(--color-border); }
+.post-body td:first-child { background: var(--color-background); font-weight: 700; }
+.post-body td:has(> strong:only-child) { background: color-mix(in oklab, var(--color-accent) 12%, var(--color-background)); box-shadow: inset 0.1875rem 0 var(--color-accent); }
 @media (min-width: 64rem) {
   .post-body > table { inline-size: max-content; min-inline-size: 100%; max-inline-size: 60rem; margin-inline-start: 50%; translate: -50% 0; }
   [dir="rtl"] .post-body > table { translate: 50% 0; }
 }
 
-/* Reviews: pros and cons as panels, and a bold price line. */
-.pros, .cons { background: var(--color-background); border: 1px solid var(--color-border); }
-.pros { border-block-start: 0.25rem solid var(--color-accent); }
-.cons { border-block-start: 0.25rem solid var(--color-text); }
-.review-rating, .product-price { font-weight: 700; }
-.faq details { border-block-end: 1px solid var(--color-border); }
-.related-links { padding-inline-start: 0; list-style: none; counter-reset: link; }
-.related-links li { border-block-end: 1px solid var(--color-border); counter-increment: link; }
-.related-links a::before { content: counter(link, decimal-leading-zero) / ""; margin-inline-end: 1rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.8125rem; }
-
-/* The footer: ruled off twice, the links in the code font. */
-.site-footer { border-block-start: 3px double var(--color-text); }
-.site-footer nav a { color: var(--color-text); font-family: var(--font-mono); font-size: 0.8125rem; }
-
-/* The shadows lean the way the page reads. */
-[dir="rtl"] :is(.card-featured, .post-header .image img) { box-shadow: -0.5rem 0.5rem 0 var(--color-accent); }
-[dir="rtl"] :is(.cards .card:hover, .cards .card:focus-within) { box-shadow: -0.375rem 0.375rem 0 var(--color-accent); translate: 0.125rem -0.125rem; }
-[dir="rtl"] .wb-topics ul { box-shadow: -0.25rem 0.25rem 0 var(--color-accent); }
-
-@media (min-width: 70rem) {
-  main:has(.post-with-toc) { max-inline-size: calc(var(--measure) + 18rem); }
+/* A wide screen reads a post as a spec sheet across the frame: the title
+   and a wider lead picture over two columns, the contents held in a rail
+   beside larger text, whose measure grows with it. */
+@media (min-width: 80rem) {
+  main { --measure: 40rem; }
+  .post-body { font-size: 1.25rem; }
+  main:has(> .post:not(.post-with-toc)) { max-inline-size: 61rem; }
+  .post:not(.post-with-toc) > :not(.post-header) { max-inline-size: var(--measure); margin-inline: auto; }
+  .post:has(> .toc-box) { display: grid; grid-template-columns: 17rem minmax(0, var(--measure)); column-gap: 4rem; align-items: start; }
+  .post:has(> .toc-box) > * { grid-column: 2; margin-inline: 0; }
+  .post:has(> .toc-box) > .post-header { grid-column: 1 / -1; }
+  .post > .toc-box { grid-column: 1; grid-row: 2 / span 8; position: sticky; inset-block-start: 1.5rem; max-block-size: calc(100vh - 3rem); overflow-y: auto; font-size: 0.9375rem; }
+  .post:has(> .toc-box) .post-body > table { margin-inline-start: 0; translate: none; max-inline-size: calc(100% + min(10rem, 50vw - 32rem)); }
+  .post-header h1 { max-inline-size: 18ch; font-size: clamp(3.75rem, 1rem + 3.4vw, 5rem); }
+  .post-header .dek { max-inline-size: 44rem; font-size: 1.375rem; }
+  .post-header .image img { aspect-ratio: 2 / 1; }
+  .related-links { columns: 2; column-gap: 3rem; }
+  .related-links li { break-inside: avoid; }
 }
-@media (prefers-reduced-motion: reduce) { .cards .card:hover, .cards .card:focus-within { translate: none; } }
-@media print { .card-featured, .post-header .image img { box-shadow: none; } }
+
+/* Reviews: pros and cons as two ruled columns with plus and minus marks,
+   ratings and prices in the code font. */
+.pros, .cons { padding: 0.75rem 0 0; background: none; border: 0; border-block-start: var(--pick); border-radius: 0; }
+.cons { border-block-start-color: var(--color-text); }
+.pros { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 2v12M2 8h12' fill='none' stroke='currentColor' stroke-width='2.4'/%3E%3C/svg%3E"); }
+.cons { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 8h12' fill='none' stroke='currentColor' stroke-width='2.4'/%3E%3C/svg%3E"); }
+.pros li::before { background: var(--color-accent); }
+.proscons :is(.pros, .cons) li { padding-block: 0.375rem; border-block-end: 1px solid var(--color-border); }
+.review-rating, .product-price { font-family: var(--font-mono); font-weight: 700; }
+.faq details { border-block-end: 1px solid var(--color-border); }
+.related-links { padding-inline-start: 0; list-style: none; counter-reset: link; border-block-start: 1px solid var(--color-border); }
+.related-links li { border-block-end: 1px solid var(--color-border); counter-increment: link; }
+.related-links a { display: flex; align-items: baseline; min-block-size: 44px; padding-block: 0.625rem; color: var(--color-text); font-weight: 600; text-decoration: none; }
+.related-links a:hover { color: var(--color-link); text-decoration: underline; }
+.related-links a::before { content: counter(link, decimal-leading-zero) / ""; flex: none; min-inline-size: 2.5rem; color: var(--color-link); font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700; }
+
+/* The footer: a heavy rule in the text colour, the links in the code font. */
+.site-footer { margin-block-start: 2rem; border-block-start: var(--heavy); }
+.site-footer a { color: var(--color-text); font-family: var(--font-mono); font-size: 0.8125rem; text-decoration: none; }
+.site-footer a:hover { color: var(--color-link); text-decoration: underline; }
+.footer-groups h2 { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Phones: the name and the button on one row, the menu as one row you
+   can swipe, the masthead a size down, the pick's picture to the edges. */
+@media (max-width: 40rem) {
+  .site-header { gap: 0 1rem; }
+  .site-header nav { order: 3; flex-basis: 100%; margin-inline: -1rem; padding-inline: 1rem 2rem; overflow-x: auto; mask-image: linear-gradient(90deg, var(--color-text) calc(100% - 2.5rem), transparent); }
+  [dir="rtl"] .site-header nav { mask-image: linear-gradient(-90deg, var(--color-text) calc(100% - 2.5rem), transparent); }
+  .site-header nav ul { flex-wrap: nowrap; gap: 0 1.25rem; }
+  .site-header nav a { white-space: nowrap; }
+  .header-button { padding-inline: 0.875rem; font-size: var(--text-small); }
+  .wb-masthead { padding-block-start: 1.5rem; }
+  .card-featured .image { margin-inline: -1rem; }
+  .card-featured .image img { border-inline: 0; }
+  .wb-latest-list > li { grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0 0.75rem; }
+  .wb-latest-list > li::before { font-size: 1.375rem; }
+  .card-meta > a, .wb-label { min-block-size: 44px; }
+  .post-body :is(th, td) { min-inline-size: 9rem; }
+  .post-body :is(th, td):first-child { min-inline-size: 7.5rem; }
+  .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { border-inline-start: 0; }
+  .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li { border-inline-end: 0; }
+  .cards .card { padding-inline: 0; }
+}
+
+/* The score panel: a review's facts as the bench's readout. The first
+   fact large in the code font's even figures, with a meter of ten steps
+   when it is a score out of ten; the next three as a spec grid under a
+   rule. A post with no facts has no panel. */
+.wb-score { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: auto 0 0; padding-block-start: 0.625rem; border-block-start: var(--rule); font-family: var(--font-mono); font-variant-numeric: tabular-nums; line-height: 1.3; }
+.card > p:has(+ .wb-score) { margin-block-end: 1.25rem; color: var(--color-muted); font-size: var(--text-small); }
+.wb-score dt { color: var(--color-muted); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.wb-score dd { margin: 0; font-size: 0.875rem; font-weight: 700; }
+.wb-score > div { padding-block-start: 0.5rem; }
+.wb-score > div + div + div { padding-inline-start: 0.625rem; border-inline-start: 1px solid var(--color-border); }
+.wb-score > .wb-score-lead { grid-column: 1 / -1; padding-block: 0 0.5rem; border-block-end: 1px solid var(--color-border); }
+.wb-score-lead dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.25rem; }
+.wb-score-lead span { font-size: 2.25rem; letter-spacing: -0.05em; line-height: 1.1; }
+.wb-score-text .wb-score-lead span { font-family: var(--font-heading); font-size: 1.25rem; letter-spacing: -0.01em; }
+.wb-score small { color: var(--color-muted); font-size: 0.875rem; }
+.wb-score meter { appearance: none; flex: 1 1 4rem; align-self: center; min-inline-size: 4rem; block-size: 0.625rem; margin-inline-start: 0.625rem; background: color-mix(in oklab, var(--color-text) 14%, transparent); border: 0; border-radius: 0; mask: repeating-linear-gradient(90deg, var(--color-text) 0 calc(10% - 2px), transparent 0 10%); }
+.wb-score meter::-webkit-meter-bar { block-size: 100%; background: none; border: 0; border-radius: 0; }
+.wb-score meter::-webkit-meter-optimum-value { background: var(--color-accent); }
+.wb-score meter::-moz-meter-bar { background: var(--color-accent); }
+/* The pick and a review's page set the panel larger, on the panel colour. */
+:is(.card-featured, .post-header) > .wb-score { margin-block-start: 1.5rem; padding: 1rem clamp(1rem, 2.5vw, 1.5rem) 1.125rem; background: var(--color-surface); }
+:is(.card-featured, .post-header) .wb-score-lead span { font-size: clamp(3rem, 2rem + 3vw, 4.5rem); }
+:is(.card-featured, .post-header) .wb-score dd { font-size: 1rem; }
+.card-featured > .wb-score { grid-column: 1 / -1; }
+.card-featured, .post-header { container-type: inline-size; }
+/* With room, one row: the score, a heavy rule, then the figures. */
+@container (min-width: 34rem) {
+  .wb-score:not(.wb-score-text) { grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)); align-items: end; }
+  .wb-score:not(.wb-score-text) > div { padding: 0 1rem; border: 0; border-inline-start: 1px solid var(--color-border); }
+  .wb-score:not(.wb-score-text) > .wb-score-lead { grid-column: auto; padding-inline-start: 0; border: 0; }
+  .wb-score:not(.wb-score-text) > .wb-score-lead + div { border-inline-start: var(--rule); }
+  .wb-score:not(.wb-score-text) > div:not(.wb-score-lead) dt { margin-block-end: 0.375rem; }
+  .wb-score:not(.wb-score-text) meter { flex-basis: 100%; margin: 0.625rem 0 0.25rem; }
+  .wb-score:not(.wb-score-text) dd { font-size: 1.125rem; }
+}
+/* In the rail, and on a list's rows, only the first fact. */
+.wb-latest-list .wb-score { display: block; margin-block-start: 0.5rem; padding: 0; border: 0; }
+.wb-latest-list .wb-score-lead { display: flex; align-items: baseline; gap: 0.625rem; padding: 0; border: 0; }
+.wb-latest-list .wb-score-lead span { font-size: 1.25rem; }
+.wb-latest-list .wb-score-lead dd { flex-wrap: nowrap; }
+.wb-latest-list .wb-score meter { flex: 0 0 5rem; }
+@media (min-width: 40.0625rem) { .cards > li:nth-child(n+13) .wb-score { display: none; } }
+@media (max-width: 40rem) {
+  .cards .wb-score > div:not(.wb-score-lead) { display: none; }
+  .cards .wb-score-lead { padding: 0; border: 0; }
+  .cards .wb-score-lead span { font-size: 1.5rem; }
+  .cards .wb-score meter { flex-basis: 100%; margin: 0.375rem 0 0; }
+  .cards > li:not(:nth-child(n+7)) .card:has(.wb-score) :is(h2, h3, h4) { margin-block-end: 1rem; }
+  .cards > li:nth-child(n+7) .card :is(h2, h3, h4) { grid-row: 1 / span 2; }
+  .cards > li:nth-child(n+7) .wb-score { grid-area: 2 / 2; justify-self: end; margin: 0 0 0.375rem; padding: 0 0.375rem; border: 0; box-shadow: inset 0 0 0 1px var(--color-border); }
+  .cards > li:nth-child(n+7) .wb-score :is(dt, meter) { position: absolute; inline-size: 1px; min-inline-size: 0; block-size: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); }
+  .cards > li:nth-child(n+7) .wb-score-lead span { font-size: 0.875rem; letter-spacing: 0; }
+  .cards > li:nth-child(n+7) .wb-score small { font-size: 0.6875rem; }
+}

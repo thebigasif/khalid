@@ -1,0 +1,26 @@
+# Small Hours files its posts under three headings. Quill lists each one
+# as a page of one-line entries, with the intro on top.
+
+[[categories]]
+slug = "essays"
+en = "Essays"
+
+[categories.seo.en]
+description = "Longer essays from Small Hours on walking the estuary, writing by hand and learning to slow down."
+intro = "Longer pieces, written slowly and edited more than once."
+
+[[categories]]
+slug = "notes"
+en = "Notes"
+
+[categories.seo.en]
+description = "Short notes from Small Hours: the week's weather, small habits and what goes in a walking bag."
+intro = "Short notes from the week, mostly written in one sitting."
+
+[[categories]]
+slug = "reading"
+en = "Reading"
+
+[categories.seo.en]
+description = "Reading notes from Small Hours: what we read each month, how to read slowly and the library on Mill Street."
+intro = "Notes on books, kept mostly by Kit, who works in the town library."

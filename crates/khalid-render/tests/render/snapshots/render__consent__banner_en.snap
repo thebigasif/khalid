@@ -1,0 +1,15 @@
+---
+source: crates/khalid-render/tests/render/consent.rs
+expression: "banner(\"en\", ConsentPart::Ask)"
+---
+<section class="consent" aria-labelledby="consent-title">
+<h2 id="consent-title">Your privacy</h2>
+<p>This blog would like to run code from other companies, such as visit counters, that may store data on your device. Nothing runs unless you agree. <a href="/blog/privacy/">Read the privacy page.</a></p>
+<!--khalid-gpc--><template><p class="consent-gpc">Your browser sent a Global Privacy Control signal, which asks sites not to sell or share your data. We honour it, so marketing stays off.</p></template><!--/khalid-gpc-->
+<form method="post" action="/blog/_consent/">
+<input type="hidden" name="back" value="/blog/what-a-sitemap-does/">
+<button class="consent-button" type="submit" name="choice" value="accept-all">Accept all</button>
+<button class="consent-button" type="submit" name="choice" value="reject-all">Reject all</button>
+<a class="consent-choose" href="/blog/privacy-choices/">Choose</a>
+</form>
+</section>

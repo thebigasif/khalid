@@ -1,0 +1,26 @@
+# The Weekly Meridian's six sections. Each has a one-word name, so the
+# template can set it as a large section title.
+
+[[categories]]
+slug = "housing"
+en = "Housing"
+
+[[categories]]
+slug = "streets"
+en = "Streets"
+
+[[categories]]
+slug = "transit"
+en = "Transit"
+
+[[categories]]
+slug = "buildings"
+en = "Buildings"
+
+[[categories]]
+slug = "materials"
+en = "Materials"
+
+[[categories]]
+slug = "neighbourhoods"
+en = "Neighbourhoods"

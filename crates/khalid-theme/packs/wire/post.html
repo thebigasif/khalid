@@ -6,6 +6,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "contents.html" import contents_list -%}
 {% from "author_box.html" import author_box, reviewed_line -%}
 {% from "card.html" import cards -%}
@@ -29,7 +30,7 @@
 {% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
 {% endif %}{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
 {% endif %}</div>
-{% if page.image %}{{ picture(page.image) }}
+{% if page.image %}{{ picture(page.image, slot_sizes("lead")) }}
 {% endif %}</header>
 {% if template.options.author_card and page.authors %}<aside class="author-card" aria-label="{{ t.written_by }}">
 {% for author in page.authors %}<div class="person-card">
@@ -80,9 +81,9 @@
 {% for post in shown %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
 {% endfor %}</ul>
 {% elif layout == "list" %}{{ cards(shown, 3, "text") }}
-{% elif layout == "row" %}{{ cards(shown, 3, "row") }}
-{% elif layout == "scroll" %}{{ cards(shown, 3, "image") }}
-{% else %}{{ cards(shown, 3) }}
+{% elif layout == "row" %}{{ cards(shown, 3, "row", sizes=slot_sizes("related", "row")) }}
+{% elif layout == "scroll" %}{{ cards(shown, 3, "image", sizes=slot_sizes("related", "scroll")) }}
+{% else %}{{ cards(shown, 3, sizes=slot_sizes("related", "grid")) }}
 {% endif %}</section>
 {% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
 <h2>{{ t.mentions }}</h2>

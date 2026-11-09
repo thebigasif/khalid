@@ -5,6 +5,8 @@
 
 showcase_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 showcase_site="$showcase_root/fixtures/showcase-site"
+# shellcheck source=../demo-media.sh
+source "$showcase_root/scripts/demo-media.sh"
 
 stop() { echo "$1"; exit 1; }
 
@@ -18,15 +20,34 @@ showcase_packs() {
     sed -n 's/.*use one of: \([a-z0-9, -]*\)\..*/\1/p' | tr ',' ' ' || true
 }
 
-# showcase_build <khalid> <work> <name> <pack> <look> [contents]: the
-# showcase with the pack in <work>/sites/<name>. <look> is "brand" for the
-# pack's sample brand, by scripts/demo-brand.sh, or "plain" for the pack's
-# own defaults with no theme at all. [contents] places the contents list.
+# showcase_publications <pack>...: each pack whose demo publication
+# applies, as scripts/demo-publication.sh decides: it has one, and it is
+# ready or DEMO_PUBLICATION_ALL is 1.
+showcase_publications() {
+  local folder="${DEMO_PUBLICATIONS:-$showcase_root/fixtures/showcase-publications}" pack
+  for pack in "$@"; do
+    [ -f "$folder/$pack/site.toml" ] || continue
+    [ -f "$folder/$pack/ready" ] || [ "${DEMO_PUBLICATION_ALL:-}" = 1 ] || continue
+    echo "$pack"
+  done
+}
+
+# showcase_build <khalid> <work> <name> <pack> <look> [contents] [text]:
+# the showcase with the pack in <work>/sites/<name>. <look> is "brand" for
+# the pack's sample brand, by scripts/demo-brand.sh, or "plain" for the
+# pack's own defaults with no theme at all. [contents] places the contents
+# list. [text] "publication" puts the pack's demo publication in place of
+# the showcase's posts first, by scripts/demo-publication.sh, which leaves
+# the showcase as it is for a pack without one.
 showcase_build() {
-  local bin="$1" work="$2" name="$3" pack="$4" look="$5" contents="${6:-}"
+  local bin="$1" work="$2" name="$3" pack="$4" look="$5" contents="${6:-}" text="${7:-}"
   local copy="$work/sites/$name" address="http://$name.localhost"
   cp -r "$showcase_site" "$copy"
   rm -rf "$copy/public" "$copy/data"
+  if [ "$text" = "publication" ]; then
+    bash "$showcase_root/scripts/demo-publication.sh" "$copy" "$pack" >"$work/publication-$name.log" 2>&1 ||
+      stop "The $pack demo publication could not be put in place: $(tail -n 1 "$work/publication-$name.log")"
+  fi
   if [ "$look" = "plain" ]; then
     rm -rf "$copy/theme"
   else
@@ -43,8 +64,11 @@ showcase_build() {
   if [ -n "$contents" ]; then
     printf '\n[template.options]\ncontents = "%s"\n' "$contents" >>"$copy/site.toml"
   fi
+  # Pictures in AVIF too, as the published demos offer them.
+  demo_media_in "$copy"
   "$bin" --site "$copy" build --out "$copy/public" >"$work/build-$name.log" 2>&1 ||
     stop "The showcase did not build with $pack. Its output is in $work/build-$name.log. Fix what it says, then run this again."
+  demo_media_out "$copy"
 }
 
 # Four builds at a time with showcase_start; each runs in its own shell, so

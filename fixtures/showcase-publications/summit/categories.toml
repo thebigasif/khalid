@@ -1,0 +1,44 @@
+# Easthaven City Summit's venues. The Summit template shows the venues
+# that hold sessions as numbered tiles on the front page, and each
+# category page is that venue's programme, with its intro as the address
+# and how to get there. Summit news holds the updates.
+
+[[categories]]
+slug = "the-ropeworks"
+en = "The Ropeworks"
+
+[categories.seo.en]
+description = "Sessions at the Ropeworks, the summit's main venue: a former rope factory on Wharf Lane with a main hall and two studios."
+intro = "A former rope factory at 4 Wharf Lane, ten minutes on foot from Easthaven station. The main hall seats 600 and the two studios seat 60 each. Step-free from the Wharf Lane door."
+
+[[categories]]
+slug = "central-library"
+en = "Central Library"
+
+[categories.seo.en]
+description = "Sessions at Easthaven Central Library: the lecture theatre and the old reading room on Market Square."
+intro = "Easthaven Central Library on Market Square, beside the bus station. Sessions run in the lecture theatre on the ground floor and the old reading room on the first floor, which has a lift."
+
+[[categories]]
+slug = "harbour-pavilion"
+en = "Harbour Pavilion"
+
+[categories.seo.en]
+description = "Sessions at the Harbour Pavilion on the quay: an open-sided stage by the water and the start of the harbour walk."
+intro = "The open-sided pavilion on the North Quay, at the end of Wharf Lane. Bring a coat: the stage is covered but the sides are open to the harbour."
+
+[[categories]]
+slug = "garden-court"
+en = "Garden Court"
+
+[categories.seo.en]
+description = "Sessions at Garden Court, the walled garden behind the old customs house, with an outdoor stage under the trees."
+intro = "The walled garden behind the old customs house on Quay Street. The stage sits under three plane trees. If it rains, sessions move into the customs house hall next door."
+
+[[categories]]
+slug = "summit-news"
+en = "Summit news"
+
+[categories.seo.en]
+description = "News from Easthaven City Summit: the programme, tickets, travel and the venues."
+intro = "What is new: the programme, tickets, travel and anything that changes before May."

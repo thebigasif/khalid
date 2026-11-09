@@ -1,0 +1,153 @@
+/* Letterpress (docs/templates/letterpress.md): a newsletter set like a
+   printed periodical. A nameplate over the folio line, a thick rule over
+   a thin one with the issue number, date and reading time between them;
+   the newest issue as a cover with its picture in a plate; past issues
+   as a pile of small printed covers; each issue with a drop cap and an
+   end mark. The section parts' own rules come first (the build adds the
+   parts this pack's templates import). Every colour is a token. */
+:root {
+  --lp-frame: 72rem;
+  --lp-issue: 48rem;
+  --hero-title: clamp(2.75rem, 0.75rem + 7vw, 6.75rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--lp-frame); }
+main { padding-block: 0 var(--space-section); }
+main > .page { max-inline-size: var(--measure); margin-inline: auto; }
+main > .lp-issue { max-inline-size: var(--lp-issue); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
+main > .lp-issue > :is(.post-body, .post-footer, .author-box, .lp-inside, .lp-end, .share, .toc-inline, .toc-box, .preferred-source) { max-inline-size: var(--measure); margin-inline: auto; }
+main > .lp-issue ~ :is(.mentions, .comments, .lock, .related, .newsletter-slot, .cta-band) { max-inline-size: var(--lp-issue); margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+/* The header: the name in the Modern face, small capital links, a rule. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1rem; border-block-end: 1px solid var(--color-text); }
+.site-name { color: var(--color-text); font-family: var(--font-heading); font-size: 1.625rem; font-weight: var(--heading-weight); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.875rem; letter-spacing: 0.12em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -1px var(--color-accent); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); text-align: center; }
+
+/* Buttons: square, inked with the accent. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.5rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: var(--radius); font: 700 0.875rem/1.4 var(--font-body); letter-spacing: 0.1em; text-align: center; text-decoration: none; text-transform: uppercase; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: var(--color-text); border-color: var(--color-text); text-decoration: none; }
+
+/* Small capital labels. */
+.lp-label, .post-kind, .lp-inside :is(h2, h3), .post-footer > h2, .mentions > h2, .list-kind { margin: 0 0 0.625rem; color: var(--color-link); font-family: var(--font-body); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.14em; line-height: 1.3; text-transform: uppercase; }
+
+/* The folio line: a thick rule over a thin one, the number, date and
+   reading time between them. */
+.lp-folio { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.25rem 1.5rem; margin: 0; padding-block: 0.5rem; border-block: 1px solid var(--color-text); border-block-start-width: 3px; color: var(--color-text); font-size: 0.875rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.lp-folio-number { font-family: var(--font-heading); font-size: 1.0625rem; font-weight: var(--heading-weight); letter-spacing: 0.04em; }
+@media (max-width: 36rem) { .lp-folio { justify-content: center; } }
+
+/* The nameplate: the name very large and centred over the folio line. */
+.hero { margin-block: 0 2.5rem; padding-block: clamp(1.75rem, 1rem + 3vw, 4rem) 0; text-align: center; }
+.hero-title { max-inline-size: none; font-weight: var(--heading-weight); letter-spacing: -0.02em; line-height: 0.95; }
+.hero-intro { margin-inline: auto; color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); font-style: italic; }
+.hero > .lp-folio { margin-block-start: clamp(1.5rem, 1rem + 1.5vw, 2.5rem); }
+
+/* The cover: the picture in a plate beside the issue's text. */
+.lp-cover { display: grid; gap: 2rem 3.5rem; margin-block: 0 var(--space-section); }
+@media (min-width: 56rem) { .lp-cover-art { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: start; } }
+.lp-plate { padding: 0.625rem; background: var(--color-background); border: 1px solid var(--color-text); }
+.lp-plate .image { margin: 0; }
+.lp-plate img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+.lp-plate figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-size: var(--text-small); font-style: italic; }
+.lp-cover-text { min-inline-size: 0; }
+.lp-cover-text > :is(h2, h3) { margin: 0; font-size: clamp(2rem, 1.25rem + 2.25vw, 3.25rem); line-height: 1.05; }
+.lp-cover-text > :is(h2, h3) a { color: var(--color-text); text-decoration: none; }
+.lp-cover-text > :is(h2, h3) a:hover { color: var(--color-link); text-decoration: underline; }
+.lp-cover-dek { margin-block: 1rem 0; font-size: 1.1875rem; line-height: 1.55; }
+.lp-byline { margin-block: 0.75rem 0; color: var(--color-muted); font-size: 0.9375rem; font-style: italic; }
+.lp-byline a { color: var(--color-text); font-style: normal; font-weight: 700; text-decoration: none; }
+.lp-byline a:hover { color: var(--color-link); text-decoration: underline; }
+.lp-actions { margin-block: 1.75rem 0; }
+
+/* In this issue: parts and headlines joined by dotted leaders. */
+.lp-inside { margin-block: 1.75rem 0; }
+.lp-inside-list { margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--color-text); }
+.lp-inside-list li { display: flex; align-items: baseline; gap: 0.625rem; padding-block: 0.5rem; border-block-end: 1px solid var(--color-border); }
+.lp-inside-part { flex: none; color: var(--color-muted); font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.lp-leader { flex: 1 1 1.5rem; min-inline-size: 1.5rem; border-block-end: 2px dotted var(--color-border); translate: 0 -0.25em; }
+.lp-inside-title { flex: 0 1 auto; font-style: italic; line-height: 1.4; text-align: end; }
+@media (max-width: 36rem) { .lp-inside-list li { flex-wrap: wrap; gap: 0.125rem 0.5rem; } .lp-leader { display: none; } .lp-inside-title { flex-basis: 100%; text-align: start; } }
+
+/* Past issues: small printed covers, each with a second sheet behind. */
+.lp-past { margin-block: var(--space-section) 0; }
+.lp-past-title, .related > h2 { display: flex; align-items: center; gap: 1.25rem; margin: 0 0 2rem; font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem); text-align: center; }
+.lp-past-title::before, .lp-past-title::after, .related > h2::before, .related > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--color-text); }
+.lp-past > .view-all { margin-block: 1.5rem 0; text-align: center; }
+.lp-pile { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 2.5rem 2rem; margin: 0; padding: 0; padding-block-end: 0.5rem; padding-inline-end: 0.5rem; list-style: none; }
+.lp-sheet { display: flex; flex-direction: column; padding: 1.25rem 1.375rem 1.375rem; background: var(--color-background); border: 1px solid var(--color-text); box-shadow: 0.375rem 0.375rem 0 -1px var(--color-surface), 0.375rem 0.375rem 0 0 var(--color-border); }
+.lp-sheet-folio { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 1rem; margin: 0 0 0.875rem; padding-block-end: 0.375rem; border-block-end: 3px double var(--color-text); color: var(--color-muted); font-size: 0.8125rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.lp-sheet-number { color: var(--color-text); font-family: var(--font-heading); font-size: 1rem; font-weight: var(--heading-weight); letter-spacing: 0.04em; }
+.lp-sheet :is(h2, h3, h4) { margin: 0 0 0.625rem; font-size: 1.5rem; line-height: 1.15; }
+.lp-sheet :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.lp-sheet :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.lp-sheet-text { margin: 0; color: var(--color-muted); font-size: 1rem; line-height: 1.5; }
+.lp-sheet-kind { margin: auto 0 0; padding-block-start: 1rem; font-size: 0.8125rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.lp-sheet-kind a { color: var(--color-link); text-decoration: none; }
+.lp-sheet-kind a:hover { text-decoration: underline; }
+
+/* Lists: the name and intro between a thick and a thin rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; padding-block: 1.5rem; border-block: 1px solid var(--color-text); border-block-start-width: 3px; text-align: center; }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin: 1rem auto 0; font-size: 1.125rem; font-style: italic; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+
+/* An issue: the folio line, then the title centred. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; text-align: center; }
+.post-header > .lp-folio { margin-block-end: 2.25rem; }
+.post-kind a { color: inherit; text-decoration: none; }
+.post-kind a:hover { text-decoration: underline; }
+.post-header h1 { max-inline-size: 22ch; margin: 0 auto 1rem; line-height: 1.05; }
+.post-header .dek { max-inline-size: var(--measure); margin: 0 auto 1rem; font-size: 1.375rem; font-style: italic; line-height: 1.45; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.5rem; font-style: italic; }
+.post-meta address a { color: var(--color-text); font-style: normal; font-weight: 700; text-decoration: none; }
+.post-meta address a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .avatar { inline-size: 2rem; block-size: 2rem; }
+.post-date, .updated-note { margin-block: 0.25rem 0; font-size: var(--text-small); }
+.post-header .lp-plate { margin-block-start: 2.25rem; text-align: start; }
+.lp-issue > .lp-inside { margin-block: 0 2.5rem; }
+
+/* The text: a drop cap and a first line in small capitals. */
+.post-body > p:first-of-type::first-line { font-variant: small-caps; letter-spacing: 0.04em; }
+.post-body > p:first-of-type::first-letter { float: inline-start; margin-inline-end: 0.08em; padding-block-start: 0.06em; color: var(--color-link); font-family: var(--font-heading); font-size: 3.75em; font-weight: var(--heading-weight); line-height: 0.8; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body blockquote { margin-inline: 0; padding-inline-start: 1.25rem; border-inline-start: 3px solid var(--color-text); font-style: italic; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); font-style: italic; }
+
+/* The end mark: an ornament and the issue it closes. */
+.lp-end { margin-block: 3rem 0; color: var(--color-muted); font-size: 0.8125rem; letter-spacing: 0.14em; text-align: center; text-transform: uppercase; }
+.lp-end-mark { display: block; margin-block-end: 0.5rem; color: var(--color-link); font-size: 1.75rem; letter-spacing: 0; line-height: 1; }
+.lp-end-number { color: var(--color-text); font-weight: 700; }
+.post-footer { margin-block-start: 3rem; }
+.post-footer .tags a { border: 1px solid var(--color-text); background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+
+/* A person: the mark beside the name. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.125rem; font-style: italic; }
+.author-bio { max-inline-size: var(--measure); }
+.people-grid-person :is(h2, h3, h4) { font-size: 1.375rem; }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.375rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The sign-up form and the call to action: a ruled card and a band. */
+main > .newsletter-slot { max-inline-size: var(--lp-issue); margin-inline: auto; }
+.newsletter-slot { padding: 1.75rem 1.5rem; background: var(--color-surface); border: 1px solid var(--color-text); border-radius: var(--radius); text-align: center; }
+.newsletter-slot .subscribe { justify-content: center; }
+.cta-band { background: transparent; border: 0; border-block: 1px solid var(--color-text); border-block-start-width: 3px; border-radius: 0; text-align: center; }
+
+/* The footer: a thick rule, quiet links. */
+.site-footer { border-block-start: 3px solid var(--color-text); }

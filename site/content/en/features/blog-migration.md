@@ -26,6 +26,8 @@ khalid import wordpress export.xml --dry-run
 khalid import wordpress export.xml
 ```
 
+Add `--download-images` to copy each post's pictures, and its feature image, into the post's own folder, so they stay when the old site goes away.
+
 Imported posts keep their dates. Each one goes live at the next build once it passes the writing checks, and the build tells you which ones still need work.
 Moving from another tool works the same way: name it in place of `wordpress`, such as `ghost`, `medium`, `substack` or `markdown`, and point at its export.
 

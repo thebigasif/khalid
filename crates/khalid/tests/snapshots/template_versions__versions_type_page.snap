@@ -1,0 +1,60 @@
+---
+source: crates/khalid/tests/template_versions.rs
+expression: "shown(&out, \"category/technical-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/technical-seo/" aria-current="page">Technical SEO</a></li>
+</ol>
+</nav>
+
+<header class="list-header">
+<p class="list-kind">Type of change</p>
+<h1>Technical SEO</h1>
+<p class="list-feed"><a href="/blog/category/technical-seo/feed.xml" type="application/rss+xml">Feed of Technical SEO</a></p>
+</header>
+<div class="changelog">
+<div class="changelog-main">
+<nav class="filter-row" aria-label="Show changes">
+<ul role="list">
+<li><a href="/blog/">All changes</a></li>
+<li><a href="/blog/category/technical-seo/" data-mark="1" aria-current="page">Technical SEO</a></li>
+</ul>
+</nav>
+<div class="release-log">
+<section class="release" id="v2-1-0" aria-labelledby="v2-1-0-name">
+<header class="release-head">
+<h2 class="release-name" id="v2-1-0-name"><span class="release-label">Version</span> <span class="release-version">2.1.0</span></h2>
+<p class="release-date"><time datetime="2026-10-05">5 October 2026</time></p>
+</header>
+<ol class="change-list" role="list">
+<li class="change">
+<a class="change-type" href="/blog/category/technical-seo/" data-mark="1">Technical SEO</a>
+<h3 class="change-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="change-summary">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</li>
+<li class="change">
+<a class="change-type" href="/blog/category/technical-seo/" data-mark="1">Technical SEO</a>
+<h3 class="change-title"><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="change-summary">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</li>
+</ol>
+</section>
+</div>
+</div>
+<aside class="changelog-side" aria-label="Versions on this page">
+<nav class="release-index" aria-labelledby="release-index-title">
+<h2 id="release-index-title">Versions on this page</h2>
+<ol role="list">
+<li><a href="#v2-1-0"><span class="release-version">2.1.0</span> <time datetime="2026-10-05">5 October 2026</time></a></li>
+</ol>
+</nav>
+
+</aside>
+</div>

@@ -1,0 +1,98 @@
+# The Varrow List, a made-up guide to Varrow, a made-up harbour city,
+# written for the Locale template's demo. Every place, street and person
+# in it is made up. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "The Varrow List"
+languages = ["en"]
+
+[template.cta]
+label = "How we choose places"
+href = "/blog/choosing-places/"
+note = "We visit every place at least twice, pay our own way and check the hours and prices twice a year."
+
+# The Locale template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Where to eat, drink, browse and sit in Varrow, area by area."]
+
+[announcement]
+text = "Millrace Market moves indoors for the winter from 6 December."
+href = "/blog/millrace-market/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A guide to Varrow, area by area"
+
+[seo.ai_page]
+covers = "The Varrow List is a city guide to Varrow, a harbour city: cafés, bakeries, bars, restaurants, shops, galleries, parks and markets, listed by area with opening hours and price level. Varrow and every place on this site are made up for a template demo."
+cite = "Name The Varrow List and the writer, give the place's opening hours with the date of the listing, and link the listing."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "The Varrow List"
+email = "hello@example.com"
+founded = "2021-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Varrow List logo"
+width = 320
+height = 80
+
+# Sign-ups for the monthly letter, under the site's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "The Varrow List"
+postal_address = "The Varrow List, 3 Rope Walk, Varrow VR1 4QD"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Old Harbour"
+href = "/blog/category/old-harbour/"
+language = "en"
+
+[[nav.primary]]
+label = "Kiln Quarter"
+href = "/blog/category/kiln-quarter/"
+language = "en"
+
+[[nav.primary]]
+label = "Hillgate"
+href = "/blog/category/hillgate/"
+language = "en"
+
+[[nav.primary]]
+label = "The Weirs"
+href = "/blog/category/the-weirs/"
+language = "en"
+
+[[nav.primary]]
+label = "Notes"
+href = "/blog/category/notes/"
+language = "en"
+
+[[nav.footer]]
+label = "About The Varrow List"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "How we choose places"
+href = "/blog/choosing-places/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

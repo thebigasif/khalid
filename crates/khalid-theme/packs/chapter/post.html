@@ -1,0 +1,98 @@
+{#- Chapter's post (docs/templates/chapter.md). A book shows its cover
+    beside the title, the description, the author and its facts (by
+    position: 1 the publisher, 2 the year, 3 the length or format, 4 a
+    link to order it). An event shows its facts as a panel (1 when, 2 the
+    venue, 3 the town or city, 4 a tickets link) over the lead picture.
+    A last fact that is a link shows as a button named by its label. An excerpt opens like a chapter: its text is set in
+    the heading serif with a drop cap. Every post ends with its tags, the
+    share links, the author box and related posts as a contents page. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture, avatar -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "contents.html" import contents_list -%}
+{% from "author_box.html" import author_box, reviewed_line -%}
+{% from "comments.html" import comments_section -%}
+{% from "series.html" import series_box, series_steps -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
+{% from "sections/contents_page.html" import contents_page -%}
+{% set options = template.options -%}
+{% set area = page.category.href if page.category else "" -%}
+{% set is_book = area is endingwith("/category/" ~ (options.books_category or "books") ~ "/") -%}
+{% set is_event = area is endingwith("/category/" ~ (options.events_category or "events") ~ "/") -%}
+{% set is_excerpt = area is endingwith("/category/" ~ (options.excerpts_category or "excerpts") ~ "/") -%}
+{% set kind = "book" if is_book else ("event" if is_event else ("excerpt" if is_excerpt else "writing")) -%}
+{% set placement = options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% set share = options.share -%}
+{% if share != "none" %}{% set share_row %}<div class="share">
+<p class="share-title">{{ t.share }}</p>
+<ul>
+{% for link in share_links(meta.canonical, page.title, options.share_networks) %}<li><a href="{{ link.href }}" rel="nofollow noreferrer">{{ t.share_email if link.key == "email" else link.name }}</a></li>
+{% endfor %}</ul>
+</div>
+{% endset %}{% endif -%}
+{% if side and placement == "side-start" %}<article data-kind="{{ kind }}" class="post post-with-toc post-toc-start">{% elif side %}<article data-kind="{{ kind }}" class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article data-kind="{{ kind }}" class="post post-toc-folded">{% else %}<article data-kind="{{ kind }}" class="post">{% endif %}
+{% if is_book and page.image %}<header class="post-header book-header">
+<div class="book-cover">{{ picture(page.image, slot_sizes("book")) }}</div>
+<div class="book-about">{% else %}<header class="post-header">
+{% endif %}{% if page.category %}<p class="post-kind"><a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
+{% endif %}<h1>{{ page.title }}</h1>
+{% if options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}<div class="post-meta">
+<address>{{ t.by }} {% for author in page.authors %}{% if author.image %}{{ avatar(author.image) }}{% endif %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</address>
+{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
+{% endif %}<p class="post-date">{{ t.published }} <time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}</p>
+{% if options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}</div>
+{% if page.facts %}{% if is_event %}<dl class="ch-facts event-panel">{% else %}<dl class="ch-facts">{% endif %}
+{% set last = page.facts | last %}{% set order = last.value is startingwith("https://") %}{% for fact in (page.facts[:-1] if order else page.facts) %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{% if fact.value is startingwith("https://") %}<a href="{{ fact.value }}">{{ fact.value | replace("https://", "") | replace("www.", "") }}</a>{% else %}{{ fact.value }}{% endif %}</dd>
+</div>
+{% endfor %}</dl>
+{% if order %}<p class="ch-actions"><a class="button" href="{{ last.value }}">{{ last.label }}</a></p>
+{% endif %}{% endif %}{% if is_excerpt %}<p class="ch-ornament" aria-hidden="true">&#8258;</p>
+{% endif %}{% if is_book and page.image %}</div>
+{% elif page.image %}{{ picture(page.image, slot_sizes("lead")) }}
+{% endif %}</header>
+{% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.contents }}</summary>
+<nav aria-label="{{ t.contents }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}<div class="post-body">
+{{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
+</div>
+{% if page.tags or share in ["end", "both"] %}<footer class="post-footer">
+{% if page.tags %}<h2>{{ t.tags }}</h2>
+<ul class="tags">
+{% for tag in page.tags %}<li><a href="{{ tag.href }}" rel="tag">{{ tag.name }}</a></li>
+{% endfor %}</ul>
+{% endif %}{% if share in ["end", "both"] %}{{ share_row }}{% endif %}</footer>
+{% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
+{% endif %}{{ preferred_source(options, t, "post") }}</article>
+{% if site.subscribe and options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
+<h2>{{ t.mentions }}</h2>
+<ul>
+{% for link in page.mentions %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
+{% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
+<h2 id="related-title">{{ t.related_posts }}</h2>
+{{ contents_page(page.related[:options.related_count]) }}
+</section>
+{% endif %}{% endblock %}

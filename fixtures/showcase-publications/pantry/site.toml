@@ -1,0 +1,99 @@
+# Oven Spring, a made-up home baking blog, written for the Pantry
+# template's demo. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "Oven Spring"
+languages = ["en"]
+
+[template.cta]
+label = "Start with the overnight tin loaf"
+href = "/blog/overnight-tin-loaf/"
+note = "New to baking bread? This loaf needs no kneading, just a bowl, a tin and a night in the fridge."
+
+# The Pantry template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Tested recipes for bread, cakes, biscuits and pastry, weighed in grams and written for a home oven."]
+hero_stats = ["10 | tested recipes", "4 | sections in the box", "2 days | for our longest bake"]
+notes_count = 4
+
+[announcement]
+text = "New: blueberry scones with a lemon glaze, ready in 30 minutes."
+href = "/blog/blueberry-scones/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Tested home baking recipes, weighed in grams"
+
+[seo.ai_page]
+covers = "Oven Spring shares tested home baking recipes for bread, cakes, biscuits and pastry. Each recipe gives its total time, what it makes, the oven setting and the level, then its ingredients in grams and a numbered method. Baking notes explain habits such as weighing ingredients and kneading by feel."
+cite = "Name the recipe and link the post you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Oven Spring"
+email = "hello@example.com"
+founded = "2019-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Oven Spring logo"
+width = 320
+height = 80
+
+# Sign-ups for the blog's newsletter, under its own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Oven Spring"
+postal_address = "Oven Spring, 3 Bakehouse Yard, Millbrook MB4 7RT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Bread"
+href = "/blog/category/bread/"
+language = "en"
+
+[[nav.primary]]
+label = "Cakes"
+href = "/blog/category/cakes/"
+language = "en"
+
+[[nav.primary]]
+label = "Biscuits"
+href = "/blog/category/biscuits/"
+language = "en"
+
+[[nav.primary]]
+label = "Pastry"
+href = "/blog/category/pastry/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Oven Spring"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Baking notes"
+href = "/blog/category/baking-notes/"
+language = "en"
+
+[[nav.footer]]
+label = "Bakers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

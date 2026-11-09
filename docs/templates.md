@@ -1,3 +1,8 @@
+---
+title: "Templates: the look of your blog"
+order: 30
+---
+
 # Templates: the look of your blog
 
 A template sets the layout and features of your blog's pages: where the contents list sits, which cards the home page shows, and the sizes of text and space. Your colours, fonts and logo still come from your main site through theme sync, so every template looks like your brand.
@@ -13,19 +18,69 @@ name = "classic"
 
 Without a `[template]` table your blog uses `classic`, Khalid's default look. Updating Khalid never switches your template to another one, but a release may restyle a template.
 
-These eleven templates are built in. Every template but classic has its own page in [`docs/templates/`](templates/), which says who it suits, what each page shows, and every option it takes with its default.
+These templates are built in. Every template but classic has its own page, linked below, which says who it suits, what each page shows, and every option it takes with its default.
 
 - `classic`: a wide frame with a large lead story and a grid of cards on list pages, a readable column for posts and the contents beside long posts. It takes no options.
 - `almanac`: a library of long guides set like a field guide, with numbered sections, a contents column beside each post, a featured guide, editor's picks and a call to action that opens and closes the front page. See [Almanac](templates/almanac.md).
-- `atlas`: a publication for a blog with many topics, with a masthead, featured stories, picture cards and a topic index. See [Atlas](templates/atlas.md).
+- `aperture`: one photographer's site, with each post one picture the full width of the page, its story and a plate of its camera, lens and exposure, and older pictures in a light contact sheet. See [Aperture](templates/aperture.md).
+- `atelier`: a fashion label, stylist or fashion writer, with a lookbook of numbered looks, each a tall picture with the pieces worn beside or under it, collections, a journal of notes and posts that open as a two-page spread. See [Atelier](templates/atelier.md).
+- `atlas`: a publication for a blog with many topics, with a map-sheet masthead that indexes every topic, featured stories and picture cards. See [Atlas](templates/atlas.md).
+- `beacon`: a charity or a cause, with campaigns that each carry a goal meter, impact figures, a news feed and a donate call in the header, the hero and a band on every page. See [Beacon](templates/beacon.md).
+- `brief`: a short daily or weekly digest newsletter, with every page one narrow sheet on a tinted desk, the latest issue with a tick for each item, earlier issues as dated rows, and numbered items that each end on a link to the source. See [Brief](templates/brief.md).
+- `channel`: a video creator's home, with the newest video large as Now showing, thumbnail cards with a play bar and running time, a shelf for each playlist, and posts that open on a wide video with Up next under them. See [Channel](templates/channel.md).
+- `chapter`: an author's site, with the newest book beside its cover, the books as a shelf of covers, excerpts and essays as a book's contents page, events as dated rows and excerpts set as a page of the book. See [Chapter](templates/chapter.md).
 - `compass`: a teaching blog where every guide opens with its trail, contents and key points. See [Compass](templates/compass.md).
+- `dialogue`: an interview show, with every episode led by its guest: their name, who they are and one line they said as a large quote, a name plate of host and guest on every episode, and transcripts with their speakers marked. See [Dialogue](templates/dialogue.md).
+- `dispatch`: a newsletter whose site wins sign-ups, with the sign-up first on the front page beside the latest issue, each issue marked by its number in a postage stamp, and a sign-up box after every issue and list. See [Dispatch](templates/dispatch.md).
+- `encore`: a musician's or a band's site, with the newest release on its sleeve, tour dates with ticket links, a shelf of every record and the band's notes from the studio and the road. See [Encore](templates/encore.md).
+- `fixture`: a sports club, with the next match and the club's form on the front page, results as scoreboard rows with the score in large figures, upcoming fixtures, club news, a squad page and a scoreboard on every match report. See [Fixture](templates/fixture.md).
 - `folio`: a product team's notebook under a large masthead on ruled paper, with category tabs, a featured story, picture cards, and notes with a contents rail, framed code and an author box. See [Folio](templates/folio.md).
-- `harbor`: a busy marketing blog with a featured post beside smaller posts, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
+- `frequency`: a podcast's site, with the newest episode playing in a dark console on the front page, every episode as a numbered row with a running-time dial, listen links on the front page and after each episode, and an episode plate that joins the player. See [Frequency](templates/frequency.md).
+- `gallery`: a studio or an illustrator, with a wall of pictures on the front page, each on a mat at its own shape with a numbered label, a list of works under the same numbers, and project pages with a sheet of the client, year, medium and edition. See [Gallery](templates/gallery.md).
+- `gazette`: a local news site with many sections, with a block per section under a bold section flag, a rail of the latest news grouped by day, dense headlines that each carry their place, and a dateline on every story. See [Gazette](templates/gazette.md).
+- `glossy`: a lifestyle magazine told in pictures, with a cover story beside its cover lines, picture cards in a rhythm of wide, tall, square and band cards, sections as rounded links and posts led by a large rounded picture. See [Glossy](templates/glossy.md).
+- `harbor`: a food and recipe blog with a featured post beside smaller posts, a strip of recipe cards, a grid of picture cards, an offer in each post and a sideways row of related reading. See [Harbor](templates/harbor.md).
+- `hearth`: a warm, classic blog for a small team or a family business, with a welcome, a picture-led lead story on a warm panel, a grid of picture cards with each author's face and a friendly reading column, every picture in an arch. See [Hearth](templates/hearth.md).
+- `hub`: a creator's link-in-bio home in one narrow column, with the creator's photo and name, a stack of large link buttons led by the call to action, and the latest posts as rows with a square picture. See [Hub](templates/hub.md).
+- `inkwell`: a long-running newsletter's archive, with the sign-up form beside the name, the latest issue with its number set large, and every issue numbered and grouped by year like bound volumes, each with its parts at a glance. See [Inkwell](templates/inkwell.md).
+- `itinerary`: a travel diary with trips filed by country as passport stamps, each trip a ticket with its days, route, season and cost, a day-by-day route on every trip and checklists for packing. See [Itinerary](templates/itinerary.md).
 - `keystone`: a calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column. See [Keystone](templates/keystone.md).
+- `lattice`: a science explainer site, with every picture a numbered figure, key numbers from each post's facts, footnotes as numbered tabs and marked glossary terms. See [Lattice](templates/lattice.md).
 - `ledger`: a calm, text-led blog for studies and long how-tos, with a masthead and ruled lists. See [Ledger](templates/ledger.md).
+- `letterpress`: a newsletter that treats each issue as a printed edition, with the newest issue as a cover beside its picture and contents, past issues as a pile of small printed covers, and each issue opened by a folio line with its number and closed by an end mark. See [Letterpress](templates/letterpress.md).
+- `locale`: a city guide with places listed by area, each as a guidebook row with its kind, opening hours and a price meter, an At a glance card on every place, and notes from the city. See [Locale](templates/locale.md).
+- `manual`: a help centre or product documentation, with a search field first, numbered topic tiles, articles in three columns (the guide's steps, the text with numbered sections, and the contents) and a next steps panel that asks whether the article helped. See [Manual](templates/manual.md).
+- `margin`: one writer's personal site, with a short introduction, a sign-up band and essays as rows, where each essay's date, reading time and topic, the byline and the essay's own footnotes sit in a ruled margin beside the text. See [Margin](templates/margin.md).
+- `masthead`: a general publication, the safe all-rounder, with the site's name centred over a heavy and a thin rule, a lead story, the latest posts as a grid or a list, headlines by section and a calm reading column. See [Masthead](templates/masthead.md).
 - `meridian`: a calm company journal with category tabs, wide rows and a reference layout for long guides. See [Meridian](templates/meridian.md).
+- `mosaic`: a photo blog laid out in tiles, with the posts in a rhythm of large, tall, small and half pictures, each cut to its tile with the place, date and title under it, never on it, and posts that open with the picture whole and the facts beside the title. See [Mosaic](templates/mosaic.md).
+- `notebook`: one person's public notebook of short notes and links, in a dated stream newest first under month headings, each date in the margin beside a double margin rule, with link notes that point to what they share. See [Notebook](templates/notebook.md).
+- `pantry`: a baking and recipe blog, with the sections of the recipe box as divider tabs, recipes as square index cards with the time and yield on a tear-off ticket, and a recipe page that opens on its facts and its ingredients card, then numbers its method. See [Pantry](templates/pantry.md).
+- `plinth`: an architecture or interiors practice, with each project as a spread of its photograph beside a title block of its facts, plans framed as numbered drawing sheets, studio notes and types of work. See [Plinth](templates/plinth.md).
+- `quill`: a minimal text blog in one column of generous type, with every list one line a post with its date, no pictures on lists and a small nib mark that ends every post. It has the smallest stylesheet of any template, so its pages load fastest. See [Quill](templates/quill.md).
+- `reel`: film and TV reviews, with a star rating on a ticket, the cast and where to watch on every review, poster cards and a score sheet ranked by rating. See [Reel](templates/reel.md).
+- `research`: a research lab or academic group, with papers as a numbered reference list with venue, DOI and citations, a news feed, research areas, a people page and a cite box on every paper. See [Research](templates/research.md).
+- `respawn`: a games site with news, reviews and a release calendar, where every review shows its score as a dark square and a health bar of ten cells, on cards, lists and the review itself. See [Respawn](templates/respawn.md).
+- `spectrum`: a magazine arranged by topic, with its own colour for each topic, a spectrum bar of every topic under the masthead, a row of each topic's newest posts on a band of its colour, and the same colour on the topic's posts and its page. See [Spectrum](templates/spectrum.md).
+- `summit`: a conference, festival or event, with the programme as a timetable by day and time, speakers, venues with their sessions and a ticket stub on every session. See [Summit](templates/summit.md).
+- `syllabus`: an online course, with a course map of one square per lesson, an outline of modules and lessons, course news, and on every lesson a progress ruler that shows how far through the course it is. See [Syllabus](templates/syllabus.md).
+- `ticker`: a markets newsletter, with a dark tape of figures, each issue's moves as a bar chart drawn without script, and every list as a data table shaded by how far each figure moved. See [Ticker](templates/ticker.md).
+- `versions`: a software product's changelog, with every change on a version rail, a filter row for each type of change (new, improved, fixed) that works without a script, the versions as anchor links and a box to get updates by email or feed. See [Versions](templates/versions.md).
+- `vital`: a health and wellness site of programmes and routines, with each routine's time in a ring on its picture card, a session panel and a care note on every routine, its steps drawn as a track, and a notes feed. See [Vital](templates/vital.md).
 - `wire`: a news and columns site with a lead story beside the latest headlines, a dated feed and the editor's picks in a rail. See [Wire](templates/wire.md).
 - `workbench`: a blog that reviews and compares tools, with a ruled, exact look and wide comparison tables. See [Workbench](templates/workbench.md).
+
+## Starting a blog in a template
+
+To start a new blog in the template you liked in its demo, name it when you make the site:
+
+```text
+khalid init blog --address https://blog.example.com --template atlas --yes
+```
+
+`--template` takes any name from the list above. It writes the `[template]` table into the new `site.toml`, and starts `theme/tokens.toml` with that template's own colours, text sizes and spacing, so the new blog looks like the demo. `khalid theme sync` or a hand edit changes them later, as on any site.
+
+A name Khalid does not know stops `init` before it makes anything, and the message lists every name. Without `--template`, the blog starts in `classic`.
 
 ## Options
 
@@ -87,6 +142,58 @@ Every template shares one set of page parts. A template switches on the ones it 
 What the reading progress bar, the contents sheet, the copy link button and the header search do for a reader is in [Reading aids](reading.md).
 
 Every part reads with scripts off. Every page also shows `[brand] icon` in the browser tab, in every template.
+
+## Facts on a post
+
+A post can list a few short facts in its front matter. A template can show them on the post's cards and on its page. A review might list its scores, a project its client and year, and a recipe its time and servings.
+
+```yaml
+---
+title: A reading room for Calder Street
+facts:
+  - label: Client
+    value: Calder Street Library
+  - label: Year
+    value: "2025"
+---
+```
+
+- A post lists at most four facts, in the order they should show.
+- A label has 1 to 24 characters. A value has 1 to 40 characters.
+- Each label and value is one line of plain text. Spaces at either end are dropped.
+- Put a label or value in quotes when it holds a colon, or to keep a number exactly as written, such as `"2.50"`.
+- An empty list is the same as no facts.
+
+`khalid build` stops and names the line when a fact breaks one of these rules.
+
+These templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+Several templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+Five templates show facts. Each reads them by their place in the list, not by their label, so the labels can be in any language:
+
+- [Fixture](templates/fixture.md#matches-are-posts-with-facts) treats posts with facts as matches: the opponent, the result or kick-off, the ground and the competition. Results show as scoreboard rows with a W, D or L chip, the front page shows the next match and the club's form, and a match report opens with a scoreboard.
+- [Frequency](templates/frequency.md#episodes-are-posts-with-a-player) treats posts with facts as episodes: the number, the running time, the guest and one fact of your own. The number shows large on every row, the running time draws a dial, and an episode's page shows every fact on a dark plate that joins the player.
+- [Aperture](templates/aperture.md#camera-details-are-facts) shows the facts as a plate of camera details under each picture: the camera, the lens, the exposure and the date it was taken.
+- [Mosaic](templates/mosaic.md#notes-are-facts) shows a post's facts as small label and value cells beside its title, such as the park, the place, the light and the season. It does not read them by position, so any short notes work.
+- [Gallery](templates/gallery.md#project-details-are-facts) shows the facts as a project sheet beside each project's title: the client, the year, the medium and the size or edition. The medium and year show on each work's wall label, and the client and year in the list of works.
+- [Folio](templates/folio.md#release-notes) treats posts with facts as releases. The front page lists them in a dated release log beside the essays, tagged with the first fact, such as the version. A release's page shows its facts above the title.
+- [Workbench](templates/workbench.md#score-panels) shows a score panel on review cards and at the top of a review: the first fact large, with a meter when it is a score out of ten, then up to three figures.
+- [Keystone](templates/keystone.md) lists posts with facts in a project index on the front page, one column per fact, and shows the facts as a credits line on each post.
+- [Brief](templates/brief.md#issues-are-posts) reads the first fact as an issue's number and the second as how many items it holds. It shows the number in the stamp line over each issue and draws one short tick per item, on the front page and on the issue itself.
+- [Ticker](templates/ticker.md#issues-are-posts-with-facts) treats posts with facts as issues, each fact a market and its move. It draws a post's facts as a bar chart and lists posts in a table with one column per fact, each figure cell shaded by how far it moved.
+- [Letterpress](templates/letterpress.md#issues-are-posts) treats every post as an issue: the first fact is the issue number, shown in the folio line, on the issue's small cover and in its end mark, and the next three are the issue's contents, listed with dotted leaders on the cover and at the top of the issue.
+- [Lattice](templates/lattice.md#what-you-write) shows a post's facts as a row of key numbers under its lead picture, the value large and the label under it, and does the same for the lead explainer on the front page.
+- [Versions](templates/versions.md#changes-are-posts) reads the first fact as the version a change shipped in, and groups the changes of each version on its version rail. A change's page shows every fact in a ruled row.
+- [Harbor](templates/harbor.md#recipe-facts) shows up to four posts with facts in a recipe card strip on the front page, with the first two facts as tags, and all the facts as tags under a post's title.
+- [Respawn](templates/respawn.md#reviews-are-posts-with-facts) treats posts with facts as reviews. The first fact is the score out of 10, shown as a dark square and a health bar on cards, lists and the review, and the second, the platforms, shows under it.
+- [Notebook](templates/notebook.md#link-notes) reads a first fact that is a web address as a link note: the label names the place and the stream and the post link to it with "Read it at". Other facts show as a small list under a note's title.
+- [Locale](templates/locale.md#places-are-posts-with-facts) treats posts with facts as places: 1 the kind of place, 2 the price level, drawn as a price meter of four marks, 3 the opening hours and 4 the address. They show on listing rows and in an At a glance card on each place.
+- [Gazette](templates/gazette.md#sections-and-places) reads the first fact as the place a story happened, such as a street or village. It shows as a small label before the headline in every list and as the dateline that opens the story.
+
+The other templates do not show facts. A custom template that wants them reads `post.facts` on a card and `page.facts` on a post page. Each fact has a `label` and a `value`:
+
+```html
+{% for fact in page.facts %}<dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd>{% endfor %}
+```
 
 ## Options many templates share
 
@@ -184,7 +291,7 @@ Two sizes grow with the screen: the first on a phone 320 pixels wide, the second
 
 ## Your own CSS rules
 
-A file named `theme/site.css` adds your own rules to the blog's one stylesheet, after the template's rules, so yours win. Use it for a few touches the tokens cannot make, such as a home page of your own in `theme/templates/home.html`.
+A file named `theme/site.css` adds your own rules to the blog's stylesheet, after the template's rules, so yours win. Use it for a few touches the tokens cannot make, such as a home page of your own in `theme/templates/home.html`.
 
 ```css
 .hero { padding-block: 4rem; background: var(--color-surface); }
@@ -192,7 +299,8 @@ A file named `theme/site.css` adds your own rules to the blog's one stylesheet, 
 
 - Read the tokens as CSS variables, such as `var(--color-accent)` and `var(--space)`, so `khalid theme sync` still sets your colours and fonts.
 - Comments and blank lines are removed when the site is built.
-- The whole stylesheet must stay small: Khalid's own pages keep it under 20 KB once compressed.
+- Each page links a stylesheet of its own, with only the template's rules its HTML can use. Your own rules stay on every page, even ones for a class only your own script adds.
+- Keep them few: each page downloads them all, and each of Khalid's demo pages downloads at most 10 KB of CSS once compressed.
 - The file must sit inside the site folder. A link to a file elsewhere stops the build with a message.
 
 ## Checking every screen size
@@ -218,9 +326,9 @@ Add `--templates harbor` to check one template, and `--widths 390,2560@2` to pic
 - a table column is narrower than its longest word, so the word breaks in the middle;
 - a picture did not load;
 - a person's photo is not drawn square, to within 1 pixel, so its circle turns into an oval;
-- at 1440 pixels and wider, the site header, or the main part of the home page or a category or tag page, is narrower than the template's minimum frame, the width its design brief sets, kept in `scripts/demo-check/frames.json`;
+- at 1440 pixels and wider, the site header, or the main part of the home page or a category or tag page, is narrower than the template's minimum frame, the width its design brief sets, kept as `frame` in `crates/khalid-theme/packs/<name>/pack.toml`;
 - at 1440 pixels and wider, a post's body text is smaller than 18 pixels, or a full line of it holds fewer than 60 or more than 75 characters;
-- a stylesheet the home page links is 20 KB or more once compressed with Brotli.
+- the stylesheets a page links weigh more than 10 KB together once compressed with Brotli.
 
 Parts that stay on screen as you scroll, such as the floating contents button and the side contents column, are checked against what passes under them. Each failure names the template, the page, the browser, the width, the two elements and where on the page they meet. The Demo check runs it in CI. To run it yourself, install the tools and the browsers once:
 
@@ -232,6 +340,8 @@ just layout-check --browsers chromium,firefox --packs keystone
 
 `--packs` picks templates and `--widths` picks widths. A screenshot of each failing page goes to `target/layout-check/shots`, and every failure to `target/layout-check/report.json`. `--frames <file>` reads the minimum frames from another file, to try a stricter one. `just layout-selftest` proves the frame, reading and stylesheet checks on two small sites with a planted fault each.
 
+A template whose demo has a ready publication of its own, in `fixtures/showcase-publications/<name>/`, is checked a second time with that publication in place of the showcase's posts, on the pages its `check-pages.txt` names. The showcase pass stays as it is for every template, so its long tables, glossary and long lists remain the floor. `just publication-selftest` proves the publication step and the second pass on a small sample publication, with no browser. `fixtures/showcase-publications/README.md` sets out what a publication holds.
+
 ## Pictures for review
 
-A template's design is approved from pictures, not from the checks alone. `just demo-pictures --out <folder>` builds the showcase with each template twice, in its sample brand and with the template's own defaults and no theme, and takes full-page pictures of the home page, the post `/content-benchmark/` and `/category/content-strategy/` at 2000, 1440 and 390 pixels. Each template gets a sheet, `sheet.html` and `sheet.png`, with the branded demo, the default and a reference picture side by side for each page and width. Add `--refs <folder>` to place stored reference pictures: one folder per template, each file named such as `<source>-<page>-<width>.png`, where the page is `home`, `post` or `list`. Keep `--out` outside the repository, since the pictures are never committed.
+A template's design is approved from pictures, not from the checks alone. `just demo-pictures --out <folder>` builds the showcase with each template twice, in its sample brand and with the template's own defaults and no theme, and takes full-page pictures of the home page, the post `/content-benchmark/` and `/category/content-strategy/` at 2000, 1440 and 390 pixels. Each template gets a sheet, `sheet.html` and `sheet.png`, with the branded demo, the default and a reference picture side by side for each page and width. Add `--refs <folder>` to place stored reference pictures: one folder per template, each file named such as `<source>-<page>-<width>.png`, where the page is `home`, `post` or `list`. Keep `--out` outside the repository, since the pictures are never committed. A template with a demo publication, ready or not, is pictured with it, on the home page and the first post and category its `check-pages.txt` names.

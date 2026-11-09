@@ -92,9 +92,9 @@ Google no longer shows rich results for the types below. Khalid still writes val
 - **Sitemaps for search engines and a sitemap for people:** the [sitemap page](/blog/sitemap/).
 - **A page for AI tools:** [for readers and AI](/blog/ai/), with the site's summary in [llms.txt](/blog/llms.txt).
 
-## Ten looks for the same blog
+## The same blog in every look
 
-The same posts, built with each of Khalid's templates: [Almanac](https://thebigasif.github.io/khalid/templates/almanac/), [Atlas](https://thebigasif.github.io/khalid/templates/atlas/), [Compass](https://thebigasif.github.io/khalid/templates/compass/), [Folio](https://thebigasif.github.io/khalid/templates/folio/), [Harbor](https://thebigasif.github.io/khalid/templates/harbor/), [Keystone](https://thebigasif.github.io/khalid/templates/keystone/), [Ledger](https://thebigasif.github.io/khalid/templates/ledger/), [Meridian](https://thebigasif.github.io/khalid/templates/meridian/), [Wire](https://thebigasif.github.io/khalid/templates/wire/) and [Workbench](https://thebigasif.github.io/khalid/templates/workbench/).
+The [template gallery](https://serpdad.com/khalid/templates/) shows these posts built with each of Khalid's templates, and links a live demo of each.
 
 ## What you cannot see on a page
 

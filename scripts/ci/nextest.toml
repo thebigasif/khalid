@@ -1,0 +1,8 @@
+# nextest settings for CI (.github/workflows/ci.yml), passed with
+# --config-file. The slowest tests, each several minutes under coverage,
+# start first, so the rest of the suite runs beside them instead of after
+# them. Priority changes only the order; every test still runs.
+
+[[profile.default.overrides]]
+filter = "package(khalid) & (binary(=showcase) | binary(=build_every_template) | binary(=serve_api) | binary(=examples))"
+priority = 100

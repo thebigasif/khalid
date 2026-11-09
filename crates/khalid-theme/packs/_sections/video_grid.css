@@ -1,0 +1,23 @@
+/* Section part: video grid (templates/sections/video_grid.html). Thumbnail
+   cards in a grid, or a shelf that scrolls sideways, each picture cut to
+   16:9 with the play bar under it: a play mark, a track and the running
+   time. A pack sets --play-color for the mark. */
+.video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 2rem 1.5rem; margin: 0; padding: 0; list-style: none; }
+.video-shelf { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: minmax(15rem, 1fr); overflow-x: auto; scroll-snap-type: inline mandatory; padding-block-end: 0.75rem; }
+.video-shelf > .video-card { scroll-snap-align: start; }
+.video-card { min-inline-size: 0; }
+.video-card .image { margin: 0; }
+.video-card .image img, .video-blank { inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); }
+.video-blank { background: var(--color-surface); }
+.play-bar { position: relative; display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0 0; color: var(--color-muted); font-size: var(--text-small); font-variant-numeric: tabular-nums; }
+.play-mark { flex: none; inline-size: 0.625rem; block-size: 0.75rem; background: var(--play-color, var(--color-accent)); clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.play-track { flex: 1; block-size: 2px; background: var(--color-border); }
+.play-bar-empty { block-size: 1.3125rem; }
+.play-time { flex: none; color: var(--color-text); font-weight: 600; }
+.play-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.video-card :is(h2, h3, h4) { margin-block: 0.5rem 0.25rem; font-size: 1.125rem; line-height: 1.3; }
+.video-card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.video-card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.video-part { color: var(--color-link); }
+.video-meta { display: flex; flex-wrap: wrap; gap: 0 0.75rem; margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.video-meta a { display: inline-flex; align-items: center; min-block-size: 44px; margin-block: -0.75rem; }

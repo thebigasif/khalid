@@ -33,27 +33,14 @@ expression: "shown(&out, \"index.html\")"
 </li>
 </ul>
 </div>
-<section class="picks">
-<h2>Editor&#39;s picks</h2>
-<ul class="cards cards-text" role="list">
-<li>
-<article class="card">
-<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
-<time datetime="2026-09-21">21 September 2026</time>
-<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
-<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
-<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
-</article>
-</li>
-</ul>
-</section>
-<ul class="cards cards-row" role="list">
+<div class="pair">
+<ul class="cards" role="list">
 <li>
 <article class="card">
 <figure class="image">
 <picture>
-<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
-<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/320.png 320w, /blog/media/d9df18e6d7e8625d/480.png 480w, /blog/media/d9df18e6d7e8625d/640.png 640w, /blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 63.5rem) calc(9vw + 31.25rem), (min-width: 48rem) calc(48vw - 0.75rem), 6.5rem">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 63.5rem) calc(9vw + 31.25rem), (min-width: 48rem) calc(48vw - 0.75rem), 6.5rem" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
 </picture>
 </figure>
 <p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>
@@ -72,6 +59,23 @@ expression: "shown(&out, \"index.html\")"
 <p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
 </article>
 </li>
+</ul>
+</div>
+<section class="picks">
+<h2>Editor&#39;s picks</h2>
+<ul class="cards cards-text" role="list">
+<li>
+<article class="card">
+<p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
+<time datetime="2026-09-21">21 September 2026</time>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</article>
+</li>
+</ul>
+</section>
+<ul class="cards cards-row" role="list">
 <li>
 <article class="card">
 <p class="card-meta"><span class="card-author">Asif<span class="person-role">Founder of SerpDad</span></span>
@@ -129,8 +133,8 @@ expression: "shown(&out, \"index.html\")"
 <article class="card">
 <figure class="image">
 <picture>
-<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 48rem, 100vw">
-<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/320.png 320w, /blog/media/d9df18e6d7e8625d/480.png 480w, /blog/media/d9df18e6d7e8625d/640.png 640w, /blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 48rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 64rem) calc(6vw + 20rem), (min-width: 51rem) calc(31vw - 0.5rem), (min-width: 48rem) 23.5rem, 6.5rem">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 64rem) calc(6vw + 20rem), (min-width: 51rem) calc(31vw - 0.5rem), (min-width: 48rem) 23.5rem, 6.5rem" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
 </picture>
 </figure>
 <p class="card-meta"><span class="card-author">Lena Vogt<span class="person-role">Technical SEO editor</span></span>

@@ -1,0 +1,58 @@
+# The sample brand for the Beacon demo: a river charity. Deep river green
+# on white with a pale green surface for the impact band, Bitter for
+# titles and figures and Figtree for the text. Only the brand lives here:
+# the template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#eef5f0"
+text = "#15231d"
+muted = "#4a5a52"
+link = "#1b6347"
+accent = "#1b6347"
+border = "#cfe0d5"
+
+[fonts]
+heading = "Bitter, Rockwell, Georgia, serif"
+body = "Figtree, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Bitter"
+style = "normal"
+weight = "700"
+path = "bitter-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "103.28%"
+descent = "125.05%"
+line_gap = "0.00%"
+size_adjust = "64.17%"
+
+[[fonts.files]]
+family = "Figtree"
+style = "normal"
+weight = "400"
+path = "figtree-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "104.94%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "56.76%"
+
+[[fonts.files]]
+family = "Figtree"
+style = "normal"
+weight = "600"
+path = "figtree-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "104.94%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "57.82%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

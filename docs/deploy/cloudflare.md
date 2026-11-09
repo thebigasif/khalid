@@ -1,3 +1,8 @@
+---
+title: "A free Khalid blog on Cloudflare"
+order: 10
+---
+
 # A free Khalid blog on Cloudflare
 
 Cloudflare can build your blog from GitHub and serve it to readers around the world for free. There are two ways in. The button does every step for you. The Pages steps follow the classic GitHub and Cloudflare Pages guide, for people who like to see each setting.

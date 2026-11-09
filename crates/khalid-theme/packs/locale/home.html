@@ -1,0 +1,51 @@
+{#- Locale's front page (docs/templates/locale.md): the guide's name and
+    intro with a chip per area, each a jump link with its place count;
+    then every area, in the order categories.toml lists them, as a block
+    of listing rows (places are posts with facts); then the notes (posts
+    without facts) as picture cards; then the page links, the optional
+    rows, the call to action and the newsletter. An area with no place on
+    this page gets no block. With home sections in site.toml, each
+    section is a block of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "parts-locale.html" import place_rows, note_cards -%}
+{% set options = template.options -%}
+{% set places = page.posts | selectattr("facts") | selectattr("category") | list -%}
+{% set notes = page.posts | rejectattr("facts") | list -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{% if not page.sections and places %}<nav class="lc-chips" aria-label="{{ t.areas_jump }}">
+<ul role="list">
+{% for area in page.categories %}{% set count = places | selectattr("category.href", "eq", area.href) | list | length %}{% if count %}<li><a href="#area-{{ loop.index }}"><span class="lc-pin" aria-hidden="true"></span>{{ area.name }} <span class="lc-count">{{ count }}</span></a></li>
+{% endif %}{% endfor %}</ul>
+</nav>
+{% endif %}{% endcall %}
+{% if page.sections %}{% for section in page.sections %}<section class="lc-area" id="area-{{ loop.index }}" aria-labelledby="area-title-{{ loop.index }}">
+<header class="lc-area-head">
+<h2 id="area-title-{{ loop.index }}"><span class="lc-pin" aria-hidden="true"></span>{{ section.title }}</h2>
+<p class="lc-area-all"><a href="{{ section.href }}">{{ t.area_all | replace("{name}", section.title) }}</a></p>
+</header>
+{% if section.posts | selectattr("facts") | list %}{{ place_rows(section.posts) }}
+{% elif section.posts %}{{ note_cards(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% endfor %}{% elif places %}<h2 class="lc-heading">{{ t.places_by_area }}</h2>
+{% for area in page.categories %}{% set here = places | selectattr("category.href", "eq", area.href) | list %}{% if here %}<section class="lc-area" id="area-{{ loop.index }}" aria-labelledby="area-title-{{ loop.index }}">
+<header class="lc-area-head">
+<h3 id="area-title-{{ loop.index }}"><span class="lc-pin" aria-hidden="true"></span>{{ area.name }}</h3>
+<p class="lc-count-line">{% if here | length == 1 %}{{ t.place_count_one }}{% else %}{{ t.place_count | replace("{count}", here | length | string) }}{% endif %}</p>
+<p class="lc-area-all"><a href="{{ area.href }}">{{ t.area_all | replace("{name}", area.name) }}</a></p>
+</header>
+{{ place_rows(here, 4) }}
+</section>
+{% endif %}{% endfor %}{% elif not notes %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if notes and not page.sections %}<section class="lc-notes-block" aria-labelledby="lc-notes-title">
+<h2 id="lc-notes-title" class="lc-heading">{{ t.city_notes }}</h2>
+{{ note_cards(notes) }}
+</section>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

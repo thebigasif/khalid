@@ -1,0 +1,150 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is
+# CC0 or in the public domain.
+
+[[photos]]
+file = "en/posts/2026-02-03-slow-pottery/lead.jpg"
+sha256 = "3a726d04bd195ae7b9d7925b4aa26429a0bbcfe5c0fe947e6c0284625ec2ab00"
+source = "https://commons.wikimedia.org/wiki/File:Making_pottery_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Making pottery (Unsplash) by Jared Sluyter jaredsluyter, via Wikimedia Commons"
+title = "Making pottery (Unsplash)"
+creator = "Jared Sluyter jaredsluyter"
+openverse = "commons:File:Making pottery (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-02-24-mending-books/lead.jpg"
+sha256 = "1a366f10a1f0564fadd7219f71ddfc02410fcd7fa138c147ec21607900df7e47"
+source = "https://commons.wikimedia.org/wiki/File:Old_books_on_bookshelf._(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Old books on bookshelf. (Unsplash) by Clem Onojeghuo clemono2, via Wikimedia Commons"
+title = "Old books on bookshelf. (Unsplash)"
+creator = "Clem Onojeghuo clemono2"
+openverse = "commons:File:Old books on bookshelf. (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-03-17-rooftop-beekeeping/lead.jpg"
+sha256 = "f726424d3a1f02d4e054a015fb12fea47b1b1f47626a2c671b88c463555207ba"
+source = "https://commons.wikimedia.org/wiki/File:Deans_Court_beekeeper_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Deans Court beekeeper (Unsplash) by Annie Spratt anniespratt, via Wikimedia Commons"
+title = "Deans Court beekeeper (Unsplash)"
+creator = "Annie Spratt anniespratt"
+openverse = "commons:File:Deans Court beekeeper (Unsplash).jpg"
+needs_credit = false
+size = "1600x1065"
+
+
+[[photos]]
+file = "en/posts/2026-04-07-wooden-boat-building/lead.jpg"
+sha256 = "8362f671a174e5b3316b070908a29de36609ebc5f1a79595c657fa6bfd255b29"
+source = "https://commons.wikimedia.org/wiki/File:Werkstatt_eines_Schiffszimmerers_im_Altonaer_Museum_IMG_5128_edit.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Werkstatt eines Schiffszimmerers im Altonaer Museum IMG 5128 edit by Christoph Braun, via Wikimedia Commons"
+title = "Werkstatt eines Schiffszimmerers im Altonaer Museum IMG 5128 edit"
+creator = "Christoph Braun"
+openverse = "commons:File:Werkstatt eines Schiffszimmerers im Altonaer Museum IMG 5128 edit.jpg"
+needs_credit = false
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-05-05-kente-weaving/lead.jpg"
+sha256 = "3c31e928c55fc680bc12580493dd9bab0c88a110f1ed5d07677184a8224811f1"
+source = "https://commons.wikimedia.org/wiki/File:Kente_weaving_in_loom.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Kente weaving in loom by Warmglow, via Wikimedia Commons"
+title = "Kente weaving in loom"
+creator = "Warmglow"
+openverse = "commons:File:Kente weaving in loom.jpg"
+needs_credit = false
+size = "1600x2133"
+
+
+[[photos]]
+file = "en/posts/2026-06-02-bicycle-repair/lead.jpg"
+sha256 = "d3d24f618255c5ab1432c8032d5a2e8e208ee2ec2b1acd9f258eb3b54595de68"
+source = "https://commons.wikimedia.org/wiki/File:Bicycle_wheel_truing_stand.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Bicycle wheel truing stand by Foxtod, via Wikimedia Commons"
+title = "Bicycle wheel truing stand"
+creator = "Foxtod"
+openverse = "commons:File:Bicycle wheel truing stand.jpg"
+needs_credit = false
+size = "1600x1064"
+
+
+[[photos]]
+file = "en/posts/2026-07-07-dry-stone-walling/lead.jpg"
+sha256 = "13d137ce002e80470fbfa6bbbebec979e38d04fe8dd9416f60ed9e8c094757e9"
+source = "https://commons.wikimedia.org/wiki/File:Stone_rock_wall_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Stone rock wall (Unsplash) by Gustavo Belemmi gustavo_belemmi, via Wikimedia Commons"
+title = "Stone rock wall (Unsplash)"
+creator = "Gustavo Belemmi gustavo_belemmi"
+openverse = "commons:File:Stone rock wall (Unsplash).jpg"
+needs_credit = false
+size = "1600x1200"
+
+
+[[photos]]
+file = "en/posts/2026-08-04-wooden-wheels/lead.jpg"
+sha256 = "d63f0c255d52507de60a4955aed77ce4d9290cda234f0c7ff66ea46a4cdd2fc2"
+source = "https://commons.wikimedia.org/wiki/File:Carpenter_and_wheelwright_from_Borre_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Carpenter and wheelwright from Borre (Unsplash) by manu schwendener manuschwendener, via Wikimedia Commons"
+title = "Carpenter and wheelwright from Borre (Unsplash)"
+creator = "manu schwendener manuschwendener"
+openverse = "commons:File:Carpenter and wheelwright from Borre (Unsplash).jpg"
+needs_credit = false
+size = "1600x1190"
+
+
+[[photos]]
+file = "en/posts/2026-08-25-podcast-recording/lead.jpg"
+sha256 = "63e10459b45a33e235d19bc0d2741386759ff0b569890c459d09959deb9436bf"
+source = "https://commons.wikimedia.org/wiki/File:Microphone_in_Saarbr%C3%BCcken_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Microphone in Saarbrücken (Unsplash) by Jens Kreuter jenskreuter, via Wikimedia Commons"
+title = "Microphone in Saarbrücken (Unsplash)"
+creator = "Jens Kreuter jenskreuter"
+openverse = "commons:File:Microphone in Saarbrücken (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-09-15-season-two/lead.jpg"
+sha256 = "da8d652576b852977707de34c3f2a2c6bd06fb0d23d0de5cf407ca847e47d7f3"
+source = "https://commons.wikimedia.org/wiki/File:Werkstatt_Werkzeuge_work_shop_tools_690038.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Werkstatt Werkzeuge work shop tools 690038 by Igor Trepeshchenok, via Wikimedia Commons"
+title = "Werkstatt Werkzeuge work shop tools 690038"
+creator = "Igor Trepeshchenok"
+openverse = "commons:File:Werkstatt Werkzeuge work shop tools 690038.jpg"
+needs_credit = false
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-10-06-glassblowing/lead.jpg"
+sha256 = "c53ca9a971eba13ebe58c1c8730fd5c07442220c4b6ce7b5fb02f3383db0f54a"
+source = "https://commons.wikimedia.org/wiki/File:Vidriero_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Vidriero (Unsplash) by Quino Al quinoal, via Wikimedia Commons"
+title = "Vidriero (Unsplash)"
+creator = "Quino Al quinoal"
+openverse = "commons:File:Vidriero (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+

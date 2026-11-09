@@ -1,0 +1,125 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2025-12-09-wadi-rum-itinerary/lead.jpg"
+sha256 = "8dfc99e5d3d994ef40a6ec6f151fe23445db0e5d45b537f259f7dc700b059eeb"
+source = "https://commons.wikimedia.org/wiki/File:Wadi_rum_desert.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Wadi rum desert by Peter Chisholm, via Wikimedia Commons"
+title = "Wadi rum desert"
+creator = "Peter Chisholm"
+openverse = "commons:File:Wadi rum desert.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-01-27-hill-country-train/lead.jpg"
+sha256 = "a0b4694eca6d174e42fbefb5d09979a95e3bd97dabb3790a5e3c581369816969"
+source = "https://commons.wikimedia.org/wiki/File:Nine-Arch_Bridge_in_Sri_Lanka.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Nine-Arch Bridge in Sri Lanka by Ravindu Thaksara, via Wikimedia Commons"
+title = "Nine-Arch Bridge in Sri Lanka"
+creator = "Ravindu Thaksara"
+openverse = "commons:File:Nine-Arch Bridge in Sri Lanka.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-02-24-travel-itinerary-planning/lead.jpg"
+sha256 = "478bd57fc91ce8ad40e4961e336ce73f5d31894a5473e234033af4cee046863d"
+source = "https://commons.wikimedia.org/wiki/File:Train_window_landscape_(24014361208).jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Train window landscape (24014361208) by James Petts from London, England, via Wikimedia Commons"
+title = "Train window landscape (24014361208)"
+creator = "James Petts from London, England"
+openverse = "commons:File:Train window landscape (24014361208).jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-03-31-morocco-train-trip/lead.jpg"
+sha256 = "cc2a166317b4e43970ba5e27aff4907aa7f2b196c97935b206ad905c2e0987cf"
+source = "https://commons.wikimedia.org/wiki/File:Ksar_A%C3%AFt_Benhaddou,_Marocco_(%D8%A3%D9%8A%D8%AA_%D8%A8%D9%86_%D8%AD%D8%AF%D9%88%D8%8C_%D8%A7%D9%84%D9%85%D8%BA%D8%B1%D8%A8,_%E2%B4%B0%E2%B5%A2%E2%B5%9C_%E2%B5%83%E2%B4%B0%E2%B4%B7%E2%B4%B7%E2%B5%93).jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Ksar Aït Benhaddou, Marocco (أيت بن حدو، المغرب, ⴰⵢⵜ ⵃⴰⴷⴷⵓ) by Petar Milošević, via Wikimedia Commons"
+title = "Ksar Aït Benhaddou, Marocco (أيت بن حدو، المغرب, ⴰⵢⵜ ⵃⴰⴷⴷⵓ)"
+creator = "Petar Milošević"
+openverse = "commons:File:Ksar Aït Benhaddou, Marocco (أيت بن حدو، المغرب, ⴰⵢⵜ ⵃⴰⴷⴷⵓ).jpg"
+needs_credit = true
+size = "1600x990"
+
+[[photos]]
+file = "en/posts/2026-04-14-night-trains/lead.jpg"
+sha256 = "65cb50e21bf5d183f45704c0be4caacda525ccd876514467151e7121c04e17bc"
+source = "https://commons.wikimedia.org/wiki/File:Sleeping_cabin_aboard_a_Finnish_night_train.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Sleeping cabin aboard a Finnish night train by JIP, via Wikimedia Commons"
+title = "Sleeping cabin aboard a Finnish night train"
+creator = "JIP"
+openverse = "commons:File:Sleeping cabin aboard a Finnish night train.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-05-12-car-free-slovenia/lead.jpg"
+sha256 = "c3ba80ee00b0257eb7eedd9c3e79678952671cdd1dc89ab4d85e22f16623fe09"
+source = "https://commons.wikimedia.org/wiki/File:Bled_Island_in_Lake_Bled,_Slovenia,_20240504_0901_8297.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Bled Island in Lake Bled, Slovenia, 20240504 0901 8297 by Jakub Hałun, via Wikimedia Commons"
+title = "Bled Island in Lake Bled, Slovenia, 20240504 0901 8297"
+creator = "Jakub Hałun"
+openverse = "commons:File:Bled Island in Lake Bled, Slovenia, 20240504 0901 8297.jpg"
+needs_credit = true
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2026-06-09-soca-trail/lead.jpg"
+sha256 = "25374273b0d4f384bc161715269dd9eb5321668b23a9285e75b3f672e4332bdc"
+source = "https://commons.wikimedia.org/wiki/File:Soca_river_in_Trenta_(2).jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Soca river in Trenta (2) by Krzysztof Golik, via Wikimedia Commons"
+title = "Soca river in Trenta (2)"
+creator = "Krzysztof Golik"
+openverse = "commons:File:Soca river in Trenta (2).jpg"
+needs_credit = true
+size = "1600x1052"
+
+[[photos]]
+file = "en/posts/2026-07-21-georgia-itinerary/lead.jpg"
+sha256 = "5066f9e5f1f310447420afc28b3e5b6bc17545352d78186f9954204b216a562c"
+source = "https://commons.wikimedia.org/wiki/File:Kazbegi,_Gergeti_Trinity_Church_and_Mt_Kazbek_(35959311351).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Kazbegi, Gergeti Trinity Church and Mt Kazbek (35959311351) by Arian Zwegers from Brussels, Belgium, via Wikimedia Commons"
+title = "Kazbegi, Gergeti Trinity Church and Mt Kazbek (35959311351)"
+creator = "Arian Zwegers from Brussels, Belgium"
+openverse = "commons:File:Kazbegi, Gergeti Trinity Church and Mt Kazbek (35959311351).jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-08-25-svaneti-trek/lead.jpg"
+sha256 = "85fc90d8963aa01c171cdcc9e743c2db5567f41659913aa35769a42e2a89a6d2"
+source = "https://commons.wikimedia.org/wiki/File:Ushguli_Svaneti_Georgia.JPG"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Ushguli Svaneti Georgia by Florian Pinel, via Wikimedia Commons"
+title = "Ushguli Svaneti Georgia"
+creator = "Florian Pinel"
+openverse = "commons:File:Ushguli Svaneti Georgia.JPG"
+needs_credit = true
+size = "1600x1071"
+
+[[photos]]
+file = "en/posts/2026-10-06-carry-on-packing-list/lead.jpg"
+sha256 = "cf78d6e02a2b2d323ec802deff5b3f11d64e6a53cecf530a4311574c390b497b"
+source = "https://commons.wikimedia.org/wiki/File:A_backpack_with_trekking_poles_and_shoes.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "A backpack with trekking poles and shoes by SGrabarczuk (WMF), via Wikimedia Commons"
+title = "A backpack with trekking poles and shoes"
+creator = "SGrabarczuk (WMF)"
+openverse = "commons:File:A backpack with trekking poles and shoes.jpg"
+needs_credit = true
+size = "1600x2133"

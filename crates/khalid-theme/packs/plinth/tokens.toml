@@ -1,0 +1,35 @@
+# Plinth: an architecture or interiors practice. Warm drawing paper, ink
+# black, one brick accent and a deeper paper surface for the drawing
+# sheets. A geometric sans for titles, a plain grotesque for the text and
+# monospace capitals for the title block, as on a drawing.
+[colors]
+background = "#f7f5f0"
+surface = "#ebe7de"
+text = "#1c1b19"
+muted = "#5c5951"
+link = "#9b3d23"
+accent = "#9b3d23"
+border = "#d6d0c4"
+
+[fonts]
+heading = "Futura, \"Century Gothic\", \"Avenir Next\", system-ui, sans-serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[shape]
+radius = "0px"
+measure = "37rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.65
+heading_weight = 500
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

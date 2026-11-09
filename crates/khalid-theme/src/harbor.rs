@@ -1,28 +1,23 @@
-//! Harbor: a busy marketing blog (templates spec 3.5). A featured post with
+//! Harbor: a food and recipe blog (templates spec 3.5). A featured post with
 //! a column of smaller posts beside it, a grid of picture cards, an offer
 //! in each post and a sideways row of related reading.
 
 use khalid_core::ReaderSwitch;
 
 use crate::parts::{self, CardShape, ContentsNumbers, ContentsPlacement, PageLinks, RelatedLayout};
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, slot};
 
 /// The Harbor pack.
 pub(crate) static HARBOR: Pack = Pack {
     name: "harbor",
-    summary: "A busy marketing blog: a featured post with a column of smaller posts beside it, a grid of picture cards, an offer in each post and a sideways row of related reading.",
-    stylesheet: include_str!("../packs/harbor/harbor.css"),
+    summary: "A food and recipe blog: a featured post with smaller posts beside it, a strip of recipe cards with time and serving tags, a grid of picture cards, an offer in each post and a sideways row of related reading.",
+    css: PackText::file("harbor/harbor.css"),
     templates: &[
-        PackTemplate {
-            name: "home.html",
-            source: include_str!("../packs/harbor/home.html"),
-        },
-        PackTemplate {
-            name: "post.html",
-            source: include_str!("../packs/harbor/post.html"),
-        },
+        PackTemplate::file("picture_sizes.html", "harbor/picture_sizes.html"),
+        PackTemplate::file("home.html", "harbor/home.html"),
+        PackTemplate::file("post.html", "harbor/post.html"),
     ],
-    tokens: include_str!("../packs/harbor/tokens.toml"),
+    tokens: PackText::file("harbor/tokens.toml"),
     reader: &[
         (ReaderSwitch::ReadingTime, true),
         (ReaderSwitch::AuthorBox, true),

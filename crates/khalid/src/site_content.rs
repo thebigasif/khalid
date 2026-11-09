@@ -1,7 +1,8 @@
 //! What the Content API answers with on a running site: the published posts
-//! of the content index and the site's lists, held in memory without their
-//! bodies. A request renders the bodies of the posts it returns from their
-//! files, so the store is small and quick to build.
+//! of the content index, the plain pages and the site's lists, held in
+//! memory without the posts' bodies. A request renders the bodies of the
+//! posts it returns from their files, so the store is small and quick to
+//! build.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
@@ -20,11 +21,16 @@ use khalid_db::{ContentIndex, IndexedPost, PostChanges};
 use tokio::sync::watch;
 
 use crate::entry_events::Entries;
+use crate::listed_post::ListedTag;
 use crate::post_heads::PostHeads;
 use crate::post_lock::Lock;
 use crate::settings_events::Settings;
 use crate::tag_events::Tags;
 use crate::{build_message, build_pages, index, site_lists};
+
+#[path = "content_page.rs"]
+mod content_page;
+use content_page::ContentPage;
 
 /// What one render of the pages read for the Content API, without a single
 /// post body: the content index, which posts are featured, and the lists.
@@ -40,6 +46,10 @@ pub(crate) struct Catalog {
     pub(crate) updated: BTreeMap<String, NaiveDate>,
     /// The series of each post that is part of one, by path.
     series: BTreeMap<String, PostSeries>,
+    /// The slugs of the tags each post names, in its order, by path.
+    post_tags: BTreeMap<String, Vec<String>>,
+    /// The plain pages, such as About.
+    pages: Vec<ContentPage>,
     lists: SiteResources,
     /// The pages, glossary terms, case studies and changelog entries.
     pub(crate) entries: Entries,
@@ -77,12 +87,24 @@ impl Catalog {
             .filter_map(|doc| Some((index::slashed(&doc.path)?, doc.front.updated?)))
             .collect();
         let series = build_pages::series::by_path(config, content);
+        let post_tags = content
+            .posts
+            .iter()
+            .filter_map(|doc| {
+                let tags = ListedTag::all(&doc.front.tags, &doc.locale, config.slugs());
+                let slugs = tags.into_iter().map(|tag| tag.slug.to_string()).collect();
+                Some((index::slashed(&doc.path)?, slugs))
+            })
+            .collect();
+        let pages = ContentPage::all(folder, config, content)?;
         let lists = site_lists::of(config, &index, content)?;
         Ok(Self {
             index,
             featured,
             updated,
             series,
+            post_tags,
+            pages,
             lists,
             entries: Entries::of(content).with_drafts(folder),
             tags: Tags::of(config, content),
@@ -155,7 +177,7 @@ impl ContentStore for LiveContent {
                 return Ok(listed);
             }
             let total = listed.total();
-            let posts = with_bodies(published, listed.into_items()).await?;
+            let posts = with_bodies(published, collection, listed.into_items()).await?;
             Ok(Listed::new(posts, total))
         })
     }
@@ -170,7 +192,7 @@ impl ContentStore for LiveContent {
             let Some(post) = published.store.find(collection, key).await? else {
                 return Ok(None);
             };
-            Ok(with_bodies(published, vec![post]).await?.pop())
+            Ok(with_bodies(published, collection, vec![post]).await?.pop())
         })
     }
 
@@ -200,6 +222,8 @@ pub(crate) struct Published {
     posts: BTreeMap<String, Listing>,
     /// The path of each post's file, by the post's identity.
     files: BTreeMap<String, String>,
+    /// Each plain page, by its identity.
+    pages: BTreeMap<String, ContentPage>,
     folder: PathBuf,
     slugs: SlugMode,
 }
@@ -290,18 +314,31 @@ impl Published {
                 entries.push((Collection::Posts, listing.post.clone().with_head(head)));
             }
         }
+        let mut pages = BTreeMap::new();
+        for page in &catalog.pages {
+            entries.push((Collection::Pages, page.post.clone()));
+            pages.insert(page.post.id().to_owned(), page.clone());
+        }
         Self {
             store: MemoryContentStore::new(entries).with_site(catalog.lists.clone()),
             posts,
             files,
+            pages,
             folder: folder.to_path_buf(),
             slugs: config.slugs(),
         }
     }
 
-    /// The body of the post with identity `id` in every format, read from
-    /// its file and rendered now.
-    fn bodies(&self, id: &str) -> Result<Bodies, ContentStoreError> {
+    /// The body of the entry of `collection` with identity `id` in every
+    /// format, rendered now: a post's read from its file, a page's from the
+    /// markdown the store keeps.
+    fn bodies(&self, collection: Collection, id: &str) -> Result<Bodies, ContentStoreError> {
+        if collection == Collection::Pages {
+            let Some(page) = self.pages.get(id) else {
+                return Ok(Bodies::default());
+            };
+            return self.rendered(&page.markdown, &page.locale);
+        }
         let Some((path, listing)) = self
             .files
             .get(id)
@@ -317,27 +354,32 @@ impl Published {
         if Lock::of(&post.front).is_some() {
             return Ok(Bodies::default());
         }
-        let body = post.body;
-        let rendered = render(&body, locale, self.slugs).map_err(ContentStoreError::new)?;
+        self.rendered(&post.body, locale)
+    }
+
+    /// The markdown `body` in `locale` in every format.
+    fn rendered(&self, body: &str, locale: &Locale) -> Result<Bodies, ContentStoreError> {
+        let rendered = render(body, locale, self.slugs).map_err(ContentStoreError::new)?;
         Ok(Bodies::new(
             &rendered.html,
-            &body,
+            body,
             &plaintext(&rendered.html),
         ))
     }
 }
 
-/// `posts` with their bodies, rendered on a blocking thread, since each
-/// one reads a file (RULES.md BL-RUN-7).
+/// `posts` of `collection` with their bodies, rendered on a blocking
+/// thread, since each one reads a file (RULES.md BL-RUN-7).
 async fn with_bodies(
     published: Arc<Published>,
+    collection: Collection,
     posts: Vec<Post>,
 ) -> Result<Vec<Post>, ContentStoreError> {
     let work = move || {
         posts
             .into_iter()
             .map(|post| {
-                let bodies = published.bodies(post.id())?;
+                let bodies = published.bodies(collection, post.id())?;
                 Ok(post.with_bodies(bodies))
             })
             .collect()
@@ -366,6 +408,9 @@ fn listings<'a>(
             post = post.with_updated_at(midnight(*day));
         }
         post = post.with_series(catalog.series.get(&row.path).cloned());
+        if let Some(tags) = catalog.post_tags.get(&row.path) {
+            post = post.with_tags(tags.clone());
+        }
         let locale = row.locale.clone();
         found.push((row.path.clone(), Listing { post, locale, date }));
     }
@@ -421,179 +466,5 @@ fn plaintext(html: &str) -> String {
 }
 
 #[cfg(test)]
-mod tests {
-    use std::time::Duration;
-
-    use khalid_api::query::RawListQuery;
-    use khalid_content::{ContentTree, read_content};
-    use khalid_core::Environment;
-
-    use super::*;
-
-    fn demo() -> (PathBuf, Config, Catalog) {
-        let mut folder = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        folder.push("../../fixtures/demo-site");
-        let config = Config::load(&folder, &Environment::empty()).unwrap();
-        let content = read_content(&ContentTree::walk(&folder).unwrap()).unwrap();
-        let catalog = Catalog::of(&folder, &config, &content).unwrap();
-        (folder, config, catalog)
-    }
-
-    fn english() -> ListQuery {
-        let mut raw = RawListQuery::default();
-        raw.filter = Some("language:en".to_owned());
-        ListQuery::try_from(&raw).unwrap()
-    }
-
-    #[tokio::test]
-    async fn the_demo_posts_come_back_from_the_index_with_their_bodies() {
-        let (folder, config, catalog) = demo();
-        let live = LiveContent::default();
-        live.replace(Published::of(&folder, &config, &catalog).unwrap());
-
-        let listed = live.list(Collection::Posts, &english()).await.unwrap();
-        let json = serde_json::to_value(listed.items()).unwrap();
-        assert_eq!(listed.total(), 5, "{json}");
-        let first = &json[0];
-        assert_eq!(first["id"], "en.planning-a-topic-cluster");
-        assert_eq!(
-            first["url"],
-            "https://www.example.com/blog/planning-a-topic-cluster/"
-        );
-        assert_eq!(first["published_at"], "2026-10-12T00:00:00Z");
-        assert!(first["html"].as_str().unwrap().contains("<p>"), "{first}");
-        assert!(
-            !first["plaintext"].as_str().unwrap().contains('<'),
-            "{first}"
-        );
-
-        let german = PostKey::Id("de.warum-interne-links-wichtig-sind".to_owned());
-        let found = live
-            .find(Collection::Posts, &german)
-            .await
-            .unwrap()
-            .unwrap();
-        let found = serde_json::to_value(found).unwrap();
-        assert_eq!(
-            found["url"],
-            "https://www.example.com/blog/de/warum-interne-links-wichtig-sind/"
-        );
-        assert!(found["markdown"].as_str().unwrap().len() > 10, "{found}");
-    }
-
-    #[tokio::test]
-    async fn the_store_holds_no_body_until_one_is_asked_for() {
-        let (folder, config, catalog) = demo();
-        let published = Published::of(&folder, &config, &catalog).unwrap();
-        let held = published.store.list(Collection::Posts, &english()).await;
-        let held = serde_json::to_value(held.unwrap().items()).unwrap();
-        assert!(held[0].get("html").is_none(), "{held}");
-        assert!(held[0].get("markdown").is_none(), "{held}");
-    }
-
-    #[tokio::test]
-    async fn a_change_makes_only_the_posts_it_names_again() {
-        let (folder, config, mut catalog) = demo();
-        let before = Published::of(&folder, &config, &catalog).unwrap();
-        let mut changes = PostChanges::default();
-        for row in &mut catalog.index.posts {
-            row.title = Some(format!("Retitled {}", row.slug));
-        }
-        let edited = "content/en/posts/2026-09-28-what-a-sitemap-does.md";
-        changes.written.insert(edited.to_owned());
-        changes
-            .removed
-            .insert("content/en/posts/2026-10-12-planning-a-topic-cluster.md".to_owned());
-        catalog
-            .index
-            .posts
-            .retain(|row| !row.path.contains("planning"));
-        let after = before.changed(&config, &catalog, &changes).unwrap();
-
-        let listed = after.store.list(Collection::Posts, &english()).await;
-        let titles: Vec<String> = serde_json::to_value(listed.unwrap().items())
-            .unwrap()
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|post| post["title"].as_str().unwrap().to_owned())
-            .collect();
-        assert_eq!(titles.len(), 4, "{titles:?}");
-        let retitled: Vec<&String> = titles
-            .iter()
-            .filter(|t| t.starts_with("Retitled"))
-            .collect();
-        assert_eq!(retitled, ["Retitled what-a-sitemap-does"], "{titles:?}");
-    }
-
-    #[tokio::test]
-    async fn a_body_whose_file_is_gone_is_an_error_not_an_empty_post() {
-        let (_, config, catalog) = demo();
-        let elsewhere = tempfile::tempdir().unwrap();
-        let live = LiveContent::default();
-        live.replace(Published::of(elsewhere.path(), &config, &catalog).unwrap());
-        assert!(live.list(Collection::Posts, &english()).await.is_err());
-        let german = PostKey::Id("de.warum-interne-links-wichtig-sind".to_owned());
-        assert!(live.find(Collection::Posts, &german).await.is_err());
-    }
-
-    #[tokio::test]
-    async fn a_request_waits_for_the_first_store_instead_of_answering_empty() {
-        let (folder, config, catalog) = demo();
-        let live = LiveContent::default();
-        let asking = live.clone();
-        let answer = tokio::spawn(async move {
-            let listed = asking.list(Collection::Posts, &english()).await;
-            listed.map(|listed| listed.total())
-        });
-        tokio::time::sleep(Duration::from_millis(50)).await;
-        assert!(!answer.is_finished(), "answered before the store was ready");
-        live.replace(Published::of(&folder, &config, &catalog).unwrap());
-        assert_eq!(answer.await.unwrap().unwrap(), 5);
-    }
-
-    #[tokio::test]
-    async fn a_store_that_never_loaded_answers_an_error_but_a_served_one_stays() {
-        let (folder, config, catalog) = demo();
-        let live = LiveContent::default();
-        live.fail();
-        assert!(live.list(Collection::Posts, &english()).await.is_err());
-        live.replace(Published::of(&folder, &config, &catalog).unwrap());
-        live.fail();
-        let listed = live.list(Collection::Posts, &english()).await.unwrap();
-        assert_eq!(listed.total(), 5);
-    }
-
-    #[tokio::test]
-    async fn a_post_in_a_series_names_it_in_the_content_api() {
-        let (folder, config, _) = demo();
-        let mut content = read_content(&ContentTree::walk(&folder).unwrap()).unwrap();
-        let text = "---\nseries:\n  name: Topic clusters from scratch\n  order: 2\n---\n";
-        let part = parse_post(Path::new("a.md"), text).unwrap().front.series;
-        content
-            .posts
-            .iter_mut()
-            .find(|doc| doc.path.ends_with("2026-10-12-planning-a-topic-cluster.md"))
-            .unwrap()
-            .front
-            .series = part;
-        let catalog = Catalog::of(&folder, &config, &content).unwrap();
-        let published = Published::of(&folder, &config, &catalog).unwrap();
-        let listed = published.store.list(Collection::Posts, &english()).await;
-        let json = serde_json::to_value(listed.unwrap().items()).unwrap();
-        assert_eq!(
-            json[0]["series"]["slug"], "topic-clusters-from-scratch",
-            "{json}"
-        );
-        assert_eq!(json[0]["series"]["order"], 2);
-        assert!(json[1].get("series").is_none(), "a post in no series");
-    }
-
-    #[test]
-    fn plaintext_drops_tags_and_reads_entities() {
-        assert_eq!(
-            plaintext("<p>Links &amp; <a href=\"/x/\">anchors</a></p>\n<p>&lt;3</p>"),
-            "Links & anchors <3"
-        );
-    }
-}
+#[path = "site_content_tests.rs"]
+mod tests;

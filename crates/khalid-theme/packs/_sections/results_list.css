@@ -1,0 +1,23 @@
+/* Section part: results list (templates/sections/results_list.html).
+   Scoreboard rows: a square chip with W, D, L or "v", the opponent, the
+   ground and competition, and the score in large figures at the end. A
+   news row has no chip and no score. */
+.results-list { margin: 0; padding: 0; list-style: none; }
+.match { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; grid-template-areas: "mark date score" "mark title score" "mark meta score" "mark headline headline"; gap: 0.125rem 1rem; align-items: center; padding-block: 0.875rem; border-block-end: 1px solid var(--color-border); }
+.match[data-match="news"] { grid-template-columns: minmax(0, 1fr); grid-template-areas: "date" "title" "meta"; }
+.match-date { grid-area: date; color: var(--color-muted); font-size: var(--text-small); font-variant-numeric: tabular-nums; }
+.match-mark { grid-area: mark; align-self: start; display: grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; border: 1px solid transparent; border-radius: var(--radius); font-family: var(--font-heading); font-size: 1.25rem; font-weight: var(--heading-weight); line-height: 1; }
+.match[data-match="win"] .match-mark { color: var(--color-on-accent); background: var(--color-accent); }
+.match[data-match="draw"] .match-mark { color: var(--color-text); background: var(--color-surface); border-color: var(--color-border); }
+.match[data-match="loss"] .match-mark { color: var(--color-background); background: var(--color-text); }
+.match[data-match="fixture"] .match-mark { color: var(--color-muted); border-color: var(--color-border); font-size: 1rem; }
+.match :is(h2, h3, h4) { grid-area: title; margin: 0; font-size: 1.1875rem; line-height: 1.25; }
+.match :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.match :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.match-meta { grid-area: meta; margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.match-meta span + span::before { content: " · "; }
+.match-score { grid-area: score; margin: 0; font-family: var(--font-heading); font-size: clamp(1.5rem, 1.25rem + 1vw, 2.25rem); font-variant-numeric: lining-nums tabular-nums; font-weight: var(--heading-weight); line-height: 1; text-align: end; white-space: nowrap; }
+.match[data-match="fixture"] .match-score { max-inline-size: 9rem; font-family: var(--font-body); font-size: var(--text-small); font-weight: 600; line-height: 1.3; white-space: normal; }
+.match-headline { grid-area: headline; margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); line-height: 1.4; }
+.results-month > :is(h2, h3) { margin-block: 2.5rem 0.25rem; color: var(--color-muted); font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.results-month:first-child > :is(h2, h3) { margin-block-start: 0; }
