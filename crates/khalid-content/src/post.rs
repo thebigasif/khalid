@@ -399,9 +399,11 @@ fn secondary_keywords<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<
 }
 
 /// Reads old paths, each starting with `/`, with a message a writer
-/// understands.
+/// understands. A blank `aliases:` line means no aliases: serde-saphyr
+/// 2.1 refuses YAML null for a list (its #233), so it is read as an
+/// `Option` first.
 fn aliases<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<String>, D::Error> {
-    let paths = Vec::<String>::deserialize(deserializer)?;
+    let paths = Option::<Vec<String>>::deserialize(deserializer)?.unwrap_or_default();
     match paths
         .iter()
         .find(|path| !path.starts_with('/') || path.contains(char::is_whitespace))

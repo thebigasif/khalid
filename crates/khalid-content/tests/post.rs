@@ -219,6 +219,17 @@ fn reads_aliases_and_featured() {
 }
 
 #[test]
+fn a_blank_aliases_line_means_no_aliases() {
+    for text in [
+        "---\ntitle: A\naliases:\n---\n",
+        "---\ntitle: A\naliases: ~\n---\n",
+    ] {
+        let post = parse_post(Path::new("posts/a.md"), text).unwrap();
+        assert!(post.front.aliases.is_empty(), "{text}");
+    }
+}
+
+#[test]
 fn reads_robots_and_canonical() {
     let text = "---\ntitle: A\nrobots: noindex, nofollow\ncanonical: https://moz.com/blog/internal-links\n---\n";
     let post = parse_post(Path::new("posts/a.md"), text).unwrap();
