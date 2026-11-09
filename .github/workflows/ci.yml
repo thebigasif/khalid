@@ -532,11 +532,20 @@ jobs:
           BROWSER: ${{ matrix.browser }}
         run: |
           npm install --prefix scripts/demo-check --no-audit --no-fund
+          # WebKit's system packages can take more than six minutes. A try
+          # that runs out of time leaves apt-get holding the dpkg lock, so
+          # the next try first stops it and waits for the lock to clear.
           for try in 1 2; do
-            if timeout 360 npx --prefix scripts/demo-check playwright install --with-deps "$BROWSER"; then
+            if timeout 900 npx --prefix scripts/demo-check playwright install --with-deps "$BROWSER"; then
               exit 0
             fi
             echo "The browser install stalled or failed (try $try of 2)."
+            sudo pkill -x apt-get || true
+            for wait in $(seq 1 60); do
+              sudo fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock >/dev/null 2>&1 || break
+              sleep 5
+            done
+            sudo dpkg --configure -a || true
           done
           exit 1
       - name: The demos' pictures, kept between runs
