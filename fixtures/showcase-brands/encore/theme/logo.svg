@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <circle cx="40" cy="40" r="26" fill="#17152b"/>
+  <circle cx="40" cy="40" r="19" fill="none" stroke="#fbfaf7" stroke-opacity="0.25" stroke-width="1.5"/>
+  <circle cx="40" cy="40" r="10" fill="#5532d0"/>
+  <circle cx="40" cy="40" r="2.5" fill="#fbfaf7"/>
+  <text textLength="230" lengthAdjust="spacingAndGlyphs" x="78" y="52" font-family="Anton, Impact, sans-serif" font-size="32" letter-spacing="1" fill="#17152b">NORTHLIGHT PARADE</text>
+</svg>

@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /free-hob-mill-weir/
+table /where-every-pound-went/
+category /category/wildlife/
+tag /tag/volunteering/
+author /authors/priya-shah/

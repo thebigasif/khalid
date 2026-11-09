@@ -255,6 +255,7 @@ impl Renderer<'_> {
             BlockKind::Toggle { summary } => self.toggle(block, summary),
             BlockKind::Toc => self.html.push_str(TOC_MARK),
             BlockKind::Cta => self.html.push_str(CTA_MARK),
+            BlockKind::PrivacyFacts => self.html.push_str(PRIVACY_FACTS_MARK),
             BlockKind::Snippet { slug } => self.snippet(slug),
             BlockKind::Location { name } => self.location(name),
             BlockKind::Button { href, label } => self.button(href, label),
@@ -439,6 +440,10 @@ const TOC_MARK: &str = "<!--khalid-toc-->\n";
 /// band from `[template.cta]`. Raw HTML in markdown is escaped, so no post
 /// can write it itself.
 pub const CTA_MARK: &str = "<!--khalid-cta-->\n";
+
+/// Where `::privacy-facts` puts the site's privacy facts. The privacy page
+/// swaps it for them; on any other page it stays an unseen comment.
+pub const PRIVACY_FACTS_MARK: &str = "<!--khalid-privacy-facts-->\n";
 
 /// How `::location` starts its mark: the location's name, escaped as an
 /// attribute, and `-->` follow. The build swaps the mark for the card.

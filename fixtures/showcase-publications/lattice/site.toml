@@ -1,0 +1,97 @@
+# Wavelength, a made-up science explainer site, written for the Lattice
+# template's demo. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "Wavelength"
+languages = ["en"]
+
+[template.cta]
+label = "Ask a question"
+href = "/blog/about/"
+note = "Is there something you have always wondered about? Send us your question, and we may answer it in a future explainer."
+
+# The Lattice template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Science explained plainly: one question, the numbers behind it and the words to go further."]
+
+[announcement]
+text = "New explainer: how lightning forms inside a thunderstorm."
+href = "/blog/how-lightning-forms/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Science explained plainly"
+
+[seo.ai_page]
+covers = "Wavelength explains everyday science for curious readers: light and colour, tides, black holes, vaccines, ice, mountains, photosynthesis, the seasons and lightning. Each post answers one question with figures, key numbers and footnoted sources."
+cite = "Quote the explainer you use and link it. The footnotes name the original sources."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Wavelength"
+email = "hello@example.com"
+founded = "2024-09-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Wavelength logo"
+width = 320
+height = 80
+
+# Sign-ups under the site's own name. The mail server is a reserved
+# example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Wavelength"
+postal_address = "Wavelength, 14 Prism Lane, Northbridge NB2 3LT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Earth"
+href = "/blog/category/earth-climate/"
+language = "en"
+
+[[nav.primary]]
+label = "Space"
+href = "/blog/category/space/"
+language = "en"
+
+[[nav.primary]]
+label = "Life"
+href = "/blog/category/life-sciences/"
+language = "en"
+
+[[nav.primary]]
+label = "Physics"
+href = "/blog/category/physics-chemistry/"
+language = "en"
+
+[[nav.primary]]
+label = "Glossary"
+href = "/blog/glossary/"
+language = "en"
+
+[[nav.footer]]
+label = "About Wavelength"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Glossary"
+href = "/blog/glossary/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

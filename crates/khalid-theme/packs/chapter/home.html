@@ -1,0 +1,83 @@
+{#- Chapter's front page (docs/templates/chapter.md): the author's name
+    and tagline beside the newest book and its cover, then the parts of
+    the site opened like chapters: I the books as a shelf of covers, II
+    the excerpts and essays as a contents page, III the coming events as
+    dated rows. A book or an event is a post in the category the options
+    books_category and events_category name; every other post is writing.
+    A part with no posts is left out, and the numerals count the parts
+    shown. With home sections in site.toml, each section is a contents
+    page of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/cover_shelf.html" import cover_shelf -%}
+{% from "sections/contents_page.html" import contents_page -%}
+{% from "sections/event_list.html" import event_list -%}
+{% set options = template.options -%}
+{% set books_href = "/category/" ~ (options.books_category or "books") ~ "/" -%}
+{% set events_href = "/category/" ~ (options.events_category or "events") ~ "/" -%}
+{% set filed = page.posts | selectattr("category") | list -%}
+{% set books = filed | selectattr("category.href", "endingwith", books_href) | list -%}
+{% set all_events = filed | selectattr("category.href", "endingwith", events_href) | list -%}
+{% set events = all_events[:options.events_count] -%}
+{% set others = (books + all_events) | map(attribute="href") | list -%}
+{% set writing = page.posts | rejectattr("href", "in", others) | list -%}
+{% set new_book = books[0] if books else none -%}
+{% set numerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"] -%}
+{% if new_book and new_book.image %}<div class="ch-opening ch-opening-cover">{% else %}<div class="ch-opening">{% endif %}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{% if new_book %}<section class="ch-new" aria-labelledby="ch-new-title">
+<p class="ch-new-label">{{ t.new_book }}</p>
+<h2 id="ch-new-title"><a href="{{ new_book.href }}">{{ new_book.title }}</a></h2>
+<p class="ch-new-text">{{ new_book.excerpt }}</p>
+{% if new_book.facts %}<dl class="ch-facts">
+{% for fact in new_book.facts[:3] %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endfor %}</dl>
+{% endif %}<p class="ch-actions"><a class="button" href="{{ new_book.href }}">{{ t.about_the_book }}</a>{% if new_book.facts | length > 3 and new_book.facts[3].value is startingwith("https://") %} <a class="button button-quiet" href="{{ new_book.facts[3].value }}">{{ new_book.facts[3].label }}</a>{% endif %}</p>
+</section>
+{% endif %}{% endcall %}
+{% if new_book and new_book.image %}<div class="ch-opening-art">{{ picture(new_book.image, slot_sizes("opening")) }}</div>
+{% endif %}</div>
+{% if page.sections %}{% for section in page.sections %}<section class="ch-chapter" aria-labelledby="ch-section-{{ loop.index }}">
+<header class="ch-head">
+<p class="ch-numeral" aria-hidden="true">{{ numerals[loop.index0] }}</p>
+<h2 id="ch-section-{{ loop.index }}">{{ section.title }}</h2>
+</header>
+{% if section.posts %}{{ contents_page(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}{% if books %}<section class="ch-chapter ch-books" aria-labelledby="ch-books">
+<header class="ch-head">
+<p class="ch-numeral" aria-hidden="true">{{ numerals[0] }}</p>
+<h2 id="ch-books">{{ t.books }}</h2>
+</header>
+{{ cover_shelf(books, sizes=slot_sizes("cover")) }}
+</section>
+{% endif %}{% if writing %}<section class="ch-chapter ch-writing" aria-labelledby="ch-writing">
+<header class="ch-head">
+<p class="ch-numeral" aria-hidden="true">{{ numerals[1 if books else 0] }}</p>
+<h2 id="ch-writing">{{ t.writing }}</h2>
+</header>
+{{ contents_page(writing) }}
+</section>
+{% endif %}{% if events %}<section class="ch-chapter ch-events-part" aria-labelledby="ch-events">
+<header class="ch-head">
+<p class="ch-numeral" aria-hidden="true">{{ numerals[(1 if books else 0) + (1 if writing else 0)] }}</p>
+<h2 id="ch-events">{{ t.events }}</h2>
+</header>
+{{ event_list(events) }}
+{% if all_events | length > events | length %}<p class="view-all"><a href="{{ all_events[0].category.href }}">{{ t.view_all | replace("{name}", all_events[0].category.name) }}</a></p>
+{% endif %}</section>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

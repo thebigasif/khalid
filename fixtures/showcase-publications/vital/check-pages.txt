@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /morning-mobility-routine/
+table /bodyweight-strength-basics/
+category /category/move-well/
+tag /tag/walking/
+author /authors/hana-brooks/

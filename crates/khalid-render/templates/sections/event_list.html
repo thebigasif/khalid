@@ -1,0 +1,20 @@
+{#- event_list(posts, level=3): events as dated rows, from each post's
+    facts read by position: 1 when, written as it should show, 2 the
+    venue, 3 the town or city, 4 a link for tickets (its label is the
+    link's text) or another short fact, such as `Entry: free`. An event
+    without facts shows its date. For readings, tour dates, talks and
+    other one-off events; a day's timetable is a schedule. Titles use a
+    heading of `level`. -#}
+{% macro event_list(posts, level=3) -%}
+<ol class="event-list" role="list">
+{% for post in posts %}{% set facts = post.facts -%}
+<li class="event-row">
+<p class="event-when">{% if facts %}{{ facts[0].value }}{% else %}<time datetime="{{ post.date }}">{{ post.date | date }}</time>{% endif %}</p>
+<div class="event-what">
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if facts | length > 1 %}<p class="event-where">{{ facts[1:3] | map(attribute="value") | join(", ") }}</p>
+{% endif %}</div>
+{% if facts | length > 3 %}{% set extra = facts[3] %}<p class="event-extra">{% if extra.value is startingwith("https://") %}<a href="{{ extra.value }}">{{ extra.label }}<span class="visually-hidden">: {{ post.title }}</span></a>{% else %}{{ extra.label }}: {{ extra.value }}{% endif %}</p>
+{% endif %}</li>
+{% endfor %}</ol>
+{%- endmacro %}

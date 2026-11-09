@@ -1,0 +1,81 @@
+# Nell Ashby, a made-up essayist on the coast, written for the Margin
+# template's demo. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "Nell Ashby"
+languages = ["en"]
+
+# The demo is a static site, which takes no sign-ups, so the sign-up band
+# on the front page shows this link to the letter instead of a form.
+[template.cta]
+label = "Get the monthly letter"
+href = "https://www.example.com/nell-ashby/letter"
+note = "One letter a month with the new essay and three things I read that month."
+
+# The Margin template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013). The sign-up band already shows the call to action, so
+# no band repeats it.
+[template.options]
+writer = "nell-ashby"
+tagline = ["I write essays about walking, weather and the small habits of an ordinary week, from a house on the coast. A new one most months."]
+letter_notes = ["Once a month, never more", "Free, with no adverts", "Every letter has a link to leave"]
+cta_band = "none"
+
+[seo.titles]
+separator = "·"
+tagline = "Essays on walking, weather and ordinary habits"
+
+[seo.ai_page]
+covers = "Nell Ashby writes personal essays about walking, the sea and weather, reading and writing, and the small habits of an ordinary week. Owen Rees writes the occasional guest essay."
+cite = "Link the essay you quote and name Nell Ashby or Owen Rees as its author."
+contact = "nell@example.com"
+
+[seo.publisher]
+type = "person"
+name = "Nell Ashby"
+email = "nell@example.com"
+
+# The letter goes out under the writer's own name. The mail server is a
+# reserved example name, so nothing is ever sent.
+[mail]
+from = "nell@example.com"
+name = "Nell Ashby"
+postal_address = "Nell Ashby, 3 Harbour Row, Seahouses NE68 7XX"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Essays"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "Walking and weather"
+href = "/blog/category/walking-and-weather/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Nell"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Reading and writing"
+href = "/blog/category/reading-and-writing/"
+language = "en"
+
+[[nav.footer]]
+label = "Home and habit"
+href = "/blog/category/home-and-habit/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

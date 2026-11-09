@@ -1,0 +1,113 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+[[photos]]
+file = "en/posts/2026-03-04-throw-a-mug-in-twelve-minutes/lead.jpg"
+sha256 = "17db5b77399605fe9ac4eec4d946e9b006aa1f691832ef1bc2334cfcb585211d"
+source = "https://commons.wikimedia.org/wiki/File:Potter_wheel_(4268605790).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Potter wheel (4268605790) by Chandan Singh from India, via Wikimedia Commons"
+title = "Potter wheel (4268605790)"
+creator = "Chandan Singh from India"
+openverse = "commons:File:Potter wheel (4268605790).jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-03-25-mixing-my-own-glazes/lead.jpg"
+sha256 = "747fd43406d02ec598f08743ccc9f63beaea6db4e43ccafded23f585d575039d"
+source = "https://commons.wikimedia.org/wiki/File:Making_and_mixing_glazes_by_hand_in_Taiz%C3%A9_pottery_workshop.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Making and mixing glazes by hand in Taizé pottery workshop by Chriewue, via Wikimedia Commons"
+title = "Making and mixing glazes by hand in Taizé pottery workshop"
+creator = "Chriewue"
+openverse = "commons:File:Making and mixing glazes by hand in Taizé pottery workshop.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-04-15-why-bowls-crack-while-drying/lead.jpg"
+sha256 = "23ca8e2c9f7545026d66cbf80b7d156907f98dcbde62775d48adc39bfc56e7c5"
+source = "https://commons.wikimedia.org/wiki/File:The_drying_process_for_hand-crafted_stoneware_bowls_Taiz%C3%A9_pottery_workshop.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "The drying process for hand-crafted stoneware bowls Taizé pottery workshop by Chriewue, via Wikimedia Commons"
+title = "The drying process for hand-crafted stoneware bowls Taizé pottery workshop"
+creator = "Chriewue"
+openverse = "commons:File:The drying process for hand-crafted stoneware bowls Taizé pottery workshop.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-05-06-first-raku-firing/lead.jpg"
+sha256 = "d68eb0482a7e122cb0651c283f716a24252e1db0908f42a14d5cf1c2f7a42b4e"
+source = "https://commons.wikimedia.org/wiki/File:Raku_15.06.2014_11-38-23.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Raku 15.06.2014 11-38-23 by Dirk Ingo Franke, via Wikimedia Commons"
+title = "Raku 15.06.2014 11-38-23"
+creator = "Dirk Ingo Franke"
+openverse = "commons:File:Raku 15.06.2014 11-38-23.jpg"
+needs_credit = true
+size = "1466x974"
+
+[[photos]]
+file = "en/posts/2026-06-03-loading-the-kiln/lead.jpg"
+sha256 = "198be0a252ebadac7c79cabb28d845aca3302d53c3fab4f56c80277ab14106e2"
+source = "https://commons.wikimedia.org/wiki/File:Elektricka_Komorova_Pec_BVD_KH_125_128_A.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Elektricka Komorova Pec BVD KH 125 128 A by Mojmir Churavy, via Wikimedia Commons"
+title = "Elektricka Komorova Pec BVD KH 125 128 A"
+creator = "Mojmir Churavy"
+openverse = "commons:File:Elektricka Komorova Pec BVD KH 125 128 A.jpg"
+needs_credit = false
+size = "1600x2133"
+
+[[photos]]
+file = "en/posts/2026-07-01-weekend-wheel-workshops/lead.jpg"
+sha256 = "6af01f8457d2f23253994a149a7efccf93bd3236e4a6966ad909c7fdadc52438"
+source = "https://commons.wikimedia.org/wiki/File:Ceramic_Studio_(12097130193).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Ceramic Studio (12097130193) by PunkToad from oakland, us, via Wikimedia Commons"
+title = "Ceramic Studio (12097130193)"
+creator = "PunkToad from oakland, us"
+openverse = "commons:File:Ceramic Studio (12097130193).jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-08-12-shaping-a-wide-bowl/lead.jpg"
+sha256 = "33c3a70d084545a8e7ba7fda8f4ecb0a904378b0b4bae87fde05dbd5b83b5662"
+source = "https://commons.wikimedia.org/wiki/File:Shape_into_a_bowl_Taiz%C3%A9_pottery_workshop.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Shape into a bowl Taizé pottery workshop by Chriewue, via Wikimedia Commons"
+title = "Shape into a bowl Taizé pottery workshop"
+creator = "Chriewue"
+openverse = "commons:File:Shape into a bowl Taizé pottery workshop.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-09-glazing-the-autumn-cups/lead.jpg"
+sha256 = "667f71e9e053493819f026292107b6bbdb273b502948a5c2910c079842d7bac8"
+source = "https://commons.wikimedia.org/wiki/File:Glazing_with_mineral-based,_hand-mixed_glazes_Taiz%C3%A9_pottery_workshop.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Glazing with mineral-based, hand-mixed glazes Taizé pottery workshop by Chriewue, via Wikimedia Commons"
+title = "Glazing with mineral-based, hand-mixed glazes Taizé pottery workshop"
+creator = "Chriewue"
+openverse = "commons:File:Glazing with mineral-based, hand-mixed glazes Taizé pottery workshop.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-14-seconds-sale-green-bowls/lead.jpg"
+sha256 = "c7667b5188d5e069a392b3bc596bbc8b1438a1759e64fb963d5d98ff7ddbd62b"
+source = "https://commons.wikimedia.org/wiki/File:Light_green_ceramic_bowl_2.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Light green ceramic bowl 2 by W.carter, via Wikimedia Commons"
+title = "Light green ceramic bowl 2"
+creator = "W.carter"
+openverse = "commons:File:Light green ceramic bowl 2.jpg"
+needs_credit = true
+size = "1600x1200"
+

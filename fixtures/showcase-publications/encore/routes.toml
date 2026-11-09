@@ -1,0 +1,2 @@
+# Northlight Parade keeps every post at /blog/<slug>/, with no collections
+# of its own: listeners find records through the Releases category.

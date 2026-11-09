@@ -1,0 +1,46 @@
+# The sample brand for the Itinerary demo: two people's slow travel diary.
+# Forest green on white with a pale leaf surface, Zilla Slab for titles like
+# a luggage label and Karla for the text. Only the brand lives here: the
+# template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#eef4ef"
+text = "#15201b"
+muted = "#4d5a53"
+link = "#1a5c44"
+accent = "#1f6b4f"
+border = "#d3e0d7"
+
+[fonts]
+heading = "\"Zilla Slab\", Rockwell, Georgia, serif"
+body = "Karla, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Zilla Slab"
+style = "normal"
+weight = "700"
+path = "zilla-slab-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00EF, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "104.28%"
+descent = "120.80%"
+line_gap = "0.00%"
+size_adjust = "58.35%"
+
+[[fonts.files]]
+family = "Karla"
+style = "normal"
+weight = "400 700"
+path = "karla-latin-400-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00EF, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "101.30%"
+descent = "118.92%"
+line_gap = "0.00%"
+size_adjust = "55.86%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

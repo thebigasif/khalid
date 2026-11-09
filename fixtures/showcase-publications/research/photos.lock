@@ -1,0 +1,137 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2025-06-24-marsh-elevation-sea-level/lead.jpg"
+sha256 = "9628e8e04d0cce5507722369bed91af262781c2dc8b3681cc9c8d0af4c8a5e7f"
+source = "https://commons.wikimedia.org/wiki/File:Tidal_creek_on_the_salt_marsh_-_geograph.org.uk_-_3659106.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Tidal creek on the salt marsh - geograph.org.uk - 3659106 by Mat Fascione, via Wikimedia Commons"
+title = "Tidal creek on the salt marsh - geograph.org.uk - 3659106"
+creator = "Mat Fascione"
+openverse = "commons:File:Tidal creek on the salt marsh - geograph.org.uk - 3659106.jpg"
+needs_credit = true
+size = "1600x1152"
+
+[[photos]]
+file = "en/posts/2025-09-09-eelgrass-drone-mapping/lead.jpg"
+sha256 = "83f399896afc78a8e232227d050d612508702f09aece4e1b2741c4ae1a87c026"
+source = "https://commons.wikimedia.org/wiki/File:Zostera_marina_-_iNaturalist.org.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Zostera marina - iNaturalist.org by Nozères, Claude, via Wikimedia Commons"
+title = "Zostera marina - iNaturalist.org"
+creator = "Nozères, Claude"
+openverse = "commons:File:Zostera marina - iNaturalist.org.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2025-11-18-oyster-reefs-juvenile-fish/lead.jpg"
+sha256 = "99458b30bc4ce003b1dd49678e96b822543305ca96196acfc9d2ae71806da5be"
+source = "https://commons.wikimedia.org/wiki/File:Oyster_reef_Hunting_Island_SC.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Oyster reef Hunting Island SC by Jstuby at English Wikipedia, via Wikimedia Commons"
+title = "Oyster reef Hunting Island SC"
+creator = "Jstuby at English Wikipedia"
+openverse = "commons:File:Oyster reef Hunting Island SC.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-03-11-small-boat-carbon-sampling/lead.jpg"
+sha256 = "b400766feaa1e104e1910ce09b0035be4c932d0c721004b1f1305e3a88c8ea0c"
+source = "https://commons.wikimedia.org/wiki/File:Ph%C3%A9nom%C3%A8ne_d%27eau_color%C3%A9e_verte_en_baie_de_Vilaine_-_Pr%C3%A9l%C3%A8vements_et_%C3%A9chantillonnage_d%27eau_depuis_le_zodiac_(Ifremer_00787-89932_-_50253).jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Phénomène d'eau colorée verte en baie de Vilaine - Prélèvements et échantillonnage d'eau depuis le zodiac (Ifremer 00787-89932 - 50253) by Stephane Lesbats (IFREMER, Pôle Images, Centre Bretagne - ZI de la Pointe du Diable - CS 10070 - 29280 Plouzané, France), via Wikimedia Commons"
+title = "Phénomène d'eau colorée verte en baie de Vilaine - Prélèvements et échantillonnage d'eau depuis le zodiac (Ifremer 00787-89932 - 50253)"
+creator = "Stephane Lesbats (IFREMER, Pôle Images, Centre Bretagne - ZI de la Pointe du Diable - CS 10070 - 29280 Plouzané, France)"
+openverse = "commons:File:Phénomène d'eau colorée verte en baie de Vilaine - Prélèvements et échantillonnage d'eau depuis le zodiac (Ifremer 00787-89932 - 50253).jpg"
+needs_credit = true
+size = "1600x1198"
+
+[[photos]]
+file = "en/posts/2026-05-20-cordgrass-planting-density/lead.jpg"
+sha256 = "ec992b8a01296a897664aef724a4e28f94a0d3641e869046965c952ff4ec6d03"
+source = "https://commons.wikimedia.org/wiki/File:Prime_Hook_National_Wildlife_Refuge_marsh_restoration_-_planting_spartina_marsh_grass_(21253877465).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Prime Hook National Wildlife Refuge marsh restoration - planting spartina marsh grass (21253877465) by U. S. Fish and Wildlife Service - Northeast Region, via Wikimedia Commons"
+title = "Prime Hook National Wildlife Refuge marsh restoration - planting spartina marsh grass (21253877465)"
+creator = "U. S. Fish and Wildlife Service - Northeast Region"
+openverse = "commons:File:Prime Hook National Wildlife Refuge marsh restoration - planting spartina marsh grass (21253877465).jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-06-30-summer-field-school/lead.jpg"
+sha256 = "8737a80df03274fb585ae4c878cd7e33243ea276330b768e5831f004f00dce2e"
+source = "https://commons.wikimedia.org/wiki/File:Mudflats_in_the_Eden_Estuary_-_geograph.org.uk_-_7464096.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Mudflats in the Eden Estuary - geograph.org.uk - 7464096 by Aleks Scholz, via Wikimedia Commons"
+title = "Mudflats in the Eden Estuary - geograph.org.uk - 7464096"
+creator = "Aleks Scholz"
+openverse = "commons:File:Mudflats in the Eden Estuary - geograph.org.uk - 7464096.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-07-15-oyster-castles-erosion/lead.jpg"
+sha256 = "19e14d3c32799e788a5824177351087f5b891866e6a25ee38383566a2f9d5e70"
+source = "https://commons.wikimedia.org/wiki/File:Oyster_reef_in_the_bay_made_from_oyster_castles,_about_60%25_complete_(22620795960).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Oyster reef in the bay made from oyster castles, about 60% complete (22620795960) by U. S. Fish and Wildlife Service - Northeast Region, via Wikimedia Commons"
+title = "Oyster reef in the bay made from oyster castles, about 60% complete (22620795960)"
+creator = "U. S. Fish and Wildlife Service - Northeast Region"
+openverse = "commons:File:Oyster reef in the bay made from oyster castles, about 60% complete (22620795960).jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-02-restored-marsh-carbon/lead.jpg"
+sha256 = "57c8b436bc4343e832374cdba6470ab170c1df79c98d3c3c77d35c18bdf60d62"
+source = "https://commons.wikimedia.org/wiki/File:Scenic_view_of_salt_marsh_wetlands_and_spartina_grass_in_savanna.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Scenic view of salt marsh wetlands and spartina grass in savanna by Gentry George, U.S. Fish and Wildlife Service, via Wikimedia Commons"
+title = "Scenic view of salt marsh wetlands and spartina grass in savanna"
+creator = "Gentry George, U.S. Fish and Wildlife Service"
+openverse = "commons:File:Scenic view of salt marsh wetlands and spartina grass in savanna.jpg"
+needs_credit = false
+size = "1600x1083"
+
+[[photos]]
+file = "en/posts/2026-09-23-phd-position-seagrass/lead.jpg"
+sha256 = "926e4d81319bede592549bb5dbef007a341f586e2171c74bbac34d00e9ccfac7"
+source = "https://commons.wikimedia.org/wiki/File:Fall_colors_on_the_marsh_at_Rachel_Carson_NWR_(50928975132).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Fall colors on the marsh at Rachel Carson NWR (50928975132) by U. S. Fish and Wildlife Service - Northeast Region, via Wikimedia Commons"
+title = "Fall colors on the marsh at Rachel Carson NWR (50928975132)"
+creator = "U. S. Fish and Wildlife Service - Northeast Region"
+openverse = "commons:File:Fall colors on the marsh at Rachel Carson NWR (50928975132).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-14-turtles-seagrass-recovery/lead.jpg"
+sha256 = "1628227bfa7568ead694ab906d3a470f5120dfa0b1de7e4c3f8d6d2d3f272986"
+source = "https://commons.wikimedia.org/wiki/File:Green_Sea_Turtle_grazing_seagrass.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Green Sea Turtle grazing seagrass by P.Lindgren, via Wikimedia Commons"
+title = "Green Sea Turtle grazing seagrass"
+creator = "P.Lindgren"
+openverse = "commons:File:Green Sea Turtle grazing seagrass.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-28-new-research-boat/lead.jpg"
+sha256 = "9963b98622285fd4d7065777e5592b50508482fc2e7191f886f10eb303f7509c"
+source = "https://commons.wikimedia.org/wiki/File:NOAA_Research_Vessel_Bay_Hydro_II_on_launch_day_-a.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "NOAA Research Vessel Bay Hydro II on launch day -a by NOAA, via Wikimedia Commons"
+title = "NOAA Research Vessel Bay Hydro II on launch day -a"
+creator = "NOAA"
+openverse = "commons:File:NOAA Research Vessel Bay Hydro II on launch day -a.jpg"
+needs_credit = false
+size = "1600x1251"

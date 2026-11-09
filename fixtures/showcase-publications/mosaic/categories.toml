@@ -1,0 +1,35 @@
+# Dry Light's kinds of place. The Mosaic template shows each category
+# page as its pictures in the same rhythm of tiles as the front page,
+# with the intro as the place's note.
+
+[[categories]]
+slug = "dunes"
+en = "Dunes"
+
+[categories.seo.en]
+description = "Photographs of sand dunes on Dry Light, from the dune field of Great Sand Dunes in Colorado, in the low light of morning."
+intro = "The tallest dunes in North America, under the Sangre de Cristo Mountains, at the start of the day."
+
+[[categories]]
+slug = "night-sky"
+en = "Night sky"
+
+[categories.seo.en]
+description = "Night sky photographs on Dry Light: the Milky Way, planets and desert plants under the stars at Joshua Tree, with how each was made."
+intro = "Moonless nights in a dark sky park, with the Milky Way over cactus and Joshua trees."
+
+[[categories]]
+slug = "canyons"
+en = "Canyons and rock"
+
+[categories.seo.en]
+description = "Photographs of canyons and rock on Dry Light: the Grand Canyon at sunrise and in snow, the clay hills of Blue Mesa and the granite of Joshua Tree."
+intro = "Deep canyons, striped clay and granite walls, in every kind of weather."
+
+[[categories]]
+slug = "desert-life"
+en = "Desert life"
+
+[categories.seo.en]
+description = "Photographs of desert plants and animals on Dry Light: bighorn sheep, Joshua trees in bloom and in snow, wildflowers and the saguaro."
+intro = "The plants and animals that live in the dry country, in bloom, in snow and at sundown."

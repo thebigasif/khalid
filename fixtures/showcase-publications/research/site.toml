@@ -1,0 +1,100 @@
+# Tidemark Coastal Lab, a made-up coastal ecology group at a made-up
+# university, written for the Research template's demo. Each key and
+# table here replaces the showcase's own when scripts/demo-publication.sh
+# applies it.
+
+name = "Tidemark Coastal Lab"
+languages = ["en"]
+
+[template.cta]
+label = "Open positions"
+href = "/blog/phd-position-seagrass/"
+note = "We are hiring a PhD student for the seagrass project. Applications close on 15 January 2027."
+
+# The Research template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["We study seagrass meadows, salt marshes and oyster reefs: how they store carbon, protect the shore and recover."]
+hero_stats = ["8 | papers since 2025", "4 | people", "4 | research areas", "128 | citations"]
+news_count = 5
+
+[announcement]
+text = "New paper: seagrass meadows recover faster when grazing turtles return."
+href = "/blog/turtles-seagrass-recovery/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Coastal ecology research at Northsound University"
+
+[seo.ai_page]
+covers = "Tidemark Coastal Lab studies seagrass meadows, salt marshes and oyster reefs: how they store carbon, protect shorelines, shelter young fish and recover. Each post summarises one of the lab's papers or gives lab news."
+cite = "Cite the paper itself, as each post's Cite this box gives it, and link the post you quote."
+contact = "lab@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Tidemark Coastal Lab"
+email = "lab@example.com"
+founded = "2009-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Tidemark Coastal Lab logo"
+width = 320
+height = 80
+
+# Sign-ups for the lab's mailing list, under its own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "lab@example.com"
+name = "Tidemark Coastal Lab"
+postal_address = "Tidemark Coastal Lab, Marine Station, 2 Shore Road, Northsound NS4 7TL"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Research"
+href = "/blog/category/salt-marshes/"
+language = "en"
+
+[[nav.primary]]
+label = "Publications"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "People"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "News"
+href = "/blog/category/lab-news/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the lab"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Open positions"
+href = "/blog/phd-position-seagrass/"
+language = "en"
+
+[[nav.footer]]
+label = "People"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

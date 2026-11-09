@@ -9,7 +9,7 @@
 # newer release from https://github.com/thebigasif/khalid/releases.
 set -eu
 
-version="v1.3.2"
+version="v1.7.0"
 installer="https://raw.githubusercontent.com/thebigasif/khalid/$version/scripts/install.sh"
 
 here=$(cd "$(dirname "$0")" && pwd)

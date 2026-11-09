@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /first-html-page/
+table /terminal-basics/
+category /category/start-here/
+tag /tag/html/
+author /authors/hanna-ostrow/

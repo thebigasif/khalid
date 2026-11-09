@@ -1,0 +1,59 @@
+# The sample brand for the Research demo: a coastal ecology lab at a
+# university. Deep sea blue on white with a pale sea surface, Literata
+# for titles like a printed paper and Fira Sans for the text. Only the
+# brand lives here: the template keeps its own shape, type sizes and
+# spacing.
+[colors]
+background = "#ffffff"
+surface = "#eef4f6"
+text = "#13212b"
+muted = "#4a5a64"
+link = "#0c5a78"
+accent = "#0c5a78"
+border = "#cfdee4"
+
+[fonts]
+heading = "Literata, Charter, Georgia, serif"
+body = "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Literata"
+style = "normal"
+weight = "600"
+path = "literata-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E8-00E9, U+00F4, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "130.02%"
+descent = "145.34%"
+line_gap = "0.00%"
+size_adjust = "69.26%"
+
+[[fonts.files]]
+family = "Fira Sans"
+style = "normal"
+weight = "400"
+path = "fira-sans-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E8-00E9, U+00F4, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "103.28%"
+descent = "125.05%"
+line_gap = "0.00%"
+size_adjust = "59.09%"
+
+[[fonts.files]]
+family = "Fira Sans"
+style = "normal"
+weight = "600"
+path = "fira-sans-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E8-00E9, U+00F4, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "103.28%"
+descent = "125.05%"
+line_gap = "0.00%"
+size_adjust = "60.36%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

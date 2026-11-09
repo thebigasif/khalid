@@ -1,0 +1,8 @@
+# The pages the layout check and the pictures open for this publication,
+# one per line: what the page is, then its path after the site's mount.
+home /
+post /plan-a-week-of-dinners/
+table /herbs-in-paper/
+category /category/weeknight-cooking/
+tag /tag/weeknights/
+author /authors/ruth-calder/

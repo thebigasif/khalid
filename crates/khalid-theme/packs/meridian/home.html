@@ -9,6 +9,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
 <header class="masthead">
@@ -24,7 +25,7 @@
 {% endfor %}</ul>
 </nav>
 {% endif %}{% set slot = page.featured if template.options.featured else none -%}
-{% if slot %}{{ featured_slot(slot) }}
+{% if slot %}{{ featured_slot(slot, slot_sizes("lead_story")) }}
 {% endif %}{% set picks = page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks -%}
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% set newer = page.pagination and page.pagination.previous -%}
@@ -34,10 +35,10 @@
 {% set rows = rest[:6] -%}
 {% set index = rest[6:] -%}
 {% if lead %}<div class="lead">
-{{ cards(lead) }}
+{{ cards(lead, sizes=slot_sizes("lead_story")) }}
 </div>
 {% endif %}{% if pair %}<div class="pair">
-{{ cards(pair, 2, "image") }}
+{{ cards(pair, 2, "image", sizes=slot_sizes("pair")) }}
 </div>
 {% endif %}{% if template.options.picks and picks %}<section class="picks">
 <h2>{{ t.editors_picks }}</h2>
@@ -45,11 +46,11 @@
 </section>
 {% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts, 3) }}
+{% if section.posts %}{{ cards(section.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif rest %}{{ cards(rows) }}
+{% endfor %}{% elif rest %}{{ cards(rows, sizes=slot_sizes("home", template.options.cards)) }}
 {% if index %}<section class="index" aria-labelledby="index-title">
 <h2 id="index-title">{{ t.more_posts }}</h2>
 <ol class="index-list" role="list">

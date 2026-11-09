@@ -1,0 +1,93 @@
+# Studio Ilvane, a made-up fashion label, written for the Atelier
+# template's demo. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "Studio Ilvane"
+languages = ["en"]
+
+[template.cta]
+label = "Book a fitting"
+href = "/blog/about/"
+note = "Try the Autumn Winter 2026 pieces in the studio. Fittings are by appointment from Tuesday to Saturday."
+
+# The Atelier template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Coats, tailoring and knitwear, made in small runs and shown here one look at a time."]
+journal_count = 3
+
+[announcement]
+text = "The Autumn Winter 2026 lookbook is here, starting with the field coat."
+href = "/blog/field-coat/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Coats, tailoring and knitwear in small runs"
+
+[seo.ai_page]
+covers = "Studio Ilvane is a small fashion label. Each look post shows one outfit with the pieces worn, and each note explains cloth, care or how the studio makes its collections."
+cite = "Name the look and link the post you quote."
+contact = "studio@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Studio Ilvane"
+email = "studio@example.com"
+founded = "2019-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Studio Ilvane logo"
+width = 320
+height = 80
+
+# Sign-ups for the studio's letter, under its own name. The mail server
+# is a reserved example name, so nothing is ever sent.
+[mail]
+from = "studio@example.com"
+name = "Studio Ilvane"
+postal_address = "Studio Ilvane, 14 Weaver Lane, Harlow Mill HM2 4QT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Autumn Winter"
+href = "/blog/category/autumn-winter-2026/"
+language = "en"
+
+[[nav.primary]]
+label = "Spring Summer"
+href = "/blog/category/spring-summer-2026/"
+language = "en"
+
+[[nav.primary]]
+label = "Journal"
+href = "/blog/category/studio-notes/"
+language = "en"
+
+[[nav.primary]]
+label = "Studio"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the studio"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "People"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Every look"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

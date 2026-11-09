@@ -1,0 +1,67 @@
+---
+source: crates/khalid/tests/template_glossy.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="gl-masthead">
+<h1>Field Notes on SEO</h1>
+<div class="gl-tagline">
+Home, food and travel for slow weekends.
+</div>
+</header>
+<section class="gl-cover" aria-labelledby="gl-cover-title">
+<div class="gl-cover-picture"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 83rem) 46rem, (min-width: 56rem) calc(58vw - 1.75rem), calc(100vw - 2rem)">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 83rem) 46rem, (min-width: 56rem) calc(58vw - 1.75rem), calc(100vw - 2rem)" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></div>
+<div class="gl-cover-panel">
+<p class="gl-cover-label"><span class="gl-pill">Cover story</span><a class="gl-section" href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h2 id="gl-cover-title" class="gl-cover-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p class="gl-cover-excerpt">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="gl-card-meta"><span>By Lena Vogt</span><time datetime="2026-10-05">5 October 2026</time><span>2 min read</span></p>
+<h3 class="gl-cover-lines-title">Also in this issue</h3>
+<ol class="gl-cover-lines" role="list">
+<li><a href="/blog/planning-a-topic-cluster/"><span class="gl-section">Content strategy</span><span class="gl-cover-line">Planning a topic cluster in an afternoon</span></a></li>
+<li><a href="/blog/what-a-sitemap-does/"><span class="gl-section">Technical SEO</span><span class="gl-cover-line">What a sitemap does, and what it does not</span></a></li>
+</ol>
+</div>
+</section>
+<section class="gl-stories" aria-labelledby="gl-latest-title">
+<h2 id="gl-latest-title">Latest stories</h2>
+<ul class="gl-grid" role="list">
+<li class="gl-card gl-card-plain">
+<div class="gl-card-text">
+<p class="gl-section">On-page SEO</p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="gl-card-excerpt">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+<p class="gl-card-meta"><time datetime="2026-09-21">21 September 2026</time><span>1 min read</span></p>
+</div>
+</li>
+<li class="gl-card gl-card-plain">
+<div class="gl-card-text">
+<p class="gl-section">On-page SEO</p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="gl-card-excerpt">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+<p class="gl-card-meta"><time datetime="2026-09-14">14 September 2026</time><span>1 min read</span></p>
+</div>
+</li>
+</ul>
+</section>
+<section class="gl-browse" aria-labelledby="gl-browse-title">
+<h2 id="gl-browse-title">Browse the sections</h2>
+<ul class="gl-browse-list" role="list">
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</section>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/letter/">Get the Friday letter</a></p>
+</div>

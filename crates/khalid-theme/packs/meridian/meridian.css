@@ -61,7 +61,7 @@ main h1 { font-weight: 400; line-height: 1.04; letter-spacing: -0.03em; }
 /* The masthead: the blog's name very large over a heavy ink rule, the intro
    beside it when there is one. A list page's title gets the same rule. */
 .masthead { display: grid; gap: 1.5rem var(--gap); align-items: end; padding-block: clamp(2.5rem, 6vw, 6rem) clamp(1.5rem, 3vw, 2.5rem); border-block-end: 2px solid var(--color-text); }
-.masthead h1 { margin: 0; font-size: clamp(3rem, 1.2rem + 5.2vw, 7.5rem); font-weight: 400; line-height: 0.98; letter-spacing: -0.035em; }
+.masthead h1 { margin: 0; font-size: clamp(2.375rem, 1.2rem + 5.2vw, 7.5rem); font-weight: 400; line-height: 0.98; letter-spacing: -0.035em; }
 main > h1 { margin-block: clamp(2.5rem, 6vw, 5rem) 0; padding-block-end: clamp(1.25rem, 3vw, 2rem); border-block-end: 2px solid var(--color-text); font-size: var(--text-h1); line-height: 1; letter-spacing: -0.035em; }
 .breadcrumbs + h1 { margin-block-start: 0.5rem; }
 .intro { max-inline-size: 34rem; margin: 0; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; }
@@ -161,7 +161,7 @@ main > h1 + .intro { margin-block: 1.5rem 0; }
 .pair .card .image img { aspect-ratio: 16 / 10; }
 :is(.related, .topic-panel, .media-row) .card > p:last-child, :is(.related, .topic-panel, .media-row) .card-author .person-role { display: none; }
 .topic-panel .cards, .media-row .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 2.5rem var(--gap); }
-.topic-panel .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.topic-panel .cards { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
 :is(.pair, .related, .topic-panel, .media-row) .cards .card-meta > time { white-space: normal; }
 .topic-panel .cards > li, .media-row .cards > li { border: 0; }
 /* The rail belongs to the rows of the index only, never to these grids. */
@@ -236,7 +236,14 @@ main > h1 + .intro { margin-block: 1.5rem 0; }
 }
 .topic-tab-list { margin-block-end: 2rem; }
 .topic-tab-list a { padding-inline: 0; margin-inline-end: 1.75rem; font-weight: 500; }
-.topic-panel h3 { margin-block: 0 1.5rem; font-size: var(--text-h2); font-weight: 400; letter-spacing: -0.02em; }
+/* Section openers: each category's one-word name set very large in the
+   serif over a hairline, as a magazine opens a section. */
+.topic-panel > h3, .home-section > h2 { display: block; margin-block: 0 clamp(1.5rem, 3vw, 2.5rem); padding-block-end: clamp(0.75rem, 1.5vw, 1.25rem); border-block-end: 1px solid var(--color-text); font-family: var(--font-heading); font-size: clamp(2.75rem, 0.5rem + 9vw, 9.5rem); font-weight: 400; line-height: 0.9; letter-spacing: -0.045em; text-transform: none; overflow-wrap: anywhere; hyphens: auto; }
+.home-section > h2::before { content: none; }
+/* The city dateline on the lead story, set in small capitals before the
+   standfirst, once posts carry a city. */
+.lead .dateline { color: var(--color-text); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.lead .dateline::after { content: ""; display: inline-block; inline-size: 1.5rem; block-size: 1px; margin-inline: 0.625rem; vertical-align: middle; background: var(--color-accent); }
 /* The shared rule that marks the first tab also reaches the first card's
    label, so the label takes the link colour back. */
 .topic-tabs .topic-panels .topic-panel .cards > li:first-child .card-meta > a { color: var(--color-link); }

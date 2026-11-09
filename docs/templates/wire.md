@@ -1,3 +1,8 @@
+---
+title: "Wire"
+order: 90
+---
+
 # Wire
 
 Wire is a template for a news and columns site: a blog that publishes often, has several writers, and wants readers to see at a glance what is new and who wrote it.
@@ -18,12 +23,14 @@ It suits a blog with a few long guides less well. For that, Harbor or classic re
 
 ## What the front page shows
 
-1. **The lead story:** the newest post with `featured: true`, large, with its picture, topic, subtitle and writer.
-2. **Latest posts beside it:** the next four posts, each led by its date and reading time, with its title, one line of its summary and its writer. On phones this list sits under the lead story.
-3. **More posts:** the next four posts in a row, each with its picture, topic, title, summary, writer and date.
-4. **The feed:** every other post as a row. With room, each row's date stands in its own column on the start side and its picture on the end side. The newsletter form sits once inside the feed, after the eighth post on the page counting the lists above it (option `newsletter_after`), or after the feed when it is shorter.
-5. **A rail beside the feed:** "Editor's picks", your other featured posts as a numbered list, then the topic links.
-6. Numbered page links, then each home section as a row of four.
+1. **The edition line:** under the masthead, a ruled line in capitals, like the folio line of a paper. It shows the blog's name on the start side and "Updated" with the date of the newest post on the other, in your link colour. On a phone, and when your home page has an `intro`, the name is left out. The line shows on the first page of the front page only, so a later page never shows an older date as "updated".
+2. **The breaking strip:** your site's announcement, when you have one, as a strip under the edition line. A label block in ink with a small accent square comes first, then the headline, large and underlined in your accent colour, linked when the announcement has a link. Start the announcement with a short lead-in and a colon, such as "Breaking: ", and the lead-in becomes the label. A lead-in can be up to 24 characters. Without one, the label is the word for "Announcement" in your blog's language. The strip does not move. On the front page it takes the place of the small announcement bar above the header, so readers see the news once. Other pages keep the bar.
+3. **The lead story:** the newest post with `featured: true`, large, with its picture, topic, subtitle and writer.
+4. **Latest posts beside it:** the next four posts, each led by its date and reading time, with its title, one line of its summary and its writer. On phones this list sits under the lead story.
+5. **More posts:** the next four posts in a row, each with its picture, topic, title, summary, writer and date.
+6. **The feed:** every other post as a row. With room, each row's date stands in its own column on the start side and its picture on the end side. The newsletter form sits once inside the feed, after the eighth post on the page counting the lists above it (option `newsletter_after`), or after the feed when it is shorter.
+7. **A rail beside the feed:** "Editor's picks", your other featured posts as a numbered list, then the topic links.
+8. Numbered page links, then each home section as a row of four.
 
 The blog's name stays in the page for search engines and screen readers, and the logo says it on screen, so the stories come first. A blog with an `intro` on its home page shows the name and the intro above the lead story.
 
@@ -35,7 +42,7 @@ There is no view count anywhere. Wire's numbered list is the editor's picks, not
 2. The title, large, and its subtitle, from the post's `description`.
 3. The writer's row: a round photo, their name and role, the date, when it was updated, the reading time and who reviewed it.
 4. The lead picture across the page, with its caption as the credit line under it. Write the credit in the picture's `caption`.
-5. The post in a reading column, with the writer's card beside it on a wide screen: photo, name, role, a short bio that folds open, and their profile links. On a phone the card sits above the post.
+5. The post in a reading column, with the writer's card beside it on a wide screen: photo, name, role, a short bio that folds open, and their profile links. Below 64rem the card hides, so the text starts right under the picture; the byline names the writer and the author box after the post carries the bio.
 6. Inside the post: subheads in the heading font, links underlined in your accent colour, the contents box under a heavy rule in two columns, a summary under an accent rule, pull quotes between two heavy rules, numbers in a stat callout set large, and "see also" lines (`:::callout{kind=read}`) quietly between two hairlines.
 7. The post's tags.
 8. The author box with the full bio.
@@ -99,7 +106,7 @@ Set any of these under `[template.options]`. An option you leave out takes the d
 | `newsletter_after` | `8` | After how many posts in the front page's list the newsletter form shows, from `2` to `20`. |
 | `cta_band` | `"none"` | Where the band with your call to action shows: `none`, `post`, `home` or `both`. |
 | `cta_button` | `false` | The header shows your call to action as a button. |
-| `author_card` | `true` | A post shows the writer's card, with a bio that folds open, right after the picture. |
+| `author_card` | `true` | A post shows the writer's card, with a bio that folds open, beside the text on a wide screen. |
 
 The call to action comes from `[template.cta]`; see [the templates guide](../templates.md#your-call-to-action).
 
@@ -140,6 +147,6 @@ This is Wire's design brief. It fixes how the template should look, so every cha
 | Phone header and menu | The logo and the menu on one row, the menu as one line you can swipe with the current item underlined in the accent. |
 | Tabs and indexes at 390 px | Topic tabs as one row you can swipe. The rail drops under the feed. Dates move above each headline. |
 | Link, card and focus states | Headlines underline on hover. Links in text are underlined in the accent. Focus is a 2 px ring in the text colour. |
-| Signature details | Section titles under a heavy rule in the accent. Kickers in small capitals above each headline. Pull quotes between two heavy rules. |
+| Signature details | The edition line with "Updated" and the newest date, and the still breaking strip under it. Section titles under a heavy rule in the accent. Kickers in small capitals above each headline. Pull quotes between two heavy rules. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/wire/theme/`: signal red (`#b3141f` links, `#d0161f` accent) on white, Barlow Condensed for headlines and Newsreader for text, and a square mark.

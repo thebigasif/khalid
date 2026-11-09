@@ -1,0 +1,35 @@
+# Ticker: a markets newsletter. A warm off-white page, near-black ink and
+# one deep green accent for moves up; moves down are drawn in ink. A
+# plain grotesque for headings, the system's serif for reading, and the
+# monospace for every figure.
+[colors]
+background = "#fbfaf7"
+surface = "#f1efe8"
+text = "#15181d"
+muted = "#535861"
+link = "#0b5e44"
+accent = "#0b6b4f"
+border = "#d9d5ca"
+
+[fonts]
+heading = "\"Helvetica Neue\", Arial, system-ui, sans-serif"
+body = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[shape]
+radius = "0px"
+measure = "36rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2rem 3rem"
+h2 = "1.375rem 1.75rem"
+h3 = "1.125rem 1.25rem"
+h4 = "1rem 1.0625rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 700
+
+[space]
+unit = "0.5rem"
+section = "4rem"

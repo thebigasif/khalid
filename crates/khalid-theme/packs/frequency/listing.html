@@ -1,0 +1,18 @@
+{#- Frequency's lists (category, tag, archive, date and collection pages):
+    the list's name and intro, such as what a topic covers, then its posts
+    as numbered episode rows with the running-time dial. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "parts-frequency.html" import episode_rows -%}
+<header class="list-header">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{{ episode_rows(page.posts, 2) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

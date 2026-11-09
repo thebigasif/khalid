@@ -1,0 +1,113 @@
+---
+source: crates/khalid/tests/template_ticker.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+
+<section class="tape" aria-label="Market figures">
+<dl class="tape-figures">
+<div class="tape-figure" data-move="up">
+<dt>Stocks</dt>
+<dd>+1.8%</dd>
+</div>
+<div class="tape-figure" data-move="down">
+<dt>Bonds</dt>
+<dd>-0.6%</dd>
+</div>
+<div class="tape-figure" data-move="up">
+<dt>Copper</dt>
+<dd>+0.9%</dd>
+</div>
+</dl>
+</section>
+<div class="masthead">
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+The week in markets.
+</div>
+</header>
+</div>
+<section class="lead-issue" aria-labelledby="lead-issue-title">
+<div class="lead-text">
+<p class="lead-kicker"><span>Latest issue</span> <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h2 id="lead-issue-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p class="lead-excerpt">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="lead-meta"><time datetime="2026-10-05">5 October 2026</time> <span>By Lena Vogt</span></p>
+<p class="lead-read"><a class="button" href="/blog/fixing-slow-pages/">Read this issue</a></p>
+</div>
+<div class="lead-chart">
+<h3>This issue in numbers</h3>
+<figure class="bar-chart" data-both-ways aria-label="This issue in numbers">
+<dl class="bar-rows">
+<div class="bar-row" data-move="up">
+<dt>Stocks</dt>
+<dd><span class="bar-value">+1.8%</span><span class="bar-track" aria-hidden="true"><span class="bar" data-w="20"></span></span></dd>
+</div>
+<div class="bar-row" data-move="down">
+<dt>Bonds</dt>
+<dd><span class="bar-value">-0.6%</span><span class="bar-track" aria-hidden="true"><span class="bar" data-w="7"></span></span></dd>
+</div>
+<div class="bar-row" data-move="up">
+<dt>Copper</dt>
+<dd><span class="bar-value">+0.9%</span><span class="bar-track" aria-hidden="true"><span class="bar" data-w="10"></span></span></dd>
+</div>
+</dl>
+<figcaption class="bar-note">Not investment advice.</figcaption>
+</figure>
+</div>
+</section>
+<section class="board" aria-labelledby="board-title">
+<h2 id="board-title">Recent issues</h2>
+<div class="fact-table-wrap">
+<table class="fact-table">
+<thead>
+<tr><th scope="col">Post</th><th scope="col">Date</th><th scope="col" class="fact-table-figure">Stocks</th><th scope="col" class="fact-table-figure">Bonds</th><th scope="col" class="fact-table-figure">Copper</th></tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a> <span class="fact-table-category">Content strategy</span></th>
+<td class="fact-table-date"><time datetime="2026-10-12">12 October 2026</time></td>
+<td class="fact-table-figure"></td>
+<td class="fact-table-figure"></td>
+<td class="fact-table-figure"></td>
+</tr>
+<tr>
+<th scope="row"><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a> <span class="fact-table-category">Technical SEO</span></th>
+<td class="fact-table-date"><time datetime="2026-09-28">28 September 2026</time></td>
+<td class="fact-table-figure"></td>
+<td class="fact-table-figure"></td>
+<td class="fact-table-figure"></td>
+</tr>
+<tr>
+<th scope="row"><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a> <span class="fact-table-category">On-page SEO</span></th>
+<td class="fact-table-date"><time datetime="2026-09-21">21 September 2026</time></td>
+<td class="fact-table-figure" data-move="down" data-heat="4">-2.4%</td>
+<td class="fact-table-figure" data-move="up" data-heat="4">+0.3%</td>
+<td class="fact-table-figure">flat</td>
+</tr>
+<tr>
+<th scope="row"><a href="/blog/why-internal-links-matter/">Why internal links matter</a> <span class="fact-table-category">On-page SEO</span></th>
+<td class="fact-table-date"><time datetime="2026-09-14">14 September 2026</time></td>
+<td class="fact-table-figure"></td>
+<td class="fact-table-figure"></td>
+<td class="fact-table-figure"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<nav class="desks" aria-label="Desks">
+<h2 id="desks-title">Desks</h2>
+<ul role="list">
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</nav>
+<p class="disclaimer">Not investment advice.</p>

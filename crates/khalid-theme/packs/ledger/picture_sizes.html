@@ -1,0 +1,15 @@
+{#- How wide Ledger draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "lead": "(min-width: 75rem) 19rem, (min-width: 32.5rem) calc(23vw + 30.5rem), calc(100vw - 2rem)",
+  "photo": "12rem"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

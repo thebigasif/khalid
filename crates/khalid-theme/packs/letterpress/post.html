@@ -1,0 +1,83 @@
+{#- Letterpress's issue page (docs/templates/letterpress.md): the folio
+    line (the issue number, the date and the reading time between a thick
+    and a thin rule), the category, the title, the description and the
+    byline, centred; the lead picture in a plate; "In this issue" from
+    the second to fourth facts; the text with a drop cap; the end mark.
+    Then the tags, the share links, the author box, the sign-up form and
+    more issues as small printed covers. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture, avatar -%}
+{% from "contents.html" import contents_list -%}
+{% from "author_box.html" import author_box, reviewed_line -%}
+{% from "comments.html" import comments_section -%}
+{% from "series.html" import series_box, series_steps -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
+{% from "parts-letterpress.html" import folio_line, issue_contents, issue_pile -%}
+{% set options = template.options -%}
+{% set placement = options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% set share = options.share -%}
+{% if share != "none" %}{% set share_row %}<div class="share">
+<p class="share-title">{{ t.share }}</p>
+<ul>
+{% for link in share_links(meta.canonical, page.title, options.share_networks) %}<li><a href="{{ link.href }}" rel="nofollow noreferrer">{{ t.share_email if link.key == "email" else link.name }}</a></li>
+{% endfor %}</ul>
+</div>
+{% endset %}{% endif -%}
+{% if side and placement == "side-start" %}<article class="post lp-issue post-with-toc post-toc-start">{% elif side %}<article class="post lp-issue post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post lp-issue post-toc-folded">{% else %}<article class="post lp-issue">{% endif %}
+<header class="post-header">
+{{ folio_line(page, page.reading_time.minutes if "reading_time" in site.features else none) }}
+{% if page.category %}<p class="post-kind"><a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
+{% endif %}<h1>{{ page.title }}</h1>
+{% if options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}<div class="post-meta">
+<address>{{ t.by }} {% for author in page.authors %}{% if author.image %}{{ avatar(author.image) }}{% endif %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</address>
+{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
+{% endif %}{% if page.updated %}<p class="post-date">{{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time></p>
+{% endif %}{% if options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}</div>
+{% if page.image %}<div class="lp-plate">{{ picture(page.image) }}</div>
+{% endif %}</header>
+{{ issue_contents(page) }}
+{% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.contents }}</summary>
+<nav aria-label="{{ t.contents }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}<div class="post-body">
+{{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
+</div>
+<p class="lp-end"><span class="lp-end-mark" aria-hidden="true">&#10086;</span> {{ t.issue_end }}{% if page.facts %} <span class="lp-end-number">{{ page.facts[0].value }}</span>{% endif %}</p>
+{% if page.tags or share in ["end", "both"] %}<footer class="post-footer">
+{% if page.tags %}<h2>{{ t.tags }}</h2>
+<ul class="tags">
+{% for tag in page.tags %}<li><a href="{{ tag.href }}" rel="tag">{{ tag.name }}</a></li>
+{% endfor %}</ul>
+{% endif %}{% if share in ["end", "both"] %}{{ share_row }}{% endif %}</footer>
+{% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
+{% endif %}{{ preferred_source(options, t, "post") }}</article>
+{% if site.subscribe and options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
+<h2>{{ t.mentions }}</h2>
+<ul>
+{% for link in page.mentions %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
+{% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
+<h2 id="related-title">{{ t.more_issues }}</h2>
+{{ issue_pile(page.related[:options.related_count]) }}
+</section>
+{% endif %}{% endblock %}

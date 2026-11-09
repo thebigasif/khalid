@@ -1,0 +1,99 @@
+# Kite, a made-up magazine of good ideas arranged by topic, written for
+# the Spectrum template's demo. Each key and table here replaces the
+# showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Kite"
+languages = ["en"]
+
+[template.cta]
+label = "Get the weekly letter"
+href = "/blog/about/"
+note = "One good idea from each topic, every Friday. Free, and easy to leave."
+
+# The Spectrum template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["A magazine of good ideas, one topic at a time: science, food, travel, culture, nature and design, explained in plain words."]
+latest_count = 5
+cta_band = "home"
+
+[seo.titles]
+separator = "·"
+tagline = "A magazine of good ideas, arranged by topic"
+
+[seo.ai_page]
+covers = "Kite is a small magazine that answers one question at a time in plain words, in six topics: culture, food, nature, science, travel and design."
+cite = "Link the piece you quote, and name its writer."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Kite"
+email = "hello@example.com"
+founded = "2021-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Kite logo"
+width = 200
+height = 80
+
+# Sign-ups for Kite's weekly letter. The mail server is a reserved example
+# name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Kite"
+postal_address = "Kite, 12 Rope Walk, Ashby AB3 9RT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Culture"
+href = "/blog/category/culture/"
+language = "en"
+
+[[nav.primary]]
+label = "Food"
+href = "/blog/category/food/"
+language = "en"
+
+[[nav.primary]]
+label = "Nature"
+href = "/blog/category/nature/"
+language = "en"
+
+[[nav.primary]]
+label = "Science"
+href = "/blog/category/science/"
+language = "en"
+
+[[nav.primary]]
+label = "Travel"
+href = "/blog/category/travel/"
+language = "en"
+
+[[nav.primary]]
+label = "Design"
+href = "/blog/category/design/"
+language = "en"
+
+[[nav.footer]]
+label = "About Kite"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Archive"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

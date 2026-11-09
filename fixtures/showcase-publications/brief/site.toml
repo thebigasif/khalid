@@ -1,0 +1,94 @@
+# Tideline, a made-up weekday digest about the Selwick coast, a made-up
+# stretch of coast, written for the Brief template's demo. Every place,
+# group and story in it is invented, and every link goes to a reserved
+# example address. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "Tideline"
+languages = ["en"]
+
+[template.cta]
+label = "How Tideline is made"
+href = "/blog/making-tideline/"
+note = "Six or so things from the coast, every weekday morning, each in a line or two with a link to read more."
+
+# The Brief template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["The Selwick coast in two minutes. Six or so things worth knowing, every weekday morning."]
+
+[announcement]
+text = "Tideline and the Selwick coast are made up to show a template. Every link goes to an example address."
+href = "/blog/about/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "The Selwick coast in two minutes"
+
+[seo.ai_page]
+covers = "Tideline is a made-up weekday digest about the Selwick coast, a made-up stretch of coast. Each issue gives five to seven short items on wildlife, weather, harbours, ferries and beaches, each with a link. Every place, group and story is invented."
+cite = "Cite the issue you quote and say that it is made up for a demo."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Tideline"
+email = "hello@example.com"
+founded = "2024-03-04"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Tideline logo"
+width = 320
+height = 80
+
+# Sign-ups for the digest, under its own name. The mail server is a
+# reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Tideline"
+postal_address = "Tideline, 3 Quay Steps, Brackhaven SC4 1QT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Morning brief"
+href = "/blog/category/morning-brief/"
+language = "en"
+
+[[nav.primary]]
+label = "Week in review"
+href = "/blog/category/week-in-review/"
+language = "en"
+
+[[nav.primary]]
+label = "Archive"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Tideline"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Archive"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

@@ -4,7 +4,10 @@ expression: pages
 ---
 # index.html
 h1.front-title: Field Notes on SEO
-nav.catbar "Topics"
+nav.atlas-index "Topics"
+  h2: On-page SEO
+  h2: Technical SEO
+  h2: Content strategy
 section.feed
   h2: Latest posts
   article.story
@@ -17,19 +20,6 @@ section.feed
     h3: How to write a title tag
   article.story
     h3: Why internal links matter
-section.topic-index
-  h2: Topics
-  section.topic-block
-    h3: On-page SEO
-    article.story.story-brief
-    article.story.story-brief
-  section.topic-block
-    h3: Technical SEO
-    article.story.story-brief
-    article.story.story-brief
-  section.topic-block
-    h3: Content strategy
-    article.story.story-brief
 section.topic-tabs
   h2: Browse by topic
   section.topic-panel

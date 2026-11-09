@@ -1,0 +1,12 @@
+/* Section part: progress strip (templates/sections/progress_strip.html).
+   Small squares in a row, one per step: filled in ink when done, in the
+   accent colour for the step the reader is on, open for the rest. A pack
+   sets --progress-step for the squares' size. */
+.progress-strip { display: grid; gap: 0.5rem; }
+.progress-words { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.75rem; margin: 0; }
+.progress-label { font-weight: 700; font-variant-numeric: tabular-nums; }
+.progress-note { color: var(--color-muted); font-size: var(--text-small); font-variant-numeric: tabular-nums; }
+.progress-steps { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+.progress-step { flex: none; inline-size: var(--progress-step, 1.125rem); block-size: var(--progress-step, 1.125rem); border: 2px solid var(--color-text); border-radius: var(--radius); }
+.progress-done { background: var(--color-text); }
+.progress-now { margin-inline: 0.25rem; border-color: var(--color-accent); background: var(--color-accent); box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-accent); }

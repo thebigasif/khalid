@@ -1,0 +1,17 @@
+/* Section part: fact table (templates/sections/fact_table.html). A
+   ruled data table: a heavy rule over the head, figures in tabular
+   numbers at the end of their cells, and the first column held in view
+   while a wide table scrolls. A pack shades `data-heat` cells. */
+.fact-table-wrap { max-inline-size: 100%; overflow-x: auto; }
+.fact-table { display: table; inline-size: 100%; margin: 0; font-size: var(--text-small); }
+.fact-table caption { padding-block-end: 0.5rem; color: var(--color-muted); text-align: start; }
+.fact-table thead th { border-block: 2px solid var(--color-text); font-weight: 600; vertical-align: bottom; }
+.fact-table :is(th, td) { padding: 0.625rem 0.75rem; }
+.fact-table tbody th { position: sticky; inset-inline-start: 0; z-index: 1; min-inline-size: min(12rem, 45vw); max-inline-size: 22rem; background: var(--color-background); font-weight: 400; }
+.fact-table tbody th a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.fact-table tbody th a:hover { color: var(--color-link); text-decoration: underline; }
+.fact-table-category { display: block; margin-block-start: 0.125rem; color: var(--color-muted); font-size: 0.8125rem; }
+.fact-table-date { min-inline-size: 5.5rem; color: var(--color-muted); }
+@media (min-width: 40rem) { .fact-table-date { white-space: nowrap; } }
+.fact-table-figure { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: end; white-space: nowrap; }
+.fact-table thead .fact-table-figure { font-family: inherit; white-space: normal; }

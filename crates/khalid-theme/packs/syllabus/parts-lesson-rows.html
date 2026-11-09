@@ -1,0 +1,18 @@
+{#- Syllabus's outline rows (docs/templates/syllabus.md), the one shape
+    every list of lessons takes: a small open square, the lesson's number
+    when the list knows it, the title and the lesson's length (its first
+    fact). A post without facts, such as course news, shows its date in
+    place of the length. With `module` set, only the posts of that module
+    (category) show, numbered on from `first`. Titles use a heading of
+    `level`. -#}
+{% macro lesson_rows(posts, level=3, first=1, numbered=true, module=none) -%}
+<ol class="lesson-rows" role="list">
+{% for post in posts if module is none or (post.category and post.category.href == module) %}<li class="lesson-row">
+<span class="lesson-mark" aria-hidden="true"></span>
+{% if numbered %}<span class="lesson-number">{{ t.course_lesson | replace("{number}", (first + loop.index0) | string) }}</span>
+{% endif %}<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.facts %}<span class="lesson-length">{{ post.facts[0].value }}</span>
+{% else %}<time class="lesson-length" datetime="{{ post.date }}">{{ post.date | date }}</time>
+{% endif %}</li>
+{% endfor %}</ol>
+{%- endmacro %}

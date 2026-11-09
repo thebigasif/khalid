@@ -1,0 +1,64 @@
+{#- Masthead's front page (docs/templates/masthead.md): under the centred
+    nameplate, the strapline, then the lead story (the newest featured
+    post with the featured option on, the newest post otherwise), the
+    latest posts in the shape the front option sets, grid or list, and
+    the rest of the page's posts as headline lists by section. With home
+    sections in site.toml, each section shows under its own rule label in
+    the front's shape. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "card.html" import cards, pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% set options = template.options -%}
+{% set shape = "row" if options.front == "list" else "image" -%}
+{% if options.front == "list" %}<div class="front front-list">{% else %}<div class="front front-grid">{% endif %}
+<header class="front-intro">
+<h1 class="visually-hidden">{{ page.title }}</h1>
+{% if options.tagline %}<p class="strapline">{{ options.tagline[0] }}</p>
+{% endif %}{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}</header>
+{% if page.sections %}{% for section in page.sections %}<section class="front-block" aria-labelledby="front-section-{{ loop.index }}">
+<h2 class="rule-label" id="front-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3, shape) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}{% set lead = page.featured if options.featured and page.featured else page.posts[0] -%}
+{% set others = page.posts | rejectattr("href", "eq", lead.href) | list -%}
+{% set latest = others[:options.latest_count] -%}
+{% set rest = others[options.latest_count:] -%}
+<article class="lead">
+{% if lead.image %}{{ picture(lead.image) }}
+{% endif %}<div class="lead-text">
+<p class="kicker">{{ t.lead_story }}{% if lead.category %} <a href="{{ lead.category.href }}">{{ lead.category.name }}</a>{% endif %}</p>
+<h2><a href="{{ lead.href }}">{{ lead.title }}</a></h2>
+<p class="lead-dek">{{ lead.excerpt }}</p>
+<p class="byline">{% if lead.author %}<span>{{ t.by }} {{ lead.author.name }}</span> {% endif %}<time datetime="{{ lead.date }}">{{ lead.date | date }}</time></p>
+</div>
+</article>
+{% if latest %}<section class="front-block" aria-labelledby="latest-title">
+<h2 class="rule-label" id="latest-title">{{ t.latest_stories }}</h2>
+{{ cards(latest, 3, shape) }}
+</section>
+{% endif %}{% set rest_areas = rest | selectattr("category") | map(attribute="category.href") | list -%}
+{% set sections = page.categories | selectattr("href", "in", rest_areas) | list -%}
+{% if sections %}<section class="front-block" aria-labelledby="sections-title">
+<h2 class="rule-label" id="sections-title">{{ t.in_the_sections }}</h2>
+<div class="section-columns">
+{% for category in sections %}{% set stories = rest | selectattr("category") | selectattr("category.href", "eq", category.href) | list %}<section class="section-column" aria-labelledby="column-{{ loop.index }}">
+<h3 id="column-{{ loop.index }}"><a href="{{ category.href }}">{{ category.name }}</a></h3>
+{{ feed_list(stories, 4) }}
+</section>
+{% endfor %}</div>
+</section>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}</div>
+{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

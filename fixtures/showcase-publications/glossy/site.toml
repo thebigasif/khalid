@@ -1,0 +1,98 @@
+# The Weekend Edit, a made-up lifestyle magazine, written for the Glossy
+# template's demo. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "The Weekend Edit"
+languages = ["en"]
+
+[template.cta]
+label = "Get the Friday letter"
+href = "/blog/about/"
+note = "One email each Friday with the week's stories and one idea for the weekend."
+
+# The Glossy template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Home, food, travel and style for slow weekends, one good picture at a time."]
+cover_lines = 3
+
+[announcement]
+text = "New this week: cold lake swims in the mountains."
+href = "/blog/cold-lake-swims/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A lifestyle magazine for slow weekends"
+
+[seo.ai_page]
+covers = "The Weekend Edit is a small lifestyle magazine. Each story covers one idea for home, food, travel, style or wellbeing, with one photograph."
+cite = "Name the story and link the post you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "The Weekend Edit"
+email = "hello@example.com"
+founded = "2024-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Weekend Edit logo"
+width = 320
+height = 80
+
+# Sign-ups for the Friday letter, under the magazine's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "The Weekend Edit"
+postal_address = "The Weekend Edit, 3 Quay Street, Porthallow PA1 7RE"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Home"
+href = "/blog/category/home/"
+language = "en"
+
+[[nav.primary]]
+label = "Food"
+href = "/blog/category/food/"
+language = "en"
+
+[[nav.primary]]
+label = "Travel"
+href = "/blog/category/travel/"
+language = "en"
+
+[[nav.primary]]
+label = "Style"
+href = "/blog/category/style/"
+language = "en"
+
+[[nav.primary]]
+label = "Wellbeing"
+href = "/blog/category/wellbeing/"
+language = "en"
+
+[[nav.footer]]
+label = "About the magazine"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Every story"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

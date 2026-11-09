@@ -35,7 +35,7 @@ pub(crate) fn tokens(pack: &Pack) -> Result<String, UserMessage> {
     let defaults = ThemeTokens::default().to_toml();
     let parse = |text: &str| text.parse::<toml::Table>().map_err(|_| broken(pack));
     let mut merged = parse(&defaults)?;
-    for (key, value) in parse(pack.tokens)? {
+    for (key, value) in parse(pack.tokens())? {
         match (merged.get_mut(&key), value) {
             (Some(toml::Value::Table(base)), toml::Value::Table(over)) => base.extend(over),
             (_, value) => {
@@ -81,7 +81,7 @@ mod tests {
         for pack in packs() {
             let text = tokens(pack).unwrap();
             let tokens = ThemeTokens::from_toml(&text).unwrap();
-            let own: toml::Table = pack.tokens.parse().unwrap();
+            let own: toml::Table = pack.tokens().parse().unwrap();
             if let Some(toml::Value::Table(colors)) = own.get("colors")
                 && let Some(link) = colors.get("link").and_then(toml::Value::as_str)
             {
@@ -99,7 +99,7 @@ mod tests {
 
     #[test]
     fn an_unknown_name_lists_every_template() {
-        let message = find("glossy").unwrap_err().to_string();
+        let message = find("velvet").unwrap_err().to_string();
         for pack in packs() {
             assert!(message.contains(pack.name), "{message}");
         }

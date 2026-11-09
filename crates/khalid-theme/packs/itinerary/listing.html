@@ -1,0 +1,37 @@
+{#- Itinerary's lists (a country, a tag, the archive, a date or a
+    collection): the list's name, such as the country, on a passport
+    stamp, its intro, then its posts as a grid of tickets: a trip with its
+    days on the stub, its route, when and its cost. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "image.html" import picture -%}
+<header class="list-header">
+{% block kind %}<p class="list-kind">{{ t.trip_diaries }}</p>
+{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}<ul class="tickets" role="list">
+{% for post in page.posts %}<li><article class="ticket">
+{% if post.image %}<div class="ticket-photo">{{ picture(post.image, slot_sizes("ticket")) }}</div>
+{% endif %}<div class="ticket-main">
+{% if post.category %}<p class="ticket-country">{{ post.category.name }}</p>
+{% endif %}<h2 class="ticket-title"><a href="{{ post.href }}">{{ post.title }}</a></h2>
+{% if post.facts[1:] %}<dl class="ticket-facts">
+{% for fact in post.facts[1:] %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endfor %}</dl>
+{% elif not post.facts %}<p class="ticket-excerpt">{{ post.excerpt }}</p>
+{% endif %}</div>
+<p class="ticket-stub">{% if post.facts %}<span class="stub-number">{{ post.facts[0].value }}</span> <span class="stub-label">{{ post.facts[0].label }}</span>{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+</article></li>
+{% endfor %}</ul>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

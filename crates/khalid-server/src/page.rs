@@ -4,6 +4,7 @@ use axum::http::HeaderValue;
 use bytes::Bytes;
 
 use crate::compress::Compressed;
+use crate::consent::{GPC_START, NO_GPC_START, under_gpc};
 use crate::{MediaType, PagePath, ServerError, etag};
 
 /// Pages may be kept, but must be checked with their tag before reuse, so
@@ -47,6 +48,13 @@ pub struct Page {
     /// The tag of the plain bytes.
     etag: Option<HeaderValue>,
     caching: Caching,
+    /// The stylesheet an HTML page links, which its answer says to
+    /// preload, when the page names one of its own.
+    preload: Option<String>,
+    /// The copy kept for a reader whose browser sends GPC and who has not
+    /// answered, when the page holds a part that differs for them
+    /// (privacy plan KTD4).
+    gpc: Option<Box<Page>>,
 }
 
 /// How a page's bytes are held: one copy, never two.
@@ -65,6 +73,8 @@ impl Page {
     /// once, so a request only compares it.
     pub fn new(path: PagePath, media_type: MediaType, body: impl Into<Bytes>) -> Self {
         let body = body.into();
+        let gpc = Self::gpc_body(media_type, &body)
+            .map(|copy| Box::new(Self::new(path.clone(), media_type, copy)));
         Self {
             etag: etag::of(&body),
             len: body.len(),
@@ -72,7 +82,27 @@ impl Page {
             media_type,
             stored: Stored::Plain(body),
             caching: Caching::Revalidate,
+            preload: None,
+            gpc,
         }
+    }
+
+    /// The bytes a reader with GPC gets in place of `body`, when it is an
+    /// HTML page with a part that differs for them.
+    fn gpc_body(media_type: MediaType, body: &[u8]) -> Option<String> {
+        let html = std::str::from_utf8(body)
+            .ok()
+            .filter(|_| media_type == MediaType::Html)?;
+        let differs = [GPC_START, NO_GPC_START]
+            .into_iter()
+            .any(|mark| html.contains(mark));
+        differs.then(|| under_gpc(html))
+    }
+
+    /// The copy kept for a reader with GPC who has not answered, when it
+    /// differs from this page.
+    pub(crate) fn under_gpc(&self) -> Option<&Self> {
+        self.gpc.as_deref()
     }
 
     /// A file at `path` whose name carries a hash of `body`, such as
@@ -94,8 +124,27 @@ impl Page {
         Self {
             caching: Caching::PerRequest,
             etag: None,
+            gpc: None,
             ..Self::new(path, media_type, body)
         }
+    }
+
+    /// The page, whose answers say to preload the stylesheet at `href`,
+    /// such as `/blog/assets/site.3f2a9c1e.css`, in place of the one
+    /// [`Pages::with_preloads`](crate::Pages::with_preloads) names for
+    /// every page. A page that links a stylesheet of its own names it here.
+    #[must_use]
+    pub fn with_preload(self, href: &str) -> Self {
+        Self {
+            preload: Some(href.to_owned()),
+            ..self
+        }
+    }
+
+    /// The stylesheet this page's answers say to preload, when it names
+    /// one of its own.
+    pub fn preload(&self) -> Option<&str> {
+        self.preload.as_deref()
     }
 
     /// Whether each answer must fill the page's [`NONCE_SLOT`].
@@ -107,7 +156,11 @@ impl Page {
     /// compressing makes it smaller, or as it is. When `old` has the same
     /// bytes, by its tag, and a copy, that copy is shared instead of
     /// compressing again.
-    pub(crate) fn compressed_like(self, old: Option<&Self>) -> Self {
+    pub(crate) fn compressed_like(mut self, old: Option<&Self>) -> Self {
+        if let Some(gpc) = self.gpc.take() {
+            let old = old.and_then(Self::under_gpc);
+            self.gpc = Some(Box::new(gpc.compressed_like(old)));
+        }
         let Stored::Plain(plain) = &self.stored else {
             return self;
         };
@@ -210,6 +263,15 @@ mod tests {
         );
         assert_eq!(page.len(), text.len());
         assert_eq!(page.body().unwrap(), text.as_bytes());
+    }
+
+    #[test]
+    fn a_page_keeps_its_own_preload_when_compressed() {
+        let text = "<p>A sitemap lists the pages you want found.</p>\n".repeat(40);
+        assert_eq!(post(&text).preload(), None);
+        let page = post(&text).with_preload("/blog/assets/site.0123abcd.css");
+        let page = page.compressed_like(None);
+        assert_eq!(page.preload(), Some("/blog/assets/site.0123abcd.css"));
     }
 
     #[test]

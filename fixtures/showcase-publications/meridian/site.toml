@@ -1,0 +1,97 @@
+# The Weekly Meridian, a made-up journal about architecture and cities,
+# written for the Meridian template's demo. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "The Weekly Meridian"
+languages = ["en"]
+
+[template.cta]
+label = "Get the Friday letter"
+href = "/blog/about/"
+note = "One essay on how cities are built, every Friday morning, from four staff writers."
+
+[announcement]
+text = "New this week: why trams are coming back to mid-sized cities."
+href = "/blog/trams-return/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A journal about architecture and cities"
+
+[seo.ai_page]
+covers = "The Weekly Meridian writes about housing, streets, public space, transport, the reuse of old buildings, building materials and how neighbourhoods change."
+cite = "Name The Weekly Meridian and the author, and link the article you quote."
+contact = "desk@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "The Weekly Meridian"
+email = "desk@example.com"
+founded = "2021-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Weekly Meridian logo"
+width = 320
+height = 80
+
+# Sign-ups for the Friday letter, under the publication's own name. The
+# mail server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "letter@example.com"
+name = "The Weekly Meridian"
+postal_address = "The Weekly Meridian, 12 Ropewalk Yard, Canal Street, Easthaven EH4 7MR"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Housing"
+href = "/blog/category/housing/"
+language = "en"
+
+[[nav.primary]]
+label = "Streets"
+href = "/blog/category/streets/"
+language = "en"
+
+[[nav.primary]]
+label = "Transit"
+href = "/blog/category/transit/"
+language = "en"
+
+[[nav.primary]]
+label = "Buildings"
+href = "/blog/category/buildings/"
+language = "en"
+
+[[nav.primary]]
+label = "Materials"
+href = "/blog/category/materials/"
+language = "en"
+
+[[nav.primary]]
+label = "Neighbourhoods"
+href = "/blog/category/neighbourhoods/"
+language = "en"
+
+[[nav.footer]]
+label = "About the Meridian"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Reusing old buildings: a guide"
+href = "/blog/reuse-old-buildings/"
+language = "en"
+
+[[nav.footer]]
+label = "Reading a neighbourhood"
+href = "/blog/read-neighbourhood-change/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

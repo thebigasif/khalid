@@ -1,2 +1,0 @@
-Changed
-- Folio, the product team's notebook template, has a new design. The blog's name runs very large on faint ruled paper at the top of the front page. Under it, the featured story sits beside a numbered rail of the five newest posts, then six picture cards, then every older post as a ruled row with its date. Post and list titles are larger, and Folio's own colours are now a quiet graphite with one ochre accent. A synced theme still recolours it all.

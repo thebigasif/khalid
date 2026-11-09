@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /saltglass-review/
+table /winter-watch-list/
+category /category/films/
+tag /tag/teodor-vance/
+author /authors/nadia-brennan/

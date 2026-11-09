@@ -5,7 +5,8 @@ use minijinja::value::Serde;
 
 use crate::{
     RenderAuthor, RenderAuthors, RenderEntries, RenderEntry, RenderGlossary, RenderHome, RenderHub,
-    RenderListing, RenderPage, RenderPost, RenderSearch, RenderSitemap,
+    RenderListing, RenderPage, RenderPost, RenderPrivacy, RenderPrivacyChoices, RenderSearch,
+    RenderSitemap,
 };
 
 /// The main content of one page. The variant picks the template.
@@ -28,6 +29,8 @@ pub enum PageBody {
     Date(RenderListing),
     /// The HTML sitemap: every listed page of one language.
     Sitemap(RenderSitemap),
+    /// The privacy page, written from the site's settings.
+    Privacy(Box<RenderPrivacy>),
     /// One post.
     Post(Box<RenderPost>),
     /// A page that is not a post, such as About.
@@ -40,6 +43,8 @@ pub enum PageBody {
     Glossary(RenderGlossary),
     /// The search form and its results.
     Search(RenderSearch),
+    /// The reader's privacy choices, one switch per category.
+    PrivacyChoices(RenderPrivacyChoices),
     /// The list of case studies or of the changelog.
     Entries(RenderEntries),
     /// One case study or changelog entry.
@@ -62,12 +67,14 @@ impl PageBody {
             Self::Channel(_) => "channel.html",
             Self::Date(_) => "date.html",
             Self::Sitemap(_) => "sitemap.html",
+            Self::Privacy(_) => "privacy.html",
             Self::Post(_) => "post.html",
             Self::Page(_) => "page.html",
             Self::Author(_) => "author.html",
             Self::Authors(_) => "authors.html",
             Self::Glossary(_) => "glossary.html",
             Self::Search(_) => "search.html",
+            Self::PrivacyChoices(_) => "privacy-choices.html",
             Self::Entries(_) => "entries.html",
             Self::Entry(_) => "entry.html",
             Self::Hub(_) => "hub.html",
@@ -93,6 +100,24 @@ impl PageBody {
         }
     }
 
+    /// Whether the page lists posts near its top, so its first card picture
+    /// may be the largest thing a reader sees. Templates read it as
+    /// `lists_posts`. A post is not one: its cards are related posts at the
+    /// end. A hub opens with its intro and chapters, not its cards.
+    pub(crate) fn lists_posts(&self) -> bool {
+        matches!(
+            self,
+            Self::Home(_)
+                | Self::Collection(_)
+                | Self::Tag(_)
+                | Self::Category(_)
+                | Self::Archive(_)
+                | Self::Channel(_)
+                | Self::Date(_)
+                | Self::Author(_)
+        )
+    }
+
     /// The page's own data, which templates read as `page`.
     pub(crate) fn value(&self) -> Value {
         match self {
@@ -104,12 +129,14 @@ impl PageBody {
             | Self::Channel(listing)
             | Self::Date(listing) => Value::from(Serde(listing)),
             Self::Sitemap(sitemap) => Value::from(Serde(sitemap)),
+            Self::Privacy(privacy) => Value::from(Serde(privacy)),
             Self::Post(post) => Value::from(Serde(post)),
             Self::Page(page) => Value::from(Serde(page)),
             Self::Author(author) => Value::from(Serde(author)),
             Self::Authors(authors) => Value::from(Serde(authors)),
             Self::Glossary(glossary) => Value::from(Serde(glossary)),
             Self::Search(search) => Value::from(Serde(search)),
+            Self::PrivacyChoices(choices) => Value::from(Serde(choices)),
             Self::Entries(entries) => Value::from(Serde(entries)),
             Self::Entry(entry) => Value::from(Serde(entry)),
             Self::Hub(hub) => Value::from(Serde(hub)),

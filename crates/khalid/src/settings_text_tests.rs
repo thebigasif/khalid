@@ -117,3 +117,21 @@ fn search_title_focus_keyword_and_schema_read_back_the_same() {
         "{written}"
     );
 }
+
+#[test]
+fn a_settings_edit_keeps_the_facts_as_written() {
+    let file = "---\ntitle: A\nfacts:\n  - label: Client\n    value: Calder Street Library\nfeatured: true\n---\n\nBody.\n";
+    let before = settings_of(&parse_post(Path::new("a.md"), file).unwrap().front);
+    let mut after = before.clone();
+    after.featured = false;
+    after.excerpt = Some(text("A library's new reading room."));
+    let mut text = PostText::parse(file).unwrap();
+    write_settings(&mut text, &before, &after, PostStatus::Draft).unwrap();
+    let written = text.to_text();
+    assert!(
+        written.contains("facts:\n  - label: Client\n    value: Calder Street Library\n"),
+        "{written}"
+    );
+    let front = parse_post(Path::new("a.md"), &written).unwrap().front;
+    assert_eq!(front.facts.len(), 1, "{written}");
+}

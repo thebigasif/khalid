@@ -1,0 +1,16 @@
+{#- filter_row(label, all_href, all_name, links, current, marks=[]): a row
+    of chips that each open a list, such as every change of one type or
+    every review of one genre. "All" first, then `links`, which are
+    categories or tags (`name`) or menu links (`label`). The chip whose
+    address is `current` is marked as this page. `marks` lists slugs in
+    order, as in `release_log`: a link to the second of them gets
+    `data-mark="2"`. Plain links, so the filter works with scripts off.
+    `label` names the row for screen readers. -#}
+{% macro filter_row(label, all_href, all_name, links, current, marks=[]) -%}
+<nav class="filter-row" aria-label="{{ label }}">
+<ul role="list">
+<li><a href="{{ all_href }}"{% if all_href == current %} aria-current="page"{% endif %}>{{ all_name }}</a></li>
+{% for link in links %}{% set slug = link.href | trim("/") | split("/") | list | last %}<li><a href="{{ link.href }}" data-mark="{% for mark in marks %}{% if mark == slug %}{{ loop.index }}{% endif %}{% endfor %}"{% if link.href == current %} aria-current="page"{% endif %}>{{ link.name if link.name is defined else link.label }}</a></li>
+{% endfor %}</ul>
+</nav>
+{%- endmacro %}

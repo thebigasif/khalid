@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="16" width="48" height="48" fill="#14212a"/>
+  <g fill="#fbfaf7"><rect x="18" y="42" width="8" height="14"/><rect x="30" y="34" width="8" height="22"/><rect x="42" y="24" width="8" height="32"/></g>
+  <text textLength="150" lengthAdjust="spacingAndGlyphs" x="72" y="51" font-family="Archivo, Arial, sans-serif" font-size="30" font-weight="700" fill="#14212a">Tallyline</text>
+</svg>

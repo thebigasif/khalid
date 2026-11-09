@@ -192,3 +192,57 @@ fn tokens_load_from_the_theme_folder() {
     let tokens = Tokens::load(site.path()).unwrap();
     assert_eq!(tokens.colors.accent.as_str(), "#b3261e");
 }
+
+#[test]
+fn the_body_font_file_is_the_upright_regular_face_of_the_body_family() {
+    let tokens = Tokens::from_toml(
+        r#"
+[fonts]
+heading = '"Fraunces", serif'
+body = '"Source Serif 4", Georgia, serif'
+
+[[fonts.files]]
+family = "Fraunces"
+style = "normal"
+weight = "400"
+path = "fraunces-latin-400.woff2"
+
+[[fonts.files]]
+family = "Source Serif 4"
+style = "italic"
+weight = "400"
+path = "source-serif-4-latin-italic-400.woff2"
+
+[[fonts.files]]
+family = "Source Serif 4"
+style = "normal"
+weight = "300 700"
+path = "source-serif-4-latin-300-700.woff2"
+"#,
+    )
+    .unwrap();
+    let file = tokens.fonts.body_file().map(|file| file.path.as_str());
+    assert_eq!(
+        file,
+        Some("source-serif-4-latin-300-700.woff2"),
+        "the variable upright file holds 400; the italic and the heading font are not preloaded"
+    );
+}
+
+#[test]
+fn body_text_in_a_system_font_preloads_nothing() {
+    let tokens = Tokens::from_toml(
+        r#"
+[fonts]
+heading = '"Fraunces", serif'
+
+[[fonts.files]]
+family = "Fraunces"
+style = "normal"
+weight = "600"
+path = "fraunces-latin-600.woff2"
+"#,
+    )
+    .unwrap();
+    assert_eq!(tokens.fonts.body_file(), None);
+}

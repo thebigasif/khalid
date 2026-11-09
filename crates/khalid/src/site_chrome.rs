@@ -17,6 +17,9 @@ pub(crate) fn render_site(config: &Config, locale: &Locale, stylesheet: &str) ->
         locale: locale.clone(),
         home: path_of(config, locale, ""),
         stylesheet: stylesheet.to_owned(),
+        // The theme is read after the pages; `assets::preload_body_font`
+        // fills this from its tokens, as the search page fills `search`.
+        body_font: None,
         nav: Nav {
             primary: menu(&nav.primary, locale),
             footer: footer(config, &nav.footer, locale),

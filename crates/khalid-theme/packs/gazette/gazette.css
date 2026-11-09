@@ -1,0 +1,168 @@
+/* Gazette (docs/templates/gazette.md): a local paper with many sections.
+   Newsprint, a sturdy serif for headlines and every section under its
+   flag: the name in reverse on a heavy ink rule. The newest stories run
+   down a rail grouped by day, and each story's place is a small label.
+   The section parts' own rules come first; these set the look over them.
+   Every colour is a token or a mix of tokens. */
+:root { --gz-frame: 80rem; --gz-rule: 3px solid var(--color-text); }
+.site-header, main, .site-footer { max-inline-size: var(--gz-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: 48rem; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(48rem + 18rem); }
+main > .post ~ * { max-inline-size: 48rem; margin-inline: auto; }
+
+/* The header: the name at the start, the menu and search at the end, over
+   a heavy ink rule. */
+.site-header { inline-size: 100%; gap: 0.5rem 2rem; padding-block: 0.875rem; border-block-end: var(--gz-rule); }
+.site-name { color: var(--color-text); font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.25rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.04em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -3px var(--color-accent); }
+.site-header nav li:last-child a { justify-content: flex-end; }
+
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; max-inline-size: 100%; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 700 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: var(--color-text); text-decoration: none; }
+
+/* The edition bar: the name, then the newest date and the tagline at the
+   end of the same ruled line. */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); align-items: end; gap: 0.25rem 2rem; margin-block: 0 0.25rem; padding-block: 1.25rem 0.75rem; border-block-end: 1px solid var(--color-text); }
+.hero-title { max-inline-size: none; font-size: clamp(1.75rem, 1.25rem + 1.6vw, 2.75rem); line-height: 1.1; }
+.hero-intro { margin-block-start: 0.25rem; font-size: 1rem; }
+.gz-edition { display: flex; flex-direction: column; gap: 0 0.5rem; margin: 0; color: var(--color-muted); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.gz-edition time { color: var(--color-text); }
+@media (min-width: 48rem) {
+  .hero { grid-template-columns: minmax(0, 1fr) auto; }
+  .gz-edition { flex-direction: row; flex-wrap: wrap; }
+  .hero-intro { grid-column: 1 / -1; }
+  .gz-edition { grid-row: 1; grid-column: 2; justify-content: flex-end; padding-block-end: 0.375rem; text-align: end; }
+  .gz-edition time + span::before { content: "\00b7"; margin-inline-end: 0.5rem; }
+}
+
+/* The section index: a jump link per section, spread along the bar on a
+   wide screen and scrolling sideways on a phone. */
+.gz-index { margin-block: 0 1.75rem; border-block-end: var(--gz-rule); }
+.gz-index ul { flex-wrap: nowrap; gap: 0 1.5rem; overflow-x: auto; scrollbar-width: thin; }
+.gz-index a { color: var(--color-text); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+.gz-index a:hover { color: var(--color-link); text-decoration: underline; }
+@media (min-width: 64rem) { .gz-index ul { justify-content: space-between; } }
+
+/* The front: the top story and the section blocks beside the rail. */
+.gz-front { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; margin-block-end: var(--space-section); }
+@media (min-width: 64rem) {
+  .gz-front { grid-template-columns: minmax(0, 1fr) 19rem; grid-template-areas: "top rail" "sections rail"; align-items: start; column-gap: 2.5rem; }
+  .gz-top { grid-area: top; }
+  .gz-rail { grid-area: rail; padding-inline-start: 2.5rem; border-inline-start: 1px solid var(--color-border); }
+  .gz-sections { grid-area: sections; }
+}
+
+/* A story's place: small capitals in the link colour, before its title. */
+.gz-place { margin: 0; color: var(--color-link); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; }
+.gz-place a { text-decoration: none; }
+.gz-place a:hover { text-decoration: underline; }
+.gz-byline { display: flex; flex-wrap: wrap; gap: 0 0.75rem; margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.gz-byline span:first-child { color: var(--color-text); font-weight: 700; }
+
+/* The top story: its picture beside the text on a wide screen. */
+.gz-top { display: grid; gap: 1rem 1.75rem; padding-block-end: 2rem; border-block-end: 1px solid var(--color-text); }
+@media (min-width: 48rem) { .gz-top:has(.gz-top-picture) { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: start; } }
+.gz-top .image, .gz-story .image { margin: 0; }
+.gz-top img, .gz-story img { inline-size: 100%; block-size: auto; object-fit: cover; }
+.gz-top img { aspect-ratio: 3 / 2; }
+.gz-top figcaption { margin-block-start: 0.375rem; color: var(--color-muted); font-size: 0.8125rem; }
+.gz-top-picture, .gz-story-picture { display: block; }
+.gz-top-text { display: flex; flex-direction: column; gap: 0.625rem; }
+.gz-top :is(h2, h3, h4) { margin: 0; font-size: clamp(1.625rem, 1.25rem + 1.4vw, 2.375rem); line-height: 1.12; }
+.gz-top :is(h2, h3, h4) a, .gz-story :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.gz-top :is(h2, h3, h4) a:hover, .gz-story :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.gz-top-summary { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
+
+/* The section blocks: two across where they fit, each under its flag. */
+.gz-sections { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); gap: 2.75rem 2rem; }
+.gz-section { display: flex; flex-direction: column; scroll-margin-block-start: 1rem; }
+.gz-flag { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.25rem 1rem; margin-block-end: 1rem; border-block-end: var(--gz-rule); }
+.gz-flag-name { margin: 0; padding: 0.375rem 0.75rem 0.25rem; color: var(--color-background); background: var(--color-text); font-family: var(--font-body); font-size: 0.875rem; letter-spacing: 0.1em; line-height: 1.4; text-transform: uppercase; }
+.gz-flag-name a { color: var(--color-background); text-decoration: none; }
+.gz-flag-name a:hover { text-decoration: underline; }
+.gz-flag-more { margin: 0 0 0.25rem; font-size: var(--text-small); }
+.gz-flag-more a { font-weight: 700; }
+.gz-story { display: flex; flex-direction: column; gap: 0.375rem; padding-block-end: 0.75rem; border-block-end: 1px solid var(--color-border); }
+.gz-story img { aspect-ratio: 16 / 9; }
+.gz-story figcaption { display: none; }
+.gz-story-picture { margin-block-end: 0.375rem; }
+.gz-story :is(h2, h3, h4) { margin: 0; font-size: 1.3125rem; line-height: 1.22; }
+.gz-summary { margin: 0; color: var(--color-muted); font-size: 0.9375rem; line-height: 1.45; }
+
+/* The latest news rail: the label in the accent, the stories by day. */
+.gz-rail-title, .gz-band-title { margin: 0 0 0.75rem; font-family: var(--font-body); font-size: 0.875rem; letter-spacing: 0.1em; line-height: 1.4; text-transform: uppercase; }
+.gz-rail-title { padding: 0.375rem 0.75rem 0.25rem; color: var(--color-on-accent); background: var(--color-accent); }
+.gz-rail .headline-row :is(h2, h3, h4, h5) { font-size: 1rem; }
+.gz-rail .newsletter-slot { margin-block-start: 2rem; padding: 1.25rem; background: var(--color-surface); border-block-start: var(--gz-rule); }
+.gz-rail .newsletter-slot :is(h2, h3, h4) { margin-block-start: 0; font-size: 1.25rem; }
+.gz-rail .subscribe input { inline-size: 100%; }
+
+/* A band title over a list: the words in capitals on a heavy rule. */
+.gz-band-title { padding-block-end: 0.375rem; border-block-end: var(--gz-rule); }
+
+/* Lists: the name under a heavy rule, the lead story, then the rest as
+   headlines in two columns where they fit. */
+.list-header { margin-block: 2rem; padding-block-end: 1rem; border-block-end: var(--gz-rule); }
+.list-header h1 { margin: 0; line-height: 1.1; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 0.5rem; color: var(--color-muted); }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-kind { margin-block: 0 0.375rem; color: var(--color-link); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.gz-list { margin-block: 2.5rem var(--space-section); }
+.gz-list .headline-days, .author-posts .headline-days { display: block; columns: 2 22rem; column-gap: 2.5rem; }
+.gz-list .headline-row, .author-posts .headline-row { break-inside: avoid; }
+.gz-list .headline-day, .author-posts .headline-day { break-after: avoid; }
+main > .headline-days { margin-block-end: var(--space-section); }
+
+/* A story: the flag, the headline, the byline, the picture with its
+   credit, then the dateline over the text. */
+.post-header { margin-block: 1.75rem 1.75rem; }
+.gz-kicker { margin-block: 0 1rem; border-block-end: var(--gz-rule); }
+.gz-kicker a { display: inline-block; padding: 0.375rem 0.75rem 0.25rem; color: var(--color-background); background: var(--color-text); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; text-decoration: none; text-transform: uppercase; }
+.gz-kicker a:hover { text-decoration: underline; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.1; }
+.post-date { margin-block: 0.25rem 0; }
+.post-header .dek { margin-block: 0 1rem; color: var(--color-muted); font-size: 1.25rem; line-height: 1.45; }
+.post-meta address { font-style: normal; }
+.post-meta .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-header .image img { inline-size: 100%; }
+.post-header figcaption { padding-block: 0.5rem; color: var(--color-muted); font-size: var(--text-small); border-block-end: 1px solid var(--color-border); }
+.gz-dateline { margin-block: 0 1rem; color: var(--color-link); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.post-body { font-size: var(--text-body); }
+.post-body > * { max-inline-size: 54ch; }
+.post-body > :is(table, figure, .image) { max-inline-size: none; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-body table { font-size: 1rem; font-variant-numeric: tabular-nums; }
+.post-body blockquote { color: var(--color-text); border-inline-start-color: var(--color-text); font-family: var(--font-heading); font-size: 1.25rem; }
+.post-footer .tags a { padding: 0.25rem 0.75rem; color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-text); font-size: var(--text-small); font-weight: 700; }
+.post-footer .tags a:hover { color: var(--color-link); border-color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+
+/* A reporter: the mark beside the name, their stories by day. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: 1.75rem; }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 7rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.0625rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-posts, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter: panels on the surface under a
+   heavy rule. */
+.cta-band, .newsletter-slot { background: var(--color-surface); border-block-start: var(--gz-rule); }
+.newsletter-slot { padding: 1.5rem; }
+.pagination a[aria-current] { color: var(--color-on-accent); background: var(--color-accent); }
+
+.site-footer { border-block-start: var(--gz-rule); }

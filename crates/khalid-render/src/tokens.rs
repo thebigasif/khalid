@@ -354,6 +354,36 @@ impl Default for Colors {
     }
 }
 
+impl Fonts {
+    /// The self-hosted file that draws body text, which a page preloads:
+    /// the first family of the body stack, upright, at weight 400 or in a
+    /// range that holds 400, else that family's first upright file. `None`
+    /// when the body text is not set in a self-hosted family.
+    pub fn body_file(&self) -> Option<&FontFile> {
+        let stack = self.body.as_str();
+        let first = stack.split_once(',').map_or(stack, |(first, _)| first);
+        let family = first.trim().trim_matches(['"', '\'']);
+        let upright = || {
+            self.files
+                .iter()
+                .filter(move |file| file.family == family && file.style == "normal")
+        };
+        upright()
+            .find(|file| holds_regular(&file.weight))
+            .or_else(|| upright().next())
+    }
+}
+
+/// Whether a file's weight, such as `400` or `300 700`, draws weight 400.
+fn holds_regular(weight: &str) -> bool {
+    let mut numbers = weight.split_whitespace().map(str::parse::<u16>);
+    match (numbers.next(), numbers.next()) {
+        (Some(Ok(only)), None) => only == 400,
+        (Some(Ok(light)), Some(Ok(bold))) => (light..=bold).contains(&400),
+        _ => false,
+    }
+}
+
 impl Default for Fonts {
     fn default() -> Self {
         let sans =

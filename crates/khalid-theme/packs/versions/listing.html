@@ -1,0 +1,39 @@
+{#- Versions' lists (a type of change, a product area, the archive, a
+    date or a collection): the list's kind, name and intro, the filter
+    row, then its changes as the version timeline, with the versions on
+    the page beside it. The filter row holds "All changes", then every
+    menu link in the same folder as this list, such as the other types
+    when the menus link them, with this list marked. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "sections/filter_row.html" import filter_row -%}
+{% from "sections/release_log.html" import release_log, release_index -%}
+{% set marks = template.options.change_types or ["new", "improved", "fixed"] -%}
+{% set here = page.pagination.links[0].href if page.pagination else meta.path -%}
+{% set folder = here | trim("/") | split("/") | list -%}
+{% set folder = "/" ~ (folder[:-1] | join("/")) ~ "/" if folder | length > 1 else site.home -%}
+{% set menus = namespace(links=site.nav.primary + site.nav.footer, seen=" ", siblings=[]) -%}
+{% for group in site.nav.footer_groups %}{% set menus.links = menus.links + group.links %}{% endfor -%}
+{% if folder != site.home %}{% for link in menus.links %}{% if link.href is startingwith(folder) and link.href != folder and (" " ~ link.href ~ " ") not in menus.seen %}{% set menus.seen = menus.seen ~ link.href ~ " " %}{% set menus.siblings = menus.siblings + [link] %}{% endif %}{% endfor %}{% endif -%}
+{% set siblings = menus.siblings if (" " ~ here ~ " ") in menus.seen else menus.siblings + [{"label": page.title, "href": here}] -%}
+<header class="list-header">
+{% block kind %}<p class="list-kind">{{ t.changelog_title }}</p>
+{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}{% block feed %}{% endblock %}</header>
+<div class="changelog">
+<div class="changelog-main">
+{{ filter_row(t.change_filter, site.home, t.all_changes, siblings, here, marks) }}
+{% if page.posts %}{{ release_log(page.posts, marks) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</div>
+{% if template.options.version_index and page.posts | selectattr("facts") | list %}<aside class="changelog-side" aria-label="{{ t.version_index }}">
+{{ release_index(page.posts, t.version_index) }}
+</aside>
+{% endif %}</div>
+{% endblock %}

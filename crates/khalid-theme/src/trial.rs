@@ -4,16 +4,16 @@
 
 use khalid_core::ReaderSwitch;
 
-use crate::{OptionKind, OptionSpec, Pack, PackTemplate, parts, slot};
+use crate::{OptionKind, OptionSpec, Pack, PackTemplate, PackText, parts, slot};
 
 /// The sampler pack: every part's option, each off, so a test turns on
 /// one part at a time in `[template.options]` (templates spec 4.2).
 pub(crate) static SAMPLER: Pack = Pack {
     name: "sampler",
     summary: "A throwaway look for tests of the parts.",
-    stylesheet: "",
+    css: PackText::empty(),
     templates: &[],
-    tokens: "",
+    tokens: PackText::empty(),
     reader: &[],
     options: &[
         parts::LOGO,
@@ -35,16 +35,17 @@ pub(crate) static SAMPLER: Pack = Pack {
     ],
 };
 
+/// The template files the trial pack replaces.
+static TRIAL_TEMPLATES: [PackTemplate; 1] =
+    [PackTemplate::file("not_found.html", "trial/not_found.html")];
+
 /// The trial pack.
 pub(crate) static TRIAL: Pack = Pack {
     name: "trial",
     summary: "A throwaway look for tests.",
-    stylesheet: include_str!("../packs/trial/trial.css"),
-    templates: &[PackTemplate {
-        name: "not_found.html",
-        source: include_str!("../packs/trial/not_found.html"),
-    }],
-    tokens: "[type]\nh1 = \"3rem 4rem\"\n",
+    css: PackText::file("trial/trial.css"),
+    templates: &TRIAL_TEMPLATES,
+    tokens: PackText::inline("[type]\nh1 = \"3rem 4rem\"\n"),
     reader: &[(ReaderSwitch::ReadingTime, false)],
     options: &[
         OptionSpec {

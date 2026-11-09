@@ -2,10 +2,14 @@
     masthead with the blog's name, a tagline and the category links; the
     lead, the newest featured post large beside a numbered rail of the
     newest posts; a grid of picture cards; the rest as a text-only index
-    of ruled rows; an optional quote and numbered page links. -#}
+    of ruled rows; an optional quote and numbered page links. When some
+    posts carry facts, those are the releases: the essays lead and the
+    releases run beside them as a dated log, each tagged with its first
+    fact (the version), and the rail and grid make way for it. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
 {% set options = template.options -%}
@@ -24,15 +28,43 @@
 {% endif %}</header>
 {% set slot = page.featured if options.featured else none -%}
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
-{% if page.sections %}{% if slot %}{{ featured_slot(slot) }}
+{% if page.sections %}{% if slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
 {% endif %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts, 3) }}
+{% if section.posts %}{{ cards(section.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif slot and posts %}<div class="lead">
-{{ featured_slot(slot) }}
+{% endfor %}{% elif posts | selectattr("facts") | list %}{% set releases = posts | selectattr("facts") | list -%}
+{% set essays = posts | rejectattr("facts") | list -%}
+{% set rest = (essays[4:] + releases[8:]) | sort(attribute="date", reverse=true) -%}
+<div class="lead lead-log">
+<div class="lead-essays">
+{% if slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
+{% endif %}{% if essays %}<section class="lead-grid" aria-labelledby="lead-grid-title">
+<h2 id="lead-grid-title">{{ t.more_posts if slot else t.latest }}</h2>
+{{ cards(essays[:4], 3, sizes=slot_sizes("home", template.options.cards)) }}
+</section>
+{% endif %}</div>
+{% set log = releases[0].category -%}
+<section class="release-log" aria-labelledby="release-log-title">
+<h2 id="release-log-title">{% if log %}<a href="{{ log.href }}">{{ log.name }}</a>{% else %}{{ t.latest }}{% endif %}</h2>
+<ol role="list">
+{% for post in releases[:8] %}<li>
+<p class="release-tag"><span class="visually-hidden">{{ post.facts[0].label }} </span>{{ post.facts[0].value }}</p>
+<time datetime="{{ post.date }}">{{ post.date | date }}</time>
+<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+</li>
+{% endfor %}</ol>
+{% if log %}<p class="view-all"><a href="{{ log.href }}">{{ t.view_all | replace("{name}", log.name) }}</a></p>
+{% endif %}</section>
+</div>
+{% if rest %}<section class="lead-index" aria-labelledby="lead-index-title">
+<h2 id="lead-index-title">{{ t.archive_title }}</h2>
+{{ cards(rest, 3, "compact") }}
+</section>
+{% endif %}{% elif slot and posts %}<div class="lead">
+{{ featured_slot(slot, slot_sizes("featured")) }}
 <section class="lead-rail" aria-labelledby="lead-rail-title">
 <h2 id="lead-rail-title">{{ t.latest }}</h2>
 {{ cards(posts[:5], 3, "ranked") }}
@@ -40,14 +72,14 @@
 </div>
 {% if posts | length > 5 %}<section class="lead-grid" aria-labelledby="lead-grid-title">
 <h2 id="lead-grid-title">{{ t.more_posts }}</h2>
-{{ cards(posts[5:11], 3) }}
+{{ cards(posts[5:11], 3, sizes=slot_sizes("home", template.options.cards)) }}
 </section>
 {% endif %}{% if posts | length > 11 %}<section class="lead-index" aria-labelledby="lead-index-title">
 <h2 id="lead-index-title">{{ t.archive_title }}</h2>
 {{ cards(posts[11:], 3, "compact") }}
 </section>
-{% endif %}{% elif slot %}{{ featured_slot(slot) }}
-{% elif posts %}{{ cards(posts) }}
+{% endif %}{% elif slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
+{% elif posts %}{{ cards(posts, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if options.quote %}<figure class="masthead-quote">
 <blockquote>

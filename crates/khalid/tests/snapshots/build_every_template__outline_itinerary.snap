@@ -1,0 +1,62 @@
+---
+source: crates/khalid/tests/build_every_template.rs
+expression: pages
+---
+# index.html
+header.hero
+  h1.hero-title: Field Notes on SEO
+section.trip-lead
+  h2: Recently published
+  article.ticket.ticket-wide
+    h3.ticket-title: Planning a topic cluster in an afternoon
+section.trip-countries
+  h2: Browse by topic
+section.trip-list
+  h2: More posts
+  article.ticket
+    h3.ticket-title: Fixing slow pages, starting with the biggest win
+  article.ticket
+    h3.ticket-title: What a sitemap does, and what it does not
+  article.ticket
+    h3.ticket-title: How to write a title tag
+  article.ticket
+    h3.ticket-title: Why internal links matter
+
+# why-internal-links-matter/index.html
+nav.breadcrumbs "Breadcrumbs"
+article.post.post-with-toc
+  header.post-header
+    h1: Why internal links matter
+  nav "Contents"
+  nav.toc-side "Contents"
+  div.post-body: the text
+  footer.post-footer
+  section.author-box
+    h2: About the author
+section.mentions
+  h2: Posts that link here
+section.related
+  h2: Related posts
+  article.ticket
+    h3.ticket-title: How to write a title tag
+  article.ticket
+    h3.ticket-title: Planning a topic cluster in an afternoon
+  article.ticket
+    h3.ticket-title: What a sitemap does, and what it does not
+
+# authors/asif/index.html
+nav.breadcrumbs "Breadcrumbs"
+article.author
+  header.author-header
+    h1: Asif
+section.author-trips
+  h2: Trip diaries
+  article.ticket
+    h3.ticket-title: Planning a topic cluster in an afternoon
+  article.ticket
+    h3.ticket-title: How to write a title tag
+  article.ticket
+    h3.ticket-title: Why internal links matter
+section.author-others
+  h2: Other authors
+  h3: Lena Vogt

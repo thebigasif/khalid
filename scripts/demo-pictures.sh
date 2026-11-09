@@ -3,7 +3,9 @@
 # founder to approve a design from. For each pack, the home page, the post
 # /content-benchmark/ and /category/content-strategy/ at 2000, 1440 and
 # 390 px, in the pack's sample brand and with the pack's own defaults and no
-# theme, beside stored pictures of reference blogs of the same kind. One
+# theme, beside stored pictures of reference blogs of the same kind. A pack
+# with a demo publication shows it, ready or not, with the home page and
+# the first post and category its check-pages.txt names. One
 # sheet per template, an HTML page and a PNG of it, goes to the output
 # folder with every picture. scripts/demo-check/pictures.mjs takes them and
 # says how a reference picture is placed by its file name.
@@ -24,8 +26,10 @@ tools="$root/scripts/demo-check"
 work="$root/target/demo-pictures"
 # shellcheck source=demo-check/showcase.sh
 source "$tools/showcase.sh"
-# The review shows every sample brand, ready or not (scripts/demo-brand.sh).
+# The review shows every sample brand and every demo publication, ready or
+# not (scripts/demo-brand.sh, scripts/demo-publication.sh).
 export DEMO_BRAND_ALL=1
+export DEMO_PUBLICATION_ALL=1
 
 only=""
 args=("$@")
@@ -57,8 +61,8 @@ packs="$(showcase_packs "$bin" "$work")"
 [ -n "$packs" ] || stop "This Khalid did not list its templates, so there is nothing to picture. Check that $bin runs."
 for pack in $packs; do
   if [ -n "$only" ] && [[ ",$only," != *",$pack,"* ]]; then continue; fi
-  showcase_start "$bin" "$work" "$pack" "$pack" brand
-  showcase_start "$bin" "$work" "$pack-plain" "$pack" plain
+  showcase_start "$bin" "$work" "$pack" "$pack" brand "" publication
+  showcase_start "$bin" "$work" "$pack-plain" "$pack" plain "" publication
 done
 showcase_finish
 

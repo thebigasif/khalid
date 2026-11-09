@@ -4,6 +4,8 @@ This kit builds a blog with Astro from a Khalid site's Content API. Khalid keeps
 
 ## Set it up
 
+You need Node 22.23.4 or later, which this version of Astro asks for.
+
 1. In the Khalid site's `site.toml`, set `mode = "headless"`. Headless means Khalid writes no HTML pages of its own and leaves them to this app.
 2. Make a content key, which can only read published posts:
 
@@ -20,7 +22,7 @@ This kit builds a blog with Astro from a Khalid site's Content API. Khalid keeps
    SITE_ADDRESS=https://www.example.com
    ```
 
-   `SITE_ADDRESS` is the `address` in `site.toml`.
+   `SITE_ADDRESS` is the `address` in `site.toml`. Variables already set in the shell win over the file, so a build server can set them there instead.
 5. Install and build:
 
    ```sh
@@ -28,7 +30,15 @@ This kit builds a blog with Astro from a Khalid site's Content API. Khalid keeps
    npm run build
    ```
 
-The pages land in `dist/blog/`, one folder per post, at the same addresses Khalid gives them. Build again after you publish a post, or run the build from a Khalid webhook on `post.published`.
+6. Look at the result:
+
+   ```sh
+   npm run preview
+   ```
+
+   It prints the address, such as `http://localhost:4321/blog/`.
+
+The pages land in `dist/`, one folder per post. Put that folder's contents under `/blog/` on your web server, and each post answers at the address Khalid gives it. Build again after you publish a post, or run the build from a Khalid webhook on `post.published`.
 
 ## What stays with Khalid
 
@@ -42,7 +52,7 @@ Send these addresses to `khalid serve` from your web server or host, so readers 
 
 ## How it works
 
-`src/lib/khalid.js` reads the Content API and has no dependencies. `headHtml` turns a post's `head` into the tags the theme writes, and the layout prints them in `<head>`. The same file ships in the Next.js kit, and Khalid's own tests run it against the demo site on every change.
+`src/lib/khalid.js` reads the Content API and has no dependencies. `headHtml` turns a post's `head` into the tags the theme writes, and the layout prints them in `<head>`. The Content API has no head for the front page, so `homeHead` writes one: the site's title, a description, the canonical link and `Blog` schema listing the posts. The same file ships in the Next.js kit, and Khalid's own tests run it against the demo site on every change. Khalid's CI also builds this kit against its showcase site, with `scripts/starters-check.sh`, and checks that the front page and a post have a title, a meta description and schema.
 
 ## Licence
 

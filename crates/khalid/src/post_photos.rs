@@ -12,6 +12,13 @@ use crate::build_pages::{LanguagePages, Page};
 /// stylesheet.
 const AVATAR: &str = "2.75rem";
 
+/// How wide a post's lead image is drawn on a card, when the template's
+/// slot does not say: the whole screen on a phone, half of it from two
+/// columns on, and a third of a wide frame on a desktop. A template passes
+/// each slot's real width as the `picture` macro's `sizes`, and a slot
+/// drawn wider than a card, such as a lead story, must.
+const CARD: &str = "(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw";
+
 /// The images drawn at the top of post and author pages, by the page's
 /// address, ready to show elsewhere.
 #[derive(Debug, Clone, Default)]
@@ -35,10 +42,12 @@ impl Shown {
         }
     }
 
-    /// Keeps `image`, the lead image of the post at `address`, for its cards.
+    /// Keeps `image`, the lead image of the post at `address`, for its
+    /// cards, where it is drawn at a card's width.
     pub(crate) fn card(&mut self, address: String, mut image: RenderImage) {
         image.loading = Loading::Lazy;
         image.caption = None;
+        CARD.clone_into(&mut image.sizes);
         self.cards.insert(address, image);
     }
 

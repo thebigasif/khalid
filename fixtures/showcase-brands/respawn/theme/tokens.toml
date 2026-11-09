@@ -1,0 +1,58 @@
+# The sample brand for the Respawn demo: Lowpoly Post, a made-up games
+# site. Deep magenta on white with a pale lilac surface, Chakra Petch for
+# titles, scores and labels, and Barlow for the text. Only the brand lives
+# here: the template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#f4eff6"
+text = "#1a1220"
+muted = "#594e60"
+link = "#a3124f"
+accent = "#a3124f"
+border = "#e2d8e6"
+
+[fonts]
+heading = "\"Chakra Petch\", Bahnschrift, \"Arial Narrow\", system-ui, sans-serif"
+body = "Barlow, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Chakra Petch"
+style = "normal"
+weight = "700"
+path = "chakra-petch-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "109.58%"
+descent = "145.34%"
+line_gap = "0.00%"
+size_adjust = "60.57%"
+
+[[fonts.files]]
+family = "Barlow"
+style = "normal"
+weight = "400"
+path = "barlow-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "110.46%"
+descent = "94.38%"
+line_gap = "0.00%"
+size_adjust = "54.32%"
+
+[[fonts.files]]
+family = "Barlow"
+style = "normal"
+weight = "600"
+path = "barlow-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "110.46%"
+descent = "94.38%"
+line_gap = "0.00%"
+size_adjust = "55.28%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

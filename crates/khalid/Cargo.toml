@@ -40,6 +40,7 @@ khalid-outbound = { path = "../khalid-outbound", version = "1.3.2" }
 khalid-theme = { path = "../khalid-theme", version = "1.3.2" }
 khalid-webhooks = { path = "../khalid-webhooks", version = "1.3.2" }
 axum = { version = "0.8", default-features = false, features = ["form", "query"] }
+brotli = "9"
 chrono = { version = "0.4", default-features = false }
 clap = { version = "4", features = ["derive"] }
 getrandom = "0.4"
@@ -71,8 +72,12 @@ rustix = { version = "1", default-features = false, features = ["std", "thread"]
 # private-network guard has no switch and only real packs ship.
 test-util = ["khalid-outbound/test-util", "khalid-theme/test-util"]
 
+[build-dependencies]
+brotli = "9"
+
 [dev-dependencies]
 atom_syndication = "0.12"
+comrak = { version = "0.59", default-features = false }
 khalid-api = { path = "../khalid-api", version = "1.3.2", features = ["test-util"] }
 khalid-core = { workspace = true, features = ["test-util"] }
 khalid-alerts = { path = "../khalid-alerts", version = "1.3.2", features = ["test-util"] }
@@ -145,6 +150,10 @@ required-features = ["test-util"]
 
 [[test]]
 name = "import_site"
+required-features = ["test-util"]
+
+[[test]]
+name = "import_images"
 required-features = ["test-util"]
 
 [[test]]

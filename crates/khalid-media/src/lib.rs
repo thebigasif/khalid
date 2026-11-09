@@ -56,4 +56,4 @@ pub use s3_storage::S3Storage;
 pub use sig_v4::{SigV4, Signed};
 pub use stock::{Access, FoundPicture, PictureSource, StockApis, StockError, StockSearch};
 pub use storage::{FileAddress, LIBRARY_ADDRESS, LocalStorage, Storage};
-pub use variant::{Format, Variant, widths};
+pub use variant::{Format, Variant, fallback_widths, fallback_widths_beside_avif, widths};

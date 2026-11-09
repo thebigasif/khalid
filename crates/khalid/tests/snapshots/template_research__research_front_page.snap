@@ -1,0 +1,76 @@
+---
+source: crates/khalid/tests/template_research.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+We study how the web is read.
+</div>
+<dl class="figure-strip">
+<div class="figure">
+<dt>papers</dt>
+<dd>12</dd>
+</div>
+<div class="figure">
+<dt>people</dt>
+<dd>5</dd>
+</div>
+</dl>
+</header>
+<div class="lab-front lab-front-news">
+<section class="lab-papers" aria-labelledby="lab-papers-title">
+<h2 id="lab-papers-title">Recent publications</h2>
+<ol class="pub-list" start="1">
+<li class="pub">
+<h3 class="pub-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="pub-authors">Lena Vogt</p>
+<p class="pub-venue"><span class="pub-fact"><span class="visually-hidden">Journal </span>Web Performance Review</span><span class="pub-fact"><span class="visually-hidden">Year </span>2026</span></p>
+<p class="pub-links"><span class="pub-fact">DOI <a href="https://doi.org/10.5555/demo.2026.001">10.5555/demo.2026.001</a></span><span class="pub-fact">Citations <b>12</b></span></p>
+</li>
+<li class="pub">
+<h3 class="pub-title"><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="pub-authors">Asif</p>
+<p class="pub-venue"><span class="pub-fact"><span class="visually-hidden">Venue </span>Search Writing Workshop</span><span class="pub-fact"><span class="visually-hidden">Year </span>2025</span></p>
+<p class="pub-links"><span class="pub-fact">Link <a href="https://www.example.com/paper.pdf">www.example.com/paper.pdf</a></span></p>
+</li>
+</ol>
+
+</section>
+<section class="lab-news" aria-labelledby="lab-news-title">
+<h2 id="lab-news-title">News</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-10-12">12 October 2026</time>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="feed-category"><a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-14">14 September 2026</time>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="feed-category"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+</ol>
+</section>
+</div>
+<section class="lab-areas" aria-labelledby="lab-areas-title">
+<h2 id="lab-areas-title">Research areas</h2>
+<ol class="area-index" role="list">
+<li><a href="/blog/category/on-page-seo/"><span class="area-number" aria-hidden="true">01</span> <span class="area-name">On-page SEO</span></a></li>
+<li><a href="/blog/category/technical-seo/"><span class="area-number" aria-hidden="true">02</span> <span class="area-name">Technical SEO</span></a></li>
+</ol>
+</section>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/jobs/">Open positions</a></p>
+</div>

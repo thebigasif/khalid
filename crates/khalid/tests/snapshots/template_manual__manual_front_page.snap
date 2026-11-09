@@ -1,0 +1,104 @@
+---
+source: crates/khalid/tests/template_manual.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<p class="hero-kicker">Help centre</p>
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+Answers on search, from the people who do it.
+</div>
+<form class="help-search" role="search" action="/blog/search/" method="get">
+<label for="help-search-query">Search the help centre</label>
+<span class="help-search-row"><input id="help-search-query" type="search" name="q" autocomplete="off">
+<button type="submit">Search</button></span>
+</form>
+<nav class="help-quick" aria-label="Popular articles">
+<p class="help-quick-title">Popular articles</p>
+<ul>
+<li><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></li>
+</ul>
+</nav>
+</header>
+<section class="help-topics" aria-labelledby="help-topics-title">
+<h2 id="help-topics-title">Browse by topic</h2>
+<ol class="topic-tiles" role="list">
+<li class="topic-tile">
+<p class="topic-number" aria-hidden="true">01</p>
+<h3><a href="/blog/category/on-page-seo/">On-page SEO</a></h3>
+<ul class="topic-links">
+<li><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></li>
+<li><a href="/blog/why-internal-links-matter/">Why internal links matter</a></li>
+</ul>
+<p class="topic-all"><a href="/blog/category/on-page-seo/">View all posts in On-page SEO</a></p>
+</li>
+<li class="topic-tile">
+<p class="topic-number" aria-hidden="true">02</p>
+<h3><a href="/blog/category/technical-seo/">Technical SEO</a></h3>
+<ul class="topic-links">
+<li><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></li>
+<li><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></li>
+</ul>
+<p class="topic-all"><a href="/blog/category/technical-seo/">View all posts in Technical SEO</a></p>
+</li>
+<li class="topic-tile">
+<p class="topic-number" aria-hidden="true">03</p>
+<h3><a href="/blog/category/content-strategy/">Content strategy</a></h3>
+<ul class="topic-links">
+<li><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></li>
+</ul>
+<p class="topic-all"><a href="/blog/category/content-strategy/">View all posts in Content strategy</a></p>
+</li>
+</ol>
+</section>
+<div class="help-front">
+<section class="help-popular" aria-labelledby="help-popular-title">
+<h2 id="help-popular-title">Popular articles</h2>
+<ul class="article-rows" role="list">
+<li class="article-row">
+<p class="article-topic"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="article-summary">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</li>
+</ul>
+</section>
+<section class="help-updates" aria-labelledby="help-updates-title">
+<h2 id="help-updates-title">Recently updated</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-10-12">12 October 2026</time>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="feed-category"><a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-10-05">5 October 2026</time>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-21">21 September 2026</time>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="feed-category"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-14">14 September 2026</time>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="feed-category"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+</ol>
+</section>
+</div>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/support/">Contact support</a></p>
+</div>

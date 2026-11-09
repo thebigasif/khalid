@@ -1,0 +1,22 @@
+/* Section part: spread (templates/sections/spread.html). The picture on
+   one page, the text and the ledger of facts on the facing page. On a
+   phone the picture comes first. A pack sets --spread-columns to change
+   the two pages' widths. */
+.spread { display: grid; gap: 1.5rem 3rem; align-items: start; }
+@media (min-width: 48rem) { .spread:not(.spread-text-only) { grid-template-columns: var(--spread-columns, minmax(0, 7fr) minmax(0, 5fr)); } }
+.spread-picture { min-inline-size: 0; }
+.spread-picture .image { margin: 0; }
+.spread-text { min-inline-size: 0; }
+.spread-kicker, .spread-ledger-title { margin-block: 0 0.75rem; color: var(--color-muted); font-size: var(--text-small); letter-spacing: 0.12em; text-transform: uppercase; }
+.spread-kicker a { color: inherit; text-decoration: none; }
+.spread-kicker a:hover { color: var(--color-link); text-decoration: underline; }
+.spread-text :is(h1, h2, h3, h4) { margin: 0; line-height: 1.1; }
+.spread-title a { color: var(--color-text); text-decoration: none; }
+.spread-title a:hover { color: var(--color-link); text-decoration: underline; }
+.spread-dek { margin-block: 1rem 0; font-size: 1.125rem; line-height: 1.5; }
+.spread-ledger-title { margin-block-start: 2rem; }
+.spread-ledger { margin: 0; border-block-start: 1px solid var(--color-border); }
+.spread-ledger > div { display: flex; align-items: baseline; gap: 0.5rem; padding-block: 0.625rem; border-block-end: 1px solid var(--color-border); }
+.spread-ledger dt { flex: none; color: var(--color-muted); font-size: var(--text-small); letter-spacing: 0.08em; text-transform: uppercase; }
+.spread-ledger > div::before { content: ""; order: 1; flex: 1 1 1rem; min-inline-size: 1rem; border-block-end: 1px dotted var(--color-muted); }
+.spread-ledger dd { order: 2; margin: 0; text-align: end; }

@@ -43,11 +43,15 @@ fn the_first_pages_are_the_full_renders_home_pages_and_stylesheet() {
     let first = source.render_first(&content).unwrap();
     let all = source.render_all().unwrap().pages;
     let paths: Vec<&str> = first.iter().map(|page| page.path().as_str()).collect();
-    assert_eq!(
-        paths.len(),
-        4,
-        "the stylesheet, the script, two homes: {paths:?}"
+    let sheets = paths
+        .iter()
+        .filter(|path| path.starts_with("/blog/assets/site."))
+        .count();
+    assert!(
+        sheets >= 2,
+        "the whole stylesheet and the homes' own: {paths:?}"
     );
+    assert_eq!(paths.len() - sheets, 3, "the script, two homes: {paths:?}");
     assert!(
         paths
             .iter()
@@ -184,7 +188,11 @@ fn each_saved_post_alone_renders_the_page_the_full_render_makes() {
     for post in &posts {
         let saved = source.render_saved(std::slice::from_ref(post)).unwrap();
         let saved = saved.unwrap_or_else(|| panic!("{} alone", post.display()));
-        assert_eq!(saved.len(), 2, "the post and its translation");
+        let html = saved
+            .iter()
+            .filter(|page| !page.path().as_str().contains("/assets/"))
+            .count();
+        assert_eq!(html, 2, "the post and its translation");
         for page in &saved {
             assert!(all.contains(page), "{} differs", page.path().as_str());
         }

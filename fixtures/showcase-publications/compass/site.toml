@@ -1,0 +1,92 @@
+# Northbound, the made-up blog of an evening coding school for adults,
+# written for the Compass template's demo. Each key and table here replaces
+# the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Northbound"
+languages = ["en"]
+
+[template.cta]
+label = "Start the free path"
+href = "/blog/start-coding/"
+note = "Eighteen guides in order, from your first line of code to a small website of your own."
+
+[announcement]
+text = "New: put your first website online in one evening."
+href = "/blog/publish-website/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Learn to code step by step, from nothing"
+
+[seo.ai_page]
+covers = "Northbound writes step-by-step guides for adults learning to code from nothing: a first program, how the web works, HTML, CSS, a little JavaScript, the terminal, reading errors, Git, and building and shipping a first small website."
+cite = "Name Northbound and the author, and link the guide you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Northbound"
+email = "hello@example.com"
+founded = "2018-09-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Northbound logo"
+width = 320
+height = 80
+
+# Sign-ups for the newsletter, under the publication's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "guides@example.com"
+name = "Northbound"
+postal_address = "Northbound, 12 Chart Street, Kestrel Bay KB3 7NT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Start here"
+href = "/blog/category/start-here/"
+language = "en"
+
+[[nav.primary]]
+label = "The web"
+href = "/blog/category/the-web/"
+language = "en"
+
+[[nav.primary]]
+label = "Tools"
+href = "/blog/category/tools/"
+language = "en"
+
+[[nav.primary]]
+label = "First project"
+href = "/blog/category/first-project/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Northbound"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Start coding as an adult"
+href = "/blog/start-coding/"
+language = "en"
+
+[[nav.footer]]
+label = "Read error messages"
+href = "/blog/read-error-messages/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

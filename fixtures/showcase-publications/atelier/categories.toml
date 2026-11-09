@@ -1,0 +1,28 @@
+# Studio Ilvane's collections. The Atelier template shows each category
+# that holds looks under Collections on the front page, and each category
+# page is that collection's lookbook, with its intro as the collection
+# note. Studio notes holds the posts without looks.
+
+[[categories]]
+slug = "autumn-winter-2026"
+en = "Autumn Winter 2026"
+
+[categories.seo.en]
+description = "Studio Ilvane's Autumn Winter 2026 lookbook: coats, tailoring, leather and knitwear, look by look with every piece named."
+intro = "Coats for wet streets, soft tailoring and knits you can wear every day. Five looks in slate, saffron, navy and black, made in runs of forty or fewer."
+
+[[categories]]
+slug = "spring-summer-2026"
+en = "Spring Summer 2026"
+
+[categories.seo.en]
+description = "Studio Ilvane's Spring Summer 2026 lookbook: cotton, linen and summer knits, look by look with every piece named."
+intro = "Cotton and linen for long days: a white shift, a pleated trouser and a cream knit. Three looks made to be lived in."
+
+[[categories]]
+slug = "studio-notes"
+en = "Studio notes"
+
+[categories.seo.en]
+description = "Notes from the Studio Ilvane workroom on cloth, care and how a collection is made."
+intro = "How we choose cloth, how to care for what you buy, and what happens in the studio between collections."

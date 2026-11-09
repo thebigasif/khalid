@@ -8,13 +8,15 @@ use std::sync::{Arc, PoisonError, RwLock};
 use axum::Router;
 use axum::response::Response;
 use khalid_comments::RateLimits;
-use khalid_core::{Config, SystemClock};
+use khalid_content::{MEDIA_CARD_END, MEDIA_FORM};
+use khalid_core::{Config, Mode, SystemClock};
 use khalid_db::{Database, FormTable, SiteId};
 use khalid_forms::{FormDelivery, FormId, FormRoute, SiteForms, form_router};
 use khalid_render::{BodyHtml, PageBody};
 use khalid_server::SecurityHeaders;
 
 use crate::build_pages::LanguagePages;
+use crate::page_code::CONSENT_FOLDER;
 use crate::site_pages::SitePages;
 
 /// How the form block opens a form, up to its id (`khalid-content`).
@@ -22,6 +24,16 @@ const BLOCK_FORM: &str = "<form class=\"form\" method=\"post\" action=\"/forms/"
 
 /// The same opening without the address, which the mount path goes after.
 const BEFORE_ACTION: &str = "<form class=\"form\" method=\"post\" action=\"";
+
+/// The button of an embed card's form, after [`MEDIA_FORM`]
+/// (`khalid-content`).
+const MEDIA_BUTTON: &str =
+    "<button type=\"submit\" name=\"choice\" value=\"allow-external-media\">";
+
+/// The same button on a static page: no form to lock, and the consent
+/// script answers its value.
+const STATIC_MEDIA_BUTTON: &str =
+    "<div class=\"embed-allow\"><button type=\"button\" value=\"allow-external-media\">";
 
 /// How the `::newsletter` block opens its form (`khalid-content`).
 const SUBSCRIBE_FORM: &str = "<form class=\"subscribe\" method=\"post\" action=\"/subscribe\">";
@@ -65,10 +77,17 @@ pub(crate) fn fill(config: &Config, forms: Option<&LiveForms>, languages: &mut [
     }
 }
 
+/// Points the forms of `languages` that post to a built-in route under the
+/// blog's mount: the sign-up form and each embed card's form.
+pub(crate) fn under_mount(config: &Config, languages: &mut [LanguagePages]) {
+    subscribe_under(config, languages);
+    media_under(config, languages);
+}
+
 /// Points each `::newsletter` block in `languages` at `<mount>subscribe`,
 /// the sign-up route under the blog's mount, where the proxy in front
 /// passes it on. A blog at `/` is left as it is.
-pub(crate) fn subscribe_under(config: &Config, languages: &mut [LanguagePages]) {
+fn subscribe_under(config: &Config, languages: &mut [LanguagePages]) {
     let mount = config.mount();
     if mount == "/" {
         return;
@@ -87,6 +106,53 @@ pub(crate) fn subscribe_under(config: &Config, languages: &mut [LanguagePages]) 
             *body = BodyHtml::from_sanitised(body.as_str().replace(SUBSCRIBE_FORM, &mounted));
         }
     }
+}
+
+/// Points each embed card's "Always load external media" form in
+/// `languages` at `<mount>_consent/`, coming back to the card's own page.
+/// A static build locks every form, so there the form becomes a plain
+/// button the consent script answers (privacy plan U5 and U6).
+pub(crate) fn media_under(config: &Config, languages: &mut [LanguagePages]) {
+    let mount = config.mount();
+    let static_end = format!("</button></form></div>\n</div>{MEDIA_CARD_END}");
+    for page in languages
+        .iter_mut()
+        .flat_map(|language| &mut language.pages)
+    {
+        let body = match &mut page.body {
+            PageBody::Post(post) => &mut post.body,
+            PageBody::Page(shown) => &mut shown.body,
+            _ => continue,
+        };
+        if !body.as_str().contains(MEDIA_FORM) {
+            continue;
+        }
+        let html = if config.mode() == Mode::Static {
+            let open = format!("{MEDIA_FORM}{MEDIA_BUTTON}");
+            let end = format!("</button></div></div>\n</div>{MEDIA_CARD_END}");
+            (body.as_str())
+                .replace(&open, STATIC_MEDIA_BUTTON)
+                .replace(&static_end, &end)
+        } else {
+            let form = media_form(mount, &page.meta.path);
+            body.as_str().replace(MEDIA_FORM, &form)
+        };
+        *body = BodyHtml::from_sanitised(html);
+    }
+}
+
+/// The opening of an embed card's form on the page at `path`, posting
+/// under `mount`. A path that could break out of the attribute comes back
+/// to the blog's home instead.
+fn media_form(mount: &str, path: &str) -> String {
+    let back = if path.contains(['"', '<', '>', '&']) {
+        mount
+    } else {
+        path
+    };
+    format!(
+        "<form class=\"embed-allow\" method=\"post\" action=\"{mount}{CONSENT_FOLDER}/\"><input type=\"hidden\" name=\"back\" value=\"{back}\">"
+    )
 }
 
 /// `html` with each form block posting under `mount`, and the forms'
@@ -159,5 +225,17 @@ mod tests {
         assert_eq!(mounted("<p>No form</p>", "/blog/"), None);
         let (root, _) = mounted(html, "/").unwrap();
         assert_eq!(root, html);
+    }
+
+    #[test]
+    fn an_embed_card_posts_under_the_mount_and_comes_back_to_its_page() {
+        let form = media_form("/blog/", "/blog/tour/");
+        assert!(form.contains("action=\"/blog/_consent/\""), "{form}");
+        assert!(
+            form.contains("name=\"back\" value=\"/blog/tour/\""),
+            "{form}"
+        );
+        let odd = media_form("/blog/", "/blog/\"x/");
+        assert!(odd.contains("name=\"back\" value=\"/blog/\""), "{odd}");
     }
 }

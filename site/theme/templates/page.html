@@ -2,7 +2,8 @@
     description as the lead, then the words in one readable column. The
     Templates page shows the gallery first: each look with a picture of
     its demo's home page and of a post, which scripts/template-previews.sh
-    draws beside this page when Pages publishes the site. -#}
+    draws beside this page when Pages publishes the site. The heading
+    counts the looks, so a new template needs only its line in the list. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "slots.html" import cta_band -%}
@@ -12,22 +13,60 @@
 <h1>{{ page.title }}</h1>
 <p class="lead">{{ meta.description }}</p>
 </header>
-{% if slug == "templates" %}<section class="look-gallery"aria-labelledby="gallery-title">
-<h2 id="gallery-title" class="label">Eleven looks, each with a live demo</h2>
-<ul class="looks" role="list">
-{% for name, line, suits in [
+{% if slug == "templates" %}{% set looks = [
   ("classic", "The look every Khalid blog starts with: a clean list of posts, a contents list beside long posts, and author boxes.", "any blog that wants to start writing today"),
+  ("quill", "A minimal text blog: one column of generous type, every list one line a post with its date, and the smallest, fastest pages of any template.", "a writer or diarist who publishes words, not pictures"),
+  ("hearth", "A warm, classic blog: a welcome, a picture-led lead story, a grid of picture cards with each writer's face and a friendly reading column, every picture in an arch.", "a small team or family business that writes about its work"),
   ("ledger", "A knowledge blog led by data, with no pictures in its lists.", "teams that publish studies and long how-to guides"),
+  ("notebook", "One person's public notebook: short notes and links in a dated stream, each date in the margin beside a double margin rule, and link notes that point to what they share.", "a gardener, developer or reader who writes short notes often and shares good links"),
+  ("margin", "One writer's personal site: a short introduction, a sign-up and essays, with each essay's date, notes and footnotes set in a ruled margin beside the text.", "an essayist, columnist or academic who writes for the public under their own name"),
+  ("hub", "A creator's link-in-bio home: the creator's photo and name, a stack of large link buttons, then the latest posts, all in one narrow column.", "a video maker, podcaster or maker who sends people from every profile to one link"),
   ("atlas", "A large portal with many categories, breadcrumbs, a category bar and editor's picks.", "a blog with hundreds of posts across many topics"),
+  ("masthead", "A general publication: the name centred over a heavy and a thin rule, a lead story, the latest posts as a grid or a list, headlines by section and a calm reading column.", "a magazine, review or small paper that covers several subjects"),
+  ("glossy", "A lifestyle magazine told in pictures: a cover story beside its cover lines, then picture cards in a rhythm of wide, tall, square and band cards.", "a lifestyle magazine or blog about home, food, travel and style"),
+  ("spectrum", "A magazine arranged by topic: each topic in its own colour, with a spectrum bar under the masthead, a row of its newest posts on a band of that colour and the same colour on its posts.", "a magazine or club publication with a handful of regular topics"),
   ("keystone", "A calm product or company blog with a lead story, a grid of framed pictures and a quiet reading column.", "a software company, studio or agency with several writers"),
+  ("plinth", "An architecture or interiors practice's site: each project as a spread with its photograph and a title block of its facts, and plans framed as numbered drawing sheets.", "an architect, interior designer or landscape studio that shows built work"),
+  ("versions", "A product changelog: every change on a version rail, a filter row for new, improved and fixed, and a box to get updates by email or feed.", "a software product that tells its users what changed in each version"),
   ("compass", "A teaching blog where every guide opens with its key points.", "a business that explains how to do things, step by step"),
+  ("locale", "A city guide: places listed by area, each with its kind, opening hours and a price meter, and an At a glance card on every place.", "a local writer, visitor board or hotel that recommends places in one city"),
+  ("vital", "A health and wellness site: programmes, routines as picture cards with their time in a ring, and a session panel, care note and step track on every routine.", "a coach, studio or wellbeing writer who shares routines and programmes"),
+  ("pantry", "A baking and recipe blog: the sections of the recipe box as divider tabs, recipes as square index cards with the time and yield on a tear-off ticket, and recipes that open on their ingredients.", "a home baker or small bakery that shares tested recipes"),
   ("harbor", "A busy blog with downloadable offers inside posts and a scrolling row of related posts.", "a marketing team that turns readers into leads"),
+  ("aperture", "One photographer's site: each post one picture the full width of the page, with its story and its camera, lens and exposure, and a light contact sheet.", "a photographer who publishes one picture at a time with the story behind it"),
+  ("mosaic", "A photo blog laid out in tiles: the posts in a rhythm of large, tall and small pictures, each with its place, date and title under it, never on it.", "a photographer or small group who posts pictures often with short notes"),
+  ("gallery", "A studio or illustrator portfolio: a wall of pictures, each on a mat at its own shape with a numbered label, a list of works, and project pages with the client, year, medium and edition.", "an illustrator, print studio or designer who shows finished work"),
+  ("atelier", "A fashion lookbook: numbered looks, each a tall picture with the pieces worn beside it, collections and a journal of notes.", "a fashion label, stylist or fashion writer"),
+  ("gazette", "A local news site with many sections: a block per section under a bold flag, a rail of the latest news grouped by day, and dense headlines that each carry their place.", "a town paper or local newsroom that covers council, schools, sport and what's on"),
   ("wire", "A news and columns site with a lead story, a ranked list of popular posts and a fast feed.", "a publication that posts often"),
+  ("brief", "A short digest newsletter: every page one narrow sheet, the latest issue with a tick for each item, past issues as dated rows, and numbered items that each end on a link.", "a curator or team that sends a short round-up of links every day or week"),
+  ("dispatch", "A newsletter's site built to win sign-ups: the sign-up first beside the latest issue, each issue marked by its number in a postage stamp, and a sign-up box after every issue.", "a writer or small team who sends a newsletter and wants more readers to join"),
+  ("ticker", "A markets newsletter: a tape of figures across the front page, each issue's moves as a bar chart, and every list as a table shaded by how far each figure moved.", "a writer or desk that reports markets in numbers every week"),
+  ("letterpress", "A newsletter set like a printed periodical: the newest issue as a cover with its contents, past issues as a pile of small printed covers, and a folio line and end mark on every issue.", "a writer or small team that sends a weekly or monthly letter and keeps every issue"),
+  ("inkwell", "A newsletter's archive: the sign-up beside the name, the latest issue with its number set large, and every issue numbered and grouped by year, each with its parts at a glance.", "a writer, club or society that has sent a numbered newsletter for years"),
+  ("encore", "A musician's or a band's site: the newest release on its sleeve, tour dates with ticket links, a shelf of every record and notes from the road.", "a band, a solo artist or a small label"),
+  ("chapter", "An author's site: the new book beside its cover, a shelf of books, excerpts set as a page of the book, and readings and launches as dated rows.", "a novelist, poet or non-fiction writer with books to show"),
+  ("beacon", "A charity's site: campaigns with a goal meter that fills as money comes in, impact figures, news and a donate call on every page.", "a charity, cause or community group that raises money for its work"),
+  ("frequency", "A podcast's site: the newest episode plays on the front page, every episode is a numbered row with a running-time dial, and the listen links show on every episode.", "a podcast with regular hosts and numbered episodes"),
+  ("channel", "A video creator's home: the newest video large, thumbnail cards with a play bar and running time, a shelf for each playlist, and posts that open on a wide video.", "a video creator or a team that teaches in videos"),
+  ("dialogue", "An interview show: every episode led by its guest, with their name, who they are and one line they said as a large quote, and a name plate of host and guest on every episode.", "a podcast, radio show or interview series with a new guest each time"),
+  ("lattice", "A science explainer site: every picture a numbered figure, key numbers from each post's facts, footnotes as numbered tabs and marked glossary terms.", "a science writer, museum or school that explains how the world works"),
+  ("itinerary", "A travel diary: trips filed by country as passport stamps, each trip a ticket with its days, route and cost, laid out day by day, with checklists for packing.", "a traveller or couple who writes up each trip day by day"),
+  ("research", "A lab or academic group's site: papers as a numbered reference list with venue, DOI and citations, people, research areas and a cite box on every paper.", "a research lab, institute or academic who publishes papers"),
+  ("summit", "A conference or events site: the programme as a timetable by day and time, speakers, venues and a ticket stub on every session.", "a conference, festival or event series with a programme"),
+  ("syllabus", "An online course: a course map with one square per lesson, an outline of modules and lessons, and a progress ruler on every lesson.", "a teacher or school that publishes a course as lessons"),
+  ("fixture", "A sports club's site: the next match and the club's form up top, results as scoreboard rows with the score in large figures, fixtures, club news and the squad.", "an amateur or local sports club that plays matches in a league"),
+  ("respawn", "A games site with news, reviews whose scores show as a health bar of ten cells, and a release calendar on the front page.", "a games site, club or newsletter that reviews games and tracks release dates"),
+  ("reel", "A film and TV review site: a star rating on a ticket, the cast and where to watch, poster cards and a score sheet ranked by rating.", "a critic or team who reviews films and series"),
   ("workbench", "A tools and comparisons blog with an at-a-glance table, a review of each tool and pros and cons.", "anyone who compares products for readers"),
+  ("manual", "A help centre: a search field first, numbered topic tiles, articles with the guide's steps and the contents beside the text, and a next steps panel that asks whether the article helped.", "a company or team that answers its customers' questions in a help centre or product docs"),
   ("almanac", "A resource library of long list guides, each with an \"On this page\" box and many related links.", "a shop or platform that teaches its customers"),
   ("meridian", "A calm company journal, with a second layout for long reference pages.", "a company that writes thoughtful posts and evergreen explainers"),
   ("folio", "A product team's essays and engineering notes under its own masthead.", "a team that writes about how it builds"),
-] %}{% set title = name | capitalize %}{% set demo = site.home ~ "templates/" ~ name ~ "/" %}<li><article class="tile look">
+] %}<section class="look-gallery"aria-labelledby="gallery-title">
+<h2 id="gallery-title" class="label">{{ looks | length }} looks, each with a live demo</h2>
+<ul class="looks" role="list">
+{% for name, line, suits in looks %}{% set title = name | capitalize %}{% set demo = site.home ~ "templates/" ~ name ~ "/" %}<li><article class="tile look">
 <div class="look-shots">
 <img src="{{ site.home }}templates/{{ name }}-home.svg" alt="The {{ title }} demo's home page" width="1280" height="800"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">
 <img class="look-post" src="{{ site.home }}templates/{{ name }}-post.svg" alt="A post in the {{ title }} demo" width="1280" height="800"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">

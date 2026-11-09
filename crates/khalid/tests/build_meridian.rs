@@ -147,10 +147,12 @@ fn meridian_ships_its_own_rules_after_the_shared_ones() {
     let css = fs::read_dir(&assets)
         .unwrap()
         .map(|entry| entry.unwrap().path())
-        .find(|path| {
+        .filter(|path| {
             let name = path.file_name().unwrap().to_string_lossy();
             name.starts_with("site.") && name.ends_with(".css")
         })
+        // The whole stylesheet, which holds every page's own.
+        .max_by_key(|path| fs::metadata(path).unwrap().len())
         .unwrap();
     let css = fs::read_to_string(css).unwrap();
     assert!(css.contains("--text-h1: clamp(2.75rem,"), "{css}");

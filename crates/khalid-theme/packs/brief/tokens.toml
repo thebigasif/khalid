@@ -1,0 +1,34 @@
+# Brief: a short digest newsletter. White paper on a pale grey-green
+# desk, near-black ink and one brick red for links and the item numbers.
+# A plain grotesque for headings, stamps and numbers; the system's serif
+# for the items.
+[colors]
+background = "#ffffff"
+surface = "#eceee9"
+text = "#17191c"
+muted = "#565c61"
+link = "#9c3418"
+accent = "#c4461d"
+border = "#d8dbd4"
+
+[fonts]
+heading = "\"Helvetica Neue\", Arial, system-ui, sans-serif"
+body = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
+
+[shape]
+radius = "0px"
+measure = "36rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "1.875rem 2.5rem"
+h2 = "1.25rem 1.375rem"
+h3 = "1.125rem 1.25rem"
+h4 = "1rem 1.0625rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 700
+
+[space]
+unit = "0.5rem"
+section = "3rem"

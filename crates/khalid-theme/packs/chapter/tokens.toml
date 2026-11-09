@@ -1,0 +1,33 @@
+# Chapter: an author's site set like the first pages of a book. A warm
+# paper, dark ink and one rust accent like a cloth binding. A book face
+# for headings, book titles and excerpts, a humanist sans for the text.
+[colors]
+background = "#fbf8f2"
+surface = "#f3ede2"
+text = "#24201b"
+muted = "#5c544a"
+link = "#8a3a1c"
+accent = "#8a3a1c"
+border = "#ddd3c3"
+
+[fonts]
+heading = "Garamond, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, \"Book Antiqua\", Georgia, serif"
+body = "\"Gill Sans\", \"Gill Sans MT\", Seravek, Candara, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+
+[shape]
+radius = "0px"
+measure = "32rem"
+
+[type]
+body = "1.1875rem 1.25rem"
+h1 = "2.25rem 3.25rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.9375rem"
+line_height = 1.6
+heading_weight = 500
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

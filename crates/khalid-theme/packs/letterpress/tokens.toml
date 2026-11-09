@@ -1,0 +1,34 @@
+# Letterpress: a newsletter set like a printed periodical. An uncoated
+# paper, a near-black ink and a printer's blue for links and the accent.
+# A Modern face for headings, the nameplate and issue numbers, a book
+# face for the text.
+[colors]
+background = "#f6f2e9"
+surface = "#ece5d6"
+text = "#1a1a1c"
+muted = "#56524a"
+link = "#1f3f8a"
+accent = "#1f3f8a"
+border = "#d6ccb8"
+
+[fonts]
+heading = "Didot, \"Bodoni 72\", \"Bodoni MT\", \"Times New Roman\", serif"
+body = "Baskerville, \"Baskerville Old Face\", \"Libre Baskerville\", \"Book Antiqua\", Georgia, serif"
+
+[shape]
+radius = "0px"
+measure = "38rem"
+
+[type]
+body = "1.1875rem 1.25rem"
+h1 = "2.25rem 3.5rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.9375rem"
+line_height = 1.6
+heading_weight = 700
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

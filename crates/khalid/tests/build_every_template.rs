@@ -283,8 +283,17 @@ fn every_template_builds_its_post_index_and_author_pages() {
         let mut pages = String::new();
         for rel in PAGES {
             let html = fs::read_to_string(at(&out, rel)).unwrap();
+            let footer = html.split_once("<footer").unwrap().1;
+            let choices = "<a href=\"/blog/privacy-choices/\">";
+            assert!(
+                footer.contains(choices),
+                "{}: {rel} links the choices",
+                pack.name
+            );
             writeln!(pages, "# {rel}\n{}", outline(rel, &html)).unwrap();
         }
+        let rel = "privacy-choices/index.html";
+        outline(rel, &fs::read_to_string(at(&out, rel)).unwrap());
         insta::assert_snapshot!(format!("outline_{}", pack.name), pages);
     }
 }
