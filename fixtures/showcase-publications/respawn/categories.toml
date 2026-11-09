@@ -1,0 +1,27 @@
+# Lowpoly Post's three sections. Respawn shows a review's category above
+# its title and on every card, and each category page lists its posts as
+# rows, with the score on each review.
+
+[[categories]]
+slug = "reviews"
+en = "Reviews"
+
+[categories.seo.en]
+description = "Every Lowpoly Post review, newest first, each with its score out of 10 and the platforms we played it on."
+intro = "Every game we review gets at least twenty hours of play and a score out of 10. The health bar beside each title shows the score at a glance."
+
+[[categories]]
+slug = "news"
+en = "News"
+
+[categories.seo.en]
+description = "Games news from Lowpoly Post: release dates, updates, studio news and events, newest first."
+intro = "Release dates, updates, studio news and events. Short, checked, and never a rumour dressed up as news."
+
+[[categories]]
+slug = "guides"
+en = "Guides"
+
+[categories.seo.en]
+description = "Lowpoly Post guides: what to play, how to set up a game night and how we work."
+intro = "What to play next, how to set up a good game night, and how we score the games we review."

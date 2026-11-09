@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /field-coat/
+table /winter-cloth-guide/
+category /category/autumn-winter-2026/
+tag /tag/wool/
+author /authors/tomas-achterberg/

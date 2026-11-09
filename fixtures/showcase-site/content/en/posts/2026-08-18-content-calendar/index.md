@@ -12,7 +12,7 @@ focus_keyword: content calendar
 tags: [planning, workflow]
 image:
   src: cover.svg
-  alt: A wall calendar with coloured slots where new posts and refresh work take turns
+  alt: A content calendar grid where new posts and refresh work take turns, with today's refresh in orange
 ---
 
 A content calendar is a shared list of the posts you plan to publish, who writes each one, and when it is due. It sounds like admin. In practice it is the one tool that turns "we should blog more" into posts that actually go live, week after week.

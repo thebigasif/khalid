@@ -15,7 +15,7 @@ related: [seo-writing-guide, editing-checklist, search-intent]
 tags: [research, writing]
 image:
   src: cover.svg
-  alt: A balance scale with a tall stack of pages on one side and a single short page on the other, the short page marked with a tick
+  alt: A level balance scale with a tall stack of pages on one pan and one short orange page with a tick on the other
 schema: '{"@context":"https://schema.org","@type":"ClaimReview","url":"https://www.example.com/blog/fact-check-word-count/","claimReviewed":"Google ranks longer posts higher.","itemReviewed":{"@type":"Claim","name":"Google ranks longer posts higher."},"author":{"@type":"Organization","name":"Larkspur Studio","url":"https://www.example.com/blog/","logo":"https://www.example.com/blog/about/logo.svg"},"reviewRating":{"@type":"Rating","ratingValue":1,"bestRating":5,"worstRating":1,"alternateName":"False"},"datePublished":"2026-08-11"}'
 ---
 

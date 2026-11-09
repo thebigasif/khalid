@@ -1,0 +1,151 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is
+# CC0 or public domain.
+
+[[photos]]
+file = "en/posts/2026-01-17-country-sourdough-loaf/lead.jpg"
+sha256 = "2f48c5c471594a41602ab18aec646d8faf6a182234a96405da917d158e500a9a"
+source = "https://commons.wikimedia.org/wiki/File:Loaf_of_sourdough_bread_cooling.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Loaf of sourdough bread cooling by Nutrition, Food Safety & Health, via Wikimedia Commons"
+title = "Loaf of sourdough bread cooling"
+creator = "Nutrition, Food Safety & Health"
+openverse = "commons:File:Loaf of sourdough bread cooling.jpg"
+needs_credit = false
+size = "1600x1332"
+
+[[photos]]
+file = "en/posts/2026-02-07-overnight-tin-loaf/lead.jpg"
+sha256 = "267fe2ab160288f2394a76a8468aa80887786638aea4f44f4971217397e8ec2f"
+source = "https://commons.wikimedia.org/wiki/File:Fresh_Rustic_Bread_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Fresh Rustic Bread (Unsplash) by Artur Rutkowski alienowicz, via Wikimedia Commons"
+title = "Fresh Rustic Bread (Unsplash)"
+creator = "Artur Rutkowski alienowicz"
+openverse = "commons:File:Fresh Rustic Bread (Unsplash).jpg"
+needs_credit = false
+size = "1600x1060"
+
+[[photos]]
+file = "en/posts/2026-03-07-cinnamon-buns/lead.jpg"
+sha256 = "58e2cb0f6d728f22aa6479c8020586894d19c204d946941208bed0f5809322f2"
+source = "https://commons.wikimedia.org/wiki/File:Cinnamon_bun_-_Black_Mocha_2024-01-08.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Cinnamon bun - Black Mocha 2024-01-08 by Andy Li, via Wikimedia Commons"
+title = "Cinnamon bun - Black Mocha 2024-01-08"
+creator = "Andy Li"
+openverse = "commons:File:Cinnamon bun - Black Mocha 2024-01-08.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-04-04-lemon-lavender-loaf/lead.jpg"
+sha256 = "a1576459aadbf357497dc906f3e8b66ccdaf84a423edc1dd92a91ed8434a007f"
+source = "https://commons.wikimedia.org/wiki/File:Lemon_and_lavender_Bread_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Lemon and lavender Bread (Unsplash) by Annie Spratt anniespratt, via Wikimedia Commons"
+title = "Lemon and lavender Bread (Unsplash)"
+creator = "Annie Spratt anniespratt"
+openverse = "commons:File:Lemon and lavender Bread (Unsplash).jpg"
+needs_credit = false
+size = "1600x1280"
+
+[[photos]]
+file = "en/posts/2026-05-02-chocolate-banana-bread/lead.jpg"
+sha256 = "2ca95608ddd5ceeb2d88bf85dc6b7f5311634aa9531cf26ea58063309adb84cc"
+source = "https://commons.wikimedia.org/wiki/File:Dark_chocolate_%26_banana_loaf_-_Bread_%26_Milk_2024-06-27.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Dark chocolate & banana loaf - Bread & Milk 2024-06-27 by Andy Li, via Wikimedia Commons"
+title = "Dark chocolate & banana loaf - Bread & Milk 2024-06-27"
+creator = "Andy Li"
+openverse = "commons:File:Dark chocolate & banana loaf - Bread & Milk 2024-06-27.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-06-06-brown-butter-cookies/lead.jpg"
+sha256 = "e08b53a0c6445eb4856d3e3a1d2d9bdd30f6b24acc527f27190fe5619e4a6909"
+source = "https://commons.wikimedia.org/wiki/File:Fresh_Cookies_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Fresh Cookies (Unsplash) by Jade Wulfraat jadew, via Wikimedia Commons"
+title = "Fresh Cookies (Unsplash)"
+creator = "Jade Wulfraat jadew"
+openverse = "commons:File:Fresh Cookies (Unsplash).jpg"
+needs_credit = false
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2026-07-04-shortbread-fingers/lead.jpg"
+sha256 = "39760a2eb1f6e8248329d0bb3ea21eb3567df1350854b70bc6afa8caaa74abf9"
+source = "https://commons.wikimedia.org/wiki/File:Scottisch_Shortbread.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Scottisch Shortbread by Thorsten Alge, via Wikimedia Commons"
+title = "Scottisch Shortbread"
+creator = "Thorsten Alge"
+openverse = "commons:File:Scottisch Shortbread.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-08-01-walnut-brownies/lead.jpg"
+sha256 = "f53cd913bf2c43f120ecdcce9be22317ebca7408181d459ee50d314e5274020f"
+source = "https://commons.wikimedia.org/wiki/File:Fresh_Baked_Brownies_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Fresh Baked Brownies (Unsplash) by Jade Wulfraat jadew, via Wikimedia Commons"
+title = "Fresh Baked Brownies (Unsplash)"
+creator = "Jade Wulfraat jadew"
+openverse = "commons:File:Fresh Baked Brownies (Unsplash).jpg"
+needs_credit = false
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2026-09-05-apple-pie/lead.jpg"
+sha256 = "abdad2850fbd2adc364443c18e469252796f9c1f227209de049fed0caaacda60"
+source = "https://commons.wikimedia.org/wiki/File:Apple_pie_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Apple pie (Unsplash) by Annie Spratt anniespratt, via Wikimedia Commons"
+title = "Apple pie (Unsplash)"
+creator = "Annie Spratt anniespratt"
+openverse = "commons:File:Apple pie (Unsplash).jpg"
+needs_credit = false
+size = "1600x2358"
+
+[[photos]]
+file = "en/posts/2026-10-03-blueberry-scones/lead.jpg"
+sha256 = "b94272bb0d46af1d42067c669d8e66d20d1b1c3719e574eee8c22a07664dab18"
+source = "https://commons.wikimedia.org/wiki/File:Blueberry_scones_with_frosting_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Blueberry scones with frosting (Unsplash) by Brina Blum brina_blum, via Wikimedia Commons"
+title = "Blueberry scones with frosting (Unsplash)"
+creator = "Brina Blum brina_blum"
+openverse = "commons:File:Blueberry scones with frosting (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-17-set-out-ingredients/lead.jpg"
+sha256 = "3b52e2dccf0e08d6693eee29b9f88b2037c83e533f7a2f84ef277f007aaf25ee"
+source = "https://commons.wikimedia.org/wiki/File:Baking_a_Pie_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Baking a Pie (Unsplash) by Andy Chilton andyc, via Wikimedia Commons"
+title = "Baking a Pie (Unsplash)"
+creator = "Andy Chilton andyc"
+openverse = "commons:File:Baking a Pie (Unsplash).jpg"
+needs_credit = false
+size = "1600x1861"
+
+[[photos]]
+file = "en/posts/2026-10-31-kneading-dough/lead.jpg"
+sha256 = "2f0c6a1e7d1a76fd3e4f14d0b0dc0c036776fff5fe5e956ee598bef71beb0b38"
+source = "https://commons.wikimedia.org/wiki/File:Making_Bread_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Making Bread (Unsplash) by Gaelle Marcel gaellemm, via Wikimedia Commons"
+title = "Making Bread (Unsplash)"
+creator = "Gaelle Marcel gaellemm"
+openverse = "commons:File:Making Bread (Unsplash).jpg"
+needs_credit = false
+size = "1600x2397"
+

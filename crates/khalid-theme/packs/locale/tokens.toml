@@ -1,0 +1,34 @@
+# Locale: a city guide. Warm paper, near-black ink and one deep harbour
+# teal for links, the area pins and the price meter. A sturdy serif for
+# headings and place names, like a printed guidebook, and a plain sans for
+# the text and the listing rows.
+[colors]
+background = "#fbf8f2"
+surface = "#efe9dc"
+text = "#1d211f"
+muted = "#555b55"
+link = "#1d5c57"
+accent = "#1d5c57"
+border = "#dcd3c2"
+
+[fonts]
+heading = "Rockwell, \"Roboto Slab\", \"DejaVu Serif\", Georgia, serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0.25rem"
+measure = "37.5rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.125rem 3.375rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.1875rem 1.3125rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 400
+
+[space]
+unit = "0.5rem"
+section = "3.5rem"

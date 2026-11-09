@@ -7,7 +7,7 @@
       "name": "AGPL-3.0-only",
       "identifier": "AGPL-3.0-only"
     },
-    "version": "1.2.0"
+    "version": "1.7.0"
   },
   "paths": {
     "/api/admin/v1/ai/": {
@@ -1776,6 +1776,141 @@
           },
           "422": {
             "description": "The body could not be read, or its name or text cannot be kept",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/consent/counts/": {
+      "get": {
+        "tags": [
+          "admin consent"
+        ],
+        "summary": "Counts the readers' answers to the consent banner in the last `days`\ndays, per day and version, with how many allowed each optional\ncategory. Needs `settings:write`.",
+        "operationId": "consent_counts",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "description": "From 1 to 366; 28 when left out.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The answers per day",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminConsentCounts"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The days are not from 1 to 366",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/consent/versions/": {
+      "get": {
+        "tags": [
+          "admin consent"
+        ],
+        "summary": "Lists every version of the banner and category text, categories,\nvendors and lifetime readers were shown, with the days each was in\nforce. Needs `settings:write`.",
+        "operationId": "consent_versions",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Every version readers were shown",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminConsentVersions"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -11382,6 +11517,161 @@
           }
         }
       },
+      "AdminConsentCounts": {
+        "type": "object",
+        "description": "How readers answered the consent banner. No address or reader\nidentifier is kept: only these daily totals.",
+        "required": [
+          "first",
+          "last",
+          "days",
+          "totals",
+          "per_day"
+        ],
+        "properties": {
+          "days": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many days were counted.",
+            "minimum": 0
+          },
+          "first": {
+            "type": "string",
+            "format": "date",
+            "description": "The first day counted, in UTC."
+          },
+          "last": {
+            "type": "string",
+            "format": "date",
+            "description": "The last day counted: today, in UTC."
+          },
+          "per_day": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminConsentDay"
+            },
+            "description": "The answers per day and version, first day first. A day with no\nanswers is left out."
+          },
+          "totals": {
+            "$ref": "#/components/schemas/AdminConsentTally",
+            "description": "Every answer in the period."
+          }
+        }
+      },
+      "AdminConsentDay": {
+        "type": "object",
+        "description": "The answers on one day under one version.",
+        "required": [
+          "day",
+          "version",
+          "counts"
+        ],
+        "properties": {
+          "counts": {
+            "$ref": "#/components/schemas/AdminConsentTally",
+            "description": "The answers."
+          },
+          "day": {
+            "type": "string",
+            "format": "date",
+            "description": "The day, in UTC."
+          },
+          "version": {
+            "type": "string",
+            "description": "The version readers were shown.",
+            "example": "0123456789abcdef"
+          }
+        }
+      },
+      "AdminConsentTally": {
+        "type": "object",
+        "description": "How many answers there were, and how many allowed each optional\ncategory. Necessary is always on, so it has no count.",
+        "required": [
+          "choices",
+          "preferences",
+          "analytics",
+          "marketing",
+          "external_media"
+        ],
+        "properties": {
+          "analytics": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Answers that allowed Analytics.",
+            "minimum": 0
+          },
+          "choices": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Every answer: Accept all, Reject all and each saved choice.",
+            "minimum": 0
+          },
+          "external_media": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Answers that allowed External media.",
+            "minimum": 0
+          },
+          "marketing": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Answers that allowed Marketing.",
+            "minimum": 0
+          },
+          "preferences": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Answers that allowed Preferences.",
+            "minimum": 0
+          }
+        }
+      },
+      "AdminConsentVersion": {
+        "type": "object",
+        "description": "One version of what readers were shown.",
+        "required": [
+          "version",
+          "first_day",
+          "last_day",
+          "shown"
+        ],
+        "properties": {
+          "first_day": {
+            "type": "string",
+            "format": "date",
+            "description": "The first day a reader was shown it, in UTC."
+          },
+          "last_day": {
+            "type": "string",
+            "format": "date",
+            "description": "The last day a reader was shown it so far, in UTC."
+          },
+          "shown": {
+            "type": "object",
+            "description": "What readers were shown: the banner and category text in each\nlanguage, the categories, the vendors and the lifetime."
+          },
+          "version": {
+            "type": "string",
+            "description": "The settings version, a hash of everything shown.",
+            "example": "0123456789abcdef"
+          }
+        }
+      },
+      "AdminConsentVersions": {
+        "type": "object",
+        "description": "Every version of what readers were shown.",
+        "required": [
+          "versions"
+        ],
+        "properties": {
+          "versions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminConsentVersion"
+            },
+            "description": "The versions, oldest first."
+          }
+        }
+      },
       "AdminDayViews": {
         "type": "object",
         "description": "The views on one day.",
@@ -12049,8 +12339,11 @@
           "mount",
           "default_language",
           "languages",
+          "mode",
           "template",
           "seo",
+          "privacy",
+          "code",
           "updated_at",
           "restart_needed"
         ],
@@ -12058,6 +12351,13 @@
           "address": {
             "type": "string",
             "description": "The address of the main site, such as `https://www.example.com`."
+          },
+          "code": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "The site's own code from `[code]`, one object per entry as written:\n`head`, `body`, the `category` it waits for (`preferences`,\n`analytics`, `marketing` or `no-tracking`), the `vendor` and its\n`policy` link. An entry with no `category` counts as Marketing. The\nold single `[code]` table reads as one entry."
           },
           "default_language": {
             "type": "string",
@@ -12070,6 +12370,10 @@
             },
             "description": "Every language the site is written in."
           },
+          "mode": {
+            "type": "string",
+            "description": "How the site reaches readers: `server`, `static` or `headless`.\nIt is read here and changed only in `site.toml`."
+          },
           "mount": {
             "type": "string",
             "description": "The path the blog lives under, such as `/blog/`."
@@ -12077,6 +12381,10 @@
           "name": {
             "type": "string",
             "description": "The site's name."
+          },
+          "privacy": {
+            "type": "object",
+            "description": "The `[privacy]` table as `site.toml` writes it, one key per part\nsuch as `lifetime_months`, `gpc`, `counts`, `external_tool`, `text`\nor `contact`. A setting left out keeps its default."
           },
           "restart_needed": {
             "type": "boolean",
@@ -16336,6 +16644,16 @@
             ],
             "description": "A new address of the main site."
           },
+          "code": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object"
+            },
+            "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`."
+          },
           "default_language": {
             "type": [
               "string",
@@ -16366,6 +16684,13 @@
               "null"
             ],
             "description": "A new name."
+          },
+          "privacy": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "New parts of the `[privacy]` table, each replacing the part of that\nname whole, such as `{\"lifetime_months\": 12}`. `null` removes a\npart, so it goes back to its default. Parts left out stay as they\nare."
           },
           "seo": {
             "type": [

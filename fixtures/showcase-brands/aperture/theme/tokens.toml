@@ -1,0 +1,60 @@
+# The sample brand for the Aperture demo: Northlight, a photo journal of
+# the north. A cool white like snow light, near-black ink and one deep
+# fjord blue. Newsreader for titles and text, a book face with an optical
+# size made for screens, and JetBrains Mono for the camera details. Only
+# the brand lives here: the template keeps its own shape, type sizes and
+# spacing.
+[colors]
+background = "#fbfaf8"
+surface = "#eff1f0"
+text = "#171a1c"
+muted = "#545b60"
+link = "#1f5a73"
+accent = "#1f5a73"
+border = "#d9ddde"
+
+[fonts]
+heading = "Newsreader, Charter, Georgia, serif"
+body = "Newsreader, Charter, Georgia, serif"
+mono = "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Newsreader"
+style = "normal"
+weight = "400"
+path = "newsreader-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00E4, U+00F6, U+00F8, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "81.19%"
+descent = "125.05%"
+line_gap = "0.00%"
+size_adjust = "59.51%"
+
+[[fonts.files]]
+family = "Newsreader"
+style = "normal"
+weight = "500"
+path = "newsreader-latin-500.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00E4, U+00F6, U+00F8, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "81.19%"
+descent = "125.05%"
+line_gap = "0.00%"
+size_adjust = "61.31%"
+
+[[fonts.files]]
+family = "JetBrains Mono"
+style = "normal"
+weight = "400"
+path = "jetbrains-mono-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00E4, U+00F6, U+00F8, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "112.67%"
+descent = "141.57%"
+line_gap = "0.00%"
+size_adjust = "63.75%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

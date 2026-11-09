@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /tyre-pressure/
+table /battery-range/
+category /category/battery-and-charging/
+tag /tag/maintenance/
+author /authors/jonas-brandt/

@@ -1,0 +1,5 @@
+# What the scripts know about this template; the binary does not read it.
+# See scripts/template-packs.sh.
+kind = "design"
+kind_label = "Architecture and design"
+frame = 1216

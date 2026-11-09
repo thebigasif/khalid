@@ -149,6 +149,7 @@ fn series_page(
     let intro = BodyHtml::from_sanitised(format!("<p>{}</p>", escape(&intro)));
     let body = PageBody::Collection(RenderListing {
         hub: None,
+        numbered: true,
         title: name,
         intro: Some(intro),
         posts: cards,

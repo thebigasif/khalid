@@ -8,6 +8,7 @@
 use std::fs;
 use std::path::{self, Path, PathBuf};
 
+use chrono::NaiveDate;
 use khalid_content::{ContentTree, SiteContent};
 use khalid_core::{Clock, Config, UserMessage};
 use khalid_lint::Report;
@@ -15,6 +16,8 @@ use khalid_render::{Asset, Renderer, Tokens};
 use khalid_routes::Routes;
 use serde::Serialize;
 
+use crate::assets::PageStylesheets;
+use crate::build_pages::LanguagePages;
 use crate::cli::Output;
 use crate::exit::Exit;
 use crate::newsletter_files::archive_pages;
@@ -23,11 +26,12 @@ use crate::post_files::{Assets, charts, library_photo};
 use crate::post_photos::Shown;
 use crate::seo_extras::{self, archives_off, term_seo};
 use crate::site_page::HeadNonce;
+use crate::static_mode::consent::{self as static_consent, Asking};
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
-    build_seo, build_sitemap, categories, content_message, look, own_descriptions, post_categories,
-    post_files, post_images, post_lock, report, search_page, search_static, share_images,
-    static_mode, trails,
+    build_seo, build_sitemap, categories, content_message, form_pages, look, own_descriptions,
+    post_categories, post_files, post_images, post_lock, privacy_page, report, search_page,
+    search_static, share_images, static_mode, trails,
 };
 
 /// The output folder inside a site when `--out` is not given.
@@ -47,6 +51,10 @@ struct BuildBody {
     /// The posts the publish gate kept out, each with every finding.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     left_out: Vec<Report>,
+    /// Things worth a look that are not problems, such as a privacy page
+    /// with no contact details.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    warnings: Vec<UserMessage>,
 }
 
 /// What one build wrote: how many pages, and the report of each post the
@@ -96,10 +104,11 @@ pub(crate) fn into_folder(
     Ok(Built { pages, left_out })
 }
 
-/// The renderer and stylesheet of the look `config` chose, and the tokens
-/// the share images take, for a site with pages. A headless site gets no
-/// renderer and the default tokens, and its theme is never read.
-fn theme(site: &Path, config: &Config) -> Result<(Option<(Renderer, Asset)>, Tokens), UserMessage> {
+/// The renderer and stylesheet of the look `config` chose, with each
+/// page's own stylesheet made from it, and the tokens the share images
+/// take, for a site with pages. A headless site gets no renderer and the
+/// default tokens, and its theme is never read.
+fn theme(site: &Path, config: &Config) -> Result<(Option<Theme>, Tokens), UserMessage> {
     if !config.mode().has_pages() {
         return Ok((None, Tokens::default()));
     }
@@ -109,8 +118,33 @@ fn theme(site: &Path, config: &Config) -> Result<(Option<(Renderer, Asset)>, Tok
         .map_err(|error| build_message::render(&error))?
         .with_brand(&tokens.brand);
     let css = assets::site_stylesheet(site, &look)?;
-    Ok((Some((renderer, css)), tokens))
+    let whole = String::from_utf8_lossy(css.body());
+    let look_rules = (&tokens, look.pack().stylesheet());
+    let sheets = PageStylesheets::new(config, &assets::href(config, &css), look_rules, &whole);
+    Ok((Some((renderer, css, sheets)), tokens))
 }
+
+/// The pages of every language. With a theme, they link its stylesheet
+/// `css` and preload the body font its `tokens` name; a headless site has
+/// neither.
+fn language_pages(
+    site: &Path,
+    (config, routes): (&Config, &Routes),
+    content: &SiteContent,
+    theme: Option<(&Asset, &Tokens)>,
+    today: NaiveDate,
+) -> Result<Vec<LanguagePages>, UserMessage> {
+    let href = theme
+        .map(|(css, _)| assets::href(config, css))
+        .unwrap_or_default();
+    let mut languages = build_pages::pages(config, routes, (content, &[]), &href, today)?;
+    let tokens = theme.map(|(_, tokens)| tokens);
+    assets::preload_body_font(site, config, tokens, &mut languages);
+    Ok(languages)
+}
+
+/// The renderer, the whole stylesheet and each page's own stylesheet.
+type Theme = (Renderer, Asset, PageStylesheets);
 
 /// Renders every page into `out`, then writes the stylesheet they link and
 /// the site's files beside them, and says how many pages were written. A
@@ -126,22 +160,22 @@ fn build(
 ) -> Result<usize, UserMessage> {
     let content = &*charts::read(site, content);
     let (theme, tokens) = theme(site, config)?;
-    let href = theme
-        .as_ref()
-        .map(|(_, css)| assets::href(config, css))
-        .unwrap_or_default();
     let today = clock.now().date_naive();
-    let mut languages = build_pages::pages(config, routes, (content, &[]), &href, today)?;
-    let renderer = theme.as_ref().map(|(renderer, _)| renderer);
+    let styled = theme.as_ref().map(|(_, css, _)| (css, &tokens));
+    let mut languages = language_pages(site, (config, routes), content, styled, today)?;
+    let renderer = theme.as_ref().map(|(renderer, ..)| renderer);
     static_mode::comments(config, &mut languages);
+    form_pages::media_under(config, &mut languages);
     post_lock::lock(config, content, renderer, &mut languages);
     let categories = categories::of(site)?;
-    if let Some((renderer, _)) = &theme {
+    let asking = Asking::of(config, &languages);
+    if let Some((renderer, ..)) = &theme {
         search_page::add(config, renderer, &mut languages)?;
         archive_pages::add(site, config, (renderer, today), &mut languages)?;
         let sources = (content, categories.as_slice());
         build_lists::add((config, routes), renderer, sources, &mut languages)?;
-        build_pages::discovery_pages((config, routes), renderer, content, &mut languages)?;
+        let found = (renderer, site, today);
+        build_pages::discovery_pages((config, routes), found, content, &mut languages)?;
         build_sitemap::add(config, renderer, &mut languages)?;
         own_descriptions::fill(config, renderer, &mut languages)?;
     }
@@ -174,20 +208,16 @@ fn build(
     build_sitemap::fill(config, &seo_site, &seo_pages, &mut languages)?;
     let mut written = 0;
     let locks = static_mode::locks(config.mode())?;
-    let code = PageCode::new(config, HeadNonce::Static);
-    if let Some((renderer, css)) = &theme {
+    let mut code = PageCode::new(config, HeadNonce::Static);
+    if let Some((renderer, css, sheets)) = &theme {
         write_asset(out, css)?;
         write_asset(out, &assets::reader_with_copies()?)?;
-        write_fonts(site, out)?;
-        for language in &languages {
-            for page in &language.pages {
-                let html = page.rendered(renderer, &language.site, &code)?;
-                let html =
-                    static_mode::lock(locks.as_ref(), html, &language.site.locale, &page.file)?;
-                write(out, &page.file, &html)?;
-                written += 1;
-            }
+        if let Some((script, tag)) = static_consent::script(config, asking)? {
+            code = code.with_consent_script(tag);
+            write_asset(out, &script)?;
         }
+        write_fonts(site, &tokens, out)?;
+        written = write_html(out, (renderer, sheets), &languages, (locks.as_ref(), &code))?;
     }
     let redirects = build_redirects::file(site, config, routes, content)?;
     let redirects = archives_off::with_redirects(redirects, &gone);
@@ -205,6 +235,8 @@ fn build(
         let relative = format!("{}/{}", build_files::ROOT_FOLDER, file.file);
         write(out, &relative, &file.text)?;
     }
+    let (gpc, honoured) = static_consent::gpc_file(config);
+    write(out, &gpc, honoured)?;
     Ok(written)
 }
 
@@ -225,30 +257,20 @@ fn write(out: &Path, relative: &str, text: &str) -> Result<(), UserMessage> {
         .map_err(|error| build_message::write(&file, &error))
 }
 
-/// Copies the site's self-hosted font files, `theme/fonts/*.woff2`, into
-/// `out/assets/fonts/`, where the stylesheet's `@font-face` rules point
-/// (G20). Anything else in the folder stays private.
-fn write_fonts(site: &Path, out: &Path) -> Result<(), UserMessage> {
-    let from = {
-        let mut folder = site.to_path_buf();
-        folder.push("theme");
-        folder.push("fonts");
-        folder
-    };
-    let Ok(entries) = fs::read_dir(&from) else {
+/// Writes the site's self-hosted font files, the `*.woff2` files in
+/// `theme/fonts/` that the tokens list, into `out/assets/fonts/`, where
+/// the stylesheet's `@font-face` rules point (G20). Anything else in the
+/// folder stays private.
+fn write_fonts(site: &Path, tokens: &Tokens, out: &Path) -> Result<(), UserMessage> {
+    let fonts = assets::fonts(site, tokens);
+    if fonts.is_empty() {
         return Ok(());
-    };
-    let into = within(out, "assets/fonts/");
+    }
+    let into = within(out, &format!("{}fonts/", assets::FOLDER));
     fs::create_dir_all(&into).map_err(|error| build_message::write(&into, &error))?;
-    for entry in entries {
-        let entry = entry.map_err(|error| build_message::write(&from, &error))?;
-        let name = entry.file_name();
-        let name = name.to_string_lossy();
-        if !name.ends_with(".woff2") {
-            continue;
-        }
-        let file = within(&into, &name);
-        fs::copy(entry.path(), &file).map_err(|error| build_message::write(&file, &error))?;
+    for font in fonts {
+        let file = within(&into, &font.name);
+        fs::write(&file, font.bytes).map_err(|error| build_message::write(&file, &error))?;
     }
     Ok(())
 }
@@ -269,6 +291,33 @@ fn write_asset(out: &Path, asset: &Asset) -> Result<(), UserMessage> {
         fs::write(&file, bytes).map_err(|error| build_message::write(&file, &error))?;
     }
     Ok(())
+}
+
+/// Writes each page of `languages` into `out`, linking its own stylesheet
+/// from `sheets`, then the stylesheets the pages link, and says how many
+/// pages were written.
+fn write_html(
+    out: &Path,
+    (renderer, sheets): (&Renderer, &PageStylesheets),
+    languages: &[LanguagePages],
+    (locks, code): (Option<&khalid_static::Locks>, &PageCode),
+) -> Result<usize, UserMessage> {
+    let mut written = 0;
+    for language in languages {
+        for page in &language.pages {
+            let html = page.rendered(renderer, &language.site, code)?;
+            let html = static_mode::lock(locks, html, &language.site.locale, &page.file)?;
+            write(out, &page.file, &sheets.fit(html).0)?;
+            written += 1;
+        }
+    }
+    for sheet in sheets.made() {
+        let body = sheet.text().as_bytes().to_vec();
+        let built = Asset::build("site", "css", "text/css; charset=utf-8", body)
+            .map_err(|error| build_message::render(&error))?;
+        write_asset(out, &built)?;
+    }
+    Ok(written)
 }
 
 /// `relative` inside `folder`. Every `relative` here is a fixed name, or a
@@ -314,6 +363,15 @@ fn success(output: Output, out: &Path, built: Built, config: &Config) -> Exit {
             "{said}Search engines read robots.txt only at {host}/robots.txt, outside the blog's folder, so its copy is in {root}. Copy the files in that folder to the root of the main site.\n"
         );
     }
+    let warnings: Vec<UserMessage> = (mode.has_pages())
+        .then(|| privacy_page::missing_contact(config))
+        .flatten()
+        .into_iter()
+        .collect();
+    for warning in &warnings {
+        let (what, why, fix) = (warning.what(), warning.why(), warning.fix());
+        said = format!("{said}Worth a look: {what}\n  {why}\n  {fix}\n");
+    }
     match output {
         Output::Human => report::text(&said, Exit::Success),
         Output::Json => report::json(
@@ -323,6 +381,7 @@ fn success(output: Output, out: &Path, built: Built, config: &Config) -> Exit {
                 root,
                 off,
                 left_out,
+                warnings,
             },
             Exit::Success,
         ),

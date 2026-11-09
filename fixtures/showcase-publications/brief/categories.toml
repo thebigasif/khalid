@@ -1,0 +1,26 @@
+# Tideline's editions. The Brief template lists them as chips on the
+# front page, and each edition's page lists its issues as dated rows.
+
+[[categories]]
+slug = "morning-brief"
+en = "Morning brief"
+
+[categories.seo.en]
+description = "Tideline's weekday morning issues: six or so short items from the Selwick coast, each with a link to read more."
+intro = "Every weekday morning: six or so things worth knowing about the Selwick coast, each in a line or two with a link."
+
+[[categories]]
+slug = "week-in-review"
+en = "Week in review"
+
+[categories.seo.en]
+description = "Tideline's Saturday issues: the week on the Selwick coast in six or seven items, for anyone who missed a morning."
+intro = "Every Saturday: the week's most useful news from the coast in one short issue, with what is coming next week."
+
+[[categories]]
+slug = "notes"
+en = "Notes"
+
+[categories.seo.en]
+description = "Notes from the editors of Tideline on how the digest is made and how to get the most from it."
+intro = "Notes from the editors: how we choose what goes in, and how to send us something."

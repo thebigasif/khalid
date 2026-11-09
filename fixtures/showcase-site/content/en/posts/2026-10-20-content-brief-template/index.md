@@ -13,7 +13,7 @@ access: members
 tags: [planning, writing]
 image:
   src: cover.svg
-  alt: A one-page plan with a target at the top, coloured section markers and a paper clip
+  alt: A content brief template with an orange target at the top, three marked sections and a paper clip, over a filled-in copy
 ---
 
 A content brief is a one-page plan that a writer reads before they write a word. It says who the post is for, which question it answers, what it must cover and how it will be judged. Ours takes twenty minutes to fill in, and it saves hours of rewriting.

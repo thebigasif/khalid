@@ -1,3 +1,8 @@
+---
+title: "SEO settings"
+order: 50
+---
+
 # SEO settings
 
 Every SEO setting lives in `site.toml`, under `[seo]`. Each one has a default, so a site works with none of them set. The admin's SEO settings screen edits the same values. This page explains each setting added for the Yoast comparison of 2 November 2026; the Rust docs of `khalid_core::SeoSettings` cover the rest.
@@ -99,6 +104,8 @@ news = "noindex"
 ```
 
 ## Feeds
+
+Each language has feeds next to its home page, such as `/blog/feed.xml` and `/blog/de/feed.xml`. Each category with posts in a language, and each channel, has its own feeds in its folder, such as `/blog/category/technical-seo/feed.xml` and `/blog/featured/feed.xml`. A feed holds the newest posts of its page, up to `limit`. Every one of these pages links its feeds in its head, so a feed reader finds them from the page's address.
 
 `[seo.feeds] off` lists the feed formats Khalid does not write: `"rss"` (`feed.xml`), `"atom"` (`atom.xml`) and `"json"` (`feed.json`). Every format is written by default.
 
@@ -235,7 +242,7 @@ A site with locations also gets a locations page at `/locations/` in each langua
 
 ## Category and tag pages
 
-Each category or tag page can have its own search settings, one table per language under `seo`. Categories live in `categories.toml` and tags in `tags.toml`, both in the site folder. A tag needs an entry in `tags.toml` only when it has settings: its name still comes from the posts.
+Each category or tag page can have its own search settings, one table per language under `seo`. Categories live in `categories.toml` and tags in `tags.toml`, both in the site folder. A tag needs an entry in `tags.toml` only when it has settings: its name still comes from the posts. A name written all in lowercase, such as `internal links`, titles its page as "Internal Links"; write any capital, such as `AI search`, and the page keeps your spelling.
 
 ```toml
 [[tags]]

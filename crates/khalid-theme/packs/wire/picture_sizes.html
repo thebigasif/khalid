@@ -1,0 +1,26 @@
+{#- How wide Wire draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Some places show the same posts as a larger place on the same page,
+    so they say its width and the browser fetches each picture once.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "lead_story": "(min-width: 73rem) calc(18vw + 41.5rem), (min-width: 64rem) 43.25rem, calc(99vw - 1.25rem)",
+  "home/image": "(min-width: 74rem) calc(7vw + 14.75rem), (min-width: 69.5rem) 16rem, (min-width: 51rem) calc(32vw - 1.25rem), (min-width: 32rem) calc(45vw + 1rem), calc(100vw - 2rem)",
+  "home/row": "(min-width: 74rem) calc(5vw + 11rem), (min-width: 48rem) 11.75rem, 6.5rem",
+  "panel/row": "(min-width: 74rem) calc(5vw + 11rem), (min-width: 48rem) 11.75rem, 6.5rem",
+  "lead": "(min-width: 53rem) calc(15vw + 55.75rem), calc(100vw - 2rem)",
+  "related/row": "(min-width: 54rem) calc(5vw + 17.25rem), (min-width: 48rem) 16rem, 6.5rem",
+  "featured": "(min-width: 73rem) calc(16vw + 38.25rem), (min-width: 48rem) calc(57vw - 1rem), calc(100vw - 2rem)",
+  "list/row": "(min-width: 74rem) calc(5vw + 11rem), (min-width: 48rem) 11.75rem, 6.5rem",
+  "author/row": "(min-width: 74rem) calc(5vw + 11rem), (min-width: 48rem) 11.75rem, 6.5rem",
+  "photo": "12rem",
+  "panel/image": "(min-width: 74rem) calc(7vw + 14.75rem), (min-width: 69.5rem) 16rem, (min-width: 51rem) calc(32vw - 1.25rem), (min-width: 32rem) calc(45vw + 1rem), calc(100vw - 2rem)"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

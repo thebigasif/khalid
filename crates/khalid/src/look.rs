@@ -47,7 +47,7 @@ pub(crate) fn render_pack(look: &Look, config: &Config) -> RenderPack<'static> {
     RenderPack {
         name: pack.name,
         templates: (pack.templates.iter())
-            .map(|file| (file.name, file.source))
+            .map(|file| (file.name, file.source()))
             .collect(),
         options: (look.options().iter())
             .map(|(key, value)| ((*key).to_owned(), option(value)))
@@ -88,7 +88,7 @@ fn preferred_source(config: &Config) -> Vec<(String, TemplateOption)> {
 ///
 /// The message for a mistake in `theme/tokens.toml`.
 pub(crate) fn tokens(site: &Path, look: &Look) -> Result<Tokens, UserMessage> {
-    Tokens::load_over(site, look.pack().tokens).map_err(|error| build_message::tokens(&error))
+    Tokens::load_over(site, look.pack().tokens()).map_err(|error| build_message::tokens(&error))
 }
 
 /// Every built-in template as the Admin API lists it, read from the
@@ -177,15 +177,15 @@ mod tests {
     fn every_pack_loads_compiles_and_ships_under_the_css_budget() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
-            let css = stylesheet_with(&tokens, pack.stylesheet).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
+            let css = stylesheet_with(&tokens, pack.stylesheet()).unwrap();
             let bytes = css.brotli().len();
             assert!(bytes < BUDGET_BYTES, "{}: {bytes} bytes", pack.name);
             println!("{}: {bytes} bytes of CSS, compressed", pack.name);
             let chosen = RenderPack {
                 name: pack.name,
                 templates: (pack.templates.iter())
-                    .map(|file| (file.name, file.source))
+                    .map(|file| (file.name, file.source()))
                     .collect(),
                 options: BTreeMap::new(),
                 cta: None,
@@ -211,8 +211,8 @@ mod tests {
     fn every_packs_header_button_wraps_within_the_header() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
-            let css = stylesheet_text_with(&tokens, pack.stylesheet);
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
+            let css = stylesheet_text_with(&tokens, pack.stylesheet());
             let rules = rules_naming(&css, ".header-button");
             let capped = rules
                 .iter()
@@ -223,10 +223,158 @@ mod tests {
         }
     }
 
+    /// Each rule in `css` as its selector and its declarations.
+    fn rules(css: &str) -> Vec<(&str, &str)> {
+        (css.split('}'))
+            .filter_map(|rule| rule.rsplit_once('{'))
+            .map(|(selector, declarations)| (selector.trim(), declarations))
+            .collect()
+    }
+
+    /// Faults found on a served Keystone blog (fix/keystone-layout), held
+    /// for every pack: the pros and cons marks keep their room, the comment
+    /// form looks like the pack's other forms, a folded table sizes its
+    /// columns to its words, and an author's role never rides up into the
+    /// name.
+    #[test]
+    fn every_pack_keeps_block_lists_forms_tables_and_roles_readable() {
+        let site = tempfile::tempdir().unwrap();
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
+            let css = stylesheet_text_with(&tokens, pack.stylesheet());
+            let name = pack.name;
+            let marks = rules_naming(&css, ".proscons :is(.pros, .cons) li");
+            let room = marks.iter().any(|r| r.contains("padding-inline-start"));
+            assert!(room, "{name}: no room for the marks");
+            for (selector, declarations) in rules(&css) {
+                let every_list = (selector.split(','))
+                    .any(|one| one.trim().ends_with(" li") && one.matches('.').count() > 1);
+                let generic =
+                    selector.contains(".post-body li") || selector.contains(".page-body li");
+                assert!(
+                    !(generic && every_list && declarations.contains("padding-inline-start")),
+                    "{name}: {selector} outranks the block lists"
+                );
+                // A rule for a post's plain lists outranked `.proscons ul`
+                // and moved the marks in from the title.
+                let plain_lists = selector.contains(".post-body :is(ul, ol):not([class])");
+                assert!(
+                    !(plain_lists && declarations.contains("padding")),
+                    "{name}: {selector} outranks the block lists"
+                );
+                if selector.contains(".author-role") {
+                    assert!(!declarations.contains("* -"), "{name}: {selector}");
+                }
+            }
+            let fields = rules_naming(&css, ".comment-form input");
+            assert!(
+                fields.iter().any(|r| r.contains("border: 1px solid")),
+                "{name}"
+            );
+            assert!(
+                fields.iter().any(|r| r.contains("appearance: none")),
+                "{name}"
+            );
+            for (selector, _) in rules(pack.stylesheet()) {
+                if selector.starts_with(".button, .subscribe button") {
+                    assert!(
+                        selector.contains(".comment-form button"),
+                        "{name}: {selector}"
+                    );
+                }
+            }
+            for rule in rules_naming(&css, ".table-fold table") {
+                assert!(!rule.contains("table-layout: fixed"), "{name}: {rule}");
+            }
+            let summary = rules_naming(&css, ".table-fold .table-fold-more");
+            assert!(
+                summary.iter().any(|r| r.contains("cursor: pointer")),
+                "{name}"
+            );
+        }
+    }
+
+    /// A lead picture or a table that grows past the text ran under the
+    /// side contents column in Keystone, Harbor, Meridian and Workbench
+    /// (fix/layout-every-pack); the shared rule keeps both to the text
+    /// column in every pack, and no pack names them again beside the column.
+    #[test]
+    fn every_pack_keeps_the_lead_picture_and_tables_clear_of_the_side_contents() {
+        let site = tempfile::tempdir().unwrap();
+        let guard = ".post-with-toc :is(.post-header .image, .post-body > table)";
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
+            let css = stylesheet_text_with(&tokens, pack.stylesheet());
+            let rule = rules_naming(&css, guard);
+            assert!(
+                rule.iter()
+                    .any(|r| r.contains("margin-inline: 0; translate: none")),
+                "{}",
+                pack.name
+            );
+            for (selector, declarations) in rules(pack.stylesheet()) {
+                let beside = selector.contains(".post-with-toc")
+                    && !selector.contains(":not(.post-with-toc)")
+                    && (selector.contains(".image") || selector.contains("table"));
+                let moves =
+                    declarations.contains("margin-inline") || declarations.contains("translate");
+                assert!(!(beside && moves), "{}: {selector}", pack.name);
+            }
+        }
+    }
+
+    /// A person's photo sits in a `<picture>`, and in a flex row it is the
+    /// picture that shrinks: beside a long name on a phone, Keystone's card
+    /// photos were drawn 18 by 28 px. The shared rule keeps every picture
+    /// around a photo at its size, and no pack lets one shrink again.
+    #[test]
+    fn every_pack_keeps_author_photos_square() {
+        let site = tempfile::tempdir().unwrap();
+        for pack in khalid_theme::packs() {
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
+            let css = stylesheet_text_with(&tokens, pack.stylesheet());
+            let held = rules_naming(&css, "picture:has(> .avatar)");
+            assert!(
+                held.iter().any(|r| r.contains("flex: none")),
+                "{}",
+                pack.name
+            );
+            for (selector, declarations) in rules(pack.stylesheet()) {
+                let shrinks = ["flex: 1", "flex: auto", "flex-shrink: 1"]
+                    .iter()
+                    .any(|grow| declarations.contains(grow));
+                let photo = selector.contains("picture") || selector.contains(".avatar");
+                assert!(!(photo && shrinks), "{}: {selector}", pack.name);
+            }
+        }
+    }
+
+    /// The topic tabs on the home page title their cards with h4. Compass
+    /// placed only h2 and h3 in its card grid, so the h4 took the author's
+    /// cell and pushed the date over the next card. Every pack's card
+    /// title rules name all three levels.
+    #[test]
+    fn every_pack_styles_card_titles_of_every_level() {
+        for pack in khalid_theme::packs() {
+            for (selector, _) in rules(pack.stylesheet()) {
+                // The selector's own list, split where no bracket is open.
+                let mut depth = 0;
+                let list = selector.split(|c| {
+                    depth += i32::from(c == '(') - i32::from(c == ')');
+                    c == ',' && depth == 0
+                });
+                for one in list.filter(|one| one.contains(".card")) {
+                    let two_levels = one.contains("h2") && !one.contains("h4");
+                    assert!(!two_levels, "{}: {one}", pack.name);
+                }
+            }
+        }
+    }
+
     #[test]
     fn a_pack_takes_every_colour_from_the_tokens_and_mirrors_for_right_to_left() {
         for pack in khalid_theme::packs() {
-            let css = pack.stylesheet;
+            let css = pack.stylesheet();
             for fixed in ["#", "rgb(", "hsl(", "oklch(", "white", "black;"] {
                 let found = css
                     .lines()
@@ -244,7 +392,7 @@ mod tests {
     fn every_pack_palette_reads_at_wcag_aa() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
             let failures = tokens.contrast_failures();
             assert!(failures.is_empty(), "{}: {failures:?}", pack.name);
             let colors = &tokens.colors;
@@ -266,20 +414,35 @@ mod tests {
     fn every_class_a_pack_template_uses_has_a_rule() {
         let site = tempfile::tempdir().unwrap();
         for pack in khalid_theme::packs() {
-            let tokens = Tokens::load_over(site.path(), pack.tokens).unwrap();
-            let css = stylesheet_with(&tokens, pack.stylesheet).unwrap();
+            let tokens = Tokens::load_over(site.path(), pack.tokens()).unwrap();
+            let css = stylesheet_with(&tokens, pack.stylesheet()).unwrap();
             let css = String::from_utf8(css.body().to_vec()).unwrap();
             for file in pack.templates {
-                let classes = (file.source.split("class=\"").skip(1))
-                    .filter_map(|attribute| attribute.split('"').next())
-                    .flat_map(str::split_whitespace);
-                for class in classes {
-                    let needle = format!(".{class}");
-                    let styled = css.match_indices(&needle).any(|(at, _)| {
-                        let next = css.get(at + needle.len()..).and_then(|r| r.chars().next());
-                        !next.is_some_and(|c| c.is_alphanumeric() || c == '-' || c == '_')
-                    });
-                    assert!(styled, "{}: .{class} in {}", pack.name, file.name);
+                // The pack's own file, and each shared section part it
+                // imports, whose rules the build adds to the pack's.
+                let mut sources = vec![(file.name.to_owned(), file.source().to_owned())];
+                for (at, _) in file.source().match_indices("\"sections/") {
+                    let rest = file.source().get(at + 1..).unwrap_or_default();
+                    let name = rest.split('"').next().unwrap_or_default();
+                    let path = format!(
+                        "{}/../khalid-render/templates/{name}",
+                        env!("CARGO_MANIFEST_DIR")
+                    );
+                    let text = std::fs::read_to_string(&path).unwrap();
+                    sources.push((name.to_owned(), text));
+                }
+                for (name, source) in &sources {
+                    let classes = (source.split("class=\"").skip(1))
+                        .filter_map(|attribute| attribute.split('"').next())
+                        .flat_map(str::split_whitespace);
+                    for class in classes {
+                        let needle = format!(".{class}");
+                        let styled = css.match_indices(&needle).any(|(at, _)| {
+                            let next = css.get(at + needle.len()..).and_then(|r| r.chars().next());
+                            !next.is_some_and(|c| c.is_alphanumeric() || c == '-' || c == '_')
+                        });
+                        assert!(styled, "{}: .{class} in {name}", pack.name);
+                    }
                 }
             }
         }

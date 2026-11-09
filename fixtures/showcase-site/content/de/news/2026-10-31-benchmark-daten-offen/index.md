@@ -11,7 +11,7 @@ focus_keyword: Benchmark-Daten
 tags: [forschung, messung]
 image:
   src: cover.svg
-  alt: Ein Ordner mit Tabellenblättern gleitet aus einer offenen Kiste, darüber ein kleiner Pfeil zum Herunterladen
+  alt: Eine Tabelle mit Benchmark-Daten neben einem offenen orangefarbenen Vorhängeschloss, frei zum Herunterladen
 ---
 
 Ab heute kann jeder die Benchmark-Daten unseres Content-Benchmarks 2026 als Beispiel herunterladen, kostenlos und unter einer offenen Lizenz. Die Datei liegt auf einer eigenen Seite, zusammen mit einem Datenlexikon, unserer Methode und einem Hinweis, wie man sie zitiert.

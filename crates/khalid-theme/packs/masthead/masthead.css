@@ -1,0 +1,149 @@
+/* Masthead (docs/templates/masthead.md): a general publication. The
+   site's name centred over the nameplate rule, a heavy rule over a thin
+   one with the menu between them; the same pair of rules heads every
+   section, with its name centred. Square corners, no shadows, no tinted
+   cards: rules and type carry the design. The section parts' own rules
+   come first; these set Masthead's look over them. Every colour is a
+   token or a mix of tokens. */
+:root {
+  --mh-frame: 76rem;
+  --mh-wide: 56rem;
+  --mh-column: 36rem;
+  --mh-rule: 3px solid var(--color-text);
+  --mh-hair: 1px solid var(--color-text);
+}
+.site-header, main, .site-footer { max-inline-size: var(--mh-frame); }
+main { padding-block: 0 var(--space-section); }
+.image img { border-radius: 0; }
+
+/* The nameplate: the name centred and large, the search at the start and
+   the call to action at the end of its row, then the menu in small
+   capitals between the heavy rule and the thin one. */
+.site-header { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 4fr) minmax(0, 1fr); align-items: center; gap: 0.5rem 1rem; padding-block: clamp(1.25rem, 1rem + 1.5vw, 2.25rem) 0; border: 0; }
+.site-name { grid-column: 2; grid-row: 1; justify-self: center; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(2rem, 1.25rem + 3.5vw, 4.5rem); font-weight: var(--heading-weight); line-height: 1.05; letter-spacing: -0.01em; text-align: center; }
+.site-logo img { block-size: clamp(2.5rem, 2rem + 2vw, 4rem); inline-size: auto; }
+.search-link { grid-column: 1; grid-row: 1; justify-self: start; color: var(--color-text); font-size: var(--text-small); }
+.header-button { grid-column: 3; grid-row: 1; justify-self: end; }
+.nav-bar { grid-column: 1 / -1; grid-row: 2; margin-block-start: clamp(0.75rem, 0.5rem + 1vw, 1.5rem); border-block-start: var(--mh-rule); border-block-end: var(--mh-hair); }
+.nav-bar ul { justify-content: center; gap: 0 clamp(1rem, 0.5rem + 1.5vw, 2.25rem); padding-block: 0.125rem; }
+.site-header nav a { color: var(--color-text); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); }
+@media (max-width: 40rem) {
+  .site-header { grid-template-columns: minmax(0, 1fr) auto; padding-block-end: 0.5rem; border-block-end: var(--mh-rule); }
+  .site-name { grid-column: 1 / -1; }
+  .search-link { grid-row: 2; }
+  .site-header > :is(.nav-menu, .header-button) { grid-column: 2; grid-row: 2; }
+  .nav-menu summary { border-radius: 0; }
+}
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); text-align: center; }
+.breadcrumbs ol { justify-content: center; }
+
+/* Buttons: square, filled with the accent. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 0; font: 600 0.9375rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* The rule label: a section's name in small capitals, centred between
+   the heavy rule and the thin one, as the menu sits in the nameplate. */
+.rule-label, .post-footer > h2, .mentions > h2 { margin-block: 0 1.75rem; padding-block: 0.375rem; border-block-start: var(--mh-rule); border-block-end: var(--mh-hair); font-family: var(--font-body); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; line-height: 1.4; text-align: center; text-transform: uppercase; }
+.front-block, .related, .author-posts, .author-others { margin-block-start: var(--space-section); }
+
+/* The front page: the strapline, the lead story, then the latest posts
+   and the headline lists by section. */
+.front-intro { margin-block: 0.75rem clamp(1.5rem, 1rem + 2vw, 2.5rem); text-align: center; }
+.strapline { margin: 0 auto; max-inline-size: 40rem; color: var(--color-muted); font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); font-style: italic; }
+.front-intro .intro { max-inline-size: 40rem; margin-inline: auto; }
+.lead { display: grid; gap: 1.25rem 3rem; align-items: center; padding-block-end: clamp(1.5rem, 1rem + 2vw, 2.5rem); border-block-end: var(--mh-hair); }
+.lead .image { margin: 0; }
+.lead-text { text-align: center; }
+.lead :is(h2, h3, h4) { margin-block: 0.5rem 0.75rem; font-size: clamp(1.875rem, 1.25rem + 2.25vw, 3.25rem); line-height: 1.1; }
+.lead :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.lead :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.lead-dek { margin-inline: auto; max-inline-size: 36rem; font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); }
+.byline { margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.byline span { color: var(--color-text); font-weight: 600; }
+.byline span::after { content: ""; display: inline-block; inline-size: 0.3125rem; block-size: 0.3125rem; margin-inline: 0.625rem; vertical-align: middle; background: var(--color-accent); }
+@media (min-width: 60rem) {
+  .front-grid .lead { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  .front-grid .lead-text { text-align: start; }
+  .front-grid .lead-dek { margin-inline: 0; }
+}
+.front-list .lead .image { grid-row: 2; }
+.kicker { margin: 0; color: var(--color-muted); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.kicker a { color: var(--color-link); text-decoration: none; }
+.kicker a:hover { text-decoration: underline; }
+.lead .kicker a { margin-inline-start: 0.5rem; padding-inline-start: 0.625rem; border-inline-start: 1px solid var(--color-border); }
+
+.front { min-inline-size: 0; }
+
+/* Cards: the grid front puts pictures three to a row; the list front
+   one story a row, its text before a small picture. */
+.card :is(h2, h3, h4) { margin-block: 0.625rem 0.375rem; font-size: 1.375rem; line-height: 1.2; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.card .image { margin: 0; }
+.card .image img { aspect-ratio: 3 / 2; object-fit: cover; }
+.front-grid .cards, .related .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 2.5rem 2rem; }
+.front-grid .card:has(.image), .related .card:has(.image) { display: block; }
+.front-list .cards { gap: 0; }
+.front-list .cards > li { padding-block: 1.5rem; border-block-end: 1px solid var(--color-border); }
+.front-list .cards > li:first-child { padding-block-start: 0; }
+.front-list .cards-row .card:has(.image) { grid-template-columns: minmax(0, 1fr) minmax(7rem, 30%); gap: 0 clamp(1rem, 0.5rem + 2vw, 2.5rem); }
+.front-list .cards-row .card .image { grid-column: 2; grid-row: 1 / span 4; }
+.front-list .card :is(h2, h3, h4) { margin-block-start: 0.25rem; font-size: clamp(1.25rem, 1.125rem + 0.6vw, 1.625rem); }
+
+/* In the sections: one column per section, its name over a hairline. */
+.section-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 2rem; }
+.section-column > :is(h2, h3, h4) { margin-block: 0 0.75rem; padding-block-end: 0.5rem; border-block-end: var(--mh-hair); font-size: 1.375rem; }
+.section-column > :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.section-column > :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.section-column .feed-category { display: none; }
+.view-all { margin-block: 1.25rem 0; text-align: center; }
+
+/* Lists and the writers page: the name centred under the heavy rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; padding-block-start: 1.25rem; border-block-start: var(--mh-rule); text-align: center; }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: 40rem; margin: 1rem auto 0; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+
+/* A post: a centred head, the picture wider than the text, then the
+   reading column. */
+main > .post { max-inline-size: var(--mh-wide); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--mh-column) + 18rem); }
+main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--mh-column); margin-inline: auto; }
+.post-header { margin-block: clamp(1.25rem, 1rem + 2vw, 2.75rem) 2.5rem; text-align: center; }
+.post-header h1 { margin-block: 0.75rem; font-size: clamp(2.125rem, 1.5rem + 2.5vw, 3.5rem); line-height: 1.1; }
+.post-header .dek { max-inline-size: var(--mh-column); margin-inline: auto; color: var(--color-muted); font-size: 1.25rem; font-style: italic; line-height: 1.5; }
+.post-meta { font-size: var(--text-small); }
+.post-meta .people { justify-content: center; }
+.post-meta .person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); }
+.post-date { margin-block: 0.25rem 0; color: var(--color-muted); }
+.post-header .image { margin-block: 2rem 0; }
+.post-header figcaption { text-align: start; }
+.post > :not(.post-header, .toc-side), .post-body > * { max-inline-size: var(--mh-column); margin-inline: auto; }
+.post-with-toc > :not(.toc-side), .post-with-toc .post-body > * { margin-inline: 0; }
+.post-body > p:first-of-type { font-size: 1.125em; }
+.post-body > p:last-of-type::after { content: ""; display: inline-block; inline-size: 0.5em; block-size: 0.5em; margin-inline-start: 0.375em; background: var(--color-accent); }
+.post-body :is(h2, h3) { margin-block-start: 1.75em; }
+.post-body blockquote { margin-inline: 0; padding-inline-start: 1.25rem; border-inline-start: var(--mh-rule); font-style: italic; }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags { justify-content: center; }
+.post-footer .tags a { padding-inline: 0.75rem; border: 1px solid var(--color-border); border-radius: 0; color: var(--color-text); font-size: var(--text-small); text-decoration: none; }
+.post-footer .tags a:hover { border-color: var(--color-text); color: var(--color-link); }
+.toc-inline { border-radius: 0; }
+
+/* A writer: centred, the bio in the reading column. */
+.author-header { justify-items: center; margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); text-align: center; }
+.author-photo { inline-size: clamp(6rem, 5rem + 4vw, 9rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; }
+.author-count { margin: 0.25rem 0 0; }
+.author-bio { max-inline-size: var(--mh-column); margin-inline: auto; }
+.people-grid-person .avatar { border-radius: 50%; }
+
+/* The call to action, the newsletter and the footer: ruled, not boxed. */
+.cta-band, .newsletter-slot { background: none; border-block: var(--mh-rule); border-radius: 0; }
+.site-footer { border-block-start: var(--mh-rule); text-align: center; }
+.site-footer ul { justify-content: center; }

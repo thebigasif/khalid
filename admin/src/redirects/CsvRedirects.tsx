@@ -6,8 +6,8 @@ import { Problem } from "../components/Problem";
 import { en, type UserMessage } from "../strings/en";
 import { KEPT } from "./KeptRedirects";
 
-/** Saves `text` as a file the browser downloads, named `name`. */
-function save(text: string, name: string) {
+/** Saves `text` as a CSV file the browser downloads, named `name`. */
+export function save(text: string, name: string) {
   const address = URL.createObjectURL(new Blob([text], { type: "text/csv" }));
   const link = document.createElement("a");
   link.href = address;

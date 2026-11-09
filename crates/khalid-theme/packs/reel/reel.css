@@ -1,0 +1,161 @@
+/* Reel (docs/templates/reel.md): a printed cinema programme. Warm paper,
+   condensed titles in capitals, pictures in a letterbox frame, tall poster
+   cards, and every verdict on a ticket with a notch cut from each side.
+   The section parts' own rules come first (the build adds the parts this
+   pack's templates import); these set the programme's look over them.
+   Every colour is a token or a mix of tokens. */
+:root {
+  --reel-frame: 80rem;
+  --reel-ink: color-mix(in oklab, var(--color-text) 92%, var(--color-accent));
+  --reel-perforation: color-mix(in oklab, var(--color-muted) 45%, var(--color-surface));
+  --hero-title: clamp(2.75rem, 1.75rem + 4.5vw, 5.75rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--reel-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: 38rem; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(38rem + 18rem); }
+main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: 38rem; margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: 0.005em; }
+
+/* The header: a thick ink rule over the window, the name in condensed
+   capitals, the menu in small capitals. */
+body { border-block-start: 6px solid var(--reel-ink); }
+.site-header { gap: 0.5rem 2rem; padding-block: 1rem; border-block-end: 3px double var(--reel-ink); }
+.site-name { font-family: var(--font-heading); font-size: 1.625rem; font-weight: var(--heading-weight); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-family: var(--font-heading); font-size: 0.9375rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: ink, squared, condensed capitals. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: var(--heading-weight) 1rem/1.2 var(--font-heading); letter-spacing: 0.06em; text-align: center; text-transform: uppercase; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* Section labels: condensed capitals beside a short accent bar. */
+:is(.reel-section, .now-showing, .latest-reviews, .score-sheet, .features, .related, .mentions, .author-reviews, .author-others, .topic-tabs, .media-row) > h2, .post-footer > h2 { display: flex; align-items: center; gap: 0.75rem; margin-block: 0 1.5rem; font-size: 1.125rem; letter-spacing: 0.12em; line-height: 1.3; text-transform: uppercase; }
+:is(.reel-section, .now-showing, .latest-reviews, .score-sheet, .features, .related, .mentions, .author-reviews, .author-others, .topic-tabs, .media-row) > h2::before, .post-footer > h2::before { flex: none; inline-size: 1.5rem; block-size: 0.375rem; background: var(--color-accent); content: ""; }
+:is(.reel-section, .now-showing, .latest-reviews, .score-sheet, .features, .related, .author-reviews, .author-others) { margin-block-end: var(--space-section); }
+.reel-section .view-all { margin-block: 1.5rem 0; }
+
+/* The name of the site: a marquee in condensed capitals. */
+.hero { padding-block: clamp(1.5rem, 1rem + 2vw, 3rem) 0; text-align: center; }
+.hero-title { max-inline-size: none; font-weight: var(--heading-weight); letter-spacing: 0.04em; line-height: 0.95; text-transform: uppercase; }
+.hero-intro { max-inline-size: 40rem; margin-inline: auto; color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); font-style: italic; line-height: 1.5; }
+
+/* The letterbox: a picture between two ink bars, as on a cinema screen. */
+.screen { padding-block: clamp(0.5rem, 0.25rem + 1.5vw, 1.5rem); background: var(--reel-ink); border-radius: var(--radius); }
+.screen .image { margin: 0; }
+.screen img { aspect-ratio: 21 / 9; block-size: auto; object-fit: cover; border-radius: 0; }
+.screen figcaption { padding-inline: 1rem; color: var(--color-background); }
+
+/* Now showing: the lead review beside its ticket. */
+.lead-review { display: grid; gap: 1.5rem 3rem; align-items: start; }
+@media (min-width: 60rem) { .lead-review { grid-template-columns: minmax(0, 3fr) minmax(20rem, 2fr); } }
+.lead-text { min-inline-size: 0; }
+.lead-review :is(h2, h3, h4) { margin-block: 0 0.75rem; font-size: clamp(1.75rem, 1.25rem + 1.75vw, 2.75rem); line-height: 1.05; }
+.lead-review :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.lead-review :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.lead-excerpt { margin-block: 0 1.5rem; font-size: 1.125rem; line-height: 1.55; }
+.kind { margin-block: 0 0.5rem; font-family: var(--font-heading); font-size: var(--text-small); letter-spacing: 0.12em; text-transform: uppercase; }
+.kind a { text-decoration: none; }
+.kind a:hover { text-decoration: underline; }
+
+/* The ticket: a surface panel with a round notch cut from each side, the
+   stars on its stub, a perforated line, then the facts. */
+.ticket { --notch: 0.875rem; --notch-at: 6rem; display: grid; margin-block: 1.75rem 0; background: var(--color-surface); border-radius: var(--radius); mask-image: radial-gradient(circle at 0 var(--notch-at), transparent var(--notch), var(--color-text) calc(var(--notch) + 0.5px)), radial-gradient(circle at 100% var(--notch-at), transparent var(--notch), var(--color-text) calc(var(--notch) + 0.5px)); mask-position: 0 0, 100% 0; mask-repeat: no-repeat; mask-size: 51% 100%; }
+@media (min-width: 40rem) { .ticket { --notch-at: 50%; grid-template-columns: auto minmax(0, 1fr); } }
+.ticket-stub { display: flex; box-sizing: border-box; min-block-size: 6rem; align-items: center; padding: 1.25rem 1.75rem; border-block-end: 2px dashed var(--reel-perforation); --rating-star: 1.5rem; }
+@media (min-width: 40rem) { .ticket-stub { border-block-end: 0; border-inline-end: 2px dashed var(--reel-perforation); } }
+.ticket-stub .rating-label { font-family: var(--font-heading); }
+.ticket-stub .rating-score { font-family: var(--font-heading); font-size: 1.75rem; }
+.ticket-facts { display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; margin: 0; padding: 1.25rem 1.75rem; }
+.ticket-facts > div { min-inline-size: 0; }
+.ticket-facts dt { color: var(--color-muted); font-family: var(--font-heading); font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.ticket-facts dd { margin: 0.125rem 0 0; font-size: 1rem; line-height: 1.4; }
+.ticket-facts > div:nth-child(2), .ticket-watch { flex-basis: 100%; }
+.cast-names { display: flex; flex-wrap: wrap; gap: 0 0.5rem; margin: 0; padding: 0; font-family: var(--font-heading); font-size: 1.0625rem; letter-spacing: 0.02em; list-style: none; }
+.cast-names li + li::before { margin-inline-end: 0.5rem; color: var(--color-accent); content: "/"; }
+.watch-list { display: flex; flex-wrap: wrap; gap: 0.375rem; margin: 0.25rem 0 0; padding: 0; list-style: none; }
+.watch-list li { padding: 0.125rem 0.625rem; background: var(--color-background); border: 1px solid var(--color-border); border-radius: 100vmax; font-size: var(--text-small); }
+
+/* Poster cards: four across the frame, two on a phone, and a small stub
+   under each title. */
+.poster-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.poster-frame img { border-radius: var(--radius); }
+.poster :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.2; }
+@media (max-width: 39.99rem) { .poster-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1rem; } .poster :is(h2, h3, h4) { font-size: 1.0625rem; } }
+.stub { display: flex; flex-direction: column; gap: 0.25rem; }
+.stub-release, .stub-watch { margin: 0; color: var(--color-muted); font-size: var(--text-small); line-height: 1.4; }
+.stub-watch { color: var(--color-text); }
+
+/* The score sheet: a ranked table of ratings on ruled rows. */
+.score-list { margin: 0; padding: 0; border-block-start: 2px solid var(--reel-ink); list-style: none; }
+.score-row { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.5rem 1rem; align-items: center; padding-block: 0.875rem; border-block-end: 1px solid var(--color-border); }
+.score-row > .rating { grid-column: 2; }
+@media (min-width: 48rem) { .score-row { grid-template-columns: 3.5rem minmax(0, 1fr) auto; } .score-row > .rating { grid-column: auto; } }
+.score-rank { color: var(--color-accent); font-family: var(--font-heading); font-size: 1.5rem; font-variant-numeric: tabular-nums; line-height: 1; }
+.score-what { min-inline-size: 0; }
+.score-what :is(h2, h3, h4) { margin: 0; font-size: 1.1875rem; line-height: 1.3; }
+.score-what :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.score-what :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.score-meta { display: flex; flex-wrap: wrap; gap: 0 1rem; margin: 0.125rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+
+/* Features: the dated feed in two columns on a wide screen. */
+@media (min-width: 60rem) { .features .feed-list { columns: 2; column-gap: 3rem; } .features .feed-item { break-inside: avoid; } .features .feed-item:first-child { padding-block-start: 0.875rem; } }
+.feed-item :is(h2, h3, h4) { font-family: var(--font-heading); font-size: 1.25rem; }
+
+/* Lists and the critics page: the kind, the name, the intro. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; padding-block-end: 1.5rem; border-block-end: 3px double var(--reel-ink); }
+.list-header h1 { margin: 0; text-transform: uppercase; letter-spacing: 0.03em; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 1rem; font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-kind { margin-block: 0 0.5rem; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-small); letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* A review: the kind, the title, the dek, the critic, the screen and the
+   ticket. The screen grows past the text on a wide window. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.05; }
+.post-header .dek { font-size: 1.25rem; font-style: italic; line-height: 1.5; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta .person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; }
+.post-header .screen { margin-block-start: 2rem; }
+@media (min-width: 64rem) { .post:not(.post-with-toc) .post-header .screen { margin-inline: -8rem; } }
+.post-body { font-size: 1.25rem; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body em { font-style: italic; }
+.post-body blockquote { margin-inline: 0; padding-inline-start: 1.25rem; border-inline-start: 4px solid var(--color-accent); font-size: 1.3125rem; font-style: italic; }
+.post-body th { font-family: var(--font-heading); font-weight: var(--heading-weight); letter-spacing: 0.04em; text-align: start; }
+.post-body thead th { border-block-end: 2px solid var(--reel-ink); }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related { max-inline-size: var(--reel-frame); margin-block-start: var(--space-section); }
+
+/* A critic: the mark beside the name, then their reviews. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; text-transform: uppercase; letter-spacing: 0.03em; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.0625rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-reviews, .author-others { margin-block-start: var(--space-section); }
+.people-grid-person :is(h2, h3, h4) { font-size: 1.3125rem; }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action: a ticket-red band; the newsletter on the surface. */
+.cta-band { background: var(--color-surface); border: 0; border-block: 3px double var(--reel-ink); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); }
+
+/* The footer: a double rule, quiet links. */
+.site-footer { border-block-start: 3px double var(--reel-ink); }

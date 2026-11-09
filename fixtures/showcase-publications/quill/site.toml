@@ -1,0 +1,82 @@
+# Small Hours, a made-up personal journal, written for the Quill
+# template's demo. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "Small Hours"
+languages = ["en"]
+
+[template.cta]
+label = "Get new posts by email"
+href = "/blog/about/"
+note = "One email when a new post goes up, about twice a month. Nothing else."
+
+# The Quill template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here. Quill is a quiet
+# template, so the band shows after posts only.
+[template.options]
+cta_band = "post"
+
+[seo.titles]
+separator = "·"
+tagline = "A journal of walking, reading and writing by hand"
+
+[seo.ai_page]
+covers = "Small Hours is the personal journal of Nell Ashby, a writer who lives by a tidal estuary, with reading notes from her brother Kit, a librarian. It holds essays on walking and writing by hand, short notes from the week and notes on books."
+cite = "Name the writer and link the post you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "person"
+name = "Nell Ashby"
+email = "hello@example.com"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Small Hours logo"
+width = 320
+height = 80
+
+# Sign-ups for new posts, under the journal's own name. The mail server
+# is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Small Hours"
+postal_address = "Small Hours, 3 Quay Row, Saltmere SM4 1QR"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Essays"
+href = "/blog/category/essays/"
+language = "en"
+
+[[nav.primary]]
+label = "Notes"
+href = "/blog/category/notes/"
+language = "en"
+
+[[nav.primary]]
+label = "Reading"
+href = "/blog/category/reading/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Archive"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

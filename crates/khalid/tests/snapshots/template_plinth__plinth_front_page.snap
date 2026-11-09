@@ -1,0 +1,119 @@
+---
+source: crates/khalid/tests/template_plinth.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+Houses and libraries by the sea.
+</div>
+<dl class="figure-strip">
+<div class="figure">
+<dt>buildings completed</dt>
+<dd>38</dd>
+</div>
+<div class="figure">
+<dt>years in practice</dt>
+<dd>21</dd>
+</div>
+</dl>
+</header>
+<section class="projects" aria-labelledby="projects-title">
+<h2 id="projects-title">Projects</h2>
+<ol class="spreads" role="list">
+<li class="spread">
+<div class="spread-plate"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 60.5rem) calc(11vw + 35.75rem), (min-width: 56rem) 34rem, calc(100vw - 2rem)">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 60.5rem) calc(11vw + 35.75rem), (min-width: 56rem) 34rem, calc(100vw - 2rem)" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></div>
+<div class="spread-text">
+<p class="spread-kind"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="spread-excerpt">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<dl class="title-block">
+<div class="title-block-sheet">
+<dt>Sheet</dt>
+<dd>01</dd>
+</div>
+<div>
+<dt>Location</dt>
+<dd>Harrowfield</dd>
+</div>
+<div>
+<dt>Year</dt>
+<dd>2026</dd>
+</div>
+<div>
+<dt>Floor area</dt>
+<dd>640 m²</dd>
+</div>
+<div>
+<dt>Stage</dt>
+<dd>Completed</dd>
+</div>
+</dl>
+
+</div>
+</li>
+<li class="spread">
+<div class="spread-text">
+<p class="spread-kind"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="spread-excerpt">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+<dl class="title-block">
+<div class="title-block-sheet">
+<dt>Sheet</dt>
+<dd>02</dd>
+</div>
+<div>
+<dt>Location</dt>
+<dd>Bow Lane</dd>
+</div>
+<div>
+<dt>Year</dt>
+<dd>2025</dd>
+</div>
+</dl>
+
+</div>
+</li>
+</ol>
+</section>
+<section class="notes" aria-labelledby="notes-title">
+<h2 id="notes-title">Studio notes</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-10-12">12 October 2026</time>
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p class="feed-category"><a href="/blog/category/content-strategy/">Content strategy</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="feed-item">
+<time datetime="2026-09-14">14 September 2026</time>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="feed-category"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+</ol>
+</section>
+<section class="kinds" aria-labelledby="kinds-title">
+<h2 id="kinds-title">Types of work</h2>
+<ul class="kind-index" role="list">
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+</ul>
+</section>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/contact/">Start a project</a></p>
+</div>

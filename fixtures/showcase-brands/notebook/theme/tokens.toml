@@ -1,0 +1,71 @@
+# The sample brand for the Notebook demo: Maren Holt's garden notebook.
+# Green-black ink and a deep leaf green on a pale sage page, Alegreya
+# for the words and Courier Prime for the dates in the margin. Only the
+# brand lives here: the template keeps its own shape, type sizes and
+# spacing.
+[colors]
+background = "#f8f8f3"
+surface = "#edefe4"
+text = "#1d2320"
+muted = "#515a54"
+link = "#2b6a3e"
+accent = "#2b6a3e"
+border = "#d8dccd"
+
+[fonts]
+heading = "Alegreya, Palatino, \"Palatino Linotype\", Georgia, serif"
+body = "Alegreya, Palatino, \"Palatino Linotype\", Georgia, serif"
+mono = "\"Courier Prime\", \"Courier New\", ui-monospace, monospace"
+
+[[fonts.files]]
+family = "Alegreya"
+style = "normal"
+weight = "400"
+path = "alegreya-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "112.23%"
+descent = "162.80%"
+line_gap = "0.00%"
+size_adjust = "58.14%"
+
+[[fonts.files]]
+family = "Alegreya"
+style = "italic"
+weight = "400"
+path = "alegreya-latin-400-italic.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "112.23%"
+descent = "162.80%"
+line_gap = "0.00%"
+size_adjust = "55.81%"
+
+[[fonts.files]]
+family = "Alegreya"
+style = "normal"
+weight = "700"
+path = "alegreya-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "112.23%"
+descent = "162.80%"
+line_gap = "0.00%"
+size_adjust = "59.51%"
+
+[[fonts.files]]
+family = "Courier Prime"
+style = "normal"
+weight = "400"
+path = "courier-prime-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "86.30%"
+descent = "161.29%"
+line_gap = "0.00%"
+size_adjust = "63.50%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

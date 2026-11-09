@@ -8,7 +8,7 @@ use chrono::NaiveDate;
 use khalid_content::{AuthorFront, Document, Heading, PostFront, Rendered, SiteContent, Wikilinks};
 use khalid_core::{AbsoluteUrl, Config, Locale, Reader, Slug, UserMessage};
 use khalid_render::{
-    BodyHtml, Contents, ContentsHeading, Feature, Features, HeadingLevel, Person, PostTopics,
+    BodyHtml, Contents, ContentsHeading, Fact, Feature, Features, HeadingLevel, Person, PostTopics,
     Profile,
 };
 use khalid_seo::AuthorProfile;
@@ -126,6 +126,17 @@ pub(crate) fn reviewers(
         reviewers.push(person.clone());
     }
     Ok((reviewers, profiles))
+}
+
+/// The facts `front` lists, in its order, as cards and post pages show
+/// them. Front matter has already trimmed and checked each one.
+pub(crate) fn facts(front: &PostFront) -> Vec<Fact> {
+    (front.facts.iter())
+        .map(|fact| Fact {
+            label: fact.label.clone(),
+            value: fact.value.clone(),
+        })
+        .collect()
 }
 
 /// The table of contents of a body with `headings`: its H2s and H3s.

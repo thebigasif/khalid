@@ -4,6 +4,8 @@ This kit is a Next.js app that shows a blog from a Khalid site's Content API. Kh
 
 ## Set it up
 
+You need Node 20.9 or later, which this version of Next.js asks for.
+
 1. In the Khalid site's `site.toml`, set `mode = "headless"`. Headless means Khalid writes no HTML pages of its own and leaves them to this app.
 2. Make a content key, which can only read published posts:
 
@@ -27,7 +29,7 @@ This kit is a Next.js app that shows a blog from a Khalid site's Content API. Kh
    npm start
    ```
 
-The blog answers at `/blog/`, with each post at the address Khalid gives it. Pages are made at build time and made again at most every five minutes, so a new post shows without a new build.
+`npm start` prints the address, and the blog answers at `/blog/` under it, such as `http://localhost:3000/blog/`, with each post at the address Khalid gives it. Khalid must be running during `npm run build`, because the build reads every post. Pages are made at build time and made again at most every five minutes, so a new post shows without a new build.
 
 ## What stays with Khalid
 
@@ -41,7 +43,7 @@ Send these addresses to `khalid serve` from your web server, or with `rewrites` 
 
 ## How it works
 
-`lib/khalid.js` reads the Content API and has no dependencies. `headElements` turns a post's `head` into elements, and `app/khalid-head.tsx` renders them. React places the title, meta and link tags in the document's `<head>`. The JSON-LD script stays in the page body, where search engines read it too. The same `khalid.js` ships in the Astro kit, and Khalid's own tests run it against the demo site on every change.
+`lib/khalid.js` reads the Content API and has no dependencies. `headElements` turns a post's `head` into elements, and `app/khalid-head.tsx` renders them. React places the title, meta and link tags in the document's `<head>`. The JSON-LD script stays in the page body, where search engines read it too. The Content API has no head for the front page, so `homeHead` writes one: the site's title, a description, the canonical link and `Blog` schema listing the posts. The same `khalid.js` ships in the Astro kit, and Khalid's own tests run it against the demo site on every change. Khalid's CI also builds this app against its showcase site, with `scripts/starters-check.sh`, and checks that the front page and a post have a title, a meta description and schema.
 
 ## Licence
 

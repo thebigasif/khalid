@@ -1,3 +1,8 @@
+---
+title: "A free Khalid blog on Cloudflare"
+order: 10
+---
+
 # A free Khalid blog on Cloudflare
 
 Cloudflare can build your blog from GitHub and serve it to readers around the world for free. There are two ways in. The button does every step for you. The Pages steps follow the classic GitHub and Cloudflare Pages guide, for people who like to see each setting.
@@ -54,13 +59,15 @@ Your domain must use Cloudflare for its DNS, the service that says which server 
 
 Then set the blog's address to the new domain, as above.
 
+Turn off Cloudflare's Email Address Obfuscation for the blog: in the domain's dashboard, go to **Security**, **Settings** (or **Scrape Shield** on older dashboards) and switch it off. It rewrites every email address and `mailto:` link and adds a script from `/cdn-cgi/`. Khalid's content security policy blocks that script, as it should, so addresses show as "[email protected]" and the share-by-email link opens a missing page.
+
 ## Write a post
 
 Add a file to `content/en/posts/` in your repository, as the welcome post shows, and commit it. Khalid checks every post before it builds. A post that breaks a basic search rule, such as a missing description, is left out, and the build log in Cloudflare says why and how to fix it. `docs/getting-started.md` explains every field of a post.
 
 ## Update Khalid
 
-`build.sh` names the Khalid release it installs, such as `version="v1.2.0"`. A new release never changes your blog until you change that line to the newer release from the [releases page](https://github.com/thebigasif/khalid/releases) and commit.
+`build.sh` names the Khalid release it installs, such as `version="v1.3.2"`. A new release never changes your blog until you change that line to the newer release from the [releases page](https://github.com/thebigasif/khalid/releases) and commit.
 
 ## What is free
 

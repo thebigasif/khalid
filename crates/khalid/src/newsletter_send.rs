@@ -7,7 +7,7 @@ use std::sync::Arc;
 
 use khalid_api::post_store::PostStore;
 use khalid_api::resources::{AdminPost, PostStatus};
-use khalid_content::parse_blocks;
+use khalid_content::{BlockKind, parse_blocks};
 use khalid_core::{Config, Environment, Locale, Slug, SystemClock, UserMessage};
 use khalid_db::SubscriberTable;
 use khalid_newsletter::{Issue, Newsletter, PostalAddress, Segment, Sent};
@@ -145,16 +145,7 @@ pub(crate) fn deliver(
 /// to read it on the site, and its text without the blocks that only work
 /// on a page, such as forms.
 fn issue_of(config: &Config, post: &AdminPost, name: &str) -> Issue {
-    let markdown = post.markdown();
-    let text = match parse_blocks(markdown) {
-        Ok(blocks) => blocks
-            .iter()
-            .map(|block| block.source.as_str())
-            .filter(|source| !source.trim_start().starts_with("::"))
-            .collect::<Vec<_>>()
-            .join("\n\n"),
-        Err(_) => markdown.to_owned(),
-    };
+    let text = email_text(post.markdown());
     let link = announce::post_url(config, post)
         .map(|url| format!("Read it on the site: {}\n\n", url.as_str()))
         .unwrap_or_default();
@@ -164,6 +155,25 @@ fn issue_of(config: &Config, post: &AdminPost, name: &str) -> Issue {
         title.to_owned(),
         format!("{title}\n\n{link}{}\n", text.trim_end()),
     )
+}
+
+/// A post's `markdown` as an email's text: an embed as its title and
+/// link, since no email plays a player (privacy plan R13), and without the
+/// other blocks that only work on a page.
+fn email_text(markdown: &str) -> String {
+    let Ok(blocks) = parse_blocks(markdown) else {
+        return markdown.to_owned();
+    };
+    let text = blocks
+        .iter()
+        .filter_map(|block| match &block.kind {
+            BlockKind::Embed { src, title, .. } => Some(format!("{title}: {}", src.as_str())),
+            _ if block.source.trim_start().starts_with("::") => None,
+            _ => Some(block.source.clone()),
+        })
+        .collect::<Vec<_>>()
+        .join("\n\n");
+    text.trim_end().to_owned()
 }
 
 fn no_mail() -> UserMessage {
@@ -220,4 +230,17 @@ fn not_sent() -> UserMessage {
         "The subscribers in data/site.db could not be read or written.",
         "Run `khalid newsletter numbers` to see what went out. The post is not sent again.",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::email_text;
+
+    #[test]
+    fn an_embed_goes_out_as_its_title_and_link() {
+        let text = email_text(
+            "Watch the tour.\n\n::embed{src=\"https://vimeo.com/1\" title=\"A film\"}\n\n::toc\n",
+        );
+        assert_eq!(text, "Watch the tour.\n\nA film: https://vimeo.com/1");
+    }
 }

@@ -1,0 +1,113 @@
+# Northlight Parade, a made-up four-piece band from Glasgow, written for
+# the Encore template's demo. Each key and table here replaces the
+# showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Northlight Parade"
+languages = ["en"]
+
+[template.cta]
+label = "Get tour tickets"
+href = "/blog/autumn-tour/"
+note = "The Glass Weather autumn tour: twelve nights from 14 November, with three ferry crossings."
+
+# The Encore template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["A four-piece band from Glasgow. Songs about islands, crossings and cities, with guitars, drums and strings."]
+listen_on = ["Bandcamp | https://www.example.com/bandcamp/", "Spotify | https://www.example.com/spotify/", "Apple Music | https://www.example.com/apple-music/"]
+tour_dates = [
+  "2026-11-14 | Glasgow | The Old Granary | https://www.example.com/tickets/glasgow/",
+  "2026-11-15 | Edinburgh | Leith Sail Loft | https://www.example.com/tickets/edinburgh/",
+  "2026-11-17 | Aberdeen | The Harbour Rooms | https://www.example.com/tickets/aberdeen/",
+  "2026-11-18 | Inverness | Riverside Hall | Sold out",
+  "2026-11-20 | Stornoway | The Net Loft | https://www.example.com/tickets/stornoway/",
+  "2026-11-22 | Belfast | Linen Mill Stage | https://www.example.com/tickets/belfast/",
+  "2026-11-23 | Dublin | The Quay Rooms | https://www.example.com/tickets/dublin/",
+  "2026-11-26 | Newcastle | Ropery Hall | https://www.example.com/tickets/newcastle/",
+  "2026-11-27 | Leeds | The Dye Works | Few tickets left",
+  "2026-11-28 | Manchester | Cotton Exchange Annex | https://www.example.com/tickets/manchester/",
+  "2026-12-03 | Bristol | Wharf Shed | https://www.example.com/tickets/bristol/",
+  "2026-12-06 | London | The Tannery | https://www.example.com/tickets/london/",
+]
+notes_count = 3
+
+[announcement]
+text = "Glass Weather, our second album, is out now on vinyl, CD and download."
+href = "/blog/glass-weather/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A band from Glasgow"
+
+[seo.ai_page]
+covers = "Northlight Parade is a four-piece band from Glasgow. The site lists every record with its track list, formats and where to listen, the band's tour dates, and notes from the studio and the road."
+cite = "Name the record or the post you quote, and link to its page."
+contact = "band@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Northlight Parade"
+email = "band@example.com"
+founded = "2019-05-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Northlight Parade logo"
+width = 320
+height = 80
+
+# Sign-ups for the band's mailing list, under its own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "band@example.com"
+name = "Northlight Parade"
+postal_address = "Northlight Parade, c/o Fieldnote Records, 12 Arch Lane, Glasgow G40 1AA"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Releases"
+href = "/blog/category/releases/"
+language = "en"
+
+[[nav.primary]]
+label = "Tour"
+href = "/blog/autumn-tour/"
+language = "en"
+
+[[nav.primary]]
+label = "Studio"
+href = "/blog/category/studio/"
+language = "en"
+
+[[nav.primary]]
+label = "The band"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the band"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Tour diary"
+href = "/blog/category/tour-diary/"
+language = "en"
+
+[[nav.footer]]
+label = "The band"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

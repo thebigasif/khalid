@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /throw-a-mug-in-twelve-minutes/
+table /mixing-my-own-glazes/
+category /category/glazes-and-firing/
+tag /tag/wheel-throwing/
+author /authors/tamsin-hale/

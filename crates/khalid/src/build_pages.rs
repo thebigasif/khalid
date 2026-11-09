@@ -5,6 +5,7 @@ mod entries;
 mod glossary;
 mod home_rows;
 mod hubs;
+pub(crate) mod privacy_choices;
 pub(crate) mod series;
 
 use std::cmp::Reverse;
@@ -14,7 +15,8 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_content::{
-    AuthorFront, Document, Gated, PostFront, Rendered, SiteContent, Wikilinks, render_framed,
+    AuthorFront, Document, Gated, PostFront, Rendered, SiteContent, Wikilinks,
+    external_media_as_links, render_framed,
 };
 use khalid_core::{AbsoluteUrl, Config, Locale, Slug, UserMessage};
 use khalid_render::{
@@ -31,7 +33,7 @@ use crate::post_lock::Unlocked;
 pub(crate) use crate::site_page::Page;
 use crate::{
     build_ai_page, build_home, build_message, build_reader, build_schema, build_seo, link_graph,
-    site_chrome,
+    privacy_page, site_chrome,
 };
 
 /// The pages of one language, and the site as they show it.
@@ -123,18 +125,20 @@ fn language_pages(
 
 /// Adds the pages that help readers find their way, once the lists of
 /// `languages` are made: the glossary from A to Z, case studies and the
-/// changelog, series, hubs and the home page's topic tabs and media rows,
-/// worded in each language by `renderer`'s strings.
+/// changelog, series, hubs, the home page's topic tabs and media rows and
+/// the privacy page, worded in each language by `renderer`'s strings.
+/// `site` is the site folder and `today` the day a privacy change is dated.
 ///
 /// # Errors
 ///
 /// Returns what, why and fix when one of those pages cannot be made.
 pub(crate) fn discovery_pages(
     (config, routes): (&Config, &Routes),
-    renderer: &Renderer,
+    (renderer, site, today): (&Renderer, &Path, NaiveDate),
     content: &SiteContent,
     languages: &mut [LanguagePages],
 ) -> Result<(), UserMessage> {
+    privacy_page::add((config, renderer), content, (site, today), languages)?;
     glossary::add((config, routes), renderer, content, languages)?;
     entries::add((config, routes), renderer, content, languages)?;
     series::add(config, renderer, content, languages)?;
@@ -156,6 +160,7 @@ pub(crate) fn home_page(
         .collect();
     let listing = RenderListing {
         hub: None,
+        numbered: false,
         title: config.name().to_owned(),
         intro: None,
         featured: picks.first().cloned(),
@@ -180,6 +185,7 @@ pub(crate) fn home_page(
         tabs: Vec::new(),
         videos: Vec::new(),
         podcasts: Vec::new(),
+        podcast_player: None,
     });
     Ok(page(locale, config, "", meta, body, seo))
 }
@@ -350,7 +356,7 @@ fn post_page(
     let description = front.description.clone().unwrap_or_default();
     let mut seo = build_seo::post(locale, (&rest, &title), front, date)?;
     seo.collection = Some(doc.collection.clone());
-    seo.content_html = build_seo::full_addresses(config, &rendered.html);
+    seo.content_html = build_seo::full_addresses(config, &external_media_as_links(&rendered.html));
     let (reviewers, profiles) = build_reader::reviewers(front, people, config)?;
     seo.reviewers = profiles;
     let html = BodyHtml::from_sanitised(rendered.html);
@@ -366,6 +372,7 @@ fn post_page(
             .description
             .clone()
             .filter(|dek| !dek.trim().is_empty()),
+        facts: build_reader::facts(front),
         reading_time: ReadingTime::of(&html, locale),
         authors: front
             .author

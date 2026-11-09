@@ -1,5 +1,5 @@
 //! `khalid build` with a post's own settings: the theme template it asks
-//! for and its head code (KH-EDT-3).
+//! for, its head code (KH-EDT-3) and its facts.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -198,4 +198,49 @@ fn a_template_the_theme_lacks_stops_the_build_and_names_the_file() {
         "{said}"
     );
     assert_eq!(said.lines().count(), 3, "what, why, fix:\n{said}");
+}
+
+/// The facts block the facts tests give their post.
+const FACTS: &str = "facts:\n  - label: Client\n    value: Calder Street Library\n  - label: \" Year \"\n    value: \"2025\"\n";
+
+/// A post template that prints the post's facts.
+const PAGE_FACTS: &str = r#"{% extends "post.html" %}{% block main %}<dl>{% for fact in page.facts %}<dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd>{% endfor %}</dl>{% endblock %}"#;
+
+/// A list template that prints each card's facts.
+const CARD_FACTS: &str = r#"{% extends "base.html" %}{% block main %}{% for post in page.posts %}<ul class="card-facts">{% for fact in post.facts %}<li>{{ fact.label }}: {{ fact.value }}</li>{% endfor %}</ul>{% endfor %}{% endblock %}"#;
+
+#[test]
+fn a_post_page_and_its_cards_carry_its_facts_in_order() {
+    let extra = format!("template: facts\n{FACTS}");
+    let templates = [
+        ("post-facts.html", PAGE_FACTS),
+        ("listing.html", CARD_FACTS),
+    ];
+    let site = site(&extra, &templates);
+    let output = khalid(site.path());
+    let said = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(output.status.code(), Some(0), "{said}");
+    let page = post_page(site.path());
+    assert!(
+        page.contains(
+            "<dl><dt>Client</dt><dd>Calder Street Library</dd><dt>Year</dt><dd>2025</dd></dl>"
+        ),
+        "{page}"
+    );
+    let mut files = Vec::new();
+    every_file(&at(site.path(), "public"), &mut files);
+    let card =
+        "<ul class=\"card-facts\"><li>Client: Calder Street Library</li><li>Year: 2025</li></ul>";
+    assert!(
+        files.iter().any(|(_, text)| text.contains(card)),
+        "no list shows the card's facts"
+    );
+}
+
+#[test]
+fn a_post_without_facts_gives_templates_an_empty_list() {
+    let templates = [("post-facts.html", PAGE_FACTS)];
+    let site = site("template: facts\n", &templates);
+    assert_eq!(khalid(site.path()).status.code(), Some(0));
+    assert!(post_page(site.path()).contains("<dl></dl>"));
 }

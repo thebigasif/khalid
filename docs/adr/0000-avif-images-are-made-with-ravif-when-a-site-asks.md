@@ -20,3 +20,9 @@ Encoding is slow. Measured on the build server with `ravif` 0.13 at speed 8, qua
 - The release binary carries the AV1 encoder. Its size is measured in the pull request against the 30 MB budget.
 - A site with many photos that turns AVIF on builds slower the first time; later builds read the cache.
 - When a maintained encoder drops `paste` and `anyhow`, the exceptions go.
+
+## Update, 2026-11-07: quality 55, and the demos ask
+
+- **Quality 55 instead of 60.** Compared on six demo photos at 1,024 and 1,152 px, side by side at full size, 55 showed no visible difference from 60, made files 10 to 14% smaller and took about 30% less time. 50 lost texture in grass and on skin-like surfaces, so it was not taken. Speed 9 was faster but made files 5 to 8% larger at the same quality, so speed 8 stays.
+- **AVIF stays off by default.** A demo photo 1,600 px wide costs about 17 s of one core for its nine AVIF widths. A site with 300 photos on a two-core server would wait about 45 minutes on its first build, which is too much to switch on without being asked.
+- **Every template demo asks for it**, through `scripts/demo-media.sh`, which `scripts/pages.sh` and the demo checks share. Each photo is made once into a shared cache that CI keeps between runs, so the cost is paid when a photo or the encoder changes. Numbers are in `docs/standards/performance.md`, "Pictures on high-density phones".

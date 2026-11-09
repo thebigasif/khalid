@@ -58,6 +58,8 @@ A test reads the table below and checks it lists every table in the schema, once
 | `site_watch` | visitor | Each look the speed and uptime watch took at a page of the public address, with its status and time; 30 days kept |
 | `serpdad_links` | visitor | The identity of the one integration key SerpDad sends drafts with, never the key, and when it was made; no row means the connection is off |
 | `serpdad_drafts` | visitor | The last 20 drafts SerpDad sent: each post's identity, title, blocks and warnings, and when it arrived |
+| `consent_versions` | visitor | Each version of the banner and category text, categories, vendors and lifetime readers were shown, as JSON under a hash of it, with the first and last day it was in force; kept as long as the site |
+| `consent_counts` | visitor | Per day and version, how many readers answered the consent banner and how many allowed each optional category; no address or reader identifier; 25 months kept |
 
 ## Changing a query
 

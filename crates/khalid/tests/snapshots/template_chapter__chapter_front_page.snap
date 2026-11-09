@@ -1,0 +1,101 @@
+---
+source: crates/khalid/tests/template_chapter.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<div class="ch-opening ch-opening-cover">
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+Novels about the web.
+</div>
+<section class="ch-new" aria-labelledby="ch-new-title">
+<p class="ch-new-label">The new book</p>
+<h2 id="ch-new-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p class="ch-new-text">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<dl class="ch-facts">
+<div>
+<dt>Publisher</dt>
+<dd>Fernhill Press</dd>
+</div>
+<div>
+<dt>Published</dt>
+<dd>2026</dd>
+</div>
+<div>
+<dt>Length</dt>
+<dd>336 pages</dd>
+</div>
+</dl>
+<p class="ch-actions"><a class="button" href="/blog/fixing-slow-pages/">About the book</a> <a class="button button-quiet" href="https://www.example.com/buy/">Order a copy</a></p>
+</section>
+</header>
+<div class="ch-opening-art"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="22rem">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="22rem" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></div>
+</div>
+<section class="ch-chapter ch-books" aria-labelledby="ch-books">
+<header class="ch-head">
+<p class="ch-numeral" aria-hidden="true">I</p>
+<h2 id="ch-books">Books</h2>
+</header>
+<ul class="cover-shelf" role="list">
+<li class="cover-shelf-item">
+<div class="cover-shelf-cover"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 27.5rem) 15rem, calc(50vw - 1.5rem)">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 27.5rem) 15rem, calc(50vw - 1.5rem)" width="800" height="450" alt="A bar chart of page weight by part" loading="lazy" decoding="async">
+</picture>
+</figure></div>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="cover-shelf-fact">2026</p>
+</li>
+<li class="cover-shelf-item">
+<div class="cover-shelf-cover cover-shelf-plain" aria-hidden="true"><span>What a sitemap does, and what it does not</span></div>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="cover-shelf-fact"><time datetime="2026-09-28">2026</time></p>
+</li>
+</ul>
+</section>
+<section class="ch-chapter ch-writing" aria-labelledby="ch-writing">
+<header class="ch-head">
+<p class="ch-numeral" aria-hidden="true">II</p>
+<h2 id="ch-writing">Excerpts and essays</h2>
+</header>
+<ol class="contents-page" role="list">
+<li class="contents-entry">
+<div class="contents-line"><h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3><span class="contents-leader" aria-hidden="true"></span><time datetime="2026-10-12">12 October 2026</time></div>
+<p class="contents-note"><span class="contents-kind">Content strategy</span> A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</li>
+</ol>
+</section>
+<section class="ch-chapter ch-events-part" aria-labelledby="ch-events">
+<header class="ch-head">
+<p class="ch-numeral" aria-hidden="true">III</p>
+<h2 id="ch-events">Events</h2>
+</header>
+<ol class="event-list" role="list">
+<li class="event-row">
+<p class="event-when">Thu 19 November 2026, 7 pm</p>
+<div class="event-what">
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="event-where">Castle Street Books, Hereford</p>
+</div>
+<p class="event-extra"><a href="https://www.example.com/tickets/">Tickets<span class="visually-hidden">: How to write a title tag</span></a></p>
+</li>
+<li class="event-row">
+<p class="event-when"><time datetime="2026-09-14">14 September 2026</time></p>
+<div class="event-what">
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+</div>
+</li>
+</ol>
+</section>

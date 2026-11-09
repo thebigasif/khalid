@@ -1,0 +1,41 @@
+---
+source: crates/khalid-render/tests/render/consent.rs
+expression: main_of(&english)
+---
+<main id="main" tabindex="-1">
+
+<h1>Your privacy choices</h1>
+<div class="privacy-choices">
+<p>Choose what this blog may load. Everything optional stays off until you turn it on. You can change your mind at any time. <a href="/blog/privacy/">Read the privacy page.</a></p>
+<!--khalid-gpc--><template><p class="consent-gpc">Your browser sent a Global Privacy Control signal, which asks sites not to sell or share your data. We honour it, so marketing stays off.</p></template><!--/khalid-gpc-->
+<form method="post" action="/blog/_consent/">
+<input type="hidden" name="back" value="/blog/privacy-choices/">
+<fieldset>
+<legend>Name of necessary</legend>
+<p>What necessary covers.</p>
+<p class="consent-always">Always on</p>
+</fieldset>
+<fieldset>
+<legend>Name of preferences</legend>
+<p>What preferences covers.</p>
+<label><input type="checkbox" name="preferences" value="on"> Allow</label>
+</fieldset>
+<fieldset>
+<legend>Name of analytics</legend>
+<p>What analytics covers.</p>
+<label><input type="checkbox" name="analytics" value="on"> Allow</label>
+</fieldset>
+<fieldset>
+<legend>Name of marketing</legend>
+<p>What marketing covers.</p>
+<label><input type="checkbox" name="marketing" value="on"> Allow</label>
+</fieldset>
+<fieldset>
+<legend>Name of external-media</legend>
+<p>What external-media covers.</p>
+<p>Shared with: YouTube, Vimeo</p>
+<label><input type="checkbox" name="external-media" value="on"> Allow</label>
+</fieldset>
+<button class="consent-button" type="submit" name="choice" value="save">Save my choices</button>
+</form>
+</div>

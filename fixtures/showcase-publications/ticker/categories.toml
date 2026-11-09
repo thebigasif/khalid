@@ -1,0 +1,42 @@
+# Tallyline's desks. The Ticker template lists them on the front page,
+# and each desk's page is a table of its posts with its intro on top.
+
+[[categories]]
+slug = "weekly-wrap"
+en = "Weekly wrap"
+
+[categories.seo.en]
+description = "Tallyline's Friday issues: the week's moves in Varnholm's shares, the varn and copper, with a chart of the four numbers that mattered."
+intro = "Every Friday: the week's moves in the Varnholm 50, small firms, the varn and copper, with what moved them. All figures are made up for a template demo."
+
+[[categories]]
+slug = "stocks"
+en = "Stocks"
+
+[categories.seo.en]
+description = "Tallyline on Varnholm's share market: indexes, sectors and company results, explained with tables."
+intro = "Varnholm's share market: the Varnholm 50, the small firms index and the sectors inside them. Long views and results, set out in tables."
+
+[[categories]]
+slug = "rates-and-money"
+en = "Rates and money"
+
+[categories.seo.en]
+description = "Tallyline on interest rates, bonds and the varn, Varnholm's currency."
+intro = "Interest rates, bond yields and the varn: what the central bank decides and how money markets react."
+
+[[categories]]
+slug = "commodities"
+en = "Commodities"
+
+[categories.seo.en]
+description = "Tallyline on copper, grain and shipping costs, and why they move Varnholm's markets."
+intro = "Copper, grain and freight: the raw materials Varnholm's firms buy and sell, and why their prices matter to the share market."
+
+[[categories]]
+slug = "explainers"
+en = "Explainers"
+
+[categories.seo.en]
+description = "Tallyline's plain guides to how markets work: indexes, yields and how to read a market table."
+intro = "How markets work, in plain words. Each explainer uses a small made-up example you can follow with a pencil."

@@ -1,0 +1,35 @@
+# Fernhill Wellbeing's programmes. The Vital template shows each as a
+# rounded chip on the front page, and each category page lists that
+# programme's routines as session cards, with its intro on top.
+
+[[categories]]
+slug = "move-well"
+en = "Move well"
+
+[categories.seo.en]
+description = "Fernhill Wellbeing's routines for mobility, balance and strength at home, each with its time, level and what you need."
+intro = "Short routines for mobility, balance and strength that you can do at home with a mat and a chair. Start gently, and add more as each one feels easy."
+
+[[categories]]
+slug = "walk-more"
+en = "Walk more"
+
+[categories.seo.en]
+description = "Fernhill Wellbeing's walking programmes and stretches for walkers, from a first short walk to five walks a week."
+intro = "Walking plans for beginners and stretches for after a walk. All you need is a pair of comfortable shoes and a route you like."
+
+[[categories]]
+slug = "breathe-rest"
+en = "Breathe and rest"
+
+[categories.seo.en]
+description = "Fernhill Wellbeing's breathing and evening routines for slowing down and winding down before bed."
+intro = "Simple breathing patterns and calm evening routines. Each one takes a few minutes and works best at the same time every day."
+
+[[categories]]
+slug = "studio-notes"
+en = "Studio notes"
+
+[categories.seo.en]
+description = "News from Fernhill Wellbeing: the class timetable, the Saturday walking group and how we write our routines."
+intro = "The timetable, the walking group and notes from the studio."

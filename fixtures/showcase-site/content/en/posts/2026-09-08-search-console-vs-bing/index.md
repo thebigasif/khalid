@@ -16,7 +16,7 @@ related: [search-console-setup, best-free-seo-tools, choosing-seo-tools]
 tags: [tools, analytics]
 image:
   src: cover.svg
-  alt: Two dashboards standing for Google Search Console and Bing Webmaster Tools on a pair of scales, held level
+  alt: Two dashboards side by side, one with a line chart in orange and one with a bar chart
 ---
 
 Every blog should set up Google Search Console first, because Google sends most search visits. Add Bing Webmaster Tools next if you want a second view of your site, quick indexing through IndexNow, and a few extra reports for free. Both are free, and Bing Webmaster Tools can import your sites from Search Console in minutes.

@@ -39,3 +39,5 @@ One file per decision the plan does not already make. Numbered, never edited aft
 | 0031 | The build writes its redirects as a `_redirects` file | Accepted |
 | 0032 | The demo check is one script with pinned Node tools | Accepted |
 | 0033 | `khalid build` writes nothing when the publish gate refuses a post | Accepted |
+| 0034 | A demo publication is an overlay with checked photos | Accepted |
+| 0035 | The Ghost-compatible API keeps Ghost's contract | Accepted |

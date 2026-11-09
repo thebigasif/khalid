@@ -1,0 +1,94 @@
+{#- Pantry's front page (docs/templates/pantry.md): the site's name and
+    tagline; the recipe box, each category that holds recipes as a divider
+    tab; on the first page the newest recipe (a post with facts) as one
+    wide index card with its full ticket; the other recipes as index cards
+    with the time and the yield, as rows with a small square picture on a
+    phone; then the newest baking notes (posts without facts) as a dated
+    list. A category whose posts on this page are all notes is left out
+    of the recipe box, by the same rule as the notes, not by its name.
+    With home sections in site.toml, each section is a grid of index
+    cards of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "image.html" import picture -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/figure_strip.html" import figure_strip -%}
+{% from "sections/ticket_cards.html" import ticket_cards, fact_ticket -%}
+{#- The newest recipe's picture is drawn in 4:3 as wide as the frame,
+    and from 52rem 7 of 12 parts of it; the frame stops at 78rem. Up to
+    66rem the words beside it are taller than 4:3, about 28rem, and the
+    picture fills that height.
+    recipe_cards(posts): the recipes as index cards, like ticket_cards,
+    with each picture's `sizes` read from the stylesheet at every width
+    from 320 to 2560 px: a 6.5rem square on a phone, then one, two or
+    three columns of the frame, which stops at 78rem, in 4:3. A picture
+    wider than its shape is drawn wider by the ratio of the two shapes.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro recipe_cards(posts) -%}
+<ul class="ticket-cards" role="list">
+{% for post in posts %}<li class="ticket-card">
+{% if post.image %}{% set shape = post.image.width / post.image.height -%}
+{% set card = [1, shape * 0.75] | max -%}
+{% set square = [1, shape] | max -%}
+{{ picture(post.image, "(min-width: 80rem) " ~ ((card * 24.67) | round(2)) ~ "rem, (min-width: 66rem) calc(" ~ ((card * 33.34) | round(2)) ~ "vw - " ~ ((card * 2) | round(2)) ~ "rem), (min-width: 44rem) calc(" ~ ((card * 50) | round(2)) ~ "vw - " ~ ((card * 2) | round(2)) ~ "rem), (min-width: 40rem) calc(" ~ ((card * 100) | round(2)) ~ "vw - " ~ ((card * 2) | round(2)) ~ "rem), " ~ ((square * 6.5) | round(2)) ~ "rem") }}
+{% endif %}<div class="ticket-card-text">
+{% if post.category %}<p class="ticket-card-kind"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+</div>
+{% if post.facts %}{{ fact_ticket(post.facts, none, 2) }}
+{% else %}<p class="ticket-card-date"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+{% endif %}</li>
+{% endfor %}</ul>
+{%- endmacro -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% set options = template.options -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{{ figure_strip(options.hero_stats) }}{% endcall %}
+{% set recipes = page.posts | selectattr("facts") | list -%}
+{% set all_notes = page.posts | rejectattr("facts") | list -%}
+{% set notes = all_notes[:options.notes_count] -%}
+{% set recipe_areas = recipes | selectattr("category") | map(attribute="category.href") | list -%}
+{% set note_areas = all_notes | selectattr("category") | map(attribute="category.href") | list -%}
+{% set sections = page.categories | rejectattr("href", "in", note_areas | reject("in", recipe_areas) | list) | list -%}
+{% set first_page = not page.pagination or page.pagination.current == 1 -%}
+{% if sections %}<nav class="recipe-box" aria-label="{{ t.recipe_box }}">
+<ul class="recipe-tabs" role="list">
+{% for section in sections %}<li><a href="{{ section.href }}">{{ section.name }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="pantry-section" aria-labelledby="pantry-section-{{ loop.index }}">
+<h2 id="pantry-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ ticket_cards(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif recipes or notes %}{% if recipes and first_page %}{% set lead = recipes[0] -%}
+<section class="fresh" aria-labelledby="fresh-title">
+<h2 id="fresh-title">{{ t.fresh_from_the_oven }}</h2>
+<article class="fresh-card">
+{% if lead.image %}{% set shape = lead.image.width / lead.image.height -%}
+{% set fresh = [1, shape * 0.75] | max -%}
+{{ picture(lead.image, "(min-width: 80rem) " ~ ((fresh * 45.5) | round(2)) ~ "rem, (min-width: 66rem) calc(" ~ ((fresh * 58.34) | round(2)) ~ "vw - " ~ ((fresh * 1.17) | round(2)) ~ "rem), (min-width: 52rem) " ~ ([fresh * 37.4, shape * 28] | max | round(2)) ~ "rem, calc(" ~ ((fresh * 100) | round(2)) ~ "vw - " ~ ((fresh * 2) | round(2)) ~ "rem)") }}
+{% endif %}<div class="fresh-text">
+{% if lead.category %}<p class="fresh-kind"><a href="{{ lead.category.href }}">{{ lead.category.name }}</a></p>
+{% endif %}<h3><a href="{{ lead.href }}">{{ lead.title }}</a></h3>
+{% if lead.excerpt %}<p class="fresh-summary">{{ lead.excerpt }}</p>
+{% endif %}{{ fact_ticket(lead.facts, t.at_a_glance) }}</div>
+</article>
+</section>
+{% set recipes = recipes[1:] %}{% endif %}{% if recipes %}<section class="recipes" aria-labelledby="recipes-title">
+<h2 id="recipes-title">{{ t.recipes }}</h2>
+{{ recipe_cards(recipes) }}
+</section>
+{% endif %}{% if notes %}<section class="notes" aria-labelledby="notes-title">
+<h2 id="notes-title">{{ t.baking_notes }}</h2>
+{{ feed_list(notes) }}
+</section>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

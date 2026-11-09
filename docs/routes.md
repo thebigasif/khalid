@@ -1,3 +1,8 @@
+---
+title: "The blog's addresses: routes.toml"
+order: 40
+---
+
 # The blog's addresses: `routes.toml`
 
 `routes.toml` sits beside `site.toml` and sets how the blog's web addresses look. `khalid init` writes it with only a comment, and that is enough: a post sits at `/<slug>/`, tags at `/tag/<tag>/` and categories at `/category/<category>/`, all under the blog's mount path, such as `/blog/`.
@@ -39,6 +44,8 @@ filter = { author = "sam-rivera" }
 ```
 
 A filter needs at least one of `author`, `tag`, `category`, `collection` or `featured`. A post must match every one that is set.
+
+A channel's feeds sit in its folder: `/blog/featured/feed.xml` for RSS, `atom.xml` for Atom and `feed.json` for JSON Feed. Each category page has the same three in its folder, such as `/blog/category/technical-seo/feed.xml`, in each language it has posts in.
 
 ## Tag and category folders
 

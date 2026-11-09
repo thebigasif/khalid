@@ -11,7 +11,7 @@ tags: [planning, workflow]
 focus_keyword: topic cluster
 image:
   src: cover.svg
-  alt: A topic cluster plan, one main circle with six post cards around it
+  alt: A topic cluster plan, one long orange main post with a line from each of its six sections to a short post card
 series:
   name: Your first topic cluster
   order: 2

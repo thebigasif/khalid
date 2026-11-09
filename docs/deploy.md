@@ -1,3 +1,8 @@
+---
+title: "Running Khalid on a server"
+order: 20
+---
+
 # Running Khalid on a server
 
 Khalid is one file. Put it on a machine, point it at a site folder, and it serves the blog and the admin. This page shows the ways to keep it running. The files it names are in `packaging/` in the repository.
@@ -16,7 +21,7 @@ The script downloads the newest release for your machine and checks it against t
 
 Options, written after `sh -s --`:
 
-- `--version v1.2.0` installs that release instead of the newest.
+- `--version v1.3.2` installs that release instead of the newest.
 - `--dir FOLDER` installs into another folder.
 - `--systemd`, as root, also sets up the service described below.
 
@@ -82,6 +87,20 @@ The unit also sets `Environment=MIMALLOC_PURGE_DELAY=0`, the allocator setting `
 MIMALLOC_PURGE_DELAY=0 khalid --site /var/lib/khalid serve --listen 127.0.0.1:8080
 ```
 
+## Changing settings while the server runs
+
+`khalid serve` watches the site folder. When you save `site.toml`, `routes.toml`, `categories.toml`, `tags.toml` or any file under `theme/`, such as `tokens.toml`, `site.css` or a font, it reads the settings again the way it does at start and renders the pages again. You do not need to restart it. Several files saved at once cost one render.
+
+If a saved `site.toml` or theme file has a mistake, the blog keeps serving the last good pages and settings. The server writes one line to its log, the same message `khalid --site` gives, with the file and the line to fix. Fix the file and save it again.
+
+A few settings only take effect when the server starts:
+
+- `mount` and `mode` shape the server's own addresses, so it keeps the values it started with.
+- `address`, `languages`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
+- The `--listen` and `--domain` options, the environment variables, and the `data/` folder with its database are read once at start.
+
+When you change one of these, the log says a restart is needed. Restart with `systemctl restart khalid`, or stop and start the server.
+
 ## Docker
 
 Docker runs programs in containers, each with its own files. The `Dockerfile` at the top of the repository builds an image from scratch, which means the image starts empty. It holds the Khalid binary, built fully static so it needs no other library, and the certificates Khalid needs to make HTTPS requests. There is no shell and no package manager in it, so there is nothing else to patch.
@@ -97,7 +116,7 @@ docker run -d -u "$(id -u):$(id -g)" -p 8080:8080 -v "$PWD/site:/site" khalid
 
 `-u` runs Khalid as you, so the files it writes in `site/` stay yours. The blog is then at `http://localhost:8080/`.
 
-Each release also publishes the image, for x86_64 and ARM, so you can skip the build. Use `ghcr.io/thebigasif/khalid:latest` in place of `khalid` in the commands above, or a version such as `ghcr.io/thebigasif/khalid:1.2.0` to stay on one release.
+Each release also publishes the image, for x86_64 and ARM, so you can skip the build. Use `ghcr.io/thebigasif/khalid:latest` in place of `khalid` in the commands above, or a version such as `ghcr.io/thebigasif/khalid:1.3.2` to stay on one release.
 
 ## Docker Compose
 
@@ -133,6 +152,14 @@ Khalid prints the rule to add to that program, for nginx, Caddy, Apache, Traefik
 | Preview links, forms, comments and newsletter sign-ups | under `/blog/` |
 
 Every address Khalid gives out names the folder too: sign-in links, preview links, the `site` in each webhook, `Location` headers, `admin_path`, and the address the Connect to SerpDad page shows. An old `/admin/` address moves to `/blog/admin/`. The APIs also still answer at `/api/` for a program that reaches Khalid directly, without the proxy in front.
+
+Search engines read `robots.txt` only at the root of a host, so the blog's own `robots.txt` under `/blog/` is never read. `khalid init` prints the line to add to the website's `robots.txt`, built from the site's address and mount:
+
+```text
+Sitemap: https://example.com/blog/sitemap.xml
+```
+
+Add it to `https://example.com/robots.txt`. `khalid doctor` fetches that file and says when the line is missing.
 
 ## Hosting platforms
 
@@ -185,6 +212,8 @@ Cloudflare builds a static blog from GitHub and serves its files for free. `depl
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/thebigasif/khalid/tree/main/deploy/cloudflare)
 
 The button copies the folder into a new repository in your GitHub account and deploys it as a Worker. For Cloudflare Pages, the build command is `sh build.sh`, the output folder is `public`, and the root folder is `deploy/cloudflare`. `docs/deploy/cloudflare.md` gives every step, the blog's address and your own domain.
+
+A blog behind Cloudflare's proxy, static or served, needs Cloudflare's Email Address Obfuscation turned off. In the domain's dashboard, go to **Security**, **Settings** (or **Scrape Shield** on older dashboards) and switch it off. It rewrites every email address and `mailto:` link and adds a script from `/cdn-cgi/`. Khalid's content security policy blocks that script, as it should, so addresses show as "[email protected]" and the share-by-email link opens a missing page.
 
 ## Sending email
 
@@ -330,9 +359,43 @@ By default this code waits for each reader's consent, which means their yes. Eve
 
 For code that sets no cookie and tracks no one, add `consent = "not-needed"` to `[code]`. The code then runs for every reader and no note is shown.
 
+You can also write the code as a list, one `[[code]]` entry per tool, each tagged with the kind of consent it needs: `preferences`, `analytics`, `marketing` or `no-tracking`. An entry with no `category` counts as `marketing`. `vendor` names who runs the tool and `policy` links to their privacy policy:
+
+```toml
+[[code]]
+head = "<script async src='https://stats.example.net/a.js'></script>"
+category = "analytics"
+vendor = "Example Stats"
+policy = "https://stats.example.net/privacy"
+```
+
+The old single `[code]` table still works: `consent = "ask"` reads as one `marketing` entry and `consent = "not-needed"` as one `no-tracking` entry. For now, when any entry waits for consent, all of the site's code waits together; the banner with a switch per kind of consent comes in a later release.
+
+The `[privacy]` table sets how consent is asked. Every key may be left out:
+
+```toml
+[privacy]
+lifetime_months = 6      # how long a reader's choice lasts, 1 to 13 months
+gpc = "marketing"        # what Global Privacy Control turns off: "marketing" or "reject-all"
+counts = true            # count choices per day, server mode only
+external_tool = "Cookiebot"  # only if you run a certified consent tool instead
+
+[privacy.text.en]
+banner = "May we count visits?"   # your own words for the banner
+
+[privacy.contact]
+name = "Example Ltd"
+email = "privacy@example.com"
+address = "1 Main Street, Springfield"
+```
+
+Global Privacy Control is a signal some browsers send to say the reader does not want to be tracked or sold.
+
 Each script gets the page's nonce, a random value the browser checks against the page's security policy, so the code is allowed to run and nothing else is. A script may load other scripts and send data to any `https` address, as analytics tools do.
 
-A static site cannot keep a reader's choice, so Khalid refuses to start in `mode = "static"` with code that waits for consent. Set `consent = "not-needed"` or switch to `mode = "server"`. Site verification tags belong in `[seo]`, which never waits.
+A static site asks with a small script instead, because a static host cannot read a cookie. `khalid build` writes code that waits as plain text, which no browser runs. The script shows a banner with Accept all, Reject all and Choose, keeps the reader's answer in a cookie for as long as `[privacy]` says, and runs each entry only for a reader who agreed to its category. A browser that sends Global Privacy Control, a setting that asks sites not to sell or share data, keeps marketing code off unless the reader turns it on at `privacy-choices/`. Code with `category = "no-tracking"` runs for every reader, and with `external_tool` set the code runs unheld for that tool to manage. With scripts off, the banner never shows and the code never runs. The script is under 2 KB and loads only on pages that ask something: a site with code that waits, and posts with an embed. Site verification tags belong in `[seo]`, which never waits.
+
+`khalid build` also writes `.well-known/gpc.json`, which tells browsers the site honours Global Privacy Control. For a blog in a folder it is in `_root/`, with the other files for the root of the host.
 
 ## A copy search engines should skip
 
@@ -415,6 +478,15 @@ avif = true
 ```
 
 The next build makes each picture's AVIF sizes once and keeps them in `data/media/`, so later builds only make them for new or changed pictures. Pages then offer AVIF first, WebP second and the original last, and each browser takes the first it can read.
+
+You can also offer AVIF in place of WebP, which nearly halves the space pictures take on disk and in a backup:
+
+```toml
+[media]
+avif = "only"
+```
+
+Pages then offer AVIF first and the original last. Every current browser reads AVIF. The few that do not, such as Safari before version 16, get one JPEG or PNG at most 1024 px wide. That file is also the picture a post shares on social networks, which show it well but suggest 1200 px.
 
 ## Photo and GIF search in the editor
 

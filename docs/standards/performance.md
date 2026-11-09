@@ -19,6 +19,10 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 | Largest Contentful Paint, demo site on a 5 dollar VPS class runner | under 1 s | none | Lighthouse CI |
 | Cumulative Layout Shift | 0 | none | Lighthouse CI |
 | Public CSS, compressed | under 20 KB | 5% | size of the built stylesheet |
+| Pictures on a template's demo home page, 390 px at 3x, without the hero | under 620 KB (Aperture 810 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
+| Pictures on a template's demo home page, 390 px at 1x, without the hero | under 140 KB | none | `scripts/page-weight.sh`, see "Page weight" |
+| Pictures on a template's demo home page, 1440 px | under 1,250 KB (Aperture 2,100 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
+| Web fonts on a template's demo home page and one post, 390 and 1440 px | under 60 KB | none | `scripts/page-weight.sh`, see "Fonts" |
 | JavaScript required to read a post | 0 bytes | none | scripts-off test |
 | Admin initial JavaScript, compressed | under 350 KB | 5% | Vite build report |
 | Test suite, CI | under 4 min | none | job time |
@@ -137,7 +141,7 @@ What a settled server holds, from `/proc/<pid>/smaps` at 51 MB: 27 MB in mimallo
 
 ## Binary size
 
-The budget is 31,457,280 bytes (30 MB), checked by CI's "Binary size" step after `cargo build --release -p khalid`. On 2026-10-31 integration branch 15 built 33,249,512 bytes and integration branch 16 built 31,639,784. Both merged together built 33,755,112 bytes.
+The budget is 31,457,280 bytes (30 MB), checked by the "Binary size, budget under 30 MB" job in CI after `cargo build --release -p khalid`. On 2026-10-31 integration branch 15 built 33,249,512 bytes and integration branch 16 built 31,639,784. Both merged together built 33,755,112 bytes.
 
 What the release profile already did: fat LTO, one codegen unit, symbols stripped, `panic = "abort"`, and opt-level `"s"` for a few cold crates (the share image stack, the font reader, the import command's HTML reader, and on branch 15 the API crate). The panic behaviour is unchanged.
 
@@ -210,6 +214,149 @@ On 2026-11-02 integration branch 30 merged with main built 31,525,496 bytes on t
 
 All kept: 31,032,440 bytes, 493,056 less than before. The linter stays at 3: at `"s"` lint one post took 14.89 and 14.77 ms against 8.87 and 9.01 ms at 3, back to back. With every kept change `scripts/perf.sh` measured idle memory 49.39 MB, lint one post 9.04 ms, a full 10,000-post rebuild 14.84 s and the first byte 64.36 ms, every budget held.
 
+### Room for cookie consent (privacy U1, 2026-11-08)
+
+Main built 31,432,184 bytes on this server, 25,096 under the budget, and the consent work adds code. `khalid-render` carried the five shared stylesheets, `reader.js` and the two strings files uncompressed (117 KB of text), beside a Brotli archive that held only the default templates. They now sit in that archive too, read out once on first use like the templates, and `rust-embed` is gone from the crate. The stylesheets, the script and the strings are byte for byte what they were: the crate's tests compare each against its file.
+
+| Run, `scripts/perf.sh` | Binary | First byte | Idle memory |
+|---|---|---|---|
+| Before, first run | 31,432,184 | 77.63 ms | 54.45 MB |
+| After, first run | 31,341,944 | 87.22 ms | 53.61 MB |
+| After, second run | 31,341,944 | 97.39 ms | 54.64 MB |
+| Before, back to back with the next row | 31,432,184 | 74.09 ms | 54.02 MB |
+| After, back to back with the row above | 31,341,944 | 62.77 ms | 52.00 MB |
+
+The measured runs built 90,240 bytes less. The final commit, after a clippy fix to how a template name's extension is checked, builds 31,342,264 bytes: 89,920 less than before and 115,016 under the budget. The two slow first bytes came while the server's load was 13 to 14; lint one post, which does not use `khalid-render`, took 12.12 and 13.39 ms in those runs against 9.48 to 9.88 ms in the others. Back to back, the first byte and idle memory did not get worse.
+
+### Privacy integration (U3, U6, U8, U9, U11, 2026-11-08)
+
+Main built 31,424,504 bytes on this server, and the five remaining privacy units on top of it built 31,535,352: 110,848 more, 78,072 over the budget, and about 25 KB more again in CI. The growth is ordinary code spread thinly: the consent proof routes in `khalid-api` (23 KB), the privacy page and the consent flow in `khalid` (22 KB), the privacy facts through `minijinja` (7 KB), the cookie and GPC handling in `khalid-server` (5 KB). Each step below is `cargo build --release -p khalid` on this server:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before (main with the five units) | 31,535,352 | |
+| `toml`, `toml_edit`, `toml_parser`, `toml_datetime` and `clap` at `"z"` | 31,618,616 | none, 83,264 more |
+| The share image font kept with Brotli instead of gzip, `khalid-theme` and `khalid-mount` at `"z"` (kept) | 31,492,344 | 43,008 |
+| Plus `khalid-media` at `"z"` | 33,069,176 | none, the image resizer it instantiates grew 1.5 MB |
+| Plus the lint catalogue packed with Brotli by a build script and `clap` at `"z"` | 31,475,704 | 16,640 more, of which the catalogue about 25 KB and `clap` about 8 KB worse |
+| The catalogue packed, `granit-parser` at `"s"` instead of 3 | 31,491,704 | the YAML reader at `"s"` was about 24 KB worse |
+| The catalogue packed (kept), every pack's `tokens.toml` in the packs' Brotli archive (kept) | 31,458,232 | 34,112 |
+| Plus `regex-syntax`, `html5ever` and `markup5ever` at `"z"` (kept) | 31,441,720 | 16,512 more |
+| Plus the agents' guide, the starter posts and the staff toolbar's styles packed with Brotli, `scraper`, `selectors`, `cssparser`, `serde_cbor_2` and `math-core` at `"z"` (kept) | 31,420,216 | 21,504 more |
+
+All kept: 31,420,216 bytes, 115,136 less than before, 4,288 less than main and 37,064 under the budget. Every packed text comes out byte for byte as its file says: each crate's tests compare them.
+
+None of the crates moved to `"z"` runs on a reader's request. Regular expressions are compiled once; the HTML parser reads a card's HTML once per post at build, a main site for theme sync or a page for the audit; the selectors only the last two; CBOR is read at a passkey sign-in; maths is drawn once per post at build; the packs are read at start. The text that is now packed is read once and kept. `scripts/perf.sh` was not run for this change on this server, which was shared with six other builds; CI's performance budgets job measures it.
+
+## Page weight
+
+Pictures are most of what a reader downloads. Every picture is offered in several widths (`srcset`), and its `sizes` tells the browser how wide the page draws it, so the browser fetches the smallest file that fills the slot. A `sizes` wider than the slot fetches a bigger file than it draws. One narrower makes the picture blurry.
+
+### How a template says its widths
+
+- The `picture` macro takes `sizes` as an optional second argument: `picture(post.image, "(min-width: 64rem) 22rem, 90vw")`. Called with the image alone, as before, the image keeps its own `sizes`: the text column for a post's lead image (`(min-width: 48rem) 48rem, 100vw`), and on a card a small card width, `(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw` (`CARD` in `crates/khalid/src/post_photos.rs`). A slot drawn wider than a card, such as a lead story across the page, must pass its width.
+- `cards`, `featured_slot` and the section parts that draw pictures (`picture_grid`, `poster_grid`, `cover_shelf`, `session_cards`, `spread`, `video_grid`) take `sizes=none` last and hand it on.
+- Each pack keeps its widths in one file, `crates/khalid-theme/packs/<pack>/picture_sizes.html`, as the macro `slot_sizes(place, shape)`. The shared templates ask it for their places (`lead`, `related`, `featured`, `home`, `panel`, `list`, `author`, `photo`, listed in `crates/khalid-render/templates/picture_sizes.html`), and the pack's own templates add their own places, such as `lead_story` or `shelf`. The shared default holds Classic's widths.
+- The widths were measured, not guessed: each pack's demo was opened in Chromium at every width from 320 to 2560 px (8 px apart up to 1120 px, then 16 px), the drawn width of every picture recorded, and each slot given the smallest `sizes` that is never narrower than what is drawn and at most a quarter wider. Measure again the same way when a stylesheet moves a picture.
+- When the same post shows in two slots of one page, such as Channel's playlist shelves and its latest videos, the smaller slot says the larger one's width, so the browser fetches each picture once and not twice at two widths.
+
+### The budget
+
+`scripts/page-weight.sh` (with `scripts/demo-check/weight.mjs`) builds each template's demo as it is published, its ready demo publication in its sample brand with its pictures in AVIF too, and opens the home page in Chromium three times: at 390 px with three device pixels per CSS pixel, as most phones sold now have, at 390 px with one, and at 1440 px with one. It scrolls to the bottom so every lazy picture loads, and adds up the bytes of every picture the page downloads. CI runs it in the demo job after the layout check, on the sites the layout check built.
+
+| Measure | Budget |
+|---|---|
+| 390 px at 3x, every picture but the hero (the first picture, fetched with high priority) | under 620 KB |
+| 390 px at 3x, Aperture | under 810 KB |
+| 390 px at 1x, every picture but the hero | under 140 KB |
+| 1440 px, every picture | under 1,250 KB |
+| 1440 px, Aperture, whose design is five photographs across a 1,296 px frame | under 2,100 KB |
+| Fonts, home page and one post, at 390 px and at 1440 px | under 60 KB |
+
+The desktop budgets were set on 2026-11-07 with about 10% headroom over the heaviest template after the change below, Atlas at 1,136 KB. The phone budgets were set again the same day, once the demos offered AVIF (see "Pictures on high-density phones"), with about 10% headroom: at 3x over Itinerary at 561 KB and Aperture at 734 KB, and at 1x over Aperture and Atlas at 125 KB. The 1x budget was 270 KB before; the 3x measure is new. A template over a budget almost always tells the browser a slot is wider than it is. The failure names the heaviest pictures and what to fix. A budget is never raised to make the check pass; a new budget is a deliberate change in its own pull request with the reason.
+
+### Measured on 2026-11-07
+
+The 31 template demos together, before and after each slot said its own width, in KB of pictures:
+
+| Width | Before | After |
+|---|---|---|
+| 390 px, all pictures | 4,317 | 3,685 |
+| 390 px, without the hero | 3,698 | 3,096 |
+| 1440 px, all pictures | 13,136 | 7,901 |
+
+Per template numbers are in the pull request that added the check (perf/picture-sizes). Keystone's desktop page grew from 558 to 601 KB and Atlas's from 1,106 to 1,136 KB, because their lead stories are drawn wider than the old 48rem said and were blurry; they now fetch a file as wide as they are drawn.
+
+### Pictures on high-density phones (2026-11-07)
+
+Most phones draw three device pixels per CSS pixel, so a card 326 px wide needs a file 978 px wide to look sharp, nine times the pixels of the 1x phone the budget first measured. Measured in Chromium at 390 px and 3x, the 31 demo home pages downloaded 16,258 KB of pictures, Aperture alone 1,507 KB. Three changes (perf/phone-pictures):
+
+- **A width for 3x phone cards.** With `sizes` from perf/picture-sizes, Chromium already fetched a file close to slot width times 3: at most 1.31 times what it drew, and that only where a slot's `sizes` rounds up. But a card 344 to 384 px wide needs 1,032 to 1,152 pixels, just over the 1,024 px file, so it fetched the 1,280 px one. `khalid-media` now also makes 1,152 px. The widths are 320, 480, 640, 800, 1,024, 1,152, 1,280, 1,600 and 2,048; for every slot from 320 to 420 px at 3x the file fetched is at most an eighth wider than needed (the `plan` test checks it). 960 was not added: between 800 and 1,024 it would save at most 6% of a file.
+- **AVIF for the demos.** Every template demo, as published and as the checks build it, sets `avif = true` (`scripts/demo-media.sh`). Each picture is offered in AVIF, then WebP, then the original's format. AVIF stays off for other sites, because of its cost (below). Since perf/demos-avif-only the demos set `avif = "only"` instead ("Demo bundle").
+- **AVIF quality 55 instead of 60.** WebP stays at 78.
+
+How the quality was chosen. Six demo photos (city streets, a harbour cliff, a gallery stair, a film still, seed potatoes) were encoded at 1,024 and 1,152 px and compared with the resized original, by SSIM on lightness in Chromium's own decoder and side by side at full size and at 2x zoom:
+
+| Encoding, 1,152 px, six photos | Bytes | SSIM, lowest to highest | Encode, one core |
+|---|---|---|---|
+| WebP 78 (unchanged) | 535,540 | 0.941 to 0.974 | 0.05 to 0.08 s |
+| AVIF 60, speed 8 (before) | 285,065 | 0.878 to 0.959 | 1.75 to 2.60 s |
+| AVIF 55, speed 8 (now) | 251,790 | 0.862 to 0.956 | 1.08 to 1.71 s |
+| AVIF 55, speed 9 | 268,895 | 0.861 to 0.953 | 0.54 to 0.83 s |
+| AVIF 50, speed 8, at 1,024 px | | 0.848 to 0.956 | |
+
+AVIF scores lower on SSIM than WebP at the same look, because it smooths fine grain instead of blocking it. At full size AVIF 55 and 60 could not be told apart; at 50 grass and the skin of the potatoes lost texture, so 50 was not taken. At 3x a phone shows each file pixel a third as wide, which hides the difference further. Speed 9 halves the time but makes files 5 to 8% larger at the same quality.
+
+What the encoding costs. The Atlas demo has 33 photos, most 1,600 px wide. `khalid build` from an empty cache, on the build server (16 cores, shared, load 20 to 40):
+
+| Atlas demo build | Wall | CPU, all cores |
+|---|---|---|
+| WebP only | 6 to 14 s | 16 to 25 s |
+| With AVIF 60, eight widths (before) | 60 to 113 s | 665 s |
+| With AVIF 55, nine widths (now) | 63 to 139 s | 574 to 578 s |
+
+About 17 s of one core per photo. A site with 300 photos on a two-core server would wait about 45 minutes on its first build, so AVIF is not switched on for every site. Each file is named by a hash of its photo and kept, so later builds read it from the cache. For the demos, `scripts/demo-media.sh` links each build's files into one cache shared by all demo builds, `~/.cache/khalid/demo-media`, and CI keeps it between runs (key: the encoder's source and the demos' `photos.lock` files). Building every template demo from an empty cache cost 8,298 s of CPU (815 s wall on the build server); on a four-core CI runner that is about 35 minutes, paid when a photo or the encoder changes. The demo job's time limit was raised from 75 to 120 minutes for such a run. One encoder thread per file (`with_num_threads(Some(1))`) was measured and left out: 23% less CPU, but twice the wall time on 16 cores.
+
+The 31 template demo home pages, in KB of pictures, before and after (the "before" is perf/picture-sizes):
+
+| Measure | Before | After |
+|---|---|---|
+| 390 px at 3x, all pictures | 16,258 | 7,766 |
+| 390 px at 3x, without the hero | 13,415 | 6,422 |
+| 390 px at 1x, all pictures | 3,685 | 2,027 |
+| 390 px at 1x, without the hero | 3,096 | 1,709 |
+| 1440 px, all pictures | 7,901 | 4,364 |
+
+At 3x, 23 of the 31 home pages download under 400 KB of pictures in all, against 14 before. The eight over it are the photo-led designs: Aperture 827 KB, Itinerary 645, Atlas 561, Compass 470, Lattice 443, Plinth 413, Beacon 404 and Keystone 403. Per template numbers are in the pull request.
+
+### Fonts
+
+The same check counts every web font file the page downloads, on each demo's home page and on one post (the first post its demo publication's `check-pages.txt` names), at 390 px and at 1440 px. A browser fetches a face only when some text on the page is set in it, so a page with no italic does not pay for the italic file.
+
+Each sample brand in `fixtures/showcase-brands/` carries its fonts as WOFF2 files. Google Fonts serves a "Latin" file with about 330 characters and, for some families, hinting for old Windows screens. `scripts/font-subset.py` cuts each file to what its demo shows:
+
+- **Letters.** Basic Latin, the no-break space and a short list of punctuation are always kept. Any other letter is kept only when the brand's built demo uses it, in its pages or in its stylesheet's generated content, such as the German umlauts and ß of the German pages, or the arrows the stylesheet draws.
+- **Features.** The OpenType features a browser applies by itself to Latin text (kerning, ligatures, contextual forms, marks), and only the numeral and small-capital features the pack's stylesheet asks for with `font-variant`.
+- **Hinting kept.** Hinting fits letters to the pixel grid, and Chromium on Linux and Windows follows it when it measures text: a first cut without it moved line breaks in Compass and Lattice enough to fail the layout check. So every file keeps its hinting, except PT Serif (Ledger), whose home page would weigh 82 KB with it, Alegreya Sans (Chapter), which leaves Chapter room under the budget, and Petrona (Dialogue), whose three faces would weigh 67 KB with it. These demos pass the layout check without it. Outlines, metrics and names stay as they were, so the page looks the same and the fallback metrics in `tokens.toml` still match (the cut leaves `hhea` and `OS/2` untouched).
+- **Ranges.** Each file's `range` in `tokens.toml`, its `unicode-range`, becomes exactly the letters it carries, so a letter it lacks is drawn by the next font in the stack. Every `@font-face` rule says `font-display: swap`.
+- **Licences.** Every font stays under the OFL, with its licence beside it, and its copyright and licence names inside it. The OFL counts a cut file as a Modified Version, which may not carry a Reserved Font Name (OFL FAQ 2.6). So PT Serif is cut as "Ledger Serif", IBM Plex Sans as "Workbench Sans", Lora as "Showcase Serif" (Masthead, Quill) and Playfair Display as "Showcase Display" (Glossy, Masthead): the same design under a new name, in the file and in `tokens.toml`. Source Sans 3 (Keystone) reserves "Source" and is under the budget uncut, so it is left as Google serves it.
+- **Variable files.** Brands that use a variable file keep it. After the cut, a variable file is about as large as the two static weights it would replace: Figtree 400 to 700 as one variable file is 12.4 KB (Vital), and its 400 and 700 static files are 12.8 KB together (Syllabus). A swap would save under 4%, so the static files stay where a brand has them.
+
+Each page also preloads its body font, the one file every page uses: the upright face of the first family in the body stack, at weight 400 or in a range that holds it. The head says `<link rel="preload" as="font" type="font/woff2" crossorigin>` at the address the stylesheet fetches, so the file is fetched once and early. No other font is preloaded.
+
+Measured on 2026-11-07, in KB of fonts, over the 31 template demos, each on its home page and one post at 390 and 1440 px (124 pages):
+
+| | Before | After |
+|---|---|---|
+| Heaviest page | 186 (Chapter post) | 54 (Research home page) |
+| Ledger home page, 390 px | 124 | 45 |
+| Average page | 59.7 | 33.1 |
+| Pages over 60 KB | 50 | 0 |
+
+Chapter needed a small design change to fit. Its excerpts set the text in EB Garamond with small capitals and italics, beside Alegreya Sans in two weights: four files, 73 KB after the cut, and still 60.0 KB with no small capitals. So the Chapter demo now serves Alegreya Sans in 400 only. Its brand stylesheet, `fixtures/showcase-brands/chapter/theme/site.css`, sets `font-synthesis-weight: none`, so text the template sets bold is drawn in 400 and never in a bold the browser fakes, and gives the small capital labels a little more letter-spacing. EB Garamond also drops its small-capital feature, so the browser draws those small capitals from scaled capitals. A Chapter post now weighs 47 KB. The pack itself is unchanged: a site that serves its own bold keeps it.
+
+To add or change a brand's fonts: put the Latin WOFF2 files and their `OFL.txt` in `theme/fonts/`, list them in `tokens.toml`, build the demos (`scripts/page-weight.sh` leaves them in `target/page-weight/sites`), then run `scripts/font-subset.py --sites target/page-weight/sites <brand>` and the check again. Cutting a file twice changes nothing, so run it again when the demo's text gains new letters.
+
 ## Fast to build
 
 - `sccache` and `mold` in CI. `cargo nextest` with the default partitioning.
@@ -226,3 +373,58 @@ How `scripts/perf.sh` takes the four measures added for brief G9, all through `k
 - **Cached post page**: one post page of the 1,000-post site, asked for once so it is cached, then over 50 keep-alive connections for 30 seconds, `oha`'s defaults, with the client on the same machine (`khalid-perf requests`).
 - **Public CSS, compressed**: the Brotli copy of each stylesheet the built home page links, from the 10,000-post build (`khalid-perf sizes`).
 - **Admin initial JavaScript, compressed**: each script `admin/dist/index.html` loads at once (`<script src>` and `modulepreload`), gzipped at level 9 as `admin/scripts/size-budget.mjs` counts. `perf.sh` does not run npm, so it is measured only when `admin/dist` holds a build; otherwise the gate lists it as not measured.
+
+## Demo bundle
+
+`khalid-demos.tar.gz`, which serpdad.com/khalid/ is built from, has a budget of **464 MB** (MB of 1,000,000 bytes). `scripts/demos-bundle.sh` fails the Pages build when the archive is over it, and `scripts/demos-bundle.sh --check khalid-demos.tar.gz` checks a downloaded one. A budget is never raised to make the build pass.
+
+Before it packs, the bundle step leaves out every raster picture that only structured data names, such as the original photo in each post's folder, and takes it out of that structured data. Pages load the sized copies in `media/` instead. It then fails if a page, stylesheet, feed or `templates.json` names a picture, video or sound the bundle does not hold.
+
+Measured on 2026-11-07 (perf/demo-bundle):
+
+| Bundle | Archive |
+|---|---|
+| Published, before AVIF reached the demos | 600.5 MB |
+| Main with AVIF and 1,152 px, no pruning | 835.7 MB |
+| Main with pruning (498 originals, 141.1 MB, left out) | 704.9 MB |
+| Main with pruning and the 18 templates of batch 5 (49 demos; 696 originals, 205.6 MB, left out) | 1,024.4 MB |
+
+What stays is nearly all pictures pages load: with batch 5, WebP 514 MB, AVIF 271 MB, the 1,280 px JPEG fallback 185 MB and the share cards 83 MB, unpacked. A browser picks almost every width: across viewports 320 to 2,560 px at 1x to 3x, only 4 MB of files are never a browser's choice. A smaller bundle needs fewer formats, not fewer widths.
+
+### AVIF in place of WebP (2026-11-07)
+
+Every browser that reads WebP today also reads AVIF, so in the demos WebP only added files. The demos now set `avif = "only"` under `[media]` (`scripts/demo-media.sh`): each picture comes in AVIF at every width and in one JPEG or PNG, at most 1,024 px wide, the width `khalid-media` makes closest to 960. A browser without AVIF, such as Safari before 16 or an old in-app browser, skips the AVIF source and loads that file from the `<img>`. Other sites keep WebP unless they ask (docs/deploy.md, "Smaller pictures with AVIF").
+
+Measured on the build server (perf/demos-avif-only):
+
+| Bundle | Before | After |
+|---|---|---|
+| Main, 31 demos | 702 MB | 310.1 MB |
+| Main with batch 5, 49 demos | 1,024.4 MB | 450.5 MB |
+
+Unpacked, the 49 demos now hold AVIF 271 MB, the 1,024 px JPEG fallback 123 MB (185 MB at 1,280 px) and the share cards 83 MB, and no WebP. The budget is the 49-demo result with about 3% headroom.
+
+A second JPEG width is not worth it. A 640 px JPEG beside the 1,024 px one would add about 43% of the fallback's bytes, 36 MB unpacked for the 31 demos and 53 MB for 49 (each 1,024 px JPEG resized to 640 and 1,024 px and encoded at the same quality in Chromium, 495 photos). It would serve only browsers without AVIF, on narrow screens, which already get a sharp picture.
+
+The page-weight check still passes on the packs measured (Almanac, Aperture, Atlas, Classic, Harbor, Keystone, Meridian, Wire, and from batch 5 Dispatch, Gazette, Glossy, Mosaic, Pantry, Quill), with the same numbers: Chromium took AVIF before and still does. `scripts/demo-check/fallback.mjs` opens each demo as a browser without AVIF sees it, every `<source type="image/avif">` taken out, and fails when a picture shows nothing; CI runs it in each Chromium layout job. On those 14 packs all 868 pictures on 82 pages showed their JPEG or PNG.
+
+## CSS weight
+
+Budget: each page downloads at most 10 KB of CSS, all the stylesheets it links together, compressed with Brotli at its best quality as Khalid serves them. It holds for the home page, a post, a category page and an author page of every template.
+
+How it is held:
+
+- **Each page links the rules it uses** (ADR "each page links the rules it uses"). After a page is rendered, the rules whose selectors name a class none of its elements has are left out of its stylesheet. Pages with the same classes share one sheet. The site's own rules in `theme/site.css` and the classes the reader script adds stay on every page.
+- **`crates/khalid/tests/css_weight.rs`** builds the showcase site in every template, in its sample brand, and fails when one of the four pages links more than 10 KB. It runs with the other tests, with no browser.
+- **The layout check** (`scripts/layout-check.sh`) holds every page it opens on every template demo, demo publications included, to the same 10 KB.
+
+Measured on 2026-11-07 on the 31 template demos as `scripts/layout-check.sh` builds them, 124 pages (home, post, category and author of each):
+
+| Measure | Before | After |
+|---|---|---|
+| Brotli, worst page | 14,342 bytes (Compass, home) | 8,919 bytes (Keystone, post) |
+| Brotli, average page | 11,395 bytes | 5,886 bytes |
+| Pages over 10 KB with Brotli | 112 of 124 | 0 of 124 |
+| Gzip, average page | 13,274 bytes | 6,725 bytes |
+
+On every page the layout check opens in all 87 demo builds, no selector that can match an element of the page is left out of its stylesheet, and the computed style of every element, and of its `::before`, `::after` and `::marker`, at 390 and 1440 px in Chromium, was the same before and after (1,732 page views; a view that differed on a first read because a picture loaded late was read again). A full build of the generated 10,000-post site took the same time before and after (about 24 to 26 s on the shared build server) and wrote 8 stylesheets. A page that moves to another kind of page downloads that page's sheet once; before, one cached sheet served both. The budget is never raised to make a check pass.

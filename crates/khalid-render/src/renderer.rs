@@ -12,8 +12,10 @@ use crate::heading_links;
 use crate::pack::{PackContext, RenderPack};
 use crate::strings::Strings;
 use crate::templates::{self, Source};
-use crate::{Brand, PageBody, PageMeta, RenderError, RenderSite};
-use crate::{cta, enlarge, escape, share};
+use crate::{
+    Brand, ConsentBanner, ConsentPart, PageBody, PageMeta, PrivacyFacts, RenderError, RenderSite,
+};
+use crate::{cta, enlarge, escape, image, share};
 
 /// How many steps one page may take before rendering stops. The default
 /// pages use a few thousand; the cap stops a theme template that loops
@@ -62,18 +64,21 @@ impl Renderer {
     /// A renderer where the template pack `pack` replaces the default
     /// templates it names, and each file in `site_root/theme/templates/`
     /// replaces either. A pack may also add post templates such as
-    /// `post-reference.html`, which a post asks for with `template:`.
+    /// `post-reference.html`, which a post asks for with `template:`, and
+    /// its own parts, such as `parts-locale.html`, which its other files
+    /// import. A site cannot add or replace a part.
     /// Templates read the pack's name and options as `template`.
     ///
     /// # Errors
     ///
     /// The errors of [`Renderer::with_theme`], and
     /// [`RenderError::UnknownTemplate`] for a pack file that is neither a
-    /// default template nor a post template.
+    /// default template, a post template nor a part.
     pub fn with_pack(site_root: &Path, pack: &RenderPack<'_>) -> Result<Self, RenderError> {
         let mut sources = Vec::new();
         for &(name, text) in &pack.templates {
-            if !templates::is_default(name) && !templates::is_post_template(name) {
+            let known = templates::is_default(name) || templates::is_post_template(name);
+            if !known && !templates::is_pack_part(name) {
                 return Err(RenderError::UnknownTemplate {
                     name: name.to_owned(),
                 });
@@ -110,6 +115,7 @@ impl Renderer {
         env.add_filter("heading_links", heading_links::heading_links);
         env.add_filter("enlarge", enlarge::enlarge);
         env.add_function("share_links", share::share_links);
+        env.add_function("first_picture", image::first_picture);
         env.add_filter("place_cta", cta::place_cta);
         for source in templates::defaults().into_iter().chain(overrides) {
             env.add_template_owned(source.name.clone(), source.text)
@@ -206,8 +212,62 @@ impl Renderer {
             lang => site.locale.as_str(),
             dir => Serde(Direction::of(&site.locale)),
             page => body.value(),
+            lists_posts => body.lists_posts(),
             template => Serde(&self.pack),
             brand => Serde(&self.brand),
+        };
+        template
+            .render(context)
+            .map_err(|error| RenderError::render(name, error))
+    }
+
+    /// The `part` of the consent banner in `locale`, from `consent.html`,
+    /// for the page splice to put right after the skip link.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`RenderError::Render`] when the template fails, for example
+    /// a theme's `consent.html` that names a value the banner does not have.
+    pub fn consent(
+        &self,
+        locale: &Locale,
+        banner: &ConsentBanner,
+        part: ConsentPart,
+    ) -> Result<String, RenderError> {
+        let name = "consent.html";
+        let template = (self.env)
+            .get_template(name)
+            .map_err(|error| RenderError::render(name, error))?;
+        let context = context! {
+            t => Serde(self.strings.for_locale(locale)),
+            banner => Serde(banner),
+            part => Serde(part),
+        };
+        template
+            .render(context)
+            .map_err(|error| RenderError::render(name, error))
+    }
+
+    /// The privacy facts as `privacy_facts.html` draws them in `locale`, for
+    /// an owner's own privacy page to show where it writes
+    /// `::privacy-facts`. The owner's words are never read as a template.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`RenderError::Render`] when the template fails.
+    pub fn privacy_facts(
+        &self,
+        locale: &Locale,
+        facts: &PrivacyFacts,
+    ) -> Result<String, RenderError> {
+        let name = "privacy_facts.html";
+        let template = (self.env)
+            .get_template(name)
+            .map_err(|error| RenderError::render(name, error))?;
+        let context = context! {
+            t => Serde(self.strings.for_locale(locale)),
+            lang => locale.as_str(),
+            facts => Serde(facts),
         };
         template
             .render(context)

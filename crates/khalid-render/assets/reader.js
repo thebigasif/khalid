@@ -4,7 +4,7 @@
 // with / or Ctrl+K, show results while typing a search, mark the section
 // being read in the contents, open the contents as a sheet on a phone,
 // preview a linked post, and say whether a location is open now and which
-// is nearest.
+// is nearest, and load an embed's player when the reader asks.
 // The words it shows come from the script tag's data attributes.
 (() => {
   "use strict";
@@ -269,10 +269,12 @@
     find();
   }
 
-  // On a narrow screen a floating button opens the contents as a sheet: a
-  // modal dialog, so focus stays inside and Escape closes it. Picking a
-  // section closes it and goes there.
-  if (contents && typeof HTMLDialogElement === "function") {
+  // The folded contents list at the start of a post becomes a button in its
+  // place that opens the contents as a sheet: a modal dialog, so focus stays
+  // inside and Escape closes it. Picking a section closes it and goes there.
+  // The button sits in the page, so it never covers what the reader reads.
+  const folded = document.querySelector(".toc-inline");
+  if (contents && folded && typeof HTMLDialogElement === "function") {
     const open = document.createElement("button");
     open.type = "button";
     open.className = "toc-button";
@@ -299,7 +301,8 @@
       sheet.showModal();
       sheet.querySelector("[aria-current]")?.scrollIntoView({ block: "center" });
     });
-    document.body.append(open, sheet);
+    folded.replaceWith(open);
+    document.body.append(sheet);
   }
 
   // A link in a post's body to another page of the site shows that page's
@@ -415,4 +418,18 @@
       );
     });
   }
+
+  // An embed's card loads its player only when the reader asks for it.
+  // The player waits in a template, so nothing reaches the provider
+  // before then; without this script the card's link opens the provider.
+  document.addEventListener("click", (event) => {
+    const card = event.target.closest(".embed-load")?.closest(".embed-card");
+    const held = card?.parentElement.querySelector("template");
+    if (!held) return;
+    event.preventDefault();
+    const player = held.content.firstElementChild;
+    card.replaceWith(held.content);
+    held.remove();
+    player?.focus();
+  });
 })();

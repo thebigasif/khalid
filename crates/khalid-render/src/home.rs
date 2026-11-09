@@ -3,7 +3,7 @@
 
 use serde::Serialize;
 
-use crate::{Link, PostCard, RenderListing};
+use crate::{BodyHtml, Link, PostCard, RenderListing};
 
 /// The most editor's picks the home page carries, the most the `picks`
 /// part may show.
@@ -37,6 +37,60 @@ pub struct RenderHome {
     /// The newest posts with a sound player, such as a podcast episode,
     /// for the row a template with its `podcast_section` part on shows.
     pub podcasts: Vec<PostCard>,
+    /// The sound player of the first of [`RenderHome::podcasts`], as its
+    /// post shows it, with its file's address made to work from the home
+    /// page. A template that leads with the newest episode, such as
+    /// Episode, plays it there.
+    pub podcast_player: Option<BodyHtml>,
+}
+
+impl RenderHome {
+    /// Every post card the page shows, in every part: the newest posts,
+    /// the featured post, the picks, the sections, the topic tabs and the
+    /// video and podcast rows. Whatever fills one card fills them all
+    /// through this, so a new part cannot be left with bare cards.
+    pub fn cards(&self) -> impl Iterator<Item = &PostCard> {
+        let Self {
+            listing,
+            sections,
+            picks,
+            topics: _,
+            categories: _,
+            tabs,
+            videos,
+            podcasts,
+            podcast_player: _,
+        } = self;
+        let listed = listing.posts.iter().chain(&listing.featured);
+        let grouped = sections.iter().chain(tabs).flat_map(|group| &group.posts);
+        listed
+            .chain(picks)
+            .chain(grouped)
+            .chain(videos)
+            .chain(podcasts)
+    }
+
+    /// [`RenderHome::cards`], to change.
+    pub fn cards_mut(&mut self) -> impl Iterator<Item = &mut PostCard> {
+        let Self {
+            listing,
+            sections,
+            picks,
+            topics: _,
+            categories: _,
+            tabs,
+            videos,
+            podcasts,
+            podcast_player: _,
+        } = self;
+        let listed = listing.posts.iter_mut().chain(&mut listing.featured);
+        let grouped = (sections.iter_mut().chain(tabs)).flat_map(|group| &mut group.posts);
+        listed
+            .chain(picks)
+            .chain(grouped)
+            .chain(videos)
+            .chain(podcasts)
+    }
 }
 
 /// One section of the front page: the newest posts of a category, a

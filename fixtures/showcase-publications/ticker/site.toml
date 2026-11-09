@@ -1,0 +1,99 @@
+# Tallyline, a made-up weekly letter about the markets of Varnholm, a
+# made-up country, written for the Ticker template's demo. Every index,
+# company, price and move on it is invented. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Tallyline"
+languages = ["en"]
+
+[template.cta]
+label = "How we work"
+href = "/blog/about/"
+note = "Tallyline explains markets in plain words. Every figure on this site is made up, and nothing here is investment advice."
+
+# The Ticker template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["The week in Varnholm's markets, in numbers and plain words. Out every Friday."]
+disclaimer = ["Made-up figures for a template demo. Not investment advice."]
+
+[announcement]
+text = "Every figure on Tallyline is made up to show a template. Nothing here is investment advice."
+href = "/blog/about/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A weekly letter on Varnholm's markets"
+
+[seo.ai_page]
+covers = "Tallyline is a made-up weekly letter about the markets of Varnholm, a made-up country. It reports each week's moves in stocks, the varn and copper with tables and charts, and explains how markets work. Every figure is invented, and nothing on the site is investment advice."
+cite = "Cite the post you quote and say that its figures are made up for a demo."
+contact = "letters@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Tallyline"
+email = "letters@example.com"
+founded = "2021-01-08"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Tallyline logo"
+width = 320
+height = 80
+
+# Sign-ups for the letter, under its own name. The mail server is a
+# reserved example name, so nothing is ever sent.
+[mail]
+from = "letters@example.com"
+name = "Tallyline"
+postal_address = "Tallyline, 14 Quay Street, Varnholm VH2 9LE"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Weekly wrap"
+href = "/blog/category/weekly-wrap/"
+language = "en"
+
+[[nav.primary]]
+label = "Stocks"
+href = "/blog/category/stocks/"
+language = "en"
+
+[[nav.primary]]
+label = "Commodities"
+href = "/blog/category/commodities/"
+language = "en"
+
+[[nav.primary]]
+label = "Explainers"
+href = "/blog/category/explainers/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Tallyline"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Archive"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

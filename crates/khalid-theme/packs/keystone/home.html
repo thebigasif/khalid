@@ -1,10 +1,12 @@
 {#- Keystone's front page: the blog's name and its topics on one quiet
-    line, the featured post as a lead story with a large picture, the
-    newest posts as a grid of framed pictures, the newsletter on a calm
-    band, one row of three per home section, then the call to action. -#}
+    line, the featured post as a lead story with a large picture, an index
+    of the posts with facts (a studio's projects), the newest posts as a
+    grid of framed pictures, the newsletter on a calm band, one row of
+    three per home section, then the call to action. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
 <div class="home-head">
@@ -20,11 +22,24 @@
 </nav>
 {% endif %}</div>
 {% set slot = page.featured if template.options.featured else none -%}
-{% if slot %}{{ featured_slot(slot) }}
+{% if slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
+{% endif %}{#- The project index: each post with facts on one ruled row, its
+    title, then its facts in the columns the first such post names. -#}
+{% set projects = page.posts | selectattr("facts") | list if not (page.pagination and page.pagination.previous) else [] -%}
+{% if projects %}{% set heads = projects[0].facts %}<section class="home-section project-index" aria-labelledby="index-title">
+<h2 id="index-title">{{ t.case_studies_title }}</h2>
+<table aria-labelledby="index-title">
+<thead><tr><th scope="col">{{ projects[0].category.name if projects[0].category else t.sitemap_posts }}</th>{% for head in heads %}<th scope="col">{{ head.label }}</th>{% endfor %}</tr></thead>
+<tbody>
+{% for post in projects %}{% set name = post.title | split(": ", 1) | list %}<tr><th scope="row"><a href="{{ post.href }}">{% if name | length > 1 %}<span>{{ name[0] }}:</span> {{ name[1] }}{% else %}<span>{{ post.title }}</span>{% endif %}</a></th>{% for head in heads %}<td>{{ post.facts[loop.index0].value if post.facts | length > loop.index0 }}</td>{% endfor %}</tr>
+{% endfor %}</tbody>
+</table>
+{% if projects[0].category %}<p class="view-all"><a href="{{ projects[0].category.href }}">{{ t.all_case_studies }}</a></p>
+{% endif %}</section>
 {% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% if posts %}<section class="home-section" aria-labelledby="recent-title">
 <h2 id="recent-title">{{ t.recent_posts }}</h2>
-{{ cards(posts, 3) }}
+{{ cards(posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</section>
 {% elif not slot %}<p>{{ t.no_posts }}</p>
@@ -34,7 +49,7 @@
 </div>
 {% endif %}{% for section in page.sections %}<section class="home-section">
 <h2>{{ section.title }}</h2>
-{% if section.posts %}{{ cards(section.posts[:3], 3) }}
+{% if section.posts %}{{ cards(section.posts[:3], 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>

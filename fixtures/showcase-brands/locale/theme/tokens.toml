@@ -1,0 +1,59 @@
+# The sample brand for the Locale demo: The Varrow List, a made-up guide
+# to a made-up harbour city. Brick red on white with a warm stone surface,
+# Young Serif for headings and Karla for the text and the listing rows.
+# Only the brand lives here: the template keeps its own shape, type sizes
+# and spacing.
+[colors]
+background = "#ffffff"
+surface = "#f4efe6"
+text = "#1c1e24"
+muted = "#545866"
+link = "#a8361b"
+accent = "#a8361b"
+border = "#e3dccf"
+
+[fonts]
+heading = "\"Young Serif\", Georgia, \"Times New Roman\", serif"
+body = "Karla, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Young Serif"
+style = "normal"
+weight = "400"
+path = "young-serif-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "115.55%"
+descent = "172.71%"
+line_gap = "0.00%"
+size_adjust = "66.50%"
+
+[[fonts.files]]
+family = "Karla"
+style = "normal"
+weight = "400"
+path = "karla-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "101.30%"
+descent = "118.92%"
+line_gap = "0.00%"
+size_adjust = "55.86%"
+
+[[fonts.files]]
+family = "Karla"
+style = "normal"
+weight = "700"
+path = "karla-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "101.30%"
+descent = "118.92%"
+line_gap = "0.00%"
+size_adjust = "58.51%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

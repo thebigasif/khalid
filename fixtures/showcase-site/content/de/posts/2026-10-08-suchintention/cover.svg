@@ -1,22 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
-  <rect width="1200" height="675" fill="#eef3ff"/>
-  <circle cx="210" cy="500" r="110" fill="#8fd9bd" opacity="0.3"/>
-  <circle cx="1000" cy="160" r="90" fill="#ffb38a" opacity="0.3"/>
-  <circle cx="200" cy="140" r="7" fill="#5b45d6"/>
-  <circle cx="232" cy="164" r="5" fill="#8fa2ff"/>
-  <circle cx="1010" cy="540" r="7" fill="#5b45d6" opacity="0.5"/>
-  <ellipse cx="600" cy="590" rx="240" ry="22" fill="#1f1b3a" opacity="0.08"/>
-  <circle cx="600" cy="330" r="226" fill="#5b45d6"/>
-  <circle cx="600" cy="330" r="186" fill="#ffffff"/>
-  <circle cx="600" cy="330" r="150" fill="none" stroke="#8fa2ff" stroke-width="4" stroke-dasharray="6 14"/>
-  <circle cx="600" cy="124" r="22" fill="#8fa2ff"/>
-  <circle cx="806" cy="330" r="22" fill="#ffb38a"/>
-  <circle cx="600" cy="536" r="22" fill="#8fd9bd"/>
-  <circle cx="394" cy="330" r="22" fill="#ffffff"/>
-  <polygon points="600,190 630,330 570,330" fill="#ffb38a"/>
-  <polygon points="600,470 630,330 570,330" fill="#8fa2ff"/>
-  <circle cx="600" cy="330" r="20" fill="#1f1b3a"/>
-  <circle cx="600" cy="330" r="7" fill="#ffffff"/>
-  <path d="M880 330 L888 352 L910 360 L888 368 L880 390 L872 368 L850 360 L872 352 Z" fill="#5b45d6"/>
-  <path d="M320 220 L325 234 L339 239 L325 244 L320 258 L315 244 L301 239 L315 234 Z" fill="#ffb38a"/>
+  <rect width="1200" height="675" fill="#f4f1ea"/>
+  <rect x="474" y="326" width="252" height="250" rx="14" fill="#eba63f"/>
+  <g fill="none" stroke="#1f2428" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="220" y="95" width="760" height="84" rx="42" fill="#fffdf8"/>
+    <circle cx="282" cy="133" r="20"/>
+    <path d="M297 148l18 18"/>
+    <path stroke-width="12" d="M350 137h320"/>
+    <path stroke-dasharray="0 20" d="M600 200v70"/>
+    <path d="M578 252l22 22 22-22"/>
+    <g fill="#fffdf8">
+      <rect x="180" y="310" width="252" height="250" rx="14"/>
+      <rect x="768" y="310" width="252" height="250" rx="14"/>
+    </g>
+    <rect x="490" y="310" width="252" height="250" rx="14"/>
+    <path stroke-width="14" d="M530 365h160"/>
+    <path stroke-width="6" d="M530 420h170M530 465h130M530 510h150"/>
+    <path d="M232 395h26l26 100h92l22-72H270"/>
+    <circle cx="300" cy="525" r="10" fill="#1f2428"/>
+    <circle cx="364" cy="525" r="10" fill="#1f2428"/>
+    <path d="M894 365a56 56 0 0 1 56 56c0 46-56 100-56 100s-56-54-56-100a56 56 0 0 1 56-56z"/>
+    <circle cx="894" cy="421" r="18"/>
+  </g>
 </svg>

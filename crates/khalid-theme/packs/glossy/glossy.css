@@ -1,0 +1,193 @@
+/* Glossy (docs/templates/glossy.md): a bright lifestyle magazine. A wide
+   cream frame, titles in the display serif, rounded pictures, panels and
+   labels, a cover with cover lines, and picture cards in a rhythm of six:
+   wide, tall, three squares and a band. Text sits beside or under every
+   picture, never on it. Every colour is a token or a mix of tokens. */
+:root {
+  --gl-frame: 80rem;
+  --gl-read: 37rem;
+  --gl-blush: color-mix(in oklab, var(--color-surface) 70%, var(--color-background));
+  --gl-tint: color-mix(in oklab, var(--color-accent) 12%, var(--color-background));
+}
+.site-header, main, main:has(.post-with-toc), .site-footer { max-inline-size: var(--gl-frame); }
+main { padding-block: 0 var(--space-section); }
+main > .page { max-inline-size: var(--measure); margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+/* The header: the name in the serif at the start, the menu as rounded
+   links, search at the end. */
+.site-header { inline-size: min(100%, var(--gl-frame)); padding-block: 1.25rem; border: 0; }
+.site-name { font-family: var(--font-heading); font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); font-weight: var(--heading-weight); color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0.25rem; }
+.site-header nav a { display: inline-flex; align-items: center; min-block-size: 2.5rem; padding-inline: 1rem; border-radius: 999px; color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+.site-header nav a:hover, .site-header nav a[aria-current] { background: var(--gl-blush); color: var(--color-text); }
+/* The last link's text, not its pill, lines up with the frame's end. */
+.site-header nav li:last-child a { margin-inline-end: -1rem; }
+.search-link { display: inline-flex; align-items: center; min-block-size: 2.5rem; padding-inline: 1.125rem; border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-text); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+.search-link:hover { border-color: var(--color-text); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--gl-blush); border: 0; box-shadow: 0 0 0 100vmax var(--gl-blush); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons and labels: rounded pills. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.5rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: 999px; font: 600 0.9375rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { color: var(--color-accent); background: var(--color-background); text-decoration: none; }
+.gl-pill { display: inline-flex; align-items: center; min-block-size: 2rem; padding-inline: 0.875rem; border-radius: 999px; background: var(--color-text); color: var(--color-background); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em; text-decoration: none; }
+a.gl-pill:hover { background: var(--color-link); color: var(--color-on-accent); }
+.gl-section { margin: 0; color: var(--color-link); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Section headings: the serif with a short accent bar before it. */
+:is(.gl-stories, .gl-browse, .related, .mentions, .author-others, .topic-tabs, .media-row) > h2, .post-footer > h2 { display: flex; align-items: center; gap: 0.75rem; margin-block: 0 1.75rem; font-size: var(--text-h2); line-height: 1.2; }
+:is(.gl-stories, .gl-browse, .related, .mentions, .author-others) > h2::before { content: ""; inline-size: 2.5rem; block-size: 0.375rem; border-radius: 999px; background: var(--color-accent); }
+.gl-stories, .gl-browse { margin-block-end: var(--space-section); }
+.gl-stories .view-all { margin-block: 1.25rem 0; }
+
+/* The masthead line: the name at the start, the tagline at the end. */
+.gl-masthead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 2rem; margin-block: clamp(1rem, 0.5rem + 2vw, 2.5rem) clamp(1.5rem, 1rem + 1.5vw, 2.5rem); padding-block-end: 1.25rem; border-block-end: 1px solid var(--color-border); }
+.gl-masthead h1 { margin: 0; font-size: clamp(2.5rem, 1.5rem + 4vw, 5rem); line-height: 1; letter-spacing: -0.02em; }
+.gl-tagline { max-inline-size: 26rem; color: var(--color-muted); font-size: clamp(1rem, 0.9rem + 0.4vw, 1.1875rem); line-height: 1.5; }
+.gl-tagline > * { margin: 0; }
+
+/* The cover: the picture large at the start, the panel at the end with
+   the title and the cover lines. */
+.gl-cover { display: grid; gap: 1.25rem; margin-block-end: var(--space-section); }
+@media (min-width: 56rem) { .gl-cover { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 1.5rem; } }
+.gl-cover-picture .image { margin: 0; }
+.gl-cover-picture .image img { aspect-ratio: 4 / 3; block-size: auto; object-fit: cover; }
+@media (min-width: 56rem) { .gl-cover-picture, .gl-cover-picture .image, .gl-cover-picture picture { block-size: 100%; } .gl-cover-picture .image img { block-size: 100%; min-block-size: 30rem; } }
+.gl-cover-picture figcaption { display: none; }
+.gl-cover-panel { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(1.5rem, 1rem + 2vw, 2.75rem); border-radius: var(--radius); background: var(--color-surface); }
+.gl-cover-label { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin: 0 0 1.25rem; }
+.gl-cover-label .gl-section { text-decoration: none; }
+.gl-cover-label .gl-section:hover { text-decoration: underline; }
+.gl-cover-title { margin: 0; font-size: clamp(2rem, 1.25rem + 2.4vw, 3.25rem); line-height: 1.08; }
+.gl-cover-title a { color: var(--color-text); text-decoration: none; }
+.gl-cover-title a:hover { color: var(--color-link); }
+.gl-cover-excerpt { margin: 1rem 0 0; color: var(--color-text); font-size: 1.125rem; line-height: 1.55; }
+.gl-cover .gl-card-meta { margin-block-start: 1rem; }
+.gl-cover-lines-title { margin: 2rem 0 0.75rem; padding-block-start: 1.25rem; align-self: stretch; border-block-start: 1px solid color-mix(in oklab, var(--color-text) 20%, var(--color-surface)); font-family: var(--font-body); font-size: var(--text-small); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.gl-cover-lines { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; counter-reset: gl-line; align-self: stretch; }
+.gl-cover-lines li { counter-increment: gl-line; }
+.gl-cover-lines a { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); column-gap: 0.875rem; align-items: center; padding-block: 0.5rem; color: var(--color-text); text-decoration: none; }
+.gl-cover-lines a::before { content: counter(gl-line); grid-row: 1 / span 2; display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; border-radius: 50%; background: var(--color-accent); color: var(--color-on-accent); font-weight: 600; font-size: 0.9375rem; }
+.gl-cover-lines .gl-section { font-size: 0.75rem; }
+.gl-cover-line { font-family: var(--font-heading); font-size: 1.1875rem; font-weight: var(--heading-weight); line-height: 1.3; }
+.gl-cover-lines a:hover .gl-cover-line { color: var(--color-link); text-decoration: underline; }
+
+/* The cards: picture first, then the section, title, excerpt and date. */
+.gl-grid { display: grid; gap: 2.5rem 1.5rem; margin: 0; padding: 0; list-style: none; }
+.gl-card { position: relative; display: flex; flex-direction: column; min-inline-size: 0; }
+.gl-card .image { margin: 0 0 1rem; }
+.gl-card .image img { aspect-ratio: var(--gl-ratio, 1); block-size: auto; object-fit: cover; }
+.gl-card figcaption { display: none; }
+.gl-card-text { display: flex; flex-direction: column; gap: 0.5rem; min-inline-size: 0; }
+.gl-card :is(h2, h3, h4) { margin: 0; font-size: var(--gl-title, 1.375rem); line-height: 1.2; }
+.gl-card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.gl-card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); }
+.gl-card:hover :is(h2, h3, h4) a { color: var(--color-link); text-decoration: underline; }
+.gl-card :is(h2, h3, h4) a:focus-visible { outline: none; }
+.gl-card :is(h2, h3, h4) a:focus-visible::after { outline: 3px solid var(--color-link); outline-offset: 4px; }
+.gl-card-excerpt { margin: 0; color: var(--color-muted); font-size: 1rem; line-height: 1.55; }
+.gl-card-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.gl-card-plain { padding: 1.5rem; border-radius: var(--radius); background: var(--gl-blush); }
+
+/* The rhythm, on a phone: the three square cards become compact rows
+   with a small square picture beside the title. */
+@media (max-width: 39.99rem) {
+  .gl-grid > :nth-child(6n + 3), .gl-grid > :nth-child(6n + 4), .gl-grid > :nth-child(6n + 5) { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem; align-items: start; --gl-title: 1.125rem; }
+  .gl-grid > :nth-child(6n + 3) .image, .gl-grid > :nth-child(6n + 4) .image, .gl-grid > :nth-child(6n + 5) .image { margin: 0; }
+  .gl-grid > :nth-child(6n + 3) .gl-card-excerpt, .gl-grid > :nth-child(6n + 4) .gl-card-excerpt, .gl-grid > :nth-child(6n + 5) .gl-card-excerpt { display: none; }
+  .gl-grid > :nth-child(6n + 1) { --gl-ratio: 4 / 3; --gl-title: 1.625rem; }
+  .gl-grid > :nth-child(6n + 2) { --gl-ratio: 4 / 5; }
+  .gl-grid > :nth-child(6n) { --gl-ratio: 3 / 2; }
+}
+/* From a tablet up: wide, tall, three squares, then a band. */
+@media (min-width: 40rem) {
+  .gl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gl-grid > :nth-child(6n + 1) { grid-column: 1 / -1; --gl-ratio: 16 / 9; --gl-title: clamp(1.625rem, 1.25rem + 1vw, 2.25rem); }
+  .gl-grid > :nth-child(6n + 2) { --gl-ratio: 4 / 5; }
+  .gl-grid > :nth-child(6n + 3), .gl-grid > :nth-child(6n + 4), .gl-grid > :nth-child(6n + 5) { --gl-title: 1.25rem; }
+  .gl-grid > :nth-child(6n) { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; border-radius: var(--radius); background: var(--color-surface); --gl-ratio: 4 / 3; --gl-title: clamp(1.5rem, 1.125rem + 1vw, 2rem); }
+  .gl-grid > :nth-child(6n) .image { margin: 0; }
+  .gl-grid > :nth-child(6n) .gl-card-text { padding: clamp(1.25rem, 0.5rem + 2vw, 2.5rem); }
+}
+@media (min-width: 64rem) {
+  .gl-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3rem 1.5rem; }
+  .gl-grid > * { grid-column: span 2; }
+  .gl-grid > :nth-child(6n + 1) { grid-column: span 4; --gl-ratio: 3 / 2; }
+  .gl-grid > :nth-child(6n + 3) .gl-card-excerpt, .gl-grid > :nth-child(6n + 4) .gl-card-excerpt, .gl-grid > :nth-child(6n + 5) .gl-card-excerpt { display: none; }
+  .gl-grid > :nth-child(6n) { grid-column: 1 / -1; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); --gl-ratio: 16 / 9; }
+}
+/* Even cards, such as More stories under a post: three squares. */
+.gl-grid.gl-grid-even > * { grid-column: auto; display: flex; background: none; --gl-ratio: 1; --gl-title: 1.25rem; }
+.gl-grid.gl-grid-even > * .image { margin: 0 0 1rem; }
+.gl-grid.gl-grid-even > * .gl-card-text { padding: 0; }
+.gl-grid.gl-grid-even .gl-card-excerpt { display: none; }
+@media (min-width: 40rem) { .gl-grid.gl-grid-even { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); } }
+
+/* Browse the sections: large rounded links. */
+.gl-browse-list { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.gl-browse-list a { display: inline-flex; align-items: center; min-block-size: 3.5rem; padding-inline: 1.75rem; border-radius: 999px; background: var(--gl-blush); color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.5rem); font-weight: var(--heading-weight); text-decoration: none; }
+.gl-browse-list a:hover { background: var(--color-accent); color: var(--color-on-accent); }
+
+/* Lists: the kind, the name and the intro, centred. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3.5rem) 2.5rem; text-align: center; }
+.list-header h1 { margin: 0; font-size: clamp(2.25rem, 1.5rem + 3vw, 4rem); line-height: 1.05; }
+.list-header .list-kind { display: inline-flex; align-items: center; min-block-size: 2rem; margin-block: 0 1rem; padding-inline: 0.875rem; border-radius: 999px; background: var(--gl-blush); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.list-header .intro { max-inline-size: var(--measure); margin: 1rem auto 0; color: var(--color-muted); }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+
+/* A post: the section, the title and the byline centred, the lead
+   picture across the frame, then one column of text. */
+.post-header { margin-block: clamp(1rem, 0.5rem + 2vw, 2.5rem) 3rem; text-align: center; }
+.gl-post-section { margin: 0 0 1.25rem; }
+.post-header h1 { max-inline-size: 22ch; margin: 0 auto; font-size: clamp(2.25rem, 1.25rem + 3.5vw, 4rem); line-height: 1.08; }
+.post-header .dek { max-inline-size: 40rem; margin: 1.25rem auto 0; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; }
+.post-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.25rem 1.25rem; margin-block-start: 1.5rem; color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta p, .post-meta address, .post-date { margin: 0; }
+.post-meta .people { justify-content: center; }
+.post-meta .person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.updated-note { flex-basis: 100%; }
+.gl-lead { margin-block-start: clamp(1.75rem, 1rem + 2vw, 3rem); text-align: start; }
+.gl-lead .image { margin: 0; }
+.gl-lead .image img { max-block-size: 44rem; object-fit: cover; }
+.gl-lead figcaption { max-inline-size: var(--gl-read); margin: 0.75rem auto 0; color: var(--color-muted); font-size: var(--text-small); text-align: center; }
+.post > :not(.post-header, .toc-side), main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--gl-read); margin-inline: auto; }
+@media (min-width: 70rem) {
+  .post-with-toc { grid-template-columns: minmax(0, 1fr) 15rem; }
+  .post-with-toc > .post-header { grid-column: 1 / -1; }
+  .post-with-toc > .toc-side { grid-row: 2 / span 9; }
+}
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer { margin-block-start: 3rem; }
+.post-footer .tags a { display: inline-flex; align-items: center; min-block-size: 2.25rem; padding-inline: 1rem; border-radius: 999px; background: var(--gl-blush); color: var(--color-text); font-size: var(--text-small); font-weight: 600; }
+.post-footer .tags a:hover { background: var(--color-accent); color: var(--color-on-accent); }
+.share a { border-radius: 999px; }
+.related { margin-block-start: var(--space-section); }
+
+/* A person: the mark beside the name, then their stories. */
+.author { max-inline-size: 52rem; margin-inline: auto; }
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-photo .image img { border-radius: 50%; }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-link); font-size: var(--text-small); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-stories, .author-others { margin-block-start: var(--space-section); }
+.people-grid-person .avatar { border-radius: 50%; }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter: rounded blush panels. */
+.cta-band { background: var(--color-surface); border: 0; border-radius: var(--radius); text-align: center; }
+.newsletter-slot { padding: 2rem; background: var(--gl-tint); border: 0; border-radius: var(--radius); }
+
+/* The footer: quiet links on the blush band. */
+.site-footer { border-block-start: 1px solid var(--color-border); }

@@ -1,0 +1,34 @@
+# Vital: a calm health and wellness site. A warm off-white page, sage
+# green for the session ring and links, and a pale sage surface for the
+# session panel. A soft serif for headings and a friendly sans for the
+# text, set large. Shapes are round: pill chips, rounded cards.
+[colors]
+background = "#fbfaf6"
+surface = "#edf1e8"
+text = "#1c2420"
+muted = "#4d5a52"
+link = "#2d6649"
+accent = "#2d6649"
+border = "#d6ddd0"
+
+[fonts]
+heading = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "1rem"
+measure = "40rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.125rem 3.25rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.9375rem"
+line_height = 1.65
+heading_weight = 400
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

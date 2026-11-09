@@ -74,7 +74,9 @@
 .hero-stats dt { color: var(--color-muted); font-size: var(--text-small); font-weight: 400; margin: 0; }
 .hero-stats dd { margin: 0; font-family: var(--font-heading); font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem); font-weight: 700; line-height: 1.1; }
 .topic-tabs, .media-row { margin-block: var(--space-section); }
-.topic-tab-list { display: flex; gap: 0.5rem; overflow-x: auto; margin: 0 0 1.5rem; padding: 0 0 0.25rem; list-style: none; border-block-end: 1px solid var(--color-border); }
+/* The tabs scroll inside their own row, never the page: with its width
+   contained, the row never asks a grid or flex column around it for room. */
+.topic-tab-list { display: flex; gap: 0.5rem; overflow-x: auto; contain: inline-size; margin: 0 0 1.5rem; padding: 0 0 0.25rem; list-style: none; border-block-end: 1px solid var(--color-border); }
 .topic-tab-list a { display: inline-flex; align-items: center; min-block-size: 44px; padding-inline: 1rem; border-block-end: 3px solid transparent; color: var(--color-muted); font-weight: 700; text-decoration: none; white-space: nowrap; }
 .topic-tab-list a:hover, .topic-tab-list a:focus-visible { color: var(--color-text); }
 .topic-panel { scroll-margin-block-start: 6rem; }

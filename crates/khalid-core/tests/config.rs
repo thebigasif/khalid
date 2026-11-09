@@ -57,7 +57,22 @@ fn refuses_an_unknown_field() {
             "mode = \"server\"\n",
             "mode = \"server\"\ncolour = \"blue\"\n"
         ),
-        "site.toml, line 5, field \"colour\": unknown field `colour`, expected one of `name`, `address`, `mount`, `mode`, `slugs`, `default_language`, `languages`, `seo`, `reader`, `template`, `nav`, `announcement`, `media`, `mail`, `alerts`, `code`, `search_console`, `visitor_log`, `ai`, `preview_link_days`, `preview_link_hours`"
+        "site.toml, line 5, field \"colour\": unknown field `colour`, expected one of `name`, `address`, `mount`, `mode`, `slugs`, `default_language`, `languages`, `seo`, `reader`, `template`, `nav`, `announcement`, `media`, `mail`, `alerts`, `code`, `privacy`, `search_console`, `visitor_log`, `ai`, `ghost_content_api`, `preview_link_days`, `preview_link_hours`"
+    );
+}
+
+#[test]
+fn ghosts_content_api_is_off_unless_the_site_switches_it_on() {
+    let read = |text: &str| Config::from_toml(Path::new("site.toml"), text, &Environment::empty());
+    assert!(!read(DEMO).unwrap().ghost_content_api());
+    let on = format!("{DEMO}ghost_content_api = true\n");
+    assert!(read(&on).unwrap().ghost_content_api());
+    let off = format!("{DEMO}ghost_content_api = false\n");
+    assert!(!read(&off).unwrap().ghost_content_api());
+    let wrong = format!("{DEMO}ghost_content_api = \"yes\"\n");
+    assert_eq!(
+        read(&wrong).unwrap_err().to_string(),
+        "site.toml, line 7, field \"ghost_content_api\": invalid type: string \"yes\", expected a boolean"
     );
 }
 

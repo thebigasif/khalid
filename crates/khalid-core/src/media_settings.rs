@@ -1,6 +1,8 @@
 //! Where a site keeps its media library, from the `[media]` table of
 //! `site.toml`.
 
+use std::fmt;
+
 use serde::Deserialize;
 
 use crate::{AbsoluteUrl, DomainName, Secret};
@@ -33,7 +35,14 @@ use crate::{AbsoluteUrl, DomainName, Secret};
 /// ```
 ///
 /// Pictures are offered in WebP and their own format. `avif = true` adds
-/// AVIF, which is smaller and slower to make.
+/// AVIF, which is smaller and slower to make. `avif = "only"` offers AVIF
+/// in place of WebP, which nearly halves the pictures a site keeps, see
+/// [`AvifSetting`]:
+///
+/// ```toml
+/// [media]
+/// avif = "only"
+/// ```
 ///
 /// An `::embed` shows a page in a frame only when it is a known player or
 /// its host is listed here, such as a calculator the site owner runs:
@@ -52,16 +61,66 @@ pub struct MediaSettings {
     pub unsplash: bool,
     /// Whether writers can find GIFs on GIPHY from the editor.
     pub gifs: bool,
-    /// Whether pictures are offered in AVIF too, before WebP. AVIF is about
-    /// half the size of JPEG, but takes about a second to make for each wide
-    /// picture, so it is off until a site asks with `avif = true`. Each
-    /// picture is made once and kept.
-    pub avif: bool,
+    /// Whether pictures are offered in AVIF, before WebP or in its place.
+    /// AVIF is about half the size of JPEG, but takes about a second to
+    /// make for each wide picture, so it is off until a site asks with
+    /// `avif = true` or `avif = "only"`. Each picture is made once and kept.
+    pub avif: AvifSetting,
     /// The domains whose pages an `::embed` may show in a frame, beside
     /// the video and sound players Khalid knows, such as an interactive
     /// tool on `tools.example.com`. Each is an exact host, and only these
     /// join the Content Security Policy's `frame-src`.
     pub embed_domains: Vec<DomainName>,
+}
+
+/// Whether pictures are offered in AVIF, written as `avif` under `[media]`
+/// in `site.toml`: `false`, `true` or `"only"`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[non_exhaustive]
+pub enum AvifSetting {
+    /// `avif = false`, or no `avif`: WebP and the picture's own format.
+    #[default]
+    Off,
+    /// `avif = true`: AVIF first, then WebP and the picture's own format.
+    BesideWebp,
+    /// `avif = "only"`: AVIF and the picture's own format, without WebP.
+    /// Every current browser reads AVIF; the few that do not get one file
+    /// in the picture's own format, at most 1024 px wide, which is also
+    /// the image the page shares on social networks.
+    Only,
+}
+
+impl<'de> Deserialize<'de> for AvifSetting {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        deserializer.deserialize_any(AvifVisitor)
+    }
+}
+
+/// Reads `avif` as written: a switch, or the word `only`.
+struct AvifVisitor;
+
+impl serde::de::Visitor<'_> for AvifVisitor {
+    type Value = AvifSetting;
+
+    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str("true, false or \"only\"")
+    }
+
+    fn visit_bool<E: serde::de::Error>(self, on: bool) -> Result<AvifSetting, E> {
+        Ok(if on {
+            AvifSetting::BesideWebp
+        } else {
+            AvifSetting::Off
+        })
+    }
+
+    fn visit_str<E: serde::de::Error>(self, word: &str) -> Result<AvifSetting, E> {
+        if word == "only" {
+            Ok(AvifSetting::Only)
+        } else {
+            Err(E::invalid_value(serde::de::Unexpected::Str(word), &self))
+        }
+    }
 }
 
 /// An S3-compatible bucket that holds the media library's files.

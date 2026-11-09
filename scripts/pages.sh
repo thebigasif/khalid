@@ -4,7 +4,10 @@
 #   <mount>                      the website, site/
 #   <mount>demo/                 the showcase site, fixtures/showcase-site
 #   <mount>examples/<slug>/      each site in fixtures/examples/
-#   <mount>templates/<name>/     the showcase once per template the binary has
+#   <mount>templates/<name>/     the showcase once per template the binary has,
+#                                or the template's ready demo publication
+#                                (scripts/demo-publication.sh), in its
+#                                sample brand (scripts/demo-brand.sh)
 #
 # Usage: scripts/pages.sh [options] <khalid binary> <output folder> [address] [mount]
 # The address defaults to https://thebigasif.github.io and the mount to
@@ -18,7 +21,9 @@
 #                          path, as its canonical one, such as
 #                          https://serpdad.com for the GitHub Pages copy
 #   --demos-only           leaves out the website's pages but the template
-#                          gallery at <mount>templates/, for the copy
+#                          gallery at <mount>templates/, and builds each
+#                          template but classic once more at
+#                          <mount>demos/<name>/, for the copy
 #                          scripts/demos-bundle.sh packs for serpdad.com
 set -euo pipefail
 
@@ -33,6 +38,8 @@ while [ $# -gt 0 ]; do
 done
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=demo-media.sh
+source "$root/scripts/demo-media.sh"
 khalid="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
 out="$2"
 address="${3:-https://thebigasif.github.io}"
@@ -66,6 +73,15 @@ without_template() {
   mv "$1.new" "$1"
 }
 
+# Prints the lines of the [template.options] table in the site.toml $1,
+# without its heading, or nothing when it has none.
+template_options() {
+  awk '
+    /^\[/ { in_options = ($0 == "[template.options]"); next }
+    in_options && NF
+  ' "$1"
+}
+
 # Keeps every page of the site whose site.toml is $1 out of search results
 # and sitemaps, with the setting `[seo.index] site = "noindex"`.
 noindex() {
@@ -95,6 +111,13 @@ build() {
   echo "==> ${at}"
   cp -r "$from" "$site"
   rm -rf "$site/public" "$site/data"
+  # A template demo shows the template's own publication, where it has a
+  # ready one (scripts/demo-publication.sh), then wears its sample brand,
+  # both before the address moves, so their own addresses move with it.
+  if [ -n "$template" ]; then
+    bash "$root/scripts/demo-publication.sh" "$site" "$template"
+    bash "$root/scripts/demo-brand.sh" "$site" "$template"
+  fi
   # Pages serves files only, so every copy is a static site: forms show a
   # note and the build lists the features that need a server.
   sed -i "s#^address = .*#address = \"$address\"#; s#^mount = .*#mount = \"$at\"#; s#^mode = .*#mode = \"static\"#" "$site/site.toml"
@@ -116,13 +139,23 @@ build() {
       sed -i "s#${origin}${was}#${address}${at}#g" {} +
   fi
   if [ -n "$template" ]; then
+    # The options a template's publication sets, such as its tagline, stay.
+    # The showcase sets none, so a demo without a publication has none.
+    local options
+    options="$(template_options "$site/site.toml")"
     without_template "$site/site.toml"
     printf '\n[template]\nname = "%s"\n' "$template" >>"$site/site.toml"
     # Each demo shows the showcase's call to action as a band on its front
-    # page and after each post, so every template shows off that part.
-    # Classic has no options at all.
+    # page and after each post, so every template shows off that part,
+    # unless its publication chose otherwise. Classic has no options at all.
     if [ "$template" != "classic" ]; then
-      printf '\n[template.options]\ncta_band = "both"\n' >>"$site/site.toml"
+      printf '\n[template.options]\n' >>"$site/site.toml"
+      if ! grep -q '^cta_band *=' <<<"$options"; then
+        printf 'cta_band = "both"\n' >>"$site/site.toml"
+      fi
+      if [ -n "$options" ]; then
+        printf '%s\n' "$options" >>"$site/site.toml"
+      fi
     fi
   else
     local named
@@ -134,8 +167,11 @@ build() {
   fi
   if [ "$into" != "." ]; then
     noindex "$site/site.toml"
+    # The demos offer their pictures in AVIF too, made once for them all.
+    demo_media_in "$site"
   fi
   "$khalid" --site "$site" build
+  demo_media_out "$site"
   # Project pages cannot serve files at the host root.
   rm -rf "$site/public/_root"
   if [ -n "$canonical" ]; then
@@ -193,5 +229,8 @@ for example in "$root"/fixtures/examples/*/; do
 done
 for name in $(cat "$work/templates"); do
   build "$root/fixtures/showcase-site" "${mount}templates/$name/" "templates/$name" "$name"
+  if [ -n "$demos_only" ] && [ "$name" != classic ]; then
+    build "$root/fixtures/showcase-site" "${mount}demos/$name/" "demos/$name" "$name"
+  fi
 done
 echo "Pages are ready in $out."

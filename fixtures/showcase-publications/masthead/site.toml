@@ -1,0 +1,100 @@
+# The Common Room, a made-up general magazine of culture, cities, nature,
+# food and ideas, written for the Masthead template's demo. Each key and
+# table here replaces the showcase's own when scripts/demo-publication.sh
+# applies it.
+
+name = "The Common Room"
+languages = ["en"]
+
+[template.cta]
+label = "Get the monthly issue"
+href = "/blog/about/"
+note = "One email a month with every new story, and nothing else."
+
+# The Masthead template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["A monthly magazine of culture, cities, nature, food and ideas, written slowly and read slowly."]
+front = "grid"
+latest_count = 6
+
+[announcement]
+text = "The autumn issue is out: markets, night trains and the papers in our cafés."
+href = "/blog/saturday-market/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A monthly magazine of culture, cities, nature, food and ideas"
+
+[seo.ai_page]
+covers = "The Common Room is a general magazine. It publishes essays and reported features on culture, cities, nature, food and ideas, written by a small team of writers."
+cite = "Name the writer and link the story you quote."
+contact = "letters@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "The Common Room"
+email = "letters@example.com"
+founded = "2019-09-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Common Room's logo"
+width = 320
+height = 80
+
+# Sign-ups for the magazine's monthly email, under its own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "letters@example.com"
+name = "The Common Room"
+postal_address = "The Common Room, 3 Weaver Street, Northgate NG4 1AB"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Culture"
+href = "/blog/category/culture/"
+language = "en"
+
+[[nav.primary]]
+label = "Cities"
+href = "/blog/category/cities/"
+language = "en"
+
+[[nav.primary]]
+label = "Nature"
+href = "/blog/category/nature/"
+language = "en"
+
+[[nav.primary]]
+label = "Food"
+href = "/blog/category/food/"
+language = "en"
+
+[[nav.primary]]
+label = "Ideas"
+href = "/blog/category/ideas/"
+language = "en"
+
+[[nav.primary]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "About the magazine"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

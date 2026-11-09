@@ -11,8 +11,13 @@ use tempfile::NamedTempFile;
 /// An existing file is never replaced; the write fails with
 /// [`io::ErrorKind::AlreadyExists`] and leaves it as it was.
 pub(crate) fn create(folder: &Path, name: &str, text: &str) -> io::Result<()> {
+    create_bytes(folder, name, text.as_bytes())
+}
+
+/// Writes `bytes` to a new file `name` in `folder`, as [`create`] does.
+pub(crate) fn create_bytes(folder: &Path, name: &str, bytes: &[u8]) -> io::Result<()> {
     let mut file = NamedTempFile::new_in(folder)?;
-    file.write_all(text.as_bytes())?;
+    file.write_all(bytes)?;
     file.as_file().sync_all()?;
     let mut path = folder.to_path_buf();
     path.push(name);

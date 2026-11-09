@@ -13,13 +13,12 @@
 {%- else %}<g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></g>
 {%- endif %}</svg>
 {%- endmacro %}
-{#- profiles(list, label, named, me): links to a person's profiles elsewhere,
-    each with its site's icon. `named` shows each name beside its icon;
-    otherwise only a profile with no icon shows its name, and the others
-    keep theirs for screen readers. `me` marks them `rel="me"`, on the
+{#- profiles(list, label, me): links to a person's profiles elsewhere,
+    each with its site's icon and its name, so no bare icon sits beside a
+    named link and reads as part of it. `me` marks them `rel="me"`, on the
     person's own page, so each profile can link back to it. -#}
-{% macro profiles(list, label, named, me) -%}
+{% macro profiles(list, label, me) -%}
 <ul class="author-profiles" role="list" aria-label="{{ label }}">
-{% for profile in list %}<li><a href="{{ profile.href }}"{% if me %} rel="me"{% endif %}{% if profile.icon %} data-icon="{{ profile.icon }}"{% endif %}>{% if profile.icon %}{{ profile_icon(profile.icon) }}{% endif %}<span{% if profile.icon and not named %} class="visually-hidden"{% endif %}>{{ profile.name }}</span></a></li>
+{% for profile in list %}<li><a href="{{ profile.href }}"{% if me %} rel="me"{% endif %} data-icon="{{ profile.icon }}">{{ profile_icon(profile.icon) }}<span>{{ profile.name }}</span></a></li>
 {% endfor %}</ul>
 {%- endmacro %}

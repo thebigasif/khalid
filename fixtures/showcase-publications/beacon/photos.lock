@@ -1,0 +1,125 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-04-14-river-ranger-training/lead.jpg"
+sha256 = "bf6faf88467ab6ced69661f13b1326a3b9c853bf906544fb0548864dd9299f9d"
+source = "https://commons.wikimedia.org/wiki/File:Zoobentos_sampling_Krippenbach.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Zoobentos sampling Krippenbach by Panek, via Wikimedia Commons"
+title = "Zoobentos sampling Krippenbach"
+creator = "Panek"
+openverse = "commons:File:Zoobentos sampling Krippenbach.jpg"
+needs_credit = true
+size = "1600x1180"
+
+[[photos]]
+file = "en/posts/2026-05-26-fernley-moor-wetland/lead.jpg"
+sha256 = "153a0c92737ad37f9d38e4812adcda7eaa09ee19c6a1210dd51de900032b5855"
+source = "https://commons.wikimedia.org/wiki/File:Restored_Ohio_Wetland_(29509324876).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Restored Ohio Wetland (29509324876) by U.S. Fish and Wildlife Service - Midwest Region, via Wikimedia Commons"
+title = "Restored Ohio Wetland (29509324876)"
+creator = "U.S. Fish and Wildlife Service - Midwest Region"
+openverse = "commons:File:Restored Ohio Wetland (29509324876).jpg"
+needs_credit = false
+size = "1600x1060"
+
+[[photos]]
+file = "en/posts/2026-06-30-where-every-pound-went/lead.jpg"
+sha256 = "fb5135fdc36518a60a995fc3c20bba86d0da4495c8e9dcd8c9a18c02533ea31e"
+source = "https://commons.wikimedia.org/wiki/File:Minster_Lovell_River_Windrush_from_Wash_Meadow_West_Oxfordshire,_England.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Minster Lovell River Windrush from Wash Meadow West Oxfordshire, England by Acabashi, via Wikimedia Commons"
+title = "Minster Lovell River Windrush from Wash Meadow West Oxfordshire, England"
+creator = "Acabashi"
+openverse = "commons:File:Minster Lovell River Windrush from Wash Meadow West Oxfordshire, England.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-07-07-otter-crossings/lead.jpg"
+sha256 = "f4cacaea036c18639c8b93df2c67dd47fb8e32662bbc09aa4cb0cee57cab6f4a"
+source = "https://commons.wikimedia.org/wiki/File:European_otter_02.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "European otter 02 by Alexander Leisser, via Wikimedia Commons"
+title = "European otter 02"
+creator = "Alexander Leisser"
+openverse = "commons:File:European otter 02.jpg"
+needs_credit = true
+size = "1600x1065"
+
+[[photos]]
+file = "en/posts/2026-08-18-clean-water-watch/lead.jpg"
+sha256 = "ab3c75e0ac37bb02261bcc8d7235afa50d3d6a30f08885d56a3349c34228721b"
+source = "https://commons.wikimedia.org/wiki/File:Searching_for_macroinvertebrates_(5574780838).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Searching for macroinvertebrates (5574780838) by U.S. Fish and Wildlife Service Southeast Region, via Wikimedia Commons"
+title = "Searching for macroinvertebrates (5574780838)"
+creator = "U.S. Fish and Wildlife Service Southeast Region"
+openverse = "commons:File:Searching for macroinvertebrates (5574780838).jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-08-ten-thousand-trees/lead.jpg"
+sha256 = "6bcb0c603c67769bf4640bc2834e9358533de2190cfde1245dc290a3eb924fc8"
+source = "https://commons.wikimedia.org/wiki/File:Volunteers_carry_trees_to_planting_sites_(37287300136).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Volunteers carry trees to planting sites (37287300136) by USFWS/Southeast, via Wikimedia Commons"
+title = "Volunteers carry trees to planting sites (37287300136)"
+creator = "USFWS/Southeast"
+openverse = "commons:File:Volunteers carry trees to planting sites (37287300136).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-22-river-clean-up-day/lead.jpg"
+sha256 = "a22932f197481b7568d22d49de86e2e1aaecc7f5bbd793097a7777ed8388e461"
+source = "https://commons.wikimedia.org/wiki/File:River_cleanup_(53625668820).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "River cleanup (53625668820) by U.S. Fish and Wildlife Service - Midwest Region, via Wikimedia Commons"
+title = "River cleanup (53625668820)"
+creator = "U.S. Fish and Wildlife Service - Midwest Region"
+openverse = "commons:File:River cleanup (53625668820).jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-06-kingfishers-lower-alder/lead.jpg"
+sha256 = "7e4e8895bf101f05c340758931388e08c5a7f727b807dd3df4806612040d6b39"
+source = "https://commons.wikimedia.org/wiki/File:Alcedo_atthis_-_Riserve_naturali_e_aree_contigue_della_fascia_fluviale_del_Po.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Alcedo atthis - Riserve naturali e aree contigue della fascia fluviale del Po by Luca Casale, via Wikimedia Commons"
+title = "Alcedo atthis - Riserve naturali e aree contigue della fascia fluviale del Po"
+creator = "Luca Casale"
+openverse = "commons:File:Alcedo atthis - Riserve naturali e aree contigue della fascia fluviale del Po.jpg"
+needs_credit = true
+size = "1600x1066"
+
+[[photos]]
+file = "en/posts/2026-10-20-free-hob-mill-weir/lead.jpg"
+sha256 = "a660e0c1aaf70325e67ddca90cf421ec0ddf2655c41946efa2e09bcd0235e5b3"
+source = "https://commons.wikimedia.org/wiki/File:Spillway_removal_at_the_Fall_River_Dam_(15894376439)_(cropped).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Spillway removal at the Fall River Dam (15894376439) (cropped) by U. S. Fish and Wildlife Service - Northeast Region, via Wikimedia Commons"
+title = "Spillway removal at the Fall River Dam (15894376439) (cropped)"
+creator = "U. S. Fish and Wildlife Service - Northeast Region"
+openverse = "commons:File:Spillway removal at the Fall River Dam (15894376439) (cropped).jpg"
+needs_credit = false
+size = "1600x1056"
+
+[[photos]]
+file = "en/posts/2026-10-30-brackenford-salmon/lead.jpg"
+sha256 = "efe8f1095ceec0d31ef06315cedc704c19b7bc2f2140df4a0d6403afa8076714"
+source = "https://commons.wikimedia.org/wiki/File:Oak_Orchard_Salmon_Jumping_Waterfall_-_panoramio_(9).jpg"
+licence = "CC BY 3.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/3.0"
+credit = "Oak Orchard Salmon Jumping Waterfall - panoramio (9) by Ron Shawley, via Wikimedia Commons"
+title = "Oak Orchard Salmon Jumping Waterfall - panoramio (9)"
+creator = "Ron Shawley"
+openverse = "commons:File:Oak Orchard Salmon Jumping Waterfall - panoramio (9).jpg"
+needs_credit = true
+size = "1600x1067"

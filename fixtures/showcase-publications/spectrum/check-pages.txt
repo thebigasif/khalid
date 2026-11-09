@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /slow-train-over-the-bernina/
+table /winter-citrus-guide/
+category /category/science/
+tag /tag/explainers/
+author /authors/ada-whitlow/

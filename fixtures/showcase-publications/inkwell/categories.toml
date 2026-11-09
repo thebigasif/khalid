@@ -1,0 +1,19 @@
+# The Seed Tin's categories. Inkwell shows every post in its yearly
+# volume; an issue carries its number and parts as facts, and a
+# supplement has none, so it shows without a number.
+
+[[categories]]
+slug = "issues"
+en = "Issues"
+
+[categories.seo.en]
+description = "Every numbered issue of The Seed Tin, the quarterly letter of the Penhallow Seed Library, grouped by year."
+intro = "One letter each season since spring 2004: a lead story, growing notes, one seed from the tin and the dates of the next swap."
+
+[[categories]]
+slug = "supplements"
+en = "Supplements"
+
+[categories.seo.en]
+description = "Supplements to The Seed Tin: seed lists and notes sent between the quarterly issues."
+intro = "Now and then a short extra between issues, such as the seed list before a swap."

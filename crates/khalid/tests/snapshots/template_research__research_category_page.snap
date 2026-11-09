@@ -1,0 +1,36 @@
+---
+source: crates/khalid/tests/template_research.rs
+expression: "shown(&out, \"category/technical-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/technical-seo/" aria-current="page">Technical SEO</a></li>
+</ol>
+</nav>
+
+<header class="list-header">
+<p class="list-kind">Publications</p>
+<h1>Technical SEO</h1>
+</header>
+<section class="pub-year" aria-labelledby="pub-year-2026">
+<h2 id="pub-year-2026">2026</h2>
+<ol class="pub-list" start="1">
+<li class="pub">
+<h3 class="pub-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="pub-authors">Lena Vogt</p>
+<p class="pub-venue"><span class="pub-fact"><span class="visually-hidden">Journal </span>Web Performance Review</span><span class="pub-fact"><span class="visually-hidden">Year </span>2026</span></p>
+<p class="pub-links"><span class="pub-fact">DOI <a href="https://doi.org/10.5555/demo.2026.001">10.5555/demo.2026.001</a></span><span class="pub-fact">Citations <b>12</b></span></p>
+</li>
+<li class="pub">
+<h3 class="pub-title"><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="pub-authors">Lena Vogt</p>
+<p class="pub-venue"><time datetime="2026-09-28">28 September 2026</time></p>
+</li>
+</ol>
+</section>

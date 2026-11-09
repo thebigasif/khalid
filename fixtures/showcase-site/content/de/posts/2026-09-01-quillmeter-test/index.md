@@ -11,7 +11,7 @@ focus_keyword: Quillmeter
 tags: [tools, tests]
 image:
   src: cover.svg
-  alt: Eine Textseite unter der Lupe von Quillmeter, zwei Zeilen pfirsichfarben markiert, daneben ein goldener Stern
+  alt: Eine Textseite unter einer Lupe, zwei schwere Zeilen orange markiert, daneben eine Bewertung mit vier von fünf Sternen
 ---
 
 Quillmeter passt zu Redakteuren und Einzelautoren, die einen ruhigen Lesbarkeitsprüfer wollen: Er markiert lange Sätze und seltene Wörter und überlässt das Umschreiben ihnen. Wer ein Tool sucht, das selbst umformuliert, oder wer im Team feste Regeln teilen muss, sollte weitersuchen. Unser Urteil nach sechs Monaten: vier von fünf Punkten.

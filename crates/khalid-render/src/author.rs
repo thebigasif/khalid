@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 use serde::Serialize;
 
 use crate::serde_display::display_option;
-use crate::{BodyHtml, Pagination, Person, PostCard, Profile, RenderImage};
+use crate::{BodyHtml, GlossaryLinks, Pagination, Person, PostCard, Profile, RenderImage};
 
 /// An author's page: who they are, where else they write, and their posts.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -60,4 +60,7 @@ pub struct RenderPage {
     pub updated: Option<NaiveDate>,
     /// The page's HTML, already sanitised.
     pub body: BodyHtml,
+    /// On a glossary term's page, the way back to the glossary and the
+    /// terms and posts around it. `None` on every other page.
+    pub term: Option<GlossaryLinks>,
 }

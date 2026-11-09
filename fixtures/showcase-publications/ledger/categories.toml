@@ -1,0 +1,18 @@
+# The Ledger Review's four sections, the headings of each issue's
+# "This issue" index.
+
+[[categories]]
+slug = "budgeting"
+en = "Budgeting"
+
+[[categories]]
+slug = "debt"
+en = "Debt"
+
+[[categories]]
+slug = "saving"
+en = "Saving"
+
+[[categories]]
+slug = "research-notes"
+en = "Research notes"

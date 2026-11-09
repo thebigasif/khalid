@@ -1,0 +1,7 @@
+{#- Versions' page for one type of change, such as Fixed: the list of
+    listing.html, labelled as a type, with a link to the type's own feed
+    so a reader can follow only, say, the fixes. -#}
+{% extends "listing.html" %}
+{% block kind %}<p class="list-kind">{{ t.change_kind }}</p>
+{% endblock %}{% block feed %}{% if template.options.feed_links %}<p class="list-feed"><a href="{{ page.pagination.links[0].href if page.pagination else meta.path }}feed.xml" type="application/rss+xml">{{ t.updates_feed_of | replace("{name}", page.title) }}</a></p>
+{% endif %}{% endblock %}

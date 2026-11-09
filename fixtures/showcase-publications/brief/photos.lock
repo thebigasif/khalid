@@ -1,0 +1,125 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-10-24-first-autumn-gale/lead.jpg"
+sha256 = "ab903bd7349a25e1d59b49ea28d4f77310284e9ba7ba96933ab8c3d09aafaec3"
+source = "https://commons.wikimedia.org/wiki/File:Waves_crashing_up_through_the_boardwalk_in_Lysekil_during_Storm_Ciara_1.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Waves crashing up through the boardwalk in Lysekil during Storm Ciara 1 by W.carter, via Wikimedia Commons"
+title = "Waves crashing up through the boardwalk in Lysekil during Storm Ciara 1"
+creator = "W.carter"
+openverse = "commons:File:Waves crashing up through the boardwalk in Lysekil during Storm Ciara 1.jpg"
+needs_credit = false
+size = "1600x1165"
+
+[[photos]]
+file = "en/posts/2026-10-26-seabird-survey-results/lead.jpg"
+sha256 = "2c33c032918c08e861899bd47a2f882e8656ad47fb2e03d3c144e19b00a96791"
+source = "https://commons.wikimedia.org/wiki/File:Puffins_On_Cliff_(4857011342).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Puffins On Cliff (4857011342) by U. S. Fish and Wildlife Service - Northeast Region, via Wikimedia Commons"
+title = "Puffins On Cliff (4857011342)"
+creator = "U. S. Fish and Wildlife Service - Northeast Region"
+openverse = "commons:File:Puffins On Cliff (4857011342).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-27-kelp-returns-carrow-point/lead.jpg"
+sha256 = "19069b913c2d4e29d8761f7311d20796cba306ceda1ded80502be033876744fa"
+source = "https://commons.wikimedia.org/wiki/File:Kelp_Forest_(43863888325).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Kelp Forest (43863888325) by National Marine Sanctuaries, via Wikimedia Commons"
+title = "Kelp Forest (43863888325)"
+creator = "National Marine Sanctuaries"
+openverse = "commons:File:Kelp Forest (43863888325).jpg"
+needs_credit = false
+size = "1600x1064"
+
+[[photos]]
+file = "en/posts/2026-10-28-merrow-head-light-repairs/lead.jpg"
+sha256 = "38618db4ccef04fd24362878cc7e8629a3a0e2def11741ec620ca1c25e4402a3"
+source = "https://commons.wikimedia.org/wiki/File:Line4463_-_Flickr_-_NOAA_Photo_Library.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Line4463 - Flickr - NOAA Photo Library by Michael Theberge., via Wikimedia Commons"
+title = "Line4463 - Flickr - NOAA Photo Library"
+creator = "Michael Theberge."
+openverse = "commons:File:Line4463 - Flickr - NOAA Photo Library.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-29-rock-pool-walks-half-term/lead.jpg"
+sha256 = "11dc2fb7e0e5bc78d3ea1d5d846d60a63fdee100935189ff4b88acdf39f091c4"
+source = "https://commons.wikimedia.org/wiki/File:20190415_Yehliu_geopark_tide_pool-1.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "20190415 Yehliu geopark tide pool-1 by Balon Greyjoy, via Wikimedia Commons"
+title = "20190415 Yehliu geopark tide pool-1"
+creator = "Balon Greyjoy"
+openverse = "commons:File:20190415 Yehliu geopark tide pool-1.jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-30-survey-boat-maps-channel/lead.jpg"
+sha256 = "9963b98622285fd4d7065777e5592b50508482fc2e7191f886f10eb303f7509c"
+source = "https://commons.wikimedia.org/wiki/File:NOAA_Research_Vessel_Bay_Hydro_II_on_launch_day_-a.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "NOAA Research Vessel Bay Hydro II on launch day -a by NOAA, via Wikimedia Commons"
+title = "NOAA Research Vessel Bay Hydro II on launch day -a"
+creator = "NOAA"
+openverse = "commons:File:NOAA Research Vessel Bay Hydro II on launch day -a.jpg"
+needs_credit = false
+size = "1600x1251"
+
+[[photos]]
+file = "en/posts/2026-10-31-clocks-go-back/lead.jpg"
+sha256 = "54b9a1cbf57c5841237d3fed42ee1e91fce913ee626582e1612aaf82047e9865"
+source = "https://commons.wikimedia.org/wiki/File:Sunset_sky_water.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Sunset sky water by an unknown author, via Wikimedia Commons"
+title = "Sunset sky water"
+creator = "an unknown author"
+openverse = "commons:File:Sunset sky water.jpg"
+needs_credit = false
+size = "1600x1060"
+
+[[photos]]
+file = "en/posts/2026-11-02-ludden-dune-fences/lead.jpg"
+sha256 = "2d4576191ea74fcb195595c925bc59c1a81e611302d2ea5233847522f72e7acc"
+source = "https://commons.wikimedia.org/wiki/File:Umpqua_Beach_and_dunes,_Oregon_-_Flickr_-_Bonnie_Moreland_(free_images).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Umpqua Beach and dunes, Oregon - Flickr - Bonnie Moreland (free images) by Bonnie Moreland from Oregon, United States, via Wikimedia Commons"
+title = "Umpqua Beach and dunes, Oregon - Flickr - Bonnie Moreland (free images)"
+creator = "Bonnie Moreland from Oregon, United States"
+openverse = "commons:File:Umpqua Beach and dunes, Oregon - Flickr - Bonnie Moreland (free images).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-11-03-wading-birds-winter-count/lead.jpg"
+sha256 = "0c45d1b851707cb2b8fd3ce7a95d834858a59b7ba2d090316fdb86f231475122"
+source = "https://commons.wikimedia.org/wiki/File:American_Oystercatcher_(5343671252).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "American Oystercatcher (5343671252) by U. S. Fish and Wildlife Service - Northeast Region, via Wikimedia Commons"
+title = "American Oystercatcher (5343671252)"
+creator = "U. S. Fish and Wildlife Service - Northeast Region"
+openverse = "commons:File:American Oystercatcher (5343671252).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-11-04-fog-harbour-plan/lead.jpg"
+sha256 = "76e229a4d7a517b7c67bd4faf82d56bf9b02ed6de94d0356a465d71179a1d450"
+source = "https://commons.wikimedia.org/wiki/File:Line1893_-_Flickr_-_NOAA_Photo_Library.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Line1893 - Flickr - NOAA Photo Library by Carol Baldwin, NOAA OMAO., via Wikimedia Commons"
+title = "Line1893 - Flickr - NOAA Photo Library"
+creator = "Carol Baldwin, NOAA OMAO."
+openverse = "commons:File:Line1893 - Flickr - NOAA Photo Library.jpg"
+needs_credit = false
+size = "1600x1071"

@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /runner-bean-seed-wet-summer/
+post /winter-seed-list/
+category /category/issues/
+tag /tag/beans/
+author /authors/morwenna-hale/

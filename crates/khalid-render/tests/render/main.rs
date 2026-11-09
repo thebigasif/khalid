@@ -24,6 +24,8 @@ mod comments;
 #[cfg(test)]
 mod common;
 #[cfg(test)]
+mod consent;
+#[cfg(test)]
 mod contents;
 #[cfg(test)]
 mod contents_parts;
@@ -57,6 +59,8 @@ mod html_check;
 mod hub;
 #[cfg(test)]
 mod image;
+#[cfg(test)]
+mod list_gaps;
 #[cfg(test)]
 mod listing;
 #[cfg(test)]

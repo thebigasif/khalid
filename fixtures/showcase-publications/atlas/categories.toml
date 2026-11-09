@@ -1,0 +1,17 @@
+# Meridian Atlas' four categories, one per region of the destination index.
+
+[[categories]]
+slug = "southern-europe"
+en = "Southern Europe"
+
+[[categories]]
+slug = "northern-europe"
+en = "Northern Europe"
+
+[[categories]]
+slug = "asia"
+en = "Asia"
+
+[[categories]]
+slug = "the-americas"
+en = "The Americas"

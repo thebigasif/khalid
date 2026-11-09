@@ -6,14 +6,14 @@ use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use khalid_content::{PostFront, Sitemap};
 use khalid_core::{ArticleSchemaType, Config, Locale, UserMessage};
 use khalid_lint::StructuredDataGap;
-use khalid_render::{HeadHtml, builtin_strings};
+use khalid_render::{HeadHtml, PostCard, builtin_strings};
 use khalid_seo::{
-    ArticleType, IndexPolicy, IssueLevel, LinkPolicy, MetaTemplate, PageKind, SeoError, SeoPage,
-    SeoSite, SitemapListing, TemplateWords, Tracking, TranslationKey, UrlPath, check_graph,
-    head_tags, link_translations, page_graph,
+    ArticleType, FeedScope, IndexPolicy, IssueLevel, LinkPolicy, MetaTemplate, PageKind, SeoError,
+    SeoPage, SeoSite, SitemapListing, TemplateWords, Tracking, TranslationKey, UrlPath,
+    check_graph, head_tags, link_translations, page_graph,
 };
 
-use crate::build_pages::LanguagePages;
+use crate::build_pages::{self, LanguagePages};
 use crate::{build_message, search_page, seo_settings, serve_message};
 
 /// The site as the SEO outputs read it, from `site.toml`: its name, address,
@@ -129,6 +129,25 @@ pub(crate) fn page(
 ) -> Result<SeoPage, UserMessage> {
     let path = UrlPath::try_new(&format!("/{rest}")).map_err(|error| build_message::seo(&error))?;
     Ok(SeoPage::new(kind, locale.clone(), path, title))
+}
+
+/// The feed of the list page at `page`, titled `title`, in `locale`: the
+/// newest of its `cards`, newest first, up to the feed limit of
+/// `site.toml`. Each card's address is the post's path after the mount
+/// and the language prefix, which is where its own page sits.
+pub(crate) fn list_feed(
+    config: &Config,
+    locale: &Locale,
+    (title, page): (&str, &UrlPath),
+    cards: &[PostCard],
+) -> FeedScope {
+    let limit = usize::try_from(config.seo().feeds.limit).unwrap_or(usize::MAX);
+    let base = build_pages::path_of(config, locale, "");
+    let posts = (cards.iter().take(limit))
+        .filter_map(|card| card.href.strip_prefix(base.as_str()))
+        .filter_map(|rest| UrlPath::try_new(&format!("/{rest}")).ok())
+        .collect();
+    FeedScope::channel(locale.clone(), title, page.clone(), posts)
 }
 
 /// The SEO page of the post with front matter `front`, dated `date`, whose

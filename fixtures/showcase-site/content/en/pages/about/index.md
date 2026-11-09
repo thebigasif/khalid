@@ -13,7 +13,7 @@ Everything on this blog is written by the four people below. We do not publish g
 
 - **Maren Okafor** runs the writing desk. She spent eight years as a newspaper sub-editor before she moved to content.
 - **Tomas Lindqvist** leads technical SEO: page speed, structured data and everything a crawler sees.
-- **Priya Raman** is our research editor. She runs the yearly content benchmark and checks every number we publish.
+- **Priya Raman Venkatesan** is our research editor. She runs the yearly content benchmark and checks every number we publish.
 - **Dalia Moreno** edits our tool reviews. She tests every tool on client work before she writes a word about it.
 
 ## How we check what we publish

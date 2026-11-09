@@ -15,7 +15,7 @@ related: [seo-writing-guide, search-intent, editing-checklist]
 tags: [writing, planning]
 image:
   src: cover.svg
-  alt: A path of seven stepping stones climbing to an open book, with a small flag on the last stone
+  alt: Seven steps climbing to an open orange book, one step for each lesson of the SEO writing course
 schema: '{"@context":"https://schema.org","@type":"Course","name":"A free SEO writing course in seven lessons","description":"Seven short lessons for small teams: read the search, find the questions, brief the post, write the draft, write the title and the description, and edit before you publish. Each lesson has one exercise.","url":"https://www.example.com/blog/seo-writing-course/","inLanguage":"en","isAccessibleForFree":true,"provider":{"@type":"Organization","name":"Larkspur Studio","sameAs":"https://www.example.com","url":"https://www.example.com/blog/","logo":"https://www.example.com/blog/about/logo.svg"},"offers":{"@type":"Offer","category":"Free","price":0,"priceCurrency":"GBP","availability":"https://schema.org/InStock"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online","courseWorkload":"PT3H5M"}}'
 ---
 

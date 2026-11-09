@@ -1,0 +1,20 @@
+{#- Pantry's lists (a section of the recipe box, a tag, the archive, date
+    and collection pages): the list's name and intro on a ruled header,
+    then its posts as index cards, each recipe with its time and yield on
+    its ticket and each note with its date. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "sections/ticket_cards.html" import ticket_cards -%}
+<header class="list-header">
+{% block kind %}<p class="list-kind">{{ t.recipes }}</p>
+{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{{ ticket_cards(page.posts, 2) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

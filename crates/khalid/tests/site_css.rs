@@ -56,14 +56,16 @@ fn build(site: &Path) -> (Output, PathBuf) {
     (output, out)
 }
 
-/// The text of the one stylesheet the build wrote.
+/// The text of the whole stylesheet the build wrote, which holds every
+/// page's own.
 #[cfg(test)]
 fn stylesheet(out: &Path) -> String {
     let assets = at(out, "assets");
     let css = fs::read_dir(&assets)
         .unwrap()
         .map(|entry| entry.unwrap().path())
-        .find(|path| path.extension().is_some_and(|ext| ext == "css"))
+        .filter(|path| path.extension().is_some_and(|ext| ext == "css"))
+        .max_by_key(|path| fs::metadata(path).unwrap().len())
         .unwrap();
     fs::read_to_string(css).unwrap()
 }
@@ -79,7 +81,7 @@ fn the_sites_own_rules_come_after_the_templates() {
     let (output, out) = build(site.path());
     assert_eq!(output.status.code(), Some(0), "{output:?}");
     let css = stylesheet(&out);
-    let template = css.find(".catbar {").unwrap();
+    let template = css.find(".atlas-index {").unwrap();
     let own = css.find(".hero {\ncolor: #123456;\n}").unwrap();
     assert!(template < own, "{css}");
     assert!(!css.contains("The site's own hero"), "comments are removed");
@@ -90,11 +92,13 @@ fn a_site_without_the_file_gets_the_template_alone() {
     let site = demo_in_atlas();
     let (output, out) = build(site.path());
     assert_eq!(output.status.code(), Some(0), "{output:?}");
-    assert!(
-        stylesheet(&out)
-            .trim_end()
-            .ends_with("@media print { .catbar, .masthead::before, .cta-band::before, .site-footer::before { display: none; } }")
-    );
+    let atlas = khalid_theme::packs()
+        .iter()
+        .find(|pack| pack.name == "atlas")
+        .unwrap();
+    let last = atlas.stylesheet().trim_end().lines().last().unwrap();
+    let css = stylesheet(&out);
+    assert!(css.trim_end().ends_with(last), "{css}");
 }
 
 #[cfg(unix)]

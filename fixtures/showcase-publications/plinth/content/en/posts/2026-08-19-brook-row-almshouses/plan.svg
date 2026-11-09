@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 908 760" width="908" height="760" role="img" aria-labelledby="t">
+<title id="t">Site plan of Brook Row: six small homes in two rows facing a shared garden, with a common room at the end</title>
+<rect width="908" height="760" fill="#fbfaf6"/>
+<g fill="none" stroke="#262624" stroke-width="2.5">
+<rect x="46.0" y="46.0" width="204.0" height="204.0"/>
+<rect x="250.0" y="46.0" width="204.0" height="204.0"/>
+<rect x="454.0" y="46.0" width="204.0" height="204.0"/>
+<rect x="46.0" y="454.0" width="204.0" height="204.0"/>
+<rect x="250.0" y="454.0" width="204.0" height="204.0"/>
+<rect x="454.0" y="454.0" width="204.0" height="204.0"/>
+<rect x="46.0" y="250.0" width="612.0" height="204.0" fill="#efece4"/>
+<rect x="658.0" y="46.0" width="204.0" height="612.0"/>
+</g>
+<rect x="46" y="46" width="816" height="612" fill="none" stroke="#262624" stroke-width="7"/>
+<line x1="80" y1="46" x2="216" y2="46" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="80" y1="46" x2="216" y2="46" stroke="#262624" stroke-width="1.2"/>
+<line x1="284" y1="46" x2="420" y2="46" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="284" y1="46" x2="420" y2="46" stroke="#262624" stroke-width="1.2"/>
+<line x1="488" y1="46" x2="624" y2="46" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="488" y1="46" x2="624" y2="46" stroke="#262624" stroke-width="1.2"/>
+<line x1="80" y1="658" x2="216" y2="658" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="80" y1="658" x2="216" y2="658" stroke="#262624" stroke-width="1.2"/>
+<line x1="284" y1="658" x2="420" y2="658" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="284" y1="658" x2="420" y2="658" stroke="#262624" stroke-width="1.2"/>
+<line x1="488" y1="658" x2="624" y2="658" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="488" y1="658" x2="624" y2="658" stroke="#262624" stroke-width="1.2"/>
+<line x1="862" y1="114" x2="862" y2="590" stroke="#fbfaf6" stroke-width="5"/>
+<line x1="862" y1="114" x2="862" y2="590" stroke="#262624" stroke-width="1.2"/>
+<line x1="131.0" y1="250" x2="100.4" y2="250" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="131.0" y1="250" x2="131.0" y2="219.4" stroke="#262624" stroke-width="1.5"/>
+<path d="M100.4 250 A30.6 30.6 0 0 1 131.0 219.4" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="335.0" y1="250" x2="304.4" y2="250" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="335.0" y1="250" x2="335.0" y2="219.4" stroke="#262624" stroke-width="1.5"/>
+<path d="M304.4 250 A30.6 30.6 0 0 1 335.0 219.4" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="539.0" y1="250" x2="508.4" y2="250" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="539.0" y1="250" x2="539.0" y2="219.4" stroke="#262624" stroke-width="1.5"/>
+<path d="M508.4 250 A30.6 30.6 0 0 1 539.0 219.4" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="131.0" y1="454" x2="100.4" y2="454" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="131.0" y1="454" x2="131.0" y2="484.6" stroke="#262624" stroke-width="1.5"/>
+<path d="M100.4 454 A30.6 30.6 0 0 0 131.0 484.6" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="335.0" y1="454" x2="304.4" y2="454" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="335.0" y1="454" x2="335.0" y2="484.6" stroke="#262624" stroke-width="1.5"/>
+<path d="M304.4 454 A30.6 30.6 0 0 0 335.0 484.6" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="539.0" y1="454" x2="508.4" y2="454" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="539.0" y1="454" x2="539.0" y2="484.6" stroke="#262624" stroke-width="1.5"/>
+<path d="M508.4 454 A30.6 30.6 0 0 0 539.0 484.6" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="658" y1="318" x2="658" y2="277.2" stroke="#fbfaf6" stroke-width="8"/>
+<line x1="658" y1="318" x2="698.8" y2="318" stroke="#262624" stroke-width="1.5"/>
+<path d="M658 277.2 A40.8 40.8 0 0 1 698.8 318" fill="none" stroke="#8a867c" stroke-width="1" stroke-dasharray="3 3"/>
+<g font-family="'Hanken Grotesk', Arial, sans-serif" fill="#262624" text-anchor="middle">
+<text x="148.0" y="148.0" font-size="13" font-weight="600">Home 1</text>
+<text x="148.0" y="163.0" font-size="10.5" fill="#8a867c">36 m²</text>
+<text x="352.0" y="148.0" font-size="13" font-weight="600">Home 2</text>
+<text x="352.0" y="163.0" font-size="10.5" fill="#8a867c">36 m²</text>
+<text x="556.0" y="148.0" font-size="13" font-weight="600">Home 3</text>
+<text x="556.0" y="163.0" font-size="10.5" fill="#8a867c">36 m²</text>
+<text x="148.0" y="556.0" font-size="13" font-weight="600">Home 4</text>
+<text x="148.0" y="571.0" font-size="10.5" fill="#8a867c">36 m²</text>
+<text x="352.0" y="556.0" font-size="13" font-weight="600">Home 5</text>
+<text x="352.0" y="571.0" font-size="10.5" fill="#8a867c">36 m²</text>
+<text x="556.0" y="556.0" font-size="13" font-weight="600">Home 6</text>
+<text x="556.0" y="571.0" font-size="10.5" fill="#8a867c">36 m²</text>
+<text x="352.0" y="352.0" font-size="13" font-weight="600">Shared garden</text>
+<text x="352.0" y="367.0" font-size="10.5" fill="#8a867c">108 m²</text>
+<text x="760.0" y="352.0" font-size="13" font-weight="600">Common room</text>
+<text x="760.0" y="367.0" font-size="10.5" fill="#8a867c">108 m²</text>
+</g>
+<g transform="translate(879.0 33.0) rotate(0)"><circle r="13" fill="none" stroke="#262624" stroke-width="1.2"/><path d="M0 -11 L5 7 L0 3 L-5 7 Z" fill="#262624"/></g>
+<text x="879.0" y="61.0" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#262624">N</text>
+<g stroke="#262624" stroke-width="1">
+<rect x="46" y="730" width="34" height="6" fill="#262624"/>
+<rect x="80" y="730" width="34" height="6" fill="#fbfaf6"/>
+<rect x="114" y="730" width="34" height="6" fill="#262624"/>
+<rect x="148" y="730" width="34" height="6" fill="#fbfaf6"/>
+<rect x="182" y="730" width="34" height="6" fill="#262624"/>
+</g>
+<g font-family="Arial, sans-serif" font-size="10" fill="#262624"><text x="46" y="750">0</text><text x="216" y="750" text-anchor="middle">5 m</text></g>
+
+</svg>

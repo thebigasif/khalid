@@ -16,7 +16,7 @@ related: [technical-seo-audit, search-console-setup, internal-linking]
 tags: [crawling]
 image:
   src: cover.svg
-  alt: Page cards feeding into one folded map, as XML sitemaps do, with a few crossed-out cards set aside
+  alt: Three page cards feeding into one orange sitemap file, as XML sitemaps do, with two crossed-out pages left out
 ---
 
 XML sitemaps are files that list the pages you want search engines to find. For a blog, the hard part is not making one. Most blog engines build XML sitemaps for you. The hard part is keeping it honest, so it lists only the pages you want in search and tells the truth about when each one changed.

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="16" width="48" height="48" fill="#0f2129"/>
+  <path d="M16 46c5-6 9-6 14 0s9 6 14 0 7-5 8-4" fill="none" stroke="#fffefb" stroke-width="4" stroke-linecap="round"/>
+  <rect x="18" y="26" width="4" height="10" fill="#d25426"/><rect x="26" y="26" width="4" height="10" fill="#d25426"/><rect x="34" y="26" width="4" height="10" fill="#d25426"/>
+  <text textLength="150" lengthAdjust="spacingAndGlyphs" x="72" y="51" font-family="Schibsted Grotesk, Arial, sans-serif" font-size="30" font-weight="700" fill="#0f2129">Tideline</text>
+</svg>

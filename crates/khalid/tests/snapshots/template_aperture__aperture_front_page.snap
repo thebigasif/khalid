@@ -1,0 +1,96 @@
+---
+source: crates/khalid/tests/template_aperture.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+
+
+
+<header class="masthead">
+<h1 class="masthead-name">Field Notes on SEO</h1>
+<p class="masthead-line">Pictures of the web, one at a time.</p>
+</header>
+<div class="stories">
+<article class="story">
+<div class="story-caption">
+<div class="story-words">
+<p class="story-meta"><a href="/blog/category/content-strategy/">Content strategy</a> <span aria-hidden="true">/</span> <time datetime="2026-10-12">12 October 2026</time></p>
+<h2 class="story-title"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
+<p class="story-summary">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</div>
+</div>
+</article>
+<article class="story">
+<a class="story-picture" href="/blog/fixing-slow-pages/" tabindex="-1" aria-hidden="true"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 82rem) 81rem, 100vw">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 82rem) 81rem, 100vw" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></a>
+<div class="story-caption">
+<div class="story-words">
+<p class="story-meta"><a href="/blog/category/technical-seo/">Technical SEO</a> <span aria-hidden="true">/</span> <time datetime="2026-10-05">5 October 2026</time></p>
+<h2 class="story-title"><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h2>
+<p class="story-summary">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</div>
+<dl class="plate" aria-label="Camera details">
+<div class="plate-cell">
+<dt>Camera</dt>
+<dd>Canon EOS 5D Mark IV</dd>
+</div>
+<div class="plate-cell">
+<dt>Lens</dt>
+<dd>EF 24-70mm f/4L at 24mm</dd>
+</div>
+<div class="plate-cell">
+<dt>Exposure</dt>
+<dd>f/8 · 1/320 s · ISO 100</dd>
+</div>
+<div class="plate-cell">
+<dt>Taken</dt>
+<dd>4 August 2026</dd>
+</div>
+</dl>
+</div>
+</article>
+</div>
+<section class="contact-sheet" aria-labelledby="contact-sheet-title">
+<h2 id="contact-sheet-title">Contact sheet</h2>
+<ol class="sheet" role="list">
+<li class="sheet-frame">
+<article>
+<a class="sheet-link" href="/blog/what-a-sitemap-does/">
+<span class="sheet-blank" aria-hidden="true"></span>
+<h3 class="sheet-title">What a sitemap does, and what it does not</h3>
+</a>
+<p class="sheet-meta">Technical SEO, <time datetime="2026-09-28">28 September 2026</time></p>
+</article>
+</li>
+<li class="sheet-frame">
+<article>
+<a class="sheet-link" href="/blog/how-to-write-a-title-tag/">
+<span class="sheet-blank" aria-hidden="true"></span>
+<h3 class="sheet-title">How to write a title tag</h3>
+</a>
+<p class="sheet-meta">On-page SEO, <time datetime="2026-09-21">21 September 2026</time></p>
+</article>
+</li>
+<li class="sheet-frame">
+<article>
+<a class="sheet-link" href="/blog/why-internal-links-matter/">
+<span class="sheet-blank" aria-hidden="true"></span>
+<h3 class="sheet-title">Why internal links matter</h3>
+</a>
+<p class="sheet-meta">On-page SEO, <time datetime="2026-09-14">14 September 2026</time></p>
+</article>
+</li>
+</ol>
+</section>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/archive/">See every picture</a></p>
+</div>

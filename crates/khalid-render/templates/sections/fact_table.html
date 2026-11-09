@@ -1,0 +1,44 @@
+{#- fact_table(posts, caption=none): posts as a data table, one row per
+    post: its title and category as the row's heading, its date, then
+    one column per fact, read by position. The column headings are the
+    labels of the first post with facts, so posts that keep the same
+    labels in the same order line up. A figure cell whose value is a
+    plain number says `data-move` up, down or flat, and `data-heat` 1 to
+    4 for how large it is beside the largest in its column, so a pack
+    can shade the table as a heat map. The first column stays in view
+    while a wide table scrolls inside its own box. -#}
+{% macro fact_number(value) -%}
+{% set clean = value | replace("−", "-") | replace("+", "") | replace("%", "") | replace(",", "") | replace("bp", "") | replace("pts", "") | replace("$", "") | replace("£", "") | replace("€", "") | replace(" ", "") -%}
+{% set digits = clean | replace("-", "") | replace(".", "") -%}
+{% set rest = digits | replace("0", "") | replace("1", "") | replace("2", "") | replace("3", "") | replace("4", "") | replace("5", "") | replace("6", "") | replace("7", "") | replace("8", "") | replace("9", "") -%}
+{% if digits and not rest and "-" not in clean[1:] and (clean | split(".") | list | length) < 3 %}{{ clean }}{% endif %}
+{%- endmacro %}
+{% macro fact_table(posts, caption=none) -%}
+{% set with_facts = posts | selectattr("facts") | list -%}
+{% set heads = with_facts[0].facts if with_facts else [] -%}
+{% set top = namespace(c0=0.0, c1=0.0, c2=0.0, c3=0.0) -%}
+{% for post in with_facts %}{% for fact in post.facts[:4] %}{% set number = fact_number(fact.value) | string -%}
+{% if number %}{% set size = number | float | abs -%}
+{% if loop.index0 == 0 and size > top.c0 %}{% set top.c0 = size %}{% elif loop.index0 == 1 and size > top.c1 %}{% set top.c1 = size %}{% elif loop.index0 == 2 and size > top.c2 %}{% set top.c2 = size %}{% elif loop.index0 == 3 and size > top.c3 %}{% set top.c3 = size %}{% endif %}{% endif %}{% endfor %}{% endfor -%}
+{% set tops = [top.c0, top.c1, top.c2, top.c3] -%}
+<div class="fact-table-wrap">
+<table class="fact-table">
+{% if caption %}<caption>{{ caption }}</caption>
+{% endif %}<thead>
+<tr><th scope="col">{{ t.table_post }}</th><th scope="col">{{ t.table_date }}</th>{% for head in heads %}<th scope="col" class="fact-table-figure">{{ head.label }}</th>{% endfor %}</tr>
+</thead>
+<tbody>
+{% for post in posts %}<tr>
+<th scope="row"><a href="{{ post.href }}">{{ post.title }}</a>{% if post.category %} <span class="fact-table-category">{{ post.category.name }}</span>{% endif %}</th>
+<td class="fact-table-date"><time datetime="{{ post.date }}">{{ post.date | date }}</time></td>
+{% for head in heads %}{% set fact = post.facts[loop.index0] if post.facts | length > loop.index0 else none -%}
+{% set number = fact_number(fact.value) | string if fact else "" -%}
+{% if number %}{% set n = number | float %}{% set size = n | abs %}{% set column_top = tops[loop.index0] -%}
+<td class="fact-table-figure" data-move="{% if n > 0 %}up{% elif n < 0 %}down{% else %}flat{% endif %}" data-heat="{{ [(size / column_top * 4) | round | int, 1] | max if size > 0 else 0 }}">{{ fact.value }}</td>
+{% elif fact %}<td class="fact-table-figure">{{ fact.value }}</td>
+{% else %}<td class="fact-table-figure"></td>
+{% endif %}{% endfor %}</tr>
+{% endfor %}</tbody>
+</table>
+</div>
+{%- endmacro %}

@@ -1,0 +1,27 @@
+{#- Syllabus's lists (a module's category page, a tag, the archive, a
+    date, a collection and the course's series page): the list's kind ("Module"
+    on a category page, whose posts all sit in the category it is named
+    for) and its name, its intro, such as the module's description, how
+    many lessons it holds, then its posts as outline rows. A list that fits on one page
+    shows them oldest first, the order of the course; a series page is in
+    the series' own order and numbers each lesson. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "parts-lesson-rows.html" import lesson_rows -%}
+{% set lessons = page.posts | selectattr("facts") | list -%}
+<header class="list-header">
+{% block kind %}{% set in_title = page.posts | selectattr("category") | map(attribute="category.name") | select("eq", page.title) | list -%}
+{% if page.posts and in_title | length == page.posts | length %}<p class="list-kind">{{ t.course_module_kind }}</p>
+{% endif %}{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if lessons %}<p class="list-count">{% if lessons | length == 1 %}{{ t.course_lessons_one }}{% else %}{{ t.course_lessons | replace("{count}", lessons | length | string) }}{% endif %}</p>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts and (page.numbered or page.pagination) %}{{ lesson_rows(page.posts, 2, 1, page.numbered) }}
+{% elif page.posts %}{{ lesson_rows(page.posts | reverse | list, 2, 1, false) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

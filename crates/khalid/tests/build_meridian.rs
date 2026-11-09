@@ -147,21 +147,26 @@ fn meridian_ships_its_own_rules_after_the_shared_ones() {
     let css = fs::read_dir(&assets)
         .unwrap()
         .map(|entry| entry.unwrap().path())
-        .find(|path| {
+        .filter(|path| {
             let name = path.file_name().unwrap().to_string_lossy();
             name.starts_with("site.") && name.ends_with(".css")
         })
+        // The whole stylesheet, which holds every page's own.
+        .max_by_key(|path| fs::metadata(path).unwrap().len())
         .unwrap();
     let css = fs::read_to_string(css).unwrap();
-    assert!(css.contains("--text-h1: clamp(2.5rem,"), "{css}");
+    assert!(css.contains("--text-h1: clamp(2.75rem,"), "{css}");
     assert!(css.contains("--measure: 42rem;"), "{css}");
     assert!(css.contains("--font-heading: \"Iowan Old Style\""), "{css}");
-    assert!(css.contains("--color-accent: #2c3f9c;"), "{css}");
-    assert!(css.contains("minmax(0, 38%)"), "{css}");
+    assert!(css.contains("--font-body: system-ui"), "{css}");
+    assert!(css.contains("--color-accent: #2b3c96;"), "{css}");
+    assert!(css.contains("--frame: 80rem;"), "{css}");
+    assert!(css.contains("\"rail title image\""), "{css}");
 }
 
 /// The home page opens with the newest post as the lead story, then the
-/// editor's picks as text, then the rest of the posts as rows.
+/// the next two side by side, the editor's picks as text, then the rest of
+/// the posts as rows.
 #[test]
 fn the_meridian_home_page_leads_with_the_newest_post() {
     let (_temp, out) = built("", &[]);
@@ -169,12 +174,65 @@ fn the_meridian_home_page_leads_with_the_newest_post() {
     let lead = home
         .find("<div class=\"lead\">")
         .unwrap_or_else(|| panic!("{home}"));
+    let pair = home
+        .find("<div class=\"pair\">")
+        .unwrap_or_else(|| panic!("{home}"));
     let picks = home
         .find("<section class=\"picks\">")
         .unwrap_or_else(|| panic!("{home}"));
-    assert!(lead < picks, "{home}");
+    assert!(lead < pair && pair < picks, "{home}");
+    let two = home.get(pair..picks).unwrap_or_default();
+    assert_eq!(two.matches("<article class=\"card\">").count(), 2, "{home}");
     assert!(home.contains("<ul class=\"cards cards-text\""), "{home}");
     assert_eq!(home.matches("<div class=\"lead\">").count(), 1, "{home}");
+}
+
+/// After six rows, every other post is a line of the text-only index, with
+/// no picture and no summary, and the home page still links every post.
+#[test]
+fn the_meridian_home_page_ends_with_a_text_index() {
+    let posts: Vec<(String, String)> = (1..=8)
+        .map(|n| {
+            (
+                format!("content/en/posts/2026-08-0{n}-index-note-{n}.md"),
+                format!(
+                    "---\ntitle: Index note number {n}\nslug: index-note-{n}\ndate: 2026-08-0{n}\nauthor: asif\ncategory: on-page-seo\ndescription: A short note that fills the front page, so the index below the rows has posts to list.\n---\n\nA short note for the index, number {n}. It says one thing and links [the title tag guide](/blog/how-to-write-a-title-tag/).\n"
+                ),
+            )
+        })
+        .collect();
+    let files: Vec<(&str, &str)> = posts
+        .iter()
+        .map(|(rel, text)| (rel.as_str(), text.as_str()))
+        .collect();
+    let (_temp, out) = built("", &files);
+    let home = shown(&out, "index.html");
+    let index = home
+        .find("<section class=\"index\"")
+        .unwrap_or_else(|| panic!("{home}"));
+    let rows = home
+        .get(..index)
+        .and_then(|before| before.rfind("<ul class=\"cards cards-row\""))
+        .unwrap_or_else(|| panic!("{home}"));
+    assert!(rows < index, "{home}");
+    let list = home.get(index..).unwrap_or_default();
+    let list = list
+        .get(..list.find("</section>").unwrap_or(list.len()))
+        .unwrap_or_default();
+    assert!(list.contains("<article class=\"index-row\">"), "{home}");
+    assert!(!list.contains("<picture"), "{home}");
+    let row_cards = home.get(rows..index).unwrap_or_default();
+    assert_eq!(
+        row_cards.matches("<article class=\"card\">").count(),
+        6,
+        "{home}"
+    );
+    for n in 1..=8 {
+        assert!(
+            home.contains(&format!("href=\"/blog/index-note-{n}/\"")),
+            "{n}: {home}"
+        );
+    }
 }
 
 /// The masthead shows a home intro the site wrote, and never the built-in

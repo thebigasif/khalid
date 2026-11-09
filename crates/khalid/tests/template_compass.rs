@@ -69,6 +69,18 @@ fn main_of(page: &str) -> &str {
     main
 }
 
+/// The whole stylesheet the build wrote, which holds every page's own.
+#[cfg(test)]
+fn whole_stylesheet(out: &Path) -> String {
+    let css = fs::read_dir(at(out, "assets"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.extension().is_some_and(|ext| ext == "css"))
+        .max_by_key(|path| fs::metadata(path).unwrap().len())
+        .unwrap();
+    fs::read_to_string(css).unwrap()
+}
+
 #[test]
 fn the_compass_index_page() {
     let (_temp, out) = built("");
@@ -113,11 +125,14 @@ fn a_compass_post_opens_with_its_trail_and_contents_and_ends_with_its_author() {
     assert!(!post.contains("<ul class=\"people\""), "{post}");
     assert!(!post.contains("class=\"related"), "{post}");
     assert!(!post.contains("class=\"reading-time\""), "{post}");
+    // The template's own rules ship, and the post links only those it uses.
     let (_, sheet) = post
         .split_once("<link rel=\"stylesheet\" href=\"/blog/")
         .unwrap();
     let (sheet, _) = sheet.split_once('"').unwrap();
-    assert!(page(&out, sheet).contains(".jump-links"), "{sheet}");
+    assert!(page(&out, sheet).contains(".toc-box"), "{sheet}");
+    assert!(!page(&out, sheet).contains(".jump-links"), "{sheet}");
+    assert!(whole_stylesheet(&out).contains(".jump-links"));
 }
 
 #[test]

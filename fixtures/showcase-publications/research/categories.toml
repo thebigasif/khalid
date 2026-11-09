@@ -1,0 +1,43 @@
+# Tidemark Coastal Lab's research areas. The Research template shows each
+# as a numbered index on the front page, and each category page is that
+# project's publication list, with its intro as the project description.
+
+[[categories]]
+slug = "seagrass-meadows"
+en = "Seagrass meadows"
+
+[categories.seo.en]
+description = "Tidemark Coastal Lab's papers on seagrass meadows: how they recover after grazing and storms, and how to map them from the air."
+intro = "How seagrass meadows grow, recover and are mapped. We monitor six meadows in the sound by snorkel survey and drone, and test which conditions help a damaged meadow come back."
+
+[[categories]]
+slug = "salt-marshes"
+en = "Salt marshes and carbon"
+
+[categories.seo.en]
+description = "Tidemark Coastal Lab's papers on salt marshes: how much carbon they store and whether they can keep pace with rising seas."
+intro = "How much carbon salt marshes bury, how restored marshes compare with natural ones, and whether marshes can build up as fast as the sea rises. Our marsh plots have been measured every spring since 2009."
+
+[[categories]]
+slug = "oyster-reefs"
+en = "Oyster reefs"
+
+[categories.seo.en]
+description = "Tidemark Coastal Lab's papers on oyster reefs: shoreline protection, young fish and how well restored reefs work."
+intro = "What oyster reefs do for a shoreline and the animals that live on it. We compare natural reefs with reefs built from oyster shell and concrete blocks, with the local shellfish growers."
+
+[[categories]]
+slug = "methods-data"
+en = "Methods and data"
+
+[categories.seo.en]
+description = "Tidemark Coastal Lab's papers on field methods and open data for coastal ecology."
+intro = "The methods and tools behind our field work, written up so other groups can use them. Every dataset is open, with a plain note on how it was collected."
+
+[[categories]]
+slug = "lab-news"
+en = "Lab news"
+
+[categories.seo.en]
+description = "News from Tidemark Coastal Lab: people, positions, field seasons and equipment."
+intro = "Who joined, what we are hiring for, and what happened in the field."
