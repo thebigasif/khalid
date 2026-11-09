@@ -51,4 +51,6 @@ mabe = "mabe"
 extend-exclude = ["target/", "node_modules/", "*.lock", ".claude/skills/rust-best-practices/references/", "**/content/de/", "**/content/es/", "crates/khalid-render/strings/de.toml", "crates/khalid-newsletter/strings/de.toml","crates/khalid-lint/src/german.rs",
   # A photo credit quotes the photo's title and its author's name as the
   # photographer wrote them, misspellings and other languages included.
-  "**/ATTRIBUTION.md", "**/pages/photo-credits/"]
+  "**/ATTRIBUTION.md", "**/pages/photo-credits/",
+  # Third-party source copied as published (vendor/sqlx-sqlite/KHALID.md).
+  "vendor/"]

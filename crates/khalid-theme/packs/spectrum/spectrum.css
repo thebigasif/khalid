@@ -37,6 +37,11 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
 .site-header { gap: 0.5rem 2rem; padding-block: 1.25rem; border-block-end: 2px solid var(--color-text); }
 .site-name { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; color: var(--color-text); text-decoration: none; }
 .site-logo img { block-size: 2.5rem; inline-size: auto; }
+/* The announcement: one small line on a light band across the window, and
+   the consent banner's words start where the header's do. */
+.announcement { margin: 0; border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.consent { padding-inline: max(0px, (100% - var(--sp-frame)) / 2); }
+.consent > * { margin-inline: 0; }
 .site-header > .nav-bar { margin-inline-start: auto; }
 @media (max-width: 60rem) { .site-header > .nav-bar { order: 3; flex-basis: 100%; margin-inline-start: 0; } }
 .site-header nav ul { gap: 0 1.25rem; }
@@ -56,7 +61,7 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
 
 /* The masthead: the name large, the tagline, then the spectrum bar. */
 .hero { margin: 0; padding-block: clamp(2rem, 1rem + 3vw, 4rem) 2.5rem; }
-.hero-title { max-inline-size: none; font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; }
+.hero-title { max-inline-size: none; font-weight: 800; letter-spacing: -0.02em; line-height: 0.95; }
 .hero-intro { max-inline-size: 40rem; color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.45; }
 .sp-bar { margin-block-start: 2.5rem; }
 .sp-bar ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr)); gap: 0.25rem; }
@@ -85,7 +90,7 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
 .sp-row::before, .sp-band::before { content: ""; position: absolute; inset: 0 0 auto; block-size: 0.5rem; background: var(--sp-strong); box-shadow: 0 0 0 100vmax var(--sp-strong); clip-path: inset(0 -100vmax); }
 .sp-row { padding-block: 2.5rem 3rem; }
 .sp-row-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 2rem; margin-block-end: 1.75rem; }
-.sp-row-head :is(h2, h3) { margin: 0; font-size: clamp(2rem, 1.4rem + 2vw, 3.25rem); line-height: 1; letter-spacing: -0.03em; }
+.sp-row-head :is(h2, h3) { margin: 0; font-size: clamp(2rem, 1.4rem + 2vw, 3.25rem); line-height: 1; letter-spacing: -0.02em; }
 .sp-all { margin: 0; }
 .sp-all a { display: inline-flex; align-items: center; min-block-size: 2.75rem; color: var(--color-text); font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 700; }
 .sp-all a:hover { color: var(--color-link); }
@@ -132,7 +137,7 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
 .post > :not(.post-header, .sp-post-picture, .toc-side), .post-header > *, main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot) { max-inline-size: var(--sp-col); margin-inline-start: max(0px, calc((100% - var(--sp-col)) / 2)); }
 .post-header > h1 { max-inline-size: 22ch; }
 .post-header .sp-topic { margin-block-end: 1rem; }
-.post-header h1 { margin-block: 0 1rem; font-size: var(--text-h1); line-height: 1.05; letter-spacing: -0.03em; }
+.post-header h1 { margin-block: 0 1rem; font-size: var(--text-h1); line-height: 1.05; letter-spacing: -0.02em; }
 .post-header .dek { margin-block: 0 1.25rem; font-size: 1.25rem; line-height: 1.45; }
 .post-meta { color: var(--color-text); font-family: var(--font-heading); font-size: 0.9375rem; }
 .post-meta a { color: var(--color-text); font-weight: 700; }
