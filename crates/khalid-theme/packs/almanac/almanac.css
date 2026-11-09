@@ -46,7 +46,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   border-block-start: var(--al-ink);
   font-size: var(--al-head);
   line-height: 1.1;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 .al-section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 calc(var(--space) * 2); }
 .al-section-head h2 { margin: 0; font-size: inherit; line-height: inherit; }
@@ -109,10 +109,10 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 }
 
 /* The title page: the blog's name set huge between two rules. */
-.al-title { margin-block: clamp(2rem, 1rem + 3vw, 4.5rem) 0; padding-block-end: clamp(1.25rem, 0.5rem + 2vw, 2.5rem); border-block-end: var(--al-ink); font-size: var(--al-display); line-height: 0.95; letter-spacing: -0.045em; text-wrap: balance; }
+.al-title { margin-block: clamp(2rem, 1rem + 3vw, 4.5rem) 0; padding-block-end: clamp(1.25rem, 0.5rem + 2vw, 2.5rem); border-block-end: var(--al-ink); font-size: var(--al-display); line-height: 0.95; letter-spacing: -0.02em; text-wrap: balance; }
 .al-title ~ .hero-stats { margin-block: calc(var(--space) * 3) 0; }
-.hero-stats dd { color: var(--color-link); letter-spacing: -0.03em; }
-main > h1 { margin-block: calc(var(--space) * 3) calc(var(--space) * 3); font-size: clamp(2.75rem, 1rem + 4.5vw, 6rem); line-height: 0.98; letter-spacing: -0.045em; }
+.hero-stats dd { color: var(--color-link); letter-spacing: -0.02em; }
+main > h1 { margin-block: calc(var(--space) * 3) calc(var(--space) * 3); font-size: clamp(2.75rem, 1rem + 4.5vw, 6rem); line-height: 0.98; letter-spacing: -0.02em; }
 main > :is(h1:not(.al-title), .hub-link) + :is(.featured, .cards) { padding-block-start: calc(var(--space) * 3); border-block-start: var(--al-ink); }
 main > .intro { max-inline-size: 40rem; margin-block: calc(var(--space) * 2) calc(var(--space) * 5); font-size: 1.25rem; line-height: 1.55; }
 main > .intro > :last-child { margin-block-end: 0; }
@@ -161,7 +161,7 @@ main > .intro > :last-child { margin-block-end: 0; }
 .featured > h2 { display: flex; align-items: center; gap: calc(var(--space) * 1.5); }
 .featured > h2::before { content: ""; inline-size: 2rem; block-size: 2px; background: var(--color-accent); }
 .card-featured { padding: 0; background: none; border-radius: 0; }
-.featured .card-featured :is(h2, h3, h4) { margin-block: var(--space) calc(var(--space) * 2); font-size: clamp(2rem, 1.25rem + 2.25vw, 3.5rem); line-height: 1.05; letter-spacing: -0.035em; }
+.featured .card-featured :is(h2, h3, h4) { margin-block: var(--space) calc(var(--space) * 2); font-size: clamp(2rem, 1.25rem + 2.25vw, 3.5rem); line-height: 1.05; letter-spacing: -0.02em; }
 .featured .card-featured > p:last-child { font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.55; -webkit-line-clamp: 4; }
 @container (min-width: 48rem) {
   .featured .card-featured:has(.image) { grid-template-columns: minmax(0, 7fr) auto minmax(0, 4.5fr); grid-template-rows: 1fr repeat(4, auto) 1fr; column-gap: 0; }
@@ -184,7 +184,7 @@ main > .intro > :last-child { margin-block-end: 0; }
    large as a title, the button under it. */
 .al-closing { margin-block-start: var(--al-section); }
 .al-closing .cta-band { display: grid; justify-items: start; gap: calc(var(--space) * 3); margin: 0; padding: calc(var(--space) * 3) 0 0; background: none; border: 0; border-block-start: var(--al-ink); border-radius: 0; }
-.al-closing .cta-note { max-inline-size: 18ch; font-size: clamp(2.25rem, 1.25rem + 3vw, 4.5rem); line-height: 1; letter-spacing: -0.04em; }
+.al-closing .cta-note { max-inline-size: 18ch; font-size: clamp(2.25rem, 1.25rem + 3vw, 4.5rem); line-height: 1; letter-spacing: -0.02em; }
 .al-closing .cta-band > :last-child { margin: 0; }
 
 /* "Latest posts": a contents page. Each row is its number, the title,
@@ -193,10 +193,10 @@ main > .intro > :last-child { margin-block-end: 0; }
 .al-rows { margin: 0; padding: 0; list-style: none; border-block-end: var(--al-rule); counter-reset: row; }
 .al-rows > li { position: relative; display: grid; grid-template-columns: 3.25rem minmax(0, 1fr); align-items: baseline; column-gap: calc(var(--space) * 2); padding-block: calc(var(--space) * 2); border-block-start: var(--al-rule); counter-increment: row; }
 .al-rows > li:first-child { border-block-start: 0; padding-block-start: 0; }
-.al-rows > li::before { content: counter(row, decimal-leading-zero) / ""; grid-row: 1 / span 3; color: var(--color-accent); font-family: var(--font-heading); font-size: 2rem; font-weight: var(--heading-weight); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: lining-nums tabular-nums; }
+.al-rows > li::before { content: counter(row, decimal-leading-zero) / ""; grid-row: 1 / span 3; color: var(--color-accent); font-family: var(--font-heading); font-size: 2rem; font-weight: var(--heading-weight); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
 .al-rows > li > * { grid-column: 2; }
 .al-rows .al-pill { justify-self: start; margin-block: -0.375rem; }
-.al-rows h3 { margin: 0; font-size: clamp(1.25rem, 1rem + 0.9vw, 1.875rem); line-height: 1.2; letter-spacing: -0.025em; }
+.al-rows h3 { margin: 0; font-size: clamp(1.25rem, 1rem + 0.9vw, 1.875rem); line-height: 1.2; letter-spacing: -0.02em; }
 .al-rows h3 a { color: var(--color-text); text-decoration: none; }
 .al-rows h3 a::after { content: ""; position: absolute; inset: 0; }
 .al-rows .al-pill { position: relative; z-index: 1; }
@@ -223,7 +223,7 @@ main > .intro > :last-child { margin-block-end: 0; }
    year, its current month filled and the months with guides dotted, then
    that month's guides as a numbered list of jobs. */
 .al-month { display: grid; gap: calc(var(--space) * 3) var(--al-gap); margin-block: var(--al-section); padding-block-start: calc(var(--space) * 1.5); border-block-start: var(--al-ink); }
-.al-month h2 { margin: 0; color: var(--color-accent); font-size: clamp(2.25rem, 1.5rem + 4vw, 6rem); line-height: 0.92; letter-spacing: -0.045em; }
+.al-month h2 { margin: 0; color: var(--color-accent); font-size: clamp(2.25rem, 1.5rem + 4vw, 6rem); line-height: 0.92; letter-spacing: -0.02em; }
 .al-month h2 span { display: block; margin-block-start: var(--space); color: var(--color-muted); font-family: var(--font-body); font-size: 1rem; letter-spacing: 0.2em; }
 .al-year { display: grid; grid-template-columns: repeat(12, 1fr); max-inline-size: 24rem; margin: calc(var(--space) * 3) 0 0; padding: 0; list-style: none; color: var(--color-muted); font-size: 0.875rem; font-weight: 700; text-align: center; }
 .al-year li { padding-block: 0.375rem 0.5rem; border-block-start: 2px solid var(--color-border); }
@@ -232,8 +232,8 @@ main > .intro > :last-child { margin-block-end: 0; }
 .al-jobs { margin: 0; padding: 0; list-style: none; counter-reset: job; }
 .al-jobs li { position: relative; display: grid; grid-template-columns: 3.25rem minmax(0, 1fr); column-gap: calc(var(--space) * 2); padding-block: calc(var(--space) * 2.5); border-block-start: var(--al-rule); counter-increment: job; }
 .al-jobs li:first-child { padding-block-start: 0; border: 0; }
-.al-jobs li::before { content: counter(job, decimal-leading-zero) / ""; grid-row: span 2; color: var(--color-accent); font-family: var(--font-heading); font-size: 2.25rem; font-weight: var(--heading-weight); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: lining-nums tabular-nums; }
-.al-jobs h3 { margin: 0; font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem); line-height: 1.2; letter-spacing: -0.025em; }
+.al-jobs li::before { content: counter(job, decimal-leading-zero) / ""; grid-row: span 2; color: var(--color-accent); font-family: var(--font-heading); font-size: 2.25rem; font-weight: var(--heading-weight); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
+.al-jobs h3 { margin: 0; font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem); line-height: 1.2; letter-spacing: -0.02em; }
 .al-jobs h3 a { color: var(--color-text); text-decoration: none; }
 .al-jobs h3 a::after { content: ""; position: absolute; inset: 0; }
 .al-jobs li:hover h3 a { text-decoration: underline; text-decoration-color: var(--color-accent); }
@@ -269,7 +269,7 @@ main > .intro > :last-child { margin-block-end: 0; }
 
 /* The newsletter: a tinted band across the screen, the form in one row. */
 .newsletter-slot { margin-block: var(--al-section); padding: calc(var(--space) * 8) 0; background: var(--al-tint); border-radius: 0; box-shadow: 0 0 0 100vmax var(--al-tint); clip-path: inset(0 -100vmax); text-align: center; }
-.newsletter-slot h2 { margin-block: 0 var(--space); font-size: var(--al-head); letter-spacing: -0.03em; }
+.newsletter-slot h2 { margin-block: 0 var(--space); font-size: var(--al-head); letter-spacing: -0.02em; }
 .newsletter-slot > p { max-inline-size: 34rem; margin-inline: auto; }
 .newsletter-slot .subscribe { display: flex; flex-wrap: wrap; justify-content: center; align-items: end; gap: var(--space); max-inline-size: 32rem; margin: calc(var(--space) * 3) auto 0; text-align: start; }
 .newsletter-slot .subscribe > p:first-child { flex: 1 1 14rem; margin: 0; }
@@ -292,7 +292,7 @@ main:has(> .newsletter-slot:last-child) { padding-block-end: 0; }
 .breadcrumbs li:last-child { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; }
 .breadcrumbs li:last-child a { display: block; overflow: hidden; line-height: 44px; text-overflow: ellipsis; white-space: nowrap; }
 .post-header { margin-block: calc(var(--space) * 3) calc(var(--space) * 6); }
-.post-header h1 { max-inline-size: 22ch; margin-block: 0 calc(var(--space) * 3); font-size: var(--al-title); line-height: 1.02; letter-spacing: -0.04em; }
+.post-header h1 { max-inline-size: 22ch; margin-block: 0 calc(var(--space) * 3); font-size: var(--al-title); line-height: 1.02; letter-spacing: -0.02em; }
 .post-header .dek { max-inline-size: 40rem; margin-block: 0 calc(var(--space) * 4); color: var(--color-muted); font-size: clamp(1.1875rem, 1.05rem + 0.45vw, 1.4375rem); line-height: 1.5; }
 .al-byline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space) calc(var(--space) * 3); padding-block: calc(var(--space) * 1.25); border-block: var(--al-rule); }
 .al-byline address, .al-byline p, .al-byline .people { margin: 0; }
@@ -355,12 +355,12 @@ main:has(> .newsletter-slot:last-child) { padding-block-end: 0; }
    margin under its own short accent rule, as in a printed book. */
 .post-body { counter-reset: chapter; }
 .post-body a { text-decoration-color: var(--color-accent); }
-.post-body > h2 { position: relative; counter-increment: chapter; margin-block: calc(var(--space) * 9) calc(var(--space) * 2.5); padding-block-start: calc(var(--space) * 2.5); border-block-start: var(--al-rule); font-size: var(--text-h2); line-height: 1.12; letter-spacing: -0.03em; }
+.post-body > h2 { position: relative; counter-increment: chapter; margin-block: calc(var(--space) * 9) calc(var(--space) * 2.5); padding-block-start: calc(var(--space) * 2.5); border-block-start: var(--al-rule); font-size: var(--text-h2); line-height: 1.12; letter-spacing: -0.02em; }
 .post .post-body > h2 { padding-inline-start: 1.5em; text-indent: -1.5em; }
 .post .post-body > h2::before { content: counter(chapter, decimal-leading-zero) / ""; position: static; display: inline-block; inline-size: 1.5em; margin: 0; padding: 0; border: 0; color: var(--color-accent); font-size: 1em; line-height: inherit; letter-spacing: -0.02em; text-indent: 0; font-variant-numeric: lining-nums tabular-nums; }
 @media (min-width: 64rem) {
   .post .post-body > h2 { padding-inline-start: 0; text-indent: 0; }
-  .post .post-body > h2::before { position: absolute; inset-inline-end: calc(100% + 1.75rem); inset-block-start: -1px; display: block; inline-size: auto; min-inline-size: 4.5rem; padding-block-start: calc(var(--space) * 0.5); border-block-start: 2px solid var(--color-accent); font-size: 3.25rem; line-height: 1; letter-spacing: -0.04em; text-align: end; }
+  .post .post-body > h2::before { position: absolute; inset-inline-end: calc(100% + 1.75rem); inset-block-start: -1px; display: block; inline-size: auto; min-inline-size: 4.5rem; padding-block-start: calc(var(--space) * 0.5); border-block-start: 2px solid var(--color-accent); font-size: 3.25rem; line-height: 1; letter-spacing: -0.02em; text-align: end; }
 }
 @media (min-width: 70rem) and (max-width: 85.99rem) {
   .post-with-toc .post-body > h2 { padding-inline-start: 1.5em; text-indent: -1.5em; }
@@ -389,7 +389,7 @@ figcaption { margin-block-start: var(--space); font-size: 0.875rem; font-style: 
 .callout-summary > :last-child, .callout > :last-child { margin-block-end: 0; }
 .callout-read { padding-inline: 0; background: none; border: 0; border-block: var(--al-rule); border-radius: 0; }
 .callout-stat { display: grid; padding-block: calc(var(--space) * 3); border-inline-start: 0; border-block-start: var(--al-ink); border-radius: 0; }
-.callout-stat strong:first-child { margin-block-end: var(--space); color: var(--color-accent); font-family: var(--font-heading); font-size: clamp(2.75rem, 2rem + 2.5vw, 4rem); line-height: 1; letter-spacing: -0.04em; }
+.callout-stat strong:first-child { margin-block-end: var(--space); color: var(--color-accent); font-family: var(--font-heading); font-size: clamp(2.75rem, 2rem + 2.5vw, 4rem); line-height: 1; letter-spacing: -0.02em; }
 .pullquote { margin-block: calc(var(--space) * 6); padding: calc(var(--space) * 2) 0; border: 0; border-block: var(--al-ink); }
 .pullquote blockquote { margin: 0; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); font-weight: var(--heading-weight); line-height: 1.25; letter-spacing: -0.02em; }
 .post-body blockquote:not(.pullquote blockquote) { border-inline-start-color: var(--color-accent); color: var(--color-text); font-style: italic; }
@@ -446,7 +446,7 @@ main > .post { margin-block-end: var(--al-section); }
 .al-keep .cards-compact { grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr)); gap: 0 var(--al-gap); counter-reset: keep; }
 .al-keep .cards-compact > li { counter-increment: keep; }
 .al-keep .card { display: grid; grid-template-columns: 3.25rem 1fr; align-items: baseline; padding-block: calc(var(--space) * 2); border-block-end: var(--al-rule); }
-.al-keep .card::before { content: counter(keep, decimal-leading-zero) / ""; grid-row: span 2; color: var(--color-accent); font-family: var(--font-heading); font-size: 1.75rem; font-weight: var(--heading-weight); line-height: 1; letter-spacing: -0.03em; font-variant-numeric: lining-nums tabular-nums; }
+.al-keep .card::before { content: counter(keep, decimal-leading-zero) / ""; grid-row: span 2; color: var(--color-accent); font-family: var(--font-heading); font-size: 1.75rem; font-weight: var(--heading-weight); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
 .al-keep .card :is(h2, h3, h4) { margin: 0; font-size: 1.1875rem; line-height: 1.3; }
 .al-keep .card p { margin: calc(var(--space) * 0.5) 0 0; color: var(--color-muted); font-size: var(--text-small); }
 .mentions ul { margin: 0; padding: 0; list-style: none; columns: 2 18rem; column-gap: var(--al-gap); }
@@ -515,3 +515,11 @@ main > .post { margin-block-end: var(--al-section); }
   .al-grid .cards > li:nth-child(-n+3) { margin-block-end: 2rem; }
   .al-grid .cards > li:nth-child(n+4), .al-grid .cards > li:nth-child(n+4) .card { min-inline-size: 0; }
 }
+
+/* The consent banner and the announcement keep their bands across the
+   window, and their words start under the site's name, where the
+   header starts. */
+.consent { max-inline-size: var(--al-wide); margin-inline: auto; padding-inline: 0; }
+.consent > * { margin-inline: 0; }
+.announcement { padding-inline: 0; text-align: start; }
+.announcement p { max-inline-size: var(--al-wide); }

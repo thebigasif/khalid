@@ -17,6 +17,12 @@ main { padding-block: 0 var(--space-section); }
 main > :is(.post, .page) { max-inline-size: var(--dl-column); margin-inline: auto; }
 main > .post-with-toc { max-inline-size: calc(var(--dl-column) + 18rem); }
 main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--dl-column); margin-inline: auto; }
+/* With the contents beside a post, the words start under the show's name
+   and the contents stay close beside them. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--dl-frame); }
+  main:has(> .post-with-toc) > :is(*, .post ~ *) { margin-inline: 0 auto; }
+}
 h1, h2, h3 { letter-spacing: -0.01em; }
 
 /* The header: the name in the serif over an ink rule, plain menu links
@@ -29,7 +35,10 @@ h1, h2, h3 { letter-spacing: -0.01em; }
 .site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
 .site-header nav a[aria-current] { text-decoration: underline 3px var(--color-accent); text-underline-offset: 0.4em; }
 .search-link { color: var(--color-text); font-size: 1rem; }
-.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); text-align: start; }
+/* The announcement and the consent banner start where the header starts. */
+.announcement, .consent { padding-inline: 0; }
+.announcement p, .consent > * { margin-inline: max(0px, (100% - var(--dl-frame)) / 2) auto; }
 
 /* Buttons: square, filled with the accent. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 0; font: 600 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }

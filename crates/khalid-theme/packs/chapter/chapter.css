@@ -18,6 +18,15 @@ main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
 main > .post[data-kind="book"] { max-inline-size: 52rem; }
 .post[data-kind="book"] > :is(.post-body, .post-footer, .author-box, details.toc-inline, nav.toc-box) { max-inline-size: var(--measure); margin-inline: auto; }
 main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
+/* From 1120 px a post with its contents beside it lines up with the
+   header: the words start under the site's name, the contents sit close
+   beside them, and what follows the post keeps to the same column. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--ch-frame); }
+  main > .post-with-toc { max-inline-size: none; grid-template-columns: minmax(0, var(--measure)) 16rem; column-gap: 4rem; }
+  main > .post-with-toc.post-toc-start { grid-template-columns: 16rem minmax(0, var(--measure)); }
+  main:has(> .post-with-toc) > :not(.post) { margin-inline: 0; }
+}
 h1, h2, h3, h4 { letter-spacing: -0.005em; }
 
 /* The header: the name in the book face, quiet links, a double rule. */
@@ -31,6 +40,10 @@ h1, h2, h3, h4 { letter-spacing: -0.005em; }
 .search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
 .search-link:hover { color: var(--color-link); text-decoration: underline; }
 .announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+/* The announcement and the consent banner start where the header does. */
+.announcement, .consent { padding-inline: 0; text-align: start; }
+.announcement p { max-inline-size: var(--ch-frame); }
+.consent > * { margin-inline: max(0px, (100% - var(--ch-frame)) / 2) auto; }
 
 /* Buttons: square, filled with the accent, or ruled for the second. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: var(--radius); font: 700 0.9375rem/1.2 var(--font-body); letter-spacing: 0.04em; text-align: center; text-decoration: none; cursor: pointer; }

@@ -31,8 +31,8 @@ h1, h2, h3 { text-wrap: balance; }
 .site-header nav a, .search-link { color: var(--color-text); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; }
 .site-header nav a:hover, .search-link:hover { color: var(--color-link); }
 .site-header nav a[aria-current] { box-shadow: inset 0 -3px var(--color-accent); }
-.announcement { margin: 0; padding-block: 0.625rem; color: var(--color-background); background: var(--color-text); border: 0; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.04em; }
-.announcement a { color: var(--color-background); }
+.announcement { --encore-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); margin: 0; padding-block: 0.625rem; color: var(--color-text); background: var(--encore-tint); border: 0; box-shadow: 0 0 0 100vmax var(--encore-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.04em; }
+.announcement a { color: var(--color-text); }
 
 /* Buttons: square ink blocks in capitals that turn vermilion. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-background); background: var(--color-text); border: 0; border-radius: var(--radius); font: 700 0.875rem/1.2 var(--font-body); letter-spacing: 0.08em; text-align: center; text-decoration: none; text-transform: uppercase; cursor: pointer; }
@@ -180,3 +180,11 @@ h1, h2, h3 { text-wrap: balance; }
 .site-footer { color: var(--color-background); background: var(--color-text); box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax -100vmax); }
 .site-footer :is(nav, p:not(.preferred-source)) a { color: var(--color-background); }
 .site-footer :is(nav, p:not(.preferred-source)) a:hover { color: var(--color-surface); }
+
+/* The consent banner and the announcement keep their bands across the
+   window, and their words start under the site's name, where the
+   header starts. */
+.consent { max-inline-size: var(--en-frame); margin-inline: auto; padding-inline: 0; }
+.consent > * { margin-inline: 0; }
+.announcement { padding-inline: 0; text-align: start; }
+.announcement p { max-inline-size: var(--en-frame); }

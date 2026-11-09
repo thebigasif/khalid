@@ -19,6 +19,15 @@ main > .post-with-toc { max-inline-size: calc(var(--rs-column) + 18rem); }
 main > .post ~ * { max-inline-size: var(--rs-column); margin-inline: auto; }
 /* Beside side contents the post sits at the start of a wider box; what follows it lines up with the post. */
 main > .post-with-toc ~ * { margin-inline: max(0px, calc((100% - var(--rs-column) - 18rem) / 2)) auto; }
+/* From 1120 px a post with its contents beside it lines up with the
+   header: the words start under the site's name, the contents sit close
+   beside them, and what follows the post keeps to the same column. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--rs-frame); }
+  main > .post-with-toc { max-inline-size: none; grid-template-columns: minmax(0, var(--rs-column)) 16rem; column-gap: 4rem; }
+  main > .post-with-toc.post-toc-start { grid-template-columns: 16rem minmax(0, var(--rs-column)); }
+  main:has(> .post-with-toc) > :not(.post), main > .post-with-toc ~ * { margin-inline: 0; }
+}
 h1 { letter-spacing: -0.015em; }
 
 /* The header: a thin accent rule across the window, the name in the
@@ -34,6 +43,10 @@ body { border-block-start: 3px solid var(--color-accent); }
 .search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
 .search-link:hover { color: var(--color-link); text-decoration: underline; }
 .announcement { margin: 0; padding-block: 0.5rem; background: var(--rs-tint); border: 0; box-shadow: 0 0 0 100vmax var(--rs-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+/* The announcement and the consent banner start where the header does. */
+.announcement, .consent { padding-inline: 0; text-align: start; }
+.announcement p { max-inline-size: var(--rs-frame); }
+.consent > * { margin-inline: max(0px, (100% - var(--rs-frame)) / 2) auto; }
 
 /* Buttons: square, filled with the accent. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 600 0.9375rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }

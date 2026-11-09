@@ -21,7 +21,7 @@ body { padding-inline: var(--pad); }
   body { --edge: calc(min(var(--wide), 100% - 2 * var(--pad)) / 2 + 1.5rem); background: linear-gradient(90deg, transparent calc(50% - var(--edge) - 1px), var(--rule) 0 calc(50% - var(--edge)), transparent 0 calc(50% + var(--edge)), var(--rule) 0 calc(50% + var(--edge) + 1px), transparent 0) var(--color-background); }
 }
 .site-header, main, .site-footer { max-inline-size: var(--wide); }
-h1, h2, h3, h4 { letter-spacing: -0.025em; }
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
 ::selection { background: color-mix(in oklab, var(--color-accent) 22%, var(--color-background)); }
 :focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
 
@@ -32,6 +32,10 @@ h1, h2, h3, h4 { letter-spacing: -0.025em; }
 /* The announcement: one quiet line on a band the width of the screen. */
 .announcement { margin: 0; padding-block: 0.625rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
 .announcement p { max-inline-size: none; }
+/* The announcement and the consent banner start where the header starts. */
+.announcement { padding-inline: 0; text-align: start; }
+.consent { padding-inline: 0; }
+.announcement p, .consent > * { margin-inline: max(0px, (100% - var(--wide)) / 2) auto; }
 .announcement a { padding-block: 0.75rem; color: var(--color-text); font-weight: 500; text-decoration: none; }
 .announcement a::after { content: "  →" / ""; white-space: pre; color: var(--color-link); }
 [dir="rtl"] .announcement a::after { content: "  ←" / ""; }
@@ -41,7 +45,7 @@ h1, h2, h3, h4 { letter-spacing: -0.025em; }
    button at the far end, over a hairline that runs to the screen's edge. */
 .site-header { position: relative; flex-wrap: nowrap; gap: 0 2.5rem; padding-block: 0.875rem; border: 0; }
 .site-header::after { inset-block-end: 0; }
-.site-name { font-size: 1.25rem; font-weight: 650; letter-spacing: -0.03em; }
+.site-name { font-size: 1.25rem; font-weight: 650; letter-spacing: -0.02em; }
 .site-logo img { block-size: 2.5rem; inline-size: auto; max-inline-size: 11rem; }
 .site-header nav { flex: 1; }
 .site-header nav ul { gap: 0 1.75rem; }
@@ -67,7 +71,7 @@ h1, h2, h3, h4 { letter-spacing: -0.025em; }
    hairlines that run to the screen's edge. */
 .masthead { position: relative; padding-block: clamp(2.5rem, 7vw, 7rem) 0; margin-block-end: clamp(2.5rem, 5vw, 4.5rem); }
 .masthead::before { content: ""; position: absolute; inset: 0 0 4rem; z-index: -1; background: var(--paper); mask-image: radial-gradient(ellipse 75% 85% at 35% 50%, black 20%, transparent 78%); }
-.masthead h1 { max-inline-size: 14ch; margin: 0 0 0 -0.03em; font-size: clamp(2.5rem, 1.6rem + 3.6vw, 5.5rem); line-height: 0.95; letter-spacing: -0.045em; text-wrap: balance; }
+.masthead h1 { max-inline-size: 14ch; margin: 0 0 0 -0.03em; font-size: clamp(2.5rem, 1.6rem + 3.6vw, 5.5rem); line-height: 0.95; letter-spacing: -0.02em; text-wrap: balance; }
 .masthead-tagline, .masthead .intro { max-inline-size: 40rem; margin: clamp(1.25rem, 2.5vw, 2rem) 0 0; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem); line-height: 1.45; letter-spacing: -0.01em; }
 .masthead .intro > :last-child { margin-block-end: 0; }
 .masthead .category-tabs { position: relative; margin-block: clamp(2.5rem, 6vw, 4.5rem) 0; border: 0; }
@@ -92,7 +96,7 @@ main .cards:not(.cards-ranked, .cards-compact) > li { padding-block-start: 1.5re
 .card-meta > time { grid-area: date; align-self: center; color: var(--color-muted); }
 .card-meta:not(:has(> a)) > time { grid-area: kicker; }
 .card-meta > .card-reading-time { display: none; }
-.card :is(h2, h3, h4) { grid-area: title; margin-block: 0.75rem 0.625rem; font-size: clamp(1.25rem, 1.1rem + 0.4vw, 1.5rem); line-height: 1.22; letter-spacing: -0.025em; text-wrap: pretty; }
+.card :is(h2, h3, h4) { grid-area: title; margin-block: 0.75rem 0.625rem; font-size: clamp(1.25rem, 1.1rem + 0.4vw, 1.5rem); line-height: 1.22; letter-spacing: -0.02em; text-wrap: pretty; }
 .card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; transition: color 0.15s; }
 .card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
 .card:hover :is(h2, h3, h4) a, .card :is(h2, h3, h4) a:focus-visible { color: var(--color-link); }
@@ -110,7 +114,7 @@ main > section + section { margin-block-start: clamp(4rem, 8vw, 6rem); }
 /* The featured story: the picture large, the words beside it. */
 .featured { margin-block: 0 clamp(4rem, 8vw, 6rem); }
 .card-featured { padding: 0; background: none; border-radius: 0; }
-.card-featured h3 { font-size: clamp(2rem, 1.1rem + 2.8vw, 3.75rem); line-height: 1.02; letter-spacing: -0.038em; }
+.card-featured h3 { font-size: clamp(2rem, 1.1rem + 2.8vw, 3.75rem); line-height: 1.02; letter-spacing: -0.02em; }
 .card-featured > p:not(.card-meta) { font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); -webkit-line-clamp: 4; }
 @media (min-width: 56rem) {
   .card-featured:has(.image) { grid-template-columns: minmax(0, 8fr) auto minmax(0, 5fr); grid-template-areas: "image . ." "image kicker date" "image title title" "image text text" "image author author" "image . ."; grid-template-rows: 1fr repeat(4, auto) 1fr; }
@@ -131,7 +135,7 @@ main > section + section { margin-block-start: clamp(4rem, 8vw, 6rem); }
   .lead .card-featured .image { margin: 0 0 1.75rem; }
   .lead .card-featured .image img { aspect-ratio: 16 / 9; }
 }
-.lead .card-featured h3 { max-inline-size: 22ch; font-size: clamp(2.125rem, 0.8rem + 3.4vw, 5rem); line-height: 0.98; letter-spacing: -0.042em; }
+.lead .card-featured h3 { max-inline-size: 22ch; font-size: clamp(2.125rem, 0.8rem + 3.4vw, 5rem); line-height: 0.98; letter-spacing: -0.02em; }
 .lead .card-featured > p:not(.card-meta) { max-inline-size: 40rem; }
 .lead-rail > h2 { margin-block-end: 0.5rem; }
 .lead-grid > h2::after { content: none; }
@@ -179,7 +183,7 @@ main .cards-compact { gap: 0 clamp(2rem, 4vw, 4rem); border-block-start: var(--h
    in the accent above it. */
 .masthead-quote { max-inline-size: 52rem; margin: clamp(4rem, 8vw, 7rem) auto; text-align: center; }
 .masthead-quote::before { content: ""; display: block; inline-size: 3rem; margin: 0 auto 2rem; border-block-start: 3px solid var(--color-accent); }
-.masthead-quote blockquote { margin: 0; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.5rem, 1rem + 2vw, 2.75rem); font-weight: var(--heading-weight); line-height: 1.2; letter-spacing: -0.035em; }
+.masthead-quote blockquote { margin: 0; padding: 0; border: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.5rem, 1rem + 2vw, 2.75rem); font-weight: var(--heading-weight); line-height: 1.2; letter-spacing: -0.02em; }
 .masthead-quote blockquote > :last-child { margin: 0; }
 .masthead-quote figcaption { margin-block-start: 1.25rem; color: var(--color-muted); }
 
@@ -195,7 +199,7 @@ main .cards-compact { gap: 0 clamp(2rem, 4vw, 4rem); border-block-start: var(--h
 
 /* A list page: its title in the masthead's voice, the cards under it,
    the breadcrumbs as a quiet mono line above. */
-main > h1 { position: relative; max-inline-size: 14ch; margin-block: clamp(2.5rem, 7vw, 7rem) 1.5rem; font-size: clamp(2.75rem, 0.75rem + 6vw, 8rem); line-height: 0.92; letter-spacing: -0.05em; }
+main > h1 { position: relative; max-inline-size: 14ch; margin-block: clamp(2.5rem, 7vw, 7rem) 1.5rem; font-size: clamp(2.75rem, 0.75rem + 6vw, 8rem); line-height: 0.92; letter-spacing: -0.02em; }
 main > h1::before, .post-header::before { content: ""; position: absolute; inset: -4rem 0 -2rem; z-index: -1; background: var(--paper); mask-image: radial-gradient(ellipse 70% 80% at 30% 50%, black 15%, transparent 75%); pointer-events: none; }
 .hub-link { margin-block: 0 clamp(2.5rem, 5vw, 4rem); }
 .hub-link a { border-color: var(--color-border); border-radius: 999px; font-weight: 600; }
@@ -214,7 +218,7 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
 .author-header { column-gap: clamp(1.5rem, 4vw, 2.5rem); margin-block-end: 1.5rem; }
 .author-photo { inline-size: clamp(6.5rem, 16vw, 10rem); }
 .author-photo img { border: var(--hair); }
-.author-header h1 { margin: 0; font-size: clamp(2.25rem, 1.4rem + 3vw, 4rem); line-height: 1.02; letter-spacing: -0.045em; }
+.author-header h1 { margin: 0; font-size: clamp(2.25rem, 1.4rem + 3vw, 4rem); line-height: 1.02; letter-spacing: -0.02em; }
 .author-role { margin: 0.375rem 0 0.25rem; color: var(--color-muted); }
 .author-bio { font-size: 1.125rem; }
 .people-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1.5rem 2.5rem; }
@@ -226,7 +230,7 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
    the reading side and the button or form beside them. */
 .button, .subscribe button, .comment-form button { color: var(--color-on-accent); border-radius: 999px; font-weight: 600; }
 .cta-band, .newsletter-slot { position: relative; gap: 1.5rem 3rem; margin-block: clamp(4rem, 8vw, 6rem); padding: clamp(2rem, 5vw, 4rem); background: var(--paper), var(--color-surface); border: var(--hair); border-radius: var(--radius); }
-.cta-note, .newsletter-slot h2 { max-inline-size: 26ch; margin: 0; font-family: var(--font-heading); font-size: clamp(1.5rem, 1rem + 1.8vw, 2.75rem); font-weight: var(--heading-weight); line-height: 1.1; letter-spacing: -0.04em; }
+.cta-note, .newsletter-slot h2 { max-inline-size: 26ch; margin: 0; font-family: var(--font-heading); font-size: clamp(1.5rem, 1rem + 1.8vw, 2.75rem); font-weight: var(--heading-weight); line-height: 1.1; letter-spacing: -0.02em; }
 .cta-note { flex: 1 1 18rem; }
 .cta-band > p:last-child { flex: 0 1 auto; max-inline-size: 100%; }
 .cta-band .button { min-block-size: 3rem; max-inline-size: 100%; padding-inline: 1.5rem; text-align: center; }
@@ -281,10 +285,10 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
 @media (min-width: 80rem) {
   .post-header .image { margin-inline: calc(50% - min(38rem, 50vw - var(--pad) - 1rem)); }
 }
-.page > h1 { line-height: 1.02; letter-spacing: -0.045em; }
+.page > h1 { line-height: 1.02; letter-spacing: -0.02em; }
 .post-header { position: relative; margin-block: clamp(1.5rem, 5vw, 4.5rem) clamp(2.5rem, 5vw, 4rem); }
 .post-header::before { inset-block-end: auto; block-size: clamp(14rem, 30vw, 26rem); }
-.post-header h1 { max-inline-size: 22ch; margin-block: 0 1.75rem; font-size: clamp(2.375rem, 1rem + 3.4vw, 4.5rem); line-height: 0.98; letter-spacing: -0.042em; text-wrap: balance; }
+.post-header h1 { max-inline-size: 22ch; margin-block: 0 1.75rem; font-size: clamp(2.375rem, 1rem + 3.4vw, 4.5rem); line-height: 0.98; letter-spacing: -0.02em; text-wrap: balance; }
 .dek { max-inline-size: 40rem; margin-block: -0.25rem 2rem; color: var(--color-muted); font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem); line-height: 1.45; letter-spacing: -0.01em; }
 .post-header .image { margin-block: clamp(2rem, 4vw, 3.5rem) 0; }
 .post-header .image img, .post-body img { border: var(--hair); border-radius: var(--radius); }
@@ -296,6 +300,8 @@ main > h1 + :is(.cards, .featured), main > .intro + :is(.cards, .featured) { mar
   .post-with-toc > .toc-side { grid-row: 2 / span 20; inset-block-start: 1.5rem; }
   main:has(.post-with-toc) > .breadcrumbs { max-inline-size: calc(var(--col) + 22rem); margin-inline: auto; }
   main:has(.post-with-toc) > :is(.cta-band, .newsletter-slot, .mentions, .comments, .related) { max-inline-size: none; }
+  /* The words start under the name in the header, the rail beside them. */
+  main:has(.post-with-toc) > :is(.post-with-toc, .breadcrumbs) { margin-inline: 0 auto; }
 }
 
 /* The meta under the title: the authors, then one quiet mono line with
@@ -340,8 +346,8 @@ main:has(.breadcrumbs) .post-meta > p:not(.reviewed-by):has(> a) { display: none
 /* The words: links underlined with a thin line that takes the accent on
    hover. */
 .post-body, .page-body { line-height: 1.7; }
-.post-body > h2, .page-body > h2 { margin-block: 3.5rem 1rem; font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.035em; }
-.post-body > h3, .page-body > h3 { margin-block: 2.5rem 0.75rem; font-size: var(--text-h3); line-height: 1.25; letter-spacing: -0.025em; }
+.post-body > h2, .page-body > h2 { margin-block: 3.5rem 1rem; font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.02em; }
+.post-body > h3, .page-body > h3 { margin-block: 2.5rem 0.75rem; font-size: var(--text-h3); line-height: 1.25; letter-spacing: -0.02em; }
 .heading-link { color: var(--color-border); font-size: 0.8em; }
 h2:hover > .heading-link, h3:hover > .heading-link, .heading-link:focus-visible { color: var(--color-muted); }
 .post-body a, .page-body a { text-decoration-color: color-mix(in oklab, var(--color-link) 35%, transparent); text-decoration-thickness: 1px; }
@@ -382,7 +388,7 @@ tr:last-child > td { border-block-end: 0; }
 .pullquote { margin-block: 3rem; padding: 0; border: 0; }
 .pullquote::before { content: ""; display: block; inline-size: 3rem; margin-block-end: 1.25rem; border-block-start: 3px solid var(--color-accent); }
 .pullquote figcaption { text-align: start; }
-.pullquote blockquote { font-size: clamp(1.375rem, 1.1rem + 1vw, 1.875rem); font-weight: var(--heading-weight); line-height: 1.25; letter-spacing: -0.03em; }
+.pullquote blockquote { font-size: clamp(1.375rem, 1.1rem + 1vw, 1.875rem); font-weight: var(--heading-weight); line-height: 1.25; letter-spacing: -0.02em; }
 .callout { margin-block: 2rem; padding: 1.25rem 1.5rem; background: var(--tint); border: var(--hair); border-inline-start: 3px solid var(--color-accent); border-radius: var(--radius); font-size: 0.96em; }
 .callout-note { background: var(--color-surface); border-inline-start-color: var(--color-muted); }
 .callout-warning { background: var(--color-background); border-inline-start-color: var(--color-text); font-weight: 400; }
@@ -390,7 +396,7 @@ tr:last-child > td { border-block-end: 0; }
 .callout-summary li + li { margin-block-start: 0.5rem; }
 .callout-read { padding: 1.25rem 0; background: none; border-inline: 0; border-radius: 0; }
 .callout-stat { background: var(--color-background); border-inline-start-color: var(--color-link); }
-.callout-stat strong:first-child { color: var(--color-link); font-size: 2.75em; letter-spacing: -0.04em; }
+.callout-stat strong:first-child { color: var(--color-link); font-size: 2.75em; letter-spacing: -0.02em; }
 .toc { padding: 1rem 1.5rem; background: none; border: var(--hair); }
 .toc ol { padding-inline-start: 1.75rem; }
 .toc li::marker { color: var(--color-muted); font-weight: 400; }
