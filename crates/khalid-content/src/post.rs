@@ -10,6 +10,7 @@ use khalid_core::{
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer};
 
+use crate::blank;
 use crate::front_matter::{Fence, split};
 use crate::post_fields::{
     self, LeadImage, PostFact, PostSeries, ReviewState, ShareCards, Sitemap, TopicCluster,
@@ -165,7 +166,7 @@ pub struct PostFront {
 pub const MAX_STOCK_TICKERS: usize = 5;
 
 fn stock_tickers<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<String>, D::Error> {
-    let tickers = Vec::<String>::deserialize(deserializer)?;
+    let tickers: Vec<String> = blank::or_empty(deserializer)?;
     if tickers.len() > MAX_STOCK_TICKERS {
         return Err(serde::de::Error::custom(format!(
             "Google News reads at most 5 stock tickers, and this lists {}; keep the 5 the post is most about",
@@ -324,11 +325,18 @@ enum OneOrMany {
     Many(Vec<String>),
 }
 
-/// Reads one text or a list of them, as a list.
+impl Default for OneOrMany {
+    fn default() -> Self {
+        Self::Many(Vec::new())
+    }
+}
+
+/// Reads one text or a list of them, as a list. A blank field is an
+/// empty list.
 pub(crate) fn one_or_many<'de, D: Deserializer<'de>>(
     deserializer: D,
 ) -> Result<Vec<String>, D::Error> {
-    Ok(match OneOrMany::deserialize(deserializer)? {
+    Ok(match blank::or_empty(deserializer)? {
         OneOrMany::One(text) => vec![text],
         OneOrMany::Many(texts) => texts,
     })
@@ -399,11 +407,9 @@ fn secondary_keywords<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<
 }
 
 /// Reads old paths, each starting with `/`, with a message a writer
-/// understands. A blank `aliases:` line means no aliases: serde-saphyr
-/// 2.1 refuses YAML null for a list (its #233), so it is read as an
-/// `Option` first.
+/// understands. A blank `aliases:` line means no aliases.
 fn aliases<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<String>, D::Error> {
-    let paths = Option::<Vec<String>>::deserialize(deserializer)?.unwrap_or_default();
+    let paths: Vec<String> = blank::or_empty(deserializer)?;
     match paths
         .iter()
         .find(|path| !path.starts_with('/') || path.contains(char::is_whitespace))

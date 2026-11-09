@@ -6,6 +6,7 @@
 //! render, serve and index it, and never writes derived data under
 //! `content/` (BL-FS-2).
 
+mod blank;
 mod block;
 mod body_check;
 mod chart;

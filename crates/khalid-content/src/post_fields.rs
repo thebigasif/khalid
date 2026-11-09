@@ -185,7 +185,7 @@ fn fact_part(part: &str, text: &str, most: usize, example: &str) -> Result<Strin
 /// Reads the facts: a list of at most [`MAX_FACTS`] label and value pairs.
 /// An empty list, or none at all, is the same as no field.
 pub(crate) fn facts<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<PostFact>, D::Error> {
-    let facts = Option::<Vec<PostFact>>::deserialize(deserializer)?.unwrap_or_default();
+    let facts: Vec<PostFact> = crate::blank::or_empty(deserializer)?;
     if facts.len() > MAX_FACTS {
         return Err(serde::de::Error::custom(format!(
             "a post has at most {MAX_FACTS} facts, and this lists {}; keep the {MAX_FACTS} a reader most needs",
