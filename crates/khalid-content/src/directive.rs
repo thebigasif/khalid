@@ -16,6 +16,7 @@ mod formula;
 mod layout;
 mod names;
 mod nested;
+mod schema_cards;
 
 pub(crate) use forms::TRAP;
 pub(crate) use names::unknown_hint;
@@ -75,6 +76,7 @@ pub(crate) fn directive(
         "review" => review(&attributes, body),
         "product" => product(&attributes, body),
         "business" => cards::business(&attributes),
+        "event" | "course" => schema_cards::card(name, &attributes, body),
         "snippet" => cards::snippet(&attributes),
         "location" => cards::location(&attributes),
         "header" => cards::header(&attributes),

@@ -22,6 +22,7 @@ mod maths;
 mod post;
 mod post_fields;
 mod render;
+mod schema_cards;
 mod schemas;
 mod site_content;
 mod structured;
@@ -29,7 +30,7 @@ mod tree;
 mod wikilink;
 
 pub use block::{
-    Block, BlockError, BlockKind, CalloutKind, GalleryImage, Visibility, parse_blocks, print_blocks,
+    Block, BlockError, BlockKind, CalloutKind, Visibility, parse_blocks, print_blocks,
 };
 pub use body_check::check_bodies;
 pub use chart::{
@@ -44,7 +45,7 @@ pub use external_media::{
     release_external_media,
 };
 pub use form::{FieldKind, FormField};
-pub use layout::{Column, ProsConsBlock};
+pub use layout::{Column, GalleryImage, ProsConsBlock};
 pub use post::{
     MAX_RELATED, MAX_SECONDARY_KEYWORDS, MAX_STOCK_TICKERS, Post, PostFront, parse_post,
 };
@@ -56,6 +57,7 @@ pub use render::{
     CTA_MARK, ENGINE_TEXT, Gated, Heading, Image, LOCATION_MARK, Link, PRIVACY_FACTS_MARK,
     Rendered, render, render_framed, render_gated, render_linked,
 };
+pub use schema_cards::{CourseBlock, EventBlock, EventPlace, EventState, SchemaCard};
 pub use schemas::{
     AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, PageHub,
     SnippetFront,
