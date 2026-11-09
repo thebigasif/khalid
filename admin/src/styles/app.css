@@ -166,6 +166,11 @@
   .search-states{list-style:none;margin:0 0 1rem;padding:0}
   .search-states li{border:1px solid var(--color-border);border-radius:var(--radius-field);padding:.75rem 1rem;margin:0 0 .75rem}
   .search-states .careful{background:var(--color-warn-bg)}
+  .home-sections{margin:0 0 1rem;padding:0 0 0 1.5rem;max-width:44rem}
+  .home-sections li{padding:.75rem 0;border-bottom:1px solid var(--color-border)}
+  .home-sections .what{display:block;margin:0 0 .5rem}
+  .home-sections .row{display:flex;flex-wrap:wrap;gap:.5rem}
+  .home-section-add{background:var(--color-surface);border-radius:var(--radius-field);padding:1rem;margin:0 0 1rem;max-width:44rem}
   .picture-grid span{display:block;padding:.25rem .5rem;color:var(--color-muted);font-size:.875rem}
   .aid-title{font-size:.875rem;color:var(--color-muted);padding:.75rem 1rem .25rem;margin:0}
   .aid-menu ul{list-style:none;margin:0;padding:0 .25rem .25rem}
