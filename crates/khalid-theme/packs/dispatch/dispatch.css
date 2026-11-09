@@ -17,6 +17,15 @@ main { padding-block: 0 var(--space-section); }
 main > :is(.post, .page, .author) { max-inline-size: 52ch; margin-inline: auto; }
 main > .post-with-toc { max-inline-size: calc(52ch + 18rem); }
 main > .post ~ :is(.mentions, .comments, .related, .cta-band, .lock) { max-inline-size: 52ch; margin-inline: auto; }
+/* From 1120 px a post with its contents beside it lines up with the
+   header: the words start under the site's name, the contents sit close
+   beside them, and what follows the post keeps to the same column. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--dp-frame); }
+  main > .post-with-toc { max-inline-size: none; grid-template-columns: minmax(0, 52ch) 16rem; column-gap: 4rem; }
+  main > .post-with-toc.post-toc-start { grid-template-columns: 16rem minmax(0, 52ch); }
+  main:has(> .post-with-toc) > :not(.post) { margin-inline: 0; }
+}
 
 /* The header: the name or logo, quiet menu links, the call to action as
    the one filled button, over a double rule as wide as the frame. */
@@ -28,6 +37,10 @@ main > .post ~ :is(.mentions, .comments, .related, .cta-band, .lock) { max-inlin
 .site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
 .site-header nav a[aria-current] { box-shadow: inset 0 -2px var(--color-accent); }
 .announcement { margin: 0; padding-block: 0.5rem; background: var(--dp-tint); border: 0; box-shadow: 0 0 0 100vmax var(--dp-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+/* The announcement and the consent banner start where the header does. */
+.announcement, .consent { padding-inline: 0; text-align: start; }
+.announcement p { max-inline-size: var(--dp-frame); }
+.consent > * { margin-inline: max(0px, (100% - var(--dp-frame)) / 2) auto; }
 
 /* Buttons: filled with the accent, in the text face. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; max-inline-size: 100%; min-block-size: 2.875rem; padding: 0.5rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 700 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
