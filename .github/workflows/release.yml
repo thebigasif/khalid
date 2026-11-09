@@ -2,8 +2,9 @@ name: Release
 
 # A version tag such as v0.1.0 builds the binary for six platforms and
 # attaches it, with checksums, to a draft GitHub release. The founder reads
-# the draft and publishes it. Nothing builds unless `just check` passes on the
-# tagged commit first. Releases are built here, never by hand (docs/standards/git.md).
+# the draft and publishes it. Nothing is published unless all of `just check`
+# passes on the tagged commit. Releases are built here, never by hand
+# (docs/standards/git.md).
 
 on:
   push:
@@ -37,10 +38,49 @@ jobs:
           path: admin/dist
           if-no-files-found: error
 
-  check:
-    name: just check
+  # `just check` runs as parallel jobs, which add up to the whole of
+  # scripts/check.sh: this job runs every step but the nextest run, and the
+  # rust job below runs the nextest suite in six parts. In one job it took
+  # 70 minutes (v1.7.1); split, the release takes about 25.
+  rust-lints:
+    name: just check without nextest
     needs: admin
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: admin-dist
+          path: admin/dist
+      - name: Toolchain from rust-toolchain.toml
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.1
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: lints
+      - name: Tools
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deny,cargo-machete,typos
+      - name: Everything CI checks but nextest
+        run: ./scripts/check.sh --no-nextest
+
+  # The job id, the RUST flags and the toolchain match the rust job in
+  # ci.yml, so a tag restores the test build main's CI cached and does not
+  # build every test from nothing in each part.
+  rust:
+    name: Rust tests ${{ matrix.part }} of 6
+    needs: admin
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: -D warnings
+      RUSTDOCFLAGS: -D warnings
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [1, 2, 3, 4, 5, 6]
     steps:
       - uses: actions/checkout@v7
       # With the bundle present, the serve test insists that /admin/ answers
@@ -53,17 +93,20 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: 1.99.1
-          components: clippy, rustfmt, llvm-tools-preview
+          components: llvm-tools-preview
       - uses: Swatinem/rust-cache@v2
       - name: Tools
         uses: taiki-e/install-action@v2
         with:
-          tool: just,cargo-nextest,cargo-deny,cargo-machete,typos
-      - name: Everything CI checks
-        run: just check
+          tool: cargo-nextest
+      # The six hash partitions hold every test once, so together they are
+      # the nextest run in scripts/check.sh. The slowest tests start first
+      # (scripts/ci/nextest.toml).
+      - name: The nextest suite, part ${{ matrix.part }} of 6
+        run: cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml --partition "hash:${{ matrix.part }}/6"
 
-  # The builds run beside the check, not after it. Nothing is published
-  # until both pass: the draft release and the image need the check too.
+  # The builds run beside the checks, not after them. Nothing is published
+  # until all pass: the draft release and the image need every check too.
   build:
     name: Build ${{ matrix.name }}
     needs: admin
@@ -157,7 +200,7 @@ jobs:
 
   release:
     name: Draft release
-    needs: [check, build]
+    needs: [rust-lints, rust, build]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -188,7 +231,7 @@ jobs:
   # up by hand. A prerelease tag gets only its version tag, never latest.
   docker:
     name: Docker image
-    needs: [check, build]
+    needs: [rust-lints, rust, build]
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -244,22 +244,128 @@ fn outside_the_mount(out: &Path) -> (Vec<String>, usize) {
     (outside, seen)
 }
 
-#[test]
-fn a_template_keeps_every_link_asset_and_form_under_the_mount() {
-    for pack in khalid_theme::packs() {
-        let (_site, out) = built_with(pack.name, MAIL);
-        let (outside, seen) = outside_the_mount(&out);
-        assert!(
-            outside.is_empty(),
-            "{}: outside /blog/: {outside:#?}",
-            pack.name
-        );
-        assert!(
-            seen > 500,
-            "{}: the check read the addresses: {seen}",
-            pack.name
-        );
+/// Builds the demo site mounted at /blog/ in `pack`, and checks every link,
+/// asset and form stays under the mount.
+#[cfg(test)]
+fn keeps_everything_under_the_mount(pack: &str) {
+    let (_site, out) = built_with(pack, MAIL);
+    let (outside, seen) = outside_the_mount(&out);
+    assert!(outside.is_empty(), "{pack}: outside /blog/: {outside:#?}");
+    assert!(seen > 500, "{pack}: the check read the addresses: {seen}");
+}
+
+/// Builds the demo site in `pack`, checks its home page, a post and an
+/// author page, and compares their outline with the pack's snapshot.
+#[cfg(test)]
+fn builds_its_pages(pack: &str) {
+    let (_site, out) = built(pack);
+    let mut pages = String::new();
+    for rel in PAGES {
+        let html = fs::read_to_string(at(&out, rel)).unwrap();
+        let footer = html.split_once("<footer").unwrap().1;
+        let choices = "<a href=\"/blog/privacy-choices/\">";
+        assert!(footer.contains(choices), "{pack}: {rel} links the choices");
+        writeln!(pages, "# {rel}\n{}", outline(rel, &html)).unwrap();
     }
+    let rel = "privacy-choices/index.html";
+    outline(rel, &fs::read_to_string(at(&out, rel)).unwrap());
+    insta::assert_snapshot!(format!("outline_{pack}"), pages);
+}
+
+/// Two tests per template, so the builds run side by side: each loop over
+/// every template took 22 minutes. Each test's name starts with its
+/// module's, the name the one looping test had.
+macro_rules! every_pack {
+    ($($pack:ident),* $(,)?) => {
+        mod a_template_keeps_every_link_asset_and_form_under_the_mount {
+            $(
+                #[test]
+                fn $pack() {
+                    super::keeps_everything_under_the_mount(stringify!($pack));
+                }
+            )*
+        }
+
+        mod every_template_builds_its_post_index_and_author_pages {
+            $(
+                #[test]
+                fn $pack() {
+                    super::builds_its_pages(stringify!($pack));
+                }
+            )*
+        }
+
+        /// The packs the tests above cover.
+        #[cfg(test)]
+        const COVERED: &[&str] = &[$(stringify!($pack)),*];
+    };
+}
+
+// Every pack, the tests' own trial and sampler among them.
+every_pack!(
+    almanac,
+    aperture,
+    atelier,
+    atlas,
+    beacon,
+    brief,
+    channel,
+    chapter,
+    classic,
+    compass,
+    dialogue,
+    dispatch,
+    encore,
+    fixture,
+    folio,
+    frequency,
+    gallery,
+    gazette,
+    glossy,
+    harbor,
+    hearth,
+    hub,
+    inkwell,
+    itinerary,
+    keystone,
+    lattice,
+    ledger,
+    letterpress,
+    locale,
+    manual,
+    margin,
+    masthead,
+    meridian,
+    mosaic,
+    notebook,
+    pantry,
+    plinth,
+    quill,
+    reel,
+    research,
+    respawn,
+    sampler,
+    spectrum,
+    summit,
+    syllabus,
+    ticker,
+    trial,
+    versions,
+    vital,
+    wire,
+    workbench,
+);
+
+/// A new pack gets its line in `every_pack!` above.
+#[test]
+fn every_pack_has_its_tests() {
+    let mut packs: Vec<&str> = khalid_theme::packs().iter().map(|pack| pack.name).collect();
+    packs.sort_unstable();
+    assert_eq!(packs, COVERED);
+}
+
+#[test]
+fn the_newsletter_form_and_share_links_stay_under_the_mount() {
     let (_site, out) = built_with("harbor", MAIL);
     let post = fs::read_to_string(at(&out, "why-internal-links-matter/index.html")).unwrap();
     assert!(
@@ -274,26 +380,4 @@ fn a_template_keeps_every_link_asset_and_form_under_the_mount() {
             .any(|link| link.starts_with("https://www.linkedin.com/") && link.contains(&encoded)),
         "the share links name the post under the mount"
     );
-}
-
-#[test]
-fn every_template_builds_its_post_index_and_author_pages() {
-    for pack in khalid_theme::packs() {
-        let (_site, out) = built(pack.name);
-        let mut pages = String::new();
-        for rel in PAGES {
-            let html = fs::read_to_string(at(&out, rel)).unwrap();
-            let footer = html.split_once("<footer").unwrap().1;
-            let choices = "<a href=\"/blog/privacy-choices/\">";
-            assert!(
-                footer.contains(choices),
-                "{}: {rel} links the choices",
-                pack.name
-            );
-            writeln!(pages, "# {rel}\n{}", outline(rel, &html)).unwrap();
-        }
-        let rel = "privacy-choices/index.html";
-        outline(rel, &fs::read_to_string(at(&out, rel)).unwrap());
-        insta::assert_snapshot!(format!("outline_{}", pack.name), pages);
-    }
 }

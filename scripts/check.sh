@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 # Everything CI checks, in the same order, so a green local run means a green CI.
 # Each step prints its name. The first failure stops the run.
+#
+# --no-nextest leaves out the one nextest run and does everything else. The
+# release workflow runs that, and runs the nextest suite beside it in parts,
+# so the two add up to this whole script.
 set -euo pipefail
+
+nextest=true
+case "${1:-}" in
+  "") ;;
+  --no-nextest) nextest=false ;;
+  *) echo "Unknown option $1. The one option is --no-nextest."; exit 2 ;;
+esac
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
@@ -25,8 +36,12 @@ if ls crates/*/Cargo.toml >/dev/null 2>&1; then
   step "Clippy, warnings as errors"
   cargo clippy --workspace --all-targets --all-features -- -D warnings
 
-  step "Tests (nextest + doc tests)"
-  cargo nextest run --workspace --all-features
+  if [ "$nextest" = true ]; then
+    step "Tests (nextest + doc tests)"
+    cargo nextest run --workspace --all-features
+  else
+    step "Doc tests (nextest runs elsewhere)"
+  fi
   cargo test --workspace --doc
 
   step "Docs, warnings as errors"

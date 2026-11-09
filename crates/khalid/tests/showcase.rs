@@ -242,37 +242,115 @@ fn the_showcase_keeps_the_depth_it_promises() {
     }
 }
 
-#[test]
-fn every_template_demo_shows_the_showcase_call_to_action() {
-    // Every template but classic, whose demo is the showcase itself.
-    let packs = shipped::templates();
-    for pack in packs.iter().filter(|pack| *pack != "classic") {
-        // As scripts/pages.sh makes each template demo: the template's name
-        // and the band's place go after the showcase's own [template.cta].
-        let site = showcase_copy();
-        let mut toml = site.path().to_path_buf();
-        toml.push("site.toml");
-        let text = fs::read_to_string(&toml).unwrap();
-        let demo = format!(
-            "{text}\n[template]\nname = \"{pack}\"\n\n[template.options]\ncta_band = \"both\"\n"
+/// Builds the showcase in `pack` as scripts/pages.sh makes each template
+/// demo, and checks both pages show the showcase's call to action.
+#[cfg(test)]
+fn demo_shows_the_call_to_action(pack: &str) {
+    // The template's name and the band's place go after the showcase's
+    // own [template.cta].
+    let site = showcase_copy();
+    let mut toml = site.path().to_path_buf();
+    toml.push("site.toml");
+    let text = fs::read_to_string(&toml).unwrap();
+    let demo = format!(
+        "{text}\n[template]\nname = \"{pack}\"\n\n[template.options]\ncta_band = \"both\"\n"
+    );
+    fs::write(&toml, demo).unwrap();
+    let out = tempfile::tempdir().unwrap();
+    let output = khalid(
+        site.path(),
+        &["build", "--out", out.path().to_str().unwrap()],
+    );
+    assert_eq!(output.status.code(), Some(0), "{pack}: {output:?}");
+    for page in ["index.html", "seo-writing-guide/index.html"] {
+        let mut path = out.path().to_path_buf();
+        path.push(page);
+        let html = fs::read_to_string(&path).unwrap();
+        let band = html.split_once("<div class=\"cta-band\">");
+        let band = band.unwrap_or_else(|| panic!("{pack} {page}: no band")).1;
+        assert!(
+            band.contains("Read the 2026 content benchmark"),
+            "{pack} {page}"
         );
-        fs::write(&toml, demo).unwrap();
-        let out = tempfile::tempdir().unwrap();
-        let output = khalid(
-            site.path(),
-            &["build", "--out", out.path().to_str().unwrap()],
-        );
-        assert_eq!(output.status.code(), Some(0), "{pack}: {output:?}");
-        for page in ["index.html", "seo-writing-guide/index.html"] {
-            let mut path = out.path().to_path_buf();
-            path.push(page);
-            let html = fs::read_to_string(&path).unwrap();
-            let band = html.split_once("<div class=\"cta-band\">");
-            let band = band.unwrap_or_else(|| panic!("{pack} {page}: no band")).1;
-            assert!(
-                band.contains("Read the 2026 content benchmark"),
-                "{pack} {page}"
-            );
-        }
     }
+}
+
+/// One test per template, so the builds run side by side: one loop over
+/// every template took 85 minutes. Each test's name starts with the
+/// module's, so a filter on that name still picks every one of them.
+macro_rules! every_template_demo {
+    ($($pack:ident),* $(,)?) => {
+        mod every_template_demo_shows_the_showcase_call_to_action {
+            $(
+                #[test]
+                fn $pack() {
+                    super::demo_shows_the_call_to_action(stringify!($pack));
+                }
+            )*
+        }
+
+        /// The templates the tests above cover.
+        #[cfg(test)]
+        const DEMOS: &[&str] = &[$(stringify!($pack)),*];
+    };
+}
+
+// Every template but classic, whose demo is the showcase itself.
+every_template_demo!(
+    almanac,
+    aperture,
+    atelier,
+    atlas,
+    beacon,
+    brief,
+    channel,
+    chapter,
+    compass,
+    dialogue,
+    dispatch,
+    encore,
+    fixture,
+    folio,
+    frequency,
+    gallery,
+    gazette,
+    glossy,
+    harbor,
+    hearth,
+    hub,
+    inkwell,
+    itinerary,
+    keystone,
+    lattice,
+    ledger,
+    letterpress,
+    locale,
+    manual,
+    margin,
+    masthead,
+    meridian,
+    mosaic,
+    notebook,
+    pantry,
+    plinth,
+    quill,
+    reel,
+    research,
+    respawn,
+    spectrum,
+    summit,
+    syllabus,
+    ticker,
+    versions,
+    vital,
+    wire,
+    workbench,
+);
+
+/// A new template gets its line in `every_template_demo!` above.
+#[test]
+fn every_template_but_classic_has_its_demo_test() {
+    let mut shipped = shipped::templates();
+    shipped.retain(|pack| pack != "classic");
+    assert_eq!(shipped, DEMOS);
 }
