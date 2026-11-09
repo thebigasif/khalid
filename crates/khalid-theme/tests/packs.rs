@@ -201,3 +201,67 @@ fn every_shipped_pack_and_no_other_has_a_pack_toml() {
         .collect();
     assert_eq!(described, shipped);
 }
+
+/// The packs checked on laptop and phone screens. Letters set tighter than
+/// -0.02em run together in San Francisco and in a heavy display face, so
+/// none of these packs sets them tighter, and each paints its
+/// announcement as a light band with dark words.
+const LAPTOP_CHECKED: [&str; 12] = [
+    "almanac", "beacon", "encore", "gallery", "hearth", "keystone", "locale", "meridian", "plinth",
+    "respawn", "ticker", "wire",
+];
+
+#[test]
+fn no_laptop_checked_pack_sets_letters_tighter_than_a_fiftieth_of_an_em() {
+    for pack in packs()
+        .iter()
+        .filter(|pack| LAPTOP_CHECKED.contains(&pack.name))
+    {
+        let css: String = pack.stylesheet().split_whitespace().collect();
+        for value in css.split("letter-spacing:").skip(1) {
+            let value = value.split([';', '}']).next().unwrap_or(value);
+            let Some(em) = value.strip_suffix("em") else {
+                continue;
+            };
+            let em: f64 = em.parse().unwrap_or(0.0);
+            assert!(
+                em >= -0.02,
+                "{} sets letter-spacing:{value}, tighter than -0.02em",
+                pack.name
+            );
+        }
+    }
+}
+
+#[test]
+fn no_laptop_checked_pack_paints_a_dark_announcement_band() {
+    for pack in packs()
+        .iter()
+        .filter(|pack| LAPTOP_CHECKED.contains(&pack.name))
+    {
+        let css: String = pack.stylesheet().split_whitespace().collect();
+        for rule in css.split('}') {
+            let Some((selector, body)) = rule.rsplit_once('{') else {
+                continue;
+            };
+            // A marker drawn before the words, such as Wire's red square,
+            // is not the band.
+            if !selector.contains(".announcement") || selector.contains("::") {
+                continue;
+            }
+            for dark in [
+                "background:var(--color-text)",
+                "background:var(--color-accent)",
+                "color:var(--color-background)",
+                "color:var(--color-on-accent)",
+                "-ink)",
+            ] {
+                assert!(
+                    !body.contains(dark),
+                    "{} paints the announcement dark with {dark}: {selector}{{{body}}}",
+                    pack.name
+                );
+            }
+        }
+    }
+}
