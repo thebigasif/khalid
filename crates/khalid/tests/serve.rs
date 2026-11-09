@@ -319,7 +319,7 @@ fn serve_answers_the_sitemaps_feeds_and_aliases_beside_the_pages() {
 }
 
 #[test]
-fn serve_answers_the_news_sitemap_and_the_images_of_each_post() {
+fn serve_answers_the_news_and_video_sitemaps_and_the_images_of_each_post() {
     let site = demo_copy();
     put(
         site.path(),
@@ -330,8 +330,9 @@ fn serve_answers_the_news_sitemap_and_the_images_of_each_post() {
     let old = "content/en/posts/2026-09-28-what-a-sitemap-does.md";
     let mut file = site.path().to_path_buf();
     file.push(old);
-    let post = fs::read_to_string(&file).unwrap();
+    let mut post = fs::read_to_string(&file).unwrap();
     fs::remove_file(&file).unwrap();
+    post.push_str("\n::embed{src=\"https://youtu.be/dQw4w9WgXcQ\" title=\"How search works\"}\n");
     put(
         site.path(),
         &format!("content/en/news/{yesterday}-what-a-sitemap-does.md"),
@@ -348,6 +349,11 @@ fn serve_answers_the_news_sitemap_and_the_images_of_each_post() {
             "<image:loc>https://www.example.com/blog/fixing-slow-pages/page-weight.png</image:loc>",
         ),
         ("/blog/sitemap.xml", "/blog/sitemaps/news.xml</loc>"),
+        (
+            "/blog/sitemaps/videos-en-1.xml",
+            "<video:player_loc>https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ</video:player_loc>",
+        ),
+        ("/blog/sitemap.xml", "/blog/sitemaps/videos-en-1.xml</loc>"),
     ] {
         let answer = get(&server, path);
         assert_eq!(answer.status, 200, "{path}");

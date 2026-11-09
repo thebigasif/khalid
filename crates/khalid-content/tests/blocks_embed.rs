@@ -1,7 +1,7 @@
 //! Embed blocks and the provider allowlist (task 1.7, KH-CON-5).
 
 use khalid_content::{
-    BlockKind, EMBED_PROVIDERS, EmbedProvider, Gated, StructuredBlock, Wikilinks,
+    BlockKind, EMBED_PROVIDERS, EmbedProvider, EmbeddedVideo, Gated, StructuredBlock, Wikilinks,
     external_media_as_links, parse_blocks, print_blocks, release_external_media, render,
     render_framed,
 };
@@ -303,16 +303,92 @@ fn a_german_post_gets_a_german_card() {
 }
 
 /// `VideoObject` and the video sitemap read a post's structured blocks,
-/// which an embed's card leaves as they were.
+/// which an embed's card leaves as they were and a video embed adds to.
 #[test]
 fn an_embed_card_leaves_the_video_facts_as_they_were() {
     let en = Locale::try_new("en").unwrap();
     let video = "::video{src=\"/media/tour.mp4\" title=\"A tour\" poster=\"/media/tour.jpg\" duration=\"2:05\"}\n";
     let alone = render(video, &en, SlugMode::Ascii).unwrap();
     let both = render(&format!("{video}\n{YOUTUBE}"), &en, SlugMode::Ascii).unwrap();
-    assert_eq!(both.structured, alone.structured);
+    assert_eq!(both.structured[..1], alone.structured[..]);
     assert!(matches!(
-        alone.structured.as_slice(),
-        [StructuredBlock::Video(_)]
+        both.structured.as_slice(),
+        [StructuredBlock::Video(_), StructuredBlock::EmbeddedVideo(_)]
     ));
+}
+
+#[cfg(test)]
+fn embedded(markdown: &str) -> Vec<EmbeddedVideo> {
+    let en = Locale::try_new("en").unwrap();
+    let page = render(markdown, &en, SlugMode::Ascii).unwrap();
+    page.structured
+        .into_iter()
+        .filter_map(|block| match block {
+            StructuredBlock::EmbeddedVideo(video) => Some(video),
+            _ => None,
+        })
+        .collect()
+}
+
+/// The video sitemap lists a host's video by its player, with the still
+/// the host publishes when its address follows from the video's id.
+#[test]
+fn a_video_embed_is_a_video_for_the_sitemap() {
+    let videos = embedded(
+        "\
+::embed{src=\"https://youtu.be/dQw4w9WgXcQ\" title=\"How search works\"}
+
+::embed{src=\"https://vimeo.com/76979871\" title=\"A short film\"}
+
+::embed{src=\"https://www.loom.com/share/0281766fa2d04bb788eaf19e65135184\" title=\"A walkthrough\"}
+",
+    );
+    let summary: Vec<(EmbedProvider, &str, &str, Option<&str>)> = videos
+        .iter()
+        .map(|video| {
+            (
+                video.provider,
+                video.title.as_str(),
+                video.player.as_str(),
+                video.thumbnail.as_ref().map(AbsoluteUrl::as_str),
+            )
+        })
+        .collect();
+    assert_eq!(
+        summary,
+        [
+            (
+                EmbedProvider::YouTube,
+                "How search works",
+                "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+                Some("https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"),
+            ),
+            (
+                EmbedProvider::Vimeo,
+                "A short film",
+                "https://player.vimeo.com/video/76979871",
+                None,
+            ),
+            (
+                EmbedProvider::Loom,
+                "A walkthrough",
+                "https://www.loom.com/embed/0281766fa2d04bb788eaf19e65135184",
+                None,
+            ),
+        ]
+    );
+}
+
+#[test]
+fn audio_code_and_other_sites_are_not_videos() {
+    let videos = embedded(
+        "\
+::embed{src=\"https://open.spotify.com/episode/4rOoJ6Egrf8K2IrywzwOMk\" title=\"An SEO podcast\"}
+
+::embed{src=\"https://codepen.io/team/pen/abcDEF\" title=\"A pen\"}
+
+::embed{src=\"https://www.example.com/watch\" title=\"A page\"}
+",
+    );
+    assert_eq!(videos, []);
 }
