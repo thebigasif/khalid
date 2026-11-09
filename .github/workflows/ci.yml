@@ -442,7 +442,7 @@ jobs:
           fi
       - uses: docker/setup-buildx-action@v4
         if: steps.inputs.outputs.build == 'true'
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         if: steps.inputs.outputs.build == 'true'
         with:
           context: .
@@ -510,7 +510,7 @@ jobs:
           echo "key=${prefix}${{ hashFiles('fixtures/showcase-publications/*/photos.lock') }}" >> "$GITHUB_OUTPUT"
       - name: Is that cache whole already?
         id: lookup
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ~/.cache/khalid/demo-media
           key: ${{ steps.media.outputs.key }}
@@ -617,7 +617,7 @@ jobs:
           done
           exit 1
       - name: The demos' pictures, kept between runs
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ~/.cache/khalid/demo-media
           key: ${{ needs.demo-plan.outputs.media-key }}
@@ -694,7 +694,7 @@ jobs:
     needs: [demo-plan, demo-layout]
     if: always() && needs.demo-plan.outputs.all == 'true' && needs.demo-plan.outputs.media-found != 'true' && needs.demo-layout.result != 'skipped'
     steps:
-      - uses: actions/cache/restore@v5
+      - uses: actions/cache/restore@v6
         with:
           path: ~/.cache/khalid/demo-media
           key: ${{ needs.demo-plan.outputs.media-key }}
@@ -711,7 +711,7 @@ jobs:
           echo "The cache holds $(find ~/.cache/khalid/demo-media -type f | wc -l) pictures."
       # The Pages workflow may have kept the same key first; then this one
       # is not needed and saving it only warns.
-      - uses: actions/cache/save@v5
+      - uses: actions/cache/save@v6
         continue-on-error: true
         with:
           path: ~/.cache/khalid/demo-media
