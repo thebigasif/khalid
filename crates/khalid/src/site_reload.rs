@@ -91,7 +91,9 @@ impl SitePages {
                  so it keeps the old value. Restart khalid serve to use the new one."
             ));
         }
-        let wired = start_only(&self.settings().config, &settings.config);
+        // The settings read keep the start's `mount` and `mode`, so only
+        // the settings wired in at start are named here.
+        let wired = settings_events::start_only(&self.settings().config, &settings.config);
         for name in &wired {
             report::notice(&format!(
                 "site.toml changed {name}, which khalid serve also reads when it starts. \
@@ -185,41 +187,6 @@ pub(super) fn keeps_last_good(message: &UserMessage) {
     let (what, why, fix) = (message.what(), message.why(), message.fix());
     let keeps = "Until then, khalid serve keeps the last good settings and pages.";
     report::notice(&format!("{what} {why} {fix} {keeps}"));
-}
-
-/// The settings besides `mount` and `mode` that `khalid serve` wires into
-/// its routes and jobs at start, named as `site.toml` writes them, that
-/// differ between `was` and `now`.
-fn start_only(was: &Config, now: &Config) -> Vec<&'static str> {
-    let languages = (was.languages(), was.default_language());
-    [
-        ("address", was.address() != now.address()),
-        (
-            "languages",
-            languages != (now.languages(), now.default_language()),
-        ),
-        ("[media]", was.media() != now.media()),
-        ("[mail]", was.mail() != now.mail()),
-        ("[alerts]", was.alerts() != now.alerts()),
-        ("[code]", was.code() != now.code()),
-        (
-            "[search_console]",
-            was.search_console() != now.search_console(),
-        ),
-        ("[visitor_log]", was.visitor_log() != now.visitor_log()),
-        ("[ai]", was.ai() != now.ai()),
-        (
-            "ghost_content_api",
-            was.ghost_content_api() != now.ghost_content_api(),
-        ),
-        (
-            "preview_link_days",
-            was.preview_link_lifetime() != now.preview_link_lifetime(),
-        ),
-    ]
-    .into_iter()
-    .filter_map(|(name, changed)| changed.then_some(name))
-    .collect()
 }
 
 /// The size and change time of `site.toml`, `routes.toml` and every file

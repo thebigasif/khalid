@@ -6620,7 +6620,7 @@
         "tags": [
           "admin settings"
         ],
-        "summary": "Changes the core settings in `site.toml`: only the fields sent change,\nand each value must pass the checks `khalid serve` makes at start. The\nchange carries the `updated_at` of the copy it was made on; when\n`site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The\nrunning server reads `site.toml` at start, so `restart_needed` says\nwhen a restart applies the change. Needs `settings:write`.",
+        "summary": "Changes the core settings in `site.toml`: only the fields sent change,\nand each value must pass the checks `khalid serve` makes at start. The\nchange carries the `updated_at` of the copy it was made on; when\n`site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The\nrunning server puts most settings in use once saved; `restart_needed`\nsays when one it reads only at start, such as `address`, waits for a\nrestart. Needs `settings:write`.",
         "operationId": "change_settings",
         "parameters": [
           {
@@ -12332,7 +12332,7 @@
       },
       "AdminSettings": {
         "type": "object",
-        "description": "The site's core settings from `site.toml`, in Admin API shape. The\nrunning server reads `site.toml` once at start, so a change applies\nafter a restart.",
+        "description": "The site's core settings from `site.toml`, in Admin API shape. The\nrunning server puts most of a saved change in use at once; the settings\nit reads only at start wait for a restart.",
         "required": [
           "name",
           "address",
@@ -12388,7 +12388,7 @@
           },
           "restart_needed": {
             "type": "boolean",
-            "description": "Whether `site.toml` says something the running server does not use\nyet, so a restart is needed to apply it."
+            "description": "Whether `site.toml` changes a setting the running server reads only\nat start, such as `mount`, `mode`, `address`, `languages` or\n`[code]`, so a restart is needed to apply it. A change to `name`,\n`[template]`, `[seo]` or `[privacy]` alone is in use once saved."
           },
           "seo": {
             "type": "object",

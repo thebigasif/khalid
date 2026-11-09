@@ -415,7 +415,7 @@ export type AdminSchemaTemplate = {
   type: string;
 };
 
-/** The site's core settings from `site.toml`, in Admin API shape. The running server reads `site.toml` once at start, so a change applies after a restart. */
+/** The site's core settings from `site.toml`, in Admin API shape. The running server puts most of a saved change in use at once; the settings it reads only at start wait for a restart. */
 export type AdminSettings = {
   /** The address of the main site, such as `https://www.example.com`. */
   address: string;
@@ -433,7 +433,7 @@ export type AdminSettings = {
   name: string;
   /** The `[privacy]` table as `site.toml` writes it, one key per part such as `lifetime_months`, `gpc`, `counts`, `external_tool`, `text` or `contact`. A setting left out keeps its default. */
   privacy: Record<string, unknown>;
-  /** Whether `site.toml` says something the running server does not use yet, so a restart is needed to apply it. */
+  /** Whether `site.toml` changes a setting the running server reads only at start, such as `mount`, `mode`, `address`, `languages` or `[code]`, so a restart is needed to apply it. A change to `name`, `[template]`, `[seo]` or `[privacy]` alone is in use once saved. */
   restart_needed: boolean;
   /** The `[seo]` table as `site.toml` writes it, one key per part such as `titles` or `crawlers`. A setting left out of the file is left out here too and keeps its default; `docs/seo-settings.md` lists every part and its defaults. */
   seo: Record<string, unknown>;
@@ -3261,7 +3261,7 @@ export interface Operations {
     };
     output: SiteSettings;
   };
-  /** Changes the core settings in `site.toml`: only the fields sent change, and each value must pass the checks `khalid serve` makes at start. The change carries the `updated_at` of the copy it was made on; when `site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The running server reads `site.toml` at start, so `restart_needed` says when a restart applies the change. Needs `settings:write`. */
+  /** Changes the core settings in `site.toml`: only the fields sent change, and each value must pass the checks `khalid serve` makes at start. The change carries the `updated_at` of the copy it was made on; when `site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The running server puts most settings in use once saved; `restart_needed` says when one it reads only at start, such as `address`, waits for a restart. Needs `settings:write`. */
   change_settings: {
     input: {
       headers?: {

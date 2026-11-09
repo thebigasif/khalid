@@ -1,8 +1,9 @@
 //! The Admin API's core settings on a running site: `site.toml`, edited in
 //! place so its comments and tables stay as written, checked as `khalid
 //! serve` checks it at start before anything is written, and written
-//! atomically (RULES.md BL-RUN-9). The running server keeps the settings
-//! it started with, so a saved change applies after a restart.
+//! atomically (RULES.md BL-RUN-9). `khalid serve` puts most saved settings
+//! in use at once (see `site_reload.rs`); the ones it reads only at start
+//! (see [`settings_events::start_only`]) wait for a restart.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -13,13 +14,12 @@ use khalid_api::content_store::BoxFuture;
 use khalid_api::entry_store::EntryStoreError;
 use khalid_api::resources::{AdminSettings, SettingsChange, TemplateSetting, TemplateValue};
 use khalid_api::settings_store::{SettingsError, SettingsStore};
-use khalid_core::{
-    Config, ConfigError, Environment, Mode, OptionValue, PrivacySettings, SeoSettings, SiteCode,
-};
+use khalid_core::{Config, ConfigError, Environment, Mode, OptionValue};
 use khalid_theme::Look;
 use toml_edit::{Array, DocumentMut, Item, Table, Value};
 
 use crate::atomic;
+use crate::settings_events;
 use crate::site_config;
 
 mod parts;
@@ -29,14 +29,14 @@ mod privacy;
 #[derive(Debug, Clone)]
 pub(crate) struct SiteSettings {
     site: PathBuf,
-    /// The core settings the server started with.
-    running: Core,
+    /// The settings the server started with.
+    start: Arc<Config>,
     /// Held while a change is checked and written, so no two interleave.
     writing: Arc<Mutex<()>>,
 }
 
 /// The core settings, as a change may set them.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 struct Core {
     name: String,
     address: String,
@@ -44,10 +44,7 @@ struct Core {
     default_language: String,
     languages: Vec<String>,
     template: TemplateSetting,
-    seo: SeoSettings,
     mode: Mode,
-    code: SiteCode,
-    privacy: PrivacySettings,
 }
 
 impl Core {
@@ -78,21 +75,18 @@ impl Core {
                 .iter()
                 .map(|l| l.as_str().to_owned())
                 .collect(),
-            seo: config.seo().clone(),
             mode: config.mode(),
-            code: config.code().clone(),
-            privacy: config.privacy().clone(),
         }
     }
 }
 
 impl SiteSettings {
     /// The settings in `site`'s `site.toml`, for a server that started with
-    /// `running`. Every step runs on a blocking thread (RULES.md BL-RUN-7).
-    pub(crate) fn new(site: &Path, running: &Config) -> Self {
+    /// `start`. Every step runs on a blocking thread (RULES.md BL-RUN-7).
+    pub(crate) fn new(site: &Path, start: &Config) -> Self {
         Self {
             site: site.to_path_buf(),
-            running: Core::of(running),
+            start: Arc::new(start.clone()),
             writing: Arc::new(Mutex::new(())),
         }
     }
@@ -116,8 +110,8 @@ impl SiteSettings {
     /// The settings `text` holds, checked, as last changed at `changed`.
     fn settings(&self, text: &str, changed: DateTime<Utc>) -> Result<AdminSettings, SettingsError> {
         let config = self.checked(text)?;
+        let restart_needed = !settings_events::start_only(&self.start, &config).is_empty();
         let core = Core::of(&config);
-        let restart_needed = core != self.running;
         Ok(AdminSettings {
             name: core.name,
             address: core.address,

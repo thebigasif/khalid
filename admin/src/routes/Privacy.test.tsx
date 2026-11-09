@@ -26,7 +26,7 @@ describe("the Privacy screen", () => {
     expect(await axeViolations()).toEqual([]);
   });
 
-  it("saves only the lifetime it changed, and says a restart applies it", async () => {
+  it("saves only the lifetime it changed, and says the blog uses it with no restart", async () => {
     signedIn();
     const changes = privacyBlog();
     renderAt("/privacy");
@@ -36,14 +36,14 @@ describe("the Privacy screen", () => {
     await userEvent.clear(months);
     await userEvent.type(months, "12");
     await userEvent.click(screen.getByRole("button", { name: SAVE }));
-    expect(await screen.findByText(WORDS.saved)).toBeVisible();
+    expect(await screen.findByText(WORDS.live)).toBeVisible();
     expect(changes).toEqual([
       { updated_at: PRIVACY_DEMO.updated_at, privacy: { lifetime_months: 12 } },
     ]);
-    expect(await screen.findByText(WORDS.restart)).toBeVisible();
+    expect(screen.queryByText(WORDS.restart)).toBeNull();
   });
 
-  it("tags a script as tracking no one, and shows the tag after a reload", async () => {
+  it("tags a script as tracking no one, says it waits for a restart, and shows the tag after a reload", async () => {
     signedIn();
     const changes = privacyBlog();
     renderAt("/privacy");
@@ -65,6 +65,7 @@ describe("the Privacy screen", () => {
         ],
       },
     ]);
+    expect(await screen.findByText(WORDS.restart)).toBeVisible();
     const reloaded = await screen.findByRole("listitem", { name: WORDS.scripts.script(1) });
     expect(within(reloaded).getByLabelText(WORDS.scripts.category)).toHaveValue("no-tracking");
     expect(within(reloaded).queryByText(WORDS.scripts.untagged)).toBeNull();
@@ -92,7 +93,7 @@ describe("the Privacy screen", () => {
     await userEvent.type(screen.getByLabelText(WORDS.contact.name), "Field Notes Ltd");
     await userEvent.type(screen.getByLabelText(WORDS.contact.email), "privacy@example.com");
     await userEvent.click(screen.getByRole("button", { name: SAVE }));
-    expect(await screen.findByText(WORDS.saved)).toBeVisible();
+    expect(await screen.findByText(WORDS.live)).toBeVisible();
     expect(changes.at(-1)?.privacy).toEqual({
       contact: { name: "Field Notes Ltd", email: "privacy@example.com" },
     });
@@ -110,7 +111,7 @@ describe("the Privacy screen", () => {
     expect(screen.getByLabelText(WORDS.text.fields.title)).toHaveValue("");
     await userEvent.type(screen.getByLabelText(WORDS.text.fields.title), "Ihre Wahl");
     await userEvent.click(screen.getByRole("button", { name: SAVE }));
-    expect(await screen.findByText(WORDS.saved)).toBeVisible();
+    expect(await screen.findByText(WORDS.live)).toBeVisible();
     expect(changes.at(-1)?.privacy).toEqual({
       text: { en: { title: "Your choices" }, de: { title: "Ihre Wahl" } },
     });

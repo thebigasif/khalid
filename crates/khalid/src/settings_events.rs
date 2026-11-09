@@ -68,6 +68,42 @@ impl SiteToml {
     }
 }
 
+/// The settings `khalid serve` reads only when it starts that differ
+/// between `was` and `now`, named as `site.toml` writes them: `mount` and
+/// `mode`, which shape its own routes, and the settings it wires into its
+/// routes, stores and jobs. Every other setting, such as `name`,
+/// `[template]`, `[seo]`, `[privacy]` or `[nav]`, is in use once the file
+/// is saved. The listen address, HTTPS and the database are set when the
+/// server starts, outside `site.toml`, so no save changes them.
+pub(crate) fn start_only(was: &Config, now: &Config) -> Vec<&'static str> {
+    let languages = (was.languages(), was.default_language());
+    let preview = was.preview_link_lifetime() != now.preview_link_lifetime();
+    let console = was.search_console() != now.search_console();
+    let ghost = was.ghost_content_api() != now.ghost_content_api();
+    [
+        ("mount", was.mount() != now.mount()),
+        ("mode", was.mode() != now.mode()),
+        ("address", was.address() != now.address()),
+        (
+            "languages",
+            languages != (now.languages(), now.default_language()),
+        ),
+        ("slugs", was.slugs() != now.slugs()),
+        ("[media]", was.media() != now.media()),
+        ("[mail]", was.mail() != now.mail()),
+        ("[alerts]", was.alerts() != now.alerts()),
+        ("[code]", was.code() != now.code()),
+        ("[search_console]", console),
+        ("[visitor_log]", was.visitor_log() != now.visitor_log()),
+        ("[ai]", was.ai() != now.ai()),
+        ("ghost_content_api", ghost),
+        ("preview_link_days", preview),
+    ]
+    .into_iter()
+    .filter_map(|(name, changed)| changed.then_some(name))
+    .collect()
+}
+
 /// Fires `site.changed` on `announce` for settings just applied: `saved`
 /// holds the files of the site `folder` whose stamp changed since the last
 /// applied settings, `toml` the `site.toml` settings now and then, and
@@ -113,6 +149,8 @@ fn body(
 
 #[cfg(test)]
 mod tests {
+    use khalid_core::Environment;
+
     use super::*;
 
     fn toml(text: &str) -> SiteToml {
@@ -134,6 +172,65 @@ mod tests {
 
     fn json(body: Option<Body>) -> serde_json::Value {
         serde_json::to_value(body.map(|body| BTreeMap::from([("settings", body)]))).unwrap()
+    }
+
+    const START: &str = "name = \"Field Notes\"\naddress = \"https://www.example.com\"\n\
+                         default_language = \"en\"\nlanguages = [\"en\"]\n";
+
+    fn config(text: &str) -> Config {
+        Config::from_toml(Path::new("site.toml"), text, &Environment::empty()).unwrap()
+    }
+
+    /// The settings named as waiting when `START` gains `more`.
+    fn waiting(more: &str) -> Vec<&'static str> {
+        start_only(&config(START), &config(&format!("{START}{more}")))
+    }
+
+    #[test]
+    fn settings_the_pages_read_wait_for_nothing() {
+        let live = [
+            "[seo.crawlers]\nblock = [\"GPTBot\"]\n",
+            "[template]\nname = \"trial\"\n",
+            "[privacy]\nlifetime_months = 12\n",
+            "[nav]\nprimary = []\n",
+        ];
+        for more in live {
+            assert_eq!(waiting(more), Vec::<&str>::new(), "{more}");
+        }
+        let named = START.replace("Field Notes", "Field Notes Weekly");
+        let renamed = start_only(&config(START), &config(&named));
+        assert_eq!(renamed, Vec::<&str>::new());
+    }
+
+    #[test]
+    fn routes_and_addresses_wait_for_a_restart() {
+        assert_eq!(waiting("mount = \"/blog/\"\n"), ["mount"]);
+        assert_eq!(waiting("mode = \"static\"\n"), ["mode"]);
+        let moved = START.replace("www.example.com", "blog.example.com");
+        assert_eq!(start_only(&config(START), &config(&moved)), ["address"]);
+        let french = START.replace("[\"en\"]", "[\"en\", \"fr\"]");
+        assert_eq!(start_only(&config(START), &config(&french)), ["languages"]);
+        assert_eq!(waiting("slugs = \"unicode\"\n"), ["slugs"]);
+    }
+
+    #[test]
+    fn jobs_and_their_tables_wait_for_a_restart() {
+        let wired = [
+            ("ghost_content_api = true\n", "ghost_content_api"),
+            ("preview_link_days = 3\n", "preview_link_days"),
+            ("[media]\navif = true\n", "[media]"),
+            (
+                "[mail]\nfrom = \"a@example.com\"\n[mail.smtp]\nhost = \"smtp.example.com\"\n",
+                "[mail]",
+            ),
+            ("[alerts]\nnot_found_spike = 3\n", "[alerts]"),
+            ("[code]\nhead = \"<meta name=a content=b>\"\n", "[code]"),
+            ("[visitor_log]\non = true\n", "[visitor_log]"),
+            ("[ai]\nprovider = \"anthropic\"\n", "[ai]"),
+        ];
+        for (more, name) in wired {
+            assert_eq!(waiting(more), [name], "{more}");
+        }
     }
 
     #[test]
