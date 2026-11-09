@@ -218,6 +218,56 @@ fn reads_aliases_and_featured() {
     assert!(plain.front.aliases.is_empty() && !plain.front.featured);
 }
 
+/// Every list a post's front matter holds.
+const POST_LISTS: [&str; 9] = [
+    "aliases",
+    "reviewed_by",
+    "related",
+    "secondary_keywords",
+    "keyword_synonyms",
+    "facts",
+    "tags",
+    "co_authors",
+    "stock_tickers",
+];
+
+#[test]
+fn a_blank_list_line_means_an_empty_list() {
+    for field in POST_LISTS {
+        for blank in ["", " ~", " null"] {
+            let text = format!("---\ntitle: A\n{field}:{blank}\n---\n");
+            let front = parse_post(Path::new("posts/a.md"), &text).unwrap().front;
+            let lengths = [
+                front.aliases.len(),
+                front.reviewed_by.len(),
+                front.related.len(),
+                front.secondary_keywords.len(),
+                front.keyword_synonyms.len(),
+                front.facts.len(),
+                front.tags.len(),
+                front.co_authors.len(),
+                front.stock_tickers.len(),
+            ];
+            assert_eq!(lengths, [0; 9], "{text}");
+        }
+    }
+}
+
+#[test]
+fn every_post_list_still_reads_its_items() {
+    let text = "---\ntitle: A\naliases:\n  - /old/\nreviewed_by:\n  - lena\nrelated:\n  - b\nsecondary_keywords:\n  - link text\nkeyword_synonyms:\n  - site links\nfacts:\n  - label: Year\n    value: \"2025\"\ntags:\n  - links\n  - seo\nco_authors:\n  - omar\nstock_tickers:\n  - NASDAQ:GOOG\n---\n";
+    let front = parse_post(Path::new("posts/a.md"), text).unwrap().front;
+    assert_eq!(front.aliases, ["/old/"]);
+    assert_eq!(front.reviewed_by[0].as_str(), "lena");
+    assert_eq!(front.related[0].as_str(), "b");
+    assert_eq!(front.secondary_keywords, ["link text"]);
+    assert_eq!(front.keyword_synonyms, ["site links"]);
+    assert_eq!(front.facts[0].value, "2025");
+    assert_eq!(front.tags, ["links", "seo"]);
+    assert_eq!(front.co_authors[0].as_str(), "omar");
+    assert_eq!(front.stock_tickers, ["NASDAQ:GOOG"]);
+}
+
 #[test]
 fn reads_robots_and_canonical() {
     let text = "---\ntitle: A\nrobots: noindex, nofollow\ncanonical: https://moz.com/blog/internal-links\n---\n";

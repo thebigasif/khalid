@@ -73,6 +73,33 @@ fn files_that_cannot_be_read_are_listed_with_why() {
 }
 
 #[test]
+fn a_blank_list_line_means_an_empty_list() {
+    let export = read_folder([
+        ("blank.md", "---\ntitle: A\ntags:\ncategories:\naliases:\n---\nText.\n"),
+        ("tilde.md", "---\ntitle: B\ntags: ~\ncategories: ~\naliases: ~\n---\nText.\n"),
+        ("full.md", "---\ntitle: C\ntags:\n  - rye\ncategories:\n  - bread\naliases:\n  - /old/c/\n---\nText.\n"),
+    ])
+    .unwrap();
+    assert!(export.unread.is_empty(), "{:?}", export.unread);
+    // Files come back in path order.
+    let [blank, full, tilde] = &export.files[..] else {
+        panic!("{:?}", export.files);
+    };
+    for empty in [blank, tilde] {
+        let front = &empty.front;
+        let lengths = [
+            front.tags.len(),
+            front.categories.len(),
+            front.aliases.len(),
+        ];
+        assert_eq!(lengths, [0; 3], "{}", empty.path);
+    }
+    assert_eq!(full.front.tags, ["rye"]);
+    assert_eq!(full.front.categories, ["bread"]);
+    assert_eq!(full.front.aliases, ["/old/c/"]);
+}
+
+#[test]
 fn a_folder_with_no_markdown_is_refused() {
     let refused = read_folder([("index.html", "<p>Hi</p>")]).unwrap_err();
     assert_eq!(refused, FolderError::NoPosts);
