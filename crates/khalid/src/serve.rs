@@ -390,7 +390,10 @@ fn destination(
         addresses: addresses.clone(),
         redirects: redirects.clone(),
         announce: Some(telling.clone()),
-        started: (Entries::of(checked), Tags::of(config, checked)),
+        started: (
+            Entries::of(checked).with_drafts(site),
+            Tags::of(config, checked),
+        ),
         pings: content_feed::UpdatePings::default(),
     };
     to.pings.set(telling.clone());
