@@ -6,8 +6,8 @@
 use std::path::Path;
 
 use khalid_content::{
-    HowToBlock, Image, LeadImage, Link, ProductBlock, ReaderRatings, RecipeBlock, ReviewBlock,
-    StructuredBlock, VideoBlock,
+    EmbeddedVideo, HowToBlock, Image, LeadImage, Link, ProductBlock, ReaderRatings, RecipeBlock,
+    ReviewBlock, StructuredBlock, VideoBlock,
 };
 use khalid_core::{AbsoluteUrl, Config, UserMessage};
 use khalid_seo::{
@@ -50,6 +50,13 @@ pub(crate) fn fill(
                 video.uploaded = seo.published;
                 seo.videos.push(video.clone());
                 SchemaBlock::Video(video)
+            }
+            // A host's video goes in the video sitemap only: its upload
+            // date, which `VideoObject` requires, is the host's to know.
+            StructuredBlock::EmbeddedVideo(embed) => {
+                let video = embedded_video(embed, seo);
+                seo.videos.extend(video);
+                continue;
             }
             StructuredBlock::Product(product) => match product_of(product, author, full)? {
                 Some(product) => SchemaBlock::Product(product),
@@ -217,6 +224,26 @@ fn video_of(
     let mut video = Video::new(&block.title, description, thumbnail, source);
     video.duration = block.duration;
     Ok(video)
+}
+
+/// A video host's embed in the page `seo` as a `Video` played by its
+/// player and described by the page's summary. Its still is the host's,
+/// else the page's first image (its lead when it has one), else its share
+/// image; with none, Google would refuse the entry, so there is no video.
+fn embedded_video(embed: &EmbeddedVideo, seo: &SeoPage) -> Option<Video> {
+    let thumbnail = (embed.thumbnail.as_ref())
+        .or(seo.images.first())
+        .or(seo.share_image.as_ref().map(|image| &image.url))?;
+    let description = Some(seo.excerpt.trim())
+        .filter(|excerpt| !excerpt.is_empty())
+        .unwrap_or(&embed.title);
+    let source = VideoSource::Player(embed.player.clone());
+    Some(Video::new(
+        &embed.title,
+        description,
+        thumbnail.clone(),
+        source,
+    ))
 }
 
 /// `link` as an entity the post mentions, when it points at a page that

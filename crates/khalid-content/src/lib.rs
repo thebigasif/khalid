@@ -62,8 +62,8 @@ pub use schemas::{
 };
 pub use site_content::{Document, SiteContent, read_content};
 pub use structured::{
-    BusinessBlock, HowToBlock, ProductBlock, Question, REVIEW_TYPES, ReaderRatings, RecipeBlock,
-    ReviewBlock, Step, StructuredBlock, VideoBlock,
+    BusinessBlock, EmbeddedVideo, HowToBlock, ProductBlock, Question, REVIEW_TYPES, ReaderRatings,
+    RecipeBlock, ReviewBlock, Step, StructuredBlock, VideoBlock,
 };
 pub use tree::{Collection, ContentTree, Entry, Language};
 pub use wikilink::{GLOSSARY, WikiTarget, Wikilinks};
