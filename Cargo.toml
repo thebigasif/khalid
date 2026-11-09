@@ -30,6 +30,12 @@ tracing = "0.1"
 khalid-core = { path = "crates/khalid-core", version = "0.2.0" }
 khalid-lint = { path = "crates/khalid-lint", version = "0.2.0" }
 
+# RUSTSEC-2026-0459 is fixed only in libsqlite3-sys 0.39 (SQLite 3.54), and
+# sqlx-sqlite 0.9.0 caps it below 0.38. The vendored copy widens that one
+# range. Remove it when sqlx accepts 0.39 (vendor/sqlx-sqlite/KHALID.md).
+[patch.crates-io]
+sqlx-sqlite = { path = "vendor/sqlx-sqlite" }
+
 [workspace.lints.rust]
 # The complete lint table is in lints/lints.toml, with the reasoning. It is
 # mirrored here line for line (only the section headers differ), and
@@ -298,6 +304,21 @@ opt-level = "z"
 [profile.release.package.serde_cbor_2]
 opt-level = "z"
 [profile.release.package.math-core]
+opt-level = "z"
+# The SQLite security fix (RUSTSEC-2026-0459) pushed the binary over budget.
+# None of these runs on a reader's request either: the HTML cleaner runs
+# once per `:::html` block at build, the YAML error printer only when a
+# file has an error, the XML reader for an import or the audit, and the
+# archive writer for a backup. The passkey crypto crates grew the binary at
+# "z" and stay at "s" (docs/standards/performance.md, "Room for the SQLite
+# fix").
+[profile.release.package.ammonia]
+opt-level = "z"
+[profile.release.package.annotate-snippets]
+opt-level = "z"
+[profile.release.package.roxmltree]
+opt-level = "z"
+[profile.release.package.tar]
 opt-level = "z"
 
 [profile.dev]
