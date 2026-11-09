@@ -41,7 +41,7 @@ With no post marked featured, the front page opens with the masthead and the new
 
 **Lists and author pages** open on the same light band with the trail and the title, then the featured post large beside its picture, then picture cards in the same grid as the front page.
 
-The tint of your accent colour stays on the masthead and on the bands behind page titles. The rest of the page is white and ink. A topic label is ink text after a small square in your accent colour. Buttons and the call-to-action band are ink, and the band has the faint map grid and an accent rule on top. Callouts, the author box and other panels in a post are a light grey, and a post without a picture shows a grey block in its place.
+The tint of your accent colour stays on the masthead and on the bands behind page titles. The rest of the page is white and ink. A topic label is ink text after a small square in your accent colour. Buttons are ink. The call-to-action band and the footer are a light tint of your accent, so the page stays light: the band has the faint map grid and an accent rule on top, and the footer an ink rule. Callouts, the author box and other panels in a post are a light grey, and a post without a picture shows a grey block in its place.
 
 The header shows your logo, your menu and your call to action as a button. Everything reads with scripts off. Atlas brings its own indigo colours; your theme tokens, such as the ones theme sync writes, replace any of them, and the logo comes from them too.
 
@@ -143,7 +143,7 @@ This is Atlas's design brief. It fixes how the template should look, so every ch
 | Part | Atlas |
 |---|---|
 | Type pairing | A heavy, characterful grotesque for headlines over a plain, sturdy sans for text. With no theme, the pack uses the system sans at weight 800 for headlines. |
-| Colour | White ground and near-black text. The accent's tint covers the masthead sheet and the bands behind page titles only. Below them the accent is a small key square before each label, or a rule. Panels are a faint grey, and buttons and the call-to-action band are ink. A post's text reads on the plain white ground. |
+| Colour | White ground and near-black text. The accent's tint covers the masthead sheet and the bands behind page titles only. Below them the accent is a small key square before each label, or a rule. Panels are a faint grey, and buttons are ink. The call-to-action band and the footer are a light tint of the accent. A post's text reads on the plain white ground. |
 | Spacing rhythm | A base step of 0.5rem. Tight inside cards (1rem), wide between sections (4rem). Grid gaps of 2rem on a wide screen, 1.25rem on a phone. |
 | Frame at 1440 px and wider | At least **88rem**: four picture cards across, the widest of the ten. |
 | Cards and lists | Picture cards with the picture edge to edge on top, the topic as a small ink label after an accent key square, a bold title of up to three lines, then the byline. The first story in a grid may span two columns. |

@@ -16,6 +16,15 @@ main { padding-block: 0 var(--space-section); }
 main > :is(.post, .page) { max-inline-size: var(--measure); margin-inline: auto; }
 main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
 main > .post ~ :is(.mentions, .comments, .lock, .related, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
+/* From 1120 px a post with its contents beside it lines up with the
+   header: the words start under the site's name, the contents sit close
+   beside them, and what follows the post keeps to the same column. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--sy-frame); }
+  main > .post-with-toc { max-inline-size: none; grid-template-columns: minmax(0, var(--measure)) 16rem; column-gap: 4rem; }
+  main > .post-with-toc.post-toc-start { grid-template-columns: 16rem minmax(0, var(--measure)); }
+  main:has(> .post-with-toc) > :not(.post) { margin-inline: 0; }
+}
 h1, h2, h3, h4 { letter-spacing: -0.01em; }
 
 /* The header: the name in the heading font, quiet menu links. */
@@ -29,6 +38,10 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 .search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
 .search-link:hover { color: var(--color-link); text-decoration: underline; }
 .announcement { margin: 0; padding-block: 0.5rem; background: var(--sy-tint); border: 0; box-shadow: 0 0 0 100vmax var(--sy-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+/* The announcement and the consent banner start where the header does. */
+.announcement, .consent { padding-inline: 0; text-align: start; }
+.announcement p { max-inline-size: var(--sy-frame); }
+.consent > * { margin-inline: max(0px, (100% - var(--sy-frame)) / 2) auto; }
 
 /* Buttons: filled with the accent, square corners. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.625rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 700 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
@@ -40,7 +53,7 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 
 /* The front page: the hero, the start button, the figure strip. */
 .hero { margin-block-end: 3rem; }
-.hero-title { max-inline-size: 18ch; font-weight: var(--heading-weight); letter-spacing: -0.03em; }
+.hero-title { max-inline-size: 18ch; font-weight: var(--heading-weight); letter-spacing: -0.02em; }
 .hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.55; }
 .course-start { margin-block: 1.75rem 0; }
 .hero > .figure-strip { border-block-start: 3px solid var(--color-text); }
