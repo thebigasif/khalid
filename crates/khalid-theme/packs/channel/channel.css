@@ -17,7 +17,19 @@ main { padding-block: 0 var(--space-section); }
 main > :is(.post, .page) { max-inline-size: var(--measure); margin-inline: auto; }
 main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
 main > .post ~ :not(.up-next) { max-inline-size: var(--measure); margin-inline: auto; }
+/* With the contents beside a post, the words start under the channel's
+   name and the contents stay close beside them. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--ch-frame); }
+  main:has(> .post-with-toc) > :is(*, .post ~ *) { margin-inline: 0 auto; }
+}
 h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+/* The announcement and the consent banner: a light band across the
+   window, the words starting where the header starts. */
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); text-align: start; }
+.announcement, .consent { padding-inline: 0; }
+.announcement p, .consent > * { margin-inline: max(0px, (100% - var(--ch-frame)) / 2) auto; }
 
 /* The header: the name in the heading font, plain menu links, the
    current one underlined in the accent. */
