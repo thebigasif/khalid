@@ -13,17 +13,25 @@ main > * { max-inline-size: var(--classic-text); }
 main > :is(.cards, .featured, .picks, .home-section, .topics, .cta-band, .newsletter-slot, .post-with-toc, .author-header, .pagination, .category-tabs) { max-inline-size: none; }
 main > :is(.post, .page) { margin-inline: auto; }
 main > .post-with-toc { max-inline-size: calc(var(--classic-text) + 18rem); }
-/* From 1024 px a post with its contents beside it spans the header's
-   frame: the words start under the site's name and the contents end
-   under the last menu link, so the page lines up with its own header. */
+/* From 1024 px a post with its contents beside it sits in the header's
+   frame: the words start under the site's name and the contents follow
+   the words a 4rem gap later, so text and contents read as one group. */
 @media (min-width: 64rem) {
   main:has(.post-with-toc) { max-inline-size: var(--frame); }
   main > .post-with-toc { max-inline-size: none; }
   .post-with-toc > :not(.toc-side) { max-inline-size: var(--classic-text); }
 }
 @media (min-width: 70rem) {
-  .post-with-toc { grid-template-columns: minmax(0, var(--classic-text)) 16rem; justify-content: space-between; }
+  .post-with-toc { grid-template-columns: minmax(0, var(--classic-text)) 16rem; column-gap: 4rem; justify-content: start; }
   .post-with-toc.post-toc-start { grid-template-columns: 16rem minmax(0, var(--classic-text)); }
+}
+
+/* The consent banner: from 640 px its words and buttons start under the
+   site's name, in the header's frame, not in a centred column of their
+   own. On phones the base gutters stay. */
+@media (min-width: 40rem) {
+  .consent { max-inline-size: var(--frame); margin-inline: auto; padding-inline: 0; }
+  .consent > * { max-inline-size: var(--classic-text); margin-inline: 0; }
 }
 
 /* The announcement: a light tint of the brand across the page, in ink, so
