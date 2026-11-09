@@ -1,0 +1,45 @@
+---
+source: crates/khalid/src/build_schema_tests.rs
+expression: "SchemaGraph::new(cards).to_json()"
+---
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Course",
+      "@id": "https://www.example.com/blog/seo-writing-course/#course-1",
+      "name": "A free SEO writing course in seven lessons",
+      "description": "Seven short lessons for small teams: read the search, find the questions, brief the post, write the draft, write the title and the description, and edit before you publish. Each lesson has one exercise.",
+      "provider": {
+        "@id": "https://www.example.com/blog/#organization"
+      }
+    },
+    {
+      "@type": "Event",
+      "@id": "https://www.example.com/blog/seo-writing-course/#event-3",
+      "name": "SEO writing course: live questions",
+      "startDate": "2026-12-03T17:00:00Z",
+      "endDate": "2026-12-03T18:00:00Z",
+      "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "location": {
+        "@type": "VirtualLocation",
+        "url": "https://meet.example.org/larkspur-live"
+      },
+      "description": "One hour on a video call. Bring your draft and one question about it.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "GBP",
+        "availability": "https://schema.org/InStock"
+      },
+      "organizer": {
+        "@id": "https://www.example.com/blog/#organization"
+      },
+      "performer": {
+        "@type": "Person",
+        "name": "Maren Okafor"
+      }
+    }
+  ]
+}

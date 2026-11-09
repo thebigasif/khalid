@@ -1,7 +1,7 @@
 //! The schema a post's own content writes (plan section 5.9): its FAQ,
-//! how-to, review, recipe, product and video blocks as their schema.org
-//! types, its images and videos for the sitemap, and the entities it links
-//! to as `mentions`.
+//! how-to, review, recipe, product, video, business, location, event,
+//! course, book and dataset blocks as their schema.org types, its images
+//! and videos for the sitemap, and the entities it links to as `mentions`.
 
 use std::path::Path;
 
@@ -16,6 +16,10 @@ use khalid_seo::{
 };
 
 use crate::build_message;
+
+mod cards;
+
+use cards::{business_of, card_of};
 
 /// Hosts whose pages name one entity each, so a link to one is a
 /// `mentions` with that page as its `sameAs`.
@@ -62,7 +66,12 @@ pub(crate) fn fill(
                 Some(product) => SchemaBlock::Product(product),
                 None => continue,
             },
-            // Businesses have their own schema in a later part.
+            StructuredBlock::Business(card) => SchemaBlock::Business(business_of(card, full)?),
+            StructuredBlock::Location(name) => SchemaBlock::Location(name.clone()),
+            StructuredBlock::Card(card) => match card_of(card, full)? {
+                Some(schema) => schema,
+                None => continue,
+            },
             _ => continue,
         };
         seo.blocks.push(schema);

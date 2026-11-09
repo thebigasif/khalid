@@ -16,7 +16,6 @@ tags: [writing, planning]
 image:
   src: cover.svg
   alt: Seven steps climbing to an open orange book, one step for each lesson of the SEO writing course
-schema: '{"@context":"https://schema.org","@type":"Course","name":"A free SEO writing course in seven lessons","description":"Seven short lessons for small teams: read the search, find the questions, brief the post, write the draft, write the title and the description, and edit before you publish. Each lesson has one exercise.","url":"https://www.example.com/blog/seo-writing-course/","inLanguage":"en","isAccessibleForFree":true,"provider":{"@type":"Organization","name":"Larkspur Studio","sameAs":"https://www.example.com","url":"https://www.example.com/blog/","logo":"https://www.example.com/blog/about/logo.svg"},"offers":{"@type":"Offer","category":"Free","price":0,"priceCurrency":"GBP","availability":"https://schema.org/InStock"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online","courseWorkload":"PT3H5M"}}'
 ---
 
 This SEO writing course is free and has seven short lessons. Each one teaches a single skill, gives you one exercise, and points to the post on this blog that covers the skill in full. Take one lesson a day, or the whole course in an afternoon. You need a topic, a notebook and a browser.
@@ -28,6 +27,10 @@ This SEO writing course is free and has seven short lessons. Each one teaches a 
 - **One exercise per lesson.** You finish the course with a post, not just notes.
 - **About three hours in all.** Each lesson takes between a quarter and three quarters of an hour.
 - **No sign-up.** Every lesson is a public post you can read now.
+:::
+
+:::course{name="A free SEO writing course in seven lessons"}
+Seven short lessons for small teams: read the search, find the questions, brief the post, write the draft, write the title and the description, and edit before you publish. Each lesson has one exercise.
 :::
 
 ## Who this SEO writing course is for
@@ -125,12 +128,18 @@ Fresh eyes catch what you no longer see. Give them the question your post answer
 
 Publish the post, then put a date in your calendar to check it in three months. Look at the searches it shows up for in Google's free [Search Console](https://search.google.com/search-console/about). They tell you which questions to add next.
 
+Bring your draft to a free live lesson, where the course's author answers questions about it.
+
+:::event{name="SEO writing course: live questions" start="2026-12-03T17:00+00:00" end="2026-12-03T18:00+00:00" online="https://meet.example.org/larkspur-live" price="0" currency="GBP" performer="Maren Okafor"}
+One hour on a video call. Bring your draft and one question about it.
+:::
+
 :::callout{kind=tip}
 Take the SEO writing course again with a second topic. The lessons go faster the second time, and you will spot what you skipped the first time.
 :::
 
 ## How this page is marked up
 
-This page carries [[glossary:structured-data|structured data for a course]]: a short block of code that names the course, says who runs it and states that it is free and online. Khalid writes it from the post's settings, so the page and the code always agree.
+This page carries [[glossary:structured-data|structured data for a course]]: a short block of code that names the course, says who runs it and states that it is free and online. Khalid writes it from the course card at the top, so the page and the code always agree.
 
 ::newsletter{label="Your email address" button="Get one lesson a week by email"}
