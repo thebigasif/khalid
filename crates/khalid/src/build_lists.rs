@@ -299,7 +299,7 @@ fn collections(
 /// Where the page of `collection` sits, after the mount and the language
 /// prefix, such as `guides/` for `/guides/{slug}/`. `None` when that is
 /// the home page, which lists every post already.
-fn collection_rest(routes: &Routes, collection: &str) -> Option<String> {
+pub(crate) fn collection_rest(routes: &Routes, collection: &str) -> Option<String> {
     let (folders, _) = shape(routes, collection);
     (!folders.is_empty()).then_some(folders)
 }
