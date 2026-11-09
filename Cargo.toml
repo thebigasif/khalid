@@ -305,6 +305,21 @@ opt-level = "z"
 opt-level = "z"
 [profile.release.package.math-core]
 opt-level = "z"
+# The SQLite security fix (RUSTSEC-2026-0459) pushed the binary over budget.
+# None of these runs on a reader's request either: the HTML cleaner runs
+# once per `:::html` block at build, the YAML error printer only when a
+# file has an error, the XML reader for an import or the audit, and the
+# archive writer for a backup. The passkey crypto crates grew the binary at
+# "z" and stay at "s" (docs/standards/performance.md, "Room for the SQLite
+# fix").
+[profile.release.package.ammonia]
+opt-level = "z"
+[profile.release.package.annotate-snippets]
+opt-level = "z"
+[profile.release.package.roxmltree]
+opt-level = "z"
+[profile.release.package.tar]
+opt-level = "z"
 
 [profile.dev]
 debug = "line-tables-only"
