@@ -44,6 +44,9 @@ body { overflow-x: clip; }
    to the edges of the window, the call to action as the one solid button. */
 .announcement { margin-block-end: 0; padding-block: 0.625rem; background: var(--compass-tint); border: 0; box-shadow: 0 0 0 100vmax var(--compass-tint); clip-path: inset(0 -100vmax); font-size: 0.875rem; font-weight: 500; }
 .announcement a { color: var(--color-text); text-decoration-color: color-mix(in oklab, var(--color-accent) 60%, transparent); }
+/* The consent banner's words start where the header's do. */
+.consent { padding-inline: max(0px, (100% - var(--compass-wide)) / 2); }
+.consent > * { margin-inline: 0; }
 .site-header { flex-wrap: nowrap; gap: 0.5rem 2rem; padding-block: 0.875rem; border-block-end: 1px solid; border-image: linear-gradient(var(--compass-line), var(--compass-line)) 0 0 1 0 / 0 0 1px 0 / 0 100vmax; }
 .site-name { gap: 0.5rem; font-size: 1.25rem; letter-spacing: -0.01em; }
 .site-name:not(.site-logo)::before { inline-size: 1.5rem; block-size: 1.5rem; color: var(--color-accent); }
@@ -114,7 +117,7 @@ main:has(> .post) > .breadcrumbs ol { justify-content: center; }
 main:has(> .post) > .breadcrumbs li:last-child { flex: 0 1 auto; }
 .post-header { display: flow-root; margin-block-end: 3rem; padding-block-end: 2.5rem; text-align: center; }
 .post-header:has(.image) { padding-block-end: 0; }
-.post-header h1, .page h1 { margin-block: 0.75rem 1.25rem; font-weight: 800; line-height: 1.04; letter-spacing: -0.04em; text-wrap: balance; }
+.post-header h1, .page h1 { margin-block: 0.75rem 1.25rem; font-weight: 800; line-height: 1.04; letter-spacing: -0.02em; text-wrap: balance; }
 @media (min-width: 48rem) { .post-header h1 { font-size: calc(var(--text-h1) * 1.125); } }
 .post-header .dek { max-inline-size: 40rem; margin: -0.25rem auto 1.5rem; color: var(--color-muted); font-size: clamp(1.1875rem, 1rem + 0.6vw, 1.4375rem); line-height: 1.5; text-wrap: balance; }
 .post-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0.25rem 1.75rem; font-size: 0.9375rem; }
@@ -312,7 +315,7 @@ main > .breadcrumbs:has(+ h1) { margin-block: 0; padding-block-start: 1.5rem; bo
    intro, then every topic as a numbered stop on one dashed trail. */
 .masthead { margin-block-end: clamp(1rem, 3vw, 2rem); padding-block: clamp(3rem, 9vw, 7.5rem) clamp(2.5rem, 4vw, 3.5rem); }
 @media (min-width: 48rem) { .masthead { padding-inline-end: clamp(11rem, 24vw, 24rem); } }
-.masthead h1 { margin: 0; max-inline-size: 15ch; font-size: clamp(2.5rem, 1.25rem + 4.8vw, 6.75rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.045em; text-wrap: balance; }
+.masthead h1 { margin: 0; max-inline-size: 15ch; font-size: clamp(2.5rem, 1.25rem + 4.8vw, 6.75rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.02em; text-wrap: balance; }
 .masthead .intro { max-inline-size: 36rem; margin-block: 1.5rem 0; font-size: clamp(1.1875rem, 1rem + 0.6vw, 1.4375rem); line-height: 1.5; }
 .masthead .intro > :last-child { margin-block-end: 0; }
 .masthead .hero-stats { margin-block: 2rem 0; }
@@ -353,7 +356,7 @@ main > .breadcrumbs:has(+ h1) { margin-block: 0; padding-block-start: 1.5rem; bo
 }
 
 /* A list's title on the same map. */
-main > h1:first-child, main > .breadcrumbs + h1 { margin-block: 0; padding-block: clamp(2.5rem, 7vw, 5.5rem); font-size: clamp(2.75rem, 1.25rem + 4vw, 4.75rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; text-wrap: balance; }
+main > h1:first-child, main > .breadcrumbs + h1 { margin-block: 0; padding-block: clamp(2.5rem, 7vw, 5.5rem); font-size: clamp(2.75rem, 1.25rem + 4vw, 4.75rem); font-weight: 800; line-height: 1; letter-spacing: -0.02em; text-wrap: balance; }
 main > .breadcrumbs + h1 { padding-block-start: clamp(1.5rem, 4vw, 3rem); }
 @media (min-width: 48rem) { main > h1:first-child, main > .breadcrumbs + h1 { padding-inline-end: clamp(11rem, 24vw, 24rem); } }
 main > h1 + .intro { max-inline-size: var(--measure); margin-block: 2rem 0; font-size: 1.1875rem; }
@@ -363,7 +366,7 @@ main > h1 + :is(p, ul, ol, div:not(.intro), nav, form) { margin-block-start: 2re
 .jump-links a { color: var(--color-text); font-weight: 600; text-decoration: none; }
 .jump-links a:hover { color: var(--color-link); }
 .home-section { margin-block: 3.5rem var(--space-section); scroll-margin-block-start: var(--space); }
-.home-section > h2, .topic-tabs > h2, .media-row > h2, main > section > h2 { display: flex; align-items: center; gap: 1.25rem; margin-block: 0 2rem; font-size: var(--text-h2); font-weight: 800; letter-spacing: -0.025em; }
+.home-section > h2, .topic-tabs > h2, .media-row > h2, main > section > h2 { display: flex; align-items: center; gap: 1.25rem; margin-block: 0 2rem; font-size: var(--text-h2); font-weight: 800; letter-spacing: -0.02em; }
 :is(.home-section, .topic-tabs, .media-row) > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--compass-line); }
 .view-all a { font-weight: 600; }
 main > h1 ~ .cards { margin-block-start: 3.5rem; }
@@ -407,7 +410,7 @@ main > h1 ~ .cards { margin-block-start: 3.5rem; }
   .cards:has(> li:nth-child(4)) > li:first-child .card { grid-template-columns: minmax(0, 1.35fr) auto minmax(0, 1fr); grid-template-areas: "picture topic topic" "picture title title" "picture words words" "picture who when"; align-content: center; }
   .cards:has(> li:nth-child(4)) > li:first-child .image { grid-row: 1 / span 5; margin: 0 3rem 0 0; }
   [dir="rtl"] .cards:has(> li:nth-child(4)) > li:first-child .image { margin: 0 0 0 3rem; }
-  .cards:has(> li:nth-child(4)) > li:first-child :is(h2, h3, h4) { font-size: clamp(2rem, 0.75rem + 2.4vw, 3.25rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.035em; margin-block-end: 1.25rem; text-wrap: balance; }
+  .cards:has(> li:nth-child(4)) > li:first-child :is(h2, h3, h4) { font-size: clamp(2rem, 0.75rem + 2.4vw, 3.25rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-block-end: 1.25rem; text-wrap: balance; }
   .cards:has(> li:nth-child(4)) > li:first-child .card > p:last-child { font-size: 1.125rem; -webkit-line-clamp: 4; line-clamp: 4; margin-block-end: 1.75rem; }
 }
 
@@ -462,7 +465,7 @@ main > h1 ~ .cards { margin-block-start: 3.5rem; }
 .author-header { display: contents; }
 .author-photo { grid-column: 1; grid-row: 1 / span 2; inline-size: clamp(6rem, 16vw, 11rem); }
 .author-photo img { border: 4px solid var(--color-background); }
-.author-header h1 { margin-block: 0 0.25rem; font-weight: 800; letter-spacing: -0.025em; }
+.author-header h1 { margin-block: 0 0.25rem; font-weight: 800; letter-spacing: -0.02em; }
 .author .author-role { margin-block: 0 0.25rem; font-weight: 500; }
 @media (max-width: 39.99rem) {
   .author { grid-template-columns: minmax(0, 1fr); }
