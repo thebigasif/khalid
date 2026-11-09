@@ -852,8 +852,9 @@ jobs:
 
   # Getting and renewing a certificate, against pebble, Let's Encrypt's own
   # test server (task 5.13, gap audit 2 G35). The tests in
-  # crates/khalid-https/tests/pebble.rs are ignored elsewhere because they
-  # need pebble running; this job starts it as their first lines say.
+  # crates/khalid-https/tests/pebble.rs and crates/khalid/tests/serve_pebble.rs
+  # are ignored elsewhere because they need pebble running; this job starts
+  # it as their first lines say.
   # On pull requests only, and not a required check.
   https:
     name: HTTPS against pebble
@@ -875,7 +876,9 @@ jobs:
           go-version: stable
           cache: false
       - name: Build the tests first, while pebble is not running
-        run: cargo test -p khalid-https --test pebble --no-run
+        run: |
+          cargo test -p khalid-https --test pebble --no-run
+          cargo test -p khalid --features test-util --test serve_pebble --no-run
       - name: Start pebble
         run: |
           go install "github.com/letsencrypt/pebble/v2/cmd/pebble@$PEBBLE_VERSION"
@@ -901,6 +904,11 @@ jobs:
           exit 1
       - name: The ignored HTTPS tests
         run: cargo test -p khalid-https --test pebble -- --ignored
+      # The real binary, `khalid serve --domain`: issue, serve and renew.
+      # One at a time, since each answers pebble's checks on ports 5001
+      # and 5002.
+      - name: The ignored khalid serve HTTPS tests
+        run: cargo test -p khalid --features test-util --test serve_pebble -- --ignored --test-threads 1
       - name: Pebble's output
         if: failure()
         run: cat target/pebble/pebble.log target/pebble/challtestsrv.log || true
