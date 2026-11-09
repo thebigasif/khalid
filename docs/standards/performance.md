@@ -248,6 +248,21 @@ All kept: 31,420,216 bytes, 115,136 less than before, 4,288 less than main and 3
 
 None of the crates moved to `"z"` runs on a reader's request. Regular expressions are compiled once; the HTML parser reads a card's HTML once per post at build, a main site for theme sync or a page for the audit; the selectors only the last two; CBOR is read at a passkey sign-in; maths is drawn once per post at build; the packs are read at start. The text that is now packed is read once and kept. `scripts/perf.sh` was not run for this change on this server, which was shared with six other builds; CI's performance budgets job measures it.
 
+### Room for the SQLite fix (RUSTSEC-2026-0459, 2026-11-09)
+
+Moving the bundled SQLite to 3.54.1 (PR #1120) built 31,481,816 bytes, 24,536 over the budget, and the waiting `tiny-skia` 0.12 update adds about 5 KB more. Taking out SQLite compile options would change what SQLite does, so the room came from the release profile instead. Each step below is `cargo build --release -p khalid` on this server:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before (fix/sqlite-cve, 5423c83b) | 31,481,816 | |
+| `ammonia`, `annotate-snippets`, `roxmltree`, `tar` and the passkey crypto crates (`crypto-glue`, `crypto-bigint`, `crypto-primes`, `rsa`, `ecdsa`, `elliptic-curve`, `primefield`, `p256`, `p384`, `p521`, `webauthn-attestation-ca`, `x509-cert`) at `"z"` | 31,406,680 | 75,136 |
+| The same without the passkey crypto crates | 31,400,920 | 80,896, so the crypto crates grew the binary by 5,760 at `"z"` |
+| `ammonia`, `annotate-snippets`, `roxmltree` and `tar` at `"z"` (kept) | 31,403,736 | 78,080 |
+
+The last two rows set the same levels, once through `--config` and once in `Cargo.toml`; they differ by 2,816 bytes between builds. All kept: 31,403,736 bytes, 78,080 less than before and 53,544 under the budget.
+
+None of the four runs on a reader's request. `ammonia` cleans a writer's own HTML once per `:::html` block at build, `annotate-snippets` prints a YAML file's error only when there is one, `roxmltree` reads XML for an import or the audit, and `tar` writes a backup. Nothing else changed: no dependency, feature or SQLite option. Embedded text was looked at too, and all that is still stored plain outside tests is about 9 KB of comment, newsletter and lock-page strings, too little to be worth packing. `scripts/perf.sh` was not run for this change on this shared server; CI's performance budgets job measures it.
+
 ## Page weight
 
 Pictures are most of what a reader downloads. Every picture is offered in several widths (`srcset`), and its `sizes` tells the browser how wide the page draws it, so the browser fetches the smallest file that fills the slot. A `sizes` wider than the slot fetches a bigger file than it draws. One narrower makes the picture blurry.
