@@ -13,7 +13,8 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::time::Duration;
 
-use khalid_core::{AbsoluteUrl, Secret, Slug, SystemClock};
+use chrono::{SecondsFormat, TimeDelta};
+use khalid_core::{AbsoluteUrl, Clock, Secret, Slug, SystemClock};
 use khalid_db::{Database, WebhookTable};
 use khalid_webhooks::{Event, SIGNATURE_HEADER, SigningKey, Verifier};
 use serde_json::{Value, json};
@@ -381,6 +382,37 @@ async fn a_changelog_draft_scheduled_fires_changelog_entry_scheduled() {
     let file = ("en/changelog/2026-11.md", CHANGELOG);
     let entry = ("changelog_entry", "en.2026-11");
     schedule_move_cancel(Event::ChangelogEntryScheduled, file, entry).await;
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_page_draft_goes_live_at_its_time_and_fires_page_published_once() {
+    let events = [Event::PageScheduled, Event::PagePublished];
+    let (receiver, site, _server, secrets) = serving(&events).await;
+    let mut draft = site.path().to_path_buf();
+    draft.push("drafts/en/pages/contact.md");
+    fs::create_dir_all(draft.parent().unwrap()).unwrap();
+    // Far enough ahead that serve sees the draft waiting first.
+    let soon = SystemClock.now() + TimeDelta::seconds(10);
+    let soon = soon.to_rfc3339_opts(SecondsFormat::Secs, true);
+    fs::write(&draft, at(PAGE, &soon)).unwrap();
+
+    let scheduled = deliveries(&receiver, (events[0], 1), &secrets[0]).await;
+    assert_eq!(scheduled[0]["page"]["publish_at"], soon.as_str());
+    let body = the_delivery(&receiver, events[1], &secrets[1]).await;
+    assert_eq!(body["page"]["id"], "en.contact", "{body}");
+    assert_eq!(
+        body["page"]["file"], "content/en/pages/contact.md",
+        "{body}"
+    );
+    let mut live = site.path().to_path_buf();
+    live.push("content/en/pages/contact.md");
+    assert_eq!(fs::read_to_string(&live).unwrap(), PAGE, "no publish_at");
+    assert!(!draft.exists(), "the draft moved");
+
+    tokio::time::sleep(Duration::from_secs(6)).await;
+    let all = receiver.received_requests().await.unwrap();
+    let paths: Vec<&str> = all.iter().map(|r| r.url.path()).collect();
+    assert_eq!(paths, ["/page.scheduled", "/page.published"], "once each");
 }
 
 /// Saves `site.toml` with `change` made to its text, and gives back the

@@ -83,6 +83,24 @@ pub(crate) fn read(folder: &Path) -> BTreeMap<String, Waiting> {
     found
 }
 
+/// Each draft in the site `folder` whose publish time is at or before
+/// `now`, as its file and the file it goes live as, both relative to
+/// `folder`, such as `drafts/en/pages/about.md` and
+/// `content/en/pages/about.md`, oldest time first.
+pub(crate) fn due(folder: &Path, now: DateTime<Utc>) -> Vec<(String, String)> {
+    let mut due: Vec<_> = read(folder)
+        .into_iter()
+        .filter_map(|(live, draft)| {
+            let at = draft.publish_at.filter(|at| *at <= now)?;
+            Some((at, draft.entry.file, live))
+        })
+        .collect();
+    due.sort();
+    due.into_iter()
+        .map(|(_, draft, live)| (draft, live))
+        .collect()
+}
+
 /// The draft of `kind` in `language`, at `drafts/<at>` and named
 /// `file_name`, whose file holds `text`.
 fn waiting(kind: Kind, (language, at, file_name): (&str, &str, &str), text: &str) -> Waiting {
