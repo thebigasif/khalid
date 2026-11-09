@@ -40,7 +40,7 @@ body { overflow-x: clip; -webkit-font-smoothing: antialiased; }
   body { --keystone-edge: calc(50% - min(var(--keystone-page), 100% - 2 * var(--keystone-gutter)) / 2 - 1.25rem); background-image: linear-gradient(90deg, transparent var(--keystone-edge), var(--keystone-guide) 0 calc(var(--keystone-edge) + 1px), transparent 0 calc(100% - var(--keystone-edge) - 1px), var(--keystone-guide) 0 calc(100% - var(--keystone-edge)), transparent 0); }
 }
 h1, h2, h3, h4 { letter-spacing: -0.02em; }
-h1 { letter-spacing: -0.035em; line-height: 1.04; text-wrap: balance; }
+h1 { line-height: 1.04; text-wrap: balance; }
 /* The keystone wedge: a small accent mark before a label. */
 .featured > h2::before, .eyebrow a::before, .subscriber-line::before { content: ""; display: inline-block; inline-size: 0.75rem; block-size: 0.5625rem; margin-inline-end: 0.5rem; background: var(--color-accent); clip-path: var(--keystone-wedge); }
 .card :is(h2, h3, h4), .faq summary, .person-name, .howto-step { font-weight: 600; }
@@ -58,7 +58,7 @@ a:hover { text-decoration-color: currentColor; }
 .announcement a:hover { text-decoration: underline; }
 .site-header { position: relative; min-block-size: 5rem; padding-block: 0.875rem; gap: 0.25rem 2rem; border: 0; }
 .site-header::after { content: ""; position: absolute; inset-inline: calc(50% - 50vw); inset-block-end: 0; border-block-end: var(--keystone-line); }
-.site-name { font-family: var(--font-heading); font-size: 1.1875rem; font-weight: 700; letter-spacing: -0.025em; }
+.site-name { font-family: var(--font-heading); font-size: 1.1875rem; font-weight: 700; letter-spacing: -0.02em; }
 .site-logo img { block-size: 2.75rem; inline-size: 11rem; }
 .site-header nav { flex: 1; }
 .site-header nav ul { justify-content: flex-end; gap: 0; }
@@ -93,7 +93,7 @@ a:hover { text-decoration-color: currentColor; }
 /* Lists of posts: the page title, its topics, then cards. */
 main > :is(h1:first-child, .breadcrumbs + h1) { margin-block: calc(var(--space) * 7) calc(var(--space) * 6); font-size: clamp(2.5rem, 1.6rem + 3vw, 4.25rem); }
 /* The masthead: the blog's name in large tight type across the top. */
-.home-head h1 { margin-block: clamp(2.5rem, 1rem + 5vw, 6rem) 0; font-size: clamp(2.5rem, 1.25rem + 5.4vw, 6.5rem); font-weight: 700; letter-spacing: -0.05em; line-height: 0.95; }
+.home-head h1 { margin-block: clamp(2.5rem, 1rem + 5vw, 6rem) 0; font-size: clamp(2.5rem, 1.25rem + 5.4vw, 6.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 0.95; }
 .home-head .intro { margin-block-start: calc(var(--space) * 3); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); color: var(--color-muted); }
 main > :is(h1:first-child, .breadcrumbs + h1):has(+ .intro) { margin-block-end: calc(var(--space) * 2); }
 main > .breadcrumbs + h1 { margin-block-start: calc(var(--space) * 2); }
@@ -138,7 +138,7 @@ main > .hub-link { margin-block: calc(var(--space) * -3) calc(var(--space) * 6);
 .card-featured:not(:has(.image)) { padding-block: clamp(1.5rem, 4vw, 3.5rem); }
 .card-featured > :not(.image) { margin-inline: clamp(1.25rem, 3vw, 2rem); }
 .card.card-featured > .image { order: -2; margin-block-end: calc(var(--space) * 1.5); border-radius: 0; box-shadow: 0 1px 0 var(--color-border); }
-.card.card-featured h3 { order: -1; margin-block: 0; font-size: clamp(1.875rem, 1rem + 2.4vw, 3.25rem); letter-spacing: -0.035em; line-height: 1.06; font-weight: var(--heading-weight); text-wrap: balance; }
+.card.card-featured h3 { order: -1; margin-block: 0; font-size: clamp(1.875rem, 1rem + 2.4vw, 3.25rem); letter-spacing: -0.02em; line-height: 1.06; font-weight: var(--heading-weight); text-wrap: balance; }
 .card-featured h3 a { color: var(--color-text); text-decoration: none; }
 .card-featured h3 a::after { content: ""; position: absolute; inset: 0; }
 .card-featured:hover h3 a { color: var(--color-link); }
@@ -175,7 +175,7 @@ main > .hub-link { margin-block: calc(var(--space) * -3) calc(var(--space) * 6);
    summary in the muted colour. */
 .home-section { margin-block: 0 var(--space-section); }
 .home-head:has(.topic-row) + .home-section > h2 { padding-block-start: 0; border: 0; }
-.home-section > h2, .media-row > h2, .topic-tabs > h2, .related > h2, .mentions > h2 { display: flex; align-items: baseline; justify-content: space-between; margin-block: 0 calc(var(--space) * 5); padding-block-start: calc(var(--space) * 2.5); border-block-start: 1px solid var(--color-text); font-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.25rem); letter-spacing: -0.03em; }
+.home-section > h2, .media-row > h2, .topic-tabs > h2, .related > h2, .mentions > h2 { display: flex; align-items: baseline; justify-content: space-between; margin-block: 0 calc(var(--space) * 5); padding-block-start: calc(var(--space) * 2.5); border-block-start: 1px solid var(--color-text); font-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.25rem); letter-spacing: -0.02em; }
 .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: calc(var(--space) * 8) calc(var(--space) * 4); }
 /* The newest posts open with two large cards, then run three across. */
 @media (min-width: 60rem) {
@@ -183,7 +183,7 @@ main > .hub-link { margin-block: calc(var(--space) * -3) calc(var(--space) * 6);
   :is(main, [aria-labelledby="recent-title"], .related) > .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: calc(var(--space) * 5); }
   :is(main, [aria-labelledby="recent-title"], .related) > .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li { grid-column: span 2; }
   :is(main, [aria-labelledby="recent-title"], .related) > .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(-n+2) { grid-column: span 3; }
-  :is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(-n+2) .card :is(h2, h3, h4) { font-size: clamp(1.5rem, 1rem + 1vw, 2rem); letter-spacing: -0.03em; line-height: 1.15; }
+  :is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(-n+2) .card :is(h2, h3, h4) { font-size: clamp(1.5rem, 1rem + 1vw, 2rem); letter-spacing: -0.02em; line-height: 1.15; }
   :is(main, [aria-labelledby="recent-title"], .related) > .cards > li:nth-child(-n+2) .card > p:not(.card-meta) { font-size: 1.0625rem; }
   :is(main, [aria-labelledby="recent-title"], .related) > .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+9) { grid-column: span 3; }
 }
@@ -268,7 +268,7 @@ main > :is(.mentions, .comments, .lock, .cta-band, .newsletter-slot) { max-inlin
 .eyebrow { margin-block-end: calc(var(--space) * 2.5); font-size: var(--text-small); font-weight: 600; }
 .eyebrow a { display: inline-flex; align-items: center; color: var(--color-link); text-decoration: none; }
 .eyebrow a:hover { text-decoration: underline; }
-.post-header h1 { margin-block: 0 calc(var(--space) * 3); font-size: clamp(2.375rem, 1.3rem + 3.6vw, 4.5rem); letter-spacing: -0.045em; line-height: 1.02; }
+.post-header h1 { margin-block: 0 calc(var(--space) * 3); font-size: clamp(2.375rem, 1.3rem + 3.6vw, 4.5rem); letter-spacing: -0.02em; line-height: 1.02; }
 .dek { margin-block: 0; color: var(--color-muted); font-size: clamp(1.1875rem, 1rem + 0.6vw, 1.5rem); line-height: 1.45; letter-spacing: -0.01em; }
 /* On a wide screen the title runs past the reading column on its right,
    on the same left edge, as far as the frame allows, so a long title
@@ -386,7 +386,7 @@ pre { padding: 1.25rem 1.5rem; background: var(--color-surface); border: var(--k
 .post-body .callout-summary li { position: relative; padding-inline-start: 1.75rem; }
 .post-body .callout-summary li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.35em; inline-size: 1rem; block-size: 1rem; background: var(--color-link); mask: var(--check) no-repeat center / contain; }
 .post-body .callout-stat { display: grid; padding: 1.75rem 0; background: none; border-block: var(--keystone-line); border-radius: 0; }
-.callout-stat strong:first-child { color: var(--color-link); font-size: 3rem; font-weight: 600; letter-spacing: -0.04em; line-height: 1; margin-block-end: 0.5rem; }
+.callout-stat strong:first-child { color: var(--color-link); font-size: 3rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1; margin-block-end: 0.5rem; }
 .callout { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='8.5' fill='none' stroke='currentColor' stroke-width='1.8'/%3E%3Cpath d='M10 9v5M10 6v.5' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); --check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 .callout-tip { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.5 15.5h5M8.5 18.5h3M10 1.5a6 6 0 0 0-3.5 10.9v1.6h7v-1.6A6 6 0 0 0 10 1.5z' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 .callout-read { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1.5 4h6a2.5 2.5 0 0 1 2.5 2.5V17a2 2 0 0 0-2-2H1.5zM18.5 4h-6A2.5 2.5 0 0 0 10 6.5V17a2 2 0 0 1 2-2h6.5z' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E"); }
@@ -536,3 +536,11 @@ main > section:not([class]) > h2 { margin-block: 0 calc(var(--space) * 4); paddi
 .credits + .post-meta { margin-block-start: 0; }
 .credits dt { color: var(--color-muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
 .credits dd { margin: 0.125rem 0 0; font-size: 0.9375rem; font-weight: 500; }
+
+/* The consent banner and the announcement keep their bands across the
+   window, and their words start under the site's name, where the
+   header starts. */
+.consent { max-inline-size: var(--keystone-page); margin-inline: auto; padding-inline: 0; }
+.consent > * { margin-inline: 0; }
+.announcement { padding-inline: var(--keystone-gutter); text-align: start; }
+.announcement p { max-inline-size: var(--keystone-page); }
