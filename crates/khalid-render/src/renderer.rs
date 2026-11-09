@@ -205,6 +205,14 @@ impl Renderer {
         let template = env
             .get_template(name)
             .map_err(|error| RenderError::render(name, error))?;
+        let placed;
+        let pack = match body {
+            PageBody::Home(home) if home.places_newsletter() => {
+                placed = self.pack.with_newsletter_placed();
+                &placed
+            }
+            _ => &self.pack,
+        };
         let context = context! {
             site => Serde(site),
             meta => Serde(meta),
@@ -213,7 +221,7 @@ impl Renderer {
             dir => Serde(Direction::of(&site.locale)),
             page => body.value(),
             lists_posts => body.lists_posts(),
-            template => Serde(&self.pack),
+            template => Serde(pack),
             brand => Serde(&self.brand),
         };
         template

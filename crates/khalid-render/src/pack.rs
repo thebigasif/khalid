@@ -88,6 +88,24 @@ impl From<&RenderPack<'_>> for PackContext {
     }
 }
 
+impl PackContext {
+    /// This context for a home page whose sections place the newsletter
+    /// form: the `newsletter` option no longer names the home page, so the
+    /// template's own place for the form stays empty and it shows once.
+    pub(crate) fn with_newsletter_placed(&self) -> Self {
+        let mut context = self.clone();
+        if let Some(TemplateOption::Word(place)) = context.options.get_mut("newsletter") {
+            let left = match place.as_str() {
+                "both" => "post",
+                "home" => "none",
+                other => other,
+            };
+            *place = left.to_owned();
+        }
+        context
+    }
+}
+
 /// The options of the slots around a page (templates spec 4.2), each off:
 /// what a pack that does not take a slot shows.
 fn slots_off() -> [(&'static str, TemplateOption); 7] {

@@ -2,8 +2,8 @@
 //! list of the newest posts, then a row of links to every topic.
 
 use khalid_render::{
-    Feature, HomeSectionPosts, Link, PageBody, PageKind, RenderHome, RenderSite, Renderer,
-    TopicGroup,
+    Feature, HomeSectionKind, HomeSectionPosts, Link, PageBody, PageKind, RenderHome, RenderSite,
+    Renderer, TopicGroup,
 };
 
 use crate::common::{demo_site, meta};
@@ -28,11 +28,13 @@ fn sectioned() -> RenderHome {
             title: "Technical SEO".to_owned(),
             href: "/blog/category/technical-seo/".to_owned(),
             posts: listing.posts,
+            kind: HomeSectionKind::Posts,
         },
         HomeSectionPosts {
             title: "Guides".to_owned(),
             href: "/blog/guides/".to_owned(),
             posts: Vec::new(),
+            kind: HomeSectionKind::Posts,
         },
     ];
     front.topics = vec![

@@ -54,6 +54,8 @@ mod home;
 #[cfg(test)]
 mod home_parts;
 #[cfg(test)]
+mod home_sections;
+#[cfg(test)]
 mod html_check;
 #[cfg(test)]
 mod hub;

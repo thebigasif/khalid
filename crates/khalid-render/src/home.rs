@@ -94,7 +94,8 @@ impl RenderHome {
 }
 
 /// One section of the front page: the newest posts of a category, a
-/// collection or a channel, and a link to all of them.
+/// collection, a channel or a series and a link to all of them, or the
+/// newsletter sign-up.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct HomeSectionPosts {
     /// The section's name, such as `Technical SEO`.
@@ -103,6 +104,40 @@ pub struct HomeSectionPosts {
     pub href: String,
     /// Its newest posts.
     pub posts: Vec<PostCard>,
+    /// What it shows, which templates read as `posts` or `newsletter`.
+    pub kind: HomeSectionKind,
+}
+
+impl HomeSectionPosts {
+    /// The section that shows the newsletter sign-up form: no name, link
+    /// or posts of its own.
+    pub fn newsletter() -> Self {
+        Self {
+            title: String::new(),
+            href: String::new(),
+            posts: Vec::new(),
+            kind: HomeSectionKind::Newsletter,
+        }
+    }
+}
+
+/// What one section of the front page shows.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "lowercase")]
+#[non_exhaustive]
+pub enum HomeSectionKind {
+    /// Its posts and a "View all" link.
+    Posts,
+    /// The newsletter sign-up form, which then shows nowhere else on the
+    /// page.
+    Newsletter,
+}
+
+impl RenderHome {
+    /// Whether one of its sections is the newsletter sign-up.
+    pub fn places_newsletter(&self) -> bool {
+        (self.sections.iter()).any(|section| section.kind == HomeSectionKind::Newsletter)
+    }
 }
 
 /// A group of topic links. A group without a name is shown without a

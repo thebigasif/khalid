@@ -5,6 +5,11 @@
     off; the stylesheet shows one panel at a time. -#}
 {% from "card.html" import cards -%}
 {% from "picture_sizes.html" import slot_sizes -%}
+{% from "slots.html" import newsletter_form -%}
+{#- The newsletter sign-up where a home section of `site.toml` places it;
+    every template's loop over the sections calls it for that section. -#}
+{% macro section_newsletter(site, t) %}{% if site.subscribe %}{{ newsletter_form(site.subscribe, t, "home-newsletter") }}
+{% endif %}{% endmacro %}
 {% macro hero_stats(options) %}{% if options.hero_stats %}<dl class="hero-stats">
 {% for line in options.hero_stats %}{% set parts = line | split("|") | list %}<div>
 <dt>{{ parts[1:] | join("|") | trim }}</dt>
