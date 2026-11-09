@@ -152,6 +152,47 @@ fn an_author_has_a_photo_and_refuses_a_blank_one() {
 }
 
 #[test]
+fn a_blank_list_line_means_an_empty_list_in_every_kind_of_file() {
+    for blank in ["", " ~"] {
+        let author = site_with(
+            "content/en/authors/asif.md",
+            &format!("---\nname: Asif\nsame_as:{blank}\n---\n"),
+        );
+        let content = read_content(&ContentTree::walk(author.path()).unwrap()).unwrap();
+        assert_eq!(content.authors[0].front.same_as.len(), 0);
+
+        let page = site_with(
+            "content/en/pages/hub.md",
+            &format!("---\nhub:\n  category: seo\n  chapters:{blank}\n---\n"),
+        );
+        let content = read_content(&ContentTree::walk(page.path()).unwrap()).unwrap();
+        let hub = content.pages[0].front.hub.as_ref().unwrap();
+        assert_eq!(hub.chapters.len(), 0);
+
+        let guide = site_with(
+            "content/en/guides/crm.md",
+            &format!("---\ntitle: CRM\ntags:{blank}\naliases:{blank}\n---\n"),
+        );
+        let content = read_content(&ContentTree::walk(guide.path()).unwrap()).unwrap();
+        let front = &content.posts[0].front;
+        assert!(front.tags.is_empty() && front.aliases.is_empty());
+    }
+}
+
+#[test]
+fn an_author_with_profiles_still_reads_them() {
+    let dir = site_with(
+        "content/en/authors/asif.md",
+        "---\nname: Asif\nsame_as:\n  - https://serpdad.com/\n---\n",
+    );
+    let content = read_content(&ContentTree::walk(dir.path()).unwrap()).unwrap();
+    assert_eq!(
+        content.authors[0].front.same_as[0].as_str(),
+        "https://serpdad.com/"
+    );
+}
+
+#[test]
 fn a_page_may_be_a_hub_for_a_category_with_chapters_in_order() {
     let text = "---\ntitle: Technical SEO\nhub:\n  category: technical-seo\n  chapters:\n    - what-a-sitemap-does\n    - fixing-slow-pages\n---\n";
     let dir = site_with("content/en/pages/technical-seo.md", text);

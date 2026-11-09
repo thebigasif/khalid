@@ -37,7 +37,7 @@ pub struct PageHub {
     /// The category the hub is the front door to, such as `technical-seo`.
     pub category: Slug,
     /// The posts to read first, in order, by slug.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "crate::blank::or_empty")]
     pub chapters: Vec<Slug>,
 }
 
@@ -57,7 +57,7 @@ pub struct AuthorFront {
     /// reader, and an engine judging the post, can see why to trust them.
     pub credentials: Option<String>,
     /// Profiles elsewhere, written into the author's schema as `sameAs`.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "crate::blank::or_empty")]
     pub same_as: Vec<AbsoluteUrl>,
     /// The author's photo for bylines, cards and the author page: a file
     /// beside the author's file, such as `asif.jpg`, a media path or a
