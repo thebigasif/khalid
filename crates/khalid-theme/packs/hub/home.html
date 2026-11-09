@@ -10,6 +10,7 @@
     page. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import cards, pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import avatar -%}
@@ -30,13 +31,13 @@
 {% endif %}{{ hero_stats(options) }}</header>
 {{ link_stack(options.links, site.nav.primary, template.cta if options.cta_tile else none, t.link_stack) }}
 {% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}<section class="latest" aria-labelledby="latest-title">
+{% endif %}{% endfor %}{% elif page.posts %}<section class="latest" aria-labelledby="latest-title">
 <h2 id="latest-title">{{ t.latest_posts }}</h2>
 {{ cards(page.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 </section>

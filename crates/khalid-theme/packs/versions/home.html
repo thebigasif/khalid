@@ -6,7 +6,8 @@
     screens: "Get updates", with the sign-up form and the feeds of every
     change and of each type, and the versions on this page as anchor
     links. With home sections in site.toml, each section is a timeline
-    of its own. -#}
+    of its own; a newsletter section adds nothing, as "Get updates"
+    always carries the form. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
@@ -20,13 +21,13 @@
 <div class="changelog">
 <div class="changelog-main">
 {% if page.categories %}{{ filter_row(t.change_filter, site.home, t.all_changes, page.categories, meta.path, marks) }}
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="changelog-section" aria-labelledby="changelog-section-{{ loop.index }}">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind != "newsletter" %}<section class="changelog-section" aria-labelledby="changelog-section-{{ loop.index }}">
 <h2 id="changelog-section-{{ loop.index }}">{{ section.title }}</h2>
-{% if section.posts %}{{ release_log(section.posts, marks, 3) }}
+{% if section.posts %}{{ release_log(section.posts, marks, 3, "section-" ~ loop.index ~ "-") }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}{{ release_log(page.posts, marks) }}
+{% endif %}{% endfor %}{% elif page.posts %}{{ release_log(page.posts, marks) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</div>

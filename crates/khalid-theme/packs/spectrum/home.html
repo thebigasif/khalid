@@ -9,6 +9,7 @@
     Later pages list the posts as cards. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -24,8 +25,8 @@
 {% set rows = (page.sections or page.tabs) if first_page else [] -%}
 {% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{% if rows %}<nav class="sp-bar" aria-label="{{ t.topic_tabs }}">
 <ul role="list">
-{% for row in rows %}<li data-hue="{{ hue(row.href, row.title, menu) }}"><a href="#sp-row-{{ loop.index }}">{{ row.title }}</a></li>
-{% endfor %}</ul>
+{% for row in rows %}{% if row.kind != "newsletter" %}<li data-hue="{{ hue(row.href, row.title, menu) }}"><a href="#sp-row-{{ loop.index }}">{{ row.title }}</a></li>
+{% endif %}{% endfor %}</ul>
 </nav>
 {% endif %}{% endcall %}
 {% if lead %}<div class="sp-top">
@@ -47,7 +48,7 @@
 {{ feed_list(latest) }}
 </section>
 {% endif %}</div>
-{% endif %}{% for row in rows %}{% set rest = row.posts | rejectattr("href", "eq", lead.href) | list if lead else row.posts -%}
+{% endif %}{% for row in rows %}{% if row.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}{% set rest = row.posts | rejectattr("href", "eq", lead.href) | list if lead else row.posts -%}
 {% set posts = (rest if rest else row.posts)[:4] -%}
 <section class="sp-row" id="sp-row-{{ loop.index }}" data-hue="{{ hue(row.href, row.title, menu) }}" aria-labelledby="sp-row-{{ loop.index }}-title">
 <div class="sp-row-head">
@@ -59,7 +60,7 @@
 {% endfor %}</ul>
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}</section>
-{% endfor %}{% if not first_page %}<header class="list-header">
+{% endif %}{% endfor %}{% if not first_page %}<header class="list-header">
 <h2>{{ t.latest }}</h2>
 </header>
 {% if page.posts %}{{ cards(page.posts, menu) }}

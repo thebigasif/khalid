@@ -8,6 +8,7 @@
     section is a list of guest rows of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
@@ -29,13 +30,13 @@
 {% set notes = all_notes[:options.notes_count] -%}
 {% set episode_topics = episodes | selectattr("category") | map(attribute="category.href") | list -%}
 {% set topics = page.categories | selectattr("href", "in", episode_topics) | list -%}
-{% if page.sections %}{% for section in page.sections %}<section class="dialogue-section" aria-labelledby="dialogue-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="dialogue-section" aria-labelledby="dialogue-section-{{ loop.index }}">
 <h2 id="dialogue-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ guest_rows(section.posts, sizes=slot_sizes("guest_row")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif not episodes and page.posts %}<section class="conversations" aria-labelledby="conversations-title">
+{% endif %}{% endfor %}{% elif not episodes and page.posts %}<section class="conversations" aria-labelledby="conversations-title">
 <h2 id="conversations-title" class="section-label">{{ t.latest_posts }}</h2>
 {{ guest_rows(page.posts, sizes=slot_sizes("guest_row")) }}
 </section>

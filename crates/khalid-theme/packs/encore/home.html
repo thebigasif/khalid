@@ -8,6 +8,7 @@
     site.toml, each section is a shelf of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
@@ -78,14 +79,14 @@
 {% endif %}</li>
 {% endfor %}</ol>
 </section>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-shelf" aria-labelledby="home-section-{{ loop.index }}">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-shelf" aria-labelledby="home-section-{{ loop.index }}">
 <h2 id="home-section-{{ loop.index }}" class="label">{{ section.title }}</h2>
 {% set shown = section.posts | selectattr("facts") | list %}{% set written = section.posts | rejectattr("facts") | list %}{% if shown %}{{ shelf(shown) }}
 {% endif %}{% if written %}{{ note_cards(written) }}
 {% endif %}{% if not section.posts %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% else %}{% set others = releases[1:] if latest else releases %}{% if others %}<section class="home-shelf" aria-labelledby="releases-title">
+{% endif %}{% endfor %}{% else %}{% set others = releases[1:] if latest else releases %}{% if others %}<section class="home-shelf" aria-labelledby="releases-title">
 <h2 id="releases-title" class="label">{{ t.music_releases }}</h2>
 {{ shelf(others) }}
 </section>

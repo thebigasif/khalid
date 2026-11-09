@@ -1,6 +1,7 @@
 {#- Workbench's front page (templates spec 3.7): the categories in one
     menu that opens without a script, the featured post, the newest five
-    posts as a list, the newsletter, the rest as picture cards, the
+    posts as a list, the newsletter, the rest as picture cards (or the
+    home sections of site.toml in their place), the
     newsletter again, and a link to every post. A post with facts shows
     them as a score panel: the first fact large, with a ten-step meter when
     it is a score out of ten, and the next three as a small spec grid. -#}
@@ -10,7 +11,7 @@
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
-{% from "home_parts.html" import hero_stats, home_sections -%}
+{% from "home_parts.html" import hero_stats, home_sections, section_newsletter -%}
 {% macro score(facts, specs=true) -%}
 {% set lead = facts[0] -%}
 {% set rated = (lead.value | trim("0123456789.")) == "" and (lead.value | length == 1 or (lead.value | length == 3 and lead.value[1:2] == ".") or lead.value in ["10", "10.0"]) -%}
@@ -61,7 +62,13 @@
 </section>
 {% elif not slot %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if signup %}{{ newsletter_form(site.subscribe, t, note=note) }}
-{% endif %}{% if posts[5:] %}<section class="wb-more" aria-labelledby="wb-more-title">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="wb-more" aria-labelledby="wb-section-{{ loop.index }}">
+<h2 id="wb-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ cards(section.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endif %}{% endfor %}{% elif posts[5:] %}<section class="wb-more" aria-labelledby="wb-more-title">
 <h2 id="wb-more-title">{{ t.more_posts }}</h2>
 {% if template.options.cards == "image" %}<ul class="cards" role="list">
 {% for post in posts[5:] %}<li>

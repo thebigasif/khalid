@@ -8,6 +8,7 @@
     fact (the version), and the rail and grid make way for it. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -29,13 +30,13 @@
 {% set slot = page.featured if options.featured else none -%}
 {% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
 {% if page.sections %}{% if slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
-{% endif %}{% for section in page.sections %}<section class="home-section">
+{% endif %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif posts | selectattr("facts") | list %}{% set releases = posts | selectattr("facts") | list -%}
+{% endif %}{% endfor %}{% elif posts | selectattr("facts") | list %}{% set releases = posts | selectattr("facts") | list -%}
 {% set essays = posts | rejectattr("facts") | list -%}
 {% set rest = (essays[4:] + releases[8:]) | sort(attribute="date", reverse=true) -%}
 <div class="lead lead-log">

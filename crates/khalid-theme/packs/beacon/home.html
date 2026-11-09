@@ -8,6 +8,7 @@
     a grid of cards of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
@@ -47,7 +48,7 @@
 <h2 id="bc-impact-title" class="bc-label">{{ t.our_impact }}</h2>
 {{ figure_strip(options.hero_stats) }}
 </section>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="bc-section" aria-labelledby="bc-section-{{ loop.index }}">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="bc-section" aria-labelledby="bc-section-{{ loop.index }}">
 <h2 id="bc-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}<ul class="bc-cards" role="list">
 {% for post in section.posts %}<li>{{ campaign_card(post) }}</li>
@@ -55,7 +56,7 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif others %}<section class="bc-section" aria-labelledby="bc-campaigns-title">
+{% endif %}{% endfor %}{% elif others %}<section class="bc-section" aria-labelledby="bc-campaigns-title">
 <h2 id="bc-campaigns-title">{{ t.campaigns }}</h2>
 <ul class="bc-cards" role="list">
 {% for post in others %}<li>{{ campaign_card(post) }}</li>

@@ -1,4 +1,4 @@
-{#- release_log(posts, marks=[], level=2): a version timeline. Posts come
+{#- release_log(posts, marks=[], level=2, prefix=""): a version timeline. Posts come
     newest first, and each run of posts with the same first fact, such
     as a version, becomes one release: that fact's label and value and
     the date on a rail, then its posts, each with its category as a chip,
@@ -7,6 +7,7 @@
     `release_index`. `marks` lists category slugs in order: a chip whose
     category is the third of them gets `data-mark="3"`, which the pack
     styles. Release names use a heading of `level`, titles one below.
+    `prefix` starts each anchor, for a page that shows a post twice.
     The file also holds two helpers the pages call: `type_chip` for one
     chip, and `release_index` for the releases as anchor links. -#}
 {% macro mark_of(category, marks) -%}
@@ -19,9 +20,9 @@
 {% macro type_chip(category, marks=[]) -%}
 {% if category %}<a class="change-type" href="{{ category.href }}" data-mark="{{ mark_of(category, marks) }}">{{ category.name }}</a>{% endif %}
 {%- endmacro %}
-{% macro release_log(posts, marks=[], level=2) -%}
+{% macro release_log(posts, marks=[], level=2, prefix="") -%}
 <div class="release-log">
-{% for post in posts %}{% set key = release_id(post) -%}
+{% for post in posts %}{% set key = prefix ~ release_id(post) -%}
 {% if loop.changed(key) %}{% if not loop.first %}</ol>
 </section>
 {% endif %}<section class="release" id="{{ key }}" aria-labelledby="{{ key }}-name">

@@ -12,6 +12,7 @@
     own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -43,13 +44,13 @@
 {% endif %}<p class="next-preview"><a href="{{ next.href }}">{{ next.title }}</a></p>
 </section>
 {% endif %}</div>
-{% if page.sections %}{% for section in page.sections %}<section class="club-section" aria-labelledby="club-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="club-section" aria-labelledby="club-section-{{ loop.index }}">
 <h2 id="club-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ results_list(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}{% set later = club.upcoming[1:] -%}
+{% endif %}{% endfor %}{% elif page.posts %}{% set later = club.upcoming[1:] -%}
 {% if later or news %}<div class="club-front club-front-side">{% else %}<div class="club-front">{% endif %}
 <section class="club-results" aria-labelledby="club-results-title">
 <h2 id="club-results-title">{{ t.results }}</h2>

@@ -35,6 +35,7 @@ Each section shows up to six posts. Some templates show fewer.
 
 - A section with nothing to show is left out. A category with no posts in German yet does not show on the German home page, and the newsletter section shows only on a site that sends mail.
 - The newsletter form shows once. When you place it as a section, the template's usual place for it on the home page stays empty. Posts keep their form as the template sets it.
+- Dispatch and Versions always show their own sign-up form, at the top and beside the changes, so a newsletter section adds nothing there. Manual shows the form after its grid of topic tiles.
 - Without `home_sections`, the home page stays exactly as it was.
 - With home sections, the archive page is no longer a copy of the home page, so search engines may list it.
 

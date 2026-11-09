@@ -9,6 +9,7 @@
     of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -25,13 +26,13 @@
 {% set loose = lessons | rejectattr("category") | list -%}
 {% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{% if lessons and options.start_button %}<p class="course-start"><a class="button" href="{{ lessons[0].href }}">{{ t.course_start }}</a></p>
 {% endif %}{{ figure_strip(options.hero_stats) }}{% endcall %}
-{% if page.sections %}{% for section in page.sections %}<section class="course-section" aria-labelledby="course-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="course-section" aria-labelledby="course-section-{{ loop.index }}">
 <h2 id="course-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ lesson_rows(section.posts | reverse | list, 3, 1, false) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif lessons or news %}{% if modules and options.course_map %}<section class="course-map" aria-labelledby="course-map-title">
+{% endif %}{% endfor %}{% elif lessons or news %}{% if modules and options.course_map %}<section class="course-map" aria-labelledby="course-map-title">
 <h2 id="course-map-title">{{ t.course_map }}</h2>
 <ol class="map-modules" role="list">
 {% for module in modules %}{% set count = lesson_modules | select("eq", module.href) | list | length %}<li class="map-module">

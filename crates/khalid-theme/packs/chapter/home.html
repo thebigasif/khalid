@@ -9,6 +9,7 @@
     page of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
@@ -45,7 +46,7 @@
 {% endif %}{% endcall %}
 {% if new_book and new_book.image %}<div class="ch-opening-art">{{ picture(new_book.image, slot_sizes("opening")) }}</div>
 {% endif %}</div>
-{% if page.sections %}{% for section in page.sections %}<section class="ch-chapter" aria-labelledby="ch-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="ch-chapter" aria-labelledby="ch-section-{{ loop.index }}">
 <header class="ch-head">
 <p class="ch-numeral" aria-hidden="true">{{ numerals[loop.index0] }}</p>
 <h2 id="ch-section-{{ loop.index }}">{{ section.title }}</h2>
@@ -54,7 +55,7 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}{% if books %}<section class="ch-chapter ch-books" aria-labelledby="ch-books">
+{% endif %}{% endfor %}{% elif page.posts %}{% if books %}<section class="ch-chapter ch-books" aria-labelledby="ch-books">
 <header class="ch-head">
 <p class="ch-numeral" aria-hidden="true">{{ numerals[0] }}</p>
 <h2 id="ch-books">{{ t.books }}</h2>

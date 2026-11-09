@@ -7,6 +7,7 @@
     the front's shape. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "card.html" import cards, pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -22,13 +23,13 @@
 {{ page.intro }}
 </div>
 {% endif %}</header>
-{% if page.sections %}{% for section in page.sections %}<section class="front-block" aria-labelledby="front-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="front-block" aria-labelledby="front-section-{{ loop.index }}">
 <h2 class="rule-label" id="front-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts, 3, shape) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}{% set lead = page.featured if options.featured and page.featured else page.posts[0] -%}
+{% endif %}{% endfor %}{% elif page.posts %}{% set lead = page.featured if options.featured and page.featured else page.posts[0] -%}
 {% set others = page.posts | rejectattr("href", "eq", lead.href) | list -%}
 {% set latest = others[:options.latest_count] -%}
 {% set rest = others[options.latest_count:] -%}

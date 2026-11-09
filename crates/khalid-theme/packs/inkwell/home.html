@@ -8,6 +8,7 @@
     site.toml, each section lists its issues as rows. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -42,13 +43,13 @@
 </div>
 {% if lead.image %}<div class="iw-latest-art">{{ picture(lead.image) }}</div>
 {% endif %}</section>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="iw-archive" aria-labelledby="iw-section-{{ loop.index }}">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="iw-archive" aria-labelledby="iw-section-{{ loop.index }}">
 <h2 id="iw-section-{{ loop.index }}" class="iw-archive-title">{{ section.title }}</h2>
 {% if section.posts %}{{ issue_rows(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}<section class="iw-archive" aria-labelledby="iw-archive-title">
+{% endif %}{% endfor %}{% elif page.posts %}<section class="iw-archive" aria-labelledby="iw-archive-title">
 <h2 id="iw-archive-title" class="iw-archive-title">{{ t.issue_archive }}</h2>
 {{ volumes(page.posts, 3) }}
 </section>

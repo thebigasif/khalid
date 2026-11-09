@@ -4,12 +4,13 @@
     Then a numbered tile per topic (category, in the order categories.toml
     gives) with its newest articles, the popular articles with their
     summaries, and the recently updated articles as a dated feed. With
-    home sections in site.toml, each section is a tile of its own. -#}
+    home sections in site.toml, each section is a tile of its own, and a
+    newsletter section is the sign-up form after the tiles. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
-{% from "home_parts.html" import home_sections -%}
+{% from "home_parts.html" import home_sections, section_newsletter -%}
 {% from "sections/hero.html" import hero -%}
 {% from "sections/feed_list.html" import feed_list -%}
 {% set options = template.options -%}
@@ -30,7 +31,7 @@
 {% if page.sections %}<section class="help-topics" aria-labelledby="help-topics-title">
 <h2 id="help-topics-title">{{ t.help_topics }}</h2>
 <ol class="topic-tiles" role="list">
-{% for section in page.sections %}<li class="topic-tile">
+{% for section in page.sections | rejectattr("kind", "eq", "newsletter") %}<li class="topic-tile">
 <p class="topic-number" aria-hidden="true">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</p>
 <h3><a href="{{ section.href }}">{{ section.title }}</a></h3>
 {% if section.posts %}<ul class="topic-links">
@@ -41,6 +42,7 @@
 </li>
 {% endfor %}</ol>
 </section>
+{% if page.sections | selectattr("kind", "eq", "newsletter") | list %}{{ section_newsletter(site, t) }}{% endif %}
 {% elif page.posts %}{% if first_page and page.tabs %}<section class="help-topics" aria-labelledby="help-topics-title">
 <h2 id="help-topics-title">{{ t.help_topics }}</h2>
 <ol class="topic-tiles" role="list">

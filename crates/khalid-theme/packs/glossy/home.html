@@ -7,6 +7,7 @@
     With home sections in site.toml, each section is a grid of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -24,13 +25,13 @@
 {% set rest = page.posts | rejectattr("href", "eq", lead.href) | list if lead else page.posts -%}
 {% set lines = rest[:options.cover_lines] if lead else [] -%}
 {% set cards = rest[lines | length:] -%}
-{% if page.sections %}{% for section in page.sections %}<section class="gl-stories" aria-labelledby="gl-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="gl-stories" aria-labelledby="gl-section-{{ loop.index }}">
 <h2 id="gl-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ story_grid(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% else %}{% if lead %}{{ cover(lead, lines) }}
+{% endif %}{% endfor %}{% else %}{% if lead %}{{ cover(lead, lines) }}
 {% endif %}{% if cards %}<section class="gl-stories" aria-labelledby="gl-latest-title">
 <h2 id="gl-latest-title">{{ t.the_latest }}</h2>
 {{ story_grid(cards) }}

@@ -8,6 +8,7 @@
     the shared front page. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -44,13 +45,13 @@
 <h2>{{ t.editors_picks }}</h2>
 {{ cards(picks[:template.options.picks], 3, "text") }}
 </section>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif rest %}{{ cards(rows, sizes=slot_sizes("home", template.options.cards)) }}
+{% endif %}{% endfor %}{% elif rest %}{{ cards(rows, sizes=slot_sizes("home", template.options.cards)) }}
 {% if index %}<section class="index" aria-labelledby="index-title">
 <h2 id="index-title">{{ t.more_posts }}</h2>
 <ol class="index-list" role="list">

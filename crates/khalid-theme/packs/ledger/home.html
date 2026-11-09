@@ -11,6 +11,7 @@
     band. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import avatar -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -64,13 +65,13 @@
 </section>
 {% endif %}</div>
 {% endif %}<div class="ledger-main">
-{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ entries(section.posts[:5], 3) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}<section class="home-section home-latest" aria-labelledby="latest-title">
+{% endif %}{% endfor %}{% elif page.posts %}<section class="home-section home-latest" aria-labelledby="latest-title">
 <h2 id="latest-title">{{ t.contents }}</h2>
 {{ entries(page.posts, 3) }}
 </section>

@@ -8,6 +8,7 @@
     of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
@@ -20,13 +21,13 @@
 {% endif %}{{ hero_stats(options) }}</header>
 <div class="nb-layout">
 <div class="nb-main">
-{% if page.sections and not later %}{% for section in page.sections %}<section class="home-section" aria-labelledby="home-section-{{ loop.index }}">
+{% if page.sections and not later %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-section" aria-labelledby="home-section-{{ loop.index }}">
 <h2 id="home-section-{{ loop.index }}" class="nb-label">{{ section.title }}</h2>
 {% if section.posts %}{{ stream(section.posts, 4, "section-" ~ loop.index) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}{{ stream(page.posts, 3) }}
+{% endif %}{% endfor %}{% elif page.posts %}{{ stream(page.posts, 3) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</div>

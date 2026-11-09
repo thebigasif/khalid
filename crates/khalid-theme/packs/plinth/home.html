@@ -10,6 +10,7 @@
     site.toml, each section is a row of sheets of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
@@ -27,7 +28,7 @@
 {% set project_kinds = projects | selectattr("category") | map(attribute="category.href") | list -%}
 {% set note_kinds = all_notes | selectattr("category") | map(attribute="category.href") | list -%}
 {% set kinds = page.categories | rejectattr("href", "in", note_kinds | reject("in", project_kinds) | list) | list -%}
-{% if page.sections %}{% for section in page.sections %}<section class="studio-section" aria-labelledby="studio-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="studio-section" aria-labelledby="studio-section-{{ loop.index }}">
 <h2 id="studio-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}<ul class="sheets" role="list">
 {% for post in section.posts %}<li class="sheet">
@@ -39,7 +40,7 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif projects or notes %}{% if projects %}<section class="projects" aria-labelledby="projects-title">
+{% endif %}{% endfor %}{% elif projects or notes %}{% if projects %}<section class="projects" aria-labelledby="projects-title">
 <h2 id="projects-title">{{ t.projects }}</h2>
 <ol class="spreads" role="list">
 {% for post in projects %}<li class="spread">

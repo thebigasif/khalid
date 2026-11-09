@@ -8,6 +8,7 @@
     post, and shows on the first page only. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "card.html" import pages -%}
@@ -34,13 +35,13 @@
 {{ byline(lead.author, lead.date) }}
 </div>
 </article>
-{% endif %}{% if page.sections and not later %}{% for section in page.sections %}<section class="hh-section" aria-labelledby="hh-section-{{ loop.index }}">
+{% endif %}{% if page.sections and not later %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="hh-section" aria-labelledby="hh-section-{{ loop.index }}">
 <h2 id="hh-section-{{ loop.index }}" class="hh-heading">{{ section.title }}</h2>
 {% if section.posts %}{{ hearth_cards(section.posts[:6]) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif rest %}<section class="hh-section" aria-labelledby="hh-latest">
+{% endif %}{% endfor %}{% elif rest %}<section class="hh-section" aria-labelledby="hh-latest">
 <h2 id="hh-latest" class="hh-heading">{{ t.latest }}</h2>
 {{ hearth_cards(rest) }}
 </section>

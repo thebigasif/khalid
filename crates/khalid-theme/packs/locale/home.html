@@ -8,6 +8,7 @@
     section is a block of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -22,7 +23,7 @@
 {% endif %}{% endfor %}</ul>
 </nav>
 {% endif %}{% endcall %}
-{% if page.sections %}{% for section in page.sections %}<section class="lc-area" id="area-{{ loop.index }}" aria-labelledby="area-title-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="lc-area" id="area-{{ loop.index }}" aria-labelledby="area-title-{{ loop.index }}">
 <header class="lc-area-head">
 <h2 id="area-title-{{ loop.index }}"><span class="lc-pin" aria-hidden="true"></span>{{ section.title }}</h2>
 <p class="lc-area-all"><a href="{{ section.href }}">{{ t.area_all | replace("{name}", section.title) }}</a></p>
@@ -31,7 +32,7 @@
 {% elif section.posts %}{{ note_cards(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}</section>
-{% endfor %}{% elif places %}<h2 class="lc-heading">{{ t.places_by_area }}</h2>
+{% endif %}{% endfor %}{% elif places %}<h2 class="lc-heading">{{ t.places_by_area }}</h2>
 {% for area in page.categories %}{% set here = places | selectattr("category.href", "eq", area.href) | list %}{% if here %}<section class="lc-area" id="area-{{ loop.index }}" aria-labelledby="area-title-{{ loop.index }}">
 <header class="lc-area-head">
 <h3 id="area-title-{{ loop.index }}"><span class="lc-pin" aria-hidden="true"></span>{{ area.name }}</h3>

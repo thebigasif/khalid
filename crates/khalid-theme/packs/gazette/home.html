@@ -9,6 +9,7 @@
     stories by day. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "sections/hero.html" import hero -%}
@@ -36,7 +37,8 @@
 {% endif %}</aside>
 {% if blocks %}<div class="gz-sections">
 {% for block in blocks %}{% set posts = block.posts | rejectattr("href", "eq", top.href if top else "") | list -%}
-{% if posts %}<section class="gz-section" id="section-{{ loop.index }}" aria-labelledby="section-title-{{ loop.index }}">
+{% if block.kind == "newsletter" %}{{ section_newsletter(site, t) }}
+{% elif posts %}<section class="gz-section" id="section-{{ loop.index }}" aria-labelledby="section-title-{{ loop.index }}">
 {{ flag(block.title, block.href, "section-title-" ~ loop.index, t.section_all | replace("{name}", block.title)) }}
 {{ story(posts[0], 3) }}
 {% if posts[1:] %}{{ headline_list(posts[1:4], 3) }}

@@ -8,6 +8,7 @@
     With home sections in site.toml, each section is a table of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -38,13 +39,13 @@
 {{ hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) }}
 {% if signup %}{{ newsletter_form(site.subscribe, t, "masthead-signup") }}
 {% endif %}</div>
-{% if page.sections %}{% for section in page.sections %}<section class="board" aria-labelledby="board-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="board" aria-labelledby="board-{{ loop.index }}">
 <h2 id="board-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ fact_table(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}{% if lead %}<section class="lead-issue" aria-labelledby="lead-issue-title">
+{% endif %}{% endfor %}{% elif page.posts %}{% if lead %}<section class="lead-issue" aria-labelledby="lead-issue-title">
 <div class="lead-text">
 <p class="lead-kicker"><span>{{ t.latest_issue }}</span>{% if lead.category %} <a href="{{ lead.category.href }}">{{ lead.category.name }}</a>{% endif %}</p>
 <h2 id="lead-issue-title"><a href="{{ lead.href }}">{{ lead.title }}</a></h2>
