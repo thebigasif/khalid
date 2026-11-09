@@ -22,13 +22,14 @@ Classic suits any blog that wants to start writing today and choose a look later
 
 **Front page**
 - A wide frame, 72rem at most, with the blog's name and quiet menu links in one row at the top.
-- The announcement, when you set one, as a dark band across the full width above the header.
+- The announcement, when you set one, as a light tint of your accent colour across the full width above the header, with the words in your text colour.
+- The privacy banner, when the blog asks readers for consent, with its words and buttons starting under the blog's name from 640 px wide.
 - The blog's name in large type.
 - The newest post as a large lead story: its picture beside its topic, author, date, title and summary.
 - The other posts as a grid of cards, three across on a wide screen and one on a phone. Each card has its picture in one 16:9 shape, the topic in small capitals above the title, the author and date, and the summary.
 
 **A post**
-- The title in large type, over a column of readable width in the middle of the frame.
+- The title in large type, over a column of readable width. A short post's column sits in the middle of the frame. A long post with its contents beside it sits in the header's frame from 1024 px wide: the text starts under the blog's name and the contents follow it, 4rem to its right.
 - The byline: each author's photo, name and role, then the reviewer, the date, the reading time and the topic in one row.
 - The lead image under the byline.
 - On a wide screen, a long post's contents in a quiet column beside the text, with the section you are reading marked. On a phone, the contents fold into a box above the text.

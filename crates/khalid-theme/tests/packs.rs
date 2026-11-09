@@ -109,6 +109,36 @@ fn every_pack_stylesheet_reads_back_from_the_binary() {
     }
 }
 
+/// The public pages are light: no pack paints the announcement band in the
+/// text colour or an ink of its own with the page colour on top. A band is
+/// a light tint with dark words, as the founder's light-only rule asks.
+#[test]
+fn no_pack_paints_a_dark_announcement_band() {
+    for pack in khalid_theme::packs() {
+        let css: String = pack.stylesheet().split_whitespace().collect();
+        for rule in css.split('}') {
+            let Some((selector, body)) = rule.rsplit_once('{') else {
+                continue;
+            };
+            let selector = selector.rsplit('{').next().unwrap_or(selector);
+            if !selector.contains(".announcement") {
+                continue;
+            }
+            for dark in [
+                "background:var(--color-text)",
+                "color:var(--color-background)",
+                "-ink)",
+            ] {
+                assert!(
+                    !body.contains(dark),
+                    "{} paints the announcement dark with {dark}: {selector}{{{body}}}",
+                    pack.name
+                );
+            }
+        }
+    }
+}
+
 /// The binary carries each pack's template files compressed, and reads
 /// them back as the text of the files in `packs/`, with each comment
 /// emptied as the build script empties it.

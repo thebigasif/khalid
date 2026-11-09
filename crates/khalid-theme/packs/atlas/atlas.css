@@ -30,11 +30,10 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .button, .subscribe button, .comment-form button, .search button { color: var(--color-background); background: var(--color-text); border-color: var(--color-text); border-radius: var(--atlas-chip); }
 .button:hover, .subscribe button:hover { box-shadow: inset 0 -0.25rem var(--color-accent); }
 
-/* The announcement: one line on ink across the window. */
-.announcement { margin: 0; padding-block: 0.5rem; color: var(--color-background); background: var(--color-text); border: 0; font-size: 0.8125rem; font-weight: 600; box-shadow: 0 0 0 100vmax var(--color-text); clip-path: inset(0 -100vmax); }
+/* The announcement: one line in ink on a light tint across the window. */
+.announcement { --atlas-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); margin: 0; padding-block: 0.5rem; color: var(--color-text); background: var(--atlas-tint); border: 0; font-size: 0.8125rem; font-weight: 600; box-shadow: 0 0 0 100vmax var(--atlas-tint); clip-path: inset(0 -100vmax); }
 .announcement a { color: inherit; text-decoration: none; }
 .announcement a:hover { text-decoration: underline; }
-.announcement :focus-visible { outline-color: var(--color-background); }
 
 /* The header: the name or logo, the menu, then the call to action, over a
    hairline that runs across the window. */
