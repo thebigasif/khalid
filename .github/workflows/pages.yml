@@ -133,7 +133,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
   # The bundles on the release named "demos". The first run creates it as a
   # prerelease that is never "latest"; every run after replaces its files in
