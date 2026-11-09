@@ -374,7 +374,7 @@ jobs:
           fi
       - uses: docker/setup-buildx-action@v4
         if: steps.inputs.outputs.build == 'true'
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         if: steps.inputs.outputs.build == 'true'
         with:
           context: .
