@@ -11,8 +11,8 @@ use crate::schema::reviewer::reviewers;
 use crate::schema::template::template_nodes;
 use crate::schema::{image_node, node_id, publisher_id, site_home};
 use crate::{
-    AuthorProfile, PageKind, SchemaGraph, SchemaNode, SchemaValue, SeoError, SeoPage, SeoSite,
-    breadcrumb_list, site_graph,
+    AuthorProfile, PageKind, SchemaBlock, SchemaGraph, SchemaNode, SchemaValue, SeoError, SeoPage,
+    SeoSite, breadcrumb_list, site_graph,
 };
 
 /// The schema.org type of a page of `kind`.
@@ -63,9 +63,10 @@ fn page_node(site: &SeoSite, page: &SeoPage) -> Result<SchemaNode, SeoError> {
     } else {
         &page.title
     };
-    let kind = page
-        .page_type
-        .map_or(page_type(page.kind), PageSchemaType::as_str);
+    let kind = match page.page_type {
+        Some(PageSchemaType::FaqPage) if has_faq_block(page) => page_type(page.kind),
+        typed => typed.map_or(page_type(page.kind), PageSchemaType::as_str),
+    };
     let mut node = SchemaNode::new(kind)
         .with_id(page_id(site, page)?)
         .with("name", SchemaValue::text(name))
@@ -120,6 +121,9 @@ fn page_node(site: &SeoSite, page: &SeoPage) -> Result<SchemaNode, SeoError> {
 /// blocks, such as an FAQ, the nodes of the site's
 /// [`SchemaTemplate`](crate::SchemaTemplate)s that cover the page, and last
 /// the [`CustomSchema`](crate::CustomSchema) of the site, then of the page.
+/// A template or custom node of a type a block on the page writes is left
+/// out, and a page typed `FAQPage` with an FAQ block is a `WebPage`, so
+/// nothing a block describes is written twice.
 ///
 /// # Errors
 ///
@@ -148,20 +152,39 @@ pub fn page_graph(site: &SeoSite, page: &SeoPage) -> Result<SchemaGraph, SeoErro
         }
     }
     let blocks = block_nodes(site, page)?;
-    for node in extra
-        .into_iter()
-        .chain(blocks)
-        .chain(template_nodes(site, page)?)
-    {
-        graph.push(node);
-    }
+    // A thing a block describes is written once: the block's node, which
+    // matches what the reader sees, wins over a template or a schema field
+    // node of the same type (ADR "a block wins over the schema field").
+    let from_blocks: Vec<String> = blocks.iter().map(|n| n.kind().to_owned()).collect();
+    let unwritten = |node: &SchemaNode| !from_blocks.iter().any(|kind| kind == node.kind());
     let custom = site
         .custom_schema
         .nodes()
         .iter()
-        .chain(page.custom_schema.nodes());
-    for node in custom {
-        graph.push(node.clone());
+        .chain(page.custom_schema.nodes())
+        .cloned();
+    for node in extra {
+        graph.push(node);
+    }
+    for node in blocks {
+        // Two location blocks that name one place share its node, which
+        // the home page already holds.
+        let id = node.id();
+        if !graph.nodes().iter().any(|n| id.is_some() && n.id() == id) {
+            graph.push(node);
+        }
+    }
+    let others = template_nodes(site, page)?.into_iter().chain(custom);
+    for node in others.filter(unwritten) {
+        graph.push(node);
     }
     Ok(graph)
+}
+
+/// Whether `page` has an FAQ block with questions, whose `FAQPage` node
+/// then stands in for a page typed `FAQPage` in its front matter.
+fn has_faq_block(page: &SeoPage) -> bool {
+    page.blocks
+        .iter()
+        .any(|block| matches!(block, SchemaBlock::Faq(items) if !items.is_empty()))
 }
