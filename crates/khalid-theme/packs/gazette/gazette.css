@@ -21,6 +21,11 @@ main > .post ~ * { max-inline-size: 48rem; margin-inline: auto; }
 .site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
 .site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -3px var(--color-accent); }
 .site-header nav li:last-child a { justify-content: flex-end; }
+/* The announcement: one small line on a light band across the window. */
+.announcement { margin: 0; border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+/* The consent banner's words start where the header's do. */
+.consent { padding-inline: max(0px, (100% - var(--gz-frame)) / 2); }
+.consent > * { margin-inline: 0; }
 
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; max-inline-size: 100%; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 700 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
 .button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: var(--color-text); text-decoration: none; }
