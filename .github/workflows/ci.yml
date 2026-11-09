@@ -22,10 +22,12 @@ on:
 permissions:
   contents: read
 
-# A new push to a pull request stops its older run. Runs on main are never
-# stopped half way, so each one finishes and can report a failure.
+# A new push to a pull request stops its older run. Every other run has a
+# group of its own, so no run on main is ever stopped or replaced: in one
+# shared group a run waiting behind a running one was replaced by the next
+# merge, and that commit never got a result (1ce13dd0, v1.7.1).
 concurrency:
-  group: ci-${{ github.event_name }}-${{ github.head_ref || github.ref }}
+  group: ci-${{ github.event_name == 'pull_request' && github.head_ref || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
@@ -135,10 +137,9 @@ jobs:
   # coverage floor, and the release build with its size budget. The job
   # named Rust, which branch protection requires, sums them up.
   #
-  # On the maintainer's busy machine, partitions each rebuilt every test
-  # binary and their coverage could not be joined. On GitHub's runners a
-  # pull request now runs four partitions without coverage, and main keeps
-  # the one coverage run (see the rust job).
+  # A pull request runs the tests in four parts without coverage. Main runs
+  # them in eight parts built for coverage, and rust-coverage joins the
+  # parts' coverage and holds it to the floor (see the rust job).
   rust-lints:
     name: Rust lints, docs and dependencies
     runs-on: ubuntu-latest
@@ -201,16 +202,23 @@ jobs:
 
   # The job id stays rust, so the test build keeps its warm cache.
   # A pull request runs the suite in four parts at once, without coverage
-  # instrumentation (part 1 to 4). Main, the nightly run and manual runs
-  # keep one full run with the coverage floor (part 0), so the floor is
-  # still enforced on every commit that lands.
+  # instrumentation. Main, the nightly run and manual runs run it in eight
+  # parts built for coverage; each part hands its coverage to rust-coverage,
+  # which joins them and holds them to the floor, so the floor is still
+  # enforced on every commit that lands. One coverage run took about two
+  # hours: its 4,543 tests kept a runner's four cores busy for 26,839
+  # test-seconds (main, 47df0f29). With one test per template, the slowest
+  # of eight parts should take about 17 minutes of tests.
   rust:
-    name: Rust tests${{ matrix.part != 0 && format(' {0} of 4', matrix.part) || '' }}
+    name: Rust tests ${{ matrix.part }} of ${{ github.event_name == 'pull_request' && 4 || 8 }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        part: ${{ fromJSON(github.event_name == 'pull_request' && '[1, 2, 3, 4]' || '[0]') }}
+        part: ${{ fromJSON(github.event_name == 'pull_request' && '[1, 2, 3, 4]' || '[1, 2, 3, 4, 5, 6, 7, 8]') }}
+    env:
+      PARTS: ${{ github.event_name == 'pull_request' && 4 || 8 }}
+      COVERAGE: ${{ github.event_name != 'pull_request' }}
     steps:
       - uses: actions/checkout@v7
       - name: Disk space for the build
@@ -251,7 +259,7 @@ jobs:
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-nextest,cargo-llvm-cov
-      - name: Tests, network disabled, with the coverage floor (BL-TST-3, BL-TST-6)
+      - name: Tests, network disabled, built for coverage on main (BL-TST-3)
         env:
           PART: ${{ matrix.part }}
         run: |
@@ -267,53 +275,113 @@ jobs:
             || sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 \
             || fail "the AppArmor user-namespace restriction could not be lifted"
           unshare -rn true || fail "unshare could not create a network namespace"
-          # The suite runs once, built for coverage, and the coverage floor
-          # reads that same run. show-env sets the flags cargo llvm-cov would,
-          # so the build can happen first, with the network, and the run
-          # inside the namespace, with nothing that needs it. The slowest
-          # tests start first (scripts/ci/nextest.toml).
-          # A pull request's part runs a quarter of the tests, plain. The one
-          # test that builds every template's demo takes over half an hour
-          # and held one part back; the demo layout jobs build those demos on
-          # every pull request, and main still runs that test.
-          if [ "$PART" != 0 ]; then
+          # Each part runs its share of the tests (--partition hash:N/PARTS),
+          # so the parts hold every test exactly once. The slowest tests start
+          # first (scripts/ci/nextest.toml). The build happens first, with
+          # the network, and the run inside the namespace, with nothing that
+          # needs it.
+          # A pull request's part runs plain. The tests that build every
+          # template's demo held a part back; the demo layout jobs build those
+          # demos on every pull request, and main still runs those tests.
+          if [ "$COVERAGE" != true ]; then
             cargo nextest run --workspace --all-features --no-run
             exec unshare -rn sh -c '
               ip link set lo up || { echo "BL-TST-3 could not be enforced: loopback did not come up. Tests did not run."; exit 1; }
               if curl -sS --max-time 5 -o /dev/null https://github.com 2>/dev/null; then
                 echo "BL-TST-3 could not be enforced: the internet is reachable inside the namespace. Tests did not run."; exit 1
               fi
-              exec cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml --partition "hash:$PART/4" -E "not test(every_template_demo_shows_the_showcase_call_to_action)"
+              exec cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml --partition "hash:$PART/$PARTS" -E "not test(every_template_demo_shows_the_showcase_call_to_action)"
             '
           fi
-          floor=$(sed -n 's/^lines *= *\([0-9.]*\).*/\1/p' coverage.toml 2>/dev/null || echo 0)
-          (
-            eval "$(cargo llvm-cov show-env --sh)"
-            cargo llvm-cov clean --workspace
-            cargo nextest run --workspace --all-features --no-run
-            unshare -rn sh -c '
-              ip link set lo up || { echo "BL-TST-3 could not be enforced: loopback did not come up. Tests did not run."; exit 1; }
-              if curl -sS --max-time 5 -o /dev/null https://github.com 2>/dev/null; then
-                echo "BL-TST-3 could not be enforced: the internet is reachable inside the namespace. Tests did not run."; exit 1
-              fi
-              exec cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml
-            '
-            cargo llvm-cov report --summary-only --fail-under-lines "$floor"
-          )
+          # Built for coverage: show-env sets the flags cargo llvm-cov would.
+          eval "$(cargo llvm-cov show-env --sh)"
+          cargo llvm-cov clean --workspace
+          cargo nextest run --workspace --all-features --no-run
+          exec unshare -rn sh -c '
+            ip link set lo up || { echo "BL-TST-3 could not be enforced: loopback did not come up. Tests did not run."; exit 1; }
+            if curl -sS --max-time 5 -o /dev/null https://github.com 2>/dev/null; then
+              echo "BL-TST-3 could not be enforced: the internet is reachable inside the namespace. Tests did not run."; exit 1
+            fi
+            exec cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml --partition "hash:$PART/$PARTS"
+          '
+      # The part's raw profiles, joined into one small file for rust-coverage.
+      - name: This part's coverage
+        if: env.COVERAGE == 'true'
+        run: ./scripts/ci/coverage-part.sh "target/coverage-part/part-${{ matrix.part }}.profdata"
+      - uses: actions/upload-artifact@v7
+        if: env.COVERAGE == 'true'
+        with:
+          name: coverage-part-${{ matrix.part }}
+          path: target/coverage-part/
+          retention-days: 1
+          if-no-files-found: error
+
+  # The coverage of the whole run, from the eight parts' profiles, held to
+  # the floor in coverage.toml (BL-TST-6). It builds the tests for coverage
+  # as each part did, from the parts' cache, so its coverage map is theirs,
+  # and runs the same `cargo llvm-cov report` one whole run ran. Joining
+  # profiles only adds their counters, so the table and the total are the
+  # ones one run of every test gives (ADR "main runs its coverage tests in
+  # eight parts").
+  rust-coverage:
+    name: Rust test coverage
+    needs: rust
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      # The number of parts the rust job runs outside pull requests.
+      PARTS: 8
+    steps:
+      - uses: actions/checkout@v7
+      - name: Toolchain from rust-toolchain.toml
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.1
+          components: llvm-tools-preview
+      # The rust job's cache, read only: the same key the parts restored.
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: rust
+          save-if: false
+      - name: Tools
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-nextest,cargo-llvm-cov
+      - name: The tests, built for coverage as the parts built them
+        run: |
+          eval "$(cargo llvm-cov show-env --sh)"
+          cargo llvm-cov clean --workspace
+          cargo nextest run --workspace --all-features --no-run
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: coverage-part-*
+          path: ${{ runner.temp }}/coverage-parts
+          merge-multiple: true
+      - name: Coverage floor (BL-TST-6)
+        run: ./scripts/ci/coverage-report.sh "$RUNNER_TEMP/coverage-parts" "$PARTS"
 
   # Branch protection requires a check named Rust. It passes only when the
-  # lints, the tests with their coverage floor and the size budget pass.
+  # lints, the tests, their coverage floor (on main) and the size budget
+  # pass. A pull request runs no coverage job.
   rust-gate:
     name: Rust
-    needs: [rust-lints, rust, binary-size]
+    needs: [rust-lints, rust, rust-coverage, binary-size]
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - name: Rust lints, tests and binary size passed
+      - name: Rust lints, tests, coverage and binary size passed
+        env:
+          COVERAGE: ${{ needs.rust-coverage.result }}
         run: |
           test "${{ needs.rust-lints.result }}" = success
           test "${{ needs.rust.result }}" = success
           test "${{ needs.binary-size.result }}" = success
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            test "$COVERAGE" = skipped
+          else
+            test "$COVERAGE" = success
+          fi
 
   # npm only, so it runs on GitHub's runners and leaves the maintainer
   # runners to the Rust builds.
