@@ -292,7 +292,7 @@ guide = "topic-clusters"
 [nofollow-internal-link]
 what = "A link to another page of your own site tells Google not to follow it."
 why = "Links between your pages help Google find them and judge their value, and this link passes nothing."
-fix = "Remove `nofollow` from the link's `rel` attribute."
+fix = "Remove `nofollow` from the link, or add its host to `internal_domains` under `[seo.links]` in `site.toml`."
 guide = "internal-links"
 
 [insecure-internal-link]

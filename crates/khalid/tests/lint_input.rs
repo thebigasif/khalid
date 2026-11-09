@@ -509,3 +509,56 @@ fn the_contents_list_and_a_block_score_are_not_read_as_the_writer_text() {
         none
     );
 }
+
+/// A one-post site whose `site.toml` is `settings`, and whose post links to
+/// the main site, a path, the main site's `www.` host and a study.
+#[cfg(test)]
+fn linking_site(settings: &str) -> tempfile::TempDir {
+    let body = "See [our prices](https://example.com/pricing/), [the guide](/blog/link-text/), \
+                [the main site](https://www.example.com/) and [a study](https://research.example.org/).";
+    let site = site(None, &[("posts/prices.md", &post("Prices", "", body))]);
+    fs::write(within(site.path(), "site.toml"), settings).unwrap();
+    site
+}
+
+/// The settings of a blog at `address` whose link settings add `nofollow`
+/// to every link to another site, with `more` in the same table.
+#[cfg(test)]
+fn nofollow_settings(address: &str, more: &str) -> String {
+    format!(
+        "name = \"Field Notes\"\naddress = \"{address}\"\nmount = \"/blog/\"\n\
+         default_language = \"en\"\nlanguages = [\"en\"]\n\n\
+         [seo.links]\nrel = [\"nofollow\"]\n{more}\n"
+    )
+}
+
+#[test]
+fn a_blog_on_a_subdomain_that_tells_google_not_to_follow_its_main_site_is_warned() {
+    // The link settings treat example.com as another site, though it is the
+    // apex of the blog's own domain (audit 2, G5).
+    let site = linking_site(&nofollow_settings("https://blog.example.com", ""));
+    let report = lint(site.path());
+    assert_eq!(
+        found(&report, "nofollow-internal-link", "prices"),
+        ["https://example.com/pricing/", "https://www.example.com/"]
+    );
+}
+
+#[test]
+fn a_main_site_listed_in_internal_domains_is_followed_and_quiet() {
+    let more = "internal_domains = [\"example.com\"]";
+    let site = linking_site(&nofollow_settings("https://blog.example.com", more));
+    let report = lint(site.path());
+    let none = Vec::<String>::new();
+    assert_eq!(found(&report, "nofollow-internal-link", "prices"), none);
+}
+
+#[test]
+fn a_mounted_site_that_adds_nofollow_to_other_sites_leaves_its_own_links_alone() {
+    // At https://www.example.com/blog/ the paths, the apex and the rest of
+    // the host are the site's own, and only the study gets `nofollow`.
+    let site = linking_site(&nofollow_settings("https://www.example.com", ""));
+    let report = lint(site.path());
+    let none = Vec::<String>::new();
+    assert_eq!(found(&report, "nofollow-internal-link", "prices"), none);
+}
