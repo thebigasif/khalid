@@ -1,0 +1,14 @@
+{#- Fixture's squad page: the squad and staff, the site's authors, in a
+    grid of cards, each with their mark or photo, name and role, such as
+    "Goalkeeper" or "Club secretary". The post counts are hidden: a
+    player need not write. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "sections/people_grid.html" import people_grid -%}
+<header class="list-header">
+<p class="list-kind">{{ site.name }}</p>
+<h1>{{ t.squad }}</h1>
+</header>
+{% if page.authors %}{{ people_grid(page.authors, 2) }}
+{% else %}<p>{{ t.no_authors }}</p>
+{% endif %}{% endblock %}

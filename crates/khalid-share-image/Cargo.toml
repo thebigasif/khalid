@@ -9,7 +9,7 @@ repository.workspace = true
 publish.workspace = true
 
 [dependencies]
-flate2 = "1"
+brotli = "9"
 khalid-core.workspace = true
 rustybuzz = "0.20"
 tiny-skia = "0.11"

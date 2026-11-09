@@ -5,7 +5,7 @@ order: 20
 
 # Atlas
 
-A publication for a blog with many topics: a masthead, featured stories, picture cards and a topic index.
+A publication for a blog with many topics: a map-sheet masthead with an index of every topic, featured stories and picture cards.
 
 ```toml
 [template]
@@ -14,18 +14,18 @@ name = "atlas"
 
 ## Who it suits
 
-Atlas suits a publication with many topics and long expert posts, such as an SEO or content marketing team's blog. A reader lands on a front page that works like the front of a magazine: the blog's name large on a soft band with every topic one tap away, your best story large at the top, the newest posts as picture cards, then an index of every topic. A post opens with a large title, a quiet byline and its picture, then reads in a measured column with its contents in a rail that stays in view.
+Atlas suits a publication with many topics and long expert posts, such as an SEO or content marketing team's blog. A reader lands on a front page that works like the front of a magazine: the blog's name large on a soft map sheet over an index of every topic and its newest posts, your best story large at the top, then the newest posts as picture cards. A post opens with a large title, a quiet byline and its picture, then reads in a measured column with its contents in a rail that stays in view.
 
 Pick Ledger instead if you publish fewer, longer pieces and want the words to lead, or classic if you want the simplest look.
 
 ## What each page shows
 
 **Front page**
-- A masthead on a light tint of your accent colour, with a faint map grid: the blog's name large, your `tagline` when you set one, and a row of topic links: "All posts", then one link for each category your posts use.
+- A masthead on a light tint of your accent colour, with a faint map grid: the blog's name large and your `tagline` when you set one.
+- Under the name, a destination index, like the index at the back of an atlas. Each category your posts use gets a column, lettered A, B, C like the columns of a map. Its name links to the topic's page. Under it are up to five of the topic's newest posts on the page, each with a reference such as A1 or A2. A post is listed by the part of its title before the colon, so "Lisbon walking route: three days over the hills" shows as "Lisbon walking route". On a phone the columns become a strip you swipe sideways, with three posts in each. Screen readers hear only the names, not the letters and numbers.
 - The two newest posts marked `featured: true`: the first large with its picture, the second beside it when there is room.
 - Editor's picks: the next posts marked featured, four by default, as picture cards.
 - The newest posts as picture cards, three across on a laptop and one on a phone, each with its topic, title, summary, author, date and reading time. Numbered page links follow when there are many.
-- The topic index: one column per topic with its three newest posts and a link to all of them.
 - The band with your `[template.cta]`, when you set one.
 
 With no post marked featured, the front page opens with the masthead and the newest posts.
@@ -40,6 +40,8 @@ With no post marked featured, the front page opens with the masthead and the new
 - Then the author box, the band with your call to action, the posts that link here, and three related posts as picture cards.
 
 **Lists and author pages** open on the same light band with the trail and the title, then the featured post large beside its picture, then picture cards in the same grid as the front page.
+
+The tint of your accent colour stays on the masthead and on the bands behind page titles. The rest of the page is white and ink. A topic label is ink text after a small square in your accent colour. Buttons and the call-to-action band are ink, and the band has the faint map grid and an accent rule on top. Callouts, the author box and other panels in a post are a light grey, and a post without a picture shows a grey block in its place.
 
 The header shows your logo, your menu and your call to action as a button. Everything reads with scripts off. Atlas brings its own indigo colours; your theme tokens, such as the ones theme sync writes, replace any of them, and the logo comes from them too.
 
@@ -125,7 +127,7 @@ section = "4rem"
 
 ## Reader features
 
-Atlas keeps every `[reader]` feature as it is. The topic links in the masthead and the topic index follow `topic_links`, so `topic_links = false` turns both off.
+Atlas keeps every `[reader]` feature as it is. The destination index in the masthead follows `topic_links`, so `topic_links = false` turns it off.
 
 ## Design
 
@@ -141,13 +143,13 @@ This is Atlas's design brief. It fixes how the template should look, so every ch
 | Part | Atlas |
 |---|---|
 | Type pairing | A heavy, characterful grotesque for headlines over a plain, sturdy sans for text. With no theme, the pack uses the system sans at weight 800 for headlines. |
-| Colour | White ground and near-black text with one loud accent used in large areas: the masthead tint, topic labels, the topic index rules. Panels take a faint tint of the accent. |
+| Colour | White ground and near-black text. The accent's tint covers the masthead sheet and the bands behind page titles only. Below them the accent is a small key square before each label, or a rule. Panels are a faint grey, and buttons and the call-to-action band are ink. A post's text reads on the plain white ground. |
 | Spacing rhythm | A base step of 0.5rem. Tight inside cards (1rem), wide between sections (4rem). Grid gaps of 2rem on a wide screen, 1.25rem on a phone. |
 | Frame at 1440 px and wider | At least **88rem**: four picture cards across, the widest of the ten. |
-| Cards and lists | Picture cards with the picture edge to edge on top, the topic as a small coloured label, a bold title of up to three lines, then the byline. The first story in a grid may span two columns. |
-| Phone header and menu | The logo and the call to action on one row. The topic links under the masthead become one row you can swipe, so every topic stays one tap away. |
-| Tabs and indexes at 390 px | Topic tabs scroll sideways in one row. The topic index becomes one column of topics, each with its three newest titles as a plain list. |
+| Cards and lists | Picture cards with the picture edge to edge on top, the topic as a small ink label after an accent key square, a bold title of up to three lines, then the byline. The first story in a grid may span two columns. |
+| Phone header and menu | The logo and the call to action on one row. The destination index under the masthead becomes one row of columns you can swipe, so every topic stays one tap away. |
+| Tabs and indexes at 390 px | Topic tabs scroll sideways in one row. Each column of the destination index shows three entries, so the masthead stays about 400 px tall. |
 | Link, card and focus states | A card lifts its title into the accent on hover and the picture darkens slightly; the whole card is the target. Links in text are underlined in the accent. Focus is a 3 px accent ring. |
-| Signature details | The masthead band in a tint of the accent with the faint map grid and the blog's name very large. Topic labels as solid accent chips with white text. The topic index under a heavy accent rule, one column per topic. |
+| Signature details | The masthead sheet in a tint of the accent with the faint map grid and the blog's name very large. The destination index under it: one lettered column per topic, its posts listed by place name with references such as A1 and A2. Topic labels in ink after a small accent key square. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/atlas/theme/`: magenta (`#b0124f` links, `#c8155c` accent) on white, Bricolage Grotesque for headlines and Public Sans for text, and a split-square mark.

@@ -5,7 +5,9 @@
     beside the text), compact (title and date) or ranked (a numbered list
     of titles). Rich cards show the author, the date and the category
     above the title, in that order. With numbered set, each card first
-    says its place, "Part 1" and on, as on a series page. -#}
+    says its place, "Part 1" and on, as on a series page. `sizes` is how
+    wide the template draws a card's picture, as the picture macro takes
+    it; without it, a card picture says a small card width. -#}
 {% from "image.html" import picture, avatar %}
 {% macro card_meta(post) -%}
 <p class="card-meta">{% if post.author %}<span class="card-author">{% if post.author.image %}{{ avatar(post.author.image) }}{% endif %}{{ post.author.name }}{% if template.options.card_author_role and post.author.role %}<span class="person-role">{{ post.author.role }}</span>{% endif %}</span>
@@ -19,7 +21,7 @@
 {% macro part(numbered, number) -%}
 {% if numbered %}<span class="card-part">{{ t.series_card_part | replace("{part}", number | string) }}</span> {% endif %}
 {%- endmacro %}
-{% macro cards(posts, level=2, shape=none, numbered=false) -%}
+{% macro cards(posts, level=2, shape=none, numbered=false, sizes=none) -%}
 {% set shape = shape or template.options.cards -%}
 {% if shape == "ranked" %}<ol class="cards cards-ranked" role="list">
 {% elif shape == "text" %}<ul class="cards cards-text" role="list">
@@ -30,7 +32,7 @@
 <article class="card">
 {% if shape == "compact" %}<h{{ level }}>{{ part(numbered, loop.index) }}<a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 <p><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
-{% else %}{% if post.image and shape in ["image", "row"] %}{{ picture(post.image) }}
+{% else %}{% if post.image and shape in ["image", "row"] %}{{ picture(post.image, sizes) }}
 {% endif %}{% if "rich_cards" in site.features %}{{ card_meta(post) }}
 <h{{ level }}>{{ part(numbered, loop.index) }}<a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
 {% else %}<h{{ level }}>{{ part(numbered, loop.index) }}<a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
@@ -40,12 +42,13 @@
 </li>
 {% endfor %}{% if shape == "ranked" %}</ol>{% else %}</ul>{% endif %}
 {%- endmacro %}
-{#- featured_slot(post): the newest featured post, large, above a list. -#}
-{% macro featured_slot(post) -%}
+{#- featured_slot(post, sizes=none): the newest featured post, large,
+    above a list, its picture as wide as `sizes` says. -#}
+{% macro featured_slot(post, sizes=none) -%}
 <section class="featured" aria-labelledby="featured-title">
 <h2 id="featured-title">{{ t.featured }}</h2>
 <article class="card card-featured">
-{% if post.image %}{{ picture(post.image) }}
+{% if post.image %}{{ picture(post.image, sizes) }}
 {% endif %}{{ card_meta(post) }}
 <h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
 <p>{{ post.excerpt }}</p>

@@ -1,0 +1,139 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo here
+# is CC0 or public domain.
+
+[[photos]]
+file = "en/posts/2026-01-14-small-cinema/lead.jpg"
+sha256 = "53113e74ee686a64616ad703f71a6ab121f685b3306a0a3752b2c5210056d14b"
+source = "https://commons.wikimedia.org/wiki/File:Movie_theater_seats_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Movie theater seats (Unsplash) by Elijah Flores baesik, via Wikimedia Commons"
+title = "Movie theater seats (Unsplash)"
+creator = "Elijah Flores baesik"
+openverse = "commons:File:Movie theater seats (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-02-04-park-bench/lead.jpg"
+sha256 = "c351f3d0c77f0eaf82dc390c62de281c074ececb09bfc894b1c221e111912d34"
+source = "https://commons.wikimedia.org/wiki/File:Empty_park_bench_at_dusk_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Empty park bench at dusk (Unsplash) by Scott Van Daalen scottvd, via Wikimedia Commons"
+title = "Empty park bench at dusk (Unsplash)"
+creator = "Scott Van Daalen scottvd"
+openverse = "commons:File:Empty park bench at dusk (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-03-11-what-a-library-is-for/lead.jpg"
+sha256 = "1228448b925fd632dc9a24ff6580dcbb6061a46ca6d7329956473a8e78aac3ce"
+source = "https://commons.wikimedia.org/wiki/File:Library_Books_Bookshelves_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Library Books Bookshelves (Unsplash) by Davide Cantelli cant89, via Wikimedia Commons"
+title = "Library Books Bookshelves (Unsplash)"
+creator = "Davide Cantelli cant89"
+openverse = "commons:File:Library Books Bookshelves (Unsplash).jpg"
+needs_credit = false
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2026-04-08-corner-bakery/lead.jpg"
+sha256 = "cc27048c92ebc2a5ad9cf4c110d322b55d6f4c729ebc52c7f88d968e3861e92b"
+source = "https://commons.wikimedia.org/wiki/File:Bread_at_a_Bakery_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Bread at a Bakery (Unsplash) by Roman Kraft romankraft, via Wikimedia Commons"
+title = "Bread at a Bakery (Unsplash)"
+creator = "Roman Kraft romankraft"
+openverse = "commons:File:Bread at a Bakery (Unsplash).jpg"
+needs_credit = false
+size = "1600x1185"
+
+[[photos]]
+file = "en/posts/2026-05-06-same-road-every-day/lead.jpg"
+sha256 = "20a5a9d20461bf13cede3bc57824ad3c0ff126e0338ae2c8d0ce23ccb1521372"
+source = "https://commons.wikimedia.org/wiki/File:Country_Road_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Country Road (Unsplash) by Bethany Legg bkotynski, via Wikimedia Commons"
+title = "Country Road (Unsplash)"
+creator = "Bethany Legg bkotynski"
+openverse = "commons:File:Country Road (Unsplash).jpg"
+needs_credit = false
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2026-06-10-night-trains/lead.jpg"
+sha256 = "8145aa5d8204fc958baed2384e94396e8f6a1615b2bb34879ece3357b1902ea0"
+source = "https://commons.wikimedia.org/wiki/File:Midnight_train_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Midnight train (Unsplash) by Ioan Radu Mester radumester, via Wikimedia Commons"
+title = "Midnight train (Unsplash)"
+creator = "Ioan Radu Mester radumester"
+openverse = "commons:File:Midnight train (Unsplash).jpg"
+needs_credit = false
+size = "1600x900"
+
+[[photos]]
+file = "en/posts/2026-07-08-allotment-season/lead.jpg"
+sha256 = "7e69d4f27e83888f11d5ad1877b8d97cf7a4f06411236d507ad8a97f03e96eb0"
+source = "https://commons.wikimedia.org/wiki/File:Vegetable_Garden_Harvest_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Vegetable Garden Harvest (Unsplash) by Gemma Evans stayandroam, via Wikimedia Commons"
+title = "Vegetable Garden Harvest (Unsplash)"
+creator = "Gemma Evans stayandroam"
+openverse = "commons:File:Vegetable Garden Harvest (Unsplash).jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-08-12-low-tide/lead.jpg"
+sha256 = "dcf612c3e2176dc7b4aa370224056eaf2abbfbf2a0b123a97336b8c253199cb5"
+source = "https://commons.wikimedia.org/wiki/File:MistyLowTide(byRobinBenad).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "MistyLowTide(byRobinBenad) by Robin Benad, via Wikimedia Commons"
+title = "MistyLowTide(byRobinBenad)"
+creator = "Robin Benad"
+openverse = "commons:File:MistyLowTide(byRobinBenad).jpg"
+needs_credit = false
+size = "1600x1071"
+
+[[photos]]
+file = "en/posts/2026-09-09-bicycle-city/lead.jpg"
+sha256 = "cc84a5a7ee6fc0ecc606f8ad3a0010750685ca43819735e9361c26d252c36dc8"
+source = "https://commons.wikimedia.org/wiki/File:Red_bicycle_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Red bicycle (Unsplash) by Dakota Corbin thedakotacorbin, via Wikimedia Commons"
+title = "Red bicycle (Unsplash)"
+creator = "Dakota Corbin thedakotacorbin"
+openverse = "commons:File:Red bicycle (Unsplash).jpg"
+needs_credit = false
+size = "1600x1243"
+
+[[photos]]
+file = "en/posts/2026-10-07-saturday-market/lead.jpg"
+sha256 = "d8fed125eb916b846151c3ab8f1290c103b5f4695018a79389f8c05650f9c5a4"
+source = "https://commons.wikimedia.org/wiki/File:Fresh_From_the_Market_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Fresh From the Market (Unsplash) by Anne Preble annepreble, via Wikimedia Commons"
+title = "Fresh From the Market (Unsplash)"
+creator = "Anne Preble annepreble"
+openverse = "commons:File:Fresh From the Market (Unsplash).jpg"
+needs_credit = false
+size = "1600x1111"
+
+[[photos]]
+file = "en/posts/2026-10-21-papers-in-cafes/lead.jpg"
+sha256 = "a494e2b85dcaeb8ddd6eb5e965540ed111caf5f316ce8b56e34b10fbe3a585a3"
+source = "https://commons.wikimedia.org/wiki/File:Reading_newspaper_in_a_caf%C3%A9_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Reading newspaper in a café (Unsplash) by Rob Bye robertbye, via Wikimedia Commons"
+title = "Reading newspaper in a café (Unsplash)"
+creator = "Rob Bye robertbye"
+openverse = "commons:File:Reading newspaper in a café (Unsplash).jpg"
+needs_credit = false
+size = "1600x1200"
+

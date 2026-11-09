@@ -1,5 +1,6 @@
 import { calendarWords } from "../strings/calendarWords";
 import { en } from "../strings/en";
+import { privacyWords } from "../strings/privacyWords";
 import { searchConsoleWords } from "../strings/searchConsoleWords";
 import { seoToolWords } from "../strings/seoToolWords";
 import { seoWords } from "../strings/seoWords";
@@ -23,6 +24,7 @@ export type NavPath =
   | "/schema-templates"
   | "/settings"
   | "/seo"
+  | "/privacy"
   | "/bulk-seo"
   | "/workouts"
   | "/team"
@@ -69,6 +71,7 @@ export const NAV: NavGroup[] = [
       { to: "/redirects", label: en.nav.redirects, icon: "redirect" },
       { to: "/schema-templates", label: en.nav.templates, icon: "braces" },
       { to: "/seo", label: seoWords.title, icon: "target" },
+      { to: "/privacy", label: privacyWords.title, icon: "lock" },
       { to: "/settings", label: en.nav.settings, icon: "sliders" },
     ],
   },

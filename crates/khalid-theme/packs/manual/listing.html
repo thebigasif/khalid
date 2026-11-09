@@ -1,0 +1,34 @@
+{#- Manual's lists (a topic's category page, a tag, the archive, a date, a
+    collection and a guide's series page): the list's kind ("Topic" on a
+    category page, whose posts all sit in the category it is named for)
+    and its name, its intro, how many articles it holds, then the articles
+    as rows, each with its title and summary, and its topic when the list
+    is not a topic's own. A guide's page numbers each
+    row as a step, in the guide's own order. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% set in_title = page.posts | selectattr("category") | map(attribute="category.name") | select("eq", page.title) | list -%}
+{% set topic_page = page.posts and in_title | length == page.posts | length -%}
+<header class="list-header">
+{% block kind %}{% set titled = page.posts | selectattr("category") | map(attribute="category.name") | select("eq", page.title) | list -%}
+{% if page.posts and titled | length == page.posts | length %}<p class="list-kind">{{ t.help_topic }}</p>
+{% elif page.numbered %}<p class="list-kind">{{ t.help_guide }}</p>
+{% endif %}{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.posts and not page.pagination %}<p class="list-count">{% if page.posts | length == 1 %}{{ t.help_articles_one }}{% else %}{{ t.help_articles | replace("{count}", page.posts | length | string) }}{% endif %}</p>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}<ol class="article-rows article-list" role="list">
+{% for post in page.posts %}<li class="article-row">
+{% if page.numbered %}<p class="article-step">{{ t.help_step_number | replace("{number}", loop.index | string) }}</p>
+{% elif post.category and not topic_page %}<p class="article-topic"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h2><a href="{{ post.href }}">{{ post.title }}</a></h2>
+{% if post.excerpt %}<p class="article-summary">{{ post.excerpt }}</p>
+{% endif %}</li>
+{% endfor %}</ol>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

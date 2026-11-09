@@ -13,12 +13,16 @@
 //   - squashed-avatar: a person's photo not drawn square, within 1 px;
 //   - frame-fill: at 1440 px and wider, the site header, or <main> on the
 //     home page or a list of posts, is narrower than the minimum frame the
-//     template's design brief sets, read from --frames;
+//     template's design brief sets, read from its pack.toml;
 //   - reading-size, reading-column: at 1440 px and wider, a post's body
 //     text is under 18 px, or a full line of it holds fewer than 60 or
 //     more than 75 characters;
-//   - stylesheet-size: a stylesheet the home page links is 20 KB or more
-//     with Brotli, checked once per pack.
+//   - contents-twice, contents-hidden: a post shows more than one list of
+//     its contents at once, such as the template's own and the ::toc a
+//     writer placed, or hides every one it has;
+//   - stylesheet-size: the stylesheets a checked page links weigh more
+//     than 10 KB together with Brotli (docs/standards/performance.md,
+//     "CSS weight"), checked once per page.
 //
 // The page is scrolled down a window at a time first, so lazy pictures
 // load. At each stop the parts that move with the window, fixed like the
@@ -38,14 +42,16 @@
 // whose name ends in -publication is a pack's demo publication, checked on
 // the pages its check-pages.txt names (site-files.mjs) in place of PAGES:
 // a "post" or "table" page is held to the reading check, as a post is.
-// --frames names a JSON file whose "frames" maps each pack to its minimum
-// frame in px; by default frames.json beside this script.
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+// Each pack's minimum frame in px is the frame in its pack.toml, in
+// crates/khalid-theme/packs/<pack>/. --frames names a JSON file whose
+// "frames" maps each pack to its minimum frame in place of those, as the
+// self-test does; frames.json beside this script, the default, has none.
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { brotliCompressSync, constants } from "node:zlib";
-import { frame, measure, reading, walkDownScript } from "./layout-measure.mjs";
+import { contentsLists, frame, measure, reading, walkDownScript } from "./layout-measure.mjs";
 import { answerFrom, builtSites } from "./site-files.mjs";
 
 // The pages each pack is checked on, by what they show.
@@ -77,7 +83,7 @@ const STEP_LIMIT = 90_000;
 // hold a post's reading text to (FRONTEND.md, R4 of the design plan).
 const WIDE = 1440;
 const READING = { size: 18, fewest: 60, most: 75 };
-const CSS_BUDGET = 20 * 1024;
+const CSS_BUDGET = 10 * 1024;
 
 const options = {};
 for (let i = 2; i < process.argv.length; i += 1) {
@@ -98,9 +104,21 @@ if (!options.sites || !existsSync(options.sites)) {
 // Playwright comes from scripts/demo-check/node_modules, or from NODE_PATH.
 const playwright = createRequire(import.meta.url)("playwright");
 
-const framesFile = options.frames || join(dirname(fileURLToPath(import.meta.url)), "frames.json");
+const here = dirname(fileURLToPath(import.meta.url));
+const packsFolder = join(here, "..", "..", "crates", "khalid-theme", "packs");
+const framesFile = options.frames || join(here, "frames.json");
 const framesData = JSON.parse(readFileSync(framesFile, "utf8"));
-const frames = framesData.frames ?? {};
+// The frame line of each pack.toml, such as `frame = 1280`.
+const packFrames = () =>
+  Object.fromEntries(
+    readdirSync(packsFolder, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && existsSync(join(packsFolder, entry.name, "pack.toml")))
+      .map((entry) => [entry.name, readFileSync(join(packsFolder, entry.name, "pack.toml"), "utf8").match(/^frame = (\d+)$/m)])
+      .filter(([, found]) => found)
+      .map(([name, found]) => [name, Number(found[1])]),
+  );
+const frames = framesData.frames ?? packFrames();
+const framesFrom = framesData.frames ? framesFile : "its pack.toml";
 // Templates whose reading check waits for their redesign (frames.json).
 const readingPending = new Set(framesData.reading_pending ?? []);
 
@@ -123,7 +141,7 @@ const wideChecks = async (tab, site, what) => {
   const sizes = await tab.evaluate(frame);
   const parts = LISTS.has(what) ? ["header", "main"] : ["header"];
   if (typeof least !== "number") {
-    problems.push({ check: "frame-fill", a: site.pack, b: "", detail: `${framesFile} sets no minimum frame for this pack; add the one its design brief sets` });
+    problems.push({ check: "frame-fill", a: site.pack, b: "", detail: `${framesFrom} sets no minimum frame for this pack; add the frame its design brief sets` });
   }
   for (const part of typeof least === "number" ? parts : []) {
     if (sizes[part] < least) {
@@ -143,22 +161,28 @@ const wideChecks = async (tab, site, what) => {
   return problems;
 };
 
-// Each stylesheet a pack's home page links, compressed with Brotli at its
-// best quality, as Khalid serves it, against the 20 KB budget.
+// The stylesheets each checked page of a pack links, each compressed with
+// Brotli at its best quality, as Khalid serves it, together against the
+// 10 KB budget.
 const stylesheetChecks = (site) => {
-  const home = readFileSync(join(site.files, "index.html"), "utf8");
   const found = [];
-  for (const [, href] of home.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)) {
-    const path = new URL(href, `${site.origin}${site.mount}`).pathname;
-    const file = join(site.files, decodeURIComponent(path.slice(site.mount.length)));
-    if (!path.startsWith(site.mount) || !existsSync(file)) {
-      found.push({ check: "stylesheet-size", a: href, b: "", detail: "the home page links it, and the build has no such file" });
-      continue;
+  for (const [what, path] of site.pages) {
+    const page = join(site.files, path, path.endsWith(".html") ? "" : "index.html");
+    if (!existsSync(page)) continue;
+    const html = readFileSync(page, "utf8");
+    let size = 0;
+    for (const [, href] of html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)) {
+      const at = new URL(href, `${site.origin}${site.mount}`).pathname;
+      const file = join(site.files, decodeURIComponent(at.slice(site.mount.length)));
+      if (!at.startsWith(site.mount) || !existsSync(file)) {
+        found.push({ page: what, check: "stylesheet-size", a: href, b: "", detail: "the page links it, and the build has no such file" });
+        continue;
+      }
+      size += brotliCompressSync(readFileSync(file), { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } }).length;
     }
-    const size = brotliCompressSync(readFileSync(file), { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } }).length;
-    if (size >= CSS_BUDGET) found.push({ check: "stylesheet-size", a: href, b: "", detail: `${(size / 1024).toFixed(1)} KB with Brotli, and a stylesheet must stay under 20 KB` });
+    if (size > CSS_BUDGET) found.push({ page: what, check: "stylesheet-size", a: path || "/", b: "", detail: `its stylesheets weigh ${(size / 1024).toFixed(1)} KB with Brotli, and a page may download at most 10 KB of CSS` });
   }
-  return found.map((p) => ({ pack: site.name, page: "home", browser: "", width: 0, ...p }));
+  return found.map((p) => ({ pack: site.name, browser: "", width: 0, ...p }));
 };
 
 // `work` finished, or a failure naming `what` once STEP_LIMIT has passed.
@@ -189,6 +213,16 @@ const checkPage = async (tab, job) => {
   await tab.evaluate(() => Promise.race([Promise.all([...document.images].map((img) => img.decode().catch(() => {}))), new Promise((done) => setTimeout(done, 3000))]));
   found.push(...(await tab.evaluate(measure, "page")));
   if (width >= WIDE) found.push(...(await wideChecks(tab, site, what)));
+  if (POSTS.has(what)) {
+    const lists = await tab.evaluate(contentsLists);
+    if (lists.length > 1) found.push({ check: "contents-twice", a: `<${lists[0]}>`, b: `<${lists[1]}>`, detail: `the post shows ${lists.length} contents lists at once, and a reader needs one` });
+    // A floating contents button opens the list in a sheet, so it counts as
+    // a way in, though not as a second list.
+    const button = await tab.evaluate(() => [...document.querySelectorAll(".toc-button")].some((b) => (b.checkVisibility ? b.checkVisibility() : b.offsetParent !== null)));
+    if (lists.length === 0 && !button && (await tab.evaluate(() => document.querySelector("main :is(.toc-inline, .toc-box, .toc-side, .post-body .toc)") !== null))) {
+      found.push({ check: "contents-hidden", a: "<main>", b: "", detail: "the post has contents, and every list of them is hidden" });
+    }
+  }
   const problems = [];
   const seen = new Map();
   for (const p of found) {

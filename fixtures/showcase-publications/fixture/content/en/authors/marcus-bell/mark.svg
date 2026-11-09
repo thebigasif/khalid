@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <rect width="160" height="160" fill="#1c2d5a" fill-opacity="0.1"/>
+  <path d="M58 34 L40 42 L24 62 L38 74 L48 64 V128 H112 V64 L122 74 L136 62 L120 42 L102 34 Q80 50 58 34 Z" fill="none" stroke="#1c2d5a" stroke-width="5" stroke-linejoin="round"/>
+  <text x="80" y="108" text-anchor="middle" font-family="Oswald, 'Arial Narrow', sans-serif" font-size="40" font-weight="600" fill="#1c2d5a">M</text>
+</svg>

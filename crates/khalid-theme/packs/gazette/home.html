@@ -1,0 +1,51 @@
+{#- Gazette's front page (docs/templates/gazette.md): the edition bar
+    (the name, the newest story's date and the tagline), the section
+    index with a jump link per section, then the top story beside the
+    latest news rail, and a block per section under its flag: the newest
+    story with its picture, then dense headlines. Each section is a
+    category, from the home page's topic rows, or a home section set in
+    site.toml. The top story does not show again in its section, and a
+    section with no other story gets no block. Later pages list their
+    stories by day. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/headline_list.html" import headline_list -%}
+{% from "parts-gazette.html" import flag, story, top_story -%}
+{% set options = template.options -%}
+{% set first_page = not (page.pagination and page.pagination.previous) -%}
+{% set newest = page.posts[0] if page.posts else none -%}
+{% set top = (page.featured if options.featured and page.featured else newest) if first_page else none -%}
+{% set blocks = page.sections or page.tabs if first_page else [] -%}
+{% set signup = site.subscribe and options.newsletter in ["home", "both"] -%}
+{% call hero(page.title, page.intro) %}{% if newest or options.tagline %}<p class="gz-edition">{% if newest %}<time datetime="{{ newest.date }}">{{ newest.date | date }}</time>{% endif %}{% if options.tagline %}<span>{{ options.tagline[0] }}</span>{% endif %}</p>
+{% endif %}{% endcall %}
+{% if blocks %}<nav class="gz-index" aria-label="{{ t.sections_jump }}">
+<ul role="list">
+{% for block in blocks %}{% if block.posts | rejectattr("href", "eq", top.href if top else "") | list %}<li><a href="#section-{{ loop.index }}">{{ block.title }}</a></li>
+{% endif %}{% endfor %}</ul>
+</nav>
+{% endif %}{% if first_page and page.posts %}<div class="gz-front">
+{% if top %}{{ top_story(top) }}
+{% endif %}<aside class="gz-rail" aria-labelledby="gz-rail-title">
+<h2 id="gz-rail-title" class="gz-rail-title">{{ t.latest_news }}</h2>
+{{ headline_list(page.posts[:options.rail_count], 3, true) }}
+{% if signup %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}</aside>
+{% if blocks %}<div class="gz-sections">
+{% for block in blocks %}{% set posts = block.posts | rejectattr("href", "eq", top.href if top else "") | list -%}
+{% if posts %}<section class="gz-section" id="section-{{ loop.index }}" aria-labelledby="section-title-{{ loop.index }}">
+{{ flag(block.title, block.href, "section-title-" ~ loop.index, t.section_all | replace("{name}", block.title)) }}
+{{ story(posts[0], 3) }}
+{% if posts[1:] %}{{ headline_list(posts[1:4], 3) }}
+{% endif %}</section>
+{% endif %}{% endfor %}</div>
+{% endif %}</div>
+{% elif page.posts %}{{ headline_list(page.posts, 2, true, 0, true) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if signup and not (first_page and page.posts) %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

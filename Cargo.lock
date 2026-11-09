@@ -2667,10 +2667,11 @@ dependencies = [
 
 [[package]]
 name = "khalid"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "atom_syndication",
  "axum",
+ "brotli",
  "chrono",
  "clap",
  "comrak",
@@ -2733,7 +2734,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-admin"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "http-body-util",
@@ -2743,7 +2744,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-alerts"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "khalid-alerts",
@@ -2755,7 +2756,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-analytics"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "serde",
@@ -2766,7 +2767,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-api"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "ammonia",
  "argon2 0.6.0",
@@ -2802,7 +2803,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-audit"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "http",
@@ -2821,7 +2822,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-auth"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "argon2 0.6.0",
  "axum",
@@ -2847,7 +2848,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-comments"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "chrono",
@@ -2870,7 +2871,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-content"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "ammonia",
  "chrono",
@@ -2905,7 +2906,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-db"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "futures-util",
@@ -2929,7 +2930,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-forms"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "chrono",
@@ -2943,7 +2944,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-https"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "base64 0.22.1",
@@ -2971,7 +2972,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-import"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "ammonia",
  "chrono",
@@ -2995,6 +2996,7 @@ dependencies = [
 name = "khalid-lint"
 version = "0.2.0"
 dependencies = [
+ "brotli",
  "chrono",
  "khalid-core",
  "rust-stemmers",
@@ -3006,7 +3008,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-mail"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "khalid-core",
  "khalid-mail",
@@ -3023,7 +3025,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-mcp"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "chrono",
@@ -3040,7 +3042,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-media"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "divan",
@@ -3066,7 +3068,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-mount"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "khalid-core",
  "thiserror 2.0.21",
@@ -3074,7 +3076,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-newsletter"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "chrono",
@@ -3096,7 +3098,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-outbound"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "http",
  "khalid-core",
@@ -3110,7 +3112,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-perf"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "divan",
@@ -3125,7 +3127,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-render"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "base64 0.22.1",
  "brotli",
@@ -3135,7 +3137,6 @@ dependencies = [
  "khalid-content",
  "khalid-core",
  "minijinja",
- "rust-embed",
  "scraper",
  "serde",
  "serde_json",
@@ -3147,7 +3148,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-routes"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "khalid-core",
@@ -3159,7 +3160,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-sdk"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "serde_json",
  "thiserror 2.0.21",
@@ -3167,7 +3168,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-search"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "khalid-core",
  "rust-stemmers",
@@ -3175,7 +3176,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-search-console"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "khalid-core",
@@ -3189,7 +3190,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-seo"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "atom_syndication",
  "chrono",
@@ -3209,7 +3210,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-server"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "axum",
  "brotli",
@@ -3235,9 +3236,9 @@ dependencies = [
 
 [[package]]
 name = "khalid-share-image"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
- "flate2",
+ "brotli",
  "insta",
  "khalid-core",
  "rustybuzz",
@@ -3250,7 +3251,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-static"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "khalid-core",
  "serde",
@@ -3260,7 +3261,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-theme"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "brotli",
  "http",
@@ -3281,7 +3282,7 @@ dependencies = [
 
 [[package]]
 name = "khalid-webhooks"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "hmac",
@@ -3419,7 +3420,7 @@ checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
 
 [[package]]
 name = "lint-check"
-version = "1.3.2"
+version = "1.7.0"
 dependencies = [
  "chrono",
  "reqwest",
@@ -3606,16 +3607,6 @@ name = "mime"
 version = "0.3.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6877bb514081ee2a7ff5ef9de3281f14a4dd4bceac4c09388074a6b5df8a139a"
-
-[[package]]
-name = "mime_guess"
-version = "2.0.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7c44f8e672c00fe5308fa235f821cb4198414e1c77935c1ab6948d3fd78550e"
-dependencies = [
- "mime",
- "unicase",
-]
 
 [[package]]
 name = "minijinja"
@@ -4762,41 +4753,6 @@ dependencies = [
  "mime",
  "quick-xml 0.41.0",
  "url",
-]
-
-[[package]]
-name = "rust-embed"
-version = "8.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "19afa5b4b6a611de00bd1bdae6ae6f39084c9399f0679c3f52d8469cf335cc23"
-dependencies = [
- "rust-embed-impl",
- "rust-embed-utils",
- "walkdir",
-]
-
-[[package]]
-name = "rust-embed-impl"
-version = "8.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0d8afda6374eac59e066abee06d265247ebbaf3006cf878e2879e8356e34053"
-dependencies = [
- "mime_guess",
- "proc-macro2",
- "quote",
- "rust-embed-utils",
- "syn 2.0.119",
- "walkdir",
-]
-
-[[package]]
-name = "rust-embed-utils"
-version = "8.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d84e8ba78bd384263e5922f084cbe1b081c3b7e69add59c8fb097b879ba968a"
-dependencies = [
- "sha2 0.11.1",
- "walkdir",
 ]
 
 [[package]]
@@ -6182,12 +6138,6 @@ name = "unarray"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eaea85b334db583fe3274d12b4cd1880032beab409c0d774be044d4480ab9a94"
-
-[[package]]
-name = "unicase"
-version = "2.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "357cc3acc6a036009fd6c973ed009037c732d60d0b4f6c673e9041497482a28f"
 
 [[package]]
 name = "unicode-bidi"

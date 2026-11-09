@@ -1,0 +1,35 @@
+# Lattice: a science explainer. Ink on white, a cool grey surface for the
+# lattice mats, a blue link and a burnt orange accent for numbers. A
+# grotesque for titles and labels, a serif for the reading column, a mono
+# for figure numbers and key numbers.
+[colors]
+background = "#ffffff"
+surface = "#f3f5f7"
+text = "#15191e"
+muted = "#4f5862"
+link = "#1d4fb8"
+accent = "#b5400f"
+border = "#d5dbe1"
+
+[fonts]
+heading = "\"Helvetica Neue\", Arial, system-ui, sans-serif"
+body = "Georgia, Cambria, \"Times New Roman\", serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[shape]
+radius = "0px"
+measure = "36rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.65
+heading_weight = 700
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

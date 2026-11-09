@@ -1,0 +1,93 @@
+# The Ledger Review, a made-up journal of personal finance research for
+# ordinary households, written for the Ledger template's demo. Each key and
+# table here replaces the showcase's own when scripts/demo-publication.sh
+# applies it.
+
+name = "The Ledger Review"
+languages = ["en"]
+
+[template.cta]
+label = "Read this issue"
+href = "/blog/about/"
+note = "A new issue every three weeks: one long study, worked sums with round numbers, and no products to sell."
+
+[announcement]
+text = "Volume 3, number 17: what small account fees add up to in ten years."
+href = "/blog/account-fees-ten-years/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Calm research on household money"
+
+[seo.ai_page]
+covers = "The Ledger Review publishes research on household money: budgeting methods, emergency funds, paying off debt, what fees and interest cost over time, saving for a home and reading a payslip. Every worked example uses made-up round numbers."
+cite = "Name The Ledger Review and the author, and link the study you quote. Our worked examples are illustrations, not advice."
+contact = "editors@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "The Ledger Review"
+email = "editors@example.com"
+founded = "2024-01-09"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Ledger Review logo"
+width = 320
+height = 80
+
+# Sign-ups for the issue letter, under the publication's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "issues@example.com"
+name = "The Ledger Review"
+postal_address = "The Ledger Review, 12 Counting House Row, Millbrook MB4 7LR"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Budgeting"
+href = "/blog/category/budgeting/"
+language = "en"
+
+[[nav.primary]]
+label = "Debt"
+href = "/blog/category/debt/"
+language = "en"
+
+[[nav.primary]]
+label = "Saving"
+href = "/blog/category/saving/"
+language = "en"
+
+[[nav.primary]]
+label = "Research notes"
+href = "/blog/category/research-notes/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About The Ledger Review"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "How we check every number"
+href = "/blog/check-every-number/"
+language = "en"
+
+[[nav.footer]]
+label = "Budgeting methods compared"
+href = "/blog/budgeting-methods-compared/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

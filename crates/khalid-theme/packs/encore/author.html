@@ -1,0 +1,61 @@
+{#- Encore's member page: their photo or mark, name, what they play and
+    their profiles, their bio, then their releases as sleeves and their
+    notes as picture cards, and the rest of the band. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture %}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "icons.html" import profiles %}
+{% from "card.html" import pages -%}
+{% from "sections/people_grid.html" import people_grid -%}
+{% macro shelf(posts, level=2) -%}
+<ul class="shelf" role="list">
+{% for post in posts %}<li class="sleeve">
+<div class="sleeve-art">{% if post.image %}{{ picture(post.image, slot_sizes("sleeve")) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
+<h{{ level }} class="sleeve-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="sleeve-meta">{{ post.facts[0].value }} <time datetime="{{ post.date }}">{{ (post.date | string)[:4] }}</time></p>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}
+{% macro note_cards(posts, level=2) -%}
+<ul class="notes" role="list">
+{% for post in posts %}<li class="note">
+{% if post.image %}{{ picture(post.image, slot_sizes("note")) }}
+{% endif %}<p class="note-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %} <span class="note-category">{{ post.category.name }}</span>{% endif %}</p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}
+<article class="author">
+<header class="author-header">
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
+{% endif %}<div class="author-intro">
+<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}<p class="author-count">{% if page.post_count == 1 %}{{ t.post_count_one }}{% else %}{{ t.post_count | replace("{count}", page.post_count | string) }}{% endif %}</p>
+{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</div>
+</header>
+<div class="author-bio">
+{{ page.bio }}
+</div>
+</article>
+{% set records = page.posts | selectattr("facts") | list -%}
+{% set written = page.posts | rejectattr("facts") | list -%}
+{% if records %}<section class="author-part" aria-labelledby="author-releases">
+<h2 id="author-releases" class="label">{{ t.music_releases }}</h2>
+{{ shelf(records, 3) }}
+</section>
+{% endif %}{% if written or not records %}<section class="author-part" aria-labelledby="author-posts">
+<h2 id="author-posts" class="label">{{ t.music_notes }}</h2>
+{% if written %}{{ note_cards(written, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}
+{% if page.others and "authors_page" in site.features %}<section class="author-part" aria-labelledby="other-authors">
+<h2 id="other-authors" class="label">{{ t.music_band }}</h2>
+{{ people_grid(page.others) }}
+</section>
+{% endif %}{% endblock %}

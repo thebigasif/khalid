@@ -1,0 +1,11 @@
+/* Section part: poster grid (templates/sections/poster_grid.html). Tall
+   cover cards in equal columns: the picture cropped to 2:3, the title
+   under it, which links the whole card, then what the pack adds. */
+.poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr)); gap: 2.5rem 1.5rem; margin: 0; padding: 0; list-style: none; }
+.poster { position: relative; display: flex; flex-direction: column; gap: 0.5rem; min-inline-size: 0; }
+.poster-frame .image { margin: 0; }
+.poster-frame img { aspect-ratio: 2 / 3; block-size: auto; object-fit: cover; }
+.poster :is(h2, h3, h4) { margin: 0.25rem 0 0; font-size: 1.1875rem; line-height: 1.25; }
+.poster :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.poster :is(h2, h3, h4) a::after { position: absolute; inset: 0; content: ""; }
+.poster :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }

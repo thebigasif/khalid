@@ -16,10 +16,12 @@ sha2 = "0.11"
 chrono = { version = "0.4", default-features = false }
 khalid-core.workspace = true
 minijinja = { version = "3", default-features = false, features = ["builtins", "macros", "multi_template", "fuel", "serde"] }
-rust-embed = { version = "8", features = ["debug-embed"] }
 serde.workspace = true
 thiserror.workspace = true
 toml = "1.1"
+
+[build-dependencies]
+brotli = "9"
 
 [dev-dependencies]
 insta = "1"

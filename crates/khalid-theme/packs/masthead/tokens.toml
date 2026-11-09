@@ -1,0 +1,33 @@
+# Masthead: a general publication. Ink on warm paper with a deep red
+# accent, a high-contrast serif for the name and titles and a calm serif
+# for the text. Square corners: rules and type carry the design.
+[colors]
+background = "#fcfbf8"
+surface = "#f2efe7"
+text = "#1b1a17"
+muted = "#57524a"
+link = "#9b1c1c"
+accent = "#9b1c1c"
+border = "#d9d3c7"
+
+[fonts]
+heading = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif"
+body = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
+
+[shape]
+radius = "0px"
+measure = "36rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.125rem 3.5rem"
+h2 = "1.5rem 2rem"
+h3 = "1.25rem 1.5rem"
+h4 = "1.0625rem 1.1875rem"
+small = "0.9375rem"
+line_height = 1.65
+heading_weight = 700
+
+[space]
+unit = "0.5rem"
+section = "4rem"

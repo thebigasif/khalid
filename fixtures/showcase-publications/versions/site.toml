@@ -1,0 +1,111 @@
+# Mossboard, a made-up project board for small teams, and its
+# changelog, written for the Versions template's demo. Each key and table
+# here replaces the showcase's own when scripts/demo-publication.sh
+# applies it.
+
+name = "Mossboard changelog"
+languages = ["en"]
+
+[template.cta]
+label = "Try Mossboard"
+href = "/blog/about/"
+note = "Mossboard is free for teams of up to five people. Every change on this page reaches every plan."
+
+# The Versions template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Every change to Mossboard, the project board for small teams: what is new, what works better and what we fixed."]
+change_types = ["new", "improved", "fixed"]
+
+[announcement]
+text = "Version 3.4 is out: recurring cards, faster boards and a time zone fix."
+href = "/blog/recurring-cards/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "What changed in Mossboard"
+
+[seo.ai_page]
+covers = "The Mossboard changelog lists every change to Mossboard, a project board for small teams. Each post is one change, marked new, improved or fixed, with the version it shipped in, the platforms and the plans it reaches."
+cite = "Name the version and link the change's own post."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Mossboard"
+email = "hello@example.com"
+founded = "2021-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Mossboard logo"
+width = 320
+height = 80
+
+# Sign-ups for the changelog's email, under its own name. The mail server
+# is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Mossboard changelog"
+postal_address = "Mossboard, 14 Weaver Lane, Northsound NS2 4QT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "All changes"
+href = "/blog/"
+language = "en"
+
+[[nav.primary]]
+label = "Team"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Mossboard"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Team"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer_groups]]
+heading = "By type"
+language = "en"
+[[nav.footer_groups.links]]
+label = "New"
+href = "/blog/category/new/"
+[[nav.footer_groups.links]]
+label = "Improved"
+href = "/blog/category/improved/"
+[[nav.footer_groups.links]]
+label = "Fixed"
+href = "/blog/category/fixed/"
+
+[[nav.footer_groups]]
+heading = "By area"
+language = "en"
+[[nav.footer_groups.links]]
+label = "Boards"
+href = "/blog/tag/boards/"
+[[nav.footer_groups.links]]
+label = "Calendar"
+href = "/blog/tag/calendar/"
+[[nav.footer_groups.links]]
+label = "Mobile apps"
+href = "/blog/tag/mobile-apps/"
+[[nav.footer_groups.links]]
+label = "Sharing"
+href = "/blog/tag/sharing/"
+[[nav.footer_groups.links]]
+label = "Integrations"
+href = "/blog/tag/integrations/"

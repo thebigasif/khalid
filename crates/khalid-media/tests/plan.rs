@@ -2,7 +2,9 @@
 
 use std::fs;
 
-use khalid_media::{ContentKey, Format, MediaCache, Variant, widths};
+use khalid_media::{
+    ContentKey, Format, MediaCache, Variant, fallback_widths, fallback_widths_beside_avif, widths,
+};
 
 #[test]
 fn the_same_bytes_get_the_same_key_and_any_change_a_new_one() {
@@ -22,8 +24,31 @@ fn the_same_bytes_get_the_same_key_and_any_change_a_new_one() {
 
 #[test]
 fn a_large_image_gets_every_breakpoint_up_to_the_widest() {
-    assert_eq!(widths(4000), [320, 480, 640, 800, 1024, 1280, 1600, 2048]);
-    assert_eq!(widths(2048), [320, 480, 640, 800, 1024, 1280, 1600, 2048]);
+    assert_eq!(
+        widths(4000),
+        [320, 480, 640, 800, 1024, 1152, 1280, 1600, 2048]
+    );
+    assert_eq!(
+        widths(2048),
+        [320, 480, 640, 800, 1024, 1152, 1280, 1600, 2048]
+    );
+}
+
+#[test]
+fn a_phone_at_three_times_gets_a_file_close_to_its_slot() {
+    // A browser fetches the narrowest width at least as wide as the slot
+    // times the screen's density. Phone slots run from about 320 to 420
+    // CSS px; at 3x no file is more than an eighth wider than it needs.
+    let offered = widths(4000);
+    for slot in 320..=420_u32 {
+        let needed = slot * 3;
+        let fetched = offered.iter().find(|&&width| width >= needed).copied();
+        let fetched = fetched.unwrap_or_else(|| panic!("no width for a {slot} px slot"));
+        assert!(
+            u64::from(fetched) * 8 <= u64::from(needed) * 9,
+            "a {slot} px slot needs {needed} px and gets {fetched} px"
+        );
+    }
 }
 
 #[test]
@@ -32,6 +57,26 @@ fn an_image_is_never_scaled_up() {
     assert_eq!(widths(300), [300]);
     assert_eq!(widths(320), [320]);
     assert_eq!(widths(0), [0_u32; 0]);
+}
+
+#[test]
+fn the_fallback_format_gets_one_width_of_1280_or_less() {
+    assert_eq!(fallback_widths(4000), [1280]);
+    assert_eq!(fallback_widths(1280), [1280]);
+    assert_eq!(fallback_widths(1500), [1280]);
+    assert_eq!(fallback_widths(1000), [1000]);
+    assert_eq!(fallback_widths(300), [300]);
+    assert_eq!(fallback_widths(0), [0_u32; 0]);
+}
+
+#[test]
+fn beside_avif_alone_the_fallback_gets_one_width_of_1024_or_less() {
+    assert_eq!(fallback_widths_beside_avif(4000), [1024]);
+    assert_eq!(fallback_widths_beside_avif(1100), [1024]);
+    assert_eq!(fallback_widths_beside_avif(1024), [1024]);
+    assert_eq!(fallback_widths_beside_avif(1000), [1000]);
+    assert_eq!(fallback_widths_beside_avif(300), [300]);
+    assert_eq!(fallback_widths_beside_avif(0), [0_u32; 0]);
 }
 
 #[test]

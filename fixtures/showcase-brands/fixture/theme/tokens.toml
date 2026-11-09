@@ -1,0 +1,59 @@
+# The sample brand for the Fixture demo: Larkmoor Rovers, a made-up
+# amateur football club. Deep navy on white with a warm chalk surface,
+# Oswald for names and scores like a scoreboard, and Archivo for the
+# text. Only the brand lives here: the template keeps its own shape,
+# type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#f5f1e6"
+text = "#141824"
+muted = "#555b66"
+link = "#1c2d5a"
+accent = "#1c2d5a"
+border = "#ddd6c4"
+
+[fonts]
+heading = "Oswald, \"Arial Narrow\", \"Roboto Condensed\", Arial, sans-serif"
+body = "Archivo, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Oswald"
+style = "normal"
+weight = "600"
+path = "oswald-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00E4, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "131.78%"
+descent = "136.38%"
+line_gap = "0.00%"
+size_adjust = "53.69%"
+
+[[fonts.files]]
+family = "Archivo"
+style = "normal"
+weight = "400"
+path = "archivo-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00E4, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "96.99%"
+descent = "99.10%"
+line_gap = "0.00%"
+size_adjust = "59.20%"
+
+[[fonts.files]]
+family = "Archivo"
+style = "normal"
+weight = "600"
+path = "archivo-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00E4, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "96.99%"
+descent = "99.10%"
+line_gap = "0.00%"
+size_adjust = "60.89%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

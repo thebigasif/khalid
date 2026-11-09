@@ -5,9 +5,11 @@
 # text, a page that scrolls sideways, a table column narrower than its
 # longest word, a picture that did not load, a frame narrower than the
 # template's brief on a wide screen, post text too small or lines too short
-# or long on a wide screen, and a stylesheet of 20 KB or more with Brotli.
+# or long on a wide screen, and a page whose stylesheets weigh more than
+# 10 KB together with Brotli.
 # scripts/demo-check/layout.mjs does the checking and says what each check
-# means, and scripts/demo-check/frames.json holds each pack's minimum frame.
+# means, and each pack's pack.toml in crates/khalid-theme/packs/ holds its
+# minimum frame.
 #
 # Each pack is built with its own options, then once more with the contents
 # list in a side column, where the pack's own default puts it elsewhere, so
@@ -18,6 +20,10 @@
 # (fixtures/showcase-publications/, scripts/demo-publication.sh) in its own
 # pack, as <pack>-publication, on the pages its check-pages.txt names. The
 # showcase pass above stays the floor every pack is held to.
+#
+# Last, scripts/demo-check/network.mjs opens each site's pages in Chromium
+# with no consent given, scripts on and then off, and fails on any request
+# to an address other than the site's own (privacy plan R1).
 #
 # Needs Node 22 or later and the pinned tools, with the browsers:
 #   npm install --prefix scripts/demo-check
@@ -56,6 +62,17 @@ mkdir -p "$work/sites"
 
 packs="$(showcase_packs "$bin" "$work")"
 [ -n "$packs" ] || stop "This Khalid did not list its templates, so there is nothing to check. Check that $bin runs."
+# With --packs, only those packs are built, as only they are checked.
+only=""
+previous=""
+for argument in "$@"; do
+  [ "$previous" = "--packs" ] && only="$argument"
+  previous="$argument"
+done
+if [ -n "$only" ]; then
+  packs="$(for pack in $packs; do [[ ",$only," == *",$pack,"* ]] && echo "$pack"; done || true)"
+  [ -n "$packs" ] || stop "None of the packs named in --packs ($only) is a template this Khalid has. Name packs it lists."
+fi
 
 for pack in $packs; do showcase_start "$bin" "$work" "$pack" "$pack" brand; done
 showcase_finish
@@ -74,4 +91,20 @@ for pack in $publications; do showcase_start "$bin" "$work" "$pack-publication" 
 showcase_finish
 echo "Built the showcase with $(echo "$packs" | wc -w) packs and $(echo "$publications" | wc -w) demo publications in $((SECONDS - since)) seconds."
 
-node "$tools/layout.mjs" --sites "$work/sites" --shots "$work/shots" "$@"
+failed=0
+node "$tools/layout.mjs" --sites "$work/sites" --shots "$work/shots" "$@" || failed=1
+# The network capture: with no consent given, scripts on and off, no page
+# may ask another address for anything (scripts/demo-check/network.mjs).
+# It runs in Chromium, so only a run that has Chromium does it: CI gives
+# each browser its own job, and only the Chromium job installs Chromium.
+case " $* " in
+  *" --browsers "*chromium* | *--browsers=*chromium*) capture=1 ;;
+  *--browsers*) capture=0 ;;
+  *) capture=1 ;;
+esac
+if [ "$capture" = 1 ]; then
+  node "$tools/network.mjs" --sites "$work/sites" "$@" || failed=1
+else
+  echo "The network capture runs in the Chromium job, so this run leaves it out."
+fi
+exit "$failed"

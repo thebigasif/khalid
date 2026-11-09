@@ -1,0 +1,71 @@
+{#- Spectrum's front page (docs/templates/spectrum.md): the masthead with
+    the spectrum bar, one coloured segment per topic linking to its row;
+    the lead story beside the latest posts; then one row per topic on a
+    band of the topic's colour, its newest post large and the others
+    small, in words only on a phone. The rows are the sections set in
+    site.toml, or else the topic groups Khalid makes from the posts. The
+    lead story is the newest featured post, or the newest post, and is
+    not repeated in its row unless it is the row's only post.
+    Later pages list the posts as cards. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% from "parts-spectrum.html" import hue, topic, story, cards, row_sizes, lead_sizes -%}
+{% set options = template.options -%}
+{% set menu = site.nav.primary -%}
+{% set first_page = not page.pagination or page.pagination.current == 1 -%}
+{% set lead = (page.featured or (page.posts[0] if page.posts else none)) if first_page else none -%}
+{% set latest = (page.posts | rejectattr("href", "eq", lead.href) | list if lead else page.posts)[:options.latest_count] -%}
+{% set rows = (page.sections or page.tabs) if first_page else [] -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{% if rows %}<nav class="sp-bar" aria-label="{{ t.topic_tabs }}">
+<ul role="list">
+{% for row in rows %}<li data-hue="{{ hue(row.href, row.title, menu) }}"><a href="#sp-row-{{ loop.index }}">{{ row.title }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}{% endcall %}
+{% if lead %}<div class="sp-top">
+<section class="sp-lead" aria-labelledby="sp-lead-title">
+<h2 id="sp-lead-title" class="sp-label">{{ t.lead_story }}</h2>
+{% if lead.category %}<article class="sp-lead-story" data-hue="{{ hue(lead.category.href, lead.category.name, menu) }}">
+{% else %}<article class="sp-lead-story">
+{% endif %}{% if lead.image %}{{ picture(lead.image, lead_sizes(lead.image)) }}
+{% endif %}<div class="sp-lead-text">
+{% if lead.category %}{{ topic(lead.category, menu) }}
+{% endif %}<h3><a href="{{ lead.href }}">{{ lead.title }}</a></h3>
+<p class="sp-excerpt">{{ lead.excerpt }}</p>
+<p class="sp-meta"><time datetime="{{ lead.date }}">{{ lead.date | date }}</time>{% if lead.author %} <span class="sp-by">{{ t.by }} {{ lead.author.name }}</span>{% endif %}</p>
+</div>
+</article>
+</section>
+{% if latest %}<section class="sp-latest" aria-labelledby="sp-latest-title">
+<h2 id="sp-latest-title" class="sp-label">{{ t.latest }}</h2>
+{{ feed_list(latest) }}
+</section>
+{% endif %}</div>
+{% endif %}{% for row in rows %}{% set rest = row.posts | rejectattr("href", "eq", lead.href) | list if lead else row.posts -%}
+{% set posts = (rest if rest else row.posts)[:4] -%}
+<section class="sp-row" id="sp-row-{{ loop.index }}" data-hue="{{ hue(row.href, row.title, menu) }}" aria-labelledby="sp-row-{{ loop.index }}-title">
+<div class="sp-row-head">
+<h2 id="sp-row-{{ loop.index }}-title">{{ row.title }}</h2>
+<p class="sp-all"><a href="{{ row.href }}">{{ t.all_in | replace("{name}", row.title) }}</a></p>
+</div>
+{% if posts %}<ul class="sp-row-posts" role="list">
+{% for post in posts %}<li>{{ story(post, menu, 3, false, true, row_sizes(post.image, loop.first) if post.image else none) }}</li>
+{% endfor %}</ul>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% endfor %}{% if not first_page %}<header class="list-header">
+<h2>{{ t.latest }}</h2>
+</header>
+{% if page.posts %}{{ cards(page.posts, menu) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% elif not lead and not rows %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

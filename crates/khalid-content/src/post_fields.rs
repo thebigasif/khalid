@@ -1,6 +1,6 @@
 //! The post fields that carry more than one value or a rule of their own:
-//! the lead image, the search title, tags, the sitemap choice, the series
-//! and the topic cluster.
+//! the lead image, the search title, tags, facts, the sitemap choice, the
+//! series and the topic cluster.
 
 use std::num::NonZeroU32;
 
@@ -114,6 +114,85 @@ pub(crate) fn tags<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<Str
         seen.push(key);
     }
     Ok(tags)
+}
+
+/// The most facts a post may list, so a card stays short.
+pub const MAX_FACTS: usize = 4;
+
+/// The most characters in a fact's label, such as `Discipline`.
+pub const MAX_FACT_LABEL: usize = 24;
+
+/// The most characters in a fact's value, such as `Calder Street Library`.
+pub const MAX_FACT_VALUE: usize = 40;
+
+/// One short fact about a post, such as `Year: 2025` or `Serves: 4`, that
+/// a template may show on its card and page. Both parts are one line of
+/// plain text with no spaces at either end.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(try_from = "RawFact")]
+#[non_exhaustive]
+pub struct PostFact {
+    /// What the value is, such as `Client`, at most [`MAX_FACT_LABEL`]
+    /// characters.
+    pub label: String,
+    /// The fact itself, such as `Calder Street Library`, at most
+    /// [`MAX_FACT_VALUE`] characters.
+    pub value: String,
+}
+
+/// A fact as written, before its rules are checked.
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawFact {
+    label: String,
+    value: String,
+}
+
+impl TryFrom<RawFact> for PostFact {
+    type Error = String;
+
+    fn try_from(raw: RawFact) -> Result<Self, Self::Error> {
+        Ok(Self {
+            label: fact_part("label", &raw.label, MAX_FACT_LABEL, "Client")?,
+            value: fact_part("value", &raw.value, MAX_FACT_VALUE, "Calder Street Library")?,
+        })
+    }
+}
+
+/// One part of a fact, trimmed: its `label` or its `value`, with at least
+/// one character, at most `most` and no line break.
+fn fact_part(part: &str, text: &str, most: usize, example: &str) -> Result<String, String> {
+    let trimmed = text.trim();
+    if trimmed.is_empty() {
+        return Err(format!(
+            "a fact needs a {part} with at least one word, such as {part}: {example}"
+        ));
+    }
+    if trimmed.contains(['\n', '\r']) {
+        return Err(format!(
+            "the fact {part} {trimmed:?} runs over more than one line; write it on one line"
+        ));
+    }
+    let length = trimmed.chars().count();
+    if length > most {
+        return Err(format!(
+            "the fact {part} {trimmed:?} has {length} characters; keep it to {most} or fewer, such as {part}: {example}"
+        ));
+    }
+    Ok(trimmed.to_owned())
+}
+
+/// Reads the facts: a list of at most [`MAX_FACTS`] label and value pairs.
+/// An empty list, or none at all, is the same as no field.
+pub(crate) fn facts<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<PostFact>, D::Error> {
+    let facts = Option::<Vec<PostFact>>::deserialize(deserializer)?.unwrap_or_default();
+    if facts.len() > MAX_FACTS {
+        return Err(serde::de::Error::custom(format!(
+            "a post has at most {MAX_FACTS} facts, and this lists {}; keep the {MAX_FACTS} a reader most needs",
+            facts.len()
+        )));
+    }
+    Ok(facts)
 }
 
 /// Where a post stands in review before it is published (KH-EDT-4).

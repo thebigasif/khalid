@@ -1,0 +1,53 @@
+{#- Chapter's person page: their photo or mark, name, role, experience
+    and profiles, their bio, then their books, writing and events in
+    Chapter's three forms. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture %}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "icons.html" import profiles %}
+{% from "card.html" import pages -%}
+{% from "sections/cover_shelf.html" import cover_shelf -%}
+{% from "sections/contents_page.html" import contents_page -%}
+{% from "sections/event_list.html" import event_list -%}
+{% set options = template.options -%}
+{% set books_href = "/category/" ~ (options.books_category or "books") ~ "/" -%}
+{% set events_href = "/category/" ~ (options.events_category or "events") ~ "/" -%}
+{% set filed = page.posts | selectattr("category") | list -%}
+{% set books = filed | selectattr("category.href", "endingwith", books_href) | list -%}
+{% set events = filed | selectattr("category.href", "endingwith", events_href) | list -%}
+{% set others = (books + events) | map(attribute="href") | list -%}
+{% set writing = page.posts | rejectattr("href", "in", others) | list -%}
+{% set titled = ((1 if books else 0) + (1 if writing else 0) + (1 if events else 0)) > 1 -%}
+<article class="author">
+<header class="author-header">
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
+{% endif %}<div class="author-intro">
+<h1>{{ page.name }}</h1>
+{% if page.role %}<p class="author-role">{{ page.role }}</p>
+{% endif %}{% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
+{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
+{% endif %}</div>
+</header>
+<div class="author-bio">
+{{ page.bio }}
+</div>
+</article>
+{% if page.posts %}{% if books %}<section class="ch-part ch-books" aria-labelledby="author-books">
+{% if titled %}<h2 id="author-books" class="ch-part-title">{{ t.books }}</h2>
+{% else %}<h2 id="author-books" class="visually-hidden">{{ t.books }}</h2>
+{% endif %}{{ cover_shelf(books, 3, sizes=slot_sizes("cover")) }}
+</section>
+{% endif %}{% if writing %}<section class="ch-part ch-writing" aria-labelledby="author-writing">
+{% if titled %}<h2 id="author-writing" class="ch-part-title">{{ t.writing }}</h2>
+{% else %}<h2 id="author-writing" class="visually-hidden">{{ t.writing }}</h2>
+{% endif %}{{ contents_page(writing, 3) }}
+</section>
+{% endif %}{% if events %}<section class="ch-part ch-events-part" aria-labelledby="author-events">
+{% if titled %}<h2 id="author-events" class="ch-part-title">{{ t.events }}</h2>
+{% else %}<h2 id="author-events" class="visually-hidden">{{ t.events }}</h2>
+{% endif %}{{ event_list(events, 3) }}
+</section>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

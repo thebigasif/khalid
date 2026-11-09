@@ -1,0 +1,35 @@
+# Northlight Parade's categories. Encore shows a category's releases (posts
+# with facts) as a shelf of sleeves and its notes as picture cards, under
+# the category's intro.
+
+[[categories]]
+slug = "releases"
+en = "Releases"
+
+[categories.seo.en]
+description = "Every Northlight Parade record: albums, an EP, singles and a live album, each with its track list, formats and where to listen."
+intro = "Every record we have made, newest first. Each one has its track list, the formats it comes in and where to listen."
+
+[[categories]]
+slug = "studio"
+en = "Studio notes"
+
+[categories.seo.en]
+description = "Notes from Northlight Parade's studio: how we write, record and film, with the gear and the rooms we use."
+intro = "How we write, record and film: the rooms, the gear and the mistakes we kept."
+
+[[categories]]
+slug = "tour-diary"
+en = "Tour diary"
+
+[categories.seo.en]
+description = "Northlight Parade's tour diary: stories from the road, the ferries and the small halls."
+intro = "Stories from the road, the ferries and the small halls, written on the way home."
+
+[[categories]]
+slug = "news"
+en = "News"
+
+[categories.seo.en]
+description = "News from Northlight Parade: tours, tickets and records."
+intro = "Tours, tickets and records."

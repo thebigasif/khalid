@@ -215,6 +215,7 @@ impl Demo {
             locale: Locale::try_new(lang.tag)?,
             home: lang.prefix.to_owned(),
             stylesheet: self.stylesheet.clone(),
+            body_font: None,
             nav: Nav {
                 primary: vec![
                     link(lang.glossary, format!("{}glossary/", lang.prefix)),
@@ -360,6 +361,7 @@ impl Demo {
             tabs: Vec::new(),
             videos: Vec::new(),
             podcasts: Vec::new(),
+            podcast_player: None,
         });
         self.page(lang, (lang.prefix, None), "Field Notes on SEO", &home)?;
         self.author_pages(lang, &authors, &cards)?;
@@ -549,6 +551,7 @@ impl Demo {
             updated: None,
             updated_note: None,
             dek: None,
+            facts: Vec::new(),
             reading_time: ReadingTime::of(&body, &Locale::try_new(lang.tag)?),
             authors: vec![Person {
                 name: file.map_or(author.clone(), |a| a.field("name")),
@@ -585,6 +588,7 @@ impl Demo {
             category: record.category.clone(),
             featured: false,
             reading_time: Some(record.reading_time),
+            facts: Vec::new(),
         };
         let body = PageBody::Post(Box::new(record));
         self.page(lang, (&path, Some(&key)), &title, &body)?;

@@ -1,0 +1,53 @@
+---
+source: crates/khalid/tests/build_every_template.rs
+expression: pages
+---
+# index.html
+header.masthead
+  h1.masthead-name: Field Notes on SEO
+article.story
+  h2.story-title: Planning a topic cluster in an afternoon
+article.story
+  h2.story-title: Fixing slow pages, starting with the biggest win
+article.story
+  h2.story-title: What a sitemap does, and what it does not
+article.story
+  h2.story-title: How to write a title tag
+article.story
+  h2.story-title: Why internal links matter
+
+# why-internal-links-matter/index.html
+article.post.post-toc-folded
+  header.post-header
+    h1: Why internal links matter
+  nav "Contents"
+  div.post-body: the text
+  footer.post-footer
+  section.author-box
+    h2: About the author
+section.mentions
+  h2: Posts that link here
+section.contact-sheet
+  h2: More pictures
+  article
+    h3.sheet-title: How to write a title tag
+  article
+    h3.sheet-title: Planning a topic cluster in an afternoon
+  article
+    h3.sheet-title: What a sitemap does, and what it does not
+
+# authors/asif/index.html
+article.author
+  header.author-header
+    h1: Asif
+section.author-stories
+  h2: Stories
+  article.row
+    h3.story-title: Planning a topic cluster in an afternoon
+  article.row
+    h3.story-title: How to write a title tag
+  article.row
+    h3.story-title: Why internal links matter
+section.author-others
+  h2: Other authors
+  h3: Lena Vogt

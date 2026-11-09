@@ -1,0 +1,71 @@
+# The sample brand for the Lattice demo: Wavelength, a science explainer
+# site. Indigo on white with a pale lilac surface for the figure mats,
+# Hanken Grotesk for titles, Gelasio for the reading column and DM Mono
+# for figure numbers and key numbers. Only the brand lives here: the
+# template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#f1f1fa"
+text = "#16172b"
+muted = "#4c4e66"
+link = "#3b3fb6"
+accent = "#3b3fb6"
+border = "#d6d7ea"
+
+[fonts]
+heading = "\"Hanken Grotesk\", \"Helvetica Neue\", Arial, sans-serif"
+body = "Gelasio, Georgia, Cambria, serif"
+mono = "\"DM Mono\", ui-monospace, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Hanken Grotesk"
+style = "normal"
+weight = "700"
+path = "hanken-grotesk-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B3, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "110.46%"
+descent = "142.98%"
+line_gap = "0.00%"
+size_adjust = "58.88%"
+
+[[fonts.files]]
+family = "Gelasio"
+style = "normal"
+weight = "400"
+path = "gelasio-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B3, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "102.48%"
+descent = "161.29%"
+line_gap = "0.00%"
+size_adjust = "62.25%"
+
+[[fonts.files]]
+family = "Gelasio"
+style = "normal"
+weight = "600"
+path = "gelasio-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B3, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "102.48%"
+descent = "161.29%"
+line_gap = "0.00%"
+size_adjust = "67.58%"
+
+[[fonts.files]]
+family = "DM Mono"
+style = "normal"
+weight = "500"
+path = "dm-mono-latin-500.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B3, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "109.58%"
+descent = "146.29%"
+line_gap = "0.00%"
+size_adjust = "63.54%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

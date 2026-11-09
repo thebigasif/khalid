@@ -1,0 +1,34 @@
+---
+source: crates/khalid/tests/template_channel.rs
+expression: "shown(&out, \"category/on-page-seo/index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/on-page-seo/" aria-current="page">On-page SEO</a></li>
+</ol>
+</nav>
+
+<header class="list-header">
+<p class="list-kind">Videos</p>
+<h1>On-page SEO</h1>
+</header>
+<ul class="video-grid" role="list">
+<li class="video-card">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar"><span class="play-mark" aria-hidden="true"></span><span class="play-track" aria-hidden="true"></span><span class="play-time"><span class="play-label">Length</span> 4:05</span></p>
+<h2><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h2>
+<p class="video-meta"><time datetime="2026-09-21">21 September 2026</time> <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+<li class="video-card">
+<div class="video-blank" aria-hidden="true"></div>
+<p class="play-bar play-bar-empty" aria-hidden="true"><span class="play-track"></span></p>
+<h2><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h2>
+<p class="video-meta"><time datetime="2026-09-14">14 September 2026</time> <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+</ul>

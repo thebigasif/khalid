@@ -1,0 +1,13 @@
+# Photographs in The Proof Sheet
+
+The Proof Sheet is a made-up publication that shows Khalid's Letterpress template. Its photographs are not part of Khalid and are not under the AGPL. Each keeps the licence its photographer gave it, listed here. The photographs are cropped and resized for the demo.
+
+- `en/posts/2026-11-05-fifty-issues-set-by-hand/lead.jpg`: "Weldon Spring letterpress (Unsplash)" by Rodney Truitt Jr rodneytruittjr, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Weldon_Spring_letterpress_(Unsplash).jpg
+- `en/posts/2026-10-29-glass-heat-and-breath/lead.jpg`: "Vidriero (Unsplash)" by Quino Al quinoal, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Vidriero_(Unsplash).jpg
+- `en/posts/2026-10-22-paper-one-sheet-at-a-time/lead.jpg`: "Handmade Paper Manufacturer" by Lucaswhitehad, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Handmade_Paper_Manufacturer.jpg
+- `en/posts/2026-10-15-carving-by-lamplight/lead.jpg`: "Carver at work (Unsplash)" by Angelina Litvin linalitvina, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Carver_at_work_(Unsplash).jpg
+- `en/posts/2026-10-08-winter-workshop-list/lead.jpg`: "Market yarn (Unsplash)" by julian mora julivajuli, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Market_yarn_(Unsplash).jpg
+- `en/posts/2026-10-01-visible-mending/lead.jpg`: "Vintage sewing box (Unsplash)" by Annie Spratt anniespratt, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Vintage_sewing_box_(Unsplash).jpg
+- `en/posts/2026-09-24-a-year-at-the-wheel/lead.jpg`: "Making pottery (Unsplash)" by Jared Sluyter jaredsluyter, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Making_pottery_(Unsplash).jpg
+- `en/posts/2026-09-17-bookbinders-shelf/lead.jpg`: "Leather bound books (Unsplash)" by Chris Lawton chrislawton, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Leather_bound_books_(Unsplash).jpg
+- `en/posts/2026-09-10-wheelwrights-barn/lead.jpg`: "Carpenter and wheelwright from Borre (Unsplash)" by manu schwendener manuschwendener, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Carpenter_and_wheelwright_from_Borre_(Unsplash).jpg

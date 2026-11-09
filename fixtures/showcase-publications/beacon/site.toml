@@ -1,0 +1,102 @@
+# Alderbrook Rivers Trust, a made-up charity that looks after a made-up
+# river, written for the Beacon template's demo. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Alderbrook Rivers Trust"
+languages = ["en"]
+
+# The donate call. It only links to the trust's donate page, which takes
+# no payment.
+[template.cta]
+label = "Donate"
+href = "/blog/donate/"
+note = "Every £10 plants two trees on a bare riverbank. Give today and help the Alder run free."
+
+# The Beacon template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["We bring the river Alder back to life: open rivers, clean water and room for wildlife, with the people who live beside it."]
+hero_stats = ["42 km | of river reopened to fish", "18,300 | trees planted since 2019", "1,240 | volunteers this year", "84p | of every pound spent on the river"]
+campaign_count = 6
+news_count = 4
+
+[announcement]
+text = "Hob Mill weir appeal: £61,850 raised of our £90,000 goal. Help us free the Alder."
+href = "/blog/free-hob-mill-weir/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A charity for the river Alder and its streams"
+
+[seo.ai_page]
+covers = "Alderbrook Rivers Trust is a charity that restores the river Alder and its streams: it takes out old weirs, plants riverbank trees, tests the water and helps otters, kingfishers and salmon come back. Each post is a campaign with its goal, or news from the trust's work."
+cite = "Link the post you quote, and give the campaign's figures as the post shows them on the day you read it."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Alderbrook Rivers Trust"
+email = "hello@example.com"
+founded = "2004-05-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Alderbrook Rivers Trust logo"
+width = 320
+height = 80
+
+# Sign-ups for the trust's newsletter, under its own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Alderbrook Rivers Trust"
+postal_address = "Alderbrook Rivers Trust, The Old Mill House, 4 Water Lane, Ashby AB3 9RT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Campaigns"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "Wildlife"
+href = "/blog/category/wildlife/"
+language = "en"
+
+[[nav.primary]]
+label = "News"
+href = "/blog/category/trust-news/"
+language = "en"
+
+[[nav.primary]]
+label = "Our team"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the trust"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Donate"
+href = "/blog/donate/"
+language = "en"
+
+[[nav.footer]]
+label = "Our team"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <g fill="none" stroke="#7b2d43" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="16" y="26" width="44" height="36" rx="4"/><path d="M13 26 H63"/><path d="M27 44 Q38 36 49 44 Q38 54 27 44"/>
+  </g>
+  <text textLength="232" lengthAdjust="spacingAndGlyphs" x="76" y="52" font-family="Vollkorn, Georgia, serif" font-size="32" font-weight="600" fill="#241c1f">The Seed Tin</text>
+</svg>

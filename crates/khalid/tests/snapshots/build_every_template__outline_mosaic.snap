@@ -1,0 +1,55 @@
+---
+source: crates/khalid/tests/build_every_template.rs
+expression: pages
+---
+# index.html
+header.masthead
+  h1.masthead-name: Field Notes on SEO
+section.mosaic-section
+  h2.mosaic-label: Latest pictures
+  article.tile-card
+    h3.tile-title: Planning a topic cluster in an afternoon
+  article.tile-card
+    h3.tile-title: Fixing slow pages, starting with the biggest win
+  article.tile-card
+    h3.tile-title: What a sitemap does, and what it does not
+  article.tile-card
+    h3.tile-title: How to write a title tag
+  article.tile-card
+    h3.tile-title: Why internal links matter
+
+# why-internal-links-matter/index.html
+article.post.post-toc-folded
+  header.post-header
+    h1: Why internal links matter
+  nav "Contents"
+  div.post-body: the text
+  footer.post-footer
+  section.author-box
+    h2: About the author
+section.mentions
+  h2: Posts that link here
+section.mosaic-section.related-tiles
+  h2.mosaic-label: More pictures
+  article.tile-card
+    h3.tile-title: How to write a title tag
+  article.tile-card
+    h3.tile-title: Planning a topic cluster in an afternoon
+  article.tile-card
+    h3.tile-title: What a sitemap does, and what it does not
+
+# authors/asif/index.html
+article.author
+  header.author-header
+    h1: Asif
+section.author-tiles
+  h2.mosaic-label: Stories
+  article.tile-card
+    h3.tile-title: Planning a topic cluster in an afternoon
+  article.tile-card
+    h3.tile-title: How to write a title tag
+  article.tile-card
+    h3.tile-title: Why internal links matter
+section.author-others
+  h2.mosaic-label: Other authors
+  h3: Lena Vogt

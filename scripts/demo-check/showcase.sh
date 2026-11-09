@@ -5,6 +5,8 @@
 
 showcase_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 showcase_site="$showcase_root/fixtures/showcase-site"
+# shellcheck source=../demo-media.sh
+source "$showcase_root/scripts/demo-media.sh"
 
 stop() { echo "$1"; exit 1; }
 
@@ -62,8 +64,11 @@ showcase_build() {
   if [ -n "$contents" ]; then
     printf '\n[template.options]\ncontents = "%s"\n' "$contents" >>"$copy/site.toml"
   fi
+  # Pictures in AVIF too, as the published demos offer them.
+  demo_media_in "$copy"
   "$bin" --site "$copy" build --out "$copy/public" >"$work/build-$name.log" 2>&1 ||
     stop "The showcase did not build with $pack. Its output is in $work/build-$name.log. Fix what it says, then run this again."
+  demo_media_out "$copy"
 }
 
 # Four builds at a time with showcase_start; each runs in its own shell, so

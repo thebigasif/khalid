@@ -58,6 +58,9 @@ pub(crate) fn directive(
         "cta" => attributes
             .only("cta", &[], "nothing")
             .map(|()| BlockKind::Cta),
+        "privacy-facts" => attributes
+            .only("privacy-facts", &[], "nothing")
+            .map(|()| BlockKind::PrivacyFacts),
         "button" => button(&attributes),
         "bookmark" => bookmark(&attributes),
         "embed" => embed(&attributes),

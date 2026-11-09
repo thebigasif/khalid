@@ -1,0 +1,175 @@
+/* Ticker (docs/templates/ticker.md): a markets newsletter. A wide frame
+   under a heavy ink rule, a dark tape of figures across the front page,
+   the latest issue beside its bar chart, and every list as a data table
+   shaded by how far each figure moved. Up is the accent, filled; down is
+   ink, hatched or drawn pointing down, so no move depends on colour
+   alone. The section parts' own rules come first (the build adds the
+   parts this pack's templates import); these set the newsletter's look
+   over them. Every colour is a token or a mix of tokens. */
+:root {
+  --tk-frame: 76rem;
+  /* The reading column: about 68 characters a line of the body serif at
+     19px, with or without the side contents. */
+  --tk-column: 36rem;
+  --tk-ink: var(--color-text);
+  --tk-paper: var(--color-background);
+  --tk-up-on-ink: color-mix(in oklab, var(--color-accent) 40%, var(--color-background));
+  --tk-quiet-on-ink: color-mix(in oklab, var(--color-background) 72%, var(--color-text));
+  --hero-title: clamp(2.5rem, 1.5rem + 3.5vw, 4.5rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--tk-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: var(--tk-column); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--tk-column) + 18rem); }
+main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band) { max-inline-size: var(--tk-column); margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+/* The header: a heavy ink rule across the window, the name in the
+   heading font, the menu in small type. */
+body { border-block-start: 6px solid var(--tk-ink); }
+.site-header { box-sizing: border-box; inline-size: min(100%, var(--tk-frame)); margin-inline: auto; gap: 0.5rem 2rem; padding-block: 1rem; border-block-end: 1px solid var(--tk-ink); }
+.site-name { font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); letter-spacing: -0.02em; color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.5rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { box-shadow: inset 0 -3px var(--color-accent); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-family: var(--font-heading); font-size: var(--text-small); }
+
+/* Buttons: square and inked; the accent on hover. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--tk-paper); background: var(--tk-ink); border: 0; border-radius: var(--radius); font: 600 0.9375rem/1.2 var(--font-heading); text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { color: var(--color-on-accent); background: var(--color-accent); text-decoration: none; }
+
+/* Section labels: the heading font in capitals over a heavy ink rule. */
+:is(.board, .desks, .related, .mentions, .author-posts, .author-others, .topic-tabs, .media-row, .issue-numbers) > h2, .post-footer > h2, .lead-chart > h3 { margin-block: 0 1.25rem; padding-block-start: 0.5rem; border-block-start: 4px solid var(--tk-ink); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; line-height: 1.3; text-transform: uppercase; }
+
+/* The tape: an ink band across the window, figures in the monospace,
+   each with a drawn mark: a triangle up, a triangle down, or a bar for
+   flat. */
+.tape { margin-block: 0 0.5rem; padding-block: 0.875rem; color: var(--tk-paper); background: var(--tk-ink); box-shadow: 0 0 0 100vmax var(--tk-ink); clip-path: inset(0 -100vmax); }
+.tape-figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 0.75rem 0; margin: 0; }
+.tape-figure { display: flex; flex-direction: column-reverse; gap: 0.25rem; padding-inline: 1.25rem; border-inline-start: 1px solid var(--tk-quiet-on-ink); }
+.tape-figure:first-child { padding-inline-start: 0; border-inline-start: 0; }
+.tape-figure dt { color: var(--tk-quiet-on-ink); font-family: var(--font-heading); font-size: 0.8125rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.tape-figure dd { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-family: var(--font-mono); font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem); font-variant-numeric: tabular-nums; font-weight: 600; line-height: 1.1; }
+.tape-figure dd::before, .fact-table-figure[data-move]::before { content: ""; flex: none; inline-size: 0.75em; block-size: 0.6em; background: currentColor; }
+.tape-figure[data-move="up"] dd::before { background: var(--tk-up-on-ink); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.tape-figure[data-move="down"] dd::before { clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.tape-figure[data-move="flat"] dd::before { block-size: 0.15em; }
+@media (max-width: 30rem) { .tape-figure:nth-child(odd) { padding-inline-start: 0; border-inline-start: 0; } }
+
+/* The masthead: the name and tagline beside the sign-up form. */
+.masthead { display: grid; gap: 2rem 4rem; align-items: end; margin-block-end: var(--space-section); padding-block-end: 2.5rem; border-block-end: 1px solid var(--tk-ink); }
+@media (min-width: 60rem) { .masthead-signup { grid-template-columns: minmax(0, 1.6fr) minmax(20rem, 1fr); } }
+.hero { margin: 0; }
+.hero-title { font-weight: var(--heading-weight); letter-spacing: -0.035em; }
+.hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; }
+.masthead .newsletter-slot { margin: 0; padding: 1.5rem; background: var(--color-surface); border: 0; border-block-start: 4px solid var(--color-accent); border-radius: 0; }
+
+/* The latest issue beside its chart. */
+.lead-issue { display: grid; gap: 2.5rem 4rem; margin-block-end: var(--space-section); }
+@media (min-width: 60rem) { .lead-issue { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
+.lead-kicker, .post-desk { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin-block: 0 0.75rem; font-family: var(--font-heading); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.lead-kicker span { color: var(--color-accent); }
+.lead-kicker a, .post-desk a { color: var(--color-text); text-decoration: none; }
+.lead-kicker a:hover, .post-desk a:hover { color: var(--color-link); text-decoration: underline; }
+.lead-text h2 { margin: 0; font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem); line-height: 1.1; }
+.lead-text h2 a { color: var(--color-text); text-decoration: none; }
+.lead-text h2 a:hover { color: var(--color-link); text-decoration: underline; }
+.lead-excerpt { margin-block: 1rem 0; font-size: 1.1875rem; line-height: 1.55; }
+.lead-meta { display: flex; flex-wrap: wrap; gap: 0 1rem; margin-block: 1rem 0; color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); }
+.lead-read { margin-block: 1.5rem 0; }
+.lead-chart { padding: 0 1.5rem 1.5rem; background: var(--color-surface); }
+.lead-chart > h3 { margin-inline: -1.5rem; padding-inline: 1.5rem; padding-block-start: 0.75rem; }
+
+/* Bar charts: a taller track, figures in the monospace. */
+.bar-chart { --bar-track: var(--color-background); }
+.bar-track { block-size: 1rem; }
+.bar-row dt { font-family: var(--font-heading); font-size: 0.9375rem; }
+.bar-note { padding-block-start: 0.75rem; border-block-start: 1px solid var(--color-border); font-family: var(--font-heading); }
+
+/* The issue table: a heat map. Up cells take more accent and down cells
+   more ink the further they moved, with the mark before the figure. */
+.board, .desks { margin-block-end: var(--space-section); }
+.board .view-all { margin-block: 0.75rem 0; font-family: var(--font-heading); }
+.fact-table { font-family: var(--font-heading); }
+.fact-table-figure[data-move]::before { display: inline-block; margin-inline-end: 0.375rem; vertical-align: 0.05em; }
+.fact-table-figure[data-move="up"]::before { background: var(--color-accent); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.fact-table-figure[data-move="down"]::before { clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.fact-table-figure[data-move="flat"]::before { block-size: 0.15em; }
+.fact-table-figure[data-move="up"][data-heat="1"] { background: color-mix(in oklab, var(--color-accent) 7%, var(--tk-paper)); }
+.fact-table-figure[data-move="up"][data-heat="2"] { background: color-mix(in oklab, var(--color-accent) 15%, var(--tk-paper)); }
+.fact-table-figure[data-move="up"][data-heat="3"] { background: color-mix(in oklab, var(--color-accent) 25%, var(--tk-paper)); }
+.fact-table-figure[data-move="up"][data-heat="4"] { background: color-mix(in oklab, var(--color-accent) 36%, var(--tk-paper)); }
+.fact-table-figure[data-move="down"][data-heat="1"] { background: color-mix(in oklab, var(--tk-ink) 5%, var(--tk-paper)); }
+.fact-table-figure[data-move="down"][data-heat="2"] { background: color-mix(in oklab, var(--tk-ink) 11%, var(--tk-paper)); }
+.fact-table-figure[data-move="down"][data-heat="3"] { background: color-mix(in oklab, var(--tk-ink) 18%, var(--tk-paper)); }
+.fact-table-figure[data-move="down"][data-heat="4"] { background: color-mix(in oklab, var(--tk-ink) 27%, var(--tk-paper)); }
+.fact-table tbody tr:hover th { background: var(--color-surface); }
+
+/* The desks: one ruled row of links. */
+.desks ul { display: flex; flex-wrap: wrap; gap: 0; margin: 0; padding: 0; list-style: none; border-block-end: 1px solid var(--color-border); }
+.desks a { display: inline-flex; align-items: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem 0.5rem 0; margin-inline-end: 1.25rem; color: var(--color-text); font-family: var(--font-heading); font-size: 1.0625rem; font-weight: 600; text-decoration: none; }
+.desks a:hover { color: var(--color-link); text-decoration: underline; }
+.disclaimer { max-inline-size: var(--measure); margin-block: 2rem 0; color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); }
+
+/* Lists and the writers page: the kind, the name, the intro, a rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; padding-block-end: 1.5rem; border-block-end: 4px solid var(--tk-ink); }
+.list-header h1 { margin: 0; }
+.list-header .list-kind { color: var(--color-accent); font-family: var(--font-heading); }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 1rem; font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+
+/* An issue: the desk, the title, the dek, the writer, the numbers. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.08; letter-spacing: -0.025em; }
+.post-header .dek { font-size: 1.25rem; line-height: 1.5; }
+.post-meta { color: var(--color-muted); font-family: var(--font-heading); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta .person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; }
+.issue-numbers { margin-block: 2rem; padding: 0 1.25rem 1.25rem; background: var(--color-surface); }
+.issue-numbers > h2 { margin-inline: -1.25rem; padding-inline: 1.25rem; padding-block-start: 0.75rem; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); }
+
+/* Tables in the text: data tables. A heavy rule over the head, figures
+   in tabular numbers at the end of their cells, and the first column
+   held in view while a wide table scrolls. */
+.post-body table { font-family: var(--font-heading); font-size: 1rem; font-variant-numeric: tabular-nums; }
+.post-body thead th { border-block: 2px solid var(--tk-ink); vertical-align: bottom; }
+.post-body :is(th, td):not(:first-child) { text-align: end; }
+.post-body tbody td:first-child { position: sticky; inset-inline-start: 0; background: var(--tk-paper); font-weight: 600; }
+.post-body tbody tr:last-child td { border-block-end: 2px solid var(--tk-ink); }
+
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--tk-paper); color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+
+/* A writer: the mark beside the name, then the posts. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-family: var(--font-heading); font-size: 1.0625rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-posts, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.1875rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the sign-up form: ruled bands on the surface. */
+.cta-band { background: var(--color-surface); border: 0; border-block-start: 4px solid var(--tk-ink); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 0; border-block-start: 4px solid var(--color-accent); border-radius: 0; }
+.newsletter-slot h2 { font-size: 1.375rem; }
+
+/* The footer: one ink rule, quiet links. */
+.site-footer { border-block-start: 1px solid var(--tk-ink); font-family: var(--font-heading); }
+/* The last menu word ends at the frame's edge, not 44 px into its target. */
+.site-header nav li:last-child a { justify-content: flex-end; }

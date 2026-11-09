@@ -1,0 +1,98 @@
+# Port City Wire, the made-up local news site of a made-up harbour city,
+# Port Arden, written for the Wire template's demo. The city, its council,
+# its people and its businesses are fictional. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Port City Wire"
+languages = ["en"]
+
+[template.cta]
+label = "Send us a story"
+href = "/blog/about/"
+note = "Seen something on the quays, at the council or on the pitch? Tell the newsroom. A reporter reads every message."
+
+[announcement]
+text = "Breaking: Tuesday's morning ferries are cancelled as gales hit the harbour. Updates through the day."
+href = "/blog/ferries-cancelled-gales/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Local news for Port Arden and the harbour"
+
+[seo.ai_page]
+covers = "Port City Wire reports local news for Port Arden: council decisions, the harbour and the ferries, schools and the library, weather, local business and sport, plus opinion columns."
+cite = "Name Port City Wire and the reporter, and link the story you quote."
+contact = "newsdesk@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Port City Wire"
+email = "newsdesk@example.com"
+founded = "2018-03-05"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Port City Wire logo"
+width = 320
+height = 80
+
+# Sign-ups for the morning briefing, under the publication's own name. The
+# mail server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "briefing@example.com"
+name = "Port City Wire"
+postal_address = "Port City Wire, 12 Customs House Lane, Port Arden PA1 4QW"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "News"
+href = "/blog/category/news/"
+language = "en"
+
+[[nav.primary]]
+label = "Harbour"
+href = "/blog/category/harbour/"
+language = "en"
+
+[[nav.primary]]
+label = "Council"
+href = "/blog/category/council/"
+language = "en"
+
+[[nav.primary]]
+label = "Community"
+href = "/blog/category/community/"
+language = "en"
+
+[[nav.primary]]
+label = "Sport"
+href = "/blog/category/sport/"
+language = "en"
+
+[[nav.primary]]
+label = "Opinion"
+href = "/blog/category/opinion/"
+language = "en"
+
+[[nav.footer]]
+label = "About Port City Wire"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "How we report the council"
+href = "/blog/council-reporting/"
+language = "en"
+
+[[nav.footer]]
+label = "Winter ferry timetable"
+href = "/blog/winter-ferry-timetable/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

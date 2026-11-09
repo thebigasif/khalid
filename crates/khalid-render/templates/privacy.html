@@ -1,0 +1,10 @@
+{#- The privacy page Khalid writes from the site's settings, at
+    `<mount>privacy/`, unless the owner writes their own. -#}
+{% extends "base.html" %}
+{% block main %}
+<article class="page">
+<h1>{{ page.title }}</h1>
+<p>{{ t.privacy_intro }}</p>
+{% with facts = page.facts %}{% include "privacy_facts.html" %}{% endwith %}
+</article>
+{% endblock %}

@@ -1,0 +1,23 @@
+{#- How wide Keystone draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Some places show the same posts as a larger place on the same page,
+    so they say its width and the browser fetches each picture once.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "featured": "(min-width: 72rem) calc(16vw + 37rem), (min-width: 60rem) 38.5rem, calc(95vw + 0.25rem)",
+  "home/image": "(min-width: 73rem) calc(13vw + 31.25rem), (min-width: 42rem) calc(45vw + 0.5rem), calc(100vw - 2rem)",
+  "lead": "(min-width: 60.5rem) calc(18vw + 62rem), calc(100vw - 2rem)",
+  "related/grid": "(min-width: 73rem) calc(13vw + 31.25rem), (min-width: 42rem) calc(45vw + 0.5rem), calc(100vw - 2rem)",
+  "list/image": "(min-width: 73rem) calc(13vw + 31.25rem), (min-width: 42rem) calc(45vw + 0.5rem), calc(100vw - 2rem)",
+  "author/image": "(min-width: 89rem) 21rem, (min-width: 66rem) calc(31vw - 1.25rem), (min-width: 42rem) calc(45vw + 0.5rem), calc(100vw - 2rem)",
+  "photo": "12rem",
+  "panel/image": "(min-width: 73rem) calc(13vw + 31.25rem), (min-width: 42rem) calc(45vw + 0.5rem), calc(100vw - 2rem)"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

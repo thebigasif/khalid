@@ -5,7 +5,7 @@ order: 50
 
 # Harbor
 
-Harbor is a template for a busy marketing blog: a team that publishes often, wants readers to sign up, and has one offer to put in front of every reader, such as a free checklist or a trial.
+Harbor is a template for a food and recipe blog that publishes often, wants readers to sign up, and has one offer to put in front of every reader, such as a free meal plan or a cookbook.
 
 ```toml
 [template]
@@ -14,6 +14,7 @@ name = "harbor"
 
 ## Who it suits
 
+- A cooking or recipe blog: posts with `facts`, such as the time and the servings, show in a recipe card strip on the front page.
 - A company blog that publishes several posts a week and wants the newest ones easy to scan.
 - A blog that grows a mailing list: the sign-up form sits at the top of the front page and after each post.
 - A blog with one call to action: Harbor shows it in the header, in each post under the author's name, and on the front page.
@@ -24,18 +25,19 @@ It suits a personal essay blog less well. For that, a calmer template such as cl
 ## What the front page shows
 
 1. The blog's name, large. With sign-ups on, the newsletter form sits beside it in a raised card, on a light tint of your accent colour across the window; on phones the form goes under the name.
-2. **Featured:** the newest post with `featured: true`, large, with its picture above its topic, title and summary. Beside it on wide screens, and under it on phones, a column of smaller posts as rows with a picture: **Editor's picks** when two or more other posts are featured, or else the four newest posts under **Latest posts**.
-3. A grid of picture cards: the topic and date, the title, a short summary and the author at the foot of each card. Under **Latest posts**, or **More posts** when the newest four sit beside the featured post. A post with no picture gets a drawn cover in tints of your accent colour, so the cards line up.
-4. Numbered page links under the grid.
-5. Your call to action as a wide band, with the note large beside its button.
+2. **A recipe card strip** on the same tint, under the name, when some posts list `facts`. It shows up to four of the newest posts with facts. Each card has a small photo, the title, and the first two facts as pill tags: the first with a clock icon, the second with a knife and fork icon. Wide screens show four cards in a row, and tablets two by two. On a phone the strip swipes sideways, card by card, with the edge of the next card in view. Posts without facts are left out of the strip, and with no such posts the strip does not show (see "Recipe facts" below).
+3. **Featured:** the newest post with `featured: true`, large, with its picture above its topic, title and summary. Beside it on wide screens, and under it on phones, a column of smaller posts as rows with a picture: **Editor's picks** when two or more other posts are featured, or else the four newest posts under **Latest posts**.
+4. A grid of picture cards: the topic and date, the title, a short summary and the author at the foot of each card. Under **Latest posts**, or **More posts** when the newest four sit beside the featured post. A post with no picture gets a drawn cover in tints of your accent colour, so the cards line up.
+5. Numbered page links under the grid.
+6. Your call to action as a wide band, with the note large beside its button.
 
 A post shows once in the featured slot and not again lower down, and a post in the column beside it does not show again in the grid. An editor's pick can show both beside the featured post and in the grid, so a reader who scans by date still finds it.
 
 ## What a post shows
 
 1. The trail from the home page to the post's topic (breadcrumbs), centred.
-2. A centred title block: the title, the author with a round photo and their role, who reviewed it, one date (the date the post was last updated, or the date it was published if it was never updated) and the reading time.
-3. An offer card with your call to action, under the author's name: one line and one button in a light rounded box.
+2. A centred title block: the title, the post's facts as the same pill tags, centred, when it has any, then the author with a round photo and their role, who reviewed it, one date (the date the post was last updated, or the date it was published if it was never updated) and the reading time.
+3. An offer card with your call to action, under the author's name: one line and one button in a white rounded card.
 4. The lead picture, wider than the text on large screens.
 5. An open contents box, without numbers, in two columns on wide screens.
 6. The post, in one column about 42rem wide. A short bar in your accent colour sits above each section heading. Tips, notes, warnings, figures, quotes, tables, code, long tables that fold and gated downloads have Harbor's look.
@@ -46,9 +48,28 @@ A post shows once in the featured slot and not again lower down, and a post in t
 
 Turn the author box or the reading time off in `[reader]` if you do not want them.
 
+## Recipe facts
+
+A recipe can list its time, servings and other short facts as `facts` in its front matter. Put the time first and the servings second, since the strip on the front page shows the first two:
+
+```yaml
+---
+title: "Sunday batch cooking: two hours for four easier dinners"
+facts:
+  - label: Time
+    value: "2 hr"
+  - label: Makes
+    value: "4 dinners for 2"
+  - label: Difficulty
+    value: "Medium"
+---
+```
+
+Harbor picks facts by their place in the list, not by their label. The first fact shows only its value on screen, such as "2 hr", and screen readers also hear its label. Later facts show their label too, such as "Makes 4 dinners for 2". Each tag has its own line icon: a clock for the first fact, a knife and fork for the second, three bars for the third and a tag for the fourth. See [Facts on a post](../templates.md#facts-on-a-post) for the limits.
+
 ## Your brand
 
-Harbor brings its own colours: a deep harbour blue accent (`#383dd0`) on white with a cool mist surface. Your colours, fonts and logo in `theme/tokens.toml`, such as the ones theme sync writes, replace them, so it looks like your main site. Buttons are pills in the accent colour with black or white text, whichever reads better on it. The bands, the offer, the contents and the tips use light tints of the accent; cards use the border colour. Every section is light: Harbor has no dark band anywhere.
+Harbor brings its own colours: a deep harbour blue accent (`#383dd0`) on white with a cool mist surface. Your colours, fonts and logo in `theme/tokens.toml`, such as the ones theme sync writes, replace them, so it looks like your main site. Buttons are pills in the accent colour with black or white text, whichever reads better on it. The front page's top band with the recipe strip, a list page's title band and the tips use light tints of the accent. The rest of the page is white: the lead post and the picks sit on it as plain content, and the offer and the contents box are white with a thin line or a soft shadow. Cards use the border colour. Every section is light: Harbor has no dark band anywhere.
 
 Harbor's own defaults, which any value in your `theme/tokens.toml` replaces:
 
@@ -131,13 +152,13 @@ This is Harbor's design brief. It fixes how the template should look, so every c
 | Part | Harbor |
 |---|---|
 | Type pairing | A round geometric sans for headings over a friendly sans for text. With no theme, the pack uses the system sans at weight 700 for headings. |
-| Colour | White ground, warm near-black text and one bright accent. Light tints of the accent for the hero, the offer card and tips. No grey panels. |
+| Colour | White ground, warm near-black text and one bright accent. Light tints of the accent for one band per page (the front page's hero and recipe strip, or a list page's title) and for tips. No grey panels. A post reads on the plain white ground, with no band behind its title. |
 | Spacing rhythm | A base step of 0.5rem. Cards and boxes with 1.5rem inside, 4.5rem between sections. Pill buttons 2.75rem high. |
 | Frame at 1440 px and wider | At least **84rem**. |
 | Cards and lists | Rounded picture cards with a soft border: the picture on top, the topic and date, the title, two lines of summary, the author at the foot. Rows with a small picture in the column beside the featured post. |
 | Phone header and menu | The logo and a pill call-to-action button on one row; the menu opens below with no script. The sign-up form sits under the blog's name. |
 | Tabs and indexes at 390 px | Topic tabs become pills you can swipe in one row. The contents box shows one column. The related posts row keeps its sideways scroll. |
 | Link, card and focus states | A card rises one step (its border turns the accent) on hover. Links in text are underlined in the accent. Buttons darken on hover. Focus is a 3 px accent ring. |
-| Signature details | The hero: the blog's name large beside a raised sign-up card on a light tint of the accent. The offer card under the author's name in every post. A short accent bar above each section heading. |
+| Signature details | The hero: the blog's name large beside a raised sign-up card on a light tint of the accent, with the recipe card strip of time and serving tags under it. The offer card under the author's name in every post. A short accent bar above each section heading. |
 
 **Sample brand.** The demo uses `fixtures/showcase-brands/harbor/theme/`: warm orange (`#b33a09` links, `#c9440b` accent) on white with peach panels (`#fff4ec`), Outfit for headings and DM Sans for text, and a wave mark.

@@ -1,0 +1,198 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is
+# CC0 or in the public domain.
+
+[[photos]]
+file = "en/posts/2026-10-28-why-the-sea-is-salty/lead.jpg"
+sha256 = "d15ad3c405d54b7b907084968bf1aad00da3523aed104028782bf3c87d937031"
+source = "https://commons.wikimedia.org/wiki/File:Waves_in_sea.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Waves in sea by Saral Shots, via Wikimedia Commons"
+title = "Waves in sea"
+creator = "Saral Shots"
+openverse = "commons:File:Waves in sea.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-16-how-bees-find-their-way-home/lead.jpg"
+sha256 = "23e5a0eeada8eddaaa29343e4bf0d27c113c109f12bc0a47b9a02a4a967c2061"
+source = "https://commons.wikimedia.org/wiki/File:European_honey_bee_extracts_nectar.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "European honey bee extracts nectar by John Severns (Severnjc), via Wikimedia Commons"
+title = "European honey bee extracts nectar"
+creator = "John Severns (Severnjc)"
+openverse = "commons:File:European honey bee extracts nectar.jpg"
+needs_credit = false
+size = "1600x1264"
+
+[[photos]]
+file = "en/posts/2026-10-21-the-slow-art-of-sourdough/lead.jpg"
+sha256 = "2f48c5c471594a41602ab18aec646d8faf6a182234a96405da917d158e500a9a"
+source = "https://commons.wikimedia.org/wiki/File:Loaf_of_sourdough_bread_cooling.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Loaf of sourdough bread cooling by Nutrition, Food Safety &amp; Health, via Wikimedia Commons"
+title = "Loaf of sourdough bread cooling"
+creator = "Nutrition, Food Safety &amp; Health"
+openverse = "commons:File:Loaf of sourdough bread cooling.jpg"
+needs_credit = false
+size = "1600x1332"
+
+[[photos]]
+file = "en/posts/2026-09-09-winter-citrus-guide/lead.jpg"
+sha256 = "7883baea183d6539d8747b8994b0194bd93fcf2e1f43b21faebb51803d001aa6"
+source = "https://commons.wikimedia.org/wiki/File:Citrus_fruits.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Citrus fruits by Scott Bauer, USDA, via Wikimedia Commons"
+title = "Citrus fruits"
+creator = "Scott Bauer, USDA"
+openverse = "commons:File:Citrus fruits.jpg"
+needs_credit = false
+size = "1600x1054"
+
+[[photos]]
+file = "en/posts/2026-11-02-slow-train-over-the-bernina/lead.jpg"
+sha256 = "231518298a8a8ab50126e684147ae7fd5e2eb7bfcb1366864b29005eab62580b"
+source = "https://commons.wikimedia.org/wiki/File:Berninabahn_zwischen_Lagalb_und_Ospizio_Bernina_im_Winter.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Berninabahn zwischen Lagalb und Ospizio Bernina im Winter by Kabelleger / David Gubler, via Wikimedia Commons"
+title = "Berninabahn zwischen Lagalb und Ospizio Bernina im Winter"
+creator = "Kabelleger / David Gubler"
+openverse = "commons:File:Berninabahn zwischen Lagalb und Ospizio Bernina im Winter.jpg"
+needs_credit = false
+size = "1600x985"
+
+[[photos]]
+file = "en/posts/2026-09-02-the-neighbourhood-library/lead.jpg"
+sha256 = "f5fdf0b091a8e766d3f66c82401059164a74fed57387f81b749339ebdc56229e"
+source = "https://commons.wikimedia.org/wiki/File:LibraryReadingRoom2.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "LibraryReadingRoom2 by Raysonho @ Open Grid Scheduler / Grid Engine, via Wikimedia Commons"
+title = "LibraryReadingRoom2"
+creator = "Raysonho @ Open Grid Scheduler / Grid Engine"
+openverse = "commons:File:LibraryReadingRoom2.jpg"
+needs_credit = false
+size = "1600x1060"
+
+[[photos]]
+file = "en/posts/2026-10-07-reading-the-clouds/lead.jpg"
+sha256 = "c69d9420c3c9901747c2683ce17d04f7d41ce6b7c708c11d722a7be62b19df07"
+source = "https://commons.wikimedia.org/wiki/File:Cumulus_clouds_in_the_sky.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Cumulus clouds in the sky by desilia, via Wikimedia Commons"
+title = "Cumulus clouds in the sky"
+creator = "desilia"
+openverse = "commons:File:Cumulus clouds in the sky.jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-23-the-hand-thrown-bowl/lead.jpg"
+sha256 = "55237d7acd75df9d18bd136b821aa6339239b9fb0a90dab55ed25cff4cc5aed2"
+source = "https://commons.wikimedia.org/w/index.php?curid=62214037"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Pottery wheel (Unsplash) by Quino Al quinoal, via wikimedia"
+title = "Pottery wheel (Unsplash)"
+creator = "Quino Al quinoal"
+openverse = "a0a4d8d3-419f-4aec-b6ba-31449d9f6eea"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-08-26-the-honest-wooden-chair/lead.jpg"
+sha256 = "2707af951afbcdc14d8e7121c63351505341dd955983210d07a39ed355685e02"
+source = "https://commons.wikimedia.org/wiki/File:Brutalist_wooden_chair._Designed_and_made_in_Denmark.jpeg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Brutalist wooden chair. Designed and made in Denmark by Ditigibt, via Wikimedia Commons"
+title = "Brutalist wooden chair. Designed and made in Denmark"
+creator = "Ditigibt"
+openverse = "commons:File:Brutalist wooden chair. Designed and made in Denmark.jpeg"
+needs_credit = false
+size = "1600x2133"
+
+[[photos]]
+file = "en/posts/2026-10-14-why-vinyl-came-back/lead.jpg"
+sha256 = "196512f565f35eae3846fa09768262d7c041069b5bcd2e93a6666278ba31c731"
+source = "https://commons.wikimedia.org/wiki/File:Technics_SL-1200MK5_Direct_Drive_Turntable_System_with_Ortofon_cartridge_(2017-01-21_22.33.27_piqsels.com_en).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Technics SL-1200MK5 Direct Drive Turntable System with Ortofon cartridge (2017-01-21 22.33.27 piqsels.com en) by Unknown authorUnknown author, via Wikimedia Commons"
+title = "Technics SL-1200MK5 Direct Drive Turntable System with Ortofon cartridge (2017-01-21 22.33.27 piqsels.com en)"
+creator = "Unknown authorUnknown author"
+openverse = "commons:File:Technics SL-1200MK5 Direct Drive Turntable System with Ortofon cartridge (2017-01-21 22.33.27 piqsels.com en).jpg"
+needs_credit = false
+size = "1600x1231"
+
+[[photos]]
+file = "en/posts/2026-10-31-why-autumn-leaves-turn-red/lead.jpg"
+sha256 = "bb78140ee8e66f9bd0dce499d282488ca1d5cdcb37c1bab268b5e8270393dccc"
+source = "https://commons.wikimedia.org/wiki/File:Sun_on_Maple_Leaves,_South_Side,_2019-11-02.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Sun on Maple Leaves, South Side, 2019-11-02 by Cbaile19, via Wikimedia Commons"
+title = "Sun on Maple Leaves, South Side, 2019-11-02"
+creator = "Cbaile19"
+openverse = "commons:File:Sun on Maple Leaves, South Side, 2019-11-02.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-30-amsterdam-canals-walk/lead.jpg"
+sha256 = "5876ee425179fbacd770a41c0eea32e8e78bd107070d3ce7061924ca49c920fb"
+source = "https://commons.wikimedia.org/wiki/File:Amsterdam_Canal_Houses_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Amsterdam Canal Houses (Unsplash) by Kaci Baum kacibaum, via Wikimedia Commons"
+title = "Amsterdam Canal Houses (Unsplash)"
+creator = "Kaci Baum kacibaum"
+openverse = "commons:File:Amsterdam Canal Houses (Unsplash).jpg"
+needs_credit = false
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2026-08-19-why-onions-make-you-cry/lead.jpg"
+sha256 = "374769578a9bdf42cd798ff6ca77aacc47362092f0f72e46e3681665cbbf6cc9"
+source = "https://commons.wikimedia.org/wiki/File:Red_onion_cut.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Red onion cut by Amada44, via Wikimedia Commons"
+title = "Red onion cut"
+creator = "Amada44"
+openverse = "commons:File:Red onion cut.jpg"
+needs_credit = false
+size = "1580x2596"
+
+[[photos]]
+file = "en/posts/2026-08-12-a-better-pot-of-tea/lead.jpg"
+sha256 = "aa1dade6102704c77d066016b3590e0e951f0b0487d756d31c71bd2bfd4b4e0c"
+source = "https://commons.wikimedia.org/wiki/File:Tea-teapot-cup-ceramic-kettle-drink-617935-pxhere.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Tea-teapot-cup-ceramic-kettle-drink-617935-pxhere by alquibar, via Wikimedia Commons"
+title = "Tea-teapot-cup-ceramic-kettle-drink-617935-pxhere"
+creator = "alquibar"
+openverse = "commons:File:Tea-teapot-cup-ceramic-kettle-drink-617935-pxhere.jpg"
+needs_credit = false
+size = "1600x900"
+
+[[photos]]
+file = "en/posts/2026-08-05-why-board-games-are-back/lead.jpg"
+sha256 = "760765022a12a91e4c2b96c7786d98368290008cfee30d58e441e5cef8d356c9"
+source = "https://commons.wikimedia.org/wiki/File:Chess_game_Staunton_No._6.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Chess game Staunton No. 6 by Wilfredor, via Wikimedia Commons"
+title = "Chess game Staunton No. 6"
+creator = "Wilfredor"
+openverse = "commons:File:Chess game Staunton No. 6.jpg"
+needs_credit = false
+size = "1600x984"
+
+[[photos]]
+file = "en/posts/2026-07-29-secret-life-moss/lead.jpg"
+sha256 = "ccf17e849372a4806b0928490f7401d90871a84b13112cc0a038865df6277b07"
+source = "https://commons.wikimedia.org/wiki/File:Bilberry_bush_and_moss_in_Gullmarsskogen_ravine.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Bilberry bush and moss in Gullmarsskogen ravine by W.carter, via Wikimedia Commons"
+title = "Bilberry bush and moss in Gullmarsskogen ravine"
+creator = "W.carter"
+openverse = "commons:File:Bilberry bush and moss in Gullmarsskogen ravine.jpg"
+needs_credit = false
+size = "1600x1067"

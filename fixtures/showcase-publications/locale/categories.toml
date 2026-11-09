@@ -1,0 +1,45 @@
+# The Varrow List's four areas and its notes. Locale lists the places of
+# each area on the front page in this order, shows a place's area above
+# its name, and lists each area's places as rows on its page. An area
+# that holds only notes, such as City notes, gets no block on the front
+# page.
+
+[[categories]]
+slug = "old-harbour"
+en = "Old Harbour"
+
+[categories.seo.en]
+description = "Places to eat, drink and look around in Varrow's Old Harbour, with opening hours and prices for each."
+intro = "The oldest part of Varrow: fish sheds, rope works and the quay. Come early, when the boats are in and the cafés open their shutters."
+
+[[categories]]
+slug = "kiln-quarter"
+en = "Kiln Quarter"
+
+[categories.seo.en]
+description = "Bakeries, bars and studios in Varrow's Kiln Quarter, with opening hours and prices for each."
+intro = "The old potteries, now full of studios, bakers and small bars. Most places open late in the morning and stay open late at night."
+
+[[categories]]
+slug = "hillgate"
+en = "Hillgate"
+
+[categories.seo.en]
+description = "Books, tea and green space in Hillgate, the quiet hill above Varrow, with opening hours and prices for each."
+intro = "A quiet hill of terraced streets above the town. Take the steps from the market and give yourself a slow afternoon."
+
+[[categories]]
+slug = "the-weirs"
+en = "The Weirs"
+
+[categories.seo.en]
+description = "Food and the Saturday market by the river in The Weirs, Varrow, with opening hours and prices for each."
+intro = "The riverside, where the old mill races meet the harbour. Busy on Saturdays, calm the rest of the week."
+
+[[categories]]
+slug = "notes"
+en = "City notes"
+
+[categories.seo.en]
+description = "Notes from The Varrow List: how we choose places, getting around Varrow and what to do on a wet day."
+intro = "Longer notes about the city: how to get around, what to do when it rains and how we choose the places we list."

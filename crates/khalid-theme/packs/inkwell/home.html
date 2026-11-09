@@ -1,0 +1,59 @@
+{#- Inkwell's front page (docs/templates/inkwell.md): the masthead, with
+    the tagline, the newsletter's name and intro beside the sign-up form,
+    or, on a site that takes no sign-ups, the call to action and the feed;
+    the latest issue, the newest post with a number, with its number set
+    large, its parts at a glance and its lead picture; then every issue on
+    the page grouped by year as bound volumes. Later pages show the
+    volumes only, with the sign-up form under them. With home sections in
+    site.toml, each section lists its issues as rows. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "parts-inkwell.html" import glance, issue_rows, volumes -%}
+{% set options = template.options -%}
+{% set first = not page.pagination or page.pagination.current == 1 -%}
+{% set found = namespace(lead=none) -%}
+{% for post in page.posts %}{% if first and not found.lead and post.facts and (post.facts[0].value | length) <= 8 %}{% set found.lead = post %}{% endif %}{% endfor -%}
+{% set lead = found.lead -%}
+{% set signup = site.subscribe and options.newsletter in ["home", "both"] -%}
+{% set note = options.signup_note[0] if options.signup_note else none -%}
+{% if first %}<div class="iw-masthead">
+{{ hero(page.title, page.intro, options.tagline[0] if options.tagline else none) }}
+{% if signup %}{{ newsletter_form(site.subscribe, t, "iw-signup", note) }}
+{% else %}<section class="iw-join" aria-labelledby="iw-join-title">
+<h2 id="iw-join-title">{{ t.newsletter_join }}</h2>
+{% if note %}<p class="newsletter-note">{{ note }}</p>
+{% endif %}<p class="iw-join-links">{% if template.cta %}<a class="button" href="{{ template.cta.href }}">{{ template.cta.label }}</a> {% endif %}<a class="iw-feed" href="{{ site.home }}feed.xml" type="application/rss+xml">{{ t.issue_feed }}</a></p>
+</section>
+{% endif %}</div>
+{% endif %}{% if lead %}<section class="iw-latest" aria-labelledby="iw-latest-title">
+<p class="iw-stamp" aria-hidden="true"><span class="iw-no-label">{{ t.issue_no }}</span> <span class="iw-stamp-figure">{{ lead.facts[0].value }}</span></p>
+<div class="iw-latest-text">
+<p class="iw-label">{{ t.latest_issue }}<span class="visually-hidden">, {{ t.issue_heading | replace("{number}", lead.facts[0].value) }}</span>, <time datetime="{{ lead.date }}">{{ lead.date | date }}</time></p>
+<h2 id="iw-latest-title"><a href="{{ lead.href }}">{{ lead.title }}</a></h2>
+<p class="iw-latest-excerpt">{{ lead.excerpt }}</p>
+{% if lead.facts | length > 1 %}<p class="iw-glance-title">{{ t.issue_glance }}</p>
+{{ glance(lead.facts) }}
+{% endif %}<p class="iw-read"><a class="button" href="{{ lead.href }}">{{ t.read_issue }}</a></p>
+</div>
+{% if lead.image %}<div class="iw-latest-art">{{ picture(lead.image) }}</div>
+{% endif %}</section>
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="iw-archive" aria-labelledby="iw-section-{{ loop.index }}">
+<h2 id="iw-section-{{ loop.index }}" class="iw-archive-title">{{ section.title }}</h2>
+{% if section.posts %}{{ issue_rows(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}<section class="iw-archive" aria-labelledby="iw-archive-title">
+<h2 id="iw-archive-title" class="iw-archive-title">{{ t.issue_archive }}</h2>
+{{ volumes(page.posts, 3) }}
+</section>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if signup and not first %}{{ newsletter_form(site.subscribe, t, "newsletter-slot", note) }}
+{% endif %}{% endblock %}

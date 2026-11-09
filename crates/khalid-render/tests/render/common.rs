@@ -28,6 +28,7 @@ pub(crate) fn demo_site(tag: &str) -> RenderSite {
         locale: locale(tag),
         home: prefix.to_owned(),
         stylesheet: "/blog/assets/site.0123abcd.css".to_owned(),
+        body_font: None,
         nav: Nav {
             primary: vec![
                 link("Posts", prefix),

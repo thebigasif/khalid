@@ -1,0 +1,9 @@
+/* Section part: title block (templates/sections/title_block.html). Facts
+   in ruled cells, two to a row, each label in small capitals over its
+   value; the sheet number fills a cell two rows high. */
+.title-block { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border-block-start: 2px solid var(--color-text); border-inline-start: 1px solid var(--color-text); }
+.title-block > div { min-inline-size: 0; padding: 0.5rem 0.75rem 0.625rem; border-block-end: 1px solid var(--color-text); border-inline-end: 1px solid var(--color-text); }
+.title-block dt { color: var(--color-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; line-height: 1.3; text-transform: uppercase; }
+.title-block dd { margin: 0.125rem 0 0; font-size: 1rem; font-variant-numeric: tabular-nums; line-height: 1.35; overflow-wrap: anywhere; }
+.title-block-sheet { display: flex; flex-direction: column; justify-content: space-between; grid-row: span 2; }
+.title-block-sheet dd { font-family: var(--font-heading); font-size: clamp(2rem, 1.6rem + 1.2vw, 2.75rem); font-variant-numeric: lining-nums tabular-nums; line-height: 1; }

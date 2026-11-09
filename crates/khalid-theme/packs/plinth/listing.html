@@ -1,0 +1,29 @@
+{#- Plinth's lists (category, tag, archive, date and collection pages):
+    the list's name and intro, such as what a type of work covers, then
+    its posts as a grid of numbered sheets, each with its photograph on
+    the ink bar, its number, title and its first two facts, such as the
+    place and the year. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "image.html" import picture -%}
+<header class="list-header">
+{% block kind %}<p class="list-kind">{{ t.projects }}</p>
+{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}<ul class="sheets" role="list">
+{% for post in page.posts %}<li class="sheet">
+{% if post.image %}{{ picture(post.image, slot_sizes("sheet")) }}
+{% endif %}<h2><span class="sheet-number">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span> <a href="{{ post.href }}">{{ post.title }}</a></h2>
+{% if post.facts %}<p class="sheet-facts">{% for fact in post.facts[:2] %}<span>{{ fact.value }}</span>{% endfor %}</p>
+{% else %}<p class="sheet-facts"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+{% endif %}</li>
+{% endfor %}</ul>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

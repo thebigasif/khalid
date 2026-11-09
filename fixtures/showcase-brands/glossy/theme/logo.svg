@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <circle cx="30" cy="40" r="18" fill="#1d5e5a"/>
+  <circle cx="30" cy="40" r="8" fill="#fbf8f3"/>
+  <text textLength="250" lengthAdjust="spacingAndGlyphs" x="60" y="52" font-family="Playfair Display, Georgia, serif" font-size="32" font-weight="600" fill="#1e1b19">The Weekend Edit</text>
+</svg>

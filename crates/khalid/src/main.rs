@@ -1,9 +1,8 @@
 //! The `khalid` command.
 //!
-//! This crate owns the edge: it parses the command line, runs a command, and
-//! turns every outcome into an exit code and a message a person or an agent can
-//! read. It must not know business rules. Those live in the library crates,
-//! which this binary calls the same way the API does.
+//! This crate owns the edge: it parses the command line, runs a command, and turns every outcome
+//! into an exit code and a message a person or an agent can read. It must not know business
+//! rules. Those live in the library crates, which this binary calls the same way the API does.
 
 mod account_author;
 mod admin_blog;
@@ -111,6 +110,7 @@ mod outbound;
 mod own_descriptions;
 mod page_code;
 mod page_counts;
+mod page_styles;
 mod plan;
 mod plan_message;
 mod post_categories;
@@ -122,6 +122,7 @@ mod post_lock;
 mod post_photos;
 mod post_text;
 mod preview;
+mod privacy_page;
 mod publish;
 mod pull;
 mod pull_message;
@@ -413,8 +414,7 @@ fn theme(folder: &Path, config: &Config, command: &ThemeCommand, cli: &Cli) -> E
     }
 }
 
-/// Runs the commands that decide who may reach the site: `keys` and
-/// `staff`.
+/// Runs the commands that decide who may reach the site: `keys`, `staff`.
 fn access(folder: &Path, config: &Config, command: &Command, output: Output) -> Exit {
     match command {
         Command::Keys { command } => keys::run(folder, command, output),

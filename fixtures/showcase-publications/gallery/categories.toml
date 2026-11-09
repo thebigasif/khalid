@@ -1,0 +1,34 @@
+# Fernbrook Press's disciplines. The Gallery template shows each one's
+# page as a wall of its work, with the intro as the discipline's note.
+
+[[categories]]
+slug = "natural-history"
+en = "Natural history"
+
+[categories.seo.en]
+description = "Natural history work from Fernbrook Press: restored plates of sea creatures, birds and hummingbirds, printed again as posters, prints and book jackets."
+intro = "Plates from old natural history books, cleaned by hand and printed again for museums, reserves and publishers."
+
+[[categories]]
+slug = "botanical"
+en = "Botanical"
+
+[categories.seo.en]
+description = "Botanical work from Fernbrook Press: restored plant plates and cyanotypes, printed again as calendars, seed packets and book covers."
+intro = "Plants and algae from the great flower books and the first photographic books, made ready for print again."
+
+[[categories]]
+slug = "woodblock"
+en = "Woodblock"
+
+[categories.seo.en]
+description = "Woodblock work from Fernbrook Press: Japanese prints of rain, mountains, waves and birds, restored for new editions and posters."
+intro = "Japanese woodblock prints, studied block by block and printed again in small editions."
+
+[[categories]]
+slug = "pattern"
+en = "Pattern"
+
+[categories.seo.en]
+description = "Pattern work from Fernbrook Press: old textile designs redrawn as clean repeats for fabric, paper and gift wrap."
+intro = "Old textile and wallpaper designs, redrawn as clean repeats that print at any size."

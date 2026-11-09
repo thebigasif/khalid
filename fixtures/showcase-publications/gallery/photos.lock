@@ -1,0 +1,247 @@
+# Every picture this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the picture's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the picture's own page on the date it gives. Every picture is
+# a public-domain or CC0 work: plates, prints and textiles by their own
+# artists, from Wikimedia Commons.
+
+[[photos]]
+file = "en/posts/2026-10-27-jellyfish-plates/lead.jpg"
+sha256 = "fed913d58a72081986ab93c740c195707e7156e7a8746752e50925622830eca8"
+source = "https://commons.wikimedia.org/wiki/File:Haeckel_Discomedusae_8.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Haeckel Discomedusae 8 by Original: Ernst Haeckel. Scan: Ragesoss. Cleanup: Ilmari Karonen., via Wikimedia Commons"
+title = "Haeckel Discomedusae 8"
+creator = "Original: Ernst Haeckel. Scan: Ragesoss. Cleanup: Ilmari Karonen."
+openverse = "commons:File:Haeckel Discomedusae 8.jpg"
+needs_credit = false
+size = "1600x2296"
+
+[[photos]]
+file = "en/posts/2026-10-27-jellyfish-plates/siphonophores.jpg"
+sha256 = "7f7ea2c18ca862bbafa5df10ac29e5eb68024f8456f0799adba2a184494cefe0"
+source = "https://commons.wikimedia.org/wiki/File:Haeckel_Siphonophorae_7.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Haeckel Siphonophorae 7 by Ernst Haeckel, via Wikimedia Commons"
+title = "Haeckel Siphonophorae 7"
+creator = "Ernst Haeckel"
+openverse = "commons:File:Haeckel Siphonophorae 7.jpg"
+needs_credit = false
+size = "1600x2249"
+
+[[photos]]
+file = "en/posts/2026-10-27-jellyfish-plates/anemones.jpg"
+sha256 = "bbbd3821a7768e3907d2563e34ccaf7ea81a9ec005719201ec4415a6010dea20"
+source = "https://commons.wikimedia.org/wiki/File:Haeckel_Actiniae_edit.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Haeckel Actiniae edit by Original plate: Ernst Haeckel, via Wikimedia Commons"
+title = "Haeckel Actiniae edit"
+creator = "Original plate: Ernst Haeckel"
+openverse = "commons:File:Haeckel Actiniae edit.jpg"
+needs_credit = false
+size = "1600x2282"
+
+[[photos]]
+file = "en/posts/2026-10-06-blue-algae/lead.jpg"
+sha256 = "d5d698b9b8f2060a602bfce716b4af930e983a23a06f9b5212a4e77f0e87a18c"
+source = "https://commons.wikimedia.org/wiki/File:Dictyota_dichotoma_in_the_young_state,_%26_in_fruit,_RP-F-2016-133-144.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Dictyota dichotoma in the young state, & in fruit, RP-F-2016-133-144 by Rijksmuseum, via Wikimedia Commons"
+title = "Dictyota dichotoma in the young state, & in fruit, RP-F-2016-133-144"
+creator = "Rijksmuseum"
+openverse = "commons:File:Dictyota dichotoma in the young state, & in fruit, RP-F-2016-133-144.jpg"
+needs_credit = false
+size = "1600x1766"
+
+[[photos]]
+file = "en/posts/2026-10-06-blue-algae/ptilota.jpg"
+sha256 = "ce39be8416b2c79c42fa834a5a0536e0225ad9882d23ebe2f6225bbfdde80bba"
+source = "https://commons.wikimedia.org/wiki/File:Ptilota_plumosa,_RP-F-2016-133-256.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Ptilota plumosa, RP-F-2016-133-256 by Rijksmuseum, via Wikimedia Commons"
+title = "Ptilota plumosa, RP-F-2016-133-256"
+creator = "Rijksmuseum"
+openverse = "commons:File:Ptilota plumosa, RP-F-2016-133-256.jpg"
+needs_credit = false
+size = "1600x1866"
+
+[[photos]]
+file = "en/posts/2026-10-06-blue-algae/polysiphonia.jpg"
+sha256 = "3fd2176e7875dfc739e351d149d8eadd2fc11cff07fccadf7f12bf61169f56f5"
+source = "https://commons.wikimedia.org/wiki/File:Met_DP-17302-050.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Polysiphonia fastigiata by Anna Atkins, via Wikimedia Commons"
+title = "Polysiphonia fastigiata"
+creator = "Anna Atkins"
+openverse = "commons:File:Met DP-17302-050.jpg"
+needs_credit = false
+size = "1600x1942"
+
+[[photos]]
+file = "en/posts/2026-09-15-atake-rain/lead.jpg"
+sha256 = "d23a01be59045c5cecf5119690ca54b5e4163ba3d880e41c671bc8c16fd59d3e"
+source = "https://commons.wikimedia.org/wiki/File:Hiroshige,_Sudden_shower_over_Shin-%C5%8Chashi_bridge_and_Atake,_1857.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Hiroshige, Sudden shower over Shin-Ōhashi bridge and Atake, 1857 by Utagawa Hiroshige, via Wikimedia Commons"
+title = "Hiroshige, Sudden shower over Shin-Ōhashi bridge and Atake, 1857"
+creator = "Utagawa Hiroshige"
+openverse = "commons:File:Hiroshige, Sudden shower over Shin-Ōhashi bridge and Atake, 1857.jpg"
+needs_credit = false
+size = "1600x2424"
+
+[[photos]]
+file = "en/posts/2026-09-15-atake-rain/plum-garden.jpg"
+sha256 = "33c056f0cb306071014d7acaee4ba5c2d327a2b52d40a0ae79673e18ee65349f"
+source = "https://commons.wikimedia.org/wiki/File:Plum_garden_at_Kameido_(Kameido_umeyashiki)_(CBL_J_2693).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Plum Park in Kameidolabel QS:Les,\"Jardín de ciruelos en Kameido\"label QS:Lja,\"名所江戸百景 亀戸梅屋舗\"label QS:Lfr,\"Le jardin des pruniers à Kameido\"label QS:Luk,\"Сливовий парк у Камейдо\"label QS:Lca,\"Jardí de pruners a Kameido\"label QS:Lko,\"가메이도의 매화 정원\"label QS:Lvi,\"Vườn mơ ở Kameido\"label QS:Len,\"Plum Park in Kameido\"label QS:Lfa,\"پارک آلو در کامه‌ایدو\"label QS:Lml,\"പ്ലം പാർക്ക് ഇൻ കമെയിഡോ\" by Utagawa Hiroshige, via Wikimedia Commons"
+title = "Plum Park in Kameidolabel QS:Les,\"Jardín de ciruelos en Kameido\"label QS:Lja,\"名所江戸百景 亀戸梅屋舗\"label QS:Lfr,\"Le jardin des pruniers à Kameido\"label QS:Luk,\"Сливовий парк у Камейдо\"label QS:Lca,\"Jardí de pruners a Kameido\"label QS:Lko,\"가메이도의 매화 정원\"label QS:Lvi,\"Vườn mơ ở Kameido\"label QS:Len,\"Plum Park in Kameido\"label QS:Lfa,\"پارک آلو در کامه‌ایدو\"label QS:Lml,\"പ്ലം പാർക്ക് ഇൻ കമെയിഡോ\""
+creator = "Utagawa Hiroshige"
+openverse = "commons:File:Plum garden at Kameido (Kameido umeyashiki) (CBL J 2693).jpg"
+needs_credit = false
+size = "1600x2327"
+
+[[photos]]
+file = "en/posts/2026-08-25-surinam-plates/lead.jpg"
+sha256 = "7cbaed2a72b7181be89b8b39604716d9e3f99b1136f29d72804ed0e6aedc9eeb"
+source = "https://commons.wikimedia.org/wiki/File:Metamorphosis_insectorum_Surinamensium_-_KW_1792_A_19_-_plaat01.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Metamorphosis insectorum Surinamensium by Maria Sibylla Merian, via Wikimedia Commons"
+title = "Metamorphosis insectorum Surinamensium"
+creator = "Maria Sibylla Merian"
+openverse = "commons:File:Metamorphosis insectorum Surinamensium - KW 1792 A 19 - plaat01.jpg"
+needs_credit = false
+size = "1600x2351"
+
+[[photos]]
+file = "en/posts/2026-08-25-surinam-plates/plate-seven.jpg"
+sha256 = "a4ff804437e1af85f769c86baf7c4bf1bf5b58f6e52e80e1918e8aebd2bb632e"
+source = "https://commons.wikimedia.org/wiki/File:Metamorphosis_insectorum_Surinamensium_-_KW_1792_A_19_-_plaat07.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Metamorphosis insectorum Surinamensium by Maria Sibylla Merian, via Wikimedia Commons"
+title = "Metamorphosis insectorum Surinamensium"
+creator = "Maria Sibylla Merian"
+openverse = "commons:File:Metamorphosis insectorum Surinamensium - KW 1792 A 19 - plaat07.jpg"
+needs_credit = false
+size = "1600x2351"
+
+[[photos]]
+file = "en/posts/2026-07-30-strawberry-thief/lead.jpg"
+sha256 = "859d37bb00a4bce1b62a38bcfed2e0a7a49c9fa4c8c4f8feed52e0d8bbbb3bd1"
+source = "https://commons.wikimedia.org/wiki/File:Textile,_Strawberry_Thief,_designed_1883,_printed_ca._1934_(CH_18340065).jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Textile, Strawberry Thief, designed 1883, printed ca. 1934 by William Morris (design), Morris & Co., via Wikimedia Commons"
+title = "Textile, Strawberry Thief, designed 1883, printed ca. 1934"
+creator = "William Morris (design), Morris & Co."
+openverse = "commons:File:Textile, Strawberry Thief, designed 1883, printed ca. 1934 (CH 18340065).jpg"
+needs_credit = false
+size = "1600x1082"
+
+[[photos]]
+file = "en/posts/2026-07-30-strawberry-thief/second-pattern.jpg"
+sha256 = "a4364a18c18b5782e9e51796bd04540638985ec6aa602be022fbdf461443392c"
+source = "https://commons.wikimedia.org/wiki/File:Clevelandart_1937.696.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Strawberry Thief by William Morris, via Wikimedia Commons"
+title = "Strawberry Thief"
+creator = "William Morris"
+openverse = "commons:File:Clevelandart 1937.696.jpg"
+needs_credit = false
+size = "1600x1428"
+
+[[photos]]
+file = "en/posts/2026-06-18-red-fuji/lead.jpg"
+sha256 = "73b7e2a5c4c2409e577447dfd1fb0571d5d4e981c56065fe868faf6ae0a8acf0"
+source = "https://commons.wikimedia.org/wiki/File:Katsushika_Hokusai_-_Fine_Wind,_Clear_Morning_(Gaif%C5%AB_kaisei)_-_Google_Art_Project.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Fine Wind, Clear Morning (Gaifū kaisei)title QS:P1476,en:\"Fine Wind, Clear Morning (Gaifū kaisei)\"label QS:Len,\"Fine Wind, Clear Morning (Gaifū kaisei)\" by Katsushika Hokusai, via Wikimedia Commons"
+title = "Fine Wind, Clear Morning (Gaifū kaisei)title QS:P1476,en:\"Fine Wind, Clear Morning (Gaifū kaisei)\"label QS:Len,\"Fine Wind, Clear Morning (Gaifū kaisei)\""
+creator = "Katsushika Hokusai"
+openverse = "commons:File:Katsushika Hokusai - Fine Wind, Clear Morning (Gaifū kaisei) - Google Art Project.jpg"
+needs_credit = false
+size = "1600x1080"
+
+[[photos]]
+file = "en/posts/2026-06-18-red-fuji/great-wave.jpg"
+sha256 = "5d939f1e4ebf04d26efc646a5f8792f153888d1f64ecedbd8f7f1607bf36c755"
+source = "https://commons.wikimedia.org/wiki/File:%E3%80%8C%E5%AF%8C%E5%B6%BD%E4%B8%89%E5%8D%81%E5%85%AD%E6%99%AF_%E7%A5%9E%E5%A5%88%E5%B7%9D%E6%B2%96%E6%B5%AA%E8%A3%8F%E3%80%8D-Under_the_Wave_off_Kanagawa_(Kanagawa_oki_nami_ura),_or_The_Great_Wave,_from_the_series_Thirty-six_Views_of_Mount_Fuji_(Fugaku_sanj%C5%ABrokkei)_MET_DP141042.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "「富嶽三十六景　神奈川沖浪裏」 by Katsushika Hokusai, via Wikimedia Commons"
+title = "「富嶽三十六景　神奈川沖浪裏」"
+creator = "Katsushika Hokusai"
+openverse = "commons:File:「富嶽三十六景 神奈川沖浪裏」-Under the Wave off Kanagawa (Kanagawa oki nami ura), or The Great Wave, from the series Thirty-six Views of Mount Fuji (Fugaku sanjūrokkei) MET DP141042.jpg"
+needs_credit = false
+size = "1600x1094"
+
+[[photos]]
+file = "en/posts/2026-05-27-kingfisher-prints/lead.jpg"
+sha256 = "9ebea9f91bfa47d569ce725a6328fe79e51417ca41707d9454c00433e2994d9b"
+source = "https://commons.wikimedia.org/wiki/File:IJsvogel_jagend_op_vis,_RP-P-1961-154.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "IJsvogel jagend op vis, RP-P-1961-154 by Rijksmuseum, via Wikimedia Commons"
+title = "IJsvogel jagend op vis, RP-P-1961-154"
+creator = "Rijksmuseum"
+openverse = "commons:File:IJsvogel jagend op vis, RP-P-1961-154.jpg"
+needs_credit = false
+size = "1600x2898"
+
+[[photos]]
+file = "en/posts/2026-05-27-kingfisher-prints/doves.jpg"
+sha256 = "378a0c38b8348afabda9f16c551bcc0cb2c9b5991d6b0e5e2a415e5b75ac1522"
+source = "https://commons.wikimedia.org/wiki/File:Twee_duiven,_RP-P-1994-53.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Twee duiven, RP-P-1994-53 by Rijksmuseum, via Wikimedia Commons"
+title = "Twee duiven, RP-P-1994-53"
+creator = "Rijksmuseum"
+openverse = "commons:File:Twee duiven, RP-P-1994-53.jpg"
+needs_credit = false
+size = "1600x1562"
+
+[[photos]]
+file = "en/posts/2026-05-27-kingfisher-prints/great-tits.jpg"
+sha256 = "59f393ca73d5d65d1340bada5739a137761bf8a2fda258728f1cf32ab39e995a"
+source = "https://commons.wikimedia.org/wiki/File:Koolmezen_op_esdoorntak,_RP-P-1999-535.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Koolmezen op esdoorntak, RP-P-1999-535 by Rijksmuseum, via Wikimedia Commons"
+title = "Koolmezen op esdoorntak, RP-P-1999-535"
+creator = "Rijksmuseum"
+openverse = "commons:File:Koolmezen op esdoorntak, RP-P-1999-535.jpg"
+needs_credit = false
+size = "1600x2977"
+
+[[photos]]
+file = "en/posts/2026-04-14-flamingo-poster/lead.jpg"
+sha256 = "13e35e6a5ddd7b5ae5c034c21fc3ac4e8369adfb591e1f535ac0224a9b1ffc1e"
+source = "https://commons.wikimedia.org/wiki/File:Robert_Havell_after_John_James_Audubon,_American_Flamingo,_1838,_NGA_32572.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "American Flamingo by Robert Havell after John James Audubon, via Wikimedia Commons"
+title = "American Flamingo"
+creator = "Robert Havell after John James Audubon"
+openverse = "commons:File:Robert Havell after John James Audubon, American Flamingo, 1838, NGA 32572.jpg"
+needs_credit = false
+size = "1600x2360"
+
+[[photos]]
+file = "en/posts/2026-03-03-hummingbird-plate/lead.jpg"
+sha256 = "a8921cf94dc94a935c74ee247fe7002e1fd6308892fdc3a0d315a2f1d8b6a2dc"
+source = "https://commons.wikimedia.org/wiki/File:Haeckel_Trochilidae.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Haeckel Trochilidae by Ernst Haeckel, via Wikimedia Commons"
+title = "Haeckel Trochilidae"
+creator = "Ernst Haeckel"
+openverse = "commons:File:Haeckel Trochilidae.jpg"
+needs_credit = false
+size = "1600x2244"
+
+[[photos]]
+file = "en/posts/2026-01-20-lily-plates/lead.jpg"
+sha256 = "8f1f29cfd65a947ce271512d1c8486d10ee0c47f3c699610061b9b41cee62b26"
+source = "https://commons.wikimedia.org/wiki/File:Redoute_liliacees.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Redoute liliacees by Pierre Joseph Redouté, via Wikimedia Commons"
+title = "Redoute liliacees"
+creator = "Pierre Joseph Redouté"
+openverse = "commons:File:Redoute liliacees.jpg"
+needs_credit = false
+size = "1600x2205"

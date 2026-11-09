@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="16" width="48" height="48" fill="#3b3fb6"/>
+  <path d="M10 28H58M10 40H58M10 52H58M22 16V64M34 16V64M46 16V64" stroke="#f1f1fa" stroke-width="1.5" stroke-opacity="0.45"/>
+  <path d="M14 46 Q20 26 26 40 T38 40 T50 36 T56 30" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+  <text textLength="196" lengthAdjust="spacingAndGlyphs" x="72" y="51" font-family="Hanken Grotesk, Arial, sans-serif" font-size="30" font-weight="700" fill="#16172b">Wavelength</text>
+</svg>

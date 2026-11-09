@@ -1,0 +1,104 @@
+{#- Plinth's post (docs/templates/plinth.md). A project is a post with
+    facts: its type of work above the title, the dek as its one-line
+    summary, then the project spread, the lead photograph on its ink bar
+    beside the title block of the project's facts with the author and the
+    date. The text runs in one column, and each figure in it, such as a
+    plan, is a numbered drawing sheet. After the text: the materials
+    (tags), the share links and the author box. Related posts close the
+    page as a row of sheets. A studio note, without facts, has its
+    photograph alone and its author and date under the title. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "contents.html" import contents_list -%}
+{% from "author_box.html" import author_box, reviewed_line -%}
+{% from "comments.html" import comments_section -%}
+{% from "series.html" import series_box, series_steps -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
+{% from "sections/title_block.html" import title_block -%}
+{% set placement = template.options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% set share = template.options.share -%}
+{% if share != "none" %}{% set share_row %}<div class="share">
+<p class="share-title">{{ t.share }}</p>
+<ul>
+{% for link in share_links(meta.canonical, page.title, template.options.share_networks) %}<li><a href="{{ link.href }}" rel="nofollow noreferrer">{{ t.share_email if link.key == "email" else link.name }}</a></li>
+{% endfor %}</ul>
+</div>
+{% endset %}{% endif -%}
+{% set byline %}{% for author in page.authors %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% endset -%}
+{% if side and placement == "side-start" %}<article class="post post-with-toc post-toc-start">{% elif side %}<article class="post post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post post-toc-folded">{% else %}<article class="post">{% endif %}
+<header class="post-header">
+{% if page.category %}<p class="project-kind"><a href="{{ page.category.href }}">{{ page.category.name }}</a></p>
+{% endif %}<h1>{{ page.title }}</h1>
+{% if template.options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}{% if page.facts %}<div class="project-spread">
+{% if page.image %}<div class="spread-plate">{{ picture(page.image, slot_sizes("lead")) }}</div>
+{% endif %}<div class="project-data">
+{% call title_block(page.facts) %}<div class="title-block-wide">
+<dt>{{ t.written_by }}</dt>
+<dd><address>{{ byline }}</address></dd>
+</div>
+<div class="title-block-wide">
+<dt>{{ t.published }}</dt>
+<dd><time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}</dd>
+</div>
+{% endcall %}{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
+{% endif %}{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}</div>
+</div>
+{% else %}<div class="post-meta">
+<address>{{ t.by }} {{ byline }}</address>
+{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
+{% endif %}<p class="post-date"><time datetime="{{ page.date }}">{{ page.date | date }}</time>{% if page.updated %}. {{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% endif %}</p>
+{% if template.options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}</div>
+{% if page.image %}<div class="spread-plate">{{ picture(page.image, slot_sizes("lead")) }}</div>
+{% endif %}{% endif %}</header>
+{% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.contents }}</summary>
+<nav aria-label="{{ t.contents }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.contents }}">
+<p class="toc-title">{{ t.contents }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}<div class="post-body">
+{{ series_box(page.series, t) }}{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}{{ series_steps(page.series, t) }}
+</div>
+{% if page.tags or share in ["end", "both"] %}<footer class="post-footer">
+{% if page.tags %}<h2>{{ t.tags }}</h2>
+<ul class="tags">
+{% for tag in page.tags %}<li><a href="{{ tag.href }}" rel="tag">{{ tag.name }}</a></li>
+{% endfor %}</ul>
+{% endif %}{% if share in ["end", "both"] %}{{ share_row }}{% endif %}</footer>
+{% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
+{% endif %}{{ preferred_source(template.options, t, "post") }}</article>
+{% if site.subscribe and template.options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and template.options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
+<h2>{{ t.mentions }}</h2>
+<ul>
+{% for link in page.mentions %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
+{% endif %}{% if "related_posts" in site.features and page.related %}<section class="related" aria-labelledby="related-title">
+<h2 id="related-title">{{ t.related_posts }}</h2>
+<ul class="sheets" role="list">
+{% for post in page.related[:template.options.related_count] %}<li class="sheet">
+{% if post.image %}{{ picture(post.image, slot_sizes("sheet")) }}
+{% endif %}<h3><span class="sheet-number">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span> <a href="{{ post.href }}">{{ post.title }}</a></h3>
+{% if post.facts %}<p class="sheet-facts">{% for fact in post.facts[:2] %}<span>{{ fact.value }}</span>{% endfor %}</p>
+{% endif %}</li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% endblock %}

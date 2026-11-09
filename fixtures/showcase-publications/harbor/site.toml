@@ -1,0 +1,92 @@
+# Harbor Kitchen Notes, the made-up marketing blog of a meal-kit company,
+# written for the Harbor template's demo. Each key and table here replaces
+# the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Harbor Kitchen Notes"
+languages = ["en"]
+
+[template.cta]
+label = "See this week's box"
+href = "/blog/about/"
+note = "Five dinners for two, tested three times in our kitchen and packed with almost no plastic."
+
+[announcement]
+text = "New: two hours on Sunday for four easier weeknight dinners."
+href = "/blog/sunday-batch-cooking/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Weeknight cooking notes from Harbor Kitchen"
+
+[seo.ai_page]
+covers = "Harbor Kitchen writes about weeknight cooking, planning a week of dinners, seasonal produce, kitchen skills and how a meal-kit kitchen works."
+cite = "Name Harbor Kitchen Notes and the author, and link the post you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Harbor Kitchen"
+email = "hello@example.com"
+founded = "2019-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Harbor Kitchen logo"
+width = 320
+height = 80
+
+# Sign-ups for the newsletter, under the publication's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "notes@example.com"
+name = "Harbor Kitchen Notes"
+postal_address = "Harbor Kitchen, 4 Quay Lane, Harbour Yard, Port Ellis PE1 2HK"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Weeknights"
+href = "/blog/category/weeknight-cooking/"
+language = "en"
+
+[[nav.primary]]
+label = "Produce"
+href = "/blog/category/produce/"
+language = "en"
+
+[[nav.primary]]
+label = "Skills"
+href = "/blog/category/kitchen-skills/"
+language = "en"
+
+[[nav.primary]]
+label = "Our kitchen"
+href = "/blog/category/behind-the-kitchen/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Harbor Kitchen"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Plan a week of dinners"
+href = "/blog/plan-week-dinners/"
+language = "en"
+
+[[nav.footer]]
+label = "How we test a recipe"
+href = "/blog/test-every-recipe/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

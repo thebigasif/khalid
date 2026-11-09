@@ -21,9 +21,11 @@ name: Pages
 # newest v release.
 # Its files are replaced in place; the release is never deleted.
 #
-# A change to the sites publishes on its own. A change to the engine
-# publishes at the next release, or by running this workflow by hand, so
-# CI does not build a release binary for every pull request that lands.
+# A change to the sites or to the templates publishes on its own: the
+# template packs, the shared templates and their strings. Any other change
+# to the engine publishes at the next release, or by running this workflow
+# by hand, so CI does not build a release binary for every pull request
+# that lands.
 on:
   push:
     branches: [main]
@@ -34,8 +36,14 @@ on:
       - "fixtures/showcase-brands/**"
       - "fixtures/showcase-publications/**"
       - "scripts/pages.sh"
+      - "scripts/demo-media.sh"
       - "scripts/demo-brand.sh"
       - "scripts/template-previews.sh"
+      - "scripts/template-packs.sh"
+      - "crates/khalid-theme/packs/**"
+      - "crates/khalid-theme/src/**"
+      - "crates/khalid-render/templates/**"
+      - "crates/khalid-render/strings/**"
       - "scripts/demos-bundle.sh"
       - "scripts/pages-forward.sh"
       - ".github/workflows/pages.yml"
@@ -72,10 +80,25 @@ jobs:
         run: |
           cargo build --release -p khalid
           ./target/release/khalid --version
+      # The demos' pictures in AVIF, made once (scripts/demo-media.sh). An
+      # empty cache costs about 35 minutes of encoding. The cache kept here
+      # on main is the one pull requests' demo checks read. The key changes
+      # with the encoder, so a file found is the one this build would make.
+      - name: The demos' pictures, kept between runs
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/khalid/demo-media
+          key: demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-${{ hashFiles('fixtures/showcase-publications/*/photos.lock') }}
+          restore-keys: demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-
       - name: Build the old Pages copy, whose pages are the old addresses
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: bash scripts/pages.sh --canonical https://serpdad.com ./target/release/khalid "$RUNNER_TEMP/pages" https://thebigasif.github.io /khalid/
       - name: Template previews
-        run: bash scripts/template-previews.sh "$RUNNER_TEMP/pages" /khalid/
+        # cwebp keeps each full-size preview to a hundred or two kilobytes.
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends webp
+          bash scripts/template-previews.sh "$RUNNER_TEMP/pages" /khalid/
       - name: The demos for serpdad.com, with the same previews
         run: |
           bash scripts/demos-bundle.sh ./target/release/khalid "$RUNNER_TEMP/demos/khalid" "$RUNNER_TEMP/pages/templates"

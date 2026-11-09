@@ -53,6 +53,20 @@ pub struct PostCard {
     /// How long it takes to read. `None` on a card made before its body
     /// is rendered, such as the home page `khalid serve` answers first.
     pub reading_time: Option<ReadingTime>,
+    /// Short label and value pairs from `facts` in its front matter, such
+    /// as `Year: 2025`, in the order written, for a template that shows
+    /// them as `post.facts`.
+    pub facts: Vec<Fact>,
+}
+
+/// One short fact about a post, such as `Serves: 4`, as a template shows
+/// it: `fact.label` and `fact.value`, both plain text.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct Fact {
+    /// What the value is, such as `Serves`.
+    pub label: String,
+    /// The fact itself, such as `4`.
+    pub value: String,
 }
 
 /// The pages of a list and which one this is. The current page is always one

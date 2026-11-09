@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /factory-orders-lift-shares/
+table /varnholm-50-ten-years/
+category /category/weekly-wrap/
+tag /tag/copper/
+author /authors/nadia-hargreave/

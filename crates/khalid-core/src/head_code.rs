@@ -105,6 +105,41 @@ impl HeadCode {
         self.written(Some(nonce))
     }
 
+    /// The head code as a static page holds it until a reader agrees to
+    /// `category`, such as `marketing`: each `script` as plain text the
+    /// browser never runs, its own `type` kept as `data-type`, and every
+    /// other element inside an inert `template`. The consent script turns
+    /// them back into code (privacy plan KTD7).
+    pub fn to_held_html(&self, category: &str) -> String {
+        let mut html = String::new();
+        for element in &self.elements {
+            if !html.is_empty() {
+                html.push('\n');
+            }
+            if element.name == "script" {
+                let mut held = element.clone();
+                for (key, _) in &mut held.attributes {
+                    if key == "type" {
+                        "data-type".clone_into(key);
+                    }
+                }
+                let marks = [
+                    ("type".to_owned(), "text/plain".to_owned()),
+                    ("data-khalid-consent".to_owned(), category.to_owned()),
+                ];
+                held.attributes.splice(0..0, marks);
+                write_element(&mut html, &held, None);
+            } else {
+                html.push_str("<template data-khalid-consent=\"");
+                html.push_str(category);
+                html.push_str("\">");
+                write_element(&mut html, element, None);
+                html.push_str("</template>");
+            }
+        }
+        html
+    }
+
     /// One element a line, each with `nonce` when there is one.
     fn written(&self, nonce: Option<&str>) -> String {
         let mut html = String::new();

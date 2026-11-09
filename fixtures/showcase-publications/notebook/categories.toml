@@ -1,0 +1,34 @@
+# Maren Holt's four sections. The Notebook template lists each one's
+# notes as the same dated stream as the front page.
+
+[[categories]]
+slug = "garden"
+en = "Garden"
+
+[categories.seo.en]
+description = "Notes from Maren Holt's allotment in Leeds: frost, seed saving, compost and planning the beds for next year."
+intro = "Notes from the plot: what went in, what came up and what I would do differently next time."
+
+[[categories]]
+slug = "reading"
+en = "Reading"
+
+[categories.seo.en]
+description = "Links to articles on gardening, soil and wildlife that Maren Holt recommends, each with a short note on why it is worth reading."
+intro = "Good things I read elsewhere, each with a line or two on why. The link at the end of each note takes you there."
+
+[[categories]]
+slug = "birds"
+en = "Birds"
+
+[categories.seo.en]
+description = "Bird notes from the allotment and the fields around it, written by Sami Okafor: arrivals, departures and counts."
+intro = "Sami Okafor keeps the bird notes: who arrived, who left and how many flew over the plot."
+
+[[categories]]
+slug = "kitchen"
+en = "Kitchen"
+
+[categories.seo.en]
+description = "What Maren Holt cooks and keeps from the allotment: apples, chutney and the rest of the harvest."
+intro = "What happens to the harvest once it reaches the kitchen."

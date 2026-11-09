@@ -64,6 +64,11 @@ layout-check *options:
 layout-selftest:
     node scripts/demo-check/layout-selftest.mjs
 
+# Proves the layout check's network capture finds a live player frame and
+# a live script, and nothing where they wait for consent, in Chromium.
+network-selftest:
+    node scripts/demo-check/network-selftest.mjs
+
 # Proves the demo publication step and the layout check's second pass on
 # the sample publication in fixtures/test-publications/, with no browser.
 publication-selftest:

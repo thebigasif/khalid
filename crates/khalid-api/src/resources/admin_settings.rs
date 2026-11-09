@@ -24,6 +24,9 @@ pub struct AdminSettings {
     pub default_language: String,
     /// Every language the site is written in.
     pub languages: Vec<String>,
+    /// How the site reaches readers: `server`, `static` or `headless`.
+    /// It is read here and changed only in `site.toml`.
+    pub mode: String,
     /// The template the site uses and the options it sets.
     pub template: TemplateSetting,
     /// The `[seo]` table as `site.toml` writes it, one key per part such
@@ -32,6 +35,18 @@ pub struct AdminSettings {
     /// every part and its defaults.
     #[schema(value_type = Object)]
     pub seo: Map<String, Value>,
+    /// The `[privacy]` table as `site.toml` writes it, one key per part
+    /// such as `lifetime_months`, `gpc`, `counts`, `external_tool`, `text`
+    /// or `contact`. A setting left out keeps its default.
+    #[schema(value_type = Object)]
+    pub privacy: Map<String, Value>,
+    /// The site's own code from `[code]`, one object per entry as written:
+    /// `head`, `body`, the `category` it waits for (`preferences`,
+    /// `analytics`, `marketing` or `no-tracking`), the `vendor` and its
+    /// `policy` link. An entry with no `category` counts as Marketing. The
+    /// old single `[code]` table reads as one entry.
+    #[schema(value_type = Vec<Object>)]
+    pub code: Vec<Map<String, Value>>,
     /// When `site.toml` last changed. A change sends it back.
     pub updated_at: DateTime<Utc>,
     /// Whether `site.toml` says something the running server does not use
@@ -62,6 +77,16 @@ pub struct SettingsChange {
     /// left out stay as they are.
     #[schema(value_type = Option<Object>)]
     pub seo: Option<BTreeMap<String, Option<Value>>>,
+    /// New parts of the `[privacy]` table, each replacing the part of that
+    /// name whole, such as `{"lifetime_months": 12}`. `null` removes a
+    /// part, so it goes back to its default. Parts left out stay as they
+    /// are.
+    #[schema(value_type = Option<Object>)]
+    pub privacy: Option<BTreeMap<String, Option<Value>>>,
+    /// Every entry of `[code]`, in place of the old ones, written as a
+    /// `[[code]]` list. An empty list removes `[code]`.
+    #[schema(value_type = Option<Vec<Object>>)]
+    pub code: Option<Vec<Map<String, Value>>>,
     /// The `updated_at` of the copy this change was made on.
     pub updated_at: DateTime<Utc>,
 }

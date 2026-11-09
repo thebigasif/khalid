@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /turtles-seagrass-recovery/
+table /cordgrass-planting-density/
+category /category/salt-marshes/
+tag /tag/blue-carbon/
+author /authors/amara-okafor/

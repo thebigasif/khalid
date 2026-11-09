@@ -1,0 +1,34 @@
+# Tamsin Hale's four categories. The Hub template lists each one's posts
+# as rows with a square picture, under the category's intro.
+
+[[categories]]
+slug = "videos"
+en = "Videos"
+
+[categories.seo.en]
+description = "Tamsin Hale's pottery videos, each with notes: throwing mugs and bowls, trimming and firing, step by step."
+intro = "Every other Wednesday I post a pottery video. Each one has a post here with the steps, the clay and the timings, so you can follow along at your own wheel."
+
+[[categories]]
+slug = "glazes-and-firing"
+en = "Glazes and firing"
+
+[categories.seo.en]
+description = "How the studio mixes its own glazes and fires its kiln, with recipes, firing schedules and what went wrong."
+intro = "Dev and I mix every glaze in the studio and fire our own kiln. These posts give the recipes, the firing schedules and the failures we learned from."
+
+[[categories]]
+slug = "studio-notes"
+en = "Studio notes"
+
+[categories.seo.en]
+description = "Notes from a small pottery studio in Bristol: drying, cracks, tools and the habits that save pots."
+intro = "Short notes from the studio on the small things that decide whether a pot survives: drying, tools, clay and habits."
+
+[[categories]]
+slug = "workshops-and-shop"
+en = "Workshops and shop"
+
+[categories.seo.en]
+description = "Weekend wheel workshops, shop updates and sales from Tamsin Hale's pottery studio in Bristol."
+intro = "News about the weekend wheel workshops and the shop: what is coming out of the kiln, when it goes on sale and how to book a place."

@@ -1,5 +1,6 @@
-//! What the analytics routes read: the views `khalid serve` counted, and
-//! the clock that says which day it is (GEO M1, KH-GRO-4).
+//! What the analytics routes read: the views `khalid serve` counted, the
+//! consent proof (R18), and the clock that says which day it is (GEO M1,
+//! KH-GRO-4).
 
 use std::sync::Arc;
 
@@ -10,17 +11,34 @@ use khalid_analytics::{
 };
 use khalid_core::{Clock, SystemClock};
 
-/// The site's counted views and its clock.
+use crate::consent_proof::{ConsentProof, DayChoices, ShownVersion};
+
+/// The site's counted views, its consent proof and its clock.
 #[derive(Clone)]
 pub struct AnalyticsDesk {
     store: Arc<dyn AnalyticsStore>,
+    consent: Option<Arc<dyn ConsentProof>>,
     clock: Arc<dyn Clock>,
 }
 
 impl AnalyticsDesk {
     /// The views in `store`, with today from `clock`.
     pub fn new(store: Arc<dyn AnalyticsStore>, clock: Arc<dyn Clock>) -> Self {
-        Self { store, clock }
+        Self {
+            store,
+            consent: None,
+            clock,
+        }
+    }
+
+    /// The same desk, reading what readers were shown and chose from
+    /// `consent`. Without it, a site has shown nothing and counted nothing.
+    #[must_use]
+    pub fn with_consent(self, consent: Arc<dyn ConsentProof>) -> Self {
+        Self {
+            consent: Some(consent),
+            ..self
+        }
     }
 
     /// A site that counts nothing, such as one built to static files.
@@ -62,6 +80,30 @@ impl AnalyticsDesk {
         let crawls = self.store.crawls(first, last).await?;
         let views = self.store.views(first, last).await?;
         Ok(uncited(&crawls, &views))
+    }
+
+    /// Every version of what readers were shown, oldest first (R18).
+    ///
+    /// # Errors
+    ///
+    /// [`AnalyticsError`] when the versions cannot be read.
+    pub async fn consent_versions(&self) -> Result<Vec<ShownVersion>, AnalyticsError> {
+        match &self.consent {
+            Some(consent) => consent.versions().await,
+            None => Ok(Vec::new()),
+        }
+    }
+
+    /// The readers' answers on each day of `period` (R18).
+    ///
+    /// # Errors
+    ///
+    /// [`AnalyticsError`] when the counts cannot be read.
+    pub async fn consent_counts(&self, period: Period) -> Result<Vec<DayChoices>, AnalyticsError> {
+        match &self.consent {
+            Some(consent) => consent.counts(period.first(), period.last()).await,
+            None => Ok(Vec::new()),
+        }
     }
 }
 

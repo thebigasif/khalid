@@ -1,0 +1,13 @@
+# Photographs in Brindle Help Centre
+
+Brindle Help Centre is a made-up publication that shows Khalid's Manual template. Its photographs are not part of Khalid and are not under the AGPL. Each keeps the licence its photographer gave it, listed here. The photographs are cropped and resized for the demo.
+
+- `en/posts/2026-09-03-first-ride/lead.jpg`: "Riding a bike in the park (Unsplash)" by Fritz Bielmeier fritzbielmeier, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Riding_a_bike_in_the_park_(Unsplash).jpg
+- `en/posts/2026-09-15-winter-battery-storage/lead.jpg`: "Bicycle Mannerheim Park Oulu 20210209" by Estormiz, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Bicycle_Mannerheim_Park_Oulu_20210209.jpg
+- `en/posts/2026-09-22-hub-gears/lead.jpg`: "Wheel and gears of bicycle (Unsplash)" by Wayne Bishop wayneb250, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Wheel_and_gears_of_bicycle_(Unsplash).jpg
+- `en/posts/2026-09-24-bike-lights/lead.jpg`: "Fahrrad LED-Akku-Leuchte Busch & Müller Ixon IQ" by Singlespeedfahrer, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Fahrrad_LED-Akku-Leuchte_Busch_%26_M%C3%BCller_Ixon_IQ.jpg
+- `en/posts/2026-09-29-tyre-pressure/lead.jpg`: "Une personne regonflant un pneu de son vélo à Genève" by Benoît Prieur, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Une_personne_regonflant_un_pneu_de_son_v%C3%A9lo_%C3%A0_Gen%C3%A8ve.JPG
+- `en/posts/2026-10-01-chain-cleaning/lead.jpg`: "Close up seven speed gear" by NonNerd, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Close_up_seven_speed_gear.jpg
+- `en/posts/2026-10-06-brake-pads/lead.jpg`: "Bicycle disc brake rotor with Torx screwdriver set" by JaredMcKenzie, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Bicycle_disc_brake_rotor_with_Torx_screwdriver_set.jpg
+- `en/posts/2026-10-08-delivery-tracking/lead.jpg`: "Boxes in grass" by Hillebrand Steve, U.S. Fish and Wildlife Service, under Public domain (https://creativecommons.org/publicdomain/mark/1.0/), from https://commons.wikimedia.org/wiki/File:Boxes_in_grass.jpg
+- `en/posts/2026-10-15-warranty-cover/lead.jpg`: "Bicycle wheel (Unsplash)" by Pietro De Grandi peter_mc_greats, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Bicycle_wheel_(Unsplash).jpg

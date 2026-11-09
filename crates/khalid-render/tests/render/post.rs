@@ -51,6 +51,7 @@ pub(crate) fn sitemap_post() -> RenderPost {
         updated: None,
         updated_note: None,
         dek: None,
+        facts: Vec::new(),
         reading_time: ReadingTime::of(&body, &locale("en")),
         authors: vec![person(
             "Lena Vogt",
