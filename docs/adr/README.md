@@ -41,3 +41,4 @@ One file per decision the plan does not already make. Numbered, never edited aft
 | 0033 | `khalid build` writes nothing when the publish gate refuses a post | Accepted |
 | 0034 | A demo publication is an overlay with checked photos | Accepted |
 | 0035 | The Ghost-compatible API keeps Ghost's contract | Accepted |
+| 0036 | The release runs `just check` as parallel jobs on the tagged commit | Accepted |

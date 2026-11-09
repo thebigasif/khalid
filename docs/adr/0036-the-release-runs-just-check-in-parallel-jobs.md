@@ -1,6 +1,6 @@
-# 0000. The release runs `just check` as parallel jobs on the tagged commit
+# 0036. The release runs `just check` as parallel jobs on the tagged commit
 
-**Number:** next free. **Status:** Proposed, 2026-11-09. Release speed task (KH-OPS-6).
+**Number:** 0036. **Status:** Accepted, 2026-11-09. Release speed task (KH-OPS-6).
 
 ## Context
 
