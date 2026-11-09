@@ -1,13 +1,16 @@
-//! Reads the cards that describe one thing: an event and a course
-//! (brief G15).
+//! Reads the cards that describe one thing: an event, a course, a book and
+//! a dataset (brief G15).
 
 use chrono::{DateTime, FixedOffset};
 
 use super::Attributes;
-use crate::{BlockError, BlockKind, CourseBlock, EventBlock, EventPlace, EventState, SchemaCard};
+use crate::{
+    BlockError, BlockKind, BookBlock, CourseBlock, DatasetBlock, EventBlock, EventPlace,
+    EventState, SchemaCard,
+};
 
-/// Reads the card `name`, `event` or `course`, with `body` as its
-/// description.
+/// Reads the card `name`, one of `event`, `course`, `book` and `dataset`,
+/// with `body` as its description.
 pub(super) fn card(
     name: &str,
     attributes: &Attributes,
@@ -15,7 +18,9 @@ pub(super) fn card(
 ) -> Result<BlockKind, BlockError> {
     let card = match name {
         "event" => SchemaCard::Event(Box::new(event(attributes, body)?)),
-        _ => SchemaCard::Course(course(attributes, body)?),
+        "course" => SchemaCard::Course(course(attributes, body)?),
+        "book" => SchemaCard::Book(book(attributes)?),
+        _ => SchemaCard::Dataset(dataset(attributes, body)?),
     };
     Ok(BlockKind::Card(card))
 }
@@ -116,6 +121,75 @@ fn course(attributes: &Attributes, body: &[&str]) -> Result<CourseBlock, BlockEr
         href: attributes
             .get("href")
             .map(|href| attributes.media("course", "href", href))
+            .transpose()?,
+        description,
+    })
+}
+
+fn book(attributes: &Attributes) -> Result<BookBlock, BlockError> {
+    attributes.only(
+        "book",
+        &["name", "author", "isbn", "href"],
+        "name, author, isbn and href",
+    )?;
+    let name = attributes.need("name", "a book needs name, its title")?;
+    let author = attributes.need("author", "a book needs author, who wrote it")?;
+    let isbn = attributes.get("isbn");
+    let digits = |isbn: &str| isbn.chars().filter(char::is_ascii_digit).count();
+    if isbn.as_deref().is_some_and(|isbn| {
+        !isbn
+            .chars()
+            .all(|c| c.is_ascii_digit() || c == '-' || c == 'X')
+            || !matches!(digits(isbn), 9 | 10 | 13)
+    }) {
+        return Err(value(
+            attributes,
+            "a book's isbn is its 10 or 13 digits, with hyphens if you like, such as 978-0-00-000000-2",
+        ));
+    }
+    let href = attributes.get("href");
+    if let Some(href) = &href {
+        attributes.address("book", "href", href)?;
+    }
+    Ok(BookBlock {
+        name,
+        author,
+        isbn,
+        href,
+    })
+}
+
+fn dataset(attributes: &Attributes, body: &[&str]) -> Result<DatasetBlock, BlockError> {
+    attributes.only(
+        "dataset",
+        &["name", "keywords", "license", "download"],
+        "name, keywords, license and download",
+    )?;
+    let name = attributes.need("name", "a dataset needs name, what it is called")?;
+    let description = body.join("\n");
+    if description.trim().is_empty() {
+        return Err(BlockError::Missing {
+            line: attributes.line,
+            problem: "a dataset needs a body that says what it holds and how it was gathered",
+        });
+    }
+    let license = attributes.get("license");
+    if let Some(license) = &license {
+        attributes.address("dataset", "license", license)?;
+    }
+    let keywords = attributes.get("keywords").unwrap_or_default();
+    Ok(DatasetBlock {
+        name,
+        keywords: keywords
+            .split(',')
+            .map(str::trim)
+            .filter(|word| !word.is_empty())
+            .map(str::to_owned)
+            .collect(),
+        license,
+        download: attributes
+            .get("download")
+            .map(|download| attributes.media("dataset", "download", download))
             .transpose()?,
         description,
     })

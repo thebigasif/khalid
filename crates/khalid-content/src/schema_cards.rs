@@ -1,9 +1,10 @@
-//! Cards for things search engines know by type: an event and a course
-//! (brief G15). Each writes one schema.org node.
+//! Cards for things search engines know by type: an event, a course, a
+//! book and a dataset (brief G15). Each writes one schema.org node.
 
 use chrono::{DateTime, FixedOffset};
 
-/// A card that describes one thing, from `:::event` or `:::course`.
+/// A card that describes one thing, from `:::event`, `:::course`,
+/// `::book` or `:::dataset`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum SchemaCard {
@@ -11,6 +12,10 @@ pub enum SchemaCard {
     Event(Box<EventBlock>),
     /// A course, which becomes a `Course`.
     Course(CourseBlock),
+    /// A book, which becomes a `Book`.
+    Book(BookBlock),
+    /// A dataset, which becomes a `Dataset`.
+    Dataset(DatasetBlock),
 }
 
 /// An event, from `:::event{...}` with what happens there as the body.
@@ -84,5 +89,35 @@ pub struct CourseBlock {
     /// Where it starts: a path on this site or a full address.
     pub href: Option<String>,
     /// What it teaches: markdown in a block, plain text in structured data.
+    pub description: String,
+}
+
+/// A book, from `::book{name="..." author="..."}`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BookBlock {
+    /// The title.
+    pub name: String,
+    /// Who wrote it.
+    pub author: String,
+    /// Its ISBN, as written.
+    pub isbn: Option<String>,
+    /// Where to read or buy it: a full address.
+    pub href: Option<String>,
+}
+
+/// Data the post publishes, from `:::dataset{name="..."}` with what it
+/// holds as the body.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DatasetBlock {
+    /// The dataset.
+    pub name: String,
+    /// Words people search for it by, from `keywords="a, b"`.
+    pub keywords: Vec<String>,
+    /// The licence it is shared under: a full address.
+    pub license: Option<String>,
+    /// Where to download it: a path on this site or a full address.
+    pub download: Option<String>,
+    /// What it holds and how it was gathered: markdown in a block, plain
+    /// text in structured data.
     pub description: String,
 }

@@ -57,7 +57,9 @@ pub use render::{
     CTA_MARK, ENGINE_TEXT, Gated, Heading, Image, LOCATION_MARK, Link, PRIVACY_FACTS_MARK,
     Rendered, render, render_framed, render_gated, render_linked,
 };
-pub use schema_cards::{CourseBlock, EventBlock, EventPlace, EventState, SchemaCard};
+pub use schema_cards::{
+    BookBlock, CourseBlock, DatasetBlock, EventBlock, EventPlace, EventState, SchemaCard,
+};
 pub use schemas::{
     AuthorFront, CaseStudyFront, ChangelogFront, GlossaryFront, IndexFront, PageFront, PageHub,
     SnippetFront,

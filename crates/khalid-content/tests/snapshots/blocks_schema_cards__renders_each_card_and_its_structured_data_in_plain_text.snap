@@ -1,0 +1,31 @@
+---
+source: crates/khalid-content/tests/blocks_schema_cards.rs
+expression: page.html
+---
+<section class="product event">
+<img src="clinic.jpg" alt="Internal links clinic" loading="lazy" decoding="async" />
+<p class="product-name">Internal links clinic</p>
+<p class="event-time"><time datetime="2026-11-12T18:00:00+00:00">2026-11-12 18:00</time> – <time datetime="2026-11-12T19:00:00+00:00">19:00</time></p>
+<address>The Mill<br />
+2 Mill Lane<br />
+Leeds LS1 4AB</address>
+<p class="product-price"><data value="0">GBP 0</data></p>
+<p>Asif</p>
+<p>An hour of fixing internal links on <strong>your own</strong> posts.</p>
+</section>
+<section class="product course">
+<p class="product-name">SEO writing</p>
+<p>Twelve lessons on writing posts that rank.</p>
+<p><a href="/blog/seo-writing-course/">SEO writing</a></p>
+</section>
+<section class="product book">
+<p class="product-name">Everybody Writes</p>
+<p>Ann Handley</p>
+<p>ISBN 978-1-119-85487-9</p>
+<p><a href="https://www.example.com/books/everybody-writes">Everybody Writes</a></p>
+</section>
+<section class="product dataset">
+<p class="product-name">Content benchmark 2026</p>
+<p>Word counts and positions for 1,200 posts.</p>
+<p><a href="benchmark.csv">benchmark.csv</a></p>
+</section>

@@ -1,10 +1,11 @@
-//! Event and course cards: each describes one thing search engines know
-//! by type (brief G15, KH-CON-5).
+//! Event, course, book and dataset cards: each describes one thing search
+//! engines know by type (brief G15, KH-CON-5).
 
 use khalid_content::{
-    BlockKind, CourseBlock, EventBlock, EventPlace, EventState, SchemaCard, parse_blocks,
-    print_blocks,
+    BlockKind, BookBlock, CourseBlock, DatasetBlock, EventBlock, EventPlace, EventState,
+    SchemaCard, StructuredBlock, parse_blocks, print_blocks, render,
 };
+use khalid_core::{Locale, SlugMode};
 
 const EVENT: &str = "\
 :::event{name=\"Internal links clinic\" start=\"2026-11-12T18:00+00:00\" end=\"2026-11-12T19:00Z\" venue=\"The Mill\" street=\"2 Mill Lane\" locality=\"Leeds\" postcode=\"LS1 4AB\" country=\"GB\" price=\"0\" currency=\"GBP\" image=\"clinic.jpg\" performer=\"Asif\"}
@@ -15,6 +16,14 @@ An hour of fixing internal links on **your own** posts.
 const COURSE: &str = "\
 :::course{name=\"SEO writing\" href=\"/blog/seo-writing-course/\"}
 Twelve lessons on writing posts that rank.
+:::
+";
+
+const BOOK: &str = "::book{name=\"Everybody Writes\" author=\"Ann Handley\" isbn=\"978-1-119-85487-9\" href=\"https://www.example.com/books/everybody-writes\"}\n";
+
+const DATASET: &str = "\
+:::dataset{name=\"Content benchmark 2026\" keywords=\"word count, rankings\" license=\"https://creativecommons.org/licenses/by/4.0/\" download=\"benchmark.csv\"}
+Word counts and positions for 1,200 posts.
 :::
 ";
 
@@ -110,4 +119,62 @@ fn a_course_round_trips_and_needs_a_body() {
         error(":::course{name=\"SEO writing\"}\n:::\n"),
         "line 1: a course needs a body that says what it teaches"
     );
+}
+
+#[test]
+fn a_book_round_trips_and_checks_its_isbn() {
+    assert_eq!(
+        card(BOOK),
+        SchemaCard::Book(BookBlock {
+            name: "Everybody Writes".to_owned(),
+            author: "Ann Handley".to_owned(),
+            isbn: Some("978-1-119-85487-9".to_owned()),
+            href: Some("https://www.example.com/books/everybody-writes".to_owned()),
+        })
+    );
+    assert_eq!(
+        error("::book{name=\"Notes\" author=\"Asif\" isbn=\"12\"}\n"),
+        "line 1: a book's isbn is its 10 or 13 digits, with hyphens if you like, such as 978-0-00-000000-2"
+    );
+    assert_eq!(
+        error(":::book{name=\"Notes\" author=\"Asif\"}\n:::\n"),
+        "line 1: book has no body; write it on one line as ::book"
+    );
+}
+
+#[test]
+fn a_dataset_round_trips_with_its_keywords() {
+    assert_eq!(
+        card(DATASET),
+        SchemaCard::Dataset(DatasetBlock {
+            name: "Content benchmark 2026".to_owned(),
+            keywords: vec!["word count".to_owned(), "rankings".to_owned()],
+            license: Some("https://creativecommons.org/licenses/by/4.0/".to_owned()),
+            download: Some("benchmark.csv".to_owned()),
+            description: "Word counts and positions for 1,200 posts.".to_owned(),
+        })
+    );
+    assert_eq!(
+        error(":::dataset{name=\"Benchmark\" license=\"CC BY\"}\nNumbers.\n:::\n")
+            .split(':')
+            .nth(1),
+        Some(" a dataset's license is wrong")
+    );
+}
+
+#[test]
+fn renders_each_card_and_its_structured_data_in_plain_text() {
+    let body = [EVENT, COURSE, BOOK, DATASET].join("\n");
+    let page = render(&body, &Locale::try_new("en").unwrap(), SlugMode::Ascii).unwrap();
+    let [StructuredBlock::Card(SchemaCard::Event(event)), _, _, _] = page.structured.as_slice()
+    else {
+        panic!("{:?}", page.structured);
+    };
+    assert_eq!(
+        event.description,
+        "An hour of fixing internal links on your own posts."
+    );
+    assert_eq!(page.images.len(), 1, "the event's picture");
+    assert_eq!(page.links.len(), 3, "the course, the book and the download");
+    insta::assert_snapshot!(page.html);
 }
