@@ -14,6 +14,13 @@
 /* One column of text on a phone or a tablet. */
 .site-header, main, .site-footer { max-inline-size: var(--mg-text); }
 
+/* The announcement: a light band across the window. Its words and the
+   consent banner's keep to the header's width and start where it starts. */
+.announcement { margin: 0; padding: 0.5rem 0; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); text-align: start; }
+.consent { padding-inline: 0; }
+.announcement p, .consent > * { max-inline-size: var(--mg-text); }
+@media (min-width: 70rem) { .announcement p, .consent > * { max-inline-size: var(--measure); } }
+
 /* The header: the name at the start, the menu at the end. */
 .site-name { font-size: 1.3125rem; font-weight: 600; letter-spacing: -0.01em; }
 .site-logo img { block-size: 2.25rem; inline-size: auto; }

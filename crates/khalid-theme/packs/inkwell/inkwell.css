@@ -18,6 +18,12 @@ main > :is(.post, .page) { max-inline-size: var(--measure); margin-inline: auto;
 main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
 main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
 main > .post ~ .related { max-inline-size: 60rem; margin-inline: auto; }
+/* With the contents beside a post, the words start under the name in the
+   header and the contents stay close beside them. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--iw-frame); }
+  main:has(> .post-with-toc) > :is(*, .post ~ *) { margin-inline: 0 auto; }
+}
 h1, h2, h3, h4 { letter-spacing: -0.01em; }
 
 /* The small capitals labels: sections, dates, tallies, the kind. */
@@ -33,7 +39,10 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 .site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
 .search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
 .search-link:hover { color: var(--color-link); text-decoration: underline; }
-.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); text-align: start; }
+/* The announcement and the consent banner start where the header starts. */
+.announcement, .consent { padding-inline: 0; }
+.announcement p, .consent > * { margin-inline: max(0px, (100% - var(--iw-frame)) / 2) auto; }
 
 /* Buttons: square, filled with the accent. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: var(--radius); font: 700 0.9375rem/1.2 var(--font-body); letter-spacing: 0.03em; text-align: center; text-decoration: none; cursor: pointer; }
@@ -46,7 +55,7 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 @media (min-width: 56rem) { .iw-masthead { grid-template-columns: minmax(0, 1fr) minmax(18rem, 25rem); } }
 .iw-masthead .hero { margin: 0; padding: 0; }
 .hero-kicker { color: var(--color-link); }
-.hero-title { max-inline-size: 13ch; letter-spacing: -0.025em; line-height: 0.98; }
+.hero-title { max-inline-size: 13ch; letter-spacing: -0.02em; line-height: 0.98; }
 .hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.5; }
 .newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); border-radius: var(--radius); }
 .iw-masthead .newsletter-slot { margin: 0; }
@@ -67,7 +76,7 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 @media (min-width: 68rem) { .iw-latest { grid-template-columns: minmax(10rem, 13rem) minmax(0, 1fr) minmax(18rem, 26rem); } .iw-latest-art { grid-column: 3; } }
 .iw-stamp { display: flex; flex-direction: column; margin: 0; color: var(--color-link); font-family: var(--font-heading); }
 .iw-stamp .iw-no-label { color: var(--color-muted); }
-.iw-stamp-figure { font-size: clamp(4.5rem, 2.5rem + 6vw, 8.5rem); font-weight: var(--heading-weight); font-variant-numeric: oldstyle-nums; letter-spacing: -0.03em; line-height: 0.9; }
+.iw-stamp-figure { font-size: clamp(4.5rem, 2.5rem + 6vw, 8.5rem); font-weight: var(--heading-weight); font-variant-numeric: oldstyle-nums; letter-spacing: -0.02em; line-height: 0.9; }
 .iw-latest-text { min-inline-size: 0; }
 .iw-label { margin: 0 0 0.5rem; color: var(--color-muted); }
 .iw-latest h2 { margin: 0; font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem); line-height: 1.1; }

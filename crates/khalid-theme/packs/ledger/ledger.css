@@ -18,6 +18,9 @@ main > :is(.post, .related, .back-link, .breadcrumbs) { max-inline-size: 62rem; 
 .post > :not(.post-header, .toc-box), .related > * { max-inline-size: var(--measure); }
 main > .post:not(.post-with-toc, :has(> .toc-box)), main > .post:not(.post-with-toc, :has(> .toc-box)) ~ :is(.related, .back-link, .newsletter-slot) { max-inline-size: var(--measure); }
 @media (min-width: 75rem) {
+  /* A post with its contents beside it spans the header's frame: the
+     words start under the name, the margin ends under the last link. */
+  main:has(> .post > .toc-box) > :is(.post, .related, .back-link, .breadcrumbs) { max-inline-size: none; }
   .post:has(> .toc-box) { display: grid; grid-template-columns: minmax(0, var(--measure)) minmax(0, 1fr); column-gap: calc(var(--space) * 6); }
   .post:has(> .toc-box) > * { grid-column: 1; }
   .post:has(> .toc-box) > .post-header { grid-column: 1 / -1; }
@@ -29,6 +32,11 @@ main > .post:not(.post-with-toc, :has(> .toc-box)), main > .post:not(.post-with-
   .post:has(> .toc-box) > .post-header > .image { grid-column: 2; margin-block-start: 0; }
 }
 main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
+/* With the contents in a side column, the words start under the name too. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--frame); }
+  main:has(> .post-with-toc) > :is(*, .post, .related) { margin-inline: 0 auto; }
+}
 main > :is(p, .intro, .search, .results, dl) { max-inline-size: var(--measure); }
 
 /* Header: an accent bar across the window, the name, then the menu in
@@ -41,13 +49,17 @@ body { border-block-start: 4px solid var(--color-accent); }
 .site-header nav a, .search-link { color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 600; text-decoration: none; }
 .site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 2px; }
 .site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -3px 0 var(--color-accent); }
-.announcement { margin-block-end: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; font-family: var(--font-heading); font-size: var(--text-small); font-weight: 600; }
+/* The announcement: a light band across the window, its words starting
+   where the header starts, as the consent banner's do. */
+.announcement { margin-block-end: 0; padding-block: 0.5rem; padding-inline: 0; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-family: var(--font-heading); font-size: var(--text-small); font-weight: 600; text-align: start; }
+.consent { padding-inline: 0; }
+.announcement p, .consent > * { margin-inline: max(0px, (100% - var(--frame)) / 2) auto; }
 .announcement a { color: var(--color-text); }
 
 /* Headings: the sans, set tight. Labels are small capitals in the heading
    face, the way a report names its kind and date. */
 h1, h2, h3, h4 { letter-spacing: -0.012em; }
-h1 { letter-spacing: -0.025em; }
+h1 { letter-spacing: -0.02em; }
 .toc-title, .home-section > h2, .related > h2, .author-box > h2, .media-row > h2, .topic-tabs > h2 { font-family: var(--font-heading); }
 a { text-decoration-color: color-mix(in oklab, var(--color-link) 45%, transparent); }
 a:hover { text-decoration-color: currentColor; }
@@ -80,7 +92,7 @@ a:hover { text-decoration-color: currentColor; }
    draws under its totals. The tagline and facts sit on that rule. */
 .masthead { display: grid; gap: calc(var(--space) * 3) calc(var(--space) * 6); padding-block: calc(var(--space) * 7) calc(var(--space) * 4); border-block-end: 6px double var(--color-text); }
 .masthead::before { content: ""; inline-size: 4rem; block-size: 6px; background: var(--color-accent); }
-.masthead h1 { margin: 0; font-size: clamp(2.5rem, 1.2rem + 6.2vw, 7.5rem); font-weight: 800; letter-spacing: -0.045em; line-height: 0.95; overflow-wrap: anywhere; }
+.masthead h1 { margin: 0; font-size: clamp(2.5rem, 1.2rem + 6.2vw, 7.5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 0.95; overflow-wrap: anywhere; }
 .tagline { margin: 0; max-inline-size: 36ch; font-size: var(--text-h3); line-height: 1.45; }
 .stats { display: flex; flex-wrap: wrap; gap: 0; margin: 0; padding: 0; list-style: none; }
 .stats li { padding: 0 calc(var(--space) * 3); border-inline-start: 1px solid var(--color-border); font-family: var(--font-heading); font-weight: 700; font-variant-numeric: lining-nums tabular-nums; }
@@ -135,7 +147,7 @@ main > .intro, main > h1 + .intro { max-inline-size: 46rem; margin-block-start: 
 
 /* The lead: the newest post's row, its title set near display size. */
 .home-latest .ledger-list > li:first-child { padding-block: calc(var(--space) * 4); }
-.home-latest .ledger-list > li:first-child .ledger-entry :is(h2, h3, h4) { font-size: clamp(1.875rem, 1.1rem + 2.2vw, 3.25rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+.home-latest .ledger-list > li:first-child .ledger-entry :is(h2, h3, h4) { font-size: clamp(1.875rem, 1.1rem + 2.2vw, 3.25rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
 
 /* Section titles: the heading face over a heavy rule, as a report
    heads a table. */
@@ -197,7 +209,7 @@ main > .cards-text { border-block-start: var(--rule); }
 .page-numbers a[aria-current] { color: var(--color-text); box-shadow: inset 0 -3px 0 var(--color-accent); }
 
 /* List pages: the title large over the list's heavy rule. */
-main > h1 { margin-block: calc(var(--space) * 6) calc(var(--space) * 3); font-size: clamp(2.5rem, 1.3rem + 4.2vw, 5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+main > h1 { margin-block: calc(var(--space) * 6) calc(var(--space) * 3); font-size: clamp(2.5rem, 1.3rem + 4.2vw, 5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
 main > :is(.cards-text, .featured) { margin-block-start: calc(var(--space) * 4); }
 
 /* A post: pill, title, byline, then the lead picture in a light frame at
@@ -205,7 +217,7 @@ main > :is(.cards-text, .featured) { margin-block-start: calc(var(--space) * 4);
    screen. A post with no contents is one centred column. */
 .post-header { margin-block-end: calc(var(--space) * 4); padding-block: calc(var(--space) * 3); border-block-end: 1px solid var(--color-border); }
 .post-header .pills { margin-block: 0 calc(var(--space) * 2); }
-.post-header h1 { margin-block: 0 calc(var(--space) * 3); max-inline-size: 22ch; font-size: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; }
+.post-header h1 { margin-block: 0 calc(var(--space) * 3); max-inline-size: 22ch; font-size: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.02; }
 .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.5rem; font-family: var(--font-heading); }
 .post-meta > :is(address, .reviewed-by, .updated-note) { flex-basis: 100%; }
 .post-meta > p { margin: 0; }

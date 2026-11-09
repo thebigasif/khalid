@@ -16,6 +16,12 @@ main { padding-block: 0 var(--space-section); }
 main > :is(.post, .page) { max-inline-size: 36rem; margin-inline: auto; }
 main > .post-with-toc { max-inline-size: calc(36rem + 18rem); }
 main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band, .lock) { max-inline-size: 36rem; margin-inline: auto; }
+/* With the contents beside a post, the words start under the name in the
+   header and the contents stay close beside them. */
+@media (min-width: 70rem) {
+  main:has(> .post-with-toc) { max-inline-size: var(--sm-frame); }
+  main:has(> .post-with-toc) > :is(*, .post ~ *) { margin-inline: 0 auto; }
+}
 h1, h2, h3 { letter-spacing: -0.01em; }
 
 /* The header: a heavy ink rule across the window, the name in the
@@ -30,7 +36,10 @@ body { border-block-start: 6px solid var(--color-text); }
 .site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -3px var(--color-accent); }
 .search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
 .search-link:hover { color: var(--color-link); text-decoration: underline; }
-.announcement { margin: 0; padding-block: 0.5rem; background: var(--sm-tint); border: 0; box-shadow: 0 0 0 100vmax var(--sm-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--sm-tint); border: 0; box-shadow: 0 0 0 100vmax var(--sm-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); text-align: start; }
+/* The announcement and the consent banner start where the header starts. */
+.announcement, .consent { padding-inline: 0; }
+.announcement p, .consent > * { margin-inline: max(0px, (100% - var(--sm-frame)) / 2) auto; }
 
 /* Buttons: filled with the accent, square corners, bold. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 3rem; padding: 0.625rem 1.5rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 700 1rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
@@ -45,7 +54,7 @@ body { border-block-start: 6px solid var(--color-text); }
    beside the updates. */
 .hero { padding-block-end: 0; }
 .hero-kicker { color: var(--color-link); font-size: 0.9375rem; letter-spacing: 0.1em; }
-.hero-title { max-inline-size: 16ch; font-weight: var(--heading-weight); letter-spacing: -0.03em; line-height: 0.98; }
+.hero-title { max-inline-size: 16ch; font-weight: var(--heading-weight); letter-spacing: -0.02em; line-height: 0.98; }
 .hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.5; }
 .hero-action { margin-block: 1.75rem 0; }
 .hero > .figure-strip { margin-block-start: 2.5rem; border-block-start: 2px solid var(--color-text); }
