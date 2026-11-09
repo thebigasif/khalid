@@ -1,2 +1,0 @@
-Fixed
-- Twelve templates (Atelier, Channel, Dialogue, Folio, Glossy, Inkwell, Ledger, Margin, Notebook, Reel, Summit and Versions) look right on a laptop: the consent banner and the announcement start where the header starts, a post with its contents beside it lines up with the header with the contents close to the words, every announcement band reaches both edges of the window, and no large title is set tighter than -0.02em, so a Mac's system font never runs the letters together.

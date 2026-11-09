@@ -4,6 +4,22 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.7.1
+
+Every template looks right on laptops and phones, and the bundled SQLite gets a security fix. What changed, in plain words: `docs/releases/1.7.1.md`.
+
+### Fixed
+
+- The classic template reads better on laptop screens. Post titles are a size smaller and a step lighter, with more room between letters, so they no longer crowd on a Mac. From 1024 px wide, a post with its contents beside it lines up with the site header: the words start under the site's name and the contents follow right after them, as one group. The privacy (consent) banner lines up with the header too, from 640 px wide. Gaps between menu links are even. The announcement above the header is a light tint with dark words in the classic, Atlas, Encore, Frequency, Gallery, Brief and Respawn templates, so no template shows a dark band.
+- Twelve more templates read better on laptop screens. In Atlas, Chapter, Dispatch, Frequency, Harbor, Itinerary, Letterpress, Research, Syllabus and Vital, a post with its contents beside it now lines up with the site header from 1120 px wide: the words start under the site's name and the contents sit close beside them. In those templates and Pantry, the announcement and the consent banner start where the header does. Atlas and Harbor titles have a little more room between letters, so they no longer crowd, and so do the Frequency and Syllabus front-page titles. The Atlas call-to-action band and footer, the Frequency call-to-action band and the Harbor announcement are light tints with dark words, so these templates show no dark band.
+- Twelve more templates read better on laptops and phones: Almanac, Beacon, Encore, Gallery, Hearth, Keystone, Locale, Meridian, Plinth, Respawn, Ticker and Wire. Big titles have a little more room between letters, so they no longer run together on a Mac. The privacy (consent) banner and the announcement above the header start where the header starts, at every width. Wire's announcement stays centred under its centred masthead. The announcement is a light tint with dark words in Beacon, Encore, Gallery and Respawn, so no template shows a dark band, and in Gallery, Hearth and Locale it now runs to both edges of the window on one line. Beacon's menu sits on its own row under the charity's name, so its donate button no longer drops below the name on a laptop.
+- Twelve templates (Aperture, Brief, Compass, Fixture, Gazette, Hub, Lattice, Manual, Mosaic, Quill, Spectrum and Workbench) look right on laptops and phones: big titles no longer squeeze their letters together on a Mac, the privacy banner's words start where the header's do, announcement bands are light and run to both edges of the window, Fixture's header button sits beside the name, and a Workbench post with its contents beside it lines up with the header.
+- Twelve templates (Atelier, Channel, Dialogue, Folio, Glossy, Inkwell, Ledger, Margin, Notebook, Reel, Summit and Versions) look right on a laptop: the consent banner and the announcement start where the header starts, a post with its contents beside it lines up with the header with the contents close to the words, every announcement band reaches both edges of the window, and no large title is set tighter than -0.02em, so a Mac's system font never runs the letters together.
+
+### Security
+
+- The SQLite copy built into `khalid` moves to 3.54, which fixes RUSTSEC-2026-0459, a security flaw in older SQLite. Every site that runs `khalid serve` should update.
+
 ## 1.7.0
 
 Built-in privacy and cookie consent: nothing optional loads before a reader agrees, every site gets a privacy page, and the admin keeps proof of what readers chose. What changed, in plain words: `docs/releases/1.7.0.md`.
