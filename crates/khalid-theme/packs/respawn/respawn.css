@@ -160,3 +160,11 @@ h1, h2, h3, h4 { letter-spacing: -0.005em; }
 
 /* The footer: a heavy rule, quiet links. */
 .site-footer { border-block-start: 3px solid var(--rs-ink); }
+
+/* The consent banner and the announcement keep their bands across the
+   window, and their words start under the site's name, where the
+   header starts. */
+.consent { max-inline-size: var(--rs-frame); margin-inline: auto; padding-inline: 0; }
+.consent > * { margin-inline: 0; }
+.announcement { padding-inline: 0; text-align: start; }
+.announcement p { max-inline-size: var(--rs-frame); }

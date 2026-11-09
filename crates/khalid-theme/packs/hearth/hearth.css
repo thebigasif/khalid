@@ -156,3 +156,12 @@ main > :is(.newsletter-slot, .cta-band) { margin-block: var(--space-section) 0; 
 @media (min-width: 40rem) { .author-header:has(.author-photo) { grid-template-columns: auto minmax(0, 1fr); gap: 2.5rem; } }
 .author-bio { max-inline-size: var(--hh-read); }
 .people-grid-person .avatar { border-radius: 50%; }
+
+/* The consent banner and the announcement keep their bands across the
+   window, and their words start under the nursery's name, where the
+   header starts. The announcement's line is as wide as the header, so it
+   fits on one line on a laptop. */
+.consent { max-inline-size: var(--hh-frame); margin-inline: auto; padding-inline: 0; }
+.consent > * { margin-inline: 0; }
+.announcement { padding-inline: 0; border: 0; box-shadow: 0 0 0 100vmax var(--hh-wash); clip-path: inset(0 -100vmax); text-align: start; }
+.announcement p { max-inline-size: var(--hh-frame); }

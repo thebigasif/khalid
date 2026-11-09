@@ -63,7 +63,7 @@ body { border-block-start: 6px solid var(--tk-ink); }
 .masthead { display: grid; gap: 2rem 4rem; align-items: end; margin-block-end: var(--space-section); padding-block-end: 2.5rem; border-block-end: 1px solid var(--tk-ink); }
 @media (min-width: 60rem) { .masthead-signup { grid-template-columns: minmax(0, 1.6fr) minmax(20rem, 1fr); } }
 .hero { margin: 0; }
-.hero-title { font-weight: var(--heading-weight); letter-spacing: -0.035em; }
+.hero-title { font-weight: var(--heading-weight); letter-spacing: -0.01em; }
 .hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; }
 .masthead .newsletter-slot { margin: 0; padding: 1.5rem; background: var(--color-surface); border: 0; border-block-start: 4px solid var(--color-accent); border-radius: 0; }
 
@@ -123,7 +123,7 @@ body { border-block-start: 6px solid var(--tk-ink); }
 
 /* An issue: the desk, the title, the dek, the writer, the numbers. */
 .post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
-.post-header h1 { margin-block: 0 0.75rem; line-height: 1.08; letter-spacing: -0.025em; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.08; letter-spacing: -0.01em; }
 .post-header .dek { font-size: 1.25rem; line-height: 1.5; }
 .post-meta { color: var(--color-muted); font-family: var(--font-heading); font-size: 0.9375rem; }
 .post-meta address { font-style: normal; }
@@ -173,3 +173,11 @@ body { border-block-start: 6px solid var(--tk-ink); }
 .site-footer { border-block-start: 1px solid var(--tk-ink); font-family: var(--font-heading); }
 /* The last menu word ends at the frame's edge, not 44 px into its target. */
 .site-header nav li:last-child a { justify-content: flex-end; }
+
+/* The consent banner and the announcement keep their bands across the
+   window, and their words start under the site's name, where the
+   header starts. */
+.consent { max-inline-size: var(--tk-frame); margin-inline: auto; padding-inline: 0; }
+.consent > * { margin-inline: 0; }
+.announcement { padding-inline: 0; text-align: start; }
+.announcement p { max-inline-size: var(--tk-frame); }
