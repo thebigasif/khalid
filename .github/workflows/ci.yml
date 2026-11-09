@@ -372,7 +372,7 @@ jobs:
             echo "build=false" >> "$GITHUB_OUTPUT"
             echo "Nothing the image is built from changed, so it is not built again." | tee -a "$GITHUB_STEP_SUMMARY"
           fi
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
         if: steps.inputs.outputs.build == 'true'
       - uses: docker/build-push-action@v6
         if: steps.inputs.outputs.build == 'true'
@@ -468,7 +468,7 @@ jobs:
         with:
           node-version: 22
       # The W3C HTML validator is a Java program.
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
@@ -793,7 +793,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           key: https
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version: stable
           cache: false
