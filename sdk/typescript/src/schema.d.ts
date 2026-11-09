@@ -1748,7 +1748,7 @@ export type RoleChange = {
 export type SchemaTemplates = {
   /** The site's collections, to pick a template's collection from. */
   collections: string[];
-  /** Whether the running server still uses older templates, so a restart is needed before previews and served pages show these. */
+  /** Whether a setting in `site.toml` that the running server reads only at start, such as `address`, changed, so it waits for a restart. The templates themselves are in use once saved. */
   restart_needed: boolean;
   /** Every template. When two of one type cover a post, the first wins. */
   templates: AdminSchemaTemplate[];
@@ -3035,7 +3035,7 @@ export interface Operations {
     };
     output: null;
   };
-  /** Lists the site's schema templates, the collections a template may name, and whether the running server needs a restart to use the templates. Needs `settings:write`. */
+  /** Lists the site's schema templates, the collections a template may name, and whether a setting the running server reads only at start waits for a restart. Needs `settings:write`. */
   read_templates: {
     input: {
       headers?: {
@@ -3045,7 +3045,7 @@ export interface Operations {
     };
     output: SchemaTemplates;
   };
-  /** Puts a new list in place of every schema template, made on the copy `updated_at` names. Each template is checked as `khalid serve` checks `site.toml` at start, and nothing is saved when one is refused. The running server uses the new templates after a restart. Needs `settings:write`. */
+  /** Puts a new list in place of every schema template, made on the copy `updated_at` names. Each template is checked as `khalid serve` checks `site.toml` at start, and nothing is saved when one is refused. The running server uses the new templates within a few seconds. Needs `settings:write`. */
   replace_templates: {
     input: {
       headers?: {

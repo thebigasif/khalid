@@ -3,12 +3,13 @@
 //! at start, before the full render that follows a change to one of them.
 //! A file that no longer reads keeps the last good settings, and `mount`
 //! and `mode`, which shape the server's own routes, keep their start value.
-//! Once new settings are in use, `site.changed` fires.
+//! Once new settings are in use, `site.changed` fires, and the admin's post
+//! checks judge with them through [`LiveConfig`].
 
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex, PoisonError};
+use std::sync::{Arc, Mutex, PoisonError, RwLock};
 use std::time::SystemTime;
 
 use khalid_core::{Config, ConfigError, Environment, Mode, UserMessage};
@@ -29,6 +30,20 @@ const THEME: &str = "theme";
 /// Each settings file's size and when it last changed.
 type Stamp = BTreeMap<PathBuf, (u64, Option<SystemTime>)>;
 
+/// The `site.toml` settings the pages are made with now, for the parts of
+/// `khalid serve` outside the pages that follow a save too, such as the
+/// admin's post checks. It holds the settings alone, never the pages.
+#[derive(Debug, Clone)]
+pub(crate) struct LiveConfig(Arc<RwLock<Arc<Settings>>>);
+
+impl LiveConfig {
+    /// A copy of the settings in use now.
+    pub(crate) fn now(&self) -> Config {
+        let settings = self.0.read().unwrap_or_else(PoisonError::into_inner);
+        settings.config.clone()
+    }
+}
+
 /// What reading the settings again needs.
 #[derive(Debug)]
 pub(super) struct Reload {
@@ -46,6 +61,11 @@ pub(super) struct Reload {
 }
 
 impl SitePages {
+    /// The settings the pages are made with, as they change.
+    pub(crate) fn live_config(&self) -> LiveConfig {
+        LiveConfig(Arc::clone(&self.0.settings))
+    }
+
     /// Reads the settings again, with `env` on top, before each full render
     /// that follows a change to one of their files, and tells `announce`
     /// once they are in use. `khalid serve` calls it once, before the watch

@@ -5340,7 +5340,7 @@
         "tags": [
           "admin settings"
         ],
-        "summary": "Lists the site's schema templates, the collections a template may name,\nand whether the running server needs a restart to use the templates.\nNeeds `settings:write`.",
+        "summary": "Lists the site's schema templates, the collections a template may name,\nand whether a setting the running server reads only at start waits for\na restart. Needs `settings:write`.",
         "operationId": "read_templates",
         "parameters": [
           {
@@ -5405,7 +5405,7 @@
         "tags": [
           "admin settings"
         ],
-        "summary": "Puts a new list in place of every schema template, made on the copy\n`updated_at` names. Each template is checked as `khalid serve` checks\n`site.toml` at start, and nothing is saved when one is refused. The\nrunning server uses the new templates after a restart. Needs\n`settings:write`.",
+        "summary": "Puts a new list in place of every schema template, made on the copy\n`updated_at` names. Each template is checked as `khalid serve` checks\n`site.toml` at start, and nothing is saved when one is refused. The\nrunning server uses the new templates within a few seconds. Needs\n`settings:write`.",
         "operationId": "replace_templates",
         "parameters": [
           {
@@ -16423,7 +16423,7 @@
           },
           "restart_needed": {
             "type": "boolean",
-            "description": "Whether the running server still uses older templates, so a restart\nis needed before previews and served pages show these."
+            "description": "Whether a setting in `site.toml` that the running server reads only\nat start, such as `address`, changed, so it waits for a restart. The\ntemplates themselves are in use once saved."
           },
           "templates": {
             "type": "array",

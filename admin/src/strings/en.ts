@@ -1,7 +1,7 @@
 import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
 import { records } from "./records";
-import { LIVE } from "./restartWords";
+import { LIVE, WAITS } from "./restartWords";
 import { serpdadWords } from "./serpdadWords";
 import { signInWords } from "./signInWords";
 import { sitesWords } from "./sites";
@@ -40,8 +40,8 @@ export const en = {
     title: "Schema templates",
     lede: "Schema is information for search engines about what a page holds. Khalid writes it for every post. A template adds one more kind to every post in a collection, so every guide is marked as a course without anyone thinking about it.",
     loading: "Reading the schema templates",
-    restart:
-      "Saved to site.toml. The blog uses it after Khalid restarts; until then, previews show the templates it started with.",
+    live: LIVE,
+    restart: WAITS,
     inUse: "Templates in use",
     none: "No templates yet. Every post still carries the schema Khalid writes for it.",
     every: (target: string, name: string, type: string) =>

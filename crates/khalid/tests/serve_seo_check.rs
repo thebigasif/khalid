@@ -2,13 +2,14 @@
 //! route answers a post's score, search snippet and schema graph, and a
 //! search title and hand-written JSON-LD saved through the Admin API reach
 //! the post file and the next check. A schema template saved through the
-//! Admin API reaches `site.toml`, and the check after a restart.
+//! Admin API reaches `site.toml`, and the check with no restart.
 
 use std::fs;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::net::TcpStream;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::thread;
 use std::time::Duration;
 
 use serde_json::{Value, json};
@@ -64,9 +65,16 @@ fn writer_key(site: &Path) -> String {
 /// Starts `khalid serve` on a free port.
 #[cfg(test)]
 fn start(site: &Path) -> Server {
+    start_with(site, &[])
+}
+
+/// Starts `khalid serve` on a free port with the variables `env` set.
+#[cfg(test)]
+fn start_with(site: &Path, env: &[(&str, &str)]) -> Server {
     let mut child = Command::new(env!("CARGO_BIN_EXE_khalid"))
         .args(["--site", site.to_str().unwrap()])
         .args(["serve", "--listen", "127.0.0.1:0", "--json"])
+        .envs(env.iter().copied())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .spawn()
@@ -175,10 +183,23 @@ fn the_check_follows_a_saved_search_title_and_custom_schema() {
 }
 
 #[test]
-fn a_saved_schema_template_reaches_site_toml_and_the_check_after_a_restart() {
+fn a_saved_schema_template_reaches_site_toml_and_the_check_with_no_restart() {
     let site = demo_site();
     let key = writer_key(site.path());
-    let server = start(site.path());
+    // Mail through Resend reads only with the key the server started with.
+    let mut file = site.path().to_path_buf();
+    file.push("site.toml");
+    let text = fs::read_to_string(&file).unwrap();
+    let mail = "\n[mail]\nfrom = \"news@example.com\"\n\n[mail.resend]\n";
+    fs::write(&file, format!("{text}{mail}")).unwrap();
+    let server = start_with(
+        site.path(),
+        &[("KHALID_RESEND_API_KEY", "made-for-this-test")],
+    );
+    let (status, settings) = send(&server, &key, ("GET", "/api/admin/v1/settings/"), "");
+    assert_eq!(status, 200, "{settings}");
+    assert_eq!(settings["settings"]["restart_needed"], false, "{settings}");
+
     let route = "/api/admin/v1/schema-templates/";
     let (status, read) = send(&server, &key, ("GET", route), "");
     assert_eq!(status, 200, "{read}");
@@ -191,22 +212,20 @@ fn a_saved_schema_template_reaches_site_toml_and_the_check_after_a_restart() {
     let change = json!({"templates": [course], "updated_at": read["updated_at"]});
     let (status, saved) = send(&server, &key, ("PUT", route), &change.to_string());
     assert_eq!(status, 200, "{saved}");
-    assert_eq!(saved["restart_needed"], true, "{saved}");
-    let mut file = site.path().to_path_buf();
-    file.push("site.toml");
+    assert_eq!(saved["restart_needed"], false, "{saved}");
     let text = fs::read_to_string(file).unwrap();
     assert!(
         text.contains("[[seo.schema]]\ncollection = \"posts\"\n"),
         "{text}"
     );
 
-    drop(server);
-    let server = start(site.path());
-    let after = check(&server, &key);
-    assert!(
-        types(&after["schema"]).contains(&"\"Course\"".to_owned()),
-        "{after}"
-    );
+    // The check follows once the pages use the saved file, within seconds.
+    let course = "\"Course\"".to_owned();
+    let follows = (0..200).any(|_| {
+        thread::sleep(Duration::from_millis(100));
+        types(&check(&server, &key)["schema"]).contains(&course)
+    });
+    assert!(follows, "{}", check(&server, &key));
 }
 
 /// Writes the draft `en.anchor-words` into `site`: in the demo's

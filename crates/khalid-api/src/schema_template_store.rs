@@ -93,8 +93,9 @@ pub struct SchemaTemplates {
     pub collections: Vec<String>,
     /// When `site.toml` last changed. A change sends it back.
     pub updated_at: DateTime<Utc>,
-    /// Whether the running server still uses older templates, so a restart
-    /// is needed before previews and served pages show these.
+    /// Whether a setting in `site.toml` that the running server reads only
+    /// at start, such as `address`, changed, so it waits for a restart. The
+    /// templates themselves are in use once saved.
     pub restart_needed: bool,
 }
 
@@ -159,7 +160,7 @@ mod memory {
     };
 
     /// Schema templates held in memory, for tests. A change stamps them
-    /// one second later and asks for a restart.
+    /// one second later, in use at once as on `khalid serve`.
     #[derive(Debug)]
     pub struct MemorySchemaTemplates(Mutex<SchemaTemplates>);
 
@@ -188,7 +189,6 @@ mod memory {
             let answer = if change.updated_at == held.updated_at {
                 held.templates = change.templates;
                 held.updated_at += chrono::TimeDelta::seconds(1);
-                held.restart_needed = true;
                 Ok(held.clone())
             } else {
                 let updated_at = held.updated_at;
