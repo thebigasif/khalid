@@ -76,7 +76,8 @@ function blog(refuse = false) {
         return json(422, { title, detail: "The site would not start.", fix: "Send it again." });
       }
       const template = body.settings.template ?? DEMO.template;
-      site = { ...DEMO, template, restart_needed: true };
+      // As on `khalid serve`, a new template is in use with no restart.
+      site = { ...DEMO, template, restart_needed: false };
       return json(200, { settings: site });
     },
   });
@@ -115,7 +116,7 @@ describe("the Look screen", () => {
     await userEvent.click(within(options).getByRole("checkbox", { name: "x" }));
     expect(await axeViolations()).toEqual([]);
     await userEvent.click(screen.getByRole("button", { name: WORDS.save }));
-    expect(await screen.findByText(WORDS.saved)).toBeVisible();
+    expect(await screen.findByText(WORDS.live)).toBeVisible();
     expect(changes).toEqual([
       {
         updated_at: DEMO.updated_at,
@@ -125,7 +126,7 @@ describe("the Look screen", () => {
         },
       },
     ]);
-    expect(await screen.findByText(WORDS.restart)).toBeVisible();
+    expect(screen.queryByText(WORDS.restart)).toBeNull();
   });
 
   it("sends nothing for the same look, and shows the server's words for a refusal", async () => {

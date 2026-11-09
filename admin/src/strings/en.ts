@@ -1,6 +1,7 @@
 import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
 import { records } from "./records";
+import { LIVE } from "./restartWords";
 import { serpdadWords } from "./serpdadWords";
 import { signInWords } from "./signInWords";
 import { sitesWords } from "./sites";
@@ -368,9 +369,10 @@ export const en = {
     careful:
       "Changing the address or the folder changes the link to every post, feed and sitemap. Add a redirect for the old addresses, or links from other sites will break.",
     restart:
-      "Restart Khalid on the server to use these settings. The running blog read site.toml when it started, and the file has changed since.",
+      "Restart Khalid on the server to use the new address, folder or languages. Khalid reads them only when it starts. Your other changes are already in use.",
     save: "Save settings",
     saved: "Saved to site.toml.",
+    live: LIVE,
     unchanged: "Nothing changed, so nothing was saved.",
   },
   account: {

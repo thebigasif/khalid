@@ -96,10 +96,10 @@ If a saved `site.toml` or theme file has a mistake, the blog keeps serving the l
 A few settings only take effect when the server starts:
 
 - `mount` and `mode` shape the server's own addresses, so it keeps the values it started with.
-- `address`, `languages`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
+- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
 - The `--listen` and `--domain` options, the environment variables, and the `data/` folder with its database are read once at start.
 
-When you change one of these, the log says a restart is needed. Restart with `systemctl restart khalid`, or stop and start the server.
+When you change one of these, the log says a restart is needed, and so does the admin: its settings screens show a note, and the Admin API's settings answer `restart_needed: true`. A change to anything else, such as the blog's name, its look, its SEO or its privacy settings, answers `false`, since the blog already uses it. Restart with `systemctl restart khalid`, or stop and start the server.
 
 ## Docker
 
