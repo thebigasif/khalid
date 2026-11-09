@@ -1,0 +1,139 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is
+# CC0 or in the public domain, so none needs a visible credit.
+
+[[photos]]
+file = "en/posts/2024-06-14-green-beans-bucket/lead.jpg"
+sha256 = "9cbbd88d3cb0ddaaaaf742230c160127df4e2d9eb56a4df146487e92d9cde270"
+source = "https://commons.wikimedia.org/wiki/File:Fresh_Green_Beans_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Fresh Green Beans (Unsplash) by Sonja Langford unmorceau, via Wikimedia Commons"
+title = "Fresh Green Beans (Unsplash)"
+creator = "Sonja Langford unmorceau"
+openverse = "commons:File:Fresh Green Beans (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2024-09-13-seed-swaps-twenty-years/lead.jpg"
+sha256 = "eea6ae2523a9b184b9d3d9104d8057405431aba351730713f29f724a051bf4c1"
+source = "https://commons.wikimedia.org/wiki/File:Seeding_sunflower_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Seeding sunflower (Unsplash) by Morgan Sessions msessionsphotos, via Wikimedia Commons"
+title = "Seeding sunflower (Unsplash)"
+creator = "Morgan Sessions msessionsphotos"
+openverse = "commons:File:Seeding sunflower (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2024-12-13-old-seed-barn-maize/lead.jpg"
+sha256 = "76c3ec6b1071da4e852db567d31062b345e23233e720254b0bb83597f213e0bc"
+source = "https://commons.wikimedia.org/wiki/File:Corn_seeds_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Corn seeds (Unsplash) by Roderico Y. Díaz rodediaz, via Wikimedia Commons"
+title = "Corn seeds (Unsplash)"
+creator = "Roderico Y. Díaz rodediaz"
+openverse = "commons:File:Corn seeds (Unsplash).jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2025-03-14-broad-beans-annie-pascoe/lead.jpg"
+sha256 = "ff72bc3fd98c35b29bddc3c9d278beb63a97adfcbaa23ef219519d88b7717f0e"
+source = "https://commons.wikimedia.org/wiki/File:Dried_broad_beans.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Dried broad beans by Fumikas Sagisavas, via Wikimedia Commons"
+title = "Dried broad beans"
+creator = "Fumikas Sagisavas"
+openverse = "commons:File:Dried broad beans.jpg"
+needs_credit = false
+size = "1600x1600"
+
+[[photos]]
+file = "en/posts/2025-06-13-tomato-seed-strangers-tin/lead.jpg"
+sha256 = "2c93e8d384f5960a68c14f50afcd81b51bd9b4ac9b7f94bfca7deda094e86fb1"
+source = "https://commons.wikimedia.org/wiki/File:Several_small_tomatoes_growing_on_a_vine._(515b5541-3cea-4d7a-8a0c-d15b964a15ac).JPG"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Tomatoes by NPS, via Wikimedia Commons"
+title = "Tomatoes"
+creator = "NPS"
+openverse = "commons:File:Several small tomatoes growing on a vine. (515b5541-3cea-4d7a-8a0c-d15b964a15ac).JPG"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2025-09-12-store-squash-till-spring/lead.jpg"
+sha256 = "7e69d4f27e83888f11d5ad1877b8d97cf7a4f06411236d507ad8a97f03e96eb0"
+source = "https://commons.wikimedia.org/wiki/File:Vegetable_Garden_Harvest_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Vegetable Garden Harvest (Unsplash) by Gemma Evans stayandroam, via Wikimedia Commons"
+title = "Vegetable Garden Harvest (Unsplash)"
+creator = "Gemma Evans stayandroam"
+openverse = "commons:File:Vegetable Garden Harvest (Unsplash).jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2025-12-12-planting-garlic-shortest-day/lead.jpg"
+sha256 = "c664e26691a8b5558fdd3cfe51fcffbb579b806aac7b1ccf9df985dd08613c44"
+source = "https://commons.wikimedia.org/wiki/File:Garlic_Bulbs_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Garlic Bulbs (Unsplash) by Matthew Pilachowski matthewpilachowski, via Wikimedia Commons"
+title = "Garlic Bulbs (Unsplash)"
+creator = "Matthew Pilachowski matthewpilachowski"
+openverse = "commons:File:Garlic Bulbs (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-03-13-greenhouse-old-windows/lead.jpg"
+sha256 = "315b55c122e3ca3f5fce8bad088cdf47a09d8687c78cfd5ba90f84d5e671ab76"
+source = "https://commons.wikimedia.org/wiki/File:Cozy_greenhouse_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Cozy greenhouse (Unsplash) by Thomas Verbruggen thmsvrbrggn, via Wikimedia Commons"
+title = "Cozy greenhouse (Unsplash)"
+creator = "Thomas Verbruggen thmsvrbrggn"
+openverse = "commons:File:Cozy greenhouse (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-06-12-heritage-pea-comes-home/lead.jpg"
+sha256 = "1db4d0c3ccda9ce140cd5b6c9c6977458eb76d11b6dc7ed76d0f0a96aa325217"
+source = "https://commons.wikimedia.org/wiki/File:Green_pea_pods.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Green pea pods by Fumikas Sagisavas, via Wikimedia Commons"
+title = "Green pea pods"
+creator = "Fumikas Sagisavas"
+openverse = "commons:File:Green pea pods.jpg"
+needs_credit = false
+size = "1600x1600"
+
+[[photos]]
+file = "en/posts/2026-09-11-runner-bean-seed-wet-summer/lead.jpg"
+sha256 = "7888049e05ba7ac763ddacd4b2bda72954019e4958ea3c650995ba15a02a015b"
+source = "https://commons.wikimedia.org/wiki/File:Scarlet_Runner_beans.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Scarlet Runner beans by Unknown, via Wikimedia Commons"
+title = "Scarlet Runner beans"
+creator = "Unknown"
+openverse = "commons:File:Scarlet Runner beans.jpg"
+needs_credit = false
+size = "1600x1070"
+
+[[photos]]
+file = "en/posts/2026-10-23-winter-seed-list/lead.jpg"
+sha256 = "efed0a18ae6702614407202435d3b205644736cde57a3ca7c4bd2b6db630b878"
+source = "https://commons.wikimedia.org/wiki/File:Pumpkins_on_shelf_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Pumpkins on shelf (Unsplash) by Jennifer Burk jenandjoon, via Wikimedia Commons"
+title = "Pumpkins on shelf (Unsplash)"
+creator = "Jennifer Burk jenandjoon"
+openverse = "commons:File:Pumpkins on shelf (Unsplash).jpg"
+needs_credit = false
+size = "1600x1068"
+

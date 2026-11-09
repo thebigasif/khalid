@@ -1,0 +1,35 @@
+# Aperture: one photographer's site. A warm white like a print's border,
+# near-black ink, one rust accent like a darkroom's safe light, and a
+# pale grey surface for the contact sheet. A book serif for the words
+# and a monospace for the camera details.
+[colors]
+background = "#faf9f6"
+surface = "#f0eee8"
+text = "#1c1b19"
+muted = "#5c5850"
+link = "#9a3412"
+accent = "#9a3412"
+border = "#dedad0"
+
+[fonts]
+heading = "\"Iowan Old Style\", Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
+body = "\"Iowan Old Style\", Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[shape]
+radius = "0px"
+measure = "36rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2rem 3.25rem"
+h2 = "1.5rem 2rem"
+h3 = "1.1875rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.875rem"
+line_height = 1.6
+heading_weight = 500
+
+[space]
+unit = "0.5rem"
+section = "5rem"

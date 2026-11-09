@@ -1,0 +1,49 @@
+{#- Encore's lists (category, tag, archive, date and collection pages):
+    the list's name and intro, then its releases (posts with facts) as a
+    shelf of sleeves and its notes (posts without facts) as picture cards,
+    each newest first. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "card.html" import pages -%}
+{% macro shelf(posts, level=2) -%}
+<ul class="shelf" role="list">
+{% for post in posts %}<li class="sleeve">
+<div class="sleeve-art">{% if post.image %}{{ picture(post.image, slot_sizes("sleeve")) }}{% else %}<span class="sleeve-blank"></span>{% endif %}</div>
+<h{{ level }} class="sleeve-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="sleeve-meta">{{ post.facts[0].value }} <time datetime="{{ post.date }}">{{ (post.date | string)[:4] }}</time></p>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}
+{% macro note_cards(posts, level=2) -%}
+<ul class="notes" role="list">
+{% for post in posts %}<li class="note">
+{% if post.image %}{{ picture(post.image, slot_sizes("note")) }}
+{% endif %}<p class="note-meta"><time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if post.category %} <span class="note-category">{{ post.category.name }}</span>{% endif %}</p>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+</li>
+{% endfor %}</ul>
+{%- endmacro %}
+<header class="list-header">
+<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% set records = page.posts | selectattr("facts") | list -%}
+{% set written = page.posts | rejectattr("facts") | list -%}
+{% if records and written %}<section class="list-part" aria-labelledby="list-releases">
+<h2 id="list-releases" class="label">{{ t.music_releases }}</h2>
+{{ shelf(records, 3) }}
+</section>
+<section class="list-part" aria-labelledby="list-notes">
+<h2 id="list-notes" class="label">{{ t.music_notes }}</h2>
+{{ note_cards(written, 3) }}
+</section>
+{% elif records %}{{ shelf(records) }}
+{% elif written %}{{ note_cards(written) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

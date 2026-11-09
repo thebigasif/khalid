@@ -15,7 +15,7 @@ cluster:
 tags: [writing, planning]
 image:
   src: cover.svg
-  alt: A compass with four coloured markers around its edge and a needle pointing to the top
+  alt: A search bar above three kinds of result, a shop cart, a guide and a map pin, with an arrow to the guide in orange
 ---
 
 Search intent is the goal a person has when they type a search. They might want to learn something, reach a page, weigh options or buy. If your post serves a different goal from the one the searcher has, it will not rank for long, however well it is written.

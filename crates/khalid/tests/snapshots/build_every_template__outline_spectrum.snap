@@ -1,0 +1,70 @@
+---
+source: crates/khalid/tests/build_every_template.rs
+expression: pages
+---
+# index.html
+header.hero
+  h1.hero-title: Field Notes on SEO
+  nav.sp-bar "Browse by topic"
+section.sp-lead
+  h2.sp-label: Lead story
+  article.sp-lead-story
+    h3: Planning a topic cluster in an afternoon
+section.sp-latest
+  h2.sp-label: Latest posts
+  h3: Fixing slow pages, starting with the biggest win
+  h3: What a sitemap does, and what it does not
+  h3: How to write a title tag
+  h3: Why internal links matter
+section.sp-row
+  h2: Content strategy
+  article.sp-story
+    h3: Planning a topic cluster in an afternoon
+section.sp-row
+  h2: Technical SEO
+  article.sp-story
+    h3: Fixing slow pages, starting with the biggest win
+  article.sp-story
+    h3: What a sitemap does, and what it does not
+section.sp-row
+  h2: On-page SEO
+  article.sp-story
+    h3: How to write a title tag
+  article.sp-story
+    h3: Why internal links matter
+
+# why-internal-links-matter/index.html
+article.post.post-toc-folded
+  header.post-header.sp-band
+    h1: Why internal links matter
+  nav "Contents"
+  div.post-body: the text
+  footer.post-footer
+  section.author-box
+    h2: About the author
+section.mentions
+  h2: Posts that link here
+section.related
+  h2: Related posts
+  article.sp-story
+    h3: How to write a title tag
+  article.sp-story
+    h3: Planning a topic cluster in an afternoon
+  article.sp-story
+    h3: What a sitemap does, and what it does not
+
+# authors/asif/index.html
+article.author
+  header.author-header
+    h1: Asif
+section.author-posts
+  h2: Posts by Asif
+  article.sp-story
+    h3: Planning a topic cluster in an afternoon
+  article.sp-story
+    h3: How to write a title tag
+  article.sp-story
+    h3: Why internal links matter
+section.author-others
+  h2: Other authors
+  h3: Lena Vogt

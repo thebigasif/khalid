@@ -281,6 +281,7 @@ fn every_example_passes_lint_with_no_finding() {
             .unwrap_or_else(|| panic!("{slug}: {body}"))
             .iter()
             .filter(|finding| !DATED.contains(&finding["rule"].as_str().unwrap()))
+            .filter(|finding| finding["severity"] != "info")
             .collect();
         assert_eq!(findings, Vec::<&Value>::new(), "{slug}: {body}");
         assert_eq!(output.status.code(), Some(0), "{slug}");

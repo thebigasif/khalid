@@ -1,0 +1,3 @@
+# "how" is a question word and "to" a filler word: no topic at all.
+extends = "focus-clean"
+focus_keyword = "how to"

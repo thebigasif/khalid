@@ -137,7 +137,7 @@ pub struct Fonts {
     pub files: Vec<FontFile>,
 }
 
-/// One self-hosted font file, served under `assets/fonts/`.
+/// One self-hosted font file, served under `<mount>assets/fonts/`.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct FontFile {
@@ -354,6 +354,36 @@ impl Default for Colors {
     }
 }
 
+impl Fonts {
+    /// The self-hosted file that draws body text, which a page preloads:
+    /// the first family of the body stack, upright, at weight 400 or in a
+    /// range that holds 400, else that family's first upright file. `None`
+    /// when the body text is not set in a self-hosted family.
+    pub fn body_file(&self) -> Option<&FontFile> {
+        let stack = self.body.as_str();
+        let first = stack.split_once(',').map_or(stack, |(first, _)| first);
+        let family = first.trim().trim_matches(['"', '\'']);
+        let upright = || {
+            self.files
+                .iter()
+                .filter(move |file| file.family == family && file.style == "normal")
+        };
+        upright()
+            .find(|file| holds_regular(&file.weight))
+            .or_else(|| upright().next())
+    }
+}
+
+/// Whether a file's weight, such as `400` or `300 700`, draws weight 400.
+fn holds_regular(weight: &str) -> bool {
+    let mut numbers = weight.split_whitespace().map(str::parse::<u16>);
+    match (numbers.next(), numbers.next()) {
+        (Some(Ok(only)), None) => only == 400,
+        (Some(Ok(light)), Some(Ok(bold))) => (light..=bold).contains(&400),
+        _ => false,
+    }
+}
+
 impl Default for Fonts {
     fn default() -> Self {
         let sans =
@@ -392,11 +422,13 @@ fn merge(under: &mut toml::Table, over: toml::Table) {
 }
 
 /// The `@font-face` rule of one self-hosted file, served with a swap so the
-/// text shows in the fallback while the file arrives (G20).
+/// text shows in the fallback while the file arrives (G20). A browser reads
+/// the `url()` against the stylesheet's own address, `<mount>assets/`, so
+/// `fonts/<file>` is `<mount>assets/fonts/<file>` with any mount.
 fn font_face(file: &FontFile) -> String {
     let mut rule = format!(
         "@font-face {{ font-family: \"{}\"; font-style: {}; font-weight: {}; \
-     src: url(\"assets/fonts/{}\") format(\"woff2\"); font-display: swap;",
+     src: url(\"fonts/{}\") format(\"woff2\"); font-display: swap;",
         file.family, file.style, file.weight, file.path
     );
     if let Some(range) = &file.range {

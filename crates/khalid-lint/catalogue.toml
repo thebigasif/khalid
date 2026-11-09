@@ -103,6 +103,24 @@ why = "Links to good sources show readers and Google where your facts come from.
 fix = "Add a link to a trusted source that backs up a claim in the post."
 guide = "citing-sources"
 
+[all-outbound-nofollow]
+what = "Every link from this post to another website tells Google not to follow it."
+why = "A post that vouches for none of its sources looks less trustworthy to readers and Google."
+fix = "Remove `nofollow` from the links to sources you trust, and keep it only for paid or untrusted links."
+guide = "citing-sources"
+
+[no-image]
+what = "This post has no image."
+why = "A picture helps readers understand and share a post, and it can bring visitors from image search."
+fix = "Add an image to the text or set `image:` in the header, with a short description."
+guide = "image-descriptions"
+
+[pillar-min-words]
+what = "This pillar post, the main post of its topic group, is shorter than the minimum this site sets for pillar posts."
+why = "The main post should cover the whole topic, so readers and Google treat it as the best page on it."
+fix = "Add the parts of the topic the group's other posts cover, with a link to each of them."
+guide = "post-length"
+
 [no-description]
 what = "This post has no description."
 why = "Search results show a description under the title, so without one Google picks any sentence."
@@ -113,6 +131,12 @@ guide = "descriptions"
 what = "This post's title is longer than search results can show."
 why = "Google cuts long titles short, so readers may not see the end of yours."
 fix = "Shorten the title and keep the words that matter most at the start."
+guide = "post-titles"
+
+[title-too-wide]
+what = "The title search results show is wider than Google shows on a desktop result."
+why = "Google cuts a title at about 600 pixels, so readers may not see the end of yours."
+fix = "Shorten `seo_title:`, or `title:` when there is none, and keep the words that matter most at the start."
 guide = "post-titles"
 
 [long-description]
@@ -223,6 +247,18 @@ why = "Readers and Google trust recent information more, and old facts may now b
 fix = "Refresh this post: check its facts, update what changed and set `updated:` to today."
 guide = "refreshing-posts"
 
+[stale-pillar]
+what = "This pillar post, the main post of its topic group, has not been updated for longer than this site allows."
+why = "The main post should be the best and most current page on its topic, for readers and Google."
+fix = "Refresh this post: add what the group's newer posts cover and set `updated:` to today."
+guide = "refreshing-posts"
+
+[duplicate-focus-keyword]
+what = "An older post on your site already uses this focus keyword."
+why = "Two posts aimed at the same search compete, and Google may show neither of them well."
+fix = "Change `focus_keyword:` to a different angle, or merge this post into the older one and redirect it."
+guide = "focus-keyword"
+
 [updated-date-wrong]
 what = "This post's `updated:` date is before its publish date or still to come."
 why = "A date that cannot be true makes readers and search engines doubt the whole page."
@@ -290,15 +326,15 @@ fix = "Give this form an email address or a service such as Zapier to send its a
 guide = "forms"
 
 [answer-capsule]
-what = "A question-style heading is not followed by a standalone answer of 40 to 60 words."
+what = "The first paragraph under a question-style heading is not a standalone answer of 40 to 60 words."
 why = "Answer engines lift the first complete answer under a question, and readers scan for it too."
 fix = "Write the whole answer in one paragraph of 40 to 60 words directly under the heading, before any detail or hedging."
 guide = "answer-capsule"
 
 [long-paragraph]
-what = "A paragraph runs past 225 words, so it holds more than one idea."
+what = "A paragraph runs past the word limit, 150 words unless this site sets another, so it holds more than one idea."
 why = "Readers lose the thread in a wall of text, and the paragraph's main point is hard for you or an engine to name."
-fix = "Split it at each change of idea, into paragraphs of 75 to 225 words, one idea each."
+fix = "Split it at each change of idea, into shorter paragraphs of one idea each."
 guide = "plain-writing"
 
 [no-about-page]
@@ -332,9 +368,9 @@ fix = "Write the claim outright in the answer paragraph and drop the hedge."
 guide = "plain-writing"
 
 [sourced-statistics]
-what = "A number has no linked source and no year beside it."
-why = "A reader, and an engine citing your post, needs to know where a number comes from and whether it still holds."
-fix = "Link the number to its source, or write the year it held beside it, such as 47 percent (2024)."
+what = "A percentage, a sum of money, a figure in millions, a multiple or a study's result has no linked source and no year."
+why = "A reader, and an engine citing your post, needs to know where a statistic comes from and whether it still holds."
+fix = "Link the statistic to its source, or write the year it held beside it, such as 47 percent (2024)."
 guide = "sourced-statistics"
 
 [fact-old-value]
@@ -347,6 +383,83 @@ guide = "fact-registry"
 what = "This post is hard to read, because its sentences are long and many of its words are long."
 why = "Readers who struggle leave early, and Google favours pages that answer people quickly."
 fix = "Split long sentences, and use shorter everyday words where you can."
+guide = "readability"
+
+[long-sentences]
+what = "More than a quarter of this post's sentences run past 20 words."
+why = "Readers lose track of long sentences, most of all on a phone."
+fix = "Split the longest sentences in two, each with one idea."
+guide = "readability"
+
+[long-section]
+what = "A stretch of this post runs past 300 words without a subheading."
+why = "Readers scan subheadings to find their part, and a long stretch hides what it covers."
+fix = "Add a `##` subheading where the topic of this stretch changes."
+guide = "readability"
+
+[repeated-openers]
+what = "Three or more sentences in a row start with the same word."
+why = "Sentences that all start alike read as monotonous, and readers start to skim."
+fix = "Rewrite one or two of these sentences so they start with another word."
+guide = "readability"
+
+[complex-words]
+what = "More than one in ten words in this post are long words readers rarely meet."
+why = "Rare long words slow every reader down, and many readers skip what they cannot follow."
+fix = "Replace the long words you can with short everyday ones, such as \"use\" for \"utilise\"."
+guide = "readability"
+
+[non-inclusive-term]
+what = "This post uses a word that can leave out or hurt some readers."
+why = "Readers who feel left out stop reading, and many sites now use other words."
+fix = "Replace the word with one of the suggested words if it fits what you mean."
+guide = "inclusive-language"
+terms = [
+  { lang = "en", term = "blacklist", instead = "blocklist, deny list" },
+  { lang = "en", term = "whitelist", instead = "allowlist, allow list" },
+  { lang = "en", term = "master and slave", instead = "primary and replica" },
+  { lang = "en", term = "slave", instead = "replica, secondary" },
+  { lang = "en", term = "manpower", instead = "workforce, staff" },
+  { lang = "en", term = "mankind", instead = "humankind, people" },
+  { lang = "en", term = "man-made", instead = "artificial, synthetic" },
+  { lang = "en", term = "chairman", instead = "chair, chairperson" },
+  { lang = "en", term = "policeman", instead = "police officer" },
+  { lang = "en", term = "fireman", instead = "firefighter" },
+  { lang = "en", term = "salesman", instead = "salesperson" },
+  { lang = "en", term = "spokesman", instead = "spokesperson" },
+  { lang = "en", term = "hey guys", instead = "hello everyone, hi all" },
+  { lang = "en", term = "crazy", instead = "wild, surprising" },
+  { lang = "en", term = "insane", instead = "extreme, unbelievable" },
+  { lang = "en", term = "lame", instead = "dull, weak" },
+  { lang = "en", term = "sanity check", instead = "quick check, confidence check" },
+  { lang = "en", term = "grandfathered", instead = "exempt, kept from before" },
+  { lang = "en", term = "illegal immigrant", instead = "undocumented immigrant" },
+  { lang = "en", term = "the elderly", instead = "older people" },
+  { lang = "en", term = "handicapped", instead = "disabled, people with disabilities" },
+  { lang = "en", term = "wheelchair-bound", instead = "wheelchair user" },
+  { lang = "de", term = "Blacklist", instead = "Sperrliste" },
+  { lang = "de", term = "Whitelist", instead = "Positivliste, Freigabeliste" },
+  { lang = "de", term = "Behinderte", instead = "Menschen mit Behinderung" },
+  { lang = "de", term = "Asylant", instead = "Asylsuchende, Geflüchtete" },
+  { lang = "de", term = "Putzfrau", instead = "Reinigungskraft" },
+  { lang = "de", term = "Krankenschwester", instead = "Pflegefachkraft" },
+  { lang = "de", term = "Milchmädchenrechnung", instead = "Fehlkalkulation" },
+  { lang = "de", term = "Zigeuner", instead = "Sinti und Roma" },
+  { lang = "de", term = "Farbige", instead = "Schwarze Menschen, People of Color" },
+  { lang = "de", term = "geistig behindert", instead = "Menschen mit Lernschwierigkeiten" },
+  { lang = "de", term = "verrückt", instead = "überraschend, erstaunlich" },
+]
+
+[few-transitions]
+what = "Fewer than three in ten sentences use a linking word such as \"because\", \"so\" or \"for example\"."
+why = "Linking words show how one idea leads to the next, so readers follow the thread."
+fix = "Add linking words where one sentence explains, contrasts or follows from the one before."
+guide = "readability"
+
+[passive-voice]
+what = "More than one in ten sentences are in the passive voice, such as \"the post was written\"."
+why = "Passive sentences hide who does what, and they are longer and harder to read."
+fix = "Rewrite these sentences so the one who acts comes first, such as \"we wrote the post\"."
 guide = "readability"
 
 [no-focus-keyword]
@@ -409,11 +522,71 @@ why = "Google treats heavy repetition as spam and may show the post less."
 fix = "Replace some repeats of `focus_keyword:` with other words, such as a close phrase or a pronoun."
 guide = "keyword-density"
 
+[focus-too-long]
+what = "Your focus keyword holds more than four words that carry meaning."
+why = "Few people search for a long phrase in exactly that order, so the post is checked against a search almost nobody makes."
+fix = "Shorten `focus_keyword:` to the two to four words a reader would type, and move the rest to `secondary_keywords:`."
+guide = "focus-keyword"
+
+[focus-only-filler]
+what = "Your focus keyword holds only small words, such as \"how to\", that name no topic."
+why = "Khalid and Google cannot tell what the post is about from words that appear in every text."
+fix = "Add the words that name your topic to `focus_keyword:`, such as \"how to bake bread\"."
+guide = "focus-keyword"
+
+[focus-not-at-title-start]
+what = "Your focus keyword sits late in the title search results show."
+why = "Searchers scan the first words of each result, and a long title may be cut before the keyword."
+fix = "Move the words of `focus_keyword:` toward the start of `seo_title:`, or of `title:` when there is none."
+guide = "focus-keyword"
+
+[focus-distribution]
+what = "Your focus keyword appears in only a few parts of the text."
+why = "A post that names its topic only at the start or the end reads as being about it only in places."
+fix = "Use the words of `focus_keyword:` or a synonym in the parts of the text that lack it, where they fit."
+guide = "keyword-density"
+
+[focus-subheading-share]
+what = "Too few or too many of your subheadings hold your focus keyword."
+why = "Readers and Google use subheadings to see the topic, and the same words in all of them read as repetitive."
+fix = "Use the focus keyword or a synonym in about a third to three quarters of the subheadings."
+guide = "focus-keyword"
+
 [secondary-keyword-unused]
 what = "One of your secondary keywords never appears in the text."
 why = "A close phrase only helps the post when readers and Google can find it in the text."
 fix = "Use the words this message names at least once, or remove them from `secondary_keywords:`."
 guide = "focus-keyword"
+
+[secondary-not-in-title]
+what = "The title search results show does not hold this secondary keyword."
+why = "A close phrase in the title helps the post show up for that search too."
+fix = "Use the named words in `seo_title:` or `title:` if they fit, or leave the title as it is."
+guide = "focus-keyword"
+
+[secondary-not-in-first-paragraph]
+what = "The first paragraph does not hold this secondary keyword."
+why = "Readers who searched for the close phrase look for it in the opening lines."
+fix = "Use the named words in the first paragraph if they read naturally there."
+guide = "focus-keyword"
+
+[secondary-not-in-subheading]
+what = "None of the subheadings holds this secondary keyword."
+why = "A subheading with the close phrase shows readers where the post covers it."
+fix = "Rewrite one subheading so it holds the named words, if a section is about them."
+guide = "focus-keyword"
+
+[secondary-too-rare]
+what = "This secondary keyword appears only rarely in the text."
+why = "A close phrase used once in a long post says little about what the post covers."
+fix = "Use the named words a few more times where they fit, about once every 200 words."
+guide = "keyword-density"
+
+[secondary-too-often]
+what = "This secondary keyword appears so often that the text reads as if written for machines."
+why = "Google treats heavy repetition as spam, whichever phrase is repeated."
+fix = "Replace some repeats of the named words with other words or a pronoun."
+guide = "keyword-density"
 
 [overlapping-collections]
 what = "Two collections, the folders that group your posts, could give two posts the same address."

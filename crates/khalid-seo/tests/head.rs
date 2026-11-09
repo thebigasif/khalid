@@ -4,7 +4,7 @@ mod common;
 
 use common::{demo_site, internal_links_post, internal_links_post_de, locale, path, url};
 use khalid_core::{Following, Indexing, RobotsDirectives};
-use khalid_seo::{MetaTemplate, PageKind, SeoPage, UrlPath, head_tags};
+use khalid_seo::{FeedFormat, FeedScope, MetaTemplate, PageKind, SeoPage, UrlPath, head_tags};
 
 #[test]
 fn a_post_gets_title_description_canonical_and_robots() {
@@ -103,4 +103,30 @@ fn an_empty_title_leaves_no_dangling_separator() {
     post.title = String::new();
     let html = head_tags(&demo_site(), &post).unwrap().to_html();
     assert!(html.contains("<title>Field Notes on SEO</title>"), "{html}");
+}
+
+#[test]
+fn a_list_page_with_a_feed_links_each_format_that_is_on() {
+    let mut site = demo_site();
+    site.feeds.off = vec![FeedFormat::Json];
+    let archive = path("/category/on-page-seo/");
+    let mut category = SeoPage::new(PageKind::Category, locale("de"), archive.clone(), "SEO");
+    category.feed = Some(FeedScope::channel(locale("de"), "SEO", archive, Vec::new()));
+    let html = head_tags(&site, &category).unwrap().to_html();
+    let folder = "https://www.example.com/blog/de/category/on-page-seo/";
+    for (media, name) in [
+        ("application/rss+xml", "feed.xml"),
+        ("application/atom+xml", "atom.xml"),
+    ] {
+        let link = format!(r#"<link rel="alternate" type="{media}" href="{folder}{name}">"#);
+        assert!(html.contains(&link), "{html}");
+    }
+    assert!(!html.contains("feed+json"), "{html}");
+}
+
+#[test]
+fn a_list_page_without_a_feed_links_none() {
+    let tag = SeoPage::new(PageKind::Tag, locale("en"), path("/tag/links/"), "Links");
+    let html = head_tags(&demo_site(), &tag).unwrap().to_html();
+    assert!(!html.contains("rss+xml"), "{html}");
 }

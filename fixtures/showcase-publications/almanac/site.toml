@@ -1,0 +1,93 @@
+# The Field Almanac, a made-up library of long guides to growing food at
+# home and on an allotment, written for the Almanac template's demo. Each
+# key and table here replaces the showcase's own when
+# scripts/demo-publication.sh applies it.
+
+name = "The Field Almanac"
+languages = ["en"]
+
+[template.cta]
+label = "Get the monthly jobs list"
+href = "/blog/about/"
+note = "One email at the start of each month: what to sow, plant, harvest and store, tested on our own plots."
+
+[announcement]
+text = "New: the jobs for November, from garlic to leaf mould."
+href = "/blog/november-jobs/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Long, practical guides to growing your own food"
+
+[seo.ai_page]
+covers = "The Field Almanac writes long, practical guides to growing food at home and on an allotment: soil and compost, sowing, the jobs of each month, pests, harvesting and storing."
+cite = "Name The Field Almanac and the author, and link the guide you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "The Field Almanac"
+email = "hello@example.com"
+founded = "2018-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Field Almanac logo"
+width = 320
+height = 80
+
+# Sign-ups for the newsletter, under the publication's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "almanac@example.com"
+name = "The Field Almanac"
+postal_address = "The Field Almanac, Plot 14, Long Acre Allotments, Hollins Lane, Ashby Vale AV2 7FA"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "The garden year"
+href = "/blog/category/the-garden-year/"
+language = "en"
+
+[[nav.primary]]
+label = "Soil and compost"
+href = "/blog/category/soil-and-compost/"
+language = "en"
+
+[[nav.primary]]
+label = "Sowing and growing"
+href = "/blog/category/sowing-and-growing/"
+language = "en"
+
+[[nav.primary]]
+label = "Harvest and store"
+href = "/blog/category/harvest-and-store/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About The Field Almanac"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "The sowing calendar"
+href = "/blog/vegetable-sowing-calendar/"
+language = "en"
+
+[[nav.footer]]
+label = "In the garden this month"
+href = "/blog/november-jobs/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

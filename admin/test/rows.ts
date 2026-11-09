@@ -18,6 +18,9 @@ export function row(fields: Partial<PostRow> = {}): PostRow {
     updated_by: "Asif",
     gate: "passes",
     lint: { blocks: 0, warnings: 1 },
+    words: 640,
+    links: { inbound: 2, outbound: 3 },
+    has_focus_keyword: true,
     index_status: "indexable",
     ...fields,
   };

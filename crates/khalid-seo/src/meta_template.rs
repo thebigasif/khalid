@@ -1,9 +1,12 @@
 //! Title and description templates with variables, such as `{title} {sep} {site}`.
 
+use std::borrow::Cow;
 use std::fmt;
 use std::str::FromStr;
 
-use crate::{SeoError, SeoPage, SeoSite};
+use chrono::{DateTime, Utc};
+
+use crate::{PageKind, SeoError, SeoPage, SeoSite};
 
 /// A variable a template may use.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -15,10 +18,20 @@ pub(crate) enum Variable {
     Excerpt,
     Category,
     Author,
+    Date,
+    Modified,
+    Page,
+    Term,
+    TermDescription,
+    SearchPhrase,
+    CurrentYear,
+    CurrentMonth,
+    Tag,
+    FocusKeyword,
 }
 
 impl Variable {
-    const ALL: [Self; 7] = [
+    const ALL: [Self; 17] = [
         Self::Title,
         Self::Site,
         Self::Tagline,
@@ -26,6 +39,16 @@ impl Variable {
         Self::Excerpt,
         Self::Category,
         Self::Author,
+        Self::Date,
+        Self::Modified,
+        Self::Page,
+        Self::Term,
+        Self::TermDescription,
+        Self::SearchPhrase,
+        Self::CurrentYear,
+        Self::CurrentMonth,
+        Self::Tag,
+        Self::FocusKeyword,
     ];
 
     fn name(self) -> &'static str {
@@ -37,18 +60,53 @@ impl Variable {
             Self::Excerpt => "excerpt",
             Self::Category => "category",
             Self::Author => "author",
+            Self::Date => "date",
+            Self::Modified => "modified",
+            Self::Page => "page",
+            Self::Term => "term",
+            Self::TermDescription => "term_description",
+            Self::SearchPhrase => "searchphrase",
+            Self::CurrentYear => "currentyear",
+            Self::CurrentMonth => "currentmonth",
+            Self::Tag => "tag",
+            Self::FocusKeyword => "focuskw",
         }
     }
 
-    fn value<'a>(self, site: &'a SeoSite, page: &'a SeoPage) -> &'a str {
+    fn value<'a>(self, site: &'a SeoSite, page: &'a SeoPage) -> Cow<'a, str> {
+        let text = |value: Option<&'a String>| Cow::Borrowed(value.map_or("", String::as_str));
+        let words = site.words_for(&page.language);
+        let day = |time: Option<DateTime<Utc>>| {
+            time.map_or(Cow::Borrowed(""), |time| {
+                Cow::Owned(words.date(time.date_naive()))
+            })
+        };
         match self {
-            Self::Title => &page.title,
-            Self::Site => &site.name,
-            Self::Tagline => &site.tagline,
-            Self::Sep => &site.separator,
-            Self::Excerpt => &page.excerpt,
-            Self::Category => page.category.as_deref().unwrap_or_default(),
-            Self::Author => page.author.as_deref().unwrap_or_default(),
+            Self::Title => Cow::Borrowed(&page.title),
+            Self::Site => Cow::Borrowed(&site.name),
+            Self::Tagline => Cow::Borrowed(&site.tagline),
+            Self::Sep => Cow::Borrowed(&site.separator),
+            Self::Excerpt => Cow::Borrowed(&page.excerpt),
+            Self::Category => text(page.category.as_ref()),
+            Self::Author => text(page.author.as_ref()),
+            Self::Date => day(page.published),
+            Self::Modified => day(page.modified.or(page.published)),
+            Self::Page => (page.page_number)
+                .map_or(Cow::Borrowed(""), |number| Cow::Owned(words.page(number))),
+            Self::Term if matches!(page.kind, PageKind::Tag | PageKind::Category) => {
+                Cow::Borrowed(page.term.as_deref().unwrap_or(&page.title))
+            }
+            Self::Term => Cow::Borrowed(""),
+            Self::TermDescription => text(page.term_description.as_ref()),
+            Self::SearchPhrase => text(page.search_phrase.as_ref()),
+            Self::CurrentYear => site.today.map_or(Cow::Borrowed(""), |today| {
+                Cow::Owned(today.format("%Y").to_string())
+            }),
+            Self::CurrentMonth => (site.today).map_or(Cow::Borrowed(""), |today| {
+                Cow::Owned(words.month(today).to_owned())
+            }),
+            Self::Tag => text(page.tags.first()),
+            Self::FocusKeyword => text(page.focus_keyword.as_ref()),
         }
     }
 }
@@ -62,8 +120,14 @@ pub(crate) enum Piece {
 /// A title or description template: text with variables in braces.
 ///
 /// The variables are `{title}`, `{site}`, `{tagline}`, `{sep}`, `{excerpt}`,
-/// `{category}` and `{author}`. A variable with no value renders as nothing,
-/// and the result loses doubled spaces and any separator left at either end.
+/// `{category}`, `{author}`, `{date}` (published), `{modified}` (last real
+/// update, else published), `{page}` ("Page 2 of 5", empty on page 1),
+/// `{term}` (the tag or category an archive lists), `{term_description}`,
+/// `{searchphrase}`, `{currentyear}`, `{currentmonth}`, `{tag}` (the first
+/// tag) and `{focuskw}` (the focus keyword). Dates and the page line use
+/// the page language's [`TemplateWords`](crate::TemplateWords). A variable
+/// with no value renders as nothing, and the result loses doubled spaces
+/// and any separator left at either end.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MetaTemplate {
     pieces: Vec<Piece>,
@@ -136,7 +200,7 @@ impl MetaTemplate {
         for piece in &self.pieces {
             match piece {
                 Piece::Text(text) => raw.push_str(text),
-                Piece::Var(variable) => raw.push_str(variable.value(site, page)),
+                Piece::Var(variable) => raw.push_str(&variable.value(site, page)),
             }
         }
         let words: Vec<&str> = raw.split_whitespace().collect();

@@ -1,0 +1,59 @@
+# The sample brand for the Reel demo: Tenth Row, a made-up site of film
+# and TV reviews. A deep oxblood on warm programme paper, Oswald for
+# titles like a cinema poster and Spectral for the reviews. Only the
+# brand lives here: the template keeps its own shape, type sizes and
+# spacing.
+[colors]
+background = "#fcfaf6"
+surface = "#f3ece2"
+text = "#1a1617"
+muted = "#5a5052"
+link = "#8a1a2b"
+accent = "#8a1a2b"
+border = "#e2d7c9"
+
+[fonts]
+heading = "Oswald, \"Arial Narrow\", \"Roboto Condensed\", sans-serif"
+body = "Spectral, Charter, Georgia, serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Oswald"
+style = "normal"
+weight = "600"
+path = "oswald-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "131.78%"
+descent = "136.38%"
+line_gap = "0.00%"
+size_adjust = "53.69%"
+
+[[fonts.files]]
+family = "Spectral"
+style = "normal"
+weight = "400"
+path = "spectral-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "116.98%"
+descent = "218.48%"
+line_gap = "0.00%"
+size_adjust = "62.05%"
+
+[[fonts.files]]
+family = "Spectral"
+style = "italic"
+weight = "400"
+path = "spectral-latin-italic-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "116.98%"
+descent = "218.48%"
+line_gap = "0.00%"
+size_adjust = "59.20%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

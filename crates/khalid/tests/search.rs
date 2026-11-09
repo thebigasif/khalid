@@ -137,10 +137,23 @@ fn a_search_lists_ranked_marked_results_with_no_script_and_escapes_the_query() {
     let snippet = found["results"][0]["snippet"].as_array().unwrap();
     assert!(snippet.iter().any(|part| part["kind"] == "match"), "{json}");
 
-    let (status, _, body) = get(&server, "/blog/search/?q=%3Cb%3Eunicorn");
+    let (status, _, body) = get(&server, "/blog/search/?q=fish+%26+unicorn");
     assert_eq!(status, 200);
-    assert!(body.contains("Results for “&lt;b&gt;unicorn”"), "{body}");
+    assert!(body.contains("Results for “fish &amp; unicorn”"), "{body}");
     assert!(body.contains("Nothing matched."), "{body}");
+    // Markup, emoji and a query over 50 characters are refused with 400
+    // and the empty search page, the query not shown back.
+    let long = "links+".repeat(10);
+    for junk in ["%3Cb%3Eunicorn", "pizza+%F0%9F%8D%95", long.as_str()] {
+        let (status, _, body) = get(&server, &format!("/blog/search/?q={junk}"));
+        assert_eq!(status, 400, "{junk}: {body}");
+        assert!(body.contains(r#"<form class="search""#), "{body}");
+        assert!(!body.contains("search-results"), "{body}");
+    }
+    let (status, _, json) = get(&server, "/blog/search/?q=www.spam&typing=1");
+    assert_eq!(status, 400, "{json}");
+    let refused: Value = serde_json::from_str(&json).unwrap();
+    assert_eq!(refused["results"], serde_json::json!([]));
     let (status, _, body) = get(&server, "/blog/search/");
     assert_eq!(status, 200);
     assert!(body.contains(r#"<form class="search""#));

@@ -1,7 +1,8 @@
 import { type FormEvent, useState } from "react";
 import type { PostRow } from "../api/rows";
 import { en } from "../strings/en";
-import { type BulkAction, type BulkResult, changeAll } from "./bulk";
+import { type BulkAction, type BulkResult, changeAll, type Farewell, liveAddress } from "./bulk";
+import { FarewellChoice } from "./FarewellChoice";
 
 type Props = {
   /** The posts ticked in the table. */
@@ -16,12 +17,14 @@ export function BulkChange({ ticked, authors, onDone }: Props) {
   const words = en.bulk;
   const [kind, setKind] = useState<BulkAction["kind"]>(authors.length > 0 ? "author" : "trash");
   const [author, setAuthor] = useState(authors[0] ?? "");
+  const [farewell, setFarewell] = useState<Farewell>({ kind: "gone" });
   const [working, setWorking] = useState(false);
+  const live = ticked.filter((row) => liveAddress(row) !== null);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setWorking(true);
-    const action: BulkAction = kind === "trash" ? { kind } : { kind, author };
+    const action: BulkAction = kind === "trash" ? { kind, farewell } : { kind, author };
     const result = await changeAll(ticked, action);
     setWorking(false);
     onDone(result);
@@ -63,6 +66,9 @@ export function BulkChange({ ticked, authors, onDone }: Props) {
             ))}
           </select>
         </div>
+      ) : null}
+      {kind === "trash" && live.length > 0 ? (
+        <FarewellChoice leaving={live} farewell={farewell} onChange={setFarewell} />
       ) : null}
       <button type="submit" className="btn" disabled={working}>
         {working ? words.working : words.submit(ticked.length)}

@@ -47,6 +47,19 @@ impl EmbedProvider {
         }
     }
 
+    /// The provider's name as readers know it, such as `YouTube`.
+    #[must_use]
+    pub const fn name(self) -> &'static str {
+        match self {
+            Self::YouTube => "YouTube",
+            Self::Vimeo => "Vimeo",
+            Self::Spotify => "Spotify",
+            Self::SoundCloud => "SoundCloud",
+            Self::CodePen => "CodePen",
+            Self::Loom => "Loom",
+        }
+    }
+
     /// Whether the player is a short audio bar rather than a wide picture.
     pub(crate) const fn is_audio(self) -> bool {
         matches!(self, Self::Spotify | Self::SoundCloud)

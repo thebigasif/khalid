@@ -180,7 +180,8 @@ impl SiteCategories {
             .and_then(Item::as_array_of_tables_mut)
             .and_then(|tables| tables.get_mut(at))
             .ok_or(EntryError::NotFound)?;
-        table.retain(|key, _| key == "slug");
+        // A rename keeps the category page's own search settings.
+        table.retain(|key, _| key == "slug" || key == "seo");
         put_names(table, edit.names());
         self.write(&read.document)?;
         self.get_now(id)?.ok_or(EntryError::NotFound)

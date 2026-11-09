@@ -1,0 +1,92 @@
+# Meridian Atlas, a made-up travel magazine about cities, written for the
+# Atlas template's demo. Each key and table here replaces the showcase's
+# own when scripts/demo-publication.sh applies it.
+
+name = "Meridian Atlas"
+languages = ["en"]
+
+[template.cta]
+label = "Get the weekly route"
+href = "/blog/about/"
+note = "One tested city walk every Thursday, with the map, the cost and the best month to go."
+
+[announcement]
+text = "New: Chicago by L train, a day of neighbourhoods from the elevated tracks."
+href = "/blog/chicago-l-train-day/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "City travel, walked and costed by Meridian Atlas"
+
+[seo.ai_page]
+covers = "Meridian Atlas writes about city travel: walking routes, neighbourhoods, food markets, getting around by train and on foot, what a week costs and when to go."
+cite = "Name Meridian Atlas and the author, and link the post you quote."
+contact = "desk@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Meridian Atlas"
+email = "desk@example.com"
+founded = "2021-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Meridian Atlas logo"
+width = 320
+height = 80
+
+# Sign-ups for the newsletter, under the publication's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "route@example.com"
+name = "Meridian Atlas"
+postal_address = "Meridian Atlas, 12 Chart Row, Old Dock, Port Ellis PE3 4MA"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Southern Europe"
+href = "/blog/category/southern-europe/"
+language = "en"
+
+[[nav.primary]]
+label = "Northern Europe"
+href = "/blog/category/northern-europe/"
+language = "en"
+
+[[nav.primary]]
+label = "Asia"
+href = "/blog/category/asia/"
+language = "en"
+
+[[nav.primary]]
+label = "The Americas"
+href = "/blog/category/the-americas/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About Meridian Atlas"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Walking routes"
+href = "/blog/tag/walking/"
+language = "en"
+
+[[nav.footer]]
+label = "What a week costs"
+href = "/blog/tag/budget/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

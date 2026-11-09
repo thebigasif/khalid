@@ -1,20 +1,31 @@
 /* Compass (templates spec 3.4): a teaching blog. Its one idea is the
-   trail: where a guide sits (breadcrumbs), where it goes (numbered
-   contents) and how far along a step is (numbered, joined steps), drawn
-   over a faint map grid in the site's accent. Lines are hairlines and
-   boxes are tints. Every colour is a token or a tint of one. */
+   trail: the front page opens on a map of the blog with every topic as a
+   numbered stop, a guide shows where it sits (breadcrumbs), where it goes
+   (numbered contents) and how far along it you are (each main heading a
+   numbered stop on a dashed trail down the margin, its steps smaller
+   stops), all over a faint map grid in the site's accent. Headings are
+   heavy and large, lines are hairlines and boxes are tints. Every colour
+   is a token or a tint of one. */
 
 :root {
   --compass-tint: color-mix(in oklab, var(--color-accent) 7%, var(--color-background));
   --compass-line: color-mix(in oklab, var(--color-border) 70%, var(--color-background));
-  --compass-grid: color-mix(in oklab, var(--color-accent) 11%, transparent);
-  --compass-wide: 74rem;
+  --compass-grid: color-mix(in oklab, var(--color-accent) 12%, transparent);
+  --compass-wide: 80rem;
   --compass-pill: 999px;
+  --compass-trail: color-mix(in oklab, var(--color-accent) 55%, var(--color-background));
+  --compass-dash-x: repeating-linear-gradient(to right, currentcolor 0 0.375rem, transparent 0 0.6875rem);
+  --compass-dash-y: repeating-linear-gradient(currentcolor 0 0.375rem, transparent 0 0.6875rem);
+  --compass-flag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cpath d='M15 28V3' stroke='black' stroke-width='2'/%3E%3Cpath d='M16 3h10l-3 4.5 3 4.5H16z'/%3E%3Ccircle cx='15' cy='26' r='2'/%3E%3C/svg%3E");
+  --compass-map: linear-gradient(var(--compass-grid) 1px, transparent 1px) 0 0 / 2rem 2rem, linear-gradient(90deg, var(--compass-grid) 1px, transparent 1px) 0 0 / 2rem 2rem;
 }
+/* The map bands run to the window's edges; nothing may scroll sideways. */
+body { overflow-x: clip; }
 .site-header, main, .site-footer { max-inline-size: var(--compass-wide); }
+@media (min-width: 110rem) { :root { --compass-wide: 88rem; } }
 
 /* Shared drawings, used as masks so they take the colour of the text. */
-.breadcrumbs li + li::before, .toc-box .toc-title::before, .callout-tip::before, .callout-note::before, .callout-warning::before, .callout-read::before, .mentions a::before, .pullquote::before, .site-name:not(.site-logo)::before, .site-footer::before, .search-link::before {
+.toc-box .toc-title::before, .callout-tip::before, .callout-note::before, .callout-warning::before, .callout-read::before, .mentions a::before, .pullquote::before, .site-name:not(.site-logo)::before, .site-footer::before, .search-link::before {
   content: "" / "";
   display: inline-block;
   flex: none;
@@ -22,13 +33,12 @@
   mask: var(--compass-mark) no-repeat center / contain;
 }
 .site-name:not(.site-logo)::before, .toc-box .toc-title::before, .site-footer::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M15.5 8.5l-2 5-5 2 2-5z' fill='black'/%3E%3C/svg%3E"); }
-.breadcrumbs li + li::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6 3.5l4.5 4.5L6 12.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 .callout-read::before, .mentions a::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 10h13M11 5l5 5-5 5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 .callout-tip::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 2.2a5.8 5.8 0 0 0-3.4 10.5V15h6.8v-2.3A5.8 5.8 0 0 0 10 2.2zM7.4 17.8h5.2' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 .callout-note::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='8' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M10 9v5' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3Ccircle cx='10' cy='6.2' r='1.1' fill='black'/%3E%3C/svg%3E"); }
 .callout-warning::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 2.5l8.2 14.5H1.8z' fill='none' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M10 8v4.2' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3Ccircle cx='10' cy='14.6' r='1.1' fill='black'/%3E%3C/svg%3E"); }
 .pullquote::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'%3E%3Cpath d='M0 24V14C0 6 4 1.5 12 0l1.5 3.5C9 5 7 8 7 11h6v13zm18 0V14c0-8 4-12.5 12-14l1.5 3.5C27 5 25 8 25 11h6v13z' fill='black'/%3E%3C/svg%3E"); }
-[dir="rtl"] :is(.breadcrumbs li + li, .callout-read, .mentions a)::before { transform: scaleX(-1); }
+[dir="rtl"] :is(.callout-read, .mentions a)::before { transform: scaleX(-1); }
 
 /* The announcement and the header: one quiet row each, hairlines that run
    to the edges of the window, the call to action as the one solid button. */
@@ -46,17 +56,23 @@
 .search-link:hover { color: var(--color-link); }
 .search-link::before { --compass-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='8.5' cy='8.5' r='5.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3Cpath d='M12.6 12.6l4.4 4.4' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); inline-size: 1.125rem; block-size: 1.125rem; }
 .site-header nav + .search-link { margin-inline-start: -0.5rem; }
-.button, .subscribe button { justify-content: center; padding-block: 0.625rem; color: var(--color-on-accent); border-radius: var(--compass-pill); line-height: 1.3; text-align: center; }
-.button:hover, .subscribe button:hover { background: color-mix(in oklab, var(--color-accent) 85%, var(--color-text)); }
+.button, .subscribe button, .comment-form button { justify-content: center; padding-block: 0.625rem; color: var(--color-on-accent); border-radius: var(--compass-pill); line-height: 1.3; text-align: center; }
+.button:hover, .subscribe button:hover, .comment-form button:hover { background: color-mix(in oklab, var(--color-accent) 85%, var(--color-text)); }
 .header-button { min-block-size: 2.75rem; padding-inline: 1.125rem; font-size: 0.9375rem; line-height: 1.25; }
+/* On a narrow screen the header stays one short row: the logo at the
+   start, the menu beside it scrolling sideways and fading at its edge. */
 @media (max-width: 55.99rem) {
-  .site-header { flex-wrap: wrap; }
-  .site-header nav { flex-basis: 100%; order: 3; margin: -0.25rem 0 -0.5rem; }
-  .site-header nav ul { gap: 0 1.125rem; }
-  .site-header .search-link { margin-inline-start: auto; }
+  .site-header { padding-block: 0.5rem; }
+  .site-header nav { flex: 1 1 auto; min-inline-size: 0; margin-inline-start: 0.5rem; }
+  .site-header nav ul { display: flex; flex-wrap: nowrap; gap: 0 1.25rem; overflow-x: auto; scrollbar-width: none; padding-inline-end: 2rem; mask: linear-gradient(to left, transparent 0.375rem, currentColor 2rem); }
+  [dir="rtl"] .site-header nav ul { mask: linear-gradient(to right, transparent 0.375rem, currentColor 2rem); }
+  .site-header nav a { display: flex; align-items: center; min-block-size: 2.75rem; white-space: nowrap; }
+  .site-header nav a[aria-current] { box-shadow: inset 0 -2px 0 var(--color-accent); }
+  .site-header nav + .search-link { margin-inline-start: 0; }
 }
 /* On a phone the call to action waits for its band on the page, so the
-   header stays one short block. */
+   header stays one short row. */
+.site-name { flex: none; }
 @media (max-width: 39.99rem) { .header-button { display: none; } }
 
 /* The footer: one section gap below the last thing on the page, then a
@@ -81,29 +97,43 @@ main > :last-child { margin-block-end: 0; }
 .breadcrumbs { margin-block: 1.5rem 0; }
 .breadcrumbs ol { flex-wrap: nowrap; align-items: center; gap: 0 0.375rem; min-inline-size: 0; }
 .breadcrumbs li { min-inline-size: 0; display: flex; align-items: center; }
-.breadcrumbs li + li::before { inline-size: 0.875rem; block-size: 0.875rem; margin-inline-end: 0.375rem; color: var(--color-muted); }
 .breadcrumbs a { text-decoration: none; white-space: nowrap; }
 .breadcrumbs a:hover { color: var(--color-link); text-decoration: underline; }
 .breadcrumbs li:last-child { flex: 1; }
 .breadcrumbs li:last-child a { display: block; overflow: hidden; line-height: 44px; text-overflow: ellipsis; color: var(--color-muted); font-weight: 400; }
 @media (max-width: 39.99rem) { .breadcrumbs li:last-child:not(:first-child) { display: none; } }
 
-/* The top of a guide: title, one quiet line of who and when, the picture. */
-.post-header { margin-block-end: 2.5rem; }
-.post-header h1, .page h1 { margin-block: 1rem 1.25rem; font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; }
-.post-header .dek { margin-block: -0.25rem 1.5rem; font-size: 1.25rem; }
-/* Each item has a dot in the gap before it; the row starts one gap early
-   and clips that strip, so a wrapped line never opens with a dot. */
-.post-meta { display: flex; flex-wrap: wrap; align-items: baseline; row-gap: 0.25rem; margin-inline-start: -1.5rem; clip-path: inset(0 0 0 1.5rem); font-size: 0.9375rem; }
-[dir="rtl"] .post-meta { clip-path: inset(0 1.5rem 0 0); }
-.post-meta > :is(p, address) { position: relative; margin: 0; margin-inline-start: 1.5rem; }
-.post-meta > *::before { content: "" / ""; position: absolute; inset-inline-start: -0.875rem; inset-block-start: calc(0.85em - 0.125rem); inline-size: 0.25rem; block-size: 0.25rem; background: var(--color-border); border-radius: 50%; }
+/* The top of a guide: the trail, a large title and one quiet line of who
+   and when, centred on a tinted band that runs to the window's edges and
+   stops halfway down the picture. */
+main:has(> .post) > .breadcrumbs, .post .post-header { border-image: linear-gradient(var(--compass-tint) 0 0) fill 0 / 0 / 0 100vmax; }
+.post .post-header:has(.image) { border-image-source: linear-gradient(var(--compass-tint) calc(100% - clamp(5rem, 16vw, 11rem)), transparent 0); }
+main:has(> :is(.post, .masthead, h1:first-child, .breadcrumbs + h1)) { padding-block-start: 0; }
+main:has(> .post) > .breadcrumbs { margin-block: 0; padding-block-start: clamp(1rem, 3vw, 2.5rem); }
+main:has(> .post) > .breadcrumbs ol { justify-content: center; }
+main:has(> .post) > .breadcrumbs li:last-child { flex: 0 1 auto; }
+.post-header { display: flow-root; margin-block-end: 3rem; padding-block-end: 2.5rem; text-align: center; }
+.post-header:has(.image) { padding-block-end: 0; }
+.post-header h1, .page h1 { margin-block: 0.75rem 1.25rem; font-weight: 800; line-height: 1.04; letter-spacing: -0.04em; text-wrap: balance; }
+@media (min-width: 48rem) { .post-header h1 { font-size: calc(var(--text-h1) * 1.125); } }
+.post-header .dek { max-inline-size: 40rem; margin: -0.25rem auto 1.5rem; color: var(--color-muted); font-size: clamp(1.1875rem, 1rem + 0.6vw, 1.4375rem); line-height: 1.5; text-wrap: balance; }
+.post-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0.25rem 1.75rem; font-size: 0.9375rem; }
+.post-meta > :is(p, address) { margin: 0; }
 .post-meta a { color: var(--color-text); font-weight: 600; text-decoration: none; }
 .post-meta a:hover { color: var(--color-link); text-decoration: underline; }
 .post-meta .people { margin: 0; }
-.post-header .image { margin-block: 2rem 0; }
+.post-header .image { margin-block: 2.5rem 0; }
 .post-header .image img, .card .image img { aspect-ratio: 16 / 9; object-fit: cover; background: var(--compass-tint); border: 1px solid var(--compass-line); border-radius: var(--radius); }
-@media (min-width: 64rem) { .post:not(.post-with-toc) .post-header .image { margin-inline: -3rem; } }
+.post-header .image img { border-radius: calc(var(--radius) * 1.5); }
+/* From 64rem the words grow and the column widens with them, so a wide
+   window still reads at 60 to 75 characters a line, and the header band
+   and the lead picture take more of the frame. */
+@media (min-width: 64rem) {
+  main:has(> .post) { --measure: 39rem; }
+  .post-body { font-size: 1.25rem; line-height: 1.65; }
+  .post:not(.post-with-toc) .post-header { margin-inline: -10rem; }
+}
+@media (min-width: 110rem) { .post:not(.post-with-toc) .post-header { margin-inline: -13rem; } }
 
 /* The contents: a numbered route, two columns when there is room. */
 .toc-box { margin-block: 0 2.5rem; padding: 1.5rem 1.75rem 1.25rem; background: var(--color-surface); border: 0; border-radius: var(--radius); }
@@ -116,7 +146,8 @@ main > :last-child { margin-block-end: 0; }
 .toc-box > ol > li > a { gap: 0.75rem; align-items: baseline; padding-block: 0.625rem; color: var(--color-text); font-size: 0.9375rem; font-weight: 500; line-height: 1.4; text-decoration: none; }
 .toc-box ol ol { padding-inline-start: 2.25rem; }
 .toc-box ol ol a { color: var(--color-muted); font-size: 0.875rem; }
-.toc-box > ol:not([class]) > li > a::before { content: counter(compass-route, decimal-leading-zero); flex: none; min-inline-size: 1.5rem; color: var(--color-link); font-size: 0.8125rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.toc-box > ol:not([class]) > li > a::before { content: counter(compass-route, decimal-leading-zero); display: grid; place-items: center; flex: none; inline-size: 2rem; block-size: 2rem; color: var(--color-link); background: var(--color-background); border-radius: 50%; font-size: 0.8125rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.toc-box > ol > li > a { align-items: center; }
 .toc-box a:hover { color: var(--color-link); text-decoration: underline; }
 @media (min-width: 48rem) { .toc-box > ol { columns: 2; column-gap: 2.5rem; } }
 /* The guide's own contents block repeats the box above it, so it shows
@@ -126,6 +157,23 @@ main > :last-child { margin-block-end: 0; }
 
 /* The words: a calm column with room above each heading. */
 .post-body > h2 { margin-block: 3.5rem 1rem; letter-spacing: -0.015em; }
+
+/* The guide as a trail: each main heading is a numbered stop, the same
+   number its line in the contents shows. On a phone the stop sits at the
+   start of the heading; on a wide screen it moves into the margin, and a
+   dashed trail runs from the first stop down to a flag at the guide's end. */
+@property --compass-line-height { syntax: "<length>"; inherits: true; initial-value: 40px; }
+.post-body { counter-reset: compass-leg; }
+.post-body > h2 { --compass-line-height: 1lh; position: relative; padding-inline-start: 2.875rem; counter-increment: compass-leg; }
+.post-body > h2::before { content: counter(compass-leg, decimal-leading-zero) / ""; position: absolute; z-index: 1; inset-inline-start: 0; inset-block-start: calc(var(--compass-line-height) / 2 - 1rem); display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 50%; font-size: 0.8125rem; font-weight: 800; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+@media (min-width: 64rem) {
+  .post:not(.post-with-toc) .post-body { position: relative; }
+  .post:not(.post-with-toc) .post-body > h2 { padding-inline-start: 0; }
+  .post:not(.post-with-toc) .post-body > h2::before { inset-inline-start: -5.25rem; inset-block-start: calc(var(--compass-line-height) / 2 - 1.5rem); inline-size: 3rem; block-size: 3rem; font-size: 1rem; box-shadow: 0 0 0 0.5rem var(--color-background); }
+  .post-body > h2:first-of-type { anchor-name: --compass-first-stop; }
+  .post:not(.post-with-toc) .post-body:has(> h2)::after { content: "" / ""; position: absolute; inset-inline-start: -4.6875rem; inset-block: 0 0; inset-block-start: anchor(--compass-first-stop top); inline-size: 1.75rem; background: linear-gradient(var(--compass-trail) 0 0) 0 0 / 100% calc(100% - 1.75rem) no-repeat, var(--color-accent); mask: var(--compass-dash-y) calc(0.9375rem - 1px) 0 / 2px calc(100% - 1.5rem) no-repeat, var(--compass-flag) 0 100% / 1.75rem 1.75rem no-repeat; }
+  [dir="rtl"] .post:not(.post-with-toc) .post-body:has(> h2)::after { scale: -1 1; }
+}
 .post-body > h3 { margin-block: 2.25rem 0.75rem; }
 .post-body a:not(.heading-link, .button) { text-decoration-color: color-mix(in oklab, var(--color-link) 40%, transparent); }
 .post-body a:not(.heading-link, .button):hover { text-decoration-color: currentColor; }
@@ -170,11 +218,11 @@ main > :last-child { margin-block-end: 0; }
 .post-body figure:not(.pullquote) figcaption { margin: 0; padding: 0.75rem 0.5rem 0.25rem; line-height: 1.5; }
 .post-body figcaption p { margin: 0; }
 
-/* Steps: numbered stops joined by a line, the route through the task. */
+/* Steps: smaller open stops on their own dashed trail inside a stop. */
 .post-body .howto { counter-reset: compass-step; margin-block: 2rem; padding: 0; list-style: none; }
 .howto > li { counter-increment: compass-step; position: relative; margin: 0; padding-inline-start: 3.25rem; padding-block-end: 1.75rem; }
-.howto > li::before { content: counter(compass-step); position: absolute; inset-inline-start: 0; inset-block-start: 0; display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 50%; font-weight: 700; font-variant-numeric: tabular-nums; }
-.howto > li:not(:last-child)::after { content: ""; position: absolute; inset-inline-start: calc(1.125rem - 1px); inset-block: 2.75rem 0.5rem; inline-size: 2px; background: color-mix(in oklab, var(--color-accent) 25%, var(--color-background)); border-radius: 2px; }
+.howto > li::before { content: counter(compass-step); position: absolute; inset-inline-start: 0; inset-block-start: 0; display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; color: var(--color-link); background: var(--color-background); border: 2px solid var(--color-accent); border-radius: 50%; font-family: var(--font-heading); font-weight: 800; font-variant-numeric: tabular-nums; }
+.howto > li:not(:last-child)::after { content: "" / ""; position: absolute; inset-inline-start: calc(1.125rem - 1px); inset-block: 2.75rem 0.5rem; inline-size: 2px; background: var(--compass-trail); border-radius: 0; mask: var(--compass-dash-y); }
 .howto > li > :last-child { margin-block-end: 0; }
 .howto-step { margin-block: 0.2rem 0.375rem; font-family: var(--font-heading); font-size: 1.1875rem; line-height: 1.35; }
 
@@ -249,42 +297,100 @@ main > .mentions { margin-block: var(--space-section) 0; }
 .mentions a::before { inline-size: 1rem; block-size: 1rem; color: var(--color-accent); }
 .mentions a:hover { color: var(--color-link); }
 
-/* Lists: the title on a panel drawn as a map, the newest post as the
-   lead, then three across. */
-main > h1:first-child, main > .breadcrumbs + h1 { position: relative; isolation: isolate; overflow: hidden; margin-block: 2rem 0; padding: clamp(2rem, 6vw, 4rem) clamp(1.25rem, 4vw, 3rem); background: var(--color-surface); border-radius: calc(var(--radius) * 1.5); font-size: calc(var(--text-h1) * 1.1); font-weight: 800; letter-spacing: -0.03em; }
-main > .breadcrumbs + h1 { margin-block-start: 0.5rem; }
-main > h1:first-child::before, main > .breadcrumbs + h1::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(var(--compass-grid) 1px, transparent 1px) 0 0 / 2rem 2rem, linear-gradient(90deg, var(--compass-grid) 1px, transparent 1px) 0 0 / 2rem 2rem; mask: linear-gradient(to left, currentColor, transparent 70%); }
-[dir="rtl"] :is(main > h1:first-child, main > .breadcrumbs + h1)::before { mask: linear-gradient(to right, currentColor, transparent 70%); }
-@media (min-width: 40rem) {
-  main > h1:first-child, main > .breadcrumbs + h1 { padding-inline-end: clamp(9rem, 22vw, 16rem); }
-  main > h1:first-child::after, main > .breadcrumbs + h1::after { content: "" / ""; position: absolute; inset-inline-end: clamp(1.5rem, 5vw, 4rem); inset-block-start: 50%; inline-size: clamp(6rem, 14vw, 10rem); aspect-ratio: 1; translate: 0 -50%; background: color-mix(in oklab, var(--color-accent) 55%, var(--color-background)); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='none' stroke='black' stroke-width='2'/%3E%3Ccircle cx='50' cy='50' r='37' fill='none' stroke='black' stroke-width='1' stroke-dasharray='2 4'/%3E%3Cpath d='M50 1v9M50 90v9M1 50h9M90 50h9' stroke='black' stroke-width='2'/%3E%3Cpath d='M50 16l7 34H43z' fill='black'/%3E%3Cpath d='M43 50h14l-7 34z' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='3.5' fill='black'/%3E%3C/svg%3E") no-repeat center / contain; }
+/* The map: the front page's masthead and a list's title sit on a tinted
+   band that runs to the window's edges, its grid showing towards the
+   end, with the drawn compass there on a wide screen. */
+.masthead, main > h1:first-child, main > .breadcrumbs + h1 { position: relative; isolation: isolate; }
+.masthead::before, main > h1:first-child::before, main > .breadcrumbs + h1::before { content: ""; position: absolute; z-index: -1; inset-block: 0; inset-inline: calc(50% - 50vw); background: linear-gradient(to right, var(--compass-tint) 25%, transparent 80%), var(--compass-map), var(--compass-tint); }
+[dir="rtl"] :is(.masthead, main > h1:first-child, main > .breadcrumbs + h1)::before { background: linear-gradient(to left, var(--compass-tint) 25%, transparent 80%), var(--compass-map), var(--compass-tint); }
+main > .breadcrumbs:has(+ h1) { margin-block: 0; padding-block-start: 1.5rem; border-image: linear-gradient(var(--compass-tint) 0 0) fill 0 / 0 / 0 100vmax; }
+.masthead::after, main > h1:first-child::after, main > .breadcrumbs + h1::after { content: "" / ""; position: absolute; inset-inline-end: 0; inset-block-start: 50%; inline-size: clamp(9rem, 20vw, 21rem); aspect-ratio: 1; translate: 0 -50%; background: color-mix(in oklab, var(--color-accent) 60%, var(--color-background)); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='none' stroke='black' stroke-width='1.5'/%3E%3Ccircle cx='50' cy='50' r='38' fill='none' stroke='black' stroke-width='0.8' stroke-dasharray='1.5 3.5'/%3E%3Cpath d='M50 1v10M50 89v10M1 50h10M89 50h10' stroke='black' stroke-width='1.5'/%3E%3Cpath d='M50 14l7.5 36h-15z' fill='black'/%3E%3Cpath d='M42.5 50h15L50 86z' fill='none' stroke='black' stroke-width='1.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='3' fill='black'/%3E%3C/svg%3E") no-repeat center / contain; }
+:is(main > h1:first-child, main > .breadcrumbs + h1)::after { inline-size: clamp(7rem, 13vw, 12rem); }
+@media (max-width: 47.99rem) { .masthead::after, main > h1:first-child::after, main > .breadcrumbs + h1::after { content: none; } }
+
+/* The front page's masthead: a title that owns the top of the screen, the
+   intro, then every topic as a numbered stop on one dashed trail. */
+.masthead { margin-block-end: clamp(1rem, 3vw, 2rem); padding-block: clamp(3rem, 9vw, 7.5rem) clamp(2.5rem, 4vw, 3.5rem); }
+@media (min-width: 48rem) { .masthead { padding-inline-end: clamp(11rem, 24vw, 24rem); } }
+.masthead h1 { margin: 0; max-inline-size: 15ch; font-size: clamp(2.5rem, 1.25rem + 4.8vw, 6.75rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.045em; text-wrap: balance; }
+.masthead .intro { max-inline-size: 36rem; margin-block: 1.5rem 0; font-size: clamp(1.1875rem, 1rem + 0.6vw, 1.4375rem); line-height: 1.5; }
+.masthead .intro > :last-child { margin-block-end: 0; }
+.masthead .hero-stats { margin-block: 2rem 0; }
+.route { margin-block-start: clamp(2rem, 5vw, 3.5rem); }
+.route h2 { margin-block: 0 0.875rem; color: var(--color-muted); font-family: var(--font-body); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+/* The stops sit on one dashed line that stretches to fill the row and
+   ends at a drawn flag: the place the topics lead to. */
+.route ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 0; margin: 0; padding: 0; list-style: none; counter-reset: compass-stop; }
+.route li { display: flex; flex: 1 1 auto; align-items: center; counter-increment: compass-stop; }
+.route li:first-child { flex-grow: 0; }
+.route li + li::before, .route ol::after { content: "" / ""; flex: 1 1 1.25rem; min-inline-size: 1.25rem; max-inline-size: 7rem; block-size: 2px; background: var(--compass-trail); border: 0; mask: var(--compass-dash-x); }
+.route ol::after { flex: none; inline-size: 3.25rem; block-size: 3.5rem; min-inline-size: 0; background: linear-gradient(var(--compass-trail) 0 0) 0 0 / calc(100% - 0.875rem) 100% no-repeat, var(--color-accent); mask: var(--compass-dash-x) 0 calc(50% + 1px) / calc(100% - 0.8125rem) 2px no-repeat, var(--compass-flag) 100% 0 / 1.75rem 1.75rem no-repeat; }
+[dir="rtl"] .route ol::after { scale: -1 1; }
+.route a { display: inline-flex; align-items: center; gap: 0.625rem; min-block-size: 2.75rem; padding: 0.3125rem 1.125rem 0.3125rem 0.3125rem; color: var(--color-text); background: var(--color-background); border: 1px solid var(--compass-line); border-radius: var(--compass-pill); font-weight: 600; line-height: 1.2; text-decoration: none; white-space: nowrap; }
+[dir="rtl"] .route a { padding: 0.3125rem 0.3125rem 0.3125rem 1.125rem; }
+.route a::before { content: counter(compass-stop, decimal-leading-zero) / ""; display: grid; place-items: center; flex: none; inline-size: 2rem; block-size: 2rem; color: var(--color-on-accent); background: var(--color-accent); border-radius: 50%; font-family: var(--font-heading); font-size: 0.8125rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.route a:hover { color: var(--color-link); border-color: var(--color-accent); }
+/* On a laptop the drawn compass narrows, so five topics still fit on
+   one row of the trail. */
+@media (min-width: 64rem) and (max-width: 99.99rem) {
+  .masthead { padding-inline-end: clamp(11rem, 14vw, 14rem); }
+  .masthead::after { inline-size: clamp(9rem, 12.5vw, 12.5rem); }
+  .route a { gap: 0.5rem; }
 }
-main > h1 + .intro { max-inline-size: var(--measure); margin-block: 1.5rem 0; font-size: 1.1875rem; }
+/* On a wide screen the stops grow, so the trail fills the band's foot. */
+@media (min-width: 100rem) {
+  .route h2 { font-size: 0.875rem; }
+  .route a { min-block-size: 3.25rem; padding: 0.375rem 1.25rem 0.375rem 0.375rem; font-size: 1.0625rem; }
+  [dir="rtl"] .route a { padding: 0.375rem 0.375rem 0.375rem 1.25rem; }
+  .route a::before { inline-size: 2.5rem; block-size: 2.5rem; font-size: 0.875rem; }
+}
+/* On a phone the trail runs down the screen, one stop under another. */
+@media (max-width: 39.99rem) {
+  .route ol { flex-direction: column; align-items: stretch; gap: 0; }
+  .route li { flex-direction: column; align-items: start; }
+  .route li + li::before, .route ol::after { flex: none; inline-size: 2px; min-inline-size: 0; block-size: 1rem; margin-inline-start: calc(1.3125rem - 1px); mask: var(--compass-dash-y); }
+  .route ol::after { inline-size: 1.75rem; block-size: 3rem; margin-inline-start: 0.375rem; background: linear-gradient(var(--compass-trail) 0 0) 0 0 / 100% calc(100% - 1.75rem) no-repeat, var(--color-accent); mask: var(--compass-dash-y) calc(0.9375rem - 1px) 0 / 2px calc(100% - 1.5rem) no-repeat, var(--compass-flag) 0 100% / 1.75rem 1.75rem no-repeat; }
+}
+
+/* A list's title on the same map. */
+main > h1:first-child, main > .breadcrumbs + h1 { margin-block: 0; padding-block: clamp(2.5rem, 7vw, 5.5rem); font-size: clamp(2.75rem, 1.25rem + 4vw, 4.75rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; text-wrap: balance; }
+main > .breadcrumbs + h1 { padding-block-start: clamp(1.5rem, 4vw, 3rem); }
+@media (min-width: 48rem) { main > h1:first-child, main > .breadcrumbs + h1 { padding-inline-end: clamp(11rem, 24vw, 24rem); } }
+main > h1 + .intro { max-inline-size: var(--measure); margin-block: 2rem 0; font-size: 1.1875rem; }
 main > h1 + :is(p, ul, ol, div:not(.intro), nav, form) { margin-block-start: 2rem; }
 .jump-links { margin-block: 2rem 0; padding-block: 0.25rem; border-block: 1px solid var(--compass-line); }
 .jump-links ul { gap: 0 2rem; }
 .jump-links a { color: var(--color-text); font-weight: 600; text-decoration: none; }
 .jump-links a:hover { color: var(--color-link); }
 .home-section { margin-block: 3.5rem var(--space-section); scroll-margin-block-start: var(--space); }
-.home-section > h2 { display: flex; align-items: center; gap: 1.25rem; margin-block: 0 2rem; font-size: var(--text-h3); }
-.home-section > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--compass-line); }
+.home-section > h2, .topic-tabs > h2, .media-row > h2, main > section > h2 { display: flex; align-items: center; gap: 1.25rem; margin-block: 0 2rem; font-size: var(--text-h2); font-weight: 800; letter-spacing: -0.025em; }
+:is(.home-section, .topic-tabs, .media-row) > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--compass-line); }
 .view-all a { font-weight: 600; }
-main > h1 ~ .cards { margin-block-start: 3rem; }
+main > h1 ~ .cards { margin-block-start: 3.5rem; }
+
+/* Topic tabs: rounded pills that wrap onto two rows at most. */
+.topic-tab-list { flex-wrap: wrap; gap: 0.5rem; overflow-x: visible; padding: 0; border: 0; }
+.topic-tab-list a { padding-inline: 1.125rem; color: var(--color-text); border: 1px solid var(--compass-line); border-radius: var(--compass-pill); font-weight: 600; }
+.topic-tab-list a:hover { border-color: var(--color-accent); }
+.topic-tabs:not(:has(.topic-panel:target)) .topic-tab-list li:first-child a, .topic-tabs:has([id="topic-1"]:target) .topic-tab-list [href$="-1"], .topic-tabs:has([id="topic-2"]:target) .topic-tab-list [href$="-2"], .topic-tabs:has([id="topic-3"]:target) .topic-tab-list [href$="-3"], .topic-tabs:has([id="topic-4"]:target) .topic-tab-list [href$="-4"], .topic-tabs:has([id="topic-5"]:target) .topic-tab-list [href$="-5"], .topic-tabs:has([id="topic-6"]:target) .topic-tab-list [href$="-6"] { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
+.topic-panel h3 { font-size: var(--text-h3); }
+@media (max-width: 39.99rem) { .topic-tab-list a { padding-inline: 0.875rem; font-size: 0.9375rem; } }
 
 /* Picture cards: the picture, the topic, the title, two or three lines,
    then who and when. The topic line is lifted out of the meta line. */
 .cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 3rem 2rem; }
+@media (min-width: 64rem) { .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .cards:is(.cards-text, .cards-row, .cards-compact, .cards-ranked) { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
 .cards .card { position: relative; }
-.cards .card :is(h2, h3) a::after { content: ""; position: absolute; inset: 0; }
+.cards .card :is(h2, h3, h4) a::after { content: ""; position: absolute; inset: 0; }
 .cards .card .card-meta a { position: relative; z-index: 1; }
 .cards:not(.cards-text, .cards-row, .cards-compact, .cards-ranked) .card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "picture picture" "topic topic" "title title" "words words" "who when"; align-content: start; block-size: 100%; }
 .card .image { grid-area: picture; margin: 0 0 1.25rem; }
 .card .card-meta { display: contents; }
 .card-meta > a { grid-area: topic; justify-self: start; min-block-size: 1.75rem; margin-block-end: 0.25rem; color: var(--color-link); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
 .card-meta > a:hover { text-decoration: underline; }
-.cards .card :is(h2, h3) { grid-area: title; margin-block: 0 0.5rem; font-size: 1.3125rem; line-height: 1.3; letter-spacing: -0.01em; }
-.card :is(h2, h3) a:hover, .cards .card:hover :is(h2, h3) a { color: var(--color-link); }
+.cards .card :is(h2, h3, h4) { grid-area: title; margin-block: 0 0.625rem; font-size: clamp(1.3125rem, 1.1rem + 0.45vw, 1.5625rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
+.card :is(h2, h3, h4) a:hover, .cards .card:hover :is(h2, h3, h4) a { color: var(--color-link); }
 .card > p:last-child { grid-area: words; margin-block-end: 1rem; color: var(--color-muted); font-size: 0.9688rem; line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
 .card-author { grid-area: who; align-self: center; color: var(--color-text); font-size: 0.875rem; font-weight: 600; }
 .card-meta time { grid-area: when; align-self: center; display: flex; align-items: center; font-size: 0.875rem; }
@@ -301,8 +407,52 @@ main > h1 ~ .cards { margin-block-start: 3rem; }
   .cards:has(> li:nth-child(4)) > li:first-child .card { grid-template-columns: minmax(0, 1.35fr) auto minmax(0, 1fr); grid-template-areas: "picture topic topic" "picture title title" "picture words words" "picture who when"; align-content: center; }
   .cards:has(> li:nth-child(4)) > li:first-child .image { grid-row: 1 / span 5; margin: 0 3rem 0 0; }
   [dir="rtl"] .cards:has(> li:nth-child(4)) > li:first-child .image { margin: 0 0 0 3rem; }
-  .cards:has(> li:nth-child(4)) > li:first-child :is(h2, h3) { font-size: clamp(1.75rem, 1rem + 1.5vw, 2.25rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; margin-block-end: 1rem; }
-  .cards:has(> li:nth-child(4)) > li:first-child .card > p:last-child { font-size: 1.0625rem; -webkit-line-clamp: 4; line-clamp: 4; margin-block-end: 1.5rem; }
+  .cards:has(> li:nth-child(4)) > li:first-child :is(h2, h3, h4) { font-size: clamp(2rem, 0.75rem + 2.4vw, 3.25rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.035em; margin-block-end: 1.25rem; text-wrap: balance; }
+  .cards:has(> li:nth-child(4)) > li:first-child .card > p:last-child { font-size: 1.125rem; -webkit-line-clamp: 4; line-clamp: 4; margin-block-end: 1.75rem; }
+}
+
+/* A long list: after the lead and six picture cards, the rest is a
+   numbered index of lessons, one ruled row each, with no pictures. */
+:is([id="latest"] > .cards, main > h1 ~ .cards) { counter-reset: compass-card; }
+:is([id="latest"] > .cards, main > h1 ~ .cards) > li { counter-increment: compass-card; }
+:is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+9) { margin-block-start: -3rem; }
+:is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+8) { grid-column: 1 / -1; border-block-start: 1px solid var(--compass-line); }
+:is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(8) { border-block-start: 2px solid var(--color-text); }
+:is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+8) .card { grid-template-columns: 4.5rem minmax(0, 13rem) minmax(0, 1fr) auto; grid-template-areas: "num topic title when"; align-items: baseline; column-gap: 1.5rem; padding-block: 1.25rem; }
+:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card::before { content: counter(compass-card, decimal-leading-zero) / ""; grid-area: num; aspect-ratio: auto; margin: 0; color: var(--color-link); background: none; font-family: var(--font-heading); font-size: 1.75rem; font-weight: 800; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card :is(.image, .card-author, p:last-child) { display: none; }
+:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card :is(h2, h3, h4) { margin: 0; font-size: clamp(1.1875rem, 1rem + 0.5vw, 1.5rem); font-weight: 800; line-height: 1.25; }
+:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card-meta > a { margin: 0; }
+:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card-meta time { justify-self: end; color: var(--color-muted); white-space: nowrap; }
+:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card-meta time::before { content: none; }
+/* On a phone each row is the number and the title, the date small under
+   it; the topic waits for the post, so the full list stays short. */
+@media (max-width: 47.99rem) {
+  :is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+8) .card { grid-template-columns: 2.5rem minmax(0, 1fr); grid-template-areas: "num title" "num when"; column-gap: 0.75rem; row-gap: 0.125rem; padding-block: 0.875rem; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card::before { font-size: 1.125rem; line-height: 1.35; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card-meta > a { display: none; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card :is(h2, h3, h4) { font-size: 1.0625rem; line-height: 1.35; letter-spacing: -0.01em; text-wrap: pretty; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card-meta time { justify-self: start; font-size: 0.8125rem; }
+}
+
+/* On a phone every picture card after a list's lead, and every card in
+   the topic tabs and the media rows, is one compact row: a small square
+   picture beside the title, the date under it. The index rows tighten to
+   the title and the date, so the front page stays short. */
+@media (max-width: 39.99rem) {
+  :is([id="latest"] > .cards, main > h1 ~ .cards, .topic-panel .cards, .media-row .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) { row-gap: 1.25rem; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+9) { margin-block-start: -1.25rem; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card { grid-template-columns: 4.5rem minmax(0, 1fr); grid-template-areas: "picture title" "picture when" "picture ."; grid-template-rows: auto auto 1fr; column-gap: 1rem; align-content: start; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card :is(.card-author, .card-meta > a, p:last-child) { display: none; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card .image { margin: 0; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card .image img { aspect-ratio: 1; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card::before { aspect-ratio: 1; margin: 0; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card :is(h2, h3, h4) { margin-block: 0 0.25rem; font-size: 1.0625rem; line-height: 1.3; letter-spacing: -0.01em; text-wrap: pretty; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card-meta time { justify-self: start; font-size: 0.8125rem; }
+  :is(:is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+2):nth-child(-n+7), :is(.topic-panel, .media-row) .cards > li) .card-meta time::before { content: none; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards):not(.cards-text, .cards-row, .cards-compact, .cards-ranked) > li:nth-child(n+8) .card { padding-block: 0.625rem; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card :is(h2, h3, h4) { font-size: 1rem; line-height: 1.3; }
+  :is([id="latest"] > .cards, main > h1 ~ .cards) > li:nth-child(n+8) .card::before { font-size: 1rem; line-height: 1.3; }
 }
 
 /* An author: a profile panel, then their posts and the other authors
@@ -322,7 +472,6 @@ main > h1 ~ .cards { margin-block-start: 3rem; }
 .author-bio { margin-block-start: 1.5rem; }
 .author-bio > :last-child { margin-block-end: 0; }
 .author-profiles { margin-block-start: 1rem; }
-main > section > h2 { display: flex; align-items: center; gap: 1.25rem; margin-block: 0 2rem; font-size: var(--text-h3); }
 main > section > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--compass-line); }
 main > section + section { margin-block-start: var(--space-section); }
 .people-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1rem 2rem; }

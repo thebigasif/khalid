@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="16" width="48" height="48" rx="4" fill="#0d6b4f"/>
+  <path d="M20 54 V38 M30 54 V30 M40 54 V34 M50 54 V26" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+  <text textLength="238" lengthAdjust="spacingAndGlyphs" x="72" y="50" font-family="Archivo, Arial, sans-serif" font-size="26" font-weight="800" fill="#122019">Easthaven City Summit</text>
+</svg>

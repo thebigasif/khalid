@@ -1,0 +1,29 @@
+{#- cite_box(page, year_fact=1, venue_fact=0, link_fact=2): "Cite this"
+    under a post, built from the post's own data: its authors, its title,
+    the venue and year from its facts (by position), and its DOI or link.
+    One reference line, then a BibTeX entry. The year falls back to the
+    post's date. No script: a reader selects the text and copies it. -#}
+{% macro cite_box(page, venue_fact=0, year_fact=1, link_fact=2) -%}
+{% set facts = page.facts -%}
+{% set venue = facts[venue_fact].value if facts | length > venue_fact else none -%}
+{% set year = facts[year_fact].value if facts | length > year_fact else (page.date | string)[:4] -%}
+{% set link = facts[link_fact].value if facts | length > link_fact else none -%}
+{% set doi = link if link and link is startingwith("10.") else none -%}
+{% set names = page.authors | map(attribute="name") | list -%}
+{% set key = ((names[0] | split(" ") | list | last) if names else "post") | lower ~ year -%}
+<section class="cite-box" aria-labelledby="cite-title">
+<h2 id="cite-title">{{ t.cite_this }}</h2>
+<p class="cite-text">{{ names | join(", ") }}{% if names %} {% endif %}({{ year }}). {{ page.title }}.{% if venue %} <i>{{ venue }}</i>.{% endif %}{% if doi %} https://doi.org/{{ doi }}{% elif link %} {{ link }}{% endif %}</p>
+<details class="cite-bibtex">
+<summary>{{ t.cite_bibtex }}</summary>
+<pre><code>@article{ {{- key }},
+  author = { {{- names | join(" and ") -}} },
+  title = { {{- page.title -}} },
+{% if venue %}  journal = { {{- venue -}} },
+{% endif %}  year = { {{- year -}} },
+{% if doi %}  doi = { {{- doi -}} },
+{% elif link %}  url = { {{- link -}} },
+{% endif %}}</code></pre>
+</details>
+</section>
+{%- endmacro %}

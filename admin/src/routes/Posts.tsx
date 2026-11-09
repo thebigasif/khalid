@@ -28,7 +28,10 @@ export function Posts() {
         ))}
       </dl>
       {/* A new address, such as after Back, starts the form again from its filters. */}
-      <PostFilters key={`${search.checks}-${search.stage}-${search.index}`} search={search} />
+      <PostFilters
+        key={`${search.checks}-${search.stage}-${search.index}-${search.seo}`}
+        search={search}
+      />
       <PostResults rows={rows} search={search} />
     </>
   );

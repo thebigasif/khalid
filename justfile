@@ -50,6 +50,47 @@ bench:
 demo-check:
     ./scripts/demo-check.sh
 
+# The showcase in every template pack, in Chromium, Firefox and WebKit at
+# 390, 768, 1440 and 2000 px: text over text or a picture, markers over
+# text, sideways scroll, crushed table columns, broken pictures, a frame
+# narrower than the template's brief, post text too small or lines too
+# short or long, and stylesheets of 20 KB or more. Pass options on, such
+# as `just layout-check --browsers chromium,firefox`.
+layout-check *options:
+    ./scripts/layout-check.sh {{options}}
+
+# Proves the layout check's frame, reading and stylesheet checks on small
+# sites with a planted fault each, in Chromium.
+layout-selftest:
+    node scripts/demo-check/layout-selftest.mjs
+
+# Proves the layout check's network capture finds a live player frame and
+# a live script, and nothing where they wait for consent, in Chromium.
+network-selftest:
+    node scripts/demo-check/network-selftest.mjs
+
+# Proves the demo publication step and the layout check's second pass on
+# the sample publication in fixtures/test-publications/, with no browser.
+publication-selftest:
+    bash scripts/demo-check/publication-selftest.sh
+
+# Proves the map scripts/pages-forward.sh uses to send each old GitHub
+# Pages address to serpdad.com, with no network.
+pages-forward-selftest:
+    bash scripts/pages-forward.sh --selftest
+
+# Ghost's own Content API client, at the version
+# scripts/ghost-client/package.json pins, against the showcase with
+# Ghost's Content API switched on (docs/ghost-api.md).
+ghost-client:
+    ./scripts/ghost-client.sh
+
+# Full-page pictures of each template's demo at 2000, 1440 and 390 px, as
+# one sheet per template, for the founder to approve. Pass --out, outside
+# the repository, such as `just demo-pictures --out ~/shots --packs wire`.
+demo-pictures *options:
+    ./scripts/demo-pictures.sh {{options}}
+
 # Line coverage against the floor.
 coverage:
     cargo llvm-cov nextest --workspace --all-features --summary-only

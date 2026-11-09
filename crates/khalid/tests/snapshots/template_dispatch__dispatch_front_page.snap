@@ -1,0 +1,107 @@
+---
+source: crates/khalid/tests/template_dispatch.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+<a class="button header-button" href="https://www.example.com/newsletter/">Subscribe free</a>
+</header>
+<main id="main" tabindex="-1">
+
+<div class="dp-top">
+<header class="hero">
+<p class="hero-kicker">Every Tuesday</p>
+<h1 class="hero-title">Field Notes on SEO</h1>
+<ul class="dp-promises" aria-label="In every issue">
+<li>One tip a week</li>
+<li>Short enough to read with coffee</li>
+</ul>
+<div class="dp-slip">
+<p class="dp-slip-send"><a class="button" href="https://www.example.com/newsletter/">Subscribe free</a></p>
+<p class="dp-slip-note">Every Tuesday</p>
+<p class="dp-slip-feed"><a href="/blog/feed.xml" type="application/rss+xml">Or follow the feed</a></p>
+</div>
+<dl class="figure-strip">
+<div class="figure">
+<dt>readers</dt>
+<dd>3,200</dd>
+</div>
+</dl>
+</header>
+<article class="dp-latest" aria-labelledby="latest-title">
+<p class="dp-latest-kind">Latest issue</p>
+<div class="dp-latest-body">
+<p class="dp-stamp" aria-hidden="true"><span class="dp-stamp-label">Oct</span> <span class="dp-stamp-value">12</span></p>
+
+<div class="dp-latest-text">
+<p class="dp-issue-meta"><time datetime="2026-10-12">12 October 2026</time> <a href="/blog/category/content-strategy/">Content strategy</a></p>
+<h2 id="latest-title"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
+<p class="dp-issue-excerpt">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+<p class="dp-latest-read"><a href="/blog/planning-a-topic-cluster/">Read this issue</a></p>
+</div>
+</div>
+</article>
+</div>
+<section class="dp-recent" aria-labelledby="recent-title">
+<h2 id="recent-title">Recent issues</h2>
+<ol class="dp-issues" role="list">
+<li class="dp-issue">
+<p class="dp-stamp"><span class="dp-stamp-label">Issue</span> <span class="dp-stamp-value">42</span></p>
+
+<div class="dp-issue-text">
+<p class="dp-issue-meta"><time datetime="2026-10-05">5 October 2026</time> <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="dp-issue-excerpt">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</div>
+<a class="dp-issue-picture" href="/blog/fixing-slow-pages/" tabindex="-1" aria-hidden="true"><figure class="image">
+<picture>
+<source type="image/webp" srcset="/blog/media/d9df18e6d7e8625d/320.webp 320w, /blog/media/d9df18e6d7e8625d/480.webp 480w, /blog/media/d9df18e6d7e8625d/640.webp 640w, /blog/media/d9df18e6d7e8625d/800.webp 800w" sizes="(min-width: 48rem) 13rem, 10rem">
+<img src="/blog/media/d9df18e6d7e8625d/800.png" srcset="/blog/media/d9df18e6d7e8625d/800.png 800w" sizes="(min-width: 48rem) 13rem, 10rem" width="800" height="450" alt="A bar chart of page weight by part" fetchpriority="high" decoding="async">
+</picture>
+</figure></a>
+</li>
+<li class="dp-issue">
+<p class="dp-stamp" aria-hidden="true"><span class="dp-stamp-label">Sep</span> <span class="dp-stamp-value">28</span></p>
+
+<div class="dp-issue-text">
+<p class="dp-issue-meta"><time datetime="2026-09-28">28 September 2026</time> <a href="/blog/category/technical-seo/">Technical SEO</a></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="dp-issue-excerpt">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</div>
+</li>
+<li class="dp-issue">
+<p class="dp-stamp"><span class="dp-stamp-label">Issue</span> <span class="dp-stamp-value">40</span></p>
+
+<div class="dp-issue-text">
+<p class="dp-issue-meta"><time datetime="2026-09-21">21 September 2026</time> <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="dp-issue-excerpt">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</div>
+</li>
+<li class="dp-issue">
+<p class="dp-stamp" aria-hidden="true"><span class="dp-stamp-label">Sep</span> <span class="dp-stamp-value">14</span></p>
+
+<div class="dp-issue-text">
+<p class="dp-issue-meta"><time datetime="2026-09-14">14 September 2026</time> <a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="dp-issue-excerpt">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</div>
+</li>
+</ol>
+</section>
+<section class="dp-topics" aria-labelledby="topics-title">
+<h2 id="topics-title">Topics</h2>
+<ul class="dp-topic-list" role="list">
+<li><a href="/blog/category/on-page-seo/">On-page SEO</a></li>
+<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><a href="/blog/category/content-strategy/">Content strategy</a></li>
+</ul>
+</section>
+<section class="dp-slip" aria-labelledby="join-end-title">
+<h2 id="join-end-title">Get the next issue by email</h2>
+<p class="dp-slip-text">New posts in your inbox. Every email has a link to leave.</p>
+<p class="dp-slip-send"><a class="button" href="https://www.example.com/newsletter/">Subscribe free</a></p>
+<p class="dp-slip-note">Every Tuesday</p>
+<p class="dp-slip-feed"><a href="/blog/feed.xml" type="application/rss+xml">Or follow the feed</a></p>
+</section>

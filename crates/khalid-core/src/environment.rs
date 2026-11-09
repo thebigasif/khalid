@@ -58,8 +58,12 @@ impl Environment {
     /// search in the editor asks with.
     pub const GIPHY_API_KEY: &str = "KHALID_GIPHY_API_KEY";
 
+    /// The key the service in `[ai]` is asked with: an Anthropic or
+    /// OpenAI-compatible API key, or the key `SerpDad` gives for Khalid.
+    pub const AI_KEY: &str = "KHALID_AI_KEY";
+
     /// Every variable Khalid reads.
-    const ALL: [&str; 13] = [
+    const ALL: [&str; 14] = [
         Self::ADDRESS,
         Self::KEY,
         Self::S3_ACCESS_KEY_ID,
@@ -73,10 +77,11 @@ impl Environment {
         Self::GIT_HOOK_SECRET,
         Self::UNSPLASH_ACCESS_KEY,
         Self::GIPHY_API_KEY,
+        Self::AI_KEY,
     ];
 
     /// Variables whose values `Debug` hides.
-    const HIDDEN: [&str; 11] = [
+    const HIDDEN: [&str; 12] = [
         Self::KEY,
         Self::S3_SECRET_ACCESS_KEY,
         Self::SMTP_PASSWORD,
@@ -88,6 +93,7 @@ impl Environment {
         Self::GIT_HOOK_SECRET,
         Self::UNSPLASH_ACCESS_KEY,
         Self::GIPHY_API_KEY,
+        Self::AI_KEY,
     ];
 
     /// Reads Khalid's variables from this process's environment.
@@ -187,6 +193,12 @@ impl Environment {
     /// or blank.
     pub fn giphy_key(&self) -> Option<Secret<String>> {
         self.secret(Self::GIPHY_API_KEY)
+    }
+
+    /// The key in [`Environment::AI_KEY`], or `None` when it is unset or
+    /// blank.
+    pub fn ai_key(&self) -> Option<Secret<String>> {
+        self.secret(Self::AI_KEY)
     }
 
     /// The variable `name`, trimmed, as a secret, or `None` when it is

@@ -5,6 +5,7 @@
 mod common;
 
 use common::{demo_site, internal_links_post, internal_links_post_de, locale, path, url};
+use khalid_core::PageSchemaType;
 use khalid_seo::{PageKind, SchemaGraph, SchemaNode, SeoPage, ShareImage, UrlPath, page_graph};
 
 fn kinds(graph: &SchemaGraph) -> Vec<&str> {
@@ -67,6 +68,23 @@ fn each_page_kind_gets_its_schema_type() {
         let page = SeoPage::new(kind, locale("en"), path("/somewhere/"), "Somewhere");
         let graph = page_graph(&demo_site(), &page).unwrap();
         assert_eq!(graph.nodes()[3].kind(), expected, "{kind:?}");
+    }
+}
+
+#[test]
+fn a_page_may_choose_its_own_schema_type() {
+    for (chosen, expected) in [
+        (PageSchemaType::FaqPage, "FAQPage"),
+        (PageSchemaType::ContactPage, "ContactPage"),
+        (PageSchemaType::AboutPage, "AboutPage"),
+        (PageSchemaType::QaPage, "QAPage"),
+        (PageSchemaType::ItemPage, "ItemPage"),
+        (PageSchemaType::CollectionPage, "CollectionPage"),
+    ] {
+        let mut page = SeoPage::new(PageKind::Page, locale("en"), path("/contact/"), "Contact");
+        page.page_type = Some(chosen);
+        let graph = page_graph(&demo_site(), &page).unwrap();
+        assert_eq!(graph.nodes()[3].kind(), expected, "{chosen:?}");
     }
 }
 

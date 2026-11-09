@@ -1,0 +1,26 @@
+# Nell Ashby's three topics. The Margin template lists each one's essays
+# as rows, with the date and reading time in the margin.
+
+[[categories]]
+slug = "walking-and-weather"
+en = "Walking and weather"
+
+[categories.seo.en]
+description = "Essays by Nell Ashby on walking the coast, reading the tide and the weather, and learning the birds on the shore."
+intro = "Most of these essays start on the coast path behind my house. They are about walking the same ground often, and what the tide, the birds and the weather teach a person who pays attention."
+
+[[categories]]
+slug = "reading-and-writing"
+en = "Reading and writing"
+
+[categories.seo.en]
+description = "Essays by Nell Ashby on how and where she writes, on letters and on reading slowly."
+intro = "Essays about the work itself: where I write, what I write by hand, and the letters I keep meaning to send."
+
+[[categories]]
+slug = "home-and-habit"
+en = "Home and habit"
+
+[categories.seo.en]
+description = "Essays on the small habits of an ordinary week: mending, gardening and keeping things going."
+intro = "Essays about the small, repeated work of a home: mending clothes, growing food and keeping things going for one more year."

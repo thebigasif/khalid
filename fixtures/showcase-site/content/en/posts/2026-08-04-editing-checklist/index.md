@@ -15,7 +15,7 @@ cluster:
 tags: [editing, writing]
 image:
   src: cover.svg
-  alt: A clipboard checklist with three boxes ticked in green, one box still empty and a pencil
+  alt: A clipboard checklist with three boxes ticked and one still empty, beside an orange pencil
 ---
 
 An editing checklist is a short list of checks you run on every post before it goes live, in the same order, every time. Ours has grown out of years of newspaper subbing and client work. It catches the problems a tired writer no longer sees, and it turns a good draft into a post a busy reader can use.

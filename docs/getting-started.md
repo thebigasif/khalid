@@ -1,3 +1,8 @@
+---
+title: "Getting started with Khalid"
+order: 10
+---
+
 # Getting started with Khalid
 
 This page takes you from nothing to a published post, then shows how to check the site, sign in to the admin, bring in an old blog, and back up and restore. Every command on this page is run by a test (`crates/khalid/tests/getting_started.rs`), so it works as written.
@@ -29,6 +34,8 @@ Pick a folder name, here `blog`, and the address the blog will have on the inter
 ```sh
 khalid init blog --address https://blog.example.com --yes
 ```
+
+The blog starts in `classic`, Khalid's default look. To start in another template, such as one you saw in a demo, add `--template` and its name, such as `--template atlas`. [templates.md](templates.md) lists every name.
 
 Leave out `--yes` to answer the questions one by one: the address, the folder of the website the blog lives under (such as `/blog/`), the languages and whether Khalid runs as a server or writes plain files.
 
@@ -130,6 +137,8 @@ khalid --site blog audit
 - `build` writes every page as plain HTML into `blog/public/`, the way static hosting needs it. If the linter blocks a dated post, `build` leaves that post out, writes the rest, and lists what it left out and why.
 - `audit` builds the site and crawls it the way Ahrefs and Semrush do, then scores its health out of 100. It keeps its reports in `blog/data/audit/` and exits with an error when it finds one. Add `--server http://127.0.0.1:8080` to crawl the running blog instead.
 
+Inside the blog folder, the one that holds `site.toml`, you can leave out `--site`: after `cd blog`, `khalid lint` does the same as `khalid --site blog lint`. This guide keeps `--site blog` so every command runs from the folder above.
+
 Each linter message ends with a rule and a guide, such as "Rule no-internal-link, guide internal-links". The rule is the check that fired. The guide names a SerpDad guide that explains it at length; those guides are not published yet, so until then the three sentences in the message are the whole advice. Every message is listed in `crates/khalid-lint/catalogue.toml`, and `khalid --site blog lint --json` gives them in a form scripts can read.
 
 Six rules block publishing: no title, no date, no author, no link to another page of the site, more than one main headline, and structured data that misses a field Google needs.
@@ -143,6 +152,8 @@ khalid --site blog import wordpress export.xml --dry-run
 ```
 
 `--dry-run` says what would come in and what would stay behind, and writes nothing. Run it again without `--dry-run` to bring the posts in. Imported posts keep their dates, so each goes live at the next build once it passes the linter. Until then `build` leaves it out and says why.
+
+Add `--download-images` to copy each post's pictures, and its feature image, from the old site into the post's own folder, so they stay when the old site goes away. A picture that cannot be fetched keeps its old address, and the import lists it with the reason. With `--dry-run`, it only says how many pictures it would fetch.
 
 ## 10. Back up and restore
 

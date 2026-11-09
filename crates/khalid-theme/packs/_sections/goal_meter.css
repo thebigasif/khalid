@@ -1,0 +1,16 @@
+/* Section part: goal meter (templates/sections/goal_meter.html). The
+   amount reached large, the target beside it, a thick square bar that
+   fills with the accent, and the share reached under it. */
+.goal-meter { display: grid; gap: 0.5rem; }
+.goal-figures { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.25rem 1rem; margin: 0; }
+.goal-figures > div { display: flex; flex-direction: column-reverse; }
+.goal-figures dt { color: var(--color-muted); font-size: var(--text-small); }
+.goal-figures dd { margin: 0; font-variant-numeric: lining-nums tabular-nums; }
+.goal-done dd { font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); line-height: 1.1; }
+.goal-target { text-align: end; }
+.goal-bar { appearance: none; display: block; inline-size: 100%; block-size: 0.75rem; background: var(--color-border); border: 0; border-radius: 0; }
+.goal-bar::-webkit-meter-inner-element { display: block; block-size: 100%; }
+.goal-bar::-webkit-meter-bar { block-size: 100%; background: var(--color-border); border: 0; border-radius: 0; }
+.goal-bar::-webkit-meter-optimum-value { block-size: 100%; background: var(--color-accent); }
+.goal-bar::-moz-meter-bar { background: var(--color-accent); }
+.goal-share { margin: 0; color: var(--color-muted); font-size: var(--text-small); font-variant-numeric: tabular-nums; }

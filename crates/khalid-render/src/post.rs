@@ -7,7 +7,9 @@ use minijinja::Value;
 use serde::Serialize;
 
 use crate::serde_display::{display, display_option};
-use crate::{Contents, Person, PostCard, ReadingTime, RenderComments, RenderImage, RenderSeries};
+use crate::{
+    Contents, Fact, Person, PostCard, ReadingTime, RenderComments, RenderImage, RenderSeries,
+};
 
 /// One post: its heading, dates, people, topics and body.
 ///
@@ -28,6 +30,10 @@ pub struct RenderPost {
     /// The subtitle under the heading, from `description` in its front
     /// matter, shown by a template that turns on its `dek` part.
     pub dek: Option<String>,
+    /// Short label and value pairs from `facts` in its front matter, such
+    /// as `Client: Calder Street Library`, in the order written, for a
+    /// template that shows them as `post.facts`.
+    pub facts: Vec<Fact>,
     /// How long it takes to read, from [`ReadingTime::of`] its body.
     pub reading_time: ReadingTime,
     /// Who wrote it, first author first.

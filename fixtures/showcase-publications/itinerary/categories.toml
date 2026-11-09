@@ -1,0 +1,52 @@
+# Slow Miles files each trip by its country. The Itinerary template shows
+# each country as a passport stamp on the front page, and each category
+# page lists that country's trips. Packing and planning holds the notes,
+# posts without facts, so it gets no stamp.
+
+[[categories]]
+slug = "georgia"
+en = "Georgia"
+
+[categories.seo.en]
+description = "Our trips in Georgia: day-by-day itineraries from Tbilisi to the Caucasus, with routes, seasons and costs."
+intro = "Two trips in the Caucasus: ten days from Tbilisi to the mountains at Kazbegi, and four days on foot through Svaneti. Marshrutka minibuses, guesthouse dinners and long walks."
+
+[[categories]]
+slug = "morocco"
+en = "Morocco"
+
+[categories.seo.en]
+description = "Our trip in Morocco by train and shared taxi: a day-by-day itinerary from Tangier to the edge of the desert."
+intro = "Two weeks from the north coast to the High Atlas without a hire car: fast trains, slow buses and shared taxis."
+
+[[categories]]
+slug = "slovenia"
+en = "Slovenia"
+
+[categories.seo.en]
+description = "Our trips in Slovenia without a car: lakes, the Soča valley and Ljubljana, day by day."
+intro = "A small country that is easy by bus and train. A week around the lakes and the capital, and three slow days in the Soča valley."
+
+[[categories]]
+slug = "sri-lanka"
+en = "Sri Lanka"
+
+[categories.seo.en]
+description = "Our trip in Sri Lanka: the hill country train and the south coast, day by day, with costs."
+intro = "Twelve days from Kandy through the tea hills by train, then down to the south coast by bus."
+
+[[categories]]
+slug = "jordan"
+en = "Jordan"
+
+[categories.seo.en]
+description = "Our trip in Jordan: Petra and Wadi Rum in six days, with the route and what it cost."
+intro = "Six days in the south of Jordan: two days in Petra, a night in the desert at Wadi Rum and a slow end by the Red Sea."
+
+[[categories]]
+slug = "packing-planning"
+en = "Packing and planning"
+
+[categories.seo.en]
+description = "How we pack one carry-on bag each, plan a day-by-day itinerary and choose night trains."
+intro = "Notes from the road that are not about one country: what we pack, how we plan and what we would do again."

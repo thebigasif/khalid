@@ -31,6 +31,7 @@ fn home() -> RenderHome {
             .collect(),
         videos: posts.iter().take(1).cloned().collect(),
         podcasts: posts.iter().skip(1).cloned().collect(),
+        podcast_player: None,
     }
 }
 

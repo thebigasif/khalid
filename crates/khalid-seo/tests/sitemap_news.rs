@@ -6,7 +6,7 @@ mod common;
 mod sitemap_xsd;
 
 use common::{at, demo_site, internal_links_post, internal_links_post_de, locale, path};
-use khalid_seo::{ArticleType, NewsSitemap, PageKind, PublishState, SeoPage};
+use khalid_seo::{ArticleType, NewsSitemap, PageKind, PublishState, SeoPage, SitemapListing};
 use sitemap_xsd::{check_urlset, google_extensions};
 
 /// Two fresh news articles, then three that must be left out: one too
@@ -56,6 +56,23 @@ fn an_article_dated_in_the_future_is_not_news_yet() {
     let news = NewsSitemap::from_pages(&demo_site(), &news_pages(), at(2026, 10, 24, 6)).unwrap();
     assert_eq!(news.entries().len(), 1);
     assert_eq!(news.entries()[0].title, "Core update recap");
+}
+
+#[test]
+fn a_post_can_stay_out_and_another_names_its_stock_tickers() {
+    let mut pages = news_pages();
+    pages[1].news = SitemapListing::Excluded;
+    pages[0].stock_tickers = vec!["NASDAQ:GOOG".to_owned(), "NYSE:IBM".to_owned()];
+    let news = NewsSitemap::from_pages(&demo_site(), &pages, at(2026, 10, 26, 12)).unwrap();
+    assert_eq!(news.entries().len(), 1);
+    let xml = news.to_xml();
+    assert!(
+        xml.contains(
+            "</news:title>\n      <news:stock_tickers>NASDAQ:GOOG, NYSE:IBM</news:stock_tickers>\n"
+        ),
+        "{xml}"
+    );
+    assert_eq!(check_urlset(&xml, google_extensions), Ok(1));
 }
 
 #[test]

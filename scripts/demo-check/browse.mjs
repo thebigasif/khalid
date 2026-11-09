@@ -12,6 +12,9 @@
 // there. axe is itself a script the page runs, and a page with scripts off
 // cannot run it.
 //
+// Every tab also fails on a request to any address but the site's: no
+// page was given consent, so nothing may load from anyone else (R1).
+//
 // Each page loads once per scripts setting and is then resized through the
 // widths, so every check runs at each width without a reload. A few pages
 // are checked at once, one browser tab each, and a page that takes longer
@@ -104,18 +107,33 @@ const checkPage = async (page, url, scripts) => {
   if (scripts) withScripts.set(url, readings);
 };
 
+// A new tab that fails on any request to an address other than the site's
+// own: the context holds no consent cookie, so nothing may leave the site
+// (privacy plan R1).
+const site = new URL(pages[0]).origin;
+const watched = async (context, scripts) => {
+  const page = await context.newPage();
+  page.on("request", (request) => {
+    const url = request.url();
+    if (/^https?:/.test(url) && new URL(url).origin !== site) {
+      failures.push(`${page.url()} with scripts ${scripts ? "on" : "off"}: asked ${url} for a ${request.resourceType()} before the reader agreed to anything`);
+    }
+  });
+  return page;
+};
+
 // One tab's share of the pages: it takes the next unchecked page until
 // none is left. A tab whose page timed out is replaced, so a stuck page
 // cannot hold up the ones after it.
 const tab = async (context, queue, scripts) => {
-  let page = await context.newPage();
+  let page = await watched(context, scripts);
   for (let url = queue.shift(); url; url = queue.shift()) {
     try {
       await checkPage(page, url, scripts);
     } catch (error) {
       failures.push(`${url} with scripts ${scripts ? "on" : "off"}: ${error.message}`);
       await page.close().catch(() => {});
-      page = await context.newPage();
+      page = await watched(context, scripts);
     }
     const seconds = Math.round((Date.now() - started) / 1000);
     console.log(`  checked ${url} with scripts ${scripts ? "on" : "off"} (${seconds} s)`);

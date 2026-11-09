@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /walking-same-path/
+table /what-tide-tables-teach/
+category /category/walking-and-weather/
+tag /tag/walking/
+author /authors/nell-ashby/

@@ -1,0 +1,5 @@
+# The secondary keyword is in the search title and the first paragraph,
+# but in no subheading.
+extends = "focus-clean"
+seo_title = "Internal links lead to a useful post"
+secondary_keywords = ["useful post"]

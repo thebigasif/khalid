@@ -1,0 +1,5 @@
+# The place tips for secondary keywords have their own fixtures.
+[rules]
+secondary-not-in-title = "off"
+secondary-not-in-first-paragraph = "off"
+secondary-not-in-subheading = "off"

@@ -1,0 +1,35 @@
+# Open Studio's topics. The Dialogue template lists each topic that holds
+# episodes on the front page, and each topic page lists its posts as guest
+# rows, with its intro on top.
+
+[[categories]]
+slug = "in-the-studio"
+en = "In the studio"
+
+[categories.seo.en]
+description = "Open Studio's conversations with makers who work at a bench or a wheel: potters, bookbinders, weavers and glassblowers."
+intro = "Conversations with makers who work indoors, at a bench, a wheel, a loom or a flame. We talk about materials, patience and how each of them learned."
+
+[[categories]]
+slug = "in-the-yard"
+en = "In the yard"
+
+[categories.seo.en]
+description = "Open Studio's conversations with people who build big things by hand: wooden boats, dry stone walls and cart wheels."
+intro = "Conversations with people who build big things in sheds and yards: boats, walls and wheels. Expect talk about wood, stone, weather and heavy lifting."
+
+[[categories]]
+slug = "out-and-about"
+en = "Out and about"
+
+[categories.seo.en]
+description = "Open Studio's conversations with people whose craft happens outdoors or out in the community, from rooftop beekeeping to bicycle repair."
+intro = "Conversations with people whose work happens on roofs, in streets and at community repair days."
+
+[[categories]]
+slug = "show-notes"
+en = "Show notes"
+
+[categories.seo.en]
+description = "News from Open Studio: how we record, the next season and answers to listeners' questions."
+intro = "How we make the show, what is coming next and answers to your questions."

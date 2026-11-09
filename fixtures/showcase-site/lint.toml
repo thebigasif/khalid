@@ -2,3 +2,26 @@
 # without a German version is a choice here, not a gap.
 [rules]
 missing-translation = "off"
+
+# The Yoast-style checks of Khalid 1.3 show as tips here until this demo
+# text is rewritten for them (docs/lint-analysis.md). A tip costs no
+# points; delete these lines to see them as warnings.
+focus-distribution = "info"
+focus-subheading-share = "info"
+focus-too-long = "info"
+duplicate-focus-keyword = "info"
+title-too-wide = "info"
+no-image = "info"
+all-outbound-nofollow = "info"
+pillar-min-words = "info"
+stale-pillar = "info"
+long-sentences = "info"
+long-section = "info"
+repeated-openers = "info"
+few-transitions = "info"
+passive-voice = "info"
+complex-words = "info"
+
+[thresholds]
+# The paragraph limit before Khalid 1.3, which this text was written for.
+paragraph-max-words = 225

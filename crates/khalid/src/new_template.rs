@@ -11,6 +11,8 @@ use clap::ValueEnum;
 use khalid_core::Locale;
 use khalid_lint::PageKind;
 
+use crate::assets::texts;
+
 /// A kind of post `khalid new` can start from.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
 pub(crate) enum Template {
@@ -47,19 +49,16 @@ impl Template {
 }
 
 /// The starter for `template` from `starters/content/<language>/`: German
-/// for `de`, English for every other language.
+/// for `de`, English for every other language. The binary packs them with
+/// its other whole texts.
 fn starter(template: Template, locale: &Locale) -> &'static str {
-    let german = locale.language() == "de";
-    match (template, german) {
-        (Template::Comparison, false) => include_str!("../starters/content/en/comparison.md"),
-        (Template::Alternatives, false) => include_str!("../starters/content/en/alternatives.md"),
-        (Template::BestOf, false) => include_str!("../starters/content/en/best-of.md"),
-        (Template::Review, false) => include_str!("../starters/content/en/review.md"),
-        (Template::Comparison, true) => include_str!("../starters/content/de/comparison.md"),
-        (Template::Alternatives, true) => include_str!("../starters/content/de/alternatives.md"),
-        (Template::BestOf, true) => include_str!("../starters/content/de/best-of.md"),
-        (Template::Review, true) => include_str!("../starters/content/de/review.md"),
-    }
+    let language = if locale.language() == "de" {
+        "de"
+    } else {
+        "en"
+    };
+    let name = format!("starters/content/{language}/{}.md", template.name());
+    texts::text(&name)
 }
 
 /// The end of a new post titled `title` in `locale`, started from

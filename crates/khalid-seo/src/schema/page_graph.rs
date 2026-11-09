@@ -1,7 +1,7 @@
 //! The whole graph of one page: the site nodes, the breadcrumbs and the
 //! page node.
 
-use khalid_core::AbsoluteUrl;
+use khalid_core::{AbsoluteUrl, PageSchemaType};
 
 use crate::schema::article::{article_nodes, person_node};
 use crate::schema::blocks::block_nodes;
@@ -63,7 +63,10 @@ fn page_node(site: &SeoSite, page: &SeoPage) -> Result<SchemaNode, SeoError> {
     } else {
         &page.title
     };
-    let mut node = SchemaNode::new(page_type(page.kind))
+    let kind = page
+        .page_type
+        .map_or(page_type(page.kind), PageSchemaType::as_str);
+    let mut node = SchemaNode::new(kind)
         .with_id(page_id(site, page)?)
         .with("name", SchemaValue::text(name))
         .with("url", SchemaValue::Url(url.clone()))

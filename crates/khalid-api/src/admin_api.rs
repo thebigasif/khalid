@@ -16,6 +16,7 @@ use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
 use crate::admin_delete;
+use crate::admin_duplicate;
 use crate::admin_key::{AdminDoor, require, require_admin_key, require_publish};
 use crate::admin_presence;
 use crate::admin_serpdad::Serpdad;
@@ -55,6 +56,7 @@ pub(crate) fn routes(posts: Posts, serpdad: Serpdad, door: AdminDoor) -> OpenApi
             admin_delete::delete_admin_post
         ))
         .routes(routes!(make_preview_link))
+        .routes(routes!(admin_duplicate::duplicate_admin_post))
         .routes(routes!(admin_versions::list_post_versions))
         .routes(routes!(admin_presence::check_in, admin_presence::leave))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))

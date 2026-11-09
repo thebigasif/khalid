@@ -7,7 +7,7 @@ translation: about
 
 Larkspur Studio ist ein kleines Content-Studio. Wir planen, schreiben und redigieren Blogs für Firmen, die an andere Firmen verkaufen. Was wir dabei lernen, veröffentlichen wir hier.
 
-Die deutschen Beiträge schreibt Tomas Lindqvist mit Priya Raman und Maren Okafor. Wir veröffentlichen keine Gastbeiträge, und niemand bezahlt dafür, erwähnt zu werden.
+Die deutschen Beiträge schreibt Tomas Lindqvist mit Priya Raman Venkatesan und Maren Okafor. Wir veröffentlichen keine Gastbeiträge, und niemand bezahlt dafür, erwähnt zu werden.
 
 ## Wie wir prüfen
 

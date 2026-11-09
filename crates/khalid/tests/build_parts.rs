@@ -153,7 +153,7 @@ fn the_sampler_pack_shows_one_trail_in_the_page_and_its_schema() {
     let post = page(&sampler, "what-a-sitemap-does/index.html");
     assert!(
         post.contains(
-            "<li><a href=\"/blog/category/technical-seo/\">Technical SEO</a></li>\n<li><a href=\"/blog/what-a-sitemap-does/\" aria-current=\"page\">What a sitemap does, and what it does not</a></li>"
+            "<li><span class=\"crumb-sep\" aria-hidden=\"true\">/</span><a href=\"/blog/category/technical-seo/\">Technical SEO</a></li>\n<li><span class=\"crumb-sep\" aria-hidden=\"true\">/</span><a href=\"/blog/what-a-sitemap-does/\" aria-current=\"page\">What a sitemap does, and what it does not</a></li>"
         ),
         "{post}"
     );
@@ -165,6 +165,38 @@ fn the_sampler_pack_shows_one_trail_in_the_page_and_its_schema() {
     let post = page(&classic, "what-a-sitemap-does/index.html");
     assert!(!post.contains("class=\"breadcrumbs\""), "{post}");
     assert!(post.contains("\"name\":\"Technical SEO\""), "{post}");
+}
+
+#[test]
+fn the_breadcrumb_settings_and_a_breadcrumb_title_shape_the_trail() {
+    let (_temp, out) = built(
+        "\n[template]\nname = \"sampler\"\n[template.options]\nbreadcrumbs = true\n\
+         [seo.breadcrumbs]\nseparator = \"»\"\nhome = \"Home\"\nbold_last = true\n\
+         archive_prefix = \"Archives for\"\n",
+        &[(
+            "content/en/posts/2026-09-28-what-a-sitemap-does.md",
+            "+breadcrumb_title: Sitemaps",
+        )],
+    );
+    let post = page(&out, "what-a-sitemap-does/index.html");
+    assert!(
+        post.contains("<nav class=\"breadcrumbs\" data-bold-last aria-label=\"Breadcrumbs\">\n<ol>\n<li><a href=\"/blog/\">Home</a></li>"),
+        "{post}"
+    );
+    assert!(
+        post.contains("<span class=\"crumb-sep\" aria-hidden=\"true\">»</span><a href=\"/blog/what-a-sitemap-does/\" aria-current=\"page\">Sitemaps</a>"),
+        "{post}"
+    );
+    assert!(
+        post.contains("\"position\":3,\"name\":\"Sitemaps\""),
+        "{post}"
+    );
+    assert!(post.contains("\"position\":1,\"name\":\"Home\""), "{post}");
+    let category = page(&out, "category/technical-seo/index.html");
+    assert!(
+        category.contains("aria-current=\"page\">Archives for Technical SEO</a>"),
+        "{category}"
+    );
 }
 
 #[test]

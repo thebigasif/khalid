@@ -1,0 +1,27 @@
+# Larkmoor Rovers' teams and topics. The Fixture template shows each
+# category page as a fixture list, matches and news under a heading for
+# each month, with its intro as the team's description.
+
+[[categories]]
+slug = "first-team"
+en = "First team"
+
+[categories.seo.en]
+description = "Larkmoor Rovers first team: match reports with the score, previews of the next fixtures and the league table."
+intro = "The first team plays in the Vale and District League, Division One, and in the County Cup. Home matches are at Larkmoor Fields on Saturdays at 2:30pm."
+
+[[categories]]
+slug = "juniors"
+en = "Juniors"
+
+[categories.seo.en]
+description = "Junior football at Larkmoor Rovers: teams from under-8s to under-14s, trials and training times."
+intro = "Junior teams from under-8s to under-14s, for girls and boys. Every junior coach holds a coaching badge and a safeguarding check."
+
+[[categories]]
+slug = "club-news"
+en = "Club news"
+
+[categories.seo.en]
+description = "News from Larkmoor Rovers: training, the clubhouse, fundraising and volunteers."
+intro = "Training nights, the clubhouse, fundraising and the volunteers who keep the club going."

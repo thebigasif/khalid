@@ -1,0 +1,1 @@
+warn focus-too-long: internal links for small food blogs

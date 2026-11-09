@@ -1,0 +1,102 @@
+# Easthaven City Summit, a made-up three-day summit on streets, transport
+# and public space in a made-up harbour town, written for the Summit
+# template's demo. Each key and table here replaces the showcase's own
+# when scripts/demo-publication.sh applies it.
+
+name = "Easthaven City Summit"
+languages = ["en"]
+
+[template.cta]
+label = "Book a ticket"
+href = "/blog/tickets-and-free-student-places/"
+note = "Day tickets cost 45 pounds and a three-day pass 110 pounds. Students and Easthaven residents on benefits come free."
+
+# The Summit template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+event_line = ["13 to 15 May 2027 · Easthaven harbourside"]
+tagline = ["Three days of talks, walks and workshops on how a town can work better for the people who live in it: streets, buses, homes and shade."]
+hero_stats = ["3 | days", "10 | sessions", "5 | speakers", "4 | venues"]
+speakers_count = 8
+news_count = 4
+
+[announcement]
+text = "The full programme is out. Free places for students are open now."
+href = "/blog/the-programme-is-out/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A summit on streets, transport and public space"
+
+[seo.ai_page]
+covers = "Easthaven City Summit is a three-day summit on streets, transport, housing and public space, held in four venues on the Easthaven harbourside from 13 to 15 May 2027. Each session has its own page with its day, time, room and format, and the updates cover tickets and travel."
+cite = "Name the session and its speaker, and link the session's page."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Easthaven City Summit"
+email = "hello@example.com"
+founded = "2019-05-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Easthaven City Summit logo"
+width = 320
+height = 80
+
+# Sign-ups for the summit's mailing list, under its own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Easthaven City Summit"
+postal_address = "Easthaven City Summit, The Ropeworks, 4 Wharf Lane, Easthaven EH2 9QA"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Programme"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "Speakers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "Venues"
+href = "/blog/getting-to-the-four-venues/"
+language = "en"
+
+[[nav.primary]]
+label = "Tickets"
+href = "/blog/tickets-and-free-student-places/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the summit"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Getting here"
+href = "/blog/getting-to-the-four-venues/"
+language = "en"
+
+[[nav.footer]]
+label = "Speakers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

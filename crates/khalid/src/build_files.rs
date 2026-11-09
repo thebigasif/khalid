@@ -1,13 +1,13 @@
 //! The files `khalid build` writes beside the pages, from `khalid-seo`: the
-//! sitemap index and its sitemaps, the news sitemap, `robots.txt`, `llms.txt`, the RSS,
-//! Atom and JSON feeds of each language, and the `IndexNow` key file
+//! sitemap index and its sitemaps, the news sitemap, `locations.kml`, `robots.txt`, `llms.txt`, the RSS,
+//! Atom and JSON feeds of each language, category and channel, and the `IndexNow` key file
 //! (KH-SEO-5, KH-SEO-6, KH-SEO-7, KH-SEO-11).
 
 use chrono::{DateTime, Utc};
 use khalid_core::{IndexNowSettings, Locale, UserMessage};
 use khalid_seo::{
-    ArticleType, Feed, FeedScope, IndexNow, LlmsTxt, NewsSitemap, RobotsTxt, SeoError, SeoPage,
-    SeoSite, SitemapSet, UrlPath,
+    ArticleType, Feed, FeedFormat, FeedScope, IndexNow, LlmsTxt, NewsSitemap, RobotsTxt, SeoError,
+    SeoPage, SeoSite, SitemapSet, UrlPath, locations_kml, locations_kml_url, site_schema,
 };
 
 use crate::build_message;
@@ -90,18 +90,34 @@ fn collect(
         index.push(site.url_for(&site.default_language, &path)?, lastmod);
         files.push(file(NEWS_SITEMAP.trim_start_matches('/'), news.to_xml()));
     }
+    if let Some(kml) = locations_kml(site) {
+        index.push(locations_kml_url(site)?, None);
+        files.push(file("locations.kml", kml));
+    }
     files.insert(0, file("sitemap.xml", index.to_xml()));
     files.push(file("robots.txt", RobotsTxt::for_site(site)?.to_string()));
-    files.push(file(
-        "llms.txt",
-        LlmsTxt::for_site(site, pages)?.to_string(),
-    ));
+    if site.llms_txt.enabled {
+        files.push(file(
+            "llms.txt",
+            LlmsTxt::for_site(site, pages)?.to_string(),
+        ));
+    }
     for language in &site.languages {
         let feed = Feed::for_pages(site, pages, &FeedScope::language(language.clone()), now)?;
         let folder = prefix(site, language);
-        files.push(file(&format!("{folder}feed.xml"), feed.to_rss()?));
-        files.push(file(&format!("{folder}atom.xml"), feed.to_atom()?));
-        files.push(file(&format!("{folder}feed.json"), feed.to_json()?));
+        if site.schema_map.writes_files() {
+            let graph = site_schema(site, pages, language)?;
+            files.push(file(&format!("{folder}schema.json"), graph.to_json()));
+        }
+        push_feed(site, &feed, &folder, &mut files)?;
+    }
+    for page in pages {
+        if let Some(scope) = &page.feed {
+            let feed = Feed::for_pages(site, pages, scope, now)?;
+            let path = page.path.as_str().trim_start_matches('/');
+            let folder = format!("{}{path}", prefix(site, &page.language));
+            push_feed(site, &feed, &folder, &mut files)?;
+        }
     }
     if let Some(settings) = indexnow {
         let key = IndexNow::new(site, settings)?.key_file();
@@ -109,6 +125,27 @@ fn collect(
         files.push(file(name, key.body().to_owned()));
     }
     Ok(files)
+}
+
+/// Adds `feed` in each format that is on to `files`, in `folder`, where
+/// [`Feed::url`] points.
+fn push_feed(
+    site: &SeoSite,
+    feed: &Feed,
+    folder: &str,
+    files: &mut Vec<SiteFile>,
+) -> Result<(), SeoError> {
+    let on = |format: FeedFormat| !site.feeds.off.contains(&format);
+    if on(FeedFormat::Rss) {
+        files.push(file(&format!("{folder}feed.xml"), feed.to_rss()?));
+    }
+    if on(FeedFormat::Atom) {
+        files.push(file(&format!("{folder}atom.xml"), feed.to_atom()?));
+    }
+    if on(FeedFormat::Json) {
+        files.push(file(&format!("{folder}feed.json"), feed.to_json()?));
+    }
+    Ok(())
 }
 
 fn file(name: &str, text: String) -> SiteFile {
@@ -161,5 +198,21 @@ mod tests {
                 assert!(written.iter().any(|written| written.file == file), "{file}");
             }
         }
+    }
+
+    #[test]
+    fn a_feed_format_switched_off_is_not_written() {
+        let mut site = SeoSite::new(
+            "Field Notes on SEO",
+            AbsoluteUrl::parse("https://www.example.com").unwrap(),
+            Locale::try_new("en").unwrap(),
+        );
+        site.feeds.off = vec![FeedFormat::Atom, FeedFormat::Json];
+        let now = Utc.with_ymd_and_hms(2026, 10, 26, 12, 0, 0).unwrap();
+        let written: Vec<String> = (files(&site, &[], None, now).unwrap().into_iter())
+            .map(|file| file.file)
+            .filter(|file| file.contains("feed") || file.contains("atom"))
+            .collect();
+        assert_eq!(written, ["feed.xml"]);
     }
 }

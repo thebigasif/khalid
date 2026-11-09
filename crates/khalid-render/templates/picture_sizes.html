@@ -1,0 +1,35 @@
+{#- slot_sizes(place, shape="image"): how wide the template draws the
+    pictures of the shared templates, as the `sizes` the picture macro
+    takes, so the browser fetches no bigger file than the slot needs. A
+    pack whose CSS draws them at other widths replaces this file with its
+    own, measured at a phone, a tablet and a desktop width
+    (docs/standards/performance.md, "Page weight").
+
+    `place` is where the picture is:
+      "lead"      a post's lead image, at the top of post.html
+      "related"   the related posts under a post
+      "featured"  the featured post above a list or the front page
+      "home"      cards on the front page
+      "panel"     cards in the front page's topic tabs, videos and podcasts
+      "list"      cards on a category, tag, series or hub page
+      "author"    cards on an author's page
+      "photo"     the author's photo on their page
+    `shape` is the card shape the cards are drawn in (image, row, compact,
+    text or ranked), or for "related" the layout (grid, row or scroll).
+
+    These are Classic's widths, measured at every width from 320 to
+    2560 px: a single column of cards, wider than a card in a grid, so a
+    pack that keeps them gets sharp pictures. A place not here says nothing, and the picture keeps its own `sizes`: the text
+    column for a lead image and a small card width for a card. -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "home/image": "(min-width: 60rem) calc(9vw + 34.75rem), calc(100vw - 2rem)",
+  "panel/image": "(min-width: 60rem) calc(9vw + 34.75rem), calc(100vw - 2rem)",
+  "list/image": "(min-width: 60rem) calc(9vw + 34.75rem), calc(100vw - 2rem)",
+  "author/image": "(min-width: 30rem) calc(9vw + 32.25rem), calc(100vw - 2rem)",
+  "related/grid": "(min-width: 30rem) calc(9vw + 32.25rem), calc(100vw - 2rem)",
+  "photo": "12rem"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

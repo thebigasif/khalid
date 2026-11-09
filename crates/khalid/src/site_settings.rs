@@ -13,12 +13,17 @@ use khalid_api::content_store::BoxFuture;
 use khalid_api::entry_store::EntryStoreError;
 use khalid_api::resources::{AdminSettings, SettingsChange, TemplateSetting, TemplateValue};
 use khalid_api::settings_store::{SettingsError, SettingsStore};
-use khalid_core::{Config, ConfigError, Environment, OptionValue};
+use khalid_core::{
+    Config, ConfigError, Environment, Mode, OptionValue, PrivacySettings, SeoSettings, SiteCode,
+};
 use khalid_theme::Look;
 use toml_edit::{Array, DocumentMut, Item, Table, Value};
 
 use crate::atomic;
 use crate::site_config;
+
+mod parts;
+mod privacy;
 
 /// The settings of one site folder. Cloning shares it.
 #[derive(Debug, Clone)]
@@ -39,6 +44,10 @@ struct Core {
     default_language: String,
     languages: Vec<String>,
     template: TemplateSetting,
+    seo: SeoSettings,
+    mode: Mode,
+    code: SiteCode,
+    privacy: PrivacySettings,
 }
 
 impl Core {
@@ -69,6 +78,10 @@ impl Core {
                 .iter()
                 .map(|l| l.as_str().to_owned())
                 .collect(),
+            seo: config.seo().clone(),
+            mode: config.mode(),
+            code: config.code().clone(),
+            privacy: config.privacy().clone(),
         }
     }
 }
@@ -111,7 +124,11 @@ impl SiteSettings {
             mount: core.mount,
             default_language: core.default_language,
             languages: core.languages,
+            mode: mode_word(core.mode).to_owned(),
             template: core.template,
+            seo: parts::table(text, "seo")?,
+            privacy: privacy::privacy_table(text)?,
+            code: privacy::code_entries(text)?,
             updated_at: changed,
             restart_needed,
         })
@@ -164,6 +181,15 @@ impl SiteSettings {
         if let Some(template) = change.template {
             set_template(&mut document, template);
         }
+        if let Some(parts) = change.seo {
+            parts::set_parts(&mut document, "seo", parts)?;
+        }
+        if let Some(parts) = change.privacy {
+            privacy::set_privacy(&mut document, parts)?;
+        }
+        if let Some(entries) = change.code {
+            privacy::set_code(&mut document, entries)?;
+        }
         let text = document.to_string();
         self.checked(&text)?;
         atomic::replace(&self.path(), &text).map_err(EntryStoreError::new)?;
@@ -215,6 +241,15 @@ fn refused(error: ConfigError) -> SettingsError {
             problem: source.message().to_owned(),
         },
         error => SettingsError::Store(EntryStoreError::new(error)),
+    }
+}
+
+/// The word `site.toml` writes for `mode`.
+fn mode_word(mode: Mode) -> &'static str {
+    match mode {
+        Mode::Server => "server",
+        Mode::Static => "static",
+        Mode::Headless => "headless",
     }
 }
 

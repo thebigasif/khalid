@@ -12,7 +12,7 @@ focus_keyword: Core Web Vitals
 tags: [ladezeit, bilder]
 image:
   src: cover.svg
-  alt: Ein Tachometer mit der Nadel im grünen Bereich über dem Ladebalken einer Seite
+  alt: Ein Tachometer für die Core Web Vitals mit der Nadel im orangefarbenen guten Bereich über dem Ladebalken einer Seite
 ---
 
 Core Web Vitals sind drei Messwerte, mit denen Google beurteilt, wie sich eine Seite für Leser anfühlt. Wie schnell erscheint der Hauptinhalt? Wie schnell reagiert die Seite auf einen Klick? Und springt beim Laden etwas hin und her? Texter schreiben selten Code. Trotzdem stammt vieles, was einen Beitrag langsam macht, aus der Redaktion.

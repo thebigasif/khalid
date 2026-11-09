@@ -9,7 +9,8 @@ use crate::{Catalogue, LintError, RuleId, Severity, Thresholds};
 
 /// The settings from a site's `lint.toml`.
 ///
-/// The `[rules]` table maps a rule ID to `"block"`, `"warn"` or `"off"`. A
+/// The `[rules]` table maps a rule ID to `"block"`, `"warn"`, `"info"` or
+/// `"off"`. A
 /// rule the file does not name keeps its default. The `[thresholds]` table
 /// tunes the numbers behind the rules that measure (see [`Thresholds`]).
 ///

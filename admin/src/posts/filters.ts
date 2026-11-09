@@ -6,13 +6,31 @@ export const CHECKS = ["blocked", "clear"] as const;
 /** What the site tells search engines about a post. */
 export const INDEX = ["indexable", "noindex", "canonical_elsewhere", "not_live"] as const;
 
+/** The SEO filter: posts with no focus keyword, posts no other post links to, pillars. */
+export const SEO = ["no_keyword", "orphan", "pillar"] as const;
+
+/** An SEO filter. */
+export type SeoFilter = (typeof SEO)[number];
+
+const SEO_FILTERS: Record<SeoFilter, string> = {
+  no_keyword: "has_focus_keyword:false",
+  orphan: "orphan:true",
+  pillar: "pillar:true",
+};
+
 /** A checks filter. */
 export type Checks = (typeof CHECKS)[number];
 /** What search engines are told. */
 export type Index = (typeof INDEX)[number];
 
 /** The posts screen's address: its filters and page, each left out when not picked. */
-export type PostSearch = { checks?: Checks; stage?: Stage; index?: Index; page?: number };
+export type PostSearch = {
+  checks?: Checks;
+  stage?: Stage;
+  index?: Index;
+  seo?: SeoFilter;
+  page?: number;
+};
 
 /** How many rows one page of the posts screen holds. */
 export const PAGE_SIZE = 20;
@@ -36,6 +54,7 @@ export function postSearch(search: Record<string, unknown>): PostSearch {
     checks: oneOf(CHECKS, search.checks),
     stage: oneOf(STAGES, search.stage),
     index: oneOf(INDEX, search.index),
+    seo: oneOf(SEO, search.seo),
     page: Number.isInteger(page) && page > 1 ? page : undefined,
   };
 }
@@ -51,6 +70,9 @@ export function rowQuery(search: PostSearch): RowQuery {
   }
   if (search.index !== undefined) {
     parts.push(`index_status:${search.index}`);
+  }
+  if (search.seo !== undefined) {
+    parts.push(SEO_FILTERS[search.seo]);
   }
   const filter = parts.length === 0 ? undefined : parts.join("+");
   return { filter, order: "updated_at desc", limit: PAGE_SIZE, page: search.page ?? 1 };

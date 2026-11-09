@@ -13,6 +13,8 @@ fn lint_toml_sets_a_severity_per_rule() {
         config.severity(RuleId::new("no-author")),
         Some(Severity::Off)
     );
+    let tip = LintConfig::parse("[rules]\nno-date = \"info\"\n").unwrap();
+    assert_eq!(tip.severity(RuleId::new("no-date")), Some(Severity::Info));
     assert_eq!(
         config.severity(RuleId::new("no-title")),
         None,

@@ -15,7 +15,7 @@ related: [core-web-vitals, technical-seo-audit]
 tags: [page speed]
 image:
   src: cover.svg
-  alt: A video player frame with a finger tapping a button, and a stopwatch beside it split into three coloured parts
+  alt: A video player beside a stopwatch split into three phases, the slowest phase in orange
 ---
 
 Debugging INP starts with field data, not with a lab test. Field data tells you which pages feel slow to real readers and on which devices. Then you reproduce one slow tap in Chrome DevTools, split it into its three phases, and fix the phase that takes longest. These are our notes, next to a talk from the Chrome team.

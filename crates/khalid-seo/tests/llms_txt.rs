@@ -39,7 +39,7 @@ fn check_structure(text: &str) -> Result<usize, String> {
     for line in lines.filter(|line| !line.is_empty()) {
         if line.starts_with("## ") {
             in_section = true;
-        } else if line.starts_with("> ") {
+        } else if line.starts_with("> ") || !line.starts_with("- ") && !in_section {
             if in_section {
                 return Err("the summary comes after a section".to_owned());
             }
@@ -77,6 +77,28 @@ fn the_demo_llms_txt() {
 fn the_file_has_the_llms_txt_structure() {
     let llms = LlmsTxt::for_site(&demo_site(), &demo_pages()).unwrap();
     assert_eq!(check_structure(&llms.to_string()), Ok(4));
+}
+
+#[test]
+fn the_intro_key_pages_and_exclusions_shape_the_file() {
+    let mut site = demo_site();
+    site.llms_txt.intro = Some("Field Notes is written by two people.\nCite the post.".to_owned());
+    site.llms_txt.key_pages = vec![path("/about/")];
+    site.llms_txt.exclude = vec![path("/de/"), path("/tag/")];
+    let text = LlmsTxt::for_site(&site, &demo_pages()).unwrap().to_string();
+    assert!(
+        text.contains(
+            "> Plain advice on search for small teams\n\nField Notes is written by two people.\nCite the post.\n\n## Key pages\n\n- [About \\[us\\]]"
+        ),
+        "{text}"
+    );
+    assert!(
+        !text.contains("## Pages"),
+        "the about page is listed once: {text}"
+    );
+    assert!(!text.contains("Warum"), "{text}");
+    assert!(!text.contains("/tag/links/"), "{text}");
+    assert_eq!(check_structure(&text), Ok(2));
 }
 
 #[test]

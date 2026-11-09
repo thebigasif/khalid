@@ -1,0 +1,6 @@
+# Two listed terms, one in another word form ("blacklists"). A tip with
+# the words to use instead. The quote in the body holds "chairman", but
+# quotes are not the writer's prose, so it does not count.
+extends = "clean"
+body_text = "Internal links help readers find the next useful post on your site.\nThe chairman said links matter."
+prose_text = "Internal links help readers find the next useful post on your site.\nKeep blacklists of spam hosts, and run a sanity check before you publish."

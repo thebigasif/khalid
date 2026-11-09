@@ -12,7 +12,7 @@ focus_keyword: Core Web Vitals
 tags: [page speed, images]
 image:
   src: cover.svg
-  alt: A speed gauge with its needle in the green zone above a page loading bar
+  alt: A speed gauge for Core Web Vitals with its needle in the orange good zone, above a page loading bar
 ---
 
 Core Web Vitals are three measures Google uses to judge how a page feels to the person reading it: how fast the main content appears, how quickly the page responds to a tap, and whether things jump around while it loads. Writers rarely touch the code, yet most of what slows a blog post down is something a writer added.

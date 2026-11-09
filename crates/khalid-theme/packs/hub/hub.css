@@ -1,0 +1,107 @@
+/* Hub (docs/templates/hub.md): a creator's link-in-bio home. One narrow
+   column on a warm page: the creator's round photo and name, a stack of
+   large link tiles with a hard ink edge and an offset ink shadow, then
+   the latest posts as rows with a square picture. The same column and
+   the same hard edge carry every other page. The link stack part's own
+   rules come first (the build adds the parts this pack's templates
+   import); these set Hub's look over them. Every colour is a token or a
+   mix of tokens. */
+:root {
+  --hb-edge: var(--color-text);
+  --hb-lift: 0.3125rem;
+  --hb-lift-down: 0.1875rem;
+}
+
+/* The header: the name at the start and the menu at the end, across the
+   whole column over a hairline, however short the menu is. */
+.site-header { inline-size: 100%; padding-block: 1rem 0.5rem; border-block-end: 1px solid var(--color-border); }
+/* A long menu wraps onto its own line and still ends at the column's end. */
+.site-header > .nav-bar { flex: 1 1 auto; }
+.site-header > .nav-bar ul { justify-content: flex-end; }
+.site-header > .nav-menu { margin-inline-start: auto; }
+.site-name { font-size: 1.0625rem; letter-spacing: -0.01em; }
+.site-logo img { block-size: 2.25rem; inline-size: auto; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { text-decoration: underline; }
+.site-header nav a[aria-current] { box-shadow: inset 0 -2px var(--color-accent); }
+
+/* Buttons: the accent with the ink edge the tiles have. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 2px solid var(--hb-edge); border-radius: var(--radius); box-shadow: var(--hb-lift-down) var(--hb-lift-down) 0 var(--hb-edge); font: 600 0.9375rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 85%, var(--color-text)); text-decoration: none; }
+
+/* The profile: the photo in an ink ring over an accent disc, the name,
+   one line about the creator, and the numbers. */
+.profile { display: grid; justify-items: center; gap: 0.75rem; margin-block: clamp(1.25rem, 1rem + 1.5vw, 2.5rem) 2rem; text-align: center; }
+.profile-photo { margin-block-end: 0.5rem; }
+.profile-photo .avatar { inline-size: 7rem; block-size: 7rem; border: 2px solid var(--hb-edge); box-shadow: var(--hb-lift) var(--hb-lift) 0 var(--color-accent); }
+.profile-name { margin: 0; font-size: var(--text-h1); letter-spacing: -0.02em; line-height: 1.1; }
+.profile-intro { max-inline-size: 32rem; margin: 0; color: var(--color-muted); font-size: 1.0625rem; line-height: 1.5; }
+.profile-intro > * { margin: 0; }
+.profile .hero-stats { justify-self: stretch; grid-template-columns: repeat(auto-fit, minmax(min(100%, 6.5rem), 1fr)); gap: 0; max-inline-size: 28rem; margin: 0.5rem auto 0; }
+.profile .hero-stats div { align-items: center; padding: 0.25rem 0.75rem; border-inline-start: 0; }
+.profile .hero-stats div + div { border-inline-start: 1px solid var(--color-border); }
+.profile .hero-stats dd { font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem); }
+
+/* The link stack, Hub's signature: tiles with a hard edge that sit on an
+   offset ink shadow, like a stack of cards, and press down on hover. */
+.link-stack { margin-block-end: var(--space-section); }
+.link-stack ul { gap: 1rem; padding-inline-end: var(--hb-lift); }
+.link-tile { min-block-size: 3.75rem; border-color: var(--hb-edge); box-shadow: var(--hb-lift) var(--hb-lift) 0 var(--hb-edge); transition: translate 0.12s ease-out, box-shadow 0.12s ease-out; }
+.link-tile:hover { translate: 0.125rem 0.125rem; box-shadow: var(--hb-lift-down) var(--hb-lift-down) 0 var(--hb-edge); }
+.link-tile-lead { border-color: var(--hb-edge); }
+.link-label { font-family: var(--font-heading); }
+@media (prefers-reduced-motion: reduce) { .link-tile { transition: none; } .link-tile:hover { translate: none; } }
+
+/* Section labels: small capitals in the muted ink. */
+:is(.latest, .home-section, .related, .post-links, .mentions) > h2, .post-footer > h2 { margin-block: 0 0.75rem; color: var(--color-muted); font-family: var(--font-body); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; line-height: 1.3; text-transform: uppercase; }
+.latest, .home-section { margin-block-end: var(--space-section); }
+.home-section .view-all { margin-block: 0.75rem 0; }
+
+/* The latest posts: rows between hairlines, each with a square picture
+   in the ink edge beside the title, the date and the summary. */
+.cards-row { gap: 0; }
+.cards-row > li { border-block-start: 1px solid var(--color-border); }
+.cards-row > li:last-child { border-block-end: 1px solid var(--color-border); }
+.cards-row .card { padding-block: 1rem; }
+.cards-row .card:has(.image) { grid-template-columns: 4.5rem minmax(0, 1fr); align-items: start; }
+@media (min-width: 40rem) { .cards-row .card:has(.image) { grid-template-columns: 5.5rem minmax(0, 1fr); } }
+.cards-row .card .image img { inline-size: 100%; aspect-ratio: 1; object-fit: cover; border: 2px solid var(--hb-edge); border-radius: var(--radius); }
+.card :is(h2, h3, h4) { margin-block: 0 0.25rem; font-size: 1.125rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.card p { color: var(--color-muted); font-size: var(--text-small); line-height: 1.5; }
+.card-meta { font-size: var(--text-small); }
+
+/* A post: the category, the title, the dek, the byline, the picture. */
+.back-link { margin-block: 0.5rem 0; }
+.post-header { margin-block: 1rem 2rem; }
+.post-kicker { margin: 0 0 0.75rem; font-size: var(--text-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.post-kicker a { text-decoration: none; }
+.post-kicker a:hover { text-decoration: underline; }
+.post-header h1 { margin-block: 0 0.75rem; letter-spacing: -0.02em; line-height: 1.12; }
+.post-header .dek { margin-block: 0 1.25rem; color: var(--color-muted); font-size: 1.1875rem; line-height: 1.5; }
+.post-meta { font-size: 0.9375rem; }
+.post-meta .person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-date { margin-block: 0.25rem 0; }
+.post-date .reading-time::before { content: "· " / ""; }
+.updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-header .image img, .post-body img { border-radius: var(--radius); }
+.post-header .image img { border: 2px solid var(--hb-edge); }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer .tags a { padding-inline: 0.875rem; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-background); color: var(--color-text); font-size: var(--text-small); text-decoration: none; }
+.post-footer .tags a:hover { border-color: var(--hb-edge); }
+.post-links, .related, .mentions { margin-block-start: var(--space-section); }
+.post-links .link-stack { margin-block-end: 0; }
+
+/* The author's page and lists keep the column and the rows. */
+.author-photo img { border: 2px solid var(--hb-edge); }
+
+/* Boxes: the surface with the ink edge. */
+.cta-band, .newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 2px solid var(--hb-edge); border-radius: var(--radius); }
+.newsletter-slot { margin-block-end: var(--space-section); }
+
+/* The footer: one hairline, quiet links, set in the middle. */
+.site-footer { justify-items: center; text-align: center; }
+.site-footer ul { justify-content: center; }

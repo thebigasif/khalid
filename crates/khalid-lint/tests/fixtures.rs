@@ -68,6 +68,7 @@ fn line(finding: &Finding) -> String {
     let severity = match finding.severity() {
         Severity::Block => "block",
         Severity::Warn => "warn",
+        Severity::Info => "info",
         Severity::Off => "off",
     };
     let mut line = match &finding.location().subject {
@@ -142,11 +143,15 @@ fn every_fixture_produces_exactly_its_expected_findings() {
     let posts = folders(root).into_iter().map(|f| (run(&f), f));
     let sites = folders(site_root).into_iter().map(|f| (run_site(&f), f));
     let mut covered = BTreeSet::new();
+    let mut wrong = Vec::new();
     for ((got, want), folder) in posts.chain(sites) {
-        assert_eq!(got, want, "fixture {}", folder.display());
         let name = folder.file_name().unwrap().to_string_lossy().into_owned();
+        if got != want {
+            wrong.push(format!("{name}\n  got:  {got:?}\n  want: {want:?}"));
+        }
         covered.insert(name);
     }
+    assert!(wrong.is_empty(), "fixtures:\n{}", wrong.join("\n"));
     let catalogue = Catalogue::builtin().unwrap();
     for (rule, _) in &catalogue {
         assert!(covered.contains(rule.as_str()), "{rule} has no fixture");

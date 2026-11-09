@@ -1,0 +1,35 @@
+# Margin: one writer's personal site of essays. Warm paper, dark ink and
+# one brick-red accent for the ruled margin line and the note numbers.
+# A book serif for everything, with the margin notes in its italic. The
+# measure is the text column and the margin together: 35rem of text,
+# a 3rem gutter and a 14rem margin.
+[colors]
+background = "#fbf9f4"
+surface = "#f2eee5"
+text = "#1f1c18"
+muted = "#5d574e"
+link = "#8f3424"
+accent = "#a33d2c"
+border = "#e0d9cc"
+
+[fonts]
+heading = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, \"Book Antiqua\", Georgia, serif"
+body = "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, \"Book Antiqua\", Georgia, serif"
+
+[shape]
+radius = "0.125rem"
+measure = "52rem"
+
+[type]
+body = "1.125rem 1.25rem"
+h1 = "2.125rem 2.875rem"
+h2 = "1.5rem 1.75rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.9375rem"
+line_height = 1.6
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "3.5rem"

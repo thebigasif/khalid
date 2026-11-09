@@ -12,7 +12,7 @@ focus_keyword: content ROI
 tags: [measurement, planning]
 image:
   src: cover.svg
-  alt: A balance scale with a clock on the lighter pan and a stack of coins on the heavier pan
+  alt: A clock for the hours put in, an arrow, and three stacks of coins rising, the tallest in orange
 ---
 
 Content ROI is the return a blog post brings back for the time and money it cost to make. You do not need a data team or an expensive dashboard to measure it. You need a spreadsheet, an honest count of hours, and an agreement on what a good result is worth.

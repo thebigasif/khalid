@@ -18,6 +18,7 @@ const PATHS = {
   key: "M8 21a5 5 0 1 1 3.5-8.5L20 4M16 8l3 3M13.5 10.5l2 2",
   bolt: "M13 2 4 14h7l-1 8 9-12h-7z",
   shield: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z",
+  lock: "M6 11h12v10H6zM8 11V8a4 4 0 0 1 8 0v3",
   list: "M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01",
   trash: "M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3",
   account:
@@ -32,6 +33,9 @@ const PATHS = {
   alert:
     "M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z",
   clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2",
+  target: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 12h.01",
+  table: "M4 5h16v14H4zM4 10h16M4 15h16M10 5v14",
+  steps: "M4 20h5v-5h5v-5h5V5",
   calendar: "M4 6h16v14H4zM4 10h16M8 3v4M16 3v4",
 } as const;
 

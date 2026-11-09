@@ -182,6 +182,7 @@ fn sample_site(source: Source<'_>) -> RenderSite {
         locale: source.locale.clone(),
         home: PAGE.to_owned(),
         stylesheet: STYLESHEET.to_owned(),
+        body_font: None,
         nav: Nav {
             primary: vec![NavLink {
                 label: "Sample post".to_owned(),
@@ -200,6 +201,7 @@ fn sample_site(source: Source<'_>) -> RenderSite {
         search: None,
         script: None,
         subscribe: None,
+        breadcrumbs: khalid_render::BreadcrumbStyle::default(),
     }
 }
 
@@ -216,6 +218,7 @@ fn sample_post(author: &str, locale: &Locale) -> RenderPost {
         updated: None,
         updated_note: None,
         dek: None,
+        facts: Vec::new(),
         reading_time: ReadingTime::of(&body, locale),
         authors: vec![Person {
             name: author.to_owned(),

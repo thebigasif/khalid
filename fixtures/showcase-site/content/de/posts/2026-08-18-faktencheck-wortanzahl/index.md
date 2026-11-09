@@ -11,7 +11,7 @@ focus_keyword: Wortanzahl
 tags: [forschung, schreiben]
 image:
   src: cover.svg
-  alt: Eine Waage mit einem hohen Stapel Seiten auf der einen Seite und einer einzelnen kurzen Seite mit Häkchen auf der anderen
+  alt: Eine Waage im Gleichgewicht, auf der einen Schale ein hoher Stapel Seiten, auf der anderen eine einzelne kurze orangefarbene Seite mit Häkchen
 schema: '{"@context":"https://schema.org","@type":"ClaimReview","url":"https://www.example.com/blog/de/faktencheck-wortanzahl/","inLanguage":"de","claimReviewed":"Google rankt längere Beiträge höher.","itemReviewed":{"@type":"Claim","name":"Google rankt längere Beiträge höher."},"author":{"@type":"Organization","name":"Larkspur Studio","url":"https://www.example.com/blog/","logo":"https://www.example.com/blog/about/logo.svg"},"reviewRating":{"@type":"Rating","ratingValue":1,"bestRating":5,"worstRating":1,"alternateName":"Falsch"},"datePublished":"2026-08-18"}'
 ---
 

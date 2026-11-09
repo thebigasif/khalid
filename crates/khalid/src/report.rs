@@ -57,6 +57,12 @@ pub(crate) fn failure(output: Output, message: &UserMessage, exit: Exit) -> Exit
     finish(written, exit)
 }
 
+/// Prints `line`, a notice from a running server, to standard error, which
+/// `--json` leaves to people. A terminal that cannot be written to loses it.
+pub(crate) fn notice(line: &str) {
+    let _ = writeln!(io::stderr().lock(), "{line}");
+}
+
 fn json_line(body: &impl Serialize) -> io::Result<()> {
     let mut out = io::stdout().lock();
     serde_json::to_writer(&mut out, body)?;

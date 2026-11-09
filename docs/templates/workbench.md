@@ -1,3 +1,8 @@
+---
+title: "Workbench"
+order: 100
+---
+
 # Workbench
 
 Workbench is the template for blogs that review and compare tools or products. It is built for the post that weighs five options against each other: a table that shows them at a glance, a section per option with its pros and cons and its price, and a plain list of further reading at the end.
@@ -17,32 +22,55 @@ It suits writing with clear sections and tables. For long essays with few headin
 name = "workbench"
 ```
 
-Your colours, fonts and logo still come from theme sync. Workbench draws no colour of its own: labels, borders and panels are your tokens, and light tints of your accent colour.
+Your colours, fonts and logo still come from theme sync. Before you sync, Workbench uses its own: a grey-white bench, graphite text and one verdict green, in your system's sans and code fonts. Labels, rules and panels always use your tokens.
 
 ## What the front page shows
 
-1. Your blog's name, and a "Categories" button that opens a menu of your categories. The menu works without scripts.
-2. The newest post marked `featured: true`, large.
-3. "Latest posts": the next three posts as rows, each with its category, title, date and reading time.
+1. Your blog's name in very large type on squared paper, over a thick rule, and a "Categories" button that opens a menu of your categories. The menu works without scripts.
+2. The newest post marked `featured: true`, large, under a green rule. Its picture keeps a 16 by 9 shape. When the post has facts, its full score panel shows under the summary (see "Score panels" below).
+3. "Latest posts": the next five posts as numbered rows, 01 to 05, each with its category, title, date and reading time. A post with facts also shows its score and meter, without the other figures. On a wide screen they sit beside the featured post.
 4. The newsletter form.
-5. "More posts": the rest as picture cards, up to three in a row.
+5. "More posts": the rest as picture cards in ruled cells, like one sheet, up to four in a row on a wide screen. A card for a post with facts ends in its score panel, and the panels line up at the foot of each row. On a phone the cards sit two across and show the score and meter only. Past the sixth card they become plain rows, each with a small ruled score chip under the date.
 6. The newsletter form again, then the page links and "See all posts", which opens the archive.
 
 ## What a post shows
 
 1. The category as a small label, the title, and the post's `description` as a subtitle.
 2. The writers, the date and the reading time.
-3. The contents in an open box at the top.
-4. The body. Wide tables can grow past the text, up to 60rem on large screens, so a comparison table has room. The header row sits on your surface colour.
-5. A closing line in italics: who wrote it, when it was published and when it was updated.
-6. Share links, the author box, the newsletter form, and six related posts as plain links.
+3. The score panel, when the post has facts, under the byline and above the lead picture.
+4. The contents in an open box at the top.
+5. The body. Each section opens under a green rule. A paragraph that starts with a bold label, such as **Price:**, shows the label in the code font, like a line on a spec sheet. Wide tables can grow past the text, up to 60rem on large screens, so a comparison table has room. The header row sits on your surface colour, and on a phone the first column stays in place while the table scrolls sideways.
+6. A closing line in italics: who wrote it, when it was published and when it was updated.
+7. Share links, the author box, the newsletter form, and six related posts as plain links.
+
+## Score panels
+
+A review can list its tested figures as `facts` in its front matter. Workbench shows them as a score panel, like a line on a test lab's data sheet:
+
+- The first fact is set large in the code font. When it is a score out of ten (a plain number from 0 to 10, such as `8` or `8.8`), it gets a small "/10" and a meter of ten steps, filled to the score in the verdict green. Any other first fact, such as a client's name, shows as plain text with no meter.
+- The next three facts sit under a rule as a small grid of figures: the label in spaced capitals, the value in the code font.
+
+```yaml
+---
+title: "Wren D7 review"
+facts:
+  - label: Score
+    value: "8.8"
+  - label: Gain needed
+    value: "58 dB"
+  - label: Weight
+    value: "380 g"
+---
+```
+
+Workbench picks facts by their place in the list, not by their label, so the labels can be in any language. A post with no facts, such as a guide, shows no panel. The panel shows on the front page and on the post. Category, tag and author pages use the shared cards, so they show no panel. See [Facts on a post](../templates.md#facts-on-a-post) for the limits.
 
 ## Writing a comparison post
 
 Workbench styles the blocks a comparison needs. Write them in your post as usual:
 
 - A criteria list: a list where each item starts with **bold words**.
-- The table: a normal markdown table. Wrap a long one in `:::table{fold=8}` so it shows eight rows and a line to open the rest.
+- The table: a normal markdown table. Wrap a long one in `:::table{fold=8}` so it shows eight rows and a line to open the rest. To mark the winner in a row, write its cell all in **bold**: Workbench tints that cell in your accent colour.
 - Each option's section: a `##` heading, then `:::proscons` for its pros and cons, then `:::review` for its rating, or a line with its price in **bold**.
 - The questions readers ask: `::::faq`.
 - Your call to action: `::cta` on its own line, once you have `[template.cta]`.
@@ -94,18 +122,54 @@ The newsletter form shows only when your blog can take sign-ups: `mode = "server
 
 ## Sizes
 
-Workbench sets these defaults. A value in your `theme/tokens.toml` wins.
+Workbench sets these defaults in `crates/khalid-theme/packs/workbench/tokens.toml`. A value in your `theme/tokens.toml` wins.
 
 | Token | Workbench |
 |---|---|
-| Body text | 1.0625rem to 1.125rem |
-| `h1`, `h2`, `h3` | 2.25rem to 3rem, 1.625rem to 2rem, 1.25rem |
-| Line height | 1.65 |
-| Line length (`measure`) | 42rem |
-| Corners (`radius`) | 0.625rem |
+| Colours | background `#f7f7f5`, surface `#ecedea`, text `#1a1c1e`, muted `#52575c`, link `#0d6a43`, accent `#11794c`, border `#d3d6d0` |
+| Fonts | the system sans for headings and text, the system code font for labels, dates and prices |
+| Body text | 1.0625rem to 1.1875rem |
+| `h1`, `h2`, `h3`, `h4` | 2.25rem to 3.5rem, 1.5rem to 2rem, 1.1875rem to 1.375rem, 1.0625rem to 1.125rem |
+| Small text | 0.875rem |
+| Line height | 1.6 |
+| Line length (`measure`) | 38rem, about 70 letters a line |
+| Corners (`radius`) | 0.125rem, nearly square |
+| Spacing | a 0.5rem step, 3.5rem between sections |
+| Frame | 84rem for the header, the lists and the footer |
 
 ## Good to know
 
 - The "Categories" menu needs your categories on the front page. Khalid does not fill them in yet, so the menu stays hidden until it does.
 - The category on the rows under "Latest posts" and above a post's title works the same way: it shows once Khalid fills in a post's category.
 - Workbench reads with scripts off, and adds no script.
+
+## Design
+
+This is Workbench's design brief. It fixes how the template should look, so every change to its stylesheet keeps the same character. Your own colours and fonts from theme sync still replace the ones named here.
+
+**Who it is for.** A team that tests tools or products and publishes "best of" lists and head-to-head comparisons. Readers scan a table first and read the detail second.
+
+**The one idea.** A test lab's bench sheet. Heavy, tight headings over thick rules, squared paper behind the name, numbered rows, ruled cells and every fact in the code font. You should be able to name it from a small picture of its front page.
+
+**Reference blogs**, by kind. Their pictures are kept with the design notes, outside the repository.
+
+- A product testing lab's review site. A count of products bought and tested above every guide, each pick under a heavy accent rule with its name, its test pictures and a row of scores, the specs as short labelled pairs, and a note on how the lab tests.
+- A consumer technology review site. Buying guides with a quick list of picks, specs tables and ratings, and lists of reviews as rows.
+
+| Part | Workbench |
+|---|---|
+| Type pairing | A technical grotesque for headings over a plain engineering sans for text, with mono details: prices, ratings, dates and labels. With no theme, the pack uses the system sans and the system mono. |
+| Type scale | Display type is heavy (800) with tight tracking (-0.04em to -0.05em). The front page's name runs from 2.5rem on a phone to 6.5rem on a wide screen, a list page's title to 5rem, a post's title to 3.75rem (5rem from 1280 px) and the pick's title to 3.25rem. |
+| Front page structure | The masthead owns the top: the name on squared paper over a thick rule. Below it, a lead grid: the pick on the left, a numbered rail of the five newest posts on the right. Then the rest as ruled cells of one sheet: twelve picture cells on a wide screen, then the sheet's ruled rows, two across, each a title, its date and its category. The front page still links every post. |
+| Colour | A grey-white bench ground, graphite text and one verdict colour (green) for picks, labels and pros. Panels a shade darker than the ground. Workbench now has a full palette of its own. |
+| Spacing rhythm | A base step of 0.5rem on a strict grid. Ruled sections 3.5rem apart. Table rows 0.75rem high in padding. |
+| Frame at 1440 px and wider | At least **80rem**. A comparison table may grow past the text to 60rem, so the frame leaves it room. |
+| Post at 1280 px and wider | A spec sheet across the frame: the title (up to 5rem) and a wider lead picture (2 by 1) span 61rem; below them the contents box sits in a rail that stays in view beside the text. The text grows to 1.25rem and its measure to 40rem, so a line still holds 60 to 75 letters. |
+| Cards and lists | Picture cards with square corners in ruled cells that share their rules, the category as a mono label, the title, the date. The featured picture keeps a fixed ratio (16 by 9) and never fills the window: on a list page it sits beside its words. |
+| Phone header and menu | The blog's name and the "Categories" button on one row; the menu opens below with no script. The site menu is one row you can swipe, its last 2rem faded so it reads as more to see. |
+| Phone lists | The first six cells two across, as a contact sheet: picture, date and title. Every later post is a ruled row: the title and the date small. The 40-post demo's front page stays near 6,000 px. |
+| Tabs and indexes at 390 px | Topic tabs as one row you can swipe. A wide comparison table scrolls sideways inside its frame, with the first column fixed. |
+| Link, card and focus states | Links underlined in the verdict colour. A card's top rule turns the verdict colour on hover. Focus is a 2 px ring in the text colour. |
+| Signature details | The score panel on every review that has facts: the score large in the code font with a ten-step meter, then up to three tested figures. The comparison table as the hero of a post: header row on the panel colour, the winning cell marked. Pros and cons as two ruled columns with plus and minus marks. Mono labels for prices and ratings, and for the bold label that opens a paragraph. Numbered rows (01, 02) in the newest posts, the contents and the related links. |
+
+**Sample brand.** The demo uses `fixtures/showcase-brands/workbench/theme/`: verdict green (`#10744a` links, `#117d50` accent) on a grey-white bench (`#fafaf8`), Space Grotesk for headings and IBM Plex Sans for text (cut to the demo's letters and served as "Workbench Sans", as its licence asks of a cut copy; see "Fonts" in `docs/standards/performance.md`), and a hex-and-check mark.

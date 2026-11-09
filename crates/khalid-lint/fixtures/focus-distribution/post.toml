@@ -1,0 +1,11 @@
+# About 300 words. The keyword appears twice, both in the opening tenth,
+# and never again: nine of ten parts lack it.
+extends = "focus-clean"
+body_text = """
+Internal links help readers find the next useful post on your site.
+Where internal links belong
+Put them where a reader asks what comes next. A guide to baking bread might point to a post about flour, and a review of a camera might point to a lesson on light. Short words that name the target work best, because readers click when they know where they will land. Search engines follow the same path and learn how your pages relate to each other. One good pointer in each section is plenty for most posts.
+Too many pointers in a row look like a list of ads, and readers stop trusting them. Check old posts from time to time and add a pointer to new work, so the whole site stays fresh for everyone who visits. Keep a short list of your best pages and send readers there often. A page that nobody points to is hard to find, both for people and for search engines that crawl the site.
+When you plan a new post, write down three older pages it could point to before you start. Then write the post and place each pointer where the reader is most curious. Read the post aloud once it is done, and remove any pointer that breaks the flow of a sentence. Ask a friend to click through the post and tell you where they got lost. Small changes like these make a site easier to explore, and they take only a few minutes for each post you publish.
+Last, look at the numbers once a month. Pages that readers reach often deserve a fresh look, a better picture and a clear next step. Pages that nobody reaches need a home: a menu, a list of guides or a mention in a newer post. Over a year, these habits turn a pile of posts into a site that guides each visitor from one answer to the next.
+"""

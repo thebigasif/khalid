@@ -1,0 +1,21 @@
+{#- Channel's lists (playlist, tag, series, archive, date and collection
+    pages): the list's name and intro, such as a playlist's description,
+    then its posts as thumbnail cards with the play bar. A series page
+    numbers them, "Part 1" and on. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "sections/video_grid.html" import video_grid -%}
+<header class="list-header">
+{% block kind %}<p class="list-kind">{{ t.channel_videos }}</p>
+{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{{ video_grid(page.posts, 2, page.numbered, sizes=slot_sizes("grid")) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

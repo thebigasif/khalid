@@ -33,6 +33,12 @@ fn copy_dir(from: &Path, into: &Path) {
 /// `reader` appended to `site.toml`, built into `out`.
 #[cfg(test)]
 fn build(reader: &str) -> (tempfile::TempDir, PathBuf) {
+    build_with(reader, "")
+}
+
+/// Builds like [`build`], with `more` added to the end of the sitemap post.
+#[cfg(test)]
+fn build_with(reader: &str, more: &str) -> (tempfile::TempDir, PathBuf) {
     let temp = tempfile::tempdir().unwrap();
     let site = at(temp.path(), "site");
     let demo = at(
@@ -42,15 +48,13 @@ fn build(reader: &str) -> (tempfile::TempDir, PathBuf) {
     copy_dir(&demo, &site);
     let post = at(&site, "content/en/posts/2026-09-28-what-a-sitemap-does.md");
     let text = fs::read_to_string(&post).unwrap();
-    fs::write(
-        &post,
-        text.replacen(
-            "\nauthor: lena-vogt\n",
-            "\nauthor: lena-vogt\nreviewed_by: asif\n",
-            1,
-        ),
-    )
-    .unwrap();
+    let mut text = text.replacen(
+        "\nauthor: lena-vogt\n",
+        "\nauthor: lena-vogt\nreviewed_by: asif\n",
+        1,
+    );
+    text.push_str(more);
+    fs::write(&post, text).unwrap();
     let settings = at(&site, "site.toml");
     let mut toml = fs::read_to_string(&settings).unwrap();
     toml.push_str(reader);
@@ -215,6 +219,17 @@ fn a_post_lists_the_posts_that_link_to_it() {
     let list = mentions(&out, "why-internal-links-matter/index.html").expect("mentions");
     assert!(!list.contains("why-internal-links-matter/"), "never itself");
     insta::assert_snapshot!(list);
+}
+
+#[test]
+fn a_labelled_wikilink_in_a_table_cell_links_and_is_mentioned() {
+    let table = "\n| Page | Read next |\n| --- | --- |\n| Titles | [[how-to-write-a-title-tag|title tags]] |\n";
+    let (_temp, out) = build_with("", table);
+    let post = page(&out, "what-a-sitemap-does/index.html");
+    let cell = "<td><a href=\"/blog/how-to-write-a-title-tag/\">title tags</a></td>";
+    assert!(post.contains(cell), "{post}");
+    let list = mentions(&out, "how-to-write-a-title-tag/index.html").expect("mentions");
+    assert!(list.contains("/blog/what-a-sitemap-does/"), "{list}");
 }
 
 #[test]

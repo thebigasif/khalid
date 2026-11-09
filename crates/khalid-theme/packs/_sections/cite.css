@@ -1,0 +1,8 @@
+/* Section part: cite box (templates/sections/cite.html). The reference in
+   a box on the surface, then the BibTeX entry folded under it. */
+.cite-box { margin-block: 2.5rem; padding: 1.25rem 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); }
+.cite-box h2 { margin: 0 0 0.75rem; font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.cite-text { margin: 0; font-size: 0.9375rem; line-height: 1.55; user-select: all; }
+.cite-bibtex { margin-block-start: 1rem; }
+.cite-bibtex summary { color: var(--color-link); font-size: var(--text-small); font-weight: 600; cursor: pointer; }
+.cite-bibtex pre { margin: 0.75rem 0 0; background: var(--color-background); border: 1px solid var(--color-border); font-size: 0.8125rem; line-height: 1.5; white-space: pre; }

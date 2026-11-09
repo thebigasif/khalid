@@ -1,0 +1,80 @@
+---
+source: crates/khalid/tests/template_margin.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="mg-band mg-intro">
+<div class="mg-text">
+<h1>Field Notes on SEO</h1>
+<p class="mg-intro-text">Essays on search, written slowly.</p>
+</div>
+<div class="mg-side mg-writer">
+<p class="mg-writer-name"><a href="/blog/authors/lena-vogt/">Lena Vogt</a><span>Technical SEO editor</span></p>
+</div>
+</header>
+<section class="mg-band mg-letter" aria-labelledby="mg-letter-title">
+<div class="mg-text">
+<h2 id="mg-letter-title">New essays by email</h2>
+<p>One letter a month with the new essay.</p>
+<p><a class="button" href="https://www.example.com/letter/">Get the letter</a></p>
+</div>
+<ul class="mg-side mg-notes" role="list">
+<li>Once a month</li>
+<li>Free, with no adverts</li>
+</ul>
+</section>
+<section class="mg-section" aria-labelledby="mg-essays">
+<h2 id="mg-essays">Essays</h2>
+<ul class="mg-rows" role="list">
+<li class="mg-band">
+<div class="mg-text">
+<h3><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h3>
+<p>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+</div>
+<div class="mg-side"><p class="mg-note"><time datetime="2026-10-12">12 October 2026</time>
+<span>1 min read</span>
+<a href="/blog/category/content-strategy/">Content strategy</a></p></div>
+</li>
+<li class="mg-band">
+<div class="mg-text">
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+</div>
+<div class="mg-side"><p class="mg-note"><time datetime="2026-10-05">5 October 2026</time>
+<span>2 min read</span>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p></div>
+</li>
+<li class="mg-band">
+<div class="mg-text">
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+</div>
+<div class="mg-side"><p class="mg-note"><time datetime="2026-09-28">28 September 2026</time>
+<span>1 min read</span>
+<a href="/blog/category/technical-seo/">Technical SEO</a></p></div>
+</li>
+<li class="mg-band">
+<div class="mg-text">
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+</div>
+<div class="mg-side"><p class="mg-note"><time datetime="2026-09-21">21 September 2026</time>
+<span>1 min read</span>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p></div>
+</li>
+<li class="mg-band">
+<div class="mg-text">
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+</div>
+<div class="mg-side"><p class="mg-note"><time datetime="2026-09-14">14 September 2026</time>
+<span>1 min read</span>
+<a href="/blog/category/on-page-seo/">On-page SEO</a></p></div>
+</li>
+</ul>
+</section>

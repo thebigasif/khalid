@@ -1,5 +1,5 @@
-//! Reading the layout blocks: pull quote, pros and cons, and the folding
-//! table.
+//! Reading the layout blocks: key takeaways, pull quote, pros and cons,
+//! and the folding table.
 
 use std::num::NonZeroU8;
 
@@ -34,6 +34,23 @@ const DEFAULT_FOLD: NonZeroU8 = match NonZeroU8::new(8) {
     Some(fold) => fold,
     None => NonZeroU8::MIN,
 };
+
+/// Reads key takeaways: the words over them, and one markdown list as the
+/// body.
+pub(super) fn takeaways(attributes: &Attributes, body: &[&str]) -> Result<BlockKind, BlockError> {
+    attributes.only("takeaways", &["title"], "title")?;
+    let blocks = markdown_blocks(body);
+    if !matches!(blocks.as_slice(), [only] if only.kind == BlockKind::List) {
+        return Err(BlockError::Value {
+            line: attributes.line,
+            problem: "key takeaways hold one list, a line starting with - for each point",
+        });
+    }
+    let title = attributes.get("title");
+    Ok(BlockKind::Takeaways {
+        title: title.unwrap_or_else(|| "Key takeaways".to_owned()),
+    })
+}
 
 /// Reads a pull quote: who said it, and its words as the body.
 pub(super) fn pull_quote(attributes: &Attributes, body: &[&str]) -> Result<BlockKind, BlockError> {

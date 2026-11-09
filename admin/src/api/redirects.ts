@@ -46,6 +46,12 @@ export function removeRedirect(id: number): Promise<Reply<null>> {
   return call(`/redirects/${id}/`, { method: "DELETE" }, nothing);
 }
 
+/** Stores one redirect from `from`: a 301 to `to`, or a 410 when `to` is `null`. */
+export function addRedirect(from: string, to: string | null): Promise<Reply<StoredRedirect[]>> {
+  const redirect = to === null ? { from, status: 410 } : { from, to, status: 301 };
+  return call("/redirects/", sending("POST", { redirects: [redirect] }), redirects);
+}
+
 /** Stores every redirect in a CSV list, or none; gives back those stored. */
 export function importRedirects(csv: string): Promise<Reply<StoredRedirect[]>> {
   const init = { method: "POST", headers: { "Content-Type": "text/csv" }, body: csv };

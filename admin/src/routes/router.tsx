@@ -18,6 +18,7 @@ import { Analytics } from "./Analytics";
 import { AuditLog } from "./AuditLog";
 import { AuthorPage } from "./AuthorPage";
 import { Authors } from "./Authors";
+import { BulkSeo } from "./BulkSeo";
 import { Calendar } from "./Calendar";
 import { Comments } from "./Comments";
 import { Dashboard } from "./Dashboard";
@@ -30,9 +31,11 @@ import { MediaDetails } from "./MediaDetails";
 import { NewPost } from "./NewPost";
 import { Passkeys } from "./Passkeys";
 import { Posts } from "./Posts";
+import { Privacy } from "./Privacy";
 import { Redirects } from "./Redirects";
 import { SchemaTemplates } from "./SchemaTemplates";
 import { SearchConsole } from "./SearchConsole";
+import { SeoSettings } from "./SeoSettings";
 import { Serpdad } from "./Serpdad";
 import { SignIn } from "./SignIn";
 import { Site } from "./Site";
@@ -41,6 +44,7 @@ import { Team } from "./Team";
 import { Trash } from "./Trash";
 import { WebhookActivity } from "./WebhookActivity";
 import { Webhooks } from "./Webhooks";
+import { Workouts } from "./Workouts";
 
 const root = createRootRoute({ errorComponent: RouteError });
 
@@ -199,6 +203,30 @@ const look = createRoute({ getParentRoute: () => signedIn, path: "/look", compon
 // The whole blog's settings; post settings live in the editor.
 const site = createRoute({ getParentRoute: () => signedIn, path: "/settings", component: Site });
 
+// Every [seo] setting of site.toml, saved through the same settings API.
+const seo = createRoute({ getParentRoute: () => signedIn, path: "/seo", component: SeoSettings });
+
+// The [privacy] table and the categories of [code], saved through the same settings API.
+const privacy = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/privacy",
+  component: Privacy,
+});
+
+// Many posts' SEO titles, descriptions and focus keywords in one table.
+const bulkSeo = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/bulk-seo",
+  component: BulkSeo,
+});
+
+// Step-by-step link work: orphaned posts and links to each cluster's main post.
+const workouts = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/workouts",
+  component: Workouts,
+});
+
 const serpdad = createRoute({
   getParentRoute: () => signedIn,
   path: "/serpdad",
@@ -234,6 +262,10 @@ const routeTree = root.addChildren([
     handOver,
     look,
     site,
+    seo,
+    privacy,
+    bulkSeo,
+    workouts,
     account,
     serpdad,
   ]),

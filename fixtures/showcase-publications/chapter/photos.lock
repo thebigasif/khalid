@@ -1,0 +1,149 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2018-06-05-small-hours/lead.jpg"
+sha256 = "1228cabab7d243e7a6544a507b33030f569842759db5939e21d5309c43e539a2"
+source = "https://commons.wikimedia.org/wiki/File:Lightbulb_and_flowers,_shop_window_at_night_(30169973232).jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Lightbulb and flowers, shop window at night (30169973232) by James Petts from London, England, via Wikimedia Commons"
+title = "Lightbulb and flowers, shop window at night (30169973232)"
+creator = "James Petts from London, England"
+openverse = "commons:File:Lightbulb and flowers, shop window at night (30169973232).jpg"
+needs_credit = true
+size = "1600x2133"
+
+[[photos]]
+file = "en/posts/2021-03-02-field-guide-leaving-essays/lead.jpg"
+sha256 = "8bcb7b7a896788a3006376d433c5c5bf2b0b68e06ecd3fbeba91b121fe8a54e4"
+source = "https://commons.wikimedia.org/wiki/File:Foggy_morning_near_Newton_Hill_-_geograph.org.uk_-_8246072.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Foggy morning near Newton Hill - geograph.org.uk - 8246072 by Christine Johnstone, via Wikimedia Commons"
+title = "Foggy morning near Newton Hill - geograph.org.uk - 8246072"
+creator = "Christine Johnstone"
+openverse = "commons:File:Foggy morning near Newton Hill - geograph.org.uk - 8246072.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2023-04-11-salt-road/lead.jpg"
+sha256 = "13223a4c144bca713161168a4091cfb3f15c2aa66406ac0c7fdfa3da3246332c"
+source = "https://commons.wikimedia.org/wiki/File:Lone_Cypress_in_Fog,_Pebble_Beach,_CA_97_(33379075116).jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Lone Cypress in Fog, Pebble Beach, CA 97 (33379075116) by inkknife_2000 (7.5 million views +), via Wikimedia Commons"
+title = "Lone Cypress in Fog, Pebble Beach, CA 97 (33379075116)"
+creator = "inkknife_2000 (7.5 million views +)"
+openverse = "commons:File:Lone Cypress in Fog, Pebble Beach, CA 97 (33379075116).jpg"
+needs_credit = true
+size = "1600x1735"
+
+[[photos]]
+file = "en/posts/2026-07-08-ferry-crossing/lead.jpg"
+sha256 = "a6e6fc3b67c2d0a33ad84f911f0c8c88e9210243082864e2cac272c53884259f"
+source = "https://commons.wikimedia.org/wiki/File:Foggy_sea_-_west_coast_(32882789145).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Foggy sea - west coast (32882789145) by Theo Crazzolara, via Wikimedia Commons"
+title = "Foggy sea - west coast (32882789145)"
+creator = "Theo Crazzolara"
+openverse = "commons:File:Foggy sea - west coast (32882789145).jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-08-18-how-novels-start/lead.jpg"
+sha256 = "72439835810e3d0df986c0f7a463c2825a9057dce7968663ff201d42214e7984"
+source = "https://commons.wikimedia.org/wiki/File:Writing_with_a_fountain_pen_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Writing with a fountain pen (Unsplash) by Aaron Burden aaronburden, via Wikimedia Commons"
+title = "Writing with a fountain pen (Unsplash)"
+creator = "Aaron Burden aaronburden"
+openverse = "commons:File:Writing with a fountain pen (Unsplash).jpg"
+needs_credit = false
+size = "1600x1201"
+
+[[photos]]
+file = "en/posts/2026-09-15-orchard-year-novel/lead.jpg"
+sha256 = "f466cb6cf6b45d9ef171e7153edc74ab6a2be84f1ce5936e8ad0e8137ff8746b"
+source = "https://commons.wikimedia.org/wiki/File:Frozen_orchard_path_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Frozen orchard path (Unsplash) by Jon Stutfield stutters, via Wikimedia Commons"
+title = "Frozen orchard path (Unsplash)"
+creator = "Jon Stutfield stutters"
+openverse = "commons:File:Frozen orchard path (Unsplash).jpg"
+needs_credit = false
+size = "1600x2133"
+
+[[photos]]
+file = "en/posts/2026-09-22-first-frost/lead.jpg"
+sha256 = "a95bd7be488cfd2c098348c3a70e0b3b66d9a0e852d3fc08e9360d697bc28df3"
+source = "https://commons.wikimedia.org/wiki/File:Apple_trees_covered_with_ice.JPG"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Apple trees covered with ice by Haneburger, via Wikimedia Commons"
+title = "Apple trees covered with ice"
+creator = "Haneburger"
+openverse = "commons:File:Apple trees covered with ice.JPG"
+needs_credit = false
+size = "1600x1071"
+
+[[photos]]
+file = "en/posts/2026-10-01-winter-reading-ludlow/lead.jpg"
+sha256 = "08bece12dc6160ebf23b675e980805869b5d85cb1a96538676ec886d7f6f1e17"
+source = "https://commons.wikimedia.org/wiki/File:Graz_University-Library_reading-room.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-06: http://creativecommons.org/licenses/by-sa/3.0/"
+credit = "Graz University-Library reading-room by Dr. Marcus Gossler, via Wikimedia Commons"
+title = "Graz University-Library reading-room"
+creator = "Dr. Marcus Gossler"
+openverse = "commons:File:Graz University-Library reading-room.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-09-cider-farm-notes/lead.jpg"
+sha256 = "b84a0055561c499f496754ffbd61270b4899dca432f717784d914fd6c6e5b757"
+source = "https://commons.wikimedia.org/wiki/File:Autumn_at_Nagog_Hill_Orchard.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Autumn at Nagog Hill Orchard by liz west, via Wikimedia Commons"
+title = "Autumn at Nagog Hill Orchard"
+creator = "liz west"
+openverse = "commons:File:Autumn at Nagog Hill Orchard.jpg"
+needs_credit = true
+size = "1600x956"
+
+[[photos]]
+file = "en/posts/2026-10-16-winter-book-weekend/lead.jpg"
+sha256 = "7bfb90cadda092140b66eb22994c168a1f3b4fa35ecd446de8fc50ab7a09479c"
+source = "https://commons.wikimedia.org/wiki/File:A_marquee_at_the_Reading_Festival_-_geograph.org.uk_-_2035719.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "A marquee at the Reading Festival - geograph.org.uk - 2035719 by Steve Daniels, via Wikimedia Commons"
+title = "A marquee at the Reading Festival - geograph.org.uk - 2035719"
+creator = "Steve Daniels"
+openverse = "commons:File:A marquee at the Reading Festival - geograph.org.uk - 2035719.jpg"
+needs_credit = true
+size = "1500x1000"
+
+[[photos]]
+file = "en/posts/2026-10-27-river-warden-excerpt/lead.jpg"
+sha256 = "fa90ea13dbf5aa078f63962174d0534ef57fbe035746572f562b90e68771a142"
+source = "https://commons.wikimedia.org/wiki/File:Morning_mist_on_the_river_-_geograph.org.uk_-_2190345.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Morning mist on the river - geograph.org.uk - 2190345 by Peter Barr, via Wikimedia Commons"
+title = "Morning mist on the river - geograph.org.uk - 2190345"
+creator = "Peter Barr"
+openverse = "commons:File:Morning mist on the river - geograph.org.uk - 2190345.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-11-03-orchard-year-launch/lead.jpg"
+sha256 = "1ec7a9bb918e6ff945bc7750084a1963173467996024c941f3ccd10244b75bc2"
+source = "https://commons.wikimedia.org/wiki/File:Shelves_in_Constant_Reader_bookshop_May_2026.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Shelves in Constant Reader bookshop May 2026 by Nick-D, via Wikimedia Commons"
+title = "Shelves in Constant Reader bookshop May 2026"
+creator = "Nick-D"
+openverse = "commons:File:Shelves in Constant Reader bookshop May 2026.jpg"
+needs_credit = true
+size = "1600x1200"

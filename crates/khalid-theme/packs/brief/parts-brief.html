@@ -1,0 +1,59 @@
+{#- Brief's own parts (docs/templates/brief.md), shared by its pages. An
+    issue is a post; its facts are read by position: 1 the issue number,
+    2 the number of items. Only the digits of each value count, so "No.
+    128" reads as 128.
+    issue_stamp(post, edition): the stamp line over an issue: its edition
+    (the category) when `edition` is "yes", the issue number and the date,
+    then the reading time when the item ticks do not show it.
+    item_ticks(post): one short upright tick per item, beside "6 items"
+    and the reading time. Nothing without an item count.
+    issue_rows(posts, level): issues as ruled rows, each with its date as
+    a small stamp (weekday, day, month), the title, the summary, then the
+    edition, issue number, items and reading time. -#}
+{% from "sections/progress_strip.html" import progress_strip -%}
+{% macro digits(post, at) -%}
+{% set found = post.facts[at].value | string | list | select("in", "0123456789") | join if post.facts[at] is defined else "" -%}
+{{ found[:6] | int if found else 0 }}
+{%- endmacro %}
+{% macro minutes(post) -%}
+{% if post.reading_time %}{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}{% endif %}
+{%- endmacro %}
+{% macro items_label(count) -%}
+{% if count == 1 %}{{ t.brief_items_one }}{% else %}{{ t.brief_items | replace("{count}", count | string) }}{% endif %}
+{%- endmacro %}
+{% macro issue_stamp(post, edition="yes") -%}
+{% set number = digits(post, 0) | string | trim | int -%}
+{% set read = minutes(post) | string if (digits(post, 1) | string | trim | int) == 0 else "" -%}
+<p class="brief-stamp">{% if edition == "yes" and post.category %}<a class="brief-edition" href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}{% if number > 0 %}<span class="brief-number">{{ t.brief_issue | replace("{number}", number | string) }}</span>{% endif %}<time datetime="{{ post.date }}">{{ post.date | date }}</time>{% if read %}<span>{{ read }}</span>{% endif %}</p>
+{%- endmacro %}
+{% macro item_ticks(post) -%}
+{% set count = digits(post, 1) | string | trim | int -%}
+{% if count > 0 %}<div class="brief-ticks">
+{{ progress_strip([count, 24] | min, 0, items_label(count) | string, minutes(post) | string or none) }}
+</div>
+{% endif %}
+{%- endmacro %}
+{% macro date_stamp(day) -%}
+{% set day = day | string -%}
+{% if day | length == 10 and day[4:5] == "-" and day[7:8] == "-" -%}
+{% set month = day[5:7] | int -%}
+{% set year = (day[:4] | int) - (1 if month < 3 else 0) -%}
+{% set weekday = (year + year // 4 - year // 100 + year // 400 + [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4][month - 1] + (day[8:10] | int)) % 7 -%}
+<time class="brief-day" datetime="{{ day }}"><span class="brief-weekday">{{ t["weekday_" ~ (weekday or 7)][:3] }}</span> <span class="brief-date">{{ day[8:10] | int }}</span> <span class="brief-month">{{ t["month_" ~ month][:3] }}</span></time>
+{%- else %}<time class="brief-day" datetime="{{ day }}"><span class="brief-date">{{ day | date }}</span></time>{% endif %}
+{%- endmacro %}
+{% macro issue_rows(posts, level=3) -%}
+<ol class="brief-issues" role="list">
+{% for post in posts %}{% set number = digits(post, 0) | string | trim | int -%}
+{% set count = digits(post, 1) | string | trim | int -%}
+{% set read = minutes(post) | string -%}
+<li class="brief-issue">
+{{ date_stamp(post.date) }}
+<div class="brief-issue-text">
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+<p class="brief-summary">{{ post.excerpt }}</p>
+<p class="brief-meta">{% if post.category %}<span>{{ post.category.name }}</span>{% endif %}{% if number > 0 %}<span>{{ t.brief_issue | replace("{number}", number | string) }}</span>{% endif %}{% if count > 0 %}<span>{{ items_label(count) }}</span>{% endif %}{% if read %}<span>{{ read }}</span>{% endif %}</p>
+</div>
+</li>
+{% endfor %}</ol>
+{%- endmacro %}

@@ -5,8 +5,9 @@
 use std::path::Path;
 
 use khalid_core::{
-    AbsoluteUrl, ArchiveIndex, Config, DomainName, Environment, ExternalRel, IndexNowKey,
-    IndexNowSettings, Indexing, LinkOpening, LinkSettings,
+    AbsoluteUrl, ArchiveIndex, ArchiveSetting, BreadcrumbTaxonomy, Config, DomainName, Environment,
+    ExternalRel, FeedKind, GeoPoint, IndexNowKey, IndexNowSettings, Indexing, LinkOpening,
+    LinkSettings,
 };
 
 const SITE: &str = r#"name = "Field Notes on SEO"
@@ -30,8 +31,8 @@ fn a_site_without_the_table_gets_the_defaults() {
     assert_eq!(index, &ArchiveIndex::default());
     assert_eq!(index.tags, Indexing::Index);
     assert_eq!(index.categories, Indexing::Index);
-    assert_eq!(index.authors, Indexing::Index);
-    assert_eq!(index.dates, Indexing::NoIndex);
+    assert_eq!(index.authors, ArchiveSetting::Index);
+    assert_eq!(index.dates, ArchiveSetting::NoIndex);
     assert_eq!(index.search, Indexing::NoIndex);
     assert_eq!(index.thin_archives_below, 3);
 }
@@ -53,8 +54,8 @@ thin_archives_below = 0
     let index = &config.seo().index;
     assert_eq!(index.tags, Indexing::NoIndex);
     assert_eq!(index.categories, Indexing::NoIndex);
-    assert_eq!(index.authors, Indexing::NoIndex);
-    assert_eq!(index.dates, Indexing::Index);
+    assert_eq!(index.authors, ArchiveSetting::NoIndex);
+    assert_eq!(index.dates, ArchiveSetting::Index);
     assert_eq!(index.search, Indexing::Index);
     assert_eq!(index.thin_archives_below, 0);
 }
@@ -64,7 +65,7 @@ fn a_setting_left_out_keeps_its_default() {
     let config = read("\n[seo.index]\ntags = \"noindex\"\n").unwrap();
     let index = &config.seo().index;
     assert_eq!(index.tags, Indexing::NoIndex);
-    assert_eq!(index.dates, Indexing::NoIndex);
+    assert_eq!(index.dates, ArchiveSetting::NoIndex);
     assert_eq!(index.thin_archives_below, 3);
 }
 
@@ -73,6 +74,34 @@ fn the_whole_site_is_indexed_unless_it_says_noindex() {
     assert_eq!(read("").unwrap().seo().index.site, Indexing::Index);
     let config = read("\n[seo.index]\nsite = \"noindex\"\n").unwrap();
     assert_eq!(config.seo().index.site, Indexing::NoIndex);
+}
+
+#[test]
+fn each_content_type_and_feed_kind_can_be_switched() {
+    let config = read(
+        "\n[seo.index]\nposts = \"noindex\"\npages = \"noindex\"\nauthors = \"off\"\n\
+         dates = \"off\"\n\n[seo.index.collections]\nnews = \"noindex\"\n\n\
+         [seo.feeds]\noff = [\"atom\", \"json\"]\n",
+    )
+    .unwrap();
+    let index = &config.seo().index;
+    assert_eq!(
+        (index.posts, index.pages),
+        (Indexing::NoIndex, Indexing::NoIndex)
+    );
+    assert_eq!(
+        (index.authors, index.dates),
+        (ArchiveSetting::Off, ArchiveSetting::Off)
+    );
+    assert_eq!(ArchiveSetting::Off.indexing(), Indexing::NoIndex);
+    assert_eq!(index.collections.get("news"), Some(&Indexing::NoIndex));
+    assert_eq!(config.seo().feeds.off, [FeedKind::Atom, FeedKind::Json]);
+    let plain = read("").unwrap();
+    assert_eq!(
+        (plain.seo().index.posts, plain.seo().index.pages),
+        (Indexing::Index, Indexing::Index)
+    );
+    assert_eq!(plain.seo().feeds.off, []);
 }
 
 #[test]
@@ -208,6 +237,66 @@ fn domain_names_are_letters_digits_hyphens_and_inner_dots() {
 fn refuses_an_archive_type_it_does_not_know() {
     assert_eq!(
         read("\n[seo.index]\nmonths = \"noindex\"\n").unwrap_err(),
-        "site.toml, line 8, field \"months\": unknown field `months`, expected one of `tags`, `categories`, `authors`, `dates`, `search`, `thin_archives_below`, `site`"
+        "site.toml, line 8, field \"months\": unknown field `months`, expected one of `tags`, `categories`, `authors`, `dates`, `search`, `thin_archives_below`, `site`, `posts`, `pages`, `collections`"
     );
+}
+
+#[test]
+fn the_breadcrumb_settings_have_defaults_and_read_each_key() {
+    let plain = read("").unwrap();
+    let defaults = &plain.seo().breadcrumbs;
+    assert_eq!(defaults.separator, "/");
+    assert_eq!(defaults.home, None);
+    assert_eq!(defaults.taxonomy, BreadcrumbTaxonomy::Category);
+    assert!(!defaults.bold_last);
+    let config = read(
+        "\n[seo.breadcrumbs]\nseparator = \"»\"\nhome = \"Home\"\narchive_prefix = \"Archives for\"\n\
+         search_prefix = \"You searched for\"\nbold_last = true\ntaxonomy = \"tag\"\n",
+    )
+    .unwrap();
+    let crumbs = &config.seo().breadcrumbs;
+    assert_eq!(crumbs.separator, "»");
+    assert_eq!(crumbs.home.as_deref(), Some("Home"));
+    assert_eq!(crumbs.archive_prefix, "Archives for");
+    assert_eq!(crumbs.search_prefix, "You searched for");
+    assert!(crumbs.bold_last);
+    assert_eq!(crumbs.taxonomy, BreadcrumbTaxonomy::Tag);
+}
+
+#[test]
+fn the_local_settings_are_on_by_default_and_a_location_reads_its_map_point() {
+    let plain = read("").unwrap();
+    assert!(plain.seo().local.page);
+    assert!(plain.seo().local.kml);
+    let location = "\n[[seo.locations]]\nname = \"Mill Lane Dental\"\nstreet = \"12 Mill Lane\"\n\
+                    locality = \"Leeds\"\npostal_code = \"LS1 4AB\"\ncountry = \"GB\"\n";
+    let config = read(&format!(
+        "\n[seo.local]\npage = false\nkml = false\n{location}\
+         geo = {{ latitude = 53.7997, longitude = -1.5492 }}\n"
+    ))
+    .unwrap();
+    assert!(!config.seo().local.page);
+    assert!(!config.seo().local.kml);
+    let geo = config.seo().locations[0].geo.unwrap();
+    assert_eq!(geo, GeoPoint::new(53.7997, -1.5492).unwrap());
+    let wrong = read(&format!(
+        "{location}geo = {{ latitude = 120.0, longitude = 0.0 }}\n"
+    ))
+    .unwrap_err();
+    assert!(wrong.contains("latitude"), "{wrong}");
+}
+
+#[test]
+fn the_search_filters_are_on_by_default_and_each_can_be_set() {
+    let plain = read("").unwrap();
+    let filter = &plain.seo().search_filter;
+    assert_eq!(filter.max_length, 50);
+    assert!(filter.symbols);
+    assert!(filter.spam);
+    let config =
+        read("\n[seo.search_filter]\nmax_length = 0\nsymbols = false\nspam = false\n").unwrap();
+    let filter = &config.seo().search_filter;
+    assert_eq!(filter.max_length, 0);
+    assert!(!filter.symbols);
+    assert!(!filter.spam);
 }

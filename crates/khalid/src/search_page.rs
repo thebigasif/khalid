@@ -25,8 +25,9 @@ pub(crate) fn mode(config: &Config) -> SearchMode {
 }
 
 /// Adds the search page to each of `languages`, titled in its language by
-/// `renderer`'s strings. When the site answers searches, every page of the
-/// language links to it from its header.
+/// `renderer`'s strings, and the other page every language has whatever
+/// its content, the privacy choices page. When the site answers searches,
+/// every page of the language links to the search page from its header.
 ///
 /// # Errors
 ///
@@ -37,6 +38,7 @@ pub(crate) fn add(
     renderer: &Renderer,
     languages: &mut [LanguagePages],
 ) -> Result<(), UserMessage> {
+    build_pages::privacy_choices::add(config, renderer, languages)?;
     let mode = mode(config);
     for language in languages.iter_mut() {
         let locale = language.site.locale.clone();

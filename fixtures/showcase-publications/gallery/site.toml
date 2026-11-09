@@ -1,0 +1,101 @@
+# Fernbrook Press, a made-up print and illustration studio written for
+# the Gallery template's demo. The studio restores public-domain prints
+# and drawings and makes new editions of them; every picture is a
+# public-domain or CC0 work by its own artist (ATTRIBUTION.md). Each key
+# and table here replaces the showcase's own when
+# scripts/demo-publication.sh applies it.
+
+name = "Fernbrook Press"
+languages = ["en"]
+
+[template.cta]
+label = "Ask about a commission"
+href = "/blog/about/"
+note = "We restore old plates and prints for museums, publishers and shops, and print them again in small editions."
+
+# The Gallery template's options for this demo. scripts/pages.sh keeps
+# them and adds cta_band = "both" unless it is set here.
+[template.options]
+statement = ["A small studio that restores old prints and drawings and gives them a second life as posters, books, patterns and prints."]
+checklist = true
+
+[announcement]
+text = "New: Haeckel's jellyfish, restored for a set of six prints."
+href = "/blog/jellyfish-plates/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "Restored prints and drawings, in new editions"
+
+[seo.ai_page]
+covers = "Fernbrook Press is a made-up studio that restores public-domain prints, plates and drawings and makes new editions of them. Each post is one project: the work, the client, the year, the medium and the edition, with notes on how it was restored."
+cite = "Every picture is a public-domain or CC0 work by its own artist. Link the post you quote."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Fernbrook Press"
+email = "hello@example.com"
+founded = "2024-03-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Fernbrook Press logo"
+width = 320
+height = 80
+
+# Sign-ups for new work by email, under the studio's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Fernbrook Press"
+postal_address = "Fernbrook Press, 12 Mill Yard, Bristol BS1 6XX, United Kingdom"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Natural history"
+href = "/blog/category/natural-history/"
+language = "en"
+
+[[nav.primary]]
+label = "Botanical"
+href = "/blog/category/botanical/"
+language = "en"
+
+[[nav.primary]]
+label = "Woodblock"
+href = "/blog/category/woodblock/"
+language = "en"
+
+[[nav.primary]]
+label = "Pattern"
+href = "/blog/category/pattern/"
+language = "en"
+
+[[nav.primary]]
+label = "Studio"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the studio"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Archive"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.footer]]
+label = "People"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Picture credits"
+href = "/blog/photo-credits/"
+language = "en"

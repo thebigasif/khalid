@@ -4,8 +4,8 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_api::resources::{
-    CustomJsonLd, FeatureImage, NonBlank, PostSettings, PostStatus, ReviewState, SearchTitle,
-    ShareCard,
+    CustomJsonLd, FeatureImage, MAX_SECONDARY_KEYWORDS, NonBlank, PostSettings, PostStatus,
+    ReviewState, SearchTitle, ShareCard,
 };
 use khalid_content::parse_post;
 use khalid_core::Slug;
@@ -88,6 +88,21 @@ fn settings_put_back_to_their_defaults_leave_no_line() {
 }
 
 #[test]
+fn secondary_keywords_read_back_the_same_as_a_quoted_list() {
+    let mut after = PostSettings::default();
+    after.focus_keyword = Some(text("anchor text"));
+    after.secondary_keywords = vec![text("link text"), text("words: that link")];
+    let (written, read) = round_trip(&after);
+    assert_eq!(read, after, "{written}");
+    let line = "secondary_keywords: [\"link text\", \"words: that link\"]\n";
+    assert!(written.contains(line), "{written}");
+    assert_eq!(
+        MAX_SECONDARY_KEYWORDS,
+        khalid_content::MAX_SECONDARY_KEYWORDS
+    );
+}
+
+#[test]
 fn search_title_focus_keyword_and_schema_read_back_the_same() {
     let mut after = PostSettings::default();
     let title = "Anchor text: \"say where\" {sep} {site}";
@@ -101,4 +116,22 @@ fn search_title_focus_keyword_and_schema_read_back_the_same() {
         written.contains("focus_keyword: \"anchor text\"\n"),
         "{written}"
     );
+}
+
+#[test]
+fn a_settings_edit_keeps_the_facts_as_written() {
+    let file = "---\ntitle: A\nfacts:\n  - label: Client\n    value: Calder Street Library\nfeatured: true\n---\n\nBody.\n";
+    let before = settings_of(&parse_post(Path::new("a.md"), file).unwrap().front);
+    let mut after = before.clone();
+    after.featured = false;
+    after.excerpt = Some(text("A library's new reading room."));
+    let mut text = PostText::parse(file).unwrap();
+    write_settings(&mut text, &before, &after, PostStatus::Draft).unwrap();
+    let written = text.to_text();
+    assert!(
+        written.contains("facts:\n  - label: Client\n    value: Calder Street Library\n"),
+        "{written}"
+    );
+    let front = parse_post(Path::new("a.md"), &written).unwrap().front;
+    assert_eq!(front.facts.len(), 1, "{written}");
 }

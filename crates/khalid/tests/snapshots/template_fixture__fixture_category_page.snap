@@ -1,0 +1,44 @@
+---
+source: crates/khalid/tests/template_fixture.rs
+expression: page
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+<a class="button header-button" href="https://www.example.com/join/">Join the club</a>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<ol>
+<li><a href="/blog/">Field Notes on SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/technical-seo/" aria-current="page">Technical SEO</a></li>
+</ol>
+</nav>
+
+<header class="list-header">
+<p class="list-kind">Matches and news</p>
+<h1>Technical SEO</h1>
+</header>
+<section class="results-month" aria-labelledby="results-month-2026-10">
+<h2 id="results-month-2026-10">October 2026</h2>
+<ol class="results-list" role="list">
+<li class="match" data-match="fixture">
+<time class="match-date" datetime="2026-10-05">5 October 2026</time>
+<span class="match-mark" aria-hidden="true">v</span>
+<h3><a href="/blog/fixing-slow-pages/">Eastfield</a></h3>
+<p class="match-meta"><span>Home</span></p>
+<p class="match-score"><span class="visually-hidden">Kick-off </span>Sat 10 Oct, 3pm</p>
+<p class="match-headline">Fixing slow pages, starting with the biggest win</p>
+</li>
+</ol>
+</section>
+<section class="results-month" aria-labelledby="results-month-2026-09">
+<h2 id="results-month-2026-09">September 2026</h2>
+<ol class="results-list" role="list">
+<li class="match" data-match="news">
+<time class="match-date" datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="match-meta">Technical SEO</p>
+</li>
+</ol>
+</section>

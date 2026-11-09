@@ -1,0 +1,1 @@
+warn long-sentences: 8 of 10 sentences are longer than 20 words

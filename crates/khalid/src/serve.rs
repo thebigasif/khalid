@@ -16,7 +16,6 @@ use khalid_content::SiteContent;
 use khalid_core::{Config, Environment, S3Keys, Secret, Slug, SystemClock, UserMessage};
 use khalid_db::{Database, NotFoundTable, ScheduleTable, SiteId, VersionTable, VisitorLogTable};
 use khalid_forms::FormDelivery;
-use khalid_https::{Domain, HttpsFolder};
 use khalid_outbound::{Outbound, OutboundError};
 use khalid_routes::Routes;
 use khalid_server::{FolderLook, LivePages, Pages, SecurityHeaders, watch};
@@ -79,6 +78,10 @@ pub(crate) struct Keys {
     pub(crate) follow_ups: SiteFollowUps,
     /// The keys photo and GIF search ask Unsplash and GIPHY with.
     pub(crate) pictures: PictureKeys,
+    /// The writer of the editor's suggestions, asked with `KHALID_AI_KEY`.
+    pub(crate) ai: khalid_api::ai::AiDesk,
+    /// The whole environment, which `site.toml` is read with again when it changes.
+    pub(crate) settings: Environment,
 }
 
 impl Keys {
@@ -90,6 +93,8 @@ impl Keys {
             mail: mail_secret(env, config),
             git_hook: env.git_hook_secret(),
             follow_ups: SiteFollowUps::new(folder, config, env, cli),
+            ai: crate::serve_apis::ai_writer::desk(config, env, cli),
+            settings: env.clone(),
             pictures: PictureKeys {
                 unsplash: env.unsplash_key(),
                 giphy: env.giphy_key(),
@@ -185,7 +190,7 @@ fn serve_with(
         (&redirects, &addresses),
     )?;
     let (feed, feeding) = content_feed::start(runtime.handle(), to);
-    let (source, first) = first_pages((site, config, routes), feed, &checked)
+    let (source, first) = first_pages((site, config, routes), (feed, &keys.settings), &checked)
         .and_then(|first| bodies.finish().map(|()| first))
         .map_err(|message| (message, Exit::Failure))?;
     let security = security_headers(config)?;
@@ -228,12 +233,11 @@ fn serve_with(
             (files, previews, search_route::router(config, search)),
             (comments, posted, pages),
         );
-        let (desks, helpers) = ((moderation, media, desk, keys.follow_ups), (panel, mailer));
         let apis = (
             (content, door, posts),
-            desks,
+            (moderation, media, desk, keys.follow_ups, keys.ai),
             (database, id, (site, config)),
-            helpers,
+            (panel, mailer),
         );
         let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook));
         // The rest renders once the routes are ready, so it does not slow
@@ -307,7 +311,7 @@ fn mail_and_alerts(
     let sources = alert_watch::Sources {
         misses: Arc::new(NotFoundTable::new(database.clone(), id)),
         content: content.clone(),
-        https: https_folder(folder, listen),
+        https: serve_https::certificate(folder, listen),
         settings: config.alerts().clone(),
         visitors: config.visitor_log().on.then(|| {
             let log: Arc<dyn VisitorLogStore> =
@@ -327,29 +331,18 @@ fn mail_and_alerts(
     Ok((newsletters.merge(forms), ready))
 }
 
-/// The domain and the folder of its certificate, when `listen` serves
-/// HTTPS, for the certificate alert.
-fn https_folder(site: &Path, listen: &Listen) -> Option<(Domain, HttpsFolder)> {
-    match listen {
-        Listen::Https(https) => Some((
-            https.domain.clone(),
-            HttpsFolder::new(serve_https::folder(site)),
-        )),
-        Listen::Plain(_) => None,
-    }
-}
-
-/// The site's pages, fed by `feed`, and the first of them to serve: only
-/// the home pages are rendered before the server listens, and the rest
-/// follows behind the first answer (ADR "khalid serve answers before the
-/// full render").
+/// The site's pages, fed by `feed`, which read their settings again with
+/// `env` when they change, and the first of them to serve: only the home
+/// pages are rendered before the server listens, and the rest follows
+/// behind the first answer (ADR "khalid serve answers before the full render").
 fn first_pages(
     (site, config, routes): (&Path, &Config, &Routes),
-    feed: content_feed::ContentFeed,
+    (feed, env): (content_feed::ContentFeed, &Environment),
     checked: &SiteContent,
 ) -> Result<(SitePages, Pages), UserMessage> {
     let clock = Arc::new(SystemClock);
     let source = SitePages::new(site, config.clone(), routes.clone(), Some(feed), clock)?;
+    source.reload_with(env.clone());
     let first = source.render_first(checked)?;
     let first = Pages::first(first).map_err(|_| serve_message::internal())?;
     let first = with_hint(first, &source);

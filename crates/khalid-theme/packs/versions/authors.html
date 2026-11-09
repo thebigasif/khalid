@@ -1,0 +1,13 @@
+{#- Versions' authors page: everyone who writes the changelog in a grid,
+    each with their mark or photo, name, role and how many changes they
+    wrote. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "sections/people_grid.html" import people_grid -%}
+<header class="list-header">
+<p class="list-kind">{{ t.changelog_title }}</p>
+<h1>{{ page.title }}</h1>
+</header>
+{% if page.authors %}{{ people_grid(page.authors, 2) }}
+{% else %}<p>{{ t.no_authors }}</p>
+{% endif %}{% endblock %}

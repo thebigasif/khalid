@@ -1,0 +1,43 @@
+# First Washes' modules, in course order. The Syllabus template numbers
+# them in this order on the front page, and each category page is that
+# module's lesson list, with its intro as the module's description.
+
+[[categories]]
+slug = "getting-started"
+en = "Getting started"
+
+[categories.seo.en]
+description = "Module 1 of First Washes: the watercolour kit you need, how paper changes everything, and your first brush marks."
+intro = "Three short lessons before your first wash: what to buy, which paper to use and how to hold the brush. By the end you have a kit on the table and a sheet full of practice marks."
+
+[[categories]]
+slug = "washes"
+en = "Washes and water"
+
+[categories.seo.en]
+description = "Module 2 of First Washes: the flat wash, the graded wash, wet in wet and lifting out."
+intro = "The four skills under every watercolour: an even flat wash, a wash that fades, colour dropped into wet paper, and taking colour back out when something goes wrong."
+
+[[categories]]
+slug = "colour-mixing"
+en = "Colour mixing"
+
+[categories.seo.en]
+description = "Module 3 of First Washes: mix nearly every colour from three paints, including real greens and shadows without black."
+intro = "Tomás shows how one yellow, one red and one blue make almost every colour a landscape needs, with greens that look real and shadows full of colour."
+
+[[categories]]
+slug = "landscapes"
+en = "Landscapes"
+
+[categories.seo.en]
+description = "Module 4 of First Washes: skies, trees and distance, and your first finished landscape."
+intro = "Everything comes together: a sky painted in one go, hills that sit far away, and one finished landscape from a blank sheet to a picture to frame."
+
+[[categories]]
+slug = "course-news"
+en = "Course news"
+
+[categories.seo.en]
+description = "News about First Washes: new modules, live critique evenings and changes to the course."
+intro = "When a module opens, when the next live critique evening is, and what changed in the lessons."

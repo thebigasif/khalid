@@ -1,20 +1,22 @@
 //! The content index a rebuild writes, read from the site's content tree.
 
+use std::collections::BTreeMap;
 use std::path::{Component, Path};
 
 use khalid_content::{ContentHash, ContentTree, SiteContent, read_content};
 use khalid_core::{Config, UserMessage};
-use khalid_db::{ContentIndex, IndexedAuthor, IndexedPost};
+use khalid_db::{ContentIndex, IndexedAuthor, IndexedPost, IndexedTerm};
 
 use crate::build_pages::named;
+use crate::listed_post::ListedTag;
 use crate::{categories, content_message};
 
 /// The collection whose entries are posts. Other collections get their own
 /// schemas and join the index with them.
 pub(crate) const POSTS: &str = "posts";
 
-/// Every post and author of every language in the `site` folder, and the
-/// categories in its `categories.toml`, ready for the database.
+/// Every post, author and tag of every language in the `site` folder, and
+/// the categories in its `categories.toml`, ready for the database.
 pub(crate) fn of(site: &Path, config: &Config) -> Result<ContentIndex, UserMessage> {
     let content = |error| content_message::of(site, &error);
     let tree = ContentTree::walk(site).map_err(content)?;
@@ -25,13 +27,17 @@ pub(crate) fn of(site: &Path, config: &Config) -> Result<ContentIndex, UserMessa
 /// The same index as [`of`], from the content already `read` from the
 /// `site` folder, so no post is read twice. A post or an author with no
 /// `slug:` takes the one `khalid build` makes from its title or name, so
-/// the server and the built site give it the same address.
+/// the server and the built site give it the same address. A tag belongs to
+/// the language of the post that names it, with the slug `khalid build`
+/// gives its page, and the first post in path order that names it gives
+/// its name. Tags are listed by language, then by slug.
 pub(crate) fn of_content(
     site: &Path,
     config: &Config,
     read: &SiteContent,
 ) -> Result<ContentIndex, UserMessage> {
     let mut index = ContentIndex::default();
+    let mut tags = BTreeMap::new();
     for doc in read.posts.iter().filter(|doc| doc.collection == POSTS) {
         let front = &doc.front;
         let at = format!("{}/{}", site.display(), doc.path.display());
@@ -45,7 +51,13 @@ pub(crate) fn of_content(
         post.category.clone_from(&front.category);
         post.translation.clone_from(&front.translation);
         index.posts.push(post);
+        for tag in ListedTag::all(&front.tags, &doc.locale, config.slugs()) {
+            let key = (doc.locale.as_str().to_owned(), tag.slug.to_string());
+            let term = || IndexedTerm::new(doc.locale.clone(), tag.slug, &tag.name);
+            tags.entry(key).or_insert_with(term);
+        }
     }
+    index.tags = tags.into_values().collect();
     for doc in &read.authors {
         let at = format!("{}/{}", site.display(), doc.path.display());
         let path = slashed(&doc.path).ok_or_else(|| unreadable_name(&at))?;

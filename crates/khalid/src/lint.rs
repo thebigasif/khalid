@@ -186,13 +186,21 @@ fn sentences(report: &Report, fixed: Option<&[Repair]>) -> String {
         .iter()
         .filter(|f| f.severity() == Severity::Block);
     let blocks = blocks.count();
-    let warnings = report.findings().len() - blocks;
+    let tips = report
+        .findings()
+        .iter()
+        .filter(|f| f.severity() == Severity::Info)
+        .count();
+    let warnings = report.findings().len() - blocks - tips;
     let _ = writeln!(
         text,
         "{} and {}.",
         count(blocks, "block"),
         count(warnings, "warning")
     );
+    if tips > 0 {
+        let _ = writeln!(text, "{}, which cost no points.", count(tips, "tip"));
+    }
     match fixed {
         Some([]) => text.push_str("Nothing needed a safe fix.\n"),
         Some(repairs) => {
@@ -232,6 +240,7 @@ pub(crate) fn write_finding(text: &mut String, finding: &Finding) {
     let at = finding.location();
     let kind = match finding.severity() {
         Severity::Block => "blocks publishing",
+        Severity::Info => "tip",
         _ => "warning",
     };
     let message = finding.message();

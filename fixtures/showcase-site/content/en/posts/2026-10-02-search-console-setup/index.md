@@ -16,7 +16,7 @@ related: [search-console-vs-bing-webmaster-tools, best-free-seo-tools, choosing-
 tags: [tools, analytics]
 image:
   src: cover.svg
-  alt: A lock on a Search Console window, with a green tick and a small bar chart beside it
+  alt: A browser window with an orange lock for proving you own the site, beside a list of setup steps, two of them ticked
 ---
 
 Google Search Console is Google's free dashboard for site owners. It shows which searches bring people to your blog and warns you when Google cannot index a page. Setting it up takes about a quarter of an hour: add your site, prove you own it, submit your sitemap, then check the reports. This guide walks through each step.

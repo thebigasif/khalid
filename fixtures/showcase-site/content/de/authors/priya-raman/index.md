@@ -1,5 +1,5 @@
 ---
-name: Priya Raman
+name: Priya Raman Venkatesan
 slug: priya-raman
 role: Research-Redakteurin bei Larkspur Studio
 credentials: Master in Statistik, leitet den jährlichen Larkspur-Content-Benchmark

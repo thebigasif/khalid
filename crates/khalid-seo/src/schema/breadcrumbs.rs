@@ -23,12 +23,14 @@ fn list_item(position: i64, name: &str, item: AbsoluteUrl) -> SchemaValue {
 pub fn breadcrumb_list(site: &SeoSite, page: &SeoPage) -> Result<SchemaNode, SeoError> {
     let page_url = site.url_for(&page.language, &page.path)?;
     let home = site.url_for(&page.language, &UrlPath::root())?;
-    let mut trail = vec![(site.name.as_str(), home.clone())];
+    let home_name = site.breadcrumb_home.as_deref().unwrap_or(&site.name);
+    let mut trail = vec![(home_name, home.clone())];
     for crumb in &page.breadcrumbs {
         trail.push((&crumb.name, site.url_for(&page.language, &crumb.path)?));
     }
     if page_url != home {
-        trail.push((&page.title, page_url.clone()));
+        let name = page.breadcrumb_title.as_ref().unwrap_or(&page.title);
+        trail.push((name, page_url.clone()));
     }
     let items = (1..)
         .zip(trail)

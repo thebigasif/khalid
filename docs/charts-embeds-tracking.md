@@ -1,3 +1,8 @@
+---
+title: "Charts, embedded tools and tracking tags"
+order: 90
+---
+
 # Charts, embedded tools and tracking tags
 
 Three ways to make a post do more: draw numbers as a chart, show an interactive tool from a site you trust, and see which posts send visitors to your product.

@@ -1,11 +1,15 @@
 {#- Almanac's front page (templates spec 3.8): a row of category links
     with the rest under "More", the featured guide and the call to action,
-    the next four posts as short rows, a grid of guides beside the
-    editor's picks, the newsletter, the home sections, and the call to
-    action again to close. -#}
+    then "In the garden this month": the month of the newest guide set
+    large beside a strip of the year, and the guides of that month and
+    the two before it as a numbered list of jobs. With no guide that
+    recent, the next four posts show as short rows instead. Then a grid of
+    guides beside the editor's picks, the newsletter, the home sections,
+    and the call to action again to close. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards, featured_slot, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
 {% set groups = page.topics if "topic_links" in site.features else [] -%}
@@ -28,10 +32,30 @@
 </div>
 {% endif %}{% set slot = page.featured if template.options.featured else none -%}
 {% set band = template.cta and template.options.cta_band in ["home", "both"] -%}
-{% if slot %}{{ featured_slot(slot) }}
-{% endif %}{% if band %}{{ cta_band(template.cta) }}
+{% if slot %}{{ featured_slot(slot, slot_sizes("featured")) }}
 {% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
-{% if posts %}<section class="al-latest" aria-labelledby="al-latest-title">
+{% set anchor = slot or (page.posts[0] if page.posts else none) -%}
+{% set ns = namespace(jobs=0, months="") -%}
+{% if anchor %}{% set now = (anchor.date[:4] | int) * 12 + (anchor.date[5:7] | int) -%}
+{% for post in posts[:4] %}{% if now - ((post.date[:4] | int) * 12 + (post.date[5:7] | int)) < 3 and ns.jobs == loop.index0 %}{% set ns.jobs = loop.index %}{% endif %}{% endfor -%}
+{% for post in page.posts %}{% set ns.months = ns.months ~ post.date[:7] ~ " " %}{% endfor -%}
+{% endif %}{% if ns.jobs %}{% set year = anchor.date[:4] -%}
+<section class="al-month" aria-labelledby="al-month-title">
+<header>
+{% if anchor.category %}<a class="al-pill" href="{{ anchor.category.href }}">{{ anchor.category.name }}</a>
+{% endif %}<h2 id="al-month-title">{{ t["month_" ~ (anchor.date[5:7] | int)] }} <span>{{ year }}</span></h2>
+<ol class="al-year" aria-hidden="true">
+{% for i in range(1, 13) %}{% set key = year ~ "-" ~ ("0" if i < 10 else "") ~ i %}<li{% if key == anchor.date[:7] %} class="al-now"{% elif key in ns.months %} class="al-has"{% endif %}>{{ t["month_" ~ i][:1] }}</li>
+{% endfor %}</ol>
+</header>
+<ol class="al-jobs" role="list">
+{% for post in posts[:ns.jobs] %}<li>
+<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p>{% if post.category %}<a class="al-pill" href="{{ post.category.href }}">{{ post.category.name }}</a>{% endif %}{% if post.reading_time and "reading_time" in site.features %}<span>{{ t.reading_time | replace("{minutes}", post.reading_time.minutes | string) }}</span>{% endif %}</p>
+</li>
+{% endfor %}</ol>
+</section>
+{% elif posts %}<section class="al-latest" aria-labelledby="al-latest-title">
 <h2 id="al-latest-title">{{ t.latest }}</h2>
 <ul class="al-rows" role="list">
 {% for post in posts[:4] %}<li>
@@ -42,12 +66,13 @@
 {% endfor %}</ul>
 </section>
 {% elif not slot %}<p>{{ t.no_posts }}</p>
-{% endif %}{% set picks = page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks -%}
+{% endif %}{% set rest = posts[ns.jobs or 4:] -%}
+{% set picks = page.picks | rejectattr("href", "eq", slot.href) | list if slot else page.picks -%}
 {% set picks = picks[:template.options.picks] -%}
-{% if posts[4:] or picks %}<div class="al-library">
-{% if posts[4:] %}<section class="al-grid" aria-labelledby="al-more-title">
+{% if rest or picks %}<div class="al-library">
+{% if rest %}<section class="al-grid" aria-labelledby="al-more-title">
 <h2 id="al-more-title">{{ t.more_posts }}</h2>
-{{ cards(posts[4:10], 3) }}
+{{ cards(rest, 3, sizes=slot_sizes("home", template.options.cards)) }}
 </section>
 {% endif %}{% if picks %}<section class="al-picks" aria-labelledby="al-picks-title">
 <h2 id="al-picks-title">{{ t.editors_picks }}</h2>
@@ -62,7 +87,7 @@
 <h2>{{ section.title }}</h2>
 <p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </div>
-{% if section.posts %}{{ cards(section.posts[:4], 3) }}
+{% if section.posts %}{{ cards(section.posts[:4], 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}</section>
 {% endfor %}{% if page.pagination %}{{ pages(page.pagination) }}

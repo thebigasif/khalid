@@ -1,0 +1,28 @@
+{#- Summit's lists (category, tag, archive, date and collection pages): a
+    venue's or a track's name and intro, such as the venue's address and
+    how to get there, then its sessions on the timetable rail by day and
+    time, then its updates as a dated feed. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "sections/schedule.html" import schedule, schedule_days -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% set sessions = page.posts | selectattr("facts") | list -%}
+{% set updates = page.posts | rejectattr("facts") | list -%}
+<header class="list-header">
+{% block kind %}<p class="list-kind">{{ t.programme }}</p>
+{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}{{ schedule_days(sessions) }}
+</header>
+{% if sessions %}{{ schedule(sessions) }}
+{% endif %}{% if updates %}<section class="summit-updates" aria-labelledby="list-updates-title">
+<h2 id="list-updates-title">{{ t.updates }}</h2>
+{{ feed_list(updates) }}
+</section>
+{% endif %}{% if not page.posts %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

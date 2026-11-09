@@ -3,8 +3,9 @@
 use khalid_core::AbsoluteUrl;
 
 use crate::escape::escape_markup;
+use crate::feed::feed_url;
 use crate::social::push_social_tags;
-use crate::{PageKind, SeoError, SeoPage, SeoSite};
+use crate::{FeedFormat, PageKind, SeoError, SeoPage, SeoSite, UrlPath, schema_map_url};
 
 /// One tag in a page's `<head>`.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -40,6 +41,14 @@ pub enum HeadTag {
         /// The `href` attribute.
         href: AbsoluteUrl,
     },
+    /// `<link rel="alternate" type="..." href="...">`, another format of
+    /// the page, such as the language's whole-site schema file.
+    Format {
+        /// The `type` attribute, such as `application/ld+json`.
+        media_type: &'static str,
+        /// The `href` attribute.
+        href: AbsoluteUrl,
+    },
 }
 
 impl HeadTag {
@@ -67,6 +76,13 @@ impl HeadTag {
             Self::Alternate { hreflang, href } => {
                 out.push_str("<link rel=\"alternate\" hreflang=\"");
                 escape_markup(hreflang, out);
+                out.push_str("\" href=\"");
+                escape_markup(href.as_str(), out);
+                out.push_str("\">");
+            }
+            Self::Format { media_type, href } => {
+                out.push_str("<link rel=\"alternate\" type=\"");
+                escape_markup(media_type, out);
                 out.push_str("\" href=\"");
                 escape_markup(href.as_str(), out);
                 out.push_str("\">");
@@ -104,7 +120,8 @@ impl HeadTags {
 }
 
 /// The SEO tags for `page` on `site`: title, description, robots, canonical, hreflang,
-/// the verification tags on the home page, then Open Graph and the Twitter card.
+/// the schema file link and the verification tags on the home page, then Open
+/// Graph and the Twitter card.
 ///
 /// A page's own title, description, robots directives and canonical address
 /// win over the site's templates and index policy. A description template
@@ -148,9 +165,41 @@ pub fn head_tags(site: &SeoSite, page: &SeoPage) -> Result<HeadTags, SeoError> {
             href: alternate.url.clone(),
         });
     }
+    push_feed_links(site, page, &mut tags)?;
     if page.kind == PageKind::Home {
+        if site.schema_map.writes_files() {
+            tags.push(HeadTag::Format {
+                media_type: "application/ld+json",
+                href: schema_map_url(site, &page.language)?,
+            });
+        }
         site.verification.push_tags(&mut tags);
     }
     push_social_tags(site, page, &canonical, &description, &mut tags);
     Ok(HeadTags(tags))
+}
+
+/// Links each feed format that is on, so feed readers find the feed: the
+/// language's on the home page, and its own on a page with a feed.
+fn push_feed_links(
+    site: &SeoSite,
+    page: &SeoPage,
+    tags: &mut Vec<HeadTag>,
+) -> Result<(), SeoError> {
+    let folder = if page.feed.is_some() {
+        site.url_for(&page.language, &page.path)?
+    } else if page.kind == PageKind::Home {
+        site.url_for(&page.language, &UrlPath::root())?
+    } else {
+        return Ok(());
+    };
+    for format in FeedFormat::ALL {
+        if !site.feeds.off.contains(&format) {
+            tags.push(HeadTag::Format {
+                media_type: format.media_type(),
+                href: feed_url(&folder, format)?,
+            });
+        }
+    }
+    Ok(())
 }

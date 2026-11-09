@@ -1,3 +1,8 @@
+---
+title: "Newsletters"
+order: 80
+---
+
 # Newsletters
 
 Readers sign up with a plain form, confirm with one click in an email, and leave with one click in any email after that. Sending needs mail settings, see "Sending email" in `docs/deploy.md`.

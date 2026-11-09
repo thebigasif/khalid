@@ -66,6 +66,9 @@ pub struct VideoBlock {
     pub description: Option<String>,
     /// How long it runs.
     pub duration: Option<Duration>,
+    /// The picture search results show for the video, when it is not the
+    /// poster: a path or a full address.
+    pub thumbnail: Option<String>,
 }
 
 /// A rating of one thing, from `:::review{...}`.

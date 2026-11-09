@@ -1,0 +1,59 @@
+# The sample brand for the Ticker demo: Tallyline, a made-up weekly
+# markets letter. Petrol blue on warm paper with a pale grey-green
+# surface, Archivo for headings and labels, Spectral for reading and
+# JetBrains Mono for every figure. Only the brand lives here: the
+# template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#fbfaf7"
+surface = "#eef1f0"
+text = "#14212a"
+muted = "#4b5862"
+link = "#0f5b6e"
+accent = "#0f5b6e"
+border = "#d3d9d6"
+
+[fonts]
+heading = "Archivo, \"Helvetica Neue\", Arial, sans-serif"
+body = "Spectral, Charter, Georgia, serif"
+mono = "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Archivo"
+style = "normal"
+weight = "400 700"
+path = "archivo-latin-400-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "96.99%"
+descent = "99.10%"
+line_gap = "0.00%"
+size_adjust = "60.89%"
+
+[[fonts.files]]
+family = "Spectral"
+style = "normal"
+weight = "400"
+path = "spectral-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "116.98%"
+descent = "218.48%"
+line_gap = "0.00%"
+size_adjust = "62.05%"
+
+[[fonts.files]]
+family = "JetBrains Mono"
+style = "normal"
+weight = "500"
+path = "jetbrains-mono-latin-500.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "112.67%"
+descent = "141.57%"
+line_gap = "0.00%"
+size_adjust = "63.75%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

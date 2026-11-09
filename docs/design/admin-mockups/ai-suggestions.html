@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI suggestions in the editor · Khalid admin mockup</title>
+<style>
+/* The admin's own rules for these parts, copied so the mockup opens offline,
+   then admin/src/editor/ai/ai.css as it ships. Light theme only. */
+*{box-sizing:border-box}
+:root{color-scheme:light;--color-app:#f7f8fa;--color-bg:#fff;--color-surface:#f2f4f7;--color-text:#1b1f24;--color-muted:#59636e;--color-link:#0b57d0;--color-on-link:#fff;--color-border:#e3e6ea;--color-field:#7d8590;--color-tint:color-mix(in srgb,var(--color-link) 9%,#fff);--color-warn:#8a4b00;--color-warn-bg:#fff8eb;--color-ok:#1a7f37;--radius-field:.5rem;--shadow-card:0 1px 2px rgb(16 24 40 / .04);--shadow-raised:0 1px 2px rgb(16 24 40 / .06),0 1px 3px rgb(16 24 40 / .08);--shadow-menu:0 .75rem 2rem rgb(16 24 40 / .12),0 2px 6px rgb(16 24 40 / .06);--font-sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+html{background:var(--color-app);color:var(--color-text);font:400 1rem/1.5 var(--font-sans)}
+body{margin:0}
+main{max-width:76rem;margin:0 auto;padding:1.5rem 1rem 3rem}
+h1{font-size:1.5rem;margin:0 0 .25rem}
+h2{font-size:1.125rem;margin:0 0 .75rem}
+p{margin:0 0 1rem}
+input,textarea{width:100%;min-height:44px;padding:.5rem .75rem;border:1px solid var(--color-field);border-radius:var(--radius-field);background:var(--color-bg);color:inherit;font:inherit}
+label{display:block;font-weight:600;margin:0 0 .25rem}
+.lede{color:var(--color-muted);max-width:68ch;font-size:.9375rem}
+.hint{display:block;color:var(--color-muted);font-weight:400;font-size:.8125rem;margin:0 0 .25rem}
+.field{margin:0 0 1.25rem;max-width:36rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:44px;padding:.5rem 1rem;border-radius:var(--radius-field);border:1px solid var(--color-border);background:var(--color-bg);color:var(--color-text);font:500 .875rem/1.25 var(--font-sans);cursor:pointer;box-shadow:var(--shadow-card)}
+.btn.primary{background:var(--color-link);border-color:var(--color-link);color:var(--color-on-link);box-shadow:var(--shadow-raised)}
+.bar{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;align-items:center;justify-content:space-between;padding:0 0 1rem;margin:0 0 1rem;border-bottom:1px solid var(--color-border)}
+.switch{display:inline-flex;gap:2px;border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-surface);padding:2px;margin:0}
+.switch button{min-height:44px;padding:.375rem .875rem;border:0;border-radius:6px;background:transparent;color:var(--color-muted);font:500 .875rem var(--font-sans)}
+.switch button[aria-pressed="true"]{background:var(--color-bg);color:var(--color-text);box-shadow:var(--shadow-raised)}
+.layout{display:grid;gap:2rem;grid-template-columns:minmax(0,1fr)}
+@media (min-width:64em){.layout{grid-template-columns:minmax(0,1fr) 24rem}}
+.panel{background:var(--color-bg);border:1px solid var(--color-border);border-radius:.75rem;padding:1.25rem}
+.title{font-size:1.75rem;font-weight:700;border:0;border-bottom:1px solid var(--color-border);border-radius:0;padding:.5rem 0;margin:0 0 1rem}
+.check{border-radius:var(--radius-field);padding:1rem;margin:0 0 1rem;border-left:4px solid}
+.check.warn{background:var(--color-warn-bg);border-color:var(--color-warn)}
+.check .tag{font-size:.875rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin:0 0 .25rem;color:var(--color-warn)}
+.check p{margin:0 0 .5rem}
+.part{margin:0 0 2rem}
+
+/* admin/src/editor/ai/ai.css */
+.ai-host { display: contents; }
+.ai-suggest { margin-block: .5rem 0; }
+.ai-button { padding-inline: .75rem; box-shadow: none; }
+.ai-badge { display: inline-grid; place-items: center; min-width: 1.5rem; height: 1.25rem; padding: 0 .25rem; border-radius: 4px; background: var(--color-tint); color: var(--color-link); font-size: .6875rem; font-weight: 700; letter-spacing: .02em; }
+.ai-suggest .hint:empty { display: none; }
+.ai-options { margin-block-start: .5rem; padding: .75rem; border: 1px solid var(--color-border); border-radius: var(--radius-field); background: var(--color-bg); }
+.ai-label { margin: 0 0 .25rem; color: var(--color-link); font-size: .75rem; font-weight: 600; }
+.ai-options ul { margin: 0; padding: 0; list-style: none; }
+.ai-options li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .125rem .75rem; align-items: center; padding-block: .5rem; border-top: 1px solid var(--color-border); }
+.ai-options li > p { margin: 0; grid-column: 1; }
+.ai-options li > .btn { grid-column: 2; grid-row: 1 / span 2; }
+.ai-misfit { color: var(--color-warn); }
+.ai-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-block-start: .5rem; }
+</style>
+</head>
+<body>
+<main>
+  <div class="bar">
+    <fieldset class="switch" aria-label="How to write"><button type="button" aria-pressed="true">Rich text</button><button type="button" aria-pressed="false">Markdown</button></fieldset>
+    <div class="ai-suggest"><button type="button" class="btn ai-button" aria-label="Summarize the post as key takeaways with AI"><span class="ai-badge" aria-hidden="true">AI</span>Summarize</button></div>
+    <span class="hint">Saved</span>
+    <button type="button" class="btn primary">Publish</button>
+  </div>
+  <div class="layout">
+    <div>
+      <input class="title" value="Choosing anchor text" aria-label="Title">
+      <section class="panel part" aria-label="Key takeaways the AI wrote">
+        <section class="ai-options" aria-label="AI suggestion from Anthropic">
+          <p class="ai-label">AI suggestion from Anthropic</p>
+          <p class="hint">These points go in a key takeaways box where you add it. Readers see it as a short summary.</p>
+          <ul>
+            <li><p>Link words should say where the link goes.</p><p class="hint">42 characters.</p></li>
+            <li><p>Vary the words when several posts link to the same page.</p><p class="hint">57 characters.</p></li>
+            <li><p>Never write "click here": it tells nobody anything.</p><p class="hint">51 characters.</p></li>
+          </ul>
+          <div class="ai-actions"><button type="button" class="btn primary">Add to the end of the post</button><button type="button" class="btn">Close</button></div>
+        </section>
+      </section>
+      <section class="panel part" aria-labelledby="media-title">
+        <h2 id="media-title">Media details: page-weight.png</h2>
+        <div class="field">
+          <label for="media-alt">Alt text</label>
+          <span class="hint" id="media-alt-hint">What the picture shows, for readers who cannot see it.</span>
+          <textarea id="media-alt" rows="3" aria-describedby="media-alt-hint"></textarea>
+          <div class="ai-suggest"><button type="button" class="btn ai-button" aria-label="Suggest alt text for this picture with AI"><span class="ai-badge" aria-hidden="true">AI</span>Suggest alt text</button><p class="hint" role="status">Writing suggestions. This takes a few seconds.</p></div>
+        </div>
+      </section>
+    </div>
+    <div>
+      <aside class="panel part" aria-labelledby="checks-title">
+        <h2 id="checks-title">Checks</h2>
+        <section class="check warn" aria-label="Warning">
+          <p class="tag">Warning</p>
+          <p><strong>The title has 72 characters; search results show about 60.</strong></p>
+          <p>A cut title loses the words that make people click.</p>
+          <p>Shorten it to 60 characters or fewer.</p>
+          <div class="ai-suggest"><button type="button" class="btn ai-button" aria-label="Suggest a fix with AI for: The title has 72 characters"><span class="ai-badge" aria-hidden="true">AI</span>Suggest a fix</button></div>
+        </section>
+      </aside>
+      <section class="panel part" aria-labelledby="search-title">
+        <h2 id="search-title">How it looks in Google</h2>
+        <div class="field">
+          <label for="setting-seoTitle">Title in search results</label>
+          <span class="hint" id="setting-seoTitle-hint">Leave empty to use the title.</span>
+          <input id="setting-seoTitle" aria-describedby="setting-seoTitle-hint" value="">
+          <div class="ai-suggest">
+            <button type="button" class="btn ai-button" aria-label="Suggest an SEO title with AI" aria-expanded="true"><span class="ai-badge" aria-hidden="true">AI</span>Suggest</button>
+            <section class="ai-options" aria-label="AI suggestion from Anthropic">
+              <p class="ai-label">AI suggestion from Anthropic</p>
+              <p class="hint">Pick one to use it. Nothing in the post changes until you do.</p>
+              <ul>
+                <li><p>Choosing anchor text that helps readers</p><p class="hint">39 characters, a good length.</p><button type="button" class="btn">Use this</button></li>
+                <li><p>Anchor text that search engines understand</p><p class="hint">42 characters, a good length.</p><button type="button" class="btn">Use this</button></li>
+                <li><p>How to choose anchor text for internal links</p><p class="hint">44 characters, a good length.</p><button type="button" class="btn">Use this</button></li>
+                <li><p>Anchor text: the words of a link, and why they matter</p><p class="hint">53 characters, a good length.</p><button type="button" class="btn">Use this</button></li>
+                <li><p>Choosing anchor text: a long guide to every kind of link on a blog</p><p class="hint ai-misfit">Too long: 66 characters, and 60 is the most that shows in full.</p><button type="button" class="btn">Use this</button></li>
+              </ul>
+              <div class="ai-actions"><button type="button" class="btn">Close</button></div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+</body>
+</html>

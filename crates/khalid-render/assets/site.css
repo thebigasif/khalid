@@ -100,8 +100,10 @@ nav a { min-inline-size: 44px; }
   padding-block: 2rem 3rem;
   border-block-start: 1px solid var(--color-border);
   color: var(--color-muted);
-  font-size: var(--text-small);
 }
+/* The small text goes on the footer's parts, not the footer: a measure in ch
+   on the footer itself would make it narrower than the header. */
+.site-footer > * { font-size: var(--text-small); }
 .site-footer p { margin: 0; }
 .footer-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 1rem 1.5rem; }
 .footer-groups h2 { margin: 0; color: var(--color-text); font-size: var(--text-small); }
@@ -119,7 +121,10 @@ nav a { min-inline-size: 44px; }
 .reviewed-by a { font-weight: 600; }
 .reading-time time { white-space: nowrap; }
 .avatar { flex: none; inline-size: 2.75rem; block-size: 2.75rem; border-radius: 50%; object-fit: cover; }
-.person-card > picture, .person > picture, .reviewer > picture { flex: none; }
+/* A photo's flex item is the <picture> around it, which shrank beside a
+   long name and squashed the photo. Named rows first, then any row. */
+.person-card > picture, .person > picture, .reviewer > picture, .card-author > picture { flex: none; }
+picture:has(> .avatar) { flex: none; }
 .post-body > :first-child, .page-body > :first-child { margin-block-start: 0; }
 .post-footer { margin-block-start: var(--space-section); }
 .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -144,8 +149,7 @@ nav a { min-inline-size: 44px; }
 .comment-author { color: var(--color-text); font-weight: 700; }
 .comment-staff { padding-inline: 0.5rem; background: var(--color-surface); border-radius: var(--radius); }
 .comment-reply summary { display: inline-flex; align-items: center; min-block-size: 44px; cursor: pointer; }
-.comment-form label { display: block; font-weight: 600; }
-.comment-form input, .comment-form textarea { inline-size: 100%; min-block-size: 44px; font: inherit; }
+.comment-form label { display: block; margin-block-end: 0.25rem; font-weight: 600; }
 .comment-held { color: var(--color-muted); font-size: var(--text-small); }
 .comment-trap, .comment-sent { display: none; }
 .comment-sent:target { display: block; padding: 1rem; background: var(--color-surface); border-radius: var(--radius); }
@@ -171,8 +175,8 @@ nav a { min-inline-size: 44px; }
 .author-box .reviewed-by .avatar { inline-size: 2.75rem; block-size: 2.75rem; }
 .author-box .reviewed-by .avatar { inline-size: 2.75rem; block-size: 2.75rem; }
 .person-name { margin-block-end: 0; font-weight: 700; }
-/* Profiles elsewhere: round icons in the author box, icons with names on the author page. */
-.author-profiles { display: flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; margin-block-start: 0.5rem; }
+/* Profiles elsewhere: each its icon and its name, in a row with room between links. */
+.author-profiles { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin-block-start: 0.5rem; }
 .author-profiles a { justify-content: center; gap: 0.5rem; min-inline-size: 44px; color: var(--color-text); text-decoration: none; }
 .author-profiles a:hover { color: var(--color-link); }
 .author-intro .author-profiles a { padding-inline: 0.875rem; border: 1px solid var(--color-border); border-radius: 999px; font-size: var(--text-small); }
@@ -204,12 +208,19 @@ h2[id], h3[id] { scroll-margin-block-start: 1rem; }
 .toc-inline a, .toc-side a { display: inline-flex; align-items: center; min-block-size: 44px; }
 .toc-title { margin-block-end: 0; font-weight: 700; }
 .toc-side { display: none; }
+/* A post whose template shows its contents keeps one list: the copy a writer
+   placed in the body with ::toc stays hidden, as it would repeat it. */
+article:has(:is(.toc-inline, .toc-box, .toc-side)) .post-body .toc { display: none; }
 @media (min-width: 70rem) {
   main:has(.post-with-toc), :where(body:has(.post-with-toc)) :is(.site-header, .site-footer) { max-inline-size: calc(var(--measure) + 18rem); }
   .post-with-toc { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; column-gap: 3rem; }
   .post-with-toc > * { grid-column: 1; }
   .post-with-toc > .toc-side { display: block; grid-column: 2; grid-row: 1 / span 9; align-self: start; position: sticky; inset-block-start: 1rem; max-block-size: calc(100vh - 2rem); overflow-y: auto; font-size: var(--text-small); }
   .toc-inline { display: none; }
+  /* With the side column shown, a lead picture or a wide block that a
+     template lets grow past the text would run under the column, so they
+     keep to the text column in every template. */
+  .post-with-toc :is(.post-header .image, .post-body > table) { max-inline-size: 100%; margin-inline: 0; translate: none; }
 }
 
 /* Images keep their space: width and height are in the HTML. */
@@ -222,14 +233,14 @@ figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-size: v
 .intro { color: var(--color-muted); }
 .cards { display: grid; gap: 2rem; }
 .card { container-type: inline-size; }
-.card h2, .card h3 { margin-block: 0.75rem 0.25rem; font-size: 1.375rem; }
-.card h2 a, .card h3 a { color: var(--color-text); text-decoration: none; }
-.card h2 a:hover, .card h3 a:hover { text-decoration: underline; }
+.card :is(h2, h3, h4) { margin-block: 0.75rem 0.25rem; font-size: 1.375rem; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { text-decoration: underline; }
 .card p { margin-block-end: 0.25rem; }
 .card time { color: var(--color-muted); font-size: var(--text-small); }
 .card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1rem; color: var(--color-muted); font-size: var(--text-small); }
 .card-author { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-text); }
-.card-meta .avatar { inline-size: 2rem; block-size: 2rem; }
+.card-meta .avatar { flex: none; inline-size: 2rem; block-size: 2rem; }
 @container (min-width: 36rem) {
   .card:has(.image) { display: grid; grid-template-columns: 12rem 1fr; gap: 0 1.5rem; }
   .card .image { grid-row: span 4; margin: 0; }
@@ -265,11 +276,14 @@ figcaption { margin-block-start: 0.5rem; color: var(--color-muted); font-size: v
 dt { font-weight: 700; margin-block-start: 1rem; }
 dd { margin-inline-start: 0; }
 
-/* Search: a plain form. */
-.search { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: end; }
-.search label { flex-basis: 100%; font-weight: 700; }
+/* Search: a plain form. The label sits above; the input and the button
+   share one line at every width, the input giving up room first. */
+.search { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.5rem; align-items: end; }
+.search label { grid-column: 1 / -1; font-weight: 700; }
 .search input {
-  flex: 1 1 12rem;
+  min-inline-size: 0;
+  inline-size: 100%;
+  box-sizing: border-box;
   min-block-size: 44px;
   padding: 0.5rem 0.75rem;
   font: inherit;
@@ -312,34 +326,46 @@ mark { color: inherit; background: var(--color-surface); font-weight: 700; }
 /* Print: the words and where the links go, nothing else. */
 @media print {
   body { font-size: 11pt; padding: 0; color: #000; background: #fff; }
-  .skip-link, .announcement, .site-header nav, .site-footer nav, .pagination, .search { display: none; }
+  .skip-link, .announcement, .consent, .consent-saved, .site-header nav, .nav-menu, .site-footer nav, .pagination, .search { display: none; }
   .post-body a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; }
   pre, blockquote, figure, table { break-inside: avoid; }
   h2, h3 { break-after: avoid; }
 }
 
-/* The consent banner: a plain form that works with scripts off (G45). */
-.consent {
-  position: sticky;
-  inset-block-end: 0;
+/* The consent banner and the privacy choices page: plain forms that work
+   with scripts off (privacy plan U4). The banner sits in the flow after the
+   skip link, so it takes its own room and covers nothing. Accept all and
+   Reject all share one look. The band's colour and its bottom line are
+   painted to both edges of the window, past the page's side padding,
+   without making the page wider. */
+.consent, .consent-saved {
   padding: 1rem;
-  background: var(--color-surface);
-  border-block-start: 1px solid var(--color-border);
+  border-image: linear-gradient(to top, var(--color-border) 1px, var(--color-surface) 1px) fill 0 / 0 / 0 100vw;
 }
-.consent form { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-inline-size: var(--measure); margin-inline: auto; }
-.consent p { flex-basis: 100%; margin: 0; }
-.consent button {
+.consent > * { max-inline-size: var(--measure); margin-inline: auto; }
+.consent h2 { margin-block: 0 0.25rem; font-size: var(--text-h4); }
+.consent p { margin-block: 0 0.75rem; }
+.consent form, .consent .consent-answers { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.consent-button, .consent-choose {
+  display: inline-flex;
+  align-items: center;
   min-block-size: 44px;
   padding: 0.5rem 1.25rem;
   font: inherit;
-  color: var(--color-text);
-  background: var(--color-background);
-  border: 1px solid var(--color-muted);
+  border: 1px solid var(--color-accent);
   border-radius: var(--radius);
-  cursor: pointer;
 }
-.consent button[value="yes"] { color: var(--color-background); background: var(--color-accent); border-color: var(--color-accent); }
-.consent-chosen { position: static; font-size: 0.875rem; }
+.consent-button { color: var(--color-background); background: var(--color-accent); cursor: pointer; }
+.consent-choose { color: var(--color-text); border-color: var(--color-muted); }
+.consent-gpc { font-weight: 600; }
+.consent-saved { margin: 0; padding-block: 0.5rem; font-size: 0.875rem; text-align: center; }
+.privacy-choices { max-inline-size: var(--measure); }
+.privacy-choices fieldset { min-inline-size: 0; margin: 0 0 1rem; padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.privacy-choices legend { padding-inline: 0.25rem; font-weight: 600; }
+.privacy-choices p { margin-block: 0 0.5rem; }
+.privacy-choices .consent-always { font-weight: 600; }
+.privacy-choices label { display: inline-flex; gap: 0.5rem; align-items: center; min-block-size: 44px; cursor: pointer; }
+.privacy-choices input { inline-size: 1.25rem; block-size: 1.25rem; accent-color: var(--color-accent); }
 
 /* The slots a template switches on around its pages. Share links are plain links in a row. */
 .share { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space); margin-block: calc(var(--space) * 3); }
@@ -358,3 +384,21 @@ mark { color: inherit; background: var(--color-surface); font-weight: 700; }
 .cta-note { font-weight: 600; }
 .header-button { justify-content: center; max-inline-size: 100%; text-align: center; overflow-wrap: break-word; }
 @media print { .share, .newsletter-slot, .cta-band, .header-button { display: none; } }
+
+/* The main menu on a phone: one Menu button that folds the links open, with
+   no script, in place of a row of links that runs off the screen. Wider
+   screens keep the row. */
+.nav-menu { display: none; }
+@media (max-width: 40rem) {
+  .site-header > .nav-bar { display: none; }
+  /* The header's button moves into the menu, where it has room. */
+  .site-header:has(> .nav-menu) > .header-button { display: none; }
+  .site-header .nav-menu .menu-button { display: flex; justify-content: center; margin: 0.5rem 0 0; }
+  .site-header > .nav-menu { position: relative; display: block; margin-inline-start: auto; }
+  .nav-menu summary { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 44px; padding-inline: 0.875rem; border: 1px solid var(--color-border); border-radius: var(--radius); font-size: var(--text-small); font-weight: 600; list-style: none; cursor: pointer; }
+  .nav-menu summary::-webkit-details-marker { display: none; }
+  .nav-menu summary::before { content: ""; inline-size: 1rem; block-size: 0.75rem; background: linear-gradient(currentColor 0 0) top / 100% 2px no-repeat, linear-gradient(currentColor 0 0) center / 100% 2px no-repeat, linear-gradient(currentColor 0 0) bottom / 100% 2px no-repeat; }
+  .site-header .nav-menu nav { position: absolute; inset-block-start: calc(100% + 0.5rem); inset-inline-end: 0; z-index: 30; order: 0; flex-basis: auto; grid-area: auto; min-inline-size: 14rem; margin: 0; padding: 0.5rem; overflow: visible; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius); box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.12); mask: none; }
+  .site-header .nav-menu nav ul { display: flex; flex-direction: column; flex-wrap: nowrap; gap: 0; margin: 0; padding: 0; overflow: visible; mask: none; }
+  .site-header .nav-menu nav a { display: flex; align-items: center; min-block-size: 44px; padding-inline: 0.5rem; }
+}

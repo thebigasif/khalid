@@ -1,0 +1,13 @@
+{#- Encore's band page: everyone who writes for the site in a grid, each
+    with their mark or photo, name, what they play and how many posts they
+    wrote. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "sections/people_grid.html" import people_grid -%}
+<header class="list-header">
+<p class="list-kind">{{ t.music_band }}</p>
+<h1>{{ page.title }}</h1>
+</header>
+{% if page.authors %}{{ people_grid(page.authors, 2) }}
+{% else %}<p>{{ t.no_authors }}</p>
+{% endif %}{% endblock %}

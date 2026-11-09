@@ -1,0 +1,94 @@
+# Slow Miles, a made-up travel diary by two writers, written for the
+# Itinerary template's demo. Each key and table here replaces the
+# showcase's own when scripts/demo-publication.sh applies it.
+
+name = "Slow Miles"
+languages = ["en"]
+
+[template.cta]
+label = "Get the packing list"
+href = "/blog/carry-on-packing-list/"
+note = "Our checklist for two weeks with one carry-on bag each, tested on every trip in this diary."
+
+# The Itinerary template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["Two of us, one carry-on bag each, and trips planned day by day: by train, bus and on foot wherever we can."]
+hero_stats = ["5 | countries", "7 | trips", "56 | days on the road", "0 | flights inside a country"]
+notes_count = 5
+
+[announcement]
+text = "New trip: four days on foot from Mestia to Ushguli in Svaneti."
+href = "/blog/svaneti-trek/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A slow travel diary, day by day"
+
+[seo.ai_page]
+covers = "Slow Miles is a travel diary by two writers. Each trip post gives a day-by-day itinerary with the route, the season and what it cost. Notes cover packing and planning."
+cite = "Link the trip or note you quote, and give the month of the trip, since prices and timetables change."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "Slow Miles"
+email = "hello@example.com"
+founded = "2019-04-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Slow Miles logo"
+width = 240
+height = 80
+
+# Sign-ups for the diary's letter, under its own name. The mail server is
+# a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "Slow Miles"
+postal_address = "Slow Miles, 14 Station Road, Northsound NS2 4LT"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Trips"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "Georgia"
+href = "/blog/category/georgia/"
+language = "en"
+
+[[nav.primary]]
+label = "Packing list"
+href = "/blog/carry-on-packing-list/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About us"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Packing and planning"
+href = "/blog/category/packing-planning/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

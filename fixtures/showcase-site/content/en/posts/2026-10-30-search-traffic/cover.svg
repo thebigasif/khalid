@@ -1,27 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
-  <rect width="1200" height="675" fill="#f4f1ff"/>
-  <circle cx="1040" cy="140" r="110" fill="#ffb38a" opacity="0.3"/>
-  <g stroke="#d9d2ec" stroke-width="2">
-    <line x1="120" y1="170" x2="1080" y2="170"/>
-    <line x1="120" y1="290" x2="1080" y2="290"/>
-    <line x1="120" y1="410" x2="1080" y2="410"/>
-    <line x1="120" y1="530" x2="1080" y2="530"/>
-  </g>
-  <g fill="#c9bde6">
-    <rect x="150" y="450" width="56" height="80" rx="6"/>
-    <rect x="256" y="430" width="56" height="100" rx="6"/>
-    <rect x="362" y="400" width="56" height="130" rx="6"/>
-    <rect x="468" y="380" width="56" height="150" rx="6"/>
-    <rect x="574" y="360" width="56" height="170" rx="6"/>
-    <rect x="680" y="350" width="56" height="180" rx="6"/>
-    <rect x="786" y="370" width="56" height="160" rx="6"/>
-    <rect x="892" y="320" width="56" height="210" rx="6"/>
-    <rect x="998" y="280" width="56" height="250" rx="6"/>
-  </g>
-  <polyline points="178,400 284,370 390,330 496,300 602,270 708,250 814,265 920,220 1026,170" fill="none" stroke="#5b3fa8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-  <g fill="#5b3fa8">
-    <circle cx="178" cy="400" r="14"/>
-    <circle cx="602" cy="270" r="14"/>
-    <circle cx="1026" cy="170" r="14"/>
+  <rect width="1200" height="675" fill="#f4f1ea"/>
+  <path fill="#eba63f" d="M260 470L360 430 460 450 560 380 660 340 760 360 860 250 960 160V560H260z"/>
+  <g fill="none" stroke="#1f2428" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="6" stroke-dasharray="0 20" d="M360 110v450M460 110v450M560 110v450M660 110v450M760 110v450M860 110v450"/>
+    <path stroke-width="12" d="M260 470L360 430 460 450 560 380 660 340 760 360 860 250 960 160"/>
+    <path d="M220 100V560H1000"/>
+    <g fill="#fffdf8">
+      <circle cx="260" cy="470" r="14"/><circle cx="360" cy="430" r="14"/><circle cx="460" cy="450" r="14"/>
+      <circle cx="560" cy="380" r="14"/><circle cx="660" cy="340" r="14"/><circle cx="760" cy="360" r="14"/>
+      <circle cx="860" cy="250" r="14"/><circle cx="960" cy="160" r="14"/>
+    </g>
   </g>
 </svg>

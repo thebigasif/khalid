@@ -31,6 +31,6 @@ pub use redirection::{
 };
 pub use report::Report;
 pub use rest::{RestAnswers, RestError, read_rest};
-pub use seo_meta::{SeoMeta, SeoPlugin, UnreadField};
+pub use seo_meta::{SeoMeta, SeoPlugin, ShareWords, UnreadField};
 pub use wxr::read_wxr;
 pub use wxr_error::WxrError;

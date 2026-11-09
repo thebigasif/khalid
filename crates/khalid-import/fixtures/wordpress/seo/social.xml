@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- One published post each from Yoast SEO, Rank Math and All in One SEO 4, with
+     their share cards, cornerstone marks, breadcrumb titles, schema types and
+     related keyphrases. -->
+<rss version="2.0" xmlns:wp="http://wordpress.org/export/1.2/"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+	<title>Northfield Bakery Blog</title>
+	<link>https://northfield.example.com</link>
+	<wp:wxr_version>1.2</wp:wxr_version>
+	<wp:category><wp:term_id>4</wp:term_id><wp:category_nicename><![CDATA[sourdough]]></wp:category_nicename><wp:category_parent><![CDATA[]]></wp:category_parent><wp:cat_name><![CDATA[Sourdough]]></wp:cat_name></wp:category>
+	<item>
+		<title><![CDATA[Why rye bread needs time]]></title>
+		<content:encoded><![CDATA[<p>Rye ferments slowly.</p>]]></content:encoded>
+		<wp:post_id>30</wp:post_id>
+		<wp:post_date><![CDATA[2024-04-02 09:00:00]]></wp:post_date>
+		<wp:post_name><![CDATA[rye-needs-time]]></wp:post_name>
+		<wp:status><![CDATA[publish]]></wp:status>
+		<wp:post_type><![CDATA[post]]></wp:post_type>
+		<category domain="category" nicename="sourdough"><![CDATA[Sourdough]]></category>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_focuskw]]></wp:meta_key><wp:meta_value><![CDATA[rye bread]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_focuskeywords]]></wp:meta_key><wp:meta_value><![CDATA[[{"keyword":"rye starter","score":"good"},{"keyword":"rye flour","score":"ok"}]]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_keywordsynonyms]]></wp:meta_key><wp:meta_value><![CDATA[["dark rye, sourdough rye",""]]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_opengraph-title]]></wp:meta_key><wp:meta_value><![CDATA[%%title%%: the slow way]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_opengraph-description]]></wp:meta_key><wp:meta_value><![CDATA[Rye wants a day, not an hour.]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_opengraph-image]]></wp:meta_key><wp:meta_value><![CDATA[https://northfield.example.com/wp-content/uploads/rye-card.jpg]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_twitter-title]]></wp:meta_key><wp:meta_value><![CDATA[Rye takes a day &amp; a night]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_is_cornerstone]]></wp:meta_key><wp:meta_value><![CDATA[1]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_bctitle]]></wp:meta_key><wp:meta_value><![CDATA[Rye]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_schema_page_type]]></wp:meta_key><wp:meta_value><![CDATA[FAQPage]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_yoast_wpseo_schema_article_type]]></wp:meta_key><wp:meta_value><![CDATA[NewsArticle]]></wp:meta_value></wp:postmeta>
+	</item>
+	<item>
+		<title><![CDATA[Choosing bread flour]]></title>
+		<content:encoded><![CDATA[<p>Strong flour holds the shape.</p>]]></content:encoded>
+		<wp:post_id>31</wp:post_id>
+		<wp:post_date><![CDATA[2024-04-03 09:00:00]]></wp:post_date>
+		<wp:post_name><![CDATA[choosing-bread-flour]]></wp:post_name>
+		<wp:status><![CDATA[publish]]></wp:status>
+		<wp:post_type><![CDATA[post]]></wp:post_type>
+		<wp:postmeta><wp:meta_key><![CDATA[rank_math_focus_keyword]]></wp:meta_key><wp:meta_value><![CDATA[bread flour,strong flour,flour protein,baker's flour,high gluten flour,wheat flour]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[rank_math_facebook_title]]></wp:meta_key><wp:meta_value><![CDATA[Which flour makes the best loaf?]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[rank_math_twitter_description]]></wp:meta_key><wp:meta_value><![CDATA[Protein is what counts.]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[rank_math_pillar_content]]></wp:meta_key><wp:meta_value><![CDATA[on]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[rank_math_breadcrumb_title]]></wp:meta_key><wp:meta_value><![CDATA[Flour]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[rank_math_rich_snippet]]></wp:meta_key><wp:meta_value><![CDATA[article]]></wp:meta_value></wp:postmeta>
+	</item>
+	<item>
+		<title><![CDATA[Proofing baskets]]></title>
+		<content:encoded><![CDATA[<p>A banneton shapes the loaf.</p>]]></content:encoded>
+		<wp:post_id>32</wp:post_id>
+		<wp:post_date><![CDATA[2024-04-04 09:00:00]]></wp:post_date>
+		<wp:post_name><![CDATA[proofing-baskets]]></wp:post_name>
+		<wp:status><![CDATA[publish]]></wp:status>
+		<wp:post_type><![CDATA[post]]></wp:post_type>
+		<wp:postmeta><wp:meta_key><![CDATA[_aioseo_og_title]]></wp:meta_key><wp:meta_value><![CDATA[#post_title for round loaves]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_aioseo_twitter_description]]></wp:meta_key><wp:meta_value><![CDATA[Cane or wood pulp?]]></wp:meta_value></wp:postmeta>
+		<wp:postmeta><wp:meta_key><![CDATA[_aioseo_keyphrases]]></wp:meta_key><wp:meta_value><![CDATA[{"focus":{"keyphrase":"proofing basket"},"additional":[{"keyphrase":"banneton"},{"keyphrase":"brotform"}]}]]></wp:meta_value></wp:postmeta>
+	</item>
+</channel>
+</rss>

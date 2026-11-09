@@ -35,6 +35,16 @@ impl Term {
             language,
         }
     }
+
+    /// The name readers see in its language.
+    pub(crate) fn name(&self) -> &str {
+        &self.name
+    }
+
+    /// The language.
+    pub(crate) fn language(&self) -> &Locale {
+        &self.language
+    }
 }
 
 impl Listable for Term {
@@ -57,6 +67,8 @@ impl FieldValues for Term {
             "slug" => text(self.slug.as_str()),
             "name" => text(&self.name),
             "language" => text(self.language.as_str()),
+            // Ghost's name, which only its compatible API lets a filter use.
+            "visibility" => text("public"),
             _ => Vec::new(),
         }
     }

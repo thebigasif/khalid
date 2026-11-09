@@ -6,8 +6,8 @@ expression: "main_of(&page(&out, POST))"
 <nav class="breadcrumbs" aria-label="Breadcrumbs">
 <ol>
 <li><a href="/blog/">Field Notes on SEO</a></li>
-<li><a href="/blog/category/technical-seo/">Technical SEO</a></li>
-<li><a href="/blog/what-a-sitemap-does/" aria-current="page">What a sitemap does, and what it does not</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/category/technical-seo/">Technical SEO</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/what-a-sitemap-does/" aria-current="page">What a sitemap does, and what it does not</a></li>
 </ol>
 </nav>
 

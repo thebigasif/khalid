@@ -1,0 +1,12 @@
+{#- contents_page(posts, level=3): posts as a book's contents page. Each
+    entry has its number, its title, a dotted leader running to its date,
+    and its category and description under it. For writing, lessons,
+    episodes or issues read in order. Titles use a heading of `level`. -#}
+{% macro contents_page(posts, level=3) -%}
+<ol class="contents-page" role="list">
+{% for post in posts %}<li class="contents-entry">
+<div class="contents-line"><h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}><span class="contents-leader" aria-hidden="true"></span><time datetime="{{ post.date }}">{{ post.date | date }}</time></div>
+<p class="contents-note">{% if post.category %}<span class="contents-kind">{{ post.category.name }}</span> {% endif %}{{ post.excerpt }}</p>
+</li>
+{% endfor %}</ol>
+{%- endmacro %}

@@ -13,7 +13,7 @@ expression: author
 <nav class="breadcrumbs" aria-label="Breadcrumbs">
 <ol>
 <li><a href="/blog/">Field Notes on SEO</a></li>
-<li><a href="/blog/authors/asif/" aria-current="page">Asif</a></li>
+<li><span class="crumb-sep" aria-hidden="true">/</span><a href="/blog/authors/asif/" aria-current="page">Asif</a></li>
 </ol>
 </nav>
 
@@ -89,6 +89,7 @@ expression: author
 <ul>
 <li><a href="/blog/ai/">AI info</a></li>
 <li><a href="/blog/sitemap/">Sitemap</a></li>
+<li><a href="/blog/privacy-choices/">Your privacy choices</a></li>
 </ul>
 </nav>
 </footer>

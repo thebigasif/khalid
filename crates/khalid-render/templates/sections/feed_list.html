@@ -1,0 +1,13 @@
+{#- feed_list(posts, level=3): a short dated feed of posts, newest first,
+    each with its date, title and category. For news, updates, notices and
+    any list where the date matters more than a picture. Titles use a
+    heading of `level`. -#}
+{% macro feed_list(posts, level=3) -%}
+<ol class="feed-list" role="list">
+{% for post in posts %}<li class="feed-item">
+<time datetime="{{ post.date }}">{{ post.date | date }}</time>
+<h{{ level }}><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.category %}<p class="feed-category"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}</li>
+{% endfor %}</ol>
+{%- endmacro %}

@@ -8,7 +8,7 @@ description: The layouts Khalid can give your blog, who each one suits, and a li
 
 A template sets the layout of your blog: where the contents list sits, which cards the home page shows, and how big the text is. Your colours, fonts and logo still come from your own website through [theme sync](/khalid/features/theme-sync/), so every template looks like your brand.
 
-Khalid has eleven looks: Classic, the one every blog starts with, and the ten templates above. Each picture shows that template's demo blog, and each name opens the demo itself. The [templates guide on GitHub](https://github.com/thebigasif/khalid/blob/main/docs/templates.md) lists every template's options.
+The gallery above shows every look: Classic, the one every blog starts with, and each template. Each picture shows that template's demo blog, and each name opens the demo itself. The [templates guide on GitHub](https://github.com/thebigasif/khalid/blob/main/docs/templates.md) lists every template's options.
 
 ## How to choose one
 

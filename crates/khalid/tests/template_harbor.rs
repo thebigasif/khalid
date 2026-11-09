@@ -127,7 +127,10 @@ fn harbor_front_page_with_one_featured_post_lists_the_newest_beside_it() {
     };
     assert_eq!(texts(".lead-side > h2"), ["Latest posts"]);
     assert_eq!(texts(".lead-side .card h3").len(), 4);
-    assert!(texts(".lead-title").len() == 1 && texts(".latest").is_empty());
+    assert!(
+        texts(".lead-title").len() == 1 && texts(".latest").is_empty(),
+        "expected nothing here"
+    );
     let mut titles = texts("main h3");
     let count = titles.len();
     titles.sort_unstable();

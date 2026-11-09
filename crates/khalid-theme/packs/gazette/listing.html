@@ -1,0 +1,28 @@
+{#- Gazette's lists (a section, a tag, the archive, date and collection
+    pages): the list's name under the section flag's heavy rule with its
+    intro, the newest story as a lead with its picture beside it, then
+    the rest as dense headlines grouped by day, with their places and
+    summaries. Later pages start with the headlines. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "sections/headline_list.html" import headline_list -%}
+{% from "parts-gazette.html" import top_story -%}
+{% set first_page = not (page.pagination and page.pagination.previous) -%}
+{% set lead = page.posts[0] if first_page and page.posts else none -%}
+<header class="list-header">
+{% block kind %}{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if lead %}{{ top_story(lead) }}
+{% endif %}{% set rest = page.posts[1:] if lead else page.posts -%}
+{% if rest %}<section class="gz-list" aria-labelledby="gz-list-title">
+<h2 id="gz-list-title" class="gz-band-title">{{ t.more_news }}</h2>
+{{ headline_list(rest, 3, true, 0, true) }}
+</section>
+{% endif %}{% if not page.posts %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

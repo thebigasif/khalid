@@ -11,7 +11,7 @@ fn every_page_links_to_search_from_its_header_in_its_language() {
     let english = render("en", sitemap_post());
     assert_valid_page(&english);
     assert!(english.contains(
-        "</nav>\n<a class=\"search-link\" href=\"/blog/search/\" data-dialog>Search</a>\n</header>"
+        "</nav>\n<a class=\"search-link\" href=\"/blog/search/\" data-dialog>Search</a>\n<details class=\"nav-menu\">"
     ));
     let german = render("de", sitemap_post());
     assert!(

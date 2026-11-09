@@ -3,6 +3,8 @@
 
 /** @type {import("./index.js").Routes} */
 export const operations = {
+  read_ai: { method: "GET", path: "/api/admin/v1/ai/", key: "admin", body: null },
+  suggest: { method: "POST", path: "/api/admin/v1/ai/suggestions/", key: "admin", body: "application/json" },
   ai_visitors: { method: "GET", path: "/api/admin/v1/analytics/ai-visitors/", key: "admin", body: null },
   uncited: { method: "GET", path: "/api/admin/v1/analytics/uncited/", key: "admin", body: null },
   visitors: { method: "GET", path: "/api/admin/v1/analytics/visitors/", key: "admin", body: null },
@@ -22,9 +24,12 @@ export const operations = {
   delete_comment: { method: "DELETE", path: "/api/admin/v1/comments/{id}/", key: "admin", body: null },
   approve_comment: { method: "POST", path: "/api/admin/v1/comments/{id}/approve/", key: "admin", body: null },
   reply_to_comment: { method: "POST", path: "/api/admin/v1/comments/{id}/replies/", key: "admin", body: "application/json" },
+  consent_counts: { method: "GET", path: "/api/admin/v1/consent/counts/", key: "admin", body: null },
+  consent_versions: { method: "GET", path: "/api/admin/v1/consent/versions/", key: "admin", body: null },
   list_keys: { method: "GET", path: "/api/admin/v1/keys/", key: "admin", body: null },
   create_key: { method: "POST", path: "/api/admin/v1/keys/", key: "admin", body: "application/json" },
   revoke_key: { method: "DELETE", path: "/api/admin/v1/keys/{id}/", key: "admin", body: null },
+  list_issues: { method: "GET", path: "/api/admin/v1/lint/issues/", key: "admin", body: null },
   list_media: { method: "GET", path: "/api/admin/v1/media/", key: "admin", body: null },
   upload_media: { method: "POST", path: "/api/admin/v1/media/", key: "admin", body: "application/octet-stream" },
   search_pictures: { method: "GET", path: "/api/admin/v1/media/search/", key: "admin", body: null },
@@ -48,6 +53,8 @@ export const operations = {
   list_draft_comments: { method: "GET", path: "/api/admin/v1/posts/{id}/draft-comments/", key: "admin", body: null },
   add_draft_comment: { method: "POST", path: "/api/admin/v1/posts/{id}/draft-comments/", key: "admin", body: "application/json" },
   resolve_draft_comment: { method: "PUT", path: "/api/admin/v1/posts/{id}/draft-comments/{comment}/", key: "admin", body: "application/json" },
+  duplicate_admin_post: { method: "POST", path: "/api/admin/v1/posts/{id}/duplicate/", key: "admin", body: null },
+  suggest_links: { method: "GET", path: "/api/admin/v1/posts/{id}/link-suggestions/", key: "admin", body: null },
   check_in: { method: "POST", path: "/api/admin/v1/posts/{id}/presence/", key: "admin", body: "application/json" },
   leave: { method: "DELETE", path: "/api/admin/v1/posts/{id}/presence/", key: "admin", body: null },
   make_preview_link: { method: "POST", path: "/api/admin/v1/posts/{id}/preview-link/", key: "admin", body: null },

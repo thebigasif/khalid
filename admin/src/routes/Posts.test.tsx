@@ -5,6 +5,7 @@ import { axeViolations, json, renderAt, serve, signedIn } from "../../test/rende
 import { listing, row, rowsPage } from "../../test/rows";
 import type { PostRow } from "../api/rows";
 import { en } from "../strings/en";
+import { seoEditorWords } from "../strings/seoEditorWords";
 
 const ROWS = [
   row({ lint: { blocks: 0, warnings: 3 } }),
@@ -94,6 +95,23 @@ describe("the posts screen", () => {
     expect(queries[0]?.get("order")).toBe("updated_at desc");
     expect(queries[0]?.get("filter")).toBeNull();
     expect(await axeViolations()).toEqual([]);
+  });
+
+  it("shows each post's two scores and its links, and filters orphans", async () => {
+    signedIn();
+    const scored = row({ scores: { seo: 85, readability: 45 } });
+    const queries = blog([scored]);
+    renderAt("/posts");
+    const table = await screen.findByRole("table");
+    const [, first] = within(table).getAllByRole("row");
+    expect(first).toHaveTextContent(`85 ${seoEditorWords.state.good}`);
+    expect(first).toHaveTextContent(`45 ${seoEditorWords.state.bad}`);
+    expect(first).toHaveTextContent(seoEditorWords.linksInOut(2, 3));
+    const form = screen.getByRole("form", { name: en.filters.label });
+    const seo = within(form).getByLabelText(seoEditorWords.seoFilter);
+    await userEvent.selectOptions(seo, "orphan");
+    await userEvent.click(within(form).getByRole("button", { name: en.filters.show }));
+    await waitFor(() => expect(queries.at(-1)?.get("filter")).toBe("orphan:true"));
   });
 
   it("says when no post matches", async () => {

@@ -1,0 +1,149 @@
+/* Versions (docs/templates/versions.md): a product changelog, not a
+   blog. A wide white frame, the changes on a version rail (each version
+   in the monospace on the rail, a node on the line, its changes beside
+   it), type chips that tell New, Improved and Fixed apart by shape as
+   well as colour, and a quiet update box. The shared parts' rules come
+   first (the build adds the parts the templates import); these set the
+   look over them. Every colour is a token or a mix of tokens. */
+:root {
+  --vs-frame: 76rem;
+  --vs-rail: 9.5rem;
+  --vs-tint: color-mix(in oklab, var(--color-accent) 10%, var(--color-background));
+  --vs-line: color-mix(in oklab, var(--color-text) 18%, var(--color-background));
+  --hero-title: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+}
+.site-header, main, .site-footer { box-sizing: border-box; inline-size: 100%; max-inline-size: var(--vs-frame); margin-inline: auto; }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: 37rem; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(37rem + 18rem); }
+main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band, .lock) { max-inline-size: 37rem; margin-inline: auto; }
+h1 { letter-spacing: -0.02em; }
+
+/* The header: the name or logo, quiet menu links, the call to action. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1rem; border-block-end: 1px solid var(--color-border); }
+.site-name { font-family: var(--font-heading); font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em; color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.5rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -2px var(--color-accent); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--vs-tint); border: 0; box-shadow: 0 0 0 100vmax var(--vs-tint); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: rounded, filled with the accent. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; max-inline-size: 100%; min-block-size: 2.75rem; padding: 0.5rem 1.125rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: 600 0.9375rem/1.2 var(--font-body); text-align: center; text-decoration: none; cursor: pointer; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* Section labels: small capitals over a hairline. */
+:is(.changelog-section, .release-index, .related, .mentions, .author-changes, .author-others) > h2, .post-footer > h2 { margin-block: 0 1rem; padding-block-start: 0.625rem; border-block-start: 1px solid var(--vs-line); color: var(--color-muted); font-family: var(--font-body); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1.3; text-transform: uppercase; }
+
+/* The front page: the name, then the timeline beside the update box. */
+.hero { margin-block-end: 2rem; }
+.hero-kicker { color: var(--color-accent); }
+.hero-title { letter-spacing: -0.03em; }
+.hero-intro { color: var(--color-muted); font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem); line-height: 1.5; }
+.changelog { display: grid; gap: var(--space-section) 4rem; }
+@media (min-width: 64rem) { .changelog { grid-template-columns: minmax(0, 1fr) 17rem; } .changelog-side { position: sticky; inset-block-start: 1.5rem; align-self: start; } }
+.changelog-main, .changelog-side { min-inline-size: 0; }
+.changelog-side { display: grid; gap: 2rem; align-content: start; }
+.changelog-section { margin-block-end: var(--space-section); }
+.view-all { margin-block: 1rem 0; }
+
+/* Type chips and the filter row. New is filled, Improved tinted with a
+   ring, Fixed plain with a square, a fourth type dashed: the marks tell
+   the types apart by shape as well as colour. */
+.change-type { gap: 0.4375rem; background: var(--color-background); letter-spacing: 0.02em; }
+.change-type:hover { border-color: var(--color-text); text-decoration: underline; }
+:is(.change-type, .filter-row a)::before { content: ""; flex: none; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 50%; background: var(--color-muted); }
+.filter-row a:not([data-mark])::before, .filter-row a[data-mark=""]::before { display: none; }
+:is(.change-type, .filter-row a)[data-mark="1"]::before { background: var(--color-accent); }
+:is(.change-type, .filter-row a)[data-mark="2"]::before { background: var(--color-background); box-shadow: inset 0 0 0 2px var(--color-accent); }
+:is(.change-type, .filter-row a)[data-mark="3"]::before { border-radius: 1px; background: var(--color-text); }
+:is(.change-type, .filter-row a)[data-mark="4"]::before { background: var(--color-background); box-shadow: inset 0 0 0 1px var(--color-muted); }
+.change-type[data-mark="1"] { border-color: var(--color-accent); background: var(--color-accent); color: var(--color-on-accent); }
+.change-type[data-mark="1"]::before { background: var(--color-on-accent); }
+.change-type[data-mark="2"] { border-color: color-mix(in oklab, var(--color-accent) 40%, var(--color-background)); background: var(--vs-tint); }
+.change-type[data-mark="3"] { border-color: var(--vs-line); background: var(--color-surface); }
+.change-type[data-mark="4"] { border-style: dashed; border-color: var(--color-muted); }
+.filter-row a[aria-current]::before { box-shadow: none; background: var(--color-background); }
+
+/* The version rail: the shared release log, with the version in the
+   monospace and the newest node filled. */
+:root { --release-rail: var(--vs-rail); }
+.release-version { color: var(--color-text); font-weight: 500; letter-spacing: -0.01em; }
+.release-label { font-family: var(--font-body); }
+.release-date { font-variant-numeric: tabular-nums; }
+
+/* Get updates: the sign-up form and the feeds on the surface. */
+.updates { padding: 1.25rem 1.25rem 1.5rem; background: var(--color-surface); border-block-start: 3px solid var(--color-accent); border-radius: 0 0 var(--radius) var(--radius); }
+.updates h2 { margin: 0 0 0.5rem; font-size: 1.125rem; }
+.updates > p { margin: 0 0 1rem; color: var(--color-muted); font-size: 0.9375rem; line-height: 1.5; }
+.updates .subscribe p { margin: 0 0 0.75rem; }
+.updates .subscribe label { display: block; margin-block-end: 0.25rem; font-size: var(--text-small); font-weight: 600; }
+.updates .subscribe input { box-sizing: border-box; inline-size: 100%; min-block-size: 2.75rem; padding: 0.5rem 0.75rem; border: 1px solid var(--vs-line); border-radius: var(--radius); background: var(--color-background); color: var(--color-text); font: inherit; }
+.updates .subscribe button { inline-size: 100%; }
+.feed-links { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; font-size: 0.9375rem; }
+.feed-links a, .list-feed a { display: inline-flex; align-items: center; min-block-size: 2rem; color: var(--color-link); }
+
+/* Lists: the kind, the name, the intro, the type's feed. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.list-header h1 { margin: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-accent); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 0.75rem; color: var(--color-muted); font-size: 1.0625rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-feed { margin-block: 0.75rem 0; font-size: 0.9375rem; }
+
+/* A change: its type and version, the title, the facts. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.change-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-block: 0 1rem; }
+.change-version { display: inline-flex; align-items: baseline; gap: 0.5rem; }
+.change-version .release-version { font-size: 1.125rem; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.12; }
+.post-header .dek { color: var(--color-muted); font-size: 1.1875rem; line-height: 1.5; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta address a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta address a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); }
+.post-meta address .person-role { display: inline; }
+.post-date { margin-block: 0.5rem 0.25rem; }
+.change-facts { display: flex; flex-wrap: wrap; gap: 0; margin-block: 1.5rem; padding: 0; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); }
+.change-facts > div { flex: 1 1 8rem; min-inline-size: 0; padding: 0.75rem 1rem; }
+.change-facts > div + div { border-inline-start: 1px solid var(--color-border); }
+.change-facts dt { color: var(--color-muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.change-facts dd { margin: 0.25rem 0 0; font-size: 1rem; overflow-wrap: anywhere; }
+.change-facts > div:first-child dd { font-family: var(--font-mono); font-weight: 500; }
+.post-header .image img { border: 1px solid var(--color-border); border-radius: var(--radius); }
+.post-body { font-size: 1.125rem; }
+.post-body :is(h2, h3) { margin-block-start: 1.75em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+.related .release-log { border-block-start: 0; }
+.related { --release-rail: 7rem; }
+.related .release:first-child .release-head::after { background: var(--color-background); }
+
+/* An author: the photo beside the name, then their changes. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 7rem); }
+.author-photo img { border-radius: var(--radius); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.0625rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-changes, .author-others { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search. */
+.card :is(h2, h3, h4) { font-size: 1.1875rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter: bands on the surface. */
+.cta-band { background: var(--color-surface); border: 0; border-block-start: 3px solid var(--color-accent); border-radius: 0 0 var(--radius) var(--radius); }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); }
+
+/* The footer: one hairline, quiet links. */
+.site-footer { border-block-start: 1px solid var(--color-border); }
+/* A list page opens over a hairline as wide as the frame. */
+.list-header { padding-block-end: 1.5rem; border-block-end: 1px solid var(--color-border); }

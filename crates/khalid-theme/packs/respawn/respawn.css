@@ -1,0 +1,162 @@
+/* Respawn (docs/templates/respawn.md): a games site. A wide frame on cool
+   white, squared titles, section labels in capitals after a small accent
+   square, and every review's score as an ink tile with a health bar of
+   ten cells. The section parts' own rules come first (the build adds the
+   parts this pack's templates import); these set the look over them.
+   Every colour is a token or a mix of tokens. */
+:root {
+  --rs-frame: 76rem;
+  --rs-ink: var(--color-text);
+  --rs-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background));
+}
+.site-header, main, .site-footer { max-inline-size: var(--rs-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: 48rem; margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(48rem + 18rem); }
+main > .post ~ * { max-inline-size: 48rem; margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: -0.005em; }
+
+/* The header: the name in the squared font on a heavy ink rule. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1rem; border-block-end: 3px solid var(--rs-ink); }
+.site-name { color: var(--color-text); font-family: var(--font-heading); font-size: 1.5rem; font-weight: var(--heading-weight); letter-spacing: 0.02em; text-decoration: none; text-transform: uppercase; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a, .search-link { color: var(--color-text); font-family: var(--font-heading); font-size: 0.9375rem; font-weight: var(--heading-weight); letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover, .search-link:hover { color: var(--color-link); }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -3px var(--color-accent); }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--rs-ink); color: var(--color-background); border: 0; box-shadow: 0 0 0 100vmax var(--rs-ink); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.announcement a { color: var(--color-background); }
+
+/* Buttons: square, filled with the accent, the label in capitals. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: var(--radius); font: var(--heading-weight) 0.9375rem/1.2 var(--font-heading); letter-spacing: 0.06em; text-align: center; text-decoration: none; text-transform: uppercase; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: var(--rs-ink); text-decoration: none; }
+
+/* Section labels: capitals after a small accent square, a hairline to
+   the end of the row. */
+:is(.rs-news, .rs-calendar, .rs-reviews, .rs-more, .related, .mentions, .author-posts, .author-others, .topic-tabs, .media-row) > h2, .post-footer > h2, .rs-verdict > h2 { display: flex; align-items: center; gap: 0.625rem; margin-block: 0 1.25rem; font-family: var(--font-heading); font-size: 1rem; letter-spacing: 0.1em; line-height: 1.3; text-transform: uppercase; }
+:is(.rs-news, .rs-calendar, .rs-reviews, .rs-more, .related, .mentions, .author-posts, .author-others, .topic-tabs, .media-row) > h2::before, .post-footer > h2::before, .rs-verdict > h2::before { content: ""; flex: none; inline-size: 0.625rem; block-size: 0.625rem; background: var(--color-accent); }
+:is(.rs-news, .rs-calendar, .rs-reviews, .rs-more, .related, .mentions, .author-posts, .author-others, .topic-tabs, .media-row) > h2::after { content: ""; flex: 1; border-block-start: 1px solid var(--color-border); }
+
+/* Small labels: the category in capitals, then the date. */
+.rs-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.rs-label { color: var(--color-link); font-family: var(--font-heading); font-weight: var(--heading-weight); letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; }
+.rs-label:hover { text-decoration: underline; }
+.rs-platforms { margin: 0; color: var(--color-muted); font-size: var(--text-small); }
+.rs-excerpt { margin: 0; color: var(--color-muted); font-size: 1rem; line-height: 1.5; }
+
+/* The front page: the slim masthead, then the lead beside the news. */
+.rs-masthead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.25rem; margin-block: clamp(1.25rem, 1rem + 1vw, 2rem) 1.5rem; }
+.rs-masthead h1 { margin: 0; font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem); letter-spacing: 0.06em; text-transform: uppercase; }
+.rs-tagline { margin: 0; color: var(--color-muted); font-size: 1rem; }
+.rs-tagline > * { margin: 0; }
+.rs-front, .rs-calendar, .rs-reviews, .rs-more { margin-block-end: var(--space-section); }
+.rs-front { display: grid; gap: 2.5rem 3rem; }
+@media (min-width: 60rem) { .rs-front-news { grid-template-columns: minmax(0, 2fr) minmax(17rem, 1fr); } }
+.rs-lead { display: grid; gap: 1.25rem; min-inline-size: 0; }
+.rs-lead .image { margin: 0; }
+.rs-lead .image img, .rs-card .image img, .rs-row-picture img { inline-size: 100%; block-size: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); }
+.rs-lead-text { display: grid; gap: 0.75rem; justify-items: start; }
+.rs-lead :is(h2, h3, h4) { margin: 0; font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.625rem); line-height: 1.1; }
+.rs-lead :is(h2, h3, h4) a, .rs-card :is(h2, h3, h4) a, .rs-row :is(h2, h3, h4) a, .rs-date :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.rs-lead :is(h2, h3, h4) a:hover, .rs-card :is(h2, h3, h4) a:hover, .rs-row :is(h2, h3, h4) a:hover, .rs-date :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.rs-lead .rs-excerpt { max-inline-size: var(--measure); font-size: 1.125rem; }
+.rs-lead-score, .rs-row-score { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+.rs-lead-score { --score-size: 3rem; --score-cell: 0.75rem; }
+.rs-news { min-inline-size: 0; }
+.rs-news .feed-item :is(h2, h3, h4) { font-family: var(--font-heading); font-size: 1.125rem; }
+
+/* The release calendar: a date tile per game, the month and day large in
+   the squared font. A row that wraps on wide screens, a sideways strip
+   with snap points on a phone. */
+.rs-dates { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+@media (max-width: 47.99rem) { .rs-dates { grid-auto-flow: column; grid-auto-columns: minmax(8.5rem, 42%); grid-template-columns: none; padding-block-end: 0.75rem; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; } }
+.rs-date { display: flex; flex-direction: column; gap: 0.375rem; padding: 1rem; background: var(--color-background); border: 2px solid var(--rs-ink); scroll-snap-align: start; }
+.rs-day { display: flex; margin: 0 0 0.25rem; font-family: var(--font-heading); font-weight: var(--heading-weight); line-height: 1; }
+.rs-day time { display: flex; flex-direction: column; gap: 0.25rem; }
+.rs-month { color: var(--color-link); font-size: var(--text-small); letter-spacing: 0.12em; text-transform: uppercase; }
+.rs-day-number { font-size: 2.5rem; font-variant-numeric: lining-nums tabular-nums; }
+.rs-day-text { align-items: flex-end; min-block-size: 3.4rem; color: var(--color-link); font-size: 1.125rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.rs-date :is(h2, h3, h4) { margin: 0; padding-block-start: 0.5rem; border-block-start: 1px solid var(--color-border); font-size: 1.0625rem; line-height: 1.25; }
+
+/* Review and story cards: the picture, the score meter, the title. */
+.rs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr)); gap: 2.5rem 1.75rem; margin: 0; padding: 0; list-style: none; }
+.rs-card { display: flex; flex-direction: column; gap: 0.75rem; }
+.rs-card .image { margin: 0 0 0.25rem; }
+.rs-card :is(h2, h3, h4) { margin: 0; font-size: 1.3125rem; line-height: 1.2; }
+
+/* Rows on lists, a writer's page and related posts. */
+.rs-rows { margin: 0; padding: 0; list-style: none; }
+.rs-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem 1.5rem; padding-block: 1.25rem; border-block-end: 1px solid var(--color-border); }
+.rs-rows > li:first-child .rs-row { padding-block-start: 0; }
+.rs-row:has(.rs-row-picture) { grid-template-columns: 7rem minmax(0, 1fr); }
+@media (min-width: 40rem) { .rs-row:has(.rs-row-picture) { grid-template-columns: 13rem minmax(0, 1fr); } }
+.rs-row-picture { display: block; }
+.rs-row-picture .image { margin: 0; }
+.rs-row-text { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; min-inline-size: 0; }
+.rs-row :is(h2, h3, h4) { margin: 0; font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.25; }
+
+/* Lists and the writers page: the name, the intro, a heavy rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; padding-block-end: 1.25rem; border-block-end: 3px solid var(--rs-ink); }
+.list-header h1 { margin: 0; text-transform: uppercase; letter-spacing: 0.02em; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 0.75rem; color: var(--color-muted); }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-kind { margin-block: 0 0.5rem; color: var(--color-link); font-family: var(--font-heading); font-size: var(--text-small); font-weight: var(--heading-weight); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* A post: the label, the title, the dek, the byline, the score strip. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2rem; }
+.post-header > .rs-meta { margin-block-end: 0.75rem; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.08; }
+.post-header .dek { color: var(--color-muted); font-size: 1.25rem; line-height: 1.45; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { font-style: normal; }
+.post-meta .person a { color: var(--color-text); font-weight: 600; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; }
+.rs-strip { --score-size: 3.5rem; --score-cell: 0.875rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; margin-block: 1.75rem; padding-block: 1rem; border-block: 3px solid var(--rs-ink); }
+.rs-facts { display: flex; flex-wrap: wrap; gap: 0.75rem 1.75rem; margin: 0; }
+.rs-facts dt { color: var(--color-muted); font-family: var(--font-heading); font-size: 0.75rem; font-weight: var(--heading-weight); letter-spacing: 0.1em; text-transform: uppercase; }
+.rs-facts dd { margin: 0.125rem 0 0; font-size: 1rem; }
+.post-header .image img { inline-size: 100%; border-radius: var(--radius); }
+.post-body { font-size: var(--text-body); }
+.post-body > * { max-inline-size: var(--measure); }
+.post-body > :is(table, figure, .image) { max-inline-size: none; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body h2 { font-size: var(--text-h2); }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-body table { font-size: 1rem; font-variant-numeric: tabular-nums; }
+.post-body th { font-family: var(--font-heading); letter-spacing: 0.04em; text-align: start; }
+
+/* The verdict: the score large in a ruled box on the tint. */
+.rs-verdict { --score-size: 4.5rem; --score-cell: 1.125rem; display: grid; gap: 1rem; margin-block: 2.5rem; padding: 1.5rem; background: var(--rs-tint); border: 2px solid var(--rs-ink); }
+.rs-verdict > h2 { margin: 0; }
+.rs-verdict-text { max-inline-size: var(--measure); margin: 0; font-size: 1.25rem; font-weight: 600; line-height: 1.4; }
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { padding: 0.25rem 0.625rem; color: var(--color-text); background: var(--color-background); border: 1px solid var(--rs-ink); border-radius: var(--radius); font-family: var(--font-heading); font-size: var(--text-small); letter-spacing: 0.04em; text-transform: uppercase; }
+.post-footer .tags a:hover { color: var(--color-on-accent); background: var(--color-accent); border-color: var(--color-accent); }
+.related { margin-block-start: var(--space-section); }
+.related .rs-row:has(.rs-row-picture) { grid-template-columns: 7rem minmax(0, 1fr); }
+
+/* A writer: the mark beside the name, the posts as rows. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.0625rem; }
+.author-count { margin: 0.25rem 0 0; color: var(--color-muted); font-size: var(--text-small); }
+.author-bio { max-inline-size: var(--measure); }
+.author-posts, .author-others { margin-block-start: var(--space-section); }
+.people-grid-person :is(h2, h3, h4) { font-family: var(--font-heading); }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.25rem; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter: ink boxes with the accent. */
+.cta-band { background: var(--rs-tint); border: 2px solid var(--rs-ink); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; background: var(--color-surface); border: 2px solid var(--rs-ink); border-radius: var(--radius); }
+.pagination a[aria-current] { color: var(--color-on-accent); background: var(--color-accent); }
+
+/* The footer: a heavy rule, quiet links. */
+.site-footer { border-block-start: 3px solid var(--rs-ink); }

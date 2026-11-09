@@ -1,0 +1,19 @@
+{#- link_stack(lines, nav=[], cta=none, label=none): a stack of large link
+    buttons, one under another, each as wide as its column, as on a
+    link-in-bio page. Each line is written `label | address`, or
+    `label | address | note` for a short line under the label; a line with
+    no address is left out. A call to action `cta` (with `label`, `href`
+    and an optional `note`) leads the stack in the accent colour. Without
+    lines, the links of `nav`, such as the main menu, fill the stack.
+    Nothing shows when there is nothing to link. `label` names the list
+    for screen readers. -#}
+{% macro link_stack(lines, nav=[], cta=none, label=none) -%}
+{% if lines or nav or cta %}<nav class="link-stack"{% if label %} aria-label="{{ label }}"{% endif %}>
+<ul role="list">
+{% if cta %}<li><a class="link-tile link-tile-lead" href="{{ cta.href }}"><span class="link-label">{{ cta.label }}</span>{% if cta.note %}<span class="link-note">{{ cta.note }}</span>{% endif %}</a></li>
+{% endif %}{% if lines %}{% for line in lines %}{% set parts = line | split("|") | list %}{% if parts | length > 1 %}<li><a class="link-tile" href="{{ parts[1] | trim }}"><span class="link-label">{{ parts[0] | trim }}</span>{% if parts | length > 2 %}<span class="link-note">{{ parts[2:] | join("|") | trim }}</span>{% endif %}</a></li>
+{% endif %}{% endfor %}{% else %}{% for link in nav %}<li><a class="link-tile" href="{{ link.href }}"><span class="link-label">{{ link.label }}</span></a></li>
+{% endfor %}{% endif %}</ul>
+</nav>
+{% endif %}
+{%- endmacro %}

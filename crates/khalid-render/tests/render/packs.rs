@@ -73,6 +73,14 @@ fn a_site_theme_file_wins_over_the_pack() {
 }
 
 #[test]
+fn a_pack_may_add_a_part_its_templates_import() {
+    let site = tempfile::tempdir().unwrap();
+    let parts = ("parts-trial.html", "{% macro hello() %}Hi{% endmacro %}");
+    let renderer = Renderer::with_pack(site.path(), &pack(vec![parts]));
+    assert!(renderer.is_ok(), "{renderer:?}");
+}
+
+#[test]
 fn a_pack_file_that_replaces_nothing_is_refused() {
     let site = tempfile::tempdir().unwrap();
     let error = Renderer::with_pack(site.path(), &pack(vec![("sidebar.html", "x")])).unwrap_err();

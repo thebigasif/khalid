@@ -1,0 +1,67 @@
+{#- Mosaic's own parts (docs/templates/mosaic.md), shared by its pages.
+    tile_sizes(image, place, count): how wide the picture of the tile at
+    `place` (1 for the first) of `count` tiles is drawn, as the `sizes`
+    the picture macro takes, so a phone fetches no bigger file than the
+    tile needs. The tile's size follows the rhythm in mosaic.css: three
+    on a phone, six from 40rem, nine from 64rem. A picture is cut to its
+    tile's shape, so a picture wider than the tile's shape is drawn
+    wider than the tile, by the ratio of the two shapes; a tall tile on
+    a wide screen has a set height, so its picture is as wide as that
+    height times the picture's shape. Read from the stylesheet at every
+    width from 320 to 2560 px; measure again when it moves a tile
+    (docs/standards/performance.md, "Page weight"). The frame is at
+    most 100vw - 4rem wide below 64rem, 100vw - 5rem from 64rem and
+    81rem from 86rem. -#}
+{% macro width(factor, vw, rem) -%}
+calc({{ (factor * vw) | round(2) }}vw - {{ (factor * rem) | round(2) }}rem)
+{%- endmacro %}
+{% macro tile_sizes(image, place, count) -%}
+{%- set shape = image.width / image.height -%}
+{%- set last = place == count -%}
+{%- set three = place % 3 -%}
+{%- set six = place % 6 -%}
+{%- set nine = place % 9 -%}
+{#- A phone: a full tile in 3:2, or a square half. -#}
+{%- if three == 1 or (last and three == 2) -%}
+{%- set phone = width([1, shape / 1.5] | max, 100, 4) -%}
+{%- else -%}
+{%- set phone = width([1, shape] | max, 50, 2.375) -%}
+{%- endif -%}
+{#- From 40rem: a full tile in 2:1, a half in 4:3, or a square third. -#}
+{%- if six == 1 or (last and six in [2, 4]) -%}
+{%- set tablet = width([1, shape / 2] | max, 100, 4) -%}
+{%- elif six in [2, 3] or (six == 4 and place == count - 1) or (last and six == 5) -%}
+{%- set tablet = width([1, shape * 0.75] | max, 50, 2.375) -%}
+{%- else -%}
+{%- set tablet = width([1, shape] | max, 33.34, 1.83) -%}
+{%- endif -%}
+{#- From 64rem: a full tile in 21:8, a half in 3:2, a large tall tile,
+    a small tall tile or a third in 4:3; below 86rem the frame is
+    100vw - 5rem, from 86rem 81rem. -#}
+{%- if last and nine in [1, 3, 6, 8] -%}
+{%- set factor = [1, shape / 2.625] | max -%}
+{%- set wide = width(factor, 100, 5) -%}
+{%- set widest = ((factor * 81) | round(2)) ~ "rem" -%}
+{%- set tallest = widest -%}
+{%- elif nine in [6, 7] or (nine == 3 and place == count - 1) or (last and nine == 4) -%}
+{%- set factor = [1, shape / 1.5] | max -%}
+{%- set wide = width(factor, 50, 2.875) -%}
+{%- set widest = ((factor * 40.125) | round(2)) ~ "rem" -%}
+{%- set tallest = widest -%}
+{%- elif nine in [1, 0] -%}
+{%- set factor = [1, shape * 0.64] | max -%}
+{%- set wide = width(factor, 66.67, 3.58) -%}
+{%- set widest = ((factor * 53.75) | round(2)) ~ "rem" -%}
+{%- set tallest = widest -%}
+{%- elif nine in [2, 8] and shape >= 1 -%}
+{%- set wide = "calc(" ~ ((shape * 22) | round(2)) ~ "vw + " ~ ((shape * 10) | round(2)) ~ "rem)" -%}
+{%- set widest = wide -%}
+{%- set tallest = ((shape * 34) | round(2)) ~ "rem" -%}
+{%- else -%}
+{%- set factor = [1, shape * (1.29 if nine in [2, 8] else 0.75)] | max -%}
+{%- set wide = width(factor, 33.34, 2.16) -%}
+{%- set widest = ((factor * 26.5) | round(2)) ~ "rem" -%}
+{%- set tallest = widest -%}
+{%- endif -%}
+(min-width: 109rem) {{ tallest }}, (min-width: 86rem) {{ widest }}, (min-width: 64rem) {{ wide }}, (min-width: 40rem) {{ tablet }}, {{ phone }}
+{%- endmacro %}

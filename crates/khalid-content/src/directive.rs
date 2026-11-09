@@ -58,6 +58,9 @@ pub(crate) fn directive(
         "cta" => attributes
             .only("cta", &[], "nothing")
             .map(|()| BlockKind::Cta),
+        "privacy-facts" => attributes
+            .only("privacy-facts", &[], "nothing")
+            .map(|()| BlockKind::PrivacyFacts),
         "button" => button(&attributes),
         "bookmark" => bookmark(&attributes),
         "embed" => embed(&attributes),
@@ -73,6 +76,7 @@ pub(crate) fn directive(
         "product" => product(&attributes, body),
         "business" => cards::business(&attributes),
         "snippet" => cards::snippet(&attributes),
+        "location" => cards::location(&attributes),
         "header" => cards::header(&attributes),
         "html" => cards::html(&attributes),
         "form" => forms::form(&attributes, body),
@@ -80,6 +84,7 @@ pub(crate) fn directive(
         "maths" => formula::maths(&attributes, body),
         "chart" => charts::chart(&attributes, body),
         "pullquote" => layout::pull_quote(&attributes, body),
+        "takeaways" => layout::takeaways(&attributes, body),
         "proscons" => layout::pros_cons(&attributes, body),
         "columns" => nested::columns(&attributes, body),
         "table" => layout::table(&attributes, body),
@@ -223,8 +228,15 @@ fn embed(attributes: &Attributes) -> Result<BlockKind, BlockError> {
 fn video(attributes: &Attributes) -> Result<BlockKind, BlockError> {
     attributes.only(
         "video",
-        &["src", "title", "poster", "description", "duration"],
-        "src, title, poster, description and duration",
+        &[
+            "src",
+            "title",
+            "poster",
+            "description",
+            "duration",
+            "thumbnail",
+        ],
+        "src, title, poster, description, duration and thumbnail",
     )?;
     let src = attributes.need("src", "a video needs src, the video file")?;
     let title = attributes.need("title", "a video needs title, the video's name")?;
@@ -247,6 +259,9 @@ fn video(attributes: &Attributes) -> Result<BlockKind, BlockError> {
         poster: attributes.media("video", "poster", poster)?,
         description: attributes.get("description"),
         duration,
+        thumbnail: (attributes.get("thumbnail"))
+            .map(|thumbnail| attributes.media("video", "thumbnail", thumbnail))
+            .transpose()?,
     }))
 }
 

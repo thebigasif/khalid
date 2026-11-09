@@ -1,0 +1,185 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-05-04-watercolour-kit/lead.jpg"
+sha256 = "09735be8d22be08a3bede22d63e9fbd44ed85fb11529ef6b3d40079fc709a73c"
+source = "https://commons.wikimedia.org/wiki/File:Set_of_watercolor_paints_-_Ariel_Waldman.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Set of watercolor paints - Ariel Waldman by Ariel Waldman from Muncie, via Wikimedia Commons"
+title = "Set of watercolor paints - Ariel Waldman"
+creator = "Ariel Waldman from Muncie"
+openverse = "commons:File:Set of watercolor paints - Ariel Waldman.jpg"
+needs_credit = true
+size = "1600x1083"
+
+[[photos]]
+file = "en/posts/2026-05-11-watercolour-paper/lead.jpg"
+sha256 = "1a3153cbc5d9e00a7ecca4cdd288496d9948057b6496147c798649c5da1a8800"
+source = "https://commons.wikimedia.org/wiki/File:Papier_aquarelle_100%25_coton,_grain_fin.png"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Papier aquarelle 100% coton, grain fin by Les.aqua, via Wikimedia Commons"
+title = "Papier aquarelle 100% coton, grain fin"
+creator = "Les.aqua"
+openverse = "commons:File:Papier aquarelle 100% coton, grain fin.png"
+needs_credit = false
+size = "1359x1433"
+
+[[photos]]
+file = "en/posts/2026-05-18-first-brush-marks/lead.jpg"
+sha256 = "afcdcc50fe76f83d2c57a7df581509d5183612844550a1fbdb485e3b3055a84e"
+source = "https://commons.wikimedia.org/wiki/File:The_Two_-_abstract_watercolor_painting_on_paper_-artist_Fons_Heijnsbroek.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "The Two - abstract watercolor painting on paper -artist Fons Heijnsbroek by Fons Heijnsbroek, via Wikimedia Commons"
+title = "The Two - abstract watercolor painting on paper -artist Fons Heijnsbroek"
+creator = "Fons Heijnsbroek"
+openverse = "commons:File:The Two - abstract watercolor painting on paper -artist Fons Heijnsbroek.jpg"
+needs_credit = false
+size = "1600x2133"
+
+[[photos]]
+file = "en/posts/2026-06-01-flat-wash/lead.jpg"
+sha256 = "8658bf26407b7d1ae8f414a7762a49d1c96a9b7133b4b2a79aad997e7f2e00b6"
+source = "https://commons.wikimedia.org/wiki/File:%27Close_Harmony%27_-_a_small_abstract_watercolor_painting,_painted_by_Dutch_artist_Fons_Heijnsbroek_in_2008.tif"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "'Close Harmony' - a small abstract watercolor painting, painted by Dutch artist Fons Heijnsbroek in 2008 by Fons Heijnsbroek, via Wikimedia Commons"
+title = "'Close Harmony' - a small abstract watercolor painting, painted by Dutch artist Fons Heijnsbroek in 2008"
+creator = "Fons Heijnsbroek"
+openverse = "commons:File:'Close Harmony' - a small abstract watercolor painting, painted by Dutch artist Fons Heijnsbroek in 2008.tif"
+needs_credit = false
+size = "1600x1322"
+
+[[photos]]
+file = "en/posts/2026-06-08-graded-wash/lead.jpg"
+sha256 = "e54d5388fda10c313f175a35864450323b5a0a3b82d8379def313e1edf9866b7"
+source = "https://commons.wikimedia.org/wiki/File:Clouds_1._-_a_small_abstract_watercolor_painting,_painted_by_Dutch_artist_Fons_Heijnsbroek_in_2008._Free_art_image_in_TIFF.tif"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Clouds 1. - a small abstract watercolor painting, painted by Dutch artist Fons Heijnsbroek in 2008. Free art image in TIFF by Fons Heijnsbroek, via Wikimedia Commons"
+title = "Clouds 1. - a small abstract watercolor painting, painted by Dutch artist Fons Heijnsbroek in 2008. Free art image in TIFF"
+creator = "Fons Heijnsbroek"
+openverse = "commons:File:Clouds 1. - a small abstract watercolor painting, painted by Dutch artist Fons Heijnsbroek in 2008. Free art image in TIFF.tif"
+needs_credit = false
+size = "1600x1234"
+
+[[photos]]
+file = "en/posts/2026-06-15-wet-paper-painting/lead.jpg"
+sha256 = "7fb7940835691ca6173c24491023ca64ca6aeb4a523b0990c4438e6a42c53ce6"
+source = "https://commons.wikimedia.org/wiki/File:Landscape_1._-_abstract_colorful_watercolor_painting_on_paper_-_artist_Fons_Heijnsbroek.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Landscape 1. - abstract colorful watercolor painting on paper - artist Fons Heijnsbroek by Fons Heijnsbroek, via Wikimedia Commons"
+title = "Landscape 1. - abstract colorful watercolor painting on paper - artist Fons Heijnsbroek"
+creator = "Fons Heijnsbroek"
+openverse = "commons:File:Landscape 1. - abstract colorful watercolor painting on paper - artist Fons Heijnsbroek.jpg"
+needs_credit = false
+size = "1600x1203"
+
+[[photos]]
+file = "en/posts/2026-06-22-lifting-out/lead.jpg"
+sha256 = "c9819f2b3f22928a0feb1c97fcecde7e9c46b4d48271883f4459c7b677d3d4e4"
+source = "https://commons.wikimedia.org/wiki/File:Winslow_Homer_-_Watching_the_Ships,_Gloucester.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Watching the Ships, Gloucester by Winslow Homer, via Wikimedia Commons"
+title = "Watching the Ships, Gloucester"
+creator = "Winslow Homer"
+openverse = "commons:File:Winslow Homer - Watching the Ships, Gloucester.jpg"
+needs_credit = false
+size = "1600x966"
+
+[[photos]]
+file = "en/posts/2026-07-06-three-colour-palette/lead.jpg"
+sha256 = "2fe9f0b018678402986b2528fcc7a4b073a10a3ea126d7972eab004c4a9524f0"
+source = "https://commons.wikimedia.org/wiki/File:Une_palette_de_demi_godets.png"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Une palette de demi godets by Les.aqua, via Wikimedia Commons"
+title = "Une palette de demi godets"
+creator = "Les.aqua"
+openverse = "commons:File:Une palette de demi godets.png"
+needs_credit = false
+size = "1572x1958"
+
+[[photos]]
+file = "en/posts/2026-07-13-mixing-greens/lead.jpg"
+sha256 = "fc78d6a453e1032c28a5a30cebfaf0796b4e4333414e01fb91059030ccf3cb93"
+source = "https://commons.wikimedia.org/wiki/File:Albrecht_D%C3%BCrer_-_The_Large_Piece_of_Turf,_1503_-_Google_Art_Project.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "The Large Piece of Turf by Albrecht Dürer, via Wikimedia Commons"
+title = "The Large Piece of Turf"
+creator = "Albrecht Dürer"
+openverse = "commons:File:Albrecht Dürer - The Large Piece of Turf, 1503 - Google Art Project.jpg"
+needs_credit = false
+size = "1600x2055"
+
+[[photos]]
+file = "en/posts/2026-07-20-shadows-without-black/lead.jpg"
+sha256 = "afb8ded87beb85be0ec4b69d744b1fedc0667f6c6f54c8432eb6ebe97d97b5ea"
+source = "https://commons.wikimedia.org/wiki/File:Winslow_Homer_-_Under_the_Coco_Palm_(1898).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Under the Coco Palm by Winslow Homer, via Wikimedia Commons"
+title = "Under the Coco Palm"
+creator = "Winslow Homer"
+openverse = "commons:File:Winslow Homer - Under the Coco Palm (1898).jpg"
+needs_credit = false
+size = "1600x1131"
+
+[[photos]]
+file = "en/posts/2026-08-31-landscapes-module-opens/lead.jpg"
+sha256 = "73c1fbe1103dc203952569d1f175d808d6b6d070effdc76f2f97d4360b63b023"
+source = "https://commons.wikimedia.org/wiki/File:The_Small_Temple_at_Paestum,_10_x_14.5_inches,_November_1782._John_Robert_Cozens.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "The Small Temple at Paestum, 10 x 14.5 inches, November 1782. John Robert Cozens by John Robert Cozens, via Wikimedia Commons"
+title = "The Small Temple at Paestum, 10 x 14.5 inches, November 1782. John Robert Cozens"
+creator = "John Robert Cozens"
+openverse = "commons:File:The Small Temple at Paestum, 10 x 14.5 inches, November 1782. John Robert Cozens.jpg"
+needs_credit = false
+size = "1600x1098"
+
+[[photos]]
+file = "en/posts/2026-09-07-painting-skies/lead.jpg"
+sha256 = "0bad3e268825e0e95c81e1dcf9f19edcb052f7ee41399a6aab6c143a2f5d6d0e"
+source = "https://commons.wikimedia.org/wiki/File:John_Robert_Cozens_-_View_between_Brixen_and_Bolzano.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "View Between Brixen and Bolsano by John Robert Cozens, via Wikimedia Commons"
+title = "View Between Brixen and Bolsano"
+creator = "John Robert Cozens"
+openverse = "commons:File:John Robert Cozens - View between Brixen and Bolzano.jpg"
+needs_credit = false
+size = "1600x1130"
+
+[[photos]]
+file = "en/posts/2026-09-14-trees-distant-hills/lead.jpg"
+sha256 = "1f6a8e1b8f26b6a083660b945bf3a7717ad0a4392a3cd46c97975a37887dc10d"
+source = "https://commons.wikimedia.org/wiki/File:John_Robert_Cozens_-_The_goatherd-_View_on_the_Galleria_di_Sopra_above_the_Lake_of_Albano_-_Google_Art_Project.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "The goatherd: View on the Galleria di Sopra above the Lake of Albanotitle QS:P1476,en:\"The goatherd: View on the Galleria di Sopra above the Lake of Albano\"label QS:Len,\"The goatherd: View on the Galleria di Sopra above the Lake of Albano\" by John Robert Cozens, via Wikimedia Commons"
+title = "The goatherd: View on the Galleria di Sopra above the Lake of Albanotitle QS:P1476,en:\"The goatherd: View on the Galleria di Sopra above the Lake of Albano\"label QS:Len,\"The goatherd: View on the Galleria di Sopra above the Lake of Albano\""
+creator = "John Robert Cozens"
+openverse = "commons:File:John Robert Cozens - The goatherd- View on the Galleria di Sopra above the Lake of Albano - Google Art Project.jpg"
+needs_credit = false
+size = "1600x1283"
+
+[[photos]]
+file = "en/posts/2026-09-21-first-landscape/lead.jpg"
+sha256 = "3595cd9940fce7f6ed74966bdacf1caa7568887c54938bda0840e164800f000d"
+source = "https://commons.wikimedia.org/wiki/File:Winslow_Homer_-_On_the_Sands_(1881).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "On the Sands by Winslow Homer, via Wikimedia Commons"
+title = "On the Sands"
+creator = "Winslow Homer"
+openverse = "commons:File:Winslow Homer - On the Sands (1881).jpg"
+needs_credit = false
+size = "1600x1128"
+
+[[photos]]
+file = "en/posts/2026-10-19-live-critique-evenings/lead.jpg"
+sha256 = "022c76cba1e6c76b4c354485c7e843f002f68d9c179b8f48aad901f93e1a6ed3"
+source = "https://commons.wikimedia.org/wiki/File:Hercules_Brabazon_Brabazon_-_Ruined_Cottages,_Pevensey_Bay_-_123_1936_2.png"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Ruined Cottages, Pevensey Bay by Hercules Brabazon Brabazon, via Wikimedia Commons"
+title = "Ruined Cottages, Pevensey Bay"
+creator = "Hercules Brabazon Brabazon"
+openverse = "commons:File:Hercules Brabazon Brabazon - Ruined Cottages, Pevensey Bay - 123 1936 2.png"
+needs_credit = false
+size = "1600x1128"

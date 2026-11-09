@@ -1,0 +1,43 @@
+# Oven Spring's recipe box. The Pantry template shows each section that
+# holds recipes as a divider tab on the front page, and each category
+# page lists its recipes as index cards, with its intro on top.
+
+[[categories]]
+slug = "bread"
+en = "Bread"
+
+[categories.seo.en]
+description = "Oven Spring's bread recipes, from a no-knead tin loaf to a two-day sourdough, each with its time, yield and oven setting."
+intro = "Loaves and buns for a home oven, from a no-knead tin loaf to a country sourdough. Every recipe gives its weights in grams."
+
+[[categories]]
+slug = "cakes"
+en = "Cakes"
+
+[categories.seo.en]
+description = "Oven Spring's cake recipes: loaf cakes and one-bowl bakes, each with its time, yield and oven setting."
+intro = "Loaf cakes and one-bowl bakes that keep well in a tin."
+
+[[categories]]
+slug = "biscuits"
+en = "Biscuits"
+
+[categories.seo.en]
+description = "Oven Spring's biscuit, cookie and traybake recipes, each with its time, yield and oven setting."
+intro = "Cookies, shortbread and traybakes for the tea table."
+
+[[categories]]
+slug = "pastry"
+en = "Pastry"
+
+[categories.seo.en]
+description = "Oven Spring's pastry and scone recipes, from a double-crust apple pie to quick blueberry scones."
+intro = "Pies, tarts and scones, made with cold butter and a light touch."
+
+[[categories]]
+slug = "baking-notes"
+en = "Baking notes"
+
+[categories.seo.en]
+description = "Oven Spring's baking notes: the habits and tests that make every recipe work, such as weighing and kneading by feel."
+intro = "The kitchen habits behind our recipes."

@@ -1,0 +1,74 @@
+{#- Fixture's front page (docs/templates/fixture.md). A match is a post
+    with facts, read by position: 1 the opponent, 2 the result or the
+    kick-off, 3 the ground, 4 the competition. A second fact that starts
+    with W, D or L and a space is a result; any other is a kick-off, and
+    the post is a preview. The previews published after the newest result
+    are the upcoming fixtures, and the newest of them is the next match.
+    The page shows the club's name and tagline beside the next match card,
+    the form guide of the last five results with the figure strip, the
+    newest results as scoreboard rows, then the other fixtures and the
+    club news beside them, the page links and the call to action. With
+    home sections in site.toml, each section is a results list of its
+    own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/figure_strip.html" import figure_strip -%}
+{% from "sections/results_list.html" import results_list -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% set options = template.options -%}
+{% set matches = page.posts | selectattr("facts") | list -%}
+{% set news = (page.posts | rejectattr("facts") | list)[:options.news_count] -%}
+{% set club = namespace(results=[], upcoming=[], played=false) -%}
+{% for post in matches %}{% set second = post.facts[1].value if post.facts | length > 1 else "" -%}
+{% if second[:2] in ["W ", "D ", "L "] %}{% set club.results = club.results + [post] %}{% set club.played = true %}{% elif not club.played %}{% set club.upcoming = club.upcoming + [post] %}{% endif %}{% endfor -%}
+{% set next = club.upcoming[0] if club.upcoming else none -%}
+{% set form = (club.results[:5] | reverse | list) -%}
+<div class="club-top">
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{% if form %}<div class="form-guide">
+<p class="form-guide-label">{{ t.form_guide }} <span class="visually-hidden">{{ t.form_guide_note }}</span></p>
+<ol class="form-chips" role="list">
+{% for post in form %}{% set mark = post.facts[1].value[:1] %}<li class="form-chip" data-match="{{ mark | lower }}"><a href="{{ post.href }}"><span aria-hidden="true">{{ mark }}</span><span class="visually-hidden">{{ t.result_win if mark == "W" else (t.result_draw if mark == "D" else t.result_loss) }}, {{ post.facts[0].value }}, {{ post.facts[1].value[2:] }}</span></a></li>
+{% endfor %}</ol>
+</div>
+{% endif %}{{ figure_strip(options.hero_stats) }}{% endcall %}
+{% if next %}{% set facts = next.facts %}<section class="next-match" aria-labelledby="next-match-title">
+<h2 id="next-match-title">{{ t.next_match }}</h2>
+<p class="next-versus"><span class="next-v" aria-hidden="true">{{ t.versus }}</span> <a href="{{ next.href }}">{{ facts[0].value }}</a></p>
+<p class="next-kick-off"><span class="visually-hidden">{{ t.kick_off }} </span>{{ facts[1].value }}</p>
+{% if facts | length > 2 %}<p class="next-where">{% for fact in facts[2:] %}<span>{{ fact.value }}</span>{% endfor %}</p>
+{% endif %}<p class="next-preview"><a href="{{ next.href }}">{{ next.title }}</a></p>
+</section>
+{% endif %}</div>
+{% if page.sections %}{% for section in page.sections %}<section class="club-section" aria-labelledby="club-section-{{ loop.index }}">
+<h2 id="club-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ results_list(section.posts) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}{% set later = club.upcoming[1:] -%}
+{% if later or news %}<div class="club-front club-front-side">{% else %}<div class="club-front">{% endif %}
+<section class="club-results" aria-labelledby="club-results-title">
+<h2 id="club-results-title">{{ t.results }}</h2>
+{% if club.results %}{{ results_list(club.results[:options.results_count]) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}</section>
+{% if later or news %}<div class="club-side">
+{% if later %}<section class="club-fixtures" aria-labelledby="club-fixtures-title">
+<h2 id="club-fixtures-title">{{ t.fixtures }}</h2>
+{{ results_list(later) }}
+</section>
+{% endif %}{% if news %}<section class="club-news" aria-labelledby="club-news-title">
+<h2 id="club-news-title">{{ t.club_news }}</h2>
+{{ feed_list(news) }}
+</section>
+{% endif %}</div>
+{% endif %}</div>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

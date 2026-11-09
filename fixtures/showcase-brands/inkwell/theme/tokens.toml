@@ -1,0 +1,45 @@
+# The sample brand for the Inkwell demo: The Seed Tin, the quarterly
+# letter of a seed library. A beetroot red on a warm paper, Vollkorn for
+# titles and the issue numbers, and Mulish for the text. Only the brand
+# lives here: the template keeps its own shape, type sizes and spacing.
+[colors]
+background = "#fcf9f3"
+surface = "#f3ede1"
+text = "#241c1f"
+muted = "#584c4f"
+link = "#7b2d43"
+accent = "#7b2d43"
+border = "#e2d8c8"
+
+[fonts]
+heading = "Vollkorn, Georgia, serif"
+body = "Mulish, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+
+[[fonts.files]]
+family = "Vollkorn"
+style = "normal"
+weight = "600"
+path = "vollkorn-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00ED, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "105.16%"
+descent = "208.10%"
+line_gap = "0.00%"
+size_adjust = "64.49%"
+
+[[fonts.files]]
+family = "Mulish"
+style = "normal"
+weight = "400 700"
+path = "mulish-latin-400-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00ED, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "111.02%"
+descent = "117.97%"
+line_gap = "0.00%"
+size_adjust = "63.01%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

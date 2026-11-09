@@ -9,37 +9,38 @@ repository.workspace = true
 publish.workspace = true
 
 [dependencies]
-khalid-admin = { path = "../khalid-admin", version = "1.2.0" }
-khalid-alerts = { path = "../khalid-alerts", version = "1.2.0" }
-khalid-analytics = { path = "../khalid-analytics", version = "1.2.0" }
-khalid-api = { path = "../khalid-api", version = "1.2.0" }
-khalid-audit = { path = "../khalid-audit", version = "1.2.0" }
-khalid-auth = { path = "../khalid-auth", version = "1.2.0" }
-khalid-comments = { path = "../khalid-comments", version = "1.2.0" }
-khalid-content = { path = "../khalid-content", version = "1.2.0" }
+khalid-admin = { path = "../khalid-admin", version = "1.3.2" }
+khalid-alerts = { path = "../khalid-alerts", version = "1.3.2" }
+khalid-analytics = { path = "../khalid-analytics", version = "1.3.2" }
+khalid-api = { path = "../khalid-api", version = "1.3.2" }
+khalid-audit = { path = "../khalid-audit", version = "1.3.2" }
+khalid-auth = { path = "../khalid-auth", version = "1.3.2" }
+khalid-comments = { path = "../khalid-comments", version = "1.3.2" }
+khalid-content = { path = "../khalid-content", version = "1.3.2" }
 khalid-core.workspace = true
-khalid-routes = { path = "../khalid-routes", version = "1.2.0" }
-khalid-db = { path = "../khalid-db", version = "1.2.0" }
-khalid-forms = { path = "../khalid-forms", version = "1.2.0" }
-khalid-https = { path = "../khalid-https", version = "1.2.0" }
-khalid-import = { path = "../khalid-import", version = "1.2.0" }
+khalid-routes = { path = "../khalid-routes", version = "1.3.2" }
+khalid-db = { path = "../khalid-db", version = "1.3.2" }
+khalid-forms = { path = "../khalid-forms", version = "1.3.2" }
+khalid-https = { path = "../khalid-https", version = "1.3.2" }
+khalid-import = { path = "../khalid-import", version = "1.3.2" }
 khalid-lint.workspace = true
-khalid-mcp = { path = "../khalid-mcp", version = "1.2.0" }
-khalid-mount = { path = "../khalid-mount", version = "1.2.0" }
-khalid-media = { path = "../khalid-media", version = "1.2.0" }
-khalid-render = { path = "../khalid-render", version = "1.2.0" }
-khalid-search = { path = "../khalid-search", version = "1.2.0" }
-khalid-search-console = { path = "../khalid-search-console", version = "1.2.0" }
-khalid-seo = { path = "../khalid-seo", version = "1.2.0" }
-khalid-share-image = { path = "../khalid-share-image", version = "1.2.0" }
-khalid-mail = { path = "../khalid-mail", version = "1.2.0" }
-khalid-newsletter = { path = "../khalid-newsletter", version = "1.2.0" }
-khalid-server = { path = "../khalid-server", version = "1.2.0" }
-khalid-static = { path = "../khalid-static", version = "1.2.0" }
-khalid-outbound = { path = "../khalid-outbound", version = "1.2.0" }
-khalid-theme = { path = "../khalid-theme", version = "1.2.0" }
-khalid-webhooks = { path = "../khalid-webhooks", version = "1.2.0" }
+khalid-mcp = { path = "../khalid-mcp", version = "1.3.2" }
+khalid-mount = { path = "../khalid-mount", version = "1.3.2" }
+khalid-media = { path = "../khalid-media", version = "1.3.2" }
+khalid-render = { path = "../khalid-render", version = "1.3.2" }
+khalid-search = { path = "../khalid-search", version = "1.3.2" }
+khalid-search-console = { path = "../khalid-search-console", version = "1.3.2" }
+khalid-seo = { path = "../khalid-seo", version = "1.3.2" }
+khalid-share-image = { path = "../khalid-share-image", version = "1.3.2" }
+khalid-mail = { path = "../khalid-mail", version = "1.3.2" }
+khalid-newsletter = { path = "../khalid-newsletter", version = "1.3.2" }
+khalid-server = { path = "../khalid-server", version = "1.3.2" }
+khalid-static = { path = "../khalid-static", version = "1.3.2" }
+khalid-outbound = { path = "../khalid-outbound", version = "1.3.2" }
+khalid-theme = { path = "../khalid-theme", version = "1.3.2" }
+khalid-webhooks = { path = "../khalid-webhooks", version = "1.3.2" }
 axum = { version = "0.8", default-features = false, features = ["form", "query"] }
+brotli = "9"
 chrono = { version = "0.4", default-features = false }
 clap = { version = "4", features = ["derive"] }
 getrandom = "0.4"
@@ -71,13 +72,17 @@ rustix = { version = "1", default-features = false, features = ["std", "thread"]
 # private-network guard has no switch and only real packs ship.
 test-util = ["khalid-outbound/test-util", "khalid-theme/test-util"]
 
+[build-dependencies]
+brotli = "9"
+
 [dev-dependencies]
 atom_syndication = "0.12"
-khalid-api = { path = "../khalid-api", version = "1.2.0", features = ["test-util"] }
+comrak = { version = "0.59", default-features = false }
+khalid-api = { path = "../khalid-api", version = "1.3.2", features = ["test-util"] }
 khalid-core = { workspace = true, features = ["test-util"] }
-khalid-alerts = { path = "../khalid-alerts", version = "1.2.0", features = ["test-util"] }
-khalid-mail = { path = "../khalid-mail", version = "1.2.0", features = ["test-util"] }
-khalid-newsletter = { path = "../khalid-newsletter", version = "1.2.0", features = ["test-util"] }
+khalid-alerts = { path = "../khalid-alerts", version = "1.3.2", features = ["test-util"] }
+khalid-mail = { path = "../khalid-mail", version = "1.3.2", features = ["test-util"] }
+khalid-newsletter = { path = "../khalid-newsletter", version = "1.3.2", features = ["test-util"] }
 image = { version = "0.25", default-features = false, features = ["png"] }
 insta = "1"
 rcgen = { version = "0.14", default-features = false, features = ["ring", "pem"] }
@@ -145,6 +150,10 @@ required-features = ["test-util"]
 
 [[test]]
 name = "import_site"
+required-features = ["test-util"]
+
+[[test]]
+name = "import_images"
 required-features = ["test-util"]
 
 [[test]]

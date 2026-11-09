@@ -72,4 +72,59 @@ describe("changing many posts at once", () => {
     const seen = new URL(deletes[0]?.url ?? "").searchParams.get("updated_at");
     expect(seen).toBe(LINKS.updated_at);
   });
+
+  it("says a trashed live post's address is gone for good unless told otherwise", async () => {
+    signedIn();
+    const live = row({ path: "/blog/why-internal-links-matter/" });
+    const sent = redirectsBlog({
+      "GET /posts/": () => rowsPage([live]),
+      "DELETE /posts/01JA/": () => new Response(null, { status: 204 }),
+      "POST /redirects/": () => json(201, { redirects: [] }),
+    });
+    renderAt("/posts");
+    await userEvent.click(await screen.findByRole("checkbox", { name: en.bulk.tick(live.title) }));
+    const form = screen.getByRole("form", { name: en.bulk.label });
+    await userEvent.selectOptions(within(form).getByLabelText(en.bulk.action), "trash");
+    const gone = within(form).getByRole("radio", { name: new RegExp(en.bulk.gone) });
+    expect(gone).toBeChecked();
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.click(within(form).getByRole("button", { name: en.bulk.submit(1) }));
+    expect(await screen.findByText(en.bulk.done(1))).toBeVisible();
+    const post = sent.find((request) => request.method === "POST");
+    expect(await post?.json()).toEqual({
+      redirects: [{ from: "/blog/why-internal-links-matter/", status: 410 }],
+    });
+  });
+
+  it("sends a trashed live post's readers to the post picked instead", async () => {
+    signedIn();
+    const live = row({ path: "/blog/why-internal-links-matter/" });
+    const other = row({ ...CLUSTER, path: "/blog/planning-a-topic-cluster/" });
+    const sent = redirectsBlog({
+      "GET /posts/": () => rowsPage([live, other]),
+      "DELETE /posts/01JA/": () => new Response(null, { status: 204 }),
+      "POST /redirects/": () => json(409, STALE),
+    });
+    renderAt("/posts");
+    await userEvent.click(await screen.findByRole("checkbox", { name: en.bulk.tick(live.title) }));
+    const form = screen.getByRole("form", { name: en.bulk.label });
+    await userEvent.selectOptions(within(form).getByLabelText(en.bulk.action), "trash");
+    await userEvent.click(within(form).getByRole("radio", { name: new RegExp(en.bulk.moved) }));
+    const target = within(form).getByLabelText(en.bulk.target);
+    expect(target).toHaveValue("/blog/planning-a-topic-cluster/");
+    expect(within(target).queryByText(live.title)).toBeNull();
+    await userEvent.click(within(form).getByRole("button", { name: en.bulk.submit(1) }));
+    const said = en.bulk.noFarewell(live.title, "/blog/why-internal-links-matter/", STALE.title);
+    expect(await screen.findByText(said)).toBeVisible();
+    const post = sent.find((request) => request.method === "POST");
+    expect(await post?.json()).toEqual({
+      redirects: [
+        {
+          from: "/blog/why-internal-links-matter/",
+          to: "/blog/planning-a-topic-cluster/",
+          status: 301,
+        },
+      ],
+    });
+  });
 });

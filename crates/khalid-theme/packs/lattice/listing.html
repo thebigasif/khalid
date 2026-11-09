@@ -1,0 +1,18 @@
+{#- Lattice's lists (topic, tag, archive, date and collection pages): what
+    the list is, its name and intro, then its posts as numbered figure
+    plates, each with its picture on the lattice mat. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import cards, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+<header class="list-header">
+{% block kind %}{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{{ cards(page.posts, 2, "image", page.numbered, slot_sizes("card")) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

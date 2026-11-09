@@ -1,0 +1,89 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+[[photos]]
+file = "en/posts/2026-11-05-first-frost-on-the-plot/lead.jpg"
+sha256 = "01d892f5adf70afd762815653b2e5c582e9104726552029bd6e3faa07e8184d0"
+source = "https://commons.wikimedia.org/wiki/File:Frosted_leaves,_Ehrenbach.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Frosted leaves, Ehrenbach by Gerda Arendt, via Wikimedia Commons"
+title = "Frosted leaves, Ehrenbach"
+creator = "Gerda Arendt"
+openverse = "commons:File:Frosted leaves, Ehrenbach.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-27-fieldfares-in-the-hawthorn/lead.jpg"
+sha256 = "ed265bc29714a72866a5ce8c58519c8e901ceca4fee10a4aec2a37b7ee994328"
+source = "https://commons.wikimedia.org/wiki/File:Turdus_pilaris_Oulu_20230225_05.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Turdus pilaris Oulu 20230225 05 by Estormiz, via Wikimedia Commons"
+title = "Turdus pilaris Oulu 20230225 05"
+creator = "Estormiz"
+openverse = "commons:File:Turdus pilaris Oulu 20230225 05.jpg"
+needs_credit = false
+size = "1600x1203"
+
+[[photos]]
+file = "en/posts/2026-10-20-saving-broad-bean-seed/lead.jpg"
+sha256 = "9d97f1792d94e72e1f4cf169b358a662b0005dd66101f5fc4530c22d0e22ee86"
+source = "https://commons.wikimedia.org/wiki/File:Fava_Beans_Dried.JPG"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Fava Beans Dried by Miansari66, via Wikimedia Commons"
+title = "Fava Beans Dried"
+creator = "Miansari66"
+openverse = "commons:File:Fava Beans Dried.JPG"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-04-apple-day-at-the-orchard/lead.jpg"
+sha256 = "357eb58bcc8dd880fbb586477ef6d2e7f3035fa424cc0efded1f74e4622d0503"
+source = "https://commons.wikimedia.org/wiki/File:Apples_in_basket_2018_G1.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Apples in basket 2018 G1 by George Chernilevsky, via Wikimedia Commons"
+title = "Apples in basket 2018 G1"
+creator = "George Chernilevsky"
+openverse = "commons:File:Apples in basket 2018 G1.jpg"
+needs_credit = false
+size = "1600x1391"
+
+[[photos]]
+file = "en/posts/2026-09-26-green-tomato-chutney/lead.jpg"
+sha256 = "6227c4995bb0a8956546c3f82bd58f3336c52121d7361c0fedf1daaa0e2f0ce0"
+source = "https://commons.wikimedia.org/wiki/File:Green_tomatoes_(1).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Green tomatoes (1) by Fumikas Sagisavas, via Wikimedia Commons"
+title = "Green tomatoes (1)"
+creator = "Fumikas Sagisavas"
+openverse = "commons:File:Green tomatoes (1).jpg"
+needs_credit = false
+size = "1600x1600"
+
+[[photos]]
+file = "en/posts/2026-09-15-four-compost-bins/lead.jpg"
+sha256 = "26c9a229c86ea1976bc6faab9049dbd91344fe306ef696bdcee4f5f916768d0d"
+source = "https://commons.wikimedia.org/wiki/File:Four_compost_bins.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Four compost bins by Hu Nhu, via Wikimedia Commons"
+title = "Four compost bins"
+creator = "Hu Nhu"
+openverse = "commons:File:Four compost bins.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-08-24-planning-next-years-beds/lead.jpg"
+sha256 = "dea7448c7db0f31b0136fcd23ad01c2b98e96f86a1b270376c693bf31920e9b3"
+source = "https://commons.wikimedia.org/wiki/File:Kale_and_Cabbage_in_Raised_Garden_Beds_(49200262267).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Kale and Cabbage in Raised Garden Beds (49200262267) by Alabama Extension, via Wikimedia Commons"
+title = "Kale and Cabbage in Raised Garden Beds (49200262267)"
+creator = "Alabama Extension"
+openverse = "commons:File:Kale and Cabbage in Raised Garden Beds (49200262267).jpg"
+needs_credit = false
+size = "1600x1065"
+

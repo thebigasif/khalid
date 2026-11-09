@@ -1,0 +1,7 @@
+[rules]
+focus-too-rare = "off"
+secondary-not-in-title = "off"
+secondary-not-in-subheading = "off"
+
+[thresholds]
+focus-min-per-thousand-words = 20

@@ -20,6 +20,9 @@ use tower::service_fn;
 /// Where the APIs answer from the host's root.
 const API: &str = "/api/";
 
+/// Where Ghost's APIs answer from the host's root.
+const GHOST: &str = "/ghost/api/";
+
 /// Where the `OpenAPI` document is served.
 const DOCUMENT: &str = "/api/openapi.json";
 
@@ -70,14 +73,19 @@ pub(crate) fn router(config: &Config, app: Router) -> Router {
     Router::new().fallback_service(answer)
 }
 
-/// The address at `/api/` that `uri` under `<prefix>/api/` stands for.
+/// The address at `/api/` that `uri` under `<prefix>/api/` stands for, or
+/// at `/ghost/api/` for one under `<prefix>/ghost/api/`, where Ghost's
+/// client sends a blog's requests when the site switches that API on.
 fn under_api(uri: &Uri, prefix: &str) -> Option<Uri> {
-    let rest = uri.path().strip_prefix(prefix)?.strip_prefix(API)?;
+    let below = uri.path().strip_prefix(prefix)?;
+    let (root, rest) = [API, GHOST]
+        .into_iter()
+        .find_map(|root| Some((root, below.strip_prefix(root)?)))?;
     let query = uri
         .query()
         .map(|query| format!("?{query}"))
         .unwrap_or_default();
-    format!("{API}{rest}{query}").parse().ok()
+    format!("{root}{rest}{query}").parse().ok()
 }
 
 /// `answer` with the path in its `Location`, if it has one, under `prefix`.

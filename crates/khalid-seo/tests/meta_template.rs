@@ -1,7 +1,10 @@
 //! Title and description templates with variables (task 1.13, KH-SEO-1).
 
+use chrono::{NaiveDate, TimeZone, Utc};
 use khalid_core::{AbsoluteUrl, Locale};
-use khalid_seo::{MetaTemplate, PageKind, SeoError, SeoPage, SeoSite, UrlPath};
+use khalid_seo::{
+    MetaTemplate, PageKind, PageNumber, SeoError, SeoPage, SeoSite, TemplateWords, UrlPath,
+};
 
 #[cfg(test)]
 fn demo_site() -> SeoSite {
@@ -48,6 +51,61 @@ fn every_variable_takes_its_value_from_the_site_or_the_page() {
          Plain advice on search for small teams"
     );
     assert_eq!(rendered("{excerpt}", &page), page.excerpt);
+}
+
+#[test]
+fn the_date_variables_use_the_words_of_the_pages_language() {
+    let mut site = demo_site();
+    site.today = Some(NaiveDate::from_ymd_opt(2026, 11, 2).unwrap());
+    let mut words = TemplateWords::default();
+    words.months[10] = String::from("Novembre");
+    words.date_format = String::from("{day} {month} {year}");
+    site.words.insert(Locale::try_new("fr").unwrap(), words);
+    let mut page = post("Les liens");
+    page.published = Some(Utc.with_ymd_and_hms(2026, 9, 14, 0, 0, 0).unwrap());
+    page.modified = Some(Utc.with_ymd_and_hms(2026, 10, 1, 0, 0, 0).unwrap());
+    let template = MetaTemplate::parse("{date}, {modified}, {currentmonth} {currentyear}").unwrap();
+    assert_eq!(
+        template.render(&site, &page),
+        "14 September 2026, 1 October 2026, November 2026"
+    );
+    page.language = Locale::try_new("fr").unwrap();
+    assert_eq!(
+        template.render(&site, &page),
+        "14 September 2026, 1 October 2026, Novembre 2026"
+    );
+}
+
+#[test]
+fn the_list_and_post_variables_take_their_values_from_the_page() {
+    let mut page = post("Links");
+    page.tags = vec![String::from("anchor text"), String::from("crawl")];
+    page.focus_keyword = Some(String::from("internal links"));
+    page.search_phrase = Some(String::from("sitemaps"));
+    assert_eq!(
+        rendered("{tag} {sep} {focuskw}", &page),
+        "anchor text | internal links"
+    );
+    assert_eq!(
+        rendered("Results for {searchphrase}", &page),
+        "Results for sitemaps"
+    );
+    let mut tag = SeoPage::new(
+        PageKind::Tag,
+        Locale::try_new("en").unwrap(),
+        UrlPath::try_new("/tag/crawl/").unwrap(),
+        "Crawl",
+    );
+    tag.term_description = Some(String::from("How search engines find pages."));
+    tag.page_number = PageNumber::new(2, 5);
+    assert_eq!(
+        rendered("{term} {page} {sep} {site}: {term_description}", &tag),
+        "Crawl Page 2 of 5 | Field Notes on SEO: How search engines find pages."
+    );
+    tag.page_number = PageNumber::new(1, 5);
+    assert_eq!(rendered("{term} {page}", &tag), "Crawl");
+    assert_eq!(PageNumber::new(6, 5), None);
+    assert_eq!(rendered("{term}", &page), "");
 }
 
 #[test]

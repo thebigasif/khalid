@@ -1,0 +1,34 @@
+# Hub: a creator's link-in-bio home. A warm off-white page, near-black
+# ink for the tiles' hard edges, one raspberry accent for the lead tile
+# and links. One narrow column for every page, rounded tiles and a
+# friendly sans for everything.
+[colors]
+background = "#fbf8f3"
+surface = "#f1ebe1"
+text = "#1f1b17"
+muted = "#5a524a"
+link = "#a3304e"
+accent = "#a3304e"
+border = "#ddd3c4"
+
+[fonts]
+heading = "ui-rounded, \"SF Pro Rounded\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0.875rem"
+measure = "36rem"
+
+[type]
+body = "1.0625rem 1.125rem"
+h1 = "1.875rem 2.5rem"
+h2 = "1.375rem 1.625rem"
+h3 = "1.125rem 1.25rem"
+h4 = "1rem 1.0625rem"
+small = "0.875rem"
+line_height = 1.65
+heading_weight = 700
+
+[space]
+unit = "0.5rem"
+section = "3.5rem"
