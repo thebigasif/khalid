@@ -9,6 +9,11 @@
 .site-name:not(.site-logo)::before, .post-body::after { content: ""; inline-size: 0.4375rem; block-size: 0.4375rem; background: var(--color-accent); rotate: 45deg; }
 .site-header nav a, .search-link { color: var(--color-muted); font-size: var(--text-small); text-decoration: none; }
 .site-header nav a:hover, .site-header nav a[aria-current] { color: var(--color-text); }
+/* The announcement: one small line on a light band across the window, and
+   the consent banner's words start where the header's do. */
+.announcement { margin: 0; border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.consent { padding-inline: max(0px, (100% - var(--measure)) / 2); }
+.consent > * { margin-inline: 0; }
 
 /* Titles in regular weight; intros and deks in italic. */
 main > h1, .post-header h1 { font-weight: 400; letter-spacing: -0.015em; line-height: 1.15; }
