@@ -2,8 +2,9 @@
 //! on a running `khalid serve` fires its `.published`, `.published.edited`
 //! and `.deleted` webhooks to a stand-in receiver on loopback, signed with
 //! each webhook's secret, moving one to `drafts/` fires `.unpublished`, a
-//! saved `site.toml` fires `site.changed`, and a post that names a tag new
-//! to the site fires `tag.added` (audit brief G25, KH-API-3).
+//! saved `site.toml` or theme file fires `site.changed` once the server uses
+//! it, and a post that names a tag new to the site fires `tag.added` (audit
+//! brief G25, KH-API-3).
 
 use std::fs;
 use std::io::{BufRead, BufReader};
@@ -286,23 +287,62 @@ async fn a_changelog_entry_moved_to_drafts_fires_changelog_entry_unpublished() {
     publish_and_unpublish(events, file, ("changelog_entry", "en.2026-11")).await;
 }
 
-#[tokio::test(flavor = "multi_thread")]
-async fn a_saved_site_toml_fires_site_changed_naming_the_settings_only() {
+/// Saves `site.toml` with `change` made to its text, and gives back the
+/// `settings` of the one `site.changed` delivery.
+#[cfg(test)]
+async fn site_toml_saved(change: impl FnOnce(String) -> String) -> Value {
     let (receiver, site, _server, secrets) = serving(&[Event::SiteChanged]).await;
     let mut file = site.path().to_path_buf();
     file.push("site.toml");
     let text = fs::read_to_string(&file).unwrap();
-    let old = "name = \"Field Notes on SEO\"\n";
-    assert!(text.contains(old), "{text}");
-    let renamed = text.replacen(old, "name = \"Field Notes Weekly\"\n", 1);
-    fs::write(&file, renamed).unwrap();
+    fs::write(&file, change(text)).unwrap();
+    let body = the_delivery(&receiver, Event::SiteChanged, &secrets[0]).await;
+    body["settings"].clone()
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_saved_site_toml_fires_site_changed_naming_the_settings_only() {
+    let settings = site_toml_saved(|text| {
+        let old = "name = \"Field Notes on SEO\"\n";
+        assert!(text.contains(old), "{text}");
+        text.replacen(old, "name = \"Field Notes Weekly\"\n", 1)
+    })
+    .await;
+    assert_eq!(settings["file"], "site.toml", "{settings}");
+    assert_eq!(settings["files"], serde_json::json!(["site.toml"]));
+    assert_eq!(settings["changed"], serde_json::json!(["name"]));
+    assert_eq!(
+        settings["restart_needed"], false,
+        "the pages use a new name at once"
+    );
+    assert!(!settings.to_string().contains("Weekly"), "no value");
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_start_only_setting_fires_site_changed_with_restart_needed() {
+    let settings = site_toml_saved(|text| format!("{text}\npreview_link_days = 3\n")).await;
+    assert_eq!(
+        settings["changed"],
+        serde_json::json!(["preview_link_days"])
+    );
+    assert_eq!(settings["restart_needed"], true, "{settings}");
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_saved_theme_file_fires_site_changed_once_it_is_in_use() {
+    let (receiver, site, _server, secrets) = serving(&[Event::SiteChanged]).await;
+    let mut file = site.path().to_path_buf();
+    file.push("theme");
+    fs::create_dir_all(&file).unwrap();
+    file.push("site.css");
+    fs::write(&file, ".site-title { letter-spacing: 0.01em; }\n").unwrap();
 
     let body = the_delivery(&receiver, Event::SiteChanged, &secrets[0]).await;
     let settings = &body["settings"];
-    assert_eq!(settings["file"], "site.toml", "{body}");
-    assert_eq!(settings["changed"], serde_json::json!(["name"]), "{body}");
-    assert_eq!(settings["restart_needed"], true, "{body}");
-    assert!(!body.to_string().contains("Weekly"), "no value: {body}");
+    assert_eq!(settings["files"], serde_json::json!(["theme/site.css"]));
+    assert_eq!(settings["changed"], serde_json::json!([]), "{body}");
+    assert_eq!(settings["restart_needed"], false, "{body}");
+    assert!(settings.get("file").is_none(), "site.toml is as it was");
 }
 
 #[tokio::test(flavor = "multi_thread")]

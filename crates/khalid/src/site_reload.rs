@@ -3,6 +3,7 @@
 //! at start, before the full render that follows a change to one of them.
 //! A file that no longer reads keeps the last good settings, and `mount`
 //! and `mode`, which shape the server's own routes, keep their start value.
+//! Once new settings are in use, `site.changed` fires.
 
 use std::collections::BTreeMap;
 use std::fs;
@@ -14,6 +15,8 @@ use khalid_core::{Config, ConfigError, Environment, Mode, UserMessage};
 use khalid_routes::Routes;
 
 use super::{Settings, SitePages, Theme};
+use crate::announce::SiteAnnounce;
+use crate::settings_events::{self, SiteToml};
 use crate::{config_message, look, report, routes_message, site_config};
 
 /// The settings files at the top of the site folder. Every file under
@@ -35,17 +38,33 @@ pub(super) struct Reload {
     start: (String, Mode),
     /// The settings files as the settings were last read.
     seen: Mutex<Stamp>,
+    /// The settings files and `site.toml` as the settings in use were read,
+    /// which the next settings put in use are compared with.
+    applied: Mutex<(Stamp, SiteToml)>,
+    /// Told `site.changed` each time new settings are put in use.
+    announce: Option<SiteAnnounce>,
 }
 
 impl SitePages {
     /// Reads the settings again, with `env` on top, before each full render
-    /// that follows a change to one of their files. `khalid serve` calls it
-    /// once, before the watch starts.
-    pub(crate) fn reload_with(&self, env: Environment) {
+    /// that follows a change to one of their files, and tells `announce`
+    /// once they are in use. `khalid serve` calls it once, before the watch
+    /// starts.
+    pub(crate) fn reload_with(&self, env: Environment, announce: Option<SiteAnnounce>) {
         let config = &self.settings().config;
         let start = (config.mount().to_owned(), config.mode());
-        let seen = Mutex::new(stamp(&self.0.folder));
-        let _ = self.0.reload.set(Reload { env, start, seen });
+        let folder = &self.0.folder;
+        let seen = stamp(folder);
+        let applied = Mutex::new((seen.clone(), SiteToml::read(folder)));
+        let seen = Mutex::new(seen);
+        let reload = Reload {
+            env,
+            start,
+            seen,
+            applied,
+            announce,
+        };
+        let _ = self.0.reload.set(reload);
     }
 
     /// Makes the pages with the settings in the files when one changed
@@ -60,19 +79,20 @@ impl SitePages {
         if *seen == now {
             return;
         }
-        *seen = now;
+        *seen = now.clone();
         drop(seen);
         let (settings, kept) = match reload.read(folder) {
             Ok(read) => read,
             Err(message) => return keeps_last_good(&message),
         };
-        for name in kept {
+        for name in &kept {
             report::notice(&format!(
                 "site.toml changed {name}, which khalid serve reads only when it starts, \
                  so it keeps the old value. Restart khalid serve to use the new one."
             ));
         }
-        for name in start_only(&self.settings().config, &settings.config) {
+        let wired = start_only(&self.settings().config, &settings.config);
+        for name in &wired {
             report::notice(&format!(
                 "site.toml changed {name}, which khalid serve also reads when it starts. \
                  The pages use it now; restart khalid serve to apply it everywhere."
@@ -80,10 +100,32 @@ impl SitePages {
         }
         let mut running = (self.0.settings.write()).unwrap_or_else(PoisonError::into_inner);
         *running = Arc::new(settings);
+        drop(running);
+        let waiting: Vec<&str> = kept.into_iter().chain(wired).collect();
+        reload.tell(folder, now, &waiting);
     }
 }
 
 impl Reload {
+    /// Fires `site.changed` for the settings files of `folder` just put in
+    /// use, stamped `now`, with `waiting` the settings that wait for a
+    /// restart, and keeps them as the ones in use.
+    fn tell(&self, folder: &Path, now: Stamp, waiting: &[&str]) {
+        let toml = SiteToml::read(folder);
+        let mut applied = (self.applied.lock()).unwrap_or_else(PoisonError::into_inner);
+        let (was, before) = &*applied;
+        let saved = (now.iter())
+            .filter(|(path, stamp)| was.get(*path) != Some(*stamp))
+            .chain(was.iter().filter(|(path, _)| !now.contains_key(*path)))
+            .map(|(path, _)| path.clone())
+            .collect();
+        if let Some(announce) = &self.announce {
+            settings_events::fire(announce, (folder, saved), (&toml, before), waiting);
+        }
+        let toml = toml.or(before);
+        *applied = (now, toml);
+    }
+
     /// The settings in the files of the site `folder`, read and checked as
     /// at start, with the start's `mount` and `mode`, and the names of
     /// those two that the files change.
