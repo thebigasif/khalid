@@ -11,7 +11,7 @@ use axum::extract::{Path as UrlPath, State};
 use axum::http::header::{
     CACHE_CONTROL, CONTENT_SECURITY_POLICY, CONTENT_TYPE, LOCATION, X_CONTENT_TYPE_OPTIONS,
 };
-use axum::http::{HeaderValue, StatusCode};
+use axum::http::{HeaderMap, HeaderValue, Method, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use khalid_api::media_api::MediaLibrary;
@@ -20,6 +20,7 @@ use khalid_media::{
     Access, ContentKey, FileAddress, LIBRARY_ADDRESS, Library, StockSearch, Storage,
 };
 use khalid_outbound::Outbound;
+use khalid_server::ranged;
 
 use crate::exit::Exit;
 
@@ -110,10 +111,13 @@ fn router(library: Arc<Library>, config: &Config) -> Router {
     Router::new().route(&route, get(file)).with_state(library)
 }
 
-/// The file, or where it lives when it is in a bucket, or a plain 404.
+/// The file, or the part of it a `Range` asks for, or where it lives when
+/// it is in a bucket, or a plain 404.
 async fn file(
     State(library): State<Arc<Library>>,
     UrlPath((key, name)): UrlPath<(String, String)>,
+    method: Method,
+    request: HeaderMap,
 ) -> Response {
     let Some(key) = ContentKey::parse(&key) else {
         return StatusCode::NOT_FOUND.into_response();
@@ -137,12 +141,33 @@ async fn file(
                 (X_CONTENT_TYPE_OPTIONS, HeaderValue::from_static("nosniff")),
                 (CONTENT_SECURITY_POLICY, HeaderValue::from_static(LOCKED)),
             ];
-            (headers, bytes).into_response()
+            // A range is defined for GET alone, so HEAD gets the whole file's headers.
+            let asks = if method == Method::HEAD {
+                HeaderMap::new()
+            } else {
+                request
+            };
+            (headers, ranged(&asks, bytes.into(), None)).into_response()
         }
         Ok(None) => StatusCode::NOT_FOUND.into_response(),
         Err(error) => {
             tracing::error!(%error, "a media file could not be read");
             StatusCode::INTERNAL_SERVER_ERROR.into_response()
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    /// The server sends every file the library takes with the type the
+    /// library gives it, whether it came through the library or sits
+    /// beside a post.
+    #[test]
+    fn the_server_names_each_library_type_as_the_library_does() {
+        for library in khalid_media::MediaType::ALL {
+            let name = format!("site-tour.{}", library.extension());
+            let served = khalid_server::MediaType::for_file(&name);
+            assert_eq!(served.as_header(), library.mime(), "{name}");
         }
     }
 }

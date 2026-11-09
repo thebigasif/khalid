@@ -1,0 +1,330 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-01-20-larch-24-review/lead.jpg"
+sha256 = "2cce8f23e5c392419e851ccf0b43cf80e234eddeb35cf836c0f1d434b7575836"
+source = "https://commons.wikimedia.org/wiki/File:ShinyBox_46MXC_Ribbon_Microphone,_LowSwing_studio,_Berlin,_2011-01-25_22_29_45.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "ShinyBox 46MXC Ribbon Microphone, LowSwing studio, Berlin, 2011-01-25 22 29 45 by Marc Wathieu from Huy, Belgium, via Wikimedia Commons"
+title = "ShinyBox 46MXC Ribbon Microphone, LowSwing studio, Berlin, 2011-01-25 22 29 45"
+creator = "Marc Wathieu from Huy, Belgium"
+openverse = "commons:File:ShinyBox 46MXC Ribbon Microphone, LowSwing studio, Berlin, 2011-01-25 22 29 45.jpg"
+needs_credit = true
+size = "1600x1071"
+
+
+[[photos]]
+file = "en/posts/2026-02-10-pike-x2-review/lead.jpg"
+sha256 = "63972d6c76c012ea51420ce9fe62f3893d7f21784e8ac843737c8c52b459af93"
+source = "https://commons.wikimedia.org/wiki/File:Mirrorless_Camera_Sensor.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Mirrorless Camera Sensor by Nulcheck, via Wikimedia Commons"
+title = "Mirrorless Camera Sensor"
+creator = "Nulcheck"
+openverse = "commons:File:Mirrorless Camera Sensor.jpg"
+needs_credit = true
+size = "1600x1105"
+
+
+[[photos]]
+file = "en/posts/2026-03-03-best-podcast-microphones/lead.jpg"
+sha256 = "5b43da98033c8c1d3370d1a6034b0ace82e76762453bbbb6707453dc8a13ee41"
+source = "https://commons.wikimedia.org/wiki/File:Recording_Mic_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Recording Mic (Unsplash) by Kelly Sikkema kelsikkema, via Wikimedia Commons"
+title = "Recording Mic (Unsplash)"
+creator = "Kelly Sikkema kelsikkema"
+openverse = "commons:File:Recording Mic (Unsplash).jpg"
+needs_credit = false
+size = "1600x1060"
+
+
+[[photos]]
+file = "en/posts/2026-03-24-plover-l60-review/lead.jpg"
+sha256 = "1192bcd1c4a8dbcfb28c728f51fbe6ce6dee2982db13f5eb5ccc62e76b5dc96b"
+source = "https://commons.wikimedia.org/wiki/File:Set-up_(3391792777).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Set-up (3391792777) by Tim Johnson from Savannah, GA, USA, via Wikimedia Commons"
+title = "Set-up (3391792777)"
+creator = "Tim Johnson from Savannah, GA, USA"
+openverse = "commons:File:Set-up (3391792777).jpg"
+needs_credit = true
+size = "1600x1071"
+
+
+[[photos]]
+file = "en/posts/2026-03-24-plover-l60-review/speed-ring.jpg"
+sha256 = "60ecda7eb44d778c3ffe368980bb8ad507c1d7aefc84e18c3ddc84b15bd3cafd"
+source = "https://commons.wikimedia.org/wiki/File:Studio_Lighting_Equipment_WMDE_IMG_3257_edit.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Studio Lighting Equipment WMDE IMG 3257 edit by Christoph Braun, via Wikimedia Commons"
+title = "Studio Lighting Equipment WMDE IMG 3257 edit"
+creator = "Christoph Braun"
+openverse = "commons:File:Studio Lighting Equipment WMDE IMG 3257 edit.jpg"
+needs_credit = false
+size = "1600x1066"
+
+
+[[photos]]
+file = "en/posts/2026-04-14-wren-d7-review/lead.jpg"
+sha256 = "8af21156feb68d7fc0a52e39bbf663640d21bfa1a244888927b24b29cbc46edc"
+source = "https://commons.wikimedia.org/wiki/File:Microphone_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Microphone (Unsplash) by Kai Oberhäuser memoryonsounds, via Wikimedia Commons"
+title = "Microphone (Unsplash)"
+creator = "Kai Oberhäuser memoryonsounds"
+openverse = "commons:File:Microphone (Unsplash).jpg"
+needs_credit = false
+size = "1600x1063"
+
+
+[[photos]]
+file = "en/posts/2026-05-05-marten-35mm-review/lead.jpg"
+sha256 = "1df6f28ceb499bf35f71044c6557a58f2a2b37cd4ab7f43752c1b2c2be832564"
+source = "https://commons.wikimedia.org/wiki/File:Lens_Helios_44_M_and_hood.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Lens Helios 44 M and hood by Dmitry Makeev, via Wikimedia Commons"
+title = "Lens Helios 44 M and hood"
+creator = "Dmitry Makeev"
+openverse = "commons:File:Lens Helios 44 M and hood.jpg"
+needs_credit = true
+size = "1600x1364"
+
+
+[[photos]]
+file = "en/posts/2026-05-05-marten-35mm-review/aperture-blades.jpg"
+sha256 = "656363f8bf0330f018ec2a842e88cb69dcec512405eefa41074d76ebc2dfe992"
+source = "https://commons.wikimedia.org/wiki/File:Canon_G12_Aperture_Blades_(2013-02-02_19.47.15_by_Mark_Turnauckas_@_Flickr_8438851605).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Canon G12 Aperture Blades (2013-02-02 19.47.15 by Mark Turnauckas @ Flickr 8438851605) by Mark Turnauckas from Akron, Ohio, USA, via Wikimedia Commons"
+title = "Canon G12 Aperture Blades (2013-02-02 19.47.15 by Mark Turnauckas @ Flickr 8438851605)"
+creator = "Mark Turnauckas from Akron, Ohio, USA"
+openverse = "commons:File:Canon G12 Aperture Blades (2013-02-02 19.47.15 by Mark Turnauckas @ Flickr 8438851605).jpg"
+needs_credit = true
+size = "1600x1066"
+
+
+[[photos]]
+file = "en/posts/2026-05-26-heron-r4-review/lead.jpg"
+sha256 = "6570154daae82b4fd3c965b643c394ab7bc6bf018d7bb2b45a4556104fe0ce20"
+source = "https://commons.wikimedia.org/wiki/File:White_music_mixing_dials_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "White music mixing dials (Unsplash) by Alexey Ruban kartochky, via Wikimedia Commons"
+title = "White music mixing dials (Unsplash)"
+creator = "Alexey Ruban kartochky"
+openverse = "commons:File:White music mixing dials (Unsplash).jpg"
+needs_credit = false
+size = "1600x1066"
+
+
+[[photos]]
+file = "en/posts/2026-06-16-gear-testing/lead.jpg"
+sha256 = "da5585d57169e57a1625bfccd0c065773271e1d6cdd45a6339b8ea405e91b47a"
+source = "https://commons.wikimedia.org/wiki/File:Photographic_studio_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Photographic studio (Unsplash) by Alexander Dummer 4dgraphic, via Wikimedia Commons"
+title = "Photographic studio (Unsplash)"
+creator = "Alexander Dummer 4dgraphic"
+openverse = "commons:File:Photographic studio (Unsplash).jpg"
+needs_credit = false
+size = "1600x900"
+
+
+[[photos]]
+file = "en/posts/2026-07-07-osprey-two-review/lead.jpg"
+sha256 = "93310ac51e5861adb30b5e034e6bf2fe8ade8a7e5fbcfe20023033549be0ac53"
+source = "https://commons.wikimedia.org/wiki/File:Panel_Mount_pot_with_Knob.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Panel Mount pot with Knob by Suyash Dwivedi, via Wikimedia Commons"
+title = "Panel Mount pot with Knob"
+creator = "Suyash Dwivedi"
+openverse = "commons:File:Panel Mount pot with Knob.jpg"
+needs_credit = true
+size = "1600x1067"
+
+
+[[photos]]
+file = "en/posts/2026-07-07-osprey-two-review/knob-insert.jpg"
+sha256 = "d26c35c09fa400b502ab2ef9cbb15f9b4147157970ab0738db30bf1f7828e182"
+source = "https://commons.wikimedia.org/wiki/File:Control_knob_with_brass_insert_(14478221212).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by/2.0"
+credit = "Control knob with brass insert (14478221212) by Mercado Viagens from Brasil, via Wikimedia Commons"
+title = "Control knob with brass insert (14478221212)"
+creator = "Mercado Viagens from Brasil"
+openverse = "commons:File:Control knob with brass insert (14478221212).jpg"
+needs_credit = true
+size = "1600x1064"
+
+
+[[photos]]
+file = "en/posts/2026-07-28-shotgun-microphones-compared/lead.jpg"
+sha256 = "1005f254fbb013626b38c2174fd045c035eb6b942de0be280e6be9ccee15cacf"
+source = "https://commons.wikimedia.org/wiki/File:Shotgun_microphone.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: http://creativecommons.org/licenses/by-sa/3.0/"
+credit = "Shotgun microphone by No machine-readable author provided. PJ assumed (based on copyright claims)., via Wikimedia Commons"
+title = "Shotgun microphone"
+creator = "No machine-readable author provided. PJ assumed (based on copyright claims)."
+openverse = "commons:File:Shotgun microphone.jpg"
+needs_credit = true
+size = "1536x764"
+
+
+[[photos]]
+file = "en/posts/2026-08-18-lavalier-microphones-compared/lead.jpg"
+sha256 = "f3e03274b5ec1eedf4e223cb32b638ef869830acb7931b8aac6a1c1f9f7bacee"
+source = "https://commons.wikimedia.org/wiki/File:Lavalier_microphone_on_shirt.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Lavalier microphone on shirt by Gage Skidmore from Surprise, AZ, United States of America, via Wikimedia Commons"
+title = "Lavalier microphone on shirt"
+creator = "Gage Skidmore from Surprise, AZ, United States of America"
+openverse = "commons:File:Lavalier microphone on shirt.jpg"
+needs_credit = true
+size = "1600x982"
+
+
+[[photos]]
+file = "en/posts/2026-09-08-pike-x2-vs-finch-c1/lead.jpg"
+sha256 = "be7cfb2607af5c0583e47aa0d9dceef804cb1d3642a8e6d3dd4030c7b9e00ec5"
+source = "https://commons.wikimedia.org/wiki/File:Camera_with_lens_on_wood_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Camera with lens on wood (Unsplash) by Jay Simmons jaysimmons, via Wikimedia Commons"
+title = "Camera with lens on wood (Unsplash)"
+creator = "Jay Simmons jaysimmons"
+openverse = "commons:File:Camera with lens on wood (Unsplash).jpg"
+needs_credit = false
+size = "1600x1063"
+
+
+[[photos]]
+file = "en/posts/2026-09-22-video-lights-small-rooms/lead.jpg"
+sha256 = "bdf025fbb0af848fb80044ae519b3531e659d032b3017addb326e91e420bca3e"
+source = "https://commons.wikimedia.org/wiki/File:Professionelle_Produktfotografie_im_Fotostudio.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Professionelle Produktfotografie im Fotostudio by Klaus Ohlenschläger, via Wikimedia Commons"
+title = "Professionelle Produktfotografie im Fotostudio"
+creator = "Klaus Ohlenschläger"
+openverse = "commons:File:Professionelle Produktfotografie im Fotostudio.jpg"
+needs_credit = true
+size = "1600x1266"
+
+
+[[photos]]
+file = "en/posts/2026-09-22-video-lights-small-rooms/softbox-assembly.jpg"
+sha256 = "ec73e9be778ba08f262868e16693c56717e1f63d808ba74a50f6ab6cd488c47a"
+source = "https://commons.wikimedia.org/wiki/File:Studio_Lighting_Equipment_WMDE_IMG_3259_edit.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Studio Lighting Equipment WMDE IMG 3259 edit by Christoph Braun, via Wikimedia Commons"
+title = "Studio Lighting Equipment WMDE IMG 3259 edit"
+creator = "Christoph Braun"
+openverse = "commons:File:Studio Lighting Equipment WMDE IMG 3259 edit.jpg"
+needs_credit = false
+size = "1600x1066"
+
+
+[[photos]]
+file = "en/posts/2026-10-06-kestrel-m50-review/lead.jpg"
+sha256 = "67c0f52d79f308d83b3eb53e3383ab6376d31aab1f1d22977ce565dcb6469786"
+source = "https://commons.wikimedia.org/wiki/File:Headphones_on_wood_in_black_and_white_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Headphones on wood in black and white (Unsplash) by Corey Blaz blazphoto, via Wikimedia Commons"
+title = "Headphones on wood in black and white (Unsplash)"
+creator = "Corey Blaz blazphoto"
+openverse = "commons:File:Headphones on wood in black and white (Unsplash).jpg"
+needs_credit = false
+size = "1600x1068"
+
+
+[[photos]]
+file = "en/posts/2026-10-06-kestrel-m50-review/headphone-jack.jpg"
+sha256 = "e0a9450e9ae6202d2bae2f9837575e4ef53c7d28ae4db9649f881238391ba287"
+source = "https://commons.wikimedia.org/wiki/File:Headphone_jack_3.5mm.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "Headphone jack 3.5mm by Bubba73 (Jud McCranie), via Wikimedia Commons"
+title = "Headphone jack 3.5mm"
+creator = "Bubba73 (Jud McCranie)"
+openverse = "commons:File:Headphone jack 3.5mm.jpg"
+needs_credit = true
+size = "1600x994"
+
+
+[[photos]]
+file = "en/posts/2026-10-14-video-tripod-heads/lead.jpg"
+sha256 = "8ce548388b9d3e4a726c6ada5ad640a1cfcc103594b4458c291ea53ee7a396ea"
+source = "https://commons.wikimedia.org/wiki/File:Camera_tripod_on_a_beach_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Camera tripod on a beach (Unsplash) by Nikola Jovanovic danteov_seen, via Wikimedia Commons"
+title = "Camera tripod on a beach (Unsplash)"
+creator = "Nikola Jovanovic danteov_seen"
+openverse = "commons:File:Camera tripod on a beach (Unsplash).jpg"
+needs_credit = false
+size = "1600x1071"
+
+
+[[photos]]
+file = "en/posts/2026-10-21-xlr-cables-tested/lead.jpg"
+sha256 = "9ccee5d64f94558e63411ae6227345edaae98966b90e1abe555c5be5c9548ade"
+source = "https://commons.wikimedia.org/wiki/File:XLR-Stecker_Makro.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/3.0"
+credit = "XLR-Stecker Makro by RobertKuhlmann, via Wikimedia Commons"
+title = "XLR-Stecker Makro"
+creator = "RobertKuhlmann"
+openverse = "commons:File:XLR-Stecker Makro.jpg"
+needs_credit = true
+size = "1600x1066"
+
+
+[[photos]]
+file = "en/posts/2026-10-21-xlr-cables-tested/connectors.jpg"
+sha256 = "158364639bc87d87d1921ee2d9b387868616b3223c737a6f4ec68ca2f61e6fec"
+source = "https://commons.wikimedia.org/wiki/File:Jack_mono_jack_stereo_xlr_male_and_female.JPG"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Jack mono jack stereo xlr male and female by Trude Bergheim Mikkelsen, via Wikimedia Commons"
+title = "Jack mono jack stereo xlr male and female"
+creator = "Trude Bergheim Mikkelsen"
+openverse = "commons:File:Jack mono jack stereo xlr male and female.JPG"
+needs_credit = true
+size = "1600x1062"
+
+
+[[photos]]
+file = "en/posts/2026-10-28-acoustic-foam-tested/lead.jpg"
+sha256 = "c3af3d3fe24eca0f22fa6c214edd2a4cfaa373a4048034371ce971f80524a610"
+source = "https://commons.wikimedia.org/wiki/File:Acoustic_foam_closeup.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Acoustic foam closeup by Chlod Alejandro, via Wikimedia Commons"
+title = "Acoustic foam closeup"
+creator = "Chlod Alejandro"
+openverse = "commons:File:Acoustic foam closeup.jpg"
+needs_credit = true
+size = "1600x1066"
+
+
+[[photos]]
+file = "en/posts/2026-11-04-home-podcast-studio/lead.jpg"
+sha256 = "6ac35f802224e9e5a41f20c98039f8525765c7394f95ab5520dd3fe45b685b35"
+source = "https://commons.wikimedia.org/wiki/File:Podcast_Studio.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-05: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Podcast Studio by Ajcosta, via Wikimedia Commons"
+title = "Podcast Studio"
+creator = "Ajcosta"
+openverse = "commons:File:Podcast Studio.jpg"
+needs_credit = true
+size = "1600x1066"
+
+
+[[photos]]
+file = "en/posts/2026-11-04-home-podcast-studio/softbox-ring.jpg"
+sha256 = "3063c72afbb5f095de9d069cbfa4345fd564b7399c84d9e7820d05892f5d6df8"
+source = "https://commons.wikimedia.org/wiki/File:Studio_Lighting_Equipment_WMDE_IMG_3227_edit.jpg"
+licence = "CC0, read on the photo's page 2026-11-05: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Studio Lighting Equipment WMDE IMG 3227 edit by Christoph Braun, via Wikimedia Commons"
+title = "Studio Lighting Equipment WMDE IMG 3227 edit"
+creator = "Christoph Braun"
+openverse = "commons:File:Studio Lighting Equipment WMDE IMG 3227 edit.jpg"
+needs_credit = false
+size = "1600x1119"
+

@@ -6,7 +6,7 @@ use std::fmt;
 
 use khalid_core::AbsoluteUrl;
 
-use crate::{SeoError, SeoSite, sitemap_index_url};
+use crate::{SchemaMap, SeoError, SeoSite, SiteSearch, schema_map_url, sitemap_index_url};
 
 /// The user-agent tokens of crawlers that gather text for AI models or AI
 /// answers, as their operators publish them, for a site that wants to
@@ -82,6 +82,29 @@ impl RobotsPath {
     }
 }
 
+/// One line a site adds to its robots.txt as written, such as
+/// `Crawl-delay: 5` or a comment.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RobotsLine(String);
+
+impl RobotsLine {
+    /// Checks a line and wraps it.
+    ///
+    /// # Errors
+    ///
+    /// [`SeoError::RobotsLine`] when the line is blank or holds a line
+    /// break, a tab or another control character.
+    pub fn try_new(text: &str) -> Result<Self, SeoError> {
+        if !text.trim().is_empty() && !text.chars().any(char::is_control) {
+            Ok(Self(text.to_owned()))
+        } else {
+            Err(SeoError::RobotsLine {
+                line: text.to_owned(),
+            })
+        }
+    }
+}
+
 /// Whether a crawler may read the blog.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
@@ -92,14 +115,31 @@ pub enum BotAccess {
     Blocked,
 }
 
-/// The site's choices for crawlers. By default every crawler may read every page.
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+/// The site's choices for crawlers. By default every crawler may read every
+/// page but the search results.
+#[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct CrawlerPolicy {
     /// Paths inside the mount folder that no crawler may read.
     pub disallow: Vec<RobotsPath>,
     /// Crawlers with their own setting, by token.
     pub bots: BTreeMap<UserAgent, BotAccess>,
+    /// Whether the search page is kept from crawlers, so they do not spend
+    /// their visits on endless result pages. On by default.
+    pub disallow_search: bool,
+    /// Lines written as they are after the groups, such as `Crawl-delay: 5`.
+    pub extra_lines: Vec<RobotsLine>,
+}
+
+impl Default for CrawlerPolicy {
+    fn default() -> Self {
+        Self {
+            disallow: Vec::new(),
+            bots: BTreeMap::new(),
+            disallow_search: true,
+            extra_lines: Vec::new(),
+        }
+    }
 }
 
 /// One group of lines: the crawlers it names, then its rules.
@@ -114,13 +154,15 @@ struct Group {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RobotsTxt {
     groups: Vec<Group>,
+    extra_lines: Vec<String>,
     sitemap: AbsoluteUrl,
+    schema_maps: Vec<AbsoluteUrl>,
 }
 
 impl RobotsTxt {
     /// The robots.txt for `site`: a group for every crawler, a group for the
-    /// allowed crawlers named in the policy, one for the blocked ones, and
-    /// the sitemap index. Every path sits under the mount folder, so a blog
+    /// allowed crawlers named in the policy, one for the blocked ones, the
+    /// sitemap index, and the schema files when the site asks for them. Every path sits under the mount folder, so a blog
     /// in a folder says nothing about the rest of the site.
     ///
     /// # Errors
@@ -130,7 +172,16 @@ impl RobotsTxt {
         let mount = site.mount.as_str();
         let under_mount =
             |rule: &RobotsPath| format!("{}{}", site.mount.without_trailing_slash(), rule.0);
-        let disallow: Vec<String> = site.crawlers.disallow.iter().map(under_mount).collect();
+        let mut disallow: Vec<String> = site.crawlers.disallow.iter().map(under_mount).collect();
+        if let SiteSearch::On(search) = &site.search
+            && site.crawlers.disallow_search
+        {
+            disallow.push(format!(
+                "{}{}",
+                site.mount.without_trailing_slash(),
+                search.as_str()
+            ));
+        }
         let named = |access: BotAccess| -> Vec<String> {
             site.crawlers
                 .bots
@@ -162,7 +213,17 @@ impl RobotsTxt {
         }
         Ok(Self {
             groups,
+            extra_lines: (site.crawlers.extra_lines.iter())
+                .map(|line| line.0.clone())
+                .collect(),
             sitemap: sitemap_index_url(site)?,
+            schema_maps: if site.schema_map == SchemaMap::FilesAndRobotsTxt {
+                (site.languages.iter())
+                    .map(|language| schema_map_url(site, language))
+                    .collect::<Result<_, _>>()?
+            } else {
+                Vec::new()
+            },
         })
     }
 }
@@ -181,6 +242,16 @@ impl fmt::Display for RobotsTxt {
             }
             writeln!(f)?;
         }
-        writeln!(f, "Sitemap: {}", self.sitemap)
+        for line in &self.extra_lines {
+            writeln!(f, "{line}")?;
+        }
+        if !self.extra_lines.is_empty() {
+            writeln!(f)?;
+        }
+        writeln!(f, "Sitemap: {}", self.sitemap)?;
+        for map in &self.schema_maps {
+            writeln!(f, "Schemamap: {map}")?;
+        }
+        Ok(())
     }
 }

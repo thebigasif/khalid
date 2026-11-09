@@ -1,0 +1,96 @@
+---
+source: crates/khalid/tests/template_fixture.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+<a class="button header-button" href="https://www.example.com/join/">Join the club</a>
+</header>
+<main id="main" tabindex="-1">
+
+<div class="club-top">
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+Amateur football since 1974.
+</div>
+<div class="form-guide">
+<p class="form-guide-label">Form <span class="visually-hidden">The last five results, oldest first</span></p>
+<ol class="form-chips" role="list">
+<li class="form-chip" data-match="w"><a href="/blog/why-internal-links-matter/"><span aria-hidden="true">W</span><span class="visually-hidden">Win, Harbour Town, 3-1</span></a></li>
+<li class="form-chip" data-match="l"><a href="/blog/how-to-write-a-title-tag/"><span aria-hidden="true">L</span><span class="visually-hidden">Defeat, Millbrook, 0-2</span></a></li>
+</ol>
+</div>
+<dl class="figure-strip">
+<div class="figure">
+<dt>played</dt>
+<dd>2</dd>
+</div>
+<div class="figure">
+<dt>won</dt>
+<dd>1</dd>
+</div>
+</dl>
+</header>
+<section class="next-match" aria-labelledby="next-match-title">
+<h2 id="next-match-title">Next match</h2>
+<p class="next-versus"><span class="next-v" aria-hidden="true">v</span> <a href="/blog/planning-a-topic-cluster/">Westbury</a></p>
+<p class="next-kick-off"><span class="visually-hidden">Kick-off </span>Sat 17 Oct, 3pm</p>
+<p class="next-where"><span>Away</span><span>League</span></p>
+<p class="next-preview"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></p>
+</section>
+</div>
+<div class="club-front club-front-side">
+<section class="club-results" aria-labelledby="club-results-title">
+<h2 id="club-results-title">Results</h2>
+<ol class="results-list" role="list">
+<li class="match" data-match="loss">
+<time class="match-date" datetime="2026-09-21">21 September 2026</time>
+<span class="match-mark" aria-hidden="true">L</span>
+<h3><a href="/blog/how-to-write-a-title-tag/">Millbrook</a></h3>
+<p class="match-meta"><span>Away</span><span>Cup</span></p>
+<p class="match-score"><span class="visually-hidden">Defeat </span>0-2</p>
+<p class="match-headline">How to write a title tag</p>
+</li>
+<li class="match" data-match="win">
+<time class="match-date" datetime="2026-09-14">14 September 2026</time>
+<span class="match-mark" aria-hidden="true">W</span>
+<h3><a href="/blog/why-internal-links-matter/">Harbour Town</a></h3>
+<p class="match-meta"><span>Home</span><span>League</span></p>
+<p class="match-score"><span class="visually-hidden">Win </span>3-1</p>
+<p class="match-headline">Why internal links matter</p>
+</li>
+</ol>
+
+</section>
+<div class="club-side">
+<section class="club-fixtures" aria-labelledby="club-fixtures-title">
+<h2 id="club-fixtures-title">Fixtures</h2>
+<ol class="results-list" role="list">
+<li class="match" data-match="fixture">
+<time class="match-date" datetime="2026-10-05">5 October 2026</time>
+<span class="match-mark" aria-hidden="true">v</span>
+<h3><a href="/blog/fixing-slow-pages/">Eastfield</a></h3>
+<p class="match-meta"><span>Home</span></p>
+<p class="match-score"><span class="visually-hidden">Kick-off </span>Sat 10 Oct, 3pm</p>
+<p class="match-headline">Fixing slow pages, starting with the biggest win</p>
+</li>
+</ol>
+
+</section>
+<section class="club-news" aria-labelledby="club-news-title">
+<h2 id="club-news-title">Club news</h2>
+<ol class="feed-list" role="list">
+<li class="feed-item">
+<time datetime="2026-09-28">28 September 2026</time>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="feed-category"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+</ol>
+</section>
+</div>
+</div>
+<div class="cta-band">
+<p><a class="button" href="https://www.example.com/join/">Join the club</a></p>
+</div>

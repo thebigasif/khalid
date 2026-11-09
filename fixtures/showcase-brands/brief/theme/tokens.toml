@@ -1,0 +1,46 @@
+# The sample brand for the Brief demo: Tideline, a made-up weekday digest
+# about a stretch of coast. Deep sea teal links and a buoy orange accent
+# on a sea mist desk, Schibsted Grotesk for headings, stamps and numbers,
+# and Petrona for the items. Only the brand lives here: the template
+# keeps its own shape, type sizes and spacing.
+[colors]
+background = "#fffefb"
+surface = "#e3ebee"
+text = "#0f2129"
+muted = "#4a5a62"
+link = "#0b5d70"
+accent = "#d25426"
+border = "#ccd8dc"
+
+[fonts]
+heading = "\"Schibsted Grotesk\", \"Helvetica Neue\", Arial, sans-serif"
+body = "Petrona, Charter, Georgia, serif"
+
+[[fonts.files]]
+family = "Schibsted Grotesk"
+style = "normal"
+weight = "400 700"
+path = "schibsted-grotesk-latin-400-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "107.87%"
+descent = "121.66%"
+line_gap = "0.00%"
+size_adjust = "61.63%"
+
+[[fonts.files]]
+family = "Petrona"
+style = "normal"
+weight = "400 700"
+path = "petrona-latin-400-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "94.78%"
+descent = "127.41%"
+line_gap = "0.00%"
+size_adjust = "57.61%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

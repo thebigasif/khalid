@@ -1,0 +1,134 @@
+{#- Manual's article (docs/templates/manual.md). The topic (category) and,
+    in a guide (series), "Step 2 of 3" above the title; the title, the dek
+    as the summary, the date it was updated and the reading time. Then the
+    facts as "Before you start", the lead picture and the text, whose
+    sections are numbered as the contents number them. Under the text, the
+    next steps panel: "Did this answer your question?" with links only,
+    the next step or article for yes, and search, the topic and the call
+    to action for not quite. On a wide screen the guide's steps, or more
+    articles in the topic, stand in a column at the start and the contents
+    ("On this page") in a column at the end. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "image.html" import picture -%}
+{% from "contents.html" import contents_list -%}
+{% from "author_box.html" import author_box, reviewed_line -%}
+{% from "comments.html" import comments_section -%}
+{% from "slots.html" import newsletter_form, cta_band, preferred_source -%}
+{% set options = template.options -%}
+{% set placement = options.contents -%}
+{% set toc = page.contents and "table_of_contents" in site.features and placement != "none" -%}
+{% set side = toc and placement in ["side-start", "side-end"] -%}
+{% set share = options.share -%}
+{% set guide = page.series -%}
+{% set more = page.related[:options.related_count] if "related_posts" in site.features else [] -%}
+{% set numbers = options.contents_numbers -%}
+{% if share != "none" %}{% set share_row %}<div class="share">
+<p class="share-title">{{ t.share }}</p>
+<ul>
+{% for link in share_links(meta.canonical, page.title, options.share_networks) %}<li><a href="{{ link.href }}" rel="nofollow noreferrer">{{ t.share_email if link.key == "email" else link.name }}</a></li>
+{% endfor %}</ul>
+</div>
+{% endset %}{% endif -%}
+{% if side and placement == "side-start" %}<article class="post help-article post-with-toc post-toc-start">{% elif side %}<article class="post help-article post-with-toc">{% elif toc and placement == "inline-folded" %}<article class="post help-article post-toc-folded">{% else %}<article class="post help-article">{% endif %}
+<header class="post-header">
+{% if page.category or guide %}<p class="help-kicker">{% if page.category %}<a href="{{ page.category.href }}">{{ page.category.name }}</a>{% endif %}{% if guide %}<span class="help-step">{{ t.help_step | replace("{part}", guide.part | string) | replace("{total}", guide.total | string) }}</span>{% endif %}</p>
+{% endif %}<h1>{{ page.title }}</h1>
+{% if options.dek and page.dek %}<p class="dek">{{ page.dek }}</p>
+{% endif %}<div class="post-meta">
+<p class="post-date">{% if page.updated %}{{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time>{% else %}{{ t.published }} <time datetime="{{ page.date }}">{{ page.date | date }}</time>{% endif %}</p>
+{% if "reading_time" in site.features %}<p class="reading-time"><time datetime="PT{{ page.reading_time.minutes }}M">{{ t.reading_time | replace("{minutes}", page.reading_time.minutes | string) }}</time></p>
+{% endif %}{% if page.authors %}<address>{{ t.by }} {% for author in page.authors %}<a rel="author" href="{{ author.href }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</address>
+{% endif %}{% if page.reviewers and "reviewed_by" in site.features %}{{ reviewed_line(page.reviewers) }}
+{% endif %}</div>
+{% if options.updated_note and page.updated and page.updated_note %}<p class="updated-note">{{ page.updated_note }}</p>
+{% endif %}{% if page.facts %}<div class="help-before">
+<p class="help-before-title">{{ t.help_before }}</p>
+<dl>
+{% for fact in page.facts %}<div>
+<dt>{{ fact.label }}</dt>
+<dd>{{ fact.value }}</dd>
+</div>
+{% endfor %}</dl>
+</div>
+{% endif %}{% if page.image %}{{ picture(page.image) }}
+{% endif %}</header>
+{% if share in ["top", "both"] %}{{ share_row }}{% endif %}{% if toc and placement == "inline" %}<nav class="toc-box" aria-label="{{ t.help_on_page }}">
+<p class="toc-title">{{ t.help_on_page }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% elif toc %}<details class="toc-inline">
+<summary>{{ t.help_on_page }}</summary>
+<nav aria-label="{{ t.help_on_page }}">
+{{ contents_list(page.contents) }}
+</nav>
+</details>
+{% if side %}<nav class="toc-side" aria-label="{{ t.help_on_page }}">
+<p class="toc-title">{{ t.help_on_page }}</p>
+{{ contents_list(page.contents) }}
+</nav>
+{% endif %}{% endif %}{% if numbers == "nested" %}<div class="post-body help-numbered help-nested">{% elif numbers == "numbered" %}<div class="post-body help-numbered">{% else %}<div class="post-body">{% endif %}
+{% set body = page.body %}{% if "heading_links" in site.features %}{% set body = body | heading_links(t.heading_link) %}{% endif %}{% if "enlarge_images" in site.features and page.originals %}{% set body = body | enlarge(page.originals) %}{% endif %}{{ body | place_cta(cta_band(template.cta) if template.cta else "") }}
+</div>
+<aside class="next-steps" aria-labelledby="next-steps-title">
+<h2 id="next-steps-title">{{ t.help_helpful }}</h2>
+<div class="next-choices">
+<div class="next-yes">
+<h3>{{ t.help_yes }}</h3>
+{% if guide and guide.next %}<p><a href="{{ guide.next.href }}" rel="next"><span>{{ t.help_next_step }}</span> {{ guide.next.name }}</a></p>
+{% elif more %}<p><a href="{{ more[0].href }}"><span>{{ t.help_read_next }}</span> {{ more[0].title }}</a></p>
+{% else %}<p><a href="{{ site.home }}"><span>{{ t.help_read_next }}</span> {{ t.help_home }}</a></p>
+{% endif %}</div>
+<div class="next-no">
+<h3>{{ t.help_no }}</h3>
+<ul>
+{% if site.search %}<li><a href="{{ site.search }}">{{ t.help_search }}</a></li>
+{% endif %}{% if page.category %}<li><a href="{{ page.category.href }}">{{ t.view_all | replace("{name}", page.category.name) }}</a></li>
+{% endif %}{% if template.cta %}<li><a href="{{ template.cta.href }}">{{ template.cta.label }}</a></li>
+{% else %}<li><a href="{{ site.home }}">{{ t.help_home }}</a></li>
+{% endif %}</ul>
+</div>
+</div>
+</aside>
+{% if guide %}<nav class="help-guide" aria-label="{{ t.help_in_guide }}">
+<p class="help-guide-title">{{ t.help_in_guide }}</p>
+<p class="help-guide-name"><a href="{{ guide.href }}">{{ guide.name }}</a></p>
+<ol>
+{% for part in guide.parts %}{% if loop.index == guide.part %}<li><span aria-current="page">{{ part.name }}</span></li>
+{% else %}<li><a href="{{ part.href }}">{{ part.name }}</a></li>
+{% endif %}{% endfor %}</ol>
+</nav>
+{% elif more %}<nav class="help-guide" aria-label="{{ t.help_more }}">
+<p class="help-guide-title">{{ t.help_more }}</p>
+<ul>
+{% for post in more %}<li><a href="{{ post.href }}">{{ post.title }}</a></li>
+{% endfor %}</ul>
+</nav>
+{% endif %}{% if page.tags or share in ["end", "both"] %}<footer class="post-footer">
+{% if page.tags %}<h2>{{ t.tags }}</h2>
+<ul class="tags">
+{% for tag in page.tags %}<li><a href="{{ tag.href }}" rel="tag">{{ tag.name }}</a></li>
+{% endfor %}</ul>
+{% endif %}{% if share in ["end", "both"] %}{{ share_row }}{% endif %}</footer>
+{% endif %}{% if "author_box" in site.features and page.authors %}{{ author_box(page.authors, page.reviewers if "reviewed_by" in site.features else []) }}
+{% endif %}{{ preferred_source(options, t, "post") }}</article>
+{% if site.subscribe and options.newsletter in ["post", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% if template.cta and options.cta_band in ["post", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if "linked_mentions" in site.features and page.mentions %}<section class="mentions">
+<h2>{{ t.mentions }}</h2>
+<ul>
+{% for link in page.mentions %}<li><a href="{{ link.href }}">{{ link.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% if page.comments %}{{ comments_section(page.comments) }}
+{% endif %}{% if guide and more %}<section class="related" aria-labelledby="related-title">
+<h2 id="related-title">{{ t.help_more }}</h2>
+<ul class="article-rows" role="list">
+{% for post in more %}<li class="article-row">
+{% if post.category %}<p class="article-topic"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+{% if post.excerpt %}<p class="article-summary">{{ post.excerpt }}</p>
+{% endif %}</li>
+{% endfor %}</ul>
+</section>
+{% endif %}{% endblock %}

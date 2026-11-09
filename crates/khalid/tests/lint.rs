@@ -26,6 +26,8 @@ focus_keyword: link text
 ---
 
 Good link text names the page it opens, like [why links matter](/blog/why-internal-links-matter/).
+
+![Link text that names the page it opens](https://example.org/link-text.png)
 ";
 
 /// A site folder with the demo settings and `posts` as `(file name, text)`.
@@ -303,6 +305,8 @@ aliases:
 ---
 
 Good link text names the page it opens, like [why links matter](/blog/why-internal-links-matter/).
+
+![Link text that names the page it opens](https://example.org/link-text.png)
 ";
 
 /// A good post that still links to the moved post's old path.

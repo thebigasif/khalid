@@ -22,14 +22,17 @@
 //! visitor log, as the [`VisitorLogTable`] it writes while switched on, the
 //! speed and uptime watch's looks, as the [`WatchTable`], the audit log, as
 //! the [`AuditTable`] the Admin API records each change in, the `SerpDad`
-//! connection, as the [`SerpdadTable`] the Admin API keeps, and the earlier
-//! versions of posts, as the [`VersionTable`] the publish door keeps.
+//! connection, as the [`SerpdadTable`] the Admin API keeps, the earlier
+//! versions of posts, as the [`VersionTable`] the publish door keeps, and
+//! the consent proof, as the [`ConsentProofTable`] the consent form counts
+//! readers' choices into.
 
 mod account_table;
 mod alert_table;
 mod analytics_table;
 mod audit_table;
 mod comment_table;
+mod consent_proof_table;
 mod content_index;
 mod database;
 mod db_error;
@@ -65,6 +68,7 @@ pub use alert_table::AlertTable;
 pub use analytics_table::AnalyticsTable;
 pub use audit_table::AuditTable;
 pub use comment_table::CommentTable;
+pub use consent_proof_table::{ConsentChoice, ConsentCounts, ConsentProofTable, ConsentVersion};
 pub use content_index::{ContentIndex, IndexedAuthor, IndexedPost, IndexedTerm};
 pub use database::Database;
 pub use db_error::DbError;

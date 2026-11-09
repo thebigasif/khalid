@@ -76,6 +76,40 @@ fn a_category_feed_holds_only_that_category() {
 }
 
 #[test]
+fn a_channel_feed_holds_only_its_published_posts() {
+    let site = demo_site();
+    let posts = vec![
+        path("/draft/"),
+        path("/crawl-budget/"),
+        path("/anchor-text/"),
+    ];
+    let scope = FeedScope::channel(locale("en"), "Featured", path("/featured/"), posts);
+    let feed = Feed::for_pages(&site, &demo_pages(), &scope, at(2026, 10, 26, 12)).unwrap();
+    assert_eq!(titles(&feed), ["Crawl budget", "Anchor text"]);
+    assert_eq!(feed.title, "Featured | Field Notes on SEO");
+    assert_eq!(feed.home.as_str(), "https://www.example.com/blog/featured/");
+}
+
+#[test]
+fn a_channel_feed_keeps_to_its_language_and_the_limit() {
+    let mut site = demo_site();
+    site.feeds.limit = 1;
+    let posts = vec![path("/anchor-text/"), path("/crawl-budget/")];
+    let scope = FeedScope::channel(locale("de"), "Featured", path("/featured/"), posts.clone());
+    let now = at(2026, 10, 26, 12);
+    let german = Feed::for_pages(&site, &demo_pages(), &scope, now).unwrap();
+    assert_eq!(titles(&german), Vec::<&str>::new());
+    assert_eq!(german.updated, now);
+    assert_eq!(
+        german.home.as_str(),
+        "https://www.example.com/blog/de/featured/"
+    );
+    let scope = FeedScope::channel(locale("en"), "Featured", path("/featured/"), posts);
+    let english = Feed::for_pages(&site, &demo_pages(), &scope, now).unwrap();
+    assert_eq!(titles(&english), ["Crawl budget"]);
+}
+
+#[test]
 fn the_german_feed_holds_the_german_post() {
     let site = demo_site();
     let feed = Feed::for_pages(

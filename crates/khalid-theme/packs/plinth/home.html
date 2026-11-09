@@ -1,0 +1,70 @@
+{#- Plinth's front page (docs/templates/plinth.md): the practice's name,
+    its tagline and the figure strip of its own numbers; then each project
+    (a post with facts) as a spread, its photograph on one side on a heavy
+    ink bar and its type of work, title, summary and numbered title block
+    on the other, the sides alternating; the studio notes (posts without
+    facts) as a dated feed; every type of work that holds projects as a
+    ruled index; then the page links and the call to action. A type of
+    work whose posts on this page are all notes is left out of the index,
+    by the same rule as the notes, not by its name. With home sections in
+    site.toml, each section is a row of sheets of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "image.html" import picture -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import home_sections -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/figure_strip.html" import figure_strip -%}
+{% from "sections/feed_list.html" import feed_list -%}
+{% from "sections/title_block.html" import title_block -%}
+{% set options = template.options -%}
+{% call hero(page.title, page.intro or (options.tagline[0] if options.tagline else none)) %}{{ figure_strip(options.hero_stats) }}{% endcall %}
+{% set projects = page.posts | selectattr("facts") | list -%}
+{% set all_notes = page.posts | rejectattr("facts") | list -%}
+{% set notes = all_notes[:options.notes_count] -%}
+{% set project_kinds = projects | selectattr("category") | map(attribute="category.href") | list -%}
+{% set note_kinds = all_notes | selectattr("category") | map(attribute="category.href") | list -%}
+{% set kinds = page.categories | rejectattr("href", "in", note_kinds | reject("in", project_kinds) | list) | list -%}
+{% if page.sections %}{% for section in page.sections %}<section class="studio-section" aria-labelledby="studio-section-{{ loop.index }}">
+<h2 id="studio-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}<ul class="sheets" role="list">
+{% for post in section.posts %}<li class="sheet">
+{% if post.image %}{{ picture(post.image, slot_sizes("sheet")) }}
+{% endif %}<h3><span class="sheet-number">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span> <a href="{{ post.href }}">{{ post.title }}</a></h3>
+{% if post.facts %}<p class="sheet-facts">{% for fact in post.facts[:2] %}<span>{{ fact.value }}</span>{% endfor %}</p>
+{% endif %}</li>
+{% endfor %}</ul>
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif projects or notes %}{% if projects %}<section class="projects" aria-labelledby="projects-title">
+<h2 id="projects-title">{{ t.projects }}</h2>
+<ol class="spreads" role="list">
+{% for post in projects %}<li class="spread">
+{% if post.image %}<div class="spread-plate">{{ picture(post.image, slot_sizes("spread")) }}</div>
+{% endif %}<div class="spread-text">
+{% if post.category %}<p class="spread-kind"><a href="{{ post.category.href }}">{{ post.category.name }}</a></p>
+{% endif %}<h3><a href="{{ post.href }}">{{ post.title }}</a></h3>
+<p class="spread-excerpt">{{ post.excerpt }}</p>
+{{ title_block(post.facts, ("0" if loop.index < 10 else "") ~ loop.index) }}
+</div>
+</li>
+{% endfor %}</ol>
+</section>
+{% endif %}{% if notes %}<section class="notes" aria-labelledby="notes-title">
+<h2 id="notes-title">{{ t.studio_notes }}</h2>
+{{ feed_list(notes) }}
+</section>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% if kinds %}<section class="kinds" aria-labelledby="kinds-title">
+<h2 id="kinds-title">{{ t.types_of_work }}</h2>
+<ul class="kind-index" role="list">
+{% for kind in kinds %}<li><a href="{{ kind.href }}">{{ kind.name }}</a></li>
+{% endfor %}</ul>
+</section>
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

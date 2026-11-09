@@ -1,0 +1,99 @@
+# The Saturday Gardener, a made-up weekly newsletter about growing food
+# and flowers in small spaces, written for the Dispatch template's demo.
+# Each key and table here replaces the showcase's own when
+# scripts/demo-publication.sh applies it.
+
+name = "The Saturday Gardener"
+languages = ["en"]
+
+# The demo is a static site, which cannot take a sign-up, so every
+# sign-up box shows this call to action as its button.
+[template.cta]
+label = "Subscribe free"
+href = "/blog/about/"
+note = "Free, every Saturday at 7am. Leave any time."
+
+# The Dispatch template's options for this demo. scripts/pages.sh keeps
+# them; cta_band is set so the demo shows no extra band.
+[template.options]
+tagline = ["One job for the weekend, every Saturday: growing food and flowers on a balcony, a windowsill or a yard the size of a table."]
+cadence = ["Every Saturday at 7am"]
+promises = ["One job for the weekend, with the steps and the reasons", "Readers' questions answered once a month", "Methods tested on our own pots, failures included"]
+hero_stats = ["9,400 | readers", "178 | issues sent", "Free | always"]
+cta_band = "none"
+
+[announcement]
+text = "Issue 178 is out: plant garlic now, twelve cloves in a balcony box."
+href = "/blog/plant-garlic/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A weekly letter about growing in small spaces"
+
+[seo.ai_page]
+covers = "The Saturday Gardener is a free weekly newsletter about growing food and flowers in small spaces. Each issue is one post with one job for the weekend. Once a month a writer answers readers' questions."
+cite = "Name the issue and the newsletter, and link the issue's post."
+contact = "letters@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "The Saturday Gardener"
+email = "letters@example.com"
+founded = "2023-03-04"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Saturday Gardener logo"
+width = 360
+height = 80
+
+# Sign-ups for the letter, under its own name. The mail server is a
+# reserved example name, so nothing is ever sent.
+[mail]
+from = "letters@example.com"
+name = "The Saturday Gardener"
+postal_address = "The Saturday Gardener, 12 Allotment Row, Harrowfield HF4 1GG"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Issues"
+href = "/blog/archive/"
+language = "en"
+
+[[nav.primary]]
+label = "Growing food"
+href = "/blog/category/growing-food/"
+language = "en"
+
+[[nav.primary]]
+label = "Your questions"
+href = "/blog/category/reader-questions/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the letter"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Writers"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Seasonal jobs"
+href = "/blog/category/seasonal-jobs/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

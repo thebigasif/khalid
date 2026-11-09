@@ -1,0 +1,114 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is
+# CC0 or in the public domain.
+
+[[photos]]
+file = "en/posts/2026-09-03-first-ride/lead.jpg"
+sha256 = "134bc04eb767c108d96a816cd36e46aaefbd68e9d95945b3d91e10ad8b3514dd"
+source = "https://commons.wikimedia.org/wiki/File:Riding_a_bike_in_the_park_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Riding a bike in the park (Unsplash) by Fritz Bielmeier fritzbielmeier, via Wikimedia Commons"
+title = "Riding a bike in the park (Unsplash)"
+creator = "Fritz Bielmeier fritzbielmeier"
+openverse = "commons:File:Riding a bike in the park (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-15-winter-battery-storage/lead.jpg"
+sha256 = "362eed3b22d7807086d7acb121fd4cc214e2b4a42d76a2366e0f652de4109d28"
+source = "https://commons.wikimedia.org/wiki/File:Bicycle_Mannerheim_Park_Oulu_20210209.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Bicycle Mannerheim Park Oulu 20210209 by Estormiz, via Wikimedia Commons"
+title = "Bicycle Mannerheim Park Oulu 20210209"
+creator = "Estormiz"
+openverse = "commons:File:Bicycle Mannerheim Park Oulu 20210209.jpg"
+needs_credit = false
+size = "1600x1202"
+
+[[photos]]
+file = "en/posts/2026-09-22-hub-gears/lead.jpg"
+sha256 = "45ef009ca241473063deba61c3f66fe9a339ce59fa15547720ea991ad1e9ce43"
+source = "https://commons.wikimedia.org/wiki/File:Wheel_and_gears_of_bicycle_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Wheel and gears of bicycle (Unsplash) by Wayne Bishop wayneb250, via Wikimedia Commons"
+title = "Wheel and gears of bicycle (Unsplash)"
+creator = "Wayne Bishop wayneb250"
+openverse = "commons:File:Wheel and gears of bicycle (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-24-bike-lights/lead.jpg"
+sha256 = "64e71de9a487f790e1dfd5523c852131bc35c93090cbb5c857ff1db048e45816"
+source = "https://commons.wikimedia.org/wiki/File:Fahrrad_LED-Akku-Leuchte_Busch_%26_M%C3%BCller_Ixon_IQ.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Fahrrad LED-Akku-Leuchte Busch & Müller Ixon IQ by Singlespeedfahrer, via Wikimedia Commons"
+title = "Fahrrad LED-Akku-Leuchte Busch & Müller Ixon IQ"
+creator = "Singlespeedfahrer"
+openverse = "commons:File:Fahrrad LED-Akku-Leuchte Busch & Müller Ixon IQ.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-29-tyre-pressure/lead.jpg"
+sha256 = "393345da91b1f5a6d19deaf5003933449aa8809a579b4547440635d388bed96b"
+source = "https://commons.wikimedia.org/wiki/File:Une_personne_regonflant_un_pneu_de_son_v%C3%A9lo_%C3%A0_Gen%C3%A8ve.JPG"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Une personne regonflant un pneu de son vélo à Genève by Benoît Prieur, via Wikimedia Commons"
+title = "Une personne regonflant un pneu de son vélo à Genève"
+creator = "Benoît Prieur"
+openverse = "commons:File:Une personne regonflant un pneu de son vélo à Genève.JPG"
+needs_credit = false
+size = "1600x1315"
+
+[[photos]]
+file = "en/posts/2026-10-01-chain-cleaning/lead.jpg"
+sha256 = "333c9b287250bab281d95556f482ce792e67f4e9a46431f8c52f6218d0671a92"
+source = "https://commons.wikimedia.org/wiki/File:Close_up_seven_speed_gear.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Close up seven speed gear by NonNerd, via Wikimedia Commons"
+title = "Close up seven speed gear"
+creator = "NonNerd"
+openverse = "commons:File:Close up seven speed gear.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-06-brake-pads/lead.jpg"
+sha256 = "1f8e372b1c1408c20aeb70f4ae05b2f13edf8fad594eb2b0538b19a705e442be"
+source = "https://commons.wikimedia.org/wiki/File:Bicycle_disc_brake_rotor_with_Torx_screwdriver_set.jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Bicycle disc brake rotor with Torx screwdriver set by JaredMcKenzie, via Wikimedia Commons"
+title = "Bicycle disc brake rotor with Torx screwdriver set"
+creator = "JaredMcKenzie"
+openverse = "commons:File:Bicycle disc brake rotor with Torx screwdriver set.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-08-delivery-tracking/lead.jpg"
+sha256 = "9f69ac8404e5305bb27cebe3324da21bd92bb41c373102d090bf90c395441c3a"
+source = "https://commons.wikimedia.org/wiki/File:Boxes_in_grass.jpg"
+licence = "Public domain, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Boxes in grass by Hillebrand Steve, U.S. Fish and Wildlife Service, via Wikimedia Commons"
+title = "Boxes in grass"
+creator = "Hillebrand Steve, U.S. Fish and Wildlife Service"
+openverse = "commons:File:Boxes in grass.jpg"
+needs_credit = false
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-15-warranty-cover/lead.jpg"
+sha256 = "70aa949f1d498448a4a41fddccc480d4d7589459b9f9f788e95ec99d866962e4"
+source = "https://commons.wikimedia.org/wiki/File:Bicycle_wheel_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-07: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Bicycle wheel (Unsplash) by Pietro De Grandi peter_mc_greats, via Wikimedia Commons"
+title = "Bicycle wheel (Unsplash)"
+creator = "Pietro De Grandi peter_mc_greats"
+openverse = "commons:File:Bicycle wheel (Unsplash).jpg"
+needs_credit = false
+size = "1600x1067"

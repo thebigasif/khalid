@@ -1,0 +1,33 @@
+# Channel: a video creator's home. White page, near-black ink, one red
+# record mark for the play bars and buttons, and a warm surface for the
+# screen behind each video.
+[colors]
+background = "#ffffff"
+surface = "#f3f1ec"
+text = "#17171c"
+muted = "#54555d"
+link = "#b3261e"
+accent = "#b3261e"
+border = "#dddad3"
+
+[fonts]
+heading = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0.5rem"
+measure = "37rem"
+
+[type]
+body = "1.0625rem 1.125rem"
+h1 = "2rem 3rem"
+h2 = "1.375rem 1.75rem"
+h3 = "1.125rem 1.25rem"
+h4 = "1rem 1.0625rem"
+small = "0.875rem"
+line_height = 1.65
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "4rem"

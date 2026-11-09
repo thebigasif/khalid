@@ -1,0 +1,19 @@
+{#- rating(value, label=none, scale=5): a score as five stars with the
+    number beside them, such as a review's rating. `value` is a number out
+    of `scale`, such as "4" or "3.5", or a number with its own scale, such
+    as "8/10", which is drawn as four stars of five. A value that is not a
+    number, such as "Must see", shows as words, with no stars. `label`
+    shows above the stars, such as "Our rating". Screen readers hear the
+    score once, in words. -#}
+{% macro rating(value, label=none, scale=5) -%}
+{% set bits = value | string | trim | split("/") | list -%}
+{% set score = bits[0] | trim -%}
+{% set top = (bits[1] | trim) if bits | length == 2 else scale | string -%}
+{% set numeric = score != "" and top != "" and (score | trim("0123456789.")) == "" and (top | trim("0123456789")) == "" and top != "0" -%}
+<p class="rating">{% if label %}<span class="rating-label">{{ label }}</span>
+{% endif %}{% if numeric %}{% set stars = (score | float) / (top | float) * 5 -%}
+<span class="rating-stars" aria-hidden="true">{% for star in range(5) %}{% if stars >= star + 0.75 %}<span class="rating-star rating-star-full"></span>{% elif stars >= star + 0.25 %}<span class="rating-star rating-star-half"></span>{% else %}<span class="rating-star"></span>{% endif %}{% endfor %}</span>
+<span class="rating-score" aria-hidden="true">{{ score }}<span class="rating-scale">/{{ top }}</span></span><span class="visually-hidden">{{ t.rating_out_of | replace("{score}", score) | replace("{scale}", top) }}</span>
+{% else %}<span class="rating-words">{{ value }}</span>
+{% endif %}</p>
+{%- endmacro %}

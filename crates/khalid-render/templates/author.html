@@ -5,15 +5,16 @@
 {% from "image.html" import picture, avatar %}
 {% from "icons.html" import profiles %}
 {% from "card.html" import cards, pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 <article class="author">
 <header class="author-header">
-{% if page.image %}<div class="author-photo">{{ picture(page.image) }}</div>
+{% if page.image %}<div class="author-photo">{{ picture(page.image, slot_sizes("photo")) }}</div>
 {% endif %}<div class="author-intro">
 <h1>{{ page.name }}</h1>
 {% if page.role %}<p class="author-role">{{ page.role }}</p>
 {% endif %}<p class="author-count">{% if page.post_count == 1 %}{{ t.post_count_one }}{% else %}{{ t.post_count | replace("{count}", page.post_count | string) }}{% endif %}</p>
 {% if page.credentials %}<p class="author-credentials"><strong>{{ t.credentials }}</strong> {{ page.credentials }}</p>
-{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true, true) }}
+{% endif %}{% if page.profiles %}{{ profiles(page.profiles, t.profiles_of | replace("{name}", page.name), true) }}
 {% endif %}</div>
 </header>
 <div class="author-bio">
@@ -22,7 +23,7 @@
 </article>
 <section aria-labelledby="author-posts">
 <h2 id="author-posts">{{ t.posts_by | replace("{name}", page.name) }}</h2>
-{% if page.posts %}{{ cards(page.posts, 3) }}
+{% if page.posts %}{{ cards(page.posts, 3, sizes=slot_sizes("author", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}</section>

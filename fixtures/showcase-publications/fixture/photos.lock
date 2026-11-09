@@ -1,0 +1,150 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-08-23-pre-season-training-and-new-kit/lead.jpg"
+sha256 = "327bf1aa2710883af8bdfc9ce98fa84ca84a8e3920b68e4eb08a238215417768"
+source = "https://commons.wikimedia.org/wiki/File:Football_Gloves_Cone1.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Football Gloves Cone1 by Walter Mains, via Wikimedia Commons"
+title = "Football Gloves Cone1"
+creator = "Walter Mains"
+openverse = "commons:File:Football Gloves Cone1.jpg"
+needs_credit = false
+size = "1600x1386"
+
+[[photos]]
+file = "en/posts/2026-09-06-coldmere-united-report/lead.jpg"
+sha256 = "180f300fc1f83d9a2ec926b6997eb6e54124fcfcc407faf4c08aee5b0daa2924"
+source = "https://commons.wikimedia.org/wiki/File:Football_goal_net.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Football goal net by Santeri Viinamäki, via Wikimedia Commons"
+title = "Football goal net"
+creator = "Santeri Viinamäki"
+openverse = "commons:File:Football goal net.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-13-thornlea-athletic-report/lead.jpg"
+sha256 = "8b526865c457fa33fab4fcea37dbde7cc995c000ef3278b13b5e1152837d2949"
+source = "https://commons.wikimedia.org/wiki/File:Football_pitch,_Bunkers_Hill,_Aberford_(27th_September_2025)_002.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Football pitch, Bunkers Hill, Aberford (27th September 2025) 002 by Mtaylor848, via Wikimedia Commons"
+title = "Football pitch, Bunkers Hill, Aberford (27th September 2025) 002"
+creator = "Mtaylor848"
+openverse = "commons:File:Football pitch, Bunkers Hill, Aberford (27th September 2025) 002.jpg"
+needs_credit = true
+size = "1600x1068"
+
+[[photos]]
+file = "en/posts/2026-09-20-under-12s-open-trials/lead.jpg"
+sha256 = "0d1d8cfc8efb806cca32134bcb0a0acff12b78301e2cb2171e088cbed58379c9"
+source = "https://commons.wikimedia.org/wiki/File:Small_soccer_goal_on_a_foggy_field_(Unsplash).jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "Small soccer goal on a foggy field (Unsplash) by Glen Carrie glencarrie, via Wikimedia Commons"
+title = "Small soccer goal on a foggy field (Unsplash)"
+creator = "Glen Carrie glencarrie"
+openverse = "commons:File:Small soccer goal on a foggy field (Unsplash).jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-27-pellow-bridge-county-cup-report/lead.jpg"
+sha256 = "e39f101a45b8f9a50a32d2114520e5a68013c0f59f2bff18992cb0f4e6c5e605"
+source = "https://commons.wikimedia.org/wiki/File:Football_field_lines_-_42417604385.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Football field lines - 42417604385 by dejankrsmanovic, via Wikimedia Commons"
+title = "Football field lines - 42417604385"
+creator = "dejankrsmanovic"
+openverse = "commons:File:Football field lines - 42417604385.jpg"
+needs_credit = true
+size = "1600x1062"
+
+[[photos]]
+file = "en/posts/2026-10-11-ambersett-report/lead.jpg"
+sha256 = "c720290f31627cc2f6f831528062cc8936d44c6c3db46c5bea2fe82c64e046eb"
+source = "https://commons.wikimedia.org/wiki/File:Fallen_corner_flag_-_geograph.org.uk_-_7551321.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Fallen corner flag - geograph.org.uk - 7551321 by Richard Sutcliffe, via Wikimedia Commons"
+title = "Fallen corner flag - geograph.org.uk - 7551321"
+creator = "Richard Sutcliffe"
+openverse = "commons:File:Fallen corner flag - geograph.org.uk - 7551321.jpg"
+needs_credit = true
+size = "1600x1243"
+
+[[photos]]
+file = "en/posts/2026-10-15-floodlight-fund-target/lead.jpg"
+sha256 = "4475ee91dccea9f4e0f19832df47f9f22712d8617f09f88439e785c92226a5a6"
+source = "https://commons.wikimedia.org/wiki/File:%C4%8Cist%C3%A1_(RA),_fotbalov%C3%A9_h%C5%99i%C5%A1t%C4%9B.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Čistá (RA), fotbalové hřiště by ŠJů, via Wikimedia Commons"
+title = "Čistá (RA), fotbalové hřiště"
+creator = "ŠJů"
+openverse = "commons:File:Čistá (RA), fotbalové hřiště.jpg"
+needs_credit = true
+size = "1600x953"
+
+[[photos]]
+file = "en/posts/2026-10-25-kingsmoor-wanderers-report/lead.jpg"
+sha256 = "46ae0b29eb26f0f93dc64c96941804abbddfa5b8ee759647459c6da576af1fc1"
+source = "https://commons.wikimedia.org/wiki/File:Soccer_Ball_(46208304925).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Soccer Ball (46208304925) by Wutthichai Charoenburi from Bangkok, via Wikimedia Commons"
+title = "Soccer Ball (46208304925)"
+creator = "Wutthichai Charoenburi from Bangkok"
+openverse = "commons:File:Soccer Ball (46208304925).jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-11-01-ospring-vale-report/lead.jpg"
+sha256 = "3cef142530b14164f44f98a7d4cb8539871af060a502b54c80385b43c6c33a93"
+source = "https://commons.wikimedia.org/wiki/File:Grass_roots_English_football_-_geograph.org.uk_-_4234422.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Grass roots English football - geograph.org.uk - 4234422 by Fernweh, via Wikimedia Commons"
+title = "Grass roots English football - geograph.org.uk - 4234422"
+creator = "Fernweh"
+openverse = "commons:File:Grass roots English football - geograph.org.uk - 4234422.jpg"
+needs_credit = true
+size = "1600x1063"
+
+[[photos]]
+file = "en/posts/2026-11-02-fenmoor-athletic-cup-preview/lead.jpg"
+sha256 = "39f939da637984d761bceb1e0e13fa97905016326cef6f4d1f63b4e7d31c16a3"
+source = "https://commons.wikimedia.org/wiki/File:Turton_Football_Ground_-_geograph.org.uk_-_7863131.jpg"
+licence = "CC BY-SA 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.0"
+credit = "Turton Football Ground - geograph.org.uk - 7863131 by philandju, via Wikimedia Commons"
+title = "Turton Football Ground - geograph.org.uk - 7863131"
+creator = "philandju"
+openverse = "commons:File:Turton Football Ground - geograph.org.uk - 7863131.jpg"
+needs_credit = true
+size = "1600x975"
+
+[[photos]]
+file = "en/posts/2026-11-03-league-table-after-nine-weeks/lead.jpg"
+sha256 = "86650ed922b3be554eaf36ed92823842a65b86c5c079318b696e8faa0c4c5ea1"
+source = "https://commons.wikimedia.org/wiki/File:Football_field_lines.jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Football field lines by dejankrsmanovic, via Wikimedia Commons"
+title = "Football field lines"
+creator = "dejankrsmanovic"
+openverse = "commons:File:Football field lines.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-11-05-wexcombe-town-preview/lead.jpg"
+sha256 = "a16d9cc4cb05a278ef8d6217f6a1c4c0aac8caa5c03868299a4b48ba6147ae7d"
+source = "https://commons.wikimedia.org/wiki/File:Soccer_Ball_(27181880724).jpg"
+licence = "CC BY 2.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/2.0"
+credit = "Soccer Ball (27181880724) by USARJ NCO CORPS, via Wikimedia Commons"
+title = "Soccer Ball (27181880724)"
+creator = "USARJ NCO CORPS"
+openverse = "commons:File:Soccer Ball (27181880724).jpg"
+needs_credit = true
+size = "1600x1080"
+

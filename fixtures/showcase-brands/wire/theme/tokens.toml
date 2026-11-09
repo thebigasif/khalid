@@ -1,0 +1,58 @@
+# The sample brand for the Wire demo: a newsroom. Signal red on white
+# with black ink, a condensed bold sans for headlines and a news serif for
+# stories. Only the brand lives here: the template keeps its own shape,
+# type sizes and spacing.
+[colors]
+background = "#ffffff"
+surface = "#f5f5f3"
+text = "#111111"
+muted = "#595959"
+link = "#b3141f"
+accent = "#d0161f"
+border = "#dcdcd8"
+
+[fonts]
+heading = "\"Barlow Condensed\", \"Arial Narrow\", system-ui, sans-serif"
+body = "Newsreader, Charter, Georgia, serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Barlow Condensed"
+style = "normal"
+weight = "700"
+path = "barlow-condensed-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00E4-00E5, U+00ED, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "110.46%"
+descent = "94.38%"
+line_gap = "0.00%"
+size_adjust = "45.32%"
+
+[[fonts.files]]
+family = "Newsreader"
+style = "italic"
+weight = "400"
+path = "newsreader-latin-italic-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00E4-00E5, U+00ED, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "81.19%"
+descent = "125.05%"
+line_gap = "0.00%"
+size_adjust = "54.06%"
+
+[[fonts.files]]
+family = "Newsreader"
+style = "normal"
+weight = "400 600"
+path = "newsreader-latin-400-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A3, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E1, U+00E4-00E5, U+00ED, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "81.19%"
+descent = "125.05%"
+line_gap = "0.00%"
+size_adjust = "55.97%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

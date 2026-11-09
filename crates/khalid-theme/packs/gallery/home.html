@@ -1,0 +1,42 @@
+{#- Gallery's front page (docs/templates/gallery.md): the studio's name
+    large with its statement beside it (the home intro, or the option
+    statement), the discipline chips (the shared filter row: all work,
+    then each category), then the wall: every post on the page on a mat
+    at its own shape, with a numbered wall label under it. The list of
+    works follows under the same numbers, unless the option checklist is
+    off. Then the page links, the home sections, the call to action and
+    the newsletter. With home sections in site.toml, each section is a
+    wall of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import newsletter_form, cta_band -%}
+{% from "home_parts.html" import hero_stats, home_sections -%}
+{% from "sections/filter_row.html" import filter_row -%}
+{% from "parts-gallery.html" import wall, checklist -%}
+{% set options = template.options -%}
+{% set later = page.pagination and page.pagination.current > 1 -%}
+<header class="studio">
+<h1 class="studio-name">{{ page.title }}</h1>
+{% if page.intro and not later %}<div class="studio-statement">
+{{ page.intro }}
+</div>
+{% elif options.statement and not later %}<div class="studio-statement">
+{% for line in options.statement %}<p>{{ line }}</p>
+{% endfor %}</div>
+{% endif %}{{ hero_stats(options) }}</header>
+{% if page.categories | length > 1 %}{{ filter_row(t.types_of_work, site.home, t.gallery_all, page.categories, meta.path) }}
+{% endif %}{% if page.sections and not later %}{% for section in page.sections %}<section class="wall-section" aria-labelledby="wall-section-{{ loop.index }}">
+<h2 id="wall-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ wall(section.posts, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}<h2 class="visually-hidden">{{ t.projects }}</h2>
+{{ wall(page.posts, 3) }}
+{% if options.checklist %}{{ checklist(page.posts) }}
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{{ home_sections(page, options, t) }}{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% if site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
+{% endif %}{% endblock %}

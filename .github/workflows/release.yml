@@ -62,9 +62,11 @@ jobs:
       - name: Everything CI checks
         run: just check
 
+  # The builds run beside the check, not after it. Nothing is published
+  # until both pass: the draft release and the image need the check too.
   build:
     name: Build ${{ matrix.name }}
-    needs: check
+    needs: admin
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -155,7 +157,7 @@ jobs:
 
   release:
     name: Draft release
-    needs: build
+    needs: [check, build]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -186,7 +188,7 @@ jobs:
   # up by hand. A prerelease tag gets only its version tag, never latest.
   docker:
     name: Docker image
-    needs: build
+    needs: [check, build]
     runs-on: ubuntu-latest
     permissions:
       contents: read

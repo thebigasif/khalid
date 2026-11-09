@@ -9,6 +9,10 @@ use khalid_routes::{PostAddress, Routes};
 
 use crate::SiteContent;
 
+mod cells;
+
+pub(crate) use cells::guard_cells;
+
 /// How a wikilink names a glossary term outright, as in
 /// `[[glossary:crawl-budget]]`, so a post with the same slug never takes it.
 pub const GLOSSARY: &str = "glossary:";

@@ -15,7 +15,7 @@ related: [content-benchmark, content-refresh, content-calendar]
 tags: [research, measurement]
 image:
   src: cover.svg
-  alt: A spreadsheet grid with a download arrow pointing into a folder, beside a small bar chart
+  alt: A spreadsheet of content benchmark data with an orange header row, beside a download arrow
 schema: '{"@context":"https://schema.org","@type":"Dataset","name":"Larkspur content benchmark 2026, sample rows","description":"Illustrative sample rows in the shape of the fictional Larkspur content benchmark of 140 small business blogs, read in August 2026. One row per blog: sector, posts in twelve months, author names, blank meta descriptions, updates, shared calendar and sourced numbers. Made for the Khalid demo; the values are not real measurements.","url":"https://www.example.com/blog/content-benchmark-data/","keywords":["content benchmark","blog audit","content marketing","small business blogs","sample data"],"creator":{"@type":"Organization","name":"Larkspur Studio","url":"https://www.example.com/blog/","logo":"https://www.example.com/blog/about/logo.svg"},"license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"temporalCoverage":"2026-08","variableMeasured":["blog_id","sector","posts_published_12m","has_author_names","blank_meta_share","updated_in_12m","shared_calendar","sourced_numbers"],"distribution":{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://www.example.com/blog/content-benchmark-data/benchmark-2026-sample.csv"}}'
 ---
 

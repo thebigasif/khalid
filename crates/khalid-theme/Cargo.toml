@@ -14,7 +14,9 @@ test-util = []
 
 [dependencies]
 khalid-core.workspace = true
-khalid-outbound = { path = "../khalid-outbound", version = "1.2.0" }
+khalid-outbound = { path = "../khalid-outbound", version = "1.3.2" }
+brotli = "9"
+http = "1"
 scraper = "0.29"
 serde.workspace = true
 thiserror.workspace = true
@@ -22,9 +24,14 @@ toml = "1.1"
 url = "2"
 read-fonts = "0.46"
 
+[build-dependencies]
+# Compresses each pack's stylesheet for the binary; the same crate reads it
+# back at run time.
+brotli = "9"
+
 [dev-dependencies]
-khalid-outbound = { path = "../khalid-outbound", version = "1.2.0", features = ["test-util"] }
-khalid-theme = { path = ".", version = "1.2.0", features = ["test-util"] }
+khalid-outbound = { path = "../khalid-outbound", version = "1.3.2", features = ["test-util"] }
+khalid-theme = { path = ".", version = "1.3.2", features = ["test-util"] }
 serde_json.workspace = true
 tempfile = "3"
 tokio.workspace = true

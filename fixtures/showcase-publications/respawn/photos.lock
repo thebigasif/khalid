@@ -1,0 +1,137 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-08-26-gravel-kings-review/lead.jpg"
+sha256 = "ec2c3aae639baa934b07c4be759ac9cceb3f77fe0004985db72809d45f7800d0"
+source = "https://commons.wikimedia.org/wiki/File:Lucy_Block_New_England_Forest_Rally_2010.jpg"
+licence = "CC BY-SA 2.5, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/2.5"
+credit = "Lucy Block New England Forest Rally 2010 by Steven Harrell, via Wikimedia Commons"
+title = "Lucy Block New England Forest Rally 2010"
+creator = "Steven Harrell"
+openverse = "commons:File:Lucy Block New England Forest Rally 2010.jpg"
+needs_credit = true
+size = "1600x960"
+
+[[photos]]
+file = "en/posts/2026-09-09-how-we-score-games/lead.jpg"
+sha256 = "5fa61bfc434e81b1992f30fa0ed9d9abdb527d6302060010e38c59ec5f9ba508"
+source = "https://commons.wikimedia.org/wiki/File:Boeder_de_Luxe_Analog_P-7_(1992)_02.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Boeder de Luxe Analog P-7 (1992) 02 by Dr. Christian Wenk, via Wikimedia Commons"
+title = "Boeder de Luxe Analog P-7 (1992) 02"
+creator = "Dr. Christian Wenk"
+openverse = "commons:File:Boeder de Luxe Analog P-7 (1992) 02.jpg"
+needs_credit = true
+size = "1600x900"
+
+[[photos]]
+file = "en/posts/2026-09-16-kitebound-review/lead.jpg"
+sha256 = "56c1bb782c8c89ce482a61d3f7e18707e0fedce6859656e0de605ba39966e828"
+source = "https://commons.wikimedia.org/wiki/File:Three_lines_of_Kites_above_the_National_Mall_2026-03-28_12-24-43.jpg"
+licence = "CC BY 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by/4.0"
+credit = "Three lines of Kites above the National Mall 2026-03-28 12-24-43 by G. Edward Johnson, via Wikimedia Commons"
+title = "Three lines of Kites above the National Mall 2026-03-28 12-24-43"
+creator = "G. Edward Johnson"
+openverse = "commons:File:Three lines of Kites above the National Mall 2026-03-28 12-24-43.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-09-23-couch-co-op-night/lead.jpg"
+sha256 = "08ad59682885ce8cfb6d6bc210049508b1407ea867d1f1105a2943bb93329e78"
+source = "https://commons.wikimedia.org/wiki/File:Family_playing_a_board_game_(2).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Family playing a board game (2) by Bill Branson (Photographer), via Wikimedia Commons"
+title = "Family playing a board game (2)"
+creator = "Bill Branson (Photographer)"
+openverse = "commons:File:Family playing a board game (2).jpg"
+needs_credit = false
+size = "1600x1063"
+
+[[photos]]
+file = "en/posts/2026-09-30-lantern-archive-review/lead.jpg"
+sha256 = "dc2724d17abd8cc07170538d4466a7d06e69cc07039c130b94246a1426644df4"
+source = "https://commons.wikimedia.org/wiki/File:Trobe_Reading_Room_State_Library_of_Victoria_interior.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Trobe Reading Room State Library of Victoria interior by Bhullargraphic, via Wikimedia Commons"
+title = "Trobe Reading Room State Library of Victoria interior"
+creator = "Bhullargraphic"
+openverse = "commons:File:Trobe Reading Room State Library of Victoria interior.jpg"
+needs_credit = true
+size = "1600x1067"
+
+[[photos]]
+file = "en/posts/2026-10-07-games-for-a-rainy-weekend/lead.jpg"
+sha256 = "a0468b1c7c508f37f8da8e7202b0020665ea4694a124da3f3206bda656c53569"
+source = "https://commons.wikimedia.org/wiki/File:Rain_drops_on_window_01_ies.jpg"
+licence = "CC BY-SA 3.0, read on the photo's page 2026-11-06: http://creativecommons.org/licenses/by-sa/3.0/"
+credit = "Rain drops on window 01 ies by Frank Vincentz, via Wikimedia Commons"
+title = "Rain drops on window 01 ies"
+creator = "Frank Vincentz"
+openverse = "commons:File:Rain drops on window 01 ies.jpg"
+needs_credit = true
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-14-starfall-couriers-review/lead.jpg"
+sha256 = "061c584ce17ad09ff4e9701bbabee9c56972c6172d4a07361c21d3291c84abcb"
+source = "https://commons.wikimedia.org/wiki/File:Keyhole_Nebula_-_Hubble_1999.jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Keyhole Nebula - Hubble 1999 by NASA, The Hubble Heritage Team (AURA/STScI), via Wikimedia Commons"
+title = "Keyhole Nebula - Hubble 1999"
+creator = "NASA, The Hubble Heritage Team (AURA/STScI)"
+openverse = "commons:File:Keyhole Nebula - Hubble 1999.jpg"
+needs_credit = false
+size = "1600x1033"
+
+[[photos]]
+file = "en/posts/2026-10-21-night-market-showcase/lead.jpg"
+sha256 = "252f44fc461e539ac55188aefa3c15327f430d1e30fe77691fbf4c670fc0d8dc"
+source = "https://commons.wikimedia.org/wiki/File:LAN_party_in_France_in_2003.jpg"
+licence = "CC0, read on the photo's page 2026-11-06: http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+credit = "LAN party in France in 2003 by Syced, via Wikimedia Commons"
+title = "LAN party in France in 2003"
+creator = "Syced"
+openverse = "commons:File:LAN party in France in 2003.jpg"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-28-cinder-valley-review/lead.jpg"
+sha256 = "9a982b0e704efdb446bd724891a84cc0273ccd6c32753a8f462d6a9c05b0e268"
+source = "https://commons.wikimedia.org/wiki/File:Farm,_Matanuska_Valley,_AK_(8743425119).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Farm, Matanuska Valley, AK (8743425119) by National Institute for Occupational Safety and Health (NIOSH) from USA, via Wikimedia Commons"
+title = "Farm, Matanuska Valley, AK (8743425119)"
+creator = "National Institute for Occupational Safety and Health (NIOSH) from USA"
+openverse = "commons:File:Farm, Matanuska Valley, AK (8743425119).jpg"
+needs_credit = false
+size = "1600x1023"
+
+[[photos]]
+file = "en/posts/2026-11-03-hollowmere-release-date/lead.jpg"
+sha256 = "97d5e9ff7dd1e9447f262f486b94a149919dbf75ddd5b03e9a2c397a2f710805"
+source = "https://commons.wikimedia.org/wiki/File:Acadia_National_Park,_Maine_(3a059072-02a5-4b10-b48e-3d47a56da307).jpg"
+licence = "Public domain, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/mark/1.0/"
+credit = "Acadia National Park by Victoria Stauffenberg, via Wikimedia Commons"
+title = "Acadia National Park"
+creator = "Victoria Stauffenberg"
+openverse = "commons:File:Acadia National Park, Maine (3a059072-02a5-4b10-b48e-3d47a56da307).jpg"
+needs_credit = false
+size = "1600x972"
+
+[[photos]]
+file = "en/posts/2026-11-05-cinder-valley-winter-update/lead.jpg"
+sha256 = "a48f0bc92be9326b8a0693f11a93f1148e6013bcaaa1ab57ac9542fe2cc3aab9"
+source = "https://commons.wikimedia.org/wiki/File:Disused_tractor_on_a_snow-covered_field_in_Star_Valley,_Wyoming,_USA.jpg"
+licence = "CC BY-SA 4.0, read on the photo's page 2026-11-06: https://creativecommons.org/licenses/by-sa/4.0"
+credit = "Disused tractor on a snow-covered field in Star Valley, Wyoming, USA by Semiautonomous, via Wikimedia Commons"
+title = "Disused tractor on a snow-covered field in Star Valley, Wyoming, USA"
+creator = "Semiautonomous"
+openverse = "commons:File:Disused tractor on a snow-covered field in Star Valley, Wyoming, USA.jpg"
+needs_credit = true
+size = "1600x1067"

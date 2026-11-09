@@ -135,6 +135,62 @@ export type AdminComments = {
   comments: AdminComment[];
 };
 
+/** How readers answered the consent banner. No address or reader identifier is kept: only these daily totals. */
+export type AdminConsentCounts = {
+  /** How many days were counted. */
+  days: number;
+  /** The first day counted, in UTC. */
+  first: string;
+  /** The last day counted: today, in UTC. */
+  last: string;
+  /** The answers per day and version, first day first. A day with no answers is left out. */
+  per_day: AdminConsentDay[];
+  /** Every answer in the period. */
+  totals: AdminConsentTally;
+};
+
+/** The answers on one day under one version. */
+export type AdminConsentDay = {
+  /** The answers. */
+  counts: AdminConsentTally;
+  /** The day, in UTC. */
+  day: string;
+  /** The version readers were shown. */
+  version: string;
+};
+
+/** How many answers there were, and how many allowed each optional category. Necessary is always on, so it has no count. */
+export type AdminConsentTally = {
+  /** Answers that allowed Analytics. */
+  analytics: number;
+  /** Every answer: Accept all, Reject all and each saved choice. */
+  choices: number;
+  /** Answers that allowed External media. */
+  external_media: number;
+  /** Answers that allowed Marketing. */
+  marketing: number;
+  /** Answers that allowed Preferences. */
+  preferences: number;
+};
+
+/** One version of what readers were shown. */
+export type AdminConsentVersion = {
+  /** The first day a reader was shown it, in UTC. */
+  first_day: string;
+  /** The last day a reader was shown it so far, in UTC. */
+  last_day: string;
+  /** What readers were shown: the banner and category text in each language, the categories, the vendors and the lifetime. */
+  shown: Record<string, unknown>;
+  /** The settings version, a hash of everything shown. */
+  version: string;
+};
+
+/** Every version of what readers were shown. */
+export type AdminConsentVersions = {
+  /** The versions, oldest first. */
+  versions: AdminConsentVersion[];
+};
+
 /** The views on one day. */
 export type AdminDayViews = {
   /** The day, in UTC. */
@@ -163,6 +219,12 @@ export type AdminDelivery = {
   state_at: string;
 };
 
+/** Issues as the Admin API wraps them. */
+export type AdminIssues = {
+  /** Up to ten problems, those that stop posts going live first. */
+  issues: SiteIssue[];
+};
+
 /** A key that works, in Admin API shape. The secret is shown once, when the key is made, and never again. */
 export type AdminKey = {
   /** When the key was made. */
@@ -185,6 +247,12 @@ export type AdminKey = {
 export type AdminKeys = {
   /** The key or keys. */
   keys: AdminKey[];
+};
+
+/** Suggestions as the Admin API wraps them. */
+export type AdminLinkSuggestions = {
+  /** Up to ten posts, best first. */
+  suggestions: LinkSuggestion[];
 };
 
 /** A file in the media library with the details kept beside it. */
@@ -351,16 +419,24 @@ export type AdminSchemaTemplate = {
 export type AdminSettings = {
   /** The address of the main site, such as `https://www.example.com`. */
   address: string;
+  /** The site's own code from `[code]`, one object per entry as written: `head`, `body`, the `category` it waits for (`preferences`, `analytics`, `marketing` or `no-tracking`), the `vendor` and its `policy` link. An entry with no `category` counts as Marketing. The old single `[code]` table reads as one entry. */
+  code: (Record<string, unknown>)[];
   /** The language a reader gets first, such as `en`. */
   default_language: string;
   /** Every language the site is written in. */
   languages: string[];
+  /** How the site reaches readers: `server`, `static` or `headless`. It is read here and changed only in `site.toml`. */
+  mode: string;
   /** The path the blog lives under, such as `/blog/`. */
   mount: string;
   /** The site's name. */
   name: string;
+  /** The `[privacy]` table as `site.toml` writes it, one key per part such as `lifetime_months`, `gpc`, `counts`, `external_tool`, `text` or `contact`. A setting left out keeps its default. */
+  privacy: Record<string, unknown>;
   /** Whether `site.toml` says something the running server does not use yet, so a restart is needed to apply it. */
   restart_needed: boolean;
+  /** The `[seo]` table as `site.toml` writes it, one key per part such as `titles` or `crawlers`. A setting left out of the file is left out here too and keeps its default; `docs/seo-settings.md` lists every part and its defaults. */
+  seo: Record<string, unknown>;
   /** The template the site uses and the options it sets. */
   template: TemplateSetting;
   /** When `site.toml` last changed. A change sends it back. */
@@ -513,6 +589,21 @@ export type AdminWebhooks = {
   webhooks: AdminWebhook[];
 };
 
+/** Whether suggestions are on, and who writes them. */
+export type AiState = {
+  /** The provider's name as people know it. */
+  label: string;
+  /** Whether the owner named a provider in `[ai]`. */
+  on: boolean;
+  /** `off`, `serpdad`, `anthropic` or `openai`. */
+  provider: string;
+  /** Whether the server holds the key it asks with, so a button can ask. */
+  ready: boolean;
+};
+
+/** What a suggestion is for. */
+export type AiTask = "seo_title" | "meta_description" | "share_title" | "share_description" | "alt_text" | "lint_fix" | "takeaways";
+
 /** An old address on this site that redirects to the post, such as `/2019/05/old-title/`, so a moved post keeps its links. */
 export type Alias = string;
 
@@ -657,6 +748,9 @@ export type CheckIn = {
 /** What a check-in asks for. */
 export type Claim = "join" | "take_over";
 
+/** A post's role in its topic cluster. */
+export type ClusterPlace = "pillar" | "member";
+
 export type Collections = {
   /** The entries on this page, or the one entry asked for. */
   collections: ContentCollection[];
@@ -800,6 +894,14 @@ export type FeatureImage = {
   src: NonBlank;
 };
 
+/** A failing check a fix is written for. */
+export type FindingWords = {
+  /** What the check found, as the editor shows it. */
+  message: string;
+  /** The rule's name. */
+  rule: string;
+};
+
 /** A point in an image in thousandths of its width and height, from the top left. `{ "x": 500, "y": 500 }` is the centre. */
 export type FocalPointBody = {
   /** Thousandths of the width from the left, 0 to 1000. */
@@ -902,6 +1004,9 @@ export type Invite = {
   role: string;
 };
 
+/** How much a problem matters. */
+export type IssueWeight = "block" | "warn" | "tip";
+
 /** The token from a sign-in link, which the admin's sign-in page reads after the `#` and posts here. */
 export type LinkRedeem = {
   /** The token. */
@@ -912,6 +1017,22 @@ export type LinkRedeem = {
 export type LinkRequest = {
   /** The address the account signs in with. */
   email: string;
+};
+
+/** One post worth linking to from the post being written. */
+export type LinkSuggestion = {
+  /** The words of the post being written that name it, as written, ready to become the link's words. */
+  anchor?: string | null;
+  /** The post's identity, as in `/posts/{id}/`. */
+  id: string;
+  /** The address to link to. */
+  path: string;
+  /** How closely it matches; the list sends the highest first. */
+  score: number;
+  /** What it shares with the post being written. */
+  shares: Shares;
+  /** Its title. */
+  title: string;
 };
 
 /** How many lint findings a post has, by severity. A post with any `blocks` cannot be published. */
@@ -1162,6 +1283,18 @@ export type NewWebhooks = {
 /** Text with something in it other than spaces. */
 export type NonBlank = string;
 
+/** The options to pick from, fitting ones first. Nothing in a post changes until a writer picks one. */
+export type Offered = {
+  /** The label every suggestion is shown with. */
+  label: string;
+  /** For `takeaways`: the points as a `:::takeaways` block to add to the post. */
+  markdown?: string | null;
+  /** The options. */
+  suggestions: Suggestion[];
+  /** What they are for. */
+  task: AiTask;
+};
+
 /** The values one option takes, and its default. */
 export type OptionTakes = {
   /** The value when not set. */
@@ -1289,6 +1422,16 @@ export type PictureSearch = {
   unsplash: boolean;
 };
 
+/** A picture alt text is written for. */
+export type PictureWords = {
+  /** The alt text it has now, if any. */
+  alt?: string | null;
+  /** Its caption, if it has one. */
+  caption?: string | null;
+  /** Its file name. */
+  name: string;
+};
+
 /** A published post in API shape. Bodies are present only when asked for with `formats`. */
 export type Post = Bodies & ({
   /** Author slugs, in the order the writer gave them. */
@@ -1325,8 +1468,12 @@ export type PostCheck = {
   lint: Record<string, unknown>;
   /** The JSON-LD the page would carry: `@context` and `@graph`. */
   schema: Record<string, unknown>;
+  /** The SEO and readability scores, from the same findings. */
+  scores: SeoScores;
   /** The search result the page would make. */
   snippet: Snippet;
+  /** How many words the post's text holds. */
+  words: number;
 };
 
 /** An edit to a post: the fields to change, and the `updated_at` of the copy it was made on. Fields left out keep their value, and `null` clears one that may be empty. A `status` of `published` publishes a draft, once the linter lets it through; `scheduled` with a future `published_at` publishes it then, and `draft` takes a scheduled post off its schedule and a live post down. */
@@ -1351,6 +1498,14 @@ export type PostEdit = {
   updated_at: string;
 };
 
+/** How many of the blog's other posts a post links to, and how many link to it, each counted once. */
+export type PostLinks = {
+  /** Posts that link to this one. */
+  inbound: number;
+  /** Posts this one links to. */
+  outbound: number;
+};
+
 /** Who has a post open, as the one checking in sees it. */
 export type PostPresence = {
   /** Who holds the lock: the one person who may change the post now. */
@@ -1365,16 +1520,23 @@ export type PostPresence = {
 export type PostRow = {
   /** The author's slug, if any. */
   author?: string | null;
+  cluster?: ClusterPlace | null;
   /** Whether the post is featured. */
   featured: boolean;
   /** Whether the lint publish gate lets it go live. A list filters by this, such as `gate:refuses`. */
   gate: Gate;
+  /** Whether it names a focus keyword. A list filters by this, such as `has_focus_keyword:false`. */
+  has_focus_keyword: boolean;
   /** The post's identity, as in `/posts/{id}/`. */
   id: string;
   /** Whether search engines may list it. */
   index_status: IndexStatus;
+  /** Its internal links to and from the blog's other posts. A list filters posts no other post links to by `orphan:true`. */
+  links: PostLinks;
   /** Its lint findings, counted. Counting takes every rule, so a list counts only the rows on the page it sends, and cannot filter or order by the counts. */
   lint: LintCounts;
+  /** Where readers find it on the site, such as a redirect leads to. */
+  path?: string | null;
   /** When it went or goes live; empty for a draft. */
   published_at?: string | null;
   /** Whether the post is due for review: more than six months since it was last reviewed or published, whichever came last. A list filters by this, such as `filter=review:due`. */
@@ -1383,6 +1545,7 @@ export type PostRow = {
   review_state: ReviewState;
   /** The day it last came up for review (F3), if it ever has. */
   reviewed?: string | null;
+  scores?: SeoScores | null;
   /** The last part of its address. */
   slug: string;
   /** Draft, published or scheduled. */
@@ -1393,6 +1556,8 @@ export type PostRow = {
   updated_at: string;
   /** Who made the last change. */
   updated_by?: string | null;
+  /** How many words its text holds. */
+  words: number;
 };
 
 /** One page of the admin's posts table, as every list is wrapped. */
@@ -1442,6 +1607,8 @@ export type PostSettings = {
   /** The post's own robots directives, in place of the site's. */
   robots?: string | null;
   schema?: CustomJsonLd | null;
+  /** Up to [`MAX_SECONDARY_KEYWORDS`] related phrases the post also answers, such as synonyms of the focus keyword, which the linter looks for in the text. Left out when there are none. */
+  secondary_keywords?: string[];
   seo_title?: SearchTitle | null;
   /** How the post looks when shared on X and Facebook. */
   share_cards: ShareCards;
@@ -1600,6 +1767,14 @@ export type SearchKeys = {
 /** The title search results show for a post, in place of the site's title template. It may use the template variables, such as `{site}`. */
 export type SearchTitle = string;
 
+/** A post's SEO and readability scores, each from 0 to 100. Each rule that found a problem costs points once, 30 for a block and 5 for a warning, as the post's one score counts them, and a group with a block scores at most 40. The rules in [`READABILITY_RULES`] make the readability score; every other rule makes the SEO score. */
+export type SeoScores = {
+  /** How easy the post is to read, from 0 to 100. */
+  readability: number;
+  /** How well the post is set up to be found, from 0 to 100. */
+  seo: number;
+};
+
 /** The connection, or `null` while it is off. */
 export type SerpdadConnection = {
   /** When the key `SerpDad` sends drafts with was made. */
@@ -1652,6 +1827,8 @@ export type Settings = {
 export type SettingsChange = {
   /** A new address of the main site. */
   address?: string | null;
+  /** Every entry of `[code]`, in place of the old ones, written as a `[[code]]` list. An empty list removes `[code]`. */
+  code?: (Record<string, unknown>)[] | null;
   /** A new default language, which `languages` must include. */
   default_language?: string | null;
   /** A new list of languages. */
@@ -1660,6 +1837,10 @@ export type SettingsChange = {
   mount?: string | null;
   /** A new name. */
   name?: string | null;
+  /** New parts of the `[privacy]` table, each replacing the part of that name whole, such as `{"lifetime_months": 12}`. `null` removes a part, so it goes back to its default. Parts left out stay as they are. */
+  privacy?: Record<string, unknown> | null;
+  /** New parts of the `[seo]` table, each replacing the part of that name whole, such as `{"titles": {"separator": "·"}}`. `null` removes a part, so its settings go back to their defaults. Parts left out stay as they are. */
+  seo?: Record<string, unknown> | null;
   template?: TemplateSetting | null;
   /** The `updated_at` of the copy this change was made on. */
   updated_at: string;
@@ -1701,6 +1882,8 @@ export type SettingsEdit = {
   robots?: string | null;
   /** New hand-written JSON-LD, or `null` for none. */
   schema?: string | null;
+  /** Every secondary keyword, at most four; an empty list for none. */
+  secondary_keywords?: string[] | null;
   /** A new search title, or `null` for the site's title template. */
   seo_title?: string | null;
   share_cards?: ShareCards | null;
@@ -1721,6 +1904,20 @@ export type ShareCards = {
   x?: ShareCard | null;
 };
 
+/** What a suggested post shares with the post being written. */
+export type Shares = {
+  /** The category both are in. */
+  category?: string | null;
+  /** The topic cluster both are in. */
+  cluster?: string | null;
+  /** The suggested post's focus keyword, when this post's text names it. */
+  keyword?: string | null;
+  /** Whether the suggested post is that cluster's pillar. */
+  pillar: boolean;
+  /** The tags both have. */
+  tags: string[];
+};
+
 /** An email and password to sign in with. */
 export type SignInBody = {
   /** The address the account signs in with. */
@@ -1735,6 +1932,24 @@ export type SiteAnswer = {
   domain: string;
   /** Whether it is the home site, where this panel lives. */
   home: boolean;
+};
+
+/** One lint rule that fires on the site, as one task. */
+export type SiteIssue = {
+  /** The identity of one post it fires on, to open first. */
+  example: string;
+  /** What to do. */
+  fix: string;
+  /** How many posts it fires on. */
+  posts: number;
+  /** The rule, such as `missing-alt`. */
+  rule: string;
+  /** Whether it stops posts going live or warns. */
+  weight: IssueWeight;
+  /** What is wrong, in one sentence. */
+  what: string;
+  /** Why it matters. */
+  why: string;
 };
 
 /** Every site the process serves. */
@@ -1824,6 +2039,36 @@ export type StockPicture = {
 
 /** Where to look for a picture. */
 export type StockSource = "unsplash" | "gifs";
+
+/** One option, with its length checked. */
+export type Suggestion = {
+  /** How many characters it has. */
+  characters: number;
+  /** Whether it fits the length rule for its task. */
+  fits: boolean;
+  /** Why it does not fit, in plain words, or `null` when it does. */
+  note?: string | null;
+  /** The words. */
+  text: string;
+};
+
+/** What to write and the words to write it from. With `post`, the saved post's title, text, language and focus keyword are used, and any of them given here win, so unsaved changes count. */
+export type SuggestionRequest = {
+  finding?: FindingWords | null;
+  /** The post's focus keyword. */
+  focus_keyword?: string | null;
+  /** The post's language, such as `en`. */
+  language?: string | null;
+  picture?: PictureWords | null;
+  /** A post's identity, such as `en.choosing-anchor-text`. */
+  post?: string | null;
+  /** What the suggestion is for. */
+  task: AiTask;
+  /** The post's text, in markdown. */
+  text?: string | null;
+  /** The post's title. */
+  title?: string | null;
+};
 
 /** A new name for a tag, written into every post that has it. */
 export type TagEdit = {
@@ -1923,6 +2168,27 @@ export type UsedPhoto = {
 
 /** What each operation takes and what it answers on success. */
 export interface Operations {
+  /** Reads whether suggestions are on, so the admin shows its buttons only then. Needs `posts:write`. */
+  read_ai: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AiState;
+  };
+  /** Asks the owner's provider for options: five for titles, descriptions and alt text, three fixes, or up to five takeaways. Needs `posts:write`. The bulk SEO editor calls it once per post with `post`. */
+  suggest: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: SuggestionRequest;
+    };
+    output: Offered;
+  };
   /** Lists how many readers each AI assistant sent in the last `days` days, against the days before, with the pages they landed on. Needs `settings:write`. */
   ai_visitors: {
     input: {
@@ -2192,6 +2458,30 @@ export interface Operations {
     };
     output: AdminComments;
   };
+  /** Counts the readers' answers to the consent banner in the last `days` days, per day and version, with how many allowed each optional category. Needs `settings:write`. */
+  consent_counts: {
+    input: {
+      query?: {
+        /** From 1 to 366; 28 when left out. */
+        days?: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminConsentCounts;
+  };
+  /** Lists every version of the banner and category text, categories, vendors and lifetime readers were shown, with the days each was in force. Needs `settings:write`. */
+  consent_versions: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminConsentVersions;
+  };
   /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
   list_keys: {
     input: {
@@ -2226,6 +2516,16 @@ export interface Operations {
       };
     };
     output: null;
+  };
+  /** The live site's most common lint problems, for the dashboard's task list: each rule that fires, on how many posts, with what, why and fix and one post to open first. Those that stop posts going live come first, then those on the most posts. Every rule runs on every post, as `khalid lint` does, so the dashboard asks for it after the rest. Needs `posts:write`. */
+  list_issues: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminIssues;
   };
   /** Lists the media library, newest upload first, with the shared list grammar: `filter`, `order`, `limit` and `page` (RULES.md BL-API-5). `filter=alt:null+kind:image` finds images still waiting for alt text. Needs `media:write`. */
   list_media: {
@@ -2579,6 +2879,34 @@ export interface Operations {
       body: ResolveThreads;
     };
     output: null;
+  };
+  /** Copies a post, in any status, as a new draft: its title with "(copy)" after it, its text, its author, and every setting but its date, its review, its old addresses and its head code. The copy's slug is the post's with `-copy`, or `-copy-2` and on when that is taken. Answers like a create, with the copy's lint findings and where it opens in the admin. Needs `posts:write`. */
+  duplicate_admin_post: {
+    input: {
+      path: {
+        /** The identity of the post to copy */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: CreatedPosts;
+  };
+  /** The blog's other posts in the same language that this post does not link to yet, ranked by what they share with it: its category, its tags, its topic cluster, with the cluster's pillar first, and their focus keyword in this post's text, given back as the words to link. A draft is weighed as if published today. Needs `posts:write`. */
+  suggest_links: {
+    input: {
+      path: {
+        /** The post's identity */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminLinkSuggestions;
   };
   /** Notes that the caller has the post open and answers who holds its lock. The editor checks in every 20 seconds; someone who stops for a minute lets go. The lock tells the editor who may type: the Admin API still takes any edit and refuses a stale one with 409. Needs `posts:write`. */
   check_in: {

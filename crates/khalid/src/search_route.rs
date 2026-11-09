@@ -6,18 +6,22 @@ use std::sync::Arc;
 
 use axum::Router;
 use axum::body::Body;
-use axum::extract::Query as Asked;
-use axum::http::{HeaderValue, Response, StatusCode, header};
+use axum::extract::{Query as Asked, RawQuery};
+use axum::http::{HeaderMap, HeaderValue, Response, StatusCode, header};
 use axum::routing::get;
 use khalid_core::{Config, Locale};
 use khalid_db::{Database, SearchResults, SiteId};
 use khalid_render::{Highlight, SearchResult};
-use khalid_search::{Analyzer, Completion, Language, Query, Snippet, SnippetPart};
-use khalid_server::{MediaType, SecurityHeaders};
+use khalid_search::{Analyzer, Completion, Language, Query, QueryFilter, Snippet, SnippetPart};
+use khalid_server::{ConsentSite, MediaType, SecurityHeaders, drawn_for};
 use serde::{Deserialize, Serialize};
 
 use crate::site_pages::SitePages;
-use crate::{build_pages, search_page};
+use crate::{build_pages, consent_route, search_page};
+
+/// One reader's request as consent reads it: its headers, its query, and
+/// the site's consent, so a results page is filled for that reader.
+type Reading<'r> = (&'r HeaderMap, Option<&'r str>, &'r ConsentSite);
 
 /// The longest query read, in bytes. Eight words fit with room to spare,
 /// and anything longer is cut, so a pasted page never becomes a search.
@@ -64,13 +68,27 @@ pub(crate) fn router(config: &Config, search: Search) -> Router {
     if search_page::mode(config) != khalid_render::SearchMode::Live {
         return router;
     }
-    let search = Arc::new(search);
+    let search = Arc::new((search, consent_route::consent_site(config)));
+    let filter = QueryFilter::from(&config.seo().search_filter);
     for locale in config.languages() {
         let path = build_pages::path_of(config, locale, search_page::REST);
         let (search, locale, at) = (Arc::clone(&search), locale.clone(), path.clone());
-        let answer = move |Asked(words): Asked<Words>| {
+        let answer = move |headers: HeaderMap, RawQuery(query): RawQuery, words: Asked<Words>| {
             let (search, locale, at) = (Arc::clone(&search), locale.clone(), at.clone());
-            async move { answer(&search, &locale, &at, words).await }
+            async move {
+                let (search, consent) = &*search;
+                let reading = (&headers, query.as_deref(), consent);
+                let Asked(words) = words;
+                if words
+                    .q
+                    .as_deref()
+                    .is_some_and(|q| filter.check(q.trim()).is_err())
+                {
+                    let typing = words.typing.as_deref();
+                    return refused(search, (&locale, &at), typing, reading);
+                }
+                answer(search, (&locale, &at), words, reading).await
+            }
         };
         router = router.route(&path, get(answer));
     }
@@ -79,8 +97,14 @@ pub(crate) fn router(config: &Config, search: Search) -> Router {
 
 /// The results page for `words` at the search page `path` in `locale`, or
 /// while typing, the results as JSON for the reader script, the last word
-/// matched as the start of a word.
-async fn answer(search: &Search, locale: &Locale, path: &str, words: Words) -> Response<Body> {
+/// matched as the start of a word. The page is filled for the reader
+/// `reading` shows, as the router fills every other page.
+async fn answer(
+    search: &Search,
+    (locale, path): (&Locale, &str),
+    words: Words,
+    reading: Reading<'_>,
+) -> Response<Body> {
     let completion = match words.typing {
         Some(_) => Completion::LastWordStarts,
         None => Completion::WholeWords,
@@ -107,7 +131,7 @@ async fn answer(search: &Search, locale: &Locale, path: &str, words: Words) -> R
         return live(search, locale, typed.as_deref(), results);
     }
     match search.pages.render_search(path, typed, results) {
-        Ok(Some(html)) => page(&search.security, MediaType::Html, html),
+        Ok(Some(html)) => results_page(search, reading, html),
         Ok(None) => unavailable(&search.security),
         Err(message) => {
             tracing::warn!(%message, "a search page could not be rendered");
@@ -169,8 +193,38 @@ fn live(
     }
 }
 
-/// A results page, or results as `kind`, with the security headers, never
-/// cached.
+/// 400 for a search the site's filters refuse, such as spam or emoji: the
+/// empty search page at `path`, or while typing, no results. The query
+/// is never shown back, so a bot's words never reach the page.
+fn refused(
+    search: &Search,
+    (locale, path): (&Locale, &str),
+    typing: Option<&str>,
+    reading: Reading<'_>,
+) -> Response<Body> {
+    let mut response = if typing.is_some() {
+        live(search, locale, None, Vec::new())
+    } else {
+        match search.pages.render_search(path, None, Vec::new()) {
+            Ok(Some(html)) => results_page(search, reading, html),
+            Ok(None) | Err(_) => return unavailable(&search.security),
+        }
+    };
+    *response.status_mut() = StatusCode::BAD_REQUEST;
+    response
+}
+
+/// The results page `html`, filled for the reader `reading` shows and kept
+/// by no cache.
+fn results_page(
+    search: &Search,
+    (headers, query, consent): Reading<'_>,
+    html: String,
+) -> Response<Body> {
+    drawn_for((headers, query), html, consent, &search.security)
+}
+
+/// Results as `kind`, with the security headers, never cached.
 fn page(security: &SecurityHeaders, kind: MediaType, body: String) -> Response<Body> {
     let mut response = Response::new(Body::from(body));
     let headers = response.headers_mut();

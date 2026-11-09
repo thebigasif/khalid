@@ -1,0 +1,18 @@
+# Northbound's four categories, in the order a beginner takes them: the
+# stops on the learning path.
+
+[[categories]]
+slug = "start-here"
+en = "Start here"
+
+[[categories]]
+slug = "the-web"
+en = "The web"
+
+[[categories]]
+slug = "tools"
+en = "Tools"
+
+[[categories]]
+slug = "first-project"
+en = "Your first project"

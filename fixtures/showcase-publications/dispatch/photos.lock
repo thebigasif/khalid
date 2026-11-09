@@ -1,0 +1,127 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives. Every photo is
+# CC0, so none needs a visible credit; the photo credits page lists them.
+
+[[photos]]
+file = "en/posts/2026-11-07-plant-garlic/lead.jpg"
+sha256 = "02e0bb2e1c652cf26b0eecb8fc7ba5b42b584b08543f7c1e0de591dce277c53e"
+source = "https://wordpress.org/photos/photo/1076596f66/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Basket full of garlic bulbs. by Topher, via wordpress"
+title = "Basket full of garlic bulbs."
+creator = "Topher"
+openverse = "c4a3d6f7-29a3-4dcf-a828-4997126a3ac5"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-31-saving-tomato-seed/lead.jpg"
+sha256 = "c7abc6d79e49bbf672012b31b088bb1385be6dc4fed223cc4cb17be8036c76e8"
+source = "https://wordpress.org/photos/photo/34769dad33/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A row of tomato plants in a greenhouse, featuring numerous green, unripe tomatoes clustered along the branches. by jasonmb012, via wordpress"
+title = "A row of tomato plants in a greenhouse, featuring numerous green, unripe tomatoes clustered along the branches."
+creator = "jasonmb012"
+openverse = "3fc4a44f-8521-43a3-aa12-55b5d287ff8f"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-24-slugs-yellow-leaves-shady-wall/lead.jpg"
+sha256 = "a6751f6cb494014c214814afc5af3e105dc24f959bda3916a5941d0ce5621adf"
+source = "https://wordpress.org/photos/photo/50365b8b88/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A snail slowly crawls on lush green leaves, blending with the leafy plant it sits on. by creativemz, via wordpress"
+title = "A snail slowly crawls on lush green leaves, blending with the leafy plant it sits on."
+creator = "creativemz"
+openverse = "15a81a57-cca2-49bd-92ea-a94bc320a4fc"
+needs_credit = false
+size = "1600x1066"
+
+[[photos]]
+file = "en/posts/2026-10-17-leaf-mould/lead.jpg"
+sha256 = "c662741d29cec3707db99d5e609fbec929a19e264608fcadaa5cbb83bac80cd9"
+source = "https://wordpress.org/photos/photo/271621e1b5/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Autumn, dry tree leaves on the ground. Brown, yellow, red by Pablo Moratinos, via wordpress"
+title = "Autumn, dry tree leaves on the ground. Brown, yellow, red"
+creator = "Pablo Moratinos"
+openverse = "9f25a494-6bd4-4685-8fe6-5e77da4cd44c"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-10-10-layered-bulbs/lead.jpg"
+sha256 = "4ff8a1130e62b8cc5faea6d9e0dc2409fd72b81e95f05bda9dfabccc33f38c54"
+source = "https://wordpress.org/photos/photo/48764413a9/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Tulips, looking down from above, about 10 inches away. by ewerkstatt, via wordpress"
+title = "Tulips, looking down from above, about 10 inches away."
+creator = "ewerkstatt"
+openverse = "b5de9642-0839-41c3-b25b-c59cb531899d"
+needs_credit = false
+size = "1600x900"
+
+[[photos]]
+file = "en/posts/2026-10-03-balcony-vegetables/lead.jpg"
+sha256 = "2e2ec5c219765259bab048f01b6220f80db980a803017a3cb41d3f1258c643af"
+source = "https://wordpress.org/photos/photo/943679676c/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Balcony garden with vibrant pink and red flowers climbing through the metal railing. The building behind has brick walls and white lattice windows. by Nilo Velez, via wordpress"
+title = "Balcony garden with vibrant pink and red flowers climbing through the metal railing. The building behind has brick walls and white lattice windows."
+creator = "Nilo Velez"
+openverse = "014e6248-708f-43b7-8158-5bcfd7b7be0d"
+needs_credit = false
+size = "1600x1069"
+
+[[photos]]
+file = "en/posts/2026-09-26-winter-windowsill-herbs/lead.jpg"
+sha256 = "bb52d110ac553471e96ae7b9778a8abb9fdabc7a75618f82e92f2b4cd41f4e8a"
+source = "https://wordpress.org/photos/photo/629654da6e/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "basil growing in smart garden by Mary Jane Duford, via wordpress"
+title = "basil growing in smart garden"
+creator = "Mary Jane Duford"
+openverse = "fa62f858-eecf-4722-8d73-6f5506a5d57e"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-19-watering-while-away/lead.jpg"
+sha256 = "34fb5fc05b4949d254b64b20ac22d63d79e471e0a4aba84f709ecd73cfbd66fc"
+source = "https://wordpress.org/photos/photo/35868c4638/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "A copper bonsai watering can with a long spout rests on a stone wall in a peaceful garden. Green foliage and a wooden fence complete the background. Captured at the Portland Japanese Garden, Oregon. by Bigul Malayi, via wordpress"
+title = "A copper bonsai watering can with a long spout rests on a stone wall in a peaceful garden. Green foliage and a wooden fence complete the background. Captured at the Portland Japanese Garden, Oregon."
+creator = "Bigul Malayi"
+openverse = "2f4b209e-7a55-474f-a587-ea45b2d2dc36"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-12-ripening-peppers/lead.jpg"
+sha256 = "e6cce4e49b2e36cff592f8d92919040928f8793b9d8fca6bc47312f6df02cdf9"
+source = "https://wordpress.org/photos/photo/853640646c/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Red peppers by Topher, via wordpress"
+title = "Red peppers"
+creator = "Topher"
+openverse = "f4ea0cfb-954d-4054-a1a3-3dfccfc3dfe3"
+needs_credit = false
+size = "1600x1200"
+
+[[photos]]
+file = "en/posts/2026-09-05-late-flowers/lead.jpg"
+sha256 = "dad54dbe47d0829de112b3fbd365c997ab0730596ae19b92af92e168cb24d673"
+source = "https://wordpress.org/photos/photo/67461f9886/"
+licence = "CC0 1.0, read on the photo's page 2026-11-07: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Wheelbarrow full of flowers by Topher, via wordpress"
+title = "Wheelbarrow full of flowers"
+creator = "Topher"
+openverse = "c80c250d-3a4c-4925-9135-fa644a678b5d"
+needs_credit = false
+size = "1600x1200"
+

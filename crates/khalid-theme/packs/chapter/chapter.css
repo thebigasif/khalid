@@ -1,0 +1,170 @@
+/* Chapter (docs/templates/chapter.md): an author's site set like the
+   first pages of a book. A warm paper, a double rule under the header,
+   each part of the front page opened like a chapter with a Roman
+   numeral, books as a shelf of covers, writing as a contents page with
+   dotted leaders, and excerpts set as a book page with a drop cap. The
+   section parts' own rules come first (the build adds the parts this
+   pack's templates import). Every colour is a token or a mix of tokens. */
+:root {
+  --ch-frame: 72rem;
+  --ch-rule: color-mix(in oklab, var(--color-text) 80%, var(--color-background));
+  --ch-quiet: color-mix(in oklab, var(--color-border) 70%, var(--color-background));
+  --hero-title: clamp(2.75rem, 1.75rem + 4vw, 5rem);
+}
+.site-header, main, .site-footer { max-inline-size: var(--ch-frame); }
+main { padding-block: 0 var(--space-section); }
+main > :is(.post, .page) { max-inline-size: var(--measure); margin-inline: auto; }
+main > .post-with-toc { max-inline-size: calc(var(--measure) + 18rem); }
+main > .post[data-kind="book"] { max-inline-size: 52rem; }
+.post[data-kind="book"] > :is(.post-body, .post-footer, .author-box, details.toc-inline, nav.toc-box) { max-inline-size: var(--measure); margin-inline: auto; }
+main > .post ~ :is(.mentions, .comments, .related, .newsletter-slot, .cta-band) { max-inline-size: var(--measure); margin-inline: auto; }
+h1, h2, h3, h4 { letter-spacing: -0.005em; }
+
+/* The header: the name in the book face, quiet links, a double rule. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.25rem 1rem; border-block-end: 3px double var(--ch-rule); }
+.site-name { font-family: var(--font-heading); font-size: 1.625rem; font-weight: var(--heading-weight); letter-spacing: 0.01em; color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0 1.5rem; }
+.site-header nav a { color: var(--color-text); font-size: 0.9375rem; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); box-shadow: inset 0 -1px var(--color-accent); }
+.search-link { color: var(--color-text); font-size: 0.9375rem; text-decoration: none; }
+.search-link:hover { color: var(--color-link); text-decoration: underline; }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: square, filled with the accent, or ruled for the second. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.375rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: var(--radius); font: 700 0.9375rem/1.2 var(--font-body); letter-spacing: 0.04em; text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+.button-quiet { color: var(--color-link); background: var(--color-background); }
+.button-quiet:hover { color: var(--color-on-accent); }
+
+/* The opening: the name and the newest book, the cover beside them. */
+.ch-opening { display: grid; gap: 2.5rem 4rem; align-items: center; margin-block: clamp(1.5rem, 1rem + 3vw, 4rem) var(--space-section); }
+@media (min-width: 56rem) { .ch-opening-cover { grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem); } }
+.ch-opening .hero { margin: 0; padding: 0; }
+.hero-title { max-inline-size: 14ch; font-weight: var(--heading-weight); letter-spacing: -0.02em; line-height: 1; }
+.hero-intro { color: var(--color-text); font-family: var(--font-heading); font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); font-style: italic; line-height: 1.45; }
+.ch-new { margin-block-start: 2.5rem; padding-block-start: 1.5rem; border-block-start: 1px solid var(--color-border); }
+.ch-new-label, .post-kind, .ch-part-title { color: var(--color-link); font-family: var(--font-body); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.ch-new-label { margin: 0 0 0.5rem; }
+.ch-new :is(h2, h3) { margin: 0; font-size: clamp(1.875rem, 1.5rem + 1.5vw, 2.75rem); line-height: 1.1; }
+.ch-new :is(h2, h3) a { color: var(--color-text); text-decoration: none; }
+.ch-new :is(h2, h3) a:hover { color: var(--color-link); text-decoration: underline; }
+.ch-new-text { max-inline-size: var(--measure); margin-block: 0.75rem 0; }
+.ch-opening-art { justify-self: center; inline-size: min(100%, 22rem); }
+.ch-opening-art .image, .book-cover .image { margin: 0; }
+.ch-opening-art img, .book-cover img { display: block; aspect-ratio: 2 / 3; object-fit: cover; border: 1px solid var(--color-border); }
+.ch-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-block: 1.5rem 0; }
+
+/* Facts: a ruled list of short label and value pairs. */
+.ch-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: 0 1.5rem; margin-block: 1.5rem 0; border-block-start: 1px solid var(--color-border); }
+.ch-facts > div { min-inline-size: 0; padding-block: 0.625rem; border-block-end: 1px solid var(--color-border); }
+.ch-facts dt { color: var(--color-muted); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.ch-facts dd { margin: 0.125rem 0 0; font-family: var(--font-heading); font-size: 1.1875rem; line-height: 1.35; overflow-wrap: anywhere; }
+
+/* A chapter opener: a Roman numeral over the part's name, centred. */
+.ch-chapter { margin-block-end: var(--space-section); }
+.ch-books, .ch-writing, .ch-events-part { scroll-margin-block-start: 1.5rem; }
+.ch-head { margin-block-end: 2.25rem; text-align: center; }
+.ch-numeral { margin: 0; color: var(--color-link); font-family: var(--font-heading); font-size: 2.25rem; line-height: 1; }
+.ch-head :is(h2, h3) { display: flex; align-items: center; gap: 1.25rem; margin: 0.5rem 0 0; font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem); font-variant: small-caps; letter-spacing: 0.06em; }
+.ch-head :is(h2, h3)::before, .ch-head :is(h2, h3)::after { content: ""; flex: 1; border-block-start: 1px solid var(--color-border); }
+.ch-chapter > .view-all { margin-block: 1rem 0; text-align: center; }
+
+/* The contents page: a number in old-style figures, the title in the
+   book face, a dotted leader running to the date. */
+.contents-page, .event-list { max-inline-size: 52rem; margin-inline: auto; }
+.contents-entry { border-block-end-color: var(--ch-quiet); }
+.contents-entry::before { color: var(--color-link); font-size: 1.375rem; }
+.contents-line :is(h2, h3, h4) { font-size: 1.375rem; }
+.contents-line time { font-variant-numeric: oldstyle-nums tabular-nums; }
+.contents-kind { color: var(--color-link); }
+
+/* Events: dated rows, when in the book face, under a dark rule. */
+@media (min-width: 44rem) { .event-row { grid-template-columns: 16rem minmax(0, 1fr) auto; } }
+.event-list { border-block-start-color: var(--ch-rule); }
+.event-when { font-family: var(--font-heading); font-size: 1.1875rem; font-weight: var(--heading-weight); }
+.event-extra { letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* The cover shelf: covers framed by a hairline, titles in the book face. */
+.cover-shelf { grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 15rem)); justify-content: center; gap: 2.5rem 2.5rem; }
+@media (max-width: 30rem) { .cover-shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1rem; } }
+.cover-shelf-cover { box-shadow: 0.375rem 0.375rem 0 var(--color-surface); }
+.cover-shelf-item :is(h2, h3, h4) { font-size: 1.25rem; }
+
+/* Lists and the people page: the name and intro over a double rule. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; padding-block-end: 1.5rem; border-block-end: 3px double var(--ch-rule); text-align: center; }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin: 1rem auto 0; color: var(--color-text); font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-link); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.ch-part { margin-block-end: var(--space-section); }
+.ch-part-title { margin-block: 0 1.5rem; text-align: center; }
+
+/* A post: the kind, the title, the description in italics. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; }
+.post-kind { margin-block: 0 0.75rem; }
+.post-kind a { color: inherit; text-decoration: none; }
+.post-kind a:hover { text-decoration: underline; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.1; }
+.post-header .dek { margin-block: 0 1rem; font-family: var(--font-heading); font-size: 1.375rem; font-style: italic; line-height: 1.45; }
+.post-meta { color: var(--color-muted); font-size: 0.9375rem; }
+.post-meta address { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-style: normal; }
+.post-meta address a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-meta address a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .avatar { inline-size: 2rem; block-size: 2rem; }
+.updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.25rem 0; }
+.post-header .image { margin-block: 2rem 0; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+.post-footer { margin-block-start: 3rem; }
+.post-footer > h2, .related > h2, .mentions > h2 { margin-block: 0 1rem; font-family: var(--font-body); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.post-footer .tags a { border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); font-size: var(--text-small); }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); padding-block-start: 1rem; border-block-start: 3px double var(--ch-rule); }
+.related .contents-line :is(h2, h3, h4) { font-size: 1.1875rem; }
+
+/* A book: the cover beside the title and its facts. */
+.book-header { display: grid; gap: 2rem 2.5rem; }
+@media (min-width: 44rem) { .book-header { grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr); align-items: start; } }
+.book-cover { inline-size: min(100%, 17rem); }
+@media (max-width: 43.99rem) { .book-cover { inline-size: min(70%, 15rem); justify-self: center; } }
+.book-about { min-inline-size: 0; }
+
+/* An event: its facts in a panel on the surface. */
+.event-panel { margin-block-start: 1.75rem; padding: 0.25rem 1.25rem 0.75rem; background: var(--color-surface); border-block-start: 3px solid var(--color-accent); }
+.event-panel > div:last-child { border-block-end: 0; }
+
+/* An excerpt: set as a page of the book, with a drop cap and the first
+   line in small capitals, after an ornament. */
+.ch-ornament { margin: 1.75rem 0 0; color: var(--color-link); font-family: var(--font-heading); font-size: 1.75rem; line-height: 1; text-align: center; }
+.post[data-kind="excerpt"] .post-header { text-align: center; }
+.post[data-kind="excerpt"] .post-meta address { justify-content: center; }
+.post[data-kind="excerpt"] .post-body { font-family: var(--font-heading); font-size: 1.25rem; line-height: 1.6; }
+.post[data-kind="excerpt"] .post-body > p { margin-block: 0; text-indent: 1.5em; }
+.post[data-kind="excerpt"] .post-body > :is(h2, h3) + p, .post[data-kind="excerpt"] .post-body > p:first-of-type { text-indent: 0; }
+.post[data-kind="excerpt"] .post-body > p:first-of-type::first-line { font-variant: small-caps; letter-spacing: 0.04em; }
+.post[data-kind="excerpt"] .post-body > p:first-of-type::first-letter { float: inline-start; margin-inline-end: 0.08em; padding-block-start: 0.06em; color: var(--color-link); font-size: 3.6em; line-height: 0.8; }
+.post[data-kind="excerpt"] .post-body > :is(h2, h3) { font-size: 1.125rem; font-variant: small-caps; letter-spacing: 0.08em; text-align: center; }
+
+/* A person: the mark beside the name. */
+.author-header { grid-template-columns: auto minmax(0, 1fr); margin-block-start: clamp(1.5rem, 1rem + 2vw, 3rem); }
+.author-photo { inline-size: clamp(5rem, 4rem + 4vw, 8rem); }
+.author-header h1 { margin: 0; }
+.author-role { margin: 0.25rem 0 0; color: var(--color-muted); font-size: 1.125rem; }
+.author-bio { max-inline-size: var(--measure); margin-block-end: var(--space-section); }
+.people-grid-person :is(h2, h3, h4) { font-size: 1.375rem; }
+
+/* Cards on the shared pages, such as search and hubs. */
+.card :is(h2, h3, h4) { font-size: 1.375rem; line-height: 1.3; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+
+/* The call to action and the newsletter: ruled bands on the surface. */
+.cta-band { background: var(--color-surface); border: 0; border-block: 3px double var(--ch-rule); border-radius: 0; text-align: center; }
+.newsletter-slot { padding: 1.75rem 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); }
+
+/* The footer: a double rule, quiet links. */
+.site-footer { border-block-start: 3px double var(--ch-rule); }

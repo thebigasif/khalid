@@ -1,0 +1,150 @@
+/* Pantry (docs/templates/pantry.md): a baking and recipe blog like a
+   recipe box. Square index cards with a tear-off ticket of facts, the
+   sections of the box as divider tabs, and a recipe page that opens on
+   its ingredients card and numbers its method in squares. The section
+   parts' own rules come first (the build adds the parts this pack's
+   templates import); these set Pantry's look over them. Every colour is
+   a token or a mix of tokens. */
+:root {
+  --pt-frame: 78rem;
+  --pt-rule: color-mix(in oklab, var(--color-border) 70%, var(--color-muted));
+  --pt-tint: color-mix(in oklab, var(--color-accent) 8%, var(--color-background));
+  --hero-title: clamp(2.75rem, 1.9rem + 3.4vw, 4.75rem);
+}
+.site-header, main, .site-footer, main:has(.post-with-toc), :where(body:has(.post-with-toc)) :is(.site-header, .site-footer) { max-inline-size: var(--pt-frame); }
+main { padding-block: 0 var(--space-section); }
+h1, h2, h3 { letter-spacing: -0.005em; }
+
+/* The header: the name in the heading face over a double rule. */
+.site-header { gap: 0.5rem 2rem; padding-block: 1.25rem 1rem; border-block-end: 3px double var(--pt-rule); }
+.site-name { font-family: var(--font-heading); font-size: 1.625rem; font-weight: var(--heading-weight); color: var(--color-text); text-decoration: none; }
+.site-logo img { block-size: 2.75rem; inline-size: auto; }
+.site-header nav ul { gap: 0.25rem 1.5rem; }
+.site-header nav a { color: var(--color-text); font-size: 1rem; font-weight: 600; text-decoration: none; }
+.site-header nav a:hover { color: var(--color-link); text-decoration: underline; }
+.site-header nav a[aria-current] { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 2px; }
+.search-link { color: var(--color-text); font-size: 1rem; text-decoration: none; }
+.search-link:hover { color: var(--color-link); text-decoration: underline; }
+.announcement { margin: 0; padding-block: 0.5rem; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+
+/* Buttons: square, filled with the accent. */
+.button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 0; border-radius: 0; font: 700 1rem/1.2 var(--font-body); letter-spacing: 0.02em; text-align: center; text-decoration: none; cursor: pointer; }
+.button { max-inline-size: 100%; }
+.button:hover, .subscribe button:hover, .comment-form button:hover, .header-button:hover { background: color-mix(in oklab, var(--color-accent) 80%, var(--color-text)); text-decoration: none; }
+
+/* Section titles: the heading face over a short accent rule. */
+:is(.fresh, .recipes, .notes, .pantry-section, .related, .mentions, .topic-tabs, .media-row) > h2, .post-footer > h2 { margin-block: 0 1.5rem; padding-block-end: 0.5rem; border-block-end: 1px solid var(--color-border); font-size: var(--text-h2); line-height: 1.2; }
+
+/* The front page: the hero, the recipe box tabs, the newest recipe, the
+   index cards, then the baking notes. */
+.hero { margin-block-end: 2.5rem; padding-block-start: clamp(2rem, 1rem + 3vw, 4rem); }
+.hero-title { max-inline-size: 16ch; }
+.hero-intro { color: var(--color-text); font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; }
+.hero > .figure-strip { border-block: 1px solid var(--color-border); }
+.recipe-box { margin-block-end: var(--space-section); }
+.recipe-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; border-block-end: 3px solid var(--color-accent); }
+.recipe-tabs a { display: flex; align-items: center; min-block-size: 3rem; padding: 0.375rem 1.375rem; background: var(--color-surface); border: 1px solid var(--color-border); border-block-end: 0; color: var(--color-text); font-family: var(--font-heading); font-size: 1.25rem; font-weight: var(--heading-weight); text-decoration: none; }
+.recipe-tabs a:hover { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
+.fresh, .recipes, .notes, .pantry-section { margin-block-end: var(--space-section); }
+.fresh-card { display: grid; background: var(--color-background); border: 1px solid var(--color-border); border-block-start: 4px solid var(--color-accent); }
+.fresh-card .image { margin: 0; }
+.fresh-card .image img { inline-size: 100%; block-size: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0; }
+.fresh-text { display: flex; flex-direction: column; gap: 0.75rem; min-inline-size: 0; padding: clamp(1.25rem, 1rem + 1.5vw, 2.5rem) clamp(1.25rem, 1rem + 1.5vw, 2.5rem) 0; }
+.fresh-kind { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.fresh-kind a { text-decoration: none; }
+.fresh-text h3 { margin: 0; font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem); line-height: 1.1; }
+.fresh-text h3 a { color: var(--color-text); text-decoration: none; }
+.fresh-text h3 a:hover { color: var(--color-link); text-decoration: underline; }
+.fresh-summary { margin: 0; color: var(--color-muted); font-size: 1.125rem; }
+.fresh-text > .ticket { margin: auto calc(-1 * clamp(1.25rem, 1rem + 1.5vw, 2.5rem)) 0; }
+@media (min-width: 52rem) { .fresh-card { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); } }
+.ticket-cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 2.5rem 2rem; }
+.ticket-card { border-block-start: 4px solid var(--color-accent); }
+.ticket-card :is(h2, h3, h4) { font-size: 1.4375rem; }
+.ticket { background: var(--color-surface); }
+/* On a phone the front page's recipes are rows: a small square picture
+   beside the section and title, the ticket across the card under them. */
+@media (max-width: 39.99rem) {
+  .recipes .ticket-cards { row-gap: 1.25rem; }
+  .recipes .ticket-card:has(> .image) { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); }
+  .recipes .ticket-card > .image img { aspect-ratio: 1; }
+  .recipes .ticket-card-text { padding: 0.75rem 1rem; }
+  .recipes .ticket-card > :is(.ticket, .ticket-card-date) { grid-column: 1 / -1; }
+}
+.notes .feed-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 0 2rem; }
+.notes .feed-item:first-child { padding-block-start: 0.875rem; }
+.notes .feed-item :is(h2, h3, h4) { font-size: 1.25rem; }
+.view-all { margin-block: 1.5rem 0; font-weight: 600; }
+
+/* Lists: the name and intro on a ruled header. */
+.list-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; padding-block: 0 1.5rem; border-block-end: 3px solid var(--color-accent); }
+.list-header h1 { margin: 0; }
+.list-header .intro { max-inline-size: var(--measure); margin-block-start: 1rem; color: var(--color-text); font-size: 1.125rem; }
+.list-header .intro > :last-child, .list-header .hub-link { margin-block-end: 0; }
+.list-header .list-kind { margin-block: 0 0.5rem; color: var(--color-link); font-size: var(--text-small); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* A recipe: the section, the title, the baker and the ticket, beside the
+   lead picture on wide screens. */
+.post-header { margin-block: clamp(1.5rem, 1rem + 2vw, 3rem) 2.5rem; }
+.post-intro { min-inline-size: 0; }
+.post-header h1 { margin-block: 0 0.75rem; line-height: 1.08; }
+.section-label { margin-block: 0 0.75rem; font-size: var(--text-small); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.section-label a { display: inline-flex; align-items: center; min-block-size: 2.75rem; text-decoration: none; }
+.section-label a:hover { text-decoration: underline; }
+.post-header .dek { margin-block-end: 1rem; color: var(--color-text); font-size: 1.25rem; line-height: 1.5; }
+.post-meta { font-size: 1rem; }
+.post-meta .person a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+.post-meta .person a:hover { color: var(--color-link); text-decoration: underline; }
+.post-meta .person-role, .updated-note { color: var(--color-muted); font-size: var(--text-small); }
+.post-date { margin-block: 0.5rem 0; }
+.post-intro > .ticket { margin-block-start: 1.5rem; border: 1px solid var(--color-border); border-block-start: 2px dashed var(--pt-rule); }
+.post-intro .ticket dd { font-family: var(--font-heading); font-size: 1.375rem; }
+.post-header .image img { aspect-ratio: 4 / 3; object-fit: cover; }
+@media (max-width: 40rem) { :is(.post-intro, .fresh-text) > .ticket { grid-template-columns: repeat(2, minmax(0, 1fr)); } :is(.post-intro, .fresh-text) .ticket-cell:nth-child(3) { border-inline-start: 0; } :is(.post-intro, .fresh-text) .ticket-cell:nth-child(n + 3) { border-block-start: 1px solid var(--color-border); } }
+@media (min-width: 60rem) { .post-header:has(> .image) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 3rem; } .post-header:has(> .image) > .image { margin: 0; } }
+
+/* The text: one column of 60 to 75 characters under the title, the
+   contents under the picture on wide screens. */
+.post-body { max-inline-size: 46ch; font-size: 1.25rem; }
+.post-footer, .post > .author-box, main > .post ~ :is(.mentions, .comments, .lock, .newsletter-slot, .cta-band) { max-inline-size: 38rem; }
+.post-body :is(h2, h3) { margin-block-start: 2em; }
+.post-body figcaption { color: var(--color-muted); font-size: var(--text-small); }
+@media (min-width: 70rem) {
+  .post-with-toc { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 3rem; }
+  .post-with-toc > .post-header { grid-column: 1 / -1; grid-row: 1; }
+  .post-with-toc > .toc-side { max-inline-size: 20rem; grid-row: 2 / span 20; padding-block-start: 1rem; border-block-start: 3px solid var(--color-accent); }
+}
+
+/* The ingredients card: every bullet list before the method, on the
+   kraft surface, each line ruled like an index card. */
+.recipe-body > ul:not(ol ~ ul) { margin-block: 0 1.5rem; padding: 0.75rem 1.5rem; list-style: none; background: var(--color-surface); border-block-start: 4px solid var(--color-accent); }
+.recipe-body > ul:not(ol ~ ul) > li { position: relative; margin: 0; padding-block: 0.5rem; padding-inline-start: 1.75rem; border-block-end: 1px solid var(--pt-rule); break-inside: avoid; }
+.recipe-body > ul:not(ol ~ ul) > li:last-child { border-block-end: 0; }
+.recipe-body > ul:not(ol ~ ul) > li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 0.95rem; inline-size: 0.75rem; block-size: 0.75rem; border: 2px solid var(--color-accent); }
+.recipe-body > h3:not(ol ~ h3) { margin-block: 1.75rem 0.5rem; font-size: 1.125rem; }
+.recipe-body > ul:not(ol ~ ul) { columns: 2 15rem; column-gap: 2.5rem; column-rule: 1px solid var(--pt-rule); }
+
+/* The method: the first numbered list, each step's number large in a
+   square, with a rule between steps. */
+.recipe-body > ol:not(ol ~ ol) { margin-inline: 0; padding: 0; list-style: none; counter-reset: step; }
+.recipe-body > ol:not(ol ~ ol) > li { position: relative; min-block-size: 3rem; margin: 0; padding-block: 1rem; padding-inline-start: 4rem; border-block-start: 1px solid var(--color-border); counter-increment: step; }
+.recipe-body > ol:not(ol ~ ol) > li:last-child { border-block-end: 1px solid var(--color-border); }
+.recipe-body > ol:not(ol ~ ol) > li::before { content: counter(step); position: absolute; inset-inline-start: 0; inset-block-start: 1rem; display: grid; place-items: center; inline-size: 2.75rem; block-size: 2.75rem; border: 2px solid var(--color-accent); color: var(--color-text); font-family: var(--font-heading); font-size: 1.375rem; font-weight: var(--heading-weight); line-height: 1; }
+
+.post-footer { margin-block-start: 2.5rem; }
+.post-footer .tags a { padding-inline: 0.875rem; border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); font-size: var(--text-small); text-decoration: none; }
+.post-footer .tags a:hover { border-color: var(--color-accent); color: var(--color-link); }
+.related { margin-block-start: var(--space-section); }
+
+/* Cards on the shared pages, such as search, bakers and their pages. */
+.card { padding-block-end: 1rem; border-block-end: 1px solid var(--color-border); }
+.card :is(h2, h3, h4) { font-size: 1.3125rem; line-height: 1.25; }
+.card :is(h2, h3, h4) a { color: var(--color-text); text-decoration: none; }
+.card :is(h2, h3, h4) a:hover { color: var(--color-link); text-decoration: underline; }
+.card .image img { aspect-ratio: 4 / 3; object-fit: cover; }
+
+/* The call to action and the newsletter: kraft panels under an accent
+   line. */
+.cta-band, .newsletter-slot { background: var(--color-surface); border: 0; border-block-start: 4px solid var(--color-accent); border-radius: 0; }
+.newsletter-slot { padding: 1.5rem; }
+.site-footer { border-block-start: 3px double var(--pt-rule); }

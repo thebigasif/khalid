@@ -1,0 +1,10 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /first-frost/
+post /orchard-year-novel/
+post /orchard-year-launch/
+category /category/books/
+tag /tag/orchards/
+author /authors/hanna-lowe/

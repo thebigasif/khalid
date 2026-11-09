@@ -50,7 +50,9 @@ impl Rule for NoDescription {
     }
 }
 
-/// A title longer than search results show.
+/// A title longer than search results show, counted in characters: the
+/// fallback for a title with characters the pixel table of
+/// `title-too-wide` lacks.
 #[derive(Debug)]
 pub(crate) struct LongTitle {
     /// The most characters, from `Thresholds::title_max_chars`.
@@ -67,6 +69,10 @@ impl Rule for LongTitle {
     }
 
     fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
+        // A title the pixel table can measure is judged by `title-too-wide`.
+        if crate::title_width::measured(post) {
+            return Vec::new();
+        }
         too_long(post.title.as_deref(), self.max)
     }
 }

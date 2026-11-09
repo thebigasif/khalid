@@ -12,7 +12,7 @@ focus_keyword: KI-Suche
 tags: [ki, zitate, schreiben]
 image:
   src: cover.svg
-  alt: Eine Antwortblase mit einem Funkeln, durch eine gestrichelte Linie mit der gewählten Quellseite verbunden
+  alt: Eine Antwort der KI-Suche zeigt auf die eine Quellseite, die sie zitiert, orange markiert mit Häkchen, zwischen zwei übergangenen Seiten
 ---
 
 Die KI-Suche beantwortet eine Frage in wenigen Sätzen und nennt dazu eine Handvoll Seiten als Quellen. Zu diesen Quellen zu gehören, ist der neue erste Platz. Dieser Beitrag erklärt, worauf die Dienste bei der Auswahl achten. Und er zeigt, wie Sie Beiträge schreiben, die man gern zitiert.

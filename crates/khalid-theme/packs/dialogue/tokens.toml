@@ -1,0 +1,34 @@
+# Dialogue: an interview show. Warm paper, ink text and a brick red
+# accent for the quote marks and links, like a studio's "on air" light. A
+# lively serif for headings and the guest's words, a plain sans for the
+# text. Shapes are square: hairlines, no rounded cards.
+[colors]
+background = "#f8f6f1"
+surface = "#ece6db"
+text = "#1f1a17"
+muted = "#5a514b"
+link = "#9c2f1b"
+accent = "#9c2f1b"
+border = "#d9d0c3"
+
+[fonts]
+heading = "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[shape]
+radius = "0px"
+measure = "38rem"
+
+[type]
+body = "1.125rem 1.1875rem"
+h1 = "2.25rem 3.5rem"
+h2 = "1.5rem 1.875rem"
+h3 = "1.25rem 1.375rem"
+h4 = "1.0625rem 1.125rem"
+small = "0.9375rem"
+line_height = 1.6
+heading_weight = 600
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"

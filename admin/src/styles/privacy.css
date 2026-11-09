@@ -1,0 +1,13 @@
+/* The Privacy screen: the site's own scripts, one card each with its code
+   above its category. One rule per line, as app.css writes them. */
+@layer components {
+  .scripts{list-style:none;margin:1rem 0 1.25rem;padding:0;display:grid;gap:1rem}
+  .scripts .json{margin:0 0 1rem;white-space:pre-wrap;overflow-wrap:anywhere}
+  .scripts .careful{margin:0 0 1rem}
+  @media (max-width:30em){.scripts .card{padding:.75rem}}
+  .proof h3{margin-top:1.75rem}
+  .proof .period,.proof .scroll{margin:0 0 1rem}
+  .proof details{margin:0}
+  @media (max-width:40em){.proof tfoot,.proof tfoot th{display:block;border:0}}
+  .proof pre{margin:0;padding:0 1rem 1rem;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.8125rem}
+}

@@ -1,0 +1,12 @@
+{
+  "name": "khalid-ghost-client-check",
+  "private": true,
+  "description": "Ghost's own Content API client, run against Khalid by scripts/ghost-client.sh. Never shipped with Khalid.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@tryghost/content-api": "1.12.13"
+  }
+}

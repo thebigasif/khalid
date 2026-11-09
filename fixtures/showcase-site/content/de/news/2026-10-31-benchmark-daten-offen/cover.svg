@@ -1,28 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
-  <rect width="1200" height="675" fill="#eafaf3"/>
-  <circle cx="190" cy="170" r="96" fill="#8fa2ff" opacity="0.3"/>
-  <circle cx="1020" cy="500" r="110" fill="#ffb38a" opacity="0.3"/>
-  <circle cx="1050" cy="150" r="8" fill="#5b45d6"/>
-  <circle cx="150" cy="520" r="6" fill="#5b45d6" opacity="0.5"/>
-  <ellipse cx="600" cy="600" rx="330" ry="18" fill="#1f1b3a" opacity="0.08"/>
-  <rect x="380" y="300" width="440" height="290" rx="24" fill="#5b45d6"/>
-  <path d="M380 330 L340 250 L860 250 L820 330 Z" fill="#8fa2ff"/>
-  <rect x="440" y="150" width="320" height="230" rx="16" fill="#ffffff" transform="rotate(-6 600 265)"/>
-  <rect x="470" y="190" width="260" height="190" rx="12" fill="#ffffff" stroke="#1f1b3a" stroke-opacity="0.12" stroke-width="3"/>
-  <rect x="470" y="190" width="260" height="34" rx="12" fill="#8fd9bd"/>
-  <g fill="#1f1b3a" opacity="0.15">
-    <rect x="490" y="242" width="60" height="14" rx="5"/>
-    <rect x="565" y="242" width="60" height="14" rx="5"/>
-    <rect x="640" y="242" width="70" height="14" rx="5"/>
-    <rect x="490" y="272" width="60" height="14" rx="5"/>
-    <rect x="565" y="272" width="60" height="14" rx="5"/>
-    <rect x="640" y="272" width="70" height="14" rx="5"/>
-    <rect x="490" y="302" width="60" height="14" rx="5"/>
-    <rect x="565" y="302" width="60" height="14" rx="5"/>
-    <rect x="640" y="302" width="70" height="14" rx="5"/>
+  <rect width="1200" height="675" fill="#f4f1ea"/>
+  <g fill="none" stroke="#1f2428" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="200" y="95" width="460" height="460" rx="14" fill="#fffdf8"/>
+    <path d="M200 180h460"/>
+    <path stroke-width="6" d="M200 275h460M200 370h460M200 465h460M350 95v460M505 95v460"/>
+    <path stroke-width="12" d="M235 138h80M385 138h80M540 138h80M235 228h70M385 228h90M540 228h60M235 323h90M385 323h60M540 323h80M235 418h60M385 418h80M540 418h70M235 510h80M385 510h50M540 510h80"/>
+    <path stroke-width="16" d="M790 330V210a80 80 0 0 1 160 0v10"/>
+    <rect x="714" y="346" width="290" height="230" rx="22" fill="#eba63f" stroke="none"/>
+    <rect x="730" y="330" width="290" height="230" rx="22"/>
+    <circle cx="875" cy="420" r="20" fill="#1f2428"/>
+    <path stroke-width="14" d="M875 430v60"/>
   </g>
-  <rect x="380" y="380" width="440" height="210" rx="24" fill="#5b45d6"/>
-  <rect x="520" y="440" width="160" height="22" rx="11" fill="#ffffff" opacity="0.85"/>
-  <circle cx="600" cy="90" r="46" fill="#ffb38a"/>
-  <path d="M600 64 L600 108 M582 92 L600 110 L618 92" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

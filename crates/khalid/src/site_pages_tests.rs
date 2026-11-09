@@ -43,11 +43,15 @@ fn the_first_pages_are_the_full_renders_home_pages_and_stylesheet() {
     let first = source.render_first(&content).unwrap();
     let all = source.render_all().unwrap().pages;
     let paths: Vec<&str> = first.iter().map(|page| page.path().as_str()).collect();
-    assert_eq!(
-        paths.len(),
-        4,
-        "the stylesheet, the script, two homes: {paths:?}"
+    let sheets = paths
+        .iter()
+        .filter(|path| path.starts_with("/blog/assets/site."))
+        .count();
+    assert!(
+        sheets >= 2,
+        "the whole stylesheet and the homes' own: {paths:?}"
     );
+    assert_eq!(paths.len() - sheets, 3, "the script, two homes: {paths:?}");
     assert!(
         paths
             .iter()
@@ -184,7 +188,11 @@ fn each_saved_post_alone_renders_the_page_the_full_render_makes() {
     for post in &posts {
         let saved = source.render_saved(std::slice::from_ref(post)).unwrap();
         let saved = saved.unwrap_or_else(|| panic!("{} alone", post.display()));
-        assert_eq!(saved.len(), 2, "the post and its translation");
+        let html = saved
+            .iter()
+            .filter(|page| !page.path().as_str().contains("/assets/"))
+            .count();
+        assert_eq!(html, 2, "the post and its translation");
         for page in &saved {
             assert!(all.contains(page), "{} differs", page.path().as_str());
         }
@@ -276,4 +284,28 @@ fn a_served_feed_with_no_posts_is_dated_by_the_given_clock() {
         rss.contains("<lastBuildDate>Mon, 26 Oct 2026 09:00:00 +0000</lastBuildDate>"),
         "{rss}"
     );
+}
+
+/// The text of the page at `path` among `pages`.
+fn text_at(pages: &[khalid_server::Page], path: &str) -> String {
+    let page = pages.iter().find(|page| page.path().as_str() == path);
+    String::from_utf8_lossy(&page.unwrap().body().unwrap()).into_owned()
+}
+
+#[test]
+fn a_full_render_reads_changed_settings_and_keeps_them_when_the_file_breaks() {
+    let site = demo_copy();
+    let source = pages(site.path());
+    source.reload_with(Environment::empty());
+    let mut file = site.path().to_path_buf();
+    file.push("site.toml");
+    let settings = fs::read_to_string(&file).unwrap();
+    let intro = "Two people write Field Notes, in Berlin.";
+    let added = format!("{settings}\n[seo.llms_txt]\nintro = \"{intro}\"\n");
+    fs::write(&file, added).unwrap();
+    let pages = source.render_all().unwrap().pages;
+    assert!(text_at(&pages, "/blog/llms.txt").contains(intro));
+    fs::write(&file, format!("{settings}\nname = [\n")).unwrap();
+    let pages = source.render_all().unwrap().pages;
+    assert!(text_at(&pages, "/blog/llms.txt").contains(intro));
 }

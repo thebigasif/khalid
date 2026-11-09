@@ -1,0 +1,46 @@
+# The sample brand for the Meridian demo: a company that keeps a
+# journal. Plum on warm ivory, a high-contrast display serif for headings
+# and a clean sans for text. Only the brand lives here: the template keeps
+# its own shape, type sizes and spacing.
+[colors]
+background = "#fbf8f5"
+surface = "#f4eee9"
+text = "#1f1a1c"
+muted = "#62585c"
+link = "#7b2d6a"
+accent = "#8a3378"
+border = "#e6dcd6"
+
+[fonts]
+heading = "\"DM Serif Display\", \"Iowan Old Style\", Georgia, serif"
+body = "\"Work Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "DM Serif Display"
+style = "normal"
+weight = "400"
+path = "dm-serif-display-latin-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00C8, U+00CE, U+00D7, U+00DF, U+00E4-00E5, U+00E8-00E9, U+00F8, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "114.44%"
+descent = "158.08%"
+line_gap = "0.00%"
+size_adjust = "59.41%"
+
+[[fonts.files]]
+family = "Work Sans"
+style = "normal"
+weight = "400 600"
+path = "work-sans-latin-400-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00C8, U+00CE, U+00D7, U+00DF, U+00E4-00E5, U+00E8-00E9, U+00F8, U+00FC, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "102.73%"
+descent = "114.67%"
+line_gap = "0.00%"
+size_adjust = "63.22%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

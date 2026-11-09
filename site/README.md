@@ -1,6 +1,6 @@
 # Khalid's website
 
-This folder is Khalid's own website, built with Khalid and published at https://thebigasif.github.io/khalid/, with every page pointing search engines to https://serpdad.com/khalid/. It tells the story of the product: who it is for, every feature group, the templates, the use cases, how to start and how it compares.
+This folder is Khalid's old website, built with Khalid. Khalid's home is now https://serpdad.com/khalid/, and https://thebigasif.github.io/khalid/ only forwards there (see "The forwarders on GitHub Pages" below). It tells the story of the product: who it is for, every feature group, the templates, the use cases, how to start and how it compares.
 
 ## What is where
 
@@ -19,9 +19,9 @@ This folder is Khalid's own website, built with Khalid and published at https://
 
 The gallery shows a picture of each template demo's home page and of one post, at `/khalid/templates/<name>-home.svg` and `<name>-post.svg`. The files beside `content/en/pages/templates/index.md` are plain cards with each template's name, so the site always has a picture. After `scripts/pages.sh` builds everything, `scripts/template-previews.sh <pages folder>` replaces them in the built folder with screenshots taken in a headless Chromium. Where no Chromium runs, it writes the plain cards again. To remake the committed cards after changing them in the script, run `scripts/template-previews.sh --cards site/content/en/pages/templates`.
 
-## The sites published beside it
+## The sites built beside it
 
-The pages link to sites built from other folders and published under the same address:
+The pages link to sites built from other folders under the same mount. The Pages workflow builds them all for their old addresses:
 
 | Address | Built from |
 |---|---|
@@ -31,9 +31,14 @@ The pages link to sites built from other folders and published under the same ad
 
 ## The copy on serpdad.com
 
-Khalid's main home is https://serpdad.com/khalid/, SerpDad's product page, and the demos live below it. `scripts/demos-bundle.sh <khalid binary> <new folder>` builds the demos, the template gallery and its pictures for that address and packs them as `khalid-demos.tar.gz`, with `demo/`, `templates/` and `examples/` at the top. The website's other pages are left out. The Pages workflow publishes the archive at https://thebigasif.github.io/khalid/khalid-demos.tar.gz for the serpdad.com build to download.
+Khalid's main home is https://serpdad.com/khalid/, SerpDad's product page, and the demos live below it. `scripts/demos-bundle.sh <khalid binary> <new folder>` builds the demos, the template gallery and its pictures for that address and packs them as `khalid-demos.tar.gz`, with `demo/`, `templates/` and `examples/` at the top. The website's other pages are left out. The Pages workflow publishes the archive on the GitHub release named `demos`, which the serpdad.com build downloads.
 
-The demos are made-up sample blogs, so every demo page, in both copies, carries `noindex, follow` and no demo sitemap lists a page. The gallery stays indexable. On GitHub Pages every page names its serpdad.com address as the canonical one, so search engines credit serpdad.com, and the header and the hero link there.
+The demos are made-up sample blogs, so every demo page, in both copies, carries `noindex, follow` and no demo sitemap lists a page. The gallery stays indexable.
+## The forwarders on GitHub Pages
+
+GitHub Pages publishes no copy of these sites any more. The Pages workflow still builds this site and the demos for their old addresses, then `scripts/pages-forward.sh` writes one small page per old address. Each page sends visitors and search engines to the matching page on serpdad.com, with a meta refresh, a canonical link and a visible link, and says noindex. A demo page goes to the same page of the template's new demo where it still exists, and to the demo's front page otherwise. The website's pages go to the landing page, the getting started guide and the comparison. Any other address keeps its path on serpdad.com.
+
+`scripts/pages-forward.sh --selftest` checks the map with no network. After serpdad.com serves the same bundle, `scripts/pages-forward.sh --check <forwarders folder>` checks that every new address answers 200.
 
 ## Checking it
 

@@ -1,0 +1,24 @@
+{#- How wide Meridian draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Some places show the same posts as a larger place on the same page,
+    so they say its width and the browser fetches each picture once.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "lead_story": "(min-width: 65rem) calc(9vw + 34.25rem), (min-width: 48rem) calc(55vw - 3.5rem), calc(100vw - 2rem)",
+  "pair": "(min-width: 63.5rem) calc(9vw + 31.25rem), (min-width: 48rem) calc(48vw - 0.75rem), 6.5rem",
+  "home/row": "(min-width: 62.5rem) calc(7vw + 20rem), (min-width: 48rem) calc(33vw - 0.75rem), 6.5rem",
+  "panel/row": "(min-width: 64rem) calc(6vw + 20rem), (min-width: 51rem) calc(31vw - 0.5rem), (min-width: 48rem) 23.5rem, 6.5rem",
+  "lead": "(min-width: 64rem) calc(9vw + 29.5rem), 97vw",
+  "related/scroll": "(min-width: 64rem) calc(6vw + 20rem), (min-width: 48rem) calc(48vw - 0.75rem), (min-width: 30.5rem) 14.25rem, calc(100vw - 2rem)",
+  "list/row": "(min-width: 62.5rem) calc(7vw + 20rem), (min-width: 48rem) calc(33vw - 0.75rem), 6.5rem",
+  "author/row": "(min-width: 62.5rem) calc(7vw + 20rem), (min-width: 48rem) calc(33vw - 0.75rem), calc(100vw - 2rem)",
+  "photo": "(min-width: 44rem) calc(2vw + 9rem), 8rem"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

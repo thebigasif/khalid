@@ -16,7 +16,7 @@ related: [choosing-seo-tools, search-console-vs-bing-webmaster-tools, search-con
 tags: [tools, analytics]
 image:
   src: cover.svg
-  alt: A toolbox of free SEO tools holding a magnifier, a gauge, a spanner and a small chart, with a price tag that shows zero
+  alt: A toolbox of free SEO tools with a magnifier, a screwdriver and a chart, and an orange price tag showing zero
 schema: '{"@context":"https://schema.org","@type":"ItemList","name":"The 7 best free SEO tools for a small blog","itemListElement":[{"@type":"ListItem","position":1,"name":"Google Search Console","url":"https://search.google.com/search-console/about"},{"@type":"ListItem","position":2,"name":"Bing Webmaster Tools","url":"https://www.bing.com/webmasters/about"},{"@type":"ListItem","position":3,"name":"PageSpeed Insights","url":"https://pagespeed.web.dev/"},{"@type":"ListItem","position":4,"name":"Rich Results Test","url":"https://search.google.com/test/rich-results"},{"@type":"ListItem","position":5,"name":"Schema Markup Validator","url":"https://validator.schema.org/"},{"@type":"ListItem","position":6,"name":"Screaming Frog SEO Spider","url":"https://www.screamingfrog.co.uk/seo-spider/"},{"@type":"ListItem","position":7,"name":"Google Trends","url":"https://trends.google.com/"}]}'
 ---
 

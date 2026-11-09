@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="10" y="58" width="48" height="8" fill="#20241f"/>
+  <path d="M14 58 V30 L34 16 L54 30 V58" fill="none" stroke="#2f5a46" stroke-width="4" stroke-linejoin="miter"/>
+  <path d="M28 58 V42 H40 V58" fill="none" stroke="#2f5a46" stroke-width="4"/>
+  <text textLength="240" lengthAdjust="spacingAndGlyphs" x="72" y="50" font-family="Jost, Futura, Arial, sans-serif" font-size="22" font-weight="500" letter-spacing="3" fill="#20241f">TESSEL ROWE</text>
+</svg>

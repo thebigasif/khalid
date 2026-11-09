@@ -16,7 +16,7 @@ related: [ai-search-guide, ai-search-sources, writing-headlines]
 tags: [ai search, writing]
 image:
   src: cover.svg
-  alt: A speech bubble holding a small capsule-shaped card, lifted out of a page by a pair of tweezers
+  alt: A dotted path lifts a short answer capsule out of a page and into an AI search answer, where it sits in orange
 ---
 
 An answer capsule is the short, plain answer you write straight under a heading that asks a question. It is the part of a post most likely to be lifted whole, by a reader in a hurry, by a featured snippet, or by an AI search tool building its reply. This post shows how we write answer capsules, with before and after examples from our own drafts.

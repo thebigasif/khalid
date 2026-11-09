@@ -1,11 +1,11 @@
 //! [`SeoPage`]: what the SEO outputs need to know about one page.
 
 use chrono::{DateTime, Utc};
-use khalid_core::{AbsoluteUrl, Locale, RobotsDirectives};
+use khalid_core::{AbsoluteUrl, Locale, PageSchemaType, RobotsDirectives};
 
 use crate::{
-    Alternate, AuthorProfile, CustomSchema, Entity, ListEntry, MetaTemplate, SchemaBlock,
-    SeoComment, ShareImage, TranslationKey, UrlPath, Video,
+    Alternate, AuthorProfile, CustomSchema, Entity, FeedScope, ListEntry, MetaTemplate, PageNumber,
+    SchemaBlock, SeoComment, ShareImage, TranslationKey, UrlPath, Video,
 };
 
 /// The kind of page, which picks its title template and index setting.
@@ -56,6 +56,8 @@ pub enum ArticleType {
     NewsArticle,
     /// A technical guide or reference.
     TechArticle,
+    /// A report, such as a study or a yearly review.
+    Report,
 }
 
 /// One step in a page's breadcrumb trail, between the home page and the page.
@@ -177,9 +179,42 @@ pub struct SeoPage {
     /// The approved comments readers left, oldest first, each with its
     /// replies, for the article's `comment` property.
     pub comments: Vec<SeoComment>,
+    /// The post's tag names, in the order written. The first is the
+    /// `{tag}` variable.
+    pub tags: Vec<String>,
+    /// The phrase the post wants to be found for, the `{focuskw}` variable.
+    pub focus_keyword: Option<String>,
+    /// On a tag or category archive, the term's name, the `{term}`
+    /// variable. `None` uses the title, which on page 2 and after also
+    /// names the page.
+    pub term: Option<String>,
+    /// On a tag or category archive, what the term covers, the
+    /// `{term_description}` variable.
+    pub term_description: Option<String>,
+    /// On a search results page, what the reader searched for, the
+    /// `{searchphrase}` variable.
+    pub search_phrase: Option<String>,
+    /// On a list split into pages, which page this is, the `{page}` variable.
+    pub page_number: Option<PageNumber>,
+    /// A shorter name for the page in its breadcrumb trail, in place of
+    /// its title.
+    pub breadcrumb_title: Option<String>,
+    /// For a post, how many minutes it takes to read, for its X and Slack
+    /// preview.
+    pub reading_minutes: Option<u32>,
+    /// The schema.org type of the page node the page chose, in place of
+    /// the one its kind gives it.
+    pub page_type: Option<PageSchemaType>,
+    /// Whether a news article is listed in the news sitemap.
+    pub news: SitemapListing,
+    /// The stock tickers a news article is about, such as `NASDAQ:GOOG`.
+    pub stock_tickers: Vec<String>,
     /// For the glossary's A to Z page, every term it lists, for the
     /// `hasDefinedTerm` of its `DefinedTermSet`.
     pub terms: Vec<ListEntry>,
+    /// On the first page of a category or channel, the posts of its own
+    /// feed, which sits in its folder and its head links.
+    pub feed: Option<FeedScope>,
 }
 
 impl SeoPage {
@@ -219,7 +254,19 @@ impl SeoPage {
             blocks: Vec::new(),
             custom_schema: CustomSchema::default(),
             comments: Vec::new(),
+            tags: Vec::new(),
+            focus_keyword: None,
+            term: None,
+            term_description: None,
+            search_phrase: None,
+            page_number: None,
+            breadcrumb_title: None,
+            reading_minutes: None,
+            page_type: None,
+            news: SitemapListing::Listed,
+            stock_tickers: Vec::new(),
             terms: Vec::new(),
+            feed: None,
         }
     }
 }

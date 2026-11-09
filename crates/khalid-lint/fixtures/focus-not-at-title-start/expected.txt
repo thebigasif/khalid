@@ -1,0 +1,1 @@
+info focus-not-at-title-start: internal links

@@ -39,4 +39,9 @@ export const dashboardWords = {
   quickMedia: "Add a picture or file",
   quickComments: "Answer comments",
   quickLook: "Change the look",
+  issues: "Fix these first",
+  issuesLede: "The checks that fail on most posts. Fixing one helps every post it names.",
+  onPosts: (count: number) => (count === 1 ? "1 post" : `${count} posts`),
+  start: "Start here",
+  startOn: (what: string) => `Start on: ${what}`,
 } as const;

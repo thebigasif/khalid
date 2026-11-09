@@ -7,6 +7,10 @@
 
 use std::fmt::Write as _;
 
+/// The named parts of one group of [`FrontMatter::groups`], each set or
+/// left out.
+pub(crate) type Parts = [(&'static str, Option<String>); 3];
+
 /// Front matter in the order its fields are added.
 #[derive(Debug, Default)]
 pub(crate) struct FrontMatter {
@@ -41,6 +45,30 @@ impl FrontMatter {
                 self.yaml.push_str(&quoted(value));
                 self.yaml.push('\n');
             }
+        }
+        self
+    }
+
+    /// Adds `key` as a map of `groups`, each a map of quoted text, leaving
+    /// out every part without a value and the key when nothing is left.
+    pub(crate) fn groups(&mut self, key: &str, groups: &[(&str, Parts)]) -> &mut Self {
+        let mut yaml = String::new();
+        for (group, parts) in groups {
+            let parts: Vec<_> = parts
+                .iter()
+                .filter_map(|(name, value)| Some((name, value.as_deref()?)))
+                .collect();
+            if parts.is_empty() {
+                continue;
+            }
+            // Writing to a String cannot fail.
+            let _ = writeln!(yaml, "  {group}:");
+            for (name, value) in parts {
+                let _ = writeln!(yaml, "    {name}: {}", quoted(value));
+            }
+        }
+        if !yaml.is_empty() {
+            let _ = write!(self.yaml, "{key}:\n{yaml}");
         }
         self
     }

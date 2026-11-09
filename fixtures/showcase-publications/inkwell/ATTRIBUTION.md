@@ -1,0 +1,15 @@
+# Photographs in The Seed Tin
+
+The Seed Tin is a made-up publication that shows Khalid's Inkwell template. Its photographs are not part of Khalid and are not under the AGPL. Each keeps the licence its photographer gave it, listed here. The photographs are cropped and resized for the demo.
+
+- `en/posts/2024-06-14-green-beans-bucket/lead.jpg`: "Fresh Green Beans (Unsplash)" by Sonja Langford unmorceau, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Fresh_Green_Beans_(Unsplash).jpg
+- `en/posts/2024-09-13-seed-swaps-twenty-years/lead.jpg`: "Seeding sunflower (Unsplash)" by Morgan Sessions msessionsphotos, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Seeding_sunflower_(Unsplash).jpg
+- `en/posts/2024-12-13-old-seed-barn-maize/lead.jpg`: "Corn seeds (Unsplash)" by Roderico Y. Díaz rodediaz, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Corn_seeds_(Unsplash).jpg
+- `en/posts/2025-03-14-broad-beans-annie-pascoe/lead.jpg`: "Dried broad beans" by Fumikas Sagisavas, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Dried_broad_beans.jpg
+- `en/posts/2025-06-13-tomato-seed-strangers-tin/lead.jpg`: "Tomatoes" by NPS, under Public domain (https://creativecommons.org/publicdomain/mark/1.0/), from https://commons.wikimedia.org/wiki/File:Several_small_tomatoes_growing_on_a_vine._(515b5541-3cea-4d7a-8a0c-d15b964a15ac).JPG
+- `en/posts/2025-09-12-store-squash-till-spring/lead.jpg`: "Vegetable Garden Harvest (Unsplash)" by Gemma Evans stayandroam, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Vegetable_Garden_Harvest_(Unsplash).jpg
+- `en/posts/2025-12-12-planting-garlic-shortest-day/lead.jpg`: "Garlic Bulbs (Unsplash)" by Matthew Pilachowski matthewpilachowski, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Garlic_Bulbs_(Unsplash).jpg
+- `en/posts/2026-03-13-greenhouse-old-windows/lead.jpg`: "Cozy greenhouse (Unsplash)" by Thomas Verbruggen thmsvrbrggn, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Cozy_greenhouse_(Unsplash).jpg
+- `en/posts/2026-06-12-heritage-pea-comes-home/lead.jpg`: "Green pea pods" by Fumikas Sagisavas, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Green_pea_pods.jpg
+- `en/posts/2026-09-11-runner-bean-seed-wet-summer/lead.jpg`: "Scarlet Runner beans" by Unknown, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Scarlet_Runner_beans.jpg
+- `en/posts/2026-10-23-winter-seed-list/lead.jpg`: "Pumpkins on shelf (Unsplash)" by Jennifer Burk jenandjoon, under CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en), from https://commons.wikimedia.org/wiki/File:Pumpkins_on_shelf_(Unsplash).jpg

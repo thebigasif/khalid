@@ -1,0 +1,64 @@
+---
+source: crates/khalid/tests/template_letterpress.rs
+expression: "shown(&out, \"index.html\")"
+---
+<header class="site-header">
+<a class="site-name" href="/blog/">Field Notes on SEO</a>
+<a class="search-link" href="/blog/search/" data-dialog>Search</a>
+</header>
+<main id="main" tabindex="-1">
+
+<header class="hero">
+<h1 class="hero-title">Field Notes on SEO</h1>
+<div class="hero-intro">
+A weekly letter about search.
+</div>
+<p class="lp-folio"><span class="lp-folio-number">No. 12</span><time datetime="2026-10-12">12 October 2026</time><span>1 min read</span></p>
+</header>
+<section class="lp-cover" aria-labelledby="lp-cover-title">
+<div class="lp-cover-text">
+<p class="lp-label">Latest issue</p>
+<h2 id="lp-cover-title"><a href="/blog/planning-a-topic-cluster/">Planning a topic cluster in an afternoon</a></h2>
+<p class="lp-cover-dek">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</p>
+<p class="lp-byline">By <a href="/blog/authors/asif/">Asif</a></p>
+<section class="lp-inside" aria-labelledby="lp-cover-inside">
+<h3 id="lp-cover-inside">In this issue</h3>
+<ol class="lp-inside-list" role="list">
+<li><span class="lp-inside-part">Feature</span><span class="lp-leader" aria-hidden="true"></span><span class="lp-inside-title">A cluster in an afternoon</span></li>
+<li><span class="lp-inside-part">The tool</span><span class="lp-leader" aria-hidden="true"></span><span class="lp-inside-title">A sheet of paper</span></li>
+<li><span class="lp-inside-part">Letters</span><span class="lp-leader" aria-hidden="true"></span><span class="lp-inside-title">How many posts is enough</span></li>
+</ol>
+</section>
+
+<p class="lp-actions"><a class="button" href="/blog/planning-a-topic-cluster/">Read this issue</a></p>
+</div>
+</section>
+<section class="lp-past" aria-labelledby="lp-past-title">
+<h2 id="lp-past-title" class="lp-past-title">Past issues</h2>
+<ul class="lp-pile" role="list">
+<li class="lp-sheet">
+<p class="lp-sheet-folio"><span class="lp-sheet-number">No. 11</span><time datetime="2026-10-05">5 October 2026</time></p>
+<h3><a href="/blog/fixing-slow-pages/">Fixing slow pages, starting with the biggest win</a></h3>
+<p class="lp-sheet-text">Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</p>
+<p class="lp-sheet-kind"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="lp-sheet">
+<p class="lp-sheet-folio"><time datetime="2026-09-28">28 September 2026</time></p>
+<h3><a href="/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+<p class="lp-sheet-text">A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</p>
+<p class="lp-sheet-kind"><a href="/blog/category/technical-seo/">Technical SEO</a></p>
+</li>
+<li class="lp-sheet">
+<p class="lp-sheet-folio"><time datetime="2026-09-21">21 September 2026</time></p>
+<h3><a href="/blog/how-to-write-a-title-tag/">How to write a title tag</a></h3>
+<p class="lp-sheet-text">The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</p>
+<p class="lp-sheet-kind"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+<li class="lp-sheet">
+<p class="lp-sheet-folio"><time datetime="2026-09-14">14 September 2026</time></p>
+<h3><a href="/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+<p class="lp-sheet-text">Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</p>
+<p class="lp-sheet-kind"><a href="/blog/category/on-page-seo/">On-page SEO</a></p>
+</li>
+</ul>
+</section>

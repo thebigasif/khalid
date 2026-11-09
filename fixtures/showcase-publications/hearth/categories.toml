@@ -1,0 +1,27 @@
+# Larkfield Nursery's topics. The Hearth template lists each one on the
+# front page, and each category page shows its posts as cards, with its
+# intro on top.
+
+[[categories]]
+slug = "in-the-garden"
+en = "In the garden"
+
+[categories.seo.en]
+description = "Seasonal garden jobs from Larkfield Nursery: what to plant, prune and sow each month, and the flowers that feed bees."
+intro = "What to plant, prune and sow this month, from a family that has grown plants for three generations."
+
+[[categories]]
+slug = "growing-food"
+en = "Growing food"
+
+[categories.seo.en]
+description = "Growing food at home with Larkfield Nursery: tomatoes, salads, herbs and fruit, and how to save your own seed."
+intro = "Tomatoes, salads, herbs and fruit, grown in a small space, with seed you can save for next year."
+
+[[categories]]
+slug = "from-the-nursery"
+en = "From the nursery"
+
+[categories.seo.en]
+description = "News from Larkfield Nursery: events, the family who run it, and how the plants are grown behind the scenes."
+intro = "Events, the family and the team, and how we grow every plant we sell, from seed to the sales bench."

@@ -22,6 +22,11 @@ pub struct RenderSite {
     pub home: String,
     /// The address of the hashed stylesheet, such as `/assets/site.3f2a9c1e.css`.
     pub stylesheet: String,
+    /// The address of the font file that draws body text, such as
+    /// `/blog/assets/fonts/inter-latin-400.woff2`, which every page
+    /// preloads so the text is drawn in it sooner. `None` when the body
+    /// text is in a font the site does not serve itself.
+    pub body_font: Option<String>,
     /// The menus.
     pub nav: Nav,
     /// The link back to the main website, when the blog lives beside one.
@@ -42,6 +47,27 @@ pub struct RenderSite {
     /// `/blog/subscribe`. `None` when the site takes no sign-ups, such as a
     /// static site, so no template shows the form.
     pub subscribe: Option<String>,
+    /// How the breadcrumb trail looks, when a template shows it.
+    pub breadcrumbs: BreadcrumbStyle,
+}
+
+/// How the breadcrumb trail looks: what stands between two steps, and
+/// whether the page itself is bold.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct BreadcrumbStyle {
+    /// What stands between two steps, such as `/` or `»`.
+    pub separator: String,
+    /// Whether the last step, the page itself, is shown in bold.
+    pub bold_last: bool,
+}
+
+impl Default for BreadcrumbStyle {
+    fn default() -> Self {
+        Self {
+            separator: "/".to_owned(),
+            bold_last: false,
+        }
+    }
 }
 
 /// The site's menus. An empty menu renders nothing.

@@ -23,14 +23,19 @@ pub struct SitemapGroup {
     pub links: Vec<Link>,
 }
 
-/// A section of the HTML sitemap.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+/// A section of the HTML sitemap, in the order the page shows them.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum SitemapSection {
     /// Posts.
     Posts,
     /// The home page, plain pages and glossary terms.
     Pages,
-    /// Authors, categories, tags, collections and other lists of posts.
+    /// Categories, apart from tags, so a category and a tag with the same
+    /// name are told apart.
+    Categories,
+    /// Tags.
+    Tags,
+    /// Authors, collections and other lists of posts.
     Archives,
 }

@@ -49,7 +49,16 @@ fn a_file_name_gives_its_media_type() {
         ("guide.pdf", MediaType::Pdf),
         ("notes.txt", MediaType::PlainText),
         ("data.json", MediaType::Json),
-        ("archive.zip", MediaType::Binary),
+        ("site-tour.mp4", MediaType::Mp4),
+        ("site-tour.WEBM", MediaType::Webm),
+        ("episode.mp3", MediaType::Mp3),
+        ("episode.m4a", MediaType::M4a),
+        ("episode.ogg", MediaType::Ogg),
+        ("episode.wav", MediaType::Wav),
+        ("episode.flac", MediaType::Flac),
+        ("traffic.csv", MediaType::Csv),
+        ("archive.zip", MediaType::Zip),
+        ("setup.exe", MediaType::Binary),
         ("no-extension", MediaType::Binary),
     ] {
         assert_eq!(MediaType::for_file(name), kind, "{name}");
@@ -65,5 +74,14 @@ fn each_file_kind_names_its_type() {
     assert_eq!(MediaType::Gif.as_header(), "image/gif");
     assert_eq!(MediaType::Svg.as_header(), "image/svg+xml");
     assert_eq!(MediaType::Pdf.as_header(), "application/pdf");
+    assert_eq!(MediaType::Mp4.as_header(), "video/mp4");
+    assert_eq!(MediaType::Webm.as_header(), "video/webm");
+    assert_eq!(MediaType::Mp3.as_header(), "audio/mpeg");
+    assert_eq!(MediaType::M4a.as_header(), "audio/mp4");
+    assert_eq!(MediaType::Ogg.as_header(), "audio/ogg");
+    assert_eq!(MediaType::Wav.as_header(), "audio/wav");
+    assert_eq!(MediaType::Flac.as_header(), "audio/flac");
+    assert_eq!(MediaType::Csv.as_header(), "text/csv; charset=utf-8");
+    assert_eq!(MediaType::Zip.as_header(), "application/zip");
     assert_eq!(MediaType::Binary.as_header(), "application/octet-stream");
 }

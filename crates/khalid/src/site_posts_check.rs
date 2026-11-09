@@ -6,15 +6,19 @@
 use std::path::PathBuf;
 
 use khalid_api::content_store::BoxFuture;
+use khalid_api::link_map::LinkMap;
+use khalid_api::link_suggestions::{LinkSuggestion, Topics, suggest};
 use khalid_api::post_check::{PostCheck, PostChecks, Snippet};
 use khalid_api::post_store::PostStoreError;
 use khalid_api::resources::PostStatus;
+use khalid_api::site_issues::{SiteIssue, top_issues};
 use khalid_content::parse_post;
+use khalid_core::Slug;
 use khalid_seo::{HeadTag, SeoPage, SeoSite, head_tags, page_graph};
 use serde_json::Value;
 
 use super::{Found, Site, SitePosts, blocking, failure};
-use crate::lint_input::{PostParts, seo_page};
+use crate::lint_input::{PostParts, lint_site, seo_page};
 use crate::post_text::PostText;
 
 impl Site {
@@ -40,6 +44,7 @@ impl Site {
         };
         let judge = self.judge(&self.content()?)?;
         let report = self.report(&judge, &found)?;
+        let words = self.candidate_now(&judge, &found)?.word_count;
         let (text, relative) = self.as_now(&found)?;
         let post = parse_post(&relative, &text.to_text()).map_err(PostStoreError::new)?;
         let collection = relative.iter().nth(2).and_then(|part| part.to_str());
@@ -54,11 +59,41 @@ impl Site {
             .ok_or_else(|| failure("the post's page cannot be made for its search preview"))?;
         let graph = page_graph(site, &page).map_err(PostStoreError::new)?;
         let schema: Value = serde_json::from_str(&graph.to_json()).map_err(PostStoreError::new)?;
-        Ok(Some(PostCheck::new(
-            id,
-            report,
-            snippet(site, &page)?,
-            schema,
+        let check = PostCheck::new(id, report, snippet(site, &page)?, schema);
+        Ok(Some(check.with_words(words)))
+    }
+}
+
+impl Site {
+    /// The posts post `id` should link to, or `None` when no post has that
+    /// identity. The site's posts are read with the document each came
+    /// from, for their categories and tags.
+    fn suggestions_now(&self, id: &str) -> Result<Option<Vec<LinkSuggestion>>, PostStoreError> {
+        let Some(found) = self.find(id)? else {
+            return Ok(None);
+        };
+        let content = self.content()?;
+        let judge = self.judge(&content)?;
+        let (site, documents) = lint_site(&content, &self.config, &judge.input);
+        let topics: Vec<Topics<'_>> = (documents.iter())
+            .map(|doc| {
+                Topics::new(
+                    doc.front.category.as_ref().map(Slug::as_str),
+                    &doc.front.tags,
+                )
+            })
+            .collect();
+        let (text, relative) = self.as_now(&found)?;
+        let front = parse_post(&relative, &text.to_text())
+            .map_err(PostStoreError::new)?
+            .front;
+        let post = self.candidate(&judge, &found, &text, &relative)?;
+        let own = Topics::new(front.category.as_ref().map(Slug::as_str), &front.tags);
+        Ok(Some(suggest(
+            &post,
+            own,
+            &LinkMap::new(&site.posts),
+            &topics,
         )))
     }
 }
@@ -96,5 +131,20 @@ impl PostChecks for SitePosts {
     ) -> BoxFuture<'a, Result<Option<PostCheck>, PostStoreError>> {
         let id = id.to_owned();
         Box::pin(blocking(&self.0, move |site| site.check_now(&id)))
+    }
+
+    fn link_suggestions<'a>(
+        &'a self,
+        id: &'a str,
+    ) -> BoxFuture<'a, Result<Option<Vec<LinkSuggestion>>, PostStoreError>> {
+        let id = id.to_owned();
+        Box::pin(blocking(&self.0, move |site| site.suggestions_now(&id)))
+    }
+
+    fn site_issues(&self) -> BoxFuture<'_, Result<Vec<SiteIssue>, PostStoreError>> {
+        Box::pin(blocking(&self.0, |site| {
+            let judge = site.judge(&site.content()?)?;
+            Ok(top_issues(&judge.linter.lint_site(&judge.site)))
+        }))
     }
 }

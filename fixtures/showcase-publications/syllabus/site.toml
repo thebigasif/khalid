@@ -1,0 +1,99 @@
+# First Washes, a made-up free online watercolour course in four modules,
+# written for the Syllabus template's demo. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "First Washes"
+languages = ["en"]
+
+[template.cta]
+label = "Get each lesson by email"
+href = "/blog/about/"
+note = "Free, one lesson a week, with a link to the monthly live critique evenings."
+
+# The Syllabus template's options for this demo. scripts/pages.sh keeps
+# them (PR #1013) and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["A free watercolour course for adults: 13 short lessons in four modules, from your first brush to a finished landscape."]
+hero_stats = ["4 | modules", "13 | lessons", "4 h | of video in all", "Free | at your own pace"]
+news_count = 4
+
+[announcement]
+text = "Live critique evenings start on 18 November. Send us a painting from any lesson."
+href = "/blog/live-critique-evenings/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A free online watercolour course"
+
+[seo.ai_page]
+covers = "First Washes is a free online watercolour course for adult beginners, in 13 lessons and four modules: materials, washes, colour mixing and landscapes. Each lesson has a short video, written notes and one exercise."
+cite = "Link the lesson you quote, and name the tutor who wrote it."
+contact = "hello@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "First Washes"
+email = "hello@example.com"
+founded = "2024-09-01"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The First Washes logo"
+width = 280
+height = 80
+
+# Sign-ups for the course emails, under the course's own name. The mail
+# server is a reserved example name, so nothing is ever sent.
+[mail]
+from = "hello@example.com"
+name = "First Washes"
+postal_address = "First Washes, 14 Mill Lane, Kendal LA9 4QX"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Start here"
+href = "/blog/watercolour-kit/"
+language = "en"
+
+[[nav.primary]]
+label = "All lessons"
+href = "/blog/series/first-washes/"
+language = "en"
+
+[[nav.primary]]
+label = "Tutors"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.primary]]
+label = "Course news"
+href = "/blog/category/course-news/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the course"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "All lessons"
+href = "/blog/series/first-washes/"
+language = "en"
+
+[[nav.footer]]
+label = "Tutors"
+href = "/blog/authors/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

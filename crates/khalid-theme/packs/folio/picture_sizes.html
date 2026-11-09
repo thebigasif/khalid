@@ -1,0 +1,23 @@
+{#- How wide Folio draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Some places show the same posts as a larger place on the same page,
+    so they say its width and the browser fetches each picture once.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "featured": "(min-width: 77rem) calc(17vw + 49rem), (min-width: 56rem) calc(110vw - 32rem), calc(97vw - 0.75rem)",
+  "home/image": "(min-width: 77rem) calc(9vw + 22.75rem), (min-width: 64rem) calc(44vw - 9.75rem), (min-width: 40.5rem) calc(47vw - 0.5rem), 5rem",
+  "lead": "(min-width: 70rem) 64rem, (min-width: 31rem) calc(34vw + 25.5rem), calc(100vw - 2rem)",
+  "related/grid": "(min-width: 70rem) calc(8vw + 20.25rem), (min-width: 64rem) 20.75rem, (min-width: 42.5rem) calc(47vw - 0.5rem), (min-width: 40.5rem) 39.5rem, 5rem",
+  "list/image": "(min-width: 70rem) calc(8vw + 20.25rem), (min-width: 64rem) 20.75rem, (min-width: 42.5rem) calc(47vw - 0.5rem), (min-width: 40.5rem) 39.5rem, 5rem",
+  "author/image": "(min-width: 70rem) calc(8vw + 20.25rem), (min-width: 64rem) 20.75rem, (min-width: 42.5rem) calc(47vw - 0.5rem), (min-width: 40.5rem) 39.5rem, 5rem",
+  "photo": "(min-width: 49rem) calc(2vw + 8.75rem), 7.75rem",
+  "panel/image": "(min-width: 77rem) calc(9vw + 22.75rem), (min-width: 64rem) calc(44vw - 9.75rem), (min-width: 40.5rem) calc(47vw - 0.5rem), 5rem"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

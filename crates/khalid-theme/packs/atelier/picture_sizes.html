@@ -1,0 +1,16 @@
+{#- How wide Atelier draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "spread": "(min-width: 64rem) calc(11vw + 36rem), (min-width: 48rem) calc(59vw - 3rem), calc(100vw - 2rem)",
+  "grid": "(min-width: 66.5rem) calc(5vw + 15rem), (min-width: 50rem) calc(34vw - 1.75rem), calc(50vw - 1.5rem)",
+  "photo": "calc(3vw + 5rem)"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

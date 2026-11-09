@@ -7,6 +7,7 @@ focus_keyword = "internal links"
 date = "2026-10-01"
 author = "Amira Haddad"
 word_count = 640
+lead_image = true
 body_text = "Internal links help readers find the next useful post on your site."
 
 [[headings]]

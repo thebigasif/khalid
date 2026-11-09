@@ -1,0 +1,19 @@
+{#- How wide Encore draws each picture, as the `sizes` the
+    picture macro takes, read from its stylesheet at every width from
+    320 to 2560 px: a phone, a tablet and a desktop. A key is a place,
+    or a place and the card shape, such as "list/image"; the shared
+    templates' places are listed in the default picture_sizes.html.
+    Measure again when the stylesheet moves a picture
+    (docs/standards/performance.md, "Page weight"). -#}
+{% macro slot_sizes(place, shape="image") -%}
+{%- set sizes = {
+  "latest": "(min-width: 61.5rem) calc(7vw + 22.25rem), (min-width: 48rem) calc(38vw - 1.75rem), calc(70vw - 1.25rem)",
+  "sleeve": "(min-width: 69.5rem) 12rem, (min-width: 52rem) calc(24vw - 1.75rem), (min-width: 34.5rem) calc(35vw - 1.5rem), calc(70vw - 1.25rem)",
+  "release": "(min-width: 31rem) 25.25rem, calc(70vw - 1.25rem)",
+  "note": "(min-width: 63rem) calc(6vw + 19.5rem), (min-width: 42rem) calc(50vw - 2rem), calc(100vw - 2rem)",
+  "lead": "(min-width: 30.5rem) calc(6vw + 33.75rem), calc(100vw - 2rem)",
+  "photo": "calc(3vw + 5rem)"
+} -%}
+{%- set key = place ~ "/" ~ shape -%}
+{{- sizes[key] if key in sizes else (sizes[place] if place in sizes else "") -}}
+{%- endmacro %}

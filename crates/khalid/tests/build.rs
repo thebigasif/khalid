@@ -51,7 +51,7 @@ fn build_renders_every_post_and_home_page_of_the_demo_site() {
     let output = khalid(&["--site", path(&demo), "build", "--out", path(out.path())]);
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
     assert!(
-        text(&output.stdout).contains("43 pages"),
+        text(&output.stdout).contains("47 pages"),
         "{}",
         text(&output.stdout)
     );
@@ -135,9 +135,9 @@ fn a_site_can_switch_the_ai_page_off() {
         path(out.path()),
     ]);
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
-    // Without the page: 42 pages, no ai/ folder, no footer link.
+    // Without the page: 46 pages, no ai/ folder, no footer link.
     assert!(
-        text(&output.stdout).contains("42 pages"),
+        text(&output.stdout).contains("46 pages"),
         "{}",
         text(&output.stdout)
     );
@@ -321,32 +321,42 @@ fn build_refuses_a_glossary_term_whose_route_needs_a_date() {
 }
 
 #[test]
-fn build_writes_the_stylesheet_every_page_links_with_its_compressed_copies() {
+fn build_writes_the_stylesheet_each_page_links_with_its_compressed_copies() {
     let out = tempfile::tempdir().unwrap();
     let demo = demo_site();
     let output = khalid(&["--site", path(&demo), "build", "--out", path(out.path())]);
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
 
-    let home = page(out.path(), "index.html");
-    let (_, rest) = home.split_once(r#"<link rel="stylesheet" href=""#).unwrap();
-    let (href, _) = rest.split_once('"').unwrap();
-    let file = href.strip_prefix("/blog/").unwrap();
-    let hash = file
-        .strip_prefix("assets/site.")
-        .and_then(|r| r.strip_suffix(".css"));
-    assert_eq!(hash.map(str::len), Some(8), "{href}");
-    assert!(
-        page(out.path(), "de/index.html").contains(href),
-        "one stylesheet"
+    let linked = |file: &str| {
+        let html = page(out.path(), file);
+        let (_, rest) = html.split_once(r#"<link rel="stylesheet" href=""#).unwrap();
+        let (href, _) = rest.split_once('"').unwrap();
+        assert_eq!(html.matches(r#"<link rel="stylesheet""#).count(), 1);
+        href.strip_prefix("/blog/").unwrap().to_owned()
+    };
+    let (home, post) = (
+        linked("index.html"),
+        linked("why-internal-links-matter/index.html"),
     );
-    let css = page(out.path(), file);
-    assert!(css.contains("--color-background: #ffffff;"), "{css}");
-    for copy in [".br", ".gz"] {
-        let size = fs::metadata(at(out.path(), &format!("{file}{copy}")))
-            .unwrap()
-            .len();
-        assert!(size > 0 && size < 20 * 1024, "{copy}: {size} bytes");
+    for file in [&home, &post] {
+        let hash = file
+            .strip_prefix("assets/site.")
+            .and_then(|r| r.strip_suffix(".css"));
+        assert_eq!(hash.map(str::len), Some(8), "{file}");
+        let css = page(out.path(), file);
+        assert!(css.contains("--color-background: #ffffff;"), "{css}");
+        for copy in [".br", ".gz"] {
+            let size = fs::metadata(at(out.path(), &format!("{file}{copy}")))
+                .unwrap()
+                .len();
+            assert!(size > 0 && size < 10 * 1024, "{copy}: {size} bytes");
+        }
     }
+    // Each page links the rules its HTML can use: the rules of a post's
+    // header are not in the home page's stylesheet.
+    assert_ne!(home, post);
+    assert!(page(out.path(), &post).contains(".post-header"));
+    assert!(!page(out.path(), &home).contains(".post-header"));
 }
 
 #[test]
@@ -397,9 +407,9 @@ fn init_then_new_then_build_writes_the_post_to_public() {
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stdout));
     let json: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(json["out"], path(&public));
-    // The post, home, search, 404, archive, authors, sitemap and AI info
-    // pages.
-    assert_eq!(json["pages"], 8);
+    // The post, home, search, 404, archive, authors, sitemap, privacy, AI
+    // info and privacy choices pages.
+    assert_eq!(json["pages"], 10);
     let post = page(&public, "why-links-matter/index.html");
     assert!(post.contains("Why links matter</h1>"), "{post}");
 }
@@ -685,6 +695,61 @@ fn self_hosted_font_files_are_served_under_assets() {
         !at(out.path(), "assets/fonts/not-a-font.txt").exists(),
         "only woff2 files are served"
     );
+}
+
+#[test]
+fn every_page_preloads_the_body_font_and_only_that_file() {
+    let out = tempfile::tempdir().unwrap();
+    let demo = tempfile::tempdir().unwrap();
+    copy_dir(&demo_site(), demo.path());
+    let theme = at(demo.path(), "theme");
+    let fonts = at(&theme, "fonts");
+    fs::create_dir_all(&fonts).unwrap();
+    for file in [
+        "inter-latin-400.woff2",
+        "inter-latin-italic-400.woff2",
+        "fraunces-latin-600.woff2",
+    ] {
+        fs::write(at(&fonts, file), b"font bytes").unwrap();
+    }
+    let face = |family: &str, style: &str, weight: &str, file: &str| {
+        format!(
+            "\n[[fonts.files]]\nfamily = \"{family}\"\nstyle = \"{style}\"\nweight = \"{weight}\"\npath = \"{file}\"\n"
+        )
+    };
+    let tokens = [
+        "[fonts]\nheading = '\"Fraunces\", serif'\nbody = '\"Inter\", system-ui, sans-serif'\n"
+            .to_owned(),
+        face("Fraunces", "normal", "600", "fraunces-latin-600.woff2"),
+        face("Inter", "italic", "400", "inter-latin-italic-400.woff2"),
+        face("Inter", "normal", "400", "inter-latin-400.woff2"),
+    ]
+    .concat();
+    fs::write(at(&theme, "tokens.toml"), tokens).unwrap();
+
+    let output = khalid(&[
+        "--site",
+        path(demo.path()),
+        "build",
+        "--out",
+        path(out.path()),
+    ]);
+    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
+    for rel in ["index.html", "why-internal-links-matter/index.html"] {
+        let html = page(out.path(), rel);
+        let preloads: Vec<&str> = html
+            .lines()
+            .filter(|line| line.contains(r#"rel="preload""#))
+            .collect();
+        assert_eq!(preloads.len(), 1, "{rel} preloads one file: {preloads:?}");
+        assert!(
+            preloads[0].ends_with(
+                r#"assets/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin>"#
+            ),
+            "{rel} preloads the upright body face where the stylesheet fetches it: {}",
+            preloads[0]
+        );
+    }
 }
 
 /// Copies the folder `from` into the empty folder `into`.

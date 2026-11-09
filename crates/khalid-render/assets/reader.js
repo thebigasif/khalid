@@ -3,7 +3,8 @@
 // enlarged image in a dialog, open search in a dialog from the header or
 // with / or Ctrl+K, show results while typing a search, mark the section
 // being read in the contents, open the contents as a sheet on a phone,
-// and preview a linked post.
+// preview a linked post, and say whether a location is open now and which
+// is nearest, and load an embed's player when the reader asks.
 // The words it shows come from the script tag's data attributes.
 (() => {
   "use strict";
@@ -268,10 +269,12 @@
     find();
   }
 
-  // On a narrow screen a floating button opens the contents as a sheet: a
-  // modal dialog, so focus stays inside and Escape closes it. Picking a
-  // section closes it and goes there.
-  if (contents && typeof HTMLDialogElement === "function") {
+  // The folded contents list at the start of a post becomes a button in its
+  // place that opens the contents as a sheet: a modal dialog, so focus stays
+  // inside and Escape closes it. Picking a section closes it and goes there.
+  // The button sits in the page, so it never covers what the reader reads.
+  const folded = document.querySelector(".toc-inline");
+  if (contents && folded && typeof HTMLDialogElement === "function") {
     const open = document.createElement("button");
     open.type = "button";
     open.className = "toc-button";
@@ -298,7 +301,8 @@
       sheet.showModal();
       sheet.querySelector("[aria-current]")?.scrollIntoView({ block: "center" });
     });
-    document.body.append(open, sheet);
+    folded.replaceWith(open);
+    document.body.append(sheet);
   }
 
   // A link in a post's body to another page of the site shows that page's
@@ -366,4 +370,66 @@
       if (event.key === "Escape") hidePreview();
     });
   }
+
+  // A location card says whether it is open now, by the reader's clock.
+  // Its hours are "mon 09:00 17:30" entries; the table lists them anyway.
+  const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+  const now = new Date();
+  const today = days[now.getDay()];
+  const time = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  for (const card of document.querySelectorAll(".location[data-hours]")) {
+    const line = card.querySelector(".location-now");
+    if (!line) continue;
+    const open = card.dataset.hours.split(",").some((entry) => {
+      const [day, opens, closes] = entry.split(" ");
+      return day === today && opens <= time && time < closes;
+    });
+    line.textContent = open ? line.dataset.open : line.dataset.closed;
+    line.dataset.state = open ? "open" : "closed";
+    line.hidden = false;
+  }
+
+  // The locations page sorts its list nearest first once the reader shares
+  // where they are. Without a location service the button stays hidden.
+  const nearest = document.querySelector(".locations-nearest");
+  const places = document.querySelector("ol.locations");
+  if (nearest && places && navigator.geolocation) {
+    nearest.hidden = false;
+    nearest.addEventListener("click", () => {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          const rad = Math.PI / 180;
+          // The angle between the reader and a place, which orders them as
+          // the distance on the globe does.
+          const away = (item) => {
+            const geo = item.querySelector(".location[data-geo]")?.dataset.geo;
+            if (!geo) return Number.POSITIVE_INFINITY;
+            const [lat, lon] = geo.split(",").map(Number);
+            const a =
+              Math.sin(((lat - coords.latitude) * rad) / 2) ** 2 +
+              Math.cos(coords.latitude * rad) * Math.cos(lat * rad) * Math.sin(((lon - coords.longitude) * rad) / 2) ** 2;
+            return Math.asin(Math.sqrt(a));
+          };
+          const sorted = [...places.children].map((item) => [away(item), item]).sort((x, y) => x[0] - y[0]);
+          places.append(...sorted.map(([, item]) => item));
+          say(nearest.dataset.sorted || "");
+        },
+        () => say(nearest.dataset.refused || ""),
+      );
+    });
+  }
+
+  // An embed's card loads its player only when the reader asks for it.
+  // The player waits in a template, so nothing reaches the provider
+  // before then; without this script the card's link opens the provider.
+  document.addEventListener("click", (event) => {
+    const card = event.target.closest(".embed-load")?.closest(".embed-card");
+    const held = card?.parentElement.querySelector("template");
+    if (!held) return;
+    event.preventDefault();
+    const player = held.content.firstElementChild;
+    card.replaceWith(held.content);
+    held.remove();
+    player?.focus();
+  });
 })();

@@ -1,0 +1,138 @@
+# Every photo this publication shows, checked by scripts/demo-publication.sh
+# before it is used. `file` is the photo's place in content/ and in the
+# publication's folder of demo-photos.tar.gz, and `sha256` its checksum.
+# Each entry was written by scripts/demo-photo.py fetch, which read the
+# licence on the photo's own page on the date it gives.
+
+[[photos]]
+file = "en/posts/2026-10-20-field-coat/lead.jpg"
+sha256 = "3f872beef1c05fa4e291058fbcaa55650644b9d7118b44286871f864e6156dce"
+source = "https://stocksnap.io/photo/model-pose-Q8FQMQWYKB"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Model Pose by Daria Shevtsova, via stocksnap"
+title = "Model Pose"
+creator = "Daria Shevtsova"
+openverse = "fb75282f-0053-4a92-a47e-071520290899"
+needs_credit = false
+size = "960x1280"
+
+[[photos]]
+file = "en/posts/2026-10-13-saffron-wool-coat/lead.jpg"
+sha256 = "5eb37fe5389378e6ecc6d8e38cae24c3997432ca8c7b0bbafb1a9b9fbd78fa39"
+source = "https://stocksnap.io/photo/person-woman-5GB7LPF8SD"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Person Woman by donterase, via stocksnap"
+title = "Person Woman"
+creator = "donterase"
+openverse = "66f3106a-8070-43c3-845b-1cb460dc040d"
+needs_credit = false
+size = "960x640"
+
+[[photos]]
+file = "en/posts/2026-10-06-navy-merino-crew/lead.jpg"
+sha256 = "09609facb6fdb270b03c47300b301bb3a856638072ef33a8c4698e90a2552c8f"
+source = "https://stocksnap.io/photo/guy-man-P0DPDZAUEI"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Guy Man by Karina Carvalho, via stocksnap"
+title = "Guy Man"
+creator = "Karina Carvalho"
+openverse = "cbc65279-7b35-4893-8e97-3c8dd2670ae1"
+needs_credit = false
+size = "960x1440"
+
+[[photos]]
+file = "en/posts/2026-09-29-black-tailoring/lead.jpg"
+sha256 = "3500d57295387c8c9ebba1d8676665da3536357714163dc492f821c319372878"
+source = "https://stocksnap.io/photo/classy-man-XKAZLYB5NV"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Classy Man by Jonas Svidras, via stocksnap"
+title = "Classy Man"
+creator = "Jonas Svidras"
+openverse = "2c13fd03-056d-4a3a-a409-db4841f12189"
+needs_credit = false
+size = "960x1200"
+
+[[photos]]
+file = "en/posts/2026-09-22-leather-jacket-black-knit/lead.jpg"
+sha256 = "9eafcb05d03313c1ddc247c9cb39788ae2777c16cee7fc85cb9ca3113d281d8a"
+source = "https://stocksnap.io/photo/beautiful-fashion-LXBEITMWN1"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Beautiful Fashion by Jonas Svidras, via stocksnap"
+title = "Beautiful Fashion"
+creator = "Jonas Svidras"
+openverse = "9baa6074-6585-482a-b94a-781580147161"
+needs_credit = false
+size = "960x640"
+
+[[photos]]
+file = "en/posts/2026-05-12-white-cotton-shift/lead.jpg"
+sha256 = "71f9cb070dc3a6c6b844a1d6e636041a2c6b4f7570c8d2f700f61f5f6d0cbc82"
+source = "https://stocksnap.io/photo/woman-girl-LGHX1WGYUO"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Woman Girl by Pham Khoai, via stocksnap"
+title = "Woman Girl"
+creator = "Pham Khoai"
+openverse = "25163589-d7bf-469e-a1ac-dcb1dbcf8481"
+needs_credit = false
+size = "960x711"
+
+[[photos]]
+file = "en/posts/2026-04-28-printed-tee-pleated-trouser/lead.jpg"
+sha256 = "43bca675490d3a80501d696f8884dc9c380cad9595842492ad55aac6de938dc9"
+source = "https://stocksnap.io/photo/sunglasses-fashion-MWTEN9NDZM"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Sunglasses Fashion by Beauty and Fashion, via stocksnap"
+title = "Sunglasses Fashion"
+creator = "Beauty and Fashion"
+openverse = "69ec47c1-18d3-4c66-bc4b-9647a56b4e36"
+needs_credit = false
+size = "960x1440"
+
+[[photos]]
+file = "en/posts/2026-04-14-cream-knit-denim/lead.jpg"
+sha256 = "7446dc3c50f0256c0da40f4e63b643360287688eae0fd8f48d6fa613778cee5f"
+source = "https://stocksnap.io/photo/woman-girl-YYQ3XBYDAP"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Woman Girl by Imani Clovis, via stocksnap"
+title = "Woman Girl"
+creator = "Imani Clovis"
+openverse = "f8d35d42-55ec-4202-ae4d-bc18cc18c439"
+needs_credit = false
+size = "960x640"
+
+[[photos]]
+file = "en/posts/2026-10-27-winter-cloth-guide/lead.jpg"
+sha256 = "39e6b6dec6eec50f447ede0064f12be944f7958d64f0c621750fd15401237252"
+source = "https://stocksnap.io/photo/suit-coat-FJKO0JXTHV"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Suit Coat by Seacoast Sage, via stocksnap"
+title = "Suit Coat"
+creator = "Seacoast Sage"
+openverse = "582ae068-3f95-487b-a9f2-4e92d47369a9"
+needs_credit = false
+size = "960x641"
+
+[[photos]]
+file = "en/posts/2026-08-18-shirt-shoe-care/lead.jpg"
+sha256 = "f7b91af42b400487db7028588eb4b5f16c8026fc2ac0f755b1f32410865b682c"
+source = "https://stocksnap.io/photo/fashion-clothes-3WTQ3M15W8"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Fashion Clothes by Terje Sollie, via stocksnap"
+title = "Fashion Clothes"
+creator = "Terje Sollie"
+openverse = "dfc2c338-11dd-4fda-9be5-d6af05155d53"
+needs_credit = false
+size = "960x640"
+
+[[photos]]
+file = "en/posts/2026-07-07-sample-rail-season/lead.jpg"
+sha256 = "ac71852582cdff38eef47280da9e1bd46d3e88e6e922bbd88b2b88d7658b6fef"
+source = "https://stocksnap.io/photo/fashion-clothes-ZN97ZIF3ZU"
+licence = "CC0 1.0, read on the photo's page 2026-11-06: https://creativecommons.org/publicdomain/zero/1.0/"
+credit = "Fashion Clothes by Hannah Morgan, via stocksnap"
+title = "Fashion Clothes"
+creator = "Hannah Morgan"
+openverse = "cb666116-0eff-4f56-b6ce-c4b859ba2858"
+needs_credit = false
+size = "960x640"
+

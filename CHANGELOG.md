@@ -4,6 +4,412 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.7.0
+
+Built-in privacy and cookie consent: nothing optional loads before a reader agrees, every site gets a privacy page, and the admin keeps proof of what readers chose. What changed, in plain words: `docs/releases/1.7.0.md`.
+
+### Added
+
+- `site.toml` can list the site's own code as `[[code]]` entries, each tagged `preferences`, `analytics`, `marketing` or `no-tracking`, with a vendor name and policy link. Code with no category counts as Marketing. A new `[privacy]` table sets how long a reader's choice lasts, how Global Privacy Control is read, whether choices are counted, an outside consent tool, banner text and the owner's contact details. Old `[code]` tables keep working.
+- Every page of every template now links "Your privacy choices" from its footer. The choices page lists five categories (Necessary, Preferences, Analytics, Marketing, External media) with every optional switch off, and saves with scripts off on a running server. The consent banner offers Accept all and Reject all with the same weight, plus Choose, and sits right after the skip link so it never covers the page. It links the privacy page in the reader's language.
+- A static site can now ask readers for consent. `khalid build` holds the site's own code until a reader agrees, through a script under 2 KB that shows the same banner at the top of the page, honours Global Privacy Control and loads only where a page asks something. With scripts off, nothing optional runs. The build also writes a choices page in each language and `.well-known/gpc.json`. Static sites with code that waits for consent no longer fail to start.
+- Every site has a privacy page at `privacy/`, written from its settings: who runs it, what it collects and why, its cookies, other companies, how long data is kept, readers' rights, Global Privacy Control and when the page last changed. An owner page with the slug `privacy` replaces it, and `::privacy-facts` places the generated facts inside it. `khalid doctor` and `khalid build` remind the owner when the page has no contact details. Its list of sections and its two tables each have their own name for screen readers.
+- A Privacy screen in the admin: how long a reader's consent choice lasts, what a browser's Global Privacy Control signal turns off, whether choices are counted, a certified consent tool used instead of Khalid, a category for each of your own scripts, your own banner words per language, and who runs the site. The settings API, and so the SDK, CLI and MCP tools, read and change the same `[privacy]` table and `[[code]]` list.
+- Proof of consent. The database keeps every version of the banner and its categories that readers were shown, with the days it was in force, and daily counts of what readers chose. It stores no address and nothing that names a reader, and drops counts after 25 months. A Proof tab on the admin's Privacy screen shows the totals a week to a row, every banner version with its dates, and a CSV download. The Admin API serves the same proof at `/api/admin/v1/consent/counts/` and `/api/admin/v1/consent/versions/`.
+- An owner guide to cookie consent, `docs/privacy/consent.md`: what Khalid does with no setup, the five categories, how to tag your own scripts, every privacy setting, proof of consent, static sites and outside consent tools.
+- Every template's demo now shows the consent banner, and the layout check fails when any demo page loads anything from another site before a reader agrees, with scripts on or off. The served demo check does the same.
+
+### Changed
+
+- Consent is now asked per category. A reader can accept all, reject all, or turn Preferences, Analytics, Marketing and External media on one by one, and each piece of the site's code runs only for a reader who allowed its category. A browser that sends Global Privacy Control keeps Marketing off, and the site answers `/.well-known/gpc.json`. A reader asked under the old banner is asked once more, except one who said no, whose no stands.
+- Video and audio embeds from YouTube, Vimeo, Spotify, SoundCloud, CodePen and Loom, and pages framed from a domain allowed under `[media] embed_domains`, such as a map, now show a card that names the provider and loads nothing from it until the reader presses "Load media" or allows external media. Feeds and newsletter emails carry the embed's title and link instead of the player.
+- The admin's editor still turns a typed or pasted address into a link when it starts with `http://`, `https://` or `www.`, or is an email address. A bare domain such as `example.com` now stays text. This keeps the admin inside its size budget.
+- The `khalid` program is about 90 KB smaller. The shared stylesheets, the reader script and the words pages show now sit compressed inside it, beside the default templates, so cookie consent fits within the size limit. Every page, stylesheet and script stays exactly the same.
+
+## 1.6.2
+
+Lighter pages: each page downloads only the CSS it uses, at most 10 KB, and pictures can come in AVIF in place of WebP. What changed, in plain words: `docs/releases/1.6.2.md`.
+
+### Added
+
+- Pictures can come in AVIF in place of WebP: set `avif = "only"` under `[media]` in `site.toml`. Pages then offer AVIF first and one JPEG or PNG, at most 1,024 px wide, for the few browsers that cannot read AVIF. This nearly halves the space pictures take on disk. It is off by default; `avif = true` still offers AVIF beside WebP. The template demos now use it, which shrinks the demos download from 702 MB to 310 MB.
+
+### Changed
+
+- Each page now downloads only the CSS it uses. A post no longer carries the rules of the home page, and the home page no longer carries the rules of every block a post may hold. Across the template demos, a home page, post, category or author page downloads at most 10 KB of CSS once compressed, where before most pages downloaded 10 to 14 KB. Pages look exactly as before, and your own rules in `theme/site.css` still reach every page. A check now keeps every template under this budget.
+
+## 1.6.0
+
+Eighteen new templates of Khalid's own design, 49 in all, with lighter pictures on every template and a smaller page on phones. What changed, in plain words: `docs/releases/1.6.0.md`.
+
+### Added
+
+- The Brief template, for a short daily or weekly digest newsletter. Every page is one narrow sheet on a tinted desk. The front page leads with the latest issue and a tick for each of its items, then lists earlier issues as dated rows. Inside an issue, each item's number hangs in the margin and the link that ends each item carries an arrow. A post's first fact is its issue number and its second the number of items.
+- The Dialogue template, for an interview show where every episode is a conversation with one guest. A post with facts is an episode: the front page leads with the latest guest, large, with their name, who they are and one line they said as a large quote, then the other episodes as guest rows, the topics and the newest notes. Each episode opens with a name plate of host and guest and the guest's line, sets blockquotes as pull quotes and marks the speakers of a transcript in a toggle.
+- A shared section part, guest rows, for conversations led by a person: a small picture, the person's name and role in a column of their own, then the title, one line they said and the date.
+- The Dispatch template, for a newsletter whose site's first job is to win sign-ups. The front page opens on the sign-up, with the newsletter's promise, what each issue holds and the form or the call to action, beside the latest issue. Each issue shows its number in a postage stamp on every list and on the issue itself, and a sign-up box follows every issue and every list.
+- The Frequency template, for a podcast's own site. The front page plays the newest episode in a dark console beside the show's name, its listen links and figures, then lists every other episode as a numbered row with a running-time dial, drawn from the episode's second fact. An episode opens with a dark plate of its facts that joins the player at the top of the show notes, and ends with the listen links. A demo publication, Dark Sky Hours, shows it with public domain photographs.
+- The Gallery template, for a studio or an illustrator. The front page is a wall of pictures with no script: every work hangs on a pale mat at its own shape, never cropped, with a numbered label under it giving its title, medium and year, and a list of works under the same numbers follows. Discipline chips lead to each category. A project page opens with its title beside a sheet of the client, year, medium and edition, read from the post's facts, then the work on its mat and one reading column with the project's other pictures.
+- The Gazette template, for a local news site with many sections. The front page shows a block per section under a bold section flag, with the section's newest story and dense headlines, beside a rail of the latest news grouped by day. A story's first fact is its place, shown as a small label before every headline and as the dateline of the story.
+- The shared headline list section part: dense headline rows, each with an optional place label from a fact, a summary and a date, or grouped under day headings.
+- The Glossy template, for a lifestyle magazine told in pictures. The front page opens like a magazine cover: the cover story's picture large beside its title and the cover lines, a numbered list of the next stories. The stories after those follow as picture cards in a repeating rhythm of wide, tall, square and band cards, then the sections as rounded links. Posts open with a large rounded picture. Text sits beside or under pictures, never on them.
+- The Hearth template, a warm, classic blog for a small team or a family business. The front page welcomes readers with the blog's name and tagline, leads with one story on a warm panel, its picture in a tall arch beside the title and the author's face, then shows the other posts as a grid of picture cards and every topic as a link. Posts read in a friendly column under a centred head. Every picture sits in an arch.
+- The Inkwell template, for the archive of a long-running newsletter. The front page puts the sign-up form beside the newsletter's name, shows the latest issue with its number set large and its parts, then lists every issue grouped by year like bound volumes, each row with the issue's number and its parts at a glance. An issue opens with a stamp of its number and an "In this issue" box. The demo is The Seed Tin, the quarterly letter of a made-up seed library.
+- The Letterpress template, for a newsletter that treats each issue as a printed edition. The front page opens with the newsletter's name as a nameplate over a folio line, then the newest issue as a cover with its picture in a plate and its contents with dotted leaders, then every other issue as a pile of small printed covers. Each issue opens with its number, date and reading time between a thick and a thin rule, sets its text with a drop cap and closes with an end mark.
+- The Manual template, for a help centre or product documentation. The front page leads with a search field on a served site and the popular articles, then numbers each topic (category) as a tile with its newest articles. An article shows the guide's steps (its series) or related articles in a column at the start, the text with its sections numbered 1, 2.1 and so on in the margin, and "On this page" in a column at the end. Under the text, a next steps panel asks "Did this answer your question?" and links to the next step, the topic, the search page and your call to action, all without a script.
+- The Margin template, for one writer's personal site of essays. Every page is a text column with a ruled margin beside it on a wide screen. The front page has a short introduction with the writer in the margin, a sign-up band and the essays as rows with their date, reading time and topic in the margin. On an essay the byline and the essay's own footnotes sit in the margin and stay beside the text as it scrolls.
+- The Masthead template, for a general publication such as a magazine, a review or a small paper. The site's name sits centred over a heavy and a thin rule with the menu between them, and the same pair of rules heads every section. The front page shows a lead story, the latest posts as picture cards in a grid or as one story a row, as the new `front` option sets, then the rest as headlines by section. Posts keep to a calm reading column of about 66 characters a line.
+- The Mosaic template, for a photo blog. The front page, every list and the foot of each post show the posts as tiles in a rhythm of sizes: a large tile beside a tall one, a row of three, two halves, then the reverse. Each picture is cut to its tile, with a small accent square, the place, the date and the title under it, never on it. A post opens with its picture whole, then the title row with the post's facts as short notes beside it, and the story in one column.
+- The Notebook template, for one person's public notebook of short notes and links. Every page is a dated stream, newest first under month headings, with each date in the margin beside a double margin rule like an exercise book. A post whose first fact is a web address is a link note, with a "Read it at" link to what it shares. The front page has a side column with what the notebook is, its sections and the newsletter form.
+- The Pantry template, for a baking and recipe blog. A post with facts is a recipe: the front page shows the sections of the recipe box (categories) as divider tabs, the newest recipe as a wide index card, the other recipes as square index cards with the time and yield on a tear-off ticket, and the newest baking notes. Each recipe opens on its ticket of four facts (time, yield, oven, level), its bullet lists before the method are drawn as an ingredients card, and its first numbered list as the method's steps.
+- A shared section part, ticket cards, for index cards whose facts sit on a tear-off ticket, with `fact_ticket` for one ticket on its own.
+- The Quill template, for a minimal text blog. One column of generous type, every list one line a post with its title and date, no pictures on lists, and a small nib mark before the site's name and under the end of every post. It replaces no page and adds only a short stylesheet, the smallest of any template, so its pages load fastest.
+- The Spectrum template, for a magazine arranged by topic. Each topic takes its own colour from its place in the main menu, made from the site's accent: a segment of the spectrum bar under the masthead, a row of the topic's newest posts on a band of that colour on the front page, the square before its label on every card, and the band at the top of its posts and its topic page. The front page leads with one story beside the latest posts.
+
+### Changed
+
+- Pictures are lighter on phones with sharp screens. Pictures now also come in a 1,152 px size, so a phone card no longer downloads the 1,280 px file, and AVIF pictures (`avif = true` under `[media]`) are about 12% smaller with no visible difference. Every template demo now offers its pictures in AVIF. On a 390 px phone at three device pixels per CSS pixel, the 31 demo home pages download 52% less picture data (15.9 MB down to 7.6 MB), and the page-weight check now measures that phone too.
+- Pictures on every template now load at the size they are shown. Each template tells the browser how wide each picture really is, on a phone, a tablet and a desktop, so a small card no longer downloads a large photo. Across the 31 template demos, the pictures on the home pages weigh 40% less on a desktop (13.1 MB down to 7.9 MB) and 15% less on a phone. Lead pictures that were shown wider than their file, such as Keystone's featured post, are now sharp. A template's own picture slots can pass their width as `sizes`, such as `picture(post.image, "(min-width: 64rem) 22rem, 90vw")`, and the old `picture(post.image)` still works. A check now keeps each demo home page under a picture budget, so a slow page cannot come back unnoticed.
+
+## 1.5.0
+
+Twenty new templates of Khalid's own design, 31 in all, for kinds of site that had none, such as events, music, sports clubs, charities, online courses and changelogs, each with a demo blog of its own. What changed, in plain words: `docs/releases/1.5.0.md`.
+
+### Added
+
+- The Aperture template, for one photographer. Each post is one picture and its story: the front page shows the newest posts as full-width single-image stories, each with a plate of its camera, lens, exposure and the date it was taken, read from the post's facts, and the older posts in a light contact sheet that scrolls sideways. A post opens with its picture the full width of the frame, then the story in one calm column. Lists show one picture a row, never a grid.
+- The Atelier template, for a fashion label, stylist or fashion writer. A post with facts and a picture is a look, and its facts are the pieces worn. The front page is a lookbook: the featured look as a two-page spread with its pieces as a ledger beside the picture, the other looks as a numbered grid of tall pictures, the collections and a journal of notes. Each post opens as the same spread. Captions sit beside or under pictures, never on them.
+- Two shared section parts for picture-led templates: a spread (a picture beside a text column with a ledger of facts) and a picture grid (numbered tall pictures with the caption under each).
+- The Beacon template, for a charity or a cause. A post with facts is a campaign: its first two facts, the amount raised and the goal, draw a goal meter on its card and in a campaign panel beside its picture, with the donate button. The front page shows the charity's name and donate button beside the lead appeal, its impact figures in a band, the campaigns as cards, a news feed and every area of work, and every page ends with a donate band. The donate button only links to a page the charity owns; Beacon takes no payments.
+- A goal meter section part, `sections/goal_meter.html`, which shows how far a number has come towards a target from two facts.
+- The Channel template, for a video creator. The front page leads with the newest post with a video as Now showing, then every other post as a thumbnail card with a play bar and its running time, then a shelf for each playlist. A post opens on its video, set wider than the text, and ends with Up next.
+- A shared video grid section part: thumbnail cards cut to 16:9 with the play bar under each picture, in a grid or a shelf that scrolls sideways.
+- The Chapter template, for an author's site. The front page opens with the newest book beside its cover, then shows the books as a shelf of covers, excerpts and essays as a book's contents page with dotted leaders, and readings and launches as dated rows, each part opened like a chapter. A book shows its cover beside its facts and an order button, an event shows its facts in a panel, and an excerpt is set as a page of the book with a drop cap.
+- Three shared section parts: a cover shelf, a contents page and an event list.
+- The Encore template, for a musician or a band. A post with facts is a release: its cover sits on a sleeve with the record half out, and its format, release date, label and a Listen button sit beside it. The front page shows the newest release, the tour dates from the `tour_dates` option with ticket links, a shelf of every other record and the band's newest notes. Lists show releases as sleeves and notes as picture cards, and the band page shows every member.
+- The Fixture template, for a sports club. A post with facts is a match: the front page shows the next match beside the club's name, the form guide of the last five results, results as scoreboard rows with the score in large figures, upcoming fixtures and club news, and each match report opens with a scoreboard with the home side first. Lists group matches by month like a fixture list, and the squad page shows the players and staff in a grid.
+- A shared section part for templates, the results list (`sections/results_list.html`): scoreboard rows with a W, D, L or "v" chip, read from a post's facts.
+- The Hub template, a creator's link-in-bio home. The front page is one narrow column: the creator's photo and name, a stack of large link buttons from the `links` option led by the call to action, then the latest posts as rows with a square picture. Each post ends with the links again.
+- A shared link stack section part, `sections/link_stack.html`, for any template that needs a stack of large link buttons.
+- The Itinerary template, for a travel diary. A post with facts is a trip (days, route, when and cost): the front page shows the newest trip as a wide ticket, each country as a passport stamp, the other trips as tickets and the notes as a dated list. A trip shows its facts as a boarding pass, lists its days under Day by day, and marks each main heading as a stop on a dashed route. Task lists, such as a packing list, show as checklists.
+- The Lattice template, for a science explainer site. Every picture is a numbered figure plate on a fine grid, a post's facts show as its key numbers, footnotes become small numbered tabs over a ruled notes panel, and links to glossary terms are marked. The front page leads with one explainer and its key numbers, then the topics and the latest explainers as plates. The glossary page gets the same look.
+- The Locale template, for a city guide. A post with facts is a place: its kind, price level, opening hours and address. The front page lists every area's places as guidebook rows, each with its name, a dotted leader and a price meter, then its kind and hours, with a chip per area to jump to it. Each place opens with its picture beside an At a glance card, and notes from the city show as picture cards.
+- The Plinth template, for an architecture or interiors practice. A post with facts is a project: the front page shows each project as a spread, its photograph on a heavy ink bar beside a numbered title block of its facts, with studio notes and the types of work after them. In a project, each figure, such as a plan, is framed as a numbered drawing sheet. Lists show projects as a grid of numbered sheets.
+- A shared title block section part, `sections/title_block.html`: a post's facts in a ruled box, as in the corner of a drawing.
+- The Reel template, for film and TV reviews. A post with facts is a review: its rating shows as five stars on a ticket with the release, the cast and where to watch. The front page leads with the featured review in a letterbox frame, then poster cards, a score sheet ranked by rating and a feed of features.
+- Two shared section parts: `rating`, a score drawn as five stars, and `poster_grid`, tall cover cards for reviews, games, books and records.
+- The Research template, for a research lab or academic group. A post with facts is a paper: the front page lists papers as a numbered reference list with venue, year, DOI and citations beside a news feed and an index of research areas, and each paper ends with a Cite this box and a BibTeX entry built from its own data. Lists group papers by year, and the people page shows the group in a grid.
+- Shared section parts for templates in `crates/khalid-render/templates/sections/`: a hero, a figure strip, a feed list, a people grid, a publication list and a cite box. A template ships a part's styles only when it uses the part.
+- The Respawn template, for a games site with news, reviews and a release calendar. A post with facts is a review: its first fact, the score out of 10, shows as a dark square and a health bar of ten cells on the front page cards, in a score strip at the top of the review, in a verdict at its end and on every list. The front page leads with a story beside the latest news, then a calendar of the games coming out soon from the `release_calendar` option.
+- A score meter section part, `sections/score_meter.html`, which any review template can reuse.
+- The Summit template, for a conference, festival or event. A post with facts is a session (day, time, room and format): the front page shows the programme as a timetable by day and time, the speakers, the venues with how many sessions each holds and the latest updates, and each session shows its facts on a ticket stub. Venue, track and speaker pages show their sessions on the same timetable.
+- A shared `schedule` section part in `crates/khalid-render/templates/sections/`: a timetable grouped by day and sorted by time, with links to each day, for conferences, fixtures, tour dates and course weeks.
+- The Syllabus template, for an online course. Lessons are posts with facts, modules are categories and the course is a series. The front page shows a course map with one square per lesson, grouped by module, and the course outline with each lesson's number and length beside the course news. Each lesson shows "Lesson 5 of 13" and a progress ruler, its facts at a glance, and large links to the previous and next lessons, all without a script.
+- A shared progress strip section part: a row of small squares, one per step, for a course's lessons, a programme's days or a trip's days.
+- The Ticker template, for a markets newsletter. A post with facts is an issue, each fact a market and its move. The front page opens with a dark tape of figures, then the latest issue beside its facts as a bar chart, then every other post as a data table shaded by how far each figure moved. Charts are HTML and CSS, so they draw with scripts off. A `disclaimer` option puts one line under every chart.
+- Two shared section parts in `crates/khalid-render/templates/sections/`: a bar chart and a fact table.
+- The Versions template, for a software product's changelog. Each change is a post: its category is its type, such as New, Improved or Fixed, and its first fact is its version. Every list shows the changes on a version rail, grouped by version with the date, under a filter row of plain links to each type. The front page adds a box to get updates by email or feed, with a feed for each type, and the versions on the page as anchor links.
+- Two shared section parts: a release log (a version timeline grouped by a post's first fact) and a filter row (chips that each open a list, with this page marked).
+- The Vital template, for a health and wellness site of programmes and routines. A post with facts is a routine: the front page shows the programmes (categories) as chips, the newest routines as picture cards with their time in a ring, and the newest notes. Each routine opens with a session panel (time, level, how often, what you need) and an optional care note, and its numbered list is drawn as a track of steps.
+- A shared section part, session cards, for picture cards whose first fact sits in a ring, such as a routine's time or a lesson's length.
+
+### Changed
+
+- The binary carries the shared templates compressed, with their comments emptied, as it already carries each template's own files. Every page renders the same; the binary is smaller.
+- A built-in template can bring its own `parts-<name>.html` files of macros. A site's `theme/templates/` still replaces only the shared files.
+- Demos refresh by themselves after a change to a template, and the speed check measures once more when only the cold start fails.
+
+## 1.4.0
+
+Ten redesigned templates, each with a signature look and a live demo publication, facts a post can show on its card and page, a smaller binary that carries every template compressed, faster first pictures on post lists, a Ghost-compatible Content API, image downloads on import and fixes across the templates. What changed, in plain words: `docs/releases/1.4.0.md`.
+
+### Added
+
+- Each template's page in `docs/templates/` now ends with its design brief: who it is for, the kind of blogs it learns from, its type and colours, how wide it runs on a large screen, and how it looks on a phone. Each template's demo also has its own sample brand (colours, a logo and a pair of self-hosted fonts) in `fixtures/showcase-brands/`, ready for the redesigned demos.
+- The layout check, `just layout-check`, now also opens every template at 2000 px, the width of a large desktop screen. On wide screens it fails when a template's frame is narrower than its design brief sets, when a post's text is under 18 px, and when a post's lines hold fewer than 60 or more than 75 characters. It also fails when a template's stylesheet is 20 KB or more compressed. `just layout-selftest` proves these checks on sites with a planted fault each.
+- `just demo-pictures --out <folder>` takes full-page pictures of every template's demo at 2000, 1440 and 390 px, in its sample brand and with its own defaults, and lays them out as one sheet per template beside reference pictures, for review.
+- Each template demo can wear a sample brand from `fixtures/showcase-brands/<name>/theme/`. GitHub Pages, the layout check and the pictures all use it.
+- A post can list up to four short facts in its front matter, such as `Client: Calder Street Library` or `Serves: 4`. Templates can show them on the post's card and page as `post.facts` and `page.facts`.
+- `khalid import --download-images` copies the images each imported post and page shows from the old site into the post's own folder, and points the links at the copies. From WordPress and Ghost, the feature image comes too and becomes the post's lead image. An image that cannot be fetched keeps its old address and is listed with the reason, the same image is fetched once, and `--dry-run` only says how many it would fetch.
+- `khalid init --template <name>` starts a new blog in any built-in template, such as `--template atlas`. It writes the `[template]` table into `site.toml` and starts `theme/tokens.toml` with that template's colours, text sizes and spacing, so the new blog looks like the template's demo. An unknown name stops before anything is made and lists every name. Without the flag the blog starts in Classic, as before.
+- A CI job, Starter kits, and `scripts/starters-check.sh`: both starter kits are built against the showcase site in headless mode, and each one's front page and a post must carry a title, a meta description and JSON-LD schema (U14, R12, KH-INS-5).
+- The demos bundle for serpdad.com, `khalid-demos.tar.gz`, now holds `demos/<name>/` for each of the ten designed templates, each with its preview pictures in `_previews/`, and `templates.json`, which lists every template with the kind of blog it suits, whether its demo publication is ready, its demo and its pictures. `templates/<name>/` stays in the bundle until serpdad.com moves to the new paths.
+- `scripts/demos-bundle.sh --check <folder or archive>` stops unless `templates.json` lists every template in the bundle and every demo and picture it names is there. Each bundle build runs it before packing.
+- The Pages workflow also puts the bundles on a GitHub release named `demos`. It is a prerelease that is never marked latest, so `scripts/install.sh` and `khalid update` still install the newest `v` release.
+- `scripts/docs-bundle.sh` packs the user docs as `khalid-docs.tar.gz` for serpdad.com/khalid/docs/: each doc with its title and order, a doc list, and links between docs rewritten to their new addresses. A link or picture that leads nowhere stops the pack.
+- A front end built on Ghost's Content API can read a Khalid blog: set `ghost_content_api = true` in site.toml, make a content key, and point Ghost's own client at the blog's address. Posts, pages, tags, authors and the settings answer in Ghost's shape at `/ghost/api/content/`, with the common part of Ghost's filters. `docs/ghost-api.md` lists what is and is not covered.
+- Each template's demo can show a publication of its own in place of the showcase site's posts, from `fixtures/showcase-publications/<name>/`, once it is marked ready. GitHub Pages, the layout check and the review pictures all use it. Its photographs are fetched when the demo is built and checked one by one against `photos.lock`; a missing or changed photo stops the build and names it. The photographs are not part of Khalid and keep their own licences, as `LICENSE` and the publications' README say. `just publication-selftest` proves the step with no browser.
+
+### Changed
+
+- The binary carries each template's stylesheet compressed and reads it out the first time a build needs it. Sites get the same stylesheet; the binary is about 250 KB smaller.
+- The binary carries each template's page files compressed too, as it already did their stylesheets. Sites build exactly as before, and the binary is smaller, which leaves room for more templates.
+- The website and the feature tour of the demo blog no longer write out how many templates Khalid has. The template gallery counts its looks itself, and the feature tour links to the gallery instead of listing each demo.
+- The binary embeds each template's stylesheet without its comments and indentation, which the renderer removed from every site's stylesheet anyway. Sites get the same stylesheet; the binary is about 40 KB smaller.
+- The binary carries all templates' stylesheets and page files as one compressed archive instead of one per file. It is about 30 KB smaller, which leaves room for many more templates. Every site builds exactly as before.
+- Compass has a new design. The front page opens on a full-width map: the blog's title up to 6.75rem, the drawn compass, and every topic as a numbered stop on one trail, so the old empty title card is gone. The newest post leads with a large title, six picture cards follow, and a long list continues as a numbered index of ruled rows. A guide's title is larger and centred on a pale band, the frame is 80rem (88rem on very wide screens), and on a phone the header stays one row. On a wide screen a guide's text is larger in a wider column, and on a phone every card after the lead is a compact row with a small picture, so the front page is less than half as tall as before. On a laptop the five demo topics fit on one row of the trail. Compass's colours and type now live in its own tokens file, and a test checks every template's colours for readable contrast.
+- Classic, the look every blog starts with, has a new design. The header, lists and footer use a wide frame (72rem) instead of one narrow column. List pages open with one large lead story, then a grid of cards with category labels above each title. The menu links are quiet, the announcement is a dark band, titles are larger, and long posts have a calmer contents list beside them. Only the tokens set colours and type, so a synced theme still recolours it all.
+- Folio, the product team's notebook template, has a new design. The blog's name runs very large on faint ruled paper at the top of the front page. Under it, the featured story sits beside a numbered rail of the five newest posts, then six picture cards, then every older post as a ruled row with its date. Post and list titles are larger, and Folio's own colours are now a quiet graphite with one ochre accent. A synced theme still recolours it all.
+- On a phone the main menu sits behind one Menu button that folds the links open, with no script, instead of a row of links that ran off the screen.
+- Keystone shows its share links after the text below 70rem, and Wire hides the writer's card where it would sit above the text, so a post starts right under its picture.
+- Atlas and Harbor posts read on the plain white ground. The tinted band stays on the front page and the list pages, and Atlas's panels take a quieter tint.
+- Keystone has a new design. The page fills a wide frame (up to 90rem) drawn with two fine guides, the blog's name runs large across the top over a row of topic pills, and the lead story sits on one framed panel split in two. The newest posts open with two large cards, then rows of three, then a text-only index of titles; on a phone the index is one line of title and the date per post, so the front page is about half as tall. Posts read in larger text on a wide screen, with the post's contents and the share links in a column on the far side of the text that stays in view as you read; the contents option now defaults to `side-end`. Post titles are larger, and a small keystone wedge marks each label. Keystone's own colours, fonts and sizes now live in its tokens file, so a blog without theme sync gets the full look, and a synced theme still recolours it all.
+- Ledger, the text-led template for studies and long how-tos, has a new design. Its front page opens with the blog's name set very large over a double rule. The newest post leads, the rest follow as numbered rows split by thin lines (no boxes), and on a wide screen the topics stand in a numbered index beside them, each with its newest post, followed by the editor's picks. From the eleventh post on, each row is one line with its title and date, so a long front page reads like a study's index. A post's lead image sits at the width of the text, so the title and first paragraph show on the first screen. Post titles run wide over a reading column of about 70 characters, with the contents beside the text on a wide screen. Headings use a heavy system sans and the text a sturdy serif. The frame is 75rem. Colours and fonts come only from the tokens, so a synced theme still recolours it all.
+- Meridian, the company journal template, has a new design built around a journal's masthead: the blog's name set very large in the serif over a heavy ink rule. The front page leads with the newest post beside its picture, then two large stories side by side, the editor's picks numbered on a soft band, six wide rows with the category, date and author in a column at the start, then every other post in a quiet text-only index of one line each, so the page keeps a rhythm and still links every post. On a phone the stories after the lead are compact, a small picture beside the title. On a wide screen a post's text grows to 1.25rem on a wider measure, and its charts and pictures step out wider. A post with a cover opens split across the page, the title beside the picture. The page is now 80rem wide, and Meridian's own palette, fonts and type sizes live in its own tokens file. A synced theme still recolours it all.
+- Almanac has a new design, set like a reference book. The front page opens with the blog name very large between two rules, over a numbered row of topics. Latest posts, editor picks and the contents of a post are numbered, ruled rows instead of boxes, and on a wide screen each section number of a post hangs in the margin. A blog with no theme now reads in the system book serif instead of a sans.
+- Atlas has a new design for publications with many topics. The home page opens with a masthead band on a tint of the accent with a faint map grid, the blog name set very large, and the topics as square chips under a heavy accent rule. Stories follow in several sizes: a wide lead with a second story beside it, numbered editor picks, and four cards across with the first spanning two. Topic labels are solid accent chips, and the topic index sits in columns under heavy rules. On a large screen post text is bigger, so a line keeps a comfortable length.
+- Harbor has a new design for busy marketing blogs. Each page opens on a light tint of the accent, with the page title set very large and the featured post, editor picks or the offer on cards resting on it. Below come rounded picture cards that lift on hover, then every older post as a one-line row of title, topic and date, so the front page still links to every post. Section headings sit under a short accent bar and the offer is a band in the full accent colour. The header keeps the logo, menu and button on one row on a laptop, and on a large screen post text is bigger so a line keeps a comfortable length.
+- Wire has a new design, set like a newspaper. A centred masthead sits above a menu in capitals between a hairline and a heavy rule. The lead story has a very large condensed headline with the latest posts ruled off beside it, section titles sit under a heavy accent rule, and the feed is dense ruled rows with the date in plain sight and the editor picks numbered in a rail. Dates and names on cards no longer break inside a word.
+- Every demo post has a new cover picture in one calm style: a bold ink line drawing on a light ground with one orange area, showing what the post is about. German posts share the drawing of the matching English post. The 43 covers weigh 46 KB together, down from 83 KB.
+- Workbench, the template for tool reviews and comparisons, has a new design: a test lab's bench sheet. It now has colours of its own before any theme sync: a grey-white bench, graphite text and one verdict green. The front page opens on the blog's name in very large, tight type on squared paper over a thick rule. On a wide screen the featured post sits beside the five newest posts, numbered 01 to 05, and its picture keeps a 16 by 9 shape instead of filling the window; on list pages it sits beside its words. The other posts show as ruled cells of one sheet, with the category in the code font; after twelve cells (six on a phone, where they sit two across) the rest are ruled rows of a title and a date, so the front page still links every post without a wall of pictures. On a phone the menu is one row you can swipe, faded at its end. On a screen 1280 px or wider, a post's title and lead picture span the frame and the contents stay in view in a rail beside larger text. In a post, each section opens under a green rule, a bold label that opens a paragraph (such as "Price:") is set in the code font, the comparison table has a ruled header row and a first column that stays in place on phones, a cell written all in bold is tinted as the pick, and pros and cons show as two ruled columns with plus and minus marks.
+- Khalid makes each picture's JPEG or PNG copy, for browsers that cannot show WebP, in one size of at most 1280 px instead of in every size. Pages look the same in every current browser, and a site's pictures take about half the disk space. Click to enlarge now opens the widest WebP, and a post's share image is still the JPEG, at 1200 px or more where the picture is that wide.
+- Harbor is described as a food and recipe blog, to match its recipe card strip and its demo. The demo gallery groups it under "Food and recipes".
+- GitHub Pages at https://thebigasif.github.io/khalid/ now only forwards to https://serpdad.com/khalid/, Khalid's one home. Each old page sends visitors and search engines to the matching page there: a demo page to the same page of its template's new demo, the old website's pages to the landing page, the getting started guide and the comparison. The README links serpdad.com.
+
+### Fixed
+
+- On the front page and on category, tag, author and other post lists, the first picture now loads at once with high priority instead of waiting, so the large picture at the top no longer shows as an empty box at first. Every other card picture still loads when it nears the screen. This works in every template.
+- On a running site, the Content API now lists the tags your posts name, shows each post's tags, and lists your plain pages, such as About. Before, the tags and pages lists were always empty and every post showed no tags.
+- Author photos on post cards stay round in every template. Beside a long author name they were squeezed into an oval: on a phone in Keystone, on wide screens in Harbor and Meridian. In Keystone a long name now wraps onto a second line instead.
+- The layout check, `just layout-check`, now also fails when a person's photo is not drawn square, and the showcase has an author with a long name so the check sees the case.
+- Classic's posts keep a comfortable line, 60 to 75 characters, on every computer. Classic reads in the system's own font, and on a Mac a line held about 77 characters.
+- The layout check's crushed-cell finding needs a word the column really breaks onto a second line. A word that just fits its column no longer fails it by a rounded pixel.
+- A template's demo publication can set the template's options, such as a tagline, and the live demo keeps them.
+- The commands `khalid import` prints at the end, such as storing the held redirects, now work from the folder the import ran in, with `--site` when it is needed.
+- A post shows its contents once. Where a template shows the contents beside the post, or folded above it, the list a writer placed in the body with `::toc` no longer repeats them.
+- Inside the blog folder, the one that holds site.toml, every command now works without `--site`, as the migration guide shows. Outside it, a command still asks for the folder.
+- Workbench: on a phone, the front page no longer scrolls sideways by one pixel. The hidden score meters on the later cards now take no width.
+- The Astro starter kit built no pages: Astro 7 leaves the Content API's address and key out of `import.meta.env`. The pages now read `process.env`, and the config loads `.env` into it.
+- The Next.js starter kit stopped at TypeScript 7's type check on `khalid.js`.
+- The starter kits' front pages now have a meta description, a canonical link and `Blog` schema, from the new `homeHead` in `khalid.js`.
+- The Astro starter's README said the pages land in `dist/blog/`. They land in `dist/`.
+
+## 1.3.2
+
+Fixes found by running a live blog on Khalid 1.3.1 and testing it in Chrome, Firefox and Safari: layout faults in every template, videos that would not play in Safari, feeds for each category, settings that apply without a restart, fairer writing checks, and a layout check in three browsers so these faults are caught before a release. What changed, in plain words: `docs/releases/1.3.2.md`.
+
+### Added
+
+#### Feeds
+
+- Each category and each channel now has its own RSS, Atom and JSON feed in its folder, such as `/blog/category/technical-seo/feed.xml`, in every language it has posts in. The home page, each category page and each channel page link their feeds in the page head, so feed readers find them from the page address. A category with no posts in a language gets no feed there.
+
+#### Templates
+
+- Keystone shows the trail of links from the front page above each post, page, list and author page. Turn it off with `breadcrumbs = false` under `[template.options]`.
+- Keystone shows why a post was updated, from its `updated_note`, under its date. Turn it off with `updated_note = false`.
+- Keystone takes `related_count`, from 3 to 10, and shows five related posts by default instead of three.
+
+#### Deploying
+
+- `khalid init --stack` prints the Sitemap line the main site's own robots.txt needs when the blog lives under a folder, and the deploy guide says where it goes.
+
+#### Checks
+
+- A layout check, `just layout-check`, opens the showcase in every template in Chromium, Firefox and WebKit at 390, 768 and 1440 px. It fails when text covers other text or a picture, a list marker covers text, a page scrolls sideways, a table column is narrower than its longest word, or a picture does not load, and it names the template, page, browser, width and the two elements. CI runs it in the Demo check.
+
+### Fixed
+
+#### Templates
+
+- The lead picture and wide tables keep to the text column while the side contents list shows, in every template, so the list never runs over them as you scroll.
+- The tick and cross in a pros and cons block no longer cover the first letters of each line, in every template.
+- A folded table sizes its columns to its words, so no word breaks in the middle on a phone. A wide one scrolls sideways inside its own box, and "Show the rest" looks like a button.
+- The Contents button no longer floats over text, tables and buttons on phones and tablets. It takes the folded contents list's place at the start of the post.
+- The comment form's fields and send button look like the template's other forms, with borders in Safari too.
+- Every profile link in the author box and on the author page shows its icon and its name, so a bare globe never reads as part of the next link.
+- On a Keystone author page the role sits under the name with space between them, instead of touching it.
+- A post that pins five related posts shows all five in Keystone, not the first three.
+- The cards in the home page's topic tabs show each post's own lead image, a PNG or an SVG, like every other card, in every template. The video and podcast rows on the home page get their pictures and author photos too.
+- Post cards in the topic tabs keep the author and the date side by side in Compass, instead of pushing the date over the next card. Harbor's cards keep the date on its own side of the author.
+- Meridian's byline stacks the author, the dates and the category when the side contents list leaves it little room, instead of printing them over each other.
+- The topic tabs on the home page scroll inside their own row, so the page no longer scrolls sideways on a phone or a tablet.
+
+#### List pages and search
+
+- A tag page says "Tag" above its name and shows the name in title case, so `internal links` reads "Internal Links"; a tag written with a capital keeps the writer's spelling.
+- The HTML sitemap lists categories and tags under their own headings, so a category and a tag with the same name are told apart.
+- Each card on a series page says "Part 1", "Part 2" and on, in series order.
+- A glossary term's page links back to the glossary and lists its related terms and the posts that use it, up to ten, newest first.
+- Search results put a dot between blocks, so a bookmark card's title, description and site never run into one sentence, and the search input and button stay on one line at every width. Older search indexes show this after the next re-index.
+
+#### Media
+
+- Videos, sound files, CSV tables and ZIP archives beside a post now go out with their own media type, such as `video/mp4`, instead of as unknown bytes, so browsers play and open them.
+- Videos and other files that are not text answer Range requests with only the part asked for, which Safari needs before it plays a video. Media library files do the same.
+- The video embed frame no longer carries `allow-presentation`, which Safari refused with a console error; full screen still works through the frame's allow list.
+
+#### Writing
+
+- A wikilink with a label, `[[slug|words]]`, now works inside a Markdown table cell, on the page, in the editor preview, in the linter's link checks and under "Posts that link here". `[[slug\|words]]`, the way GitHub writes it, gives the same link. A `|` outside `[[ ]]` still splits the cell.
+- The `answer-capsule` check counts only the first paragraph under a question heading, as its message always said, so a correct 40 to 60 word answer followed by detail no longer warns.
+- The `sourced-statistics` check warns only on statistics: a percentage, a sum of money, a figure in millions or billions, a multiple such as 3x, or a number near "study", "survey", "report", "found" or "according to". Step names, counts of words or minutes, version numbers, dates, headings and code no longer warn.
+
+#### Serving
+
+- `khalid serve` now applies a saved `site.toml`, `routes.toml` or theme file (`tokens.toml`, `site.css`, fonts, templates) without a restart. A file with a mistake keeps the last good pages and settings, and the log says which file and line to fix, in one line. `mount` and `mode` keep their start value, and the log says when a changed setting needs a restart. `docs/deploy.md` lists those settings.
+
+#### Docs
+
+- The Cloudflare deploy guides say to turn off Email Address Obfuscation, which Khalid's security policy blocks, so email addresses and the share-by-email link work.
+- The demo's feature tour no longer sends you to Google's Rich Results Test for FAQ, how-to, fact check, course and podcast episode data, which Google stopped showing. It names the Schema Markup Validator for those, and says the automatic table of contents needs the `contents` option.
+
+## 1.3.1
+
+Two fixes: the classic template's footer lines up with the page again, and a blog's own fonts now load, as small files. What changed, in plain words: `docs/releases/1.3.1.md`.
+
+### Fixed
+
+#### Templates
+
+- The classic template's footer is as wide as the header and the page again, instead of narrower, when the site sets its line length in ch or em, such as measure = "68ch" in theme/tokens.toml.
+
+#### Theme and fonts
+
+- Self-hosted fonts now show on the blog. `khalid serve` answers the font files in `theme/fonts/` that `theme/tokens.toml` lists, kept by browsers for a year, and the stylesheet points at the right address with or without a mount such as `/blog/`, in both `khalid serve` and `khalid build`. Nothing else in that folder can be reached. `khalid theme sync` now writes the font entries even when `theme/tokens.toml` already exists, and saves each Google font as one small Latin file with its `unicode-range` (the letters it covers), one file per weight or one variable file for every weight, instead of one whole bold file. Run `khalid theme sync <your site>` again to pick up the smaller files.
+
+## 1.3.0
+
+Yoast-style checks and settings: readability and keyword checks that know word forms and synonyms, two scores per post, search title templates, breadcrumbs, local business locations, an SEO settings screen, a bulk SEO editor, optional AI suggestions and richer WordPress imports.
+Better reading and discovery for your readers: a reading progress bar, live search, series, hub pages, a glossary, charts, a newsletter page and AVIF images, plus a Calendar in the admin. What is new, in plain words: `docs/releases/1.3.0.md`.
+
+### Added
+
+#### Checks and scores
+
+- **Yoast-style content analysis.** The focus keyword now counts in any word form ("internal link" for "internal links", in English and German), and `keyword_synonyms:` in the header lists other words that count as it. Each secondary keyword gets the title, first paragraph, subheading and density checks as tips. New checks warn when the keyword is too long, is only small words, is spread through only a few parts of the text, sits in too few or too many subheadings, or is already used by an older post, and a tip shows when it sits late in the title. The title is now measured in pixels, as Google cuts it. New checks also warn about a post with no image, a post whose links to other sites all carry `nofollow`, and pillar posts under 900 words or not updated for six months. See `docs/lint-analysis.md`.
+- **Readability checks** on your own prose, with code, quotes, tables and Khalid's own text left out: long sentences, long stretches without a subheading, three sentences in a row that start alike, too few linking words, too much passive voice and too many long rare words, in English and German, and a tip with other words for terms that can leave readers out.
+- **Two scores.** A post's lint result now carries a readability score apart from the SEO score, with its word count, its reading index and its ten most prominent words.
+- A fourth lint level, `info`, for tips that cost no points and never block.
+- `[[glossary:slug]]` always links the glossary term, even when a post has the same slug. A new `ambiguous-wikilink` warning shows each `[[slug]]` that names both a post and a term, because the bare form links the post.
+
+#### Search appearance
+
+- **Ten more title and description variables**, as Yoast has: `{date}`, `{modified}`, `{page}`, `{term}`, `{term_description}`, `{searchphrase}`, `{currentyear}`, `{currentmonth}`, `{tag}` and `{focuskw}`. Dates and month names are written in the page's language. Every variable is listed in `docs/seo-settings.md`.
+- **Show in search results per content type**: `[seo.index] posts`, `pages` and `collections.<name>`. **Author and date archives can be switched off** with `authors = "off"` and `dates = "off"`: their pages are not built and their addresses redirect to the home page.
+- **A whole site can stay out of search.** `[seo.index] site = "noindex"` gives every page `noindex, follow`, over a post's own `robots`, and empties the sitemaps, for a staging copy or a sample blog.
+- **Breadcrumb settings** in `[seo.breadcrumbs]`: the separator, the home step's name, a prefix for archive and search pages, a bold last step, and which term a post's trail passes through. A post can set a shorter `breadcrumb_title:`. The trail and its `BreadcrumbList` agree.
+- **Category and tag SEO**: each term page can have its own title, description, robots, share image and intro, in `categories.toml` and `tags.toml`. The build names term pages that have no intro.
+- **Schema type per post and page**: `page_type:` (`FAQPage`, `ContactPage`, `AboutPage`, `QAPage`, `ItemPage`, `CollectionPage`) and `article_type:` (`BlogPosting`, `Article`, `NewsArticle`, `TechArticle`, `Report`) override the defaults.
+- **Schema aggregation**: the whole site's structured data in one file per language, at `schema.json`, linked from each language's home page. `[seo.schema_map] robots_txt = true` also names it in `robots.txt` on a `Schemamap:` line, as Yoast does, though Lighthouse then marks `robots.txt` invalid. `[seo.schema_map] off = true` turns it off.
+- **Enhanced X and Slack previews**: a post's preview names its author and reading time (`twitter:label1` to `data2`). `[seo.social] share_labels = false` turns them off.
+- **robots.txt**: the search page is kept from crawlers by default (`[seo.crawlers] disallow_search`), and `extra_lines` adds lines as written.
+- **Search filters** in `[seo.search_filter]`: a search over 50 characters, with emoji or symbols, or that looks like spam answers 400 with the empty search page. Each filter can be switched off.
+- **llms.txt options** in `[seo.llms_txt]`: an intro, key pages listed first, paths to leave out, and `off`.
+- **Feeds per format**: `[seo.feeds] off = ["atom", "json"]` stops writing those feeds.
+- **News**: `news: false` keeps a post out of the news sitemap, and `stock_tickers:` adds up to five tickers to it.
+- **Video**: `thumbnail=` on the video block sets the picture search results show.
+- Review and product blocks on a page, such as a tools page, now write their `Review`, `Product` and `Offer` structured data, as they already did on posts. A page has no author, so its scores are credited to the site's publisher.
+- Review and product blocks take readers' scores, `average="4.2" ratings="310"`, shown as "Readers: 4.2 / 5 from 310 ratings" and written as the `AggregateRating` search engines show as stars.
+
+#### Local business
+
+- **Local**: a location can have a `geo` point. Those with one go in `locations.kml`, a geo sitemap listed in the sitemap index, and their schema node names the point. `[seo.local] kml = false` turns the file off.
+- **The location block**: `::location{name="..."}` shows a location's address, phone, opening hours, a map link and, with scripts on, whether it is open now.
+- **The locations page** at `/locations/` lists every location, and sorts them nearest first when the reader shares where they are. `[seo.local] page = false` turns it off.
+
+#### Reading
+
+- Posts show a reading progress bar: a thin line in your accent colour at the top of the window that fills as the reader scrolls. It needs no script in current browsers and hides for readers who ask for less motion and in print. Every template shows it; in any template but classic, `reading_progress = "none"` under `[template.options]` turns it off.
+- The contents of a long post mark the section being read, and on a phone a small "Contents" button opens them as a sheet from the bottom of the screen, closed by Escape or its Close button. With scripts off the contents box above the post still lists every section.
+- The `#` beside each H2 and H3 of a post is now a "Copy link" button: it copies the address of that section and says "Link copied", out loud for screen readers too. With scripts off it stays a plain link to the section.
+- On a served blog the header's search link opens a search box over the page that shows matching posts as the reader types; `/` and Ctrl+K open it too. With scripts off it opens the search page. The template option `header_search` picks `button` (the default), `link` or `none`. A static blog has no search, so its header shows none.
+
+#### Discovery
+
+- **Glossary from A to Z.** Every language with a glossary term now gets a page at `/glossary/`: a row of letters to jump to, then each term under its letter as a card with its one-sentence definition. Accented letters sort with their base letter, so German `Ähnlichkeit` sits under A. The page's JSON-LD is a `DefinedTermSet` that names every term, it is in the XML and HTML sitemaps, and `content/<lang>/glossary/_index.md` may give it a title, a description and an intro (KH-CON-1, KH-CON-2, KH-SEO-3, KH-SEO-5).
+- **Case study and changelog pages.** Case studies and changelog entries, which the Content API already served, now have pages in every template: `/case-studies/` lists each study as a card with its client and result, `/changelog/` lists each change under its month with its version and its whole text, and each entry has a page of its own with a link back. Each list is an `ItemList` in its JSON-LD and may take a title, description and intro from its folder's `_index.md` (KH-CON-1, KH-CON-2, KH-SEO-3).
+- **Series.** A post may name its series and its place in it with `series: { name, order }`. Each part shows "Part 2 of 5" with every part listed, links to the parts before and after, and the series gets a page at `/series/<name>/` that lists its parts in order as an `ItemList` in its JSON-LD. Every template shows it, with scripts on or off (KH-CON-4, KH-SEO-3, KH-WEB-2).
+- **Hub pages.** A page with a `hub` table (`category`, and `chapters` in reading order) becomes the front door to its topic: its own text as the introduction, the chapters as a numbered list, then the newest posts in the category. The category's list links to it as "Start here", and the chapters are an `ItemList` in the hub's JSON-LD (KH-CON-4, KH-SEO-3).
+- **Home page numbers, topic tabs and media rows.** Every template but classic takes four new options. `hero_stats` shows up to four numbers you write under the home page's title, such as `"140 | blogs studied"`; Khalid never makes one up. `topic_tabs` shows a tab per topic with its newest posts, as links that work with scripts off (on by default in Atlas, Compass, Meridian and Wire). `video_section` and `podcast_section` show a row of the newest posts with a video or a sound player, when there are any (on by default) (KH-WEB-2, KH-WEB-9).
+
+#### Engagement
+
+- Charts in posts: `:::chart` draws bar, column and line charts from numbers in the post or a CSV file beside it, as a picture with no script, in your template's colours, with a table for screen readers (`docs/charts-embeds-tracking.md`).
+- Embed interactive tools: `::embed` shows a page from any host you list in `[media] embed_domains` in a lazy, sandboxed frame of fixed height, and only those hosts join the Content Security Policy.
+- Tracking tags: `[seo.links.tracking]` adds `utm_source`, `utm_medium` and `utm_campaign` to links that point to your own product's domains, in posts, pages and the call to action, and to no other link.
+- A "preferred source on Google" button after each post and in the footer of every template, turned on with `[template.preferred_source]`.
+- A newsletter page at `/newsletter/` with what readers get, the sign-up form on a server, a recent issue and an archive of past issues, each with its own page, from `content/newsletters/main/` (`docs/newsletters.md`).
+- A key takeaways block, `:::takeaways`, drawn as a box in every template.
+
+#### Media
+
+- Khalid can make AVIF images, about half the size of JPEG, beside WebP. AVIF takes about a second per wide image, so it is off until a site turns it on; each image is made once and kept.
+- `avif = true` under `[media]` in `site.toml` offers every picture in AVIF first, then WebP, then its own format, so each browser takes the smallest file it can read. docs/deploy.md explains when to turn it on.
+
+#### Admin
+
+- An SEO settings screen in the admin, under Site. Search appearance sets the separator, the tagline, and the title and description templates of each kind of page, with buttons that add each variable and a live search result.
+- The SEO settings screen also sets which list pages show in search, thin archives and the whole blog's switch; who is behind the blog, with its logo and social profiles; the X username and default share image; the verification codes for Google, Bing, Yandex, Baidu and Pinterest; a switch to block each known AI crawler, other blocked crawlers and paths, and the AI info page; what feeds carry and how many posts they list; and IndexNow, switched on with one tick that makes its key.
+- The editor's checks show two lights, SEO and readability, each with its score and what it means in words, and the post's word count. The Google preview switches between desktop and mobile, cuts the title and description where Google would by their width in pixels, shows the post's date, and puts the focus keyword in bold.
+- The editor shows the post as shared on Facebook and X, takes up to four secondary keywords, and folds the rarer robots choices under the visibility setting: keep images out of image search, no cached copy, no text snippet, the longest snippet and the largest picture preview.
+- The editor suggests internal links to add, says why each post is suggested, and adds a link with one press: on the words of the text that name the post, or as a Related line at the end. A Copy as a new draft button opens the copy.
+- The editor's block menu now offers columns, pull quote, pros and cons, and the call to action box, each with its own form, and the review and product forms ask for readers' scores. A post with any of them opens in the rich-text view and saves back unchanged.
+- The posts list shows each post's SEO and readability lights and how many posts link in and out, and filters posts with no focus keyword, posts no other post links to, and the main posts or members of topic clusters.
+- The dashboard lists the checks that fail on most posts as tasks, "Fix these first", each with its fix and a post to start on.
+- A Bulk SEO screen edits the SEO title, description and focus keyword of many posts in one table, shows each field's length, saves each row on its own, and can show only the posts that lack one of the three.
+- An SEO workouts screen walks two jobs step by step: link each orphaned post from one of the posts closest to it, and link every post of a topic cluster to the cluster's main post, each with one press and a count of what is done.
+- A Calendar screen, under Write: every live and scheduled post on its day, every draft on its planned day, a month at a time or as a list. Drag a draft onto a day, or press its Schedule button and pick the day, to publish it that day at 12:00. Each post links to the editor.
+- Moving live posts to the trash asks what their old addresses should do: say the page is gone for good (410), the default, or send readers to another live post you pick (301). The answer is stored as a redirect.
+
+#### AI suggestions
+
+- Writing suggestions in the editor, off until you turn them on: an `[ai]` table in `site.toml` names SerpDad, Anthropic or any OpenAI-compatible service, and the key comes from `KHALID_AI_KEY`, never the file.
+- Suggest buttons, marked AI, beside the SEO title, the description and the X and Facebook titles and descriptions: five options, each checked against the length rules. Suggest a fix under checks about words, Summarize for key takeaways, and Suggest alt text in media details. Nothing changes until you pick one.
+
+#### Import
+
+- WordPress imports now carry Yoast, Rank Math and All in One SEO share cards for X and Facebook, cornerstone posts as the main post of a topic group, the focus keyword, and related keyphrases and synonyms as secondary keywords. Breadcrumb titles and schema types are listed in the report.
+
+#### API
+
+- The settings API reads and saves the `[seo]` table of `site.toml` one part at a time, such as `titles` or `crawlers`, keeping every other line and comment of the file. `docs/seo-settings.md` lists every part and its defaults.
+- A post's check and each row of the posts list carry two scores out of 100, one for SEO and one for readability, split from the same lint findings; the check also counts the post's words.
+- Each row of the posts list carries its `path` on the site, its word count, how many posts link to it and how many it links to, whether it names a focus keyword, and its role in a topic cluster. A list filters by `orphan:true`, `has_focus_keyword:false`, `pillar:true`, `cluster:member` and `cluster:pillar`.
+- A post's settings in the Admin API carry its secondary keywords, up to four, read from and written to `secondary_keywords` in its front matter.
+- `GET /api/admin/v1/lint/issues/` lists the live blog's ten most pressing lint problems, those that stop posts going live first, each with how many posts it fires on, what, why and fix, and a post to open first.
+- `POST /api/admin/v1/posts/{id}/duplicate/` copies a post as a new draft, with its text, author and settings, but not its date, review, old addresses or head code.
+- `GET /api/admin/v1/posts/{id}/link-suggestions/` ranks up to ten posts in the same language that a post does not link to yet, by shared category, tags and topic cluster, with the cluster's pillar first, and gives back the post's own words that name each one's focus keyword.
+- `POST /api/admin/v1/ai/suggestions/` for programs and the bulk SEO editor, and `GET /api/admin/v1/ai/` to see whether suggestions are on.
+- **Series in the Content API.** A post that is part of a series carries `series` with its `name`, the `slug` of the series page and its `order`, so a front end of its own can group and link the parts. The OpenAPI document and the TypeScript SDK's types include it (KH-API-1).
+
+#### Demos
+
+- **Every demo is also on serpdad.com.** `scripts/demos-bundle.sh` builds the showcase, the template gallery with its pictures, each template's demo and the six use case examples for https://serpdad.com/khalid/ and packs them as `khalid-demos.tar.gz`, which the Pages workflow publishes for the serpdad.com build to download. The demos stay out of search; the template gallery stays indexable.
+- The showcase demo has a "Readability checkers compared" page that shows the new pieces at once: a review and a product with readers' scores and their structured data on a page, pros and cons, a pull quote, columns, a contents list over a question heading, and a `[[glossary:...]]` link.
+
+### Changed
+
+#### Checks and scores
+
+- `paragraph-max-words` now defaults to 150, as in Yoast. A site that set its own number keeps it.
+- The post score is now the SEO score: the readability checks count towards the readability score instead.
+
+#### Demos
+
+- **The showcase demo** now shows every feature at the depth of a large SEO blog: 33 English posts across five sections, six full guides of 3,000 words or more with charts and diagrams, a topic hub for each section, a review, a comparison, a best-of list, a fact check, a dataset, a course, a podcast episode, a self-hosted video and a news post. It also has four authors with profile links, 27 glossary terms, six German posts, editorial policy and contact pages, and a feature tour page that links each feature to the page that shows it.
+- The GitHub Pages copy at thebigasif.github.io/khalid/ names the matching serpdad.com address as each page's canonical one, and its header and hero link to https://serpdad.com/khalid/.
+- Each card in the template gallery, Classic too, links to its demo at `/khalid/templates/<name>/`.
+
+### Fixed
+
+#### Checks and scores
+
+- The linter now reads only what the writer wrote. A `::toc` contents list no longer hides the answer under a question heading from `answer-capsule`, and the numbers a block prints itself (a review's score, a product's price, a recipe's servings, a folding table's "Show 3 more rows") no longer trip `sourced-statistics`.
+- **Tips no longer cost points or crowd out warnings.** The dashboard's "Fix these first" list shows tips last, in blue, and the SEO and readability scores leave them out, as the linter's own score does.
+
+#### Templates
+
+- **One breadcrumb separator.** Compass and Wire drew their own mark beside the one from the breadcrumb settings, so readers saw two. The setting now wins in every template.
+- **robots.txt passes Lighthouse again.** The `Schemamap:` line for the whole-site schema files is off by default, because Lighthouse marks it invalid. Each home page links its `schema.json` instead, and `[seo.schema_map] robots_txt = true` brings the line back.
+
+#### Admin
+
+- **The share previews show the post's own picture.** A picture beside the post, such as `cover.svg`, showed as a broken image in the Facebook and X cards.
+- **Admin polish.** A score of 100 fits its circle, the bulk SEO editor gives the description most of the row so it shows in full, and the posts list keeps "2 in, 3 out" on one line.
+- **An AI pick saves at once.** Picking a suggested title waited for the next autosave, because the editor had not drawn the new title when it tried to save.
+- **No character count under the focus keyword.** The bulk SEO editor said "11 of about 60 characters" under a keyword, which the linter measures in words, not characters.
+
 ## 1.2.0
 
 Ten professionally redesigned templates, checked on every screen size from a 320 pixel phone to a 27 inch iMac, a modern admin with a new sign-in page, and finished author profiles: your own profile, photo upload, designed author pages and bylines with photos.

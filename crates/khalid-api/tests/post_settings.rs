@@ -1,7 +1,7 @@
 //! A post's settings as the Admin API reads and writes them (KH-EDT-3).
 
 use khalid_api::resources::{
-    Alias, FeatureImage, NonBlank, PostSettings, ReviewState, ShareCard, ShareCards,
+    Alias, FeatureImage, NonBlank, PostSettings, ReviewState, SettingsEdit, ShareCard, ShareCards,
 };
 use khalid_core::Slug;
 use serde_json::{Value, json};
@@ -79,6 +79,22 @@ fn an_image_reads_with_a_caption_and_refuses_a_blank_alt() {
         "alt is required"
     );
     assert!(read(json!({"src": "/a.jpg", "alt": "A", "width": 3})).is_err());
+}
+
+#[test]
+fn secondary_keywords_are_a_list_of_at_most_four_and_left_out_when_empty() {
+    let four = json!({"secondary_keywords": ["link text", "anchor words", "link labels", "alt"]});
+    let edit = serde_json::from_value::<SettingsEdit>(four).unwrap();
+    let settings = edit.applied_to(PostSettings::default());
+    let json = serde_json::to_value(&settings).unwrap();
+    assert_eq!(json["secondary_keywords"][1], "anchor words");
+    let five = json!({"secondary_keywords": ["a", "b", "c", "d", "e"]});
+    let refused = serde_json::from_value::<SettingsEdit>(five).unwrap_err();
+    assert!(refused.to_string().contains("at most 4"), "{refused}");
+    let blank = json!({"secondary_keywords": [" "]});
+    assert!(serde_json::from_value::<SettingsEdit>(blank).is_err());
+    let none = serde_json::to_value(PostSettings::default()).unwrap();
+    assert!(none.get("secondary_keywords").is_none(), "{none}");
 }
 
 #[test]

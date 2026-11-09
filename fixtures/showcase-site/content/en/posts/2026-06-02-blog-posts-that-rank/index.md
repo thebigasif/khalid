@@ -19,7 +19,7 @@ featured: true
 tags: [writing, planning, editing]
 image:
   src: cover.svg
-  alt: Three pages standing on podium steps, with the tallest page on top beside a small sparkle
+  alt: Three blog pages on podium steps, the winning page in orange on the top step
 ---
 
 SEO writing is the craft of answering a real question so well that search engines choose your page to show for it. It is not a trick played on an algorithm. It is ordinary good writing, planned around what people search for and shaped so that a busy reader can act on it.

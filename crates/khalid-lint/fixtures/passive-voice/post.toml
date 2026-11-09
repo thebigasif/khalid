@@ -1,0 +1,14 @@
+# About 210 words in 13 sentences; four are passive ("were added",
+# "is often used"), over the 10 percent ceiling. A passive sentence in a
+# quote sits in body_text only, and does not count.
+extends = "clean"
+body_text = "Internal links help readers find the next useful post on your site.\nThe rules were written by the board and are enforced by the courts."
+prose_text = """
+Internal links help readers find the next useful post on your site, because readers want a clear next step.
+Last year, most of the links on our blog were added by one editor in a single week. Because of that, the links felt rushed, so we checked each of them again.
+The phrase click here is often used by new writers, but it tells the reader nothing. Instead, name the page the link opens, for example a guide to link text.
+Some of our older posts were never linked from anywhere, so readers could not find them. Therefore we wrote a short list of the ten pages that matter most.
+Each month, the list is checked by our team, and we then add a link from a new post to an old one. As a result, every page now gets visitors from search and from other posts.
+Similarly, our menu was rebuilt around five topics, so a reader sees the shape of the site at once. However, the menu only holds the main pages, while the text holds the details.
+Finally, we read each post aloud before it goes live. For example, a sentence that runs too long gets split in two, and a vague link gets a clear name.
+"""

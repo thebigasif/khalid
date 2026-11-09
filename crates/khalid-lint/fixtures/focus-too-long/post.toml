@@ -1,0 +1,4 @@
+# Five words carry meaning: internal, links, small, food, blogs. "for"
+# is a filler word and does not count.
+extends = "focus-clean"
+focus_keyword = "internal links for small food blogs"

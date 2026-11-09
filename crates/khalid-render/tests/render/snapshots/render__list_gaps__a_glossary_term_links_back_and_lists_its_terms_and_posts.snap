@@ -1,0 +1,25 @@
+---
+source: crates/khalid-render/tests/render/list_gaps.rs
+expression: main_of(&page)
+---
+ id="main" tabindex="-1">
+
+<article class="page">
+<p class="term-back"><a href="/blog/glossary/">Back to the glossary</a></p>
+<h1>Anchor text</h1>
+<div class="page-body">
+<p>The words a link is written on.</p>
+</div>
+<section class="term-related" aria-labelledby="term-related">
+<h2 id="term-related">Related terms</h2>
+<ul>
+<li><a href="/blog/glossary/internal-link/">Internal link</a></li>
+</ul>
+</section>
+<section class="term-posts" aria-labelledby="term-posts">
+<h2 id="term-posts">Posts that use this term</h2>
+<ul>
+<li><a href="/blog/how-to-link-posts/">How to link posts</a></li>
+</ul>
+</section>
+</article>

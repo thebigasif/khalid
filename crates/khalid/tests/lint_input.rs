@@ -381,6 +381,31 @@ fn a_secondary_keyword_the_body_never_uses_is_a_warning() {
 }
 
 #[test]
+fn a_keyword_synonym_in_the_header_counts_as_the_focus_keyword() {
+    let extra = "focus_keyword: internal links\nsecondary_keywords: [site links]\n";
+    let body = "Site links help readers.";
+    let lone = site(
+        None,
+        &[("posts/site-links.md", &post("Site links", extra, body))],
+    );
+    let report = lint(lone.path());
+    assert_eq!(
+        found(&report, "focus-not-in-title", "site-links"),
+        ["internal links"]
+    );
+    let synonym = format!("{extra}keyword_synonyms: site links\n");
+    let with = site(
+        None,
+        &[("posts/site-links.md", &post("Site links", &synonym, body))],
+    );
+    let report = lint(with.path());
+    assert_eq!(
+        found(&report, "focus-not-in-title", "site-links"),
+        Vec::<String>::new()
+    );
+}
+
+#[test]
 fn a_cluster_member_that_never_links_to_its_pillar_is_a_warning() {
     let pillar = "cluster:\n  name: internal-links\n  role: pillar\n";
     let member = "cluster:\n  name: internal-links\n";

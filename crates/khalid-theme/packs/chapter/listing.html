@@ -1,0 +1,45 @@
+{#- Chapter's lists (category, tag, archive, date and collection pages):
+    the list's name and intro, then its posts in Chapter's three forms:
+    books as a shelf of covers, writing as a contents page and events as
+    dated rows. A list with only one of them shows it without a heading. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "picture_sizes.html" import slot_sizes -%}
+{% from "sections/cover_shelf.html" import cover_shelf -%}
+{% from "sections/contents_page.html" import contents_page -%}
+{% from "sections/event_list.html" import event_list -%}
+{% set options = template.options -%}
+{% set books_href = "/category/" ~ (options.books_category or "books") ~ "/" -%}
+{% set events_href = "/category/" ~ (options.events_category or "events") ~ "/" -%}
+{% set filed = page.posts | selectattr("category") | list -%}
+{% set books = filed | selectattr("category.href", "endingwith", books_href) | list -%}
+{% set events = filed | selectattr("category.href", "endingwith", events_href) | list -%}
+{% set others = (books + events) | map(attribute="href") | list -%}
+{% set writing = page.posts | rejectattr("href", "in", others) | list -%}
+{% set titled = ((1 if books else 0) + (1 if writing else 0) + (1 if events else 0)) > 1 -%}
+<header class="list-header">
+{% block kind %}{% endblock %}<h1>{{ page.title }}</h1>
+{% if page.intro %}<div class="intro">
+{{ page.intro }}
+</div>
+{% endif %}{% if page.hub %}<p class="hub-link"><a href="{{ page.hub.href }}"><span>{{ t.hub_start }}</span> {{ page.hub.name }}</a></p>
+{% endif %}</header>
+{% if page.posts %}{% if books %}<section class="ch-part ch-books" aria-labelledby="list-books">
+{% if titled %}<h2 id="list-books" class="ch-part-title">{{ t.books }}</h2>
+{% else %}<h2 id="list-books" class="visually-hidden">{{ t.books }}</h2>
+{% endif %}{{ cover_shelf(books, 3, sizes=slot_sizes("cover")) }}
+</section>
+{% endif %}{% if writing %}<section class="ch-part ch-writing" aria-labelledby="list-writing">
+{% if titled %}<h2 id="list-writing" class="ch-part-title">{{ t.writing }}</h2>
+{% else %}<h2 id="list-writing" class="visually-hidden">{{ t.writing }}</h2>
+{% endif %}{{ contents_page(writing, 3) }}
+</section>
+{% endif %}{% if events %}<section class="ch-part ch-events-part" aria-labelledby="list-events">
+{% if titled %}<h2 id="list-events" class="ch-part-title">{{ t.events }}</h2>
+{% else %}<h2 id="list-events" class="visually-hidden">{{ t.events }}</h2>
+{% endif %}{{ event_list(events, 3) }}
+</section>
+{% endif %}{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endblock %}

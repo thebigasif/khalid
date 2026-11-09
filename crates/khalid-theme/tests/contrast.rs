@@ -170,6 +170,41 @@ fn when_no_shade_can_pass_it_gets_the_closest_and_says_what_to_change() {
     );
 }
 
+/// A pack's own colours over the stock ones, as the renderer lays a
+/// pack's tokens over its defaults: a colour the pack leaves out stays.
+#[cfg(test)]
+fn pack_tokens(pack: &khalid_theme::Pack) -> ThemeTokens {
+    let mut tokens = ThemeTokens::default();
+    let table: toml::Table = toml::from_str(pack.tokens()).unwrap();
+    let Some(colors) = table.get("colors").and_then(toml::Value::as_table) else {
+        return tokens;
+    };
+    let set = &mut tokens.colors;
+    for (name, value) in colors {
+        let color = hex(value.as_str().unwrap());
+        match name.as_str() {
+            "background" => set.background = color,
+            "surface" => set.surface = color,
+            "text" => set.text = color,
+            "muted" => set.muted = color,
+            "link" => set.link = color,
+            "accent" => set.accent = color,
+            "border" => set.border = color,
+            other => panic!("{}: unknown colour {other}", pack.name),
+        }
+    }
+    tokens
+}
+
+#[test]
+fn every_pack_reads_at_aa_in_its_own_colours() {
+    for pack in khalid_theme::packs() {
+        let tokens = pack_tokens(pack);
+
+        assert_all_pass(&tokens, pack.name);
+    }
+}
+
 #[tokio::test]
 async fn every_failing_pair_in_the_fixture_sites_passes_after_the_pass() {
     for (site, stylesheet) in SITES {

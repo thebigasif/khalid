@@ -12,6 +12,13 @@ use crate::build_pages::{LanguagePages, Page};
 /// stylesheet.
 const AVATAR: &str = "2.75rem";
 
+/// How wide a post's lead image is drawn on a card, when the template's
+/// slot does not say: the whole screen on a phone, half of it from two
+/// columns on, and a third of a wide frame on a desktop. A template passes
+/// each slot's real width as the `picture` macro's `sizes`, and a slot
+/// drawn wider than a card, such as a lead story, must.
+const CARD: &str = "(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw";
+
 /// The images drawn at the top of post and author pages, by the page's
 /// address, ready to show elsewhere.
 #[derive(Debug, Clone, Default)]
@@ -35,10 +42,12 @@ impl Shown {
         }
     }
 
-    /// Keeps `image`, the lead image of the post at `address`, for its cards.
+    /// Keeps `image`, the lead image of the post at `address`, for its
+    /// cards, where it is drawn at a card's width.
     pub(crate) fn card(&mut self, address: String, mut image: RenderImage) {
         image.loading = Loading::Lazy;
         image.caption = None;
+        CARD.clone_into(&mut image.sizes);
         self.cards.insert(address, image);
     }
 
@@ -86,13 +95,7 @@ pub(crate) fn attach(languages: &mut [LanguagePages], shown: &Shown) {
             | PageBody::Tag(listing)
             | PageBody::Category(listing)
             | PageBody::Archive(listing) => list(listing, shown),
-            PageBody::Home(home) => {
-                list(&mut home.listing, shown);
-                cards(&mut home.picks, shown);
-                for section in &mut home.sections {
-                    cards(&mut section.posts, shown);
-                }
-            }
+            PageBody::Home(home) => home.cards_mut().for_each(|post| card(post, shown)),
             _ => {}
         }
     }
@@ -107,13 +110,18 @@ fn list(listing: &mut RenderListing, shown: &Shown) {
 
 /// Gives each of `posts` its post's lead image and its author's photo.
 fn cards(posts: &mut [PostCard], shown: &Shown) {
-    for card in posts {
-        if let Some(image) = shown.cards.get(&card.href) {
-            card.image = Some(image.clone());
-        }
-        if let Some(author) = &mut card.author {
-            photo(author, shown);
-        }
+    for post in posts {
+        card(post, shown);
+    }
+}
+
+/// Gives `post` its post's lead image and its author's photo.
+fn card(post: &mut PostCard, shown: &Shown) {
+    if let Some(image) = shown.cards.get(&post.href) {
+        post.image = Some(image.clone());
+    }
+    if let Some(author) = &mut post.author {
+        photo(author, shown);
     }
 }
 

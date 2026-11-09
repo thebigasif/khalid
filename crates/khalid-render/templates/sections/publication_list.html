@@ -1,0 +1,32 @@
+{#- publication_list(posts, level=3, by_year=false, start=1): a numbered
+    reference list. Each entry hangs its number in the margin, then the
+    title, the author, and the post's facts read by position: 1 the venue,
+    2 the year, 3 a DOI or a link, 4 how often it was cited. A post
+    without facts shows its title, author and date. A DOI such as
+    10.1000/xyz links to doi.org. With `by_year`, the list starts a new
+    group under a year heading (one level above `level`) at each new year
+    of the posts' dates, and the numbers run on. -#}
+{% macro pub_entry(post, level) -%}
+<li class="pub">
+<h{{ level }} class="pub-title"><a href="{{ post.href }}">{{ post.title }}</a></h{{ level }}>
+{% if post.author %}<p class="pub-authors">{{ post.author.name }}</p>
+{% endif %}{% if post.facts %}<p class="pub-venue">{% for fact in post.facts[:2] %}<span class="pub-fact"><span class="visually-hidden">{{ fact.label }} </span>{{ fact.value }}</span>{% endfor %}</p>
+{% if post.facts | length > 2 %}<p class="pub-links">{% for fact in post.facts[2:] %}{% set value = fact.value %}<span class="pub-fact">{{ fact.label }} {% if loop.first and value is startingwith("10.") %}<a href="https://doi.org/{{ value }}">{{ value }}</a>{% elif loop.first and value is startingwith("https://") %}<a href="{{ value }}">{{ value | replace("https://", "") }}</a>{% else %}<b>{{ value }}</b>{% endif %}</span>{% endfor %}</p>
+{% endif %}{% else %}<p class="pub-venue"><time datetime="{{ post.date }}">{{ post.date | date }}</time></p>
+{% endif %}</li>
+{%- endmacro %}
+{% macro publication_list(posts, level=3, by_year=false, start=1) -%}
+{% if by_year %}{% for post in posts %}{% set year = (post.date | string)[:4] -%}
+{% if loop.changed(year) %}{% if not loop.first %}</ol>
+</section>
+{% endif %}<section class="pub-year" aria-labelledby="pub-year-{{ year }}">
+<h{{ level - 1 }} id="pub-year-{{ year }}">{{ year }}</h{{ level - 1 }}>
+<ol class="pub-list" start="{{ loop.index + start - 1 }}">
+{% endif %}{{ pub_entry(post, level) }}
+{% if loop.last %}</ol>
+</section>
+{% endif %}{% endfor %}{% else %}<ol class="pub-list" start="{{ start }}">
+{% for post in posts %}{{ pub_entry(post, level) }}
+{% endfor %}</ol>
+{% endif %}
+{%- endmacro %}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <rect x="14" y="18" width="44" height="44" fill="none" stroke="#1e4d6b" stroke-width="4"/>
+  <path d="M14 30 H58 M26 62 V40 H46 V62" fill="none" stroke="#1e4d6b" stroke-width="4"/>
+  <text textLength="236" lengthAdjust="spacingAndGlyphs" x="72" y="50" font-family="'Playfair Display', Georgia, serif" font-size="28" font-weight="700" fill="#1d1b18">The Common Room</text>
+</svg>

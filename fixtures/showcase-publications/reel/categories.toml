@@ -1,0 +1,35 @@
+# Tenth Row's kinds of review. The Reel template shows a review's kind
+# above its title, and each category page is a poster grid with its intro
+# under the name.
+
+[[categories]]
+slug = "films"
+en = "Films"
+
+[categories.seo.en]
+description = "Tenth Row's film reviews: new releases in cinemas and on streaming, each with a rating out of five, the cast and where to watch."
+intro = "New films, in cinemas and at home. Each review gives a rating out of five stars, the cast, the director and where to watch."
+
+[[categories]]
+slug = "series"
+en = "Series"
+
+[categories.seo.en]
+description = "Tenth Row's TV series reviews: each new season rated out of five, with the cast, the creator and the service it is on."
+intro = "New TV series and new seasons. We review a season once we have watched every episode the service gave us."
+
+[[categories]]
+slug = "documentaries"
+en = "Documentaries"
+
+[categories.seo.en]
+description = "Tenth Row's documentary reviews: films about real people and places, rated out of five, with where to watch."
+intro = "Films about real people, places and work. Rated on the same five stars as every other review."
+
+[[categories]]
+slug = "features"
+en = "Features"
+
+[categories.seo.en]
+description = "Tenth Row's features: watch lists, essays on craft and notes from our critics."
+intro = "Watch lists, essays and notes from the critics, between the reviews."

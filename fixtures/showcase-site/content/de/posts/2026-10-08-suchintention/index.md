@@ -12,7 +12,7 @@ focus_keyword: Suchintention
 tags: [planung, schreiben]
 image:
   src: cover.svg
-  alt: Ein Kompass mit vier farbigen Markierungen am Rand und einer Nadel, die nach oben zeigt
+  alt: Eine Suchleiste über drei Arten von Ergebnissen, ein Einkaufswagen, ein Ratgeber und eine Kartennadel, mit einem Pfeil zum orangefarbenen Ratgeber
 ---
 
 Die Suchintention ist das Ziel hinter einer Suchanfrage. Wer „Meta Description Länge“ eingibt, will eine Zahl und einen Grund. Wer „Redaktionsplan erstellen“ sucht, will eine Methode für diese Woche. Ein Beitrag, der dieses Ziel verfehlt, rankt selten, egal wie gut er geschrieben ist.

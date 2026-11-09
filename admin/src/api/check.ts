@@ -3,6 +3,8 @@ import type { components } from "./schema";
 
 /** A post checked as it would go live now: lint, score, search result and schema. */
 export type PostCheck = components["schemas"]["PostCheck"];
+/** A post's SEO and readability scores, each out of 100. */
+export type SeoScores = components["schemas"]["SeoScores"];
 /** The lines of a search result for a post. */
 export type Snippet = components["schemas"]["Snippet"];
 

@@ -1,0 +1,76 @@
+# The Proof Sheet, a made-up weekly letter about things made by hand,
+# written for the Letterpress template's demo. Each key and table here
+# replaces the showcase's own when scripts/demo-publication.sh applies it.
+
+name = "The Proof Sheet"
+languages = ["en"]
+
+[template.cta]
+label = "Get the letter on Thursdays"
+href = "/blog/about/"
+note = "One issue a week about people who make things by hand. Free, and every email has a link to leave."
+
+# The Letterpress template's options for this demo. scripts/pages.sh
+# keeps them and adds cta_band = "both" unless it is set here.
+[template.options]
+tagline = ["A weekly letter about things made by hand, and the people who make them."]
+
+[announcement]
+text = "Issue No. 50 is out: fifty issues, and the print shop where it all began."
+href = "/blog/fifty-issues-set-by-hand/"
+language = "en"
+
+[seo.titles]
+separator = "·"
+tagline = "A weekly letter about craft"
+
+[seo.ai_page]
+covers = "The Proof Sheet is a weekly letter about crafts made by hand: printing, pottery, bookbinding, mending, carving, papermaking and glass. Each issue visits one workshop and lists what is inside."
+cite = "Quote the issue itself and link the page you quote."
+contact = "letters@example.com"
+
+[seo.publisher]
+type = "organization"
+name = "The Proof Sheet"
+email = "letters@example.com"
+
+[seo.publisher.logo]
+url = "https://www.example.com/blog/about/logo.svg"
+alt = "The Proof Sheet"
+width = 320
+height = 80
+
+# Sign-ups for the letter, under its own name. The mail server is a
+# reserved example name, so nothing is ever sent.
+[mail]
+from = "letters@example.com"
+name = "The Proof Sheet"
+postal_address = "The Proof Sheet, 12 Mill Lane, Hebden Bridge HX7 8AA"
+
+[mail.smtp]
+host = "smtp.example.com"
+
+[[nav.primary]]
+label = "Weekly issues"
+href = "/blog/category/weekly/"
+language = "en"
+
+[[nav.primary]]
+label = "Specials"
+href = "/blog/category/special/"
+language = "en"
+
+[[nav.primary]]
+label = "About"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "About the letter"
+href = "/blog/about/"
+language = "en"
+
+[[nav.footer]]
+label = "Photo credits"
+href = "/blog/photo-credits/"
+language = "en"

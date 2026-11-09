@@ -1,0 +1,4 @@
+# "link" and "links" are one keyword in two word forms, and appear six
+# times in about 120 words, 50 times per thousand, over the ceiling of 25.
+extends = "focus-too-rare"
+secondary_keywords = ["link"]

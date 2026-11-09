@@ -21,6 +21,9 @@ pub struct IndexPolicy {
     /// The whole site. `NoIndex` keeps every page out, over the setting per
     /// type and a page's own directives, as a demo or staging copy needs.
     pub whole_site: Indexing,
+    /// The setting for the posts of one collection, by its name, over the
+    /// setting for every post.
+    pub by_collection: BTreeMap<String, Indexing>,
 }
 
 impl Default for IndexPolicy {
@@ -33,6 +36,7 @@ impl Default for IndexPolicy {
             ]),
             thin_archive_below: 3,
             whole_site: Indexing::Index,
+            by_collection: BTreeMap::new(),
         }
     }
 }
@@ -43,15 +47,18 @@ impl From<&ArchiveIndex> for IndexPolicy {
     fn from(settings: &ArchiveIndex) -> Self {
         Self {
             by_kind: BTreeMap::from([
+                (PageKind::Post, settings.posts),
+                (PageKind::Page, settings.pages),
                 (PageKind::Tag, settings.tags),
                 (PageKind::Category, settings.categories),
-                (PageKind::Author, settings.authors),
-                (PageKind::Date, settings.dates),
+                (PageKind::Author, settings.authors.indexing()),
+                (PageKind::Date, settings.dates.indexing()),
                 (PageKind::Search, settings.search),
                 (PageKind::NotFound, Indexing::NoIndex),
             ]),
             thin_archive_below: settings.thin_archives_below,
             whole_site: settings.site,
+            by_collection: settings.collections.clone(),
         }
     }
 }
@@ -76,8 +83,13 @@ impl IndexPolicy {
             && page
                 .item_count
                 .is_some_and(|count| count < self.thin_archive_below);
+        let collection = (page.kind == PageKind::Post)
+            .then(|| self.by_collection.get(page.collection.as_deref()?))
+            .flatten();
         let indexing = if thin {
             Indexing::NoIndex
+        } else if let Some(setting) = collection {
+            *setting
         } else {
             self.by_kind.get(&page.kind).copied().unwrap_or_default()
         };

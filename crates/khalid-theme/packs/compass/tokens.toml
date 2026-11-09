@@ -1,0 +1,33 @@
+# Compass's own look, used when a site has not synced its main site's
+# theme: a white ground, deep blue-black text, a clear teal accent and
+# pale teal panels, heavy rounded headings over the system's reading
+# sans, and a bold type scale whose front page title reaches 5.5rem. A
+# value in the site's own theme/tokens.toml wins.
+[colors]
+background = "#ffffff"
+surface = "#edf6f8"
+text = "#0d2430"
+muted = "#495f6b"
+link = "#0a6176"
+accent = "#0e7490"
+border = "#c9dde2"
+
+[fonts]
+heading = "ui-rounded, \"SF Pro Rounded\", \"Nunito\", \"Varela Round\", \"Segoe UI Variable Display\", \"Segoe UI\", system-ui, sans-serif"
+body = "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+
+[type]
+body = "1.0625rem 1.1875rem"
+h1 = "2.5rem 4rem"
+h2 = "1.625rem 2.125rem"
+h3 = "1.25rem 1.5rem"
+h4 = "1.125rem"
+line_height = 1.7
+
+[space]
+unit = "0.5rem"
+section = "4.5rem"
+
+[shape]
+radius = "0.75rem"
+measure = "36rem"

@@ -1,0 +1,53 @@
+{#- Versions' front page (docs/templates/versions.md): the product's
+    changelog. The name and tagline; the filter row, "All changes" and
+    each type of change (a category), each a list of its own; then the
+    version timeline, each run of changes with the same version (the
+    first fact) under that version and its date. Beside it on wide
+    screens: "Get updates", with the sign-up form and the feeds of every
+    change and of each type, and the versions on this page as anchor
+    links. With home sections in site.toml, each section is a timeline
+    of its own. -#}
+{% extends "base.html" %}
+{% block main %}
+{% from "card.html" import pages -%}
+{% from "slots.html" import cta_band -%}
+{% from "sections/hero.html" import hero -%}
+{% from "sections/filter_row.html" import filter_row -%}
+{% from "sections/release_log.html" import release_log, release_index -%}
+{% set options = template.options -%}
+{% set marks = options.change_types or ["new", "improved", "fixed"] -%}
+{{ hero(page.title, page.intro or (options.tagline[0] if options.tagline else none), t.changelog_title) }}
+<div class="changelog">
+<div class="changelog-main">
+{% if page.categories %}{{ filter_row(t.change_filter, site.home, t.all_changes, page.categories, meta.path, marks) }}
+{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="changelog-section" aria-labelledby="changelog-section-{{ loop.index }}">
+<h2 id="changelog-section-{{ loop.index }}">{{ section.title }}</h2>
+{% if section.posts %}{{ release_log(section.posts, marks, 3) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
+</section>
+{% endfor %}{% elif page.posts %}{{ release_log(page.posts, marks) }}
+{% else %}<p>{{ t.no_posts }}</p>
+{% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}</div>
+<aside class="changelog-side" aria-label="{{ t.updates_title }}">
+<section class="updates" aria-labelledby="updates-title">
+<h2 id="updates-title">{{ t.updates_title }}</h2>
+<p>{{ t.updates_text }}</p>
+{% if site.subscribe %}<form class="subscribe" method="post" action="{{ site.subscribe }}">
+<p><label for="updates-email">{{ t.newsletter_label }}</label>
+<input id="updates-email" name="email" type="email" autocomplete="email" required></p>
+<p class="form-trap" aria-hidden="true"><label for="updates-homepage">{{ t.form_trap }}</label>
+<input id="updates-homepage" name="homepage" type="text" tabindex="-1" autocomplete="off"></p>
+<p><button type="submit">{{ t.newsletter_button }}</button></p>
+</form>
+{% endif %}{% if options.feed_links %}<ul class="feed-links" role="list">
+<li><a href="{{ site.home }}feed.xml" type="application/rss+xml">{{ t.updates_feed }}</a></li>
+{% for category in page.categories %}<li><a href="{{ category.href }}feed.xml" type="application/rss+xml">{{ t.updates_feed_of | replace("{name}", category.name) }}</a></li>
+{% endfor %}</ul>
+{% endif %}</section>
+{% if options.version_index and not page.sections %}{{ release_index(page.posts, t.version_index) }}
+{% endif %}</aside>
+</div>
+{% if template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endblock %}

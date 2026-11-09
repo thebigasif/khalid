@@ -1,6 +1,5 @@
 ---
 source: crates/khalid-render/tests/render/post.rs
-assertion_line: 104
 expression: page
 ---
 <!doctype html>
@@ -33,13 +32,22 @@ expression: page
 <a class="skip-link" href="#main">Skip to the content</a>
 <header class="site-header">
 <a class="site-name" href="/blog/">Field Notes on SEO</a>
-<nav aria-label="Main menu">
+<nav class="nav-bar" aria-label="Main menu">
 <ul>
 <li><a href="/blog/">Posts</a></li>
 <li><a href="/blog/glossary/">Glossary</a></li>
 </ul>
 </nav>
 <a class="search-link" href="/blog/search/" data-dialog>Search</a>
+<details class="nav-menu">
+<summary>Menu</summary>
+<nav aria-label="Main menu">
+<ul>
+<li><a href="/blog/">Posts</a></li>
+<li><a href="/blog/glossary/">Glossary</a></li>
+</ul>
+</nav>
+</details>
 </header>
 <main id="main" tabindex="-1">
 
@@ -92,6 +100,7 @@ expression: page
 <ul>
 <li><a href="/blog/about/">About</a></li>
 <li><a href="/blog/sitemap/">Sitemap</a></li>
+<li><a href="/blog/privacy-choices/">Your privacy choices</a></li>
 </ul>
 </nav>
 <p><a href="https://www.example.com/">Back to example.com</a></p>

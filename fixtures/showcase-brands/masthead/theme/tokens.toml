@@ -1,0 +1,58 @@
+# The sample brand for the Masthead demo: The Common Room, a monthly
+# magazine. Deep blue on a cream page with a light sand surface, Playfair
+# Display for the nameplate and titles and Lora for the text. Only the
+# brand lives here: the template keeps its own shape, type sizes and
+# spacing.
+[colors]
+background = "#fbf8f2"
+surface = "#efe8da"
+text = "#1d1b18"
+muted = "#5a5247"
+link = "#1e4d6b"
+accent = "#1e4d6b"
+border = "#e0d7c6"
+
+[fonts]
+heading = "\"Showcase Display\", Didot, \"Bodoni 72\", Georgia, serif"
+body = "\"Showcase Serif\", Charter, Georgia, serif"
+
+[[fonts.files]]
+family = "Showcase Display"
+style = "normal"
+weight = "700"
+path = "playfair-display-latin-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "119.52%"
+descent = "118.44%"
+line_gap = "0.00%"
+size_adjust = "64.28%"
+
+[[fonts.files]]
+family = "Showcase Serif"
+style = "normal"
+weight = "400 700"
+path = "lora-latin-400-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "111.13%"
+descent = "129.30%"
+line_gap = "0.00%"
+size_adjust = "63.43%"
+
+[[fonts.files]]
+family = "Showcase Serif"
+style = "italic"
+weight = "400"
+path = "lora-latin-400-italic.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E9, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "111.13%"
+descent = "129.30%"
+line_gap = "0.00%"
+size_adjust = "62.37%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

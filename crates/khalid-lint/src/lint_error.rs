@@ -44,4 +44,11 @@ pub enum LintError {
         #[source]
         source: toml::de::Error,
     },
+    /// The catalogue built into the crate cannot be unpacked.
+    #[error("the built-in message catalogue cannot be unpacked")]
+    CatalogueUnpacked {
+        /// What the Brotli reader found.
+        #[source]
+        source: std::io::Error,
+    },
 }

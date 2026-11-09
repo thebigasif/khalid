@@ -1,0 +1,28 @@
+---
+title: Picture credits
+slug: photo-credits
+description: Who made each picture in Fernbrook Press, where it comes from and why it is free to use.
+---
+
+Every picture in Fernbrook Press is an old print, plate or textile by its own artist. Each is in the public domain, or a museum shares its scan under CC0, so anyone may use it. Each one is listed here with a link to its source. The pictures are resized to fit this site.
+
+- "[Haeckel Discomedusae 8](https://commons.wikimedia.org/wiki/File:Haeckel_Discomedusae_8.jpg)" by Original: Ernst Haeckel. Scan: Ragesoss. Cleanup: Ilmari Karonen., under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[Haeckel Siphonophorae 7](https://commons.wikimedia.org/wiki/File:Haeckel_Siphonophorae_7.jpg)" by Ernst Haeckel, under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[Haeckel Actiniae edit](https://commons.wikimedia.org/wiki/File:Haeckel_Actiniae_edit.jpg)" by Original plate: Ernst Haeckel, under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[Dictyota dichotoma in the young state, & in fruit, RP-F-2016-133-144](https://commons.wikimedia.org/wiki/File:Dictyota_dichotoma_in_the_young_state,_%26_in_fruit,_RP-F-2016-133-144.jpg)" by Rijksmuseum, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- "[Ptilota plumosa, RP-F-2016-133-256](https://commons.wikimedia.org/wiki/File:Ptilota_plumosa,_RP-F-2016-133-256.jpg)" by Rijksmuseum, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- "[Polysiphonia fastigiata](https://commons.wikimedia.org/wiki/File:Met_DP-17302-050.jpg)" by Anna Atkins, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- "[Hiroshige, Sudden shower over Shin-Ōhashi bridge and Atake, 1857](https://commons.wikimedia.org/wiki/File:Hiroshige,_Sudden_shower_over_Shin-%C5%8Chashi_bridge_and_Atake,_1857.jpg)" by Utagawa Hiroshige, under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[Plum Park in Kameidolabel QS:Les,"Jardín de ciruelos en Kameido"label QS:Lja,"名所江戸百景 亀戸梅屋舗"label QS:Lfr,"Le jardin des pruniers à Kameido"label QS:Luk,"Сливовий парк у Камейдо"label QS:Lca,"Jardí de pruners a Kameido"label QS:Lko,"가메이도의 매화 정원"label QS:Lvi,"Vườn mơ ở Kameido"label QS:Len,"Plum Park in Kameido"label QS:Lfa,"پارک آلو در کامه‌ایدو"label QS:Lml,"പ്ലം പാർക്ക് ഇൻ കമെയിഡോ"](https://commons.wikimedia.org/wiki/File:Plum_garden_at_Kameido_(Kameido_umeyashiki)_(CBL_J_2693).jpg)" by Utagawa Hiroshige, under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[Metamorphosis insectorum Surinamensium](https://commons.wikimedia.org/wiki/File:Metamorphosis_insectorum_Surinamensium_-_KW_1792_A_19_-_plaat01.jpg)" by Maria Sibylla Merian, under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[Metamorphosis insectorum Surinamensium](https://commons.wikimedia.org/wiki/File:Metamorphosis_insectorum_Surinamensium_-_KW_1792_A_19_-_plaat07.jpg)" by Maria Sibylla Merian, under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[Textile, Strawberry Thief, designed 1883, printed ca. 1934](https://commons.wikimedia.org/wiki/File:Textile,_Strawberry_Thief,_designed_1883,_printed_ca._1934_(CH_18340065).jpg)" by William Morris (design), Morris & Co., under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[Strawberry Thief](https://commons.wikimedia.org/wiki/File:Clevelandart_1937.696.jpg)" by William Morris, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- "[Fine Wind, Clear Morning (Gaifū kaisei)title QS:P1476,en:"Fine Wind, Clear Morning (Gaifū kaisei)"label QS:Len,"Fine Wind, Clear Morning (Gaifū kaisei)"](https://commons.wikimedia.org/wiki/File:Katsushika_Hokusai_-_Fine_Wind,_Clear_Morning_(Gaif%C5%AB_kaisei)_-_Google_Art_Project.jpg)" by Katsushika Hokusai, under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[「富嶽三十六景　神奈川沖浪裏」](https://commons.wikimedia.org/wiki/File:%E3%80%8C%E5%AF%8C%E5%B6%BD%E4%B8%89%E5%8D%81%E5%85%AD%E6%99%AF_%E7%A5%9E%E5%A5%88%E5%B7%9D%E6%B2%96%E6%B5%AA%E8%A3%8F%E3%80%8D-Under_the_Wave_off_Kanagawa_(Kanagawa_oki_nami_ura),_or_The_Great_Wave,_from_the_series_Thirty-six_Views_of_Mount_Fuji_(Fugaku_sanj%C5%ABrokkei)_MET_DP141042.jpg)" by Katsushika Hokusai, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- "[IJsvogel jagend op vis, RP-P-1961-154](https://commons.wikimedia.org/wiki/File:IJsvogel_jagend_op_vis,_RP-P-1961-154.jpg)" by Rijksmuseum, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- "[Twee duiven, RP-P-1994-53](https://commons.wikimedia.org/wiki/File:Twee_duiven,_RP-P-1994-53.jpg)" by Rijksmuseum, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- "[Koolmezen op esdoorntak, RP-P-1999-535](https://commons.wikimedia.org/wiki/File:Koolmezen_op_esdoorntak,_RP-P-1999-535.jpg)" by Rijksmuseum, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- "[American Flamingo](https://commons.wikimedia.org/wiki/File:Robert_Havell_after_John_James_Audubon,_American_Flamingo,_1838,_NGA_32572.jpg)" by Robert Havell after John James Audubon, under [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- "[Haeckel Trochilidae](https://commons.wikimedia.org/wiki/File:Haeckel_Trochilidae.jpg)" by Ernst Haeckel, under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).
+- "[Redoute liliacees](https://commons.wikimedia.org/wiki/File:Redoute_liliacees.jpg)" by Pierre Joseph Redouté, under [Public domain](https://creativecommons.org/publicdomain/mark/1.0/).

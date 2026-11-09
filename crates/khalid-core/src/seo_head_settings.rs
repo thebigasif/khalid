@@ -15,7 +15,10 @@ use crate::AbsoluteUrl;
 /// Title and description templates, from `[seo.titles]`.
 ///
 /// A template is text with variables in braces: `{title}`, `{site}`,
-/// `{tagline}`, `{sep}`, `{excerpt}`, `{category}` and `{author}`. A page
+/// `{tagline}`, `{sep}`, `{excerpt}`, `{category}`, `{author}`, `{date}`,
+/// `{modified}`, `{page}`, `{term}`, `{term_description}`,
+/// `{searchphrase}`, `{currentyear}`, `{currentmonth}`, `{tag}` and
+/// `{focuskw}`, each explained in `docs/seo-settings.md`. A page
 /// type left out keeps its default, `{title} {sep} {site}` with `{excerpt}`,
 /// or on the home page `{site} {sep} {tagline}` with `{tagline}`:
 ///
@@ -84,7 +87,7 @@ pub struct TemplateSettings {
 /// url = "https://www.example.com/media/share.png"
 /// alt = "The Field Notes logo on a white card"
 /// ```
-#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(default, deny_unknown_fields)]
 #[non_exhaustive]
 pub struct SocialSettings {
@@ -92,6 +95,19 @@ pub struct SocialSettings {
     pub twitter: Option<String>,
     /// The share image of every page that has none of its own.
     pub image: Option<ImageSettings>,
+    /// Whether a post's preview on X and Slack names its author and its
+    /// reading time, Yoast's "enhanced Slack sharing". On by default.
+    pub share_labels: bool,
+}
+
+impl Default for SocialSettings {
+    fn default() -> Self {
+        Self {
+            twitter: None,
+            image: None,
+            share_labels: true,
+        }
+    }
 }
 
 /// An image by its public address, size and alternative text.
@@ -156,7 +172,7 @@ pub struct VerificationSettings {
 /// disallow = ["/drafts/"]
 /// block = ["GPTBot", "CCBot"]
 /// ```
-#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(default, deny_unknown_fields)]
 #[non_exhaustive]
 pub struct CrawlerSettings {
@@ -166,6 +182,23 @@ pub struct CrawlerSettings {
     pub allow: Vec<String>,
     /// Crawlers that may not read any page of the blog, such as `GPTBot`.
     pub block: Vec<String>,
+    /// Whether crawlers are kept off the search page, so they do not spend
+    /// their visits on endless result pages. On by default.
+    pub disallow_search: bool,
+    /// Lines added to robots.txt as written, such as `Crawl-delay: 5`.
+    pub extra_lines: Vec<String>,
+}
+
+impl Default for CrawlerSettings {
+    fn default() -> Self {
+        Self {
+            disallow: Vec::new(),
+            allow: Vec::new(),
+            block: Vec::new(),
+            disallow_search: true,
+            extra_lines: Vec::new(),
+        }
+    }
 }
 
 /// What every feed carries, from `[seo.feeds]`:
@@ -191,6 +224,9 @@ pub struct FeedSettings {
     pub source_line: Option<String>,
     /// How many of the newest posts a feed holds. 20 by default.
     pub limit: u32,
+    /// The feed formats not written at all, such as `["atom", "json"]`.
+    /// Empty by default: every format is written.
+    pub off: Vec<FeedKind>,
 }
 
 impl Default for FeedSettings {
@@ -201,8 +237,21 @@ impl Default for FeedSettings {
             after_item: String::new(),
             source_line: None,
             limit: 20,
+            off: Vec::new(),
         }
     }
+}
+
+/// One feed format, as `[seo.feeds] off` names it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum FeedKind {
+    /// RSS 2.0, `feed.xml`.
+    Rss,
+    /// Atom, `atom.xml`.
+    Atom,
+    /// JSON Feed, `feed.json`.
+    Json,
 }
 
 /// How much of each post a feed carries: `"full"` or `"excerpt"`.

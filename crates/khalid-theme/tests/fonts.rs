@@ -128,7 +128,9 @@ async fn rehostable_fonts_are_downloaded_and_returned_as_files() {
         .mount(&server)
         .await;
     wiremock::Mock::given(wiremock::matchers::path("/inter-latin.woff2"))
-        .respond_with(wiremock::ResponseTemplate::new(200).set_body_bytes(b"font bytes".as_slice()))
+        .respond_with(
+            wiremock::ResponseTemplate::new(200).set_body_bytes(b"wOF2 font bytes".as_slice()),
+        )
         .mount(&server)
         .await;
 
@@ -143,14 +145,14 @@ async fn rehostable_fonts_are_downloaded_and_returned_as_files() {
         .unwrap();
     assert_eq!(files.len(), 1, "{files:?}");
     assert_eq!(files[0].family, "Inter");
-    assert_eq!(files[0].path, "inter-latin.woff2");
+    assert_eq!(files[0].path, "inter-latin-400.woff2");
     assert_eq!(
         files[0].range.as_deref(),
         Some("U+0000-00FF"),
         "the subset the file covers is kept"
     );
-    let saved = std::fs::read(within(into.path(), "inter-latin.woff2")).unwrap();
-    assert_eq!(saved, b"font bytes");
+    let saved = std::fs::read(within(into.path(), "inter-latin-400.woff2")).unwrap();
+    assert_eq!(saved, b"wOF2 font bytes");
 }
 
 #[tokio::test]
@@ -317,8 +319,9 @@ async fn a_real_face_is_measured_into_metric_overrides() {
             .unwrap();
 
     // The DejaVu Sans Bold face from the crate's fixtures, a real font with
-    // real tables, so the measurements are the true ones, not a mock's.
-    let face = include_bytes!("../fixtures/real/fonts/DejaVuSans-Bold.ttf");
+    // real tables packed as WOFF2 here, so the measurements are the true
+    // ones, not a mock's.
+    let face = woff2_of(include_bytes!("../fixtures/real/fonts/DejaVuSans-Bold.ttf"));
     let css = format!(
         "/* latin */\n@font-face {{ font-family: 'DejaVu Sans'; font-style: normal; font-weight: 700; src: url(http://fonts.gstatic.test:{port}/dejavu.woff2) format('woff2'); }}\n"
     );
@@ -371,8 +374,8 @@ async fn a_file_that_is_not_a_font_is_saved_but_not_measured() {
         khalid_outbound::Outbound::with_resolver(khalid_outbound::Limits::default(), resolver)
             .unwrap();
 
-    // Bytes that are not any font: the parse fails, the file is still saved
-    // and served, but no fallback tuning is claimed for it.
+    // A WOFF2 signature on bytes that are no font: the parse fails, the
+    // file is still saved and served, but no fallback tuning is claimed.
     let css = format!(
         "/* latin */\n@font-face {{ font-family: 'Not A Font'; font-style: normal; font-weight: 400; src: url(http://fonts.gstatic.test:{port}/broken.woff2) format('woff2'); }}\n"
     );
@@ -383,7 +386,7 @@ async fn a_file_that_is_not_a_font_is_saved_but_not_measured() {
     wiremock::Mock::given(wiremock::matchers::path("/broken.woff2"))
         .respond_with(
             wiremock::ResponseTemplate::new(200)
-                .set_body_bytes(b"definitely not a font file".as_slice()),
+                .set_body_bytes(b"wOF2 but not a font file".as_slice()),
         )
         .mount(&server)
         .await;
@@ -404,7 +407,62 @@ async fn a_file_that_is_not_a_font_is_saved_but_not_measured() {
         "a file that does not parse as a face is never tuned"
     );
     assert!(
-        within(into.path(), "not-a-font-latin.woff2").exists(),
+        within(into.path(), "not-a-font-latin-400.woff2").exists(),
         "the file itself is still saved and served"
     );
+}
+
+/// `ttf` packed as a WOFF2 file with no table transforms: each table's
+/// tag given in full, the glyph and glyph location tables marked as kept
+/// as they are, and the tables one Brotli stream.
+#[cfg(test)]
+fn woff2_of(ttf: &[u8]) -> Vec<u8> {
+    let be32 = |at: usize| u32::from_be_bytes(ttf[at..at + 4].try_into().unwrap());
+    let count = u16::from_be_bytes([ttf[4], ttf[5]]);
+    let (mut directory, mut tables) = (Vec::new(), Vec::new());
+    for index in 0..usize::from(count) {
+        let entry = 12 + 16 * index;
+        let tag = &ttf[entry..entry + 4];
+        let offset = usize::try_from(be32(entry + 8)).unwrap();
+        let length = be32(entry + 12);
+        let glyph_locations = [0x6c, 0x6f, 0x63, 0x61];
+        let kept_as_is = if tag == b"glyf" || tag == glyph_locations {
+            0xc0
+        } else {
+            0
+        };
+        directory.push(0x3f | kept_as_is);
+        directory.extend_from_slice(tag);
+        directory.extend(base128(length));
+        tables.extend_from_slice(&ttf[offset..offset + usize::try_from(length).unwrap()]);
+    }
+    let mut stream = Vec::new();
+    let params = brotli::enc::BrotliEncoderParams::default();
+    brotli::BrotliCompress(&mut tables.as_slice(), &mut stream, &params).unwrap();
+    let size = |n: usize| u32::try_from(n).unwrap().to_be_bytes();
+    let mut file = b"wOF2".to_vec();
+    file.extend(0x0001_0000_u32.to_be_bytes());
+    file.extend(size(48 + directory.len() + stream.len()));
+    file.extend(count.to_be_bytes());
+    file.extend([0, 0]);
+    file.extend(size(ttf.len()));
+    file.extend(size(stream.len()));
+    // Version 1.0, then no metadata block and no private block.
+    file.extend([0, 1, 0, 0]);
+    file.extend([0; 20]);
+    file.extend(directory);
+    file.extend(stream);
+    file
+}
+
+/// `value` as WOFF2's `UIntBase128`: seven bits a byte, high bits first.
+#[cfg(test)]
+fn base128(value: u32) -> Vec<u8> {
+    let mut bytes = vec![u8::try_from(value & 0x7f).unwrap()];
+    let mut rest = value >> 7;
+    while rest > 0 {
+        bytes.insert(0, u8::try_from(rest & 0x7f).unwrap() | 0x80);
+        rest >>= 7;
+    }
+    bytes
 }

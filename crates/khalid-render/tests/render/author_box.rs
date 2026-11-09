@@ -33,15 +33,21 @@ fn the_post_ends_with_the_author_and_the_reviewer() {
 }
 
 #[test]
-fn the_box_shows_credentials_and_icons_named_for_screen_readers() {
+fn the_box_shows_credentials_and_every_profile_by_icon_and_name() {
     let page = render("en", post_with_profile());
     let parts = part(&page, "<section class=\"author-box\">", "</section>");
     assert!(parts.contains("<strong>Experience</strong> Ten years running crawls"));
     let linkedin = "data-icon=\"linkedin\"><svg";
     assert!(parts.contains(linkedin), "{parts}");
-    assert!(parts.contains("<span class=\"visually-hidden\">LinkedIn</span>"));
-    // A page with no known icon shows its host as a plain link.
-    assert!(parts.contains("<span>speakerdeck.com</span>"));
+    assert!(parts.contains("</svg><span>LinkedIn</span>"), "{parts}");
+    // A page on a site with no icon of its own gets the globe, and its
+    // host, so no link is a bare icon beside a named one.
+    assert!(parts.contains("data-icon=\"website\"><svg"), "{parts}");
+    assert!(
+        parts.contains("</svg><span>speakerdeck.com</span>"),
+        "{parts}"
+    );
+    assert!(!parts.contains("visually-hidden"), "{parts}");
     // Only the author's own page marks profiles rel="me".
     assert!(!parts.contains("rel=\"me\""));
 }

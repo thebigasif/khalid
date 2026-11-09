@@ -4,6 +4,8 @@
 
 **Status:** Proposed, 2026-10-31. G45, KH-SEO-12.
 
+**Superseded** for the cookie, the form, the router and the static refusal by ADR "consent has categories" and ADR "static consent is a small script" (privacy plan, 2026-11-08). Its page marks and its per-request page for a reader who answered still stand.
+
 ## Context
 
 KH-SEO-12 asks for head and body code per site and per post, allowed through the Content Security Policy, with a consent banner that holds scripts until a reader agrees. The banner must work with scripts off, as every public page must (BL-WEB-2). Pages are rendered once, at publish, and kept with a tag and a Brotli copy (ADR "the CSP nonce lives in the header"). A post's head code already gets the nonce per request (ADR "head code gets the nonce on each request").

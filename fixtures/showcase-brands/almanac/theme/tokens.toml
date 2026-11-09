@@ -1,0 +1,58 @@
+# The sample brand for the Almanac demo: a field guide publisher. Moss
+# green on warm paper, a soft display serif for headings and a reading
+# serif for long guides. Only the brand lives here: the template keeps its
+# own shape, type sizes and spacing.
+[colors]
+background = "#f9f6ee"
+surface = "#f1ecdd"
+text = "#22261c"
+muted = "#5a5e4f"
+link = "#4a6418"
+accent = "#56731c"
+border = "#ddd6c1"
+
+[fonts]
+heading = "Fraunces, \"Iowan Old Style\", Georgia, serif"
+body = "\"Source Serif 4\", \"Iowan Old Style\", Georgia, serif"
+mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+
+[[fonts.files]]
+family = "Fraunces"
+style = "normal"
+weight = "600"
+path = "fraunces-latin-600.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "108.03%"
+descent = "120.33%"
+line_gap = "0.00%"
+size_adjust = "59.83%"
+
+[[fonts.files]]
+family = "Source Serif 4"
+style = "italic"
+weight = "400"
+path = "source-serif-4-latin-italic-400.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "114.44%"
+descent = "158.08%"
+line_gap = "0.00%"
+size_adjust = "54.01%"
+
+[[fonts.files]]
+family = "Source Serif 4"
+style = "normal"
+weight = "400 700"
+path = "source-serif-4-latin-400-700.woff2"
+range = "U+0020-007E, U+00A0, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+2013-2014, U+2018-201A, U+201C-201E, U+2022, U+2026, U+2039-203A, U+20AC, U+2122, U+2212"
+[fonts.files.metrics]
+ascent = "114.44%"
+descent = "158.08%"
+line_gap = "0.00%"
+size_adjust = "54.32%"
+
+# The brand's logo, served from the showcase's about page. The shared
+# sample-brand step copies logo.svg from this folder to that address.
+[brand]
+logo = "https://www.example.com/blog/about/logo.svg"

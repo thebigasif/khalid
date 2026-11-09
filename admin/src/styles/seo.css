@@ -1,0 +1,49 @@
+/* The SEO screens: the SEO settings, the editor's scores and previews, and
+   the link work. One rule per line, as app.css writes them. */
+@layer components {
+  /* The separator choice: one square per mark, the chosen one tinted. */
+  .seps{display:flex;flex-wrap:wrap;gap:.5rem;margin:.25rem 0 1.25rem}
+  .seps label{position:relative;display:grid;place-items:center;min-width:44px;min-height:44px;margin:0;border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);font-size:1.125rem;font-weight:500;cursor:pointer}
+  .seps label:has(input:checked){border-color:var(--color-link);background:var(--color-tint);color:var(--color-link)}
+  .seps label:has(input:focus-visible){outline:2px solid var(--color-link);outline-offset:2px}
+  .seps input{position:absolute;inset:0;width:100%;min-height:0;height:100%;margin:0;opacity:0;cursor:pointer}
+  /* The variables a template may hold, as a row of small buttons under its field. */
+  .vars{display:flex;flex-wrap:wrap;gap:.375rem;min-inline-size:0;margin:.5rem 0 0}
+  .vars .btn{font-size:.8125rem;box-shadow:none}
+  @media (pointer:fine){.vars .btn{min-height:1.875rem;padding:.25rem .625rem}}
+  /* The editor's two scores as lights, each with its number and its meaning in words. */
+  .lights{list-style:none;margin:0 0 1rem;padding:0;display:grid;gap:.375rem}
+  .lights li{display:flex;align-items:center;flex-wrap:wrap;gap:.375rem}
+  .light{width:.75rem;height:.75rem;border-radius:50%;flex:none}
+  .light.good{background:var(--color-ok)}
+  .light.ok{background:var(--color-warn)}
+  .light.bad{background:var(--color-block)}
+  /* The search result: Google's words in bold, and a phone's narrower column. */
+  .serp b{font-weight:700}
+  .serp .desc b{color:var(--color-text)}
+  .serp.mobile{max-width:24rem;border-radius:1rem}
+  .serp.mobile .head{font-size:1.125rem}
+  .score-cell{display:inline-flex;align-items:center;gap:.375rem;white-space:nowrap}
+  .link-count{white-space:nowrap}
+  /* A shared link as Facebook and X draw it: the picture, then the site and the words. */
+  .share{margin:0 0 1rem;max-width:32rem}
+  .share img,.share-none{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;margin:0;border:1px solid var(--color-border);border-bottom:0;border-radius:var(--radius-field) var(--radius-field) 0 0;background:var(--color-surface)}
+  .share-none{display:grid;place-items:center;padding:1rem;color:var(--color-muted);text-align:center}
+  .share-words{padding:.625rem .75rem;border:1px solid var(--color-border);border-radius:0 0 var(--radius-field) var(--radius-field);background:var(--color-surface)}
+  .share-words p{margin:0}
+  .share-site{color:var(--color-muted);font-size:.75rem}
+  .share-title{font-weight:600}
+  .share-desc{color:var(--color-muted);font-size:.8125rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .share.x .share-words{background:var(--color-bg)}
+  /* The bulk SEO editor: a field per cell, its length under it, red past the limit. */
+  .bulk-seo textarea{width:100%;min-width:12rem;resize:vertical}
+  .bulk-seo td,.bulk-seo tbody th{vertical-align:top}
+  /* As a table, the post's title stays narrow so the description gets the room. */
+  @media (min-width:40.01em){
+    .bulk-seo tbody th{width:22%;padding-top:1rem}
+    .bulk-seo td[data-label]:nth-child(3) textarea{min-width:20rem}
+  }
+  .bulk-seo .hint.over{color:var(--color-block)}
+  /* One switch per AI crawler, in two columns where there is room. */
+  .bots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(19rem,100%),1fr));gap:0 1.5rem;margin:1rem 0 0}
+}

@@ -13,7 +13,7 @@ featured: true
 tags: [research, measurement]
 image:
   src: cover.svg
-  alt: A magnifying glass over a grid of blog cards, showing a small bar chart inside the lens
+  alt: A row of blog pages standing like bars on a chart, with one orange page rising above a dotted benchmark line
 ---
 
 The Larkspur content benchmark is our yearly look at how small companies that sell to other businesses run their blogs. During August 2026, 140 of their public blogs went through our hands. We read each one post by post and counted what any reader can see: who wrote each post, when it was last updated, how it answers its question and where its numbers come from.

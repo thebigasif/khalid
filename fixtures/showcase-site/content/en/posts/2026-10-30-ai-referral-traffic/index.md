@@ -16,7 +16,7 @@ related: [ai-search-guide, answer-capsules, content-roi]
 tags: [ai search, analytics]
 image:
   src: cover.svg
-  alt: A row of small chat bubbles sending dotted paths into one bar chart, with one path fading out before it arrives
+  alt: A chat answer with a link, and a dotted path from that link to one orange row in an analytics table of visit sources
 ---
 
 AI referral traffic is the set of visits that reach your blog when a reader clicks a link inside an AI assistant's answer. Some of them show up in your analytics with a clear source. Others arrive with no source at all and hide among your direct visits. This post shows how to find the ones you can see, group them, and read them without fooling yourself.

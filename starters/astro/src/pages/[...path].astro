@@ -6,7 +6,7 @@ import Base from "../layouts/Base.astro";
 import { getPost, getPosts, routeOf, siteFrom } from "../lib/khalid.js";
 
 export async function getStaticPaths() {
-  const site = siteFrom(import.meta.env);
+  const site = siteFrom(process.env);
   const posts = await getPosts(site);
   return posts.map((post) => ({
     params: { path: routeOf(post, import.meta.env.BASE_URL) },
@@ -14,7 +14,7 @@ export async function getStaticPaths() {
   }));
 }
 
-const post = await getPost(siteFrom(import.meta.env), Astro.props.id);
+const post = await getPost(siteFrom(process.env),Astro.props.id);
 if (!post) {
   throw new Error(
     `Khalid listed the post ${Astro.props.id} but did not find it a moment later. ` +

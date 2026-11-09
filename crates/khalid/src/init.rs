@@ -8,12 +8,14 @@ use std::path::Path;
 use khalid_core::{AbsoluteUrl, Config, Environment, Locale, UserMessage};
 use khalid_mount::{MountError, MountPath, Stack, proxy_rule};
 use khalid_routes::Routes;
-use khalid_theme::ThemeTokens;
+use khalid_theme::{Pack, ThemeTokens};
 use serde::Serialize;
 
 use crate::cli::{InitArgs, Output, Prompts, SiteMode};
 use crate::exit::Exit;
 use crate::{config_message, init_message, init_prompt, report};
+
+mod template;
 
 /// The language a site writes in when nothing says otherwise.
 const DEFAULT_LANGUAGE: &str = "en";
@@ -57,6 +59,9 @@ pub(crate) struct Answers {
 struct InitBody {
     site: String,
     created: Vec<String>,
+    /// The template `--template` chose, left out without the flag.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    template: Option<&'static str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proxy: Option<ProxyBody>,
 }
@@ -67,6 +72,8 @@ struct ProxyBody {
     stack: String,
     mount: String,
     rule: String,
+    /// The line the host's own `robots.txt` needs to name the blog's sitemap.
+    sitemap_line: String,
     /// The blog address in the rule when Khalid guessed it, to be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     guessed: Option<String>,
@@ -80,16 +87,25 @@ pub(crate) fn run(folder: &Path, args: &InitArgs, output: Output) -> Exit {
     if settings.exists() {
         return report::failure(output, &init_message::exists(&settings), Exit::Failure);
     }
+    let template = match args.template.as_deref().map(template::find).transpose() {
+        Ok(template) => template,
+        Err(message) => return report::failure(output, &message, Exit::Usage),
+    };
+    let tokens = match template.map(template::tokens).transpose() {
+        Ok(tokens) => tokens.unwrap_or_else(|| ThemeTokens::default().to_toml()),
+        Err(message) => return report::failure(output, &message, Exit::Failure),
+    };
     let answers = match gather(args) {
         Ok(answers) => answers,
         Err((message, exit)) => return report::failure(output, &message, exit),
     };
-    let text = answers.site_toml();
+    let mut text = answers.site_toml();
+    text.push_str(&template.map(template::table).unwrap_or_default());
     if let Err(error) = Config::from_toml(&settings, &text, &Environment::empty()) {
         return report::failure(output, &init_message::refused(&error), Exit::Failure);
     }
-    match write(folder, &answers, &text) {
-        Ok(created) => success(output, folder, &answers, created),
+    match write(folder, &answers, &text, &tokens) {
+        Ok(created) => success(output, folder, &answers, template, created),
         Err(error) => report::failure(output, &init_message::write(folder, &error), Exit::Failure),
     }
 }
@@ -111,7 +127,8 @@ pub(crate) fn first_start(folder: &Path, environment: &Environment) -> Result<()
     }
     let answers = start_address(&settings, environment)
         .and_then(|address| defaults_at(address).ok_or_else(init_message::needs_start_address))?;
-    write(folder, &answers, &answers.site_toml())
+    let tokens = ThemeTokens::default().to_toml();
+    write(folder, &answers, &answers.site_toml(), &tokens)
         .map(drop)
         .map_err(|error| init_message::write(folder, &error))
 }
@@ -140,6 +157,7 @@ fn defaults_at(address: AbsoluteUrl) -> Option<Answers> {
         mode: None,
         stack: None,
         blog: None,
+        template: None,
         prompts: Prompts::Never,
     })
 }
@@ -202,6 +220,11 @@ impl Answers {
 pub(crate) struct Proxy {
     stack: Stack,
     rule: String,
+    /// The host's root, such as `https://www.example.com`, where search
+    /// engines read `robots.txt`.
+    host: String,
+    /// `Sitemap: <host><mount>sitemap.xml`, for the host's `robots.txt`.
+    sitemap_line: String,
     /// The blog address the rule names when Khalid had to guess it.
     guessed: Option<AbsoluteUrl>,
 }
@@ -233,9 +256,12 @@ impl Answers {
             }
         };
         let rule = proxy_rule(stack, &mount, &blog).map_err(|error| of_mount_error(&error))?;
+        let host = self.address.as_str().trim_end_matches('/').to_owned();
         Ok(Some(Proxy {
             stack,
             rule,
+            sitemap_line: format!("Sitemap: {host}{}sitemap.xml", self.mount),
+            host,
             guessed,
         }))
     }
@@ -315,16 +341,22 @@ pub(crate) fn make_site(folder: &Path, address: AbsoluteUrl) -> io::Result<()> {
         stack: None,
         blog: None,
     };
-    match write(folder, &answers, &answers.site_toml()) {
+    let tokens = ThemeTokens::default().to_toml();
+    match write(folder, &answers, &answers.site_toml(), &tokens) {
         Err(error) if error.kind() != io::ErrorKind::AlreadyExists => Err(error),
         _ => Ok(()),
     }
 }
 
 /// Makes the site's folders and files, `site.toml` last so a failed run can be
-/// repeated, keeping any `routes.toml` or `theme/tokens.toml`. Returns what it
-/// made, relative to `folder`.
-fn write(folder: &Path, answers: &Answers, settings: &str) -> io::Result<Vec<String>> {
+/// repeated, keeping any `routes.toml` or `theme/tokens.toml`. `tokens` is the
+/// text of `theme/tokens.toml`. Returns what it made, relative to `folder`.
+fn write(
+    folder: &Path,
+    answers: &Answers,
+    settings: &str,
+    tokens: &str,
+) -> io::Result<Vec<String>> {
     let mut folders = vec!["theme/templates/".to_owned()];
     folders.extend(
         answers
@@ -343,10 +375,9 @@ fn write(folder: &Path, answers: &Answers, settings: &str) -> io::Result<Vec<Str
         path.push(relative);
         fs::create_dir_all(path)?;
     }
-    // The light defaults the pages use anyway, written out so they can be
-    // edited by hand and `khalid theme sync` has a file to update.
-    let tokens = ThemeTokens::default().to_toml();
-    for (name, text) in [(Routes::FILE_NAME, ROUTES_TOML), (TOKENS, tokens.as_str())] {
+    // The values the pages use anyway, written out so they can be edited by
+    // hand and `khalid theme sync` has a file to update.
+    for (name, text) in [(Routes::FILE_NAME, ROUTES_TOML), (TOKENS, tokens)] {
         if let Err(error) = create(folder, name, text)
             && error.kind() != io::ErrorKind::AlreadyExists
         {
@@ -373,16 +404,24 @@ fn create(folder: &Path, name: &str, text: &str) -> io::Result<()> {
 }
 
 /// Says what `init` made and what to do next.
-fn success(output: Output, folder: &Path, answers: &Answers, created: Vec<String>) -> Exit {
+fn success(
+    output: Output,
+    folder: &Path,
+    answers: &Answers,
+    template: Option<&'static Pack>,
+    created: Vec<String>,
+) -> Exit {
     let shown = folder.display().to_string();
     let proxy = answers.proxy_rule().unwrap_or(None);
+    let template = template.map(|pack| pack.name);
     match output {
         Output::Human => report::text(
             &format!(
-                "Made a Khalid site in {shown} for {}.\nIt holds {}.\n{}Next, write your first post with \
+                "Made a Khalid site in {shown} for {}{}.\nIt holds {}.\n{}Next, write your first post with \
                  `khalid --site {shown} new --draft \"Your title\" --author \"Your name\"`. \
                  It waits in drafts/ until `khalid --site {shown} publish <slug>` takes it live.\n{}",
                 answers.address,
+                template.map_or(String::new(), |name| format!(" in the {name} template")),
                 listed(&created),
                 proxy.as_ref().map_or(String::new(), proxy_text),
                 match answers.mode {
@@ -398,10 +437,12 @@ fn success(output: Output, folder: &Path, answers: &Answers, created: Vec<String
             &InitBody {
                 site: shown,
                 created,
+                template,
                 proxy: proxy.map(|proxy| ProxyBody {
                     stack: proxy.stack.name().to_owned(),
                     mount: answers.mount.clone(),
                     rule: proxy.rule,
+                    sitemap_line: proxy.sitemap_line,
                     guessed: proxy.guessed.map(|blog| blog.as_str().to_owned()),
                 }),
             },
@@ -430,8 +471,10 @@ fn proxy_text(proxy: &Proxy) -> String {
         )
     });
     format!(
-        "The blog lives under a folder, so {} must pass it to Khalid. Add this rule:\n\n{}\n{guess}",
-        proxy.stack, proxy.rule
+        "The blog lives under a folder, so {} must pass it to Khalid. Add this rule:\n\n{}\n{guess}\
+         Search engines read robots.txt only at the root of the host, so add this line to the \
+         robots.txt at {}/robots.txt to show them the blog's sitemap:\n\n{}\n\n",
+        proxy.stack, proxy.rule, proxy.host, proxy.sitemap_line
     )
 }
 

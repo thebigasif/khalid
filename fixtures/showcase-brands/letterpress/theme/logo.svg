@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <g fill="none" stroke="#a2301c" stroke-width="3" stroke-linejoin="miter">
+    <rect x="12" y="18" width="44" height="44"/><path d="M12 28 H56 M12 52 H56"/>
+  </g>
+  <path d="M27 33 H37 Q44 33 44 39 Q44 45 37 45 H31 V48 H27 Z M31 37 V41 H36 Q39 41 39 39 Q39 37 36 37 Z" fill="#a2301c"/>
+  <text textLength="224" lengthAdjust="spacingAndGlyphs" x="72" y="52" font-family="Old Standard TT, Didot, Times New Roman, serif" font-size="30" font-weight="700" fill="#1c1b19">The Proof Sheet</text>
+</svg>

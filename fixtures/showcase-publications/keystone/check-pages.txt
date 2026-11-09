@@ -1,0 +1,9 @@
+# The pages the layout check and the picture review open for this
+# publication, one per line: what the page is, then its path after the
+# site's mount.
+home /
+post /calder-street-library-wayfinding/
+table /what-a-project-costs/
+category /category/projects/
+tag /tag/wayfinding/
+author /authors/tobias-reyne/

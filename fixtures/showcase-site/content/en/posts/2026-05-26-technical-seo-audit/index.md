@@ -20,7 +20,7 @@ related: [core-web-vitals, internal-linking, xml-sitemaps, structured-data]
 tags: [crawling, page speed]
 image:
   src: cover.svg
-  alt: A technical SEO audit checklist page beside a magnifying glass that shows a small site map with one broken link marked in peach
+  alt: A site drawn as a tree of pages for a technical SEO audit, with one broken link crossed out and its page marked in orange
 ---
 
 A technical SEO audit is a check of everything a search engine has to get right before it can rank your pages: can it reach them, can it read them, does it know which version to show, and do they load well for real people. The writing can be superb. If a crawler cannot reach the page, nobody will find it.

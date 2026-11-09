@@ -3,6 +3,7 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import cards -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 <article class="page hub">
 <h1>{{ page.title }}</h1>
 <div class="page-body">
@@ -17,7 +18,7 @@
 {% endif %}</article>
 {% if page.latest %}<section class="hub-latest" aria-labelledby="hub-latest">
 <h2 id="hub-latest">{{ t.hub_latest | replace("{name}", page.topic.name) if page.topic else t.latest_posts }}</h2>
-{{ cards(page.latest, 3) }}
+{{ cards(page.latest, 3, sizes=slot_sizes("list", template.options.cards)) }}
 {% if page.topic %}<p class="view-all"><a href="{{ page.topic.href }}">{{ t.view_all | replace("{name}", page.topic.name) }}</a></p>
 {% endif %}</section>
 {% endif %}{% endblock %}

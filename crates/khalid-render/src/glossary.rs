@@ -2,7 +2,7 @@
 
 use serde::Serialize;
 
-use crate::BodyHtml;
+use crate::{BodyHtml, Link};
 
 /// The glossary: every term, grouped under its first letter.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -36,6 +36,18 @@ pub struct GlossaryTerm {
     pub href: String,
     /// One sentence that says what it means.
     pub summary: String,
+}
+
+/// What a glossary term's page links to beside its definition.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct GlossaryLinks {
+    /// The glossary's own page, such as `/blog/glossary/`.
+    pub glossary: String,
+    /// Up to five other terms: those the definition links to, then those
+    /// whose definitions link to this one.
+    pub related: Vec<Link>,
+    /// Up to ten posts whose bodies link to the term, newest first.
+    pub posts: Vec<Link>,
 }
 
 /// The search page: the form, and the results when there was a query.

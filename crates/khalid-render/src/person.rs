@@ -30,13 +30,13 @@ pub struct Person {
 /// known by.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Profile {
-    /// What a reader sees or hears for the link, such as `LinkedIn`, or
-    /// the site's host for one without a known icon.
+    /// What a reader sees beside the icon, such as `LinkedIn`, or the
+    /// site's host for a site with no icon of its own.
     pub name: String,
     /// The profile's address.
     pub href: String,
-    /// The icon drawn for it. `None` draws the name as a plain link.
-    pub icon: Option<ProfileIcon>,
+    /// The icon drawn before the name.
+    pub icon: ProfileIcon,
 }
 
 /// The sites whose icon a profile link shows, drawn as inline SVG by the
@@ -59,7 +59,7 @@ pub enum ProfileIcon {
     Facebook,
     /// A Mastodon server, known by its name or an `@name` address.
     Mastodon,
-    /// A personal site: a whole site rather than a page on one.
+    /// Any other site, such as a personal site: a globe.
     Website,
 }
 
@@ -78,23 +78,20 @@ const KNOWN: [(&str, ProfileIcon, &str); 9] = [
 
 impl Profile {
     /// The profile at `url`, with the icon of the site it is on: a known
-    /// network's own, a globe for a personal site's home page, and none
-    /// for any other page.
+    /// network's own, or a globe and the host for any other site.
     #[must_use]
     pub fn of(url: &AbsoluteUrl) -> Self {
         let host = url.host().trim_start_matches("www.");
         let on = |site: &str| host == site || host.ends_with(&format!(".{site}"));
-        let segments = url.segments();
         let known = KNOWN.iter().find(|(site, _, _)| on(site));
         let (icon, name) = match known {
-            Some(&(_, icon, name)) => (Some(icon), name.to_owned()),
+            Some(&(_, icon, name)) => (icon, name.to_owned()),
             None if host.contains("mastodon")
-                || segments.first().is_some_and(|first| first.starts_with('@')) =>
+                || (url.segments().first()).is_some_and(|first| first.starts_with('@')) =>
             {
-                (Some(ProfileIcon::Mastodon), "Mastodon".to_owned())
+                (ProfileIcon::Mastodon, "Mastodon".to_owned())
             }
-            None if segments.is_empty() => (Some(ProfileIcon::Website), host.to_owned()),
-            None => (None, host.to_owned()),
+            None => (ProfileIcon::Website, host.to_owned()),
         };
         Self {
             name,
@@ -146,19 +143,19 @@ mod tests {
         ];
         for (href, icon, name) in cases {
             let profile = of(href);
-            assert_eq!(profile.icon, Some(icon), "{href}");
+            assert_eq!(profile.icon, icon, "{href}");
             assert_eq!(profile.name, name, "{href}");
             assert_eq!(profile.href, href);
         }
     }
 
     #[test]
-    fn a_home_page_is_a_personal_site_and_any_other_page_a_plain_link() {
+    fn any_other_site_gets_the_globe_and_its_host() {
         let site = of("https://www.lenavogt.example/");
-        assert_eq!(site.icon, Some(ProfileIcon::Website));
+        assert_eq!(site.icon, ProfileIcon::Website);
         assert_eq!(site.name, "lenavogt.example");
         let page = of("https://speakerdeck.com/lena");
-        assert_eq!(page.icon, None);
+        assert_eq!(page.icon, ProfileIcon::Website);
         assert_eq!(page.name, "speakerdeck.com");
     }
 }

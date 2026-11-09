@@ -16,7 +16,7 @@ related: [editing-checklist, choosing-seo-tools, best-free-seo-tools]
 tags: [tools, reviews, editing]
 image:
   src: cover.svg
-  alt: A page of text under the Quillmeter lens, with two lines marked in peach and a gold star beside it
+  alt: A page of text under a magnifying glass, two hard lines marked in orange, beside a rating of four stars out of five
 ---
 
 Quillmeter suits editors and solo writers who want a quiet readability checker that marks long sentences and rare words and leaves the fixing to them. Skip it if you want a tool that rewrites for you, or if a whole team must share one set of rules. Our score after six months of daily use: four out of five.

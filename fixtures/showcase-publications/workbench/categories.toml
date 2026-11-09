@@ -1,0 +1,22 @@
+# Bench Test's five categories: four kinds of gear, and the guides that
+# weigh them against each other.
+
+[[categories]]
+slug = "cameras"
+en = "Cameras"
+
+[[categories]]
+slug = "microphones"
+en = "Microphones"
+
+[[categories]]
+slug = "lighting"
+en = "Lighting"
+
+[[categories]]
+slug = "audio-gear"
+en = "Audio gear"
+
+[[categories]]
+slug = "guides"
+en = "Guides"
