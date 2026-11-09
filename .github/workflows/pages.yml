@@ -85,7 +85,7 @@ jobs:
       # on main is the one pull requests' demo checks read. The key changes
       # with the encoder, so a file found is the one this build would make.
       - name: The demos' pictures, kept between runs
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.cache/khalid/demo-media
           key: demo-media-${{ hashFiles('crates/khalid-media/src/**') }}-${{ hashFiles('fixtures/showcase-publications/*/photos.lock') }}
