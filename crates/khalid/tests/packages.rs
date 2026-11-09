@@ -249,6 +249,73 @@ fn the_image_command_serves_the_demo_site() {
     assert!(body.contains("Field Notes on SEO"), "{body}");
 }
 
+/// The words of a shell line, with `"..."` kept as one word.
+#[cfg(test)]
+fn shell_words(line: &str) -> Vec<String> {
+    line.split('"')
+        .enumerate()
+        .flat_map(|(at, part)| {
+            if at % 2 == 1 {
+                vec![part.to_owned()]
+            } else {
+                part.split_whitespace().map(str::to_owned).collect()
+            }
+        })
+        .collect()
+}
+
+/// The Docker section of `docs/deploy.md` (gap G34), each `docker run`
+/// line in order through the image's `ENTRYPOINT`: a line naming a
+/// command runs it, the line with none starts the image's `CMD`. A line
+/// that fails in the image, such as one that names `--site` again, fails
+/// here.
+#[test]
+fn the_deploy_guide_docker_lines_run_through_the_image_entrypoint() {
+    let dockerfile = fs::read_to_string(repo_file("Dockerfile")).unwrap();
+    let guide = fs::read_to_string(repo_file("docs/deploy.md")).unwrap();
+    let entry = docker_array(&dockerfile, "ENTRYPOINT");
+    let image = "-v \"$PWD/site:/site\" khalid";
+    let lines: Vec<&str> = guide
+        .lines()
+        .filter(|line| line.starts_with("docker run "))
+        .filter_map(|line| line.split_once(image).map(|(_, rest)| rest.trim()))
+        .collect();
+    assert_eq!(lines.len(), 3, "{lines:?}");
+    let site = tempfile::tempdir().unwrap();
+    let mut server = None;
+    for rest in lines {
+        let mut args = entry.clone();
+        if rest.is_empty() {
+            args.extend(docker_array(&dockerfile, "CMD"));
+            let started = start(
+                &args,
+                "/khalid",
+                ("/site", site.path()),
+                Some("0.0.0.0:8080"),
+            );
+            // scripts/packages-check.sh looks for the same h1 in the image.
+            let (status, body) = get(&started, "/");
+            assert_eq!(status, 200);
+            assert!(body.contains("<h1"), "{body}");
+            server = Some(started);
+            continue;
+        }
+        args.extend(shell_words(rest));
+        let swapped = args.iter().skip(1).map(|arg| match arg.as_str() {
+            "/site" => site.path().to_str().unwrap(),
+            arg => arg,
+        });
+        // The owner's sign-in link is a secret, so only stderr is shown.
+        let ran = Command::new(env!("CARGO_BIN_EXE_khalid"))
+            .args(swapped)
+            .output()
+            .unwrap();
+        let said = String::from_utf8_lossy(&ran.stderr);
+        assert!(ran.status.success(), "{rest}: {said}");
+    }
+    assert!(server.is_some(), "no docker run line starts the image");
+}
+
 #[test]
 fn the_image_is_one_static_binary_in_an_empty_image_run_as_a_user() {
     let dockerfile = fs::read_to_string(repo_file("Dockerfile")).unwrap();

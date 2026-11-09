@@ -112,9 +112,12 @@ docker build -t khalid .
 mkdir site
 docker run --rm -u "$(id -u):$(id -g)" -v "$PWD/site:/site" khalid init /site --address https://blog.example.com --yes
 docker run -d -u "$(id -u):$(id -g)" -p 8080:8080 -v "$PWD/site:/site" khalid
+docker run --rm -u "$(id -u):$(id -g)" -v "$PWD/site:/site" khalid staff owner --email you@example.com --name "Your Name"
 ```
 
-`-u` runs Khalid as you, so the files it writes in `site/` stay yours. The blog is then at `http://localhost:8080/`.
+The build compiles Khalid and the admin: about 20 minutes on a machine with 4 cores, longer on a smaller one. To skip it, use the published image below. `-u` runs Khalid as you, so the files it writes in `site/` stay yours. The blog is then at `http://localhost:8080/`, and the last line prints the admin's sign-in link, as "Signing in to the admin the first time" above says.
+
+The image already adds `--site /site` to every command, so write the command without it: `khalid staff owner`, not `khalid --site /site staff owner`. Khalid refuses `--site` given twice. With Compose, the same command is `docker compose run --rm khalid staff owner --email you@example.com --name "Your Name"`.
 
 Each release also publishes the image, for x86_64 and ARM, so you can skip the build. Use `ghcr.io/thebigasif/khalid:latest` in place of `khalid` in the commands above, or a version such as `ghcr.io/thebigasif/khalid:1.3.2` to stay on one release.
 
