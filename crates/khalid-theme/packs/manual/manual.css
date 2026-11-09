@@ -14,6 +14,11 @@
 }
 .site-header, main, .site-footer { box-sizing: border-box; inline-size: 100%; max-inline-size: var(--mn-frame); margin-inline: auto; }
 main { padding-block: 0 var(--space-section); }
+/* The announcement: one small line on a light band across the window, and
+   the consent banner's words start where the header's do. */
+.announcement { margin: 0; border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.consent { padding-inline: max(0px, (100% - var(--mn-frame)) / 2); }
+.consent > * { margin-inline: 0; }
 main > .page, main > .post:not(.help-article), main > .author, main > .search, main > .search ~ section { max-inline-size: var(--mn-text); }
 .help-article, .help-article ~ * { max-inline-size: var(--mn-text); margin-inline: auto; }
 h1, h2, h3, h4 { letter-spacing: -0.015em; }
