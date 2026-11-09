@@ -173,3 +173,12 @@ main > .post ~ * { max-inline-size: 48rem; margin-inline: auto; }
 
 /* The footer: a double rule, quiet links. */
 .site-footer { border-block-start: 3px double var(--color-text); }
+
+/* The consent banner and the announcement keep their bands across the
+   window, and their words start under the guide's name, where the header
+   starts. The announcement's line is as wide as the header, so it fits
+   on one line on a laptop. */
+.consent { max-inline-size: var(--lc-frame); margin-inline: auto; padding-inline: 0; }
+.consent > * { margin-inline: 0; }
+.announcement { margin-block-end: 0; padding-inline: 0; border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); text-align: start; }
+.announcement p { max-inline-size: var(--lc-frame); }
