@@ -25,6 +25,11 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
 .site-header nav a, .search-link { color: var(--color-text); font-size: 0.9375rem; font-weight: 500; text-decoration: none; }
 .site-header nav a:hover, .search-link:hover { color: var(--color-link); text-decoration: underline; }
 .site-header nav a[aria-current] { box-shadow: inset 0 -2px var(--color-accent); }
+/* The announcement: one small line on a light band across the window, and
+   the consent banner's words start where the header's do. */
+.announcement { margin: 0; border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-size: var(--text-small); }
+.consent { padding-inline: calc(max(0px, (100% - var(--mo-frame)) / 2) + clamp(1rem, 0.5rem + 2vw, 1.5rem)); }
+.consent > * { margin-inline: 0; }
 
 /* Buttons: ink, a small radius. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--color-on-accent); background: var(--color-accent); border: 1px solid var(--color-accent); border-radius: var(--radius); font: 600 0.9375rem/1.2 var(--font-body); text-decoration: none; cursor: pointer; }

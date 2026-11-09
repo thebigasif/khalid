@@ -45,6 +45,9 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 .site-header nav li:last-child a { justify-content: flex-end; }
 .announcement { --br-band: color-mix(in oklab, var(--color-accent) 8%, var(--color-background)); margin: 0; padding-block: 0.5rem; background: var(--br-band); border: 0; box-shadow: 0 0 0 100vmax var(--br-band); clip-path: inset(0 -100vmax); color: var(--color-text); font-family: var(--font-heading); font-size: var(--text-small); }
 .announcement a { color: var(--color-text); }
+/* The consent banner's words start where the sheet's do. */
+.consent { padding-inline: calc(max(0px, (100% - var(--br-sheet)) / 2) + var(--br-pad)); }
+.consent > * { margin-inline: 0; }
 
 /* Buttons: square and inked; the accent on hover. */
 .button, .subscribe button, .comment-form button, .header-button { display: inline-flex; align-items: center; justify-content: center; min-block-size: 2.75rem; padding: 0.5rem 1.25rem; color: var(--br-paper); background: var(--br-ink); border: 0; border-radius: var(--radius); font: 600 0.9375rem/1.2 var(--font-heading); text-align: center; text-decoration: none; cursor: pointer; }
@@ -59,7 +62,7 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 .masthead { display: grid; gap: 1.5rem 2rem; align-items: end; margin-block: 0 var(--space-section); padding-block: 1.5rem 2rem; border-block-end: 1px solid var(--br-ink); }
 @media (min-width: 46rem) { .masthead-signup { grid-template-columns: minmax(0, 1fr) minmax(0, 17rem); } }
 .hero { margin: 0; padding: 0; }
-.hero-title { font-weight: var(--heading-weight); letter-spacing: -0.03em; }
+.hero-title { font-weight: var(--heading-weight); letter-spacing: -0.02em; }
 .hero-intro { margin-block-start: 0.75rem; color: var(--br-ink); font-size: 1.125rem; line-height: 1.5; }
 .masthead .newsletter-slot { margin: 0; padding: 1.25rem; border-block-start: 4px solid var(--color-accent); }
 .masthead .newsletter-slot h2 { font-size: 1.125rem; }
@@ -125,7 +128,7 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 /* An issue: the stamp, the title, the dek, the writer, the ticks, then a
    short, wide picture. */
 .post-header { margin-block: 1.75rem 2rem; padding-block-end: 1.5rem; border-block-end: 1px solid var(--br-ink); }
-.post-header h1 { margin-block: 0 0.5rem; line-height: 1.1; letter-spacing: -0.025em; }
+.post-header h1 { margin-block: 0 0.5rem; line-height: 1.1; letter-spacing: -0.02em; }
 .post-header .dek { margin-block: 0.5rem 1rem; color: var(--br-ink); font-size: 1.1875rem; line-height: 1.45; }
 .post-header .image { margin-block: 1.5rem 0; }
 .post-header .image img { aspect-ratio: 2 / 1; object-fit: cover; object-position: 50% 30%; }

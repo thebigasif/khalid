@@ -159,7 +159,7 @@ This is Workbench's design brief. It fixes how the template should look, so ever
 | Part | Workbench |
 |---|---|
 | Type pairing | A technical grotesque for headings over a plain engineering sans for text, with mono details: prices, ratings, dates and labels. With no theme, the pack uses the system sans and the system mono. |
-| Type scale | Display type is heavy (800) with tight tracking (-0.04em to -0.05em). The front page's name runs from 2.5rem on a phone to 6.5rem on a wide screen, a list page's title to 5rem, a post's title to 3.75rem (5rem from 1280 px) and the pick's title to 3.25rem. |
+| Type scale | Display type is heavy (800) with tracking no tighter than -0.02em, so the letters never touch in a Mac's system font. The front page's name runs from 2.5rem on a phone to 6.5rem on a wide screen, a list page's title to 5rem, a post's title to 3.75rem (5rem from 1280 px) and the pick's title to 3.25rem. |
 | Front page structure | The masthead owns the top: the name on squared paper over a thick rule. Below it, a lead grid: the pick on the left, a numbered rail of the five newest posts on the right. Then the rest as ruled cells of one sheet: twelve picture cells on a wide screen, then the sheet's ruled rows, two across, each a title, its date and its category. The front page still links every post. |
 | Colour | A grey-white bench ground, graphite text and one verdict colour (green) for picks, labels and pros. Panels a shade darker than the ground. Workbench now has a full palette of its own. |
 | Spacing rhythm | A base step of 0.5rem on a strict grid. Ruled sections 3.5rem apart. Table rows 0.75rem high in padding. |

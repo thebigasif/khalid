@@ -1,0 +1,2 @@
+Fixed
+- Twelve templates (Aperture, Brief, Compass, Fixture, Gazette, Hub, Lattice, Manual, Mosaic, Quill, Spectrum and Workbench) look right on laptops and phones: big titles no longer squeeze their letters together on a Mac, the privacy banner's words start where the header's do, announcement bands are light and run to both edges of the window, Fixture's header button sits beside the name, and a Workbench post with its contents beside it lines up with the header.

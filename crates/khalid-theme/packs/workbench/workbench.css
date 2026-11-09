@@ -29,7 +29,10 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .site-header nav a:hover, .site-header nav a[aria-current] { box-shadow: inset 0 -3px var(--color-accent); }
 .search-link { color: var(--color-text); font-family: var(--font-mono); font-size: 0.8125rem; text-decoration: none; }
 .header-button { padding-inline: 1.25rem; font-weight: 700; }
-.announcement { margin: 0; background: var(--color-surface); border-block-end: 1px solid var(--color-border); font-family: var(--font-mono); font-size: 0.8125rem; }
+.announcement { margin: 0; background: var(--color-surface); border: 0; box-shadow: 0 0 0 100vmax var(--color-surface); clip-path: inset(0 -100vmax); font-family: var(--font-mono); font-size: 0.8125rem; }
+/* The consent banner's words start where the header's do. */
+.consent { padding-inline: max(0px, (100% - var(--frame)) / 2); }
+.consent > * { margin-inline: 0; }
 
 /* The labels: the code font in spaced capitals. */
 .wb-label, .featured > h2, .toc-title, .share-title, .proscons-title, .related > h2, .wb-latest > h2, .wb-more > h2, .newsletter-slot h2, .author-box h2, .post-footer h2, .home-section > h2, .media-row > h2, .topic-tabs > h2, .card-meta > a, .hero-stats dt {
@@ -50,7 +53,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .wb-masthead { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem 2rem; margin-block-end: clamp(2rem, 4vw, 3.5rem); padding-block: clamp(1.75rem, 5vw, 4.5rem) clamp(1rem, 2vw, 1.75rem); border-block-end: var(--heavy); position: relative; isolation: isolate; }
 /* The bench's squared paper behind the name, faded at both ends. */
 .wb-masthead::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 1.5rem 1.5rem; background-position: -1px -1px; mask-image: linear-gradient(90deg, transparent, var(--color-text) 35% 65%, transparent); }
-.wb-masthead h1 { margin: 0; font-size: clamp(2.5rem, 1.25rem + 5.6vw, 6.5rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.045em; }
+.wb-masthead h1 { margin: 0; font-size: clamp(2.5rem, 1.25rem + 5.6vw, 6.5rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.02em; }
 .wb-masthead .intro { flex-basis: 100%; order: 1; margin: 0; max-inline-size: 44rem; color: var(--color-muted); font-size: var(--text-h4); }
 .wb-masthead .intro > :last-child { margin-block-end: 0; }
 .hero-stats { display: flex; flex-wrap: wrap; gap: 0.5rem 2.5rem; flex-basis: 100%; order: 2; margin: 0.5rem 0 0; }
@@ -71,7 +74,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 .card-featured { display: grid; gap: 0.25rem 2.5rem; align-content: start; padding: 0; background: none; border-radius: 0; }
 .card-featured .image { margin: 0 0 1rem; }
 .card-featured .image img { inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0; }
-.card.card-featured h3 { margin-block: 0.5rem 0.75rem; font-size: clamp(1.875rem, 1rem + 2.2vw, 3.25rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.04em; }
+.card.card-featured h3 { margin-block: 0.5rem 0.75rem; font-size: clamp(1.875rem, 1rem + 2.2vw, 3.25rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.02em; }
 .card-featured h3 a:hover { color: var(--color-link); text-decoration: underline; text-decoration-thickness: 0.06em; }
 .card.card-featured > p:last-child { margin: 0; max-inline-size: 40rem; color: var(--color-muted); font-size: 1.125rem; }
 /* Beside its words wherever there is room, except in the front page's
@@ -166,7 +169,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
 }
 
 /* A list page: its title in the masthead's type, over a thick rule. */
-main > h1 { margin-block: clamp(1.75rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2.5rem); padding-block-end: clamp(1rem, 2vw, 1.5rem); border-block-end: var(--heavy); font-size: clamp(2.5rem, 1.25rem + 4.4vw, 5rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.05em; }
+main > h1 { margin-block: clamp(1.75rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2.5rem); padding-block-end: clamp(1rem, 2vw, 1.5rem); border-block-end: var(--heavy); font-size: clamp(2.5rem, 1.25rem + 4.4vw, 5rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.02em; }
 main > h1 + .intro { max-inline-size: 44rem; margin-block: calc(-1 * clamp(0.5rem, 1.5vw, 1.25rem)) 2.5rem; color: var(--color-muted); font-size: var(--text-h4); }
 
 /* The newsletter: a panel a shade darker than the bench, under a verdict
@@ -187,7 +190,7 @@ main > h1 + .intro { max-inline-size: 44rem; margin-block: calc(-1 * clamp(0.5re
    between two rules, an open contents box on the panel colour. */
 .post-header { margin-block: clamp(1.5rem, 4vw, 3rem) 2.5rem; }
 .post-header .wb-label { margin-block-end: -0.25rem; }
-.post-header h1 { margin-block: 0.25rem 1rem; font-size: clamp(2.375rem, 1.4rem + 3.2vw, 3.75rem); font-weight: 800; line-height: 1; letter-spacing: -0.045em; }
+.post-header h1 { margin-block: 0.25rem 1rem; font-size: clamp(2.375rem, 1.4rem + 3.2vw, 3.75rem); font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
 .dek { margin-block: 0 1.5rem; color: var(--color-muted); font-size: var(--text-h4); line-height: 1.5; }
 .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.5rem; padding-block: 0.75rem; border-block: var(--rule); border-block-end: 1px solid var(--color-border); font-family: var(--font-mono); font-size: 0.8125rem; }
 .post-meta > :is(address, .reviewed-by) { flex-basis: 100%; }
@@ -206,7 +209,7 @@ main > h1 + .intro { max-inline-size: 44rem; margin-block: calc(-1 * clamp(0.5re
 .toc-box li + li { border-block-start: 1px solid var(--color-border); }
 .toc-box a:hover { color: var(--color-link); text-decoration: underline; }
 .post-body a { text-decoration-color: var(--color-accent); text-decoration-thickness: 0.1em; text-underline-offset: 0.18em; }
-.post-body h2 { margin-block-start: 2.25em; padding-block-start: 0.875rem; border-block-start: var(--pick); font-weight: 800; letter-spacing: -0.03em; }
+.post-body h2 { margin-block-start: 2.25em; padding-block-start: 0.875rem; border-block-start: var(--pick); font-weight: 800; letter-spacing: -0.02em; }
 .post-body h3 { letter-spacing: -0.02em; }
 .post-body strong { font-weight: 700; }
 .post-body li > strong:first-child { font-family: var(--font-heading); }
@@ -245,6 +248,10 @@ main > h1 + .intro { max-inline-size: 44rem; margin-block: calc(-1 * clamp(0.5re
   main { --measure: 40rem; }
   .post-body { font-size: 1.25rem; }
   main:has(> .post:not(.post-with-toc)) { max-inline-size: 61rem; }
+  /* With the contents in a rail the sheet starts under the site's name,
+     so the post lines up with its own header. */
+  main:has(> .post > .toc-box) { max-inline-size: var(--frame); }
+  main:has(> .post > .toc-box) > :not(.post) { max-inline-size: 61rem; }
   .post:not(.post-with-toc) > :not(.post-header) { max-inline-size: var(--measure); margin-inline: auto; }
   .post:has(> .toc-box) { display: grid; grid-template-columns: 17rem minmax(0, var(--measure)); column-gap: 4rem; align-items: start; }
   .post:has(> .toc-box) > * { grid-column: 2; margin-inline: 0; }
