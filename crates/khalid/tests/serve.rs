@@ -16,6 +16,11 @@ use khalid_core::{Clock, SystemClock};
 use serde_json::Value;
 use tempfile::TempDir;
 
+#[path = "serve/policy.rs"]
+mod policy;
+#[path = "serve/routes.rs"]
+mod routes;
+
 /// The pause between looks for an edit.
 const PAUSE: Duration = Duration::from_millis(100);
 
@@ -371,68 +376,6 @@ fn put(site: &Path, rel: &str, text: &str) {
 }
 
 #[test]
-fn serve_answers_every_list_page_where_routes_toml_puts_it() {
-    let site = demo_copy();
-    put(
-        site.path(),
-        "routes.toml",
-        "[taxonomies]\ncategory = \"topic\"\n\n\
-         [collections.news]\npermalink = \"/news/{year}/{month}/{slug}/\"\n\n\
-         [channels.from-lena]\npath = \"/from-lena/\"\nfilter = { author = \"lena-vogt\" }\n",
-    );
-    put(
-        site.path(),
-        "content/en/news/_index.md",
-        "---\ntitle: News\n---\n\nWhat changed on Field Notes, month by month.\n",
-    );
-    put(
-        site.path(),
-        "content/en/news/launch.md",
-        "---\ntitle: Field Notes is live\nslug: launch\ndate: 2026-09-03\nauthor: asif\n---\n\n\
-         The blog is live. Start at [the home page](/blog/).\n",
-    );
-    let server = start(site.path());
-    for (path, text) in [
-        ("/blog/archive/", "<h1>Archive</h1>"),
-        ("/blog/de/archive/", "lang=\"de\""),
-        ("/blog/authors/", "<h1>Authors</h1>"),
-        ("/blog/sitemap/", "<h1>Sitemap</h1>"),
-        ("/blog/topic/technical-seo/", "<h1>Technical SEO</h1>"),
-        ("/blog/from-lena/", "<h1>From lena</h1>"),
-        ("/blog/news/", "month by month."),
-        ("/blog/news/2026/", "<h1>2026</h1>"),
-        ("/blog/news/2026/09/", "Field Notes is live</a>"),
-    ] {
-        let answer = get(&server, path);
-        assert_eq!(answer.status, 200, "{path}");
-        assert!(answer.body.contains(text), "{path}:\n{}", answer.body);
-    }
-    assert_eq!(get(&server, "/blog/category/technical-seo/").status, 404);
-}
-
-#[test]
-fn serve_moves_an_alias_to_where_routes_toml_puts_the_post() {
-    let site = demo_copy();
-    let mut routes = site.path().to_path_buf();
-    routes.push("routes.toml");
-    fs::write(
-        &routes,
-        "[collections.posts]\npermalink = \"/{year}/{slug}/\"\n",
-    )
-    .unwrap();
-    let mut file = site.path().to_path_buf();
-    file.push("content/en/posts/2026-09-28-what-a-sitemap-does.md");
-    let post = fs::read_to_string(&file).unwrap();
-    let alias = "translation: sitemap\naliases:\n  - /blog/sitemaps-explained/\n";
-    fs::write(&file, post.replace("translation: sitemap\n", alias)).unwrap();
-    let server = start(site.path());
-    let moved = get(&server, "/blog/sitemaps-explained/");
-    assert_eq!(moved.status, 301, "the alias moved to its post");
-    assert_eq!(moved.location, "/blog/2026/what-a-sitemap-does/");
-    assert_eq!(get(&server, &moved.location).status, 200);
-}
-
-#[test]
 fn serve_answers_the_indexnow_key_file_where_requests_say_it_is() {
     let site = demo_copy();
     let mut settings = site.path().to_path_buf();
@@ -454,97 +397,6 @@ fn serve_answers_robots_txt_at_the_host_root_for_a_blog_in_a_folder() {
     assert_eq!(answer.status, 200);
     let sitemap = "Sitemap: https://www.example.com/blog/sitemap.xml";
     assert!(answer.body.contains(sitemap), "{}", answer.body);
-}
-
-#[test]
-fn serve_gives_body_links_the_sites_link_policy() {
-    let site = demo_copy();
-    let mut settings = site.path().to_path_buf();
-    settings.push("site.toml");
-    let mut text = fs::read_to_string(&settings).unwrap();
-    text.push_str("\n[seo.links]\nrel = [\"nofollow\"]\naffiliate_domains = [\"amazon.com\"]\n");
-    fs::write(&settings, text).unwrap();
-    let mut file = site.path().to_path_buf();
-    file.push("content/en/posts/2026-09-28-what-a-sitemap-does.md");
-    let mut post = fs::read_to_string(&file).unwrap();
-    post.push_str("\nRead [the book](https://www.amazon.com/dp/B0C1234567) or ");
-    post.push_str("[the guide](https://developers.google.com/search).\n");
-    fs::write(&file, post).unwrap();
-    let server = start(site.path());
-    let page = get(&server, "/blog/what-a-sitemap-does/");
-    assert_eq!(page.status, 200);
-    let book = "<a href=\"https://www.amazon.com/dp/B0C1234567\" rel=\"nofollow sponsored\">";
-    let guide = "<a href=\"https://developers.google.com/search\" rel=\"nofollow\">";
-    assert!(page.body.contains(book), "{}", page.body);
-    assert!(page.body.contains(guide), "{}", page.body);
-}
-
-#[test]
-fn serve_frames_a_page_of_an_allowed_domain_and_lets_only_it_into_the_policy() {
-    let site = demo_copy();
-    let mut settings = site.path().to_path_buf();
-    settings.push("site.toml");
-    let mut text = fs::read_to_string(&settings).unwrap();
-    text.push_str("\n[media]\nembed_domains = [\"tools.example.com\"]\n");
-    fs::write(&settings, text).unwrap();
-    let mut file = site.path().to_path_buf();
-    file.push("content/en/posts/2026-09-28-what-a-sitemap-does.md");
-    let mut post = fs::read_to_string(&file).unwrap();
-    post.push_str("\n::embed{src=\"https://tools.example.com/roi\" title=\"ROI calculator\"}\n");
-    post.push_str("\n::embed{src=\"https://other.example.com/x\" title=\"Elsewhere\"}\n");
-    fs::write(&file, post).unwrap();
-    let server = start(site.path());
-    let page = get(&server, "/blog/what-a-sitemap-does/");
-    assert_eq!(page.status, 200, "{}", page.body);
-    let frame = "<iframe src=\"https://tools.example.com/roi\" title=\"ROI calculator\"";
-    assert!(page.body.contains(frame), "{}", page.body);
-    assert!(
-        !page.body.contains("<iframe src=\"https://other"),
-        "{}",
-        page.body
-    );
-    assert!(
-        page.policy.contains(" https://tools.example.com"),
-        "{}",
-        page.policy
-    );
-    assert!(
-        !page.policy.contains("other.example.com"),
-        "{}",
-        page.policy
-    );
-}
-
-#[test]
-fn serve_answers_the_admin_app_at_admin_with_its_own_policy() {
-    let site = demo_copy();
-    let server = start(site.path());
-    // The demo blog sits under /blog/, and so does its admin.
-    let admin = get(&server, "/blog/admin/");
-    // The pull request checks build Khalid without running npm, so the
-    // binary holds no admin and says how to add it. The release builds
-    // admin/dist first, and then only the app's page will do (G7).
-    let mut bundle = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    bundle.push("../../admin/dist/index.html");
-    if bundle.is_file() {
-        assert_eq!(admin.status, 200, "admin/dist is built: {}", admin.body);
-        assert!(admin.body.contains("<div id=\"root\">"), "{}", admin.body);
-    } else {
-        assert_eq!(admin.status, 503, "admin/dist is not built: {}", admin.body);
-        assert!(admin.body.contains("npm run build"), "{}", admin.body);
-    }
-    assert!(
-        admin.policy.contains("script-src 'self'"),
-        "{}",
-        admin.policy
-    );
-    assert!(
-        admin.policy.contains("frame-ancestors 'none'"),
-        "{}",
-        admin.policy
-    );
-    let blog = get(&server, "/blog/");
-    assert_eq!(blog.status, 200, "the pages still answer beside the admin");
 }
 
 #[test]
