@@ -25,6 +25,8 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 | Web fonts on a template's demo home page and one post, 390 and 1440 px | under 60 KB | none | `scripts/page-weight.sh`, see "Fonts" |
 | JavaScript required to read a post | 0 bytes | none | scripts-off test |
 | Admin initial JavaScript, compressed | under 350 KB | 5% | `khalid-perf sizes` on the build CI's Admin job hands over: each script `admin/dist/index.html` loads at once, gzipped at level 9. With `PERF_REQUIRE_ADMIN=1`, as CI sets it, `scripts/perf.sh` fails when no admin build is there |
+| Admin first download, compressed | at most 250 KB | none | `admin/scripts/size-budget.mjs` in CI's Admin job: `admin/dist/index.html`, each script and stylesheet it loads at once, and every chunk those scripts import at the top, gzipped at level 9. See "Admin size check" |
+| Admin, every built file together, compressed | at most 450 KB | none | the same script: every `.js`, `.css` and `.html` file in `admin/dist`, gzipped at level 9. A ceiling against runaway growth |
 | Test suite, CI | under 4 min | none | job time |
 | Release build, CI | under 10 min with cache | none | job time |
 
@@ -478,6 +480,17 @@ How `scripts/perf.sh` takes the four measures added for brief G9, all through `k
 - **Cached post page**: one post page of the 1,000-post site, asked for once so it is cached, then over 50 keep-alive connections for 30 seconds, `oha`'s defaults, with the client on the same machine (`khalid-perf requests`).
 - **Public CSS, compressed**: the Brotli copy of each stylesheet the built home page links, from the 10,000-post build (`khalid-perf sizes`).
 - **Admin initial JavaScript, compressed**: each script `admin/dist/index.html` loads at once (`<script src>` and `modulepreload`), gzipped at level 9 as `admin/scripts/size-budget.mjs` counts. `perf.sh` does not run npm, so it is measured only when `admin/dist` holds a build; otherwise the gate lists it as not measured.
+
+## Admin size check
+
+`npm run size` in `admin/` runs `admin/scripts/size-budget.mjs` after `vite build`, and CI's Admin job fails when either limit is passed:
+
+- **The first download, at most 250 KB compressed.** This is what a visitor waits for before the admin's first screen: `index.html`, the scripts and stylesheets it loads at once, and the chunks those scripts import at the top. A screen loaded with a lazy `import()` is not counted, because it downloads only when someone opens it.
+- **Every built file together, at most 450 KB compressed.** A ceiling, so lazy screens cannot grow without end.
+
+Until November 2026 the check counted every file against 350 KB. A lazy screen then made the number worse, because its own file compresses less well than the same code inside the main one, so the check pushed screens into the first download. The ADR "the admin size check measures the first download" records the change.
+
+Measured on 2026-11-10 (integration 32, 42 pull requests of new screens, with Forms, Tags and Navigation lazy): first download 208.6 KB, every file 370.7 KB.
 
 ## Demo bundle
 
