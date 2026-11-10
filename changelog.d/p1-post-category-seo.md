@@ -1,0 +1,2 @@
+Fixed
+- A post's category now reaches its search tags. A `[[seo.schema]]` template for a category, such as a Course for every post in "On-page SEO", now applies to that category's posts, `{category}` in a title template writes the category's name, and each post carries `articleSection` in its schema and `article:section` in its share tags, and feed items name it. The publish check reads the same, so a category template that lacks what Google needs stops the post, as a collection template does (G54, plan 5.9).
