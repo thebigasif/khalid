@@ -117,6 +117,13 @@ const mediaItem = createRoute({
   component: MediaDetails,
 });
 
+// Loads when opened, so the admin's first download stays inside its budget.
+const snippets = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/snippets",
+  component: lazyRouteComponent(() => import("./Snippets"), "Snippets"),
+});
+
 const trash = createRoute({ getParentRoute: () => signedIn, path: "/trash", component: Trash });
 
 const audit = createRoute({ getParentRoute: () => signedIn, path: "/audit", component: AuditLog });
@@ -249,6 +256,7 @@ const routeTree = root.addChildren([
     editor,
     media,
     mediaItem,
+    snippets,
     comments,
     authors,
     authorPage,
