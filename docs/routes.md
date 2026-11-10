@@ -29,6 +29,8 @@ news = true
 
 Change the permalink of a live blog with care: the old addresses stop working. Add each old address to the post's `aliases:` so readers and search engines are sent on.
 
+Changing one live post's web address in the admin, or through the Admin API, is safe. The file stays where it is, `slug:` changes, and the old address goes into `aliases:`, so it sends readers on with a 301 (a permanent redirect) on `khalid serve` and in a static build's `_redirects`. Changing it back takes the alias out again, so no address points at itself. `khalid serve` also stores a 301, made by `slug_change`, when you change `slug:` in a file by hand.
+
 ## Channels: extra lists that leave addresses alone
 
 A channel is a page with its own feed that lists some posts. It never changes a post's own address.

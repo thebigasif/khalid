@@ -581,7 +581,7 @@ export const en = {
     title: "Post settings",
     slug: "Web address",
     slugHint:
-      "The last part of the post's address, in lowercase words joined by hyphens. Settle it before the post goes live, so links to it keep working.",
+      "The last part of the post's address, in lowercase words joined by hyphens. Change it on a live post and the old address sends readers to the new one.",
     author: "Author",
     authorHint:
       "The author's short name, as in the file name in your blog's authors folder, such as asif.",
