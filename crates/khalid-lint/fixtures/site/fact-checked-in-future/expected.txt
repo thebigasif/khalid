@@ -1,0 +1,1 @@
+en/pricing-explained: warn fact-checked-in-future: pro-plan-price (suggest: https://example.com/pricing/)

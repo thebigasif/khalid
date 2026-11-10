@@ -133,6 +133,24 @@ async fn answers_an_unknown_address_with_the_not_found_page() {
 }
 
 #[tokio::test]
+async fn a_missing_address_gets_the_not_found_page_of_its_language() {
+    let german = (PagePath::try_new("/de/").unwrap(), "<h1>Seite fehlt</h1>");
+    let pages = demo().with_not_found_under(vec![german]);
+    for (uri, want) in [
+        ("/de/blog/no-such-post/", "<h1>Seite fehlt</h1>"),
+        ("/de/", "<h1>Seite fehlt</h1>"),
+        ("/blog/de/", "<h1>Page not found</h1>"),
+        ("/dev/", "<h1>Page not found</h1>"),
+    ] {
+        let request = Request::get(uri).body(Body::empty()).unwrap();
+        let app = router(pages.clone(), SecurityHeaders::default());
+        let response = app.oneshot(request).await.unwrap();
+        assert_eq!(response.status(), StatusCode::NOT_FOUND, "{uri}");
+        assert_eq!(text(response).await, want, "{uri}");
+    }
+}
+
+#[tokio::test]
 async fn a_site_without_an_icon_answers_the_browsers_icon_request_with_no_content() {
     for method in [Method::GET, Method::HEAD] {
         let response = send(method.clone(), "/favicon.ico").await;

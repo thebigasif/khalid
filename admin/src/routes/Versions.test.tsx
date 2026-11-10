@@ -25,7 +25,8 @@ const DRAFT: AdminPost = {
 
 const EARLIER: PostVersion = {
   saved_at: "2026-10-30T16:05:00Z",
-  saved_by: "maria",
+  saved_by: "0000000000000002",
+  saved_by_name: "Maria Lopez",
   title: "Internal links",
   markdown: "Internal links help Google.\n",
 };
@@ -58,7 +59,7 @@ describe("earlier versions", () => {
     blog([EARLIER]);
     await showVersions();
     const list = await screen.findByRole("list", { name: en.versions.list });
-    const pick = within(list).getByRole("button", { name: /by maria$/ });
+    const pick = within(list).getByRole("button", { name: /by Maria Lopez$/ });
     fireEvent.click(pick);
     expect(pick).toHaveAttribute("aria-pressed", "true");
     const changes = screen.getByRole("group", { name: en.versions.changes });
@@ -73,7 +74,7 @@ describe("earlier versions", () => {
     const edits = blog([EARLIER]);
     await showVersions();
     const list = await screen.findByRole("list", { name: en.versions.list });
-    fireEvent.click(within(list).getByRole("button", { name: /by maria$/ }));
+    fireEvent.click(within(list).getByRole("button", { name: /by Maria Lopez$/ }));
     fireEvent.click(screen.getByRole("button", { name: en.versions.restore }));
     const title = screen.getByLabelText(en.editor.title);
     expect(title).toHaveValue(EARLIER.title);

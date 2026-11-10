@@ -198,9 +198,35 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
+  # The manual pages, from a build with the man feature, so the shipped
+  # binaries carry no page writer (docs/cli.md). The release attaches them
+  # as one archive, and the Docker image holds them in /usr/share/man/man1.
+  man:
+    name: Manual pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.1
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: man
+      - name: Write the pages
+        run: |
+          cargo run --locked -p khalid --features man -- man "$RUNNER_TEMP/man"
+          mkdir dist
+          tar -czf "dist/khalid-${{ github.ref_name }}-man.tar.gz" -C "$RUNNER_TEMP/man" .
+      - uses: actions/upload-artifact@v7
+        with:
+          name: khalid-man
+          path: dist/*
+          if-no-files-found: error
+
   release:
     name: Draft release
-    needs: [rust-lints, rust, build]
+    needs: [rust-lints, rust, build, man]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -222,6 +248,7 @@ jobs:
           fail_on_unmatched_files: true
           body: |
             Binaries for Linux (x86_64 and ARM, fully static), macOS (Apple silicon and Intel) and Windows. Each one holds the admin. Check a download against `SHA256SUMS`.
+            The manual pages for every command are in the `-man.tar.gz` file; docs/cli.md says how to install them.
             The Docker image is `ghcr.io/${{ github.repository }}`, tagged with this version.
             What changed is in CHANGELOG.md.
 
@@ -231,7 +258,7 @@ jobs:
   # up by hand. A prerelease tag gets only its version tag, never latest.
   docker:
     name: Docker image
-    needs: [rust-lints, rust, build]
+    needs: [rust-lints, rust, build, man]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -243,11 +270,16 @@ jobs:
           path: artifacts
           pattern: khalid-linux-*
           merge-multiple: true
-      - name: One binary per Docker processor name
+      - uses: actions/download-artifact@v8
+        with:
+          name: khalid-man
+          path: artifacts
+      - name: One binary per Docker processor name, and the manual pages
         run: |
-          mkdir -p dist/amd64 dist/arm64
+          mkdir -p dist/amd64 dist/arm64 dist/man
           cp "artifacts/khalid-${{ github.ref_name }}-linux-x86_64" dist/amd64/khalid
           cp "artifacts/khalid-${{ github.ref_name }}-linux-aarch64" dist/arm64/khalid
+          tar -xzf "artifacts/khalid-${{ github.ref_name }}-man.tar.gz" -C dist/man
       # The image's last step runs the binary, so the ARM image needs an
       # emulator on this x86_64 runner.
       - uses: docker/setup-qemu-action@v4

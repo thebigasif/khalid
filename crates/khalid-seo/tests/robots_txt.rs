@@ -9,7 +9,8 @@ mod common;
 
 use common::{demo_site, internal_links_post, internal_links_post_de, path};
 use khalid_seo::{
-    BotAccess, RobotsLine, RobotsPath, RobotsTxt, SeoError, SeoSite, SiteSearch, UserAgent,
+    AI_ANSWER_CRAWLERS, AI_TRAINING_CRAWLERS, BotAccess, RobotsLine, RobotsPath, RobotsTxt,
+    SeoError, SeoSite, SiteSearch, UserAgent,
 };
 use robotstxt::DefaultMatcher;
 
@@ -149,4 +150,84 @@ fn bot_names_and_paths_are_checked() {
         Err(SeoError::RobotsPath { .. })
     ));
     assert!(RobotsPath::try_new("/*.pdf$").is_ok());
+}
+
+/// The demo site with the "search yes, AI training no" switch on.
+fn training_blocked_site() -> SeoSite {
+    let mut site = demo_site();
+    site.crawlers.ai_training = BotAccess::Blocked;
+    site
+}
+
+const POST: &str = "https://www.example.com/blog/on-links/";
+
+#[test]
+fn ai_training_crawlers_are_allowed_by_default() {
+    let robots = RobotsTxt::for_site(&demo_site()).unwrap().to_string();
+    insta::assert_snapshot!(robots);
+    for crawler in AI_TRAINING_CRAWLERS.iter().chain(&AI_ANSWER_CRAWLERS) {
+        assert!(allowed(&robots, crawler.token, POST), "{}", crawler.token);
+    }
+}
+
+#[test]
+fn the_switch_blocks_training_crawlers_and_keeps_search_and_answers() {
+    let robots = RobotsTxt::for_site(&training_blocked_site())
+        .unwrap()
+        .to_string();
+    insta::assert_snapshot!(robots);
+    for crawler in &AI_TRAINING_CRAWLERS {
+        assert!(!allowed(&robots, crawler.token, POST), "{}", crawler.token);
+    }
+    for crawler in &AI_ANSWER_CRAWLERS {
+        assert!(allowed(&robots, crawler.token, POST), "{}", crawler.token);
+    }
+    for search in ["Googlebot", "Bingbot", "Applebot"] {
+        assert!(allowed(&robots, search, POST), "{search}");
+    }
+}
+
+#[test]
+fn an_answer_crawler_blocked_by_hand_joins_the_training_crawlers() {
+    let mut site = training_blocked_site();
+    site.crawlers
+        .bots
+        .insert(agent("PerplexityBot"), BotAccess::Blocked);
+    let robots = RobotsTxt::for_site(&site).unwrap().to_string();
+    insta::assert_snapshot!(robots);
+    assert!(!allowed(&robots, "PerplexityBot", POST));
+    assert!(!allowed(&robots, "GPTBot", POST));
+    assert!(allowed(&robots, "Claude-SearchBot", POST));
+}
+
+#[test]
+fn a_training_crawler_allowed_by_name_stays_allowed() {
+    let mut site = training_blocked_site();
+    site.crawlers
+        .bots
+        .insert(agent("CCBot"), BotAccess::Allowed);
+    site.crawlers
+        .bots
+        .insert(agent("bytespider"), BotAccess::Allowed);
+    let robots = RobotsTxt::for_site(&site).unwrap().to_string();
+    assert!(allowed(&robots, "CCBot", POST), "{robots}");
+    assert!(allowed(&robots, "Bytespider", POST), "{robots}");
+    assert!(!allowed(&robots, "GPTBot", POST), "{robots}");
+}
+
+#[test]
+fn the_two_lists_are_valid_tokens_and_share_none() {
+    for crawler in AI_TRAINING_CRAWLERS.iter().chain(&AI_ANSWER_CRAWLERS) {
+        assert!(
+            UserAgent::try_new(crawler.token).is_ok(),
+            "{}",
+            crawler.token
+        );
+        assert!(!crawler.about.is_empty(), "{}", crawler.token);
+    }
+    for training in &AI_TRAINING_CRAWLERS {
+        let twice = (AI_ANSWER_CRAWLERS.iter())
+            .any(|answer| answer.token.eq_ignore_ascii_case(training.token));
+        assert!(!twice, "{}", training.token);
+    }
 }

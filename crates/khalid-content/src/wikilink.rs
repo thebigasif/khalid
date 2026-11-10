@@ -17,12 +17,19 @@ pub(crate) use cells::guard_cells;
 /// `[[glossary:crawl-budget]]`, so a post with the same slug never takes it.
 pub const GLOSSARY: &str = "glossary:";
 
-/// The pages a wikilink can reach in one language, by slug, and the
-/// snippets a `::snippet` block can place, by slug.
+/// How a wikilink shows a fact's current value from `facts.toml`, as in
+/// `[[fact:pro-plan-price]]`, so one edit to the registry changes every
+/// post that gives it.
+pub const FACT: &str = "fact:";
+
+/// The pages a wikilink can reach in one language, by slug, the snippets
+/// a `::snippet` block can place, by slug, and the facts a `[[fact:key]]`
+/// can show, by key.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Wikilinks {
     targets: BTreeMap<String, WikiTarget>,
     snippets: BTreeMap<String, String>,
+    facts: BTreeMap<String, String>,
 }
 
 impl Wikilinks {
@@ -40,7 +47,8 @@ impl Wikilinks {
     /// term, whatever shares its slug. Pages sit at `/<slug>/` under the mount and
     /// language prefix, where `khalid build` writes them. An undated post in a
     /// collection whose addresses carry the date has no address yet, so no
-    /// wikilink reaches it. Every snippet written in `locale` is kept too.
+    /// wikilink reaches it. Every snippet written in `locale` is kept too,
+    /// and every fact of the site's registry, which serves all languages.
     #[must_use]
     pub fn for_language(
         content: &SiteContent,
@@ -100,7 +108,26 @@ impl Wikilinks {
                 links.insert_snippet(&slug, doc.body.clone());
             }
         }
+        for fact in &content.facts {
+            links.insert_fact(&fact.key, fact.value.clone());
+        }
         links
+    }
+
+    /// Lets `[[fact:key]]` show `value`. A key that is already taken keeps
+    /// its first value.
+    pub fn insert_fact(&mut self, key: &Slug, value: impl Into<String>) {
+        self.facts
+            .entry(key.as_str().to_owned())
+            .or_insert_with(|| value.into());
+    }
+
+    /// The value a wikilink to `target`, such as `fact:pro-plan-price`,
+    /// shows, or `None` when `target` names no fact.
+    #[must_use]
+    pub fn fact(&self, target: &str) -> Option<&str> {
+        let key = target.strip_prefix(FACT)?.trim();
+        self.facts.get(key).map(String::as_str)
     }
 
     /// Lets `::snippet{slug="..."}` place the blocks of `body`. A slug that
@@ -175,7 +202,8 @@ impl WikiTarget {
 
 /// Turns every wikilink under `root` into a link to its target, or into its
 /// text alone when `links` has no target for it. A wikilink with no text
-/// after a pipe shows its target's title.
+/// after a pipe shows its target's title. A `[[fact:key]]` becomes the
+/// fact's value as plain text, whatever text it names.
 pub(crate) fn resolve<'a>(root: &'a AstNode<'a>, links: &Wikilinks) {
     let wikilinks: Vec<_> = root
         .descendants()
@@ -186,6 +214,14 @@ pub(crate) fn resolve<'a>(root: &'a AstNode<'a>, links: &Wikilinks) {
             NodeValue::WikiLink(link) => link.url.clone(),
             _ => continue,
         };
+        if let Some(value) = links.fact(&slug) {
+            let children: Vec<_> = node.children().collect();
+            for child in children {
+                child.detach();
+            }
+            node.data.borrow_mut().value = NodeValue::Text(value.to_owned().into());
+            continue;
+        }
         let Some(target) = links.get(&slug) else {
             let children: Vec<_> = node.children().collect();
             for child in children {

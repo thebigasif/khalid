@@ -210,3 +210,37 @@ fn a_page_may_be_a_hub_for_a_category_with_chapters_in_order() {
         .to_string();
     assert!(error.contains("missing field `category`"), "{error}");
 }
+
+/// Writes `text` as the `facts.toml` of the site in `dir`.
+#[cfg(test)]
+fn write_facts(dir: &tempfile::TempDir, text: &str) {
+    let mut path = dir.path().to_path_buf();
+    path.push("facts.toml");
+    fs::write(path, text).unwrap();
+}
+
+#[test]
+fn facts_toml_beside_content_is_read_with_the_posts() {
+    let dir = site_with("content/en/posts/a.md", "---\ntitle: A\n---\n");
+    write_facts(
+        &dir,
+        "[pro-plan-price]\nvalue = \"29 USD a month\"\nchecked = 2026-09-01\n",
+    );
+    let content = read_content(&ContentTree::walk(dir.path()).unwrap()).unwrap();
+    let values: Vec<&str> = content.facts.iter().map(|f| f.value.as_str()).collect();
+    assert_eq!(values, ["29 USD a month"]);
+
+    write_facts(&dir, "[price]\nvalue = \"29\"\n");
+    let error = read_content(&ContentTree::walk(dir.path()).unwrap()).unwrap_err();
+    assert!(
+        error.to_string().starts_with("facts.toml: line 1"),
+        "{error}"
+    );
+}
+
+#[test]
+fn a_site_without_facts_toml_has_no_facts() {
+    let dir = site_with("content/en/posts/a.md", "---\ntitle: A\n---\n");
+    let content = read_content(&ContentTree::walk(dir.path()).unwrap()).unwrap();
+    assert_eq!(content.facts, Vec::new());
+}

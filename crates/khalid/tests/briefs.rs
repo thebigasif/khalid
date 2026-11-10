@@ -117,6 +117,24 @@ fn lint_warns_about_each_part_of_the_brief_the_post_misses() {
 }
 
 #[test]
+fn lint_warns_about_a_planned_link_to_a_post_the_site_lacks() {
+    let site = site(BRIEF);
+    let output = khalid(site.path(), &["lint", "--json"]);
+    let json: Value = serde_json::from_str(&text(&output.stdout)).unwrap();
+    assert_eq!(
+        found(&json, "brief-link-unknown"),
+        ["/blog/choosing-link-text/", "/blog/orphan-pages/"],
+        "{json}"
+    );
+    let own = BRIEF.replace("/blog/orphan-pages/", "/blog/why-internal-links-matter/");
+    let site = self::site(&own);
+    let output = khalid(site.path(), &["lint", "--json"]);
+    let json: Value = serde_json::from_str(&text(&output.stdout)).unwrap();
+    let unknown = found(&json, "brief-link-unknown");
+    assert_eq!(unknown, ["/blog/choosing-link-text/"], "{json}");
+}
+
+#[test]
 fn lint_names_the_fix_in_sentences() {
     let site = site(BRIEF);
     let output = khalid(site.path(), &["lint"]);

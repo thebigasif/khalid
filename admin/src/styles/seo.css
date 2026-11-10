@@ -45,5 +45,9 @@
   }
   .bulk-seo .hint.over{color:var(--color-block)}
   /* One switch per AI crawler, in two columns where there is room. */
+  /* The AI training choice leads the crawlers screen: a tinted box, the choice in it. */
+  .training{border:1px solid var(--color-link);border-radius:var(--radius-field);background:var(--color-tint);padding:1rem 1.25rem .5rem;max-width:44rem}
+  .training legend{float:left;width:100%;font-size:1.0625rem}
+  .training>p{clear:both}
   .bots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(19rem,100%),1fr));gap:0 1.5rem;margin:1rem 0 0}
 }

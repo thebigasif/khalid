@@ -1,8 +1,8 @@
 //! The speed and uptime watch (C6): `khalid serve` looks at the blog's
 //! home page at its public address every few minutes, as a reader would,
 //! through DNS, the certificate and any proxy in front. Each look is kept
-//! for 30 days, and three failed looks in a row, or a slow hour, raise an
-//! alert. A server that is down cannot say so itself: its looks stop.
+//! for 30 days, and three failed looks in a row, or slow recent looks,
+//! raise an alert. A server that is down cannot say so itself: its looks stop.
 
 use std::time::Duration;
 
@@ -46,6 +46,9 @@ pub(crate) struct SiteWatch {
     page: AbsoluteUrl,
     table: WatchTable,
     slow_ms: u32,
+    /// How often the settings ask the watch to look, which sizes the
+    /// window a slow site is judged on.
+    every: Days,
 }
 
 impl SiteWatch {
@@ -64,6 +67,7 @@ impl SiteWatch {
             page,
             table: WatchTable::new(database.clone(), id),
             slow_ms: config.alerts().slow_ms,
+            every: Days::minutes(i64::from(config.alerts().watch_minutes)),
         })
     }
 
@@ -72,7 +76,11 @@ impl SiteWatch {
     /// the next round tries again.
     pub(crate) async fn round(&self, alerting: &Alerting) {
         let at = alerting.now();
-        let Some(probe) = self.look(at).await else {
+        let Ok(probe) = self
+            .look(at)
+            .await
+            .inspect_err(|said| tracing::warn!("{said}"))
+        else {
             return;
         };
         let page = self.page.as_str();
@@ -84,7 +92,7 @@ impl SiteWatch {
         alerting
             .raise(Kind::SiteDown, site_down(&probes, page))
             .await;
-        let slow = slow_site(&probes, self.slow_ms, page, at);
+        let slow = slow_site(&probes, self.slow_ms, self.every, page, at);
         alerting.raise(Kind::SlowSite, slow).await;
     }
 
@@ -98,24 +106,23 @@ impl SiteWatch {
     }
 
     /// One look at the page, started `at`: its status and how long the
-    /// whole answer took. `None` when the guard refuses the address,
-    /// because it is on a private network: no reader outside sees it, so
-    /// there is nothing to watch, and the log says so.
-    async fn look(&self, at: DateTime<Utc>) -> Option<Probe> {
+    /// whole answer took. When the guard refuses the address, because it
+    /// is on a private network, no reader outside sees it, so there is
+    /// nothing to watch: the error says so in plain words, for the log.
+    async fn look(&self, at: DateTime<Utc>) -> Result<Probe, String> {
         let started = Instant::now();
         let answer = match self.outbound.get(&self.page).await {
             Ok(fetched) => Answer::Status(fetched.status()),
             Err(OutboundError::Blocked { .. }) => {
-                tracing::warn!(
-                    page = self.page.as_str(),
-                    "the speed and uptime watch does not look at a private address"
-                );
-                return None;
+                return Err(format!(
+                    "The speed and uptime watch did not look at {}, because it is a private address no reader outside can reach. Set address in site.toml to the blog's public address to watch it.",
+                    self.page
+                ));
             }
             Err(_) => Answer::Unreached,
         };
         let millis = u32::try_from(started.elapsed().as_millis()).unwrap_or(u32::MAX);
-        Some(Probe { at, answer, millis })
+        Ok(Probe { at, answer, millis })
     }
 }
 
@@ -124,7 +131,8 @@ mod tests {
     use std::path::Path;
 
     use clap::Parser;
-    use khalid_core::Environment;
+    use khalid_core::{Environment, Slug};
+    use khalid_outbound::Limits;
 
     use super::*;
     use crate::cli::{Cli, Command};
@@ -153,5 +161,26 @@ mod tests {
         assert_eq!(every_for(&["khalid", "serve"], ""), None, "writing here");
         let here = ["khalid", "serve", "--listen", "[::1]:8080"];
         assert_eq!(every_for(&here, ""), None);
+    }
+
+    #[tokio::test]
+    async fn a_private_address_is_not_looked_at_and_the_log_says_why() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut path = dir.path().to_path_buf();
+        path.push("site.db");
+        let db = Database::open(&path).await.unwrap();
+        db.migrate().await.unwrap();
+        let site = db.site(&Slug::try_new("main").unwrap()).await.unwrap();
+        let text = SITE.replace("https://www.example.com", "http://192.168.1.20");
+        let env = Environment::empty();
+        let config = Config::from_toml(Path::new("site.toml"), &text, &env).unwrap();
+        let outbound = Outbound::new(Limits::default()).unwrap();
+        let watch = SiteWatch::new(&config, &outbound, (&db, site)).unwrap();
+
+        let said = watch.look(DateTime::UNIX_EPOCH).await.unwrap_err();
+        assert_eq!(
+            said,
+            "The speed and uptime watch did not look at http://192.168.1.20/, because it is a private address no reader outside can reach. Set address in site.toml to the blog's public address to watch it."
+        );
     }
 }

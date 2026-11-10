@@ -36,6 +36,7 @@ use crate::resources::{
     AdminPost, Listable, NewPost, NonBlank, NotRealUpdate, PostDraft, PostEdit, PostRow, PostStatus,
 };
 use crate::review_rule;
+use crate::staff_names::NameBook;
 
 /// Where the Admin API lives.
 pub(crate) const BASE: &str = "/api/admin/v1";
@@ -225,7 +226,7 @@ pub(crate) struct EditPosts {
 )]
 async fn edit_admin_post(
     State(posts): State<Posts>,
-    Extension(principal): Extension<Principal>,
+    (Extension(principal), Extension(book)): (Extension<Principal>, Extension<NameBook>),
     Path(id): Path<String>,
     OriginalUri(uri): OriginalUri,
     body: Result<Json<EditPosts>, JsonRejection>,
@@ -257,7 +258,10 @@ async fn edit_admin_post(
         Err(UpdatePostError::Stale {
             updated_at,
             updated_by,
-        }) => Err(stale(updated_at, updated_by.as_deref())),
+        }) => Err(stale(
+            updated_at,
+            book.name_of(updated_by.as_deref()).await.as_deref(),
+        )),
         Err(UpdatePostError::SlugTaken(slug)) => Err(slug_taken(
             slug.as_str(),
             "Send a different slug, or leave slug out to keep the one it has.",
@@ -562,13 +566,13 @@ pub(crate) fn invalid_body(reason: &str) -> Problem {
     Problem::new(ProblemType::InvalidBody, &message)
 }
 
-pub(crate) fn stale(updated_at: DateTime<Utc>, updated_by: Option<&str>) -> Problem {
+/// The 409 for an edit made on an old copy, naming who changed the post by
+/// the name the admin shows for them.
+pub(crate) fn stale(updated_at: DateTime<Utc>, name: Option<&str>) -> Problem {
     let when = updated_at.format("%Y-%m-%d %H:%M UTC");
+    let name = name.unwrap_or("Someone");
     let message = UserMessage::new(
-        format!(
-            "{} changed this post at {when}, after the copy you edited.",
-            updated_by.unwrap_or("Someone")
-        ),
+        format!("{name} changed this post at {when}, after the copy you edited."),
         "Saving your copy would undo their change.",
         "Fetch the post again, make your change to it, and send its new updated_at.",
     );

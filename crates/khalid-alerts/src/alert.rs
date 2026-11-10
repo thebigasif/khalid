@@ -134,7 +134,7 @@ impl Kind {
                 "Check that khalid serve runs, then check the domain's DNS, the proxy and the firewall in front of it.",
             ],
             Self::SlowSite => [
-                "The blog answered slowly at its public address in the last hour.",
+                "The blog answered slowly at its public address in its recent looks.",
                 "Readers wait for every page, and many leave before it shows.",
                 "Run khalid watch to see when it began, then check the server's load and anything new in front of it.",
             ],
