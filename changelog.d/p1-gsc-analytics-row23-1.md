@@ -1,0 +1,2 @@
+Added
+- The Admin API adds up Google search's numbers for the whole site at `GET /api/admin/v1/search-console/totals/?days=`: clicks, impressions, click-through rate and average position for the last 1 to 90 days whose numbers are final (28 when left out), against the same number of days before. It needs a key with `settings:write`, like the other Search Console routes, and answers 409 for a site not connected to Search Console.

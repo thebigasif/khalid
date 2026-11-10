@@ -1920,6 +1920,18 @@ export type SearchKeys = {
   unsplash: boolean;
 };
 
+/** Every page's numbers added up. */
+export type SearchNumbers = {
+  /** Clicks from Google search. */
+  clicks: number;
+  /** Clicks for each time shown, from 0 to 1. */
+  ctr: number;
+  /** Times a search showed a page. */
+  impressions: number;
+  /** The average position in results, 1 at the top, or `null` when no search showed a page. */
+  position?: number | null;
+};
+
 /** A site's Search Console numbers. */
 export type SearchReport = {
   /** Pages whose clicks fell three 28-day months in a row. */
@@ -1946,6 +1958,22 @@ export type SearchReport = {
 
 /** The title search results show for a post, in place of the site's title template. It may use the template variables, such as `{site}`. */
 export type SearchTitle = string;
+
+/** What Google search did for the whole site in a period, against the period just as long before it. */
+export type SearchTotals = {
+  /** Every page together in the days just before. */
+  before: SearchNumbers;
+  /** How many days the period has. */
+  days: number;
+  /** The first day of the period. */
+  first: string;
+  /** The last day of the period: the last day whose numbers are final, about three days ago. */
+  last: string;
+  /** Every page together in the period. */
+  now: SearchNumbers;
+  /** The Search Console property the numbers come from. */
+  property: string;
+};
 
 /** A post's SEO and readability scores, each from 0 to 100. Each rule that found a problem costs points once, 30 for a block and 5 for a warning, as the post's one score counts them, and a group with a block scores at most 40. The rules in [`READABILITY_RULES`] make the readability score; every other rule makes the SEO score. */
 export type SeoScores = {
@@ -3284,6 +3312,20 @@ export interface Operations {
       };
     };
     output: SearchReport;
+  };
+  /** Adds up every page's clicks, impressions, click-through rate and average position for the last `days` days whose numbers are final, and for the `days` days before, for the Analytics screen. Google is asked on each request. Needs `settings:write`. */
+  search_totals: {
+    input: {
+      query?: {
+        /** From 1 to 90, the longest period the Analytics screen shows; 28 when left out. */
+        days?: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: SearchTotals;
   };
   /** Reads whether `SerpDad` is connected and the last 20 drafts it sent. Needs `settings:write`. */
   read_serpdad: {
