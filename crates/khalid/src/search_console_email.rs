@@ -10,6 +10,7 @@ use std::sync::Arc;
 use std::{fs, io};
 
 use chrono::{Days, NaiveDate};
+use khalid_api::search_report::SearchReport;
 use khalid_audit::history;
 use khalid_content::SiteContent;
 use khalid_core::{Config, Environment, UserMessage};
@@ -20,7 +21,7 @@ use khalid_search_console::{Question, SearchConsole, go_deeper};
 use crate::bing::{Failed, block_on};
 use crate::cli::Output;
 use crate::exit::Exit;
-use crate::search_console_report::{ReportBody, gather};
+use crate::search_console_report::gather;
 use crate::{atomic, newsletter, report, serve_message};
 
 /// Days between two weekly emails.
@@ -132,7 +133,7 @@ fn score(folder: &Path) -> String {
 }
 
 /// The weekly email's text for the site with `config`.
-fn weekly(config: &Config, body: &ReportBody, score: &str) -> String {
+fn weekly(config: &Config, body: &SearchReport, score: &str) -> String {
     let mut text = format!(
         "This is {}'s week in Google search, up to {}, the last day Google has final numbers for.\n\n\
          Clicks from Google: {:.0} this week, against {:.0} the week before.\n{score}\n",

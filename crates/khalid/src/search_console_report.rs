@@ -7,19 +7,19 @@ use std::fmt::Write as _;
 use std::path::Path;
 
 use chrono::NaiveDate;
+use khalid_api::search_report::{FallingPage, Mover, PostNumbers, SearchReport};
 use khalid_content::SiteContent;
 use khalid_core::{Config, Indexing, Slug};
 use khalid_outbound::Outbound;
 use khalid_search_console::{
     Change, Decay, PageNumbers, Question, SearchConsole, Window, decaying, go_deeper, movers,
 };
-use serde::Serialize;
 
 use crate::bing::Failed;
 use crate::cli::Output;
 use crate::exit::Exit;
 use crate::search_console::{ask, last_month};
-use crate::search_console_lost::{self, LostBody};
+use crate::search_console_lost;
 use crate::{build_pages, index, report};
 
 /// How many winners and how many losers a report lists.
@@ -28,6 +28,8 @@ const MOVERS: usize = 5;
 /// A dated post readers can open, as Search Console names it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct LivePost {
+    /// Its identity in the Admin API, such as `en.a`.
+    pub(crate) id: String,
     pub(crate) title: String,
     /// Its full address, such as `https://www.example.com/blog/a/`.
     pub(crate) address: String,
@@ -37,58 +39,6 @@ pub(crate) struct LivePost {
     /// Its file in the content index's form, such as
     /// `content/en/posts/a.md`.
     pub(crate) path: String,
-}
-
-/// The JSON shape of a report, which the weekly email reads too.
-#[derive(Serialize)]
-pub(crate) struct ReportBody {
-    pub(crate) property: String,
-    pub(crate) first: String,
-    pub(crate) last: String,
-    pub(crate) posts: Vec<PostBody>,
-    pub(crate) decaying: Vec<DecayBody>,
-    pub(crate) lost: Vec<LostBody>,
-    /// Clicks on every page in the last 7 days, and in the 7 before.
-    pub(crate) week_clicks: f64,
-    pub(crate) last_week_clicks: f64,
-    /// The last 7 days against the 7 before.
-    pub(crate) winners: Vec<MoverBody>,
-    pub(crate) losers: Vec<MoverBody>,
-}
-
-/// The JSON shape of one post's numbers. A post no search showed has no
-/// position.
-#[derive(Serialize)]
-pub(crate) struct PostBody {
-    title: String,
-    url: String,
-    clicks: f64,
-    impressions: f64,
-    ctr: f64,
-    position: Option<f64>,
-}
-
-/// The JSON shape of one page's change in clicks.
-#[derive(Serialize)]
-pub(crate) struct MoverBody {
-    pub(crate) title: String,
-    url: String,
-    pub(crate) before: f64,
-    pub(crate) now: f64,
-    /// Where to ask why it dropped, for a loser.
-    pub(crate) go_deeper: Option<String>,
-}
-
-/// The JSON shape of a page whose clicks fell three months in a row.
-#[derive(Serialize)]
-pub(crate) struct DecayBody {
-    pub(crate) title: String,
-    url: String,
-    /// Clicks in each 28-day month, oldest first.
-    clicks: Vec<f64>,
-    /// What to do about it.
-    action: &'static str,
-    pub(crate) go_deeper: String,
 }
 
 /// Reads the numbers of the checked site's posts from `console` up to
@@ -110,7 +60,7 @@ pub(crate) fn run(
 pub(crate) fn gather(
     (folder, config, content): (&Path, &Config, &SiteContent),
     (console, outbound, today): (&SearchConsole, &Outbound, NaiveDate),
-) -> Result<ReportBody, Failed> {
+) -> Result<SearchReport, Failed> {
     let posts = live_posts(folder, config, content)?;
     let misses = search_console_lost::misses(folder)?;
     let month = last_month(today);
@@ -132,16 +82,16 @@ pub(crate) fn gather(
         Ok((now, then, vec![h3, h2, h1, h0]))
     })?;
     let pages = history.last().map_or(&[][..], Vec::as_slice);
-    let mut rows: Vec<PostBody> = posts.iter().map(|post| numbers(post, pages)).collect();
+    let mut rows: Vec<PostNumbers> = posts.iter().map(|post| numbers(post, pages)).collect();
     rows.sort_by(|a, b| b.clicks.total_cmp(&a.clicks).then(a.title.cmp(&b.title)));
     let week_movers = movers(&last_week, &this_week, MOVERS);
     let root = config.address().as_str().trim_end_matches('/');
     let clicks = |rows: &[PageNumbers]| rows.iter().map(|row| row.clicks).sum();
-    Ok(ReportBody {
+    Ok(SearchReport {
         lost: search_console_lost::lost(root, &posts, pages, &misses),
         property: console.property().to_owned(),
-        first: month.first.to_string(),
-        last: month.last.to_string(),
+        first: month.first,
+        last: month.last,
         posts: rows,
         week_clicks: clicks(&this_week),
         last_week_clicks: clicks(&last_week),
@@ -180,6 +130,7 @@ pub(crate) fn live_posts(
     let posts = rows.posts.iter().filter(|row| row.date.is_some());
     Ok(posts
         .map(|row| LivePost {
+            id: format!("{}.{}", row.locale, row.slug),
             title: row.title.clone().unwrap_or_else(|| row.slug.to_string()),
             address: format!(
                 "{root}{}",
@@ -193,9 +144,10 @@ pub(crate) fn live_posts(
 }
 
 /// `post`'s numbers among `pages`, or none when no search showed it.
-fn numbers(post: &LivePost, pages: &[PageNumbers]) -> PostBody {
+fn numbers(post: &LivePost, pages: &[PageNumbers]) -> PostNumbers {
     let found = pages.iter().find(|page| page.key == post.address);
-    PostBody {
+    PostNumbers {
+        id: post.id.clone(),
         title: post.title.clone(),
         url: post.address.clone(),
         clicks: found.map_or(0.0, |page| page.clicks),
@@ -207,9 +159,10 @@ fn numbers(post: &LivePost, pages: &[PageNumbers]) -> PostBody {
 
 /// `change` named by its post's title among `posts`, or by its address,
 /// with a link that asks `question` when one is given.
-fn mover(posts: &[LivePost], change: &Change, question: Option<Question>) -> MoverBody {
+fn mover(posts: &[LivePost], change: &Change, question: Option<Question>) -> Mover {
     let post = posts.iter().find(|post| post.address == change.key);
-    MoverBody {
+    Mover {
+        id: post.map(|post| post.id.clone()),
         title: post.map_or_else(|| change.key.clone(), |post| post.title.clone()),
         url: change.key.clone(),
         before: change.before,
@@ -219,19 +172,20 @@ fn mover(posts: &[LivePost], change: &Change, question: Option<Question>) -> Mov
 }
 
 /// `decay` named by its post's title among `posts`, or by its address.
-fn decay_body(posts: &[LivePost], decay: &Decay) -> DecayBody {
+fn decay_body(posts: &[LivePost], decay: &Decay) -> FallingPage {
     let post = posts.iter().find(|post| post.address == decay.key);
-    DecayBody {
+    FallingPage {
+        id: post.map(|post| post.id.clone()),
         title: post.map_or_else(|| decay.key.clone(), |post| post.title.clone()),
         url: decay.key.clone(),
         clicks: decay.clicks.clone(),
-        action: "Refresh this post",
+        action: "Refresh this post".to_owned(),
         go_deeper: go_deeper(Question::WhyItDropped, &decay.key),
     }
 }
 
 /// The report as sentences for a person.
-fn sentences(body: &ReportBody) -> String {
+fn sentences(body: &SearchReport) -> String {
     let mut text = format!(
         "Search Console numbers for {}, {} to {}:\n",
         body.property, body.first, body.last

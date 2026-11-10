@@ -81,6 +81,7 @@ pub mod resources;
 mod review_rule;
 pub mod schedule_store;
 pub mod schema_template_store;
+pub mod search_report;
 pub mod serpdad_store;
 pub mod session_check;
 pub mod settings_store;
