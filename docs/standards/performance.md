@@ -335,6 +335,21 @@ Speed, the kept profile against main, alternating, on this shared server. Each c
 
 The render and lint rows were taken with the wider set of the fifth table row, which includes everything kept here, so they are the slower case. Earlier serve runs under load 10 to 40 spread from 62 to 250 ms for the first byte on both binaries and are left out; under quieter load the two are level. Every measure is inside its budget.
 
+### Room for the server log (G38, 2026-11-10)
+
+The mail trace stack (PR 1161) gives `khalid serve` a log through `tracing-subscriber`. Main (42496c9c) built about 31,216,000 bytes on this server (31,241,688 in CI on a branch from it), and the stack built 31,730,008: 272,728 over the budget. `tracing-subscriber` itself is only 40.5 KiB of code. The rest came from every other `tracing` line. Before this stack no program path ever installed a log writer, so with fat LTO the compiler proved that each `debug!`, `info!` or `warn!` in Khalid and its dependencies could never write anything and left their code and metadata out. Once a writer is installed they are all live: each line's code, its static metadata, and the 24-byte relocation for every pointer in that metadata. `cargo bloat` puts only about 100 KB of the growth in `.text`. Each step below is `cargo build --release -p khalid` on this server:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before (task/p1-mail-trace-7, 2a13b422) | 31,730,008 | |
+| `tracing` with `release_max_level_debug`: trace lines left out when compiled | 31,642,968 | 87,040 |
+| `tracing` with `release_max_level_info`: debug and trace lines left out (kept) | 31,591,000 | 139,008 |
+| The same, plus SQLite without FTS3, FTS5, R-tree, `dbstat`, `soundex` and STAT4 (`LIBSQLITE3_FLAGS`, measured with `--config`) | 31,291,896 | 438,112 |
+
+The level cap is set on `tracing` in the `khalid` crate and, through feature unification, cuts the debug and trace lines of every crate in a release build. Every line Khalid writes for an operator is `info`, `warn` or `error`, so the log keeps everything it was built for, failed emails included; `[log] level = "debug"` or `"trace"` adds lines only in a development build, which `docs/deploy.md` says. Tests and debug builds keep every level. The subscriber's features were already as small as they go: no colours, no environment filter, no `time` crate.
+
+The cap alone leaves the binary 133,720 bytes over. The SQLite options in the last row are the ones the "Room for scheduled webhook events" entry measured and set aside, unused by Khalid's SQL. They can only be set through the `LIBSQLITE3_FLAGS` environment variable, which needs an `[env]` table in `.cargo/config.toml`; that file is handed over as a patch with this change. With both, the binary is 165,384 bytes under the budget here, about 140,000 in CI. `scripts/perf.sh` was not run on this shared server; CI's performance budgets job measures it.
+
 ## Page weight
 
 Pictures are most of what a reader downloads. Every picture is offered in several widths (`srcset`), and its `sizes` tells the browser how wide the page draws it, so the browser fetches the smallest file that fills the slot. A `sizes` wider than the slot fetches a bigger file than it draws. One narrower makes the picture blurry.

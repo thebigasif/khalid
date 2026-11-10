@@ -120,7 +120,7 @@ level = "warn"
 format = "json"
 ```
 
-`level` is the least important line written: `error`, `warn`, `info`, `debug` or `trace`, `info` unless set. A failed email is a `warn` line. `format` is `text`, one plain line a message, unless set, or `json`, one JSON object a line. `khalid serve --json` writes JSON too. A server of several sites logs plain lines at `info`.
+`level` is the least important line written: `error`, `warn`, `info`, `debug` or `trace`, `info` unless set. A released Khalid writes `info` at most, so `debug` and `trace` log the same as `info`; they add lines only in a build made for development, which keeps the binary small. A failed email is a `warn` line. `format` is `text`, one plain line a message, unless set, or `json`, one JSON object a line. `khalid serve --json` writes JSON too. A server of several sites logs plain lines at `info`.
 
 ## Docker
 

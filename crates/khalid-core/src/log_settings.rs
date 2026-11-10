@@ -24,7 +24,8 @@ pub struct LogSettings {
 }
 
 /// How important a log line is, least to most: a level writes its own lines
-/// and every more important one.
+/// and every more important one. A release build leaves `debug` and `trace`
+/// lines out when it is compiled, so there both log the same as `info`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Deserialize)]
 #[serde(rename_all = "lowercase")]
 #[non_exhaustive]
