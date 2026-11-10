@@ -255,7 +255,12 @@ impl Site {
         let publishes = edit.publishes() && found.status == PostStatus::Draft;
         let unpublishes =
             edit.status() == Some(PostStatus::Draft) && found.status == PostStatus::Published;
-        let edited = current.clone().edited(edit, self.clock.now(), by);
+        let mut edited = current.clone().edited(edit, self.clock.now(), by);
+        if edited.slug() != current.slug() && found.status == PostStatus::Published {
+            let both = (current.settings(), edited.settings());
+            let settings = self.moved_aliases(&found, edited.slug(), both)?;
+            edited = edited.with_settings(settings);
+        }
         let mut text = found.text.clone();
         if edited.title() != current.title() {
             text.set("title", &quoted(edited.title()));
@@ -300,31 +305,30 @@ impl Site {
         Ok(self.noted_post(&saved, by)?)
     }
 
-    /// Moves the draft `found` to its file for `slug`, with `text`, which
-    /// gains the new slug. Its identity changes with the slug.
+    /// `found` under `slug`, with `text`, which gains the new slug. A draft
+    /// moves to its file for `slug`; a live post keeps its file, so the
+    /// automatic 301 finds it by file. Its identity changes with the slug.
     fn moved(
         &self,
         found: Found,
         slug: &Slug,
         text: &mut PostText,
     ) -> Result<Found, UpdatePostError> {
-        if found.status != PostStatus::Draft {
-            let why = "A live post's address cannot change yet, because links to the old one would break.";
-            let setting = "slug";
-            return Err(UpdatePostError::Unsupported { setting, why });
-        }
         if self.find(&format!("{}.{slug}", found.locale))?.is_some() {
             return Err(UpdatePostError::SlugTaken(slug.clone()));
         }
         text.set("slug", slug.as_str());
-        let path = self.draft_path(&found.locale, slug);
+        let slug = slug.clone();
+        if found.status != PostStatus::Draft {
+            return Ok(Found { slug, ..found });
+        }
+        let path = self.draft_path(&found.locale, &slug);
         let folder = path
             .parent()
             .ok_or_else(|| failure("a draft has no folder"))?;
         atomic::create(folder, &format!("{slug}.md"), &text.to_text())
             .map_err(PostStoreError::new)?;
         fs::remove_file(&found.path).map_err(PostStoreError::new)?;
-        let slug = slug.clone();
         Ok(Found {
             slug,
             path,
@@ -595,6 +599,8 @@ mod check;
 mod editors;
 #[path = "site_posts_list.rs"]
 mod list;
+#[path = "site_posts_moved.rs"]
+mod moved;
 #[path = "site_posts_publish.rs"]
 mod publish;
 
