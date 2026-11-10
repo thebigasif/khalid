@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { adminBlog, noContent } from "../../test/blog";
@@ -86,6 +86,16 @@ function blog(kept: AdminSubscriber[], sending: Newsletters["sending"] = "ready"
   return { sent, bodies };
 }
 
+/** The table row that holds `email`. */
+async function rowOf(email: string): Promise<HTMLElement> {
+  const cell = await screen.findByRole("rowheader", { name: email });
+  const found = cell.closest("tr");
+  if (found === null) {
+    throw new Error(`No row holds ${email}`);
+  }
+  return found;
+}
+
 describe("the Subscribers screen", () => {
   it("shows the newsletters, what went out and the readers", async () => {
     signedIn();
@@ -96,6 +106,8 @@ describe("the Subscribers screen", () => {
     expect(await screen.findByText("212")).toBeVisible();
     expect(screen.getByText(/4 more have not opened/)).toBeVisible();
     expect(screen.getByRole("rowheader", { name: "en/how-to-write-a-title-tag" })).toBeVisible();
+    const omar = await rowOf("omar@example.com");
+    expect(within(omar).getByText(words.readers.statuses.pending)).toBeVisible();
     expect(await screen.findByRole("button", { name: words.send.submit(212) })).toBeVisible();
     expect(await axeViolations()).toEqual([]);
   });
@@ -119,6 +131,47 @@ describe("the Subscribers screen", () => {
     const said = words.send.notReady.no_postal_address.what;
     expect(await screen.findByText(said)).toBeVisible();
     expect(screen.queryByRole("combobox", { name: words.send.post })).toBeNull();
+  });
+
+  it("gives a reader a label", async () => {
+    signedIn();
+    const { sent } = blog([reader()]);
+    renderAt("/subscribers");
+    const lena = await rowOf("lena@example.com");
+    await userEvent.click(within(lena).getByText(words.readers.addLabel));
+    await userEvent.type(within(lena).getByLabelText(words.readers.label), "paid");
+    await userEvent.click(within(lena).getByRole("button", { name: words.readers.add }));
+    expect(await screen.findByText(words.readers.labelled("lena@example.com"))).toBeVisible();
+    expect(sent.some((request) => request.method === "PUT")).toBe(true);
+    const removing = words.readers.removeLabelName("paid", "lena@example.com");
+    expect(await screen.findByRole("button", { name: removing })).toBeVisible();
+  });
+
+  it("forgets a reader only after one more question", async () => {
+    signedIn();
+    const { sent } = blog([reader(), OMAR]);
+    renderAt("/subscribers");
+    const omar = await rowOf("omar@example.com");
+    const forget = words.readers.forgetName("omar@example.com");
+    await userEvent.click(within(omar).getByRole("button", { name: forget }));
+    expect(sent.some((request) => request.method === "DELETE")).toBe(false);
+    await userEvent.click(within(omar).getByRole("button", { name: words.readers.forgetYes }));
+    expect(await screen.findByText(words.readers.forgotten("omar@example.com"))).toBeVisible();
+    await waitFor(() =>
+      expect(screen.queryByRole("rowheader", { name: "omar@example.com" })).toBeNull(),
+    );
+  });
+
+  it("narrows the readers by where they stand", async () => {
+    signedIn();
+    const { sent } = blog([reader(), OMAR]);
+    renderAt("/subscribers");
+    await rowOf("lena@example.com");
+    await userEvent.click(screen.getByRole("button", { name: words.readers.statuses.pending }));
+    await waitFor(() =>
+      expect(screen.queryByRole("rowheader", { name: "lena@example.com" })).toBeNull(),
+    );
+    expect(sent.some((request) => request.url.includes("status=pending"))).toBe(true);
   });
 
   it("shows the API's words when it refuses", async () => {
