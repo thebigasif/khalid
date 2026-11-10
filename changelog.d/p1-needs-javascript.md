@@ -1,0 +1,2 @@
+Added
+- The site audit warns when a page needs JavaScript to work: a form with no action, a link that goes only to `#` or to a `javascript:` address, or a notice asking readers to turn JavaScript on. The new check is `needs-javascript`. It reads every built page, so it catches a template override and a raw HTML block in a post alike. One page is one warning, naming the first such part and how many more there are.

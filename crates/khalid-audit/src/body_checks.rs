@@ -24,6 +24,7 @@ pub(crate) fn body_issues(
 ) {
     text(visit, page, found);
     links(crawl, page, thresholds, found);
+    scripted(page, found);
     extras(page, found);
     let https = found.url.as_str().starts_with("https://");
     if https
@@ -78,6 +79,19 @@ fn links(crawl: &Crawl, page: &Page, thresholds: Thresholds, found: &mut Found<'
     if let Some(file) = page.resources().iter().find(|file| plain(file)) {
         found.add(Check::MixedContent, file.as_str());
     }
+}
+
+/// The parts of the page that only work with scripts on, named by the
+/// first, so one page is one issue however many it holds.
+fn scripted(page: &Page, found: &mut Found<'_>) {
+    let [first, rest @ ..] = page.scripted() else {
+        return;
+    };
+    let detail = match rest.len() {
+        0 => first.clone(),
+        more => format!("{first}, and {more} more"),
+    };
+    found.add(Check::NeedsJavaScript, detail);
 }
 
 /// Social tags and structured data.

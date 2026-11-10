@@ -15,6 +15,7 @@ Every default template follows this list. CI checks what a machine can check. Th
 - Navigation, pagination, the language switcher, search, comment posting and the newsletter form are plain links and HTML forms first.
 - JavaScript only adds polish: live search results, a copy button, hover previews. Remove it and the page is whole.
 - No `noscript` notice asking to turn JavaScript on. No form without an `action`. No link that goes only to `#`.
+- `khalid audit` checks this line on every built page with its `needs-javascript` check, so an override or a raw HTML block that breaks it shows up as a warning.
 
 ## Responsive on every device
 

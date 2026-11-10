@@ -142,3 +142,66 @@ async fn structured_data_that_is_not_json_is_named_with_its_place() {
         [(Check::StructuredDataInvalid, "block 2".to_owned())]
     );
 }
+
+#[tokio::test]
+async fn markup_that_only_works_with_scripts_is_named() {
+    let cases = [
+        (
+            r#"<form><input type="email" name="email"></form>"#,
+            "a form with no action",
+        ),
+        (
+            r##"<form action="#" method="post"><button>Join</button></form>"##,
+            "a form whose action is \"#\"",
+        ),
+        (
+            r##"<a href="#" class="menu">Menu</a>"##,
+            "the link \"Menu\" goes to \"#\"",
+        ),
+        (
+            r#"<a href="javascript:void(0)">Open the menu</a>"#,
+            "the link \"Open the menu\" goes to \"javascript:void(0)\"",
+        ),
+        (
+            "<noscript><p>Please turn on JavaScript to read this blog.</p></noscript>",
+            "a notice asks readers to turn on JavaScript",
+        ),
+    ];
+    for (markup, detail) in cases {
+        let body = format!("{}{markup}", words(400));
+        let found = found(HEAD, &body, Thresholds::default()).await;
+        assert_eq!(
+            found,
+            [(Check::NeedsJavaScript, detail.to_owned())],
+            "{markup}"
+        );
+    }
+}
+
+#[tokio::test]
+async fn several_scripted_parts_on_a_page_are_one_issue_naming_the_first() {
+    let body = format!(
+        r##"{}<a href="#">Menu</a><form></form><a href="#">Search</a>"##,
+        words(400)
+    );
+    let found = found(HEAD, &body, Thresholds::default()).await;
+    assert_eq!(
+        found,
+        [(
+            Check::NeedsJavaScript,
+            "the link \"Menu\" goes to \"#\", and 2 more".to_owned()
+        )]
+    );
+}
+
+#[tokio::test]
+async fn forms_skip_links_and_plain_notices_work_without_scripts() {
+    let body = format!(
+        r##"<a href="#main">Skip to the post</a>{}
+<form class="search" role="search" action="/blog/search/" method="get"><input name="q"></form>
+<a href="#top">Back to the top</a>
+<noscript><p>Your browser runs no scripts, so this blog loads nothing optional.</p></noscript>"##,
+        words(400)
+    );
+    assert_eq!(found(HEAD, &body, Thresholds::default()).await, []);
+}
