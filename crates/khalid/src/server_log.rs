@@ -64,7 +64,11 @@ pub(crate) fn causes(error: &(dyn Error + 'static)) -> String {
     let mut said = error.to_string();
     let mut cause = error.source();
     while let Some(next) = cause {
-        let _ = write!(said, ": {next}");
+        let next_said = next.to_string();
+        // Some errors repeat their cause's words; say them once.
+        if !said.ends_with(&next_said) {
+            let _ = write!(said, ": {next_said}");
+        }
         cause = next.source();
     }
     said
@@ -200,6 +204,35 @@ mod tests {
         assert!(
             !log.contains(&password),
             "the password reached the log: {log}"
+        );
+    }
+
+    /// An error that says `words`, with `cause` under it.
+    #[derive(Debug)]
+    struct Said(&'static str, Option<Box<Said>>);
+
+    impl std::fmt::Display for Said {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            f.write_str(self.0)
+        }
+    }
+
+    impl Error for Said {
+        fn source(&self) -> Option<&(dyn Error + 'static)> {
+            self.1
+                .as_deref()
+                .map(|cause| -> &(dyn Error + 'static) { cause })
+        }
+    }
+
+    #[test]
+    fn each_cause_is_said_once_in_order() {
+        let root = Said("no mechanism", None);
+        let middle = Said("client error: no mechanism", Some(Box::new(root)));
+        let top = Said("the email could not be sent", Some(Box::new(middle)));
+        assert_eq!(
+            causes(&top),
+            "the email could not be sent: client error: no mechanism"
         );
     }
 
