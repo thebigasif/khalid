@@ -1,0 +1,2 @@
+Fixed
+- The Admin API's settings route now says a restart is needed only for the settings `khalid serve` reads when it starts, such as `address`, `languages`, `mount` or `[code]`. A saved name, look, SEO or privacy setting answers `restart_needed: false`, since the blog uses it within a few seconds. The admin's Settings, Look, SEO and Privacy screens say so after a save, and show the restart note only when a setting truly waits for one. The server's restart notice now also names `slugs` (KH-API-3).

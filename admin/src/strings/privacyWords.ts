@@ -1,6 +1,7 @@
 // The words of the Privacy screen, where the `[privacy]` table and the
 // categories of `[code]` in site.toml are changed. They sit in their own
 // file so en.ts stays short.
+import { LIVE, WAITS } from "./restartWords";
 
 /** The four categories an owner may give a script, in the order the picker lists them. */
 export const CATEGORIES = ["preferences", "analytics", "marketing", "no-tracking"] as const;
@@ -13,13 +14,13 @@ export const TEXT_LANGUAGES = ["en", "de"] as const;
 
 export const privacyWords = {
   title: "Privacy",
-  lede: "Khalid asks readers before anything tracks them or stores data on their device, and nothing optional runs until they agree. Here you choose how it asks. Each part saves to site.toml, and the blog uses it after Khalid restarts.",
+  lede: "Khalid asks readers before anything tracks them or stores data on their device, and nothing optional runs until they agree. Here you choose how it asks. Each part saves to site.toml, and the blog uses it within a few seconds. Changed scripts wait until Khalid restarts.",
   loading: "Reading the privacy settings",
   sections: "Parts of the privacy settings",
-  saved: "Saved to site.toml. The blog uses it after Khalid restarts.",
+  saved: "Saved to site.toml.",
+  live: LIVE,
   unchanged: "Nothing to save: this part is as site.toml has it.",
-  restart:
-    "Some saved settings wait for a restart. Until Khalid restarts, the blog keeps the ones it started with.",
+  restart: WAITS,
   tabs: {
     settings: "Settings",
     scripts: "Scripts",

@@ -10,7 +10,7 @@ use std::error::Error;
 use std::fmt;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex, PoisonError};
+use std::sync::{Arc, Mutex, OnceLock, PoisonError};
 
 use chrono::{DateTime, NaiveTime, Utc};
 use khalid_api::content_store::{BoxFuture, Listed};
@@ -27,6 +27,7 @@ use khalid_routes::Routes;
 use crate::lint_input::{LintInput, PostParts, lint_parts, lint_site};
 use crate::post_text::{PostText, quoted};
 use crate::settings_text::{put, settings_of, write_real_update, write_settings};
+use crate::site_pages::reload::LiveConfig;
 use crate::{atomic, lint, site_briefs, site_facts};
 
 /// The folder of drafts at the top of a site.
@@ -39,7 +40,11 @@ pub(crate) struct SitePosts(Arc<Site>);
 #[derive(Debug)]
 struct Site {
     folder: PathBuf,
+    /// The settings at start, which name the languages and slug style.
     config: Config,
+    /// The settings the pages use now, which posts are judged with, once
+    /// `khalid serve` sets them. Until then posts are judged with `config`.
+    live: OnceLock<LiveConfig>,
     clock: Box<dyn Clock>,
     /// Each `Idempotency-Key` seen since start, and the post it made.
     /// Holding the lock also keeps two writes from interleaving.
@@ -51,6 +56,8 @@ struct Judge {
     linter: Linter,
     site: LintSite,
     input: LintInput,
+    /// The settings the post is judged with.
+    config: Config,
 }
 
 /// A post file found by its identity.
@@ -91,9 +98,17 @@ impl SitePosts {
         Self(Arc::new(Site {
             folder: folder.to_path_buf(),
             config,
+            live: OnceLock::new(),
             clock: Box::new(clock),
             seen: Mutex::new(BTreeMap::new()),
         }))
+    }
+
+    /// Judges every post, in this copy and every clone, with the settings
+    /// in `live` from now on, so a saved `[seo]` reaches the checks and the
+    /// publish gate as soon as it reaches the pages. Only the first call counts.
+    pub(crate) fn follow(&self, live: LiveConfig) {
+        let _ = self.0.live.set(live);
     }
 }
 
@@ -280,44 +295,34 @@ impl Site {
         relative: &Path,
     ) -> Result<Verdict, PostStoreError> {
         let judge = self.judge(&self.content()?)?;
-        self.gate_with(&judge, found, text, relative)
+        let candidate = Self::candidate(&judge, found, text, relative)?;
+        Ok(judge.linter.gate(&candidate, &judge.site))
     }
 
     /// The linter and the view of `content` every post is judged against,
     /// made once for a whole list.
     fn judge(&self, content: &SiteContent) -> Result<Judge, PostStoreError> {
+        let config = (self.live.get()).map_or_else(|| self.config.clone(), LiveConfig::now);
         let routes = Routes::load(&self.folder).map_err(PostStoreError::new)?;
         let facts = site_facts::load(&self.folder).map_err(|m| failure(&m.to_string()))?;
         let briefs = site_briefs::load(&self.folder).map_err(|m| failure(&m.to_string()))?;
         let input =
-            (LintInput::new(content, &self.config, routes).with_facts(facts)).with_briefs(briefs);
-        let (site, _) = lint_site(content, &self.config, &input);
+            (LintInput::new(content, &config, routes).with_facts(facts)).with_briefs(briefs);
+        let (site, _) = lint_site(content, &config, &input);
         let settings = lint::lint_settings(&self.folder).map_err(|m| failure(&m.to_string()))?;
         let linter = Linter::new(&settings, self.clock.as_ref()).map_err(PostStoreError::new)?;
         Ok(Judge {
             linter,
             site,
             input,
+            config,
         })
-    }
-
-    /// [`Site::gate`] with a `judge` already made.
-    fn gate_with(
-        &self,
-        judge: &Judge,
-        found: &Found,
-        text: &PostText,
-        relative: &Path,
-    ) -> Result<Verdict, PostStoreError> {
-        let candidate = self.candidate(judge, found, text, relative)?;
-        Ok(judge.linter.gate(&candidate, &judge.site))
     }
 
     /// `text` as the linter reads the post at `relative`, a path such as
     /// `content/en/posts/2026-10-27-a-post.md`, whose third folder is the
     /// post's collection.
     fn candidate(
-        &self,
         judge: &Judge,
         found: &Found,
         text: &PostText,
@@ -332,7 +337,7 @@ impl Site {
             front: &post.front,
             body: &post.body,
         };
-        lint_parts(&parts, &self.config, &judge.input)
+        lint_parts(&parts, &judge.config, &judge.input)
             .ok_or_else(|| failure("the post cannot be read for linting"))
     }
 
@@ -340,7 +345,7 @@ impl Site {
     /// today, a published post as it is.
     fn candidate_now(&self, judge: &Judge, found: &Found) -> Result<LintPost, PostStoreError> {
         let (text, relative) = self.as_now(found)?;
-        self.candidate(judge, found, &text, &relative)
+        Self::candidate(judge, found, &text, &relative)
     }
 
     /// What the publish gate finds in `found` now, writing nothing.

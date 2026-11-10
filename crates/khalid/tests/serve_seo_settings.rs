@@ -34,7 +34,7 @@ fn seo_parts_are_saved_into_site_toml_and_a_bad_one_saves_nothing() {
         saved["settings"]["seo"]["titles"]["separator"], "·",
         "{saved}"
     );
-    assert_eq!(saved["settings"]["restart_needed"], true, "{saved}");
+    assert_eq!(saved["settings"]["restart_needed"], false, "{saved}");
     let mut file = PathBuf::from(site.path());
     file.push("site.toml");
     let text = std::fs::read_to_string(&file).unwrap();

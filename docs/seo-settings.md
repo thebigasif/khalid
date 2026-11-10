@@ -14,8 +14,15 @@ The admin's **SEO settings** screen edits them through the settings API
 and changes it one part at a time. A part the screen saves replaces that
 part whole; any other table and comment in the file stays as it was. Every
 change is checked as `khalid serve` checks the file at start, and a change
-the site could not start with saves nothing. The running server reads
-`site.toml` at start, so a saved change applies after a restart.
+the site could not start with saves nothing. The running server puts a
+saved SEO setting in use within a few seconds, with no restart: on the
+pages, and in the post checks and publish gate the editor shows. Schema
+templates saved on the **Schema templates** screen work the same way.
+
+Both routes read `site.toml` with the environment `khalid serve` started
+with, so a site whose mail or media bucket needs a key from the
+environment, or whose address comes from `KHALID_ADDRESS`, reads and saves
+its settings as it starts. No key or password is ever sent back.
 
 | Part | What it sets | Default | Admin section |
 | --- | --- | --- | --- |

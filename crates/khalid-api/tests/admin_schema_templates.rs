@@ -95,13 +95,13 @@ async fn the_templates_are_read_with_the_collections_to_pick_from() {
 }
 
 #[tokio::test]
-async fn a_new_list_replaces_them_all_and_asks_for_a_restart() {
+async fn a_new_list_replaces_them_all_and_is_in_use_with_no_restart() {
     let router = router();
     let change = json!({"templates": [recipe()], "updated_at": LAST_CHANGE});
     let (status, json) = send(&router, ADMIN, Some(change)).await;
     assert_eq!(status, StatusCode::OK, "{json}");
     assert_eq!(json["templates"], json!([recipe()]));
-    assert_eq!(json["restart_needed"], true);
+    assert_eq!(json["restart_needed"], false);
     let (_, read) = send(&router, ADMIN, None).await;
     assert_eq!(read["templates"], json!([recipe()]));
 }
