@@ -211,29 +211,6 @@ impl Site {
         Err(UpdatePostError::Unsupported { setting, why })
     }
 
-    /// The post a found file holds, with who last changed it through
-    /// Khalid, when `editors` knows and the file has not changed since.
-    fn named_post(&self, found: &Found, editors: &Editors) -> Result<AdminPost, PostStoreError> {
-        let post = Self::admin_post(found)?;
-        let file = found.path.strip_prefix(&self.folder).unwrap_or(&found.path);
-        Ok(match editors.of(file, post.updated_at()) {
-            Some(by) => post.with_updated_by(by),
-            None => post,
-        })
-    }
-
-    /// The post a file just written by `by` holds, noting `by` as the one
-    /// who last changed it. A note that cannot be kept costs only the name.
-    fn noted_post(&self, found: &Found, by: &str) -> Result<AdminPost, PostStoreError> {
-        let post = Self::admin_post(found)?;
-        let file = found.path.strip_prefix(&self.folder).unwrap_or(&found.path);
-        let editors = Editors::read(&self.folder);
-        if let Err(error) = editors.note(&self.folder, file, (post.updated_at(), by)) {
-            tracing::warn!(%error, "who changed the post could not be kept in data/post-editors.txt, so the admin shows no name for it");
-        }
-        Ok(post.with_updated_by(by))
-    }
-
     fn get_now(&self, id: &str) -> Result<Option<AdminPost>, PostStoreError> {
         let editors = Editors::read(&self.folder);
         self.find(id)?

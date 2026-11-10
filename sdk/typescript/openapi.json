@@ -249,6 +249,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1218,6 +1221,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2400,6 +2406,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2508,6 +2517,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2587,6 +2599,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3189,6 +3204,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3694,6 +3712,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3860,6 +3881,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3966,6 +3990,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6759,6 +6786,107 @@
         ]
       }
     },
+    "/api/admin/v1/search-console/totals/": {
+      "get": {
+        "tags": [
+          "admin search console"
+        ],
+        "summary": "Adds up every page's clicks, impressions, click-through rate and\naverage position for the last `days` days whose numbers are final, and\nfor the `days` days before, for the Analytics screen. Google is asked\non each request. Needs `settings:write`.",
+        "operationId": "search_totals",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "description": "From 1 to 90, the longest period the Analytics screen shows; 28\nwhen left out.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The site's search numbers, now and before",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchTotals"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The days are not from 1 to 90",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The site is not connected to Search Console",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "description": "Google refused or could not be reached",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/serpdad/": {
       "get": {
         "tags": [
@@ -9037,6 +9165,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9107,6 +9238,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9203,6 +9337,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9297,6 +9434,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -19563,6 +19703,40 @@
           }
         }
       },
+      "SearchNumbers": {
+        "type": "object",
+        "description": "Every page's numbers added up.",
+        "required": [
+          "clicks",
+          "impressions",
+          "ctr"
+        ],
+        "properties": {
+          "clicks": {
+            "type": "number",
+            "format": "double",
+            "description": "Clicks from Google search."
+          },
+          "ctr": {
+            "type": "number",
+            "format": "double",
+            "description": "Clicks for each time shown, from 0 to 1."
+          },
+          "impressions": {
+            "type": "number",
+            "format": "double",
+            "description": "Times a search showed a page."
+          },
+          "position": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "The average position in results, 1 at the top, or `null` when no\nsearch showed a page."
+          }
+        }
+      },
       "SearchReport": {
         "type": "object",
         "description": "A site's Search Console numbers.",
@@ -19645,6 +19819,50 @@
         "type": "string",
         "description": "The title search results show for a post, in place of the site's title\ntemplate. It may use the template variables, such as `{site}`.",
         "example": "Anchor text that says where it goes {sep} {site}"
+      },
+      "SearchTotals": {
+        "type": "object",
+        "description": "What Google search did for the whole site in a period, against the\nperiod just as long before it.",
+        "required": [
+          "property",
+          "days",
+          "first",
+          "last",
+          "now",
+          "before"
+        ],
+        "properties": {
+          "before": {
+            "$ref": "#/components/schemas/SearchNumbers",
+            "description": "Every page together in the days just before."
+          },
+          "days": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many days the period has.",
+            "example": 28,
+            "minimum": 0
+          },
+          "first": {
+            "type": "string",
+            "format": "date",
+            "description": "The first day of the period."
+          },
+          "last": {
+            "type": "string",
+            "format": "date",
+            "description": "The last day of the period: the last day whose numbers are final,\nabout three days ago."
+          },
+          "now": {
+            "$ref": "#/components/schemas/SearchNumbers",
+            "description": "Every page together in the period."
+          },
+          "property": {
+            "type": "string",
+            "description": "The Search Console property the numbers come from.",
+            "example": "sc-domain:example.com"
+          }
+        }
       },
       "SendReadiness": {
         "type": "string",

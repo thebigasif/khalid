@@ -365,16 +365,7 @@ fn assemble(
     let mut admin = admin_api::routes(Arc::clone(&posts), serpdad.clone(), door.clone())
         .merge(admin_audit::routes(desks.audit, door.clone()))
         .merge(admin_calendar::routes(Arc::clone(&posts), door.clone()))
-        .merge(admin_draft_comments::routes(
-            Arc::clone(&posts),
-            desks.draft_comments.clone(),
-            door.clone(),
-        ))
-        .merge(admin_draft_threads::routes(
-            posts,
-            desks.draft_comments,
-            door.clone(),
-        ))
+        .merge(draft_routes(posts, desks.draft_comments, &door))
         .merge(admin_comments::routes(desks.comments, door.clone()))
         .merge(admin_subscribers::routes(
             desks.subscribers.clone(),
@@ -424,6 +415,17 @@ fn assemble(
         )
         .nest(admin_api::BASE, admin);
     finish(api)
+}
+
+/// The routes of comments on drafts, one by one and by thread, on the
+/// posts of `posts`.
+fn draft_routes(
+    posts: Arc<PublishDoor>,
+    comments: Option<DraftComments>,
+    door: &AdminDoor,
+) -> OpenApiRouter {
+    admin_draft_comments::routes(Arc::clone(&posts), comments.clone(), door.clone())
+        .merge(admin_draft_threads::routes(posts, comments, door.clone()))
 }
 
 /// Splits `api` into the router and its document, lists
