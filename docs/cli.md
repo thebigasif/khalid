@@ -33,7 +33,7 @@ $ khalid completions zsh
 ...
 ```
 
-Run the line for your shell once, then open a new terminal.
+The one-line install in `docs/deploy.md` does this for you on bash, zsh and fish. Otherwise, run the line for your shell once, then open a new terminal.
 
 **bash**, on Linux, or on a Mac with the bash-completion package:
 
@@ -71,7 +71,7 @@ echo 'eval (khalid completions elvish | slurp)' >> ~/.config/elvish/rc.elv
 
 A manual page is the help for one command in the form the `man` command shows, on Linux and on a Mac. Khalid has one for itself and one for each command, such as `khalid-init.1` for `khalid init`.
 
-Each release has them in `khalid-<version>-man.tar.gz`, beside the binaries. Unpack it into a folder `man` reads, then open a page:
+The one-line install in `docs/deploy.md` puts them where `man` finds them. Each release also has them in `khalid-<version>-man.tar.gz`, beside the binaries. To install them by hand, unpack it into a folder `man` reads, then open a page:
 
 ```text
 mkdir -p ~/.local/share/man/man1
