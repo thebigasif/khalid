@@ -9,7 +9,7 @@ use std::sync::Arc;
 use khalid_api::redirect_desk::{RedirectDesk, StaticPages, StoreRefusal};
 use khalid_api::redirect_store::Origin;
 use khalid_core::{Config, Environment, Slug, SystemClock, UserMessage};
-use khalid_db::{Database, NotFoundTable, RedirectRows};
+use khalid_db::{Database, NotFoundTable, RedirectRows, SiteId};
 use khalid_seo::{RedirectEntry, UrlPath, read_redirects_csv, write_redirects_csv};
 use serde::Serialize;
 
@@ -17,7 +17,7 @@ use crate::cli::{Output, RedirectsCommand};
 use crate::doctor_files::counted;
 use crate::exit::Exit;
 use crate::redirects_explain::{self, Aliases};
-use crate::{db, db_message, report, site_config};
+use crate::{db, db_message, outside_writes, report, site_config};
 
 /// The JSON shape of `khalid redirects import --json`.
 #[derive(Serialize)]
@@ -89,6 +89,12 @@ fn import(site: &Path, config: &Config, file: &Path, output: Output) -> Done {
     let stored = stored
         .map_err(|refusal| (refused(&refusal), Exit::Failure))?
         .len();
+    if let Err(error) = outside_writes::note(site) {
+        report::notice(&format!(
+            "Khalid could not tell a running khalid serve about them ({error}). \
+             Start it again to answer them."
+        ));
+    }
     Ok(match output {
         Output::Json => report::json(
             &ImportedBody {
@@ -109,7 +115,7 @@ fn import(site: &Path, config: &Config, file: &Path, output: Output) -> Done {
             };
             let text = format!(
                 "Stored {} from {shown}.\n{note}\
-                 A running khalid serve answers them once it is started again.\n",
+                 A running khalid serve answers them within a few seconds.\n",
                 counted(stored, "redirect")
             );
             report::text(&text, Exit::Success)
@@ -151,6 +157,18 @@ pub(crate) fn refused(refusal: &StoreRefusal) -> UserMessage {
     )
 }
 
+/// The redirect desk of site `id` in `database`, as a command outside
+/// `khalid serve` uses it: the stored redirects and the 404 log, with no
+/// page addresses, since no pages are rendered.
+pub(crate) fn desk(database: &Database, id: SiteId) -> RedirectDesk {
+    RedirectDesk::new(
+        Arc::new(RedirectRows::new(database.clone(), id)),
+        Arc::new(NotFoundTable::new(database.clone(), id)),
+        Arc::new(StaticPages::default()),
+        Arc::new(SystemClock),
+    )
+}
+
 /// Opens `data/site.db` in `site`, runs `work` with the main site's
 /// redirect desk, and closes it.
 pub(crate) fn on_desk<T>(
@@ -176,15 +194,7 @@ pub(crate) fn on_desk<T>(
             database.site(&main).await
         };
         let done = match opened.await {
-            Ok(id) => {
-                let desk = RedirectDesk::new(
-                    Arc::new(RedirectRows::new(database.clone(), id)),
-                    Arc::new(NotFoundTable::new(database.clone(), id)),
-                    Arc::new(StaticPages::default()),
-                    Arc::new(SystemClock),
-                );
-                Ok(work(&desk).await)
-            }
+            Ok(id) => Ok(work(&desk(&database, id)).await),
             Err(error) => Err(failed(db_message::of(&path, &error))),
         };
         database.close().await;

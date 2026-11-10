@@ -32,6 +32,7 @@ use crate::exit::Exit;
 use crate::form_delivery::SiteDelivery;
 use crate::media_library::PictureKeys;
 use crate::memory::HandBack;
+use crate::outside_writes::Reloads;
 use crate::post_files::Assets;
 use crate::scheduler::WeeklyEmail;
 use crate::search_console_finder::SiteFollowUps;
@@ -201,7 +202,7 @@ fn serve_with(
         .and_then(|first| bodies.finish().map(|()| first))
         .map_err(|message| (message, Exit::Failure))?;
     let security = security_headers(config)?;
-    let search = search_of(&source, (database, id), &security);
+    let search = search_route::Search::of(&source, (database, id), &security);
     let (posted, alerting) = mail_and_alerts(
         (site, config, listen, alert_every),
         (&search, runtime, &telling),
@@ -221,14 +222,17 @@ fn serve_with(
         let replies = (security.clone(), telling.clone());
         let commenting = comment_pages::start(config, (database, id), (&source, &live), replies);
         let shown_pages = consent_route::pages(config, live.clone(), security.clone());
-        let ((comments, moderation), (door, posts), (media, files), unlocked) = tokio::try_join!(
-            async { Ok(commenting.await) },
-            publish_door((site, config), (database, id), telling),
-            media_library::open(site, config, (keys.bucket, keys.pictures), outbound),
-            unlocking((site, config), (database, id), &source, shown_pages),
-        )?;
+        let ((comments, moderation, rereading), (door, posts), (media, files, library), unlocked) =
+            tokio::try_join!(
+                async { Ok(commenting.await) },
+                publish_door((site, config), (database, id), telling),
+                media_library::open(site, config, (keys.bucket, keys.pictures), outbound),
+                unlocking((site, config), (database, id), &source, shown_pages),
+            )?;
         posts.follow(source.live_config());
-        let scheduling = scheduler::start((Arc::clone(&door), &posts), (alerting, keys.weekly));
+        let reloads = Reloads::new(site, (redirects.clone(), library, rereading));
+        let scheduling =
+            scheduler::start((Arc::clone(&door), &posts), (alerting, keys.weekly), reloads);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =
@@ -258,12 +262,7 @@ fn serve_with(
         watching.stop().await;
         tokio::join!(scheduling.stop(), alert_watching.stop());
         tokio::join!(announcing.stop(), counter.stop());
-        if let Some(message) = why.lock().unwrap_or_else(PoisonError::into_inner).take() {
-            return Err((message, Exit::Failure));
-        }
-        stopped
-            .map(|_| ())
-            .map_err(|_| (serve_message::stopped(), Exit::Failure))
+        ended(&why, stopped)
     });
     // The pages hold the last feed. Once they are gone the Content API's
     // task finishes its last write, before the database closes.
@@ -272,21 +271,6 @@ fn serve_with(
         tracing::warn!(?error, "the Content API's task stopped early");
     }
     served
-}
-
-/// What the search route reads: the pages of `source`, the database of
-/// site `id`, and the headers of every page.
-fn search_of(
-    source: &SitePages,
-    (database, id): (&Database, SiteId),
-    security: &SecurityHeaders,
-) -> search_route::Search {
-    search_route::Search {
-        pages: source.clone(),
-        db: database.clone(),
-        site: id,
-        security: security.clone(),
-    }
 }
 
 /// The routes a reader posts to from a page besides comments, and the
@@ -530,6 +514,20 @@ async fn stop_or_fail(
         Ok(message) = failure => {
             *why.lock().unwrap_or_else(PoisonError::into_inner) = Some(message);
         }
+    }
+}
+
+/// How serving ended: why the pages could not be rendered, which
+/// [`stop_or_fail`] left in `why`, or else whether it `stopped` cleanly.
+fn ended<T, E>(
+    why: &Mutex<Option<UserMessage>>,
+    stopped: Result<T, E>,
+) -> Result<(), (UserMessage, Exit)> {
+    match why.lock().unwrap_or_else(PoisonError::into_inner).take() {
+        Some(message) => Err((message, Exit::Failure)),
+        None => stopped
+            .map(|_| ())
+            .map_err(|_| (serve_message::stopped(), Exit::Failure)),
     }
 }
 

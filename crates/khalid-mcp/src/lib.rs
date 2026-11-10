@@ -15,4 +15,4 @@ mod tool;
 pub use api_tools::ApiTools;
 pub use server::{MAX_MESSAGE, ServeError, Server};
 pub use session_keys::SessionKeys;
-pub use tool::{BoxFuture, Tool, ToolResult, Tools};
+pub use tool::{BoxFuture, Effect, Tool, ToolResult, Tools};

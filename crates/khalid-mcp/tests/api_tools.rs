@@ -119,6 +119,55 @@ fn each_tool_takes_an_object_described_without_outside_references() {
     assert!(schema["$defs"]["NewPost"].is_object(), "{schema}");
 }
 
+#[test]
+fn each_tool_says_whether_it_reads_adds_or_overwrites() {
+    let tools = tools(WRITER);
+    let listed = serde_json::to_value(tools.list()).unwrap();
+    let hints = |name: &str| {
+        let tool = listed
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|tool| tool["name"] == name)
+            .unwrap_or_else(|| panic!("no tool {name}"));
+        let hints = &tool["annotations"];
+        (
+            hints["readOnlyHint"].as_bool().unwrap(),
+            hints["destructiveHint"].as_bool().unwrap(),
+            hints["idempotentHint"].as_bool().unwrap(),
+        )
+    };
+    assert_eq!(
+        hints("browse_posts"),
+        (true, false, true),
+        "a GET only reads"
+    );
+    assert_eq!(hints("read_admin_post"), (true, false, true));
+    assert_eq!(
+        hints("create_admin_post"),
+        (false, false, false),
+        "a POST adds"
+    );
+    assert_eq!(
+        hints("edit_admin_post"),
+        (false, true, true),
+        "a PUT overwrites"
+    );
+    assert_eq!(
+        hints("delete_admin_post"),
+        (false, true, true),
+        "a DELETE removes"
+    );
+    assert_eq!(
+        hints("publish_post"),
+        (false, true, true),
+        "publishing overwrites a draft's status and puts it in front of readers"
+    );
+    for tool in listed.as_array().unwrap() {
+        assert!(tool["annotations"].is_object(), "no hints on {tool}");
+    }
+}
+
 #[tokio::test]
 async fn browse_posts_reads_the_content_api() {
     let tools = tools(WRITER);

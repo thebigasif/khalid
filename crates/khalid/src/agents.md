@@ -56,6 +56,10 @@ Two tools are not operations of their own:
 - `lint_post` runs the checks `publish_post` runs, without publishing and without changing anything. A draft is checked as it would go live today.
 - `publish_post` publishes a draft, with its `id` and `updated_at`, once the linter lets it through.
 
+The tools work on the site's own stores, as `khalid serve` does: readers' comments (`list_comments`, `approve_comment`), the media library (`upload_media`, `list_media`) and stored redirects (`create_redirect`, `list_redirects`). A running `khalid serve` shows each change to readers within about 5 seconds, without a restart.
+
+Each tool carries the protocol's hints, taken from its route's method, so your client knows which calls to confirm with a person: a `GET` only reads (`readOnlyHint`), a `POST` adds, and a `PUT`, `PATCH` or `DELETE` overwrites or removes what is there (`destructiveHint`). `lint_post` only reads, and `publish_post` counts as overwriting, because it puts a post in front of readers.
+
 Every answer is the API's own JSON. A tool that fails returns an error result holding the API's problem: a `detail` that says what happened and why, and a `fix` that says what to do.
 
 ## Writing a post that publishes

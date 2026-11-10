@@ -19,7 +19,7 @@ use crate::{
 const ITEM_FILE: &str = "item.toml";
 
 /// The media library of one site. It reads every `media/<key>/item.toml`
-/// once when it opens, keeps the details in memory, and writes each change
+/// when it opens and on [`Library::reload`], keeps the details in memory, and writes each change
 /// back to its file (ADR "the media library keeps each file with its
 /// details").
 #[derive(Debug)]
@@ -126,6 +126,33 @@ impl Library {
             items: RwLock::new(items),
             editing: tokio::sync::Mutex::new(()),
         })
+    }
+
+    /// Reads every `item.toml` again, so the library has what another
+    /// process, such as `khalid mcp`, added or changed since it opened.
+    /// An item this library saved while the files were read is kept when
+    /// it is newer than its file.
+    ///
+    /// # Errors
+    ///
+    /// Returns the errors of [`Library::open`]. On an error the library
+    /// keeps the items it had.
+    pub async fn reload(&self) -> Result<(), MediaError> {
+        let folder = SitePath::within(&self.site_root, LIBRARY_FOLDER)?.resolve()?;
+        let mut read = tokio::task::spawn_blocking(move || read_items(&folder))
+            .await
+            .map_err(|source| MediaError::Worker { source })??;
+        let mut items = self.items.write().unwrap_or_else(PoisonError::into_inner);
+        for (id, item) in items.iter() {
+            let older = read
+                .get(id)
+                .is_none_or(|on_disk| on_disk.updated_at < item.updated_at);
+            if older {
+                read.insert(id.clone(), item.clone());
+            }
+        }
+        *items = read;
+        Ok(())
     }
 
     /// Adds `upload`, or finds the item that already has its bytes. The type
