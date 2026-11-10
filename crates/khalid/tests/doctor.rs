@@ -13,7 +13,7 @@ use tempfile::TempDir;
 const ROOT: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../..");
 
 /// Every check, in the order doctor runs them.
-const CHECKS: [&str; 9] = [
+const CHECKS: [&str; 10] = [
     "settings",
     "routes",
     "content",
@@ -21,6 +21,7 @@ const CHECKS: [&str; 9] = [
     "theme",
     "permissions",
     "pictures",
+    "mail",
     "address",
     "robots",
 ];
@@ -101,6 +102,7 @@ fn the_demo_site_passes_every_check_and_exits_0() {
         "Theme: ok.",
         "Permissions: ok.",
         "Picture search: ok.",
+        "Mail: ok.",
         "Public address: skipped.",
         "Host robots.txt: skipped.",
     ] {

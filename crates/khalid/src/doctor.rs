@@ -3,6 +3,8 @@
 //! problem. It changes nothing: the permission check writes a hidden empty
 //! file and removes it at once.
 
+mod mail;
+
 use std::fmt::Write as _;
 use std::path::Path;
 
@@ -66,15 +68,13 @@ impl<'a> From<&'a Finding> for CheckBody<'a> {
 
 /// Runs every check on the `site` folder, then fetches its public address
 /// and the host's `robots.txt` unless `network` says to stay offline, and
-/// reports them all, with the
-/// features a static site has off.
+/// reports them all, with the features a static site has off.
 pub(crate) fn run(site: &Path, network: Network, cli: &Cli) -> Exit {
-    let (mut findings, config) = doctor_files::check(site);
+    let env = Environment::from_process();
+    let (mut findings, config) = doctor_files::check(site, &env);
     findings.extend(doctor_folder::check(site));
-    findings.push(doctor_pictures::check(
-        config.as_ref(),
-        &Environment::from_process(),
-    ));
+    findings.push(doctor_pictures::check(config.as_ref(), &env));
+    findings.push(mail::check(config.as_ref(), &env));
     findings.push(doctor_address::check(config.as_ref(), network, cli));
     findings.push(doctor_robots::check(config.as_ref(), network, cli));
     let off = config
