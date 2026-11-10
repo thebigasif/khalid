@@ -24,6 +24,7 @@ use crate::serpdad_store::SerpdadStore;
 use crate::settings_store::SettingsStore;
 use crate::subscriber_desk::SubscriberDesk;
 use crate::tag_store::TagStore;
+use crate::uptime::UptimeReader;
 use crate::webhook_store::WebhookStore;
 
 /// The Admin API's stores beside posts, as `khalid serve` holds them.
@@ -96,6 +97,9 @@ pub struct AdminDesks {
     /// routes list none and the newsletter routes answer that the site
     /// cannot send.
     pub subscribers: Option<Arc<dyn SubscriberDesk>>,
+    /// The speed and uptime watch's looks, or `None` when the watch route
+    /// answers that this server keeps none.
+    pub uptime: Option<Arc<dyn UptimeReader>>,
 }
 
 impl std::fmt::Debug for AdminDesks {
@@ -112,8 +116,8 @@ impl AdminDesks {
     /// audit log, no trash, no post checks, no schema templates, no pages,
     /// no snippets, no authors, no tags, no categories, no settings, no design, no
     /// templates, no counted views, no comments on drafts, no Search Console connection,
-    /// no form answers, no `SerpDad` connection, no writing suggestions and no
-    /// subscribers, with the usual limits.
+    /// no form answers, no `SerpDad` connection, no writing suggestions, no
+    /// subscribers and no watch looks, with the usual limits.
     pub fn none() -> Self {
         Self {
             comments: Arc::new(NoComments),
@@ -140,6 +144,7 @@ impl AdminDesks {
             ai: AiDesk::off(),
             limits: LimitSettings::default(),
             subscribers: None,
+            uptime: None,
         }
     }
 }
