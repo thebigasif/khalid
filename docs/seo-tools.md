@@ -77,3 +77,34 @@ Two jobs, one step at a time:
 A link goes on words of the text that name the target when there are some
 outside a link, or else on a line `Related: [title](path).` at the end.
 Open the post to move it where it reads best.
+
+## Telling search engines what changed (IndexNow)
+
+IndexNow is a shared way to tell Bing, Yandex, Seznam, Naver and Yep
+which pages changed, so they read them soon. Switch it on with a key in
+`site.toml`:
+
+```toml
+[seo.indexnow]
+key = "3f9c0b5e2a8d4c71"
+```
+
+Khalid then sends the address of each live post that is new, or whose
+`updated:` date is new or later. Any other edit, such as a typo fix, sends
+nothing. Each change is sent once:
+
+- `khalid serve` sends a change as soon as the file is saved. When it
+  starts, it also sends what changed while it was stopped, such as a post
+  edited by hand or arriving through `git pull`.
+- `khalid build` sends what changed since the last build, and says how
+  many addresses it sent. `khalid build --no-indexnow` sends nothing; the
+  next build sends those changes. A build sends nothing when the site's
+  `address` is not public, such as `localhost`, because search engines
+  cannot read pages there.
+
+Khalid keeps the list of what search engines heard in
+`data/indexnow-sent.txt`. The first run with IndexNow on sends nothing and
+starts that list, so a new site does not send every address it has.
+Deleting the file is safe: the next run sends nothing and starts again.
+Requests go 10,000 addresses at a time, the most IndexNow takes in one.
+Google does not use IndexNow; it reads the sitemap.

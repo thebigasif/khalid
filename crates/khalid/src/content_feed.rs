@@ -4,10 +4,9 @@
 //! section 3).
 
 use std::collections::BTreeMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock};
 
-use chrono::NaiveDate;
 use khalid_core::{AbsoluteUrl, Clock, Config, SystemClock};
 use khalid_db::{Database, PostChanges, SiteId};
 use khalid_seo::UrlPath;
@@ -16,13 +15,14 @@ use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
 
 use crate::announce::SiteAnnounce;
+use crate::announce::indexnow_record::{self, Record};
 use crate::entry_events::Entries;
 use crate::live_redirects::LiveRedirects;
 use crate::memory::HandBack;
 use crate::site_addresses::{self, LiveAddresses};
 use crate::site_content::{Catalog, LiveContent, Published};
 use crate::tag_events::Tags;
-use crate::{db_message, search_index, slug_moves};
+use crate::{db_message, report, search_index, slug_moves};
 
 /// Hands the catalog of each render to the background task. When every
 /// feed is dropped, the task finishes what it is doing and stops.
@@ -87,41 +87,25 @@ impl UpdatePings {
         }
     }
 
+    /// Whether an announcer was set.
+    fn on(&self) -> bool {
+        self.0.get().is_some()
+    }
+
     /// Sends the full addresses of `paths` on the site with `config`.
-    fn send(&self, config: &Config, paths: &[&UrlPath]) {
+    fn send(&self, config: &Config, paths: &[&str]) {
         let Some(telling) = self.0.get() else {
             return;
         };
         let base = config.address().as_str().trim_end_matches('/');
         let urls: Vec<AbsoluteUrl> = paths
             .iter()
-            .filter_map(|path| AbsoluteUrl::parse(&format!("{base}{}", path.as_str())).ok())
+            .filter_map(|path| AbsoluteUrl::parse(&format!("{base}{path}")).ok())
             .collect();
         if !urls.is_empty() {
             telling.updated(urls);
         }
     }
-}
-
-/// Each live post's address and `updated:` date, by the path of its file.
-#[derive(Debug, Default)]
-struct Live {
-    addresses: BTreeMap<String, UrlPath>,
-    updated: BTreeMap<String, NaiveDate>,
-}
-
-/// The addresses of the posts in `now` that went live since `before`, or
-/// whose `updated:` date is new or later. The date changes only on a real
-/// update (decision D4), so any other edit tells nothing.
-fn told<'a>(before: &Live, now: &'a Live) -> Vec<&'a UrlPath> {
-    now.addresses
-        .iter()
-        .filter(|(file, _)| {
-            !before.addresses.contains_key(*file)
-                || now.updated.get(*file) > before.updated.get(*file)
-        })
-        .map(|(_, path)| path)
-        .collect()
 }
 
 /// Starts the background task on `runtime`. Await the handle after the
@@ -145,8 +129,8 @@ struct Applied {
     /// Each page's address in the last catalog, by file.
     addresses: Option<BTreeMap<String, UrlPath>>,
     /// The live posts of the last catalog; `None` before the first, which
-    /// has nothing to compare with and tells nothing.
-    live: Option<Live>,
+    /// is compared with the record kept in `data/`.
+    live: Option<Record>,
 }
 
 /// Serves the addresses of `catalog`'s pages, and stores a permanent move
@@ -160,15 +144,49 @@ async fn moved(to: &Destination, catalog: &Catalog, applied: &mut Applied) {
     };
     slug_moves::store(&to.redirects, (&before, &after), SystemClock.now()).await;
     to.addresses.replace(&after);
-    let now = Live {
-        addresses: after.clone(),
-        updated: catalog.updated.clone(),
-    };
-    if let Some(before) = &applied.live {
-        to.pings.send(&to.config, &told(before, &now));
-    }
+    let now = Record::of(&after, &catalog.updated);
+    news(to, applied.live.take(), &now).await;
     applied.live = Some(now);
     applied.addresses = Some(after);
+}
+
+/// Sends `IndexNow` the addresses with news in `now` since `before`, the
+/// last catalog's record, or for the first catalog the record kept in
+/// `data/`, so a post updated while the server was stopped is sent once.
+/// With no record kept, nothing is sent and the run says so. `now` is kept
+/// whenever it differs. Only a site with `IndexNow` on keeps a record.
+async fn news(to: &Destination, before: Option<Record>, now: &Record) {
+    if !to.pings.on() || to.config.seo().indexnow.is_none() {
+        return;
+    }
+    let before = match before {
+        Some(before) => Some(before),
+        None => on_disk(&to.folder, Record::read).await.flatten(),
+    };
+    match &before {
+        Some(before) => to.pings.send(&to.config, &now.news_since(before)),
+        None => report::notice(indexnow_record::FIRST_RUN),
+    }
+    if before.as_ref() == Some(now) {
+        return;
+    }
+    let kept = now.clone();
+    let written = on_disk(&to.folder, move |folder| kept.write(folder)).await;
+    if let Some(Err(error)) = written {
+        tracing::warn!(%error, "the list of what IndexNow heard was not kept");
+    }
+}
+
+/// Runs `work` on the site `folder` off the async threads; `None` when the
+/// task could not finish.
+async fn on_disk<T: Send + 'static>(
+    folder: &Path,
+    work: impl FnOnce(&Path) -> T + Send + 'static,
+) -> Option<T> {
+    let folder = folder.to_path_buf();
+    tokio::task::spawn_blocking(move || work(&folder))
+        .await
+        .ok()
 }
 
 /// Builds the latest catalog each time one arrives, and drops it once it is
@@ -346,43 +364,6 @@ mod tests {
             "the store shows the save"
         );
         db.close().await;
-    }
-
-    #[test]
-    fn a_new_updated_date_or_a_new_live_post_is_told_and_nothing_else() {
-        let live = |posts: &[(&str, Option<u32>)]| {
-            let mut live = Live::default();
-            for &(file, day) in posts {
-                let path = UrlPath::try_new(&format!("/blog/{file}/")).unwrap();
-                live.addresses.insert(format!("{file}.md"), path);
-                if let Some(day) = day.and_then(|day| NaiveDate::from_ymd_opt(2026, 10, day)) {
-                    live.updated.insert(format!("{file}.md"), day);
-                }
-            }
-            live
-        };
-        let before = live(&[
-            ("dated", None),
-            ("same", Some(1)),
-            ("later", Some(5)),
-            ("dropped", Some(5)),
-        ]);
-        let now = live(&[
-            ("dated", Some(9)),
-            ("same", Some(1)),
-            ("later", Some(7)),
-            ("dropped", None),
-            ("new", None),
-        ]);
-        let told: Vec<&str> = told(&before, &now)
-            .into_iter()
-            .map(UrlPath::as_str)
-            .collect();
-        assert_eq!(told, ["/blog/dated/", "/blog/later/", "/blog/new/"]);
-        assert!(
-            super::told(&now, &now).is_empty(),
-            "a save with no new date tells nothing"
-        );
     }
 
     #[test]
