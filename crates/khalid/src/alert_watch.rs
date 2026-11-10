@@ -29,34 +29,44 @@ use crate::alerts::{self, Alerting};
 use crate::announce::SiteAnnounce;
 use crate::cli::ServeArgs;
 use crate::crawl_alerts;
+use crate::serve_https::ServeClock;
 use crate::site_content::LiveContent;
 use crate::site_watch::{self, SiteWatch};
 
 /// How often the checks run.
 const EVERY: Duration = Duration::from_hours(1);
 
-/// How often the checks run, and the speed and uptime watch looks.
+/// How often the checks run, and the speed and uptime watch looks, with
+/// the clock the scheduler and preview links read.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) struct Every {
     /// The alert checks.
     pub(crate) checks: Duration,
     /// The watch, or `None` when it does not look.
     pub(crate) watch: Option<Duration>,
+    /// When a schedule or a preview link falls due: the computer's own
+    /// clock, ahead only in a test build.
+    pub(crate) clock: ServeClock,
 }
 
 /// How often the checks run for `args`: hourly, or as the hidden
 /// `--alert-every` asks in a test build. The watch looks as
 /// [`site_watch::every`] says for the site with `config`.
 pub(crate) fn every(args: &ServeArgs, config: &Config) -> Every {
-    let watch = site_watch::every(args, config);
+    let (watch, clock) = (site_watch::every(args, config), ServeClock::new(args));
     #[cfg(feature = "test-util")]
     if let Some(seconds) = args.test.alert_every {
         let checks = Duration::from_secs(seconds);
-        return Every { checks, watch };
+        return Every {
+            checks,
+            watch,
+            clock,
+        };
     }
     Every {
         checks: EVERY,
         watch,
+        clock,
     }
 }
 

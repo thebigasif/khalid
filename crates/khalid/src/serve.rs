@@ -37,7 +37,7 @@ use crate::post_files::Assets;
 use crate::scheduler::WeeklyEmail;
 use crate::search_console_finder::SiteFollowUps;
 use crate::serve_check::BodyCheck;
-use crate::serve_https::{self, Listen};
+use crate::serve_https::{self, Listen, ServeClock};
 use crate::site_content::LiveContent;
 use crate::site_hosts::{self, Among, Door};
 use crate::site_html::NotFound;
@@ -183,7 +183,7 @@ pub(crate) fn serve_site(
 fn serve_with(
     (site, config, routes): (&Path, &Config, &Routes),
     (checked, assets, look, bodies): (Arc<SiteContent>, Assets, FolderLook, BodyCheck),
-    (listen, outbound, (output, alert_every), keys): (&Listen, &Outbound, (Output, Every), Keys),
+    (listen, outbound, (output, every), keys): (&Listen, &Outbound, (Output, Every), Keys),
     runtime: &Runtime,
     (database, id): (&Database, SiteId),
     among: Option<&Among>,
@@ -204,7 +204,7 @@ fn serve_with(
     let security = security_headers(config)?;
     let search = search_route::Search::of(&source, (database, id), &security);
     let (posted, alerting) = mail_and_alerts(
-        (site, config, listen, alert_every),
+        (site, config, listen, every),
         (&search, runtime, &telling),
         &content,
         (keys.mail, outbound),
@@ -225,14 +225,14 @@ fn serve_with(
         let ((comments, moderation, rereading), (door, posts), (media, files, library), unlocked) =
             tokio::try_join!(
                 async { Ok(commenting.await) },
-                publish_door((site, config), (database, id), telling),
+                publish_door((site, config), (database, id, every.clock), telling),
                 media_library::open(site, config, (keys.bucket, keys.pictures), outbound),
                 unlocking((site, config), (database, id), &source, shown_pages),
             )?;
         posts.follow(source.live_config());
         let reloads = Reloads::new(site, (redirects.clone(), library, rereading));
         let scheduling =
-            scheduler::start((Arc::clone(&door), &posts), (alerting, keys.weekly), reloads);
+            scheduler::start((&door, &posts, every.clock), (alerting, keys.weekly), reloads);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =
@@ -410,21 +410,20 @@ fn assembled(
         .merge(pages)
 }
 
-/// The publish door the Admin API, the scheduler and preview links share.
-/// It keeps schedules and the text each edit replaces in the database, and
-/// tells `telling` about each post that goes live.
+/// The publish door the Admin API, the scheduler and preview links share, on `clock`. It keeps
+/// schedules and earlier versions in the database, and tells `telling` of each post that goes live.
 async fn publish_door(
     (site, config): (&Path, &Config),
-    (database, id): (&Database, SiteId),
+    (database, id, clock): (&Database, SiteId, ServeClock),
     telling: SiteAnnounce,
 ) -> Result<(Arc<PublishDoor>, SitePosts), (UserMessage, Exit)> {
     let file = db::data_file(site).map_err(|message| (message, Exit::Failure))?;
     let posts = SitePosts::new(site, config.clone(), SystemClock);
     let schedules = Arc::new(ScheduleTable::new(database.clone(), id));
     let versions = Arc::new(VersionTable::new(database.clone(), id));
-    let signer = preview::signer(config, (database, id, &file)).await;
+    let signer = preview::signer(config, (database, id, &file), clock).await;
     let door = PublishDoor::new(Arc::new(posts.clone()), Arc::new(telling))
-        .with_schedules(schedules, SystemClock)
+        .with_schedules(schedules, clock)
         .with_versions(versions)
         .with_planner(Arc::new(posts.clone()))
         .with_previews(signer.map_err(|message| (message, Exit::Failure))?);

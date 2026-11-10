@@ -18,6 +18,7 @@ use khalid_db::{Database, SiteId};
 use khalid_server::{MediaType, Page, PagePath, Pages, SecurityHeaders};
 use tower::ServiceExt;
 
+use crate::serve_https::ServeClock;
 use crate::site_pages::SitePages;
 use crate::{db_message, serve_message};
 
@@ -30,7 +31,8 @@ struct Preview {
 }
 
 /// The signer of the site's preview links: the site's own key, from the
-/// database at `file`, and the lifetime `site.toml` sets.
+/// database at `file`, and the lifetime `site.toml` sets, counted on
+/// `clock`.
 ///
 /// # Errors
 ///
@@ -38,6 +40,7 @@ struct Preview {
 pub(crate) async fn signer(
     config: &Config,
     (db, site, file): (&Database, SiteId, &std::path::Path),
+    clock: ServeClock,
 ) -> Result<PreviewSigner, UserMessage> {
     let key = db.preview_key(site, &SystemClock).await;
     let key = key.map_err(|error| db_message::of(file, &error))?;
@@ -48,7 +51,7 @@ pub(crate) async fn signer(
     );
     let blog = AbsoluteUrl::parse(&blog).map_err(|_| serve_message::internal())?;
     let lifetime = config.preview_link_lifetime();
-    Ok(PreviewSigner::new(&key, &blog, lifetime, SystemClock))
+    Ok(PreviewSigner::new(&key, &blog, lifetime, clock))
 }
 
 /// The route `<mount>preview/<id>/`, answering from `pages` the drafts
