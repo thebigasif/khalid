@@ -143,6 +143,19 @@ fn a_broken_facts_file_stops_lint_and_build_with_a_plain_message() {
 }
 
 #[test]
+fn a_source_that_is_not_a_web_address_stops_lint_with_the_fix() {
+    let site = site(&format!("{FACTS}source = \"the pricing page\"\n"));
+    let output = khalid(site.path(), &["lint"]);
+    assert_eq!(output.status.code(), Some(1));
+    let said = text(&output.stderr);
+    assert!(
+        said.contains("has a source that is not a web address"),
+        "{said}"
+    );
+    assert!(said.contains("source = \"https://"), "{said}");
+}
+
+#[test]
 fn build_leaves_out_an_old_value_when_the_site_makes_it_block() {
     let site = site(FACTS);
     let rules = "[rules]\nfact-old-value = \"block\"\n";

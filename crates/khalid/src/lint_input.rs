@@ -28,7 +28,7 @@ use khalid_seo::{LinkPolicy, SeoPage, SeoSite};
 use crate::build_pages::{path_of, routed};
 use crate::lint_text::{plain_text, prose_text, section_shapes, wikilinks};
 use crate::site_briefs::Briefs;
-use crate::{build_schema, build_seo};
+use crate::{build_schema, build_seo, site_facts};
 
 /// What a post is linted against besides itself: the site's routes, the
 /// pages a wikilink reaches in each language, the site as the SEO outputs
@@ -46,7 +46,7 @@ pub(crate) struct LintInput {
 
 impl LintInput {
     /// The input for the posts of `content` on the site `config` describes,
-    /// whose addresses follow `routes`.
+    /// whose addresses follow `routes`, held to the content's facts.
     pub(crate) fn new(content: &SiteContent, config: &Config, routes: Routes) -> Self {
         let links = config
             .languages()
@@ -63,14 +63,9 @@ impl LintInput {
             links,
             seo,
             policy,
-            facts: Vec::new(),
+            facts: site_facts::for_lint(&content.facts),
             briefs: Briefs::new(),
         }
-    }
-
-    /// This input with the site's fact registry, read from `facts.toml`.
-    pub(crate) fn with_facts(self, facts: Vec<LintFact>) -> Self {
-        Self { facts, ..self }
     }
 
     /// This input with each post's brief, read from `briefs/`.
