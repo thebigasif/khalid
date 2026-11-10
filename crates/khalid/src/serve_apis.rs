@@ -23,8 +23,8 @@ use khalid_api::session_check::SessionCheck;
 use khalid_auth::SiteDirectory;
 use khalid_core::{Config, Environment, SystemClock};
 use khalid_db::{
-    AnalyticsTable, AuditTable, ConsentProofTable, Database, KeyTable, SerpdadTable, SiteId,
-    WebhookTable,
+    AnalyticsTable, AuditTable, ConsentProofTable, Database, FormTable, KeyTable, SerpdadTable,
+    SiteId, WebhookTable,
 };
 use khalid_newsletter::Mailer;
 
@@ -66,7 +66,7 @@ pub(crate) type ApiParts<'a> = (
 
 /// The Content API and the Admin API as `khalid serve` runs them, with the
 /// comment moderation, media library, stored redirects, Search Console
-/// follow-ups, webhooks, `SerpDad` connection and staff accounts of site
+/// follow-ups, webhooks, form answers, `SerpDad` connection and staff accounts of site
 /// `id`, the post checks, schema templates, pages, snippets, authors, tags,
 /// categories and settings of the site in `site`, the super-admin routes
 /// over `panel`, and comments on drafts emailed through `mailer` when the
@@ -115,6 +115,7 @@ pub(crate) fn api_router(
         .with_consent(Arc::new(ConsentProofTable::new(database.clone(), id))),
         draft_comments: Some(draft_comment_mail::desk((database, id, config), mailer)),
         follow_ups: Arc::new(follow_ups),
+        forms: Some(Arc::new(FormTable::new(database.clone(), id))),
         serpdad: Some(Arc::new(SerpdadTable::new(
             database.clone(),
             id,
