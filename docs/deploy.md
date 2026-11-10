@@ -252,6 +252,8 @@ Khalid connects on port 587 and turns encryption on before it sends anything. Ad
 
 Form answers are emailed to the `from` address unless you add `forms_to = "hello@example.com"` under `[mail]`.
 
+Every answer is also kept in the site database, mail or not. Open Forms in the admin to read them, newest first; only an owner or an admin sees it, because answers hold visitors' email addresses. Tools read the same answers through the Admin API at `/api/admin/v1/forms/` with a key that has `subscribers:write`.
+
 Through Resend or Postmark, two services that send mail for websites, write an empty `[mail.resend]` or `[mail.postmark]` instead of `[mail.smtp]`. Postmark sends on its `outbound` stream unless you add `message_stream = "<name>"`.
 
 The password, API key or token never goes in `site.toml`. Set it in the server's environment, where only Khalid reads it:

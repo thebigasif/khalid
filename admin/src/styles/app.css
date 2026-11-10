@@ -316,6 +316,12 @@
   .terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:.25rem 2rem;margin:0 0 1.5rem;font-size:.875rem}
   .terms dt{font-weight:600}
   .terms dd{margin:0 0 .5rem;color:var(--color-muted)}
+  .answers{list-style:none;margin:0;padding:0;display:grid;gap:.75rem;max-width:48rem}
+  .answer h2{font-size:1rem;margin:0 0 .75rem}
+  .answer dl{margin:0;display:grid;gap:.1rem 1rem}
+  @media (min-width:40em){.answer dl{grid-template-columns:10rem minmax(0,1fr)}.answer dl>div{display:contents}}
+  .answer dt{color:var(--color-muted);font-size:.9375rem}
+  .answer dd{margin:0 0 .5rem;white-space:pre-line}
   .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:1rem;align-items:end;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-field);padding:1rem;margin:0 0 1rem}
   .filters .field{margin:0}
   .bulk{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(12rem,100%),1fr));gap:1rem;align-items:end;border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);padding:1rem;margin:0 0 1rem}

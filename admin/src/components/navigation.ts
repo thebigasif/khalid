@@ -14,6 +14,7 @@ export type NavPath =
   | "/calendar"
   | "/media"
   | "/comments"
+  | "/forms"
   | "/trash"
   | "/analytics"
   | "/search-console"
@@ -51,6 +52,7 @@ export const NAV: NavGroup[] = [
       { to: "/calendar", label: calendarWords.nav, icon: "calendar" },
       { to: "/media", label: en.nav.media, icon: "media" },
       { to: "/comments", label: en.nav.comments, icon: "comments" },
+      { to: "/forms", label: en.nav.forms, icon: "inbox" },
       { to: "/trash", label: en.nav.trash, icon: "trash" },
     ],
   },
