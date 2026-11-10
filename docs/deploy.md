@@ -52,8 +52,15 @@ The unit runs Khalid as its own `khalid` user, never as root. The site folder is
 
    ```sh
    sudo cp packaging/systemd/khalid.service /etc/systemd/system/
+   sudo mkdir -p /etc/sysusers.d
    sudo cp packaging/systemd/khalid.sysusers /etc/sysusers.d/khalid.conf
    sudo systemd-sysusers
+   ```
+
+   Some systems, such as Ubuntu, have no `/etc/sysusers.d` folder until something is put there, so the second line makes it. If your system says `systemd-sysusers: command not found`, make the user with `useradd` instead:
+
+   ```sh
+   sudo useradd --system --user-group --home-dir /var/lib/khalid --no-create-home --shell /usr/sbin/nologin khalid
    ```
 
 3. Make the site, as the `khalid` user:

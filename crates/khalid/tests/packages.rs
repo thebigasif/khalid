@@ -184,6 +184,43 @@ fn the_systemd_unit_keeps_the_service_in_its_site_folder() {
     assert_eq!(unit_value(&unit, "KillSignal"), "SIGTERM");
 }
 
+/// Ubuntu ships `systemd-sysusers` but no `/etc/sysusers.d` folder, so the
+/// install script and the guide make the folder before they copy into it
+/// (gap G34), and the script makes the user with `useradd` where
+/// `systemd-sysusers` is missing.
+#[test]
+fn the_user_file_goes_into_a_folder_the_install_steps_make_first() {
+    let script = fs::read_to_string(repo_file("scripts/install.sh")).unwrap();
+    let guide = fs::read_to_string(repo_file("docs/deploy.md")).unwrap();
+    for (name, text, make, copy) in [
+        (
+            "scripts/install.sh",
+            &script,
+            "mkdir -p /etc/sysusers.d",
+            "/etc/sysusers.d/khalid.conf",
+        ),
+        (
+            "docs/deploy.md",
+            &guide,
+            "sudo mkdir -p /etc/sysusers.d",
+            "sudo cp packaging/systemd/khalid.sysusers /etc/sysusers.d/khalid.conf",
+        ),
+    ] {
+        let made = text
+            .find(make)
+            .unwrap_or_else(|| panic!("{name}: no {make}"));
+        let copied = text
+            .find(copy)
+            .unwrap_or_else(|| panic!("{name}: no {copy}"));
+        assert!(
+            made < copied,
+            "{name} copies into /etc/sysusers.d before making it"
+        );
+    }
+    assert!(script.contains("command -v systemd-sysusers"), "{script}");
+    assert!(script.contains("useradd --system"), "{script}");
+}
+
 /// `systemd-analyze verify` reads the unit as systemd would. It runs where
 /// systemd is installed and is skipped elsewhere, such as on macOS.
 #[test]

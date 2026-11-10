@@ -69,8 +69,11 @@ check_docker() {
 }
 
 check_systemd() {
-  local binary="$1" version="v0.0.0" platform release units file
+  local binary="$1" version said platform release units file
   [ -x "$binary" ] || stop "$binary is not a program this check can run. Point it at a built khalid."
+  # The release is named after the binary's own version, as on GitHub.
+  said="$("$binary" --version)"
+  version="v${said#khalid }"
   case "$(uname -m)" in
     x86_64 | amd64) platform="linux-x86_64" ;;
     aarch64 | arm64) platform="linux-aarch64" ;;
@@ -92,6 +95,8 @@ check_systemd() {
   # The systemd section of docs/deploy.md, through the install script.
   sudo env KHALID_RELEASES="file://$work/releases" KHALID_UNIT_SOURCE="file://$work/units" \
     sh "$root/scripts/install.sh" --version "$version" --systemd
+  [ "$(khalid --version)" = "$said" ] \
+    || stop "The khalid on the PATH is not the one just installed, so the service may run another version. Run command -v khalid to see which one it is."
   sudo -u khalid khalid init /var/lib/khalid --address https://blog.example.com --yes
   sudo systemctl enable --now khalid
   if ! home_answers http://127.0.0.1:8080/; then
