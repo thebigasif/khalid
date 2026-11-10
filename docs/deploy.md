@@ -455,6 +455,8 @@ The weekly email goes out when a week has passed since the last one, and the fir
 
 `khalid serve` reads the connection and the two secrets once, at start, so restart it after setting them. It then answers the same follow-ups at `GET /api/admin/v1/search-console/follow-ups/`, and the same report at `GET /api/admin/v1/search-console/report/`, for a key with `settings:write`. The admin shows both under Search Console, with a link from each post to its editor. The posts are read on each request, so a heading you just added counts.
 
+The Analytics screen also shows Google's numbers for all your pages together: clicks, times shown, the share clicked and the average position, for the same 7, 28 or 90 days as the page views, against the days before. It reads them from `GET /api/admin/v1/search-console/totals/?days=`, from 1 to 90 days, 28 when left out. Google needs about three days to make a day's numbers final, so these days end three days earlier than the page views. A blog that is not connected sees a link to the Search Console screen in their place, and Google is not asked.
+
 A refresh token stops working when you take Khalid's permission back in your Google account, or when Google lets it lapse. The commands then say so: make a new one with step 3.
 
 ## Pages AI bots read but never cite
