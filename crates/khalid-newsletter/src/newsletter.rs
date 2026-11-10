@@ -3,14 +3,21 @@
 
 use std::sync::Arc;
 
-use khalid_core::{Clock, Locale, Slug};
+use chrono::TimeDelta;
+use khalid_core::{AbsoluteUrl, Clock, Locale, Slug};
 
+use crate::clicks::{self, Piece};
 use crate::{
     BackPath, ConfirmationLinks, Confirmed, EmailAddress, GenerateTokenError, Issue, Lists, Mail,
-    MailError, Mailer, Member, NewsletterWords, PostalAddress, ReaderPass, Segment, SendTotals,
-    Sent, SignUp, SignedUp, SiteLinks, StoreError, SubscriberId, SubscriberStore, SubscriberToken,
-    Unsubscribed, Welcomes, WordsError,
+    MailError, Mailer, Member, NewsletterWords, PostalAddress, ReaderPass, Recipient, Segment,
+    SendId, SendTotals, Sent, SignUp, SignedUp, SiteLinks, StoreError, SubscriberId,
+    SubscriberStore, SubscriberToken, Unsubscribed, Welcome, Welcomes, WordsError,
 };
+
+/// How long after its day a later welcome step may still go out, so a
+/// server stopped for a few days catches up, and a reader who joined long
+/// ago is not sent a sequence written since.
+const LATE_FOR: TimeDelta = TimeDelta::days(7);
 
 /// The site the emails come from: its name, its language and where its
 /// pages answer.
@@ -35,6 +42,7 @@ pub struct Newsletter {
     pass: Option<ReaderPass>,
     lists: Arc<Lists>,
     welcomes: Option<Arc<Welcomes>>,
+    count_clicks: bool,
 }
 
 impl Newsletter {
@@ -60,6 +68,7 @@ impl Newsletter {
             pass: None,
             lists: Arc::new(Lists::main_only()),
             welcomes: None,
+            count_clicks: false,
         })
     }
 
@@ -106,7 +115,8 @@ impl Newsletter {
         back: &BackPath,
     ) -> Result<SignedUp, NewsletterError> {
         let signed = self.signed_up(email.clone(), list, Some(back)).await?;
-        if let (SignedUp::AlreadyConfirmed, Some(pass)) = (&signed, &self.pass) {
+        let confirmed = matches!(signed, SignedUp::AlreadyConfirmed | SignedUp::JoinedNow(_));
+        if let (true, Some(pass)) = (confirmed, &self.pass) {
             let (site, words) = &*self.site;
             let mail = words.pass(&site.locale, &site.name, email, &pass.link(back));
             self.mailer.send(&mail).await?;
@@ -141,8 +151,12 @@ impl Newsletter {
     ) -> Result<SignedUp, NewsletterError> {
         let (confirm, remove) = (SubscriberToken::generate()?, SubscriberToken::generate()?);
         let at = self.clock.now();
-        let asked = SignUp::new(email.clone(), list, confirm.hash(), at);
+        let asked = SignUp::new(email.clone(), list.clone(), confirm.hash(), at);
         let signed = self.store.sign_up(&asked).await?;
+        if let SignedUp::JoinedNow(subscriber) = signed {
+            self.welcome(&Recipient::new(subscriber, email.clone()), &[list])
+                .await;
+        }
         if let SignedUp::ConfirmationDue(subscriber) = signed {
             self.store
                 .add_unsubscribe(subscriber, &remove.hash(), at)
@@ -160,8 +174,9 @@ impl Newsletter {
         Ok(signed)
     }
 
-    /// The same newsletter, sending `welcomes` to each reader the moment
-    /// they confirm.
+    /// The same newsletter, sending the first of `welcomes` to each reader
+    /// the moment they join, and the later steps through
+    /// [`send_due_welcomes`](Self::send_due_welcomes).
     #[must_use]
     pub fn with_welcomes(self, welcomes: Welcomes) -> Self {
         Self {
@@ -170,40 +185,95 @@ impl Newsletter {
         }
     }
 
-    /// Sends `subscriber`, confirmed a moment ago, the welcome email of each
-    /// newsletter they joined that has one. A welcome that cannot go out is
-    /// logged and left: the reader is subscribed all the same.
-    async fn welcome(&self, subscriber: SubscriberId) {
+    /// Sends `subscriber`, confirmed a moment ago, the first welcome email
+    /// of each newsletter they joined that has one.
+    async fn welcome_confirmed(&self, subscriber: SubscriberId) {
+        if self.welcomes.is_none() {
+            return;
+        }
+        match self.store.subscriber(subscriber).await {
+            Ok(Some(Member {
+                recipient, lists, ..
+            })) => self.welcome(&recipient, &lists).await,
+            Ok(None) => {}
+            Err(error) => tracing::warn!(%error, "a welcome email was not sent"),
+        }
+    }
+
+    /// Sends `recipient`, who joined each of `lists` a moment ago, the
+    /// step of its welcome sequence sent at once, when it has one.
+    async fn welcome(&self, recipient: &Recipient, lists: &[Slug]) {
         let Some(welcomes) = &self.welcomes else {
             return;
         };
-        let found = match self.store.subscriber(subscriber).await {
-            Ok(Some(found)) => found,
-            Ok(None) => return,
-            Err(error) => return tracing::warn!(%error, "a welcome email was not sent"),
-        };
-        let Member {
-            recipient, lists, ..
-        } = found;
-        let (site, words) = &*self.site;
-        for welcome in lists.iter().filter_map(|list| welcomes.of(list)) {
-            let sent = async {
-                let remove = SubscriberToken::generate()?;
-                let at = self.clock.now();
-                self.store
-                    .add_unsubscribe(recipient.id, &remove.hash(), at)
-                    .await?;
-                let link = site.links.unsubscribe(&remove);
-                let footer = words.footer(&site.locale, &site.name, &link, welcomes.postal());
-                let text = format!("{}{footer}", welcome.text());
-                let to = recipient.email.clone();
-                let mail = Mail::new(to, welcome.subject().to_owned(), text);
-                Ok::<_, NewsletterError>(self.mailer.send(&mail).await?)
-            };
-            if let Err(error) = sent.await {
-                tracing::warn!(%error, "a welcome email was not sent");
+        for list in lists {
+            let steps = welcomes.of(list).await;
+            if let Some(first) = steps.first().filter(|step| step.day() == 0) {
+                self.welcome_step(welcomes, recipient, (list, first)).await;
             }
         }
+    }
+
+    /// Sends `recipient` the welcome `step` of `list`, unless it went to
+    /// them before, and says whether it went now. A step that cannot go
+    /// out is logged and left, never tried again: the reader is
+    /// subscribed all the same.
+    async fn welcome_step(
+        &self,
+        welcomes: &Welcomes,
+        recipient: &Recipient,
+        (list, step): (&Slug, &Welcome),
+    ) -> bool {
+        let (site, words) = &*self.site;
+        let sent = async {
+            let at = self.clock.now();
+            let id = recipient.id;
+            if !self.store.claim_welcome(id, list, step.day(), at).await? {
+                return Ok(false);
+            }
+            let remove = SubscriberToken::generate()?;
+            self.store.add_unsubscribe(id, &remove.hash(), at).await?;
+            let link = site.links.unsubscribe(&remove);
+            let footer = words.footer(&site.locale, &site.name, &link, welcomes.postal());
+            let text = format!("{}{footer}", step.text());
+            let to = recipient.email.clone();
+            let mail = Mail::new(to, step.subject().to_owned(), text);
+            self.mailer.send(&mail).await?;
+            Ok::<_, NewsletterError>(true)
+        };
+        sent.await.unwrap_or_else(|error| {
+            tracing::warn!(%error, "a welcome email was not sent");
+            false
+        })
+    }
+
+    /// Sends each later step of every welcome sequence to the readers it
+    /// has fallen due for, once, and gives how many went out. A step more
+    /// than a week past its day is skipped, so a sequence written long
+    /// after a reader joined does not reach them in a burst. Run it every
+    /// hour or so.
+    ///
+    /// # Errors
+    ///
+    /// [`NewsletterError::Store`] when the store cannot be read. The steps
+    /// sent before the failure stay sent.
+    pub async fn send_due_welcomes(&self) -> Result<u32, NewsletterError> {
+        let Some(welcomes) = &self.welcomes else {
+            return Ok(0);
+        };
+        let now = self.clock.now();
+        let due = (now - LATE_FOR, now);
+        let mut sent = 0_u32;
+        for list in self.lists.iter() {
+            for step in welcomes.of(list).await.iter().filter(|step| step.day() > 0) {
+                for recipient in self.store.welcomes_due(list, step.day(), due).await? {
+                    if self.welcome_step(welcomes, &recipient, (list, step)).await {
+                        sent = sent.saturating_add(1);
+                    }
+                }
+            }
+        }
+        Ok(sent)
     }
 
     /// Confirms the subscriber whose link holds `token`, as typed in the
@@ -219,7 +289,7 @@ impl Newsletter {
         };
         let confirmed = self.store.confirm(&token.hash(), self.clock.now()).await?;
         if let Confirmed::Now(subscriber) = confirmed {
-            self.welcome(subscriber).await;
+            self.welcome_confirmed(subscriber).await;
         }
         Ok(confirmed)
     }
@@ -267,6 +337,7 @@ impl Newsletter {
             return Ok(Sent::Before);
         };
         let (site, words) = &*self.site;
+        let body = self.counted(send, issue.text()).await?;
         let mut totals = SendTotals::default();
         for recipient in self.store.audience(segment).await? {
             let remove = SubscriberToken::generate()?;
@@ -275,7 +346,7 @@ impl Newsletter {
                 .await?;
             let link = site.links.unsubscribe(&remove);
             let footer = words.footer(&site.locale, &site.name, &link, postal);
-            let text = format!("{}{footer}", issue.text());
+            let text = format!("{body}{footer}");
             let mail = Mail::new(recipient.email, issue.subject().to_owned(), text);
             match self.mailer.send(&mail).await {
                 Ok(()) => totals.sent = totals.sent.saturating_add(1),
@@ -289,6 +360,50 @@ impl Newsletter {
             .finish_send(send, totals, self.clock.now())
             .await?;
         Ok(Sent::Now(totals))
+    }
+
+    /// The same newsletter, counting clicks on the links in each email it
+    /// sends, as `[mail] count_clicks = true` asks (G39).
+    #[must_use]
+    pub fn with_click_counting(self) -> Self {
+        Self {
+            count_clicks: true,
+            ..self
+        }
+    }
+
+    /// `text` of `send` as every copy carries it: when clicks are counted,
+    /// each web link is stored and leads through the blog first.
+    async fn counted(&self, send: SendId, text: &str) -> Result<String, NewsletterError> {
+        if !self.count_clicks {
+            return Ok(text.to_owned());
+        }
+        let (pieces, links) = clicks::pieces(text);
+        for (position, url) in (1_u32..).zip(&links) {
+            self.store.add_link(send, position, url).await?;
+        }
+        let links = &self.site.0.links;
+        Ok(pieces
+            .iter()
+            .map(|piece| match piece {
+                Piece::Text(text) => (*text).to_owned(),
+                Piece::Link(position) => links.click(send, *position),
+            })
+            .collect())
+    }
+
+    /// Counts a click on link number `position` of `send`, and gives where
+    /// it leads, or `None` when no email had that link.
+    ///
+    /// # Errors
+    ///
+    /// [`NewsletterError::Store`] when the store fails.
+    pub async fn click(
+        &self,
+        send: SendId,
+        position: u32,
+    ) -> Result<Option<AbsoluteUrl>, NewsletterError> {
+        Ok(self.store.click(send, position).await?)
     }
 }
 

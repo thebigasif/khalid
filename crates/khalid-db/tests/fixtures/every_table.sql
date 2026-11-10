@@ -93,6 +93,11 @@ INSERT INTO subscriber_tokens (site_id, subscriber_id, purpose, token_hash, crea
 INSERT INTO newsletter_sends (site_id, send_key, list, started_at, sent) VALUES
     (1, 'post:en/old-post', 'main', '2026-10-26T09:00:00Z', 1),
     (2, 'post:en/old-post', 'main', '2026-10-26T09:00:00Z', 1);
+INSERT INTO newsletter_links (site_id, send_id, position, url, clicks) VALUES
+    (1, 1, 1, 'https://www.example.com/blog/old-post/', 3),
+    (2, 2, 1, 'https://www.example.com/blog/old-post/', 3);
+INSERT INTO welcome_steps (site_id, subscriber_id, list, day, sent_at) VALUES
+    (1, 1, 'main', 0, '2026-10-26T09:00:00Z'), (2, 2, 'main', 0, '2026-10-26T09:00:00Z');
 INSERT INTO comments (site_id, post_path, author_kind, author_name, author_email, body, status, created_at) VALUES
     (1, 'content/en/posts/old-post.md', 'reader', 'Ben Reader', 'ben@example.com', 'Useful, thank you.', 'approved', '2026-10-26T09:00:00Z'),
     (2, 'content/en/posts/old-post.md', 'reader', 'Ben Reader', 'ben@example.com', 'Useful, thank you.', 'approved', '2026-10-26T09:00:00Z');

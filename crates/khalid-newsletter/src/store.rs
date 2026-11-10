@@ -7,7 +7,7 @@ use std::future::Future;
 use std::pin::Pin;
 
 use chrono::{DateTime, TimeDelta, Utc};
-use khalid_core::Slug;
+use khalid_core::{AbsoluteUrl, Slug};
 
 use crate::{
     EmailAddress, Labelled, Member, Recipient, Segment, SendId, SendNumbers, SendTotals, TokenHash,
@@ -85,9 +85,12 @@ pub enum SignedUp {
     /// A confirmation email went out a moment ago. Nothing was stored, and
     /// nothing is sent.
     RecentlyAsked,
-    /// The address was confirmed before. It now gets this newsletter too,
-    /// and nothing is sent.
+    /// The address was confirmed before and gets this newsletter already,
+    /// so nothing changed and nothing is sent.
     AlreadyConfirmed,
+    /// The address was confirmed before and joined this newsletter now, so
+    /// its welcome is due.
+    JoinedNow(SubscriberId),
 }
 
 /// What a confirmation link did.
@@ -255,6 +258,61 @@ pub trait SubscriberStore: fmt::Debug + Send + Sync {
         &'a self,
         segment: &'a Segment,
     ) -> BoxFuture<'a, Result<Vec<Recipient>, StoreError>>;
+
+    /// Records that `subscriber` is sent the welcome step of `list` due
+    /// `day` days after they joined, `at` that time. `false` when it was
+    /// sent before, so no step goes out twice.
+    ///
+    /// # Errors
+    ///
+    /// [`StoreError`] when the store cannot be written.
+    fn claim_welcome<'a>(
+        &'a self,
+        subscriber: SubscriberId,
+        list: &'a Slug,
+        day: u16,
+        at: DateTime<Utc>,
+    ) -> BoxFuture<'a, Result<bool, StoreError>>;
+
+    /// Every confirmed subscriber of `list` not yet sent its welcome step
+    /// for `day`, whose step falls due after the first time of `due` and
+    /// no later than the second, oldest first. A step is due `day` days
+    /// after the subscriber both confirmed and joined `list`.
+    ///
+    /// # Errors
+    ///
+    /// [`StoreError`] when the store cannot be read.
+    fn welcomes_due<'a>(
+        &'a self,
+        list: &'a Slug,
+        day: u16,
+        due: (DateTime<Utc>, DateTime<Utc>),
+    ) -> BoxFuture<'a, Result<Vec<Recipient>, StoreError>>;
+
+    /// Stores `url` as link number `position` of `send`, so a click on it
+    /// is counted against that email.
+    ///
+    /// # Errors
+    ///
+    /// [`StoreError`] when the store cannot be written.
+    fn add_link<'a>(
+        &'a self,
+        send: SendId,
+        position: u32,
+        url: &'a AbsoluteUrl,
+    ) -> BoxFuture<'a, Result<(), StoreError>>;
+
+    /// Counts one click on link number `position` of `send`, and gives
+    /// where it leads, or `None` when no email had that link.
+    ///
+    /// # Errors
+    ///
+    /// [`StoreError`] when the store cannot be read or written.
+    fn click(
+        &self,
+        send: SendId,
+        position: u32,
+    ) -> BoxFuture<'_, Result<Option<AbsoluteUrl>, StoreError>>;
 }
 
 /// The store could not be read or written. It keeps the store's own error

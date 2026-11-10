@@ -252,6 +252,8 @@ Khalid connects on port 587 and turns encryption on before it sends anything. Ad
 
 Form answers are emailed to the `from` address unless you add `forms_to = "hello@example.com"` under `[mail]`.
 
+To count clicks on the links in newsletter emails, add `count_clicks = true` under `[mail]`. It is off unless you set it. See "Numbers" in `docs/newsletters.md`.
+
 Through Resend or Postmark, two services that send mail for websites, write an empty `[mail.resend]` or `[mail.postmark]` instead of `[mail.smtp]`. Postmark sends on its `outbound` stream unless you add `message_stream = "<name>"`.
 
 The password, API key or token never goes in `site.toml`. Set it in the server's environment, where only Khalid reads it:

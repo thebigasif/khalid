@@ -107,6 +107,8 @@ pub struct SendNumbers {
     pub totals: SendTotals,
     /// The readers who unsubscribed with a link from it.
     pub unsubscribed: u32,
+    /// The clicks on its links, when the site counts them. Zero otherwise.
+    pub clicks: u32,
 }
 
 impl SendNumbers {
@@ -118,7 +120,14 @@ impl SendNumbers {
             started_at,
             totals,
             unsubscribed: 0,
+            clicks: 0,
         }
+    }
+
+    /// The same numbers, with `clicks` on its links.
+    #[must_use]
+    pub fn with_clicks(self, clicks: u32) -> Self {
+        Self { clicks, ..self }
     }
 
     /// The same numbers, with `unsubscribed` readers who left through it.

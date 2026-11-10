@@ -305,7 +305,7 @@ fn mail_and_alerts(
     let (database, id) = (&site.db, site.site);
     let internal = |message| (message, Exit::Internal);
     let mailer = newsletter::mailer(config, secret, outbound).map_err(internal)?;
-    let newsletters = newsletter::router(
+    let (newsletters, welcomes) = newsletter::router(
         (folder, config),
         (database, id),
         (runtime, telling),
@@ -330,6 +330,7 @@ fn mail_and_alerts(
             let watch = SiteWatch::new(config, outbound, (database, id))?;
             Some((watch, looks))
         }),
+        welcomes,
     };
     let ready = alert_watch::Ready {
         mailer,

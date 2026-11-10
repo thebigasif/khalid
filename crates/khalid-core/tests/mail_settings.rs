@@ -176,6 +176,18 @@ fn refuses_a_name_on_two_lines() {
 }
 
 #[test]
+fn click_counting_is_off_unless_set() {
+    let env = with(Environment::SMTP_PASSWORD);
+    let config = load(&format!("{SITE}{SMTP}"), &env).unwrap();
+    assert!(!config.mail().unwrap().count_clicks);
+    let text = format!("{SITE}{SMTP}").replace(
+        "name = \"Field Notes\"",
+        "name = \"Field Notes\"\ncount_clicks = true",
+    );
+    assert!(load(&text, &env).unwrap().mail().unwrap().count_clicks);
+}
+
+#[test]
 fn reads_the_postal_address_newsletters_need() {
     let config = load(&format!("{SITE}{SMTP}"), &with(Environment::SMTP_PASSWORD)).unwrap();
     assert_eq!(config.mail().unwrap().postal_address, None);

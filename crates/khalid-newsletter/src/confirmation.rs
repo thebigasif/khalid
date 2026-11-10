@@ -8,7 +8,7 @@ use percent_encoding::{NON_ALPHANUMERIC, utf8_percent_encode};
 use serde::Deserialize;
 
 use crate::pages::PageWords;
-use crate::{BackPath, EmailAddress, Mail, PostalAddress, SubscriberToken};
+use crate::{BackPath, EmailAddress, Mail, PostalAddress, SendId, SubscriberToken};
 
 /// The language whose words fill in for a language with no file.
 const FALLBACK_LANGUAGE: &str = "en";
@@ -180,6 +180,13 @@ impl SiteLinks {
     pub fn pass(&self, code: &str, back: &str) -> String {
         let back = encoded(back);
         format!("{}subscribe/pass?code={code}&back={back}", self.base)
+    }
+
+    /// The link that counts a click on link number `position` of `send`
+    /// and leads on to it.
+    pub fn click(&self, send: SendId, position: u32) -> String {
+        let send = send.as_row();
+        format!("{}subscribe/click?send={send}&link={position}", self.base)
     }
 
     /// Whether the site answers over HTTPS, so cookies get `Secure`.

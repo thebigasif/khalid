@@ -63,7 +63,8 @@ pub(crate) enum NewsletterCommand {
         language: Option<Locale>,
     },
     /// Show each email that went out, newest first, with its totals: copies
-    /// sent, copies refused and readers who unsubscribed with its link
+    /// sent, copies refused, readers who unsubscribed with its link, and
+    /// clicks on its links when `count_clicks` is on
     Numbers,
     /// Print a sign-up form to paste into another website, such as your
     /// main site. It works with scripts off
@@ -231,6 +232,7 @@ async fn numbers(store: &SubscriberTable, output: Output) -> Done {
         sent: u32,
         failed: u32,
         unsubscribed: u32,
+        clicks: u32,
     }
     #[derive(Serialize)]
     struct NumbersBody<'a> {
@@ -247,6 +249,7 @@ async fn numbers(store: &SubscriberTable, output: Output) -> Done {
                 sent: send.totals.sent,
                 failed: send.totals.failed,
                 unsubscribed: send.unsubscribed,
+                clicks: send.clicks,
             });
             let sends = sends.collect();
             report::json(&NumbersBody { sends }, Exit::Success)
@@ -260,13 +263,14 @@ async fn numbers(store: &SubscriberTable, output: Output) -> Done {
                 .iter()
                 .map(|send| {
                     format!(
-                        "{}  {}  to {}: {} sent, {} refused, {} unsubscribed\n",
+                        "{}  {}  to {}: {} sent, {} refused, {} unsubscribed, {} clicks\n",
                         stamp(send),
                         send.key,
                         send.list,
                         send.totals.sent,
                         send.totals.failed,
-                        send.unsubscribed
+                        send.unsubscribed,
+                        send.clicks
                     )
                 })
                 .collect();

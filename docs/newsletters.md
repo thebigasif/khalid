@@ -60,7 +60,24 @@ A newsletter can greet each reader the moment they confirm. Write the email in `
 Every Friday you get five links worth your time, with a line on why each one matters.
 ```
 
-Like every newsletter email, a welcome ends with the reader's one-click unsubscribe link and the postal address, so it goes out only once `postal_address` is set under `[mail]`. `khalid serve` reads the files when it starts.
+A reader who already confirmed and signs up for one more newsletter gets that newsletter's welcome the moment they join it, with no second confirmation.
+
+Like every newsletter email, a welcome ends with the reader's one-click unsubscribe link and the postal address, so it goes out only once `postal_address` is set under `[mail]`. `khalid serve` reads the files each time a reader is due one, so an edit reaches the next reader without a restart.
+
+### A welcome sequence
+
+To send more emails in the days after someone joins, add one file per email beside `welcome.md`, named by the day it goes out: `welcome-day-3.md` goes out three days after the reader joined, `welcome-day-10.md` ten days after. Each is written like `welcome.md`. Days run from 1 to 365.
+
+```text
+content/
+  newsletters/
+    weekly/
+      welcome.md
+      welcome-day-3.md
+      welcome-day-10.md
+```
+
+`khalid serve` looks once an hour, so each email arrives within the hour of its day. Each reader gets each email once. If the server was stopped on an email's day, it goes out when the server is back, up to a week late; after that it is skipped, so a reader who joined long before you wrote a new step does not get it out of the blue.
 
 ## The newsletter page
 
@@ -97,7 +114,9 @@ It is plain HTML that posts to the blog's full address, so it needs no script, n
 khalid --site <folder> newsletter numbers
 ```
 
-lists each email that went out, newest first, with three totals: copies sent, copies the mail server refused, and readers who unsubscribed with a link from that email. Numbers are totals per email, never per person. Khalid does not count opens: that needs a hidden image in every email, which tells you who read what, so it is off.
+lists each email that went out, newest first, with its totals: copies sent, copies the mail server refused, readers who unsubscribed with a link from that email, and clicks on its links. Numbers are totals per email, never per person. Khalid does not count opens: that needs a hidden image in every email, which tells you who read what, so it is off.
+
+Clicks are counted only when you ask, with `count_clicks = true` under `[mail]` in `site.toml`. Each link in an email you send after that leads through your blog first, such as `https://www.example.com/blog/subscribe/click?send=4&link=2`, which counts the click and sends the reader on. Every reader's copy has the same links, so a click tells you which link was popular, never who clicked. Some mail programs open links to check them for safety, so a few clicks may come from them. Welcome emails are not counted.
 
 ## RSS to email
 
