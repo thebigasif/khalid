@@ -15409,7 +15409,7 @@
             "items": {
               "$ref": "#/components/schemas/Author"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -15569,7 +15569,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -15595,7 +15595,7 @@
             "items": {
               "$ref": "#/components/schemas/Term"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -15668,7 +15668,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -15721,7 +15721,7 @@
             "items": {
               "$ref": "#/components/schemas/ContentCollection"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -16541,7 +16541,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -17330,7 +17330,7 @@
             "items": {
               "$ref": "#/components/schemas/Menu"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           }
         }
       },
@@ -18132,7 +18132,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           }
         }
       },
@@ -19364,7 +19364,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           }
         }
       },
@@ -21016,7 +21016,7 @@
             "items": {
               "$ref": "#/components/schemas/Term"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           }
         }
       },
