@@ -41,6 +41,7 @@ import { SeoSettings } from "./SeoSettings";
 import { Serpdad } from "./Serpdad";
 import { SignIn } from "./SignIn";
 import { Site } from "./Site";
+import { SitePage } from "./SitePage";
 import { Sites } from "./Sites";
 import { Team } from "./Team";
 import { Trash } from "./Trash";
@@ -179,6 +180,12 @@ const authorPage = createRoute({
 // The site's pages, such as About: files beside the posts, live once saved.
 const pages = createRoute({ getParentRoute: () => signedIn, path: "/pages", component: Pages });
 
+const sitePage = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/pages/$id",
+  component: SitePage,
+});
+
 const keys = createRoute({ getParentRoute: () => signedIn, path: "/keys", component: Keys });
 
 const webhooks = createRoute({
@@ -257,6 +264,7 @@ const routeTree = root.addChildren([
     authors,
     authorPage,
     pages,
+    sitePage,
     trash,
     audit,
     redirects,
