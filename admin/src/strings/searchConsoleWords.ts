@@ -18,8 +18,53 @@ export const searchConsoleWords = {
       `A long search has ${words} words or more. People ask AI assistants in whole questions like these, and each one is a question a reader brings to your post.`,
     fix: "To answer one, add a heading to the post that asks the question, with a 40 to 60 word answer under it. Google and AI assistants can then quote that passage.",
   },
+  week: {
+    title: "This week in Google search",
+    clicks: (clicks: string) => `${clicks} clicks`,
+    sentence: (last: string, before: string) =>
+      `from Google in the 7 days up to ${last}, against ${before} in the 7 days before.`,
+    gained: "Gained the most clicks",
+    lost: "Lost the most clicks",
+    change: (now: string, before: string) => `: ${now} clicks, from ${before}.`,
+  },
+  goDeeper: "Why? Go deeper in SerpDad",
+  falling: {
+    title: "Posts to refresh",
+    why: "Their clicks fell three months in a row. Newer facts and a clearer answer often win them back.",
+    months: (clicks: string[]) =>
+      `: ${clicks.slice(0, -1).join(", ")}, then ${clicks.at(-1) ?? "0"} clicks a month.`,
+  },
+  lost: {
+    title: "Pages that lose their readers",
+    why: "Google still sends people to these, but they cannot read them.",
+    clicks: (clicks: string) => `: ${clicks} clicks.`,
+    missing: (hits: string) => `It answers 404, not found, to ${hits} requests so far.`,
+    redirect: "Add a redirect",
+    replaced: "to the page that replaced it.",
+    noindex:
+      "It is marked noindex, so Google will drop it. Remove noindex in the editor if it should stay in search.",
+  },
+  month: {
+    title: "Each post's month",
+    terms: [
+      { term: "Shown", meaning: "How many times Google showed your post in its results." },
+      { term: "Clicked", meaning: "The share of those times someone clicked through to it." },
+      {
+        term: "Average position",
+        meaning: "Where your post stood in Google's results, 1 being the top.",
+      },
+    ],
+    caption: "Every published post, the one with the most clicks first. Open a post to edit it.",
+    post: "Post",
+    clicks: "Clicks",
+    shown: "Shown",
+    clicked: "Clicked",
+    position: "Average position",
+    notShown: "Not shown yet",
+  },
+  edit: (title: string) => `Open "${title}" in the editor`,
   posts: {
-    title: "Each post",
+    title: "Each post's long searches",
     terms: [
       { term: "Shown", meaning: "How many times Google showed your post for the search." },
       {

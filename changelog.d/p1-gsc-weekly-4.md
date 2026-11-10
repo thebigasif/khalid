@@ -1,0 +1,2 @@
+Added
+- The admin's Search Console screen now shows the rest of the report under the questions your posts do not answer yet: this week's clicks against last week's with the pages that gained and lost the most, posts to refresh because their clicks fell three months in a row, pages that answer 404 or noindex but still get search traffic, and a table of each post's clicks, times shown, share clicked and position. Every post links to its editor.
