@@ -39,7 +39,8 @@ its settings as it starts. No key or password is ever sent back.
 | `[[seo.locations]]` | the site's shops or offices, for local search | none | Not on the screen yet |
 | `[seo.breadcrumbs]` | see [Breadcrumbs](#breadcrumbs) | see below | Breadcrumbs |
 | `[seo.search_filter]` | see [Search filters](#search-filters) | every filter on | Site search |
-| `[seo.llms_txt]`, `[seo.local]`, `[seo.schema_map]` | see their sections below | see below | Not on the screen yet |
+| `[seo.llms_txt]`, `[seo.schema_map]` | see [llms.txt](#llmstxt) and [Whole-site schema](#whole-site-schema) | both files written | Files for AI tools |
+| `[seo.local]` | see [Local business](#local-business) | both on | Local business |
 | `[[seo.schema]]` | schema nodes per category or collection | none | Schema templates screen |
 
 The training switch on the Crawlers screen writes `[seo.crawlers]

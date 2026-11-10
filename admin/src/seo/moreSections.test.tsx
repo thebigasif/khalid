@@ -70,3 +70,56 @@ describe("the breadcrumbs and site search parts", () => {
     expect(changes[0]?.seo).toEqual({ search_filter: { max_length: 0, symbols: false } });
   });
 });
+
+describe("the files for AI tools and local business parts", () => {
+  it("saves llms.txt's key pages one per line and the robots.txt line", async () => {
+    signedIn();
+    const changes = seoBlog();
+    await openTab(seoWords.tabs.machines);
+    const words = seoWords.machines;
+    expect(screen.getByLabelText(words.llms)).toBeChecked();
+    expect(screen.getByLabelText(words.robots)).not.toBeChecked();
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.type(screen.getByLabelText(words.pages), "/about/\n\n/guides/");
+    await userEvent.click(screen.getByLabelText(words.robots));
+    await save();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
+    expect(changes[0]?.seo).toEqual({
+      llms_txt: { pages: ["/about/", "/guides/"] },
+      schema_map: { robots_txt: true },
+    });
+  });
+
+  it("turns llms.txt off and keeps its other settings", async () => {
+    signedIn();
+    const llms_txt = { intro: "Written by the SEO team.", exclude: ["/tag/"] };
+    const changes = seoBlog({ ...SEO_DEMO, seo: { llms_txt } });
+    await openTab(seoWords.tabs.machines);
+    expect(screen.getByLabelText(seoWords.machines.exclude)).toHaveValue("/tag/");
+    await userEvent.click(screen.getByLabelText(seoWords.machines.llms));
+    await save();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
+    expect(changes[0]?.seo).toEqual({ llms_txt: { ...llms_txt, off: true } });
+  });
+
+  it("names the locations and turns the KML file off", async () => {
+    signedIn();
+    const locations = [{ name: "Mill Lane Dental" }, { name: "Kirkgate Dental" }];
+    const changes = seoBlog({ ...SEO_DEMO, seo: { locations } });
+    await openTab(seoWords.tabs.local);
+    const words = seoWords.local;
+    expect(screen.getByText(words.listed(["Mill Lane Dental", "Kirkgate Dental"]))).toBeVisible();
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.click(screen.getByLabelText(words.kml));
+    await save();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
+    expect(changes[0]?.seo).toEqual({ local: { kml: false } });
+  });
+
+  it("says when site.toml lists no locations", async () => {
+    signedIn();
+    seoBlog();
+    await openTab(seoWords.tabs.local);
+    expect(screen.getByText(seoWords.local.none)).toBeVisible();
+  });
+});

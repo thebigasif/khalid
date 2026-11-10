@@ -1,8 +1,10 @@
 import type { SiteSettings } from "../api/site";
 import { type PartProps, type Section, SettingsTabs } from "../components/SettingsTabs";
+import { AiFiles } from "../seo/AiFiles";
 import { Breadcrumbs } from "../seo/Breadcrumbs";
 import { Crawlers } from "../seo/Crawlers";
 import { Feeds } from "../seo/Feeds";
+import { LocalBusiness } from "../seo/LocalBusiness";
 import { type Part, partOf, same } from "../seo/parts";
 import { Representation } from "../seo/Representation";
 import { SearchAppearance } from "../seo/SearchAppearance";
@@ -31,8 +33,8 @@ const SECTIONS: Section<keyof typeof seoWords.tabs, Parts>[] = [
   { tab: "feeds", show: (props) => <Feeds {...props} /> },
   { tab: "breadcrumbs", show: (props) => <Breadcrumbs {...props} /> },
   { tab: "search", show: (props) => <SiteSearch {...props} /> },
-  // TODO(Yoast WP2): llms.txt, the schema files and local business get a
-  // tab here; docs/seo-settings.md lists them.
+  { tab: "machines", show: (props) => <AiFiles {...props} /> },
+  { tab: "local", show: (props) => <LocalBusiness {...props} /> },
 ];
 
 /** Only the parts that differ from `site`, or `null` when none does. */

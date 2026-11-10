@@ -22,6 +22,8 @@ export const seoWords = {
     feeds: "Feeds and IndexNow",
     breadcrumbs: "Breadcrumbs",
     search: "Site search",
+    machines: "Files for AI tools",
+    local: "Local business",
   },
   appearance: {
     lede: "The title and the line under it that search results show for each kind of page. A template is text with variables, such as {title}, that Khalid fills in for each page.",
@@ -243,5 +245,35 @@ export const seoWords = {
     spam: "Refuse searches that look like spam",
     spamHint:
       "A search with a link, markup, a spam domain such as .xyz, or one character six times in a row.",
+  },
+  machines: {
+    lede: "Two files help AI tools and search engines read the whole blog at once, instead of page by page.",
+    llmsTxt: "llms.txt",
+    llms: "Publish llms.txt",
+    llmsHint: "A short guide to the blog for AI tools: what it covers and its main pages.",
+    intro: "Introduction",
+    introHint:
+      "Shown after the tagline, such as who writes the blog and how to cite it. Leave it empty for none.",
+    pages: "Key pages",
+    pagesHint: "One path per line, listed first, such as /about/.",
+    exclude: "Pages left out",
+    excludeHint: "One path per line. Every page below a path is left out too, such as /tag/.",
+    schema: "Whole-blog schema",
+    files: "Publish schema.json for each language",
+    filesHint:
+      "All the blog's structured data in one file. Structured data is the description of a page that search engines read, such as its author and date.",
+    robots: "Name the files in robots.txt too, as Yoast does",
+    robotsHint:
+      "Lighthouse then marks robots.txt as invalid, which lowers the SEO score of every page.",
+  },
+  local: {
+    lede: "For a shop, office or clinic. The locations themselves are listed in site.toml.",
+    listed: (names: string[]) => `The locations in site.toml: ${names.join(", ")}.`,
+    none: "site.toml lists no locations yet, so these switches change nothing until you add one. docs/seo-settings.md shows how.",
+    page: "Publish a locations page at /locations/",
+    pageHint: "Every location's address and opening hours on one page.",
+    kml: "Publish locations.kml",
+    kmlHint:
+      "A map file with a pin for each location that has a point on the map. Search engines find it in the sitemap.",
   },
 } as const;
