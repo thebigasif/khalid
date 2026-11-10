@@ -165,7 +165,7 @@ fn build(
     let mut languages = language_pages(site, (config, routes), content, styled, today)?;
     let renderer = theme.as_ref().map(|(renderer, ..)| renderer);
     static_mode::comments(config, &mut languages);
-    form_pages::media_under(config, &mut languages);
+    form_pages::under_mount(config, &mut languages);
     post_lock::lock(config, content, renderer, &mut languages);
     let categories = categories::of(site)?;
     let asking = Asking::of(config, &languages);
