@@ -68,6 +68,7 @@ mod media_picture;
 mod media_search;
 pub mod not_found_log;
 pub mod pagination;
+pub mod plan_posts;
 pub mod post_check;
 pub mod post_password;
 pub mod post_store;

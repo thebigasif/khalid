@@ -6,14 +6,12 @@
 use std::fmt::Write as _;
 use std::path::Path;
 
-use khalid_api::resources::{Gate, PostStatus};
+use khalid_api::plan_posts::PlanPosts;
+use khalid_api::resources::PostStatus;
 use khalid_api::schedule_store::ScheduleStore;
-use khalid_content::{PostFront, TopicRole};
 use khalid_core::{Clock, Config, SystemClock, UserMessage};
 use khalid_db::ScheduleTable;
-use khalid_seo::{
-    ClusterRole, Pace, PaceFrom, Plan, PlanPost, PlanState, PlanWarning, SlotKind, WaitReason,
-};
+use khalid_seo::{Pace, PaceFrom, Plan, PlanWarning, SlotKind, WaitReason};
 use serde::Serialize;
 
 use crate::cli::{Cli, Output};
@@ -72,45 +70,21 @@ fn plan_site(folder: &Path, config: &Config, pace: Option<Pace>) -> Result<Plan,
         let schedules = ScheduleTable::new(database.clone(), site);
         let mut posts = Vec::new();
         for one in planned {
-            let state = if one.post.status() == PostStatus::Published {
-                // A live post with no date is the linter's to report.
-                let Some(day) = one.front.date else {
-                    continue;
-                };
-                PlanState::Live(day)
+            let at = if one.post().status() == PostStatus::Published {
+                None
             } else {
-                let schedule = schedules.get(one.post.id()).await;
-                let schedule = schedule.map_err(|_| plan_message::unreadable())?;
-                match (schedule.publish_at(), one.gate) {
-                    (Some(at), _) => PlanState::Scheduled(at.date_naive()),
-                    (None, Gate::Passes) => PlanState::Ready,
-                    (None, _) => PlanState::Blocked,
-                }
+                let schedule = schedules.get(one.post().id()).await;
+                schedule
+                    .map_err(|_| plan_message::unreadable())?
+                    .publish_at()
             };
-            posts.push(in_cluster(
-                PlanPost::new(one.post.id(), one.post.title(), state),
-                &one.front,
-            ));
+            posts.extend(one.plan_post(at));
         }
         Ok::<_, UserMessage>(posts)
     });
     runtime.block_on(database.close());
     let today = SystemClock.now().date_naive();
     Ok(khalid_seo::plan(&posts?, today, pace))
-}
-
-/// `post` in the topic cluster its front matter names, if any.
-fn in_cluster(post: PlanPost, front: &PostFront) -> PlanPost {
-    match &front.cluster {
-        Some(cluster) => {
-            let role = match cluster.role {
-                TopicRole::Pillar => ClusterRole::Pillar,
-                _ => ClusterRole::Member,
-            };
-            post.in_cluster(cluster.name.clone(), role)
-        }
-        None => post,
-    }
 }
 
 fn body(plan: &Plan) -> PlanBody {

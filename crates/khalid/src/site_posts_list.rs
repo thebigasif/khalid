@@ -4,37 +4,38 @@
 use std::collections::BTreeMap;
 use std::fs;
 
-use khalid_api::content_store::{Listed, select};
+use khalid_api::content_store::{BoxFuture, Listed, select};
 use khalid_api::link_map::LinkMap;
+use khalid_api::plan_posts::{PlanPosts, PlannedPost};
 use khalid_api::post_store::PostStoreError;
 use khalid_api::query::ListQuery;
-use khalid_api::resources::{AdminPost, Gate, PostLinks, PostRow, PostStatus};
-use khalid_content::{PostFront, SiteContent, parse_post};
+use khalid_api::resources::{Gate, PostLinks, PostRow, PostStatus};
+use khalid_content::{PostFront, SiteContent, TopicRole, parse_post};
 use khalid_core::Slug;
+use khalid_seo::ClusterRole;
 
 use super::{DRAFTS, Found, Site, SitePosts, blocking, failure};
 
-/// One post as the publishing planner reads it.
-#[derive(Debug)]
-pub(crate) struct Planned {
-    /// The post in Admin API shape: its identity, title and status.
-    pub(crate) post: AdminPost,
-    /// Its front matter, for its date and topic cluster.
-    pub(crate) front: PostFront,
-    /// Whether the lint publish gate lets it go live now.
-    pub(crate) gate: Gate,
+/// Every post as the publishing planner reads it, for `khalid plan` and
+/// the admin calendar's suggested days, on a blocking thread, writing
+/// nothing.
+impl PlanPosts for SitePosts {
+    fn planned(&self) -> BoxFuture<'_, Result<Vec<PlannedPost>, PostStoreError>> {
+        Box::pin(blocking(&self.0, Site::planned_now))
+    }
 }
 
-impl SitePosts {
-    /// Every post as the publishing planner reads it, on a blocking
-    /// thread, writing nothing.
-    ///
-    /// # Errors
-    ///
-    /// Returns [`PostStoreError`] when the posts or the lint settings
-    /// cannot be read.
-    pub(crate) async fn planned(&self) -> Result<Vec<Planned>, PostStoreError> {
-        blocking(&self.0, Site::planned_now).await
+/// `post` in the topic cluster `front` names, if any.
+fn in_cluster(post: PlannedPost, front: &PostFront) -> PlannedPost {
+    match &front.cluster {
+        Some(cluster) => {
+            let role = match cluster.role {
+                TopicRole::Pillar => ClusterRole::Pillar,
+                _ => ClusterRole::Member,
+            };
+            post.in_cluster(cluster.name.clone(), role)
+        }
+        None => post,
     }
 }
 
@@ -85,7 +86,7 @@ impl Site {
     /// Every post as the publishing planner reads it: its Admin API shape,
     /// its front matter, and the gate's quick answer, the same one a list
     /// gives each row.
-    pub(super) fn planned_now(&self) -> Result<Vec<Planned>, PostStoreError> {
+    pub(super) fn planned_now(&self) -> Result<Vec<PlannedPost>, PostStoreError> {
         let content = self.content()?;
         let judge = self.judge(&content)?;
         let mut planned = Vec::new();
@@ -100,7 +101,7 @@ impl Site {
             } else {
                 Gate::Passes
             };
-            planned.push(Planned { post, front, gate });
+            planned.push(in_cluster(PlannedPost::new(post, gate), &front));
         }
         Ok(planned)
     }
