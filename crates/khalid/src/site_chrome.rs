@@ -49,7 +49,7 @@ fn subscribe(config: &Config) -> Option<String> {
 
 /// The links of `links` that pages in `locale` show, in the order written:
 /// those for every language and those for `locale`.
-fn menu(links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
+pub(crate) fn menu(links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
     let shown = |link: &&MenuLink| link.language.as_ref().is_none_or(|only| only == locale);
     let link = |link: &MenuLink| NavLink {
         label: link.label.to_string(),
@@ -62,7 +62,7 @@ fn menu(links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
 /// is on (P3), so a reader or a model finds it from anywhere; the header
 /// stays as the site's author set it. The page is built in the main
 /// language alone, so every language links to that copy.
-fn footer(config: &Config, links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
+pub(crate) fn footer(config: &Config, links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
     let mut footer = menu(links, locale);
     if !config.ai_page().off {
         footer.push(NavLink {

@@ -274,6 +274,10 @@ href = "/blog/de/impressum/"
 
 A group needs at least one link. A link may also name a `language`, like any menu link.
 
+### Menus in the Content API
+
+A headless front end reads the same menus from the Content API at `/api/content/v1/navigation/` (under the blog's mount when it has one). Each language has a `primary` menu, the `[[nav.primary]]` links, and a `footer` menu, the `[[nav.footer]]` links. Each holds the links that language's pages show, in the order written, so `de.footer` skips a link marked `language = "en"`. The footer ends with the AI info page while that page is on, as on the pages. Footer groups are not in the API yet.
+
 ## Reader features
 
 A template may switch some `[reader]` features on or off by default, such as the reading time. A key you write in `[reader]` always wins over the template.
