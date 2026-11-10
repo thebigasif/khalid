@@ -151,3 +151,53 @@ async fn a_new_updated_date_in_a_live_post_file_is_sent_to_indexnow() {
     let body: Value = serde_json::from_slice(&requests[0].body).unwrap();
     assert_eq!(body["urlList"], json!([ADDRESS]), "{body}");
 }
+
+/// Gives `IndexNow` time to hear of anything a start would send.
+#[cfg(test)]
+async fn settle() {
+    tokio::time::sleep(Duration::from_secs(2)).await;
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_post_updated_while_serve_was_stopped_is_sent_once_at_the_next_start() {
+    let receiver = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/indexnow"))
+        .respond_with(ResponseTemplate::new(200))
+        .mount(&receiver)
+        .await;
+    let site = demo_site(&receiver);
+    let first = start(site.path());
+    wait_until_read(&first, site.path());
+    drop(first);
+    let kept = fs::read_to_string(at(site.path(), "data/indexnow-sent.txt")).unwrap();
+    assert!(kept.contains("/blog/what-a-sitemap-does/\t"), "{kept}");
+    settle().await;
+    let all = receiver.received_requests().await.unwrap();
+    assert!(all.is_empty(), "a first start sends nothing");
+
+    let file = at(site.path(), POST);
+    let text = fs::read_to_string(&file).unwrap();
+    let updated = text.replacen(
+        "date: 2026-09-28\n",
+        "date: 2026-09-28\nupdated: 2026-10-30\n",
+        1,
+    );
+    fs::write(&file, updated).unwrap();
+
+    let second = start(site.path());
+    wait_until_read(&second, site.path());
+    told(&receiver).await;
+    settle().await;
+    let requests = receiver.received_requests().await.unwrap();
+    assert_eq!(requests.len(), 1, "IndexNow is told once");
+    let body: Value = serde_json::from_slice(&requests[0].body).unwrap();
+    assert_eq!(body["urlList"], json!([ADDRESS]), "{body}");
+    drop(second);
+
+    let third = start(site.path());
+    wait_until_read(&third, site.path());
+    settle().await;
+    let all = receiver.received_requests().await.unwrap();
+    assert_eq!(all.len(), 1, "a restart with no change sends nothing");
+}
