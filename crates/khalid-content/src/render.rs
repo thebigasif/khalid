@@ -25,6 +25,7 @@ use heading_ids::HeadingIds;
 pub use forms::Gated;
 mod media;
 mod recipe;
+mod schema_cards;
 mod snippet;
 mod steps;
 
@@ -289,6 +290,7 @@ impl Renderer<'_> {
             BlockKind::Recipe(recipe) => self.recipe(recipe),
             BlockKind::Product(product) => self.product(product),
             BlockKind::Business(card) => self.business(card),
+            BlockKind::Card(card) => self.card(card),
             BlockKind::SafeHtml { show } => self.safe_html(block, *show),
             BlockKind::Form { id, button, fields } => self.form(id, button, fields),
             BlockKind::Newsletter {

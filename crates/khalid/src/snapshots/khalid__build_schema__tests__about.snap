@@ -1,0 +1,24 @@
+---
+source: crates/khalid/src/build_schema_tests.rs
+expression: "SchemaGraph::new(cards).to_json()"
+---
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://www.example.com/blog/about/#business-1",
+      "name": "Larkspur Studio",
+      "url": "https://www.example.com/",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "4 Tannery Yard",
+        "addressLocality": "Bristol",
+        "postalCode": "BS1 6QA",
+        "addressCountry": "GB"
+      },
+      "telephone": "+44 117 496 0000",
+      "email": "hello@example.com"
+    }
+  ]
+}

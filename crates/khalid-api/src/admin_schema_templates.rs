@@ -34,8 +34,8 @@ pub(crate) fn routes(templates: Templates, door: AdminDoor) -> OpenApiRouter {
 }
 
 /// Lists the site's schema templates, the collections a template may name,
-/// and whether the running server needs a restart to use the templates.
-/// Needs `settings:write`.
+/// and whether a setting the running server reads only at start waits for
+/// a restart. Needs `settings:write`.
 #[utoipa::path(
     get, path = "/schema-templates/", tag = "admin settings",
     security(("admin_key" = [])),
@@ -58,7 +58,7 @@ async fn read_templates(
 /// Puts a new list in place of every schema template, made on the copy
 /// `updated_at` names. Each template is checked as `khalid serve` checks
 /// `site.toml` at start, and nothing is saved when one is refused. The
-/// running server uses the new templates after a restart. Needs
+/// running server uses the new templates within a few seconds. Needs
 /// `settings:write`.
 #[utoipa::path(
     put, path = "/schema-templates/", tag = "admin settings",

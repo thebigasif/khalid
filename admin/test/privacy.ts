@@ -20,7 +20,10 @@ export const PRIVACY_DEMO: SiteSettings = {
   restart_needed: false,
 };
 
-/** A blog with `site`'s settings that records each change, then needs a restart; `more` answers the rest. */
+/**
+ * A blog with `site`'s settings that records each change; `more` answers the
+ * rest. As on `khalid serve`, only changed scripts wait for a restart.
+ */
 export function privacyBlog(site: SiteSettings = PRIVACY_DEMO, more: Answers = {}): SiteChange[] {
   const changes: SiteChange[] = [];
   let now = site;
@@ -39,7 +42,8 @@ export function privacyBlog(site: SiteSettings = PRIVACY_DEMO, more: Answers = {
         }
       }
       const code = body.settings.code ?? now.code;
-      now = { ...now, privacy, code, updated_at: "2026-11-08T09:05:00Z", restart_needed: true };
+      const restart_needed = now.restart_needed || body.settings.code !== undefined;
+      now = { ...now, privacy, code, updated_at: "2026-11-08T09:05:00Z", restart_needed };
       return json(200, { settings: now });
     },
   });

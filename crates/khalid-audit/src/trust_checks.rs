@@ -1,0 +1,89 @@
+//! The check on whether the blog says who stands behind it (GEO P5): an
+//! About or contact page a reader can reach, in the blog or on the main
+//! site it links to.
+
+use khalid_core::AbsoluteUrl;
+use serde_json::Value;
+
+use crate::{Check, Crawl, Issue, Page};
+
+/// The last part of an About or contact page's address. The linter's
+/// `no-about-page` rule knows the same four.
+const ABOUT_SLUGS: &[&str] = &["about", "contact", "about-us", "contact-us"];
+
+/// The schema types `page_type:` gives an About or contact page.
+const ABOUT_TYPES: &[&str] = &["AboutPage", "ContactPage"];
+
+/// Warns once, on the home page, when no page of the blog that answered
+/// is an About or contact page by its address or its schema, and no link
+/// leads to one on the blog's own host. A crawl that read no page at all
+/// has bigger problems, so it gets no warning.
+pub(crate) fn trust_issues(crawl: &Crawl, issues: &mut Vec<Issue>) {
+    let pages: Vec<(&AbsoluteUrl, &Page)> = crawl
+        .visits()
+        .iter()
+        .filter(|visit| visit.outcome().is_ok())
+        .filter_map(|visit| visit.page().map(|page| (visit.url(), page)))
+        .collect();
+    if pages.is_empty() {
+        return;
+    }
+    let home = crawl.home();
+    let inside = pages
+        .iter()
+        .any(|(url, page)| is_about(url) || declares_about(page));
+    let on_main_site = crawl
+        .outside()
+        .iter()
+        .any(|url| same_site(home.host(), url.host()) && is_about(url));
+    if !inside && !on_main_site {
+        issues.push(Issue::new(Check::AboutMissing, home, ""));
+    }
+}
+
+/// Whether `other` is the blog's own site: the blog's host, or with any
+/// `www.` left off, the main domain of a blog on a subdomain, such as
+/// `example.com` for `blog.example.com`.
+fn same_site(blog: &str, other: &str) -> bool {
+    let blog = blog.strip_prefix("www.").unwrap_or(blog);
+    let other = other.strip_prefix("www.").unwrap_or(other);
+    blog == other
+        || blog
+            .strip_suffix(other)
+            .is_some_and(|sub| sub.ends_with('.'))
+}
+
+/// Whether the last part of `url`'s path is an About or contact slug.
+fn is_about(url: &AbsoluteUrl) -> bool {
+    url.segments()
+        .last()
+        .is_some_and(|last| ABOUT_SLUGS.contains(last))
+}
+
+/// Whether one of `page`'s JSON-LD blocks names it an About or contact
+/// page, at the top or inside `@graph`.
+fn declares_about(page: &Page) -> bool {
+    page.structured_data()
+        .iter()
+        .filter_map(|block| serde_json::from_str::<Value>(block).ok())
+        .any(|value| has_about_type(&value))
+}
+
+/// Whether `value`, searched depth first, holds an About or contact type.
+fn has_about_type(value: &Value) -> bool {
+    match value {
+        Value::Array(items) => items.iter().any(has_about_type),
+        Value::Object(node) => {
+            let typed = match node.get("@type") {
+                Some(Value::String(kind)) => ABOUT_TYPES.contains(&kind.as_str()),
+                Some(Value::Array(kinds)) => kinds.iter().any(|kind| {
+                    kind.as_str()
+                        .is_some_and(|kind| ABOUT_TYPES.contains(&kind))
+                }),
+                _ => false,
+            };
+            typed || node.get("@graph").is_some_and(has_about_type)
+        }
+        _ => false,
+    }
+}

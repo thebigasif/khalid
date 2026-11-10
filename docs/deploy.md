@@ -52,8 +52,15 @@ The unit runs Khalid as its own `khalid` user, never as root. The site folder is
 
    ```sh
    sudo cp packaging/systemd/khalid.service /etc/systemd/system/
+   sudo mkdir -p /etc/sysusers.d
    sudo cp packaging/systemd/khalid.sysusers /etc/sysusers.d/khalid.conf
    sudo systemd-sysusers
+   ```
+
+   Some systems, such as Ubuntu, have no `/etc/sysusers.d` folder until something is put there, so the second line makes it. If your system says `systemd-sysusers: command not found`, make the user with `useradd` instead:
+
+   ```sh
+   sudo useradd --system --user-group --home-dir /var/lib/khalid --no-create-home --shell /usr/sbin/nologin khalid
    ```
 
 3. Make the site, as the `khalid` user:
@@ -96,10 +103,10 @@ If a saved `site.toml` or theme file has a mistake, the blog keeps serving the l
 A few settings only take effect when the server starts:
 
 - `mount` and `mode` shape the server's own addresses, so it keeps the values it started with.
-- `address`, `languages`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
+- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
 - The `--listen` and `--domain` options, the environment variables, and the `data/` folder with its database are read once at start.
 
-When you change one of these, the log says a restart is needed. Restart with `systemctl restart khalid`, or stop and start the server.
+When you change one of these, the log says a restart is needed, and so does the admin: its settings screens show a note, and the Admin API's settings answer `restart_needed: true`. A change to anything else, such as the blog's name, its look, its SEO or its privacy settings, answers `false`, since the blog already uses it. Restart with `systemctl restart khalid`, or stop and start the server.
 
 ## Docker
 
@@ -112,9 +119,12 @@ docker build -t khalid .
 mkdir site
 docker run --rm -u "$(id -u):$(id -g)" -v "$PWD/site:/site" khalid init /site --address https://blog.example.com --yes
 docker run -d -u "$(id -u):$(id -g)" -p 8080:8080 -v "$PWD/site:/site" khalid
+docker run --rm -u "$(id -u):$(id -g)" -v "$PWD/site:/site" khalid staff owner --email you@example.com --name "Your Name"
 ```
 
-`-u` runs Khalid as you, so the files it writes in `site/` stay yours. The blog is then at `http://localhost:8080/`.
+The build compiles Khalid and the admin: about 20 minutes on a machine with 4 cores, longer on a smaller one. To skip it, use the published image below. `-u` runs Khalid as you, so the files it writes in `site/` stay yours. The blog is then at `http://localhost:8080/`, and the last line prints the admin's sign-in link, as "Signing in to the admin the first time" above says.
+
+The image already adds `--site /site` to every command, so write the command without it: `khalid staff owner`, not `khalid --site /site staff owner`. Khalid refuses `--site` given twice. With Compose, the same command is `docker compose run --rm khalid staff owner --email you@example.com --name "Your Name"`.
 
 Each release also publishes the image, for x86_64 and ARM, so you can skip the build. Use `ghcr.io/thebigasif/khalid:latest` in place of `khalid` in the commands above, or a version such as `ghcr.io/thebigasif/khalid:1.3.2` to stay on one release.
 

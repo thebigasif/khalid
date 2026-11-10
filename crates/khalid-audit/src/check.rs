@@ -410,6 +410,10 @@ checks! {
     StalePage => "stale-page", AiSearch, Notice, "Article not updated for a year or more",
         "Readers and AI tools prefer current answers, and an old date tells them the page may be out of date.",
         "Review the post, and when you really change it, set updated in its front matter. Change the date only for a real update.";
+    /// No page a reader can reach tells who stands behind the blog.
+    AboutMissing => "about-missing", AiSearch, Warning, "No About or contact page",
+        "Readers trust a blog less when they cannot find who runs it, and AI tools have no one to credit when they cite it.",
+        "Write a page with the slug about or contact, or set page_type: AboutPage on the page that says who you are, and link to it from the blog.";
     /// An HTTPS page comes without a `Strict-Transport-Security` header.
     HstsMissing => "hsts-missing", Https, Notice, "No HSTS support",
         "Without it, a browser may still open the first visit over plain HTTP.",

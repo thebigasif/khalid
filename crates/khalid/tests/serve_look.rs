@@ -16,7 +16,7 @@ const OWNER: [&str; 4] = ["--name", "Owner", "--scope", "settings:write"];
 const SETTINGS: &str = "/blog/api/admin/v1/settings/";
 
 #[test]
-fn a_template_saved_through_the_settings_is_in_site_toml_and_used_after_a_restart() {
+fn a_template_saved_through_the_settings_is_in_site_toml_and_needs_no_restart() {
     let site = demo_copy();
     let key = new_key(site.path(), &OWNER);
     let server = start(site.path(), &key);
@@ -43,7 +43,7 @@ fn a_template_saved_through_the_settings_is_in_site_toml_and_used_after_a_restar
     );
     let (status, saved) = server.admin("PUT", SETTINGS, Some(&trial));
     assert_eq!(status, 200, "{saved}");
-    assert_eq!(saved["settings"]["restart_needed"], true, "{saved}");
+    assert_eq!(saved["settings"]["restart_needed"], false, "{saved}");
     assert_eq!(
         saved["settings"]["template"]["options"]["greeting"],
         "welcome"

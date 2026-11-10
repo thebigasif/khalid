@@ -27,19 +27,23 @@ const REFUSED = {
   fix: "Correct the template the message names, then save again.",
 };
 
-/** A blog holding `HELD`, which records each change and answers it with `status`. */
-function blog(status = 200) {
+/** A blog holding `held`, which records each change and answers it with `status`, in use with no restart as on `khalid serve`. */
+function blog(status = 200, held = HELD) {
   const changes: unknown[] = [];
   serve(async (request) => {
     if (request.method !== "PUT") {
-      return json(200, HELD);
+      return json(200, held);
     }
     const body: { templates: unknown[] } = await request.json();
     changes.push(body);
     if (status !== 200) {
       return json(status, REFUSED);
     }
-    return json(200, { ...body, collections: HELD.collections, restart_needed: true });
+    return json(200, {
+      ...body,
+      collections: held.collections,
+      restart_needed: held.restart_needed,
+    });
   });
   return changes;
 }
@@ -64,7 +68,8 @@ describe("the schema templates screen", () => {
     expect(await screen.findByRole("heading", { name: heading })).toBeVisible();
     expect(await axeViolations()).toEqual([]);
     await addRecipe();
-    expect(await screen.findByText(en.templates.restart)).toBeVisible();
+    expect(await screen.findByText(en.templates.live)).toBeVisible();
+    expect(screen.queryByText(en.templates.restart)).toBeNull();
     const recipe = { applies_to: "collection", name: "posts", type: "Recipe" };
     expect(changes).toEqual([
       {
@@ -84,6 +89,16 @@ describe("the schema templates screen", () => {
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("template 2"));
     const heading = en.templates.every("collection", "guides", "Course");
     expect(screen.getByRole("heading", { name: heading })).toBeVisible();
+  });
+
+  it("says a saved setting waits for a restart only when the blog says so", async () => {
+    signedIn();
+    blog(200, { ...HELD, restart_needed: true });
+    renderAt("/schema-templates");
+    expect(await screen.findByText(en.templates.restart)).toBeVisible();
+    await addRecipe();
+    expect(await screen.findByText(en.templates.restart)).toBeVisible();
+    expect(screen.queryByText(en.templates.live)).toBeNull();
   });
 
   it("removes a template by saving the list without it", async () => {

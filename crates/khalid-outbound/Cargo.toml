@@ -16,7 +16,10 @@ test-util = []
 [dependencies]
 khalid-core.workspace = true
 http = "1"
-reqwest = { version = "0.13", default-features = false, features = ["rustls-no-provider", "http2"] }
+# HTTP/1.1 only: every service Khalid calls speaks it, and HTTP/2 added about
+# 330 KB to the binary (docs/standards/performance.md, "Room for scheduled
+# webhook events").
+reqwest ={ version = "0.13", default-features = false, features = ["rustls-no-provider"] }
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
 thiserror.workspace = true
 tokio = { workspace = true, features = ["net"] }
