@@ -90,6 +90,8 @@ mod lint_text;
 mod listed_post;
 mod live_redirects;
 mod look;
+#[cfg(feature = "man")]
+mod man;
 mod mcp;
 mod mcp_content;
 mod mcp_message;
@@ -442,6 +444,8 @@ fn run_unchecked(cli: &Cli) -> Option<Exit> {
         }
         Some(Command::Agents) => Some(agents::run(cli.output)),
         Some(Command::Completions(args)) => Some(completions::run(args, cli.output)),
+        #[cfg(feature = "man")]
+        Some(Command::Man(args)) => Some(man::run(args, cli.output)),
         Some(Command::Restore { archive, folder }) => {
             Some(restore::run(archive, folder, cli.output))
         }

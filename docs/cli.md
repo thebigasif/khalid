@@ -66,3 +66,17 @@ Add-Content $PROFILE 'khalid completions powershell | Out-String | Invoke-Expres
 ```text
 echo 'eval (khalid completions elvish | slurp)' >> ~/.config/elvish/rc.elv
 ```
+
+## Read the manual pages
+
+A manual page is the help for one command in the form the `man` command shows, on Linux and on a Mac. Khalid has one for itself and one for each command, such as `khalid-init.1` for `khalid init`.
+
+Each release has them in `khalid-<version>-man.tar.gz`, beside the binaries. Unpack it into a folder `man` reads, then open a page:
+
+```text
+mkdir -p ~/.local/share/man/man1
+tar -xzf khalid-<version>-man.tar.gz -C ~/.local/share/man/man1
+man khalid-init
+```
+
+The Docker image holds them in `/usr/share/man/man1`. To make them from the source code, run `just man`, which writes them to `target/man`.

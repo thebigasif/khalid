@@ -42,19 +42,24 @@ COPY --from=admin /src/admin/dist admin/dist
 RUN cargo build --release --locked -p khalid \
     && mkdir -p /out/site /out/tmp \
     && cp target/release/khalid /out/khalid
+# The manual pages come from a second build with the man feature, after the
+# shipped binary is copied out, so that binary carries no page writer.
+RUN cargo run --release --locked -p khalid --features man -- man /out/man
 
-# The release's own binary, for the processor being built. Docker skips
-# this stage unless BINARY names it.
+# The release's own binary, for the processor being built, and the manual
+# pages it made in dist/man. Docker skips this stage unless BINARY names it.
 FROM --platform=$BUILDPLATFORM alpine:3.22 AS prebuilt
 ARG TARGETARCH
 RUN apk add --no-cache ca-certificates && mkdir -p /out/site /out/tmp
 COPY --chmod=755 dist/${TARGETARCH}/khalid /out/khalid
+COPY dist/man /out/man
 
 FROM ${BINARY} AS binary
 
 FROM scratch
 COPY --from=binary /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=binary /out/khalid /khalid
+COPY --from=binary /out/man /usr/share/man/man1
 COPY --from=binary --chmod=1777 /out/tmp /tmp
 COPY --from=binary --chown=65532:65532 /out/site /site
 # The image has no loader and no library, so this runs only when the
