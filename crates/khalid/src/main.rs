@@ -159,6 +159,7 @@ mod serve_check;
 mod serve_https;
 mod serve_message;
 mod serve_sites;
+mod server_log;
 mod settings_events;
 mod settings_text;
 mod share_images;
@@ -425,9 +426,8 @@ fn access(folder: &Path, config: &Config, command: &Command, output: Output) -> 
 
 /// Runs the commands that do not start from a checked site: `init`, which
 /// makes the site, `restore`, which makes one from a backup, `agents` and
-/// `update`, which need none, `doctor`, which
-/// checks the settings, routes and content itself so it can list every
-/// problem instead of stopping at the first, and the commands
+/// `update`, which need none, `doctor`, which checks the site itself to list
+/// every problem instead of stopping at the first, and the commands
 /// [`on_folder`] runs. Returns `None` for every other command.
 fn run_unchecked(cli: &Cli) -> Option<Exit> {
     match &cli.command {
