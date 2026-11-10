@@ -10,8 +10,8 @@ use utoipa::ToSchema;
 use super::TemplateSetting;
 
 /// The site's core settings from `site.toml`, in Admin API shape. The
-/// running server reads `site.toml` once at start, so a change applies
-/// after a restart.
+/// running server puts most of a saved change in use at once; the settings
+/// it reads only at start wait for a restart.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, ToSchema)]
 pub struct AdminSettings {
     /// The site's name.
@@ -49,8 +49,10 @@ pub struct AdminSettings {
     pub code: Vec<Map<String, Value>>,
     /// When `site.toml` last changed. A change sends it back.
     pub updated_at: DateTime<Utc>,
-    /// Whether `site.toml` says something the running server does not use
-    /// yet, so a restart is needed to apply it.
+    /// Whether `site.toml` changes a setting the running server reads only
+    /// at start, such as `mount`, `mode`, `address`, `languages` or
+    /// `[code]`, so a restart is needed to apply it. A change to `name`,
+    /// `[template]`, `[seo]` or `[privacy]` alone is in use once saved.
     pub restart_needed: bool,
 }
 

@@ -412,6 +412,15 @@ jobs:
         if: steps.admin.outputs.present == 'true'
         run: npm run build && node scripts/size-budget.mjs
         working-directory: admin
+      # The performance budgets job measures the admin's initial
+      # JavaScript from this build, so npm runs once.
+      - uses: actions/upload-artifact@v7
+        if: steps.admin.outputs.present == 'true'
+        with:
+          name: admin-dist
+          path: admin/dist/
+          retention-days: 1
+          if-no-files-found: error
       - name: No admin yet
         if: steps.admin.outputs.present == 'false'
         run: echo "Admin checks start with Phase 4."
@@ -434,7 +443,7 @@ jobs:
         id: inputs
         run: |
           changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
-          if printf '%s\n' "$changed" | grep -Eq '^(Dockerfile|\.dockerignore|Cargo\.lock|rust-toolchain\.toml|(.*/)?Cargo\.toml|admin/package(-lock)?\.json|\.github/workflows/ci\.yml)$'; then
+          if printf '%s\n' "$changed" | grep -Eq '^(Dockerfile|\.dockerignore|Cargo\.lock|rust-toolchain\.toml|(.*/)?Cargo\.toml|admin/package(-lock)?\.json|scripts/packages-check\.sh|\.github/workflows/ci\.yml)$'; then
             echo "build=true" >> "$GITHUB_OUTPUT"
           else
             echo "build=false" >> "$GITHUB_OUTPUT"
@@ -453,6 +462,46 @@ jobs:
       - name: The image answers
         if: steps.inputs.outputs.build == 'true'
         run: docker run --rm khalid:check --version
+      # Gap G34: the Docker section of docs/deploy.md, line by line, and
+      # the empty-volume first start the hosting platforms use.
+      - name: The image serves a site as docs/deploy.md says
+        if: steps.inputs.outputs.build == 'true'
+        run: scripts/packages-check.sh docker khalid:check
+
+  # Gap G34: scripts/install.sh --systemd and the systemd section of
+  # docs/deploy.md on a fresh runner, which has root and systemd, with the
+  # release binary handover-build made. The service must serve the home
+  # page and stop cleanly. On pull requests only, and not a required check.
+  systemd:
+    name: systemd service serves
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'pull_request'
+    needs: handover-build
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Did the service's inputs change?
+        id: inputs
+        run: |
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          if printf '%s\n' "$changed" | grep -Eq '^(packaging/systemd/|scripts/install\.sh$|scripts/packages-check\.sh$|crates/khalid-server/|crates/khalid/src/serve|Cargo\.lock$|\.github/workflows/ci\.yml$)'; then
+            echo "check=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "check=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing the service runs changed, so it is not checked again." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/download-artifact@v7
+        if: steps.inputs.outputs.check == 'true'
+        with:
+          name: release-binaries
+          path: target/handover
+      - name: Install and start the service as docs/deploy.md says
+        if: steps.inputs.outputs.check == 'true'
+        run: |
+          chmod +x target/handover/khalid
+          scripts/packages-check.sh systemd target/handover/khalid
 
 
   # The demo, end to end (task 1.22, gap audit 2 G8, GEO P2), as parallel
@@ -540,20 +589,32 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      # The browser install sometimes stalls on a download. Each try gets 6
-      # minutes; a stalled try is stopped and run once more. A normal
-      # install takes about 1.
+      # The browser and its Ubuntu packages, kept between runs, so a run
+      # seldom waits on a mirror (scripts/ci/browsers.sh says why).
+      - name: The browsers' cache key
+        id: browsers
+        run: ./scripts/ci/browsers.sh key chromium
+      - name: The browsers, kept between runs
+        id: browser-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/khalid/apt-archives
+          key: ${{ steps.browsers.outputs.key }}
       - name: Tools, at the versions scripts/demo-check/package.json pins
-        timeout-minutes: 14
+        timeout-minutes: 22
         run: |
           npm install --prefix scripts/demo-check --no-audit --no-fund
-          for try in 1 2; do
-            if timeout 360 npx --prefix scripts/demo-check playwright install --with-deps chromium; then
-              exit 0
-            fi
-            echo "The browser install stalled or failed (try $try of 2)."
-          done
-          exit 1
+          ./scripts/ci/browsers.sh install chromium
+      - name: Keep the browsers for the next run
+        if: steps.browser-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/khalid/apt-archives
+          key: ${{ steps.browsers.outputs.key }}
       # Lighthouse runs that fail to start a page (NO_NAVSTART) are tried
       # once more inside the script; a low score is never retried.
       - name: Demo check
@@ -594,28 +655,36 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+      # The browser and its Ubuntu packages, kept between runs, so a run
+      # seldom waits on a mirror (scripts/ci/browsers.sh says why).
+      - name: The browsers' cache key
+        id: browsers
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: ./scripts/ci/browsers.sh key "$BROWSER"
+      - name: The browsers, kept between runs
+        id: browser-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/khalid/apt-archives
+          key: ${{ steps.browsers.outputs.key }}
       - name: Tools, at the versions scripts/demo-check/package.json pins
-        timeout-minutes: 14
+        timeout-minutes: 22
         env:
           BROWSER: ${{ matrix.browser }}
         run: |
           npm install --prefix scripts/demo-check --no-audit --no-fund
-          # WebKit's system packages can take more than six minutes. A try
-          # that runs out of time leaves apt-get holding the dpkg lock, so
-          # the next try first stops it and waits for the lock to clear.
-          for try in 1 2; do
-            if timeout 900 npx --prefix scripts/demo-check playwright install --with-deps "$BROWSER"; then
-              exit 0
-            fi
-            echo "The browser install stalled or failed (try $try of 2)."
-            sudo pkill -x apt-get || true
-            for wait in $(seq 1 60); do
-              sudo fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock >/dev/null 2>&1 || break
-              sleep 5
-            done
-            sudo dpkg --configure -a || true
-          done
-          exit 1
+          ./scripts/ci/browsers.sh install "$BROWSER"
+      - name: Keep the browsers for the next run
+        if: steps.browser-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/khalid/apt-archives
+          key: ${{ steps.browsers.outputs.key }}
       - name: The demos' pictures, kept between runs
         uses: actions/cache/restore@v6
         with:
@@ -852,8 +921,9 @@ jobs:
 
   # Getting and renewing a certificate, against pebble, Let's Encrypt's own
   # test server (task 5.13, gap audit 2 G35). The tests in
-  # crates/khalid-https/tests/pebble.rs are ignored elsewhere because they
-  # need pebble running; this job starts it as their first lines say.
+  # crates/khalid-https/tests/pebble.rs and crates/khalid/tests/serve_pebble.rs
+  # are ignored elsewhere because they need pebble running; this job starts
+  # it as their first lines say.
   # On pull requests only, and not a required check.
   https:
     name: HTTPS against pebble
@@ -875,7 +945,9 @@ jobs:
           go-version: stable
           cache: false
       - name: Build the tests first, while pebble is not running
-        run: cargo test -p khalid-https --test pebble --no-run
+        run: |
+          cargo test -p khalid-https --test pebble --no-run
+          cargo test -p khalid --features test-util --test serve_pebble --no-run
       - name: Start pebble
         run: |
           go install "github.com/letsencrypt/pebble/v2/cmd/pebble@$PEBBLE_VERSION"
@@ -901,6 +973,11 @@ jobs:
           exit 1
       - name: The ignored HTTPS tests
         run: cargo test -p khalid-https --test pebble -- --ignored
+      # The real binary, `khalid serve --domain`: issue, serve and renew.
+      # One at a time, since each answers pebble's checks on ports 5001
+      # and 5002.
+      - name: The ignored khalid serve HTTPS tests
+        run: cargo test -p khalid --features test-util --test serve_pebble -- --ignored --test-threads 1
       - name: Pebble's output
         if: failure()
         run: cat target/pebble/pebble.log target/pebble/challtestsrv.log || true
@@ -910,14 +987,19 @@ jobs:
     name: Performance budgets
     runs-on: ubuntu-latest
     # The binaries come from the size budget's build; they are measured
-    # here, on GitHub's runner, as before.
-    needs: handover-build
+    # here, on GitHub's runner, as before. The admin comes from the Admin
+    # job's build, for the admin's initial JavaScript budget.
+    needs: [handover-build, admin]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/download-artifact@v7
         with:
           name: release-binaries
           path: target/handover
+      - uses: actions/download-artifact@v7
+        with:
+          name: admin-dist
+          path: admin/dist
       - name: The handed-over binaries
         run: |
           chmod +x target/handover/khalid target/handover/khalid-perf
@@ -930,6 +1012,7 @@ jobs:
       - name: Budgets (docs/standards/performance.md)
         env:
           PERF_SERVE_RUNS: ${{ github.event_name == 'pull_request' && '1' || '5' }}
+          PERF_REQUIRE_ADMIN: "1"
         run: |
           if ./scripts/perf.sh | tee target/perf-run.log; then exit 0; fi
           if [ "$GITHUB_EVENT_NAME" != pull_request ]; then exit 1; fi

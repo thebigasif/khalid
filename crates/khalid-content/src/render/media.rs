@@ -103,6 +103,10 @@ impl Renderer<'_> {
     /// it, or the link alone.
     pub(super) fn embed(&mut self, src: &AbsoluteUrl, title: &str, height: Option<u16>) {
         self.link_out(src, title);
+        if let Some(video) = embed::video(src, title) {
+            let block = StructuredBlock::EmbeddedVideo(video);
+            self.facts.structured.push(block);
+        }
         let link = [
             "<a href=\"",
             &attribute(src.as_str()),

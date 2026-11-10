@@ -24,7 +24,6 @@ use crate::entry_events::Entries;
 use crate::listed_post::ListedTag;
 use crate::post_heads::PostHeads;
 use crate::post_lock::Lock;
-use crate::settings_events::Settings;
 use crate::tag_events::Tags;
 use crate::{build_message, build_pages, index, site_lists};
 
@@ -55,8 +54,6 @@ pub(crate) struct Catalog {
     pub(crate) entries: Entries,
     /// The tags the posts name.
     pub(crate) tags: Tags,
-    /// The settings in `site.toml`.
-    pub(crate) settings: Settings,
     /// The head of each post page, by address, which the render that read
     /// this catalog made.
     pub(crate) heads: PostHeads,
@@ -108,7 +105,6 @@ impl Catalog {
             lists,
             entries: Entries::of(content).with_drafts(folder),
             tags: Tags::of(config, content),
-            settings: Settings::read(folder),
             heads: PostHeads::new(),
         })
     }

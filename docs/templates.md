@@ -103,7 +103,7 @@ An option you leave out takes the template's default.
 
 The admin's **Look** screen does the same without opening `site.toml`. It lists every template your Khalid has, each with one sentence on what it is for and what it turns on and off. Pick one, change the options you want different, and press **Save the look**.
 
-Khalid checks the choice as it checks `site.toml` at start, so a template or value it would refuse is never saved. It writes only the options that differ from the template's defaults, and keeps your comments and `[template.cta]`. Your blog shows the new look after Khalid restarts.
+Khalid checks the choice as it checks `site.toml` at start, so a template or value it would refuse is never saved. It writes only the options that differ from the template's defaults, and keeps your comments and `[template.cta]`. Your blog shows the new look within a few seconds, with no restart.
 
 The screen reads two Admin API routes, which need `settings:write`:
 

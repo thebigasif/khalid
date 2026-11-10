@@ -36,7 +36,6 @@ use crate::post_files::Assets;
 use crate::search_console_finder::SiteFollowUps;
 use crate::serve_check::BodyCheck;
 use crate::serve_https::{self, Listen};
-use crate::settings_events::Settings;
 use crate::site_content::LiveContent;
 use crate::site_hosts::{self, Among, Door};
 use crate::site_pages::SitePages;
@@ -80,7 +79,8 @@ pub(crate) struct Keys {
     pub(crate) pictures: PictureKeys,
     /// The writer of the editor's suggestions, asked with `KHALID_AI_KEY`.
     pub(crate) ai: khalid_api::ai::AiDesk,
-    /// The whole environment, which `site.toml` is read with again when it changes.
+    /// The whole environment, which `site.toml` is read with again when it
+    /// changes, and when the Admin API reads or saves its settings.
     pub(crate) settings: Environment,
 }
 
@@ -190,7 +190,8 @@ fn serve_with(
         (&redirects, &addresses),
     )?;
     let (feed, feeding) = content_feed::start(runtime.handle(), to);
-    let (source, first) = first_pages((site, config, routes), (feed, &keys.settings), &checked)
+    let reload = (feed, &keys.settings, &telling);
+    let (source, first) = first_pages((site, config, routes), reload, &checked)
         .and_then(|first| bodies.finish().map(|()| first))
         .map_err(|message| (message, Exit::Failure))?;
     let security = security_headers(config)?;
@@ -220,7 +221,8 @@ fn serve_with(
             media_library::open(site, config, (keys.bucket, keys.pictures), outbound),
             unlocking((site, config), (database, id), &source, shown_pages),
         )?;
-        let scheduling = scheduler::start(Arc::clone(&door), alerting);
+        posts.follow(source.live_config());
+        let scheduling = scheduler::start((Arc::clone(&door), site.to_path_buf()), alerting);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =
@@ -236,7 +238,7 @@ fn serve_with(
         let apis = (
             (content, door, posts),
             (moderation, media, desk, keys.follow_ups, keys.ai),
-            (database, id, (site, config)),
+            (database, id, (site, config, &keys.settings)),
             (panel, mailer),
         );
         let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook));
@@ -332,17 +334,18 @@ fn mail_and_alerts(
 }
 
 /// The site's pages, fed by `feed`, which read their settings again with
-/// `env` when they change, and the first of them to serve: only the home
-/// pages are rendered before the server listens, and the rest follows
-/// behind the first answer (ADR "khalid serve answers before the full render").
+/// `env` when they change and tell `telling` once they do, and the first of
+/// them to serve: only the home pages are rendered before the server
+/// listens, and the rest follows behind the first answer (ADR "khalid serve
+/// answers before the full render").
 fn first_pages(
     (site, config, routes): (&Path, &Config, &Routes),
-    (feed, env): (content_feed::ContentFeed, &Environment),
+    (feed, env, telling): (content_feed::ContentFeed, &Environment, &SiteAnnounce),
     checked: &SiteContent,
 ) -> Result<(SitePages, Pages), UserMessage> {
     let clock = Arc::new(SystemClock);
     let source = SitePages::new(site, config.clone(), routes.clone(), Some(feed), clock)?;
-    source.reload_with(env.clone());
+    source.reload_with(env.clone(), Some(telling.clone()));
     let first = source.render_first(checked)?;
     let first = Pages::first(first).map_err(|_| serve_message::internal())?;
     let first = with_hint(first, &source);
@@ -388,9 +391,8 @@ fn destination(
         redirects: redirects.clone(),
         announce: Some(telling.clone()),
         started: (
-            Entries::of(checked),
+            Entries::of(checked).with_drafts(site),
             Tags::of(config, checked),
-            Settings::read(site),
         ),
         pings: content_feed::UpdatePings::default(),
     };

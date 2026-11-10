@@ -4,6 +4,7 @@ import { failureMessage, isData } from "../api/call";
 import { changeSite, readSite, type SiteSettings } from "../api/site";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
+import { savedWords } from "../components/SettingsTabs";
 import { PictureSearches } from "../site/PictureSearches";
 import { SiteForm } from "../site/SiteForm";
 import { type SiteFields, siteChange } from "../site/siteChange";
@@ -26,7 +27,7 @@ export function Site() {
       return;
     }
     const reply = await changeSite(change);
-    setSaid(isData(reply) ? words.saved : null);
+    setSaid(isData(reply) ? savedWords(words, reply.data) : null);
     setFailed(isData(reply) ? null : failureMessage(reply));
     await queries.invalidateQueries({ queryKey: SITE });
   };

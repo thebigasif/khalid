@@ -1,13 +1,13 @@
 //! The schema a post's own content writes (plan section 5.9): its FAQ,
-//! how-to, review, recipe, product and video blocks as their schema.org
-//! types, its images and videos for the sitemap, and the entities it links
-//! to as `mentions`.
+//! how-to, review, recipe, product, video, business, location, event,
+//! course, book and dataset blocks as their schema.org types, its images
+//! and videos for the sitemap, and the entities it links to as `mentions`.
 
 use std::path::Path;
 
 use khalid_content::{
-    HowToBlock, Image, LeadImage, Link, ProductBlock, ReaderRatings, RecipeBlock, ReviewBlock,
-    StructuredBlock, VideoBlock,
+    EmbeddedVideo, HowToBlock, Image, LeadImage, Link, ProductBlock, ReaderRatings, RecipeBlock,
+    ReviewBlock, StructuredBlock, VideoBlock,
 };
 use khalid_core::{AbsoluteUrl, Config, UserMessage};
 use khalid_seo::{
@@ -16,6 +16,10 @@ use khalid_seo::{
 };
 
 use crate::build_message;
+
+mod cards;
+
+use cards::{business_of, card_of};
 
 /// Hosts whose pages name one entity each, so a link to one is a
 /// `mentions` with that page as its `sameAs`.
@@ -51,11 +55,23 @@ pub(crate) fn fill(
                 seo.videos.push(video.clone());
                 SchemaBlock::Video(video)
             }
+            // A host's video goes in the video sitemap only: its upload
+            // date, which `VideoObject` requires, is the host's to know.
+            StructuredBlock::EmbeddedVideo(embed) => {
+                let video = embedded_video(embed, seo);
+                seo.videos.extend(video);
+                continue;
+            }
             StructuredBlock::Product(product) => match product_of(product, author, full)? {
                 Some(product) => SchemaBlock::Product(product),
                 None => continue,
             },
-            // Businesses have their own schema in a later part.
+            StructuredBlock::Business(card) => SchemaBlock::Business(business_of(card, full)?),
+            StructuredBlock::Location(name) => SchemaBlock::Location(name.clone()),
+            StructuredBlock::Card(card) => match card_of(card, full)? {
+                Some(schema) => schema,
+                None => continue,
+            },
             _ => continue,
         };
         seo.blocks.push(schema);
@@ -217,6 +233,26 @@ fn video_of(
     let mut video = Video::new(&block.title, description, thumbnail, source);
     video.duration = block.duration;
     Ok(video)
+}
+
+/// A video host's embed in the page `seo` as a `Video` played by its
+/// player and described by the page's summary. Its still is the host's,
+/// else the page's first image (its lead when it has one), else its share
+/// image; with none, Google would refuse the entry, so there is no video.
+fn embedded_video(embed: &EmbeddedVideo, seo: &SeoPage) -> Option<Video> {
+    let thumbnail = (embed.thumbnail.as_ref())
+        .or(seo.images.first())
+        .or(seo.share_image.as_ref().map(|image| &image.url))?;
+    let description = Some(seo.excerpt.trim())
+        .filter(|excerpt| !excerpt.is_empty())
+        .unwrap_or(&embed.title);
+    let source = VideoSource::Player(embed.player.clone());
+    Some(Video::new(
+        &embed.title,
+        description,
+        thumbnail.clone(),
+        source,
+    ))
 }
 
 /// `link` as an entity the post mentions, when it points at a page that

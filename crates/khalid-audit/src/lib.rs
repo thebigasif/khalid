@@ -33,6 +33,7 @@ mod shown_checks;
 mod sitemap;
 mod sitemap_checks;
 mod thresholds;
+mod trust_checks;
 mod visit;
 mod weight_report;
 mod writing_checks;

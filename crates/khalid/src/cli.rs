@@ -463,16 +463,10 @@ pub(crate) struct ServeArgs {
     /// Another ACME directory than Let's Encrypt's, such as its staging one
     #[arg(long, value_name = "URL", requires = "domain", hide = true)]
     pub(crate) acme_directory: Option<String>,
-    /// Test builds only: run the alert checks this many seconds apart
-    /// instead of hourly.
+    /// Test builds only: the hidden timings.
     #[cfg(feature = "test-util")]
-    #[arg(long, hide = true, value_name = "SECONDS")]
-    pub(crate) alert_every: Option<u64>,
-    /// Test builds only: look at the public address this many seconds
-    /// apart, even when answering on loopback.
-    #[cfg(feature = "test-util")]
-    #[arg(long, hide = true, value_name = "SECONDS")]
-    pub(crate) watch_every: Option<u64>,
+    #[command(flatten)]
+    pub(crate) test: crate::serve_https::ServeTestArgs,
 }
 
 /// What `khalid init` takes. Each flag answers one of the four questions, and

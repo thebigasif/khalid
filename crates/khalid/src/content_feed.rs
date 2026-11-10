@@ -19,7 +19,6 @@ use crate::announce::SiteAnnounce;
 use crate::entry_events::Entries;
 use crate::live_redirects::LiveRedirects;
 use crate::memory::HandBack;
-use crate::settings_events::Settings;
 use crate::site_addresses::{self, LiveAddresses};
 use crate::site_content::{Catalog, LiveContent, Published};
 use crate::tag_events::Tags;
@@ -67,9 +66,9 @@ pub(crate) struct Destination {
     /// is new, changed or gone since the last catalog, when the site has
     /// webhooks to tell.
     pub(crate) announce: Option<SiteAnnounce>,
-    /// The entries, tags and settings the run started with, which the
-    /// first catalog is compared with.
-    pub(crate) started: (Entries, Tags, Settings),
+    /// The entries and tags the run started with, which the first catalog
+    /// is compared with.
+    pub(crate) started: (Entries, Tags),
     /// Where the addresses of live posts with news go, for `IndexNow`.
     pub(crate) pings: UpdatePings,
 }
@@ -176,20 +175,18 @@ async fn moved(to: &Destination, catalog: &Catalog, applied: &mut Applied) {
 /// served and written, so no catalog stays in memory.
 async fn take_catalogs(mut catalogs: mpsc::UnboundedReceiver<Catalog>, to: Arc<Destination>) {
     let mut applied = Applied::default();
-    let (mut entries, mut tags, mut settings) = to.started.clone();
+    let (mut entries, mut tags) = to.started.clone();
     while let Some(mut catalog) = catalogs.recv().await {
         while let Ok(later) = catalogs.try_recv() {
             catalog = later;
         }
         let now = std::mem::take(&mut catalog.entries);
         let tagged = std::mem::take(&mut catalog.tags);
-        let set = std::mem::take(&mut catalog.settings);
         if let Some(announce) = &to.announce {
             now.fire_since(&entries, announce);
             tagged.fire_since(&tags, announce);
-            set.fire_since(&settings, announce);
         }
-        (entries, tags, settings) = (now, tagged, settings.latest(set));
+        (entries, tags) = (now, tagged);
         apply(&to, Arc::new(catalog), &mut applied).await;
         to.hand_back.after_work();
     }
@@ -314,7 +311,7 @@ mod tests {
             addresses: LiveAddresses::default(),
             redirects: LiveRedirects::new(Arc::new(khalid_db::RedirectRows::new(db.clone(), site))),
             announce: None,
-            started: (Entries::default(), Tags::default(), Settings::default()),
+            started: (Entries::default(), Tags::default()),
             pings: UpdatePings::default(),
         };
         let (feed, task) = start(&Handle::current(), to);

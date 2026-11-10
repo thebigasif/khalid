@@ -1,6 +1,9 @@
 //! The audit: every check over one crawl.
 
-use crate::{Crawl, Issue, Thresholds, head_link_checks, link_checks, page_checks, sitemap_checks};
+use crate::{
+    Crawl, Issue, Thresholds, head_link_checks, link_checks, page_checks, sitemap_checks,
+    trust_checks,
+};
 
 /// Runs every check over `crawl`, measuring against `thresholds`, and
 /// returns the issues, sorted by check, then address.
@@ -10,6 +13,7 @@ pub fn audit(crawl: &Crawl, thresholds: Thresholds) -> Vec<Issue> {
     link_checks::link_issues(crawl, &mut issues);
     head_link_checks::head_link_issues(crawl, &mut issues);
     sitemap_checks::sitemap_issues(crawl, &mut issues);
+    trust_checks::trust_issues(crawl, &mut issues);
     issues.sort();
     issues
 }

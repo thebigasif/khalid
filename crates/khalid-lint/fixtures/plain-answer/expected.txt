@@ -1,1 +1,1 @@
-warn plain-answer: the answer under "How long should an answer be?" uses perhaps, which (suggest: say the claim outright and drop the hedge)
+warn plain-answer: the answer under "How long should an answer be?" uses perhaps (suggest: say the claim outright and drop the hedge)
