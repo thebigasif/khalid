@@ -1,5 +1,6 @@
-//! How often one key may call the API, and how many wrong keys one
-//! address may send, before the API answers 429 (RULES.md BL-SEC-5).
+//! How often one key may call the API, how many wrong keys one address
+//! may send, and how often one address may search the site, before the
+//! answer is 429 (RULES.md BL-SEC-5). The numbers come from `[limits]`.
 
 use std::collections::BTreeMap;
 use std::net::{IpAddr, SocketAddr};
@@ -10,10 +11,17 @@ use axum::extract::{ConnectInfo, Request};
 use axum::http::{HeaderMap, HeaderValue, header};
 use axum::response::{IntoResponse, Response};
 use chrono::{DateTime, TimeDelta, Utc};
-use khalid_core::{Clock, UserMessage};
+use khalid_core::{Clock, LimitSettings, UserMessage};
+use utoipa::openapi::header::HeaderBuilder;
+use utoipa::openapi::schema::{ObjectBuilder, Type};
+use utoipa::openapi::{ContentBuilder, OpenApi, Ref, RefOr, ResponseBuilder};
 
 use crate::keys::KeyId;
 use crate::problem::{Problem, ProblemType};
+
+/// The name of the 429 answer every operation behind a key shares in the
+/// `OpenAPI` document.
+const TOO_MANY: &str = "TooManyRequests";
 
 /// The time each limit is counted over.
 const SPAN: TimeDelta = TimeDelta::minutes(1);
@@ -30,6 +38,8 @@ enum Bucket {
     Refused([u8; 16]),
     /// Requests from one key, or from one staff member's session.
     Key(KeyId),
+    /// Searches from one network, counted like wrong keys.
+    Search([u8; 16]),
 }
 
 /// Whether a look at a bucket takes a request from it.
@@ -62,24 +72,18 @@ pub(crate) enum Api {
 #[derive(Debug)]
 pub struct ApiLimits {
     clock: Box<dyn Clock>,
+    /// How many requests each limit allows a minute.
+    per_minute: LimitSettings,
     /// When each bucket is full again. A time already past means full.
     full_at: Mutex<BTreeMap<Bucket, DateTime<Utc>>>,
 }
 
 impl ApiLimits {
-    /// How many Admin API requests one key or staff session may make a minute.
-    pub const ADMIN_PER_MINUTE: i32 = 600;
-
-    /// How many Content API requests one content key may make a minute.
-    pub const CONTENT_PER_MINUTE: i32 = 6000;
-
-    /// How many wrong keys one address may send a minute.
-    pub const REFUSED_PER_MINUTE: i32 = 10;
-
-    /// Limits that read the time from `clock`.
-    pub fn new(clock: impl Clock + 'static) -> Self {
+    /// Limits of `per_minute` that read the time from `clock`.
+    pub fn new(clock: impl Clock + 'static, per_minute: LimitSettings) -> Self {
         Self {
             clock: Box::new(clock),
+            per_minute,
             full_at: Mutex::new(BTreeMap::new()),
         }
     }
@@ -88,7 +92,7 @@ impl ApiLimits {
     /// `None` when it may now. Counts nothing.
     pub(crate) fn paused(&self, address: IpAddr) -> Option<Duration> {
         let bucket = Bucket::Refused(network(address));
-        self.take(bucket, Self::REFUSED_PER_MINUTE, Take::Look)
+        self.take(bucket, self.per_minute.wrong_keys_per_minute, Take::Look)
             .err()
     }
 
@@ -97,7 +101,19 @@ impl ApiLimits {
         let bucket = Bucket::Refused(network(address));
         // A refusal past the limit only happens when two arrive together;
         // the next one is paused either way.
-        let _ = self.take(bucket, Self::REFUSED_PER_MINUTE, Take::Count);
+        let _ = self.take(bucket, self.per_minute.wrong_keys_per_minute, Take::Count);
+    }
+
+    /// Counts a search from the reader at `address`, as [`client_of`]
+    /// finds it.
+    ///
+    /// # Errors
+    ///
+    /// How long the address must wait when it has no searches left; the
+    /// refused search is not counted.
+    pub fn search(&self, address: IpAddr) -> Result<(), Duration> {
+        let bucket = Bucket::Search(network(address));
+        self.take(bucket, self.per_minute.search_per_minute, Take::Count)
     }
 
     /// Counts a request from the accepted `key` through `api`.
@@ -108,15 +124,17 @@ impl ApiLimits {
     /// refused request is not counted.
     pub(crate) fn admit(&self, key: &KeyId, api: Api) -> Result<(), Duration> {
         let per_minute = match api {
-            Api::Content => Self::CONTENT_PER_MINUTE,
-            Api::Admin => Self::ADMIN_PER_MINUTE,
+            Api::Content => self.per_minute.content_per_minute,
+            Api::Admin => self.per_minute.admin_per_minute,
         };
         self.take(Bucket::Key(key.clone()), per_minute, Take::Count)
     }
 
     /// Whether `bucket`, which holds `per_minute`, has a request left, and
     /// with [`Take::Count`], takes it.
-    fn take(&self, bucket: Bucket, per_minute: i32, how: Take) -> Result<(), Duration> {
+    fn take(&self, bucket: Bucket, per_minute: u32, how: Take) -> Result<(), Duration> {
+        // The settings keep each limit from 1 to 100000.
+        let per_minute = i32::try_from(per_minute.max(1)).unwrap_or(i32::MAX);
         let now = self.clock.now();
         let mut full_at = self.full_at.lock().unwrap_or_else(PoisonError::into_inner);
         let from = full_at.get(&bucket).copied().filter(|&at| at > now);
@@ -157,11 +175,14 @@ fn network(address: IpAddr) -> [u8; 16] {
 /// tests that call the router directly.
 pub(crate) fn client(request: &Request) -> Option<IpAddr> {
     let ConnectInfo(peer) = request.extensions().get::<ConnectInfo<SocketAddr>>()?;
-    Some(behind_proxy(peer.ip(), request.headers()))
+    Some(client_of(peer.ip(), request.headers()))
 }
 
-/// The same rule as the comment form's limit in `khalid-comments`.
-fn behind_proxy(peer: IpAddr, headers: &HeaderMap) -> IpAddr {
+/// The address a request from `peer` with `headers` came from: `peer`, or,
+/// when it is a proxy on this machine or the local network, the last
+/// address its `X-Forwarded-For` names. The same rule as the comment
+/// form's limit in `khalid-comments`.
+pub fn client_of(peer: IpAddr, headers: &HeaderMap) -> IpAddr {
     let local = match peer.to_canonical() {
         IpAddr::V4(v4) => v4.is_loopback() || v4.is_private(),
         IpAddr::V6(v6) => v6.is_loopback() || v6.is_unique_local(),
@@ -211,9 +232,51 @@ fn too_many(message: &UserMessage, seconds: u64) -> Response {
 }
 
 /// `wait` rounded up to whole seconds, at least one, as `Retry-After` takes.
-fn whole_seconds(wait: Duration) -> u64 {
+pub fn whole_seconds(wait: Duration) -> u64 {
     let part = u64::from(wait.subsec_nanos() > 0);
     wait.as_secs().saturating_add(part).max(1)
+}
+
+/// Lists the 429 answer on every operation of `document` that needs a key,
+/// since each key and each address sending wrong keys has a limit. An
+/// operation that already lists its own 429 keeps it.
+pub(crate) fn document(document: &mut OpenApi) {
+    let retry_after = HeaderBuilder::new()
+        .schema(Some(ObjectBuilder::new().schema_type(Type::Integer)))
+        .description(Some("How many seconds to wait before trying again."))
+        .build();
+    let problem = ContentBuilder::new()
+        .schema(Some(Ref::from_schema_name("Problem")))
+        .build();
+    let answer = ResponseBuilder::new()
+        .description(
+            "Too many requests from this key, or too many wrong keys from this address, \
+             in the last minute; Retry-After says when to try again",
+        )
+        .header("Retry-After", retry_after)
+        .content("application/problem+json", problem)
+        .build();
+    let components = document.components.get_or_insert_with(Default::default);
+    components
+        .responses
+        .insert(TOO_MANY.to_owned(), answer.into());
+    for item in document.paths.paths.values_mut() {
+        let operations = [
+            &mut item.get,
+            &mut item.put,
+            &mut item.post,
+            &mut item.patch,
+            &mut item.delete,
+        ];
+        for operation in operations.into_iter().flatten() {
+            if operation.security.as_ref().is_none_or(Vec::is_empty) {
+                continue;
+            }
+            let shared = RefOr::Ref(Ref::from_response_name(TOO_MANY));
+            let answers = &mut operation.responses.responses;
+            answers.entry("429".to_owned()).or_insert(shared);
+        }
+    }
 }
 
 fn in_seconds(seconds: u64) -> String {
@@ -261,11 +324,48 @@ mod tests {
         text.parse().unwrap()
     }
 
+    fn usual() -> LimitSettings {
+        LimitSettings::default()
+    }
+
+    #[test]
+    fn a_site_sets_its_own_numbers() {
+        let mut own = usual();
+        own.admin_per_minute = 2;
+        own.wrong_keys_per_minute = 1;
+        let limits = ApiLimits::new(Hand::start(), own);
+        limits.admit(&key(), Api::Admin).unwrap();
+        limits.admit(&key(), Api::Admin).unwrap();
+        let wait = limits.admit(&key(), Api::Admin).unwrap_err();
+        assert_eq!(wait, Duration::from_secs(30));
+        limits.refused(ip("203.0.113.7"));
+        assert_eq!(
+            limits.paused(ip("203.0.113.7")),
+            Some(Duration::from_secs(60))
+        );
+    }
+
+    #[test]
+    fn each_network_has_its_own_searches_apart_from_its_wrong_keys() {
+        let clock = Hand::start();
+        let limits = ApiLimits::new(clock.clone(), usual());
+        let address = ip("2001:db8::1");
+        for _ in 0..usual().search_per_minute {
+            limits.search(address).unwrap();
+        }
+        let wait = limits.search(ip("2001:db8::2")).unwrap_err();
+        assert_eq!(wait, Duration::from_millis(500));
+        assert_eq!(limits.paused(address), None, "searches are not wrong keys");
+        limits.search(ip("203.0.113.7")).unwrap();
+        clock.wait(TimeDelta::milliseconds(500));
+        limits.search(address).unwrap();
+    }
+
     #[test]
     fn a_key_spends_its_minute_at_once_and_earns_one_back_each_tenth_of_a_second() {
         let clock = Hand::start();
-        let limits = ApiLimits::new(clock.clone());
-        for _ in 0..ApiLimits::ADMIN_PER_MINUTE {
+        let limits = ApiLimits::new(clock.clone(), usual());
+        for _ in 0..usual().admin_per_minute {
             limits.admit(&key(), Api::Admin).unwrap();
         }
         let wait = limits.admit(&key(), Api::Admin).unwrap_err();
@@ -282,8 +382,8 @@ mod tests {
 
     #[test]
     fn the_content_api_allows_ten_times_the_admin_api() {
-        let limits = ApiLimits::new(Hand::start());
-        for _ in 0..ApiLimits::CONTENT_PER_MINUTE {
+        let limits = ApiLimits::new(Hand::start(), usual());
+        for _ in 0..usual().content_per_minute {
             limits.admit(&key(), Api::Content).unwrap();
         }
         let wait = limits.admit(&key(), Api::Content).unwrap_err();
@@ -293,9 +393,9 @@ mod tests {
     #[test]
     fn an_address_is_paused_after_its_wrong_keys_and_looking_counts_nothing() {
         let clock = Hand::start();
-        let limits = ApiLimits::new(clock.clone());
+        let limits = ApiLimits::new(clock.clone(), usual());
         let address = ip("203.0.113.7");
-        for _ in 0..ApiLimits::REFUSED_PER_MINUTE {
+        for _ in 0..usual().wrong_keys_per_minute {
             assert_eq!(limits.paused(address), None);
             limits.refused(address);
         }
@@ -315,7 +415,7 @@ mod tests {
     #[test]
     fn a_full_memory_forgets_the_buckets_that_filled_up_again() {
         let clock = Hand::start();
-        let limits = ApiLimits::new(clock.clone());
+        let limits = ApiLimits::new(clock.clone(), usual());
         let full = (0..MAX_BUCKETS).map(|n| {
             let id = KeyId::try_new(&format!("{n:016x}")).unwrap();
             (Bucket::Key(id), clock.now() + TimeDelta::seconds(1))
@@ -334,8 +434,8 @@ mod tests {
         let mut headers = HeaderMap::new();
         let forwarded = HeaderValue::from_static("198.51.100.1, 203.0.113.7");
         headers.insert("x-forwarded-for", forwarded);
-        assert_eq!(behind_proxy(ip("127.0.0.1"), &headers), ip("203.0.113.7"));
-        assert_eq!(behind_proxy(ip("192.0.2.9"), &headers), ip("192.0.2.9"));
+        assert_eq!(client_of(ip("127.0.0.1"), &headers), ip("203.0.113.7"));
+        assert_eq!(client_of(ip("192.0.2.9"), &headers), ip("192.0.2.9"));
     }
 
     #[test]

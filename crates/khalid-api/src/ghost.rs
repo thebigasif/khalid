@@ -40,7 +40,7 @@ pub const BASE: &str = "/ghost/api/content";
 pub fn router(content: Arc<dyn ContentStore>, keys: Arc<dyn KeyStore>, site: GhostSite) -> Router {
     let door = GhostDoor {
         keys,
-        limits: Arc::new(ApiLimits::new(SystemClock)),
+        limits: Arc::new(ApiLimits::new(SystemClock, site.limits())),
     };
     let state = GhostState {
         content,

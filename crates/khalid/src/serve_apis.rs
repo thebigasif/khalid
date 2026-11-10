@@ -119,6 +119,7 @@ pub(crate) fn api_router(
             SystemClock,
         ))),
         ai,
+        limits: *config.limits(),
     };
     let keys: Arc<dyn KeyStore> = Arc::new(KeyTable::new(database.clone(), id, SystemClock));
     let content: Arc<dyn ContentStore> = Arc::new(content);
