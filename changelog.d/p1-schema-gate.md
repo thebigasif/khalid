@@ -1,0 +1,2 @@
+Fixed
+- The publish check now reads all of a post's structured data, as the page will carry it: the schema of its blocks, its schema template and the JSON-LD in its `schema` field. A post whose event, recipe or other node lacks a property Google needs, such as an event with no start date or a recipe with no photo, no longer goes live without a word: `khalid lint`, `khalid publish` and the admin's publish button name the type and the missing property.
