@@ -10,6 +10,13 @@
 #   --dir FOLDER       install into FOLDER [default: /usr/local/bin as root,
 #                      else ~/.local/bin]
 #   --systemd          also install the systemd unit and its user (root only)
+#   --no-man           leave out the manual pages
+#   --no-completions   leave out Tab completion for your shell
+#
+# It also installs the manual pages and Tab completion for bash, zsh or
+# fish: in your home folder, or for everyone under /usr/local/share as
+# root. Either one that cannot be done is skipped with a note, and the
+# binary stays installed.
 #
 # KHALID_RELEASES points at another copy of the releases, for mirrors and
 # tests. Its files are named as on GitHub: <tag>/khalid-<tag>-<platform>
@@ -32,6 +39,8 @@ fail() {
 version=""
 dir=""
 systemd="no"
+man="yes"
+completions="yes"
 while [ $# -gt 0 ]; do
   case "$1" in
     --version) [ $# -ge 2 ] || fail "--version needs a release name." "Write it like --version v0.1.0."
@@ -39,7 +48,9 @@ while [ $# -gt 0 ]; do
     --dir) [ $# -ge 2 ] || fail "--dir needs a folder." "Write it like --dir /usr/local/bin."
       dir="$2"; shift 2 ;;
     --systemd) systemd="yes"; shift ;;
-    *) fail "The option $1 is not one this script knows." "Use --version, --dir or --systemd." ;;
+    --no-man) man="no"; shift ;;
+    --no-completions) completions="no"; shift ;;
+    *) fail "The option $1 is not one this script knows." "Use --version, --dir, --systemd, --no-man or --no-completions." ;;
   esac
 done
 
@@ -102,6 +113,76 @@ chmod 0755 "$work/$file"
 cp "$work/$file" "$dir/.khalid.new"
 mv -f "$dir/.khalid.new" "$dir/khalid"
 printf 'Installed Khalid %s at %s/khalid.\n' "$version" "$dir"
+
+# The extras below never stop the install. Each one says what it did, or
+# why it was skipped and what to do instead.
+note() { printf '%s\n' "$@"; }
+if [ "$(id -u)" = "0" ]; then
+  share="/usr/local/share"
+else
+  share="${XDG_DATA_HOME:-$HOME/.local/share}"
+fi
+
+# man finds ~/.local/share/man and /usr/local/share/man on its own, as
+# they sit beside a bin folder on the PATH.
+install_man() {
+  pages="khalid-$version-man.tar.gz"
+  mandir="$share/man/man1"
+  if ! command -v tar >/dev/null 2>&1; then
+    note "The manual pages were not installed. This system has no tar to unpack them." "khalid <command> --help shows the same help."
+    return 0
+  fi
+  if ! curl -fsSL -o "$work/$pages" "$releases/$version/$pages" 2>/dev/null; then
+    note "The manual pages were not installed. Release $version has none to download." "khalid <command> --help shows the same help."
+    return 0
+  fi
+  expected=$(awk -v name="$pages" '$2 == name || $2 == "*" name { print $1 }' "$work/SHA256SUMS")
+  if [ -z "$expected" ] || [ "$(sum "$work/$pages")" != "$expected" ]; then
+    note "The manual pages were not installed. Their download does not match SHA256SUMS, so it may be damaged." "Run the script again to retry."
+    return 0
+  fi
+  # Unpacked aside first, so only the pages themselves reach the man folder.
+  mkdir -p "$work/man"
+  if ! tar -xzf "$work/$pages" -C "$work/man" 2>/dev/null ||
+    ! mkdir -p "$mandir" 2>/dev/null || ! cp "$work"/man/*.1 "$mandir/" 2>/dev/null; then
+    note "The manual pages were not installed. They could not be written to $mandir." "Check that you can write there, or run the script with sudo."
+    return 0
+  fi
+  note "Installed the manual pages in $mandir. Read one with: man khalid-init"
+}
+
+# Tab completion means the shell finishes a khalid command when you press
+# Tab. The installed binary writes the script for the shell you log in with.
+install_completions() {
+  shell="${SHELL:-}"
+  shell="${shell##*/}"
+  case "$shell:$(id -u)" in
+    bash:*) target="$share/bash-completion/completions/khalid" ;;
+    zsh:0) target="$share/zsh/site-functions/_khalid" ;;
+    zsh:*) target="$HOME/.zfunc/_khalid" ;;
+    fish:0) target="$share/fish/vendor_completions.d/khalid.fish" ;;
+    fish:*) target="${XDG_CONFIG_HOME:-$HOME/.config}/fish/completions/khalid.fish" ;;
+    *)
+      note "Tab completion was not set up. The script sets it up for bash, zsh and fish, and your shell is ${shell:-unknown}." \
+        "khalid completions --help lists the other shells, and docs/cli.md shows how to add one."
+      return 0 ;;
+  esac
+  if ! "$dir/khalid" completions "$shell" >"$work/completion" 2>/dev/null; then
+    note "Tab completion was not set up. Khalid $version cannot write a completion script yet." "Install a newer release to get it."
+    return 0
+  fi
+  if ! mkdir -p "${target%/*}" 2>/dev/null || ! cp "$work/completion" "$target" 2>/dev/null; then
+    note "Tab completion was not set up. It could not be written to $target." "Check that you can write there, then run the script again."
+    return 0
+  fi
+  note "Set up Tab completion for $shell in $target: your shell now finishes khalid commands when you press Tab. Open a new terminal to use it."
+  if [ "$target" = "${HOME:-}/.zfunc/_khalid" ] && ! grep -qs 'zfunc' "$HOME/.zshrc"; then
+    note "zsh looks there once ~/.zshrc has this line before compinit:" '  fpath=(~/.zfunc $fpath)'
+  fi
+}
+
+if [ "$man" = "yes" ]; then install_man; fi
+if [ "$completions" = "yes" ]; then install_completions; fi
 
 if [ "$systemd" = "yes" ]; then
   if ! curl -fsSL -o "$work/khalid.service" "$unit_source/$version/packaging/systemd/khalid.service" ||
