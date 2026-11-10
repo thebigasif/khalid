@@ -31,7 +31,7 @@ its settings as it starts. No key or password is ever sent back.
 | `[seo.publisher]` | `type` (`organization` or `person`), `name`, `logo`, `same_as` (social profiles), `email`, `telephone`, `founded` | an organisation named after the site | Site representation |
 | `[seo.social]` | `twitter` (the X handle) and `image`, the default share image | none | Social sharing |
 | `[seo.verification]` | `google`, `bing`, `yandex`, `baidu`, `pinterest` codes, and `files` | none | Webmaster tools |
-| `[seo.crawlers]` | `disallow` paths, `allow` and `block` crawler names | every crawler reads every page | Crawlers and AI bots |
+| `[seo.crawlers]` | `ai_training` (`allow` or `block`), `disallow` paths, `allow` and `block` crawler names | every crawler reads every page | Crawlers and AI bots |
 | `[seo.feeds]` | `content` (`full` or `excerpt`), `before_item`, `after_item`, `source_line`, `limit` | full posts, 20 items | Feeds |
 | `[seo.indexnow]` | `key` and `endpoint` | off | IndexNow |
 | `[seo.ai_page]` | `off`, `contact`, `covers`, `cite` | on | AI info page |
@@ -40,11 +40,10 @@ its settings as it starts. No key or password is ever sent back.
 | `[seo.breadcrumbs]`, `[seo.llms_txt]`, `[seo.search_filter]`, `[seo.local]`, `[seo.schema_map]` | see their sections below | see below | Not on the screen yet |
 | `[[seo.schema]]` | schema nodes per category or collection | none | Schema templates screen |
 
-The AI bot toggles on the screen write the crawler's name into
-`[seo.crawlers] block`. The known AI crawlers are `GPTBot`, `ChatGPT-User`,
-`OAI-SearchBot`, `ClaudeBot`, `Claude-Web`, `anthropic-ai`, `PerplexityBot`,
-`Google-Extended`, `Applebot-Extended`, `CCBot`, `Bytespider`,
-`meta-externalagent` and `Amazonbot`.
+The training switch on the Crawlers screen writes `[seo.crawlers]
+ai_training`. The box under each AI crawler writes its name into
+`[seo.crawlers] block`. The crawlers Khalid knows are listed under
+[AI crawlers](#ai-crawlers).
 
 ## Titles and descriptions
 
@@ -165,10 +164,54 @@ share_labels = false
 
 | Key | Default | What it does |
 |---|---|---|
+| `ai_training` | `"allow"` | `"block"` blocks every AI training crawler below and keeps search and AI answer crawlers in. |
 | `disallow` | none | Paths no crawler may read, such as `/preview/`. |
-| `allow`, `block` | none | Crawlers allowed or blocked by name, such as `GPTBot`. |
+| `allow`, `block` | none | Crawlers allowed or blocked by name, such as `GPTBot`. A name here wins over `ai_training`. |
 | `disallow_search` | `true` | Keeps crawlers off the search page, so they do not spend their visits on endless result pages. |
 | `extra_lines` | none | Lines added as written, after the rules and before the sitemap, such as `Crawl-delay: 5`. Each must be one line. |
+
+### AI crawlers
+
+AI companies send two kinds of crawler. Training crawlers copy posts into
+the text their models learn from. Answer crawlers fetch a post when someone
+asks an AI tool a question, then quote and link it. A new site lets both in
+(decision D1). To keep posts out of training but stay in search and AI
+answers:
+
+```toml
+[seo.crawlers]
+ai_training = "block"
+```
+
+robots.txt then names every training crawler in one group with
+`Disallow:` on the blog's folder. Search engines such as Googlebot and
+Bingbot are not named, so nothing changes for them. To block one answer
+crawler too, add it to `block`; to let one training crawler in anyway, add
+it to `allow`.
+
+| Training crawler | Run by, and what for |
+|---|---|
+| `GPTBot` | OpenAI, to train its models |
+| `ClaudeBot` | Anthropic, to train its models |
+| `anthropic-ai`, `Claude-Web` | Anthropic, older names it may still use |
+| `Google-Extended` | Google, to train Gemini. Google Search is not affected |
+| `Applebot-Extended` | Apple, to train Apple Intelligence. Siri and Spotlight are not affected |
+| `CCBot` | Common Crawl, a public copy of the web many models train on |
+| `Bytespider` | ByteDance, to train its models |
+| `meta-externalagent` | Meta, to train its models |
+| `Amazonbot` | Amazon, for Alexa and to train its models |
+
+| Answer crawler | Run by, and what for |
+|---|---|
+| `OAI-SearchBot` | ChatGPT search, which links the pages it finds |
+| `ChatGPT-User` | ChatGPT, when a person asks it to open a page |
+| `Claude-SearchBot` | Claude's search, which links the pages it finds |
+| `Claude-User` | Claude, when a person asks it to open a page |
+| `PerplexityBot` | Perplexity search, which links the pages it finds |
+| `Perplexity-User` | Perplexity, when a person asks it to open a page |
+
+The lists live in `crates/khalid-seo/src/known_crawlers.rs`, each entry with
+the page where its operator says what the crawler does.
 
 ## Search filters
 
