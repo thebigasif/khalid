@@ -325,6 +325,28 @@ export type AdminMisses = {
   misses: AdminMiss[];
 };
 
+/** One newsletter and how many readers it has. */
+export type AdminNewsletter = {
+  /** The readers who confirmed and get it. */
+  confirmed: number;
+  /** A sign-up form to paste into another website, such as the main site. It works with scripts off. */
+  form: string;
+  /** Its name, such as `main` or `weekly`. */
+  name: string;
+  /** The readers who signed up and have not confirmed yet. */
+  pending: number;
+};
+
+/** The site's newsletters, whether it can send, and what went out. */
+export type AdminNewsletters = {
+  /** Each newsletter, in alphabetical order. */
+  newsletters: AdminNewsletter[];
+  /** Whether a post can be sent now, and if not, what the site lacks. */
+  sending: SendReadiness;
+  /** Every email that went out, newest first. */
+  sends: AdminSend[];
+};
+
 /** A page in one language, such as About, in Admin API shape. It is live as soon as it is saved: pages have no drafts. */
 export type AdminPage = {
   /** The text search engines show under the title, if set. */
@@ -429,6 +451,22 @@ export type AdminSchemaTemplate = {
   type: string;
 };
 
+/** The totals of one email that went out. Totals only: who got a copy is never kept. */
+export type AdminSend = {
+  /** The copies the mail service refused. They are not sent again. */
+  failed: number;
+  /** The key it went out under, such as `post:en/hello`. */
+  key: string;
+  /** The newsletter. */
+  list: string;
+  /** The copies sent. */
+  sent: number;
+  /** When it started going out. */
+  started_at: string;
+  /** The readers who unsubscribed with a link from it. */
+  unsubscribed: number;
+};
+
 /** The site's core settings from `site.toml`, in Admin API shape. The running server puts most of a saved change in use at once; the settings it reads only at start wait for a restart. */
 export type AdminSettings = {
   /** The address of the main site, such as `https://www.example.com`. */
@@ -489,6 +527,32 @@ export type AdminSourceViews = {
   source: string;
   /** Views in the period. */
   views: number;
+};
+
+/** One subscriber in Admin API shape. Exhaustive on purpose: the database fills it in. */
+export type AdminSubscriber = {
+  /** When they opened the confirmation link, if they did. */
+  confirmed_at?: string | null;
+  /** When they first signed up. */
+  created_at: string;
+  /** Where their email goes. */
+  email: string;
+  /** Its identity. */
+  id: number;
+  /** Their labels, such as `paid`, in alphabetical order. */
+  labels: string[];
+  /** The newsletters they get, in alphabetical order. Empty once they unsubscribed. */
+  lists: string[];
+  /** Where they stand. */
+  status: SubscriberStatus;
+  /** When they unsubscribed, if they did. */
+  unsubscribed_at?: string | null;
+};
+
+/** One subscriber, wrapped the way the list wraps them. */
+export type AdminSubscribers = {
+  /** The one subscriber. */
+  subscribers: AdminSubscriber[];
 };
 
 /** A tag in one language, in Admin API shape. A tag lives in the `tags` of its posts, drafts included, so it exists while one post has it. */
@@ -1412,6 +1476,14 @@ export type NewWebhooks = {
   webhooks: NewWebhook[];
 };
 
+/** A published post to email to one newsletter. */
+export type NewsletterSend = {
+  /** Send only to subscribers who carry every one of these labels. */
+  labels?: string[];
+  /** The post's identity, such as `en.hello`. */
+  post: string;
+};
+
 /** Text with something in it other than spaces. */
 export type NonBlank = string;
 
@@ -1941,6 +2013,15 @@ export type SearchReport = {
 /** The title search results show for a post, in place of the site's title template. It may use the template variables, such as `{site}`. */
 export type SearchTitle = string;
 
+/** Whether the site can send a newsletter now, and if not, what it lacks. */
+export type SendReadiness = "ready" | "no_mail" | "no_postal_address";
+
+/** A send that started. */
+export type SendStarted = {
+  /** The key it goes out under, such as `post:en/hello`. Its totals show in `sends` once the copies are out. */
+  key: string;
+};
+
 /** A post's SEO and readability scores, each from 0 to 100. Each rule that found a problem costs points once, 30 for a block and 5 for a warning, as the post's one score counts them, and a group with a block scores at most 40. The rules in [`READABILITY_RULES`] make the readability score; every other rule makes the SEO score. */
 export type SeoScores = {
   /** How easy the post is to read, from 0 to 100. */
@@ -2221,6 +2302,17 @@ export type StockPicture = {
 
 /** Where to look for a picture. */
 export type StockSource = "unsplash" | "gifs";
+
+/** One page of subscribers, and where it sits in the whole list. */
+export type SubscriberList = {
+  /** The page, and how many subscribers match in all. */
+  meta: Meta;
+  /** The subscribers on this page, newest first. */
+  subscribers: AdminSubscriber[];
+};
+
+/** Where a subscriber stands. */
+export type SubscriberStatus = "pending" | "confirmed" | "unsubscribed";
 
 /** One option, with its length checked. */
 export type Suggestion = {
@@ -2845,6 +2937,31 @@ export interface Operations {
       body: PictureEditBody;
     };
     output: MediaItems;
+  };
+  /** Lists the newsletters with their readers and sign-up forms, and the emails that went out. Needs `subscribers:write`. */
+  list_newsletters: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminNewsletters;
+  };
+  /** Emails a published post to a newsletter's confirmed subscribers, once. The answer comes as the copies start to leave. Needs `subscribers:write`. */
+  send_post: {
+    input: {
+      path: {
+        /** The newsletter, such as main */
+        name: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: NewsletterSend;
+    };
+    output: SendStarted;
   };
   /** Lists the addresses that answered 404, most requested first, each with the nearest page. Needs `settings:write`. */
   list_misses: {
@@ -3637,6 +3754,76 @@ export interface Operations {
       };
     };
     output: StaffList;
+  };
+  /** Lists the subscribers, newest first, with how many match. Needs `subscribers:write`. */
+  list_subscribers: {
+    input: {
+      query?: {
+        /** Only subscribers who stand here. */
+        status?: SubscriberStatus;
+        /** Only subscribers who get this newsletter, such as `weekly`. */
+        list?: string;
+        /** Only subscribers who carry this label, such as `paid`. */
+        label?: string;
+        /** Only subscribers whose address holds this text, in any case. */
+        q?: string;
+        /** The page, from 1. */
+        page?: number;
+        /** How many to a page: 50 when not given, at most 100. */
+        limit?: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: SubscriberList;
+  };
+  /** Removes a subscriber and everything kept about them, for a reader who asks to be forgotten. Needs `subscribers:write`. */
+  erase_subscriber: {
+    input: {
+      path: {
+        /** The subscriber's identity */
+        id: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: null;
+  };
+  /** Gives a subscriber a label, such as `paid`. Needs `subscribers:write`. */
+  add_label: {
+    input: {
+      path: {
+        /** The subscriber's identity */
+        id: number;
+        /** The label, in lowercase letters, digits and hyphens */
+        label: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminSubscribers;
+  };
+  /** Takes a label away from a subscriber. Needs `subscribers:write`. */
+  remove_label: {
+    input: {
+      path: {
+        /** The subscriber's identity */
+        id: number;
+        /** The label to take away */
+        label: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminSubscribers;
   };
   /** Lists every tag the site's posts carry, drafts included, in every language, with how many posts have each. Needs `posts:write`. */
   list_tags: {

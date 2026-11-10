@@ -3135,6 +3135,169 @@
         ]
       }
     },
+    "/api/admin/v1/newsletters/": {
+      "get": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Lists the newsletters with their readers and sign-up forms, and the\nemails that went out. Needs `subscribers:write`.",
+        "operationId": "list_newsletters",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The newsletters and the emails that went out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminNewsletters"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/newsletters/{name}/sends/": {
+      "post": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Emails a published post to a newsletter's confirmed subscribers, once.\nThe answer comes as the copies start to leave. Needs\n`subscribers:write`.",
+        "operationId": "send_post",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "The newsletter, such as main",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewsletterSend"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "The post is going out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendStarted"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The site has no newsletter or post by that name",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The post went to this newsletter before, or the site cannot send email yet",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, or the post is not published",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/not-found/": {
       "get": {
         "tags": [
@@ -7907,6 +8070,391 @@
         ]
       }
     },
+    "/api/admin/v1/subscribers/": {
+      "get": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Lists the subscribers, newest first, with how many match. Needs\n`subscribers:write`.",
+        "operationId": "list_subscribers",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Only subscribers who stand here.",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/SubscriberStatus"
+            }
+          },
+          {
+            "name": "list",
+            "in": "query",
+            "description": "Only subscribers who get this newsletter, such as `weekly`.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "label",
+            "in": "query",
+            "description": "Only subscribers who carry this label, such as `paid`.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Only subscribers whose address holds this text, in any case.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page, from 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many to a page: 50 when not given, at most 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of subscribers, newest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriberList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A filter or the page is not one the API knows",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/subscribers/{id}/": {
+      "delete": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Removes a subscriber and everything kept about them, for a reader who\nasks to be forgotten. Needs `subscribers:write`.",
+        "operationId": "erase_subscriber",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The subscriber's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The subscriber and their labels are gone"
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No subscriber has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/subscribers/{id}/labels/{label}/": {
+      "put": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Gives a subscriber a label, such as `paid`. Needs `subscribers:write`.",
+        "operationId": "add_label",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The subscriber's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "label",
+            "in": "path",
+            "description": "The label, in lowercase letters, digits and hyphens",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The subscriber, with the label",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSubscribers"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No subscriber has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The label is not a slug, or the subscriber unsubscribed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Takes a label away from a subscriber. Needs `subscribers:write`.",
+        "operationId": "remove_label",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The subscriber's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "label",
+            "in": "path",
+            "description": "The label to take away",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The subscriber, without the label",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSubscribers"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No subscriber has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The label is not a slug",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/tags/": {
       "get": {
         "tags": [
@@ -12333,6 +12881,68 @@
           }
         }
       },
+      "AdminNewsletter": {
+        "type": "object",
+        "description": "One newsletter and how many readers it has.",
+        "required": [
+          "name",
+          "confirmed",
+          "pending",
+          "form"
+        ],
+        "properties": {
+          "confirmed": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The readers who confirmed and get it.",
+            "minimum": 0
+          },
+          "form": {
+            "type": "string",
+            "description": "A sign-up form to paste into another website, such as the main\nsite. It works with scripts off."
+          },
+          "name": {
+            "type": "string",
+            "description": "Its name, such as `main` or `weekly`.",
+            "example": "weekly"
+          },
+          "pending": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The readers who signed up and have not confirmed yet.",
+            "minimum": 0
+          }
+        }
+      },
+      "AdminNewsletters": {
+        "type": "object",
+        "description": "The site's newsletters, whether it can send, and what went out.",
+        "required": [
+          "newsletters",
+          "sending",
+          "sends"
+        ],
+        "properties": {
+          "newsletters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminNewsletter"
+            },
+            "description": "Each newsletter, in alphabetical order."
+          },
+          "sending": {
+            "$ref": "#/components/schemas/SendReadiness",
+            "description": "Whether a post can be sent now, and if not, what the site lacks."
+          },
+          "sends": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminSend"
+            },
+            "description": "Every email that went out, newest first."
+          }
+        }
+      },
       "AdminPage": {
         "type": "object",
         "description": "A page in one language, such as About, in Admin API shape. It is live\nas soon as it is saved: pages have no drafts.",
@@ -12635,6 +13245,53 @@
         },
         "additionalProperties": false
       },
+      "AdminSend": {
+        "type": "object",
+        "description": "The totals of one email that went out. Totals only: who got a copy is\nnever kept.",
+        "required": [
+          "key",
+          "list",
+          "started_at",
+          "sent",
+          "failed",
+          "unsubscribed"
+        ],
+        "properties": {
+          "failed": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The copies the mail service refused. They are not sent again.",
+            "minimum": 0
+          },
+          "key": {
+            "type": "string",
+            "description": "The key it went out under, such as `post:en/hello`.",
+            "example": "post:en/hello"
+          },
+          "list": {
+            "type": "string",
+            "description": "The newsletter.",
+            "example": "main"
+          },
+          "sent": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The copies sent.",
+            "minimum": 0
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When it started going out."
+          },
+          "unsubscribed": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The readers who unsubscribed with a link from it.",
+            "minimum": 0
+          }
+        }
+      },
       "AdminSettings": {
         "type": "object",
         "description": "The site's core settings from `site.toml`, in Admin API shape. The\nrunning server puts most of a saved change in use at once; the settings\nit reads only at start wait for a restart.",
@@ -12800,6 +13457,92 @@
             "format": "int64",
             "description": "Views in the period.",
             "minimum": 0
+          }
+        }
+      },
+      "AdminSubscriber": {
+        "type": "object",
+        "description": "One subscriber in Admin API shape.\n\nExhaustive on purpose: the database fills it in.",
+        "required": [
+          "id",
+          "email",
+          "status",
+          "lists",
+          "labels",
+          "created_at"
+        ],
+        "properties": {
+          "confirmed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When they opened the confirmation link, if they did."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When they first signed up."
+          },
+          "email": {
+            "type": "string",
+            "description": "Where their email goes.",
+            "example": "lena@example.com"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Its identity."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Their labels, such as `paid`, in alphabetical order.",
+            "example": [
+              "paid"
+            ]
+          },
+          "lists": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The newsletters they get, in alphabetical order. Empty once they\nunsubscribed.",
+            "example": [
+              "main",
+              "weekly"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/SubscriberStatus",
+            "description": "Where they stand."
+          },
+          "unsubscribed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When they unsubscribed, if they did."
+          }
+        }
+      },
+      "AdminSubscribers": {
+        "type": "object",
+        "description": "One subscriber, wrapped the way the list wraps them.",
+        "required": [
+          "subscribers"
+        ],
+        "properties": {
+          "subscribers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminSubscriber"
+            },
+            "description": "The one subscriber."
           }
         }
       },
@@ -15585,6 +16328,31 @@
           }
         }
       },
+      "NewsletterSend": {
+        "type": "object",
+        "description": "A published post to email to one newsletter.",
+        "required": [
+          "post"
+        ],
+        "properties": {
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Send only to subscribers who carry every one of these labels.",
+            "example": [
+              "paid"
+            ]
+          },
+          "post": {
+            "type": "string",
+            "description": "The post's identity, such as `en.hello`.",
+            "example": "en.hello"
+          }
+        },
+        "additionalProperties": false
+      },
       "NonBlank": {
         "type": "string",
         "description": "Text with something in it other than spaces."
@@ -17288,6 +18056,29 @@
         "description": "The title search results show for a post, in place of the site's title\ntemplate. It may use the template variables, such as `{site}`.",
         "example": "Anchor text that says where it goes {sep} {site}"
       },
+      "SendReadiness": {
+        "type": "string",
+        "description": "Whether the site can send a newsletter now, and if not, what it lacks.",
+        "enum": [
+          "ready",
+          "no_mail",
+          "no_postal_address"
+        ]
+      },
+      "SendStarted": {
+        "type": "object",
+        "description": "A send that started.",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The key it goes out under, such as `post:en/hello`. Its totals show\nin `sends` once the copies are out.",
+            "example": "post:en/hello"
+          }
+        }
+      },
       "SeoScores": {
         "type": "object",
         "description": "A post's SEO and readability scores, each from 0 to 100.\n\nEach rule that found a problem costs points once, 30 for a block and 5\nfor a warning, as the post's one score counts them, and a group with a\nblock scores at most 40. The rules in [`READABILITY_RULES`] make the\nreadability score; every other rule makes the SEO score.",
@@ -18192,6 +18983,36 @@
         "enum": [
           "unsplash",
           "gifs"
+        ]
+      },
+      "SubscriberList": {
+        "type": "object",
+        "description": "One page of subscribers, and where it sits in the whole list.",
+        "required": [
+          "subscribers",
+          "meta"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "The page, and how many subscribers match in all."
+          },
+          "subscribers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminSubscriber"
+            },
+            "description": "The subscribers on this page, newest first."
+          }
+        }
+      },
+      "SubscriberStatus": {
+        "type": "string",
+        "description": "Where a subscriber stands.",
+        "enum": [
+          "pending",
+          "confirmed",
+          "unsubscribed"
         ]
       },
       "Suggestion": {
