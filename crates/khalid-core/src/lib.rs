@@ -25,6 +25,7 @@ mod indexnow_key;
 mod link_settings;
 mod link_tracking;
 mod locale;
+mod log_settings;
 mod mail_settings;
 mod media_settings;
 mod post_access;
@@ -65,6 +66,7 @@ pub use indexnow_key::{IndexNowKey, ParseIndexNowKeyError};
 pub use link_settings::{DomainName, ExternalRel, LinkOpening, LinkSettings, ParseDomainNameError};
 pub use link_tracking::{LinkTracking, ParseTagValueError, TagValue};
 pub use locale::{Locale, ParseLocaleError};
+pub use log_settings::{LogFormat, LogLevel, LogSettings};
 pub use mail_settings::{
     MailSettings, MailTransport, PostmarkSettings, SmtpSecurity, SmtpSettings,
 };
