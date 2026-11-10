@@ -25,5 +25,5 @@ pub use client::{Credentials, SearchConsole, Session};
 pub use error::SearchConsoleError;
 pub use follow_ups::{FOLLOW_UP_WORDS, Search, answered_by, follow_ups};
 pub use index_status::{IndexStatus, Verdict};
-pub use numbers::{PageNumbers, Window};
+pub use numbers::{PageNumbers, Totals, Window};
 pub use trends::{Change, DECAY_MONTHS, Decay, Movers, Question, decaying, go_deeper, movers};

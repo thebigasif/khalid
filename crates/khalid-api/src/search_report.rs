@@ -2,7 +2,8 @@
 //! post's numbers for the last 28 days Google has final numbers for, the
 //! posts whose clicks keep falling, pages that get search traffic though
 //! readers cannot use them, and the week's winners and losers.
-//! `khalid search-console report --json` prints the same shape.
+//! `khalid search-console report --json` prints the same shape. The
+//! Analytics screen reads the whole site's totals for a period.
 
 use chrono::NaiveDate;
 use serde::Serialize;
@@ -114,4 +115,39 @@ pub struct Mover {
     pub now: f64,
     /// The go-deeper link, which asks why it dropped, for a loser.
     pub go_deeper: Option<String>,
+}
+
+/// What Google search did for the whole site in a period, against the
+/// period just as long before it.
+#[derive(Debug, Clone, PartialEq, Serialize, ToSchema)]
+pub struct SearchTotals {
+    /// The Search Console property the numbers come from.
+    #[schema(example = "sc-domain:example.com")]
+    pub property: String,
+    /// How many days the period has.
+    #[schema(example = 28)]
+    pub days: u32,
+    /// The first day of the period.
+    pub first: NaiveDate,
+    /// The last day of the period: the last day whose numbers are final,
+    /// about three days ago.
+    pub last: NaiveDate,
+    /// Every page together in the period.
+    pub now: SearchNumbers,
+    /// Every page together in the days just before.
+    pub before: SearchNumbers,
+}
+
+/// Every page's numbers added up.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, ToSchema)]
+pub struct SearchNumbers {
+    /// Clicks from Google search.
+    pub clicks: f64,
+    /// Times a search showed a page.
+    pub impressions: f64,
+    /// Clicks for each time shown, from 0 to 1.
+    pub ctr: f64,
+    /// The average position in results, 1 at the top, or `null` when no
+    /// search showed a page.
+    pub position: Option<f64>,
 }

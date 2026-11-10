@@ -4,6 +4,7 @@ import { AiBots } from "../analytics/AiBots";
 import { AiTools } from "../analytics/AiTools";
 import { DayChart } from "../analytics/DayChart";
 import { PeriodTotal } from "../analytics/PeriodTotal";
+import { SearchTotals } from "../analytics/SearchTotals";
 import { SourceTable } from "../analytics/SourceTable";
 import { TopPages } from "../analytics/TopPages";
 import { UncitedPages } from "../analytics/UncitedPages";
@@ -19,7 +20,10 @@ function failure(reply: { data: unknown } | Failure | undefined): Failure | unde
   return reply !== undefined && !("data" in reply) ? reply : undefined;
 }
 
-/** How the blog is read: page views, where readers came from, and what AI assistants do with it. */
+/**
+ * How the blog is read: page views, where readers came from, what Google search counted,
+ * and what AI assistants do with it.
+ */
 export function Analytics() {
   const [days, setDays] = useState<Days>(28);
   // The last answer stays on screen while another period is read.
@@ -56,6 +60,7 @@ export function Analytics() {
         <PeriodTotal counts={visitors.data} days={days} onDays={setDays} />
         <DayChart perDay={visitors.data.per_day} />
         <SourceTable counts={visitors.data} />
+        <SearchTotals days={days} />
         <TopPages pages={visitors.data.pages} />
         <AiTools report={tools.data} />
         <AiBots report={bots.data} />

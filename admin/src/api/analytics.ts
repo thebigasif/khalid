@@ -69,6 +69,19 @@ export function readAiBots(days: Days): Promise<Reply<AiBots>> {
   return reply(() => api.GET("/api/admin/v1/analytics/ai-bots/", { params: { query: { days } } }));
 }
 
+/** Google search's numbers for every page together in a period, against the period before. */
+export type SearchTotals = components["schemas"]["SearchTotals"];
+
+/**
+ * Reads Google search's numbers for the last `days` days whose numbers are final.
+ * Khalid asks Google on each call, so it can take some seconds.
+ */
+export function readSearchTotals(days: Days): Promise<Reply<SearchTotals>> {
+  return reply(() =>
+    api.GET("/api/admin/v1/search-console/totals/", { params: { query: { days } } }),
+  );
+}
+
 /** Reads the pages AI bots read in the last `days` days but no AI assistant cited. */
 export function readUncited(days: Days): Promise<Reply<Uncited>> {
   return reply(() => api.GET("/api/admin/v1/analytics/uncited/", { params: { query: { days } } }));

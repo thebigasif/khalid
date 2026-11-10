@@ -1,4 +1,4 @@
-import type { AiBots, AiVisitors, Uncited, Visitors } from "../src/api/analytics";
+import type { AiBots, AiVisitors, SearchTotals, Uncited, Visitors } from "../src/api/analytics";
 import type { Answers } from "./redirects";
 import { json, serve } from "./render";
 
@@ -104,12 +104,26 @@ export function aiBots(fields: Partial<AiBots> = {}): AiBots {
   };
 }
 
+/** What Google search counted for the week ending 28 October 2026, its last final day. */
+export function searchTotals(fields: Partial<SearchTotals> = {}): SearchTotals {
+  return {
+    property: "sc-domain:example.com",
+    days: 7,
+    first: "2026-10-22",
+    last: "2026-10-28",
+    now: { clicks: 412, impressions: 9850, ctr: 0.0418, position: 7.36 },
+    before: { clicks: 0, impressions: 0, ctr: 0, position: null },
+    ...fields,
+  };
+}
+
 // What the Analytics screen reads when it opens, the week above unless a test says otherwise.
 const WEEK: Answers = {
   "GET /analytics/visitors/": () => json(200, visitors()),
   "GET /analytics/ai-visitors/": () => json(200, aiVisitors()),
   "GET /analytics/uncited/": () => json(200, uncited()),
   "GET /analytics/ai-bots/": () => json(200, aiBots()),
+  "GET /search-console/totals/": () => json(200, searchTotals()),
 };
 
 /** A blog that answers the analytics routes from `answers`, and the requests it was sent. */

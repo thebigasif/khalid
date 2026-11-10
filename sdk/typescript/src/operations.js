@@ -79,6 +79,7 @@ export const operations = {
   replace_templates: { method: "PUT", path: "/api/admin/v1/schema-templates/", key: "admin", body: "application/json" },
   follow_ups: { method: "GET", path: "/api/admin/v1/search-console/follow-ups/", key: "admin", body: null },
   search_report: { method: "GET", path: "/api/admin/v1/search-console/report/", key: "admin", body: null },
+  search_totals: { method: "GET", path: "/api/admin/v1/search-console/totals/", key: "admin", body: null },
   read_serpdad: { method: "GET", path: "/api/admin/v1/serpdad/", key: "admin", body: null },
   connect_serpdad: { method: "POST", path: "/api/admin/v1/serpdad/", key: "admin", body: null },
   disconnect_serpdad: { method: "DELETE", path: "/api/admin/v1/serpdad/", key: "admin", body: null },

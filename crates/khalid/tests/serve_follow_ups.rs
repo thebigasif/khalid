@@ -17,11 +17,12 @@ use std::path::Path;
 use std::process::{Child, Command, Stdio};
 use std::time::Duration;
 
+use chrono::Days;
 use khalid_core::{Clock, SystemClock};
 use khalid_mail::StubSmtp;
 use serde_json::{Value, json};
 use tempfile::TempDir;
-use wiremock::matchers::{method, path};
+use wiremock::matchers::{body_partial_json, method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
 /// Made for these tests; Google never issued them.
@@ -35,6 +36,7 @@ const ANALYTICS: &str =
 
 const ROUTE: &str = "/api/admin/v1/search-console/follow-ups/";
 const REPORT: &str = "/api/admin/v1/search-console/report/";
+const TOTALS: &str = "/api/admin/v1/search-console/totals/";
 
 /// What `khalid keys create` makes for these tests: a key the screen could use.
 const SCREEN: [&str; 4] = ["--name", "Screen", "--scope", "settings:write"];
@@ -232,6 +234,59 @@ async fn serve_sends_the_weekly_email_on_its_own_and_keeps_the_day() {
     kept.push("data/search-console-email.txt");
     let today = SystemClock.now().date_naive();
     assert_eq!(fs::read_to_string(kept).unwrap(), format!("{today}\n"));
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn the_admin_api_adds_up_the_site_for_the_final_days_and_the_days_before() {
+    let google = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/token"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({ "access_token": "ya29.t" })))
+        .mount(&google)
+        .await;
+    let today = SystemClock.now().date_naive();
+    let last = today.checked_sub_days(Days::new(3)).unwrap();
+    let first = last.checked_sub_days(Days::new(6)).unwrap();
+    let earlier = first.checked_sub_days(Days::new(7)).unwrap();
+    let row = |page: &str, clicks: f64, impressions: f64, position: f64| {
+        json!({ "keys": [page], "clicks": clicks, "impressions": impressions,
+            "ctr": 0.0, "position": position })
+    };
+    let (a, b) = (
+        "https://www.example.com/blog/a/",
+        "https://www.example.com/blog/b/",
+    );
+    let answers = [
+        (
+            first,
+            json!({ "rows": [row(a, 30.0, 300.0, 2.0), row(b, 10.0, 100.0, 10.0)] }),
+        ),
+        (earlier, json!({ "rows": [row(a, 5.0, 50.0, 6.0)] })),
+    ];
+    for (start, rows) in answers {
+        Mock::given(method("POST"))
+            .and(path(ANALYTICS))
+            .and(body_partial_json(json!({ "startDate": start.to_string() })))
+            .respond_with(ResponseTemplate::new(200).set_body_json(rows))
+            .expect(1)
+            .mount(&google)
+            .await;
+    }
+    let site = demo_site(OPT_IN);
+    let key = common::new_key(site.path(), &SCREEN);
+    let server = start(site.path(), &google);
+
+    let (status, json) = get(&server, &format!("{TOTALS}?days=7"), &key);
+    assert_eq!(status, 200, "{json}");
+    assert_eq!(json["days"], 7);
+    assert_eq!(json["first"], first.to_string(), "{json}");
+    assert_eq!(json["last"], last.to_string());
+    assert_eq!(
+        (&json["now"]["clicks"], &json["now"]["impressions"]),
+        (&json!(40.0), &json!(400.0))
+    );
+    assert_eq!(json["now"]["position"], 4.0);
+    assert_eq!(json["before"]["clicks"], 5.0);
 }
 
 #[tokio::test(flavor = "multi_thread")]
