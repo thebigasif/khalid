@@ -1,0 +1,3 @@
+# The site wants a reviewer on every health post, and this one names none.
+extends = "clean"
+category = "health"

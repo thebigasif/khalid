@@ -1,0 +1,2 @@
+[reviewers]
+required-in = ["health", "money"]

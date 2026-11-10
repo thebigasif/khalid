@@ -210,6 +210,8 @@ pub(crate) fn lint_parts(
         .author
         .as_ref()
         .map(|author| author.as_str().to_owned());
+    post.reviewed_by = front.reviewed_by.iter().map(Slug::to_string).collect();
+    post.category = front.category.as_ref().map(Slug::to_string);
     post.translation.clone_from(&front.translation);
     post.aliases.clone_from(&front.aliases);
     post.focus_keyword.clone_from(&front.focus_keyword);
