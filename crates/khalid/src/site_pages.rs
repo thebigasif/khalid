@@ -13,7 +13,7 @@ use khalid_content::{
 use khalid_core::{Clock, Config, Locale, Slug, UserMessage};
 use khalid_render::{Renderer, Tokens};
 use khalid_routes::Routes;
-use khalid_server::{Moved, Page, Render, Rendered};
+use khalid_server::{Page, Render, Rendered};
 
 use crate::assets::PageStylesheets;
 use crate::comment_pages::{self, ShownComments};
@@ -26,7 +26,9 @@ use crate::post_heads::{self, PostHeads};
 use crate::post_photos::Shown;
 use crate::site_content::Catalog;
 use crate::site_files::HEADLESS_NOT_FOUND;
-use crate::site_html::{SearchShell, Unrendered, Which, html_pages, search_shells};
+use crate::site_html::{
+    NotFound, SearchShell, Served, Unrendered, Which, html_pages, search_shells,
+};
 use crate::unlock::Gate;
 use crate::{
     assets, build_gate, build_home, build_lists, build_message, build_pages, build_seo,
@@ -142,17 +144,6 @@ impl Theme {
             tokens,
         }))
     }
-}
-
-/// One render of the site: what [`Rendered`] holds, kept apart so that
-/// `khalid serve` can answer before compressing.
-#[derive(Debug)]
-pub(crate) struct Served {
-    pub(crate) pages: Vec<Page>,
-    pub(crate) not_found: String,
-    pub(crate) moves: Vec<Moved>,
-    /// The head of each post page, for the Content API: empty without one.
-    pub(crate) heads: PostHeads,
 }
 
 impl SitePages {
@@ -498,7 +489,7 @@ impl SitePages {
         post_lock::share_heads(&mut languages);
         let mut served = Served {
             pages: Vec::new(),
-            not_found: HEADLESS_NOT_FOUND.to_owned(),
+            not_found: NotFound::only(HEADLESS_NOT_FOUND),
             moves: Vec::new(),
             heads: PostHeads::new(),
         };
@@ -546,7 +537,7 @@ impl Render for SitePages {
         let served = (self.render_all())
             .inspect_err(reload::keeps_last_good)
             .map_err(Unrendered)?;
-        Ok(Rendered::new(served.pages, served.not_found).with_moves(served.moves))
+        Ok(served.rendered())
     }
 
     /// A saved post's page alone: its own file read again, with the authors

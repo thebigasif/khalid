@@ -1,18 +1,20 @@
-//! The HTML of the pages `khalid serve` renders into memory, the search
-//! page each language keeps without results, and why a render failed.
+//! The HTML of the pages `khalid serve` renders into memory, the
+//! not-found page of each language, the search page each language keeps
+//! without results, and why a render failed.
 
 use std::error::Error;
 use std::fmt;
 
 use khalid_core::{Config, UserMessage};
 use khalid_render::{PageBody, PageMeta, RenderSite, Renderer};
-use khalid_server::Page;
+use khalid_server::{Moved, Page, PagePath, Rendered};
 
 use crate::assets::PageStylesheets;
-use crate::build_pages::LanguagePages;
+use crate::build_pages::{self, LanguagePages};
 use crate::page_code::PageCode;
-use crate::post_lock;
+use crate::post_heads::PostHeads;
 use crate::site_page::{HeadNonce, served_at};
+use crate::{build_message, post_lock};
 
 /// Why the site could not be rendered after an edit, as a person reads it.
 #[derive(Debug)]
@@ -59,18 +61,57 @@ pub(crate) fn search_shells(languages: &[LanguagePages]) -> Vec<SearchShell> {
     shells
 }
 
+/// One render of the site: what [`Rendered`] holds, kept apart so that
+/// `khalid serve` can answer before compressing.
+#[derive(Debug)]
+pub(crate) struct Served {
+    pub(crate) pages: Vec<Page>,
+    pub(crate) not_found: NotFound,
+    pub(crate) moves: Vec<Moved>,
+    /// The head of each post page, for the Content API: empty without one.
+    pub(crate) heads: PostHeads,
+}
+
+impl Served {
+    /// The pages, the not-found pages and the moves, as the server holds them.
+    pub(crate) fn rendered(self) -> Rendered {
+        let NotFound { default, under } = self.not_found;
+        let rendered = Rendered::new(self.pages, default).with_not_found_under(under);
+        rendered.with_moves(self.moves)
+    }
+}
+
+/// The page `khalid serve` answers an address with nothing behind it.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub(crate) struct NotFound {
+    /// The default language's, for an address under no other language.
+    pub(crate) default: String,
+    /// Each other language's, under its own address, such as `/blog/de/`.
+    pub(crate) under: Vec<(PagePath, String)>,
+}
+
+impl NotFound {
+    /// Only `default`, as a headless site answers every miss.
+    pub(crate) fn only(default: &str) -> Self {
+        Self {
+            default: default.to_owned(),
+            under: Vec::new(),
+        }
+    }
+}
+
 /// Renders the `which` pages of `languages` with the theme's `renderer`
 /// into `pages`, each linking its own stylesheet from `sheets`, which go
-/// into `pages` too with every other one made so far, and returns the not-found page of the default
-/// language, empty unless `which` is [`Which::All`].
+/// into `pages` too with every other one made so far, and returns the
+/// not-found page of each language, empty unless `which` is [`Which::All`].
 pub(crate) fn html_pages(
     (renderer, sheets): (&Renderer, &PageStylesheets),
     config: &Config,
     languages: &[LanguagePages],
     which: Which,
     pages: &mut Vec<Page>,
-) -> Result<String, UserMessage> {
-    let mut not_found = String::new();
+) -> Result<NotFound, UserMessage> {
+    let mut not_found = NotFound::default();
     let code = PageCode::new(config, HeadNonce::PerRequest);
     for language in languages {
         for page in &language.pages {
@@ -79,8 +120,15 @@ pub(crate) fn html_pages(
             }
             let html = page.rendered(renderer, &language.site, &code)?;
             if matches!(page.body, PageBody::NotFound) {
-                if &language.site.locale == config.default_language() {
-                    not_found = sheets.fit(html).0;
+                let html = sheets.fit(html).0;
+                let locale = &language.site.locale;
+                if locale == config.default_language() {
+                    not_found.default = html;
+                } else {
+                    let under = build_pages::path_of(config, locale, "");
+                    let at =
+                        PagePath::try_new(&under).map_err(|_| build_message::address(&under))?;
+                    not_found.under.push((at, html));
                 }
                 continue;
             }
