@@ -43,6 +43,7 @@ axum = { version = "0.8", default-features = false, features = ["form", "query"]
 brotli = "9"
 chrono = { version = "0.4", default-features = false }
 clap = { version = "4", features = ["derive"] }
+clap_complete = "4"
 getrandom = "0.4"
 hmac = "0.13"
 mimalloc = { version = "0.1", features = ["no_thp"] }

@@ -176,5 +176,5 @@ khalid restore blog.tar.gz blog-restored
 - `docs/deploy.md`: run Khalid as a service, in Docker, or on Fly.io, Railway, Coolify or a Hetzner server.
 - `docs/newsletters.md`: send posts to subscribers by email, and give the newsletter a page with its past issues.
 - `docs/charts-embeds-tracking.md`: charts in posts, interactive tools from sites you allow, and tracking tags on links to your product.
-- `khalid --help` lists every command, and `khalid <command> --help` explains one.
+- `khalid --help` lists every command, and `khalid <command> --help` explains one. [The khalid command](cli.md) shows how to make your shell finish commands on Tab.
 - `khalid agents` prints the guide for AI agents that write and publish through Khalid.

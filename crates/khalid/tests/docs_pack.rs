@@ -22,8 +22,9 @@ const BASE: &str = "/khalid/docs/";
 /// The docs R13 publishes before the template guides, with the guides
 /// under `deploy`. A guide for each template follows `templates`
 /// (`shipped::templates`).
-const BEFORE_GUIDES: [&str; 4] = [
+const BEFORE_GUIDES: [&str; 5] = [
     "getting-started",
+    "cli",
     "deploy",
     "deploy/cloudflare",
     "templates",

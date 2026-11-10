@@ -323,6 +323,8 @@ pub(crate) enum Command {
         #[command(subcommand)]
         command: AnalyticsCommand,
     },
+    /// Print the script that completes Khalid's commands on Tab in bash, zsh, fish, `PowerShell` or elvish
+    Completions(crate::completions::CompletionsArgs),
 }
 
 /// The Search Console commands, for the property `[search_console]` names.
