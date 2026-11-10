@@ -7,18 +7,18 @@ use std::fs;
 use std::io::{self, Read as _};
 use std::path::{Path, PathBuf};
 
-use khalid_core::{AbsoluteUrl, Locale, UserMessage};
+use khalid_core::{AbsoluteUrl, Config, UserMessage};
 use khalid_render::Renderer;
 use khalid_theme::{
-    ContrastFix, FontFileEntry, FontMetrics, FontSource, HeldFont, MAX_CSS_BYTES, SiteSource,
-    SiteTheme, ThemeDiff, ThemeTokens, TokenChange, download_and_report, fetch_site,
+    ContrastFix, DesignFile, FontFileEntry, FontMetrics, FontSource, HeldFont, MAX_CSS_BYTES,
+    SiteSource, SiteTheme, ThemeDiff, ThemeTokens, TokenChange, download_and_report, fetch_site,
 };
 use serde::Serialize;
 
 use crate::cli::{Cli, Output};
 use crate::exit::Exit;
 use crate::theme_preview::{Preview, PreviewError, Source};
-use crate::{outbound, report, theme_message};
+use crate::{look, outbound, report, theme_message};
 
 /// The JSON shape of a finished sync.
 #[derive(Serialize)]
@@ -175,14 +175,15 @@ struct HeldBody<'a> {
     message: String,
 }
 
-/// Syncs the theme of the main site at `url` into the `site` folder, and
-/// draws the preview in `locale`, the blog's own language. With `from_css`,
-/// the colours and fonts come from that file and nothing is fetched.
+/// Syncs the theme of the main site at `url` into the `site` folder whose
+/// settings are `config`, and draws the preview in the blog's own
+/// language. With `from_css`, the colours and fonts come from that file
+/// and nothing is fetched.
 pub(crate) fn run(
     site: &Path,
     url: &AbsoluteUrl,
     from_css: Option<&Path>,
-    locale: &Locale,
+    config: &Config,
     cli: &Cli,
 ) -> Exit {
     let output = cli.output;
@@ -200,30 +201,20 @@ pub(crate) fn run(
         Ok(found) => found,
         Err((message, exit)) => return report::failure(output, &message, exit),
     };
-    let (tokens, diff) = match ThemeTokens::read(site) {
-        Ok(Some(mut file)) => {
-            fixes.retain(|fix| !file.locked.iter().any(|n| n.as_str() == fix.token().name()));
-            let diff = file.resync(&fresh);
-            // The font files are not tokens: a sync that saved the site's
-            // fonts lists them, and one that saved none keeps the list.
-            if !fresh.fonts.files.is_empty() {
-                file.fonts.files.clone_from(&fresh.fonts.files);
-            }
-            (file, Some(diff))
-        }
-        Ok(None) => (fresh, None),
-        Err(error) => return report::failure(output, &theme_message::read(&error), Exit::Failure),
+    let (path, tokens, diff) = match write(site, look::pack_text(config), fresh) {
+        Ok(written) => written,
+        Err(message) => return report::failure(output, &message, Exit::Failure),
     };
-    let path = match tokens.write(site) {
-        Ok(path) => path,
-        Err(error) => {
-            return report::failure(output, &theme_message::tokens(&error), Exit::Failure);
-        }
-    };
+    fixes.retain(|fix| {
+        !tokens
+            .locked
+            .iter()
+            .any(|n| n.as_str() == fix.token().name())
+    });
     let source = Source {
         name: name.as_deref(),
         url,
-        locale,
+        locale: config.default_language(),
     };
     match preview(site, &tokens, source) {
         Ok(preview) => success(
@@ -240,6 +231,29 @@ pub(crate) fn run(
         ),
         Err(error) => report::failure(output, &error.message(), Exit::Failure),
     }
+}
+
+/// Writes `fresh` into `theme/tokens.toml` inside `site`: the whole file on
+/// a first sync, and otherwise each changed value that is not locked, in
+/// place, over `pack`, the chosen template's tokens. A file the Design
+/// screen wrote, with only a few values, stays that short. Returns the
+/// path, the tokens the pages use now, and what changed on a sync after
+/// the first.
+fn write(
+    site: &Path,
+    pack: &str,
+    fresh: ThemeTokens,
+) -> Result<(PathBuf, ThemeTokens, Option<ThemeDiff>), UserMessage> {
+    let mut file = DesignFile::read(site).map_err(|error| theme_message::read(&error))?;
+    if file.changed().is_none() {
+        let path = fresh.write(site).map_err(|e| theme_message::tokens(&e))?;
+        return Ok((path, fresh, None));
+    }
+    let (tokens, diff) = file
+        .resync(pack, &fresh)
+        .map_err(|e| theme_message::read(&e))?;
+    let path = file.write(site).map_err(|e| theme_message::tokens(&e))?;
+    Ok((path, tokens, Some(diff)))
 }
 
 /// Draws the sample post with `tokens` through the site's own templates and

@@ -107,6 +107,10 @@ name = "theme"
 required-features = ["test-util"]
 
 [[test]]
+name = "theme_partial"
+required-features = ["test-util"]
+
+[[test]]
 name = "build_template"
 required-features = ["test-util"]
 
