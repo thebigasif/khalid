@@ -8,12 +8,16 @@
 //! whose next try has come (G40). At start and then once an hour it deletes
 //! for good each post that has waited in the trash longer than the site's
 //! `trash_days`. Once an hour it sends the weekly Search Console email
-//! when a week has passed since the last one. Each round also reads the
+//! when a week has passed since the last one, and audits the site when a
+//! day has passed since the last audit, though never in the first hour, so
+//! the audit's build never slows the start. Each round also reads the
 //! stores another process, such as `khalid mcp`, wrote to.
 
 mod entries;
+mod nightly_audit;
 mod weekly_email;
 
+pub(crate) use nightly_audit::NightlyAudit;
 pub(crate) use weekly_email::WeeklyEmail;
 
 use std::sync::Arc;
@@ -39,6 +43,15 @@ const EVERY: Duration = Duration::from_secs(5);
 /// since a trashed copy is kept for whole days.
 const HOURLY: u32 = 720;
 
+/// What the scheduler runs beside the posts: the alerts, the weekly email,
+/// the form emails to try again and the nightly audit.
+pub(crate) type Timed = (
+    Arc<Alerting>,
+    Option<Arc<WeeklyEmail>>,
+    Option<Arc<FormRetry>>,
+    Option<Arc<NightlyAudit>>,
+);
+
 /// The running scheduler, stopped before the database closes.
 #[derive(Debug)]
 pub(crate) struct Scheduling {
@@ -59,17 +72,13 @@ impl Scheduling {
 /// `posts`, whose times fall due by `clock`, raising each post the linter
 /// refuses through `alerting`, trying again each form email `forms` holds
 /// whose time has come, sending the `weekly` email when the site gets one,
-/// and reading the stores in `reloads` again after another process wrote
-/// to them. Must be called inside the tokio runtime. The first round runs
-/// at once, so a time that passed while the server was stopped is acted on
-/// at start.
+/// running the `nightly` audit when the site has pages, and reading the
+/// stores in `reloads` again after another process wrote to them. Must be
+/// called inside the tokio runtime. The first round runs at once, so a
+/// time that passed while the server was stopped is acted on at start.
 pub(crate) fn start(
     (door, posts, clock): (&Arc<PublishDoor>, &SitePosts, ServeClock),
-    (alerting, weekly, forms): (
-        Arc<Alerting>,
-        Option<Arc<WeeklyEmail>>,
-        Option<Arc<FormRetry>>,
-    ),
+    (alerting, weekly, forms, nightly): Timed,
     mut reloads: Reloads,
 ) -> Scheduling {
     let (door, posts, folder) = (
@@ -82,6 +91,7 @@ pub(crate) fn start(
         let mut ticks = tokio::time::interval(EVERY);
         ticks.set_missed_tick_behavior(MissedTickBehavior::Delay);
         let mut rounds = 0_u32;
+        let mut auditing: Option<JoinHandle<()>> = None;
         loop {
             tokio::select! {
                 _ = &mut stopped => return,
@@ -117,6 +127,15 @@ pub(crate) fn start(
             // After the posts, so asking Google never holds a post back.
             if let Some(weekly) = weekly.as_ref().filter(|_| rounds.is_multiple_of(HOURLY)) {
                 weekly.round().await;
+            }
+            let after_the_first_hour = rounds > 0 && rounds.is_multiple_of(HOURLY);
+            // Beside the rounds, since a build can take minutes, and never
+            // two at once.
+            if let Some(nightly) = nightly.as_ref().filter(|_| after_the_first_hour)
+                && auditing.as_ref().is_none_or(JoinHandle::is_finished)
+            {
+                let nightly = Arc::clone(nightly);
+                auditing = Some(tokio::spawn(async move { nightly.round(clock).await }));
             }
             rounds = rounds.wrapping_add(1);
         }
