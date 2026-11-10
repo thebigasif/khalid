@@ -135,26 +135,43 @@ export const seoWords = {
   },
   crawlers: {
     lede: "Crawlers are the programs that read your blog for search engines and AI tools. Each one you block is named in robots.txt, which well-behaved crawlers obey.",
-    ai: "AI crawlers",
-    aiHint:
-      "Blocking one keeps your posts out of what it gathers. A blocked search assistant also stops citing you in its answers.",
+    training: "AI training",
+    trainingContext:
+      "Some AI companies copy blog posts into the text their models learn from. Others fetch a post only when someone asks a question, then quote it and link to it.",
+    trainingAllow: "Let AI companies train on my posts",
+    trainingAllowHint: "Every crawler may read the blog. This is how a new blog starts.",
+    trainingBlock: "Block AI training, keep search and AI answers",
+    trainingBlockHint:
+      "Training crawlers such as GPTBot are blocked. Google, Bing, ChatGPT search, Claude and Perplexity still read, quote and link your posts.",
+    oneByOne: "One crawler at a time",
+    oneByOneHint: "A box you tick blocks that one crawler, whatever the choice above says.",
+    trainingBots: "Training crawlers",
+    answerBots: "Answer crawlers",
+    answerHint: "Blocking one also stops it quoting and linking your posts in its answers.",
+    bySwitch: "Blocked by the choice above.",
     block: (name: string) => `Block ${name}`,
-    blockAll: "Block every AI crawler",
-    // Who runs each crawler and what it gathers for, in a few words.
-    bots: {
+    // Who runs each crawler and what it reads pages for, in a few words.
+    // The split and the sources are in crates/khalid-seo/src/known_crawlers.rs.
+    trainingBotsAbout: {
       GPTBot: "OpenAI, to train its models",
-      "ChatGPT-User": "ChatGPT, when a person asks it to open a page",
-      "OAI-SearchBot": "ChatGPT search, which cites the pages it finds",
       ClaudeBot: "Anthropic, to train its models",
+      "anthropic-ai": "Anthropic, an older name for its training crawler",
       "Claude-Web": "Anthropic, an older name it may still use",
-      "anthropic-ai": "Anthropic, an older name it may still use",
-      PerplexityBot: "Perplexity search, which cites the pages it finds",
       "Google-Extended": "Google, to train Gemini. Google Search is not affected",
-      "Applebot-Extended": "Apple, to train Apple Intelligence. Siri search is not affected",
+      "Applebot-Extended":
+        "Apple, to train Apple Intelligence. Siri and Spotlight are not affected",
       CCBot: "Common Crawl, a public copy of the web many models train on",
       Bytespider: "ByteDance, to train its models",
       "meta-externalagent": "Meta, to train its models",
-      Amazonbot: "Amazon, for Alexa answers",
+      Amazonbot: "Amazon, for Alexa and to train its models",
+    } as Record<string, string>,
+    answerBotsAbout: {
+      "OAI-SearchBot": "ChatGPT search, which links the pages it finds",
+      "ChatGPT-User": "ChatGPT, when a person asks it to open a page",
+      "Claude-SearchBot": "Claude's search, which links the pages it finds",
+      "Claude-User": "Claude, when a person asks it to open a page",
+      PerplexityBot: "Perplexity search, which links the pages it finds",
+      "Perplexity-User": "Perplexity, when a person asks it to open a page",
     } as Record<string, string>,
     others: "Other crawlers to block",
     othersHint: "One crawler's name per line, as it names itself, such as AhrefsBot.",

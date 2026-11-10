@@ -8,7 +8,7 @@ use serde::de::DeserializeOwned;
 use crate::post::parse_front;
 use crate::{
     AuthorFront, CaseStudyFront, ChangelogFront, ContentError, ContentHash, ContentTree, Entry,
-    GlossaryFront, IndexFront, PageFront, PostFront, SnippetFront,
+    Fact, GlossaryFront, IndexFront, PageFront, PostFront, SnippetFront, parse_facts,
 };
 
 /// One content file with its typed front matter.
@@ -52,6 +52,8 @@ pub struct SiteContent {
     pub snippets: Vec<Document<SnippetFront>>,
     /// Every collection's `_index.md`.
     pub indexes: Vec<Document<IndexFront>>,
+    /// The site's fact registry from `facts.toml`, sorted by key.
+    pub facts: Vec<Fact>,
 }
 
 /// Reads every file in `tree` with the schema its collection's folder name
@@ -60,9 +62,13 @@ pub struct SiteContent {
 ///
 /// # Errors
 ///
-/// Returns the first [`ContentError`] in path order.
+/// Returns [`ContentError::Facts`] when `facts.toml` is not a fact
+/// registry, and otherwise the first [`ContentError`] in path order.
 pub fn read_content(tree: &ContentTree) -> Result<SiteContent, ContentError> {
     let mut content = SiteContent::default();
+    if let Some(text) = tree.facts() {
+        content.facts = parse_facts(text)?;
+    }
     for language in tree.languages() {
         let locale = language.locale();
         for collection in language.collections() {

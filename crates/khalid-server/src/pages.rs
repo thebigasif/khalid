@@ -13,6 +13,9 @@ use crate::{Moved, Page, PagePath, Rendered, ServerError};
 pub struct Pages {
     by_path: BTreeMap<String, Page>,
     not_found: Bytes,
+    /// The not-found page of each address prefix with its own, such as a
+    /// language's `/de/`, which wins over `not_found` under it.
+    not_found_under: Vec<(PagePath, Bytes)>,
     moved: BTreeMap<String, PagePath>,
     extent: Extent,
     preloads: Vec<String>,
@@ -75,6 +78,7 @@ impl Pages {
         Ok(Self {
             by_path,
             not_found: not_found.into(),
+            not_found_under: Vec::new(),
             moved: BTreeMap::new(),
             extent: Extent::Whole,
             preloads: Vec::new(),
@@ -118,6 +122,17 @@ impl Pages {
         self
     }
 
+    /// The same pages, answering an address under each prefix of `under`
+    /// that has nothing behind it with that prefix's page, such as a
+    /// language's own not-found page under `/de/`. The longest prefix
+    /// wins; any other address gets the one the pages were made with.
+    #[must_use]
+    pub fn with_not_found_under<B: Into<Bytes>>(mut self, under: Vec<(PagePath, B)>) -> Self {
+        let under = under.into_iter().map(|(at, page)| (at, page.into()));
+        self.not_found_under = under.collect();
+        self
+    }
+
     /// The same pages, answering every HTML page with a `Link` header that
     /// says to preload each address in `preloads`, such as the stylesheet,
     /// which an HTTP stack can send ahead as a 103 Early Hints (G20).
@@ -148,6 +163,7 @@ impl Pages {
         Self {
             by_path,
             not_found: self.not_found.clone(),
+            not_found_under: self.not_found_under.clone(),
             moved: self.moved.clone(),
             extent: self.extent,
             preloads: self.preloads.clone(),
@@ -172,6 +188,7 @@ impl Pages {
         Self {
             by_path,
             not_found: self.not_found.clone(),
+            not_found_under: self.not_found_under.clone(),
             moved: self.moved.clone(),
             extent: self.extent,
             preloads: self.preloads.clone(),
@@ -204,8 +221,10 @@ impl Pages {
         rendered: Rendered,
         previous: Option<&Self>,
     ) -> Result<Self, ServerError> {
-        let (pages, not_found, moves) = rendered.into_parts();
-        let mut plain = Self::plain(pages, not_found)?.with_moves(moves);
+        let (pages, (not_found, under), moves) = rendered.into_parts();
+        let mut plain = Self::plain(pages, not_found)?
+            .with_moves(moves)
+            .with_not_found_under(under);
         plain.saves = previous.map_or(0, |pages| pages.saves);
         for (path, page) in &mut plain.by_path {
             let old = previous.and_then(|pages| pages.get(path));
@@ -222,6 +241,16 @@ impl Pages {
     /// The HTML for an address with nothing behind it.
     pub fn not_found(&self) -> &Bytes {
         &self.not_found
+    }
+
+    /// The HTML for `path`, which has nothing behind it: the page of the
+    /// longest prefix of `path` given to [`Pages::with_not_found_under`],
+    /// or [`Pages::not_found`] when none is.
+    pub fn not_found_at(&self, path: &str) -> &Bytes {
+        let under = self.not_found_under.iter();
+        let fits = under.filter(|(prefix, _)| path.starts_with(prefix.as_str()));
+        let longest = fits.max_by_key(|(prefix, _)| prefix.as_str().len());
+        longest.map_or(&self.not_found, |(_, page)| page)
     }
 
     /// Where the address `path` moved to, once percent-encoding is undone.
@@ -291,5 +320,29 @@ mod tests {
         );
         let saved = pages.with_saved(vec![post("<p>A sitemap, saved.</p>")]);
         assert_eq!(saved.moved("/blog/old/"), pages.moved("/blog/old/"));
+    }
+
+    #[test]
+    fn each_language_keeps_its_not_found_page() {
+        let under = |text: &str, html: &'static str| {
+            (
+                PagePath::try_new(text).unwrap(),
+                Bytes::from_static(html.as_bytes()),
+            )
+        };
+        let rendered = Rendered::new(vec![post("<p>A sitemap.</p>")], "Missing")
+            .with_not_found_under(vec![
+                under("/blog/de/", "Fehlt"),
+                under("/blog/de/at/", "Fehlt hier"),
+            ]);
+        let pages = Pages::from_rendered(rendered, None).unwrap();
+        let saved = pages.with_saved(vec![post("<p>A sitemap, saved.</p>")]);
+        for pages in [&pages, &pages.compressed(), &saved] {
+            let at = |path: &str| pages.not_found_at(path).as_ref().to_vec();
+            assert_eq!(at("/blog/de/nichts/"), b"Fehlt");
+            assert_eq!(at("/blog/de/at/nichts/"), b"Fehlt hier");
+            assert_eq!(at("/blog/nothing/"), b"Missing");
+            assert_eq!(at("/elsewhere/"), b"Missing");
+        }
     }
 }

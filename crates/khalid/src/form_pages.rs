@@ -78,10 +78,35 @@ pub(crate) fn fill(config: &Config, forms: Option<&LiveForms>, languages: &mut [
 }
 
 /// Points the forms of `languages` that post to a built-in route under the
-/// blog's mount: the sign-up form and each embed card's form.
+/// blog's mount: each form block, the sign-up form and each embed card's
+/// form. `khalid build` and `khalid serve` both call it, so a built page
+/// posts where a served one does.
 pub(crate) fn under_mount(config: &Config, languages: &mut [LanguagePages]) {
+    blocks_under(config, languages);
     subscribe_under(config, languages);
     media_under(config, languages);
+}
+
+/// Points each form block in `languages` at `<mount>forms/<id>`. A blog at
+/// `/` is left as it is, and so is a form [`fill`] already pointed.
+fn blocks_under(config: &Config, languages: &mut [LanguagePages]) {
+    let mount = config.mount();
+    if mount == "/" {
+        return;
+    }
+    for page in languages
+        .iter_mut()
+        .flat_map(|language| &mut language.pages)
+    {
+        let body = match &mut page.body {
+            PageBody::Post(post) => &mut post.body,
+            PageBody::Page(shown) => &mut shown.body,
+            _ => continue,
+        };
+        if let Some((html, _)) = mounted(body.as_str(), mount) {
+            *body = BodyHtml::from_sanitised(html);
+        }
+    }
 }
 
 /// Points each `::newsletter` block in `languages` at `<mount>subscribe`,
@@ -112,7 +137,7 @@ fn subscribe_under(config: &Config, languages: &mut [LanguagePages]) {
 /// `languages` at `<mount>_consent/`, coming back to the card's own page.
 /// A static build locks every form, so there the form becomes a plain
 /// button the consent script answers (privacy plan U5 and U6).
-pub(crate) fn media_under(config: &Config, languages: &mut [LanguagePages]) {
+fn media_under(config: &Config, languages: &mut [LanguagePages]) {
     let mount = config.mount();
     let static_end = format!("</button></form></div>\n</div>{MEDIA_CARD_END}");
     for page in languages

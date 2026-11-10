@@ -11,6 +11,8 @@ use serde_json::Value;
 
 #[path = "lint_input/keywords.rs"]
 mod keywords;
+#[path = "lint_input/schema.rs"]
+mod schema;
 
 /// A site folder with the demo settings, `routes` as `routes.toml` when
 /// given, and `posts` as `(file under content/en, text)`.

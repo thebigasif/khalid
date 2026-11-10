@@ -203,8 +203,8 @@ fn bookmark(attributes: &Attributes) -> Result<BlockKind, BlockError> {
 fn embed(attributes: &Attributes) -> Result<BlockKind, BlockError> {
     attributes.only(
         "embed",
-        &["src", "title", "height"],
-        "src, title and height",
+        &["src", "title", "height", "uploaded"],
+        "src, title, height and uploaded",
     )?;
     let src = attributes.need("src", "an embed needs src, the page of the video or sound")?;
     let title = attributes.need(
@@ -224,6 +224,7 @@ fn embed(attributes: &Attributes) -> Result<BlockKind, BlockError> {
         src: attributes.address("embed", "src", &src)?,
         title,
         height,
+        uploaded: schema_cards::uploaded(attributes)?,
     })
 }
 
@@ -237,8 +238,9 @@ fn video(attributes: &Attributes) -> Result<BlockKind, BlockError> {
             "description",
             "duration",
             "thumbnail",
+            "uploaded",
         ],
-        "src, title, poster, description, duration and thumbnail",
+        "src, title, poster, description, duration, thumbnail and uploaded",
     )?;
     let src = attributes.need("src", "a video needs src, the video file")?;
     let title = attributes.need("title", "a video needs title, the video's name")?;
@@ -264,6 +266,7 @@ fn video(attributes: &Attributes) -> Result<BlockKind, BlockError> {
         thumbnail: (attributes.get("thumbnail"))
             .map(|thumbnail| attributes.media("video", "thumbnail", thumbnail))
             .transpose()?,
+        uploaded: schema_cards::uploaded(attributes)?,
     }))
 }
 

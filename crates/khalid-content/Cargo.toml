@@ -17,6 +17,7 @@ serde.workspace = true
 serde-saphyr = "2"
 sha2 = "0.11"
 thiserror.workspace = true
+toml = "1.1"
 ammonia = "4"
 math-core = { version = "0.9.0", default-features = false, features = ["std"] }
 

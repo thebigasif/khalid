@@ -1,5 +1,6 @@
 //! The checks on every body that need the whole site: wikilinks reach a
-//! page, snippets are the site's, and formulas can be drawn.
+//! page, facts are in the registry, snippets are the site's, and formulas
+//! can be drawn.
 
 use comrak::nodes::NodeValue;
 use comrak::{Arena, parse_document};
@@ -8,16 +9,18 @@ use khalid_routes::Routes;
 
 use crate::render::options;
 use crate::{
-    BlockKind, ContentError, Document, SiteContent, Wikilinks, maths, parse_blocks, wikilink,
+    BlockKind, ContentError, Document, FACT, SiteContent, Wikilinks, maths, parse_blocks, wikilink,
 };
 
 /// Checks every content file of `site`'s languages: each wikilink reaches a
-/// page, as [`Wikilinks::for_language`] finds them with `routes`, and each
-/// formula can be drawn as `MathML`.
+/// page, as [`Wikilinks::for_language`] finds them with `routes`, each
+/// `[[fact:key]]` names a fact in `facts.toml`, and each formula can be
+/// drawn as `MathML`.
 ///
 /// # Errors
 ///
-/// Returns [`ContentError::Wikilink`] for a wikilink that reaches nothing and
+/// Returns [`ContentError::Wikilink`] for a wikilink that reaches nothing,
+/// [`ContentError::Fact`] for a fact the registry lacks and
 /// [`ContentError::Maths`] for a formula that cannot be drawn, the first in
 /// language order and then in the order of [`SiteContent`]'s fields, with
 /// the file and its line.
@@ -64,6 +67,15 @@ impl Check<'_> {
                     .saturating_add(data.sourcepos.start.line)
                     .saturating_sub(1);
                 match &data.value {
+                    NodeValue::WikiLink(wikilink) if wikilink.url.starts_with(FACT) => {
+                        if self.links.fact(&wikilink.url).is_none() {
+                            return Err(ContentError::Fact {
+                                path: doc.path.clone(),
+                                line,
+                                key: wikilink.url.trim_start_matches(FACT).trim().to_owned(),
+                            });
+                        }
+                    }
                     NodeValue::WikiLink(wikilink) if self.links.get(&wikilink.url).is_none() => {
                         return Err(ContentError::Wikilink {
                             path: doc.path.clone(),

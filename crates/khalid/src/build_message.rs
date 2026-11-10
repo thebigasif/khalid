@@ -138,6 +138,15 @@ pub(crate) fn write(file: &Path, error: &io::Error) -> UserMessage {
     )
 }
 
+/// The message when `IndexNow` did not take the addresses a build sent.
+pub(crate) fn indexnow(error: &dyn std::fmt::Display) -> UserMessage {
+    UserMessage::new(
+        format!("IndexNow did not take the addresses: {error}."),
+        "IndexNow tells Bing, Yandex and other search engines which pages changed, so they read them soon.",
+        "Check the key and endpoint under [seo.indexnow] in site.toml, then build again.",
+    )
+}
+
 /// The message when a share image cannot be drawn or kept.
 pub(crate) fn share_image(error: &khalid_share_image::ShareImageError) -> UserMessage {
     UserMessage::new(

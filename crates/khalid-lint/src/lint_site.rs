@@ -177,17 +177,21 @@ pub struct LintFact {
     pub old: Vec<String>,
     /// The day someone last made sure the value still holds.
     pub checked: NaiveDate,
+    /// The address of the page that shows the value, where it is checked.
+    #[serde(default)]
+    pub source: Option<String>,
 }
 
 impl LintFact {
     /// The fact `key` with `value`, last checked on `checked`, with no old
-    /// values.
+    /// values and no source.
     pub fn new(key: impl Into<String>, value: impl Into<String>, checked: NaiveDate) -> Self {
         Self {
             key: key.into(),
             value: value.into(),
             old: Vec::new(),
             checked,
+            source: None,
         }
     }
 
@@ -195,6 +199,13 @@ impl LintFact {
     #[must_use]
     pub fn with_old(mut self, old: Vec<String>) -> Self {
         self.old = old;
+        self
+    }
+
+    /// This fact with `source`, the address of the page that shows it.
+    #[must_use]
+    pub fn with_source(mut self, source: Option<String>) -> Self {
+        self.source = source;
         self
     }
 }

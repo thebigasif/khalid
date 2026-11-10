@@ -1,0 +1,30 @@
+# Today is 2026-10-26. The price claims a check in December, which has not
+# happened, so the post that gives it is flagged. The founding year was
+# checked tomorrow, which a writer a day ahead of the server may write, so
+# it passes.
+[[facts]]
+key = "pro-plan-price"
+value = "29 USD a month"
+checked = "2026-12-01"
+source = "https://example.com/pricing/"
+
+[[facts]]
+key = "founded"
+value = "2019"
+checked = "2026-10-27"
+
+[[posts]]
+locale = "en"
+slug = "pricing-explained"
+date = "2026-10-01"
+body_text = "The Pro plan costs 29 USD a month."
+
+[[posts]]
+locale = "en"
+slug = "our-story"
+date = "2026-10-01"
+body_text = "We started the company in 2019."
+
+[[pages]]
+locale = "en"
+slug = "about"

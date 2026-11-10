@@ -271,6 +271,18 @@ why = "A price, count or date that no longer holds misleads readers and the engi
 fix = "Update the fact in `facts.toml` after checking it, and set its `checked` date to today."
 guide = "fact-registry"
 
+[fact-unknown]
+what = "This post shows a `[[fact:...]]` that `facts.toml` does not have."
+why = "The page would show a gap where readers expect the value."
+fix = "Add the fact to `facts.toml`, or change the key to one the file has."
+guide = "fact-registry"
+
+[fact-checked-in-future]
+what = "This post uses a fact from `facts.toml` whose `checked` date has not come yet."
+why = "A check that has not happened hides the fact from the reminder to check it again."
+fix = "Change the fact's `checked` date in `facts.toml` to the day you last checked it."
+guide = "fact-registry"
+
 [near-duplicate]
 what = "This post shares most of its text with another post on your site."
 why = "Google shows only one of two near copies, so the two posts compete and both lose."
@@ -658,4 +670,10 @@ guide = "post-briefs"
 what = "The post's brief lists a page that the post does not link to."
 why = "The brief planned this link so readers and search engines reach the related page from here."
 fix = "Link to the page where the post mentions its subject, or remove it from the brief."
+guide = "post-briefs"
+
+[brief-link-unknown]
+what = "The post's brief plans a link to a post your site does not have."
+why = "A link to a missing post takes readers to a page that does not exist."
+fix = "Change the address in the brief to the post's current one, or write that post first."
 guide = "post-briefs"

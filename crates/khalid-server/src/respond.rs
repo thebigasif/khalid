@@ -281,6 +281,7 @@ fn respond(pages: &Pages, request: &Request<Body>, consent: Consent<'_>) -> Resp
         }
     };
     let uri = request.uri();
+    let not_found = pages.not_found_at(uri.path());
     match resolve(pages, uri.path(), uri.query()) {
         Resolved::Page(page) => page_response(page, request.headers(), send_body, consent),
         Resolved::Redirect(location) => redirect(StatusCode::PERMANENT_REDIRECT, &location),
@@ -292,22 +293,15 @@ fn respond(pages: &Pages, request: &Request<Body>, consent: Consent<'_>) -> Resp
                 .insert(header::CACHE_CONTROL, NO_ICON_FOR_A_DAY);
             response
         }
-        Resolved::NotFound
-            if answered(consent) || gpc(consent) || holds_slot(pages.not_found()) =>
-        {
+        Resolved::NotFound if answered(consent) || gpc(consent) || holds_slot(not_found) => {
             personal(
                 StatusCode::NOT_FOUND,
-                (MediaType::Html, pages.not_found()),
+                (MediaType::Html, not_found),
                 send_body,
                 consent,
             )
         }
-        Resolved::NotFound => file(
-            StatusCode::NOT_FOUND,
-            MediaType::Html,
-            pages.not_found(),
-            send_body,
-        ),
+        Resolved::NotFound => file(StatusCode::NOT_FOUND, MediaType::Html, not_found, send_body),
     }
 }
 

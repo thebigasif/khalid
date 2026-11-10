@@ -40,11 +40,15 @@ const PAGE_LIMIT: usize = 4 * 1024 * 1024;
 /// render: each one's address, its file and what opens it. Cloning shares
 /// it.
 #[derive(Debug, Clone, Default)]
-pub(crate) struct Gate(Arc<Mutex<BTreeMap<String, (PathBuf, Key)>>>);
+pub(crate) struct Gate(Arc<Mutex<GatedPosts>>);
 
-impl Gate {
-    /// Takes the locked posts of `languages` in place of the old ones.
-    pub(crate) fn replace(&self, languages: &[LanguagePages]) {
+/// The locked posts of one render, which [`Gate::replace`] takes.
+#[derive(Debug, Default)]
+pub(crate) struct GatedPosts(BTreeMap<String, (PathBuf, Key)>);
+
+impl GatedPosts {
+    /// The locked posts of `languages`.
+    pub(crate) fn of(languages: &[LanguagePages]) -> Self {
         let posts = languages.iter().flat_map(|language| &language.unlocked);
         let entries = posts.filter_map(|unlocked| {
             let source = unlocked.page.source.clone()?;
@@ -53,13 +57,20 @@ impl Gate {
                 (source, unlocked.key.clone()),
             ))
         });
-        *self.0.lock().unwrap_or_else(PoisonError::into_inner) = entries.collect();
+        Self(entries.collect())
+    }
+}
+
+impl Gate {
+    /// Takes `posts` in place of the old ones.
+    pub(crate) fn replace(&self, posts: GatedPosts) {
+        *self.0.lock().unwrap_or_else(PoisonError::into_inner) = posts;
     }
 
     /// Whether the post file `source` has a full page kept now.
     pub(crate) fn guards(&self, source: &std::path::Path) -> bool {
         let posts = self.0.lock().unwrap_or_else(PoisonError::into_inner);
-        posts.values().any(|(file, _)| file == source)
+        posts.0.values().any(|(file, _)| file == source)
     }
 
     /// The hash of the password of the post at `path`, if it has one.
@@ -73,7 +84,7 @@ impl Gate {
     /// What opens the full page of the post at `path`, if it has one.
     fn key(&self, path: &str) -> Option<Key> {
         let posts = self.0.lock().unwrap_or_else(PoisonError::into_inner);
-        posts.get(path).map(|(_, key)| key.clone())
+        posts.0.get(path).map(|(_, key)| key.clone())
     }
 }
 

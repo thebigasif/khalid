@@ -29,6 +29,7 @@ use crate::pagination::Meta;
 use crate::problem::{Problem, ProblemType};
 use crate::query::{ListQuery, RawListQuery};
 use crate::resources::{AdminMedia, MediaEditBody, MediaEdits, MediaItems, MediaList};
+use crate::staff_names::NameBook;
 use crate::{media_picture, media_search};
 
 /// A site's media library, and the address its own files are served under.
@@ -216,7 +217,7 @@ async fn read_media(
 )]
 async fn edit_media(
     State(media): State<Media>,
-    Extension(principal): Extension<Principal>,
+    (Extension(principal), Extension(book)): (Extension<Principal>, Extension<NameBook>),
     Path(id): Path<String>,
     OriginalUri(uri): OriginalUri,
     body: Result<Json<MediaEdits>, JsonRejection>,
@@ -235,7 +236,10 @@ async fn edit_media(
         Err(EditMediaError::Stale {
             updated_at,
             updated_by,
-        }) => return Err(stale(updated_at, &updated_by)),
+        }) => {
+            let name = book.names().await.of(&updated_by).to_owned();
+            return Err(stale(updated_at, &name));
+        }
         Err(EditMediaError::TooLong { field, limit }) => {
             return Err(invalid(&format!(
                 "{field} is longer than {limit} characters"
@@ -275,10 +279,10 @@ fn invalid(reason: &str) -> Problem {
     Problem::new(ProblemType::InvalidBody, &message)
 }
 
-fn stale(updated_at: DateTime<Utc>, updated_by: &str) -> Problem {
+fn stale(updated_at: DateTime<Utc>, name: &str) -> Problem {
     let when = updated_at.format("%Y-%m-%d %H:%M UTC");
     let message = UserMessage::new(
-        format!("{updated_by} changed this item at {when}, after the copy you edited."),
+        format!("{name} changed this item at {when}, after the copy you edited."),
         "Saving your copy would undo their change.",
         "Fetch the item again, make your change to it, and send its new updated_at.",
     );
