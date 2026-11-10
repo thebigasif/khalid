@@ -106,7 +106,8 @@ impl Newsletter {
         back: &BackPath,
     ) -> Result<SignedUp, NewsletterError> {
         let signed = self.signed_up(email.clone(), list, Some(back)).await?;
-        if let (SignedUp::AlreadyConfirmed, Some(pass)) = (&signed, &self.pass) {
+        let confirmed = matches!(signed, SignedUp::AlreadyConfirmed | SignedUp::JoinedNow(_));
+        if let (true, Some(pass)) = (confirmed, &self.pass) {
             let (site, words) = &*self.site;
             let mail = words.pass(&site.locale, &site.name, email, &pass.link(back));
             self.mailer.send(&mail).await?;

@@ -62,6 +62,7 @@ mod version_table;
 mod visitor_log_table;
 mod watch_table;
 mod webhook_table;
+mod welcome_steps;
 
 pub use account_table::AccountTable;
 pub use alert_table::AlertTable;

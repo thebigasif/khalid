@@ -148,4 +148,23 @@ impl SubscriberStore for AnnouncedSubscribers {
     ) -> BoxFuture<'a, Result<Vec<Recipient>, StoreError>> {
         self.store.audience(segment)
     }
+
+    fn claim_welcome<'a>(
+        &'a self,
+        subscriber: SubscriberId,
+        list: &'a Slug,
+        day: u16,
+        at: DateTime<Utc>,
+    ) -> BoxFuture<'a, Result<bool, StoreError>> {
+        self.store.claim_welcome(subscriber, list, day, at)
+    }
+
+    fn welcomes_due<'a>(
+        &'a self,
+        list: &'a Slug,
+        day: u16,
+        due: (DateTime<Utc>, DateTime<Utc>),
+    ) -> BoxFuture<'a, Result<Vec<Recipient>, StoreError>> {
+        self.store.welcomes_due(list, day, due)
+    }
 }

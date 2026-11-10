@@ -85,9 +85,12 @@ pub enum SignedUp {
     /// A confirmation email went out a moment ago. Nothing was stored, and
     /// nothing is sent.
     RecentlyAsked,
-    /// The address was confirmed before. It now gets this newsletter too,
-    /// and nothing is sent.
+    /// The address was confirmed before and gets this newsletter already,
+    /// so nothing changed and nothing is sent.
     AlreadyConfirmed,
+    /// The address was confirmed before and joined this newsletter now, so
+    /// its welcome is due.
+    JoinedNow(SubscriberId),
 }
 
 /// What a confirmation link did.
@@ -254,6 +257,36 @@ pub trait SubscriberStore: fmt::Debug + Send + Sync {
     fn audience<'a>(
         &'a self,
         segment: &'a Segment,
+    ) -> BoxFuture<'a, Result<Vec<Recipient>, StoreError>>;
+
+    /// Records that `subscriber` is sent the welcome step of `list` due
+    /// `day` days after they joined, `at` that time. `false` when it was
+    /// sent before, so no step goes out twice.
+    ///
+    /// # Errors
+    ///
+    /// [`StoreError`] when the store cannot be written.
+    fn claim_welcome<'a>(
+        &'a self,
+        subscriber: SubscriberId,
+        list: &'a Slug,
+        day: u16,
+        at: DateTime<Utc>,
+    ) -> BoxFuture<'a, Result<bool, StoreError>>;
+
+    /// Every confirmed subscriber of `list` not yet sent its welcome step
+    /// for `day`, whose step falls due after the first time of `due` and
+    /// no later than the second, oldest first. A step is due `day` days
+    /// after the subscriber both confirmed and joined `list`.
+    ///
+    /// # Errors
+    ///
+    /// [`StoreError`] when the store cannot be read.
+    fn welcomes_due<'a>(
+        &'a self,
+        list: &'a Slug,
+        day: u16,
+        due: (DateTime<Utc>, DateTime<Utc>),
     ) -> BoxFuture<'a, Result<Vec<Recipient>, StoreError>>;
 }
 

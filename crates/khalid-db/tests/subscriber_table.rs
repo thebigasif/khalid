@@ -119,11 +119,13 @@ async fn a_second_form_within_ten_minutes_sends_nothing_and_later_one_more() {
 async fn a_confirmed_address_joins_another_newsletter_without_an_email() {
     let db = opened().await;
     let (asked, token) = sign_up("grace@example.com", "main", nine());
-    due(&db.demo, &asked).await;
+    let id = due(&db.demo, &asked).await;
     open(&db.demo, &token, nine()).await;
     let (more, _) = sign_up("grace@example.com", "releases", nine());
     let answer = db.demo.sign_up(&more).await.unwrap();
-    assert_eq!(answer, SignedUp::AlreadyConfirmed);
+    assert_eq!(answer, SignedUp::JoinedNow(id));
+    let again = db.demo.sign_up(&more).await.unwrap();
+    assert_eq!(again, SignedUp::AlreadyConfirmed);
     let lists: Vec<String> = sqlx::query_scalar("SELECT list FROM subscriber_lists ORDER BY list")
         .fetch_all(&db.file)
         .await
