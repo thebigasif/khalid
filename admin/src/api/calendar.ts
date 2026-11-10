@@ -1,5 +1,6 @@
-// The calendar route of the Admin API (KH-EDT-4): posts by day. It only
-// reads; giving a draft its day is an edit to the post.
+// The calendar routes of the Admin API (KH-EDT-4): posts by day, and the
+// planner's suggested days. They only read; giving a draft its day is an
+// edit to the post.
 import { call, type Reply } from "./call";
 import { type Answer, readPost, savePost } from "./posts";
 import type { components } from "./schema";
@@ -17,6 +18,19 @@ export function readCalendar(from: string, to: string): Promise<Reply<Calendar>>
   return call(`/calendar/?${query}`, {}, async (response) => {
     const body: components["schemas"]["CalendarBody"] = await response.json();
     return body.calendar;
+  });
+}
+
+/** The publishing planner's days from tomorrow, as the Admin API sends them. */
+export type Plan = components["schemas"]["PlanView"];
+/** One scheduled or suggested day of the plan. */
+export type PlanSlot = components["schemas"]["PlanSlot"];
+
+/** The plan at the site's own pace: a day for each ready draft. Reading it changes nothing. */
+export function readPlan(): Promise<Reply<Plan>> {
+  return call("/calendar/plan/", {}, async (response) => {
+    const body: components["schemas"]["PlanBody"] = await response.json();
+    return body.plan;
   });
 }
 
