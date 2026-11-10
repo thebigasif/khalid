@@ -2454,6 +2454,63 @@
         ]
       }
     },
+    "/api/admin/v1/media/folders/": {
+      "get": {
+        "tags": [
+          "admin media"
+        ],
+        "summary": "Lists the library's folders by name: each one that holds an item, and\neach one above it, with how many items it holds itself. The top of the\nlibrary is never listed. Needs `media:write`.",
+        "operationId": "list_media_folders",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The folders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaFolders"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks media:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/media/search/": {
       "get": {
         "tags": [
@@ -14355,6 +14412,45 @@
           }
         },
         "additionalProperties": false
+      },
+      "MediaFolder": {
+        "type": "object",
+        "description": "A folder of the media library, as the Admin API lists it.",
+        "required": [
+          "name",
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "integer",
+            "description": "The items filed in it, not counting those in folders inside it.",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "description": "Up to five slugs joined by `/`, never empty."
+          }
+        },
+        "example": {
+          "name": "guides/2026",
+          "items": 4
+        }
+      },
+      "MediaFolders": {
+        "type": "object",
+        "description": "Every folder of the media library that holds an item, and each folder\nabove one, by name.",
+        "required": [
+          "folders"
+        ],
+        "properties": {
+          "folders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaFolder"
+            },
+            "description": "The folders, by name."
+          }
+        }
       },
       "MediaItems": {
         "type": "object",

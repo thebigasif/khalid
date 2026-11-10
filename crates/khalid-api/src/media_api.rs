@@ -30,7 +30,9 @@ use crate::media_uses::MediaUses;
 use crate::pagination::Meta;
 use crate::problem::{Problem, ProblemType};
 use crate::query::{ListQuery, RawListQuery};
-use crate::resources::{AdminMedia, MediaEditBody, MediaEdits, MediaItems, MediaList};
+use crate::resources::{
+    AdminMedia, MediaEditBody, MediaEdits, MediaFolder, MediaFolders, MediaItems, MediaList,
+};
 use crate::{media_picture, media_search};
 
 /// A site's media library, and the address its own files are served under.
@@ -82,6 +84,7 @@ pub(crate) fn routes(media: Media, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(upload_media, list_media))
         .routes(routes!(read_media, edit_media, delete_media))
+        .routes(routes!(list_media_folders))
         .routes(routes!(media_search::search_pictures))
         .routes(routes!(media_search::photo_used))
         .routes(routes!(media_picture::copy_picture))
@@ -346,6 +349,36 @@ fn in_use(files: &[String]) -> Problem {
         "Remove the file from those places first, then delete it.",
     );
     Problem::new(ProblemType::Conflict, &message).with_rule("uses")
+}
+
+/// Lists the library's folders by name: each one that holds an item, and
+/// each one above it, with how many items it holds itself. The top of the
+/// library is never listed. Needs `media:write`.
+#[utoipa::path(
+    get, path = "/media/folders/", tag = "admin media",
+    security(("admin_key" = [])),
+    responses(
+        (status = 200, description = "The folders", body = MediaFolders),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks media:write", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn list_media_folders(
+    State(media): State<Media>,
+    Extension(principal): Extension<Principal>,
+) -> Result<Json<MediaFolders>, Problem> {
+    require(&principal, Scope::MediaWrite)?;
+    let media = media.ok_or_else(no_library)?;
+    let folders = media
+        .library
+        .folders()
+        .into_iter()
+        .map(|counted| MediaFolder {
+            name: counted.folder.as_str().to_owned(),
+            items: counted.items,
+        })
+        .collect();
+    Ok(Json(MediaFolders { folders }))
 }
 
 /// The edit `body` asks for, with its folder and focal point checked.

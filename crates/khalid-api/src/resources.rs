@@ -43,8 +43,8 @@ pub use collection::Collection;
 pub use comment::{AdminComment, CommentReply, CommentStatus, CommentWriter};
 pub use content_collection::ContentCollection;
 pub use media::{
-    AdminMedia, CropBoxBody, FocalPointBody, MediaEditBody, MediaEdits, MediaItems, MediaList,
-    PictureEditBody,
+    AdminMedia, CropBoxBody, FocalPointBody, MediaEditBody, MediaEdits, MediaFolder, MediaFolders,
+    MediaItems, MediaList, PictureEditBody,
 };
 pub use menu::{Menu, MenuLink};
 pub use post::{Bodies, Post, PostSeries};

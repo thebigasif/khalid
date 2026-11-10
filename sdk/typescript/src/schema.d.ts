@@ -1062,6 +1062,20 @@ export type MediaEdits = {
   media: MediaEditBody[];
 };
 
+/** A folder of the media library, as the Admin API lists it. */
+export type MediaFolder = {
+  /** The items filed in it, not counting those in folders inside it. */
+  items: number;
+  /** Up to five slugs joined by `/`, never empty. */
+  name: string;
+};
+
+/** Every folder of the media library that holds an item, and each folder above one, by name. */
+export type MediaFolders = {
+  /** The folders, by name. */
+  folders: MediaFolder[];
+};
+
 /** Media items, wrapped the way the Admin API wraps resources. */
 export type MediaItems = {
   /** The item or items. */
@@ -2569,6 +2583,16 @@ export interface Operations {
       body: Blob;
     };
     output: MediaItems;
+  };
+  /** Lists the library's folders by name: each one that holds an item, and each one above it, with how many items it holds itself. The top of the library is never listed. Needs `media:write`. */
+  list_media_folders: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: MediaFolders;
   };
   /** Finds free photos on Unsplash or GIFs on GIPHY for a post, through the blog, so the keys never reach the browser. Each search is off until the owner turns it on in `site.toml`; without `words` the answer only says which are on. Needs `media:write`. */
   search_pictures: {

@@ -30,6 +30,7 @@ const WRITER: &str =
     "ki_1111222233334444_aaaabbbbccccddddeeeeffff00001111aaaabbbbccccddddeeeeffff00001111";
 
 const PDF: &[u8] = b"%PDF-1.7\nA checklist for choosing a CRM\n%%EOF\n";
+const TEXT: &[u8] = b"Ten questions to ask a CRM vendor.\n";
 
 /// A site where the posts named in it use every file called `name`.
 #[derive(Debug)]
@@ -184,4 +185,26 @@ async fn a_file_a_post_still_uses_is_not_deleted() {
     let read = format!("/api/admin/v1/media/{id}/");
     let (status, _) = send(&app, "GET", &read, UPLOADER, b"").await;
     assert_eq!(status, StatusCode::OK);
+}
+
+#[tokio::test]
+async fn folders_are_listed_by_name_with_their_counts() {
+    let site = tempfile::tempdir().unwrap();
+    let app = app(site.path(), nobody()).await;
+    let uri = "/api/admin/v1/media/folders/";
+    let (status, body) = send(&app, "GET", uri, UPLOADER, b"").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body, serde_json::json!({ "folders": [] }));
+    upload(&app, "checklist.pdf", "guides/2026", PDF).await;
+    upload(&app, "questions.txt", "", TEXT).await;
+    let (_, body) = send(&app, "GET", uri, UPLOADER, b"").await;
+    assert_eq!(
+        body,
+        serde_json::json!({ "folders": [
+            { "name": "guides", "items": 0 },
+            { "name": "guides/2026", "items": 1 },
+        ] })
+    );
+    let (status, _) = send(&app, "GET", uri, WRITER, b"").await;
+    assert_eq!(status, StatusCode::FORBIDDEN);
 }
