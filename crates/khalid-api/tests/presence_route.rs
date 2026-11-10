@@ -9,7 +9,7 @@ use axum::body::{Body, to_bytes};
 use axum::http::{Request, StatusCode};
 use chrono::{TimeZone, Utc};
 use khalid_api::api;
-use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
+use khalid_api::keys::{KeyHashing, KeyStore, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{Announce, PublishDoor};
 use khalid_api::resources::AdminPost;
@@ -35,9 +35,10 @@ impl Announce for Quiet {
     fn published(&self, _post: &AdminPost) {}
 }
 
-/// The router over one draft, with the clock stopped.
+/// The router over one draft, with the clock stopped. Maria's and Lena's
+/// keys carry their names; the reader's is named by its identity.
 #[cfg(test)]
-fn router() -> axum::Router {
+async fn router() -> axum::Router {
     let draft = AdminPost::new(
         "en.choosing-anchor-text",
         Slug::try_new("choosing-anchor-text").unwrap(),
@@ -54,11 +55,12 @@ fn router() -> axum::Router {
         let token: KeyToken = token.parse().unwrap();
         StoredKey::for_integration(&token, scopes, &hashing).unwrap()
     };
-    let keys = MemoryKeyStore::new(vec![
-        key(MARIA, vec![Scope::PostsWrite]),
-        key(LENA, vec![Scope::PostsWrite]),
-        key(READER, vec![Scope::ContentRead]),
-    ]);
+    let keys = MemoryKeyStore::new(vec![key(READER, vec![Scope::ContentRead])]);
+    let maria = key(MARIA, vec![Scope::PostsWrite]);
+    keys.create(maria, "Maria").await.unwrap();
+    keys.create(key(LENA, vec![Scope::PostsWrite]), "Lena")
+        .await
+        .unwrap();
     let content = Arc::new(common::store());
     api::router_with_door(content, Arc::new(door), Arc::new(keys)).0
 }
@@ -99,24 +101,28 @@ async fn check_in(router: &axum::Router, key: &str, claim: &str) -> Value {
 
 #[tokio::test]
 async fn the_first_to_check_in_holds_the_lock_until_someone_takes_over() {
-    let router = router();
+    let router = router().await;
     let maria = check_in(&router, MARIA, "join").await;
     let holder = maria["holder"]["who"].clone();
+    assert_eq!(holder, json!("1111222233334444"), "{maria}");
     assert_eq!(maria["yours"], json!(true), "{maria}");
     assert_eq!(maria["holder"]["since"], json!("2026-10-31T09:00:00Z"));
     let lena = check_in(&router, LENA, "join").await;
     assert_eq!(lena["yours"], json!(false), "{lena}");
     assert_eq!(lena["holder"]["who"], holder);
+    assert_eq!(lena["holder"]["name"], json!("Maria"), "{lena}");
     let lena = check_in(&router, LENA, "take_over").await;
     assert_eq!(lena["yours"], json!(true), "{lena}");
+    assert_eq!(lena["holder"]["name"], json!("Lena"), "{lena}");
     assert_eq!(lena["others"][0]["who"], holder);
+    assert_eq!(lena["others"][0]["name"], json!("Maria"), "{lena}");
     let maria = check_in(&router, MARIA, "join").await;
     assert_eq!(maria["yours"], json!(false), "{maria}");
 }
 
 #[tokio::test]
 async fn leaving_hands_the_lock_to_the_next_in_line() {
-    let router = router();
+    let router = router().await;
     check_in(&router, MARIA, "join").await;
     check_in(&router, LENA, "join").await;
     let (status, _) = send(&router, ("DELETE", PRESENCE), MARIA, None).await;
@@ -128,7 +134,7 @@ async fn leaving_hands_the_lock_to_the_next_in_line() {
 
 #[tokio::test]
 async fn the_presence_route_refuses_a_missing_post_a_reader_and_an_unknown_claim() {
-    let router = router();
+    let router = router().await;
     let missing = "/api/admin/v1/posts/en.nothing-here/presence/";
     let body = Some(json!({ "claim": "join" }));
     for method in ["POST", "DELETE"] {
