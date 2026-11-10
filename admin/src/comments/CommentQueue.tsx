@@ -7,11 +7,14 @@ import {
   type CommentStatus,
   deleteComment,
   listComments,
+  markSpam,
+  notSpam,
   replyToComment,
 } from "../api/comments";
 import { problemMessage } from "../api/posts";
 import { Problem } from "../components/Problem";
 import { en, type UserMessage } from "../strings/en";
+import { spamWords } from "../strings/spamWords";
 import { CommentCard } from "./CommentCard";
 
 type Props = { status: CommentStatus };
@@ -44,6 +47,12 @@ export function CommentQueue({ status }: Props) {
   };
   const reply = async (comment: AdminComment, name: string, text: string) =>
     settle(await replyToComment(comment.id, name, text), words.replied(comment.author_name));
+  const spam = async (comment: AdminComment) => {
+    await settle(await markSpam(comment.id), spamWords.marked(comment.author_name));
+  };
+  const notSpamAfterAll = async (comment: AdminComment) => {
+    await settle(await notSpam(comment.id), spamWords.back(comment.author_name));
+  };
 
   const comments = listed.data;
   let list = <p role="status">{words.loading}</p>;
@@ -62,6 +71,8 @@ export function CommentQueue({ status }: Props) {
             onApprove={approve}
             onDelete={remove}
             onReply={reply}
+            onSpam={spam}
+            onNotSpam={notSpamAfterAll}
           />
         ))}
       </ul>
