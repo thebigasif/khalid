@@ -53,6 +53,8 @@ showcase_build() {
   else
     bash "$showcase_root/scripts/demo-brand.sh" "$copy" "$pack"
   fi
+  # The announcement links back to the template's page, as on Pages.
+  bash "$showcase_root/scripts/demo-backlink.sh" "$copy" "$pack"
   # The address moves, and so does every full address of the site's own
   # files, such as the logo in theme/tokens.toml.
   find "$copy" -type f -name '*.toml' -exec sed -i "s#https://www\.example\.com\([/\"]\)#$address\1#g" {} +
