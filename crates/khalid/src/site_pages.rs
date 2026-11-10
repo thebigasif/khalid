@@ -2,15 +2,12 @@
 //! rendered into memory instead of files, with the site's files and moved
 //! addresses. A headless site has the files and moves and no HTML page.
 
-use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, OnceLock, PoisonError, RwLock};
 
-use khalid_content::{
-    ContentTree, Document, PostFront, SiteContent, check_bodies, parse_post, read_content,
-};
-use khalid_core::{Clock, Config, Locale, Slug, UserMessage};
+use khalid_content::{ContentTree, Document, PostFront, SiteContent, check_bodies, read_content};
+use khalid_core::{Clock, Config, Locale, UserMessage};
 use khalid_render::{Renderer, Tokens};
 use khalid_routes::Routes;
 use khalid_server::{Moved, Page, Render, Rendered};
@@ -18,21 +15,18 @@ use khalid_server::{Moved, Page, Render, Rendered};
 use crate::assets::PageStylesheets;
 use crate::comment_pages::{self, ShownComments};
 use crate::content_feed::ContentFeed;
-use crate::form_pages::{self, LiveForms};
+use crate::form_pages::LiveForms;
 use crate::listed_post::ListedPost;
-use crate::newsletter_files::archive_pages;
-use crate::post_files::{Assets, charts};
-use crate::post_heads::{self, PostHeads};
+use crate::post_files::Assets;
+use crate::post_heads::PostHeads;
 use crate::post_photos::Shown;
 use crate::site_content::Catalog;
-use crate::site_files::HEADLESS_NOT_FOUND;
-use crate::site_html::{SearchShell, Unrendered, Which, html_pages, search_shells};
+use crate::site_html::{SearchShell, Unrendered, Which, html_pages};
 use crate::unlock::Gate;
 use crate::{
-    assets, build_gate, build_home, build_lists, build_message, build_pages, build_seo,
-    build_sitemap, categories, content_message, home_images, look, own_descriptions,
-    post_categories, post_files, post_gate, post_lock, search_page, seo_extras, serve_message,
-    share_images, site_files, site_outline, trails,
+    assets, build_gate, build_home, build_message, build_seo, categories, content_message,
+    home_images, look, own_descriptions, post_categories, post_lock, search_page, share_images,
+    site_outline,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -308,66 +302,6 @@ impl SitePages {
         self.0.gate.clone()
     }
 
-    /// The page the draft of post `slug` in `locale` would have if it went
-    /// live today, rendered among the site's posts as they are now, for
-    /// its preview link. `None` when there is no such draft, the site has
-    /// no theme, or it has no post to shape the draft's entry on. Reads
-    /// files and renders, so it runs off the async runtime (BL-RUN-7).
-    pub(crate) fn preview(
-        &self,
-        locale: &Locale,
-        slug: &Slug,
-    ) -> Result<Option<String>, UserMessage> {
-        let (folder, settings) = (&self.0.folder, self.settings());
-        let mut file = folder.clone();
-        file.push(format!("drafts/{locale}/{slug}.md"));
-        let (Some(_), Ok(text)) = (&settings.theme, fs::read_to_string(&file)) else {
-            return Ok(None);
-        };
-        let unreadable = |error| content_message::of(folder, &error);
-        let tree = ContentTree::walk(folder).map_err(unreadable)?;
-        let mut content = read_content(&tree).map_err(unreadable)?;
-        let today = self.0.clock.now().date_naive();
-        let path = PathBuf::from(format!("content/{locale}/posts/{today}-{slug}.md"));
-        let post = parse_post(&path, &text).map_err(unreadable)?;
-        // A Document is made only by khalid-content, so the draft's entry
-        // is another post's with every field that names a file replaced.
-        let Some(mut doc) = content.posts.first().cloned() else {
-            return Ok(None);
-        };
-        doc.locale = locale.clone();
-        "posts".clone_into(&mut doc.collection);
-        doc.path = path;
-        doc.front = post.front;
-        doc.front.date.get_or_insert(today);
-        let front_lines = text
-            .lines()
-            .count()
-            .saturating_sub(post.body.lines().count());
-        doc.body_line = front_lines.saturating_add(1);
-        doc.body = post.body;
-        content
-            .posts
-            .retain(|other| &other.locale != locale || other.front.slug.as_ref() != Some(slug));
-        content.posts.push(doc);
-        let assets = Assets::of(&tree);
-        let mut shown = Shown::default();
-        let which = Which::Posts;
-        let shown = (which, &mut shown);
-        let (served, _) = self.render_of(&settings, &assets, (&content, &[]), shown)?;
-        let address = build_pages::path_of(&settings.config, locale, &format!("{slug}/"));
-        let page = served
-            .pages
-            .iter()
-            .rev()
-            .find(|page| page.path().as_str() == address);
-        let Some(page) = page else {
-            return Ok(None);
-        };
-        let body = page.body().map_err(|_| serve_message::internal())?;
-        Ok(Some(String::from_utf8_lossy(&body).into_owned()))
-    }
-
     /// Every page made from `content`, already read from the site folder,
     /// with the files `assets` lists beside folder posts, the site's files,
     /// the not-found page and the moved addresses, then hands the feed its
@@ -433,111 +367,6 @@ impl SitePages {
         }
         Ok(rendered)
     }
-
-    /// The `which` pages made from `content` with `settings`, with the files `assets` lists
-    /// beside folder posts, the site's files, the moved addresses and the
-    /// not-found page of the default language when `which` is
-    /// [`Which::All`], and the dated posts of `content` as lists show them.
-    /// Related posts are chosen among those and `others`. Only a full
-    /// render serves the files; a saved post's page still points its
-    /// images at them. A headless site has no HTML page, as `khalid build`
-    /// writes none. Cards and bylines show the images in `shown`, which
-    /// gains the ones these pages draw.
-    fn render_of(
-        &self,
-        settings: &Settings,
-        assets: &Assets,
-        (content, others): (&SiteContent, &[ListedPost]),
-        (which, shown): (Which, &mut Shown),
-    ) -> Result<(Served, Vec<ListedPost>), UserMessage> {
-        let folder = &self.0.folder;
-        let Settings {
-            config,
-            routes,
-            theme,
-        } = settings;
-        let href = theme
-            .as_ref()
-            .map_or("", |theme| theme.stylesheet.path().as_str());
-        let today = self.0.clock.now().date_naive();
-        let content = &*charts::read(folder, content);
-        let mut languages = build_pages::pages(config, routes, (content, others), href, today)?;
-        let tokens = theme.as_ref().map(|theme| &theme.tokens);
-        assets::preload_body_font(folder, config, tokens, &mut languages);
-        let renderer = theme.as_ref().map(|theme| &theme.renderer);
-        post_lock::lock(config, content, renderer, &mut languages);
-        let categories = categories::of(folder)?;
-        if let Some(theme) = theme {
-            search_page::add(config, &theme.renderer, &mut languages)?;
-            archive_pages::add(folder, config, (&theme.renderer, today), &mut languages)?;
-            // A saved post's page alone needs no list, and its content
-            // holds too few posts to make one.
-            if which == Which::All {
-                let sources = (content, categories.as_slice());
-                build_lists::add((config, routes), &theme.renderer, sources, &mut languages)?;
-                let found = (&theme.renderer, folder.as_path(), today);
-                build_pages::discovery_pages((config, routes), found, content, &mut languages)?;
-                build_sitemap::add(config, &theme.renderer, &mut languages)?;
-            }
-            own_descriptions::fill(config, &theme.renderer, &mut languages)?;
-        }
-        let (gone, _) = seo_extras::arrange(folder, (config, routes), &mut languages)?;
-        // A headless site's heads carry the same trail as its pages would.
-        trails::fill(folder, (config, routes), &mut languages)?;
-        post_categories::fill((config, routes), &categories, &mut languages);
-        comment_pages::fill(config, self.0.comments.as_ref(), &mut languages);
-        form_pages::fill(config, self.0.forms.as_ref(), &mut languages);
-        form_pages::under_mount(config, &mut languages);
-        let beside = post_files::served(folder, config, assets, &mut languages, shown)?;
-        post_gate::open(config, routes, content, &mut languages)?;
-        let seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
-        let default_tokens = Tokens::default();
-        let tokens = theme.as_ref().map_or(&default_tokens, |t| &t.tokens);
-        let cards = share_images::attach(folder, config, tokens, &seo_site, &mut languages)?;
-        let seo_pages = build_seo::heads(&seo_site, &mut languages)?;
-        build_sitemap::fill(config, &seo_site, &seo_pages, &mut languages)?;
-        post_lock::share_heads(&mut languages);
-        let mut served = Served {
-            pages: Vec::new(),
-            not_found: HEADLESS_NOT_FOUND.to_owned(),
-            moves: Vec::new(),
-            heads: PostHeads::new(),
-        };
-        if which == Which::All {
-            self.0.gate.replace(&languages);
-            if self.0.feed.is_some() {
-                served.heads = post_heads::of(&seo_site, &seo_pages)?;
-            }
-            served.pages = site_files::files(config, &seo_site, &seo_pages, self.0.clock.now())?;
-            served.pages.extend(beside);
-            served.moves = site_files::moves(config, routes, content)?;
-            served.moves.extend(seo_extras::archives_off::moves(&gone)?);
-        }
-        if let Some(theme) = theme {
-            if which == Which::All {
-                (served.pages).extend([theme.stylesheet.clone(), theme.script.clone()]);
-                (served.pages).extend(theme.fonts.iter().cloned());
-                let shells = search_shells(&languages);
-                *self
-                    .0
-                    .searches
-                    .lock()
-                    .unwrap_or_else(PoisonError::into_inner) = shells;
-            }
-            let parts = (&theme.renderer, &theme.sheets);
-            served.not_found = html_pages(parts, config, &languages, which, &mut served.pages)?;
-        }
-        // The cards draw behind the answers: their addresses are already
-        // baked into the heads, so the pages are complete without the
-        // files, and the cache warms while the server answers (G14, ADR
-        // "khalid serve answers before the full render").
-        if !cards.is_empty() {
-            let site = folder.clone();
-            std::thread::spawn(move || share_images::warm(&site, cards));
-        }
-        let listed = languages.into_iter().flat_map(|language| language.listed);
-        Ok((served, listed.collect()))
-    }
 }
 
 impl Render for SitePages {
@@ -595,6 +424,12 @@ mod search;
 
 #[path = "site_pages_saved.rs"]
 mod saved;
+
+#[path = "site_pages_preview.rs"]
+mod preview;
+
+#[path = "site_pages_render.rs"]
+mod render;
 
 #[path = "site_reload.rs"]
 pub(crate) mod reload;
