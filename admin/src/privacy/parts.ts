@@ -20,6 +20,14 @@ export type PrivacyText = {
 /** Who runs the site, for the privacy page. */
 export type PrivacyContact = { name?: string; email?: string; address?: string };
 
+/** The imprint's own lines, beyond the contact's name, address and email. */
+export type PrivacyImprint = {
+  phone?: string;
+  register?: string;
+  vat_id?: string;
+  responsible?: string;
+};
+
 /** The `[privacy]` table: every key may be left out. */
 export type PrivacyTable = {
   /** 6 unless set, from 1 to 13. */
@@ -32,6 +40,8 @@ export type PrivacyTable = {
   /** The owner's words, per language such as `en`. */
   text?: Record<string, PrivacyText>;
   contact?: PrivacyContact;
+  /** Set, even empty, it adds an imprint page. */
+  imprint?: PrivacyImprint;
 };
 
 /** One part of `[privacy]` as a change sends it. */
@@ -60,6 +70,11 @@ export function categoryOf(entry: CodeEntry): Category | null {
 export function contactMissing(table: PrivacyTable | undefined): boolean {
   const contact = table?.contact;
   return !contact?.name?.trim() || !contact?.email?.trim();
+}
+
+/** Whether an imprint lacks what German law asks for: a name, a postal address and an email. */
+export function imprintMissing(table: PrivacyTable | undefined): boolean {
+  return contactMissing(table) || !table?.contact?.address?.trim();
 }
 
 /** `text` trimmed, or `undefined` when empty, so the file leaves the key out. */
