@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { aiVisitors, analyticsBlog, uncited, visitors } from "../../test/analytics";
 import { axeViolations, json, renderAt, signedIn } from "../../test/render";
 import { en } from "../strings/en";
+import { searchTotalsWords as searchWords } from "../strings/searchTotalsWords";
 
 const words = en.analytics;
 
@@ -33,6 +34,13 @@ describe("the Analytics screen", () => {
     const quiet = screen.getByRole("table", { name: words.uncited.title });
     expect(quiet).toHaveTextContent("/blog/what-a-sitemap-does/");
     expect(quiet).toHaveTextContent("ClaudeBot, GPTBot");
+    const google = await screen.findByRole("table", { name: searchWords.title });
+    expect(within(google).getByRole("row", { name: /^Clicks/ })).toHaveTextContent("412");
+    expect(within(google).getByRole("row", { name: /^Clicked/ })).toHaveTextContent("4.2%");
+    const position = within(google).getByRole("row", { name: /^Average position/ });
+    expect(position).toHaveTextContent("7.4");
+    expect(position).toHaveTextContent(searchWords.notShown);
+    expect(screen.getByText(searchWords.late(7))).toBeVisible();
     expect(screen.getByRole("link", { name: en.nav.analytics })).toHaveAttribute(
       "aria-current",
       "page",
@@ -49,8 +57,41 @@ describe("the Analytics screen", () => {
     await userEvent.click(screen.getByRole("button", { name: words.show }));
     await waitFor(() => {
       const asked = sent.map((request) => new URL(request.url).searchParams.get("days"));
-      expect(asked.filter((days) => days === "90")).toHaveLength(3);
+      expect(asked.filter((days) => days === "90")).toHaveLength(4);
     });
+  });
+
+  it("tells a blog not connected to Search Console where to connect, calmly", async () => {
+    signedIn();
+    const notSetUp = {
+      type: "https://khalid.dev/problems/not-set-up",
+      title: "Search Console is not set up",
+      status: 409,
+      detail: "This site is not connected to Google Search Console.",
+      fix: "Follow the steps in docs/deploy.md.",
+    };
+    analyticsBlog({ "GET /search-console/totals/": () => json(409, notSetUp) });
+    renderAt("/analytics");
+    const connect = await screen.findByRole("link", { name: searchWords.connect });
+    expect(connect).toHaveAttribute("href", "/admin/search-console");
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.queryByRole("table", { name: searchWords.title })).toBeNull();
+  });
+
+  it("keeps the page views on screen when Google gives no usable answer", async () => {
+    signedIn();
+    const quota = {
+      type: "https://khalid.dev/problems/upstream",
+      title: "Google gave no usable answer",
+      status: 502,
+      detail: "Google's quota for these requests is spent for now.",
+      fix: "Wait a minute, or until tomorrow for the daily quota, then try again.",
+    };
+    analyticsBlog({ "GET /search-console/totals/": () => json(502, quota) });
+    renderAt("/analytics");
+    const google = await screen.findByRole("region", { name: searchWords.title });
+    expect(await within(google).findByRole("alert")).toHaveTextContent(quota.title);
+    expect(screen.getByRole("region", { name: words.total(7) })).toHaveTextContent("321");
   });
 
   it("says plainly when nothing was counted", async () => {
