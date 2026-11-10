@@ -23,12 +23,14 @@ import { Calendar } from "./Calendar";
 import { Comments } from "./Comments";
 import { Dashboard } from "./Dashboard";
 import { Design } from "./Design";
+import { Forms } from "./Forms";
 import { HandOver } from "./HandOver";
 import { Keys } from "./Keys";
 import { LinkSignIn } from "./LinkSignIn";
 import { Look } from "./Look";
 import { Media } from "./Media";
 import { MediaDetails } from "./MediaDetails";
+import { Navigation } from "./Navigation";
 import { NewPost } from "./NewPost";
 import { Pages } from "./Pages";
 import { Passkeys } from "./Passkeys";
@@ -44,6 +46,7 @@ import { Site } from "./Site";
 import { SitePage } from "./SitePage";
 import { Sites } from "./Sites";
 import { Subscribers } from "./Subscribers";
+import { Tags } from "./Tags";
 import { Team } from "./Team";
 import { Trash } from "./Trash";
 import { WebhookActivity } from "./WebhookActivity";
@@ -124,11 +127,14 @@ const trash = createRoute({ getParentRoute: () => signedIn, path: "/trash", comp
 
 const audit = createRoute({ getParentRoute: () => signedIn, path: "/audit", component: AuditLog });
 
-// Only owners and admins read form answers, so the screen loads when opened.
+// The answers readers sent through the site's forms. Only owners and
+// admins read them. The Forms, Tags and Navigation screens are in the
+// first download: the size gate counts every file, and a separate file
+// for each cost 4.3 KB more than the screens themselves.
 const forms = createRoute({
   getParentRoute: () => signedIn,
   path: "/forms",
-  component: lazyRouteComponent(() => import("./Forms"), "Forms"),
+  component: Forms,
 });
 
 const redirects = createRoute({
@@ -191,11 +197,11 @@ const authorPage = createRoute({
   component: AuthorPage,
 });
 
-// Loads when opened, so the admin's first download stays inside its budget.
+// The site's tags: rename, merge and remove.
 const tags = createRoute({
   getParentRoute: () => signedIn,
   path: "/tags",
-  component: lazyRouteComponent(() => import("./Tags"), "Tags"),
+  component: Tags,
 });
 
 // The site's pages, such as About: files beside the posts, live once saved.
@@ -237,11 +243,10 @@ const look = createRoute({ getParentRoute: () => signedIn, path: "/look", compon
 const design = createRoute({ getParentRoute: () => signedIn, path: "/design", component: Design });
 
 // The header and footer menus of [nav], saved through the settings API.
-// It loads on first visit, so the first screen stays small.
 const navigation = createRoute({
   getParentRoute: () => signedIn,
   path: "/navigation",
-  component: lazyRouteComponent(() => import("./Navigation"), "Navigation"),
+  component: Navigation,
 });
 
 // The whole blog's settings; post settings live in the editor.
