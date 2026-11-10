@@ -20,6 +20,7 @@ pub(crate) fn for_lint(facts: &[Fact]) -> Vec<LintFact> {
         .map(|fact| {
             LintFact::new(fact.key.as_str(), fact.value.as_str(), fact.checked)
                 .with_old(fact.old.clone())
+                .with_source(fact.source.as_ref().map(|url| url.as_str().to_owned()))
         })
         .collect()
 }

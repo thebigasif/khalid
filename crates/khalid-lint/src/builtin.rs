@@ -188,6 +188,7 @@ fn topic_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(brief::QuestionUnanswered),
         Box::new(brief::TermMissing),
         Box::new(brief::LinkMissing),
+        Box::new(brief::LinkUnknown),
         Box::new(collections::OverlappingCollections),
         Box::new(address::BrokenWikilink),
         Box::new(address::AmbiguousWikilink),
@@ -238,6 +239,7 @@ pub(crate) fn site_rules(thresholds: Thresholds, today: NaiveDate) -> Vec<Box<dy
             months: thresholds.fact_check_months,
             today,
         }),
+        Box::new(facts::FactCheckedInFuture { today }),
         Box::new(site_sections::SectionRepeatsPost {
             min_words: thresholds.thin_post_words,
         }),

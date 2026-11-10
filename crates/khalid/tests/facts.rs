@@ -143,6 +143,35 @@ fn a_broken_facts_file_stops_lint_and_build_with_a_plain_message() {
 }
 
 #[test]
+fn lint_warns_about_a_check_still_to_come_and_points_at_the_source() {
+    let ahead = FACTS.replace("2020-01-01", "2999-01-01");
+    let site = site(&format!(
+        "{ahead}source = \"https://example.com/pricing/\"\n"
+    ));
+    let output = khalid(site.path(), &["lint", "--json"]);
+    let json: Value = serde_json::from_str(&text(&output.stdout)).unwrap();
+    let price = (
+        "why-internal-links-matter".to_owned(),
+        "pro-plan-price".to_owned(),
+    );
+    assert_eq!(
+        found(&json, "fact-checked-in-future"),
+        vec![price],
+        "{json}"
+    );
+    assert!(found(&json, "fact-not-checked").is_empty(), "{json}");
+    let findings = json["findings"].as_array().unwrap();
+    let ahead = findings
+        .iter()
+        .find(|f| f["rule"] == "fact-checked-in-future");
+    let suggests = ahead.map(|finding| finding["suggestions"].clone());
+    assert_eq!(
+        suggests,
+        Some(serde_json::json!(["https://example.com/pricing/"]))
+    );
+}
+
+#[test]
 fn a_source_that_is_not_a_web_address_stops_lint_with_the_fix() {
     let site = site(&format!("{FACTS}source = \"the pricing page\"\n"));
     let output = khalid(site.path(), &["lint"]);
