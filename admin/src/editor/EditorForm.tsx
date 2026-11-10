@@ -8,6 +8,7 @@ import type { PostVersion } from "../api/versions";
 import { Problem } from "../components/Problem";
 import { en } from "../strings/en";
 import { CopyPost } from "./CopyPost";
+import { DraftComments } from "./comments/DraftComments";
 import { GoLive } from "./GoLive";
 import { LinkSuggestions } from "./LinkSuggestions";
 import { LintPanel } from "./LintPanel";
@@ -176,6 +177,7 @@ export function EditorForm({ post }: Props) {
               spellCheck
             />
           )}
+          <DraftComments id={post.id} markdown={draft.markdown} />
         </div>
         {live ? (
           <LivePage id={post.id} version={updatedAt.current} />
