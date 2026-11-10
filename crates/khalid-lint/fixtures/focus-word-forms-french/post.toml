@@ -1,0 +1,18 @@
+# A French post whose focus keyword "lien interne" appears only in the
+# plural, "liens internes". The French stemmer matches the two forms, so
+# no focus rule fires. Before French stems every focus place was missing.
+extends = "focus-clean"
+locale = "fr"
+slug = "pourquoi-les-liens-internes-comptent"
+title = "Liens internes : pourquoi ils comptent"
+focus_keyword = "lien interne"
+description = "Pourquoi les liens internes aident les visiteurs et Google, et comment les ajouter."
+body_text = "Les liens internes aident les visiteurs à trouver le prochain article utile.\nOù placer les liens internes\nMettez-les là où le lecteur cherche la suite."
+
+[[headings]]
+level = "h2"
+text = "Où placer les liens internes"
+
+[[images]]
+src = "/media/link-map.png"
+alt = "Une carte des liens internes entre cinq articles"
