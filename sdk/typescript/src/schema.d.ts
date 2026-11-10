@@ -2007,7 +2007,7 @@ export type Settings = {
 export type SettingsChange = {
   /** A new address of the main site. */
   address?: string | null;
-  /** Every entry of `[code]`, in place of the old ones, written as a `[[code]]` list. An empty list removes `[code]`. */
+  /** Every entry of `[code]`, in place of the old ones, written as a `[[code]]` list. An empty list removes `[code]`. A list that differs from the saved one needs `admin:all`. */
   code?: (Record<string, unknown>)[] | null;
   /** A new default language, which `languages` must include. */
   default_language?: string | null;
@@ -3480,7 +3480,7 @@ export interface Operations {
     };
     output: SiteSettings;
   };
-  /** Changes the core settings in `site.toml`: only the fields sent change, and each value must pass the checks `khalid serve` makes at start. The change carries the `updated_at` of the copy it was made on; when `site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The running server puts most settings in use once saved; `restart_needed` says when one it reads only at start, such as `address`, waits for a restart. Needs `settings:write`. */
+  /** Changes the core settings in `site.toml`: only the fields sent change, and each value must pass the checks `khalid serve` makes at start. The change carries the `updated_at` of the copy it was made on; when `site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The running server puts most settings in use once saved; `restart_needed` says when one it reads only at start, such as `address`, waits for a restart. Needs `settings:write`; a change to `code` also needs `admin:all`, as a post's head code does, because that code runs on every reader's page. Sending `code` back unchanged needs no more. */
   change_settings: {
     input: {
       headers?: {

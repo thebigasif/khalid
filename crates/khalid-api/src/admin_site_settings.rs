@@ -84,7 +84,9 @@ pub(crate) struct SettingsChanges {
 /// `site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The
 /// running server puts most settings in use once saved; `restart_needed`
 /// says when one it reads only at start, such as `address`, waits for a
-/// restart. Needs `settings:write`.
+/// restart. Needs `settings:write`; a change to `code` also needs
+/// `admin:all`, as a post's head code does, because that code runs on
+/// every reader's page. Sending `code` back unchanged needs no more.
 #[utoipa::path(
     put, path = "/settings/", tag = "admin settings",
     security(("admin_key" = [])),
@@ -92,7 +94,7 @@ pub(crate) struct SettingsChanges {
     responses(
         (status = 200, description = "The settings as saved", body = SiteSettings),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
-        (status = 403, description = "The key lacks settings:write", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks settings:write, or changes code without admin:all", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "This server keeps no settings", body = Problem, content_type = "application/problem+json"),
         (status = 409, description = "site.toml changed after the copy the change was made on", body = Problem, content_type = "application/problem+json"),
         (status = 422, description = "The body could not be read, or a value would not pass the checks at start", body = Problem, content_type = "application/problem+json"),
@@ -105,9 +107,31 @@ async fn change_settings(
 ) -> Result<Json<SiteSettings>, Problem> {
     require(&principal, Scope::SettingsWrite)?;
     let change = SETTINGS.body(body)?.settings;
-    let changed = SETTINGS.store(settings.as_deref())?.change(change).await;
+    let store = SETTINGS.store(settings.as_deref())?;
+    if let Some(code) = &change.code
+        && !principal.access().allows(Scope::AdminAll)
+    {
+        let read = store.read().await;
+        let before = read.map_err(|error| Problem::internal(&error))?;
+        if *code != before.code {
+            return Err(code_forbidden());
+        }
+    }
+    let changed = store.change(change).await;
     let settings = changed.map_err(problem)?;
     Ok(Json(SiteSettings { settings }))
+}
+
+/// The 403 for a `[code]` change from anyone but an owner, an admin or
+/// an `admin:all` key, because site code runs on every reader's page. It
+/// matches the rule for a post's head code.
+fn code_forbidden() -> Problem {
+    let message = UserMessage::new(
+        "Only an owner or an admin may change the site's head and body code.",
+        "This code runs in every reader's browser, so it needs the most trusted roles.",
+        "Ask an owner or an admin to change it, or leave code out of the change.",
+    );
+    Problem::new(ProblemType::Forbidden, &message).with_rule("code")
 }
 
 /// The problem a refused change answers with.

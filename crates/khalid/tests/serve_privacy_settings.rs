@@ -18,7 +18,7 @@ const SETTINGS: &str = "/api/admin/v1/settings/";
 #[test]
 fn privacy_and_tagged_code_are_saved_into_site_toml_and_a_bad_lifetime_saves_nothing() {
     let site = demo_copy();
-    let owner = ["--name", "Owner", "--scope", "settings:write"];
+    let owner = ["--name", "Owner", "--scope", "admin:all"];
     let key = new_key(site.path(), &owner);
     let server = start(site.path(), &key);
     let (status, read) = server.admin("GET", SETTINGS, None);
