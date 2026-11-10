@@ -6,6 +6,7 @@ import { readTemplates, type Template } from "../api/templates";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { savedWords } from "../components/SettingsTabs";
+import type { CtaLines } from "../look/cta";
 import { LookForm } from "../look/LookForm";
 import { lookChange, startOf, type Values } from "../look/lookChange";
 import { en, type UserMessage } from "../strings/en";
@@ -32,8 +33,8 @@ export function Look() {
   } else if (isData(site) && isData(templates)) {
     const settings = site.data;
     const start = startOf(templates.data, settings);
-    const save = async (chosen: Template, values: Values) => {
-      const change = lookChange(settings, chosen, values);
+    const save = async (chosen: Template, values: Values, cta: CtaLines) => {
+      const change = lookChange(settings, chosen, values, cta);
       if (change === null) {
         setSaid(words.unchanged);
         return;

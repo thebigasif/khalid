@@ -111,6 +111,18 @@ Weekly since 2024</textarea></div>
       <label class="choice"><input type="checkbox" checked>email</label></fieldset>
   </section>
 
+  <section class="options" aria-labelledby="cta-title">
+    <h2 id="cta-title">Your call to action</h2>
+    <p class="hint">A call to action is the one thing you ask readers to do, such as start a trial. Write it once here and every page that shows it uses the same button. Empty all three lines to remove it.</p>
+    <p class="hint">This template shows it only where a post or page has a ::cta line. Pick a template with a call to action band to show it on every post.</p>
+    <div class="field"><label for="c-label">Words on the button</label><span class="hint" id="c-label-hint">A few words, such as Start a free trial.</span>
+      <input id="c-label" type="text" maxlength="160" required value="Start a free trial" aria-describedby="c-label-hint"></div>
+    <div class="field"><label for="c-href">Where the button goes</label><span class="hint" id="c-href-hint">A full address, such as https://example.com/signup, or a path on your blog, such as /blog/start/.</span>
+      <input id="c-href" type="text" maxlength="160" required value="https://example.com/signup" aria-describedby="c-href-hint"></div>
+    <div class="field"><label for="c-note">Line beside the button</label><span class="hint" id="c-note-hint">Optional. One short line, such as No card needed.</span>
+      <input id="c-note" type="text" maxlength="160" value="" aria-describedby="c-note-hint"></div>
+  </section>
+
   <p class="careful" role="status">Saved to site.toml. Your blog shows the new look after Khalid restarts.</p>
   <div class="actions">
     <button class="btn primary" type="submit">Save the look</button>

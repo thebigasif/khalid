@@ -2,6 +2,8 @@ import { type FormEvent, useState } from "react";
 import type { SiteSettings } from "../api/site";
 import type { Template } from "../api/templates";
 import { en } from "../strings/en";
+import { type CtaLines, ctaLines } from "./cta";
+import { CtaFields } from "./CtaFields";
 import { defaultOf, turns, type Values, valuesOf, wordsOf } from "./lookChange";
 import { OptionField } from "./OptionField";
 
@@ -10,7 +12,7 @@ type Props = {
   /** The template the form opens on: the one in use, or the first. */
   start: Template;
   site: SiteSettings;
-  onSave: (chosen: Template, values: Values) => Promise<void>;
+  onSave: (chosen: Template, values: Values, cta: CtaLines) => Promise<void>;
 };
 
 /** The words for what a template turns on or off. */
@@ -41,6 +43,7 @@ export function LookForm({ templates, start, site, onSave }: Props) {
   const inUse = site.template.name;
   const [chosen, setChosen] = useState(start);
   const [values, setValues] = useState(valuesOf(start, site.template.options));
+  const [cta, setCta] = useState(ctaLines(site.cta));
   const [busy, setBusy] = useState(false);
 
   const choose = (template: Template) => {
@@ -51,7 +54,7 @@ export function LookForm({ templates, start, site, onSave }: Props) {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setBusy(true);
-    await onSave(chosen, values);
+    await onSave(chosen, values, cta);
     setBusy(false);
   };
 
@@ -97,6 +100,7 @@ export function LookForm({ templates, start, site, onSave }: Props) {
           />
         ))}
       </section>
+      <CtaFields chosen={chosen} lines={cta} onChange={setCta} />
       <button type="submit" className="btn primary" disabled={busy}>
         {words.save}
       </button>
