@@ -82,6 +82,7 @@ pub(crate) fn start_only(was: &Config, now: &Config) -> Vec<&'static str> {
     let ghost = was.ghost_content_api() != now.ghost_content_api();
     [
         ("mount", was.mount() != now.mount()),
+        ("admin_folder", was.admin_folder() != now.admin_folder()),
         ("mode", was.mode() != now.mode()),
         ("address", was.address() != now.address()),
         (
@@ -205,6 +206,7 @@ mod tests {
     #[test]
     fn routes_and_addresses_wait_for_a_restart() {
         assert_eq!(waiting("mount = \"/blog/\"\n"), ["mount"]);
+        assert_eq!(waiting("admin_folder = \"studio\"\n"), ["admin_folder"]);
         assert_eq!(waiting("mode = \"static\"\n"), ["mode"]);
         let moved = START.replace("www.example.com", "blog.example.com");
         assert_eq!(start_only(&config(START), &config(&moved)), ["address"]);

@@ -33,7 +33,17 @@ curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/inst
 
 ## Signing in to the admin the first time
 
-The admin is at `admin/` in the blog's folder: `/admin/` for a blog that is the whole site, and `/blog/admin/` for one under `/blog/`. The first person in is the owner, and the command line makes them:
+The admin is at `admin/` in the blog's folder: `/admin/` for a blog that is the whole site, and `/blog/admin/` for one under `/blog/`.
+
+To put the admin in another folder, for example because a page of the blog already uses `/admin/`, name it in `site.toml`:
+
+```toml
+admin_folder = "studio"
+```
+
+The admin then answers at `/studio/`, or `/blog/studio/` under `/blog/`, and `/admin/` is left to the blog's pages. Sign-in links, the staff toolbar, the link `khalid staff owner` prints and each `admin_path` in the Admin API name the new folder. The name is one folder of lowercase letters, digits and hyphens. It cannot be `api`, `ghost` or one of the site's language codes, since those folders already answer. Restart the server after changing it.
+
+The first person in is the owner, and the command line makes them:
 
 ```sh
 khalid --site blog staff owner --email you@example.com --name "Your Name"
@@ -102,7 +112,7 @@ If a saved `site.toml` or theme file has a mistake, the blog keeps serving the l
 
 A few settings only take effect when the server starts:
 
-- `mount` and `mode` shape the server's own addresses, so it keeps the values it started with.
+- `mount`, `admin_folder` and `mode` shape the server's own addresses, so it keeps the values it started with.
 - `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
 - The `--listen` and `--domain` options, the environment variables, and the `data/` folder with its database are read once at start.
 
@@ -161,7 +171,7 @@ Khalid prints the rule to add to that program, for nginx, Caddy, Apache, Traefik
 | The git mode push hook | `/blog/api/hooks/git` |
 | Preview links, forms, comments and newsletter sign-ups | under `/blog/` |
 
-Every address Khalid gives out names the folder too: sign-in links, preview links, the `site` in each webhook, `Location` headers, `admin_path`, and the address the Connect to SerpDad page shows. An old `/admin/` address moves to `/blog/admin/`. The APIs also still answer at `/api/` for a program that reaches Khalid directly, without the proxy in front.
+Every address Khalid gives out names the folder too: sign-in links, preview links, the `site` in each webhook, `Location` headers, `admin_path`, and the address the Connect to SerpDad page shows. An old `/admin/` address moves to `/blog/admin/`, unless `admin_folder` puts the admin elsewhere. The APIs also still answer at `/api/` for a program that reaches Khalid directly, without the proxy in front.
 
 Search engines read `robots.txt` only at the root of a host, so the blog's own `robots.txt` under `/blog/` is never read. `khalid init` prints the line to add to the website's `robots.txt`, built from the site's address and mount:
 

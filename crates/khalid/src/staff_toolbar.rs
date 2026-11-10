@@ -49,6 +49,8 @@ struct Toolbar {
     clock: Arc<dyn Clock>,
     /// The mount folder, such as `/blog/`.
     mount: String,
+    /// The admin's path, such as `/blog/admin`.
+    admin: String,
 }
 
 /// `router`, the site's pages, with the bar on each page staff of site
@@ -65,6 +67,7 @@ pub(crate) fn start(
         views: Arc::new(AnalyticsTable::new(database.clone(), id)),
         clock: Arc::new(SystemClock),
         mount: config.mount().to_owned(),
+        admin: staff::admin_path(config),
     };
     router.layer(middleware::from_fn_with_state(Arc::new(toolbar), show))
 }
@@ -146,7 +149,7 @@ impl Toolbar {
 
     /// The bar for the page at `path`.
     async fn bar(&self, path: &str) -> String {
-        let admin = format!("{}admin", self.mount);
+        let admin = &self.admin;
         let opening = format!(
             "<link rel=\"stylesheet\" href=\"{}\"><aside class=\"khalid-toolbar\" \
              aria-label=\"Staff toolbar\"><p>You are signed in. Readers do not see this bar.</p>",

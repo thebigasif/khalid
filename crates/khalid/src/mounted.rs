@@ -39,16 +39,22 @@ pub(crate) fn blog_address(config: &Config) -> String {
 
 /// `app`, answering under the mount of the blog in `config` what it
 /// answers under `/api/`, and naming the blog under its mount as the
-/// server in the `OpenAPI` document. At `/`, `app` as it is.
+/// server in the `OpenAPI` document. An `admin_path` names the admin in
+/// its folder under the mount; one reached at `/api/` keeps `/admin/`,
+/// which moves there, unless `site.toml` names another folder. At `/`
+/// with the admin at `admin`, `app` as it is.
 pub(crate) fn router(config: &Config, app: Router) -> Router {
-    let mount = config.mount();
-    if mount == "/" {
+    let (mount, folder) = (config.mount(), config.admin_folder().as_str());
+    let moved_admin = folder != "admin";
+    if mount == "/" && !moved_admin {
         return app;
     }
     let prefix = Arc::<str>::from(mount.trim_end_matches('/'));
     let server = Arc::<str>::from(blog_address(config).trim_end_matches('/'));
+    let admin = Arc::<str>::from(format!("{mount}{folder}/"));
     let answer = service_fn(move |request: Request<Body>| {
         let (app, prefix, server) = (app.clone(), Arc::clone(&prefix), Arc::clone(&server));
+        let admin = Arc::clone(&admin);
         async move {
             let (mut parts, body) = request.into_parts();
             let at_root = under_api(&parts.uri, &prefix);
@@ -60,9 +66,9 @@ pub(crate) fn router(config: &Config, app: Router) -> Router {
             let mut answer = app.oneshot(Request::from_parts(parts, body)).await?;
             if at_root.is_some() {
                 answer = moved_under(answer, &prefix);
-                if names_admin {
-                    answer = admin_under(answer, &prefix).await;
-                }
+            }
+            if names_admin && (at_root.is_some() || moved_admin) {
+                answer = admin_under(answer, &admin).await;
             }
             if document {
                 answer = with_server(answer, &server).await;
@@ -101,14 +107,15 @@ fn moved_under(mut answer: Response, prefix: &str) -> Response {
     answer
 }
 
-/// `answer` with each `admin_path` in its JSON under `prefix`.
-async fn admin_under(answer: Response, prefix: &str) -> Response {
+/// `answer` with each `admin_path` in its JSON under `admin`, the admin's
+/// path such as `/blog/admin/`, in place of `/admin/`.
+async fn admin_under(answer: Response, admin: &str) -> Response {
     let (mut parts, body) = answer.into_parts();
     // The answer was made in memory, so reading it whole adds no limit.
     let Ok(bytes) = to_bytes(body, usize::MAX).await else {
         return StatusCode::INTERNAL_SERVER_ERROR.into_response();
     };
-    let named = format!("\"admin_path\":\"{prefix}/admin/");
+    let named = format!("\"admin_path\":\"{admin}");
     let text = String::from_utf8_lossy(&bytes).replace("\"admin_path\":\"/admin/", &named);
     parts.headers.remove(header::CONTENT_LENGTH);
     Response::from_parts(parts, Body::from(text))
@@ -143,8 +150,13 @@ mod tests {
     use super::*;
 
     fn config(mount: &str) -> Config {
+        config_in(mount, "admin")
+    }
+
+    fn config_in(mount: &str, folder: &str) -> Config {
         let text = format!(
             "name = \"Blog\"\naddress = \"https://example.com\"\nmount = \"{mount}\"\n\
+             admin_folder = \"{folder}\"\n\
              mode = \"server\"\ndefault_language = \"en\"\nlanguages = [\"en\"]\n"
         );
         let env = khalid_core::Environment::empty();
@@ -208,6 +220,20 @@ mod tests {
         assert_eq!(location.as_deref(), Some("/api/admin/v1/pages/a/"));
         let (_, _, drafts) = get_at(&router, "/api/admin/v1/serpdad/").await;
         assert!(drafts.contains("\"/admin/posts/en.a\""), "{drafts}");
+    }
+
+    #[tokio::test]
+    async fn an_admin_in_another_folder_is_named_there_from_either_door() {
+        let drafts = r#"{"drafts":[{"admin_path":"/studio/posts/en.a"}]}"#;
+        let router = router(&config_in("/", "studio"), app());
+        assert_eq!(get_at(&router, "/api/admin/v1/serpdad/").await.2, drafts);
+        let (_, location, _) = get_at(&router, "/api/admin/v1/pages/").await;
+        assert_eq!(location.as_deref(), Some("/api/admin/v1/pages/a/"));
+        let router = super::router(&config_in("/blog/", "studio"), app());
+        let mounted = r#"{"drafts":[{"admin_path":"/blog/studio/posts/en.a"}]}"#;
+        for path in ["/blog/api/admin/v1/serpdad/", "/api/admin/v1/serpdad/"] {
+            assert_eq!(get_at(&router, path).await.2, mounted, "{path}");
+        }
     }
 
     #[tokio::test]

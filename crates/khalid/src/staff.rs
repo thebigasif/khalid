@@ -39,8 +39,15 @@ pub(crate) fn accounts(db: &Database, site: SiteId, config: &Config) -> Accounts
     }
 }
 
-/// Where the admin is served: `admin` under the blog's address with its
-/// mount, such as `https://example.com/blog/admin` (plan section 4.6).
+/// Where the admin is served: its folder, `admin` unless `site.toml` sets
+/// `admin_folder`, under the blog's address with its mount, such as
+/// `https://example.com/blog/admin` (plan section 4.6).
 pub(crate) fn admin_address(config: &Config) -> String {
-    format!("{}admin", mounted::blog_address(config))
+    format!("{}{}", mounted::blog_address(config), config.admin_folder())
+}
+
+/// The admin's path from the host's root, with no slash at the end, such
+/// as `/blog/admin` or `/studio`.
+pub(crate) fn admin_path(config: &Config) -> String {
+    format!("{}{}", config.mount(), config.admin_folder())
 }
