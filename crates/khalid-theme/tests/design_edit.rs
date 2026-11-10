@@ -124,6 +124,10 @@ fn every_write_moves_the_time_past_the_copy_it_was_read_with() {
         let file = DesignFile::read(site.path()).unwrap();
         file.write(site.path()).unwrap();
         let after = DesignFile::read(site.path()).unwrap().changed();
-        assert!(after > file.changed(), "{after:?} after {:?}", file.changed());
+        assert!(
+            after > file.changed(),
+            "{after:?} after {:?}",
+            file.changed()
+        );
     }
 }

@@ -56,7 +56,7 @@ export const designWords = {
   textOn: (ratio: number) => `Text on it: ${ratio.toFixed(1)} to 1`,
   tooFaint: (ratio: number) => `${ratio.toFixed(1)} to 1, too faint`,
   faintOnPanels: (ratio: number) => `${ratio.toFixed(1)} to 1 on panels, too faint`,
-  useNearest: (shade: string) => `Use ${shade}, the closest shade that is easy to read`,
+  takeNearest: (shade: string) => `Use ${shade}, the closest shade that is easy to read`,
   fonts: "Fonts",
   body: "Text",
   bodyHint: "The font of every paragraph. A system font shows at once, with nothing to download.",

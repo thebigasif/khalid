@@ -100,7 +100,7 @@ export function ColorTable(props: Props) {
                       className="btn nearest"
                       onClick={() => onColor(token, shade)}
                     >
-                      {words.useNearest(shade)}
+                      {words.takeNearest(shade)}
                     </button>
                   )}
                 </td>
