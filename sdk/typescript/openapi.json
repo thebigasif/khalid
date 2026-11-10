@@ -4615,7 +4615,7 @@
         },
         "responses": {
           "200": {
-            "description": "Who holds the lock, and who else has the post open",
+            "description": "Who holds the lock, and who else has the post open, each by identity and name",
             "content": {
               "application/json": {
                 "schema": {
@@ -16133,9 +16133,15 @@
         "description": "Someone with a post open.",
         "required": [
           "who",
+          "name",
           "since"
         ],
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name the admin shows for them: their account's name, or the\nname their key was made with. Their identity when neither is known.",
+            "example": "Maria Lopez"
+          },
           "since": {
             "type": "string",
             "format": "date-time",

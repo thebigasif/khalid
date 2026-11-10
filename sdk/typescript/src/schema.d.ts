@@ -1645,6 +1645,8 @@ export type Posts = {
 
 /** Someone with a post open. */
 export type PresentEditor = {
+  /** The name the admin shows for them: their account's name, or the name their key was made with. Their identity when neither is known. */
+  name: string;
   /** Since when: when they opened the post, or took over its lock. */
   since: string;
   /** Who, as the post's `updated_by` names them. */

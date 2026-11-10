@@ -85,6 +85,7 @@ pub mod serpdad_store;
 pub mod session_check;
 pub mod settings_store;
 pub mod site_issues;
+pub mod staff_names;
 pub mod tag_store;
 pub mod unlock;
 pub mod version_store;
