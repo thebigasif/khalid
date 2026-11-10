@@ -136,6 +136,7 @@ mod publish;
 mod pull;
 mod pull_message;
 mod push_hook;
+mod redirect_files;
 mod redirect_route;
 mod redirects;
 mod redirects_explain;
