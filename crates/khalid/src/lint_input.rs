@@ -143,6 +143,9 @@ pub(crate) fn lint_site<'c>(
     site.slugs = Some(config.slugs());
     let host = config.address().host();
     site.host = (!host.is_empty()).then(|| host.to_owned());
+    // The hosts the link settings leave alone are the site's own too.
+    let internal = &config.seo().links.internal_domains;
+    site.own_hosts = internal.iter().map(|d| d.as_str().to_owned()).collect();
     // A process serves the one site `--site` names, so it has no sister
     // sites and `sibling_hosts` stays empty.
     (site, documents)

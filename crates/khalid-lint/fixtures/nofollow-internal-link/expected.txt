@@ -1,2 +1,6 @@
 warn all-outbound-nofollow
 warn nofollow-internal-link: /blog/choosing-link-text/
+warn nofollow-internal-link: https://blog.example.com/archive/
+warn nofollow-internal-link: https://example.com/pricing/
+warn nofollow-internal-link: http://WWW.Example.com
+warn nofollow-internal-link: https://help.shop.example.net/returns/
