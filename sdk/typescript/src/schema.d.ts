@@ -1215,6 +1215,22 @@ export type HeadParts = {
   tags: HeadElement[];
 };
 
+/** One audit as the dashboard shows it. */
+export type HealthRun = {
+  /** When the audit ran, in UTC. */
+  at: string;
+  /** How many errors it found. */
+  errors: number;
+  /** How many notices it found. */
+  notices: number;
+  /** How many pages it read. */
+  pages: number;
+  /** The health score out of 100: the share of pages with no error. */
+  score: number;
+  /** How many warnings it found. */
+  warnings: number;
+};
+
 /** One section of the home page: `{"kind": "latest"}`, or a list named by its slug, such as `{"kind": "category", "slug": "technical-seo"}`. */
 export type HomeSectionSetting = {
   kind: "latest";
@@ -2431,6 +2447,13 @@ export type SiteAnswer = {
 export type SiteDesign = {
   /** The site's design. */
   design: AdminDesign;
+};
+
+/** The site's health: its last audit and the trend. */
+export type SiteHealth = {
+  last?: HealthRun | null;
+  /** Up to the last 30 audits, oldest first, the last among them. */
+  trend: HealthRun[];
 };
 
 /** One lint rule that fires on the site, as one task. */
@@ -3953,6 +3976,16 @@ export interface Operations {
       body: SettingsChanges;
     };
     output: SiteSettings;
+  };
+  /** The site's health score out of 100 from its last audit, for the dashboard, and up to the last 30 audits as the trend, oldest first. `khalid serve` audits the site once a day, and `khalid audit` adds a run too. Before the first audit, `last` is `null` and the trend is empty. Needs `posts:write`. */
+  site_health: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: SiteHealth;
   };
   /** Lists every site this process serves. Only a super admin, signed in on the home site, may see it; a key never may. */
   list_sites: {
