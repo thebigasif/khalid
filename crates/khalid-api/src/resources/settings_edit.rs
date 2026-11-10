@@ -30,6 +30,16 @@ pub struct SettingsEdit {
     #[serde(default)]
     #[schema(value_type = Option<String>)]
     excerpt: Change<NonBlank>,
+    /// A new category's slug, one of the site's categories, or `null` for
+    /// none.
+    #[serde(default)]
+    #[schema(value_type = Option<String>, example = "on-page-seo")]
+    category: Change<Slug>,
+    /// Every tag's name, all of them; an empty list for none. No name may
+    /// be listed twice, whatever its capitals.
+    #[serde(default, deserialize_with = "distinct")]
+    #[schema(value_type = Option<Vec<String>>, example = json!(["internal links"]))]
+    tags: Option<Vec<NonBlank>>,
     /// A new feature image, or `null` for none.
     #[serde(default)]
     #[schema(value_type = Option<FeatureImage>)]
@@ -104,6 +114,8 @@ impl SettingsEdit {
         Self {
             co_authors: Some(settings.co_authors.clone()),
             excerpt: kept(settings.excerpt.as_ref()),
+            category: kept(settings.category.as_ref()),
+            tags: Some(settings.tags.clone()),
             feature_image: kept(settings.feature_image.as_ref()),
             featured: Some(settings.featured),
             canonical: kept(settings.canonical.as_ref()),
@@ -168,6 +180,8 @@ impl SettingsEdit {
             date: self.date.applied_to(settings.date),
             co_authors: self.co_authors.unwrap_or(settings.co_authors),
             excerpt: self.excerpt.applied_to(settings.excerpt),
+            category: self.category.applied_to(settings.category),
+            tags: self.tags.unwrap_or(settings.tags),
             feature_image: self.feature_image.applied_to(settings.feature_image),
             featured: self.featured.unwrap_or(settings.featured),
             review_state: self.review_state.unwrap_or(settings.review_state),
@@ -227,6 +241,24 @@ fn at_most_four<'de, D: Deserializer<'de>>(
         )));
     }
     Ok(Some(keywords))
+}
+
+/// Reads a list of tag names, refusing one listed twice, as front matter
+/// does, so a saved post always reads back.
+fn distinct<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Option<Vec<NonBlank>>, D::Error> {
+    let tags = Vec::<NonBlank>::deserialize(deserializer)?;
+    let mut seen: Vec<String> = Vec::with_capacity(tags.len());
+    for tag in &tags {
+        let key = tag.as_str().trim().to_lowercase();
+        if seen.contains(&key) {
+            return Err(serde::de::Error::custom(format!(
+                "the tag {:?} is listed twice; keep one",
+                tag.as_str()
+            )));
+        }
+        seen.push(key);
+    }
+    Ok(Some(tags))
 }
 
 /// Serde calls this only for a field that is present, so it reads `null`

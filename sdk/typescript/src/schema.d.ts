@@ -1672,6 +1672,8 @@ export type PostPresence = {
 export type PostRow = {
   /** The author's slug, if any. */
   author?: string | null;
+  /** The category's slug, if any. A list filters by this, such as `category:on-page-seo`. */
+  category?: string | null;
   cluster?: ClusterPlace | null;
   /** Whether the post is featured. */
   featured: boolean;
@@ -1702,6 +1704,8 @@ export type PostRow = {
   slug: string;
   /** Draft, published or scheduled. */
   status: PostStatus;
+  /** The tags' names, in the order written. A list filters by one, such as `tag:'internal links'`. */
+  tags: string[];
   /** The title. */
   title: string;
   /** When it last changed. */
@@ -1738,6 +1742,8 @@ export type PostSettings = {
   aliases: Alias[];
   /** The address search engines should credit instead of this post. */
   canonical?: string | null;
+  /** The slug of the category the post belongs to, one of the site's categories, or `null` for none. */
+  category?: string | null;
   /** The other authors' slugs, after the author. */
   co_authors: string[];
   /** The day the post is dated, as shown to readers. */
@@ -1764,6 +1770,8 @@ export type PostSettings = {
   seo_title?: SearchTitle | null;
   /** How the post looks when shared on X and Facebook. */
   share_cards: ShareCards;
+  /** The tags' names, such as `internal links`, in the order written. */
+  tags: string[];
   /** The theme template the post is shown with, such as `wide` for `theme/templates/post-wide.html`, or `null` for `post.html`. */
   template?: string | null;
 };
@@ -2042,6 +2050,8 @@ export type SettingsEdit = {
   aliases?: string[] | null;
   /** A new canonical address, or `null` for the post's own. */
   canonical?: string | null;
+  /** A new category's slug, one of the site's categories, or `null` for none. */
+  category?: string | null;
   /** The other authors' slugs, all of them. */
   co_authors?: string[] | null;
   /** A new date, as `YYYY-MM-DD`, or `null` for none. */
@@ -2069,6 +2079,8 @@ export type SettingsEdit = {
   /** A new search title, or `null` for the site's title template. */
   seo_title?: string | null;
   share_cards?: ShareCards | null;
+  /** Every tag's name, all of them; an empty list for none. No name may be listed twice, whatever its capitals. */
+  tags?: string[] | null;
   /** A theme template such as `wide`, or `null` for `post.html`. */
   template?: string | null;
 };

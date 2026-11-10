@@ -19,6 +19,12 @@ pub(crate) fn settings_of(front: &PostFront) -> PostSettings {
     settings.date = front.date;
     settings.co_authors.clone_from(&front.co_authors);
     settings.excerpt = front.description.as_deref().and_then(NonBlank::try_new);
+    settings.category.clone_from(&front.category);
+    settings.tags = front
+        .tags
+        .iter()
+        .filter_map(|t| NonBlank::try_new(t))
+        .collect();
     settings.feature_image = front.image.as_ref().and_then(feature_image);
     settings.featured = front.featured;
     settings.reviewed = front.reviewed;
@@ -101,6 +107,18 @@ pub(crate) fn write_settings(
     if after.excerpt != before.excerpt {
         let excerpt = after.excerpt.as_ref().map(|text| quoted(text.as_str()));
         put(text, "description", excerpt);
+    }
+    if after.category != before.category {
+        put(
+            text,
+            "category",
+            after.category.as_ref().map(ToString::to_string),
+        );
+    }
+    if after.tags != before.tags {
+        let names: Vec<String> = after.tags.iter().map(|t| quoted(t.as_str())).collect();
+        let names: Vec<&str> = names.iter().map(String::as_str).collect();
+        put(text, "tags", list(&names));
     }
     if after.feature_image != before.feature_image {
         put(text, "image", after.feature_image.as_ref().map(image_text));

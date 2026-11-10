@@ -21,6 +21,7 @@ export function row(fields: Partial<PostRow> = {}): PostRow {
     words: 640,
     links: { inbound: 2, outbound: 3 },
     has_focus_keyword: true,
+    tags: [],
     index_status: "indexable",
     ...fields,
   };

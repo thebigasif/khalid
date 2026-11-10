@@ -470,6 +470,53 @@ async fn a_template_the_theme_lacks_is_refused() {
 }
 
 #[tokio::test]
+async fn category_and_tags_go_into_the_file_and_filter_the_list() {
+    let (site, posts) = demo();
+    let settings = json!({"category": "on-page-seo", "tags": ["anchor text", "Internal links"]});
+    let saved = edited_draft(&posts, json!({"settings": settings})).await;
+    let saved = saved.unwrap();
+    let file = within(site.path(), "drafts/en/choosing-anchor-text.md");
+    let text = fs::read_to_string(&file).unwrap();
+    for line in [
+        "category: on-page-seo\n",
+        "tags: [\"anchor text\", \"Internal links\"]\n",
+    ] {
+        assert!(text.contains(line), "{line} in {text}");
+    }
+    let read = posts.get(saved.id()).await.unwrap().unwrap();
+    assert_eq!(read.settings(), saved.settings());
+    for filter in ["category:on-page-seo", "tag:'anchor text'"] {
+        let found = posts.list(&query(Some(filter), "id")).await.unwrap();
+        let ids: Vec<&str> = found.items().iter().map(PostRow::id).collect();
+        assert!(ids.contains(&saved.id()), "{filter}: {ids:?}");
+    }
+
+    let clear =
+        json!({"settings": {"category": null, "tags": []}, "updated_at": read.updated_at()});
+    posts.update(read.id(), edit(clear), "k").await.unwrap();
+    let text = fs::read_to_string(&file).unwrap();
+    for field in ["category:", "tags:"] {
+        assert!(!text.contains(field), "{field} in {text}");
+    }
+}
+
+#[tokio::test]
+async fn a_category_the_site_lacks_is_refused() {
+    let (_site, posts) = demo();
+    let refused = edited_draft(&posts, json!({"settings": {"category": "recipes"}})).await;
+    assert!(
+        matches!(
+            refused,
+            Err(UpdatePostError::Unsupported {
+                setting: "category",
+                ..
+            })
+        ),
+        "{refused:?}"
+    );
+}
+
+#[tokio::test]
 async fn a_new_slug_moves_a_draft_but_not_a_live_post() {
     let (site, posts) = demo();
     let moved = edited_draft(&posts, json!({"slug": "anchor-text-guide"})).await;
