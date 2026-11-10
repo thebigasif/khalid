@@ -434,7 +434,7 @@ jobs:
         id: inputs
         run: |
           changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
-          if printf '%s\n' "$changed" | grep -Eq '^(Dockerfile|\.dockerignore|Cargo\.lock|rust-toolchain\.toml|(.*/)?Cargo\.toml|admin/package(-lock)?\.json|\.github/workflows/ci\.yml)$'; then
+          if printf '%s\n' "$changed" | grep -Eq '^(Dockerfile|\.dockerignore|Cargo\.lock|rust-toolchain\.toml|(.*/)?Cargo\.toml|admin/package(-lock)?\.json|scripts/packages-check\.sh|\.github/workflows/ci\.yml)$'; then
             echo "build=true" >> "$GITHUB_OUTPUT"
           else
             echo "build=false" >> "$GITHUB_OUTPUT"
@@ -453,6 +453,46 @@ jobs:
       - name: The image answers
         if: steps.inputs.outputs.build == 'true'
         run: docker run --rm khalid:check --version
+      # Gap G34: the Docker section of docs/deploy.md, line by line, and
+      # the empty-volume first start the hosting platforms use.
+      - name: The image serves a site as docs/deploy.md says
+        if: steps.inputs.outputs.build == 'true'
+        run: scripts/packages-check.sh docker khalid:check
+
+  # Gap G34: scripts/install.sh --systemd and the systemd section of
+  # docs/deploy.md on a fresh runner, which has root and systemd, with the
+  # release binary handover-build made. The service must serve the home
+  # page and stop cleanly. On pull requests only, and not a required check.
+  systemd:
+    name: systemd service serves
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'pull_request'
+    needs: handover-build
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Did the service's inputs change?
+        id: inputs
+        run: |
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          if printf '%s\n' "$changed" | grep -Eq '^(packaging/systemd/|scripts/install\.sh$|scripts/packages-check\.sh$|crates/khalid-server/|crates/khalid/src/serve|Cargo\.lock$|\.github/workflows/ci\.yml$)'; then
+            echo "check=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "check=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing the service runs changed, so it is not checked again." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/download-artifact@v7
+        if: steps.inputs.outputs.check == 'true'
+        with:
+          name: release-binaries
+          path: target/handover
+      - name: Install and start the service as docs/deploy.md says
+        if: steps.inputs.outputs.check == 'true'
+        run: |
+          chmod +x target/handover/khalid
+          scripts/packages-check.sh systemd target/handover/khalid
 
 
   # The demo, end to end (task 1.22, gap audit 2 G8, GEO P2), as parallel

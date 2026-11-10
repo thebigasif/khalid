@@ -9,6 +9,9 @@ use std::process::Command;
 
 use serde_json::Value;
 
+#[path = "lint_input/keywords.rs"]
+mod keywords;
+
 /// A site folder with the demo settings, `routes` as `routes.toml` when
 /// given, and `posts` as `(file under content/en, text)`.
 #[cfg(test)]
@@ -257,32 +260,6 @@ fn a_post_the_home_page_does_not_list_is_too_deep() {
 }
 
 #[test]
-fn a_focus_keyword_missing_from_each_place_is_a_warning_per_place() {
-    let body = "Readers come back for clear writing.\n\n## How it starts\n\n\
-                ![A tidy desk](/media/desk.jpg)";
-    let extra = "focus_keyword: internal links\n";
-    let site = site(
-        None,
-        &[("posts/writing-well.md", &post("Writing well", extra, body))],
-    );
-    let report = lint(site.path());
-    for rule in [
-        "focus-not-in-title",
-        "focus-not-in-description",
-        "focus-not-in-first-paragraph",
-        "focus-not-in-subheading",
-        "focus-not-in-address",
-        "focus-not-in-image-alt",
-    ] {
-        assert_eq!(
-            found(&report, rule, "writing-well"),
-            ["internal links"],
-            "{rule}"
-        );
-    }
-}
-
-#[test]
 fn a_heading_about_kinds_or_differences_is_quiet_once_a_list_or_table_follows() {
     // W6 reads what the page shows: the markdown's bullets and pipes are
     // gone from the plain text, so the shapes come from the rendered page.
@@ -307,102 +284,6 @@ fn a_heading_about_kinds_or_differences_is_quiet_once_a_list_or_table_follows() 
         Vec::<String>::new()
     );
     assert_eq!(found(&report, "heading-shape", "prose").len(), 2);
-}
-
-/// `count` sentences of filler, ten words each, the first `uses` of them
-/// holding "internal links".
-#[cfg(test)]
-fn filler(count: usize, uses: usize) -> String {
-    (0..count)
-        .map(|n| {
-            if n < uses {
-                "Good internal links help readers find the next useful page here."
-            } else {
-                "A clear sentence helps every reader keep going through the page."
-            }
-        })
-        .collect::<Vec<_>>()
-        .join(" ")
-}
-
-#[test]
-fn a_focus_keyword_used_too_rarely_is_a_warning() {
-    let extra = "focus_keyword: internal links\n";
-    let body = filler(40, 0);
-    let site = site(
-        None,
-        &[(
-            "posts/internal-links.md",
-            &post("Internal links", extra, &body),
-        )],
-    );
-    let report = lint(site.path());
-    assert_eq!(
-        found(&report, "focus-too-rare", "internal-links"),
-        ["internal links"]
-    );
-}
-
-#[test]
-fn a_focus_keyword_used_too_often_is_a_warning() {
-    let extra = "focus_keyword: internal links\n";
-    let body = filler(40, 40);
-    let site = site(
-        None,
-        &[(
-            "posts/internal-links.md",
-            &post("Internal links", extra, &body),
-        )],
-    );
-    let report = lint(site.path());
-    assert_eq!(
-        found(&report, "focus-too-often", "internal-links"),
-        ["internal links"]
-    );
-}
-
-#[test]
-fn a_secondary_keyword_the_body_never_uses_is_a_warning() {
-    let extra =
-        "focus_keyword: internal links\nsecondary_keywords:\n  - link text\n  - site structure\n";
-    let body = "Internal links need good link text.";
-    let site = site(
-        None,
-        &[(
-            "posts/internal-links.md",
-            &post("Internal links", extra, body),
-        )],
-    );
-    let report = lint(site.path());
-    assert_eq!(
-        found(&report, "secondary-keyword-unused", "internal-links"),
-        ["site structure"]
-    );
-}
-
-#[test]
-fn a_keyword_synonym_in_the_header_counts_as_the_focus_keyword() {
-    let extra = "focus_keyword: internal links\nsecondary_keywords: [site links]\n";
-    let body = "Site links help readers.";
-    let lone = site(
-        None,
-        &[("posts/site-links.md", &post("Site links", extra, body))],
-    );
-    let report = lint(lone.path());
-    assert_eq!(
-        found(&report, "focus-not-in-title", "site-links"),
-        ["internal links"]
-    );
-    let synonym = format!("{extra}keyword_synonyms: site links\n");
-    let with = site(
-        None,
-        &[("posts/site-links.md", &post("Site links", &synonym, body))],
-    );
-    let report = lint(with.path());
-    assert_eq!(
-        found(&report, "focus-not-in-title", "site-links"),
-        Vec::<String>::new()
-    );
 }
 
 #[test]
@@ -508,4 +389,57 @@ fn the_contents_list_and_a_block_score_are_not_read_as_the_writer_text() {
         found(&report, "sourced-statistics", "readability-checkers"),
         none
     );
+}
+
+/// A one-post site whose `site.toml` is `settings`, and whose post links to
+/// the main site, a path, the main site's `www.` host and a study.
+#[cfg(test)]
+fn linking_site(settings: &str) -> tempfile::TempDir {
+    let body = "See [our prices](https://example.com/pricing/), [the guide](/blog/link-text/), \
+                [the main site](https://www.example.com/) and [a study](https://research.example.org/).";
+    let site = site(None, &[("posts/prices.md", &post("Prices", "", body))]);
+    fs::write(within(site.path(), "site.toml"), settings).unwrap();
+    site
+}
+
+/// The settings of a blog at `address` whose link settings add `nofollow`
+/// to every link to another site, with `more` in the same table.
+#[cfg(test)]
+fn nofollow_settings(address: &str, more: &str) -> String {
+    format!(
+        "name = \"Field Notes\"\naddress = \"{address}\"\nmount = \"/blog/\"\n\
+         default_language = \"en\"\nlanguages = [\"en\"]\n\n\
+         [seo.links]\nrel = [\"nofollow\"]\n{more}\n"
+    )
+}
+
+#[test]
+fn a_blog_on_a_subdomain_that_tells_google_not_to_follow_its_main_site_is_warned() {
+    // The link settings treat example.com as another site, though it is the
+    // apex of the blog's own domain (audit 2, G5).
+    let site = linking_site(&nofollow_settings("https://blog.example.com", ""));
+    let report = lint(site.path());
+    assert_eq!(
+        found(&report, "nofollow-internal-link", "prices"),
+        ["https://example.com/pricing/", "https://www.example.com/"]
+    );
+}
+
+#[test]
+fn a_main_site_listed_in_internal_domains_is_followed_and_quiet() {
+    let more = "internal_domains = [\"example.com\"]";
+    let site = linking_site(&nofollow_settings("https://blog.example.com", more));
+    let report = lint(site.path());
+    let none = Vec::<String>::new();
+    assert_eq!(found(&report, "nofollow-internal-link", "prices"), none);
+}
+
+#[test]
+fn a_mounted_site_that_adds_nofollow_to_other_sites_leaves_its_own_links_alone() {
+    // At https://www.example.com/blog/ the paths, the apex and the rest of
+    // the host are the site's own, and only the study gets `nofollow`.
+    let site = linking_site(&nofollow_settings("https://www.example.com", ""));
+    let report = lint(site.path());
+    let none = Vec::<String>::new();
+    assert_eq!(found(&report, "nofollow-internal-link", "prices"), none);
 }

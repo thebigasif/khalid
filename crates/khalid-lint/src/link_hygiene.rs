@@ -1,9 +1,14 @@
 //! Rules about how a post's links are written: their `rel` words, their
 //! scheme and their number.
 
+use crate::own_hosts::OwnHosts;
 use crate::{Hit, LinkKind, LintPost, Rule, RuleId, Severity, SiteView};
 
-/// An internal link whose `rel` holds `nofollow`, in any case.
+/// A link to the site's own pages whose `rel` holds `nofollow`, in any
+/// case: an internal link, or a full address on one of the site's own
+/// hosts. The renderer marks every full address as external, and the link
+/// settings add `nofollow` to the ones they count as another site, such as
+/// the main site of a blog on a subdomain.
 #[derive(Debug)]
 pub(crate) struct NofollowInternalLink;
 
@@ -16,11 +21,15 @@ impl Rule for NofollowInternalLink {
         Severity::Warn
     }
 
-    fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
+    fn check(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Hit> {
+        let own = OwnHosts::of(site);
         post.links
             .iter()
-            .filter(|link| link.kind == LinkKind::Internal)
             .filter(|link| link.rel.iter().any(|w| w.eq_ignore_ascii_case("nofollow")))
+            .filter(|link| {
+                link.kind == LinkKind::Internal
+                    || web_host(&link.target).is_some_and(|h| own.hold(h))
+            })
             .map(|link| Hit::about(link.target.clone()))
             .collect()
     }

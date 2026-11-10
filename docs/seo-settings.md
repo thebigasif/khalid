@@ -114,6 +114,20 @@ Each language has feeds next to its home page, such as `/blog/feed.xml` and `/bl
 off = ["atom", "json"]
 ```
 
+## Links to other sites
+
+`[seo.links]` says what links to other sites get. `rel` lists the words every such link gets, such as `"nofollow"`, which asks Google not to follow the link or pass it any value. `internal_domains` lists the other hosts that are yours, such as the main site of a blog on a subdomain; their links get nothing added, and each listed host covers its subdomains.
+
+Khalid always counts the site's own host as yours, and the `www.` and apex pair of its domain: for a blog at `blog.example.com`, the apex is `example.com`, and `example.com` and `www.example.com` are yours too. The apex is the name you registered, so `example.co.uk` for `blog.example.co.uk`. A site on a shared host such as `name.github.io` has no apex.
+
+The linter's `nofollow-internal-link` rule warns when a post's link to one of your hosts gets `nofollow`, because the link then passes your own pages nothing. A blog at `blog.example.com` with `rel = ["nofollow"]` gets that warning for each link to `example.com`, until the main site is listed:
+
+```toml
+[seo.links]
+rel = ["nofollow"]
+internal_domains = ["example.com"]
+```
+
 ## Breadcrumbs
 
 `[seo.breadcrumbs]` shapes the trail above each page, when the template shows it, and the `BreadcrumbList` search engines read.
