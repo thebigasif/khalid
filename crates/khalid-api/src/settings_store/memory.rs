@@ -60,6 +60,10 @@ impl MemorySettings {
         set_parts(&mut next.privacy, change.privacy);
         next.code = change.code.unwrap_or(next.code);
         next.home_sections = change.home_sections.unwrap_or(next.home_sections);
+        if let Some(nav) = change.nav {
+            next.nav.primary = nav.primary.unwrap_or(next.nav.primary);
+            next.nav.footer = nav.footer.unwrap_or(next.nav.footer);
+        }
         if !next.languages.contains(&next.default_language) {
             return Err(SettingsError::Refused {
                 field: "default_language".to_owned(),

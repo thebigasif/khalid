@@ -12656,6 +12656,7 @@
           "privacy",
           "code",
           "home_sections",
+          "nav",
           "updated_at",
           "restart_needed"
         ],
@@ -12700,6 +12701,10 @@
           "name": {
             "type": "string",
             "description": "The site's name."
+          },
+          "nav": {
+            "$ref": "#/components/schemas/NavSetting",
+            "description": "The header and footer menus from `[nav]`."
           },
           "privacy": {
             "type": "object",
@@ -15008,6 +15013,32 @@
           }
         }
       },
+      "MenuLinkSetting": {
+        "type": "object",
+        "description": "One link in a menu, such as `{\"label\": \"Guides\", \"href\": \"/blog/guides/\"}`.",
+        "required": [
+          "label",
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Where it goes: a path on this site, such as `/blog/about/`, or a\nfull `http` or `https` address."
+          },
+          "label": {
+            "type": "string",
+            "description": "The words a reader sees, on one line of at most 160 characters."
+          },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The one language whose pages show the link, such as `de`. Left out,\nevery page shows it."
+          }
+        },
+        "additionalProperties": false
+      },
       "Meta": {
         "type": "object",
         "description": "The `meta` object beside every list (`docs/standards/api.md`).",
@@ -15061,6 +15092,57 @@
           "url": {
             "type": "string",
             "description": "The page's full address."
+          }
+        }
+      },
+      "NavChange": {
+        "type": "object",
+        "description": "New menus for `[nav]`: only the menus sent change.",
+        "properties": {
+          "footer": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MenuLinkSetting"
+            },
+            "description": "Every link of the footer menu, in order. An empty list removes the\nmenu."
+          },
+          "primary": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MenuLinkSetting"
+            },
+            "description": "Every link of the header menu, in order. An empty list removes the\nmenu."
+          }
+        },
+        "additionalProperties": false
+      },
+      "NavSetting": {
+        "type": "object",
+        "description": "The menus every page shows, from `[nav]` in `site.toml`. The footer's\ncolumns, `[[nav.footer_groups]]`, are changed only in the file.",
+        "required": [
+          "primary",
+          "footer"
+        ],
+        "properties": {
+          "footer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MenuLinkSetting"
+            },
+            "description": "The menu in the footer, in the order shown."
+          },
+          "primary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MenuLinkSetting"
+            },
+            "description": "The main menu in the header, in the order shown."
           }
         }
       },
@@ -17540,6 +17622,17 @@
               "null"
             ],
             "description": "A new name."
+          },
+          "nav": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NavChange",
+                "description": "New menus. Each menu sent replaces the old one whole; a menu left\nout stays as it is."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "privacy": {
             "type": [

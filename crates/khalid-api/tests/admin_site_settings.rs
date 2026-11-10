@@ -14,7 +14,7 @@ use khalid_api::content_store::MemoryContentStore;
 use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
-use khalid_api::resources::{AdminSettings, TemplateSetting};
+use khalid_api::resources::{AdminSettings, NavSetting, TemplateSetting};
 use khalid_api::settings_store::{MemorySettings, SettingsStore};
 use khalid_core::FixedClock;
 use serde_json::{Value, json};
@@ -67,6 +67,7 @@ fn demo() -> Router {
         privacy: serde_json::Map::new(),
         code: Vec::new(),
         home_sections: Vec::new(),
+        nav: NavSetting::default(),
         updated_at: Utc.with_ymd_and_hms(2026, 10, 20, 9, 0, 0).unwrap(),
         restart_needed: false,
     };
@@ -170,6 +171,29 @@ async fn the_home_sections_are_saved_and_read_back_in_order() {
     assert_eq!(json["settings"]["home_sections"], sections, "{json}");
     let unknown = json!({"settings": {
         "home_sections": [{"kind": "author", "slug": "asif"}],
+        "updated_at": "2026-10-27T09:00:00Z",
+    }});
+    let (status, json) = send(&router, "PUT", OWNER, Some(unknown)).await;
+    assert!(status.is_client_error(), "{status}: {json}");
+}
+
+#[tokio::test]
+async fn a_menu_sent_replaces_that_menu_and_leaves_the_other() {
+    let router = demo();
+    let (_, json) = send(&router, "GET", OWNER, None).await;
+    let empty = json!({"primary": [], "footer": []});
+    assert_eq!(json["settings"]["nav"], empty, "{json}");
+    let primary = json!([
+        {"label": "Guides", "href": "/blog/guides/"},
+        {"label": "Impressum", "href": "/blog/de/impressum/", "language": "de"},
+    ]);
+    let change = json!({"settings": {"nav": {"primary": primary}, "updated_at": LAST_CHANGE}});
+    let (status, json) = send(&router, "PUT", OWNER, Some(change)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let saved = json!({"primary": primary, "footer": []});
+    assert_eq!(json["settings"]["nav"], saved, "{json}");
+    let unknown = json!({"settings": {
+        "nav": {"sidebar": []},
         "updated_at": "2026-10-27T09:00:00Z",
     }});
     let (status, json) = send(&router, "PUT", OWNER, Some(unknown)).await;
