@@ -18,6 +18,7 @@ use crate::post_store::DeletePostError;
 use crate::problem::{Problem, ProblemType};
 use crate::publish_door::PublishDoor;
 use crate::resources::PostStatus;
+use crate::staff_names::NameBook;
 
 /// What a delete names: the copy of the post, page or other entry it was
 /// made on.
@@ -50,7 +51,7 @@ pub(crate) struct DeleteQuery {
 )]
 pub(crate) async fn delete_admin_post(
     State(posts): State<Arc<PublishDoor>>,
-    Extension(principal): Extension<Principal>,
+    (Extension(principal), Extension(book)): (Extension<Principal>, Extension<NameBook>),
     Path(id): Path<String>,
     OriginalUri(uri): OriginalUri,
     query: Result<Query<DeleteQuery>, QueryRejection>,
@@ -73,7 +74,10 @@ pub(crate) async fn delete_admin_post(
         Err(DeletePostError::Stale {
             updated_at,
             updated_by,
-        }) => Err(stale(updated_at, updated_by.as_deref())),
+        }) => Err(stale(
+            updated_at,
+            book.name_of(updated_by.as_deref()).await.as_deref(),
+        )),
         Err(error) => Err(Problem::internal(&error)),
     }
 }

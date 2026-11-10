@@ -61,7 +61,7 @@ function Picking({ versions, now, onRestore }: PickingProps) {
         {listed.map(({ kept, n, id }) => (
           <li key={id}>
             <button type="button" aria-pressed={chosen === n} onClick={() => setChosen(n)}>
-              {`${moment(kept.saved_at)}${en.versions.by(kept.saved_by)}`}
+              {`${moment(kept.saved_at)}${en.versions.by(kept.saved_by_name ?? kept.saved_by)}`}
             </button>
           </li>
         ))}
