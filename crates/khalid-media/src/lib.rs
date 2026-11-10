@@ -14,6 +14,7 @@
 //! It must not know about HTTP routes, templates or the content tree. The
 //! render crate shows what this crate made; the wiring code connects them.
 
+mod alt_replace;
 mod avif;
 mod content_key;
 mod crop;
@@ -38,6 +39,7 @@ mod storage;
 mod variant;
 mod whole_file;
 
+pub use alt_replace::{AltChange, AltReplace, ReplaceAltError};
 pub use content_key::ContentKey;
 pub use crop::Crop;
 pub use derive::{Avif, DerivedFile, DerivedImage, derive, derive_in_background, derive_with};
