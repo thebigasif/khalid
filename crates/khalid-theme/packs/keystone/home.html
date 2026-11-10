@@ -5,6 +5,7 @@
     three per home section, then the call to action. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -47,11 +48,11 @@
 {% for line in template.options.subscriber_line %}<p class="subscriber-line">{{ line }}</p>
 {% endfor %}{{ newsletter_form(site.subscribe, t) }}
 </div>
-{% endif %}{% for section in page.sections %}<section class="home-section">
+{% endif %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts[:3], 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endfor %}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% endblock %}

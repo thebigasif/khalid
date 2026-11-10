@@ -9,6 +9,7 @@
     section is a picture grid of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -27,13 +28,13 @@
 {% set rest = looks | rejectattr("href", "eq", cover.href) | list if cover else [] -%}
 {% set look_areas = looks | selectattr("category") | map(attribute="category.href") | list -%}
 {% set collections = page.categories | selectattr("href", "in", look_areas) | list -%}
-{% if page.sections %}{% for section in page.sections %}<section class="at-section" aria-labelledby="at-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="at-section" aria-labelledby="at-section-{{ loop.index }}">
 <h2 id="at-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ picture_grid(section.posts, 3, 1, t.look_number, slot_sizes("grid")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif cover %}<section class="at-lookbook" aria-labelledby="at-lookbook-title">
+{% endif %}{% endfor %}{% elif cover %}<section class="at-lookbook" aria-labelledby="at-lookbook-title">
 <h2 id="at-lookbook-title">{{ t.lookbook }}</h2>
 {% call spread(cover, 3, t.look_number | replace("{number}", "01"), cover.excerpt, cover.href, none, t.the_pieces, slot_sizes("spread")) %}{% if cover.category %}<p class="at-cover-collection"><a href="{{ cover.category.href }}">{{ cover.category.name }}</a></p>
 {% endif %}{% endcall %}

@@ -8,6 +8,14 @@ import type { Part, SeoTable } from "../seo/parts";
 import { call, type Reply, sending } from "./call";
 import type { TemplateSetting } from "./templates";
 
+/** A home section that names no list. */
+export type PlainSectionKind = "latest" | "featured" | "newsletter";
+/** A home section that shows one list, named by its slug. */
+export type ListSectionKind = "category" | "collection" | "channel" | "series";
+
+/** One section of the home page, as `[reader] home_sections` holds it. */
+export type HomeSection = { kind: PlainSectionKind } | { kind: ListSectionKind; slug: string };
+
 /** The site's core settings, as `site.toml` holds them. */
 export type SiteSettings = {
   name: string;
@@ -30,6 +38,8 @@ export type SiteSettings = {
   privacy?: PrivacyTable;
   /** The site's own code from `[code]`, one entry each, as written. */
   code?: CodeEntry[];
+  /** The home page's sections, top first. A server from before them sends none. */
+  home_sections?: HomeSection[];
   /** When `site.toml` last changed; a change sends it back. */
   updated_at: string;
   /** Whether the running server needs a restart to use what `site.toml` says. */
@@ -52,6 +62,8 @@ export type SiteChange = {
   privacy?: Record<string, PrivacyPart | null>;
   /** Every entry of `[code]`, in place of the old ones. */
   code?: CodeEntry[];
+  /** Every home section, top first, in place of the old ones. */
+  home_sections?: HomeSection[];
 };
 
 async function settings(response: Response): Promise<SiteSettings> {

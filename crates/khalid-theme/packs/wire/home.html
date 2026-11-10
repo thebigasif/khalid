@@ -5,6 +5,7 @@
     ranked and the topics. Then each home section. No script anywhere. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import cards, pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
@@ -85,11 +86,11 @@
 {% endif %}</aside>
 {% endif %}</div>
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}
-{% endif %}{% for section in page.sections %}<section class="home-section">
+{% endif %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-section">
 <h2 class="band-title">{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts[:4], 3, "image", sizes=slot_sizes("home", "image")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{{ home_sections(page, template.options, t) }}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
+{% endif %}{% endfor %}{{ home_sections(page, template.options, t) }}{% if template.cta and template.options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
 {% endif %}{% endblock %}

@@ -8,6 +8,7 @@
     site.toml, each section is a timetable of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -24,13 +25,13 @@
 {% set speakers = (sessions | selectattr("author") | map(attribute="author") | unique(attribute="href") | list)[:options.speakers_count] -%}
 {% set session_venues = sessions | selectattr("category") | map(attribute="category.href") | list -%}
 {% set venues = page.categories | selectattr("href", "in", session_venues) | list -%}
-{% if page.sections %}{% for section in page.sections %}<section class="summit-section" aria-labelledby="summit-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="summit-section" aria-labelledby="summit-section-{{ loop.index }}">
 <h2 id="summit-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts | selectattr("facts") | list %}{{ schedule(section.posts, 3, false) }}
 {% else %}{{ feed_list(section.posts) }}
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif sessions %}<section class="summit-programme" aria-labelledby="summit-programme-title">
+{% endif %}{% endfor %}{% elif sessions %}<section class="summit-programme" aria-labelledby="summit-programme-title">
 <h2 id="summit-programme-title">{{ t.programme }}</h2>
 {{ schedule_days(sessions) }}
 {{ schedule(sessions) }}

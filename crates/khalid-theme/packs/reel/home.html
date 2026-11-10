@@ -9,6 +9,7 @@
     poster grid of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
@@ -48,13 +49,13 @@
 {% set rest = reviews | rejectattr("href", "eq", lead.href) | list if lead else reviews -%}
 {% set features = (others | rejectattr("href", "eq", lead.href) | list if lead else others)[:options.features_count] -%}
 {% set ranked = (reviews | selectattr("facts") | sort(attribute="facts.0.value", reverse=true) | list)[:options.score_sheet] -%}
-{% if page.sections %}{% for section in page.sections %}<section class="reel-section" aria-labelledby="reel-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="reel-section" aria-labelledby="reel-section-{{ loop.index }}">
 <h2 id="reel-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{% call(post) poster_grid(section.posts, sizes=slot_sizes("poster")) %}{{ stub(post) }}{% endcall %}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif lead %}<section class="now-showing" aria-labelledby="now-showing-title">
+{% endif %}{% endfor %}{% elif lead %}<section class="now-showing" aria-labelledby="now-showing-title">
 <h2 id="now-showing-title">{{ t.now_showing if rated else t.featured }}</h2>
 <article class="lead-review">
 {% if lead.image %}<div class="screen">{{ picture(lead.image, slot_sizes("screen")) }}</div>

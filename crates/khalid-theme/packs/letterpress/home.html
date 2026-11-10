@@ -8,6 +8,7 @@
     own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -34,13 +35,13 @@
 </section>
 {% endif %}{% if first_page and site.subscribe and options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t) }}
 {% endif %}{% if first_page and template.cta and options.cta_band in ["home", "both"] %}{{ cta_band(template.cta) }}
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="lp-past" aria-labelledby="lp-section-{{ loop.index }}">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="lp-past" aria-labelledby="lp-section-{{ loop.index }}">
 <h2 id="lp-section-{{ loop.index }}" class="lp-past-title">{{ section.title }}</h2>
 {% if section.posts %}{{ issue_pile(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif rest %}<section class="lp-past" aria-labelledby="lp-past-title">
+{% endif %}{% endfor %}{% elif rest %}<section class="lp-past" aria-labelledby="lp-past-title">
 <h2 id="lp-past-title" class="lp-past-title">{{ t.newsletter_issues }}</h2>
 {{ issue_pile(rest) }}
 </section>

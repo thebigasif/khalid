@@ -6,6 +6,7 @@
     sections in site.toml, each section is a grid of plates of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import cards, card_meta, pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
@@ -41,13 +42,13 @@
 {% for topic in page.categories %}<li><a href="{{ topic.href }}"><span class="lt-topic-number" aria-hidden="true">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span> {{ topic.name }}</a></li>
 {% endfor %}</ul>
 </nav>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="lt-section" aria-labelledby="lt-section-{{ loop.index }}">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="lt-section" aria-labelledby="lt-section-{{ loop.index }}">
 <h2 id="lt-section-{{ loop.index }}" class="lt-label">{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts, 3, "image", sizes=slot_sizes("card")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif rest %}<section class="lt-section" aria-labelledby="lt-latest-title">
+{% endif %}{% endfor %}{% elif rest %}<section class="lt-section" aria-labelledby="lt-latest-title">
 <h2 id="lt-latest-title" class="lt-label">{{ t.latest_explainers }}</h2>
 {{ cards(rest, 3, "image", sizes=slot_sizes("card")) }}
 </section>

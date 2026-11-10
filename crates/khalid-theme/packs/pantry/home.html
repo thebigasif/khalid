@@ -10,6 +10,7 @@
     cards of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "image.html" import picture -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -59,13 +60,13 @@
 {% for section in sections %}<li><a href="{{ section.href }}">{{ section.name }}</a></li>
 {% endfor %}</ul>
 </nav>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="pantry-section" aria-labelledby="pantry-section-{{ loop.index }}">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="pantry-section" aria-labelledby="pantry-section-{{ loop.index }}">
 <h2 id="pantry-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ ticket_cards(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif recipes or notes %}{% if recipes and first_page %}{% set lead = recipes[0] -%}
+{% endif %}{% endfor %}{% elif recipes or notes %}{% if recipes and first_page %}{% set lead = recipes[0] -%}
 <section class="fresh" aria-labelledby="fresh-title">
 <h2 id="fresh-title">{{ t.fresh_from_the_oven }}</h2>
 <article class="fresh-card">

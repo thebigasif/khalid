@@ -4,6 +4,7 @@
 mod entries;
 mod glossary;
 mod home_rows;
+mod home_sections;
 mod hubs;
 pub(crate) mod privacy_choices;
 pub(crate) mod series;
@@ -125,8 +126,8 @@ fn language_pages(
 
 /// Adds the pages that help readers find their way, once the lists of
 /// `languages` are made: the glossary from A to Z, case studies and the
-/// changelog, series, hubs, the home page's topic tabs and media rows and
-/// the privacy page, worded in each language by `renderer`'s strings.
+/// changelog, series, hubs, the home page's topic tabs, media rows and
+/// sections, and the privacy page, worded in each language by `renderer`'s strings.
 /// `site` is the site folder and `today` the day a privacy change is dated.
 ///
 /// # Errors
@@ -144,7 +145,7 @@ pub(crate) fn discovery_pages(
     series::add(config, renderer, content, languages)?;
     hubs::fill((config, routes), content, languages);
     home_rows::fill(languages);
-    Ok(())
+    home_sections::fill((config, routes), renderer, languages)
 }
 
 /// The home page of `locale`, listing `cards`, newest first.

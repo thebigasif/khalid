@@ -272,7 +272,45 @@ fn builds_its_pages(pack: &str) {
     insta::assert_snapshot!(format!("outline_{pack}"), pages);
 }
 
-/// Two tests per template, so the builds run side by side: each loop over
+/// Home sections for the demo site: a category, the newsletter, then the
+/// newest posts.
+#[cfg(test)]
+const SECTIONS: &str =
+    "\n[reader]\nhome_sections = [{ category = \"technical-seo\" }, \"newsletter\", \"latest\"]\n";
+
+/// The packs whose home page always carries its own sign-up form, so a
+/// newsletter section adds none.
+#[cfg(test)]
+const OWN_SIGN_UP: [&str; 2] = ["dispatch", "versions"];
+
+/// Builds the demo site in `pack` with [`SECTIONS`], and checks its home
+/// page shows them, the newsletter form once and between the other two.
+/// A title may show above its section too, in a menu or a row of jump
+/// links, so the check looks for one before the form and one after it.
+#[cfg(test)]
+fn shows_the_home_sections(pack: &str) {
+    let (_site, out) = built_with(pack, &format!("{MAIL}{SECTIONS}"));
+    let html = fs::read_to_string(at(&out, "index.html")).unwrap();
+    outline("index.html", &html);
+    let forms = html.matches("<form class=\"subscribe\"").count();
+    assert_eq!(forms, 1, "{pack}: the newsletter form shows once");
+    assert!(html.contains("href=\"/blog/archive/\""), "{pack}: View all");
+    let category = html.find(">Technical SEO<");
+    let latest = html.rfind(">Latest posts<");
+    let (Some(category), Some(latest)) = (category, latest) else {
+        panic!("{pack}: both sections show");
+    };
+    if OWN_SIGN_UP.contains(&pack) {
+        return;
+    }
+    let form = html.find("id=\"home-newsletter-title\"");
+    let form = form.unwrap_or_else(|| panic!("{pack}: the newsletter section"));
+    // Manual's sections are tiles in one grid, and the form follows it.
+    let before_latest = pack == "manual" || form < latest;
+    assert!(category < form && before_latest, "{pack}: in order");
+}
+
+/// Three tests per template, so the builds run side by side: each loop over
 /// every template took 22 minutes. Each test's name starts with its
 /// module's, the name the one looping test had.
 macro_rules! every_pack {
@@ -291,6 +329,15 @@ macro_rules! every_pack {
                 #[test]
                 fn $pack() {
                     super::builds_its_pages(stringify!($pack));
+                }
+            )*
+        }
+
+        mod every_template_shows_the_home_sections {
+            $(
+                #[test]
+                fn $pack() {
+                    super::shows_the_home_sections(stringify!($pack));
                 }
             )*
         }

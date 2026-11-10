@@ -59,6 +59,7 @@ impl MemorySettings {
         set_parts(&mut next.seo, change.seo);
         set_parts(&mut next.privacy, change.privacy);
         next.code = change.code.unwrap_or(next.code);
+        next.home_sections = change.home_sections.unwrap_or(next.home_sections);
         if !next.languages.contains(&next.default_language) {
             return Err(SettingsError::Refused {
                 field: "default_language".to_owned(),

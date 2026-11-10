@@ -1,0 +1,39 @@
+---
+source: crates/khalid/tests/demo_home_sections.rs
+assertion_line: 143
+expression: outline(&main)
+---
+## Editor&#39;s picks
+  link /blog/category/content-strategy/
+  link /blog/planning-a-topic-cluster/
+  link /blog/archive/
+## Technical SEO
+  link /blog/category/technical-seo/
+  link /blog/fixing-slow-pages/
+  link /blog/category/technical-seo/
+  link /blog/what-a-sitemap-does/
+  link /blog/category/technical-seo/
+## Get new posts by email
+  form class="subscribe" method="post" action="/blog/subscribe"
+## Links and titles
+  link /blog/category/on-page-seo/
+  link /blog/why-internal-links-matter/
+  link /blog/category/on-page-seo/
+  link /blog/how-to-write-a-title-tag/
+  link /blog/series/links-and-titles/
+## Latest posts
+  link /blog/category/content-strategy/
+  link /blog/planning-a-topic-cluster/
+  link /blog/category/technical-seo/
+  link /blog/fixing-slow-pages/
+  link /blog/category/technical-seo/
+  link /blog/what-a-sitemap-does/
+  link /blog/category/on-page-seo/
+  link /blog/how-to-write-a-title-tag/
+  link /blog/category/on-page-seo/
+  link /blog/why-internal-links-matter/
+  link /blog/archive/
+## Topics
+  link /blog/category/on-page-seo/
+  link /blog/category/technical-seo/
+  link /blog/category/content-strategy/

@@ -5,7 +5,7 @@
 
 use std::collections::BTreeMap;
 
-use khalid_render::{BodyHtml, HomeSectionPosts, PageBody, PostCard};
+use khalid_render::{BodyHtml, HomeSectionKind, HomeSectionPosts, PageBody, PostCard};
 
 use crate::build_pages::LanguagePages;
 
@@ -137,6 +137,7 @@ fn tabs(cards: &[&PostCard]) -> Vec<HomeSectionPosts> {
                 title: category.name.clone(),
                 href: category.href.clone(),
                 posts: vec![(*card).clone()],
+                kind: HomeSectionKind::Posts,
             }),
             // A full tab, or a topic past the last tab, shows no more.
             _ => {}

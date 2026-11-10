@@ -47,6 +47,9 @@ pub struct AdminSettings {
     /// old single `[code]` table reads as one entry.
     #[schema(value_type = Vec<Object>)]
     pub code: Vec<Map<String, Value>>,
+    /// The home page's sections from `[reader] home_sections`, top first.
+    /// Empty means one list of the newest posts.
+    pub home_sections: Vec<HomeSectionSetting>,
     /// When `site.toml` last changed. A change sends it back.
     pub updated_at: DateTime<Utc>,
     /// Whether `site.toml` changes a setting the running server reads only
@@ -89,6 +92,43 @@ pub struct SettingsChange {
     /// `[[code]]` list. An empty list removes `[code]`.
     #[schema(value_type = Option<Vec<Object>>)]
     pub code: Option<Vec<Map<String, Value>>>,
+    /// Every home section, top first, in place of the old ones. An empty
+    /// list goes back to one list of the newest posts.
+    pub home_sections: Option<Vec<HomeSectionSetting>>,
     /// The `updated_at` of the copy this change was made on.
     pub updated_at: DateTime<Utc>,
+}
+
+/// One section of the home page: `{"kind": "latest"}`, or a list named
+/// by its slug, such as `{"kind": "category", "slug": "technical-seo"}`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(tag = "kind", rename_all = "lowercase")]
+#[non_exhaustive]
+pub enum HomeSectionSetting {
+    /// The newest posts.
+    Latest,
+    /// The posts marked `featured`.
+    Featured,
+    /// The newsletter sign-up form.
+    Newsletter,
+    /// A category from `categories.toml`.
+    Category {
+        /// Its slug, such as `technical-seo`.
+        slug: String,
+    },
+    /// A collection, such as `guides`.
+    Collection {
+        /// Its name, such as `guides`.
+        slug: String,
+    },
+    /// A channel from `routes.toml`.
+    Channel {
+        /// Its name, such as `featured`.
+        slug: String,
+    },
+    /// A series, in reading order.
+    Series {
+        /// The slug of its page, such as `link-building-101`.
+        slug: String,
+    },
 }

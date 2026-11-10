@@ -9,6 +9,7 @@
     wall of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
@@ -26,13 +27,13 @@
 {% endfor %}</div>
 {% endif %}{{ hero_stats(options) }}</header>
 {% if page.categories | length > 1 %}{{ filter_row(t.types_of_work, site.home, t.gallery_all, page.categories, meta.path) }}
-{% endif %}{% if page.sections and not later %}{% for section in page.sections %}<section class="wall-section" aria-labelledby="wall-section-{{ loop.index }}">
+{% endif %}{% if page.sections and not later %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="wall-section" aria-labelledby="wall-section-{{ loop.index }}">
 <h2 id="wall-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ wall(section.posts, 3) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}<h2 class="visually-hidden">{{ t.projects }}</h2>
+{% endif %}{% endfor %}{% elif page.posts %}<h2 class="visually-hidden">{{ t.projects }}</h2>
 {{ wall(page.posts, 3) }}
 {% if options.checklist %}{{ checklist(page.posts) }}
 {% endif %}{% if page.pagination %}{{ pages(page.pagination) }}

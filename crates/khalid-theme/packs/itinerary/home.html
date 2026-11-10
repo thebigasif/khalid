@@ -10,6 +10,7 @@
     site.toml, each section is a grid of tickets of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "image.html" import picture -%}
@@ -47,7 +48,7 @@
 {% set notes = all_notes[:options.notes_count] -%}
 {% set trip_countries = tickets | selectattr("category") | map(attribute="category.href") | list -%}
 {% set countries = page.categories | selectattr("href", "in", trip_countries) | list -%}
-{% if page.sections %}{% for section in page.sections %}<section class="trip-section" aria-labelledby="trip-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="trip-section" aria-labelledby="trip-section-{{ loop.index }}">
 <h2 id="trip-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}<ul class="tickets" role="list">
 {% for post in section.posts %}<li>{{ ticket(post) }}</li>
@@ -55,7 +56,7 @@
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif tickets %}<section class="trip-lead" aria-labelledby="trip-lead-title">
+{% endif %}{% endfor %}{% elif tickets %}<section class="trip-lead" aria-labelledby="trip-lead-title">
 <h2 id="trip-lead-title">{{ t.latest_trip if trips else t.recent_posts }}</h2>
 {{ ticket(tickets[0], 3, true) }}
 </section>

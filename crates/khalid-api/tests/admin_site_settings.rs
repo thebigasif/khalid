@@ -66,6 +66,7 @@ fn demo() -> Router {
         seo: serde_json::Map::new(),
         privacy: serde_json::Map::new(),
         code: Vec::new(),
+        home_sections: Vec::new(),
         updated_at: Utc.with_ymd_and_hms(2026, 10, 20, 9, 0, 0).unwrap(),
         restart_needed: false,
     };
@@ -149,4 +150,28 @@ async fn settings_need_settings_write_and_a_server_that_keeps_them() {
     assert_eq!(status, StatusCode::FORBIDDEN);
     let (status, json) = send(&router(None), "GET", OWNER, None).await;
     assert_eq!(status, StatusCode::NOT_FOUND, "{json}");
+}
+
+#[tokio::test]
+async fn the_home_sections_are_saved_and_read_back_in_order() {
+    let router = demo();
+    let (_, json) = send(&router, "GET", OWNER, None).await;
+    assert_eq!(json["settings"]["home_sections"], json!([]), "{json}");
+    let sections = json!([
+        {"kind": "featured"},
+        {"kind": "category", "slug": "technical-seo"},
+        {"kind": "newsletter"},
+        {"kind": "series", "slug": "link-building-101"},
+        {"kind": "latest"},
+    ]);
+    let change = json!({"settings": {"home_sections": sections, "updated_at": LAST_CHANGE}});
+    let (status, json) = send(&router, "PUT", OWNER, Some(change)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(json["settings"]["home_sections"], sections, "{json}");
+    let unknown = json!({"settings": {
+        "home_sections": [{"kind": "author", "slug": "asif"}],
+        "updated_at": "2026-10-27T09:00:00Z",
+    }});
+    let (status, json) = send(&router, "PUT", OWNER, Some(unknown)).await;
+    assert!(status.is_client_error(), "{status}: {json}");
 }

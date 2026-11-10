@@ -5,7 +5,8 @@
 use std::collections::BTreeMap;
 
 use khalid_render::{
-    HomeSectionPosts, PageBody, PageKind, RenderHome, RenderPack, Renderer, TemplateOption,
+    HomeSectionKind, HomeSectionPosts, PageBody, PageKind, RenderHome, RenderPack, Renderer,
+    TemplateOption,
 };
 
 use crate::common::{demo_site, meta};
@@ -27,6 +28,7 @@ fn home() -> RenderHome {
                 title: (*title).to_owned(),
                 href: format!("/blog/category/{}/", title.to_lowercase().replace(' ', "-")),
                 posts: posts.clone(),
+                kind: HomeSectionKind::Posts,
             })
             .collect(),
         videos: posts.iter().take(1).cloned().collect(),

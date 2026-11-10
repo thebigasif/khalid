@@ -9,6 +9,7 @@
     a list of rows of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "image.html" import picture -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -39,13 +40,13 @@
 {% endif %}<p class="fq-notes-link"><a href="{{ lead.href }}">{{ t.frequency_show_notes }}</a></p>
 </section>
 {% endif %}</div>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="fq-section" aria-labelledby="fq-section-{{ loop.index }}">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="fq-section" aria-labelledby="fq-section-{{ loop.index }}">
 <h2 id="fq-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ episode_rows(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif rows %}<section class="fq-section" aria-labelledby="fq-episodes-title">
+{% endif %}{% endfor %}{% elif rows %}<section class="fq-section" aria-labelledby="fq-episodes-title">
 <h2 id="fq-episodes-title">{{ t.frequency_episodes }}</h2>
 {{ episode_rows(rows) }}
 </section>

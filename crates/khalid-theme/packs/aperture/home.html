@@ -11,6 +11,7 @@
     sections in site.toml, each section is a contact sheet of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import hero_stats, home_sections -%}
@@ -56,13 +57,13 @@
 </div>
 {% elif options.tagline and not later %}<p class="masthead-line">{{ options.tagline[0] }}</p>
 {% endif %}{{ hero_stats(options) }}</header>
-{% if page.sections and not later %}{% for section in page.sections %}<section class="sheet-section" aria-labelledby="sheet-section-{{ loop.index }}">
+{% if page.sections and not later %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="sheet-section" aria-labelledby="sheet-section-{{ loop.index }}">
 <h2 id="sheet-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ sheet(section.posts, 3) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif page.posts %}<div class="stories">
+{% endif %}{% endfor %}{% elif page.posts %}<div class="stories">
 {% for post in page.posts[:options.stories] %}<article class="story">
 {% if post.image %}<a class="story-picture" href="{{ post.href }}" tabindex="-1" aria-hidden="true">{{ frame(post.image, "(min-width: 82rem) 81rem, 100vw") }}</a>
 {% endif %}<div class="story-caption">

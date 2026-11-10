@@ -5,7 +5,8 @@
     stamp. Then the recent issues as ruled rows, the page links, the
     topics, and a second reply slip at the end. On a phone it all stacks
     in that order, so the sign-up is on the first screen. With home
-    sections in site.toml, each section is a list of issues of its own. -#}
+    sections in site.toml, each section is a list of issues of its own; a
+    newsletter section adds nothing, as the reply slip opens the page. -#}
 {% extends "base.html" %}
 {% block main %}
 {% from "card.html" import pages -%}
@@ -39,13 +40,13 @@
 </div>
 </article>
 {% endif %}</div>
-{% if page.sections %}{% for section in page.sections %}<section class="dp-recent" aria-labelledby="dp-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind != "newsletter" %}<section class="dp-recent" aria-labelledby="dp-section-{{ loop.index }}">
 <h2 id="dp-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ issue_rows(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif rows %}<section class="dp-recent" aria-labelledby="recent-title">
+{% endif %}{% endfor %}{% elif rows %}<section class="dp-recent" aria-labelledby="recent-title">
 <h2 id="recent-title">{{ t.recent_issues }}</h2>
 {{ issue_rows(rows) }}
 </section>

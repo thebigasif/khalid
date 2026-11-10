@@ -5,6 +5,7 @@ import { adminBlog } from "../../test/blog";
 import { axeViolations, json, renderAt, signedIn } from "../../test/render";
 import type { SiteChange, SiteSettings } from "../api/site";
 import { en } from "../strings/en";
+import { homeSections as HOME } from "../strings/homeSections";
 
 // The demo site's real site.toml.
 const DEMO: SiteSettings = {
@@ -66,6 +67,40 @@ describe("the Settings screen", () => {
     expect(await screen.findByText(en.site.live)).toBeVisible();
     expect(changes).toEqual([{ updated_at: DEMO.updated_at, name: "Field Notes" }]);
     expect(screen.queryByText(en.site.restart)).toBeNull();
+  });
+
+  it("adds, orders and saves the home page sections as one list", async () => {
+    signedIn();
+    const changes = blog();
+    renderAt("/settings");
+    expect(await screen.findByText(HOME.none)).toBeVisible();
+    const kind = screen.getByLabelText(HOME.kindLabel);
+    await userEvent.selectOptions(kind, "category");
+    await userEvent.click(screen.getByRole("button", { name: HOME.add }));
+    expect(screen.getByText(HOME.slugMissing)).toBeVisible();
+    await userEvent.type(screen.getByLabelText(HOME.slugLabel("category")), "technical-seo");
+    await userEvent.click(screen.getByRole("button", { name: HOME.add }));
+    await userEvent.selectOptions(kind, "newsletter");
+    expect(screen.queryByLabelText(HOME.slugLabel("category"))).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: HOME.add }));
+    await userEvent.selectOptions(kind, "latest");
+    await userEvent.click(screen.getByRole("button", { name: HOME.add }));
+    await userEvent.click(screen.getByRole("button", { name: HOME.add }));
+    expect(screen.getByText(HOME.already)).toBeVisible();
+    const newsletter = { kind: "newsletter" } as const;
+    await userEvent.click(screen.getByRole("button", { name: HOME.upNamed(newsletter) }));
+    await userEvent.click(
+      screen.getByRole("button", { name: HOME.removeNamed({ kind: "latest" }) }),
+    );
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.click(screen.getByRole("button", { name: HOME.save }));
+    expect(await screen.findByText(en.site.live)).toBeVisible();
+    expect(changes).toEqual([
+      {
+        updated_at: DEMO.updated_at,
+        home_sections: [newsletter, { kind: "category", slug: "technical-seo" }],
+      },
+    ]);
   });
 
   it("sends the languages as a list, says they wait for a restart, and nothing when nothing changed", async () => {

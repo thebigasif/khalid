@@ -8,6 +8,7 @@
     and the call to action again to close. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -82,7 +83,7 @@
 </section>
 {% endif %}</div>
 {% endif %}{{ home_sections(page, template.options, t) }}{% if site.subscribe and template.options.newsletter in ["home", "both"] %}{{ newsletter_form(site.subscribe, t, note=template.options.newsletter_note | first if template.options.newsletter_note else none) }}
-{% endif %}{% for section in page.sections %}<section class="home-section">
+{% endif %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-section">
 <div class="al-section-head">
 <h2>{{ section.title }}</h2>
 <p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
@@ -90,6 +91,6 @@
 {% if section.posts %}{{ cards(section.posts[:4], 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}</section>
-{% endfor %}{% if page.pagination %}{{ pages(page.pagination) }}
+{% endif %}{% endfor %}{% if page.pagination %}{{ pages(page.pagination) }}
 {% endif %}{% if band %}<div class="al-closing">{{ cta_band(template.cta) }}</div>
 {% endif %}{% endblock %}

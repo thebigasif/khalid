@@ -32,7 +32,7 @@ pub use admin_category::{AdminCategory, CategoryEdit, NewCategory, names_problem
 pub use admin_key::{AdminKey, NewKey, NewKeyKind};
 pub use admin_page::{AdminPage, NewPage, PageEdit};
 pub use admin_post::{AdminPost, NewPost, PostDraft, PostEdit, PostStatus};
-pub use admin_settings::{AdminSettings, SettingsChange};
+pub use admin_settings::{AdminSettings, HomeSectionSetting, SettingsChange};
 pub use admin_snippet::{AdminSnippet, NewSnippet, SnippetEdit};
 pub use admin_tag::{AdminTag, TagEdit};
 pub use admin_template::{

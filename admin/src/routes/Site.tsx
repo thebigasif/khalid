@@ -1,10 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { failureMessage, isData } from "../api/call";
-import { changeSite, readSite, type SiteSettings } from "../api/site";
+import { changeSite, readSite, type SiteChange, type SiteSettings } from "../api/site";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { savedWords } from "../components/SettingsTabs";
+import { HomeSections } from "../site/HomeSections";
 import { PictureSearches } from "../site/PictureSearches";
 import { SiteForm } from "../site/SiteForm";
 import { type SiteFields, siteChange } from "../site/siteChange";
@@ -26,6 +27,10 @@ export function Site() {
       setSaid(words.unchanged);
       return;
     }
+    await send(change);
+  };
+
+  const send = async (change: SiteChange) => {
     const reply = await changeSite(change);
     setSaid(isData(reply) ? savedWords(words, reply.data) : null);
     setFailed(isData(reply) ? null : failureMessage(reply));
@@ -43,6 +48,11 @@ export function Site() {
         {failed === null ? null : <Problem message={failed} />}
         <p role="status">{said}</p>
         <SiteForm site={site} onSave={(fields) => save(site, fields)} />
+        <HomeSections
+          key={site.updated_at}
+          saved={site.home_sections ?? []}
+          onSave={(sections) => send({ updated_at: site.updated_at, home_sections: sections })}
+        />
         <PictureSearches />
       </>
     );

@@ -248,8 +248,8 @@ impl SitePages {
     /// The first pages `khalid serve` answers with while the rest of the
     /// site renders: the home page of each language, made from the front
     /// matter of `content` without rendering a single body, and the
-    /// stylesheet they link. Each is byte for byte the page the full render
-    /// makes. A headless site has none.
+    /// stylesheet they link, byte for byte the full render's. None for a
+    /// headless site, nor with home sections: list pages fill those (G19).
     pub(crate) fn render_first(&self, content: &SiteContent) -> Result<Vec<Page>, UserMessage> {
         let (folder, settings) = (&self.0.folder, self.settings());
         let Settings {
@@ -257,7 +257,8 @@ impl SitePages {
             routes,
             theme,
         } = &*settings;
-        let Some(theme) = theme else {
+        let sections = !config.reader().home_sections.is_empty();
+        let Some(theme) = theme.as_ref().filter(|_| !sections) else {
             return Ok(Vec::new());
         };
         let href = theme.stylesheet.path().as_str();

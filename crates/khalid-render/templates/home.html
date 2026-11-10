@@ -5,7 +5,7 @@
 {% from "card.html" import cards, featured_slot, pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
-{% from "home_parts.html" import hero_stats, home_sections -%}
+{% from "home_parts.html" import hero_stats, home_sections, section_newsletter -%}
 <h1>{{ page.title }}</h1>{{ hero_stats(template.options) }}
 {% if page.intro %}<div class="intro">
 {{ page.intro }}
@@ -24,13 +24,13 @@
 {{ cards(picks[:template.options.picks], 3, sizes=slot_sizes("home", template.options.cards)) }}
 </section>
 {% endif %}{% set posts = page.posts | rejectattr("href", "eq", slot.href) | list if slot else page.posts -%}
-{% if page.sections %}{% for section in page.sections %}<section class="home-section">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="home-section">
 <h2>{{ section.title }}</h2>
 {% if section.posts %}{{ cards(section.posts, 3, sizes=slot_sizes("home", template.options.cards)) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif posts %}{{ cards(posts, sizes=slot_sizes("home", template.options.cards)) }}
+{% endif %}{% endfor %}{% elif posts %}{{ cards(posts, sizes=slot_sizes("home", template.options.cards)) }}
 {% elif not slot %}<p>{{ t.no_posts }}</p>
 {% endif %}{% if page.pagination and not page.sections %}{{ pages(page.pagination) }}
 {% endif %}{{ home_sections(page, template.options, t) }}{% if page.topics and "topic_links" in site.features %}<nav class="topics" aria-label="{{ t.topics }}">

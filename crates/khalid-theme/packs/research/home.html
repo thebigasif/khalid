@@ -9,6 +9,7 @@
     each section is a reference list of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
 {% from "home_parts.html" import home_sections -%}
@@ -24,13 +25,13 @@
 {% set paper_areas = papers | selectattr("category") | map(attribute="category.href") | list -%}
 {% set news_areas = all_news | selectattr("category") | map(attribute="category.href") | list -%}
 {% set areas = page.categories | rejectattr("href", "in", news_areas | reject("in", paper_areas) | list) | list -%}
-{% if page.sections %}{% for section in page.sections %}<section class="lab-section" aria-labelledby="lab-section-{{ loop.index }}">
+{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="lab-section" aria-labelledby="lab-section-{{ loop.index }}">
 <h2 id="lab-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ publication_list(section.posts) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif papers or news %}{% if news %}<div class="lab-front lab-front-news">{% else %}<div class="lab-front">{% endif %}
+{% endif %}{% endfor %}{% elif papers or news %}{% if news %}<div class="lab-front lab-front-news">{% else %}<div class="lab-front">{% endif %}
 <section class="lab-papers" aria-labelledby="lab-papers-title">
 <h2 id="lab-papers-title">{{ t.recent_publications }}</h2>
 {% if papers %}{{ publication_list(papers) }}

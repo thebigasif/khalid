@@ -8,6 +8,7 @@
     site.toml, each section is a grid of session cards of its own. -#}
 {% extends "base.html" %}
 {% block main %}
+{% from "home_parts.html" import section_newsletter -%}
 {% from "card.html" import pages -%}
 {% from "picture_sizes.html" import slot_sizes -%}
 {% from "slots.html" import newsletter_form, cta_band -%}
@@ -30,13 +31,13 @@
 {% for programme in programmes %}<li><a href="{{ programme.href }}"><span class="programme-mark" aria-hidden="true"></span>{{ programme.name }}</a></li>
 {% endfor %}</ul>
 </nav>
-{% endif %}{% if page.sections %}{% for section in page.sections %}<section class="vital-section" aria-labelledby="vital-section-{{ loop.index }}">
+{% endif %}{% if page.sections %}{% for section in page.sections %}{% if section.kind == "newsletter" %}{{ section_newsletter(site, t) }}{% else %}<section class="vital-section" aria-labelledby="vital-section-{{ loop.index }}">
 <h2 id="vital-section-{{ loop.index }}">{{ section.title }}</h2>
 {% if section.posts %}{{ session_cards(section.posts, sizes=slot_sizes("session")) }}
 {% else %}<p>{{ t.no_posts }}</p>
 {% endif %}<p class="view-all"><a href="{{ section.href }}">{{ t.view_all | replace("{name}", section.title) }}</a></p>
 </section>
-{% endfor %}{% elif routines or notes %}{% if routines %}<section class="routines" aria-labelledby="routines-title">
+{% endif %}{% endfor %}{% elif routines or notes %}{% if routines %}<section class="routines" aria-labelledby="routines-title">
 <h2 id="routines-title">{{ t.routines }}</h2>
 {{ session_cards(routines, sizes=slot_sizes("session")) }}
 </section>
