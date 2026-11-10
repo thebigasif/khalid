@@ -28,6 +28,7 @@ mod admin_follow_ups;
 mod admin_key;
 mod admin_not_found;
 mod admin_pages;
+mod admin_plan;
 mod admin_presence;
 mod admin_redirect_csv;
 mod admin_redirects;
