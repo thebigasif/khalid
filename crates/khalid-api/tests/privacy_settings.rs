@@ -25,6 +25,9 @@ const OWNER: &str =
     "ki_1111222233334444_aaaabbbbccccddddeeeeffff00001111aaaabbbbccccddddeeeeffff00001111";
 const EDITOR: &str =
     "ki_2222333344445555_aaaabbbbccccddddeeeeffff00001111aaaabbbbccccddddeeeeffff00001111";
+/// An integration key with `settings:write` and nothing more.
+const SETTINGS_ONLY: &str =
+    "ki_3333444455556666_aaaabbbbccccddddeeeeffff00001111aaaabbbbccccddddeeeeffff00001111";
 
 const SETTINGS: &str = "/api/admin/v1/settings/";
 const LAST_CHANGE: &str = "2026-11-02T09:00:00Z";
@@ -36,8 +39,9 @@ fn demo() -> Router {
     let token = |text: &str| text.parse::<KeyToken>().unwrap();
     let key = |text, scopes| StoredKey::for_integration(&token(text), scopes, &hashing).unwrap();
     let keys = MemoryKeyStore::new(vec![
-        key(OWNER, vec![Scope::SettingsWrite]),
+        key(OWNER, vec![Scope::AdminAll]),
         key(EDITOR, vec![Scope::PostsWrite]),
+        key(SETTINGS_ONLY, vec![Scope::SettingsWrite]),
     ]);
     let script = json!({"head": "<script src='https://stats.example.net/a.js'></script>"});
     let settings = AdminSettings {
@@ -176,4 +180,39 @@ async fn a_key_without_settings_write_cannot_change_privacy() {
     let (status, json) = send(&router, EDITOR, Some(change)).await;
     assert_eq!(status, StatusCode::FORBIDDEN, "{json}");
     assert_eq!(json["rule"], "settings:write", "{json}");
+}
+
+#[tokio::test]
+async fn a_settings_only_key_cannot_change_site_code_and_nothing_is_saved() {
+    let router = demo();
+    let entry = json!({"head": "<script src='https://other.example.org/x.js'></script>"});
+    let change = json!({"settings": {"updated_at": LAST_CHANGE, "code": [entry]}});
+    let (status, json) = send(&router, SETTINGS_ONLY, Some(change)).await;
+    assert_eq!(status, StatusCode::FORBIDDEN, "{json}");
+    assert_eq!(json["rule"], "code", "{json}");
+    let (_, json) = send(&router, OWNER, None).await;
+    let head = json["settings"]["code"][0]["head"].as_str().unwrap_or("");
+    assert!(head.contains("stats.example.net"), "nothing saved: {json}");
+}
+
+#[tokio::test]
+async fn a_settings_only_key_cannot_remove_site_code() {
+    let router = demo();
+    let change = json!({"settings": {"updated_at": LAST_CHANGE, "code": []}});
+    let (status, json) = send(&router, SETTINGS_ONLY, Some(change)).await;
+    assert_eq!(status, StatusCode::FORBIDDEN, "{json}");
+    assert_eq!(json["rule"], "code", "{json}");
+}
+
+#[tokio::test]
+async fn a_settings_only_key_may_send_the_code_back_unchanged_with_other_changes() {
+    let router = demo();
+    let (status, json) = send(&router, SETTINGS_ONLY, None).await;
+    assert_eq!(status, StatusCode::OK, "it may still read the code: {json}");
+    let code = json["settings"]["code"].clone();
+    let change = json!({"settings": {"updated_at": LAST_CHANGE,
+        "privacy": {"counts": false}, "code": code}});
+    let (status, json) = send(&router, SETTINGS_ONLY, Some(change)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(json["settings"]["privacy"]["counts"], false, "{json}");
 }

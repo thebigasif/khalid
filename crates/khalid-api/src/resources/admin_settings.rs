@@ -91,7 +91,8 @@ pub struct SettingsChange {
     #[schema(value_type = Option<Object>)]
     pub privacy: Option<BTreeMap<String, Option<Value>>>,
     /// Every entry of `[code]`, in place of the old ones, written as a
-    /// `[[code]]` list. An empty list removes `[code]`.
+    /// `[[code]]` list. An empty list removes `[code]`. A list that differs
+    /// from the saved one needs `admin:all`.
     #[schema(value_type = Option<Vec<Object>>)]
     pub code: Option<Vec<Map<String, Value>>>,
     /// Every home section, top first, in place of the old ones. An empty

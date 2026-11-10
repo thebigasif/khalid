@@ -7765,7 +7765,7 @@
         "tags": [
           "admin settings"
         ],
-        "summary": "Changes the core settings in `site.toml`: only the fields sent change,\nand each value must pass the checks `khalid serve` makes at start. The\nchange carries the `updated_at` of the copy it was made on; when\n`site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The\nrunning server puts most settings in use once saved; `restart_needed`\nsays when one it reads only at start, such as `address`, waits for a\nrestart. Needs `settings:write`.",
+        "summary": "Changes the core settings in `site.toml`: only the fields sent change,\nand each value must pass the checks `khalid serve` makes at start. The\nchange carries the `updated_at` of the copy it was made on; when\n`site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The\nrunning server puts most settings in use once saved; `restart_needed`\nsays when one it reads only at start, such as `address`, waits for a\nrestart. Needs `settings:write`; a change to `code` also needs\n`admin:all`, as a post's head code does, because that code runs on\nevery reader's page. Sending `code` back unchanged needs no more.",
         "operationId": "change_settings",
         "parameters": [
           {
@@ -7810,7 +7810,7 @@
             }
           },
           "403": {
-            "description": "The key lacks settings:write",
+            "description": "The key lacks settings:write, or changes code without admin:all",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -19780,7 +19780,7 @@
             "items": {
               "type": "object"
             },
-            "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`."
+            "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`. A list that differs\nfrom the saved one needs `admin:all`."
           },
           "default_language": {
             "type": [
