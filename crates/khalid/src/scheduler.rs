@@ -4,11 +4,12 @@
 //! announced like any other (CTO answers 2026-10-27, section 4). In the
 //! same round it moves each page, glossary term, case study and changelog
 //! entry whose `publish_at` has come from `drafts/` to `content/`, which
-//! the next render announces.
+//! the next render announces, and tries again each form answer email
+//! whose next try has come (G40).
 
 mod entries;
 
-use std::path::PathBuf;
+use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -19,6 +20,7 @@ use tokio::task::JoinHandle;
 use tokio::time::MissedTickBehavior;
 
 use crate::alerts::Alerting;
+use crate::form_delivery::FormRetry;
 
 /// How often the schedules are looked at, so a post goes live at most this
 /// long after its time.
@@ -41,14 +43,16 @@ impl Scheduling {
 }
 
 /// Starts the scheduler on `door` and the drafts of the site `folder`,
-/// raising each post the linter refuses through `alerting`. Must be called
+/// raising each post the linter refuses through `alerting`, and trying
+/// again each form email `forms` holds whose time has come. Must be called
 /// inside the tokio runtime. The first round runs at once, so a time that
 /// passed while the server was stopped is acted on at start.
 pub(crate) fn start(
-    (door, folder): (Arc<PublishDoor>, PathBuf),
+    (door, folder, forms): (Arc<PublishDoor>, &Path, Option<Arc<FormRetry>>),
     alerting: Arc<Alerting>,
 ) -> Scheduling {
     let (stop, mut stopped) = oneshot::channel();
+    let folder = folder.to_path_buf();
     let task = tokio::spawn(async move {
         let mut ticks = tokio::time::interval(EVERY);
         ticks.set_missed_tick_behavior(MissedTickBehavior::Delay);
@@ -76,6 +80,9 @@ pub(crate) fn start(
                 tokio::task::spawn_blocking(move || entries::publish_due(&site, SystemClock.now()));
             for file in moved.await.unwrap_or_default() {
                 tracing::info!(file, "a scheduled entry went live");
+            }
+            if let Some(forms) = &forms {
+                forms.round().await;
             }
         }
     });

@@ -29,7 +29,7 @@ use crate::cli::{Cli, Output};
 use crate::content_feed::{self, Destination};
 use crate::entry_events::Entries;
 use crate::exit::Exit;
-use crate::form_delivery::SiteDelivery;
+use crate::form_delivery::{FormRetry, SiteDelivery};
 use crate::media_library::PictureKeys;
 use crate::memory::HandBack;
 use crate::post_files::Assets;
@@ -196,7 +196,7 @@ fn serve_with(
         .map_err(|message| (message, Exit::Failure))?;
     let security = security_headers(config)?;
     let search = search_of(&source, (database, id), &security);
-    let (posted, alerting) = mail_and_alerts(
+    let ((posted, forms), alerting) = mail_and_alerts(
         (site, config, listen, alert_every),
         (&search, runtime, &telling),
         &content,
@@ -222,7 +222,7 @@ fn serve_with(
             unlocking((site, config), (database, id), &source, shown_pages),
         )?;
         posts.follow(source.live_config());
-        let scheduling = scheduler::start((Arc::clone(&door), site.to_path_buf()), alerting);
+        let scheduling = scheduler::start((Arc::clone(&door), site, forms), alerting);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =
@@ -283,19 +283,23 @@ fn search_of(
     }
 }
 
+/// The routes readers post to, and the retry of form emails that failed.
+type Posted = (Router, Option<Arc<FormRetry>>);
+
 /// The routes a reader posts to from a page besides comments, and the
 /// alerts ready to start, sharing the one way mail leaves, made from
 /// `[mail]` with its `secret` and `outbound`. The routes are the
 /// newsletter's and the form block's (G4), whose answers are emailed and
 /// told to `telling` (G40), as is each confirmed subscriber; both keep
 /// what they receive in the database `site` reads. The alert checks and
-/// the speed and uptime watch run `every` so often.
+/// the speed and uptime watch run `every` so often. The form emails that
+/// fail are tried again by the retry it returns beside the routes.
 fn mail_and_alerts(
     (folder, config, listen, every): (&Path, &Config, &Listen, Every),
     (site, runtime, telling): (&search_route::Search, &Runtime, &SiteAnnounce),
     content: &LiveContent,
     (secret, outbound): (Option<Secret<String>>, &Outbound),
-) -> Result<(Router, alert_watch::Ready), (UserMessage, Exit)> {
+) -> Result<(Posted, alert_watch::Ready), (UserMessage, Exit)> {
     let (database, id) = (&site.db, site.site);
     let internal = |message| (message, Exit::Internal);
     let mailer = newsletter::mailer(config, secret, outbound).map_err(internal)?;
@@ -306,7 +310,8 @@ fn mail_and_alerts(
         mailer.clone(),
     )
     .map_err(internal)?;
-    let delivery = SiteDelivery::new(config, mailer.clone(), telling.clone()).map_err(internal)?;
+    let retry = FormRetry::for_site(mailer.clone(), (database, id));
+    let delivery = SiteDelivery::new(config, retry.clone(), telling.clone()).map_err(internal)?;
     let delivery: Arc<dyn FormDelivery> = Arc::new(delivery);
     let forms = (&site.security, delivery);
     let forms = form_pages::router(config, (database, id), &site.pages, forms);
@@ -330,7 +335,7 @@ fn mail_and_alerts(
         sources,
         every: every.checks,
     };
-    Ok((newsletters.merge(forms), ready))
+    Ok(((newsletters.merge(forms), retry), ready))
 }
 
 /// The site's pages, fed by `feed`, which read their settings again with
