@@ -233,6 +233,14 @@ async fn serve_sends_the_weekly_email_on_its_own_and_keeps_the_day() {
     let mut kept = site.path().to_path_buf();
     kept.push("data/search-console-email.txt");
     let today = SystemClock.now().date_naive();
+    // The day is written once the mail server has answered, a moment after
+    // the stub holds the mail.
+    for _ in 0..50 {
+        if kept.is_file() {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(100)).await;
+    }
     assert_eq!(fs::read_to_string(kept).unwrap(), format!("{today}\n"));
 }
 

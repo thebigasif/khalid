@@ -229,6 +229,14 @@ mod tests {
             { "label": "AI info", "url": "/ai/" },
         ]);
         assert_eq!(links(1), footer, "the footer ends with the AI info page");
-        assert_eq!(links(3), footer, "every language links the one AI page");
+        let german = serde_json::json!([
+            { "label": "Pricing", "url": "https://www.example.com/pricing/" },
+            { "label": "KI-Info", "url": "/de/ai/" },
+        ]);
+        assert_eq!(
+            links(3),
+            german,
+            "a language links its own copy of the AI page"
+        );
     }
 }
