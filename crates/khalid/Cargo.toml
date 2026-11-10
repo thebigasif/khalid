@@ -59,7 +59,10 @@ tokio = { workspace = true, features = ["rt", "net", "sync", "io-std", "io-util"
 toml = "1.1"
 toml_edit = "0.25"
 tower = { version = "0.5", default-features = false, features = ["util"] }
-tracing.workspace = true
+# A release build leaves debug and trace lines out of every crate: once the
+# server log is installed, each tracing line in the dependencies is live
+# code, and those levels alone cost 139 KB (docs/standards/performance.md).
+tracing = { workspace = true, features = ["release_max_level_info"] }
 tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "std", "json"] }
 tar = { version = "0.4", default-features = false }
 semver = "1"
