@@ -490,8 +490,8 @@ impl SitePages {
         comment_pages::fill(config, self.0.comments.as_ref(), &mut languages);
         form_pages::fill(config, self.0.forms.as_ref(), &mut languages);
         form_pages::under_mount(config, &mut languages);
-        let beside = post_files::served(folder, config, assets, &mut languages, shown)?;
         post_gate::open(config, routes, content, &mut languages)?;
+        let beside = post_files::served(folder, config, assets, &mut languages, shown)?;
         let seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
         let default_tokens = Tokens::default();
         let tokens = theme.as_ref().map_or(&default_tokens, |t| &t.tokens);

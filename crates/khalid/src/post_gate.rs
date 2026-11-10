@@ -11,7 +11,7 @@ use khalid_routes::Routes;
 
 use crate::build_pages::LanguagePages;
 use crate::post_lock::{Key, Lock, Unlocked};
-use crate::{build_message, build_seo};
+use crate::{build_message, build_reader, build_seo};
 
 /// How the renderer starts a locked gated part, and an open one.
 const LOCKED: &str = "<section class=\"gated\">\n";
@@ -20,10 +20,16 @@ const OPEN: &str = "<section class=\"gated gated-open\">\n";
 /// How every gated part ends. Neither holds a section of its own.
 const END: &str = "</section>\n";
 
+/// How the renderer starts a `::toc` list, and ends it.
+const TOC: &str = "<nav class=\"toc\"";
+const TOC_END: &str = "</nav>\n";
+
 /// Keeps a full page for each post of `content` in `languages` with gated
 /// content: a copy of its public page, finished as the public page is,
 /// with each locked part swapped for the part open. A post with a password
-/// or for members is skipped: its body stays locked as a whole.
+/// or for members is skipped: its body stays locked as a whole. Call it
+/// before `post_files::served`, which draws the images of full pages in
+/// their sizes too.
 ///
 /// # Errors
 ///
@@ -75,10 +81,14 @@ pub(crate) fn open(
             let Some(html) = opened(post.body.as_str(), &parts) else {
                 continue;
             };
+            let html = listed(html, &parts);
             let mut page = page.clone();
             if let PageBody::Post(post) = &mut page.body {
                 post.body = BodyHtml::from_sanitised(html);
                 post.reading_time = ReadingTime::of(&post.body, &site.locale);
+                // A heading keeps its id open or locked, so the open
+                // body's headings link to the page's own.
+                post.contents = build_reader::contents(&rendered.headings);
             }
             let key = Key::Reader;
             unlocked.push(Unlocked { page, key });
@@ -108,6 +118,21 @@ fn opened(public: &str, open: &str) -> Option<String> {
     parts.next().is_none().then_some(html)
 }
 
+/// `html` with each `::toc` list swapped for the one in `open`, which also
+/// lists the headings of the gated parts. Every list in one body is the
+/// same, so the first of each stands for all.
+fn listed(html: String, open: &str) -> String {
+    let list = |body: &str| {
+        let start = body.find(TOC)?;
+        let length = body.get(start..)?.find(TOC_END)? + TOC_END.len();
+        body.get(start..start + length).map(str::to_owned)
+    };
+    match (list(&html), list(open)) {
+        (Some(public), Some(open)) => html.replace(&public, &open),
+        _ => html,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -119,6 +144,23 @@ mod tests {
         assert_eq!(
             opened(public, open).unwrap(),
             "<p>Intro</p>\n<section class=\"gated gated-open\">\n<p>First secret</p>\n</section>\n<p>Middle</p>\n<section class=\"gated gated-open\">\n<p>Second secret</p>\n</section>\n<p>End</p>"
+        );
+    }
+
+    #[test]
+    fn the_toc_list_comes_from_the_open_body() {
+        let toc = |items: &str| {
+            format!("<nav class=\"toc\" aria-label=\"Contents\">\n<ol>\n{items}</ol>\n</nav>\n")
+        };
+        let one = "<li class=\"toc-h2\"><a href=\"#why\">Why</a></li>\n";
+        let two = format!("{one}<li class=\"toc-h2\"><a href=\"#how\">How</a></li>\n");
+        let public = format!("{}<p>Intro</p>\n{}", toc(one), toc(one));
+        let open = format!("{}<p>x</p>\n", toc(&two));
+        let expected = format!("{}<p>Intro</p>\n{}", toc(&two), toc(&two));
+        assert_eq!(listed(public, &open), expected);
+        assert_eq!(
+            listed("<p>No list</p>\n".to_owned(), &open),
+            "<p>No list</p>\n"
         );
     }
 

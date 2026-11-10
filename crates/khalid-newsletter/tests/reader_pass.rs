@@ -78,3 +78,16 @@ fn a_pass_link_opens_for_two_days_and_is_no_cookie() {
     let cookie = sent(&maker.cookie());
     assert!(!maker.opens(cookie.trim_start_matches("khalid_reader=")));
 }
+
+#[test]
+fn the_cookie_that_forgets_empties_the_same_cookie_at_once() {
+    let checker = pass(7, "https://example.com", FixedClock::new(at(0)));
+    let forget = checker.forget();
+    assert_eq!(
+        forget,
+        "khalid_reader=; Path=/blog/; Max-Age=0; HttpOnly; SameSite=Lax; Secure"
+    );
+    assert!(!checker.admits(&sent(&forget)));
+    let plain = pass(7, "http://localhost:8080", FixedClock::new(at(0))).forget();
+    assert!(!plain.contains("Secure"), "{plain}");
+}

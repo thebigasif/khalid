@@ -72,12 +72,22 @@ impl ReaderPass {
     /// is sent to every page of the blog, is never readable by scripts,
     /// and is not sent on requests from other sites' forms.
     pub fn cookie(&self) -> String {
+        let code = self.code(Use::Cookie, PASS_DAYS);
+        self.set_cookie(&code, TimeDelta::days(PASS_DAYS).num_seconds())
+    }
+
+    /// The `Set-Cookie` value that empties the reader cookie in the
+    /// browser that gets it, sent when a reader unsubscribes there.
+    pub fn forget(&self) -> String {
+        self.set_cookie("", 0)
+    }
+
+    /// The reader cookie holding `value` for `seconds`.
+    fn set_cookie(&self, value: &str, seconds: i64) -> String {
         let secure = if self.site.is_https() { "; Secure" } else { "" };
         format!(
-            "{COOKIE}={}; Path={}; Max-Age={}; HttpOnly; SameSite=Lax{secure}",
-            self.code(Use::Cookie, PASS_DAYS),
+            "{COOKIE}={value}; Path={}; Max-Age={seconds}; HttpOnly; SameSite=Lax{secure}",
             self.site.mount(),
-            TimeDelta::days(PASS_DAYS).num_seconds(),
         )
     }
 

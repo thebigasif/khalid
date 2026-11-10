@@ -3,7 +3,7 @@
 //! confirmed subscriber (G41, task 5.11).
 
 use khalid_content::{
-    BlockKind, Gated, Wikilinks, parse_blocks, print_blocks, render, render_gated,
+    BlockKind, Gated, Heading, Wikilinks, parse_blocks, print_blocks, render, render_gated,
 };
 use khalid_core::{Locale, Slug, SlugMode};
 
@@ -137,6 +137,45 @@ fn an_open_gated_block_shows_its_body_and_counts_it() {
     assert_eq!(page.links.len(), 1);
     assert!(page.words >= 6, "{}", page.words);
     insta::assert_snapshot!(page.html);
+}
+
+/// A post whose gated part holds a heading that a later public heading
+/// repeats, with a table of contents.
+const HEADINGS: &str = "\
+::toc
+
+## Setup
+
+:::gated{note=\"Subscribers read on.\" label=\"Email\" button=\"Read\"}
+## Setup
+
+The secret steps.
+:::
+
+## Setup
+";
+
+#[test]
+fn a_heading_keeps_its_id_whether_the_gated_part_is_locked_or_open() {
+    let locale = Locale::try_new("en").unwrap();
+    let links = Wikilinks::new();
+    let locked = Gated::Locked { back: None };
+    let public = render_gated(HEADINGS, &locale, SlugMode::Ascii, &links, locked).unwrap();
+    let open = render_gated(HEADINGS, &locale, SlugMode::Ascii, &links, Gated::Open).unwrap();
+    let ids = |headings: &[Heading]| -> Vec<String> {
+        headings.iter().map(|heading| heading.id.clone()).collect()
+    };
+    assert_eq!(ids(&public.headings), ["setup", "setup-3"]);
+    assert_eq!(ids(&open.headings), ["setup", "setup-2", "setup-3"]);
+    assert!(
+        public.html.contains("<h2 id=\"setup-3\">"),
+        "{}",
+        public.html
+    );
+    assert!(!public.html.contains("setup-2"), "{}", public.html);
+    assert!(!public.html.contains("secret"), "{}", public.html);
+    assert!(open.html.contains("href=\"#setup-2\""), "{}", open.html);
+    assert_eq!((public.words, public.links.len()), (2, 0));
 }
 
 #[test]
