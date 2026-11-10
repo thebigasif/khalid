@@ -1,14 +1,23 @@
 //! The words templates show, one file per language (RULES.md BL-TXT-3).
 
 use std::collections::BTreeMap;
+use std::path::Path;
+use std::{fs, io};
 
-use khalid_core::Locale;
+use khalid_core::{Locale, SitePath};
 
 use crate::RenderError;
 use crate::archive;
 
 /// The language whose strings fill in for a language with no file.
 const FALLBACK_LANGUAGE: &str = "en";
+
+/// Where a site keeps its own strings files, one per language, such as
+/// `theme/strings/fr.toml`.
+const SITE_FOLDER: &str = "theme/strings";
+
+/// The site's file for the fallback language.
+const ENGLISH_FILE: &str = "en.toml";
 
 /// Where the strings files sit in the built-in archive, such as
 /// `strings/en.toml`. A language's words for one part of the site may sit
@@ -61,6 +70,76 @@ impl Strings {
         Ok(Self { tables })
     }
 
+    /// The built-in strings with each file in `site_root/theme/strings/`
+    /// laid over its language: `fr.toml` gives a French site its words, and
+    /// `de.toml` changes some German ones. A key the file leaves out keeps
+    /// the built-in word of that language, or the English one when the
+    /// language has no built-in file.
+    pub(crate) fn with_site(site_root: &Path) -> Result<Self, RenderError> {
+        let mut strings = Self::load()?;
+        let folder = SitePath::within(site_root, SITE_FOLDER)?.resolve()?;
+        let entries = match fs::read_dir(&folder) {
+            Ok(entries) => entries,
+            Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(strings),
+            Err(source) => {
+                return Err(RenderError::ReadStrings {
+                    path: folder,
+                    source,
+                });
+            }
+        };
+        let mut names = Vec::new();
+        for entry in entries {
+            let entry = entry.map_err(|source| RenderError::ReadStrings {
+                path: folder.clone(),
+                source,
+            })?;
+            let name = entry.file_name().to_string_lossy().into_owned();
+            // A hidden file, such as the `.DS_Store` a Mac leaves, holds no words.
+            if !name.starts_with('.') {
+                names.push(name);
+            }
+        }
+        // English first, so a language with no built-in file starts from
+        // the site's English words.
+        names.sort_by(|a, b| (a != ENGLISH_FILE, a).cmp(&(b != ENGLISH_FILE, b)));
+        for name in names {
+            let language = site_language(&name)?;
+            let path = SitePath::within(site_root, &format!("{SITE_FOLDER}/{name}"))?.resolve()?;
+            let text = fs::read_to_string(&path)
+                .map_err(|source| RenderError::ReadStrings { path, source })?;
+            let own = site_table(&name, &text)?;
+            strings.lay_over(language, &name, own)?;
+        }
+        Ok(strings)
+    }
+
+    /// Lays the site's table `own`, read from `file`, over `language`'s.
+    fn lay_over(
+        &mut self,
+        language: &str,
+        file: &str,
+        own: BTreeMap<String, String>,
+    ) -> Result<(), RenderError> {
+        let english = self.tables.get(FALLBACK_LANGUAGE);
+        if let Some(key) = own
+            .keys()
+            .find(|key| english.is_none_or(|english| !english.contains_key(*key)))
+        {
+            return Err(RenderError::UnknownStringsKey {
+                file: file.to_owned(),
+                key: key.clone(),
+            });
+        }
+        let base = self.tables.get(language).or(english).cloned();
+        let table = self
+            .tables
+            .entry(language.to_owned())
+            .or_insert(base.unwrap_or_default());
+        table.extend(own);
+        Ok(())
+    }
+
     /// The table for `locale`'s language, or the English one when the
     /// language has no file yet. `None` only if the English file is missing,
     /// which this crate's tests rule out.
@@ -75,6 +154,36 @@ impl Strings {
     pub(crate) fn languages(&self) -> impl Iterator<Item = &str> {
         self.tables.keys().map(String::as_str)
     }
+}
+
+/// The language a site's strings file `name` is for, such as `fr` for
+/// `fr.toml`. A regional file such as `de-CH.toml` is refused, because
+/// strings are kept per language.
+fn site_language(name: &str) -> Result<&str, RenderError> {
+    name.strip_suffix(".toml")
+        .filter(|stem| {
+            Locale::try_new(stem)
+                .is_ok_and(|locale| locale.as_str() == *stem && !stem.contains('-'))
+        })
+        .ok_or_else(|| RenderError::StringsFileName {
+            name: name.to_owned(),
+        })
+}
+
+/// The table in the site's strings file `file`, whose words are `text`.
+fn site_table(file: &str, text: &str) -> Result<BTreeMap<String, String>, RenderError> {
+    toml::from_str(text).map_err(|source: toml::de::Error| {
+        let line = source.span().map(|span| {
+            text.get(..span.start)
+                .map_or(0, |before| before.matches('\n').count())
+                .saturating_add(1)
+        });
+        RenderError::SiteStrings {
+            file: file.to_owned(),
+            line,
+            source: Box::new(source),
+        }
+    })
 }
 
 #[cfg(test)]

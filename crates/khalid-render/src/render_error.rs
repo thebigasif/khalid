@@ -60,6 +60,43 @@ pub enum RenderError {
         #[source]
         source: toml::de::Error,
     },
+    /// A site's strings file in `theme/strings/` is not valid TOML, or holds
+    /// a value that is not text.
+    #[error("theme/strings/{file} has a mistake{}", line.map(|line| format!(" on line {line}")).unwrap_or_default())]
+    SiteStrings {
+        /// The file's name, such as `fr.toml`.
+        file: String,
+        /// The line of the mistake, when the parser knows it.
+        line: Option<usize>,
+        /// What the TOML parser reported.
+        #[source]
+        source: Box<toml::de::Error>,
+    },
+    /// A site's strings file names a key no template reads, most often a
+    /// typing mistake.
+    #[error("theme/strings/{file} has the key {key}, which no template reads")]
+    UnknownStringsKey {
+        /// The file's name, such as `fr.toml`.
+        file: String,
+        /// The key no built-in strings file has.
+        key: String,
+    },
+    /// A file in `theme/strings/` is not named for a language, such as
+    /// `fr.toml`.
+    #[error("theme/strings/{name} is not named for a language, such as fr.toml")]
+    StringsFileName {
+        /// The file name that names no language.
+        name: String,
+    },
+    /// A site's strings file or its folder could not be read.
+    #[error("could not read {}", path.display())]
+    ReadStrings {
+        /// The file or folder that could not be read.
+        path: PathBuf,
+        /// What the file system reported.
+        #[source]
+        source: io::Error,
+    },
     /// `theme/tokens.toml` has a value that is not a colour, a font list or
     /// a length, a field no token has, or broken TOML.
     #[error("theme/tokens.toml has a mistake{}", line.map(|line| format!(" on line {line}")).unwrap_or_default())]

@@ -100,6 +100,8 @@ mod seo_head;
 #[cfg(test)]
 mod series;
 #[cfg(test)]
+mod site_strings;
+#[cfg(test)]
 mod slots;
 #[cfg(test)]
 mod validity;
