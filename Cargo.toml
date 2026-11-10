@@ -33,8 +33,13 @@ khalid-lint = { path = "crates/khalid-lint", version = "0.2.0" }
 # RUSTSEC-2026-0459 is fixed only in libsqlite3-sys 0.39 (SQLite 3.54), and
 # sqlx-sqlite 0.9.0 caps it below 0.38. The vendored copy widens that one
 # range. Remove it when sqlx accepts 0.39 (vendor/sqlx-sqlite/KHALID.md).
+#
+# htmd 0.5.6 pins html5ever 0.38 while scraper and ammonia use 0.40, so the
+# binary carried two HTML parsers. The vendored copy moves htmd to 0.40 with
+# no source change, 558 KB smaller (vendor/htmd/KHALID.md).
 [patch.crates-io]
 sqlx-sqlite = { path = "vendor/sqlx-sqlite" }
+htmd = { path = "vendor/htmd" }
 
 [workspace.lints.rust]
 # The complete lint table is in lints/lints.toml, with the reasoning. It is
