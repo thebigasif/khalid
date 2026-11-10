@@ -743,6 +743,36 @@ export type AiTask = "seo_title" | "meta_description" | "share_title" | "share_d
 /** An old address on this site that redirects to the post, such as `/2019/05/old-title/`, so a moved post keeps its links. */
 export type Alias = string;
 
+/** One item's alt text before and after a replace. */
+export type AltChangeBody = {
+  /** Its alt text after, trimmed. */
+  after: string;
+  /** Its alt text before. */
+  before: string;
+  /** The item's identity. */
+  id: string;
+  /** Its file name. */
+  name: string;
+};
+
+/** What a replace changes, or changed, by item identity. */
+export type AltChanges = {
+  /** Whether the changes were made, or only listed. */
+  applied: boolean;
+  /** Every item whose alt text holds the words. */
+  changes: AltChangeBody[];
+};
+
+/** Words to find in the alt text of every library item, and what to put in their place. Matching is exact, letter case included. */
+export type AltReplaceBody = {
+  /** `true` makes the changes; `false`, the default, only lists them. */
+  apply?: boolean;
+  /** The words to find; not empty. */
+  find: string;
+  /** What to put in their place; empty removes them. */
+  replace: string;
+};
+
 /** One field of an answer. */
 export type AnswerField = {
   /** The field's name in the form block. */
@@ -3174,6 +3204,17 @@ export interface Operations {
       body: Blob;
     };
     output: MediaItems;
+  };
+  /** Finds words in the alt text of every library item and puts others in their place. Without `apply` it only lists what would change, so a person can check before saving. Captions, folders and addresses stay as they are. Needs `media:write`. */
+  replace_alt: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: AltReplaceBody;
+    };
+    output: AltChanges;
   };
   /** Lists the library's folders by name: each one that holds an item, and each one above it, with how many items it holds itself. The top of the library is never listed. Needs `media:write`. */
   list_media_folders: {
