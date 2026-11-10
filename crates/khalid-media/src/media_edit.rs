@@ -6,7 +6,7 @@ use crate::{FocalPoint, Folder, MediaError, MediaItem};
 
 /// The most characters of alt text. Screen readers read alt text whole, so
 /// a description runs a sentence or two.
-const MAX_ALT: usize = 1000;
+pub(crate) const MAX_ALT: usize = 1000;
 
 /// The most characters of a caption.
 const MAX_CAPTION: usize = 2000;

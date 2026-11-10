@@ -12,8 +12,9 @@ use khalid_core::{Clock, Locale, SitePath};
 use crate::storage::LIBRARY_FOLDER;
 use crate::whole_file::write_whole;
 use crate::{
-    ContentKey, EditMediaError, FileAddress, FileName, FocalPoint, Folder, FolderCount, Kind,
-    MediaEdit, MediaError, MediaItem, MediaType, Original, PictureEdit, Pixels, Refusal, Storage,
+    AltChange, AltReplace, ContentKey, EditMediaError, FileAddress, FileName, FocalPoint, Folder,
+    FolderCount, Kind, MediaEdit, MediaError, MediaItem, MediaType, Original, PictureEdit, Pixels,
+    Refusal, ReplaceAltError, Storage,
 };
 
 /// The file beside each item that holds its details.
@@ -329,6 +330,50 @@ impl Library {
         let edited = edit.applied(&item, by, now)?;
         self.save(&edited).await?;
         Ok(edited)
+    }
+
+    /// What `replace` would do to the alt text of every item, by identity.
+    /// Nothing changes.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ReplaceAltError::TooLong`] when it would make one item's
+    /// alt text too long.
+    pub fn alt_changes(&self, replace: &AltReplace) -> Result<Vec<AltChange>, ReplaceAltError> {
+        let items = self.items.read().unwrap_or_else(PoisonError::into_inner);
+        let changes = items.values().map(|item| replace.change(item));
+        changes.filter_map(Result::transpose).collect()
+    }
+
+    /// Makes `replace` in the alt text of every item that holds its words,
+    /// as `by`, and writes each changed `item.toml`. Captions, folders and
+    /// addresses stay as they are.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ReplaceAltError::TooLong`], changing nothing, when it
+    /// would make one item's alt text too long, and
+    /// [`ReplaceAltError::Media`] when a change cannot be written.
+    pub async fn replace_alt(
+        &self,
+        replace: &AltReplace,
+        by: &str,
+    ) -> Result<Vec<AltChange>, ReplaceAltError> {
+        let _one_at_a_time = self.editing.lock().await;
+        let changes = self.alt_changes(replace)?;
+        for change in &changes {
+            let Some(mut item) = self.get(&change.id) else {
+                continue;
+            };
+            item.updated_at = self
+                .clock
+                .now()
+                .max(item.updated_at + chrono::TimeDelta::milliseconds(1));
+            item.alt.clone_from(&change.after);
+            by.clone_into(&mut item.updated_by);
+            self.save(&item).await?;
+        }
+        Ok(changes)
     }
 
     /// Makes a copy of the picture `id`, turned and cropped as `edit` says,
