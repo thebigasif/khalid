@@ -142,6 +142,7 @@ fn share_height() -> u32 {
 /// ```toml
 /// [seo.verification]
 /// google = "aBc123"
+/// bluesky = "did:plc:z72i7hdynmk6r22z27h6tvur"
 ///
 /// [seo.verification.files]
 /// "google1a2b3c4d.html" = "google-site-verification: google1a2b3c4d.html"
@@ -160,6 +161,10 @@ pub struct VerificationSettings {
     pub baidu: Option<String>,
     /// Pinterest.
     pub pinterest: Option<String>,
+    /// The Bluesky account's DID, such as `did:plc:z72i7hdynmk6r22z27h6tvur`,
+    /// served at `/.well-known/atproto-did` so the account can use the
+    /// blog's domain as its handle.
+    pub bluesky: Option<String>,
     /// Verification files by name, each with the text it holds.
     pub files: BTreeMap<String, String>,
 }

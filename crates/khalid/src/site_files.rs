@@ -52,12 +52,15 @@ pub(crate) fn moves(
         .collect()
 }
 
-/// The media type of a file `build_files` makes, by its extension.
+/// The media type of a file `build_files` makes, by its extension. A file
+/// with none, such as Bluesky's `atproto-did`, is plain text.
 fn media_type(file: &str) -> MediaType {
-    match file.rsplit_once('.').map(|(_, extension)| extension) {
+    let name = file.rsplit_once('/').map_or(file, |(_, name)| name);
+    match name.rsplit_once('.').map(|(_, extension)| extension) {
         Some("json") => MediaType::Json,
-        Some("txt") => MediaType::PlainText,
-        _ => MediaType::Xml,
+        Some("xml" | "kml") => MediaType::Xml,
+        Some("html") => MediaType::Html,
+        _ => MediaType::PlainText,
     }
 }
 
@@ -77,5 +80,8 @@ mod tests {
         assert_eq!(media_type("de/feed.json"), MediaType::Json);
         assert_eq!(media_type("robots.txt"), MediaType::PlainText);
         assert_eq!(media_type("de/atom.xml"), MediaType::Xml);
+        assert_eq!(media_type("locations.kml"), MediaType::Xml);
+        assert_eq!(media_type(".well-known/atproto-did"), MediaType::PlainText);
+        assert_eq!(media_type("google1a2b.html"), MediaType::Html);
     }
 }

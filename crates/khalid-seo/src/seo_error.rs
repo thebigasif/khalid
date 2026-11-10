@@ -43,6 +43,12 @@ pub enum SeoError {
         /// The code, as given.
         code: String,
     },
+    /// A Bluesky DID is neither a `did:plc` nor a `did:web` DID.
+    #[error("the Bluesky DID {did:?} is not a did:plc or did:web identity")]
+    BlueskyDid {
+        /// The DID, as given.
+        did: String,
+    },
     /// A verification file name is not a plain file name at the root.
     #[error("the verification file name {name:?} {problem}")]
     RootFile {

@@ -3,7 +3,7 @@
 //! site is the owner's (audit G11, KH-SEO-2, KH-SEO-7).
 
 use khalid_core::{ImageSettings, SocialSettings, VerificationSettings};
-use khalid_seo::{RootFile, SeoSite, ShareImage, TwitterHandle, VerificationCode};
+use khalid_seo::{AtprotoDid, RootFile, SeoSite, ShareImage, TwitterHandle, VerificationCode};
 
 use crate::seo_settings::SettingMistake;
 
@@ -12,6 +12,10 @@ const HANDLE: &str = "up to 15 letters, digits and _, such as @serpdad";
 
 /// What a verification code may be, for the fix.
 const CODE: &str = "the code the search engine gave, such as aBc123";
+
+/// What a Bluesky DID may be, for the fix.
+const DID: &str =
+    "the DID in Bluesky's settings under Handle, such as did:plc:z72i7hdynmk6r22z27h6tvur";
 
 /// Checks the Twitter account and the default share image and sets them on `site`.
 ///
@@ -93,6 +97,12 @@ pub(crate) fn verification(
             *slot = Some(code);
         }
     }
+    if let Some(did) = &settings.bluesky {
+        let did = AtprotoDid::try_new(did).map_err(|error| {
+            SettingMistake::new("seo.verification", "bluesky", &error, Some(DID))
+        })?;
+        codes.bluesky = Some(did);
+    }
     for (name, body) in &settings.files {
         let file = RootFile::try_new(name, body)
             .map_err(|error| SettingMistake::new("seo.verification.files", name, &error, None))?;
@@ -120,6 +130,20 @@ mod tests {
             no_height.problem,
             "the image's height is 0 pixels, expected its size in pixels, such as 1200"
         );
+    }
+
+    #[test]
+    fn a_bluesky_handle_in_place_of_its_did_is_refused() {
+        let text = "[seo.verification]\nbluesky = \"fieldnotes.bsky.social\"\n";
+        let error = apply(&settings(text), &mut site()).unwrap_err();
+        assert_eq!(error.key, "bluesky");
+        assert!(error.problem.contains("did:plc:"), "{}", error.problem);
+        let text = "[seo.verification]\nbluesky = \"did:plc:z72i7hdynmk6r22z27h6tvur\"\n";
+        let mut site = site();
+        apply(&settings(text), &mut site).unwrap();
+        let did = site.verification.bluesky.as_ref();
+        let did = did.map(khalid_seo::AtprotoDid::as_str);
+        assert_eq!(did, Some("did:plc:z72i7hdynmk6r22z27h6tvur"));
     }
 
     #[test]
