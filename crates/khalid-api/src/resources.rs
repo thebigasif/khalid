@@ -26,6 +26,7 @@ mod seo_fields;
 mod seo_scores;
 mod settings;
 mod settings_edit;
+mod subscriber;
 mod term;
 
 pub use admin_author::{AdminAuthor, AuthorEdit, AuthorFile, NewAuthor};
@@ -61,6 +62,10 @@ pub use seo_fields::{CustomJsonLd, SearchTitle};
 pub use seo_scores::{READABILITY_RULES, SeoScores};
 pub use settings::Settings;
 pub use settings_edit::SettingsEdit;
+pub use subscriber::{
+    AdminNewsletter, AdminSend, AdminSubscriber, NewsletterSend, SendReadiness, SubscriberFilter,
+    SubscriberPage, SubscriberStatus,
+};
 pub use term::Term;
 
 use std::fmt::Display;
