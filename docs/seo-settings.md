@@ -14,8 +14,15 @@ The admin's **SEO settings** screen edits them through the settings API
 and changes it one part at a time. A part the screen saves replaces that
 part whole; any other table and comment in the file stays as it was. Every
 change is checked as `khalid serve` checks the file at start, and a change
-the site could not start with saves nothing. The running server reads
-`site.toml` at start, so a saved change applies after a restart.
+the site could not start with saves nothing. The running server puts a
+saved SEO setting in use within a few seconds, with no restart: on the
+pages, and in the post checks and publish gate the editor shows. Schema
+templates saved on the **Schema templates** screen work the same way.
+
+Both routes read `site.toml` with the environment `khalid serve` started
+with, so a site whose mail or media bucket needs a key from the
+environment, or whose address comes from `KHALID_ADDRESS`, reads and saves
+its settings as it starts. No key or password is ever sent back.
 
 | Part | What it sets | Default | Admin section |
 | --- | --- | --- | --- |
@@ -112,6 +119,20 @@ Each language has feeds next to its home page, such as `/blog/feed.xml` and `/bl
 ```toml
 [seo.feeds]
 off = ["atom", "json"]
+```
+
+## Links to other sites
+
+`[seo.links]` says what links to other sites get. `rel` lists the words every such link gets, such as `"nofollow"`, which asks Google not to follow the link or pass it any value. `internal_domains` lists the other hosts that are yours, such as the main site of a blog on a subdomain; their links get nothing added, and each listed host covers its subdomains.
+
+Khalid always counts the site's own host as yours, and the `www.` and apex pair of its domain: for a blog at `blog.example.com`, the apex is `example.com`, and `example.com` and `www.example.com` are yours too. The apex is the name you registered, so `example.co.uk` for `blog.example.co.uk`. A site on a shared host such as `name.github.io` has no apex.
+
+The linter's `nofollow-internal-link` rule warns when a post's link to one of your hosts gets `nofollow`, because the link then passes your own pages nothing. A blog at `blog.example.com` with `rel = ["nofollow"]` gets that warning for each link to `example.com`, until the main site is listed:
+
+```toml
+[seo.links]
+rel = ["nofollow"]
+internal_domains = ["example.com"]
 ```
 
 ## Breadcrumbs

@@ -23,7 +23,10 @@ export type SettingsWords<Tab extends string> = {
   lede: string;
   loading: string;
   sections: string;
+  /** Said after a save that waits for a restart, beside the `restart` note. */
   saved: string;
+  /** Said after a save the running blog already uses. */
+  live: string;
   unchanged: string;
   restart: string;
   tabs: Record<Tab, string>;
@@ -38,6 +41,11 @@ type Props<Tab extends string, Change> = {
   /** Only what `change` changes on `site`, or `null` when it changes nothing. */
   changed: (site: SiteSettings, change: Change) => Omit<SiteChange, "updated_at"> | null;
 };
+
+/** What to say once `saved` is in site.toml: whether the blog uses it yet. */
+export function savedWords(words: { saved: string; live: string }, saved: SiteSettings): string {
+  return saved.restart_needed ? words.saved : words.live;
+}
 
 /** A settings screen of site.toml in tabs, one part at a time, each saved on its own. */
 export function SettingsTabs<Tab extends string, Change>({
@@ -60,7 +68,7 @@ export function SettingsTabs<Tab extends string, Change>({
       return;
     }
     const reply = await changeSite({ updated_at: site.updated_at, ...sent });
-    setSaid(isData(reply) ? words.saved : null);
+    setSaid(isData(reply) ? savedWords(words, reply.data) : null);
     setFailed(isData(reply) ? null : failureMessage(reply));
     await queries.invalidateQueries({ queryKey: SITE });
   };

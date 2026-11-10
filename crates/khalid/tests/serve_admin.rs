@@ -261,7 +261,7 @@ fn a_category_renamed_through_the_admin_api_shows_on_its_page_and_keeps_its_file
 }
 
 #[test]
-fn the_settings_are_changed_in_site_toml_and_applied_after_a_restart() {
+fn the_settings_are_changed_in_site_toml_and_only_the_address_waits_for_a_restart() {
     let site = demo_copy();
     let owner = ["--name", "Owner", "--scope", "settings:write"];
     let key = new_key(site.path(), &owner);
@@ -275,7 +275,7 @@ fn the_settings_are_changed_in_site_toml_and_applied_after_a_restart() {
     let change = json!({"settings": {"name": "Field Notes", "updated_at": seen}});
     let (status, saved) = server.admin("PUT", "/api/admin/v1/settings/", Some(&change));
     assert_eq!(status, 200, "{saved}");
-    assert_eq!(saved["settings"]["restart_needed"], true, "{saved}");
+    assert_eq!(saved["settings"]["restart_needed"], false, "{saved}");
     let mut file = PathBuf::from(site.path());
     file.push("site.toml");
     let text = std::fs::read_to_string(&file).unwrap();
@@ -294,6 +294,11 @@ fn the_settings_are_changed_in_site_toml_and_applied_after_a_restart() {
     assert_eq!(body["rule"], "default_language", "{body}");
     let after = std::fs::read_to_string(&file).unwrap();
     assert_eq!(after, text, "nothing was written");
+
+    let moved = json!({"settings": {"address": "https://notes.example.com", "updated_at": seen}});
+    let (status, saved) = server.admin("PUT", "/api/admin/v1/settings/", Some(&moved));
+    assert_eq!(status, 200, "{saved}");
+    assert_eq!(saved["settings"]["restart_needed"], true, "{saved}");
 
     drop(server);
     let restarted = start(site.path(), &key);

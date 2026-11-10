@@ -412,6 +412,15 @@ jobs:
         if: steps.admin.outputs.present == 'true'
         run: npm run build && node scripts/size-budget.mjs
         working-directory: admin
+      # The performance budgets job measures the admin's initial
+      # JavaScript from this build, so npm runs once.
+      - uses: actions/upload-artifact@v7
+        if: steps.admin.outputs.present == 'true'
+        with:
+          name: admin-dist
+          path: admin/dist/
+          retention-days: 1
+          if-no-files-found: error
       - name: No admin yet
         if: steps.admin.outputs.present == 'false'
         run: echo "Admin checks start with Phase 4."
@@ -434,7 +443,7 @@ jobs:
         id: inputs
         run: |
           changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
-          if printf '%s\n' "$changed" | grep -Eq '^(Dockerfile|\.dockerignore|Cargo\.lock|rust-toolchain\.toml|(.*/)?Cargo\.toml|admin/package(-lock)?\.json|\.github/workflows/ci\.yml)$'; then
+          if printf '%s\n' "$changed" | grep -Eq '^(Dockerfile|\.dockerignore|Cargo\.lock|rust-toolchain\.toml|(.*/)?Cargo\.toml|admin/package(-lock)?\.json|scripts/packages-check\.sh|\.github/workflows/ci\.yml)$'; then
             echo "build=true" >> "$GITHUB_OUTPUT"
           else
             echo "build=false" >> "$GITHUB_OUTPUT"
@@ -453,6 +462,46 @@ jobs:
       - name: The image answers
         if: steps.inputs.outputs.build == 'true'
         run: docker run --rm khalid:check --version
+      # Gap G34: the Docker section of docs/deploy.md, line by line, and
+      # the empty-volume first start the hosting platforms use.
+      - name: The image serves a site as docs/deploy.md says
+        if: steps.inputs.outputs.build == 'true'
+        run: scripts/packages-check.sh docker khalid:check
+
+  # Gap G34: scripts/install.sh --systemd and the systemd section of
+  # docs/deploy.md on a fresh runner, which has root and systemd, with the
+  # release binary handover-build made. The service must serve the home
+  # page and stop cleanly. On pull requests only, and not a required check.
+  systemd:
+    name: systemd service serves
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'pull_request'
+    needs: handover-build
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Did the service's inputs change?
+        id: inputs
+        run: |
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          if printf '%s\n' "$changed" | grep -Eq '^(packaging/systemd/|scripts/install\.sh$|scripts/packages-check\.sh$|crates/khalid-server/|crates/khalid/src/serve|Cargo\.lock$|\.github/workflows/ci\.yml$)'; then
+            echo "check=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "check=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing the service runs changed, so it is not checked again." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/download-artifact@v7
+        if: steps.inputs.outputs.check == 'true'
+        with:
+          name: release-binaries
+          path: target/handover
+      - name: Install and start the service as docs/deploy.md says
+        if: steps.inputs.outputs.check == 'true'
+        run: |
+          chmod +x target/handover/khalid
+          scripts/packages-check.sh systemd target/handover/khalid
 
 
   # The demo, end to end (task 1.22, gap audit 2 G8, GEO P2), as parallel
@@ -918,14 +967,19 @@ jobs:
     name: Performance budgets
     runs-on: ubuntu-latest
     # The binaries come from the size budget's build; they are measured
-    # here, on GitHub's runner, as before.
-    needs: handover-build
+    # here, on GitHub's runner, as before. The admin comes from the Admin
+    # job's build, for the admin's initial JavaScript budget.
+    needs: [handover-build, admin]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/download-artifact@v7
         with:
           name: release-binaries
           path: target/handover
+      - uses: actions/download-artifact@v7
+        with:
+          name: admin-dist
+          path: admin/dist
       - name: The handed-over binaries
         run: |
           chmod +x target/handover/khalid target/handover/khalid-perf
@@ -938,6 +992,7 @@ jobs:
       - name: Budgets (docs/standards/performance.md)
         env:
           PERF_SERVE_RUNS: ${{ github.event_name == 'pull_request' && '1' || '5' }}
+          PERF_REQUIRE_ADMIN: "1"
         run: |
           if ./scripts/perf.sh | tee target/perf-run.log; then exit 0; fi
           if [ "$GITHUB_EVENT_NAME" != pull_request ]; then exit 1; fi

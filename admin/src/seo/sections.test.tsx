@@ -24,7 +24,7 @@ describe("the parts of the SEO settings", () => {
     await userEvent.click(screen.getByLabelText(seoWords.index.archive.dates));
     await userEvent.click(screen.getByLabelText(seoWords.index.site));
     await save();
-    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
     expect(changes[0]?.seo).toEqual({ index: { dates: "index", site: "noindex" } });
   });
 
@@ -40,7 +40,7 @@ describe("the parts of the SEO settings", () => {
       "https://www.linkedin.com/in/asif\n\nhttps://www.youtube.com/@serpdad",
     );
     await save();
-    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
     expect(changes[0]?.seo).toEqual({
       publisher: {
         type: "person",
@@ -57,7 +57,7 @@ describe("the parts of the SEO settings", () => {
     await openTab(seoWords.tabs.webmaster);
     await userEvent.type(screen.getByLabelText(seoWords.webmaster.engines.bing), "B1C2D3");
     await save();
-    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
     expect(changes[0]?.seo).toEqual({ verification: { files, bing: "B1C2D3" } });
   });
 
@@ -67,7 +67,7 @@ describe("the parts of the SEO settings", () => {
     await openTab(seoWords.tabs.social);
     await userEvent.clear(screen.getByLabelText(seoWords.social.twitter));
     await save();
-    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
     expect(changes[0]?.seo).toEqual({ social: null });
   });
 
@@ -79,7 +79,7 @@ describe("the parts of the SEO settings", () => {
     expect(await axeViolations()).toEqual([]);
     await userEvent.click(screen.getByLabelText(seoWords.crawlers.block("GPTBot")));
     await save();
-    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
     expect(changes[0]?.seo).toEqual({ crawlers: { block: ["GPTBot", "AhrefsBot"] } });
   });
 
@@ -93,7 +93,7 @@ describe("the parts of the SEO settings", () => {
     // jest-dom's toHaveValue compares strings with ===, so it cannot take a pattern.
     expect((key as HTMLInputElement).value).toMatch(/^[0-9a-f]{32}$/);
     await save();
-    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
     expect(changes[0]?.seo).toEqual({
       feeds: { content: "excerpt" },
       indexnow: { key: (key as HTMLInputElement).value },

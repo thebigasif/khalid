@@ -79,7 +79,8 @@ pub(crate) struct Keys {
     pub(crate) pictures: PictureKeys,
     /// The writer of the editor's suggestions, asked with `KHALID_AI_KEY`.
     pub(crate) ai: khalid_api::ai::AiDesk,
-    /// The whole environment, which `site.toml` is read with again when it changes.
+    /// The whole environment, which `site.toml` is read with again when it
+    /// changes, and when the Admin API reads or saves its settings.
     pub(crate) settings: Environment,
 }
 
@@ -220,6 +221,7 @@ fn serve_with(
             media_library::open(site, config, (keys.bucket, keys.pictures), outbound),
             unlocking((site, config), (database, id), &source, shown_pages),
         )?;
+        posts.follow(source.live_config());
         let scheduling = scheduler::start(Arc::clone(&door), alerting);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
@@ -236,7 +238,7 @@ fn serve_with(
         let apis = (
             (content, door, posts),
             (moderation, media, desk, keys.follow_ups, keys.ai),
-            (database, id, (site, config)),
+            (database, id, (site, config, &keys.settings)),
             (panel, mailer),
         );
         let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook));

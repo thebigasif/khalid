@@ -17,6 +17,7 @@ use std::process::{Child, Command, Stdio};
 use std::sync::Arc;
 use std::time::Duration;
 
+use chrono::TimeDelta;
 use khalid_core::{AbsoluteUrl, Clock, SystemClock};
 use khalid_outbound::{Limits, Outbound, Reach, Resolver};
 use rustls::crypto::ring::default_provider;
@@ -96,6 +97,7 @@ fn saved(site: &Path, name: &str) -> PathBuf {
 /// `site/serve.log`.
 #[cfg(test)]
 fn serve(site: &Path, more: &[&str]) -> (Server, String) {
+    ports_free();
     let mut log = site.to_path_buf();
     log.push("serve.log");
     let mut child = Command::new(env!("CARGO_BIN_EXE_khalid"))
@@ -120,6 +122,23 @@ fn serve(site: &Path, more: &[&str]) -> (Server, String) {
     let json: Value = serde_json::from_str(&line).unwrap_or_else(|_| panic!("{}", said()));
     let address = json["address"].as_str().unwrap().to_owned();
     (server, address)
+}
+
+/// Waits until ports 5001 and 5002 can be opened again, so a server the
+/// test before stopped has let them go before the next one starts.
+#[cfg(test)]
+fn ports_free() {
+    let deadline = SystemClock.now() + TimeDelta::seconds(30);
+    while ["127.0.0.1:5001", "127.0.0.1:5002"]
+        .iter()
+        .any(|port| std::net::TcpListener::bind(port).is_err())
+    {
+        assert!(
+            SystemClock.now() < deadline,
+            "ports 5001 and 5002 are still taken 30 seconds on"
+        );
+        std::thread::sleep(Duration::from_millis(100));
+    }
 }
 
 /// Answers `localhost` and `NAME` with this machine.
@@ -200,6 +219,36 @@ fn renew_at(der: &[u8]) -> i64 {
     from + (to - from) * 2 / 3
 }
 
+/// When the certificate `der` was issued, in seconds since 1970. Pebble
+/// picks a 90-day or a 6-day life at random for each order, so the issue
+/// time, not the renewal time, tells which certificate is newer.
+#[cfg(test)]
+fn issued_at(der: &[u8]) -> i64 {
+    let (_, parsed) = x509_parser::parse_x509_certificate(der).unwrap();
+    parsed.validity().not_before.timestamp()
+}
+
+/// Reads the served and the saved certificate once a second until the
+/// server serves a saved certificate other than `first`, or two minutes
+/// pass, and returns the last ones read, served first.
+#[cfg(test)]
+fn until_renewed(
+    runtime: &tokio::runtime::Runtime,
+    site: &Path,
+    root: &[u8],
+    first: &[u8],
+) -> (Vec<u8>, Vec<u8>) {
+    let deadline = SystemClock.now() + TimeDelta::seconds(120);
+    loop {
+        std::thread::sleep(Duration::from_secs(1));
+        let served = runtime.block_on(served(root));
+        let kept = saved_leaf(site);
+        if (served != first && served == kept) || SystemClock.now() > deadline {
+            return (served, kept);
+        }
+    }
+}
+
 #[test]
 #[ignore = "needs pebble on this machine; see this file's first lines"]
 fn khalid_serve_renews_while_it_runs_and_serves_the_new_certificate() {
@@ -207,24 +256,16 @@ fn khalid_serve_renews_while_it_runs_and_serves_the_new_certificate() {
     drop(serve(site.path(), &[]));
     let first = saved_leaf(site.path());
     let account = fs::read(saved(site.path(), "account.json")).unwrap();
-    // Renewal reads a clock set so the first certificate falls due 15
-    // seconds from now, while the server runs.
-    let ahead = renew_at(&first) - SystemClock.now().timestamp() - 15;
+    // Renewal reads a clock set so the first certificate falls due 30
+    // seconds from now, while the server runs, leaving time to start it.
+    let ahead = renew_at(&first) - SystemClock.now().timestamp() - 30;
     let ahead = ahead.to_string();
 
     let (_server, address) = serve(site.path(), &["--test-clock-ahead", &ahead]);
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let root = pebble_root(&runtime);
     let before = runtime.block_on(served(&root));
-    let (mut after, mut kept) = (before.clone(), first.clone());
-    for _ in 0..90 {
-        std::thread::sleep(Duration::from_secs(1));
-        after = runtime.block_on(served(&root));
-        kept = saved_leaf(site.path());
-        if after != first && after == kept {
-            break;
-        }
-    }
+    let (after, kept) = until_renewed(&runtime, site.path(), &root, &first);
     let (status, _) = home_through_pebble(&address);
 
     assert_eq!(before, first, "the saved certificate is served first");
@@ -235,7 +276,10 @@ fn khalid_serve_renews_while_it_runs_and_serves_the_new_certificate() {
         log(site.path())
     );
     assert_eq!(after, kept, "the new certificate is saved");
-    assert!(renew_at(&after) > renew_at(&first));
+    assert!(
+        issued_at(&after) > issued_at(&first),
+        "the new certificate was issued after the first"
+    );
     assert_eq!(status, 200);
     assert_eq!(
         fs::read(saved(site.path(), "account.json")).unwrap(),
