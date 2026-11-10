@@ -136,6 +136,12 @@ export const en = {
       saving: "Saving",
       saved: "Saved.",
     },
+    remove: {
+      title: "Delete this file",
+      lede: "Deleting removes the file from your library and from the blog for good. While a post, a page or your theme still uses it, the blog keeps it and says where it is used.",
+      submit: (name: string) => `Delete ${name}`,
+      inUse: "The file was kept, because it is still in use.",
+    },
     kinds: { image: "Image", video: "Video", audio: "Sound", file: "File" },
     size: (bytes: number) =>
       bytes < 1024 * 1024

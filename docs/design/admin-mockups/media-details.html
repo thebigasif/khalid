@@ -26,6 +26,7 @@ h1{font-size:clamp(1.5rem,1.2rem + 1.2vw,2rem);line-height:1.2;margin:0 0 .5rem}
 h2{font-size:1.25rem;line-height:1.3;margin:2rem 0 .5rem}
 p{margin:0 0 1rem}
 .lede{color:var(--muted);max-width:68ch;font-size:1.0625rem}
+.problem{border:1px solid var(--block);background:var(--block-bg);border-radius:var(--radius);padding:.75rem 1rem;margin:0 0 1.25rem;max-width:40rem}.problem p{margin:0 0 .5rem}.problem p:last-child{margin:0}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;border-radius:var(--radius);border:1px solid var(--field);background:var(--bg);color:var(--text);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
 .btn.primary{background:var(--link);border-color:var(--link);color:#fff}
 .focus{border:2px solid var(--link);background:var(--tint);border-radius:var(--radius);padding:1.5rem}
@@ -84,7 +85,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
       <form action="media-details.html" method="post">
         <div class="field"><label for="alt">Alt text</label><span class="hint" id="alt-hint">What the image shows, for people who use a screen reader and for Google. One sentence is enough.</span><textarea id="alt" rows="3" aria-describedby="alt-hint">A bar chart of page weight: images take 1.4 MB of a 2 MB page</textarea></div>
         <div class="field"><label for="caption">Caption</label><span class="hint" id="caption-hint">Optional. The line shown under it in a post.</span><input id="caption" aria-describedby="caption-hint" value=""></div>
-        <div class="field"><label for="folder">Folder</label><span class="hint" id="folder-hint">Lowercase words joined by /, such as guides/2026. Empty means the top of the library. Its address stays the same.</span><input id="folder" aria-describedby="folder-hint" value="guides"></div>
+        <div class="field"><label for="folder">Folder</label><span class="hint" id="folder-hint">Lowercase words joined by /, such as guides/2026. Empty means the top of the library. Its address stays the same.</span><input id="folder" aria-describedby="folder-hint" list="folders" value="guides"><datalist id="folders"><option value="guides"><option value="guides/2026"><option value="news"></datalist></div>
         <fieldset>
           <legend>Focal point</legend>
           <div class="pair">
@@ -97,6 +98,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
       <p role="status">Saved.</p>
     </section>
   </div>
+
+  <section aria-labelledby="delete-title">
+    <h2 id="delete-title">Delete this file</h2>
+    <p class="muted">Deleting removes the file from your library and from the blog for good. While a post, a page or your theme still uses it, the blog keeps it and says where it is used.</p>
+    <div class="problem" role="alert"><p><strong>The file was kept, because it is still in use.</strong></p><p>This file is still used in content/en/posts/page-weight.md. Deleting it would leave a broken picture or link there.</p><p>Remove the file from those places first, then delete it.</p></div>
+    <button class="btn" type="button">Delete page-weight.png</button>
+  </section>
 
   <p class="note">Mockup for the founder's review. Nothing on this page saves. The grey box stands in for the picture itself. A video, a sound file or a PDF shows the same page without the picture and the focal point. <a href="media.html">Back to media</a> · <a href="index.html">All mockups</a></p>
 </main>
