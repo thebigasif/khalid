@@ -796,7 +796,7 @@ export type AuthorEdits = {
 };
 
 export type Authors = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   authors: Author[];
   meta?: Meta | null;
 };
@@ -852,13 +852,13 @@ export type CalendarPost = {
 };
 
 export type CaseStudies = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   case_studies: Post[];
   meta?: Meta | null;
 };
 
 export type Categories = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   categories: Term[];
   meta?: Meta | null;
 };
@@ -878,7 +878,7 @@ export type CategoryEdits = {
 };
 
 export type ChangelogEntries = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   changelog: Post[];
   meta?: Meta | null;
 };
@@ -896,7 +896,7 @@ export type Claim = "join" | "take_over";
 export type ClusterPlace = "pillar" | "member";
 
 export type Collections = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   collections: ContentCollection[];
   meta?: Meta | null;
 };
@@ -1179,7 +1179,7 @@ export type Gate = "passes" | "refuses";
 export type GetOptions = Record<string, unknown>;
 
 export type GlossaryTerms = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   glossary: Post[];
   meta?: Meta | null;
 };
@@ -1425,7 +1425,7 @@ export type NavSetting = {
 
 export type Navigation = {
   meta?: Meta | null;
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   navigation: Menu[];
 };
 
@@ -1680,7 +1680,7 @@ export type PageEdits = {
 
 export type Pages = {
   meta?: Meta | null;
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   pages: Post[];
 };
 
@@ -2062,7 +2062,7 @@ export type PostVersions = {
 
 export type Posts = {
   meta?: Meta | null;
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   posts: Post[];
 };
 
@@ -2596,7 +2596,7 @@ export type TagEdits = {
 
 export type Tags = {
   meta?: Meta | null;
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   tags: Term[];
 };
 

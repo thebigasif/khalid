@@ -780,15 +780,16 @@ fn a_library_video_is_sent_as_video_and_in_parts() {
 }
 
 #[test]
-fn the_content_api_refuses_include_and_fields_it_ignores() {
+fn the_content_api_refuses_include_and_answers_fields() {
     let site = demo_copy();
     let key = new_key(site.path(), &["--kind", "content", "--name", "Web page"]);
     let server = start(site.path());
-    for parameter in [
-        "include=authors",
-        "fields=title",
-        "include=authors&fields=title",
-    ] {
+    let path = format!("/api/content/v1/posts/?key={key}&fields=title&limit=1");
+    let (status, body) = request(&server, "GET", &path, &[], None);
+    assert_eq!(status, 200, "{body}");
+    let json: Value = serde_json::from_str(&body).unwrap();
+    assert_eq!(json["posts"][0].as_object().unwrap().len(), 1, "{body}");
+    for parameter in ["include=authors", "include=authors&fields=title"] {
         let path = format!("/api/content/v1/posts/?key={key}&{parameter}");
         let (status, body) = request(&server, "GET", &path, &[], None);
         assert_eq!(status, 400, "{parameter}: {body}");

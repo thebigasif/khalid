@@ -25,6 +25,7 @@ use crate::query::{ListQuery, RawListQuery};
 use crate::resources::{
     Author, Collection, ContentCollection, Listable, Menu, Post, Settings, Term,
 };
+use crate::sparse::{Sparse, keep_fields};
 
 /// Where the Content API lives.
 pub(crate) const BASE: &str = "/api/content/v1";
@@ -101,8 +102,10 @@ macro_rules! collection_routes {
         #[doc = concat!("Entries of `", $tag, "`, as every response wraps them.")]
         #[derive(Debug, Serialize, ToSchema)]
         pub struct $Envelope {
-            /// The entries on this page, or the one entry asked for.
-            $key: Vec<$Item>,
+            /// The entries on this page, or the one entry asked for. On a
+            /// list, `fields` keeps only the fields named.
+            #[schema(value_type = Vec<$Item>)]
+            $key: Vec<Sparse<$Item>>,
             /// Pagination, on lists only.
             #[serde(skip_serializing_if = "Option::is_none")]
             meta: Option<Meta>,
@@ -143,7 +146,7 @@ macro_rules! collection_routes {
             OriginalUri(uri): OriginalUri,
         ) -> Result<Json<$Envelope>, Problem> {
             let entry = $one(&store, $source, &PostKey::Id(id), uri.path()).await?;
-            Ok(Json($Envelope { $key: vec![entry], meta: None }))
+            Ok(Json($Envelope { $key: vec![Sparse::whole(entry)], meta: None }))
         }
 
         #[doc = concat!("Reads one published entry of `", $tag, "` by its slug.")]
@@ -164,7 +167,7 @@ macro_rules! collection_routes {
         ) -> Result<Json<$Envelope>, Problem> {
             let slug = Slug::try_new(&slug).map_err(|_| not_found(uri.path()))?;
             let entry = $one(&store, $source, &PostKey::Slug(slug), uri.path()).await?;
-            Ok(Json($Envelope { $key: vec![entry], meta: None }))
+            Ok(Json($Envelope { $key: vec![Sparse::whole(entry)], meta: None }))
         }
     };
 }
@@ -326,9 +329,9 @@ async fn browse(
     store: &Store,
     collection: Collection,
     raw: &RawListQuery,
-) -> Result<(Vec<Post>, Meta), Problem> {
+) -> Result<(Vec<Sparse<Post>>, Meta), Problem> {
     let query = ListQuery::try_from(raw)?;
-    check_sparse(&query)?;
+    check_include(&query)?;
     check_fields(&query, Post::FIELDS)?;
     let listed = store
         .list(collection, &query)
@@ -340,7 +343,7 @@ async fn browse(
         .into_items()
         .into_iter()
         .map(|entry| entry.with_formats(formats));
-    Ok((entries.collect(), meta))
+    Ok((keep_fields(entries.collect(), query.fields())?, meta))
 }
 
 /// One entry of `collection`, or a 404 problem about `path`.
@@ -358,13 +361,13 @@ async fn one(
 }
 
 /// One page of a site list, `pick`ed from the store's [`SiteResources`].
-async fn browse_site<T: Listable>(
+async fn browse_site<T: Listable + ToSchema>(
     store: &Store,
     pick: fn(&SiteResources) -> &[T],
     raw: &RawListQuery,
-) -> Result<(Vec<T>, Meta), Problem> {
+) -> Result<(Vec<Sparse<T>>, Meta), Problem> {
     let query = ListQuery::try_from(raw)?;
-    check_sparse(&query)?;
+    check_include(&query)?;
     check_fields(&query, T::FIELDS)?;
     let site = store
         .site()
@@ -372,7 +375,7 @@ async fn browse_site<T: Listable>(
         .map_err(|error| Problem::internal(&error))?;
     let listed = select(pick(&site).iter(), &query);
     let meta = Meta::new(query.page(), query.limit(), listed.total());
-    Ok((listed.into_items(), meta))
+    Ok((keep_fields(listed.into_items(), query.fields())?, meta))
 }
 
 /// One entry of a site list, or a 404 problem about `path`.
@@ -393,22 +396,19 @@ async fn one_in_site<T: Listable>(
     found.cloned().ok_or_else(|| not_found(path))
 }
 
-/// Refuses `include` and `fields`, which are accepted on the command line
-/// but not answered yet (audit F6, G23). Saying so is kinder than sending
-/// everything and letting a caller believe it asked for less.
-pub(crate) fn check_sparse(query: &ListQuery) -> Result<(), Problem> {
-    for (parameter, asked) in [("include", query.include()), ("fields", query.fields())] {
-        if asked.is_empty() {
-            continue;
-        }
-        let message = UserMessage::new(
-            format!("The {parameter} parameter is not answered yet."),
-            "It is accepted so future callers are not broken, but every field is always sent.",
-            format!("Drop {parameter} for now; the whole entry is the only answer."),
-        );
-        return Err(Problem::new(ProblemType::InvalidQuery, &message).with_rule(parameter));
+/// Refuses `include`, which is accepted on the command line but not
+/// answered yet (audit F6, G23): a post already names its tags and
+/// authors. Saying so is kinder than letting a caller believe it was added.
+pub(crate) fn check_include(query: &ListQuery) -> Result<(), Problem> {
+    if query.include().is_empty() {
+        return Ok(());
     }
-    Ok(())
+    let message = UserMessage::new(
+        "The include parameter is not answered yet.",
+        "Posts already name their tags and authors, so nothing more is added.",
+        "Drop include, and read the tags and authors lists for their details.",
+    );
+    Err(Problem::new(ProblemType::InvalidQuery, &message).with_rule("include"))
 }
 
 /// Refuses fields the resource does not have in `filter` and `order`.

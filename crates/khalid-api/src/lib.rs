@@ -96,6 +96,7 @@ pub mod serpdad_store;
 pub mod session_check;
 pub mod settings_store;
 pub mod site_issues;
+mod sparse;
 pub mod staff_names;
 pub mod subscriber_desk;
 pub mod tag_store;
