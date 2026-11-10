@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 use chrono::{TimeZone, Utc};
+use khalid_api::post_password::NewPassword;
 use khalid_core::{Config, Environment, FixedClock, SystemClock};
 use khalid_routes::Routes;
 
@@ -126,6 +127,35 @@ fn the_start_render_finishing_after_a_saved_one_hands_on_nothing() {
         "older content would undo the save"
     );
     assert_eq!(outlined(&source), posts);
+}
+
+#[test]
+fn the_start_render_finishing_after_a_saved_one_keeps_its_gate_and_search_pages() {
+    let site = demo_copy();
+    let checked = read_content(&ContentTree::walk(site.path()).unwrap()).unwrap();
+    let source = pages(site.path());
+    // A post locked with a password while the start render runs.
+    let post = Path::new("content/en/posts/2026-09-14-why-internal-links-matter.md");
+    let mut file = site.path().to_path_buf();
+    file.push(post);
+    let hash = NewPassword::try_new("a test password".to_owned()).unwrap();
+    let line = format!(
+        "---\npassword_hash: \"{}\"\n",
+        hash.hash().unwrap().as_str()
+    );
+    let text = fs::read_to_string(&file)
+        .unwrap()
+        .replacen("---\n", &line, 1);
+    fs::write(&file, text).unwrap();
+    source.render_all().unwrap();
+    assert!(source.gate().guards(post), "the saved render locks it");
+    // Emptied, so any write by an older render shows.
+    source.0.searches.lock().unwrap().clear();
+
+    // The start render, of content read before the save, finishes last.
+    source.render_content(&checked, Assets::default()).unwrap();
+    assert!(source.gate().guards(post), "older content would unlock it");
+    assert!(source.0.searches.lock().unwrap().is_empty());
 }
 
 fn copy_dir(from: &Path, into: &Path) {

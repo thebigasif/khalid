@@ -11,9 +11,11 @@ use khalid_server::{Moved, Page, PagePath, Rendered};
 
 use crate::assets::PageStylesheets;
 use crate::build_pages::{self, LanguagePages};
+use crate::listed_post::ListedPost;
 use crate::page_code::PageCode;
 use crate::post_heads::PostHeads;
 use crate::site_page::{HeadNonce, served_at};
+use crate::unlock::GatedPosts;
 use crate::{build_message, post_lock};
 
 /// Why the site could not be rendered after an edit, as a person reads it.
@@ -79,6 +81,18 @@ impl Served {
         let rendered = Rendered::new(self.pages, default).with_not_found_under(under);
         rendered.with_moves(self.moves)
     }
+}
+
+/// What a render made beside its pages, which only the newest full
+/// render hands on, so a render of older content changes nothing.
+#[derive(Debug, Default)]
+pub(crate) struct Made {
+    /// The dated posts as lists show them.
+    pub(crate) listed: Vec<ListedPost>,
+    /// The password posts, which the password form checks.
+    pub(crate) gated: GatedPosts,
+    /// The search page of each language, empty unless every page was made.
+    pub(crate) searches: Vec<SearchShell>,
 }
 
 /// The page `khalid serve` answers an address with nothing behind it.

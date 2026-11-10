@@ -27,9 +27,9 @@ use crate::post_photos::Shown;
 use crate::site_content::Catalog;
 use crate::site_files::HEADLESS_NOT_FOUND;
 use crate::site_html::{
-    NotFound, SearchShell, Served, Unrendered, Which, html_pages, search_shells,
+    Made, NotFound, SearchShell, Served, Unrendered, Which, html_pages, search_shells,
 };
-use crate::unlock::Gate;
+use crate::unlock::{Gate, GatedPosts};
 use crate::{
     assets, build_gate, build_home, build_lists, build_message, build_pages, build_seo,
     build_sitemap, categories, content_message, home_images, look, own_descriptions,
@@ -403,7 +403,7 @@ impl SitePages {
             None => None,
         };
         let mut shown = Shown::default();
-        let (mut rendered, listed) =
+        let (mut rendered, made) =
             self.render_of(settings, &assets, (content, &[]), (Which::All, &mut shown))?;
         let mut handed_on = handed_on.lock().unwrap_or_else(PoisonError::into_inner);
         if read < *handed_on {
@@ -411,6 +411,17 @@ impl SitePages {
             return Ok(rendered);
         }
         *handed_on = read;
+        let Made {
+            listed,
+            gated,
+            searches,
+        } = made;
+        self.0.gate.replace(gated);
+        *self
+            .0
+            .searches
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner) = searches;
         *outline.lock().unwrap_or_else(PoisonError::into_inner) = Outline {
             content: site_outline::outline_of(content),
             listed,
@@ -426,9 +437,9 @@ impl SitePages {
 
     /// The `which` pages made from `content` with `settings`, with the files `assets` lists
     /// beside folder posts, the site's files, the moved addresses and the
-    /// not-found page of the default language when `which` is
-    /// [`Which::All`], and the dated posts of `content` as lists show them.
-    /// Related posts are chosen among those and `others`. Only a full
+    /// not-found page of each language when `which` is [`Which::All`],
+    /// and what else it [`Made`], which it keeps nowhere: the caller hands
+    /// it on. Related posts are chosen among the dated posts and `others`. Only a full
     /// render serves the files; a saved post's page still points its
     /// images at them. A headless site has no HTML page, as `khalid build`
     /// writes none. Cards and bylines show the images in `shown`, which
@@ -439,7 +450,7 @@ impl SitePages {
         assets: &Assets,
         (content, others): (&SiteContent, &[ListedPost]),
         (which, shown): (Which, &mut Shown),
-    ) -> Result<(Served, Vec<ListedPost>), UserMessage> {
+    ) -> Result<(Served, Made), UserMessage> {
         let folder = &self.0.folder;
         let Settings {
             config,
@@ -493,8 +504,9 @@ impl SitePages {
             moves: Vec::new(),
             heads: PostHeads::new(),
         };
+        let mut made = Made::default();
         if which == Which::All {
-            self.0.gate.replace(&languages);
+            made.gated = GatedPosts::of(&languages);
             if self.0.feed.is_some() {
                 served.heads = post_heads::of(&seo_site, &seo_pages)?;
             }
@@ -507,12 +519,7 @@ impl SitePages {
             if which == Which::All {
                 (served.pages).extend([theme.stylesheet.clone(), theme.script.clone()]);
                 (served.pages).extend(theme.fonts.iter().cloned());
-                let shells = search_shells(&languages);
-                *self
-                    .0
-                    .searches
-                    .lock()
-                    .unwrap_or_else(PoisonError::into_inner) = shells;
+                made.searches = search_shells(&languages);
             }
             let parts = (&theme.renderer, &theme.sheets);
             served.not_found = html_pages(parts, config, &languages, which, &mut served.pages)?;
@@ -526,7 +533,8 @@ impl SitePages {
             std::thread::spawn(move || share_images::warm(&site, cards));
         }
         let listed = languages.into_iter().flat_map(|language| language.listed);
-        Ok((served, listed.collect()))
+        made.listed = listed.collect();
+        Ok((served, made))
     }
 }
 
