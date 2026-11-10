@@ -90,8 +90,7 @@ export function DesignForm({ design, onSave }: Props) {
     <form className="design-form" onSubmit={submit}>
       <h2>{words.colors}</h2>
       <p className={faint === 0 ? "passed" : "careful"} role="status">
-        <strong>{faint === 0 ? words.allReadable : words.someFaint(faint)}</strong>{" "}
-        {words.standard}
+        <strong>{faint === 0 ? words.allReadable : words.someFaint(faint)}</strong> {words.standard}
       </p>
       <ColorTable values={values} saved={design} onColor={set} onKeep={keep} />
       <div className="design-grid">
