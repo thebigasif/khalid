@@ -1,4 +1,4 @@
-import type { AiVisitors, Uncited, Visitors } from "../src/api/analytics";
+import type { AiBots, AiVisitors, Uncited, Visitors } from "../src/api/analytics";
 import type { Answers } from "./redirects";
 import { json, serve } from "./render";
 
@@ -76,11 +76,40 @@ export function uncited(fields: Partial<Uncited> = {}): Uncited {
   };
 }
 
+/** How often each AI assistant's bots read in the same week. */
+export function aiBots(fields: Partial<AiBots> = {}): AiBots {
+  return {
+    first: "2026-10-25",
+    last: "2026-10-31",
+    days: 7,
+    tools: [
+      {
+        tool: "chatgpt",
+        name: "ChatGPT",
+        reads: 412,
+        pages: 58,
+        sent: 21,
+        bots: [{ bot: "GPTBot", reads: 301 }, { bot: "OAI-SearchBot", reads: 111 }],
+      },
+      {
+        tool: "other",
+        name: "AI bots of no assistant named here",
+        reads: 92,
+        pages: 30,
+        sent: 0,
+        bots: [{ bot: "CCBot", reads: 92 }],
+      },
+    ],
+    ...fields,
+  };
+}
+
 // What the Analytics screen reads when it opens, the week above unless a test says otherwise.
 const WEEK: Answers = {
   "GET /analytics/visitors/": () => json(200, visitors()),
   "GET /analytics/ai-visitors/": () => json(200, aiVisitors()),
   "GET /analytics/uncited/": () => json(200, uncited()),
+  "GET /analytics/ai-bots/": () => json(200, aiBots()),
 };
 
 /** A blog that answers the analytics routes from `answers`, and the requests it was sent. */

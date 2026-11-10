@@ -61,6 +61,14 @@ export function readConsentVersions(): Promise<Reply<ConsentVersions>> {
   return reply(() => api.GET("/api/admin/v1/consent/versions/"));
 }
 
+/** How often each AI assistant's bots read the blog in a period, beside the readers it sent. */
+export type AiBots = components["schemas"]["AdminAiBots"];
+
+/** Reads how often each AI assistant's bots read the blog in the last `days` days. */
+export function readAiBots(days: Days): Promise<Reply<AiBots>> {
+  return reply(() => api.GET("/api/admin/v1/analytics/ai-bots/", { params: { query: { days } } }));
+}
+
 /** Reads the pages AI bots read in the last `days` days but no AI assistant cited. */
 export function readUncited(days: Days): Promise<Reply<Uncited>> {
   return reply(() => api.GET("/api/admin/v1/analytics/uncited/", { params: { query: { days } } }));

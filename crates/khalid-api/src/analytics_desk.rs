@@ -6,8 +6,8 @@ use std::sync::Arc;
 
 use chrono::NaiveDate;
 use khalid_analytics::{
-    AiVisitors, AnalyticsError, AnalyticsStore, BoxFuture, Crawls, Period, Tally, Uncited, Views,
-    Visitors, uncited,
+    AiVisitors, AnalyticsError, AnalyticsStore, BoxFuture, Crawls, Period, Tally, ToolBots,
+    Uncited, Views, Visitors, ai_bots, uncited,
 };
 use khalid_core::{Clock, SystemClock};
 
@@ -80,6 +80,19 @@ impl AnalyticsDesk {
         let crawls = self.store.crawls(first, last).await?;
         let views = self.store.views(first, last).await?;
         Ok(uncited(&crawls, &views))
+    }
+
+    /// How often each AI assistant's bots read pages in `period`, beside
+    /// the readers it sent in it.
+    ///
+    /// # Errors
+    ///
+    /// [`AnalyticsError`] when the bot reads or the views cannot be read.
+    pub async fn ai_bots(&self, period: Period) -> Result<Vec<ToolBots>, AnalyticsError> {
+        let (first, last) = (period.first(), period.last());
+        let crawls = self.store.crawls(first, last).await?;
+        let views = self.store.views(first, last).await?;
+        Ok(ai_bots(&crawls, &views))
     }
 
     /// Every version of what readers were shown, oldest first (R18).
