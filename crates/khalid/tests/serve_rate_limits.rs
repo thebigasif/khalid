@@ -4,7 +4,7 @@
 mod common;
 
 use common::{demo_copy, new_key, start};
-use khalid_api::api_limits::ApiLimits;
+use khalid_core::LimitSettings;
 
 #[test]
 fn an_address_that_sends_wrong_keys_is_paused_on_both_apis() {
@@ -19,7 +19,7 @@ fn an_address_that_sends_wrong_keys_is_paused_on_both_apis() {
     let last = if content.ends_with('0') { "1" } else { "0" };
     let wrong = format!("{}{last}", content.get(..content.len() - 1).unwrap());
     let guess = format!("/api/content/v1/posts/?key={wrong}&limit=1");
-    for _ in 0..ApiLimits::REFUSED_PER_MINUTE {
+    for _ in 0..LimitSettings::default().wrong_keys_per_minute {
         assert_eq!(server.raw("GET", &guess, &[], None).0, 401);
     }
 

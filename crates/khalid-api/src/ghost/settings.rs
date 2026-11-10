@@ -1,6 +1,6 @@
 //! `/settings/` in Ghost's shape, from `site.toml`.
 
-use khalid_core::{Config, MenuLink};
+use khalid_core::{Config, LimitSettings, MenuLink};
 use serde::Serialize;
 
 /// Ghost's time zone for every Khalid site: times are kept in UTC.
@@ -28,6 +28,9 @@ pub struct GhostSite {
     meta_title: Option<String>,
     meta_description: Option<String>,
     url: String,
+    /// How many requests a key and an address may make, from `[limits]`.
+    #[serde(skip)]
+    limits: LimitSettings,
 }
 
 /// One menu link as Ghost writes it.
@@ -38,6 +41,11 @@ struct GhostLink {
 }
 
 impl GhostSite {
+    /// How many requests a key and an address may make a minute.
+    pub(super) fn limits(&self) -> LimitSettings {
+        self.limits
+    }
+
     /// The site's default language, the one language Ghost's path answers
     /// in, since a Ghost site has one.
     pub(super) fn language(&self) -> &str {
@@ -83,6 +91,7 @@ impl GhostSite {
             meta_title: None,
             meta_description: (!tagline.is_empty()).then(|| tagline.to_owned()),
             url: format!("{address}{}", config.mount()),
+            limits: *config.limits(),
         }
     }
 }

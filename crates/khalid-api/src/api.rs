@@ -9,21 +9,21 @@ use axum::http::header::CONTENT_TYPE;
 use axum::middleware;
 use axum::routing::get;
 use khalid_core::SystemClock;
+use utoipa::OpenApi;
 use utoipa::openapi::OpenApi as Document;
-use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
-use utoipa::{Modify, OpenApi};
 use utoipa_axum::router::OpenApiRouter;
 
 use crate::admin_ai;
 use crate::admin_key::{AdminDoor, require_admin_key};
 use crate::analytics_desk::AnalyticsDesk;
-use crate::api_limits::ApiLimits;
+use crate::api_limits::{self, ApiLimits};
 use crate::api_version::negotiate_version;
 use crate::comment_moderation::{CommentModeration, NoComments};
 use crate::content_key::ContentDoor;
 use crate::content_store::ContentStore;
 use crate::draft_comments::DraftComments;
 use crate::follow_ups::FollowUpFinder;
+use crate::key_schemes::KeySchemes;
 use crate::keys::KeyStore;
 use crate::media_api::{self, MediaLibrary};
 use crate::post_store::PostStore;
@@ -70,49 +70,6 @@ const JSON: &str = "application/json";
     modifiers(&KeySchemes)
 )]
 pub(crate) struct ApiDoc;
-
-/// Adds the ways to send a key to the document.
-struct KeySchemes;
-
-impl Modify for KeySchemes {
-    fn modify(&self, document: &mut Document) {
-        let components = document.components.get_or_insert_with(Default::default);
-        let schemes = [
-            (
-                "content_key",
-                ApiKey::Header(ApiKeyValue::with_description(
-                    "Authorization",
-                    "The site's content key, as Khalid-Content followed by the key.",
-                )),
-            ),
-            (
-                "content_key_query",
-                ApiKey::Query(ApiKeyValue::with_description(
-                    "key",
-                    "The site's content key.",
-                )),
-            ),
-            (
-                "admin_key",
-                ApiKey::Header(ApiKeyValue::with_description(
-                    "Authorization",
-                    "An integration key or staff token, as Khalid followed by the key.",
-                )),
-            ),
-            (
-                "staff_session",
-                ApiKey::Cookie(ApiKeyValue::with_description(
-                    "__Host-khalid-session",
-                    "A signed-in staff session. Every request with it also sends the session's \
-                     CSRF token in the x-khalid-csrf header.",
-                )),
-            ),
-        ];
-        for (name, scheme) in schemes {
-            components.add_security_scheme(name, SecurityScheme::ApiKey(scheme));
-        }
-    }
-}
 
 /// The staff routes and the session check of a site with staff accounts.
 pub type Staff = (StaffRoutes, Arc<dyn SessionCheck>);
@@ -371,7 +328,7 @@ fn assemble(
     staff: Option<Staff>,
 ) -> (Router, Document) {
     let (routes, sessions) = staff.unzip();
-    let limits = Arc::new(ApiLimits::new(SystemClock));
+    let limits = Arc::new(ApiLimits::new(SystemClock, desks.limits));
     let door = AdminDoor {
         keys: Arc::clone(&keys),
         sessions,
@@ -456,6 +413,7 @@ fn assemble(
 pub(crate) fn finish(api: OpenApiRouter) -> (Router, Document) {
     let (router, mut document) = api.split_for_parts();
     api_version::document(&mut document);
+    api_limits::document(&mut document);
     let router = match serde_json::to_vec(&document) {
         Ok(json) => {
             let json = Bytes::from(json);

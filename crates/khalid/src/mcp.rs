@@ -111,6 +111,7 @@ fn api_router(
     let webhooks = WebhookTable::new(database.clone(), id, SystemClock);
     let desks = AdminDesks {
         webhooks: Some(Arc::new(webhooks)),
+        limits: *config.limits(),
         ..AdminDesks::none()
     };
     let (router, document) =
