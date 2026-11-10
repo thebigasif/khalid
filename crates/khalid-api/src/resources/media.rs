@@ -142,6 +142,24 @@ pub struct MediaList {
     pub meta: Meta,
 }
 
+/// A folder of the media library, as the Admin API lists it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, ToSchema)]
+#[schema(example = json!({ "name": "guides/2026", "items": 4 }))]
+pub struct MediaFolder {
+    /// Up to five slugs joined by `/`, never empty.
+    pub name: String,
+    /// The items filed in it, not counting those in folders inside it.
+    pub items: usize,
+}
+
+/// Every folder of the media library that holds an item, and each folder
+/// above one, by name.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, ToSchema)]
+pub struct MediaFolders {
+    /// The folders, by name.
+    pub folders: Vec<MediaFolder>,
+}
+
 impl AdminMedia {
     /// The fields a list's `filter` and `order` may name.
     pub const FIELDS: &'static [&'static str] = &[
