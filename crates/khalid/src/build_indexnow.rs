@@ -1,10 +1,11 @@
 //! What `khalid build` sends `IndexNow`: each live post that is new or has
 //! a new `updated:` date since the last build, as the record in `data/`
-//! has it, when the site has a key (task C8, ADR
+//! has it, when the site has a key and a public address (task C8, ADR
 //! "`IndexNow` without sitemap pings"). A static site has no server to send
 //! them, so the build does.
 
 use std::collections::BTreeMap;
+use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 
 use khalid_content::SiteContent;
@@ -32,8 +33,9 @@ impl Told {
 
 /// Sends `IndexNow` the news in the published `content` of the `site`
 /// folder, without the posts in `left_out`, which the gate kept out. `None`
-/// when the site has no `IndexNow` key. The record is kept only once the
-/// news is sent, so a failed request is sent again at the next build.
+/// when the site has no `IndexNow` key; nothing is sent when its address
+/// is not public. The record is kept only once the news is sent, so a
+/// failed request is sent again at the next build.
 pub(crate) fn tell(
     (site, config): (&Path, &Config),
     content: &SiteContent,
@@ -41,6 +43,12 @@ pub(crate) fn tell(
     cli: &Cli,
 ) -> Option<Told> {
     let settings = config.seo().indexnow.as_ref()?;
+    let address = config.address();
+    if !public(address) {
+        return Some(Told::line(&format!(
+            "IndexNow: nothing sent, because the site's address {address} is not public, so search engines cannot read pages there. Set address in site.toml to the public address to send them."
+        )));
+    }
     let now = match record(site, config, content, left_out) {
         Ok(now) => now,
         Err(message) => return Some(Told::line(&format!("IndexNow: {}", message.what()))),
@@ -132,4 +140,33 @@ fn send(
     let sent = runtime.block_on(indexnow.send(&outbound, &retries, urls));
     sent.map(|sent| sent.urls)
         .map_err(|error| build_message::indexnow(&error))
+}
+
+/// Whether search engines can reach `address`: not `localhost`, a private
+/// or loopback address, or a name kept for local networks and tests.
+fn public(address: &AbsoluteUrl) -> bool {
+    let host = address.host().trim_start_matches('[').trim_end_matches(']');
+    if let Ok(ip) = host.parse::<IpAddr>() {
+        return khalid_outbound::is_public(ip);
+    }
+    let local = [".localhost", ".local", ".internal", ".test", ".lan"];
+    host != "localhost" && !local.iter().any(|end| host.ends_with(end))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn only_an_address_search_engines_can_reach_is_public() {
+        let public = |url: &str| public(&AbsoluteUrl::parse(url).unwrap());
+        assert!(public("https://www.example.com/blog/"));
+        assert!(public("https://203.0.114.9/"));
+        assert!(!public("http://localhost:8080/"));
+        assert!(!public("http://127.0.0.1:8080/"));
+        assert!(!public("http://192.168.1.4/"));
+        assert!(!public("http://[::1]:8080/"));
+        assert!(!public("https://bakery.test/"));
+        assert!(!public("https://blog.local/"));
+    }
 }
