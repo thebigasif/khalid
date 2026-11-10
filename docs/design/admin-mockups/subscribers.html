@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subscribers · Khalid admin mockup</title>
+<style>
+/* Shared admin styles. Each mockup carries its own copy so it opens offline. */
+*{box-sizing:border-box}
+:root{color-scheme:light;--bg:#fff;--surface:#f6f7f9;--text:#1f2328;--muted:#57606a;--link:#0b57d0;--border:#d0d7de;--field:#6e7781;--tint:#eef4fe;--block:#b42318;--block-bg:#fef3f2;--warn:#8a4b00;--warn-bg:#fff8eb;--ok:#1a7f37;--ok-bg:#eefbf1;--radius:.375rem}
+html{background:var(--bg);color:var(--text);font:400 1rem/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0;overflow-wrap:break-word}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-100vw}.skip:focus{left:1rem;top:.5rem;background:var(--bg);padding:.5rem 1rem}
+.top{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid var(--border)}
+.brand{font-weight:700}.brand span{color:var(--muted);font-weight:400}
+.shell{display:grid;grid-template-columns:minmax(0,1fr)}
+@media (min-width:60em){.shell{grid-template-columns:13rem minmax(0,1fr)}.side{border-right:1px solid var(--border);min-height:calc(100vh - 3.6rem)}.side ul{flex-direction:column}}
+.side ul{list-style:none;margin:0;padding:.75rem;display:flex;flex-wrap:wrap;gap:.25rem}
+.side a{display:flex;align-items:center;min-height:44px;padding:.5rem .75rem;border-radius:var(--radius);color:var(--text);text-decoration:none}
+.side a:hover{background:var(--surface)}
+.side a[aria-current]{background:var(--tint);color:var(--link);font-weight:600}
+main{padding:1.5rem 1.25rem 3rem;max-width:72rem}
+h1{font-size:clamp(1.5rem,1.2rem + 1.2vw,2rem);line-height:1.2;margin:0 0 .5rem}
+h2{font-size:1.25rem;line-height:1.3;margin:2rem 0 .5rem}
+p{margin:0 0 1rem}
+.lede{color:var(--muted);max-width:68ch;font-size:1.0625rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;border-radius:var(--radius);border:1px solid var(--field);background:var(--bg);color:var(--text);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn.primary{background:var(--link);border-color:var(--link);color:#fff}
+label{display:block;font-weight:600;margin:0 0 .25rem}
+.hint{display:block;color:var(--muted);font-weight:400;font-size:.9375rem;margin:0 0 .4rem}
+input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--field);border-radius:var(--radius);padding:.5rem .7rem;min-height:44px;width:100%}
+.field{margin:0 0 1.25rem;max-width:36rem}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.muted{color:var(--muted)}
+.note{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.9375rem}
+.switch{display:inline-flex;flex-wrap:wrap;border:1px solid var(--field);border-radius:var(--radius);overflow:hidden;margin:0 0 1.25rem}
+.switch button{min-height:44px;padding:.5rem 1rem;border:0;background:var(--bg);font:inherit;font-weight:600;cursor:pointer}
+.switch button[aria-pressed="true"]{background:var(--tint);color:var(--link)}
+details{border:1px solid var(--border);border-radius:var(--radius);margin:.75rem 0 0}
+summary{cursor:pointer;font-weight:600;padding:.75rem 1rem;min-height:44px}
+details>div{padding:0 1rem 1rem}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:.6rem .75rem;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:.875rem;color:var(--muted);font-weight:600}
+.scroll{overflow-x:auto}
+.pill{display:inline-block;padding:.1rem .5rem;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:.875rem}
+.pill.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.pill.warn{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+/* This screen */
+.lists{list-style:none;margin:0;padding:0;display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
+.lists>li{border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem}
+.big{font-size:1.75rem;font-weight:700;line-height:1.2;margin:0}
+.focus{border:2px solid var(--link);background:var(--tint);border-radius:var(--radius);padding:1rem 1.25rem;max-width:52rem}
+.focus .field{max-width:none}
+.filters{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));max-width:52rem;margin:0 0 1rem}
+.filters .field{margin:0}
+code.form{display:block;white-space:pre-wrap;background:var(--surface);padding:.75rem;border-radius:var(--radius);font-size:.875rem}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the main content</a>
+<header class="top">
+  <div class="brand">Khalid <span>· Field Notes on SEO</span></div>
+  <div class="row"><a href="https://www.example.com/blog/">View the blog</a><a href="account.html">Your account</a></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Admin">
+  <ul>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="posts.html">Posts</a></li>
+    <li><a href="comments.html">Comments</a></li>
+    <li><a href="subscribers.html" aria-current="page">Subscribers</a></li>
+    <li><a href="authors.html">Authors</a></li>
+    <li><a href="design.html">Design</a></li>
+    <li><a href="settings.html">Settings</a></li>
+  </ul>
+</nav>
+<main id="main">
+  <h1>Subscribers</h1>
+  <p class="lede">The readers who signed up for your newsletters. Readers join only through the sign-up form and the link in its email, so everyone here asked to be here. Only the owner and admins see this screen.</p>
+
+  <h2>Your newsletters</h2>
+  <ul class="lists">
+    <li>
+      <h3>main</h3>
+      <p class="big">212</p>
+      <p class="muted">readers get it. 4 more have not opened their confirmation email yet.</p>
+      <details>
+        <summary>Sign-up form for your main website</summary>
+        <div>
+          <p class="muted">Paste this into any page of your main site. It works with scripts off, and readers land on the blog's "Check your inbox" page.</p>
+          <code class="form">&lt;form class="khalid-subscribe" method="post" action="https://www.example.com/blog/subscribe"&gt;…&lt;/form&gt;</code>
+          <p><button class="btn" type="button">Copy the form</button></p>
+        </div>
+      </details>
+    </li>
+    <li>
+      <h3>weekly</h3>
+      <p class="big">58</p>
+      <p class="muted">readers get it. 1 more has not opened their confirmation email yet.</p>
+      <details>
+        <summary>Sign-up form for your main website</summary>
+        <div><p><button class="btn" type="button">Copy the form</button></p></div>
+      </details>
+    </li>
+  </ul>
+
+  <h2>Send a post</h2>
+  <form class="focus">
+    <p>A published post goes to one newsletter once, with a link to read it on the blog and each reader's own unsubscribe link. An edit never sends it again.</p>
+    <div class="field">
+      <label for="post">Post</label>
+      <select id="post"><option>What a sitemap does</option><option>How to write a title tag</option><option>Why internal links matter</option></select>
+    </div>
+    <div class="field">
+      <label for="list">Newsletter</label>
+      <select id="list"><option>main (212 readers)</option><option>weekly (58 readers)</option></select>
+    </div>
+    <div class="field">
+      <label for="labels">Only readers with these labels <span class="hint">Leave empty to send to everyone on the newsletter. Separate labels with commas.</span></label>
+      <input id="labels" value="">
+    </div>
+    <button class="btn primary" type="submit">Send to 212 readers</button>
+  </form>
+
+  <h2>Sent emails</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th scope="col">Post</th><th scope="col">Newsletter</th><th scope="col">Sent</th><th scope="col">Copies sent</th><th scope="col">Refused</th><th scope="col">Unsubscribed with its link</th></tr></thead>
+    <tbody>
+      <tr><td>en/how-to-write-a-title-tag</td><td>main</td><td>2 November 2026</td><td>209</td><td>1</td><td>2</td></tr>
+      <tr><td>en/why-internal-links-matter</td><td>weekly</td><td>26 October 2026</td><td>55</td><td>0</td><td>0</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">Numbers are totals per email, never per person. Khalid does not count opens.</p>
+
+  <h2>Readers</h2>
+  <div class="switch" role="group" aria-label="Which readers">
+    <button type="button" aria-pressed="true">Everyone</button>
+    <button type="button" aria-pressed="false">Getting emails</button>
+    <button type="button" aria-pressed="false">Not confirmed yet</button>
+    <button type="button" aria-pressed="false">Left</button>
+  </div>
+  <div class="filters">
+    <div class="field"><label for="q">Find an address</label><input id="q" type="search"></div>
+    <div class="field"><label for="only-list">Newsletter</label><select id="only-list"><option>Any</option><option>main</option><option>weekly</option></select></div>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th scope="col">Address</th><th scope="col">Stands</th><th scope="col">Newsletters</th><th scope="col">Labels</th><th scope="col">Signed up</th><th scope="col"><span class="muted">Actions</span></th></tr></thead>
+    <tbody>
+      <tr>
+        <td>lena@example.com</td><td><span class="pill ok">Getting emails</span></td><td>main, weekly</td>
+        <td><span class="pill">paid</span> <button class="btn" type="button" aria-label="Take the label paid away from lena@example.com">Remove</button>
+          <details><summary>Add a label</summary><div><label for="label-1">Label</label><input id="label-1"><p><button class="btn" type="button">Add</button></p></div></details></td>
+        <td>1 November 2026</td>
+        <td><button class="btn" type="button">Forget</button></td>
+      </tr>
+      <tr>
+        <td>omar@example.com</td><td><span class="pill warn">Not confirmed yet</span></td><td>main</td><td></td><td>9 November 2026</td>
+        <td><button class="btn" type="button">Forget</button></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="row"><span class="muted">1 to 50 of 275 readers</span><a class="btn" href="#main">Next 50</a></p>
+  <p class="muted">Forget removes a reader's address, newsletters and labels for good, for a reader who asks. A reader who wants fewer emails can unsubscribe with the link in any of them.</p>
+
+  <p class="note">Mockup for the founder's review. Nothing on this page saves. The posts are the demo site's; the readers, counts and numbers are examples. Built without waiting for a yes; ask for changes any time. <a href="index.html">All mockups</a></p>
+</main>
+</div>
+</body>
+</html>
