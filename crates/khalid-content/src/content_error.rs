@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use khalid_core::{Locale, ParseLocaleError};
 
-use crate::BlockError;
+use crate::{BlockError, FactError};
 
 /// Why a content file could not be read.
 #[derive(Debug, thiserror::Error)]
@@ -113,4 +113,7 @@ pub enum ContentError {
         /// What the maths reader found, in a phrase.
         problem: String,
     },
+    /// `facts.toml` is not a fact registry.
+    #[error("facts.toml: {0}")]
+    Facts(#[from] FactError),
 }

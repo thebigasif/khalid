@@ -16,6 +16,7 @@ use std::collections::BTreeMap;
 use std::path::Path;
 
 use chrono::NaiveDate;
+use khalid_content::FactError;
 use khalid_core::{SitePath, Slug, UserMessage};
 use khalid_lint::LintFact;
 use serde::Deserialize;
@@ -90,6 +91,25 @@ fn plain_date(datetime: &Datetime) -> Option<NaiveDate> {
     let date = datetime.date.filter(|_| datetime.time.is_none())?;
     let year = i32::from(date.year);
     NaiveDate::from_ymd_opt(year, u32::from(date.month), u32::from(date.day))
+}
+
+/// What a person reads when the content reader finds `facts.toml` is not
+/// a fact registry.
+pub(crate) fn message(error: &FactError) -> UserMessage {
+    match error {
+        FactError::NotToml { line, detail } => wrong(*line, detail),
+        FactError::BadKey(key) => bad_key(key),
+        FactError::NoValue(key) => no_value(key),
+        FactError::NotADate(key) => not_a_date(key),
+        FactError::BadSource(key) => UserMessage::new(
+            format!("The fact `{key}` in facts.toml has a source that is not a web address."),
+            WHY,
+            format!(
+                "Write the full address of the page that shows the value in [{key}], such as source = \"https://example.com/pricing/\", or remove it."
+            ),
+        ),
+        _ => unreadable(),
+    }
 }
 
 fn unreadable() -> UserMessage {

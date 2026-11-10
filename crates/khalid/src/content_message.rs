@@ -6,6 +6,7 @@ use khalid_content::ContentError;
 use khalid_core::{Locale, UserMessage};
 
 use crate::config_message::located;
+use crate::site_facts;
 
 /// Why a front matter mistake stops the run.
 const WHY: &str =
@@ -47,6 +48,7 @@ pub(crate) fn of(site: &Path, error: &ContentError) -> UserMessage {
             line,
             problem,
         } => maths(&at(path), *line, problem),
+        ContentError::Facts(error) => site_facts::message(error),
         ContentError::NoFrontMatter { path } => UserMessage::new(
             format!("{} does not start with front matter.", at(path)),
             "Front matter between two --- lines holds the title, date and author that readers and search engines need.",
