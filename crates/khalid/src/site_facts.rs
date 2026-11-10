@@ -1,8 +1,8 @@
 //! The site's fact registry, from `facts.toml` in the site folder (P7), as
 //! the linter reads it.
 //!
-//! The content reader reads the file with the posts, so every command that
-//! reads the content reads the same registry. The
+//! The content reader reads the file with the posts, so every page that
+//! shows a `[[fact:key]]` and every lint run agree on one registry. The
 //! linter warns when a post still gives an old value, and when a post gives
 //! a fact nobody has checked for six months.
 

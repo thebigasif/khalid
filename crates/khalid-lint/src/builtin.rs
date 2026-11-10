@@ -134,6 +134,7 @@ fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
             table_words: headings::TABLE_WORDS.to_vec(),
         }),
         Box::new(facts::FactOldValue),
+        Box::new(facts::FactUnknown),
     ];
     rules.extend(keyword_rules(thresholds));
     rules.extend(topic_rules(thresholds));

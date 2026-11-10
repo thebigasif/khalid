@@ -143,6 +143,57 @@ fn a_broken_facts_file_stops_lint_and_build_with_a_plain_message() {
 }
 
 #[test]
+fn build_writes_the_current_value_where_a_post_names_the_fact() {
+    let site = site(FACTS);
+    let post = within(
+        site.path(),
+        "content/en/posts/2026-09-14-why-internal-links-matter.md",
+    );
+    let placed = NEW_PRICE.replace("29 USD a month", "[[fact:pro-plan-price]]");
+    fs::write(&post, placed).unwrap();
+    let output = khalid(site.path(), &["build"]);
+    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
+    let page = within(site.path(), "public/why-internal-links-matter/index.html");
+    let html = fs::read_to_string(&page).unwrap();
+    assert!(
+        html.contains("The Pro plan costs 29 USD a month."),
+        "{html}"
+    );
+    assert!(!html.contains("fact:"), "{html}");
+
+    let lint = khalid(site.path(), &["lint", "--json"]);
+    let json: Value = serde_json::from_str(&text(&lint.stdout)).unwrap();
+    let due = found(&json, "fact-not-checked");
+    assert!(
+        due.iter()
+            .any(|(slug, _)| slug == "why-internal-links-matter"),
+        "the linter reads the value the reader sees: {json}"
+    );
+}
+
+#[test]
+fn build_stops_at_a_fact_the_registry_lacks() {
+    let site = site(FACTS);
+    let post = within(
+        site.path(),
+        "content/en/posts/2026-09-14-why-internal-links-matter.md",
+    );
+    let placed = NEW_PRICE.replace("29 USD a month", "[[fact:team-size]]");
+    fs::write(&post, placed).unwrap();
+    let output = khalid(site.path(), &["build"]);
+    assert_eq!(output.status.code(), Some(1));
+    let said = text(&output.stderr);
+    assert!(said.contains("[[fact:team-size]] names no fact"), "{said}");
+    assert!(said.contains("Add a [team-size] table"), "{said}");
+    let lint = khalid(site.path(), &["lint", "--json"]);
+    let said = text(&lint.stdout);
+    assert_eq!(lint.status.code(), Some(1), "{said}");
+    let json: Value = serde_json::from_str(&said).unwrap();
+    let what = json["error"]["what"].as_str().unwrap_or_default();
+    assert!(what.contains("[[fact:team-size]] names no fact"), "{json}");
+}
+
+#[test]
 fn lint_warns_about_a_check_still_to_come_and_points_at_the_source() {
     let ahead = FACTS.replace("2020-01-01", "2999-01-01");
     let site = site(&format!(

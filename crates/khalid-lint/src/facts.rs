@@ -3,6 +3,7 @@
 
 use chrono::{Months, NaiveDate};
 
+use crate::address::FACT;
 use crate::topics::mentions;
 use crate::{Hit, LintFact, LintPost, Rule, RuleId, Severity, SiteRule, SiteView};
 
@@ -19,6 +20,35 @@ fn visible_text(post: &LintPost) -> String {
 fn gives(text: &str, value: &str) -> bool {
     let value = value.trim().to_lowercase();
     !value.is_empty() && mentions(text, &value)
+}
+
+/// A `[[fact:key]]` in a post whose key the registry lacks, named in the
+/// finding as written. The build stops at it too, so the page never shows
+/// a gap.
+#[derive(Debug)]
+pub(crate) struct FactUnknown;
+
+impl Rule for FactUnknown {
+    fn id(&self) -> RuleId {
+        RuleId::new("fact-unknown")
+    }
+
+    fn default_severity(&self) -> Severity {
+        Severity::Block
+    }
+
+    fn check(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Hit> {
+        post.wikilinks
+            .iter()
+            .map(|target| target.trim())
+            .filter(|target| {
+                target
+                    .strip_prefix(FACT)
+                    .is_some_and(|key| !site.facts().iter().any(|fact| fact.key == key.trim()))
+            })
+            .map(Hit::about)
+            .collect()
+    }
 }
 
 /// A post that gives a value the fact registry lists as one a fact held

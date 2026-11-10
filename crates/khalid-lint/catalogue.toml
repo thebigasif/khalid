@@ -271,6 +271,12 @@ why = "A price, count or date that no longer holds misleads readers and the engi
 fix = "Update the fact in `facts.toml` after checking it, and set its `checked` date to today."
 guide = "fact-registry"
 
+[fact-unknown]
+what = "This post shows a `[[fact:...]]` that `facts.toml` does not have."
+why = "The page would show a gap where readers expect the value."
+fix = "Add the fact to `facts.toml`, or change the key to one the file has."
+guide = "fact-registry"
+
 [fact-checked-in-future]
 what = "This post uses a fact from `facts.toml` whose `checked` date has not come yet."
 why = "A check that has not happened hides the fact from the reminder to check it again."

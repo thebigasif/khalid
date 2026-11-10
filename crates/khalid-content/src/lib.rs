@@ -72,4 +72,4 @@ pub use structured::{
     RecipeBlock, ReviewBlock, Step, StructuredBlock, VideoBlock,
 };
 pub use tree::{Collection, ContentTree, Entry, Language};
-pub use wikilink::{GLOSSARY, WikiTarget, Wikilinks};
+pub use wikilink::{FACT, GLOSSARY, WikiTarget, Wikilinks};

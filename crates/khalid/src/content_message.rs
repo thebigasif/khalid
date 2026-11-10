@@ -49,6 +49,7 @@ pub(crate) fn of(site: &Path, error: &ContentError) -> UserMessage {
             problem,
         } => maths(&at(path), *line, problem),
         ContentError::Facts(error) => site_facts::message(error),
+        ContentError::Fact { path, line, key } => fact(&at(path), *line, key),
         ContentError::NoFrontMatter { path } => UserMessage::new(
             format!("{} does not start with front matter.", at(path)),
             "Front matter between two --- lines holds the title, date and author that readers and search engines need.",
@@ -116,6 +117,18 @@ fn snippet(path: &str, line: usize, slug: &str, language: &Locale) -> UserMessag
         "A snippet block shows a file from snippets/ in the post's own language, so the post would have a gap.",
         format!(
             "Add content/{language}/snippets/{slug}.md, or change the slug on line {line} to one that exists."
+        ),
+    )
+}
+
+/// The message for a `[[fact:key]]` on `line` of the file at `path` whose
+/// `key` is not in `facts.toml`.
+fn fact(path: &str, line: usize, key: &str) -> UserMessage {
+    UserMessage::new(
+        format!("{path}, line {line}: [[fact:{key}]] names no fact in facts.toml."),
+        "A fact placeholder shows the value facts.toml keeps, so the post would have a gap.",
+        format!(
+            "Add a [{key}] table with its value to facts.toml, or change the key on line {line} to one it has."
         ),
     )
 }
