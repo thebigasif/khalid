@@ -110,6 +110,19 @@ The screen reads two Admin API routes, which need `settings:write`:
 - `GET /api/admin/v1/templates/` lists the templates, each with its options: the values each takes and its default.
 - `PUT /api/admin/v1/settings/` saves the choice as `template`, with its `name` and `options`, beside the other settings.
 
+## Colours, fonts and logo in the admin
+
+The admin's **Design** screen changes `theme/tokens.toml` without opening it. It shows the colours, fonts, corners, line length and logo your pages use now: each value your file sets, and the template's own for the rest.
+
+Beside each colour is its contrast, how far it stands out from what is behind it. WCAG AA, the web's standard for readable pages, asks text for 4.5 to 1 on the page background and on panels, and buttons for 3 to 1. The score moves as you type. A colour that is too faint says so, and after you save it offers the closest shade that passes, the same one `khalid theme sync` would pick. The fonts are a system font, a serif, and each font your site serves itself. The logo is a picture you uploaded to Media.
+
+**Save changes** writes only what you changed, each value in its place, so your comments and every other table stay as you wrote them. A site with no `theme/tokens.toml` gets one holding only your change, so the template keeps the rest. Tick **Keep when syncing** beside a colour to add it to `locked`, so the next `khalid theme sync` keeps it. Your blog shows the change on the next page it renders, with no restart.
+
+The screen reads one Admin API route, which needs `settings:write`, so among staff only the owner and admins see it:
+
+- `GET /api/admin/v1/design/` answers every token by name, such as `colors.link`, the `locked` list, the font choices, the contrast of each colour on the background and the surface, and `updated_at`, which is `null` before the file exists.
+- `PUT /api/admin/v1/design/` takes `tokens` with only the values that change, `locked` when it changes, and the `updated_at` you read. A value the pages could not load is refused with a 422 that names the token, and a copy read before someone else saved is refused with a 409. Nothing is saved either way.
+
 ## Parts a template can switch on
 
 Every template shares one set of page parts. A template switches on the ones it uses, and offers each as an option with its own default. Classic switches none of them on but the reading progress bar. The words below are the option keys and the values each takes; a template lists only the parts it offers.
