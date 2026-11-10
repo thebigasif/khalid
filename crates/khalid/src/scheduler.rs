@@ -4,15 +4,16 @@
 //! announced like any other (CTO answers 2026-10-27, section 4). In the
 //! same round it moves each page, glossary term, case study and changelog
 //! entry whose `publish_at` has come from `drafts/` to `content/`, which
-//! the next render announces. Once an hour it sends the weekly Search
-//! Console email when a week has passed since the last one.
+//! the next render announces. At start and then once an hour it deletes
+//! for good each post that has waited in the trash longer than the site's
+//! `trash_days`. Once an hour it sends the weekly Search Console email
+//! when a week has passed since the last one.
 
 mod entries;
 mod weekly_email;
 
 pub(crate) use weekly_email::WeeklyEmail;
 
-use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -23,12 +24,14 @@ use tokio::task::JoinHandle;
 use tokio::time::MissedTickBehavior;
 
 use crate::alerts::Alerting;
+use crate::site_posts::SitePosts;
 
 /// How often the schedules are looked at, so a post goes live at most this
 /// long after its time.
 const EVERY: Duration = Duration::from_secs(5);
 
-/// Rounds between two looks at the weekly email: an hour.
+/// Rounds between two looks at the trash and at the weekly email: an hour,
+/// since a trashed copy is kept for whole days.
 const HOURLY: u32 = 720;
 
 /// The running scheduler, stopped before the database closes.
@@ -47,17 +50,17 @@ impl Scheduling {
     }
 }
 
-/// Starts the scheduler on `door` and the drafts of the site `folder`,
-/// raising each post the linter refuses through `alerting`, and sending
-/// the `weekly` email when the site gets one. Must be called inside the
-/// tokio runtime. The first round runs at once, so a time that passed
+/// Starts the scheduler on `door` and the drafts and trash of the site of
+/// `posts`, raising each post the linter refuses through `alerting`, and
+/// sending the `weekly` email when the site gets one. Must be called inside
+/// the tokio runtime. The first round runs at once, so a time that passed
 /// while the server was stopped is acted on at start.
 pub(crate) fn start(
-    (door, folder): (Arc<PublishDoor>, &Path),
+    (door, posts): (Arc<PublishDoor>, SitePosts),
     (alerting, weekly): (Arc<Alerting>, Option<Arc<WeeklyEmail>>),
 ) -> Scheduling {
+    let folder = posts.folder().to_path_buf();
     let (stop, mut stopped) = oneshot::channel();
-    let folder = folder.to_path_buf();
     let task = tokio::spawn(async move {
         let mut ticks = tokio::time::interval(EVERY);
         ticks.set_missed_tick_behavior(MissedTickBehavior::Delay);
@@ -66,6 +69,9 @@ pub(crate) fn start(
             tokio::select! {
                 _ = &mut stopped => return,
                 _ = ticks.tick() => {}
+            }
+            if rounds.is_multiple_of(HOURLY) {
+                empty_trash(&posts).await;
             }
             match door.run_due().await {
                 Ok(ran) => {
@@ -95,6 +101,25 @@ pub(crate) fn start(
         }
     });
     Scheduling { stop, task }
+}
+
+/// Deletes for good the copies in the trash of `posts` older than the
+/// site's `trash_days`, logging each.
+async fn empty_trash(posts: &SitePosts) {
+    match posts.empty_old_trash().await {
+        Ok(emptied) => {
+            for key in emptied {
+                tracing::info!(
+                    key,
+                    "a post that waited its days in the trash was deleted for good"
+                );
+            }
+        }
+        Err(error) => tracing::warn!(
+            ?error,
+            "the trash could not be emptied, so it is tried again in an hour"
+        ),
+    }
 }
 
 /// Logs what the scheduler did about one post.
