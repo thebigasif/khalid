@@ -19,11 +19,26 @@ curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/inst
 
 The script downloads the newest release for your machine and checks it against the release's list of checksums, `SHA256SUMS`. A checksum is a fingerprint of a file: if the download was damaged or changed, the fingerprints differ and the script stops without installing anything. As root it installs to `/usr/local/bin`, otherwise to `~/.local/bin`.
 
+It also installs two extras, and says what it did with each:
+
+- **The manual pages**, the help that `man khalid-init` shows. They go to `~/.local/share/man/man1`, or to `/usr/local/share/man/man1` as root, and are checked against `SHA256SUMS` like the binary.
+- **Tab completion**, which makes your shell finish a `khalid` command when you press Tab. The script sets it up for the shell you log in with, if that is bash, zsh or fish:
+
+| Shell | For you | As root, for everyone |
+| --- | --- | --- |
+| bash | `~/.local/share/bash-completion/completions/khalid` | `/usr/local/share/bash-completion/completions/khalid` |
+| zsh | `~/.zfunc/_khalid` | `/usr/local/share/zsh/site-functions/_khalid` |
+| fish | `~/.config/fish/completions/khalid.fish` | `/usr/local/share/fish/vendor_completions.d/khalid.fish` |
+
+Open a new terminal to use it. For zsh in your home folder, `~/.zshrc` needs the line `fpath=(~/.zfunc $fpath)` before `compinit`; the script prints it when the line is missing and leaves the file alone. If an extra cannot be installed, for example on an older release without manual pages or with another shell, the script says why and the binary stays installed. `docs/cli.md` shows how to add either one by hand.
+
 Options, written after `sh -s --`:
 
 - `--version v1.3.2` installs that release instead of the newest.
 - `--dir FOLDER` installs into another folder.
 - `--systemd`, as root, also sets up the service described below.
+- `--no-man` leaves out the manual pages.
+- `--no-completions` leaves out Tab completion.
 
 For example, to install and set up the service on a server:
 
