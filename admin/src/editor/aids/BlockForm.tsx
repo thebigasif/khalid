@@ -51,6 +51,7 @@ export function BlockForm({ details, onSave, onCancel }: Props) {
       {fieldsOf(spec).map((field) => (
         <DetailField
           key={field}
+          block={spec.name}
           field={field}
           value={values[field] ?? ""}
           onChange={(value) => setValues((current) => ({ ...current, [field]: value }))}

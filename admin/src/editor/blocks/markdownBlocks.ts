@@ -1,5 +1,6 @@
 import { type JSONContent, type MarkdownToken, Node } from "@tiptap/core";
 import { en } from "../../strings/en";
+import { tables } from "../../strings/tables";
 
 // Two plan 4.6 blocks are standard markdown that Tiptap's starter kit does
 // not hold: tables and footnotes. Each keeps its markdown exactly as written,
@@ -49,7 +50,7 @@ function kept(name: string, tokenName: string, label: string) {
 }
 
 /** A table, `| a | b |`, kept as written. */
-export const MarkdownTable = kept("markdownTable", "table", en.blocks.table);
+export const MarkdownTable = kept("markdownTable", "table", tables.title);
 
 /** A footnote's text, `[^1]: ...` and its indented lines, kept as written. */
 export const FootnoteText = kept("footnoteText", "footnoteText", en.blocks.footnote).extend({
