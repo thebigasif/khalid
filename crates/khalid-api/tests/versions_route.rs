@@ -10,7 +10,7 @@ use axum::body::{Body, to_bytes};
 use axum::http::{Request, StatusCode};
 use chrono::{TimeZone, Utc};
 use khalid_api::api;
-use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
+use khalid_api::keys::{KeyHashing, KeyStore, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{Announce, PublishDoor};
 use khalid_api::resources::AdminPost;
@@ -38,7 +38,7 @@ impl Announce for Quiet {
 
 /// The router over one draft, keeping versions in `versions` if given.
 #[cfg(test)]
-fn router(versions: Option<MemoryVersionStore>) -> axum::Router {
+async fn router(versions: Option<MemoryVersionStore>) -> axum::Router {
     let draft = AdminPost::new(
         "en.choosing-anchor-text",
         Slug::try_new("choosing-anchor-text").unwrap(),
@@ -57,10 +57,9 @@ fn router(versions: Option<MemoryVersionStore>) -> axum::Router {
         let token: KeyToken = token.parse().unwrap();
         StoredKey::for_integration(&token, scopes, &hashing).unwrap()
     };
-    let keys = MemoryKeyStore::new(vec![
-        key(WRITER, vec![Scope::PostsWrite]),
-        key(READER, vec![Scope::ContentRead]),
-    ]);
+    let keys = MemoryKeyStore::new(vec![key(READER, vec![Scope::ContentRead])]);
+    let writer = key(WRITER, vec![Scope::PostsWrite]);
+    keys.create(writer, "Maria").await.unwrap();
     let content = Arc::new(common::store());
     api::router_with_door(content, Arc::new(door), Arc::new(keys)).0
 }
@@ -92,7 +91,7 @@ async fn send(
 
 #[tokio::test]
 async fn the_versions_route_lists_what_each_edit_replaced() {
-    let router = router(Some(MemoryVersionStore::default()));
+    let router = router(Some(MemoryVersionStore::default())).await;
     let versions = format!("{POST}versions/");
     let (status, json) = send(&router, ("GET", &versions), WRITER, None).await;
     assert_eq!(status, StatusCode::OK, "{json}");
@@ -106,6 +105,7 @@ async fn the_versions_route_lists_what_each_edit_replaced() {
     let kept = json!({ "versions": [{
         "saved_at": "2026-10-20T08:30:00Z",
         "saved_by": null,
+        "saved_by_name": null,
         "title": "Choosing anchor text",
         "markdown": "Anchor text tells readers where a link goes.",
     }] });
@@ -113,8 +113,30 @@ async fn the_versions_route_lists_what_each_edit_replaced() {
 }
 
 #[tokio::test]
+async fn a_version_and_a_stale_edit_name_the_writer_by_their_key_name() {
+    let router = router(Some(MemoryVersionStore::default())).await;
+    let first = json!({ "posts": [{ "markdown": "Anchor text names the page.",
+        "updated_at": "2026-10-20T08:30:00Z" }] });
+    let (status, json) = send(&router, ("PUT", POST), WRITER, Some(first.clone())).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let (status, json) = send(&router, ("PUT", POST), WRITER, Some(first)).await;
+    assert_eq!(status, StatusCode::CONFLICT, "{json}");
+    let detail = json["detail"].as_str().unwrap();
+    assert!(detail.starts_with("Maria changed this post at"), "{json}");
+    let second = json!({ "posts": [{ "markdown": "Anchor text names the page it opens.",
+        "updated_at": "2026-10-27T09:00:00Z" }] });
+    let (status, json) = send(&router, ("PUT", POST), WRITER, Some(second)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let versions = format!("{POST}versions/");
+    let (_, json) = send(&router, ("GET", &versions), WRITER, None).await;
+    let newest = &json["versions"][0];
+    assert_eq!(newest["saved_by"], "1111222233334444", "{json}");
+    assert_eq!(newest["saved_by_name"], "Maria", "{json}");
+}
+
+#[tokio::test]
 async fn the_versions_route_refuses_a_missing_post_a_reader_and_a_server_without_versions() {
-    let keeping = router(Some(MemoryVersionStore::default()));
+    let keeping = router(Some(MemoryVersionStore::default())).await;
     let missing = "/api/admin/v1/posts/en.nothing-here/versions/";
     let (status, json) = send(&keeping, ("GET", missing), WRITER, None).await;
     assert_eq!(status, StatusCode::NOT_FOUND, "{json}");
@@ -125,7 +147,7 @@ async fn the_versions_route_refuses_a_missing_post_a_reader_and_a_server_without
     let versions = format!("{POST}versions/");
     let (status, json) = send(&keeping, ("GET", &versions), READER, None).await;
     assert_eq!(status, StatusCode::FORBIDDEN, "{json}");
-    let (status, json) = send(&router(None), ("GET", &versions), WRITER, None).await;
+    let (status, json) = send(&router(None).await, ("GET", &versions), WRITER, None).await;
     assert_eq!(status, StatusCode::NOT_FOUND, "{json}");
     assert!(
         json.to_string().contains("keeps no earlier versions"),
