@@ -79,3 +79,53 @@ async fn another_sites_about_page_or_a_broken_one_does_not_count() {
     .await;
     assert_eq!(about_missing(&crawl), [HOME]);
 }
+
+/// Where the AI info page check put its issue, if anywhere.
+#[cfg(test)]
+fn ai_page_missing(crawl: &Crawl) -> Vec<String> {
+    audit(crawl, Thresholds::default())
+        .iter()
+        .filter(|issue| issue.check() == Check::AiPageMissing)
+        .map(|issue| issue.url().as_str().to_owned())
+        .collect()
+}
+
+#[tokio::test]
+async fn a_blog_with_no_ai_info_page_gets_one_notice_on_its_home_page() {
+    let crawl = crawled(&[
+        (HOME, html(r#"<a href="/blog/about/">About</a>"#)),
+        ("https://www.example.com/blog/about/", html("")),
+    ])
+    .await;
+    assert_eq!(ai_page_missing(&crawl), [HOME]);
+    assert_eq!(Check::AiPageMissing.severity(), Severity::Notice);
+    assert_eq!(Check::AiPageMissing.id(), "ai-page-missing");
+}
+
+#[tokio::test]
+async fn the_ai_info_page_in_any_language_or_on_the_main_site_is_enough() {
+    for (link, address) in [
+        ("/blog/ai/", "https://www.example.com/blog/ai/"),
+        ("/blog/de/ai/", "https://www.example.com/blog/de/ai/"),
+        ("/blog/ai-info/", "https://www.example.com/blog/ai-info/"),
+    ] {
+        let crawl = crawled(&[
+            (HOME, html(&format!(r#"<a href="{link}">AI info</a>"#))),
+            (address, html("")),
+        ])
+        .await;
+        assert_eq!(ai_page_missing(&crawl), Vec::<String>::new(), "{address}");
+    }
+    let main_site = crawled(&[(HOME, html(r#"<a href="/ai/">AI info</a>"#))]).await;
+    assert_eq!(ai_page_missing(&main_site), Vec::<String>::new());
+}
+
+#[tokio::test]
+async fn a_broken_ai_info_link_or_another_sites_page_does_not_count() {
+    let crawl = crawled(&[(
+        HOME,
+        html(r#"<a href="/blog/ai/">AI info</a> <a href="https://other.example.org/ai/">Them</a>"#),
+    )])
+    .await;
+    assert_eq!(ai_page_missing(&crawl), [HOME]);
+}

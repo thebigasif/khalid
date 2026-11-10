@@ -86,11 +86,11 @@ async fn each_run_is_one_line_and_the_history_skips_a_broken_line() {
     let report = Report::of(&crawl, Thresholds::default());
     let at = Utc.with_ymd_and_hms(2026, 10, 27, 3, 0, 0).unwrap();
     let line = Run::of(&report, at).line().unwrap();
-    // The test site has no sitemap, robots.txt, llms.txt or About page:
-    // two warnings and two notices.
+    // The test site has no sitemap, robots.txt, llms.txt, About page or
+    // AI info page: two warnings and three notices.
     assert_eq!(
         line,
-        "{\"at\":\"2026-10-27T03:00:00Z\",\"score\":100,\"pages\":1,\"errors\":0,\"warnings\":2,\"notices\":2}\n"
+        "{\"at\":\"2026-10-27T03:00:00Z\",\"score\":100,\"pages\":1,\"errors\":0,\"warnings\":2,\"notices\":3}\n"
     );
     let file = format!("{line}{{\"at\":\"2026-10-2\n{line}");
     let runs = history(&file);
