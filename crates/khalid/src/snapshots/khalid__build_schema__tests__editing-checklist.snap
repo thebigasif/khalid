@@ -1,0 +1,18 @@
+---
+source: crates/khalid/src/build_schema_tests.rs
+expression: "SchemaGraph::new(cards).to_json()"
+---
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Book",
+      "@id": "https://www.example.com/blog/editing-checklist/#book-2",
+      "name": "On Writing Well",
+      "author": {
+        "@type": "Person",
+        "name": "William Zinsser"
+      }
+    }
+  ]
+}

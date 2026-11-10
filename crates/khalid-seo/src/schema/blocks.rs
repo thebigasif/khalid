@@ -8,14 +8,16 @@ use crate::schema::event::event_node;
 use crate::schema::faq::faq_node;
 use crate::schema::howto::how_to_node;
 use crate::schema::item_list::item_list_node;
+use crate::schema::local_business::{business_card_node, location_node};
 use crate::schema::podcast::episode_node;
 use crate::schema::product::product_node;
 use crate::schema::recipe::recipe_node;
 use crate::schema::software::app_node;
 use crate::schema::video_review::{review_node, video_node};
 use crate::{
-    Book, ClaimReview, Course, Dataset, Event, FaqItem, HowTo, ItemList, PodcastEpisode, Product,
-    Recipe, Review, SchemaNode, SeoError, SeoPage, SeoSite, SoftwareApplication, Video,
+    Book, ClaimReview, Course, Dataset, Event, FaqItem, HowTo, ItemList, LocalBusiness,
+    PodcastEpisode, Product, Recipe, Review, SchemaNode, SeoError, SeoPage, SeoSite,
+    SoftwareApplication, Video,
 };
 
 /// An editor block on a page that writes its own schema node.
@@ -50,6 +52,13 @@ pub enum SchemaBlock {
     Podcast(PodcastEpisode),
     /// A fact-check block: `ClaimReview`.
     FactCheck(ClaimReview),
+    /// A business card: `LocalBusiness`, or a more exact type such as
+    /// `Bakery`.
+    Business(LocalBusiness),
+    /// A location block: the site's location of this name, as written in
+    /// `site.toml`, under the same `@id` as on the home page. A name the
+    /// site does not list writes nothing.
+    Location(String),
 }
 
 /// The schema nodes of the page's blocks, in the order of the blocks. A
@@ -74,6 +83,15 @@ pub(crate) fn block_nodes(site: &SeoSite, page: &SeoPage) -> Result<Vec<SchemaNo
             SchemaBlock::Podcast(episode) => nodes.push(episode_node(episode, page, &url, number)?),
             SchemaBlock::FactCheck(review) => {
                 nodes.push(claim_review_node(review, (site, page), &url, number)?);
+            }
+            SchemaBlock::Business(business) => {
+                nodes.push(business_card_node(business, &url, number)?);
+            }
+            SchemaBlock::Location(name) => {
+                let mut listed = (1..).zip(&site.locations);
+                if let Some((at, business)) = listed.find(|(_, b)| b.name == *name) {
+                    nodes.push(location_node(site, business, at)?);
+                }
             }
         }
     }

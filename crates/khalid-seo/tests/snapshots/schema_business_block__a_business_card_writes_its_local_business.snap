@@ -1,0 +1,24 @@
+---
+source: crates/khalid-seo/tests/schema_business_block.rs
+expression: "SchemaGraph::new(vec![node]).to_json()"
+---
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://www.example.com/blog/why-internal-links-matter/#business-1",
+      "name": "Larkspur Studio",
+      "url": "https://www.example.com/",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "4 Tannery Yard",
+        "addressLocality": "Bristol",
+        "postalCode": "BS1 6QA",
+        "addressCountry": "GB"
+      },
+      "telephone": "+44 117 496 0000",
+      "email": "hello@example.com"
+    }
+  ]
+}

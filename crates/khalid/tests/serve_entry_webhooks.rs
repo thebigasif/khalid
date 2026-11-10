@@ -2,6 +2,7 @@
 //! on a running `khalid serve` fires its `.published`, `.published.edited`
 //! and `.deleted` webhooks to a stand-in receiver on loopback, signed with
 //! each webhook's secret, moving one to `drafts/` fires `.unpublished`, a
+//! draft given, moved or cleared of a `publish_at` time fires `.scheduled`, a
 //! saved `site.toml` or theme file fires `site.changed` once the server uses
 //! it, and a post that names a tag new to the site fires `tag.added` (audit
 //! brief G25, KH-API-3).
@@ -12,10 +13,11 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::time::Duration;
 
-use khalid_core::{AbsoluteUrl, Secret, Slug, SystemClock};
+use chrono::{SecondsFormat, TimeDelta};
+use khalid_core::{AbsoluteUrl, Clock, Secret, Slug, SystemClock};
 use khalid_db::{Database, WebhookTable};
 use khalid_webhooks::{Event, SIGNATURE_HEADER, SigningKey, Verifier};
-use serde_json::Value;
+use serde_json::{Value, json};
 use tempfile::TempDir;
 use tokio::time::Instant;
 use wiremock::matchers::method;
@@ -285,6 +287,132 @@ async fn a_changelog_entry_moved_to_drafts_fires_changelog_entry_unpublished() {
     ];
     let file = ("en/changelog/2026-11.md", CHANGELOG);
     publish_and_unpublish(events, file, ("changelog_entry", "en.2026-11")).await;
+}
+
+/// The bodies of the first `count` deliveries of `event`, in the order they
+/// came, waited for until [`DEADLINE`], each checked against `secret`.
+#[cfg(test)]
+async fn deliveries(
+    receiver: &MockServer,
+    (event, count): (Event, usize),
+    secret: &Secret<String>,
+) -> Vec<Value> {
+    let route = format!("/{event}");
+    let deadline = Instant::now() + DEADLINE;
+    let hooks = loop {
+        let all = receiver.received_requests().await.unwrap();
+        let hooks: Vec<_> = all.into_iter().filter(|r| r.url.path() == route).collect();
+        if hooks.len() >= count || Instant::now() >= deadline {
+            break hooks;
+        }
+        tokio::time::sleep(Duration::from_millis(100)).await;
+    };
+    let verifier = Verifier::new(SigningKey::try_new(secret).unwrap());
+    let checked = hooks.iter().map(|hook| {
+        let signature = hook.headers[SIGNATURE_HEADER].to_str().unwrap();
+        verifier
+            .verify(signature, &hook.body, &SystemClock)
+            .unwrap();
+        serde_json::from_slice::<Value>(&hook.body).unwrap()
+    });
+    checked.collect()
+}
+
+/// `text` with `publish_at: <at>` added to its front matter.
+#[cfg(test)]
+fn at(text: &str, at: &str) -> String {
+    text.replacen("---\n", &format!("---\npublish_at: {at}\n"), 1)
+}
+
+/// Writes `text` as a draft at `drafts/<name>` with a publish time, moves
+/// the time, then takes it away, and checks `scheduled` fires once for
+/// each with the entry under `key`, named `id`, and the time or `null`.
+#[cfg(test)]
+async fn schedule_move_cancel(
+    scheduled: Event,
+    (name, text): (&str, &str),
+    (key, id): (&str, &str),
+) {
+    let (receiver, site, _server, secrets) = serving(&[scheduled]).await;
+    let mut draft = site.path().to_path_buf();
+    draft.push(format!("drafts/{name}"));
+    fs::create_dir_all(draft.parent().unwrap()).unwrap();
+    let times = ["2099-01-05T09:00:00Z", "2099-01-06T10:30:00+01:00"];
+    for (n, time) in times.iter().enumerate() {
+        fs::write(&draft, at(text, time)).unwrap();
+        deliveries(&receiver, (scheduled, n + 1), &secrets[0]).await;
+    }
+    fs::write(&draft, text).unwrap();
+    let bodies = deliveries(&receiver, (scheduled, 3), &secrets[0]).await;
+
+    let told: Vec<&Value> = bodies.iter().map(|body| &body[key]["publish_at"]).collect();
+    let (nine, half_nine) = (json!("2099-01-05T09:00:00Z"), json!("2099-01-06T09:30:00Z"));
+    assert_eq!(told, [&nine, &half_nine, &Value::Null], "{bodies:?}");
+    for body in &bodies {
+        assert_eq!(body["event"], scheduled.as_str(), "{body}");
+        assert_eq!(body[key]["id"], id, "{body}");
+        assert_eq!(body[key]["file"], format!("drafts/{name}"), "{body}");
+    }
+    let all = receiver.received_requests().await.unwrap();
+    assert_eq!(all.len(), 3, "each change fired once");
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_page_draft_scheduled_moved_and_cancelled_fires_page_scheduled() {
+    let file = ("en/pages/contact.md", PAGE);
+    schedule_move_cancel(Event::PageScheduled, file, ("page", "en.contact")).await;
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_glossary_term_draft_scheduled_fires_glossary_term_scheduled() {
+    let file = ("en/glossary/crawl-budget.md", TERM);
+    let entry = ("glossary_term", "en.crawl-budget");
+    schedule_move_cancel(Event::GlossaryTermScheduled, file, entry).await;
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_case_study_draft_scheduled_fires_case_study_scheduled() {
+    let file = ("en/case-studies/harbour-cafe.md", STUDY);
+    let entry = ("case_study", "en.harbour-cafe");
+    schedule_move_cancel(Event::CaseStudyScheduled, file, entry).await;
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_changelog_draft_scheduled_fires_changelog_entry_scheduled() {
+    let file = ("en/changelog/2026-11.md", CHANGELOG);
+    let entry = ("changelog_entry", "en.2026-11");
+    schedule_move_cancel(Event::ChangelogEntryScheduled, file, entry).await;
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_page_draft_goes_live_at_its_time_and_fires_page_published_once() {
+    let events = [Event::PageScheduled, Event::PagePublished];
+    let (receiver, site, _server, secrets) = serving(&events).await;
+    let mut draft = site.path().to_path_buf();
+    draft.push("drafts/en/pages/contact.md");
+    fs::create_dir_all(draft.parent().unwrap()).unwrap();
+    // Far enough ahead that serve sees the draft waiting first.
+    let soon = SystemClock.now() + TimeDelta::seconds(10);
+    let soon = soon.to_rfc3339_opts(SecondsFormat::Secs, true);
+    fs::write(&draft, at(PAGE, &soon)).unwrap();
+
+    let scheduled = deliveries(&receiver, (events[0], 1), &secrets[0]).await;
+    assert_eq!(scheduled[0]["page"]["publish_at"], soon.as_str());
+    let body = the_delivery(&receiver, events[1], &secrets[1]).await;
+    assert_eq!(body["page"]["id"], "en.contact", "{body}");
+    assert_eq!(
+        body["page"]["file"], "content/en/pages/contact.md",
+        "{body}"
+    );
+    let mut live = site.path().to_path_buf();
+    live.push("content/en/pages/contact.md");
+    assert_eq!(fs::read_to_string(&live).unwrap(), PAGE, "no publish_at");
+    assert!(!draft.exists(), "the draft moved");
+
+    tokio::time::sleep(Duration::from_secs(6)).await;
+    let all = receiver.received_requests().await.unwrap();
+    let paths: Vec<&str> = all.iter().map(|r| r.url.path()).collect();
+    assert_eq!(paths, ["/page.scheduled", "/page.published"], "once each");
 }
 
 /// Saves `site.toml` with `change` made to its text, and gives back the

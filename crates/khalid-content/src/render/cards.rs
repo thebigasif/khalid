@@ -9,6 +9,8 @@ impl Renderer<'_> {
     /// card of the location `name` names in `site.toml`.
     pub(super) fn location(&mut self, name: &str) {
         self.push(&[LOCATION_MARK, &attribute(name), "-->\n"]);
+        let location = StructuredBlock::Location(name.to_owned());
+        self.facts.structured.push(location);
     }
 
     /// Writes a business card as an `<address>`: name, street, town and

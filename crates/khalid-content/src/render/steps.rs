@@ -179,7 +179,7 @@ impl Renderer<'_> {
 
 /// The words of `markdown` without its markup, one space between them, for
 /// structured data.
-fn plain(markdown: &str) -> String {
+pub(super) fn plain(markdown: &str) -> String {
     let arena = Arena::new();
     let root = parse_document(&arena, markdown, &Options::default());
     let mut text = String::new();
