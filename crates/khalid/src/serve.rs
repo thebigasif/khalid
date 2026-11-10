@@ -84,6 +84,8 @@ pub(crate) struct Keys {
     pub(crate) pictures: PictureKeys,
     /// The writer of the editor's suggestions, asked with `KHALID_AI_KEY`.
     pub(crate) ai: khalid_api::ai::AiDesk,
+    /// What fetches a page to copy its JSON-LD, through the outbound guard.
+    pub(crate) copier: Option<crate::serve_apis::schema_copier::PageCopier>,
     /// The whole environment, which `site.toml` is read with again when it
     /// changes, and when the Admin API reads or saves its settings.
     pub(crate) settings: Environment,
@@ -100,6 +102,7 @@ impl Keys {
             follow_ups: SiteFollowUps::new(folder, config, env, cli),
             weekly: WeeklyEmail::new(folder, config, env, cli),
             ai: crate::serve_apis::ai_writer::desk(config, env, cli),
+            copier: crate::serve_apis::schema_copier::copier(cli),
             settings: env.clone(),
             pictures: PictureKeys {
                 unsplash: env.unsplash_key(),
@@ -244,9 +247,10 @@ fn serve_with(
             (files, previews, search_route::router(config, search)),
             (comments, posted, pages),
         );
+        let helpers = (keys.ai, keys.copier);
         let apis = (
             (content, door, posts),
-            (moderation, media, desk, keys.follow_ups, keys.ai),
+            (moderation, media, desk, keys.follow_ups, helpers),
             (database, id, (site, config, &keys.settings)),
             (panel, mailer),
         );

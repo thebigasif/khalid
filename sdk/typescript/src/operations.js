@@ -78,6 +78,7 @@ export const operations = {
   remove_redirect: { method: "DELETE", path: "/api/admin/v1/redirects/{id}/", key: "admin", body: null },
   read_templates: { method: "GET", path: "/api/admin/v1/schema-templates/", key: "admin", body: null },
   replace_templates: { method: "PUT", path: "/api/admin/v1/schema-templates/", key: "admin", body: "application/json" },
+  copy_schema: { method: "POST", path: "/api/admin/v1/schema/copies/", key: "admin", body: "application/json" },
   follow_ups: { method: "GET", path: "/api/admin/v1/search-console/follow-ups/", key: "admin", body: null },
   search_report: { method: "GET", path: "/api/admin/v1/search-console/report/", key: "admin", body: null },
   search_totals: { method: "GET", path: "/api/admin/v1/search-console/totals/", key: "admin", body: null },

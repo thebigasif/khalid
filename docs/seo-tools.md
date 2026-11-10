@@ -34,6 +34,22 @@ Most blocks refuse to save without what Google needs, so the gap comes
 from the `schema` field, a schema template, or a recipe block with no
 `image`.
 
+## Copy schema from a URL
+
+`POST /api/admin/v1/schema/copies/` with `{"url": "https://..."}` fetches
+any public page and answers with its JSON-LD as text for a post's `schema`
+field. Every JSON-LD script on the page joins one `@graph`. The other
+site's `@id`s are left out, and so is a value that only pointed to one,
+since they name that site's pages. `types` lists each node's type, and
+`problem` says why the `schema` field would refuse the copy as it is, or
+is `null`. The copy is a starting point: change the names, dates and
+addresses to your own before you save.
+
+The page is fetched through Khalid's one outbound client, so an address
+inside the server's own network is refused, and a page over 4 MB or
+slower than 10 seconds is not read. Nothing is saved. The route needs a
+key with `posts:write`.
+
 ## Posts list
 
 Each row shows the post's SEO and readability lights, how many posts link

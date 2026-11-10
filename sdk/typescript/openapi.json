@@ -6626,6 +6626,106 @@
         ]
       }
     },
+    "/api/admin/v1/schema/copies/": {
+      "post": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "Fetches the page at `url` through the shared outbound client and\nanswers with its JSON-LD, ready to edit in a post's custom JSON-LD\nfield. Nothing is saved. Addresses inside the server's network are\nrefused. Needs `posts:write`.",
+        "operationId": "copy_schema",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchemaCopyAsk"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The page's JSON-LD",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaCopy"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server fetches no pages",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The address is not a public web address, or the page has no JSON-LD",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "description": "The page could not be fetched, or answered with an error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/search-console/follow-ups/": {
       "get": {
         "tags": [
@@ -19642,6 +19742,53 @@
           "role": {
             "type": "string",
             "description": "`admin`, `editor`, `writer` or `contributor`."
+          }
+        },
+        "additionalProperties": false
+      },
+      "SchemaCopy": {
+        "type": "object",
+        "description": "Another page's JSON-LD, as text for a custom JSON-LD field.",
+        "required": [
+          "json_ld",
+          "types"
+        ],
+        "properties": {
+          "json_ld": {
+            "type": "string",
+            "description": "Every JSON-LD node on the page in one graph, pretty-printed, without\nthe other site's `@id`s.",
+            "example": "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Recipe\"\n}"
+          },
+          "problem": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Why the custom field would refuse the copy as it is, or `null` when\nit takes it."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The `@type` of each node at the top, in page order.",
+            "example": [
+              "Recipe"
+            ]
+          }
+        }
+      },
+      "SchemaCopyAsk": {
+        "type": "object",
+        "description": "The page to copy schema from.",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The page's full web address.",
+            "example": "https://www.example.com/recipes/lentil-soup/"
           }
         },
         "additionalProperties": false
