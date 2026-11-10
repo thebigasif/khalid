@@ -115,9 +115,9 @@ table{min-width:50rem}
   <form class="bulk" aria-label="Change the posts you tick">
     <p><strong>2 posts ticked.</strong> <span class="muted">Each change is checked post by post; a post someone else changed meanwhile is left as it is, and you are told which.</span></p>
     <div class="field"><label for="bulk-action">Change</label>
-      <select id="bulk-action" name="action"><option>Set the author</option><option>Move to the trash</option></select></div>
-    <div class="field"><label for="bulk-author">New author</label>
-      <select id="bulk-author" name="author"><option>Asif</option><option selected>Lena Vogt</option></select></div>
+      <select id="bulk-action" name="action"><option>Set the author</option><option selected>Add a tag</option><option>Remove a tag</option><option>Set the category</option><option>Move to the trash</option></select></div>
+    <div class="field"><label for="bulk-value">Tag to add</label><span class="hint" id="bulk-value-hint">A tag is a short topic, such as internal links, that lists posts together on one page. Posts that have it already stay as they are.</span>
+      <input id="bulk-value" name="tag" aria-describedby="bulk-value-hint" value="site speed" required></div>
     <button class="btn" type="submit">Change 2 posts</button>
   </form>
 
