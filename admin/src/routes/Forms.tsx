@@ -1,12 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { type FormAnswer, type FormSummary, listAnswers, listForms } from "../api/forms";
+import {
+  deleteAnswer,
+  type FormAnswer,
+  type FormSummary,
+  listAnswers,
+  listForms,
+} from "../api/forms";
 import { problemMessage } from "../api/posts";
 import { isData } from "../api/redirects";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { moment } from "../strings/dates";
-import { en } from "../strings/en";
+import { en, type UserMessage } from "../strings/en";
 import { formWords } from "../strings/formWords";
 
 /** What visitors sent through form blocks: one form at a time, newest answers first. */
@@ -60,14 +66,25 @@ export function Forms() {
   );
 }
 
-/** The answers to `form`, a page at a time. */
+/** The answers to `form`, a page at a time, each with a way to delete it. */
 function FormAnswers({ form }: { form: FormSummary }) {
   const words = formWords;
+  const queries = useQueryClient();
   const [page, setPage] = useState(1);
+  const [done, setDone] = useState<string | null>(null);
+  const [failed, setFailed] = useState<UserMessage | null>(null);
   const answers = useQuery({
     queryKey: ["forms", form.id, page],
     queryFn: () => listAnswers(form.id, page),
   }).data;
+
+  // Says what happened, or why not, then reads the forms and answers again.
+  const remove = async (answer: FormAnswer) => {
+    const reply = await deleteAnswer(form.id, answer.id);
+    setDone(isData(reply) ? words.removed : null);
+    setFailed(isData(reply) ? null : problemMessage(reply.problem, en.problems.unreachable));
+    await queries.invalidateQueries({ queryKey: ["forms"] });
+  };
 
   if (answers === undefined) {
     return <p role="status">{words.loading}</p>;
@@ -79,9 +96,11 @@ function FormAnswers({ form }: { form: FormSummary }) {
   return (
     <>
       <p role="status">{words.count(form.answers, form.id, moment(form.last_at))}</p>
+      {failed === null ? null : <Problem message={failed} />}
+      <p role="status">{done}</p>
       <ol className="answers">
         {answers.data.answers.map((answer) => (
-          <Answer key={answer.id} answer={answer} />
+          <Answer key={answer.id} answer={answer} onDelete={remove} />
         ))}
       </ol>
       {pages > 1 ? (
@@ -109,8 +128,13 @@ function FormAnswers({ form }: { form: FormSummary }) {
   );
 }
 
-/** One answer: when and where it was sent, and each field as the form named it. */
-function Answer({ answer }: { answer: FormAnswer }) {
+type AnswerProps = { answer: FormAnswer; onDelete: (answer: FormAnswer) => void };
+
+/** One answer: when and where it was sent, each field as the form named it, and Delete. */
+function Answer({ answer, onDelete }: AnswerProps) {
+  const words = formWords;
+  // Deleting cannot be undone, so it asks once more, in the answer's own card.
+  const [asking, setAsking] = useState(false);
   return (
     <li className="card answer">
       <h2>
@@ -126,6 +150,26 @@ function Answer({ answer }: { answer: FormAnswer }) {
           </div>
         ))}
       </dl>
+      {asking ? (
+        <div className="flex flex-wrap items-center gap-3">
+          <span>{words.asking}</span>
+          <button type="button" className="btn" onClick={() => onDelete(answer)}>
+            {words.sure}
+          </button>
+          <button type="button" className="btn" onClick={() => setAsking(false)}>
+            {words.keep}
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          className="btn"
+          aria-label={words.removeLabel(moment(answer.sent_at))}
+          onClick={() => setAsking(true)}
+        >
+          {words.remove}
+        </button>
+      )}
     </li>
   );
 }

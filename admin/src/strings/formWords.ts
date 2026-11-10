@@ -20,4 +20,11 @@ export const formWords = {
   page: (page: number, pages: number) => `Page ${page} of ${pages}`,
   newer: "Newer answers",
   older: "Older answers",
+  remove: "Delete",
+  removeLabel: (sent: string) => `Delete the answer sent on ${sent}`,
+  asking:
+    "Delete this answer for good? Do this when the person who sent it asks you to erase it. It cannot be brought back.",
+  sure: "Delete for good",
+  keep: "Keep it",
+  removed: "The answer is deleted for good.",
 };

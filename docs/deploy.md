@@ -254,6 +254,8 @@ Form answers are emailed to the `from` address unless you add `forms_to = "hello
 
 Every answer is also kept in the site database, mail or not. Open Forms in the admin to read them, newest first; only an owner or an admin sees it, because answers hold visitors' email addresses. Tools read the same answers through the Admin API at `/api/admin/v1/forms/` with a key that has `subscribers:write`.
 
+When a visitor asks you to erase what they sent (their right under the GDPR), open the form in Forms and click **Delete** on their answer, then confirm. The answer is gone for good and cannot be brought back; the audit log keeps only that an answer was deleted, never what it said. Tools do the same with `DELETE /api/admin/v1/forms/{id}/answers/{answer}/`.
+
 Through Resend or Postmark, two services that send mail for websites, write an empty `[mail.resend]` or `[mail.postmark]` instead of `[mail.smtp]`. Postmark sends on its `outbound` stream unless you add `message_stream = "<name>"`.
 
 The password, API key or token never goes in `site.toml`. Set it in the server's environment, where only Khalid reads it:

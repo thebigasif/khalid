@@ -1,5 +1,5 @@
-// What visitors sent through form blocks, read from the Admin API
-// (backlog row 21, KH-GRO-1).
+// What visitors sent through form blocks, read from the Admin API and
+// deleted on request (backlog row 21, gap audit 4 row 11, KH-GRO-1).
 import { createApi } from "./client";
 import { isProblem } from "./posts";
 import type { Failure, Reply } from "./redirects";
@@ -42,6 +42,18 @@ export async function listAnswers(id: string, page: number): Promise<Reply<Answe
       params: { path: { id }, query: { page, limit: ANSWERS_PER_PAGE } },
     });
     return data === undefined ? failed(error, response) : { data };
+  } catch {
+    return UNREACHABLE;
+  }
+}
+
+/** Deletes answer `answer` to form `id` for good. */
+export async function deleteAnswer(id: string, answer: number): Promise<Reply<null>> {
+  try {
+    const { error, response } = await api.DELETE("/api/admin/v1/forms/{id}/answers/{answer}/", {
+      params: { path: { id, answer } },
+    });
+    return response.ok ? { data: null } : failed(error, response);
   } catch {
     return UNREACHABLE;
   }

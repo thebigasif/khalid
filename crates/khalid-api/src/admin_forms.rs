@@ -1,12 +1,14 @@
-//! The Admin API's form routes: which forms visitors answered, and each
-//! form's answers, newest first (KH-GRO-1, plan section 4.6). Answers hold
-//! what visitors typed, such as their email address, so both routes need
-//! `subscribers:write`, the scope for what visitors send the site.
+//! The Admin API's form routes: which forms visitors answered, each form's
+//! answers, newest first, and deleting one answer (KH-GRO-1, plan section
+//! 4.6). Answers hold what visitors typed, such as their email address, so
+//! every route needs `subscribers:write`, the scope for what visitors send
+//! the site.
 
 use std::sync::Arc;
 
 use axum::extract::rejection::QueryRejection;
-use axum::extract::{Path, Query, State};
+use axum::extract::{OriginalUri, Path, Query, State};
+use axum::http::StatusCode;
 use axum::{Extension, Json, middleware};
 use khalid_core::UserMessage;
 use serde::{Deserialize, Serialize};
@@ -36,6 +38,7 @@ pub(crate) fn routes(forms: Kept, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(list_forms))
         .routes(routes!(list_answers))
+        .routes(routes!(delete_answer))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
         .with_state(forms)
@@ -127,6 +130,49 @@ async fn list_answers(
         answers: read.answers,
         meta,
     }))
+}
+
+/// Deletes one answer for good, such as when the visitor who sent it asks
+/// under the GDPR. Needs `subscribers:write`.
+#[utoipa::path(
+    delete, path = "/forms/{id}/answers/{answer}/", tag = "admin forms",
+    security(("admin_key" = [])),
+    params(
+        ("id" = String, Path, description = "The form's id, as its block names it"),
+        ("answer" = i64, Path, description = "The answer's identity"),
+    ),
+    responses(
+        (status = 204, description = "The answer is gone"),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks subscribers:write", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "The form has no such answer, or this server keeps none", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn delete_answer(
+    State(forms): State<Kept>,
+    Extension(principal): Extension<Principal>,
+    Path((id, answer)): Path<(String, String)>,
+    OriginalUri(uri): OriginalUri,
+) -> Result<StatusCode, Problem> {
+    require(&principal, Scope::SubscribersWrite)?;
+    let forms = kept(forms.as_deref())?;
+    let answer = answer.parse().map_err(|_| no_answer(uri.path()))?;
+    let deleted = forms.delete(&id, answer).await;
+    if deleted.map_err(|error| Problem::internal(&error))? {
+        Ok(StatusCode::NO_CONTENT)
+    } else {
+        Err(no_answer(uri.path()))
+    }
+}
+
+/// The 404 for an answer the form does not have.
+fn no_answer(path: &str) -> Problem {
+    let message = UserMessage::new(
+        "This form has no answer with this identity.",
+        "It may have been deleted already, or the form or identity may be mistyped.",
+        "List the form's answers to find it.",
+    );
+    Problem::new(ProblemType::NotFound, &message).with_instance(path)
 }
 
 /// The answers, or the 404 of a server that keeps none.

@@ -32,6 +32,18 @@ pub trait FormAnswers: Send + Sync {
         offset: u64,
         limit: u32,
     ) -> BoxFuture<'a, Result<AnswerPage, FormAnswersError>>;
+
+    /// Deletes the answer `answer` to `form` for good, as a visitor may ask
+    /// under the GDPR. `false` when the form has no such answer.
+    ///
+    /// # Errors
+    ///
+    /// [`FormAnswersError`] when the answer cannot be deleted.
+    fn delete<'a>(
+        &'a self,
+        form: &'a str,
+        answer: i64,
+    ) -> BoxFuture<'a, Result<bool, FormAnswersError>>;
 }
 
 /// One form and how many answers it has.
@@ -81,7 +93,7 @@ pub struct AnswerPage {
     pub total: u64,
 }
 
-/// Why the answers could not be read.
+/// Why the answers could not be read or deleted.
 #[derive(Debug, thiserror::Error)]
-#[error("the form answers could not be read")]
+#[error("the form answers could not be read or deleted")]
 pub struct FormAnswersError(#[source] pub Box<dyn Error + Send + Sync>);

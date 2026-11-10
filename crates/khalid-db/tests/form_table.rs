@@ -141,3 +141,44 @@ async fn the_admin_reads_answers_a_page_at_a_time_newest_first() {
         .unwrap();
     assert_eq!(no_form, AnswerPage::default());
 }
+
+#[tokio::test]
+async fn an_answer_deleted_on_request_is_gone_and_only_that_one() {
+    let (_dir, demo, other) = opened().await;
+    demo.insert(&sent("contact", &[("email", "lena@example.com")]), at(0))
+        .await
+        .unwrap();
+    demo.insert(&sent("contact", &[("email", "ada@example.com")]), at(1))
+        .await
+        .unwrap();
+    other
+        .insert(&sent("contact", &[("email", "mo@example.com")]), at(2))
+        .await
+        .unwrap();
+    let page = FormAnswers::answers(&demo, "contact", 0, 25).await.unwrap();
+    let ada = page.answers[0].id;
+    let lena = page.answers[1].id;
+    let mo = FormAnswers::answers(&other, "contact", 0, 25)
+        .await
+        .unwrap()
+        .answers[0]
+        .id;
+
+    // Another site's answer, the wrong form, or a name no form block can
+    // have deletes nothing.
+    assert!(!FormAnswers::delete(&demo, "contact", mo).await.unwrap());
+    assert!(!FormAnswers::delete(&demo, "survey", lena).await.unwrap());
+    assert!(
+        !FormAnswers::delete(&demo, "../Contact", lena)
+            .await
+            .unwrap()
+    );
+
+    assert!(FormAnswers::delete(&demo, "contact", lena).await.unwrap());
+    assert!(!FormAnswers::delete(&demo, "contact", lena).await.unwrap());
+    let left = FormAnswers::answers(&demo, "contact", 0, 25).await.unwrap();
+    let ids: Vec<i64> = left.answers.iter().map(|answer| answer.id).collect();
+    assert_eq!((ids, left.total), (vec![ada], 1));
+    let contact = FormId::try_new("contact").unwrap();
+    assert_eq!(other.of_form(&contact).await.unwrap().len(), 1);
+}

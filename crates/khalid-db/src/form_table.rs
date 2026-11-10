@@ -1,5 +1,5 @@
-//! Form answers on SQLite, kept for `khalid-forms` and read back for the
-//! Admin API.
+//! Form answers on SQLite, kept for `khalid-forms` and read back, or
+//! deleted, for the Admin API.
 
 use chrono::{DateTime, SecondsFormat, Utc};
 use khalid_api::content_store::BoxFuture;
@@ -178,6 +178,22 @@ impl FormTable {
         let total = u64::try_from(total).unwrap_or_default();
         Ok(AnswerPage { answers, total })
     }
+
+    async fn delete_now(&self, form: &str, answer: i64) -> Result<bool, DbError> {
+        // A name no form block can have was never kept.
+        let Ok(form) = FormId::try_new(form) else {
+            return Ok(false);
+        };
+        let deleted = sqlx::query(
+            "DELETE FROM form_submissions WHERE site_id = ?1 AND form = ?2 AND id = ?3",
+        )
+        .bind(self.site.as_row())
+        .bind(form.as_str())
+        .bind(answer)
+        .execute(&self.db.writer)
+        .await?;
+        Ok(deleted.rows_affected() > 0)
+    }
 }
 
 impl FormAnswers for FormTable {
@@ -197,9 +213,17 @@ impl FormAnswers for FormTable {
                 .map_err(read_error)
         })
     }
+
+    fn delete<'a>(
+        &'a self,
+        form: &'a str,
+        answer: i64,
+    ) -> BoxFuture<'a, Result<bool, FormAnswersError>> {
+        Box::pin(async move { self.delete_now(form, answer).await.map_err(read_error) })
+    }
 }
 
-/// `error` as the Admin API's reading error.
+/// `error` as the Admin API's form answers error.
 fn read_error(error: DbError) -> FormAnswersError {
     FormAnswersError(Box::new(error))
 }
