@@ -299,6 +299,42 @@ Speed, `khalid-perf` on the 1,000-post site, main and this change alternating, l
 
 Render and lint run inside `khalid-perf`, which does not link `reqwest`, so they cannot change with it; they were run once to show they are where the earlier entries left them. The first byte and idle memory are within the noise between runs.
 
+### Room 4 (2026-11-10)
+
+Main (af14e0d5) built 31,675,096 bytes on this server, 217,816 over the budget, and six open pull requests add code on top of it. This makes at least 1,000,000 bytes of room. Each step below is `cargo build --release -p khalid` on this server:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before (main, af14e0d5) | 31,675,096 | |
+| The routes keep their paths and methods but leave the `OpenAPI` document out | 31,580,376 | 94,720, not worth it |
+| `tracing` capped at `info` in release builds | 31,681,624 | none, 6,528 more |
+| `log` capped at `info` in release builds | 31,691,224 | none, 16,128 more |
+| `khalid-content`, `khalid-render`, `khalid-static`, `minijinja`, `syntect`, `fancy-regex`, `comrak`, `serde-saphyr` and `granit-parser` at `"s"` instead of 3 | 30,172,760 | 1,502,336, but a full rebuild about 11% slower |
+| The same, with `comrak`, `serde-saphyr` and `granit-parser` left at 3 (kept) | 30,407,000 | 1,268,096 |
+
+The kept levels, set in `Cargo.toml` instead of through `--config`, build 30,402,136 bytes: 1,272,960 less than before and 1,055,144 under the budget. On main at 77930756, which added the staff names (#1170), they build 30,421,464 bytes, 1,035,816 under the budget.
+
+What the rows found:
+
+- **The API router.** `khalid_api::api::assemble` is the biggest function in the binary, 710 KB. It is not the `OpenAPI` document: a stand-in for `utoipa_axum::routes!` that kept each route but built no document saved only 94,720 bytes, and the document would then have to be shipped as a file. The function is every API handler, inlined into the one place that builds the router.
+- **Log level caps.** No tracing subscriber and no `log` logger is installed on main, so `debug!` and `trace!` events already print nothing. Compiling them out made the binary bigger, not smaller.
+- **Build-path crates at 3.** The crates that read content, render pages and write the built site were at 3 since the first binary size work. Moved to `"s"` all together, they saved 1.5 MB, but the full rebuild of 10,000 posts went from a median of 17.47 s to 19.41 s over five alternating runs each at load 2 to 10. The markdown parser and the YAML front matter reader run once for every post; kept at 3, the rebuild measured no slower and 1.27 MB of the saving stayed.
+- **SQLite's unused parts** (about 295 KB, see "Room for scheduled webhook events") still need `LIBSQLITE3_FLAGS` in a `.cargo/config.toml`, which this change could not write. They remain the next lever.
+
+Speed, the kept profile against main, alternating, on this shared server. Each cell lists every run in order; the load average is the server's while they ran:
+
+| Measure, how | Main | This change |
+|---|---|---|
+| Full rebuild, 10,000 posts, `khalid build` (load 15 to 40) | 19.36, 38.58, 55.69, 25.20, 24.58, 19.55 s | 21.24, 23.99, 36.97, 44.59, 25.15, 22.00 s |
+| Full rebuild, 10,000 posts (load 9 to 19) | 22.56, 19.12 s | 20.91, 19.47 s |
+| Cold start to first byte, `khalid-perf serve`, 1,000 posts (load 5 to 10) | 82.62, 76.88, 77.10 ms | 73.76, 75.75, 64.89 ms |
+| Idle memory, same runs | 54.36, 53.56, 55.10 MB | 53.70, 54.43, 54.23 MB |
+| Incremental rebuild, same runs | 20.80, 16.34, 16.59 ms | 18.06, 17.43, 22.57 ms |
+| Post page render p50, `khalid-perf render` (load about 35) | 0.1772, 0.1607 ms | 0.1715, 0.1765 ms |
+| Lint one post, `khalid-perf lint` (load about 30) | 29.84, 20.91 ms | 27.40, 17.73 ms |
+
+The render and lint rows were taken with the wider set of the fifth table row, which includes everything kept here, so they are the slower case. Earlier serve runs under load 10 to 40 spread from 62 to 250 ms for the first byte on both binaries and are left out; under quieter load the two are level. Every measure is inside its budget.
+
 ## Page weight
 
 Pictures are most of what a reader downloads. Every picture is offered in several widths (`srcset`), and its `sizes` tells the browser how wide the page draws it, so the browser fetches the smallest file that fills the slot. A `sizes` wider than the slot fetches a bigger file than it draws. One narrower makes the picture blurry.
