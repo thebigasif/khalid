@@ -225,3 +225,79 @@ fn the_rev_is_short_and_the_version_longer() {
         ("903f4ca1", "93071fba9b4f59b3")
     );
 }
+
+const CONTACT: &str = "\n[privacy.contact]\nname = \"Notes GmbH\"\n\
+                       email = \"hello@example.com\"\naddress = \"Hauptstraße 1, 10115 Berlin\"\n";
+
+#[test]
+fn no_imprint_table_means_no_imprint() {
+    assert_eq!(load(SITE).unwrap().privacy().imprint, None);
+}
+
+#[test]
+fn reads_the_imprint_table() {
+    let text = format!(
+        "{SITE}{CONTACT}\n[privacy.imprint]\nphone = \"+49 30 1234567\"\n\
+         register = \"Amtsgericht Berlin, HRB 12345\"\nvat_id = \"DE123456789\"\n\
+         responsible = \"Erika Muster, Hauptstraße 1, 10115 Berlin\"\n"
+    );
+    let config = load(&text).unwrap();
+    let imprint = config.privacy().imprint.as_ref().unwrap();
+    assert_eq!(imprint.phone.as_deref(), Some("+49 30 1234567"));
+    assert_eq!(
+        imprint.register.as_deref(),
+        Some("Amtsgericht Berlin, HRB 12345")
+    );
+    assert_eq!(imprint.vat_id.as_deref(), Some("DE123456789"));
+    assert_eq!(
+        imprint.responsible.as_deref(),
+        Some("Erika Muster, Hauptstraße 1, 10115 Berlin")
+    );
+}
+
+#[test]
+fn an_empty_imprint_table_is_enough_with_the_contact_details() {
+    let config = load(&format!("{SITE}{CONTACT}\n[privacy.imprint]\n")).unwrap();
+    let imprint = config.privacy().imprint.as_ref().unwrap();
+    assert_eq!(imprint.phone, None);
+    assert_eq!(imprint.register, None);
+}
+
+#[test]
+fn an_imprint_refuses_missing_contact_details() {
+    for (missing, kept) in [
+        (
+            "name",
+            "email = \"a@example.com\"\naddress = \"Hauptstraße 1\"\n",
+        ),
+        ("address", "name = \"Notes\"\nemail = \"a@example.com\"\n"),
+        ("email", "name = \"Notes\"\naddress = \"Hauptstraße 1\"\n"),
+        (
+            "name",
+            "name = \" \"\naddress = \"Hauptstraße 1\"\nemail = \"a@example.com\"\n",
+        ),
+    ] {
+        let text = format!("{SITE}\n[privacy.contact]\n{kept}\n[privacy.imprint]\n");
+        let error = load(&text).unwrap_err();
+        assert!(
+            error.contains(&format!("field \"{missing}\""))
+                && error.contains("imprint")
+                && error.contains("[privacy.contact]"),
+            "{missing}: {error}"
+        );
+    }
+}
+
+#[test]
+fn an_imprint_refuses_an_unknown_key() {
+    let text = format!("{SITE}{CONTACT}\n[privacy.imprint]\nfax = \"1\"\n");
+    assert!(load(&text).unwrap_err().contains("fax"));
+}
+
+#[test]
+fn an_imprint_leaves_the_rev_and_the_version_alone() {
+    let plain = format!("{SITE}{CONTACT}");
+    let with = format!("{plain}\n[privacy.imprint]\nphone = \"+49 30 1\"\n");
+    assert_eq!(rev(&plain), rev(&with));
+    assert_eq!(version(&plain), version(&with));
+}

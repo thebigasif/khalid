@@ -73,8 +73,8 @@ pub use post_access::{
     ParsePasswordHashError, ParseTemplateNameError, PasswordHash, PostAccess, TemplateName,
 };
 pub use privacy_settings::{
-    ConsentCategory, ConsentRev, GpcMode, PrivacyContact, PrivacySettings, PrivacyText,
-    SettingsVersion,
+    ConsentCategory, ConsentRev, GpcMode, PrivacyContact, PrivacyImprint, PrivacySettings,
+    PrivacyText, SettingsVersion,
 };
 pub use reader::{HomeSection, Reader, ReaderSwitch};
 pub use robots::{

@@ -107,6 +107,23 @@ pub struct PrivacyContact {
     pub address: Option<String>,
 }
 
+/// What the imprint, the Impressum German law asks a website for, shows
+/// beyond the name, address and email of [`PrivacyContact`]. Each line is
+/// left off the page when it is not set.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct PrivacyImprint {
+    /// A phone number, a second quick way to reach the owner.
+    pub phone: Option<String>,
+    /// The trade register entry, such as `Amtsgericht Berlin, HRB 12345`.
+    pub register: Option<String>,
+    /// The VAT identification number, such as `DE123456789`.
+    pub vat_id: Option<String>,
+    /// Who answers for the site's articles, with their address.
+    pub responsible: Option<String>,
+}
+
 /// How the site asks readers for consent. Every key may be left out:
 ///
 /// ```toml
@@ -121,6 +138,9 @@ pub struct PrivacyContact {
 ///
 /// [privacy.contact]
 /// email = "privacy@example.com"
+///
+/// [privacy.imprint]
+/// phone = "+49 30 1234567"
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -144,6 +164,9 @@ pub struct PrivacySettings {
     /// Who runs the site.
     #[serde(default)]
     pub contact: PrivacyContact,
+    /// The imprint's own lines. Set, even empty, it adds an imprint page.
+    #[serde(default)]
+    pub imprint: Option<PrivacyImprint>,
 }
 
 impl Default for PrivacySettings {
@@ -155,6 +178,7 @@ impl Default for PrivacySettings {
             external_tool: None,
             text: BTreeMap::new(),
             contact: PrivacyContact::default(),
+            imprint: None,
         }
     }
 }
@@ -203,6 +227,33 @@ impl PrivacySettings {
             return Some((
                 "email",
                 "the contact email needs an @, like privacy@example.com",
+            ));
+        }
+        self.imprint_mistake()
+    }
+
+    /// The contact detail an imprint needs that `[privacy.contact]` lacks:
+    /// German law asks for a name, a postal address and an email.
+    fn imprint_mistake(&self) -> Option<(&'static str, &'static str)> {
+        self.imprint.as_ref()?;
+        let blank = |value: &Option<String>| value.as_ref().is_none_or(|v| v.trim().is_empty());
+        let contact = &self.contact;
+        if blank(&contact.name) {
+            return Some((
+                "name",
+                "the imprint names who runs the site; add name under [privacy.contact], or remove [privacy.imprint]",
+            ));
+        }
+        if blank(&contact.address) {
+            return Some((
+                "address",
+                "the imprint needs a postal address; add address under [privacy.contact], or remove [privacy.imprint]",
+            ));
+        }
+        if blank(&contact.email) {
+            return Some((
+                "email",
+                "the imprint needs an email address; add email under [privacy.contact], or remove [privacy.imprint]",
             ));
         }
         None
