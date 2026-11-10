@@ -1,0 +1,2 @@
+Added
+- The Scripts part of the admin's Privacy screen now adds, changes and removes your own code, not only tags it. Paste the snippet an analytics or ads tool gives you as code for the head or for the end of the page, pick the category it waits for, and save. Khalid checks the code as it does at start, so a site never fails to start because of it, and uses the change after a restart. Before, you had to edit `[code]` in `site.toml` by hand.

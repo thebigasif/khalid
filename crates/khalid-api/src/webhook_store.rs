@@ -67,8 +67,9 @@ pub trait WebhookStore: Send + Sync {
     /// [`WebhookStoreError`] when it cannot be written.
     fn remove(&self, id: i64) -> BoxFuture<'_, Result<bool, WebhookStoreError>>;
 
-    /// The newest `limit` deliveries of webhook `id`, newest first, each
-    /// with every attempt.
+    /// The newest `limit` deliveries of webhook `id` older than delivery
+    /// `before`, or the newest of all when `before` is `None`, newest
+    /// first, each with every attempt.
     ///
     /// # Errors
     ///
@@ -76,6 +77,7 @@ pub trait WebhookStore: Send + Sync {
     fn deliveries(
         &self,
         id: i64,
+        before: Option<i64>,
         limit: u32,
     ) -> BoxFuture<'_, Result<Vec<Delivery>, WebhookStoreError>>;
 }
@@ -168,15 +170,18 @@ mod memory {
         fn deliveries(
             &self,
             id: i64,
+            before: Option<i64>,
             limit: u32,
         ) -> BoxFuture<'_, Result<Vec<Delivery>, WebhookStoreError>> {
             let deliveries = self
                 .deliveries
                 .lock()
                 .unwrap_or_else(PoisonError::into_inner);
+            let below = |delivery: &&Delivery| before.is_none_or(|top| delivery.id().get() < top);
             let mut log: Vec<Delivery> = deliveries
                 .iter()
                 .filter(|delivery| delivery.webhook().get() == id)
+                .filter(below)
                 .cloned()
                 .collect();
             log.sort_by_key(|delivery| std::cmp::Reverse(delivery.id().get()));

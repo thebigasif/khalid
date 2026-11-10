@@ -29,7 +29,7 @@ A category is a group of things a reader can allow together. There are five, and
 
 ## Tagging your own scripts
 
-Your own code lives in `site.toml` as `[[code]]` entries, one per script. Give each one the category it belongs to, who runs it, and their privacy policy. You can do the same on the admin's Privacy screen, under Scripts.
+Your own code lives in `site.toml` as `[[code]]` entries, one per script. Give each one the category it belongs to, who runs it, and their privacy policy. You can do the same on the admin's Privacy screen, under Scripts, where you can also add a script, change its code for the head or the end of the page, and remove it. The code for the end of the page may hold only `script` elements. Khalid uses a changed script after it restarts.
 
 ```toml
 [[code]]
