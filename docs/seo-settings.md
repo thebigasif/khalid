@@ -37,7 +37,10 @@ its settings as it starts. No key or password is ever sent back.
 | `[seo.ai_page]` | `off`, `contact`, `covers`, `cite`, and `[seo.ai_page.text.<language>]` with `covers` and `cite` for one language's copy | on: a copy in the main language, and one in each other language Khalid has the page's sentences for (English and German), linked from that language's footer | AI info page (the words per language are not on the screen yet) |
 | `[seo.links]` | `affiliate_domains` and the other outbound link rules | none | Not on the screen yet |
 | `[[seo.locations]]` | the site's shops or offices, for local search | none | Not on the screen yet |
-| `[seo.breadcrumbs]`, `[seo.llms_txt]`, `[seo.search_filter]`, `[seo.local]`, `[seo.schema_map]` | see their sections below | see below | Not on the screen yet |
+| `[seo.breadcrumbs]` | see [Breadcrumbs](#breadcrumbs) | see below | Breadcrumbs |
+| `[seo.search_filter]` | see [Search filters](#search-filters) | every filter on | Site search |
+| `[seo.llms_txt]`, `[seo.schema_map]` | see [llms.txt](#llmstxt) and [Whole-site schema](#whole-site-schema) | both files written | Files for AI tools |
+| `[seo.local]` | see [Local business](#local-business) | both on | Local business |
 | `[[seo.schema]]` | schema nodes per category or collection; `category` is the name readers see, such as `"On-page SEO"`, so a category named per language needs one entry per name | none | Schema templates screen |
 
 The training switch on the Crawlers screen writes `[seo.crawlers]
