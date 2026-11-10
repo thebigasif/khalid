@@ -1,0 +1,4 @@
+Fixed
+- The Admin API's settings and schema templates routes now read `site.toml` with the environment `khalid serve` started with. A site that sends mail through Resend, Postmark or SMTP with a password, or keeps media in an S3 bucket, can now read and save its settings there, and a site whose address comes from `KHALID_ADDRESS` no longer reports a restart for it. No key or password is sent back (KH-API-3).
+- The admin's post checks and the publish gate now judge posts with the settings the pages use, so a saved `[seo]` change or schema template reaches them within a few seconds instead of after a restart (KH-API-3, KH-SEO-4).
+- The schema templates route answers `restart_needed: true` only when a setting `khalid serve` reads at start waits, as the settings route does, and the admin's Schema templates screen says a saved template is in use within a few seconds.

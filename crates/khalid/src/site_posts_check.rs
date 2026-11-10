@@ -55,7 +55,7 @@ impl Site {
             front: &post.front,
             body: &post.body,
         };
-        let (site, page) = seo_page(&parts, &self.config, &judge.input)
+        let (site, page) = seo_page(&parts, &judge.config, &judge.input)
             .ok_or_else(|| failure("the post's page cannot be made for its search preview"))?;
         let graph = page_graph(site, &page).map_err(PostStoreError::new)?;
         let schema: Value = serde_json::from_str(&graph.to_json()).map_err(PostStoreError::new)?;
@@ -74,7 +74,7 @@ impl Site {
         };
         let content = self.content()?;
         let judge = self.judge(&content)?;
-        let (site, documents) = lint_site(&content, &self.config, &judge.input);
+        let (site, documents) = lint_site(&content, &judge.config, &judge.input);
         let topics: Vec<Topics<'_>> = (documents.iter())
             .map(|doc| {
                 Topics::new(
@@ -87,7 +87,7 @@ impl Site {
         let front = parse_post(&relative, &text.to_text())
             .map_err(PostStoreError::new)?
             .front;
-        let post = self.candidate(&judge, &found, &text, &relative)?;
+        let post = Self::candidate(&judge, &found, &text, &relative)?;
         let own = Topics::new(front.category.as_ref().map(Slug::as_str), &front.tags);
         Ok(Some(suggest(
             &post,

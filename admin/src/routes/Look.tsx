@@ -5,6 +5,7 @@ import { changeSite, readSite } from "../api/site";
 import { readTemplates, type Template } from "../api/templates";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
+import { savedWords } from "../components/SettingsTabs";
 import { LookForm } from "../look/LookForm";
 import { lookChange, startOf, type Values } from "../look/lookChange";
 import { en, type UserMessage } from "../strings/en";
@@ -38,7 +39,7 @@ export function Look() {
         return;
       }
       const reply = await changeSite(change);
-      setSaid(isData(reply) ? words.saved : null);
+      setSaid(isData(reply) ? savedWords(words, reply.data) : null);
       setFailed(isData(reply) ? null : failureMessage(reply));
       await queries.invalidateQueries({ queryKey: SITE });
     };

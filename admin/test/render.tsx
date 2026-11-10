@@ -5,6 +5,7 @@ import axe from "axe-core";
 import { vi } from "vitest";
 import { saveKey } from "../src/auth/session";
 import { makeRouter } from "../src/routes/router";
+import { track } from "./routers";
 
 /** Signs the tab in with a made-up token, as if the blog had accepted it. */
 export function signedIn() {
@@ -38,6 +39,7 @@ export function serverAnswers(status: number) {
 /** Shows the admin at one address under /admin, as a browser tab would. */
 export function renderAt(path: string) {
   const router = makeRouter(createMemoryHistory({ initialEntries: [`/admin${path}`] }));
+  track(router);
   const queries = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const view = render(
     <QueryClientProvider client={queries}>

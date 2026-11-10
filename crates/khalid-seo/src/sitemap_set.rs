@@ -54,6 +54,25 @@ impl SitemapSection {
     }
 }
 
+/// Which file of a language a sitemap entry goes in: its page's section,
+/// or, after them all, the video sitemap.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+enum FileGroup {
+    /// The file of a section, which lists its pages without their videos.
+    Section(SitemapSection),
+    /// The video sitemap: the pages that hold a video, each with its videos.
+    Videos,
+}
+
+impl FileGroup {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Section(section) => section.as_str(),
+            Self::Videos => "videos",
+        }
+    }
+}
+
 /// One sitemap file and where it is served.
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
@@ -99,6 +118,7 @@ fn split(entries: Vec<SitemapEntry>) -> Vec<Vec<SitemapEntry>> {
 impl SitemapSet {
     /// One file per section and language, in the site's language order,
     /// numbered from 1 when a file must be split, and the index of them all.
+    /// A page's videos go in the videos file of its language, never twice.
     ///
     /// # Errors
     ///
@@ -110,23 +130,34 @@ impl SitemapSet {
                 .position(|declared| declared == language)
                 .unwrap_or(site.languages.len())
         };
-        let mut groups: BTreeMap<(SitemapSection, usize, Locale), Vec<SitemapEntry>> =
-            BTreeMap::new();
+        let mut groups: BTreeMap<(FileGroup, usize, Locale), Vec<SitemapEntry>> = BTreeMap::new();
         for page in pages.iter().filter(|page| is_listed(site, page)) {
             let key = (
-                SitemapSection::of(page.kind),
+                FileGroup::Section(SitemapSection::of(page.kind)),
                 rank(&page.language),
                 page.language.clone(),
             );
-            groups.entry(key).or_default().push(entry_for(site, page)?);
+            let mut entry = entry_for(site, page)?;
+            if !entry.videos.is_empty() {
+                let videos = SitemapEntry {
+                    loc: entry.loc.clone(),
+                    lastmod: entry.lastmod,
+                    alternates: Vec::new(),
+                    images: Vec::new(),
+                    videos: mem::take(&mut entry.videos),
+                };
+                let group = (FileGroup::Videos, key.1, key.2.clone());
+                groups.entry(group).or_default().push(videos);
+            }
+            groups.entry(key).or_default().push(entry);
         }
         let mut files = Vec::new();
         let mut index = SitemapIndex::default();
-        for ((section, _, language), entries) in groups {
+        for ((group, _, language), entries) in groups {
             for (number, chunk) in (1..).zip(split(entries)) {
                 let name = format!(
                     "/sitemaps/{}-{}-{number}.xml",
-                    section.as_str(),
+                    group.as_str(),
                     language.as_str().to_ascii_lowercase()
                 );
                 let path = UrlPath::try_new(&name)?;

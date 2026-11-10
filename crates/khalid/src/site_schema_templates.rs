@@ -1,7 +1,9 @@
 //! The site's schema templates as the Admin API reads and replaces them:
 //! `[[seo.schema]]` in `site.toml`, edited in place so every other line,
-//! comment and blank keeps its place (G54, KH-SEO-4). The running server
-//! read `site.toml` at start, so a change applies after a restart.
+//! comment and blank keeps its place (G54, KH-SEO-4). `khalid serve` puts
+//! saved templates in use at once, as it does `[seo]`; `restart_needed`
+//! says when a setting it reads only at start (see
+//! [`settings_events::start_only`]) waits, as the settings route does.
 
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
@@ -19,7 +21,7 @@ use khalid_content::{Collection, ContentTree, Language};
 use khalid_core::{Config, Environment, SchemaTemplateSettings};
 use toml_edit::{ArrayOfTables, DocumentMut, Item, Table, value};
 
-use crate::{atomic, site_config};
+use crate::{atomic, settings_events, site_config};
 
 /// Content folders that hold something other than posts, which schema
 /// templates never cover.
@@ -36,19 +38,23 @@ const NOT_POSTS: [&str; 6] = [
 #[derive(Debug, Clone)]
 pub(crate) struct SiteSchemaTemplates {
     site: PathBuf,
-    /// The templates the running server started with.
-    running: Vec<SchemaTemplateSettings>,
+    /// The settings the running server started with.
+    running: Arc<Config>,
+    /// The environment the server started with, which `site.toml` is read
+    /// with here too. Never answered.
+    env: Arc<Environment>,
     /// Held while a change is written, so two never interleave.
     writing: Arc<Mutex<()>>,
 }
 
 impl SiteSchemaTemplates {
     /// The templates in `site`'s `site.toml`, for a server that started
-    /// with `running`.
-    pub(crate) fn new(site: &Path, running: &Config) -> Self {
+    /// with `running` read with `env` on top.
+    pub(crate) fn new(site: &Path, running: &Config, env: &Environment) -> Self {
         Self {
             site: site.to_path_buf(),
-            running: running.seo().schema.clone(),
+            running: Arc::new(running.clone()),
+            env: Arc::new(env.clone()),
             writing: Arc::new(Mutex::new(())),
         }
     }
@@ -71,7 +77,7 @@ impl SiteSchemaTemplates {
 
     /// `text` as a config, when it passes every check made at start.
     fn checked(&self, text: &str) -> Result<Config, TemplateStoreError> {
-        let config = Config::from_toml(&self.path(), text, &Environment::empty()).map_err(store)?;
+        let config = Config::from_toml(&self.path(), text, &self.env).map_err(store)?;
         // The API checks each template first, so only a mistake elsewhere
         // in the file, made by hand, ends here.
         site_config::check(&self.site, &config)
@@ -87,7 +93,7 @@ impl SiteSchemaTemplates {
             templates: held.iter().filter_map(admin_template).collect(),
             collections: self.collections(),
             updated_at: changed,
-            restart_needed: *held != self.running,
+            restart_needed: !settings_events::start_only(&self.running, &config).is_empty(),
         })
     }
 

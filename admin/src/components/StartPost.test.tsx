@@ -23,6 +23,17 @@ const DRAFT = {
   },
 };
 
+/**
+ * Waits for the editor itself. The start form's field is also called Title,
+ * so looking for that label alone would pass before the editor's code had
+ * loaded, and the test would end in the middle of the move.
+ */
+async function editorOpens() {
+  const name = `${en.editor.heading} ${DRAFT.title}`;
+  expect(await screen.findByRole("heading", { level: 1, name })).toBeInTheDocument();
+  return screen.getByLabelText(en.editor.title);
+}
+
 /** Whether `request` asks who the session cookie signs in. */
 function isSession(request: Request): boolean {
   return new URL(request.url).pathname.endsWith("/session/");
@@ -45,7 +56,7 @@ describe("starting a post", () => {
     const { router } = renderAt("/new");
     await userEvent.type(await screen.findByLabelText(en.start.label), "Why dough sticks");
     await userEvent.click(screen.getByRole("button", { name: en.start.submit }));
-    expect(await screen.findByLabelText(en.editor.title)).toHaveValue("Why dough sticks");
+    expect(await editorOpens()).toHaveValue("Why dough sticks");
     expect(router.state.location.pathname).toContain("/posts/01JC");
     expect(sent[0]?.method).toBe("POST");
     expect(sent[0]?.headers.get("Idempotency-Key")).toMatch(/^[0-9a-f]{32}$/);
@@ -66,7 +77,9 @@ describe("starting a post", () => {
         const account = { id: 1, email: "lena@example.com", name: "Lena", role: "writer" };
         return json(200, { account: { ...account, author: "de.lena-vogt" }, csrf: "csrf-test" });
       }
-      if (request.method === "POST") {
+      // Only the new post's own request. The editor, once open, also checks
+      // in on the post's presence with a POST of its own.
+      if (request.method === "POST" && !new URL(request.url).pathname.endsWith("/presence/")) {
         bodies.push(await request.json());
       }
       return json(request.method === "POST" ? 201 : 200, { posts: [DRAFT] });
@@ -74,7 +87,7 @@ describe("starting a post", () => {
     renderAt("/new");
     await userEvent.type(await screen.findByLabelText(en.start.label), "Why dough sticks");
     await userEvent.click(screen.getByRole("button", { name: en.start.submit }));
-    expect(await screen.findByLabelText(en.editor.title)).toHaveValue("Why dough sticks");
+    expect(await editorOpens()).toHaveValue("Why dough sticks");
     expect(bodies).toEqual([
       { posts: [{ title: "Why dough sticks", markdown: "", author: "lena-vogt" }] },
     ]);

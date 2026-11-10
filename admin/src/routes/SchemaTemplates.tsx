@@ -12,6 +12,17 @@ import { en, type UserMessage } from "../strings/en";
 import { TemplateCard } from "../templates/TemplateCard";
 import { TemplateForm } from "../templates/TemplateForm";
 
+/**
+ * What the screen says of `current`: that a saved setting waits for a
+ * restart when the blog says so, else, once `saved` here, that it is in use.
+ */
+function savedWords(current: Templates, saved: boolean): string | null {
+  if (current.restart_needed) {
+    return en.templates.restart;
+  }
+  return saved ? en.templates.live : null;
+}
+
 /** The schema every post in a collection gets: the templates in use, and a form to add one. */
 export function SchemaTemplates() {
   const words = en.templates;
@@ -48,12 +59,13 @@ export function SchemaTemplates() {
     return false;
   };
   const without = (at: number) => current.templates.filter((_, each) => each !== at);
+  const said = savedWords(current, saved !== null);
 
   return (
     <>
       <h1>{words.title}</h1>
       <p className="lede">{words.lede}</p>
-      {current.restart_needed ? <p className="saved">{words.restart}</p> : null}
+      {said === null ? null : <p className="saved">{said}</p>}
       {problem === null ? null : <Problem message={problem} />}
       <h2>{words.inUse}</h2>
       {current.templates.length === 0 ? <p className="hint">{words.none}</p> : null}
