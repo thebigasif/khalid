@@ -19,7 +19,7 @@ use crate::cli::{Cli, ServeArgs};
 use crate::exit::Exit;
 use crate::post_files::Assets;
 use crate::serve::Keys;
-use crate::{alert_watch, https_message, outbound, report, serve, serve_message};
+use crate::{alert_watch, https_message, outbound, report, serve, serve_message, server_log};
 
 /// The folder in `data/` that keeps the account and the certificate.
 const FOLDER: &str = "https";
@@ -116,6 +116,7 @@ pub(crate) fn serve(
     start: (SiteContent, Assets, FolderLook),
     (args, keys): (&ServeArgs, Keys),
 ) -> Exit {
+    server_log::install(config.log(), cli.output);
     match listen(cli, config.mode(), args) {
         Ok(listen) => {
             let to = (&listen, outbound::client(cli), keys);

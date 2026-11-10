@@ -14,7 +14,7 @@ use khalid_webhooks::Event;
 use serde::ser::{Serialize, Serializer};
 
 use crate::announce::SiteAnnounce;
-use crate::serve_message;
+use crate::{serve_message, server_log};
 
 /// Where a running site sends each kept answer.
 #[derive(Debug)]
@@ -65,6 +65,7 @@ impl FormDelivery for SiteDelivery {
             let (mailer, form) = (Arc::clone(mailer), submission.form.clone());
             self.announce.send(async move {
                 if let Err(error) = mailer.send(&mail).await {
+                    let error = server_log::causes(&error);
                     tracing::warn!(%error, %form, "a form's answers could not be emailed");
                 }
             });
