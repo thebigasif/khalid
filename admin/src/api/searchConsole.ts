@@ -9,6 +9,12 @@ export type FollowUps = components["schemas"]["FollowUps"];
 export type FollowUpPost = components["schemas"]["FollowUpPost"];
 /** One long search and how it did. */
 export type FollowUp = components["schemas"]["FollowUp"];
+/** Each post's numbers for the month, the falling posts, the lost pages and the week's movers. */
+export type SearchReport = components["schemas"]["SearchReport"];
+/** One post's numbers for the month. */
+export type PostNumbers = components["schemas"]["PostNumbers"];
+/** One page's clicks this week against last week. */
+export type Mover = components["schemas"]["Mover"];
 
 const api = createApi();
 
@@ -19,6 +25,19 @@ const api = createApi();
 export async function readFollowUps(): Promise<Reply<FollowUps>> {
   try {
     const { data, error, response } = await api.GET("/api/admin/v1/search-console/follow-ups/");
+    if (data !== undefined) {
+      return { data };
+    }
+    return { problem: isProblem(error) ? error : null, status: response.status };
+  } catch {
+    return { problem: null, status: 0 };
+  }
+}
+
+/** Reads the report. Khalid asks Google on each call, so it can take some seconds. */
+export async function readReport(): Promise<Reply<SearchReport>> {
+  try {
+    const { data, error, response } = await api.GET("/api/admin/v1/search-console/report/");
     if (data !== undefined) {
       return { data };
     }

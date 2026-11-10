@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { json, serve, serverAnswers, signedIn } from "../../test/render";
-import { followUps, NOT_SET_UP, searchConsoleBlog } from "../../test/searchConsole";
-import { openSearches, readFollowUps } from "./searchConsole";
+import { followUps, NOT_SET_UP, report, searchConsoleBlog } from "../../test/searchConsole";
+import { openSearches, readFollowUps, readReport } from "./searchConsole";
 
 describe("the Search Console client", () => {
   it("reads the follow-ups with the signed-in key", async () => {
@@ -12,6 +12,17 @@ describe("the Search Console client", () => {
       "/api/admin/v1/search-console/follow-ups/",
     ]);
     expect(sent[0]?.headers.get("Authorization")).toBe("Khalid ks_0123456789abcdef_test");
+  });
+
+  it("reads the report, and its problem when Google refuses", async () => {
+    signedIn();
+    const sent = searchConsoleBlog();
+    expect(await readReport()).toEqual({ data: report() });
+    expect(sent.map((request) => new URL(request.url).pathname)).toEqual([
+      "/api/admin/v1/search-console/report/",
+    ]);
+    searchConsoleBlog({ "GET /search-console/report/": () => json(409, NOT_SET_UP) });
+    expect(await readReport()).toEqual({ problem: NOT_SET_UP, status: 409 });
   });
 
   it("gives back the API's problem when the blog is not connected", async () => {
