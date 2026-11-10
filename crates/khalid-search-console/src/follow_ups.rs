@@ -2,9 +2,11 @@
 //! showed a page, the way people ask an AI assistant or Google's AI Mode,
 //! and whether one of the page's headings already answers each (GEO M3).
 
+use khalid_core::Locale;
 use serde::Deserialize;
 
 use crate::SearchConsoleError;
+use crate::filler::filler;
 
 /// The fewest words a search needs to read as a conversational question
 /// rather than a few keywords. A site may ask for more or fewer.
@@ -13,14 +15,6 @@ pub const FOLLOW_UP_WORDS: usize = 8;
 /// The share of a search's own words, out of four, a heading must hold to
 /// answer it.
 const COVERED_QUARTERS: usize = 3;
-
-/// Words that carry no topic, left out when a search meets a heading.
-const FILLER: &[&str] = &[
-    "a", "an", "and", "are", "as", "at", "be", "by", "can", "do", "does", "for", "from", "how",
-    "has", "have", "i", "if", "in", "is", "it", "me", "my", "of", "on", "or", "should", "so",
-    "that", "the", "there", "this", "to", "what", "when", "where", "which", "who", "why", "will",
-    "with", "you", "your",
-];
 
 /// What Google counted for one search on one page in a window.
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -111,11 +105,15 @@ pub fn follow_ups(searches: &[Search], words: usize) -> Vec<Search> {
     found
 }
 
-/// The first of `headings` that answers `query`: one holding at least
-/// three in four of the search's topic words. A word matches its plural.
-/// `None` when no heading does, or the search has no topic words.
-pub fn answered_by<'h>(query: &str, headings: &'h [String]) -> Option<&'h str> {
-    let asked = topic_words(query);
+/// The first of `headings` that answers `query`, both written in the
+/// language of `locale`: one holding at least three in four of the
+/// search's topic words. A word matches its plural. The filler words of
+/// English, German, French, Spanish, Italian, Portuguese and Dutch are
+/// left out; in any other language every word counts. `None` when no
+/// heading does, or the search has no topic words.
+pub fn answered_by<'h>(locale: &Locale, query: &str, headings: &'h [String]) -> Option<&'h str> {
+    let language = locale.language();
+    let asked = topic_words(query, language);
     if asked.is_empty() {
         return None;
     }
@@ -123,19 +121,23 @@ pub fn answered_by<'h>(query: &str, headings: &'h [String]) -> Option<&'h str> {
     headings
         .iter()
         .find(|heading| {
-            let held = topic_words(heading);
+            let held = topic_words(heading, language);
             asked.iter().filter(|word| held.contains(word)).count() >= needed
         })
         .map(String::as_str)
 }
 
-/// The words of `text` in lower case, without punctuation, filler or a
-/// plural `s`, each once, in order.
-fn topic_words(text: &str) -> Vec<String> {
+/// The words of `text`, written in `language`, in lower case, without
+/// punctuation, filler or a plural `s`, each once, in order. An
+/// apostrophe joins an English word, as in "don't", and parts one in
+/// other languages, as in "l'article".
+fn topic_words(text: &str, language: &str) -> Vec<String> {
+    let filler = filler(language);
+    let joins = |c: char| matches!(c, '\'' | '\u{2019}') && language == "en";
     let mut words: Vec<String> = Vec::new();
-    for word in text.split(|c: char| !c.is_alphanumeric() && c != '\'') {
-        let word = word.trim_matches('\'').to_lowercase();
-        if word.is_empty() || FILLER.contains(&word.as_str()) {
+    for word in text.split(|c: char| !c.is_alphanumeric() && !joins(c)) {
+        let word = word.trim_matches(['\'', '\u{2019}']).to_lowercase();
+        if word.is_empty() || filler.contains(&word.as_str()) {
             continue;
         }
         let word = match word.strip_suffix('s') {
@@ -220,19 +222,75 @@ mod tests {
             "How many internal links does a post need?".to_owned(),
         ];
         assert_eq!(
-            answered_by("how many internal links should a blog post have", &headings),
+            answered(
+                "en",
+                "how many internal links should a blog post have",
+                &headings
+            ),
             Some("How many internal links does a post need?")
         );
         assert_eq!(
-            answered_by("how many internal links should a blog page have", &headings),
+            answered(
+                "en",
+                "how many internal links should a blog page have",
+                &headings
+            ),
             None,
             "three of five topic words is less than three in four"
         );
         assert_eq!(
-            answered_by("why do internal links matter so much", &headings),
+            answered("en", "why do internal links matter so much", &headings),
             Some("Why internal links matter")
         );
-        assert_eq!(answered_by("what is it", &headings), None);
-        assert_eq!(answered_by("how to fix redirect chains", &headings), None);
+        assert_eq!(answered("en", "what is it", &headings), None);
+        assert_eq!(
+            answered("en", "how to fix redirect chains", &headings),
+            None
+        );
+    }
+
+    #[test]
+    fn each_language_leaves_out_its_own_filler_words() {
+        let german = ["Wie viele interne Links braucht ein Beitrag?".to_owned()];
+        assert_eq!(
+            answered(
+                "de",
+                "wie viele interne Links braucht ein Beitrag in einem Blog",
+                &german
+            ),
+            Some(german[0].as_str())
+        );
+        assert_eq!(
+            answered(
+                "de",
+                "wie viele interne Links sollte ein Shop für seine Produkte haben",
+                &german
+            ),
+            None,
+            "Shop and Produkte are topic words the heading lacks"
+        );
+        let french = ["Combien de liens internes faut-il dans un article ?".to_owned()];
+        assert_eq!(
+            answered(
+                "fr",
+                "combien de liens internes faut il mettre dans l'article",
+                &french
+            ),
+            Some(french[0].as_str()),
+            "the l of l'article is filler, so article matches"
+        );
+        let spanish = ["¿Cuántos enlaces internos necesita un artículo?".to_owned()];
+        assert_eq!(
+            answered(
+                "es",
+                "cuántos enlaces internos necesita un artículo de un blog",
+                &spanish
+            ),
+            Some(spanish[0].as_str())
+        );
+    }
+
+    fn answered<'h>(language: &str, query: &str, headings: &'h [String]) -> Option<&'h str> {
+        answered_by(&Locale::try_new(language).unwrap(), query, headings)
     }
 }

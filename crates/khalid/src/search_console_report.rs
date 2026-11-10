@@ -9,7 +9,7 @@ use std::path::Path;
 use chrono::NaiveDate;
 use khalid_api::search_report::{FallingPage, Mover, PostNumbers, SearchReport};
 use khalid_content::SiteContent;
-use khalid_core::{Config, Indexing, Slug};
+use khalid_core::{Config, Indexing, Locale, Slug};
 use khalid_outbound::Outbound;
 use khalid_search_console::{
     Change, Decay, PageNumbers, Question, SearchConsole, Window, decaying, go_deeper, movers,
@@ -36,6 +36,8 @@ pub(crate) struct LivePost {
     /// Whether its front matter keeps it out of search results.
     pub(crate) noindex: bool,
     pub(crate) slug: Slug,
+    /// The language it is written in.
+    pub(crate) locale: Locale,
     /// Its file in the content index's form, such as
     /// `content/en/posts/a.md`.
     pub(crate) path: String,
@@ -138,6 +140,7 @@ pub(crate) fn live_posts(
             ),
             noindex: hidden.contains(&row.path),
             slug: row.slug.clone(),
+            locale: row.locale.clone(),
             path: row.path.clone(),
         })
         .collect())

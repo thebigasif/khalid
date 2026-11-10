@@ -119,10 +119,13 @@ async fn the_admin_api_names_the_heading_that_answers_each_long_search() {
         json!({ "keys": [links, query], "clicks": 2.0, "impressions": impressions,
             "ctr": 0.02, "position": 8.2 })
     };
+    let german = "https://www.example.com/blog/de/warum-interne-links-wichtig-sind/";
     let rows = json!({ "rows": [
         row("internal links", 900.0),
         row("how many internal links should a blog post have", 60.0),
         row("how do search engines find and rank pages on a site", 40.0),
+        { "keys": [german, "wie nutzen Suchmaschinen die Links zum Finden und Bewerten"],
+            "clicks": 1.0, "impressions": 30.0, "ctr": 0.03, "position": 9.1 },
     ] });
     Mock::given(method("POST"))
         .and(path(ANALYTICS))
@@ -145,6 +148,14 @@ async fn the_admin_api_names_the_heading_that_answers_each_long_search() {
     assert_eq!(
         searches[1]["answered_by"],
         "Search engines use them to find and rank pages"
+    );
+    // German filler words, such as "die" and "und", are left out of a
+    // German post's searches, so its heading answers this one.
+    let post = &json["posts"][1];
+    assert_eq!(post["url"], german, "{json}");
+    assert_eq!(
+        post["searches"][0]["answered_by"],
+        "Suchmaschinen nutzen sie zum Finden und Bewerten"
     );
 }
 

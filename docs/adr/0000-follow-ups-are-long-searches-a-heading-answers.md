@@ -12,7 +12,7 @@ The behaviour it points to comes from the two allowed sources. Koray Tugberk Gub
 
 - **A follow-up is a long search.** A search of at least 8 words (`FOLLOW_UP_WORDS`) that showed a published post in the last 28 days with final numbers. People ask AI assistants and Google's AI Mode in whole sentences, and those searches reach Search Console like any other. The word count is our choice, not either source's; it stays a constant until a site asks for another.
 - **One request for the whole site.** `Session::searches` asks Search Analytics by page and query at once, up to Google's 25,000 rows, rather than one request per post.
-- **A heading answers a search when it holds three in four of the search's topic words.** Topic words are the words left after filler and question words, each once; a word matches its plural `s`. No stemmer dependency, and the filler list is English: in another language every word counts, so the finder errs towards "no heading answers it yet".
+- **A heading answers a search when it holds three in four of the search's topic words.** Topic words are the words left after filler and question words, each once; a word matches its plural `s`. No stemmer dependency. The filler lists follow the post's language: English, German, French, Spanish, Italian, Portuguese and Dutch (backlog row 25). In any other language every word counts, so the finder errs towards "no heading answers it yet".
 - **Posts only.** A search that showed the home page or a list page is left out: those pages have no body to add a heading to.
 - **The fix it teaches is W1's.** A heading that asks the question, with a 40 to 60 word answer under it (D3).
 - **The text lists 10 searches a post; `--json` lists all.**
