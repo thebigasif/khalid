@@ -1,0 +1,3 @@
+Added
+- The Posts screen shows each post's Google clicks and times shown for the last 28 days whose numbers are final, in a "Google search, last 28 days" column, when the blog is connected to Search Console. A post Google has not shown says so. A blog that is not connected sees the table as before.
+- The Admin API answers each published post's Search Console numbers alone at `GET /api/admin/v1/search-console/posts/`: one request to Google, where the full report needs six. It needs a key with `settings:write`, like the other Search Console routes, and answers 409 for a site not connected to Search Console.

@@ -1,7 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { json, serve, serverAnswers, signedIn } from "../../test/render";
-import { followUps, NOT_SET_UP, report, searchConsoleBlog } from "../../test/searchConsole";
-import { openSearches, readFollowUps, readReport } from "./searchConsole";
+import {
+  followUps,
+  NOT_SET_UP,
+  report,
+  searchConsoleBlog,
+  searchPosts,
+} from "../../test/searchConsole";
+import {
+  numbersById,
+  openSearches,
+  readFollowUps,
+  readPostNumbers,
+  readReport,
+} from "./searchConsole";
 
 describe("the Search Console client", () => {
   it("reads the follow-ups with the signed-in key", async () => {
@@ -23,6 +35,22 @@ describe("the Search Console client", () => {
     ]);
     searchConsoleBlog({ "GET /search-console/report/": () => json(409, NOT_SET_UP) });
     expect(await readReport()).toEqual({ problem: NOT_SET_UP, status: 409 });
+  });
+
+  it("reads each post's month for the posts table, keyed by identity", async () => {
+    signedIn();
+    const sent = searchConsoleBlog();
+    const reply = await readPostNumbers();
+    expect(reply).toEqual({ data: searchPosts() });
+    expect(sent.map((request) => new URL(request.url).pathname)).toEqual([
+      "/api/admin/v1/search-console/posts/",
+    ]);
+    expect(numbersById(reply).get("en.why-internal-links-matter")?.clicks).toBe(120);
+    searchConsoleBlog({ "GET /search-console/posts/": () => json(409, NOT_SET_UP) });
+    const refused = await readPostNumbers();
+    expect(refused).toEqual({ problem: NOT_SET_UP, status: 409 });
+    expect(numbersById(refused).size).toBe(0);
+    expect(numbersById(undefined).size).toBe(0);
   });
 
   it("gives back the API's problem when the blog is not connected", async () => {

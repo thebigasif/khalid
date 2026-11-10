@@ -1,7 +1,8 @@
 //! Search Console through the Admin API: the follow-ups (GEO M3), the
 //! long searches that showed each post and the heading that answers each,
-//! the report of each post's numbers (G43), and the whole site's totals
-//! for a period, which the Analytics screen shows. The routes need
+//! the report of each post's numbers (G43), those numbers alone for the
+//! posts table, and the whole site's totals for a period, which the
+//! Analytics screen shows. The routes need
 //! `settings:write`, because the numbers come from the owner's Google
 //! account.
 
@@ -21,7 +22,7 @@ use crate::api_version::negotiate_version;
 use crate::follow_ups::{FollowUpError, FollowUpFinder, FollowUps};
 use crate::keys::{Principal, Scope};
 use crate::problem::{Problem, ProblemType};
-use crate::search_report::{SearchReport, SearchTotals};
+use crate::search_report::{SearchPosts, SearchReport, SearchTotals};
 
 /// The finder the route calls.
 type Finder = Arc<dyn FollowUpFinder>;
@@ -37,6 +38,7 @@ pub(crate) fn routes(finder: Finder, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(follow_ups))
         .routes(routes!(search_report))
+        .routes(routes!(search_posts))
         .routes(routes!(search_totals))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
@@ -89,6 +91,29 @@ async fn search_report(
 ) -> Result<Json<SearchReport>, Problem> {
     require(&principal, Scope::SettingsWrite)?;
     finder.report().await.map(Json).map_err(problem)
+}
+
+/// Lists each published post's clicks, impressions, click-through rate
+/// and average position for the last 28 days whose numbers are final,
+/// and nothing else, for the posts table. One request to Google finds
+/// them, where the whole report needs six. Needs `settings:write`.
+#[utoipa::path(
+    get, path = "/search-console/posts/", tag = "admin search console",
+    security(("admin_key" = [])),
+    responses(
+        (status = 200, description = "Each post's numbers for the month", body = SearchPosts),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks settings:write", body = Problem, content_type = "application/problem+json"),
+        (status = 409, description = "The site is not connected to Search Console", body = Problem, content_type = "application/problem+json"),
+        (status = 502, description = "Google refused or could not be reached", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn search_posts(
+    State(finder): State<Finder>,
+    Extension(principal): Extension<Principal>,
+) -> Result<Json<SearchPosts>, Problem> {
+    require(&principal, Scope::SettingsWrite)?;
+    finder.posts().await.map(Json).map_err(problem)
 }
 
 /// How many days to add up, ending on the last day whose numbers are final.

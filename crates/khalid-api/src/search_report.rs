@@ -35,6 +35,22 @@ pub struct SearchReport {
     pub losers: Vec<Mover>,
 }
 
+/// Each published post's numbers for the month and nothing else, which
+/// the posts table shows beside each post. One request to Google finds
+/// them, where the whole report needs six.
+#[derive(Debug, Clone, PartialEq, Serialize, ToSchema)]
+pub struct SearchPosts {
+    /// The Search Console property the numbers come from.
+    #[schema(example = "sc-domain:example.com")]
+    pub property: String,
+    /// The first day of the month looked at.
+    pub first: NaiveDate,
+    /// The last day looked at: the last day whose numbers are final.
+    pub last: NaiveDate,
+    /// Every published post, the one with the most clicks first.
+    pub posts: Vec<PostNumbers>,
+}
+
 /// One post's numbers for the month.
 #[derive(Debug, Clone, PartialEq, Serialize, ToSchema)]
 pub struct PostNumbers {

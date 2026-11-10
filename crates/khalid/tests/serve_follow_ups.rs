@@ -37,6 +37,7 @@ const ANALYTICS: &str =
 const ROUTE: &str = "/api/admin/v1/search-console/follow-ups/";
 const REPORT: &str = "/api/admin/v1/search-console/report/";
 const TOTALS: &str = "/api/admin/v1/search-console/totals/";
+const POSTS: &str = "/api/admin/v1/search-console/posts/";
 
 /// What `khalid keys create` makes for these tests: a key the screen could use.
 const SCREEN: [&str; 4] = ["--name", "Screen", "--scope", "settings:write"];
@@ -188,6 +189,39 @@ async fn the_admin_api_reports_each_posts_numbers_with_its_identity() {
     assert_eq!(json["week_clicks"], 120.0);
     let unseen = json["posts"].as_array().and_then(|posts| posts.last());
     assert_eq!(unseen.map(|post| &post["position"]), Some(&Value::Null));
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn the_posts_table_numbers_ask_google_once_for_the_month() {
+    let google = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/token"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({ "access_token": "ya29.t" })))
+        .mount(&google)
+        .await;
+    let row = json!({ "keys": ["https://www.example.com/blog/why-internal-links-matter/"],
+        "clicks": 120.0, "impressions": 2400.0, "ctr": 0.05, "position": 3.1 });
+    Mock::given(method("POST"))
+        .and(path(ANALYTICS))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({ "rows": [row] })))
+        .expect(1)
+        .mount(&google)
+        .await;
+    let site = demo_site(OPT_IN);
+    let key = common::new_key(site.path(), &SCREEN);
+    let server = start(site.path(), &google);
+
+    let (status, json) = get(&server, POSTS, &key);
+    assert_eq!(status, 200, "{json}");
+    let first = &json["posts"][0];
+    assert_eq!(first["id"], "en.why-internal-links-matter", "{json}");
+    assert_eq!(
+        (&first["clicks"], &first["impressions"]),
+        (&json!(120.0), &json!(2400.0))
+    );
+    assert_eq!(json["week_clicks"], Value::Null, "only the month: {json}");
+    let unseen = json["posts"].as_array().and_then(|posts| posts.last());
+    assert_eq!(unseen.map(|post| &post["clicks"]), Some(&json!(0.0)));
 }
 
 #[tokio::test(flavor = "multi_thread")]

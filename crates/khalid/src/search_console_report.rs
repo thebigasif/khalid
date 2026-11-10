@@ -7,7 +7,7 @@ use std::fmt::Write as _;
 use std::path::Path;
 
 use chrono::NaiveDate;
-use khalid_api::search_report::{FallingPage, Mover, PostNumbers, SearchReport};
+use khalid_api::search_report::{FallingPage, Mover, PostNumbers, SearchPosts, SearchReport};
 use khalid_content::SiteContent;
 use khalid_core::{Config, Indexing, Locale, Slug};
 use khalid_outbound::Outbound;
@@ -84,8 +84,7 @@ pub(crate) fn gather(
         Ok((now, then, vec![h3, h2, h1, h0]))
     })?;
     let pages = history.last().map_or(&[][..], Vec::as_slice);
-    let mut rows: Vec<PostNumbers> = posts.iter().map(|post| numbers(post, pages)).collect();
-    rows.sort_by(|a, b| b.clicks.total_cmp(&a.clicks).then(a.title.cmp(&b.title)));
+    let rows = post_rows(&posts, pages);
     let week_movers = movers(&last_week, &this_week, MOVERS);
     let root = config.address().as_str().trim_end_matches('/');
     let clicks = |rows: &[PageNumbers]| rows.iter().map(|row| row.clicks).sum();
@@ -112,6 +111,32 @@ pub(crate) fn gather(
             .map(|c| mover(&posts, c, Some(Question::WhyItDropped)))
             .collect(),
     })
+}
+
+/// Reads only each of the checked site's posts' numbers for the last
+/// month up to `today` from `console`: one request, for the posts table.
+pub(crate) fn gather_posts(
+    (folder, config, content): (&Path, &Config, &SiteContent),
+    (console, outbound, today): (&SearchConsole, &Outbound, NaiveDate),
+) -> Result<SearchPosts, Failed> {
+    let posts = live_posts(folder, config, content)?;
+    let month = last_month(today);
+    let pages = ask(console, async {
+        console.sign_in(outbound).await?.pages(month).await
+    })?;
+    Ok(SearchPosts {
+        property: console.property().to_owned(),
+        first: month.first,
+        last: month.last,
+        posts: post_rows(&posts, &pages),
+    })
+}
+
+/// Each of `posts`' numbers among `pages`, the most clicked first.
+fn post_rows(posts: &[LivePost], pages: &[PageNumbers]) -> Vec<PostNumbers> {
+    let mut rows: Vec<PostNumbers> = posts.iter().map(|post| numbers(post, pages)).collect();
+    rows.sort_by(|a, b| b.clicks.total_cmp(&a.clicks).then(a.title.cmp(&b.title)));
+    rows
 }
 
 /// Every dated post of the site, in the content index's order.
