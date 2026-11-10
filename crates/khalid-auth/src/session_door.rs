@@ -27,15 +27,32 @@ impl SessionCheck for Accounts {
             }
         })
     }
+
+    fn names(&self) -> BoxFuture<'_, Result<Vec<(KeyId, String)>, KeyStoreError>> {
+        Box::pin(async move {
+            let accounts = self.store().list().await.map_err(KeyStoreError::new)?;
+            accounts
+                .iter()
+                .map(|account| Ok((identity(account)?, account.name().to_owned())))
+                .collect()
+        })
+    }
 }
 
-/// The principal of a signed-in account: its role, and its row as 16 hex
-/// digits, the shape of a key's identity, so a post edited by a person
-/// names them the way one edited by a key names the key.
+/// The principal of a signed-in account: its role and its identity.
 fn principal(account: &Account) -> Result<Principal, KeyStoreError> {
-    let id = KeyId::try_new(&format!("{:016x}", account.id().as_row()))
-        .map_err(|_| KeyStoreError::new(SessionDoorError))?;
-    Ok(Principal::new(id, Access::Staff(account.role())))
+    Ok(Principal::new(
+        identity(account)?,
+        Access::Staff(account.role()),
+    ))
+}
+
+/// An account's row as 16 hex digits, the shape of a key's identity, so a
+/// post edited by a person names them the way one edited by a key names
+/// the key.
+fn identity(account: &Account) -> Result<KeyId, KeyStoreError> {
+    KeyId::try_new(&format!("{:016x}", account.id().as_row()))
+        .map_err(|_| KeyStoreError::new(SessionDoorError))
 }
 
 /// An account row that cannot be written as a key identity.
