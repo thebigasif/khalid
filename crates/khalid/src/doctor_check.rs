@@ -21,7 +21,8 @@ pub(crate) enum Check {
     Permissions,
     /// Each picture search `[media]` turns on has its key.
     Pictures,
-    /// `[mail]` has the secret its way of sending needs.
+    /// `[mail]` has the secret its way of sending needs, and a test email
+    /// leaves when `--send-test-mail` asks.
     Mail,
     /// The blog answers at its public address, so the proxy rule works.
     Address,
@@ -44,6 +45,23 @@ impl Check {
             Self::Address => "Public address",
             Self::Robots => "Host robots.txt",
         }
+    }
+}
+
+/// Whether `khalid doctor` sends a test email through `[mail]`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum MailTest {
+    /// Send one, because `--send-test-mail` was given. It goes out with
+    /// `--offline` too, as the person asked for it.
+    Send,
+    /// Only check the settings and the secret.
+    Skip,
+}
+
+impl From<bool> for MailTest {
+    /// What `--send-test-mail` asks for when it is `given`.
+    fn from(given: bool) -> Self {
+        if given { Self::Send } else { Self::Skip }
     }
 }
 

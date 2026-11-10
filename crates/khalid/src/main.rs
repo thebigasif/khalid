@@ -453,8 +453,8 @@ fn run_unchecked(cli: &Cli) -> Option<Exit> {
             many.then(|| serve_sites::run(root, cli, args))
         }
         Some(Command::Update { target }) => Some(update::run(*target, cli)),
-        Some(command @ Command::Doctor { network }) => Some(match cli.site.as_deref() {
-            Some(folder) => doctor::run(folder, *network, cli),
+        Some(command @ Command::Doctor { network, test_mail }) => Some(match cli.site.as_deref() {
+            Some(folder) => doctor::run(folder, (*network, *test_mail), cli),
             None => report::failure(cli.output, &needs_site(command), Exit::Usage),
         }),
         Some(
