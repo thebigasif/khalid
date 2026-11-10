@@ -51,6 +51,7 @@ pub mod consent_proof;
 pub mod content_api;
 mod content_key;
 pub mod content_store;
+pub mod design_desk;
 pub mod draft_comments;
 mod draft_lint;
 pub mod entry_store;

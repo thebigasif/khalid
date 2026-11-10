@@ -112,3 +112,18 @@ fn an_empty_locked_list_leaves_the_file() {
     file.set_locked(&[]);
     assert!(!file.to_toml().contains("locked"));
 }
+
+#[test]
+fn every_write_moves_the_time_past_the_copy_it_was_read_with() {
+    let site = tempfile::tempdir().unwrap();
+    DesignFile::from_toml(SYNCED)
+        .unwrap()
+        .write(site.path())
+        .unwrap();
+    for _ in 0..20 {
+        let file = DesignFile::read(site.path()).unwrap();
+        file.write(site.path()).unwrap();
+        let after = DesignFile::read(site.path()).unwrap().changed();
+        assert!(after > file.changed(), "{after:?} after {:?}", file.changed());
+    }
+}

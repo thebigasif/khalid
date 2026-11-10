@@ -2788,6 +2788,7 @@ dependencies = [
  "khalid-media",
  "khalid-outbound",
  "khalid-seo",
+ "khalid-theme",
  "khalid-webhooks",
  "proptest",
  "serde",

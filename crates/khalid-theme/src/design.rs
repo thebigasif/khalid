@@ -6,7 +6,7 @@
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
-use std::time::SystemTime;
+use std::time::{Duration, SystemTime};
 
 use toml_edit::DocumentMut;
 
@@ -116,15 +116,36 @@ impl DesignFile {
 
     /// Writes the file atomically to `theme/tokens.toml` inside
     /// `site_root`, as [`ThemeTokens::write`] does, and returns the path.
+    /// The file's time always moves past the one it was read with, even
+    /// within one tick of the file system's clock, so a copy read before
+    /// never matches [`DesignFile::changed`] after.
     ///
     /// # Errors
     ///
     /// Returns [`TokensError::Path`] and [`TokensError::Write`] as
     /// [`ThemeTokens::write`] does.
     pub fn write(&self, site_root: &Path) -> Result<PathBuf, TokensError> {
-        write_text(site_root, &self.to_toml())
+        let path = write_text(site_root, &self.to_toml())?;
+        if let Some(before) = self.changed {
+            let later = || -> io::Result<()> {
+                let file = fs::File::options().write(true).open(&path)?;
+                if file.metadata()?.modified()? <= before {
+                    file.set_modified(before + TICK)?;
+                }
+                Ok(())
+            };
+            later().map_err(|source| TokensError::Write {
+                path: path.clone(),
+                source,
+            })?;
+        }
+        Ok(path)
     }
 }
+
+/// How far a write moves the file's time past the one it was read with,
+/// when the file system's clock has not moved yet.
+const TICK: Duration = Duration::from_micros(1);
 
 /// Puts every value of `over` into `under`, table by table, as the
 /// renderer layers a site's file over its pack.
