@@ -38,7 +38,7 @@ its settings as it starts. No key or password is ever sent back.
 | `[seo.links]` | `affiliate_domains` and the other outbound link rules | none | Not on the screen yet |
 | `[[seo.locations]]` | the site's shops or offices, for local search | none | Not on the screen yet |
 | `[seo.breadcrumbs]`, `[seo.llms_txt]`, `[seo.search_filter]`, `[seo.local]`, `[seo.schema_map]` | see their sections below | see below | Not on the screen yet |
-| `[[seo.schema]]` | schema nodes per category or collection | none | Schema templates screen |
+| `[[seo.schema]]` | schema nodes per category or collection; `category` is the name readers see, such as `"On-page SEO"`, so a category named per language needs one entry per name | none | Schema templates screen |
 
 The training switch on the Crawlers screen writes `[seo.crawlers]
 ai_training`. The box under each AI crawler writes its name into
@@ -56,7 +56,7 @@ ai_training`. The box under each AI crawler writes its name into
 | `{tagline}` | The tagline, from `[seo.titles] tagline`. |
 | `{sep}` | The separator, `\|` unless `[seo.titles] separator` says otherwise. |
 | `{excerpt}` | The page's summary: a post's `description`. |
-| `{category}` | A post's category name. |
+| `{category}` | A post's category name, as `categories.toml` gives it in the page's language, or its slug when the file does not name it. |
 | `{author}` | A post's author name. |
 | `{date}` | The day a post was published, such as `14 September 2026`. |
 | `{modified}` | The day a post was last really updated, or published when it never was. |

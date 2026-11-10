@@ -1,7 +1,8 @@
 //! The category of each post where a page shows it: on the post, on every
-//! card that lists it, and in the row of topic links on the home page.
-//! Templates such as category pills and a category bar read these
-//! (templates spec 3.1 and 3.2).
+//! card that lists it, in the row of topic links on the home page, and in
+//! the post's head. Templates such as category pills and a category bar
+//! read these (templates spec 3.1 and 3.2), and so do category schema
+//! templates and `{category}` in a title template (G54).
 
 use std::collections::BTreeMap;
 
@@ -47,6 +48,12 @@ pub(crate) fn fill(
             .collect();
         for page in &mut language.pages {
             name_page(&mut page.body, &named);
+            // The head carries the name readers see: `{category}` in a
+            // title, a category's schema template, `articleSection` and
+            // `article:section` (G54).
+            if let PageBody::Post(post) = &page.body {
+                page.seo.category = post.category.as_ref().map(|link| link.name.clone());
+            }
         }
     }
 }

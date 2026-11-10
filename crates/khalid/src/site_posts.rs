@@ -28,7 +28,7 @@ use crate::lint_input::{LintInput, PostParts, lint_parts, lint_site};
 use crate::post_text::{PostText, quoted};
 use crate::settings_text::{put, settings_of, write_real_update, write_settings};
 use crate::site_pages::reload::LiveConfig;
-use crate::{atomic, lint, site_briefs};
+use crate::{atomic, categories, lint, site_briefs};
 
 /// The folder of drafts at the top of a site.
 const DRAFTS: &str = "drafts";
@@ -305,7 +305,10 @@ impl Site {
         let config = (self.live.get()).map_or_else(|| self.config.clone(), LiveConfig::now);
         let routes = Routes::load(&self.folder).map_err(PostStoreError::new)?;
         let briefs = site_briefs::load(&self.folder).map_err(|m| failure(&m.to_string()))?;
-        let input = LintInput::new(content, &config, routes).with_briefs(briefs);
+        let named = categories::of(&self.folder).map_err(|m| failure(&m.to_string()))?;
+        let input = LintInput::new(content, &config, routes)
+            .with_briefs(briefs)
+            .with_categories(named);
         let (site, _) = lint_site(content, &config, &input);
         let settings = lint::lint_settings(&self.folder).map_err(|m| failure(&m.to_string()))?;
         let linter = Linter::new(&settings, self.clock.as_ref()).map_err(PostStoreError::new)?;

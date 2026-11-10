@@ -17,6 +17,7 @@ expression: "read(&built(), \"feed.xml\")"
       <guid isPermaLink="true">https://www.example.com/blog/planning-a-topic-cluster/</guid>
       <pubDate>Mon, 12 Oct 2026 00:00:00 +0000</pubDate>
       <dc:creator>Asif</dc:creator>
+      <category>Content strategy</category>
       <description>A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</description>
       <content:encoded>&lt;p&gt;A topic cluster is a group of posts on one subject: one main post that covers the whole subject, and several shorter posts that each answer one question in depth. They all link to each other. Together they show search engines that your site knows the subject, which is what &lt;a href=&quot;https://www.example.com/blog/glossary/topical-authority/&quot;&gt;Topical authority&lt;/a&gt; means.&lt;/p&gt;
 &lt;h2 id=&quot;plan-it-on-one-page&quot;&gt;Plan it on one page&lt;/h2&gt;
@@ -36,6 +37,7 @@ expression: "read(&built(), \"feed.xml\")"
       <guid isPermaLink="true">https://www.example.com/blog/fixing-slow-pages/</guid>
       <pubDate>Mon, 5 Oct 2026 00:00:00 +0000</pubDate>
       <dc:creator>Lena Vogt</dc:creator>
+      <category>Technical SEO</category>
       <description>Slow pages lose readers before they read a word. Where the time usually goes, and what to fix first.</description>
       <content:encoded>&lt;p&gt;Readers leave pages that load slowly, and search engines notice. The good news: most slow pages are slow for the same few reasons.&lt;/p&gt;
 &lt;h2 id=&quot;measure-first&quot;&gt;Measure first&lt;/h2&gt;
@@ -75,6 +77,7 @@ expression: "read(&built(), \"feed.xml\")"
       <guid isPermaLink="true">https://www.example.com/blog/what-a-sitemap-does/</guid>
       <pubDate>Mon, 28 Sep 2026 00:00:00 +0000</pubDate>
       <dc:creator>Lena Vogt</dc:creator>
+      <category>Technical SEO</category>
       <description>A sitemap lists the pages you want search engines to know about. It helps them find pages, but it does not make a page rank.</description>
       <content:encoded>&lt;p&gt;A sitemap is a file, usually at &lt;code&gt;/sitemap.xml&lt;/code&gt;, that lists the addresses of the pages on your site. Search engines read it to find pages they might otherwise miss.&lt;/p&gt;
 &lt;h2 id=&quot;what-it-does&quot;&gt;What it does&lt;/h2&gt;
@@ -95,6 +98,7 @@ expression: "read(&built(), \"feed.xml\")"
       <guid isPermaLink="true">https://www.example.com/blog/how-to-write-a-title-tag/</guid>
       <pubDate>Mon, 21 Sep 2026 00:00:00 +0000</pubDate>
       <dc:creator>Asif</dc:creator>
+      <category>On-page SEO</category>
       <description>The title tag is the blue link people click in search results. Five rules for writing one that earns the click.</description>
       <content:encoded>&lt;p&gt;The title tag is the line of text a search engine shows as the clickable headline of your result. It is often the first thing a reader sees of your site, so it decides whether they visit at all.&lt;/p&gt;
 &lt;h2 id=&quot;five-rules&quot;&gt;Five rules&lt;/h2&gt;
@@ -116,6 +120,7 @@ expression: "read(&built(), \"feed.xml\")"
       <guid isPermaLink="true">https://www.example.com/blog/why-internal-links-matter/</guid>
       <pubDate>Mon, 14 Sep 2026 00:00:00 +0000</pubDate>
       <dc:creator>Asif</dc:creator>
+      <category>On-page SEO</category>
       <description>Internal links help readers and search engines find the rest of your site. Here is how to add them without overthinking it.</description>
       <content:encoded>&lt;p&gt;An internal link is a link from one page on your site to another page on the same site. It sounds too simple to matter. It matters a lot.&lt;/p&gt;
 &lt;h2 id=&quot;readers-use-them-to-keep-going&quot;&gt;Readers use them to keep going&lt;/h2&gt;

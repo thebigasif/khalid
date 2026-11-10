@@ -24,8 +24,8 @@ Structured data is the JSON-LD a page carries so search engines can show
 it as a rich result, such as a recipe card. The publish check (`khalid
 lint`, `khalid publish` and the Admin API's publish route) reads the same
 graph `khalid build` writes for the post: its article and author, the
-schema of its blocks, its collection's schema template and
-the JSON-LD in its `schema` field. When a node lacks a property Google
+schema of its blocks, its collection's and its category's schema
+templates and the JSON-LD in its `schema` field. When a node lacks a property Google
 needs, the post does not go live, and the finding names both, such as
 `Event needs startDate` or `Recipe needs image`. A property Google only
 recommends never stops a post.

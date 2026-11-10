@@ -4,10 +4,10 @@
 //! their rendered output to `LintPost` and `LintSite`, as the built page has
 //! them: the slug and address `khalid build` gives each post, its body
 //! rendered with its wikilinks linked, the wikilinks as written, its forms,
-//! focus keywords, collection and topic cluster, the `rel` words the link
-//! policy gives each link, the site's collections, and the links of each
-//! home page, which lists every dated post (audit 2, G5), the site's fact
-//! registry (P7) and each post's brief (P6).
+//! focus keywords, collection, category name and topic cluster, the `rel`
+//! words the link policy gives each link, the site's collections, and the
+//! links of each home page, which lists every dated post (audit 2, G5), the
+//! site's fact registry (P7) and each post's brief (P6).
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
@@ -18,6 +18,7 @@ use khalid_content::{
     TopicRole, Wikilinks, parse_blocks, render_linked,
 };
 use khalid_core::{Config, Locale, Slug, UserMessage};
+use khalid_db::IndexedTerm;
 use khalid_lint::{
     Cluster, ClusterRole, GlossaryTerm, Heading, HeadingLevel, Image, LinkKind, LintCollection,
     LintFact, LintForm, LintLink, LintPost, LintSite, PageRef, StructuredDataGap,
@@ -42,6 +43,7 @@ pub(crate) struct LintInput {
     policy: (LinkPolicy, SeoSite),
     facts: Vec<LintFact>,
     briefs: Briefs,
+    categories: Vec<IndexedTerm>,
 }
 
 impl LintInput {
@@ -65,12 +67,28 @@ impl LintInput {
             policy,
             facts: site_facts::for_lint(&content.facts),
             briefs: Briefs::new(),
+            categories: Vec::new(),
         }
     }
 
     /// This input with each post's brief, read from `briefs/`.
     pub(crate) fn with_briefs(self, briefs: Briefs) -> Self {
         Self { briefs, ..self }
+    }
+
+    /// This input with the site's `categories`, read from `categories.toml`,
+    /// so a post's category is named as its page names it.
+    pub(crate) fn with_categories(self, categories: Vec<IndexedTerm>) -> Self {
+        Self { categories, ..self }
+    }
+
+    /// The name the category `slug` has in `locale`, as `categories.toml`
+    /// gives it, or the slug itself when the file does not name it.
+    fn category_name(&self, locale: &Locale, slug: &Slug) -> String {
+        self.categories
+            .iter()
+            .find(|term| &term.locale == locale && &term.slug == slug)
+            .map_or_else(|| slug.to_string(), |term| term.name.clone())
     }
 }
 
@@ -278,15 +296,15 @@ fn gaps(
     };
     // A block or schema field the build cannot write stops `khalid build`
     // with its own message, so the check reads what could be written.
-    let _ = with_schema(&mut page, (parts, config), rest, rendered);
+    let _ = with_schema(&mut page, (parts, config, input), rest, rendered);
     build_seo::structured_data_gaps(site, &page)
 }
 
 /// Fills `page`, the SEO page of the post made of `parts` at the address
 /// ending in `rest`, with what its schema graph carries besides the base
-/// graph, as `khalid build` fills it: its collection, which picks the
-/// schema templates, its author by slug, the schema of the blocks of its
-/// body `rendered` and its hand-written JSON-LD.
+/// graph, as `khalid build` fills it: its collection and its category by
+/// name, which pick the schema templates, its author by slug, the schema of
+/// the blocks of its body `rendered` and its hand-written JSON-LD.
 ///
 /// # Errors
 ///
@@ -294,11 +312,13 @@ fn gaps(
 /// schema field is not JSON-LD.
 fn with_schema(
     page: &mut SeoPage,
-    (parts, config): (&PostParts<'_>, &Config),
+    (parts, config, input): (&PostParts<'_>, &Config, &LintInput),
     rest: &str,
     rendered: &Rendered,
 ) -> Result<(), UserMessage> {
     page.collection = Some(parts.collection.to_owned());
+    page.category =
+        (parts.front.category.as_ref()).map(|slug| input.category_name(parts.locale, slug));
     page.author = parts.front.author.as_ref().map(Slug::to_string);
     let path = path_of(config, parts.locale, rest);
     let author = page.author.clone().unwrap_or_default();
@@ -331,7 +351,7 @@ pub(crate) fn seo_page<'i>(
     let title = front.title.clone().unwrap_or_else(|| slug.to_string());
     let mut page = build_seo::post(parts.locale, (&rest, &title), front, front.date?).ok()?;
     page.content_html = build_seo::full_addresses(config, &rendered.html);
-    with_schema(&mut page, (parts, config), &rest, &rendered).ok()?;
+    with_schema(&mut page, (parts, config, input), &rest, &rendered).ok()?;
     Some((site, page))
 }
 
