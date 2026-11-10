@@ -7,7 +7,7 @@ use std::future::Future;
 use std::pin::Pin;
 
 use chrono::{DateTime, TimeDelta, Utc};
-use khalid_core::Slug;
+use khalid_core::{AbsoluteUrl, Slug};
 
 use crate::{
     EmailAddress, Labelled, Member, Recipient, Segment, SendId, SendNumbers, SendTotals, TokenHash,
@@ -288,6 +288,31 @@ pub trait SubscriberStore: fmt::Debug + Send + Sync {
         day: u16,
         due: (DateTime<Utc>, DateTime<Utc>),
     ) -> BoxFuture<'a, Result<Vec<Recipient>, StoreError>>;
+
+    /// Stores `url` as link number `position` of `send`, so a click on it
+    /// is counted against that email.
+    ///
+    /// # Errors
+    ///
+    /// [`StoreError`] when the store cannot be written.
+    fn add_link<'a>(
+        &'a self,
+        send: SendId,
+        position: u32,
+        url: &'a AbsoluteUrl,
+    ) -> BoxFuture<'a, Result<(), StoreError>>;
+
+    /// Counts one click on link number `position` of `send`, and gives
+    /// where it leads, or `None` when no email had that link.
+    ///
+    /// # Errors
+    ///
+    /// [`StoreError`] when the store cannot be read or written.
+    fn click(
+        &self,
+        send: SendId,
+        position: u32,
+    ) -> BoxFuture<'_, Result<Option<AbsoluteUrl>, StoreError>>;
 }
 
 /// The store could not be read or written. It keeps the store's own error

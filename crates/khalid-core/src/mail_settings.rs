@@ -35,6 +35,11 @@ pub struct MailSettings {
     /// The postal address every newsletter email ends with, as anti-spam
     /// laws ask. Khalid refuses to send a newsletter until it is set.
     pub postal_address: Option<String>,
+    /// Whether newsletter emails count clicks on their links, written
+    /// `count_clicks = true`. Off unless set. Each link then leads through
+    /// the blog, which counts the click against the email, never the
+    /// reader.
+    pub count_clicks: bool,
     /// How the mail leaves.
     pub transport: MailTransport,
 }
@@ -131,6 +136,8 @@ pub(crate) struct MailTable {
     name: Option<String>,
     forms_to: Option<String>,
     postal_address: Option<String>,
+    #[serde(default)]
+    count_clicks: bool,
     smtp: Option<SmtpSettings>,
     resend: Option<ResendTable>,
     postmark: Option<PostmarkSettings>,
@@ -208,6 +215,7 @@ impl MailTable {
             name: self.name,
             forms_to: self.forms_to,
             postal_address: self.postal_address,
+            count_clicks: self.count_clicks,
             transport,
         })
     }

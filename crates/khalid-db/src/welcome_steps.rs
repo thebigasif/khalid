@@ -1,9 +1,10 @@
-//! Welcome sequences on SQLite (G39): which welcome step each subscriber
-//! was sent.
+//! Welcome sequences and link clicks on SQLite (G39): which welcome step
+//! each subscriber was sent, and how often each link in an email was
+//! clicked, never by whom.
 
 use chrono::{DateTime, Utc};
-use khalid_core::Slug;
-use khalid_newsletter::{EmailAddress, Recipient, SubscriberId};
+use khalid_core::{AbsoluteUrl, Slug};
+use khalid_newsletter::{EmailAddress, Recipient, SendId, SubscriberId};
 
 use crate::subscriber_table::stamp;
 use crate::{DbError, SubscriberTable};
@@ -65,5 +66,47 @@ impl SubscriberTable {
                 }),
             })
             .collect()
+    }
+
+    pub(crate) async fn add_link_now(
+        &self,
+        send: SendId,
+        position: u32,
+        url: &AbsoluteUrl,
+    ) -> Result<(), DbError> {
+        sqlx::query(
+            "INSERT INTO newsletter_links (site_id, send_id, position, url) \
+             VALUES (?1, ?2, ?3, ?4)",
+        )
+        .bind(self.site.as_row())
+        .bind(send.as_row())
+        .bind(position)
+        .bind(url.as_str())
+        .execute(&self.db.writer)
+        .await?;
+        Ok(())
+    }
+
+    pub(crate) async fn click_now(
+        &self,
+        send: SendId,
+        position: u32,
+    ) -> Result<Option<AbsoluteUrl>, DbError> {
+        let url: Option<String> = sqlx::query_scalar(
+            "UPDATE newsletter_links SET clicks = clicks + 1 \
+             WHERE site_id = ?1 AND send_id = ?2 AND position = ?3 RETURNING url",
+        )
+        .bind(self.site.as_row())
+        .bind(send.as_row())
+        .bind(position)
+        .fetch_optional(&self.db.writer)
+        .await?;
+        url.map(|url| {
+            AbsoluteUrl::parse(&url).map_err(|_| DbError::Unreadable {
+                column: "url",
+                value: url,
+            })
+        })
+        .transpose()
     }
 }

@@ -1,13 +1,14 @@
-//! Welcome sequences on SQLite (G39): a step is claimed once, and falls
-//! due a number of days after the reader confirmed and joined.
+//! Welcome sequences and link clicks on SQLite (G39): a step is claimed
+//! once, falls due a number of days after the reader confirmed and joined,
+//! and a click counts against the email's link, never a person.
 
 use std::path::PathBuf;
 
 use chrono::{DateTime, TimeDelta, TimeZone, Utc};
-use khalid_core::Slug;
+use khalid_core::{AbsoluteUrl, Slug};
 use khalid_db::{Database, SubscriberTable};
 use khalid_newsletter::{
-    EmailAddress, SignUp, SignedUp, SubscriberId, SubscriberStore, SubscriberToken,
+    EmailAddress, SendId, SignUp, SignedUp, SubscriberId, SubscriberStore, SubscriberToken,
 };
 
 #[cfg(test)]
@@ -109,4 +110,22 @@ async fn a_second_newsletter_s_steps_count_from_joining_it() {
         due(&table, "weekly", 2, later + TimeDelta::days(2)).await,
         [id.as_row()]
     );
+}
+
+#[tokio::test]
+async fn a_click_counts_against_the_email_and_leads_where_its_link_did() {
+    let (_dir, table) = table().await;
+    let send = table
+        .start_send("post:en/hello", &slug("main"), nine())
+        .await;
+    let send = send.unwrap().unwrap();
+    let url = AbsoluteUrl::parse("https://www.example.com/blog/hello/").unwrap();
+    table.add_link(send, 1, &url).await.unwrap();
+    for _ in 0..2 {
+        assert_eq!(table.click(send, 1).await.unwrap(), Some(url.clone()));
+    }
+    assert_eq!(table.click(send, 2).await.unwrap(), None);
+    assert_eq!(table.click(SendId::from_row(99), 1).await.unwrap(), None);
+    let numbers = table.sends().await.unwrap();
+    assert_eq!(numbers.first().map(|one| one.clicks), Some(2));
 }

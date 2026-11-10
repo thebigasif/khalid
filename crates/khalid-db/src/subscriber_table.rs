@@ -1,7 +1,7 @@
 //! Newsletter subscribers on SQLite, for `khalid-newsletter` (task 5.5).
 
 use chrono::{DateTime, SecondsFormat, Utc};
-use khalid_core::Slug;
+use khalid_core::{AbsoluteUrl, Slug};
 use khalid_newsletter::{
     BoxFuture, Confirmed, EmailAddress, Labelled, Member, Recipient, Segment, SendId, SendNumbers,
     SendTotals, SignUp, SignedUp, StoreError, SubscriberId, SubscriberStore, TokenHash,
@@ -378,6 +378,30 @@ impl SubscriberStore for SubscriberTable {
         Box::pin(async move {
             let due = self.welcomes_due_now(list, day, due).await;
             due.map_err(StoreError::new)
+        })
+    }
+
+    fn add_link<'a>(
+        &'a self,
+        send: SendId,
+        position: u32,
+        url: &'a AbsoluteUrl,
+    ) -> BoxFuture<'a, Result<(), StoreError>> {
+        Box::pin(async move {
+            let added = self.add_link_now(send, position, url).await;
+            added.map_err(StoreError::new)
+        })
+    }
+
+    fn click(
+        &self,
+        send: SendId,
+        position: u32,
+    ) -> BoxFuture<'_, Result<Option<AbsoluteUrl>, StoreError>> {
+        Box::pin(async move {
+            self.click_now(send, position)
+                .await
+                .map_err(StoreError::new)
         })
     }
 }
