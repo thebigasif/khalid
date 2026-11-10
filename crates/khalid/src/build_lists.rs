@@ -45,7 +45,8 @@ struct List {
     body: fn(RenderListing) -> PageBody,
     /// Its posts, newest first.
     cards: Vec<PostCard>,
-    /// Whether its first page has its own feed: a category's or a channel's.
+    /// Whether its first page has its own feed: a collection's, a
+    /// category's or a channel's.
     feed: bool,
 }
 
@@ -290,7 +291,7 @@ fn collections(
             robots: None,
             body: PageBody::Collection,
             cards: vec![post.card.clone()],
-            feed: false,
+            feed: true,
         });
     }
     Ok(lists)
