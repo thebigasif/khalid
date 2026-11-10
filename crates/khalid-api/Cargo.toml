@@ -26,6 +26,7 @@ khalid-core.workspace = true
 khalid-lint.workspace = true
 khalid-media = { path = "../khalid-media", version = "1.3.2" }
 khalid-seo = { path = "../khalid-seo", version = "1.3.2" }
+khalid-theme = { path = "../khalid-theme", version = "1.3.2" }
 khalid-webhooks = { path = "../khalid-webhooks", version = "1.3.2" }
 serde.workspace = true
 serde_json.workspace = true

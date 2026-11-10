@@ -2788,6 +2788,7 @@ dependencies = [
  "khalid-media",
  "khalid-outbound",
  "khalid-seo",
+ "khalid-theme",
  "khalid-webhooks",
  "proptest",
  "serde",
@@ -3279,6 +3280,7 @@ dependencies = [
  "thiserror 2.0.21",
  "tokio",
  "toml",
+ "toml_edit",
  "url",
  "wiremock",
 ]

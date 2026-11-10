@@ -1927,6 +1927,178 @@
         ]
       }
     },
+    "/api/admin/v1/design/": {
+      "get": {
+        "tags": [
+          "admin settings"
+        ],
+        "summary": "Reads the colours, fonts, shape and logo the site's pages use, each\nfrom `theme/tokens.toml` or else the chosen template, with the WCAG\ncontrast of every colour pair. Needs `settings:write`.",
+        "operationId": "read_design",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The design",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteDesign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no design",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "theme/tokens.toml holds a mistake the pages cannot load",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "admin settings"
+        ],
+        "summary": "Changes the tokens sent in `theme/tokens.toml`, in place: comments and\nevery other table stay as written. Each value must be one the pages\nload. The change carries the `updated_at` of the copy it was made on;\nwhen the file changed since, the answer is a 409 (RULES.md BL-API-7).\nThe running server shows the change on the next page it renders.\nNeeds `settings:write`.",
+        "operationId": "change_design",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DesignChanges"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The design as saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteDesign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no design",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "theme/tokens.toml changed after the copy the change was made on, or holds a mistake",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, or a value is not one the pages load",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/keys/": {
       "get": {
         "tags": [
@@ -11824,6 +11996,62 @@
           }
         }
       },
+      "AdminDesign": {
+        "type": "object",
+        "description": "The values the site's pages use from `theme/tokens.toml`, each over the\nchosen template's own, with the contrast of each colour pair.",
+        "required": [
+          "tokens",
+          "locked",
+          "fonts",
+          "contrast"
+        ],
+        "properties": {
+          "contrast": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContrastPair"
+            },
+            "description": "Each colour on the background and on the surface, with its WCAG\ncontrast."
+          },
+          "fonts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FontChoice"
+            },
+            "description": "The fonts a body or heading may use: the system fonts, each family\nthe site serves itself, and the ones the file names now."
+          },
+          "locked": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The tokens `khalid theme sync` keeps as they are, such as\n`colors.link`."
+          },
+          "tokens": {
+            "type": "object",
+            "description": "Every token by its name in the file, such as `colors.link`, with\nthe value pages use: the file's, else the template's, else the\ndefault. A logo or icon that is not set is an empty text.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            },
+            "example": {
+              "colors.link": "#0b57d0",
+              "fonts.body": "system-ui, sans-serif",
+              "brand.logo": ""
+            }
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When `theme/tokens.toml` last changed, or `null` when the site has\nno such file yet. A change sends it back."
+          }
+        }
+      },
       "AdminIssues": {
         "type": "object",
         "description": "Issues as the Admin API wraps them.",
@@ -13531,6 +13759,48 @@
           }
         }
       },
+      "ContrastPair": {
+        "type": "object",
+        "description": "One colour pair the templates draw, with its contrast.",
+        "required": [
+          "token",
+          "ground",
+          "ratio",
+          "target",
+          "passes"
+        ],
+        "properties": {
+          "ground": {
+            "type": "string",
+            "description": "What it is drawn on: `colors.background` or `colors.surface`."
+          },
+          "nearest": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "For a colour that fails, the nearest shade that passes on both\ngrounds, such as `#2563eb`."
+          },
+          "passes": {
+            "type": "boolean",
+            "description": "Whether the ratio meets the target."
+          },
+          "ratio": {
+            "type": "number",
+            "format": "double",
+            "description": "The contrast, such as `6.3` for 6.3 to 1, rounded down so a failing\n4.47 never reads as a passing 4.5."
+          },
+          "target": {
+            "type": "number",
+            "format": "double",
+            "description": "What WCAG 2.2 AA asks: 4.5 for text, 3 for buttons and highlights."
+          },
+          "token": {
+            "type": "string",
+            "description": "The colour drawn, such as `colors.link`."
+          }
+        }
+      },
       "CreateOptions": {
         "allOf": [
           {
@@ -13613,6 +13883,58 @@
         "type": "string",
         "description": "JSON-LD written by hand for a type Khalid does not write itself, kept\nas written. It is read as schema.org nodes before it is kept, so a page\nnever carries JSON-LD a search engine would throw away.",
         "example": "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}"
+      },
+      "DesignChange": {
+        "type": "object",
+        "description": "A change to the design: only the tokens sent change.",
+        "properties": {
+          "locked": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "The whole list of tokens a sync keeps, when it changes."
+          },
+          "tokens": {
+            "type": "object",
+            "description": "New values by token name, such as `{\"colors.link\": \"#b3261e\"}`. An\nempty logo or icon takes it out of the file.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            },
+            "example": {
+              "colors.link": "#b3261e"
+            }
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "The `updated_at` of the copy the change was made on, `null` when\nthe site had no file."
+          }
+        },
+        "additionalProperties": false
+      },
+      "DesignChanges": {
+        "type": "object",
+        "description": "A change, wrapped the way the Admin API wraps the design.",
+        "required": [
+          "design"
+        ],
+        "properties": {
+          "design": {
+            "$ref": "#/components/schemas/DesignChange",
+            "description": "The change."
+          }
+        },
+        "additionalProperties": false
       },
       "DraftComment": {
         "type": "object",
@@ -14036,6 +14358,24 @@
             "description": "The fewest words a search had to have to count.",
             "example": 8,
             "minimum": 0
+          }
+        }
+      },
+      "FontChoice": {
+        "type": "object",
+        "description": "One font a body or heading may use.",
+        "required": [
+          "label",
+          "stack"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The name a person reads, such as `System font` or `Inter`."
+          },
+          "stack": {
+            "type": "string",
+            "description": "The CSS font list the file writes for it."
           }
         }
       },
@@ -17556,6 +17896,19 @@
           "home": {
             "type": "boolean",
             "description": "Whether it is the home site, where this panel lives."
+          }
+        }
+      },
+      "SiteDesign": {
+        "type": "object",
+        "description": "The design as the Admin API wraps it.",
+        "required": [
+          "design"
+        ],
+        "properties": {
+          "design": {
+            "$ref": "#/components/schemas/AdminDesign",
+            "description": "The site's design."
           }
         }
       },

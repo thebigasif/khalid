@@ -5,9 +5,11 @@
 
 use std::fs;
 use std::path::Path;
+use std::sync::Arc;
 
+use khalid_api::design_desk::PackTokens;
 use khalid_api::resources::{AdminTemplate, OptionTakes, ReaderDefault, TemplateOptionSpec};
-use khalid_core::{Config, ConfigError, UserMessage, toml_location};
+use khalid_core::{Config, ConfigError, Environment, UserMessage, toml_location};
 use khalid_render::{RenderCta, RenderPack, TemplateOption, Tokens};
 use khalid_theme::{CheckedOption, Look, LookError, OptionKind};
 
@@ -89,6 +91,27 @@ fn preferred_source(config: &Config) -> Vec<(String, TemplateOption)> {
 /// The message for a mistake in `theme/tokens.toml`.
 pub(crate) fn tokens(site: &Path, look: &Look) -> Result<Tokens, UserMessage> {
     Tokens::load_over(site, look.pack().tokens()).map_err(|error| build_message::tokens(&error))
+}
+
+/// The tokens of the template `site.toml` in `site` chooses, read with
+/// `env` on each call, so the Design route shows the palette of a template
+/// chosen on the Look screen at once. Classic's when `site.toml` does not
+/// read.
+pub(crate) fn pack_tokens(site: &Path, env: &Environment) -> PackTokens {
+    let (site, env) = (site.to_path_buf(), env.clone());
+    Arc::new(move || {
+        let mut path = site.clone();
+        path.push(Config::FILE_NAME);
+        let config = fs::read_to_string(&path)
+            .ok()
+            .and_then(|text| Config::from_toml(&path, &text, &env).ok());
+        config
+            .and_then(|config| Look::choose(config.template()).ok())
+            .map_or_else(
+                || khalid_theme::classic().tokens(),
+                |look| look.pack().tokens(),
+            )
+    })
 }
 
 /// Every built-in template as the Admin API lists it, read from the

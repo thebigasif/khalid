@@ -26,6 +26,8 @@ export const operations = {
   reply_to_comment: { method: "POST", path: "/api/admin/v1/comments/{id}/replies/", key: "admin", body: "application/json" },
   consent_counts: { method: "GET", path: "/api/admin/v1/consent/counts/", key: "admin", body: null },
   consent_versions: { method: "GET", path: "/api/admin/v1/consent/versions/", key: "admin", body: null },
+  read_design: { method: "GET", path: "/api/admin/v1/design/", key: "admin", body: null },
+  change_design: { method: "PUT", path: "/api/admin/v1/design/", key: "admin", body: "application/json" },
   list_keys: { method: "GET", path: "/api/admin/v1/keys/", key: "admin", body: null },
   create_key: { method: "POST", path: "/api/admin/v1/keys/", key: "admin", body: "application/json" },
   revoke_key: { method: "DELETE", path: "/api/admin/v1/keys/{id}/", key: "admin", body: null },

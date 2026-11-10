@@ -19,6 +19,7 @@ export type NavPath =
   | "/search-console"
   | "/serpdad"
   | "/look"
+  | "/design"
   | "/authors"
   | "/redirects"
   | "/schema-templates"
@@ -67,6 +68,7 @@ export const NAV: NavGroup[] = [
     label: shellWords.groups.site,
     items: [
       { to: "/look", label: en.nav.look, icon: "look" },
+      { to: "/design", label: en.nav.design, icon: "type" },
       { to: "/authors", label: en.nav.authors, icon: "person" },
       { to: "/redirects", label: en.nav.redirects, icon: "redirect" },
       { to: "/schema-templates", label: en.nav.templates, icon: "braces" },

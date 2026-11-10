@@ -12,6 +12,7 @@ use khalid_api::analytics_desk::AnalyticsDesk;
 use khalid_api::api::{self, AdminDesks, AuditDesk};
 use khalid_api::comment_moderation::CommentModeration;
 use khalid_api::content_store::ContentStore;
+use khalid_api::design_desk::DesignDesk;
 use khalid_api::ghost::{self, GhostSite};
 use khalid_api::keys::KeyStore;
 use khalid_api::media_api::MediaLibrary;
@@ -105,6 +106,7 @@ pub(crate) fn api_router(
         tags: Some(Arc::new(SiteTags::new(site, config))),
         categories: Some(Arc::new(SiteCategories::new(site, config))),
         settings: Some(Arc::new(SiteSettings::new(site, config, env))),
+        design: Some(DesignDesk::new(site, look::pack_tokens(site, env))),
         templates: Some(Arc::from(look::admin_templates())),
         analytics: AnalyticsDesk::new(
             Arc::new(AnalyticsTable::new(database.clone(), id)),

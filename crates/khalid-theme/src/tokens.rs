@@ -14,7 +14,8 @@ use crate::{Rgb, SiteTheme, TokenName, TokensError};
 const TOKENS_FILE: &str = "theme/tokens.toml";
 
 /// The comment at the top of every file this crate writes.
-const HEADER: &str = "# The blog's colours, fonts and shape, read by the templates as CSS
+pub(crate) const HEADER: &str =
+    "# The blog's colours, fonts and shape, read by the templates as CSS
 # variables. `khalid theme sync` writes this file from the main site.
 # Every value may be edited by hand. To keep an edit when the site is
 # synced again, name it in a list at the top: locked = [\"colors.link\"]
@@ -234,13 +235,7 @@ impl ThemeTokens {
     ///
     /// Returns [`TokensError::Parse`] with the line of the first mistake.
     pub fn from_toml(text: &str) -> Result<Self, TokensError> {
-        toml::from_str(text).map_err(|source: toml::de::Error| {
-            let line = source.span().map(|span| {
-                let before = text.get(..span.start).unwrap_or_default();
-                before.matches('\n').count().saturating_add(1)
-            });
-            TokensError::Parse { line, source }
-        })
+        toml::from_str(text).map_err(|source| parse_error(text, source))
     }
 
     /// The tokens as the text of `theme/tokens.toml`, with a header that
@@ -259,7 +254,7 @@ impl ThemeTokens {
     /// folder, [`TokensError::Read`] when the file cannot be read, and
     /// [`TokensError::Parse`] for a mistake in it.
     pub fn read(site_root: &Path) -> Result<Option<Self>, TokensError> {
-        let path = SitePath::within(site_root, TOKENS_FILE)?.resolve()?;
+        let path = tokens_path(site_root)?;
         match fs::read_to_string(&path) {
             Ok(text) => Self::from_toml(&text).map(Some),
             Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(None),
@@ -280,25 +275,51 @@ impl ThemeTokens {
     /// folder through a symlink, and [`TokensError::Write`] when the disk
     /// refuses the write.
     pub fn write(&self, site_root: &Path) -> Result<PathBuf, TokensError> {
-        let path = SitePath::within(site_root, TOKENS_FILE)?.resolve()?;
-        let write = |source| TokensError::Write {
-            path: path.clone(),
-            source,
-        };
-        if let Some(folder) = path.parent() {
-            fs::create_dir_all(folder).map_err(write)?;
-        }
-        let temporary = path.with_file_name(".tokens.toml.tmp");
-        let result = (|| {
-            let mut file = fs::File::create(&temporary)?;
-            file.write_all(self.to_toml().as_bytes())?;
-            file.sync_all()?;
-            fs::rename(&temporary, &path)
-        })();
-        if result.is_err() {
-            drop(fs::remove_file(&temporary));
-        }
-        result.map_err(write)?;
-        Ok(path)
+        write_text(site_root, &self.to_toml())
     }
+}
+
+/// The path of `theme/tokens.toml` inside `site_root`.
+pub(crate) fn tokens_path(site_root: &Path) -> Result<PathBuf, TokensError> {
+    Ok(SitePath::within(site_root, TOKENS_FILE)?.resolve()?)
+}
+
+/// Writes `text` to `theme/tokens.toml` inside `site_root` atomically, as
+/// [`ThemeTokens::write`] describes, and returns the path.
+pub(crate) fn write_text(site_root: &Path, text: &str) -> Result<PathBuf, TokensError> {
+    let path = tokens_path(site_root)?;
+    let write = |source| TokensError::Write {
+        path: path.clone(),
+        source,
+    };
+    if let Some(folder) = path.parent() {
+        fs::create_dir_all(folder).map_err(write)?;
+    }
+    let temporary = path.with_file_name(".tokens.toml.tmp");
+    let result = (|| {
+        let mut file = fs::File::create(&temporary)?;
+        file.write_all(text.as_bytes())?;
+        file.sync_all()?;
+        fs::rename(&temporary, &path)
+    })();
+    if result.is_err() {
+        drop(fs::remove_file(&temporary));
+    }
+    result.map_err(write)?;
+    Ok(path)
+}
+
+/// The text of a `tokens.toml` file as a table, with the line of the first
+/// mistake.
+pub(crate) fn parse_table(text: &str) -> Result<toml::Table, TokensError> {
+    toml::from_str(text).map_err(|source: toml::de::Error| parse_error(text, source))
+}
+
+/// A reader's error, with the line of `text` it points at.
+fn parse_error(text: &str, source: toml::de::Error) -> TokensError {
+    let line = source.span().map(|span| {
+        let before = text.get(..span.start).unwrap_or_default();
+        before.matches('\n').count().saturating_add(1)
+    });
+    TokensError::Parse { line, source }
 }
