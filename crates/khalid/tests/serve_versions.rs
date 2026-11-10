@@ -61,6 +61,16 @@ fn versions_and_a_stale_edit_name_who_saved_through_a_restart() {
     assert_eq!(status, 200, "{json}");
     assert_eq!(json["versions"][0]["saved_by"], by, "{json}");
     assert_eq!(json["versions"][0]["saved_by_name"], "Maria", "{json}");
+    let rows = "/api/admin/v1/posts/?filter=status:published&limit=100";
+    let (status, json) = server.admin("GET", rows, None);
+    assert_eq!(status, 200, "{json}");
+    let id = "en.why-internal-links-matter";
+    let row = json["posts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|row| row["id"] == id);
+    assert_eq!(row.unwrap()["updated_by_name"], "Maria", "{json}");
     let old = before["updated_at"].clone();
     let stale = json!({ "posts": [{ "markdown": "Lost.", "updated_at": old }] });
     let (status, json) = server.admin("PUT", POST, Some(&stale));

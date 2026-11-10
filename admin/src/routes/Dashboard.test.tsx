@@ -134,6 +134,25 @@ describe("the dashboard", () => {
     expect(asked?.get("limit")).toBe("5");
   });
 
+  it("names who changed a draft, not their key, or says nobody is known", async () => {
+    signedIn();
+    const named = row({
+      id: "01JD",
+      title: "Notes on link depth",
+      status: "draft",
+      updated_by: "1111222233334444",
+      updated_by_name: "Maria Lopez",
+    });
+    const unknown = row({ id: "01JE", title: "Notes by hand", status: "draft", updated_by: null });
+    blog({ drafts: [named, unknown] });
+    renderAt("/");
+    const drafts = await screen.findByRole("region", { name: words.recentDrafts });
+    const [, first, second] = within(drafts).getAllByRole("row");
+    expect(first).toHaveTextContent("Maria Lopez");
+    expect(first).not.toHaveTextContent("1111222233334444");
+    expect(second).toHaveTextContent(en.dashboard.nobody);
+  });
+
   it("puts failing posts, scheduled posts and waiting comments under Needs attention", async () => {
     signedIn();
     blog({ blocked: [STUCK], scheduled: 2, waiting: 3 });

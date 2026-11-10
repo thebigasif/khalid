@@ -145,7 +145,7 @@ fn whole_site() -> Problem {
 )]
 async fn browse_admin_posts(
     State(posts): State<Posts>,
-    Extension(principal): Extension<Principal>,
+    (Extension(principal), Extension(book)): (Extension<Principal>, Extension<NameBook>),
     rows: Result<Query<RowQuery>, QueryRejection>,
 ) -> Result<Json<PostRows>, Problem> {
     require(&principal, Scope::PostsWrite)?;
@@ -160,8 +160,10 @@ async fn browse_admin_posts(
         .await
         .map_err(|error| Problem::internal(&error))?;
     let meta = Meta::new(query.page(), query.limit(), listed.total());
+    let names = book.names().await;
+    let posts = listed.into_items().into_iter();
     Ok(Json(PostRows {
-        posts: listed.into_items(),
+        posts: posts.map(|row| row.named(&names)).collect(),
         meta,
     }))
 }

@@ -135,6 +135,23 @@ async fn a_version_and_a_stale_edit_name_the_writer_by_their_key_name() {
 }
 
 #[tokio::test]
+async fn a_posts_row_names_who_made_the_last_change() {
+    let router = router(None).await;
+    let rows = "/api/admin/v1/posts/";
+    let (status, json) = send(&router, ("GET", rows), WRITER, None).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(json["posts"][0]["updated_by"], Value::Null, "{json}");
+    assert_eq!(json["posts"][0]["updated_by_name"], Value::Null, "{json}");
+    let edit = json!({ "posts": [{ "title": "Picking anchor text",
+        "updated_at": "2026-10-20T08:30:00Z" }] });
+    let (status, json) = send(&router, ("PUT", POST), WRITER, Some(edit)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let (_, json) = send(&router, ("GET", rows), WRITER, None).await;
+    assert_eq!(json["posts"][0]["updated_by"], "1111222233334444", "{json}");
+    assert_eq!(json["posts"][0]["updated_by_name"], "Maria", "{json}");
+}
+
+#[tokio::test]
 async fn the_versions_route_refuses_a_missing_post_a_reader_and_a_server_without_versions() {
     let keeping = router(Some(MemoryVersionStore::default())).await;
     let missing = "/api/admin/v1/posts/en.nothing-here/versions/";

@@ -1706,8 +1706,10 @@ export type PostRow = {
   title: string;
   /** When it last changed. */
   updated_at: string;
-  /** Who made the last change. */
+  /** Who made the last change, as the post names them; `null` when not known, such as for a file changed by hand. */
   updated_by?: string | null;
+  /** The name the admin shows for whoever made the last change: their account's name, the name their key was made with, or else `updated_by`; `null` when `updated_by` is. */
+  updated_by_name?: string | null;
   /** How many words its text holds. */
   words: number;
 };
