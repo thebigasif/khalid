@@ -6,7 +6,7 @@ use std::sync::Arc;
 
 use bytes::Bytes;
 
-use crate::{Moved, Page, Pages, ServerError};
+use crate::{Moved, Page, PagePath, Pages, ServerError};
 
 /// Renders every page of a site from its files.
 ///
@@ -63,8 +63,13 @@ impl<R: Render + ?Sized> Render for Arc<R> {
 pub struct Rendered {
     pages: Vec<Page>,
     not_found: Bytes,
+    not_found_under: Vec<(PagePath, Bytes)>,
     moves: Vec<Moved>,
 }
+
+/// The not-found page of any address, and of each address prefix with
+/// its own.
+pub(crate) type NotFoundPages = (Bytes, Vec<(PagePath, Bytes)>);
 
 impl Rendered {
     /// The rendered `pages` and the `not_found` page, with no moves.
@@ -72,7 +77,19 @@ impl Rendered {
         Self {
             pages,
             not_found: not_found.into(),
+            not_found_under: Vec::new(),
             moves: Vec::new(),
+        }
+    }
+
+    /// The same, with the not-found page of each address prefix in
+    /// `under`, as [`Pages::with_not_found_under`] answers them.
+    #[must_use]
+    pub fn with_not_found_under<B: Into<Bytes>>(self, under: Vec<(PagePath, B)>) -> Self {
+        let under = under.into_iter().map(|(at, page)| (at, page.into()));
+        Self {
+            not_found_under: under.collect(),
+            ..self
         }
     }
 
@@ -82,9 +99,10 @@ impl Rendered {
         Self { moves, ..self }
     }
 
-    /// Splits into the pages, the not-found page and the moves.
-    pub(crate) fn into_parts(self) -> (Vec<Page>, Bytes, Vec<Moved>) {
-        (self.pages, self.not_found, self.moves)
+    /// Splits into the pages, the not-found pages and the moves.
+    pub(crate) fn into_parts(self) -> (Vec<Page>, NotFoundPages, Vec<Moved>) {
+        let not_found = (self.not_found, self.not_found_under);
+        (self.pages, not_found, self.moves)
     }
 }
 
