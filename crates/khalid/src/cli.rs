@@ -1,13 +1,11 @@
 //! The command line, as `clap` parses it.
 
-use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
 
 use clap::builder::{BoolValueParser, TypedValueParser};
 use clap::{ArgAction, Args, Parser, Subcommand, ValueEnum};
 use khalid_analytics::CRAWL_DAYS_KEPT;
 use khalid_core::{AbsoluteUrl, Locale, Slug};
-use khalid_https::Domain;
 use khalid_seo::Pace;
 use khalid_webhooks::Event;
 
@@ -17,6 +15,7 @@ pub(crate) use crate::cli_access::{
 pub(crate) use crate::cli_import::{Images, ImportArgs, ImportSource, Run};
 use crate::new::NewArgs;
 use crate::newsletter_cli::NewsletterCommand;
+pub(crate) use crate::serve_args::ServeArgs;
 use crate::update::UpdateTarget;
 
 /// The command line.
@@ -444,38 +443,6 @@ pub(crate) enum RedirectsCommand {
         #[arg(value_name = "PATH")]
         path: String,
     },
-}
-
-/// What `khalid serve` takes: plain HTTP on an address, or HTTPS for a
-/// domain with its own certificate.
-#[derive(Debug, Args)]
-pub(crate) struct ServeArgs {
-    /// The address and port to answer on over plain HTTP
-    #[arg(long, value_name = "ADDRESS", default_value = "127.0.0.1:8080")]
-    pub(crate) listen: SocketAddr,
-    /// Make the site first when the folder has none, at the address in `KHALID_ADDRESS`
-    #[arg(long)]
-    pub(crate) init: bool,
-    /// Answer over HTTPS for this domain on ports 443 and 80, with a free
-    /// certificate from Let's Encrypt that Khalid gets and renews
-    #[arg(long, value_name = "DOMAIN", conflicts_with = "listen")]
-    pub(crate) domain: Option<Domain>,
-    /// Agree to Let's Encrypt's subscriber agreement unasked, as in a service or a container
-    #[arg(long, requires = "domain")]
-    pub(crate) accept_terms: bool,
-    /// The address for HTTPS instead of port 443 on every address
-    #[arg(long, value_name = "ADDRESS", requires = "domain", hide = true)]
-    pub(crate) https_listen: Option<SocketAddr>,
-    /// The address for plain HTTP instead of port 80 on every address
-    #[arg(long, value_name = "ADDRESS", requires = "domain", hide = true)]
-    pub(crate) http_listen: Option<SocketAddr>,
-    /// Another ACME directory than Let's Encrypt's, such as its staging one
-    #[arg(long, value_name = "URL", requires = "domain", hide = true)]
-    pub(crate) acme_directory: Option<String>,
-    /// Test builds only: the hidden timings.
-    #[cfg(feature = "test-util")]
-    #[command(flatten)]
-    pub(crate) test: crate::serve_https::ServeTestArgs,
 }
 
 /// What `khalid init` takes. Each flag answers one of the four questions, and

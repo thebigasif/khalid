@@ -159,6 +159,7 @@ mod seo_settings;
 mod serve;
 mod serve_address;
 mod serve_apis;
+mod serve_args;
 mod serve_check;
 mod serve_https;
 mod serve_message;

@@ -168,6 +168,23 @@ fn a_static_site_refuses_https_and_says_why() {
 }
 
 #[test]
+fn one_site_refuses_https_for_a_sites_folder_and_names_domain() {
+    let (site, _) = demo_with_certificate();
+
+    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", site.path().to_str().unwrap()])
+        .args(["serve", "--https", "--accept-terms"])
+        .stdin(Stdio::null())
+        .output()
+        .unwrap();
+
+    let said = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(output.status.code(), Some(1), "{said}");
+    assert!(said.contains("this folder holds one site"), "{said}");
+    assert!(said.contains("--domain blog.example.com"), "{said}");
+}
+
+#[test]
 fn with_no_one_to_ask_and_no_accept_terms_khalid_says_how_to_agree() {
     let (site, _) = demo_with_certificate();
     let ports = (free_port(), free_port());
