@@ -21,6 +21,6 @@ The `:::gated` block shows a note and a sign-up form and never its body (KH-GRO-
 
 - Unsubscribing empties the cookie in the browser that unsubscribes (`Max-Age=0`). Other devices keep theirs until it runs out after 180 days: checking the subscriber on every request would need a database read per gated page, and the cookie holds no one to check.
 - The full page takes its table of contents, beside the post and in `::toc`, from the body rendered open. A locked part's headings still take their ids, unlisted, so every heading has the same `id` on both pages. The feeds come from the public page, so a heading inside a gated part is not in them. The search index and the Content API never see the gated body.
-- Images inside a gated part get no generated sizes, because sizes are made from the public page.
+- The full pages are made before the files beside posts are attached, so images inside a gated part get their generated sizes, as the public page's images do.
 - A static build has no server, so gated content stays locked there, as the static lock card says.
 - Not checked on this server: a real browser's handling of the cookie and the redirect. The end-to-end test drives the form, the email, the button, the cookie and the page over HTTP.

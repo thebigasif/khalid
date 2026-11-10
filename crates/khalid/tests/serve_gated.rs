@@ -32,6 +32,8 @@ const FOLDER_GATED: &str = "
 ## Measure again
 
 Check the page weight once more after each fix.
+
+![The page weight after the fixes](page-weight.png)
 :::
 ";
 
@@ -179,7 +181,9 @@ fn after_the_full_render(server: &Server) -> (u16, String, String) {
 }
 
 /// With `cookie`, the folder post's open page lists the gated part's
-/// heading in its table of contents, which the public page has none of.
+/// heading in its table of contents, which the public page has none of,
+/// and draws the gated part's image in sizes, as the public page draws
+/// its own.
 #[cfg(test)]
 fn the_open_page_is_finished_as_the_public_one(server: &Server, cookie: &str) {
     let contents = "<li><a href=\"#measure-again\">Measure again</a>";
@@ -190,6 +194,16 @@ fn the_open_page_is_finished_as_the_public_one(server: &Server, cookie: &str) {
     assert_eq!(status, 200, "{page}");
     assert!(page.contains("<h2 id=\"measure-again\">"), "{page}");
     assert!(page.contains(contents), "the contents list it: {page}");
+    let alt = page
+        .find("alt=\"The page weight after the fixes\"")
+        .unwrap();
+    let tag = page
+        .get(..alt)
+        .and_then(|before| before.rfind("<img "))
+        .unwrap();
+    let image = page.get(tag..alt).unwrap();
+    let sized = image.contains(" srcset=\"/blog/media/") && image.contains(" width=\"");
+    assert!(sized, "the gated image is drawn in sizes: {image}");
 }
 
 #[test]

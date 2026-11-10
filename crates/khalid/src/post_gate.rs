@@ -27,7 +27,9 @@ const TOC_END: &str = "</nav>\n";
 /// Keeps a full page for each post of `content` in `languages` with gated
 /// content: a copy of its public page, finished as the public page is,
 /// with each locked part swapped for the part open. A post with a password
-/// or for members is skipped: its body stays locked as a whole.
+/// or for members is skipped: its body stays locked as a whole. Call it
+/// before `post_files::served`, which draws the images of full pages in
+/// their sizes too.
 ///
 /// # Errors
 ///
