@@ -348,7 +348,7 @@ pub(crate) enum SearchConsoleCommand {
     /// whether a heading of the post answers each
     FollowUps,
     /// Email the week in Google search to `report_to` under `[search_console]`,
-    /// through `[mail]`. Run it once a week from a timer
+    /// through `[mail]`. `khalid serve` sends it once a week on its own
     Email,
 }
 

@@ -1,7 +1,8 @@
 //! Search Console follow-ups through `khalid serve` (GEO M3): the Admin
 //! API asks Google, here a stand-in, and names the heading of each post
 //! that answers each long search, as `khalid search-console follow-ups`
-//! does.
+//! does. With `report_to` and `[mail]` set, the server sends the weekly
+//! email on its own (G43).
 
 #[expect(
     dead_code,
@@ -16,6 +17,8 @@ use std::path::Path;
 use std::process::{Child, Command, Stdio};
 use std::time::Duration;
 
+use khalid_core::{Clock, SystemClock};
+use khalid_mail::StubSmtp;
 use serde_json::{Value, json};
 use tempfile::TempDir;
 use wiremock::matchers::{method, path};
@@ -141,6 +144,52 @@ async fn the_admin_api_names_the_heading_that_answers_each_long_search() {
         searches[1]["answered_by"],
         "Search engines use them to find and rank pages"
     );
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn serve_sends_the_weekly_email_on_its_own_and_keeps_the_day() {
+    let google = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/token"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({ "access_token": "ya29.t" })))
+        .mount(&google)
+        .await;
+    let row = json!({ "keys": ["https://www.example.com/blog/what-a-sitemap-does/"],
+        "clicks": 8.0, "impressions": 160.0, "ctr": 0.05, "position": 3.1 });
+    Mock::given(method("POST"))
+        .and(path(ANALYTICS))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({ "rows": [row] })))
+        .mount(&google)
+        .await;
+    let stub = StubSmtp::start().unwrap();
+    let mail = format!(
+        "report_to = \"owner@example.com\"\n\n[mail]\nfrom = \"news@example.com\"\n\n[mail.smtp]\n\
+         host = \"127.0.0.1\"\nport = {}\nsecurity = \"none\"\nprivate_host = true\n",
+        stub.port()
+    );
+    let site = demo_site(&format!("{OPT_IN}{mail}"));
+    let _server = start(site.path(), &google);
+
+    for _ in 0..300 {
+        if !stub.received().is_empty() {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(200)).await;
+    }
+    let received = stub.received();
+    assert_eq!(received.len(), 1, "{received:?}");
+    assert!(
+        received[0].contains("To: owner@example.com"),
+        "{received:?}"
+    );
+    assert!(
+        received[0].contains("Clicks from Google: 8 this week"),
+        "{received:?}"
+    );
+    let mut kept = site.path().to_path_buf();
+    kept.push("data/search-console-email.txt");
+    let today = SystemClock.now().date_naive();
+    assert_eq!(fs::read_to_string(kept).unwrap(), format!("{today}\n"));
 }
 
 #[tokio::test(flavor = "multi_thread")]
