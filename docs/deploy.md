@@ -128,10 +128,24 @@ If a saved `site.toml` or theme file has a mistake, the blog keeps serving the l
 A few settings only take effect when the server starts:
 
 - `mount`, `admin_folder` and `mode` shape the server's own addresses, so it keeps the values it started with.
-- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[limits]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
+- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[limits]`, `[log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts, the log and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
 - The `--listen`, `--domain` and `--https` options, the environment variables, and the `data/` folder with its database are read once at start.
 
 When you change one of these, the log says a restart is needed, and so does the admin: its settings screens show a note, and the Admin API's settings answer `restart_needed: true`. A change to anything else, such as the blog's name, its look, its SEO or its privacy settings, answers `false`, since the blog already uses it. Restart with `systemctl restart khalid`, or stop and start the server.
+
+## The server log
+
+`khalid serve` writes its log to standard error, the stream a service manager keeps for each program. Each line says what happened, such as a post that went live, or an email that could not be sent and why. With systemd, read it with `journalctl -u khalid`. With Docker, read it with `docker logs <container>`, and with Compose with `docker compose logs khalid`.
+
+The log says what the server did and what failed. It holds no password, API key, token or email text. To log less, or to send JSON to a log collector, add a `[log]` table to `site.toml`:
+
+```toml
+[log]
+level = "warn"
+format = "json"
+```
+
+`level` is the least important line written: `error`, `warn`, `info`, `debug` or `trace`, `info` unless set. A released Khalid writes `info` at most, so `debug` and `trace` log the same as `info`; they add lines only in a build made for development, which keeps the binary small. A failed email is a `warn` line. `format` is `text`, one plain line a message, unless set, or `json`, one JSON object a line. `khalid serve --json` writes JSON too. A server of several sites logs plain lines at `info`.
 
 ## Docker
 
@@ -277,6 +291,8 @@ Khalid connects on port 587 and turns encryption on before it sends anything. Ad
 
 Form answers are emailed to the `from` address unless you add `forms_to = "hello@example.com"` under `[mail]`.
 
+If a form answer's email cannot be sent, because the mail server is down or refuses it, Khalid keeps it and tries again 1 minute, 5 minutes, 30 minutes, 2 hours, 5 hours and 16 hours later, the same waits as a webhook. That is seven tries over about a day. Each failed try leaves a warning in the server log with the reason. If the last try fails too, Khalid stops, and `khalid doctor` shows how many answers never arrived, under "Worth a look", for 30 days. The answers themselves are always kept in the site's database, and `khalid db export` writes them to `form_submissions.csv`.
+
 Every answer is also kept in the site database, mail or not. Open Forms in the admin to read them, newest first; only an owner or an admin sees it, because answers hold visitors' email addresses. Tools read the same answers through the Admin API at `/api/admin/v1/forms/` with a key that has `subscribers:write`.
 
 When a visitor asks you to erase what they sent (their right under the GDPR), open the form in Forms and click **Delete** on their answer, then confirm. The answer is gone for good and cannot be brought back; the audit log keeps only that an answer was deleted, never what it said. Tools do the same with `DELETE /api/admin/v1/forms/{id}/answers/{answer}/`.
@@ -294,6 +310,8 @@ The password, API key or token never goes in `site.toml`. Set it in the server's
 | Postmark | `KHALID_POSTMARK_TOKEN` |
 
 With systemd, run `sudo systemctl edit khalid` and add `Environment=KHALID_SMTP_PASSWORD=...` under `[Service]`, or keep it in a file only root can read and name it with `EnvironmentFile=`. With Compose, put it in the `.env` file and pass it on under `environment:` in `compose.yaml`, as `KHALID_SMTP_PASSWORD: ${KHALID_SMTP_PASSWORD}`. Khalid refuses to start, and says which variable is missing, when the way you picked needs one that is not set.
+
+To check mail before you start the server, run `khalid --site <folder> doctor` in the same environment. Its Mail line says which way mail leaves and whether the variable is set, without showing it. Add `--send-test-mail` to send one email to the address form answers go to, through the same server or service `khalid serve` uses. If it fails, doctor says why, such as a refused password or a server that did not answer.
 
 ## Alerts
 

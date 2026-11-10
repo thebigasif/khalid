@@ -1,16 +1,18 @@
 //! `khalid --site <folder> doctor`: run every check on a site folder and
 //! print each problem with what to do. It exits with 1 when any check finds a
 //! problem. It changes nothing: the permission check writes a hidden empty
-//! file and removes it at once.
+//! file and removes it at once, and `--send-test-mail` sends one email.
+
+mod mail;
 
 use std::fmt::Write as _;
 use std::path::Path;
 
-use khalid_core::{Environment, UserMessage};
+use khalid_core::{Clock, Environment, SystemClock, UserMessage};
 use serde::Serialize;
 
 use crate::cli::{Cli, Network, Output};
-use crate::doctor_check::{Check, Finding, Outcome, Status};
+use crate::doctor_check::{Check, Finding, MailTest, Outcome, Status};
 use crate::exit::Exit;
 use crate::{
     doctor_address, doctor_files, doctor_folder, doctor_pictures, doctor_robots, privacy_page,
@@ -65,16 +67,16 @@ impl<'a> From<&'a Finding> for CheckBody<'a> {
 }
 
 /// Runs every check on the `site` folder, then fetches its public address
-/// and the host's `robots.txt` unless `network` says to stay offline, and
-/// reports them all, with the
-/// features a static site has off.
-pub(crate) fn run(site: &Path, network: Network, cli: &Cli) -> Exit {
-    let (mut findings, config) = doctor_files::check(site);
+/// and the host's `robots.txt` unless `network` says to stay offline,
+/// sends a test email when `test_mail` asks, and reports them all,
+/// with the features a static site has off.
+pub(crate) fn run(site: &Path, (network, test_mail): (Network, bool), cli: &Cli) -> Exit {
+    let env = Environment::from_process();
+    let (mut findings, config) = doctor_files::check(site, &env);
     findings.extend(doctor_folder::check(site));
-    findings.push(doctor_pictures::check(
-        config.as_ref(),
-        &Environment::from_process(),
-    ));
+    findings.push(doctor_pictures::check(config.as_ref(), &env));
+    let test = (MailTest::from(test_mail), cli);
+    findings.push(mail::check(config.as_ref(), &env, test));
     findings.push(doctor_address::check(config.as_ref(), network, cli));
     findings.push(doctor_robots::check(config.as_ref(), network, cli));
     let off = config
@@ -85,6 +87,7 @@ pub(crate) fn run(site: &Path, network: Network, cli: &Cli) -> Exit {
         .as_ref()
         .and_then(privacy_page::missing_contact)
         .into_iter()
+        .chain(mail::given_up(site, SystemClock.now()))
         .collect();
     let problems = findings
         .iter()

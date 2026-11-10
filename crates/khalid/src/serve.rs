@@ -9,13 +9,11 @@ use std::sync::{Arc, Mutex, PoisonError};
 use std::time::Duration;
 
 use axum::Router;
-use khalid_analytics::VisitorLogStore;
 use khalid_api::publish_door::PublishDoor;
 use khalid_api::unlock::{Transport, UnlockSigner};
 use khalid_content::SiteContent;
 use khalid_core::{Config, Environment, S3Keys, Secret, Slug, SystemClock, UserMessage};
-use khalid_db::{Database, NotFoundTable, ScheduleTable, SiteId, VersionTable, VisitorLogTable};
-use khalid_forms::FormDelivery;
+use khalid_db::{Database, ScheduleTable, SiteId, VersionTable};
 use khalid_outbound::{Outbound, OutboundError};
 use khalid_routes::Routes;
 use khalid_server::{FolderLook, LivePages, Pages, SecurityHeaders, watch};
@@ -29,7 +27,6 @@ use crate::cli::{Cli, Output};
 use crate::content_feed::{self, Destination};
 use crate::entry_events::Entries;
 use crate::exit::Exit;
-use crate::form_delivery::SiteDelivery;
 use crate::media_library::PictureKeys;
 use crate::memory::HandBack;
 use crate::outside_writes::Reloads;
@@ -37,20 +34,22 @@ use crate::post_files::Assets;
 use crate::scheduler::WeeklyEmail;
 use crate::search_console_finder::SiteFollowUps;
 use crate::serve_check::BodyCheck;
-use crate::serve_https::{self, Listen, ServeClock};
+use crate::serve_https::{Listen, ServeClock};
 use crate::site_content::LiveContent;
 use crate::site_hosts::{self, Among, Door};
 use crate::site_html::NotFound;
 use crate::site_pages::SitePages;
 use crate::site_posts::SitePosts;
-use crate::site_watch::SiteWatch;
 use crate::tag_events::Tags;
 use crate::{
-    admin_blog, alert_watch, announce, assets, comment_pages, consent_route, db, db_message,
-    form_pages, media_library, newsletter, page_counts, preview, push_hook, redirect_route, report,
-    scheduler, search_route, serve_apis, serve_message, share_images, site_config, staff_toolbar,
-    unlock,
+    admin_blog, announce, assets, comment_pages, consent_route, db, db_message, media_library,
+    newsletter, page_counts, preview, push_hook, redirect_route, report, scheduler, search_route,
+    serve_apis, serve_message, share_images, site_config, staff_toolbar, unlock,
 };
+
+#[path = "serve_mail.rs"]
+mod mail;
+use mail::mail_and_alerts;
 
 /// How often the site folder is looked at for a saved edit where the system
 /// has no file events for it (ADR "the server watches files with events").
@@ -203,7 +202,7 @@ fn serve_with(
         .map_err(|message| (message, Exit::Failure))?;
     let security = security_headers(config)?;
     let search = search_route::Search::of(&source, (database, id), &security);
-    let (posted, alerting) = mail_and_alerts(
+    let ((posted, forms), alerting) = mail_and_alerts(
         (site, config, listen, every),
         (&search, runtime, &telling),
         &content,
@@ -231,8 +230,8 @@ fn serve_with(
             )?;
         posts.follow(source.live_config());
         let reloads = Reloads::new(site, (redirects.clone(), library, rereading));
-        let scheduling =
-            scheduler::start((&door, &posts, every.clock), (alerting, keys.weekly), reloads);
+        let timed = (alerting, keys.weekly, forms);
+        let scheduling = scheduler::start((&door, &posts, every.clock), timed, reloads);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =
@@ -271,57 +270,6 @@ fn serve_with(
         tracing::warn!(?error, "the Content API's task stopped early");
     }
     served
-}
-
-/// The routes a reader posts to from a page besides comments, and the
-/// alerts ready to start, sharing the one way mail leaves, made from
-/// `[mail]` with its `secret` and `outbound`. The routes are the
-/// newsletter's and the form block's (G4), whose answers are emailed and
-/// told to `telling` (G40), as is each confirmed subscriber; both keep
-/// what they receive in the database `site` reads. The alert checks and
-/// the speed and uptime watch run `every` so often.
-fn mail_and_alerts(
-    (folder, config, listen, every): (&Path, &Config, &Listen, Every),
-    (site, runtime, telling): (&search_route::Search, &Runtime, &SiteAnnounce),
-    content: &LiveContent,
-    (secret, outbound): (Option<Secret<String>>, &Outbound),
-) -> Result<(Router, alert_watch::Ready), (UserMessage, Exit)> {
-    let (database, id) = (&site.db, site.site);
-    let internal = |message| (message, Exit::Internal);
-    let mailer = newsletter::mailer(config, secret, outbound).map_err(internal)?;
-    let (newsletters, welcomes) = newsletter::router(
-        (folder, config),
-        (database, id),
-        (runtime, telling),
-        mailer.clone(),
-    )
-    .map_err(internal)?;
-    let delivery = SiteDelivery::new(config, mailer.clone(), telling.clone()).map_err(internal)?;
-    let delivery: Arc<dyn FormDelivery> = Arc::new(delivery);
-    let forms = (&site.security, delivery);
-    let forms = form_pages::router(config, (database, id), &site.pages, forms);
-    let sources = alert_watch::Sources {
-        misses: Arc::new(NotFoundTable::new(database.clone(), id)),
-        content: content.clone(),
-        https: serve_https::certificate(folder, listen),
-        settings: config.alerts().clone(),
-        visitors: config.visitor_log().on.then(|| {
-            let log: Arc<dyn VisitorLogStore> =
-                Arc::new(VisitorLogTable::new(database.clone(), id));
-            log
-        }),
-        watch: every.watch.and_then(|looks| {
-            let watch = SiteWatch::new(config, outbound, (database, id))?;
-            Some((watch, looks))
-        }),
-        welcomes,
-    };
-    let ready = alert_watch::Ready {
-        mailer,
-        sources,
-        every: every.checks,
-    };
-    Ok((newsletters.merge(forms), ready))
 }
 
 /// The site's pages, fed by `feed`, which read their settings again with

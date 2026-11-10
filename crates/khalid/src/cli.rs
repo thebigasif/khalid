@@ -204,6 +204,9 @@ pub(crate) enum Command {
             value_parser = BoolValueParser::new().map(|offline| if offline { Network::Offline } else { Network::Fetch }),
         )]
         network: Network,
+        /// Also send one test email through `[mail]`, to the address form answers go to
+        #[arg(long = "send-test-mail")]
+        test_mail: bool,
     },
     /// Write one archive of the site folder, with a safe copy of its
     /// database, leaving out public/ and data/media/, which Khalid makes again

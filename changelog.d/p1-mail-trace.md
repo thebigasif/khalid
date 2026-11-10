@@ -1,0 +1,7 @@
+Added
+- `khalid doctor` checks mail: it says which way mail leaves and whether the password, API key or token it needs is set, without showing it, and `--send-test-mail` sends one email through it and says why if that fails (G38).
+- `khalid serve` now writes a log to standard error: plain lines, or JSON with `--json` or `[log] format = "json"`, at the level `[log] level` names, `info` unless set. A released binary writes `info` at most: `debug` and `trace` add lines only in a development build. An email that could not be sent, such as a form answer, a welcome or an alert, leaves a warning there with the reason. No password, API key or token reaches the log (G38).
+- A form answer email that fails is tried again 1 minute, 5 minutes, 30 minutes, 2 hours, 5 hours and 16 hours later, like a webhook delivery. If all seven tries fail, `khalid doctor` says how many answers never arrived, for 30 days. The answers are always kept in the database (G40, KH-GRO-1).
+
+Changed
+- The `khalid` binary carries one HTML parser instead of two, 558 KB smaller: a copy of `htmd` in `vendor/htmd/` uses the same html5ever as the rest of Khalid. Imports turn HTML into Markdown as before.

@@ -12,7 +12,7 @@ use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
     AbsoluteUrl, AdminFolder, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment,
-    LimitSettings, Locale, MailSettings, MediaSettings, NavSettings, ParseUrlError,
+    LimitSettings, Locale, LogSettings, MailSettings, MediaSettings, NavSettings, ParseUrlError,
     PrivacySettings, Reader, ReaderSwitch, SearchConsoleSettings, SeoSettings, SiteCode,
     TemplateChoice, VisitorLogSettings,
 };
@@ -47,6 +47,7 @@ pub struct Config {
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
     limits: LimitSettings,
+    log: LogSettings,
     preview_link_lifetime: Duration,
     trash_days: Option<u16>,
     ai: AiSettings,
@@ -128,6 +129,8 @@ struct SiteFile {
     visitor_log: VisitorLogSettings,
     #[serde(default)]
     limits: LimitSettings,
+    #[serde(default)]
+    log: LogSettings,
     #[serde(default)]
     ai: AiSettings,
     #[serde(default)]
@@ -367,6 +370,7 @@ impl Config {
             search_console,
             visitor_log: file.visitor_log,
             limits: file.limits,
+            log: file.log,
             preview_link_lifetime,
             trash_days: (file.trash_days > 0).then_some(file.trash_days),
             ai: file.ai,
@@ -436,6 +440,12 @@ impl Config {
     /// from `[limits]`; the usual numbers unless the site sets its own.
     pub fn limits(&self) -> &LimitSettings {
         &self.limits
+    }
+
+    /// How much `khalid serve` logs and in which shape, from `[log]`;
+    /// plain lines at `info` unless set.
+    pub fn log(&self) -> LogSettings {
+        self.log
     }
 
     /// Whether a copy of Ghost's Content API answers under

@@ -169,6 +169,7 @@ mod serve_check;
 mod serve_https;
 mod serve_message;
 mod serve_sites;
+mod server_log;
 mod settings_events;
 mod settings_text;
 mod share_images;
@@ -348,9 +349,8 @@ fn run(cli: &Cli) -> Exit {
 
 /// Runs the commands that do not start from a checked site: `init`, which
 /// makes the site, `restore`, which makes one from a backup, `agents`,
-/// `completions` and `update`, which need none, `doctor`, which
-/// checks the settings, routes and content itself so it can list every
-/// problem instead of stopping at the first, and the commands
+/// `completions` and `update`, which need none, `doctor`, which checks the
+/// site itself to list every problem instead of stopping at the first, and the commands
 /// [`on_folder`] runs. Returns `None` for every other command.
 fn run_unchecked(cli: &Cli) -> Option<Exit> {
     match &cli.command {
@@ -379,8 +379,8 @@ fn run_unchecked(cli: &Cli) -> Option<Exit> {
             many.then(|| serve_sites::run(root, cli, args))
         }
         Some(Command::Update { target }) => Some(update::run(*target, cli)),
-        Some(command @ Command::Doctor { network }) => Some(match cli.site.as_deref() {
-            Some(folder) => doctor::run(folder, *network, cli),
+        Some(command @ Command::Doctor { network, test_mail }) => Some(match cli.site.as_deref() {
+            Some(folder) => doctor::run(folder, (*network, *test_mail), cli),
             None => report::failure(cli.output, &needs_site(command), Exit::Usage),
         }),
         Some(

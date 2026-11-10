@@ -80,6 +80,9 @@ INSERT INTO site_keys (site_id, purpose, secret, created_at) VALUES
 INSERT INTO form_submissions (site_id, form, fields, status, created_at) VALUES
     (1, 'contact', '{"message":"Hello"}', 'received', '2026-10-26T09:00:00Z'),
     (2, 'contact', '{"message":"Hello"}', 'received', '2026-10-26T09:00:00Z');
+INSERT INTO form_mail (site_id, form, to_address, subject, body, first_at, failures, last_at, last_error, next_at) VALUES
+    (1, 'contact', 'hello@example.com', 'New answer', 'Hello', '2026-10-26T09:00:00Z', 1, '2026-10-26T09:00:00Z', 'refused', '2026-10-26T09:01:00Z'),
+    (2, 'contact', 'hello@example.com', 'New answer', 'Hello', '2026-10-26T09:00:00Z', 1, '2026-10-26T09:00:00Z', 'refused', NULL);
 INSERT INTO subscribers (id, site_id, email, status, created_at) VALUES
     (1, 1, 'reader@example.com', 'confirmed', '2026-10-26T09:00:00Z'),
     (2, 2, 'reader@example.com', 'confirmed', '2026-10-26T09:00:00Z');

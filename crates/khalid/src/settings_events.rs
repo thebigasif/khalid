@@ -97,6 +97,7 @@ pub(crate) fn start_only(was: &Config, now: &Config) -> Vec<&'static str> {
         ("[search_console]", console),
         ("[visitor_log]", was.visitor_log() != now.visitor_log()),
         ("[limits]", was.limits() != now.limits()),
+        ("[log]", was.log() != now.log()),
         ("[ai]", was.ai() != now.ai()),
         ("ghost_content_api", ghost),
         ("preview_link_days", preview),
@@ -230,6 +231,7 @@ mod tests {
             ("[code]\nhead = \"<meta name=a content=b>\"\n", "[code]"),
             ("[visitor_log]\non = true\n", "[visitor_log]"),
             ("[limits]\nsearch_per_minute = 30\n", "[limits]"),
+            ("[log]\nlevel = \"warn\"\n", "[log]"),
             ("[ai]\nprovider = \"anthropic\"\n", "[ai]"),
         ];
         for (more, name) in wired {
