@@ -200,6 +200,18 @@ pub enum SeoError {
         /// What is wrong there.
         problem: &'static str,
     },
+    /// A type or property name in custom JSON-LD is not a schema.org name but
+    /// is a slip away from one, such as `Eevnt` for `Event`. Search engines
+    /// skip a name they do not know, so the node or property would be lost.
+    #[error("in the custom JSON-LD, {} is not a schema.org name; did you mean {known}?", if at == name { name.clone() } else { format!("{name} at {at}") })]
+    SchemaNameSlip {
+        /// Where the name is, such as `location.@type` or `startdate`.
+        at: String,
+        /// The name, as written.
+        name: String,
+        /// The schema.org name it is most likely a slip for.
+        known: &'static str,
+    },
     /// A changed address is outside the folder that holds the `IndexNow` key
     /// file, so search engines would refuse the request.
     #[error("the address {url} is outside {scope}, where the IndexNow key file applies")]

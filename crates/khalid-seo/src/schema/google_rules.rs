@@ -12,7 +12,7 @@
 /// required properties, where names joined by `|` are a choice; the ones
 /// needed only when the node stands alone, not inside another; and the
 /// recommended ones.
-const TABLE: &str = "\
+pub(super) const TABLE: &str = "\
 Article BlogPosting NewsArticle TechArticle; an article with its headline, image and date; ; ; author dateModified datePublished headline image
 BreadcrumbList; the page's breadcrumb trail; itemListElement; ;
 ItemList; the list as a carousel; itemListElement; ;

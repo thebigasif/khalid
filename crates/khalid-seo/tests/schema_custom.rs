@@ -115,6 +115,130 @@ fn each_refused_shape_names_the_place_and_the_problem() {
 }
 
 #[test]
+fn a_slip_in_a_type_or_property_name_says_which_name_was_meant() {
+    let cases = [
+        (r#"{"@type": "Eevnt"}"#, "@type", "Eevnt", "Event"),
+        (
+            r#"{"@type": "Organisation"}"#,
+            "@type",
+            "Organisation",
+            "Organization",
+        ),
+        (r#"{"@type": "Faqpage"}"#, "@type", "Faqpage", "FAQPage"),
+        (
+            r#"{"@type": "Event", "startdate": "2026-11-12"}"#,
+            "startdate",
+            "startdate",
+            "startDate",
+        ),
+        (
+            r#"{"@type": "Event", "organiser": {"@type": "Person", "name": "Asif"}}"#,
+            "organiser",
+            "organiser",
+            "organizer",
+        ),
+        (
+            r#"{"@type": "Book", "authors": {"@type": "Person", "name": "Asif"}}"#,
+            "authors",
+            "authors",
+            "author",
+        ),
+        (
+            r#"{"@type": "Event", "location": {"@type": "Plaec", "name": "Room 2"}}"#,
+            "location.@type",
+            "Plaec",
+            "Place",
+        ),
+        (
+            r#"{"@graph": [{"@type": "Course", "providr": {"@id": "https://example.com/#o"}}]}"#,
+            "@graph[0].providr",
+            "providr",
+            "provider",
+        ),
+        (
+            r#"{"@type": "Event", "maximumAttendeCapacity": 40}"#,
+            "maximumAttendeCapacity",
+            "maximumAttendeCapacity",
+            "maximumAttendeeCapacity",
+        ),
+    ];
+    for (text, place, written, meant) in cases {
+        assert_eq!(
+            CustomSchema::parse(text),
+            Err(SeoError::SchemaNameSlip {
+                at: place.to_owned(),
+                name: written.to_owned(),
+                known: meant,
+            }),
+            "{text}"
+        );
+    }
+}
+
+#[test]
+fn a_slip_message_names_the_place_and_the_fix() {
+    let error = CustomSchema::parse(r#"{"@type": "Event", "startdate": "2026-11-12"}"#)
+        .unwrap_err()
+        .to_string();
+    assert_eq!(
+        error,
+        "in the custom JSON-LD, startdate is not a schema.org name; did you mean startDate?"
+    );
+}
+
+#[test]
+fn names_far_from_any_known_one_and_real_near_pairs_still_pass() {
+    // Rare types and properties the table does not hold pass, and so do real
+    // names one letter apart from each other.
+    let texts = [
+        r#"{"@type": "TouristAttraction", "touristType": "families"}"#,
+        r#"{"@type": "Resort", "name": "Sea view"}"#,
+        r#"{"@type": "Report", "name": "Annual"}"#,
+        r#"{"@type": "Product", "name": "Box", "height": "2 cm", "weight": "1 kg"}"#,
+        r#"{"@type": "Book", "name": "Links", "isbn": "9780000000002", "issn": "0000-0000"}"#,
+        r#"{"@type": "HowTo", "name": "Fix", "step": "Open it", "steps": "Open it"}"#,
+        r#"{"@type": "Event", "name": "Gig", "performer": "A", "performers": "A"}"#,
+        r#"{"@type": "Product", "name": "Box", "gtin12": "000000000000", "gtin13": "0000000000000"}"#,
+    ];
+    for text in texts {
+        assert!(CustomSchema::parse(text).is_ok(), "{text}");
+    }
+}
+
+#[test]
+fn every_graph_khalid_writes_reads_back_as_custom_json_ld() {
+    let mut site = demo_site();
+    site.custom_schema = CustomSchema::parse(EVENT).unwrap();
+    for post in [internal_links_post(), internal_links_post_de()] {
+        let json = page_graph(&site, &post).unwrap().to_json();
+        let read = CustomSchema::parse(&json);
+        assert!(read.is_ok(), "{read:?}");
+    }
+}
+
+#[test]
+fn no_name_in_a_snapshot_graph_reads_as_a_slip() {
+    let folder = format!("{}/tests/snapshots", env!("CARGO_MANIFEST_DIR"));
+    let mut graphs = 0;
+    for entry in std::fs::read_dir(folder).unwrap() {
+        let text = std::fs::read_to_string(entry.unwrap().path()).unwrap();
+        let Some((_, body)) = text.split_once("\n---\n") else {
+            continue;
+        };
+        if !body.trim_start().starts_with('{') || !body.contains("\"@type\"") {
+            continue;
+        }
+        graphs += 1;
+        let read = CustomSchema::parse(body);
+        assert!(
+            !matches!(read, Err(SeoError::SchemaNameSlip { .. })),
+            "{read:?}"
+        );
+    }
+    assert!(graphs > 10, "{graphs}");
+}
+
+#[test]
 fn a_field_over_64_kb_is_refused() {
     let long = format!(
         r#"{{"@type": "Course", "name": "{}"}}"#,
