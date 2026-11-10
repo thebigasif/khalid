@@ -15,7 +15,7 @@ Neither Steve Toth nor Koray Tugberk Gubur says how a placeholder is written or 
 - **Unknown keys stop the build.** A `[[fact:key]]` whose key is not in `facts.toml` stops `khalid build`, `khalid serve` and the publish door with the file and line, as a missing snippet does, since the page would have a gap. `khalid lint` stops with the same message. Where no body check runs, as when SerpDad's backend passes its own posts to the linter, the new rule `fact-unknown` names the key and blocks by default. `broken-wikilink`, whose message is about pages, leaves `fact:` alone.
 - **`source`** is an optional full `http` or `https` address of the page that shows the value. `fact-not-checked` and the new rule below suggest it as the place to check.
 - **`fact-checked-in-future`** warns on each post that gives a fact whose `checked` date is more than one day ahead. The day of slack covers a writer whose today is ahead of the server's.
-- **`brief-link-unknown`** warns about a planned link to an address in a folder where the site's posts live, such as `/blog/`, that no post, page or glossary term has. An old address of a post suggests its current one. Tag, list and home pages are never judged, because the linter does not know them.
+- **`brief-link-unknown`** warns about a planned link to an address in a folder where the site's posts live, such as `/blog/`, that no post, page or glossary term has. An old address of a post suggests its current one. A dated folder counts for every date, so on a site whose posts sit in `/news/2026/11/`, a planned `/news/2025/03/a-post/` is judged too. Tag, list and home pages are never judged, because the linter does not know them.
 - `brief-link-unknown` and `fact-checked-in-future` warn. A site that wants a hard stop sets them to `block`.
 
 ## What we did not do
@@ -25,5 +25,5 @@ A brief file whose post does not exist, such as `briefs/en/a-typo.toml`, is stil
 ## Consequences
 
 - Changing a price is one edit to `facts.toml`; every post that names the fact shows the new value at the next build, and the linter reads the value the reader sees.
-- `khalid serve` re-reads `facts.toml` when it re-reads the content. An edit to `facts.toml` alone shows after the next content change or a restart.
+- `khalid serve` re-reads `facts.toml` when it re-reads the content. Its watch sees every file in the site folder, so an edit to `facts.toml` alone starts a full render, and the new value shows a moment later.
 - The admin editor does not offer facts yet; a writer types the placeholder.

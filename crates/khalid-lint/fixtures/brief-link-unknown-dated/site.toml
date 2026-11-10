@@ -1,0 +1,7 @@
+# Posts live in dated folders, /news/<year>/<month>/.
+[[posts]]
+locale = "en"
+slug = "choosing-link-text"
+path = "/news/2026/11/choosing-link-text/"
+title = "Choosing link text readers trust"
+body_text = "Good link text tells readers where a link goes before they click."
