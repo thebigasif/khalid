@@ -316,6 +316,24 @@ A file named `theme/site.css` adds your own rules to the blog's stylesheet, afte
 - Keep them few: each page downloads them all, and each of Khalid's demo pages downloads at most 10 KB of CSS once compressed.
 - The file must sit inside the site folder. A link to a file elsewhere stops the build with a message.
 
+## Your own words
+
+Khalid writes the words around your posts, such as "Read more", the month names in dates and the "page not found" text, in English and German. A file named for a language in `theme/strings/` gives your pages their words in that language, or changes some of the built-in ones. A French blog adds `theme/strings/fr.toml`:
+
+```toml
+not_found_title = "Cette page n'existe pas"
+date_format = "{day} {month} {year}"
+month_1 = "janvier"
+month_2 = "février"
+```
+
+- Name the file for the language alone, such as `fr.toml`, `es.toml` or `de.toml`. It serves every region of that language, such as `fr-CA`.
+- Each name on the left, a key, picks one piece of text. The English files in [crates/khalid-render/strings](https://github.com/thebigasif/khalid/tree/main/crates/khalid-render/strings) list every key.
+- A key you leave out keeps the built-in word of that language, or the English word when Khalid has none for it.
+- `en.toml` changes the English words, and every language Khalid has no words for starts from them.
+- A key no template reads, most often a typing mistake, stops the build with a message that names the file and the key.
+- The title variables such as `{currentmonth}`, comments and newsletter mails still use the built-in words.
+
 ## Checking every screen size
 
 `scripts/responsive-check.mjs` opens each template's home page, `/seo-writing-guide/`, a category page and the German home in a real browser, at 320, 360, 375, 390 and 414 pixels (phones), 768 and 1024 (tablets), and 1280, 1440, 1920 and 2560 (desktops, up to a 27 inch iMac). It fails when a page scrolls sideways, when reading text on a phone is under 15 pixels or a menu link is under 40 by 40, and when on a wide screen the reading column passes about 80 characters, the content runs edge to edge or sits off centre, or a picture is drawn larger than its own pixels. It saves a screenshot of each page at each width, so you can look for what a script cannot see.
