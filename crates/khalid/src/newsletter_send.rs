@@ -144,7 +144,7 @@ pub(crate) fn deliver(
 /// The email of `post`, called `name`: its title as the subject, a link
 /// to read it on the site, and its text without the blocks that only work
 /// on a page, such as forms.
-fn issue_of(config: &Config, post: &AdminPost, name: &str) -> Issue {
+pub(crate) fn issue_of(config: &Config, post: &AdminPost, name: &str) -> Issue {
     let text = email_text(post.markdown());
     let link = announce::post_url(config, post)
         .map(|url| format!("Read it on the site: {}\n\n", url.as_str()))
