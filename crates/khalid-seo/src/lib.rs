@@ -8,9 +8,9 @@
 //! so the same input always gives the same bytes (ADR 0013).
 //!
 //! It must not know about templates, files or the database, nor how HTTP is
-//! done: [`IndexNow::send`] and [`BingWebmaster`]'s calls are the only ones
-//! that reach another server, and they do so through the `Outbound` client
-//! they are given (BL-RUN-8). The
+//! done: [`IndexNow::send`], [`BingWebmaster`]'s calls and
+//! [`CopiedSchema::fetch`] are the only ones that reach another server, and
+//! they do so through the `Outbound` client they are given (BL-RUN-8). The
 //! crates that read content and render pages build its inputs and place its
 //! output.
 
@@ -102,6 +102,7 @@ pub use schema::{
     SiteSearch, SoftwareApplication, TemplateScope, breadcrumb_list, check_graph, page_graph,
     site_graph,
 };
+pub use schema::{CopiedSchema, CopySchemaError};
 pub use schema_map::{SchemaMap, schema_map_url, site_schema};
 pub use seo_error::SeoError;
 pub use site::SeoSite;
