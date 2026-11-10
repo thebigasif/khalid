@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use khalid_core::AbsoluteUrl;
 
-use crate::EmbedProvider;
+use crate::{EmbedProvider, SchemaCard};
 
 /// A block whose content becomes schema markup, in the order of the body,
 /// for the schema builders in `khalid-seo` (task 1.14).
@@ -28,6 +28,11 @@ pub enum StructuredBlock {
     Faq(Vec<Question>),
     /// A how-to block, which becomes a `HowTo`. Steps are plain text.
     HowTo(HowToBlock),
+    /// An event, course, book or dataset card, which becomes the type it
+    /// names. Descriptions are plain text.
+    Card(SchemaCard),
+    /// A location block, which becomes the site's location of this name.
+    Location(String),
 }
 
 /// One question of an FAQ and its answer.

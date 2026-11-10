@@ -85,6 +85,10 @@ Clients often ask for our editing checklist as a file they can share with their 
 
 Members can read how we fill in a brief, field by field, in [our content brief template walkthrough](/blog/content-brief-template/).
 
+New editors on our team read one book before they first run the editing checklist. It teaches the habit behind every step: cut each word that does no work.
+
+::book{name="On Writing Well" author="William Zinsser"}
+
 ## When an old post needs the checklist again
 
 The checklist is not only for new posts. When an older post starts to slip in search, we run it again, alongside the extra checks in [our playbook for refreshing posts](/blog/content-refresh/). A fresh edit often does more than new words.
