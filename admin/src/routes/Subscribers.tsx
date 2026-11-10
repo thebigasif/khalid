@@ -5,6 +5,7 @@ import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { subscriberWords } from "../strings/subscriberWords";
 import { NewsletterCards } from "../subscribers/NewsletterCards";
+import { SendPost } from "../subscribers/SendPost";
 import { SentTable } from "../subscribers/SentTable";
 
 /** The newsletters and their readers: sending a post is the focus, the readers come last. */
@@ -16,10 +17,11 @@ export function Subscribers() {
   if (answer !== undefined && !isData(answer)) {
     body = <Problem message={failureMessage(answer)} />;
   } else if (isData(answer)) {
-    const { newsletters, sends } = answer.data;
+    const { newsletters, sending, sends } = answer.data;
     body = (
       <>
         <NewsletterCards newsletters={newsletters} />
+        <SendPost newsletters={newsletters} sending={sending} />
         <SentTable sends={sends} />
       </>
     );
