@@ -7,7 +7,8 @@
 //! focus keywords, collection, category name and topic cluster, the `rel`
 //! words the link policy gives each link, the site's collections, and the
 //! links of each home page, which lists every dated post (audit 2, G5), the
-//! site's fact registry (P7) and each post's brief (P6).
+//! site's fact registry (P7), each post's brief (P6), and the fields of each
+//! case study and changelog entry (plan 5.13).
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
@@ -20,8 +21,9 @@ use khalid_content::{
 use khalid_core::{Config, Locale, Slug, UserMessage};
 use khalid_db::IndexedTerm;
 use khalid_lint::{
-    Cluster, ClusterRole, GlossaryTerm, Heading, HeadingLevel, Image, LinkKind, LintCollection,
-    LintFact, LintForm, LintLink, LintPost, LintSite, PageRef, StructuredDataGap,
+    Cluster, ClusterRole, EntryKind, GlossaryTerm, Heading, HeadingLevel, Image, LinkKind,
+    LintCollection, LintEntry, LintFact, LintForm, LintLink, LintPost, LintSite, PageRef,
+    StructuredDataGap,
 };
 use khalid_render::Person;
 use khalid_routes::{PostAddress, Routes};
@@ -165,6 +167,7 @@ pub(crate) fn lint_site<'c>(
         Some(PageRef::new(author.locale.clone(), slug))
     });
     site.authors = Some(authors.collect());
+    site.entries = entries(content, config);
     site.locales = config.languages().to_vec();
     site.facts.clone_from(&input.facts);
     site.slugs = Some(config.slugs());
@@ -415,6 +418,32 @@ fn topic_group(front: &PostFront) -> Option<Cluster> {
         .topic_group
         .as_deref()
         .map(|group| Cluster::new(group, role))
+}
+
+/// Every case study and changelog entry (plan section 5.13), at the slug
+/// `khalid build` gives its page: a changelog entry with no title is named
+/// after its version.
+fn entries(content: &SiteContent, config: &Config) -> Vec<LintEntry> {
+    let studies = content.case_studies.iter().filter_map(|doc| {
+        let front = &doc.front;
+        let named = (front.slug.as_ref(), front.title.as_deref());
+        let slug = slug_of(named, &doc.path, &doc.locale, config)?;
+        let kind = EntryKind::CaseStudy {
+            client: front.client.clone(),
+            outcome: front.outcome.clone(),
+        };
+        Some(LintEntry::new(doc.locale.clone(), slug, front.date, kind))
+    });
+    let changes = content.changelog.iter().filter_map(|doc| {
+        let front = &doc.front;
+        let named = (None, front.title.as_deref().or(front.version.as_deref()));
+        let slug = slug_of(named, &doc.path, &doc.locale, config)?;
+        let kind = EntryKind::Changelog {
+            version: front.version.clone(),
+        };
+        Some(LintEntry::new(doc.locale.clone(), slug, front.date, kind))
+    });
+    studies.chain(changes).collect()
 }
 
 /// The slug a page is built at: from the header, or else from the title,
