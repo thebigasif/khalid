@@ -14,9 +14,12 @@ use crate::{content_message, routes_message, site_config};
 /// Checks the settings, the routes and the content of `site`, in that order.
 /// The content is read only when the settings and the routes load, because
 /// reading it needs both. Returns the settings too, when they load, for the
-/// checks that need them.
-pub(crate) fn check(site: &Path) -> (Vec<Finding>, Option<Config>) {
-    let config = site_config::load(site, &Environment::from_process());
+/// checks that need them. The settings are read with `env`; when they
+/// fail only for a missing mail secret, they load, and the mail check
+/// names the secret instead.
+pub(crate) fn check(site: &Path, env: &Environment) -> (Vec<Finding>, Option<Config>) {
+    let config = site_config::load(site, env)
+        .or_else(|message| site_config::load(site, &with_mail_secrets(env)).map_err(|_| message));
     let routes = Routes::load(site);
     let mut found = vec![
         match &config {
@@ -46,6 +49,20 @@ pub(crate) fn check(site: &Path) -> (Vec<Finding>, Option<Config>) {
         ),
     });
     (found, config.ok())
+}
+
+/// `env` with a stand-in for every mail secret, so the rest
+/// of `[mail]` can be checked. Nothing is ever sent with a stand-in: the
+/// mail check reads the secrets from `env` itself.
+fn with_mail_secrets(env: &Environment) -> Environment {
+    let names = [
+        Environment::SMTP_PASSWORD,
+        Environment::RESEND_API_KEY,
+        Environment::POSTMARK_TOKEN,
+    ];
+    names.into_iter().fold(env.clone(), |filled, name| {
+        filled.with(name, "stand-in-for-khalid-doctor")
+    })
 }
 
 /// Reads every content file and checks every block in it.

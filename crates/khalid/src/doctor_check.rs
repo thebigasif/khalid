@@ -21,6 +21,8 @@ pub(crate) enum Check {
     Permissions,
     /// Each picture search `[media]` turns on has its key.
     Pictures,
+    /// `[mail]` has the secret its way of sending needs.
+    Mail,
     /// The blog answers at its public address, so the proxy rule works.
     Address,
     /// The host's own `robots.txt` names the blog's sitemap.
@@ -38,6 +40,7 @@ impl Check {
             Self::Theme => "Theme",
             Self::Permissions => "Permissions",
             Self::Pictures => "Picture search",
+            Self::Mail => "Mail",
             Self::Address => "Public address",
             Self::Robots => "Host robots.txt",
         }
