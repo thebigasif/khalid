@@ -247,7 +247,7 @@ fn serve_with(
             (database, id, (site, config, &keys.settings)),
             (panel, mailer),
         );
-        let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook));
+        let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook, &rest));
         // The rest renders once the routes are ready, so it does not slow
         // setting them up (ADR "the APIs are built beside the first answer").
         let (failed, failure) = oneshot::channel();

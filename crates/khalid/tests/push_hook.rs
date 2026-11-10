@@ -155,9 +155,8 @@ fn a_signed_push_is_pulled_and_served_and_an_unsigned_one_is_refused() {
     let server = start(blog.path());
     let page = ("GET", "/blog/how-to-write-a-title-tag/");
     assert_eq!(request(&server, page, &[]).0, 200);
-    // The file watch is set up off the runtime after the first answer, and
-    // a change made before it is ready waits for the next one.
-    thread::sleep(Duration::from_secs(3));
+    // No wait for the file watch: the hook renders what it pulled itself,
+    // so a push that lands before the watch is ready is served too.
     let post = within(writer.path(), POST);
     let before = fs::read_to_string(&post).unwrap();
     fs::write(
