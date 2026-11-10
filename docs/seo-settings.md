@@ -31,7 +31,7 @@ its settings as it starts. No key or password is ever sent back.
 | `[seo.publisher]` | `type` (`organization` or `person`), `name`, `logo`, `same_as` (social profiles), `email`, `telephone`, `founded` | an organisation named after the site | Site representation |
 | `[seo.social]` | `twitter` (the X handle) and `image`, the default share image | none | Social sharing |
 | `[seo.verification]` | `google`, `bing`, `yandex`, `baidu`, `pinterest` codes, and `files` | none | Webmaster tools |
-| `[seo.crawlers]` | `disallow` paths, `allow` and `block` crawler names | every crawler reads every page | Crawlers and AI bots |
+| `[seo.crawlers]` | `ai_training` (`allow` or `block`), `disallow` paths, `allow` and `block` crawler names | every crawler reads every page | Crawlers and AI bots |
 | `[seo.feeds]` | `content` (`full` or `excerpt`), `before_item`, `after_item`, `source_line`, `limit` | full posts, 20 items | Feeds |
 | `[seo.indexnow]` | `key` and `endpoint` | off | IndexNow |
 | `[seo.ai_page]` | `off`, `contact`, `covers`, `cite` | on | AI info page |
