@@ -383,8 +383,8 @@ fn on_content(
     (cli, environment): (&Cli, &Environment),
 ) -> Exit {
     match asked {
-        Command::Build { out } => {
-            build::run(folder, checked, out.as_deref(), &SystemClock, cli.output)
+        Command::Build { out, no_indexnow } => {
+            build::run(folder, checked, (out.as_deref(), *no_indexnow), cli)
         }
         Command::Export => export::run(folder, checked, &SystemClock, cli.output),
         Command::Audit { server, network } => site_audit::run(

@@ -10,7 +10,7 @@ use std::path::{self, Path, PathBuf};
 
 use chrono::NaiveDate;
 use khalid_content::{ContentTree, SiteContent};
-use khalid_core::{Clock, Config, UserMessage};
+use khalid_core::{Clock, Config, SystemClock, UserMessage};
 use khalid_lint::Report;
 use khalid_render::{Asset, Renderer, Tokens};
 use khalid_routes::Routes;
@@ -18,7 +18,7 @@ use serde::Serialize;
 
 use crate::assets::PageStylesheets;
 use crate::build_pages::LanguagePages;
-use crate::cli::Output;
+use crate::cli::{Cli, Output};
 use crate::exit::Exit;
 use crate::newsletter_files::archive_pages;
 use crate::page_code::PageCode;
@@ -33,6 +33,10 @@ use crate::{
     post_categories, post_files, post_images, post_lock, privacy_page, report, search_page,
     search_static, share_images, static_mode, trails,
 };
+
+#[path = "build_indexnow.rs"]
+mod indexnow;
+use indexnow::Told;
 
 /// The output folder inside a site when `--out` is not given.
 const PUBLIC: &str = "public";
@@ -55,32 +59,41 @@ struct BuildBody {
     /// with no contact details.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     warnings: Vec<UserMessage>,
+    /// How many addresses were sent to `IndexNow`, when any request went out.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    indexnow_sent: Option<usize>,
 }
 
-/// What one build wrote: how many pages, and the report of each post the
-/// publish gate left out.
+/// What one build wrote: how many pages, and the report and file of each
+/// post the publish gate left out.
 #[derive(Debug)]
 pub(crate) struct Built {
     pub(crate) pages: usize,
     pub(crate) left_out: Vec<Report>,
+    pub(crate) left_files: Vec<PathBuf>,
 }
 
 /// Renders the `site` folder, whose `config`, `routes` and `content` were
-/// checked, into `out`, or `public/` in the site. `clock` dates a feed with
-/// no posts.
+/// checked, into `out`, or `public/` in the site, then sends `IndexNow` what
+/// changed unless `no_indexnow`.
 pub(crate) fn run(
     site: &Path,
     (config, routes, content): (&Config, &Routes, &SiteContent),
-    out: Option<&Path>,
-    clock: &dyn Clock,
-    output: Output,
+    (out, no_indexnow): (Option<&Path>, bool),
+    cli: &Cli,
 ) -> Exit {
+    let output = cli.output;
     let out = out.map_or_else(|| within(site, PUBLIC), Path::to_path_buf);
     if inside(&out, &within(site, "content")) {
         return report::failure(output, &build_message::into_content(&out), Exit::Failure);
     }
-    match into_folder(site, (config, routes, content), &out, clock, output) {
-        Ok(built) => success(output, &out, built, config),
+    match into_folder(site, (config, routes, content), &out, &SystemClock, output) {
+        Ok(built) => {
+            let told = (!no_indexnow)
+                .then(|| indexnow::tell((site, config), content, &built.left_files, cli))
+                .flatten();
+            success(output, &out, (built, told), config)
+        }
         Err(exit) => exit,
     }
 }
@@ -100,8 +113,15 @@ pub(crate) fn into_folder(
     let refused = build_gate::screen(site, (config, routes, content), clock).map_err(fail)?;
     let published = build_gate::published(content, &refused);
     let pages = build(site, config, routes, &published, out, clock).map_err(fail)?;
-    let left_out = refused.into_iter().map(|post| post.report).collect();
-    Ok(Built { pages, left_out })
+    let (left_files, left_out) = refused
+        .into_iter()
+        .map(|post| (post.path, post.report))
+        .unzip();
+    Ok(Built {
+        pages,
+        left_out,
+        left_files,
+    })
 }
 
 /// The renderer and stylesheet of the look `config` chose, with each
@@ -338,9 +358,17 @@ fn inside(path: &Path, folder: &Path) -> bool {
 
 /// Says which posts were left out and why, how many pages were written and
 /// where, or for a headless site that only its files were, where the files
-/// for the host's root are, and for a static site which features are off.
-fn success(output: Output, out: &Path, built: Built, config: &Config) -> Exit {
-    let Built { pages, left_out } = built;
+/// for the host's root are, for a static site which features are off, and
+/// what `IndexNow` was `told`.
+fn success(
+    output: Output,
+    out: &Path,
+    (built, told): (Built, Option<Told>),
+    config: &Config,
+) -> Exit {
+    let Built {
+        pages, left_out, ..
+    } = built;
     let shown = out.display().to_string();
     let mode = config.mode();
     let off = static_mode::off(mode);
@@ -372,6 +400,10 @@ fn success(output: Output, out: &Path, built: Built, config: &Config) -> Exit {
         let (what, why, fix) = (warning.what(), warning.why(), warning.fix());
         said = format!("{said}Worth a look: {what}\n  {why}\n  {fix}\n");
     }
+    let indexnow_sent = told.as_ref().and_then(|told| told.sent);
+    if let Some(told) = told {
+        said = format!("{said}{}\n", told.line);
+    }
     match output {
         Output::Human => report::text(&said, Exit::Success),
         Output::Json => report::json(
@@ -382,6 +414,7 @@ fn success(output: Output, out: &Path, built: Built, config: &Config) -> Exit {
                 off,
                 left_out,
                 warnings,
+                indexnow_sent,
             },
             Exit::Success,
         ),

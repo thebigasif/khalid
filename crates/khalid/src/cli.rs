@@ -139,6 +139,9 @@ pub(crate) enum Command {
         /// The folder to write the pages to [default: public in the site folder]
         #[arg(long, value_name = "FOLDER")]
         out: Option<PathBuf>,
+        /// Do not tell search engines which posts are new or updated since the last build
+        #[arg(long)]
+        no_indexnow: bool,
     },
     /// Check one post or the whole site against the SEO rules, and score
     /// each post out of 100
