@@ -10,6 +10,8 @@ export const shellWords = {
   openMenu: "Open the menu",
   closeMenu: "Close the menu",
   newPost: "New post",
+  // Here, not in termWords, so the first download carries only the menu's word.
+  tags: "Tags and categories",
   accountMenu: "Your account menu",
   byEmail: "You signed in with your email.",
   byToken: "You signed in with a staff token.",

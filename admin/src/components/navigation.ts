@@ -21,6 +21,7 @@ export type NavPath =
   | "/look"
   | "/design"
   | "/authors"
+  | "/tags"
   | "/redirects"
   | "/schema-templates"
   | "/settings"
@@ -70,6 +71,7 @@ export const NAV: NavGroup[] = [
       { to: "/look", label: en.nav.look, icon: "look" },
       { to: "/design", label: en.nav.design, icon: "type" },
       { to: "/authors", label: en.nav.authors, icon: "person" },
+      { to: "/tags", label: shellWords.tags, icon: "tag" },
       { to: "/redirects", label: en.nav.redirects, icon: "redirect" },
       { to: "/schema-templates", label: en.nav.templates, icon: "braces" },
       { to: "/seo", label: seoWords.title, icon: "target" },
