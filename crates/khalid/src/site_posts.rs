@@ -136,7 +136,7 @@ impl Site {
             let published = content
                 .posts
                 .iter()
-                .find(|doc| &doc.locale == locale && doc.front.slug.as_ref() == Some(&slug));
+                .find(|doc| &doc.locale == locale && self.slug_of(doc).as_ref() == Some(&slug));
             let Some(doc) = published else {
                 return Ok(None);
             };
@@ -262,6 +262,12 @@ impl Site {
             edited = edited.with_settings(settings);
         }
         let mut text = found.text.clone();
+        // A post named from its title keeps its address when the title
+        // changes: the file gains the slug it already lives at.
+        let unnamed = parse_post(&found.path, &text.to_text()).map_err(PostStoreError::new)?;
+        if unnamed.front.slug.is_none() {
+            text.set("slug", found.slug.as_str());
+        }
         if edited.title() != current.title() {
             text.set("title", &quoted(edited.title()));
         }

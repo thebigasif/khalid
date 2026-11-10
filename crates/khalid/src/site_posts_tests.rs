@@ -340,6 +340,48 @@ async fn the_list_holds_drafts_and_live_posts_with_their_lint_counts() {
     assert_eq!(ids, ["en.a-weak-post"]);
 }
 
+/// The demo's live post with its `slug:` line taken out, as a site owner
+/// may write one: `khalid build` names it from its title.
+fn without_slug(site: &Path) -> PathBuf {
+    let file = within(
+        site,
+        "content/en/posts/2026-09-14-why-internal-links-matter.md",
+    );
+    let text = fs::read_to_string(&file).unwrap();
+    fs::write(&file, text.replace("slug: why-internal-links-matter\n", "")).unwrap();
+    file
+}
+
+#[tokio::test]
+async fn a_live_post_with_no_slug_is_listed_and_read_by_its_title_slug() {
+    let (site, posts) = demo();
+    without_slug(site.path());
+    let id = "en.why-internal-links-matter";
+    let all = posts.list(&query(None, "id")).await.unwrap();
+    let ids: Vec<&str> = all.items().iter().map(PostRow::id).collect();
+    assert!(ids.contains(&id), "{ids:?}");
+    let live = posts.get(id).await.unwrap().unwrap();
+    assert_eq!(live.status(), PostStatus::Published);
+    assert!(posts.lint(id).await.unwrap().is_some());
+}
+
+#[tokio::test]
+async fn a_new_title_keeps_the_address_of_a_live_post_with_no_slug() {
+    let (site, posts) = demo();
+    let file = without_slug(site.path());
+    let id = "en.why-internal-links-matter";
+    let post = posts.get(id).await.unwrap().unwrap();
+    let change = edit(json!({"title": "Internal links", "updated_at": post.updated_at()}));
+    let saved = posts.update(id, change, "k").await.unwrap();
+    assert_eq!(saved.id(), id);
+    let text = fs::read_to_string(file).unwrap();
+    assert!(
+        text.contains("\nslug: why-internal-links-matter\n"),
+        "{text}"
+    );
+    assert!(posts.get(id).await.unwrap().is_some());
+}
+
 /// The draft made from [`good_draft`], edited with `fields`.
 async fn edited_draft(posts: &SitePosts, mut fields: Value) -> Result<AdminPost, UpdatePostError> {
     let made = posts.create(good_draft(), "k", None).await.unwrap();
