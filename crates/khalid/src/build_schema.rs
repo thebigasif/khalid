@@ -49,18 +49,27 @@ pub(crate) fn fill(
             StructuredBlock::HowTo(how_to) => SchemaBlock::HowTo(how_to_of(how_to)),
             StructuredBlock::Review(review) => SchemaBlock::Review(review_of(review, author)?),
             StructuredBlock::Recipe(recipe) => SchemaBlock::Recipe(recipe_of(recipe, full)?),
-            StructuredBlock::Video(video) => {
-                let mut video = video_of(video, full)?;
-                video.uploaded = seo.published;
-                seo.videos.push(video.clone());
-                SchemaBlock::Video(video)
+            // A file is first published with the post, unless the block
+            // gives an earlier day, such as for a video from another site.
+            StructuredBlock::Video(block) => {
+                let mut video = video_of(block, full)?;
+                video.uploaded = block.uploaded.map(|day| day.to_utc()).or(seo.published);
+                match dated(seo, video) {
+                    Some(video) => SchemaBlock::Video(video),
+                    None => continue,
+                }
             }
-            // A host's video goes in the video sitemap only: its upload
-            // date, which `VideoObject` requires, is the host's to know.
+            // Only the host knows when it published a video, so an embed
+            // is dated only when the writer gives the day.
             StructuredBlock::EmbeddedVideo(embed) => {
-                let video = embedded_video(embed, seo);
-                seo.videos.extend(video);
-                continue;
+                let video = embedded_video(embed, seo).map(|mut video| {
+                    video.uploaded = embed.uploaded.map(|day| day.to_utc());
+                    video
+                });
+                match video.and_then(|video| dated(seo, video)) {
+                    Some(video) => SchemaBlock::Video(video),
+                    None => continue,
+                }
             }
             StructuredBlock::Product(product) => match product_of(product, author, full)? {
                 Some(product) => SchemaBlock::Product(product),
@@ -253,6 +262,14 @@ fn embedded_video(embed: &EmbeddedVideo, seo: &SeoPage) -> Option<Video> {
         thumbnail.clone(),
         source,
     ))
+}
+
+/// Lists `video` in `seo` for the video sitemap, and gives it back for its
+/// `VideoObject` when it has an upload date. Google requires one, and a
+/// guessed date would be wrong, so an undated video writes no node.
+fn dated(seo: &mut SeoPage, video: Video) -> Option<Video> {
+    seo.videos.push(video.clone());
+    video.uploaded.is_some().then_some(video)
 }
 
 /// `link` as an entity the post mentions, when it points at a page that

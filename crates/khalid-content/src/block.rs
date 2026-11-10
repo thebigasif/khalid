@@ -111,7 +111,7 @@ pub enum BlockKind {
         /// The page's preview image.
         image: Option<AbsoluteUrl>,
     },
-    /// `::embed{src="..." title="..." height="..."}`: a player from one of
+    /// `::embed{src="..." title="..." height="..." uploaded="..."}`: a player from one of
     /// the [`EMBED_PROVIDERS`](crate::EMBED_PROVIDERS) or a page on a domain
     /// the site allows in a frame, or a plain link for any other address.
     Embed {
@@ -121,6 +121,8 @@ pub enum BlockKind {
         title: String,
         /// The frame's height in pixels for an allowed site's page.
         height: Option<u16>,
+        /// When the host published the video, from `uploaded="2024-05-16"`.
+        uploaded: Option<chrono::DateTime<chrono::FixedOffset>>,
     },
     /// `::video{src="..." title="..." poster="..."}`, with an optional
     /// `thumbnail` for search results: a video file with
