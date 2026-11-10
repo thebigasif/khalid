@@ -85,7 +85,19 @@ impl Challenges {
         Ok(())
     }
 
-    /// Forgets every answer, once an order is done.
+    /// Forgets the answer to the HTTP-01 check for `token`, once its order
+    /// is done. Other orders' answers stay.
+    pub fn forget_http(&self, token: &str) {
+        self.write().http.remove(token);
+    }
+
+    /// Forgets the answer to the TLS-ALPN-01 check for `domain`, once its
+    /// order is done. Other orders' answers stay.
+    pub fn forget_tls(&self, domain: &str) {
+        self.write().tls.remove(&domain.to_ascii_lowercase());
+    }
+
+    /// Forgets every answer.
     pub fn clear(&self) {
         let mut answers = self.write();
         answers.http.clear();

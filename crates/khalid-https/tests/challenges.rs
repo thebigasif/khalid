@@ -6,7 +6,7 @@ mod common;
 
 use axum::serve::Listener;
 use common::tls_handshake;
-use khalid_https::{Certificate, Certificates, TlsListener};
+use khalid_https::{Certificate, Certificates, Challenges, TlsListener};
 use tokio::net::TcpListener;
 
 /// The name the checks are for.
@@ -66,6 +66,37 @@ async fn a_visitor_gets_the_site_certificate_while_a_check_is_open() {
     let (certificate, _) = tls_handshake(port, NAME, b"http/1.1").await.unwrap();
 
     assert_eq!(certificate, site_der);
+}
+
+#[test]
+fn one_order_done_leaves_another_orders_file_check_open() {
+    let challenges = Challenges::new();
+    challenges.answer_http("token-1", "token-1.blog");
+    challenges.answer_http("token-2", "token-2.news");
+
+    challenges.forget_http("token-1");
+
+    assert_eq!(challenges.http_answer("token-1"), None);
+    assert_eq!(
+        challenges.http_answer("token-2").as_deref(),
+        Some("token-2.news")
+    );
+}
+
+#[tokio::test]
+async fn a_tls_check_for_one_domain_stays_open_when_another_closes() {
+    let (certificates, _) = site();
+    certificates.challenges().answer_tls(NAME, &DIGEST).unwrap();
+    certificates
+        .challenges()
+        .answer_tls("news.test", &DIGEST)
+        .unwrap();
+    certificates.challenges().forget_tls("news.test");
+    let port = listen(certificates).await;
+
+    let answered = tls_handshake(port, NAME, b"acme-tls/1").await;
+
+    assert!(answered.is_some(), "blog.test's check is still answered");
 }
 
 #[tokio::test]

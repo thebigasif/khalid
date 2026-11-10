@@ -1,0 +1,2 @@
+Added
+- `khalid serve --https` serves every site of a sites folder over HTTPS on ports 443 and 80, each site with its own free certificate from Let's Encrypt that Khalid gets and renews. One account serves them all, each site keeps its certificate in its own `data/https/`, a site added while the server runs gets its certificate at once, and port 80 moves each visitor to HTTPS on their own site. No proxy such as Caddy is needed any more.

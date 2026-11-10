@@ -25,7 +25,7 @@ use crate::{alert_watch, https_message, outbound, report, serve, serve_message};
 const FOLDER: &str = "https";
 
 /// Where `khalid serve` answers.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) enum Listen {
     /// Plain HTTP on this address.
     Plain(SocketAddr),
@@ -34,7 +34,7 @@ pub(crate) enum Listen {
 }
 
 /// HTTPS for a domain, as the command line asks for it.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct HttpsListen {
     pub(crate) domain: Domain,
     pub(crate) terms: Terms,
@@ -60,7 +60,7 @@ pub(crate) struct ServeTestArgs {
     pub(crate) watch_every: Option<u64>,
     /// Test builds only: renewal reads a clock this many seconds ahead,
     /// so a certificate falls due while the server runs.
-    #[arg(long, hide = true, value_name = "SECONDS", requires = "domain")]
+    #[arg(long, hide = true, value_name = "SECONDS", requires = "tls")]
     pub(crate) test_clock_ahead: Option<u32>,
 }
 
@@ -132,12 +132,24 @@ pub(crate) fn serve(
 /// A static site has HTTPS from its host, so `--domain` is refused there
 /// with the reason.
 fn listen(cli: &Cli, mode: Mode, https: &ServeArgs) -> Result<Listen, UserMessage> {
+    if https.https {
+        return Err(https_message::sites_only());
+    }
     let Some(domain) = &https.domain else {
         return Ok(Listen::Plain(https.listen));
     };
     if mode == Mode::Static {
         return Err(https_message::static_site());
     }
+    https_listen(cli, https, domain).map(|https| Listen::Https(Box::new(https)))
+}
+
+/// HTTPS for `domain` with the settings `https` gives on the command line.
+pub(crate) fn https_listen(
+    cli: &Cli,
+    https: &ServeArgs,
+    domain: &Domain,
+) -> Result<HttpsListen, UserMessage> {
     let outbound = outbound::client(cli).map_err(|_| serve_message::internal())?;
     let directory = https
         .acme_directory
@@ -148,14 +160,14 @@ fn listen(cli: &Cli, mode: Mode, https: &ServeArgs) -> Result<Listen, UserMessag
     } else {
         Terms::Ask
     };
-    Ok(Listen::Https(Box::new(HttpsListen {
+    Ok(HttpsListen {
         domain: domain.clone(),
         terms,
         directory,
         addresses: (https.https_listen, https.http_listen),
         outbound,
         clock: RenewalClock::new(https),
-    })))
+    })
 }
 
 /// Opens where `listen` says, and returns it with the address visitors use.
@@ -192,18 +204,32 @@ impl HttpsListen {
         } else {
             Some(self.agree().await?)
         };
-        let tls = self.addresses.0.unwrap_or_else(|| usual(443));
-        let plain = self.addresses.1.unwrap_or_else(|| usual(80));
-        let listeners = (bind_https(tls).await?, bind_https(plain).await?);
         https
-            .start(&self.outbound, agreed, listeners, self.clock)
+            .start(&self.outbound, agreed, self.bind().await?, self.clock)
             .await
             .map_err(failed)
     }
 
+    /// The same settings for another `domain`, as each site of a sites
+    /// folder has its own.
+    pub(crate) fn for_domain(&self, domain: Domain) -> Self {
+        Self {
+            domain,
+            ..self.clone()
+        }
+    }
+
+    /// Opens port 443, or the TLS address asked for, then port 80, or the
+    /// plain one asked for.
+    pub(crate) async fn bind(&self) -> Result<(TcpListener, TcpListener), (UserMessage, Exit)> {
+        let tls = self.addresses.0.unwrap_or_else(|| usual(443));
+        let plain = self.addresses.1.unwrap_or_else(|| usual(80));
+        Ok((bind_https(tls).await?, bind_https(plain).await?))
+    }
+
     /// The owner's yes to Let's Encrypt's subscriber agreement: from
     /// `--accept-terms`, or asked at the terminal.
-    async fn agree(&self) -> Result<AgreedToTerms, (UserMessage, Exit)> {
+    pub(crate) async fn agree(&self) -> Result<AgreedToTerms, (UserMessage, Exit)> {
         if self.terms == Terms::Accepted {
             return Ok(AgreedToTerms);
         }

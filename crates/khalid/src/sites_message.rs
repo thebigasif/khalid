@@ -3,7 +3,7 @@
 
 use std::path::Path;
 
-use khalid_core::UserMessage;
+use khalid_core::{DomainName, UserMessage};
 
 /// Why each sites.toml problem matters: Khalid serves from it.
 const SERVED_FROM: &str = "Khalid reads this file to know which sites to serve and who adds them.";
@@ -72,11 +72,22 @@ pub(crate) fn not_saved(path: &Path) -> UserMessage {
     )
 }
 
-pub(crate) fn no_https_yet() -> UserMessage {
+pub(crate) fn domain_in_sites_folder() -> UserMessage {
     UserMessage::new(
-        "khalid serve --domain gets a certificate for one site, not for a sites folder.",
-        "Each site in the folder has its own domain, and HTTPS for many domains is not built in yet.",
-        "Serve with --listen behind a proxy that handles HTTPS, such as Caddy, for every domain.",
+        "khalid serve --domain gets a certificate for one site, and this folder holds many.",
+        "Each site in a sites folder has its own domain, which sites.toml lists.",
+        "Run khalid serve --https to serve every site over HTTPS, each with its own certificate.",
+    )
+}
+
+pub(crate) fn no_certificate(domain: &DomainName) -> UserMessage {
+    UserMessage::new(
+        format!(
+            "{} gets no HTTPS certificate, so browsers cannot open it.",
+            domain.as_str()
+        ),
+        "Let's Encrypt gives certificates only for public names with a dot, such as news.example.com.",
+        "Add the site again under its public domain, such as khalid sites add news.example.com.",
     )
 }
 

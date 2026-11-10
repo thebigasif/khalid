@@ -90,6 +90,11 @@ impl Certificate {
             .any(|name| name.eq_ignore_ascii_case(domain))
     }
 
+    /// The domain names the certificate covers, in lower case.
+    pub(crate) fn names(&self) -> &[String] {
+        &self.names
+    }
+
     /// The last moment the certificate is valid.
     pub fn not_after(&self) -> DateTime<Utc> {
         self.not_after
