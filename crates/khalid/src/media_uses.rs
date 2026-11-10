@@ -139,7 +139,7 @@ mod tests {
     #[test]
     fn a_file_that_is_not_utf_8_is_still_read() {
         let site = tempfile::tempdir().unwrap();
-        let mut latin = b"Caf\xe9 photo: ".to_vec();
+        let mut latin = b"Photo \xe9 here: ".to_vec();
         latin.extend_from_slice(b"/blog/media/library/3f2a9c1e0b57d0aa/cafe.jpg\n");
         let mut path = site.path().to_path_buf();
         path.push("content");
