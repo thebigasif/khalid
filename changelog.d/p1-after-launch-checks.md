@@ -1,0 +1,2 @@
+Added
+- A page that says where the four checks promised after 1.0.0 stand: Ahrefs and Semrush on the demo site, HTTPS with a live Let's Encrypt certificate, the starter kits deployed, and SerpDad's own blog on Khalid. The 1.0.0 notes promised a report in the next release, and 1.1.0 to 1.8.0 left it out. All four are still open. The page says what our tests prove meanwhile and what to do if a check matters to you. It is `docs/releases/after-launch.md`, and every release's notes link to it until all four are done.
