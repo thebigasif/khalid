@@ -158,4 +158,5 @@ export const operations = {
   browse_tags: { method: "GET", path: "/api/content/v1/tags/", key: "content", body: null },
   read_tag_by_slug: { method: "GET", path: "/api/content/v1/tags/slug/{slug}/", key: "content", body: null },
   read_tag: { method: "GET", path: "/api/content/v1/tags/{id}/", key: "content", body: null },
+  embed: { method: "GET", path: "/api/oembed", key: "none", body: null },
 };

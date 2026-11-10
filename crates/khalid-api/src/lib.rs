@@ -74,6 +74,7 @@ mod media_picture;
 mod media_search;
 pub mod media_uses;
 pub mod not_found_log;
+pub mod oembed;
 pub mod pagination;
 pub mod plan_posts;
 pub mod post_check;

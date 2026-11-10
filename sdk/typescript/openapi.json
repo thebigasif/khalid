@@ -13069,6 +13069,90 @@
           }
         ]
       }
+    },
+    "/api/oembed": {
+      "get": {
+        "tags": [
+          "oembed"
+        ],
+        "summary": "Answers a consumer with the card of the post at `url`.",
+        "operationId": "embed",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "description": "The full address of a published post.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "`json`, the only format served. `xml` answers 501, as oEmbed asks.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxwidth",
+            "in": "query",
+            "description": "The widest the card may be, in pixels, from 200; 550 when left out.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The post as a card",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Embed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No url was given",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No published post is at the url",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "A format other than json was asked for"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -16150,6 +16234,101 @@
           }
         },
         "additionalProperties": false
+      },
+      "Embed": {
+        "type": "object",
+        "description": "A post as an oEmbed `rich` answer: a card of its title, summary and\nsite that the consumer puts in its page as it is.",
+        "required": [
+          "type",
+          "version",
+          "title",
+          "provider_name",
+          "provider_url",
+          "html",
+          "width"
+        ],
+        "properties": {
+          "author_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The first author's name."
+          },
+          "author_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The first author's page on the blog."
+          },
+          "height": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Unset: the card is as tall as its text.",
+            "minimum": 0
+          },
+          "html": {
+            "type": "string",
+            "description": "The card: a quote of the title, the summary and the site, each a\nplain link, with no script and no frame."
+          },
+          "provider_name": {
+            "type": "string",
+            "description": "The site's name."
+          },
+          "provider_url": {
+            "type": "string",
+            "description": "The blog's front page."
+          },
+          "thumbnail_height": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Its height in pixels.",
+            "minimum": 0
+          },
+          "thumbnail_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The post's share image."
+          },
+          "thumbnail_width": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Its width in pixels.",
+            "minimum": 0
+          },
+          "title": {
+            "type": "string",
+            "description": "The post's title."
+          },
+          "type": {
+            "type": "string",
+            "description": "Always `rich`.",
+            "example": "rich"
+          },
+          "version": {
+            "type": "string",
+            "description": "Always `1.0`.",
+            "example": "1.0"
+          },
+          "width": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The card's width in pixels.",
+            "minimum": 0
+          }
+        }
       },
       "Ended": {
         "type": "object",
