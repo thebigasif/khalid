@@ -96,6 +96,11 @@ impl Tool {
     pub fn name(&self) -> &str {
         &self.name
     }
+
+    /// Whether its calls only read, so a call that worked changed nothing.
+    pub fn is_read_only(&self) -> bool {
+        self.annotations.read_only_hint
+    }
 }
 
 /// What a tool call answers: text for the agent, and whether the call

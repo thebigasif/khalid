@@ -291,3 +291,54 @@ fn the_webhook_and_staff_tools_reach_the_sites_own_stores() {
     let output = session.finish();
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
 }
+
+#[test]
+fn the_redirect_and_media_tools_reach_the_sites_own_stores_and_note_each_write() {
+    let (site, _) = demo();
+    let args = [
+        "--name",
+        "Mover",
+        "--scope",
+        "settings:write",
+        "--scope",
+        "media:write",
+    ];
+    let key = make_key(site.path(), &args);
+    let mut note = site.path().to_path_buf();
+    note.push("data");
+    note.push("outside-writes");
+    let noted = || fs::read_to_string(&note).unwrap_or_default();
+    let mut session = Session::start(site.path(), &key);
+    let (failed, listed) = session.call("list_redirects", &json!({}));
+    assert!(!failed, "{listed}");
+    assert_eq!(noted(), "", "a call that only reads notes nothing");
+
+    let moved = json!({ "from": "/blog/old-guide/", "to": "/blog/", "status": 301 });
+    let body = json!({ "body": { "redirects": [moved] } });
+    let (failed, stored) = session.call("create_redirect", &body);
+    assert!(!failed, "{stored}");
+    let after_redirect = noted();
+    assert_ne!(after_redirect, "", "a running khalid serve is told");
+    let (_, listed) = session.call("list_redirects", &json!({}));
+    assert_eq!(
+        listed["redirects"][0]["from"], "/blog/old-guide/",
+        "kept in the site's database: {listed}"
+    );
+
+    let pdf: Vec<u8> = b"%PDF-1.7\nA checklist\n%%EOF\n".to_vec();
+    let upload = json!({ "name": "checklist", "body": pdf });
+    let (failed, uploaded) = session.call("upload_media", &upload);
+    assert!(!failed, "{uploaded}");
+    assert_ne!(noted(), after_redirect, "each write is noted");
+    let (_, listed) = session.call("list_media", &json!({}));
+    assert_eq!(
+        listed["media"].as_array().map(Vec::len),
+        Some(1),
+        "{listed}"
+    );
+    let output = session.finish();
+    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
+    let mut files = site.path().to_path_buf();
+    files.push("media");
+    assert!(files.is_dir(), "the upload is in the site's media folder");
+}

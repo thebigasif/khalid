@@ -315,7 +315,7 @@ fn run(cli: &Cli) -> Exit {
             Some(command @ (Command::Keys { .. } | Command::Staff { .. })),
             Some((folder, config, ..)),
         ) => access(folder, config, command, cli.output),
-        (Some(Command::Mcp), Some((folder, config, ..))) => mcp::run(folder, config, &env),
+        (Some(Command::Mcp), Some((folder, config, ..))) => mcp::run(folder, config, (&env, cli)),
         (
             Some(command @ (Command::Bing { .. } | Command::SearchConsole { .. })),
             Some((folder, config, _, (content, _))),
