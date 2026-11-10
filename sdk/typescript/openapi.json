@@ -8067,6 +8067,76 @@
         ]
       }
     },
+    "/api/admin/v1/site/health/": {
+      "get": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "The site's health score out of 100 from its last audit, for the\ndashboard, and up to the last 30 audits as the trend, oldest first.\n`khalid serve` audits the site once a day, and `khalid audit` adds a\nrun too. Before the first audit, `last` is `null` and the trend is\nempty. Needs `posts:write`.",
+        "operationId": "site_health",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The last audit and the trend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteHealth"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server checks no posts",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/sites/": {
       "get": {
         "tags": [
@@ -16669,6 +16739,56 @@
           }
         }
       },
+      "HealthRun": {
+        "type": "object",
+        "description": "One audit as the dashboard shows it.",
+        "required": [
+          "at",
+          "score",
+          "pages",
+          "errors",
+          "warnings",
+          "notices"
+        ],
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the audit ran, in UTC."
+          },
+          "errors": {
+            "type": "integer",
+            "description": "How many errors it found.",
+            "example": 2,
+            "minimum": 0
+          },
+          "notices": {
+            "type": "integer",
+            "description": "How many notices it found.",
+            "example": 9,
+            "minimum": 0
+          },
+          "pages": {
+            "type": "integer",
+            "description": "How many pages it read.",
+            "example": 48,
+            "minimum": 0
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The health score out of 100: the share of pages with no error.",
+            "example": 96,
+            "minimum": 0
+          },
+          "warnings": {
+            "type": "integer",
+            "description": "How many warnings it found.",
+            "example": 5,
+            "minimum": 0
+          }
+        }
+      },
       "HomeSectionSetting": {
         "oneOf": [
           {
@@ -20540,6 +20660,33 @@
           "design": {
             "$ref": "#/components/schemas/AdminDesign",
             "description": "The site's design."
+          }
+        }
+      },
+      "SiteHealth": {
+        "type": "object",
+        "description": "The site's health: its last audit and the trend.",
+        "required": [
+          "trend"
+        ],
+        "properties": {
+          "last": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/HealthRun",
+                "description": "The last audit, or `null` when none has run yet."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trend": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HealthRun"
+            },
+            "description": "Up to the last 30 audits, oldest first, the last among them."
           }
         }
       },

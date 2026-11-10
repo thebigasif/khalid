@@ -8,11 +8,13 @@ use std::sync::Arc;
 
 use axum::body::{Body, to_bytes};
 use axum::http::{Request, StatusCode};
+use chrono::{TimeDelta, TimeZone, Utc};
 use khalid_api::api::{self, AdminDesks};
 use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_check::{MemoryPostChecks, PostCheck, PostChecks, Snippet};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
+use khalid_api::site_health::{HealthRun, SiteHealth};
 use khalid_lint::Report;
 use serde_json::{Value, json};
 use tower::ServiceExt;
@@ -39,6 +41,13 @@ fn check() -> PostCheck {
 /// `checks`; answers the status and the body.
 #[cfg(test)]
 async fn send(checks: Option<Arc<dyn PostChecks>>, key: &str, id: &str) -> (StatusCode, Value) {
+    get(checks, key, &format!("/api/admin/v1/posts/{id}/check/")).await
+}
+
+/// Sends a GET of `path` with `key` to an API whose checks are `checks`;
+/// answers the status and the body.
+#[cfg(test)]
+async fn get(checks: Option<Arc<dyn PostChecks>>, key: &str, path: &str) -> (StatusCode, Value) {
     let hashing = KeyHashing::fast_for_tests();
     let stored = |text: &str, scope| {
         let token: KeyToken = text.parse().unwrap();
@@ -55,7 +64,7 @@ async fn send(checks: Option<Arc<dyn PostChecks>>, key: &str, id: &str) -> (Stat
     };
     let content = Arc::new(common::store());
     let (router, _) = api::router_with_desks(content, Arc::new(door), Arc::new(keys), desks);
-    let request = Request::get(format!("/api/admin/v1/posts/{id}/check/"))
+    let request = Request::get(path)
         .header("authorization", format!("Khalid {key}"))
         .body(Body::empty())
         .unwrap();
@@ -110,4 +119,55 @@ async fn a_server_without_checks_says_so() {
 async fn a_key_that_cannot_write_posts_is_a_403() {
     let (status, json) = send(Some(checks()), WEBHOOKS_ONLY, "anchor-text").await;
     assert_eq!(status, StatusCode::FORBIDDEN, "{json}");
+}
+
+const HEALTH: &str = "/api/admin/v1/site/health/";
+
+/// One kept audit, `day` days after the first, scoring `score`.
+#[cfg(test)]
+fn run(day: i64, score: u8) -> HealthRun {
+    let first = Utc.with_ymd_and_hms(2026, 11, 1, 2, 0, 0).unwrap();
+    HealthRun {
+        at: first + TimeDelta::days(day),
+        score,
+        pages: 48,
+        errors: 2,
+        warnings: 5,
+        notices: 9,
+    }
+}
+
+#[tokio::test]
+async fn the_health_route_sends_the_last_audit_and_the_trend() {
+    let health = SiteHealth::of(&[run(0, 90), run(1, 96)]);
+    let checks = MemoryPostChecks::new(Vec::new()).with_health(health);
+    let (status, json) = get(Some(Arc::new(checks)), WRITER, HEALTH).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let last = json!({
+        "at": "2026-11-02T02:00:00Z", "score": 96, "pages": 48,
+        "errors": 2, "warnings": 5, "notices": 9,
+    });
+    assert_eq!(json["last"], last);
+    let scores: Vec<&Value> = json["trend"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|r| &r["score"])
+        .collect();
+    assert_eq!(scores, [&json!(90), &json!(96)]);
+}
+
+#[tokio::test]
+async fn before_the_first_audit_the_health_is_empty() {
+    let (status, json) = get(Some(checks()), WRITER, HEALTH).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(json, json!({"last": null, "trend": []}));
+}
+
+#[tokio::test]
+async fn the_health_route_needs_posts_write_and_a_checking_server() {
+    let (status, _) = get(Some(checks()), WEBHOOKS_ONLY, HEALTH).await;
+    assert_eq!(status, StatusCode::FORBIDDEN);
+    let (status, json) = get(None, WRITER, HEALTH).await;
+    assert_eq!(status, StatusCode::NOT_FOUND, "{json}");
 }

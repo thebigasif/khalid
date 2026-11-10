@@ -11,6 +11,7 @@ use crate::content_store::BoxFuture;
 use crate::link_suggestions::LinkSuggestion;
 use crate::post_store::PostStoreError;
 use crate::resources::SeoScores;
+use crate::site_health::SiteHealth;
 use crate::site_issues::SiteIssue;
 
 /// Checks posts as they would go live now, writing nothing. `khalid serve`
@@ -47,6 +48,16 @@ pub trait PostChecks: Send + Sync {
     /// Returns [`PostStoreError`] when the posts or the site's settings
     /// cannot be read.
     fn site_issues(&self) -> BoxFuture<'_, Result<Vec<SiteIssue>, PostStoreError>>;
+
+    /// The site's health score from its last audit and the trend before
+    /// it. A store that keeps no audits answers that none has run.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`PostStoreError`] when the audits cannot be read.
+    fn site_health(&self) -> BoxFuture<'_, Result<SiteHealth, PostStoreError>> {
+        Box::pin(std::future::ready(Ok(SiteHealth::default())))
+    }
 }
 
 /// The lines of a search result: the title, the address and the
@@ -137,18 +148,30 @@ pub use memory::MemoryPostChecks;
 
 #[cfg(any(test, feature = "test-util"))]
 mod memory {
-    use super::{BoxFuture, LinkSuggestion, PostCheck, PostChecks, PostStoreError, SiteIssue};
+    use super::{
+        BoxFuture, LinkSuggestion, PostCheck, PostChecks, PostStoreError, SiteHealth, SiteIssue,
+    };
 
     /// Checks made up front, for tests.
     #[derive(Debug, Default)]
     pub struct MemoryPostChecks {
         checks: Vec<PostCheck>,
+        health: SiteHealth,
     }
 
     impl MemoryPostChecks {
         /// Answers with `checks`, each for the post it names.
         pub fn new(checks: Vec<PostCheck>) -> Self {
-            Self { checks }
+            Self {
+                checks,
+                health: SiteHealth::default(),
+            }
+        }
+
+        /// The same checks, answering `health` for the site.
+        #[must_use]
+        pub fn with_health(self, health: SiteHealth) -> Self {
+            Self { health, ..self }
         }
     }
 
@@ -173,6 +196,10 @@ mod memory {
         /// No issues here; ranking is tested on its own.
         fn site_issues(&self) -> BoxFuture<'_, Result<Vec<SiteIssue>, PostStoreError>> {
             Box::pin(std::future::ready(Ok(Vec::new())))
+        }
+
+        fn site_health(&self) -> BoxFuture<'_, Result<SiteHealth, PostStoreError>> {
+            Box::pin(std::future::ready(Ok(self.health.clone())))
         }
     }
 }

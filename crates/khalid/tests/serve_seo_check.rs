@@ -385,3 +385,29 @@ fn the_site_issues_list_the_most_pressing_problems_first() {
         .all(|pair| pair[0].0 < pair[1].0 || (pair[0].0 == pair[1].0 && pair[0].1 >= pair[1].1));
     assert!(ranked, "blocks first, then the most posts: {json}");
 }
+
+#[test]
+fn the_site_health_sends_the_score_khalid_audit_kept() {
+    let site = demo_site();
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let health = "/api/admin/v1/site/health/";
+    let (status, json) = send(&server, &key, ("GET", health), "");
+    assert_eq!(status, 200, "{json}");
+    assert_eq!(json["last"], Value::Null, "no audit has run yet: {json}");
+
+    let audited = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args([
+            "--site",
+            site.path().to_str().unwrap(),
+            "audit",
+            "--offline",
+        ])
+        .output()
+        .unwrap();
+    assert_eq!(audited.status.code(), Some(0));
+    let (status, json) = send(&server, &key, ("GET", health), "");
+    assert_eq!(status, 200, "{json}");
+    assert_eq!(json["last"]["score"], 100, "{json}");
+    assert_eq!(json["trend"].as_array().unwrap().len(), 1, "{json}");
+}

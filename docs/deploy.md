@@ -313,6 +313,12 @@ With systemd, run `sudo systemctl edit khalid` and add `Environment=KHALID_SMTP_
 
 To check mail before you start the server, run `khalid --site <folder> doctor` in the same environment. Its Mail line says which way mail leaves and whether the variable is set, without showing it. Add `--send-test-mail` to send one email to the address form answers go to, through the same server or service `khalid serve` uses. If it fails, doctor says why, such as a refused password or a server that did not answer.
 
+## Nightly site audit
+
+`khalid serve` audits the blog once a day, the way `khalid audit --offline` does: it builds the site into `data/audit/site/`, reads every page as a search engine's crawler would, and keeps the health score in `data/audit/runs.jsonl`. The health score is the share of pages with no error, out of 100. The first audit runs an hour after the server starts, so it never slows the start, and the next one a day after the last audit, whether the server or you ran it. The issues and their fixes are in `data/audit/issues.csv`.
+
+The dashboard shows the score from `GET /api/admin/v1/site/health/`, which sends the last audit and up to the last 30 as the trend. Before the first audit, `last` is `null`.
+
 ## Alerts
 
 `khalid serve` tells you when something on the blog needs you. Once an hour it checks for a burst of visits ending on missing pages (404s), an HTTPS certificate with under two weeks left, and live posts that have not changed in a year. It also tells you when a scheduled post did not go live because the linter refused it, and `khalid audit` tells you about broken links. Each problem is sent once while it lasts, and again if it clears and comes back.
