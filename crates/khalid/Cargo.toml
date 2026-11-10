@@ -44,6 +44,8 @@ brotli = "9"
 chrono = { version = "0.4", default-features = false }
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
+# Only with the man feature, for `just man`: the binary carries no page writer.
+clap_mangen = { version = "0.3", optional = true }
 getrandom = "0.4"
 hmac = "0.13"
 mimalloc = { version = "0.1", features = ["no_thp"] }
@@ -72,6 +74,9 @@ rustix = { version = "1", default-features = false, features = ["std", "thread"]
 # the throwaway trial template pack. Release builds leave it off, so the
 # private-network guard has no switch and only real packs ship.
 test-util = ["khalid-outbound/test-util", "khalid-theme/test-util"]
+# The hidden `khalid man <FOLDER>`, which writes the manual pages that the
+# release archive and the Docker image ship. Release builds leave it off.
+man = ["dep:clap_mangen"]
 
 [build-dependencies]
 brotli = "9"
@@ -191,6 +196,10 @@ required-features = ["test-util"]
 [[test]]
 name = "serve_visitor_log"
 required-features = ["test-util"]
+
+[[test]]
+name = "man_pages"
+required-features = ["man"]
 
 [lints]
 workspace = true
