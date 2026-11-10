@@ -2,6 +2,7 @@
 @import "./tokens.css";
 @import "./seo.css";
 @import "./privacy.css";
+@import "./design.css";
 
 /* Tailwind reads every word in src/ as a possible class, so plain words in
    comments, types and copy such as "filter" or "transition" built rules no
