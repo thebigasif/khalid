@@ -550,6 +550,7 @@ impl Demo {
             date,
             updated: None,
             updated_note: None,
+            updates: Vec::new(),
             dek: None,
             facts: Vec::new(),
             reading_time: ReadingTime::of(&body, &Locale::try_new(lang.tag)?),

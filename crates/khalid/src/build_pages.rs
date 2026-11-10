@@ -366,11 +366,12 @@ fn post_page(
     let post = RenderPost {
         title: title.clone(),
         date,
-        updated: front.updated,
+        updated: front.last_updated(),
         updated_note: front
             .updated_note
             .clone()
             .filter(|note| !note.trim().is_empty()),
+        updates: build_reader::updates(front),
         dek: front
             .description
             .clone()

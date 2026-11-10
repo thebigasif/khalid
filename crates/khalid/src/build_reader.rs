@@ -9,7 +9,7 @@ use khalid_content::{AuthorFront, Document, Heading, PostFront, Rendered, SiteCo
 use khalid_core::{AbsoluteUrl, Config, Locale, Reader, Slug, UserMessage};
 use khalid_render::{
     BodyHtml, Contents, ContentsHeading, Fact, Feature, Features, HeadingLevel, Person, PostTopics,
-    Profile,
+    Profile, RenderUpdate,
 };
 use khalid_seo::AuthorProfile;
 
@@ -135,6 +135,17 @@ pub(crate) fn facts(front: &PostFront) -> Vec<Fact> {
         .map(|fact| Fact {
             label: fact.label.clone(),
             value: fact.value.clone(),
+        })
+        .collect()
+}
+
+/// The Updates list `front` gives, newest first, as post pages show it.
+/// Front matter has already sorted, trimmed and checked each note.
+pub(crate) fn updates(front: &PostFront) -> Vec<RenderUpdate> {
+    (front.updates.iter())
+        .map(|update| RenderUpdate {
+            date: update.date,
+            note: update.note.clone(),
         })
         .collect()
 }
