@@ -41,6 +41,7 @@ import { Serpdad } from "./Serpdad";
 import { SignIn } from "./SignIn";
 import { Site } from "./Site";
 import { Sites } from "./Sites";
+import { Subscribers } from "./Subscribers";
 import { Team } from "./Team";
 import { Trash } from "./Trash";
 import { WebhookActivity } from "./WebhookActivity";
@@ -157,6 +158,12 @@ const comments = createRoute({
   component: Comments,
 });
 
+const subscribers = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/subscribers",
+  component: Subscribers,
+});
+
 const account = createRoute({
   getParentRoute: () => signedIn,
   path: "/account",
@@ -250,6 +257,7 @@ const routeTree = root.addChildren([
     media,
     mediaItem,
     comments,
+    subscribers,
     authors,
     authorPage,
     trash,
