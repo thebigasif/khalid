@@ -4,6 +4,40 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.8.0
+
+Videos get their own sitemap, the home page shows the sections you choose, pages and other entries can be scheduled, blocks write their own structured data, every webhook event now fires, and saved settings take effect without a restart. What changed, in plain words: `docs/releases/1.8.0.md`.
+
+### Added
+
+- Posts with a video now appear in a video sitemap of their own, such as `sitemaps/videos-en-1.xml`, listed in the sitemap index on `khalid build` and `khalid serve`. Video blocks and YouTube, Vimeo and Loom embeds are both listed, so Google can show them in video results.
+- Pages, glossary terms, case studies and changelog entries can be scheduled: give a draft under `drafts/` a `publish_at:` time in its front matter, and `khalid serve` puts it live at that time. Their `.scheduled` webhooks now fire when a time is set, moved or taken away, the last with `publish_at` null, and going live fires `.published` once. `post.scheduled` now also fires when a post is taken off its schedule, with `published_at` null (KH-API-3).
+- Four new blocks describe one thing each and write its structured data for search engines: `:::event` for an event at a venue or online, `:::course` for a course, `::book` for a book and `:::dataset` for data you share. Business cards and location blocks now write their structured data too.
+- When a block and the post's `schema` field, or a schema template, describe the same kind of thing, the page now carries only the block's version, so search engines never see it twice.
+- `khalid audit` warns once, on the home page, when a reader cannot reach an About or contact page: no page of the blog has the slug `about`, `contact`, `about-us` or `contact-us` or is marked `page_type: AboutPage` or `ContactPage`, and no link leads to one on the main site. Readers trust a blog more when they can see who runs it, and AI tools need someone to credit when they cite it. `khalid lint` already gave the same warning as `no-about-page`.
+- Choose and order your home page's sections in `site.toml` or in the admin under Settings, "Home page": your newest posts, your featured posts, a category, a collection, a channel, a series in reading order, and the newsletter sign-up, each with a "View all" link. Every template shows them in its own style. Sections listed under `[[reader.home_sections]]` before now show too; they were read but not shown. Without sections the home page is unchanged.
+
+### Changed
+
+- The `site.changed` webhook now fires once `khalid serve` has put saved settings in use, for a change to `site.toml`, `routes.toml` or any file under `theme/`. Its body lists the changed files under `files`, and `restart_needed` is `true` only when a change waits for the next start. A `site.toml` saved with only comments changed fires nothing. The webhook docs now say which command fires each event (KH-API-3).
+- The Khalid program is about 330 KB smaller. It now calls outside services such as Search Console, SerpDad and webhooks over HTTP/1.1 only, which every one of them accepts.
+- The performance budgets job now checks the admin's initial JavaScript against its 350 KB budget, from the admin CI already builds, and fails when no admin build reaches it. Lint time, requests per second and the public stylesheet were already checked; the budgets page now says how each is measured.
+- Every change that lands on the main branch now gets its full check result in about half an hour instead of two hours, with the same test coverage number, and no landed change goes without a result.
+- A new release is ready as a draft in about 25 minutes instead of more than an hour. It still runs every check on the tagged version before anything is published, now as several jobs at once.
+
+### Fixed
+
+- The Admin API's settings route now says a restart is needed only for the settings `khalid serve` reads when it starts, such as `address`, `languages`, `mount` or `[code]`. A saved name, look, SEO or privacy setting answers `restart_needed: false`, since the blog uses it within a few seconds. The admin's Settings, Look, SEO and Privacy screens say so after a save, and show the restart note only when a setting truly waits for one. The server's restart notice now also names `slugs` (KH-API-3).
+- The Admin API's settings and schema templates routes now read `site.toml` with the environment `khalid serve` started with. A site that sends mail through Resend, Postmark or SMTP with a password, or keeps media in an S3 bucket, can now read and save its settings there, and a site whose address comes from `KHALID_ADDRESS` no longer reports a restart for it. No key or password is sent back (KH-API-3).
+- The admin's post checks and the publish gate now judge posts with the settings the pages use, so a saved `[seo]` change or schema template reaches them within a few seconds instead of after a restart (KH-API-3, KH-SEO-4).
+- The schema templates route answers `restart_needed: true` only when a setting `khalid serve` reads at start waits, as the settings route does, and the admin's Schema templates screen says a saved template is in use within a few seconds.
+- `khalid lint` now warns when a blog on a subdomain, such as `blog.example.com`, tells Google not to follow its links to the main site, `example.com`. The site's own hosts are its address, the `www.` and main domain pair, and the hosts listed in `internal_domains` under `[seo.links]`; listing the main site there stops the `nofollow` and the warning.
+- The Docker guide in `docs/deploy.md` now shows how to make the admin's owner inside the image, and says to leave out `--site`, which the image adds itself. A new check, `scripts/packages-check.sh`, runs the Docker image and the systemd service exactly as the guide says and fetches the home page from each.
+- `install.sh --systemd` and the systemd steps in `docs/deploy.md` now work on Ubuntu, which has no `/etc/sysusers.d` folder until something is put there: they make the folder first. Where `systemd-sysusers` is missing, the script makes the `khalid` user with `useradd` instead.
+- The check that Khalid renews its HTTPS certificate while it runs no longer fails at random: it waits for the new certificate instead of guessing how long it takes, and compares when each certificate was issued.
+- The `plain-answer` check reads an answer the way `khalid audit` does. A hedge word counts only whole, so "unusually" no longer warns as "usually". A vague opener such as "There are" warns at the start of any sentence of the answer, not only the first. Two ", which" clauses in one sentence warn as a chain; a lone "which" at the end of a line no longer does. Each kind it finds comes with its own plain fix.
+- The admin's test run no longer fails now and then with "window is not defined" after every test passed. The start-a-post tests ended while the editor was still loading; they now wait for it, and every admin test waits for any page it opened to finish loading.
+
 ## 1.7.1
 
 Every template looks right on laptops and phones, and the bundled SQLite gets a security fix. What changed, in plain words: `docs/releases/1.7.1.md`.
