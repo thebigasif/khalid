@@ -103,10 +103,24 @@ If a saved `site.toml` or theme file has a mistake, the blog keeps serving the l
 A few settings only take effect when the server starts:
 
 - `mount` and `mode` shape the server's own addresses, so it keeps the values it started with.
-- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
+- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts, the log and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
 - The `--listen` and `--domain` options, the environment variables, and the `data/` folder with its database are read once at start.
 
 When you change one of these, the log says a restart is needed, and so does the admin: its settings screens show a note, and the Admin API's settings answer `restart_needed: true`. A change to anything else, such as the blog's name, its look, its SEO or its privacy settings, answers `false`, since the blog already uses it. Restart with `systemctl restart khalid`, or stop and start the server.
+
+## The server log
+
+`khalid serve` writes its log to standard error, the stream a service manager keeps for each program. Each line says what happened, such as a post that went live, or an email that could not be sent and why. With systemd, read it with `journalctl -u khalid`. With Docker, read it with `docker logs <container>`, and with Compose with `docker compose logs khalid`.
+
+The log says what the server did and what failed. It holds no password, API key, token or email text. To log less, or to send JSON to a log collector, add a `[log]` table to `site.toml`:
+
+```toml
+[log]
+level = "warn"
+format = "json"
+```
+
+`level` is the least important line written: `error`, `warn`, `info`, `debug` or `trace`, `info` unless set. A failed email is a `warn` line. `format` is `text`, one plain line a message, unless set, or `json`, one JSON object a line. `khalid serve --json` writes JSON too. A server of several sites logs plain lines at `info`.
 
 ## Docker
 
