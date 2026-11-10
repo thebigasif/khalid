@@ -1,6 +1,6 @@
 //! Git mode's push hook on `khalid serve`: a git host that was pushed to
-//! asks the blog to pull, and the server's watch shows what came in (plan
-//! section 4.6, ADR "git mode: a branch per draft").
+//! asks the blog to pull, and the pages are rendered again from what came
+//! in (plan section 4.6, ADR "git mode: a branch per draft").
 
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, PoisonError};
@@ -12,6 +12,7 @@ use axum::http::{HeaderMap, StatusCode};
 use axum::routing::post;
 use hmac::{Hmac, KeyInit, Mac};
 use khalid_core::Secret;
+use khalid_server::{LivePages, Render};
 use sha2::Sha256;
 use subtle::ConstantTimeEq;
 
@@ -26,18 +27,24 @@ const GITHUB_SIGNATURE: &str = "x-hub-signature-256";
 /// GitLab's header: the secret itself.
 const GITLAB_TOKEN: &str = "x-gitlab-token";
 
-/// What the hook needs: the site folder, the secret, and a lock so two
-/// pulls never run at once.
+/// What the hook needs: the site folder, the secret, a lock so two pulls
+/// never run at once, and the pages to render again after a pull.
 #[derive(Clone)]
-struct Hook {
+struct Hook<R> {
     site: PathBuf,
     secret: Arc<Secret<String>>,
     pulling: Arc<Mutex<()>>,
+    shown: (R, LivePages),
 }
 
 /// The push hook for the site in `site`, or no route at all when the
-/// environment holds no `secret`.
-pub(crate) fn router(site: &Path, secret: Option<Secret<String>>) -> Router {
+/// environment holds no `secret`. A pull that moved files renders the
+/// `shown` pages again with their renderer.
+pub(crate) fn router<R: Render + Clone>(
+    site: &Path,
+    secret: Option<Secret<String>>,
+    shown: &(R, LivePages),
+) -> Router {
     let Some(secret) = secret else {
         return Router::new();
     };
@@ -45,16 +52,17 @@ pub(crate) fn router(site: &Path, secret: Option<Secret<String>>) -> Router {
         site: site.to_path_buf(),
         secret: Arc::new(secret),
         pulling: Arc::new(Mutex::new(())),
+        shown: shown.clone(),
     };
     Router::new()
-        .route(HOOK_PATH, post(pushed))
+        .route(HOOK_PATH, post(pushed::<R>))
         .with_state(hook)
 }
 
 /// Answers a signed push with 202 and pulls in the background, since a host
 /// waits about ten seconds for an answer. Anything unsigned is a 401.
-async fn pushed(
-    State(hook): State<Hook>,
+async fn pushed<R: Render + Clone>(
+    State(hook): State<Hook<R>>,
     headers: HeaderMap,
     body: Bytes,
 ) -> (StatusCode, &'static str) {
@@ -64,19 +72,40 @@ async fn pushed(
             "The push was not signed with KHALID_GIT_HOOK_SECRET. Set the same secret on the git host's webhook.\n",
         );
     }
-    tokio::task::spawn_blocking(move || {
-        let _one_at_a_time = hook.pulling.lock().unwrap_or_else(PoisonError::into_inner);
-        // Git's own words may hold the remote's address with a token in
-        // it, so a failure only says where to look (BL-RUN-5).
-        if let Ok(moved) = pull::pulled(&hook.site) {
-            tracing::info!(files = moved.files, "the push hook pulled");
-        } else {
-            tracing::warn!(
-                "the push hook could not pull; run khalid pull in the site folder to see why"
-            );
-        }
-    });
+    tokio::spawn(pull_and_show(hook));
     (StatusCode::ACCEPTED, "Pulling.\n")
+}
+
+/// Pulls, then renders the pages again when the pull moved files. The file
+/// watch sees them too, but not when the pull lands before the watch is
+/// ready, so the hook does not wait for it (backlog row 33).
+async fn pull_and_show<R: Render + Clone>(hook: Hook<R>) {
+    let (site, pulling) = (hook.site.clone(), Arc::clone(&hook.pulling));
+    let pulled = tokio::task::spawn_blocking(move || {
+        let _one_at_a_time = pulling.lock().unwrap_or_else(PoisonError::into_inner);
+        pull::pulled(&site)
+    })
+    .await;
+    // Git's own words may hold the remote's address with a token in it, so
+    // a failure only says where to look (BL-RUN-5).
+    let Ok(Ok(moved)) = pulled else {
+        return tracing::warn!(
+            "the push hook could not pull; run khalid pull in the site folder to see why"
+        );
+    };
+    tracing::info!(files = moved.files, "the push hook pulled");
+    if moved.files == 0 {
+        return;
+    }
+    // A save shown while this renders is newer than what it read, so it
+    // stays, and the watch renders the pull after it.
+    let (renderer, live) = &hook.shown;
+    if let Err(error) = live.refresh_unless_saved(renderer).await {
+        tracing::warn!(
+            ?error,
+            "the push hook pulled but the pages could not be rendered, so readers keep the last good pages"
+        );
+    }
 }
 
 /// Whether `headers` sign `body` with `secret`, the way GitHub or GitLab
@@ -113,6 +142,13 @@ fn bytes(hex: &str) -> Option<Vec<u8>> {
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+
+    use axum::http::Request;
+    use khalid_server::{Pages, Rendered};
+    use tower::ServiceExt;
+
     use super::*;
 
     fn github(body: &[u8], secret: &str) -> HeaderMap {
@@ -151,5 +187,75 @@ mod tests {
         assert!(signed(&headers, b"{}", secret));
         headers.insert(GITLAB_TOKEN, "made-for-this-tesT".parse().unwrap());
         assert!(!signed(&headers, b"{}", secret));
+    }
+
+    /// Counts its renders, each a site with no pages.
+    #[derive(Clone, Default)]
+    struct Counted(Arc<AtomicUsize>);
+
+    impl Render for Counted {
+        type Error = std::io::Error;
+
+        fn render(&self) -> Result<Rendered, Self::Error> {
+            self.0.fetch_add(1, Ordering::SeqCst);
+            Ok(Rendered::new(Vec::new(), "<h1>Page not found</h1>"))
+        }
+    }
+
+    fn git(folder: &Path, args: &[&str]) {
+        let ran = std::process::Command::new("git")
+            .args(["-c", "user.name=Writer", "-c", "user.email=w@example.com"])
+            .arg("-C")
+            .arg(folder)
+            .args(args)
+            .output()
+            .unwrap();
+        assert!(ran.status.success(), "git {args:?}");
+    }
+
+    fn within(folder: &Path, name: &str) -> PathBuf {
+        let mut path = folder.to_path_buf();
+        path.push(name);
+        path
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn a_pull_that_moved_files_is_rendered_without_the_file_watch() {
+        let (origin, writer, blog) = (
+            tempfile::tempdir().unwrap(),
+            tempfile::tempdir().unwrap(),
+            tempfile::tempdir().unwrap(),
+        );
+        let origin_path = origin.path().to_str().unwrap();
+        git(origin.path(), &["init", "--bare", "--quiet", "-b", "main"]);
+        git(writer.path(), &["clone", "--quiet", origin_path, "."]);
+        fs::write(within(writer.path(), "site.toml"), "").unwrap();
+        git(writer.path(), &["add", "."]);
+        git(writer.path(), &["commit", "--quiet", "-m", "A site"]);
+        git(writer.path(), &["push", "--quiet", "origin", "HEAD:main"]);
+        git(blog.path(), &["clone", "--quiet", origin_path, "."]);
+        fs::write(within(writer.path(), "post.md"), "A post.\n").unwrap();
+        git(writer.path(), &["add", "."]);
+        git(writer.path(), &["commit", "--quiet", "-m", "A post"]);
+        git(writer.path(), &["push", "--quiet", "origin", "HEAD:main"]);
+
+        let secret = "made-for-this-test";
+        let renders = Counted::default();
+        let live = LivePages::new(Pages::new(Vec::new(), "").unwrap());
+        let shown = (renders.clone(), live);
+        let hook = router(blog.path(), Some(Secret::new(secret.to_owned())), &shown);
+        let push = Request::post(HOOK_PATH)
+            .header(GITLAB_TOKEN, secret)
+            .body(axum::body::Body::from("{}"))
+            .unwrap();
+        assert_eq!(hook.oneshot(push).await.unwrap().status(), 202);
+        let rendered = async {
+            while renders.0.load(Ordering::SeqCst) == 0 {
+                tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+            }
+        };
+        let waited = tokio::time::timeout(std::time::Duration::from_secs(20), rendered).await;
+        assert!(waited.is_ok(), "the pulled post was rendered");
+        assert!(within(blog.path(), "post.md").is_file(), "the blog pulled");
     }
 }
