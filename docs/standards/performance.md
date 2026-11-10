@@ -10,21 +10,21 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 | Cold start to first byte | under 100 ms | 10% | `hyperfine` on `khalid serve` with a 1,000-post fixture, first request |
 | Idle memory, one site, 1,000 posts | under 50 MB RSS | 10% | resident set size of `khalid serve`, read after it settles, then five readings one second apart of which CI takes the lowest (CTO answers 2026-10-27, section 2) |
 | Post page render, in process | p50 under 1 ms, p99 under 5 ms | 10% | `divan` benchmark over the fixture |
-| Cached post page, 2 vCPU | at least 10,000 requests per second | 10% | `oha` for 30 seconds |
+| Cached post page, 2 vCPU | at least 10,000 requests per second | 10% | `khalid-perf requests`: one cached post page of the 1,000-post site over 50 keep-alive connections for 30 seconds, as `oha` asks by default |
 | Full rebuild, 10,000 posts | under 30 s | 10% | timed `khalid build` |
 | Incremental rebuild, one post | under 50 ms | 10% | timed file change to updated page |
-| Lint one post | under 20 ms | 10% | `divan` |
+| Lint one post | under 20 ms | 10% | `khalid-perf lint`: the median over 100 posts of the 1,000-post site, each linted against the whole site |
 | Full site audit, 1,000 posts | under 60 s | 10% | timed `khalid audit` |
 | Lighthouse, default post page | 100 in all four categories | none | Lighthouse CI against the demo site |
 | Largest Contentful Paint, demo site on a 5 dollar VPS class runner | under 1 s | none | Lighthouse CI |
 | Cumulative Layout Shift | 0 | none | Lighthouse CI |
-| Public CSS, compressed | under 20 KB | 5% | size of the built stylesheet |
+| Public CSS, compressed | under 20 KB | 5% | `khalid-perf sizes`: the Brotli copy of each stylesheet the built home page links |
 | Pictures on a template's demo home page, 390 px at 3x, without the hero | under 620 KB (Aperture 810 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
 | Pictures on a template's demo home page, 390 px at 1x, without the hero | under 140 KB | none | `scripts/page-weight.sh`, see "Page weight" |
 | Pictures on a template's demo home page, 1440 px | under 1,250 KB (Aperture 2,100 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
 | Web fonts on a template's demo home page and one post, 390 and 1440 px | under 60 KB | none | `scripts/page-weight.sh`, see "Fonts" |
 | JavaScript required to read a post | 0 bytes | none | scripts-off test |
-| Admin initial JavaScript, compressed | under 350 KB | 5% | Vite build report |
+| Admin initial JavaScript, compressed | under 350 KB | 5% | `khalid-perf sizes` on the build CI's Admin job hands over: each script `admin/dist/index.html` loads at once, gzipped at level 9. With `PERF_REQUIRE_ADMIN=1`, as CI sets it, `scripts/perf.sh` fails when no admin build is there |
 | Test suite, CI | under 4 min | none | job time |
 | Release build, CI | under 10 min with cache | none | job time |
 

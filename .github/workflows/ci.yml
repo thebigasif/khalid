@@ -412,6 +412,15 @@ jobs:
         if: steps.admin.outputs.present == 'true'
         run: npm run build && node scripts/size-budget.mjs
         working-directory: admin
+      # The performance budgets job measures the admin's initial
+      # JavaScript from this build, so npm runs once.
+      - uses: actions/upload-artifact@v7
+        if: steps.admin.outputs.present == 'true'
+        with:
+          name: admin-dist
+          path: admin/dist/
+          retention-days: 1
+          if-no-files-found: error
       - name: No admin yet
         if: steps.admin.outputs.present == 'false'
         run: echo "Admin checks start with Phase 4."
@@ -958,14 +967,19 @@ jobs:
     name: Performance budgets
     runs-on: ubuntu-latest
     # The binaries come from the size budget's build; they are measured
-    # here, on GitHub's runner, as before.
-    needs: handover-build
+    # here, on GitHub's runner, as before. The admin comes from the Admin
+    # job's build, for the admin's initial JavaScript budget.
+    needs: [handover-build, admin]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/download-artifact@v7
         with:
           name: release-binaries
           path: target/handover
+      - uses: actions/download-artifact@v7
+        with:
+          name: admin-dist
+          path: admin/dist
       - name: The handed-over binaries
         run: |
           chmod +x target/handover/khalid target/handover/khalid-perf
@@ -978,6 +992,7 @@ jobs:
       - name: Budgets (docs/standards/performance.md)
         env:
           PERF_SERVE_RUNS: ${{ github.event_name == 'pull_request' && '1' || '5' }}
+          PERF_REQUIRE_ADMIN: "1"
         run: |
           if ./scripts/perf.sh | tee target/perf-run.log; then exit 0; fi
           if [ "$GITHUB_EVENT_NAME" != pull_request ]; then exit 1; fi
