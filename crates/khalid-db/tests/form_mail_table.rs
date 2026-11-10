@@ -121,3 +121,29 @@ async fn a_given_up_email_is_never_due_and_listed_until_forgotten() {
     demo.forget_given_up_before(at(2)).await.unwrap();
     assert_eq!(demo.given_up_since(at(0)).await.unwrap(), []);
 }
+
+#[tokio::test]
+async fn doctor_reads_given_up_emails_by_the_site_handle() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut path = PathBuf::from(dir.path());
+    path.push("site.db");
+    let db = Database::open(&path).await.unwrap();
+    db.migrate().await.unwrap();
+    let (main, missing) = (
+        Slug::try_new("main").unwrap(),
+        Slug::try_new("none").unwrap(),
+    );
+    let table = FormMailTable::new(db.clone(), db.site(&main).await.unwrap());
+    table
+        .keep(&contact(), &mail("Hello"), failure(0, None))
+        .await
+        .unwrap();
+
+    let given_up = FormMailTable::given_up_of(&db, &main, at(0)).await.unwrap();
+    assert_eq!(given_up.len(), 1);
+    assert_eq!(given_up[0].form, contact());
+    let none = FormMailTable::given_up_of(&db, &missing, at(0))
+        .await
+        .unwrap();
+    assert_eq!(none, [], "a site the database lacks has none");
+}

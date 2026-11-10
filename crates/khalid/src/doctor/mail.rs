@@ -3,12 +3,16 @@
 //! email goes out through the mailer `khalid serve` uses. It only looks at
 //! whether the secret is set; it never prints it.
 
-use khalid_core::{Config, Environment, MailSettings, MailTransport, Secret, UserMessage};
+use std::path::Path;
+
+use chrono::{DateTime, TimeDelta, Utc};
+use khalid_core::{Config, Environment, MailSettings, MailTransport, Secret, Slug, UserMessage};
+use khalid_db::{Database, FormMailTable};
 use khalid_newsletter::{EmailAddress, Mail};
 
 use crate::cli::Cli;
 use crate::doctor_check::{Check, Finding, MailTest};
-use crate::{newsletter, outbound, server_log};
+use crate::{db, doctor_files, newsletter, outbound, server_log};
 
 /// What the summary says of a site that sends no mail.
 const NO_MAIL: &str = "The site sends no email, so newsletter sign-ups stay closed and form answers stay in the database only. Add [mail] to site.toml to send them.";
@@ -49,6 +53,38 @@ pub(crate) fn check(
         Ok(to) => Finding::ok(Check::Mail, format!("{said} A test email went to {to}.")),
         Err(message) => Finding::problem(Check::Mail, message),
     }
+}
+
+/// What doctor says when Khalid gave up emailing form answers to the
+/// main site of `site` in the 30 days before `now`, or `None` when it gave
+/// up on none, or the site has no database or no such table yet. It only
+/// reads the database.
+pub(crate) fn given_up(site: &Path, now: DateTime<Utc>) -> Option<UserMessage> {
+    let path = db::data_file(site).ok().filter(|path| path.exists())?;
+    let main = Slug::try_new(db::MAIN).ok()?;
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .ok()?;
+    let found = runtime.block_on(async {
+        let database = Database::open(&path).await?;
+        let found = FormMailTable::given_up_of(&database, &main, now - TimeDelta::days(30)).await;
+        database.close().await;
+        found
+    });
+    let given_up = found.ok().filter(|found| !found.is_empty())?;
+    let last = given_up.last()?;
+    Some(UserMessage::new(
+        format!(
+            "Khalid gave up emailing {} to you in the last 30 days, after a day of failed tries.",
+            doctor_files::counted(given_up.len(), "form answer")
+        ),
+        "You did not get them by email, but each answer is kept in the site's database.",
+        format!(
+            "The last try failed with \"{}\". Run `khalid doctor --send-test-mail` to check mail, and read the answers in form_submissions.csv from `khalid db export`.",
+            last.last_error
+        ),
+    ))
 }
 
 /// The way `transport` sends, as a person names it.

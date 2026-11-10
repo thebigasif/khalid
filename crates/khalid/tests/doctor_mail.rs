@@ -9,7 +9,12 @@ use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+use chrono::TimeDelta;
+use khalid_core::{Clock, Slug, SystemClock};
+use khalid_db::{Database, Failure, FormMailTable};
+use khalid_forms::FormId;
 use khalid_mail::StubSmtp;
+use khalid_newsletter::{EmailAddress, Mail};
 use serde_json::Value;
 use tempfile::TempDir;
 
@@ -183,4 +188,56 @@ fn a_test_email_that_fails_is_a_problem_that_says_why() {
     );
     let fix = mail["problem"]["fix"].as_str().unwrap();
     assert!(fix.contains("[mail.smtp]"), "{fix}");
+}
+
+#[tokio::test]
+async fn a_form_email_khalid_gave_up_on_is_worth_a_look() {
+    let site = site_with(&smtp(25));
+    let mut file = within(site.path(), "data");
+    fs::create_dir_all(&file).unwrap();
+    file.push("site.db");
+    let db = Database::open(&file).await.unwrap();
+    db.migrate().await.unwrap();
+    let site_id = db.site(&Slug::try_new("main").unwrap()).await.unwrap();
+    let to = EmailAddress::parse("hello@example.com").unwrap();
+    let mail = Mail::new(
+        to,
+        "New answer".to_owned(),
+        "name: Grace Hopper\n".to_owned(),
+    );
+    let failure = Failure {
+        at: SystemClock.now() - TimeDelta::hours(1),
+        error: "the email could not be sent: the SMTP server did not take the email",
+        next_at: None,
+    };
+    let table = FormMailTable::new(db.clone(), site_id);
+    let contact = FormId::try_new("contact").unwrap();
+    table.keep(&contact, &mail, failure).await.unwrap();
+    db.close().await;
+
+    let secrets = [("KHALID_SMTP_PASSWORD", "made-for-this-test")];
+    let (code, _, _, said) = doctor(site.path(), &secrets, &[]);
+    assert_eq!(code, Some(0), "worth a look, not a problem: {said}");
+    let body: Value = serde_json::from_str(&said).unwrap();
+    let warning = body["warnings"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|warning| warning["what"].as_str().unwrap().contains("gave up"))
+        .unwrap_or_else(|| panic!("no given-up note in {said}"));
+    assert_eq!(
+        warning["what"],
+        "Khalid gave up emailing 1 form answer to you in the last 30 days, after a day of failed tries."
+    );
+    assert!(
+        warning["fix"]
+            .as_str()
+            .unwrap()
+            .contains("did not take the email"),
+        "{warning}"
+    );
+    assert!(
+        !said.contains("Grace Hopper"),
+        "doctor printed an answer: {said}"
+    );
 }
