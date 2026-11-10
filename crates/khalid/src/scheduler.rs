@@ -56,10 +56,10 @@ impl Scheduling {
 /// the tokio runtime. The first round runs at once, so a time that passed
 /// while the server was stopped is acted on at start.
 pub(crate) fn start(
-    (door, posts): (Arc<PublishDoor>, SitePosts),
+    (door, posts): (Arc<PublishDoor>, &SitePosts),
     (alerting, weekly): (Arc<Alerting>, Option<Arc<WeeklyEmail>>),
 ) -> Scheduling {
-    let folder = posts.folder().to_path_buf();
+    let (posts, folder) = (posts.clone(), posts.folder().to_path_buf());
     let (stop, mut stopped) = oneshot::channel();
     let task = tokio::spawn(async move {
         let mut ticks = tokio::time::interval(EVERY);
