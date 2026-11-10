@@ -2,6 +2,10 @@
 
 use std::time::Duration;
 
+use khalid_core::AbsoluteUrl;
+
+use crate::EmbedProvider;
+
 /// A block whose content becomes schema markup, in the order of the body,
 /// for the schema builders in `khalid-seo` (task 1.14).
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -9,6 +13,8 @@ use std::time::Duration;
 pub enum StructuredBlock {
     /// A video block, which becomes a `VideoObject`.
     Video(VideoBlock),
+    /// A video host's player in an embed, for the video sitemap.
+    EmbeddedVideo(EmbeddedVideo),
     /// A review block, which becomes a `Review`. The body is plain text.
     Review(ReviewBlock),
     /// A recipe block, which becomes a `Recipe`.
@@ -69,6 +75,21 @@ pub struct VideoBlock {
     /// The picture search results show for the video, when it is not the
     /// poster: a path or a full address.
     pub thumbnail: Option<String>,
+}
+
+/// A video from a video host shown in a frame, from `::embed{...}`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
+pub struct EmbeddedVideo {
+    /// The video host.
+    pub provider: EmbedProvider,
+    /// The embed's title.
+    pub title: String,
+    /// The player the frame loads.
+    pub player: AbsoluteUrl,
+    /// The still the host publishes for the video, when its address follows
+    /// from the video's id without asking the host, as on `YouTube`.
+    pub thumbnail: Option<AbsoluteUrl>,
 }
 
 /// A rating of one thing, from `:::review{...}`.

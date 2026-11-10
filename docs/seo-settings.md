@@ -269,6 +269,15 @@ alt = "A spider on a sitemap"
 
 A term page with no intro shows search engines only a list of links. `khalid build` names such pages in one note, and still builds.
 
+## Video sitemap
+
+A site whose posts hold a video gets a video sitemap for each language, such as `sitemaps/videos-en-1.xml`, listed in the sitemap index. A video sitemap is the file that tells Google which pages play a video. It lists two kinds of video:
+
+- A `::video` block, by its file, with its own title, description, still, length and the post's date.
+- An `::embed` of a YouTube, Vimeo or Loom video, by the host's player, with the embed's title and the post's description. A YouTube video shows YouTube's own still. A Vimeo or Loom video shows the post's lead image, else its first picture, else its link preview picture. A post with no picture at all leaves it out, because Google refuses a video with no picture.
+
+The other sitemap files list the same pages without their videos, so no video is listed twice. There is nothing to turn on.
+
 ## Front matter for search
 
 These fields go in a post's front matter, between the `---` lines. `page_type` also works on a page in `pages/`.

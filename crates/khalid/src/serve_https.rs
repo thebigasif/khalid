@@ -6,8 +6,9 @@ use std::io::{self, BufRead, IsTerminal, Write};
 use std::net::{Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::path::{Path, PathBuf};
 
+use chrono::{DateTime, TimeDelta, Utc};
 use khalid_content::SiteContent;
-use khalid_core::{Config, Mode, SystemClock, UserMessage};
+use khalid_core::{Clock, Config, Mode, SystemClock, UserMessage};
 use khalid_https::{AgreedToTerms, Directory, Domain, Https, HttpsFolder, Listening};
 use khalid_outbound::Outbound;
 use khalid_routes::Routes;
@@ -41,6 +42,60 @@ pub(crate) struct HttpsListen {
     /// The TLS address and the port 80 address, when not the usual ones.
     pub(crate) addresses: (Option<SocketAddr>, Option<SocketAddr>),
     pub(crate) outbound: Outbound,
+    /// The clock renewal reads.
+    pub(crate) clock: RenewalClock,
+}
+
+/// The hidden flags of `khalid serve` in a test build.
+#[cfg(feature = "test-util")]
+#[derive(Debug, clap::Args)]
+pub(crate) struct ServeTestArgs {
+    /// Test builds only: run the alert checks this many seconds apart
+    /// instead of hourly.
+    #[arg(long, hide = true, value_name = "SECONDS")]
+    pub(crate) alert_every: Option<u64>,
+    /// Test builds only: look at the public address this many seconds
+    /// apart, even when answering on loopback.
+    #[arg(long, hide = true, value_name = "SECONDS")]
+    pub(crate) watch_every: Option<u64>,
+    /// Test builds only: renewal reads a clock this many seconds ahead,
+    /// so a certificate falls due while the server runs.
+    #[arg(long, hide = true, value_name = "SECONDS", requires = "domain")]
+    pub(crate) test_clock_ahead: Option<u32>,
+}
+
+/// The computer's clock, ahead by a set time in a test build only, so a
+/// test can make a certificate fall due in seconds.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct RenewalClock {
+    ahead: TimeDelta,
+}
+
+impl RenewalClock {
+    /// The clock for `args`: the computer's own, or ahead as the hidden
+    /// `--test-clock-ahead` asks in a test build.
+    #[cfg_attr(
+        not(feature = "test-util"),
+        expect(unused_variables, reason = "only test builds read the flag")
+    )]
+    fn new(args: &ServeArgs) -> Self {
+        #[cfg(feature = "test-util")]
+        if let Some(seconds) = args.test.test_clock_ahead {
+            return Self {
+                ahead: TimeDelta::seconds(i64::from(seconds)),
+            };
+        }
+        Self {
+            ahead: TimeDelta::zero(),
+        }
+    }
+}
+
+impl Clock for RenewalClock {
+    fn now(&self) -> DateTime<Utc> {
+        let now = SystemClock.now();
+        now.checked_add_signed(self.ahead).unwrap_or(now)
+    }
 }
 
 /// How the owner answers Let's Encrypt's terms.
@@ -99,6 +154,7 @@ fn listen(cli: &Cli, mode: Mode, https: &ServeArgs) -> Result<Listen, UserMessag
         directory,
         addresses: (https.https_listen, https.http_listen),
         outbound,
+        clock: RenewalClock::new(https),
     })))
 }
 
@@ -140,7 +196,7 @@ impl HttpsListen {
         let plain = self.addresses.1.unwrap_or_else(|| usual(80));
         let listeners = (bind_https(tls).await?, bind_https(plain).await?);
         https
-            .start(&self.outbound, agreed, listeners, SystemClock)
+            .start(&self.outbound, agreed, listeners, self.clock)
             .await
             .map_err(failed)
     }

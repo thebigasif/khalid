@@ -28,7 +28,7 @@ const READ_BACK: Days = Days::hours(4);
 /// test build may ask with the hidden `--watch-every`.
 pub(crate) fn every(args: &ServeArgs, config: &Config) -> Option<Duration> {
     #[cfg(feature = "test-util")]
-    if let Some(seconds) = args.watch_every {
+    if let Some(seconds) = args.test.watch_every {
         return Some(Duration::from_secs(seconds));
     }
     let minutes = config.alerts().watch_minutes;

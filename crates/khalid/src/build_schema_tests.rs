@@ -122,3 +122,58 @@ fn every_block_reaches_the_graph_and_google_finds_nothing_missing() {
         .collect();
     assert_eq!(blocking, Vec::<String>::new(), "{json}");
 }
+
+/// A post at `/blog/films/` with `body`, its summary and its `lead`
+/// image filled in, as the build fills them.
+fn embeds_post(body: &str, lead: Option<&str>) -> khalid_seo::SeoPage {
+    let config = Config::load(&demo(), &Environment::empty()).unwrap();
+    let locale = Locale::try_new("en").unwrap();
+    let rendered = render(body, &locale, SlugMode::Ascii).unwrap();
+    let mut seo = build_seo::page(PageKind::Post, &locale, "films/", "Films").unwrap();
+    seo.excerpt = "Two short films about search.".to_owned();
+    seo.images = lead
+        .map(|src| khalid_core::AbsoluteUrl::parse(src).unwrap())
+        .into_iter()
+        .collect();
+    let body = (&rendered.structured[..], &rendered.links[..]);
+    fill(&mut seo, &config, ("/blog/films/", "Asif"), body).unwrap();
+    seo
+}
+
+#[test]
+fn a_video_embed_reaches_the_video_sitemap_by_its_player() {
+    let seo = embeds_post(
+        "::embed{src=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" title=\"How search works\"}\n",
+        None,
+    );
+    let [video] = seo.videos.as_slice() else {
+        panic!("one video: {:?}", seo.videos);
+    };
+    assert_eq!(video.title, "How search works");
+    assert_eq!(video.description, "Two short films about search.");
+    assert_eq!(
+        video.thumbnail.as_str(),
+        "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+    );
+    assert_eq!(
+        video.player().map(khalid_core::AbsoluteUrl::as_str),
+        Some("https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ")
+    );
+    assert_eq!(video.file(), None);
+    assert_eq!(video.uploaded, None, "the host's upload date is unknown");
+    assert!(
+        seo.blocks.is_empty(),
+        "no VideoObject without an upload date"
+    );
+}
+
+#[test]
+fn a_vimeo_embed_shows_the_lead_image_and_waits_for_one() {
+    let vimeo = "::embed{src=\"https://vimeo.com/76979871\" title=\"A short film\"}\n";
+    let lead = "https://www.example.com/blog/media/film.jpg";
+    let seo = embeds_post(vimeo, Some(lead));
+    assert_eq!(seo.videos.len(), 1);
+    assert_eq!(seo.videos[0].thumbnail.as_str(), lead);
+    let seo = embeds_post(vimeo, None);
+    assert_eq!(seo.videos, [], "Google refuses a video with no still");
+}
