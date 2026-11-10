@@ -41,6 +41,35 @@ fn kept(server: &common::Server) -> Vec<String> {
 }
 
 #[test]
+fn versions_and_a_stale_edit_name_who_saved_through_a_restart() {
+    let site = common::demo_copy();
+    let scopes = ["--scope", "posts:write", "--scope", "posts:publish"];
+    let key = common::new_key(site.path(), &[&["--name", "Maria"][..], &scopes].concat());
+    let server = common::start(site.path(), &key);
+    let before = current(&server);
+    assert_eq!(before["updated_by"], Value::Null, "a file from the demo");
+    let original = before["markdown"].as_str().unwrap().to_owned();
+    save(&server, &format!("{original}\nA line by Maria."));
+    let by = current(&server)["updated_by"].clone();
+    assert!(by.is_string(), "the key that saved it: {by}");
+    drop(server);
+
+    let server = common::start(site.path(), &key);
+    assert_eq!(current(&server)["updated_by"], by, "kept through a restart");
+    save(&server, &original);
+    let (status, json) = server.admin("GET", VERSIONS, None);
+    assert_eq!(status, 200, "{json}");
+    assert_eq!(json["versions"][0]["saved_by"], by, "{json}");
+    assert_eq!(json["versions"][0]["saved_by_name"], "Maria", "{json}");
+    let old = before["updated_at"].clone();
+    let stale = json!({ "posts": [{ "markdown": "Lost.", "updated_at": old }] });
+    let (status, json) = server.admin("PUT", POST, Some(&stale));
+    assert_eq!(status, 409, "{json}");
+    let said = json["detail"].as_str().unwrap_or_default();
+    assert!(said.starts_with("Maria changed this post"), "{json}");
+}
+
+#[test]
 fn an_edit_keeps_the_old_text_through_a_restart_and_a_restore_can_be_undone() {
     let site = common::demo_copy();
     let scopes = ["--scope", "posts:write", "--scope", "posts:publish"];

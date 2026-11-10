@@ -29,6 +29,7 @@ use crate::post_text::{PostText, quoted};
 use crate::settings_text::{put, settings_of, write_real_update, write_settings};
 use crate::site_pages::reload::LiveConfig;
 use crate::{atomic, lint, site_briefs};
+use editors::Editors;
 
 /// The folder of drafts at the top of a site.
 const DRAFTS: &str = "drafts";
@@ -179,21 +180,45 @@ impl Site {
         !file.is_file()
     }
 
+    /// The post a found file holds, with who last changed it through
+    /// Khalid, when `editors` knows and the file has not changed since.
+    fn named_post(&self, found: &Found, editors: &Editors) -> Result<AdminPost, PostStoreError> {
+        let post = Self::admin_post(found)?;
+        let file = found.path.strip_prefix(&self.folder).unwrap_or(&found.path);
+        Ok(match editors.of(file, post.updated_at()) {
+            Some(by) => post.with_updated_by(by),
+            None => post,
+        })
+    }
+
+    /// The post a file just written by `by` holds, noting `by` as the one
+    /// who last changed it. A note that cannot be kept costs only the name.
+    fn noted_post(&self, found: &Found, by: &str) -> Result<AdminPost, PostStoreError> {
+        let post = Self::admin_post(found)?;
+        let file = found.path.strip_prefix(&self.folder).unwrap_or(&found.path);
+        let editors = Editors::read(&self.folder);
+        if let Err(error) = editors.note(&self.folder, file, (post.updated_at(), by)) {
+            tracing::warn!(%error, "who changed the post could not be kept in data/post-editors.txt, so the admin shows no name for it");
+        }
+        Ok(post.with_updated_by(by))
+    }
+
     fn get_now(&self, id: &str) -> Result<Option<AdminPost>, PostStoreError> {
+        let editors = Editors::read(&self.folder);
         self.find(id)?
-            .map(|found| Self::admin_post(&found))
+            .map(|found| self.named_post(&found, &editors))
             .transpose()
     }
 
     fn update_now(&self, id: &str, edit: PostEdit, by: &str) -> Result<AdminPost, UpdatePostError> {
         let _writing = self.seen.lock().unwrap_or_else(PoisonError::into_inner);
         let found = self.find(id)?.ok_or(UpdatePostError::NotFound)?;
-        let current = Self::admin_post(&found)?;
+        let current = self.named_post(&found, &Editors::read(&self.folder))?;
         if current.updated_at() != edit.updated_at() {
             let updated_at = current.updated_at();
             return Err(UpdatePostError::Stale {
                 updated_at,
-                updated_by: None,
+                updated_by: current.updated_by().map(str::to_owned),
             });
         }
         let publishes = edit.publishes() && found.status == PostStatus::Draft;
@@ -251,7 +276,7 @@ impl Site {
             text,
             ..found
         };
-        Ok(Self::admin_post(&saved)?.with_updated_by(by))
+        Ok(self.noted_post(&saved, by)?)
     }
 
     /// Moves the draft `found` to its file for `slug`, with `text`, which
@@ -377,7 +402,7 @@ impl Site {
             .transpose()?
             .flatten()
         {
-            return Ok(Self::admin_post(&found)?);
+            return Ok(self.named_post(&found, &Editors::read(&self.folder))?);
         }
         let locale = self.config.default_language();
         let slug = match draft.slug() {
@@ -410,7 +435,7 @@ impl Site {
             status: PostStatus::Draft,
             text,
         };
-        Ok(Self::admin_post(&found)?.with_updated_by(by))
+        Ok(self.noted_post(&found, by)?)
     }
 
     /// Moves post `id` to the trash when its file has not changed since
@@ -419,12 +444,12 @@ impl Site {
     fn delete_now(&self, id: &str, seen: DateTime<Utc>) -> Result<AdminPost, DeletePostError> {
         let _writing = self.seen.lock().unwrap_or_else(PoisonError::into_inner);
         let found = self.find(id)?.ok_or(DeletePostError::NotFound)?;
-        let post = Self::admin_post(&found)?;
+        let post = self.named_post(&found, &Editors::read(&self.folder))?;
         if post.updated_at() != seen {
             let updated_at = post.updated_at();
             return Err(DeletePostError::Stale {
                 updated_at,
-                updated_by: None,
+                updated_by: post.updated_by().map(str::to_owned),
             });
         }
         let index = found
@@ -542,6 +567,8 @@ fn failure(what: &str) -> PostStoreError {
 
 #[path = "site_posts_check.rs"]
 mod check;
+#[path = "site_editors.rs"]
+mod editors;
 #[path = "site_posts_list.rs"]
 mod list;
 #[path = "site_posts_publish.rs"]
