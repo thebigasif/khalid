@@ -46,6 +46,16 @@ impl Settings {
             languages,
         }
     }
+
+    /// The site's name.
+    pub(crate) fn title(&self) -> &str {
+        &self.title
+    }
+
+    /// The address of the blog's front page.
+    pub(crate) fn url(&self) -> &AbsoluteUrl {
+        &self.url
+    }
 }
 
 /// Writes each language through its `Display`.

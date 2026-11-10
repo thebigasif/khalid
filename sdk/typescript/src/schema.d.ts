@@ -1043,6 +1043,36 @@ export type EditPosts = {
   posts: PostEdit[];
 };
 
+/** A post as an oEmbed `rich` answer: a card of its title, summary and site that the consumer puts in its page as it is. */
+export type Embed = {
+  /** The first author's name. */
+  author_name?: string | null;
+  /** The first author's page on the blog. */
+  author_url?: string | null;
+  /** Unset: the card is as tall as its text. */
+  height?: number | null;
+  /** The card: a quote of the title, the summary and the site, each a plain link, with no script and no frame. */
+  html: string;
+  /** The site's name. */
+  provider_name: string;
+  /** The blog's front page. */
+  provider_url: string;
+  /** Its height in pixels. */
+  thumbnail_height?: number | null;
+  /** The post's share image. */
+  thumbnail_url?: string | null;
+  /** Its width in pixels. */
+  thumbnail_width?: number | null;
+  /** The post's title. */
+  title: string;
+  /** Always `rich`. */
+  type: string;
+  /** Always `1.0`. */
+  version: string;
+  /** The card's width in pixels. */
+  width: number;
+};
+
 /** How many sessions signing out everywhere ended. */
 export type Ended = {
   /** Sessions ended, this one included. */
@@ -4842,5 +4872,23 @@ export interface Operations {
       };
     };
     output: Tags;
+  };
+  /** Answers a consumer with the card of the post at `url`. */
+  embed: {
+    input: {
+      query: {
+        /** The full address of a published post. */
+        url: string;
+        /** `json`, the only format served. `xml` answers 501, as oEmbed asks. */
+        format?: string;
+        /** The widest the card may be, in pixels, from 200; 550 when left out. */
+        maxwidth?: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: Embed;
   };
 }
