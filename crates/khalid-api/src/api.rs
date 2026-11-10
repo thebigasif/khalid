@@ -14,6 +14,7 @@ use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
 use utoipa::{Modify, OpenApi};
 use utoipa_axum::router::OpenApiRouter;
 
+use crate::admin_ai;
 use crate::admin_key::{AdminDoor, require_admin_key};
 use crate::analytics_desk::AnalyticsDesk;
 use crate::api_limits::ApiLimits;
@@ -22,26 +23,18 @@ use crate::comment_moderation::{CommentModeration, NoComments};
 use crate::content_key::ContentDoor;
 use crate::content_store::ContentStore;
 use crate::draft_comments::DraftComments;
-use crate::entry_store::EntryStore;
-use crate::follow_ups::{FollowUpFinder, NoSearchConsole};
+use crate::follow_ups::FollowUpFinder;
 use crate::keys::KeyStore;
 use crate::media_api::{self, MediaLibrary};
-use crate::post_check::PostChecks;
 use crate::post_store::PostStore;
 use crate::post_trash::PostTrash;
 use crate::problem::Problem;
 use crate::publish_door::{PublishDoor, Silent};
 use crate::redirect_desk::RedirectDesk;
-use crate::resources::{
-    AdminAuthor, AdminCategory, AdminPage, AdminSnippet, AdminTemplate, MediaItems,
-};
-use crate::schema_template_store::SchemaTemplateStore;
+use crate::resources::MediaItems;
 use crate::serpdad_store::SerpdadStore;
 use crate::session_check::{SessionCheck, StaffRoutes};
-use crate::settings_store::SettingsStore;
-use crate::tag_store::TagStore;
 use crate::webhook_store::WebhookStore;
-use crate::{admin_ai, ai::AiDesk};
 use crate::{
     admin_analytics, admin_api, admin_api_keys, admin_audit, admin_authors, admin_calendar,
     admin_categories, admin_check, admin_comments, admin_consent, admin_draft_comments,
@@ -51,6 +44,10 @@ use crate::{
 };
 
 pub use crate::audit_desk::AuditDesk;
+
+mod desks;
+
+pub use desks::AdminDesks;
 
 /// Where the `OpenAPI` document is served.
 const DOCUMENT: &str = "/api/openapi.json";
@@ -232,107 +229,6 @@ pub fn router_with_door_comments_and_staff(
         ..AdminDesks::none()
     };
     assemble(content, door, keys, desks, Some((staff, sessions)))
-}
-
-/// The Admin API's stores beside posts, as `khalid serve` holds them.
-pub struct AdminDesks {
-    /// Readers' comments, moderated under `/api/admin/v1/comments/`.
-    pub comments: Arc<dyn CommentModeration>,
-    /// The media library, or `None` when the media routes answer that the
-    /// site has none.
-    pub media: Option<MediaLibrary>,
-    /// The stored redirects and the 404 log.
-    pub redirects: RedirectDesk,
-    /// The site's webhooks, or `None` when the webhook routes list none
-    /// and answer that the site keeps none.
-    pub webhooks: Option<Arc<dyn WebhookStore>>,
-    /// The audit log every write that succeeds is kept in, or `None` when
-    /// nothing is logged and the audit route lists nothing.
-    pub audit: Option<AuditDesk>,
-    /// Where deleted posts wait, or `None` when the trash routes list none.
-    pub trash: Option<Arc<dyn PostTrash>>,
-    /// The post checks behind the editor's SEO panel, or `None` when the
-    /// check route answers that this server makes none.
-    pub checks: Option<Arc<dyn PostChecks>>,
-    /// The site's schema templates, or `None` when their routes answer
-    /// that this server keeps none.
-    pub schema_templates: Option<Arc<dyn SchemaTemplateStore>>,
-    /// The site's pages, or `None` when the page routes answer that this
-    /// server keeps none.
-    pub pages: Option<Arc<dyn EntryStore<AdminPage>>>,
-    /// The site's snippets, or `None` when the snippet routes answer that
-    /// this server keeps none.
-    pub snippets: Option<Arc<dyn EntryStore<AdminSnippet>>>,
-    /// The site's authors, or `None` when the author routes answer that
-    /// this server keeps none.
-    pub authors: Option<Arc<dyn EntryStore<AdminAuthor>>>,
-    /// The site's tags, or `None` when the tag routes answer that this
-    /// server keeps none.
-    pub tags: Option<Arc<dyn TagStore>>,
-    /// The site's categories, or `None` when the category routes answer
-    /// that this server keeps none.
-    pub categories: Option<Arc<dyn EntryStore<AdminCategory>>>,
-    /// The site's core settings, or `None` when the settings routes answer
-    /// that this server keeps none.
-    pub settings: Option<Arc<dyn SettingsStore>>,
-    /// The built-in templates, or `None` when the template route answers
-    /// that this server lists none.
-    pub templates: Option<Arc<[AdminTemplate]>>,
-    /// The views `khalid serve` counted, read under `/api/admin/v1/analytics/`.
-    pub analytics: AnalyticsDesk,
-    /// Staff comments on drafts, or `None` when the routes list none and
-    /// answer that the site keeps none.
-    pub draft_comments: Option<DraftComments>,
-    /// The Search Console follow-ups, under
-    /// `/api/admin/v1/search-console/follow-ups/`.
-    pub follow_ups: Arc<dyn FollowUpFinder>,
-    /// The `SerpDad` connection, or `None` when the `SerpDad` route answers
-    /// that the site keeps no database.
-    pub serpdad: Option<Arc<dyn SerpdadStore>>,
-    /// Who writes the editor's suggestions, under `/api/admin/v1/ai/`;
-    /// [`AiDesk::off`] sends nothing anywhere.
-    pub ai: AiDesk,
-}
-
-impl std::fmt::Debug for AdminDesks {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("AdminDesks")
-            .field("media", &self.media)
-            .field("redirects", &self.redirects)
-            .finish_non_exhaustive()
-    }
-}
-
-impl AdminDesks {
-    /// No comments, no media library, no stored redirects, no webhooks, no
-    /// audit log, no trash, no post checks, no schema templates, no pages,
-    /// no snippets, no authors, no tags, no categories, no settings, no
-    /// templates, no counted views, no comments on drafts, no Search Console connection
-    /// no `SerpDad` connection and no writing suggestions.
-    pub fn none() -> Self {
-        Self {
-            comments: Arc::new(NoComments),
-            media: None,
-            redirects: RedirectDesk::none(),
-            webhooks: None,
-            audit: None,
-            trash: None,
-            checks: None,
-            schema_templates: None,
-            pages: None,
-            snippets: None,
-            authors: None,
-            tags: None,
-            categories: None,
-            settings: None,
-            templates: None,
-            analytics: AnalyticsDesk::none(),
-            draft_comments: None,
-            follow_ups: Arc::new(NoSearchConsole),
-            serpdad: None,
-            ai: AiDesk::off(),
-        }
-    }
 }
 
 /// [`router_with_door`] keeping each deleted post in `trash`, under
