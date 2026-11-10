@@ -11,9 +11,10 @@ use crate::mail_settings::MailTable;
 use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
-    AbsoluteUrl, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment, Locale,
-    MailSettings, MediaSettings, NavSettings, ParseUrlError, PrivacySettings, Reader, ReaderSwitch,
-    SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
+    AbsoluteUrl, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment,
+    LimitSettings, Locale, MailSettings, MediaSettings, NavSettings, ParseUrlError,
+    PrivacySettings, Reader, ReaderSwitch, SearchConsoleSettings, SeoSettings, SiteCode,
+    TemplateChoice, VisitorLogSettings,
 };
 
 /// Every setting Khalid reads, checked once at start and then passed by
@@ -44,6 +45,7 @@ pub struct Config {
     privacy: PrivacySettings,
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
+    limits: LimitSettings,
     preview_link_lifetime: Duration,
     ai: AiSettings,
     ghost_content_api: bool,
@@ -120,6 +122,8 @@ struct SiteFile {
     search_console: Option<SearchConsoleTable>,
     #[serde(default)]
     visitor_log: VisitorLogSettings,
+    #[serde(default)]
+    limits: LimitSettings,
     #[serde(default)]
     ai: AiSettings,
     #[serde(default)]
@@ -213,8 +217,8 @@ fn in_table(path: &Path, text: &str, table: &str, key: &str, problem: &str) -> C
 }
 
 /// The first mistake in the tables whose checks span the file: `[alerts]`
-/// against how the site sends `mail`, and `[visitor_log]` and `[privacy]`
-/// against the mode.
+/// against how the site sends `mail`, `[visitor_log]` and `[privacy]`
+/// against the mode, and `[ai]` and `[limits]` on their own.
 fn tables_mistake(
     file: &SiteFile,
     mail: Option<&MailSettings>,
@@ -226,6 +230,9 @@ fn tables_mistake(
     }
     if let Some((key, problem)) = file.visitor_log.mistake(file.mode) {
         return Err(in_table(path, text, "[visitor_log", key, problem));
+    }
+    if let Some((key, problem)) = file.limits.mistake() {
+        return Err(in_table(path, text, "[limits", key, problem));
     }
     if let Some((key, problem)) = file.ai.mistake() {
         return Err(in_table(path, text, "[ai", key, problem));
@@ -328,6 +335,7 @@ impl Config {
             privacy: file.privacy,
             search_console,
             visitor_log: file.visitor_log,
+            limits: file.limits,
             preview_link_lifetime,
             ai: file.ai,
             ghost_content_api: file.ghost_content_api,
@@ -383,6 +391,12 @@ impl Config {
     /// off unless the site switches it on.
     pub fn visitor_log(&self) -> &VisitorLogSettings {
         &self.visitor_log
+    }
+
+    /// How many requests the APIs and the search page take a minute,
+    /// from `[limits]`; the usual numbers unless the site sets its own.
+    pub fn limits(&self) -> &LimitSettings {
+        &self.limits
     }
 
     /// Whether a copy of Ghost's Content API answers under
