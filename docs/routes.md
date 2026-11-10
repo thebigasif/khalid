@@ -27,6 +27,8 @@ news = true
 - `news = true` marks a collection's posts as news: search engines get the `NewsArticle` type and a news sitemap.
 - The language prefix, such as `/de/`, and the mount path are added for you.
 
+A collection whose permalink starts with its own folder, such as `/news/`, gets an index page there that lists its posts, newest first, and its own feeds next to it: `/blog/news/feed.xml` for RSS, `atom.xml` for Atom and `feed.json` for JSON Feed, in each language it has posts in. A collection at the blog's root, such as the default `posts`, is listed on the home page and in the language feed instead.
+
 Change the permalink of a live blog with care: the old addresses stop working. Add each old address to the post's `aliases:` so readers and search engines are sent on.
 
 ## Channels: extra lists that leave addresses alone

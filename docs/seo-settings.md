@@ -111,7 +111,7 @@ news = "noindex"
 
 ## Feeds
 
-Each language has feeds next to its home page, such as `/blog/feed.xml` and `/blog/de/feed.xml`. Each category with posts in a language, and each channel, has its own feeds in its folder, such as `/blog/category/technical-seo/feed.xml` and `/blog/featured/feed.xml`. A feed holds the newest posts of its page, up to `limit`. Every one of these pages links its feeds in its head, so a feed reader finds them from the page's address.
+Each language has feeds next to its home page, such as `/blog/feed.xml` and `/blog/de/feed.xml`. Each collection and category with posts in a language, and each channel, has its own feeds in its folder, such as `/blog/guides/feed.xml`, `/blog/category/technical-seo/feed.xml` and `/blog/featured/feed.xml`. A feed holds the newest posts of its page, up to `limit`. Every one of these pages links its feeds in its head, so a feed reader finds them from the page's address.
 
 `[seo.feeds] off` lists the feed formats Khalid does not write: `"rss"` (`feed.xml`), `"atom"` (`atom.xml`) and `"json"` (`feed.json`). Every format is written by default.
 

@@ -220,16 +220,33 @@ fn the_served_feeds_of_each_language_pass_the_feed_checks() {
     }
 }
 
-/// The demo site with a channel of Lena's posts in `routes.toml` and a
-/// category no post is filed under in `categories.toml`.
+/// The demo site with a second collection of two guides and a channel of
+/// Lena's posts in `routes.toml`, and a category no post is filed under in
+/// `categories.toml`.
 #[cfg(test)]
 fn site_with_lists() -> TempDir {
     let site = demo_copy();
     let mut routes = site.path().to_path_buf();
     routes.push("routes.toml");
-    let channel =
-        "[channels.from-lena]\npath = \"/from-lena/\"\nfilter = { author = \"lena-vogt\" }\n";
-    fs::write(routes, channel).unwrap();
+    let lists = "[collections.guides]\npermalink = \"/guides/{slug}/\"\n\n\
+                 [channels.from-lena]\npath = \"/from-lena/\"\nfilter = { author = \"lena-vogt\" }\n";
+    fs::write(routes, lists).unwrap();
+    let mut guides = site.path().to_path_buf();
+    guides.push("content/en/guides");
+    fs::create_dir_all(&guides).unwrap();
+    for (slug, date) in [
+        ("audit-a-page", "2026-10-02"),
+        ("plan-a-month", "2026-10-09"),
+    ] {
+        let text = format!(
+            "---\ntitle: How to {slug}\nslug: {slug}\ndate: {date}\nauthor: asif\n\
+             description: A short guide for small teams.\n---\n\n\
+             Start with [internal links](/blog/why-internal-links-matter/).\n"
+        );
+        let mut file = guides.clone();
+        file.push(format!("{slug}.md"));
+        fs::write(file, text).unwrap();
+    }
     let mut categories = read(site.path(), "categories.toml");
     categories.push_str("\n[[categories]]\nslug = \"link-building\"\nen = \"Link building\"\n");
     let mut file = site.path().to_path_buf();
@@ -238,9 +255,10 @@ fn site_with_lists() -> TempDir {
     site
 }
 
-/// Each category and channel folder below the blog's root, and the slugs
-/// of the posts its feeds hold, newest first.
-const LIST_FEEDS: [(&str, &[&str]); 6] = [
+/// Each collection, category and channel folder below the blog's root,
+/// and the slugs of the posts its feeds hold, newest first.
+const LIST_FEEDS: [(&str, &[&str]); 7] = [
+    ("guides/", &["plan-a-month", "audit-a-page"]),
     (
         "category/on-page-seo/",
         &["how-to-write-a-title-tag", "why-internal-links-matter"],
@@ -284,7 +302,7 @@ fn check_list(feeds: [String; 3], folder: &str, slugs: &[&str]) {
 }
 
 #[test]
-fn the_built_category_and_channel_feeds_hold_only_their_own_posts() {
+fn the_built_list_feeds_hold_only_their_own_posts() {
     let site = site_with_lists();
     let out = tempfile::tempdir().unwrap();
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
@@ -317,7 +335,7 @@ fn the_built_category_and_channel_feeds_hold_only_their_own_posts() {
 }
 
 #[test]
-fn the_served_category_and_channel_feeds_hold_only_their_own_posts() {
+fn the_served_list_feeds_hold_only_their_own_posts() {
     let site = site_with_lists();
     let server = start(site.path());
     for (folder, slugs) in LIST_FEEDS {
