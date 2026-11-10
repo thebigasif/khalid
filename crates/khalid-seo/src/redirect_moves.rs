@@ -88,7 +88,7 @@ fn words(segment: &str) -> BTreeSet<&str> {
 }
 
 /// How many letters must be added, removed or changed to turn `a` into `b`.
-fn edit_distance(a: &str, b: &str) -> usize {
+pub(crate) fn edit_distance(a: &str, b: &str) -> usize {
     let b: Vec<char> = b.chars().collect();
     let mut row: Vec<usize> = (0..=b.len()).collect();
     for (i, left) in a.chars().enumerate() {

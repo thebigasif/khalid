@@ -32,6 +32,7 @@ mod site_graph;
 mod software;
 mod template;
 mod video_review;
+mod vocabulary;
 
 pub use author::{AuthorProfile, Entity, EntityRole};
 pub use blocks::SchemaBlock;
