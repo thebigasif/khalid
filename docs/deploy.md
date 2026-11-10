@@ -453,7 +453,7 @@ Then, all with `--json` when a program reads the answer:
 
 The weekly email goes out when a week has passed since the last one, and the first soon after `khalid serve` starts. Khalid keeps the day it last went out in `data/search-console-email.txt`, and the command writes it too, so a restart or a run by hand never sends the email twice in a week. If Google or the mail service fails, the server tries again an hour later.
 
-`khalid serve` reads the connection and the two secrets once, at start, so restart it after setting them. It then answers the same follow-ups at `GET /api/admin/v1/search-console/follow-ups/` for a key with `settings:write`, and the admin shows them under Search Console. The posts are read on each request, so a heading you just added counts.
+`khalid serve` reads the connection and the two secrets once, at start, so restart it after setting them. It then answers the same follow-ups at `GET /api/admin/v1/search-console/follow-ups/`, and the same report at `GET /api/admin/v1/search-console/report/`, for a key with `settings:write`. The admin shows both under Search Console, with a link from each post to its editor. The posts are read on each request, so a heading you just added counts.
 
 A refresh token stops working when you take Khalid's permission back in your Google account, or when Google lets it lapse. The commands then say so: make a new one with step 3.
 
