@@ -219,6 +219,20 @@ export type AdminDelivery = {
   state_at: string;
 };
 
+/** The values the site's pages use from `theme/tokens.toml`, each over the chosen template's own, with the contrast of each colour pair. */
+export type AdminDesign = {
+  /** Each colour on the background and on the surface, with its WCAG contrast. */
+  contrast: ContrastPair[];
+  /** The fonts a body or heading may use: the system fonts, each family the site serves itself, and the ones the file names now. */
+  fonts: FontChoice[];
+  /** The tokens `khalid theme sync` keeps as they are, such as `colors.link`. */
+  locked: string[];
+  /** Every token by its name in the file, such as `colors.link`, with the value pages use: the file's, else the template's, else the default. A logo or icon that is not set is an empty text. */
+  tokens: Record<string, string>;
+  /** When `theme/tokens.toml` last changed, or `null` when the site has no such file yet. A change sends it back. */
+  updated_at?: string | null;
+};
+
 /** Issues as the Admin API wraps them. */
 export type AdminIssues = {
   /** Up to ten problems, those that stop posts going live first. */
@@ -791,6 +805,22 @@ export type ContentCollection = {
   title?: string | null;
 };
 
+/** One colour pair the templates draw, with its contrast. */
+export type ContrastPair = {
+  /** What it is drawn on: `colors.background` or `colors.surface`. */
+  ground: string;
+  /** For a colour that fails, the nearest shade that passes on both grounds, such as `#2563eb`. */
+  nearest?: string | null;
+  /** Whether the ratio meets the target. */
+  passes: boolean;
+  /** The contrast, such as `6.3` for 6.3 to 1, rounded down so a failing 4.47 never reads as a passing 4.5. */
+  ratio: number;
+  /** What WCAG 2.2 AA asks: 4.5 for text, 3 for buttons and highlights. */
+  target: number;
+  /** The colour drawn, such as `colors.link`. */
+  token: string;
+};
+
 /** What the admin passes to `navigator.credentials.create`, as `{"publicKey": {...}}`. */
 export type CreateOptions = Record<string, unknown>;
 
@@ -817,6 +847,22 @@ export type CropBoxBody = {
 
 /** JSON-LD written by hand for a type Khalid does not write itself, kept as written. It is read as schema.org nodes before it is kept, so a page never carries JSON-LD a search engine would throw away. */
 export type CustomJsonLd = string;
+
+/** A change to the design: only the tokens sent change. */
+export type DesignChange = {
+  /** The whole list of tokens a sync keeps, when it changes. */
+  locked?: string[] | null;
+  /** New values by token name, such as `{"colors.link": "#b3261e"}`. An empty logo or icon takes it out of the file. */
+  tokens?: Record<string, string>;
+  /** The `updated_at` of the copy the change was made on, `null` when the site had no file. */
+  updated_at?: string | null;
+};
+
+/** A change, wrapped the way the Admin API wraps the design. */
+export type DesignChanges = {
+  /** The change. */
+  design: DesignChange;
+};
 
 /** One comment on a draft. */
 export type DraftComment = {
@@ -946,6 +992,14 @@ export type FollowUps = {
   property: string;
   /** The fewest words a search had to have to count. */
   words: number;
+};
+
+/** One font a body or heading may use. */
+export type FontChoice = {
+  /** The name a person reads, such as `System font` or `Inter`. */
+  label: string;
+  /** The CSS font list the file writes for it. */
+  stack: string;
 };
 
 /** The lint publish gate's answer for a post as it stands. */
@@ -1934,6 +1988,12 @@ export type SiteAnswer = {
   home: boolean;
 };
 
+/** The design as the Admin API wraps it. */
+export type SiteDesign = {
+  /** The site's design. */
+  design: AdminDesign;
+};
+
 /** One lint rule that fires on the site, as one task. */
 export type SiteIssue = {
   /** The identity of one post it fires on, to open first. */
@@ -2481,6 +2541,27 @@ export interface Operations {
       };
     };
     output: AdminConsentVersions;
+  };
+  /** Reads the colours, fonts, shape and logo the site's pages use, each from `theme/tokens.toml` or else the chosen template, with the WCAG contrast of every colour pair. Needs `settings:write`. */
+  read_design: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: SiteDesign;
+  };
+  /** Changes the tokens sent in `theme/tokens.toml`, in place: comments and every other table stay as written. Each value must be one the pages load. The change carries the `updated_at` of the copy it was made on; when the file changed since, the answer is a 409 (RULES.md BL-API-7). The running server shows the change on the next page it renders. Needs `settings:write`. */
+  change_design: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: DesignChanges;
+    };
+    output: SiteDesign;
   };
   /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
   list_keys: {

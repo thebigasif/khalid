@@ -7,6 +7,7 @@ use crate::ai::AiDesk;
 use crate::analytics_desk::AnalyticsDesk;
 use crate::audit_desk::AuditDesk;
 use crate::comment_moderation::{CommentModeration, NoComments};
+use crate::design_desk::DesignDesk;
 use crate::draft_comments::DraftComments;
 use crate::entry_store::EntryStore;
 use crate::follow_ups::{FollowUpFinder, NoSearchConsole};
@@ -62,6 +63,9 @@ pub struct AdminDesks {
     /// The site's core settings, or `None` when the settings routes answer
     /// that this server keeps none.
     pub settings: Option<Arc<dyn SettingsStore>>,
+    /// The site's `theme/tokens.toml`, or `None` when the Design route
+    /// answers that this server keeps none.
+    pub design: Option<DesignDesk>,
     /// The built-in templates, or `None` when the template route answers
     /// that this server lists none.
     pub templates: Option<Arc<[AdminTemplate]>>,
@@ -93,7 +97,7 @@ impl std::fmt::Debug for AdminDesks {
 impl AdminDesks {
     /// No comments, no media library, no stored redirects, no webhooks, no
     /// audit log, no trash, no post checks, no schema templates, no pages,
-    /// no snippets, no authors, no tags, no categories, no settings, no
+    /// no snippets, no authors, no tags, no categories, no settings, no design, no
     /// templates, no counted views, no comments on drafts, no Search Console connection
     /// no `SerpDad` connection and no writing suggestions.
     pub fn none() -> Self {
@@ -112,6 +116,7 @@ impl AdminDesks {
             tags: None,
             categories: None,
             settings: None,
+            design: None,
             templates: None,
             analytics: AnalyticsDesk::none(),
             draft_comments: None,

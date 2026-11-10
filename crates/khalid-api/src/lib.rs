@@ -18,6 +18,7 @@ mod admin_check;
 mod admin_comments;
 mod admin_consent;
 mod admin_delete;
+mod admin_design;
 mod admin_deliveries;
 mod admin_draft_comments;
 mod admin_draft_threads;
