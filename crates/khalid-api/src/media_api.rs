@@ -26,6 +26,7 @@ use crate::api_version::negotiate_version;
 use crate::content_api::check_fields;
 use crate::content_store::select;
 use crate::keys::{Principal, Scope};
+use crate::media_uses::MediaUses;
 use crate::pagination::Meta;
 use crate::problem::{Problem, ProblemType};
 use crate::query::{ListQuery, RawListQuery};
@@ -39,6 +40,9 @@ pub struct MediaLibrary {
     site: String,
     /// Photo and GIF search for the editor, when the server has it.
     pub(crate) search: Option<Arc<StockSearch>>,
+    /// Who finds the site files that still name an item, so it is not
+    /// deleted under them; `None` deletes without asking.
+    uses: Option<Arc<dyn MediaUses>>,
 }
 
 impl MediaLibrary {
@@ -51,7 +55,16 @@ impl MediaLibrary {
             library,
             site,
             search: None,
+            uses: None,
         }
+    }
+
+    /// The same library, refusing to delete an item `uses` finds in the
+    /// site's files.
+    #[must_use]
+    pub fn with_uses(mut self, uses: Arc<dyn MediaUses>) -> Self {
+        self.uses = Some(uses);
+        self
     }
 
     /// `item` as the Admin API sends it, with the full address readers
@@ -280,6 +293,15 @@ async fn delete_media(
     let item = ContentKey::parse(&id)
         .and_then(|id| media.library.get(&id))
         .ok_or_else(|| missing(uri.path()))?;
+    if let Some(uses) = &media.uses {
+        let files = uses
+            .using(&item)
+            .await
+            .map_err(|error| Problem::internal(&error))?;
+        if !files.is_empty() {
+            return Err(in_use(&files));
+        }
+    }
     match media.library.delete(&item.id, seen).await {
         Ok(_) => Ok(StatusCode::NO_CONTENT),
         Err(DeleteMediaError::NotFound) => Err(missing(uri.path())),
@@ -308,6 +330,22 @@ fn changed_since(updated_at: DateTime<Utc>, updated_by: &str) -> Problem {
         "Fetch the item again, and delete it with its new updated_at if it should still go.",
     );
     Problem::new(ProblemType::Conflict, &message).with_rule("updated_at")
+}
+
+/// The 409 for an item the site `files` still name.
+fn in_use(files: &[String]) -> Problem {
+    let shown: Vec<&str> = files.iter().take(3).map(String::as_str).collect();
+    let more = files.len().saturating_sub(shown.len());
+    let list = match more {
+        0 => shown.join(", "),
+        more => format!("{} and {more} more", shown.join(", ")),
+    };
+    let message = UserMessage::new(
+        format!("This file is still used in {list}."),
+        "Deleting it would leave a broken picture or link there.",
+        "Remove the file from those places first, then delete it.",
+    );
+    Problem::new(ProblemType::Conflict, &message).with_rule("uses")
 }
 
 /// The edit `body` asks for, with its folder and focal point checked.
