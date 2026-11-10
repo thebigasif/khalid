@@ -42,7 +42,7 @@ use crate::{
     admin_draft_comments, admin_draft_threads, admin_follow_ups, admin_forms, admin_newsletters,
     admin_not_found, admin_pages, admin_redirect_csv, admin_redirects, admin_schema_templates,
     admin_serpdad, admin_site_settings, admin_snippets, admin_subscribers, admin_tags,
-    admin_templates, admin_trash, admin_webhooks, api_version, content_api,
+    admin_templates, admin_trash, admin_uptime, admin_webhooks, api_version, content_api,
 };
 
 pub use crate::audit_desk::AuditDesk;
@@ -396,6 +396,7 @@ fn assemble(
         .merge(admin_analytics::routes(desks.analytics, door.clone()))
         .merge(admin_follow_ups::routes(desks.follow_ups, door.clone()))
         .merge(admin_forms::routes(desks.forms, door.clone()))
+        .merge(admin_uptime::routes(desks.uptime, door.clone()))
         .merge(admin_serpdad::routes(serpdad, door.clone()))
         .merge(admin_ai::routes(ai, door.clone()));
     if let Some(staff) = routes {
