@@ -1,2 +1,0 @@
-Added
-- `khalid audit` warns once, on the home page, when a reader cannot reach an About or contact page: no page of the blog has the slug `about`, `contact`, `about-us` or `contact-us` or is marked `page_type: AboutPage` or `ContactPage`, and no link leads to one on the main site. Readers trust a blog more when they can see who runs it, and AI tools need someone to credit when they cite it. `khalid lint` already gave the same warning as `no-about-page`.

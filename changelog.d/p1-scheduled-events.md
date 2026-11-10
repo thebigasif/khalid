@@ -1,2 +1,0 @@
-Added
-- Pages, glossary terms, case studies and changelog entries can be scheduled: give a draft under `drafts/` a `publish_at:` time in its front matter, and `khalid serve` puts it live at that time. Their `.scheduled` webhooks now fire when a time is set, moved or taken away, the last with `publish_at` null, and going live fires `.published` once. `post.scheduled` now also fires when a post is taken off its schedule, with `published_at` null (KH-API-3).

@@ -1,2 +1,0 @@
-Added
-- Choose and order your home page's sections in `site.toml` or in the admin under Settings, "Home page": your newest posts, your featured posts, a category, a collection, a channel, a series in reading order, and the newsletter sign-up, each with a "View all" link. Every template shows them in its own style. Sections listed under `[[reader.home_sections]]` before now show too; they were read but not shown. Without sections the home page is unchanged.

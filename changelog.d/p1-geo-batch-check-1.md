@@ -1,2 +1,0 @@
-Fixed
-- The `plain-answer` check reads an answer the way `khalid audit` does. A hedge word counts only whole, so "unusually" no longer warns as "usually". A vague opener such as "There are" warns at the start of any sentence of the answer, not only the first. Two ", which" clauses in one sentence warn as a chain; a lone "which" at the end of a line no longer does. Each kind it finds comes with its own plain fix.
