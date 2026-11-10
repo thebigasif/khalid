@@ -16,8 +16,19 @@ export const EVENT_GROUPS: { label: string; events: string[] }[] = [
   },
   { label: words.groups.readers, events: ["comment.added", "subscriber.added", "form.submitted"] },
   {
+    label: words.groups.groups,
+    events: [
+      "tag.added",
+      "tag.renamed",
+      "tag.removed",
+      "category.added",
+      "category.renamed",
+      "category.deleted",
+    ],
+  },
+  {
     label: words.groups.site,
-    events: ["tag.added", "lint.blocked", "audit.finished", "site.changed", "alert.raised"],
+    events: ["lint.blocked", "audit.finished", "site.changed", "alert.raised"],
   },
 ];
 

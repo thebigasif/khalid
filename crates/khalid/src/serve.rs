@@ -224,7 +224,7 @@ fn serve_with(
         let ((comments, moderation, rereading), (door, posts), (media, files, library), unlocked) =
             tokio::try_join!(
                 async { Ok(commenting.await) },
-                publish_door((site, config), (database, id, every.clock), telling),
+                publish_door((site, config), (database, id, every.clock), telling.clone()),
                 media_library::open(site, config, (keys.bucket, keys.pictures), outbound),
                 unlocking((site, config), (database, id), &source, shown_pages),
             )?;
@@ -248,7 +248,7 @@ fn serve_with(
             (content, door, posts),
             (moderation, media, desk, keys.follow_ups, keys.ai),
             (database, id, (site, config, &keys.settings)),
-            (panel, mailer),
+            (panel, mailer, telling),
         );
         let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook, &rest));
         // The rest renders once the routes are ready, so it does not slow

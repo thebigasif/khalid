@@ -19,6 +19,6 @@ The brief asks for Admin API read and write routes for pages, authors, tags, cat
 ## Consequences
 
 - An edit through the API and an edit in a text editor meet the same stale check, so neither silently undoes the other.
-- Tag and category changes bypass the publish door: they do not change whether a post may be live, so they run no lint gate and fire no `post.published.edited`. `tag.added` and a rename event are left to the webhooks follow-up.
+- Tag and category changes bypass the publish door: they do not change whether a post may be live, so they run no lint gate and fire no `post.published.edited`. They fire their own webhooks instead: `tag.renamed`, `tag.removed`, `category.added`, `category.renamed` and `category.deleted`, once the files are written. `tag.added` fires from the render that first sees a new tag, so a rename to a name no post had fires it too.
 - A file's modified time has the coarse clock of the file system, so two writes a few milliseconds apart can share one `updated_at`. Posts have the same limit.
 - The SEO tables in `site.toml` (brief G11) and staff tokens have no Admin API routes yet.
