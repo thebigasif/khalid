@@ -1,0 +1,38 @@
+{#- The imprint, the Impressum German law asks for, which Khalid writes at
+    `<mount>impressum/` from `[privacy.contact]` and `[privacy.imprint]`,
+    unless the owner writes their own. A line left unset is left off. -#}
+{% extends "base.html" %}
+{% block main %}
+<article class="page">
+<h1>{{ page.title }}</h1>
+<p>{{ t.imprint_intro }}</p>
+<section aria-labelledby="imprint-who">
+<h2 id="imprint-who">{{ t.imprint_who }}</h2>
+<address>{{ page.name }}<br>{{ page.address }}</address>
+</section>
+<section aria-labelledby="imprint-contact">
+<h2 id="imprint-contact">{{ t.imprint_contact }}</h2>
+<dl>
+<dt>{{ t.imprint_email }}</dt>
+<dd><a href="mailto:{{ page.email }}">{{ page.email }}</a></dd>
+{% if page.phone %}<dt>{{ t.imprint_phone }}</dt>
+<dd><a href="tel:{{ page.phone | replace(" ", "") }}">{{ page.phone }}</a></dd>
+{% endif %}</dl>
+</section>
+{% if page.register or page.vat_id %}<section aria-labelledby="imprint-register">
+<h2 id="imprint-register">{{ t.imprint_register }}</h2>
+<dl>
+{% if page.register %}<dt>{{ t.imprint_register_entry }}</dt>
+<dd>{{ page.register }}</dd>
+{% endif %}{% if page.vat_id %}<dt>{{ t.imprint_vat_id }}</dt>
+<dd>{{ page.vat_id }}</dd>
+{% endif %}</dl>
+</section>
+{% endif %}{% if page.responsible %}<section aria-labelledby="imprint-responsible">
+<h2 id="imprint-responsible">{{ t.imprint_responsible }}</h2>
+<p>{{ t.imprint_responsible_law }}</p>
+<address>{{ page.responsible }}</address>
+</section>
+{% endif %}{% if page.privacy %}<p>{{ t.imprint_privacy }} <a href="{{ page.privacy }}">{{ t.privacy_title }}</a></p>
+{% endif %}</article>
+{% endblock %}
