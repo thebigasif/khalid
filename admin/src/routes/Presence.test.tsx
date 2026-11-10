@@ -24,8 +24,8 @@ const DRAFT: AdminPost = {
   },
 };
 
-const MARIA = { who: "maria", since: "2026-10-31T10:40:00Z" };
-const ME = { who: "asif", since: "2026-10-31T10:45:00Z" };
+const MARIA = { who: "0000000000000002", name: "Maria Lopez", since: "2026-10-31T10:40:00Z" };
+const ME = { who: "0000000000000001", name: "Asif", since: "2026-10-31T10:45:00Z" };
 
 /** A blog where Maria holds DRAFT until this writer takes it over; records each claim. */
 function heldByMaria() {
@@ -54,9 +54,10 @@ describe("someone else editing the post", () => {
     signedIn();
     heldByMaria();
     renderAt("/posts/01JB");
-    const held = await screen.findByRole("heading", { name: words.held("maria") });
+    const held = await screen.findByRole("heading", { name: words.held("Maria Lopez") });
     expect(held).toBeVisible();
-    expect(screen.getByText(words.cost("maria"))).toBeVisible();
+    expect(screen.getByText(words.cost("Maria Lopez"))).toBeVisible();
+    expect(screen.queryByText(/0000000000000002/)).toBeNull();
     expect(screen.getByLabelText(en.editor.title)).toHaveAttribute("readonly");
     const text = screen.getByRole("textbox", { name: en.editor.text });
     expect(text).toHaveAttribute("contenteditable", "false");
@@ -69,9 +70,9 @@ describe("someone else editing the post", () => {
     const claims = heldByMaria();
     renderAt("/posts/01JB");
     fireEvent.click(await screen.findByRole("button", { name: words.takeOver }));
-    expect(await screen.findByText(words.others(["maria"]))).toBeVisible();
+    expect(await screen.findByText(words.others(["Maria Lopez"]))).toBeVisible();
     expect(claims).toEqual(["join", "take_over"]);
-    expect(screen.queryByRole("heading", { name: words.held("maria") })).toBeNull();
+    expect(screen.queryByRole("heading", { name: words.held("Maria Lopez") })).toBeNull();
     expect(screen.getByLabelText(en.editor.title)).not.toHaveAttribute("readonly");
     await waitFor(() =>
       expect(screen.getByRole("textbox", { name: en.editor.text })).toHaveAttribute(

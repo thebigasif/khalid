@@ -14,6 +14,7 @@ use crate::admin_key::require;
 use crate::keys::{Principal, Scope};
 use crate::problem::{Problem, ProblemType};
 use crate::publish_door::PublishDoor;
+use crate::staff_names::NameBook;
 use crate::version_store::PostVersion;
 
 /// Earlier versions, wrapped the way the Admin API wraps resources.
@@ -40,7 +41,7 @@ pub(crate) struct PostVersions {
 )]
 pub(crate) async fn list_post_versions(
     State(posts): State<Arc<PublishDoor>>,
-    Extension(principal): Extension<Principal>,
+    (Extension(principal), Extension(book)): (Extension<Principal>, Extension<NameBook>),
     Path(id): Path<String>,
     OriginalUri(uri): OriginalUri,
 ) -> Result<Json<PostVersions>, Problem> {
@@ -52,6 +53,8 @@ pub(crate) async fn list_post_versions(
     let versions = posts.versions(&id).await;
     let versions = versions.map_err(|error| Problem::internal(&error))?;
     let versions = versions.ok_or_else(|| none_kept(uri.path()))?;
+    let names = book.names().await;
+    let versions = versions.into_iter().map(|v| v.named(&names)).collect();
     Ok(Json(PostVersions { versions }))
 }
 
