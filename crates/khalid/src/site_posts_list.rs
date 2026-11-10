@@ -9,10 +9,11 @@ use khalid_api::link_map::LinkMap;
 use khalid_api::post_store::PostStoreError;
 use khalid_api::query::ListQuery;
 use khalid_api::resources::{AdminPost, Gate, PostLinks, PostRow, PostStatus};
-use khalid_content::{PostFront, SiteContent, parse_post};
+use khalid_content::{Document, PostFront, SiteContent, parse_post};
 use khalid_core::Slug;
 
 use super::{DRAFTS, Found, Site, SitePosts, blocking, failure};
+use crate::build_pages::named;
 
 /// One post as the publishing planner reads it.
 #[derive(Debug)]
@@ -105,8 +106,23 @@ impl Site {
         Ok(planned)
     }
 
-    /// The drafts in `drafts/<language>/`, then the published posts with a
-    /// slug in their front matter, which their identity needs.
+    /// The slug `doc` lives at: the one in its front matter, or the one
+    /// `khalid build` makes from its title, so the admin finds every post
+    /// the site shows. `None` when it has neither.
+    pub(super) fn slug_of(&self, doc: &Document<PostFront>) -> Option<Slug> {
+        let front = &doc.front;
+        named(
+            &self.config,
+            doc,
+            front.slug.as_ref(),
+            front.title.as_deref(),
+        )
+        .ok()
+        .map(|(_, slug)| slug)
+    }
+
+    /// The drafts in `drafts/<language>/`, then the posts in `content/`,
+    /// named by [`Self::slug_of`].
     fn every_post(&self, content: &SiteContent) -> Result<Vec<Found>, PostStoreError> {
         let mut found = Vec::new();
         for locale in self.config.languages() {
@@ -128,7 +144,7 @@ impl Site {
             }
         }
         for doc in &content.posts {
-            let Some(slug) = doc.front.slug.clone() else {
+            let Some(slug) = self.slug_of(doc) else {
                 continue;
             };
             if self.draft_path(&doc.locale, &slug).is_file() {
