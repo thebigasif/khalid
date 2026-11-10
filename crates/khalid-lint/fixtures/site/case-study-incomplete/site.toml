@@ -1,0 +1,23 @@
+# Three case studies: one complete, one with a blank outcome and no date,
+# one with nothing but its address. A changelog entry is not a case study.
+[[entries]]
+locale = "en"
+slug = "harbour-tea"
+date = "2026-10-09"
+kind = { type = "case-study", client = "Harbour Tea Rooms", outcome = "Search visits back in eight weeks." }
+
+[[entries]]
+locale = "en"
+slug = "fieldwork-plumbing"
+kind = { type = "case-study", client = "Fieldwork Plumbing", outcome = "  " }
+
+[[entries]]
+locale = "de"
+slug = "corner-bakery"
+kind = { type = "case-study" }
+
+[[entries]]
+locale = "en"
+slug = "two-four"
+date = "2026-11-01"
+kind = { type = "changelog", version = "2.4" }
