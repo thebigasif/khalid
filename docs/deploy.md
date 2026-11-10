@@ -478,7 +478,7 @@ The server answers a signed push at once and pulls in the background; the post s
 
 The Analytics screen in the admin shows the same counts for the last 7, 28 or 90 days: the page views against the days before, each day, where readers came from, the most read pages, the readers each AI assistant sent, and the pages AI bots read but never cite. It needs an owner or admin sign-in, because views are visitor data.
 
-Programs read the same numbers from the Admin API with a key that has `settings:write`: `GET /api/admin/v1/analytics/visitors/?days=28`, `GET /api/admin/v1/analytics/ai-visitors/?days=28` and `GET /api/admin/v1/analytics/uncited/?days=30`. The OpenAPI document at `/api/openapi.json` describes each answer.
+Programs read the same numbers from the Admin API with a key that has `settings:write`: `GET /api/admin/v1/analytics/visitors/?days=28`, `GET /api/admin/v1/analytics/ai-visitors/?days=28`, `GET /api/admin/v1/analytics/uncited/?days=30` and `GET /api/admin/v1/analytics/ai-bots/?days=30`, which counts how often each assistant's bots read your pages beside the readers it sent. The OpenAPI document at `/api/openapi.json` describes each answer.
 
 ## Smaller pictures with AVIF
 
