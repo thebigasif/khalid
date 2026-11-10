@@ -4,7 +4,10 @@ import { en } from "../strings/en";
 
 type Props = { changes: Change[] };
 
-/** One page of the audit log: when, who, what happened and where. */
+/**
+ * One page of the audit log: when, who, what happened and where. Who is a
+ * name; an identity with no name, such as a revoked key, shows as its code.
+ */
 export function AuditTable({ changes }: Props) {
   const words = en.audit;
   return (
@@ -25,7 +28,7 @@ export function AuditTable({ changes }: Props) {
                 <time dateTime={change.at}>{moment(change.at)}</time>
               </td>
               <td data-label={words.who}>
-                <code>{change.by}</code>
+                {change.by_name === change.by ? <code>{change.by}</code> : change.by_name}
               </td>
               <td data-label={words.what}>{words.happened(change.action, change.route)}</td>
               <td data-label={words.where}>

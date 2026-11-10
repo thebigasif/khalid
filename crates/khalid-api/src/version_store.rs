@@ -10,6 +10,7 @@ use utoipa::ToSchema;
 
 use crate::content_store::BoxFuture;
 use crate::resources::AdminPost;
+use crate::staff_names::StaffNames;
 
 /// How many earlier versions are kept for each post. An older one is
 /// dropped when a new one comes.
@@ -24,6 +25,11 @@ pub struct PostVersion {
     /// Who saved them, as the post named them; `null` when not known, such
     /// as for a file written by hand.
     saved_by: Option<String>,
+    /// The name the admin shows for whoever saved them: their account's
+    /// name, the name their key was made with, or else `saved_by`; `null`
+    /// when `saved_by` is.
+    #[schema(example = "Maria Lopez")]
+    saved_by_name: Option<String>,
     /// The title.
     title: String,
     /// The text, in markdown.
@@ -36,6 +42,7 @@ impl PostVersion {
         Self {
             saved_at: post.updated_at(),
             saved_by: post.updated_by().map(str::to_owned),
+            saved_by_name: None,
             title: post.title().to_owned(),
             markdown: post.markdown().to_owned(),
         }
@@ -51,6 +58,7 @@ impl PostVersion {
         Self {
             saved_at,
             saved_by,
+            saved_by_name: None,
             title: title.into(),
             markdown: markdown.into(),
         }
@@ -64,6 +72,23 @@ impl PostVersion {
     /// Who saved them, if known.
     pub fn saved_by(&self) -> Option<&str> {
         self.saved_by.as_deref()
+    }
+
+    /// The name the admin shows for whoever saved them, once
+    /// [`Self::named`] has looked it up.
+    pub fn saved_by_name(&self) -> Option<&str> {
+        self.saved_by_name.as_deref()
+    }
+
+    /// The same version with whoever saved it shown by their name in
+    /// `names`.
+    #[must_use]
+    pub fn named(self, names: &StaffNames) -> Self {
+        let saved_by_name = self.saved_by.as_deref().map(|by| names.of(by).to_owned());
+        Self {
+            saved_by_name,
+            ..self
+        }
     }
 
     /// The title.

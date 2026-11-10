@@ -14,6 +14,8 @@ use chrono::{DateTime, TimeDelta, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+use crate::staff_names::StaffNames;
+
 /// How long someone stays on a post after their last check-in. The admin
 /// checks in every 20 seconds, so a closed tab lets go within a minute.
 pub const LEASE_SECONDS: i64 = 60;
@@ -34,6 +36,10 @@ pub enum Claim {
 pub struct PresentEditor {
     /// Who, as the post's `updated_by` names them.
     who: String,
+    /// The name the admin shows for them: their account's name, or the
+    /// name their key was made with. Their identity when neither is known.
+    #[schema(example = "Maria Lopez")]
+    name: String,
     /// Since when: when they opened the post, or took over its lock.
     since: DateTime<Utc>,
 }
@@ -42,6 +48,16 @@ impl PresentEditor {
     /// Who, as the post's `updated_by` names them.
     pub fn who(&self) -> &str {
         &self.who
+    }
+
+    /// The name the admin shows for them.
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    fn named(self, names: &StaffNames) -> Self {
+        let name = names.of(&self.who).to_owned();
+        Self { name, ..self }
     }
 }
 
@@ -71,6 +87,16 @@ impl PostPresence {
     pub fn others(&self) -> &[PresentEditor] {
         &self.others
     }
+
+    /// The same presence with everyone shown by their name in `names`.
+    #[must_use]
+    pub fn named(self, names: &StaffNames) -> Self {
+        Self {
+            holder: self.holder.named(names),
+            yours: self.yours,
+            others: self.others.into_iter().map(|e| e.named(names)).collect(),
+        }
+    }
 }
 
 /// One person on a post, and when they last checked in.
@@ -82,8 +108,12 @@ struct Seat {
 
 impl Seat {
     fn new(who: &str, now: DateTime<Utc>) -> Self {
-        let who = who.to_owned();
-        let editor = PresentEditor { who, since: now };
+        let (who, name) = (who.to_owned(), who.to_owned());
+        let editor = PresentEditor {
+            who,
+            name,
+            since: now,
+        };
         Self { editor, seen: now }
     }
 
