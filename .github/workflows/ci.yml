@@ -39,20 +39,20 @@ env:
   GH_TOKEN: ${{ github.token }}
 
 jobs:
-  # Every job runs on GitHub's runners. The maintainer's runners shared one
-  # machine with the builders, where the Rust tests took 52 to 84 minutes;
-  # on GitHub's runners they run in parallel and leave that machine to the
-  # builders (2026-11-08).
+  # A pull request from this repository runs Text rules, the Rust jobs and
+  # the binary size on the maintainer's runners labelled khalid, which sat
+  # idle while GitHub's shared runners queued 43 runs (2026-11-10). A fork's
+  # pull request, main, the nightly run and every other job stay on
+  # GitHub's runners. On 2026-11-08 the Rust tests took 52 to 84 minutes on
+  # the shared machine; that is the price when it is busy.
   # Performance budgets stay on GitHub's runners, where their numbers were set.
   #
   # Each maintainer runner has its own work folder, so jobs that run at the
   # same time never share a checkout or a target folder, and its own Rust
   # home (below), so they never share a toolchain install either.
-  # Ten seconds of work, so it runs on GitHub's runners and never waits
-  # for a maintainer runner.
   text:
     name: Text rules
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && 'khalid' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       - name: No em dashes (RULES.md BL-TXT-1)
@@ -68,7 +68,7 @@ jobs:
   # handover-build below.
   binary-size:
     name: Binary size, budget under 30 MB
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && 'khalid' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       - name: Disk space for the build
@@ -142,7 +142,7 @@ jobs:
   # parts' coverage and holds it to the floor (see the rust job).
   rust-lints:
     name: Rust lints, docs and dependencies
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && 'khalid' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       - name: Disk space for the build
@@ -211,7 +211,7 @@ jobs:
   # of eight parts should take about 17 minutes of tests.
   rust:
     name: Rust tests ${{ matrix.part }} of ${{ github.event_name == 'pull_request' && 4 || 8 }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && 'khalid' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
