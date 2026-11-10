@@ -12,8 +12,8 @@ use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
     AbsoluteUrl, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment, Locale,
-    MailSettings, MediaSettings, NavSettings, ParseUrlError, PrivacySettings, Reader, ReaderSwitch,
-    SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
+    LogSettings, MailSettings, MediaSettings, NavSettings, ParseUrlError, PrivacySettings, Reader,
+    ReaderSwitch, SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
 };
 
 /// Every setting Khalid reads, checked once at start and then passed by
@@ -44,6 +44,7 @@ pub struct Config {
     privacy: PrivacySettings,
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
+    log: LogSettings,
     preview_link_lifetime: Duration,
     ai: AiSettings,
     ghost_content_api: bool,
@@ -120,6 +121,8 @@ struct SiteFile {
     search_console: Option<SearchConsoleTable>,
     #[serde(default)]
     visitor_log: VisitorLogSettings,
+    #[serde(default)]
+    log: LogSettings,
     #[serde(default)]
     ai: AiSettings,
     #[serde(default)]
@@ -328,6 +331,7 @@ impl Config {
             privacy: file.privacy,
             search_console,
             visitor_log: file.visitor_log,
+            log: file.log,
             preview_link_lifetime,
             ai: file.ai,
             ghost_content_api: file.ghost_content_api,
@@ -383,6 +387,12 @@ impl Config {
     /// off unless the site switches it on.
     pub fn visitor_log(&self) -> &VisitorLogSettings {
         &self.visitor_log
+    }
+
+    /// How much `khalid serve` logs and in which shape, from `[log]`;
+    /// plain lines at `info` unless set.
+    pub fn log(&self) -> LogSettings {
+        self.log
     }
 
     /// Whether a copy of Ghost's Content API answers under
