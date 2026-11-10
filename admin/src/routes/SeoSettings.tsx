@@ -1,11 +1,13 @@
 import type { SiteSettings } from "../api/site";
 import { type PartProps, type Section, SettingsTabs } from "../components/SettingsTabs";
+import { Breadcrumbs } from "../seo/Breadcrumbs";
 import { Crawlers } from "../seo/Crawlers";
 import { Feeds } from "../seo/Feeds";
 import { type Part, partOf, same } from "../seo/parts";
 import { Representation } from "../seo/Representation";
 import { SearchAppearance } from "../seo/SearchAppearance";
 import { ShowInSearch } from "../seo/ShowInSearch";
+import { SiteSearch } from "../seo/SiteSearch";
 import { SocialSharing } from "../seo/SocialSharing";
 import { Webmaster } from "../seo/Webmaster";
 import { seoWords } from "../strings/seoWords";
@@ -27,8 +29,10 @@ const SECTIONS: Section<keyof typeof seoWords.tabs, Parts>[] = [
   { tab: "webmaster", show: (props) => <Webmaster {...props} /> },
   { tab: "crawlers", show: (props) => <Crawlers {...props} /> },
   { tab: "feeds", show: (props) => <Feeds {...props} /> },
-  // TODO(Yoast WP2): breadcrumbs and llms.txt get a tab here once their
-  // settings are in SeoSettings on main; docs/seo-settings.md lists them.
+  { tab: "breadcrumbs", show: (props) => <Breadcrumbs {...props} /> },
+  { tab: "search", show: (props) => <SiteSearch {...props} /> },
+  // TODO(Yoast WP2): llms.txt, the schema files and local business get a
+  // tab here; docs/seo-settings.md lists them.
 ];
 
 /** Only the parts that differ from `site`, or `null` when none does. */

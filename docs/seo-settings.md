@@ -37,7 +37,9 @@ its settings as it starts. No key or password is ever sent back.
 | `[seo.ai_page]` | `off`, `contact`, `covers`, `cite` | on | AI info page |
 | `[seo.links]` | `affiliate_domains` and the other outbound link rules | none | Not on the screen yet |
 | `[[seo.locations]]` | the site's shops or offices, for local search | none | Not on the screen yet |
-| `[seo.breadcrumbs]`, `[seo.llms_txt]`, `[seo.search_filter]`, `[seo.local]`, `[seo.schema_map]` | see their sections below | see below | Not on the screen yet |
+| `[seo.breadcrumbs]` | see [Breadcrumbs](#breadcrumbs) | see below | Breadcrumbs |
+| `[seo.search_filter]` | see [Search filters](#search-filters) | every filter on | Site search |
+| `[seo.llms_txt]`, `[seo.local]`, `[seo.schema_map]` | see their sections below | see below | Not on the screen yet |
 | `[[seo.schema]]` | schema nodes per category or collection | none | Schema templates screen |
 
 The training switch on the Crawlers screen writes `[seo.crawlers]

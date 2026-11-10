@@ -20,6 +20,8 @@ export const seoWords = {
     webmaster: "Webmaster tools",
     crawlers: "Crawlers and AI bots",
     feeds: "Feeds and IndexNow",
+    breadcrumbs: "Breadcrumbs",
+    search: "Site search",
   },
   appearance: {
     lede: "The title and the line under it that search results show for each kind of page. A template is text with variables, such as {title}, that Khalid fills in for each page.",
@@ -212,5 +214,34 @@ export const seoWords = {
     keyHint:
       "8 to 128 letters, digits or hyphens. It is public by design: the blog serves it so search engines can check the sender.",
     makeKey: "Make a new key",
+  },
+  breadcrumbs: {
+    lede: "Breadcrumbs are the trail of links above a page, such as Home / Technical SEO / Choosing anchor text. Google shows the same trail in search results.",
+    separator: "Separator",
+    separatorHint: "The mark between two steps. Leave it empty for the default: /",
+    home: "Name of the first step",
+    homeHint: "Such as Home. Leave it empty to use the blog's name.",
+    archivePrefix: "Words before an archive's name",
+    archivePrefixHint:
+      "Shown on tag, category, author and date pages, such as Archives for. Leave it empty for none.",
+    searchPrefix: "Words before a search",
+    searchPrefixHint:
+      "Shown on the search page, such as You searched for. Leave it empty for none.",
+    bold: "Show the last step in bold",
+    boldHint: "The last step is the page the reader is on.",
+    through: "A post's trail passes through",
+    category: "Its category",
+    tag: "Its first tag",
+    none: "Nothing: the blog, then the post",
+  },
+  search: {
+    lede: "Bots fill a blog's search page with long or spam searches, so the page shows their words and links. Each filter here refuses such a search before anything is looked up.",
+    length: "Longest search, in characters",
+    lengthHint: "A longer search is refused. 50 by default. 0 sets no limit.",
+    symbols: "Refuse searches with emoji or other symbols",
+    symbolsHint: "Letters, digits and punctuation are always allowed.",
+    spam: "Refuse searches that look like spam",
+    spamHint:
+      "A search with a link, markup, a spam domain such as .xyz, or one character six times in a row.",
   },
 } as const;
