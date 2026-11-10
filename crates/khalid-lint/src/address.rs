@@ -127,7 +127,7 @@ pub fn flags_slug_part(rule: RuleId, language: &str, part: &str) -> bool {
 }
 
 /// A `[[slug]]` that matches no post, page or glossary term in the post's
-/// language.
+/// language. A `[[fact:key]]` is left to `fact-unknown`.
 #[derive(Debug)]
 pub(crate) struct BrokenWikilink;
 
@@ -190,6 +190,10 @@ impl Rule for AmbiguousWikilink {
 /// `[[glossary:crawl-budget]]`, so a post with the same slug never takes it.
 const GLOSSARY: &str = "glossary:";
 
+/// How a wikilink shows a fact's value from the registry, as in
+/// `[[fact:pro-plan-price]]`.
+pub(crate) const FACT: &str = "fact:";
+
 /// The slug a wikilink `target` names, without the `glossary:` in front.
 pub(crate) fn wikilink_slug(target: &str) -> &str {
     target.strip_prefix(GLOSSARY).unwrap_or(target).trim()
@@ -197,7 +201,8 @@ pub(crate) fn wikilink_slug(target: &str) -> &str {
 
 /// What one wikilink reaches in its post's language.
 struct Reach {
-    /// A post or page with its slug, unless it names a glossary term outright.
+    /// A post or page with its slug, unless it names a glossary term
+    /// outright. Always true for a `fact:` wikilink, which is no page.
     page: bool,
     /// A glossary term with its slug.
     term: bool,
@@ -206,6 +211,13 @@ struct Reach {
 impl Reach {
     /// What `target`, written in `post`, reaches on `site`.
     fn of(post: &LintPost, site: &dyn SiteView, target: &str) -> Self {
+        if target.starts_with(FACT) {
+            // `fact-unknown` judges facts, with its own message.
+            return Self {
+                page: true,
+                term: false,
+            };
+        }
         let slug = wikilink_slug(target);
         let here = |locale: &Locale, found: &Slug| *locale == post.locale && found.as_str() == slug;
         let page = !target.starts_with(GLOSSARY)
@@ -255,5 +267,13 @@ mod tests {
     fn a_slug_with_no_plain_form_warns_without_a_suggestion() {
         let hits = unicode_hits("مرحبا", "ar", Some(SlugMode::Ascii));
         assert_eq!(subjects(&hits), [None]);
+    }
+
+    #[test]
+    fn a_fact_wikilink_is_never_a_broken_page_link() {
+        let mut post = LintPost::new(Locale::try_new("en").unwrap(), Slug::try_new("a").unwrap());
+        post.wikilinks = vec!["fact:team-size".to_owned()];
+        let hits = BrokenWikilink.check(&post, &LintSite::default());
+        assert_eq!(subjects(&hits), Vec::<Option<&str>>::new());
     }
 }

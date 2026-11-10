@@ -6,27 +6,10 @@ use std::fmt;
 
 use khalid_core::AbsoluteUrl;
 
-use crate::{SchemaMap, SeoError, SeoSite, SiteSearch, schema_map_url, sitemap_index_url};
-
-/// The user-agent tokens of crawlers that gather text for AI models or AI
-/// answers, as their operators publish them, for a site that wants to
-/// choose for each one.
-pub const KNOWN_AI_CRAWLERS: [&str; 14] = [
-    "GPTBot",
-    "OAI-SearchBot",
-    "ChatGPT-User",
-    "ClaudeBot",
-    "Claude-SearchBot",
-    "Claude-User",
-    "PerplexityBot",
-    "Perplexity-User",
-    "Google-Extended",
-    "Applebot-Extended",
-    "CCBot",
-    "Bytespider",
-    "Amazonbot",
-    "meta-externalagent",
-];
+use crate::{
+    AI_TRAINING_CRAWLERS, SchemaMap, SeoError, SeoSite, SiteSearch, schema_map_url,
+    sitemap_index_url,
+};
 
 /// A crawler's user-agent token, such as `GPTBot`.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -122,8 +105,12 @@ pub enum BotAccess {
 pub struct CrawlerPolicy {
     /// Paths inside the mount folder that no crawler may read.
     pub disallow: Vec<RobotsPath>,
-    /// Crawlers with their own setting, by token.
+    /// Crawlers with their own setting, by token. A setting here wins over
+    /// `ai_training`.
     pub bots: BTreeMap<UserAgent, BotAccess>,
+    /// Whether the crawlers in [`AI_TRAINING_CRAWLERS`] may read the blog.
+    /// Allowed by default.
+    pub ai_training: BotAccess,
     /// Whether the search page is kept from crawlers, so they do not spend
     /// their visits on endless result pages. On by default.
     pub disallow_search: bool,
@@ -136,9 +123,30 @@ impl Default for CrawlerPolicy {
         Self {
             disallow: Vec::new(),
             bots: BTreeMap::new(),
+            ai_training: BotAccess::Allowed,
             disallow_search: true,
             extra_lines: Vec::new(),
         }
+    }
+}
+
+impl CrawlerPolicy {
+    /// The crawlers named one by one, with every training crawler added as
+    /// blocked when `ai_training` blocks them and the site does not name it
+    /// itself. Crawlers read their token in any case, so `gptbot` in the
+    /// site's own list counts as naming `GPTBot`.
+    fn bots_with_training(&self) -> Result<BTreeMap<UserAgent, BotAccess>, SeoError> {
+        let mut bots = self.bots.clone();
+        if self.ai_training == BotAccess::Blocked {
+            for crawler in &AI_TRAINING_CRAWLERS {
+                let named = (self.bots.keys())
+                    .any(|agent| agent.as_str().eq_ignore_ascii_case(crawler.token));
+                if !named {
+                    bots.insert(UserAgent::try_new(crawler.token)?, BotAccess::Blocked);
+                }
+            }
+        }
+        Ok(bots)
     }
 }
 
@@ -182,10 +190,9 @@ impl RobotsTxt {
                 search.as_str()
             ));
         }
+        let bots = site.crawlers.bots_with_training()?;
         let named = |access: BotAccess| -> Vec<String> {
-            site.crawlers
-                .bots
-                .iter()
+            bots.iter()
                 .filter(|(_, setting)| **setting == access)
                 .map(|(agent, _)| agent.as_str().to_owned())
                 .collect()

@@ -5,9 +5,9 @@
 use std::path::Path;
 
 use khalid_core::{
-    AbsoluteUrl, ArchiveIndex, ArchiveSetting, BreadcrumbTaxonomy, Config, DomainName, Environment,
-    ExternalRel, FeedKind, GeoPoint, IndexNowKey, IndexNowSettings, Indexing, LinkOpening,
-    LinkSettings,
+    AbsoluteUrl, AiTraining, ArchiveIndex, ArchiveSetting, BreadcrumbTaxonomy, Config, DomainName,
+    Environment, ExternalRel, FeedKind, GeoPoint, IndexNowKey, IndexNowSettings, Indexing,
+    LinkOpening, LinkSettings,
 };
 
 const SITE: &str = r#"name = "Field Notes on SEO"
@@ -299,4 +299,14 @@ fn the_search_filters_are_on_by_default_and_each_can_be_set() {
     assert_eq!(filter.max_length, 0);
     assert!(!filter.symbols);
     assert!(!filter.spam);
+}
+
+#[test]
+fn ai_training_crawlers_are_allowed_until_the_switch_blocks_them() {
+    let plain = read("").unwrap();
+    assert_eq!(plain.seo().crawlers.ai_training, AiTraining::Allow);
+    let config = read("\n[seo.crawlers]\nai_training = \"block\"\n").unwrap();
+    assert_eq!(config.seo().crawlers.ai_training, AiTraining::Block);
+    let wrong = read("\n[seo.crawlers]\nai_training = \"maybe\"\n").unwrap_err();
+    assert!(wrong.contains("ai_training"), "{wrong}");
 }

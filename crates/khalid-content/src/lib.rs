@@ -15,6 +15,7 @@ mod content_hash;
 mod directive;
 mod embed;
 mod external_media;
+mod facts;
 mod form;
 mod front_matter;
 mod layout;
@@ -44,6 +45,7 @@ pub use external_media::{
     MEDIA_CARD_END, MEDIA_CARD_START, MEDIA_END, MEDIA_FORM, MEDIA_START, external_media_as_links,
     release_external_media,
 };
+pub use facts::{FACTS_FILE, Fact, FactError, parse_facts};
 pub use form::{FieldKind, FormField};
 pub use layout::{Column, GalleryImage, ProsConsBlock};
 pub use post::{
@@ -70,4 +72,4 @@ pub use structured::{
     RecipeBlock, ReviewBlock, Step, StructuredBlock, VideoBlock,
 };
 pub use tree::{Collection, ContentTree, Entry, Language};
-pub use wikilink::{GLOSSARY, WikiTarget, Wikilinks};
+pub use wikilink::{FACT, GLOSSARY, WikiTarget, Wikilinks};

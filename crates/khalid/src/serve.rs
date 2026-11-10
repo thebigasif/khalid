@@ -39,6 +39,7 @@ use crate::serve_check::BodyCheck;
 use crate::serve_https::{self, Listen};
 use crate::site_content::LiveContent;
 use crate::site_hosts::{self, Among, Door};
+use crate::site_html::NotFound;
 use crate::site_pages::SitePages;
 use crate::site_posts::SitePosts;
 use crate::site_watch::SiteWatch;
@@ -489,8 +490,9 @@ async fn render_the_rest(
     let rendering = tokio::task::spawn_blocking(move || {
         let served = source.render_content(&checked, assets)?;
         drop(checked);
-        Pages::plain(served.pages, served.not_found)
-            .map(|pages| pages.with_moves(served.moves))
+        let NotFound { default, under } = served.not_found;
+        Pages::plain(served.pages, default)
+            .map(|pages| pages.with_moves(served.moves).with_not_found_under(under))
             .map(|pages| with_hint(pages, &source))
             .map_err(|_| serve_message::internal())
     });

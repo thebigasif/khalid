@@ -81,6 +81,9 @@ impl Command {
             Self::Watch => "watch",
             Self::Sites { command } => command.name(),
             Self::Analytics { command } => command.name(),
+            Self::Completions(_) => "completions",
+            #[cfg(feature = "man")]
+            Self::Man(_) => "man",
         }
     }
 }

@@ -167,6 +167,57 @@ async fn a_post_in_a_series_names_it_in_the_content_api() {
     assert!(json[1].get("series").is_none(), "a post in no series");
 }
 
+/// Writes `text` to `rel` inside `site`, making its folders first.
+fn put(site: &Path, rel: &str, text: &str) {
+    let mut file = site.to_path_buf();
+    file.push(rel);
+    std::fs::create_dir_all(file.parent().unwrap()).unwrap();
+    std::fs::write(file, text).unwrap();
+}
+
+#[tokio::test]
+async fn the_html_places_snippets_and_links_wikilinks_as_the_page_does() {
+    let site = tempfile::tempdir().unwrap();
+    let folder = site.path();
+    put(
+        folder,
+        "site.toml",
+        "name = \"Field Notes\"\naddress = \"https://www.example.com\"\nmount = \"/blog/\"\n\
+         default_language = \"en\"\nlanguages = [\"en\"]\n",
+    );
+    put(
+        folder,
+        "content/en/snippets/disclosure.md",
+        "---\ntitle: Disclosure\nslug: disclosure\n---\n\nSome links here earn us a fee.\n",
+    );
+    put(
+        folder,
+        "content/en/posts/links.md",
+        "---\ntitle: Why links matter\nslug: why-links-matter\ndate: 2026-09-01\n---\n\nRead it.\n",
+    );
+    put(
+        folder,
+        "content/en/posts/clusters.md",
+        "---\ntitle: Planning a cluster\nslug: planning-a-cluster\ndate: 2026-10-01\n---\n\n\
+         First read [[why-links-matter]].\n\n::snippet{slug=\"disclosure\"}\n",
+    );
+    let config = Config::load(folder, &Environment::empty()).unwrap();
+    let content = read_content(&ContentTree::walk(folder).unwrap()).unwrap();
+    let catalog = Catalog::of(folder, &config, &content).unwrap();
+    let live = LiveContent::default();
+    live.replace(Published::of(folder, &config, &catalog).unwrap());
+
+    let key = PostKey::Id("en.planning-a-cluster".to_owned());
+    let found = live.find(Collection::Posts, &key).await.unwrap().unwrap();
+    let found = serde_json::to_value(found).unwrap();
+    let html = found["html"].as_str().unwrap();
+    assert!(html.contains("Some links here earn us a fee."), "{html}");
+    assert!(
+        html.contains("href=\"/blog/why-links-matter/\">Why links matter</a>"),
+        "{html}"
+    );
+}
+
 #[test]
 fn plaintext_drops_tags_and_reads_entities() {
     assert_eq!(

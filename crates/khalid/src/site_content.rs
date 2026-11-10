@@ -15,9 +15,10 @@ use khalid_api::content_store::{
 };
 use khalid_api::query::ListQuery;
 use khalid_api::resources::{Bodies, Collection, Post, PostSeries};
-use khalid_content::{SiteContent, parse_post, render};
+use khalid_content::{SiteContent, Wikilinks, parse_post, render_linked};
 use khalid_core::{AbsoluteUrl, Config, Locale, SitePath, SlugMode, UserMessage};
 use khalid_db::{ContentIndex, IndexedPost, PostChanges};
+use khalid_routes::Routes;
 use tokio::sync::watch;
 
 use crate::entry_events::Entries;
@@ -25,7 +26,7 @@ use crate::listed_post::ListedTag;
 use crate::post_heads::PostHeads;
 use crate::post_lock::Lock;
 use crate::tag_events::Tags;
-use crate::{build_message, build_pages, index, site_lists};
+use crate::{build_message, build_pages, index, routes_message, site_lists};
 
 #[path = "content_page.rs"]
 mod content_page;
@@ -57,6 +58,9 @@ pub(crate) struct Catalog {
     /// The head of each post page, by address, which the render that read
     /// this catalog made.
     pub(crate) heads: PostHeads,
+    /// The pages wikilinks reach and the snippets, in each language, as
+    /// the build renders bodies with them. Cloning shares them.
+    links: Arc<BTreeMap<Locale, Wikilinks>>,
 }
 
 impl Catalog {
@@ -95,6 +99,13 @@ impl Catalog {
             .collect();
         let pages = ContentPage::all(folder, config, content)?;
         let lists = site_lists::of(config, &index, content)?;
+        let routes = Routes::load(folder).map_err(|error| routes_message::of(&error))?;
+        let links = (config.languages().iter())
+            .map(|locale| {
+                let links = Wikilinks::for_language(content, config, &routes, locale);
+                (locale.clone(), links)
+            })
+            .collect();
         Ok(Self {
             index,
             featured,
@@ -106,6 +117,7 @@ impl Catalog {
             entries: Entries::of(content).with_drafts(folder),
             tags: Tags::of(config, content),
             heads: PostHeads::new(),
+            links: Arc::new(links),
         })
     }
 }
@@ -222,6 +234,7 @@ pub(crate) struct Published {
     pages: BTreeMap<String, ContentPage>,
     folder: PathBuf,
     slugs: SlugMode,
+    links: Arc<BTreeMap<Locale, Wikilinks>>,
 }
 
 /// One published post, and the language and day that order it.
@@ -322,6 +335,7 @@ impl Published {
             pages,
             folder: folder.to_path_buf(),
             slugs: config.slugs(),
+            links: Arc::clone(&catalog.links),
         }
     }
 
@@ -353,9 +367,13 @@ impl Published {
         self.rendered(&post.body, locale)
     }
 
-    /// The markdown `body` in `locale` in every format.
+    /// The markdown `body` in `locale` in every format, with its snippets
+    /// placed and its wikilinks linked as on its page.
     fn rendered(&self, body: &str, locale: &Locale) -> Result<Bodies, ContentStoreError> {
-        let rendered = render(body, locale, self.slugs).map_err(ContentStoreError::new)?;
+        let none = Wikilinks::new();
+        let links = self.links.get(locale).unwrap_or(&none);
+        let rendered =
+            render_linked(body, locale, self.slugs, links).map_err(ContentStoreError::new)?;
         Ok(Bodies::new(
             &rendered.html,
             body,

@@ -1,0 +1,5 @@
+# The fact registry, from the site's `facts.toml`.
+[[facts]]
+key = "pro-plan-price"
+value = "29 USD a month"
+checked = "2026-09-01"

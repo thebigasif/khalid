@@ -103,6 +103,12 @@ db-prepare:
     DATABASE_URL=sqlite:target/sqlx-prepare.db sqlx migrate run --source crates/khalid-db/migrations
     DATABASE_URL=sqlite:target/sqlx-prepare.db cargo sqlx prepare --workspace -- --all-targets --all-features
 
+# A manual page for khalid and for each command, such as khalid-init.1, in
+# a folder: target/man unless you name another. The release ships the same
+# pages; the binary itself carries no page writer.
+man out="target/man":
+    cargo run --locked -p khalid --features man -- man {{out}}
+
 # Run the binary in a scratch site with a demo fixture.
 dev:
     cargo run -p khalid -- serve --site fixtures/demo-site
