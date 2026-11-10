@@ -6,12 +6,15 @@
 //! `Secret`, which never prints its value (RULES.md BL-RUN-5).
 
 use std::error::Error;
-use std::fmt::Write as _;
+use std::fmt::{self, Write as _};
+use std::io;
 
-use khalid_core::{LogFormat, LogLevel, LogSettings};
-use tracing::Subscriber;
+use chrono::SecondsFormat;
+use khalid_core::{Clock, LogFormat, LogLevel, LogSettings, SystemClock};
+use serde_json::{Map, Value};
+use tracing::field::{Field, Visit};
 use tracing::level_filters::LevelFilter;
-use tracing_subscriber::fmt::MakeWriter;
+use tracing::{Event, Metadata, Subscriber, span};
 
 use crate::cli::Output;
 
@@ -28,20 +31,128 @@ pub(crate) fn install(settings: LogSettings, output: Output) {
     let _ = tracing::subscriber::set_global_default(subscriber);
 }
 
-/// The log writer for lines at `level` and above, in `format`,
-/// written to `writer`.
-fn subscriber<W>(level: LogLevel, format: LogFormat, writer: W) -> Box<dyn Subscriber + Send + Sync>
+/// The log writer for lines at `level` and above, in `format`, each
+/// written to a fresh `writer()`.
+fn subscriber<M, W>(
+    level: LogLevel,
+    format: LogFormat,
+    writer: M,
+) -> Box<dyn Subscriber + Send + Sync>
 where
-    W: for<'w> MakeWriter<'w> + Send + Sync + 'static,
+    M: Fn() -> W + Send + Sync + 'static,
+    W: io::Write,
 {
-    let builder = tracing_subscriber::fmt()
-        .with_writer(writer)
-        .with_max_level(filter(level))
-        .with_target(false);
-    if format == LogFormat::Json {
-        Box::new(builder.json().finish())
-    } else {
-        Box::new(builder.finish())
+    Box::new(Lines {
+        level: filter(level),
+        json: format == LogFormat::Json,
+        writer,
+    })
+}
+
+/// Writes each event as one line, such as `2026-11-10T09:00:00.000000Z
+/// WARN a form's answers could not be emailed form="contact"`, or as one
+/// JSON object with `timestamp`, `level` and `fields`. Spans are not kept:
+/// Khalid opens none, so a span a dependency opens adds nothing to a line.
+/// Written by hand because `tracing-subscriber` and the crates under it
+/// cost 66 KB of the binary's size budget.
+struct Lines<M> {
+    level: LevelFilter,
+    json: bool,
+    writer: M,
+}
+
+impl<M, W> Subscriber for Lines<M>
+where
+    M: Fn() -> W + Send + Sync + 'static,
+    W: io::Write,
+{
+    fn enabled(&self, metadata: &Metadata<'_>) -> bool {
+        *metadata.level() <= self.level
+    }
+
+    fn max_level_hint(&self) -> Option<LevelFilter> {
+        Some(self.level)
+    }
+
+    fn new_span(&self, _: &span::Attributes<'_>) -> span::Id {
+        span::Id::from_u64(1)
+    }
+
+    fn record(&self, _: &span::Id, _: &span::Record<'_>) {}
+
+    fn record_follows_from(&self, _: &span::Id, _: &span::Id) {}
+
+    fn event(&self, event: &Event<'_>) {
+        let mut fields = Fields::default();
+        event.record(&mut fields);
+        let at = SystemClock
+            .now()
+            .to_rfc3339_opts(SecondsFormat::Micros, true);
+        let level = event.metadata().level().as_str();
+        let mut line = if self.json {
+            let mut object = Map::new();
+            object.insert("timestamp".to_owned(), Value::String(at));
+            object.insert("level".to_owned(), Value::String(level.to_owned()));
+            object.insert("fields".to_owned(), Value::Object(fields.json));
+            Value::Object(object).to_string()
+        } else {
+            format!("{at} {level:>5} {}{}", fields.message, fields.text)
+        };
+        line.push('\n');
+        // A log line that cannot be written has nowhere else to go.
+        let _ = (self.writer)().write_all(line.as_bytes());
+    }
+
+    fn enter(&self, _: &span::Id) {}
+
+    fn exit(&self, _: &span::Id) {}
+}
+
+/// One event's fields: the message, the rest as ` name=value` for a plain
+/// line, and all of them for a JSON line.
+#[derive(Default)]
+struct Fields {
+    message: String,
+    text: String,
+    json: Map<String, Value>,
+}
+
+impl Fields {
+    fn add(&mut self, field: &Field, text: String, json: Value) {
+        if field.name() == "message" {
+            self.message = text;
+        } else {
+            let _ = write!(self.text, " {}={text}", field.name());
+        }
+        self.json.insert(field.name().to_owned(), json);
+    }
+}
+
+impl Visit for Fields {
+    fn record_i64(&mut self, field: &Field, value: i64) {
+        self.add(field, value.to_string(), Value::from(value));
+    }
+
+    fn record_u64(&mut self, field: &Field, value: u64) {
+        self.add(field, value.to_string(), Value::from(value));
+    }
+
+    fn record_bool(&mut self, field: &Field, value: bool) {
+        self.add(field, value.to_string(), Value::from(value));
+    }
+
+    fn record_str(&mut self, field: &Field, value: &str) {
+        let text = if field.name() == "message" {
+            value.to_owned()
+        } else {
+            format!("{value:?}")
+        };
+        self.add(field, text, Value::from(value));
+    }
+
+    fn record_debug(&mut self, field: &Field, value: &dyn fmt::Debug) {
+        let said = format!("{value:?}");
+        self.add(field, said.clone(), Value::String(said));
     }
 }
 
@@ -95,6 +206,12 @@ mod tests {
             let bytes = self.0.lock().unwrap_or_else(PoisonError::into_inner);
             String::from_utf8_lossy(&bytes).into_owned()
         }
+
+        /// A writer for the log that keeps what it is given here.
+        fn writer(&self) -> impl Fn() -> Self + Send + Sync + 'static {
+            let kept = self.clone();
+            move || kept.clone()
+        }
     }
 
     impl io::Write for Kept {
@@ -109,17 +226,9 @@ mod tests {
         }
     }
 
-    impl<'w> MakeWriter<'w> for Kept {
-        type Writer = Self;
-
-        fn make_writer(&'w self) -> Self::Writer {
-            self.clone()
-        }
-    }
-
     /// Logs `error` the way a failed form email is logged, into `kept`.
     fn log_failure(kept: &Kept, format: LogFormat, error: &(dyn Error + 'static)) {
-        let subscriber = subscriber(LogLevel::Info, format, kept.clone());
+        let subscriber = subscriber(LogLevel::Info, format, kept.writer());
         tracing::subscriber::with_default(subscriber, || {
             let error = causes(error);
             tracing::warn!(%error, form = "contact", "a form's answers could not be emailed");
@@ -237,9 +346,38 @@ mod tests {
     }
 
     #[test]
+    fn a_json_line_is_one_object_with_its_level_and_fields() {
+        let kept = Kept::default();
+        let subscriber = subscriber(LogLevel::Info, LogFormat::Json, kept.writer());
+        tracing::subscriber::with_default(subscriber, || {
+            tracing::warn!(form = "contact", tries = 7, "Khalid gave up on an email");
+        });
+        let line: Value = serde_json::from_str(kept.text().trim_end()).unwrap();
+        assert_eq!(line["level"], "WARN");
+        assert_eq!(line["fields"]["message"], "Khalid gave up on an email");
+        assert_eq!(line["fields"]["form"], "contact");
+        assert_eq!(line["fields"]["tries"], 7);
+        assert!(line["timestamp"].as_str().unwrap().ends_with('Z'), "{line}");
+    }
+
+    #[test]
+    fn a_plain_line_says_the_level_the_message_and_each_field() {
+        let kept = Kept::default();
+        let subscriber = subscriber(LogLevel::Info, LogFormat::Text, kept.writer());
+        tracing::subscriber::with_default(subscriber, || {
+            tracing::warn!(form = "contact", tries = 7, "Khalid gave up on an email");
+        });
+        let log = kept.text();
+        assert!(
+            log.ends_with("  WARN Khalid gave up on an email form=\"contact\" tries=7\n"),
+            "{log}"
+        );
+    }
+
+    #[test]
     fn a_line_below_the_level_is_left_out() {
         let kept = Kept::default();
-        let subscriber = subscriber(LogLevel::Warn, LogFormat::Text, kept.clone());
+        let subscriber = subscriber(LogLevel::Warn, LogFormat::Text, kept.writer());
         tracing::subscriber::with_default(subscriber, || {
             tracing::info!("a post went live");
             tracing::warn!("an email could not be sent");

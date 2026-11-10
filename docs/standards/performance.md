@@ -309,10 +309,13 @@ The mail trace stack (PR 1161) gives `khalid serve` a log through `tracing-subsc
 | `tracing` with `release_max_level_debug`: trace lines left out when compiled | 31,642,968 | 87,040 |
 | `tracing` with `release_max_level_info`: debug and trace lines left out (kept) | 31,591,000 | 139,008 |
 | The same, plus SQLite without FTS3, FTS5, R-tree, `dbstat`, `soundex` and STAT4 (`LIBSQLITE3_FLAGS`, measured with `--config`) | 31,291,896 | 438,112 |
+| Repair 2: the level cap, and a log writer of Khalid's own in `server_log.rs` instead of `tracing-subscriber` (kept) | 31,524,568 | 205,440 |
 
 The level cap is set on `tracing` in the `khalid` crate and, through feature unification, cuts the debug and trace lines of every crate in a release build. Every line Khalid writes for an operator is `info`, `warn` or `error`, so the log keeps everything it was built for, failed emails included; `[log] level = "debug"` or `"trace"` adds lines only in a development build, which `docs/deploy.md` says. Tests and debug builds keep every level. The subscriber's features were already as small as they go: no colours, no environment filter, no `time` crate.
 
 The cap alone leaves the binary 133,720 bytes over. The SQLite options in the last row are the ones the "Room for scheduled webhook events" entry measured and set aside, unused by Khalid's SQL. They can only be set through the `LIBSQLITE3_FLAGS` environment variable, which needs an `[env]` table in `.cargo/config.toml`; that file is handed over as a patch with this change. With both, the binary is 165,384 bytes under the budget here, about 140,000 in CI. `scripts/perf.sh` was not run on this shared server; CI's performance budgets job measures it.
+
+Repair 2 dropped `tracing-subscriber`, `sharded-slab`, `thread_local` and `tracing-serde` for about 110 lines in `server_log.rs` that write the same plain or JSON line: 66,432 bytes. Spans are not kept, as Khalid opens none. That leaves the binary 67,288 bytes over here without the SQLite options, and 232,000 under with them. Measured and not kept: a `warn` cap saves 30,464 more but drops every `info` line; `rustls` at "z" saves 13,824 on the TLS path; `clap_builder`, `toml`, `chrono`, `url` and `notify` at "z" grow the binary by 11,008. With every `tracing` line left out the binary is 31,291,480, so the `warn` and `error` lines of Khalid and its dependencies cost about 200 KB, which no writer can save.
 
 ## Page weight
 
