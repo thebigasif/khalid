@@ -43,4 +43,4 @@ pub use store::{
     BoxFuture, Confirmed, SignUp, SignedUp, StoreError, SubscriberId, SubscriberStore, Unsubscribed,
 };
 pub use token::{GenerateTokenError, ParseTokenError, SubscriberToken, TokenHash};
-pub use welcome::{Welcome, Welcomes};
+pub use welcome::{LAST_DAY, Welcome, WelcomeFiles, Welcomes};

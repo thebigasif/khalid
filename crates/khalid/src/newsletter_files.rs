@@ -41,13 +41,13 @@ pub(crate) fn lists(folder: &Path) -> Lists {
 /// `welcome.md` in its folder in the site in `folder` (task 5.9). A file
 /// that is missing, unreadable or without a `# ` subject line sends no
 /// welcome.
-pub(crate) fn welcomes(folder: &Path, lists: &Lists) -> BTreeMap<Slug, Welcome> {
+pub(crate) fn welcomes(folder: &Path, lists: &Lists) -> BTreeMap<Slug, Vec<Welcome>> {
     lists
         .iter()
         .filter_map(|list| {
             let file = SitePath::within(folder, &format!("{FOLDER}/{list}/welcome.md")).ok()?;
             let text = fs::read_to_string(file.as_path()).ok()?;
-            Some((list.clone(), Welcome::read(&text)?))
+            Some((list.clone(), vec![Welcome::read(&text)?]))
         })
         .collect()
 }
