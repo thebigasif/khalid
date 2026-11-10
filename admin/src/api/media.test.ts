@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { item, mediaPage } from "../../test/media";
 import { json, serve, signedIn } from "../../test/render";
-import { editMedia, listMedia, readMedia, uploadMedia } from "./media";
+import { deleteMedia, editMedia, listFolders, listMedia, readMedia, uploadMedia } from "./media";
 
 /** A blog that answers every call with `answer`, and the requests it was sent. */
 function blog(answer: () => Response) {
@@ -101,6 +101,29 @@ describe("the media client", () => {
     blog(() => json(422, refused));
     const file = new File(["MZ"], "photo.jpg");
     expect(await uploadMedia(file, "")).toEqual({ problem: refused, status: 422 });
+  });
+
+  it("deletes an item on the copy it names, and hands back a refusal", async () => {
+    const sent = blog(() => new Response(null, { status: 204 }));
+    expect(await deleteMedia(item().id, "2026-10-30T09:00:00Z")).toEqual({ data: null });
+    const url = new URL(sent[0]?.url ?? "http://localhost/");
+    expect(sent[0]?.method).toBe("DELETE");
+    expect(url.pathname).toBe(`/api/admin/v1/media/${item().id}/`);
+    expect(url.searchParams.get("updated_at")).toBe("2026-10-30T09:00:00Z");
+    blog(() => json(409, STALE));
+    expect(await deleteMedia(item().id, "2026-10-30T09:00:00Z")).toEqual({
+      problem: STALE,
+      status: 409,
+    });
+  });
+
+  it("lists the folders' names in the order the blog sends them", async () => {
+    const folders = [
+      { name: "guides", items: 0 },
+      { name: "guides/2026", items: 3 },
+    ];
+    blog(() => json(200, { folders }));
+    expect(await listFolders()).toEqual({ data: ["guides", "guides/2026"] });
   });
 
   it("answers status 0 with no problem when the blog cannot be reached", async () => {
