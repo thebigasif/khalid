@@ -30,8 +30,10 @@ fn the_second_writer_reads_until_the_first_leaves() {
     assert_eq!(check_in(&server, &maria)["yours"], true);
     let seen = check_in(&server, &lena);
     assert_eq!(seen["yours"], false, "{seen}");
+    assert_eq!(seen["holder"]["name"], "Maria", "{seen}");
     let others = &check_in(&server, &maria)["others"];
     assert_eq!(others.as_array().map(Vec::len), Some(1), "{others}");
+    assert_eq!(others[0]["name"], "Lena", "{others}");
     let (status, json) = server.admin("DELETE", PRESENCE, None);
     assert_eq!(status, 204, "{json}");
     assert_eq!(check_in(&server, &lena)["yours"], true);
