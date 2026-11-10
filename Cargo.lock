@@ -2715,6 +2715,7 @@ dependencies = [
  "rcgen",
  "rss",
  "rustix",
+ "rustls",
  "scraper",
  "semver",
  "serde",
@@ -2725,11 +2726,13 @@ dependencies = [
  "tar",
  "tempfile",
  "tokio",
+ "tokio-rustls",
  "toml",
  "toml_edit",
  "tower",
  "tracing",
  "wiremock",
+ "x509-parser",
 ]
 
 [[package]]
