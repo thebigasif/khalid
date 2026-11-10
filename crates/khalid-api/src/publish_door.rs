@@ -10,9 +10,11 @@ use std::sync::Arc;
 use chrono::{DateTime, Utc};
 use khalid_core::{Clock, SystemClock};
 use khalid_lint::Report;
+use khalid_seo::{Pace, Plan};
 use tokio::sync::Mutex;
 
 use crate::content_store::Listed;
+use crate::plan_posts::PlanPosts;
 use crate::post_store::{DeletePostError, PostStore, PostStoreError, UpdatePostError};
 use crate::presence::{Claim, PostPresence, Presence};
 use crate::preview_link::PreviewSigner;
@@ -111,6 +113,7 @@ pub struct PublishDoor {
     schedules: Option<Arc<dyn ScheduleStore>>,
     previews: Option<PreviewSigner>,
     versions: Option<Arc<dyn VersionStore>>,
+    planner: Option<Arc<dyn PlanPosts>>,
     presence: Presence,
     clock: Arc<dyn Clock>,
     /// Held through every edit, so two at once cannot both see the same
@@ -135,6 +138,7 @@ impl PublishDoor {
             clock: Arc::new(SystemClock),
             previews: None,
             versions: None,
+            planner: None,
             presence: Presence::new(),
             editing: Mutex::new(()),
         }
@@ -168,6 +172,37 @@ impl PublishDoor {
     pub fn with_versions(self, versions: Arc<dyn VersionStore>) -> Self {
         let versions = Some(versions);
         Self { versions, ..self }
+    }
+
+    /// The same door, planning from the posts `planner` reads.
+    #[must_use]
+    pub fn with_planner(self, planner: Arc<dyn PlanPosts>) -> Self {
+        let planner = Some(planner);
+        Self { planner, ..self }
+    }
+
+    /// The publishing plan from tomorrow, as `khalid plan` makes it, at
+    /// `pace` or else the site's own, with each draft's schedule; `None`
+    /// when this door has no planner. It suggests days and writes nothing.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`PostStoreError`] when the posts or their schedules cannot
+    /// be read.
+    pub async fn plan(&self, pace: Option<Pace>) -> Result<Option<Plan>, PostStoreError> {
+        let Some(planner) = &self.planner else {
+            return Ok(None);
+        };
+        let mut posts = Vec::new();
+        for one in planner.planned().await? {
+            let at = match one.post().status() {
+                PostStatus::Published => None,
+                _ => self.schedule(one.post().id()).await?.publish_at(),
+            };
+            posts.extend(one.plan_post(at));
+        }
+        let today = self.clock.now().date_naive();
+        Ok(Some(khalid_seo::plan(&posts, today, pace)))
     }
 
     /// The earlier versions of post `id`, the newest first, or `None` when

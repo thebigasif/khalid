@@ -441,6 +441,7 @@ async fn publish_door(
     let door = PublishDoor::new(Arc::new(posts.clone()), Arc::new(telling))
         .with_schedules(schedules, SystemClock)
         .with_versions(versions)
+        .with_planner(Arc::new(posts.clone()))
         .with_previews(signer.map_err(|message| (message, Exit::Failure))?);
     Ok((Arc::new(door), posts))
 }

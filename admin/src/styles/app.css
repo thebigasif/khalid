@@ -266,6 +266,13 @@
   .chip-published{border-left-color:var(--color-ok)}
   .chip-scheduled{border-left-color:var(--color-link);background:var(--color-tint)}
   .chip-draft{border-left-color:var(--color-warn);background:var(--color-warn-bg)}
+  .chip-suggested{border-style:dashed;border-left-style:solid;border-left-color:var(--color-muted);background:var(--color-bg)}
+  .calendar-side{display:grid;gap:1.5rem;align-content:start}
+  .plan{padding:1rem;border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);box-shadow:var(--shadow-card)}
+  .plan h2{margin-top:0}
+  .plan ul{display:grid;gap:.25rem;list-style:none;margin:0 0 .75rem;padding:0}
+  .plan-note{margin:0 0 .75rem;padding:.5rem .75rem;border-left:3px solid var(--color-warn);background:var(--color-warn-bg);border-radius:6px}
+  .plan-note p{margin:0}
   .drafts{padding:1rem;border:1px solid var(--color-border);border-radius:var(--radius-field);background:var(--color-bg);box-shadow:var(--shadow-card)}
   .drafts h2{margin-top:0}
   .drafts li{display:grid;gap:.5rem;padding:.625rem 0;border-bottom:1px solid var(--color-border)}

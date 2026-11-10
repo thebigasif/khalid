@@ -36,6 +36,7 @@ const PAGE: u32 = 100;
 pub(crate) fn routes(door: Arc<PublishDoor>, keys: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(read_calendar))
+        .routes(routes!(crate::admin_plan::read_plan))
         .route_layer(middleware::from_fn_with_state(keys, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
         .with_state(door)
