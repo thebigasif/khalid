@@ -43,6 +43,9 @@ th{font-size:.875rem;color:var(--muted);font-weight:600}
 /* This screen */
 .big{display:block;font-size:2rem;line-height:1.2;font-weight:700}
 table{min-width:40rem}
+.pair{display:grid;gap:0 2rem}@media (min-width:48em){.pair{grid-template-columns:1fr 1fr}}
+ul.list{margin:0 0 1rem;padding-left:1.25rem;max-width:68ch}ul.list li{margin:0 0 .5rem}
+caption{text-align:left;padding:0 0 .5rem}
 dl.terms{margin:0;max-width:68ch}dl.terms dt{font-weight:600}dl.terms dd{margin:0 0 .5rem}
 /* At phone width each row becomes a card with its own labels, so nothing scrolls sideways. */
 @media (max-width:40em){table,tbody,tr,td,tbody th{display:block}table{min-width:0}thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}tr{border:1px solid var(--border);border-radius:var(--radius);margin:0 0 .75rem;padding:.4rem 0}td,tbody th{border:0;padding:.35rem .9rem}tbody th{font-size:1rem;color:var(--text)}td[data-label]::before{content:attr(data-label);display:block;font-size:.875rem;font-weight:600;color:var(--muted)}}
@@ -78,13 +81,60 @@ dl.terms{margin:0;max-width:68ch}dl.terms dt{font-weight:600}dl.terms dd{margin:
     <p>To answer one, add a heading to the post that asks the question, with a 40 to 60 word answer under it. Google and AI assistants can then quote that passage.</p>
   </section>
 
-  <h2>Each post</h2>
+  <h2 id="week-title">This week in Google search</h2>
+  <p><span class="big">84 clicks</span> from Google in the 7 days up to 28 October 2026, against 96 in the 7 days before.</p>
+  <div class="pair">
+    <section aria-labelledby="gained-title">
+      <h3 id="gained-title">Gained the most clicks</h3>
+      <ul class="list">
+        <li><a href="editor.html">Why internal links matter</a>: 31 clicks, from 18.</li>
+      </ul>
+    </section>
+    <section aria-labelledby="lost-title">
+      <h3 id="lost-title">Lost the most clicks</h3>
+      <ul class="list">
+        <li><a href="editor.html">What a sitemap does, and what it does not</a>: 9 clicks, from 30. <a href="https://app.serpdad.com/go-deeper?question=why-it-dropped">Why? Go deeper in SerpDad</a></li>
+      </ul>
+    </section>
+  </div>
+
+  <h2>Posts to refresh</h2>
+  <p class="muted">Their clicks fell three months in a row. Newer facts and a clearer answer often win them back.</p>
+  <ul class="list">
+    <li><a href="editor.html">What a sitemap does, and what it does not</a>: 90, 70, 50, then 40 clicks a month. <a href="https://app.serpdad.com/go-deeper?question=why-it-dropped">Why? Go deeper in SerpDad</a></li>
+  </ul>
+
+  <h2>Pages that lose their readers</h2>
+  <p class="muted">Google still sends people to these, but they cannot read them.</p>
+  <ul class="list">
+    <li>https://www.example.com/blog/old-sitemap-guide/: 12 clicks. It answers 404, not found, to 31 requests so far. <a href="redirects.html">Add a redirect</a> to the page that replaced it.</li>
+    <li>https://www.example.com/blog/draft-checklist/: 3 clicks. It is marked noindex, so Google will drop it. Remove noindex in the editor if it should stay in search.</li>
+  </ul>
+
+  <h2>Each post's month</h2>
+  <dl class="terms">
+    <dt>Shown</dt><dd>How many times Google showed your post in its results.</dd>
+    <dt>Clicked</dt><dd>The share of those times someone clicked through to it.</dd>
+    <dt>Average position</dt><dd>Where your post stood in Google's results, 1 being the top.</dd>
+  </dl>
+  <div class="scroll"><table aria-labelledby="month-title">
+    <caption id="month-title" class="muted">Every published post, the one with the most clicks first. Open a post to edit it.</caption>
+    <thead><tr><th scope="col">Post</th><th scope="col">Clicks</th><th scope="col">Shown</th><th scope="col">Clicked</th><th scope="col">Average position</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><a href="editor.html">Why internal links matter</a></th><td data-label="Clicks">120</td><td data-label="Shown">2,400</td><td data-label="Clicked">5.0%</td><td data-label="Average position">3.1</td></tr>
+      <tr><th scope="row"><a href="editor.html">What a sitemap does, and what it does not</a></th><td data-label="Clicks">40</td><td data-label="Shown">800</td><td data-label="Clicked">5.0%</td><td data-label="Average position">6.4</td></tr>
+      <tr><th scope="row"><a href="editor.html">How to write a meta description</a></th><td data-label="Clicks">0</td><td data-label="Shown">0</td><td data-label="Clicked">0.0%</td><td data-label="Average position">Not shown yet</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Each post's long searches</h2>
   <dl class="terms">
     <dt>Shown</dt><dd>How many times Google showed your post for the search.</dd>
     <dt>Average position</dt><dd>Where your post stood in Google's results, 1 being the top.</dd>
   </dl>
 
   <h3 id="post-1"><a href="https://www.example.com/blog/why-internal-links-matter/">Why internal links matter</a></h3>
+  <p><a href="editor.html">Open "Why internal links matter" in the editor</a></p>
   <div class="scroll"><table aria-labelledby="post-1">
     <thead><tr><th scope="col">Search</th><th scope="col">Shown</th><th scope="col">Clicks</th><th scope="col">Average position</th><th scope="col">Answered under</th></tr></thead>
     <tbody>
@@ -95,6 +145,7 @@ dl.terms{margin:0;max-width:68ch}dl.terms dt{font-weight:600}dl.terms dd{margin:
   </table></div>
 
   <h3 id="post-2"><a href="https://www.example.com/blog/what-a-sitemap-does/">What a sitemap does, and what it does not</a></h3>
+  <p><a href="editor.html">Open "What a sitemap does, and what it does not" in the editor</a></p>
   <div class="scroll"><table aria-labelledby="post-2">
     <thead><tr><th scope="col">Search</th><th scope="col">Shown</th><th scope="col">Clicks</th><th scope="col">Average position</th><th scope="col">Answered under</th></tr></thead>
     <tbody>

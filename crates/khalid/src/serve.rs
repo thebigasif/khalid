@@ -33,6 +33,7 @@ use crate::form_delivery::SiteDelivery;
 use crate::media_library::PictureKeys;
 use crate::memory::HandBack;
 use crate::post_files::Assets;
+use crate::scheduler::WeeklyEmail;
 use crate::search_console_finder::SiteFollowUps;
 use crate::serve_check::BodyCheck;
 use crate::serve_https::{self, Listen};
@@ -75,6 +76,9 @@ pub(crate) struct Keys {
     /// The Search Console follow-ups, signed in with the owner's Google
     /// secrets when the site opts in.
     pub(crate) follow_ups: SiteFollowUps,
+    /// The weekly Search Console email, when the site names `report_to`
+    /// and has `[mail]` and the Google sign-in.
+    pub(crate) weekly: Option<Arc<WeeklyEmail>>,
     /// The keys photo and GIF search ask Unsplash and GIPHY with.
     pub(crate) pictures: PictureKeys,
     /// The writer of the editor's suggestions, asked with `KHALID_AI_KEY`.
@@ -93,6 +97,7 @@ impl Keys {
             mail: mail_secret(env, config),
             git_hook: env.git_hook_secret(),
             follow_ups: SiteFollowUps::new(folder, config, env, cli),
+            weekly: WeeklyEmail::new(folder, config, env, cli),
             ai: crate::serve_apis::ai_writer::desk(config, env, cli),
             settings: env.clone(),
             pictures: PictureKeys {
@@ -222,7 +227,7 @@ fn serve_with(
             unlocking((site, config), (database, id), &source, shown_pages),
         )?;
         posts.follow(source.live_config());
-        let scheduling = scheduler::start((Arc::clone(&door), site.to_path_buf()), alerting);
+        let scheduling = scheduler::start((Arc::clone(&door), site), (alerting, keys.weekly));
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =

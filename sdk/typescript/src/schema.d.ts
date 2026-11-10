@@ -887,6 +887,22 @@ export type ExplainedHop = {
   to?: string | null;
 };
 
+/** A page whose clicks fell three months in a row. */
+export type FallingPage = {
+  /** What to do about it. */
+  action: string;
+  /** Clicks in each 28-day month, oldest first. */
+  clicks: number[];
+  /** The go-deeper link, which asks why it dropped. */
+  go_deeper: string;
+  /** The post's identity, or `null` for a page that is not a post. */
+  id?: string | null;
+  /** The post's title, or the page's address. */
+  title: string;
+  /** The page's full address. */
+  url: string;
+};
+
 /** The image at the top of a post and on its cards. The alt text is required, as for every image (plan section 4.6). */
 export type FeatureImage = {
   /** What the image shows, for readers who cannot see it. */
@@ -928,6 +944,8 @@ export type FollowUp = {
 
 /** One post and the long searches that showed it. */
 export type FollowUpPost = {
+  /** The post's identity, as in `/posts/{id}/`. */
+  id: string;
   /** Its long searches, the most shown first. */
   searches: FollowUp[];
   /** The post's title. */
@@ -1070,6 +1088,23 @@ export type LintCounts = {
   warnings: number;
 };
 
+/** A page that gets search traffic though readers cannot use it. */
+export type LostPage = {
+  /** Clicks from Google search in the month. */
+  clicks: number;
+  /** Times a search showed it in the month. */
+  impressions: number;
+  /** How many requests the 404 log counted, for a missing page. */
+  not_found_hits?: number | null;
+  /** The page's full address. */
+  url: string;
+  /** Why readers cannot use it. */
+  why: LostReason;
+};
+
+/** Why a page with search traffic cannot be used. */
+export type LostReason = "missing" | "noindex";
+
 /** A change to an item's details. A field left out stays as it is. */
 export type MediaEditBody = {
   /** New alt text, up to 1000 characters; empty clears it. */
@@ -1126,6 +1161,22 @@ export type MenuLink = {
 /** The `meta` object beside every list (`docs/standards/api.md`). */
 export type Meta = {
   pagination: Pagination;
+};
+
+/** One page's clicks this week against last week. */
+export type Mover = {
+  /** Clicks last week. */
+  before: number;
+  /** The go-deeper link, which asks why it dropped, for a loser. */
+  go_deeper?: string | null;
+  /** The post's identity, or `null` for a page that is not a post. */
+  id?: string | null;
+  /** Clicks this week. */
+  now: number;
+  /** The post's title, or the page's address. */
+  title: string;
+  /** The page's full address. */
+  url: string;
 };
 
 export type Navigation = {
@@ -1533,6 +1584,24 @@ export type PostLinks = {
   outbound: number;
 };
 
+/** One post's numbers for the month. */
+export type PostNumbers = {
+  /** Clicks from Google search. */
+  clicks: number;
+  /** Clicks for each time shown, from 0 to 1. */
+  ctr: number;
+  /** The post's identity, as in `/posts/{id}/`. */
+  id: string;
+  /** Times a search showed it. */
+  impressions: number;
+  /** Its average position in results, 1 at the top, or `null` when no search showed it. */
+  position?: number | null;
+  /** The post's title. */
+  title: string;
+  /** The post's full address. */
+  url: string;
+};
+
 /** Who has a post open, as the one checking in sees it. */
 export type PostPresence = {
   /** Who holds the lock: the one person who may change the post now. */
@@ -1789,6 +1858,30 @@ export type SearchKeys = {
   gifs: boolean;
   /** Photo search on Unsplash. */
   unsplash: boolean;
+};
+
+/** A site's Search Console numbers. */
+export type SearchReport = {
+  /** Pages whose clicks fell three 28-day months in a row. */
+  decaying: FallingPage[];
+  /** The first day of the month looked at. */
+  first: string;
+  /** The last day looked at: the last day whose numbers are final. */
+  last: string;
+  /** Clicks on every page in the 7 days before. */
+  last_week_clicks: number;
+  /** The pages that lost the most clicks this week against last. */
+  losers: Mover[];
+  /** Pages that still get search traffic though readers cannot use them. */
+  lost: LostPage[];
+  /** Every published post, the one with the most clicks first. */
+  posts: PostNumbers[];
+  /** The Search Console property the numbers come from. */
+  property: string;
+  /** Clicks on every page in the last 7 days. */
+  week_clicks: number;
+  /** The pages that gained the most clicks this week against last. */
+  winners: Mover[];
 };
 
 /** The title search results show for a post, in place of the site's title template. It may use the template variables, such as `{site}`. */
@@ -3094,6 +3187,16 @@ export interface Operations {
       };
     };
     output: FollowUps;
+  };
+  /** Lists each published post's clicks, impressions, click-through rate and average position for the last 28 days whose numbers are final, the pages whose clicks fell three months in a row, pages that answer 404 or `noindex` but still get search traffic, and this week's winners and losers against last week. Google is asked on each request, so the answer can take some seconds. Needs `settings:write`. */
+  search_report: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: SearchReport;
   };
   /** Reads whether `SerpDad` is connected and the last 20 drafts it sent. Needs `settings:write`. */
   read_serpdad: {

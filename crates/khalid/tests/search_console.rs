@@ -123,6 +123,7 @@ async fn the_report_shows_each_posts_month_decay_and_the_weeks_movers() {
     let body: Value = serde_json::from_slice(&output.stdout).unwrap();
     let posts = body["posts"].as_array().unwrap();
     assert_eq!(posts[0]["title"], "Why internal links matter");
+    assert_eq!(posts[0]["id"], "en.why-internal-links-matter");
     assert_eq!(
         posts[1]["url"],
         "https://www.example.com/blog/what-a-sitemap-does/"
