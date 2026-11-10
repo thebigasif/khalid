@@ -4,15 +4,17 @@ use std::path::{Path, PathBuf};
 
 use clap::builder::{BoolValueParser, TypedValueParser};
 use clap::{ArgAction, Args, Parser, Subcommand, ValueEnum};
-use khalid_analytics::CRAWL_DAYS_KEPT;
 use khalid_core::{AbsoluteUrl, Locale, Slug};
 use khalid_seo::Pace;
-use khalid_webhooks::Event;
 
 pub(crate) use crate::cli_access::{
     KeyKindArg, KeysCommand, NewKeyArgs, OwnerArgs, SitesCommand, StaffCommand,
 };
+pub(crate) use crate::cli_data::{DbCommand, RedirectsCommand, WebhooksCommand};
 pub(crate) use crate::cli_import::{Images, ImportArgs, ImportSource, Run};
+pub(crate) use crate::cli_reports::{
+    AnalyticsCommand, BingCommand, CrawlCommand, SearchConsoleCommand,
+};
 use crate::new::NewArgs;
 use crate::newsletter_cli::NewsletterCommand;
 pub(crate) use crate::serve_args::ServeArgs;
@@ -333,118 +335,6 @@ pub(crate) enum Command {
     Man(crate::man::ManArgs),
 }
 
-/// The Search Console commands, for the property `[search_console]` names.
-#[derive(Debug, Clone, PartialEq, Eq, Subcommand)]
-pub(crate) enum SearchConsoleCommand {
-    /// Sign in to Google and check that the property can be read
-    Check,
-    /// Show each post's clicks, impressions, click-through rate and
-    /// position for the last 28 days, posts in decay, and the week's
-    /// winners and losers
-    Report,
-    /// Show one post's numbers, the searches that showed it, and whether
-    /// Google has it in its index
-    Post {
-        /// The slug of the published post
-        slug: Slug,
-    },
-    /// Ask Google whether each published post is in its index, up to 200
-    /// posts a run, within Google's daily quota of 2,000
-    Index,
-    /// List the long searches of 8 words or more, the way people ask an
-    /// AI assistant, that showed each post in the last 28 days, and
-    /// whether a heading of the post answers each
-    FollowUps,
-    /// Email the week in Google search to `report_to` under `[search_console]`,
-    /// through `[mail]`. `khalid serve` sends it once a week on its own
-    Email,
-}
-
-/// The crawl reports. They read the visitor log in `data/site.db` and
-/// count a crawler only from an address its company publishes.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Subcommand)]
-pub(crate) enum CrawlCommand {
-    /// Show how long each new post waited for its first crawl
-    First,
-    /// Show each search and AI crawler's visits and what it got
-    Health,
-    /// List the addresses that answered crawlers with an error
-    Errors,
-}
-
-/// The analytics commands. They read `data/site.db`, so they work while
-/// `khalid serve` runs.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Subcommand)]
-pub(crate) enum AnalyticsCommand {
-    /// Show how many readers each AI assistant, such as `ChatGPT` or
-    /// Perplexity, sent in the last days, against the days before
-    Ai {
-        /// How many days to count back from today, from 1 to 366
-        #[arg(long, default_value_t = 28, value_parser = clap::value_parser!(u32).range(1..=366))]
-        days: u32,
-    },
-    /// List the pages AI bots read but no AI assistant sent a reader to
-    Uncited {
-        /// How many days back to look, today included, from 1 to 90
-        #[arg(long, default_value_t = 30, value_parser = clap::value_parser!(u32).range(1..=i64::from(CRAWL_DAYS_KEPT)))]
-        days: u32,
-    },
-}
-
-/// The Bing Webmaster Tools commands, for the site at the address in
-/// `site.toml`, as verified in Bing.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Subcommand)]
-pub(crate) enum BingCommand {
-    /// Hand Bing the site's sitemap, so it reads every page from it
-    Sitemap,
-    /// Show Bing's last crawl day, the sitemaps it holds and the addresses
-    /// it had trouble with
-    Report,
-}
-
-/// The webhook commands. Webhooks live in `data/site.db`; a running
-/// `khalid serve` sees a change at once.
-#[derive(Debug, Clone, Subcommand)]
-pub(crate) enum WebhooksCommand {
-    /// Send one event to one address, signed with a new secret shown once
-    Add {
-        /// The event to send, such as post.published or comment.added
-        #[arg(long, value_name = "EVENT", value_parser = |text: &str| text.parse::<Event>())]
-        event: Event,
-        /// Where to send it: a full http or https address
-        #[arg(long, value_name = "URL")]
-        url: String,
-    },
-    /// Show every webhook that is on, without its secret
-    List,
-    /// Switch a webhook off. Its past deliveries stay in the log
-    Remove {
-        /// The webhook's identity, as list shows it
-        #[arg(value_name = "ID")]
-        id: i64,
-    },
-}
-
-/// The redirect commands. Stored redirects live in `data/site.db`;
-/// `khalid serve` reads them when it starts.
-#[derive(Debug, Clone, Subcommand)]
-pub(crate) enum RedirectsCommand {
-    /// Store every redirect in a CSV file with the columns from,to,status,match, or none
-    Import {
-        /// The CSV file, such as the import/wordpress-redirects.csv an import wrote
-        #[arg(value_name = "FILE")]
-        file: PathBuf,
-    },
-    /// Print every stored redirect as CSV, to keep or open in a spreadsheet
-    Export,
-    /// Say which stored redirect or post alias an address matches, and where a reader ends up
-    Explain {
-        /// The address from the site root, such as /blog/old-links/
-        #[arg(value_name = "PATH")]
-        path: String,
-    },
-}
-
 /// What `khalid init` takes. Each flag answers one of the four questions, and
 /// a question with a flag is not asked.
 #[derive(Debug, Args)]
@@ -519,22 +409,6 @@ impl SiteMode {
             Self::Static => "static",
         }
     }
-}
-
-/// The database commands. The database is `data/site.db` in the site folder.
-#[derive(Debug, Clone, PartialEq, Eq, Subcommand)]
-pub(crate) enum DbCommand {
-    /// Make the database if it is missing and apply every new migration
-    Migrate,
-    /// Empty the index and fill it again from the content files, keeping visitor data
-    Rebuild,
-    /// Write every table of the site as one CSV and one JSON file each, for
-    /// spreadsheets and Looker Studio. Sign-in material and secrets stay out
-    Export {
-        /// The folder to write the files to [default: data/export in the site folder]
-        #[arg(long, value_name = "FOLDER")]
-        out: Option<PathBuf>,
-    },
 }
 
 /// The theme commands.
