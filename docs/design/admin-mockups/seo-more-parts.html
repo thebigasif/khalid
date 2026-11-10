@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breadcrumbs, site search, files for AI tools and local business · Khalid admin mockup</title>
+<style>
+/* Shared admin styles. Each mockup carries its own copy so it opens offline. */
+*{box-sizing:border-box}
+:root{color-scheme:light;--bg:#fff;--surface:#f6f7f9;--text:#1f2328;--muted:#57606a;--link:#0b57d0;--border:#d0d7de;--field:#6e7781;--tint:#eef4fe;--block:#b42318;--block-bg:#fef3f2;--warn:#8a4b00;--warn-bg:#fff8eb;--ok:#1a7f37;--ok-bg:#eefbf1;--radius:.375rem}
+html{background:var(--bg);color:var(--text);font:400 1rem/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0;overflow-wrap:break-word}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-100vw}.skip:focus{left:1rem;top:.5rem;background:var(--bg);padding:.5rem 1rem}
+.top{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid var(--border)}
+.brand{font-weight:700}.brand span{color:var(--muted);font-weight:400}
+.shell{display:grid;grid-template-columns:minmax(0,1fr)}
+@media (min-width:60em){.shell{grid-template-columns:13rem minmax(0,1fr)}.side{border-right:1px solid var(--border);min-height:calc(100vh - 3.6rem)}.side ul{flex-direction:column}}
+.side ul{list-style:none;margin:0;padding:.75rem;display:flex;flex-wrap:wrap;gap:.25rem}
+.side a{display:flex;align-items:center;min-height:44px;padding:.5rem .75rem;border-radius:var(--radius);color:var(--text);text-decoration:none}
+.side a:hover{background:var(--surface)}
+.side a[aria-current]{background:var(--tint);color:var(--link);font-weight:600}
+main{padding:1.5rem 1.25rem 3rem;max-width:72rem}
+h1{font-size:clamp(1.5rem,1.2rem + 1.2vw,2rem);line-height:1.2;margin:0 0 .5rem}
+h2{font-size:1.25rem;line-height:1.3;margin:2rem 0 .5rem}
+h3{font-size:1.0625rem;margin:0 0 .25rem}
+p{margin:0 0 1rem}
+.lede{color:var(--muted);max-width:68ch;font-size:1.0625rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;border-radius:var(--radius);border:1px solid var(--field);background:var(--bg);color:var(--text);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn.primary{background:var(--link);border-color:var(--link);color:#fff}
+.btn:disabled{color:var(--muted);background:var(--surface);border-color:var(--border);cursor:not-allowed}
+.card{border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+.focus{border:2px solid var(--link);background:var(--tint);border-radius:var(--radius);padding:1.5rem}
+.focus>h2:first-child{margin-top:0}
+.pill{display:inline-block;padding:.1rem .6rem;border-radius:999px;font-size:.875rem;font-weight:600;white-space:nowrap}
+.pill.block{color:var(--block);background:var(--block-bg)}.pill.warn{color:var(--warn);background:var(--warn-bg)}.pill.ok{color:var(--ok);background:var(--ok-bg)}.pill.quiet{color:var(--muted);background:var(--surface)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:.7rem .75rem;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:.875rem;color:var(--muted);font-weight:600}
+label,legend{display:block;font-weight:600;margin:0 0 .25rem}
+fieldset{border:0;margin:0 0 1.25rem;padding:0}
+.hint{display:block;color:var(--muted);font-weight:400;font-size:.9375rem;margin:0 0 .4rem}
+input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--field);border-radius:var(--radius);padding:.5rem .7rem;min-height:44px;width:100%}
+input[type=checkbox],input[type=radio]{width:1.25rem;min-height:1.25rem;margin:.15rem .6rem 0 0;accent-color:var(--link);flex:none}
+.choice{display:flex;align-items:flex-start;font-weight:400;margin:0 0 .6rem}
+.field{margin:0 0 1.25rem;max-width:36rem}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.muted{color:var(--muted)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;background:var(--surface);padding:.05rem .3rem;border-radius:.25rem}
+.note{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.9375rem}
+/* This screen */
+.choice label{font-weight:600;margin:0}
+.tabs{display:flex;flex-wrap:wrap;gap:.25rem;margin:0 0 1.5rem;padding:0;list-style:none}
+.tabs .btn{font-weight:500}
+.tabs .btn[aria-current]{background:var(--tint);border-color:var(--link);color:var(--link)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:0 1.5rem;max-width:36rem}
+.part{margin:0 0 3rem}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the main content</a>
+<header class="top">
+  <div class="brand">Khalid <span>· Field Notes on SEO</span></div>
+  <div class="row"><a href="https://www.example.com/blog/">View the blog</a><span class="muted">Asif, owner</span></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Admin">
+  <ul>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="posts.html">Posts</a></li>
+    <li><a href="seo-more-parts.html" aria-current="page">SEO settings</a></li>
+  </ul>
+</nav>
+<main id="main">
+  <h1>SEO settings</h1>
+  <p class="lede">The four new tabs, shown one under the other here. On the screen only the open tab shows.</p>
+  <ul class="tabs">
+    <li><a class="btn" href="#">Search appearance</a></li>
+    <li><a class="btn" href="#">Show in search</a></li>
+    <li><a class="btn" href="#">Site representation</a></li>
+    <li><a class="btn" href="#">Social sharing</a></li>
+    <li><a class="btn" href="#">Webmaster tools</a></li>
+    <li><a class="btn" href="seo-crawlers.html">Crawlers and AI bots</a></li>
+    <li><a class="btn" href="#">Feeds and IndexNow</a></li>
+    <li><a class="btn" href="#breadcrumbs" aria-current="page">Breadcrumbs</a></li>
+    <li><a class="btn" href="#search">Site search</a></li>
+    <li><a class="btn" href="#machines">Files for AI tools</a></li>
+    <li><a class="btn" href="#local">Local business</a></li>
+  </ul>
+
+  <form class="part focus" id="breadcrumbs">
+    <h2>Breadcrumbs</h2>
+    <p class="hint">Breadcrumbs are the trail of links above a page, such as Home / Technical SEO / Choosing anchor text. Google shows the same trail in search results.</p>
+    <div class="pair">
+      <div class="field"><label for="c1">Separator</label><span class="hint">The mark between two steps. Leave it empty for the default: /</span><input id="c1" value="»"></div>
+      <div class="field"><label for="c2">Name of the first step</label><span class="hint">Such as Home. Leave it empty to use the blog's name.</span><input id="c2" value="Home"></div>
+    </div>
+    <div class="field"><label for="c3">Words before an archive's name</label><span class="hint">Shown on tag, category, author and date pages, such as Archives for. Leave it empty for none.</span><input id="c3"></div>
+    <div class="field"><label for="c4">Words before a search</label><span class="hint">Shown on the search page, such as You searched for. Leave it empty for none.</span><input id="c4"></div>
+    <fieldset>
+      <legend>A post's trail passes through</legend>
+      <div class="choice"><input id="t1" type="radio" name="t" checked><label for="t1">Its category</label></div>
+      <div class="choice"><input id="t2" type="radio" name="t"><label for="t2">Its first tag</label></div>
+      <div class="choice"><input id="t3" type="radio" name="t"><label for="t3">Nothing: the blog, then the post</label></div>
+    </fieldset>
+    <div class="choice"><input id="c5" type="checkbox"><div><label for="c5">Show the last step in bold</label><span class="hint">The last step is the page the reader is on.</span></div></div>
+    <button type="button" class="btn primary">Save this part</button>
+  </form>
+
+  <form class="part focus" id="search">
+    <h2>Site search</h2>
+    <p class="hint">Bots fill a blog's search page with long or spam searches, so the page shows their words and links. Each filter here refuses such a search before anything is looked up.</p>
+    <div class="field"><label for="s1">Longest search, in characters</label><span class="hint">A longer search is refused. 50 by default. 0 sets no limit.</span><input id="s1" type="number" value="50"></div>
+    <div class="choice"><input id="s2" type="checkbox" checked><div><label for="s2">Refuse searches with emoji or other symbols</label><span class="hint">Letters, digits and punctuation are always allowed.</span></div></div>
+    <div class="choice"><input id="s3" type="checkbox" checked><div><label for="s3">Refuse searches that look like spam</label><span class="hint">A search with a link, markup, a spam domain such as .xyz, or one character six times in a row.</span></div></div>
+    <button type="button" class="btn primary">Save this part</button>
+  </form>
+
+  <form class="part focus" id="machines">
+    <h2>Files for AI tools</h2>
+    <p class="hint">Two files help AI tools and search engines read the whole blog at once, instead of page by page.</p>
+    <h3>llms.txt</h3>
+    <div class="choice"><input id="m1" type="checkbox" checked><div><label for="m1">Publish llms.txt</label><span class="hint">A short guide to the blog for AI tools: what it covers and its main pages.</span></div></div>
+    <div class="field"><label for="m2">Introduction</label><span class="hint">Shown after the tagline, such as who writes the blog and how to cite it. Leave it empty for none.</span><textarea id="m2" rows="3">Written by the SEO team at SerpDad. Quote a post by its title and link it.</textarea></div>
+    <div class="field"><label for="m3">Key pages</label><span class="hint">One path per line, listed first, such as /about/.</span><textarea id="m3" rows="3">/about/
+/guides/</textarea></div>
+    <div class="field"><label for="m4">Pages left out</label><span class="hint">One path per line. Every page below a path is left out too, such as /tag/.</span><textarea id="m4" rows="2">/tag/</textarea></div>
+    <h3>Whole-blog schema</h3>
+    <div class="choice"><input id="m5" type="checkbox" checked><div><label for="m5">Publish schema.json for each language</label><span class="hint">All the blog's structured data in one file. Structured data is the description of a page that search engines read, such as its author and date.</span></div></div>
+    <div class="choice"><input id="m6" type="checkbox"><div><label for="m6">Name the files in robots.txt too, as Yoast does</label><span class="hint">Lighthouse then marks robots.txt as invalid, which lowers the SEO score of every page.</span></div></div>
+    <button type="button" class="btn primary">Save this part</button>
+  </form>
+
+  <form class="part focus" id="local">
+    <h2>Local business</h2>
+    <p class="hint">For a shop, office or clinic. site.toml lists 2 locations: Mill Lane Dental and Kirkgate Dental.</p>
+    <div class="choice"><input id="l1" type="checkbox" checked><div><label for="l1">Publish a locations page at /locations/</label><span class="hint">Every location's address and opening hours on one page.</span></div></div>
+    <div class="choice"><input id="l2" type="checkbox" checked><div><label for="l2">Publish locations.kml</label><span class="hint">A map file with a pin for each location that has a point on the map. Search engines find it in the sitemap.</span></div></div>
+    <button type="button" class="btn primary">Save this part</button>
+  </form>
+
+  <p class="note">Mockup for the founder's review. Nothing on this page saves. Adding or changing the locations themselves stays in site.toml for now. <a href="index.html">All mockups</a></p>
+</main>
+</div>
+</body>
+</html>
