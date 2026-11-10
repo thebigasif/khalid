@@ -2628,6 +2628,24 @@ export interface Operations {
     };
     output: MediaItems;
   };
+  /** Deletes an item and its file for good. The delete names the `updated_at` of the copy it was made on, and is a 409 when the item changed since (RULES.md BL-API-7), or when a post, a page or the theme still names the file, since deleting it would break them. Needs `media:write`. */
+  delete_media: {
+    input: {
+      path: {
+        /** The item's identity */
+        id: string;
+      };
+      query: {
+        /** The `updated_at` as last read, such as `2026-10-20T08:30:00Z`. */
+        updated_at: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: null;
+  };
   /** Makes a copy of a picture, turned and then cropped, as a new item in the same folder with the same name, alt text and caption. The original stays, so posts that show it do not change. The same edit made again answers 200 with the first copy. Needs `media:write`. */
   copy_picture: {
     input: {
