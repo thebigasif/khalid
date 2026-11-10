@@ -15,6 +15,7 @@ mod audit_error;
 mod body_checks;
 mod check;
 mod crawl;
+mod fixed_width;
 mod folder;
 mod head_link_checks;
 mod history;

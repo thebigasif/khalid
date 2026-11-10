@@ -422,4 +422,9 @@ checks! {
     BrokenExternal => "broken-external", OutgoingLinks, Warning, "Page has broken links to other sites",
         "A reader who follows the link finds an error, and the page looks neglected.",
         "Change the link to a page on that site that still exists, or remove it.";
+    /// A page sets a part wider than a phone screen in pixels, in a style
+    /// or a table's width (`docs/plan.md` section 6, "Fixed width").
+    FixedWidth => "fixed-width", Resources, Warning, "Fixed width wider than a phone",
+        "On a phone the part runs off the screen, so readers must scroll sideways to read it.",
+        "In the template override or raw HTML, use max-width or a percentage instead of a width over 320 pixels.";
 }
