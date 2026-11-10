@@ -79,7 +79,8 @@ impl fmt::Debug for AccountKey {
 }
 
 /// An account with a certificate authority, spoken to through the one
-/// outbound client (RULES.md BL-RUN-8).
+/// outbound client (RULES.md BL-RUN-8). Clones share the account.
+#[derive(Clone)]
 pub struct Acme {
     account: Account,
 }
