@@ -150,7 +150,7 @@ describe("the Tags and categories screen", () => {
 
   it("says when this server cannot list tags yet", async () => {
     signedIn();
-    adminBlog({});
+    adminBlog({ "GET /categories/": () => json(200, { categories: [] }) });
     renderAt("/tags");
     expect(await screen.findByRole("alert")).toHaveTextContent(en.problems.notYet.what);
   });

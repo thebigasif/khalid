@@ -9,6 +9,26 @@ export const termWords = {
   title: "Tags and categories",
   lede: "A category is the one shelf a post sits on, such as Technical SEO. A tag is a loose label, and a post can have many. Each has its own page on your blog that lists its posts. Change them here and every post that uses them changes with them.",
   back: "Back to the list",
+  categories: {
+    title: "Categories",
+    lede: "Each category has a name in every language of your site. Your categories live in categories.toml in your site folder.",
+    loading: "Reading your categories",
+    none: "Your site has no categories yet. Add the first one below.",
+    name: "Name",
+    slug: "Short name",
+    posts: "Posts",
+    count: (count: number) => (count === 0 ? "No posts" : posts(count)),
+    other: (language: string, name: string) => `${language}: ${name}`,
+  },
+  addCategory: {
+    title: "Add a category",
+    slug: "Short name",
+    slugHint:
+      "Posts name the category by it in their category field. Lowercase words joined by hyphens. It cannot change later.",
+    name: (language: string) => `Name in ${language}`,
+    submit: "Add category",
+    added: (name: string) => `Added the category "${name}".`,
+  },
   tags: {
     title: "Tags",
     lede: "Tags come from your posts: a tag exists while one post has it. Each language has its own tags.",

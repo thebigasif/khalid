@@ -4,13 +4,14 @@ import { failureMessage, isData } from "../api/call";
 import { listTags } from "../api/terms";
 import { Problem } from "../components/Problem";
 import { termWords } from "../strings/termWords";
+import { Categories } from "../terms/Categories";
 import { TagChange, type TagPick } from "../terms/TagChange";
 import { TagTable } from "../terms/TagTable";
 
 /** The query key the screen refreshes after a tag is renamed or removed. */
 export const TAGS = ["tags"];
 
-/** The site's tags, each renamed or removed in every post at once. */
+/** The site's categories and tags, each tag renamed or removed in every post at once. */
 export function Tags() {
   const words = termWords;
   const queries = useQueryClient();
@@ -54,6 +55,7 @@ export function Tags() {
       <h1>{words.title}</h1>
       <p className="lede">{words.lede}</p>
       <p role="status">{done}</p>
+      <Categories />
       <h2 id="tags-title">{words.tags.title}</h2>
       <p className="muted">{words.tags.lede}</p>
       {tags}

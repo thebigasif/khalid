@@ -1,4 +1,4 @@
-// The tag routes of the Admin API, for the Tags and categories screen.
+// The tag and category routes of the Admin API, for the Tags and categories screen.
 import { call, nothing, type Reply, sending } from "./call";
 import type { components } from "./schema";
 
@@ -25,4 +25,25 @@ export function renameTag(tag: AdminTag, name: string): Promise<Reply<AdminTag[]
 export function removeTag(tag: AdminTag): Promise<Reply<null>> {
   const query = new URLSearchParams({ updated_at: tag.updated_at });
   return call(`/tags/${encodeURIComponent(tag.id)}/?${query}`, { method: "DELETE" }, nothing);
+}
+
+/** A category with its name in each language and how many posts are in it. */
+export type AdminCategory = components["schemas"]["AdminCategory"];
+
+/** A new category: the slug posts name it by, and its name by language code. */
+export type NewCategory = components["schemas"]["NewCategory"];
+
+async function categories(response: Response): Promise<AdminCategory[]> {
+  const body: components["schemas"]["AdminCategories"] = await response.json();
+  return body.categories;
+}
+
+/** Every category of the site, with its names and how many posts are in it. */
+export function listCategories(): Promise<Reply<AdminCategory[]>> {
+  return call("/categories/", {}, categories);
+}
+
+/** Adds a category to `categories.toml`. */
+export function createCategory(category: NewCategory): Promise<Reply<AdminCategory[]>> {
+  return call("/categories/", sending("POST", { categories: [category] }), categories);
 }
