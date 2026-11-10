@@ -8,3 +8,5 @@ Each pull request that changes behaviour adds one file here instead of editing `
 The CTO folds the fragments into `CHANGELOG.md` under Unreleased when the pull request lands, and deletes them.
 
 At a release, the release pull request moves what Unreleased and the remaining fragments hold into the version's own section, grouped by Added, Changed, Fixed and Security and then by area, rewritten in plain words where needed, and deletes the fragments it folded in.
+
+While a check in `docs/releases/after-launch.md` is still open, the release notes in `docs/releases/<version>.md` end with a "Still checked after launch" section that names the open checks in a line each and links `after-launch.md`. A check found done since the last release gets its result there too. `crates/khalid/tests/release_version.rs` fails a release from 1.9.0 on whose notes leave the link out.
