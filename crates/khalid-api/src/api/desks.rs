@@ -18,7 +18,9 @@ use crate::media_api::MediaLibrary;
 use crate::post_check::PostChecks;
 use crate::post_trash::PostTrash;
 use crate::redirect_desk::RedirectDesk;
-use crate::resources::{AdminAuthor, AdminCategory, AdminPage, AdminSnippet, AdminTemplate};
+use crate::resources::{
+    AdminAuthor, AdminCategory, AdminPage, AdminSnippet, AdminTemplate, AdminTerm,
+};
 use crate::schema_template_store::SchemaTemplateStore;
 use crate::serpdad_store::SerpdadStore;
 use crate::settings_store::SettingsStore;
@@ -55,6 +57,9 @@ pub struct AdminDesks {
     /// The site's snippets, or `None` when the snippet routes answer that
     /// this server keeps none.
     pub snippets: Option<Arc<dyn EntryStore<AdminSnippet>>>,
+    /// The site's glossary terms, or `None` when the glossary routes answer
+    /// that this server keeps none.
+    pub glossary: Option<Arc<dyn EntryStore<AdminTerm>>>,
     /// The site's authors, or `None` when the author routes answer that
     /// this server keeps none.
     pub authors: Option<Arc<dyn EntryStore<AdminAuthor>>>,
@@ -110,7 +115,7 @@ impl std::fmt::Debug for AdminDesks {
 impl AdminDesks {
     /// No comments, no media library, no stored redirects, no webhooks, no
     /// audit log, no trash, no post checks, no schema templates, no pages,
-    /// no snippets, no authors, no tags, no categories, no settings, no design, no
+    /// no snippets, no glossary terms, no authors, no tags, no categories, no settings, no design, no
     /// templates, no counted views, no comments on drafts, no Search Console connection,
     /// no form answers, no `SerpDad` connection, no writing suggestions and no
     /// subscribers, with the usual limits.
@@ -126,6 +131,7 @@ impl AdminDesks {
             schema_templates: None,
             pages: None,
             snippets: None,
+            glossary: None,
             authors: None,
             tags: None,
             categories: None,
