@@ -3,6 +3,8 @@
 
 use std::sync::Arc;
 
+use khalid_core::LimitSettings;
+
 use crate::ai::AiDesk;
 use crate::analytics_desk::AnalyticsDesk;
 use crate::audit_desk::AuditDesk;
@@ -83,6 +85,8 @@ pub struct AdminDesks {
     /// Who writes the editor's suggestions, under `/api/admin/v1/ai/`;
     /// [`AiDesk::off`] sends nothing anywhere.
     pub ai: AiDesk,
+    /// How many requests each key and address may make a minute.
+    pub limits: LimitSettings,
 }
 
 impl std::fmt::Debug for AdminDesks {
@@ -99,7 +103,8 @@ impl AdminDesks {
     /// audit log, no trash, no post checks, no schema templates, no pages,
     /// no snippets, no authors, no tags, no categories, no settings, no design, no
     /// templates, no counted views, no comments on drafts, no Search Console connection
-    /// no `SerpDad` connection and no writing suggestions.
+    /// no `SerpDad` connection and no writing suggestions, with the usual
+    /// limits.
     pub fn none() -> Self {
         Self {
             comments: Arc::new(NoComments),
@@ -123,6 +128,7 @@ impl AdminDesks {
             follow_ups: Arc::new(NoSearchConsole),
             serpdad: None,
             ai: AiDesk::off(),
+            limits: LimitSettings::default(),
         }
     }
 }

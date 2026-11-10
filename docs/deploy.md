@@ -103,7 +103,7 @@ If a saved `site.toml` or theme file has a mistake, the blog keeps serving the l
 A few settings only take effect when the server starts:
 
 - `mount` and `mode` shape the server's own addresses, so it keeps the values it started with.
-- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
+- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[limits]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
 - The `--listen` and `--domain` options, the environment variables, and the `data/` folder with its database are read once at start.
 
 When you change one of these, the log says a restart is needed, and so does the admin: its settings screens show a note, and the Admin API's settings answer `restart_needed: true`. A change to anything else, such as the blog's name, its look, its SEO or its privacy settings, answers `false`, since the blog already uses it. Restart with `systemctl restart khalid`, or stop and start the server.
@@ -316,6 +316,20 @@ While it is on, three commands read it. A crawler counts only when its address i
 - `khalid crawl errors`: each address that answered crawlers with a 4xx or 5xx, most hits first.
 
 Add `--json` to any of them for the same as one JSON object. The hourly alerts also raise `crawl-stopped` when Googlebot or Bingbot has not fetched a page for a week, and `crawler-errors` when crawlers got a server error in the last hour. Both go out like every other alert.
+
+## Request limits
+
+`khalid serve` limits how often one key or one reader may ask for work, so a busy script or a leaked key cannot slow the blog for everyone. Past a limit the answer is 429, "too many requests", with a `Retry-After` header that says how many seconds to wait. The usual numbers suit one blog on a small server. To change them, add a `[limits]` table to `site.toml` and restart the server:
+
+```toml
+[limits]
+admin_per_minute = 600        # Admin API requests per key or signed-in staff member
+content_per_minute = 6000     # Content API requests per content key
+wrong_keys_per_minute = 10    # wrong keys one address may send before it is paused
+search_per_minute = 120       # searches one reader's address may make
+```
+
+Each number may be 1 to 100000. Searches count only when the reader typed words, so opening the empty search page never counts. A reader past the limit sees the search form under one sentence that says to wait a minute, then search again. A blog behind a proxy on the same machine or network, such as Caddy or nginx, is counted by the address the proxy passes on in `X-Forwarded-For`.
 
 ## Many sites on one server
 

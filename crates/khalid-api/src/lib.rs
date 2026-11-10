@@ -61,6 +61,7 @@ mod etag;
 pub mod follow_ups;
 pub mod ghost;
 mod html_source;
+mod key_schemes;
 pub mod keys;
 pub mod link_map;
 pub mod link_suggestions;
