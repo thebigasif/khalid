@@ -18804,7 +18804,15 @@
               "string",
               "null"
             ],
-            "description": "Who made the last change."
+            "description": "Who made the last change, as the post names them; `null` when not\nknown, such as for a file changed by hand."
+          },
+          "updated_by_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The name the admin shows for whoever made the last change: their\naccount's name, the name their key was made with, or else\n`updated_by`; `null` when `updated_by` is.",
+            "example": "Maria Lopez"
           },
           "words": {
             "type": "integer",

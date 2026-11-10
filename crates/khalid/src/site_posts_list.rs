@@ -14,7 +14,7 @@ use khalid_content::{PostFront, SiteContent, TopicRole, parse_post};
 use khalid_core::Slug;
 use khalid_seo::ClusterRole;
 
-use super::{DRAFTS, Found, Site, SitePosts, blocking, failure};
+use super::{DRAFTS, Editors, Found, Site, SitePosts, blocking, failure};
 
 /// Every post as the publishing planner reads it, for `khalid plan` and
 /// the admin calendar's suggested days, on a blocking thread, writing
@@ -50,10 +50,11 @@ impl Site {
         let content = self.content()?;
         let judge = self.judge(&content)?;
         let links = LinkMap::new(&judge.site.posts);
+        let editors = Editors::read(&self.folder);
         let mut rows = Vec::new();
         let mut files = BTreeMap::new();
         for found in self.every_post(&content)? {
-            let post = Self::admin_post(&found)?;
+            let post = self.named_post(&found, &editors)?;
             let candidate = self.candidate_now(&judge, &found)?;
             let gate = if judge.linter.refuses(&candidate, &judge.site) {
                 Gate::Refuses

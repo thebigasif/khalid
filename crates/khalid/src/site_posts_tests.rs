@@ -553,6 +553,56 @@ async fn a_new_slug_moves_a_draft_but_not_a_live_post() {
     ));
 }
 
+#[tokio::test]
+async fn the_last_editor_is_read_back_until_the_file_changes_by_hand() {
+    let (site, posts) = demo();
+    let made = posts.create(good_draft(), "maria", None).await.unwrap();
+    let read = posts.get(made.id()).await.unwrap().unwrap();
+    assert_eq!(read.updated_by(), Some("maria"), "the maker is the editor");
+
+    let retitle = edit(json!({"title": "Picking anchor text", "updated_at": made.updated_at()}));
+    let saved = posts.update(made.id(), retitle, "asif").await.unwrap();
+    let live = edit(json!({"status": "published", "updated_at": saved.updated_at()}));
+    let live = posts.update(made.id(), live, "scheduler").await.unwrap();
+    let read = posts.get(made.id()).await.unwrap().unwrap();
+    assert_eq!(read.updated_by(), Some("scheduler"), "kept at its new file");
+    assert_eq!(row_of(&posts, made.id()).await["updated_by"], "scheduler");
+    let stale = edit(json!({"title": "Old copy", "updated_at": saved.updated_at()}));
+    let refused = posts.update(made.id(), stale, "asif").await;
+    assert!(
+        matches!(&refused, Err(UpdatePostError::Stale { updated_by: Some(by), .. }) if by == "scheduler"),
+        "a stale edit names who changed it: {refused:?}"
+    );
+
+    let file = within(
+        site.path(),
+        "content/en/posts/2026-10-26-choosing-anchor-text.md",
+    );
+    let text = fs::read_to_string(&file).unwrap();
+    fs::write(&file, text.replace("Picking", "Choosing")).unwrap();
+    let later = std::time::SystemTime::from(live.updated_at()) + std::time::Duration::from_secs(5);
+    fs::File::options()
+        .write(true)
+        .open(&file)
+        .unwrap()
+        .set_modified(later)
+        .unwrap();
+    let read = posts.get(made.id()).await.unwrap().unwrap();
+    assert_eq!(
+        read.updated_by(),
+        None,
+        "a change by hand has no known editor"
+    );
+    assert_eq!(row_of(&posts, made.id()).await["updated_by"], Value::Null);
+}
+
+/// The list row of post `id`, as JSON.
+async fn row_of(posts: &SitePosts, id: &str) -> Value {
+    let rows = posts.list(&query(None, "id")).await.unwrap();
+    let row = rows.items().iter().find(|row| row.id() == id).unwrap();
+    serde_json::to_value(row).unwrap()
+}
+
 #[test]
 fn a_trash_key_names_one_folder_inside_trash_and_never_climbs() {
     let (_site, posts) = demo();

@@ -11,6 +11,7 @@ use super::{
     AdminPost, Listable, NonBlank, PostStatus, ReviewState, SeoScores, display, display_option,
 };
 use crate::query::{FieldValues, Literal};
+use crate::staff_names::StaffNames;
 
 /// The lint publish gate's answer for a post as it stands.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, ToSchema)]
@@ -170,8 +171,14 @@ pub struct PostRow {
     published_at: Option<DateTime<Utc>>,
     /// When it last changed.
     updated_at: DateTime<Utc>,
-    /// Who made the last change.
+    /// Who made the last change, as the post names them; `null` when not
+    /// known, such as for a file changed by hand.
     updated_by: Option<String>,
+    /// The name the admin shows for whoever made the last change: their
+    /// account's name, the name their key was made with, or else
+    /// `updated_by`; `null` when `updated_by` is.
+    #[schema(example = "Maria Lopez")]
+    updated_by_name: Option<String>,
     /// Whether the lint publish gate lets it go live. A list filters by
     /// this, such as `gate:refuses`.
     gate: Gate,
@@ -250,6 +257,7 @@ impl PostRow {
             published_at: post.published_at(),
             updated_at: post.updated_at(),
             updated_by: post.updated_by().map(str::to_owned),
+            updated_by_name: None,
             gate,
             lint: LintCounts::default(),
             scores: None,
@@ -280,6 +288,17 @@ impl PostRow {
     #[must_use]
     pub fn with_path(self, path: Option<String>) -> Self {
         Self { path, ..self }
+    }
+
+    /// The same row with whoever made the last change shown by their name
+    /// in `names`.
+    #[must_use]
+    pub fn named(self, names: &StaffNames) -> Self {
+        let updated_by_name = self.updated_by.as_deref().map(|by| names.of(by).to_owned());
+        Self {
+            updated_by_name,
+            ..self
+        }
     }
 
     /// The same row with its findings counted as `lint`.

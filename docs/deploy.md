@@ -7,7 +7,7 @@ order: 20
 
 Khalid is one file. Put it on a machine, point it at a site folder, and it serves the blog and the admin. This page shows the ways to keep it running. The files it names are in `packaging/` in the repository.
 
-A site folder is the folder that holds `site.toml`, `content/` and `theme/`. Khalid keeps what it works out from those files, such as its database and image sizes, in `data/` inside the same folder. `khalid backup` saves the whole folder in one archive, as "Backing up and restoring" below shows.
+A site folder is the folder that holds `site.toml`, `content/` and `theme/`. Khalid keeps what it works out from those files, such as its database and image sizes, in `data/` inside the same folder. It also notes who last changed each post through the admin, the API or the scheduler in `data/post-editors.txt`, so the admin can name them. A post you then change by hand in its file shows no name until the next change in the admin. `khalid backup` saves the whole folder in one archive, as "Backing up and restoring" below shows.
 
 ## Install with one line
 

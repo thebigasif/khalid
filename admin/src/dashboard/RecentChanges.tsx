@@ -44,7 +44,9 @@ export function RecentChanges({ rows, empty }: Props) {
               <td data-label={en.dashboard.stands}>
                 <StatusPill status={row.status} />
               </td>
-              <td data-label={en.dashboard.who}>{row.updated_by ?? en.dashboard.nobody}</td>
+              <td data-label={en.dashboard.who}>
+                {row.updated_by_name ?? row.updated_by ?? en.dashboard.nobody}
+              </td>
               <td data-label={en.dashboard.when}>
                 <time dateTime={row.updated_at}>{day(row.updated_at)}</time>
               </td>
