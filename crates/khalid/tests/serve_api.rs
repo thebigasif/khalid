@@ -410,6 +410,12 @@ fn the_content_api_serves_the_demo_authors_and_the_site_lists() {
             "\"de.footer\""
         ]
     );
+    let footer = &menus["navigation"][1]["links"];
+    assert_eq!(
+        footer[footer.as_array().unwrap().len() - 1]["label"],
+        "AI info",
+        "{footer}"
+    );
     assert_eq!(get("tags/")["meta"]["pagination"]["total"], 0);
 }
 
