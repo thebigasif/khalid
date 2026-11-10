@@ -55,6 +55,7 @@ fn demo() -> Router {
             name: "classic".to_owned(),
             options: BTreeMap::new(),
         },
+        cta: None,
         seo: serde_json::Map::new(),
         privacy: serde_json::Map::new(),
         code: vec![serde_json::from_value(script).unwrap()],

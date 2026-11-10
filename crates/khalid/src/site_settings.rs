@@ -22,6 +22,7 @@ use crate::atomic;
 use crate::settings_events;
 use crate::site_config;
 
+mod cta;
 mod home;
 mod nav;
 mod parts;
@@ -127,6 +128,7 @@ impl SiteSettings {
             languages: core.languages,
             mode: mode_word(core.mode).to_owned(),
             template: core.template,
+            cta: cta::cta(&config),
             seo: parts::table(text, "seo")?,
             privacy: privacy::privacy_table(text)?,
             code: privacy::code_entries(text)?,
@@ -183,6 +185,9 @@ impl SiteSettings {
         }
         if let Some(template) = change.template {
             set_template(&mut document, template);
+        }
+        if let Some(sent) = change.cta {
+            cta::set_cta(&mut document, sent.into_setting());
         }
         if let Some(parts) = change.seo {
             parts::set_parts(&mut document, "seo", parts)?;
