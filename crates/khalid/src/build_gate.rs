@@ -15,8 +15,7 @@ use khalid_lint::{Linter, PublishGate, Report, Verdict};
 use khalid_routes::Routes;
 
 use crate::lint_input::{self, LintInput};
-use crate::site_briefs::Briefs;
-use crate::{lint, lint_message, site_briefs};
+use crate::{categories, lint, lint_message, site_briefs};
 
 /// A dated post the gate keeps off the site, and the report saying why.
 #[derive(Debug)]
@@ -28,12 +27,13 @@ pub(crate) struct Refused {
 }
 
 /// Every dated post of `content` the gate refuses, judged with the `site`
-/// folder's `lint.toml` and briefs and the content's fact registry, on
-/// today's date from `clock`.
+/// folder's `lint.toml`, briefs and categories and the content's fact
+/// registry, on today's date from `clock`.
 ///
 /// # Errors
 ///
-/// What, why and fix when `lint.toml` or a brief cannot be read.
+/// What, why and fix when `lint.toml`, a brief or `categories.toml` cannot
+/// be read.
 pub(crate) fn screen(
     site: &Path,
     (config, routes, content): (&Config, &Routes, &SiteContent),
@@ -41,24 +41,24 @@ pub(crate) fn screen(
 ) -> Result<Vec<Refused>, UserMessage> {
     let settings = lint::lint_settings(site)?;
     let linter = Linter::new(&settings, clock).map_err(|error| lint_message::of(&error))?;
-    let briefs = site_briefs::load(site)?;
-    Ok(refused(&linter, content, config, routes, briefs))
+    let input = LintInput::new(content, config, routes.clone())
+        .with_briefs(site_briefs::load(site)?)
+        .with_categories(categories::of(site)?);
+    Ok(refused(&linter, content, config, &input))
 }
 
 /// Each dated post in `content` that `gate` refuses, in the order the
 /// posts were read. Empty when every post may go live. Each post first
 /// gets the quick yes or no, and only a refused post the full verdict with
 /// its warnings, so a 10,000-post site stays inside its budget. Posts are
-/// held to the content's fact registry and to their `briefs`.
+/// held to the content's fact registry and to their briefs in `input`.
 pub(crate) fn refused(
     gate: &dyn PublishGate,
     content: &SiteContent,
     config: &Config,
-    routes: &Routes,
-    briefs: Briefs,
+    input: &LintInput,
 ) -> Vec<Refused> {
-    let input = LintInput::new(content, config, routes.clone()).with_briefs(briefs);
-    let (site, documents) = lint_input::lint_site(content, config, &input);
+    let (site, documents) = lint_input::lint_site(content, config, input);
     site.posts
         .iter()
         .zip(documents)

@@ -25,6 +25,8 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 | Web fonts on a template's demo home page and one post, 390 and 1440 px | under 60 KB | none | `scripts/page-weight.sh`, see "Fonts" |
 | JavaScript required to read a post | 0 bytes | none | scripts-off test |
 | Admin initial JavaScript, compressed | under 350 KB | 5% | `khalid-perf sizes` on the build CI's Admin job hands over: each script `admin/dist/index.html` loads at once, gzipped at level 9. With `PERF_REQUIRE_ADMIN=1`, as CI sets it, `scripts/perf.sh` fails when no admin build is there |
+| Admin first download, compressed | at most 250 KB | none | `admin/scripts/size-budget.mjs` in CI's Admin job: `admin/dist/index.html`, each script and stylesheet it loads at once, and every chunk those scripts import at the top, gzipped at level 9. See "Admin size check" |
+| Admin, every built file together, compressed | at most 450 KB | none | the same script: every `.js`, `.css` and `.html` file in `admin/dist`, gzipped at level 9. A ceiling against runaway growth |
 | Test suite, CI | under 4 min | none | job time |
 | Release build, CI | under 10 min with cache | none | job time |
 
@@ -335,6 +337,24 @@ Speed, the kept profile against main, alternating, on this shared server. Each c
 
 The render and lint rows were taken with the wider set of the fifth table row, which includes everything kept here, so they are the slower case. Earlier serve runs under load 10 to 40 spread from 62 to 250 ms for the first byte on both binaries and are left out; under quieter load the two are level. Every measure is inside its budget.
 
+### Room for the server log (G38, 2026-11-10)
+
+The mail trace stack (PR 1161) gives `khalid serve` a log through `tracing-subscriber`. Main (42496c9c) built about 31,216,000 bytes on this server (31,241,688 in CI on a branch from it), and the stack built 31,730,008: 272,728 over the budget. `tracing-subscriber` itself is only 40.5 KiB of code. The rest came from every other `tracing` line. Before this stack no program path ever installed a log writer, so with fat LTO the compiler proved that each `debug!`, `info!` or `warn!` in Khalid and its dependencies could never write anything and left their code and metadata out. Once a writer is installed they are all live: each line's code, its static metadata, and the 24-byte relocation for every pointer in that metadata. `cargo bloat` puts only about 100 KB of the growth in `.text`. Each step below is `cargo build --release -p khalid` on this server:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before (task/p1-mail-trace-7, 2a13b422) | 31,730,008 | |
+| `tracing` with `release_max_level_debug`: trace lines left out when compiled | 31,642,968 | 87,040 |
+| `tracing` with `release_max_level_info`: debug and trace lines left out (kept) | 31,591,000 | 139,008 |
+| The same, plus SQLite without FTS3, FTS5, R-tree, `dbstat`, `soundex` and STAT4 (`LIBSQLITE3_FLAGS`, measured with `--config`) | 31,291,896 | 438,112 |
+| Repair 2: the level cap, and a log writer of Khalid's own in `server_log.rs` instead of `tracing-subscriber` (kept) | 31,524,568 | 205,440 |
+
+The level cap is set on `tracing` in the `khalid` crate and, through feature unification, cuts the debug and trace lines of every crate in a release build. Every line Khalid writes for an operator is `info`, `warn` or `error`, so the log keeps everything it was built for, failed emails included; `[log] level = "debug"` or `"trace"` adds lines only in a development build, which `docs/deploy.md` says. Tests and debug builds keep every level. The subscriber's features were already as small as they go: no colours, no environment filter, no `time` crate.
+
+The cap alone leaves the binary 133,720 bytes over. The SQLite options in the last row are the ones the "Room for scheduled webhook events" entry measured and set aside, unused by Khalid's SQL. They can only be set through the `LIBSQLITE3_FLAGS` environment variable, which needs an `[env]` table in `.cargo/config.toml`; that file is handed over as a patch with this change. With both, the binary is 165,384 bytes under the budget here, about 140,000 in CI. `scripts/perf.sh` was not run on this shared server; CI's performance budgets job measures it.
+
+Repair 2 dropped `tracing-subscriber`, `sharded-slab`, `thread_local` and `tracing-serde` for about 110 lines in `server_log.rs` that write the same plain or JSON line: 66,432 bytes. Spans are not kept, as Khalid opens none. That leaves the binary 67,288 bytes over here without the SQLite options, and 232,000 under with them. Measured and not kept: a `warn` cap saves 30,464 more but drops every `info` line; `rustls` at "z" saves 13,824 on the TLS path; `clap_builder`, `toml`, `chrono`, `url` and `notify` at "z" grow the binary by 11,008. With every `tracing` line left out the binary is 31,291,480, so the `warn` and `error` lines of Khalid and its dependencies cost about 200 KB, which no writer can save.
+
 ## Page weight
 
 Pictures are most of what a reader downloads. Every picture is offered in several widths (`srcset`), and its `sizes` tells the browser how wide the page draws it, so the browser fetches the smallest file that fills the slot. A `sizes` wider than the slot fetches a bigger file than it draws. One narrower makes the picture blurry.
@@ -460,6 +480,17 @@ How `scripts/perf.sh` takes the four measures added for brief G9, all through `k
 - **Cached post page**: one post page of the 1,000-post site, asked for once so it is cached, then over 50 keep-alive connections for 30 seconds, `oha`'s defaults, with the client on the same machine (`khalid-perf requests`).
 - **Public CSS, compressed**: the Brotli copy of each stylesheet the built home page links, from the 10,000-post build (`khalid-perf sizes`).
 - **Admin initial JavaScript, compressed**: each script `admin/dist/index.html` loads at once (`<script src>` and `modulepreload`), gzipped at level 9 as `admin/scripts/size-budget.mjs` counts. `perf.sh` does not run npm, so it is measured only when `admin/dist` holds a build; otherwise the gate lists it as not measured.
+
+## Admin size check
+
+`npm run size` in `admin/` runs `admin/scripts/size-budget.mjs` after `vite build`, and CI's Admin job fails when either limit is passed:
+
+- **The first download, at most 250 KB compressed.** This is what a visitor waits for before the admin's first screen: `index.html`, the scripts and stylesheets it loads at once, and the chunks those scripts import at the top. A screen loaded with a lazy `import()` is not counted, because it downloads only when someone opens it.
+- **Every built file together, at most 450 KB compressed.** A ceiling, so lazy screens cannot grow without end.
+
+Until November 2026 the check counted every file against 350 KB. A lazy screen then made the number worse, because its own file compresses less well than the same code inside the main one, so the check pushed screens into the first download. The ADR "the admin size check measures the first download" records the change.
+
+Measured on 2026-11-10 (integration 32, 42 pull requests of new screens, with Forms, Tags and Navigation lazy): first download 208.6 KB, every file 370.7 KB.
 
 ## Demo bundle
 

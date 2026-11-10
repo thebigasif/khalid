@@ -385,8 +385,20 @@ impl Renderer<'_> {
     }
 
     fn markdown(&mut self, text: &str) {
+        if let Some(html) = self.markdown_html(text, Noted::Yes) {
+            self.html.push_str(&html);
+            if !self.html.ends_with('\n') {
+                self.html.push('\n');
+            }
+        }
+    }
+
+    /// `text` as HTML, each heading given its id, or `None` when it is
+    /// empty. Its words, links and images count among the body's facts
+    /// as `noted` says.
+    fn markdown_html(&mut self, text: &str, noted: Noted) -> Option<String> {
         if text.trim().is_empty() {
-            return;
+            return None;
         }
         let options = options();
         let arena = Arena::new();
@@ -394,7 +406,7 @@ impl Renderer<'_> {
         let root = parse_document(&arena, &text, &options);
         wikilink::resolve(root, self.wikilinks);
         maths::draw(root);
-        for node in root.descendants() {
+        for node in root.descendants().filter(|_| noted == Noted::Yes) {
             self.facts.note(node);
         }
         let mut plugins = Plugins::default();
@@ -402,13 +414,18 @@ impl Renderer<'_> {
         plugins.render.codefence_syntax_highlighter = Some(highlighter());
         let mut html = String::new();
         // Writing into a String cannot fail; an empty run is the safe fallback.
-        if format_html_with_plugins(root, &options, &mut html, &plugins).is_ok() {
-            self.html.push_str(&html);
-            if !self.html.ends_with('\n') {
-                self.html.push('\n');
-            }
-        }
+        format_html_with_plugins(root, &options, &mut html, &plugins)
+            .is_ok()
+            .then_some(html)
     }
+}
+
+/// Whether a run of markdown counts among the body's facts. A locked
+/// gated part does not: the public page never shows it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Noted {
+    Yes,
+    No,
 }
 
 /// How Khalid reads markdown: tables, footnotes, task lists, strikethrough,

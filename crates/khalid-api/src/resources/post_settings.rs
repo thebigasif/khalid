@@ -162,6 +162,14 @@ pub struct PostSettings {
     pub co_authors: Vec<Slug>,
     /// The summary for cards, feeds and search results.
     pub excerpt: Option<NonBlank>,
+    /// The slug of the category the post belongs to, one of the site's
+    /// categories, or `null` for none.
+    #[serde(serialize_with = "display_option")]
+    #[schema(value_type = Option<String>, example = "on-page-seo")]
+    pub category: Option<Slug>,
+    /// The tags' names, such as `internal links`, in the order written.
+    #[schema(value_type = Vec<String>, example = json!(["internal links"]))]
+    pub tags: Vec<NonBlank>,
     /// The image at the top of the post.
     pub feature_image: Option<FeatureImage>,
     /// Whether the post is featured in lists and the featured channel.

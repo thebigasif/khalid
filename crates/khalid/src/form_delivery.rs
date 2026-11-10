@@ -2,33 +2,37 @@
 //! to the address `[mail]` names for form answers, and as `form.submitted`
 //! to every webhook that asked for it. Both run on the announcing tasks, so
 //! the reader's thank-you page never waits, and both are under way within
-//! the 5 seconds plan section 10 allows.
+//! the 5 seconds plan section 10 allows. An email that fails is tried again
+//! over about a day, see [`retry`].
+
+mod retry;
 
 use std::sync::Arc;
 
 use chrono::{DateTime, SecondsFormat, Utc};
 use khalid_core::{Config, UserMessage};
 use khalid_forms::{FormDelivery, Submission};
-use khalid_newsletter::{EmailAddress, Mail, Mailer};
+use khalid_newsletter::{EmailAddress, Mail};
 use khalid_webhooks::Event;
 use serde::ser::{Serialize, Serializer};
 
+pub(crate) use self::retry::FormRetry;
 use crate::announce::SiteAnnounce;
 use crate::serve_message;
 
 /// Where a running site sends each kept answer.
 #[derive(Debug)]
 pub(crate) struct SiteDelivery {
-    /// The way mail leaves and the owner's address, or `None` when the
-    /// site sends no mail.
-    mail: Option<(Arc<dyn Mailer>, EmailAddress)>,
+    /// The way mail leaves, trying again when it fails, and the owner's
+    /// address, or `None` when the site sends no mail.
+    mail: Option<(Arc<FormRetry>, EmailAddress)>,
     /// The site's address without its last `/`, which page paths follow.
     base: String,
     announce: SiteAnnounce,
 }
 
 impl SiteDelivery {
-    /// The delivery for the site with `config`, emailing through `mailer`
+    /// The delivery for the site with `config`, emailing through `retry`
     /// when it has one and firing webhooks through `announce`.
     ///
     /// # Errors
@@ -37,14 +41,14 @@ impl SiteDelivery {
     /// which the settings check at start rules out.
     pub(crate) fn new(
         config: &Config,
-        mailer: Option<Arc<dyn Mailer>>,
+        retry: Option<Arc<FormRetry>>,
         announce: SiteAnnounce,
     ) -> Result<Self, UserMessage> {
-        let mail = match (mailer, config.mail()) {
-            (Some(mailer), Some(settings)) => {
+        let mail = match (retry, config.mail()) {
+            (Some(retry), Some(settings)) => {
                 let to = EmailAddress::parse(settings.form_answers_to())
                     .map_err(|_| serve_message::internal())?;
-                Some((mailer, to))
+                Some((retry, to))
             }
             _ => None,
         };
@@ -60,14 +64,11 @@ impl SiteDelivery {
 impl FormDelivery for SiteDelivery {
     fn kept(&self, submission: &Submission, at: DateTime<Utc>) {
         let page = format!("{}{}", self.base, submission.page);
-        if let Some((mailer, to)) = &self.mail {
+        if let Some((retry, to)) = &self.mail {
             let mail = email(to.clone(), submission, &page, at);
-            let (mailer, form) = (Arc::clone(mailer), submission.form.clone());
-            self.announce.send(async move {
-                if let Err(error) = mailer.send(&mail).await {
-                    tracing::warn!(%error, %form, "a form's answers could not be emailed");
-                }
-            });
+            let (retry, form) = (Arc::clone(retry), submission.form.clone());
+            self.announce
+                .send(async move { retry.send(&form, &mail).await });
         }
         let submission = Answer {
             form: submission.form.to_string(),

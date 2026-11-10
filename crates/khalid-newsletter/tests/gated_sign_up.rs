@@ -142,3 +142,24 @@ async fn a_page_off_the_blog_is_never_where_a_reader_is_sent() {
         assert!(headers.contains_key(header::SET_COOKIE), "{back}");
     }
 }
+
+#[tokio::test]
+async fn unsubscribing_takes_the_reader_cookie_back() {
+    let mailer = MemoryMailer::default();
+    let (_dir, app) = routes(&mailer).await;
+    ask(&app, Method::POST, "/blog/subscribe", FORM).await;
+    let leave = link_in(&mailer, "unsubscribe");
+    let link = link_in(&mailer, "subscribe/confirm");
+    let token = link.split("token=").nth(1).unwrap().get(..64).unwrap();
+    let button = format!("token={token}");
+    ask(&app, Method::POST, "/blog/subscribe/confirm", &button).await;
+    let (status, headers) = ask(&app, Method::POST, &leave, "").await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(
+        headers[header::SET_COOKIE],
+        "khalid_reader=; Path=/blog/; Max-Age=0; HttpOnly; SameSite=Lax; Secure"
+    );
+    let (status, headers) = ask(&app, Method::POST, "/blog/unsubscribe", "token=1").await;
+    assert_eq!(status, StatusCode::NOT_FOUND);
+    assert!(!headers.contains_key(header::SET_COOKIE));
+}

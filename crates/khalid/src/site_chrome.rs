@@ -5,7 +5,7 @@ use khalid_core::{Config, FooterGroup, Locale, MenuLink, Mode};
 use khalid_render::{AnnouncementBar, BreadcrumbStyle, Nav, NavGroup, NavLink, RenderSite};
 
 use crate::build_pages::path_of;
-use crate::{assets, build_ai_page, build_reader};
+use crate::{assets, build_ai_page, build_reader, imprint_page};
 
 /// The site as pages in `locale` show it, linking the stylesheet at
 /// `stylesheet` and the reader script when a feature on uses it.
@@ -49,7 +49,7 @@ fn subscribe(config: &Config) -> Option<String> {
 
 /// The links of `links` that pages in `locale` show, in the order written:
 /// those for every language and those for `locale`.
-fn menu(links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
+pub(crate) fn menu(links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
     let shown = |link: &&MenuLink| link.language.as_ref().is_none_or(|only| only == locale);
     let link = |link: &MenuLink| NavLink {
         label: link.label.to_string(),
@@ -60,17 +60,33 @@ fn menu(links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
 
 /// The footer links of `links` for `locale`, then the AI info page when it
 /// is on (P3), so a reader or a model finds it from anywhere; the header
-/// stays as the site's author set it. The page is built in the main
-/// language alone, so every language links to that copy.
-fn footer(config: &Config, links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
+/// stays as the site's author set it. A language with no copy of the page
+/// links to the main language's.
+pub(crate) fn footer(config: &Config, links: &[MenuLink], locale: &Locale) -> Vec<NavLink> {
     let mut footer = menu(links, locale);
-    if !config.ai_page().off {
-        footer.push(NavLink {
-            label: "AI info".to_owned(),
-            href: path_of(config, config.default_language(), build_ai_page::REST),
-        });
+    if let Some((label, href)) = build_ai_page::link(config, locale) {
+        footer.push(NavLink { label, href });
     }
+    footer.extend(imprint_link(config, locale));
     footer
+}
+
+/// The footer link to the imprint of `locale`, since German law asks that
+/// it be one click from every page, unless the site has no imprint or the
+/// owner's footer already links to it.
+fn imprint_link(config: &Config, locale: &Locale) -> Option<NavLink> {
+    config.privacy().imprint.as_ref()?;
+    let href = path_of(config, locale, imprint_page::REST);
+    let nav = config.nav();
+    let grouped = nav.footer_groups.iter().flat_map(|group| &group.links);
+    if (nav.footer.iter().chain(grouped)).any(|link| link.href.to_string() == href) {
+        return None;
+    }
+    let label = khalid_render::builtin_strings(locale)
+        .ok()
+        .and_then(|strings| strings.get("imprint_title").cloned())
+        .unwrap_or_else(|| "Impressum".to_owned());
+    Some(NavLink { label, href })
 }
 
 /// The footer groups pages in `locale` show, in the order written: those

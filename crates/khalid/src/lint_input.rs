@@ -4,37 +4,40 @@
 //! their rendered output to `LintPost` and `LintSite`, as the built page has
 //! them: the slug and address `khalid build` gives each post, its body
 //! rendered with its wikilinks linked, the wikilinks as written, its forms,
-//! focus keywords, collection and topic cluster, the `rel` words the link
-//! policy gives each link, the site's collections, and the links of each
-//! home page, which lists every dated post (audit 2, G5), the site's fact
-//! registry (P7) and each post's brief (P6).
+//! focus keywords, collection, category name and topic cluster, the `rel`
+//! words the link policy gives each link, the site's collections, and the
+//! links of each home page, which lists every dated post (audit 2, G5), the
+//! site's fact registry (P7) and each post's brief (P6).
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_content::{
-    BlockKind, Document, Link, PostFront, Rendered, SiteContent, StructuredBlock, TopicCluster,
-    TopicRole, Wikilinks, parse_blocks, render_linked,
+    AuthorFront, BlockKind, Document, Link, PostFront, Rendered, SiteContent, StructuredBlock,
+    TopicCluster, TopicRole, Wikilinks, parse_blocks, render_linked,
 };
 use khalid_core::{Config, Locale, Slug, UserMessage};
+use khalid_db::IndexedTerm;
 use khalid_lint::{
     Cluster, ClusterRole, GlossaryTerm, Heading, HeadingLevel, Image, LinkKind, LintCollection,
     LintFact, LintForm, LintLink, LintPost, LintSite, PageRef, StructuredDataGap,
 };
+use khalid_render::Person;
 use khalid_routes::{PostAddress, Routes};
 use khalid_seo::{LinkPolicy, SeoPage, SeoSite};
 
 use crate::build_pages::{path_of, routed};
 use crate::lint_text::{plain_text, prose_text, section_shapes, wikilinks};
 use crate::site_briefs::Briefs;
-use crate::{build_schema, build_seo, site_facts};
+use crate::{build_reader, build_schema, build_seo, site_facts};
 
 /// What a post is linted against besides itself: the site's routes, the
 /// pages a wikilink reaches in each language, the site as the SEO outputs
 /// read it, or `None` when `site.toml` cannot give one, in which case
 /// `khalid build` stops with its own message, the site's fact registry and
-/// the posts' briefs.
+/// the posts' briefs, and the site's authors as bylines name them in each
+/// language, with their files, for a post's author and reviewers.
 pub(crate) struct LintInput {
     routes: Routes,
     links: BTreeMap<Locale, Wikilinks>,
@@ -42,6 +45,9 @@ pub(crate) struct LintInput {
     policy: (LinkPolicy, SeoSite),
     facts: Vec<LintFact>,
     briefs: Briefs,
+    people: BTreeMap<Locale, BTreeMap<Slug, Person>>,
+    authors: Vec<Document<AuthorFront>>,
+    categories: Vec<IndexedTerm>,
 }
 
 impl LintInput {
@@ -55,6 +61,14 @@ impl LintInput {
                 let links = Wikilinks::for_language(content, config, &routes, locale);
                 (locale.clone(), links)
             })
+            .collect::<BTreeMap<_, _>>();
+        // An author file `khalid build` cannot read stops the build with
+        // its own message, so its posts are named by slug here.
+        let people = (links.iter())
+            .map(|(locale, links)| {
+                let people = build_reader::people(config, links, content, locale);
+                (locale.clone(), people.unwrap_or_default())
+            })
             .collect();
         let seo = build_seo::site(config).ok();
         let policy = build_seo::link_policy(config);
@@ -65,12 +79,30 @@ impl LintInput {
             policy,
             facts: site_facts::for_lint(&content.facts),
             briefs: Briefs::new(),
+            people,
+            authors: content.authors.clone(),
+            categories: Vec::new(),
         }
     }
 
     /// This input with each post's brief, read from `briefs/`.
     pub(crate) fn with_briefs(self, briefs: Briefs) -> Self {
         Self { briefs, ..self }
+    }
+
+    /// This input with the site's `categories`, read from `categories.toml`,
+    /// so a post's category is named as its page names it.
+    pub(crate) fn with_categories(self, categories: Vec<IndexedTerm>) -> Self {
+        Self { categories, ..self }
+    }
+
+    /// The name the category `slug` has in `locale`, as `categories.toml`
+    /// gives it, or the slug itself when the file does not name it.
+    fn category_name(&self, locale: &Locale, slug: &Slug) -> String {
+        self.categories
+            .iter()
+            .find(|term| &term.locale == locale && &term.slug == slug)
+            .map_or_else(|| slug.to_string(), |term| term.name.clone())
     }
 }
 
@@ -210,6 +242,8 @@ pub(crate) fn lint_parts(
         .author
         .as_ref()
         .map(|author| author.as_str().to_owned());
+    post.reviewed_by = front.reviewed_by.iter().map(Slug::to_string).collect();
+    post.category = front.category.as_ref().map(Slug::to_string);
     post.translation.clone_from(&front.translation);
     post.aliases.clone_from(&front.aliases);
     post.focus_keyword.clone_from(&front.focus_keyword);
@@ -278,41 +312,50 @@ fn gaps(
     };
     // A block or schema field the build cannot write stops `khalid build`
     // with its own message, so the check reads what could be written.
-    let _ = with_schema(&mut page, (parts, config), rest, rendered);
+    let _ = with_schema(&mut page, (parts, config, input), rest, rendered);
     build_seo::structured_data_gaps(site, &page)
 }
 
 /// Fills `page`, the SEO page of the post made of `parts` at the address
 /// ending in `rest`, with what its schema graph carries besides the base
-/// graph, as `khalid build` fills it: its collection, which picks the
-/// schema templates, its author by slug, the schema of the blocks of its
+/// graph, as `khalid build` fills it: its collection and its category by
+/// name, which pick the schema templates, its author by the name and
+/// profile in their file, its reviewers, the schema of the blocks of its
 /// body `rendered` and its hand-written JSON-LD.
 ///
 /// # Errors
 ///
-/// A [`UserMessage`] when a block cannot be written as schema, or the
-/// schema field is not JSON-LD.
+/// A [`UserMessage`] when a block cannot be written as schema, the schema
+/// field is not JSON-LD, or an author's page has no full address.
 fn with_schema(
     page: &mut SeoPage,
-    (parts, config): (&PostParts<'_>, &Config),
+    (parts, config, input): (&PostParts<'_>, &Config, &LintInput),
     rest: &str,
     rendered: &Rendered,
 ) -> Result<(), UserMessage> {
+    let (front, locale) = (parts.front, parts.locale);
     page.collection = Some(parts.collection.to_owned());
-    page.author = parts.front.author.as_ref().map(Slug::to_string);
-    let path = path_of(config, parts.locale, rest);
+    page.category = (front.category.as_ref()).map(|slug| input.category_name(locale, slug));
+    let none = BTreeMap::new();
+    let people = input.people.get(locale).unwrap_or(&none);
+    let person = |slug| build_reader::person(people, slug, config, locale).name;
+    page.author = front.author.as_ref().map(person);
     let author = page.author.clone().unwrap_or_default();
+    let path = path_of(config, locale, rest);
     let body = (&rendered.structured[..], &rendered.links[..]);
     build_schema::fill(page, config, (path.as_str(), &author), body)?;
-    page.custom_schema = build_schema::custom(parts.path, parts.front.schema.as_deref())?;
+    page.custom_schema = build_schema::custom(parts.path, front.schema.as_deref())?;
+    let profile = build_reader::author_profile(config, locale, (front, &author), &input.authors)?;
+    page.author_profile = profile;
+    page.reviewers = build_reader::reviewers(front, people, config)?.1;
     Ok(())
 }
 
 /// The site, and the SEO page the post made of `parts` becomes on it, as
 /// `khalid build` makes the page's head and schema graph: with the schema
 /// of its blocks, its collection's schema templates and its hand-written
-/// JSON-LD. Its author is named by slug, since only the build reads the
-/// author files. `None` when the post has no date, no slug or no address,
+/// JSON-LD. Its author is named as their file names them, as on the built
+/// page. `None` when the post has no date, no slug or no address,
 /// does not render, or holds JSON-LD that is not schema.org, or when
 /// `site.toml` gives no SEO site.
 pub(crate) fn seo_page<'i>(
@@ -331,7 +374,7 @@ pub(crate) fn seo_page<'i>(
     let title = front.title.clone().unwrap_or_else(|| slug.to_string());
     let mut page = build_seo::post(parts.locale, (&rest, &title), front, front.date?).ok()?;
     page.content_html = build_seo::full_addresses(config, &rendered.html);
-    with_schema(&mut page, (parts, config), &rest, &rendered).ok()?;
+    with_schema(&mut page, (parts, config, input), &rest, &rendered).ok()?;
     Some((site, page))
 }
 

@@ -15,7 +15,8 @@ fn text(text: &str) -> NonBlank {
 fn settings_never_set_are_empty_false_and_draft() {
     let json = serde_json::to_value(PostSettings::default()).unwrap();
     let empty = json!({
-        "date": null, "co_authors": [], "excerpt": null, "feature_image": null,
+        "date": null, "co_authors": [], "excerpt": null, "category": null, "tags": [],
+        "feature_image": null,
         "featured": false, "review_state": "draft", "reviewed": null, "canonical": null,
         "robots": null,
         "share_cards": {"x": null, "facebook": null}, "aliases": [], "access": "public",
@@ -95,6 +96,29 @@ fn secondary_keywords_are_a_list_of_at_most_four_and_left_out_when_empty() {
     assert!(serde_json::from_value::<SettingsEdit>(blank).is_err());
     let none = serde_json::to_value(PostSettings::default()).unwrap();
     assert!(none.get("secondary_keywords").is_none(), "{none}");
+}
+
+#[test]
+fn tags_and_category_change_only_when_named_and_refuse_a_twice_listed_tag() {
+    let mut before = PostSettings::default();
+    before.tags = vec![text("seo")];
+    before.category = Some(Slug::try_new("on-page-seo").unwrap());
+    let read = |json: Value| serde_json::from_value::<SettingsEdit>(json);
+    let kept = read(json!({"featured": true}))
+        .unwrap()
+        .applied_to(before.clone());
+    assert_eq!(
+        (kept.tags, kept.category),
+        (before.tags.clone(), before.category.clone())
+    );
+    let edit = read(json!({"tags": ["anchor text", "seo"], "category": null})).unwrap();
+    let after = edit.applied_to(before);
+    assert_eq!(after.tags, [text("anchor text"), text("seo")]);
+    assert_eq!(after.category, None);
+    let twice = read(json!({"tags": ["SEO", "seo "]})).unwrap_err();
+    assert!(twice.to_string().contains("listed twice"), "{twice}");
+    assert!(read(json!({"tags": [""]})).is_err());
+    assert!(read(json!({"category": "Not a slug"})).is_err());
 }
 
 #[test]

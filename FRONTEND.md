@@ -15,12 +15,14 @@ Every default template follows this list. CI checks what a machine can check. Th
 - Navigation, pagination, the language switcher, search, comment posting and the newsletter form are plain links and HTML forms first.
 - JavaScript only adds polish: live search results, a copy button, hover previews. Remove it and the page is whole.
 - No `noscript` notice asking to turn JavaScript on. No form without an `action`. No link that goes only to `#`.
+- `khalid audit` checks this line on every built page with its `needs-javascript` check, so an override or a raw HTML block that breaks it shows up as a warning.
 
 ## Responsive on every device
 
 - Mobile first. Breakpoints only where the content needs them, never at device sizes.
 - Fluid type and spacing with `clamp()` from 320 px to 1920 px. Line length between 60 and 75 characters.
 - No horizontal scroll at any width from 320 px up. Long words and URLs wrap. Tables and code blocks scroll inside their own box. Embeds keep their aspect ratio.
+- No fixed pixel width over 320 px, in a `style` attribute, a `<style>` block or a table's `width`. `khalid audit` checks every built page with its `fixed-width` check, so a template override or a raw HTML block that sets one shows up as a warning. A wide rule inside a `min-width` media query is fine.
 - Images carry `srcset`, `sizes`, `width` and `height`.
 - Touch targets at least 44 by 44 px with space between them. Nothing depends on hover.
 - Correct viewport meta, safe-area insets, layouts that work at 200% zoom and in landscape.

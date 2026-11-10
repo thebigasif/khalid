@@ -5,6 +5,8 @@ const PATHS = {
   posts: "M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h6",
   media: "M4 4h16v16H4zM4 16l5-5 4 4 2-2 5 5M16 8.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0",
   comments: "M4 5h16v11H9l-5 4z",
+  mail: "M3 5h18v14H3zM3 6l9 7 9-7",
+  inbox: "M4 13h4l1 3h6l1-3h4M6 4h12l2 9v7H4v-7z",
   analytics: "M5 20v-9M12 20V4M19 20v-6",
   search: "M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14zM16 16l5 5",
   link: "M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1",
@@ -38,6 +40,7 @@ const PATHS = {
   table: "M4 5h16v14H4zM4 10h16M4 15h16M10 5v14",
   steps: "M4 20h5v-5h5v-5h5V5",
   calendar: "M4 6h16v14H4zM4 10h16M8 3v4M16 3v4",
+  tag: "M3 3h8l10 10-8 8L3 11zM7.5 7.5h.01",
 } as const;
 
 /** The name of one of the admin's icons. */

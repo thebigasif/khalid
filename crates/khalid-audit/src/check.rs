@@ -248,6 +248,12 @@ checks! {
     MixedContent => "mixed-content", Https, Error, "Mixed content",
         "Browsers block or warn about files loaded without HTTPS, so the page may break.",
         "Load the file over https, or keep a copy with the site.";
+    /// A page has a part that only works with scripts on: a form with no
+    /// action, a link to `#` or `javascript:`, or a notice asking readers
+    /// to turn on JavaScript (`docs/plan.md` section 6, "Needs JavaScript").
+    NeedsJavaScript => "needs-javascript", Resources, Warning, "Page needs JavaScript to work",
+        "Readers with scripts off, and crawlers that run none, cannot use that part of the page.",
+        "In the template override or raw HTML, give each form an action and each link a real address, and remove any notice asking readers to turn on JavaScript.";
     /// A page lacks one of the Open Graph tags a shared link needs.
     OpenGraphIncomplete => "open-graph-incomplete", Social, Notice, "Open Graph tags incomplete",
         "A shared link without these tags shows a plain card that few people click.",
@@ -422,4 +428,9 @@ checks! {
     BrokenExternal => "broken-external", OutgoingLinks, Warning, "Page has broken links to other sites",
         "A reader who follows the link finds an error, and the page looks neglected.",
         "Change the link to a page on that site that still exists, or remove it.";
+    /// A page sets a part wider than a phone screen in pixels, in a style
+    /// or a table's width (`docs/plan.md` section 6, "Fixed width").
+    FixedWidth => "fixed-width", Resources, Warning, "Fixed width wider than a phone",
+        "On a phone the part runs off the screen, so readers must scroll sideways to read it.",
+        "In the template override or raw HTML, use max-width or a percentage instead of a width over 320 pixels.";
 }

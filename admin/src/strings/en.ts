@@ -1,5 +1,6 @@
 import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
+import { realUpdateWords } from "./realUpdateWords";
 import { records } from "./records";
 import { LIVE, WAITS } from "./restartWords";
 import { serpdadWords } from "./serpdadWords";
@@ -22,6 +23,7 @@ export const en = {
     posts: "Posts",
     media: "Media",
     comments: "Comments",
+    forms: "Forms",
     authors: "Authors",
     trash: "Trash",
     audit: "Audit log",
@@ -136,6 +138,12 @@ export const en = {
       saving: "Saving",
       saved: "Saved.",
     },
+    remove: {
+      title: "Delete this file",
+      lede: "Deleting removes the file from your library and from the blog for good. While a post, a page or your theme still uses it, the blog keeps it and says where it is used.",
+      submit: (name: string) => `Delete ${name}`,
+      inUse: "The file was kept, because it is still in use.",
+    },
     kinds: { image: "Image", video: "Video", audio: "Sound", file: "File" },
     size: (bytes: number) =>
       bytes < 1024 * 1024
@@ -195,6 +203,15 @@ export const en = {
       top: "Page they opened most",
       noPage: "None in these days",
       none: "No AI assistant sent a reader in these days or the days before.",
+    },
+    bots: {
+      title: "What each assistant's bots read",
+      lede: "Each AI company sends bots to read your pages, to train its models, to fill its search or to answer a person right now. Many reads and few readers sent means the assistant knows your blog but rarely points people to it.",
+      reads: "Reads by its bots",
+      pages: "Pages read",
+      sent: "Page views it sent",
+      bots: "Bots",
+      none: "No AI bot read a page in these days.",
     },
     uncited: {
       title: "Read by AI, but never cited",
@@ -341,6 +358,7 @@ export const en = {
     },
   },
   webhooks: webhookWords,
+  realUpdate: realUpdateWords,
   team: teamWords,
   site: {
     title: "Settings",
@@ -581,7 +599,7 @@ export const en = {
     title: "Post settings",
     slug: "Web address",
     slugHint:
-      "The last part of the post's address, in lowercase words joined by hyphens. Settle it before the post goes live, so links to it keep working.",
+      "The last part of the post's address, in lowercase words joined by hyphens. Change it on a live post and the old address sends readers to the new one.",
     author: "Author",
     authorHint:
       "The author's short name, as in the file name in your blog's authors folder, such as asif.",

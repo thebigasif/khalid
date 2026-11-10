@@ -2,19 +2,25 @@
 //! `khalid-mcp`, and `lint_post`, which runs the lint publish gate on a
 //! post without publishing it. The Admin API has no lint route yet, so
 //! `lint_post` calls the function the publish route calls, and checks the
-//! key's scope the way a route would.
+//! key's scope the way a route would. Each call that changed something is
+//! noted for a running `khalid serve` (ADR "khalid serve reads again what
+//! khalid mcp writes").
+
+use std::path::{Path, PathBuf};
 
 use khalid_api::keys::{Principal, Scope};
 use khalid_api::post_store::PostStore;
-use khalid_mcp::{ApiTools, BoxFuture, Tool, ToolResult, Tools};
+use khalid_mcp::{ApiTools, BoxFuture, Effect, Tool, ToolResult, Tools};
 use serde_json::{Map, Value, json};
 
 use crate::site_posts::SitePosts;
+use crate::{outside_writes, report};
 
 /// The API tools and `lint_post`, acting as one key.
 #[derive(Debug)]
 pub(crate) struct SiteTools {
     api: ApiTools,
+    site: PathBuf,
     posts: SitePosts,
     principal: Principal,
     tools: Vec<Tool>,
@@ -22,12 +28,17 @@ pub(crate) struct SiteTools {
 
 impl SiteTools {
     /// `api`'s tools, then `lint_post` over `posts`, for the key that
-    /// `principal` names.
-    pub(crate) fn new(api: ApiTools, posts: SitePosts, principal: Principal) -> Self {
+    /// `principal` names, on the site in the `site` folder.
+    pub(crate) fn new(
+        api: ApiTools,
+        (site, posts): (&Path, SitePosts),
+        principal: Principal,
+    ) -> Self {
         let mut tools = api.list().to_vec();
         tools.push(Tool::new(
             "lint_post",
             "Runs the checks publish_post runs, without publishing. A draft is checked as it would go live today.",
+            Effect::Reads,
             json!({
                 "type": "object",
                 "properties": {
@@ -39,6 +50,7 @@ impl SiteTools {
         ));
         Self {
             api,
+            site: site.to_path_buf(),
             posts,
             principal,
             tools,
@@ -89,6 +101,31 @@ impl Tools for SiteTools {
         if name == "lint_post" {
             return Box::pin(async move { Some(self.lint(&arguments).await) });
         }
-        self.api.call(name, arguments)
+        Box::pin(async move {
+            let result = self.api.call(name, arguments).await?;
+            let wrote = self
+                .tools
+                .iter()
+                .any(|tool| tool.name() == name && !tool.is_read_only());
+            if wrote && !result.is_failure() {
+                self.note().await;
+            }
+            Some(result)
+        })
+    }
+}
+
+impl SiteTools {
+    /// Tells a running `khalid serve` that the site's stores changed, so it
+    /// reads its redirects, media and comments again.
+    async fn note(&self) {
+        let site = self.site.clone();
+        let noted = tokio::task::spawn_blocking(move || outside_writes::note(&site)).await;
+        if !matches!(noted, Ok(Ok(()))) {
+            report::notice(
+                "Khalid could not tell a running khalid serve about this change. \
+                 Start it again so readers see it.",
+            );
+        }
     }
 }

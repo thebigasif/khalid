@@ -16,6 +16,21 @@ export type ListSectionKind = "category" | "collection" | "channel" | "series";
 /** One section of the home page, as `[reader] home_sections` holds it. */
 export type HomeSection = { kind: PlainSectionKind } | { kind: ListSectionKind; slug: string };
 
+/** One link in a menu, as `[[nav.primary]]` or `[[nav.footer]]` holds it. */
+export type MenuLink = {
+  label: string;
+  /** A path on the blog, such as `/blog/about/`, or a full `https` address. */
+  href: string;
+  /** The one language whose pages show it; every page when left out. */
+  language?: string;
+};
+
+/** Which menu: the header's main menu or the footer's. */
+export type MenuName = "primary" | "footer";
+
+/** The header and footer menus from `[nav]`. */
+export type SiteNav = Record<MenuName, MenuLink[]>;
+
 /** The site's core settings, as `site.toml` holds them. */
 export type SiteSettings = {
   name: string;
@@ -40,6 +55,8 @@ export type SiteSettings = {
   code?: CodeEntry[];
   /** The home page's sections, top first. A server from before them sends none. */
   home_sections?: HomeSection[];
+  /** The header and footer menus. A server from before the Navigation screen sends none. */
+  nav?: SiteNav;
   /** When `site.toml` last changed; a change sends it back. */
   updated_at: string;
   /** Whether the running server needs a restart to use what `site.toml` says. */
@@ -64,6 +81,8 @@ export type SiteChange = {
   code?: CodeEntry[];
   /** Every home section, top first, in place of the old ones. */
   home_sections?: HomeSection[];
+  /** New menus, each replacing its menu whole; a menu left out stays. */
+  nav?: Partial<SiteNav>;
 };
 
 async function settings(response: Response): Promise<SiteSettings> {

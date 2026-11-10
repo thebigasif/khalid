@@ -58,6 +58,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -156,6 +159,9 @@
               }
             }
           },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
           "502": {
             "description": "The AI service did not answer with suggestions",
             "content": {
@@ -165,6 +171,87 @@
                 }
               }
             }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/analytics/ai-bots/": {
+      "get": {
+        "tags": [
+          "admin analytics"
+        ],
+        "summary": "Counts how often each AI assistant's bots read the site in the last\n`days` days, beside the readers the assistant sent. Needs\n`settings:write`.",
+        "operationId": "ai_bots",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "description": "From 1 to 90, the days the crawl log keeps; 30 when left out.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The bots' reads per assistant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAiBots"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The days are not from 1 to 90",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -243,6 +330,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -321,6 +411,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -399,6 +492,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -487,6 +583,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -554,6 +653,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -649,6 +751,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -725,6 +830,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -829,6 +937,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -925,6 +1036,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1014,6 +1128,102 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/calendar/plan/": {
+      "get": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "Suggests a day for each ready draft from tomorrow, at `per_week` or the\nsite's own pace, with each topic's main post before its members, and\nsays what to act on. Scheduled posts keep their days. Nothing is\nchanged: to take a suggestion, edit the post to `scheduled` with that\nday's `published_at`. Needs `posts:write`.",
+        "operationId": "read_plan",
+        "parameters": [
+          {
+            "name": "per_week",
+            "in": "query",
+            "description": "Posts a week, from 1 to 14. Left out, the site's own pace over the\nlast twelve weeks.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 14,
+              "minimum": 1
+            },
+            "example": 2
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "per_week is not a number from 1 to 14",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server makes no plan",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1081,6 +1291,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1176,6 +1389,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1252,6 +1468,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1356,6 +1575,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1452,6 +1674,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1539,6 +1764,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1609,6 +1837,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1686,6 +1917,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1783,6 +2017,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1861,6 +2098,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1918,6 +2158,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1995,6 +2238,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2090,6 +2336,272 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/forms/": {
+      "get": {
+        "tags": [
+          "admin forms"
+        ],
+        "summary": "Lists the forms visitors answered, with how many answers each has and\nwhen the newest came. Spam caught by the trap is left out. Needs\n`subscribers:write`.",
+        "operationId": "list_forms",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Every form with answers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminForms"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no form answers",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/forms/{id}/answers/": {
+      "get": {
+        "tags": [
+          "admin forms"
+        ],
+        "summary": "Lists one page of a form's answers, newest first, each field in the\norder the form sent them. A form with no answers lists none. Needs\n`subscribers:write`.",
+        "operationId": "list_answers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The form's id, as its block names it",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page, from 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Answers per page: 25 when not given, from 1 to 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of the form's answers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAnswers"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The page or limit is not a whole number in range",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no form answers",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/forms/{id}/answers/{answer}/": {
+      "delete": {
+        "tags": [
+          "admin forms"
+        ],
+        "summary": "Deletes one answer for good, such as when the visitor who sent it asks\nunder the GDPR. Needs `subscribers:write`.",
+        "operationId": "delete_answer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The form's id, as its block names it",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "answer",
+            "in": "path",
+            "description": "The answer's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The answer is gone"
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The form has no such answer, or this server keeps none",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2147,6 +2659,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2222,6 +2737,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2301,6 +2819,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2368,6 +2889,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2498,6 +3022,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2617,6 +3144,69 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/media/folders/": {
+      "get": {
+        "tags": [
+          "admin media"
+        ],
+        "summary": "Lists the library's folders by name: each one that holds an item, and\neach one above it, with how many items it holds itself. The top of the\nlibrary is never listed. Needs `media:write`.",
+        "operationId": "list_media_folders",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The folders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaFolders"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks media:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2916,6 +3506,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3020,6 +3613,108 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "admin media"
+        ],
+        "summary": "Deletes an item and its file for good. The delete names the\n`updated_at` of the copy it was made on, and is a 409 when the item\nchanged since (RULES.md BL-API-7), or when a post, a page or the theme\nstill names the file, since deleting it would break them. Needs\n`media:write`.",
+        "operationId": "delete_media",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The item's identity",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updated_at",
+            "in": "query",
+            "description": "The `updated_at` as last read, such as `2026-10-20T08:30:00Z`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The item and its file are gone"
+          },
+          "400": {
+            "description": "updated_at is missing or is not a time",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks media:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No item has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The item changed after the copy the delete was made on, or site files still name it",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3126,6 +3821,178 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/newsletters/": {
+      "get": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Lists the newsletters with their readers and sign-up forms, and the\nemails that went out. Needs `subscribers:write`.",
+        "operationId": "list_newsletters",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The newsletters and the emails that went out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminNewsletters"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/newsletters/{name}/sends/": {
+      "post": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Emails a published post to a newsletter's confirmed subscribers, once.\nThe answer comes as the copies start to leave. Needs\n`subscribers:write`.",
+        "operationId": "send_post",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "The newsletter, such as main",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewsletterSend"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "The post is going out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendStarted"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The site has no newsletter or post by that name",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The post went to this newsletter before, or the site cannot send email yet",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, or the post is not published",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3207,6 +4074,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3294,6 +4164,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3361,6 +4234,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3456,6 +4332,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3532,6 +4411,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3636,6 +4518,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3732,6 +4617,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3835,6 +4723,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -3956,6 +4847,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4032,6 +4926,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4136,6 +5033,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4232,6 +5132,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4308,6 +5211,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4384,6 +5290,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4478,6 +5387,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4577,6 +5489,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4663,6 +5578,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4739,6 +5657,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4835,6 +5756,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4902,6 +5826,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -4988,6 +5915,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5064,6 +5994,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5121,6 +6054,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5206,6 +6142,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5282,6 +6221,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5339,6 +6281,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5428,6 +6373,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5498,6 +6446,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5565,6 +6516,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5660,6 +6614,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -5727,6 +6684,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           },
           "502": {
             "description": "Google refused or could not be reached",
@@ -5804,6 +6764,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           },
           "502": {
             "description": "Google refused or could not be reached",
@@ -5903,6 +6866,9 @@
               }
             }
           },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
           "502": {
             "description": "Google refused or could not be reached",
             "content": {
@@ -5969,6 +6935,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6034,6 +7003,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6092,6 +7064,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6139,6 +7114,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6247,6 +7225,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6528,6 +7509,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6586,6 +7570,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6643,6 +7630,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6703,6 +7693,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6781,6 +7774,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6841,6 +7837,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6888,6 +7887,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6955,6 +7957,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -6967,7 +7972,7 @@
         "tags": [
           "admin settings"
         ],
-        "summary": "Changes the core settings in `site.toml`: only the fields sent change,\nand each value must pass the checks `khalid serve` makes at start. The\nchange carries the `updated_at` of the copy it was made on; when\n`site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The\nrunning server puts most settings in use once saved; `restart_needed`\nsays when one it reads only at start, such as `address`, waits for a\nrestart. Needs `settings:write`.",
+        "summary": "Changes the core settings in `site.toml`: only the fields sent change,\nand each value must pass the checks `khalid serve` makes at start. The\nchange carries the `updated_at` of the copy it was made on; when\n`site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The\nrunning server puts most settings in use once saved; `restart_needed`\nsays when one it reads only at start, such as `address`, waits for a\nrestart. Needs `settings:write`; a change to `code` also needs\n`admin:all`, as a post's head code does, because that code runs on\nevery reader's page. Sending `code` back unchanged needs no more.",
         "operationId": "change_settings",
         "parameters": [
           {
@@ -7012,7 +8017,7 @@
             }
           },
           "403": {
-            "description": "The key lacks settings:write",
+            "description": "The key lacks settings:write, or changes code without admin:all",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -7050,6 +8055,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7107,6 +8115,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7192,6 +8203,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7259,6 +8273,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7354,6 +8371,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7430,6 +8450,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7534,6 +8557,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7630,6 +8656,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7687,6 +8716,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7775,6 +8807,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7865,6 +8900,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7926,6 +8964,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -7996,11 +9037,411 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
           {
             "staff_session": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/subscribers/": {
+      "get": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Lists the subscribers, newest first, with how many match. Needs\n`subscribers:write`.",
+        "operationId": "list_subscribers",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Only subscribers who stand here.",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/SubscriberStatus"
+            }
+          },
+          {
+            "name": "list",
+            "in": "query",
+            "description": "Only subscribers who get this newsletter, such as `weekly`.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "label",
+            "in": "query",
+            "description": "Only subscribers who carry this label, such as `paid`.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Only subscribers whose address holds this text, in any case.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page, from 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many to a page: 50 when not given, at most 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of subscribers, newest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriberList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A filter or the page is not one the API knows",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/subscribers/{id}/": {
+      "delete": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Removes a subscriber and everything kept about them, for a reader who\nasks to be forgotten. Needs `subscribers:write`.",
+        "operationId": "erase_subscriber",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The subscriber's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The subscriber and their labels are gone"
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No subscriber has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/subscribers/{id}/labels/{label}/": {
+      "put": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Gives a subscriber a label, such as `paid`. Needs `subscribers:write`.",
+        "operationId": "add_label",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The subscriber's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "label",
+            "in": "path",
+            "description": "The label, in lowercase letters, digits and hyphens",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The subscriber, with the label",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSubscribers"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No subscriber has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The label is not a slug, or the subscriber unsubscribed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Takes a label away from a subscriber. Needs `subscribers:write`.",
+        "operationId": "remove_label",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The subscriber's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "label",
+            "in": "path",
+            "description": "The label to take away",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The subscriber, without the label",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSubscribers"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No subscriber has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The label is not a slug",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
           }
         ]
       }
@@ -8063,6 +9504,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8169,6 +9613,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8265,6 +9712,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8332,6 +9782,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8389,6 +9842,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8458,6 +9914,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8544,6 +10003,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8601,6 +10063,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8676,6 +10141,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8746,6 +10214,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8760,7 +10231,7 @@
         "tags": [
           "admin webhooks"
         ],
-        "summary": "Lists the 50 newest messages one webhook that is on sent, newest\nfirst, each with every try and where it stands. The bodies sent are\nleft out. Needs `webhooks:manage`.",
+        "summary": "Lists the messages one webhook that is on sent, newest first, a page\nat a time, each with every try and where it stands. The bodies sent\nare left out. Needs `webhooks:manage`.",
         "operationId": "list_deliveries",
         "parameters": [
           {
@@ -8771,6 +10242,27 @@
             "schema": {
               "type": "integer",
               "format": "int64"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Only deliveries older than this one, by its `id`: the `next` of\nthe page before. Left out, the list starts at the newest.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "From 1 to 100; 50 when left out.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
             }
           },
           {
@@ -8785,11 +10277,21 @@
         ],
         "responses": {
           "200": {
-            "description": "The webhook's newest deliveries",
+            "description": "One page of the webhook's deliveries",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminDeliveries"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The limit is not from 1 to 100, or before is not a number",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -8823,6 +10325,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -8942,6 +10447,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9010,6 +10518,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9078,6 +10589,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9200,6 +10714,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9268,6 +10785,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9336,6 +10856,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9458,6 +10981,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9526,6 +11052,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9594,6 +11123,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9716,6 +11248,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9784,6 +11319,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9852,6 +11390,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -9974,6 +11515,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10042,6 +11586,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10110,6 +11657,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10232,6 +11782,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10300,6 +11853,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10368,6 +11924,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10490,6 +12049,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10558,6 +12120,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10626,6 +12191,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10748,6 +12316,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10816,6 +12387,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -10884,6 +12458,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -11006,6 +12583,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -11074,6 +12654,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -11142,6 +12725,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -11202,6 +12788,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -11324,6 +12913,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -11392,6 +12984,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -11460,6 +13055,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -11475,6 +13073,41 @@
   },
   "components": {
     "schemas": {
+      "AdminAiBots": {
+        "type": "object",
+        "description": "The AI bots' reads per assistant. A read is a bot fetching a page and\ngetting it; it is never a citation.",
+        "required": [
+          "first",
+          "last",
+          "days",
+          "tools"
+        ],
+        "properties": {
+          "days": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many days were looked at.",
+            "minimum": 0
+          },
+          "first": {
+            "type": "string",
+            "format": "date",
+            "description": "The first day looked at, in UTC."
+          },
+          "last": {
+            "type": "string",
+            "format": "date",
+            "description": "The last day looked at: today, in UTC."
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminToolBots"
+            },
+            "description": "Each assistant whose bots read a page, most reads first, and last\nthe bots of no assistant named here."
+          }
+        }
+      },
       "AdminAiVisitors": {
         "type": "object",
         "description": "The readers AI assistants sent, per tool. The counts are page views,\nnot people, and never include AI bots.",
@@ -11521,6 +13154,27 @@
               "$ref": "#/components/schemas/AdminToolVisitors"
             },
             "description": "Each assistant that sent readers in the period or the one before,\nmost views first."
+          }
+        }
+      },
+      "AdminAnswers": {
+        "type": "object",
+        "description": "One page of a form's answers.",
+        "required": [
+          "answers",
+          "meta"
+        ],
+        "properties": {
+          "answers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormAnswer"
+            },
+            "description": "The answers on this page, newest first."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Pagination."
           }
         }
       },
@@ -11640,6 +13294,27 @@
               "$ref": "#/components/schemas/AdminAuthor"
             },
             "description": "The author or authors."
+          }
+        }
+      },
+      "AdminBotReads": {
+        "type": "object",
+        "description": "One bot's reads.",
+        "required": [
+          "bot",
+          "reads"
+        ],
+        "properties": {
+          "bot": {
+            "type": "string",
+            "description": "The bot's name, as its user agent claimed it.",
+            "example": "GPTBot"
+          },
+          "reads": {
+            "type": "integer",
+            "format": "int64",
+            "description": "How many times it read a page.",
+            "minimum": 0
           }
         }
       },
@@ -12048,7 +13723,7 @@
       },
       "AdminDeliveries": {
         "type": "object",
-        "description": "The newest deliveries of one webhook.",
+        "description": "One page of one webhook's deliveries.",
         "required": [
           "deliveries"
         ],
@@ -12058,7 +13733,15 @@
             "items": {
               "$ref": "#/components/schemas/AdminDelivery"
             },
-            "description": "At most 50, newest first."
+            "description": "The deliveries, newest first."
+          },
+          "next": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "The `before` that lists the next, older page, or null on the last\npage."
           }
         }
       },
@@ -12153,6 +13836,22 @@
             ],
             "format": "date-time",
             "description": "When `theme/tokens.toml` last changed, or `null` when the site has\nno such file yet. A change sends it back."
+          }
+        }
+      },
+      "AdminForms": {
+        "type": "object",
+        "description": "The forms visitors answered.",
+        "required": [
+          "forms"
+        ],
+        "properties": {
+          "forms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormSummary"
+            },
+            "description": "Each form with at least one answer, the one answered last first."
           }
         }
       },
@@ -12434,6 +14133,68 @@
               "$ref": "#/components/schemas/AdminMiss"
             },
             "description": "The addresses, most requested first."
+          }
+        }
+      },
+      "AdminNewsletter": {
+        "type": "object",
+        "description": "One newsletter and how many readers it has.",
+        "required": [
+          "name",
+          "confirmed",
+          "pending",
+          "form"
+        ],
+        "properties": {
+          "confirmed": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The readers who confirmed and get it.",
+            "minimum": 0
+          },
+          "form": {
+            "type": "string",
+            "description": "A sign-up form to paste into another website, such as the main\nsite. It works with scripts off."
+          },
+          "name": {
+            "type": "string",
+            "description": "Its name, such as `main` or `weekly`.",
+            "example": "weekly"
+          },
+          "pending": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The readers who signed up and have not confirmed yet.",
+            "minimum": 0
+          }
+        }
+      },
+      "AdminNewsletters": {
+        "type": "object",
+        "description": "The site's newsletters, whether it can send, and what went out.",
+        "required": [
+          "newsletters",
+          "sending",
+          "sends"
+        ],
+        "properties": {
+          "newsletters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminNewsletter"
+            },
+            "description": "Each newsletter, in alphabetical order."
+          },
+          "sending": {
+            "$ref": "#/components/schemas/SendReadiness",
+            "description": "Whether a post can be sent now, and if not, what the site lacks."
+          },
+          "sends": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminSend"
+            },
+            "description": "Every email that went out, newest first."
           }
         }
       },
@@ -12739,6 +14500,53 @@
         },
         "additionalProperties": false
       },
+      "AdminSend": {
+        "type": "object",
+        "description": "The totals of one email that went out. Totals only: who got a copy is\nnever kept.",
+        "required": [
+          "key",
+          "list",
+          "started_at",
+          "sent",
+          "failed",
+          "unsubscribed"
+        ],
+        "properties": {
+          "failed": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The copies the mail service refused. They are not sent again.",
+            "minimum": 0
+          },
+          "key": {
+            "type": "string",
+            "description": "The key it went out under, such as `post:en/hello`.",
+            "example": "post:en/hello"
+          },
+          "list": {
+            "type": "string",
+            "description": "The newsletter.",
+            "example": "main"
+          },
+          "sent": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The copies sent.",
+            "minimum": 0
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When it started going out."
+          },
+          "unsubscribed": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The readers who unsubscribed with a link from it.",
+            "minimum": 0
+          }
+        }
+      },
       "AdminSettings": {
         "type": "object",
         "description": "The site's core settings from `site.toml`, in Admin API shape. The\nrunning server puts most of a saved change in use at once; the settings\nit reads only at start wait for a restart.",
@@ -12754,6 +14562,7 @@
           "privacy",
           "code",
           "home_sections",
+          "nav",
           "updated_at",
           "restart_needed"
         ],
@@ -12798,6 +14607,10 @@
           "name": {
             "type": "string",
             "description": "The site's name."
+          },
+          "nav": {
+            "$ref": "#/components/schemas/NavSetting",
+            "description": "The header and footer menus from `[nav]`."
           },
           "privacy": {
             "type": "object",
@@ -12907,6 +14720,92 @@
           }
         }
       },
+      "AdminSubscriber": {
+        "type": "object",
+        "description": "One subscriber in Admin API shape.\n\nExhaustive on purpose: the database fills it in.",
+        "required": [
+          "id",
+          "email",
+          "status",
+          "lists",
+          "labels",
+          "created_at"
+        ],
+        "properties": {
+          "confirmed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When they opened the confirmation link, if they did."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When they first signed up."
+          },
+          "email": {
+            "type": "string",
+            "description": "Where their email goes.",
+            "example": "lena@example.com"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Its identity."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Their labels, such as `paid`, in alphabetical order.",
+            "example": [
+              "paid"
+            ]
+          },
+          "lists": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The newsletters they get, in alphabetical order. Empty once they\nunsubscribed.",
+            "example": [
+              "main",
+              "weekly"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/SubscriberStatus",
+            "description": "Where they stand."
+          },
+          "unsubscribed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When they unsubscribed, if they did."
+          }
+        }
+      },
+      "AdminSubscribers": {
+        "type": "object",
+        "description": "One subscriber, wrapped the way the list wraps them.",
+        "required": [
+          "subscribers"
+        ],
+        "properties": {
+          "subscribers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminSubscriber"
+            },
+            "description": "The one subscriber."
+          }
+        }
+      },
       "AdminTag": {
         "type": "object",
         "description": "A tag in one language, in Admin API shape. A tag lives in the `tags`\nof its posts, drafts included, so it exists while one post has it.",
@@ -12997,6 +14896,55 @@
           "summary": {
             "type": "string",
             "description": "One plain sentence on what the template is for."
+          }
+        }
+      },
+      "AdminToolBots": {
+        "type": "object",
+        "description": "What one AI assistant's bots read, and the readers it sent.",
+        "required": [
+          "tool",
+          "name",
+          "reads",
+          "pages",
+          "sent",
+          "bots"
+        ],
+        "properties": {
+          "bots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminBotReads"
+            },
+            "description": "Its bots, most reads first."
+          },
+          "name": {
+            "type": "string",
+            "description": "The assistant's name, for people.",
+            "example": "ChatGPT"
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64",
+            "description": "How many different pages its bots read.",
+            "minimum": 0
+          },
+          "reads": {
+            "type": "integer",
+            "format": "int64",
+            "description": "How many times its bots read a page.",
+            "minimum": 0
+          },
+          "sent": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The page views of readers the assistant sent in the same days.",
+            "minimum": 0
+          },
+          "tool": {
+            "type": "string",
+            "description": "The assistant, for programs, as in the AI visitors report, or\n`other` for the AI bots of no assistant named here, such as\n`CCBot`.",
+            "example": "chatgpt"
           }
         }
       },
@@ -13292,6 +15240,26 @@
         "type": "string",
         "description": "An old address on this site that redirects to the post, such as\n`/2019/05/old-title/`, so a moved post keeps its links.",
         "example": "/2019/05/old-title/"
+      },
+      "AnswerField": {
+        "type": "object",
+        "description": "One field of an answer.",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The field's name in the form block.",
+            "example": "email"
+          },
+          "value": {
+            "type": "string",
+            "description": "What the visitor typed.",
+            "example": "lena@example.com"
+          }
+        }
       },
       "Author": {
         "type": "object",
@@ -14483,6 +16451,68 @@
           }
         }
       },
+      "FormAnswer": {
+        "type": "object",
+        "description": "One answer a visitor sent.",
+        "required": [
+          "id",
+          "page",
+          "sent_at",
+          "fields"
+        ],
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnswerField"
+            },
+            "description": "Each field in the order the form sent them."
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Its identity: a later answer has a larger number."
+          },
+          "page": {
+            "type": "string",
+            "description": "The address of the page the form was on.",
+            "example": "/blog/write-to-us/"
+          },
+          "sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When it was sent."
+          }
+        }
+      },
+      "FormSummary": {
+        "type": "object",
+        "description": "One form and how many answers it has.",
+        "required": [
+          "id",
+          "answers",
+          "last_at"
+        ],
+        "properties": {
+          "answers": {
+            "type": "integer",
+            "format": "int64",
+            "description": "How many answers are kept, spam left out.",
+            "example": 12,
+            "minimum": 0
+          },
+          "id": {
+            "type": "string",
+            "description": "The form's id, as its block names it.",
+            "example": "contact"
+          },
+          "last_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the newest answer was sent."
+          }
+        }
+      },
       "Gate": {
         "type": "string",
         "description": "The lint publish gate's answer for a post as it stands.",
@@ -15017,6 +17047,45 @@
         },
         "additionalProperties": false
       },
+      "MediaFolder": {
+        "type": "object",
+        "description": "A folder of the media library, as the Admin API lists it.",
+        "required": [
+          "name",
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "integer",
+            "description": "The items filed in it, not counting those in folders inside it.",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "description": "Up to five slugs joined by `/`, never empty."
+          }
+        },
+        "example": {
+          "name": "guides/2026",
+          "items": 4
+        }
+      },
+      "MediaFolders": {
+        "type": "object",
+        "description": "Every folder of the media library that holds an item, and each folder\nabove one, by name.",
+        "required": [
+          "folders"
+        ],
+        "properties": {
+          "folders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaFolder"
+            },
+            "description": "The folders, by name."
+          }
+        }
+      },
       "MediaItems": {
         "type": "object",
         "description": "Media items, wrapped the way the Admin API wraps resources.",
@@ -15106,6 +17175,32 @@
           }
         }
       },
+      "MenuLinkSetting": {
+        "type": "object",
+        "description": "One link in a menu, such as `{\"label\": \"Guides\", \"href\": \"/blog/guides/\"}`.",
+        "required": [
+          "label",
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Where it goes: a path on this site, such as `/blog/about/`, or a\nfull `http` or `https` address."
+          },
+          "label": {
+            "type": "string",
+            "description": "The words a reader sees, on one line of at most 160 characters."
+          },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The one language whose pages show the link, such as `de`. Left out,\nevery page shows it."
+          }
+        },
+        "additionalProperties": false
+      },
       "Meta": {
         "type": "object",
         "description": "The `meta` object beside every list (`docs/standards/api.md`).",
@@ -15159,6 +17254,57 @@
           "url": {
             "type": "string",
             "description": "The page's full address."
+          }
+        }
+      },
+      "NavChange": {
+        "type": "object",
+        "description": "New menus for `[nav]`: only the menus sent change.",
+        "properties": {
+          "footer": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MenuLinkSetting"
+            },
+            "description": "Every link of the footer menu, in order. An empty list removes the\nmenu."
+          },
+          "primary": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MenuLinkSetting"
+            },
+            "description": "Every link of the header menu, in order. An empty list removes the\nmenu."
+          }
+        },
+        "additionalProperties": false
+      },
+      "NavSetting": {
+        "type": "object",
+        "description": "The menus every page shows, from `[nav]` in `site.toml`. The footer's\ncolumns, `[[nav.footer_groups]]`, are changed only in the file.",
+        "required": [
+          "primary",
+          "footer"
+        ],
+        "properties": {
+          "footer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MenuLinkSetting"
+            },
+            "description": "The menu in the footer, in the order shown."
+          },
+          "primary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MenuLinkSetting"
+            },
+            "description": "The main menu in the header, in the order shown."
           }
         }
       },
@@ -15689,6 +17835,31 @@
           }
         }
       },
+      "NewsletterSend": {
+        "type": "object",
+        "description": "A published post to email to one newsletter.",
+        "required": [
+          "post"
+        ],
+        "properties": {
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Send only to subscribers who carry every one of these labels.",
+            "example": [
+              "paid"
+            ]
+          },
+          "post": {
+            "type": "string",
+            "description": "The post's identity, such as `en.hello`.",
+            "example": "en.hello"
+          }
+        },
+        "additionalProperties": false
+      },
       "NonBlank": {
         "type": "string",
         "description": "Text with something in it other than spaces."
@@ -16199,6 +18370,169 @@
         },
         "additionalProperties": false
       },
+      "PlanBody": {
+        "type": "object",
+        "description": "The plan as the Admin API wraps it.",
+        "required": [
+          "plan"
+        ],
+        "properties": {
+          "plan": {
+            "$ref": "#/components/schemas/PlanView",
+            "description": "The plan."
+          }
+        }
+      },
+      "PlanKind": {
+        "type": "string",
+        "description": "Whether a day is set or only suggested.",
+        "enum": [
+          "scheduled",
+          "suggested"
+        ]
+      },
+      "PlanNote": {
+        "type": "object",
+        "description": "Something to act on: what, why and the fix.",
+        "required": [
+          "what",
+          "why",
+          "fix"
+        ],
+        "properties": {
+          "fix": {
+            "type": "string",
+            "description": "What to do."
+          },
+          "what": {
+            "type": "string",
+            "description": "What the planner found."
+          },
+          "why": {
+            "type": "string",
+            "description": "Why it matters."
+          }
+        }
+      },
+      "PlanPace": {
+        "type": "string",
+        "description": "Where a plan's pace came from.",
+        "enum": [
+          "asked",
+          "history"
+        ]
+      },
+      "PlanSlot": {
+        "type": "object",
+        "description": "One post on one day of the plan.",
+        "required": [
+          "day",
+          "id",
+          "title",
+          "kind"
+        ],
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date",
+            "description": "The day, in UTC."
+          },
+          "id": {
+            "type": "string",
+            "description": "The post's identity, as in `/posts/{id}/`."
+          },
+          "kind": {
+            "$ref": "#/components/schemas/PlanKind",
+            "description": "Set or suggested."
+          },
+          "title": {
+            "type": "string",
+            "description": "The title."
+          }
+        }
+      },
+      "PlanView": {
+        "type": "object",
+        "description": "The plan: the pace, the days from tomorrow, the drafts that wait, and\nthe warnings.",
+        "required": [
+          "per_week",
+          "pace_from",
+          "calendar",
+          "waiting",
+          "warnings"
+        ],
+        "properties": {
+          "calendar": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanSlot"
+            },
+            "description": "Scheduled and suggested posts, earliest first."
+          },
+          "pace_from": {
+            "$ref": "#/components/schemas/PlanPace",
+            "description": "Where the pace came from."
+          },
+          "per_week": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Posts a week.",
+            "minimum": 0
+          },
+          "waiting": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanWaiting"
+            },
+            "description": "Drafts the linter holds back."
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanNote"
+            },
+            "description": "What to act on."
+          }
+        }
+      },
+      "PlanWaiting": {
+        "type": "object",
+        "description": "A draft with no day, and why.",
+        "required": [
+          "id",
+          "title",
+          "why"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The post's identity."
+          },
+          "pillar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The main post it waits for, with `pillar_blocked`."
+          },
+          "title": {
+            "type": "string",
+            "description": "The title."
+          },
+          "why": {
+            "$ref": "#/components/schemas/PlanWhy",
+            "description": "Why it waits."
+          }
+        }
+      },
+      "PlanWhy": {
+        "type": "string",
+        "description": "Why a ready draft has no day.",
+        "enum": [
+          "blocked",
+          "pillar_blocked"
+        ]
+      },
       "Post": {
         "allOf": [
           {
@@ -16543,6 +18877,7 @@
           "id",
           "slug",
           "title",
+          "tags",
           "status",
           "review_state",
           "review_due",
@@ -16563,6 +18898,14 @@
             ],
             "description": "The author's slug, if any.",
             "example": "asif"
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The category's slug, if any. A list filters by this, such as\n`category:on-page-seo`.",
+            "example": "on-page-seo"
           },
           "cluster": {
             "oneOf": [
@@ -16656,6 +18999,16 @@
             "$ref": "#/components/schemas/PostStatus",
             "description": "Draft, published or scheduled."
           },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The tags' names, in the order written. A list filters by one, such\nas `tag:'internal links'`.",
+            "example": [
+              "internal links"
+            ]
+          },
           "title": {
             "type": "string",
             "description": "The title."
@@ -16670,7 +19023,15 @@
               "string",
               "null"
             ],
-            "description": "Who made the last change."
+            "description": "Who made the last change, as the post names them; `null` when not\nknown, such as for a file changed by hand."
+          },
+          "updated_by_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The name the admin shows for whoever made the last change: their\naccount's name, the name their key was made with, or else\n`updated_by`; `null` when `updated_by` is.",
+            "example": "Maria Lopez"
           },
           "words": {
             "type": "integer",
@@ -16735,6 +19096,7 @@
         "description": "A post's settings beside its title and body. Every setting has a\nvalue: empty lists, `false`, `draft` and `null` when never set.",
         "required": [
           "co_authors",
+          "tags",
           "featured",
           "review_state",
           "share_cards",
@@ -16765,6 +19127,14 @@
             ],
             "description": "The address search engines should credit instead of this post.",
             "example": "https://example.com/original/"
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The slug of the category the post belongs to, one of the site's\ncategories, or `null` for none.",
+            "example": "on-page-seo"
           },
           "co_authors": {
             "type": "array",
@@ -16887,6 +19257,16 @@
           "share_cards": {
             "$ref": "#/components/schemas/ShareCards",
             "description": "How the post looks when shared on X and Facebook."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The tags' names, such as `internal links`, in the order written.",
+            "example": [
+              "internal links"
+            ]
           },
           "template": {
             "type": [
@@ -17484,6 +19864,29 @@
           }
         }
       },
+      "SendReadiness": {
+        "type": "string",
+        "description": "Whether the site can send a newsletter now, and if not, what it lacks.",
+        "enum": [
+          "ready",
+          "no_mail",
+          "no_postal_address"
+        ]
+      },
+      "SendStarted": {
+        "type": "object",
+        "description": "A send that started.",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The key it goes out under, such as `post:en/hello`. Its totals show\nin `sends` once the copies are out.",
+            "example": "post:en/hello"
+          }
+        }
+      },
       "SeoScores": {
         "type": "object",
         "description": "A post's SEO and readability scores, each from 0 to 100.\n\nEach rule that found a problem costs points once, 30 for a block and 5\nfor a warning, as the post's one score counts them, and a group with a\nblock scores at most 40. The rules in [`READABILITY_RULES`] make the\nreadability score; every other rule makes the SEO score.",
@@ -17674,7 +20077,7 @@
             "items": {
               "type": "object"
             },
-            "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`."
+            "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`. A list that differs\nfrom the saved one needs `admin:all`."
           },
           "default_language": {
             "type": [
@@ -17716,6 +20119,17 @@
               "null"
             ],
             "description": "A new name."
+          },
+          "nav": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NavChange",
+                "description": "New menus. Each menu sent replaces the old one whole; a menu left\nout stays as it is."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "privacy": {
             "type": [
@@ -17796,6 +20210,14 @@
             ],
             "description": "A new canonical address, or `null` for the post's own.",
             "example": "https://example.com/original/"
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new category's slug, one of the site's categories, or `null` for\nnone.",
+            "example": "on-page-seo"
           },
           "co_authors": {
             "type": [
@@ -17934,6 +20356,19 @@
               {
                 "type": "null"
               }
+            ]
+          },
+          "tags": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every tag's name, all of them; an empty list for none. No name may\nbe listed twice, whatever its capitals.",
+            "example": [
+              "internal links"
             ]
           },
           "template": {
@@ -18390,6 +20825,36 @@
           "gifs"
         ]
       },
+      "SubscriberList": {
+        "type": "object",
+        "description": "One page of subscribers, and where it sits in the whole list.",
+        "required": [
+          "subscribers",
+          "meta"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "The page, and how many subscribers match in all."
+          },
+          "subscribers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminSubscriber"
+            },
+            "description": "The subscribers on this page, newest first."
+          }
+        }
+      },
+      "SubscriberStatus": {
+        "type": "string",
+        "description": "Where a subscriber stands.",
+        "enum": [
+          "pending",
+          "confirmed",
+          "unsubscribed"
+        ]
+      },
       "Suggestion": {
         "type": "object",
         "description": "One option, with its length checked.",
@@ -18771,6 +21236,26 @@
           }
         },
         "additionalProperties": false
+      }
+    },
+    "responses": {
+      "TooManyRequests": {
+        "description": "Too many requests from this key, or too many wrong keys from this address, in the last minute; Retry-After says when to try again",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer"
+            },
+            "description": "How many seconds to wait before trying again."
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
       }
     },
     "securitySchemes": {

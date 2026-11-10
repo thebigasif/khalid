@@ -61,29 +61,39 @@ impl Assets {
 
 /// Every file beside the content file of a page in `languages`, as
 /// `assets` lists them, in page order. Each such page's body, and the copy
-/// the feeds read, point their relative images at those files.
+/// the feeds read, point their relative images at those files, and so
+/// does the full page of a locked post or one with gated content.
 pub(crate) fn attach(assets: &Assets, languages: &mut [LanguagePages]) -> Vec<PostFile> {
     let mut files = Vec::new();
-    for page in languages
-        .iter_mut()
-        .flat_map(|language| &mut language.pages)
-    {
-        let Some((source, found)) = page
-            .source
-            .as_deref()
-            .and_then(|source| assets.0.get_key_value(source))
-        else {
-            continue;
-        };
-        let folder = source.parent().unwrap_or(Path::new(""));
-        let beside: Vec<PostFile> = found
-            .iter()
-            .filter_map(|asset| post_file(page, folder, asset))
-            .collect();
-        relink(page, &beside);
-        files.extend(beside);
+    for language in languages.iter_mut() {
+        for page in &mut language.pages {
+            files.extend(relinked_beside(assets, page));
+        }
+        // A full page shows the files its public page already lists.
+        for unlocked in &mut language.unlocked {
+            relinked_beside(assets, &mut unlocked.page);
+        }
     }
     files
+}
+
+/// The files `assets` lists beside the content file of `page`, at whose
+/// addresses its body's relative images now point.
+fn relinked_beside(assets: &Assets, page: &mut Page) -> Vec<PostFile> {
+    let Some((source, found)) = page
+        .source
+        .as_deref()
+        .and_then(|source| assets.0.get_key_value(source))
+    else {
+        return Vec::new();
+    };
+    let folder = source.parent().unwrap_or(Path::new(""));
+    let beside: Vec<PostFile> = found
+        .iter()
+        .filter_map(|asset| post_file(page, folder, asset))
+        .collect();
+    relink(page, &beside);
+    beside
 }
 
 /// Where `asset`, in the entry `folder`, goes for `page`. `None` for a name

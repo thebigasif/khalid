@@ -34,11 +34,14 @@ its settings as it starts. No key or password is ever sent back.
 | `[seo.crawlers]` | `ai_training` (`allow` or `block`), `disallow` paths, `allow` and `block` crawler names | every crawler reads every page | Crawlers and AI bots |
 | `[seo.feeds]` | `content` (`full` or `excerpt`), `before_item`, `after_item`, `source_line`, `limit` | full posts, 20 items | Feeds |
 | `[seo.indexnow]` | `key` and `endpoint` | off | IndexNow |
-| `[seo.ai_page]` | `off`, `contact`, `covers`, `cite` | on | AI info page |
+| `[seo.ai_page]` | `off`, `contact`, `covers`, `cite`, and `[seo.ai_page.text.<language>]` with `covers` and `cite` for one language's copy | on: a copy in the main language, and one in each other language Khalid has the page's sentences for (English and German), linked from that language's footer | AI info page (the words per language are not on the screen yet) |
 | `[seo.links]` | `affiliate_domains` and the other outbound link rules | none | Not on the screen yet |
 | `[[seo.locations]]` | the site's shops or offices, for local search | none | Not on the screen yet |
-| `[seo.breadcrumbs]`, `[seo.llms_txt]`, `[seo.search_filter]`, `[seo.local]`, `[seo.schema_map]` | see their sections below | see below | Not on the screen yet |
-| `[[seo.schema]]` | schema nodes per category or collection | none | Schema templates screen |
+| `[seo.breadcrumbs]` | see [Breadcrumbs](#breadcrumbs) | see below | Breadcrumbs |
+| `[seo.search_filter]` | see [Search filters](#search-filters) | every filter on | Site search |
+| `[seo.llms_txt]`, `[seo.schema_map]` | see [llms.txt](#llmstxt) and [Whole-site schema](#whole-site-schema) | both files written | Files for AI tools |
+| `[seo.local]` | see [Local business](#local-business) | both on | Local business |
+| `[[seo.schema]]` | schema nodes per category or collection; `category` is the name readers see, such as `"On-page SEO"`, so a category named per language needs one entry per name | none | Schema templates screen |
 
 The training switch on the Crawlers screen writes `[seo.crawlers]
 ai_training`. The box under each AI crawler writes its name into
@@ -56,7 +59,7 @@ ai_training`. The box under each AI crawler writes its name into
 | `{tagline}` | The tagline, from `[seo.titles] tagline`. |
 | `{sep}` | The separator, `\|` unless `[seo.titles] separator` says otherwise. |
 | `{excerpt}` | The page's summary: a post's `description`. |
-| `{category}` | A post's category name. |
+| `{category}` | A post's category name, as `categories.toml` gives it in the page's language, or its slug when the file does not name it. |
 | `{author}` | A post's author name. |
 | `{date}` | The day a post was published, such as `14 September 2026`. |
 | `{modified}` | The day a post was last really updated, or published when it never was. |
@@ -111,7 +114,7 @@ news = "noindex"
 
 ## Feeds
 
-Each language has feeds next to its home page, such as `/blog/feed.xml` and `/blog/de/feed.xml`. Each category with posts in a language, and each channel, has its own feeds in its folder, such as `/blog/category/technical-seo/feed.xml` and `/blog/featured/feed.xml`. A feed holds the newest posts of its page, up to `limit`. Every one of these pages links its feeds in its head, so a feed reader finds them from the page's address.
+Each language has feeds next to its home page, such as `/blog/feed.xml` and `/blog/de/feed.xml`. Each collection and category with posts in a language, and each channel, has its own feeds in its folder, such as `/blog/guides/feed.xml`, `/blog/category/technical-seo/feed.xml` and `/blog/featured/feed.xml`. A feed holds the newest posts of its page, up to `limit`. Every one of these pages links its feeds in its head, so a feed reader finds them from the page's address.
 
 `[seo.feeds] off` lists the feed formats Khalid does not write: `"rss"` (`feed.xml`), `"atom"` (`atom.xml`) and `"json"` (`feed.json`). Every format is written by default.
 
@@ -380,3 +383,25 @@ The video block takes an optional `thumbnail`, the picture search results show f
 ```markdown
 ::video{src="/media/tour.mp4" title="A tour" poster="/media/tour.jpg" thumbnail="/media/tour-thumb.jpg"}
 ```
+
+## A reviewer for health or money posts
+
+Some topics, such as health and money, are trusted more when an expert checked the post. A post names who checked it with `reviewed_by:` in its front matter. The page then shows "Reviewed by" with their names, and its structured data carries `reviewedBy`.
+
+To make a reviewer required, list those categories in `lint.toml`, next to `site.toml`:
+
+```toml
+[reviewers]
+required-in = ["health", "money"]
+```
+
+Each name is a category slug from `categories.toml`. A post in one of them that names no reviewer gets the `no-reviewer` finding, which blocks it: `khalid lint` reports it, `khalid build` leaves the post out, and publishing it is refused. The fix is one line in the post:
+
+```yaml
+---
+category: health
+reviewed_by: [lena-vogt]
+---
+```
+
+Each reviewer is the slug of an author profile. To warn instead of block, add `no-reviewer = "warn"` under `[rules]`. A site that lists no category never sees the finding.

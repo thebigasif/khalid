@@ -101,17 +101,34 @@ pub(crate) fn attach(
     let any = !pictures.is_empty() || !vectors.is_empty();
     for language in languages.iter_mut().filter(|_| any) {
         for page in &mut language.pages {
-            post_files::rewrite(page, |html| drawn(html, &pictures));
-            if let PageBody::Post(post) = &mut page.body {
-                post.originals = originals(post.body.as_str(), &pictures);
-            }
-            if let Some(image) = lead(config, page, (&pictures, &vectors)) {
+            if let Some(image) = draw_page(config, page, (&pictures, &vectors)) {
                 shown.add(page, image);
             }
+        }
+        // The full page of a locked post, or of one with gated content,
+        // draws its images as its public page does.
+        for unlocked in &mut language.unlocked {
+            draw_page(config, &mut unlocked.page, (&pictures, &vectors));
         }
     }
     post_photos::attach(languages, shown);
     Ok(sizes.into_values().collect())
+}
+
+/// Draws the body images of `page` among `pictures` in their sizes, links
+/// the wide ones to their widest size, and draws its lead image. Returns
+/// the lead image drawn.
+fn draw_page(
+    config: &Config,
+    page: &mut Page,
+    images: (&BTreeMap<String, Picture>, &BTreeMap<String, Picture>),
+) -> Option<RenderImage> {
+    let pictures = images.0;
+    post_files::rewrite(page, |html| drawn(html, pictures));
+    if let PageBody::Post(post) = &mut page.body {
+        post.originals = originals(post.body.as_str(), pictures);
+    }
+    lead(config, page, images)
 }
 
 /// Draws the lead image of a post, or the photo of an author, at the top

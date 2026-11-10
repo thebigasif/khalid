@@ -22,6 +22,27 @@ pub(super) struct HeadingIds {
 pub(super) struct IdState {
     pub(super) headings: Vec<Heading>,
     seen: BTreeMap<String, usize>,
+    /// While set, headings take their ids but are not listed: those of a
+    /// locked gated part, which the public page never shows.
+    unlisted: bool,
+}
+
+impl HeadingIds {
+    /// Leaves the headings written from now on out of the list.
+    pub(super) fn stop_listing(&self) {
+        self.state
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .unlisted = true;
+    }
+
+    /// Lists the headings written from now on again.
+    pub(super) fn list_again(&self) {
+        self.state
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .unlisted = false;
+    }
 }
 
 impl HeadingAdapter for HeadingIds {
@@ -42,6 +63,9 @@ impl HeadingAdapter for HeadingIds {
             format!("{base}-{count}")
         };
         write!(output, "<h{} id=\"{id}\">", heading.level)?;
+        if state.unlisted {
+            return Ok(());
+        }
         state.headings.push(Heading {
             level: heading.level,
             id,

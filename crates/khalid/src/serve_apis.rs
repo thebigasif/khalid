@@ -23,8 +23,8 @@ use khalid_api::session_check::SessionCheck;
 use khalid_auth::SiteDirectory;
 use khalid_core::{Config, Environment, SystemClock};
 use khalid_db::{
-    AnalyticsTable, AuditTable, ConsentProofTable, Database, KeyTable, SerpdadTable, SiteId,
-    WebhookTable,
+    AnalyticsTable, AuditTable, ConsentProofTable, Database, FormTable, KeyTable, SerpdadTable,
+    SiteId, SubscriberTable, WebhookTable,
 };
 use khalid_newsletter::Mailer;
 
@@ -40,6 +40,7 @@ use crate::site_tags::SiteTags;
 use crate::{draft_comment_mail, late_api, look, mounted, staff};
 
 pub(crate) mod ai_writer;
+mod subscribers;
 
 /// The desks `khalid serve` keeps in memory for the Admin API: comment
 /// moderation, the media library, stored redirects and the Search Console
@@ -66,18 +67,21 @@ pub(crate) type ApiParts<'a> = (
 
 /// The Content API and the Admin API as `khalid serve` runs them, with the
 /// comment moderation, media library, stored redirects, Search Console
-/// follow-ups, webhooks, `SerpDad` connection and staff accounts of site
+/// follow-ups, webhooks, form answers, `SerpDad` connection and staff accounts of site
 /// `id`, the post checks, schema templates, pages, snippets, authors, tags,
 /// categories and settings of the site in `site`, the super-admin routes
-/// over `panel`, and comments on drafts emailed through `mailer` when the
-/// site sends mail. The settings and schema templates read `site.toml` with
-/// `env`, the environment the server started with.
+/// over `panel`, and comments on drafts and newsletters emailed through
+/// `mailer` when the site sends mail. The settings and schema templates
+/// read `site.toml` with `env`, the environment the server started with.
 pub(crate) fn api_router(
     (content, door, posts): (LiveContent, Arc<PublishDoor>, SitePosts),
     (comments, media, redirects, follow_ups, ai): Desks,
     (database, id, (site, config, env)): (&Database, SiteId, (&Path, &Config, &Environment)),
     (panel, mailer): (Arc<dyn SiteDirectory>, Option<Arc<dyn Mailer>>),
 ) -> Router {
+    let table = SubscriberTable::new(database.clone(), id);
+    let readers =
+        subscribers::SiteSubscribers::new(table, (site, config), posts.clone(), mailer.clone());
     let profiles = Arc::new(SiteAuthorProfiles::new(site, config));
     let accounts = staff::accounts(database, id, config).with_author_profiles(profiles);
     let sessions: Arc<dyn SessionCheck> = Arc::new(accounts.clone());
@@ -115,12 +119,15 @@ pub(crate) fn api_router(
         .with_consent(Arc::new(ConsentProofTable::new(database.clone(), id))),
         draft_comments: Some(draft_comment_mail::desk((database, id, config), mailer)),
         follow_ups: Arc::new(follow_ups),
+        forms: Some(Arc::new(FormTable::new(database.clone(), id))),
         serpdad: Some(Arc::new(SerpdadTable::new(
             database.clone(),
             id,
             SystemClock,
         ))),
         ai,
+        limits: *config.limits(),
+        subscribers: Some(Arc::new(readers)),
     };
     let keys: Arc<dyn KeyStore> = Arc::new(KeyTable::new(database.clone(), id, SystemClock));
     let content: Arc<dyn ContentStore> = Arc::new(content);

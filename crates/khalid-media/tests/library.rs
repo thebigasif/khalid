@@ -127,3 +127,27 @@ async fn lists_the_newest_upload_first() {
     let ids: Vec<ContentKey> = noon.items().into_iter().map(|item| item.id).collect();
     assert_eq!(ids, [second.id, first.id]);
 }
+
+#[tokio::test]
+async fn reload_finds_what_another_process_added_to_the_same_folder() {
+    let site = tempfile::tempdir().unwrap();
+    let serving = open(site.path(), 8).await;
+    let item = add(&open(site.path(), 9).await, "checklist.pdf", PDF).await;
+    assert!(serving.get(&item.id).is_none(), "read once at open");
+    serving.reload().await.unwrap();
+    assert_eq!(serving.get(&item.id), Some(item));
+}
+
+#[tokio::test]
+async fn a_reload_that_cannot_read_a_file_keeps_what_it_had() {
+    let site = tempfile::tempdir().unwrap();
+    let library = open(site.path(), 8).await;
+    let item = add(&library, "checklist.pdf", PDF).await;
+    let mut broken = site.path().to_path_buf();
+    broken.push("media");
+    broken.push(item.id.to_string());
+    broken.push("item.toml");
+    std::fs::write(&broken, "not = [toml").unwrap();
+    assert!(library.reload().await.is_err());
+    assert_eq!(library.get(&item.id), Some(item));
+}

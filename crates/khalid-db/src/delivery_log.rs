@@ -150,14 +150,21 @@ impl DeliveryLog {
         self.deliveries(rows)
     }
 
-    /// The newest `limit` deliveries of `webhook`, newest first, each with
-    /// every attempt: the admin's log of one webhook.
+    /// The newest `limit` deliveries of `webhook` with an id below
+    /// `before`, or the newest of all when `before` is `None`, newest
+    /// first, each with every attempt: one page of the admin's log of one
+    /// webhook.
     ///
     /// # Errors
     ///
     /// [`DbError`] when the log cannot be read or holds a row this
     /// version cannot read.
-    pub async fn newest(&self, webhook: WebhookId, limit: u32) -> Result<Vec<Delivery>, DbError> {
+    pub async fn newest(
+        &self,
+        webhook: WebhookId,
+        before: Option<i64>,
+        limit: u32,
+    ) -> Result<Vec<Delivery>, DbError> {
         let rows = sqlx::query(
             "SELECT d.id, d.webhook_id, d.event, d.url, d.body, d.first_at, \
                     a.number, a.at, a.status, a.reason \
@@ -165,11 +172,13 @@ impl DeliveryLog {
              LEFT JOIN webhook_attempts a ON a.delivery_id = d.id \
              WHERE d.id IN (SELECT id FROM webhook_deliveries \
                             WHERE site_id = ?1 AND webhook_id = ?2 \
-                            ORDER BY id DESC LIMIT ?3) \
+                              AND (?3 IS NULL OR id < ?3) \
+                            ORDER BY id DESC LIMIT ?4) \
              ORDER BY d.id DESC, a.number",
         )
         .bind(self.site.as_row())
         .bind(webhook.get())
+        .bind(before)
         .bind(i64::from(limit))
         .fetch_all(&self.db.readers)
         .await?;

@@ -59,6 +59,9 @@ pub struct Blog<'a> {
     /// The folder the blog sits under on its host, such as `/blog/`, or
     /// `/` for a blog that is the whole site.
     pub mount: &'a str,
+    /// The folder under the mount where the admin answers, `admin` unless
+    /// `site.toml` sets `admin_folder`.
+    pub folder: &'a str,
     /// The blog's name, as `site.toml` gives it.
     pub name: &'a str,
     /// The full address of the main site's logo, when there is one the
@@ -69,22 +72,23 @@ pub struct Blog<'a> {
     pub accent: Option<&'a str>,
 }
 
-/// The routes that answer the admin of `blog` under its mount, such as
-/// `/blog/`, or `/` for a blog that is the whole site: `<mount>admin`
-/// moves to `<mount>admin/`, a built file answers as itself, and any other
-/// address under `<mount>admin/` gets the app's page, whose router shows
-/// the screen for it. The page names the mount, so the app finds its
-/// files, screens and APIs there, and the blog's name and logo. Under a
-/// mount, an address under `/admin/` moves to the same one under
-/// `<mount>admin/`.
+/// The routes that answer the admin of `blog` in its folder under its
+/// mount, such as `/blog/admin/`, or `/admin/` for a blog that is the
+/// whole site: `<mount><folder>` moves to `<mount><folder>/`, a built file
+/// answers as itself, and any other address under `<mount><folder>/` gets
+/// the app's page, whose router shows the screen for it. The page names
+/// the mount and the folder, so the app finds its files, screens and APIs
+/// there, and the blog's name and logo. Under a mount, an address under
+/// `/admin/` moves to the same one under `<mount>admin/`; a blog that
+/// names another folder leaves `/admin/` to its pages.
 pub fn router(files: &'static [Asset], blog: Blog<'_>) -> Router {
-    let mount = blog.mount;
-    let home = Arc::<str>::from(format!("{mount}admin/"));
+    let (mount, folder) = (blog.mount, blog.folder);
+    let home = Arc::<str>::from(format!("{mount}{folder}/"));
     let shown = Arc::new(page_in(files, blog));
     let (to_home, at_home, anywhere) = (Arc::clone(&home), Arc::clone(&shown), shown);
     let router = Router::new()
         .route(
-            &format!("{mount}admin"),
+            &format!("{mount}{folder}"),
             get(move || async move { Redirect::permanent(&to_home) }),
         )
         .route(
@@ -97,7 +101,7 @@ pub fn router(files: &'static [Asset], blog: Blog<'_>) -> Router {
                 file(files, Option::as_ref(&anywhere), &path)
             }),
         );
-    if mount == "/" {
+    if mount == "/" || folder != "admin" {
         return router;
     }
     let moved = move |uri: Uri| async move {
@@ -117,13 +121,15 @@ pub fn router(files: &'static [Asset], blog: Blog<'_>) -> Router {
 /// The app's page as a blog under `mount` serves it, or `None` when this
 /// binary holds no admin. Vite names the built files from the page's own
 /// folder, which differs on each screen's address, so they are named from
-/// the host's root instead, and the mount goes in a `khalid-mount` meta,
-/// after the blog's name, logo and accent in their own.
+/// the host's root instead. The admin's folder goes in a
+/// `khalid-admin-folder` meta and the mount in a `khalid-mount` meta, after
+/// the blog's name, logo and accent in their own.
 fn page_in(files: &[Asset], blog: Blog<'_>) -> Option<Bytes> {
     let index = files.iter().find(|asset| asset.path == "index.html")?;
     let html = String::from_utf8_lossy(index.body);
     let mount = blog.mount;
-    let folder = format!("=\"{mount}admin/");
+    let place = meta("khalid-admin-folder", blog.folder);
+    let folder = format!("=\"{mount}{}/", blog.folder);
     let name = meta("khalid-name", blog.name);
     let logo = blog
         .logo
@@ -133,8 +139,9 @@ fn page_in(files: &[Asset], blog: Blog<'_>) -> Option<Bytes> {
         .accent
         .map(|accent| meta("khalid-accent", accent))
         .unwrap_or_default();
-    let named =
-        format!("{name}{logo}{accent}<meta name=\"khalid-mount\" content=\"{mount}\">\n</head>");
+    let named = format!(
+        "{name}{logo}{accent}{place}<meta name=\"khalid-mount\" content=\"{mount}\">\n</head>"
+    );
     let html = html
         .replace("=\"./", &folder)
         .replace("=\"/admin/", &folder)

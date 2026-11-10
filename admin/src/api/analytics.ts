@@ -61,6 +61,14 @@ export function readConsentVersions(): Promise<Reply<ConsentVersions>> {
   return reply(() => api.GET("/api/admin/v1/consent/versions/"));
 }
 
+/** How often each AI assistant's bots read the blog in a period, beside the readers it sent. */
+export type AiBots = components["schemas"]["AdminAiBots"];
+
+/** Reads how often each AI assistant's bots read the blog in the last `days` days. */
+export function readAiBots(days: Days): Promise<Reply<AiBots>> {
+  return reply(() => api.GET("/api/admin/v1/analytics/ai-bots/", { params: { query: { days } } }));
+}
+
 /** Google search's numbers for every page together in a period, against the period before. */
 export type SearchTotals = components["schemas"]["SearchTotals"];
 

@@ -60,7 +60,24 @@ A newsletter can greet each reader the moment they confirm. Write the email in `
 Every Friday you get five links worth your time, with a line on why each one matters.
 ```
 
-Like every newsletter email, a welcome ends with the reader's one-click unsubscribe link and the postal address, so it goes out only once `postal_address` is set under `[mail]`. `khalid serve` reads the files when it starts.
+A reader who already confirmed and signs up for one more newsletter gets that newsletter's welcome the moment they join it, with no second confirmation.
+
+Like every newsletter email, a welcome ends with the reader's one-click unsubscribe link and the postal address, so it goes out only once `postal_address` is set under `[mail]`. `khalid serve` reads the files each time a reader is due one, so an edit reaches the next reader without a restart.
+
+### A welcome sequence
+
+To send more emails in the days after someone joins, add one file per email beside `welcome.md`, named by the day it goes out: `welcome-day-3.md` goes out three days after the reader joined, `welcome-day-10.md` ten days after. Each is written like `welcome.md`. Days run from 1 to 365.
+
+```text
+content/
+  newsletters/
+    weekly/
+      welcome.md
+      welcome-day-3.md
+      welcome-day-10.md
+```
+
+`khalid serve` looks once an hour, so each email arrives within the hour of its day. Each reader gets each email once. If the server was stopped on an email's day, it goes out when the server is back, up to a week late; after that it is skipped, so a reader who joined long before you wrote a new step does not get it out of the blue.
 
 ## The newsletter page
 
@@ -97,7 +114,9 @@ It is plain HTML that posts to the blog's full address, so it needs no script, n
 khalid --site <folder> newsletter numbers
 ```
 
-lists each email that went out, newest first, with three totals: copies sent, copies the mail server refused, and readers who unsubscribed with a link from that email. Numbers are totals per email, never per person. Khalid does not count opens: that needs a hidden image in every email, which tells you who read what, so it is off.
+lists each email that went out, newest first, with its totals: copies sent, copies the mail server refused, readers who unsubscribed with a link from that email, and clicks on its links. Numbers are totals per email, never per person. Khalid does not count opens: that needs a hidden image in every email, which tells you who read what, so it is off.
+
+Clicks are counted only when you ask, with `count_clicks = true` under `[mail]` in `site.toml`. Each link in an email you send after that leads through your blog first, such as `https://www.example.com/blog/subscribe/click?send=4&link=2`, which counts the click and sends the reader on. Every reader's copy has the same links, so a click tells you which link was popular, never who clicked. Some mail programs open links to check them for safety, so a few clicks may come from them. Welcome emails are not counted.
 
 ## RSS to email
 
@@ -106,3 +125,20 @@ khalid --site <folder> newsletter digest --list weekly
 ```
 
 sends one email that lists every post published since the last digest, each with its title and link. The first digest looks back seven days. With nothing new it sends nothing, so it is safe to run from a timer, such as a systemd timer or a cron job once a week. `--label` narrows it to a segment and `--language` picks the posts' language.
+
+## In the admin and the Admin API
+
+The admin's Subscribers screen does all of the above except the digest while `khalid serve` runs: it lists your readers, gives and takes away labels, forgets a reader who asks, shows each newsletter's readers and sign-up form, sends a published post, and shows the numbers. Only the owner and admins see it, because addresses are personal data.
+
+The same routes are in the Admin API, for a key with the `subscribers:write` scope:
+
+| Route | What it does |
+|---|---|
+| `GET /api/admin/v1/subscribers/` | Lists readers, newest first. Filter with `status` (`pending`, `confirmed` or `unsubscribed`), `list`, `label` and `q` (text in the address), page with `page` and `limit`. |
+| `PUT /api/admin/v1/subscribers/{id}/labels/{label}/` | Gives a reader a label. A reader who unsubscribed gets none. |
+| `DELETE /api/admin/v1/subscribers/{id}/labels/{label}/` | Takes a label away. |
+| `DELETE /api/admin/v1/subscribers/{id}/` | Forgets a reader: their address, newsletters, labels and links are removed. The totals of emails sent stay, as they name no one. |
+| `GET /api/admin/v1/newsletters/` | Each newsletter with its confirmed and waiting readers and its sign-up form, whether the site can send now (`ready`, `no_mail` or `no_postal_address`), and the numbers of every email sent. |
+| `POST /api/admin/v1/newsletters/{name}/sends/` | Sends a published post, `{"post": "en.what-a-sitemap-does", "labels": ["paid"]}`, once. It answers `202` with the send's key as the copies start to leave. |
+
+No route adds a subscriber. Readers join only through the form and the link in its email, so every address on the list asked to be there.

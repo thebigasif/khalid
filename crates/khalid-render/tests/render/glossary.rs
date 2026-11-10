@@ -142,6 +142,33 @@ fn a_locked_search_page_shows_one_sentence_and_no_form() {
 }
 
 #[test]
+fn a_busy_search_page_says_to_wait_above_the_form() {
+    for (language, sentence) in [
+        (
+            "en",
+            "You searched many times in a short while. Wait a minute, then search again.",
+        ),
+        (
+            "de",
+            "Sie haben in kurzer Zeit sehr oft gesucht. Warten Sie eine Minute und suchen Sie dann erneut.",
+        ),
+    ] {
+        let mut busy = search(None, Vec::new());
+        if let PageBody::Search(page) = &mut busy {
+            page.mode = SearchMode::Busy;
+        }
+        let page = render(&busy, language);
+        assert_valid_page(&page);
+        assert!(
+            page.contains(&format!(r#"<p class="busy" role="status">{sentence}</p>"#)),
+            "{page}"
+        );
+        assert!(page.contains("<form"), "the reader may try again later");
+        assert!(!page.contains("search-results"));
+    }
+}
+
+#[test]
 fn a_locked_search_page_tells_a_german_reader_in_one_sentence() {
     let mut locked = search(None, Vec::new());
     if let PageBody::Search(page) = &mut locked {

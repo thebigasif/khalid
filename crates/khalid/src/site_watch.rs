@@ -32,7 +32,7 @@ pub(crate) fn every(args: &ServeArgs, config: &Config) -> Option<Duration> {
         return Some(Duration::from_secs(seconds));
     }
     let minutes = config.alerts().watch_minutes;
-    let only_here = args.domain.is_none() && args.listen.ip().is_loopback();
+    let only_here = !args.serves_https() && args.listen.ip().is_loopback();
     if minutes == 0 || only_here {
         return None;
     }
@@ -158,6 +158,8 @@ mod tests {
         assert_eq!(every_for(&public, "\n[alerts]\nwatch_minutes = 0\n"), None);
         let https = ["khalid", "serve", "--domain", "blog.example.com"];
         assert_eq!(every_for(&https, ""), Some(Duration::from_secs(300)));
+        let sites = ["khalid", "serve", "--https"];
+        assert_eq!(every_for(&sites, ""), Some(Duration::from_secs(300)));
         assert_eq!(every_for(&["khalid", "serve"], ""), None, "writing here");
         let here = ["khalid", "serve", "--listen", "[::1]:8080"];
         assert_eq!(every_for(&here, ""), None);

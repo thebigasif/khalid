@@ -24,8 +24,8 @@ Structured data is the JSON-LD a page carries so search engines can show
 it as a rich result, such as a recipe card. The publish check (`khalid
 lint`, `khalid publish` and the Admin API's publish route) reads the same
 graph `khalid build` writes for the post: its article and author, the
-schema of its blocks, its collection's schema template and
-the JSON-LD in its `schema` field. When a node lacks a property Google
+schema of its blocks, its collection's and its category's schema
+templates and the JSON-LD in its `schema` field. When a node lacks a property Google
 needs, the post does not go live, and the finding names both, such as
 `Event needs startDate` or `Recipe needs image`. A property Google only
 recommends never stops a post.
@@ -55,6 +55,16 @@ addresses should do:
 The answer is stored as a redirect under Redirects once the post is in the
 trash. Putting the post back from the trash keeps the redirect; remove it
 under Redirects.
+
+A post waits in the trash for 30 days, then `khalid serve` deletes it for
+good. It looks at start and then once an hour. To keep posts longer or
+shorter, set the number of days in `site.toml`, up to 3650:
+
+```toml
+trash_days = 90
+```
+
+`trash_days = 0` keeps every deleted post until you delete it yourself.
 
 ## Bulk SEO
 

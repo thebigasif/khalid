@@ -27,7 +27,7 @@ The admin is the one place JavaScript is allowed, because the editor needs it. E
 - Error boundaries on every route. A caught error shows a `UserMessage`: what, why, fix.
 - Autosave every few seconds and on blur, with an unsaved-changes guard on navigation.
 - The editor round-trips: a document opened and saved without edits produces the identical markdown. One test per block.
-- The admin bundle stays under its budget in `performance.md`. Code-split by route. No dependency over 50 KB compressed without a sentence in the pull request.
+- The admin stays inside both limits in `performance.md`, "Admin size check": the first download and every built file together. Code-split by route: a lazy screen costs the first download nothing. No dependency over 50 KB compressed without a sentence in the pull request.
 - Accessibility tests run on every screen in CI with axe. Zero violations.
 
 ## Mockups first

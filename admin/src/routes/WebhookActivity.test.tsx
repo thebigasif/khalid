@@ -66,6 +66,28 @@ describe("the webhook activity screen", () => {
     expect(await axeViolations()).toEqual([]);
   });
 
+  it("shows older messages a page at a time", async () => {
+    signedIn();
+    const [newest, , oldest] = SENT;
+    const sent = adminBlog({
+      "GET /webhooks/": () => json(200, { webhooks: [ZAPIER] }),
+      "GET /webhooks/3/deliveries/": (request) =>
+        new URL(request.url).searchParams.get("before") === "9"
+          ? json(200, { deliveries: [oldest], next: null })
+          : json(200, { deliveries: [newest], next: 9 }),
+    });
+    renderAt("/webhooks/3");
+    expect(await screen.findByText("answered 200", { exact: false })).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: words.older }));
+    expect(await screen.findByText(words.gaveUp)).toBeVisible();
+    expect(screen.queryByText("answered 200", { exact: false })).toBeNull();
+    expect(sent.some((request) => request.url.includes("before=9"))).toBe(true);
+    expect(screen.queryByRole("button", { name: words.older })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: words.newest }));
+    expect(await screen.findByText("answered 200", { exact: false })).toBeVisible();
+    expect(await axeViolations()).toEqual([]);
+  });
+
   it("says so when the webhook has sent nothing yet", async () => {
     signedIn();
     adminBlog({

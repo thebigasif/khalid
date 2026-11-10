@@ -17,7 +17,7 @@ This folder is Khalid's old website, built with Khalid. Khalid's home is now htt
 
 ## The template pictures
 
-The gallery shows a picture of each template demo's home page and of one post, at `/khalid/templates/<name>-home.svg` and `<name>-post.svg`. The files beside `content/en/pages/templates/index.md` are plain cards with each template's name, so the site always has a picture. After `scripts/pages.sh` builds everything, `scripts/template-previews.sh <pages folder>` replaces them in the built folder with screenshots taken in a headless Chromium. Where no Chromium runs, it writes the plain cards again. To remake the committed cards after changing them in the script, run `scripts/template-previews.sh --cards site/content/en/pages/templates`.
+The gallery shows a picture of each template demo's home page and of one post, at `/khalid/templates/<name>-home.svg` and `<name>-post.svg`. The files beside `content/en/pages/templates/index.md` are plain cards with each template's name, so the site always has a picture. After `scripts/pages.sh` builds everything, `scripts/template-previews.sh <pages folder>` replaces them in the built folder with screenshots taken in a headless Chromium, in a window 1440 pixels wide, so each template shows its wide-screen frame. Where no Chromium runs, it writes the plain cards again. To remake the committed cards after changing them in the script, run `scripts/template-previews.sh --cards site/content/en/pages/templates`.
 
 ## The sites built beside it
 

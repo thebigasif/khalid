@@ -82,6 +82,7 @@ pub(crate) fn start_only(was: &Config, now: &Config) -> Vec<&'static str> {
     let ghost = was.ghost_content_api() != now.ghost_content_api();
     [
         ("mount", was.mount() != now.mount()),
+        ("admin_folder", was.admin_folder() != now.admin_folder()),
         ("mode", was.mode() != now.mode()),
         ("address", was.address() != now.address()),
         (
@@ -95,6 +96,8 @@ pub(crate) fn start_only(was: &Config, now: &Config) -> Vec<&'static str> {
         ("[code]", was.code() != now.code()),
         ("[search_console]", console),
         ("[visitor_log]", was.visitor_log() != now.visitor_log()),
+        ("[limits]", was.limits() != now.limits()),
+        ("[log]", was.log() != now.log()),
         ("[ai]", was.ai() != now.ai()),
         ("ghost_content_api", ghost),
         ("preview_link_days", preview),
@@ -205,6 +208,7 @@ mod tests {
     #[test]
     fn routes_and_addresses_wait_for_a_restart() {
         assert_eq!(waiting("mount = \"/blog/\"\n"), ["mount"]);
+        assert_eq!(waiting("admin_folder = \"studio\"\n"), ["admin_folder"]);
         assert_eq!(waiting("mode = \"static\"\n"), ["mode"]);
         let moved = START.replace("www.example.com", "blog.example.com");
         assert_eq!(start_only(&config(START), &config(&moved)), ["address"]);
@@ -226,6 +230,8 @@ mod tests {
             ("[alerts]\nnot_found_spike = 3\n", "[alerts]"),
             ("[code]\nhead = \"<meta name=a content=b>\"\n", "[code]"),
             ("[visitor_log]\non = true\n", "[visitor_log]"),
+            ("[limits]\nsearch_per_minute = 30\n", "[limits]"),
+            ("[log]\nlevel = \"warn\"\n", "[log]"),
             ("[ai]\nprovider = \"anthropic\"\n", "[ai]"),
         ];
         for (more, name) in wired {

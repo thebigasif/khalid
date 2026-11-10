@@ -18,7 +18,7 @@ use khalid_api::post_store::{
     CreatePostError, DeletePostError, PostStore, PostStoreError, UpdatePostError,
 };
 use khalid_api::query::ListQuery;
-use khalid_api::resources::{AdminPost, PostDraft, PostEdit, PostRow, PostStatus};
+use khalid_api::resources::{AdminPost, PostDraft, PostEdit, PostRow, PostSettings, PostStatus};
 use khalid_content::{ContentTree, SiteContent, parse_post, read_content};
 use khalid_core::{Clock, Config, Locale, Slug, TemplateName};
 use khalid_lint::{LintPost, LintSite, Linter, Report, Verdict};
@@ -28,7 +28,8 @@ use crate::lint_input::{LintInput, PostParts, lint_parts, lint_site};
 use crate::post_text::{PostText, quoted};
 use crate::settings_text::{put, settings_of, write_real_update, write_settings};
 use crate::site_pages::reload::LiveConfig;
-use crate::{atomic, lint, site_briefs};
+use crate::{atomic, categories, lint, site_briefs};
+use editors::Editors;
 
 /// The folder of drafts at the top of a site.
 const DRAFTS: &str = "drafts";
@@ -135,7 +136,7 @@ impl Site {
             let published = content
                 .posts
                 .iter()
-                .find(|doc| &doc.locale == locale && doc.front.slug.as_ref() == Some(&slug));
+                .find(|doc| &doc.locale == locale && self.slug_of(doc).as_ref() == Some(&slug));
             let Some(doc) = published else {
                 return Ok(None);
             };
@@ -179,28 +180,71 @@ impl Site {
         !file.is_file()
     }
 
+    /// Refuses an edit that newly names a template the theme lacks or a
+    /// category `categories.toml` lacks, since the post would point at
+    /// nothing.
+    fn refuse_unknown(
+        &self,
+        before: &PostSettings,
+        after: &PostSettings,
+    ) -> Result<(), UpdatePostError> {
+        let template = after.template.as_ref();
+        if template != before.template.as_ref() && template.is_some_and(|name| self.lacks(name)) {
+            let why =
+                "The theme has no such file in theme/templates/, so the post could not be shown.";
+            let setting = "template";
+            return Err(UpdatePostError::Unsupported { setting, why });
+        }
+        let Some(slug) = after
+            .category
+            .as_ref()
+            .filter(|_| after.category != before.category)
+        else {
+            return Ok(());
+        };
+        let known = categories::of(&self.folder).map_err(|m| failure(&m.to_string()))?;
+        if known.iter().any(|term| &term.slug == slug) {
+            return Ok(());
+        }
+        let why = "The site's categories.toml has no category with this slug, so the post would belong to nothing. Add the category first.";
+        let setting = "category";
+        Err(UpdatePostError::Unsupported { setting, why })
+    }
+
     fn get_now(&self, id: &str) -> Result<Option<AdminPost>, PostStoreError> {
+        let editors = Editors::read(&self.folder);
         self.find(id)?
-            .map(|found| Self::admin_post(&found))
+            .map(|found| self.named_post(&found, &editors))
             .transpose()
     }
 
     fn update_now(&self, id: &str, edit: PostEdit, by: &str) -> Result<AdminPost, UpdatePostError> {
         let _writing = self.seen.lock().unwrap_or_else(PoisonError::into_inner);
         let found = self.find(id)?.ok_or(UpdatePostError::NotFound)?;
-        let current = Self::admin_post(&found)?;
+        let current = self.named_post(&found, &Editors::read(&self.folder))?;
         if current.updated_at() != edit.updated_at() {
             let updated_at = current.updated_at();
             return Err(UpdatePostError::Stale {
                 updated_at,
-                updated_by: None,
+                updated_by: current.updated_by().map(str::to_owned),
             });
         }
         let publishes = edit.publishes() && found.status == PostStatus::Draft;
         let unpublishes =
             edit.status() == Some(PostStatus::Draft) && found.status == PostStatus::Published;
-        let edited = current.clone().edited(edit, self.clock.now(), by);
+        let mut edited = current.clone().edited(edit, self.clock.now(), by);
+        if edited.slug() != current.slug() && found.status == PostStatus::Published {
+            let both = (current.settings(), edited.settings());
+            let settings = self.moved_aliases(&found, edited.slug(), both)?;
+            edited = edited.with_settings(settings);
+        }
         let mut text = found.text.clone();
+        // A post named from its title keeps its address when the title
+        // changes: the file gains the slug it already lives at.
+        let unnamed = parse_post(&found.path, &text.to_text()).map_err(PostStoreError::new)?;
+        if unnamed.front.slug.is_none() {
+            text.set("slug", found.slug.as_str());
+        }
         if edited.title() != current.title() {
             text.set("title", &quoted(edited.title()));
         }
@@ -214,17 +258,7 @@ impl Site {
                 edited.author().map(ToString::to_string),
             );
         }
-        let template = edited.settings().template.as_ref();
-        if template != current.settings().template.as_ref()
-            && template.is_some_and(|name| self.lacks(name))
-        {
-            let why =
-                "The theme has no such file in theme/templates/, so the post could not be shown.";
-            return Err(UpdatePostError::Unsupported {
-                setting: "template",
-                why,
-            });
-        }
+        self.refuse_unknown(current.settings(), edited.settings())?;
         write_settings(
             &mut text,
             current.settings(),
@@ -251,34 +285,33 @@ impl Site {
             text,
             ..found
         };
-        Ok(Self::admin_post(&saved)?.with_updated_by(by))
+        Ok(self.noted_post(&saved, by)?)
     }
 
-    /// Moves the draft `found` to its file for `slug`, with `text`, which
-    /// gains the new slug. Its identity changes with the slug.
+    /// `found` under `slug`, with `text`, which gains the new slug. A draft
+    /// moves to its file for `slug`; a live post keeps its file, so the
+    /// automatic 301 finds it by file. Its identity changes with the slug.
     fn moved(
         &self,
         found: Found,
         slug: &Slug,
         text: &mut PostText,
     ) -> Result<Found, UpdatePostError> {
-        if found.status != PostStatus::Draft {
-            let why = "A live post's address cannot change yet, because links to the old one would break.";
-            let setting = "slug";
-            return Err(UpdatePostError::Unsupported { setting, why });
-        }
         if self.find(&format!("{}.{slug}", found.locale))?.is_some() {
             return Err(UpdatePostError::SlugTaken(slug.clone()));
         }
         text.set("slug", slug.as_str());
-        let path = self.draft_path(&found.locale, slug);
+        let slug = slug.clone();
+        if found.status != PostStatus::Draft {
+            return Ok(Found { slug, ..found });
+        }
+        let path = self.draft_path(&found.locale, &slug);
         let folder = path
             .parent()
             .ok_or_else(|| failure("a draft has no folder"))?;
         atomic::create(folder, &format!("{slug}.md"), &text.to_text())
             .map_err(PostStoreError::new)?;
         fs::remove_file(&found.path).map_err(PostStoreError::new)?;
-        let slug = slug.clone();
         Ok(Found {
             slug,
             path,
@@ -305,7 +338,10 @@ impl Site {
         let config = (self.live.get()).map_or_else(|| self.config.clone(), LiveConfig::now);
         let routes = Routes::load(&self.folder).map_err(PostStoreError::new)?;
         let briefs = site_briefs::load(&self.folder).map_err(|m| failure(&m.to_string()))?;
-        let input = LintInput::new(content, &config, routes).with_briefs(briefs);
+        let named = categories::of(&self.folder).map_err(|m| failure(&m.to_string()))?;
+        let input = LintInput::new(content, &config, routes)
+            .with_briefs(briefs)
+            .with_categories(named);
         let (site, _) = lint_site(content, &config, &input);
         let settings = lint::lint_settings(&self.folder).map_err(|m| failure(&m.to_string()))?;
         let linter = Linter::new(&settings, self.clock.as_ref()).map_err(PostStoreError::new)?;
@@ -377,7 +413,7 @@ impl Site {
             .transpose()?
             .flatten()
         {
-            return Ok(Self::admin_post(&found)?);
+            return Ok(self.named_post(&found, &Editors::read(&self.folder))?);
         }
         let locale = self.config.default_language();
         let slug = match draft.slug() {
@@ -410,7 +446,7 @@ impl Site {
             status: PostStatus::Draft,
             text,
         };
-        Ok(Self::admin_post(&found)?.with_updated_by(by))
+        Ok(self.noted_post(&found, by)?)
     }
 
     /// Moves post `id` to the trash when its file has not changed since
@@ -419,12 +455,12 @@ impl Site {
     fn delete_now(&self, id: &str, seen: DateTime<Utc>) -> Result<AdminPost, DeletePostError> {
         let _writing = self.seen.lock().unwrap_or_else(PoisonError::into_inner);
         let found = self.find(id)?.ok_or(DeletePostError::NotFound)?;
-        let post = Self::admin_post(&found)?;
+        let post = self.named_post(&found, &Editors::read(&self.folder))?;
         if post.updated_at() != seen {
             let updated_at = post.updated_at();
             return Err(DeletePostError::Stale {
                 updated_at,
-                updated_by: None,
+                updated_by: post.updated_by().map(str::to_owned),
             });
         }
         let index = found
@@ -542,8 +578,12 @@ fn failure(what: &str) -> PostStoreError {
 
 #[path = "site_posts_check.rs"]
 mod check;
+#[path = "site_editors.rs"]
+mod editors;
 #[path = "site_posts_list.rs"]
 mod list;
+#[path = "site_posts_moved.rs"]
+mod moved;
 #[path = "site_posts_publish.rs"]
 mod publish;
 

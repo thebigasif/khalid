@@ -81,7 +81,7 @@ impl Renewal {
     /// and tried again an hour later.
     pub async fn keep_renewed(self, clock: impl Clock) {
         loop {
-            let current = self.certificates.current();
+            let current = self.certificates.get(self.domain.as_str());
             match next(current.as_ref(), &self.domain, clock.now()) {
                 Next::Wait(wait) => tokio::time::sleep(wait).await,
                 Next::Renew => match self.renew().await {

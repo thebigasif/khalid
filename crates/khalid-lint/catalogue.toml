@@ -361,6 +361,12 @@ why = "The byline links to the author's page, and without a profile that page do
 fix = "Add `content/<language>/authors/<author>.md` with `name:` and `slug:` in its header."
 guide = "post-authors"
 
+[no-reviewer]
+what = "This post is in a category that needs a reviewer, and names none."
+why = "Readers and search engines trust health or money advice more when an expert checked it."
+fix = "Add `reviewed_by:` to the header with the short name of the author who checked the post."
+guide = "post-authors"
+
 [heading-agrees]
 what = "Two headings in the post say near the same thing."
 why = "A repeated heading leaves a reader unable to tell the sections apart, and an engine unsure which to lift."

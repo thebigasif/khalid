@@ -1,0 +1,2 @@
+Added
+- The admin has a Pages screen for the site's pages that are not posts, such as About or Contact. It lists every page in every language, adds a page, changes a page's title, description and text, and deletes a page. A saved page is live at once, and an edit made on an old copy is refused rather than undoing someone else's change. It uses the Admin API's existing `/api/admin/v1/pages/` routes, so before this an owner could change a page only by editing its file.

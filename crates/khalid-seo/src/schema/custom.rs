@@ -7,6 +7,7 @@ use khalid_core::AbsoluteUrl;
 use serde_json::{Map, Value};
 
 use crate::schema::template::is_word;
+use crate::schema::vocabulary::{Names, slip_for};
 use crate::{SchemaNode, SchemaType, SchemaValue, SeoError};
 
 /// The longest custom JSON-LD field taken, in bytes. A page's whole graph
@@ -43,6 +44,8 @@ impl CustomSchema {
     /// [`SeoError::CustomSchema`] when it is JSON but not JSON-LD this crate
     /// can write: too long, a node without a type, another vocabulary, an
     /// `@id` that is not a full web address, or an empty value.
+    /// [`SeoError::SchemaNameSlip`] when a type or property name is a slip
+    /// for a schema.org name, such as `Eevnt` for `Event`.
     pub fn parse(text: &str) -> Result<Self, SeoError> {
         if text.len() > MAX_BYTES {
             return Err(refused("", "is longer than 64 KB"));
@@ -128,6 +131,7 @@ fn node(object: &Map<String, Value>, at: &str) -> Result<SchemaNode, SeoError> {
         }
         Some(_) => return Err(refused(&type_at, "must be one type name")),
     };
+    known(kind.as_str(), Names::Types, &type_at)?;
     let mut node = SchemaNode::new(kind.as_str());
     for (name, value) in object {
         let here = place(at, name);
@@ -144,10 +148,26 @@ fn node(object: &Map<String, Value>, at: &str) -> Result<SchemaNode, SeoError> {
             _ if !is_word(name, char::is_ascii_lowercase) => {
                 return Err(refused(&here, "is not a property name such as startDate"));
             }
-            _ => node.set(name, property(value, &here)?),
+            _ => {
+                known(name, Names::Properties, &here)?;
+                node.set(name, property(value, &here)?);
+            }
         }
     }
     Ok(node)
+}
+
+/// Refuses `name` at `at` when it is a slip for a schema.org name, such as
+/// `startdate` for `startDate`, which search engines would skip.
+fn known(name: &str, names: Names, at: &str) -> Result<(), SeoError> {
+    match slip_for(name, names) {
+        Some(known) => Err(SeoError::SchemaNameSlip {
+            at: at.to_owned(),
+            name: name.to_owned(),
+            known,
+        }),
+        None => Ok(()),
+    }
 }
 
 /// The value of the property at `at`.

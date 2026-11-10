@@ -1,4 +1,4 @@
-import type { AiVisitors, SearchTotals, Uncited, Visitors } from "../src/api/analytics";
+import type { AiBots, AiVisitors, SearchTotals, Uncited, Visitors } from "../src/api/analytics";
 import type { Answers } from "./redirects";
 import { json, serve } from "./render";
 
@@ -76,6 +76,37 @@ export function uncited(fields: Partial<Uncited> = {}): Uncited {
   };
 }
 
+/** How often each AI assistant's bots read in the same week. */
+export function aiBots(fields: Partial<AiBots> = {}): AiBots {
+  return {
+    first: "2026-10-25",
+    last: "2026-10-31",
+    days: 7,
+    tools: [
+      {
+        tool: "chatgpt",
+        name: "ChatGPT",
+        reads: 412,
+        pages: 58,
+        sent: 21,
+        bots: [
+          { bot: "GPTBot", reads: 301 },
+          { bot: "OAI-SearchBot", reads: 111 },
+        ],
+      },
+      {
+        tool: "other",
+        name: "AI bots of no assistant named here",
+        reads: 92,
+        pages: 30,
+        sent: 0,
+        bots: [{ bot: "CCBot", reads: 92 }],
+      },
+    ],
+    ...fields,
+  };
+}
+
 /** What Google search counted for the week ending 28 October 2026, its last final day. */
 export function searchTotals(fields: Partial<SearchTotals> = {}): SearchTotals {
   return {
@@ -94,6 +125,7 @@ const WEEK: Answers = {
   "GET /analytics/visitors/": () => json(200, visitors()),
   "GET /analytics/ai-visitors/": () => json(200, aiVisitors()),
   "GET /analytics/uncited/": () => json(200, uncited()),
+  "GET /analytics/ai-bots/": () => json(200, aiBots()),
   "GET /search-console/totals/": () => json(200, searchTotals()),
 };
 

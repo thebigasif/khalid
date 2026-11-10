@@ -6,20 +6,21 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, PoisonError, RwLock};
 
+use chrono::{DateTime, Utc};
 use khalid_core::{Clock, Locale, SitePath};
 
 use crate::storage::LIBRARY_FOLDER;
 use crate::whole_file::write_whole;
 use crate::{
-    ContentKey, EditMediaError, FileAddress, FileName, FocalPoint, Folder, Kind, MediaEdit,
-    MediaError, MediaItem, MediaType, Original, PictureEdit, Pixels, Refusal, Storage,
+    ContentKey, EditMediaError, FileAddress, FileName, FocalPoint, Folder, FolderCount, Kind,
+    MediaEdit, MediaError, MediaItem, MediaType, Original, PictureEdit, Pixels, Refusal, Storage,
 };
 
 /// The file beside each item that holds its details.
 const ITEM_FILE: &str = "item.toml";
 
 /// The media library of one site. It reads every `media/<key>/item.toml`
-/// once when it opens, keeps the details in memory, and writes each change
+/// when it opens and on [`Library::reload`], keeps the details in memory, and writes each change
 /// back to its file (ADR "the media library keeps each file with its
 /// details").
 #[derive(Debug)]
@@ -85,6 +86,26 @@ pub enum EditPictureError {
     Media(#[from] MediaError),
 }
 
+/// Why an item was not deleted.
+#[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
+pub enum DeleteMediaError {
+    /// The library has no such item.
+    #[error("the library has no such item")]
+    NotFound,
+    /// The item changed after the copy the delete was made on.
+    #[error("the item changed after the copy the delete was made on")]
+    Stale {
+        /// When it last changed.
+        updated_at: DateTime<Utc>,
+        /// Who changed it.
+        updated_by: String,
+    },
+    /// The file or its details could not be removed.
+    #[error(transparent)]
+    Media(#[from] MediaError),
+}
+
 /// Why an upload was not added.
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
@@ -126,6 +147,33 @@ impl Library {
             items: RwLock::new(items),
             editing: tokio::sync::Mutex::new(()),
         })
+    }
+
+    /// Reads every `item.toml` again, so the library has what another
+    /// process, such as `khalid mcp`, added or changed since it opened.
+    /// An item this library saved while the files were read is kept when
+    /// it is newer than its file.
+    ///
+    /// # Errors
+    ///
+    /// Returns the errors of [`Library::open`]. On an error the library
+    /// keeps the items it had.
+    pub async fn reload(&self) -> Result<(), MediaError> {
+        let folder = SitePath::within(&self.site_root, LIBRARY_FOLDER)?.resolve()?;
+        let mut read = tokio::task::spawn_blocking(move || read_items(&folder))
+            .await
+            .map_err(|source| MediaError::Worker { source })??;
+        let mut items = self.items.write().unwrap_or_else(PoisonError::into_inner);
+        for (id, item) in items.iter() {
+            let older = read
+                .get(id)
+                .is_none_or(|on_disk| on_disk.updated_at < item.updated_at);
+            if older {
+                read.insert(id.clone(), item.clone());
+            }
+        }
+        *items = read;
+        Ok(())
     }
 
     /// Adds `upload`, or finds the item that already has its bytes. The type
@@ -189,6 +237,68 @@ impl Library {
         let mut all: Vec<MediaItem> = items.values().cloned().collect();
         all.sort_by(|a, b| b.uploaded_at.cmp(&a.uploaded_at).then(a.id.cmp(&b.id)));
         all
+    }
+
+    /// Every folder that holds an item, and each folder above one, by name,
+    /// with how many items each holds itself. The top is not listed.
+    pub fn folders(&self) -> Vec<FolderCount> {
+        let items = self.items.read().unwrap_or_else(PoisonError::into_inner);
+        let mut counts: BTreeMap<Folder, usize> = BTreeMap::new();
+        for item in items.values() {
+            *counts.entry(item.folder.clone()).or_default() += 1;
+            let mut above = item.folder.parent();
+            while let Some(folder) = above {
+                above = folder.parent();
+                counts.entry(folder).or_default();
+            }
+        }
+        counts
+            .into_iter()
+            .filter(|(folder, _)| *folder != Folder::root())
+            .map(|(folder, items)| FolderCount { folder, items })
+            .collect()
+    }
+
+    /// Removes the item `id`, its file and its `item.toml`, when it has not
+    /// changed since `seen`, the `updated_at` of the copy the delete was
+    /// made on (RULES.md BL-API-7). The file goes first, so a delete that
+    /// stops half way leaves the item listed and can run again. Returns the
+    /// item as it was.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`DeleteMediaError::NotFound`] for an unknown item,
+    /// [`DeleteMediaError::Stale`] when the item changed after `seen`, and
+    /// [`DeleteMediaError::Media`] when the file or its details cannot be
+    /// removed.
+    pub async fn delete(
+        &self,
+        id: &ContentKey,
+        seen: DateTime<Utc>,
+    ) -> Result<MediaItem, DeleteMediaError> {
+        let _one_at_a_time = self.editing.lock().await;
+        let item = self.get(id).ok_or(DeleteMediaError::NotFound)?;
+        if item.updated_at != seen {
+            return Err(DeleteMediaError::Stale {
+                updated_at: item.updated_at,
+                updated_by: item.updated_by,
+            });
+        }
+        self.storage.delete(&item.id, &item.name).await?;
+        let relative = format!("{LIBRARY_FOLDER}/{}", item.id);
+        let path = SitePath::within(&self.site_root, &relative)
+            .and_then(|path| path.resolve())
+            .map_err(MediaError::from)?;
+        tokio::task::spawn_blocking(move || match fs::remove_dir_all(&path) {
+            Ok(()) => Ok(()),
+            Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(()),
+            Err(source) => Err(MediaError::Write { path, source }),
+        })
+        .await
+        .map_err(|source| MediaError::Worker { source })??;
+        let mut items = self.items.write().unwrap_or_else(PoisonError::into_inner);
+        items.remove(id);
+        Ok(item)
     }
 
     /// Changes the details of the item `id` as `edit` says, as `by`, and

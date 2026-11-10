@@ -13,6 +13,7 @@ export function BulkPosts({ rows }: Props) {
   const queries = useQueryClient();
   const [ticked, setTicked] = useState<string[]>([]);
   const [result, setResult] = useState<BulkResult | null>(null);
+  const [said, setSaid] = useState<string | null>(null);
   const authors = [...new Set(rows.flatMap((row) => (row.author ? [row.author] : [])))];
   const chosen = rows.filter((row) => ticked.includes(row.id));
 
@@ -21,6 +22,7 @@ export function BulkPosts({ rows }: Props) {
   };
   const done = async (came: BulkResult) => {
     setResult(came);
+    setSaid(null);
     setTicked([]);
     await queries.invalidateQueries({ queryKey: ["rows"] });
   };
@@ -28,6 +30,7 @@ export function BulkPosts({ rows }: Props) {
   return (
     <>
       <div role="status">
+        {said === null ? null : <p>{said}</p>}
         {result === null ? null : (
           <>
             <p>{en.bulk.done(result.changed)}</p>
@@ -38,7 +41,16 @@ export function BulkPosts({ rows }: Props) {
         )}
       </div>
       {chosen.length === 0 ? null : <BulkChange ticked={chosen} authors={authors} onDone={done} />}
-      <PostTable rows={rows} ticked={ticked} onTick={tick} />
+      <PostTable
+        rows={rows}
+        ticked={ticked}
+        onTick={tick}
+        authors={authors}
+        onSaid={(words) => {
+          setSaid(words);
+          setResult(null);
+        }}
+      />
     </>
   );
 }

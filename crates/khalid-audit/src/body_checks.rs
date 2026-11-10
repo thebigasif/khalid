@@ -24,6 +24,7 @@ pub(crate) fn body_issues(
 ) {
     text(visit, page, found);
     links(crawl, page, thresholds, found);
+    scripted(page, found);
     extras(page, found);
     let https = found.url.as_str().starts_with("https://");
     if https
@@ -32,6 +33,7 @@ pub(crate) fn body_issues(
     {
         found.add(Check::HstsMissing, "");
     }
+    fixed_width(page, found);
 }
 
 /// The amount of text, against the page's size.
@@ -80,6 +82,19 @@ fn links(crawl: &Crawl, page: &Page, thresholds: Thresholds, found: &mut Found<'
     }
 }
 
+/// The parts of the page that only work with scripts on, named by the
+/// first, so one page is one issue however many it holds.
+fn scripted(page: &Page, found: &mut Found<'_>) {
+    let [first, rest @ ..] = page.scripted() else {
+        return;
+    };
+    let detail = match rest.len() {
+        0 => first.clone(),
+        more => format!("{first}, and {more} more"),
+    };
+    found.add(Check::NeedsJavaScript, detail);
+}
+
 /// Social tags and structured data.
 fn extras(page: &Page, found: &mut Found<'_>) {
     let missing: Vec<&str> = OPEN_GRAPH
@@ -105,4 +120,17 @@ fn extras(page: &Page, found: &mut Found<'_>) {
             format!("block {}", at.saturating_add(1)),
         );
     }
+}
+
+/// The parts of the page wider than a phone screen, named by the first,
+/// so one page is one issue however many it holds.
+fn fixed_width(page: &Page, found: &mut Found<'_>) {
+    let [first, rest @ ..] = page.wide() else {
+        return;
+    };
+    let detail = match rest.len() {
+        0 => first.clone(),
+        more => format!("{first}, and {more} more"),
+    };
+    found.add(Check::FixedWidth, detail);
 }

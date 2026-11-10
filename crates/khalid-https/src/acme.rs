@@ -79,7 +79,8 @@ impl fmt::Debug for AccountKey {
 }
 
 /// An account with a certificate authority, spoken to through the one
-/// outbound client (RULES.md BL-RUN-8).
+/// outbound client (RULES.md BL-RUN-8). Clones share the account.
+#[derive(Clone)]
 pub struct Acme {
     account: Account,
 }
@@ -129,8 +130,9 @@ impl Acme {
     }
 
     /// Gets a certificate for `domain`, answering the authority's check
-    /// through `challenges` with the first of `checks` it offers. The
-    /// answers are cleared afterwards, whether or not it worked.
+    /// through `challenges` with the first of `checks` it offers. Its
+    /// answers are forgotten afterwards, whether or not it worked, and
+    /// another domain's open order keeps its own.
     ///
     /// # Errors
     ///
@@ -143,16 +145,23 @@ impl Acme {
         challenges: &Challenges,
         checks: &[Check],
     ) -> Result<Issued, HttpsError> {
-        let issued = self.order(domain, challenges, checks).await;
-        challenges.clear();
+        let mut tokens = Vec::new();
+        let issued = self.order(domain, challenges, checks, &mut tokens).await;
+        challenges.forget_tls(domain.as_str());
+        for token in &tokens {
+            challenges.forget_http(token);
+        }
         issued
     }
 
+    /// Orders the certificate, putting the token of each file check it
+    /// answers in `tokens`.
     async fn order(
         &self,
         domain: &Domain,
         challenges: &Challenges,
         checks: &[Check],
+        tokens: &mut Vec<String>,
     ) -> Result<Issued, HttpsError> {
         let acme = |source| HttpsError::Acme { source };
         let identifiers = [Identifier::Dns(domain.as_str().to_owned())];
@@ -186,7 +195,10 @@ impl Acme {
                         .map_err(|_| acme(instant_acme::Error::Str("a digest is not 32 bytes")))?;
                     challenges.answer_tls(domain.as_str(), &digest)?;
                 }
-                Check::Http => challenges.answer_http(&challenge.token, answer.as_str()),
+                Check::Http => {
+                    tokens.push(challenge.token.clone());
+                    challenges.answer_http(&challenge.token, answer.as_str());
+                }
             }
             challenge.set_ready().await.map_err(acme)?;
         }

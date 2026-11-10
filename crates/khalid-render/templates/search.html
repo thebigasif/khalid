@@ -2,7 +2,8 @@
 {% block main %}
 <h1>{{ page.title }}</h1>
 {% if page.mode == "locked" %}<p class="lock locked" data-feature="search">{{ t.search_locked }}</p>
-{% else %}<form class="search" role="search" action="{{ page.action }}" method="get">
+{% else %}{% if page.mode == "busy" %}<p class="busy" role="status">{{ t.search_busy }}</p>
+{% endif %}<form class="search" role="search" action="{{ page.action }}" method="get">
 <label for="search-query">{{ t.search_label }}</label>
 <input id="search-query" type="search" name="q" value="{{ page.query or "" }}" autocomplete="off">
 <button type="submit">{{ t.search_button }}</button>

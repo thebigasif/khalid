@@ -183,6 +183,36 @@ fn the_check_follows_a_saved_search_title_and_custom_schema() {
 }
 
 #[test]
+fn the_check_names_the_author_from_their_file_as_the_built_page_does() {
+    let site = demo_site();
+    let mut file = site.path().to_path_buf();
+    file.push(FILE);
+    let text = fs::read_to_string(&file).unwrap();
+    let titled = text.replacen(
+        "\nauthor: asif\n",
+        "\nauthor: asif\nseo_title: \"Links by {author}\"\n",
+        1,
+    );
+    assert_ne!(text, titled);
+    fs::write(&file, titled).unwrap();
+    let key = writer_key(site.path());
+    let server = start(site.path());
+
+    let check = check(&server, &key);
+    assert_eq!(check["snippet"]["title"], "Links by Asif", "{check}");
+    let nodes = check["schema"]["@graph"].as_array().unwrap();
+    let person = nodes.iter().find(|node| node["@type"] == "Person");
+    let person = person.unwrap_or_else(|| panic!("no Person: {check}"));
+    assert_eq!(person["name"], "Asif", "{person}");
+    assert_eq!(person["jobTitle"], "Founder of SerpDad", "{person}");
+    assert_eq!(
+        person["sameAs"],
+        json!(["https://serpdad.com/"]),
+        "{person}"
+    );
+}
+
+#[test]
 fn a_saved_schema_template_reaches_site_toml_and_the_check_with_no_restart() {
     let site = demo_site();
     let key = writer_key(site.path());

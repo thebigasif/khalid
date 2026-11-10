@@ -80,6 +80,9 @@ INSERT INTO site_keys (site_id, purpose, secret, created_at) VALUES
 INSERT INTO form_submissions (site_id, form, fields, status, created_at) VALUES
     (1, 'contact', '{"message":"Hello"}', 'received', '2026-10-26T09:00:00Z'),
     (2, 'contact', '{"message":"Hello"}', 'received', '2026-10-26T09:00:00Z');
+INSERT INTO form_mail (site_id, form, to_address, subject, body, first_at, failures, last_at, last_error, next_at) VALUES
+    (1, 'contact', 'hello@example.com', 'New answer', 'Hello', '2026-10-26T09:00:00Z', 1, '2026-10-26T09:00:00Z', 'refused', '2026-10-26T09:01:00Z'),
+    (2, 'contact', 'hello@example.com', 'New answer', 'Hello', '2026-10-26T09:00:00Z', 1, '2026-10-26T09:00:00Z', 'refused', NULL);
 INSERT INTO subscribers (id, site_id, email, status, created_at) VALUES
     (1, 1, 'reader@example.com', 'confirmed', '2026-10-26T09:00:00Z'),
     (2, 2, 'reader@example.com', 'confirmed', '2026-10-26T09:00:00Z');
@@ -93,6 +96,11 @@ INSERT INTO subscriber_tokens (site_id, subscriber_id, purpose, token_hash, crea
 INSERT INTO newsletter_sends (site_id, send_key, list, started_at, sent) VALUES
     (1, 'post:en/old-post', 'main', '2026-10-26T09:00:00Z', 1),
     (2, 'post:en/old-post', 'main', '2026-10-26T09:00:00Z', 1);
+INSERT INTO newsletter_links (site_id, send_id, position, url, clicks) VALUES
+    (1, 1, 1, 'https://www.example.com/blog/old-post/', 3),
+    (2, 2, 1, 'https://www.example.com/blog/old-post/', 3);
+INSERT INTO welcome_steps (site_id, subscriber_id, list, day, sent_at) VALUES
+    (1, 1, 'main', 0, '2026-10-26T09:00:00Z'), (2, 2, 'main', 0, '2026-10-26T09:00:00Z');
 INSERT INTO comments (site_id, post_path, author_kind, author_name, author_email, body, status, created_at) VALUES
     (1, 'content/en/posts/old-post.md', 'reader', 'Ben Reader', 'ben@example.com', 'Useful, thank you.', 'approved', '2026-10-26T09:00:00Z'),
     (2, 'content/en/posts/old-post.md', 'reader', 'Ben Reader', 'ben@example.com', 'Useful, thank you.', 'approved', '2026-10-26T09:00:00Z');

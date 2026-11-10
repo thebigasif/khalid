@@ -122,6 +122,15 @@ impl Environment {
         )
     }
 
+    /// This environment with `name` set to `value` as well, such as
+    /// `khalid doctor` filling in a missing mail secret to check the rest of
+    /// the settings. Nothing is sent with a value set this way.
+    #[must_use]
+    pub fn with(mut self, name: &str, value: &str) -> Self {
+        self.0.insert(name.to_owned(), value.to_owned());
+        self
+    }
+
     /// The key in [`Environment::KEY`], or `None` when it is unset or blank.
     pub fn key(&self) -> Option<Secret<String>> {
         self.get(Self::KEY)

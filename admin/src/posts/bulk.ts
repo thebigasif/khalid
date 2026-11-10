@@ -1,4 +1,4 @@
-import { type Problem, problemMessage, savePost } from "../api/posts";
+import { type PostEdit, type Problem, problemMessage, savePost } from "../api/posts";
 import { trashPost } from "../api/records";
 import { addRedirect, isData } from "../api/redirects";
 import type { PostRow } from "../api/rows";
@@ -11,7 +11,42 @@ import { en } from "../strings/en";
 export type Farewell = { kind: "gone" } | { kind: "moved"; to: string };
 
 /** What one change to many posts does to each of them. */
-export type BulkAction = { kind: "author"; author: string } | { kind: "trash"; farewell: Farewell };
+export type BulkAction =
+  | { kind: "author"; author: string }
+  | { kind: "addTag"; tag: string }
+  | { kind: "removeTag"; tag: string }
+  | { kind: "category"; category: string | null }
+  | { kind: "trash"; farewell: Farewell };
+
+/** Whether two tag names are the same tag, as front matter compares them. */
+function sameTag(one: string, other: string): boolean {
+  return one.trim().toLowerCase() === other.trim().toLowerCase();
+}
+
+/**
+ * The edit `action` makes to `row`, beside its `updated_at`, or `null` when the post
+ * already is as asked. Trash is not an edit, so it has none.
+ */
+export function editOf(row: PostRow, action: BulkAction): Omit<PostEdit, "updated_at"> | null {
+  switch (action.kind) {
+    case "author":
+      return row.author === action.author ? null : { author: action.author };
+    case "addTag":
+      return row.tags.some((tag) => sameTag(tag, action.tag))
+        ? null
+        : { settings: { tags: [...row.tags, action.tag.trim()] } };
+    case "removeTag": {
+      const kept = row.tags.filter((tag) => !sameTag(tag, action.tag));
+      return kept.length === row.tags.length ? null : { settings: { tags: kept } };
+    }
+    case "category":
+      return (row.category ?? null) === action.category
+        ? null
+        : { settings: { category: action.category } };
+    case "trash":
+      return null;
+  }
+}
 
 /** What a change to many posts came to: how many changed, and what to say about the others. */
 export type BulkResult = { changed: number; left: string[] };
@@ -45,8 +80,11 @@ async function changeOne(row: PostRow, action: BulkAction): Promise<Outcome> {
     const reply = await trashPost(row.id, row.updated_at);
     return isData(reply) ? farewell(row, action.farewell) : refused(reply.problem);
   }
-  const edit = { updated_at: row.updated_at, author: action.author };
-  const answer = await savePost(row.id, edit);
+  const change = editOf(row, action);
+  if (change === null) {
+    return { changed: false, note: null };
+  }
+  const answer = await savePost(row.id, { updated_at: row.updated_at, ...change });
   return "post" in answer ? { changed: true, note: null } : refused(answer.problem);
 }
 

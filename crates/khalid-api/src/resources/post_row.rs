@@ -7,8 +7,11 @@ use khalid_lint::{ClusterRole, Report, Severity};
 use serde::Serialize;
 use utoipa::ToSchema;
 
-use super::{AdminPost, Listable, PostStatus, ReviewState, SeoScores, display, display_option};
+use super::{
+    AdminPost, Listable, NonBlank, PostStatus, ReviewState, SeoScores, display, display_option,
+};
 use crate::query::{FieldValues, Literal};
+use crate::staff_names::StaffNames;
 
 /// The lint publish gate's answer for a post as it stands.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, ToSchema)]
@@ -141,6 +144,15 @@ pub struct PostRow {
     #[serde(serialize_with = "display_option")]
     #[schema(value_type = Option<String>, example = "asif")]
     author: Option<Slug>,
+    /// The category's slug, if any. A list filters by this, such as
+    /// `category:on-page-seo`.
+    #[serde(serialize_with = "display_option")]
+    #[schema(value_type = Option<String>, example = "on-page-seo")]
+    category: Option<Slug>,
+    /// The tags' names, in the order written. A list filters by one, such
+    /// as `tag:'internal links'`.
+    #[schema(value_type = Vec<String>, example = json!(["internal links"]))]
+    tags: Vec<NonBlank>,
     /// Draft, published or scheduled.
     status: PostStatus,
     /// Draft, in review or ready.
@@ -159,8 +171,14 @@ pub struct PostRow {
     published_at: Option<DateTime<Utc>>,
     /// When it last changed.
     updated_at: DateTime<Utc>,
-    /// Who made the last change.
+    /// Who made the last change, as the post names them; `null` when not
+    /// known, such as for a file changed by hand.
     updated_by: Option<String>,
+    /// The name the admin shows for whoever made the last change: their
+    /// account's name, the name their key was made with, or else
+    /// `updated_by`; `null` when `updated_by` is.
+    #[schema(example = "Maria Lopez")]
+    updated_by_name: Option<String>,
     /// Whether the lint publish gate lets it go live. A list filters by
     /// this, such as `gate:refuses`.
     gate: Gate,
@@ -229,6 +247,8 @@ impl PostRow {
             title: post.title().to_owned(),
             path: None,
             author: post.author().cloned(),
+            category: post.settings().category.clone(),
+            tags: post.settings().tags.clone(),
             status: post.status(),
             review_state: post.settings().review_state,
             reviewed: post.settings().reviewed,
@@ -237,6 +257,7 @@ impl PostRow {
             published_at: post.published_at(),
             updated_at: post.updated_at(),
             updated_by: post.updated_by().map(str::to_owned),
+            updated_by_name: None,
             gate,
             lint: LintCounts::default(),
             scores: None,
@@ -267,6 +288,17 @@ impl PostRow {
     #[must_use]
     pub fn with_path(self, path: Option<String>) -> Self {
         Self { path, ..self }
+    }
+
+    /// The same row with whoever made the last change shown by their name
+    /// in `names`.
+    #[must_use]
+    pub fn named(self, names: &StaffNames) -> Self {
+        let updated_by_name = self.updated_by.as_deref().map(|by| names.of(by).to_owned());
+        Self {
+            updated_by_name,
+            ..self
+        }
     }
 
     /// The same row with its findings counted as `lint`.
@@ -349,6 +381,12 @@ impl FieldValues for PostRow {
             "slug" => text(self.slug.as_str()),
             "title" => text(&self.title),
             "author" => self.author.iter().flat_map(|a| text(a.as_str())).collect(),
+            "category" => self
+                .category
+                .iter()
+                .flat_map(|c| text(c.as_str()))
+                .collect(),
+            "tag" => self.tags.iter().flat_map(|t| text(t.as_str())).collect(),
             "status" => status_text(self.status),
             "review_state" => text(self.review_state.as_str()),
             "reviewed" => self
@@ -383,6 +421,8 @@ impl Listable for PostRow {
         "slug",
         "title",
         "author",
+        "category",
+        "tag",
         "status",
         "review_state",
         "reviewed",

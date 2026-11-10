@@ -8,6 +8,7 @@ import type { PostVersion } from "../api/versions";
 import { Problem } from "../components/Problem";
 import { en } from "../strings/en";
 import { CopyPost } from "./CopyPost";
+import { DraftComments } from "./comments/DraftComments";
 import { GoLive } from "./GoLive";
 import { LinkSuggestions } from "./LinkSuggestions";
 import { LintPanel } from "./LintPanel";
@@ -18,6 +19,7 @@ import { PostSettings } from "./PostSettings";
 import { Presence } from "./Presence";
 import { PreviewLink } from "./PreviewLink";
 import { PublishButton } from "./PublishButton";
+import { type Marking, noteToSend, RealUpdate } from "./RealUpdate";
 import { RichText } from "./RichText";
 import { fitsRichText } from "./richText";
 import { SchemaPanel } from "./SchemaPanel";
@@ -41,7 +43,12 @@ function statusText(state: SaveState, dirty: boolean): string {
 
 /** The title and text of one post, saved as the writer goes. */
 export function EditorForm({ post }: Props) {
-  const { draft, setDraft, dirty, state, save, updatedAt } = useAutosave(post);
+  // The honest update switch: off until the writer says this change is a real update.
+  const [marking, setMarking] = useState<Marking>({ on: false, note: "" });
+  const { draft, setDraft, dirty, state, save, updatedAt, dated } = useAutosave(post, {
+    note: noteToSend(marking),
+    onDated: () => setMarking({ on: false, note: "" }),
+  });
   const { publishing, publish } = usePublish(post, save, updatedAt);
   // Checked again after each save, since the key holds the saved copy's time.
   const check = useQuery({
@@ -176,6 +183,7 @@ export function EditorForm({ post }: Props) {
               spellCheck
             />
           )}
+          <DraftComments id={post.id} markdown={draft.markdown} />
         </div>
         {live ? (
           <LivePage id={post.id} version={updatedAt.current} />
@@ -196,7 +204,11 @@ export function EditorForm({ post }: Props) {
             <LinkSuggestions id={post.id} version={updatedAt.current} onAdd={addLink} />
             <SchemaPanel check={checked} live={publishing.status === "published"} {...fields} />
             <PostSettings settings={draft.settings} onSetting={setSetting} onBlur={onBlur}>
-              {publishing.status === "published" ? null : <GoLive at={at} onAt={setAt} />}
+              {publishing.status === "published" ? (
+                <RealUpdate dated={dated} marking={marking} onMarking={setMarking} />
+              ) : (
+                <GoLive at={at} onAt={setAt} />
+              )}
               <PreviewLink id={post.id} />
               <CopyPost id={post.id} />
               <Versions id={post.id} version={updatedAt.current} now={draft} onRestore={restore} />

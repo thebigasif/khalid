@@ -8,6 +8,8 @@ use std::io::{BufRead, BufReader, Read, Write};
 use std::net::TcpStream;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::thread;
+use std::time::Duration;
 
 use khalid_api::post_password::NewPassword;
 use serde_json::Value;
@@ -18,6 +20,13 @@ const PASSWORD: &str = "generated-for-this-test";
 /// The post, and a line of its body that only its full page shows.
 const POST: &str = "/blog/why-internal-links-matter/";
 const BODY: &str = "It sounds too simple to matter.";
+
+/// The post's file in the site folder.
+const FIRST_POST: &str = "content/en/posts/2026-09-14-why-internal-links-matter.md";
+
+/// A folder post with an image beside it, and its file.
+const FOLDER_POST: &str = "/blog/fixing-slow-pages/";
+const FOLDER_FILE: &str = "content/en/posts/2026-10-05-fixing-slow-pages/index.md";
 
 /// A running `khalid serve`, stopped when dropped.
 struct Server {
@@ -47,15 +56,15 @@ fn copy_dir(from: &Path, into: &Path) {
     }
 }
 
-/// A copy of the demo site whose first post has the test's password.
+/// A copy of the demo site whose `post` has the test's password.
 #[cfg(test)]
-fn site_with_password() -> tempfile::TempDir {
+fn site_with_password(post: &str) -> tempfile::TempDir {
     let mut demo = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     demo.push("../../fixtures/demo-site");
     let temp = tempfile::tempdir().unwrap();
     copy_dir(&demo, temp.path());
     let mut file = temp.path().to_path_buf();
-    file.push("content/en/posts/2026-09-14-why-internal-links-matter.md");
+    file.push(post);
     let text = fs::read_to_string(&file).unwrap();
     let hash = NewPassword::try_new(PASSWORD.to_owned())
         .unwrap()
@@ -120,11 +129,11 @@ fn send(server: &Server, head: &str, body: &str) -> (u16, String, String) {
     (status, head.to_owned(), body.to_owned())
 }
 
-/// Posts the password form with `password`.
+/// Posts the password form for `post` with `password`.
 #[cfg(test)]
-fn unlock(server: &Server, password: &str) -> (u16, String, String) {
+fn unlock(server: &Server, post: &str, password: &str) -> (u16, String, String) {
     let head = "POST /blog/_unlock/ HTTP/1.1\r\nContent-Type: application/x-www-form-urlencoded";
-    let form = format!("path=%2Fblog%2Fwhy-internal-links-matter%2F&password={password}");
+    let form = format!("path={}&password={password}", post.replace('/', "%2F"));
     send(server, head, &form)
 }
 
@@ -139,7 +148,7 @@ fn header<'h>(head: &'h str, name: &str) -> Option<&'h str> {
 
 #[test]
 fn a_password_opens_the_post_with_no_script_and_nothing_else_does() {
-    let site = site_with_password();
+    let site = site_with_password(FIRST_POST);
     let key = khalid(
         site.path(),
         &[
@@ -163,7 +172,7 @@ fn a_password_opens_the_post_with_no_script_and_nothing_else_does() {
         assert!(!page.contains(BODY), "{door}");
     }
 
-    let (status, head, page) = unlock(&server, "not-the-password");
+    let (status, head, page) = unlock(&server, POST, "not-the-password");
     assert_eq!(status, 401, "{head}");
     assert!(
         page.contains("class=\"unlock-error\" role=\"alert\">"),
@@ -172,7 +181,7 @@ fn a_password_opens_the_post_with_no_script_and_nothing_else_does() {
     assert!(header(&head, "set-cookie").is_none(), "{head}");
     assert!(header(&head, "content-security-policy").is_some(), "{head}");
 
-    let (status, head, _) = unlock(&server, PASSWORD);
+    let (status, head, _) = unlock(&server, POST, PASSWORD);
     assert_eq!(status, 303, "{head}");
     assert_eq!(header(&head, "location"), Some(POST));
     let cookie = header(&head, "set-cookie")
@@ -193,4 +202,26 @@ fn a_password_opens_the_post_with_no_script_and_nothing_else_does() {
     let (status, _, body) = send(&server, &list, "");
     assert_eq!(status, 200, "{body}");
     assert!(!body.contains(BODY), "the Content API sends no locked body");
+}
+
+#[test]
+fn the_full_page_of_a_password_post_draws_its_images_in_sizes() {
+    let site = site_with_password(FOLDER_FILE);
+    let server = start(site.path());
+    // The full render keeps the full page: a minute at most, ten times a
+    // second.
+    let mut page = String::new();
+    for _ in 0..600 {
+        let (status, head, _) = unlock(&server, FOLDER_POST, PASSWORD);
+        if let (303, Some(cookie)) = (status, header(&head, "set-cookie")) {
+            let cookie = cookie.split(';').next().unwrap();
+            let opened = format!("GET {FOLDER_POST} HTTP/1.1\r\nCookie: {cookie}");
+            page = send(&server, &opened, "").2;
+            break;
+        }
+        thread::sleep(Duration::from_millis(100));
+    }
+    let image = "<img src=\"/blog/media/";
+    assert!(page.contains(image), "the image is drawn in sizes: {page}");
+    assert!(!page.contains("src=\"page-weight.png\""), "{page}");
 }

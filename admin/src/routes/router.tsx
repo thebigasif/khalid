@@ -7,7 +7,7 @@ import {
   type RouterHistory,
   redirect,
 } from "@tanstack/react-router";
-import { mountPath } from "../api/mount";
+import { adminPath } from "../api/mount";
 import { isSignedIn } from "../auth/session";
 import { RouteError } from "../components/RouteError";
 import { Shell } from "../components/Shell";
@@ -30,6 +30,7 @@ import { Look } from "./Look";
 import { Media } from "./Media";
 import { MediaDetails } from "./MediaDetails";
 import { NewPost } from "./NewPost";
+import { Pages } from "./Pages";
 import { Passkeys } from "./Passkeys";
 import { Posts } from "./Posts";
 import { Privacy } from "./Privacy";
@@ -40,7 +41,9 @@ import { SeoSettings } from "./SeoSettings";
 import { Serpdad } from "./Serpdad";
 import { SignIn } from "./SignIn";
 import { Site } from "./Site";
+import { SitePage } from "./SitePage";
 import { Sites } from "./Sites";
+import { Subscribers } from "./Subscribers";
 import { Team } from "./Team";
 import { Trash } from "./Trash";
 import { WebhookActivity } from "./WebhookActivity";
@@ -121,6 +124,13 @@ const trash = createRoute({ getParentRoute: () => signedIn, path: "/trash", comp
 
 const audit = createRoute({ getParentRoute: () => signedIn, path: "/audit", component: AuditLog });
 
+// Only owners and admins read form answers, so the screen loads when opened.
+const forms = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/forms",
+  component: lazyRouteComponent(() => import("./Forms"), "Forms"),
+});
+
 const redirects = createRoute({
   getParentRoute: () => signedIn,
   path: "/redirects",
@@ -157,6 +167,12 @@ const comments = createRoute({
   component: Comments,
 });
 
+const subscribers = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/subscribers",
+  component: Subscribers,
+});
+
 const account = createRoute({
   getParentRoute: () => signedIn,
   path: "/account",
@@ -173,6 +189,22 @@ const authorPage = createRoute({
   getParentRoute: () => signedIn,
   path: "/authors/$id",
   component: AuthorPage,
+});
+
+// Loads when opened, so the admin's first download stays inside its budget.
+const tags = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/tags",
+  component: lazyRouteComponent(() => import("./Tags"), "Tags"),
+});
+
+// The site's pages, such as About: files beside the posts, live once saved.
+const pages = createRoute({ getParentRoute: () => signedIn, path: "/pages", component: Pages });
+
+const sitePage = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/pages/$id",
+  component: SitePage,
 });
 
 const keys = createRoute({ getParentRoute: () => signedIn, path: "/keys", component: Keys });
@@ -203,6 +235,14 @@ const look = createRoute({ getParentRoute: () => signedIn, path: "/look", compon
 
 // The colours, fonts and logo in theme/tokens.toml.
 const design = createRoute({ getParentRoute: () => signedIn, path: "/design", component: Design });
+
+// The header and footer menus of [nav], saved through the settings API.
+// It loads on first visit, so the first screen stays small.
+const navigation = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/navigation",
+  component: lazyRouteComponent(() => import("./Navigation"), "Navigation"),
+});
 
 // The whole blog's settings; post settings live in the editor.
 const site = createRoute({ getParentRoute: () => signedIn, path: "/settings", component: Site });
@@ -250,8 +290,13 @@ const routeTree = root.addChildren([
     media,
     mediaItem,
     comments,
+    subscribers,
+    forms,
     authors,
     authorPage,
+    tags,
+    pages,
+    sitePage,
     trash,
     audit,
     redirects,
@@ -266,6 +311,7 @@ const routeTree = root.addChildren([
     handOver,
     look,
     design,
+    navigation,
     site,
     seo,
     privacy,
@@ -278,7 +324,7 @@ const routeTree = root.addChildren([
 
 /** Makes the admin's router; a test passes a memory history. */
 export function makeRouter(history: RouterHistory = createBrowserHistory()) {
-  return createRouter({ routeTree, history, basepath: `${mountPath()}admin` });
+  return createRouter({ routeTree, history, basepath: adminPath() });
 }
 
 declare module "@tanstack/react-router" {

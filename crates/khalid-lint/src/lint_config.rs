@@ -2,6 +2,7 @@
 
 use std::collections::BTreeMap;
 
+use khalid_core::Slug;
 use serde::Deserialize;
 use toml::Spanned;
 
@@ -13,6 +14,8 @@ use crate::{Catalogue, LintError, RuleId, Severity, Thresholds};
 /// `"off"`. A
 /// rule the file does not name keeps its default. The `[thresholds]` table
 /// tunes the numbers behind the rules that measure (see [`Thresholds`]).
+/// The `[reviewers]` table names, in `required-in`, the categories whose
+/// posts must say who checked them, such as health or money posts.
 ///
 /// # Examples
 ///
@@ -27,6 +30,7 @@ use crate::{Catalogue, LintError, RuleId, Severity, Thresholds};
 pub struct LintConfig {
     severities: BTreeMap<String, Severity>,
     thresholds: Thresholds,
+    reviewers_required_in: Vec<Slug>,
 }
 
 /// The file as written, with the position of each rule name.
@@ -37,6 +41,16 @@ struct RawConfig {
     rules: BTreeMap<Spanned<String>, Severity>,
     #[serde(default)]
     thresholds: Thresholds,
+    #[serde(default)]
+    reviewers: RawReviewers,
+}
+
+/// The `[reviewers]` table as written.
+#[derive(Deserialize, Default)]
+#[serde(deny_unknown_fields, rename_all = "kebab-case")]
+struct RawReviewers {
+    #[serde(default)]
+    required_in: Vec<Slug>,
 }
 
 impl LintConfig {
@@ -73,6 +87,7 @@ impl LintConfig {
         Ok(Self {
             severities,
             thresholds: raw.thresholds,
+            reviewers_required_in: raw.reviewers.required_in,
         })
     }
 
@@ -85,6 +100,13 @@ impl LintConfig {
     /// leaves out.
     pub fn thresholds(&self) -> Thresholds {
         self.thresholds
+    }
+
+    /// The slugs of the categories whose posts must name a reviewer in
+    /// `reviewed_by`, from `required-in` in the `[reviewers]` table. Empty
+    /// when the file sets none, so no post needs one.
+    pub fn reviewers_required_in(&self) -> &[Slug] {
+        &self.reviewers_required_in
     }
 }
 

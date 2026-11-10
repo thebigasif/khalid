@@ -27,14 +27,21 @@ export function addWebhook(webhook: NewWebhook): Promise<Reply<AdminWebhook[]>> 
 /** One message a webhook sent: where it stands, and every try. */
 export type AdminDelivery = components["schemas"]["AdminDelivery"];
 
-async function deliveries(response: Response): Promise<AdminDelivery[]> {
-  const body: components["schemas"]["AdminDeliveries"] = await response.json();
-  return body.deliveries;
+/** One page of a webhook's messages, and the `before` of the next, older page, if any. */
+export type AdminDeliveries = components["schemas"]["AdminDeliveries"];
+
+async function deliveries(response: Response): Promise<AdminDeliveries> {
+  const body: AdminDeliveries = await response.json();
+  return body;
 }
 
-/** The 50 newest messages one webhook that is on sent, newest first. */
-export function listDeliveries(id: string): Promise<Reply<AdminDelivery[]>> {
-  return call(`/webhooks/${encodeURIComponent(id)}/deliveries/`, {}, deliveries);
+/**
+ * One page of the messages one webhook that is on sent, newest first,
+ * older than the message `before` when given.
+ */
+export function listDeliveries(id: string, before?: number): Promise<Reply<AdminDeliveries>> {
+  const page = before === undefined ? "" : `?before=${before}`;
+  return call(`/webhooks/${encodeURIComponent(id)}/deliveries/${page}`, {}, deliveries);
 }
 
 /** Switches a webhook off; its past deliveries stay in the log. */

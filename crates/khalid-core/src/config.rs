@@ -11,9 +11,10 @@ use crate::mail_settings::MailTable;
 use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
-    AbsoluteUrl, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment, Locale,
-    MailSettings, MediaSettings, NavSettings, ParseUrlError, PrivacySettings, Reader, ReaderSwitch,
-    SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
+    AbsoluteUrl, AdminFolder, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment,
+    LimitSettings, Locale, LogSettings, MailSettings, MediaSettings, NavSettings, ParseUrlError,
+    PrivacySettings, Reader, ReaderSwitch, SearchConsoleSettings, SeoSettings, SiteCode,
+    TemplateChoice, VisitorLogSettings,
 };
 
 /// Every setting Khalid reads, checked once at start and then passed by
@@ -27,6 +28,7 @@ pub struct Config {
     name: String,
     address: AbsoluteUrl,
     mount: String,
+    admin_folder: AdminFolder,
     mode: Mode,
     slugs: SlugMode,
     default_language: Locale,
@@ -44,7 +46,10 @@ pub struct Config {
     privacy: PrivacySettings,
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
+    limits: LimitSettings,
+    log: LogSettings,
     preview_link_lifetime: Duration,
+    trash_days: Option<u16>,
     ai: AiSettings,
     ghost_content_api: bool,
 }
@@ -94,6 +99,8 @@ struct SiteFile {
     #[serde(default = "root_mount")]
     mount: String,
     #[serde(default)]
+    admin_folder: AdminFolder,
+    #[serde(default)]
     mode: Mode,
     #[serde(default)]
     slugs: SlugMode,
@@ -121,11 +128,17 @@ struct SiteFile {
     #[serde(default)]
     visitor_log: VisitorLogSettings,
     #[serde(default)]
+    limits: LimitSettings,
+    #[serde(default)]
+    log: LogSettings,
+    #[serde(default)]
     ai: AiSettings,
     #[serde(default)]
     ghost_content_api: bool,
     preview_link_days: Option<u64>,
     preview_link_hours: Option<u64>,
+    #[serde(default = "default_trash_days")]
+    trash_days: u16,
 }
 
 /// The value of the process's environment variable `name`, or `None` when
@@ -153,6 +166,17 @@ const MOST_HOURS: u64 = 30 * 24;
 
 /// How long a preview link works when `site.toml` does not say, 7 days.
 const DEFAULT_HOURS: u64 = 7 * 24;
+
+/// How many days a deleted post waits in the trash when `site.toml` does
+/// not say.
+const DEFAULT_TRASH_DAYS: u16 = 30;
+
+/// The most days `trash_days` may set, ten years.
+const MOST_TRASH_DAYS: u16 = 3650;
+
+fn default_trash_days() -> u16 {
+    DEFAULT_TRASH_DAYS
+}
 
 /// The preview link lifetime `file` sets, or the key it is set under and
 /// what is wrong with it.
@@ -184,6 +208,15 @@ fn layout_mistake(file: &SiteFile) -> Option<(&'static str, &'static str)> {
             "the mount path must start and end with /, like /blog/",
         ));
     }
+    let folder = file.admin_folder.as_str();
+    if file
+        .languages
+        .iter()
+        .any(|language| language.as_str() == folder)
+    {
+        let problem = "the admin folder cannot be a language code, since that language's pages answer there; pick another name, like studio";
+        return Some(("admin_folder", problem));
+    }
     if file.languages.is_empty() {
         return Some(("languages", "the site needs at least one language"));
     }
@@ -213,8 +246,8 @@ fn in_table(path: &Path, text: &str, table: &str, key: &str, problem: &str) -> C
 }
 
 /// The first mistake in the tables whose checks span the file: `[alerts]`
-/// against how the site sends `mail`, and `[visitor_log]` and `[privacy]`
-/// against the mode.
+/// against how the site sends `mail`, `[visitor_log]` and `[privacy]`
+/// against the mode, and `[ai]` and `[limits]` on their own.
 fn tables_mistake(
     file: &SiteFile,
     mail: Option<&MailSettings>,
@@ -226,6 +259,9 @@ fn tables_mistake(
     }
     if let Some((key, problem)) = file.visitor_log.mistake(file.mode) {
         return Err(in_table(path, text, "[visitor_log", key, problem));
+    }
+    if let Some((key, problem)) = file.limits.mistake() {
+        return Err(in_table(path, text, "[limits", key, problem));
     }
     if let Some((key, problem)) = file.ai.mistake() {
         return Err(in_table(path, text, "[ai", key, problem));
@@ -291,6 +327,10 @@ impl Config {
                 return Err(field("bucket", missing));
             }
         }
+        if file.trash_days > MOST_TRASH_DAYS {
+            let most = "the trash keeps a deleted post for up to 3650 days, so use 1 to 3650, or 0 to never empty it";
+            return Err(field("trash_days", most));
+        }
         let mail = file.mail.take().map(|table| table.check(env)).transpose();
         let mail = mail.map_err(|(key, problem)| in_table(path, text, "[mail", key, problem))?;
         tables_mistake(&file, mail.as_ref(), path, text)?;
@@ -311,6 +351,7 @@ impl Config {
             name: file.name,
             address,
             mount: file.mount,
+            admin_folder: file.admin_folder,
             mode: file.mode,
             slugs: file.slugs,
             default_language: file.default_language,
@@ -328,7 +369,10 @@ impl Config {
             privacy: file.privacy,
             search_console,
             visitor_log: file.visitor_log,
+            limits: file.limits,
+            log: file.log,
             preview_link_lifetime,
+            trash_days: (file.trash_days > 0).then_some(file.trash_days),
             ai: file.ai,
             ghost_content_api: file.ghost_content_api,
         })
@@ -379,10 +423,29 @@ impl Config {
         self.preview_link_lifetime
     }
 
+    /// How many days a deleted post waits in the trash before `khalid
+    /// serve` empties it: 30 unless `site.toml` sets `trash_days`, up to
+    /// 3650, or `None` when it sets 0 and the trash is never emptied.
+    pub fn trash_days(&self) -> Option<u16> {
+        self.trash_days
+    }
+
     /// Whether each visit is logged and for how long, from `[visitor_log]`;
     /// off unless the site switches it on.
     pub fn visitor_log(&self) -> &VisitorLogSettings {
         &self.visitor_log
+    }
+
+    /// How many requests the APIs and the search page take a minute,
+    /// from `[limits]`; the usual numbers unless the site sets its own.
+    pub fn limits(&self) -> &LimitSettings {
+        &self.limits
+    }
+
+    /// How much `khalid serve` logs and in which shape, from `[log]`;
+    /// plain lines at `info` unless set.
+    pub fn log(&self) -> LogSettings {
+        self.log
     }
 
     /// Whether a copy of Ghost's Content API answers under
@@ -406,6 +469,12 @@ impl Config {
     /// The folder the blog sits under on that site, such as `/blog/`.
     pub fn mount(&self) -> &str {
         &self.mount
+    }
+
+    /// The folder under the mount where the admin answers, from
+    /// `admin_folder`; `admin` unless the file says otherwise.
+    pub fn admin_folder(&self) -> &AdminFolder {
+        &self.admin_folder
     }
 
     /// Server, static or headless.

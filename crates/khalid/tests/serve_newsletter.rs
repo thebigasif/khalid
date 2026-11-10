@@ -229,4 +229,22 @@ fn confirming_sends_the_newsletter_s_welcome_email() {
         "{message}"
     );
     assert!(message.contains("Five links, every Friday."), "{message}");
+    // Written while the server runs, and read without a restart (G39).
+    let mut greeting = site.path().to_path_buf();
+    greeting.extend(["content", "newsletters", "main", "welcome.md"]);
+    fs::create_dir_all(greeting.parent().unwrap()).unwrap();
+    fs::write(&greeting, "# Welcome to Field Notes\n\nOne post a week.\n").unwrap();
+    let more = "email=grace%40example.com&homepage=";
+    for _ in 0..2 {
+        let (status, page) = post_form(&server, "/subscribe", more);
+        assert_eq!(status, 200, "{page}");
+    }
+    let received = stub.received();
+    assert_eq!(received.len(), 3, "one welcome for the second list");
+    let message = &received[2];
+    assert!(
+        message.contains("Subject: Welcome to Field Notes"),
+        "{message}"
+    );
+    assert!(message.contains("One post a week."), "{message}");
 }

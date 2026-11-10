@@ -36,6 +36,48 @@ const KIND_WORDS: &[(&str, Words)] = &[
             best_of: german::BEST_OF_WORDS,
         },
     ),
+    // Only the plural of "best" counts where the singular also means
+    // "better", as "mejor" does: "Cómo escribir mejor" is no list.
+    (
+        "fr",
+        Words {
+            alternatives: &["alternative", "alternatives"],
+            review: &["avis", "test"],
+            best_of: &["meilleurs", "meilleures", "top"],
+        },
+    ),
+    (
+        "es",
+        Words {
+            alternatives: &["alternativa", "alternativas"],
+            review: &["opiniones", "reseña", "review"],
+            best_of: &["mejores", "top"],
+        },
+    ),
+    (
+        "it",
+        Words {
+            alternatives: &["alternativa", "alternative"],
+            review: &["opinioni", "recensione", "recensioni", "review"],
+            best_of: &["migliori", "top"],
+        },
+    ),
+    (
+        "pt",
+        Words {
+            alternatives: &["alternativa", "alternativas"],
+            review: &["avaliação", "opiniões", "review"],
+            best_of: &["melhores", "top"],
+        },
+    ),
+    (
+        "nl",
+        Words {
+            alternatives: &["alternatief", "alternatieven"],
+            review: &["ervaringen", "recensie", "review", "test"],
+            best_of: &["beste", "top"],
+        },
+    ),
 ];
 
 /// One language's title words for the kinds a single word marks.
@@ -76,7 +118,8 @@ impl PageKind {
     /// for a title of no known kind.
     ///
     /// A title that compares with `vs` is a comparison in every language.
-    /// The other kinds are read from English and German words; when a
+    /// The other kinds are read from English, German, French, Spanish,
+    /// Italian, Portuguese and Dutch words; when a
     /// title holds words of two kinds, alternatives win over a review, and
     /// a review over a best-of list.
     pub fn of_title(language: &str, title: &str) -> Option<Self> {
@@ -209,7 +252,39 @@ mod tests {
             kind("de", "Die 10 besten SEO-Tools"),
             Some(PageKind::BestOf { picks: Some(10) })
         );
-        assert_eq!(kind("fr", "Les meilleurs outils"), None);
+        assert_eq!(kind("sv", "De bästa verktygen"), None);
+    }
+
+    #[test]
+    fn french_spanish_italian_portuguese_and_dutch_titles_have_their_words() {
+        let alternatives = |picks| Some(PageKind::Alternatives { picks });
+        let best_of = |picks| Some(PageKind::BestOf { picks });
+        let review = Some(PageKind::Review);
+        let titles = [
+            ("fr", "7 alternatives à Ahrefs", alternatives(Some(7))),
+            ("fr", "Ahrefs : notre avis complet", review.clone()),
+            ("fr", "Les 10 meilleurs outils SEO", best_of(Some(10))),
+            ("es", "5 alternativas a Ahrefs", alternatives(Some(5))),
+            ("es", "Reseña de Ahrefs: ¿vale la pena?", review.clone()),
+            ("es", "Las mejores herramientas SEO", best_of(None)),
+            (
+                "it",
+                "Le 6 migliori alternative ad Ahrefs",
+                alternatives(Some(6)),
+            ),
+            ("it", "Recensione di Ahrefs", review.clone()),
+            ("it", "I migliori strumenti SEO", best_of(None)),
+            ("pt", "Alternativas ao Ahrefs", alternatives(None)),
+            ("pt", "Ahrefs: avaliação completa", review.clone()),
+            ("pt", "As 8 melhores ferramentas de SEO", best_of(Some(8))),
+            ("nl", "4 alternatieven voor Ahrefs", alternatives(Some(4))),
+            ("nl", "Ahrefs review: is het de prijs waard?", review),
+            ("nl", "De beste SEO-tools", best_of(None)),
+        ];
+        for (language, title, want) in titles {
+            assert_eq!(kind(language, title), want, "{language}: {title}");
+        }
+        assert_eq!(kind("fr", "Pourquoi les liens internes comptent"), None);
     }
 
     #[test]

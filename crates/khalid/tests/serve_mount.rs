@@ -99,6 +99,43 @@ fn the_admin_answers_under_the_mount_and_its_old_address_moves_there() {
 }
 
 #[test]
+fn an_admin_folder_in_site_toml_moves_the_admin_and_its_links() {
+    let site = demo_copy();
+    let mut settings = site.path().to_path_buf();
+    settings.push("site.toml");
+    let text = std::fs::read_to_string(&settings).unwrap();
+    let moved = text.replacen("mode =", "admin_folder = \"studio\"\nmode =", 1);
+    std::fs::write(&settings, moved).unwrap();
+    let server = start(site.path(), &new_key(site.path(), &EDITOR));
+    let (status, _, page) = get(&server, "/blog/studio/posts");
+    match status {
+        200 => assert!(
+            page.contains("<meta name=\"khalid-admin-folder\" content=\"studio\">"),
+            "{page}"
+        ),
+        503 => assert!(page.contains("The admin is not in this copy"), "{page}"),
+        _ => panic!("the admin is not in its folder: {status} {page}"),
+    }
+    let (status, head, _) = get(&server, "/blog/studio");
+    assert_eq!((status, location(&head)), (308, Some("/blog/studio/")));
+    for old in ["/blog/admin/", "/admin/posts"] {
+        let (status, head, _) = get(&server, old);
+        assert_eq!((status, location(&head)), (404, None), "{old}");
+    }
+    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", site.path().to_str().unwrap(), "--json", "staff"])
+        .args(["owner", "--email", "asif@example.com", "--name", "Asif"])
+        .output()
+        .unwrap();
+    let made: Value = serde_json::from_slice(&output.stdout).unwrap();
+    let link = made["link"].as_str().unwrap();
+    assert!(
+        link.starts_with(&format!("{BLOG}studio/sign-in/link#token=")),
+        "{link}"
+    );
+}
+
+#[test]
 fn both_apis_and_their_document_answer_under_the_mount() {
     let site = demo_copy();
     let server = start(site.path(), &new_key(site.path(), &EDITOR));

@@ -28,12 +28,16 @@
 //! [`uncited`] lists the pages AI bots read that no AI assistant ever sent
 //! a reader to. A bot's visit is never counted as a citation.
 //!
+//! [`ai_bots`] counts the AI bots' reads per assistant, beside the readers
+//! each assistant sent.
+//!
 //! [`Visitors`] counts the page views in a period per day, per [`Source`]
 //! and per page, against the period before.
 //!
 //! This crate knows nothing about HTTP, SQL or files. The binary reads the
 //! headers and `khalid-db` keeps the counts.
 
+mod ai_bots;
 mod ai_tool;
 mod ai_visitors;
 mod crawl_report;
@@ -48,6 +52,7 @@ mod uncited;
 mod visit;
 mod visitors;
 
+pub use ai_bots::{AI_BOT_MAKERS, BotReads, ToolBots, ai_bots};
 pub use ai_tool::AiTool;
 pub use ai_visitors::{AiVisitors, PageViews, Period, ToolVisitors};
 pub use crawl_report::{Answers, BotError, CrawlerHealth, bot_errors, crawl_health};

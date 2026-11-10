@@ -17,12 +17,22 @@ use tokio::sync::oneshot;
 /// The name the test certificate is for, resolved to loopback.
 const NAME: &str = "blog.test";
 
+/// Another name, for a second site behind the same listener.
+const OTHER: &str = "news.test";
+
 /// A self-signed certificate for `NAME`, as PEM: the certificate, then its
 /// key.
 #[cfg(test)]
 fn self_signed() -> (String, String) {
+    self_signed_for(NAME)
+}
+
+/// A self-signed certificate for `name`, as PEM: the certificate, then its
+/// key.
+#[cfg(test)]
+fn self_signed_for(name: &str) -> (String, String) {
     let CertifiedKey { cert, signing_key } =
-        rcgen::generate_simple_self_signed(vec![NAME.to_owned()]).unwrap();
+        rcgen::generate_simple_self_signed(vec![name.to_owned()]).unwrap();
     (cert.pem(), signing_key.serialize_pem())
 }
 
@@ -58,7 +68,11 @@ fn answer_on(listener: Listening) -> oneshot::Sender<()> {
 /// loopback.
 #[cfg(test)]
 fn client(root: &str) -> Outbound {
-    let hosts = vec![(NAME.to_owned(), vec!["127.0.0.1".parse().unwrap()])];
+    let loopback = vec!["127.0.0.1".parse().unwrap()];
+    let hosts = vec![
+        (NAME.to_owned(), loopback.clone()),
+        (OTHER.to_owned(), loopback),
+    ];
     let resolver = Resolver::for_tests(hosts, Reach::PublicAndLoopback);
     Outbound::trusting(Limits::default(), resolver, root.as_bytes()).unwrap()
 }
@@ -79,6 +93,27 @@ async fn a_page_is_answered_over_tls_with_the_certificate() {
 
     assert_eq!(fetched.status(), 200);
     assert_eq!(fetched.body(), b"hello");
+    stop.send(()).unwrap();
+}
+
+#[tokio::test]
+async fn each_domain_is_answered_with_its_own_certificate() {
+    let certificates = Certificates::new();
+    let mut roots = Vec::new();
+    for name in [NAME, OTHER] {
+        let (chain, key) = self_signed_for(name);
+        certificates.set(Certificate::from_pem(chain.as_bytes(), key.as_bytes()).unwrap());
+        roots.push((name, chain));
+    }
+    let (port, stop) = serve(certificates.clone()).await;
+
+    for (name, root) in &roots {
+        let page = AbsoluteUrl::parse(&format!("https://{name}:{port}/")).unwrap();
+        let fetched = client(root).get(&page).await.unwrap();
+        assert_eq!(fetched.body(), b"hello", "{name}");
+    }
+    assert!(certificates.get(OTHER).is_some_and(|c| c.covers(OTHER)));
+    assert!(certificates.current().is_some_and(|c| c.covers(NAME)));
     stop.send(()).unwrap();
 }
 

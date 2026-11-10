@@ -6,7 +6,9 @@ use khalid_core::AbsoluteUrl;
 use scraper::{ElementRef, Html};
 use url::Url;
 
+use crate::fixed_width;
 use crate::outline::Outline;
+use crate::scripted;
 use crate::{Alternate, Block, Image, Link, Robots};
 
 /// One HTML page as the checks see it.
@@ -23,10 +25,12 @@ pub struct Page {
     structured_data: Vec<String>,
     links: Vec<Link>,
     images: Vec<Image>,
+    wide: Vec<String>,
     resources: Vec<AbsoluteUrl>,
     words: usize,
     text_bytes: usize,
     outline: Outline,
+    scripted: Vec<String>,
 }
 
 impl Page {
@@ -47,6 +51,7 @@ impl Page {
         while let Some((element, seen)) = stack.pop() {
             page.element(element, &base);
             page.outline.element(element);
+            page.wide.extend(fixed_width::part(element));
             let name = element.value().name();
             let seen = (seen || name == "body")
                 && !matches!(name, "script" | "style" | "template" | "noscript");
@@ -70,6 +75,7 @@ impl Page {
     fn element(&mut self, element: ElementRef<'_>, base: &Url) {
         let attr = |name: &str| element.value().attr(name);
         let address = |name: &str| attr(name).and_then(|href| resolve(base, href));
+        self.scripted.extend(scripted::part(element));
         match element.value().name() {
             "html" => self.language = attr("lang").map(str::to_owned),
             "title" if within(element, "head") => self.titles.push(text_of(element)),
@@ -193,6 +199,12 @@ impl Page {
         &self.resources
     }
 
+    /// Each part of the page set wider than a phone screen in pixels, such
+    /// as a table with `width="900"`, in words, in order.
+    pub fn wide(&self) -> &[String] {
+        &self.wide
+    }
+
     /// How many words the reader sees, outside scripts and styles.
     pub fn words(&self) -> usize {
         self.words
@@ -220,6 +232,12 @@ impl Page {
     pub fn dates(&self) -> &[String] {
         &self.outline.dates
     }
+
+    /// Each part of the page that only works with scripts on, such as a
+    /// form with no action, in words, in order.
+    pub fn scripted(&self) -> &[String] {
+        &self.scripted
+    }
 }
 
 /// `href` against `base`, as a web address with no fragment, or `None`
@@ -246,7 +264,7 @@ pub(crate) fn text_of(element: ElementRef<'_>) -> String {
 
 /// A link's text, or the `alt` of the first image inside it when it has
 /// none.
-fn link_text(element: ElementRef<'_>) -> String {
+pub(crate) fn link_text(element: ElementRef<'_>) -> String {
     let text = text_of(element);
     if !text.is_empty() {
         return text;

@@ -114,12 +114,23 @@ async fn receiver() -> MockServer {
 /// Starts `khalid serve`, reaching the stand-in host on loopback.
 #[cfg(test)]
 fn start(site: &Path) -> Server {
-    let mut child = Command::new(env!("CARGO_BIN_EXE_khalid"))
+    start_logging(site, None, Stdio::null())
+}
+
+/// Starts `khalid serve` with the SMTP `password` in its environment, if
+/// any, and its log sent to `log`.
+#[cfg(test)]
+fn start_logging(site: &Path, password: Option<&str>, log: Stdio) -> Server {
+    let mut command = Command::new(env!("CARGO_BIN_EXE_khalid"));
+    if let Some(password) = password {
+        command.env("KHALID_SMTP_PASSWORD", password);
+    }
+    let mut child = command
         .args(["--site", site.to_str().unwrap()])
         .args(["--test-hosts", HOSTS])
         .args(["serve", "--listen", "127.0.0.1:0", "--json"])
         .stdout(Stdio::piped())
-        .stderr(Stdio::null())
+        .stderr(log)
         .spawn()
         .unwrap();
     let mut line = String::new();
@@ -262,5 +273,56 @@ async fn with_the_mail_server_down_the_reader_is_thanked_and_the_webhook_fires()
     assert_eq!(
         body["submission"]["fields"]["name"], "Grace Hopper",
         "{body}"
+    );
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_failed_email_writes_a_warning_to_the_log_without_the_password() {
+    let closed = TcpListener::bind("127.0.0.1:0").unwrap();
+    let port = closed.local_addr().unwrap().port();
+    drop(closed);
+    let receiver = receiver().await;
+    let (site, _) = demo_site(port, &receiver).await;
+    let mut settings = site.path().to_path_buf();
+    settings.push("site.toml");
+    let text = fs::read_to_string(&settings).unwrap();
+    // [mail.smtp] is the file's last table, so the user joins it.
+    fs::write(
+        &settings,
+        format!("{text}username = \"news@example.com\"\n"),
+    )
+    .unwrap();
+    let password = format!("pw-{}-{}", std::process::id(), port);
+    let mut server = start_logging(site.path(), Some(&password), Stdio::piped());
+    let log = BufReader::new(server.child.stderr.take().unwrap());
+    let (lines, read) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        for line in log.lines().map_while(Result::ok) {
+            if lines.send(line).is_err() {
+                return;
+            }
+        }
+    });
+    assert_eq!(answer(&server).await, 303);
+
+    let warning = loop {
+        let line = read
+            .recv_timeout(WITHIN)
+            .expect("a warning within 5 seconds");
+        assert!(
+            !line.contains(&password),
+            "the password reached the log: {line}"
+        );
+        if line.contains("a form's answers could not be emailed") {
+            break line;
+        }
+    };
+    let json: Value = serde_json::from_str(&warning).unwrap_or_else(|_| panic!("{warning}"));
+    assert_eq!(json["level"], "WARN", "{warning}");
+    assert_eq!(json["fields"]["form"], "contact", "{warning}");
+    let error = json["fields"]["error"].as_str().unwrap();
+    assert!(
+        error.starts_with("the email could not be sent: the SMTP server did not take the email"),
+        "{warning}"
     );
 }

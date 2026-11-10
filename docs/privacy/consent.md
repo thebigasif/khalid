@@ -29,7 +29,7 @@ A category is a group of things a reader can allow together. There are five, and
 
 ## Tagging your own scripts
 
-Your own code lives in `site.toml` as `[[code]]` entries, one per script. Give each one the category it belongs to, who runs it, and their privacy policy. You can do the same on the admin's Privacy screen, under Scripts.
+Your own code lives in `site.toml` as `[[code]]` entries, one per script. Give each one the category it belongs to, who runs it, and their privacy policy. You can do the same on the admin's Privacy screen, under Scripts, where you can also add a script, change its code for the head or the end of the page, and remove it. The code for the end of the page may hold only `script` elements. Khalid uses a changed script after it restarts.
 
 ```toml
 [[code]]
@@ -55,6 +55,7 @@ Each setting is on the admin's Privacy screen, in the `[privacy]` table of `site
 | Certified consent tool, `external_tool` | none | The name of a paid consent tool you run instead, such as Cookiebot. See below. |
 | Banner words, `[privacy.text.<language>]` | Khalid's own | Your own words for the banner and each category, in English and German. |
 | Contact, `[privacy.contact]` | none | Your name, email and postal address, for the privacy page. |
+| Imprint, `[privacy.imprint]` | none | Adds the imprint German law asks for. See [the imprint](imprint.md). The admin screen has no fields for it yet, so set it in `site.toml`. |
 
 Until the contact details are filled in, `khalid doctor` and `khalid build` remind you. Readers never see that reminder.
 

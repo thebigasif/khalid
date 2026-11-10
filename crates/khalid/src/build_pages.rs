@@ -33,8 +33,8 @@ use crate::listed_post::{ListedPost, ListedTag};
 use crate::post_lock::Unlocked;
 pub(crate) use crate::site_page::Page;
 use crate::{
-    build_ai_page, build_home, build_message, build_reader, build_schema, build_seo, link_graph,
-    privacy_page, site_chrome,
+    build_ai_page, build_home, build_message, build_reader, build_schema, build_seo, imprint_page,
+    link_graph, privacy_page, site_chrome,
 };
 
 /// The pages of one language, and the site as they show it.
@@ -127,7 +127,8 @@ fn language_pages(
 /// Adds the pages that help readers find their way, once the lists of
 /// `languages` are made: the glossary from A to Z, case studies and the
 /// changelog, series, hubs, the home page's topic tabs, media rows and
-/// sections, and the privacy page, worded in each language by `renderer`'s strings.
+/// sections, the privacy page and the imprint, worded in each language by
+/// `renderer`'s strings.
 /// `site` is the site folder and `today` the day a privacy change is dated.
 ///
 /// # Errors
@@ -140,6 +141,7 @@ pub(crate) fn discovery_pages(
     languages: &mut [LanguagePages],
 ) -> Result<(), UserMessage> {
     privacy_page::add((config, renderer), content, (site, today), languages)?;
+    imprint_page::add(config, renderer, languages)?;
     glossary::add((config, routes), renderer, content, languages)?;
     entries::add((config, routes), renderer, content, languages)?;
     series::add(config, renderer, content, languages)?;

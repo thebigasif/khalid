@@ -1,9 +1,10 @@
 import { type DragEvent, useState } from "react";
-import type { CalendarPost } from "../api/calendar";
+import type { CalendarPost, PlanSlot } from "../api/calendar";
 import { calendarWords } from "../strings/calendarWords";
 import { calendarDay } from "../strings/dates";
 import { en } from "../strings/en";
 import { canSchedule, inMonth, type Month, weeks } from "./month";
+import { SuggestedChip } from "./PlanPanel";
 import { DRAGGED, PostChip } from "./PostChip";
 
 // Monday 4 January 2027 starts the week the names are read from.
@@ -15,12 +16,14 @@ type Props = {
   month: Month;
   today: string;
   posts: Map<string, CalendarPost[]>;
+  /** The drafts the planner suggests, by day. */
+  suggested: Map<string, PlanSlot[]>;
   /** A draft was dropped on a day it may go live. */
   onDrop: (id: string, day: string) => void;
 };
 
 /** The month as a grid of weeks, each day with its posts; a draft dropped on a day is scheduled. */
-export function MonthGrid({ month, today, posts, onDrop }: Props) {
+export function MonthGrid({ month, today, posts, suggested, onDrop }: Props) {
   const [over, setOver] = useState<string | null>(null);
   const dropOn = (day: string) => (event: DragEvent) => {
     event.preventDefault();
@@ -48,6 +51,8 @@ export function MonthGrid({ month, today, posts, onDrop }: Props) {
               {week.map((day) => {
                 const open = canSchedule(day, today);
                 const own = posts.get(day) ?? [];
+                const ideas = suggested.get(day) ?? [];
+                const count = own.length + ideas.length;
                 return (
                   <td
                     key={day}
@@ -73,13 +78,18 @@ export function MonthGrid({ month, today, posts, onDrop }: Props) {
                     <span className="sr-only">
                       {calendarDay(day)}
                       {day === today ? `, ${calendarWords.today}` : ""}
-                      {own.length > 0 ? `, ${calendarWords.count(own.length)}` : ""}
+                      {count > 0 ? `, ${calendarWords.count(count)}` : ""}
                     </span>
-                    {own.length === 0 ? null : (
+                    {count === 0 ? null : (
                       <ul>
                         {own.map((post) => (
                           <li key={post.id}>
                             <PostChip post={post} />
+                          </li>
+                        ))}
+                        {ideas.map((slot) => (
+                          <li key={`suggested-${slot.id}`}>
+                            <SuggestedChip slot={slot} />
                           </li>
                         ))}
                       </ul>

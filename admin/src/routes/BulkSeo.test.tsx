@@ -24,6 +24,7 @@ function post(id: string, title: string, settings: Partial<AdminPost["settings"]
       review_state: "ready",
       access: "public",
       password_protected: false,
+      tags: [],
       share_cards: {},
       aliases: [],
       excerpt: "How to pick the words of a link.",

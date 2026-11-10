@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tags and categories · Khalid admin mockup</title>
+<style>
+/* Shared admin styles. Each mockup carries its own copy so it opens offline. */
+*{box-sizing:border-box}
+:root{color-scheme:light;--bg:#fff;--surface:#f6f7f9;--text:#1f2328;--muted:#57606a;--link:#0b57d0;--border:#d0d7de;--field:#6e7781;--tint:#eef4fe;--block:#b42318;--block-bg:#fef3f2;--warn:#8a4b00;--warn-bg:#fff8eb;--ok:#1a7f37;--ok-bg:#eefbf1;--radius:.375rem}
+html{background:var(--bg);color:var(--text);font:400 1rem/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0;overflow-wrap:break-word}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-100vw}.skip:focus{left:1rem;top:.5rem;background:var(--bg);padding:.5rem 1rem}
+.top{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid var(--border)}
+.brand{font-weight:700}.brand span{color:var(--muted);font-weight:400}
+.shell{display:grid;grid-template-columns:minmax(0,1fr)}
+@media (min-width:60em){.shell{grid-template-columns:13rem minmax(0,1fr)}.side{border-right:1px solid var(--border);min-height:calc(100vh - 3.6rem)}.side ul{flex-direction:column}}
+.side ul{list-style:none;margin:0;padding:.75rem;display:flex;flex-wrap:wrap;gap:.25rem}
+.side a{display:flex;align-items:center;min-height:44px;padding:.5rem .75rem;border-radius:var(--radius);color:var(--text);text-decoration:none}
+.side a:hover{background:var(--surface)}
+.side a[aria-current]{background:var(--tint);color:var(--link);font-weight:600}
+main{padding:1.5rem 1.25rem 3rem;max-width:72rem}
+h1{font-size:clamp(1.5rem,1.2rem + 1.2vw,2rem);line-height:1.2;margin:0 0 .5rem}
+h2{font-size:1.25rem;line-height:1.3;margin:2rem 0 .5rem}
+h3{font-size:1.0625rem;margin:1.5rem 0 .5rem}
+p{margin:0 0 1rem}
+.lede{color:var(--muted);max-width:68ch;font-size:1.0625rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;border-radius:var(--radius);border:1px solid var(--field);background:var(--bg);color:var(--text);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn.primary{background:var(--link);border-color:var(--link);color:#fff}
+.focus{border:2px solid var(--link);background:var(--tint);border-radius:var(--radius);padding:1.5rem;max-width:56rem}
+.focus>h2:first-child{margin-top:0}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:.7rem .75rem;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:.875rem;color:var(--muted);font-weight:600}
+label{display:block;font-weight:600;margin:0 0 .25rem}
+.hint{display:block;color:var(--muted);font-weight:400;font-size:.9375rem;margin:0 0 .4rem}
+input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--field);border-radius:var(--radius);padding:.5rem .7rem;min-height:44px;width:100%}
+.field{margin:0 0 1.25rem;max-width:36rem}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:0 1.5rem}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.muted{color:var(--muted)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;background:var(--surface);padding:.05rem .3rem;border-radius:.25rem}
+.note{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.9375rem}
+.state{margin-top:3rem;padding-top:1rem;border-top:2px dashed var(--border)}
+/* At phone width each row becomes a card with its own labels, so nothing scrolls sideways. */
+@media (max-width:40em){table,tbody,tr,td{display:block}thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}tr{border:1px solid var(--border);border-radius:var(--radius);margin:0 0 .75rem;padding:.4rem 0}td{border:0;padding:.35rem .9rem}td[data-label]::before{content:attr(data-label);display:block;font-size:.875rem;font-weight:600;color:var(--muted)}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the main content</a>
+<header class="top">
+  <div class="brand">Khalid <span>· Field Notes on SEO</span></div>
+  <div class="row"><a href="https://www.example.com/blog/">View the blog</a><a href="account.html">Your account</a></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Admin">
+  <ul>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="posts.html">Posts</a></li>
+    <li><a href="authors.html">Authors</a></li>
+    <li><a href="tags.html" aria-current="page">Tags and categories</a></li>
+    <li><a href="redirects.html">Redirects</a></li>
+    <li><a href="settings.html">Settings</a></li>
+  </ul>
+</nav>
+<main id="main">
+  <h1>Tags and categories</h1>
+  <p class="lede">A category is the one shelf a post sits on, such as Technical SEO. A tag is a loose label, and a post can have many. Each has its own page on your blog that lists its posts. Change them here and every post that uses them changes with them.</p>
+
+  <h2 id="categories-title">Categories</h2>
+  <p class="muted">Each category has a name in every language of your site. Your categories live in <code>categories.toml</code> in your site folder.</p>
+  <div class="scroll">
+  <table aria-labelledby="categories-title">
+    <thead><tr><th scope="col">Name</th><th scope="col">Short name</th><th scope="col">Posts</th><th scope="col"><span class="muted">Action</span></th></tr></thead>
+    <tbody>
+      <tr><td>On-page SEO<br><span class="muted">German: Onpage-SEO</span></td><td data-label="Short name"><code>on-page-seo</code></td><td data-label="Posts">4 posts</td><td><span class="row"><a class="btn" href="#rename-category" aria-label="Rename On-page SEO">Rename</a></span></td></tr>
+      <tr><td>Technical SEO<br><span class="muted">German: Technisches SEO</span></td><td data-label="Short name"><code>technical-seo</code></td><td data-label="Posts">3 posts</td><td><span class="row"><a class="btn" href="#rename-category" aria-label="Rename Technical SEO">Rename</a></span></td></tr>
+      <tr><td>Content strategy<br><span class="muted">German: Content-Strategie</span></td><td data-label="Short name"><code>content-strategy</code></td><td data-label="Posts">No posts</td><td><span class="row"><a class="btn" href="#rename-category" aria-label="Rename Content strategy">Rename</a><a class="btn" href="#delete-category" aria-label="Delete Content strategy">Delete</a></span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">Delete shows only for a category no post is in, so no post loses its shelf by accident.</p>
+
+  <h3 id="add-title">Add a category</h3>
+  <form action="tags.html" method="post">
+    <div class="pair">
+      <div class="field"><label for="cat-slug">Short name</label><span class="hint" id="cat-slug-hint">Posts name the category by it in their <code>category</code> field. Lowercase words joined by hyphens. It cannot change later.</span><input id="cat-slug" aria-describedby="cat-slug-hint" value="link-building"></div>
+    </div>
+    <div class="pair">
+      <div class="field"><label for="cat-en">Name in English</label><input id="cat-en" value="Link building"></div>
+      <div class="field"><label for="cat-de">Name in German</label><input id="cat-de" value="Linkaufbau"></div>
+    </div>
+    <button class="btn primary" type="submit">Add category</button>
+  </form>
+
+  <h2 id="tags-title">Tags</h2>
+  <p class="muted">Tags come from your posts: a tag exists while one post has it. Each language has its own tags.</p>
+  <div class="scroll">
+  <table aria-labelledby="tags-title">
+    <thead><tr><th scope="col">Name</th><th scope="col">Language</th><th scope="col">Posts</th><th scope="col"><span class="muted">Action</span></th></tr></thead>
+    <tbody>
+      <tr><td>internal links</td><td data-label="Language">English</td><td data-label="Posts">3 posts</td><td><span class="row"><a class="btn" href="#rename-tag" aria-label="Rename internal links, English">Rename</a><a class="btn" href="#remove-tag" aria-label="Remove internal links, English">Remove</a></span></td></tr>
+      <tr><td>sitemaps</td><td data-label="Language">English</td><td data-label="Posts">1 post</td><td><span class="row"><a class="btn" href="#rename-tag" aria-label="Rename sitemaps, English">Rename</a><a class="btn" href="#remove-tag" aria-label="Remove sitemaps, English">Remove</a></span></td></tr>
+      <tr><td>interne Links</td><td data-label="Language">German</td><td data-label="Posts">2 posts</td><td><span class="row"><a class="btn" href="#rename-tag" aria-label="Rename interne Links, German">Rename</a><a class="btn" href="#remove-tag" aria-label="Remove interne Links, German">Remove</a></span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <section class="state" id="rename-tag" aria-labelledby="rename-tag-title">
+    <p class="muted">After Rename on a tag, the screen shows only this, until you rename or go back.</p>
+    <div class="focus">
+      <h2 id="rename-tag-title">Rename "internal links"</h2>
+      <p>3 posts have this tag, drafts included. The new name replaces it in each of them, and live posts change at once. If another English tag already has the new name, the two become one tag.</p>
+      <form action="tags.html" method="post">
+        <div class="field"><label for="tag-name">New name</label><span class="hint" id="tag-name-hint">As readers see it on posts and on the tag's page.</span><input id="tag-name" aria-describedby="tag-name-hint" value="internal linking"></div>
+        <div class="row"><button class="btn primary" type="submit">Rename in 3 posts</button><a class="btn" href="tags.html">Back to the list</a></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="state" id="remove-tag" aria-labelledby="remove-tag-title">
+    <p class="muted">After Remove on a tag.</p>
+    <div class="focus">
+      <h2 id="remove-tag-title">Remove "sitemaps"</h2>
+      <p>The tag comes off 1 post, drafts included. The posts stay, and live posts change at once. The tag's own page goes with it.</p>
+      <div class="row"><button class="btn primary" type="button">Remove from 1 post</button><a class="btn" href="tags.html">Back to the list</a></div>
+    </div>
+  </section>
+
+  <section class="state" id="rename-category" aria-labelledby="rename-category-title">
+    <p class="muted">After Rename on a category.</p>
+    <div class="focus">
+      <h2 id="rename-category-title">Rename "On-page SEO"</h2>
+      <p>4 posts are in this category. They keep it, and live posts show the new name at once. The short name <code>on-page-seo</code> stays, so no address changes.</p>
+      <form action="tags.html" method="post">
+        <div class="pair">
+          <div class="field"><label for="ren-en">Name in English</label><input id="ren-en" value="On-page SEO"></div>
+          <div class="field"><label for="ren-de">Name in German</label><input id="ren-de" value="Onpage-SEO"></div>
+        </div>
+        <div class="row"><button class="btn primary" type="submit">Save names</button><a class="btn" href="tags.html">Back to the list</a></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="state" id="delete-category" aria-labelledby="delete-category-title">
+    <p class="muted">After Delete on an empty category.</p>
+    <div class="focus">
+      <h2 id="delete-category-title">Delete "Content strategy"</h2>
+      <p>No post is in this category. It goes from <code>categories.toml</code> and its page goes with it.</p>
+      <div class="row"><button class="btn primary" type="button">Delete category</button><a class="btn" href="tags.html">Back to the list</a></div>
+    </div>
+  </section>
+
+  <p class="note">Mockup for the founder's review. Nothing on this page saves. The categories are the demo site's real ones; the demo posts carry no tags, so the tags are examples. <a href="index.html">All mockups</a></p>
+</main>
+</div>
+</body>
+</html>

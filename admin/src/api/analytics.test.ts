@@ -1,7 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { aiVisitors, analyticsBlog, searchTotals, uncited, visitors } from "../../test/analytics";
+import {
+  aiBots,
+  aiVisitors,
+  analyticsBlog,
+  searchTotals,
+  uncited,
+  visitors,
+} from "../../test/analytics";
 import { json, serve, serverAnswers, signedIn } from "../../test/render";
-import { readAiVisitors, readSearchTotals, readUncited, readVisitors } from "./analytics";
+import {
+  readAiBots,
+  readAiVisitors,
+  readSearchTotals,
+  readUncited,
+  readVisitors,
+} from "./analytics";
 
 const LACKS = {
   type: "https://khalid.dev/problems/forbidden",
@@ -18,6 +31,7 @@ describe("the analytics client", () => {
     expect(await readVisitors(7)).toEqual({ data: visitors() });
     expect(await readAiVisitors(28)).toEqual({ data: aiVisitors() });
     expect(await readUncited(90)).toEqual({ data: uncited() });
+    expect(await readAiBots(7)).toEqual({ data: aiBots() });
     const asked = sent.map((request) => {
       const url = new URL(request.url);
       return `${url.pathname}${url.search}`;
@@ -26,6 +40,7 @@ describe("the analytics client", () => {
       "/api/admin/v1/analytics/visitors/?days=7",
       "/api/admin/v1/analytics/ai-visitors/?days=28",
       "/api/admin/v1/analytics/uncited/?days=90",
+      "/api/admin/v1/analytics/ai-bots/?days=7",
     ]);
     expect(sent[0]?.headers.get("Authorization")).toBe("Khalid ks_0123456789abcdef_test");
   });

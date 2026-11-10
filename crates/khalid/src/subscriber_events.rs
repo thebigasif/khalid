@@ -5,7 +5,7 @@
 use std::sync::Arc;
 
 use chrono::{DateTime, Utc};
-use khalid_core::Slug;
+use khalid_core::{AbsoluteUrl, Slug};
 use khalid_newsletter::{
     BoxFuture, Confirmed, EmailAddress, Labelled, Member, Recipient, Segment, SendId, SendNumbers,
     SendTotals, SignUp, SignedUp, StoreError, SubscriberId, SubscriberStore, TokenHash,
@@ -147,5 +147,41 @@ impl SubscriberStore for AnnouncedSubscribers {
         segment: &'a Segment,
     ) -> BoxFuture<'a, Result<Vec<Recipient>, StoreError>> {
         self.store.audience(segment)
+    }
+
+    fn claim_welcome<'a>(
+        &'a self,
+        subscriber: SubscriberId,
+        list: &'a Slug,
+        day: u16,
+        at: DateTime<Utc>,
+    ) -> BoxFuture<'a, Result<bool, StoreError>> {
+        self.store.claim_welcome(subscriber, list, day, at)
+    }
+
+    fn welcomes_due<'a>(
+        &'a self,
+        list: &'a Slug,
+        day: u16,
+        due: (DateTime<Utc>, DateTime<Utc>),
+    ) -> BoxFuture<'a, Result<Vec<Recipient>, StoreError>> {
+        self.store.welcomes_due(list, day, due)
+    }
+
+    fn add_link<'a>(
+        &'a self,
+        send: SendId,
+        position: u32,
+        url: &'a AbsoluteUrl,
+    ) -> BoxFuture<'a, Result<(), StoreError>> {
+        self.store.add_link(send, position, url)
+    }
+
+    fn click(
+        &self,
+        send: SendId,
+        position: u32,
+    ) -> BoxFuture<'_, Result<Option<AbsoluteUrl>, StoreError>> {
+        self.store.click(send, position)
     }
 }

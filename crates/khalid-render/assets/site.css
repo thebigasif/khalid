@@ -306,8 +306,9 @@ dd { margin-inline-start: 0; }
 .results { padding-inline-start: 1.25rem; }
 mark { color: inherit; background: var(--color-surface); font-weight: 700; }
 
-/* A lock card: one sentence where a feature that needs a running server was (plan section 7). */
-.lock, .locked {
+/* A lock card: one sentence where a feature that needs a running server was (plan section 7).
+   The busy note above the search form, after too many searches, looks the same. */
+.lock, .locked, .busy {
   padding: 1rem 1.25rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);

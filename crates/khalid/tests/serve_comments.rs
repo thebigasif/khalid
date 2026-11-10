@@ -182,6 +182,65 @@ fn a_comment_sent_without_script_waits_then_shows_once_approved() {
     );
 }
 
+/// Runs `khalid mcp` on `site` with `key`, sends it `calls` after the
+/// handshake, and returns each call's result.
+#[cfg(test)]
+fn agent(site: &Path, key: &str, calls: &[(&str, Value)]) -> Vec<Value> {
+    let mut child = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", site.to_str().unwrap(), "mcp"])
+        .env("KHALID_KEY", key)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .unwrap();
+    let hello = serde_json::json!({ "protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": { "name": "test", "version": "0" } });
+    let mut lines = vec![
+        serde_json::json!({ "jsonrpc": "2.0", "id": 0, "method": "initialize", "params": hello }),
+    ];
+    for (id, (name, arguments)) in (1_u64..).zip(calls) {
+        let params = serde_json::json!({ "name": name, "arguments": arguments });
+        lines.push(serde_json::json!({ "jsonrpc": "2.0", "id": id, "method": "tools/call", "params": params }));
+    }
+    let mut input = child.stdin.take().unwrap();
+    for line in &lines {
+        writeln!(input, "{line}").unwrap();
+    }
+    drop(input);
+    let output = child.wait_with_output().unwrap();
+    let answers = String::from_utf8(output.stdout).unwrap();
+    answers
+        .lines()
+        .skip(1)
+        .map(|line| {
+            let answer: Value = serde_json::from_str(line).unwrap();
+            let result = &answer["result"];
+            assert_eq!(result["isError"], false, "{answer}");
+            serde_json::from_str(result["content"][0]["text"].as_str().unwrap()).unwrap()
+        })
+        .collect()
+}
+
+#[test]
+fn an_agent_approves_a_comment_and_the_running_site_shows_it() {
+    let (site, server, key) = served_demo();
+    post_page_with(&server, "<form class=\"comment-form\"");
+    let sent = comment(&server, "name=Lena&email=&comment=Useful+list.&website=");
+    assert_eq!(sent.0, 303);
+    let list = ("list_comments", serde_json::json!({ "status": "pending" }));
+    let listed = agent(site.path(), &key, &[list]);
+    let waiting = listed[0]["comments"].as_array().unwrap();
+    assert_eq!(waiting.len(), 1, "khalid mcp reads the site's comments");
+    let id = waiting[0]["id"].as_i64().unwrap();
+    let approve = ("approve_comment", serde_json::json!({ "id": id }));
+    agent(site.path(), &key, &[approve]);
+    let page = post_page_with(&server, "Useful list.");
+    assert!(
+        page.contains(&format!("id=\"comment-{id}\"")),
+        "serve shows it without a restart: {page}"
+    );
+}
+
 #[test]
 fn a_mistake_comes_back_as_a_page_and_a_flood_is_slowed() {
     let (_site, server, key) = served_demo();

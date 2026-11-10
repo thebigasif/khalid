@@ -1,10 +1,13 @@
 import { calendarWords } from "../strings/calendarWords";
 import { en } from "../strings/en";
+import { navWords } from "../strings/navWords";
+import { pagesWords } from "../strings/pagesWords";
 import { privacyWords } from "../strings/privacyWords";
 import { searchConsoleWords } from "../strings/searchConsoleWords";
 import { seoToolWords } from "../strings/seoToolWords";
 import { seoWords } from "../strings/seoWords";
 import { shellWords } from "../strings/shellWords";
+import { subscriberWords } from "../strings/subscriberWords";
 import type { IconName } from "./Icon";
 
 /** The address of every screen the side menu opens. */
@@ -14,13 +17,18 @@ export type NavPath =
   | "/calendar"
   | "/media"
   | "/comments"
+  | "/subscribers"
+  | "/forms"
   | "/trash"
   | "/analytics"
   | "/search-console"
   | "/serpdad"
   | "/look"
   | "/design"
+  | "/navigation"
   | "/authors"
+  | "/tags"
+  | "/pages"
   | "/redirects"
   | "/schema-templates"
   | "/settings"
@@ -51,6 +59,7 @@ export const NAV: NavGroup[] = [
       { to: "/calendar", label: calendarWords.nav, icon: "calendar" },
       { to: "/media", label: en.nav.media, icon: "media" },
       { to: "/comments", label: en.nav.comments, icon: "comments" },
+      { to: "/forms", label: en.nav.forms, icon: "inbox" },
       { to: "/trash", label: en.nav.trash, icon: "trash" },
     ],
   },
@@ -59,6 +68,7 @@ export const NAV: NavGroup[] = [
     items: [
       { to: "/analytics", label: en.nav.analytics, icon: "analytics" },
       { to: "/search-console", label: searchConsoleWords.title, icon: "search" },
+      { to: "/subscribers", label: subscriberWords.nav, icon: "mail" },
       { to: "/serpdad", label: en.nav.serpdad, icon: "link" },
       { to: "/bulk-seo", label: seoToolWords.bulk.nav, icon: "table" },
       { to: "/workouts", label: seoToolWords.workouts.nav, icon: "steps" },
@@ -69,7 +79,10 @@ export const NAV: NavGroup[] = [
     items: [
       { to: "/look", label: en.nav.look, icon: "look" },
       { to: "/design", label: en.nav.design, icon: "type" },
+      { to: "/navigation", label: navWords.nav, icon: "menu" },
       { to: "/authors", label: en.nav.authors, icon: "person" },
+      { to: "/tags", label: shellWords.tags, icon: "tag" },
+      { to: "/pages", label: pagesWords.nav, icon: "posts" },
       { to: "/redirects", label: en.nav.redirects, icon: "redirect" },
       { to: "/schema-templates", label: en.nav.templates, icon: "braces" },
       { to: "/seo", label: seoWords.title, icon: "target" },

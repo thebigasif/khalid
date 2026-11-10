@@ -69,6 +69,12 @@ table.month td[data-today] .month-date{background:var(--link);color:#fff}
 .chip-published{border-left-color:var(--ok)}
 .chip-scheduled{border-left-color:var(--link);background:var(--tint)}
 .chip-draft{border-left-color:var(--warn);background:var(--warn-bg)}
+.chip-suggested{border-style:dashed;border-left-style:solid;border-left-color:var(--muted);background:var(--bg)}
+.calendar-side{display:grid;gap:1.5rem}
+.plan{padding:1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);box-shadow:var(--card)}
+.plan ul{display:grid;gap:.25rem;list-style:none;margin:0 0 .75rem;padding:0}
+.plan-note{margin:0 0 .75rem;padding:.5rem .75rem;border-left:3px solid var(--warn);background:var(--warn-bg);border-radius:6px}
+.plan-note p{margin:0}
 .legend{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;grid-column:1/-1;list-style:none;margin:0;padding:0;color:var(--muted);font-size:.8125rem}
 .legend li{display:flex;align-items:center;gap:.375rem}
 :where(.chip-key){width:.875rem;height:.875rem;border:1px solid var(--border);border-left-width:3px;border-radius:3px}
@@ -123,7 +129,7 @@ table.month td[data-today] .month-date{background:var(--link);color:#fff}
       </div>
       <p class="done" role="status">Choosing anchor text is scheduled for 12 November 2026 at 12:00.</p>
       <div class="calendar-layout">
-        <ul class="legend" aria-label="What the colours mean"><li><span class="chip-key chip-published" aria-hidden="true"></span>Live</li><li><span class="chip-key chip-scheduled" aria-hidden="true"></span>Scheduled</li><li><span class="chip-key chip-draft" aria-hidden="true"></span>Draft</li></ul>
+        <ul class="legend" aria-label="What the colours mean"><li><span class="chip-key chip-published" aria-hidden="true"></span>Live</li><li><span class="chip-key chip-scheduled" aria-hidden="true"></span>Scheduled</li><li><span class="chip-key chip-draft" aria-hidden="true"></span>Draft</li><li><span class="chip-key chip-suggested" aria-hidden="true"></span>Suggested</li></ul>
         <div class="scroll">
           <table class="month" aria-labelledby="month-title">
             <thead><tr><th scope="col"><abbr title="Monday">Mon</abbr></th><th scope="col"><abbr title="Tuesday">Tue</abbr></th><th scope="col"><abbr title="Wednesday">Wed</abbr></th><th scope="col"><abbr title="Thursday">Thu</abbr></th><th scope="col"><abbr title="Friday">Fri</abbr></th><th scope="col"><abbr title="Saturday">Sat</abbr></th><th scope="col"><abbr title="Sunday">Sun</abbr></th></tr></thead>
@@ -149,10 +155,10 @@ table.month td[data-today] .month-date{background:var(--link);color:#fff}
               <tr>
                 <td data-label="9 November 2026"><span class="month-date">9</span></td>
                 <td data-today data-label="10 November 2026, today"><span class="month-date">10</span></td>
-                <td data-label="11 November 2026"><span class="month-date">11</span></td>
+                <td data-label="11 November 2026"><span class="month-date">11</span><ul><li><span class="chip chip-suggested"><span class="sr-only">Suggested: </span><a href="#">Writing headlines that earn the click</a></span></li></ul></td>
                 <td data-label="12 November 2026"><span class="month-date">12</span><ul><li><span class="chip chip-scheduled"><a href="#">Choosing anchor text</a><time>12:00</time></span></li></ul></td>
                 <td data-label="13 November 2026"><span class="month-date">13</span></td>
-                <td data-label="14 November 2026"><span class="month-date">14</span></td>
+                <td data-label="14 November 2026"><span class="month-date">14</span><ul><li><span class="chip chip-suggested"><span class="sr-only">Suggested: </span><a href="#">Search intent, explained with examples</a></span></li></ul></td>
                 <td data-label="15 November 2026"><span class="month-date">15</span></td>
               </tr>
               <tr>
@@ -185,6 +191,18 @@ table.month td[data-today] .month-date{background:var(--link);color:#fff}
             </tbody>
           </table>
         </div>
+        <div class="calendar-side">
+        <section class="plan" aria-labelledby="plan-title">
+          <h2 id="plan-title">Suggested days</h2>
+          <p class="hint">Khalid gives each draft that passes its checks a day, at your usual pace of 2 posts a week, each topic's main post first. Nothing changes until you schedule them.</p>
+          <ul>
+            <li><span class="chip chip-suggested"><a href="#">Writing headlines that earn the click</a><time datetime="2026-11-11">11 November</time></span></li>
+            <li><span class="chip chip-suggested"><a href="#">Search intent, explained with examples</a><time datetime="2026-11-14">14 November</time></span></li>
+          </ul>
+          <div class="plan-note"><p><strong>2 posts went live in the last four weeks, against 5 in the four weeks before.</strong></p><p>Search engines read a steady pace as a sign a site keeps covering its subject.</p><p>Schedule the suggested drafts on their days to get back to your pace.</p></div>
+          <p class="hint" id="plan-hint">Each goes live at 12:00 on its day, in your time zone. You can still move any of them.</p>
+          <button class="btn primary" type="button" aria-describedby="plan-hint">Schedule 2 suggested drafts</button>
+        </section>
         <section class="drafts" aria-labelledby="drafts-title">
           <h2 id="drafts-title">Drafts to schedule</h2>
           <p class="hint">Drag one onto a day, or press Schedule and pick the day. Publishing checks the post first, so one the checks block stays a draft.</p>
@@ -202,6 +220,7 @@ table.month td[data-today] .month-date{background:var(--link);color:#fff}
             <li><span class="chip chip-draft"><a href="#">The content refresh checklist</a></span><button class="btn" type="button">Schedule</button></li>
           </ul>
         </section>
+        </div>
       </div>
     </main>
   </div>

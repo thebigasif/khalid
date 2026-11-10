@@ -1,0 +1,2 @@
+Added
+- A site can require a reviewer on health, money or any other category. List the categories under `[reviewers]` as `required-in = ["health", "money"]` in `lint.toml`, and a post in one of them that names no one in `reviewed_by:` gets the new `no-reviewer` finding. It blocks by default, so `khalid lint` reports it, `khalid build` leaves the post out and publishing it is refused. Set `no-reviewer = "warn"` under `[rules]` to only warn.

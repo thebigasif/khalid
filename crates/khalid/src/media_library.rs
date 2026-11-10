@@ -24,6 +24,9 @@ use khalid_server::ranged;
 
 use crate::exit::Exit;
 
+#[path = "media_uses.rs"]
+mod media_uses;
+
 /// A file never changes at its address, since the key in it is a hash of
 /// its bytes, so a browser may keep it for a year without asking again.
 const CACHED: &str = "public, max-age=31536000, immutable";
@@ -43,7 +46,8 @@ pub(crate) struct PictureKeys {
 /// Opens the library of the `site` folder, in the bucket `config` names,
 /// signed with the bucket's keys and reached through `outbound`, or on
 /// disk, with photo and GIF search as `[media]` and their keys allow.
-/// Returns it for the Admin API, and the router that serves its files.
+/// Returns it for the Admin API, the router that serves its files, and the
+/// library itself, to read again after another process changed it.
 ///
 /// # Errors
 ///
@@ -54,12 +58,14 @@ pub(crate) async fn open(
     config: &Config,
     (bucket, pictures): (Option<S3Keys>, PictureKeys),
     outbound: &Outbound,
-) -> Result<(MediaLibrary, Router), (UserMessage, Exit)> {
+) -> Result<(MediaLibrary, Router, Arc<Library>), (UserMessage, Exit)> {
     let (library, api) = opened(site, config, bucket, outbound)
         .await
         .map_err(|message| (message, Exit::Failure))?;
-    let api = api.with_search(stock_search(config, pictures, outbound));
-    Ok((api, router(library, config)))
+    let api = api
+        .with_search(stock_search(config, pictures, outbound))
+        .with_uses(Arc::new(media_uses::SiteMediaUses::new(site)));
+    Ok((api, router(Arc::clone(&library), config), library))
 }
 
 /// Photo and GIF search, each on only when `[media]` turns it on.

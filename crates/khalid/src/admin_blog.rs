@@ -22,6 +22,7 @@ pub(crate) fn router(site: &Path, config: &Config) -> Router {
     let accent = tokens.as_ref().and_then(accent);
     let blog = Blog {
         mount: config.mount(),
+        folder: config.admin_folder().as_str(),
         name: config.name(),
         logo: logo.as_ref().map(AbsoluteUrl::as_str),
         accent: accent.as_ref().map(Color::as_str),

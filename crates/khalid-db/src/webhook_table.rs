@@ -189,11 +189,12 @@ impl WebhookStore for WebhookTable {
     fn deliveries(
         &self,
         id: i64,
+        before: Option<i64>,
         limit: u32,
     ) -> BoxFuture<'_, Result<Vec<Delivery>, WebhookStoreError>> {
         let log = DeliveryLog::new(self.db.clone(), self.site);
         Box::pin(async move {
-            log.newest(WebhookId::new(id), limit)
+            log.newest(WebhookId::new(id), before, limit)
                 .await
                 .map_err(WebhookStoreError::storage)
         })

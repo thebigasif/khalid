@@ -211,6 +211,48 @@ fn a_post_in_a_templated_collection_carries_the_template_node() {
     );
 }
 
+/// A schema template and a title for the category "On-page SEO", as named
+/// in the demo site's `categories.toml` (G54).
+const CATEGORY_TABLES: &str = r#"
+[seo.titles.post]
+title = "{title} in {category}"
+
+[[seo.schema]]
+category = "On-page SEO"
+type = "Course"
+
+[seo.schema.properties]
+about = "{category}"
+"#;
+
+#[test]
+fn a_post_carries_its_category_by_the_name_readers_see() {
+    let (_site, out) = built_with(CATEGORY_TABLES);
+    let rel = "why-internal-links-matter/index.html";
+    let nodes = graph(&out, rel);
+    assert!(nodes.contains(r#""@type":"Course""#), "{nodes}");
+    assert!(nodes.contains(r#""about":"On-page SEO""#), "{nodes}");
+    assert!(
+        nodes.contains(r#""articleSection":"On-page SEO""#),
+        "{nodes}"
+    );
+    let tags = head_lines(&out, rel);
+    let title = "<title>Why internal links matter in On-page SEO</title>";
+    assert!(tags.contains(title), "{tags}");
+    let section = r#"<meta property="article:section" content="On-page SEO">"#;
+    let page = fs::read_to_string(at(out.path(), rel)).unwrap();
+    assert!(page.contains(section), "{tags}");
+
+    // The German post is in the same category, named in German, so the
+    // template for the English name leaves it alone.
+    let german = graph(&out, "de/warum-interne-links-wichtig-sind/index.html");
+    assert!(
+        german.contains(r#""articleSection":"Onpage-SEO""#),
+        "{german}"
+    );
+    assert!(!german.contains(r#""@type":"Course""#), "{german}");
+}
+
 #[test]
 fn a_post_title_follows_its_template() {
     let (_site, out) = built_with(HEAD_TABLES);

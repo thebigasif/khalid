@@ -37,9 +37,11 @@ mod build_sitemap;
 mod categories;
 mod cli;
 mod cli_access;
+mod cli_data;
 mod cli_import;
 mod cli_name;
 mod cli_parse;
+mod cli_reports;
 mod comment_pages;
 mod completions;
 mod config_message;
@@ -55,6 +57,7 @@ mod db;
 mod db_export;
 mod db_message;
 mod definition_text;
+mod dispatch;
 mod doctor;
 mod doctor_address;
 mod doctor_check;
@@ -74,6 +77,7 @@ mod https_message;
 mod import;
 mod import_held;
 mod import_rest;
+mod imprint_page;
 mod index;
 mod init;
 mod init_message;
@@ -111,6 +115,7 @@ mod newsletter_digest;
 mod newsletter_files;
 mod newsletter_send;
 mod outbound;
+mod outside_writes;
 mod own_descriptions;
 mod page_code;
 mod page_counts;
@@ -159,10 +164,12 @@ mod seo_settings;
 mod serve;
 mod serve_address;
 mod serve_apis;
+mod serve_args;
 mod serve_check;
 mod serve_https;
 mod serve_message;
 mod serve_sites;
+mod server_log;
 mod settings_events;
 mod settings_text;
 mod share_images;
@@ -190,6 +197,7 @@ mod site_settings;
 mod site_tags;
 mod site_watch;
 mod sites;
+mod sites_https;
 mod sites_message;
 mod slug_moves;
 mod slug_repair;
@@ -225,10 +233,10 @@ use khalid_core::{Config, Environment, SystemClock, UserMessage};
 use khalid_routes::Routes;
 use khalid_server::FolderLook;
 
-use crate::cli::{AnalyticsCommand, Cli, Command, Output, ServeArgs, ThemeCommand};
+use crate::cli::{Cli, Command, Output, ServeArgs};
+use crate::dispatch::{access, needs_site, not_built, on_content, on_folder, on_settings, outside};
 use crate::exit::Exit;
 use crate::lint::Mode;
-use crate::new::NewPost;
 use crate::post_files::Assets;
 
 #[global_allocator]
@@ -314,7 +322,7 @@ fn run(cli: &Cli) -> Exit {
             Some(command @ (Command::Keys { .. } | Command::Staff { .. })),
             Some((folder, config, ..)),
         ) => access(folder, config, command, cli.output),
-        (Some(Command::Mcp), Some((folder, config, ..))) => mcp::run(folder, config, &env),
+        (Some(Command::Mcp), Some((folder, config, ..))) => mcp::run(folder, config, (&env, cli)),
         (
             Some(command @ (Command::Bing { .. } | Command::SearchConsole { .. })),
             Some((folder, config, _, (content, _))),
@@ -339,98 +347,10 @@ fn run(cli: &Cli) -> Exit {
     }
 }
 
-/// Runs the commands that ask a search engine about the checked site, with
-/// the keys in `env`: `bing` and `search-console`.
-fn outside(
-    (folder, config, content): (&Path, &Config, &SiteContent),
-    env: &Environment,
-    command: &Command,
-    cli: &Cli,
-) -> Exit {
-    match command {
-        Command::Bing { command } => bing::run(config, env, *command, cli),
-        Command::SearchConsole { command } => {
-            search_console::run((folder, config, content), env, command.clone(), cli)
-        }
-        _ => report::failure(cli.output, &not_built(command), Exit::Internal),
-    }
-}
-
-/// Runs the commands that need only a checked site's settings: `theme`,
-/// `publish`, `plan`, `newsletter` and `new`.
-fn on_settings(folder: &Path, config: &Config, command: &Command, cli: &Cli) -> Exit {
-    match command {
-        Command::New(args) => new::run(
-            folder,
-            config,
-            NewPost::from(args),
-            &SystemClock,
-            cli.output,
-        ),
-        Command::Newsletter { command } => newsletter_cli::run(cli, (folder, config), command),
-        Command::Theme { command } => theme(folder, config, command, cli),
-        Command::Publish { slug, language } => {
-            publish::run(cli, (folder, config), (slug, language.as_ref()))
-        }
-        Command::Plan { per_week } => plan::run(cli, (folder, config), *per_week),
-        _ => report::failure(cli.output, &not_built(command), Exit::Internal),
-    }
-}
-
-/// Runs the commands that read a checked site's content: `build`,
-/// `export`, and `audit` from a build or the server it names.
-fn on_content(
-    folder: &Path,
-    checked: (&Config, &Routes, &SiteContent),
-    asked: &Command,
-    (cli, environment): (&Cli, &Environment),
-) -> Exit {
-    match asked {
-        Command::Build { out, no_indexnow } => {
-            build::run(folder, checked, (out.as_deref(), *no_indexnow), cli)
-        }
-        Command::Export => export::run(folder, checked, &SystemClock, cli.output),
-        Command::Audit { server, network } => site_audit::run(
-            folder,
-            checked,
-            (server.as_ref(), *network),
-            &SystemClock,
-            (cli, serve::mail_secret(environment, checked.0)),
-        ),
-        _ => report::failure(cli.output, &not_built(asked), Exit::Internal),
-    }
-}
-
-/// Runs `theme sync` and `theme check` on a checked site.
-fn theme(folder: &Path, config: &Config, command: &ThemeCommand, cli: &Cli) -> Exit {
-    match command {
-        ThemeCommand::Sync { url, from_css } => theme_sync::run(
-            folder,
-            url,
-            from_css.as_deref(),
-            config.default_language(),
-            cli,
-        ),
-        ThemeCommand::Check { url } => {
-            theme_check::run(folder, url.as_ref().unwrap_or(config.address()), cli)
-        }
-    }
-}
-
-/// Runs the commands that decide who may reach the site: `keys`, `staff`.
-fn access(folder: &Path, config: &Config, command: &Command, output: Output) -> Exit {
-    match command {
-        Command::Keys { command } => keys::run(folder, command, output),
-        Command::Staff { command } => staff_owner::run(folder, config, command, output),
-        _ => report::failure(output, &not_built(command), Exit::Internal),
-    }
-}
-
 /// Runs the commands that do not start from a checked site: `init`, which
 /// makes the site, `restore`, which makes one from a backup, `agents`,
-/// `completions` and `update`, which need none, `doctor`, which
-/// checks the settings, routes and content itself so it can list every
-/// problem instead of stopping at the first, and the commands
+/// `completions` and `update`, which need none, `doctor`, which checks the
+/// site itself to list every problem instead of stopping at the first, and the commands
 /// [`on_folder`] runs. Returns `None` for every other command.
 fn run_unchecked(cli: &Cli) -> Option<Exit> {
     match &cli.command {
@@ -459,8 +379,8 @@ fn run_unchecked(cli: &Cli) -> Option<Exit> {
             many.then(|| serve_sites::run(root, cli, args))
         }
         Some(Command::Update { target }) => Some(update::run(*target, cli)),
-        Some(command @ Command::Doctor { network }) => Some(match cli.site.as_deref() {
-            Some(folder) => doctor::run(folder, *network, cli),
+        Some(command @ Command::Doctor { network, test_mail }) => Some(match cli.site.as_deref() {
+            Some(folder) => doctor::run(folder, (*network, *test_mail), cli),
             None => report::failure(cli.output, &needs_site(command), Exit::Usage),
         }),
         Some(
@@ -475,28 +395,6 @@ fn run_unchecked(cli: &Cli) -> Option<Exit> {
             None => report::failure(cli.output, &needs_site(asked), Exit::Usage),
         }),
         _ => None,
-    }
-}
-
-/// Runs the commands that need the site folder but not its checked content:
-/// `redirects`, `webhooks`, `crawl` and `analytics`, which read the
-/// settings and the database themselves, `backup`, which keeps a broken
-/// site as well as a whole one, and `pull`, which checks the site after it
-/// brings in the new files.
-fn on_folder(folder: &Path, asked: &Command, output: Output) -> Exit {
-    match asked {
-        Command::Crawl { command } => crawl_report::run(folder, *command, &SystemClock, output),
-        Command::Redirects { command } => redirects::run(folder, command, output),
-        Command::Webhooks { command } => webhooks::run(folder, command, output),
-        Command::Analytics {
-            command: AnalyticsCommand::Ai { days },
-        } => ai_visitors::run(folder, *days, output),
-        Command::Backup { out } => backup::run(folder, out.as_deref(), &SystemClock, output),
-        Command::Analytics {
-            command: AnalyticsCommand::Uncited { days },
-        } => uncited_report::run(folder, *days, &SystemClock, output),
-        Command::Pull => pull::run(folder, &SystemClock, output),
-        _ => report::failure(output, &not_built(asked), Exit::Internal),
     }
 }
 
@@ -538,28 +436,4 @@ fn check(site: &Path, environment: &Environment, bodies: Bodies) -> Result<Check
         })
         .map_err(|error| content_message::of(site, &error))?;
     Ok((config, routes, content, assets))
-}
-
-/// The message for a command that works on one site folder when none was given.
-fn needs_site(command: &Command) -> UserMessage {
-    UserMessage::new(
-        format!(
-            "The command `khalid {}` needs a site folder.",
-            command.name()
-        ),
-        "It works on the files inside one site, so Khalid has to know which one.",
-        format!(
-            "Run it inside the folder that holds site.toml, or run `khalid --site <folder> {}`.",
-            command.name()
-        ),
-    )
-}
-
-/// The message for a command that a later phase builds.
-fn not_built(command: &Command) -> UserMessage {
-    UserMessage::new(
-        format!("The command `khalid {}` is not built yet.", command.name()),
-        "Khalid is in its first phase, and this command arrives in a later one.",
-        "Run `khalid --help` to see every command, and check the next release.",
-    )
 }

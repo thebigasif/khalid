@@ -14,7 +14,7 @@ use tower::ServiceExt;
 
 use crate::call::{Call, Key, Payload};
 use crate::operations::{self, Operation};
-use crate::tool::{BoxFuture, Tool, ToolResult, Tools};
+use crate::tool::{BoxFuture, Effect, Tool, ToolResult, Tools};
 
 /// The largest API answer passed on to an agent, in bytes.
 const MAX_ANSWER: usize = 32 * 1024 * 1024;
@@ -153,6 +153,8 @@ fn publish_post_tool() -> Tool {
     Tool::new(
         "publish_post",
         "Publishes a draft once the linter lets it through. A refusal lists every finding to fix.",
+        // It overwrites the post's status, and puts the post before readers.
+        Effect::Overwrites,
         json!({
             "type": "object",
             "properties": {

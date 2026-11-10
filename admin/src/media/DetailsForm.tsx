@@ -8,6 +8,7 @@ import { Toast } from "../components/Toast";
 import { en, type UserMessage } from "../strings/en";
 import { FocalFields } from "./FocalFields";
 import { FocalPicture } from "./FocalPicture";
+import { FOLDER_CHOICES, FolderChoices } from "./FolderChoices";
 import type { Percent } from "./focal";
 
 type Props = { item: MediaItem };
@@ -119,9 +120,11 @@ export function DetailsForm({ item }: Props) {
             <input
               id="media-folder"
               aria-describedby="media-folder-hint"
+              list={FOLDER_CHOICES}
               value={draft.folder}
               onChange={(event) => change({ folder: event.target.value })}
             />
+            <FolderChoices />
           </div>
           {image ? <FocalFields point={draft.point} onChange={point} /> : null}
           <button type="submit" className="btn primary">

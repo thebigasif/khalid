@@ -18,6 +18,7 @@ const POST: AdminPost = {
     review_state: "ready",
     access: "public",
     password_protected: false,
+    tags: [],
     share_cards: {},
     aliases: [],
     feature_image: { src: "cover.svg", alt: "A spanner" },

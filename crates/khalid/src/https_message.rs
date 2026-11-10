@@ -38,6 +38,15 @@ pub(crate) fn static_site() -> UserMessage {
     )
 }
 
+/// The message when `--https` is given for a folder that holds one site.
+pub(crate) fn sites_only() -> UserMessage {
+    UserMessage::new(
+        "khalid serve --https serves every site of a sites folder, and this folder holds one site.",
+        "One site has one domain, and --domain names it.",
+        "Run khalid serve --domain with the blog's domain instead, such as --domain blog.example.com.",
+    )
+}
+
 /// The message when port 443 or 80 cannot be opened.
 pub(crate) fn listen(address: SocketAddr, error: &io::Error) -> UserMessage {
     let why = match error.kind() {

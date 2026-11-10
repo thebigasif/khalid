@@ -42,11 +42,14 @@ A test reads the table below and checks it lists every table in the schema, once
 | `post_versions` | visitor | The title and text each post edit replaced, the 100 newest per post, so a writer can bring an old text back |
 | `site_keys` | visitor | Keys the site makes for itself, such as the one that signs preview links; 256 random bits each, never shown |
 | `form_submissions` | visitor | What people sent through forms on the site |
+| `form_mail` | visitor | Form answer emails that could not be sent: the email, how many tries failed and why, and when the next is due; removed once sent, and 30 days after Khalid gives up |
 | `subscribers` | visitor | Newsletter subscribers, whether they confirmed, and when they left |
 | `subscriber_lists` | visitor | Which newsletters each subscriber gets, by the newsletter's name |
 | `subscriber_labels` | visitor | The labels each subscriber carries, such as paid, which make segments |
 | `subscriber_tokens` | visitor | The confirmation and unsubscribe links sent to each subscriber, as hashes of their tokens |
 | `newsletter_sends` | visitor | Each email that went out to a newsletter, under a key that stops a post going out twice, with its totals: copies sent, refused and unsubscribes from it |
+| `newsletter_links` | visitor | The links in an email that went out, when the site counts clicks, with how often each was clicked; never who clicked |
+| `welcome_steps` | visitor | Which step of each newsletter's welcome sequence a subscriber was sent, so no step goes out twice |
 | `comments` | visitor | Comments on posts, named by the post's path so they survive a rebuild: who wrote each, a reader or staff, its text and where it stands in moderation |
 | `draft_comments` | visitor | Staff comments on drafts, named by the post's identity so a rebuild keeps them: the block each is about, its thread, who wrote it and whether the thread is resolved |
 | `analytics_counts` | visitor | Page views per day, page and referrer group, counted without cookies |

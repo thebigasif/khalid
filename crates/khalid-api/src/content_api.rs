@@ -5,7 +5,7 @@ use std::sync::Arc;
 use axum::extract::{OriginalUri, Path, Query, State};
 use axum::middleware;
 use axum::{Json, Router};
-use khalid_core::{Slug, SystemClock, UserMessage};
+use khalid_core::{LimitSettings, Slug, SystemClock, UserMessage};
 use serde::Serialize;
 use utoipa::openapi::OpenApi as Document;
 use utoipa::{OpenApi, ToSchema};
@@ -39,7 +39,7 @@ type Store = Arc<dyn ContentStore>;
 pub fn router(store: Store, keys: Arc<dyn KeyStore>) -> (Router, Document) {
     let door = ContentDoor {
         keys,
-        limits: Arc::new(ApiLimits::new(SystemClock)),
+        limits: Arc::new(ApiLimits::new(SystemClock, LimitSettings::default())),
     };
     finish(OpenApiRouter::with_openapi(ApiDoc::openapi()).nest(BASE, routes(store, door)))
 }

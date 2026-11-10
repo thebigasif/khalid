@@ -59,9 +59,16 @@ fn demo_copy() -> TempDir {
 /// A key with `settings:write` for `site`, made with `khalid keys create`.
 #[cfg(test)]
 fn settings_key(site: &Path) -> String {
+    key_with(site, &["--scope", "settings:write"])
+}
+
+/// A key for `site` with the `scopes` flags, made with `khalid keys create`.
+#[cfg(test)]
+fn key_with(site: &Path, scopes: &[&str]) -> String {
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
         .args(["--site", site.to_str().unwrap(), "keys", "create", "--json"])
-        .args(["--name", "Redirects", "--scope", "settings:write"])
+        .args(["--name", "Redirects"])
+        .args(scopes)
         .output()
         .unwrap();
     assert_eq!(output.status.code(), Some(0));
@@ -340,4 +347,56 @@ fn a_renamed_post_keeps_its_old_address_while_serving_and_across_a_restart() {
         "/blog/how-to-write-a-title-tag/",
         "/blog/writing-title-tags/",
     );
+}
+
+#[test]
+fn a_redirect_another_process_stores_answers_without_a_restart() {
+    let site = demo_copy();
+    let server = start(site.path());
+    let mut list = site.path().to_path_buf();
+    list.push("moves.csv");
+    fs::write(
+        &list,
+        "from,to,status,match\n/blog/old-guide/,/blog/,301,exact\n",
+    )
+    .unwrap();
+    let imported = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args([
+            "--site",
+            site.path().to_str().unwrap(),
+            "redirects",
+            "import",
+        ])
+        .arg(&list)
+        .output()
+        .unwrap();
+    let said = String::from_utf8_lossy(&imported.stdout);
+    let why = String::from_utf8_lossy(&imported.stderr);
+    assert_eq!(imported.status.code(), Some(0), "{why}");
+    assert!(said.contains("within a few seconds"), "{said}");
+    moves(&server, "/blog/old-guide/", "/blog/");
+}
+
+#[test]
+fn a_live_post_given_a_new_slug_in_the_admin_keeps_its_old_address() {
+    let site = demo_copy();
+    let scopes = ["--scope", "posts:write", "--scope", "posts:publish"];
+    let key = key_with(site.path(), &scopes);
+    let server = start(site.path());
+    let post = "/api/admin/v1/posts/en.why-internal-links-matter/";
+    let (status, _, read) = send(&server, "GET", post, Some(&key), None);
+    assert_eq!(status, 200, "{read}");
+    let read: Value = serde_json::from_str(&read).unwrap();
+    let updated_at = &read["posts"][0]["updated_at"];
+    let edit = json!({"posts": [{"slug": "internal-links", "updated_at": updated_at}]});
+    let (status, _, saved) = send(&server, "PUT", post, Some(&key), Some(&edit));
+    assert_eq!(status, 200, "{saved}");
+    let saved: Value = serde_json::from_str(&saved).unwrap();
+    assert_eq!(saved["posts"][0]["id"], "en.internal-links");
+    let old = "/blog/why-internal-links-matter/";
+    moves(&server, old, "/blog/internal-links/");
+    drop(server);
+
+    let server = start(site.path());
+    moves(&server, old, "/blog/internal-links/");
 }

@@ -134,6 +134,11 @@ pub(crate) fn deliver(
         let clock = Arc::new(SystemClock);
         let flow = Newsletter::new(Arc::new(store), mailer, clock, newsletter::site(config));
         let flow = flow.map_err(|_| internal())?;
+        let flow = if mail.count_clicks {
+            flow.with_click_counting()
+        } else {
+            flow
+        };
         let sent = flow.send(&issue, &segment, &postal).await;
         sent.map(Some).map_err(|_| failed(not_sent()))
     });
@@ -144,7 +149,7 @@ pub(crate) fn deliver(
 /// The email of `post`, called `name`: its title as the subject, a link
 /// to read it on the site, and its text without the blocks that only work
 /// on a page, such as forms.
-fn issue_of(config: &Config, post: &AdminPost, name: &str) -> Issue {
+pub(crate) fn issue_of(config: &Config, post: &AdminPost, name: &str) -> Issue {
     let text = email_text(post.markdown());
     let link = announce::post_url(config, post)
         .map(|url| format!("Read it on the site: {}\n\n", url.as_str()))

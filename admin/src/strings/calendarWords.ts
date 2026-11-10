@@ -1,5 +1,5 @@
 // The words of the content calendar: what is planned, scheduled and live,
-// by day, and how to give a draft its day.
+// by day, how to give a draft its day, and the days the planner suggests.
 
 export const calendarWords = {
   nav: "Calendar",
@@ -29,6 +29,20 @@ export const calendarWords = {
   cancel: "Cancel",
   scheduled: (title: string, day: string) => `${title} is scheduled for ${day} at 12:00.`,
   dropHere: "Drop here to schedule",
+  suggested: "Suggested",
+  plan: "Suggested days",
+  planHint: (perWeek: number) =>
+    `Khalid gives each draft that passes its checks a day, at your usual pace of ${perWeek === 1 ? "1 post" : `${perWeek} posts`} a week, each topic's main post first. Nothing changes until you schedule them.`,
+  noSuggestions:
+    "No draft passes its checks yet, so none has a day. Finish a draft and it gets one here.",
+  applyHint:
+    "Each goes live at 12:00 on its day, in your time zone. You can still move any of them.",
+  apply: (drafts: number) =>
+    drafts === 1 ? "Schedule 1 suggested draft" : `Schedule ${drafts} suggested drafts`,
+  applied: (drafts: number) =>
+    drafts === 1
+      ? "1 draft is scheduled on its suggested day."
+      : `${drafts} drafts are scheduled on their suggested days.`,
   past: {
     what: "That day has already passed.",
     why: "A post goes live at the time it is scheduled for, so a day gone by would publish it at once.",

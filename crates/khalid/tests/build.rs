@@ -51,7 +51,7 @@ fn build_renders_every_post_and_home_page_of_the_demo_site() {
     let output = khalid(&["--site", path(&demo), "build", "--out", path(out.path())]);
     assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
     assert!(
-        text(&output.stdout).contains("47 pages"),
+        text(&output.stdout).contains("48 pages"),
         "{}",
         text(&output.stdout)
     );
@@ -96,17 +96,33 @@ fn build_renders_every_post_and_home_page_of_the_demo_site() {
     );
     let home_body = page(out.path(), "index.html");
     assert!(home_body.contains("href=\"/blog/ai/\""), "{home_body}");
-    // Its text comes from site.toml in one language, so it is built once,
-    // in the main language, and the German footer links to that copy.
+    // German has its own copy in German words, linked from the German
+    // footer, and the two copies name each other as language versions.
+    let german_ai = page(out.path(), "de/ai/index.html");
+    assert!(german_ai.contains("<html lang=\"de\""), "{german_ai}");
     assert!(
-        SitePath::within(out.path(), "de/ai")
-            .unwrap()
-            .as_path()
-            .read_dir()
-            .is_err()
+        german_ai.contains("Field Notes on SEO betreibt diese Website."),
+        "{german_ai}"
+    );
+    assert!(german_ai.contains("\"AboutPage\""), "{german_ai}");
+    assert!(
+        german_ai.contains(
+            "<link rel=\"alternate\" hreflang=\"en\" href=\"https://www.example.com/blog/ai/\">"
+        ),
+        "{german_ai}"
+    );
+    assert!(
+        ai.contains(
+            "<link rel=\"alternate\" hreflang=\"de\" href=\"https://www.example.com/blog/de/ai/\">"
+        ),
+        "{ai}"
     );
     let german_home = page(out.path(), "de/index.html");
-    assert!(german_home.contains("href=\"/blog/ai/\""), "{german_home}");
+    assert!(
+        german_home.contains("href=\"/blog/de/ai/\""),
+        "{german_home}"
+    );
+    assert!(german_home.contains(">KI-Info<"), "{german_home}");
 }
 
 #[test]
@@ -168,7 +184,10 @@ fn the_ai_page_shows_its_settings_as_text_not_markup() {
         .as_path()
         .to_path_buf();
     let mut file = fs::read_to_string(&settings).unwrap();
-    file.push_str("\n[seo.ai_page]\ncite = \"Quote Tom & Jerry, never <b>bold</b>.\"\n");
+    file.push_str(
+        "\n[seo.ai_page]\ncite = \"Quote Tom & Jerry, never <b>bold</b>.\"\n\n\
+         [seo.ai_page.text.de]\ncovers = \"Anleitungen für <i>kleine</i> Blogs.\"\n",
+    );
     fs::write(&settings, file).unwrap();
     let output = khalid(&[
         "--site",
@@ -183,6 +202,18 @@ fn the_ai_page_shows_its_settings_as_text_not_markup() {
         ai.contains("Quote Tom &amp; Jerry, never &lt;b&gt;bold&lt;/b&gt;."),
         "{ai}"
     );
+    // The German copy shows the owner's German words, and the built-in
+    // German sentence where the owner wrote none, never the English cite.
+    let german = page(out.path(), "de/ai/index.html");
+    assert!(
+        german.contains("Anleitungen für &lt;i&gt;kleine&lt;/i&gt; Blogs."),
+        "{german}"
+    );
+    assert!(
+        german.contains("Nennen Sie Field Notes on SEO und verlinken Sie"),
+        "{german}"
+    );
+    assert!(!german.contains("Tom &amp; Jerry"), "{german}");
 }
 
 #[test]

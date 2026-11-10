@@ -13,6 +13,7 @@
 //! I/O is reading the system clock and resolving a [`SitePath`] on disk.
 
 mod absolute_url;
+mod admin_folder;
 mod ai_page_settings;
 mod ai_settings;
 mod alert_settings;
@@ -22,9 +23,11 @@ mod environment;
 mod geo_point;
 mod head_code;
 mod indexnow_key;
+mod limit_settings;
 mod link_settings;
 mod link_tracking;
 mod locale;
+mod log_settings;
 mod mail_settings;
 mod media_settings;
 mod post_access;
@@ -51,7 +54,8 @@ mod user_message;
 mod visitor_log_settings;
 
 pub use absolute_url::{AbsoluteUrl, ParseUrlError};
-pub use ai_page_settings::{AiPageSettings, LlmsTxtSettings};
+pub use admin_folder::{AdminFolder, ParseAdminFolderError};
+pub use ai_page_settings::{AiPageSettings, AiPageText, LlmsTxtSettings};
 pub use ai_settings::{AiProvider, AiSettings};
 pub use alert_settings::AlertSettings;
 #[cfg(any(test, feature = "test-util"))]
@@ -62,9 +66,11 @@ pub use environment::Environment;
 pub use geo_point::{GeoPoint, GeoPointError};
 pub use head_code::{HeadCode, HeadCodeError};
 pub use indexnow_key::{IndexNowKey, ParseIndexNowKeyError};
+pub use limit_settings::LimitSettings;
 pub use link_settings::{DomainName, ExternalRel, LinkOpening, LinkSettings, ParseDomainNameError};
 pub use link_tracking::{LinkTracking, ParseTagValueError, TagValue};
 pub use locale::{Locale, ParseLocaleError};
+pub use log_settings::{LogFormat, LogLevel, LogSettings};
 pub use mail_settings::{
     MailSettings, MailTransport, PostmarkSettings, SmtpSecurity, SmtpSettings,
 };
@@ -73,8 +79,8 @@ pub use post_access::{
     ParsePasswordHashError, ParseTemplateNameError, PasswordHash, PostAccess, TemplateName,
 };
 pub use privacy_settings::{
-    ConsentCategory, ConsentRev, GpcMode, PrivacyContact, PrivacySettings, PrivacyText,
-    SettingsVersion,
+    ConsentCategory, ConsentRev, GpcMode, PrivacyContact, PrivacyImprint, PrivacySettings,
+    PrivacyText, SettingsVersion,
 };
 pub use reader::{HomeSection, Reader, ReaderSwitch};
 pub use robots::{

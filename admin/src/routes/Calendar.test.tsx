@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { adminBlog } from "../../test/blog";
 import { axeViolations, json, renderAt, signedIn } from "../../test/render";
-import type { Calendar, CalendarPost } from "../api/calendar";
+import type { Calendar, CalendarPost, Plan } from "../api/calendar";
 import type { AdminPost, PostEdit } from "../api/posts";
 import { DRAGGED } from "../calendar/PostChip";
 import { calendarWords } from "../strings/calendarWords";
@@ -41,6 +41,23 @@ const CALENDAR: Calendar = {
   undated: [IDEA],
 };
 
+const PLAN: Plan = {
+  per_week: 2,
+  pace_from: "history",
+  calendar: [
+    { day: "2026-11-12", id: IDEA.id, title: IDEA.title, kind: "suggested" },
+    { day: "2026-11-20", id: NEXT.id, title: NEXT.title, kind: "scheduled" },
+  ],
+  waiting: [],
+  warnings: [
+    {
+      what: "2 posts went live in the last four weeks, against 5 in the four weeks before.",
+      why: "Search engines read a steady pace as a sign a site keeps covering its subject.",
+      fix: "Schedule the suggested drafts on their days to get back to your pace.",
+    },
+  ],
+};
+
 const DRAFT: AdminPost = {
   id: IDEA.id,
   slug: "planning-a-topic-cluster",
@@ -54,6 +71,7 @@ const DRAFT: AdminPost = {
     review_state: "ready",
     access: "public",
     password_protected: false,
+    tags: [],
     share_cards: {},
     aliases: [],
   },
@@ -72,6 +90,7 @@ function blog(answer: Response = json(200, { posts: [{ ...DRAFT, status: "schedu
   const edits: PostEdit[] = [];
   const sent = adminBlog({
     "GET /calendar/": () => json(200, { calendar: CALENDAR }),
+    "GET /calendar/plan/": () => json(200, { plan: PLAN }),
     [`GET /posts/${IDEA.id}/`]: () => json(200, { posts: [DRAFT] }),
     [`PUT /posts/${IDEA.id}/`]: async (request) => {
       const body: { posts: PostEdit[] } = await request.json();
@@ -118,7 +137,7 @@ describe("the content calendar", () => {
     const live = within(month).getByRole("link", { name: LIVE.title });
     expect(live.getAttribute("href")).toContain(`/posts/${LIVE.id}`);
     expect(within(cell("2026-11-20")).getByRole("link", { name: NEXT.title })).toBeVisible();
-    const asked = new URL(sent.find((request) => request.url.includes("/calendar/"))?.url ?? "");
+    const asked = new URL(sent.find((request) => request.url.includes("/calendar/?"))?.url ?? "");
     expect(asked.searchParams.get("from")).toBe("2026-10-26");
     expect(asked.searchParams.get("to")).toBe("2026-12-06");
     expect(await axeViolations()).toEqual([]);
@@ -185,6 +204,48 @@ describe("the content calendar", () => {
     expect(await screen.findByText(said)).toBeVisible();
     await waitFor(() => expect(edits).toHaveLength(1));
     expect(edits[0]?.published_at).toBe(new Date("2026-11-27T12:00").toISOString());
+  });
+
+  it("shows the planner's suggested days and changes nothing until asked", async () => {
+    signedIn();
+    const { edits } = blog();
+    renderAt("/calendar");
+    await screen.findByRole("table", { name: "November 2026" });
+    const day = cell("2026-11-12");
+    expect(await within(day).findByRole("link", { name: IDEA.title })).toBeVisible();
+    expect(within(day).getByText(`${calendarWords.suggested}:`)).toBeInTheDocument();
+    const plan = screen.getByRole("region", { name: calendarWords.plan });
+    expect(within(plan).getByText(calendarWords.planHint(2))).toBeVisible();
+    expect(within(plan).getByText(PLAN.warnings[0]?.what ?? "")).toBeVisible();
+    expect(edits).toEqual([]);
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("schedules each suggested draft on its day with one button", async () => {
+    signedIn();
+    const { edits } = blog();
+    renderAt("/calendar");
+    const plan = await screen.findByRole("region", { name: calendarWords.plan });
+    const apply = within(plan).getByRole("button", { name: calendarWords.apply(1) });
+    expect(apply).toHaveAccessibleDescription(calendarWords.applyHint);
+    await userEvent.click(apply);
+    expect(await screen.findByText(calendarWords.applied(1))).toBeVisible();
+    expect(edits).toEqual([
+      {
+        updated_at: DRAFT.updated_at,
+        status: "scheduled",
+        published_at: new Date("2026-11-12T12:00").toISOString(),
+      },
+    ]);
+  });
+
+  it("keeps the calendar when the server makes no plan", async () => {
+    signedIn();
+    adminBlog({ "GET /calendar/": () => json(200, { calendar: CALENDAR }) });
+    renderAt("/calendar");
+    await screen.findByRole("table", { name: "November 2026" });
+    expect(screen.queryByRole("region", { name: calendarWords.plan })).toBeNull();
+    expect(screen.queryByRole("alert")).toBeNull();
   });
 
   it("says why a draft the checks block stays a draft", async () => {

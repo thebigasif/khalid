@@ -86,6 +86,8 @@ fn every_setting() -> Value {
         "reviewed": "2026-10-29",
         "co_authors": ["mira", "jonas"],
         "excerpt": "Pick words that say where the link goes.",
+        "category": "on-page-seo",
+        "tags": ["anchor text", "internal links"],
         "feature_image": {
             "src": "/media/anchor-text.jpg",
             "alt": "A highlighted link in a paragraph",

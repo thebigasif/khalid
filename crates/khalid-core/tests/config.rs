@@ -57,7 +57,7 @@ fn refuses_an_unknown_field() {
             "mode = \"server\"\n",
             "mode = \"server\"\ncolour = \"blue\"\n"
         ),
-        "site.toml, line 5, field \"colour\": unknown field `colour`, expected one of `name`, `address`, `mount`, `mode`, `slugs`, `default_language`, `languages`, `seo`, `reader`, `template`, `nav`, `announcement`, `media`, `mail`, `alerts`, `code`, `privacy`, `search_console`, `visitor_log`, `ai`, `ghost_content_api`, `preview_link_days`, `preview_link_hours`"
+        "site.toml, line 5, field \"colour\": unknown field `colour`, expected one of `name`, `address`, `mount`, `admin_folder`, `mode`, `slugs`, `default_language`, `languages`, `seo`, `reader`, `template`, `nav`, `announcement`, `media`, `mail`, `alerts`, `code`, `privacy`, `search_console`, `visitor_log`, `limits`, `log`, `ai`, `ghost_content_api`, `preview_link_days`, `preview_link_hours`, `trash_days`"
     );
 }
 
@@ -126,6 +126,34 @@ fn refuses_a_mount_path_without_slashes() {
     assert_eq!(
         message_with("\"/blog/\"", "\"blog\""),
         "site.toml, line 3, field \"mount\": the mount path must start and end with /, like /blog/"
+    );
+}
+
+#[test]
+fn the_admin_answers_under_admin_unless_the_file_names_a_folder() {
+    let config = Config::from_toml(Path::new("site.toml"), DEMO, &Environment::empty()).unwrap();
+    assert_eq!(config.admin_folder().as_str(), "admin");
+    let text = DEMO.replacen("mode =", "admin_folder = \"studio\"\nmode =", 1);
+    let config = Config::from_toml(Path::new("site.toml"), &text, &Environment::empty()).unwrap();
+    assert_eq!(config.admin_folder().as_str(), "studio");
+}
+
+#[test]
+fn refuses_an_admin_folder_that_is_not_one_folder_name() {
+    let message = message_with("mode =", "admin_folder = \"/studio/\"\nmode =");
+    assert!(
+        message.starts_with(
+            "site.toml, line 4, field \"admin_folder\": the admin folder must be one folder name"
+        ),
+        "{message}"
+    );
+}
+
+#[test]
+fn refuses_an_admin_folder_where_a_language_answers() {
+    assert_eq!(
+        message_with("mode =", "admin_folder = \"de\"\nmode ="),
+        "site.toml, line 4, field \"admin_folder\": the admin folder cannot be a language code, since that language's pages answer there; pick another name, like studio"
     );
 }
 

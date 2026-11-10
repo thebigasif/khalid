@@ -26,6 +26,7 @@ mod seo_fields;
 mod seo_scores;
 mod settings;
 mod settings_edit;
+mod subscriber;
 mod term;
 
 pub use admin_author::{AdminAuthor, AuthorEdit, AuthorFile, NewAuthor};
@@ -34,7 +35,9 @@ pub use admin_design::{AdminDesign, ContrastPair, DesignChange, FontChoice};
 pub use admin_key::{AdminKey, NewKey, NewKeyKind};
 pub use admin_page::{AdminPage, NewPage, PageEdit};
 pub use admin_post::{AdminPost, NewPost, PostDraft, PostEdit, PostStatus};
-pub use admin_settings::{AdminSettings, HomeSectionSetting, SettingsChange};
+pub use admin_settings::{
+    AdminSettings, HomeSectionSetting, MenuLinkSetting, NavChange, NavSetting, SettingsChange,
+};
 pub use admin_snippet::{AdminSnippet, NewSnippet, SnippetEdit};
 pub use admin_tag::{AdminTag, TagEdit};
 pub use admin_template::{
@@ -45,8 +48,8 @@ pub use collection::Collection;
 pub use comment::{AdminComment, CommentReply, CommentStatus, CommentWriter};
 pub use content_collection::ContentCollection;
 pub use media::{
-    AdminMedia, CropBoxBody, FocalPointBody, MediaEditBody, MediaEdits, MediaItems, MediaList,
-    PictureEditBody,
+    AdminMedia, CropBoxBody, FocalPointBody, MediaEditBody, MediaEdits, MediaFolder, MediaFolders,
+    MediaItems, MediaList, PictureEditBody,
 };
 pub use menu::{Menu, MenuLink};
 pub use post::{Bodies, Post, PostSeries};
@@ -61,6 +64,10 @@ pub use seo_fields::{CustomJsonLd, SearchTitle};
 pub use seo_scores::{READABILITY_RULES, SeoScores};
 pub use settings::Settings;
 pub use settings_edit::SettingsEdit;
+pub use subscriber::{
+    AdminNewsletter, AdminSend, AdminSubscriber, NewsletterSend, SendReadiness, SubscriberFilter,
+    SubscriberPage, SubscriberStatus,
+};
 pub use term::Term;
 
 use std::fmt::Display;

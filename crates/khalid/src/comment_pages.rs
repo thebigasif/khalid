@@ -50,6 +50,16 @@ impl ShownComments {
         *shown = all;
     }
 
+    /// Whether `all` differs from the threads shown now.
+    fn differs(&self, all: &BTreeMap<PostFile, Vec<Thread>>) -> bool {
+        let shown = self
+            .0
+            .threads
+            .read()
+            .unwrap_or_else(PoisonError::into_inner);
+        *shown != *all
+    }
+
     /// Shows `threads` on `post` in place of those shown before.
     fn show_on(&self, post: PostFile, threads: Vec<Thread>) {
         let mut shown = self
@@ -206,18 +216,43 @@ impl CommentEvents for PageEvents {
     }
 }
 
-/// The comments of a running site: the routes of the reader form and the
-/// Admin API's moderation. The form's answers carry `security`, and each
-/// new comment is told to `announce`. A site not in server mode takes no
-/// comments: no form route, and moderation finds nothing.
+/// Reads the approved comments again after another process, such as
+/// `khalid mcp`, moderated them, and renders the pages again when they
+/// changed.
+pub(crate) struct CommentsReload {
+    comments: Arc<Comments<CommentTable>>,
+    shown: ShownComments,
+    source: SitePages,
+    live: LivePages,
+}
+
+impl CommentsReload {
+    /// Shows the approved comments as the database holds them now.
+    pub(crate) async fn reload(&self) {
+        match self.comments.shown().await {
+            Ok(all) if self.shown.differs(&all) => self.shown.show_all(all),
+            Ok(_) => return,
+            Err(error) => return tracing::warn!(%error, "approved comments could not be read"),
+        }
+        if let Err(error) = self.live.refresh(&self.source).await {
+            tracing::warn!(%error, "the post pages could not show their comments");
+        }
+    }
+}
+
+/// The comments of a running site: the routes of the reader form, the
+/// Admin API's moderation, and what reads them again after another process
+/// changed them. The form's answers carry `security`, and each new comment
+/// is told to `announce`. A site not in server mode takes no comments: no
+/// form route, and moderation finds nothing.
 pub(crate) async fn start(
     config: &Config,
     (db, site): (&Database, SiteId),
     (source, live): (&SitePages, &LivePages),
     (security, announce): (SecurityHeaders, SiteAnnounce),
-) -> (Router, Arc<dyn CommentModeration>) {
+) -> (Router, Arc<dyn CommentModeration>, Option<CommentsReload>) {
     let (Some(shown), Some(stylesheet)) = (source.comments(), source.stylesheet()) else {
-        return (Router::new(), Arc::new(NoComments));
+        return (Router::new(), Arc::new(NoComments), None);
     };
     let store = CommentTable::new(db.clone(), site);
     let events = PageEvents {
@@ -233,8 +268,18 @@ pub(crate) async fn start(
         Err(error) => tracing::warn!(%error, "approved comments could not be read"),
     }
     let comments = Arc::new(comments);
+    let reload = Some(CommentsReload {
+        comments: Arc::clone(&comments),
+        shown: shown.clone(),
+        source: source.clone(),
+        live: live.clone(),
+    });
     let Ok(refusals) = RefusalPages::load() else {
-        return (Router::new(), Arc::new(ApiModeration::new(comments)));
+        return (
+            Router::new(),
+            Arc::new(ApiModeration::new(comments)),
+            reload,
+        );
     };
     let route = FormRoute {
         comments: Arc::clone(&comments),
@@ -250,7 +295,7 @@ pub(crate) async fn start(
         async move { response }
     };
     let form = form_router(route).layer(axum::middleware::map_response(secured));
-    (form, Arc::new(ApiModeration::new(comments)))
+    (form, Arc::new(ApiModeration::new(comments)), reload)
 }
 
 /// Whether a site in `mode` takes comments: only a site Khalid serves.

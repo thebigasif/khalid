@@ -147,6 +147,33 @@ fn joined(message: &str) -> String {
 }
 
 #[tokio::test]
+async fn with_count_clicks_the_links_lead_through_the_blog_and_numbers_count_them() {
+    let stub = StubSmtp::start().unwrap();
+    let site = demo_copy();
+    mail_through(site.path(), &stub, Some(POSTAL));
+    let mut settings = site.path().to_path_buf();
+    settings.push("site.toml");
+    let text = fs::read_to_string(&settings).unwrap().replace(
+        "name = \"Field Notes\"\n",
+        "name = \"Field Notes\"\ncount_clicks = true\n",
+    );
+    fs::write(&settings, text).unwrap();
+    subscribers(site.path(), &["grace@example.com"]).await;
+    let (code, out) = newsletter(site.path(), &["send", POST]);
+    assert_eq!(code, Some(0), "{out}");
+    let message = joined(&stub.received()[0]);
+    let read_it = "Read it on the site: https://www.example.com/blog/subscribe/click?send=1&link=1";
+    assert!(message.contains(read_it), "{message}");
+    assert!(message.contains("/blog/unsubscribe?token="), "{message}");
+    let (code, out) = newsletter(site.path(), &["numbers"]);
+    assert_eq!(code, Some(0), "{out}");
+    assert!(
+        out.ends_with(": 1 sent, 0 refused, 0 unsubscribed, 0 clicks\n"),
+        "{out}"
+    );
+}
+
+#[tokio::test]
 async fn a_published_post_goes_out_once_with_a_link_out_and_the_postal_address() {
     let stub = StubSmtp::start().unwrap();
     let site = demo_copy();

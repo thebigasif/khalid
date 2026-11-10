@@ -1,18 +1,9 @@
 import { useState } from "react";
 import type { HomeSection } from "../api/site";
 import { namesAList, SECTION_KINDS, homeSections as words } from "../strings/homeSections";
+import { swapped } from "./menuLinks";
 
 type Kind = HomeSection["kind"];
-
-/** `list` with the items at `from` and `to` swapped. */
-function swapped<T>(list: readonly T[], from: number, to: number): T[] {
-  const next = [...list];
-  const [moved] = next.splice(from, 1);
-  if (moved !== undefined) {
-    next.splice(to, 0, moved);
-  }
-  return next;
-}
 
 /** The section the "Add a section" fields describe, or null without a slug it needs. */
 function made(kind: Kind, slug: string): HomeSection | null {

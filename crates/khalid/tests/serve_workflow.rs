@@ -47,6 +47,18 @@ fn the_calendar_shows_the_live_posts_and_a_dated_draft_by_day() {
     assert_eq!(planned["status"], "draft", "{body}");
     assert_eq!(planned["review_state"], "in_review", "{body}");
     assert_eq!(body["calendar"]["undated"], json!([]), "{body}");
+
+    // The planner reads the same posts: the new draft gets a day or waits.
+    let (status, body) = server.admin("GET", "/api/admin/v1/calendar/plan/", None);
+    assert_eq!(status, 200, "{body}");
+    assert_eq!(body["plan"]["pace_from"], "history", "{body}");
+    let plan = &body["plan"];
+    let listed = [&plan["calendar"], &plan["waiting"]].into_iter();
+    let ids: Vec<&Value> = listed.flat_map(|list| list.as_array().unwrap()).collect();
+    assert!(
+        ids.iter().any(|one| one["id"] == "en.choosing-anchor-text"),
+        "{body}"
+    );
 }
 
 #[test]

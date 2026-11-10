@@ -43,6 +43,8 @@ fn a_new_admin_post_is_a_draft_in_api_shape() {
                 "date": null,
                 "co_authors": [],
                 "excerpt": null,
+                "category": null,
+                "tags": [],
                 "feature_image": null,
                 "featured": false,
                 "review_state": "draft",

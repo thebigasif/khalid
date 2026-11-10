@@ -1,0 +1,2 @@
+Changed
+- A webhook's "What this webhook sent" screen now reaches every message it ever sent, not only the last 50: "Show older messages" opens the next 50, and "Back to the newest" returns to the top. Through the Admin API, `GET /api/admin/v1/webhooks/{id}/deliveries/` takes `limit` (1 to 100, 50 by default) and `before`, and answers `next`, the `before` of the next older page, or `null` on the last one.

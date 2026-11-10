@@ -39,6 +39,12 @@ pub struct LintPost {
     pub reviewed: Option<NaiveDate>,
     /// The author from the header.
     pub author: Option<String>,
+    /// The slugs of the authors who checked the post, from `reviewed_by` in
+    /// the header, in the order written.
+    #[serde(default)]
+    pub reviewed_by: Vec<String>,
+    /// The category's slug, such as `health`, from `category` in the header.
+    pub category: Option<String>,
     /// The `translation` key from the header, shared by every language
     /// version of the same post.
     pub translation: Option<String>,
@@ -124,6 +130,8 @@ impl LintPost {
             updated: None,
             reviewed: None,
             author: None,
+            reviewed_by: Vec::new(),
+            category: None,
             translation: None,
             cluster: None,
             headings: Vec::new(),

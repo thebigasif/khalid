@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation · Khalid admin mockup</title>
+<style>
+/* Shared admin styles. Each mockup carries its own copy so it opens offline. */
+*{box-sizing:border-box}
+:root{color-scheme:light;--bg:#fff;--surface:#f6f7f9;--text:#1f2328;--muted:#57606a;--link:#0b57d0;--border:#d0d7de;--field:#6e7781;--tint:#eef4fe;--block:#b42318;--block-bg:#fef3f2;--warn:#8a4b00;--warn-bg:#fff8eb;--ok:#1a7f37;--ok-bg:#eefbf1;--radius:.375rem}
+html{background:var(--bg);color:var(--text);font:400 1rem/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0;overflow-wrap:break-word}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.skip{position:absolute;left:-100vw}.skip:focus{left:1rem;top:.5rem;background:var(--bg);padding:.5rem 1rem}
+.top{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid var(--border)}
+.brand{font-weight:700}.brand span{color:var(--muted);font-weight:400}
+.shell{display:grid;grid-template-columns:minmax(0,1fr)}
+@media (min-width:60em){.shell{grid-template-columns:13rem minmax(0,1fr)}.side{border-right:1px solid var(--border);min-height:calc(100vh - 3.6rem)}.side ul{flex-direction:column}}
+.side ul{list-style:none;margin:0;padding:.75rem;display:flex;flex-wrap:wrap;gap:.25rem}
+.side a{display:flex;align-items:center;min-height:44px;padding:.5rem .75rem;border-radius:var(--radius);color:var(--text);text-decoration:none}
+.side a:hover{background:var(--surface)}
+.side a[aria-current]{background:var(--tint);color:var(--link);font-weight:600}
+main{padding:1.5rem 1.25rem 3rem;max-width:72rem}
+h1{font-size:clamp(1.5rem,1.2rem + 1.2vw,2rem);line-height:1.2;margin:0 0 .5rem}
+h2{font-size:1.25rem;line-height:1.3;margin:2rem 0 .5rem}
+p{margin:0 0 1rem}
+.lede{color:var(--muted);max-width:68ch;font-size:1.0625rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;border-radius:var(--radius);border:1px solid var(--field);background:var(--bg);color:var(--text);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn.primary{background:var(--link);border-color:var(--link);color:#fff}
+label,legend{display:block;font-weight:600;margin:0 0 .25rem}
+.hint{display:block;color:var(--muted);font-weight:400;font-size:.9375rem;margin:0 0 .4rem}
+input,select{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--field);border-radius:var(--radius);padding:.5rem .7rem;min-height:44px;width:100%}
+.field{margin:0 0 1.25rem;max-width:36rem}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.muted{color:var(--muted)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;background:var(--surface);padding:.05rem .3rem;border-radius:.25rem}
+.note{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.9375rem}
+/* This screen */
+section{border-top:1px solid var(--border);padding-top:.5rem;margin-top:1.5rem;max-width:44rem}
+.home-sections{list-style:none;margin:0 0 1.5rem;padding:0;counter-reset:place}
+.home-sections li{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border);counter-increment:place}
+.home-sections li::before{content:counter(place);display:inline-grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;border-radius:50%;background:var(--tint);color:var(--link);font-weight:700;font-size:.875rem}
+.home-sections .what{flex:1 1 14rem}
+.home-sections .what b{display:block}
+.home-sections .btn{min-height:44px;padding:.4rem .8rem;font-weight:500}
+.add{background:var(--surface);border-radius:var(--radius);padding:1rem;margin:0 0 1.5rem}
+.add .field{margin-bottom:1rem}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the main content</a>
+<header class="top">
+  <div class="brand">Khalid <span>· Field Notes on SEO</span></div>
+  <div class="row"><a href="https://www.example.com/blog/">View the blog</a><span class="muted">Asif, owner</span></div>
+</header>
+<div class="shell">
+<nav class="side" aria-label="Admin">
+  <ul>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="posts.html">Posts</a></li>
+    <li><a href="media.html">Media</a></li>
+    <li><a href="design.html">Design</a></li>
+    <li><a href="navigation.html" aria-current="page">Navigation</a></li>
+    <li><a href="redirects.html">Redirects</a></li>
+    <li><a href="settings.html">Settings</a></li>
+  </ul>
+</nav>
+<main id="main">
+  <h1>Navigation</h1>
+  <p class="lede">The links in your blog's header and footer, on every page. Readers use them to find their way around.</p>
+
+  <section aria-labelledby="primary-title">
+    <h2 id="primary-title">Header menu</h2>
+    <p class="hint">The main links at the top of every page, left to right. On a phone they fold into a Menu button.</p>
+    <ol class="home-sections">
+      <li>
+        <span class="what"><b>Guides</b><span class="hint">/blog/guides/</span></span>
+        <span class="row"><button class="btn" type="button" aria-label="Move Guides down">Move down</button><button class="btn" type="button" aria-label="Remove Guides">Remove</button></span>
+      </li>
+      <li>
+        <span class="what"><b>Technical SEO</b><span class="hint">/blog/category/technical-seo/</span></span>
+        <span class="row"><button class="btn" type="button" aria-label="Move Technical SEO up">Move up</button><button class="btn" type="button" aria-label="Move Technical SEO down">Move down</button><button class="btn" type="button" aria-label="Remove Technical SEO">Remove</button></span>
+      </li>
+      <li>
+        <span class="what"><b>Impressum (de)</b><span class="hint">/blog/de/impressum/</span></span>
+        <span class="row"><button class="btn" type="button" aria-label="Move Impressum (de) up">Move up</button><button class="btn" type="button" aria-label="Remove Impressum (de)">Remove</button></span>
+      </li>
+    </ol>
+    <div class="add">
+      <div class="field"><label for="primary-label">Link text</label><span class="hint" id="primary-label-hint">The words readers see, such as Guides.</span><input id="primary-label" aria-describedby="primary-label-hint" value="Tools"></div>
+      <div class="field"><label for="primary-href">Address</label><span class="hint" id="primary-href-hint">A page on your blog, such as /blog/about/, or a full address, such as https://www.example.com/.</span><input id="primary-href" aria-describedby="primary-href-hint" value="https://www.example.com/tools/"></div>
+      <div class="field"><label for="primary-language">Show on</label><select id="primary-language"><option selected>Pages in every language</option><option>English pages only</option><option>German pages only</option></select></div>
+      <button class="btn" type="button" aria-label="Add link to the header menu">Add link</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="footer-title">
+    <h2 id="footer-title">Footer menu</h2>
+    <p class="hint">Links at the bottom of every page, such as About or your legal pages. Columns of footer links under a heading are set in site.toml, and saving here keeps them.</p>
+    <p>No links yet, so the footer shows none.</p>
+    <div class="add">
+      <div class="field"><label for="footer-label">Link text</label><span class="hint" id="footer-label-hint">The words readers see, such as Guides.</span><input id="footer-label" aria-describedby="footer-label-hint"></div>
+      <div class="field"><label for="footer-href">Address</label><span class="hint" id="footer-href-hint">A page on your blog, such as /blog/about/, or a full address, such as https://www.example.com/.</span><input id="footer-href" aria-describedby="footer-href-hint" value="blog/about/"></div>
+      <div class="field"><label for="footer-language">Show on</label><select id="footer-language"><option selected>Pages in every language</option><option>English pages only</option><option>German pages only</option></select></div>
+      <p role="alert">Start the address with / for a page on your blog, or with https:// for another site.</p>
+      <button class="btn" type="button" aria-label="Add link to the footer menu">Add link</button>
+    </div>
+  </section>
+
+  <button class="btn primary" type="button">Save menus</button>
+
+  <p class="note">Mockup for the founder's review. Nothing on this page saves. The links are an example for the demo site, and the footer shows the message for an address without its first slash. <a href="index.html">All mockups</a></p>
+</main>
+</div>
+</body>
+</html>

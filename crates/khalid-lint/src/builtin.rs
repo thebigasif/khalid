@@ -1,6 +1,7 @@
 //! The list of rules this crate ships.
 
 use chrono::NaiveDate;
+use khalid_core::Slug;
 
 use crate::catalogue::Swap;
 use crate::focus::{FocusNotIn, FocusTooOften, FocusTooRare, Place, SecondaryKeywordUnused};
@@ -15,8 +16,13 @@ use crate::{
 
 /// Every built-in rule, measured against `thresholds`, in the order their
 /// findings are listed: the blocks first, then the warnings.
-pub(crate) fn rules(thresholds: Thresholds, terms: Vec<Swap>) -> Vec<Box<dyn Rule>> {
-    let mut rules = blocking_and_structure_rules(thresholds);
+/// `reviewed` lists the categories whose posts need a reviewer.
+pub(crate) fn rules(
+    thresholds: Thresholds,
+    terms: Vec<Swap>,
+    reviewed: Vec<Slug>,
+) -> Vec<Box<dyn Rule>> {
+    let mut rules = blocking_and_structure_rules(thresholds, reviewed);
     rules.extend(writing_and_reading_rules(thresholds));
     rules.extend(readability_rules(thresholds, terms));
     rules
@@ -50,12 +56,15 @@ fn readability_rules(thresholds: Thresholds, terms: Vec<Swap>) -> Vec<Box<dyn Ru
 }
 
 /// The rules that block or judge a post's shape, first in the findings.
-fn blocking_and_structure_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
+fn blocking_and_structure_rules(thresholds: Thresholds, reviewed: Vec<Slug>) -> Vec<Box<dyn Rule>> {
     vec![
         Box::new(blocking::NoTitle),
         Box::new(blocking::ManyHeadlines),
         Box::new(blocking::NoDate),
         Box::new(blocking::NoAuthor),
+        Box::new(site_trust::NoReviewer {
+            categories: reviewed,
+        }),
         Box::new(blocking::NoInternalLink),
         Box::new(blocking::InvalidStructuredData),
         Box::new(snippet::LongTitle {

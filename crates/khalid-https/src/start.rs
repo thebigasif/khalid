@@ -105,13 +105,7 @@ impl Https {
         outbound: &Outbound,
         agreed: Option<AgreedToTerms>,
     ) -> Result<Acme, HttpsError> {
-        if let Some(key) = self.folder.account().await? {
-            return Acme::sign_in(outbound, key).await;
-        }
-        let agreed = agreed.ok_or(HttpsError::TermsNotAgreed)?;
-        let (acme, key) = Acme::sign_up(outbound, &self.directory, agreed).await?;
-        self.folder.save_account(&key).await?;
-        Ok(acme)
+        account((&self.folder, &self.directory), outbound, agreed).await
     }
 
     /// Signs in, trying again every hour until it works.
@@ -121,25 +115,65 @@ impl Https {
         agreed: Option<AgreedToTerms>,
         certificates: &Certificates,
     ) -> Renewal {
-        loop {
-            match self.account(outbound, agreed).await {
-                Ok(acme) => return self.renewal(acme, certificates),
-                Err(error) => {
-                    tracing::warn!(domain = %self.domain, %error, "Let's Encrypt could not be reached, so Khalid tries again in an hour");
-                    tokio::time::sleep(SIGN_IN_AGAIN).await;
-                }
-            }
-        }
+        let at = (&self.folder, &self.directory);
+        let acme = signed_in(at, outbound, agreed, &self.domain).await;
+        self.renewal(acme, certificates)
     }
 
     fn renewal(&self, acme: Acme, certificates: &Certificates) -> Renewal {
-        Renewal {
-            acme,
-            domain: self.domain.clone(),
-            certificates: certificates.clone(),
-            folder: self.folder.clone(),
-            checks: CHECKS.to_vec(),
+        renewal(acme, &self.domain, certificates, &self.folder)
+    }
+}
+
+/// The account saved in `folder`, or a new one at `directory` when
+/// `agreed` allows it.
+pub(crate) async fn account(
+    (folder, directory): (&HttpsFolder, &Directory),
+    outbound: &Outbound,
+    agreed: Option<AgreedToTerms>,
+) -> Result<Acme, HttpsError> {
+    if let Some(key) = folder.account().await? {
+        return Acme::sign_in(outbound, key).await;
+    }
+    let agreed = agreed.ok_or(HttpsError::TermsNotAgreed)?;
+    let (acme, key) = Acme::sign_up(outbound, directory, agreed).await?;
+    folder.save_account(&key).await?;
+    Ok(acme)
+}
+
+/// The account, signing in again every hour until it works. `domain` is
+/// the one waiting, for the log.
+pub(crate) async fn signed_in(
+    at: (&HttpsFolder, &Directory),
+    outbound: &Outbound,
+    agreed: Option<AgreedToTerms>,
+    domain: &Domain,
+) -> Acme {
+    loop {
+        match account(at, outbound, agreed).await {
+            Ok(acme) => return acme,
+            Err(error) => {
+                tracing::warn!(%domain, %error, "Let's Encrypt could not be reached, so Khalid tries again in an hour");
+                tokio::time::sleep(SIGN_IN_AGAIN).await;
+            }
         }
+    }
+}
+
+/// The renewal of `domain`'s certificate, served from `certificates` and
+/// saved in `folder`.
+pub(crate) fn renewal(
+    acme: Acme,
+    domain: &Domain,
+    certificates: &Certificates,
+    folder: &HttpsFolder,
+) -> Renewal {
+    Renewal {
+        acme,
+        domain: domain.clone(),
+        certificates: certificates.clone(),
+        folder: folder.clone(),
+        checks: CHECKS.to_vec(),
     }
 }
 

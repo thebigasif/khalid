@@ -83,12 +83,12 @@ struct Reads<'a> {
 }
 
 /// Whether a bot answered with `status` got the page.
-fn read_ok(status: u16) -> bool {
+pub(crate) fn read_ok(status: u16) -> bool {
     (200..300).contains(&status) || status == NOT_MODIFIED
 }
 
 /// Whether `path` is a page rather than a file: its last part has no dot.
-fn is_page(path: &str) -> bool {
+pub(crate) fn is_page(path: &str) -> bool {
     path.rsplit('/')
         .next()
         .is_none_or(|last| !last.contains('.'))

@@ -18,6 +18,7 @@ use khalid_outbound::{Outbound, Resolver};
 use tokio::runtime::Runtime;
 
 use crate::announce::SiteAnnounce;
+use crate::newsletter_files::WelcomeFolder;
 use crate::subscriber_events::AnnouncedSubscribers;
 use crate::{newsletter_files, serve_message};
 
@@ -27,12 +28,14 @@ use crate::{newsletter_files, serve_message};
 /// telling `announce` of each one confirmed, and sending through `mailer`,
 /// the way [`mailer`] made from `[mail]`. A reader who confirms gets the
 /// reader cookie, signed with the site's preview key read on `runtime`.
+/// Beside the routes comes the newsletter itself, when the site sends mail,
+/// for the hourly round that sends the later welcome steps.
 pub(crate) fn router(
     (folder, config): (&Path, &Config),
     (database, id): (&Database, SiteId),
     (runtime, announce): (&Runtime, &SiteAnnounce),
     mailer: Option<Arc<dyn Mailer>>,
-) -> Result<Router, UserMessage> {
+) -> Result<(Router, Option<Newsletter>), UserMessage> {
     let site = site(config);
     let pages = Pages::new(site.clone()).map_err(|_| serve_message::internal())?;
     let newsletter = match mailer {
@@ -48,7 +51,10 @@ pub(crate) fn router(
         }
         None => None,
     };
-    Ok(khalid_newsletter::router(pages, newsletter))
+    Ok((
+        khalid_newsletter::router(pages, newsletter.clone()),
+        newsletter,
+    ))
 }
 
 /// The reader pass of the site with `config`, signed with its `key`.
@@ -67,7 +73,7 @@ fn with_files(newsletter: Newsletter, folder: &Path, config: &Config) -> Newslet
         .and_then(|mail| mail.postal_address.as_deref());
     let welcomes = postal
         .and_then(PostalAddress::new)
-        .map(|postal| Welcomes::new(newsletter_files::welcomes(folder, &lists), postal));
+        .map(|postal| Welcomes::new(WelcomeFolder::new(folder), postal));
     let newsletter = newsletter.with_lists(lists);
     match welcomes {
         Some(welcomes) => newsletter.with_welcomes(welcomes),

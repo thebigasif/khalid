@@ -166,6 +166,15 @@ details details{margin:1rem 0 0}
             <label for="publish-at">Date and time</label><span class="hint" id="publish-at-hint">In your own time zone. This is also the date readers see on the post.</span>
             <input id="publish-at" type="datetime-local" aria-describedby="publish-at-hint" value="2026-10-12T09:00">
           </fieldset>
+          <!-- Once the post is live, "When it goes live" makes way for this. -->
+          <fieldset>
+            <legend>Real update</legend>
+            <span class="hint">Readers and search engines see an "Updated" date only when you say the post really changed. Leave this off for a typo or a fixed link.</span>
+            <p class="muted">Last real update: 31 October 2026. Added a worked example with five posts.</p>
+            <label class="choice"><input type="checkbox" checked><span>This change is a real update</span></label>
+            <label for="update-note">What changed</label><span class="hint" id="update-note-hint">One short sentence readers see beside the new date. 35 of 160 characters. The date becomes today with your next change to the text.</span>
+            <input id="update-note" aria-describedby="update-note-hint" value="Added a sheet to plan the links on.">
+          </fieldset>
           <div class="field"><label for="author">Author</label><select id="author"><option selected>Asif</option><option>Lena Vogt</option></select></div>
           <div class="field"><label for="category">Category</label><select id="category"><option>On-page SEO</option><option>Technical SEO</option><option selected>Content strategy</option></select></div>
           <div class="field"><label for="description">Description</label><span class="hint" id="desc-hint">The line under the title in search results. 114 of 160 characters.</span><textarea id="description" rows="4" aria-describedby="desc-hint">A topic cluster is one main post and several shorter posts that link to it. How to plan one with a sheet of paper.</textarea></div>

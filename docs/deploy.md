@@ -7,7 +7,7 @@ order: 20
 
 Khalid is one file. Put it on a machine, point it at a site folder, and it serves the blog and the admin. This page shows the ways to keep it running. The files it names are in `packaging/` in the repository.
 
-A site folder is the folder that holds `site.toml`, `content/` and `theme/`. Khalid keeps what it works out from those files, such as its database and image sizes, in `data/` inside the same folder. `khalid backup` saves the whole folder in one archive, as "Backing up and restoring" below shows.
+A site folder is the folder that holds `site.toml`, `content/` and `theme/`. Khalid keeps what it works out from those files, such as its database and image sizes, in `data/` inside the same folder. It also notes who last changed each post through the admin, the API or the scheduler in `data/post-editors.txt`, so the admin can name them. A post you then change by hand in its file shows no name until the next change in the admin. `khalid backup` saves the whole folder in one archive, as "Backing up and restoring" below shows.
 
 ## Install with one line
 
@@ -19,11 +19,26 @@ curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/inst
 
 The script downloads the newest release for your machine and checks it against the release's list of checksums, `SHA256SUMS`. A checksum is a fingerprint of a file: if the download was damaged or changed, the fingerprints differ and the script stops without installing anything. As root it installs to `/usr/local/bin`, otherwise to `~/.local/bin`.
 
+It also installs two extras, and says what it did with each:
+
+- **The manual pages**, the help that `man khalid-init` shows. They go to `~/.local/share/man/man1`, or to `/usr/local/share/man/man1` as root, and are checked against `SHA256SUMS` like the binary.
+- **Tab completion**, which makes your shell finish a `khalid` command when you press Tab. The script sets it up for the shell you log in with, if that is bash, zsh or fish:
+
+| Shell | For you | As root, for everyone |
+| --- | --- | --- |
+| bash | `~/.local/share/bash-completion/completions/khalid` | `/usr/local/share/bash-completion/completions/khalid` |
+| zsh | `~/.zfunc/_khalid` | `/usr/local/share/zsh/site-functions/_khalid` |
+| fish | `~/.config/fish/completions/khalid.fish` | `/usr/local/share/fish/vendor_completions.d/khalid.fish` |
+
+Open a new terminal to use it. For zsh in your home folder, `~/.zshrc` needs the line `fpath=(~/.zfunc $fpath)` before `compinit`; the script prints it when the line is missing and leaves the file alone. If an extra cannot be installed, for example on an older release without manual pages or with another shell, the script says why and the binary stays installed. `docs/cli.md` shows how to add either one by hand.
+
 Options, written after `sh -s --`:
 
 - `--version v1.3.2` installs that release instead of the newest.
 - `--dir FOLDER` installs into another folder.
 - `--systemd`, as root, also sets up the service described below.
+- `--no-man` leaves out the manual pages.
+- `--no-completions` leaves out Tab completion.
 
 For example, to install and set up the service on a server:
 
@@ -33,7 +48,17 @@ curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/inst
 
 ## Signing in to the admin the first time
 
-The admin is at `admin/` in the blog's folder: `/admin/` for a blog that is the whole site, and `/blog/admin/` for one under `/blog/`. The first person in is the owner, and the command line makes them:
+The admin is at `admin/` in the blog's folder: `/admin/` for a blog that is the whole site, and `/blog/admin/` for one under `/blog/`.
+
+To put the admin in another folder, for example because a page of the blog already uses `/admin/`, name it in `site.toml`:
+
+```toml
+admin_folder = "studio"
+```
+
+The admin then answers at `/studio/`, or `/blog/studio/` under `/blog/`, and `/admin/` is left to the blog's pages. Sign-in links, the staff toolbar, the link `khalid staff owner` prints and each `admin_path` in the Admin API name the new folder. The name is one folder of lowercase letters, digits and hyphens. It cannot be `api`, `ghost` or one of the site's language codes, since those folders already answer. Restart the server after changing it.
+
+The first person in is the owner, and the command line makes them:
 
 ```sh
 khalid --site blog staff owner --email you@example.com --name "Your Name"
@@ -102,11 +127,25 @@ If a saved `site.toml` or theme file has a mistake, the blog keeps serving the l
 
 A few settings only take effect when the server starts:
 
-- `mount` and `mode` shape the server's own addresses, so it keeps the values it started with.
-- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
-- The `--listen` and `--domain` options, the environment variables, and the `data/` folder with its database are read once at start.
+- `mount`, `admin_folder` and `mode` shape the server's own addresses, so it keeps the values it started with.
+- `address`, `languages`, `slugs`, `[media]`, `[mail]`, `[alerts]`, `[code]`, `[search_console]`, `[visitor_log]`, `[limits]`, `[log]`, `[ai]` and `preview_link_days` also set up the admin, mail, alerts, the log and other parts of the server at start. The pages use the new value at once; the rest uses it after a restart.
+- The `--listen`, `--domain` and `--https` options, the environment variables, and the `data/` folder with its database are read once at start.
 
 When you change one of these, the log says a restart is needed, and so does the admin: its settings screens show a note, and the Admin API's settings answer `restart_needed: true`. A change to anything else, such as the blog's name, its look, its SEO or its privacy settings, answers `false`, since the blog already uses it. Restart with `systemctl restart khalid`, or stop and start the server.
+
+## The server log
+
+`khalid serve` writes its log to standard error, the stream a service manager keeps for each program. Each line says what happened, such as a post that went live, or an email that could not be sent and why. With systemd, read it with `journalctl -u khalid`. With Docker, read it with `docker logs <container>`, and with Compose with `docker compose logs khalid`.
+
+The log says what the server did and what failed. It holds no password, API key, token or email text. To log less, or to send JSON to a log collector, add a `[log]` table to `site.toml`:
+
+```toml
+[log]
+level = "warn"
+format = "json"
+```
+
+`level` is the least important line written: `error`, `warn`, `info`, `debug` or `trace`, `info` unless set. A released Khalid writes `info` at most, so `debug` and `trace` log the same as `info`; they add lines only in a build made for development, which keeps the binary small. A failed email is a `warn` line. `format` is `text`, one plain line a message, unless set, or `json`, one JSON object a line. `khalid serve --json` writes JSON too. A server of several sites logs plain lines at `info`.
 
 ## Docker
 
@@ -161,7 +200,7 @@ Khalid prints the rule to add to that program, for nginx, Caddy, Apache, Traefik
 | The git mode push hook | `/blog/api/hooks/git` |
 | Preview links, forms, comments and newsletter sign-ups | under `/blog/` |
 
-Every address Khalid gives out names the folder too: sign-in links, preview links, the `site` in each webhook, `Location` headers, `admin_path`, and the address the Connect to SerpDad page shows. An old `/admin/` address moves to `/blog/admin/`. The APIs also still answer at `/api/` for a program that reaches Khalid directly, without the proxy in front.
+Every address Khalid gives out names the folder too: sign-in links, preview links, the `site` in each webhook, `Location` headers, `admin_path`, and the address the Connect to SerpDad page shows. An old `/admin/` address moves to `/blog/admin/`, unless `admin_folder` puts the admin elsewhere. The APIs also still answer at `/api/` for a program that reaches Khalid directly, without the proxy in front.
 
 Search engines read `robots.txt` only at the root of a host, so the blog's own `robots.txt` under `/blog/` is never read. `khalid init` prints the line to add to the website's `robots.txt`, built from the site's address and mount:
 
@@ -252,6 +291,14 @@ Khalid connects on port 587 and turns encryption on before it sends anything. Ad
 
 Form answers are emailed to the `from` address unless you add `forms_to = "hello@example.com"` under `[mail]`.
 
+If a form answer's email cannot be sent, because the mail server is down or refuses it, Khalid keeps it and tries again 1 minute, 5 minutes, 30 minutes, 2 hours, 5 hours and 16 hours later, the same waits as a webhook. That is seven tries over about a day. Each failed try leaves a warning in the server log with the reason. If the last try fails too, Khalid stops, and `khalid doctor` shows how many answers never arrived, under "Worth a look", for 30 days. The answers themselves are always kept in the site's database, and `khalid db export` writes them to `form_submissions.csv`.
+
+Every answer is also kept in the site database, mail or not. Open Forms in the admin to read them, newest first; only an owner or an admin sees it, because answers hold visitors' email addresses. Tools read the same answers through the Admin API at `/api/admin/v1/forms/` with a key that has `subscribers:write`.
+
+When a visitor asks you to erase what they sent (their right under the GDPR), open the form in Forms and click **Delete** on their answer, then confirm. The answer is gone for good and cannot be brought back; the audit log keeps only that an answer was deleted, never what it said. Tools do the same with `DELETE /api/admin/v1/forms/{id}/answers/{answer}/`.
+
+To count clicks on the links in newsletter emails, add `count_clicks = true` under `[mail]`. It is off unless you set it. See "Numbers" in `docs/newsletters.md`.
+
 Through Resend or Postmark, two services that send mail for websites, write an empty `[mail.resend]` or `[mail.postmark]` instead of `[mail.smtp]`. Postmark sends on its `outbound` stream unless you add `message_stream = "<name>"`.
 
 The password, API key or token never goes in `site.toml`. Set it in the server's environment, where only Khalid reads it:
@@ -263,6 +310,8 @@ The password, API key or token never goes in `site.toml`. Set it in the server's
 | Postmark | `KHALID_POSTMARK_TOKEN` |
 
 With systemd, run `sudo systemctl edit khalid` and add `Environment=KHALID_SMTP_PASSWORD=...` under `[Service]`, or keep it in a file only root can read and name it with `EnvironmentFile=`. With Compose, put it in the `.env` file and pass it on under `environment:` in `compose.yaml`, as `KHALID_SMTP_PASSWORD: ${KHALID_SMTP_PASSWORD}`. Khalid refuses to start, and says which variable is missing, when the way you picked needs one that is not set.
+
+To check mail before you start the server, run `khalid --site <folder> doctor` in the same environment. Its Mail line says which way mail leaves and whether the variable is set, without showing it. Add `--send-test-mail` to send one email to the address form answers go to, through the same server or service `khalid serve` uses. If it fails, doctor says why, such as a refused password or a server that did not answer.
 
 ## Alerts
 
@@ -287,7 +336,7 @@ slow_ms = 1000           # a slower middle answer time over an hour, or three lo
 
 ### Speed and uptime
 
-Once the server answers more than its own computer, with `--domain` or a `--listen` address such as `0.0.0.0:8080`, it looks at the blog's home page at its public address every 5 minutes, the way a reader's browser would: through DNS, the certificate and any proxy in front. Three failed looks in a row send a "site down" alert. An hour whose middle answer time is over 1 second sends a "slow site" alert. Both are sent once, and again only after the site has recovered.
+Once the server answers more than its own computer, with `--domain`, `--https` or a `--listen` address such as `0.0.0.0:8080`, it looks at the blog's home page at its public address every 5 minutes, the way a reader's browser would: through DNS, the certificate and any proxy in front. Three failed looks in a row send a "site down" alert. An hour whose middle answer time is over 1 second sends a "slow site" alert. Both are sent once, and again only after the site has recovered.
 
 To see the record, run:
 
@@ -315,6 +364,20 @@ While it is on, three commands read it. A crawler counts only when its address i
 
 Add `--json` to any of them for the same as one JSON object. The hourly alerts also raise `crawl-stopped` when Googlebot or Bingbot has not fetched a page for a week, and `crawler-errors` when crawlers got a server error in the last hour. Both go out like every other alert.
 
+## Request limits
+
+`khalid serve` limits how often one key or one reader may ask for work, so a busy script or a leaked key cannot slow the blog for everyone. Past a limit the answer is 429, "too many requests", with a `Retry-After` header that says how many seconds to wait. The usual numbers suit one blog on a small server. To change them, add a `[limits]` table to `site.toml` and restart the server:
+
+```toml
+[limits]
+admin_per_minute = 600        # Admin API requests per key or signed-in staff member
+content_per_minute = 6000     # Content API requests per content key
+wrong_keys_per_minute = 10    # wrong keys one address may send before it is paused
+search_per_minute = 120       # searches one reader's address may make
+```
+
+Each number may be 1 to 100000. Searches count only when the reader typed words, so opening the empty search page never counts. A reader past the limit sees the search form under one sentence that says to wait a minute, then search again. A blog behind a proxy on the same machine or network, such as Caddy or nginx, is counted by the address the proxy passes on in `X-Forwarded-For`.
+
 ## Many sites on one server
 
 One Khalid process can serve several blogs, each on its own domain. In an empty folder, add each site by its domain. The first one is the home site, where super admins add more:
@@ -331,7 +394,15 @@ Each site gets its own folder in `sites/`, with its own posts, theme, staff and 
 
 A super admin is a person whose email `sites.toml` lists and who signs in on the home site. They can add a site from there while the server runs, and it answers at once. Keys and staff of the other sites cannot. The page for it is `/admin/sites` on the home site: it asks for your email, sends you a sign-in link, and opening the link brings you back to it. The sign-in link `khalid staff owner` prints opens the same page.
 
-Point each domain's DNS at the server. HTTPS for many domains is not built in yet, so put a proxy such as Caddy in front: it gets a certificate for each domain and passes requests to `127.0.0.1:8080`.
+Point each domain's DNS at the server. Then serve every site over HTTPS on ports 443 and 80, each with its own free certificate from Let's Encrypt that Khalid gets and renews:
+
+```sh
+khalid serve --https --accept-terms
+```
+
+`--accept-terms` is your yes to Let's Encrypt's subscriber agreement, asked once for the whole folder. Without it, Khalid asks at the terminal. One Let's Encrypt account serves every site, kept in `data/https/` of the sites folder, and each site keeps its own certificate in its own `sites/<domain>/data/https/`, so it moves with the site. A site a super admin adds while the server runs gets its certificate within a minute, once its DNS leads here. A site whose domain does not lead here yet is tried again every hour, and the others are served meanwhile. Plain HTTP on port 80 moves each visitor to HTTPS on their own site. `--domain` is for a single site, and a sites folder refuses it.
+
+To keep a proxy such as Caddy in front instead, serve with `--listen 127.0.0.1:8080` and let the proxy get the certificates.
 
 ## Backing up and restoring
 
@@ -480,7 +551,7 @@ The server answers a signed push at once and pulls in the background; the post s
 
 The Analytics screen in the admin shows the same counts for the last 7, 28 or 90 days: the page views against the days before, each day, where readers came from, the most read pages, the readers each AI assistant sent, and the pages AI bots read but never cite. It needs an owner or admin sign-in, because views are visitor data.
 
-Programs read the same numbers from the Admin API with a key that has `settings:write`: `GET /api/admin/v1/analytics/visitors/?days=28`, `GET /api/admin/v1/analytics/ai-visitors/?days=28` and `GET /api/admin/v1/analytics/uncited/?days=30`. The OpenAPI document at `/api/openapi.json` describes each answer.
+Programs read the same numbers from the Admin API with a key that has `settings:write`: `GET /api/admin/v1/analytics/visitors/?days=28`, `GET /api/admin/v1/analytics/ai-visitors/?days=28`, `GET /api/admin/v1/analytics/uncited/?days=30` and `GET /api/admin/v1/analytics/ai-bots/?days=30`, which counts how often each assistant's bots read your pages beside the readers it sent. The OpenAPI document at `/api/openapi.json` describes each answer.
 
 ## Smaller pictures with AVIF
 

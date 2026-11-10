@@ -7,7 +7,8 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use khalid_auth::{Home, SiteDirectory};
-use khalid_core::{DomainName, Environment, UserMessage};
+use khalid_core::{DomainName, Environment, LogSettings, UserMessage};
+use khalid_https::{Domains, Listening};
 use khalid_outbound::Outbound;
 use khalid_server::FolderLook;
 use serde::Serialize;
@@ -22,7 +23,9 @@ use crate::serve_https::{self, Listen};
 use crate::site_folders::{NoPanel, SiteFolders};
 use crate::site_hosts::{Among, Hosts};
 use crate::site_list::{self, SiteList};
-use crate::{alert_watch, memory, outbound, report, serve_message, sites_message};
+use crate::{
+    alert_watch, memory, outbound, report, serve_message, server_log, sites_https, sites_message,
+};
 
 /// The JSON shape of the line `khalid serve --json` prints once it listens.
 #[derive(Serialize)]
@@ -49,8 +52,14 @@ struct Shared<'a> {
 /// Ctrl+C or a stop signal stops them all.
 pub(crate) fn run(root: &Path, cli: &Cli, args: &ServeArgs) -> Exit {
     let output = cli.output;
+    // Each site's own `[log]` is read later, so the log starts plain at info.
+    server_log::install(LogSettings::default(), output);
     if args.domain.is_some() {
-        return report::failure(output, &sites_message::no_https_yet(), Exit::Usage);
+        return report::failure(
+            output,
+            &sites_message::domain_in_sites_folder(),
+            Exit::Usage,
+        );
     }
     let list = match SiteList::read(root) {
         Ok(Some(list)) => list,
@@ -61,6 +70,10 @@ pub(crate) fn run(root: &Path, cli: &Cli, args: &ServeArgs) -> Exit {
                 Exit::Failure,
             );
         }
+        Err(message) => return report::failure(output, &message, Exit::Failure),
+    };
+    let listen = match listen(cli, args, &list) {
+        Ok(listen) => listen,
         Err(message) => return report::failure(output, &message, Exit::Failure),
     };
     memory::small_pages_only();
@@ -77,7 +90,7 @@ pub(crate) fn run(root: &Path, cli: &Cli, args: &ServeArgs) -> Exit {
         cli,
         runtime: &runtime,
         env: &Environment::from_process(),
-        listen: Listen::Plain(args.listen),
+        listen,
         outbound,
         hosts: Hosts::default(),
         home: Arc::new(SiteFolders::new(root, Some(started))),
@@ -91,6 +104,34 @@ pub(crate) fn run(root: &Path, cli: &Cli, args: &ServeArgs) -> Exit {
     }
 }
 
+/// Where the sites answer: plain HTTP on `--listen`, or with `--https`
+/// HTTPS on ports 443 and 80, port 80 sending visitors to the home site
+/// when their name has no certificate yet.
+fn listen(cli: &Cli, args: &ServeArgs, list: &SiteList) -> Result<Listen, UserMessage> {
+    let Some(first) = list.domains().first().filter(|_| args.https) else {
+        return Ok(Listen::Plain(args.listen));
+    };
+    let home = sites_https::domain(first).ok_or_else(|| sites_message::no_certificate(first))?;
+    serve_https::https_listen(cli, args, &home).map(|https| Listen::Https(Box::new(https)))
+}
+
+/// Opens the sites folder's listener, and says where it answers and, over
+/// HTTPS, the domains each site adds itself to.
+async fn open(
+    shared: &Shared<'_>,
+) -> Result<(Listening, String, Option<Domains>), (UserMessage, Exit)> {
+    match &shared.listen {
+        Listen::Https(home) => {
+            let (listener, address, domains) = sites_https::open(shared.root, home).await?;
+            Ok((listener, address, Some(domains)))
+        }
+        Listen::Plain(_) => {
+            let (listener, address) = serve_https::open(shared.root, &shared.listen).await?;
+            Ok((listener, address, None))
+        }
+    }
+}
+
 /// Opens the listener, starts each site on its own thread, then starts
 /// each site added through the panel, until a stop signal.
 fn serve_all(
@@ -98,16 +139,15 @@ fn serve_all(
     list: &SiteList,
     mut starts: mpsc::UnboundedReceiver<DomainName>,
 ) -> Result<(), (UserMessage, Exit)> {
-    let (listener, address) = shared
-        .runtime
-        .block_on(serve_https::open(shared.root, &shared.listen))?;
+    let (listener, address, domains) = shared.runtime.block_on(open(shared))?;
+    let domains = domains.as_ref();
     announce(shared.output, &address, list.domains());
     let front = khalid_server::serve(listener, shared.hosts.router(), serve::stop(), GRACE);
     let front = shared.runtime.spawn(front);
     std::thread::scope(|scope| {
         let homes = std::iter::once(Home::Yes).chain(std::iter::repeat(Home::No));
         for (domain, home) in list.domains().iter().zip(homes) {
-            scope.spawn(move || one_site(shared, domain, home));
+            scope.spawn(move || one_site(shared, (domain, domains), home));
         }
         while let Some(domain) = shared.runtime.block_on(next_start(&mut starts)) {
             if shared.output == Output::Human {
@@ -116,7 +156,7 @@ fn serve_all(
                     Exit::Success,
                 );
             }
-            scope.spawn(move || one_site(shared, &domain, Home::No));
+            scope.spawn(move || one_site(shared, (&domain, domains), Home::No));
         }
     });
     match shared.runtime.block_on(front) {
@@ -133,9 +173,10 @@ async fn next_start(starts: &mut mpsc::UnboundedReceiver<DomainName>) -> Option<
     }
 }
 
-/// Checks and serves the site on `domain` until the stop signal. A site
-/// that cannot be served is reported, and the others go on.
-fn one_site(shared: &Shared<'_>, domain: &DomainName, home: Home) {
+/// Checks and serves the site on `domain` until the stop signal, over
+/// HTTPS when the sites folder has `domains`. A site that cannot be
+/// served is reported, and the others go on.
+fn one_site(shared: &Shared<'_>, (domain, domains): (&DomainName, Option<&Domains>), home: Home) {
     let folder = site_list::folder(shared.root, domain);
     let look = FolderLook::take(&folder);
     let checked = crate::check(&folder, shared.env, crate::Bodies::ByTheCommand);
@@ -155,8 +196,9 @@ fn one_site(shared: &Shared<'_>, domain: &DomainName, home: Home) {
         },
     };
     let keys = Keys::read(shared.env, (&folder, &config), shared.cli);
+    let listen = site_listen(shared, (&folder, domain), domains);
     let to = (
-        &shared.listen,
+        &listen,
         &shared.outbound,
         (shared.output, alert_watch::every(shared.args, &config)),
         keys,
@@ -174,6 +216,30 @@ fn one_site(shared: &Shared<'_>, domain: &DomainName, home: Home) {
     if let Err((message, _)) = served {
         report::failure(shared.output, &message, Exit::Failure);
     }
+}
+
+/// Where the site on `domain` in `folder` answers among many: over HTTPS
+/// for its own domain when there are `domains`, whose certificate is then
+/// kept from now on, and the sites folder's plain address otherwise.
+fn site_listen(
+    shared: &Shared<'_>,
+    (folder, domain): (&Path, &DomainName),
+    domains: Option<&Domains>,
+) -> Listen {
+    let (Listen::Https(home), Some(domains)) = (&shared.listen, domains) else {
+        return shared.listen.clone();
+    };
+    let Some(name) = sites_https::domain(domain) else {
+        report::failure(
+            shared.output,
+            &sites_message::no_certificate(domain),
+            Exit::Failure,
+        );
+        return Listen::Plain(shared.args.listen);
+    };
+    let (listen, keeping) = sites_https::site(home, (folder, name), domains);
+    shared.runtime.spawn(keeping);
+    listen
 }
 
 /// Says where the sites answer. In JSON, this one line is the whole output.

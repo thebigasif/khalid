@@ -63,6 +63,7 @@ pub(crate) fn found(
         let Some(post) = by_address.get(search.page.as_str()) else {
             continue;
         };
+        let locale = &post.locale;
         let place = *at.entry(&post.address).or_insert_with(|| {
             found.push((post_found(post), headings(config, content, post)));
             found.len().saturating_sub(1)
@@ -71,7 +72,7 @@ pub(crate) fn found(
             continue;
         };
         post.searches.push(FollowUp {
-            answered_by: answered_by(&search.query, headings).map(str::to_owned),
+            answered_by: answered_by(locale, &search.query, headings).map(str::to_owned),
             query: search.query,
             clicks: search.clicks,
             impressions: search.impressions,

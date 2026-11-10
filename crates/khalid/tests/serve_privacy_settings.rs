@@ -18,7 +18,7 @@ const SETTINGS: &str = "/api/admin/v1/settings/";
 #[test]
 fn privacy_and_tagged_code_are_saved_into_site_toml_and_a_bad_lifetime_saves_nothing() {
     let site = demo_copy();
-    let owner = ["--name", "Owner", "--scope", "settings:write"];
+    let owner = ["--name", "Owner", "--scope", "admin:all"];
     let key = new_key(site.path(), &owner);
     let server = start(site.path(), &key);
     let (status, read) = server.admin("GET", SETTINGS, None);
@@ -64,4 +64,44 @@ fn privacy_and_tagged_code_are_saved_into_site_toml_and_a_bad_lifetime_saves_not
     assert_eq!(body["rule"], "lifetime_months", "{body}");
     let after = std::fs::read_to_string(&file).unwrap();
     assert_eq!(after, text, "nothing was written");
+}
+
+#[test]
+fn body_code_added_on_the_scripts_tab_is_checked_and_an_empty_list_removes_code() {
+    let site = demo_copy();
+    // Site code runs on every reader's page, so only `admin:all` may change it.
+    let owner = ["--name", "Owner", "--scope", "admin:all"];
+    let key = new_key(site.path(), &owner);
+    let server = start(site.path(), &key);
+    let (_, read) = server.admin("GET", SETTINGS, None);
+    let mut file = PathBuf::from(site.path());
+    file.push("site.toml");
+    let before = std::fs::read_to_string(&file).unwrap();
+
+    let seen = read["settings"]["updated_at"].as_str().unwrap();
+    let div = json!({"body": "<div>Ads</div>", "category": "marketing"});
+    let change = json!({"settings": {"updated_at": seen, "code": [div]}});
+    let (status, body) = server.admin("PUT", SETTINGS, Some(&change));
+    assert_eq!(status, 422, "{body}");
+    let detail = body["detail"].as_str().unwrap_or_default();
+    assert!(detail.contains("may hold only script, not div"), "{body}");
+    let after = std::fs::read_to_string(&file).unwrap();
+    assert_eq!(after, before, "nothing was written");
+
+    let tag = json!({"body": "<script src=\"https://cdn.example.org/tag.js\"></script>",
+        "category": "analytics"});
+    let change = json!({"settings": {"updated_at": seen, "code": [tag]}});
+    let (status, saved) = server.admin("PUT", SETTINGS, Some(&change));
+    assert_eq!(status, 200, "{saved}");
+    assert_eq!(saved["settings"]["code"][0]["category"], "analytics");
+    let seen = saved["settings"]["updated_at"].as_str().unwrap();
+    let none = json!({"settings": {"updated_at": seen, "code": []}});
+    let (status, saved) = server.admin("PUT", SETTINGS, Some(&none));
+    assert_eq!(status, 200, "{saved}");
+    assert_eq!(saved["settings"]["code"], json!([]), "{saved}");
+    let text = std::fs::read_to_string(&file).unwrap();
+    assert!(
+        !text.contains("[[code]]") && !text.contains("[code]"),
+        "{text}"
+    );
 }
