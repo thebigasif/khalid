@@ -5,7 +5,7 @@
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
 use http_body_util::BodyExt;
-use khalid_https::{Challenges, Domain, port_80};
+use khalid_https::{Certificate, Certificates, Challenges, Domain, port_80, port_80_among};
 use tower::ServiceExt;
 
 /// Port 80's answer to `path` for `blog.test`: its status, its
@@ -58,6 +58,32 @@ async fn every_other_address_moves_to_https() {
         answered.1.as_deref(),
         Some("https://blog.test/blog/hello/?ref=mail")
     );
+}
+
+#[tokio::test]
+async fn among_many_a_visitor_moves_to_the_name_they_asked_for_once_it_has_a_certificate() {
+    let made = rcgen::generate_simple_self_signed(vec!["news.test".to_owned()]).unwrap();
+    let (chain, key) = (made.cert.pem(), made.signing_key.serialize_pem());
+    let certificates = Certificates::new();
+    certificates.set(Certificate::from_pem(chain.as_bytes(), key.as_bytes()).unwrap());
+    let home = Domain::try_new("blog.test").unwrap();
+
+    for (host, moved_to) in [
+        ("news.test", "https://news.test/a/?b=1"),
+        ("NEWS.test.:80", "https://news.test/a/?b=1"),
+        ("shop.test", "https://blog.test/a/?b=1"),
+        ("203.0.113.7", "https://blog.test/a/?b=1"),
+    ] {
+        let request = Request::get("/a/?b=1").header("host", host);
+        let response = port_80_among(&home, certificates.clone())
+            .oneshot(request.body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        let location = response.headers().get("location").unwrap();
+
+        assert_eq!(response.status(), StatusCode::PERMANENT_REDIRECT, "{host}");
+        assert_eq!(location.to_str().unwrap(), moved_to, "{host}");
+    }
 }
 
 #[test]

@@ -30,7 +30,7 @@ pub use domain::{Domain, DomainError};
 pub use error::HttpsError;
 pub use listener::TlsListener;
 pub use listening::{Connection, Listening};
-pub use port_80::port_80;
+pub use port_80::{port_80, port_80_among};
 pub use renew::{Next, Renewal, next};
 pub use start::Https;
 pub use store::HttpsFolder;
