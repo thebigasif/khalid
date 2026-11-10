@@ -44,7 +44,9 @@ impl Linter {
             .get("non-inclusive-term")
             .map(|message| message.terms().to_vec())
             .unwrap_or_default();
-        Self::with_catalogue(catalogue, config, builtin::rules(thresholds, terms))?
+        let reviewed = config.reviewers_required_in().to_vec();
+        let rules = builtin::rules(thresholds, terms, reviewed);
+        Self::with_catalogue(catalogue, config, rules)?
             .with_site_rules(config, builtin::site_rules(thresholds, today))
     }
 

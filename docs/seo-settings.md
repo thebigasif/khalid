@@ -380,3 +380,25 @@ The video block takes an optional `thumbnail`, the picture search results show f
 ```markdown
 ::video{src="/media/tour.mp4" title="A tour" poster="/media/tour.jpg" thumbnail="/media/tour-thumb.jpg"}
 ```
+
+## A reviewer for health or money posts
+
+Some topics, such as health and money, are trusted more when an expert checked the post. A post names who checked it with `reviewed_by:` in its front matter. The page then shows "Reviewed by" with their names, and its structured data carries `reviewedBy`.
+
+To make a reviewer required, list those categories in `lint.toml`, next to `site.toml`:
+
+```toml
+[reviewers]
+required-in = ["health", "money"]
+```
+
+Each name is a category slug from `categories.toml`. A post in one of them that names no reviewer gets the `no-reviewer` finding, which blocks it: `khalid lint` reports it, `khalid build` leaves the post out, and publishing it is refused. The fix is one line in the post:
+
+```yaml
+---
+category: health
+reviewed_by: [lena-vogt]
+---
+```
+
+Each reviewer is the slug of an author profile. To warn instead of block, add `no-reviewer = "warn"` under `[rules]`. A site that lists no category never sees the finding.

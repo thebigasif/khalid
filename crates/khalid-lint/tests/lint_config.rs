@@ -94,3 +94,33 @@ fn a_negative_threshold_names_its_line() {
         "{error:?}"
     );
 }
+
+#[test]
+fn lint_toml_names_the_categories_that_need_a_reviewer() {
+    let text = "[reviewers]\nrequired-in = [\"health\", \"money\"]\n";
+    let config = LintConfig::parse(text).unwrap();
+    let slugs: Vec<&str> = config
+        .reviewers_required_in()
+        .iter()
+        .map(khalid_core::Slug::as_str)
+        .collect();
+    assert_eq!(slugs, ["health", "money"]);
+    assert!(
+        LintConfig::default().reviewers_required_in().is_empty(),
+        "a site that lists no category needs no reviewer"
+    );
+}
+
+#[test]
+fn a_reviewer_category_that_is_not_a_slug_names_its_line() {
+    let error = LintConfig::parse("[reviewers]\nrequired-in = [\"Health Tips\"]\n").unwrap_err();
+    assert!(
+        matches!(error, LintError::Syntax { line: 2, .. }),
+        "{error:?}"
+    );
+    let error = LintConfig::parse("[reviewers]\nrequired = [\"health\"]\n").unwrap_err();
+    assert!(
+        matches!(error, LintError::Syntax { line: 2, .. }),
+        "{error:?}"
+    );
+}
