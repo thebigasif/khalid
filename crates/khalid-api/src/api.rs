@@ -39,10 +39,10 @@ use crate::webhook_store::WebhookStore;
 use crate::{
     admin_analytics, admin_api, admin_api_keys, admin_audit, admin_authors, admin_calendar,
     admin_categories, admin_check, admin_comments, admin_consent, admin_design,
-    admin_draft_comments, admin_draft_threads, admin_follow_ups, admin_forms, admin_newsletters,
-    admin_not_found, admin_pages, admin_redirect_csv, admin_redirects, admin_schema_templates,
-    admin_serpdad, admin_site_settings, admin_snippets, admin_subscribers, admin_tags,
-    admin_templates, admin_trash, admin_webhooks, api_version, content_api,
+    admin_draft_comments, admin_draft_threads, admin_follow_ups, admin_forms, admin_glossary,
+    admin_newsletters, admin_not_found, admin_pages, admin_redirect_csv, admin_redirects,
+    admin_schema_templates, admin_serpdad, admin_site_settings, admin_snippets, admin_subscribers,
+    admin_tags, admin_templates, admin_trash, admin_webhooks, api_version, content_api,
 };
 
 pub use crate::audit_desk::AuditDesk;
@@ -385,6 +385,7 @@ fn assemble(
         ))
         .merge(admin_pages::routes(desks.pages, door.clone()))
         .merge(admin_snippets::routes(desks.snippets, door.clone()))
+        .merge(admin_glossary::routes(desks.glossary, door.clone()))
         .merge(admin_authors::routes(desks.authors, door.clone()))
         .merge(admin_tags::routes(desks.tags, door.clone()))
         .merge(admin_categories::routes(desks.categories, door.clone()))

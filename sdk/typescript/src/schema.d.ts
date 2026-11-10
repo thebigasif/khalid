@@ -271,6 +271,12 @@ export type AdminForms = {
   forms: FormSummary[];
 };
 
+/** Glossary terms as the Admin API wraps them. */
+export type AdminGlossary = {
+  /** The term or terms. */
+  glossary: AdminTerm[];
+};
+
 /** Issues as the Admin API wraps them. */
 export type AdminIssues = {
   /** Up to ten problems, those that stop posts going live first. */
@@ -627,6 +633,24 @@ export type AdminTemplate = {
   reader: ReaderDefault[];
   /** One plain sentence on what the template is for. */
   summary: string;
+};
+
+/** A glossary term in one language, such as "topical authority", in Admin API shape. A post links to it with a wikilink to its slug, and the term gets its own page under the glossary. */
+export type AdminTerm = {
+  /** The language and the slug, such as `en.topical-authority`. */
+  id: string;
+  /** The language, such as `en`. */
+  language: string;
+  /** The definition, in markdown. */
+  markdown: string;
+  /** The slug a wikilink names the term by, such as `topical-authority`. */
+  slug: string;
+  /** The term as it is written. */
+  term: string;
+  /** The key shared by the term in other languages, if any. */
+  translation?: string | null;
+  /** When the term last changed. An edit or delete sends it back. */
+  updated_at: string;
 };
 
 /** What one AI assistant's bots read, and the readers it sent. */
@@ -1586,6 +1610,26 @@ export type NewSnippet = {
 export type NewSnippets = {
   /** The one new snippet. */
   snippets: NewSnippet[];
+};
+
+/** A new glossary term, as a create request sends it. */
+export type NewTerm = {
+  /** The language, such as `de`; the site's default when left out. */
+  language?: string | null;
+  /** The definition, in markdown. */
+  markdown: string;
+  /** The slug a wikilink will name it by, such as `topical-authority`. */
+  slug: string;
+  /** The term as it is written. */
+  term: string;
+  /** The key shared by the term in other languages, if any. */
+  translation?: string | null;
+};
+
+/** A new term, wrapped the way the Admin API wraps the glossary: exactly one. */
+export type NewTerms = {
+  /** The one new term. */
+  glossary: NewTerm[];
 };
 
 /** One new webhook. */
@@ -3086,6 +3130,41 @@ export interface Operations {
       };
     };
     output: null;
+  };
+  /** Lists every glossary term in every language. A site has tens, so the list comes whole. Needs `posts:write`. */
+  list_terms: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminGlossary;
+  };
+  /** Creates a glossary term in the language it names or the site's default. Needs `posts:publish`. */
+  create_term: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: NewTerms;
+    };
+    output: AdminGlossary;
+  };
+  /** Reads one glossary term. Needs `posts:write`. */
+  read_term: {
+    input: {
+      path: {
+        /** The language and slug, such as en.topical-authority */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminGlossary;
   };
   /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
   list_keys: {
