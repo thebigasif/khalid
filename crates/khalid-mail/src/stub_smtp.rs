@@ -6,8 +6,9 @@ use std::sync::{Arc, Mutex, PoisonError};
 use std::thread;
 
 /// An SMTP server on loopback that keeps every email as written, with no
-/// encryption or sign-in. It runs on its own thread until the test process
-/// ends, so a test can point a separate `khalid serve` at it.
+/// encryption, letting in any user and password. It runs on its own thread
+/// until the test process ends, so a test can point a separate `khalid
+/// serve` at it.
 #[derive(Debug, Clone)]
 pub struct StubSmtp {
     port: u16,
@@ -58,7 +59,10 @@ fn session(stream: TcpStream, received: &Mutex<Vec<String>>) -> io::Result<()> {
     while let Some(line) = lines.next() {
         let command = line?.to_ascii_uppercase();
         if command.starts_with("EHLO") {
-            write.write_all(b"250-stub\r\n250 8BITMIME\r\n")?;
+            write.write_all(b"250-stub\r\n250-AUTH PLAIN LOGIN\r\n250 8BITMIME\r\n")?;
+        } else if command.starts_with("AUTH") {
+            // Any user and password sign in.
+            write.write_all(b"235 signed in\r\n")?;
         } else if command == "DATA" {
             write.write_all(b"354 go on\r\n")?;
             let mut message = Vec::new();

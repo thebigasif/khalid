@@ -1,11 +1,15 @@
-//! `khalid doctor` checks mail: `[mail]` is valid and the secret it names
-//! is in the environment, which doctor never prints (G38, KH-OPS-2). Every
-//! secret here is made up for the test.
+//! `khalid doctor` checks mail: `[mail]` is valid, the secret it names is
+//! in the environment, which doctor never prints, and with
+//! `--send-test-mail` one email goes out through the site's own mailer
+//! (G38, KH-OPS-2). Every secret here is made up for the test, and the mail
+//! server is a stand-in on loopback.
 
 use std::fs;
+use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+use khalid_mail::StubSmtp;
 use serde_json::Value;
 use tempfile::TempDir;
 
@@ -124,20 +128,59 @@ fn a_missing_mail_secret_is_one_plain_problem_under_mail() {
 }
 
 #[test]
-fn a_good_secret_passes_without_being_shown() {
-    let site = site_with(&smtp(25));
+fn a_good_secret_passes_and_the_test_email_arrives_without_the_secret_shown() {
+    let stub = StubSmtp::start().unwrap();
+    let site = site_with(&smtp(stub.port()));
     let password = format!("pw-made-for-this-test-{}", std::process::id());
     let secrets = [("KHALID_SMTP_PASSWORD", password.as_str())];
+
     let (code, mail, _, said) = doctor(site.path(), &secrets, &[]);
     assert_eq!(code, Some(0), "{said}");
     assert_eq!(mail["status"], "ok", "{mail}");
-    assert_eq!(
-        mail["summary"],
-        "Mail goes out through the SMTP server 127.0.0.1 from news@example.com, \
-         with KHALID_SMTP_PASSWORD set."
+    assert!(
+        stub.received().is_empty(),
+        "no email without --send-test-mail"
+    );
+
+    let (code, mail, _, said) = doctor(site.path(), &secrets, &["--send-test-mail"]);
+    assert_eq!(code, Some(0), "{said}");
+    let summary = mail["summary"].as_str().unwrap();
+    assert!(
+        summary.contains("A test email went to hello@example.com."),
+        "{summary}"
     );
     assert!(
         !said.contains(&password),
         "doctor printed the password: {said}"
     );
+    let emails = stub.received();
+    assert_eq!(emails.len(), 1, "{emails:?}");
+    assert!(emails[0].contains("To: hello@example.com"), "{}", emails[0]);
+    assert!(
+        emails[0].contains("Subject: A test email from khalid doctor"),
+        "{}",
+        emails[0]
+    );
+}
+
+#[test]
+fn a_test_email_that_fails_is_a_problem_that_says_why() {
+    let closed = TcpListener::bind("127.0.0.1:0").unwrap();
+    let port = closed.local_addr().unwrap().port();
+    drop(closed);
+    let site = site_with(&smtp(port));
+    let secrets = [("KHALID_SMTP_PASSWORD", "made-for-this-test")];
+    let (code, mail, _, said) = doctor(site.path(), &secrets, &["--send-test-mail"]);
+    assert_eq!(code, Some(1), "{said}");
+    let what = mail["problem"]["what"].as_str().unwrap();
+    assert!(
+        what.starts_with("The test email to hello@example.com could not be sent: "),
+        "{what}"
+    );
+    assert!(
+        what.contains("the SMTP server did not take the email"),
+        "{what}"
+    );
+    let fix = mail["problem"]["fix"].as_str().unwrap();
+    assert!(fix.contains("[mail.smtp]"), "{fix}");
 }
