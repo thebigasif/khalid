@@ -1,15 +1,21 @@
 //! `GET search/?q=` on a running site: the search page with the ranked
 //! results of the words in `q`, each with its text and the matching words
 //! marked, as plain HTML that needs no script (plan Phase 5, KH-WEB-2).
+//! Each reader's address may search `search_per_minute` times a minute,
+//! from `[limits]`, so a script cannot keep the index busy (KH-OPS-5).
 
+use std::net::SocketAddr;
 use std::sync::Arc;
+use std::time::Duration;
 
 use axum::Router;
 use axum::body::Body;
-use axum::extract::{Query as Asked, RawQuery};
+use axum::extract::{ConnectInfo, Query as Asked, Request};
 use axum::http::{HeaderMap, HeaderValue, Response, StatusCode, header};
+use axum::response::IntoResponse;
 use axum::routing::get;
-use khalid_core::{Config, Locale};
+use khalid_api::api_limits::{self, ApiLimits};
+use khalid_core::{Config, Locale, SystemClock};
 use khalid_db::{Database, SearchResults, SiteId};
 use khalid_render::{Highlight, SearchResult};
 use khalid_search::{Analyzer, Completion, Language, Query, QueryFilter, Snippet, SnippetPart};
@@ -68,24 +74,31 @@ pub(crate) fn router(config: &Config, search: Search) -> Router {
     if search_page::mode(config) != khalid_render::SearchMode::Live {
         return router;
     }
-    let search = Arc::new((search, consent_route::consent_site(config)));
+    let limits = ApiLimits::new(SystemClock, *config.limits());
+    let search = Arc::new((search, consent_route::consent_site(config), limits));
     let filter = QueryFilter::from(&config.seo().search_filter);
     for locale in config.languages() {
         let path = build_pages::path_of(config, locale, search_page::REST);
         let (search, locale, at) = (Arc::clone(&search), locale.clone(), path.clone());
-        let answer = move |headers: HeaderMap, RawQuery(query): RawQuery, words: Asked<Words>| {
+        let answer = move |request: Request| {
             let (search, locale, at) = (Arc::clone(&search), locale.clone(), at.clone());
             async move {
-                let (search, consent) = &*search;
-                let reading = (&headers, query.as_deref(), consent);
-                let Asked(words) = words;
-                if words
-                    .q
-                    .as_deref()
-                    .is_some_and(|q| filter.check(q.trim()).is_err())
+                let (search, consent, limits) = &*search;
+                let words = match Asked::<Words>::try_from_uri(request.uri()) {
+                    Ok(Asked(words)) => words,
+                    Err(rejection) => return rejection.into_response(),
+                };
+                let reading = (request.headers(), request.uri().query(), consent);
+                let typing = words.typing.as_deref();
+                let asked = words.q.as_deref().map(str::trim);
+                if asked.is_some_and(|q| !q.is_empty())
+                    && let Some(wait) = limited(limits, &request)
                 {
-                    let typing = words.typing.as_deref();
-                    return refused(search, (&locale, &at), typing, reading);
+                    return too_many(search, (&locale, &at), typing, reading, wait);
+                }
+                if asked.is_some_and(|q| filter.check(q).is_err()) {
+                    let refusal = StatusCode::BAD_REQUEST;
+                    return refused(search, (&locale, &at), typing, reading, refusal);
                 }
                 answer(search, (&locale, &at), words, reading).await
             }
@@ -193,14 +206,42 @@ fn live(
     }
 }
 
-/// 400 for a search the site's filters refuse, such as spam or emoji: the
-/// empty search page at `path`, or while typing, no results. The query
-/// is never shown back, so a bot's words never reach the page.
+/// How long the reader `request` came from must wait before searching
+/// again, or `None` when a search is left. A request with no peer, as in
+/// tests that call the router directly, is not counted.
+fn limited(limits: &ApiLimits, request: &Request) -> Option<Duration> {
+    let ConnectInfo(peer) = request.extensions().get::<ConnectInfo<SocketAddr>>()?;
+    let address = api_limits::client_of(peer.ip(), request.headers());
+    limits.search(address).err()
+}
+
+/// 429 for a reader with no searches left for `wait`: [`refused`], with
+/// `Retry-After` in whole seconds.
+fn too_many(
+    search: &Search,
+    place: (&Locale, &str),
+    typing: Option<&str>,
+    reading: Reading<'_>,
+    wait: Duration,
+) -> Response<Body> {
+    let busy = StatusCode::TOO_MANY_REQUESTS;
+    let mut response = refused(search, place, typing, reading, busy);
+    let seconds = HeaderValue::from(api_limits::whole_seconds(wait));
+    response.headers_mut().insert(header::RETRY_AFTER, seconds);
+    response
+}
+
+/// `status` for a search that is not run: 400 when the site's filters
+/// refuse it, such as spam or emoji, or 429 when the reader searched too
+/// often. The answer is the empty search page at `path`, or while typing,
+/// no results. The query is never shown back, so a bot's words never
+/// reach the page.
 fn refused(
     search: &Search,
     (locale, path): (&Locale, &str),
     typing: Option<&str>,
     reading: Reading<'_>,
+    status: StatusCode,
 ) -> Response<Body> {
     let mut response = if typing.is_some() {
         live(search, locale, None, Vec::new())
@@ -210,7 +251,7 @@ fn refused(
             Ok(None) | Err(_) => return unavailable(&search.security),
         }
     };
-    *response.status_mut() = StatusCode::BAD_REQUEST;
+    *response.status_mut() = status;
     response
 }
 

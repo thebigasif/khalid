@@ -1,0 +1,2 @@
+Added
+- The search page now has a limit: each reader's address may search 120 times a minute, and past it gets a 429 with `Retry-After`. A new `[limits]` table in `site.toml` sets this and the API's limits (`admin_per_minute`, `content_per_minute`, `wrong_keys_per_minute`, `search_per_minute`). Every API operation that needs a key now lists its 429 answer in `openapi.json`.

@@ -32,7 +32,7 @@ Integration keys are created in the admin or with `khalid keys create`. Each key
 
 ## Rate limits
 
-Each key may make 600 Admin API requests a minute, and a content key 6,000 Content API requests a minute; a staff session counts as its staff member's key. Each address may send 10 wrong keys a minute, counted by network (an IPv4 address or an IPv6 /64), and once it has none left it is refused before its key is checked. A request with no key is not counted. Past a limit the API answers 429 with a `too-many-requests` problem and `Retry-After` in seconds (BL-SEC-5). The limits are kept in memory and start empty when the server starts. ADR "Number: next free", `0000-the-api-limits-each-key-and-each-wrong-key.md`, says why.
+Each key may make 600 Admin API requests a minute, and a content key 6,000 Content API requests a minute; a staff session counts as its staff member's key. Each address may send 10 wrong keys a minute, counted by network (an IPv4 address or an IPv6 /64), and once it has none left it is refused before its key is checked. A request with no key is not counted. Past a limit the API answers 429 with a `too-many-requests` problem and `Retry-After` in seconds (BL-SEC-5), and every operation behind a key lists that 429 in `openapi.json` as the shared `TooManyRequests` answer. A site sets its own numbers in the `[limits]` table of `site.toml`: `admin_per_minute`, `content_per_minute` and `wrong_keys_per_minute`, each 1 to 100000. The limits are kept in memory and start empty when the server starts. ADR "Number: next free", `0000-the-api-limits-each-key-and-each-wrong-key.md`, says why, and `0000-limits-are-settings-and-search-has-one.md` adds the settings and the search page's limit.
 
 ## Publish target
 

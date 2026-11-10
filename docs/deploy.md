@@ -315,6 +315,20 @@ While it is on, three commands read it. A crawler counts only when its address i
 
 Add `--json` to any of them for the same as one JSON object. The hourly alerts also raise `crawl-stopped` when Googlebot or Bingbot has not fetched a page for a week, and `crawler-errors` when crawlers got a server error in the last hour. Both go out like every other alert.
 
+## Request limits
+
+`khalid serve` limits how often one key or one reader may ask for work, so a busy script or a leaked key cannot slow the blog for everyone. Past a limit the answer is 429, "too many requests", with a `Retry-After` header that says how many seconds to wait. The usual numbers suit one blog on a small server. To change them, add a `[limits]` table to `site.toml` and restart the server:
+
+```toml
+[limits]
+admin_per_minute = 600        # Admin API requests per key or signed-in staff member
+content_per_minute = 6000     # Content API requests per content key
+wrong_keys_per_minute = 10    # wrong keys one address may send before it is paused
+search_per_minute = 120       # searches one reader's address may make
+```
+
+Each number may be 1 to 100000. Searches count only when the reader typed words, so opening the empty search page never counts. A reader past the limit sees the empty search page until the wait is over. A blog behind a proxy on the same machine or network, such as Caddy or nginx, is counted by the address the proxy passes on in `X-Forwarded-For`.
+
 ## Many sites on one server
 
 One Khalid process can serve several blogs, each on its own domain. In an empty folder, add each site by its domain. The first one is the home site, where super admins add more:
