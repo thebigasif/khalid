@@ -58,6 +58,7 @@ mod draft_lint;
 pub mod entry_store;
 mod etag;
 pub mod follow_ups;
+pub mod form_answers;
 pub mod ghost;
 mod html_source;
 pub mod keys;
