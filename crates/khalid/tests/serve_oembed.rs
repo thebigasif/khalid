@@ -44,3 +44,27 @@ fn another_site_gets_a_demo_post_as_a_card_under_the_mount() {
     );
     assert_eq!(status, 404);
 }
+
+#[test]
+fn a_post_page_names_the_card_a_consumer_then_gets() {
+    let site = demo_copy();
+    let key = new_key(
+        site.path(),
+        &["--name", "Reader", "--scope", "content:read"],
+    );
+    let server = start(site.path(), &key);
+    let (status, page) = server.raw("GET", "/blog/fixing-slow-pages/", &[], None);
+    assert_eq!(status, 200);
+    let marker = "<link rel=\"alternate\" type=\"application/json+oembed\" href=\"";
+    let (_, rest) = page.split_once(marker).unwrap_or_else(|| panic!("{page}"));
+    let href = rest.split('"').next().unwrap();
+    let path = href.strip_prefix("https://www.example.com").unwrap();
+    assert!(
+        path.starts_with("/blog/api/oembed?url=https%3A%2F%2F"),
+        "{path}"
+    );
+    let (status, body) = server.raw("GET", path, &[], None);
+    assert_eq!(status, 200, "{body}");
+    let card: Value = serde_json::from_str(&body).unwrap();
+    assert!(card["html"].as_str().unwrap().contains(POST), "{card}");
+}

@@ -62,6 +62,14 @@ oEmbed is the standard other sites use to turn a pasted link into a card, as Wor
 
 The answer is JSON with the post's title, first author, share image and site name, and `html`: a short quote of the title, the summary and the site, each a plain link, with no script and no frame. `maxwidth` makes the card narrower, down to 200 pixels from 550. An address with tracking tags such as `?utm_source=` still names its post. A draft, a page that is not a post, or an address on another site answers 404, and `format=xml` answers 501, because only JSON is served. A static site has no server to answer, so it has no oEmbed.
 
+Each post page that `khalid serve` shows names its card in its `<head>`, so a site given only the post's address finds it on its own:
+
+```html
+<link rel="alternate" type="application/json+oembed" href="https://www.example.com/blog/api/oembed?url=https%3A%2F%2Fwww.example.com%2Fblog%2Ffixing-slow-pages%2F">
+```
+
+Pages `khalid build` writes leave the link out, even for a site in server mode, because a static host has nothing to answer it.
+
 ## Tracking tags on links to your product
 
 To see in your product's analytics which posts send visitors, list the product's domains:

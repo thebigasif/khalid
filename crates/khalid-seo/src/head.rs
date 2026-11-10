@@ -166,6 +166,12 @@ pub fn head_tags(site: &SeoSite, page: &SeoPage) -> Result<HeadTags, SeoError> {
         });
     }
     push_feed_links(site, page, &mut tags)?;
+    if site.oembed && page.kind == PageKind::Post {
+        tags.push(HeadTag::Format {
+            media_type: "application/json+oembed",
+            href: oembed_url(site, page)?,
+        });
+    }
     if page.kind == PageKind::Home {
         if site.schema_map.writes_files() {
             tags.push(HeadTag::Format {
@@ -177,6 +183,30 @@ pub fn head_tags(site: &SeoSite, page: &SeoPage) -> Result<HeadTags, SeoError> {
     }
     push_social_tags(site, page, &canonical, &description, &mut tags);
     Ok(HeadTags(tags))
+}
+
+/// Where the site's oEmbed provider answers with the card of `page`:
+/// `api/oembed` under the mount, asked for the page's own address.
+fn oembed_url(site: &SeoSite, page: &SeoPage) -> Result<AbsoluteUrl, SeoError> {
+    let own = site.url_for(&page.language, &page.path)?;
+    let provider = site.url_for(&site.default_language, &UrlPath::try_new("/api/oembed")?)?;
+    let mut href = provider.as_str().to_owned();
+    href.push_str("?url=");
+    for byte in own.as_str().bytes() {
+        if byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'.' | b'_' | b'~') {
+            href.push(char::from(byte));
+        } else {
+            href.push('%');
+            for half in [byte >> 4, byte & 0x0f] {
+                let digit = char::from_digit(u32::from(half), 16).unwrap_or('0');
+                href.push(digit.to_ascii_uppercase());
+            }
+        }
+    }
+    AbsoluteUrl::parse(&href).map_err(|source| SeoError::Url {
+        path: page.path.as_str().to_owned(),
+        source,
+    })
 }
 
 /// Links each feed format that is on, so feed readers find the feed: the
